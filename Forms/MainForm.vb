@@ -2200,35 +2200,26 @@ Public Class MainForm
                         sec = CByte((((buffer(b + 6) And 240) >> 4) * 10) + (buffer(b + 6) And 15))
 
                         If Math.Abs(p.SourceSeconds - ((hour * 60 ^ 2) + (min * 60) + sec)) < 30 Then
-                            Dim params As New StringBuilder
-                            params.AppendLine(ifoPath)
-                            params.AppendLine(p.TempDir + Filepath.GetBase(p.SourceFile))
-                            params.AppendLine((i + 1).ToString)
-                            params.AppendLine("1")
-                            params.AppendLine("ALL")
-                            params.AppendLine("CLOSE")
+                            Dim args = _
+                                ifoPath + CrLf +
+                                p.TempDir + Filepath.GetBase(p.SourceFile) + CrLf &
+                                (i + 1) & CrLf +
+                                "1" + CrLf +
+                                "ALL" + CrLf +
+                                "CLOSE"
 
-                            Dim paramFile = p.TempDir + Filepath.GetBase(p.TargetFile) + "_vsrip.txt"
-                            params.ToString.WriteFile(paramFile)
+                            Dim fileContent = p.TempDir + Filepath.GetBase(p.TargetFile) + "_vsrip.txt"
+                            args.WriteFile(fileContent)
 
-                            Dim pw As New Proc
-
-                            ProcessForm.ProcInstance = pw
-                            ProcessForm.ShowForm()
-
-                            Log.WriteHeader("Extracting Subtitles")
-                            Dim startTime = DateTime.Now
-
-                            pw.File = Packs.VSRip.GetPath
-                            pw.Arguments = """" + paramFile + """"
-                            pw.Wait = True
-                            pw.Priority = s.ProcessPriority
-                            pw.Directory = Filepath.GetDir(pw.File)
-                            pw.Wait = True
-                            pw.AllowedExitCodes = {0, 1, 2}
-                            pw.Start()
-
-                            Log.WriteStats(startTime)
+                            Using proc As New Proc
+                                proc.Init("Demux subtitles using VSRip")
+                                proc.WriteLine(args)
+                                proc.File = Packs.VSRip.GetPath
+                                proc.Arguments = """" + fileContent + """"
+                                proc.Directory = Packs.VSRip.GetDir
+                                proc.AllowedExitCodes = {0, 1, 2}
+                                proc.Start()
+                            End Using
 
                             Exit For
                         End If

@@ -16,8 +16,6 @@ Modern video encoding GUI for many powerfull video tools such as AviSynth, mkvto
 - Cut/Trim/Edit feature
 - External AviSynth filters and command line encoding applications can be integrated
 - Rich project, project template and profiles support
-- Large amount of macros that can be used in scripts and command lines to perform advanced tasks
-- Very rich log file for learning and troubleshooting purpose
 
 # Requirements
 

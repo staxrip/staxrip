@@ -1688,17 +1688,19 @@ Public Class Shutdown
             Case ShutdownMode.Hibernate
                 SetSuspendState(True, False, False)
             Case ShutdownMode.Shutdown
+                'Const Shutdown = 1
+                Const ForcedShutdown = 5
+                'Const PowerOff = 8
+                'Const ForcedPowerOff = 12
                 Dim c As New ManagementClass("Win32_OperatingSystem")
                 c.Scope.Options.EnablePrivileges = True
                 Dim params = c.GetMethodParameters("Win32Shutdown")
-                params("Flags") = CInt(mode).ToString
+                params("Flags") = ForcedShutdown.ToString
                 DirectCast(c.GetInstances()(0), ManagementObject).InvokeMethod("Win32Shutdown", params, Nothing)
         End Select
     End Sub
 
-    Declare Function SetSuspendState Lib "powrprof.dll" (hibernate As Boolean,
-                                                         forceCritical As Boolean,
-                                                         disableWakeEvent As Boolean) As Boolean
+    Declare Function SetSuspendState Lib "powrprof.dll" (hibernate As Boolean, forceCritical As Boolean, disableWakeEvent As Boolean) As Boolean
 End Class
 
 Public Enum ShutdownMode

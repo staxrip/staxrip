@@ -1,0 +1,3 @@
+.NET 4.5 is required:
+
+http://www.microsoft.com/en-us/download/details.aspx?id=30653

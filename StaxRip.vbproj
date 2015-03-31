@@ -1,0 +1,551 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8DB07BD5-D3DD-49CB-85ED-AB35EAF3C951}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>MainIcon.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>StaxRip</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyMode>None</AssemblyOriginatorKeyMode>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>WinExe</OutputType>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionStrict>On</OptionStrict>
+    <RootNamespace>StaxRip</RootNamespace>
+    <StartupObject>Sub Main</StartupObject>
+    <MyType>WindowsFormsWithCustomSubMain</MyType>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <GenerateManifests>false</GenerateManifests>
+    <SignManifests>false</SignManifests>
+    <ManifestCertificateThumbprint>B078FD33BBCE3920206E3C0C0490CA18E86315AF</ManifestCertificateThumbprint>
+    <ManifestKeyFile>StaxRip_TemporaryKey.pfx</ManifestKeyFile>
+    <TargetZone>LocalIntranet</TargetZone>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <OptionInfer>On</OptionInfer>
+    <PublishUrl>ftp://planetdvb.net/staxrip/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Background</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Weeks</UpdateIntervalUnits>
+    <UpdatePeriodically>true</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>http://www.planetdvb.net/staxrip/</InstallUrl>
+    <TargetCulture>en</TargetCulture>
+    <ProductName>StaxRip</ProductName>
+    <PublisherName>stax</PublisherName>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>0.9.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\</OutputPath>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>1</WarningLevel>
+    <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
+    <DefineDebug>true</DefineDebug>
+    <DebugType>Full</DebugType>
+    <DefineTrace>true</DefineTrace>
+    <NoWarn>42030,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\</OutputPath>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>1</WarningLevel>
+    <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <NoWarn>42030,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic">
+      <Name>Microsoft.VisualBasic</Name>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.DirectoryServices">
+      <Name>System.DirectoryServices</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Security">
+      <Name>System.Security</Name>
+    </Reference>
+    <Reference Include="System.Web.Services">
+      <Name>System.Web.Services</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.IO" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\DemuxingControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\x265Control.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\x264Control.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\SimpleSettingsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MediaInfoForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MediaInfoFolderViewForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\eac3toForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Extensions\UI Extensions.vb" />
+    <Compile Include="Extensions\MiscExtensions.vb" />
+    <Compile Include="Forms\AudioForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DemuxingForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HelpForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\AviSynthListView.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\CommandLineControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SubtitleControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MacroEditorControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MacrosForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TestForm.Designer.vb">
+      <DependentUpon>TestForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TestForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CommandLineForm.Designer.vb">
+      <DependentUpon>CommandLineForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\CommandLineForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="General\Audio.vb" />
+    <Compile Include="General\Automation.vb" />
+    <Compile Include="General\CommandLine.vb" />
+    <Compile Include="General\ImageUtils.vb" />
+    <Compile Include="General\x265.vb" />
+    <Compile Include="UI\Controls\ListViewEx.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\SimpleUI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="General\VideoDrawer.vb" />
+    <Compile Include="General\x264.vb" />
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\SearchTextBox.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Dynamic.vb" />
+    <Compile Include="Extensions\StringExtension.vb" />
+    <Compile Include="Forms\BatchEncoderForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EventCommandEditor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EventCommandsEditor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Misc Forms.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MacroEditor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\x264Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ControlHostForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MuxerForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="General\ApplicationSettings.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="General\AudioProfile.vb" />
+    <Compile Include="General\AviSynth.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="General\AVIFile.vb" />
+    <Compile Include="General\Help.vb" />
+    <Compile Include="General\MediaInfo.vb">
+    </Compile>
+    <Compile Include="General\General.vb" />
+    <Compile Include="General\Proc.vb" />
+    <Compile Include="General\Native.vb" />
+    <Compile Include="Forms\CommandLineAudioForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CropForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\JobsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ApplicationsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PreviewForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ProfilesForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SourceFilesForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="General\Muxer.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="General\Package.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="General\Demux.vb" />
+    <Compile Include="Forms\ProcessForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="General\Project.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="General\VideoEncoder.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="General\Misc.vb">
+    </Compile>
+    <Compile Include="General\Strings.vb" />
+    <Compile Include="UI\Controls\Controls.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Criteria\Criteria.vb" />
+    <Compile Include="UI\Criteria\CriteriaControl.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Criteria\CriteriaItemControl.Designer.vb">
+      <DependentUpon>CriteriaItemControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Criteria\CriteriaItemControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\CustomMenuEditor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ExtenderProviders.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\FolderBrowserDialog.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\HSLColor.vb" />
+    <Compile Include="UI\InputBox.vb" />
+    <Compile Include="UI\InputBoxForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu Types.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\MenuTemplateForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Misc.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SelectionBox.vb" />
+    <Compile Include="UI\SelectionBoxForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\StockIcon.vb" />
+    <Compile Include="UI\StringEditorForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\TaskDialog.vb" />
+    <Compile Include="UI\Templates\DialogTemplate.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Templates\UserControlTemplate.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\TipProvider.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\ToolStripRendererEx.vb" />
+    <Compile Include="UI\UI Help.vb" />
+    <None Include="Resources\play.png" />
+    <None Include="Resources\arrow.png" />
+    <None Include="Resources\X.png" />
+    <None Include="Resources\Right3.png" />
+    <None Include="Resources\Right2.png" />
+    <None Include="Resources\Right1.png" />
+    <None Include="Resources\Left3.png" />
+    <None Include="Resources\Left2.png" />
+    <None Include="Resources\Left1.png" />
+    <None Include="Resources\BracketOpen.png" />
+    <None Include="Resources\BracketClose.png" />
+    <EmbeddedResource Include="Controls\CommandLineControl.resx">
+      <DependentUpon>CommandLineControl.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MacroEditorControl.resx">
+      <DependentUpon>MacroEditorControl.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DemuxingControl.resx">
+      <DependentUpon>DemuxingControl.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SubtitleControl.resx">
+      <DependentUpon>SubtitleControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\x265Control.resx">
+      <DependentUpon>x265Control.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\x264Control.resx">
+      <DependentUpon>x264Control.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ApplicationsForm.resx">
+      <DependentUpon>ApplicationsForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AudioForm.resx">
+      <DependentUpon>AudioForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SimpleSettingsForm.resx">
+      <DependentUpon>SimpleSettingsForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CommandLineAudioForm.resx">
+      <DependentUpon>CommandLineAudioForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\BatchEncoderForm.resx">
+      <DependentUpon>BatchEncoderForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ControlHostForm.resx">
+      <DependentUpon>ControlHostForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CropForm.resx">
+      <DependentUpon>CropForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DemuxingForm.resx">
+      <DependentUpon>DemuxingForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MediaInfoForm.resx">
+      <DependentUpon>MediaInfoForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\eac3toForm.resx">
+      <DependentUpon>eac3toForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EventCommandEditor.resx">
+      <DependentUpon>EventCommandEditor.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EventCommandsEditor.resx">
+      <DependentUpon>EventCommandsEditor.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\HelpForm.resx">
+      <DependentUpon>HelpForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\JobsForm.resx">
+      <DependentUpon>JobsForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MacroEditor.resx">
+      <DependentUpon>MacroEditor.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainForm.resx">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MediaInfoFolderViewForm.resx">
+      <DependentUpon>MediaInfoFolderViewForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MuxerForm.resx">
+      <DependentUpon>MuxerForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PreviewForm.resx">
+      <DependentUpon>PreviewForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ProcessForm.resx">
+      <DependentUpon>ProcessForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ProfilesForm.resx">
+      <DependentUpon>ProfilesForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SourceFilesForm.resx">
+      <DependentUpon>SourceFilesForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MacrosForm.resx">
+      <DependentUpon>MacrosForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TestForm.resx">
+      <DependentUpon>TestForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\x264Form.resx">
+      <DependentUpon>x264Form.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CommandLineForm.resx">
+      <DependentUpon>CommandLineForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+    <Content Include="MainIcon.ico" />
+    <EmbeddedResource Include="UI\Controls\SearchTextBox.resx">
+      <DependentUpon>SearchTextBox.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Criteria\CriteriaControl.resx">
+      <DependentUpon>CriteriaControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Criteria\CriteriaItemControl.resx">
+      <DependentUpon>CriteriaItemControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\CustomMenuEditor.resx">
+      <DependentUpon>CustomMenuEditor.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\InputBoxForm.resx">
+      <DependentUpon>InputBoxForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\MenuTemplateForm.resx">
+      <DependentUpon>MenuTemplateForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SelectionBoxForm.resx">
+      <DependentUpon>SelectionBoxForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\StringEditorForm.resx">
+      <DependentUpon>StringEditorForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Templates\UserControlTemplate.resx">
+      <DependentUpon>UserControlTemplate.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="My Project\app.manifest">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\background.gif1.bin" />
+    <None Include="Resources\main.gif1.bin" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\" />
+    <Folder Include="Controls\Settings\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

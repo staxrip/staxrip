@@ -1,0 +1,16 @@
+Public Class Strings
+    Public Const BatchMode As String = "Normally StaxRip performs various tasks directly after a source file is opened like demuxing, auto crop, auto resize etc. In Batch Mode all this tasks are performed when the encoding is started."
+    Public Const EventCommands As String = "A Event Command allows to define a command to be executed on a defined event. Furthermore criteria can be defined to execute the command only if certain criteria is matched."
+    Public Const MacrosHelp As String = "Macros are placeholders that can be used in command lines and other places, on execution StaxRip replaces the macros with the actual values."
+    Public Const DonationsURL As String = "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L7R6AKUHJQLM6&lc=EN&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"
+    Public Const TaskDialogFooter As String = "[copymsg: Copy Message]"
+    Public Const ParRegexPattern As String = "^([1-9]+\d*)(/|:)([1-9]+\d*)$"
+    Public Const VisitForum As String = "Please copy the message and post it to the support forum or mail it."
+    Public Const NoUnicode As String = "Unicode filenames are not supported by AviSynth."
+    Public Const InstallManually As String = "Application not found, please click the 'Website' toolbar button above and download and install the application manually."
+    Public Const ProjectX As String = "ProjectX demuxes and fixes DVB MPEG-2 captures. It's possible to disable ProjectX in the settings, in that case StaxRip uses DGMPGDec instead which normally should work well."
+    Public Const dsmux As String = "dsmux is used to mux TS containing AVC into MKV, dsmux and DGDecNV are excelent in regard of keeping audio properly synced. dsmux is installed by the Haali Splitter which is bundled with StaxRip. When you install the Haali Splitter you should always install LAV Filters afterwards."
+    Public Const Muxer As String = "A muxer merges different video, audio and subtitle files into a single container file which is the actual output file. Using x264 or subtitles MKV or MP4 is required as container."
+    Public Const DGDecNV As String = "DGDecNV is a shareware high performance decoder/frameserver for AVC, MPEG2, and VC1 streams that runs on the GPU of Nvidia graphics cards that support CUDA video decoding. It works in particular well with TS source files that would be otherwise need to be remuxed to MKV using dsmux in order to avoid sync problems (dsmux is included with Haali Splitter)."
+    Public Const DGMPGDec As String = "DGMPGDec is a AviSynth source filter plugin. DGIndex opens MPEG-2 files (VOB, TS, MPG) and creates a D2V index file which can then be opened in AviSynth with the MPEG2Source filter."
+End Class

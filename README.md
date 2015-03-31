@@ -21,6 +21,6 @@ Modern video encoding GUI for many powerfull video tools such as AviSynth, mkvto
 
 # Requirements
 
-Windows 7 or higher
-.NET 4.5
-LAV Filters
+- Windows 7 or higher
+- .NET 4.5
+- LAV Filters

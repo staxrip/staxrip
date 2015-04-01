@@ -7,6 +7,8 @@ Imports StaxRip.UI
 Class CommandLineForm
     Private Params As CommandLineParams
 
+    Public HTMLHelp As String
+
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
         Me.Params = params
@@ -149,7 +151,7 @@ Class CommandLineForm
                 sp.Init(tb.Edit)
             End If
 
-            If item.Switch <> "" AndAlso Not helpControl Is Nothing AndAlso item.Help <> "" Then
+            If item.Switch <> "" AndAlso Not helpControl Is Nothing Then
                 SwitchControlDic(item.Switch) = helpControl
                 ControlFlowDic(helpControl) = currentFlow
                 ControlHelpDic(helpControl) = item.Help
@@ -175,6 +177,7 @@ Class CommandLineForm
         f.Doc.WriteStart(Text)
         f.Doc.WriteP("The Search input field can be used to search for options, it searches in the switch, the label and the help. Multiple matches can be cycled by pressing enter.")
         f.Doc.WriteP("Numeric values and options can easily be reset to their default value by double clicking on the label. The default value for boolean and any other value can be found in the tooltip which can be shown by right-clicking the label.")
+        If HTMLHelp <> "" Then f.Doc.Writer.WriteRaw(HTMLHelp)
         f.Doc.WriteTips(SimpleUI.ActivePage.TipProvider.GetTips)
         f.Show()
     End Sub
@@ -206,7 +209,7 @@ Class CommandLineForm
             Next
 
             For Each i In ControlHelpDic
-                If i.Value.ToLower.Contains(q) AndAlso
+                If i.Value <> "" AndAlso i.Value.ToLower.Contains(q) AndAlso
                     Not matchedControls.Contains(i.Key) Then
 
                     matchedControls.Add(i.Key)

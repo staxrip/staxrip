@@ -1057,6 +1057,8 @@ Class IntelEncoder
         newParams.Init(store)
 
         Using f As New CommandLineForm(newParams)
+            f.HTMLHelp = Strings.Intel
+
             f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetStandardOutput(Packs.QSVEncC.GetPath, "--check-environment"))))
             f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStandardOutput(Packs.QSVEncC.GetPath, "--check-hw"))))
             f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStandardOutput(Packs.QSVEncC.GetPath, "--check-features"))))
@@ -1125,54 +1127,6 @@ Class IntelEncoder
             New StringPair("vcm", "VCM - Video Conferencing Mode"),
             New StringPair("vqp", "VQP - Variable QP")}
 
-        Private ModeHelp As String = <a>
-CBR: constant bitrate control algorithm
-Use case: streaming or recording with a constant bit rate.
-Description: Bitrate is determined by the "Max Bitrate" setting in Encoding->Video Encoding or TargetKbps if "use global Max Bitrate" in Quick Sync Encoder Settings is unchecked.
-Quality is determined by the bitrate. The higher the bitrate, the better the quality.
-
-VBR: variable bit rate control algorithm
-Use case: realtime, recording and streaming with a variable bitrate
-Description: Video is encoded with target bitrate TargetKbps, while allowing MaxKbps spikes that smooth out using a buffer, whose size is determined by the global buffer size or BufferSizeInKB.
-Remark: According to the SDK description, this algorithm is HRD compliant and can probably be used fine with streaming, although it is not a strict constant bit rate algorithm.
-Quality is determined by the 2 bitrate parameters. The higher the bitrate, the better the quality.
-
-CQP: constant quantization parameter algorithm
-Use case: recording with a variable bit rate
-Description: Video is encoded with a constant quality, regardless of motion. Bitrate is determined by the complexity of the video material. Quality is determined by QPI, QPP and QPB parameters. QPI determines intra frame quality (known as key frames), QPP determines predicted (P-) frames quality, and QPB determines h.264 B-frames (a weaker version of P-frames). You want to use the same value for all 3 parameters.
-Remark: Very good for local recording for raw footage, since quality is not restricted to bitrate if you set the bitrate high enough, while not wasting disk space on low complex scenes.
-Quality is determined by the 3 QP parameters (1..51). The lower the values, the better the quality. 0 uses SDK default. Sweet spot is probably around 20-25. My choice is 22 with a maximum bit rate of 50000, which results in an average bit rate of about 29000 while keeping high complex scenes at maximum quality. Lower values than 22 greatly increases the bitrate requirement.
-Not available in every HD Graphics.
-
-AVBR: average variable bit rate control algorithm
-Use case: recording with a variable bit rate.
-Description: The algorithm focuses on overall encoding quality while meeting the specified bitrate, TargetKbps, within the accuracy range Accuracy, after a Convergence period.
-Quality is determined by the bitrate. The higher the bitrate, the better the quality. Allows spikes in bitrate consumption for short high complex scenes to maintain quality. Quality of high complex scenes is determined by the Accuracy and Convergence parameters. This is not constant enough for streaming like the VBR algorithm (not HRD compliant).
-Not available in every HD Graphics.
-
-LA (VBR): VBR algorithm look ahead
-Use case: recording with a variable bit rate.
-Description: A better version of the VBR algorithm. Quality improvements over VBR. Huge latency and increased memory consumption due to extensive analysis of several dozen frames before the actual encoding.
-Quality is determined by the bitrate and the Look-Ahead depth (1..100). The higher the bitrate, the better the quality. The larger the Look-Ahead, the better the quality. A LA value of 0 gives the SDK default.
-Not available in every HD Graphics.
-
-ICQ: intelligent constant quality algorithm
-Use case: recording with a variable bit rate.
-Description: A better version of the CQP mode. Recording with a constant quality, similar to the CRF mode of x.264, that makes better usage of the bandwith than CQP mode.
-Quality is determined by the ICQQuality parameter (1..51), where 1 corresponds to the best quality. Sane values of ICQQuality are probably around 20..25 like in CQP modes.
-Not available in every HD Graphics.
-
-VCM: Video conferencing mode
-Use case: video conferencing. Probably low latency, low bitrate requirements, low quality.
-Description: I did not find any details about this mode, but it is probably not suitable for high quality streaming or recording but focuses on low bandwith usage and robustness of the data stream.
-Not available in every HD Graphics.
-
-LA ICQ: intelligent constant quality algorithm with look ahead
-Use case: recording with a variable bit rate.
-Description: The same quality improvements and caveats as LA (VBR), but for the ICQ algorithm. Probably the best quality while at the same time consuming the least bandwidth of all available algorithms - if your CPU supports it.
-Quality is determined by the ICQQuality parameter (1..51), where 1 corresponds to the best quality, and the Look-Ahead depth (1..100). The larger the Look-Ahead, the better the quality, where 0 gives the SDK default. Sane values of ICQQuality are probably around 20..25 like in CQP modes.
-Not available in every HD Graphics.</a>.Value.Trim
-
         Sub New()
             Title = "Intel Encoding Options"
         End Sub
@@ -1180,7 +1134,6 @@ Not available in every HD Graphics.</a>.Value.Trim
         Property Mode As New OptionParam With {
             .Name = "Mode",
             .Text = "Mode:",
-            .Help = ModeHelp,
             .Expand = True,
             .Options = Modes.Select(Function(a) a.Value).ToArray,
             .Values = Modes.Select(Function(a) a.Name).ToArray,

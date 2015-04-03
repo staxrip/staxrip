@@ -137,6 +137,8 @@ Namespace x265
             Dim newParams As New x265Params
             Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
             newParams.Init(store)
+            newParams.ApplyPresetDefaultValues()
+            newParams.ApplyTuneDefaultValues()
 
             Using f As New CommandLineForm(newParams)
                 If f.ShowDialog() = DialogResult.OK Then
@@ -168,7 +170,7 @@ Namespace x265
     Class x265Params
         Inherits CommandLineParams
 
-        Const NrHelp As String = "Noise reduction - an adaptive deadzone applied after DCT (subtracting from DCT coefficients), before quantization. It does no pixel-level filtering, doesn’t cross DCT block boundaries, has no overlap, The higher the strength value parameter, the more aggressively it will reduce noise." + CrLf2 + "Enabling noise reduction will make outputs diverge between different numbers of frame threads. Outputs will be deterministic but the outputs of -F2 will no longer match the outputs of -F3, etc." + CrLf2 + "Values: any value in range of 0 to 2000. Default 0 (disabled)."
+        Const NrHelp As String = "Noise reduction - an adaptive deadzone applied after DCT (subtracting from DCT coefficients), before quantization. It does no pixel-level filtering, doesn’t cross DCT block boundaries, has no overlap, The higher the strength value parameter, the more aggressively it will reduce noise." + CrLf2 + "Enabling noise reduction will make outputs diverge between different numbers of frame threads. Outputs will be deterministic but the outputs of -F2 will no longer match the outputs of -F3, etc." + CrLf2 + "Values: any value in range of 0 to 2000. 0 = disabled."
 
         Sub New()
             Title = "x265 Options"
@@ -204,53 +206,53 @@ Namespace x265
         Property SSIM As New BoolParam With {
             .Switch = "--ssim",
             .Text = "SSIM",
-            .Help = "Calculate and report Structural Similarity values. It is recommended to use --tune ssim if you are measuring ssim, else the results should not be used for comparison purposes." + CrLf2 + "Default disabled."}
+            .Help = "Calculate and report Structural Similarity values. It is recommended to use --tune ssim if you are measuring ssim, else the results should not be used for comparison purposes."}
 
         Property PSNR As New BoolParam With {
             .Switch = "--psnr",
             .Text = "PSNR",
-            .Help = "Calculate and report Peak Signal to Noise Ratio. It is recommended to use --tune psnr if you are measuring PSNR, else the results should not be used for comparison purposes." + CrLf2 + "Default disabled."}
+            .Help = "Calculate and report Peak Signal to Noise Ratio. It is recommended to use --tune psnr if you are measuring PSNR, else the results should not be used for comparison purposes."}
 
         Property BFrames As New NumParam With {
             .Switch = "--bframes",
             .Text = "B Frames:",
-            .Help = "Maximum number of consecutive b-frames. Use --bframes 0 to force all P/I low-latency encodes. Default 4. This parameter has a quadratic effect on the amount of memory allocated and the amount of work performed by the full trellis version of --b-adapt lookahead.",
+            .Help = "Maximum number of consecutive b-frames. Use --bframes 0 to force all P/I low-latency encodes. This parameter has a quadratic effect on the amount of memory allocated and the amount of work performed by the full trellis version of --b-adapt lookahead.",
             .MinMaxStep = {0, 16, 1}}
 
         Property BFrameBias As New NumParam With {
             .Switch = "--bframe-bias",
             .Text = "B Frame Bias:",
-            .Help = "Bias towards B frames in slicetype decision. The higher the bias the more likely x265 is to use B frames. Can be any value between -90 and 100 and is clipped to that range." + CrLf2 + "Default 0.",
+            .Help = "Bias towards B frames in slicetype decision. The higher the bias the more likely x265 is to use B frames. Can be any value between -90 and 100 and is clipped to that range.",
             .MinMaxStep = {-90, 100, 1}}
 
         Property BAdapt As New OptionParam With {
             .Switch = "--b-adapt",
             .Text = "B Adapt:",
             .Options = {"None", "Fast", "Full"},
-            .Help = "Adaptive B frame scheduling." + CrLf2 + "Default 2"}
+            .Help = "Adaptive B frame scheduling."}
 
         Property RCLookahead As New NumParam With {
             .Switch = "--rc-lookahead",
             .Text = "RC Lookahead:",
-            .Help = "Number of frames for slice-type decision lookahead (a key determining factor for encoder latency). The longer the lookahead buffer the more accurate scenecut decisions will be, and the more effective cuTree will be at improving adaptive quant. Having a lookahead larger than the max keyframe interval is not helpful." + CrLf2 + "Default 20",
+            .Help = "Number of frames for slice-type decision lookahead (a key determining factor for encoder latency). The longer the lookahead buffer the more accurate scenecut decisions will be, and the more effective cuTree will be at improving adaptive quant. Having a lookahead larger than the max keyframe interval is not helpful.",
             .MinMaxStep = {0, 250, 5}}
 
         Property LookaheadSlices As New NumParam With {
             .Switch = "--lookahead-slices",
             .Text = "Lookahead Slices:",
-            .Help = "Use multiple worker threads to measure the estimated cost of each frame within the lookahead. When --b-adapt is 2, most frame cost estimates will be performed in batch mode, many cost estimates at the same time, and lookahead-slices is ignored for batched estimates. The effect on performance can be quite small. The higher this parameter, the less accurate the frame costs will be (since context is lost across slice boundaries) which will result in less accurate B-frame and scene-cut decisions." + CrLf2 + "The encoder may internally lower the number of slices to ensure each slice codes at least 10 16x16 rows of lowres blocks. If slices are used in lookahead, the are logged in the list of tools as lslices." + CrLf2 + "Values: 0 - disabled (default). 1 is the same as 0. Max 16",
+            .Help = "Use multiple worker threads to measure the estimated cost of each frame within the lookahead. When --b-adapt is 2, most frame cost estimates will be performed in batch mode, many cost estimates at the same time, and lookahead-slices is ignored for batched estimates. The effect on performance can be quite small. The higher this parameter, the less accurate the frame costs will be (since context is lost across slice boundaries) which will result in less accurate B-frame and scene-cut decisions." + CrLf2 + "The encoder may internally lower the number of slices to ensure each slice codes at least 10 16x16 rows of lowres blocks. If slices are used in lookahead, they are logged in the list of tools as lslices." + CrLf2 + "Values: 0 - disabled (default). 1 is the same as 0. Max 16",
             .MinMaxStep = {0, 16, 1}}
 
         Property Scenecut As New NumParam With {
             .Switch = "--scenecut",
             .Text = "Scenecut:",
-            .Help = "How aggressively I-frames need to be inserted. The higher the threshold value, the more aggressive the I-frame placement. --scenecut 0 or --no-scenecut disables adaptive I frame placement." + CrLf2 + "Default 40",
+            .Help = "How aggressively I-frames need to be inserted. The higher the threshold value, the more aggressive the I-frame placement. --scenecut 0 or --no-scenecut disables adaptive I frame placement.",
             .MinMaxStep = {0, 900, 10}}
 
         Property Ref As New NumParam With {
             .Switch = "--ref",
             .Text = "References:",
-            .Help = "Max number of L0 references to be allowed. This number has a linear multiplier effect on the amount of work performed in motion search, but will generally have a beneficial affect on compression and distortion." + CrLf2 + "Default 3",
+            .Help = "Max number of L0 references to be allowed. This number has a linear multiplier effect on the amount of work performed in motion search, but will generally have a beneficial affect on compression and distortion.",
             .MinMaxStep = {0, 16, 1}}
 
         Property [Me] As New OptionParam With {
@@ -262,9 +264,10 @@ Namespace x265
 
         Property MErange As New NumParam With {
             .Switch = "--merange",
-            .Text = "Motion Search Range:",
-            .Help = "Motion search range. Default 57. The default is derived from the default CTU size (64) minus the luma interpolation half-length (4) minus maximum subpel distance (2) minus one extra pixel just in case the hex search method is used. If the search range were any larger than this, another CTU row of latency would be required for reference frames. Range of values: an integer from 0 to 32768.",
-            .MinMaxStep = {0, 32768, 1}}
+            .Text = "ME Range (0=auto):",
+            .Help = "Motion search range. The default is derived from the default CTU size (64) minus the luma interpolation half-length (4) minus maximum subpel distance (2) minus one extra pixel just in case the hex search method is used. If the search range were any larger than this, another CTU row of latency would be required for reference frames. Range of values: an integer from 0 to 32768.",
+            .MinMaxStep = {0, 32768, 1},
+            .ArgsFunc = Function() If(MErange.Value = 0, "--merange " & CInt(Calc.GetYFromTwoPointForm(480, 16, 2160, 57, p.TargetHeight)), If(MErange.Value <> MErange.defaultvalue, "--merange " & CInt(MErange.Value), ""))}
 
         Property SubME As New OptionParam With {
             .Switch = "--subme",
@@ -278,18 +281,18 @@ Namespace x265
                         "6 - HPEL 2/8 - QPEL 1/8 - HPEL SATD true",
                         "7 - HPEL 2/8 - QPEL 2/8 - HPEL SATD true"},
             .Expand = True,
-            .Help = "Amount of subpel refinement to perform. The higher the number the more subpel iterations and steps are performed. Default 2. At –subme values larger than 2, chroma residual cost is included in all subpel refinement steps and chroma residual is included in all motion estimation decisions (selecting the best reference picture in each list, and chosing between merge, uni-directional motion and bi-directional motion). The ‘slow’ preset is the first preset to enable the use of chroma residual."}
+            .Help = "Amount of subpel refinement to perform. The higher the number the more subpel iterations and steps are performed. At –subme values larger than 2, chroma residual cost is included in all subpel refinement steps and chroma residual is included in all motion estimation decisions (selecting the best reference picture in each list, and chosing between merge, uni-directional motion and bi-directional motion). The ‘slow’ preset is the first preset to enable the use of chroma residual."}
 
         Property MaxMerge As New NumParam With {
             .Switch = "--max-merge",
             .Text = "Max Merge:",
-            .Help = "Maximum number of neighbor (spatial and temporal) candidate blocks that the encoder may consider for merging motion predictions. If a merge candidate results in no residual, it is immediately selected as a 'skip'. Otherwise the merge candidates are tested as part of motion estimation when searching for the least cost inter option. The max candidate number is encoded in the SPS and determines the bit cost of signaling merge CUs." + CrLf2 + "Default 2.",
+            .Help = "Maximum number of neighbor (spatial and temporal) candidate blocks that the encoder may consider for merging motion predictions. If a merge candidate results in no residual, it is immediately selected as a 'skip'. Otherwise the merge candidates are tested as part of motion estimation when searching for the least cost inter option. The max candidate number is encoded in the SPS and determines the bit cost of signaling merge CUs.",
             .MinMaxStep = {1, 5, 1}}
 
         Property SAOnonDeblock As New BoolParam With {
             .Switch = "--sao-non-deblock",
             .Text = "Specify how to handle depencency between SAO and deblocking filter",
-            .Help = "Specify how to handle depencency between SAO and deblocking filter. When enabled, non-deblocked pixels are used for SAO analysis. When disabled, SAO analysis skips the right/bottom boundary areas." + CrLf2 + "Default disabled."}
+            .Help = "Specify how to handle depencency between SAO and deblocking filter. When enabled, non-deblocked pixels are used for SAO analysis. When disabled, SAO analysis skips the right/bottom boundary areas."}
 
         Property SAO As New BoolParam With {
             .Switch = "--sao",
@@ -301,7 +304,7 @@ Namespace x265
             .Switch = "--signhide",
             .NoSwitch = "--no-signhide",
             .Text = "Hide sign bit of one coeff per TU (rdo)",
-            .Help = "Hide sign bit of one coeff per TU (rdo). The last sign is implied. This requires analyzing all the coefficients to determine if a sign must be toggled, and then to determine which one can be toggled with the least amount of distortion." + CrLf2 + "Default enabled."}
+            .Help = "Hide sign bit of one coeff per TU (rdo). The last sign is implied. This requires analyzing all the coefficients to determine if a sign must be toggled, and then to determine which one can be toggled with the least amount of distortion."}
 
         Property CompCheckQuant As New NumParam With {
             .Name = "CompCheckQuant",
@@ -313,13 +316,13 @@ Namespace x265
             .Switch = "--weightp",
             .NoSwitch = "--no-weightp",
             .Text = "Enable weighted prediction in P slices",
-            .Help = "Enable weighted prediction in P slices. This enables weighting analysis in the lookahead, which influences slice decisions, and enables weighting analysis in the main encoder which allows P reference samples to have a weight function applied to them prior to using them for motion compensation. In video which has lighting changes, it can give a large improvement in compression efficiency." + CrLf2 + "Default is enabled."}
+            .Help = "Enable weighted prediction in P slices. This enables weighting analysis in the lookahead, which influences slice decisions, and enables weighting analysis in the main encoder which allows P reference samples to have a weight function applied to them prior to using them for motion compensation. In video which has lighting changes, it can give a large improvement in compression efficiency."}
 
         Property Weightb As New BoolParam With {
             .Switch = "--weightb",
             .NoSwitch = "--no-weightb",
             .Text = "Enable weighted prediction in B slices",
-            .Help = "Enable weighted prediction in B slices." + CrLf2 + "Default disabled."}
+            .Help = "Enable weighted prediction in B slices."}
 
         Property AQmode As New OptionParam With {
             .Switch = "--aq-mode",
@@ -332,12 +335,12 @@ Namespace x265
             .Text = "Videoformat:",
             .Options = {"undefined", "component", "pal", "ntsc", "secam", "mac"},
             .Values = {"", "component", "pal", "ntsc", "secam", "mac"},
-            .Help = "Specify the source format of the original analog video prior to digitizing and encoding." + CrLf2 + "Default undefined (not signaled)."}
+            .Help = "Specify the source format of the original analog video prior to digitizing and encoding."}
 
         Property AQStrength As New NumParam With {
             .Switch = "--aq-strength",
             .Text = "AQ Strength:",
-            .Help = "Adjust the strength of the adaptive quantization offsets. Setting --aq-strength to 0 disables AQ." + CrLf2 + "Default 1.0.",
+            .Help = "Adjust the strength of the adaptive quantization offsets. Setting --aq-strength to 0 disables AQ.",
             .MinMaxStepDec = {0D, 3D, 0.05D, 2D},
             .Value = 1,
             .DefaultValue = 1}
@@ -346,7 +349,7 @@ Namespace x265
             .Switch = "--cutree",
             .NoSwitch = "--no-cutree",
             .Text = "CU Tree",
-            .Help = "Enable the use of lookahead’s lowres motion vector fields to determine the amount of reuse of each block to tune adaptive quantization factors. CU blocks which are heavily reused as motion reference for later frames are given a lower QP (more bits) while CU blocks which are quickly changed and are not referenced are given less bits. This tends to improve detail in the backgrounds of video with less detail in areas of high motion." + CrLf2 + "Default enabled.",
+            .Help = "Enable the use of lookahead’s lowres motion vector fields to determine the amount of reuse of each block to tune adaptive quantization factors. CU blocks which are heavily reused as motion reference for later frames are given a lower QP (more bits) while CU blocks which are quickly changed and are not referenced are given less bits. This tends to improve detail in the backgrounds of video with less detail in areas of high motion.",
             .Value = True}
 
         Property RD As New OptionParam With {
@@ -360,21 +363,21 @@ Namespace x265
                         "5 - Adds RDO prediction decisions",
                         "6 - Currently same as 5"},
             .Expand = True,
-            .Help = "Level of RDO in mode decision. The higher the value, the more exhaustive the analysis and the more rate distortion optimization is used. The lower the value the faster the encode, the higher the value the smaller the bitstream (in general)." + CrLf2 + "Default 3."}
+            .Help = "Level of RDO in mode decision. The higher the value, the more exhaustive the analysis and the more rate distortion optimization is used. The lower the value the faster the encode, the higher the value the smaller the bitstream (in general)."}
 
         Property MinCuSize As New OptionParam With {
             .Switch = "--min-cu-size",
             .Text = "Minimum CU size:",
             .Options = {"64", "32", "16", "8"},
             .Values = {"64", "32", "16", "8"},
-            .Help = "Minimum CU size (width and height). By using 16 or 32 the encoder will not analyze the cost of CUs below that minimum threshold, saving considerable amounts of compute with a predictable increase in bitrate. This setting has a large effect on performance on the faster presets." + CrLf2 + "Default: 8 (minimum 8x8 CU for HEVC, best compression efficiency)"}
+            .Help = "Minimum CU size (width and height). By using 16 or 32 the encoder will not analyze the cost of CUs below that minimum threshold, saving considerable amounts of compute with a predictable increase in bitrate. This setting has a large effect on performance on the faster presets."}
 
         Property MaxCuSize As New OptionParam With {
             .Switch = "--ctu",
             .Text = "Maximum CU size:",
             .Options = {"64", "32", "16"},
             .Values = {"64", "32", "16"},
-            .Help = "Maximum CU size (width and height). The larger the maximum CU size, the more efficiently x265 can encode flat areas of the picture, giving large reductions in bitrate. However this comes at a loss of parallelism with fewer rows of CUs that can be encoded in parallel, and less frame parallelism as well. Because of this the faster presets use a CU size of 32." + CrLf2 + "Default: 64"}
+            .Help = "Maximum CU size (width and height). The larger the maximum CU size, the more efficiently x265 can encode flat areas of the picture, giving large reductions in bitrate. However this comes at a loss of parallelism with fewer rows of CUs that can be encoded in parallel, and less frame parallelism as well. Because of this the faster presets use a CU size of 32."}
 
         Property TUintra As New NumParam With {
             .Switch = "--tu-intra-depth",
@@ -398,19 +401,19 @@ Namespace x265
             .Switch = "--rect",
             .NoSwitch = "--no-rect",
             .Text = "Enable analysis of rectangular motion partitions Nx2N and 2NxN",
-            .Help = "Enable analysis of rectangular motion partitions Nx2N and 2NxN (50/50 splits, two directions)." + CrLf2 + "Default disabled."}
+            .Help = "Enable analysis of rectangular motion partitions Nx2N and 2NxN (50/50 splits, two directions)."}
 
         Property AMP As New BoolParam With {
             .Switch = "--amp",
             .NoSwitch = "--no-amp",
             .Text = "Enable analysis of asymmetric motion partitions",
-            .Help = "Enable analysis of asymmetric motion partitions (75/25 splits, four directions). At RD levels 0 through 4, AMP partitions are only considered at CU sizes 32x32 and below. At RD levels 5 and 6, it will only consider AMP partitions as merge candidates (no motion search) at 64x64, and as merge or inter candidates below 64x64. The AMP partitions which are searched are derived from the current best inter partition. If Nx2N (vertical rectangular) is the best current prediction, then left and right asymmetrical splits will be evaluated. If 2NxN (horizontal rectangular) is the best current prediction, then top and bottom asymmetrical splits will be evaluated, If 2Nx2N is the best prediction, and the block is not a merge/skip, then all four AMP partitions are evaluated. This setting has no effect if rectangular partitions are disabled." + CrLf2 + "Default disabled."}
+            .Help = "Enable analysis of asymmetric motion partitions (75/25 splits, four directions). At RD levels 0 through 4, AMP partitions are only considered at CU sizes 32x32 and below. At RD levels 5 and 6, it will only consider AMP partitions as merge candidates (no motion search) at 64x64, and as merge or inter candidates below 64x64. The AMP partitions which are searched are derived from the current best inter partition. If Nx2N (vertical rectangular) is the best current prediction, then left and right asymmetrical splits will be evaluated. If 2NxN (horizontal rectangular) is the best current prediction, then top and bottom asymmetrical splits will be evaluated, If 2Nx2N is the best prediction, and the block is not a merge/skip, then all four AMP partitions are evaluated. This setting has no effect if rectangular partitions are disabled."}
 
         Property EarlySkip As New BoolParam With {
             .Switch = "--early-skip",
             .NoSwitch = "--no-early-skip",
             .Text = "Early Skip",
-            .Help = "Measure full CU size (2Nx2N) merge candidates first; if no residual is found the analysis is short circuited." + CrLf2 + "Default disabled."}
+            .Help = "Measure full CU size (2Nx2N) merge candidates first; if no residual is found the analysis is short circuited."}
 
         Property FastIntra As New BoolParam With {
             .Switch = "--fast-intra",
@@ -422,27 +425,27 @@ Namespace x265
             .Switch = "--b-intra",
             .NoSwitch = "--no-b-intra",
             .Text = "Evaluate intra modes in B slices",
-            .Help = "Enables the evaluation of intra modes in B slices." + CrLf2 + "Default disabled."}
+            .Help = "Enables the evaluation of intra modes in B slices."}
 
         Property CUlossless As New BoolParam With {
             .Switch = "--cu-lossless",
             .Text = "CU Lossless",
-            .Help = "For each CU, evaluate lossless (transform and quant bypass) encode of the best non-lossless mode option as a potential rate distortion optimization. If the global option --lossless has been specified, all CUs will be encoded as lossless unconditionally regardless of whether this option was enabled. Default disabled. Only effective at RD levels 3 and above, which perform RDO mode decisions."}
+            .Help = "For each CU, evaluate lossless (transform and quant bypass) encode of the best non-lossless mode option as a potential rate distortion optimization. If the global option --lossless has been specified, all CUs will be encoded as lossless unconditionally regardless of whether this option was enabled. Only effective at RD levels 3 and above, which perform RDO mode decisions."}
 
         Property Tskip As New BoolParam With {
             .Switch = "--tskip",
             .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks",
-            .Help = "Enable evaluation of transform skip (bypass DCT but still use quantization) coding for 4x4 TU coded blocks. Only effective at RD levels 3 and above, which perform RDO mode decisions." + CrLf2 + "Default disabled."}
+            .Help = "Enable evaluation of transform skip (bypass DCT but still use quantization) coding for 4x4 TU coded blocks. Only effective at RD levels 3 and above, which perform RDO mode decisions."}
 
         Property TskipFast As New BoolParam With {
             .Switch = "--tskip-fast",
             .Text = "Only evaluate transform skip for NxN intra predictions (4x4 blocks)",
-            .Help = "Only evaluate transform skip for NxN intra predictions (4x4 blocks). Only applicable if transform skip is enabled. For chroma, only evaluate if luma used tskip. Inter block tskip analysis is unmodified." + CrLf2 + "Default disabled."}
+            .Help = "Only evaluate transform skip for NxN intra predictions (4x4 blocks). Only applicable if transform skip is enabled. For chroma, only evaluate if luma used tskip. Inter block tskip analysis is unmodified."}
 
         Property PsyRD As New NumParam With {
             .Switch = "--psy-rd",
             .Text = "Psy RD:",
-            .Help = "Influence rate distortion optimizated mode decision to preserve the energy of the source image in the encoded image at the expense of compression efficiency. It only has effect on presets which use RDO-based mode decisions (--rd 3 and above). 1.0 is a typical value. Default 0.3",
+            .Help = "Influence rate distortion optimizated mode decision to preserve the energy of the source image in the encoded image at the expense of compression efficiency. It only has effect on presets which use RDO-based mode decisions (--rd 3 and above). 1.0 is a typical value.",
             .MinMaxStepDec = {0D, 2D, 0.05D, 2D},
             .Value = 0.3,
             .DefaultValue = 0.3}
@@ -450,7 +453,7 @@ Namespace x265
         Property PsyRDOQ As New NumParam With {
             .Switch = "--psy-rdoq",
             .Text = "Psy RDOQ:",
-            .Help = "Influence rate distortion optimized quantization by favoring higher energy in the reconstructed image. This generally improves perceived visual quality at the cost of lower quality metric scores. It only has effect when --rdoq-level is 1 or 2. High values can be beneficial in preserving high-frequency detail like film grain. Default: 1.0",
+            .Help = "Influence rate distortion optimized quantization by favoring higher energy in the reconstructed image. This generally improves perceived visual quality at the cost of lower quality metric scores. It only has effect when --rdoq-level is 1 or 2. High values can be beneficial in preserving high-frequency detail like film grain.",
             .MinMaxStepDec = {0D, 50D, 0.05D, 2D},
             .Value = 1,
             .DefaultValue = 1}
@@ -461,7 +464,7 @@ Namespace x265
             .MinMaxStepDec = {0D, 51D, 1D, 1D},
             .Value = 51,
             .DefaultValue = 51,
-            .Help = "Specify an upper limit to the rate factor which may be assigned to any given frame (ensuring a max QP). This is dangerous when CRF is used in combination with VBV as it may result in buffer underruns." + CrLf2 + "Default disabled."}
+            .Help = "Specify an upper limit to the rate factor which may be assigned to any given frame (ensuring a max QP). This is dangerous when CRF is used in combination with VBV as it may result in buffer underruns."}
 
         Property CRFmin As New NumParam With {
             .Switch = "--crf-min",
@@ -472,28 +475,28 @@ Namespace x265
         Property PBRatio As New NumParam With {
             .Switch = "--pbratio",
             .Text = "PB Ratio:",
-            .Help = "QP ratio factor between P and B slices. This ratio is used in all of the rate control modes. Some --tune options may change the default value. It is not typically manually specified." + CrLf2 + "Default 1.3.",
+            .Help = "QP ratio factor between P and B slices. This ratio is used in all of the rate control modes. Some --tune options may change the default value. It is not typically manually specified.",
             .MinMaxStepDec = {0D, 1000D, 0.05D, 2D},
             .Value = 1.3}
 
         Property IPRatio As New NumParam With {
             .Switch = "--ipratio",
             .Text = "IP Ratio:",
-            .Help = "QP ratio factor between I and P slices. This ratio is used in all of the rate control modes. Some --tune options may change the default value. It is not typically manually specified." + CrLf2 + "Default 1.4.",
+            .Help = "QP ratio factor between I and P slices. This ratio is used in all of the rate control modes. Some --tune options may change the default value. It is not typically manually specified.",
             .MinMaxStepDec = {0D, 1000D, 0.05D, 2D},
             .Value = 1.4}
 
         Property QComp As New NumParam With {
             .Switch = "--qcomp",
             .Text = "qComp:",
-            .Help = "qComp sets the quantizer curve compression factor. It weights the frame quantizer based on the complexity of residual (measured by lookahead)." + CrLf2 + "Default value is 0.6. Increasing it to 1 will effectively generate CQP.",
+            .Help = "qComp sets the quantizer curve compression factor. It weights the frame quantizer based on the complexity of residual (measured by lookahead). Increasing to 1 will effectively generate CQP.",
             .MinMaxStepDec = {0D, 1000D, 0.05D, 2D},
             .Value = 0.6}
 
         Property QBlur As New NumParam With {
             .Switch = "--qblur",
             .Text = "Q Blur:",
-            .Help = "Temporally blur quants." + CrLf2 + "Default 0.5",
+            .Help = "Temporally blur quants.",
             .MinMaxStepDec = {Integer.MinValue, Integer.MaxValue, 0.05D, 2D},
             .Value = 0.5,
             .DefaultValue = 0.5}
@@ -519,26 +522,26 @@ Namespace x265
             .Text = "Colorprim:",
             .Options = {"undefined", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "film", "bt2020"},
             .Values = {"", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "film", "bt2020"},
-            .Help = "Specify color primitive to use when converting to RGB." + CrLf2 + "Default undefined (not signaled)."}
+            .Help = "Specify color primitive to use when converting to RGB."}
 
         Property Transfer As New OptionParam With {
             .Switch = "--transfer",
             .Text = "Transfer:",
             .Options = {"undefined", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte-st-2084", "smpte-st-428"},
             .Values = {"", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte-st-2084", "smpte-st-428"},
-            .Help = "Specify transfer characteristics." + CrLf2 + "Default undefined (not signaled)."}
+            .Help = "Specify transfer characteristics."}
 
         Property Colormatrix As New OptionParam With {
             .Switch = "--colormatrix",
             .Text = "Colormatrix:",
             .Options = {"undefined", "GBR", "bt709", "fcc", "bt470bg", "smpte170m", "smpte240m", "YCgCo", "bt2020nc", "bt2020c"},
             .Values = {"", "GBR", "bt709", "fcc", "bt470bg", "smpte170m", "smpte240m", "YCgCo", "bt2020nc", "bt2020c"},
-            .Help = "Specify color matrix setting i.e set the matrix coefficients used in deriving the luma and chroma." + CrLf2 + "Default undefined (not signaled)."}
+            .Help = "Specify color matrix setting i.e set the matrix coefficients used in deriving the luma and chroma."}
 
         Property CuStats As New BoolParam With {
             .Switch = "--cu-stats",
             .Text = "Record statistics on how each CU was coded",
-            .Help = "Records statistics on how each CU was coded (split depths and other mode decisions) and reports those statistics at the end of the encode." + CrLf2 + "Default disabled."}
+            .Help = "Records statistics on how each CU was coded (split depths and other mode decisions) and reports those statistics at the end of the encode."}
 
         Property Pools As New StringParam With {
             .Switch = "--pools",
@@ -549,7 +552,7 @@ Namespace x265
         Property Qstep As New NumParam With {
             .Switch = "--qstep",
             .Text = "Q Step:",
-            .Help = "The maximum single adjustment in QP allowed to rate control." + CrLf2 + "Default 4.",
+            .Help = "The maximum single adjustment in QP allowed to rate control.",
             .MinMaxStep = {0, Integer.MaxValue, 1},
             .Value = 4,
             .DefaultValue = 4}
@@ -558,7 +561,7 @@ Namespace x265
             .Switch = "--wpp",
             .noSwitch = "--no-wpp",
             .Text = "Wavefront Parallel Processing",
-            .Help = "Enable Wavefront Parallel Processing. The encoder may begin encoding a row as soon as the row above it is at least two CTUs ahead in the encode process. This gives a 3-5x gain in parallelism for about 1% overhead in compression efficiency. This feature is implicitly disabled when no thread pool is present." + CrLf2 + "Default: Enabled.",
+            .Help = "Enable Wavefront Parallel Processing. The encoder may begin encoding a row as soon as the row above it is at least two CTUs ahead in the encode process. This gives a 3-5x gain in parallelism for about 1% overhead in compression efficiency. This feature is implicitly disabled when no thread pool is present.",
             .Value = True,
             .DefaultValue = True}
 
@@ -566,18 +569,18 @@ Namespace x265
             .Switch = "--pmode",
             .noSwitch = "--no-pmode",
             .Text = "Parallel Mode Decision",
-            .Help = "Parallel mode decision, or distributed mode analysis. When enabled the encoder will distribute the analysis work of each CU (merge, inter, intra) across multiple worker threads. Only recommended if x265 is not already saturating the CPU cores. In RD levels 3 and 4 it will be most effective if –rect is enabled. At RD levels 5 and 6 there is generally always enough work to distribute to warrant the overhead, assuming your CPUs are not already saturated. –pmode will increase utilization without reducing compression efficiency. In fact, since the modes are all measured in parallel it makes certain early-outs impractical and thus you usually get slightly better compression when it is enabled (at the expense of not skipping improbable modes). This bypassing of early-outs can cause pmode to slow down encodes, especially at faster presets. This feature is implicitly disabled when no thread pool is present." + CrLf2 + "Default disabled."}
+            .Help = "Parallel mode decision, or distributed mode analysis. When enabled the encoder will distribute the analysis work of each CU (merge, inter, intra) across multiple worker threads. Only recommended if x265 is not already saturating the CPU cores. In RD levels 3 and 4 it will be most effective if –rect is enabled. At RD levels 5 and 6 there is generally always enough work to distribute to warrant the overhead, assuming your CPUs are not already saturated. –pmode will increase utilization without reducing compression efficiency. In fact, since the modes are all measured in parallel it makes certain early-outs impractical and thus you usually get slightly better compression when it is enabled (at the expense of not skipping improbable modes). This bypassing of early-outs can cause pmode to slow down encodes, especially at faster presets. This feature is implicitly disabled when no thread pool is present."}
 
         Property PME As New BoolParam With {
             .Switch = "--pme",
             .noSwitch = "--no-pme",
             .Text = "Parallel Motion Estimation",
-            .Help = "Parallel motion estimation. When enabled the encoder will distribute motion estimation across multiple worker threads when more than two references require motion searches for a given CU. Only recommended if x265 is not already saturating CPU cores. --pmode is much more effective than this option, since the amount of work it distributes is substantially higher. With –pme it is not unusual for the overhead of distributing the work to outweigh the parallelism benefits. This feature is implicitly disabled when no thread pool is present. –pme will increase utilization on many core systems with no effect on the output bitstream." + CrLf2 + "Default disabled."}
+            .Help = "Parallel motion estimation. When enabled the encoder will distribute motion estimation across multiple worker threads when more than two references require motion searches for a given CU. Only recommended if x265 is not already saturating CPU cores. --pmode is much more effective than this option, since the amount of work it distributes is substantially higher. With –pme it is not unusual for the overhead of distributing the work to outweigh the parallelism benefits. This feature is implicitly disabled when no thread pool is present. –pme will increase utilization on many core systems with no effect on the output bitstream."}
 
         Property Dither As New BoolParam With {
             .Switch = "--dither",
             .Text = "Enable high quality downscaling",
-            .Help = "Enable high quality downscaling. Dithering is based on the diffusion of errors from one row of pixels to the next row of pixels in a picture. Only applicable when the input bit depth is larger than 8bits and internal bit depth is 8bits." + CrLf2 + "Default disabled."}
+            .Help = "Enable high quality downscaling. Dithering is based on the diffusion of errors from one row of pixels to the next row of pixels in a picture. Only applicable when the input bit depth is larger than 8bits and internal bit depth is 8bits."}
 
         Property InterlaceMode As New OptionParam With {
             .Switch = "--interlaceMode",
@@ -598,14 +601,14 @@ Namespace x265
             .Text = "Level:",
             .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"},
             .Values = {"", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"},
-            .Help = "Minimum decoder requirement level. Defaults to 0, which implies auto-detection by the encoder. If specified, the encoder will attempt to bring the encode specifications within that specified level. If the encoder is unable to reach the level it issues a warning and aborts the encode. If the requested requirement level is higher than the actual level, the actual requirement level is signaled. Beware, specifying a decoder level will force the encoder to enable VBV for constant rate factor encodes, which may introduce non-determinism. The value is specified as a float or as an integer with the level times 10, for example level 5.1 is specified as '5.1' or '51', and level 5.0 is specified as '5.0' or '50'."}
+            .Help = "Minimum decoder requirement level. Unrestricted implies auto-detection by the encoder. If specified, the encoder will attempt to bring the encode specifications within that specified level. If the encoder is unable to reach the level it issues a warning and aborts the encode. If the requested requirement level is higher than the actual level, the actual requirement level is signaled. Beware, specifying a decoder level will force the encoder to enable VBV for constant rate factor encodes, which may introduce non-determinism. The value is specified as a float or as an integer with the level times 10, for example level 5.1 is specified as '5.1' or '51', and level 5.0 is specified as '5.0' or '50'."}
 
         Property Hash As New OptionParam With {
             .Switch = "--hash",
             .Text = "Hash:",
             .Options = {"None", "MD5", "CRC", "Checksum"},
             .Values = {"", "MD5", "CRC", "Checksum"},
-            .Help = "Emit decoded picture hash SEI, so the decoder may validate the reconstructed pictures and detect data loss. Also useful as a debug feature to validate the encoder state." + CrLf2 + "Default None."}
+            .Help = "Emit decoded picture hash SEI, so the decoder may validate the reconstructed pictures and detect data loss. Also useful as a debug feature to validate the encoder state."}
 
         Property HighTier As New BoolParam With {
             .Switch = "--high-tier",
@@ -616,7 +619,7 @@ Namespace x265
             .Switch = "--temporal-mvp",
             .NoSwitch = "--no-temporal-mvp",
             .Text = "Enable temporal motion vector predictors in P and B slices",
-            .Help = "Enable temporal motion vector predictors in P and B slices. This enables the use of the motion vector from the collocated block in the previous frame to be used as a predictor." + CrLf2 + "Default is enabled.",
+            .Help = "Enable temporal motion vector predictors in P and B slices. This enables the use of the motion vector from the collocated block in the previous frame to be used as a predictor.",
             .Value = True,
             .DefaultValue = True}
 
@@ -631,21 +634,21 @@ Namespace x265
             .Switch = "--constrained-intra",
             .NoSwitch = "--no-constrained-intra",
             .Text = "Constrained Intra Prediction",
-            .Help = "Constrained intra prediction. When generating intra predictions for blocks in inter slices, only intra-coded reference pixels are used. Inter-coded reference pixels are replaced with intra-coded neighbor pixels or default values. The general idea is to block the propagation of reference errors that may have resulted from lossy signals." + CrLf2 + "Default disabled.",
+            .Help = "Constrained intra prediction. When generating intra predictions for blocks in inter slices, only intra-coded reference pixels are used. Inter-coded reference pixels are replaced with intra-coded neighbor pixels or default values. The general idea is to block the propagation of reference errors that may have resulted from lossy signals.",
             .Value = True,
             .DefaultValue = True}
 
         Property RDpenalty As New NumParam With {
             .Switch = "--rdpenalty",
-            .Text = "RD Penalty:",
-            .Help = "When set to 1, transform units of size 32x32 are given a 4x bit cost penalty compared to smaller transform units, in intra coded CUs in P or B slices. When set to 2, transform units of size 32x32 are not even attempted, unless otherwise required by the maximum recursion depth. For this option to be effective with 32x32 intra CUs, --tu-intra-depth must be at least 2. For it to be effective with 64x64 intra CUs, --tu-intra-depth must be at least 3. Note that in HEVC an intra transform unit (a block of the residual quad-tree) is also a prediction unit, meaning that the intra prediction signal is generated for each TU block, the residual subtracted and then coded. The coding unit simply provides the prediction modes that will be used when predicting all of the transform units within the CU. This means that when you prevent 32x32 intra transform units, you are preventing 32x32 intra predictions." + CrLf2 + "Default 0, disabled.",
+            .Text = "RD Penalty (0=disabled):",
+            .Help = "When set to 1, transform units of size 32x32 are given a 4x bit cost penalty compared to smaller transform units, in intra coded CUs in P or B slices. When set to 2, transform units of size 32x32 are not even attempted, unless otherwise required by the maximum recursion depth. For this option to be effective with 32x32 intra CUs, --tu-intra-depth must be at least 2. For it to be effective with 64x64 intra CUs, --tu-intra-depth must be at least 3. Note that in HEVC an intra transform unit (a block of the residual quad-tree) is also a prediction unit, meaning that the intra prediction signal is generated for each TU block, the residual subtracted and then coded. The coding unit simply provides the prediction modes that will be used when predicting all of the transform units within the CU. This means that when you prevent 32x32 intra transform units, you are preventing 32x32 intra predictions.",
             .MinMaxStep = {0, 2, 1}}
 
         Property OpenGop As New BoolParam With {
             .Switch = "--open-gop",
             .NoSwitch = "--no-open-gop",
             .Text = "Open GOP",
-            .Help = "Enable open GOP, allow I-slices to be non-IDR." + CrLf2 + "Default enabled.",
+            .Help = "Enable open GOP, allow I-slices to be non-IDR.",
             .Value = True,
             .DefaultValue = True}
 
@@ -653,37 +656,37 @@ Namespace x265
             .Switch = "--b-pyramid",
             .NoSwitch = "--no-b-pyramid",
             .Text = "B Pyramid",
-            .Help = "Use B-frames as references, when possible." + CrLf2 + "Default enabled.",
+            .Help = "Use B-frames as references, when possible.",
             .Value = True,
             .DefaultValue = True}
 
         Property Lossless As New BoolParam With {
             .Switch = "--lossless",
             .Text = "Lossless",
-            .Help = "Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filter processes. This is used for ultra-high bitrates with zero loss of quality. Reconstructed output pictures are bit-exact to the input pictures. Lossless encodes implicitly have no rate control, all rate control options are ignored. Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams)." + CrLf2 + "Default disabled."}
+            .Help = "Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filter processes. This is used for ultra-high bitrates with zero loss of quality. Reconstructed output pictures are bit-exact to the input pictures. Lossless encodes implicitly have no rate control, all rate control options are ignored. Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams)."}
 
         Property SlowFirstpass As New BoolParam With {
             .Switch = "--slow-firstpass",
             .Text = "Slow Firstpass",
-            .Help = "Enable a slow and more detailed first pass encode in multi-pass rate control mode. Speed of the first pass encode is slightly lesser and quality midly improved when compared to the default settings in a multi-pass encode. Default disabled (turbo mode enabled). When turbo first pass is not disabled, these options are set on the first pass to improve performance: --fast-intra, --no-rect, --no-amp, --early-skip, --ref = 1, --max-merge = 1, --me = DIA, --subme = MIN(2, --subme), --rd = MIN(2, --rd)",
+            .Help = "Enable a slow and more detailed first pass encode in multi-pass rate control mode. Speed of the first pass encode is slightly lesser and quality midly improved when compared to the default settings in a multi-pass encode. When turbo first pass is not disabled, these options are set on the first pass to improve performance: --fast-intra, --no-rect, --no-amp, --early-skip, --ref = 1, --max-merge = 1, --me = DIA, --subme = MIN(2, --subme), --rd = MIN(2, --rd)",
             .Value = False,
             .DefaultValue = False}
 
         Property StrictCBR As New BoolParam With {
             .Switch = "--strict-cbr",
             .Text = "Strict CBR",
-            .Help = "Enables stricter conditions to control bitrate deviance from the target bitrate in CBR mode. Bitrate adherence is prioritised over quality. Rate tolerance is reduced to 50%. Default disabled. This option is for use-cases which require the final average bitrate to be within very strict limits of the target - preventing overshoots completely, and achieve bitrates within 5% of target bitrate, especially in short segment encodes. Typically, the encoder stays conservative, waiting until there is enough feedback in terms of encoded frames to control QP. strict-cbr allows the encoder to be more aggressive in hitting the target bitrate even for short segment videos. Experimental."}
+            .Help = "Enables stricter conditions to control bitrate deviance from the target bitrate in CBR mode. Bitrate adherence is prioritised over quality. Rate tolerance is reduced to 50%. This option is for use-cases which require the final average bitrate to be within very strict limits of the target - preventing overshoots completely, and achieve bitrates within 5% of target bitrate, especially in short segment encodes. Typically, the encoder stays conservative, waiting until there is enough feedback in terms of encoded frames to control QP. strict-cbr allows the encoder to be more aggressive in hitting the target bitrate even for short segment videos. Experimental."}
 
         Property CBQPoffs As New NumParam With {
             .Switch = "--cbqpoffs",
             .Text = "Cb QP Offset:",
-            .Help = "Offset of Cb chroma QP from the luma QP selected by rate control. This is a general way to spend more or less bits on the chroma channel." + CrLf2 + "Default 0.",
+            .Help = "Offset of Cb chroma QP from the luma QP selected by rate control. This is a general way to spend more or less bits on the chroma channel.",
             .MinMaxStep = {-12, 12, 1}}
 
         Property CRQPoffs As New NumParam With {
             .Switch = "--crqpoffs",
             .Text = "CR QP Offset:",
-            .Help = "Offset of Cr chroma QP from the luma QP selected by rate control. This is a general way to spend more or less bits on the chroma channel." + CrLf2 + "Default 0. Range of values: -12 to 12.",
+            .Help = "Offset of Cr chroma QP from the luma QP selected by rate control. This is a general way to spend more or less bits on the chroma channel.",
             .MinMaxStep = {-12, 12, 1}}
 
         Property NRintra As New NumParam With {
@@ -701,7 +704,7 @@ Namespace x265
         Property Keyint As New NumParam With {
             .Switch = "--keyint",
             .Text = "Maximum GOP Size:",
-            .Help = "Max intra period in frames. A special case of infinite-gop (single keyframe at the beginning of the stream) can be triggered with argument -1. Use 1 to force all-intra." + CrLf2 + "Default 250.",
+            .Help = "Max intra period in frames. A special case of infinite-gop (single keyframe at the beginning of the stream) can be triggered with argument -1. Use 1 to force all-intra.",
             .MinMaxStep = {0, 10000, 10},
             .Value = 250,
             .DefaultValue = 250}
@@ -716,20 +719,20 @@ Namespace x265
             .Switch = "--vbv-bufsize",
             .Text = "VBV Bufsize:",
             .LabelMargin = New Padding With {.Right = 6, .Left = 6},
-            .Help = "Specify the size of the VBV buffer (kbits). Enables VBV in ABR mode. In CRF mode, --vbv-maxrate must also be specified." + CrLf2 + "Default 0 (vbv disabled).",
+            .Help = "Specify the size of the VBV buffer (kbits). Enables VBV in ABR mode. In CRF mode, --vbv-maxrate must also be specified.",
             .MinMaxStep = {0, 1000000, 100}}
 
         Property VBVmaxrate As New NumParam With {
             .Switch = "--vbv-maxrate",
             .Text = "VBV Maxrate:",
             .LabelMargin = New Padding With {.Right = 7},
-            .Help = "Maximum local bitrate (kbits/sec). Will be used only if vbv-bufsize is also non-zero. Both vbv-bufsize and vbv-maxrate are required to enable VBV in CRF mode." + CrLf2 + "Default 0 (disabled).",
+            .Help = "Maximum local bitrate (kbits/sec). Will be used only if vbv-bufsize is also non-zero. Both vbv-bufsize and vbv-maxrate are required to enable VBV in CRF mode.",
             .MinMaxStep = {0, 1000000, 100}}
 
         Property VBVinit As New NumParam With {
             .Switch = "--vbv-init",
             .Text = "VBV Init:",
-            .Help = "Initial buffer occupancy. The portion of the decode buffer which must be full before the decoder will begin decoding. Determines absolute maximum frame size." + CrLf2 + "Default 0.9.",
+            .Help = "Initial buffer occupancy. The portion of the decode buffer which must be full before the decoder will begin decoding. Determines absolute maximum frame size.",
             .MinMaxStepDec = {0D, 1D, 0.05D, 2D},
             .Value = 0.9,
             .DefaultValue = 0.9}
@@ -737,36 +740,36 @@ Namespace x265
         Property Chromaloc As New NumParam With {
             .Switch = "--chromaloc",
             .Text = "Chromaloc:",
-            .Help = "Specify chroma sample location for 4:2:0 inputs. Consult the HEVC specification for a description of these values." + CrLf2 + "Default undefined (not signaled).",
+            .Help = "Specify chroma sample location for 4:2:0 inputs. Consult the HEVC specification for a description of these values.",
             .MinMaxStep = {0, 5, 1}}
 
         Property FrameThreads As New NumParam With {
             .Switch = "--frame-threads",
             .Text = "Frame Threads (0=auto):",
-            .Help = "Number of concurrently encoded frames. Using a single frame thread gives a slight improvement in compression, since the entire reference frames are always available for motion compensation, but it has severe performance implications. Default is an autodetected count based on the number of CPU cores and whether WPP is enabled or not. Over-allocation of frame threads will not improve performance, it will generally just increase memory use. Values: any value between 8 and 16." + CrLf2 + "Default is 0, auto-detect"}
+            .Help = "Number of concurrently encoded frames. Using a single frame thread gives a slight improvement in compression, since the entire reference frames are always available for motion compensation, but it has severe performance implications. Default is an autodetected count based on the number of CPU cores and whether WPP is enabled or not. Over-allocation of frame threads will not improve performance, it will generally just increase memory use. Values: any value between 8 and 16."}
 
         Property RepeatHeaders As New BoolParam With {
             .Switch = "--repeat-headers",
             .Text = "Repeat Headers",
-            .Help = "If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe. This is intended for use when you do not have a container to keep the stream headers for you and you want keyframes to be random access points." + CrLf2 + "Default disabled."}
+            .Help = "If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe. This is intended for use when you do not have a container to keep the stream headers for you and you want keyframes to be random access points."}
 
         Property Info As New BoolParam With {
             .Switch = "--info",
             .NoSwitch = "--no-info",
             .Text = "Info",
-            .Help = "Emit an informational SEI with the stream headers which describes the encoder version, build info, and encode parameters. This is very helpful for debugging purposes but encoding version numbers and build info could make your bitstreams diverge and interfere with regression testing." + CrLf2 + "Default enabled.",
+            .Help = "Emit an informational SEI with the stream headers which describes the encoder version, build info, and encode parameters. This is very helpful for debugging purposes but encoding version numbers and build info could make your bitstreams diverge and interfere with regression testing.",
             .Value = True,
             .DefaultValue = True}
 
         Property HRD As New BoolParam With {
             .Switch = "--hrd",
             .Text = "HRD",
-            .Help = "If enable the signalling of HRD parameters to the decoder. The HRD parameters are carried by the Buffering Period SEI messages and Picture Timing SEI messages providing timing information to the decoder." + CrLf2 + "Default disabled."}
+            .Help = "If enable the signalling of HRD parameters to the decoder. The HRD parameters are carried by the Buffering Period SEI messages and Picture Timing SEI messages providing timing information to the decoder."}
 
         Property AUD As New BoolParam With {
             .Switch = "--aud",
             .Text = "AUD",
-            .Help = "Emit an access unit delimiter NAL at the start of each slice access unit. If --repeat-headers is not enabled (indicating the user will be writing headers manually at the start of the stream) the very first AUD will be skipped since it cannot be placed at the start of the access unit, where it belongs." + CrLf2 + "Default disabled."}
+            .Help = "Emit an access unit delimiter NAL at the start of each slice access unit. If --repeat-headers is not enabled (indicating the user will be writing headers manually at the start of the stream) the very first AUD will be skipped since it cannot be placed at the start of the access unit, where it belongs."}
 
         Property Custom As New StringParam With {
             .Text = "Custom Switches:"}
@@ -785,6 +788,13 @@ Namespace x265
             .Text = "      Threshold:",
             .MinMaxStep = {-6, 6, 1}}
 
+        Property MaxTuSize As New OptionParam With {
+            .Switch = "--max-tu-size",
+            .Text = "Max TU Size",
+            .Help = "Maximum TU size (width and height). The residual can be more efficiently compressed by the DCT transform when the max TU size is larger, but at the expense of more computation. Transform unit quad-tree begins at the same depth of the coded tree unit, but if the maximum TU size is smaller than the CU size then transform QT begins at the depth of the max-tu-size.",
+            .Options = {"32", "16", "8", "4"},
+            .Values = {"32", "16", "8", "4"}}
+
         Private ItemsValue As List(Of CommandLineItem)
 
         Overrides ReadOnly Property Items As List(Of CommandLineItem)
@@ -793,11 +803,12 @@ Namespace x265
                     ItemsValue = New List(Of CommandLineItem)
 
                     Add("Basic", Quant, Preset, Tune, Profile, Level, Mode)
-                    Add("Analysis", RD, MinCuSize, MaxCuSize, TUintra, TUinter, rdoqLevel, Rect, AMP, EarlySkip, FastIntra, BIntra, CUlossless, Tskip, TskipFast)
-                    Add("Slice Decision", BAdapt, BFrames, BFrameBias, RCLookahead, LookaheadSlices, Scenecut, Ref, MinKeyint, Keyint, Bpyramid, OpenGop)
-                    Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP)
+                    Add("Analysis 1", RD, MinCuSize, MaxCuSize, MaxTuSize, TUintra, TUinter, rdoqLevel)
+                    Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra, CUlossless, Tskip, TskipFast)
                     Add("Rate Control 1", AQmode, AQStrength, IPRatio, PBRatio, QComp, CBQPoffs, Qstep, QBlur, Cplxblur, CUtree, Lossless, StrictCBR)
                     Add("Rate Control 2", NRintra, NRinter, CRFmin, CRFmax, VBVbufsize, VBVmaxrate, VBVinit)
+                    Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP)
+                    Add("Slice Decision", BAdapt, BFrames, BFrameBias, RCLookahead, LookaheadSlices, Scenecut, Ref, MinKeyint, Keyint, Bpyramid, OpenGop)
                     Add("Spatial/Intra", StrongIntraSmoothing, ConstrainedIntra, RDpenalty)
                     Add("Performance", Pools, FrameThreads, WPP, Pmode, PME)
                     Add("Statistic", LogLevel, SSIM, PSNR, CuStats)

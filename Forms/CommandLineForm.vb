@@ -1,5 +1,6 @@
 ﻿Imports System.Threading
 Imports System.Threading.Tasks
+Imports System.Globalization
 
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
@@ -83,11 +84,30 @@ Class CommandLineForm
             End If
 
             If item.Switch <> "" Then
-                If item.Help = "" Then
-                    help = item.Switch
+                If item.NoSwitch <> "" Then
+                    help = item.Switch + CrLf2 + item.NoSwitch
                 Else
-                    help = item.Switch + CrLf2 + item.Help
+                    help = item.Switch
                 End If
+
+                If TypeOf item Is BoolParam Then
+                    If DirectCast(item, BoolParam).DefaultValue Then
+                        help += CrLf2 + "Default: enabled"
+                    Else
+                        help += CrLf2 + "Default: disabled"
+                    End If
+                ElseIf TypeOf item Is NumParam Then
+                    Dim param = DirectCast(item, NumParam)
+                    help += CrLf2 + "Default: " & param.DefaultValue.ToString(CultureInfo.InvariantCulture)
+                    help += CrLf2 + "Minimum: " & param.MinMaxStepDec(0) & CrLf + "Maximum: " & param.MinMaxStepDec(1)
+                ElseIf TypeOf item Is OptionParam Then
+                    Dim param = DirectCast(item, OptionParam)
+                    help += CrLf2 + "Default: " + param.Options(param.DefaultValue)
+                ElseIf TypeOf item Is StringParam Then
+                    help += CrLf2 + "Default: " & DirectCast(item, StringParam).DefaultValue
+                End If
+
+                If item.Help <> "" Then help += CrLf2 + item.Help
             End If
 
             If TypeOf item Is BoolParam Then

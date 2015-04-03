@@ -100,17 +100,18 @@ Class CommandLineForm
             ElseIf TypeOf item Is NumParam Then
                 Dim tempItem = DirectCast(item, NumParam)
 
+                'TODO: remove?
                 If item.Group <> "" Then
-                    Dim param = DirectCast(item, NumParam)
-                    Dim l = SimpleUI.AddLabel(parent, item.Text)
-                    AddHandler l.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
-                    l.Margin = item.LabelMargin
-                    l.Tooltip = help
-                    helpControl = l
-                    Dim num = SimpleUI.AddNumeric(parent)
-                    num.Margin = New Padding With {.Right = FontHeight}
-                    num.Init(param.MinMaxStepDec)
-                    param.Init(num)
+                    'Dim param = DirectCast(item, NumParam)
+                    'Dim l = SimpleUI.AddLabel(parent, item.Text)
+                    'AddHandler l.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
+                    'l.Margin = item.LabelMargin
+                    'l.Tooltip = help
+                    'helpControl = l
+                    'Dim num = SimpleUI.AddNumeric(parent)
+                    'num.Margin = New Padding With {.Right = FontHeight}
+                    'num.Init(param.MinMaxStepDec)
+                    'param.Init(num)
                 Else
                     Dim param = DirectCast(item, NumParam)
                     Dim nb = SimpleUI.AddNumericBlock(parent)
@@ -121,6 +122,16 @@ Class CommandLineForm
                     DirectCast(item, NumParam).Init(nb.NumEdit)
                     helpControl = nb.Label
                 End If
+                'ElseIf TypeOf item Is CheckedNumParam Then
+                '    Dim tempItem = DirectCast(item, CheckedNumParam)
+
+                '    Dim nb = SimpleUI.AddCheckedNumericBlock(parent)
+                '    nb.CheckBox.Margin = New Padding(3) With {.Left = 9}
+                '    nb.CheckBox.Text = item.Text
+                '    nb.CheckBox.Tooltip = help
+                '    nb.NumEdit.Init(tempItem.MinMaxStepDec)
+                '    DirectCast(item, CheckedNumParam).Init(nb.CheckBox, nb.NumEdit)
+                '    helpControl = nb.CheckBox
             ElseIf TypeOf item Is OptionParam Then
                 Dim tempItem = DirectCast(item, OptionParam)
                 Dim os = DirectCast(item, OptionParam)

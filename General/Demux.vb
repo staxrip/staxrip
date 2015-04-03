@@ -165,12 +165,13 @@ Public Class MP4BoxDemuxer
         If subs.Count = 0 Then Exit Sub
 
         For Each i In subs
-            Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " - ID" & i.ID
-            outpath += " - " + i.Language.Name
+            Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " - ID" & i.ID & " - " + i.Language.Name
             If i.Title <> "" AndAlso i.Title <> " " Then outpath += " - " + i.Title
             outpath += i.Extension
 
-            If outpath.Length > 220 Then outpath = outpath.Replace(Filepath.GetBase(p.SourceFile), "")
+            If outpath.Length > 220 Then
+                outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(5) + " - ID" & i.ID & " - " + i.Language.Name + i.Extension
+            End If
 
             FileHelp.Delete(outpath)
 
@@ -284,7 +285,12 @@ Public Class mkvDemuxer
 
         For Each i In subs
             Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " - " + i.Filename + i.Extension
-            If outpath.Length > 220 Then outpath = outpath.Replace(Filepath.GetBase(p.SourceFile), "")
+
+            If outpath.Length > 220 Then
+                outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(5) + " - " + i.Filename + i.Extension
+            End If
+
+
             args += " " & i.StreamOrder & ":""" + outpath + """"
         Next
 

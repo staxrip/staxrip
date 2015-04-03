@@ -2930,6 +2930,7 @@ Public Class GlobalCommands
 
                 f.Doc.WriteList("Improved ffmpeg video encoding, VP9 two pass still don't work, apparently bug in libvpx 1.3",
                                 "Improved GUI for QSVEncC (tool for Intel Quick Sync H.264 GPU encoding)",
+                                "Fixed bug occuring when the source file path is very long",
                                 "Fixed help browser not using word wrap",
                                 "Fixed shutdown not working")
 

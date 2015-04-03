@@ -2137,7 +2137,7 @@ Public Class MainForm
                 Not File.Exists(Filepath.GetDirAndBase(i) + ".idx") Then
 
                 Using proc As New Proc
-                    proc.Init("Convert sup to sub/idx: " + Filepath.GetName(i), "#> ", "Decoding frame ")
+                    proc.Init("Convert sup to sub: " + Filepath.GetName(i), "#> ", "Decoding frame ")
                     proc.File = Packs.BDSup2SubPP.GetPath
                     proc.Arguments = "-o """ + Filepath.GetDirAndBase(i) + ".idx"" """ + i + """"
                     proc.Start()

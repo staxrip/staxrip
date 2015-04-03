@@ -167,6 +167,17 @@ Class SimpleUI
         Return ret
     End Function
 
+    'TODO: remove?
+    'Function AddCheckedNumericBlock(parent As FlowLayoutPanelEx) As CheckedNumericBlock
+    '    Dim ret As New CheckedNumericBlock(Me)
+    '    ret.AutoSize = True
+    '    ret.UseParenWidth = True
+    '    AddHandler SaveValues, AddressOf ret.NumEdit.Save
+    '    AddHandler SaveValues, AddressOf ret.CheckBox.Save
+    '    parent.Controls.Add(ret)
+    '    Return ret
+    'End Function
+
     Function AddTextBlock(parent As FlowLayoutPanelEx) As TextBlock
         Dim ret As New TextBlock(Me)
         ret.AutoSize = True
@@ -320,6 +331,32 @@ Class SimpleUI
                 Margin = m
             End Set
         End Property
+
+        Private OffsetValue As Integer
+
+        Property Offset As Integer
+            Get
+                Return OffsetValue
+            End Get
+            Set(value As Integer)
+                OffsetValue = value
+                PerformLayout()
+            End Set
+        End Property
+
+        Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
+            If Offset > 0 Then
+                Dim ret = MyBase.GetPreferredSize(proposedSize)
+
+                If ret.Width < Offset * FontHeight - 6 Then
+                    ret.Width = Offset * FontHeight - 6
+                End If
+
+                Return ret
+            Else
+                Return MyBase.GetPreferredSize(proposedSize)
+            End If
+        End Function
 
         Sub Save()
             SaveAction.Invoke(Checked)
@@ -554,6 +591,23 @@ Class SimpleUI
             Controls.Add(NumEdit)
         End Sub
     End Class
+
+    'TODO: remove?
+    'Class CheckedNumericBlock
+    '    Inherits EmptyBlock
+
+    '    Property NumEdit As SimpleUINumEdit
+    '    Property CheckBox As SimpleUICheckBox
+
+    '    Sub New(ui As SimpleUI)
+    '        CheckBox = New SimpleUICheckBox(ui)
+    '        Controls.Add(CheckBox)
+    '        NumEdit = New SimpleUINumEdit(ui)
+    '        NumEdit.Height = 36
+    '        NumEdit.Width = 100
+    '        Controls.Add(NumEdit)
+    '    End Sub
+    'End Class
 
     Class TextBlock
         Inherits LabelBlock

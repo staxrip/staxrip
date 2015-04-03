@@ -1251,6 +1251,13 @@ Namespace UI
                 For Each i In labelBlocks
                     i.Label.Offset = CInt(Math.Ceiling(hMax / i.Label.Font.Height))
                 Next
+
+                'TODO: remove?
+                'Dim checkeNumBlocks = From block In Controls.OfType(Of SimpleUI.CheckedNumericBlock)()
+
+                'For Each i In checkeNumBlocks
+                '    i.CheckBox.Offset = CInt(Math.Ceiling(hMax / i.CheckBox.Font.Height))
+                'Next
             End If
         End Sub
 

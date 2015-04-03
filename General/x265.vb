@@ -168,6 +168,8 @@ Namespace x265
     Class x265Params
         Inherits CommandLineParams
 
+        Const NrHelp As String = "Noise reduction - an adaptive deadzone applied after DCT (subtracting from DCT coefficients), before quantization. It does no pixel-level filtering, doesn’t cross DCT block boundaries, has no overlap, The higher the strength value parameter, the more aggressively it will reduce noise." + CrLf2 + "Enabling noise reduction will make outputs diverge between different numbers of frame threads. Outputs will be deterministic but the outputs of -F2 will no longer match the outputs of -F3, etc." + CrLf2 + "Values: any value in range of 0 to 2000. Default 0 (disabled)."
+
         Sub New()
             Title = "x265 Options"
         End Sub
@@ -208,25 +210,6 @@ Namespace x265
             .Switch = "--psnr",
             .Text = "PSNR",
             .Help = "Calculate and report Peak Signal to Noise Ratio. It is recommended to use --tune psnr if you are measuring PSNR, else the results should not be used for comparison purposes." + CrLf2 + "Default disabled."}
-
-        Property Deblock As New BoolParam With {
-            .Switch = "--deblock",
-            .Text = "Deblocking",
-            .Help = "Deblocking loop filter",
-            .ArgsFunc = AddressOf GetDeblockArgs,
-            .Group = "Deblocking"}
-
-        Property DeblockA As New NumParam With {
-            .Name = "deblock.a",
-            .Text = "Strength:",
-            .Group = "Deblocking",
-            .MinMaxStep = {-6, 6, 1}}
-
-        Property DeblockB As New NumParam With {
-            .Name = "deblock.b",
-            .Text = "Threshold:",
-            .Group = "Deblocking",
-            .MinMaxStep = {-6, 6, 1}}
 
         Property BFrames As New NumParam With {
             .Switch = "--bframes",
@@ -364,8 +347,7 @@ Namespace x265
             .NoSwitch = "--no-cutree",
             .Text = "CU Tree",
             .Help = "Enable the use of lookahead’s lowres motion vector fields to determine the amount of reuse of each block to tune adaptive quantization factors. CU blocks which are heavily reused as motion reference for later frames are given a lower QP (more bits) while CU blocks which are quickly changed and are not referenced are given less bits. This tends to improve detail in the backgrounds of video with less detail in areas of high motion." + CrLf2 + "Default enabled.",
-            .Value = True,
-            .Group = "rate control bool"}
+            .Value = True}
 
         Property RD As New OptionParam With {
             .Switch = "--rd",
@@ -457,63 +439,35 @@ Namespace x265
             .Text = "Only evaluate transform skip for NxN intra predictions (4x4 blocks)",
             .Help = "Only evaluate transform skip for NxN intra predictions (4x4 blocks). Only applicable if transform skip is enabled. For chroma, only evaluate if luma used tskip. Inter block tskip analysis is unmodified." + CrLf2 + "Default disabled."}
 
-        Property PsyRD As New BoolParam With {
+        Property PsyRD As New NumParam With {
             .Switch = "--psy-rd",
             .Text = "Psy RD:",
-            .ArgsFunc = Function() If(Not PsyRD.value, "--no-psy-rd", If(PsyRDValue.Value <> PsyRDValue.DefaultValue, "--psy-rd " + PsyRDValue.Value.ToString(CultureInfo.InvariantCulture), "")),
             .Help = "Influence rate distortion optimizated mode decision to preserve the energy of the source image in the encoded image at the expense of compression efficiency. It only has effect on presets which use RDO-based mode decisions (--rd 3 and above). 1.0 is a typical value. Default 0.3",
-            .Value = True,
-            .DefaultValue = True,
-            .Group = "psy-rd"}
-
-        Property PsyRDValue As New NumParam With {
-            .Name = "psy-rd-value:",
             .MinMaxStepDec = {0D, 2D, 0.05D, 2D},
             .Value = 0.3,
-            .DefaultValue = 0.3,
-            .Group = "psy-rd"}
+            .DefaultValue = 0.3}
 
-        Property PsyRDOQ As New BoolParam With {
+        Property PsyRDOQ As New NumParam With {
             .Switch = "--psy-rdoq",
             .Text = "Psy RDOQ:",
-            .ArgsFunc = Function() If(Not PsyRDOQ.value, "--no-psy-rdoq", If(PsyRDOQValue.Value <> PsyRDOQValue.DefaultValue, "--psy-rdoq " + PsyRDOQValue.Value.ToString(CultureInfo.InvariantCulture), "")),
             .Help = "Influence rate distortion optimized quantization by favoring higher energy in the reconstructed image. This generally improves perceived visual quality at the cost of lower quality metric scores. It only has effect when --rdoq-level is 1 or 2. High values can be beneficial in preserving high-frequency detail like film grain. Default: 1.0",
-            .Value = True,
-            .DefaultValue = True,
-            .Group = "psy-rd"}
-
-        Property PsyRDOQValue As New NumParam With {
-            .Name = "psy-rdoq-value:",
             .MinMaxStepDec = {0D, 50D, 0.05D, 2D},
             .Value = 1,
-            .DefaultValue = 1,
-            .Group = "psy-rd"}
+            .DefaultValue = 1}
 
-        Property CRFmax As New BoolParam With {
+        Property CRFmax As New NumParam With {
             .Switch = "--crf-max",
-            .Text = "Max CRF:",
-            .Group = "crf-min/max",
-            .Help = "Specify an upper limit to the rate factor which may be assigned to any given frame (ensuring a max QP). This is dangerous when CRF is used in combination with VBV as it may result in buffer underruns." + CrLf2 + "Default disabled.",
-            .ArgsFunc = Function() If(CRFmax.Value AndAlso (CRFmax.Value <> CRFmax.DefaultValue OrElse CRFmaxValue.Value <> CRFmaxValue.DefaultValue), "--crf-max " + CRFmaxValue.Value.ToString(CultureInfo.InvariantCulture), "")}
-
-        Property CRFmaxValue As New NumParam With {
-            .Name = "crf-max-value:",
+            .Text = "Maximum CRF:",
             .MinMaxStepDec = {0D, 51D, 1D, 1D},
             .Value = 51,
-            .Group = "crf-min/max"}
+            .DefaultValue = 51,
+            .Help = "Specify an upper limit to the rate factor which may be assigned to any given frame (ensuring a max QP). This is dangerous when CRF is used in combination with VBV as it may result in buffer underruns." + CrLf2 + "Default disabled."}
 
-        Property CRFmin As New BoolParam With {
+        Property CRFmin As New NumParam With {
             .Switch = "--crf-min",
-            .Text = "Min CRF:",
+            .Text = "Minimum CRF:",
             .Help = "Specify an lower limit to the rate factor which may be assigned to any given frame (ensuring a min compression factor).",
-            .ArgsFunc = Function() If(CRFmin.Value AndAlso (CRFmin.Value <> CRFmin.DefaultValue OrElse CRFminValue.Value <> CRFminValue.DefaultValue), "--crf-min " + CRFminValue.Value.ToString(CultureInfo.InvariantCulture), ""),
-            .Group = "crf-min/max"}
-
-        Property CRFminValue As New NumParam With {
-            .Name = "crf-min-value",
-            .MinMaxStepDec = {0D, 51D, 1D, 1D},
-            .Value = 0,
-            .Group = "crf-min/max"}
+            .MinMaxStepDec = {0D, 51D, 1D, 1D}}
 
         Property PBRatio As New NumParam With {
             .Switch = "--pbratio",
@@ -706,7 +660,6 @@ Namespace x265
         Property Lossless As New BoolParam With {
             .Switch = "--lossless",
             .Text = "Lossless",
-            .Group = "rate control bool",
             .Help = "Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filter processes. This is used for ultra-high bitrates with zero loss of quality. Reconstructed output pictures are bit-exact to the input pictures. Lossless encodes implicitly have no rate control, all rate control options are ignored. Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams)." + CrLf2 + "Default disabled."}
 
         Property SlowFirstpass As New BoolParam With {
@@ -719,7 +672,6 @@ Namespace x265
         Property StrictCBR As New BoolParam With {
             .Switch = "--strict-cbr",
             .Text = "Strict CBR",
-            .Group = "rate control bool",
             .Help = "Enables stricter conditions to control bitrate deviance from the target bitrate in CBR mode. Bitrate adherence is prioritised over quality. Rate tolerance is reduced to 50%. Default disabled. This option is for use-cases which require the final average bitrate to be within very strict limits of the target - preventing overshoots completely, and achieve bitrates within 5% of target bitrate, especially in short segment encodes. Typically, the encoder stays conservative, waiting until there is enough feedback in terms of encoded frames to control QP. strict-cbr allows the encoder to be more aggressive in hitting the target bitrate even for short segment videos. Experimental."}
 
         Property CBQPoffs As New NumParam With {
@@ -736,8 +688,14 @@ Namespace x265
 
         Property NRintra As New NumParam With {
             .Switch = "--nr-intra",
-            .Text = "Noise Reduction:",
-            .Help = "Noise reduction - an adaptive deadzone applied after DCT (subtracting from DCT coefficients), before quantization. It does no pixel-level filtering, doesn’t cross DCT block boundaries, has no overlap, The higher the strength value parameter, the more aggressively it will reduce noise. Enabling noise reduction will make outputs diverge between different numbers of frame threads. Outputs will be deterministic but the outputs of -F2 will no longer match the outputs of -F3, etc. Values: any value in range of 0 to 2000." + CrLf2 + "Default 0 (disabled).",
+            .Text = "Intra Noise Reduction:",
+            .Help = NrHelp,
+            .MinMaxStep = {0, 2000, 50}}
+
+        Property NRinter As New NumParam With {
+            .Switch = "--nr-inter",
+            .Text = "Inter Noise Reduction:",
+            .Help = NrHelp,
             .MinMaxStep = {0, 2000, 50}}
 
         Property Keyint As New NumParam With {
@@ -757,7 +715,6 @@ Namespace x265
         Property VBVbufsize As New NumParam With {
             .Switch = "--vbv-bufsize",
             .Text = "VBV Bufsize:",
-            .Group = "vbv",
             .LabelMargin = New Padding With {.Right = 6, .Left = 6},
             .Help = "Specify the size of the VBV buffer (kbits). Enables VBV in ABR mode. In CRF mode, --vbv-maxrate must also be specified." + CrLf2 + "Default 0 (vbv disabled).",
             .MinMaxStep = {0, 1000000, 100}}
@@ -765,7 +722,6 @@ Namespace x265
         Property VBVmaxrate As New NumParam With {
             .Switch = "--vbv-maxrate",
             .Text = "VBV Maxrate:",
-            .Group = "vbv",
             .LabelMargin = New Padding With {.Right = 7},
             .Help = "Maximum local bitrate (kbits/sec). Will be used only if vbv-bufsize is also non-zero. Both vbv-bufsize and vbv-maxrate are required to enable VBV in CRF mode." + CrLf2 + "Default 0 (disabled).",
             .MinMaxStep = {0, 1000000, 100}}
@@ -773,7 +729,6 @@ Namespace x265
         Property VBVinit As New NumParam With {
             .Switch = "--vbv-init",
             .Text = "VBV Init:",
-            .Group = "vbv",
             .Help = "Initial buffer occupancy. The portion of the decode buffer which must be full before the decoder will begin decoding. Determines absolute maximum frame size." + CrLf2 + "Default 0.9.",
             .MinMaxStepDec = {0D, 1D, 0.05D, 2D},
             .Value = 0.9,
@@ -816,6 +771,20 @@ Namespace x265
         Property Custom As New StringParam With {
             .Text = "Custom Switches:"}
 
+        Property Deblock As New BoolParam With {
+            .Switch = "--deblock",
+            .Text = "Deblocking",
+            .Help = "Deblocking loop filter",
+            .ArgsFunc = AddressOf GetDeblockArgs}
+
+        Property DeblockA As New NumParam With {
+            .Text = "      Strength:",
+            .MinMaxStep = {-6, 6, 1}}
+
+        Property DeblockB As New NumParam With {
+            .Text = "      Threshold:",
+            .MinMaxStep = {-6, 6, 1}}
+
         Private ItemsValue As List(Of CommandLineItem)
 
         Overrides ReadOnly Property Items As List(Of CommandLineItem)
@@ -826,14 +795,15 @@ Namespace x265
                     Add("Basic", Quant, Preset, Tune, Profile, Level, Mode)
                     Add("Analysis", RD, MinCuSize, MaxCuSize, TUintra, TUinter, rdoqLevel, Rect, AMP, EarlySkip, FastIntra, BIntra, CUlossless, Tskip, TskipFast)
                     Add("Slice Decision", BAdapt, BFrames, BFrameBias, RCLookahead, LookaheadSlices, Scenecut, Ref, MinKeyint, Keyint, Bpyramid, OpenGop)
-                    Add("Motion Search", [Me], SubME, MErange, MaxMerge, Weightp, Weightb, TemporalMVP)
-                    Add("Rate Control", AQmode, AQStrength, IPRatio, PBRatio, QComp, NRintra, CBQPoffs, Qstep, QBlur, Cplxblur, CRFmin, CRFminValue, CRFmax, CRFmaxValue, VBVbufsize, VBVmaxrate, VBVinit, CUtree, Lossless, StrictCBR)
+                    Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP)
+                    Add("Rate Control 1", AQmode, AQStrength, IPRatio, PBRatio, QComp, CBQPoffs, Qstep, QBlur, Cplxblur, CUtree, Lossless, StrictCBR)
+                    Add("Rate Control 2", NRintra, NRinter, CRFmin, CRFmax, VBVbufsize, VBVmaxrate, VBVinit)
                     Add("Spatial/Intra", StrongIntraSmoothing, ConstrainedIntra, RDpenalty)
                     Add("Performance", Pools, FrameThreads, WPP, Pmode, PME)
                     Add("Statistic", LogLevel, SSIM, PSNR, CuStats)
                     Add("VUI", Videoformat, Colorprim, Colormatrix, Transfer)
                     Add("Bitstream", Hash, RepeatHeaders, Info, HRD, AUD)
-                    Add("Other", InterlaceMode, Deblock, DeblockA, DeblockB, PsyRD, PsyRDValue, PsyRDOQ, PsyRDOQValue, SAO, HighTier, SAOnonDeblock, SignHide, Dither, SlowFirstpass, CompCheckQuant, Custom)
+                    Add("Other", InterlaceMode, Deblock, DeblockA, DeblockB, PsyRD, PsyRDOQ, CompCheckQuant, SAO, HighTier, SAOnonDeblock, Dither, SlowFirstpass, SignHide, Custom)
                 End If
 
                 Return ItemsValue
@@ -871,12 +841,6 @@ Namespace x265
                 ApplyTuneValues()
                 BlockValueChanged = False
             End If
-
-            PsyRDValue.NumEdit.Enabled = PsyRD.Value
-            PsyRDOQValue.NumEdit.Enabled = PsyRDOQ.Value
-
-            CRFminValue.NumEdit.Enabled = CRFmin.Value
-            CRFmaxValue.NumEdit.Enabled = CRFmax.Value
 
             DeblockA.NumEdit.Enabled = Deblock.Value
             DeblockB.NumEdit.Enabled = Deblock.Value
@@ -1494,70 +1458,46 @@ Namespace x265
         End Sub
 
         Sub ApplyTuneValues()
-            PsyRD.Value = True
-            PsyRDValue.Value = 0.3
-
-            PsyRDOQ.Value = False
-            PsyRDOQValue.Value = 1
-
+            PsyRD.Value = 0.3
+            PsyRDOQ.Value = 1
             AQStrength.Value = 1
-
             PBRatio.Value = 1.3
             IPRatio.Value = 1.4
             QComp.Value = 0.6
-
             DeblockA.Value = 0
             DeblockB.Value = 0
 
             Select Case Tune.Value
                 Case 3 'grain
-                    PsyRD.Value = True
-                    PsyRDValue.Value = 0.5
-
-                    PsyRDOQ.Value = True
-                    PsyRDOQValue.Value = 30
-
+                    PsyRD.Value = 0.5
+                    PsyRDOQ.Value = 30
                     AQStrength.Value = 0.3
-
                     PBRatio.Value = 1.1
                     IPRatio.Value = 1.1
                     QComp.Value = 0.8
-
                     DeblockA.Value = -2
                     DeblockB.Value = -2
             End Select
         End Sub
 
         Sub ApplyTuneDefaultValues()
-            PsyRD.DefaultValue = True
-            PsyRDValue.DefaultValue = 0.3
-
-            PsyRDOQ.DefaultValue = False
-            PsyRDOQValue.DefaultValue = 1
-
+            PsyRD.DefaultValue = 0.3
+            PsyRDOQ.DefaultValue = 1
             AQStrength.DefaultValue = 1
-
             PBRatio.DefaultValue = 1.3
             IPRatio.DefaultValue = 1.4
             QComp.DefaultValue = 0.6
-
             DeblockA.DefaultValue = 0
             DeblockB.DefaultValue = 0
 
             Select Case Tune.Value
                 Case 3 'grain
-                    PsyRD.DefaultValue = True
-                    PsyRDValue.DefaultValue = 0.5
-
-                    PsyRDOQ.DefaultValue = True
-                    PsyRDOQValue.DefaultValue = 30
-
+                    PsyRD.DefaultValue = 0.5
+                    PsyRDOQ.DefaultValue = 30
                     AQStrength.DefaultValue = 0.3
-
                     PBRatio.DefaultValue = 1.1
                     IPRatio.DefaultValue = 1.1
                     QComp.DefaultValue = 0.8
-
                     DeblockA.DefaultValue = -2
                     DeblockB.DefaultValue = -2
             End Select

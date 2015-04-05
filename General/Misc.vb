@@ -357,7 +357,7 @@ Public Class GlobalClass
                 End If
             End If
 
-            If (i.Length + Filepath.GetName(i).Length + 30) > 260 Then
+            If i.Length > 170 Then
                 MsgError("Generated temp files might exceed 260 character file path limit, please use shorter file paths." + CrLf2 + i)
                 Return True
             End If
@@ -558,7 +558,11 @@ Public Class GlobalClass
 
                     p.TempDir = Filepath.GetDir(p.SourceFile)
                 Else
-                    p.TempDir = Filepath.GetDirAndBase(p.SourceFile) + " temp files\"
+                    Dim base = Filepath.GetBase(p.SourceFile)
+
+                    If base.Length > 60 Then base = base.Shorten(30) + "..."
+
+                    p.TempDir = Filepath.GetDir(p.SourceFile) + base + " temp files\"
                 End If
             End If
 
@@ -575,6 +579,7 @@ Public Class GlobalClass
             End If
 
             If p.TempDir.StartsWith("\\") Then Throw New AbortException
+
             p.TempDir = DirPath.AppendSeparator(p.TempDir)
 
             If Not Directory.Exists(p.TempDir) Then
@@ -2928,10 +2933,11 @@ Public Class GlobalCommands
 
                 f.Doc.WriteP("1.2.2.2 beta (2015-??-??)")
 
-                f.Doc.WriteList("Improved ffmpeg video encoding, VP9 two pass still don't work, apparently bug in libvpx 1.3",
+                f.Doc.WriteList("Added support for very long file names by shortening the name of the temp files directory",
+                                "Improved ffmpeg video encoding, VP9 two pass still don't work, apparently bug in libvpx 1.3",
                                 "Improved GUI for QSVEncC (tool for Intel Quick Sync H.264 GPU encoding)",
-                                "Improved tooltips in x265 dialog",
-                                "Fixed bug occuring when the source file path is very long",
+                                "Improved help in x265 dialog, tooltip now shows switch including --no version, minimum und maximum values and right-click links now to the official online documentation",
+                                "Fixed crash opening MP4 files with EIA-608 subtitles used by Apple",
                                 "Fixed help browser not using word wrap",
                                 "Fixed shutdown not working")
 
@@ -3864,6 +3870,7 @@ Public Class Subtitle
     Property Title As String
     Property Path As String
     Property CodecString As String
+    Property Format As String
     Property ID As Integer
     Property StreamOrder As Integer
     Property IndexIDX As Integer
@@ -3877,8 +3884,10 @@ Public Class Subtitle
 
             ret += " - " + Language.Name
 
-            If Title <> "" AndAlso Title <> " " AndAlso Not Title.ContainsUnicode Then
-                ret += " - " + Title
+            If Title <> "" AndAlso Title <> " " AndAlso Not Title.ContainsUnicode AndAlso
+                p.SourceFile <> "" AndAlso p.SourceFile.Length < 130 Then
+
+                ret += " - " + Title.Shorten(30)
             End If
 
             If Not Filepath.IsValidFileSystemName(ret) Then
@@ -3904,6 +3913,8 @@ Public Class Subtitle
                     Return ".ssa"
                 Case "S_TEXT/USF", "USF"
                     Return ".usf"
+                Case "Timed"
+                    Return ".srt"
             End Select
         End Get
     End Property

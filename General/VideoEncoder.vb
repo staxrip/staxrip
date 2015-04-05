@@ -923,37 +923,44 @@ Class NvidiaEncoder
 
         Property QPI As New NumParam With {
             .Text = "Constant QP I:",
-            .Value = 20}
+            .Value = 20,
+            .MinMaxStep = {0, 51, 1}}
 
         Property QPP As New NumParam With {
             .Text = "Constant QP P:",
-            .Value = 23}
+            .Value = 23,
+            .MinMaxStep = {0, 51, 1}}
 
         Property QPB As New NumParam With {
             .Text = "Constant QP B:",
-            .Value = 25}
+            .Value = 25,
+            .MinMaxStep = {0, 51, 1}}
 
         Property MaxBitrate As New NumParam With {
             .Switch = "--max-bitrate",
             .Text = "Maximum Bitrate:",
             .Value = 17500,
-            .DefaultValue = 17500}
+            .DefaultValue = 17500,
+            .MinMaxStep = {0, 1000000, 1}}
 
         Property GOPLength As New NumParam With {
             .Switch = "--gop-len",
-            .Text = "GOP Length (0=auto):"}
+            .Text = "GOP Length (0=auto):",
+            .MinMaxStep = {0, 10000, 1}}
 
         Property BFrames As New NumParam With {
             .Switch = "--bframes",
             .Text = "B Frames:",
             .Value = 3,
-            .DefaultValue = 3}
+            .DefaultValue = 3,
+            .MinMaxStep = {0, 16, 1}}
 
         Property Ref As New NumParam With {
             .Switch = "--ref",
             .Text = "Reference Frames:",
             .Value = 3,
-            .DefaultValue = 3}
+            .DefaultValue = 3,
+            .MinMaxStep = {0, 16, 1}}
 
         Property Custom As New StringParam With {
             .Text = "Custom Switches:",
@@ -1161,48 +1168,56 @@ Class IntelEncoder
         Property Quality As New NumParam With {
             .Text = "Quality:",
             .Value = 23,
-            .DefaultValue = 23}
+            .DefaultValue = 23,
+            .MinMaxStep = {0, 51, 1}}
 
         Property QPI As New NumParam With {
             .Text = "QP I:",
             .Value = 24,
-            .DefaultValue = 24}
+            .DefaultValue = 24,
+            .MinMaxStep = {0, 51, 1}}
 
         Property QPP As New NumParam With {
             .Text = "QP P:",
             .Value = 26,
-            .DefaultValue = 26}
+            .DefaultValue = 26,
+            .MinMaxStep = {0, 51, 1}}
 
         Property QPB As New NumParam With {
             .Text = "QP B:",
             .Value = 27,
-            .DefaultValue = 27}
+            .DefaultValue = 27,
+            .MinMaxStep = {0, 51, 1}}
 
         Property MaxBitrate As New NumParam With {
             .Switch = "--max-bitrate",
             .Text = "Maximum Bitrate:",
             .Value = 17500,
-            .DefaultValue = 17500}
+            .DefaultValue = 17500,
+            .MinMaxStep = {0, 1000000, 1}}
 
         Property GOPLength As New NumParam With {
             .Switch = "--gop-len",
-            .Text = "GOP Length (0=auto):"}
+            .Text = "GOP Length (0=auto):",
+            .MinMaxStep = {0, 10000, 1}}
 
         Property BFrames As New NumParam With {
             .Switch = "--bframes",
             .Text = "B Frames:",
             .Value = 3,
-            .DefaultValue = 3}
+            .DefaultValue = 3,
+            .MinMaxStep = {0, 16, 1}}
 
         Property LookaheadDepth As New NumParam With {
             .Switch = "--la-depth",
             .Text = "Lookahead Depth:",
             .Value = 30,
-            .DefaultValue = 0}
+            .MinMaxStep = {0, 100, 1}}
 
         Property Ref As New NumParam With {
             .Switch = "--ref",
-            .Text = "Ref Frames (0=auto):"}
+            .Text = "Ref Frames (0=auto):",
+            .MinMaxStep = {0, 16, 1}}
 
         Property Resize As New BoolParam With {
             .ArgsFunc = Function() If(Resize.Value, "--output-res " & p.TargetWidth & "x" & p.TargetHeight, Nothing),

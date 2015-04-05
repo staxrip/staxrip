@@ -65,8 +65,8 @@ Public Class MediaInfoFolderViewForm
         lv.View = View.Details
         lv.FullRowSelect = True
 
-        For Each i In {"Filename", "Filetype", "Codec", "Aspect Ratio", "Dimension", "Bitrate",
-                       "Duration", "Filesize", "Framerate", "Audiocodec"}
+        For Each i In {"Filename", "Type", "Codec", "Ratio", "Dimension", "Bitrate",
+                       "Duration", "Filesize", "Rate", "Audiocodecs"}
 
             Dim ch = lv.Columns.Add(i)
         Next
@@ -102,6 +102,7 @@ Public Class MediaInfoFolderViewForm
                 Select Case codec
                     Case "MPEG-4 Visual"
                         codec = mi.GetInfo(kind, "CodecID/Hint")
+                        If codec = "" Then codec = mi.GetInfo(kind, "Codec")
                     Case "MPEG Video"
                         If mi.GetInfo(kind, "Format_Version") = "Version 1" Then
                             codec = "MPEG-1"
@@ -110,17 +111,26 @@ Public Class MediaInfoFolderViewForm
                         End If
                 End Select
 
-                Dim audioFormat = mi.GetInfo(MediaInfoStreamKind.Audio, "Format")
+                Dim audioCodecs = mi.GetInfo(MediaInfoStreamKind.General, "Audio_Codec_List")
 
-                If audioFormat = "MPEG Audio" Then
-                    audioFormat = mi.GetInfo(MediaInfoStreamKind.Audio, "CodecID/Hint")
+                If audioCodecs.Contains("MPEG-1 Audio layer 3") Then
+                    audioCodecs = audioCodecs.Replace("MPEG-1 Audio layer 3", "MP3")
                 End If
+
+                If audioCodecs.Contains("MPEG-1 Audio layer 2") Then
+                    audioCodecs = audioCodecs.Replace("MPEG-1 Audio layer 2", "MP2")
+                End If
+
+                If audioCodecs.Contains("MPEG-2 Audio layer 3") Then
+                    audioCodecs = audioCodecs.Replace("MPEG-2 Audio layer 3", "MP3")
+                End If
+
 
                 Dim item As New ListViewItem
                 item.Text = Path.GetFileName(fp)
                 item.Tag = item.Text
 
-                item.SubItems.Add(GetSubItem(Path.GetExtension(fp)))
+                item.SubItems.Add(GetSubItem(Filepath.GetExtNoDot(fp).ToUpper))
                 item.SubItems.Add(GetSubItem(codec))
                 item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "DisplayAspectRatio")))
                 item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "Width") + " x " + mi.GetInfo(kind, "Height")))
@@ -128,7 +138,7 @@ Public Class MediaInfoFolderViewForm
                 item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "Duration/String"), mi.GetInfo(kind, "Duration").ToInt))
                 item.SubItems.Add(GetSubItem(mi.GetInfo(MediaInfoStreamKind.General, "FileSize/String"), CLng(mi.GetInfo(MediaInfoStreamKind.General, "FileSize"))))
                 item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "FrameRate/String"), mi.GetInfo(kind, "FrameRate").ToSingle))
-                item.SubItems.Add(GetSubItem(audioFormat))
+                item.SubItems.Add(GetSubItem(audioCodecs))
 
                 Invoke(Sub()
                            lv.Items.Add(item)

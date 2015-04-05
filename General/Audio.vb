@@ -67,15 +67,18 @@ Public Class Audio
     End Sub
 
     Shared Function GetBaseNameForStream(path As String, stream As AudioStream, Optional shorten As Boolean = False) As String
-        Dim ret = If(shorten, Filepath.GetBase(path).Shorten(5), Filepath.GetBase(path)) + " - ID" & (stream.StreamOrder + 1)
+        Dim ret = If(shorten, Filepath.GetBase(path).Shorten(10), Filepath.GetBase(path)) + " - ID" & (stream.StreamOrder + 1)
+
         If stream.Delay <> 0 Then ret += " - " & stream.Delay & "ms"
         If stream.Language.TwoLetterCode <> "iv" Then ret += " - " + stream.Language.ToString
+        If Not shorten AndAlso path.Length < 130 Then If stream.Title <> "" Then ret += " - " + stream.Title.Shorten(30)
+
         Return ret
     End Function
 
     Shared Sub Demuxffmpeg(sourcefile As String, stream As AudioStream, ap As AudioProfile)
         Dim outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream) + stream.Extension
-        If outPath.Length > 220 Then outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
+        If outPath.Length > 259 Then outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
 
         Dim streamIndex = stream.StreamOrder
         Dim args = "-i """ + sourcefile + """"
@@ -102,7 +105,7 @@ Public Class Audio
 
     Shared Sub DemuxMP4(sourcefile As String, stream As AudioStream, ap As AudioProfile)
         Dim outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream) + stream.Extension
-        If outPath.Length > 220 Then outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
+        If outPath.Length > 259 Then outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
         FileHelp.Delete(outPath)
         Dim args As String
         If stream.Format = "AAC" Then args += " -single" Else args += " -raw"
@@ -129,7 +132,7 @@ Public Class Audio
         Dim ext = stream.Extension
         If ext = ".m4a" Then ext = ".aac"
         Dim outPath = p.TempDir + If(sourcefile = p.SourceFile, GetBaseNameForStream(sourcefile, stream), Filepath.GetBase(sourcefile)) + ext
-        If outPath.Length > 220 Then outPath = p.TempDir + If(sourcefile = p.SourceFile, GetBaseNameForStream(sourcefile, stream, True), Filepath.GetBase(sourcefile)).MD5Hash.Shorten(5) + ext
+        If outPath.Length > 259 Then outPath = p.TempDir + If(sourcefile = p.SourceFile, GetBaseNameForStream(sourcefile, stream, True), Filepath.GetBase(sourcefile).Shorten(10)) + ext
 
         Using proc As New Proc
             proc.Init("Demux audio using mkvextract", "Progress: ")

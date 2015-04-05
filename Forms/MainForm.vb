@@ -2163,7 +2163,7 @@ Public Class MainForm
                     proc.Init("Extract forced subtitles if existing", "# ")
                     proc.WriteLine(Filepath.GetName(i) + CrLf2)
                     proc.File = Packs.BDSup2SubPP.GetPath
-                    proc.Arguments = "--forced-only2 -o """ + Filepath.GetDirAndBase(i) + "_Forced.idx"" """ + i + """"
+                    proc.Arguments = "--forced-only -o """ + Filepath.GetDirAndBase(i) + "_Forced.idx"" """ + i + """"
                     proc.AllowedExitCodes = {}
                     proc.Start()
                 End Using

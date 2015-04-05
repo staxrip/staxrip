@@ -102,7 +102,10 @@ Class CommandLineForm
                     help += CrLf2 + "Minimum: " & param.MinMaxStepDec(0) & CrLf + "Maximum: " & param.MinMaxStepDec(1)
                 ElseIf TypeOf item Is OptionParam Then
                     Dim param = DirectCast(item, OptionParam)
-                    help += CrLf2 + "Default: " + param.Options(param.DefaultValue)
+
+                    If param.DefaultValue >= 0 AndAlso param.DefaultValue < param.Options.Length Then
+                        help += CrLf2 + "Default: " + param.Options(param.DefaultValue)
+                    End If
                 ElseIf TypeOf item Is StringParam Then
                     help += CrLf2 + "Default: " & DirectCast(item, StringParam).DefaultValue
                 End If
@@ -115,6 +118,7 @@ Class CommandLineForm
                 cb.Margin = New Padding(3) With {.Left = 9}
                 cb.Text = item.Text
                 cb.Tooltip = help
+                If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, cb)
                 DirectCast(item, BoolParam).Init(cb)
                 helpControl = cb
             ElseIf TypeOf item Is NumParam Then
@@ -137,6 +141,7 @@ Class CommandLineForm
                     Dim nb = SimpleUI.AddNumericBlock(parent)
                     nb.Label.Text = item.Text
                     nb.Label.Tooltip = help
+                    If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, nb.Label)
                     nb.NumEdit.Init(param.MinMaxStepDec)
                     AddHandler nb.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
                     DirectCast(item, NumParam).Init(nb.NumEdit)
@@ -158,6 +163,7 @@ Class CommandLineForm
                 Dim mb = SimpleUI.AddMenuButtonBlock(Of Integer)(parent)
                 mb.Label.Text = item.Text
                 mb.Tooltip = help
+                If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, mb.Label, mb.MenuButton)
                 helpControl = mb.Label
                 AddHandler mb.Label.MouseDoubleClick, Sub() tempItem.ValueChangedUser(tempItem.DefaultValue)
 

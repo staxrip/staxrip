@@ -191,6 +191,7 @@ Public Class MediaInfo
                         s.ID = GetInfo(MediaInfoStreamKind.Text, i, "ID").ToInt
                         s.Title = GetInfo(MediaInfoStreamKind.Text, i, "Title").Trim
                         s.CodecString = GetInfo(MediaInfoStreamKind.Text, i, "Codec/String")
+                        s.Format = GetInfo(MediaInfoStreamKind.Text, i, "Format")
 
                         SubtitlesValue.Add(s)
                     Next

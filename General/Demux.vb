@@ -165,20 +165,31 @@ Public Class MP4BoxDemuxer
         If subs.Count = 0 Then Exit Sub
 
         For Each i In subs
-            Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " - ID" & i.ID & " - " + i.Language.Name
-            If i.Title <> "" AndAlso i.Title <> " " Then outpath += " - " + i.Title
-            outpath += i.Extension
+            Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " - " + i.Filename + i.Extension
 
-            If outpath.Length > 220 Then
-                outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(5) + " - ID" & i.ID & " - " + i.Language.Name + i.Extension
+            If outpath.Length > 259 Then
+                outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(10) + " - " + i.Filename.Shorten(20) + i.Extension
             End If
 
             FileHelp.Delete(outpath)
 
+            Dim args As String
+
+            Select Case i.Extension
+                Case ""
+                    Continue For
+                Case ".srt"
+                    args = "-srt "
+                Case Else
+                    args = "-raw "
+            End Select
+
+            args += i.ID & " -out """ + outpath + """ """ + p.SourceFile + """"
+
             Using proc As New Proc
                 proc.Init("Demux subtitle using MP4Box", {"Media Export: |", "File Export: |", "ISO File Writing: |", "VobSub Export: |"})
                 proc.File = Packs.MP4Box.GetPath
-                proc.Arguments = "-raw " & i.ID & " -out """ + outpath + """ """ + p.SourceFile + """"
+                proc.Arguments = args
                 proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
                 proc.Start()
             End Using
@@ -286,10 +297,9 @@ Public Class mkvDemuxer
         For Each i In subs
             Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " - " + i.Filename + i.Extension
 
-            If outpath.Length > 220 Then
-                outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(5) + " - " + i.Filename + i.Extension
+            If outpath.Length > 259 Then
+                outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(10) + " - " + i.Filename.Shorten(10) + i.Extension
             End If
-
 
             args += " " & i.StreamOrder & ":""" + outpath + """"
         Next

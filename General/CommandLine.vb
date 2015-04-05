@@ -30,6 +30,7 @@ Namespace CommandLine
         Property Name As String
         Property Text As String
         Property Help As String
+        Property URL As String
         Property Path As String
         Property Group As String 'TODO: remove?
         Property NoSwitch As String

@@ -16,6 +16,7 @@ Namespace UI
 
         Private ToolTip As New ToolTip
         Private TipTitles As New Dictionary(Of Control, String)
+        Private TipURLs As New Dictionary(Of Control, String)
         Private TipTexts As New Dictionary(Of Control, String)
         Private CreatedAdded As Boolean
         Private CleanUpAdded As Boolean
@@ -60,6 +61,12 @@ Namespace UI
             Init(value, c)
         End Sub
 
+        Sub SetURL(url As String, ParamArray controls As Control())
+            For Each i In controls
+                TipURLs(i) = url
+            Next
+        End Sub
+
         Sub SetTip(tipText As String,
                    tipTitle As String,
                    c As Control)
@@ -68,24 +75,20 @@ Namespace UI
             SetTipText(c, tipText)
         End Sub
 
-        Sub SetTip(tipText As String, ParamArray a As Control())
+        Sub SetTip(tipText As String, ParamArray controls As Control())
             If tipText = "" Then Exit Sub
 
             Dim title As String
 
-            For Each i In a
+            For Each i In controls
                 If TypeOf i Is Label OrElse TypeOf i Is CheckBox Then
                     title = FormatName(i.Text)
                 End If
             Next
 
-            For Each i In a
+            For Each i In controls
                 TipTexts(i) = tipText
-
-                If OK(title) Then
-                    TipTitles(i) = title
-                End If
-
+                If title <> "" Then TipTitles(i) = title
                 Init(tipText, i)
             Next
         End Sub
@@ -121,8 +124,12 @@ Namespace UI
         End Sub
 
         Private Sub ShowHelp(c As Control)
-            Dim t = GetTip(c)
-            g.ShowHelp(t.Name, t.Value)
+            If TipURLs.ContainsKey(c) Then
+                g.ShellExecute(TipURLs(c))
+            Else
+                Dim t = GetTip(c)
+                g.ShowHelp(t.Name, t.Value)
+            End If
         End Sub
 
         Private Function GetTip(c As Control) As StringPair

@@ -1683,18 +1683,7 @@ Public Class MainForm
                 p.SourcePAR.Y = 1000
             End If
 
-            p.Codec = MediaInfo.GetVideo(p.OriginalSourceFile, "Codec/String")
-
-            Select Case p.Codec
-                Case "V_MPEGH/ISO/HEVC"
-                    p.Codec = "HEVC"
-                Case "MPEG-2 Video"
-                    p.Codec = "MPEG-2"
-                Case "V_VP9"
-                    p.Codec = "VP9"
-                Case "0x00000000"
-                    p.Codec = MediaInfo.GetVideo(p.OriginalSourceFile, "Format")
-            End Select
+            p.Codec = MediaInfo.GetVideoCodec(p.OriginalSourceFile)
 
             p.CodecProfile = MediaInfo.GetVideo(p.OriginalSourceFile, "Format_Profile")
 
@@ -2272,9 +2261,7 @@ Public Class MainForm
             Log.Save()
             p.VideoEncoder.Muxer.Mux()
 
-            If p.SaveThumbnails Then
-                Thumbnails.SaveThumbnails(p.TargetFile)
-            End If
+            If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile)
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
@@ -3121,34 +3108,6 @@ Public Class MainForm
             tb.Edit.Text = s.WindowPositionsCenterScreen.Join(", ")
             tb.Edit.SaveAction = Sub(value) s.WindowPositionsCenterScreen = value.SplitNoEmptyAndWhiteSpace(",")
 
-            ui.AddLine(generalPage, "Thumbnails")
-
-            Dim eb = ui.AddEmptyBlock(generalPage)
-
-            ui.AddLabel(eb, "Width:")
-
-            Dim te = ui.AddEdit(eb)
-            te.Width = 60
-            te.Text = s.ThumbnailWidth.ToString
-            te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value) If value.IsInt Then s.ThumbnailWidth = CInt(value)
-
-            ui.AddLabel(eb, "    Rows:")
-
-            te = ui.AddEdit(eb)
-            te.Width = 60
-            te.Text = s.ThumbnailRows.ToString
-            te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value) If value.IsInt Then s.ThumbnailRows = CInt(value)
-
-            ui.AddLabel(eb, "    Columns:")
-
-            te = ui.AddEdit(eb)
-            te.Width = 60
-            te.Text = s.ThumbnailColumns.ToString
-            te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value) If value.IsInt Then s.ThumbnailColumns = CInt(value)
-
             generalPage.ResumeLayout()
 
             ui.CreateControlPage(New DemuxingControl, "Demux")
@@ -3244,8 +3203,6 @@ Public Class MainForm
             c2.HeaderText = "Prefered Source Filter Profile"
             c2.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
 
-            'c2.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-
             Dim filterNames = s.AviSynthCategories.Where(
                 Function(v) v.Name = "Source").First.Filters.Where(
                 Function(v) v.Name <> "Automatic").Select(Function(v) v.Name).Sort.ToArray
@@ -3259,6 +3216,31 @@ Public Class MainForm
                                    Function(a) filterNames.Contains(a.Value) AndAlso a.Name <> "")))
 
             filterPage.DataSource = bs
+
+            Dim imagesPage = ui.CreateFlowPage("Images")
+            imagesPage.SuspendLayout()
+
+            ui.AddLine(imagesPage, "Thumbnails")
+
+            Dim num = ui.AddNumericBlock(imagesPage)
+            num.Label.Text = "Width:"
+            num.NumEdit.Init(0, 10000, 16)
+            num.NumEdit.Value = s.ThumbnailWidth
+            num.NumEdit.SaveAction = Sub(value) s.ThumbnailWidth = CInt(value)
+
+            num = ui.AddNumericBlock(imagesPage)
+            num.Label.Text = "Rows:"
+            num.NumEdit.Init(0, 100, 1)
+            num.NumEdit.Value = s.ThumbnailRows
+            num.NumEdit.SaveAction = Sub(value) s.ThumbnailRows = CInt(value)
+
+            num = ui.AddNumericBlock(imagesPage)
+            num.Label.Text = "Columns:"
+            num.NumEdit.Init(0, 100, 1)
+            num.NumEdit.Value = s.ThumbnailColumns
+            num.NumEdit.SaveAction = Sub(value) s.ThumbnailColumns = CInt(value)
+
+            imagesPage.ResumeLayout()
 
             ui.SelectLast("last settings page")
 
@@ -3730,9 +3712,15 @@ Public Class MainForm
             MsgInfo("Job added")
         End If
 
-        If OK(templateName) Then
+        If templateName <> "" Then
             LoadProject(Paths.TemplateDir + templateName + ".srip")
         End If
+    End Sub
+
+    <Command("Dialog | Compare and extract images", "Compare and extract images for codec comparisons.")>
+    Sub ImageGrabber()
+        Dim f As New ImageComparerForm
+        f.Show()
     End Sub
 
     <Command("Dialog | Filters", "Dialog to edit filters.")>
@@ -4393,6 +4381,7 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Run a specific command on a specific event...", "OpenEventCommandsDialog")
         ret.Add("Tools|Advanced|Reset a specific setting...", "ResetSettings")
         ret.Add("Tools|Advanced|Show MediaInfo of all files in a folder...", "OpenMediaInfoFolderView")
+        ret.Add("Tools|Advanced|Compare and extract images...", "ImageGrabber")
         ret.Add("Tools|Advanced|Batch generate thumbnails...", "BatchGenerateThumbnails")
         ret.Add("Tools|Advanced|Show Command Prompt...", "ShowCommandPrompt")
 

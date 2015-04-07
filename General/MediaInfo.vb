@@ -269,6 +269,39 @@ Public Class MediaInfo
         Return GetMediaInfo(path).GetFrameRate
     End Function
 
+    Shared Function GetAudioCodecs(path As String) As String
+        Dim ret = GetGeneral(path, "Audio_Codec_List")
+
+        If ret.Contains("MPEG-1 Audio layer 2") Then ret = ret.Replace("MPEG-1 Audio layer 2", "MP2")
+        If ret.Contains("MPEG-1 Audio layer 3") Then ret = ret.Replace("MPEG-1 Audio layer 3", "MP3")
+        If ret.Contains("MPEG-2 Audio layer 3") Then ret = ret.Replace("MPEG-2 Audio layer 3", "MP3")
+
+        Return ret
+    End Function
+
+    Shared Function GetVideoCodec(path As String) As String
+        Dim ret = MediaInfo.GetVideo(path, "Codec/String")
+
+        Select Case ret
+            Case "MPEG-4 Visual"
+                ret = "MPEG-4V"
+            Case "MPEG-1 Video"
+                ret = "MPEG-1"
+            Case "V_MPEGH/ISO/HEVC"
+                ret = "HEVC"
+            Case "MPEG-2 Video"
+                ret = "MPEG-2"
+            Case "V_VP8"
+                ret = "VP8"
+            Case "V_VP9"
+                ret = "VP9"
+            Case "0x00000000"
+                ret = MediaInfo.GetVideo(path, "Format")
+        End Select
+
+        Return ret
+    End Function
+
     Function GetVideoCount() As Integer
         Return MediaInfo_Count_Get(Handle, MediaInfoStreamKind.Video, -1)
     End Function

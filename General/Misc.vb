@@ -1512,12 +1512,8 @@ Public Class Calc
 
     Shared Function GetBitrateFromFile(path As String, seconds As Integer) As Double
         Try
-            If path = "" OrElse seconds = 0 Then
-                Return 0
-            End If
-
+            If path = "" OrElse seconds = 0 Then Return 0
             Dim kBits = ((New FileInfo(path).Length) * 8) / 1000
-
             Return kBits / seconds
         Catch ex As Exception
             g.ShowException(ex)
@@ -2934,9 +2930,12 @@ Public Class GlobalCommands
                 f.Doc.WriteP("1.2.2.2 beta (2015-??-??)")
 
                 f.Doc.WriteList("Added support for very long file names by shortening the name of the temp files directory",
+                                "Added image comparison tool for codec comparisons which can extract PNG images",
                                 "Improved ffmpeg video encoding, VP9 two pass still don't work, apparently bug in libvpx 1.3",
                                 "Improved GUI for QSVEncC (tool for Intel Quick Sync H.264 GPU encoding)",
-                                "Improved help in x265 dialog, tooltip now shows switch including --no version, minimum und maximum values and right-click links now to the official online documentation",
+                                "Improved x265 GUI, new options added, improved layout, improved help",
+                                "Improved thumbnail generator printing more info",
+                                "Improved MediaInfo Folder View (at Tools/Advanced)",
                                 "Fixed crash opening MP4 files with EIA-608 subtitles used by Apple",
                                 "Fixed help browser not using word wrap",
                                 "Fixed shutdown not working")

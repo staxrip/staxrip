@@ -86,45 +86,14 @@ Public Class MediaInfoFolderViewForm
         Dim kind = MediaInfoStreamKind.Video
 
         For x = 0 To Files.Length - 1
-            If Abort Then
-                Exit For
-            End If
+            If Abort Then Exit For
 
             Dim fp = Files(x)
+            Dim codec = MediaInfo.GetVideoCodec(fp)
+            If codec = "" Then Continue For
 
             Using mi As New MediaInfo(fp)
-                Dim codec = mi.GetInfo(kind, "Format")
-
-                If codec = "" Then
-                    Continue For
-                End If
-
-                Select Case codec
-                    Case "MPEG-4 Visual"
-                        codec = mi.GetInfo(kind, "CodecID/Hint")
-                        If codec = "" Then codec = mi.GetInfo(kind, "Codec")
-                    Case "MPEG Video"
-                        If mi.GetInfo(kind, "Format_Version") = "Version 1" Then
-                            codec = "MPEG-1"
-                        ElseIf mi.GetInfo(kind, "Format_Version") = "Version 2" Then
-                            codec = "MPEG-2"
-                        End If
-                End Select
-
-                Dim audioCodecs = mi.GetInfo(MediaInfoStreamKind.General, "Audio_Codec_List")
-
-                If audioCodecs.Contains("MPEG-1 Audio layer 3") Then
-                    audioCodecs = audioCodecs.Replace("MPEG-1 Audio layer 3", "MP3")
-                End If
-
-                If audioCodecs.Contains("MPEG-1 Audio layer 2") Then
-                    audioCodecs = audioCodecs.Replace("MPEG-1 Audio layer 2", "MP2")
-                End If
-
-                If audioCodecs.Contains("MPEG-2 Audio layer 3") Then
-                    audioCodecs = audioCodecs.Replace("MPEG-2 Audio layer 3", "MP3")
-                End If
-
+                Dim audioCodecs = MediaInfo.GetAudioCodecs(fp)
 
                 Dim item As New ListViewItem
                 item.Text = Path.GetFileName(fp)

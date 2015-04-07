@@ -16,6 +16,8 @@
     Sub Draw(Optional g As Graphics = Nothing)
         If g Is Nothing Then g = Control.CreateGraphics()
 
+        g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+
         Using g
             If Control.Visible Then
                 Dim rectDest As RectangleF

@@ -256,7 +256,7 @@ Namespace x265
             .Switch = "--merange",
             .Text = "ME Range (0=auto):",
             .MinMaxStep = {0, 32768, 1},
-            .ArgsFunc = Function() If(MErange.Value = 0, "--merange " & CInt(Calc.GetYFromTwoPointForm(480, 16, 2160, 57, p.TargetHeight)), If(MErange.Value <> MErange.defaultvalue, "--merange " & CInt(MErange.Value), ""))}
+            .ArgsFunc = Function() If(MErange.Value = 0, "--merange " & CInt(Calc.GetYFromTwoPointForm(480, 16, 2160, 57, p.TargetHeight)), If(MErange.Value <> MErange.defaultvalue, "--merange " & CInt(MErange.Value), Nothing))}
 
         Property SubME As New OptionParam With {
             .Switch = "--subme",
@@ -710,6 +710,11 @@ Namespace x265
             .Options = {"32", "16", "8", "4"},
             .Values = {"32", "16", "8", "4"}}
 
+        Property CSV As New BoolParam With {
+            .Switch = "--csv",
+            .Text = "Write encoding results to a comma separated value log file",
+            .ArgsFunc = Function() If(CSV.Value, "--csv """ + Filepath.GetDirAndBase(p.TargetFile) + ".csv""", Nothing)}
+
         Private ItemsValue As List(Of CommandLineItem)
 
         Overrides ReadOnly Property Items As List(Of CommandLineItem)
@@ -726,7 +731,7 @@ Namespace x265
                     Add("Slice Decision", BAdapt, BFrames, BFrameBias, RCLookahead, LookaheadSlices, Scenecut, Ref, MinKeyint, Keyint, Bpyramid, OpenGop)
                     Add("Spatial/Intra", StrongIntraSmoothing, ConstrainedIntra, RDpenalty)
                     Add("Performance", Pools, FrameThreads, WPP, Pmode, PME)
-                    Add("Statistic", LogLevel, SSIM, PSNR, CuStats)
+                    Add("Statistic", LogLevel, CSV, SSIM, PSNR, CuStats)
                     Add("VUI", Videoformat, Colorprim, Colormatrix, Transfer)
                     Add("Bitstream", Hash, RepeatHeaders, Info, HRD, AUD)
                     Add("Other", InterlaceMode, Deblock, DeblockA, DeblockB, PsyRD, PsyRDOQ, CompCheckQuant, SAO, HighTier, SAOnonDeblock, Dither, SlowFirstpass, SignHide, Custom)

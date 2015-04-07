@@ -1454,6 +1454,8 @@ Public Module MainModule
                  buttons As MessageBoxButtons,
                  Optional defaultButton As DialogResult = DialogResult.None) As DialogResult
 
+        If mainInstruction Is Nothing Then mainInstruction = ""
+
         Using td As New TaskDialog(Of DialogResult)
             td.AllowCancel = False
             td.DefaultButton = defaultButton

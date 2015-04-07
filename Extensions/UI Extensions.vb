@@ -50,14 +50,6 @@ Public Module ControlExtensions
     End Sub
 
     <Extension()>
-    Function RemoveAndDispose(c As Control, ParamArray controls As Control()) As Point
-        For Each i In controls
-            c.Controls.Remove(i)
-            i.Dispose()
-        Next
-    End Function
-
-    <Extension()>
     Sub SendMessageCue(tb As TextBox, value As String, hideWhenFocused As Boolean)
         Dim wParam = If(hideWhenFocused, 0, 1)
         Native.SendMessage(tb.Handle, Native.EM_SETCUEBANNER, wParam, value)

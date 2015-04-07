@@ -2,99 +2,111 @@
 Imports System.Globalization
 
 Public Class Thumbnails
-    Shared Sub SaveThumbnails(fp As String)
-        If Not File.Exists(fp) Then Exit Sub
+    Shared Sub SaveThumbnails(inputFile As String)
+        If Not File.Exists(inputFile) Then Exit Sub
         If Not Packs.AviSynth.VerifyOK Then Exit Sub
 
         Log.WriteHeader("Saving Thumnails")
-        Log.WriteLine(fp)
+        Log.WriteLine(inputFile)
         Log.Save()
 
-        Dim w = s.ThumbnailWidth
+        Dim width = s.ThumbnailWidth
         Dim columns = s.ThumbnailColumns
         Dim rows = s.ThumbnailRows
-        Dim dar = MediaInfo.GetVideo(fp, "DisplayAspectRatio")
-        Dim h = CInt(w / Convert.ToSingle(dar, CultureInfo.InvariantCulture))
+        Dim dar = MediaInfo.GetVideo(inputFile, "DisplayAspectRatio")
+        Dim height = CInt(width / Convert.ToSingle(dar, CultureInfo.InvariantCulture))
         Dim shadowDistance = 5
         Dim backgroundColor = Color.Gainsboro
         Dim gap = 5
 
-        w = w - w Mod 4
-        h = h - h Mod 4
+        width = width - width Mod 4
+        height = height - height Mod 4
 
-        Dim d As New AviSynthDocument
-        d.Path = Paths.SettingsDir + "Thumbnails.avs"
-        d.Filters.Add(New AviSynthFilter("DirectShowSource(""" + fp + """, audio=false, convertfps=true).LanczosResize(" & w & "," & h & ")"))
-        d.Filters.Add(New AviSynthFilter("ConvertToRGB()"))
+        Dim avsdoc As New AviSynthDocument
+        avsdoc.Path = Paths.SettingsDir + "Thumbnails.avs"
+        avsdoc.Filters.Add(New AviSynthFilter("DirectShowSource(""" + inputFile + """, audio=false, convertfps=true).LanczosResize(" & width & "," & height & ")"))
+        avsdoc.Filters.Add(New AviSynthFilter("ConvertToRGB()"))
 
         Dim errorMsg = ""
 
         Try
-            d.Synchronize()
+            avsdoc.Synchronize()
             errorMsg = p.SourceAviSynthDocument.GetErrorMessage
         Catch ex As Exception
             errorMsg = ex.Message
         End Try
 
-        If OK(errorMsg) Then
-            MsgError("Failed to open file, are you missing a codec?" + CrLf2 + fp, errorMsg)
+        If errorMsg <> "" Then
+            MsgError("Failed to open file." + CrLf2 + inputFile, errorMsg)
             Exit Sub
         End If
 
-        Dim frames = d.GetFrames
+        Dim frames = avsdoc.GetFrames
         Dim count = columns * rows
 
         Dim bitmaps As New List(Of Bitmap)
 
-        Using avi As New AVIFile(d.Path)
+        Using avi As New AVIFile(avsdoc.Path)
             For x = 1 To count
                 avi.Position = CInt((frames / count) * x) - CInt((frames / count) / 2)
-                Dim b = New Bitmap(avi.GetBitmap())
-                DropShadow(b, Color.Black, backgroundColor, shadowDistance)
-                bitmaps.Add(b)
+                Dim bitmap = New Bitmap(avi.GetBitmap())
+                DropShadow(bitmap, Color.Black, backgroundColor, shadowDistance)
+                bitmaps.Add(bitmap)
                 ProcessForm.UpdateStatusThreadsafe("Extracting thumbnails: " & CInt(100 / count * x) & "%")
             Next
 
-            w = w + shadowDistance + gap
-            h = h + shadowDistance + gap
+            width = width + shadowDistance + gap
+            height = height + shadowDistance + gap
         End Using
 
-        FileHelp.Delete(d.Path)
+        FileHelp.Delete(avsdoc.Path)
 
-        Dim infoWidth = MediaInfo.GetVideo(fp, "Width")
-        Dim infoHeight = MediaInfo.GetVideo(fp, "Height")
-        Dim infoSize = CInt(New FileInfo(fp).Length / 1024 ^ 2).ToString
-        Dim infoDuration = MediaInfo.GetInfo(fp, MediaInfoStreamKind.General, "Duration")
+        Dim infoSize As String
 
-        Dim ts As New TimeSpan(CLng(infoDuration) * 10000L)
-        
-        Dim caption = Filepath.GetName(fp) + CrLf &
-             infoSize & " MB, " & CInt(Math.Floor(ts.TotalMinutes)).ToString("D2") +
-             ":" + ts.Seconds.ToString("D2") + " min, " & infoWidth & "x" & infoHeight
+        Dim infoWidth = MediaInfo.GetVideo(inputFile, "Width")
+        Dim infoHeight = MediaInfo.GetVideo(inputFile, "Height")
+        Dim infoLength = New FileInfo(inputFile).Length
 
-        Dim offsetCaption = 50
+        Dim infoDuration = MediaInfo.GetGeneral(inputFile, "Duration").ToInt
 
-        Dim imgWidth = w * columns + shadowDistance + gap
-        Dim imgHeight = h * rows + offsetCaption
+        If infoLength / 1024 ^ 3 > 1 Then
+            infoSize = (infoLength / 1024 ^ 3).ToString("f2") + " GB"
+        Else
+            infoSize = CInt(infoLength / 1024 ^ 2).ToString + " MB"
+        End If
 
-        Using b As New Bitmap(imgWidth, imgHeight)
-            Using g = Graphics.FromImage(b)
+        Dim infoDate As Date
+        infoDate = infoDate.AddMilliseconds(infoDuration)
+
+        Dim caption = Filepath.GetName(inputFile) + CrLf & "Size: " & infoSize & ", Duration: " +
+            infoDate.ToString("HH:mm:ss") + ", Bitrate: " & CInt((infoLength * 8) / 1000 / (infoDuration / 1000)) & " Kbps" + CrLf +
+            "Audio: " + MediaInfo.GetAudioCodecs(inputFile) + CrLf +
+            "Video: " + MediaInfo.GetVideoCodec(inputFile) + ", " & infoWidth & " x " & infoHeight & ", " & MediaInfo.GetVideo(inputFile, "FrameRate/String")
+
+        Dim captionHeight = 110
+
+        Dim imageWidth = width * columns + shadowDistance + gap
+        Dim imageHeight = height * rows + captionHeight
+
+        Using bitmap As New Bitmap(imageWidth, imageHeight)
+            Using g = Graphics.FromImage(bitmap)
                 g.Clear(backgroundColor)
-                Dim r = New RectangleF(shadowDistance + gap, 0, imgWidth - (shadowDistance + gap) * 2, offsetCaption)
-                Dim sf As New StringFormat
-                sf.LineAlignment = StringAlignment.Center
-                g.DrawString(caption, New Font("Tahoma", 12), Brushes.Black, r, sf)
-                sf.Alignment = StringAlignment.Far
-                g.DrawString("StaxRip", New Font("Tahoma", 30), Brushes.White, r, sf)
+                Dim rect = New RectangleF(shadowDistance + gap, 0, imageWidth - (shadowDistance + gap) * 2, captionHeight)
+                Dim format As New StringFormat
+                format.LineAlignment = StringAlignment.Center
+                g.DrawString(caption, New Font("Tahoma", 9), Brushes.Black, rect, format)
+                format.Alignment = StringAlignment.Far
+                format.LineAlignment = StringAlignment.Far
+                g.DrawString("StaxRip", New Font("Tahoma", 18), Brushes.White, rect, format)
 
                 For x = 0 To bitmaps.Count - 1
                     Dim rowPos = x \ columns
                     Dim columnPos = x Mod columns
-                    g.DrawImage(bitmaps(x), columnPos * w + shadowDistance + gap, rowPos * h + offsetCaption)
+                    g.DrawImage(bitmaps(x), columnPos * width + shadowDistance + gap, rowPos * height + captionHeight)
                 Next
             End Using
 
-            b.Save(Filepath.GetChangeExt(fp, "jpg"), Imaging.ImageFormat.Jpeg)
+            bitmap.Save(Filepath.GetChangeExt(inputFile, "jpg"), Imaging.ImageFormat.Jpeg)
         End Using
     End Sub
 
@@ -106,61 +118,53 @@ Public Class Thumbnails
                           Optional shadowSoftness As Integer = 4,
                           Optional shadowRoundedEdges As Boolean = True)
 
-        Dim imgTarget As Bitmap = Nothing
-        Dim imgShadow As Bitmap = Nothing
-        Dim g As Graphics = Nothing
+        If sourceImage IsNot Nothing Then
+            shadowOpacity = shadowOpacity.EnsureRange(0, 255)
+            shadowSoftness = shadowSoftness.EnsureRange(1, 30)
+            shadowDistance = shadowDistance.EnsureRange(1, 50)
 
-        Try
-            If sourceImage IsNot Nothing Then
-                shadowOpacity = shadowOpacity.EnsureRange(0, 255)
-                shadowSoftness = shadowSoftness.EnsureRange(1, 30)
-                shadowDistance = shadowDistance.EnsureRange(1, 50)
+            If shadowColor = Color.Transparent Then
+                shadowColor = Color.Black
+            End If
 
-                If shadowColor = Color.Transparent Then
-                    shadowColor = Color.Black
-                End If
+            If backgroundColor = Color.Transparent Then
+                backgroundColor = Color.White
+            End If
 
-                If backgroundColor = Color.Transparent Then
-                    backgroundColor = Color.White
-                End If
+            'get shadow
+            Dim shWidth = CInt(sourceImage.Width / shadowSoftness)
+            Dim shHeight = CInt(sourceImage.Height / shadowSoftness)
 
-                'get shadow
-                Dim shWidth = CInt(sourceImage.Width / shadowSoftness)
-                Dim shHeight = CInt(sourceImage.Height / shadowSoftness)
-                imgShadow = New Bitmap(shWidth, shHeight)
-                g = Graphics.FromImage(imgShadow)
-                g.Clear(Color.Transparent)
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic
-                g.SmoothingMode = SmoothingMode.AntiAlias
-                Dim sre = 0
+            Using imgShadow = New Bitmap(shWidth, shHeight)
+                Using g = Graphics.FromImage(imgShadow)
+                    g.Clear(Color.Transparent)
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic
+                    g.SmoothingMode = SmoothingMode.AntiAlias
+                    Dim sre = 0
 
-                If shadowRoundedEdges Then sre = 1
+                    If shadowRoundedEdges Then sre = 1
 
-                Using b = New SolidBrush(Color.FromArgb(shadowOpacity, shadowColor))
-                    g.FillRectangle(b, sre, sre, shWidth, shHeight)
+                    Using b = New SolidBrush(Color.FromArgb(shadowOpacity, shadowColor))
+                        g.FillRectangle(b, sre, sre, shWidth, shHeight)
+                    End Using
                 End Using
-
-                g.Dispose()
 
                 'draw shadow
                 Dim d_shWidth = sourceImage.Width + shadowDistance
                 Dim d_shHeight = sourceImage.Height + shadowDistance
-                imgTarget = New Bitmap(d_shWidth, d_shHeight)
-                g = Graphics.FromImage(imgTarget)
-                g.Clear(backgroundColor)
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic
-                g.SmoothingMode = SmoothingMode.AntiAlias
-                g.DrawImage(imgShadow, New Rectangle(0, 0, d_shWidth, d_shHeight), 0, 0, imgShadow.Width, imgShadow.Height, GraphicsUnit.Pixel)
-                g.DrawImage(sourceImage, New Rectangle(0, 0, sourceImage.Width, sourceImage.Height), 0, 0, sourceImage.Width, sourceImage.Height, GraphicsUnit.Pixel)
-                g.Dispose()
-                imgShadow.Dispose()
-                sourceImage = New Bitmap(imgTarget)
-                imgTarget.Dispose()
-            End If
-        Catch
-            If g IsNot Nothing Then g.Dispose()
-            If imgShadow IsNot Nothing Then imgShadow.Dispose()
-            If imgTarget IsNot Nothing Then imgTarget.Dispose()
-        End Try
+
+                Using imgTarget = New Bitmap(d_shWidth, d_shHeight)
+                    Using g = Graphics.FromImage(imgTarget)
+                        g.Clear(backgroundColor)
+                        g.InterpolationMode = InterpolationMode.HighQualityBicubic
+                        g.SmoothingMode = SmoothingMode.AntiAlias
+                        g.DrawImage(imgShadow, New Rectangle(0, 0, d_shWidth, d_shHeight), 0, 0, imgShadow.Width, imgShadow.Height, GraphicsUnit.Pixel)
+                        g.DrawImage(sourceImage, New Rectangle(0, 0, sourceImage.Width, sourceImage.Height), 0, 0, sourceImage.Width, sourceImage.Height, GraphicsUnit.Pixel)
+                    End Using
+
+                    sourceImage = New Bitmap(imgTarget)
+                End Using
+            End Using
+        End If
     End Sub
 End Class

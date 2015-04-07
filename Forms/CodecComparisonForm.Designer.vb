@@ -1,7 +1,7 @@
 ﻿Imports StaxRip.UI
 
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class ImageComparerForm
+Partial Class CodecComparisonForm
     Inherits FormBase
 
     'Form overrides dispose to clean up the component list.
@@ -31,8 +31,8 @@ Partial Class ImageComparerForm
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.bnRemove = New System.Windows.Forms.Button()
         Me.bnSave = New System.Windows.Forms.Button()
-        Me.lInfo = New System.Windows.Forms.Label()
         Me.bnHelp = New System.Windows.Forms.Button()
+        Me.lInfo = New System.Windows.Forms.Label()
         CType(Me.TrackBar, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.FlowLayoutPanel1.SuspendLayout()
@@ -124,14 +124,6 @@ Partial Class ImageComparerForm
         Me.bnSave.Text = "Save"
         Me.bnSave.UseVisualStyleBackColor = True
         '
-        'lInfo
-        '
-        Me.lInfo.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lInfo.Location = New System.Drawing.Point(3, 567)
-        Me.lInfo.Name = "lInfo"
-        Me.lInfo.Size = New System.Drawing.Size(650, 50)
-        Me.lInfo.TabIndex = 3
-        '
         'bnHelp
         '
         Me.bnHelp.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -142,7 +134,15 @@ Partial Class ImageComparerForm
         Me.bnHelp.Text = "Help"
         Me.bnHelp.UseVisualStyleBackColor = True
         '
-        'ImageComparerForm
+        'lInfo
+        '
+        Me.lInfo.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lInfo.Location = New System.Drawing.Point(3, 567)
+        Me.lInfo.Name = "lInfo"
+        Me.lInfo.Size = New System.Drawing.Size(650, 50)
+        Me.lInfo.TabIndex = 3
+        '
+        'CodecComparisonForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.ClientSize = New System.Drawing.Size(656, 617)
@@ -151,9 +151,9 @@ Partial Class ImageComparerForm
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(0, 0)
-        Me.Name = "ImageComparerForm"
+        Me.Name = "CodecComparisonForm"
         Me.ShowIcon = False
-        Me.Text = "Image Comparer"
+        Me.Text = "Codec Comparison"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         CType(Me.TrackBar, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TableLayoutPanel1.ResumeLayout(False)

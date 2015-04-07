@@ -2930,7 +2930,8 @@ Public Class GlobalCommands
                 f.Doc.WriteP("1.2.2.2 beta (2015-??-??)")
 
                 f.Doc.WriteList("Added support for very long file names by shortening the name of the temp files directory",
-                                "Added image comparison tool for codec comparisons which can extract PNG images",
+                                "Added codec comparison tool for codec comparisons (Tools/Advanced)",
+                                "Added the possibility to show the LAV Filters video decoder configuration (Tools/Advanced)",
                                 "Improved ffmpeg video encoding, VP9 two pass still don't work, apparently bug in libvpx 1.3",
                                 "Improved GUI for QSVEncC (tool for Intel Quick Sync H.264 GPU encoding)",
                                 "Improved x265 GUI, new options added, improved layout, improved help",
@@ -2938,7 +2939,10 @@ Public Class GlobalCommands
                                 "Improved MediaInfo Folder View (at Tools/Advanced)",
                                 "Fixed crash opening MP4 files with EIA-608 subtitles used by Apple",
                                 "Fixed help browser not using word wrap",
-                                "Fixed shutdown not working")
+                                "Fixed shutdown not working",
+                                "Updated x265 to version x265 1.6+85",
+                                "Updated QSVEncC to 1.33 (Tool for Intel H.264 GPU encoding)",
+                                "Updated NVEncC to 1.05 (Tool for NVIDIA H.264 and H.265 GPU encoding)")
 
                 f.Doc.WriteP("1.2.2.1 beta (2015-03-30)")
 
@@ -3686,9 +3690,9 @@ End Class
 
 Public Class GUIDS
     Shared Property LAVSplitter As String = "{171252A0-8820-4AFE-9DF8-5C92B2D66B04}"
+    Shared Property LAVVideoDecoder As String = "{EE30215D-164F-4A92-A4EB-9D4C13390F9F}"
     Shared Property HaaliMuxer As String = "{A28F324B-DDC5-4999-AA25-D3A7E25EF7A8}"
     Shared Property ffdshow As String = "{04FE9017-F873-410E-871E-AB91661A4EF7}"
-    Shared Property LAVVideoDecoder As String = "{EE30215D-164F-4A92-A4EB-9D4C13390F9F}"
 End Class
 
 Public Class M2TSStream

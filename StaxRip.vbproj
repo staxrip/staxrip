@@ -147,10 +147,10 @@
     <Compile Include="Controls\x264Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ImageComparerForm.Designer.vb">
-      <DependentUpon>ImageComparerForm.vb</DependentUpon>
+    <Compile Include="Forms\CodecComparisonForm.Designer.vb">
+      <DependentUpon>CodecComparisonForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ImageComparerForm.vb">
+    <Compile Include="Forms\CodecComparisonForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\SimpleSettingsForm.vb">
@@ -400,8 +400,8 @@
     <EmbeddedResource Include="Forms\AudioForm.resx">
       <DependentUpon>AudioForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ImageComparerForm.resx">
-      <DependentUpon>ImageComparerForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\CodecComparisonForm.resx">
+      <DependentUpon>CodecComparisonForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SimpleSettingsForm.resx">
       <DependentUpon>SimpleSettingsForm.vb</DependentUpon>

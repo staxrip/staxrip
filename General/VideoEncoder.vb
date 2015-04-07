@@ -824,7 +824,8 @@ Class NvidiaEncoder
 
         Using f As New CommandLineForm(newParams)
             f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStandardOutput(Packs.NVEncC.GetPath, "--check-hw"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Environment", ProcessHelp.GetStandardOutput(Packs.NVEncC.GetPath, "--check-features"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStandardOutput(Packs.NVEncC.GetPath, "--check-features"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetErrorOutput(Packs.NVEncC.GetPath, "--check-environment"))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = newParams
@@ -1155,11 +1156,14 @@ Class IntelEncoder
             .Value = 3,
             .DefaultValue = 3}
 
+        '.Options = {"None", "Normal", "Inverse Telecine", "Inverse Telecine 32", "Inverse Telecine 2332", "Inverse Telecine repeat", "Inverse Telecine 41", "Double Framerate", "Automatic", "Automatic Double Framerate"},
+        '.Values = {"none", "normal", "it", "it-manual ""32""", "it-manual ""2332""", "it-manual ""repeat""", "it-manual ""41""", "bob", "auto", "auto-bob"}}
+
         Property Deinterlace As New OptionParam With {
             .Switch = "--vpp-deinterlace",
             .Text = "Deinterlace:",
-            .Options = {"None", "Normal", "Inverse Telecine", "Inverse Telecine 32", "Inverse Telecine 2332", "Inverse Telecine repeat", "Inverse Telecine 41", "Double Framerate", "Automatic", "Automatic Double Framerate"},
-            .Values = {"none", "normal", "it", "it-manual ""32""", "it-manual ""2332""", "it-manual ""repeat""", "it-manual ""41""", "bob", "auto", "auto-bob"}}
+            .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"},
+            .Values = {"none", "normal", "it", "bob"}}
 
         Property BFF As New BoolParam With {
             .NoSwitch = "--bff",

@@ -1,7 +1,7 @@
 ﻿Imports System.Drawing.Drawing2D
 Imports System.Drawing.Imaging
 
-Public Class ImageComparerForm
+Public Class CodecComparisonForm
     Shared Property Pos As Integer
 
     Public Sub New()
@@ -78,7 +78,7 @@ Public Class ImageComparerForm
         Inherits TabPage
 
         Property AVI As AVIFile
-        Property Form As ImageComparerForm
+        Property Form As CodecComparisonForm
         Property SourceFile As String
 
         Private FrameInfo As String()

@@ -871,6 +871,7 @@ Public Class QSVEncCPackage
         Filename = "QSVEncC.exe"
         Description = "Intel Quick Sync GPU accelerated H.264 encoder"
         HelpFile = "help.txt"
+        WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!482"
     End Sub
 End Class
 

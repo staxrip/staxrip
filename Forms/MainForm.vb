@@ -12,6 +12,7 @@ Imports StaxRip.UI
 Imports SWF = System.Windows.Forms
 Imports VB6 = Microsoft.VisualBasic
 Imports System.Threading.Tasks
+Imports System.Runtime.InteropServices
 
 Public Class MainForm
     Inherits FormBase
@@ -3719,7 +3720,7 @@ Public Class MainForm
 
     <Command("Dialog | Compare and extract images", "Compare and extract images for codec comparisons.")>
     Sub ImageGrabber()
-        Dim f As New ImageComparerForm
+        Dim f As New CodecComparisonForm
         f.Show()
     End Sub
 
@@ -4378,12 +4379,13 @@ Public Class MainForm
         ret.Add("Tools|Launch", "DynamicMenuItem", DynamicMenuItemID.LaunchApplications)
 
         ret.Add("Tools|Advanced|Add hardcoded subtitle...", "AddHardcodedSubtitle")
-        ret.Add("Tools|Advanced|Run a specific command on a specific event...", "OpenEventCommandsDialog")
-        ret.Add("Tools|Advanced|Reset a specific setting...", "ResetSettings")
-        ret.Add("Tools|Advanced|Show MediaInfo of all files in a folder...", "OpenMediaInfoFolderView")
-        ret.Add("Tools|Advanced|Compare and extract images...", "ImageGrabber")
         ret.Add("Tools|Advanced|Batch generate thumbnails...", "BatchGenerateThumbnails")
+        ret.Add("Tools|Advanced|Compare and extract images...", "ImageGrabber")
+        ret.Add("Tools|Advanced|Reset a specific setting...", "ResetSettings")
+        ret.Add("Tools|Advanced|Run a specific command on a specific event...", "OpenEventCommandsDialog")
         ret.Add("Tools|Advanced|Show Command Prompt...", "ShowCommandPrompt")
+        ret.Add("Tools|Advanced|Show LAV Filters video decoder configuration...", "OpenLAVFiltersConfiguration")
+        ret.Add("Tools|Advanced|Show MediaInfo of all files in a folder...", "OpenMediaInfoFolderView")
 
         ret.Add("Tools|Edit Menu...", "OpenMainMenuEditor")
         ret.Add("Tools|Settings...", "OpenSettingsDialog", "")
@@ -4781,6 +4783,28 @@ Public Class MainForm
         'End Using
 
         'FileHelp.Delete("C:\Daten\Temp\test.mp4", VB6.FileIO.RecycleOption.SendToRecycleBin)
+    End Sub
+
+    <Command("Dialog | LAV Filters video decoder configuration", "Shows LAV Filters video decoder configuration")>
+    Private Sub OpenLAVFiltersConfiguration()
+        Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.LAVVideoDecoder.ToString + "\InprocServer32", Nothing)
+
+        If File.Exists(ret) Then
+            Static loaded As Boolean
+
+            If Not loaded Then
+                Native.LoadLibrary(ret)
+                loaded = True
+            End If
+
+            OpenConfiguration(Nothing, Nothing, Nothing, Nothing)
+        Else
+            MsgError("The LAV Filters video decoder library could not be located.")
+        End If
+    End Sub
+
+    <DllImport("LAVVideo.ax")>
+    Public Shared Sub OpenConfiguration(hwnd As IntPtr, hinst As IntPtr, lpszCmdLine As String, nCmdShow As Integer)
     End Sub
 
     <Command("Perform | Execute Multiple StaxRip Commands", "Executes multiple StaxRip commands using command line switches.")>

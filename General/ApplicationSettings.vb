@@ -103,10 +103,11 @@ Public Class ApplicationSettings
             Demuxers = Demuxer.GetDefaults()
         End If
 
-        If Check(FilterPreferences, "Source Filter Preference", 4) Then
+        If Check(FilterPreferences, "Source Filter Preference", 6) Then
             FilterPreferences = New StringPairList
             FilterPreferences.Add("default", "FFVideoSource")
             FilterPreferences.Add("ts, m2ts, wmv", "DirectShowSource")
+            FilterPreferences.Add("mp4, m4v", "LSMASHVideoSource")
             FilterPreferences.Add("d2v", "MPEG2Source")
             FilterPreferences.Add("dgi", "DGSource")
         End If
@@ -195,7 +196,7 @@ Public Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 109) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 113) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 

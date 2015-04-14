@@ -98,8 +98,8 @@ Class CommandLineForm
                     End If
                 ElseIf TypeOf item Is NumParam Then
                     Dim param = DirectCast(item, NumParam)
-                    help += CrLf2 + "Default: " & param.DefaultValue.ToString(CultureInfo.InvariantCulture)
-                    help += CrLf2 + "Minimum: " & param.MinMaxStepDec(0) & CrLf + "Maximum: " & param.MinMaxStepDec(1)
+                    help += CrLf2 + "Default: " & param.DefaultValue.ToString(CultureInfo.InvariantCulture) + CrLf +
+                        "Minimum: " & param.MinMaxStepDec(0) & CrLf + "Maximum: " & param.MinMaxStepDec(1)
                 ElseIf TypeOf item Is OptionParam Then
                     Dim param = DirectCast(item, OptionParam)
 
@@ -111,6 +111,7 @@ Class CommandLineForm
                 End If
 
                 If item.Help <> "" Then help += CrLf2 + item.Help
+                If item.URL <> "" Then help += CrLf2 + "[" + item.URL + " " + item.URL + "]"
             End If
 
             If TypeOf item Is BoolParam Then

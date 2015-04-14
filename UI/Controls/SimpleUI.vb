@@ -222,7 +222,7 @@ Class SimpleUI
         Return ret
     End Function
 
-    Sub AddLine(parent As FlowLayoutPanelEx, text As String)
+    Sub AddLine(parent As FlowLayoutPanelEx, Optional text As String = "")
         Dim line As New LineControl
         line.Height = 36
         line.Width = 100
@@ -696,62 +696,4 @@ Class SimpleUI
             End Set
         End Property
     End Class
-
-    'Function GetColumn(path As String) As FlowLayoutPanelEx
-    '    Dim column = path.Substring(path.Length - 1).ToInt
-    '    path = path.Substring(0, path.Length - 2)
-    '    Dim query = From v In Pages Where v.Path = path
-
-    '    If query.Count = 0 Then
-    '        Dim page = New TwoColumnsPage
-    '        Pages.Add(page)
-    '        page.Path = path
-    '        page.Dock = DockStyle.Fill
-    '        page.Node = Tree.AddNode(path)
-    '        Parent.Controls.Add(page)
-    '        ActivePage = page
-    '        Return DirectCast(page.Controls(column), FlowLayoutPanelEx)
-    '    Else
-    '        Dim page = query.First
-    '        ActivePage = page
-    '        Dim control = DirectCast(page, Control)
-    '        control.BringToFront()
-    '        Return DirectCast(control.Controls(column), FlowLayoutPanelEx)
-    '    End If
-    'End Function
-
-    'Class TwoColumnsPage
-    '    Inherits Control
-    '    Implements IPage
-
-    '    Public Property Node As TreeNode Implements IPage.Node
-    '    Public Property Path As String Implements IPage.Path
-    '    Public Property TipProvider As TipProvider Implements IPage.TipProvider
-
-    '    Sub New()
-    '        TipProvider = New TipProvider(Nothing)
-    '        AddHandler Disposed, Sub() TipProvider.Dispose()
-    '        Controls.Add(New FlowLayoutPanelEx)
-    '        Controls.Add(New FlowLayoutPanelEx)
-    '    End Sub
-
-    '    Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-    '        If Controls.Count = 2 Then
-    '            Dim a = Controls(0)
-    '            Dim b = Controls(1)
-
-    '            a.Left = 0
-    '            a.Top = 0
-    '            a.Width = CInt(Width / 2)
-    '            a.Height = Height
-
-    '            b.Left = a.Width
-    '            b.Top = 0
-    '            b.Width = a.Width
-    '            b.Height = Height
-    '        End If
-
-    '        MyBase.OnLayout(levent)
-    '    End Sub
-    'End Class
 End Class

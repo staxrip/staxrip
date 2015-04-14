@@ -183,11 +183,10 @@ Namespace UI
 
         Event Command(e As CustomMenuItemEventArgs)
 
-        Sub New( _
-            defaultMenu As Func(Of CustomMenuItem), _
-            menuItem As CustomMenuItem, _
-            commandManager As CommandManager, _
-            toolStrip As ToolStrip)
+        Sub New(defaultMenu As Func(Of CustomMenuItem),
+                menuItem As CustomMenuItem,
+                commandManager As CommandManager,
+                toolStrip As ToolStrip)
 
             Me.CommandManager = commandManager
             Me.DefaultMenu = defaultMenu
@@ -301,9 +300,8 @@ Namespace UI
             Dim ret As New StringPairList
 
             For Each i As MenuItemEx In MenuItems
-                If Not i.Tooltip Is Nothing Then
-                    ret.Add(i.Tooltip)
-                End If
+                Dim help = i.GetHelp
+                If Not help Is Nothing Then ret.Add(help)
             Next
 
             Return ret
@@ -442,8 +440,6 @@ Namespace UI
     Public Class MenuItemEx
         Inherits ToolStripMenuItem
 
-        Private TipValue As StringPair
-
         Shared Property UseTooltips As Boolean
 
         Sub New()
@@ -453,41 +449,29 @@ Namespace UI
             MyBase.New(text)
         End Sub
 
-        <Browsable(False)>
-        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        ReadOnly Property Tooltip() As StringPair
-            Get
-                If TipValue Is Nothing AndAlso
-                    Not CustomMenuItem Is Nothing AndAlso
-                    Not CustomMenuItem.CustomMenu Is Nothing Then
+        Function GetHelp() As StringPair
+            If Not CustomMenuItem Is Nothing AndAlso Not CustomMenuItem.CustomMenu Is Nothing AndAlso
+                CustomMenuItem.CustomMenu.CommandManager.HasCommand(CustomMenuItem.MethodName) Then
 
-                    If CustomMenuItem.CustomMenu.CommandManager.HasCommand(CustomMenuItem.MethodName) Then
-                        Dim command = CustomMenuItem.CustomMenu.CommandManager.GetCommand(CustomMenuItem.MethodName)
+                Dim command = CustomMenuItem.CustomMenu.CommandManager.GetCommand(CustomMenuItem.MethodName)
 
-                        If Not command.Attribute.Description Is Nothing Then
-                            Dim sp As New StringPair
+                If command.Attribute.Description <> "" Then
+                    Dim ret As New StringPair
 
-                            If Text.EndsWith("...") Then
-                                sp.Name = Text.TrimEnd("."c)
-                            Else
-                                sp.Name = Text
-                            End If
-
-                            sp.Value = command.Attribute.Description
-                            Dim paramHelp = command.GetParameterHelp(CustomMenuItem.Parameters)
-
-                            If Not paramHelp Is Nothing Then
-                                sp.Value += " (" + paramHelp + ")"
-                            End If
-
-                            TipValue = sp
-                        End If
+                    If Text.EndsWith("...") Then
+                        ret.Name = Text.TrimEnd("."c)
+                    Else
+                        ret.Name = Text
                     End If
-                End If
 
-                Return TipValue
-            End Get
-        End Property
+                    ret.Value = command.Attribute.Description
+                    Dim paramHelp = command.GetParameterHelp(CustomMenuItem.Parameters)
+                    If paramHelp <> "" Then ret.Value += " (" + paramHelp + ")"
+
+                    Return ret
+                End If
+            End If
+        End Function
 
         Private CustomMenuItemValue As CustomMenuItem
 
@@ -507,9 +491,9 @@ Namespace UI
 
                     If c.MethodInfo.Name <> "DynamicMenuItem" Then
                         If c.MethodInfo.Name = "ExecuteCmdl" Then
-                            HelpText = CustomMenuItem.Parameters(0).ToString.Trim(""""c)
+                            Help = CustomMenuItem.Parameters(0).ToString.Trim(""""c)
                         Else
-                            HelpText = c.Attribute.Description
+                            Help = c.Attribute.Description
                         End If
                     End If
                 End If
@@ -517,23 +501,23 @@ Namespace UI
         End Property
 
         Private Function ShouldSerializeHelpText() As Boolean
-            Return OK(HelpTextValue)
+            Return HelpValue <> ""
         End Function
 
-        Private HelpTextValue As String
+        Private HelpValue As String
 
         <Editor(GetType(StringEditor), GetType(UITypeEditor))>
-        Property HelpText() As String
+        Property Help() As String
             Get
-                Return HelpTextValue
+                Return HelpValue
             End Get
             Set(Value As String)
-                HelpTextValue = Value
+                HelpValue = Value
 
                 If UseTooltips Then
-                    If OK(HelpTextValue) Then
-                        If OK(HelpTextValue) AndAlso HelpTextValue.Length < 80 Then
-                            ToolTipText = HelpTextValue.TrimEnd("."c)
+                    If HelpValue <> "" Then
+                        If HelpValue.Length < 80 Then
+                            ToolTipText = HelpValue.TrimEnd("."c)
                         Else
                             ToolTipText = "Right-click for help"
                         End If
@@ -543,12 +527,12 @@ Namespace UI
         End Property
 
         Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
-            MyBase.OnMouseDown(e)
-
-            If e.Button = MouseButtons.Right AndAlso OK(HelpText) Then
+            If e.Button = MouseButtons.Right AndAlso Help <> "" Then
                 CloseAll(Me)
-                g.ShowHelp(Text, HelpText)
+                g.ShowHelp(Text, Help)
             End If
+
+            MyBase.OnMouseDown(e)
         End Sub
 
         Sub CloseAll(item As Object)
@@ -575,6 +559,12 @@ Namespace UI
 
         Private Action As Action
 
+        Property EnabledFunc As Func(Of Boolean)
+        Property Form As Form
+
+        Sub New()
+        End Sub
+
         Sub New(text As String, a As Action)
             Me.New(text, a, Nothing)
         End Sub
@@ -586,77 +576,53 @@ Namespace UI
 
             Me.Text = text
             Me.Action = action
-            Me.HelpText = tooltip
+            Me.Help = tooltip
             Me.Enabled = enabled
         End Sub
+
+        Private ShortcutValue As Keys
+
+        Property Shortcut As Keys
+            Get
+                Return ShortcutValue
+            End Get
+            Set(value As Keys)
+                ShortcutValue = value
+                ShortcutKeyDisplayString = KeysHelp.GetKeyString(value)
+                AddHandler Form.KeyDown, AddressOf KeyDown
+            End Set
+        End Property
+
+        Sub KeyDown(sender As Object, e As KeyEventArgs)
+            If e.KeyData = Shortcut Then
+                PerformClick()
+                e.Handled = True
+            End If
+        End Sub
+
+        Sub Opening(sender As Object, e As CancelEventArgs)
+            If Not EnabledFunc Is Nothing Then Enabled = EnabledFunc.Invoke
+        End Sub
+
+        Protected Overrides Sub OnClick(e As EventArgs)
+            Application.DoEvents()
+            If Not Action Is Nothing Then Action()
+            MyBase.OnClick(e)
+        End Sub
+
+        Shared Function Add(Of T)(items As ToolStripItemCollection,
+                                  path As String,
+                                  action As Action(Of T),
+                                  value As T,
+                                  Optional help As String = Nothing) As ActionMenuItem
+
+            Return Add(items, path, Sub() action(value), help)
+        End Function
 
         Shared Function Add(items As ToolStripItemCollection,
                             path As String,
                             action As Action,
-                            Optional tip As String = Nothing) As ToolStripMenuItem
-
-            Return ActionMenuItem(Of Action).Add(items, path, AddressOf OnAction, action, tip)
-        End Function
-
-        Shared Sub OnAction(a As Action)
-            Application.DoEvents()
-            a()
-        End Sub
-
-        Protected Overrides Sub OnClick(e As EventArgs)
-            MyBase.OnClick(e)
-            Application.DoEvents()
-            Action()
-        End Sub
-    End Class
-
-    Public Class ActionMenuItem(Of T)
-        Inherits MenuItemEx
-
-        Private Action As Action(Of T)
-        Property Value As T
-
-        Sub New()
-        End Sub
-
-        Sub New(text As String, action As Action(Of T), value As T)
-            Me.New(text, action, value, Nothing)
-        End Sub
-
-        Sub New(text As String, action As Action(Of T), value As T, tip As String)
-            Me.New(text, action, value, tip, Keys.None)
-        End Sub
-
-        Sub New(text As String,
-                action As Action(Of T),
-                argument As T,
-                toolTip As String,
-                key As Keys)
-
-            Me.Text = text
-            Me.Action = action
-            Me.Value = argument
-            Me.HelpText = toolTip
-
-            If key <> Keys.None Then
-                Me.ShortcutKeyDisplayString = KeysHelp.GetKeyString(key)
-            End If
-        End Sub
-
-        Protected Overrides Sub OnClick(e As EventArgs)
-            MyBase.OnClick(e)
-            Application.DoEvents()
-
-            If Not Action Is Nothing Then
-                Action(Value)
-            End If
-        End Sub
-
-        Shared Function Add(items As ToolStripItemCollection,
-                            path As String,
-                            action As Action(Of T),
-                            value As T,
-                            Optional toolTip As String = Nothing) As ToolStripMenuItem
+                            Optional tip As String = Nothing) As ActionMenuItem
 
             Dim a = path.SplitNoEmpty(" | ")
             Dim l = items
@@ -678,13 +644,13 @@ Namespace UI
                         If a(x) = "-" Then
                             l.Add(New ToolStripSeparator)
                         Else
-                            Dim item As New ActionMenuItem(Of T)(a(x), action, value, toolTip, Keys.None)
+                            Dim item As New ActionMenuItem(a(x), action, tip)
                             l.Add(item)
                             l = item.DropDownItems
                             Return item
                         End If
                     Else
-                        Dim item As New ActionMenuItem(Of T)
+                        Dim item As New ActionMenuItem()
                         item.Text = a(x)
                         l.Add(item)
                         l = item.DropDownItems
@@ -745,9 +711,9 @@ Namespace UI
             For Each i In definition.SplitKeepEmpty(CrLf)
                 If i.Contains("=") Then
                     Dim arg = i.Right("=").Trim
-                    ActionMenuItem(Of String).Add(r.Items, i.Left("="), action, arg, Nothing)
+                    ActionMenuItem.Add(r.Items, i.Left("="), action, arg, Nothing)
                 ElseIf i.EndsWith(" | -") Then
-                    ActionMenuItem(Of String).Add(r.Items, i, Nothing, Nothing, Nothing)
+                    ActionMenuItem.Add(r.Items, i, Nothing, Nothing)
                 ElseIf i = "" Then
                     r.Items.Add(New ToolStripSeparator)
                 End If
@@ -755,5 +721,90 @@ Namespace UI
 
             Return r
         End Function
+    End Class
+
+    Class ContextMenuStripEx
+        Inherits ContextMenuStrip
+
+        Property Form As Form
+
+        Sub New(form As Form)
+            Me.Form = form
+            AddHandler form.Disposed, Sub() Dispose()
+        End Sub
+
+        Function Add(path As String, action As action, shortcut As Keys,
+                     enabledFunc As Func(Of Boolean),
+                     Optional help As String = Nothing) As ActionMenuItem
+
+            Dim ret = ActionMenuItem.Add(Items, path, action)
+
+            ret.Form = Form
+            ret.Shortcut = shortcut
+            ret.EnabledFunc = enabledFunc
+            ret.Help = help
+
+            AddHandler Opening, AddressOf ret.Opening
+
+            Return ret
+        End Function
+
+        Function GetTips() As StringPairList
+            Dim ret As New StringPairList
+
+            For Each i In GetItems.OfType(Of ActionMenuItem)()
+                If i.Help <> "" Then
+                    Dim pair As New StringPair
+
+                    If i.Text.EndsWith("...") Then
+                        pair.Name = i.Text.TrimEnd("."c)
+                    Else
+                        pair.Name = i.Text
+                    End If
+
+                    pair.Value = i.Help
+                    ret.Add(pair)
+                End If
+            Next
+
+            Return ret
+        End Function
+
+        Function GetKeys() As StringPairList
+            Dim ret As New StringPairList
+
+            For Each i In GetItems.OfType(Of ActionMenuItem)()
+                If i.ShortcutKeyDisplayString <> "" Then
+                    Dim sp As New StringPair
+
+                    If i.Text.EndsWith("...") Then
+                        sp.Name = i.Text.TrimEnd("."c)
+                    Else
+                        sp.Name = i.Text
+                    End If
+
+                    sp.Value = i.ShortcutKeyDisplayString
+                    ret.Add(sp)
+                End If
+            Next
+
+            Return ret
+        End Function
+
+        Function GetItems() As List(Of ToolStripItem)
+            Dim ret As New List(Of ToolStripItem)
+            AddItemsRecursive(Items, ret)
+            Return ret
+        End Function
+
+        Shared Sub AddItemsRecursive(searchList As ToolStripItemCollection, returnList As List(Of ToolStripItem))
+            For Each i As ToolStripItem In searchList
+                returnList.Add(i)
+
+                If TypeOf i Is ToolStripDropDownItem Then
+                    AddItemsRecursive(DirectCast(i, ToolStripDropDownItem).DropDownItems, returnList)
+                End If
+            Next
+        End Sub
     End Class
 End Namespace

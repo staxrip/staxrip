@@ -578,13 +578,15 @@ Namespace UI
     Public Class TrackBarEx
         Inherits TrackBar
 
-        Protected Overrides ReadOnly Property CreateParams() As CreateParams
+        Shadows Property Value As Integer
             Get
-                Dim p = MyBase.CreateParams
-                Dim TBS_TRANSPARENTBKGND = &H1000
-                p.Style = p.Style Or TBS_TRANSPARENTBKGND
-                Return p
+                Return MyBase.Value
             End Get
+            Set(value As Integer)
+                If value > Maximum Then value = Maximum
+                If value < Minimum Then value = Minimum
+                If value <> MyBase.Value Then MyBase.Value = value
+            End Set
         End Property
     End Class
 
@@ -905,8 +907,8 @@ Namespace UI
         Sub MenuOpening(sender As Object, e As CancelEventArgs)
             Menu.MinimumSize = New Size(Width, 0)
 
-            For Each i As ActionMenuItem(Of Object) In Menu.Items
-                If Not Value Is Nothing AndAlso Value.Equals(i.Value) Then
+            For Each i As ActionMenuItem In Menu.Items
+                If Not Value Is Nothing AndAlso Value.Equals(i.Tag) Then
                     i.Font = New Font(i.Font, FontStyle.Bold)
                 Else
                     i.Font = New Font(i.Font, FontStyle.Regular)
@@ -933,13 +935,13 @@ Namespace UI
                             Dim text = DispNameAttribute.GetValueForEnum(i)
                             Dim temp = i
 
-                            ActionMenuItem(Of Object).Add(Menu.Items, text, Sub(o As Object) OnAction(text, o), temp, Nothing)
+                            ActionMenuItem.Add(Menu.Items, text, Sub(o As Object) OnAction(text, o), temp, Nothing).Tag = temp
                         Next
                     End If
                 End If
 
-                For Each i In Menu.Items.OfType(Of ActionMenuItem(Of Object))()
-                    If value.Equals(i.Value) Then
+                For Each i In Menu.Items.OfType(Of ActionMenuItem)()
+                    If value.Equals(i.Tag) Then
                         Text = i.Text
                     End If
                 Next
@@ -977,7 +979,7 @@ Namespace UI
                 name = path.RightLast("|").Trim
             End If
 
-            ActionMenuItem(Of Object).Add(Menu.Items, path, Sub(o As Object) OnAction(name, o), obj, tip)
+            ActionMenuItem.Add(Menu.Items, path, Sub(o As Object) OnAction(name, o), obj, tip).Tag = obj
         End Sub
 
         Private Sub OnAction(text As String, value As Object)
@@ -1972,5 +1974,74 @@ Namespace UI
             Columns.Add(ret)
             Return ret
         End Function
+    End Class
+
+    Public Class TabControlEx
+        Inherits TabControl
+
+        Private DragStartPosition As Point = Point.Empty
+        Private TabType As Type
+
+        Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
+            DragStartPosition = New Point(e.X, e.Y)
+            MyBase.OnMouseDown(e)
+        End Sub
+
+        Protected Overrides Sub OnMouseMove(e As MouseEventArgs)
+            If e.Button <> MouseButtons.Left Then Return
+
+            Dim rect = New Rectangle(DragStartPosition, Size.Empty)
+            rect.Inflate(SystemInformation.DragSize)
+
+            Dim page = HoverTab()
+
+            If Not page Is Nothing AndAlso Not rect.Contains(e.X, e.Y) Then
+                TabType = page.GetType
+                DoDragDrop(page, DragDropEffects.All)
+            End If
+
+            DragStartPosition = Point.Empty
+            MyBase.OnMouseMove(e)
+        End Sub
+
+        Protected Overrides Sub OnDragOver(e As DragEventArgs)
+            Dim hoverTab = Me.HoverTab()
+
+            If hoverTab Is Nothing Then
+                e.Effect = DragDropEffects.None
+            Else
+                If e.Data.GetDataPresent(TabType) Then
+                    e.Effect = DragDropEffects.Move
+                    Dim dragTab = DirectCast(e.Data.GetData(TabType), TabPage)
+
+                    If hoverTab Is dragTab Then Return
+
+                    Dim tabRect = GetTabRect(TabPages.IndexOf(hoverTab))
+                    tabRect.Inflate(-3, -3)
+
+                    If tabRect.Contains(PointToClient(New Point(e.X, e.Y))) Then
+                        SwapTabPages(dragTab, hoverTab)
+                        SelectedTab = dragTab
+                    End If
+                End If
+            End If
+
+            MyBase.OnDragOver(e)
+        End Sub
+
+        Private Function HoverTab() As TabPage
+            For index = 0 To TabCount - 1
+                If GetTabRect(index).Contains(PointToClient(Cursor.Position)) Then
+                    Return TabPages(index)
+                End If
+            Next
+        End Function
+
+        Private Sub SwapTabPages(ByVal tp1 As TabPage, ByVal tp2 As TabPage)
+            Dim index1 = TabPages.IndexOf(tp1)
+            Dim index2 = TabPages.IndexOf(tp2)
+            TabPages(index1) = tp2
+            TabPages(index2) = tp1
+        End Sub
     End Class
 End Namespace

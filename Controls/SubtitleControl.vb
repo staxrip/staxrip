@@ -166,7 +166,7 @@ Public Class SubtitleControl
                     AddSubtitles(Subtitle.Create(i))
                 Next
 
-                lv.SetColumnWidths()
+                lv.AutoResizeColumns(False)
             End If
         End Using
     End Sub
@@ -236,7 +236,7 @@ Public Class SubtitleControl
     End Sub
 
     Private Sub lv_ControlsUpdated() Handles lv.ControlsUpdated
-        lv.SetColumnWidths()
+        lv.AutoResizeColumns(False)
         Dim selected = lv.SelectedItems.Count > 0
         Dim path = If(selected, DirectCast(lv.SelectedItems(0).Tag, Subtitle).Path, "")
         bnPlay.Enabled = selected AndAlso IsOneOf(Filepath.GetExt(path), ".idx", ".srt")
@@ -407,7 +407,7 @@ Public Class SubtitleControl
                 listItem.SubItems(2).Text = subtitel.Title
                 listItem.SubItems(3).Text = _option
 
-                lv.SetColumnWidths()
+                lv.AutoResizeColumns(False)
             End If
         End Using
     End Sub

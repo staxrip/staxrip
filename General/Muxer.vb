@@ -248,7 +248,7 @@ Public Class MP4Muxer
     Private Function GetArgs() As String
         Dim args As New StringBuilder
 
-        args.Append(" -fps " + p.AvsDoc.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
+        args.Append(" -fps " + p.VideoEncoder.GetFrameRate.ToString("f6", CultureInfo.InvariantCulture))
 
         Dim temp As String = Nothing
         Dim par = Calc.GetTargetPAR
@@ -527,7 +527,7 @@ Public Class MkvMuxer
         End If
 
         If FileTypes.VideoRaw.Contains(p.VideoEncoder.OutputFileType) Then
-            args.Append(" --default-duration 0:" + p.AvsDoc.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps")
+            args.Append(" --default-duration 0:" + p.VideoEncoder.GetFrameRate.ToString("f6", CultureInfo.InvariantCulture) + "fps")
         End If
 
         args.Append(" """ + p.VideoEncoder.OutputPath + """")

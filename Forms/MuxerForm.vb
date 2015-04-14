@@ -313,6 +313,6 @@ Public Class MuxerForm
     End Sub
 
     Private Sub MuxerForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        SubtitleControl.lv.SetColumnWidths()
+        SubtitleControl.lv.AutoResizeColumns(False)
     End Sub
 End Class

@@ -327,4 +327,11 @@ Public Class MediaInfoForm
         ActiveGroup = e.Node.Text
         UpdateItems()
     End Sub
+
+    Private Sub rtb_KeyDown(sender As Object, e As KeyEventArgs) Handles rtb.KeyDown
+        If e.KeyData = (Keys.Control Or Keys.C) Then
+            Clipboard.SetText(rtb.SelectedText)
+            e.Handled = True
+        End If
+    End Sub
 End Class

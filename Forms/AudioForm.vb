@@ -701,7 +701,7 @@ Public Class AudioForm
         miProfiles.DropDownItems.Clear()
 
         For Each i In s.AudioProfiles.OfType(Of GUIAudioProfile)()
-            ActionMenuItem(Of GUIAudioProfile).Add(miProfiles.DropDownItems, i.Name, AddressOf LoadProfile2, i, Nothing)
+            ActionMenuItem.Add(miProfiles.DropDownItems, i.Name, AddressOf LoadProfile2, i, Nothing)
         Next
 
         miProfiles.DropDownItems.Add("-")

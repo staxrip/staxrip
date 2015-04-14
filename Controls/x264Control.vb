@@ -150,7 +150,7 @@ Public Class x264Control
         If lv.SelectedItems.Count > 0 Then
             Select Case lv.SelectedIndices(0)
                 Case 0 - offset
-                    Dim fn = Function(value As Integer, text As String, tooltip As String) New ActionMenuItem(Of Integer)(value & " - " + text, AddressOf SetQuality, value, tooltip) With {.Font = If(Encoder.Params.Quant.Value = value, New Font(.Font, FontStyle.Bold), .Font)}
+                    Dim fn = Function(value As Integer, text As String, tooltip As String) New ActionMenuItem(value & " - " + text, Sub() SetQuality(value), tooltip) With {.Font = If(Encoder.Params.Quant.Value = value, New Font(.Font, FontStyle.Bold), .Font)}
 
                     cms.Items.Add(fn(18, "Super High", "Super high quality and file size (-crf 18)"))
                     cms.Items.Add(fn(19, "Very High", "Very high quality and file size (-crf 19)"))
@@ -165,20 +165,20 @@ Public Class x264Control
                     For Each i In System.Enum.GetValues(GetType(x264PresetMode))
                         Dim a = CType(i, x264PresetMode)
 
-                        cms.Items.Add(New ActionMenuItem(Of x264PresetMode)(
-                                      DispNameAttribute.GetValueForEnum(a), AddressOf SetPreset, a,
+                        cms.Items.Add(New ActionMenuItem(
+                                      DispNameAttribute.GetValueForEnum(a), Sub() SetPreset(a),
                                       "Use values between Fast and Slower otherwise the quality and compression will either be poor or the encoding will be painful slow. Slower is three times slower than Medium, Veryslow is 6 times slower than Medium with little gains compared to Slower.") With {.Font = If(Encoder.Params.Preset.Value = a, New Font(.Font, FontStyle.Bold), .Font)})
                     Next
                 Case 2 - offset
                     For Each i In System.Enum.GetValues(GetType(x264TuneMode))
                         Dim a = CType(i, x264TuneMode)
-                        cms.Items.Add(New ActionMenuItem(Of x264TuneMode)(
-                                      DispNameAttribute.GetValueForEnum(a), AddressOf SetTune, a) With {.Font = If(Encoder.Params.Tune.Value = a, New Font(.Font, FontStyle.Bold), .Font)})
+                        cms.Items.Add(New ActionMenuItem(
+                                      DispNameAttribute.GetValueForEnum(a), Sub() SetTune(a)) With {.Font = If(Encoder.Params.Tune.Value = a, New Font(.Font, FontStyle.Bold), .Font)})
                     Next
                 Case 3 - offset
                     For Each i In System.Enum.GetValues(GetType(x264DeviceMode))
                         Dim a = CType(i, x264DeviceMode)
-                        cms.Items.Add(New ActionMenuItem(Of x264DeviceMode)(DispNameAttribute.GetValueForEnum(a), AddressOf SetDevice, a) With {.Font = If(Encoder.Params.Device.Value = a, New Font(.Font, FontStyle.Bold), .Font)})
+                        cms.Items.Add(New ActionMenuItem(DispNameAttribute.GetValueForEnum(a), Sub() SetDevice(a)) With {.Font = If(Encoder.Params.Device.Value = a, New Font(.Font, FontStyle.Bold), .Font)})
                     Next
             End Select
         End If

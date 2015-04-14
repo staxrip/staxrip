@@ -1118,32 +1118,22 @@ Public Class MainForm
     Sub RenameDVDTracks()
         Dim ifoPath = GetIfoFile()
 
-        If Not File.Exists(ifoPath) Then
-            Exit Sub
-        End If
+        If Not File.Exists(ifoPath) Then Exit Sub
 
         For Each i In Directory.GetFiles(p.TempDir)
             If g.IsSourceSame(i) AndAlso i.Contains("VTS") Then
-                Dim re As New Regex(" T\d(\d) ")
-                Dim m = re.Match(i)
+                Dim regex As New Regex(" T(\d\d) ")
+                Dim match = regex.Match(i)
 
-                If m.Success Then
-                    Dim indexFilename = CInt(m.Groups(1).Value)
+                If match.Success Then
+                    Dim dgID = CInt(match.Groups(1).Value)
 
                     Using mi As New MediaInfo(ifoPath)
-                        For Each iAudioTrack In mi.AudioStreams
-                            If indexFilename = mi.AudioStreams.IndexOf(iAudioTrack) Then
-                                Dim ci As CultureInfo
-
-                                Try
-                                    ci = New CultureInfo(iAudioTrack.Language.TwoLetterCode)
-                                Catch
-                                    ci = Language.Languages(0).CultureInfo
-                                End Try
-
-                                Dim title = If(iAudioTrack.Title <> "", iAudioTrack.Title + " - ", "")
-                                Dim newName = re.Replace(i, " - ID" & (indexFilename + 1) & " - " + ci.EnglishName + " - " + title).Replace("3_2ch", "6ch -").Replace(" DELAY", " -")
-
+                        For x = 0 To mi.AudioStreams.Count - 1
+                            If mi.GetAudio(x, "ID/String").Contains(" (0x" & dgID & ")") Then
+                                Dim stream = mi.AudioStreams(x)
+                                Dim title = If(stream.Title <> "", stream.Title + " - ", "")
+                                Dim newName = regex.Replace(i, " - ID" & x & " - " + stream.Language.Name + " - " + title).Replace("3_2ch", "6ch -").Replace(" DELAY", " -")
                                 FileHelp.Move(i, newName)
                             End If
                         Next
@@ -1317,7 +1307,7 @@ Public Class MainForm
                                 name = "..." + name.Remove(0, name.Length - 70)
                             End If
 
-                            i.DropDownItems.Add(New ActionMenuItem(Of String)(name, AddressOf LoadProject, i2))
+                            i.DropDownItems.Add(New ActionMenuItem(name, Sub() LoadProject(i2)))
                         End If
                     Next
                 End SyncLock
@@ -1386,7 +1376,7 @@ Public Class MainForm
                         base = "Backup | " + base
                     End If
 
-                    ActionMenuItem(Of String).Add(i.DropDownItems, base, AddressOf LoadProject, i2, Nothing)
+                    ActionMenuItem.Add(i.DropDownItems, base, AddressOf LoadProject, i2, Nothing)
                 Next
 
                 i.DropDownItems.Add("-")
@@ -1611,9 +1601,7 @@ Public Class MainForm
                 End If
             Next
 
-            If Not Paths.VerifyRequirements() Then
-                Throw New AbortException
-            End If
+            If Not Paths.VerifyRequirements() Then Throw New AbortException
 
             If p.SourceFile <> "" AndAlso autoMode Then
                 Dim templates = Directory.GetFiles(Paths.TemplateDir, "*.srip")
@@ -1668,10 +1656,6 @@ Public Class MainForm
                     End If
                 End If
             End If
-
-            Dim scantype = MediaInfo.GetVideo(p.OriginalSourceFile, "ScanType")
-
-            Dim deinterlace = scantype = "MBAFF" OrElse scantype = "Interlaced"
 
             Dim originalFPS = MediaInfo.GetFrameRate(p.OriginalSourceFile)
 
@@ -1836,16 +1820,6 @@ Public Class MainForm
                             p.AvsDoc.GetFilter("Source").Script += CrLf + "ConvertToYV12(" + matrix + ")"
                         End If
                     End If
-                End If
-            End If
-
-            If deinterlace Then
-                Dim filter = p.AvsDoc.GetFilter("Field")
-
-                If Not filter Is Nothing AndAlso Not filter.Active Then
-                    filter.Path = "Yadif"
-                    filter.Script = "Yadif()"
-                    filter.Active = True
                 End If
             End If
 
@@ -2203,7 +2177,7 @@ Public Class MainForm
 
                             Using proc As New Proc
                                 proc.Init("Demux subtitles using VSRip")
-                                proc.WriteLine(args)
+                                proc.WriteLine(args + CrLf2)
                                 proc.File = Packs.VSRip.GetPath
                                 proc.Arguments = """" + fileContent + """"
                                 proc.Directory = Packs.VSRip.GetDir
@@ -3109,6 +3083,26 @@ Public Class MainForm
             tb.Edit.Text = s.WindowPositionsCenterScreen.Join(", ")
             tb.Edit.SaveAction = Sub(value) s.WindowPositionsCenterScreen = value.SplitNoEmptyAndWhiteSpace(",")
 
+            ui.AddLine(generalPage, "Thumbnails")
+
+            Dim num = ui.AddNumericBlock(generalPage)
+            num.Label.Text = "Width:"
+            num.NumEdit.Init(0, 10000, 16)
+            num.NumEdit.Value = s.ThumbnailWidth
+            num.NumEdit.SaveAction = Sub(value) s.ThumbnailWidth = CInt(value)
+
+            num = ui.AddNumericBlock(generalPage)
+            num.Label.Text = "Rows:"
+            num.NumEdit.Init(0, 100, 1)
+            num.NumEdit.Value = s.ThumbnailRows
+            num.NumEdit.SaveAction = Sub(value) s.ThumbnailRows = CInt(value)
+
+            num = ui.AddNumericBlock(generalPage)
+            num.Label.Text = "Columns:"
+            num.NumEdit.Init(0, 100, 1)
+            num.NumEdit.Value = s.ThumbnailColumns
+            num.NumEdit.SaveAction = Sub(value) s.ThumbnailColumns = CInt(value)
+
             generalPage.ResumeLayout()
 
             ui.CreateControlPage(New DemuxingControl, "Demux")
@@ -3217,31 +3211,6 @@ Public Class MainForm
                                    Function(a) filterNames.Contains(a.Value) AndAlso a.Name <> "")))
 
             filterPage.DataSource = bs
-
-            Dim imagesPage = ui.CreateFlowPage("Images")
-            imagesPage.SuspendLayout()
-
-            ui.AddLine(imagesPage, "Thumbnails")
-
-            Dim num = ui.AddNumericBlock(imagesPage)
-            num.Label.Text = "Width:"
-            num.NumEdit.Init(0, 10000, 16)
-            num.NumEdit.Value = s.ThumbnailWidth
-            num.NumEdit.SaveAction = Sub(value) s.ThumbnailWidth = CInt(value)
-
-            num = ui.AddNumericBlock(imagesPage)
-            num.Label.Text = "Rows:"
-            num.NumEdit.Init(0, 100, 1)
-            num.NumEdit.Value = s.ThumbnailRows
-            num.NumEdit.SaveAction = Sub(value) s.ThumbnailRows = CInt(value)
-
-            num = ui.AddNumericBlock(imagesPage)
-            num.Label.Text = "Columns:"
-            num.NumEdit.Init(0, 100, 1)
-            num.NumEdit.Value = s.ThumbnailColumns
-            num.NumEdit.SaveAction = Sub(value) s.ThumbnailColumns = CInt(value)
-
-            imagesPage.ResumeLayout()
 
             ui.SelectLast("last settings page")
 
@@ -3722,6 +3691,7 @@ Public Class MainForm
     Sub ImageGrabber()
         Dim f As New CodecComparisonForm
         f.Show()
+        f.Add()
     End Sub
 
     <Command("Dialog | Filters", "Dialog to edit filters.")>
@@ -4063,7 +4033,7 @@ Public Class MainForm
             compCheckButton.MenuButton.Value = p.CompCheckAction
             compCheckButton.MenuButton.SaveAction = Sub(value) p.CompCheckAction = value
 
-            If OK(pagePath) Then
+            If pagePath <> "" Then
                 ui.ShowPage(pagePath)
             Else
                 ui.SelectLast("last options page")
@@ -4345,6 +4315,15 @@ Public Class MainForm
         g.MakeBugReport(Nothing)
     End Sub
 
+    <Command("Perform | Run AVSMeter", "Runs AVSMeter to benchmark the AviSynth script.")>
+    Sub AVSMeter()
+        If File.Exists(p.SourceFile) Then
+            g.ShellExecute(Packs.AVSMeter.GetPath, """" + p.AvsDoc.Path + """")
+        Else
+            MsgWarn("Please open a source file first.")
+        End If
+    End Sub
+
     Shared Function GetDefaultMainMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
@@ -4378,14 +4357,15 @@ Public Class MainForm
         ret.Add("Tools|Directories|System", "ExecuteCmdl", """%system_dir%""")
         ret.Add("Tools|Launch", "DynamicMenuItem", DynamicMenuItemID.LaunchApplications)
 
-        ret.Add("Tools|Advanced|Add hardcoded subtitle...", "AddHardcodedSubtitle")
-        ret.Add("Tools|Advanced|Batch generate thumbnails...", "BatchGenerateThumbnails")
-        ret.Add("Tools|Advanced|Compare and extract images...", "ImageGrabber")
-        ret.Add("Tools|Advanced|Reset a specific setting...", "ResetSettings")
-        ret.Add("Tools|Advanced|Run a specific command on a specific event...", "OpenEventCommandsDialog")
-        ret.Add("Tools|Advanced|Show Command Prompt...", "ShowCommandPrompt")
-        ret.Add("Tools|Advanced|Show LAV Filters video decoder configuration...", "OpenLAVFiltersConfiguration")
-        ret.Add("Tools|Advanced|Show MediaInfo of all files in a folder...", "OpenMediaInfoFolderView")
+        ret.Add("Tools|Advanced|AVSMeter...", "AVSMeter")
+        ret.Add("Tools|Advanced|Codec Comparison...", "ImageGrabber")
+        ret.Add("Tools|Advanced|Command Prompt...", "ShowCommandPrompt")
+        ret.Add("Tools|Advanced|Event Commands...", "OpenEventCommandsDialog")
+        ret.Add("Tools|Advanced|Hardcoded Subtitle...", "AddHardcodedSubtitle")
+        ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", "OpenLAVFiltersConfiguration")
+        ret.Add("Tools|Advanced|MediaInfo Folder View...", "OpenMediaInfoFolderView")
+        ret.Add("Tools|Advanced|Reset Setting...", "ResetSettings")
+        ret.Add("Tools|Advanced|Thumbnails Generator...", "BatchGenerateThumbnails")
 
         ret.Add("Tools|Edit Menu...", "OpenMainMenuEditor")
         ret.Add("Tools|Settings...", "OpenSettingsDialog", "")
@@ -4714,9 +4694,9 @@ Public Class MainForm
             End If
         End If
 
-        'Using testForm As New TestForm
-        '    testForm.StartPosition = FormStartPosition.CenterScreen
-        '    testForm.ShowDialog()
+        'Using f As New TestForm
+        '    f.StartPosition = FormStartPosition.CenterScreen
+        '    f.ShowDialog()
         'End Using
 
         'AddHandler tbAudioFile0.TextChanged, Sub()
@@ -4783,6 +4763,14 @@ Public Class MainForm
         'End Using
 
         'FileHelp.Delete("C:\Daten\Temp\test.mp4", VB6.FileIO.RecycleOption.SendToRecycleBin)
+
+        'Dim sw As New Stopwatch
+        'sw.Start()
+        'Dim output = ProcessHelp.GetStandardOutput(Packs.QSVEncC.GetPath, "--check-lib")
+        'sw.Stop()
+        'MsgInfo(sw.ElapsedMilliseconds.ToString)
+
+        'MsgInfo(Registry.LocalMachine.GetString("SOFTWARE\Intel\GFX", "Version"))
     End Sub
 
     <Command("Dialog | LAV Filters video decoder configuration", "Shows LAV Filters video decoder configuration")>

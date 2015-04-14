@@ -124,7 +124,7 @@ Class x264Form
     Friend WithEvents nudNoiseReduction As NumEdit
     Friend WithEvents lNoiseReduction As System.Windows.Forms.Label
     Friend WithEvents cbGoTo As System.Windows.Forms.ComboBox
-    Friend WithEvents bProfiles As ButtonEx
+    Friend WithEvents bnProfiles As ButtonEx
     Friend WithEvents ToolStripMenuItem1 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents lSlices As System.Windows.Forms.Label
     Friend WithEvents nudSlices As NumEdit
@@ -382,7 +382,7 @@ Class x264Form
         Me.gbCompressibilityCheck = New System.Windows.Forms.GroupBox()
         Me.lAimedQualityHint = New System.Windows.Forms.Label()
         Me.cbGoTo = New System.Windows.Forms.ComboBox()
-        Me.bProfiles = New StaxRip.UI.ButtonEx()
+        Me.bnProfiles = New StaxRip.UI.ButtonEx()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.tcMain.SuspendLayout()
@@ -2364,12 +2364,12 @@ Class x264Form
         '
         'bProfiles
         '
-        Me.bProfiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.bProfiles.Location = New System.Drawing.Point(194, 471)
-        Me.bProfiles.Margin = New System.Windows.Forms.Padding(4)
-        Me.bProfiles.ShowMenuSymbol = True
-        Me.bProfiles.Size = New System.Drawing.Size(120, 36)
-        Me.bProfiles.Text = "Profiles"
+        Me.bnProfiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.bnProfiles.Location = New System.Drawing.Point(194, 471)
+        Me.bnProfiles.Margin = New System.Windows.Forms.Padding(4)
+        Me.bnProfiles.ShowMenuSymbol = True
+        Me.bnProfiles.Size = New System.Drawing.Size(120, 36)
+        Me.bnProfiles.Text = "Profiles"
         '
         'bnCancel
         '
@@ -2397,7 +2397,7 @@ Class x264Form
         Me.ClientSize = New System.Drawing.Size(899, 519)
         Me.Controls.Add(Me.bnCancel)
         Me.Controls.Add(Me.bnOK)
-        Me.Controls.Add(Me.bProfiles)
+        Me.Controls.Add(Me.bnProfiles)
         Me.Controls.Add(Me.cbGoTo)
         Me.Controls.Add(Me.tcMain)
         Me.Controls.Add(Me.rtbCmdl)
@@ -3356,7 +3356,7 @@ Class x264Form
     Sub SaveProfile()
         Dim name = InputBox.Show("Please enter a name.", "Name", NameOfLastProfile)
 
-        If OK(name) Then
+        If name <> "" Then
             For Each i In s.VideoEncoderProfiles.OfType(Of x264Encoder)()
                 If i.Name = name Then
                     i.Params = ObjectHelp.GetCopy(Of x264Params)(Params)
@@ -3370,7 +3370,6 @@ Class x264Form
             enc.Clean()
 
             NameOfLastProfile = name
-
             s.VideoEncoderProfiles.Add(enc)
         End If
     End Sub
@@ -3530,7 +3529,7 @@ Class x264Form
 
     Dim ProfilesMenu As ContextMenuStrip
 
-    Private Sub bProfiles_Click() Handles bProfiles.Click
+    Private Sub bProfiles_Click() Handles bnProfiles.Click
         If ProfilesMenu Is Nothing Then
             ProfilesMenu = New ContextMenuStrip(components)
         End If
@@ -3541,13 +3540,13 @@ Class x264Form
         ProfilesMenu.Items.Add(profiles)
 
         For Each i In s.VideoEncoderProfiles.OfType(Of x264Encoder)()
-            ActionMenuItem(Of x264Encoder).Add(profiles.DropDownItems, i.Name, AddressOf LoadProfile, i, Nothing)
+            ActionMenuItem.Add(profiles.DropDownItems, i.Name, AddressOf LoadProfile, i, Nothing)
         Next
 
         ProfilesMenu.Items.Add(New ActionMenuItem("Save...", Sub() SaveProfile(), "Saves the current x264 settings to a encoder profile"))
         ProfilesMenu.Items.Add(New ActionMenuItem("Edit...", Sub() EditProfiles(), "Shows the profiles dialog to edit the encoder profiles"))
 
-        ProfilesMenu.Show(bProfiles, New Point(0, bProfiles.Height))
+        ProfilesMenu.Show(bnProfiles, New Point(0, bnProfiles.Height))
     End Sub
 
     Sub LoadProfile(value As x264Encoder)

@@ -48,7 +48,7 @@ Public Class AviSynthListView
             Items.Add(item)
         Next
 
-        SetColumnWidths()
+        AutoResizeColumns(True)
 
         EndUpdate()
 
@@ -57,12 +57,12 @@ Public Class AviSynthListView
 
     Protected Overrides Sub OnCreateControl()
         MyBase.OnCreateControl()
-        SetColumnWidths()
+        AutoResizeColumns(True)
     End Sub
 
     Protected Overrides Sub OnLayout(e As LayoutEventArgs)
         MyBase.OnLayout(e)
-        SetColumnWidths()
+        AutoResizeColumns(True)
     End Sub
 
     Sub UpdateMenu()
@@ -80,7 +80,7 @@ Public Class AviSynthListView
                             tip = Macro.Solve(tip)
                         End If
 
-                        ActionMenuItem(Of AviSynthFilter).Add(Menu.Items,
+                        ActionMenuItem.Add(Menu.Items,
                             i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
                     Next
                 End If
@@ -102,10 +102,10 @@ Public Class AviSynthListView
                         tip = Macro.Solve(tip)
                     End If
 
-                    ActionMenuItem(Of AviSynthFilter).Add(replace.DropDownItems,
+                    ActionMenuItem.Add(replace.DropDownItems,
                         i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
 
-                    ActionMenuItem(Of AviSynthFilter).Add(insert.DropDownItems,
+                    ActionMenuItem.Add(insert.DropDownItems,
                         i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
                 Next
             Next
@@ -123,7 +123,7 @@ Public Class AviSynthListView
                         tip = Macro.Solve(tip)
                     End If
 
-                    ActionMenuItem(Of AviSynthFilter).Add(add.DropDownItems,
+                    ActionMenuItem.Add(add.DropDownItems,
                         i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
                 Next
             Next
@@ -137,7 +137,7 @@ Public Class AviSynthListView
         End If
 
         If TypeOf FindForm() Is MainForm Then
-            Menu.Items.Add(New ActionMenuItem("Play", AddressOf g.DefaultCommands.PlayScript, "Plays the script with the AVI player."))
+            Menu.Items.Add(New ActionMenuItem("Play", AddressOf g.DefaultCommands.PlayScript, "Plays the script with the AVI player.", p.SourceFile <> ""))
         End If
 
         Menu.Items.Add(New ActionMenuItem("Profiles...", AddressOf g.MainForm.OpenAviSynthFilterProfilesDialog, "Dialog to edit profiles."))

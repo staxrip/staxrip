@@ -1151,7 +1151,7 @@ Public Class Command
         commands.Sort()
 
         For Each i In commands
-            ActionMenuItem(Of Command).Add(items, i.Attribute.Name, clickSub, i, i.Attribute.Description)
+            ActionMenuItem.Add(items, i.Attribute.Name, clickSub, i, i.Attribute.Description)
         Next
     End Sub
 

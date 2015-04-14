@@ -590,7 +590,7 @@ Namespace UI
             End Function
         End Class
 
-        Sub SetColumnWidths()
+        Shadows Sub AutoResizeColumns(lastAtListViewWidth As Boolean)
             BeginUpdate()
 
             For Each i As ColumnHeader In Columns
@@ -607,14 +607,13 @@ Namespace UI
 
                 Dim headerWidth = i.Width
                 i.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
-
-                If i.Width < headerWidth Then
-                    i.Width = headerWidth
-                End If
+                If i.Width < headerWidth Then i.Width = headerWidth
             Next
 
-            Dim widthAll = Aggregate i In Columns.OfType(Of ColumnHeader)() Into Sum(i.Width)
-            Columns(Columns.Count - 1).Width -= widthAll - ClientSize.Width
+            If lastAtListViewWidth Then
+                Dim widthAll = Aggregate i In Columns.OfType(Of ColumnHeader)() Into Sum(i.Width)
+                Columns(Columns.Count - 1).Width -= widthAll - ClientSize.Width
+            End If
 
             EndUpdate()
         End Sub

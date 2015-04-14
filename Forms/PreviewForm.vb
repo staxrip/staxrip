@@ -616,7 +616,6 @@ Public Class PreviewForm
     Sub GoToTime()
         Dim d As Date
         d = d.AddSeconds(AVI.Position / AVI.FrameRate)
-
         Dim value = InputBox.Show("Time:", "Go To Time", d.ToString("HH:mm:ss.fff"))
 
         If value <> "" Then
@@ -631,7 +630,7 @@ Public Class PreviewForm
 
     <Command("Dialog | Go To Frame", "Dialog to jump to a specific frame.")>
     Sub GoToFrame()
-        Dim value As String = InputBox.Show("Frame:", "Go To Frame", AVI.Position.ToString)
+        Dim value = InputBox.Show("Frame:", "Go To Frame", AVI.Position.ToString)
         Dim pos As Integer
 
         If Integer.TryParse(value, pos) Then

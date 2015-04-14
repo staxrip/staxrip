@@ -43,15 +43,17 @@ Public Class Packs
     Public Shared NVEncC As New NVEncCPackage
     Public Shared QSVEncC As New QSVEncCPackage
     Public Shared Haali As New HaaliSplitter
+    Public Shared AVSMeter As New AVSMeterPackage
+    Public Shared vpxenc As New vpxencPackage
 
     Public Shared Property Packages As New Dictionary(Of String, Package)
 
     Shared Sub Init()
-        AddPackage(Haali)
-        AddPackage(QSVEncC)
+        AddPackage(vpxenc)
         AddPackage(AutoCrop)
         AddPackage(AviSynth)
         AddPackage(avs4x26x)
+        AddPackage(AVSMeter)
         AddPackage(BDSup2SubPP)
         AddPackage(BeSweet)
         AddPackage(Decomb)
@@ -65,6 +67,7 @@ Public Class Packs
         AddPackage(ffmpeg)
         AddPackage(ffms2)
         AddPackage(FluxSmooth)
+        AddPackage(Haali)
         AddPackage(Java)
         AddPackage(lsmashWorks)
         AddPackage(MediaInfo)
@@ -75,6 +78,7 @@ Public Class Packs
         AddPackage(NVEncC)
         AddPackage(ProjectX)
         AddPackage(qaac)
+        AddPackage(QSVEncC)
         AddPackage(TomsMoComp)
         AddPackage(UnDot)
         AddPackage(VirtualDubMod)
@@ -858,7 +862,7 @@ Public Class NVEncCPackage
         Name = "NVEncC"
         Filename = "NVEncC.exe"
         WebURL = "http://forum.videohelp.com/threads/370223-NVEncC-by-rigaya-NVIDIA-GPU-encoding"
-        Description = "nvidia GPU accelerated H.264/H.265 encoder"
+        Description = "nvidia GPU accelerated H.264/H.265 encoder."
         HelpFile = "help.txt"
     End Sub
 End Class
@@ -869,9 +873,33 @@ Public Class QSVEncCPackage
     Sub New()
         Name = "QSVEncC"
         Filename = "QSVEncC.exe"
-        Description = "Intel Quick Sync GPU accelerated H.264 encoder"
+        Description = "Intel Quick Sync GPU accelerated H.264 encoder."
         HelpFile = "help.txt"
         WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!482"
+    End Sub
+End Class
+
+Public Class AVSMeterPackage
+    Inherits Package
+
+    Sub New()
+        Name = "AVSMeter"
+        Filename = "AVSMeter.exe"
+        Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements."
+        HelpFile = "doc\AVSMeter.html"
+        WebURL = "http://forum.doom9.org/showthread.php?t=165528"
+    End Sub
+End Class
+
+Public Class vpxencPackage
+    Inherits Package
+
+    Sub New()
+        Name = "vpxenc"
+        Filename = "vpxenc.exe"
+        Description = "VP8/VP9 command line encoding application."
+        HelpFile = "help.txt"
+        WebURL = "http://www.webmproject.org/docs/encoder-parameters"
     End Sub
 End Class
 
@@ -892,7 +920,7 @@ Public Class HaaliSplitter
     End Function
 
     Public Overrides Function IsRequired() As Boolean
-        Return False
+        Return CommandLineDemuxer.IsActive("dsmux")
     End Function
 End Class
 
@@ -914,6 +942,6 @@ Public Class dsmuxPackage
     End Function
 
     Overrides Function IsRequired() As Boolean
-        Return False
+        Return CommandLineDemuxer.IsActive("dsmux")
     End Function
 End Class

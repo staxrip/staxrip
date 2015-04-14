@@ -301,12 +301,10 @@ Public Class TaskDialog(Of T)
     Function Show() As T
         MarshalDialogControlStructs()
         Dim isChecked As Boolean
-        Dim r = TaskDialogIndirect(Config, Nothing, Nothing, isChecked)
+        Dim hr = TaskDialogIndirect(Config, Nothing, Nothing, isChecked)
         CheckBoxChecked = isChecked
 
-        If r < 0 Then
-            Marshal.ThrowExceptionForHR(r)
-        End If
+        If hr < 0 Then Marshal.ThrowExceptionForHR(hr)
 
         If TypeOf SelectedValue Is DialogResult Then
             Dim o As Object = SelectedID
@@ -318,13 +316,11 @@ Public Class TaskDialog(Of T)
 
     Private ExitTickCount As Integer
 
-    Private Function DialogProc(
-        hwnd As IntPtr,
-        msg As UInteger,
-        wParam As IntPtr,
-        lParam As IntPtr,
-        lpRefData As IntPtr) As Integer
-
+    Private Function DialogProc(hwnd As IntPtr,
+                                msg As UInteger,
+                                wParam As IntPtr,
+                                lParam As IntPtr,
+                                lpRefData As IntPtr) As Integer
         DialogHandle = hwnd
 
         Select Case msg
@@ -375,9 +371,8 @@ Public Class TaskDialog(Of T)
     End Sub
 
     Private Shared Function AllocateAndMarshalButtons(structs As List(Of TASKDIALOG_BUTTON)) As IntPtr
-        Dim initialPtr As IntPtr = Marshal.AllocHGlobal(Marshal.SizeOf(GetType(TASKDIALOG_BUTTON)) * structs.Count)
-
-        Dim currentPtr As IntPtr = initialPtr
+        Dim initialPtr = Marshal.AllocHGlobal(Marshal.SizeOf(GetType(TASKDIALOG_BUTTON)) * structs.Count)
+        Dim currentPtr = initialPtr
 
         For Each button In structs
             Marshal.StructureToPtr(button, currentPtr, False)

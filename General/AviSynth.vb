@@ -378,6 +378,7 @@ Public Class AviSynthCategory
 
         src.Filters.AddRange(
             {New AviSynthFilter("Source", "Automatic", "", True),
+             New AviSynthFilter("Source", "AviSource", "AviSource(""%source_file%"", audio = false)", True),
              New AviSynthFilter("Source", "MPEG2Source", "MPEG2Source(""%source_file%"")", True),
              New AviSynthFilter("Source", "DirectShowSource", "DirectShowSource(""%source_file%"", audio = false, convertfps = true, fps = %original_framerate%)", True),
              New AviSynthFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%working_dir%%source_name%.ffindex"")" + CrLf + "AssumeFPS(%original_framerate%)", True),
@@ -423,6 +424,7 @@ Public Class AviSynthCategory
             .Add(New AviSynthFilter(resize.Name, "Lanczos4Resize", "Lanczos4Resize(%target_width%, %target_height%)", True))
             .Add(New AviSynthFilter(resize.Name, "BlackmanResize", "BlackmanResize(%target_width%, %target_height%)", True))
             .Add(New AviSynthFilter(resize.Name, "GaussResize", "GaussResize(%target_width%, %target_height%)", True))
+            .Add(New AviSynthFilter(resize.Name, "SincResize", "SincResize(%target_width%, %target_height%)", True))
             .Add(New AviSynthFilter(resize.Name, "PointResize", "PointResize(%target_width%, %target_height%)", True))
             .Add(New AviSynthFilter(resize.Name, "Empty", "# calculations/macros", True))
             .Add(New AviSynthFilter(resize.Name, "Spline | Spline16Resize", "Spline16Resize(%target_width%, %target_height%)", True))

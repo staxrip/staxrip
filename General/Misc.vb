@@ -414,7 +414,7 @@ Public Class GlobalClass
 
                 If Not found Then
                     If i = a.Length - 1 Then
-                        Dim item As New ActionMenuItem(Of Profile)(a(i), loadAction, iProfile)
+                        Dim item As New ActionMenuItem(a(i), Sub() loadAction(iProfile))
                         l.Add(item)
                         l = item.DropDownItems
                     Else
@@ -1358,6 +1358,7 @@ Public Class Log
             "OS Name: " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + CrLf +
             "OS Type: " + If(x64, "64-bit", "32-bit") + CrLf +
             "OS Culture: " + CultureInfo.CurrentCulture.EnglishName + CrLf +
+            "CPU Name: " + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + CrLf +
             "LAV Filters: " + Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\lavfilters_is1", "DisplayName") + CrLf +
             "AviSynth: " + Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\AviSynth", "DisplayName")
 
@@ -1861,12 +1862,8 @@ Public Class Language
     Sub New(twoLetterCode As String, Optional isCommon As Boolean = False)
         Try
             Me.IsCommon = isCommon
-
-            If twoLetterCode = "" Then
-                CultureInfoValue = CultureInfo.InvariantCulture
-            Else
-                CultureInfoValue = New CultureInfo(twoLetterCode)
-            End If
+            If twoLetterCode = "iw" Then twoLetterCode = "he"
+            CultureInfoValue = New CultureInfo(twoLetterCode)
         Catch ex As Exception
             CultureInfoValue = CultureInfo.InvariantCulture
         End Try
@@ -1895,18 +1892,30 @@ Public Class Language
                     ThreeLetterCodeValue = "und"
                 Else
                     Select Case CultureInfo.ThreeLetterISOLanguageName
+                        Case "deu"
+                            ThreeLetterCodeValue = "ger"
                         Case "ces"
                             ThreeLetterCodeValue = "cze"
                         Case "zho"
                             ThreeLetterCodeValue = "chi"
-                        Case "deu"
-                            ThreeLetterCodeValue = "ger"
                         Case "nld"
                             ThreeLetterCodeValue = "dut"
                         Case "ell"
                             ThreeLetterCodeValue = "gre"
                         Case "fra"
                             ThreeLetterCodeValue = "fre"
+                        Case "sqi"
+                            ThreeLetterCodeValue = "alb"
+                        Case "hye"
+                            ThreeLetterCodeValue = "arm"
+                        Case "eus"
+                            ThreeLetterCodeValue = "baq"
+                        Case "mya"
+                            ThreeLetterCodeValue = "bur"
+                        Case "kat"
+                            ThreeLetterCodeValue = "geo"
+                        Case "isl"
+                            ThreeLetterCodeValue = "ice"
                         Case Else
                             ThreeLetterCodeValue = CultureInfo.ThreeLetterISOLanguageName
                     End Select
@@ -2927,22 +2936,25 @@ Public Class GlobalCommands
             Case "changelog"
                 f.Doc.WriteStart("Changelog")
 
-                f.Doc.WriteP("1.2.2.2 beta (2015-??-??)")
+                f.Doc.WriteP("1.2.2.2 beta (2015-04-13)")
 
                 f.Doc.WriteList("Added support for very long file names by shortening the name of the temp files directory",
-                                "Added codec comparison tool for codec comparisons (Tools/Advanced)",
-                                "Added the possibility to show the LAV Filters video decoder configuration (Tools/Advanced)",
-                                "Improved ffmpeg video encoding, VP9 two pass still don't work, apparently bug in libvpx 1.3",
+                                "Added codec comparison tool for codec comparisons (Tools/Advanced/Codec Comparison)",
+                                "Added the possibility to show the LAV Filters video decoder configuration (Tools/Advanced/LAV Filters...)",
+                                "Added AVSMeter for benchmarking AviSynth scripts (Tools/Advanced/AVSMeter)",
+                                "Added SincResize AviSynth filter",
+                                "Added vpxenc encoding tool for VP9 encoding and added a command line profile, a GUI will follow soon",
                                 "Improved GUI for QSVEncC (tool for Intel Quick Sync H.264 GPU encoding)",
                                 "Improved x265 GUI, new options added, improved layout, improved help",
                                 "Improved thumbnail generator printing more info",
-                                "Improved MediaInfo Folder View (at Tools/Advanced)",
+                                "Improved MediaInfo Folder View (at Tools/Advanced/MediaInfo Folder View), list of audio codecs, context menu with various options, automatic layout",
                                 "Fixed crash opening MP4 files with EIA-608 subtitles used by Apple",
                                 "Fixed help browser not using word wrap",
                                 "Fixed shutdown not working",
-                                "Updated x265 to version x265 1.6+85",
+                                "Updated x265 to version x265 1.6+174",
                                 "Updated QSVEncC to 1.33 (Tool for Intel H.264 GPU encoding)",
-                                "Updated NVEncC to 1.05 (Tool for NVIDIA H.264 and H.265 GPU encoding)")
+                                "Updated NVEncC to 1.05 (Tool for NVIDIA H.264 and H.265 GPU encoding)",
+                                "Updated ffmpeg")
 
                 f.Doc.WriteP("1.2.2.1 beta (2015-03-30)")
 

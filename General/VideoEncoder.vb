@@ -137,6 +137,10 @@ Public MustInherit Class VideoEncoder
         Muxer.Clean()
     End Sub
 
+    Overridable Function GetFrameRate() As Double
+        Return p.AvsDoc.GetFramerate
+    End Function
+
     Overridable Function GetError() As String
         Return Nothing
     End Function
@@ -257,11 +261,6 @@ Public MustInherit Class VideoEncoder
         Dim quickSync As New IntelEncoder("Intel H.264")
         ret.Add(quickSync)
 
-        Dim vp9 As New ffmpegEncoder()
-        vp9.Name = "VP9"
-        vp9.Params.Quality.Value = 30
-        ret.Add(vp9)
-
         Dim xvid = New ffmpegEncoder()
         xvid.Name = "Xvid"
         xvid.Params.Codec.Value = 1
@@ -285,6 +284,14 @@ Public MustInherit Class VideoEncoder
         nvencH265.QualityMode = True
         nvencH265.CommandLines = """%app:NVEncC%"" --sar %target_sar% -c h265 -i ""%avs_file%"" -o ""%encoder_out_file%"""
         ret.Add(nvencH265)
+
+        Dim vp9CLI As New BatchEncoder()
+        vp9CLI.OutputFileTypeValue = "webm"
+        vp9CLI.Name = "Command Line | VP9"
+        vp9CLI.Muxer = New WebMMuxer()
+        vp9CLI.QualityMode = True
+        vp9CLI.CommandLines = """%app:ffmpeg%"" -i ""%avs_file%"" -f yuv4mpegpipe - | ""%app:vpxenc%"" --codec=vp9 --passes=1 --good --cpu-used=1 -o ""%encoder_out_file%"" -"
+        ret.Add(vp9CLI)
 
         ret.Add(Getx264Encoder("Devices | DivX Plus", x264DeviceMode.DivXPlus))
         ret.Add(Getx264Encoder("Devices | Blu-ray", x264DeviceMode.BluRay))
@@ -372,7 +379,8 @@ Public Class BatchEncoder
             File.WriteAllText(batchPath, commands, Encoding.GetEncoding(850))
 
             Using proc As New Proc
-                proc.Init("Encoding video command line encoder: " + Name, ", eta ", " frames: ")
+                proc.Init("Encoding video command line encoder: " + Name)
+                proc.SkipStrings = {" [ETA ", ", eta ", " frames: ", "frame= "}
                 proc.WriteLine(commands + CrLf2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
@@ -1059,6 +1067,14 @@ Class IntelEncoder
         End Set
     End Property
 
+    Public Overrides Function GetFrameRate() As Double
+        If Params.Deinterlace.OptionText = "Double Framerate" Then
+            Return MyBase.GetFrameRate() * 2
+        End If
+
+        Return MyBase.GetFrameRate()
+    End Function
+
     Overrides Sub ShowConfigDialog()
         Dim newParams As New EncoderParams
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
@@ -1263,7 +1279,7 @@ Class IntelEncoder
             QPI.Visible = {"cqp", "vqp"}.Contains(Mode.ValueText)
             QPP.Visible = {"cqp", "vqp"}.Contains(Mode.ValueText)
             LookaheadDepth.Visible = {"la", "la-hrd", "la-icq"}.Contains(Mode.ValueText)
-            MBBRC.DefaultValue = Mode.ValueText = "icq" OrElse Mode.ValueText = "la-icq"
+            MBBRC.Visible = Not (Mode.ValueText = "icq" OrElse Mode.ValueText = "la-icq")
             BFF.Visible = Deinterlace.Value > 0
             MyBase.OnValueChanged(item)
         End Sub

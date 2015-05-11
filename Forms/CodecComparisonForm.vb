@@ -41,7 +41,7 @@ Public Class CodecComparisonForm
 
     Sub Add()
         Using f As New OpenFileDialog
-            f.SetFilter({"mkv", "mp4", "png", "webm", "m4a"})
+            f.SetFilter({"mkv", "mp4", "png", "webm", "m4v"})
             f.Multiselect = True
             f.SetInitDir(s.Storage.GetString("codec comparison folder"))
 
@@ -126,6 +126,14 @@ Public Class CodecComparisonForm
         For Each i As VideoTab In TabControl.TabPages
             i.AVI.Position = Pos
         Next
+    End Sub
+
+    Private Sub CodecComparisonForm_MouseWheel(sender As Object, e As MouseEventArgs) Handles Me.MouseWheel
+        If e.Delta > 0 Then
+            TrackBar.Value += 100
+        Else
+            TrackBar.Value -= 100
+        End If
     End Sub
 
     Private Sub CodecComparisonForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
@@ -223,32 +231,36 @@ Public Class CodecComparisonForm
             Text = Filepath.GetBase(sourePath)
             SourceFile = sourePath
 
-            Dim doc As New AviSynthDocument
-            doc.Path = sourePath + ".avs"
-            doc.Filters.Add(New AviSynthFilter("SetMemoryMax(512)"))
+            Dim avs As New AviSynthDocument
+            avs.Path = CommonDirs.Temp + Guid.NewGuid.ToString + ".avs"
+            AddHandler Disposed, Sub() FileHelp.Delete(avs.Path)
+
+            avs.Filters.Add(New AviSynthFilter("SetMemoryMax(512)"))
 
             If Filepath.GetExt(sourePath) = ".png" Then
-                doc.Filters.Add(New AviSynthFilter("ImageSource(""" + sourePath + """, end = 0)"))
+                avs.Filters.Add(New AviSynthFilter("ImageSource(""" + sourePath + """, end = 0)"))
             Else
-                doc.Filters.Add(New AviSynthFilter("FFVideoSource(""" + sourePath + """)"))
+                Dim cachefile = CommonDirs.Temp + Guid.NewGuid.ToString + ".ffindex"
+                AddHandler Disposed, Sub() FileHelp.Delete(cachefile)
+                avs.Filters.Add(New AviSynthFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachefile + """)"))
             End If
 
             If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
-                doc.Filters.Add(New AviSynthFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
+                avs.Filters.Add(New AviSynthFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
             End If
 
             If p.SourceHeight > 576 Then
-                doc.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec709"")"))
+                avs.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec709"")"))
             Else
-                doc.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec601"")"))
+                avs.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec601"")"))
             End If
 
             If Form.Zoom <> 100 Then
-                doc.Filters.Add(New AviSynthFilter("LanczosResize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
+                avs.Filters.Add(New AviSynthFilter("LanczosResize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
             End If
 
-            doc.Synchronize()
-            AVI = New AVIFile(doc.Path)
+            avs.Synchronize()
+            AVI = New AVIFile(avs.Path)
 
             If Form.TrackBar.Maximum < AVI.FrameCount - 1 Then
                 Form.TrackBar.Maximum = AVI.FrameCount - 1

@@ -1,7 +1,7 @@
 Imports System.Runtime.InteropServices
 Imports System.Text.RegularExpressions
 
-Public Class MediaInfo
+Class MediaInfo
     Implements IDisposable
 
     Private Handle As IntPtr
@@ -83,6 +83,33 @@ Public Class MediaInfo
         MyBase.Finalize()
     End Sub
 
+    Private VideoStreamsValue As List(Of VideoStream)
+
+    ReadOnly Property VideoStreams() As List(Of VideoStream)
+        Get
+            If VideoStreamsValue Is Nothing Then
+                VideoStreamsValue = New List(Of VideoStream)
+                Dim count = MediaInfo_Count_Get(Handle, MediaInfoStreamKind.Video, -1)
+
+                If count > 0 Then
+                    For i = 0 To count - 1
+                        Dim at As New VideoStream
+
+                        Dim streamOrder = GetVideo(i, "StreamOrder")
+                        If Not streamOrder.IsInt Then streamOrder = (i + 1).ToString
+                        at.StreamOrder = streamOrder.ToInt
+
+                        at.Format = GetVideo(i, "Format")
+
+                        VideoStreamsValue.Add(at)
+                    Next
+                End If
+            End If
+
+            Return VideoStreamsValue
+        End Get
+    End Property
+
     Private AudioStreamsValue As List(Of AudioStream)
 
     ReadOnly Property AudioStreams() As List(Of AudioStream)
@@ -111,12 +138,14 @@ Public Class MediaInfo
                         at.FormatProfile = GetAudio(i, "Format_Profile")
                         at.Title = GetAudio(i, "Title").Trim
 
-                        If IsOneOf(at.Title, "Surround 7.1", "Surround 5.1", "Stereo", "3/2+1", "2/0") Then
-                            at.Title = ""
-                        ElseIf at.Title.Contains("IsoMedia") OrElse at.Title.Contains("GPAC") OrElse
-                            at.Title.Contains("PID ") Then
+                        If at.Title.Contains("IsoMedia") OrElse at.Title.Contains("GPAC") OrElse at.Title.Contains("PID ") OrElse
+                            {"Surround 7.1", "Surround 5.1", "Stereo", "3/2+1", "2/0"}.Contains(at.Title) Then
 
                             at.Title = ""
+                        End If
+
+                        If Not Filepath.IsValidFileSystemName(at.Title) Then
+                            at.Title = Filepath.RemoveIllegalCharsFromName(at.Title)
                         End If
 
                         Dim lm = GetAudio(i, "Language_More")
@@ -206,6 +235,10 @@ Public Class MediaInfo
         Return GetMediaInfo(path).AudioStreams
     End Function
 
+    Shared Function GetVideoStreams(path As String) As List(Of VideoStream)
+        Return GetMediaInfo(path).VideoStreams
+    End Function
+
     Shared Function GetSubtitles(path As String) As List(Of Subtitle)
         Return GetMediaInfo(path).Subtitles
     End Function
@@ -248,6 +281,10 @@ Public Class MediaInfo
         Return GetInfo(MediaInfoStreamKind.Video, parameter)
     End Function
 
+    Function GetVideo(streamNumber As Integer, parameter As String) As String
+        Return GetInfo(MediaInfoStreamKind.Video, streamNumber, parameter)
+    End Function
+
     Shared Function GetVideo(path As String, parameter As String) As String
         Return GetInfo(path, MediaInfoStreamKind.Video, parameter)
     End Function
@@ -256,16 +293,16 @@ Public Class MediaInfo
         Return GetInfo(path, MediaInfoStreamKind.General, parameter)
     End Function
 
-    Function GetFrameRate() As String
+    Function GetFrameRate() As Double
         Dim ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate")
 
         If ret = "" Then ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Original")
         If ret = "" Then ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Nominal")
 
-        Return ret
+        If ret.IsDouble Then Return ret.ToDouble Else Return 25
     End Function
 
-    Shared Function GetFrameRate(path As String) As String
+    Shared Function GetFrameRate(path As String) As Double
         Return GetMediaInfo(path).GetFrameRate
     End Function
 

@@ -790,7 +790,7 @@ Public Class PreviewForm
     <Command("Perform | Show External Player", "Shows the AviSynth script using the player currently associated with AVI files.")>
     Sub ShowExternalPlayer()
         UpdateTrim()
-        g.DefaultCommands.PlayScript()
+        g.PlayScript()
     End Sub
 
     <Command("Perform | Reload Script", "Reloads the script.")>

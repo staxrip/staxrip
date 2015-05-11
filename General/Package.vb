@@ -1,97 +1,105 @@
 Imports Microsoft.Win32
 
-Imports System.Text.RegularExpressions
-Imports System.Threading
-Imports System.Runtime.InteropServices
-
-Imports StaxRip.UI
-
 Public Class Packs
+    Public Shared autocrop As New AutoCropPackage
     Public Shared AviSynth As New AviSynthPackage
-    Public Shared AutoCrop As New AutoCropPackage
+    Public Shared avs4x26x As New avs4x26xPackage
+    Public Shared AVSMeter As New AVSMeterPackage
+    Public Shared BDSup2SubPP As New BDSup2SubPackage
     Public Shared BeSweet As New BeSweetPackage
-    Public Shared Decomb As New DecombPackage
-    Public Shared Deen As New DeenPackage
-    Public Shared DGDecode As New DGDecodePackage
+    Public Shared checkmate As New checkmatePackage
+    'Public Shared DGDecode As New DGDecodePackage
+    Public Shared DGDecodeIM As New DGDecodeIMPackage
+    Public Shared DGDecodeNV As New DGDecodeNVPackage
     Public Shared DGIndex As New DGIndexPackage
-    Public Shared FluxSmooth As New FluxSmoothPackage
+    Public Shared DGIndexIM As New DGIndexIMPackage
+    Public Shared DGIndexNV As New DGIndexNVPackage
+    Public Shared DivX265 As New DivX265Package
+    Public Shared dsmux As New dsmuxPackage
+    Public Shared DSS2 As New DSS2Package
+    Public Shared eac3to As New eac3toPackage
+    Public Shared ffmpeg As New ffmpegPackage
+    Public Shared ffms2 As New ffms2Package
+    Public Shared Haali As New HaaliSplitter
     Public Shared Java As New JavaPackage
+    Public Shared lsmashWorks As New lsmashWorksPackage
+    Public Shared masktools2 As New masktools2Package
     Public Shared MediaInfo As New MediaInfoPackage
     Public Shared Mkvmerge As New MKVToolNixPackage
     Public Shared MP4Box As New MP4BoxPackage
+    Public Shared MPC As New MPCPackage
+    Public Shared mvtools2 As New mvtools2Package
     Public Shared NeroAACEnc As New NeroAACEncPackage
     Public Shared NicAudio As New NicAudioPackage
+    Public Shared nnedi3 As New nnedi3Package
+    Public Shared NVEncC As New NVEncCPackage
     Public Shared ProjectX As New ProjectXPackage
-    Public Shared TomsMoComp As New TomsMoCompPackage
+    Public Shared qaac As New qaacPackage
+    Public Shared QSVEncC As New QSVEncCPackage
+    Public Shared QTGMC As New QTGMCPackage
+    Public Shared RgTools As New RgToolsPackage
+    Public Shared SangNom2 As New SangNom2Package
+    Public Shared TDeint As New TDeintPackage
     Public Shared UnDot As New UnDotPackage
-    Public Shared VirtualDubMod As New VirtualDubModPackage
     Public Shared VSFilter As New VSFilterPackage
     Public Shared VSRip As New VSRipPackage
     Public Shared x264 As New x264Package
     Public Shared x265 As New x265Package
-    Public Shared avs4x26x As New avs4x26xPackage
-    Public Shared Yadif As New YadifPackage
-    Public Shared ffmpeg As New ffmpegPackage
-    Public Shared eac3to As New eac3toPackage
-    Public Shared ffms2 As New ffms2Package
-    Public Shared BDSup2SubPP As New BDSup2SubPackage
-    Public Shared DGDecodeNV As New DGDecodeNVPackage
-    Public Shared DGIndexNV As New DGIndexNVPackage
-    Public Shared lsmashWorks As New lsmashWorksPackage
-    Public Shared dsmux As New dsmuxPackage
-    Public Shared qaac As New qaacPackage
-    Public Shared NVEncC As New NVEncCPackage
-    Public Shared QSVEncC As New QSVEncCPackage
-    Public Shared Haali As New HaaliSplitter
-    Public Shared AVSMeter As New AVSMeterPackage
-    Public Shared vpxenc As New vpxencPackage
+    Public Shared xvid_encraw As New xvid_encrawPackage
 
     Public Shared Property Packages As New Dictionary(Of String, Package)
 
     Shared Sub Init()
-        AddPackage(vpxenc)
-        AddPackage(AutoCrop)
+        AddPackage(autocrop)
         AddPackage(AviSynth)
         AddPackage(avs4x26x)
         AddPackage(AVSMeter)
         AddPackage(BDSup2SubPP)
         AddPackage(BeSweet)
-        AddPackage(Decomb)
-        AddPackage(Deen)
-        AddPackage(DGDecode)
+        AddPackage(checkmate)
+        'AddPackage(DGDecode)
+        AddPackage(DGDecodeIM)
         AddPackage(DGDecodeNV)
         AddPackage(DGIndex)
+        AddPackage(DGIndexIM)
         AddPackage(DGIndexNV)
+        AddPackage(DivX265)
         AddPackage(dsmux)
+        AddPackage(DSS2)
         AddPackage(eac3to)
         AddPackage(ffmpeg)
         AddPackage(ffms2)
-        AddPackage(FluxSmooth)
         AddPackage(Haali)
         AddPackage(Java)
         AddPackage(lsmashWorks)
+        AddPackage(masktools2)
         AddPackage(MediaInfo)
         AddPackage(Mkvmerge)
         AddPackage(MP4Box)
+        AddPackage(MPC)
+        AddPackage(mvtools2)
         AddPackage(NeroAACEnc)
         AddPackage(NicAudio)
+        AddPackage(nnedi3)
         AddPackage(NVEncC)
         AddPackage(ProjectX)
         AddPackage(qaac)
         AddPackage(QSVEncC)
-        AddPackage(TomsMoComp)
+        AddPackage(QTGMC)
+        AddPackage(RgTools)
+        AddPackage(SangNom2)
+        AddPackage(TDeint)
         AddPackage(UnDot)
-        AddPackage(VirtualDubMod)
         AddPackage(VSFilter)
         AddPackage(VSRip)
         AddPackage(x264)
         AddPackage(x265)
-        AddPackage(Yadif)
+        AddPackage(xvid_encraw)
 
-        Dim fp = CommonDirs.Startup + "Applications\Versions.txt"
+        Dim fp = CommonDirs.Startup + "Tools\Versions.txt"
 
         If File.Exists(fp) Then
-            For Each i In File.ReadAllLines(CommonDirs.Startup + "Applications\Versions.txt")
+            For Each i In File.ReadAllLines(CommonDirs.Startup + "Tools\Versions.txt")
                 For Each i2 In Packages.Values
                     If i Like "*=*;*" Then
                         Dim name = i.Left("=").Trim
@@ -125,8 +133,22 @@ Public MustInherit Class Package
     Property HelpDir As String
     Property HelpURL As String
     Property FixedDir As String
+    Property Filenames As String()
+
+    Private FilenameValue As String
 
     Overridable Property Filename As String
+        Get
+            If FilenameValue = "" AndAlso OK(Filenames) Then
+                FilenameValue = Filenames(0)
+            End If
+
+            Return FilenameValue
+        End Get
+        Set(value As String)
+            FilenameValue = value
+        End Set
+    End Property
 
     Protected LaunchName As String
 
@@ -144,9 +166,13 @@ Public MustInherit Class Package
         End Get
     End Property
 
-    Overridable Function IsRequired() As Boolean
-        Return True
-    End Function
+    Protected IsRequiredValue As Boolean = True
+
+    Overridable ReadOnly Property IsRequired() As Boolean
+        Get
+            Return IsRequiredValue
+        End Get
+    End Property
 
     Sub LaunchWithJava()
         Try
@@ -178,33 +204,31 @@ Public MustInherit Class Package
                 g.MainForm.Refresh()
             End Using
 
-            If IsStatusCritical() Then
-                Return False
-            End If
+            If IsStatusCritical() Then Return False
         End If
 
         Return True
     End Function
 
     Function IsStatusCritical() As Boolean
-        Return OK(GetStatusLocation) OrElse OK(GetStatus())
+        Return GetStatusLocation() <> "" OrElse GetStatus() <> ""
     End Function
 
     Overridable Function GetStatus() As String
     End Function
 
     Function GetStatusDisplay() As String
-        Dim r = GetStatusLocation()
+        Dim ret = GetStatusLocation()
 
-        If r <> "" Then Return r
+        If ret <> "" Then Return ret
 
-        r = GetStatus()
+        ret = GetStatus()
 
-        If r <> "" Then Return r
+        If ret <> "" Then Return ret
 
-        r = GetStatusVersion()
+        ret = GetStatusVersion()
 
-        If r <> "" Then Return r
+        If ret <> "" Then Return ret
 
         Return "OK"
     End Function
@@ -251,12 +275,14 @@ Public MustInherit Class Package
     End Function
 
     Overridable Function GetPath() As String
-        If Not s Is Nothing AndAlso Not s.Storage Is Nothing Then
-            Dim fp = s.Storage.GetString(Name + "custom path")
+        Dim ret As String
 
-            If fp <> "" Then
-                If File.Exists(fp) Then
-                    Return fp
+        If Not s Is Nothing AndAlso Not s.Storage Is Nothing Then
+            ret = s.Storage.GetString(Name + "custom path")
+
+            If ret <> "" Then
+                If File.Exists(ret) Then
+                    Return ret
                 Else
                     s.Storage.SetString(Name + "custom path", Nothing)
                 End If
@@ -264,41 +290,33 @@ Public MustInherit Class Package
         End If
 
         If FixedDir <> "" Then
-            If File.Exists(FixedDir + Filename) Then
-                Return FixedDir + Filename
-            End If
-
+            If File.Exists(FixedDir + Filename) Then Return FixedDir + Filename
             Return Nothing
         End If
 
         If TypeOf Me Is AviSynthPluginPackage Then
             For Each i In {
-                CommonDirs.Startup + "Applications\AviSynth plugins\" + Filename,
-                CommonDirs.Startup + "Applications\AviSynth plugins\" + Name + "\" + Filename}
+                CommonDirs.Startup + "Tools\Plugins\" + Filename,
+                CommonDirs.Startup + "Tools\Plugins\" + Name + "\" + Filename}
 
-                If File.Exists(i) Then
-                    Return i
-                End If
+                If File.Exists(i) Then Return i
             Next
         End If
 
-        Dim fp2 = CommonDirs.Startup + "Applications\" + Name + "\" + Filename
+        ret = CommonDirs.Startup + "Tools\" + Name + "\" + Filename
+        If File.Exists(ret) Then Return ret
 
-        If File.Exists(fp2) Then
-            Return fp2
-        End If
+        ret = Registry.CurrentUser.GetString("Software\" + Application.ProductName + "\Tool Paths", Name)
 
-        Dim fp3 = Registry.CurrentUser.GetString("Software\" + Application.ProductName, Name + " location")
-
-        If fp3 <> "" Then
-            If File.Exists(fp3) Then
+        If ret <> "" Then
+            If File.Exists(ret) Then
                 If Not s Is Nothing AndAlso Not s.Storage Is Nothing Then
-                    s.Storage.SetString(Name + "custom path", fp3)
+                    s.Storage.SetString(Name + "custom path", ret)
                 End If
 
-                Return fp3
+                Return ret
             Else
-                Registry.CurrentUser.DeleteValue("Software\" + Application.ProductName, Name + " location")
+                Registry.CurrentUser.DeleteValue("Software\" + Application.ProductName + "\Tool Paths", Name)
             End If
         End If
     End Function
@@ -314,36 +332,21 @@ Public Class AutoCropPackage
     Sub New()
         Name = "AutoCrop"
         Filename = "AutoCrop.dll"
-        WebURL = "http://avisynth.org/warpenterprises"
-        Description = "AviSynth plugin for automatic cropping."
-        HelpFile = "AutoCrop.txt"
+        Description = "AutoCrop is an AviSynth filter that automatically crops the black borders from a clip. It operates in either preview mode where it overlays the recommended cropping information on the existing clip, or cropping mode where it really crops the clip."
         FilterNames = {"AutoCrop"}
     End Sub
 End Class
 
-Public Class DeenPackage
+Public Class VSFilterPackage
     Inherits AviSynthPluginPackage
 
     Sub New()
-        Name = "Deen"
-        Filename = "Deen.dll"
-        WebURL = "http://ziquash.chez.tiscali.fr"
-        Description = "AviSynth plugin for denoising."
-        FilterNames = {"Deen"}
-        HelpFile = "Deen.txt"
-    End Sub
-End Class
-
-Public Class TomsMoCompPackage
-    Inherits AviSynthPluginPackage
-
-    Sub New()
-        Name = "TomsMoComp"
-        Filename = "TomsMoComp.dll"
-        WebURL = "http://www6.impacthosting.com/trbarry"
-        Description = "AviSynth plugin for deinterlacing using motion compensation."
-        FilterNames = {"TomsMoComp"}
-        HelpFile = "TomsMoComp.txt"
+        Name = "VSFilter"
+        Filename = "VSFilter.dll"
+        Description = "AviSynth subtitle plugin. The format of the subtitles can be *.sub, *.srt, *.ssa, *.ass, etc. (ssa = Sub Station Alpha)."
+        WebURL = "http://avisynth.org.ru/docs/english/externalfilters/vsfilter.htm"
+        HelpURL = "http://avisynth.org.ru/docs/english/externalfilters/vsfilter.htm"
+        FilterNames = {"VobSub", "TextSub"}
     End Sub
 End Class
 
@@ -353,10 +356,10 @@ Public Class UnDotPackage
     Sub New()
         Name = "UnDot"
         Filename = "UnDot.dll"
-        WebURL = "http://www6.impacthosting.com/trbarry"
+        WebURL = "http://avisynth.nl/index.php/UnDot"
+        HelpURL = "http://avisynth.nl/index.php/UnDot"
         Description = "UnDot is a simple median filter for removing dots, that is stray orphan pixels and mosquito noise."
         FilterNames = {"UnDot"}
-        HelpFile = "UnDot.txt"
     End Sub
 End Class
 
@@ -367,9 +370,9 @@ Public Class NicAudioPackage
         Name = "NicAudio"
         Filename = "NicAudio.dll"
         WebURL = "http://www.codeplex.com/NicAudio"
+        HelpURL = "http://avisynth.org.ru/docs/english/externalfilters/nicaudio.htm"
         Description = "AviSynth audio source filter."
-        FilterNames = {"NicAC3Source", "NicDTSSource", "NicMPG123Source", "RaWavSource"}
-        HelpFile = "Readme.txt"
+        FilterNames = {"NicAC3Source", "NicDTSSource", "NicMPASource", "RaWavSource"}
     End Sub
 End Class
 
@@ -377,13 +380,13 @@ Public Class AviSynthPackage
     Inherits Package
 
     Sub New()
-        Name = "AviSynth"
+        Name = "AviSynth+"
         Filename = "avisynth.dll"
         WebURL = "http://avisynth.nl"
-        Description = "AviSynth is a powerful scripting language used to transform audio and video. The scripts are saved as AVS files which applications like x264 can use as input file like it would be a normal AVI file."
-        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Applications\AviSynth 2.6.0 RC1.exe")
+        Description = "AviSynth+ is a powerful scripting language used to transform audio and video. The scripts are saved as AVS files which applications like x264 can use as input file like it would be a normal AVI file."
         HelpURL = "http://avisynth.nl/index.php/Main_Page"
         FixedDir = CommonDirs.System
+        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Tools\AviSynth+_v0.1.0_r1825-MT.exe")
     End Sub
 
     Public Overrides Function GetStatus() As String
@@ -396,12 +399,12 @@ End Class
 Public MustInherit Class AviSynthPluginPackage
     Inherits Package
 
+    Property FilterNames As String()
+    Property Dependencies As String()
+
     Public Sub New()
         TreePath = "Filters"
     End Sub
-
-    Property FilterNames As String()
-    Property IsCPlugin As Boolean
 End Class
 
 Public Class BeSweetPackage
@@ -461,73 +464,7 @@ Public Class NeroAACEncPackage
         Description = "Free AAC encoder"
         WebURL = "http://www.nero.com/enu/downloads-nerodigital-nero-aac-codec.php"
         HelpFile = "nero readme.txt"
-        FixedDir = CommonDirs.Startup + "Applications\BeSweet\"
-    End Sub
-End Class
-
-Public Class DecombPackage
-    Inherits AviSynthPluginPackage
-
-    Sub New()
-        Name = "Decomb"
-        Filename = "Decomb.dll"
-        Description = "AviSynth plugin containing filters for deinterlacing and IVTC."
-        WebURL = "http://www.neuron2.net/decomb/decombnew.html"
-        FilterNames = {"FieldDeinterlace", "Telecide", "Decimate"}
-        HelpFile = "DecombReferenceManual.html"
-    End Sub
-End Class
-
-Public Class DGDecodePackage
-    Inherits AviSynthPluginPackage
-
-    Sub New()
-        Name = "DGDecode"
-        Filename = "DGDecode.dll"
-        WebURL = "http://www.neuron2.net/dgmpgdec/dgmpgdec.html"
-        Description = Strings.DGMPGDec
-        FilterNames = {"MPEG2Source", "Deblock"}
-        HelpFile = "DGDecodeManual.html"
-        FixedDir = CommonDirs.Startup + "Applications\DGMPGDec\"
-    End Sub
-End Class
-
-Public Class DGIndexPackage
-    Inherits Package
-
-    Sub New()
-        Name = "DGIndex"
-        Filename = "DGIndex.exe"
-        WebURL = "http://www.neuron2.net/dgmpgdec/dgmpgdec.html"
-        Description = Strings.DGMPGDec
-        HelpFile = "DGIndexManual.html"
-        LaunchName = Filename
-        FixedDir = CommonDirs.Startup + "Applications\DGMPGDec\"
-    End Sub
-End Class
-
-Public Class FluxSmoothPackage
-    Inherits AviSynthPluginPackage
-
-    Sub New()
-        Name = "FluxSmooth"
-        Filename = "FluxSmooth.dll"
-        Description = "FluxSmooth is a AviSynth plugin that removes noise from poor video sources."
-        WebURL = "http://avisynth.org/warpenterprises"
-        FilterNames = {"FluxSmoothT", "FluxSmoothST"}
-        HelpFile = "readme.html"
-    End Sub
-End Class
-
-Public Class VSFilterPackage
-    Inherits AviSynthPluginPackage
-
-    Sub New()
-        Name = "VSFilter"
-        Filename = "VSFilter.dll"
-        Description = "VSFilter is a AviSynth plugin for adding hardcoded subtitles. Furthermore it's a DirectShow Filter to display optional subtitles."
-        WebURL = "http://sourceforge.net/projects/guliverkli"
-        FilterNames = {"VobSub", "TextSub"}
+        FixedDir = CommonDirs.Startup + "Tools\BeSweet\"
     End Sub
 End Class
 
@@ -542,9 +479,11 @@ Public Class JavaPackage
         FileNotFoundMessage = Strings.InstallManually
     End Sub
 
-    Overrides Function IsRequired() As Boolean
-        Return Packs.ProjectX.IsRequired
-    End Function
+    Overrides ReadOnly Property IsRequired As Boolean
+        Get
+            Return Packs.ProjectX.IsRequired
+        End Get
+    End Property
 
     Public Overrides Function GetPath() As String
         Dim ret = MyBase.GetPath()
@@ -571,15 +510,22 @@ Public Class ProjectXPackage
         Description = Strings.ProjectX
     End Sub
 
-    Overrides Function IsRequired() As Boolean
-        Return CommandLineDemuxer.IsActive("ProjectX")
-    End Function
+    Overrides ReadOnly Property IsRequired As Boolean
+        Get
+            Return CommandLineDemuxer.IsActive("ProjectX")
+        End Get
+    End Property
 
     Overrides ReadOnly Property LaunchAction As Action
         Get
             Return AddressOf LaunchWithJava
         End Get
     End Property
+
+    Public Overrides Function GetStatus() As String
+        If Packs.Java.GetPath = "" Then Return "Failed to locate Java, ProjectX requires Java."
+        Return MyBase.GetStatus()
+    End Function
 End Class
 
 Public Class x264Package
@@ -592,19 +538,6 @@ Public Class x264Package
         Description = "H.264 video encoding command line application."
         HelpFile = "Help.txt"
     End Sub
-
-    Public Overrides Property Filename As String
-        Get
-            If s Is Nothing Then
-                Return "x264 32-Bit 8-Bit.exe"
-            End If
-
-            Return "x264 " + s.x264Build + ".exe"
-        End Get
-        Set(value As String)
-            MyBase.Filename = value
-        End Set
-    End Property
 End Class
 
 Public Class x265Package
@@ -617,11 +550,6 @@ Public Class x265Package
         Description = "H.265 video encoding command line application."
         HelpURL = "http://x265.readthedocs.org"
     End Sub
-
-    Public Overrides Function GetPath() As String
-        If s Is Nothing Then Return ""
-        Return CommonDirs.Startup + "Applications\x265\" + s.x265Build + "\" + Filename
-    End Function
 End Class
 
 Public Class avs4x26xPackage
@@ -632,19 +560,6 @@ Public Class avs4x26xPackage
         Filename = "avs4x26x.exe"
         WebURL = "http://forum.doom9.org/showthread.php?t=162656"
         Description = "Pipes video from AviSynth to x264/x265."
-    End Sub
-End Class
-
-Public Class VirtualDubModPackage
-    Inherits Package
-
-    Sub New()
-        Name = "VirtualDubMod"
-        Filename = "VirtualDubMod.exe"
-        WebURL = "http://virtualdubmod.sourceforge.net"
-        Description = "VirtualDubMod is used for tasks like encoding, muxing, demuxing and cutting."
-        HelpFile = "VirtualDubMod.chm"
-        LaunchName = Filename
     End Sub
 End Class
 
@@ -687,20 +602,6 @@ Public Class MediaInfoPackage
         Filename = "MediaInfo.dll"
         WebURL = "http://mediainfo.sourceforge.net"
         Description = "MediaInfo is used by StaxRip to read infos from media files."
-    End Sub
-End Class
-
-Public Class YadifPackage
-    Inherits AviSynthPluginPackage
-
-    Sub New()
-        Name = "Yadif"
-        Filename = "yadif.dll"
-        WebURL = "http://avisynth.org.ru"
-        Description = "Port of YADIF (Yet Another DeInterlacing Filter) from MPlayer."
-        HelpFile = "yadif.html"
-        FilterNames = {"Yadif"}
-        IsCPlugin = True
     End Sub
 End Class
 
@@ -756,9 +657,11 @@ Public Class lsmashWorksPackage
                        "LWLibavAudioSource"}
     End Sub
 
-    Public Overrides Function IsRequired() As Boolean
-        Return p.AvsDoc.GetFilter("Source").Script.Contains("LSMASHVideoSource") OrElse p.AvsDoc.GetFilter("Source").Script.Contains("LWLibavVideoSource")
-    End Function
+    Overrides ReadOnly Property IsRequired As Boolean
+        Get
+            Return p.AvsDoc.GetFilter("Source").Script.Contains("LSMASHVideoSource") OrElse p.AvsDoc.GetFilter("Source").Script.Contains("LWLibavVideoSource")
+        End Get
+    End Property
 
     Public Overrides Function GetStatus() As String
         If Not File.Exists(CommonDirs.System + "MSVCR120.dll") Then
@@ -772,47 +675,65 @@ Public Class qaacPackage
 
     Sub New()
         Name = "qaac"
-        Filename = "qaac.exe"
+        Filename = "qaac64.exe"
         WebURL = "https://sites.google.com/site/qaacpage"
-        Description = "qaac is a command line AAC encoder frontend based on Apple encoder."
+        Description = "qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the 64-Bit iTunes installer using the context menu within the 7zip file manager. The makeportable script found on the qaac website can also be used."
     End Sub
 
-    Public Overrides Function IsRequired() As Boolean
-        Return TypeOf p.Audio0 Is GUIAudioProfile AndAlso
-            DirectCast(p.Audio0, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.qaac OrElse
-            TypeOf p.Audio1 Is GUIAudioProfile AndAlso
-            DirectCast(p.Audio1, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.qaac
-    End Function
+    Overrides ReadOnly Property IsRequired As Boolean
+        Get
+            Return TypeOf p.Audio0 Is GUIAudioProfile AndAlso
+                DirectCast(p.Audio0, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.qaac OrElse
+                TypeOf p.Audio1 Is GUIAudioProfile AndAlso
+                DirectCast(p.Audio1, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.qaac
+        End Get
+    End Property
 
     Overrides Function GetStatus() As String
-        Dim fp = CommonDirs.Programs + "Common Files\Apple\Apple Application Support\CoreAudioToolbox.dll"
+        Dim path = CommonDirs.Programs + "\Common Files\Apple\Apple Application Support\CoreAudioToolbox.dll"
 
-        If Not File.Exists(fp) AndAlso Not File.Exists(GetDir() + "QTfiles\CoreAudioToolbox.dll") Then
-            Return "Failed to locate Apple Application Support, it must be downloaded and installed manually, qaac requires it, search the internet for a setup guide."
+        If Not File.Exists(path) AndAlso Not File.Exists(GetDir() + "QTfiles64\CoreAudioToolbox.dll") Then
+            Return "Failed to locate Apple Application Support, StaxRip checks following locations:" + CrLf2 + path + CrLf2 + GetDir() + "QTfiles64\CoreAudioToolbox.dll"
         End If
     End Function
 End Class
 
-Public Class DGDecodeNVPackage
+Public Class checkmatePackage
     Inherits AviSynthPluginPackage
 
     Sub New()
-        Name = "DGDecodeNV"
-        Filename = "DGDecodeNV.dll"
-        WebURL = "http://neuron2.net/dgdecnv/dgdecnv.html"
-        Description = Strings.DGDecNV
-        HelpFile = "DGDecodeNVManual.html"
-        FilterNames = {"DGSource", "DGMultiSource"}
-        FileNotFoundMessage = "Application not found, please locate it by pressing F11 or disable the DGIndexNV feature under Tools/Settings/Demuxing."
+        Name = "checkmate"
+        Filename = "checkmate.dll"
+        WebURL = "http://github.com/tp7/checkmate"
+        HelpURL = "http://github.com/tp7/checkmate"
+        Description = "Spatial and temporal dot crawl reducer. Checkmate is most effective in static or low motion scenes. When using in high motion scenes (or areas) be careful, it's known to cause artifacts with its default values."
+        FilterNames = {"checkmate"}
     End Sub
+End Class
 
-    Overrides Function IsCorrectVersion(path As String) As Boolean
-        Return True
-    End Function
+Public Class SangNom2Package
+    Inherits AviSynthPluginPackage
 
-    Overrides Function IsRequired() As Boolean
-        Return CommandLineDemuxer.IsActive("DGIndexNV")
-    End Function
+    Sub New()
+        Name = "SangNom2"
+        Filename = "SangNom2.dll"
+        WebURL = "http://avisynth.nl/index.php/SangNom2"
+        HelpURL = "http://avisynth.nl/index.php/SangNom2"
+        Description = "SangNom2 is a reimplementation of MarcFD's old SangNom filter. Originally it's a single field deinterlacer using edge-directed interpolation but nowadays it's mainly used in anti-aliasing scripts. The output is not completely but mostly identical to the original SangNom."
+        FilterNames = {"SangNom2"}
+    End Sub
+End Class
+
+Public Class DSS2Package
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "DSS2"
+        Filename = "DSS2.dll"
+        WebURL = "http://code.google.com/p/xvid4psp/downloads/detail?name=DSS2%20mod%20%2B%20LAVFilters.7z&can=2&q="
+        Description = "Direct Show source filter"
+        FilterNames = {"DSS2"}
+    End Sub
 End Class
 
 Public Class DGIndexNVPackage
@@ -825,7 +746,7 @@ Public Class DGIndexNVPackage
         Description = Strings.DGDecNV
         HelpFile = "DGIndexNVManual.html"
         LaunchName = Filename
-        FileNotFoundMessage = "Application not found, please locate it by pressing F11 or disable the DGIndexNV feature under Tools/Settings/Demuxing."
+        FileNotFoundMessage = "Application not found, please locate it by pressing F11 or disable the DGIndexNV feature under Tools/Settings/Demux."
     End Sub
 
     Overrides Function GetStatus() As String
@@ -834,13 +755,76 @@ Public Class DGIndexNVPackage
         End If
     End Function
 
-    Overrides Function IsCorrectVersion(path As String) As Boolean
-        Return True
+    Overrides ReadOnly Property IsRequired As Boolean
+        Get
+            Return CommandLineDemuxer.IsActive("DGIndexNV")
+        End Get
+    End Property
+End Class
+
+Public Class DGDecodeNVPackage
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "DGDecodeNV"
+        Filename = "DGDecodeNV.dll"
+        WebURL = "http://neuron2.net/dgdecnv/dgdecnv.html"
+        Description = Strings.DGDecNV
+        HelpFile = "DGDecodeNVManual.html"
+        FilterNames = {"DGSource", "DGMultiSource"}
+        FileNotFoundMessage = "Application not found, please locate it by pressing F11 or disable the DGIndexNV feature under Tools/Settings/Demux."
+    End Sub
+
+    Overrides ReadOnly Property IsRequired As Boolean
+        Get
+            Return CommandLineDemuxer.IsActive("DGIndexNV")
+        End Get
+    End Property
+End Class
+
+Public Class DGIndexIMPackage
+    Inherits Package
+
+    Sub New()
+        Name = "DGIndexIM"
+        Filename = "DGIndexIM.exe"
+        WebURL = "http://rationalqm.us/mine.html"
+        Description = Strings.DGDecIM
+        HelpFile = "Notes.txt"
+        FileNotFoundMessage = "Application not found, please locate it by pressing F11 or disable the DGIndexIM feature under Tools/Settings/Demux."
+    End Sub
+
+    Overrides Function GetStatus() As String
+        If Not File.Exists(GetDir() + "License.txt") Then
+            Return "DGIndexIM is shareware requiring a license file but the file is missing."
+        End If
     End Function
 
-    Overrides Function IsRequired() As Boolean
-        Return CommandLineDemuxer.IsActive("DGIndexNV")
-    End Function
+    Overrides ReadOnly Property IsRequired As Boolean
+        Get
+            Return CommandLineDemuxer.IsActive("DGIndexIM")
+        End Get
+    End Property
+End Class
+
+Public Class DGDecodeIMPackage
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "DGDecodeIM"
+        Filename = "DGDecodeIM.dll"
+        WebURL = "http://rationalqm.us/mine.html"
+        Description = Strings.DGDecIM
+        HelpFile = "Notes.txt"
+        FilterNames = {"DGSourceIM"}
+        FileNotFoundMessage = "Application not found, please locate it by pressing F11 or disable the DGIndexIM feature under Tools/Settings/Demux."
+    End Sub
+
+    Overrides ReadOnly Property IsRequired As Boolean
+        Get
+            Return CommandLineDemuxer.IsActive("DGIndexIM")
+        End Get
+    End Property
 End Class
 
 Public Class BDSup2SubPackage
@@ -872,7 +856,7 @@ Public Class QSVEncCPackage
 
     Sub New()
         Name = "QSVEncC"
-        Filename = "QSVEncC.exe"
+        Filename = "QSVEncC64.exe"
         Description = "Intel Quick Sync GPU accelerated H.264 encoder."
         HelpFile = "help.txt"
         WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!482"
@@ -884,22 +868,33 @@ Public Class AVSMeterPackage
 
     Sub New()
         Name = "AVSMeter"
-        Filename = "AVSMeter.exe"
+        Filename = "AVSMeter64.exe"
         Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements."
         HelpFile = "doc\AVSMeter.html"
         WebURL = "http://forum.doom9.org/showthread.php?t=165528"
     End Sub
 End Class
 
-Public Class vpxencPackage
+Public Class DivX265Package
     Inherits Package
 
     Sub New()
-        Name = "vpxenc"
-        Filename = "vpxenc.exe"
-        Description = "VP8/VP9 command line encoding application."
+        Name = "DivX265"
+        Filename = "DivX265.exe"
+        Description = "DivX H265 command line encoder"
         HelpFile = "help.txt"
-        WebURL = "http://www.webmproject.org/docs/encoder-parameters"
+        WebURL = "http://labs.divx.com/term/HEVC"
+    End Sub
+End Class
+
+Public Class xvid_encrawPackage
+    Inherits Package
+
+    Sub New()
+        Name = "xvid_encraw"
+        Filename = "xvid_encraw.exe"
+        Description = "XviD command line encoder"
+        HelpFile = "help.txt"
     End Sub
 End Class
 
@@ -910,7 +905,7 @@ Public Class HaaliSplitter
         Name = "Haali Splitter"
         Filename = "splitter.ax"
         WebURL = "http://haali.su/mkv"
-        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Applications\MatroskaSplitter.exe")
+        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Tools\MatroskaSplitter.exe")
         Description = "Haali Splitter is used by eac3to and dsmux to write MKV files. Haali Splitter and LAV Filters overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
     End Sub
 
@@ -919,9 +914,11 @@ Public Class HaaliSplitter
         If File.Exists(ret) Then Return ret
     End Function
 
-    Public Overrides Function IsRequired() As Boolean
-        Return CommandLineDemuxer.IsActive("dsmux")
-    End Function
+    Overrides ReadOnly Property IsRequired As Boolean
+        Get
+            Return CommandLineDemuxer.IsActive("dsmux")
+        End Get
+    End Property
 End Class
 
 Public Class dsmuxPackage
@@ -929,10 +926,10 @@ Public Class dsmuxPackage
 
     Sub New()
         Name = "dsmux"
-        Filename = "dsmux.exe"
+        Filename = "dsmux.x64.exe"
         Description = Strings.dsmux
         WebURL = "http://haali.su/mkv"
-        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Applications\MatroskaSplitter.exe")
+        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Tools\MatroskaSplitter.exe")
     End Sub
 
     Public Overrides Function GetPath() As String
@@ -941,7 +938,136 @@ Public Class dsmuxPackage
         If File.Exists(ret) Then Return ret
     End Function
 
-    Overrides Function IsRequired() As Boolean
-        Return CommandLineDemuxer.IsActive("dsmux")
-    End Function
+    Overrides ReadOnly Property IsRequired As Boolean
+        Get
+            Return CommandLineDemuxer.IsActive("dsmux")
+        End Get
+    End Property
+End Class
+
+Public Class DGDecodePackage
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "DGDecode"
+        Filename = "DGDecode.dll"
+        WebURL = "http://www.neuron2.net/dgmpgdec/dgmpgdec.html"
+        Description = Strings.DGMPGDec
+        FilterNames = {"MPEG2Source", "Deblock"}
+        HelpFile = "DGDecodeManual.html"
+        FixedDir = CommonDirs.Startup + "Tools\DGMPGDec\"
+    End Sub
+End Class
+
+Public Class DGIndexPackage
+    Inherits Package
+
+    Sub New()
+        Name = "DGIndex"
+        Filename = "DGIndex.exe"
+        WebURL = "http://www.neuron2.net/dgmpgdec/dgmpgdec.html"
+        Description = Strings.DGMPGDec
+        HelpFile = "DGIndexManual.html"
+        LaunchName = Filename
+        FixedDir = CommonDirs.Startup + "Tools\DGMPGDec\"
+    End Sub
+End Class
+
+Public Class MPCPackage
+    Inherits Package
+
+    Sub New()
+        Name = "MPC Player"
+        Filenames = {"mpc-be64.exe", "mpc-hc64.exe"}
+        Description = "MPC is a open source media player with built in playback support for all common media formats. MPC-HC or MPC-BE can be used, x64 is absolutely required because StaxRip supports only AviSynth+ x64. StaxRip uses MPC's /dub and /sub CLI switches."
+        WebURL = "http://mpc-hc.org"
+        HelpURL = "http://forum.doom9.org/showthread.php?p=1719479&goto=newpost"
+        IsRequiredValue = False
+        FileNotFoundMessage = "MPC player could not be found, please locate it by pressing F11."
+    End Sub
+
+    Public Overrides ReadOnly Property LaunchAction As Action
+        Get
+            Return Sub() g.ShellExecute(GetPath)
+        End Get
+    End Property
+End Class
+
+Public Class TDeintPackage
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "TDeint"
+        Filename = "TDeint.dll"
+        WebURL = "http://avisynth.nl/index.php/TDeint"
+        HelpURL = "http://avisynth.nl/index.php/TDeint"
+        Description = "TDeint is a bi-directionally, motion adaptive, sharp deinterlacer. It can adaptively choose between using per-field and per-pixel motion adaptivity, and can use cubic interpolation, kernel interpolation (with temporal direction switching), or one of two forms of modified ELA interpolation which help to reduce ""jaggy"" edges in moving areas where interpolation must be used."
+        FilterNames = {"TDeint"}
+    End Sub
+End Class
+
+Public Class nnedi3Package
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "nnedi3"
+        Filename = "nnedi3.dll"
+        WebURL = "http://forum.doom9.org/showthread.php?t=170083"
+        HelpFile = "Readme.txt"
+        Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field."
+        FilterNames = {"nnedi3"}
+    End Sub
+End Class
+
+Public Class mvtools2Package
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "mvtools2"
+        Filename = "mvtools2.dll"
+        WebURL = "http://avisynth.org.ru/mvtools/mvtools2.html"
+        HelpFile = "mvtools2.html"
+        Description = "MVTools plugin for AviSynth 2.5 is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks."
+        FilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDeGrain1", "MDeGrain2", "MDegrain3"}
+    End Sub
+End Class
+
+Public Class masktools2Package
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "masktools2"
+        Filename = "masktools2.dll"
+        WebURL = "http://avisynth.nl/index.php/MaskTools2"
+        HelpURL = "http://avisynth.nl/index.php/MaskTools2"
+        Description = "MaskTools2 contain a set of filters designed to create, manipulate and use masks. Masks, in video processing, are a way to give a relative importance to each pixel. You can, for example, create a mask that selects only the green parts of the video, and then replace those parts with another video."
+        FilterNames = {"Mt_edge", "Mt_motion"}
+    End Sub
+End Class
+
+Public Class RgToolsPackage
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "RgTools"
+        Filename = "RgTools.dll"
+        WebURL = "http://avisynth.nl/index.php/RgTools"
+        HelpURL = "http://avisynth.nl/index.php/RgTools"
+        Description = "RgTools is a modern rewrite of RemoveGrain, Repair, BackwardClense, Clense, ForwardClense and VerticalCleaner all in a single plugin."
+        FilterNames = {"RemoveGrain", "Clense", "ForwardClense", "BackwardClense", "Repair", "VerticalCleaner"}
+    End Sub
+End Class
+
+Public Class QTGMCPackage
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "QTGMC"
+        Filename = "QTGMC.avsi"
+        WebURL = "http://avisynth.nl/index.php/QTGMC"
+        HelpFile = "QTGMC.html"
+        Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée."
+        FilterNames = {"QTGMC"}
+        Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}
+    End Sub
 End Class

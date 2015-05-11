@@ -603,7 +603,7 @@ Public Class GUIAudioProfile
                     ElseIf i.Contains("ffmpeg.exe") Then
                         proc.Init("Audio encoding using ffmpeg", "size=", "decoding is not implemented", "unsupported frame type", "upload a sample")
                         proc.Encoding = Encoding.UTF8
-                    ElseIf i.Contains("qaac.exe") Then
+                    ElseIf i.Contains("qaac64.exe") Then
                         proc.Init("Audio encoding using qaac", ", ETA ")
                     End If
 
@@ -1090,7 +1090,7 @@ Public Class GUIAudioProfile
         Property BeSweetGainAndNormalization As String = "-norm 0.97"
         Property Codec As AudioCodec
         Property CustomSwitches As String = ""
-        Property Down16 As Boolean = True
+        Property Down16 As Boolean
         Property eac3toExtractDtsCore As Boolean
         Property eac3toStereoDownmixMode As Integer
         Property Encoder As GuiAudioEncoder

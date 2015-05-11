@@ -35,7 +35,6 @@ Public Class Project
     Public CustomDAR As String = ""
     Public CustomPAR As String = ""
     Public CuttingMode As CuttingMode
-    Public DeactivateFiltersWhenImportingAVS As Boolean = True
     Public DecodingMode As DecodingMode
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
@@ -76,7 +75,6 @@ Public Class Project
     Public Versions As Dictionary(Of String, Integer)
     Public VideoBitrate As Integer = 1000
     Public VideoEncoder As VideoEncoder
-    Public OriginalFramerate As Single = 25
     Public OriginalSourceFile As String
 
     Public Codec As String

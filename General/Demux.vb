@@ -41,14 +41,25 @@ Public MustInherit Class Demuxer
     Shared Function GetDefaults() As List(Of Demuxer)
         Dim ret As New List(Of Demuxer)
 
+        Dim prx As New CommandLineDemuxer
+        prx.Name = "ProjectX"
+        prx.InputExtensions = "mpg ts pva".Split(" "c)
+        prx.OutputExtensions = {"m2v"}
+        prx.InputFormats = {"MPEG Video"}
+        prx.Command = "%app:Java%"
+        prx.Description = Strings.ProjectX
+        prx.Arguments = "-jar ""%app:ProjectX%"" %source_files% -out ""%working_dir%"""
+        prx.Active = False
+        ret.Add(prx)
+
         Dim dsmux As New CommandLineDemuxer
         dsmux.Name = "dsmux"
         dsmux.InputExtensions = "ts".Split(" "c)
         dsmux.OutputExtensions = {"mkv"}
-        dsmux.InputFormats = {"AVC"}
+        'dsmux.InputFormats = {"AVC"}
         dsmux.Command = "%app:dsmux%"
-        dsmux.Arguments = """%working_dir%%source_name%.mkv"" ""%source_file%"""
-        dsmux.Active = g.IsCOMObjectRegistered(GUIDS.HaaliMuxer)
+        dsmux.Arguments = """%temp_file%.mkv"" ""%source_file%"""
+        dsmux.Active = True
         dsmux.Description = Strings.dsmux
         ret.Add(dsmux)
 
@@ -56,28 +67,40 @@ Public MustInherit Class Demuxer
         ret.Add(New MP4BoxDemuxer)
         ret.Add(New eac3toDemuxer)
 
+        Dim dgi As New CommandLineDemuxer
+        dgi.Name = "DGIndex"
+        dgi.InputExtensions = "mpg vob ts pva m2v".Split(" "c)
+        dgi.OutputExtensions = {"m2v"}
+        dgi.InputFormats = {"MPEG Video"}
+        dgi.Command = "%app:DGIndex%"
+        dgi.Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -od ""%temp_file%"" -hide -exit"
+        dgi.SourceFilters = {"MPEG2Source"}
+        dgi.Description = Strings.DGMPGDec
+        ret.Add(dgi)
+
         Dim dgnv As New CommandLineDemuxer
         dgnv.Name = "DGIndexNV"
         dgnv.InputExtensions = "h264 mkv mp4 mpg ts m2ts".Split(" "c)
         dgnv.OutputExtensions = {"dgi"}
         dgnv.InputFormats = {"AVC", "VC-1", "MPEG Video"}
         dgnv.Command = "%app:DGIndexNV%"
-        dgnv.Arguments = "-i %source_files_comma% -o ""%working_dir%%source_name%.dgi"" -a -e"
+        dgnv.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgi"" -a -e"
         dgnv.SourceFilters = {"DGSource"}
         dgnv.Active = False
         dgnv.Description = Strings.DGDecNV
         ret.Add(dgnv)
 
-        Dim dgi As New CommandLineDemuxer
-        dgi.Name = "DGIndex"
-        dgi.InputExtensions = "mpg vob ts pva m2v".Split(" "c)
-        dgi.OutputExtensions = {"d2v"}
-        dgi.InputFormats = {"MPEG Video"}
-        dgi.Command = "%app:DGIndex%"
-        dgi.Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -o ""%working_dir%%source_name%"" -hide -exit"
-        dgi.SourceFilters = {"MPEG2Source"}
-        dgnv.Description = Strings.DGMPGDec
-        ret.Add(dgi)
+        'Dim dgim As New CommandLineDemuxer
+        'dgim.Name = "DGIndexIM"
+        'dgim.InputExtensions = "h264 mkv mp4 mpg ts m2ts".Split(" "c)
+        'dgim.OutputExtensions = {"dgi"}
+        'dgim.InputFormats = {"AVC", "VC-1", "MPEG Video"}
+        'dgim.Command = "%app:DGIndexIM%"
+        'dgim.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgi"" -a"
+        'dgim.SourceFilters = {"DGSourceIM"}
+        'dgim.Active = False
+        'dgim.Description = Strings.DGDecIM
+        'ret.Add(dgim)
 
         Return ret
     End Function
@@ -105,30 +128,22 @@ Public Class CommandLineDemuxer
 
     Overrides Sub Run()
         Using proc As New Proc
-            Select Case Name
-                Case "dsmux"
-                    proc.SkipStrings = {"Muxing..."}
-                Case "DGIndex"
-                    proc.SkipPatterns = {"^\d+$"}
-            End Select
+            If Command?.Contains("DGIndex") Then
+                proc.SkipPatterns = {"^\d+$"}
+            ElseIf Command?.Contains("dsmux")
+                proc.SkipStrings = {"Muxing..."}
+            ElseIf Command?.Contains("Java")
+                proc.SkipPatterns = {"^\d+ %$"}
+            End If
 
             proc.Init(Name)
             proc.File = Macro.Solve(Command)
             proc.Arguments = Macro.Solve(Arguments)
             proc.Start()
 
-            Dim fp = p.TempDir + Filepath.GetBase(p.SourceFile) + ".log"
-
-            If Not File.Exists(fp) Then
-                fp = Filepath.GetDirAndBase(p.SourceFile) + ".log"
-            End If
-
-            If File.Exists(fp) AndAlso File.ReadAllText(fp).StartsWith("Stream Type: ") Then
-                If Name.Contains("DGIndexNV") Then
-                    FileHelp.Move(fp, p.TempDir + Filepath.GetBase(p.SourceFile) + "_DGIndexNV.log")
-                ElseIf Name.Contains("DGIndex") Then
-                    FileHelp.Move(fp, p.TempDir + Filepath.GetBase(p.SourceFile) + "_DGIndex.log")
-                End If
+            If Command?.Contains("DGIndex") Then
+                FileHelp.Move(Filepath.GetDirAndBase(p.SourceFile) + ".log", p.TempDir + Filepath.GetBase(p.SourceFile) + "_DG.log")
+                FileHelp.Move(p.TempDir + Filepath.GetBase(p.SourceFile) + ".demuxed.m2v", p.TempDir + Filepath.GetBase(p.SourceFile) + ".m2v")
             End If
         End Using
     End Sub

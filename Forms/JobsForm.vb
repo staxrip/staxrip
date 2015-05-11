@@ -234,7 +234,6 @@ Friend Class JobsForm
         End While
     End Sub
 
-    'TODO: does this still work?
     Shared Function GetJobs() As List(Of StringBooleanPair)
         Dim formatter As New BinaryFormatter
         Dim jobsPath = Paths.SettingsDir + "Jobs.dat"

@@ -44,7 +44,10 @@ Temporary Items
 
 bin
 obj
+AviSynth+
+.vs
 
 StaxRip.v12.suo
+StaxRip.vbproj.user
 x265 help.txt
 x265 settings.txt

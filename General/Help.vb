@@ -216,15 +216,15 @@ End Class
 
 Public Class FileHelp
     Shared Sub Move(src As String, dest As String)
-        If File.Exists(dest) Then
-            Delete(dest)
-        End If
+        If File.Exists(src) Then
+            If File.Exists(dest) Then Delete(dest)
 
-        Try
-            FileSystem.MoveFile(src, dest, True)
-        Catch
-            FileSystem.MoveFile(src, dest, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
-        End Try
+            Try
+                FileSystem.MoveFile(src, dest, True)
+            Catch
+                FileSystem.MoveFile(src, dest, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
+            End Try
+        End If
     End Sub
 
     Shared Sub Copy(src As String, dest As String)

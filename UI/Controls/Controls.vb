@@ -454,12 +454,17 @@ Namespace UI
 
         Private BorderRect As Native.RECT
 
-        Sub New()
+        Sub New(Optional cms As ContextMenuStrip = Nothing)
             If VisualStyleInformation.IsEnabledByUser Then
                 BorderStyle = BorderStyle.None
             End If
 
-            ContextMenuStrip = New ContextMenuStrip
+            If cms Is Nothing Then
+                ContextMenuStrip = New ContextMenuStrip
+            Else
+                ContextMenuStrip = cms
+            End If
+
             AddHandler Disposed, Sub() If Not ContextMenuStrip Is Nothing Then ContextMenuStrip.Dispose()
 
             Dim cutItem = ContextMenuStrip.Items.Add("Cut")
@@ -1253,13 +1258,6 @@ Namespace UI
                 For Each i In labelBlocks
                     i.Label.Offset = CInt(Math.Ceiling(hMax / i.Label.Font.Height))
                 Next
-
-                'TODO: remove?
-                'Dim checkeNumBlocks = From block In Controls.OfType(Of SimpleUI.CheckedNumericBlock)()
-
-                'For Each i In checkeNumBlocks
-                '    i.CheckBox.Offset = CInt(Math.Ceiling(hMax / i.CheckBox.Font.Height))
-                'Next
             End If
         End Sub
 

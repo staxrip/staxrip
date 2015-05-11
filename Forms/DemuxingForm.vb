@@ -236,7 +236,7 @@ Public Class DemuxingForm
         Me.Label6.Location = New System.Drawing.Point(3, 231)
         Me.Label6.Margin = New System.Windows.Forms.Padding(3, 15, 3, 0)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(477, 25)
+        Me.Label6.Size = New System.Drawing.Size(341, 25)
         Me.Label6.TabIndex = 12
         Me.Label6.Text = "Full executable path, may contain macros:"
         '
@@ -254,9 +254,9 @@ Public Class DemuxingForm
         Me.Label3.AutoSize = True
         Me.Label3.Location = New System.Drawing.Point(533, 0)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(376, 25)
+        Me.Label3.Size = New System.Drawing.Size(184, 25)
         Me.Label3.TabIndex = 25
-        Me.Label3.Text = "Video input file types the demuxer will handle:"
+        Me.Label3.Text = "Video input file types:"
         '
         'Label1
         '
@@ -264,9 +264,9 @@ Public Class DemuxingForm
         Me.Label1.Location = New System.Drawing.Point(533, 77)
         Me.Label1.Margin = New System.Windows.Forms.Padding(3, 15, 3, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(453, 25)
+        Me.Label1.Size = New System.Drawing.Size(431, 25)
         Me.Label1.TabIndex = 26
-        Me.Label1.Text = "Video input formats to be handled (MediaInfo: Format):"
+        Me.Label1.Text = "Video input formats (AVC, HEVC, VC-1, MPEG Video):"
         '
         'Label4
         '
@@ -274,7 +274,7 @@ Public Class DemuxingForm
         Me.Label4.AutoSize = True
         Me.Label4.Location = New System.Drawing.Point(533, 154)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(494, 25)
+        Me.Label4.Size = New System.Drawing.Size(493, 25)
         Me.Label4.TabIndex = 27
         Me.Label4.Text = "Video input formats NOT to be handled (MediaInfo: Format):"
         '

@@ -218,7 +218,7 @@ Public Class FolderBrowserDialog
         Dim dialog As IFileDialog = Nothing
 
         Try
-            dialog = CType(New NativeFileOpenDialog(), IFileDialog)
+            dialog = CType(New FileOpenDialogRCW(), IFileDialog)
             SetDialogProperties(dialog)
             Dim result As Integer = dialog.Show(hwndOwner)
             If result < 0 Then

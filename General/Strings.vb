@@ -8,11 +8,12 @@ Public Class Strings
     Public Const VisitForum As String = "Please copy the message and post it to the support forum or mail it."
     Public Const NoUnicode As String = "Unicode filenames are not supported by AviSynth."
     Public Const InstallManually As String = "Application not found, please click the 'Website' toolbar button above and download and install the application manually."
-    Public Const ProjectX As String = "ProjectX demuxes and fixes DVB MPEG-2 captures. It's possible to disable ProjectX in the settings, in that case StaxRip uses DGMPGDec instead which normally should work well."
+    Public Const ProjectX As String = "ProjectX demuxes and fixes DVB MPEG-2 captures. It's possible to disable ProjectX in the settings, in that case StaxRip uses DGMPGDec instead which normally should work well. ProjectX requires Java x64 or x86."
     Public Const dsmux As String = "dsmux is installed by the Haali Splitter and is used to mux TS containing AVC into MKV. dsmux and DGDecNV are excelent tools for keeping audio properly synced of TS files containing AVC." + CrLf2 + "If you don't use TS containing AVC you can prevent StaxRip asking to install dsmux (Haali Splitter) by disabling dsmux at Tools/Settings/Demux." + CrLf2 + "LAV Filters and Haali Splitter overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
     Public Const Muxer As String = "A muxer merges different video, audio and subtitle files into a single container file which is the actual output file. Using x264 or subtitles MKV or MP4 is required as container."
-    Public Const DGDecNV As String = "DGDecNV is a shareware high performance decoder/frameserver for AVC, MPEG2, and VC1 streams that runs on the GPU of Nvidia graphics cards that support CUDA video decoding. It works in particular well with TS source files that would be otherwise need to be remuxed to MKV using dsmux in order to avoid sync problems (dsmux is included with Haali Splitter)."
-    Public Const DGMPGDec As String = "DGMPGDec is a AviSynth source filter plugin. DGIndex opens MPEG-2 files (VOB, TS, MPG) and creates a D2V index file which can then be opened in AviSynth with the MPEG2Source filter."
+    Public Const DGDecNV As String = "DGDecNV is similar to DGMPGDec, it's shareware and requires a NVIDIA GPU and it supports H264/AVC. DGIndexNV can be enabled and configured at Tools/Setting/Demux."
+    Public Const DGDecIM As String = "DGDecIM is similar to DGMPGDec, it's shareware and requires a Intel GPU and it supports H264/AVC. DGIndexIM can be enabled and configured at Tools/Setting/Demux."
+    Public Const DGMPGDec As String = "DGMPGDec is a AviSynth source filter plugin. DGIndex opens MPEG-2 files (VOB, TS, MPG) and creates a D2V index file which can then be opened in AviSynth with the MPEG2Source filter. DGIndex can also demux audio and video"
 
     Public Shared Intel As String = <div>
                                         <b>CBR: constant bitrate control algorithm</b>

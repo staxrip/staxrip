@@ -93,7 +93,7 @@ Public Class MacroEditor
     Sub New()
         MyBase.New()
         InitializeComponent()
-        MinimumSize = New Size(700, 500)
+        MinimumSize = New Size(950, 600)
     End Sub
 
     Sub SetCommandlineDefaults()
@@ -141,10 +141,6 @@ Public Class MacroEditor
         If Height > b.Height * 0.7 Then Height = CInt(b.Height * 0.7)
 
         MyBase.OnLoad(e)
-    End Sub
-
-    Private Sub bMacros_Click(sender As Object, e As EventArgs)
-        MacrosForm.ShowDialogForm()
     End Sub
 
     Private Sub MacroEditor_Load(sender As Object, e As EventArgs) Handles Me.Load

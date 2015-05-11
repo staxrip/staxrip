@@ -52,7 +52,7 @@ Public Class x264Encoder
     Overloads Sub Encode(passName As String, args As String)
         Using proc As New Proc
             proc.Init(passName, "kb/s, eta", "%]")
-            proc.File = If(s.x264Build.Contains("64-Bit"), Packs.avs4x26x.GetPath, Packs.x264.GetPath)
+            proc.File = Packs.x264.GetPath
             proc.Arguments = args
             proc.Start()
         End Using
@@ -65,7 +65,7 @@ Public Class x264Encoder
         enc.Params.Mode.Value = x264Mode.SingleCRF
         enc.Params.Quant.Value = enc.Params.QuantCompCheck.Value
         Dim args = enc.GetArgs(0, avsPath, p.TempDir + p.Name + "_CompCheck." + OutputFileType)
-        RunCompCheck(If(s.x264Build.Contains("64-Bit"), Packs.avs4x26x.GetPath, Packs.x264.GetPath), args, " kb/s, eta ")
+        RunCompCheck(Packs.x264.GetPath, args, " kb/s, eta ")
     End Sub
 
     Protected Overloads Sub RunCompCheck(executable As String,
@@ -80,7 +80,7 @@ Public Class x264Encoder
         Dim script = Macro.Solve(p.AvsDoc.GetScript.Trim) + CrLf + "SelectRangeEvery(" +
             ((100 \ p.CompCheckRange) * 14).ToString + ",14)"
 
-        AviSynthDocument.SetPlugins(script)
+        script = AviSynthDocument.SetPlugins(script)
         script.WriteFile(avsPath)
 
         Using proc As New Proc
@@ -143,10 +143,6 @@ Public Class x264Encoder
                      Optional includePaths As Boolean = True) As String
 
         Dim sb As New StringBuilder
-
-        If includePaths AndAlso s.x264Build.Contains("64-Bit") Then
-            sb.Append(" --x26x-binary """ + Packs.x264.GetPath + """")
-        End If
 
         Dim defaults As New x264Params
         defaults.ApplyDefaults(Params)

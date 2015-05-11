@@ -83,6 +83,36 @@ Public Module StringExtensions
     End Function
 
     <Extension()>
+    Function IsDouble(value As String) As Boolean
+        If value <> "" Then
+            If value.Contains(",") Then value = value.Replace(",", ".")
+
+            Return Double.TryParse(value,
+                                   NumberStyles.Float Or NumberStyles.AllowThousands,
+                                   CultureInfo.InvariantCulture,
+                                   Nothing)
+        End If
+    End Function
+
+    <Extension()>
+    Function ToDouble(value As String, Optional defaultValue As Single = 0) As Double
+        If value <> "" Then
+            If value.Contains(",") Then value = value.Replace(",", ".")
+
+            Dim ret As Double
+
+            If Double.TryParse(value,
+                               NumberStyles.Float Or NumberStyles.AllowThousands,
+                               CultureInfo.InvariantCulture,
+                               ret) Then
+                Return ret
+            End If
+        End If
+
+        Return defaultValue
+    End Function
+
+    <Extension()>
     Function FormatColumn(value As String, delimiter As String) As String
         If value = "" Then Return ""
         Dim lines = value.SplitKeepEmpty(CrLf)

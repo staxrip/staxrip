@@ -1,5 +1,1 @@
-Is there a reason that after selecting “Empty” in the resize filter and go to Intel H.264 options the resize option is not already selected and it’s waiting for the user to select it ?
-I can see that you’ve already implemented the automatic passing of the resolution selected from the first page as a parameter to QSVEncC, so I think in order to to complete the HW resizing procedure the best thing would be to automatically select the resize option too.
-The user could not even go in the Intel H.264 encoder options in that way. The HW resizing could be done by only selecting the resolution from the first page or if he goes in he would see the resize button already selected.
-######
-make menu for gpu encoders like x264/x265 crf, medium, low, lower
+Uwe Brickmann: Gibt es eine M�glichkeit, dass das auch automatisiert abl�uft, sodass alles indexiert und demuxt wird UND automatisch der entsprechende Job erstellt wird?

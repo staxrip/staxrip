@@ -99,7 +99,7 @@ Namespace x265
             Dim script = Macro.Solve(p.AvsDoc.GetScript.Trim) + CrLf + "SelectRangeEvery(" +
                 ((100 \ p.CompCheckRange) * 14).ToString + ",14)"
 
-            AviSynthDocument.SetPlugins(script)
+            script = AviSynthDocument.SetPlugins(script)
             script.WriteFile(avsPath)
 
             Using proc As New Proc
@@ -354,6 +354,18 @@ Namespace x265
             .Options = {"64", "32", "16"},
             .Values = {"64", "32", "16"}}
 
+        Property qgSize As New OptionParam With {
+            .Switch = "--qg-size",
+            .Text = "QG Size:",
+            .Options = {"64", "32", "16"},
+            .Values = {"64", "32", "16"}}
+
+        Property qpstep As New NumParam With {
+            .Switch = "--qpstep",
+            .Text = "QP Step:",
+            .Value = 4,
+            .DefaultValue = 4}
+
         Property TUintra As New NumParam With {
             .Switch = "--tu-intra-depth",
             .Text = "TU Intra Depth:",
@@ -537,7 +549,9 @@ Namespace x265
             .Switch = "--profile",
             .Text = "Profile:",
             .Options = {"main", "main10", "mainstillpicture", "main422-8", "main422-10", "main444-8", "main444-10"},
-            .Values = {"main", "main10", "mainstillpicture", "main422-8", "main422-10", "main444-8", "main444-10"}}
+            .Values = {"main", "main10", "mainstillpicture", "main422-8", "main422-10", "main444-8", "main444-10"},
+            .Value = 1,
+            .DefaultValue = 1}
 
         Property Level As New OptionParam With {
             .Switch = "--level-idc",
@@ -725,8 +739,8 @@ Namespace x265
                     Add("Basic", Quant, Preset, Tune, Profile, Level, Mode)
                     Add("Analysis 1", RD, MinCuSize, MaxCuSize, MaxTuSize, TUintra, TUinter, rdoqLevel)
                     Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra, CUlossless, Tskip, TskipFast)
-                    Add("Rate Control 1", AQmode, AQStrength, IPRatio, PBRatio, QComp, CBQPoffs, Qstep, QBlur, Cplxblur, CUtree, Lossless, StrictCBR)
-                    Add("Rate Control 2", NRintra, NRinter, CRFmin, CRFmax, VBVbufsize, VBVmaxrate, VBVinit)
+                    Add("Rate Control 1", AQmode, qgSize, AQStrength, IPRatio, PBRatio, QComp, CBQPoffs, Qstep, QBlur, Cplxblur, CUtree, Lossless, StrictCBR)
+                    Add("Rate Control 2", NRintra, NRinter, CRFmin, CRFmax, VBVbufsize, VBVmaxrate, VBVinit, qpstep)
                     Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP)
                     Add("Slice Decision", BAdapt, BFrames, BFrameBias, RCLookahead, LookaheadSlices, Scenecut, Ref, MinKeyint, Keyint, Bpyramid, OpenGop)
                     Add("Spatial/Intra", StrongIntraSmoothing, ConstrainedIntra, RDpenalty)

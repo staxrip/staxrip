@@ -275,77 +275,79 @@ Public Class SubtitleControl
     End Sub
 
     Private Sub bnPlay_Click() Handles bnPlay.Click
-        Try
-            Dim item = DirectCast(lv.SelectedItems(0), ListViewItem)
-            Dim st = DirectCast(item.Tag, Subtitle)
-            Dim fp = st.Path
+        If Packs.MPC.VerifyOK(True) Then
+            Try
+                Dim item = DirectCast(lv.SelectedItems(0), ListViewItem)
+                Dim st = DirectCast(item.Tag, Subtitle)
+                Dim fp = st.Path
 
-            Dim avsdoc As New AviSynthDocument
-            avsdoc.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play.avs"
-            avsdoc.Filters = p.AvsDoc.GetFiltersCopy
+                Dim avs As New AviSynthDocument
+                avs.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play.avs"
+                avs.Filters = p.AvsDoc.GetFiltersCopy
 
-            If FileTypes.TextSub.Contains(Filepath.GetExtNoDot(fp)) Then
-                Dim insertCat = If(avsdoc.IsFilterActive("Crop"), "Crop", "Source")
+                If FileTypes.TextSub.Contains(Filepath.GetExtNoDot(fp)) Then
+                    Dim insertCat = If(avs.IsFilterActive("Crop"), "Crop", "Source")
 
-                If Filepath.GetExt(st.Path) = ".idx" Then
-                    fp = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play.idx"
+                    If Filepath.GetExt(st.Path) = ".idx" Then
+                        fp = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play.idx"
 
-                    Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
-                        st.IndexIDX.ToString).WriteFile(fp)
+                        Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
+                            st.IndexIDX.ToString).WriteFile(fp)
 
-                    FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
+                        FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
 
-                    avsdoc.InsertAfter(insertCat, New AviSynthFilter("VobSub(""" + fp + """)"))
-                Else
-                    avsdoc.InsertAfter(insertCat, New AviSynthFilter("TextSub(""" + fp + """)"))
-                End If
-            End If
-
-            Dim par = Calc.GetTargetPAR
-
-            If Not par = New Point(1, 1) Then
-                Dim w = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
-                avsdoc.Filters.Add(New AviSynthFilter("LanczosResize(" & w & "," & p.TargetHeight & ")"))
-            End If
-
-            Dim ap = p.Audio0
-
-            If Not File.Exists(ap.File) Then ap = p.Audio1
-
-            If File.Exists(ap.File) Then
-                avsdoc.Filters.Add(New AviSynthFilter("KillAudio()"))
-
-                Dim nic = Audio.GetNicAudioCode(ap)
-
-                If nic <> "" Then
-                    avsdoc.Filters.Add(New AviSynthFilter(nic))
-                Else
-                    avsdoc.Filters.Add(New AviSynthFilter("AudioDub(last, DirectShowSource(""" + ap.File + """, video = false))"))
+                        avs.InsertAfter(insertCat, New AviSynthFilter("VobSub(""" + fp + """)"))
+                    Else
+                        avs.InsertAfter(insertCat, New AviSynthFilter("TextSub(""" + fp + """)"))
+                    End If
                 End If
 
-                avsdoc.Filters.Add(New AviSynthFilter("DelayAudio(" & (ap.Delay / 1000).ToString(CultureInfo.InvariantCulture) & ")"))
-            End If
+                Dim par = Calc.GetTargetPAR
 
-            If p.SourceHeight > 576 Then
-                avsdoc.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec709"")"))
-            Else
-                avsdoc.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec601"")"))
-            End If
+                If Not par = New Point(1, 1) Then
+                    Dim w = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
+                    avs.Filters.Add(New AviSynthFilter("LanczosResize(" & w & "," & p.TargetHeight & ")"))
+                End If
 
-            avsdoc.Synchronize()
+                Dim ap = p.Audio0
 
-            Dim subSwitch As String
+                If Not File.Exists(ap.File) Then ap = p.Audio1
 
-            If Not FileTypes.TextSub.Contains(Filepath.GetExtNoDot(fp)) AndAlso
-                FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExtNoDot(fp)) Then
+                If File.Exists(ap.File) Then
+                    avs.Filters.Add(New AviSynthFilter("KillAudio()"))
 
-                subSwitch = " /sub """ + fp + """"
-            End If
+                    Dim nic = Audio.GetNicAudioCode(ap)
 
-            g.ShellExecute(g.GetPlayer(".avi"), """" + avsdoc.Path + """" + subSwitch)
-        Catch ex As Exception
-            g.ShowException(ex)
-        End Try
+                    If nic <> "" Then
+                        avs.Filters.Add(New AviSynthFilter(nic))
+                    Else
+                        avs.Filters.Add(New AviSynthFilter("AudioDub(last, DirectShowSource(""" + ap.File + """, video = false))"))
+                    End If
+
+                    avs.Filters.Add(New AviSynthFilter("DelayAudio(" & (ap.Delay / 1000).ToString(CultureInfo.InvariantCulture) & ")"))
+                End If
+
+                If p.SourceHeight > 576 Then
+                    avs.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec709"")"))
+                Else
+                    avs.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec601"")"))
+                End If
+
+                avs.Synchronize()
+
+                Dim subSwitch As String
+
+                If Not FileTypes.TextSub.Contains(Filepath.GetExtNoDot(fp)) AndAlso
+                    FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExtNoDot(fp)) Then
+
+                    subSwitch = "/sub """ + fp + """"
+                End If
+
+                g.Play(avs.Path, subSwitch)
+            Catch ex As Exception
+                g.ShowException(ex)
+            End Try
+        End If
     End Sub
 
     Private Sub bnEdit_Click(sender As Object, e As EventArgs) Handles bnEdit.Click

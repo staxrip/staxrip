@@ -167,17 +167,6 @@ Class SimpleUI
         Return ret
     End Function
 
-    'TODO: remove?
-    'Function AddCheckedNumericBlock(parent As FlowLayoutPanelEx) As CheckedNumericBlock
-    '    Dim ret As New CheckedNumericBlock(Me)
-    '    ret.AutoSize = True
-    '    ret.UseParenWidth = True
-    '    AddHandler SaveValues, AddressOf ret.NumEdit.Save
-    '    AddHandler SaveValues, AddressOf ret.CheckBox.Save
-    '    parent.Controls.Add(ret)
-    '    Return ret
-    'End Function
-
     Function AddTextBlock(parent As FlowLayoutPanelEx) As TextBlock
         Dim ret As New TextBlock(Me)
         ret.AutoSize = True
@@ -591,23 +580,6 @@ Class SimpleUI
             Controls.Add(NumEdit)
         End Sub
     End Class
-
-    'TODO: remove?
-    'Class CheckedNumericBlock
-    '    Inherits EmptyBlock
-
-    '    Property NumEdit As SimpleUINumEdit
-    '    Property CheckBox As SimpleUICheckBox
-
-    '    Sub New(ui As SimpleUI)
-    '        CheckBox = New SimpleUICheckBox(ui)
-    '        Controls.Add(CheckBox)
-    '        NumEdit = New SimpleUINumEdit(ui)
-    '        NumEdit.Height = 36
-    '        NumEdit.Width = 100
-    '        Controls.Add(NumEdit)
-    '    End Sub
-    'End Class
 
     Class TextBlock
         Inherits LabelBlock

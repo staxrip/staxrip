@@ -86,7 +86,7 @@ Public Class MediaInfoFolderViewForm
 
         cms.Add("Show Media Info", AddressOf ShowMediaInfo, Keys.None, enabledFunc)
         cms.Add("Show in windows explorer", Sub() g.OpenDirAndSelectFile(pathFunc(), Handle), Keys.None, enabledFunc)
-        cms.Add("Play", Sub() g.ShellExecute(g.GetPlayer(Filepath.GetExt(pathFunc())), """" + pathFunc() + """"), Keys.None, enabledFunc)
+        cms.Add("Play", Sub() g.Play(pathFunc()), Keys.None, enabledFunc)
         cms.Add("Copy path to clipboard", Sub() Clipboard.SetText(pathFunc()), Keys.None, enabledFunc)
         cms.Add("Open with StaxRip", Sub() g.MainForm.OpenVideoSourceFile(pathFunc()), Keys.None, enabledFunc)
     End Sub

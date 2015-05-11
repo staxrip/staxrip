@@ -357,13 +357,13 @@ Public Class TaskDialog(Of T)
     End Function
 
     Private Sub MarshalDialogControlStructs()
-        If Buttons IsNot Nothing AndAlso Buttons.Count > 0 Then
+        If Not Buttons Is Nothing AndAlso Buttons.Count > 0 Then
             ButtonArray = AllocateAndMarshalButtons(Buttons)
             Config.pButtons = ButtonArray
             Config.cButtons = CUInt(Buttons.Count)
         End If
 
-        If RadioButtons IsNot Nothing AndAlso RadioButtons.Count > 0 Then
+        If Not RadioButtons Is Nothing AndAlso RadioButtons.Count > 0 Then
             RadioButtonArray = AllocateAndMarshalButtons(RadioButtons)
             Config.pRadioButtons = RadioButtonArray
             Config.cRadioButtons = CUInt(RadioButtons.Count)
@@ -376,7 +376,7 @@ Public Class TaskDialog(Of T)
 
         For Each button In structs
             Marshal.StructureToPtr(button, currentPtr, False)
-            currentPtr = CType((CInt(currentPtr) + Marshal.SizeOf(button)), IntPtr)
+            currentPtr = CType((currentPtr.ToInt64 + Marshal.SizeOf(button)), IntPtr)
         Next
 
         Return initialPtr

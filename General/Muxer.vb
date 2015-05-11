@@ -110,14 +110,18 @@ Public MustInherit Class Muxer
             End If
 
             If FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExtNoDot(i)) AndAlso
-                g.IsSourceSameOrSimilar(i) AndAlso Not i.Contains("_Forced.") AndAlso
-                Not i.Contains("_Preview.") AndAlso Not i.Contains("_Temp.") Then
+                g.IsSourceSameOrSimilar(i) AndAlso Not i.Contains("_Preview.") AndAlso
+                Not i.Contains("_Temp.") Then
 
                 If p.ConvertSup2Sub AndAlso Filepath.GetExt(i) = ".sup" Then
                     Continue For
                 End If
 
                 If TypeOf Me Is MP4Muxer AndAlso Not IsOneOf(Filepath.GetExt(i), ".idx", ".srt") Then
+                    Continue For
+                End If
+
+                If i.Contains("_Forced.") AndAlso Not Filepath.GetBase(i).Contains(Language.CurrentCulture.Name) Then
                     Continue For
                 End If
 
@@ -135,6 +139,17 @@ Public MustInherit Class Muxer
                                     Next
 
                                     i2.Title = m.Groups(3).Value
+                                End If
+
+                                If i.Contains("_Forced.") Then
+                                    Static forcedAdded As Boolean
+
+                                    If forcedAdded Then
+                                        Continue For
+                                    Else
+                                        i2.Forced = True
+                                        forcedAdded = True
+                                    End If
                                 End If
 
                                 Subtitles.Add(i2)
@@ -343,7 +358,9 @@ Public Class MP4Muxer
 
     Overrides ReadOnly Property SupportedInputTypes() As String()
         Get
-            Return {"avi", "ac3",
+            Return {"ts", "m2ts",
+                    "mpg", "m2v",
+                    "avi", "ac3",
                     "mp4", "m4a", "aac",
                     "264", "h264", "avc",
                     "265", "h265", "hevc",

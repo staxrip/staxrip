@@ -57,7 +57,7 @@ Public Class ApplicationsForm
         Me.tv.SelectOnMouseDown = True
         Me.tv.ShowLines = False
         Me.tv.ShowPlusMinus = False
-        Me.tv.Size = New System.Drawing.Size(232, 526)
+        Me.tv.Size = New System.Drawing.Size(232, 542)
         Me.tv.Sorted = True
         Me.tv.TabIndex = 0
         '
@@ -73,7 +73,7 @@ Public Class ApplicationsForm
         Me.ToolStrip.Location = New System.Drawing.Point(250, 10)
         Me.ToolStrip.Name = "ToolStrip"
         Me.ToolStrip.Padding = New System.Windows.Forms.Padding(3, 1, 1, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(599, 40)
+        Me.ToolStrip.Size = New System.Drawing.Size(740, 40)
         Me.ToolStrip.TabIndex = 1
         Me.ToolStrip.Text = "ToolStrip1"
         '
@@ -119,7 +119,7 @@ Public Class ApplicationsForm
         '
         Me.bnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnClose.Location = New System.Drawing.Point(749, 592)
+        Me.bnClose.Location = New System.Drawing.Point(890, 608)
         Me.bnClose.Size = New System.Drawing.Size(100, 34)
         Me.bnClose.Text = "Close"
         '
@@ -134,12 +134,14 @@ Public Class ApplicationsForm
         Me.flp.Location = New System.Drawing.Point(250, 60)
         Me.flp.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
         Me.flp.Name = "flp"
-        Me.flp.Size = New System.Drawing.Size(599, 526)
+        Me.flp.Size = New System.Drawing.Size(740, 542)
         Me.flp.TabIndex = 2
         '
         'SearchTextBox
         '
+        Me.SearchTextBox.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.SearchTextBox.Location = New System.Drawing.Point(12, 16)
+        Me.SearchTextBox.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.SearchTextBox.Name = "SearchTextBox"
         Me.SearchTextBox.Size = New System.Drawing.Size(232, 31)
         Me.SearchTextBox.TabIndex = 4
@@ -148,7 +150,7 @@ Public Class ApplicationsForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnClose
-        Me.ClientSize = New System.Drawing.Size(861, 638)
+        Me.ClientSize = New System.Drawing.Size(1002, 654)
         Me.Controls.Add(Me.SearchTextBox)
         Me.Controls.Add(Me.flp)
         Me.Controls.Add(Me.bnClose)
@@ -193,6 +195,11 @@ Public Class ApplicationsForm
         SetupButton.TextImageRelation = TextImageRelation.ImageBeforeText
         SetupButton.Image = StockIcon.GetSmallImage(StockIconIdentifier.Shield)
 
+        Dim title = New Label With {.Font = New Font(flp.Font.FontFamily, 14, FontStyle.Bold),
+                                    .AutoSize = True,
+                                    .Margin = New Padding(6, 6, 0, 0)}
+        Headers("Title") = title
+        flp.Controls.Add(title)
         AddSection("Status")
         flp.Controls.Add(SetupButton)
         AddSection("Location")
@@ -204,6 +211,7 @@ Public Class ApplicationsForm
     Sub ShowActivePackage()
         Dim path = ActivePackage.GetPath
 
+        Headers("Title").Text = ActivePackage.Name
         SetupButton.Text = "Install " + ActivePackage.Name
         SetupButton.Visible = Not ActivePackage.SetupAction Is Nothing AndAlso ActivePackage.IsStatusCritical
 
@@ -308,14 +316,20 @@ Public Class ApplicationsForm
             Case Keys.F11
                 Using d As New OpenFileDialog
                     d.SetInitDir(s.Storage.GetString(ActivePackage.Name + "custom path"))
-                    d.Filter = ActivePackage.Filename + "|" + ActivePackage.Filename + "|All Files|*.*"
+                    If OK(ActivePackage.Filenames) Then
+                        d.Filter = "|" + ActivePackage.Filenames.Join(";") + "|All Files|*.*"
+                    Else
+                        d.Filter = "|" + ActivePackage.Filename + "|All Files|*.*"
+                    End If
 
                     If d.ShowDialog = DialogResult.OK Then
                         s.Storage.SetString(ActivePackage.Name + "custom path", d.FileName)
-                        Registry.CurrentUser.Write("Software\" + Application.ProductName, ActivePackage.Name + " location", d.FileName)
+                        Registry.CurrentUser.Write("Software\" + Application.ProductName + "\Tool Paths", ActivePackage.Name, d.FileName)
                     End If
                 End Using
             Case Keys.F12
+                If Not File.Exists(ActivePackage.GetPath) Then Exit Sub
+
                 Dim input = InputBox.Show("Version name?", "StaxRip", ActivePackage.VersionName)
 
                 If input <> "" Then
@@ -330,7 +344,7 @@ Public Class ApplicationsForm
                         End If
                     Next
 
-                    File.WriteAllText(CommonDirs.Startup + "Applications\Versions.txt", t.FormatColumn("="))
+                    File.WriteAllText(CommonDirs.Startup + "Tools\Versions.txt", t.FormatColumn("="))
                 End If
         End Select
 

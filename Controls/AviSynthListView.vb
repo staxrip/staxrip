@@ -111,33 +111,31 @@ Public Class AviSynthListView
             Next
         End If
 
-        If SelectedItems.Count = 0 Then
-            Dim add As New MenuItemEx("Add")
-            Menu.Items.Add(add)
+        Dim add As New MenuItemEx("Add")
+        Menu.Items.Add(add)
 
-            For Each i In s.AviSynthCategories
-                For Each i2 In i.Filters
-                    Dim tip = i2.Script
+        For Each i In s.AviSynthCategories
+            For Each i2 In i.Filters
+                Dim tip = i2.Script
 
-                    If Not tip.Contains("%app:") Then
-                        tip = Macro.Solve(tip)
-                    End If
+                If Not tip.Contains("%app:") Then
+                    tip = Macro.Solve(tip)
+                End If
 
-                    ActionMenuItem.Add(add.DropDownItems,
-                        i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
-                Next
+                ActionMenuItem.Add(add.DropDownItems,
+                    i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
             Next
-        Else
+        Next
+
+        If SelectedItems.Count > 0 Then
             Menu.Items.Add(New ToolStripSeparator)
             Menu.Items.Add(New ActionMenuItem("Remove", AddressOf RemoveClick, "Removes the selected filter."))
         End If
 
-        If Not Editable Then
-            Menu.Items.Add(New ActionMenuItem("Edit...", AddressOf EditClick, "Dialog to edit filters."))
-        End If
+        Menu.Items.Add(New ActionMenuItem("Edit...", AddressOf ShowEditor, "Dialog to edit filters."))
 
         If TypeOf FindForm() Is MainForm Then
-            Menu.Items.Add(New ActionMenuItem("Play", AddressOf g.DefaultCommands.PlayScript, "Plays the script with the AVI player.", p.SourceFile <> ""))
+            Menu.Items.Add(New ActionMenuItem("Play", AddressOf g.PlayScript, "Plays the script with the AVI player.", p.SourceFile <> ""))
         End If
 
         Menu.Items.Add(New ActionMenuItem("Profiles...", AddressOf g.MainForm.OpenAviSynthFilterProfilesDialog, "Dialog to edit profiles."))
@@ -156,12 +154,19 @@ Public Class AviSynthListView
         ActionMenuItem.Add(Menu.Items, "Help | A && E", Sub() g.ShellExecute("http://www.animemusicvideos.org/guides/avtech3/amvapp-avisynth.html"))
     End Sub
 
+    Sub ShowEditor()
+        If ProfileFunc().Invoke.Edit = DialogResult.OK Then
+            Load()
+            RaiseScriptChanged()
+        End If
+    End Sub
+
     Sub ShowAviSynthHelp()
         Dim installDir = Registry.LocalMachine.GetString("SOFTWARE\AviSynth", Nothing)
         g.ShellExecute(installDir + "\Docs\English\index.htm")
     End Sub
 
-    Private Sub ReplaceClick(f As AviSynthFilter)
+    Sub ReplaceClick(f As AviSynthFilter)
         Dim index = SelectedItems(0).Index
         ProfileFunc.Invoke.Filters(index) = f
         Load()
@@ -186,39 +191,6 @@ Public Class AviSynthListView
 
     Sub RaiseScriptChanged()
         RaiseEvent ScriptChanged()
-    End Sub
-
-    Sub EditClick()
-        EditClick(AddressOf g.MainForm.GetTargetAviSynthDocument)
-    End Sub
-
-    Shared Sub EditClick(docDelegate As Func(Of AviSynthDocument))
-        Using f As New ControlHostForm("Filters")
-            f.FormBorderStyle = FormBorderStyle.Sizable
-            f.Width = 900
-            f.Height = 500
-
-            Dim c As New AviSynthListView
-            c.SmallImageList = New ImageList() With {.ImageSize = New Size(18, 18)}
-            c.Editable = True
-            c.Dock = DockStyle.Fill
-            c.ProfileFunc = docDelegate
-            c.Columns(1).Width += 20
-            c.Columns.Add("Script")
-            c.HeaderStyle = ColumnHeaderStyle.Nonclickable
-            c.DoubleClickDoesCheck = False
-            Dim categories = From a In s.AviSynthCategories Select a.Name
-            Dim cb = c.AddComboBox(categories.ToArray, 1)
-            cb.DropDownStyle = ComboBoxStyle.DropDownList
-            cb.Sorted = True
-            c.AddTextBox(2)
-            c.AddTextBox(3)
-            c.Load()
-            f.AddControl(c, AddressOf ShowHelp)
-            f.ShowDialog()
-            g.MainForm.AviSynthListView.Load()
-            g.MainForm.AviSynthListView.RaiseScriptChanged()
-        End Using
     End Sub
 
     Protected Overrides Sub OnBeforeShowControl(e As BeforeShowControlEventArgs)
@@ -313,10 +285,6 @@ Public Class AviSynthListView
         End If
 
         MyBase.OnMouseUp(e)
-
-        If Control.ModifierKeys = Keys.Control AndAlso SelectedItems.Count > 0 Then
-            EditScript()
-        End If
     End Sub
 
     Shared Sub ShowHelp()
@@ -335,68 +303,6 @@ Public Class AviSynthListView
         f.Doc.WriteP("The mini filter editor in the main dialog has a similar but limited feature set. It supports the context menu, Drag & Drop to reorder, the script editor shows with a simple double-click.")
         f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
         f.Show()
-    End Sub
-
-    Sub EditScript()
-        If SelectedItems.Count > 0 Then
-            Dim filter = DirectCast(SelectedItems(0).Tag, AviSynthFilter)
-
-            Using f As New AviSynthScriptEditor(filter.Script)
-                For Each i In Packs.Packages.Values.OfType(Of AviSynthPluginPackage)()
-                    For Each i2 In i.FilterNames
-                        If filter.Script.Contains(i2) Then
-                            Dim path = i.GetHelpPath()
-
-                            If path <> "" Then
-                                f.MacroEditorControl.llHelp.Visible = True
-                                f.MacroEditorControl.llHelp.Text = " " + i.Name + " Help "
-                                AddHandler f.MacroEditorControl.llHelp.Click, Sub() g.ShellExecute(path)
-                            End If
-                        End If
-                    Next
-                Next
-
-                If f.bnContext.Text = "" Then
-                    Dim installDir = Registry.LocalMachine.GetString("SOFTWARE\AviSynth", Nothing)
-
-                    f.bnContext.Text = filter.Script.Left("(")
-
-                    If f.bnContext.Text.EndsWith("Resize") Then
-                        f.bnContext.Text = "Resize"
-                    End If
-
-                    If f.bnContext.Text.StartsWith("ConvertTo") Then
-                        f.bnContext.Text = "Convert"
-                    End If
-
-                    Dim cmdl = installDir + "\Docs\English\corefilters\" + f.bnContext.Text + ".htm"
-
-                    If Not File.Exists(cmdl) Then
-                        f.bnContext.Text = "AviSynth"
-                        cmdl = installDir + "\Docs\English\index.htm"
-                    End If
-
-                    If Not File.Exists(cmdl) Then
-                        f.bnContext.Text = "AviSynth"
-                        cmdl = "http://www.avisynth.org"
-                    End If
-
-                    f.bnContext.Text = " " + f.bnContext.Text + " Help "
-                    f.bnContext.Visible = True
-                    f.bnContext.AddClickAction(Sub() g.ShellExecute(cmdl))
-                End If
-
-                If f.ShowDialog(FindForm) = DialogResult.OK AndAlso filter.Script <> f.MacroEditorControl.Value Then
-                    filter.Script = f.MacroEditorControl.Value
-
-                    If Columns.Count > 3 Then
-                        SetText(New Point(3, SelectedItems(0).Index), filter.Script)
-                    End If
-
-                    RaiseEvent ScriptChanged()
-                End If
-            End Using
-        End If
     End Sub
 
     Protected Overrides Sub OnKeyDown(e As KeyEventArgs)

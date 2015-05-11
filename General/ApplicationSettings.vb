@@ -32,7 +32,6 @@ Public Class ApplicationSettings
     Public LastSourceDirValue As String
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
-    Public Player As String
     Public PreviewToggleInfos As Boolean
     Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.Idle
     Public RecentFramePositions As List(Of String)
@@ -56,8 +55,6 @@ Public Class ApplicationSettings
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
     Public WindowStatePreview As FormWindowState
-    Public x264Build As String = If(Environment.Is64BitOperatingSystem, "64-Bit 8-Bit", "32-Bit 8-Bit")
-    Public x265Build As String = If(Environment.Is64BitOperatingSystem, "64-Bit 8-Bit", "32-Bit 8-Bit")
 
     Public DeleteTempFilesToRecycleBin As Boolean = True
 
@@ -91,7 +88,7 @@ Public Class ApplicationSettings
             Storage = New ObjectStorage
         End If
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 168) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 169) Then
             VideoEncoderProfiles = VideoEncoder.GetDefaults()
         End If
 
@@ -99,17 +96,18 @@ Public Class ApplicationSettings
             AudioProfiles = AudioProfile.GetDefaults()
         End If
 
-        If Check(Demuxers, "Demuxers", 74) Then
+        If Check(Demuxers, "Demuxers", 83) Then
             Demuxers = Demuxer.GetDefaults()
         End If
 
-        If Check(FilterPreferences, "Source Filter Preference", 6) Then
+        If Check(FilterPreferences, "Source Filter Preference", 13) Then
             FilterPreferences = New StringPairList
             FilterPreferences.Add("default", "FFVideoSource")
             FilterPreferences.Add("ts, m2ts, wmv", "DirectShowSource")
             FilterPreferences.Add("mp4, m4v", "LSMASHVideoSource")
-            FilterPreferences.Add("d2v", "MPEG2Source")
+            FilterPreferences.Add("264, h264, avc, 265, h265, hevc", "LWLibavVideoSource")
             FilterPreferences.Add("dgi", "DGSource")
+            'FilterPreferences.Add("d2v", "MPEG2Source")
         End If
 
         If Check(EventCommands, "Event Commands", 0) Then
@@ -173,7 +171,7 @@ Public Class ApplicationSettings
                               "SAR | NTSC | 4:3 = --sar 10:11" + CrLf +
                               "SAR | NTSC | 16:9 = --sar 40:33" + CrLf +
                               "Enter SAR = --sar $enter_text:Please enter the SAR.$" + CrLf +
-                              "Stats = --stats ""%working_dir%%target_name%.stats"""
+                              "Stats = --stats ""%temp_file%.stats"""
         End If
 
         If Check(SourceAspectRatioMenu, "Source aspect ratio menu", 22) Then
@@ -196,7 +194,7 @@ Public Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 113) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 116) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 
@@ -208,11 +206,11 @@ Public Class ApplicationSettings
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 
-        If Check(AviSynthCategories, "Filter Profiles", 96) Then
+        If Check(AviSynthCategories, "Filter Profiles", 117) Then
             AviSynthCategories = AviSynthCategory.GetDefaults
         End If
 
-        If Check(AviSynthProfiles, "Filter Setup Profiles", 79) Then
+        If Check(AviSynthProfiles, "Filter Setup Profiles", 85) Then
             AviSynthProfiles = AviSynthDocument.GetDefaults
         End If
 

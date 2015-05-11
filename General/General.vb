@@ -74,24 +74,6 @@ Public Class CommonDirs
         End Get
     End Property
 
-    Shared ReadOnly Property UserDesktop() As String
-        Get
-            Const CSIDL_DESKTOPDIRECTORY As Int32 = &H10 'users desktop dir
-            Dim sb As New StringBuilder(260)
-            SHGetFolderPath(IntPtr.Zero, CSIDL_DESKTOPDIRECTORY, IntPtr.Zero, 0, sb)
-            Return DirPath.AppendSeparator(sb.ToString)
-        End Get
-    End Property
-
-    Shared ReadOnly Property Windows() As String
-        Get
-            Const CSIDL_WINDOWS As Int32 = &H24
-            Dim sb As New StringBuilder(260)
-            SHGetFolderPath(IntPtr.Zero, CSIDL_WINDOWS, IntPtr.Zero, 0, sb)
-            Return DirPath.AppendSeparator(sb.ToString)
-        End Get
-    End Property
-
     <DllImport("shfolder.dll", CharSet:=CharSet.Unicode)>
     Private Shared Function SHGetFolderPath(hwndOwner As IntPtr, nFolder As Integer, hToken As IntPtr, dwFlags As Integer, lpszPath As StringBuilder) As Integer
     End Function
@@ -129,16 +111,14 @@ Public Class PathBase
     Shared Function IsValidFileSystemName(name As String) As Boolean
         If name = "" Then Return False
 
-        For i = 0 To name.Length - 1
-            Dim value = name.Chars(i)
+        Dim chars = """*/:<>?\|".ToCharArray
 
-            For Each i2 In """*/:<>?\|"
-                If value = i2 Then
-                    Return False
-                End If
-            Next
+        For Each i In name.ToCharArray
+            If chars.Contains(i) Then
+                Return False
+            End If
 
-            If Convert.ToInt32(value) < 32 Then
+            If Convert.ToInt32(i) < 32 Then
                 Return False
             End If
         Next
@@ -149,9 +129,17 @@ Public Class PathBase
     Shared Function RemoveIllegalCharsFromName(name As String) As String
         If name = "" Then Return ""
 
-        For Each i In """*/:<>?\|"
-            If name.Contains(i) Then
+        Dim chars = """*/:<>?\|".ToCharArray
+
+        For Each i In name.ToCharArray
+            If chars.Contains(i) Then
                 name = name.Replace(i, "_")
+            End If
+        Next
+
+        For x = 1 To 31
+            If name.Contains(Convert.ToChar(x)) Then
+                name = name.Replace(Convert.ToChar(x), "_"c)
             End If
         Next
 
@@ -1356,9 +1344,7 @@ Public Module MainModule
         End If
 
         For Each i In values
-            If String.IsNullOrEmpty(i) Then
-                Return False
-            End If
+            If i = "" Then Return False
         Next
 
         Return True
@@ -1694,11 +1680,11 @@ Public Class Shutdown
                 Const ForcedShutdown = 5
                 'Const PowerOff = 8
                 'Const ForcedPowerOff = 12
-                Dim c As New ManagementClass("Win32_OperatingSystem")
-                c.Scope.Options.EnablePrivileges = True
-                Dim params = c.GetMethodParameters("Win32Shutdown")
+                Dim mc As New ManagementClass("Win32_OperatingSystem")
+                mc.Scope.Options.EnablePrivileges = True
+                Dim params = mc.GetMethodParameters("Win32Shutdown")
                 params("Flags") = ForcedShutdown.ToString
-                DirectCast(c.GetInstances()(0), ManagementObject).InvokeMethod("Win32Shutdown", params, Nothing)
+                DirectCast(mc.GetInstances()(0), ManagementObject).InvokeMethod("Win32Shutdown", params, Nothing)
         End Select
     End Sub
 

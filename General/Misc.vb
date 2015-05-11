@@ -3,7 +3,6 @@ Imports Microsoft.Win32
 Imports StaxRip.UI
 
 Imports System.Globalization
-Imports System.Management
 Imports System.Reflection
 Imports System.Drawing.Design
 Imports System.Runtime.InteropServices
@@ -20,6 +19,7 @@ Imports System.ComponentModel
 
 Imports VB6 = Microsoft.VisualBasic
 Imports System.Windows.Forms.VisualStyles
+Imports System.Management
 
 Public Module ShortcutModule
     Public g As New GlobalClass
@@ -97,7 +97,7 @@ Public Class Paths
     Shared Property SettingsDir() As String
         Get
             If SettingsDirValue Is Nothing Then
-                SettingsDirValue = Paths.SolveDirMacros(Registry.CurrentUser.GetString("Software\" + Application.ProductName, "SettingsDir"))
+                SettingsDirValue = Paths.SolveDirMacros(Registry.CurrentUser.GetString("Software\" + Application.ProductName, "SettingsDir64"))
 
                 If Not IsDirValid(SettingsDirValue) Then
                     If File.Exists(CommonDirs.Startup + "Settings.dat") Then
@@ -110,41 +110,38 @@ Public Class Paths
                         td.MainInstruction = "Settings Directory"
                         td.Content = "Choose the location of the settings directory."
 
+                        td.AddCommandLink("Common Application Data", CommonDirs.CommonAppData + "StaxRip64", CommonDirs.CommonAppData + "StaxRip64")
+                        td.AddCommandLink("User Application Data Local", CommonDirs.UserAppDataLocal + "StaxRip64", CommonDirs.UserAppDataLocal + "StaxRip64")
+                        td.AddCommandLink("User Application Data Roaming", CommonDirs.UserAppDataRoaming + "StaxRip64", CommonDirs.UserAppDataRoaming + "StaxRip64")
                         td.AddCommandLink("Browse for custom directory", "custom")
-                        td.AddCommandLink("Common Application Data", CommonDirs.CommonAppData + "StaxRip", CommonDirs.CommonAppData + "StaxRip")
-                        td.AddCommandLink("User Application Data Local", CommonDirs.UserAppDataLocal + "StaxRip", CommonDirs.UserAppDataLocal + "StaxRip")
-                        td.AddCommandLink("User Application Data Roaming", CommonDirs.UserAppDataRoaming + "StaxRip", CommonDirs.UserAppDataRoaming + "StaxRip")
 
-                        Dim r = td.Show
+                        Dim dir = td.Show
 
-                        If r = "custom" Then
+                        If dir = "custom" Then
                             Using d As New FolderBrowserDialog
                                 d.Description = "Please select a directory."
                                 d.SelectedPath = CommonDirs.Startup
 
                                 If d.ShowDialog = DialogResult.OK Then
-                                    r = d.SelectedPath
+                                    dir = d.SelectedPath
                                 Else
-                                    r = CommonDirs.CommonAppData + "StaxRip"
+                                    dir = CommonDirs.CommonAppData + "StaxRip64"
                                 End If
                             End Using
-                        ElseIf r = "" Then
-                            r = CommonDirs.CommonAppData + "StaxRip"
+                        ElseIf dir = "" Then
+                            dir = CommonDirs.CommonAppData + "StaxRip64"
                         End If
 
-                        If Not Directory.Exists(r) Then
+                        If Not Directory.Exists(dir) Then
                             Try
-                                Directory.CreateDirectory(r)
+                                Directory.CreateDirectory(dir)
                             Catch
-                                r = CommonDirs.CommonAppData + "StaxRip"
-
-                                If Not Directory.Exists(r) Then
-                                    Directory.CreateDirectory(r)
-                                End If
+                                dir = CommonDirs.CommonAppData + "StaxRip64"
+                                If Not Directory.Exists(dir) Then Directory.CreateDirectory(dir)
                             End Try
                         End If
 
-                        Paths.SettingsDir = r
+                        Paths.SettingsDir = dir
                     End If
                 End If
             End If
@@ -152,13 +149,10 @@ Public Class Paths
             Return SettingsDirValue
         End Get
         Set(value As String)
-            If OK(value) Then
-                If Not value.EndsWith("\") Then
-                    value += "\"
-                End If
-
+            If value <> "" Then
+                If Not value.EndsWith("\") Then value += "\"
                 SettingsDirValue = value
-                Registry.CurrentUser.Write("Software\" + Application.ProductName, "SettingsDir", InjectDirMacros(value))
+                Registry.CurrentUser.Write("Software\" + Application.ProductName, "SettingsDir64", InjectDirMacros(value))
             End If
         End Set
     End Property
@@ -249,23 +243,18 @@ Public Class Paths
                     Next
                 End If
 
-                Dim divxplus As New Project
-                divxplus.Init()
-                divxplus.VideoEncoder = VideoEncoder.Getx264Encoder("DivX Plus", x264DeviceMode.DivXPlus)
-                SafeSerialization.Serialize(divxplus, ret + "DivX Plus.srip")
-
                 Dim x264 As New Project
                 x264.Init()
                 SafeSerialization.Serialize(x264, ret + "x264.srip")
 
-                Dim x265 As New Project
-                x265.Init()
-                Dim x265enc = New x265.x265Encoder
-                x265enc.Params.ApplyPresetDefaultValues()
-                x265enc.Params.ApplyPresetValues()
-                x265.VideoEncoder = x265enc
+                'Dim x265 As New Project
+                'x265.Init()
+                'Dim x265enc = New x265.x265Encoder
+                'x265enc.Params.ApplyPresetDefaultValues()
+                'x265enc.Params.ApplyPresetValues()
+                'x265.VideoEncoder = x265enc
 
-                SafeSerialization.Serialize(x265, ret + "x265.srip")
+                'SafeSerialization.Serialize(x265, ret + "x265.srip")
 
                 Dim aaclc = New GUIAudioProfile(AudioCodec.AAC, 0.4)
 
@@ -370,12 +359,60 @@ Public Class GlobalClass
         Next
     End Function
 
+    Sub PlayScript()
+        If File.Exists(p.Audio0.File) Then
+            PlayScript(p.Audio0)
+        Else
+            PlayScript(p.Audio1)
+        End If
+    End Sub
+
+    Sub PlayScript(ap As AudioProfile)
+        Dim avs As New AviSynthDocument
+        avs.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play.avs"
+        avs.Filters = p.AvsDoc.GetFiltersCopy
+
+        Dim par = Calc.GetTargetPAR
+
+        If Not par = New Point(1, 1) Then
+            Dim w = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
+            avs.Filters.Add(New AviSynthFilter("LanczosResize(" & w & "," & p.TargetHeight & ")"))
+        End If
+
+        If File.Exists(ap.File) Then
+            avs.Filters.Add(New AviSynthFilter("KillAudio()"))
+
+            Dim nic = Audio.GetNicAudioCode(ap)
+
+            If nic <> "" Then
+                avs.Filters.Add(New AviSynthFilter(nic))
+            Else
+                avs.Filters.Add(New AviSynthFilter("AudioDub(last, DirectShowSource(""" + ap.File + """, video = false))"))
+            End If
+
+            avs.Filters.Add(New AviSynthFilter("DelayAudio(" & (ap.Delay / 1000).ToString(CultureInfo.InvariantCulture) & ")"))
+
+            Dim cutFilter = avs.GetFilter("Cutting")
+
+            If Not cutFilter Is Nothing Then
+                avs.Remove("Cutting")
+                avs.Filters.Add(cutFilter)
+            End If
+        End If
+
+        If p.SourceHeight > 576 Then
+            avs.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec709"")"))
+        Else
+            avs.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec601"")"))
+        End If
+
+        avs.Synchronize()
+        g.Play(avs.Path)
+    End Sub
+
     Function ExtractDelay(value As String) As Integer
         Dim match = Regex.Match(value, " (-?\d+)ms")
-
-        If match.Success Then
-            Return CInt(match.Groups(1).Value)
-        End If
+        If match.Success Then Return CInt(match.Groups(1).Value)
     End Function
 
     Sub ShowCode(title As String, content As String)
@@ -484,15 +521,6 @@ Public Class GlobalClass
         Dim fr = p.AvsDoc.GetFramerate
         If fr = 0 Then fr = 25
         Return CInt((s.LastPosition / fr) * 1000)
-    End Function
-
-    Function GetPlayer(ext As String) As String
-        Dim ret = s.Player
-        If File.Exists(ret) Then Return ret
-        ret = CommonDirs.Programs + "Windows Media Player\wmplayer.exe"
-        If File.Exists(ret) Then Return ret
-        ret = GetAssociatedApplication(ext)
-        If File.Exists(ret) Then Return ret
     End Function
 
     Function GetTextEditor() As String
@@ -751,6 +779,14 @@ Public Class GlobalClass
         ToolStripManager.Renderer = ms.Renderer
     End Sub
 
+    Sub Play(file As String, Optional cliOptions As String = Nothing)
+        If Packs.MPC.VerifyOK(True) Then
+            Dim args = """" + file + """"
+            If cliOptions <> "" Then args += " " + cliOptions
+            g.ShellExecute(Packs.MPC.GetPath, args)
+        End If
+    End Sub
+
     Sub ShellExecute(cmd As String, Optional args As String = Nothing)
         Try
             Process.Start(cmd, args)
@@ -829,11 +865,9 @@ Public Class GlobalClass
     End Sub
 
     Function WasFileJustWritten(path As String) As Boolean
-        For x = 0 To 9
-            If File.Exists(path) AndAlso DateTime.Now.Subtract(
-                File.GetLastWriteTime(path)).TotalSeconds < 9 Then Return True
-
-            Thread.Sleep(500)
+        For x = 0 To 50
+            If File.Exists(path) Then Return True
+            Thread.Sleep(1000)
         Next
     End Function
 
@@ -867,7 +901,7 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub EnableFilter(cat As String)
+    Function EnableFilter(cat As String) As Boolean
         For Each i In p.AvsDoc.Filters
             If i.Category = cat Then
                 If Not i.Active Then
@@ -875,16 +909,10 @@ Public Class GlobalClass
                     g.MainForm.AviSynthListView.Load()
                 End If
 
-                Exit For
+                Return True
             End If
         Next
-    End Sub
-
-    Sub ShowNoResizeFilterWarning()
-        If Not p.AvsDoc.IsFilterActive("Resize") Then
-            MsgInfo("Please add a resize filter first. Resizing reduces filesize and image quality.")
-        End If
-    End Sub
+    End Function
 
     Function BrowseFile(filter As String, Optional defaultFilepath As String = Nothing) As String
         Using d As New OpenFileDialog
@@ -1036,7 +1064,10 @@ Public Class GlobalClass
     End Sub
 
     Sub ForceCropMod()
-        p.AvsDoc.ActivateFilter("Crop")
+        If Not g.EnableFilter("Crop") Then
+            p.AvsDoc.InsertAfter("Source", New AviSynthFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))
+        End If
+
         CorrectCropMod(True)
         g.MainForm.AviSynthListView.Load()
     End Sub
@@ -1087,186 +1118,6 @@ Public Enum RegistryRoot
     LocalMachine
     ClassesRoot
 End Enum
-
-Public Class VirtualDubScript
-    Public Sub New()
-        Registry.CurrentUser.Write("Software\Freeware\VirtualDubMod", "SeenWelcome", 1)
-        Registry.CurrentUser.Write("Software\Freeware\VirtualDubMod", "VirtualDub", 1)
-        Registry.CurrentUser.Write("Software\Freeware\VirtualDubMod", "SeenMatroskaDeprecated 1.5.10.2", 1)
-    End Sub
-
-    Property Lines As List(Of String) = New List(Of String)
-
-    Function GetStreamSetSourceParams(path As String) As String
-        Select Case Filepath.GetExt(path)
-            Case ".mp3"
-                If MediaInfo.GetAudio(path, "BitRate_Mode") = "CBR" Then
-                    Return "0x00000202,0"
-                Else
-                    Return "0x00000202,1"
-                End If
-            Case ".mp2", ".mpa"
-                Return "0x00000202,0"
-            Case ".wav"
-                Return "0x00000201"
-            Case ".ac3"
-                Return "0x00000203,0"
-            Case Else
-                Return Nothing
-        End Select
-    End Function
-
-    Sub SaveScript(path As String)
-        Dim script = ""
-
-        For Each i In Lines
-            If i <> "" Then
-                script += i + CrLf
-            End If
-        Next
-
-        Lines.Clear()
-
-        Dim newScript = ""
-
-        For Each i In script
-            If Convert.ToByte(i) > 127 Then 'ANSII is not supported by VirtualDub
-                For Each i2 In System.Text.Encoding.UTF8.GetBytes(i)
-                    newScript += "\x" + System.Convert.ToString(i2, 16)
-                Next
-            Else
-                newScript += i.ToString()
-            End If
-        Next
-
-        newScript.WriteFile(path)
-    End Sub
-
-    Private Function EscapeSeparator(value As String) As String
-        Return value.Replace("\\", "\").Replace("\", "\\")
-    End Function
-
-    Shared Function FixQuotes(st As String) As String
-        Return st.Replace("""", "\""")
-    End Function
-
-    ReadOnly Property Text() As String
-        Get
-            Dim t As String = ""
-
-            For Each i In Lines
-                t += i + Environment.NewLine
-            Next
-
-            Return t
-        End Get
-    End Property
-
-    Sub AddLine(search As String, line As String)
-        Dim x As Integer
-        Dim Item As String
-
-        line = EscapeSeparator(line)
-
-        For x = 0 To Lines.Count - 1
-            Item = CStr(Lines.Item(x))
-
-            If Item.IndexOf(search) > -1 AndAlso Not line.Contains(".Add") Then
-                Lines.RemoveAt(x)
-                Lines.Insert(x, line)
-
-                Exit Sub
-            End If
-        Next
-
-        Lines.Add(line)
-    End Sub
-
-    Sub SetLines(scriptText As String)
-        For Each i As String In scriptText.SplitLinesNoEmpty
-            If i.StartsWith("VirtualDub.") Then
-                AddLine(i.Left("(") + "(", i)
-            End If
-        Next
-    End Sub
-
-    Sub Delete(search As String)
-        Dim x As Integer
-
-        For x = 0 To Lines.Count - 1
-            If CType(Lines.Item(x), String).IndexOf(search) > -1 Then
-                Lines.RemoveAt(x)
-                Exit For
-            End If
-        Next
-    End Sub
-
-    'script functions
-
-    Sub Open(path As String)
-        Lines.Add("VirtualDub.Open(""" + EscapeSeparator(path) + ""","""",0);")
-    End Sub
-
-    Sub Close()
-        Lines.Add("VirtualDub.Close();")
-    End Sub
-
-    Sub Append(path As String)
-        Lines.Add("VirtualDub.Append(""" + EscapeSeparator(path) + """);")
-    End Sub
-
-    Sub Save(path As String, splitSize As Integer)
-        If splitSize > 50 Then
-            Lines.Add("VirtualDub.SaveSegmentedAVI(""" + EscapeSeparator(path) + """," & splitSize & ",0);")
-        Else
-            Lines.Add("VirtualDub.SaveAVI(""" + EscapeSeparator(path) + """);")
-        End If
-    End Sub
-
-    Sub SaveWAV(path As String)
-        Lines.Add("VirtualDub.SaveWAV(""" + EscapeSeparator(path) + """);")
-    End Sub
-
-    Sub SubsetClear()
-        Lines.Add("VirtualDub.subset.Clear();")
-    End Sub
-
-    Sub SubsetAddRange(start As Integer, [end] As Integer)
-        Lines.Add("VirtualDub.subset.AddRange(" + start.ToString + ", " + [end].ToString + ");")
-    End Sub
-
-    Sub RemoveInputStreams()
-        Lines.Add("VirtualDub.RemoveInputStreams();")
-    End Sub
-
-    Sub VideoSetModeFastRecompress()
-        AddLine("video.SetMode", "VirtualDub.video.SetMode(1);")
-    End Sub
-
-    Sub VideoSetRange(start As Integer, length As Integer)
-        AddLine("video.SetRange", "VirtualDub.video.SetRange(" + start.ToString() + ", " + length.ToString() + ");")
-    End Sub
-
-    Sub VideoSetCompression(arguments As String, kbytesPerSec As Double)
-        AddLine("video.SetCompression", "VirtualDub.video.SetCompression(" + arguments.Replace("%kbytes_per_sec%", CInt(kbytesPerSec).ToString()) + ");")
-    End Sub
-
-    Sub StreamSetSource(index As Integer, path As String)
-        Lines.Add("VirtualDub.stream[" + index.ToString() + "].SetSource(""" + EscapeSeparator(path) + """," + GetStreamSetSourceParams(path) + ");")
-    End Sub
-
-    Sub StreamDemux(index As Integer, path As String)
-        Lines.Add("VirtualDub.stream[" + index.ToString() + "].Demux(""" + EscapeSeparator(path) + """);")
-    End Sub
-
-    Sub StreamSetMode(index As Integer, mode As AudioMode)
-        Lines.Add("VirtualDub.stream[" + index.ToString() + "].SetMode(" + CInt(mode).ToString() + ");")
-    End Sub
-
-    Sub StreamSetInterleave(index As Integer, delay As Integer)
-        Lines.Add("VirtualDub.stream[" + index.ToString() + "].SetInterleave(1,500,1,0," + delay.ToString + ");")
-    End Sub
-End Class
 
 <Serializable()>
 Public Class Range
@@ -1351,16 +1202,16 @@ Public Class Log
     Shared Sub WriteEnvironment()
         WriteHeader("Environment")
 
-        Dim x64 = Directory.Exists(Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%"))
+        Dim mc As New ManagementClass("Win32_VideoController")
+        Dim videoControllerCaptions = From i2 In mc.GetInstances().OfType(Of ManagementBaseObject)() Select CStr(i2("Caption"))
 
         Dim temp =
-            "StaxRip version: " + Application.ProductVersion + CrLf +
-            "OS Name: " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + CrLf +
-            "OS Type: " + If(x64, "64-bit", "32-bit") + CrLf +
-            "OS Culture: " + CultureInfo.CurrentCulture.EnglishName + CrLf +
-            "CPU Name: " + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + CrLf +
-            "LAV Filters: " + Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\lavfilters_is1", "DisplayName") + CrLf +
-            "AviSynth: " + Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\AviSynth", "DisplayName")
+            "StaxRip x64: " + Application.ProductVersion + CrLf +
+            "OS: " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + CrLf +
+            "Language: " + CultureInfo.CurrentCulture.EnglishName + CrLf +
+            "CPU: " + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + CrLf +
+            "GPU: " + String.Join(", ", videoControllerCaptions) + CrLf +
+            "LAV Filters: " + Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\lavfilters_is1", "DisplayName")
 
         WriteLine(temp.FormatColumn(":"))
 
@@ -1862,7 +1713,14 @@ Public Class Language
     Sub New(twoLetterCode As String, Optional isCommon As Boolean = False)
         Try
             Me.IsCommon = isCommon
-            If twoLetterCode = "iw" Then twoLetterCode = "he"
+
+            Select Case twoLetterCode
+                Case "iw"
+                    twoLetterCode = "he"
+                Case "jp"
+                    twoLetterCode = "ja"
+            End Select
+
             CultureInfoValue = New CultureInfo(twoLetterCode)
         Catch ex As Exception
             CultureInfoValue = CultureInfo.InvariantCulture
@@ -1963,9 +1821,7 @@ Public Class Language
 
                 Dim current = l.Where(Function(a) a.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName).FirstOrDefault
 
-                If current Is Nothing Then
-                    l.Add(New Language(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, True))
-                End If
+                If current Is Nothing Then l.Add(CurrentCulture)
 
                 l.Sort()
 
@@ -1983,6 +1839,13 @@ Public Class Language
             Return LanguagesValue
         End Get
     End Property
+
+    Shared ReadOnly Property CurrentCulture As Language
+        Get
+            Return New Language(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, True)
+        End Get
+    End Property
+
 
     Overrides Function ToString() As String
         Return Name
@@ -2333,7 +2196,6 @@ Public Class Macro
         ret.Add(New Macro("encoder_out_file", "Encoder Output File", GetType(String), "Output file of the video encoder."))
         ret.Add(New Macro("encoder_out_file_track1", "Encoder Output File Track 1", GetType(String), "Audio output file of the first track."))
         ret.Add(New Macro("encoder_out_file_track2", "Encoder Output File Track 2", GetType(String), "Audio output file of the second track."))
-        ret.Add(New Macro("original_framerate", "Original Framerate", GetType(Integer), "Frame rate of the source video returned from MediaInfo."))
         ret.Add(New Macro("player", "Player", GetType(Integer), "Path of the application currently associated with AVI files."))
         ret.Add(New Macro("plugin_dir", "AviSynth Plugin Directory", GetType(String), "AviSynth plugin directory."))
         ret.Add(New Macro("pos_frame", "Position In Frames", GetType(Integer), "Current preview position in frames."))
@@ -2371,6 +2233,7 @@ Public Class Macro
         ret.Add(New Macro("version", "Version", GetType(String), "StaxRip version."))
         ret.Add(New Macro("video_bitrate", "Video Bitrate", GetType(Integer), "Video bitrate"))
         ret.Add(New Macro("working_dir", "Working Directory", GetType(String), "Directory of the source file or the temp directory if enabled."))
+        ret.Add(New Macro("temp_file", "Temp File", GetType(String), "File located in the temp directory using the same name as the source file."))
         ret.Add(New Macro("target_sar", "Target Sample Aspect Ratio", GetType(String), "Target sample aspect ratio (also known as PAR (pixel aspect ratio))."))
 
         ret.Sort()
@@ -2453,6 +2316,9 @@ Public Class Macro
         If value.Contains("%working_dir%") Then value = value.Replace("%working_dir%", p.TempDir)
         If Not value.Contains("%") Then Return value
 
+        If value.Contains("%temp_file%") Then value = value.Replace("%temp_file%", p.TempDir + Filepath.GetBase(p.SourceFile))
+        If Not value.Contains("%") Then Return value
+
         If value.Contains("%source_name%") Then value = value.Replace("%source_name%", Filepath.GetBase(p.SourceFile))
         If Not value.Contains("%") Then Return value
 
@@ -2472,9 +2338,6 @@ Public Class Macro
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_framerate%") Then value = value.Replace("%source_framerate%", p.SourceFramerate.ToString("f6", CultureInfo.InvariantCulture))
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%original_framerate%") Then value = value.Replace("%original_framerate%", p.OriginalFramerate.ToString("f6", CultureInfo.InvariantCulture))
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_dir%") Then value = value.Replace("%source_dir%", Filepath.GetDir(p.SourceFile))
@@ -2604,7 +2467,7 @@ Public Class Macro
         If value.Contains("%settings_dir%") Then value = value.Replace("%settings_dir%", Paths.SettingsDir)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%player%") Then value = value.Replace("%player%", g.GetPlayer(".avi"))
+        If value.Contains("%player%") Then value = value.Replace("%player%", Packs.MPC.GetPath)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%text_editor%") Then value = value.Replace("%text_editor%", g.GetTextEditor)
@@ -2887,6 +2750,7 @@ Public Class GlobalCommands
                 Try
                     proc.Start()
                 Catch ex As Exception
+                    g.ShowException(ex)
                     Log.WriteLine(ex.Message)
                 End Try
             End Using
@@ -2895,7 +2759,13 @@ Public Class GlobalCommands
                 Using pw As New Proc
                     pw.CommandLine = i
                     pw.Wait = waitForExit
-                    pw.Start()
+
+                    Try
+                        pw.Start()
+                    Catch ex As Exception
+                        g.ShowException(ex)
+                        Log.WriteLine(ex.Message)
+                    End Try
                 End Using
             Next
         End If
@@ -2922,7 +2792,7 @@ Public Class GlobalCommands
 
         Select Case topic
             Case "info"
-                f.Doc.WriteStart("StaxRip " + Application.ProductVersion + If(Application.ProductVersion.EndsWith("0"), "", " beta"))
+                f.Doc.WriteStart("StaxRip x64 " + Application.ProductVersion + If(Application.ProductVersion.EndsWith("0"), "", " beta"))
                 f.Doc.WriteP("This program is free software and may be distributed according to the terms of the [http://www.gnu.org/licenses/gpl.html GNU General Public License].")
 
                 f.Doc.WriteH2("Patches")
@@ -2933,8 +2803,62 @@ Public Class GlobalCommands
                 f.Doc.WriteList("DivX Network giving a open source development sponsorship award",
                                 "Brother John writing [http://encodingwissen.de/staxrip german tutorial]",
                                 "Donald Graft (neuron2) helping with various issues")
-            Case "changelog"
+            Case "changelog" 'cl:
                 f.Doc.WriteStart("Changelog")
+
+                f.Doc.WriteP("StaxRip x64 1.3.1.1 beta (20??-??-??)")
+
+                f.Doc.WriteList("Instead of always adding AssumeFPS it's now only added if necessary",
+                                "Improved AviSynth editor and filter profiles",
+                                "Improved 'Just Mux' feature supporting more formats",
+                                "Fixed qaac executed with command window, improved qaac description in applications dialog",
+                                "Fixed crash in preview window caused by AviSynth, StaxRip shows a error message instead now",
+                                "Fixed crash caused by stream title containing character that are illegal in windows file system",
+                                "DGMPGDec, DGDecNV and DGDecIM removed because of unsolved bugs",
+                                "Changed MP4Box to mingw build",
+                                "Updated AVSMeter x64 v2.0.1",
+                                "Updated qaac x64 2.48")
+
+                f.Doc.WriteP("1.3.1.0 beta (2015-05-01)")
+
+                f.Doc.WriteList("Added QTGMC, masktools2, mvtools2, RGTools and nnedi3",
+                                "Added new AviSynth editor",
+                                "Added DGDecIM integration",
+                                "Added 'Hardware Encoder' resize filter to AviSynth filter profiles which does nothing with AviSynth but enables the Quick Sync resizer",
+                                "Added option to audio context menu to play audio together with the AviSynth script",
+                                "Added possibility to use different settings directories for StaxRip 32-Bit and StaxRip 64-Bit",
+                                "Added x265 options --qpstep and --qg-size",
+                                "Updated ffms2 which fixes a critical memory leak",
+                                "Updated AVSMeter to version 2.0.0",
+                                "Updated AviSynth+ to version v1825",
+                                "Updated XviD to v1.3.3",
+                                "Updated x265 to v1.6+298",
+                                "Updated hardware encoders supporting 64-Bit avs reading",
+                                "Enabled dsmux to handle any kind of TS",
+                                "Forced subtitles from DVDs are now added automatically but only if the forced subtitle is the language of the current locale and maximum one forced subtitle is added and the subtitle is added with a forced flag")
+
+                f.Doc.WriteP("1.3.0.3 alpha (2015-04-27)")
+
+                f.Doc.WriteList("Fixed Win8/Win10 crash",
+                                "Added AviSynth+ v0.1.0 r1779 installer")
+
+                f.Doc.WriteP("1.3.0.2 alpha (2015-04-26)")
+
+                f.Doc.WriteList("Added xvid_encraw 1.2.0.0",
+                                "DivXH265 encoder added",
+                                "AVSMeter stays open when finished",
+                                "15 plugins are now integrated")
+
+                f.Doc.WriteP("1.3.0.1 alpha (2015-04-26)")
+
+                f.Doc.WriteList("StaxRip uses now AviSynth+ 64-Bit exclusively",
+                                "x265 is 10-Bit only, using 8-Bit is as simple as replacing the executable",
+                                "x264 is 8-Bit only, using 10-Bit is as simple as replacing the executable",
+                                "Hardware encoders don't work currently due to missing avs reading support in the x64 builds",
+                                "All AviSynth plugins except ffms2 and l-smash are gone due to missing x64 version, RgTools, SangNom2 and checkmate added",
+                                "Fixed audio delay not always shown in main dialog",
+                                "Improved VP9 GUI and default values",
+                                "Updated ffmpeg with new libvpx 1.4 for improved VP9 encoding")
 
                 f.Doc.WriteP("1.2.2.2 beta (2015-04-13)")
 
@@ -3015,18 +2939,6 @@ Public Class GlobalCommands
                                 "Fixed gain detection with ffmpeg to normalize audio didn't use the correct stream using mkv as audio source file",
                                 "Updated AviSynth, eac3to, ffms2, ffmpeg, x264, x265, MP4Box, QSVEncC, NVEncC")
 
-                f.Doc.WriteP("1.2.0.4 beta (2015-03-02)")
-
-                f.Doc.WriteList("Added QSVEncC Intel Quick Sync H.264 encoding tool support",
-                                "Improved job processing",
-                                "Improved load times and responsiveness",
-                                "Changed the Play feature for audio and subtitles to use NicAudio or DirectShowSource instead of FFAudioSource because FFAudioSource requires additional slow indexing",
-                                "Fixed x265 project template being not properly initialized",
-                                "Fixed anamorphic not being signaled to nvidia encoder, added new macro %target_sar%",
-                                "Fixed crash in x264 dialog",
-                                "Updated mkvtoolnix to v7.7.0",
-                                "Updated NVEncC to v1.02")
-
                 f.Doc.WriteP("1.2.0.3 beta (2015-02-16)")
 
                 f.Doc.WriteList("Added qaac encoder, Apple library not included",
@@ -3092,18 +3004,6 @@ Public Class GlobalCommands
                                 "Updated ffmpeg",
                                 "Various minor changes")
 
-                f.Doc.WriteP("1.1.8.0 (2012-10-14)")
-
-                f.Doc.WriteList("Updated mkvtoolnix to version 5.8.0",
-                                "Updated x264 to version r2216",
-                                "Updated ffms2 to version 2.16",
-                                "Updated MediaInfo to version 0.7.51.0",
-                                "Added Drag & Drop support in text boxes that edit code and command lines",
-                                "Added option for DGDecodeNV cropping (Ask | Enabled | Disabled)",
-                                "Added the flat Windows 8 menu style",
-                                "Added various iPhone and iPad generations to the x264 device option",
-                                "Fixed various cosmetic problems")
-
                 f.Doc.WriteP("1.1.7.1 beta (2011-05-22)")
 
                 f.Doc.WriteList("Updated MP4Box to version 0.4.6 that hopefully fixes sync problems",
@@ -3148,45 +3048,6 @@ Public Class GlobalCommands
                                 "Added option to downconvert to 16-bit (enabled by default)",
                                 "Updated x264 to r1698",
                                 "Updated eac3to to version 3.24")
-
-                f.Doc.WriteP("1.1.6.7 beta (2010-08-10)")
-
-                f.Doc.WriteList("Fixed bug trying to run DGIndexNV even though it's not installed",
-                                "Fixed bug same source file picked up for both audio tracks",
-                                "Fixed bug mkvmerge custom command line parameters with attachments added to MP4Box custom command line parameters",
-                                "Fixed bug subtitle preview in cropping dialog not showing subtitles due to MakeMKV created idx files not being compatible with vsfilter, also inserted subtitle filter after cropping both in the subtitle preview and in the add hardcoded subtitle feature in the main dialog",
-                                "Added WebM video encoder profile with simple GUI, WebM muxer profile and WebM template",
-                                "eac3to demuxer defaults now to mkv output, DGIndexNV, ffms2 and DSS can open it, DGAVCDEC can't",
-                                "Removed asking to demux video from MKV now using defaults, AVC and MPEG-2 is not demuxed since DSS, ffms2 and DGIndexNV can open it",
-                                "In case the first audio decoding method fails a second method is tried",
-                                "Changed shortcut for 'No Crop' in Cropping dialog to N and added new menu item 'Crop Options...' showing the crop options directly from the Cropping dialog",
-                                "In case the audio track language is undetermined StaxRip now first tries to find a track with language of the current locale as track 1 and english as track 2",
-                                "Improved source PAR detection for some formats")
-
-                f.Doc.WriteP("1.1.6.6 (beta 2010-07-31)")
-
-                f.Doc.WriteList("Added option to convert Blu-ray subtitles to VobSub subtitles using BDSup2Sub (Options > Subtitles > Convert Sup to Sub)",
-                                "Added support for moving crop values into dgi file for GPU cropping (there is a question after the crop dialog closes)",
-                                "Added NV tools to applications dialog and launch menu",
-                                "Added source filter profiles DGSource 720p and DGSource 1024x576 but without reseting profiles",
-                                "Added option to force ffmpeg as audio encoder, mostly useful to decode",
-                                "Added warning appearing when the input format isn't supported by the audio encoder using the Execute feature in the audio dialog",
-                                "Added possibility to edit the location and version in the Applications dialog, see F1, F11, F12 shortcuts",
-                                "Added preview option in muxing dialog to preview subtitles with a external player including audio",
-                                "Added option to open SUP and VobSub subtitles with BDSup2Sub in the muxing dialog useful to take a look at the subtitle content",
-                                "Added display of file size for each subtitle file in the muxing dialog",
-                                "Fixed bug second audio track not being picked up",
-                                "Fixed bug audio delay not detected demuxing mkv",
-                                "Fixed bug Execute feature in audio dialog not working when no video source is loaded",
-                                "Fixed bug aspect ratio not properly detected for some source formats",
-                                "Updated x264 to r1683",
-                                "Updated mkvtoolnix to version 4.2.0",
-                                "Updated ffmpeg to 2010-07-25",
-                                "Updated MediaInfo to version 0.7.35.0beta",
-                                "Reorganized muxing dialog",
-                                "Changed eac3to to be the default AAC encoder",
-                                "Disabled header compression for mkv muxing",
-                                "Playing the script at Tools > Play file > AviSynth script or in the Preview dialog at Tools > External Preview adds sound to the script using NicAudio if possible and resizes to set the aspect ratio if necessary. It's now also possible to play the script from the filters menu in the main dialog")
 
                 f.Doc.WriteP("1.1.6.5 (beta 2010-07-21)")
 
@@ -3431,54 +3292,6 @@ Public Class GlobalCommands
 
         g.MainForm.AviSynthListView.Load()
         g.MainForm.Assistant()
-    End Sub
-
-    <Command("Perform | Play Script", "Plays the AviSynth script.")>
-    Sub PlayScript()
-        Dim avsdoc As New AviSynthDocument
-        avsdoc.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play.avs"
-        avsdoc.Filters = p.AvsDoc.GetFiltersCopy
-
-        Dim par = Calc.GetTargetPAR
-
-        If Not par = New Point(1, 1) Then
-            Dim w = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
-            avsdoc.Filters.Add(New AviSynthFilter("LanczosResize(" & w & "," & p.TargetHeight & ")"))
-        End If
-
-        Dim ap = p.Audio0
-
-        If Not File.Exists(ap.File) Then ap = p.Audio1
-
-        If File.Exists(ap.File) Then
-            avsdoc.Filters.Add(New AviSynthFilter("KillAudio()"))
-
-            Dim nic = Audio.GetNicAudioCode(ap)
-
-            If nic <> "" Then
-                avsdoc.Filters.Add(New AviSynthFilter(nic))
-            Else
-                avsdoc.Filters.Add(New AviSynthFilter("AudioDub(last, DirectShowSource(""" + ap.File + """, video = false))"))
-            End If
-
-            avsdoc.Filters.Add(New AviSynthFilter("DelayAudio(" & (ap.Delay / 1000).ToString(CultureInfo.InvariantCulture) & ")"))
-
-            Dim cutFilter = avsdoc.GetFilter("Cutting")
-
-            If Not cutFilter Is Nothing Then
-                avsdoc.Remove("Cutting")
-                avsdoc.Filters.Add(cutFilter)
-            End If
-        End If
-
-        If p.SourceHeight > 576 Then
-            avsdoc.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec709"")"))
-        Else
-            avsdoc.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec601"")"))
-        End If
-
-        avsdoc.Synchronize()
-        g.ShellExecute(g.GetPlayer(".avi"), """" + avsdoc.Path + """")
     End Sub
 End Class
 
@@ -3866,10 +3679,52 @@ Public Class AudioStream
             End Select
         End Get
     End Property
+End Class
 
-    Shared Function IsFileSupported(src As String) As Boolean
-        Return Filepath.GetExtNoDot(src) = "mkv" OrElse Filepath.GetExtNoDot(src) = "mp4"
-    End Function
+Class VideoStream
+    Property Format As String
+    Property StreamOrder As Integer
+
+    ReadOnly Property Extension() As String
+        Get
+            Select Case Format
+                Case "MPEG Video"
+                    Return ".mpg"
+                Case "AVC"
+                    Return ".h264"
+                Case "MPEG-4 Visual"
+                    Return ".avi"
+                Case "HEVC"
+                    Return "h265"
+            End Select
+        End Get
+    End Property
+End Class
+
+Class Video
+    Shared Sub DemuxMKV(sourcefile As String)
+        Dim streams = MediaInfo.GetVideoStreams(sourcefile)
+        If streams.Count = 0 Then Exit Sub
+        Dim stream = streams(0)
+        If stream.Extension = "" Then Throw New Exception("demuxing of video stream format is not implemented")
+        Dim outPath = p.TempDir + Filepath.GetBase(sourcefile) + "_out" + stream.Extension
+
+        Using proc As New Proc
+            proc.Init("Demux video using mkvextract", "Progress: ")
+            proc.Encoding = Encoding.UTF8
+            proc.File = Packs.Mkvmerge.GetDir + "mkvextract.exe"
+            proc.Arguments = "tracks """ + sourcefile + """ " & stream.StreamOrder &
+                ":""" + outPath + """ --ui-language en"
+            proc.AllowedExitCodes = {0, 1, 2}
+            proc.Start()
+        End Using
+
+        If File.Exists(outPath) Then
+            Log.WriteLine(MediaInfo.GetSummary(outPath))
+        Else
+            Log.Write("Error", "no output found")
+        End If
+    End Sub
 End Class
 
 <Serializable()>
@@ -4032,7 +3887,7 @@ Class FileTypes
     Shared Property VideoOnly As String() = {"m4v", "m2v", "y4m", "mpv", "avc", "hevc", "264", "h264", "265", "h265"}
     Shared Property VideoRaw As String() = {"h264", "h265", "264", "265", "avc", "hevc"}
     Shared Property qaacInput As String() = {"wav", "flac"}
-    Shared Property VideoText As String() = {"d2v", "dgi", "avs"}
+    Shared Property VideoText As String() = {"d2v", "dgi", "dga", "avs"}
     Shared Property VirtualDubModInput As String() = {"ac3", "mp3", "mp2", "mpa", "wav"}
     Shared Property AudioVideo As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
 
@@ -4046,6 +3901,7 @@ Class FileTypes
                                                  "mp2", "mpa", "mp3",
                                                  "ogg", "ogm",
                                                  "dts", "dtsma", "dtshr", "dtshd",
+                                                 "mpg", "m2v",
                                                  "ts", "m2ts",
                                                  "opus", "flac"}
 

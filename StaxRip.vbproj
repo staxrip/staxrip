@@ -60,32 +60,49 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <OutputPath>bin\</OutputPath>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>1</WarningLevel>
-    <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
-    <DefineDebug>true</DefineDebug>
-    <DebugType>Full</DebugType>
-    <DefineTrace>true</DefineTrace>
-    <NoWarn>42030,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <OutputPath>bin\</OutputPath>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>1</WarningLevel>
-    <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
-    <NoWarn>42030,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup />
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\</OutputPath>
+    <WarningLevel>1</WarningLevel>
+    <NoWarn>42030,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <DebugType>Full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <WarningLevel>1</WarningLevel>
+    <NoWarn>42030,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\</OutputPath>
+    <WarningLevel>1</WarningLevel>
+    <NoWarn>42030,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <DebugType>Full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\</OutputPath>
+    <WarningLevel>1</WarningLevel>
+    <NoWarn>42030,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <PlatformTarget>x64</PlatformTarget>
+    <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic">
@@ -146,6 +163,12 @@
     </Compile>
     <Compile Include="Controls\x264Control.vb">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\AviSynthEditor.Designer.vb">
+      <DependentUpon>AviSynthEditor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AviSynthEditor.vb">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\CodecComparisonForm.Designer.vb">
       <DependentUpon>CodecComparisonForm.vb</DependentUpon>
@@ -333,9 +356,7 @@
     <Compile Include="UI\InputBoxForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Menu Types.vb">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="UI\Menu Types.vb" />
     <Compile Include="UI\MenuTemplateForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -400,6 +421,9 @@
     <EmbeddedResource Include="Forms\AudioForm.resx">
       <DependentUpon>AudioForm.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AviSynthEditor.resx">
+      <DependentUpon>AviSynthEditor.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\CodecComparisonForm.resx">
       <DependentUpon>CodecComparisonForm.vb</DependentUpon>
     </EmbeddedResource>
@@ -453,6 +477,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PreviewForm.resx">
       <DependentUpon>PreviewForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProcessForm.resx">
       <DependentUpon>ProcessForm.vb</DependentUpon>
@@ -462,6 +487,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SourceFilesForm.resx">
       <DependentUpon>SourceFilesForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MacrosForm.resx">
       <DependentUpon>MacrosForm.vb</DependentUpon>

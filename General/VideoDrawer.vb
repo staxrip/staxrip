@@ -21,7 +21,25 @@
         Using g
             If Control.Visible Then
                 Dim rectDest As RectangleF
-                Dim img = AVI.GetBitmap
+                Dim img As Image
+
+                Try
+                    img = AVI.GetBitmap
+
+                    If img Is Nothing Then
+                        MsgError("AviSynth Error", "AviSynth returned empty image data.")
+                        Exit Sub
+                    End If
+                Catch ex As OutOfMemoryException
+                    Static wasShown As Boolean
+
+                    If Not wasShown Then
+                        MsgError("Memory Allocation Failure", "Please restart StaxRip in order to free memory.")
+                        wasShown = True
+                    End If
+
+                    Exit Sub
+                End Try
 
                 If CropLeft = 0 AndAlso CropTop = 0 AndAlso CropRight = 0 AndAlso CropBottom = 0 Then
                     rectDest = Control.ClientRectangle

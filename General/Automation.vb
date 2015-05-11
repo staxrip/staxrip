@@ -7,7 +7,9 @@ Public Class Explorer
 
     Shared Sub SelectFile(handle As IntPtr, filepath As String)
         For Each i In ShellApp.Windows
-            If TypeName(i) = "IWebBrowser2" AndAlso i.HWND = handle.ToInt32 Then
+            Dim h = If(Environment.Is64BitOperatingSystem, handle.ToInt64, handle.ToInt32)
+
+            If TypeName(i) = "IWebBrowser2" AndAlso i.HWND = h Then
                 'two shorter methods tried to get correct FolderItem but didn't work
                 For Each i2 In i.Document.Folder.Items()
                     If i2.Path = filepath Then

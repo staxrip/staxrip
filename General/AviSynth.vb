@@ -1,13 +1,4 @@
-Imports System.ComponentModel
-Imports System.Drawing.Design
 Imports System.Text
-Imports System.Runtime.Serialization
-Imports System.Reflection
-Imports System.Threading
-
-Imports StaxRip.UI
-
-Imports Microsoft.Win32
 
 <Serializable()>
 Public Class AviSynthDocument
@@ -30,16 +21,6 @@ Public Class AviSynthDocument
         MyBase.New(name)
     End Sub
 
-    <NonSerialized()>
-    Private IsYV12Value As Boolean
-
-    ReadOnly Property IsYV12 As Boolean
-        Get
-            Synchronize()
-            Return IsYV12Value
-        End Get
-    End Property
-
     Private PathValue As String = ""
 
     Overridable Property Path() As String
@@ -58,10 +39,8 @@ Public Class AviSynthDocument
     Overridable Function GetScript(skipCategory As String) As String
         Dim sb As New StringBuilder()
 
-        If p.AvsCodeAtTop <> "" Then
-            sb.AppendLine(p.AvsCodeAtTop)
-        End If
-
+        If p.AvsCodeAtTop <> "" Then sb.AppendLine(p.AvsCodeAtTop)
+      
         For Each i As AviSynthFilter In Filters
             If i.Active Then
                 If skipCategory Is Nothing OrElse i.Category <> skipCategory Then
@@ -97,14 +76,14 @@ Public Class AviSynthDocument
         Filters.Insert(Filters.IndexOf(f) + 1, af)
     End Sub
 
-    Sub ActivateFilter(category As String)
-        Dim f = GetFilter(category)
-        If Not f Is Nothing Then f.Active = True
-    End Sub
-
     Function IsFilterActive(category As String) As Boolean
-        Dim f = GetFilter(category)
-        Return Not f Is Nothing AndAlso f.Active
+        Dim filter = GetFilter(category)
+        Return Not filter Is Nothing AndAlso filter.Active
+    End Function
+
+    Function IsFilterActive(category As String, name As String) As Boolean
+        Dim filter = GetFilter(category)
+        Return Not filter Is Nothing AndAlso filter.Active AndAlso filter.Name = name
     End Function
 
     Function GetFiltersCopy() As List(Of AviSynthFilter)
@@ -133,7 +112,7 @@ Public Class AviSynthDocument
 
             If Frames = 240 OrElse current <> LastSync Then
                 If Directory.Exists(Filepath.GetDir(Path)) Then
-                    SetPlugins(script)
+                    script = SetPlugins(script)
                     script.WriteFile(Path)
 
                     If g.MainForm.Visible Then
@@ -146,7 +125,6 @@ Public Class AviSynthDocument
                     Using avi As New AVIFile(Path)
                         Framerate = avi.FrameRate
                         Frames = avi.FrameCount
-                        IsYV12Value = avi.IsYV12
                         Size = avi.FrameSize
                         ErrorMessage = avi.ErrorMessage
                     End Using
@@ -157,31 +135,56 @@ Public Class AviSynthDocument
         End If
     End Sub
 
-    Shared Sub SetPlugins(ByRef script As String)
-        Dim lscript = script.ToLower
+    Shared Function SetPlugins(script As String) As String
+        Dim scriptLower = script.ToLower
 
-        Dim plugins = ""
+        Dim code = ""
+        Dim plugins = Packs.Packages.Values.OfType(Of AviSynthPluginPackage)()
 
-        For Each i In Packs.Packages.Values.OfType(Of AviSynthPluginPackage)()
+        For Each i In plugins
             Dim fp = i.GetPath
 
             If fp <> "" Then
                 For Each i2 In i.FilterNames
-                    If lscript.Contains(i2.ToLower + "(") Then
-                        Dim v = If(i.IsCPlugin, "LoadC", "Load") + "Plugin(""" + fp + """)" + CrLf
+                    If scriptLower.Contains(i2.ToLower + "(") Then
+                        If i.Filename.Contains(".avsi") Then
+                            Dim load = "Import(""" + fp + """)" + CrLf
 
-                        If Not lscript.Contains(v.ToLower) AndAlso Not plugins.Contains(v) Then
-                            plugins += v
+                            If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
+                                code += load
+                            End If
+
+                            If OK(i.Dependencies) Then
+                                For Each i3 In i.Dependencies
+                                    For Each i4 In plugins
+                                        If i3 = i4.Name Then
+                                            load = "LoadPlugin(""" + i4.GetPath + """)" + CrLf
+
+                                            If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
+                                                code += load
+                                            End If
+                                        End If
+                                    Next
+                                Next
+                            End If
+                        Else
+                            Dim load = "LoadPlugin(""" + fp + """)" + CrLf
+
+                            If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
+                                code += load
+                            End If
                         End If
                     End If
                 Next
             End If
         Next
 
-        If plugins <> "" Then
-            script = plugins + script
+        If code <> "" Then
+            Return code + script
+        Else
+            Return script
         End If
-    End Sub
+    End Function
 
     Function ContainsIgnoreCase(value As String) As Boolean
         For Each i In Filters
@@ -225,10 +228,10 @@ Public Class AviSynthDocument
         Dim doc As New TargetAviSynthDocument("Default Filter Setup")
 
         doc.Filters.Add(New AviSynthFilter("Source", "Automatic", "", True))
-        doc.Filters.Add(New AviSynthFilter("Field", "Yadif", "Yadif()", False))
         doc.Filters.Add(New AviSynthFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", False))
-        doc.Filters.Add(New AviSynthFilter("Noise", "FluxSmooth medium", "FluxSmoothT(4)", False))
-        doc.Filters.Add(New AviSynthFilter("Resize", "BicubicResize neutral", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", False))
+        doc.Filters.Add(New AviSynthFilter("Misc", "TDeint", "TDeint()", False))
+        doc.Filters.Add(New AviSynthFilter("Misc", "RemoveGrain", "RemoveGrain()", False))
+        doc.Filters.Add(New AviSynthFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", False))
 
         ret.Add(doc)
 
@@ -236,8 +239,16 @@ Public Class AviSynthDocument
     End Function
 
     Overrides Function Edit() As DialogResult
-        AviSynthListView.EditClick(AddressOf GetDocument)
-        Return DialogResult.OK
+        Using f As New AviSynthEditor(Me)
+            f.StartPosition = FormStartPosition.CenterParent
+
+            If f.ShowDialog() = DialogResult.OK Then
+                Filters = f.GetFilters
+                Return DialogResult.OK
+            End If
+        End Using
+
+        Return DialogResult.Cancel
     End Function
 
     Private Function GetDocument() As AviSynthDocument
@@ -302,7 +313,6 @@ End Class
 
 <Serializable()>
 Public Class AviSynthFilter
-    'Implements ISerializable
 
     Property Active As Boolean
     Property Category As String
@@ -372,69 +382,51 @@ Public Class AviSynthCategory
     Shared Function GetDefaults() As List(Of AviSynthCategory)
         Dim ret As New List(Of AviSynthCategory)
 
-        'source
-
         Dim src As New AviSynthCategory("Source")
-
         src.Filters.AddRange(
             {New AviSynthFilter("Source", "Automatic", "", True),
              New AviSynthFilter("Source", "AviSource", "AviSource(""%source_file%"", audio = false)", True),
-             New AviSynthFilter("Source", "MPEG2Source", "MPEG2Source(""%source_file%"")", True),
-             New AviSynthFilter("Source", "DirectShowSource", "DirectShowSource(""%source_file%"", audio = false, convertfps = true, fps = %original_framerate%)", True),
-             New AviSynthFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%working_dir%%source_name%.ffindex"")" + CrLf + "AssumeFPS(%original_framerate%)", True),
-             New AviSynthFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")", True),
-             New AviSynthFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")" + CrLf + "AssumeFPS(%original_framerate%)", True),
-             New AviSynthFilter("Source", "DGSource", "DGSource(""%source_file%"", deinterlace = 0, resize_w = 0, resize_h = 0)", True)})
-
+             New AviSynthFilter("Source", "DirectShowSource", "DirectShowSource(""%source_file%"", audio = false)", True),
+             New AviSynthFilter("Source", "DSS2", "DSS2(""%source_file%"")", True),
+             New AviSynthFilter("Source", "MPEG2Source", "# SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "# SetFilterMTMode(""MPEG2Source"", 3)" + CrLf + "MPEG2Source(""%source_file%"")", True),
+             New AviSynthFilter("Source", "FFVideoSource", "# SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "# SetFilterMTMode(""FFVideoSource"", 3)" + CrLf + "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")", True),
+             New AviSynthFilter("Source", "LSMASHVideoSource", "# SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "# SetFilterMTMode(""LSMASHVideoSource"", 3)" + CrLf + "LSMASHVideoSource(""%source_file%"")", True),
+             New AviSynthFilter("Source", "LWLibavVideoSource", "# SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "# SetFilterMTMode(""LWLibavVideoSource"", 3)" + CrLf + "LWLibavVideoSource(""%source_file%"")", True),
+             New AviSynthFilter("Source", "DGSource", "# SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "# SetFilterMTMode(""DGSource"", 3)" + CrLf + "DGSource(""%source_file%"", deinterlace = 0, resize_w = 0, resize_h = 0)", True),
+             New AviSynthFilter("Source", "DGSourceIM", "# SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "# SetFilterMTMode(""DGSourceIM"", 3)" + CrLf + "DGSourceIM(""%source_file%"")", True)})
         ret.Add(src)
 
-        Dim field As New AviSynthCategory("Field")
+        Dim misc As New AviSynthCategory("Misc")
 
-        field.Filters.Add(New AviSynthFilter(field.Name, "Yadif", "Yadif()", True))
-        field.Filters.Add(New AviSynthFilter(field.Name, "IVTC", "Telecide(guide = 1).Decimate()", True))
-        field.Filters.Add(New AviSynthFilter(field.Name, "FieldDeinterlace", "FieldDeinterlace()", True))
-        field.Filters.Add(New AviSynthFilter(field.Name, "TomsMoComp", "TomsMoComp(-1, 5, 1)", True))
-        field.Filters.Add(New AviSynthFilter(field.Name, "SelectEven", "SelectEven()", True))
-        field.Filters.Add(New AviSynthFilter(field.Name, "SeparateFields", "SeparateFields()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "SelectEven", "SelectEven()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "RemoveGrain", "RemoveGrain()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "Clense", "Clense()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "SangNom2", "SangNom2()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "checkmate", "checkmate()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "nnedi3", "nnedi3()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "UnDot", "UnDot()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "TDeint", "TDeint()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "nnedi3", "nnedi3()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "Prefetch(4) ", "Prefetch(4) ", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "QTGMC | QTGMC Medium", "QTGMC(Preset=""Medium"")", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "QTGMC | QTGMC Slow", "QTGMC(Preset=""Slow"")", True))
 
-        ret.Add(field)
-
-        'noise
-
-        Dim noise As New AviSynthCategory("Noise")
-
-        With noise.Filters
-            .Add(New AviSynthFilter(noise.Name, "FluxSmooth Low", "FluxSmoothT(2)", True))
-            .Add(New AviSynthFilter(noise.Name, "FluxSmooth Medium", "FluxSmoothT(4)", True))
-            .Add(New AviSynthFilter(noise.Name, "FluxSmooth Heavy", "FluxSmoothT(8)", True))
-            .Add(New AviSynthFilter(noise.Name, "Deen", "Deen()", True))
-            .Add(New AviSynthFilter(noise.Name, "UnDot", "UnDot()", True))
-        End With
-
-        ret.Add(noise)
-
-        'resize
+        ret.Add(misc)
 
         Dim resize As New AviSynthCategory("Resize")
-
-        With resize.Filters
-            .Add(New AviSynthFilter(resize.Name, "BilinearResize", "BilinearResize(%target_width%, %target_height%)", True))
-            .Add(New AviSynthFilter(resize.Name, "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
-            .Add(New AviSynthFilter(resize.Name, "LanczosResize", "LanczosResize(%target_width%, %target_height%)", True))
-            .Add(New AviSynthFilter(resize.Name, "Lanczos4Resize", "Lanczos4Resize(%target_width%, %target_height%)", True))
-            .Add(New AviSynthFilter(resize.Name, "BlackmanResize", "BlackmanResize(%target_width%, %target_height%)", True))
-            .Add(New AviSynthFilter(resize.Name, "GaussResize", "GaussResize(%target_width%, %target_height%)", True))
-            .Add(New AviSynthFilter(resize.Name, "SincResize", "SincResize(%target_width%, %target_height%)", True))
-            .Add(New AviSynthFilter(resize.Name, "PointResize", "PointResize(%target_width%, %target_height%)", True))
-            .Add(New AviSynthFilter(resize.Name, "Empty", "# calculations/macros", True))
-            .Add(New AviSynthFilter(resize.Name, "Spline | Spline16Resize", "Spline16Resize(%target_width%, %target_height%)", True))
-            .Add(New AviSynthFilter(resize.Name, "Spline | Spline36Resize", "Spline36Resize(%target_width%, %target_height%)", True))
-            .Add(New AviSynthFilter(resize.Name, "Spline | Spline64Resize", "Spline64Resize(%target_width%, %target_height%)", True))
-        End With
-
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "BilinearResize", "BilinearResize(%target_width%, %target_height%)", True))
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "LanczosResize", "LanczosResize(%target_width%, %target_height%)", True))
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "Lanczos4Resize", "Lanczos4Resize(%target_width%, %target_height%)", True))
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "BlackmanResize", "BlackmanResize(%target_width%, %target_height%)", True))
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "GaussResize", "GaussResize(%target_width%, %target_height%)", True))
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "SincResize", "SincResize(%target_width%, %target_height%)", True))
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "PointResize", "PointResize(%target_width%, %target_height%)", True))
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "Hardware Encoder", "# used with the Intel Quick Sync encoder", True))
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "Spline | Spline16Resize", "Spline16Resize(%target_width%, %target_height%)", True))
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "Spline | Spline36Resize", "Spline36Resize(%target_width%, %target_height%)", True))
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "Spline | Spline64Resize", "Spline64Resize(%target_width%, %target_height%)", True))
         ret.Add(resize)
-
-        'crop
 
         Dim crop As New AviSynthCategory("Crop")
         crop.Filters.Add(New AviSynthFilter(crop.Name, "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))

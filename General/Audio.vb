@@ -71,7 +71,14 @@ Public Class Audio
 
         If stream.Delay <> 0 Then ret += " - " & stream.Delay & "ms"
         If stream.Language.TwoLetterCode <> "iv" Then ret += " - " + stream.Language.ToString
-        If Not shorten AndAlso path.Length < 130 Then If stream.Title <> "" Then ret += " - " + stream.Title.Shorten(30)
+
+        If Not shorten AndAlso path.Length < 130 AndAlso stream.Title <> "" AndAlso
+            Not stream.Title.ContainsUnicode Then
+
+            ret += " - " + stream.Title.Shorten(30)
+        End If
+
+        If Not Filepath.IsValidFileSystemName(ret) Then ret = Filepath.RemoveIllegalCharsFromName(ret)
 
         Return ret
     End Function
@@ -218,6 +225,69 @@ Public Class Audio
         DecodeDirectShowSource(ap, useFlac)
     End Sub
 
+    Shared Sub CutNicAudio(ap As AudioProfile)
+        If ap.File.Contains("_cut_") Then Exit Sub
+        If Not IsOneOf(Filepath.GetExtNoDot(ap.File), FileTypes.NicAudioInput) Then Exit Sub
+        ap.Delay = 0
+        Dim d As New AviSynthDocument
+        d.Filters.AddRange(p.AvsDoc.Filters)
+        Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_na.wav"
+        d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_na.avs"
+        d.Filters.Insert(1, New AviSynthFilter(GetNicAudioCode(ap)))
+        If ap.Channels = 2 Then d.Filters.Add(New AviSynthFilter(GetDown2Code))
+        d.Synchronize()
+
+        Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
+
+        Using proc As New Proc
+            proc.Init("AVS to WAV using ffmpeg", "frame=", "size=", "Multiple")
+            proc.WriteLine(Macro.Solve(d.GetScript) + CrLf)
+            proc.Encoding = Encoding.UTF8
+            proc.File = Packs.ffmpeg.GetPath
+            proc.Arguments = args
+            proc.Start()
+        End Using
+
+        If g.WasFileJustWritten(wavPath) Then
+            ap.File = wavPath
+            Log.WriteLine(MediaInfo.GetSummary(wavPath))
+        Else
+            Log.Write("Error", "no output found")
+        End If
+    End Sub
+
+    Shared Sub DecodeNicAudio(ap As AudioProfile)
+        If Filepath.GetExt(ap.File) = ".wav" Then Exit Sub
+        If Not FileTypes.NicAudioInput.Contains(Filepath.GetExtNoDot(ap.File)) Then Exit Sub
+        ap.Delay = 0
+        Dim d As New AviSynthDocument
+        d.Filters.AddRange(p.AvsDoc.Filters)
+        d.Remove("Cutting")
+        Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeNicAudio.wav"
+        d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeNicAudio.avs"
+        d.Filters.Insert(1, New AviSynthFilter(GetNicAudioCode(ap)))
+        If ap.Channels = 2 Then d.Filters.Add(New AviSynthFilter(GetDown2Code))
+        d.Synchronize()
+
+        Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
+
+        Using proc As New Proc
+            proc.Init("AVS to WAV using ffmpeg", "frame=", "size=", "Multiple")
+            proc.WriteLine(Macro.Solve(d.GetScript) + CrLf)
+            proc.Encoding = Encoding.UTF8
+            proc.File = Packs.ffmpeg.GetPath
+            proc.Arguments = args
+            proc.Start()
+        End Using
+
+        If g.WasFileJustWritten(wavPath) Then
+            ap.File = wavPath
+            Log.WriteLine(MediaInfo.GetSummary(wavPath))
+        Else
+            Log.Write("Error", "no output found")
+        End If
+    End Sub
+
     Shared Sub Cut(ap As AudioProfile)
         If p.Ranges.Count = 0 OrElse Not File.Exists(ap.File) OrElse
             ap.File.Contains("_cut_.") Then
@@ -228,12 +298,6 @@ Public Class Audio
         Select Case p.CuttingMode
             Case CuttingMode.mkvmerge
                 CutMkvmerge(ap)
-            Case CuttingMode.VirtualDubMod
-                If IsOneOf(Filepath.GetExtNoDot(ap.File), FileTypes.VirtualDubModInput) Then
-                    CutVirtualDubMod(ap)
-                Else
-                    CutMkvmerge(ap)
-                End If
             Case CuttingMode.NicAudio
                 If IsOneOf(Filepath.GetExtNoDot(ap.File), FileTypes.NicAudioInput) AndAlso
                     Not TypeOf ap Is MuxAudioProfile Then
@@ -250,6 +314,19 @@ Public Class Audio
                 End If
         End Select
     End Sub
+
+    Shared Function GetNicAudioCode(ap As AudioProfile) As String
+        Select Case Filepath.GetExt(ap.File)
+            Case ".ac3"
+                Return "AudioDub(last, NicAC3Source(""" + ap.File + """, Channels = " & ap.Channels & "))"
+            Case ".dts"
+                Return "AudioDub(last, NicDTSSource(""" + ap.File + """, Channels = " & ap.Channels & "))"
+            Case ".mpa", ".mp2", ".mp3"
+                Return "AudioDub(last, NicMPASource(""" + ap.File + """))"
+            Case ".wav"
+                Return "AudioDub(last, RaWavSource(""" + ap.File + """, Channels = " & ap.Channels & "))"
+        End Select
+    End Function
 
     Shared Sub DecodeEac3to(ap As AudioProfile, Optional useFlac As Boolean = False)
         If {"wav", "flac"}.Contains(Filepath.GetExtNoDot(ap.File)) Then Exit Sub
@@ -347,38 +424,6 @@ Public Class Audio
         End If
     End Sub
 
-    Shared Sub DecodeNicAudio(ap As AudioProfile)
-        If Filepath.GetExt(ap.File) = ".wav" Then Exit Sub
-        If Not FileTypes.NicAudioInput.Contains(Filepath.GetExtNoDot(ap.File)) Then Exit Sub
-        ap.Delay = 0
-        Dim d As New AviSynthDocument
-        d.Filters.AddRange(p.AvsDoc.Filters)
-        d.Remove("Cutting")
-        Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeNicAudio.wav"
-        d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeNicAudio.avs"
-        d.Filters.Insert(1, New AviSynthFilter(GetNicAudioCode(ap)))
-        If ap.Channels = 2 Then d.Filters.Add(New AviSynthFilter(GetDown2Code))
-        d.Synchronize()
-
-        Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
-
-        Using proc As New Proc
-            proc.Init("AVS to WAV using ffmpeg", "frame=", "size=", "Multiple")
-            proc.WriteLine(Macro.Solve(d.GetScript) + CrLf)
-            proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
-            proc.Arguments = args
-            proc.Start()
-        End Using
-
-        If g.WasFileJustWritten(wavPath) Then
-            ap.File = wavPath
-            Log.WriteLine(MediaInfo.GetSummary(wavPath))
-        Else
-            Log.Write("Error", "no output found")
-        End If
-    End Sub
-
     Shared Sub DecodeFFAudioSource(ap As AudioProfile)
         If Filepath.GetExt(ap.File) = ".wav" Then Exit Sub
         ap.Delay = 0
@@ -420,37 +465,6 @@ Public Class Audio
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ds.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ds.avs"
         d.Filters.Insert(1, New AviSynthFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
-        If ap.Channels = 2 Then d.Filters.Add(New AviSynthFilter(GetDown2Code))
-        d.Synchronize()
-
-        Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
-
-        Using proc As New Proc
-            proc.Init("AVS to WAV using ffmpeg", "frame=", "size=", "Multiple")
-            proc.WriteLine(Macro.Solve(d.GetScript) + CrLf)
-            proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
-            proc.Arguments = args
-            proc.Start()
-        End Using
-
-        If g.WasFileJustWritten(wavPath) Then
-            ap.File = wavPath
-            Log.WriteLine(MediaInfo.GetSummary(wavPath))
-        Else
-            Log.Write("Error", "no output found")
-        End If
-    End Sub
-
-    Shared Sub CutNicAudio(ap As AudioProfile)
-        If ap.File.Contains("_cut_") Then Exit Sub
-        If Not IsOneOf(Filepath.GetExtNoDot(ap.File), FileTypes.NicAudioInput) Then Exit Sub
-        ap.Delay = 0
-        Dim d As New AviSynthDocument
-        d.Filters.AddRange(p.AvsDoc.Filters)
-        Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_na.wav"
-        d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_na.avs"
-        d.Filters.Insert(1, New AviSynthFilter(GetNicAudioCode(ap)))
         If ap.Channels = 2 Then d.Filters.Add(New AviSynthFilter(GetDown2Code))
         d.Synchronize()
 
@@ -579,80 +593,6 @@ Public Class Audio
         End If
     End Sub
 
-    Shared Sub CutVirtualDubMod(ap As AudioProfile)
-        If ap.File.Contains("_cut_") Then Exit Sub
-
-        Dim ext = Filepath.GetExt(ap.File)
-
-        Dim avs As New AviSynthDocument
-        avs.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_.avs"
-        avs.Filters.AddRange(p.AvsDoc.Filters)
-        avs.Remove("Cutting")
-        avs.Filters.Add(New AviSynthFilter("KillAudio()"))
-        avs.Synchronize()
-
-        Dim script As New VirtualDubScript
-        script.Open(avs.Path)
-        script.StreamSetSource(0, ap.File)
-        script.StreamSetMode(0, AudioMode.DirectStreamCopy)
-        script.SubsetClear()
-
-        For Each i In p.Ranges
-            script.SubsetAddRange(i.Start, i.End - i.Start)
-        Next
-
-        Dim outPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_" + ext
-
-        If ext = ".wav" Then
-            script.SaveWAV(outPath)
-        Else
-            script.StreamDemux(0, outPath)
-        End If
-
-        Log.WriteHeader("Audio cutting using VirtualDubMod")
-        Log.WriteLine(Macro.Solve(avs.GetScript) + CrLf)
-        Log.WriteLine(script.Text)
-
-        script.SaveScript(p.TempDir + Filepath.GetBase(outPath) + "_cut_.vcf")
-
-        Dim pwCut As New Proc
-        ProcessForm.ProcInstance = pwCut
-
-        pwCut.File = Packs.VirtualDubMod.GetPath
-        pwCut.Arguments = "/s""" + p.TempDir + Filepath.GetBase(outPath) + "_cut_.vcf"" /x"
-        pwCut.Wait = True
-        pwCut.Priority = s.ProcessPriority
-
-        If Not ProcessForm.IsVisible Then
-            pwCut.HideAfterStart = True
-        End If
-
-        Dim start = DateTime.Now
-
-        pwCut.Start()
-
-        If g.WasFileJustWritten(outPath) Then
-            ap.File = outPath
-            Log.WriteStats(start)
-            Log.WriteLine(MediaInfo.GetSummary(outPath))
-        Else
-            Log.Write("Error", "no output found")
-        End If
-    End Sub
-
-    Shared Function GetNicAudioCode(ap As AudioProfile) As String
-        Select Case Filepath.GetExt(ap.File)
-            Case ".ac3"
-                Return "AudioDub(last, NicAC3Source(""" + ap.File + """, Channels=" & ap.Channels & ", DRC=1))"
-            Case ".dts"
-                Return "AudioDub(last, NicDTSSource(""" + ap.File + """, Channels=" & ap.Channels & ", DRC=1))"
-            Case ".mpa", ".mp2", ".mp3"
-                Return "AudioDub(last, NicMPG123Source(""" + ap.File + """))"
-            Case ".wav"
-                Return "AudioDub(last, RaWavSource(""" + ap.File + """, Channels=" & ap.Channels & "))"
-        End Select
-    End Function
-
     Shared Function GetDown2Code() As String
         Dim a = _
       <a>
@@ -711,7 +651,6 @@ End Enum
 
 Public Enum CuttingMode
     mkvmerge
-    VirtualDubMod
-    NicAudio
     DirectShow
+    NicAudio
 End Enum

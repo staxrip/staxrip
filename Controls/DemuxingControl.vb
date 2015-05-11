@@ -172,17 +172,6 @@ Public Class DemuxingControl
         cli.Name = "Command Line Demuxer"
         sb.AddItem(cli)
 
-        Dim prx As New CommandLineDemuxer
-        prx.Name = "ProjectX"
-        prx.InputExtensions = "mpg ts pva".Split(" "c)
-        prx.OutputExtensions = {"m2v"}
-        prx.InputFormats = {"MPEG Video"}
-        prx.Command = "%app:Java%"
-        prx.Description = Strings.ProjectX
-        prx.Arguments = "-jar ""%app:ProjectX%"" %source_files% -out ""%working_dir%"""
-        prx.Active = False
-        sb.AddItem(prx)
-
         For Each i In Demuxer.GetDefaults()
             sb.AddItem(i)
         Next

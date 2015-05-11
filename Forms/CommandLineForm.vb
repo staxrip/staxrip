@@ -46,8 +46,6 @@ Class CommandLineForm
     End Sub
 
     Sub InitUI()
-        Dim groupPanel As FlowLayoutPanelEx
-        Dim lastGroup As String
         Dim flowPanels As New List(Of Control)
         Dim helpControl As Control
         Dim currentFlow As SimpleUI.FlowPage
@@ -60,19 +58,6 @@ Class CommandLineForm
             If Not flowPanels.Contains(parent) Then
                 flowPanels.Add(parent)
                 parent.SuspendLayout()
-            End If
-
-            If item.Group <> "" Then
-                If item.Group <> lastGroup Then
-                    groupPanel = SimpleUI.AddEmptyBlock(parent)
-                    groupPanel.Margin = New Padding With {.Top = 3, .Bottom = 3}
-                End If
-
-                lastGroup = item.Group
-                parent = groupPanel
-            Else
-                lastGroup = Nothing
-                groupPanel = Nothing
             End If
 
             Dim help As String
@@ -124,40 +109,15 @@ Class CommandLineForm
                 helpControl = cb
             ElseIf TypeOf item Is NumParam Then
                 Dim tempItem = DirectCast(item, NumParam)
-
-                'TODO: remove?
-                If item.Group <> "" Then
-                    'Dim param = DirectCast(item, NumParam)
-                    'Dim l = SimpleUI.AddLabel(parent, item.Text)
-                    'AddHandler l.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
-                    'l.Margin = item.LabelMargin
-                    'l.Tooltip = help
-                    'helpControl = l
-                    'Dim num = SimpleUI.AddNumeric(parent)
-                    'num.Margin = New Padding With {.Right = FontHeight}
-                    'num.Init(param.MinMaxStepDec)
-                    'param.Init(num)
-                Else
-                    Dim param = DirectCast(item, NumParam)
-                    Dim nb = SimpleUI.AddNumericBlock(parent)
-                    nb.Label.Text = item.Text
-                    nb.Label.Tooltip = help
-                    If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, nb.Label)
-                    nb.NumEdit.Init(param.MinMaxStepDec)
-                    AddHandler nb.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
-                    DirectCast(item, NumParam).Init(nb.NumEdit)
-                    helpControl = nb.Label
-                End If
-                'ElseIf TypeOf item Is CheckedNumParam Then
-                '    Dim tempItem = DirectCast(item, CheckedNumParam)
-
-                '    Dim nb = SimpleUI.AddCheckedNumericBlock(parent)
-                '    nb.CheckBox.Margin = New Padding(3) With {.Left = 9}
-                '    nb.CheckBox.Text = item.Text
-                '    nb.CheckBox.Tooltip = help
-                '    nb.NumEdit.Init(tempItem.MinMaxStepDec)
-                '    DirectCast(item, CheckedNumParam).Init(nb.CheckBox, nb.NumEdit)
-                '    helpControl = nb.CheckBox
+                Dim param = DirectCast(item, NumParam)
+                Dim nb = SimpleUI.AddNumericBlock(parent)
+                nb.Label.Text = item.Text
+                nb.Label.Tooltip = help
+                If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, nb.Label)
+                nb.NumEdit.Init(param.MinMaxStepDec)
+                AddHandler nb.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
+                DirectCast(item, NumParam).Init(nb.NumEdit)
+                helpControl = nb.Label
             ElseIf TypeOf item Is OptionParam Then
                 Dim tempItem = DirectCast(item, OptionParam)
                 Dim os = DirectCast(item, OptionParam)

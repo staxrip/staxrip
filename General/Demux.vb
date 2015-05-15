@@ -38,6 +38,14 @@ Public MustInherit Class Demuxer
         Return Name + " (" + InputExtensions.Join(", ") + " -> " + OutputExtensions.Join(", ") + ")"
     End Function
 
+    Overridable Function GetHelp() As String
+        For Each i In Packs.Packages
+            If Name = i.Value.Name Then
+                Return i.Value.Description
+            End If
+        Next
+    End Function
+
     Shared Function GetDefaults() As List(Of Demuxer)
         Dim ret As New List(Of Demuxer)
 
@@ -47,7 +55,6 @@ Public MustInherit Class Demuxer
         prx.OutputExtensions = {"m2v"}
         prx.InputFormats = {"MPEG Video"}
         prx.Command = "%app:Java%"
-        prx.Description = Strings.ProjectX
         prx.Arguments = "-jar ""%app:ProjectX%"" %source_files% -out ""%working_dir%"""
         prx.Active = False
         ret.Add(prx)
@@ -56,11 +63,9 @@ Public MustInherit Class Demuxer
         dsmux.Name = "dsmux"
         dsmux.InputExtensions = "ts".Split(" "c)
         dsmux.OutputExtensions = {"mkv"}
-        'dsmux.InputFormats = {"AVC"}
         dsmux.Command = "%app:dsmux%"
         dsmux.Arguments = """%temp_file%.mkv"" ""%source_file%"""
-        dsmux.Active = True
-        dsmux.Description = Strings.dsmux
+        dsmux.Active = False
         ret.Add(dsmux)
 
         ret.Add(New mkvDemuxer)
@@ -69,14 +74,23 @@ Public MustInherit Class Demuxer
 
         Dim dgi As New CommandLineDemuxer
         dgi.Name = "DGIndex"
-        dgi.InputExtensions = "mpg vob ts pva m2v".Split(" "c)
+        dgi.InputExtensions = "mpg vob ts".Split(" "c)
         dgi.OutputExtensions = {"m2v"}
         dgi.InputFormats = {"MPEG Video"}
         dgi.Command = "%app:DGIndex%"
         dgi.Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -od ""%temp_file%"" -hide -exit"
         dgi.SourceFilters = {"MPEG2Source"}
-        dgi.Description = Strings.DGMPGDec
         ret.Add(dgi)
+
+        Dim dgavcdec As New CommandLineDemuxer
+        dgavcdec.Name = "DGAVCIndex"
+        dgavcdec.InputExtensions = "ts".Split(" "c)
+        dgavcdec.OutputExtensions = {"h264"}
+        dgavcdec.InputFormats = {"AVC"}
+        dgavcdec.Command = "%app:DGAVCIndex%"
+        dgavcdec.Arguments = "-i %source_files_comma% -od ""%temp_file%.dga"" -a -h"
+        dgavcdec.Active = True
+        ret.Add(dgavcdec)
 
         Dim dgnv As New CommandLineDemuxer
         dgnv.Name = "DGIndexNV"
@@ -84,23 +98,21 @@ Public MustInherit Class Demuxer
         dgnv.OutputExtensions = {"dgi"}
         dgnv.InputFormats = {"AVC", "VC-1", "MPEG Video"}
         dgnv.Command = "%app:DGIndexNV%"
-        dgnv.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgi"" -a -e"
+        dgnv.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgi"" -a -h"
         dgnv.SourceFilters = {"DGSource"}
         dgnv.Active = False
-        dgnv.Description = Strings.DGDecNV
         ret.Add(dgnv)
 
-        'Dim dgim As New CommandLineDemuxer
-        'dgim.Name = "DGIndexIM"
-        'dgim.InputExtensions = "h264 mkv mp4 mpg ts m2ts".Split(" "c)
-        'dgim.OutputExtensions = {"dgi"}
-        'dgim.InputFormats = {"AVC", "VC-1", "MPEG Video"}
-        'dgim.Command = "%app:DGIndexIM%"
-        'dgim.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgi"" -a"
-        'dgim.SourceFilters = {"DGSourceIM"}
-        'dgim.Active = False
-        'dgim.Description = Strings.DGDecIM
-        'ret.Add(dgim)
+        Dim dgim As New CommandLineDemuxer
+        dgim.Name = "DGIndexIM"
+        dgim.InputExtensions = "h264 mkv mp4 mpg ts m2ts".Split(" "c)
+        dgim.OutputExtensions = {"dgi"}
+        dgim.InputFormats = {"AVC", "VC-1", "MPEG Video"}
+        dgim.Command = "%app:DGIndexIM%"
+        dgim.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgim"" -a"
+        dgim.SourceFilters = {"DGSourceIM"}
+        dgim.Active = False
+        ret.Add(dgim)
 
         Return ret
     End Function
@@ -112,7 +124,6 @@ Public Class CommandLineDemuxer
 
     Property Command As String = ""
     Property Arguments As String = ""
-    Property Description As String = ""
 
     Overrides ReadOnly Property HasConfigDialog() As Boolean
         Get
@@ -128,7 +139,7 @@ Public Class CommandLineDemuxer
 
     Overrides Sub Run()
         Using proc As New Proc
-            If Command?.Contains("DGIndex") Then
+            If Command?.Contains("DGIndex") OrElse Command?.Contains("DGAVCIndex") Then
                 proc.SkipPatterns = {"^\d+$"}
             ElseIf Command?.Contains("dsmux")
                 proc.SkipStrings = {"Muxing..."}
@@ -141,7 +152,12 @@ Public Class CommandLineDemuxer
             proc.Arguments = Macro.Solve(Arguments)
             proc.Start()
 
-            If Command?.Contains("DGIndex") Then
+            If Command?.Contains("DGAVCIndex") Then
+                FileHelp.Move(Filepath.GetDirAndBase(p.SourceFile) + ".log", p.TempDir + Filepath.GetBase(p.SourceFile) + "_DG.log")
+                FileHelp.Move(p.TempDir + Filepath.GetBase(p.SourceFile) + ".demuxed.264", p.TempDir + Filepath.GetBase(p.SourceFile) + ".h264")
+            ElseIf Command?.Contains("DGIndexIM") Then
+                FileHelp.Move(Filepath.GetDirAndBase(p.SourceFile) + ".log", p.TempDir + Filepath.GetBase(p.SourceFile) + "_DG.log")
+            ElseIf Command?.Contains("DGIndex") Then
                 FileHelp.Move(Filepath.GetDirAndBase(p.SourceFile) + ".log", p.TempDir + Filepath.GetBase(p.SourceFile) + "_DG.log")
                 FileHelp.Move(p.TempDir + Filepath.GetBase(p.SourceFile) + ".demuxed.m2v", p.TempDir + Filepath.GetBase(p.SourceFile) + ".m2v")
             End If
@@ -430,7 +446,7 @@ Public Class mkvDemuxer
         End Using
     End Function
 
-    Public Overrides ReadOnly Property HasConfigDialog As Boolean
+    Overrides ReadOnly Property HasConfigDialog As Boolean
         Get
             Return True
         End Get

@@ -1108,7 +1108,8 @@ Public Class MainForm
     Function GetIfoFile() As String
         Dim ret = Filepath.GetDir(p.SourceFile)
         If ret.EndsWith(" temp files\") Then ret = DirPath.GetParent(ret)
-        Return ret + Filepath.GetName(p.SourceFile).DeleteRight(5) + "0.ifo"
+        ret = ret + Filepath.GetName(p.SourceFile).DeleteRight(5) + "0.ifo"
+        If File.Exists(ret) Then Return ret
     End Function
 
     Sub RenameDVDTracks()
@@ -1129,9 +1130,15 @@ Public Class MainForm
                             If mi.GetAudio(x, "ID/String").Contains(" (0x" & dgID & ")") Then
                                 Dim stream = mi.AudioStreams(x)
                                 Dim title = If(stream.Title <> "", stream.Title + " - ", "")
-                                Dim newName = regex.Replace(i, " - ID" & x & " - " + stream.Language.Name + " - " + title).Replace("3_2ch", "6ch -").Replace(" DELAY", " -")
+                                Dim newName = regex.Replace(i, " - ID" & x & " - " + stream.Language.Name + " - " + title)
+
+                                If newName.Contains("2_0ch") Then newName = newName.Replace("2_0ch", "2ch -")
+                                If newName.Contains("3_2ch") Then newName = newName.Replace("3_2ch", "6ch -")
+                                If newName.Contains(" DELAY") Then newName = newName.Replace(" DELAY", " -")
+                                If newName.Contains(" - 0ms") Then newName = newName.Replace(" - 0ms", "")
+
                                 FileHelp.Move(i, newName)
-                            End If
+                                End If
                         Next
                     End Using
                 End If
@@ -1864,8 +1871,6 @@ Public Class MainForm
                 End If
             End If
 
-            Dim isVobSource As Boolean
-
             If Filepath.GetExt(p.SourceFile) = ".d2v" Then
                 Dim content = File.ReadAllText(p.SourceFile)
 
@@ -1874,7 +1879,7 @@ Public Class MainForm
                 Else
                     Dim ifoFile = GetIfoFile()
 
-                    If File.Exists(ifoFile) Then
+                    If ifoFile <> "" Then
                         Dim dar2 = MediaInfo.GetVideo(ifoFile, "DisplayAspectRatio")
 
                         If dar2 = "1.778" Then
@@ -1895,13 +1900,6 @@ Public Class MainForm
                         End If
                     End If
                 End If
-
-                For Each i In content.SplitLinesNoEmpty
-                    If i.Contains("\") AndAlso Filepath.GetExt(i) = ".vob" Then
-                        isVobSource = True
-                        Exit For
-                    End If
-                Next
             End If
 
             Dim errorMsg = ""
@@ -1978,7 +1976,7 @@ Public Class MainForm
             SetTargetLength(p.SourceSeconds)
             lbSourceLength.Text = lTargetLength.Text
 
-            DemuxVobSubSubtitles(isVobSource)
+            DemuxVobSubSubtitles()
             ConvertBluRaySubtitles()
             ExtractForcedVobSubSubtitles()
             p.VideoEncoder.Muxer.Init()
@@ -2133,60 +2131,55 @@ Public Class MainForm
         Next
     End Sub
 
-    Sub DemuxVobSubSubtitles(isVobSource As Boolean)
-        If isVobSource AndAlso Not File.Exists(p.TempDir + Filepath.GetBase(p.SourceFile) + ".idx") Then
-            Dim ifoPath = GetIfoFile()
-            Dim subtitleCount As Integer
+    Sub DemuxVobSubSubtitles()
+        If Not {"vob", "m2v"}.Contains(Filepath.GetExtNoDot(p.OriginalSourceFile)) Then Exit Sub
+        Dim ifoPath = GetIfoFile()
+        If ifoPath = "" Then Exit Sub
+        If File.Exists(p.TempDir + Filepath.GetBase(p.SourceFile) + ".idx") Then Exit Sub
+        Dim subtitleCount = MediaInfo.GetSubtitleCount(ifoPath)
 
-            If File.Exists(ifoPath) Then
-                Using mi As New MediaInfo(ifoPath)
-                    subtitleCount = mi.Subtitles.Count
-                End Using
-            End If
+        If subtitleCount > 0 Then
+            Dim pgcCount As Byte
+            Dim sectorPointer As Integer
+            Dim buffer = File.ReadAllBytes(ifoPath)
+            sectorPointer = (((buffer(&HCC) * &H1000000) + (buffer(&HCD) * &H10000)) + (buffer(&HCE) * &H100)) + (buffer(&HCF) * 1)
+            pgcCount = CByte((buffer(sectorPointer * &H800) * &H100) + buffer((sectorPointer * &H800) + 1))
 
-            If subtitleCount > 0 Then
-                Dim pgcCount As Byte
-                Dim sectorPointer As Integer
-                Dim buffer = File.ReadAllBytes(ifoPath)
-                sectorPointer = (((buffer(&HCC) * &H1000000) + (buffer(&HCD) * &H10000)) + (buffer(&HCE) * &H100)) + (buffer(&HCF) * 1)
-                pgcCount = CByte((buffer(sectorPointer * &H800) * &H100) + buffer((sectorPointer * &H800) + 1))
+            If pgcCount <> 0 Then
+                For i = 0 To pgcCount - 1
+                    Dim a = ((sectorPointer * &H800) + (i * 8)) + 12
+                    Dim b = (((buffer(a + 0) * &H1000000) + (buffer(a + 1) * &H10000)) + (buffer(a + 2) * &H100)) + (buffer(a + 3) * 1) + sectorPointer * &H800
+                    Dim hour, min, sec As Integer
 
-                If pgcCount <> 0 Then
-                    For i = 0 To pgcCount - 1
-                        Dim a = ((sectorPointer * &H800) + (i * 8)) + 12
-                        Dim b = (((buffer(a + 0) * &H1000000) + (buffer(a + 1) * &H10000)) + (buffer(a + 2) * &H100)) + (buffer(a + 3) * 1) + sectorPointer * &H800
-                        Dim hour, min, sec As Integer
+                    hour = CByte((((buffer(b + 4) And 240) >> 4) * 10) + (buffer(b + 4) And 15))
+                    min = CByte((((buffer(b + 5) And 240) >> 4) * 10) + (buffer(b + 5) And 15))
+                    sec = CByte((((buffer(b + 6) And 240) >> 4) * 10) + (buffer(b + 6) And 15))
 
-                        hour = CByte((((buffer(b + 4) And 240) >> 4) * 10) + (buffer(b + 4) And 15))
-                        min = CByte((((buffer(b + 5) And 240) >> 4) * 10) + (buffer(b + 5) And 15))
-                        sec = CByte((((buffer(b + 6) And 240) >> 4) * 10) + (buffer(b + 6) And 15))
+                    If Math.Abs(p.SourceSeconds - ((hour * 60 ^ 2) + (min * 60) + sec)) < 30 Then
+                        Dim args =
+                            ifoPath + CrLf +
+                            p.TempDir + Filepath.GetBase(p.SourceFile) + CrLf &
+                            (i + 1) & CrLf +
+                            "1" + CrLf +
+                            "ALL" + CrLf +
+                            "CLOSE"
 
-                        If Math.Abs(p.SourceSeconds - ((hour * 60 ^ 2) + (min * 60) + sec)) < 30 Then
-                            Dim args = _
-                                ifoPath + CrLf +
-                                p.TempDir + Filepath.GetBase(p.SourceFile) + CrLf &
-                                (i + 1) & CrLf +
-                                "1" + CrLf +
-                                "ALL" + CrLf +
-                                "CLOSE"
+                        Dim fileContent = p.TempDir + Filepath.GetBase(p.TargetFile) + "_vsrip.txt"
+                        args.WriteFile(fileContent)
 
-                            Dim fileContent = p.TempDir + Filepath.GetBase(p.TargetFile) + "_vsrip.txt"
-                            args.WriteFile(fileContent)
+                        Using proc As New Proc
+                            proc.Init("Demux subtitles using VSRip")
+                            proc.WriteLine(args + CrLf2)
+                            proc.File = Packs.VSRip.GetPath
+                            proc.Arguments = """" + fileContent + """"
+                            proc.Directory = Packs.VSRip.GetDir
+                            proc.AllowedExitCodes = {0, 1, 2}
+                            proc.Start()
+                        End Using
 
-                            Using proc As New Proc
-                                proc.Init("Demux subtitles using VSRip")
-                                proc.WriteLine(args + CrLf2)
-                                proc.File = Packs.VSRip.GetPath
-                                proc.Arguments = """" + fileContent + """"
-                                proc.Directory = Packs.VSRip.GetDir
-                                proc.AllowedExitCodes = {0, 1, 2}
-                                proc.Start()
-                            End Using
-
-                            Exit For
-                        End If
-                    Next
-                End If
+                        Exit For
+                    End If
+                Next
             End If
         End If
     End Sub
@@ -3960,7 +3953,7 @@ Public Class MainForm
     Sub DisableCropFilter()
         Dim f = p.AvsDoc.GetFilter("Crop")
 
-        If Not f Is Nothing AndAlso p.CropLeft + p.CropTop + p.CropRight + p.CropBottom = 0 Then
+        If Not f Is Nothing AndAlso CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
             f.Active = False
         End If
     End Sub
@@ -4194,15 +4187,6 @@ Public Class MainForm
         g.MakeBugReport(Nothing)
     End Sub
 
-    <Command("Perform | Run AVSMeter", "Runs AVSMeter to benchmark the AviSynth script.")>
-    Sub AVSMeter()
-        If File.Exists(p.SourceFile) Then
-            g.ShellExecute("cmd.exe", "/s /k """"" + Packs.AVSMeter.GetPath + """ """ + p.AvsDoc.Path + """""")
-        Else
-            MsgWarn("Please open a source file first.")
-        End If
-    End Sub
-
     Shared Function GetDefaultMainMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
@@ -4220,7 +4204,7 @@ Public Class MainForm
         ret.Add("Options", "OpenOptionsDialog", Keys.F8)
 
         ret.Add("Tools|Jobs...", "OpenJobsDialog", Keys.F6)
-        ret.Add("Tools|Applications...", "OpenApplicationsDialog")
+        ret.Add("Tools|Apps...", "OpenApplicationsDialog")
 
         ret.Add("Tools|Files|Log File", "ExecuteCmdl", """%text_editor%"" ""%temp_file%_StaxRip.log""")
         ret.Add("Tools|Files|AviSynth Script", "ExecuteCmdl", """%text_editor%"" ""%avs_file%""")
@@ -4236,7 +4220,7 @@ Public Class MainForm
         ret.Add("Tools|Directories|System", "ExecuteCmdl", """%system_dir%""")
         ret.Add("Tools|Launch", "DynamicMenuItem", DynamicMenuItemID.LaunchApplications)
 
-        ret.Add("Tools|Advanced|AVSMeter...", "AVSMeter")
+        ret.Add("Tools|Advanced|AVSMeter...", "ExecuteCmdl", """%app:AVSMeter%"" ""%avs_file%""" + CrLf + "pause", False, False, True)
         ret.Add("Tools|Advanced|Codec Comparison...", "ImageGrabber")
         ret.Add("Tools|Advanced|Command Prompt...", "ShowCommandPrompt")
         ret.Add("Tools|Advanced|Event Commands...", "OpenEventCommandsDialog")
@@ -4249,7 +4233,12 @@ Public Class MainForm
         ret.Add("Tools|Edit Menu...", "OpenMainMenuEditor")
         ret.Add("Tools|Settings...", "OpenSettingsDialog", "")
 
-        ret.Add("Help|Support Forum", "ExecuteCmdl", "http://forum.videohelp.com/threads/369913-StaxRip-support-%28encoder-GUI-for-x265-h265-hevc-mkv-4K%29")
+        If g.IsCulture("de") Then
+            ret.Add("Help|Support Forum", "ExecuteCmdl", "http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-(Diskussion)")
+        Else
+            ret.Add("Help|Support Forum", "ExecuteCmdl", "http://forum.videohelp.com/threads/369913-StaxRip-support-%28encoder-GUI-for-x265-h265-hevc-mkv-4K%29")
+        End If
+
         ret.Add("Help|Guides", "ExecuteCmdl", "http://sourceforge.net/p/staxmedia/wiki/Guides")
         ret.Add("Help|Bug Report", "MakeBugReport")
         ret.Add("Help|Mail", "ExecuteCmdl", "mailto:frank_skare@yahoo.de?subject=StaxRip%20feedback")
@@ -4260,9 +4249,6 @@ Public Class MainForm
         ret.Add("Help|Applications", "DynamicMenuItem", DynamicMenuItemID.HelpApplications)
         ret.Add("Help|-")
         ret.Add("Help|Info...", "OpenHelpTopic", "info")
-
-        'If g.IsCulture("de") Then ret.Add("Help|Forum|Gleitz", "ExecuteCmdl", "http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-(Diskussion)")
-        'ret.Add("Help|Forum|Doom9", "ExecuteCmdl", "http://forum.doom9.org/showthread.php?t=102652")
 
         Return ret
     End Function
@@ -4622,14 +4608,6 @@ Public Class MainForm
 
         IsLoading = False
 
-        If My.Application.CommandLineArgs.Count = 0 Then
-            If g.IsCulture("de") AndAlso Not s.Storage.GetString("german first start") = Application.ProductVersion Then
-                s.Storage.SetString("german first start", Application.ProductVersion)
-
-                MsgInfo("Erste Schritte", "Solltest du noch keine Erfahrung mit StaxRip haben wird dringend empfohlen [http://encodingwissen.de/staxrip/ Brother John's StaxRip Anleitung] durch zu arbeiten.")
-            End If
-        End If
-
         'Using f As New TestForm
         '    f.StartPosition = FormStartPosition.CenterScreen
         '    f.ShowDialog()
@@ -4727,6 +4705,8 @@ Public Class MainForm
         '    f.StartPosition = FormStartPosition.CenterParent
         '    f.ShowDialog()
         'End Using
+
+        'LoadProject("D:\Temp\test temp files\test.srip")
     End Sub
 
     <Command("Dialog | LAV Filters video decoder configuration", "Shows LAV Filters video decoder configuration")>

@@ -561,20 +561,9 @@ a {
         WriteElement("p", "<img src=""" + HelpForm.MainImagePath + """ style=""margin-bottom:-8pt;margin-left:-4pt"">")
 
         If showTitle Then
-            Dim header = ""
-
-            If g.IsCulture("de") Then
-                header = "Bitte lest Brother John's <a href=""http://encodingwissen.de"">Encodingwissen</a>, es enthält Grundlagen, Hintergrundinfos und eine ausführliche <a href=""http://encodingwissen.de/staxrip"">deutsche StaxRip Anleitung</a>.<br><br>"
-            End If
-
-            header += "StaxRip supports context help by right-clicking a user interface element like a control, menu item or list item."
-
+            Dim header = "StaxRip supports context help by right-clicking a user interface element like a control, menu item or list item."
             header = "<div style=""font-size:80%; border: thin solid #666666; background-color: #F4F4F4; padding: 20px"">" + header + "</div>"
-
-            If showTopSection Then
-                Writer.WriteRaw(header)
-            End If
-
+            If showTopSection Then Writer.WriteRaw(header)
             Writer.WriteElementString("h1", title)
         End If
 

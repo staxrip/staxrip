@@ -101,7 +101,7 @@ Public Class ApplicationsForm
         Me.tsbWebsite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbWebsite.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbWebsite.Name = "tsbWebsite"
-        Me.tsbWebsite.Size = New System.Drawing.Size(85, 36)
+        Me.tsbWebsite.Size = New System.Drawing.Size(84, 36)
         Me.tsbWebsite.Text = "Website "
         Me.tsbWebsite.ToolTipText = "Opens the application's website"
         '
@@ -161,7 +161,7 @@ Public Class ApplicationsForm
         Me.Location = New System.Drawing.Point(0, 0)
         Me.Margin = New System.Windows.Forms.Padding(1)
         Me.Name = "ApplicationsForm"
-        Me.Text = "Applications"
+        Me.Text = "Apps"
         Me.ToolStrip.ResumeLayout(False)
         Me.ToolStrip.PerformLayout()
         Me.ResumeLayout(False)
@@ -204,8 +204,8 @@ Public Class ApplicationsForm
         flp.Controls.Add(SetupButton)
         AddSection("Location")
         AddSection("Version")
-        AddSection("Description")
         AddSection("Filters")
+        AddSection("Description")
     End Sub
 
     Sub ShowActivePackage()
@@ -226,15 +226,15 @@ Public Class ApplicationsForm
 
         Contents("Status").Text = ActivePackage.GetStatusDisplay()
         Contents("Location").Text = path
-        Contents("Version").Text = ActivePackage.VersionName
+        Contents("Version").Text = ActivePackage.Version
         Contents("Description").Text = ActivePackage.Description
         Contents("Filters").Text = ActivePackage.Description
 
         Contents("Location").Visible = path <> ""
         Headers("Location").Visible = path <> ""
 
-        Contents("Version").Visible = ActivePackage.VersionName <> ""
-        Headers("Version").Visible = ActivePackage.VersionName <> ""
+        Contents("Version").Visible = ActivePackage.Version <> ""
+        Headers("Version").Visible = ActivePackage.Version <> ""
 
         Headers("Filters").Visible = TypeOf ActivePackage Is AviSynthPluginPackage
         Contents("Filters").Visible = TypeOf ActivePackage Is AviSynthPluginPackage
@@ -330,17 +330,17 @@ Public Class ApplicationsForm
             Case Keys.F12
                 If Not File.Exists(ActivePackage.GetPath) Then Exit Sub
 
-                Dim input = InputBox.Show("Version name?", "StaxRip", ActivePackage.VersionName)
+                Dim input = InputBox.Show("Version name?", "StaxRip", ActivePackage.Version)
 
                 If input <> "" Then
-                    ActivePackage.VersionName = input
+                    ActivePackage.Version = input
                     ActivePackage.VersionDate = File.GetLastWriteTimeUtc(ActivePackage.GetPath)
 
                     Dim t As String
 
                     For Each i In Packs.Packages.Values
-                        If i.VersionName <> "" Then
-                            t += i.Name + " = " + i.VersionName + "; " + i.VersionDate.ToString("yyyy-MM-dd") + CrLf
+                        If i.Version <> "" Then
+                            t += i.Name + " = " + i.Version + "; " + i.VersionDate.ToString("yyyy-MM-dd") + CrLf
                         End If
                     Next
 
@@ -357,7 +357,9 @@ Public Class ApplicationsForm
         For Each i In Packs.Packages.Values
             Dim search = SearchTextBox.Text.ToLower
 
-            If i.Name.ToLower.Contains(search) OrElse i.Description.ToLower.Contains(search) Then
+            If i.Name.ToLower.Contains(search) OrElse i.Description.ToLower.Contains(search) OrElse
+                i.Version?.ToLower.Contains(search) Then
+
                 Dim n = tv.AddNode(i.TreePath + "|" + i.Name)
                 Nodes.Add(n)
                 n.Tag = i

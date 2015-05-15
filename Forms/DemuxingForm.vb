@@ -38,7 +38,8 @@ Public Class DemuxingForm
     Friend WithEvents Label9 As System.Windows.Forms.Label
     Friend WithEvents Label10 As System.Windows.Forms.Label
     Friend WithEvents tbDescription As System.Windows.Forms.TextBox
-
+    Friend WithEvents ArgumentsFlowLayoutPanel As FlowLayoutPanel
+    Friend WithEvents llHelp As LinkLabel
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -65,7 +66,10 @@ Public Class DemuxingForm
         Me.Label10 = New System.Windows.Forms.Label()
         Me.tbDescription = New System.Windows.Forms.TextBox()
         Me.Label9 = New System.Windows.Forms.Label()
+        Me.ArgumentsFlowLayoutPanel = New System.Windows.Forms.FlowLayoutPanel()
+        Me.llHelp = New System.Windows.Forms.LinkLabel()
         Me.tlp.SuspendLayout()
+        Me.ArgumentsFlowLayoutPanel.SuspendLayout()
         Me.SuspendLayout()
         '
         'tbName
@@ -150,7 +154,7 @@ Public Class DemuxingForm
         '
         Me.llMacros.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.llMacros.AutoSize = True
-        Me.llMacros.Location = New System.Drawing.Point(987, 308)
+        Me.llMacros.Location = New System.Drawing.Point(3, 0)
         Me.llMacros.Name = "llMacros"
         Me.llMacros.Size = New System.Drawing.Size(70, 25)
         Me.llMacros.TabIndex = 20
@@ -170,7 +174,7 @@ Public Class DemuxingForm
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(968, 541)
+        Me.bnCancel.Location = New System.Drawing.Point(968, 603)
         Me.bnCancel.Size = New System.Drawing.Size(100, 36)
         Me.bnCancel.Text = "Cancel"
         '
@@ -178,7 +182,7 @@ Public Class DemuxingForm
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(862, 541)
+        Me.bnOK.Location = New System.Drawing.Point(862, 603)
         Me.bnOK.Size = New System.Drawing.Size(100, 36)
         Me.bnOK.Text = "OK"
         '
@@ -194,7 +198,6 @@ Public Class DemuxingForm
         Me.tlp.Controls.Add(Me.llBrowse, 1, 6)
         Me.tlp.Controls.Add(Me.tbName, 0, 1)
         Me.tlp.Controls.Add(Me.tbArguments, 0, 9)
-        Me.tlp.Controls.Add(Me.llMacros, 1, 8)
         Me.tlp.Controls.Add(Me.tbInput, 1, 1)
         Me.tlp.Controls.Add(Me.tbCommand, 0, 7)
         Me.tlp.Controls.Add(Me.tbVideoOut, 0, 3)
@@ -210,6 +213,7 @@ Public Class DemuxingForm
         Me.tlp.Controls.Add(Me.tbDescription, 0, 11)
         Me.tlp.Controls.Add(Me.Label9, 0, 4)
         Me.tlp.Controls.Add(Me.tbSourceFilters, 0, 5)
+        Me.tlp.Controls.Add(Me.ArgumentsFlowLayoutPanel, 1, 8)
         Me.tlp.Location = New System.Drawing.Point(9, 2)
         Me.tlp.Margin = New System.Windows.Forms.Padding(0)
         Me.tlp.Name = "tlp"
@@ -227,7 +231,7 @@ Public Class DemuxingForm
         Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
         Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-        Me.tlp.Size = New System.Drawing.Size(1060, 536)
+        Me.tlp.Size = New System.Drawing.Size(1060, 598)
         Me.tlp.TabIndex = 21
         '
         'Label6
@@ -236,9 +240,9 @@ Public Class DemuxingForm
         Me.Label6.Location = New System.Drawing.Point(3, 231)
         Me.Label6.Margin = New System.Windows.Forms.Padding(3, 15, 3, 0)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(341, 25)
+        Me.Label6.Size = New System.Drawing.Size(172, 25)
         Me.Label6.TabIndex = 12
-        Me.Label6.Text = "Full executable path, may contain macros:"
+        Me.Label6.Text = "Full executable path:"
         '
         'Label2
         '
@@ -284,9 +288,9 @@ Public Class DemuxingForm
         Me.Label7.Location = New System.Drawing.Point(3, 308)
         Me.Label7.Margin = New System.Windows.Forms.Padding(3, 15, 3, 0)
         Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(273, 25)
+        Me.Label7.Size = New System.Drawing.Size(104, 25)
         Me.Label7.TabIndex = 29
-        Me.Label7.Text = "Arguments, may contain macros:"
+        Me.Label7.Text = "Arguments:"
         '
         'Label8
         '
@@ -317,7 +321,8 @@ Public Class DemuxingForm
         Me.tbDescription.Location = New System.Drawing.Point(3, 444)
         Me.tbDescription.Multiline = True
         Me.tbDescription.Name = "tbDescription"
-        Me.tbDescription.Size = New System.Drawing.Size(1054, 89)
+        Me.tbDescription.ReadOnly = True
+        Me.tbDescription.Size = New System.Drawing.Size(1054, 151)
         Me.tbDescription.TabIndex = 33
         '
         'Label9
@@ -331,12 +336,34 @@ Public Class DemuxingForm
         Me.Label9.TabIndex = 31
         Me.Label9.Text = "Run only if defined source filters are used:"
         '
+        'ArgumentsFlowLayoutPanel
+        '
+        Me.ArgumentsFlowLayoutPanel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ArgumentsFlowLayoutPanel.AutoSize = True
+        Me.ArgumentsFlowLayoutPanel.Controls.Add(Me.llMacros)
+        Me.ArgumentsFlowLayoutPanel.Controls.Add(Me.llHelp)
+        Me.ArgumentsFlowLayoutPanel.Location = New System.Drawing.Point(926, 305)
+        Me.ArgumentsFlowLayoutPanel.Name = "ArgumentsFlowLayoutPanel"
+        Me.ArgumentsFlowLayoutPanel.Size = New System.Drawing.Size(131, 25)
+        Me.ArgumentsFlowLayoutPanel.TabIndex = 34
+        '
+        'llHelp
+        '
+        Me.llHelp.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.llHelp.AutoSize = True
+        Me.llHelp.Location = New System.Drawing.Point(79, 0)
+        Me.llHelp.Name = "llHelp"
+        Me.llHelp.Size = New System.Drawing.Size(49, 25)
+        Me.llHelp.TabIndex = 21
+        Me.llHelp.TabStop = True
+        Me.llHelp.Text = "Help"
+        '
         'DemuxingForm
         '
         Me.AcceptButton = Me.bnOK
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1078, 587)
+        Me.ClientSize = New System.Drawing.Size(1078, 649)
         Me.Controls.Add(Me.tlp)
         Me.Controls.Add(Me.bnCancel)
         Me.Controls.Add(Me.bnOK)
@@ -347,6 +374,8 @@ Public Class DemuxingForm
         Me.Text = "Demux Configuration"
         Me.tlp.ResumeLayout(False)
         Me.tlp.PerformLayout()
+        Me.ArgumentsFlowLayoutPanel.ResumeLayout(False)
+        Me.ArgumentsFlowLayoutPanel.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -372,7 +401,7 @@ Public Class DemuxingForm
         tbVideoOut.Text = Temp.OutputExtensions.ToArray.Join(", ")
         tbArguments.Text = Temp.Arguments
         tbCommand.Text = Temp.Command
-        tbDescription.Text = Temp.Description
+        tbDescription.Text = Temp.GetHelp
 
         ActiveControl = bnOK
     End Sub
@@ -387,7 +416,6 @@ Public Class DemuxingForm
             Target.SourceFilters = tbSourceFilters.Text.SplitNoEmptyAndWhiteSpace(",", ";")
             Target.Command = tbCommand.Text
             Target.Arguments = tbArguments.Text
-            Target.Description = tbDescription.Text
         End If
     End Sub
 
@@ -421,5 +449,22 @@ Public Class DemuxingForm
 
     Private Sub llMacros_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llMacros.LinkClicked
         MacrosForm.ShowDialogForm()
+    End Sub
+
+    Private Sub llHelp_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llHelp.LinkClicked
+        For Each i In Packs.Packages
+            If tbName.Text = i.Value.Name Then
+                If i.Value.GetHelpPath <> "" Then
+                    g.ShellExecute(i.Value.GetHelpPath)
+                Else
+                    MsgWarn("There is no help available for this app.")
+                End If
+
+                Exit Sub
+            End If
+        Next
+
+        MsgWarn("The demuxer name '" + tbName.Text + "' does not match with the name of one of StaxRip's apps. StaxRip includes the following apps:" + CrLf2 +
+                Packs.Packages.Where(Function(b) Not TypeOf b.Value Is AviSynthPluginPackage).Select(Function(a) a.Value.Name).ToArray.Sort.Join(", "))
     End Sub
 End Class

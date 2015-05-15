@@ -319,8 +319,9 @@ Public Class Audio
         Select Case Filepath.GetExt(ap.File)
             Case ".ac3"
                 Return "AudioDub(last, NicAC3Source(""" + ap.File + """, Channels = " & ap.Channels & "))"
-            Case ".dts"
-                Return "AudioDub(last, NicDTSSource(""" + ap.File + """, Channels = " & ap.Channels & "))"
+            'Avatar mkv sample don't work
+            ' Case ".dts"
+            '    Return "AudioDub(last, NicDTSSource(""" + ap.File + """, Channels = " & ap.Channels & "))"
             Case ".mpa", ".mp2", ".mp3"
                 Return "AudioDub(last, NicMPASource(""" + ap.File + """))"
             Case ".wav"

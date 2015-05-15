@@ -309,28 +309,16 @@ Public Class CropForm
         Select Case Side
             Case AnchorStyles.Left
                 p.CropLeft += x
-
-                If opposite Then
-                    p.CropRight += x
-                End If
+                If opposite Then p.CropRight += x
             Case AnchorStyles.Top
                 p.CropTop += x
-
-                If opposite Then
-                    p.CropBottom += x
-                End If
+                If opposite Then p.CropBottom += x
             Case AnchorStyles.Right
                 p.CropRight += x
-
-                If opposite Then
-                    p.CropLeft += x
-                End If
+                If opposite Then p.CropLeft += x
             Case AnchorStyles.Bottom
                 p.CropBottom += x
-
-                If opposite Then
-                    p.CropTop += x
-                End If
+                If opposite Then p.CropTop += x
         End Select
 
         UpdateAll()

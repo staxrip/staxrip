@@ -1149,7 +1149,7 @@ Class IntelEncoder
     Overloads Sub Encode(args As String)
         Using proc As New Proc
             proc.Init("Encoding using QSVEncC")
-            proc.SkipStrings = {"%]"}
+            proc.SkipStrings = {"%]", "frames:"}
             proc.File = Packs.QSVEncC.GetPath
             proc.Arguments = args
             proc.Start()
@@ -1297,13 +1297,20 @@ Class IntelEncoder
             .Text = "Custom Switches:",
             .ArgsFunc = Function() Custom.Value}
 
+        Property HardwareDecoding As New BoolParam With {
+            .Switch = "--avqsv",
+            .Text = "Use hardware decoding (bypasses AviSynth)",
+            .Help = "Uses the source file as input for QSVEncC as well as StaxRip's cut/trim and crop values.",
+            .Value = False,
+            .DefaultValue = False}
+
         Private ItemsValue As List(Of CommandLineItem)
 
         Overrides ReadOnly Property Items As List(Of CommandLineItem)
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineItem)
-                    ItemsValue.AddRange({Mode, QualitySpeed, Deinterlace, BFF, Quality, QPI, QPP, QPB, BFrames, Ref, GOPLength, LookaheadDepth, Resize, Scenechange, MBBRC, Custom})
+                    ItemsValue.AddRange({Mode, QualitySpeed, Deinterlace, BFF, Quality, QPI, QPP, QPB, BFrames, Ref, GOPLength, LookaheadDepth, HardwareDecoding, Resize, Scenechange, MBBRC, Custom})
                 End If
 
                 Return ItemsValue
@@ -1316,7 +1323,7 @@ Class IntelEncoder
             QPI.Visible = {"cqp", "vqp"}.Contains(Mode.ValueText)
             QPP.Visible = {"cqp", "vqp"}.Contains(Mode.ValueText)
             LookaheadDepth.Visible = {"la", "la-hrd", "la-icq"}.Contains(Mode.ValueText)
-            MBBRC.Visible = {"icq", "la-icq"}.Contains(Mode.ValueText)
+            MBBRC.Visible = Not {"cqp", "la", "la-hrd", "la-icq", "vqp", "icq"}.Contains(Mode.ValueText)
             BFF.Visible = Deinterlace.Value > 0
 
             If p.AvsDoc.IsFilterActive("Resize", "Hardware Encoder") Then
@@ -1359,6 +1366,22 @@ Class IntelEncoder
             If p.AutoARSignaling Then
                 Dim par = Calc.GetTargetPAR
                 If par <> New Point(1, 1) Then ret += " --sar " & par.X & ":" & par.Y
+            End If
+
+            If p.Ranges.Count > 0 Then
+                ret += " --trim " + p.Ranges.Select(Function(range) range.Start & ":" & range.End).Join(",")
+            End If
+
+            If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 Then
+                ret += " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom
+            End If
+
+            If HardwareDecoding.Value Then
+                If FileTypes.VideoText.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
+                    sourcePath = p.OriginalSourceFile
+                Else
+                    sourcePath = p.SourceFile
+                End If
             End If
 
             If includePaths Then ret += " --input-file """ + sourcePath + """ --output-file """ + targetPath + """"

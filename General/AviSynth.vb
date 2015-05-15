@@ -398,18 +398,19 @@ Public Class AviSynthCategory
 
         Dim misc As New AviSynthCategory("Misc")
 
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "SelectEven", "SelectEven()", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "RemoveGrain", "RemoveGrain()", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "Clense", "Clense()", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "SangNom2", "SangNom2()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "checkmate", "checkmate()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "Clense", "Clense()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "f3kdb", "f3kdb()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "nnedi3", "nnedi3()", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "UnDot", "UnDot()", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "TDeint", "TDeint()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "nnedi3", "nnedi3()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "Prefetch(4) ", "Prefetch(4) ", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "QTGMC | QTGMC Medium", "QTGMC(Preset=""Medium"")", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "QTGMC | QTGMC Slow", "QTGMC(Preset=""Slow"")", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "RemoveGrain", "RemoveGrain()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "SangNom2", "SangNom2()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "SelectEven", "SelectEven()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "TDeint", "TDeint()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "UnDot", "UnDot()", True))
 
         ret.Add(misc)
 

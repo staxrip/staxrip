@@ -22,7 +22,7 @@ Public Class Packs
     Public Shared ffms2 As New ffms2Package
     Public Shared Haali As New HaaliSplitter
     Public Shared Java As New JavaPackage
-    Public Shared lsmashWorks As New lsmashWorksPackage
+    Public Shared lsmashWorks As New LSmashWorksPackage
     Public Shared masktools2 As New masktools2Package
     Public Shared MediaInfo As New MediaInfoPackage
     Public Shared Mkvmerge As New MKVToolNixPackage
@@ -46,10 +46,14 @@ Public Class Packs
     Public Shared x264 As New x264Package
     Public Shared x265 As New x265Package
     Public Shared xvid_encraw As New xvid_encrawPackage
+    Public Shared DGAVCIndex As New DGAVCIndexPackage
+    Public Shared flash3kyuu_deband As New flash3kyuu_debandPackage
 
     Public Shared Property Packages As New Dictionary(Of String, Package)
 
     Shared Sub Init()
+        AddPackage(flash3kyuu_deband)
+        AddPackage(DGAVCIndex)
         AddPackage(autocrop)
         AddPackage(AviSynth)
         AddPackage(avs4x26x)
@@ -105,7 +109,7 @@ Public Class Packs
                         Dim name = i.Left("=").Trim
 
                         If name = i2.Name Then
-                            i2.VersionName = i.Right("=").Left(";").Trim
+                            i2.Version = i.Right("=").Left(";").Trim
                             Dim a = i.Right("=").Right(";").Trim.Split("-"c)
                             i2.VersionDate = New DateTime(CInt(a(0)), CInt(a(1)), CInt(a(2)))
                         End If
@@ -120,11 +124,11 @@ Public Class Packs
     End Sub
 End Class
 
-Public MustInherit Class Package
+Public Class Package
     Property Name As String
     Property FileNotFoundMessage As String
     Property SetupAction As Action
-    Property VersionName As String
+    Property Version As String
     Property WebURL As String
     Property Description As String
     Property VersionDate As DateTime
@@ -234,7 +238,7 @@ Public MustInherit Class Package
     End Function
 
     Function GetStatusVersion() As String
-        If VersionName <> "" AndAlso Not IsCorrectVersion(GetPath) Then
+        If Version <> "" AndAlso Not IsCorrectVersion(GetPath) Then
             Dim text = "Unknown version, use at your own risk, press F12 to edit the version."
 
             If SetupAction Is Nothing Then
@@ -332,6 +336,8 @@ Public Class AutoCropPackage
     Sub New()
         Name = "AutoCrop"
         Filename = "AutoCrop.dll"
+        WebURL = "http://avisynth.org.ru/docs/english/externalfilters/autocrop.htm"
+        HelpURL = "http://avisynth.org.ru/docs/english/externalfilters/autocrop.htm"
         Description = "AutoCrop is an AviSynth filter that automatically crops the black borders from a clip. It operates in either preview mode where it overlays the recommended cropping information on the existing clip, or cropping mode where it really crops the clip."
         FilterNames = {"AutoCrop"}
     End Sub
@@ -584,12 +590,12 @@ Public Class MKVToolNixPackage
         WebURL = "http://www.bunkus.org/videotools/mkvtoolnix"
         Description = "MKVtoolnix contains mkvmerge and mkvextract to mux and demux Matroska (MKV) files."
         HelpFile = "doc\command_line_references_and_guide.html"
-        LaunchName = "mmg.exe"
+        LaunchName = "mkvtoolnix-gui.exe"
     End Sub
 
     Public Overrides ReadOnly Property LaunchTitle As String
         Get
-            Return "mkvmerge GUI"
+            Return "MKVToolNix GUI"
         End Get
     End Property
 End Class
@@ -642,13 +648,13 @@ Public Class ffms2Package
     End Sub
 End Class
 
-Public Class lsmashWorksPackage
+Public Class LSmashWorksPackage
     Inherits AviSynthPluginPackage
 
     Sub New()
         Name = "L-SMASH-Works"
         Filename = "LSMASHSource.dll"
-        WebURL = "https://github.com/VFR-maniac/L-SMASH-Works"
+        WebURL = "http://avisynth.nl/index.php/LSMASHSource"
         Description = "AviSynth source filter supporting various input formats."
         HelpFile = "README.txt"
         FilterNames = {"LSMASHVideoSource",
@@ -677,7 +683,7 @@ Public Class qaacPackage
         Name = "qaac"
         Filename = "qaac64.exe"
         WebURL = "https://sites.google.com/site/qaacpage"
-        Description = "qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the 64-Bit iTunes installer using the context menu within the 7zip file manager. The makeportable script found on the qaac website can also be used."
+        Description = "qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the x64 iTunes installer using 7-Zip. The makeportable script found on the qaac website can also be used."
     End Sub
 
     Overrides ReadOnly Property IsRequired As Boolean
@@ -690,10 +696,11 @@ Public Class qaacPackage
     End Property
 
     Overrides Function GetStatus() As String
-        Dim path = CommonDirs.Programs + "\Common Files\Apple\Apple Application Support\CoreAudioToolbox.dll"
+        Dim path = CommonDirs.Programs + "Common Files\Apple\Apple Application Support\CoreAudioToolbox.dll"
 
         If Not File.Exists(path) AndAlso Not File.Exists(GetDir() + "QTfiles64\CoreAudioToolbox.dll") Then
-            Return "Failed to locate Apple Application Support, StaxRip checks following locations:" + CrLf2 + path + CrLf2 + GetDir() + "QTfiles64\CoreAudioToolbox.dll"
+            Return "Failed to locate CoreAudioToolbox, read the description below. Expected paths:" +
+                CrLf2 + path + CrLf2 + GetDir() + "QTfiles64\CoreAudioToolbox.dll"
         End If
     End Function
 End Class
@@ -1058,6 +1065,19 @@ Public Class RgToolsPackage
     End Sub
 End Class
 
+Public Class flash3kyuu_debandPackage
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "flash3kyuu_deband"
+        Filename = "flash3kyuu_deband.dll"
+        WebURL = "http://forum.doom9.org/showthread.php?t=161411"
+        HelpFile = "flash3kyuu_deband.txt"
+        Description = "Simple debanding filter that can be quite effective for some anime sources."
+        FilterNames = {"f3kdb"}
+    End Sub
+End Class
+
 Public Class QTGMCPackage
     Inherits AviSynthPluginPackage
 
@@ -1069,5 +1089,17 @@ Public Class QTGMCPackage
         Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée."
         FilterNames = {"QTGMC"}
         Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}
+    End Sub
+End Class
+
+Public Class DGAVCIndexPackage
+    Inherits Package
+
+    Sub New()
+        Name = "DGAVCIndex"
+        Filename = "DGAVCIndex.exe"
+        Description = Strings.DGAVCIndex
+        HelpFile = "DGAVCIndexManual.html"
+        LaunchName = Filename
     End Sub
 End Class

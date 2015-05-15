@@ -3,23 +3,17 @@ Imports Microsoft.Win32
 Imports StaxRip.UI
 
 Imports System.Globalization
-Imports System.Reflection
 Imports System.Drawing.Design
 Imports System.Runtime.InteropServices
 Imports System.Runtime.Serialization
-Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
-Imports System.Xml
-Imports System.Xml.Linq
-Imports System.Xml.Serialization
-Imports System.Resources
 Imports System.ComponentModel
 
-Imports VB6 = Microsoft.VisualBasic
 Imports System.Windows.Forms.VisualStyles
 Imports System.Management
+Imports System.Reflection
 
 Public Module ShortcutModule
     Public g As New GlobalClass
@@ -2709,7 +2703,7 @@ Public Class GlobalCommands
     <Command("Perform | Execute Command Line", "Executes command lines separated by a line break line by line.")>
     Sub ExecuteCmdl(
         <DispName("Command Line"),
-        Description("One or more command lines to be executed."),
+        Description("One or more command lines to be executed or if batch mode is used content of the batch file."),
         Editor(GetType(CmdlTypeEditor), GetType(UITypeEditor))>
         commandLines As String,
         <DispName("Wait For Exit"),
@@ -2717,7 +2711,7 @@ Public Class GlobalCommands
         DefaultValue(False)>
         waitForExit As Boolean,
         <DispName("Show Process Window"),
-        Description("Shows the process window."),
+        Description("Redirects the output of command line apps to the process window."),
         DefaultValue(False)>
         showProcessWindow As Boolean,
         <DispName("Batch Mode"),
@@ -2729,7 +2723,6 @@ Public Class GlobalCommands
 
         If showProcessWindow AndAlso Not ProcessForm.IsActive Then
             closeNeeded = True
-            ProcessForm.ShowForm(False)
         End If
 
         If asBatch Then
@@ -2740,7 +2733,7 @@ Public Class GlobalCommands
             AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 
             Using proc As New Proc
-                proc.Init("Execute Command Line")
+                If showProcessWindow Then proc.Init("Execute Command Line")
                 proc.WriteLine(batchCode + CrLf2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
@@ -2755,13 +2748,14 @@ Public Class GlobalCommands
                 End Try
             End Using
         Else
-            For Each i As String In Macro.Solve(commandLines).SplitLinesNoEmpty
-                Using pw As New Proc
-                    pw.CommandLine = i
-                    pw.Wait = waitForExit
+            For Each i In Macro.Solve(commandLines).SplitLinesNoEmpty
+                Using proc As New Proc
+                    If showProcessWindow Then proc.Init("Execute Command Line")
+                    proc.CommandLine = i
+                    proc.Wait = waitForExit
 
                     Try
-                        pw.Start()
+                        proc.Start()
                     Catch ex As Exception
                         g.ShowException(ex)
                         Log.WriteLine(ex.Message)
@@ -2770,9 +2764,7 @@ Public Class GlobalCommands
             Next
         End If
 
-        If closeNeeded Then
-            ProcessForm.CloseProcessForm()
-        End If
+        If closeNeeded Then ProcessForm.CloseProcessForm()
     End Sub
 
     <Command("Perform | Play Sound", "Plays a mp3, wav or wmv sound file.")>
@@ -2783,6 +2775,13 @@ Public Class GlobalCommands
         Misc.PlayAudioFile(Filepath, Volume)
     End Sub
 
+    Function GetReleaseType() As String
+        Dim version = Assembly.GetExecutingAssembly.GetName.Version
+        If version.MinorRevision <> 0 Then Return "pre-release"
+        If version.Minor <> 0 Then Return "beta"
+        Return "stable"
+    End Function
+
     <Command("Dialog | Help Topic", "Opens a given help topic in the help browser.")>
     Sub OpenHelpTopic(
         <DispName("Help Topic"),
@@ -2792,7 +2791,7 @@ Public Class GlobalCommands
 
         Select Case topic
             Case "info"
-                f.Doc.WriteStart("StaxRip x64 " + Application.ProductVersion + If(Application.ProductVersion.EndsWith("0"), "", " beta"))
+                f.Doc.WriteStart("StaxRip x64 " + GetReleaseType())
                 f.Doc.WriteP("This program is free software and may be distributed according to the terms of the [http://www.gnu.org/licenses/gpl.html GNU General Public License].")
 
                 f.Doc.WriteH2("Patches")
@@ -2806,256 +2805,26 @@ Public Class GlobalCommands
             Case "changelog" 'cl:
                 f.Doc.WriteStart("Changelog")
 
-                f.Doc.WriteP("StaxRip x64 1.3.1.1 beta (20??-??-??)")
+                f.Doc.WriteP("StaxRip x64 1.3.1.1 " + GetReleaseType() + " (2015-05-15)")
 
-                f.Doc.WriteList("Instead of always adding AssumeFPS it's now only added if necessary",
+                f.Doc.WriteList("Added DGAVCIndex as AVC TS demuxer, dsmux is still available but disabled by default",
+                                "Added plugin flash3kyuu_deband v1.5.1",
+                                "Added QSVEncC hardware decoding bypassing AviSynth and using StaxRip's cut/trim and crop values. On my Win10 development OS it don't work however and I didn't test on Win7",
+                                "Changed DGIndex to demux and output m2v because DGDecode does not work on Win10, this means the old DVD workflow is fully supported again, MakeMKV is still recommended instead",
+                                "Instead of always adding AssumeFPS it's now only added if necessary",
+                                "The Applications dialog was renamed to Apps and Version and Description info was improved (only 50% completed)",
                                 "Improved AviSynth editor and filter profiles",
                                 "Improved 'Just Mux' feature supporting more formats",
                                 "Fixed qaac executed with command window, improved qaac description in applications dialog",
                                 "Fixed crash in preview window caused by AviSynth, StaxRip shows a error message instead now",
                                 "Fixed crash caused by stream title containing character that are illegal in windows file system",
-                                "DGMPGDec, DGDecNV and DGDecIM removed because of unsolved bugs",
-                                "Changed MP4Box to mingw build",
-                                "Updated AVSMeter x64 v2.0.1",
-                                "Updated qaac x64 2.48")
-
-                f.Doc.WriteP("1.3.1.0 beta (2015-05-01)")
-
-                f.Doc.WriteList("Added QTGMC, masktools2, mvtools2, RGTools and nnedi3",
-                                "Added new AviSynth editor",
-                                "Added DGDecIM integration",
-                                "Added 'Hardware Encoder' resize filter to AviSynth filter profiles which does nothing with AviSynth but enables the Quick Sync resizer",
-                                "Added option to audio context menu to play audio together with the AviSynth script",
-                                "Added possibility to use different settings directories for StaxRip 32-Bit and StaxRip 64-Bit",
-                                "Added x265 options --qpstep and --qg-size",
-                                "Updated ffms2 which fixes a critical memory leak",
-                                "Updated AVSMeter to version 2.0.0",
-                                "Updated AviSynth+ to version v1825",
-                                "Updated XviD to v1.3.3",
-                                "Updated x265 to v1.6+298",
-                                "Updated hardware encoders supporting 64-Bit avs reading",
-                                "Enabled dsmux to handle any kind of TS",
-                                "Forced subtitles from DVDs are now added automatically but only if the forced subtitle is the language of the current locale and maximum one forced subtitle is added and the subtitle is added with a forced flag")
-
-                f.Doc.WriteP("1.3.0.3 alpha (2015-04-27)")
-
-                f.Doc.WriteList("Fixed Win8/Win10 crash",
-                                "Added AviSynth+ v0.1.0 r1779 installer")
-
-                f.Doc.WriteP("1.3.0.2 alpha (2015-04-26)")
-
-                f.Doc.WriteList("Added xvid_encraw 1.2.0.0",
-                                "DivXH265 encoder added",
-                                "AVSMeter stays open when finished",
-                                "15 plugins are now integrated")
-
-                f.Doc.WriteP("1.3.0.1 alpha (2015-04-26)")
-
-                f.Doc.WriteList("StaxRip uses now AviSynth+ 64-Bit exclusively",
-                                "x265 is 10-Bit only, using 8-Bit is as simple as replacing the executable",
-                                "x264 is 8-Bit only, using 10-Bit is as simple as replacing the executable",
-                                "Hardware encoders don't work currently due to missing avs reading support in the x64 builds",
-                                "All AviSynth plugins except ffms2 and l-smash are gone due to missing x64 version, RgTools, SangNom2 and checkmate added",
-                                "Fixed audio delay not always shown in main dialog",
-                                "Improved VP9 GUI and default values",
-                                "Updated ffmpeg with new libvpx 1.4 for improved VP9 encoding")
-
-                f.Doc.WriteP("1.2.2.2 beta (2015-04-13)")
-
-                f.Doc.WriteList("Added support for very long file names by shortening the name of the temp files directory",
-                                "Added codec comparison tool for codec comparisons (Tools/Advanced/Codec Comparison)",
-                                "Added the possibility to show the LAV Filters video decoder configuration (Tools/Advanced/LAV Filters...)",
-                                "Added AVSMeter for benchmarking AviSynth scripts (Tools/Advanced/AVSMeter)",
-                                "Added SincResize AviSynth filter",
-                                "Added vpxenc encoding tool for VP9 encoding and added a command line profile, a GUI will follow soon",
-                                "Improved GUI for QSVEncC (tool for Intel Quick Sync H.264 GPU encoding)",
-                                "Improved x265 GUI, new options added, improved layout, improved help",
-                                "Improved thumbnail generator printing more info",
-                                "Improved MediaInfo Folder View (at Tools/Advanced/MediaInfo Folder View), list of audio codecs, context menu with various options, automatic layout",
-                                "Fixed crash opening MP4 files with EIA-608 subtitles used by Apple",
-                                "Fixed help browser not using word wrap",
-                                "Fixed shutdown not working",
-                                "Updated x265 to version x265 1.6+174",
-                                "Updated QSVEncC to 1.33 (Tool for Intel H.264 GPU encoding)",
-                                "Updated NVEncC to 1.05 (Tool for NVIDIA H.264 and H.265 GPU encoding)",
-                                "Updated ffmpeg")
-
-                f.Doc.WriteP("1.2.2.1 beta (2015-03-30)")
-
-                f.Doc.WriteList("Added GUI for NVEncC (tool for NVIDIA H.264/H.265 GPU encoding)",
-                                "Added GUI for QSVEncC (tool for Intel Quick Sync H.264 GPU encoding)",
-                                "Added x265 option --pools",
-                                "Added x265 option --frame-threads",
-                                "Added x265 option --min-cu-size",
-                                "Added x265 option --log-level frame and updated help for --log-level",
-                                "Added x264 option --aq-mode 3 (Auto-variance AQ with bias to dark scenes)",
-                                "Fixed video stream of audio source being muxed into MP4",
-                                "Reverted to old shutdown method due to bug report",
-                                "Updated mkvtoolnix version 7.8.0 (River Man) supporting DTS Express",
-                                "Updated eac3to to version 3.29 supporting DTS-HD decoding",
-                                "Updated ffmpeg supporting DTS-HD decoding",
-                                "Updated x265 to version 1.5+370",
-                                "Updated QSVEncC (tool for Intel H.264 GPU encoding) to version 1.32")
-
-                f.Doc.WriteP("1.2.2.0 (2015-03-19)")
-
-                f.Doc.WriteList("Enabled raw AAC files input for MP4 container output",
-                                "Fixed framerate being falsely detected as 25 in certain countries",
-                                "Added Haali Splitter, StaxRip asks only to install it if dsmux is enabled (Tools/Settings/Demux) or when MKV output is selected in the eac3to dialog, both is selected and enabled by default and I recommend to keep it so")
-
-                f.Doc.WriteP("1.2.1.0 (2015-03-16)")
-
-                f.Doc.WriteList("Added macros %media_info_video:property% and %media_info_audio:property%",
-                                "Added options in preview to copy the time of the current position, to save the current frame as JPG and replaced the Info feature with a better looking one",
-                                "Added timeout of 2 minutes to most common shown error dialog so job processing continues",
-                                "Fixed AAC output failure",
-                                "Fixed assistant complaing about subtitle cutting being not supported even when muxing is disabled",
-                                "Fixed command line based encoders not working with certain paths and characters",
-                                "Fixed default audio language being German instead of local, this is saved in projects and templates and not in audio profiles",
-                                "Fixed MP4Box failing to demux in case the output already exists from a previous job run for instance",
-                                "Fixed MP4Box leaving temp files in system temp directory",
-                                "Fixed MP4Box failing due to missing libraries",
-                                "Fixed play feature not working in filters menu and subtitle menu due to missing YV12 decoder, the solution is the same as for preview and cropping window converting to RGB",
-                                "Fixed play feature of the filters menu audio not working with cutting",
-                                "Fixed qaac not accepting FLAC due to missing libflac",
-                                "Fixed temp files directory being deleted even if it contains more jobs to encode",
-                                "Fixed wrong text encoding in log file and log window",
-                                "Improved eac3to error handling",
-                                "Improved Log text and window showing more infos with better formatted text, the windows uses word wrap and remembers it's size",
-                                "Updated MP4Box to 0.5.2-DEV-rev107",
-                                "Updated NVEncC to 1.04",
-                                "Updated L-SMASH-Works to r784",
-                                "Updated x265 to 1.5+258",
-                                "Reverted ffms2 back to 2.20 due to memory leak")
-
-                f.Doc.WriteP("1.2.0.5 beta (2015-03-11)")
-
-                f.Doc.WriteList("Improved cli/batch/script GUI",
-                                "Improved eac3to GUI and error handling",
-                                "Fixed invalid script used for non mod 4 sources",
-                                "Fixed invalid script used for RGB sources",
-                                "Fixed decimal number framerates being imprecise",
-                                "Fixed unnecessary WAV to FLAC conversion when DirectShowFilter is used",
-                                "Fixed gain detection with ffmpeg to normalize audio didn't use the correct stream using mkv as audio source file",
-                                "Updated AviSynth, eac3to, ffms2, ffmpeg, x264, x265, MP4Box, QSVEncC, NVEncC")
-
-                f.Doc.WriteP("1.2.0.3 beta (2015-02-16)")
-
-                f.Doc.WriteList("Added qaac encoder, Apple library not included",
-                                "Added nvidia GPU encoder supporting H.265 encoding with GTX 960 card",
-                                "Added setting to prevent windows entering standby mode while encoding",
-                                "Fixed shutdown feature not executed by the last instance only",
-                                "Improved eac3to GUI",
-                                "Improved AviSynth filter profiles editor",
-                                "Improved audio encoding GUI",
-                                "Improved MediaInfo GUI",
-                                "Improved command line audio and video encoding GUI, processing as batch now supporting piping",
-                                "Updated x265 builds to version 1.5 and updated x265 GUI",
-                                "Updated mkvtoolnix to version 7.6.0")
-
-                f.Doc.WriteP("1.2.0.2 beta (2015-01-31)")
-
-                f.Doc.WriteList("Added new audio cutting method using mkvmerge and made it default for all audio formats.",
-                                "Added many small improvements in audio processing",
-                                "Added more x265 switches, there is a GUI option for more then 80 switches now, a search feature searching label, switch and help and a option for additional custom switches",
-                                "Added feature to the x265 dialog to easily reset numeric values and option values to their default value by double clicking on the label",
-                                "Added L-SMASH-Works AviSynth source filter, DGAVCDec removed",
-                                "Added C++/QT based BDSup2Sub++, removed Java based BDSup2Sub",
-                                "Added latest versions of ffms2 and MP4Box",
-                                "Added setting to define which source filter will be used for a given source container in case the source filter is automatic",
-                                "Added option to jobs dialog to either run job processing in the current or a new StaxRip instance, job processing works completely different now",
-                                "Added ts to mkv remuxing configuration using Haali's dsmux, it works better then using TS directly or remuxing with mkvmerge",
-                                "Improved GUI and help in various locations",
-                                "Improved usability in eac3to demuxing dialog",
-                                "Fixed compressibility check being broken in various configurations",
-                                "Fixed bug with idx file containing multiple subtitles and fixed a vsrip related crash",
-                                "Fixed bug Java not being found, if ProjectX is enabled in the settings Java is required.")
-
-                f.Doc.WriteP("1.2.0.1 beta (2015-01-16)")
-
-                f.Doc.WriteList("Added generic ffmpeg video encoder with Xvid, VP9 and Theora enabled",
-                                "Added generic ffmpeg muxer with option to use any ffmpeg supported target container",
-                                "Added 4 different x264 builds and 4 different x265 builds, 32/64-Bit, 8/10-Bit. Which build to use can be defined at Tools/Settings/System. The version string at Tools/Applications shows version, compiler version and source/website of the build.",
-                                "Fixed crash using Windows 98 classic theme")
-
-                f.Doc.WriteP("1.2.0.0 (2015-01-13)")
-
-                f.Doc.WriteList("Removed requirement for YV12 decoder",
-                                "Removed XviD and DivX encoding feature",
-                                "Removed Windows XP support due to migration to .NET 4.5",
-                                "Added full x265 support including rich GUI",
-                                "Added better GUI for settings replacing all treeview based settings",
-                                "Added better MediaInfo GUI",
-                                "Added setting to define a external player for avs files",
-                                "Added support for Opus audio encoding using ffmpeg",
-                                "Added options to disable audio and subtitle demuxing",
-                                "Added option to choose the audio source stream index using the audio source context menu",
-                                "Added feature to use mkv and mp4 as subtitle source file for mkv muxer",
-                                "Added setting to disable tooltips of menu items, tooltips can still be shown by right-clicking menu items",
-                                "Fixed various issues with ffmpeg audio encoding",
-                                "Updated various applications such as x264 and mkvtoolnix")
-
-                f.Doc.WriteP("1.1.9.0 (2013-06-30)")
-
-                f.Doc.WriteList("Updated mkvtoolnix to v6.3.0",
-                                "Updated x264 to r2334",
-                                "Updated eac3to to 3.27",
-                                "Updated MediaInfo to version 0.7.63",
-                                "Updated ffmpeg",
-                                "Various minor changes")
-
-                f.Doc.WriteP("1.1.7.1 beta (2011-05-22)")
-
-                f.Doc.WriteList("Updated MP4Box to version 0.4.6 that hopefully fixes sync problems",
-                                "Updated ffms2 to version 2.15 mt",
-                                "Updated x264 to version r1995",
-                                "Updated mkvtoolnix to version 4.7.0",
-                                "Fixed bug 'DTS Express' format not detected",
-                                "Added option to modify existing cut selection, overlapping selections are merged")
-
-                f.Doc.WriteP("1.1.7.0 beta (2010-09-19)")
-
-                f.Doc.WriteList("Fixed trying to create forced subtitle files without Java beeing installed",
-                                "Fixed Java x64 not beeing detected",
-                                "Fixed StaxRip trying to use a network directory as temp files directory, opening a source from a network directory StaxRip will now ask for a local temp files directory",
-                                "Fixed native crash in the Event Commands editor happening with command having boolean values",
-                                "Fixed bug failing to mux mono audio streams",
-                                "Updated Nero to version 1.5.4",
-                                "Updated x264 to r1724",
-                                "Changed default audio processing back to BeSweet for input formats supported by BeSweet, apparently it's more reliable then eac3to",
-                                "Changed start credits default to q=30, end credits q=35, reset preview dialog menu to force new defaults",
-                                "Enabled sup to sub conversion by default and silently omit execution in case Java isn't installed")
-
-                f.Doc.WriteP("1.1.6.9 beta (2010-08-31)")
-
-                f.Doc.WriteList("Improved source aspect ratio and frame rate detection",
-                                "New Getting Started dialog for beginners",
-                                "Various tweaks to improve handling of rare formats",
-                                "Updated DGMPGDec to version 1.5.8",
-                                "Replaced old folder browser with new vista filder browser",
-                                "Fixed bug video delay in MKV not detected",
-                                "Added various eac3to and BeSweet options",
-                                "Updated x264 to r1703")
-
-                f.Doc.WriteP("1.1.6.9 beta (2010-08-22)")
-
-                f.Doc.WriteList("If StaxRip finds a vobsub subtitle containing forced captions it will create a separate vobsub file containing only forced subtitles using *_Forced.idx as filename",
-                                "Fixed bug PSP device setting not using --b-pyramid none. Encoder profiles weren't reset so either must be reset manually or the PSP profiles must be corrected manually",
-                                "Fixed UI bugs on small resolutions like Netbooks have",
-                                "Subtitles with unknown language use now undetermined instead of the current locale language",
-                                "Added warning regarding missing DirectShow filters",
-                                "Added support to use wmv as audio source file with 'just Mux' audio profile, it will mux WMA into MKV then",
-                                "Added option to downconvert to 16-bit (enabled by default)",
-                                "Updated x264 to r1698",
-                                "Updated eac3to to version 3.24")
-
-                f.Doc.WriteP("1.1.6.5 (beta 2010-07-21)")
-
-                f.Doc.WriteList("Added support for NV tools 2021",
-                                "Added new GUI for eac3to Blu-ray/M2TS demuxing",
-                                "Added preferred encoder option to audio dialog to audio dialog to force the usage of a certain encoder",
-                                "Added context menus to file path text boxes in main dialog to easily open files, play files, show media info and explore the files directory",
-                                "Changed AAC VBR quality to be incremented by 0.05 steps instead of 0.1 steps")
+                                "Fixed two bugs in the 'Execute Command Line' command of StaxRip's command engine which powers StaxRip CLI, various menus and event commands",
+                                "Updated MP4Box to 0.5.2-DEV-rev376 static mingw build, I made some basic tests which succeeded, Selur said -hint don't work but nobody ever requested -hint support in StaxRip.",
+                                "Updated MKVToolNix 7.9.0 x64",
+                                "Updated nnedi3 0.9.4.9 x64, nnedi3 and DGDecNV are now working on Win8 and Win10, DGDecNV 2049 has to be re-downloaded",
+                                "Updated AVSMeter 2.0.2 x64, the main menu can be customized to add custom CLI switches",
+                                "Updated qaac 2.48 x64 and improved intergration",
+                                "Updated l-Smash-Works 785 x64")
             Case "CRF Value"
                 f.Doc.WriteStart("CRF Value")
                 f.Doc.WriteP("Low values produce high quality, large file size, large value produces small file size and poor quality. A balanced value is 23 which is the defalt in x264. Common values are 18-26 where 18 produces near transparent quality at the cost of a huge file size. The quality 26 produces is rather poor so such a high value should only be used when a small file size is the only criterium.")

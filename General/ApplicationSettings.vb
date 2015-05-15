@@ -96,17 +96,19 @@ Public Class ApplicationSettings
             AudioProfiles = AudioProfile.GetDefaults()
         End If
 
-        If Check(Demuxers, "Demuxers", 83) Then
+        If Check(Demuxers, "Demuxers", 85) Then
             Demuxers = Demuxer.GetDefaults()
         End If
 
-        If Check(FilterPreferences, "Source Filter Preference", 13) Then
+        If Check(FilterPreferences, "Source Filter Preference", 15) Then
             FilterPreferences = New StringPairList
             FilterPreferences.Add("default", "FFVideoSource")
             FilterPreferences.Add("ts, m2ts, wmv", "DirectShowSource")
             FilterPreferences.Add("mp4, m4v", "LSMASHVideoSource")
             FilterPreferences.Add("264, h264, avc, 265, h265, hevc", "LWLibavVideoSource")
             FilterPreferences.Add("dgi", "DGSource")
+            FilterPreferences.Add("dgim", "DGSourceIM")
+
             'FilterPreferences.Add("d2v", "MPEG2Source")
         End If
 
@@ -194,7 +196,7 @@ Public Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 116) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 120) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 
@@ -206,7 +208,7 @@ Public Class ApplicationSettings
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 
-        If Check(AviSynthCategories, "Filter Profiles", 117) Then
+        If Check(AviSynthCategories, "Filter Profiles", 119) Then
             AviSynthCategories = AviSynthCategory.GetDefaults
         End If
 

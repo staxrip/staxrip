@@ -97,6 +97,10 @@ Public Class Project
         If TempDir Is Nothing Then TempDir = ""
         If Log Is Nothing Then Log = New StringBuilder
         If Storage Is Nothing Then Storage = New ObjectStorage
+        If Ranges Is Nothing Then Ranges = New List(Of Range)
+        If TargetFile Is Nothing Then TargetFile = ""
+        If Name Is Nothing Then Name = ""
+        If SourceFile Is Nothing Then SourceFile = ""
 
         If AutoSubtitles Is Nothing Then
             If CultureInfo.CurrentCulture.TwoLetterISOLanguageName = "en" Then
@@ -106,24 +110,8 @@ Public Class Project
             End If
         End If
 
-        If Ranges Is Nothing Then
-            Ranges = New List(Of Range)
-        End If
-
-        If TargetFile Is Nothing Then
-            TargetFile = ""
-        End If
-
         If SourceAviSynthDocument Is Nothing Then
             SourceAviSynthDocument = New SourceAviSynthDocument
-        End If
-
-        If Name Is Nothing Then
-            Name = ""
-        End If
-
-        If SourceFile Is Nothing Then
-            SourceFile = ""
         End If
 
         If SkippedAssistantTips Is Nothing Then

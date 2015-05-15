@@ -141,15 +141,13 @@ Public Class DemuxingControl
     Function GetTips() As StringPairList
         Dim ret As New StringPairList
 
-        ret.Add("Demuxing", "The demux menu defines a set of applications that are executed to prepare the source file(s). The applications are executed one by one starting from the top so the next application can use the output from the previous application as input. The most common task is separating a source file into separate audio and video files, this process is called demuxing. It's possible to add custom demuxers by defining command lines.")
+        ret.Add("Demuxing", "The demux menu defines a set of applications that are executed to demux and index source file(s). The applications are executed one by one starting from the top so the next application can use the output from the previous application as input. It's possible to add custom demuxers by defining command lines.")
 
         For Each i As ListViewItem In lv.Items
             If TypeOf i.Tag Is CommandLineDemuxer Then
                 Dim muxer = DirectCast(i.Tag, CommandLineDemuxer)
-
-                If muxer.Description <> "" Then
-                    ret.Add(muxer.Name, muxer.Description)
-                End If
+                Dim help = muxer.GetHelp
+                If help <> "" Then ret.Add(muxer.Name, help)
             End If
         Next
 

@@ -548,8 +548,14 @@ Namespace x265
         Property Profile As New OptionParam With {
             .Switch = "--profile",
             .Text = "Profile:",
-            .Options = {"main", "main10", "mainstillpicture", "main422-8", "main422-10", "main444-8", "main444-10"},
-            .Values = {"main", "main10", "mainstillpicture", "main422-8", "main422-10", "main444-8", "main444-10"},
+            .Options = {"Unrestricted", "main", "main10", "mainstillpicture", "main422-8", "main422-10", "main444-8", "main444-10"},
+            .Values = {"", "main", "main10", "mainstillpicture", "main422-8", "main422-10", "main444-8", "main444-10"}}
+
+        Property OutputDepth As New OptionParam With {
+            .Switch = "--output-depth",
+            .Text = "Depth:",
+            .Options = {"8", "10"},
+            .Values = {"8", "10"},
             .Value = 1,
             .DefaultValue = 1}
 
@@ -736,7 +742,7 @@ Namespace x265
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineItem)
 
-                    Add("Basic", Quant, Preset, Tune, Profile, Level, Mode)
+                    Add("Basic", Quant, Preset, Tune, Profile, OutputDepth, Level, Mode)
                     Add("Analysis 1", RD, MinCuSize, MaxCuSize, MaxTuSize, TUintra, TUinter, rdoqLevel)
                     Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra, CUlossless, Tskip, TskipFast)
                     Add("Rate Control 1", AQmode, qgSize, AQStrength, IPRatio, PBRatio, QComp, CBQPoffs, Qstep, QBlur, Cplxblur, CUtree, Lossless, StrictCBR)

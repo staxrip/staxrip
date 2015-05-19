@@ -19,7 +19,6 @@ Public MustInherit Class Demuxer
     Overridable Property Active As Boolean = True
     Overridable Property InputExtensions As String() = {}
     Overridable Property InputFormats As String() = {}
-    Overridable Property InputFormatsBlacklist As String() = {}
     Overridable Property Name As String = ""
     Overridable Property OutputExtensions As String() = {}
     Overridable Property SourceFilters As String() = {}
@@ -51,9 +50,9 @@ Public MustInherit Class Demuxer
 
         Dim prx As New CommandLineDemuxer
         prx.Name = "ProjectX"
-        prx.InputExtensions = "mpg ts pva".Split(" "c)
+        prx.InputExtensions = {"mpg", "ts"}
         prx.OutputExtensions = {"m2v"}
-        prx.InputFormats = {"MPEG Video"}
+        prx.InputFormats = {"mpeg2"}
         prx.Command = "%app:Java%"
         prx.Arguments = "-jar ""%app:ProjectX%"" %source_files% -out ""%working_dir%"""
         prx.Active = False
@@ -61,8 +60,9 @@ Public MustInherit Class Demuxer
 
         Dim dsmux As New CommandLineDemuxer
         dsmux.Name = "dsmux"
-        dsmux.InputExtensions = "ts".Split(" "c)
+        dsmux.InputExtensions = {"ts"}
         dsmux.OutputExtensions = {"mkv"}
+        dsmux.InputFormats = {"avc", "vc1", "mpeg2"}
         dsmux.Command = "%app:dsmux%"
         dsmux.Arguments = """%temp_file%.mkv"" ""%source_file%"""
         dsmux.Active = False
@@ -74,9 +74,9 @@ Public MustInherit Class Demuxer
 
         Dim dgi As New CommandLineDemuxer
         dgi.Name = "DGIndex"
-        dgi.InputExtensions = "mpg vob ts".Split(" "c)
+        dgi.InputExtensions = {"mpg", "vob", "ts"}
         dgi.OutputExtensions = {"m2v"}
-        dgi.InputFormats = {"MPEG Video"}
+        dgi.InputFormats = {"mpeg2"}
         dgi.Command = "%app:DGIndex%"
         dgi.Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -od ""%temp_file%"" -hide -exit"
         dgi.SourceFilters = {"MPEG2Source"}
@@ -84,9 +84,9 @@ Public MustInherit Class Demuxer
 
         Dim dgavcdec As New CommandLineDemuxer
         dgavcdec.Name = "DGAVCIndex"
-        dgavcdec.InputExtensions = "ts".Split(" "c)
+        dgavcdec.InputExtensions = {"ts"}
         dgavcdec.OutputExtensions = {"h264"}
-        dgavcdec.InputFormats = {"AVC"}
+        dgavcdec.InputFormats = {"avc"}
         dgavcdec.Command = "%app:DGAVCIndex%"
         dgavcdec.Arguments = "-i %source_files_comma% -od ""%temp_file%.dga"" -a -h"
         dgavcdec.Active = True
@@ -94,9 +94,9 @@ Public MustInherit Class Demuxer
 
         Dim dgnv As New CommandLineDemuxer
         dgnv.Name = "DGIndexNV"
-        dgnv.InputExtensions = "h264 mkv mp4 mpg ts m2ts".Split(" "c)
+        dgnv.InputExtensions = {"h264 mkv mp4 mpg ts m2ts"}
         dgnv.OutputExtensions = {"dgi"}
-        dgnv.InputFormats = {"AVC", "VC-1", "MPEG Video"}
+        dgnv.InputFormats = {"avc", "vc1", "mpeg2"}
         dgnv.Command = "%app:DGIndexNV%"
         dgnv.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgi"" -a -h"
         dgnv.SourceFilters = {"DGSource"}
@@ -105,9 +105,9 @@ Public MustInherit Class Demuxer
 
         Dim dgim As New CommandLineDemuxer
         dgim.Name = "DGIndexIM"
-        dgim.InputExtensions = "h264 mkv mp4 mpg ts m2ts".Split(" "c)
+        dgim.InputExtensions = {"h264 mkv mp4 mpg ts m2ts"}
         dgim.OutputExtensions = {"dgi"}
-        dgim.InputFormats = {"AVC", "VC-1", "MPEG Video"}
+        dgim.InputFormats = {"avc", "vc1", "mpeg2"}
         dgim.Command = "%app:DGIndexIM%"
         dgim.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgim"" -a"
         dgim.SourceFilters = {"DGSourceIM"}
@@ -196,10 +196,10 @@ Public Class MP4BoxDemuxer
         If subs.Count = 0 Then Exit Sub
 
         For Each i In subs
-            Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " - " + i.Filename + i.Extension
+            Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " " + i.Filename + i.Extension
 
             If outpath.Length > 259 Then
-                outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(10) + " - " + i.Filename.Shorten(20) + i.Extension
+                outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(10) + " " + i.Filename.Shorten(20) + i.Extension
             End If
 
             FileHelp.Delete(outpath)
@@ -326,10 +326,10 @@ Public Class mkvDemuxer
         Dim args = "tracks """ + p.SourceFile + """"
 
         For Each i In subs
-            Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " - " + i.Filename + i.Extension
+            Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " " + i.Filename + i.Extension
 
             If outpath.Length > 259 Then
-                outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(10) + " - " + i.Filename.Shorten(10) + i.Extension
+                outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(10) + " " + i.Filename.Shorten(10) + i.Extension
             End If
 
             args += " " & i.StreamOrder & ":""" + outpath + """"

@@ -67,15 +67,15 @@ Public Class Audio
     End Sub
 
     Shared Function GetBaseNameForStream(path As String, stream As AudioStream, Optional shorten As Boolean = False) As String
-        Dim ret = If(shorten, Filepath.GetBase(path).Shorten(10), Filepath.GetBase(path)) + " - ID" & (stream.StreamOrder + 1)
+        Dim ret = If(shorten, Filepath.GetBase(path).Shorten(10), Filepath.GetBase(path)) + " ID" & (stream.StreamOrder + 1)
 
-        If stream.Delay <> 0 Then ret += " - " & stream.Delay & "ms"
-        If stream.Language.TwoLetterCode <> "iv" Then ret += " - " + stream.Language.ToString
+        If stream.Delay <> 0 Then ret += " " & stream.Delay & "ms"
+        If stream.Language.TwoLetterCode <> "iv" Then ret += " " + stream.Language.ToString
 
         If Not shorten AndAlso path.Length < 130 AndAlso stream.Title <> "" AndAlso
             Not stream.Title.ContainsUnicode Then
 
-            ret += " - " + stream.Title.Shorten(30)
+            ret += " " + stream.Title.Shorten(30)
         End If
 
         If Not Filepath.IsValidFileSystemName(ret) Then ret = Filepath.RemoveIllegalCharsFromName(ret)

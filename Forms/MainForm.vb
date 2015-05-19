@@ -1129,16 +1129,20 @@ Public Class MainForm
                         For x = 0 To mi.AudioStreams.Count - 1
                             If mi.GetAudio(x, "ID/String").Contains(" (0x" & dgID & ")") Then
                                 Dim stream = mi.AudioStreams(x)
-                                Dim title = If(stream.Title <> "", stream.Title + " - ", "")
-                                Dim newName = regex.Replace(i, " - ID" & x & " - " + stream.Language.Name + " - " + title)
+                                Dim base = Filepath.GetBase(i)
+                                base = regex.Replace(base, " ID" & x & " ")
 
-                                If newName.Contains("2_0ch") Then newName = newName.Replace("2_0ch", "2ch -")
-                                If newName.Contains("3_2ch") Then newName = newName.Replace("3_2ch", "6ch -")
-                                If newName.Contains(" DELAY") Then newName = newName.Replace(" DELAY", " -")
-                                If newName.Contains(" - 0ms") Then newName = newName.Replace(" - 0ms", "")
+                                If base.Contains("2_0ch") Then base = base.Replace("2_0ch", "2ch")
+                                If base.Contains("3_2ch") Then base = base.Replace("3_2ch", "6ch")
+                                If base.Contains(" DELAY") Then base = base.Replace(" DELAY", "")
+                                If base.Contains(" 0ms") Then base = base.Replace(" 0ms", "")
 
-                                FileHelp.Move(i, newName)
+                                If stream.Language.TwoLetterCode <> "iv" Then
+                                    base += " " + stream.Language.Name
                                 End If
+                                If stream.Title <> "" Then base += " " + stream.Title
+                                FileHelp.Move(i, Filepath.GetDir(i) + base + Filepath.GetExt(i))
+                            End If
                         Next
                     End Using
                 End If
@@ -1203,9 +1207,7 @@ Public Class MainForm
                         lng = If(track = 0, New Language(), New Language("en"))
                     End If
 
-                    If Not iPath.Contains(" - " + lng.Name) Then
-                        Continue For
-                    End If
+                    If Not iPath.Contains(lng.Name) Then Continue For
                 End If
 
                 If Filepath.GetExt(iPath) = ".mp4" AndAlso Filepath.IsSameBase(p.SourceFile, iPath) Then
@@ -2097,9 +2099,10 @@ Public Class MainForm
                 Not File.Exists(Filepath.GetDirAndBase(i) + ".idx") Then
 
                 Using proc As New Proc
-                    proc.Init("Convert sup to sub: " + Filepath.GetName(i), "#> ", "Decoding frame ")
+                    proc.Init("Convert sup to sub: " + Filepath.GetName(i), "#>", "#<", "Decoding frame")
                     proc.File = Packs.BDSup2SubPP.GetPath
                     proc.Arguments = "-o """ + Filepath.GetDirAndBase(i) + ".idx"" """ + i + """"
+                    proc.AllowedExitCodes = {}
                     proc.Start()
                 End Using
             End If
@@ -2395,22 +2398,6 @@ Public Class MainForm
         AssistantPassed = False
 
         If Not p.BatchMode Then
-            If TypeOf p.VideoEncoder Is IntelEncoder Then
-                Dim encoder = DirectCast(p.VideoEncoder, IntelEncoder)
-
-                If encoder.Params.Resize.Value Then
-                    Dim filter = p.AvsDoc.GetFilter("Resize")
-
-                    If filter Is Nothing OrElse Not filter.Active OrElse filter.Script.Contains("(") Then
-                        If ProcessTip("For GPU resizing choose the 'Empty' resize filter, if it don't exist either reset the filter profiles or choose a random resize filter, double-click it and remove all code.") Then
-                            gbAssistant.Text = "Invalid resize filter"
-                            CanIgnoreTip = False
-                            Return False
-                        End If
-                    End If
-                End If
-            End If
-
             If Filepath.GetExt(p.TargetFile) = ".mp4" AndAlso p.TargetFile.Contains("#") Then
                 If ProcessTip("Character # can't be processed by MP4Box, please rename target file.") Then
                     gbAssistant.Text = "Invalid target file name"
@@ -2801,7 +2788,7 @@ Public Class MainForm
 
     Function GetAudioText(ap As AudioProfile, stream As AudioStream, path As String) As String
         For Each i In Language.Languages
-            If path.Contains(" - " + i.CultureInfo.EnglishName) Then
+            If path.Contains(i.CultureInfo.EnglishName) Then
                 stream.Language = i
                 Exit For
             End If
@@ -2810,7 +2797,7 @@ Public Class MainForm
         Dim matchDelay = Regex.Match(path, " (-?\d+)ms")
         If matchDelay.Success Then stream.Delay = matchDelay.Groups(1).Value.ToInt
 
-        Dim matchID = Regex.Match(path, " - ID(\d+)")
+        Dim matchID = Regex.Match(path, " ID(\d+)")
         Dim name As String
 
         If matchID.Success Then
@@ -2881,51 +2868,60 @@ Public Class MainForm
     End Sub
 
     Private Sub Demux()
-        Dim getFormat = Function() MediaInfo.GetVideo(p.SourceFile, "Format")
+        Dim getFormat = Function() As String
+                            Dim ret = MediaInfo.GetVideo(p.SourceFile, "Format")
+
+                            Select Case ret
+                                Case "MPEG Video"
+                                    ret = "mpeg2"
+                                Case "VC-1"
+                                    ret = "vc1"
+                            End Select
+
+                            Return ret.ToLower
+                        End Function
+
         Dim srcScript = p.AvsDoc.GetFilter("Source").Script.ToLower
 
         For Each i In s.Demuxers
-            If i.Active Then
-                Dim inputExtensions = Not OK(i.InputExtensions) OrElse i.InputExtensions.Contains(Filepath.GetExtNoDot(p.SourceFile))
+            If Not i.Active Then Continue For
 
-                If inputExtensions Then
-                    Dim notInInputFormatsBlacklist = Not OK(i.InputFormatsBlacklist) OrElse Not i.InputFormatsBlacklist.Contains(getFormat())
-                    Dim sourceFilters = srcScript = "" OrElse Not OK(i.SourceFilters) OrElse srcScript.ContainsAnyCaseInsensitive(i.SourceFilters)
+            If i.InputExtensions?.Length = 0 OrElse i.InputExtensions.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
+                If srcScript = "" OrElse Not OK(i.SourceFilters) OrElse
+                    srcScript.ContainsAnyCaseInsensitive(i.SourceFilters) Then
 
-                    If notInInputFormatsBlacklist AndAlso sourceFilters Then
-                        Dim inputFormats = Not OK(i.InputFormats) OrElse i.InputFormats.Contains(getFormat())
+                    Dim inputFormats = Not OK(i.InputFormats) OrElse i.InputFormats.Contains(getFormat())
 
-                        If inputFormats Then
-                            i.Run()
-                            Refresh()
+                    If inputFormats Then
+                        i.Run()
+                        Refresh()
 
-                            For Each iExt In i.OutputExtensions
-                                Dim exitFor = False
+                        For Each iExt In i.OutputExtensions
+                            Dim exitFor = False
 
-                                For Each iFile In Directory.GetFiles(p.TempDir, "*." + iExt)
-                                    If g.IsSourceSame(iFile) AndAlso
-                                        p.SourceFile <> iFile AndAlso
-                                        Not Filepath.GetBase(iFile).EndsWith("_out") AndAlso
-                                        Not Filepath.GetBase(iFile).Contains("_cut_") Then
+                            For Each iFile In Directory.GetFiles(p.TempDir, "*." + iExt)
+                                If g.IsSourceSame(iFile) AndAlso
+                                    p.SourceFile <> iFile AndAlso
+                                    Not Filepath.GetBase(iFile).EndsWith("_out") AndAlso
+                                    Not Filepath.GetBase(iFile).Contains("_cut_") Then
 
-                                        p.SourceFile = iFile
-                                        p.SourceFiles.Clear()
-                                        p.SourceFiles.Add(p.SourceFile)
+                                    p.SourceFile = iFile
+                                    p.SourceFiles.Clear()
+                                    p.SourceFiles.Add(p.SourceFile)
 
-                                        BlockSourceTextBoxTextChanged = True
-                                        tbSourceFile.Text = p.SourceFile
-                                        BlockSourceTextBoxTextChanged = False
+                                    BlockSourceTextBoxTextChanged = True
+                                    tbSourceFile.Text = p.SourceFile
+                                    BlockSourceTextBoxTextChanged = False
 
-                                        exitFor = True
-                                        Exit For
-                                    End If
-                                Next
-
-                                If exitFor Then
+                                    exitFor = True
                                     Exit For
                                 End If
                             Next
-                        End If
+
+                            If exitFor Then
+                                Exit For
+                            End If
+                        Next
                     End If
                 End If
             End If
@@ -3114,11 +3110,10 @@ Public Class MainForm
                            End Function
 
             filterPage.TipProvider.TipsFunc = tipsFunc
-            filterPage.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
 
             Dim c1 = filterPage.AddTextColumn()
             c1.DataPropertyName = "Name"
-            c1.HeaderText = "Container Type"
+            c1.HeaderText = "File Type"
 
             Dim c2 = filterPage.AddComboBoxColumn
             c2.DataPropertyName = "Value"
@@ -3130,6 +3125,7 @@ Public Class MainForm
                 Function(v) v.Name <> "Automatic").Select(Function(v) v.Name).Sort.ToArray
 
             c2.Items.AddRange(filterNames)
+            filterPage.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
 
             Dim bs As New BindingSource
 
@@ -3143,6 +3139,7 @@ Public Class MainForm
 
             If form.ShowDialog() = DialogResult.OK Then
                 s.FilterPreferences = DirectCast(bs.DataSource, StringPairList)
+                s.FilterPreferences.Sort()
                 ui.Save()
                 g.SetRenderer(MenuStrip)
                 SetMenuStyle()
@@ -3180,7 +3177,7 @@ Public Class MainForm
         Try
             SafeSerialization.Serialize(p, path)
             SetSavedProject()
-            Text = Application.ProductName + " - " + Filepath.GetBase(path)
+            Text = Application.ProductName + " x64 - " + Filepath.GetBase(path)
             UpdateRecentProjectsMenuItems(path)
         Catch ex As Exception
             g.ShowException(ex)

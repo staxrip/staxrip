@@ -7,5 +7,5 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyProduct("StaxRip")>
 <Assembly: AssemblyCopyright("stax76")>
 <Assembly: ComVisible(False)> 
-<Assembly: Guid("54d5dc0f-6ba7-42f0-a82f-9c71d561cb8b")> 
-<Assembly: AssemblyVersion("1.3.1.1")> 
+<Assembly: Guid("54d5dc0f-6ba7-42f0-a82f-9c71d561cb8b")>
+<Assembly: AssemblyVersion("1.3.1.2")>

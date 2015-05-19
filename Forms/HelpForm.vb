@@ -1,10 +1,4 @@
-Imports System.IO
-
 Imports StaxRip.UI
-
-Imports System.Text.RegularExpressions
-Imports System.Xml
-Imports System.Text
 
 Public Class HelpForm
     Inherits FormBase

@@ -117,7 +117,7 @@ Public MustInherit Class Muxer
                     Continue For
                 End If
 
-                If TypeOf Me Is MP4Muxer AndAlso Not IsOneOf(Filepath.GetExt(i), ".idx", ".srt") Then
+                If TypeOf Me Is MP4Muxer AndAlso Not {"idx", "srt"}.Contains(Filepath.GetExtNoDot(i)) Then
                     Continue For
                 End If
 

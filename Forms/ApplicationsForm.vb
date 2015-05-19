@@ -344,7 +344,7 @@ Public Class ApplicationsForm
                         End If
                     Next
 
-                    File.WriteAllText(CommonDirs.Startup + "Tools\Versions.txt", t.FormatColumn("="))
+                    File.WriteAllText(CommonDirs.Startup + "Apps\Versions.txt", t.FormatColumn("="))
                 End If
         End Select
 

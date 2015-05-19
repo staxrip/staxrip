@@ -88,7 +88,7 @@ Public Class ApplicationSettings
             Storage = New ObjectStorage
         End If
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 169) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 170) Then
             VideoEncoderProfiles = VideoEncoder.GetDefaults()
         End If
 
@@ -96,18 +96,20 @@ Public Class ApplicationSettings
             AudioProfiles = AudioProfile.GetDefaults()
         End If
 
-        If Check(Demuxers, "Demuxers", 85) Then
+        If Check(Demuxers, "Demuxers", 89) Then
             Demuxers = Demuxer.GetDefaults()
         End If
 
-        If Check(FilterPreferences, "Source Filter Preference", 15) Then
+        If Check(FilterPreferences, "Filter Preference", 21) Then
             FilterPreferences = New StringPairList
+            FilterPreferences.Add("264, h264, avc", "LWLibavVideoSource")
+            FilterPreferences.Add("265, h265, hevc", "LWLibavVideoSource")
             FilterPreferences.Add("default", "FFVideoSource")
-            FilterPreferences.Add("ts, m2ts, wmv", "DirectShowSource")
-            FilterPreferences.Add("mp4, m4v", "LSMASHVideoSource")
-            FilterPreferences.Add("264, h264, avc, 265, h265, hevc", "LWLibavVideoSource")
             FilterPreferences.Add("dgi", "DGSource")
             FilterPreferences.Add("dgim", "DGSourceIM")
+            FilterPreferences.Add("mp4, m4v", "LSMASHVideoSource")
+            FilterPreferences.Add("ts, m2ts", "LWLibavVideoSource")
+            FilterPreferences.Add("wmv", "DSS2")
 
             'FilterPreferences.Add("d2v", "MPEG2Source")
         End If
@@ -208,7 +210,7 @@ Public Class ApplicationSettings
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 
-        If Check(AviSynthCategories, "Filter Profiles", 119) Then
+        If Check(AviSynthCategories, "Filter Profiles", 123) Then
             AviSynthCategories = AviSynthCategory.GetDefaults
         End If
 

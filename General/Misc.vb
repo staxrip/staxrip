@@ -221,7 +221,7 @@ Public Class Paths
                 fresh = True
             End If
 
-            Dim version = 35
+            Dim version = 36
 
             If fresh OrElse Not s.Storage.GetInt("template update") = version Then
                 s.Storage.SetInt("template update", version)
@@ -349,6 +349,11 @@ Public Class GlobalClass
                 If Not Packs.Haali.VerifyOK(True) Then
                     Return True
                 End If
+            End If
+
+            If {"d2v", "dga"}.Contains(Filepath.GetExtNoDot(i)) Then
+                MsgError("There are no properly working x64 source filters available for D2V and DGA.")
+                Return True
             End If
         Next
     End Function
@@ -2805,11 +2810,20 @@ Public Class GlobalCommands
             Case "changelog" 'cl:
                 f.Doc.WriteStart("Changelog")
 
+                f.Doc.WriteP("StaxRip x64 1.3.1.2 " + GetReleaseType() + " (2015-05-19)")
+
+                f.Doc.WriteList("Added x265 switch --output-depth to choose between 8bit and 10bit output",
+                                "Improved 'Demux Configuration' dialog",
+                                "Fixed and changed cropping and resizing with QSVEncC, there is now for both crop and resize a special AviSynth filter profile 'Hardware Encoder' but if AviSynth is bypassed by enabling hardware decoding in QSVEncC then it's not necessary to use this special profiles, any crop or resize profile will do in this case.",
+                                "Fixed bug audio streams not being detected for M2TS files",
+                                "Updated x265 to x265_1.7+2",
+                                "Updated QSVEncC to 2.0 beta 3")
+
                 f.Doc.WriteP("StaxRip x64 1.3.1.1 " + GetReleaseType() + " (2015-05-15)")
 
-                f.Doc.WriteList("Added DGAVCIndex as AVC TS demuxer, dsmux is still available but disabled by default",
+                f.Doc.WriteList("Added DGAVCIndex As AVC TS demuxer, dsmux Is still available but disabled by Default",
                                 "Added plugin flash3kyuu_deband v1.5.1",
-                                "Added QSVEncC hardware decoding bypassing AviSynth and using StaxRip's cut/trim and crop values. On my Win10 development OS it don't work however and I didn't test on Win7",
+                                "Added QSVEncC hardware decoding bypassing AviSynth And Using StaxRip's cut/trim and crop values. On my Win10 development OS it don't work however and I didn't test on Win7",
                                 "Changed DGIndex to demux and output m2v because DGDecode does not work on Win10, this means the old DVD workflow is fully supported again, MakeMKV is still recommended instead",
                                 "Instead of always adding AssumeFPS it's now only added if necessary",
                                 "The Applications dialog was renamed to Apps and Version and Description info was improved (only 50% completed)",
@@ -3253,7 +3267,7 @@ Public Class Startup
         'use new GDI/TextRenderer by default instead of old GDI+/Graphics.DrawString
         Application.SetCompatibleTextRenderingDefault(False)
 
-        Dim args = My.Application.CommandLineArgs
+        Dim args = Environment.GetCommandLineArgs.Skip(1)
 
         If args.Count = 2 AndAlso args(0) = "-mediainfo" Then
             ToolStripManager.Renderer = New ToolStripRendererEx(ToolStripRenderMode.SystemDefault)
@@ -3521,12 +3535,12 @@ Public Class Subtitle
         Get
             Dim ret = "ID" & (StreamOrder + 1)
 
-            ret += " - " + Language.Name
+            ret += " " + Language.Name
 
             If Title <> "" AndAlso Title <> " " AndAlso Not Title.ContainsUnicode AndAlso
                 p.SourceFile <> "" AndAlso p.SourceFile.Length < 130 Then
 
-                ret += " - " + Title.Shorten(30)
+                ret += " " + Title.Shorten(30)
             End If
 
             If Not Filepath.IsValidFileSystemName(ret) Then
@@ -3608,11 +3622,11 @@ Public Class Subtitle
         Else
             Dim st As New Subtitle()
 
-            Dim match = Regex.Match(path, " - ID(\d+)")
+            Dim match = Regex.Match(path, " ID(\d+)")
             If match.Success Then st.StreamOrder = match.Groups(1).Value.ToInt - 1
 
             For Each i In Language.Languages
-                If path.Contains(" - " + i.CultureInfo.EnglishName) Then
+                If path.Contains(i.CultureInfo.EnglishName) Then
                     st.Language = i
                     Exit For
                 End If
@@ -3658,7 +3672,7 @@ Class FileTypes
     Shared Property qaacInput As String() = {"wav", "flac"}
     Shared Property VideoText As String() = {"d2v", "dgi", "dga", "avs"}
     Shared Property VirtualDubModInput As String() = {"ac3", "mp3", "mp2", "mpa", "wav"}
-    Shared Property AudioVideo As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
+    Shared Property AudioVideo As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
 
     Shared Property mkvmergeInput As String() = {"avi", "wav",
                                                  "mp4", "m4a", "aac",

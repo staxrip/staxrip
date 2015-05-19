@@ -845,26 +845,24 @@ Public Class eac3toForm
 
         For Each i In Streams
             If i.IsAudio AndAlso i.Checked Then
-                r += " " & i.ID & ": """ + OutputFolder + baseName + " - ID" & i.ID
+                r += " " & i.ID & ": """ + OutputFolder + baseName + " ID" & i.ID
 
                 If Not i.Language.CultureInfo Is CultureInfo.InvariantCulture Then
-                    r += " - " + i.Language.CultureInfo.EnglishName
+                    r += " " + i.Language.CultureInfo.EnglishName
                 End If
 
                 r += "." + i.OutputType + """"
 
-                If i.Options <> "" Then
-                    r += " " + i.Options.Trim
-                End If
+                If i.Options <> "" Then r += " " + i.Options.Trim
             End If
         Next
 
         For Each i In Streams
             If i.IsSubtitle AndAlso i.Checked Then
-                r += " " & i.ID & ": """ + OutputFolder + baseName + " - ID" & i.ID
+                r += " " & i.ID & ": """ + OutputFolder + baseName + " ID" & i.ID
 
                 If Not i.Language.CultureInfo Is CultureInfo.InvariantCulture Then
-                    r += " - " + i.Language.CultureInfo.EnglishName
+                    r += " " + i.Language.CultureInfo.EnglishName
                 End If
 
                 r += ".sup"""

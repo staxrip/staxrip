@@ -202,7 +202,7 @@ Public Class SubtitleControl
 
                 Dim id As String
 
-                Dim match = Regex.Match(i.Path, " - ID(\d+)")
+                Dim match = Regex.Match(i.Path, " ID(\d+)")
 
                 If match.Success Then
                     id = match.Groups(1).Value

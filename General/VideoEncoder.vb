@@ -1276,10 +1276,6 @@ Class IntelEncoder
             .Text = "Ref Frames (0=auto):",
             .MinMaxStep = {0, 16, 1}}
 
-        Property Resize As New BoolParam With {
-            .ArgsFunc = Function() If(Resize.Value, "--output-res " & p.TargetWidth & "x" & p.TargetHeight, Nothing),
-            .Text = "Resize"}
-
         Property Scenechange As New BoolParam With {
             .NoSwitch = "--no-scenechange",
             .Text = "Scenechange",
@@ -1310,7 +1306,7 @@ Class IntelEncoder
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineItem)
-                    ItemsValue.AddRange({Mode, QualitySpeed, Deinterlace, BFF, Quality, QPI, QPP, QPB, BFrames, Ref, GOPLength, LookaheadDepth, HardwareDecoding, Resize, Scenechange, MBBRC, Custom})
+                    ItemsValue.AddRange({Mode, QualitySpeed, Deinterlace, BFF, Quality, QPI, QPP, QPB, BFrames, Ref, GOPLength, LookaheadDepth, HardwareDecoding, Scenechange, MBBRC, Custom})
                 End If
 
                 Return ItemsValue
@@ -1325,10 +1321,6 @@ Class IntelEncoder
             LookaheadDepth.Visible = {"la", "la-hrd", "la-icq"}.Contains(Mode.ValueText)
             MBBRC.Visible = Not {"cqp", "la", "la-hrd", "la-icq", "vqp", "icq"}.Contains(Mode.ValueText)
             BFF.Visible = Deinterlace.Value > 0
-
-            If p.AvsDoc.IsFilterActive("Resize", "Hardware Encoder") Then
-                Resize.Value = True
-            End If
 
             MyBase.OnValueChanged(item)
         End Sub
@@ -1363,20 +1355,28 @@ Class IntelEncoder
                     ret += " --" + Mode.ValueText + " " & p.VideoBitrate
             End Select
 
-            If p.AutoARSignaling Then
+            If p.AvsDoc.IsFilterActive("Resize", "Hardware Encoder") OrElse
+                (HardwareDecoding.Value AndAlso p.AvsDoc.IsFilterActive("Resize")) Then
+
+                ret += " --output-res " & p.TargetWidth & "x" & p.TargetHeight
+            ElseIf p.AutoARSignaling Then
                 Dim par = Calc.GetTargetPAR
                 If par <> New Point(1, 1) Then ret += " --sar " & par.X & ":" & par.Y
             End If
 
-            If p.Ranges.Count > 0 Then
-                ret += " --trim " + p.Ranges.Select(Function(range) range.Start & ":" & range.End).Join(",")
-            End If
 
-            If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 Then
+            If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
+                (p.AvsDoc.IsFilterActive("Crop", "Hardware Encoder") OrElse
+                (HardwareDecoding.Value AndAlso p.AvsDoc.IsFilterActive("Crop"))) Then
+
                 ret += " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom
             End If
 
             If HardwareDecoding.Value Then
+                If p.Ranges.Count > 0 Then
+                    ret += " --trim " + p.Ranges.Select(Function(range) range.Start & ":" & range.End).Join(",")
+                End If
+
                 If FileTypes.VideoText.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
                     sourcePath = p.OriginalSourceFile
                 Else

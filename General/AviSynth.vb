@@ -98,9 +98,7 @@ Public Class AviSynthDocument
 
     Function GetFilter(category As String) As AviSynthFilter
         For Each i In Filters
-            If i.Category = category Then
-                Return i
-            End If
+            If i.Category = category Then Return i
         Next
     End Function
 
@@ -388,12 +386,16 @@ Public Class AviSynthCategory
              New AviSynthFilter("Source", "AviSource", "AviSource(""%source_file%"", audio = false)", True),
              New AviSynthFilter("Source", "DirectShowSource", "DirectShowSource(""%source_file%"", audio = false)", True),
              New AviSynthFilter("Source", "DSS2", "DSS2(""%source_file%"")", True),
-             New AviSynthFilter("Source", "MPEG2Source", "# SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "# SetFilterMTMode(""MPEG2Source"", 3)" + CrLf + "MPEG2Source(""%source_file%"")", True),
-             New AviSynthFilter("Source", "FFVideoSource", "# SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "# SetFilterMTMode(""FFVideoSource"", 3)" + CrLf + "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")", True),
-             New AviSynthFilter("Source", "LSMASHVideoSource", "# SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "# SetFilterMTMode(""LSMASHVideoSource"", 3)" + CrLf + "LSMASHVideoSource(""%source_file%"")", True),
-             New AviSynthFilter("Source", "LWLibavVideoSource", "# SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "# SetFilterMTMode(""LWLibavVideoSource"", 3)" + CrLf + "LWLibavVideoSource(""%source_file%"")", True),
-             New AviSynthFilter("Source", "DGSource", "# SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "# SetFilterMTMode(""DGSource"", 3)" + CrLf + "DGSource(""%source_file%"", deinterlace = 0, resize_w = 0, resize_h = 0)", True),
-             New AviSynthFilter("Source", "DGSourceIM", "# SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "# SetFilterMTMode(""DGSourceIM"", 3)" + CrLf + "DGSourceIM(""%source_file%"")", True)})
+             New AviSynthFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")", True),
+             New AviSynthFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")", True),
+             New AviSynthFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")", True),
+             New AviSynthFilter("Source", "DGSource", "DGSource(""%source_file%"", deinterlace = 0, resize_w = 0, resize_h = 0)", True),
+             New AviSynthFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")", True),
+             New AviSynthFilter("Source", "MT | FFVideoSource", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""FFVideoSource"", 3)" + CrLf + "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")", True),
+             New AviSynthFilter("Source", "MT | LSMASHVideoSource", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""LSMASHVideoSource"", 3)" + CrLf + "LSMASHVideoSource(""%source_file%"")", True),
+             New AviSynthFilter("Source", "MT | LWLibavVideoSource", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""LWLibavVideoSource"", 3)" + CrLf + "LWLibavVideoSource(""%source_file%"")", True),
+             New AviSynthFilter("Source", "MT | DGSource", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""DGSource"", 3)" + CrLf + "DGSource(""%source_file%"", deinterlace = 0, resize_w = 0, resize_h = 0)", True),
+             New AviSynthFilter("Source", "MT | DGSourceIM", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""DGSourceIM"", 3)" + CrLf + "DGSourceIM(""%source_file%"")", True)})
         ret.Add(src)
 
         Dim misc As New AviSynthCategory("Misc")
@@ -423,7 +425,7 @@ Public Class AviSynthCategory
         resize.Filters.Add(New AviSynthFilter(resize.Name, "GaussResize", "GaussResize(%target_width%, %target_height%)", True))
         resize.Filters.Add(New AviSynthFilter(resize.Name, "SincResize", "SincResize(%target_width%, %target_height%)", True))
         resize.Filters.Add(New AviSynthFilter(resize.Name, "PointResize", "PointResize(%target_width%, %target_height%)", True))
-        resize.Filters.Add(New AviSynthFilter(resize.Name, "Hardware Encoder", "# used with the Intel Quick Sync encoder", True))
+        resize.Filters.Add(New AviSynthFilter(resize.Name, "Hardware Encoder", "# hardware encoder resizes", True))
         resize.Filters.Add(New AviSynthFilter(resize.Name, "Spline | Spline16Resize", "Spline16Resize(%target_width%, %target_height%)", True))
         resize.Filters.Add(New AviSynthFilter(resize.Name, "Spline | Spline36Resize", "Spline36Resize(%target_width%, %target_height%)", True))
         resize.Filters.Add(New AviSynthFilter(resize.Name, "Spline | Spline64Resize", "Spline64Resize(%target_width%, %target_height%)", True))
@@ -431,6 +433,7 @@ Public Class AviSynthCategory
 
         Dim crop As New AviSynthCategory("Crop")
         crop.Filters.Add(New AviSynthFilter(crop.Name, "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))
+        crop.Filters.Add(New AviSynthFilter(crop.Name, "Hardware Encoder", "# hardware encoder crops", True))
         ret.Add(crop)
 
         Return ret

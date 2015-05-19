@@ -508,15 +508,11 @@ Public Class HelpDocument
     End Sub
 
     Sub WriteStart(title As String, showTitle As Boolean)
-        WriteStart(title, showTitle, True)
-    End Sub
-
-    Sub WriteStart(title As String, showTitle As Boolean, showTopSection As Boolean)
-        Dim script As XElement = _
+        Dim script As XElement =
 <script type="text/javascript">
 </script>
 
-        Dim style As XElement = _
+        Dim style As XElement =
 <style type="text/css">
 body {
     background-image:url('StaxRipBackground.gif');
@@ -545,7 +541,6 @@ h3 {
 a {
     color: #666666;
 }
-
 </style>
 
         Me.Title = title
@@ -560,13 +555,7 @@ a {
         Writer.WriteStartElement("body")
         WriteElement("p", "<img src=""" + HelpForm.MainImagePath + """ style=""margin-bottom:-8pt;margin-left:-4pt"">")
 
-        If showTitle Then
-            Dim header = "StaxRip supports context help by right-clicking a user interface element like a control, menu item or list item."
-            header = "<div style=""font-size:80%; border: thin solid #666666; background-color: #F4F4F4; padding: 20px"">" + header + "</div>"
-            If showTopSection Then Writer.WriteRaw(header)
-            Writer.WriteElementString("h1", title)
-        End If
-
+        If showTitle Then Writer.WriteElementString("h1", title)
         Dim dummy = HelpForm.BackgroundImagePath
     End Sub
 

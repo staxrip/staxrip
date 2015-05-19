@@ -100,10 +100,10 @@ Public Class Packs
         AddPackage(x265)
         AddPackage(xvid_encraw)
 
-        Dim fp = CommonDirs.Startup + "Tools\Versions.txt"
+        Dim fp = CommonDirs.Startup + "Apps\Versions.txt"
 
         If File.Exists(fp) Then
-            For Each i In File.ReadAllLines(CommonDirs.Startup + "Tools\Versions.txt")
+            For Each i In File.ReadAllLines(CommonDirs.Startup + "Apps\Versions.txt")
                 For Each i2 In Packages.Values
                     If i Like "*=*;*" Then
                         Dim name = i.Left("=").Trim
@@ -132,7 +132,7 @@ Public Class Package
     Property WebURL As String
     Property Description As String
     Property VersionDate As DateTime
-    Property TreePath As String = "Tools"
+    Property TreePath As String = "Apps"
     Property HelpFile As String
     Property HelpDir As String
     Property HelpURL As String
@@ -300,14 +300,14 @@ Public Class Package
 
         If TypeOf Me Is AviSynthPluginPackage Then
             For Each i In {
-                CommonDirs.Startup + "Tools\Plugins\" + Filename,
-                CommonDirs.Startup + "Tools\Plugins\" + Name + "\" + Filename}
+                CommonDirs.Startup + "Apps\Plugins\" + Filename,
+                CommonDirs.Startup + "Apps\Plugins\" + Name + "\" + Filename}
 
                 If File.Exists(i) Then Return i
             Next
         End If
 
-        ret = CommonDirs.Startup + "Tools\" + Name + "\" + Filename
+        ret = CommonDirs.Startup + "Apps\" + Name + "\" + Filename
         If File.Exists(ret) Then Return ret
 
         ret = Registry.CurrentUser.GetString("Software\" + Application.ProductName + "\Tool Paths", Name)
@@ -392,7 +392,7 @@ Public Class AviSynthPackage
         Description = "AviSynth+ is a powerful scripting language used to transform audio and video. The scripts are saved as AVS files which applications like x264 can use as input file like it would be a normal AVI file."
         HelpURL = "http://avisynth.nl/index.php/Main_Page"
         FixedDir = CommonDirs.System
-        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Tools\AviSynth+_v0.1.0_r1825-MT.exe")
+        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\AviSynth+_v0.1.0_r1825-MT.exe")
     End Sub
 
     Public Overrides Function GetStatus() As String
@@ -470,7 +470,7 @@ Public Class NeroAACEncPackage
         Description = "Free AAC encoder"
         WebURL = "http://www.nero.com/enu/downloads-nerodigital-nero-aac-codec.php"
         HelpFile = "nero readme.txt"
-        FixedDir = CommonDirs.Startup + "Tools\BeSweet\"
+        FixedDir = CommonDirs.Startup + "Apps\BeSweet\"
     End Sub
 End Class
 
@@ -905,19 +905,20 @@ Public Class xvid_encrawPackage
     End Sub
 End Class
 
-Public Class HaaliSplitter
+Public Class dsmuxPackage
     Inherits Package
 
     Sub New()
-        Name = "Haali Splitter"
-        Filename = "splitter.ax"
+        Name = "dsmux"
+        Filename = "dsmux.x64.exe"
+        Description = Strings.dsmux
         WebURL = "http://haali.su/mkv"
-        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Tools\MatroskaSplitter.exe")
-        Description = "Haali Splitter is used by eac3to and dsmux to write MKV files. Haali Splitter and LAV Filters overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
+        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\MatroskaSplitter.exe")
     End Sub
 
     Public Overrides Function GetPath() As String
         Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing)
+        ret = Filepath.GetDir(ret) + Filename
         If File.Exists(ret) Then Return ret
     End Function
 
@@ -928,20 +929,19 @@ Public Class HaaliSplitter
     End Property
 End Class
 
-Public Class dsmuxPackage
+Public Class HaaliSplitter
     Inherits Package
 
     Sub New()
-        Name = "dsmux"
-        Filename = "dsmux.x64.exe"
-        Description = Strings.dsmux
+        Name = "Haali Splitter"
+        Filename = "splitter.ax"
         WebURL = "http://haali.su/mkv"
-        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Tools\MatroskaSplitter.exe")
+        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\MatroskaSplitter.exe")
+        Description = "Haali Splitter is used by eac3to and dsmux to write MKV files. Haali Splitter and LAV Filters overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
     End Sub
 
     Public Overrides Function GetPath() As String
         Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing)
-        ret = Filepath.GetDir(ret) + Filename
         If File.Exists(ret) Then Return ret
     End Function
 
@@ -962,7 +962,7 @@ Public Class DGDecodePackage
         Description = Strings.DGMPGDec
         FilterNames = {"MPEG2Source", "Deblock"}
         HelpFile = "DGDecodeManual.html"
-        FixedDir = CommonDirs.Startup + "Tools\DGMPGDec\"
+        FixedDir = CommonDirs.Startup + "Apps\DGMPGDec\"
     End Sub
 End Class
 
@@ -976,7 +976,7 @@ Public Class DGIndexPackage
         Description = Strings.DGMPGDec
         HelpFile = "DGIndexManual.html"
         LaunchName = Filename
-        FixedDir = CommonDirs.Startup + "Tools\DGMPGDec\"
+        FixedDir = CommonDirs.Startup + "Apps\DGMPGDec\"
     End Sub
 End Class
 

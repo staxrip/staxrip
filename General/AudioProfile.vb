@@ -61,7 +61,7 @@ Public MustInherit Class AudioProfile
 
         If File <> p.OriginalSourceFile Then
             For Each i In Language.Languages
-                If File.Contains(" - " + i.CultureInfo.EnglishName) Then
+                If File.Contains(i.CultureInfo.EnglishName) Then
                     Language = i
                     Exit Sub
                 End If

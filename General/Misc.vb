@@ -631,10 +631,12 @@ Public Class GlobalClass
 
     Sub ShowCommandLinePreview(value As String)
         Using f As New StringEditorForm
-            f.Text = "Command Line"
+            f.tb.ReadOnly = True
             f.cbWrap.Checked = Not value.Contains(CrLf)
             f.tb.Text = value
-            f.tb.ReadOnly = True
+            f.tb.SelectionStart = 0
+            f.tb.SelectionLength = 0
+            f.Text = "Command Line"
             f.Width = 1000
             f.Height = 500
             f.bOK.Visible = False
@@ -930,10 +932,8 @@ Public Class GlobalClass
 
     Sub ShowDirectShowWarning()
         If Not p.BatchMode Then
-            If (Not g.IsCOMObjectRegistered(GUIDS.HaaliMuxer) AndAlso
-                Not g.IsCOMObjectRegistered(GUIDS.LAVSplitter)) OrElse
-                (Not g.IsCOMObjectRegistered(GUIDS.ffdshow) AndAlso
-                Not g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder)) Then
+            If Not g.IsCOMObjectRegistered(GUIDS.LAVSplitter) OrElse
+                Not g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
 
                 MsgError("DirectShow Filter Setup",
                          "An error occurred that could possibly be solved by installing [http://code.google.com/p/lavfilters LAV Filters].")
@@ -2521,13 +2521,13 @@ Public Class Macro
 
         If value.Contains("%media_info_video:") Then
             For Each i As Match In Regex.Matches(value, "%media_info_video:(.+?)%")
-                value = value.Replace(i.Value, MediaInfo.GetVideo(p.OriginalSourceFile, i.Groups(1).Value))
+                value = value.Replace(i.Value, MediaInfo.GetVideo(p.NativeSourceFile, i.Groups(1).Value))
             Next
         End If
 
         If value.Contains("%media_info_audio:") Then
             For Each i As Match In Regex.Matches(value, "%media_info_audio:(.+?)%")
-                value = value.Replace(i.Value, MediaInfo.GetAudio(p.OriginalSourceFile, i.Groups(1).Value))
+                value = value.Replace(i.Value, MediaInfo.GetAudio(p.NativeSourceFile, i.Groups(1).Value))
             Next
         End If
 
@@ -2782,8 +2782,8 @@ Public Class GlobalCommands
 
     Function GetReleaseType() As String
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
-        If version.MinorRevision <> 0 Then Return "pre-release"
-        If version.Minor <> 0 Then Return "beta"
+        If version.MinorRevision <> 0 Then Return "beta"
+        If version.Minor <> 0 Then Return "pre-release"
         Return "stable"
     End Function
 
@@ -2796,7 +2796,7 @@ Public Class GlobalCommands
 
         Select Case topic
             Case "info"
-                f.Doc.WriteStart("StaxRip x64 " + GetReleaseType())
+                f.Doc.WriteStart("StaxRip x64 " + Application.ProductVersion + " " + GetReleaseType())
                 f.Doc.WriteP("This program is free software and may be distributed according to the terms of the [http://www.gnu.org/licenses/gpl.html GNU General Public License].")
 
                 f.Doc.WriteH2("Patches")
@@ -2810,9 +2810,20 @@ Public Class GlobalCommands
             Case "changelog" 'cl:
                 f.Doc.WriteStart("Changelog")
 
+                f.Doc.WriteP("StaxRip x64 1.3.1.3 " + GetReleaseType() + " (2015-05-21)")
+
+                f.Doc.WriteList("Added Decomb x64 plugin",
+                                "Greatly improved AviSynth editor",
+                                "eac3to dialog is now surpressed in batch mode",
+                                "Improved framerate correction",
+                                "Replaced DGAVCDec with dsmux",
+                                "Re-added backup feature to keep backup of filter, audio and video encoder profiles. It means when filter, audio or video encoder profiles are reset, previous profiles are still available in a Backup sub menu, the menu structure is customizable so profiles of the backup sub menu can be moved to top level using the profiles editor which supports multi selection.",
+                                "Fixed wrong DGIndexNV demux configuration",
+                                "Updated ffms2 to 2.21")
+
                 f.Doc.WriteP("StaxRip x64 1.3.1.2 " + GetReleaseType() + " (2015-05-19)")
 
-                f.Doc.WriteList("Added x265 switch --output-depth to choose between 8bit and 10bit output",
+                f.Doc.WriteList("Added x265 switch --output-depth To choose between 8bit And 10bit output",
                                 "Improved 'Demux Configuration' dialog",
                                 "Fixed and changed cropping and resizing with QSVEncC, there is now for both crop and resize a special AviSynth filter profile 'Hardware Encoder' but if AviSynth is bypassed by enabling hardware decoding in QSVEncC then it's not necessary to use this special profiles, any crop or resize profile will do in this case.",
                                 "Fixed bug audio streams not being detected for M2TS files",
@@ -3300,7 +3311,6 @@ Public Class GUIDS
     Shared Property LAVSplitter As String = "{171252A0-8820-4AFE-9DF8-5C92B2D66B04}"
     Shared Property LAVVideoDecoder As String = "{EE30215D-164F-4A92-A4EB-9D4C13390F9F}"
     Shared Property HaaliMuxer As String = "{A28F324B-DDC5-4999-AA25-D3A7E25EF7A8}"
-    Shared Property ffdshow As String = "{04FE9017-F873-410E-871E-AB91661A4EF7}"
 End Class
 
 Public Class M2TSStream
@@ -3666,7 +3676,7 @@ Class FileTypes
     Shared Property SubtitleIncludingContainers As String() = {"ass", "idx", "mkv", "mp4", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
     Shared Property Video As String() = {"264", "avc", "avi", "avs", "d2v", "dgi", "divx", "flv", "h264", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m"}
-    Shared Property VideoIndex As String() = {"d2v", "dgi", "dga"}
+    Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
     Shared Property VideoOnly As String() = {"m4v", "m2v", "y4m", "mpv", "avc", "hevc", "264", "h264", "265", "h265"}
     Shared Property VideoRaw As String() = {"h264", "h265", "264", "265", "avc", "hevc"}
     Shared Property qaacInput As String() = {"wav", "flac"}

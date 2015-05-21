@@ -594,7 +594,7 @@ Namespace UI
         End Property
 
         Sub KeyDown(sender As Object, e As KeyEventArgs)
-            If e.KeyData = Shortcut Then
+            If Enabled AndAlso e.KeyData = Shortcut Then
                 PerformClick()
                 e.Handled = True
             End If
@@ -726,12 +726,31 @@ Namespace UI
     Class ContextMenuStripEx
         Inherits ContextMenuStrip
 
-        Property Form As Form
+        Private FormValue As Form
 
-        Sub New(form As Form)
-            Me.Form = form
-            AddHandler form.Disposed, Sub() Dispose()
-        End Sub
+        Property Form As Form
+            Get
+                Return FormValue
+            End Get
+            Set(value As Form)
+                AddHandler value.Disposed, Sub() Dispose()
+                FormValue = value
+            End Set
+        End Property
+
+        Function Add(path As String,
+                     action As Action,
+                     Optional help As String = Nothing) As ActionMenuItem
+
+            Dim ret = ActionMenuItem.Add(Items, path, action)
+
+            ret.Form = Form
+            ret.Help = help
+
+            AddHandler Opening, AddressOf ret.Opening
+
+            Return ret
+        End Function
 
         Function Add(path As String, action As action, shortcut As Keys,
                      enabledFunc As Func(Of Boolean),

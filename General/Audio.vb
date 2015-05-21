@@ -115,7 +115,7 @@ Public Class Audio
         If outPath.Length > 259 Then outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
         FileHelp.Delete(outPath)
         Dim args As String
-        If stream.Format = "AAC" Then args += " -single" Else args += " -raw"
+        If stream.Format = "AAC" Then args += "-single" Else args += "-raw"
         args += " " & stream.ID & " -out """ + outPath + """ """ + sourcefile + """"
 
         Using proc As New Proc

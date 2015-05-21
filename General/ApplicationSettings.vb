@@ -88,17 +88,43 @@ Public Class ApplicationSettings
             Storage = New ObjectStorage
         End If
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 170) Then
-            VideoEncoderProfiles = VideoEncoder.GetDefaults()
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 179) Then
+            If VideoEncoderProfiles Is Nothing Then
+                VideoEncoderProfiles = VideoEncoder.GetDefaults()
+            Else
+                Dim l As New List(Of VideoEncoder)
+
+                For Each i In VideoEncoderProfiles
+                    If Not i.Name.Contains("Backup") Then
+                        i.Name = "Backup | " + i.Name
+                        l.Add(i)
+                    End If
+                Next
+
+                VideoEncoderProfiles = VideoEncoder.GetDefaults()
+                VideoEncoderProfiles.AddRange(l)
+            End If
         End If
 
         If Check(AudioProfiles, "Audio Profiles", 112) Then
-            AudioProfiles = AudioProfile.GetDefaults()
+            If AudioProfiles Is Nothing Then
+                AudioProfiles = AudioProfile.GetDefaults()
+            Else
+                Dim l As New List(Of AudioProfile)
+
+                For Each i In AudioProfiles
+                    If Not i.Name.Contains("Backup") Then
+                        i.Name = "Backup | " + i.Name
+                        l.Add(i)
+                    End If
+                Next
+
+                AudioProfiles = AudioProfile.GetDefaults()
+                AudioProfiles.AddRange(l)
+            End If
         End If
 
-        If Check(Demuxers, "Demuxers", 89) Then
-            Demuxers = Demuxer.GetDefaults()
-        End If
+        If Check(Demuxers, "Demuxers", 94) Then Demuxers = Demuxer.GetDefaults()
 
         If Check(FilterPreferences, "Filter Preference", 21) Then
             FilterPreferences = New StringPairList
@@ -210,8 +236,27 @@ Public Class ApplicationSettings
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 
-        If Check(AviSynthCategories, "Filter Profiles", 123) Then
-            AviSynthCategories = AviSynthCategory.GetDefaults
+        If Check(AviSynthCategories, "Filter Profiles", 128) Then
+            If AviSynthCategories Is Nothing Then
+                AviSynthCategories = AviSynthCategory.GetDefaults
+            Else
+                Dim backup As New AviSynthCategory("Backup")
+
+                For Each c In AviSynthCategories.ToList
+                    For Each f In c.Filters.ToList
+                        If f.Category <> "Backup" Then
+                            f.Path = f.Category + " | " + f.Path
+                            f.Category = "Backup"
+                            backup.Filters.Add(f)
+                        End If
+
+                        c.Filters.Remove(f)
+                    Next
+                Next
+
+                AviSynthCategories = AviSynthCategory.GetDefaults
+                AviSynthCategories.Add(backup)
+            End If
         End If
 
         If Check(AviSynthProfiles, "Filter Setup Profiles", 85) Then

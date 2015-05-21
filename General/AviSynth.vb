@@ -242,6 +242,12 @@ Public Class AviSynthDocument
 
             If f.ShowDialog() = DialogResult.OK Then
                 Filters = f.GetFilters
+
+                If Filters.Count = 0 OrElse Filters(0).Category <> "Source" Then
+                    MsgError("The first filter must be a source filter.")
+                    Filters = GetDefaults(0).Filters
+                End If
+
                 Return DialogResult.OK
             End If
         End Using
@@ -391,11 +397,11 @@ Public Class AviSynthCategory
              New AviSynthFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")", True),
              New AviSynthFilter("Source", "DGSource", "DGSource(""%source_file%"", deinterlace = 0, resize_w = 0, resize_h = 0)", True),
              New AviSynthFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")", True),
-             New AviSynthFilter("Source", "MT | FFVideoSource", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""FFVideoSource"", 3)" + CrLf + "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")", True),
-             New AviSynthFilter("Source", "MT | LSMASHVideoSource", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""LSMASHVideoSource"", 3)" + CrLf + "LSMASHVideoSource(""%source_file%"")", True),
-             New AviSynthFilter("Source", "MT | LWLibavVideoSource", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""LWLibavVideoSource"", 3)" + CrLf + "LWLibavVideoSource(""%source_file%"")", True),
-             New AviSynthFilter("Source", "MT | DGSource", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""DGSource"", 3)" + CrLf + "DGSource(""%source_file%"", deinterlace = 0, resize_w = 0, resize_h = 0)", True),
-             New AviSynthFilter("Source", "MT | DGSourceIM", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""DGSourceIM"", 3)" + CrLf + "DGSourceIM(""%source_file%"")", True)})
+             New AviSynthFilter("Source", "MT | FFVideoSource MT", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""FFVideoSource"", 3)" + CrLf + "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")", True),
+             New AviSynthFilter("Source", "MT | LSMASHVideoSource MT", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""LSMASHVideoSource"", 3)" + CrLf + "LSMASHVideoSource(""%source_file%"")", True),
+             New AviSynthFilter("Source", "MT | LWLibavVideoSource MT", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""LWLibavVideoSource"", 3)" + CrLf + "LWLibavVideoSource(""%source_file%"")", True),
+             New AviSynthFilter("Source", "MT | DGSource MT", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""DGSource"", 3)" + CrLf + "DGSource(""%source_file%"", deinterlace = 0, resize_w = 0, resize_h = 0)", True),
+             New AviSynthFilter("Source", "MT | DGSourceIM MT", "SetFilterMTMode(""DEFAULT_MT_MODE"", 2)" + CrLf + "SetFilterMTMode(""DGSourceIM"", 3)" + CrLf + "DGSourceIM(""%source_file%"")", True)})
         ret.Add(src)
 
         Dim misc As New AviSynthCategory("Misc")
@@ -403,7 +409,6 @@ Public Class AviSynthCategory
         misc.Filters.Add(New AviSynthFilter(misc.Name, "checkmate", "checkmate()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "Clense", "Clense()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "f3kdb", "f3kdb()", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "nnedi3", "nnedi3()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "nnedi3", "nnedi3()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "Prefetch(4) ", "Prefetch(4) ", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "QTGMC | QTGMC Medium", "QTGMC(Preset=""Medium"")", True))
@@ -413,6 +418,8 @@ Public Class AviSynthCategory
         misc.Filters.Add(New AviSynthFilter(misc.Name, "SelectEven", "SelectEven()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "TDeint", "TDeint()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "UnDot", "UnDot()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "IVTC", "Telecide(guide=1).Decimate()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "FieldDeinterlace", "FieldDeinterlace()", True))
 
         ret.Add(misc)
 

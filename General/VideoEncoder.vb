@@ -270,15 +270,18 @@ Public MustInherit Class VideoEncoder
         xvid.Name = "XviD Quality Mode"
         xvid.Muxer = New ffmpegMuxer("AVI")
         xvid.QualityMode = True
-        xvid.CommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -lumimasking -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%avs_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
+        xvid.CommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%avs_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
         ret.Add(xvid)
 
         Dim xvid2pass As New BatchEncoder()
         xvid2pass.OutputFileTypeValue = "avi"
         xvid2pass.Name = "XviD 2 pass"
         xvid2pass.Muxer = New ffmpegMuxer("AVI")
-        xvid2pass.CommandLines = """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -lumimasking -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%avs_file%"" -pass1 ""%temp_file%.stats"" -bitrate %video_bitrate% -par %target_sar% -turbo" + CrLf +
-                                 """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -lumimasking -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%avs_file%"" -pass2 ""%temp_file%.stats"" -bitrate %video_bitrate% -par %target_sar% -avi ""%encoder_out_file%"""
+        xvid2pass.CommandLines = """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -turbo -pass1 ""%temp_file%.stats"" -i ""%avs_file%""" + CrLf +
+                                 """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -pass2 ""%temp_file%.stats"" -i ""%avs_file%"" -avi ""%encoder_out_file%"""
+
+        xvid2pass.CompCheckCommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -par %target_sar% -i ""%temp_file%_CompCheck.avs"" -avi ""%temp_file%_CompCheck.avi"""
+
         ret.Add(xvid2pass)
 
         ret.Add(New NullEncoder("Just Mux"))
@@ -385,22 +388,22 @@ Public Class BatchEncoder
         Return ret
     End Function
 
+    Function GetSkipStrings(commands As String) As String()
+        If commands.Contains("DivX265") Then
+            Return {"encoded @"}
+        ElseIf commands.Contains("xvid_encraw") Then
+            Return {"key="}
+        ElseIf commands.Contains("x264") Then
+            Return {"frames,"}
+        ElseIf commands.Contains("NVEncC") Then
+            Return {"frame= ", "frames: "}
+        Else
+            Return {" [ETA ", ", eta ", "frames: ", "frame= "}
+        End If
+    End Function
+
     Overrides Sub Encode()
         Dim commands = Macro.Solve(CommandLines).Trim
-
-        Dim skipStrings As String()
-
-        If commands.Contains("DivX265") Then
-            skipStrings = {"encoded @"}
-        ElseIf commands.Contains("xvid_encraw") Then
-            skipStrings = {"key="}
-        ElseIf commands.Contains("x264") Then
-            skipStrings = {"frames,"}
-        ElseIf commands.Contains("NVEncC") Then
-            skipStrings = {"frame= ", "frames: "}
-        Else
-            skipStrings = {" [ETA ", ", eta ", "frames: ", "frame= "}
-        End If
 
         If commands.Contains("|") OrElse commands.Contains(CrLf) Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
@@ -408,7 +411,7 @@ Public Class BatchEncoder
 
             Using proc As New Proc
                 proc.Init("Encoding video command line encoder: " + Name)
-                proc.SkipStrings = skipStrings
+                proc.SkipStrings = GetSkipStrings(commands)
                 proc.WriteLine(commands + CrLf2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
@@ -427,7 +430,7 @@ Public Class BatchEncoder
         Else
             Using proc As New Proc
                 proc.Init("Encoding video command line encoder: " + Name)
-                proc.SkipStrings = skipStrings
+                proc.SkipStrings = GetSkipStrings(commands)
                 proc.CommandLine = commands
                 proc.Start()
             End Using
@@ -462,6 +465,7 @@ Public Class BatchEncoder
 
         Using proc As New Proc
             proc.Init(Nothing)
+            proc.SkipStrings = GetSkipStrings(command)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
 
@@ -507,7 +511,7 @@ Public Class NullEncoder
         Next
 
         If FileTypes.VideoIndex.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
-            Return p.OriginalSourceFile
+            Return p.NativeSourceFile
         Else
             Return p.SourceFile
         End If
@@ -1378,7 +1382,7 @@ Class IntelEncoder
                 End If
 
                 If FileTypes.VideoText.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
-                    sourcePath = p.OriginalSourceFile
+                    sourcePath = p.NativeSourceFile
                 Else
                     sourcePath = p.SourceFile
                 End If

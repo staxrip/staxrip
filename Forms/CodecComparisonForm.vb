@@ -20,7 +20,8 @@ Public Class CodecComparisonForm
         TabControl.AllowDrop = True
 
         Dim enabledFunc = Function() Not TabControl.SelectedTab Is Nothing
-        Menu = New ContextMenuStripEx(Me)
+        Menu = New ContextMenuStripEx()
+        Menu.Form = Me
 
         bnMenu.ContextMenuStrip = Menu
         TabControl.ContextMenuStrip = Menu

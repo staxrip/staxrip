@@ -62,39 +62,28 @@ Public MustInherit Class Demuxer
         dsmux.Name = "dsmux"
         dsmux.InputExtensions = {"ts"}
         dsmux.OutputExtensions = {"mkv"}
-        dsmux.InputFormats = {"avc", "vc1", "mpeg2"}
+        dsmux.InputFormats = {"avc"}
         dsmux.Command = "%app:dsmux%"
         dsmux.Arguments = """%temp_file%.mkv"" ""%source_file%"""
-        dsmux.Active = False
         ret.Add(dsmux)
 
         ret.Add(New mkvDemuxer)
         ret.Add(New MP4BoxDemuxer)
         ret.Add(New eac3toDemuxer)
 
-        Dim dgi As New CommandLineDemuxer
-        dgi.Name = "DGIndex"
-        dgi.InputExtensions = {"mpg", "vob", "ts"}
-        dgi.OutputExtensions = {"m2v"}
-        dgi.InputFormats = {"mpeg2"}
-        dgi.Command = "%app:DGIndex%"
-        dgi.Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -od ""%temp_file%"" -hide -exit"
-        dgi.SourceFilters = {"MPEG2Source"}
-        ret.Add(dgi)
-
-        Dim dgavcdec As New CommandLineDemuxer
-        dgavcdec.Name = "DGAVCIndex"
-        dgavcdec.InputExtensions = {"ts"}
-        dgavcdec.OutputExtensions = {"h264"}
-        dgavcdec.InputFormats = {"avc"}
-        dgavcdec.Command = "%app:DGAVCIndex%"
-        dgavcdec.Arguments = "-i %source_files_comma% -od ""%temp_file%.dga"" -a -h"
-        dgavcdec.Active = True
-        ret.Add(dgavcdec)
+        Dim dgindex As New CommandLineDemuxer
+        dgindex.Name = "DGIndex"
+        dgindex.InputExtensions = {"mpg", "vob", "ts"}
+        dgindex.OutputExtensions = {"m2v"}
+        dgindex.InputFormats = {"mpeg2"}
+        dgindex.Command = "%app:DGIndex%"
+        dgindex.Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -od ""%temp_file%"" -hide -exit"
+        dgindex.SourceFilters = {"MPEG2Source"}
+        ret.Add(dgindex)
 
         Dim dgnv As New CommandLineDemuxer
         dgnv.Name = "DGIndexNV"
-        dgnv.InputExtensions = {"h264 mkv mp4 mpg ts m2ts"}
+        dgnv.InputExtensions = {"h264", "mkv", "mp4", "mpg", "ts", "m2ts"}
         dgnv.OutputExtensions = {"dgi"}
         dgnv.InputFormats = {"avc", "vc1", "mpeg2"}
         dgnv.Command = "%app:DGIndexNV%"
@@ -105,11 +94,11 @@ Public MustInherit Class Demuxer
 
         Dim dgim As New CommandLineDemuxer
         dgim.Name = "DGIndexIM"
-        dgim.InputExtensions = {"h264 mkv mp4 mpg ts m2ts"}
-        dgim.OutputExtensions = {"dgi"}
+        dgim.InputExtensions = {"h264", "mkv", "mp4", "mpg", "ts", "m2ts"}
+        dgim.OutputExtensions = {"dgim"}
         dgim.InputFormats = {"avc", "vc1", "mpeg2"}
         dgim.Command = "%app:DGIndexIM%"
-        dgim.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgim"" -a"
+        dgim.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgim"" -a -h"
         dgim.SourceFilters = {"DGSourceIM"}
         dgim.Active = False
         ret.Add(dgim)
@@ -139,7 +128,7 @@ Public Class CommandLineDemuxer
 
     Overrides Sub Run()
         Using proc As New Proc
-            If Command?.Contains("DGIndex") OrElse Command?.Contains("DGAVCIndex") Then
+            If Command?.Contains("DGIndex") Then
                 proc.SkipPatterns = {"^\d+$"}
             ElseIf Command?.Contains("dsmux")
                 proc.SkipStrings = {"Muxing..."}
@@ -152,10 +141,7 @@ Public Class CommandLineDemuxer
             proc.Arguments = Macro.Solve(Arguments)
             proc.Start()
 
-            If Command?.Contains("DGAVCIndex") Then
-                FileHelp.Move(Filepath.GetDirAndBase(p.SourceFile) + ".log", p.TempDir + Filepath.GetBase(p.SourceFile) + "_DG.log")
-                FileHelp.Move(p.TempDir + Filepath.GetBase(p.SourceFile) + ".demuxed.264", p.TempDir + Filepath.GetBase(p.SourceFile) + ".h264")
-            ElseIf Command?.Contains("DGIndexIM") Then
+            If Command?.Contains("DGIndexIM") Then
                 FileHelp.Move(Filepath.GetDirAndBase(p.SourceFile) + ".log", p.TempDir + Filepath.GetBase(p.SourceFile) + "_DG.log")
             ElseIf Command?.Contains("DGIndex") Then
                 FileHelp.Move(Filepath.GetDirAndBase(p.SourceFile) + ".log", p.TempDir + Filepath.GetBase(p.SourceFile) + "_DG.log")
@@ -273,6 +259,8 @@ Public Class eac3toDemuxer
     End Sub
 
     Overrides Sub Run()
+        If p.BatchMode Then Exit Sub
+
         Using f As New eac3toForm
             f.M2TSFile = p.SourceFile
             f.tbTempDir.Text = p.TempDir

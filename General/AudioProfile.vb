@@ -59,7 +59,7 @@ Public MustInherit Class AudioProfile
     Sub SetStreamOrLanguage()
         If File = "" Then Exit Sub
 
-        If File <> p.OriginalSourceFile Then
+        If File <> p.NativeSourceFile Then
             For Each i In Language.Languages
                 If File.Contains(i.CultureInfo.EnglishName) Then
                     Language = i

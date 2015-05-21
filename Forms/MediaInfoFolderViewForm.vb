@@ -79,7 +79,9 @@ Public Class MediaInfoFolderViewForm
         Me.Folder = folder
         Files = Directory.GetFiles(folder)
 
-        Dim cms As New ContextMenuStripEx(Me)
+        Dim cms As New ContextMenuStripEx()
+        cms.Form = Me
+
         lv.ContextMenuStrip = cms
         Dim enabledFunc = Function() lv.SelectedItems.Count = 1
         Dim pathFunc = Function() folder + lv.SelectedItems(0).Text

@@ -186,7 +186,7 @@ Public Class ProcessForm
         Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "ProcessForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
-        Me.Text = "StaxRip - Log"
+        Me.Text = "StaxRip x64 - Log"
         Me.FlowLayoutPanel1.ResumeLayout(False)
         Me.FlowLayoutPanel1.PerformLayout()
         Me.ResumeLayout(False)

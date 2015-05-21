@@ -1583,9 +1583,7 @@ Public Class MainForm
         AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(recoverProjectPath)
 
         Try
-            If g.ShowVideoSourceWarnings(files) Then
-                Exit Sub
-            End If
+            If g.ShowVideoSourceWarnings(files) Then Throw New AbortException
 
             For Each i In files
                 Dim name = Filepath.GetName(i)
@@ -1633,6 +1631,7 @@ Public Class MainForm
 
             g.SetTempDir()
 
+            p.NativeSourceFile = p.SourceFile
             p.OriginalSourceFile = p.SourceFile
 
             If FileTypes.VideoIndex.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
@@ -1643,6 +1642,7 @@ Public Class MainForm
                         End If
 
                         If File.Exists(i) AndAlso FileTypes.Video.Contains(Filepath.GetExtNoDot(i)) Then
+                            p.NativeSourceFile = i
                             p.OriginalSourceFile = i
                             Exit For
                         End If
@@ -1657,21 +1657,22 @@ Public Class MainForm
                     Dim fp = match.Groups(1).Value
 
                     If File.Exists(fp) AndAlso FileTypes.Video.Contains(Filepath.GetExtNoDot(fp)) Then
+                        p.NativeSourceFile = fp
                         p.OriginalSourceFile = fp
                     End If
                 End If
             End If
 
-            Dim sourcePAR = MediaInfo.GetVideo(p.OriginalSourceFile, "PixelAspectRatio")
+            Dim sourcePAR = MediaInfo.GetVideo(p.NativeSourceFile, "PixelAspectRatio")
 
             If sourcePAR <> "" Then
                 p.SourcePAR.X = CInt(Convert.ToSingle(sourcePAR, CultureInfo.InvariantCulture) * 1000)
                 p.SourcePAR.Y = 1000
             End If
 
-            p.Codec = MediaInfo.GetVideoCodec(p.OriginalSourceFile)
+            p.Codec = MediaInfo.GetVideoCodec(p.NativeSourceFile)
 
-            p.CodecProfile = MediaInfo.GetVideo(p.OriginalSourceFile, "Format_Profile")
+            p.CodecProfile = MediaInfo.GetVideo(p.NativeSourceFile, "Format_Profile")
 
             If autoMode AndAlso p.BatchMode Then
                 Assistant()
@@ -1735,10 +1736,10 @@ Public Class MainForm
                 Throw New AbortException
             End If
 
-            If p.OriginalSourceFile <> p.SourceFile AndAlso
+            If p.NativeSourceFile <> p.SourceFile AndAlso
                 Not FileTypes.VideoText.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
 
-                p.OriginalSourceFile = p.SourceFile
+                p.NativeSourceFile = p.SourceFile
             End If
 
             s.LastSourceDir = Filepath.GetDir(p.SourceFile)
@@ -1786,8 +1787,8 @@ Public Class MainForm
                     End If
 
                     If Not sourceFilter.Script.Contains("Crop(") Then
-                        Dim sourceWidth = MediaInfo.GetVideo(p.OriginalSourceFile, "Width").ToInt
-                        Dim sourceHeight = MediaInfo.GetVideo(p.OriginalSourceFile, "Height").ToInt
+                        Dim sourceWidth = MediaInfo.GetVideo(p.NativeSourceFile, "Width").ToInt
+                        Dim sourceHeight = MediaInfo.GetVideo(p.NativeSourceFile, "Height").ToInt
 
                         If sourceWidth Mod 4 <> 0 OrElse sourceHeight Mod 4 <> 0 Then
                             p.AvsDoc.GetFilter("Source").Script += CrLf + "Crop(0, 0, -" & sourceWidth Mod 4 & ", -" & sourceHeight Mod 4 & ")"
@@ -1795,14 +1796,14 @@ Public Class MainForm
                     End If
 
                     If Not sourceFilter.Script.Contains("ConvertToYV12") Then
-                        Dim ChromaSubsampling = MediaInfo.GetVideo(p.OriginalSourceFile, "ChromaSubsampling")
+                        Dim ChromaSubsampling = MediaInfo.GetVideo(p.NativeSourceFile, "ChromaSubsampling")
 
                         If ChromaSubsampling <> "4:2:0" Then
-                            Dim format = MediaInfo.GetVideo(p.OriginalSourceFile, "Format")
+                            Dim format = MediaInfo.GetVideo(p.NativeSourceFile, "Format")
                             Dim matrix As String
 
                             If format = "RGB" Then
-                                Dim sourceHeight = MediaInfo.GetVideo(p.OriginalSourceFile, "Height").ToInt
+                                Dim sourceHeight = MediaInfo.GetVideo(p.NativeSourceFile, "Height").ToInt
 
                                 If sourceHeight > 576 Then
                                     matrix = "matrix=""Rec709"""
@@ -1820,8 +1821,8 @@ Public Class MainForm
             AviSynthListView.Load()
             RenameDVDTracks()
 
-            If FileTypes.AudioVideo.Contains(Filepath.GetExtNoDot(p.OriginalSourceFile)) Then
-                p.Audio0.Streams = MediaInfo.GetAudioStreams(p.OriginalSourceFile)
+            If FileTypes.AudioVideo.Contains(Filepath.GetExtNoDot(p.NativeSourceFile)) Then
+                p.Audio0.Streams = MediaInfo.GetAudioStreams(p.NativeSourceFile)
                 p.Audio1.Streams = p.Audio0.Streams
             End If
 
@@ -1839,9 +1840,9 @@ Public Class MainForm
             Else
                 If p.Audio0.File = "" AndAlso p.Audio1.File = "" Then
                     If Not TypeOf p.Audio0 Is NullAudioProfile AndAlso
-                        Not FileTypes.VideoText.Contains(Filepath.GetExtNoDot(p.OriginalSourceFile)) Then
+                        Not FileTypes.VideoText.Contains(Filepath.GetExtNoDot(p.NativeSourceFile)) Then
 
-                        tbAudioFile0.Text = p.OriginalSourceFile
+                        tbAudioFile0.Text = p.NativeSourceFile
 
                         If p.Audio0.Streams.Count = 0 Then
                             tbAudioFile0.Text = ""
@@ -1850,7 +1851,7 @@ Public Class MainForm
                         If Not TypeOf p.Audio1 Is NullAudioProfile AndAlso
                             p.Audio0.Streams.Count > 1 Then
 
-                            tbAudioFile1.Text = p.OriginalSourceFile
+                            tbAudioFile1.Text = p.NativeSourceFile
 
                             For Each i In p.Audio1.Streams
                                 If Not p.Audio0.Stream Is Nothing AndAlso
@@ -1960,9 +1961,9 @@ Public Class MainForm
                 Dim src = p.AvsDoc.GetFilter("Source")
                 src.Script = src.Script + CrLf + "SelectEven().AssumeFPS(" & miFPS.ToString(CultureInfo.InvariantCulture) + ")"
                 p.SourceAviSynthDocument.Synchronize()
-            ElseIf miFPS = 25 AndAlso avsFPS <> 25 AndAlso CInt(avsFPS) = 25 Then
+            ElseIf miFPS <> avsFPS
                 Dim src = p.AvsDoc.GetFilter("Source")
-                src.Script = src.Script + CrLf + "AssumeFPS(25)"
+                src.Script = src.Script + CrLf + "AssumeFPS(" + miFPS.ToString(CultureInfo.InvariantCulture) + ")"
                 p.SourceAviSynthDocument.Synchronize()
             End If
 
@@ -2007,9 +2008,7 @@ Public Class MainForm
 
             Assistant()
 
-            If Not p.BatchMode Then
-                ProcessForm.CloseProcessForm()
-            End If
+            If Not p.BatchMode Then ProcessForm.CloseProcessForm()
 
             g.RaiseApplicationEvent(ApplicationEvent.AfterSourceLoaded)
             g.RaiseApplicationEvent(ApplicationEvent.ProjectOrSourceLoaded)
@@ -2021,10 +2020,7 @@ Public Class MainForm
             OpenProject(recoverProjectPath)
             Text = recoverText
             g.ProjectPath = recoverPath
-
-            If Not autoMode Then
-                Throw New AbortException
-            End If
+            If Not autoMode Then Throw New AbortException
         Catch ex As Exception
             g.OnException(ex)
         End Try
@@ -2135,7 +2131,7 @@ Public Class MainForm
     End Sub
 
     Sub DemuxVobSubSubtitles()
-        If Not {"vob", "m2v"}.Contains(Filepath.GetExtNoDot(p.OriginalSourceFile)) Then Exit Sub
+        If Not {"vob", "m2v"}.Contains(Filepath.GetExtNoDot(p.NativeSourceFile)) Then Exit Sub
         Dim ifoPath = GetIfoFile()
         If ifoPath = "" Then Exit Sub
         If File.Exists(p.TempDir + Filepath.GetBase(p.SourceFile) + ".idx") Then Exit Sub
@@ -2672,7 +2668,7 @@ Public Class MainForm
             If p.VideoEncoder.IsCompCheckEnabled AndAlso p.Compressibility > 0 Then
                 Dim value = Calc.GetPercent
 
-                If value < (p.VideoEncoder.AutoCompCheckValue - 20) OrElse _
+                If value < (p.VideoEncoder.AutoCompCheckValue - 20) OrElse
                     value > (p.VideoEncoder.AutoCompCheckValue + 20) Then
 
                     If ProcessTip("The aimed quality value is more than 20% off, change the image or file size to get something between 50% and 70% quality.") Then
@@ -4878,9 +4874,7 @@ Public Class MainForm
 
                         Dim tempPath = Paths.TemplateDir + "temp.srip"
 
-                        If f.cbCreateJobs.Checked Then
-                            p.BatchMode = True
-                        End If
+                        If f.cbCreateJobs.Checked Then p.BatchMode = True
 
                         SaveProjectByPath(tempPath)
 
@@ -4923,9 +4917,7 @@ Public Class MainForm
 
                         Dim tempPath = Paths.TemplateDir + "temp.srip"
 
-                        If f.cbCreateJobs.Checked Then
-                            p.BatchMode = True
-                        End If
+                        If f.cbCreateJobs.Checked Then p.BatchMode = True
 
                         SaveProjectByPath(tempPath)
 
@@ -5673,7 +5665,7 @@ Public Class MainForm
     End Sub
 
     Sub UpdateAudioFileMenu(m As ContextMenuStrip,
-                            a As action,
+                            a As Action,
                             ap As AudioProfile,
                             tb As TextBox)
         m.Items.Clear()
@@ -5684,8 +5676,8 @@ Public Class MainForm
                 Dim temp = i
 
                 Dim menuAction = Sub()
-                                     If ap.File <> p.OriginalSourceFile Then
-                                         tb.Text = p.OriginalSourceFile
+                                     If ap.File <> p.NativeSourceFile Then
+                                         tb.Text = p.NativeSourceFile
                                      End If
 
                                      tb.Text = temp.Name + " (" + Filepath.GetExtNoDot(ap.File) + ")"

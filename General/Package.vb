@@ -46,14 +46,14 @@ Public Class Packs
     Public Shared x264 As New x264Package
     Public Shared x265 As New x265Package
     Public Shared xvid_encraw As New xvid_encrawPackage
-    Public Shared DGAVCIndex As New DGAVCIndexPackage
     Public Shared flash3kyuu_deband As New flash3kyuu_debandPackage
+    Public Shared Decomb As New DecombPackage
 
     Public Shared Property Packages As New Dictionary(Of String, Package)
 
     Shared Sub Init()
+        AddPackage(Decomb)
         AddPackage(flash3kyuu_deband)
-        AddPackage(DGAVCIndex)
         AddPackage(autocrop)
         AddPackage(AviSynth)
         AddPackage(avs4x26x)
@@ -1065,6 +1065,19 @@ Public Class RgToolsPackage
     End Sub
 End Class
 
+Public Class DecombPackage
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "Decomb"
+        Filename = "Decomb.dll"
+        WebURL = "http://neuron2.net/decomb/decombnew.html"
+        HelpFile = "DecombReferenceManual.html"
+        Description = "This package of plugin functions for Avisynth provides the means for removing combing artifacts from telecined progressive streams, interlaced streams, and mixtures thereof. Functions can be combined to implement inverse telecine (IVTC) for both NTSC and PAL streams."
+        FilterNames = {"Telecide", "FieldDeinterlace", "Decimate", "IsCombed"}
+    End Sub
+End Class
+
 Public Class flash3kyuu_debandPackage
     Inherits AviSynthPluginPackage
 
@@ -1089,17 +1102,5 @@ Public Class QTGMCPackage
         Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée."
         FilterNames = {"QTGMC"}
         Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}
-    End Sub
-End Class
-
-Public Class DGAVCIndexPackage
-    Inherits Package
-
-    Sub New()
-        Name = "DGAVCIndex"
-        Filename = "DGAVCIndex.exe"
-        Description = Strings.DGAVCIndex
-        HelpFile = "DGAVCIndexManual.html"
-        LaunchName = Filename
     End Sub
 End Class

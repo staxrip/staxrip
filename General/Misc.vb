@@ -2805,21 +2805,25 @@ Public Class GlobalCommands
 
                 f.Doc.WriteH2("Special Thanks")
                 f.Doc.WriteList("DivX Network giving a open source development sponsorship award",
-                                "Brother John writing [http://encodingwissen.de/staxrip german tutorial]",
-                                "Donald Graft (neuron2) helping with various issues")
+                                "Brother John writing [http://encodingwissen.de/staxrip german tutorial]")
+
             Case "changelog" 'cl:
                 f.Doc.WriteStart("Changelog")
+
+                f.Doc.WriteP("StaxRip x64 1.3.1.4 " + GetReleaseType() + " (2015-0?-??)")
+
+                f.Doc.WriteList("Updated qaac to 2.49")
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.3 " + GetReleaseType() + " (2015-05-21)")
 
                 f.Doc.WriteList("Added Decomb x64 plugin",
                                 "Greatly improved AviSynth editor",
-                                "eac3to dialog is now surpressed in batch mode",
+                                "eac3to dialog Is now surpressed In batch mode",
                                 "Improved framerate correction",
-                                "Replaced DGAVCDec with dsmux",
-                                "Re-added backup feature to keep backup of filter, audio and video encoder profiles. It means when filter, audio or video encoder profiles are reset, previous profiles are still available in a Backup sub menu, the menu structure is customizable so profiles of the backup sub menu can be moved to top level using the profiles editor which supports multi selection.",
+                                "Replaced DGAVCDec With dsmux",
+                                "Re-added backup feature To keep backup Of filter, audio And video encoder profiles. It means When filter, audio Or video encoder profiles are reset, previous profiles are still available In a Backup Sub menu, the menu Structure Is customizable so profiles Of the backup Sub menu can be moved To top level Using the profiles editor which supports multi selection.",
                                 "Fixed wrong DGIndexNV demux configuration",
-                                "Updated ffms2 to 2.21")
+                                "Updated ffms2 To 2.21")
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.2 " + GetReleaseType() + " (2015-05-19)")
 

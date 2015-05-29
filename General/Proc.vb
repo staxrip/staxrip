@@ -125,15 +125,31 @@ Public Class Proc
             If BatchCode <> "" Then
                 Dim code = BatchCode.ToLower
 
-                For Each i In System.Diagnostics.Process.GetProcesses()
+                For Each i In Process.GetProcesses()
                     Try
                         If code.Contains(i.ProcessName.ToLower + ".exe") Then
-                            If Not i.HasExited AndAlso Msg("Confirm to kill " + i.ProcessName + ".exe",
-                                       MessageBoxIcon.Question,
-                                       MessageBoxButtons.OKCancel) = DialogResult.OK Then
+                            Dim procName = Process.GetProcessById(i.Id).ProcessName
+                            Dim procsByName = Process.GetProcessesByName(procName)
+                            Dim procIndexdName As String = Nothing
+                            Dim tempIndexdName As String = Nothing
 
-                                i.Kill()
-                                Thread.Sleep(2000)
+                            For idx = 0 To procsByName.Length - 1
+                                tempIndexdName = If(idx = 0, procName, Convert.ToString(procName) & "#" & idx)
+                                Dim procId = New PerformanceCounter("Process", "ID Process", tempIndexdName)
+
+                                If CInt(procId.NextValue()) = i.Id Then
+                                    procIndexdName = tempIndexdName
+                                End If
+                            Next
+
+                            Dim parentId = New PerformanceCounter("Process", "Creating Process ID", procIndexdName)
+                            Dim ppid = CInt(parentId.NextValue())
+
+                            If ppid = Process.Id AndAlso Not i.HasExited AndAlso
+                                Msg("Confirm to kill " + i.ProcessName + ".exe",
+                                    MessageBoxIcon.Question,
+                                    MessageBoxButtons.OKCancel) = DialogResult.OK Then
+                                If Not i.HasExited Then i.Kill()
                             End If
                         End If
                     Catch
@@ -196,9 +212,7 @@ Public Class Proc
 
             MsgError(m)
 
-            If ReTrowException Then
-                Throw New AbortException
-            End If
+            If ReTrowException Then Throw New AbortException
         End Try
 
         Try

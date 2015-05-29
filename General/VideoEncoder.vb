@@ -277,7 +277,7 @@ Public MustInherit Class VideoEncoder
         xvid2pass.OutputFileTypeValue = "avi"
         xvid2pass.Name = "XviD 2 pass"
         xvid2pass.Muxer = New ffmpegMuxer("AVI")
-        xvid2pass.CommandLines = """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -turbo -pass1 ""%temp_file%.stats"" -i ""%avs_file%""" + CrLf +
+        xvid2pass.CommandLines = """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -turbo -pass1 ""%temp_file%.stats"" -i ""%avs_file%"" || exit" + CrLf +
                                  """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -pass2 ""%temp_file%.stats"" -i ""%avs_file%"" -avi ""%encoder_out_file%"""
 
         xvid2pass.CompCheckCommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -par %target_sar% -i ""%temp_file%_CompCheck.avs"" -avi ""%temp_file%_CompCheck.avi"""
@@ -345,7 +345,7 @@ Public MustInherit Class VideoEncoder
 End Class
 
 <Serializable()>
-Public Class BatchEncoder
+Class BatchEncoder
     Inherits VideoEncoder
 
     Sub New()
@@ -432,7 +432,16 @@ Public Class BatchEncoder
                 proc.Init("Encoding video command line encoder: " + Name)
                 proc.SkipStrings = GetSkipStrings(commands)
                 proc.CommandLine = commands
-                proc.Start()
+
+                Try
+                    proc.Start()
+                Catch ex As AbortException
+                    Throw ex
+                Catch ex As Exception
+                    ProcessForm.CloseProcessForm()
+                    g.ShowException(ex)
+                    Throw New AbortException
+                End Try
             End Using
         End If
     End Sub
@@ -468,13 +477,17 @@ Public Class BatchEncoder
             proc.SkipStrings = GetSkipStrings(command)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
+            proc.BatchCode = command
 
             Try
                 proc.Start()
+            Catch ex As AbortException
+                ProcessForm.CloseProcessForm()
+                Exit Sub
             Catch ex As Exception
                 ProcessForm.CloseProcessForm()
                 g.ShowException(ex)
-                Throw New AbortException
+                Exit Sub
             End Try
         End Using
 

@@ -682,7 +682,7 @@ Public Class qaacPackage
     Sub New()
         Name = "qaac"
         Filename = "qaac64.exe"
-        WebURL = "https://sites.google.com/site/qaacpage"
+        WebURL = "http://github.com/nu774/qaac"
         Description = "qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the x64 iTunes installer using 7-Zip. The makeportable script found on the qaac website can also be used."
     End Sub
 

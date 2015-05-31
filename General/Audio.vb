@@ -24,11 +24,11 @@ Public Class Audio
 
             Dim directMux = TypeOf ap Is MuxAudioProfile AndAlso
                 p.VideoEncoder.Muxer.IsSupported(ap.Stream.Extension.TrimStart("."c)) AndAlso
-                p.VideoEncoder.Muxer.IsSupported(Filepath.GetExtNoDot(ap.File)) AndAlso
+                p.VideoEncoder.Muxer.IsSupported(Filepath.GetExt(ap.File)) AndAlso
                 Not cutting
 
             If (cutting OrElse Not ap.IsInputSupported) AndAlso Not directMux Then
-                Select Case Filepath.GetExt(ap.File)
+                Select Case Filepath.GetExtFull(ap.File)
                     Case ".mkv", ".webm"
                         DemuxMKV(ap.File, ap.Stream, ap)
                     Case ".mp4"
@@ -38,7 +38,7 @@ Public Class Audio
                             Not TypeOf ap Is MuxAudioProfile Then
 
                             DecodeDirectShowSource(ap)
-                        ElseIf Not Filepath.GetExt(ap.File) = ".m2ts" Then
+                        ElseIf Not Filepath.GetExtFull(ap.File) = ".m2ts" Then
                             Demuxffmpeg(ap.File, ap.Stream, ap)
                         End If
                 End Select
@@ -48,7 +48,7 @@ Public Class Audio
         Cut(ap)
 
         If Not TypeOf ap Is MuxAudioProfile AndAlso
-            Not ap.SupportedInput.Contains(Filepath.GetExtNoDot(ap.File)) Then
+            Not ap.SupportedInput.Contains(Filepath.GetExt(ap.File)) Then
 
             Decode(ap, ap.SupportedInput.Contains("flac"))
         End If
@@ -155,7 +155,7 @@ Public Class Audio
             If Not ap Is Nothing Then ap.File = outPath
             Log.WriteLine(MediaInfo.GetSummary(outPath))
 
-            If Filepath.GetExt(outPath) = ".aac" Then
+            If Filepath.GetExtFull(outPath) = ".aac" Then
                 Using proc As New Proc
                     proc.Init("Mux AAC to M4A", "|")
                     proc.File = Packs.MP4Box.GetPath
@@ -184,9 +184,9 @@ Public Class Audio
 
     Shared Sub Decode(ap As AudioProfile, Optional useFlac As Boolean = False)
         Dim ext = If(useFlac, ".flac", ".wav")
-        If Filepath.GetExt(ap.File) = If(useFlac, ".flac", ".wav") Then Exit Sub
+        If Filepath.GetExtFull(ap.File) = If(useFlac, ".flac", ".wav") Then Exit Sub
 
-        If Filepath.GetExt(ap.File) = ".avs" Then
+        If Filepath.GetExtFull(ap.File) = ".avs" Then
             Dim outPath = Filepath.GetDirAndBase(ap.File) + ext
             Dim args = "-i """ + ap.File + """ -y """ + outPath + """"
 
@@ -227,7 +227,7 @@ Public Class Audio
 
     Shared Sub CutNicAudio(ap As AudioProfile)
         If ap.File.Contains("_cut_") Then Exit Sub
-        If Not IsOneOf(Filepath.GetExtNoDot(ap.File), FileTypes.NicAudioInput) Then Exit Sub
+        If Not IsOneOf(Filepath.GetExt(ap.File), FileTypes.NicAudioInput) Then Exit Sub
         ap.Delay = 0
         Dim d As New AviSynthDocument
         d.Filters.AddRange(p.AvsDoc.Filters)
@@ -257,8 +257,8 @@ Public Class Audio
     End Sub
 
     Shared Sub DecodeNicAudio(ap As AudioProfile)
-        If Filepath.GetExt(ap.File) = ".wav" Then Exit Sub
-        If Not FileTypes.NicAudioInput.Contains(Filepath.GetExtNoDot(ap.File)) Then Exit Sub
+        If Filepath.GetExtFull(ap.File) = ".wav" Then Exit Sub
+        If Not FileTypes.NicAudioInput.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
         ap.Delay = 0
         Dim d As New AviSynthDocument
         d.Filters.AddRange(p.AvsDoc.Filters)
@@ -299,7 +299,7 @@ Public Class Audio
             Case CuttingMode.mkvmerge
                 CutMkvmerge(ap)
             Case CuttingMode.NicAudio
-                If IsOneOf(Filepath.GetExtNoDot(ap.File), FileTypes.NicAudioInput) AndAlso
+                If IsOneOf(Filepath.GetExt(ap.File), FileTypes.NicAudioInput) AndAlso
                     Not TypeOf ap Is MuxAudioProfile Then
 
                     CutNicAudio(ap)
@@ -316,7 +316,7 @@ Public Class Audio
     End Sub
 
     Shared Function GetNicAudioCode(ap As AudioProfile) As String
-        Select Case Filepath.GetExt(ap.File)
+        Select Case Filepath.GetExtFull(ap.File)
             Case ".ac3"
                 Return "AudioDub(last, NicAC3Source(""" + ap.File + """, Channels = " & ap.Channels & "))"
             'Avatar mkv sample don't work
@@ -330,9 +330,9 @@ Public Class Audio
     End Function
 
     Shared Sub DecodeEac3to(ap As AudioProfile, Optional useFlac As Boolean = False)
-        If {"wav", "flac"}.Contains(Filepath.GetExtNoDot(ap.File)) Then Exit Sub
+        If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
 
-        If Not IsOneOf(Filepath.GetExtNoDot(ap.File), FileTypes.eac3toInput) Then
+        If Not IsOneOf(Filepath.GetExt(ap.File), FileTypes.eac3toInput) Then
             Exit Sub
         End If
 
@@ -367,7 +367,7 @@ Public Class Audio
     End Sub
 
     Shared Sub DecodeFfmpeg(ap As AudioProfile, Optional useFlac As Boolean = False)
-        If {"wav", "flac"}.Contains(Filepath.GetExtNoDot(ap.File)) Then Exit Sub
+        If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
         Dim outPath = p.TempDir + Filepath.GetBase(ap.File) + If(useFlac, ".flac", ".wav")
         Dim args = "-i """ + ap.File + """"
 
@@ -377,7 +377,7 @@ Public Class Audio
         args += " """ + outPath + """"
 
         Using proc As New Proc
-            proc.Init("Convert from " + Filepath.GetExtNoDot(ap.File).ToUpper + " to " + Filepath.GetExtNoDot(outPath).ToUpper + " using ffmpeg",
+            proc.Init("Convert from " + Filepath.GetExt(ap.File).ToUpper + " to " + Filepath.GetExt(outPath).ToUpper + " using ffmpeg",
                                 "frame=", "size=", "Multiple", "decoding is not implemented", "unsupported frame type", "upload a sample")
             proc.Encoding = Encoding.UTF8
             proc.File = Packs.ffmpeg.GetPath
@@ -395,7 +395,7 @@ Public Class Audio
     End Sub
 
     Shared Sub DecodeDirectShowSource(ap As AudioProfile, Optional useFlac As Boolean = False)
-        If {"wav", "flac"}.Contains(Filepath.GetExtNoDot(ap.File)) Then Exit Sub
+        If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
         ap.Delay = 0
         Dim d As New AviSynthDocument
         d.Filters.AddRange(p.AvsDoc.Filters)
@@ -426,7 +426,7 @@ Public Class Audio
     End Sub
 
     Shared Sub DecodeFFAudioSource(ap As AudioProfile)
-        If Filepath.GetExt(ap.File) = ".wav" Then Exit Sub
+        If Filepath.GetExtFull(ap.File) = ".wav" Then Exit Sub
         ap.Delay = 0
         Dim cachefile = p.TempDir + Filepath.GetBase(ap.File) + ".ffindex"
         g.MainForm.ffmsindex(ap.File, cachefile)
@@ -583,12 +583,12 @@ Public Class Audio
         End If
 
         If fail AndAlso TypeOf ap Is GUIAudioProfile AndAlso
-            Not Filepath.GetExt(ap.File) = ".wav" Then
+            Not Filepath.GetExtFull(ap.File) = ".wav" Then
 
             Log.Write("Error", "no output found")
             Decode(ap)
 
-            If Filepath.GetExt(ap.File) = ".wav" Then
+            If Filepath.GetExtFull(ap.File) = ".wav" Then
                 Cut(ap)
             End If
         End If

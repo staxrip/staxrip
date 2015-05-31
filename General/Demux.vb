@@ -21,7 +21,7 @@ Public MustInherit Class Demuxer
     Overridable Property InputFormats As String() = {}
     Overridable Property Name As String = ""
     Overridable Property OutputExtensions As String() = {}
-    Overridable Property SourceFilters As String() = {}
+    Overridable Property SourceFilter As String = ""
 
     Overridable ReadOnly Property HasConfigDialog() As Boolean
         Get
@@ -78,28 +78,28 @@ Public MustInherit Class Demuxer
         dgindex.InputFormats = {"mpeg2"}
         dgindex.Command = "%app:DGIndex%"
         dgindex.Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -od ""%temp_file%"" -hide -exit"
-        dgindex.SourceFilters = {"MPEG2Source"}
+        dgindex.SourceFilter = "MPEG2Source"
         ret.Add(dgindex)
 
         Dim dgnv As New CommandLineDemuxer
         dgnv.Name = "DGIndexNV"
-        dgnv.InputExtensions = {"h264", "mkv", "mp4", "mpg", "ts", "m2ts"}
+        dgnv.InputExtensions = FileTypes.DGDecNVInput
         dgnv.OutputExtensions = {"dgi"}
         dgnv.InputFormats = {"avc", "vc1", "mpeg2"}
         dgnv.Command = "%app:DGIndexNV%"
         dgnv.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgi"" -a -h"
-        dgnv.SourceFilters = {"DGSource"}
+        dgnv.SourceFilter = "DGSource"
         dgnv.Active = False
         ret.Add(dgnv)
 
         Dim dgim As New CommandLineDemuxer
         dgim.Name = "DGIndexIM"
-        dgim.InputExtensions = {"h264", "mkv", "mp4", "mpg", "ts", "m2ts"}
+        dgim.InputExtensions = FileTypes.DGDecNVInput
         dgim.OutputExtensions = {"dgim"}
         dgim.InputFormats = {"avc", "vc1", "mpeg2"}
         dgim.Command = "%app:DGIndexIM%"
         dgim.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgim"" -a -h"
-        dgim.SourceFilters = {"DGSourceIM"}
+        dgim.SourceFilter = "DGSourceIM"
         dgim.Active = False
         ret.Add(dgim)
 

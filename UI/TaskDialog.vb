@@ -279,15 +279,8 @@ Public Class TaskDialog(Of T)
 
         Dim id = 1000 + IdValueDic.Count + 1
         IdValueDic(id) = value
-
-        If setShield Then
-            CommandLinkShieldList.Add(id)
-        End If
-
-        If description <> "" Then
-            text = text + CrLf + description
-        End If
-
+        If setShield Then CommandLinkShieldList.Add(id)
+        If description <> "" Then text = text + CrLf + description
         Buttons.Add(New TASKDIALOG_BUTTON(id, text))
         Config.dwFlags = Config.dwFlags Or Flags.TDF_USE_COMMAND_LINKS
     End Sub

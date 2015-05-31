@@ -103,7 +103,7 @@ Public MustInherit Class AudioProfile
     End Property
 
     Function IsInputSupported() As Boolean
-        Return SupportedInput.Contains(Filepath.GetExtNoDot(File))
+        Return SupportedInput.Contains(Filepath.GetExt(File))
     End Function
 
     Function IsMuxProfile() As Boolean
@@ -299,10 +299,10 @@ Public Class BatchAudioProfile
             Else
                 Log.Write("Error", "no output found")
 
-                If Not Filepath.GetExt(File) = ".wav" Then
+                If Not Filepath.GetExtFull(File) = ".wav" Then
                     Audio.Decode(Me)
 
-                    If Filepath.GetExt(File) = ".wav" Then
+                    If Filepath.GetExtFull(File) = ".wav" Then
                         Encode()
                     End If
                 End If
@@ -376,7 +376,7 @@ Public Class MuxAudioProfile
     Public Overrides Property OutputFileType As String
         Get
             If Stream Is Nothing Then
-                Return Filepath.GetExtNoDot(File)
+                Return Filepath.GetExt(File)
             Else
                 Return Stream.Extension.TrimStart("."c)
             End If
@@ -625,10 +625,10 @@ Public Class GUIAudioProfile
                 Else
                     Log.Write("Error", "no output found")
 
-                    If Not Filepath.GetExt(File) = ".wav" Then
+                    If Not Filepath.GetExtFull(File) = ".wav" Then
                         Audio.Decode(Me)
 
-                        If Filepath.GetExt(File) = ".wav" Then
+                        If Filepath.GetExtFull(File) = ".wav" Then
                             Encode()
                         End If
                     End If
@@ -672,7 +672,7 @@ Public Class GUIAudioProfile
     Function GetEeac3toCommandLine(includePaths As Boolean) As String
         Dim r, id As String
 
-        If IsOneOf(Filepath.GetExt(File), ".ts", ".m2ts") AndAlso Not Stream Is Nothing Then
+        If IsOneOf(Filepath.GetExtFull(File), ".ts", ".m2ts") AndAlso Not Stream Is Nothing Then
             id = (Stream.StreamOrder + 1) & ": "
         End If
 

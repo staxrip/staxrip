@@ -334,7 +334,7 @@ Public Class GlobalClass
             End If
 
             If i.Contains("#") Then
-                If Filepath.GetExt(i) = ".mp4" OrElse MediaInfo.GetGeneral(i, "Audio_Codec_List").Contains("AAC") Then
+                If Filepath.GetExtFull(i) = ".mp4" OrElse MediaInfo.GetGeneral(i, "Audio_Codec_List").Contains("AAC") Then
                     MsgError("Character # can't be processed by MP4Box, please rename." + CrLf2 + i)
                     Return True
                 End If
@@ -345,13 +345,13 @@ Public Class GlobalClass
                 Return True
             End If
 
-            If Filepath.GetExt(i) = ".ts" AndAlso CommandLineDemuxer.IsActive("dsmux") AndAlso MediaInfo.GetVideo(i, "Format") = "AVC" Then
+            If Filepath.GetExtFull(i) = ".ts" AndAlso CommandLineDemuxer.IsActive("dsmux") AndAlso MediaInfo.GetVideo(i, "Format") = "AVC" Then
                 If Not Packs.Haali.VerifyOK(True) Then
                     Return True
                 End If
             End If
 
-            If {"d2v", "dga"}.Contains(Filepath.GetExtNoDot(i)) Then
+            If {"d2v", "dga"}.Contains(Filepath.GetExt(i)) Then
                 MsgError("There are no properly working x64 source filters available for D2V and DGA.")
                 Return True
             End If
@@ -579,8 +579,8 @@ Public Class GlobalClass
             p.TempDir = Macro.Solve(p.TempDir)
 
             If p.TempDir = "" Then
-                If FileTypes.VideoOnly.Contains(Filepath.GetExtNoDot(p.SourceFile)) OrElse
-                    FileTypes.VideoIndex.Contains(Filepath.GetExtNoDot(p.SourceFile)) OrElse
+                If FileTypes.VideoOnly.Contains(Filepath.GetExt(p.SourceFile)) OrElse
+                    FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile)) OrElse
                     Filepath.GetDir(p.SourceFile).EndsWith(" temp files\") Then
 
                     p.TempDir = Filepath.GetDir(p.SourceFile)
@@ -1335,7 +1335,7 @@ Public Class Calc
         End If
 
         For Each i In p.VideoEncoder.Muxer.Subtitles
-            If Filepath.GetExt(i.Path) = ".idx" Then
+            If Filepath.GetExtFull(i.Path) = ".idx" Then
                 ret += CInt(p.TargetSeconds * 0.256)
             End If
         Next
@@ -2810,9 +2810,12 @@ Public Class GlobalCommands
             Case "changelog" 'cl:
                 f.Doc.WriteStart("Changelog")
 
-                f.Doc.WriteP("StaxRip x64 1.3.1.4 " + GetReleaseType() + " (2015-0?-??)")
+                f.Doc.WriteP("StaxRip x64 1.3.1.4 " + GetReleaseType() + " (2015-05-31)")
 
-                f.Doc.WriteList("Updated qaac to 2.49")
+                f.Doc.WriteList("Added feature to choose which source filter to use when a single file is opened, this gives more MeGUI manual workflow like control without giving up much of StaxRip's automated character",
+                                "Fixed failing to show log file from main menu",
+                                "Updated qaac to 2.49",
+                                "Updated ffms2 to 2.22 RC2")
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.3 " + GetReleaseType() + " (2015-05-21)")
 
@@ -3590,7 +3593,7 @@ Public Class Subtitle
         Get
             Dim ret = Extension
 
-            If ret = "" Then ret = Filepath.GetExt(Path)
+            If ret = "" Then ret = Filepath.GetExtFull(Path)
 
             Return ret.TrimStart("."c).ToUpper.Replace("SUP", "PGS").Replace("IDX", "VobSub")
         End Get
@@ -3599,7 +3602,7 @@ Public Class Subtitle
     Shared Function Create(path As String) As List(Of Subtitle)
         Dim ret As New List(Of Subtitle)
 
-        If Filepath.GetExt(path) = ".idx" Then
+        If Filepath.GetExtFull(path) = ".idx" Then
             Dim indexData As Integer
             Dim st As Subtitle = Nothing
 
@@ -3626,7 +3629,7 @@ Public Class Subtitle
                     st = Nothing
                 End If
             Next
-        ElseIf IsOneOf(Filepath.GetExt(path), ".mkv", ".mp4") Then
+        ElseIf IsOneOf(Filepath.GetExtFull(path), ".mkv", ".mp4") Then
             Dim subs = MediaInfo.GetSubtitles(path)
 
             For Each i In subs
@@ -3674,6 +3677,7 @@ End Enum
 Class FileTypes
     Shared Property Audio As String() = {"aac", "ac3", "dts", "dtsma", "dtshr", "dtshd", "eac3", "flac", "m4a", "mka", "mp2", "mp3", "mpa", "ogg", "opus", "thd", "thd+ac3", "true-hd", "truehd", "wav"}
     Shared Property BeSweetInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "ogg"}
+    Shared Property DGDecNVInput As String() = {"264", "h264", "avc", "mkv", "mp4", "mpg", "vob", "ts", "m2ts", "mts", "m2t"}
     Shared Property eac3toInput As String() = {"ac3", "dts", "dtshd", "dtshr", "dtsma", "eac3", "evo", "flac", "m2ts", "mlp", "pcm", "raw", "thd", "thd+ac3", "ts", "vob", "wav", "mp2", "mpa"}
     Shared Property NicAudioInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "dts"}
     Shared Property SubtitleExludingContainers As String() = {"ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}

@@ -1141,7 +1141,7 @@ Public Class MainForm
                                     base += " " + stream.Language.Name
                                 End If
                                 If stream.Title <> "" Then base += " " + stream.Title
-                                FileHelp.Move(i, Filepath.GetDir(i) + base + Filepath.GetExt(i))
+                                FileHelp.Move(i, Filepath.GetDir(i) + base + Filepath.GetExtFull(i))
                             End If
                         Next
                     End Using
@@ -1184,7 +1184,7 @@ Public Class MainForm
                     Continue For
                 End If
 
-                If Not Filepath.GetExtNoDot(iPath) = iExt Then
+                If Not Filepath.GetExt(iPath) = iExt Then
                     Continue For
                 End If
 
@@ -1196,7 +1196,7 @@ Public Class MainForm
                     Continue For
                 End If
 
-                If same AndAlso tbOther.Text <> "" AndAlso Filepath.GetExt(tbOther.Text) <> Filepath.GetExt(iPath) Then
+                If same AndAlso tbOther.Text <> "" AndAlso Filepath.GetExtFull(tbOther.Text) <> Filepath.GetExtFull(iPath) Then
                     Continue For
                 End If
 
@@ -1210,7 +1210,7 @@ Public Class MainForm
                     If Not iPath.Contains(lng.Name) Then Continue For
                 End If
 
-                If Filepath.GetExt(iPath) = ".mp4" AndAlso Filepath.IsSameBase(p.SourceFile, iPath) Then
+                If Filepath.GetExtFull(iPath) = ".mp4" AndAlso Filepath.IsSameBase(p.SourceFile, iPath) Then
                     Continue For
                 End If
 
@@ -1544,25 +1544,82 @@ Public Class MainForm
     End Sub
 
     Sub FormMain_DragDrop(sender As Object, e As DragEventArgs) Handles MyBase.DragDrop
-        Dim a = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
-        If OK(a) Then
+        If OK(files) Then
             Activate()
-            BeginInvoke(New Action(Of List(Of String))(AddressOf OpenAnyFile), New List(Of String)(a))
+            BeginInvoke(Sub() OpenAnyFile(files.ToList, False))
         End If
     End Sub
 
-    Sub OpenAnyFile(l As List(Of String))
-        If Filepath.GetExt(l(0)) = ".srip" Then
-            OpenProject(l(0))
-        ElseIf FileTypes.Video.Contains(Filepath.GetExtNoDot(l(0)).ToLower) Then
-            l.Sort()
-            OpenVideoSourceFiles(l)
-        ElseIf FileTypes.Audio.Contains(Filepath.GetExtNoDot(l(0)).ToLower) Then
-            tbAudioFile0.Text = l(0)
+    Sub OpenSingleFile(files As IEnumerable(Of String))
+        Dim filter As AviSynthFilter
+
+        If files.Count = 1 Then
+            Dim td As New TaskDialog(Of String)
+            td.MainInstruction = "Choose a preferred source filter"
+            td.Content = "A description of the available source filters can be found in the [http://github.com/stax76/staxrip/wiki/Source-Filters wiki]."
+            td.AddCommandLink("Automatic", "Automatic")
+
+            If FileTypes.DGDecNVInput.Contains(files(0).Ext) Then
+                If Packs.DGDecodeNV.GetPath <> "" Then td.AddCommandLink("DGSource", "DGSource")
+                If Packs.DGDecodeIM.GetPath <> "" Then td.AddCommandLink("DGSourceIM", "DGSourceIM")
+            End If
+
+            td.AddCommandLink("FFVideoSource", "FFVideoSource")
+            td.AddCommandLink("LWLibavVideoSource", "LWLibavVideoSource")
+
+            If {"mp4", "m4v", "mov"}.Contains(files(0).Ext) Then
+                td.AddCommandLink("LSMASHVideoSource", "LSMASHVideoSource")
+            End If
+
+            If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso
+                g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
+
+                td.AddCommandLink("DSS2", "DSS2")
+            End If
+
+            If files(0).Ext = "avi" Then td.AddCommandLink("AVISource", "AVISource")
+
+            Select Case td.Show
+                Case "Automatic"
+                    filter = New AviSynthFilter("Source", "Automatic", "", True)
+                Case "DGSource"
+                    filter = New AviSynthFilter("Source", "DGSource", "DGSource(""%source_file%"")")
+                Case "DGSourceIM"
+                    filter = New AviSynthFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
+                Case "FFVideoSource"
+                    filter = New AviSynthFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")")
+                Case "LWLibavVideoSource"
+                    filter = New AviSynthFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")")
+                Case "LSMASHVideoSource"
+                    filter = New AviSynthFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")")
+                Case "DSS2"
+                    filter = New AviSynthFilter("Source", "DSS2", "DSS2(""%source_file%"")")
+                Case "AVISource"
+                    filter = New AviSynthFilter("Source", "AVISource", "AviSource(""%source_file%"", audio = false)")
+            End Select
+        End If
+
+        OpenVideoSourceFiles(files, filter)
+    End Sub
+
+    Sub OpenAnyFile(files As IEnumerable(Of String), Optional silent As Boolean = True)
+        If Filepath.GetExtFull(files(0)) = ".srip" Then
+            OpenProject(files(0))
+        ElseIf FileTypes.Video.Contains(Filepath.GetExt(files(0)).ToLower) Then
+            files.Sort()
+
+            If silent Then
+                OpenVideoSourceFiles(files)
+            Else
+                OpenSingleFile(files)
+            End If
+        ElseIf FileTypes.Audio.Contains(Filepath.GetExt(files(0)).ToLower) Then
+            tbAudioFile0.Text = files(0)
         Else
-            l.Sort()
-            OpenVideoSourceFiles(l)
+            files.Sort()
+            OpenVideoSourceFiles(files)
         End If
     End Sub
 
@@ -1570,11 +1627,16 @@ Public Class MainForm
         OpenVideoSourceFiles({fp})
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String))
-        OpenVideoSourceFiles(files, True)
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String),
+                             Optional preferredSourceFilter As AviSynthFilter = Nothing)
+
+        OpenVideoSourceFiles(files, True, preferredSourceFilter)
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), autoMode As Boolean)
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String),
+                             autoMode As Boolean,
+                             Optional preferredSourceFilter As AviSynthFilter = Nothing)
+
         Dim recoverPath = g.ProjectPath
         Dim recoverProjectPath = CommonDirs.Temp + Guid.NewGuid.ToString + ".bin"
         Dim recoverText = Text
@@ -1634,21 +1696,21 @@ Public Class MainForm
             p.NativeSourceFile = p.SourceFile
             p.OriginalSourceFile = p.SourceFile
 
-            If FileTypes.VideoIndex.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
+            If FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile)) Then
                 For Each i In File.ReadAllLines(p.SourceFile)
                     If i.Contains(":\") Then
                         If Regex.IsMatch(i, "^.+ \d+$") Then
                             i = i.LeftLast(" ")
                         End If
 
-                        If File.Exists(i) AndAlso FileTypes.Video.Contains(Filepath.GetExtNoDot(i)) Then
+                        If File.Exists(i) AndAlso FileTypes.Video.Contains(Filepath.GetExt(i)) Then
                             p.NativeSourceFile = i
                             p.OriginalSourceFile = i
                             Exit For
                         End If
                     End If
                 Next
-            ElseIf Filepath.GetExt(p.SourceFile) = ".avs" Then
+            ElseIf Filepath.GetExtFull(p.SourceFile) = ".avs" Then
                 Dim code = File.ReadAllText(p.SourceFile)
 
                 Dim match = Regex.Match(code, "source\(""(.+?)""", RegexOptions.IgnoreCase)
@@ -1656,7 +1718,7 @@ Public Class MainForm
                 If match.Success Then
                     Dim fp = match.Groups(1).Value
 
-                    If File.Exists(fp) AndAlso FileTypes.Video.Contains(Filepath.GetExtNoDot(fp)) Then
+                    If File.Exists(fp) AndAlso FileTypes.Video.Contains(Filepath.GetExt(fp)) Then
                         p.NativeSourceFile = fp
                         p.OriginalSourceFile = fp
                     End If
@@ -1707,10 +1769,10 @@ Public Class MainForm
             tbTargetFile.Text = targetDir + targetName + p.VideoEncoder.Muxer.GetExtension
 
             If p.SourceFile = p.TargetFile OrElse
-                (FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile)) AndAlso
+                (FileTypes.VideoIndex.Contains(Filepath.GetExtFull(p.SourceFile)) AndAlso
                 File.ReadAllText(p.SourceFile).Contains(p.TargetFile)) Then
 
-                tbTargetFile.Text = Filepath.GetDirAndBase(p.TargetFile) + "_new" + Filepath.GetExt(p.TargetFile)
+                tbTargetFile.Text = Filepath.GetDirAndBase(p.TargetFile) + "_new" + Filepath.GetExtFull(p.TargetFile)
             End If
 
             Log.WriteHeader("Source file MediaInfo")
@@ -1730,14 +1792,20 @@ Public Class MainForm
                 End If
             Next
 
+            If Not preferredSourceFilter Is Nothing Then
+                p.AvsDoc.SetFilter(preferredSourceFilter.Category,
+                                   preferredSourceFilter.Name,
+                                   preferredSourceFilter.Script)
+            End If
+
             Demux()
 
-            If Filepath.GetExtNoDot(p.SourceFile) = "dgi" AndAlso Not Packs.DGDecodeNV.VerifyOK(True) Then
+            If Filepath.GetExt(p.SourceFile) = "dgi" AndAlso Not Packs.DGDecodeNV.VerifyOK(True) Then
                 Throw New AbortException
             End If
 
             If p.NativeSourceFile <> p.SourceFile AndAlso
-                Not FileTypes.VideoText.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
+                Not FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) Then
 
                 p.NativeSourceFile = p.SourceFile
             End If
@@ -1747,14 +1815,14 @@ Public Class MainForm
             Dim sourceFilter = p.AvsDoc.GetFilter("Source")
 
             If Not sourceFilter.Script.Contains("(") Then
-                If Filepath.GetExtNoDot(p.SourceFile) = "avs" Then
+                If Filepath.GetExt(p.SourceFile) = "avs" Then
                     p.AvsDoc.Filters.Clear()
                     p.AvsDoc.Filters.Add(New AviSynthFilter("Source", "AVS Import", File.ReadAllText(p.SourceFile), True))
                 Else
                     For Each i In s.FilterPreferences
                         Dim name = i.Name.SplitNoEmptyAndWhiteSpace({",", " "})
 
-                        If name.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
+                        If name.Contains(Filepath.GetExt(p.SourceFile)) Then
                             Dim filters = s.AviSynthCategories.Where(
                                 Function(v) v.Name = "Source").First.Filters.Where(
                                 Function(v) v.Name = i.Value)
@@ -1821,7 +1889,7 @@ Public Class MainForm
             AviSynthListView.Load()
             RenameDVDTracks()
 
-            If FileTypes.AudioVideo.Contains(Filepath.GetExtNoDot(p.NativeSourceFile)) Then
+            If FileTypes.AudioVideo.Contains(Filepath.GetExt(p.NativeSourceFile)) Then
                 p.Audio0.Streams = MediaInfo.GetAudioStreams(p.NativeSourceFile)
                 p.Audio1.Streams = p.Audio0.Streams
             End If
@@ -1840,7 +1908,7 @@ Public Class MainForm
             Else
                 If p.Audio0.File = "" AndAlso p.Audio1.File = "" Then
                     If Not TypeOf p.Audio0 Is NullAudioProfile AndAlso
-                        Not FileTypes.VideoText.Contains(Filepath.GetExtNoDot(p.NativeSourceFile)) Then
+                        Not FileTypes.VideoText.Contains(Filepath.GetExt(p.NativeSourceFile)) Then
 
                         tbAudioFile0.Text = p.NativeSourceFile
 
@@ -1860,7 +1928,7 @@ Public Class MainForm
                                     If p.Audio0.Stream.StreamOrder = p.Audio1.Stream.StreamOrder Then
                                         For Each i2 In p.Audio1.Streams
                                             If i2.StreamOrder <> p.Audio1.Stream.StreamOrder Then
-                                                tbAudioFile1.Text = i2.Name + " (" + Filepath.GetExtNoDot(p.Audio1.File) + ")"
+                                                tbAudioFile1.Text = i2.Name + " (" + Filepath.GetExt(p.Audio1.File) + ")"
                                                 p.Audio1.Stream = i2
                                                 UpdateAudio(p.Audio1)
                                                 Exit For
@@ -1874,7 +1942,7 @@ Public Class MainForm
                 End If
             End If
 
-            If Filepath.GetExt(p.SourceFile) = ".d2v" Then
+            If Filepath.GetExtFull(p.SourceFile) = ".d2v" Then
                 Dim content = File.ReadAllText(p.SourceFile)
 
                 If content.Contains("Aspect_Ratio=16:9") Then
@@ -1963,7 +2031,7 @@ Public Class MainForm
                 p.SourceAviSynthDocument.Synchronize()
             ElseIf miFPS <> avsFPS
                 Dim src = p.AvsDoc.GetFilter("Source")
-                src.Script = src.Script + CrLf + "AssumeFPS(" + miFPS.ToString(CultureInfo.InvariantCulture) + ")"
+                src.Script = src.Script + CrLf + "# AssumeFPS(" + miFPS.ToString(CultureInfo.InvariantCulture) + ")"
                 p.SourceAviSynthDocument.Synchronize()
             End If
 
@@ -2091,7 +2159,7 @@ Public Class MainForm
         If Not p.ConvertSup2Sub Then Exit Sub
 
         For Each i In g.GetFilesInTempDirAndParent
-            If Filepath.GetExt(i) = ".sup" AndAlso g.IsSourceSameOrSimilar(i) AndAlso
+            If Filepath.GetExtFull(i) = ".sup" AndAlso g.IsSourceSameOrSimilar(i) AndAlso
                 Not File.Exists(Filepath.GetDirAndBase(i) + ".idx") Then
 
                 Using proc As New Proc
@@ -2107,7 +2175,7 @@ Public Class MainForm
 
     Sub ExtractForcedVobSubSubtitles()
         For Each i In g.GetFilesInTempDirAndParent
-            If Filepath.GetExt(i) = ".idx" AndAlso g.IsSourceSameOrSimilar(i) AndAlso
+            If Filepath.GetExtFull(i) = ".idx" AndAlso g.IsSourceSameOrSimilar(i) AndAlso
                 Not File.Exists(Filepath.GetDirAndBase(i) + "_Forced.idx") Then
 
                 Dim idxContent = File.ReadAllText(i, Encoding.Default)
@@ -2131,7 +2199,7 @@ Public Class MainForm
     End Sub
 
     Sub DemuxVobSubSubtitles()
-        If Not {"vob", "m2v"}.Contains(Filepath.GetExtNoDot(p.NativeSourceFile)) Then Exit Sub
+        If Not {"vob", "m2v"}.Contains(Filepath.GetExt(p.NativeSourceFile)) Then Exit Sub
         Dim ifoPath = GetIfoFile()
         If ifoPath = "" Then Exit Sub
         If File.Exists(p.TempDir + Filepath.GetBase(p.SourceFile) + ".idx") Then Exit Sub
@@ -2394,7 +2462,7 @@ Public Class MainForm
         AssistantPassed = False
 
         If Not p.BatchMode Then
-            If Filepath.GetExt(p.TargetFile) = ".mp4" AndAlso p.TargetFile.Contains("#") Then
+            If Filepath.GetExtFull(p.TargetFile) = ".mp4" AndAlso p.TargetFile.Contains("#") Then
                 If ProcessTip("Character # can't be processed by MP4Box, please rename target file.") Then
                     gbAssistant.Text = "Invalid target file name"
                     CanIgnoreTip = False
@@ -2482,7 +2550,8 @@ Public Class MainForm
             End If
 
             If Math.Abs(p.Audio0.Delay) > 2000 Then
-                If ProcessTip("The audio delay is unusual high, you might have to use a tool preventing such delays like MakeMKV, TS-Doctor or ProjectX.") Then
+                If ProcessTip("The audio delay is unusual high, tools that can prevent such delays are MakeMKV, ProjectX, dsmux, gdsmux or TS-Doctor." + CrLf +
+                              "Visit the support forum for help on individual cases.") Then
                     lTip.Font = New Font(Font.FontFamily, 8)
                     ResetAssistantFont = True
                     g.Highlight(True, tbAudioFile0)
@@ -2511,7 +2580,7 @@ Public Class MainForm
                 End If
             End If
 
-            If p.VideoEncoder.Muxer.GetExtension <> Filepath.GetExt(p.TargetFile) Then
+            If p.VideoEncoder.Muxer.GetExtension <> Filepath.GetExtFull(p.TargetFile) Then
                 If ProcessTip("The container requires " + p.VideoEncoder.Muxer.GetExtension.Trim("."c).ToUpper + " as target file type.") Then
                     g.Highlight(True, tbTargetFile)
                     gbAssistant.Text = "Invalid File Type"
@@ -2601,7 +2670,7 @@ Public Class MainForm
             End If
 
             If File.Exists(p.TargetFile) Then
-                If FileTypes.VideoText.Contains(Filepath.GetExtNoDot(p.SourceFile)) AndAlso
+                If FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) AndAlso
                     File.ReadAllText(p.SourceFile).Contains(p.TargetFile) Then
 
                     If ProcessTip("Source and target name are identical, please choose another target name.") Then
@@ -2686,7 +2755,7 @@ Public Class MainForm
 
             If TypeOf p.VideoEncoder.Muxer Is MP4Muxer Then
                 For Each i In p.VideoEncoder.Muxer.Subtitles
-                    If Not IsOneOf(Filepath.GetExt(i.Path), ".idx", ".srt") Then
+                    If Not IsOneOf(Filepath.GetExtFull(i.Path), ".idx", ".srt") Then
                         If ProcessTip("MP4 supports only SRT and IDX subtitles.") Then
                             CanIgnoreTip = False
                             gbAssistant.Text = "Invalid subtitle format"
@@ -2772,7 +2841,7 @@ Public Class MainForm
                 Dim streams = MediaInfo.GetAudioStreams(tb.Text)
                 If streams.Count > 0 Then tb.Text = GetAudioText(ap, streams(0), tb.Text)
             Else
-                tb.Text = ap.Stream.Name + " (" + Filepath.GetExtNoDot(ap.File) + ")"
+                tb.Text = ap.Stream.Name + " (" + Filepath.GetExt(ap.File) + ")"
             End If
 
             BlockAudioTextChanged = False
@@ -2804,7 +2873,7 @@ Public Class MainForm
         End If
 
         If Filepath.GetBase(ap.File) = Filepath.GetBase(p.SourceFile) Then
-            Return name + " (" + Filepath.GetExtNoDot(ap.File) + ")"
+            Return name + " (" + Filepath.GetExt(ap.File) + ")"
         Else
             Return name + " (" + Filepath.GetName(ap.File) + ")"
         End If
@@ -2880,11 +2949,29 @@ Public Class MainForm
         Dim srcScript = p.AvsDoc.GetFilter("Source").Script.ToLower
 
         For Each i In s.Demuxers
-            If Not i.Active Then Continue For
+            If i.Name = "dsmux" Then
+                If MediaInfo.GetAudioCount(p.SourceFile) = 0 Then
+                    Continue For
+                End If
 
-            If i.InputExtensions?.Length = 0 OrElse i.InputExtensions.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
-                If srcScript = "" OrElse Not OK(i.SourceFilters) OrElse
-                    srcScript.ContainsAnyCaseInsensitive(i.SourceFilters) Then
+                If CommandLineDemuxer.IsActive("DGIndexNV") OrElse
+                    CommandLineDemuxer.IsActive("DGIndexIM") Then
+
+                    Continue For
+                End If
+
+                If p.AvsDoc.Contains("Source", "DGSource(") OrElse
+                    p.AvsDoc.Contains("Source", "DGSourceIM(") Then
+
+                    Continue For
+                End If
+            End If
+
+            If Not i.Active AndAlso Not srcScript.Contains(i.SourceFilter.ToLower + "(") Then Continue For
+
+            If i.InputExtensions?.Length = 0 OrElse i.InputExtensions.Contains(Filepath.GetExt(p.SourceFile)) Then
+                If srcScript = "" OrElse i.SourceFilter = "" OrElse
+                    srcScript.Contains(i.SourceFilter.ToLower + "(") Then
 
                     Dim inputFormats = Not OK(i.InputFormats) OrElse i.InputFormats.Contains(getFormat())
 
@@ -2914,9 +3001,7 @@ Public Class MainForm
                                 End If
                             Next
 
-                            If exitFor Then
-                                Exit For
-                            End If
+                            If exitFor Then Exit For
                         Next
                     End If
                 End If
@@ -2939,7 +3024,7 @@ Public Class MainForm
             End If
         ElseIf srcScript.Contains("lwlibavvideosource") Then
             If Not File.Exists(p.SourceFile + ".lwi") AndAlso File.Exists(p.AvsDoc.Path) AndAlso
-                Not FileTypes.VideoText.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
+                Not FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) Then
 
                 Using proc As New Proc
                     proc.Init("Index LWLibavVideoSource")
@@ -2955,7 +3040,7 @@ Public Class MainForm
 
     Sub ffmsindex(sourcePath As String, cachePath As String, Optional indexAudio As Boolean = False)
         If File.Exists(sourcePath) AndAlso Not File.Exists(cachePath) AndAlso
-            Not FileTypes.VideoText.Contains(Filepath.GetExtNoDot(sourcePath)) Then
+            Not FileTypes.VideoText.Contains(Filepath.GetExt(sourcePath)) Then
 
             Using o As New Proc
                 o.Init("Index with ffmsindex", "Indexing, please wait...")
@@ -2980,7 +3065,7 @@ Public Class MainForm
 
     Private Function LoadTemplateWithSelectionDialog() As Boolean
         Dim td As New TaskDialog(Of String)
-        td.MainInstruction = "Please select a template."
+        td.MainInstruction = "Please select a template"
 
         For Each i In Directory.GetFiles(Paths.TemplateDir, "*.srip")
             td.AddCommandLink(Filepath.GetBase(i), i)
@@ -4199,7 +4284,7 @@ Public Class MainForm
         ret.Add("Tools|Jobs...", "OpenJobsDialog", Keys.F6)
         ret.Add("Tools|Apps...", "OpenApplicationsDialog")
 
-        ret.Add("Tools|Files|Log File", "ExecuteCmdl", """%text_editor%"" ""%temp_file%_StaxRip.log""")
+        ret.Add("Tools|Files|Log File", "ExecuteCmdl", """%text_editor%"" ""%working_dir%%target_name%_StaxRip.log""")
         ret.Add("Tools|Files|AviSynth Script", "ExecuteCmdl", """%text_editor%"" ""%avs_file%""")
 
         ret.Add("Tools|Directories|Source", "ExecuteCmdl", """%source_dir%""")
@@ -4239,7 +4324,7 @@ Public Class MainForm
         ret.Add("Help|Donate", "ExecuteCmdl", Strings.DonationsURL)
         ret.Add("Help|Changelog", "OpenHelpTopic", "changelog")
         ret.Add("Help|Command Line", "OpenCmdlHelp")
-        ret.Add("Help|Applications", "DynamicMenuItem", DynamicMenuItemID.HelpApplications)
+        ret.Add("Help|Apps", "DynamicMenuItem", DynamicMenuItemID.HelpApplications)
         ret.Add("Help|-")
         ret.Add("Help|Info...", "OpenHelpTopic", "info")
 
@@ -4253,7 +4338,7 @@ Public Class MainForm
             d.SetInitDir(s.LastSourceDir)
 
             If d.ShowDialog = DialogResult.OK Then
-                If Filepath.GetExt(d.FileName) = ".idx" Then
+                If Filepath.GetExtFull(d.FileName) = ".idx" Then
                     Dim subs = Subtitle.Create(d.FileName)
 
                     If subs.Count = 0 Then
@@ -4283,7 +4368,7 @@ Public Class MainForm
                 filter.Path = Filepath.GetName(d.FileName)
                 filter.Active = True
 
-                If Filepath.GetExt(d.FileName) = ".idx" Then
+                If Filepath.GetExtFull(d.FileName) = ".idx" Then
                     filter.Script = "VobSub(""" + d.FileName + """)"
                 Else
                     filter.Script = "TextSub(""" + d.FileName + """)"
@@ -4820,7 +4905,7 @@ Public Class MainForm
                     d.SetInitDir(s.LastSourceDir)
 
                     If d.ShowDialog() = DialogResult.OK Then
-                        OpenVideoSourceFiles(d.FileNames)
+                        OpenSingleFile(d.FileNames)
                     End If
                 End Using
             Case "merge"
@@ -4831,7 +4916,7 @@ Public Class MainForm
                     If f.ShowDialog() = DialogResult.OK Then
                         Refresh()
 
-                        Select Case Filepath.GetExtNoDot(f.Files(0))
+                        Select Case Filepath.GetExt(f.Files(0))
                             Case "mpg", "mpeg", "vob", "mpv", "m2v", "m2t", "ts", "pva", "trp"
                                 OpenVideoSourceFiles(f.Files)
                             Case Else
@@ -5143,7 +5228,7 @@ Public Class MainForm
 
                 Dim l As New List(Of String)(d.FileNames)
                 l.Sort()
-                OpenVideoSourceFiles(l)
+                OpenSingleFile(l)
             End If
         End Using
     End Sub
@@ -5680,7 +5765,7 @@ Public Class MainForm
                                          tb.Text = p.NativeSourceFile
                                      End If
 
-                                     tb.Text = temp.Name + " (" + Filepath.GetExtNoDot(ap.File) + ")"
+                                     tb.Text = temp.Name + " (" + Filepath.GetExt(ap.File) + ")"
                                      ap.Stream = temp
                                      UpdateAudio(ap)
                                  End Sub
@@ -5693,7 +5778,7 @@ Public Class MainForm
 
         If p.TempDir <> "" AndAlso Directory.Exists(p.TempDir) Then
             Dim audioFiles = Directory.GetFiles(p.TempDir).Where(
-                Function(audioPath) FileTypes.Audio.Contains(Filepath.GetExtNoDot(audioPath)))
+                Function(audioPath) FileTypes.Audio.Contains(Filepath.GetExt(audioPath)))
 
             If audioFiles.Count > 0 Then
                 For Each i In audioFiles
@@ -5734,7 +5819,7 @@ Public Class MainForm
 
     Sub UpdateSourceFileMenu()
         SourceFileMenu.Items.Clear()
-        Dim isIndex = FileTypes.VideoIndex.Contains(Filepath.GetExtNoDot(p.SourceFile))
+        Dim isIndex = FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile))
 
         SourceFileMenu.Items.Add(New ActionMenuItem("Open...", AddressOf OpenSourceFiles, "Open source files"))
         SourceFileMenu.Items.Add(New ActionMenuItem("Play...", Sub() g.Play(p.SourceFile), "Play the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex))

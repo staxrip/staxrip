@@ -238,7 +238,7 @@ Public Class CodecComparisonForm
 
             avs.Filters.Add(New AviSynthFilter("SetMemoryMax(512)"))
 
-            If Filepath.GetExt(sourePath) = ".png" Then
+            If Filepath.GetExtFull(sourePath) = ".png" Then
                 avs.Filters.Add(New AviSynthFilter("ImageSource(""" + sourePath + """, end = 0)"))
             Else
                 Dim cachefile = CommonDirs.Temp + Guid.NewGuid.ToString + ".ffindex"

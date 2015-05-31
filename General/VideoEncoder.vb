@@ -307,7 +307,7 @@ Public MustInherit Class VideoEncoder
         nvencH265.Name = "Command Line | NVIDIA H.265"
         nvencH265.Muxer = New MkvMuxer()
         nvencH265.QualityMode = True
-        nvencH265.CommandLines = """%app:ffmpeg%"" -i ""%avs_file%"" -f yuv4mpegpipe -pix_fmt yuv420p - | ""%app:NVEncC%"" --sar %target_sar% --codec h265 --y4m --cqp 36 --input - --output ""%encoder_out_file%"""
+        nvencH265.CommandLines = """%app:ffmpeg%"" -i ""%avs_file%"" -f yuv4mpegpipe -pix_fmt yuv420p - | ""%app:NVEncC%"" --sar %target_sar% --codec h265 --y4m --cqp 20 --input - --output ""%encoder_out_file%"""
         ret.Add(nvencH265)
 
         ret.Add(Getx264Encoder("Devices | DivX Plus", x264DeviceMode.DivXPlus))
@@ -523,7 +523,7 @@ Public Class NullEncoder
             End If
         Next
 
-        If FileTypes.VideoIndex.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
+        If FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile)) Then
             Return p.NativeSourceFile
         Else
             Return p.SourceFile
@@ -534,8 +534,8 @@ Public Class NullEncoder
         Get
             Dim source = GetSource()
 
-            If Not p.VideoEncoder.Muxer.IsSupported(Filepath.GetExtNoDot(source)) Then
-                Select Case Filepath.GetExtNoDot(source)
+            If Not p.VideoEncoder.Muxer.IsSupported(Filepath.GetExt(source)) Then
+                Select Case Filepath.GetExt(source)
                     Case "mkv"
                         Dim streams = MediaInfo.GetVideoStreams(source)
                         If streams.Count = 0 Then Return source
@@ -551,15 +551,15 @@ Public Class NullEncoder
 
     Overrides ReadOnly Property OutputFileType As String
         Get
-            Return Filepath.GetExtNoDot(OutputPath)
+            Return Filepath.GetExt(OutputPath)
         End Get
     End Property
 
     Overrides Sub Encode()
         Dim source = GetSource()
 
-        If Not p.VideoEncoder.Muxer.IsSupported(Filepath.GetExtNoDot(source)) Then
-            Select Case Filepath.GetExtNoDot(source)
+        If Not p.VideoEncoder.Muxer.IsSupported(Filepath.GetExt(source)) Then
+            Select Case Filepath.GetExt(source)
                 Case "mkv"
                     Video.DemuxMKV(source)
             End Select
@@ -1394,7 +1394,7 @@ Class IntelEncoder
                     ret += " --trim " + p.Ranges.Select(Function(range) range.Start & ":" & range.End).Join(",")
                 End If
 
-                If FileTypes.VideoText.Contains(Filepath.GetExtNoDot(p.SourceFile)) Then
+                If FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) Then
                     sourcePath = p.NativeSourceFile
                 Else
                     sourcePath = p.SourceFile

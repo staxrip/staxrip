@@ -8,7 +8,6 @@ Public Class Packs
     Public Shared BDSup2SubPP As New BDSup2SubPackage
     Public Shared BeSweet As New BeSweetPackage
     Public Shared checkmate As New checkmatePackage
-    'Public Shared DGDecode As New DGDecodePackage
     Public Shared DGDecodeIM As New DGDecodeIMPackage
     Public Shared DGDecodeNV As New DGDecodeNVPackage
     Public Shared DGIndex As New DGIndexPackage
@@ -16,7 +15,7 @@ Public Class Packs
     Public Shared DGIndexNV As New DGIndexNVPackage
     Public Shared DivX265 As New DivX265Package
     Public Shared dsmux As New dsmuxPackage
-    Public Shared DSS2 As New DSS2Package
+    Public Shared DSS2mod As New DSS2modPackage
     Public Shared eac3to As New eac3toPackage
     Public Shared ffmpeg As New ffmpegPackage
     Public Shared ffms2 As New ffms2Package
@@ -69,7 +68,7 @@ Public Class Packs
         AddPackage(DGIndexNV)
         AddPackage(DivX265)
         AddPackage(dsmux)
-        AddPackage(DSS2)
+        AddPackage(DSS2mod)
         AddPackage(eac3to)
         AddPackage(ffmpeg)
         AddPackage(ffms2)
@@ -309,20 +308,6 @@ Public Class Package
 
         ret = CommonDirs.Startup + "Apps\" + Name + "\" + Filename
         If File.Exists(ret) Then Return ret
-
-        ret = Registry.CurrentUser.GetString("Software\" + Application.ProductName + "\Tool Paths", Name)
-
-        If ret <> "" Then
-            If File.Exists(ret) Then
-                If Not s Is Nothing AndAlso Not s.Storage Is Nothing Then
-                    s.Storage.SetString(Name + "custom path", ret)
-                End If
-
-                Return ret
-            Else
-                Registry.CurrentUser.DeleteValue("Software\" + Application.ProductName + "\Tool Paths", Name)
-            End If
-        End If
     End Function
 
     Overrides Function ToString() As String
@@ -731,11 +716,11 @@ Public Class SangNom2Package
     End Sub
 End Class
 
-Public Class DSS2Package
+Public Class DSS2modPackage
     Inherits AviSynthPluginPackage
 
     Sub New()
-        Name = "DSS2"
+        Name = "DSS2mod"
         Filename = "DSS2.dll"
         WebURL = "http://code.google.com/p/xvid4psp/downloads/detail?name=DSS2%20mod%20%2B%20LAVFilters.7z&can=2&q="
         Description = "Direct Show source filter"
@@ -778,7 +763,7 @@ Public Class DGDecodeNVPackage
         WebURL = "http://neuron2.net/dgdecnv/dgdecnv.html"
         Description = Strings.DGDecNV
         HelpFile = "DGDecodeNVManual.html"
-        FilterNames = {"DGSource", "DGMultiSource"}
+        FilterNames = {"DGSource"}
         FileNotFoundMessage = "Application not found, please locate it by pressing F11 or disable the DGIndexNV feature under Tools/Settings/Demux."
     End Sub
 

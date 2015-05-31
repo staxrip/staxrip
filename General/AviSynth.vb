@@ -76,6 +76,12 @@ Public Class AviSynthDocument
         Filters.Insert(Filters.IndexOf(f) + 1, af)
     End Sub
 
+    Function Contains(category As String, search As String) As Boolean
+        If category = "" OrElse search = "" Then Exit Function
+        Dim filter = GetFilter(category)
+        If filter?.Script?.ToLower?.Contains(search.ToLower) Then Return True
+    End Function
+
     Function IsFilterActive(category As String) As Boolean
         Dim filter = GetFilter(category)
         Return Not filter Is Nothing AndAlso filter.Active
@@ -182,14 +188,6 @@ Public Class AviSynthDocument
         Else
             Return script
         End If
-    End Function
-
-    Function ContainsIgnoreCase(value As String) As Boolean
-        For Each i In Filters
-            If i.Active AndAlso i.Script.ToUpper.Contains(value.ToUpper) Then
-                Return True
-            End If
-        Next
     End Function
 
     Function GetFramerate() As Double
@@ -334,7 +332,7 @@ Public Class AviSynthFilter
     Sub New(category As String,
             name As String,
             script As String,
-            active As Boolean)
+            Optional active As Boolean = False)
 
         Me.Path = name
         Me.Script = script

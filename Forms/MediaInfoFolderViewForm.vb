@@ -124,7 +124,7 @@ Public Class MediaInfoFolderViewForm
                 Dim width = mi.GetInfo(kind, "Width")
                 Dim height = mi.GetInfo(kind, "Height")
 
-                item.SubItems.Add(GetSubItem(Filepath.GetExtNoDot(fp).ToUpper))
+                item.SubItems.Add(GetSubItem(Filepath.GetExt(fp).ToUpper))
                 item.SubItems.Add(GetSubItem(codec))
                 item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "DisplayAspectRatio")))
                 item.SubItems.Add(GetSubItem(width + " x " + height, width.ToInt * height.ToInt))

@@ -99,7 +99,7 @@ Public MustInherit Class Muxer
         files = so.GetSortedList()
 
         For Each i In files
-            If Filepath.GetExt(i) = ".idx" Then
+            If Filepath.GetExtFull(i) = ".idx" Then
                 Dim v = File.ReadAllText(i, Encoding.Default)
 
                 If v.Contains(vb6.ChrW(&HA) + vb6.ChrW(&H0) + vb6.ChrW(&HD) + vb6.ChrW(&HA)) Then
@@ -109,15 +109,15 @@ Public MustInherit Class Muxer
                 End If
             End If
 
-            If FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExtNoDot(i)) AndAlso
+            If FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExt(i)) AndAlso
                 g.IsSourceSameOrSimilar(i) AndAlso Not i.Contains("_Preview.") AndAlso
                 Not i.Contains("_Temp.") Then
 
-                If p.ConvertSup2Sub AndAlso Filepath.GetExt(i) = ".sup" Then
+                If p.ConvertSup2Sub AndAlso Filepath.GetExtFull(i) = ".sup" Then
                     Continue For
                 End If
 
-                If TypeOf Me Is MP4Muxer AndAlso Not {"idx", "srt"}.Contains(Filepath.GetExtNoDot(i)) Then
+                If TypeOf Me Is MP4Muxer AndAlso Not {"idx", "srt"}.Contains(Filepath.GetExt(i)) Then
                     Continue For
                 End If
 
@@ -161,7 +161,7 @@ Public MustInherit Class Muxer
         Next
 
         If p.AutoSubtitles <> "" AndAlso Subtitles.Count = 0 AndAlso
-            IsOneOf(Filepath.GetExt(p.SourceFile), ".mkv", ".mp4") AndAlso
+            IsOneOf(Filepath.GetExtFull(p.SourceFile), ".mkv", ".mp4") AndAlso
             MediaInfo.GetSubtitleCount(p.SourceFile) > 0 AndAlso
             TypeOf Me Is MkvMuxer Then
 
@@ -277,7 +277,7 @@ Public Class MP4Muxer
         If File.Exists(p.Audio0.File) AndAlso IsSupported(p.Audio0.OutputFileType) Then
             args.Append(" -add """ + p.Audio0.File)
 
-            If p.Audio0.HasStream AndAlso Filepath.GetExt(p.Audio0.File) = ".mp4" Then
+            If p.Audio0.HasStream AndAlso Filepath.GetExtFull(p.Audio0.File) = ".mp4" Then
                 args.Append("#trackID=" & p.Audio0.Stream.ID)
             Else
                 args.Append("#audio")
@@ -298,7 +298,7 @@ Public Class MP4Muxer
         If File.Exists(p.Audio1.File) AndAlso IsSupported(p.Audio1.OutputFileType) AndAlso p.Audio1.File <> "" Then
             args.Append(" -add """ + p.Audio1.File)
 
-            If p.Audio1.HasStream AndAlso Filepath.GetExt(p.Audio1.File) = ".mp4" Then
+            If p.Audio1.HasStream AndAlso Filepath.GetExtFull(p.Audio1.File) = ".mp4" Then
                 args.Append("#trackID=" & p.Audio1.Stream.ID)
             Else
                 args.Append("#audio")
@@ -318,7 +318,7 @@ Public Class MP4Muxer
 
         For Each i In Subtitles
             If File.Exists(i.Path) Then
-                If Filepath.GetExt(i.Path) = ".idx" Then
+                If Filepath.GetExtFull(i.Path) = ".idx" Then
                     If i.Title = "" Then i.Title = " "
                     args.Append(" -add """ + i.Path + "#" & i.IndexIDX + 1 & ":name=" + Macro.Solve(i.Title, True) & """")
                 Else
@@ -611,7 +611,7 @@ Public Class MkvMuxer
             If File.Exists(i.Path) Then
                 Dim id = i.StreamOrder
 
-                If {"mkv", "mp4", "idx"}.Contains(Filepath.GetExtNoDot(i.Path)) Then
+                If {"mkv", "mp4", "idx"}.Contains(Filepath.GetExt(i.Path)) Then
                     args.Append(" --no-audio --no-video --no-chapters --no-attachments --no-track-tags --no-global-tags")
                     args.Append(" --subtitle-tracks " & id)
                 Else

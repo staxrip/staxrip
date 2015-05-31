@@ -403,7 +403,7 @@ Public Class DemuxingForm
         tbName.Text = Temp.Name
         tbInput.Text = Temp.InputExtensions.ToArray.Join(", ")
         tbInputFormats.Text = Temp.InputFormats.ToArray.Join(", ")
-        tbSourceFilters.Text = Temp.SourceFilters.ToArray.Join(", ")
+        tbSourceFilters.Text = Temp.SourceFilter
         tbVideoOut.Text = Temp.OutputExtensions.ToArray.Join(", ")
         tbArguments.Text = Temp.Arguments
         tbCommand.Text = Temp.Command
@@ -424,7 +424,7 @@ Public Class DemuxingForm
             Target.InputExtensions = tbInput.Text.ToLower.SplitNoEmptyAndWhiteSpace(",", ";")
             Target.InputFormats = ConvertFormat(tbInputFormats.Text).SplitNoEmptyAndWhiteSpace(",", ";")
             Target.OutputExtensions = tbVideoOut.Text.ToLower.SplitNoEmptyAndWhiteSpace(",", ";")
-            Target.SourceFilters = tbSourceFilters.Text.SplitNoEmptyAndWhiteSpace(",", ";")
+            Target.SourceFilter = tbSourceFilters.Text.Trim
             Target.Command = tbCommand.Text
             Target.Arguments = tbArguments.Text
         End If

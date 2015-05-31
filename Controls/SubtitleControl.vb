@@ -176,7 +176,7 @@ Public Class SubtitleControl
             If File.Exists(i.Path) Then
                 Dim size As String
 
-                If Not FileTypes.Video.Contains(Filepath.GetExtNoDot(i.Path)) Then
+                If Not FileTypes.Video.Contains(Filepath.GetExt(i.Path)) Then
                     Dim len = New FileInfo(i.Path).Length
 
                     If len > 1024 ^ 2 Then
@@ -239,10 +239,10 @@ Public Class SubtitleControl
         lv.AutoResizeColumns(False)
         Dim selected = lv.SelectedItems.Count > 0
         Dim path = If(selected, DirectCast(lv.SelectedItems(0).Tag, Subtitle).Path, "")
-        bnPlay.Enabled = selected AndAlso IsOneOf(Filepath.GetExt(path), ".idx", ".srt")
-        bnBDSup2SubPP.Enabled = selected AndAlso IsOneOf(Filepath.GetExt(path), ".idx", ".sup")
+        bnPlay.Enabled = selected AndAlso IsOneOf(Filepath.GetExtFull(path), ".idx", ".srt")
+        bnBDSup2SubPP.Enabled = selected AndAlso IsOneOf(Filepath.GetExtFull(path), ".idx", ".sup")
         bnEdit.Enabled = selected
-        bnPlay.Enabled = FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExtNoDot(path)) AndAlso p.SourceFile <> ""
+        bnPlay.Enabled = FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExt(path)) AndAlso p.SourceFile <> ""
     End Sub
 
     Private Sub lv_DoubleClick() Handles lv.DoubleClick
@@ -259,7 +259,7 @@ Public Class SubtitleControl
             Dim st = DirectCast(item.Tag, Subtitle)
             Dim fp = st.Path
 
-            If Filepath.GetExt(fp) = ".idx" Then
+            If Filepath.GetExtFull(fp) = ".idx" Then
                 fp = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Temp.idx"
 
                 Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
@@ -285,10 +285,10 @@ Public Class SubtitleControl
                 avs.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play.avs"
                 avs.Filters = p.AvsDoc.GetFiltersCopy
 
-                If FileTypes.TextSub.Contains(Filepath.GetExtNoDot(fp)) Then
+                If FileTypes.TextSub.Contains(Filepath.GetExt(fp)) Then
                     Dim insertCat = If(avs.IsFilterActive("Crop"), "Crop", "Source")
 
-                    If Filepath.GetExt(st.Path) = ".idx" Then
+                    If Filepath.GetExtFull(st.Path) = ".idx" Then
                         fp = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play.idx"
 
                         Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
@@ -337,8 +337,8 @@ Public Class SubtitleControl
 
                 Dim subSwitch As String
 
-                If Not FileTypes.TextSub.Contains(Filepath.GetExtNoDot(fp)) AndAlso
-                    FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExtNoDot(fp)) Then
+                If Not FileTypes.TextSub.Contains(Filepath.GetExt(fp)) AndAlso
+                    FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExt(fp)) Then
 
                     subSwitch = "/sub """ + fp + """"
                 End If

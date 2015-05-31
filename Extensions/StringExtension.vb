@@ -8,6 +8,21 @@ Imports VB6 = Microsoft.VisualBasic
 
 Public Module StringExtensions
     <Extension()>
+    Function Ext(value As String) As String
+        Return Filepath.GetExt(value)
+    End Function
+
+    <Extension()>
+    Function ExtFull(value As String) As String
+        Return Filepath.GetExtFull(value)
+    End Function
+
+    <Extension()>
+    Function Base(value As String) As String
+        Return Filepath.GetBase(value)
+    End Function
+
+    <Extension()>
     Public Function FixBreak(value As String) As String
         value = value.Replace(VB6.ChrW(13) + VB6.ChrW(10), VB6.ChrW(10))
         value = value.Replace(VB6.ChrW(13), VB6.ChrW(10))
@@ -19,17 +34,6 @@ Public Module StringExtensions
         For Each i In value
             If Convert.ToInt32(i) > 255 Then Return True
         Next
-    End Function
-
-    <Extension()>
-    Function ContainsAnyCaseInsensitive(value As String, ParamArray values As String()) As Boolean
-        If OK(value) AndAlso OK(values) Then
-            For Each i In values
-                If value.ToLower.Contains(i.ToLower) Then
-                    Return True
-                End If
-            Next
-        End If
     End Function
 
     <Extension()>

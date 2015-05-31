@@ -303,7 +303,7 @@ Public Class SourceFilesForm
 
         Try 'dir access could be denied
             For Each i In Directory.GetFiles(n.Path)
-                If FileTypes.Video.Contains(Filepath.GetExtNoDot(i)) Then
+                If FileTypes.Video.Contains(Filepath.GetExt(i)) Then
                     found = True
                 End If
             Next

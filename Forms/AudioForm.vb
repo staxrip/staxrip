@@ -683,7 +683,7 @@ Public Class AudioForm
         Next
 
         For Each i In Directory.GetFiles(Packs.BeSweet.GetDir + "help")
-            If Filepath.GetExt(i) <> ".lst" Then
+            If Filepath.GetExtFull(i) <> ".lst" Then
                 Dim tmp = i
                 ActionMenuItem.Add(miHelp.DropDownItems, "BeSweet | " + Filepath.GetBase(i), Sub() g.ShellExecute(tmp))
             End If
@@ -982,7 +982,7 @@ Public Class AudioForm
 
     Private Sub miExecute_Click(sender As Object, e As EventArgs) Handles miExecute.Click
         If TempProfile.File <> "" Then
-            If Not TempProfile.SupportedInput.Contains(Filepath.GetExtNoDot(TempProfile.File)) Then
+            If Not TempProfile.SupportedInput.Contains(Filepath.GetExt(TempProfile.File)) Then
                 MsgWarn("The input format isn't supported," + CrLf + "please decode first using:" + CrLf2 + "Codec: WAV" + CrLf + "Encoder: ffmpeg")
             Else
                 Proc.StartComandLine(TempProfile.GetCommandLine(True))

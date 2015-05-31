@@ -324,7 +324,6 @@ Public Class ApplicationsForm
 
                     If d.ShowDialog = DialogResult.OK Then
                         s.Storage.SetString(ActivePackage.Name + "custom path", d.FileName)
-                        Registry.CurrentUser.Write("Software\" + Application.ProductName + "\Tool Paths", ActivePackage.Name, d.FileName)
                     End If
                 End Using
             Case Keys.F12

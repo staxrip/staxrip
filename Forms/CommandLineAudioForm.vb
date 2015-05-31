@@ -252,7 +252,7 @@ Public Class CommandLineAudioForm
         CmdlControl.SetCommandLineDefaults()
         CmdlControl.Value = TempProfile.CommandLines
         CmdlControl.SpecialMacrosFunction = AddressOf TempProfile.SolveMacros
-        CmdlControl.llExecute.Visible = TempProfile.File <> "" AndAlso TempProfile.SupportedInput.Contains(Filepath.GetExtNoDot(TempProfile.File))
+        CmdlControl.llExecute.Visible = TempProfile.File <> "" AndAlso TempProfile.SupportedInput.Contains(Filepath.GetExt(TempProfile.File))
 
         AddHandler CmdlControl.rtbEdit.TextChanged, AddressOf tbEditTextChanged
 

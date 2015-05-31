@@ -248,11 +248,11 @@ Public Class Filepath
         Return path
     End Function
 
-    Shared Function GetExt(filepath As String) As String
+    Shared Function GetExtFull(filepath As String) As String
         Return GetExt(filepath, True)
     End Function
 
-    Shared Function GetExtNoDot(filepath As String) As String
+    Shared Function GetExt(filepath As String) As String
         Return GetExt(filepath, False)
     End Function
 

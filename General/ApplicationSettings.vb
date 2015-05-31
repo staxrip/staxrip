@@ -124,20 +124,18 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(Demuxers, "Demuxers", 94) Then Demuxers = Demuxer.GetDefaults()
+        If Check(Demuxers, "Demuxers", 97) Then Demuxers = Demuxer.GetDefaults()
 
-        If Check(FilterPreferences, "Filter Preference", 21) Then
+        If Check(FilterPreferences, "Filter Preference", 22) Then
             FilterPreferences = New StringPairList
             FilterPreferences.Add("264, h264, avc", "LWLibavVideoSource")
             FilterPreferences.Add("265, h265, hevc", "LWLibavVideoSource")
             FilterPreferences.Add("default", "FFVideoSource")
             FilterPreferences.Add("dgi", "DGSource")
             FilterPreferences.Add("dgim", "DGSourceIM")
-            FilterPreferences.Add("mp4, m4v", "LSMASHVideoSource")
-            FilterPreferences.Add("ts, m2ts", "LWLibavVideoSource")
+            FilterPreferences.Add("mp4, m4v, mov", "LSMASHVideoSource")
+            FilterPreferences.Add("ts, m2ts, mts, m2t", "LWLibavVideoSource")
             FilterPreferences.Add("wmv", "DSS2")
-
-            'FilterPreferences.Add("d2v", "MPEG2Source")
         End If
 
         If Check(EventCommands, "Event Commands", 0) Then
@@ -224,7 +222,7 @@ Public Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 120) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 122) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 

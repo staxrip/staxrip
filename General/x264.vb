@@ -550,7 +550,7 @@ Public Class x264Params
     Public PsyTrellis As New SettingBag(Of Single)(0.0)
     Public QComp As New SettingBag(Of Single)(0.6)
     Public QPMin As New SettingBag(Of Integer)(10)
-    Public Quant As New SettingBag(Of Single)(23)
+    Public Quant As New SettingBag(Of Single)(22)
     Public QuantCompCheck As New SettingBag(Of Integer)(18)
     Public RefFrames As New SettingBag(Of Integer)(3)
     Public SceneCut As New SettingBag(Of Integer)(40)

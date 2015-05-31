@@ -1868,7 +1868,7 @@ Public Class CmdlTypeEditor
                                            provider As IServiceProvider,
                                            value As Object) As Object
         Using f As New MacroEditor
-            f.SetCommandlineDefaults()
+            f.SetBatchDefaults()
             f.MacroEditorControl.Value = CStr(value)
 
             If f.ShowDialog = DialogResult.OK Then
@@ -2806,13 +2806,16 @@ Public Class GlobalCommands
                 f.Doc.WriteH2("Special Thanks")
                 f.Doc.WriteList("DivX Network giving a open source development sponsorship award",
                                 "Brother John writing [http://encodingwissen.de/staxrip german tutorial]")
-
             Case "changelog" 'cl:
                 f.Doc.WriteStart("Changelog")
 
+                f.Doc.WriteP("StaxRip x64 1.3.1.5 " + GetReleaseType() + " (2015-05-??)")
+
+                f.Doc.WriteList("Replaced LinkLabels with Buttons in eac3to dialog for better usability")
+
                 f.Doc.WriteP("StaxRip x64 1.3.1.4 " + GetReleaseType() + " (2015-05-31)")
 
-                f.Doc.WriteList("Added feature to choose which source filter to use when a single file is opened, this gives more MeGUI manual workflow like control without giving up much of StaxRip's automated character",
+                f.Doc.WriteList("Added feature To choose which source filter To use When a Single file Is opened, this gives more MeGUI manual workflow Like control without giving up much Of StaxRip's automated character",
                                 "Fixed failing to show log file from main menu",
                                 "Updated qaac to 2.49",
                                 "Updated ffms2 to 2.22 RC2")

@@ -211,7 +211,7 @@ Public MustInherit Class Muxer
         ret.Add(New ffmpegMuxer("AVI"))
         ret.Add(New WebMMuxer())
         ret.Add(New DivXPluxMuxer())
-        ret.Add(New CommandLineMuxer("Command Line"))
+        ret.Add(New BatchMuxer("Command Line"))
         ret.Add(New NullMuxer("No Muxing"))
 
         Return ret
@@ -374,7 +374,7 @@ Public Class NullMuxer
     Inherits Muxer
 
     Sub New(name As String)
-        MyBase.New(Name)
+        MyBase.New(name)
         CanEditValue = False
     End Sub
 
@@ -400,7 +400,7 @@ Public Class NullMuxer
 End Class
 
 <Serializable()>
-Public Class CommandLineMuxer
+Public Class BatchMuxer
     Inherits Muxer
 
     Property OutputTypeValue As String = "mp4"
@@ -421,36 +421,36 @@ Public Class CommandLineMuxer
     End Function
 
     Overrides Sub Mux()
-        Log.WriteHeader("Muxing")
+        Log.WriteHeader("Batch Muxing")
 
-        For Each i As String In Macro.Solve(CommandLines).SplitLinesNoEmpty
-            Dim start = DateTime.Now
+        Dim commands = Macro.Solve(CommandLines)
+        Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_mux.bat"
+        File.WriteAllText(batchPath, commands, Encoding.GetEncoding(850))
 
-            Dim pw As New Proc
+        Using proc As New Proc
+            proc.Init("Encoding video command line encoder: " + Name)
+            proc.WriteLine(commands + CrLf2)
+            proc.File = "cmd.exe"
+            proc.Arguments = "/C call """ + batchPath + """"
+            proc.BatchCode = commands
 
-            pw.CommandLine = i
-            pw.Wait = True
-            pw.Priority = s.ProcessPriority
-
-            If Not ProcessForm.IsVisible Then
-                pw.HideAfterStart = True
-            End If
-
-            Log.WriteLine(i)
-            ProcessForm.ProcInstance = pw
-
-            pw.Start()
-
-            Log.WriteStats(start)
-        Next
+            Try
+                proc.Start()
+            Catch ex As AbortException
+                Throw ex
+            Catch ex As Exception
+                ProcessForm.CloseProcessForm()
+                g.ShowException(ex)
+                Throw New AbortException
+            End Try
+        End Using
     End Sub
 
     Overrides Function Edit() As DialogResult
-        Using f As New SimpleSettingsForm(Name, "The Command Line Muxer dialog allows to configure StaxRip to use any command line compatible muxer.")
-            f.Size = New Size(1000, 350)
+        Using f As New SimpleSettingsForm("Batch Muxer", "The Batch Muxer dialog allows to configure StaxRip to use a command line or batch code as muxer.")
+            f.Size = New Size(1100, 600)
 
             Dim ui = f.SimpleUI
-
             Dim page = ui.CreateFlowPage("main page")
 
             Dim tb = ui.AddTextBlock(page)
@@ -459,24 +459,21 @@ Public Class CommandLineMuxer
             tb.Edit.Text = OutputTypeValue
             tb.Edit.SaveAction = Sub(value) OutputTypeValue = value
 
-            Dim l = ui.AddLabel(page, "Command Lines:")
+            Dim l = ui.AddLabel(page, "Batch Script:")
             l.MarginTop = f.Font.Height
-            l.Tooltip = "Command lines to be executed performing the muxing. It's possible to use multible command lines separated by a new line. The command lines may contain macros."
+            l.Tooltip = "Batch script which may contain macros."
 
             tb = ui.AddTextBlock(page)
             tb.Label.Visible = False
             tb.Expand(tb.Edit)
-            tb.Edit.Height = f.Font.Height * 4
+            tb.Edit.Height = f.Font.Height * 15
             tb.Edit.TextBox.Multiline = True
             tb.Edit.Text = CommandLines
             tb.Edit.UseCommandlineEditor = True
             tb.Edit.SaveAction = Sub(value) CommandLines = value
 
             Dim ret = f.ShowDialog()
-
-            If ret = DialogResult.OK Then
-                ui.Save()
-            End If
+            If ret = DialogResult.OK Then ui.Save()
 
             Return ret
         End Using

@@ -96,9 +96,9 @@ Public Class MacroEditor
         MinimumSize = New Size(950, 600)
     End Sub
 
-    Sub SetCommandlineDefaults()
-        Text = "Command Line Editor"
-        HelpText = "Editor for command lines that may contain macros."
+    Sub SetBatchDefaults()
+        Text = "Batch Editor"
+        HelpText = "Editor for batch script editing."
         MacroEditorControl.SetCommandLineDefaults()
         Size = New Size(800, 250)
     End Sub

@@ -402,7 +402,7 @@ Class SimpleUI
         WriteOnly Property UseCommandlineEditor As Boolean
             Set(value As Boolean)
                 If value Then
-                    AddHandler TextBox.Click, Sub() EditCommandline()
+                    AddHandler TextBox.MouseDown, Sub() EditCommandline()
                 End If
             End Set
         End Property
@@ -415,7 +415,7 @@ Class SimpleUI
 
         Sub EditCommandline()
             Using f As New MacroEditor
-                f.SetCommandlineDefaults()
+                f.SetBatchDefaults()
                 f.MacroEditorControl.Value = Text
 
                 If f.ShowDialog() = DialogResult.OK Then

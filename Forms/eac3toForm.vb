@@ -31,10 +31,6 @@ Public Class eac3toForm
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents lvAudio As ListViewEx
     Friend WithEvents lvSubtitles As StaxRip.UI.ListViewEx
-    Friend WithEvents llAudioAll As System.Windows.Forms.LinkLabel
-    Friend WithEvents llAudioNone As System.Windows.Forms.LinkLabel
-    Friend WithEvents llSubtitlesAll As System.Windows.Forms.LinkLabel
-    Friend WithEvents llSubtitlesNone As System.Windows.Forms.LinkLabel
     Friend WithEvents cbVideoStream As System.Windows.Forms.ComboBox
     Friend WithEvents Label8 As System.Windows.Forms.Label
     Friend WithEvents flpAudioLinks As System.Windows.Forms.FlowLayoutPanel
@@ -45,10 +41,6 @@ Public Class eac3toForm
     Friend WithEvents FlowLayoutPanel1 As System.Windows.Forms.FlowLayoutPanel
     Friend WithEvents Panel3 As System.Windows.Forms.Panel
     Friend WithEvents cbChapters As System.Windows.Forms.CheckBox
-    Friend WithEvents llSubtitlesEnglish As System.Windows.Forms.LinkLabel
-    Friend WithEvents llSubtitlesNative As System.Windows.Forms.LinkLabel
-    Friend WithEvents llAudioEnglish As System.Windows.Forms.LinkLabel
-    Friend WithEvents llAudioNative As System.Windows.Forms.LinkLabel
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents gbAudio As System.Windows.Forms.GroupBox
@@ -58,7 +50,14 @@ Public Class eac3toForm
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents bnMenu As StaxRip.UI.ButtonEx
     Friend WithEvents cms As System.Windows.Forms.ContextMenuStrip
-
+    Friend WithEvents bnAudioAll As ButtonEx
+    Friend WithEvents bnAudioNone As ButtonEx
+    Friend WithEvents bnAudioEnglish As ButtonEx
+    Friend WithEvents bnAudioNative As ButtonEx
+    Friend WithEvents bnSubtitleAll As ButtonEx
+    Friend WithEvents bnSubtitleNone As ButtonEx
+    Friend WithEvents bnSubtitleEnglish As ButtonEx
+    Friend WithEvents bnSubtitleNative As ButtonEx
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -72,17 +71,17 @@ Public Class eac3toForm
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.lvAudio = New StaxRip.UI.ListViewEx()
         Me.lvSubtitles = New StaxRip.UI.ListViewEx()
-        Me.llAudioAll = New System.Windows.Forms.LinkLabel()
-        Me.llAudioNone = New System.Windows.Forms.LinkLabel()
-        Me.llSubtitlesAll = New System.Windows.Forms.LinkLabel()
-        Me.llSubtitlesNone = New System.Windows.Forms.LinkLabel()
         Me.flpSubtitleLinks = New System.Windows.Forms.FlowLayoutPanel()
-        Me.llSubtitlesEnglish = New System.Windows.Forms.LinkLabel()
-        Me.llSubtitlesNative = New System.Windows.Forms.LinkLabel()
+        Me.bnSubtitleAll = New StaxRip.UI.ButtonEx()
+        Me.bnSubtitleNone = New StaxRip.UI.ButtonEx()
+        Me.bnSubtitleEnglish = New StaxRip.UI.ButtonEx()
+        Me.bnSubtitleNative = New StaxRip.UI.ButtonEx()
         Me.flpAudioLinks = New System.Windows.Forms.FlowLayoutPanel()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
-        Me.llAudioEnglish = New System.Windows.Forms.LinkLabel()
-        Me.llAudioNative = New System.Windows.Forms.LinkLabel()
+        Me.bnAudioAll = New StaxRip.UI.ButtonEx()
+        Me.bnAudioNone = New StaxRip.UI.ButtonEx()
+        Me.bnAudioEnglish = New StaxRip.UI.ButtonEx()
+        Me.bnAudioNative = New StaxRip.UI.ButtonEx()
         Me.cbVideoStream = New System.Windows.Forms.ComboBox()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.tlp = New System.Windows.Forms.TableLayoutPanel()
@@ -115,7 +114,7 @@ Public Class eac3toForm
         Me.cmdlOptions.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdlOptions.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdlOptions.Location = New System.Drawing.Point(304, 315)
+        Me.cmdlOptions.Location = New System.Drawing.Point(304, 330)
         Me.cmdlOptions.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.cmdlOptions.Name = "cmdlOptions"
         Me.cmdlOptions.Size = New System.Drawing.Size(725, 36)
@@ -152,9 +151,9 @@ Public Class eac3toForm
         'tbTempDir
         '
         Me.tbTempDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbTempDir.Location = New System.Drawing.Point(152, 8)
+        Me.tbTempDir.Location = New System.Drawing.Point(150, 8)
         Me.tbTempDir.Name = "tbTempDir"
-        Me.tbTempDir.Size = New System.Drawing.Size(850, 31)
+        Me.tbTempDir.Size = New System.Drawing.Size(852, 31)
         Me.tbTempDir.TabIndex = 0
         '
         'bnCancel
@@ -181,7 +180,7 @@ Public Class eac3toForm
         Me.lvAudio.Location = New System.Drawing.Point(11, 30)
         Me.lvAudio.Margin = New System.Windows.Forms.Padding(8, 3, 8, 3)
         Me.lvAudio.Name = "lvAudio"
-        Me.lvAudio.Size = New System.Drawing.Size(1018, 277)
+        Me.lvAudio.Size = New System.Drawing.Size(1018, 292)
         Me.lvAudio.TabIndex = 8
         Me.lvAudio.UseCompatibleStateImageBehavior = False
         '
@@ -193,99 +192,61 @@ Public Class eac3toForm
         Me.lvSubtitles.Location = New System.Drawing.Point(11, 30)
         Me.lvSubtitles.Margin = New System.Windows.Forms.Padding(8, 3, 8, 3)
         Me.lvSubtitles.Name = "lvSubtitles"
-        Me.lvSubtitles.Size = New System.Drawing.Size(1018, 133)
+        Me.lvSubtitles.Size = New System.Drawing.Size(1018, 131)
         Me.lvSubtitles.TabIndex = 9
         Me.lvSubtitles.UseCompatibleStateImageBehavior = False
-        '
-        'llAudioAll
-        '
-        Me.llAudioAll.AutoSize = True
-        Me.llAudioAll.Location = New System.Drawing.Point(3, 0)
-        Me.llAudioAll.Name = "llAudioAll"
-        Me.llAudioAll.Size = New System.Drawing.Size(32, 25)
-        Me.llAudioAll.TabIndex = 1
-        Me.llAudioAll.TabStop = True
-        Me.llAudioAll.Text = "All"
-        '
-        'llAudioNone
-        '
-        Me.llAudioNone.AutoSize = True
-        Me.llAudioNone.Location = New System.Drawing.Point(47, 0)
-        Me.llAudioNone.Name = "llAudioNone"
-        Me.llAudioNone.Size = New System.Drawing.Size(55, 25)
-        Me.llAudioNone.TabIndex = 2
-        Me.llAudioNone.TabStop = True
-        Me.llAudioNone.Text = "None"
-        '
-        'llSubtitlesAll
-        '
-        Me.llSubtitlesAll.AutoSize = True
-        Me.llSubtitlesAll.Location = New System.Drawing.Point(3, 0)
-        Me.llSubtitlesAll.Name = "llSubtitlesAll"
-        Me.llSubtitlesAll.Size = New System.Drawing.Size(32, 25)
-        Me.llSubtitlesAll.TabIndex = 3
-        Me.llSubtitlesAll.TabStop = True
-        Me.llSubtitlesAll.Text = "All"
-        '
-        'llSubtitlesNone
-        '
-        Me.llSubtitlesNone.AutoSize = True
-        Me.llSubtitlesNone.Location = New System.Drawing.Point(41, 0)
-        Me.llSubtitlesNone.Name = "llSubtitlesNone"
-        Me.llSubtitlesNone.Size = New System.Drawing.Size(55, 25)
-        Me.llSubtitlesNone.TabIndex = 4
-        Me.llSubtitlesNone.TabStop = True
-        Me.llSubtitlesNone.Text = "None"
         '
         'flpSubtitleLinks
         '
         Me.flpSubtitleLinks.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.flpSubtitleLinks.AutoSize = True
         Me.flpSubtitleLinks.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.flpSubtitleLinks.Controls.Add(Me.llSubtitlesAll)
-        Me.flpSubtitleLinks.Controls.Add(Me.llSubtitlesNone)
-        Me.flpSubtitleLinks.Controls.Add(Me.llSubtitlesEnglish)
-        Me.flpSubtitleLinks.Controls.Add(Me.llSubtitlesNative)
-        Me.flpSubtitleLinks.Location = New System.Drawing.Point(9, 169)
+        Me.flpSubtitleLinks.Controls.Add(Me.bnSubtitleAll)
+        Me.flpSubtitleLinks.Controls.Add(Me.bnSubtitleNone)
+        Me.flpSubtitleLinks.Controls.Add(Me.bnSubtitleEnglish)
+        Me.flpSubtitleLinks.Controls.Add(Me.bnSubtitleNative)
+        Me.flpSubtitleLinks.Location = New System.Drawing.Point(7, 167)
         Me.flpSubtitleLinks.Name = "flpSubtitleLinks"
-        Me.flpSubtitleLinks.Size = New System.Drawing.Size(241, 25)
+        Me.flpSubtitleLinks.Size = New System.Drawing.Size(424, 42)
         Me.flpSubtitleLinks.TabIndex = 19
         '
-        'llSubtitlesEnglish
+        'bnSubtitleAll
         '
-        Me.llSubtitlesEnglish.AutoSize = True
-        Me.llSubtitlesEnglish.Enabled = False
-        Me.llSubtitlesEnglish.Location = New System.Drawing.Point(102, 0)
-        Me.llSubtitlesEnglish.Name = "llSubtitlesEnglish"
-        Me.llSubtitlesEnglish.Size = New System.Drawing.Size(68, 25)
-        Me.llSubtitlesEnglish.TabIndex = 5
-        Me.llSubtitlesEnglish.TabStop = True
-        Me.llSubtitlesEnglish.Text = "English"
+        Me.bnSubtitleAll.Location = New System.Drawing.Point(3, 3)
+        Me.bnSubtitleAll.Size = New System.Drawing.Size(100, 36)
+        Me.bnSubtitleAll.Text = "All"
         '
-        'llSubtitlesNative
+        'bnSubtitleNone
         '
-        Me.llSubtitlesNative.AutoSize = True
-        Me.llSubtitlesNative.Enabled = False
-        Me.llSubtitlesNative.Location = New System.Drawing.Point(176, 0)
-        Me.llSubtitlesNative.Name = "llSubtitlesNative"
-        Me.llSubtitlesNative.Size = New System.Drawing.Size(62, 25)
-        Me.llSubtitlesNative.TabIndex = 6
-        Me.llSubtitlesNative.TabStop = True
-        Me.llSubtitlesNative.Text = "Native"
+        Me.bnSubtitleNone.Location = New System.Drawing.Point(109, 3)
+        Me.bnSubtitleNone.Size = New System.Drawing.Size(100, 36)
+        Me.bnSubtitleNone.Text = "None"
+        '
+        'bnSubtitleEnglish
+        '
+        Me.bnSubtitleEnglish.Location = New System.Drawing.Point(215, 3)
+        Me.bnSubtitleEnglish.Size = New System.Drawing.Size(100, 36)
+        Me.bnSubtitleEnglish.Text = "English"
+        '
+        'bnSubtitleNative
+        '
+        Me.bnSubtitleNative.Location = New System.Drawing.Point(321, 3)
+        Me.bnSubtitleNative.Size = New System.Drawing.Size(100, 36)
+        Me.bnSubtitleNative.Text = "Native"
         '
         'flpAudioLinks
         '
         Me.flpAudioLinks.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.flpAudioLinks.AutoSize = True
         Me.flpAudioLinks.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.flpAudioLinks.Controls.Add(Me.llAudioAll)
         Me.flpAudioLinks.Controls.Add(Me.FlowLayoutPanel1)
-        Me.flpAudioLinks.Controls.Add(Me.llAudioNone)
-        Me.flpAudioLinks.Controls.Add(Me.llAudioEnglish)
-        Me.flpAudioLinks.Controls.Add(Me.llAudioNative)
-        Me.flpAudioLinks.Location = New System.Drawing.Point(9, 359)
+        Me.flpAudioLinks.Controls.Add(Me.bnAudioAll)
+        Me.flpAudioLinks.Controls.Add(Me.bnAudioNone)
+        Me.flpAudioLinks.Controls.Add(Me.bnAudioEnglish)
+        Me.flpAudioLinks.Controls.Add(Me.bnAudioNative)
+        Me.flpAudioLinks.Location = New System.Drawing.Point(2, 372)
         Me.flpAudioLinks.Name = "flpAudioLinks"
-        Me.flpAudioLinks.Size = New System.Drawing.Size(247, 25)
+        Me.flpAudioLinks.Size = New System.Drawing.Size(430, 42)
         Me.flpAudioLinks.TabIndex = 18
         '
         'FlowLayoutPanel1
@@ -293,33 +254,35 @@ Public Class eac3toForm
         Me.FlowLayoutPanel1.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.FlowLayoutPanel1.AutoSize = True
         Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(41, 10)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(3, 18)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(3, 3, 3, 8)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
         Me.FlowLayoutPanel1.Size = New System.Drawing.Size(0, 0)
         Me.FlowLayoutPanel1.TabIndex = 0
         '
-        'llAudioEnglish
+        'bnAudioAll
         '
-        Me.llAudioEnglish.AutoSize = True
-        Me.llAudioEnglish.Enabled = False
-        Me.llAudioEnglish.Location = New System.Drawing.Point(108, 0)
-        Me.llAudioEnglish.Name = "llAudioEnglish"
-        Me.llAudioEnglish.Size = New System.Drawing.Size(68, 25)
-        Me.llAudioEnglish.TabIndex = 3
-        Me.llAudioEnglish.TabStop = True
-        Me.llAudioEnglish.Text = "English"
+        Me.bnAudioAll.Location = New System.Drawing.Point(9, 3)
+        Me.bnAudioAll.Size = New System.Drawing.Size(100, 36)
+        Me.bnAudioAll.Text = "All"
         '
-        'llAudioNative
+        'bnAudioNone
         '
-        Me.llAudioNative.AutoSize = True
-        Me.llAudioNative.Enabled = False
-        Me.llAudioNative.Location = New System.Drawing.Point(182, 0)
-        Me.llAudioNative.Name = "llAudioNative"
-        Me.llAudioNative.Size = New System.Drawing.Size(62, 25)
-        Me.llAudioNative.TabIndex = 4
-        Me.llAudioNative.TabStop = True
-        Me.llAudioNative.Text = "Native"
+        Me.bnAudioNone.Location = New System.Drawing.Point(115, 3)
+        Me.bnAudioNone.Size = New System.Drawing.Size(100, 36)
+        Me.bnAudioNone.Text = "None"
+        '
+        'bnAudioEnglish
+        '
+        Me.bnAudioEnglish.Location = New System.Drawing.Point(221, 3)
+        Me.bnAudioEnglish.Size = New System.Drawing.Size(100, 36)
+        Me.bnAudioEnglish.Text = "English"
+        '
+        'bnAudioNative
+        '
+        Me.bnAudioNative.Location = New System.Drawing.Point(327, 3)
+        Me.bnAudioNative.Size = New System.Drawing.Size(100, 36)
+        Me.bnAudioNative.Text = "Native"
         '
         'cbVideoStream
         '
@@ -339,7 +302,7 @@ Public Class eac3toForm
         Me.Label8.Location = New System.Drawing.Point(215, 16)
         Me.Label8.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(72, 25)
+        Me.Label8.Size = New System.Drawing.Size(71, 25)
         Me.Label8.TabIndex = 15
         Me.Label8.Text = "Stream:"
         '
@@ -362,14 +325,14 @@ Public Class eac3toForm
         Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlp.Size = New System.Drawing.Size(1049, 750)
+        Me.tlp.Size = New System.Drawing.Size(1049, 795)
         Me.tlp.TabIndex = 20
         '
         'Panel2
         '
         Me.Panel2.Controls.Add(Me.TableLayoutPanel1)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel2.Location = New System.Drawing.Point(0, 652)
+        Me.Panel2.Location = New System.Drawing.Point(0, 697)
         Me.Panel2.Margin = New System.Windows.Forms.Padding(0)
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(1049, 47)
@@ -398,7 +361,7 @@ Public Class eac3toForm
         Me.Label2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Label2.Location = New System.Drawing.Point(3, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(143, 47)
+        Me.Label2.Size = New System.Drawing.Size(141, 47)
         Me.Label2.TabIndex = 2
         Me.Label2.Text = "Target Directory:"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -423,7 +386,7 @@ Public Class eac3toForm
         Me.Panel3.Controls.Add(Me.bnOK)
         Me.Panel3.Controls.Add(Me.bnCancel)
         Me.Panel3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel3.Location = New System.Drawing.Point(3, 702)
+        Me.Panel3.Location = New System.Drawing.Point(3, 747)
         Me.Panel3.Name = "Panel3"
         Me.Panel3.Size = New System.Drawing.Size(1043, 45)
         Me.Panel3.TabIndex = 22
@@ -439,7 +402,7 @@ Public Class eac3toForm
         '
         Me.cms.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.cms.Name = "cms"
-        Me.cms.Size = New System.Drawing.Size(61, 4)
+        Me.cms.Size = New System.Drawing.Size(74, 4)
         '
         'cbChapters
         '
@@ -465,24 +428,26 @@ Public Class eac3toForm
         Me.gbAudio.Location = New System.Drawing.Point(3, 53)
         Me.gbAudio.Margin = New System.Windows.Forms.Padding(3, 0, 3, 3)
         Me.gbAudio.Name = "gbAudio"
-        Me.gbAudio.Size = New System.Drawing.Size(1043, 390)
+        Me.gbAudio.Size = New System.Drawing.Size(1043, 420)
         Me.gbAudio.TabIndex = 23
         Me.gbAudio.TabStop = False
         Me.gbAudio.Text = "Audio"
         '
         'cbAudioOutput
         '
+        Me.cbAudioOutput.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.cbAudioOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbAudioOutput.FormattingEnabled = True
-        Me.cbAudioOutput.Location = New System.Drawing.Point(85, 317)
+        Me.cbAudioOutput.Location = New System.Drawing.Point(85, 332)
         Me.cbAudioOutput.Name = "cbAudioOutput"
         Me.cbAudioOutput.Size = New System.Drawing.Size(115, 33)
         Me.cbAudioOutput.TabIndex = 21
         '
         'Label3
         '
+        Me.Label3.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(215, 321)
+        Me.Label3.Location = New System.Drawing.Point(215, 336)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(80, 25)
         Me.Label3.TabIndex = 20
@@ -490,8 +455,9 @@ Public Class eac3toForm
         '
         'Label1
         '
+        Me.Label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(7, 321)
+        Me.Label1.Location = New System.Drawing.Point(7, 336)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(73, 25)
         Me.Label1.TabIndex = 19
@@ -502,9 +468,9 @@ Public Class eac3toForm
         Me.gbSubtitles.Controls.Add(Me.flpSubtitleLinks)
         Me.gbSubtitles.Controls.Add(Me.lvSubtitles)
         Me.gbSubtitles.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbSubtitles.Location = New System.Drawing.Point(3, 449)
+        Me.gbSubtitles.Location = New System.Drawing.Point(3, 479)
         Me.gbSubtitles.Name = "gbSubtitles"
-        Me.gbSubtitles.Size = New System.Drawing.Size(1043, 200)
+        Me.gbSubtitles.Size = New System.Drawing.Size(1043, 215)
         Me.gbSubtitles.TabIndex = 24
         Me.gbSubtitles.TabStop = False
         Me.gbSubtitles.Text = "Subtitles"
@@ -514,7 +480,7 @@ Public Class eac3toForm
         Me.AcceptButton = Me.bnOK
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1049, 750)
+        Me.ClientSize = New System.Drawing.Size(1049, 795)
         Me.Controls.Add(Me.tlp)
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
@@ -525,7 +491,6 @@ Public Class eac3toForm
         Me.Name = "eac3toForm"
         Me.Text = "eac3to"
         Me.flpSubtitleLinks.ResumeLayout(False)
-        Me.flpSubtitleLinks.PerformLayout()
         Me.flpAudioLinks.ResumeLayout(False)
         Me.flpAudioLinks.PerformLayout()
         Me.tlp.ResumeLayout(False)
@@ -580,17 +545,19 @@ Public Class eac3toForm
         cmdlOptions.Presets = s.CmdlPresetsEac3to
         cmdlOptions.RestoreFunc = Function() ApplicationSettings.GetDefaultEac3toMenu.FormatColumn("=")
 
-        If CultureInfo.CurrentCulture.TwoLetterISOLanguageName = "en" Then
-            llAudioNative.Visible = False
-            llSubtitlesNative.Visible = False
-        Else
+        bnAudioNative.Visible = False
+        bnAudioEnglish.Visible = False
+        bnSubtitleNative.Visible = False
+        bnSubtitleEnglish.Visible = False
+
+        If CultureInfo.CurrentCulture.TwoLetterISOLanguageName <> "en" Then
             Try
-                llAudioNative.Text = New CultureInfo(CultureInfo.CurrentCulture.TwoLetterISOLanguageName).EnglishName
-                llSubtitlesNative.Text = llAudioNative.Text
+                bnAudioNative.Text = New CultureInfo(CultureInfo.CurrentCulture.TwoLetterISOLanguageName).EnglishName
+                bnSubtitleNative.Text = bnAudioNative.Text
             Catch ex As Exception
                 g.ShowException(ex)
-                llAudioNative.Visible = False
-                llSubtitlesNative.Visible = False
+                bnAudioNative.Visible = False
+                bnSubtitleNative.Visible = False
             End Try
         End If
 
@@ -738,10 +705,10 @@ Public Class eac3toForm
                     i.ListViewItem.Tag = i
 
                     If i.Language.CultureInfo.TwoLetterISOLanguageName = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
-                        llAudioNative.Enabled = True
+                        bnAudioNative.Visible = True
                         i.ListViewItem.Checked = True
                     ElseIf i.Language.CultureInfo.TwoLetterISOLanguageName = "en" Then
-                        llAudioEnglish.Enabled = True
+                        bnAudioEnglish.Visible = True
                         i.ListViewItem.Checked = True
                     ElseIf i.Language.TwoLetterCode = "iv" Then
                         i.ListViewItem.Checked = True
@@ -750,9 +717,9 @@ Public Class eac3toForm
                     cbVideoStream.Items.Add(i)
                 ElseIf i.IsSubtitle Then
                     If i.Language.CultureInfo.TwoLetterISOLanguageName = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
-                        llSubtitlesNative.Enabled = True
+                        bnSubtitleNative.Visible = True
                     ElseIf i.Language.CultureInfo.TwoLetterISOLanguageName = "en" Then
-                        llSubtitlesEnglish.Enabled = True
+                        bnSubtitleEnglish.Visible = True
                     End If
 
                     Dim lang = i.Language.ToString
@@ -908,70 +875,6 @@ Public Class eac3toForm
         DirectCast(lvSubtitles.Items(e.Index).Tag, M2TSStream).Checked = e.NewValue = CheckState.Checked
     End Sub
 
-    Private Sub llAudioAll_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llAudioAll.LinkClicked
-        For Each i As ListViewItem In lvAudio.Items
-            i.Checked = True
-        Next
-    End Sub
-
-    Private Sub llAudioNone_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llAudioNone.LinkClicked
-        For Each i As ListViewItem In lvAudio.Items
-            i.Checked = False
-        Next
-    End Sub
-
-    Private Sub llAudioEnglish_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llAudioEnglish.LinkClicked
-        For Each i As ListViewItem In lvAudio.Items
-            Dim stream = DirectCast(i.Tag, M2TSStream)
-
-            If stream.Language.TwoLetterCode = "en" Then
-                i.Checked = True
-            End If
-        Next
-    End Sub
-
-    Private Sub llAudioNative_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llAudioNative.LinkClicked
-        For Each i As ListViewItem In lvAudio.Items
-            Dim stream = DirectCast(i.Tag, M2TSStream)
-
-            If stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
-                i.Checked = True
-            End If
-        Next
-    End Sub
-
-    Private Sub llSubtitlesAll_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llSubtitlesAll.LinkClicked
-        For Each i As ListViewItem In lvSubtitles.Items
-            i.Checked = True
-        Next
-    End Sub
-
-    Private Sub llSubtitlesNone_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llSubtitlesNone.LinkClicked
-        For Each i As ListViewItem In lvSubtitles.Items
-            i.Checked = False
-        Next
-    End Sub
-
-    Private Sub llSubtitlesEnglish_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llSubtitlesEnglish.LinkClicked
-        For Each i As ListViewItem In lvSubtitles.Items
-            Dim stream = DirectCast(i.Tag, M2TSStream)
-
-            If stream.Language.TwoLetterCode = "en" Then
-                i.Checked = True
-            End If
-        Next
-    End Sub
-
-    Private Sub llSubtitlesNative_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llSubtitlesNative.LinkClicked
-        For Each i As ListViewItem In lvSubtitles.Items
-            Dim stream = DirectCast(i.Tag, M2TSStream)
-
-            If stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
-                i.Checked = True
-            End If
-        Next
-    End Sub
-
     Private Sub cbVideoStream_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbVideoStream.SelectedIndexChanged
         cbVideoOutput.Items.Clear()
         cbVideoOutput.Items.Add("Nothing")
@@ -1073,4 +976,68 @@ Public Class eac3toForm
                 Return {"ac3", "wav", "flac", "m4a"}
         End Select
     End Function
+
+    Private Sub bnAudioAll_Click(sender As Object, e As EventArgs) Handles bnAudioAll.Click
+        For Each i As ListViewItem In lvAudio.Items
+            i.Checked = True
+        Next
+    End Sub
+
+    Private Sub bnAudioNone_Click(sender As Object, e As EventArgs) Handles bnAudioNone.Click
+        For Each i As ListViewItem In lvAudio.Items
+            i.Checked = False
+        Next
+    End Sub
+
+    Private Sub bnAudioEnglish_Click(sender As Object, e As EventArgs) Handles bnAudioEnglish.Click
+        For Each i As ListViewItem In lvAudio.Items
+            Dim stream = DirectCast(i.Tag, M2TSStream)
+
+            If stream.Language.TwoLetterCode = "en" Then
+                i.Checked = True
+            End If
+        Next
+    End Sub
+
+    Private Sub bnAudioNative_Click(sender As Object, e As EventArgs) Handles bnAudioNative.Click
+        For Each i As ListViewItem In lvAudio.Items
+            Dim stream = DirectCast(i.Tag, M2TSStream)
+
+            If stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
+                i.Checked = True
+            End If
+        Next
+    End Sub
+
+    Private Sub bnSubtitleAll_Click(sender As Object, e As EventArgs) Handles bnSubtitleAll.Click
+        For Each i As ListViewItem In lvSubtitles.Items
+            i.Checked = True
+        Next
+    End Sub
+
+    Private Sub bnSubtitleNone_Click(sender As Object, e As EventArgs) Handles bnSubtitleNone.Click
+        For Each i As ListViewItem In lvSubtitles.Items
+            i.Checked = False
+        Next
+    End Sub
+
+    Private Sub bnSubtitleEnglish_Click(sender As Object, e As EventArgs) Handles bnSubtitleEnglish.Click
+        For Each i As ListViewItem In lvSubtitles.Items
+            Dim stream = DirectCast(i.Tag, M2TSStream)
+
+            If stream.Language.TwoLetterCode = "en" Then
+                i.Checked = True
+            End If
+        Next
+    End Sub
+
+    Private Sub bnSubtitleNative_Click(sender As Object, e As EventArgs) Handles bnSubtitleNative.Click
+        For Each i As ListViewItem In lvSubtitles.Items
+            Dim stream = DirectCast(i.Tag, M2TSStream)
+
+            If stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
+                i.Checked = True
+            End If
+        Next
+    End Sub
 End Class

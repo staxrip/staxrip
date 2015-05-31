@@ -214,15 +214,14 @@ Public MustInherit Class VideoEncoder
         device As x264DeviceMode,
         Optional mode As x264Mode = x264Mode.SingleCRF) As x264Encoder
 
-        Return Getx264Encoder(name, mode, x264PresetMode.Medium, x264TuneMode.Disabled, device, 22)
+        Return Getx264Encoder(name, mode, x264PresetMode.Medium, x264TuneMode.Disabled, device)
     End Function
 
     Shared Function Getx264Encoder(name As String,
-                               mode As x264Mode,
-                               preset As x264PresetMode,
-                               tuning As x264TuneMode,
-                               device As x264DeviceMode,
-                               quant As Integer) As x264Encoder
+                                   mode As x264Mode,
+                                   preset As x264PresetMode,
+                                   tuning As x264TuneMode,
+                                   device As x264DeviceMode) As x264Encoder
 
         Dim r As New x264Encoder()
         r.Name = name
@@ -230,7 +229,6 @@ Public MustInherit Class VideoEncoder
         r.Params.Preset.Value = preset
         r.Params.Tune.Value = tuning
         r.Params.Device.Value = device
-        r.Params.Quant.Value = quant
         r.Params.ApplyDeviceSettings()
         r.Params.ApplyDefaults(r.Params)
         r.Params.ApplyDeviceSettings()
@@ -242,21 +240,21 @@ Public MustInherit Class VideoEncoder
     Shared Function GetDefaults() As List(Of VideoEncoder)
         Dim ret As New List(Of VideoEncoder)
 
-        Dim x265 = New x265.x265Encoder
-        x265.Params.ApplyPresetDefaultValues()
-        x265.Params.ApplyPresetValues()
-        ret.Add(x265)
+        ret.Add(Getx264Encoder("x264", x264Mode.SingleCRF, x264PresetMode.Medium, x264TuneMode.Disabled, x264DeviceMode.Disabled))
 
-        ret.Add(Getx264Encoder("x264", x264Mode.SingleCRF, x264PresetMode.Medium, x264TuneMode.Disabled, x264DeviceMode.Disabled, 22))
+        Dim x265crf = New x265.x265Encoder
+        x265crf.Params.ApplyPresetDefaultValues()
+        x265crf.Params.ApplyPresetValues()
+        ret.Add(x265crf)
+
+        Dim nv264 As New NvidiaEncoder("NVIDIA H.264")
+        nv264.Params.Mode.Value = 2
+        ret.Add(nv264)
 
         Dim nv265 As New NvidiaEncoder("NVIDIA H.265")
         nv265.Params.Mode.Value = 2
         nv265.Params.Codec.Value = 1
         ret.Add(nv265)
-
-        Dim nv264 As New NvidiaEncoder("NVIDIA H.264")
-        nv264.Params.Mode.Value = 2
-        ret.Add(nv264)
 
         Dim quickSync As New IntelEncoder("Intel H.264")
         ret.Add(quickSync)
@@ -267,31 +265,38 @@ Public MustInherit Class VideoEncoder
 
         Dim xvid As New BatchEncoder()
         xvid.OutputFileTypeValue = "avi"
-        xvid.Name = "XviD Quality Mode"
+        xvid.Name = "XviD"
         xvid.Muxer = New ffmpegMuxer("AVI")
         xvid.QualityMode = True
         xvid.CommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%avs_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
         ret.Add(xvid)
 
+        ret.Add(New NullEncoder("Just Mux"))
+
+        ret.Add(Getx264Encoder("2 pass | x264", x264Mode.TwoPass, x264PresetMode.Medium, x264TuneMode.Disabled, x264DeviceMode.Disabled))
+
+        Dim x265_2pass = New x265.x265Encoder
+        x265_2pass.Name = "2 pass | x265"
+        x265_2pass.Params.Mode.Value = x265.RateMode.TwoPass
+        x265_2pass.Params.ApplyPresetDefaultValues()
+        x265_2pass.Params.ApplyPresetValues()
+        ret.Add(x265_2pass)
+
         Dim xvid2pass As New BatchEncoder()
         xvid2pass.OutputFileTypeValue = "avi"
-        xvid2pass.Name = "XviD 2 pass"
+        xvid2pass.Name = "2 pass | XviD"
         xvid2pass.Muxer = New ffmpegMuxer("AVI")
         xvid2pass.CommandLines = """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -turbo -pass1 ""%temp_file%.stats"" -i ""%avs_file%"" || exit" + CrLf +
                                  """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -pass2 ""%temp_file%.stats"" -i ""%avs_file%"" -avi ""%encoder_out_file%"""
-
         xvid2pass.CompCheckCommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -par %target_sar% -i ""%temp_file%_CompCheck.avs"" -avi ""%temp_file%_CompCheck.avi"""
-
         ret.Add(xvid2pass)
-
-        ret.Add(New NullEncoder("Just Mux"))
 
         Dim x264cli As New BatchEncoder()
         x264cli.OutputFileTypeValue = "h264"
         x264cli.Name = "Command Line | x264"
         x264cli.Muxer = New MkvMuxer()
         x264cli.AutoCompCheckValue = 50
-        x264cli.CommandLines = """%app:x264%"" --pass 1 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output NUL ""%avs_file%""" + CrLf + """%app:x264%"" --pass 2 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output ""%encoder_out_file%"" ""%avs_file%"""
+        x264cli.CommandLines = """%app:x264%"" --pass 1 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output NUL ""%avs_file%"" || exit" + CrLf + """%app:x264%"" --pass 2 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output ""%encoder_out_file%"" ""%avs_file%"""
         x264cli.CompCheckCommandLines = """%app:x264%"" --crf 18 --output ""%temp_file%_CompCheck%encoder_ext%"" ""%temp_file%_CompCheck.avs"""
         ret.Add(x264cli)
 

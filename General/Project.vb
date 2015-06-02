@@ -75,8 +75,8 @@ Public Class Project
     Public Versions As Dictionary(Of String, Integer)
     Public VideoBitrate As Integer = 1000
     Public VideoEncoder As VideoEncoder
-    Public NativeSourceFile As String
-    Public OriginalSourceFile As String
+    Public LastOriginalSourceFile As String
+    Public FirstOriginalSourceFile As String
 
     Public Codec As String
     Public CodecProfile As String

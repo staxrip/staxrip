@@ -529,7 +529,7 @@ Public Class NullEncoder
         Next
 
         If FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile)) Then
-            Return p.NativeSourceFile
+            Return p.LastOriginalSourceFile
         Else
             Return p.SourceFile
         End If
@@ -1240,8 +1240,12 @@ Class IntelEncoder
             .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"},
             .Values = {"none", "normal", "it", "bob"}}
 
+        Property TFF As New BoolParam With {
+            .Switch = "--tff",
+            .Text = "Top Field First"}
+
         Property BFF As New BoolParam With {
-            .NoSwitch = "--bff",
+            .Switch = "--bff",
             .Text = "Bottom Field First"}
 
         Property Quality As New NumParam With {
@@ -1328,7 +1332,7 @@ Class IntelEncoder
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineItem)
-                    ItemsValue.AddRange({Mode, QualitySpeed, Deinterlace, BFF, Quality, QPI, QPP, QPB, BFrames, Ref, GOPLength, LookaheadDepth, HardwareDecoding, Scenechange, MBBRC, Custom})
+                    ItemsValue.AddRange({Mode, QualitySpeed, Deinterlace, Quality, QPI, QPP, QPB, BFrames, Ref, GOPLength, LookaheadDepth, TFF, BFF, HardwareDecoding, Scenechange, MBBRC, Custom})
                 End If
 
                 Return ItemsValue
@@ -1342,8 +1346,7 @@ Class IntelEncoder
             QPP.Visible = {"cqp", "vqp"}.Contains(Mode.ValueText)
             LookaheadDepth.Visible = {"la", "la-hrd", "la-icq"}.Contains(Mode.ValueText)
             MBBRC.Visible = Not {"cqp", "la", "la-hrd", "la-icq", "vqp", "icq"}.Contains(Mode.ValueText)
-            BFF.Visible = Deinterlace.Value > 0
-
+            Scenechange.Visible = Not HardwareDecoding.Value
             MyBase.OnValueChanged(item)
         End Sub
 
@@ -1363,8 +1366,6 @@ Class IntelEncoder
             If q.Count > 0 Then
                 ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
             End If
-
-            If Deinterlace.Value > 0 Then If BFF.Value Then ret += " --bff" Else ret += " --tff"
 
             Select Case Mode.ValueText
                 Case "icq", "la-icq"
@@ -1400,7 +1401,7 @@ Class IntelEncoder
                 End If
 
                 If FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) Then
-                    sourcePath = p.NativeSourceFile
+                    sourcePath = p.LastOriginalSourceFile
                 Else
                     sourcePath = p.SourceFile
                 End If

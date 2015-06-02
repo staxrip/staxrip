@@ -1346,7 +1346,7 @@ Public Class MainForm
                 If i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.HelpApplications) Then
                     i.DropDownItems.Clear()
 
-                    For Each i2 In Packs.Packages.Values
+                    For Each i2 In Packs.Packages.Values.Sort
                         Dim helpPath = i2.GetHelpPath
 
                         If helpPath <> "" Then
@@ -1693,8 +1693,8 @@ Public Class MainForm
 
             g.SetTempDir()
 
-            p.NativeSourceFile = p.SourceFile
-            p.OriginalSourceFile = p.SourceFile
+            p.LastOriginalSourceFile = p.SourceFile
+            p.FirstOriginalSourceFile = p.SourceFile
 
             If FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile)) Then
                 For Each i In File.ReadAllLines(p.SourceFile)
@@ -1704,8 +1704,8 @@ Public Class MainForm
                         End If
 
                         If File.Exists(i) AndAlso FileTypes.Video.Contains(Filepath.GetExt(i)) Then
-                            p.NativeSourceFile = i
-                            p.OriginalSourceFile = i
+                            p.LastOriginalSourceFile = i
+                            p.FirstOriginalSourceFile = i
                             Exit For
                         End If
                     End If
@@ -1719,22 +1719,22 @@ Public Class MainForm
                     Dim fp = match.Groups(1).Value
 
                     If File.Exists(fp) AndAlso FileTypes.Video.Contains(Filepath.GetExt(fp)) Then
-                        p.NativeSourceFile = fp
-                        p.OriginalSourceFile = fp
+                        p.LastOriginalSourceFile = fp
+                        p.FirstOriginalSourceFile = fp
                     End If
                 End If
             End If
 
-            Dim sourcePAR = MediaInfo.GetVideo(p.NativeSourceFile, "PixelAspectRatio")
+            Dim sourcePAR = MediaInfo.GetVideo(p.LastOriginalSourceFile, "PixelAspectRatio")
 
             If sourcePAR <> "" Then
                 p.SourcePAR.X = CInt(Convert.ToSingle(sourcePAR, CultureInfo.InvariantCulture) * 1000)
                 p.SourcePAR.Y = 1000
             End If
 
-            p.Codec = MediaInfo.GetVideoCodec(p.NativeSourceFile)
+            p.Codec = MediaInfo.GetVideoCodec(p.LastOriginalSourceFile)
 
-            p.CodecProfile = MediaInfo.GetVideo(p.NativeSourceFile, "Format_Profile")
+            p.CodecProfile = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format_Profile")
 
             If autoMode AndAlso p.BatchMode Then
                 Assistant()
@@ -1804,10 +1804,10 @@ Public Class MainForm
                 Throw New AbortException
             End If
 
-            If p.NativeSourceFile <> p.SourceFile AndAlso
+            If p.LastOriginalSourceFile <> p.SourceFile AndAlso
                 Not FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) Then
 
-                p.NativeSourceFile = p.SourceFile
+                p.LastOriginalSourceFile = p.SourceFile
             End If
 
             s.LastSourceDir = Filepath.GetDir(p.SourceFile)
@@ -1855,8 +1855,8 @@ Public Class MainForm
                     End If
 
                     If Not sourceFilter.Script.Contains("Crop(") Then
-                        Dim sourceWidth = MediaInfo.GetVideo(p.NativeSourceFile, "Width").ToInt
-                        Dim sourceHeight = MediaInfo.GetVideo(p.NativeSourceFile, "Height").ToInt
+                        Dim sourceWidth = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Width").ToInt
+                        Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
 
                         If sourceWidth Mod 4 <> 0 OrElse sourceHeight Mod 4 <> 0 Then
                             p.AvsDoc.GetFilter("Source").Script += CrLf + "Crop(0, 0, -" & sourceWidth Mod 4 & ", -" & sourceHeight Mod 4 & ")"
@@ -1864,14 +1864,14 @@ Public Class MainForm
                     End If
 
                     If Not sourceFilter.Script.Contains("ConvertToYV12") Then
-                        Dim ChromaSubsampling = MediaInfo.GetVideo(p.NativeSourceFile, "ChromaSubsampling")
+                        Dim ChromaSubsampling = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ChromaSubsampling")
 
                         If ChromaSubsampling <> "4:2:0" Then
-                            Dim format = MediaInfo.GetVideo(p.NativeSourceFile, "Format")
+                            Dim format = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format")
                             Dim matrix As String
 
                             If format = "RGB" Then
-                                Dim sourceHeight = MediaInfo.GetVideo(p.NativeSourceFile, "Height").ToInt
+                                Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
 
                                 If sourceHeight > 576 Then
                                     matrix = "matrix=""Rec709"""
@@ -1889,8 +1889,8 @@ Public Class MainForm
             AviSynthListView.Load()
             RenameDVDTracks()
 
-            If FileTypes.AudioVideo.Contains(Filepath.GetExt(p.NativeSourceFile)) Then
-                p.Audio0.Streams = MediaInfo.GetAudioStreams(p.NativeSourceFile)
+            If FileTypes.AudioVideo.Contains(Filepath.GetExt(p.LastOriginalSourceFile)) Then
+                p.Audio0.Streams = MediaInfo.GetAudioStreams(p.LastOriginalSourceFile)
                 p.Audio1.Streams = p.Audio0.Streams
             End If
 
@@ -1908,9 +1908,9 @@ Public Class MainForm
             Else
                 If p.Audio0.File = "" AndAlso p.Audio1.File = "" Then
                     If Not TypeOf p.Audio0 Is NullAudioProfile AndAlso
-                        Not FileTypes.VideoText.Contains(Filepath.GetExt(p.NativeSourceFile)) Then
+                        Not FileTypes.VideoText.Contains(Filepath.GetExt(p.LastOriginalSourceFile)) Then
 
-                        tbAudioFile0.Text = p.NativeSourceFile
+                        tbAudioFile0.Text = p.LastOriginalSourceFile
 
                         If p.Audio0.Streams.Count = 0 Then
                             tbAudioFile0.Text = ""
@@ -1919,7 +1919,7 @@ Public Class MainForm
                         If Not TypeOf p.Audio1 Is NullAudioProfile AndAlso
                             p.Audio0.Streams.Count > 1 Then
 
-                            tbAudioFile1.Text = p.NativeSourceFile
+                            tbAudioFile1.Text = p.LastOriginalSourceFile
 
                             For Each i In p.Audio1.Streams
                                 If Not p.Audio0.Stream Is Nothing AndAlso
@@ -2022,7 +2022,7 @@ Public Class MainForm
                 End If
             End If
 
-            Dim miFPS = MediaInfo.GetFrameRate(p.OriginalSourceFile)
+            Dim miFPS = MediaInfo.GetFrameRate(p.FirstOriginalSourceFile)
             Dim avsFPS = p.SourceAviSynthDocument.GetFramerate
 
             If (CInt(miFPS) * 2) = CInt(avsFPS) Then
@@ -2199,7 +2199,7 @@ Public Class MainForm
     End Sub
 
     Sub DemuxVobSubSubtitles()
-        If Not {"vob", "m2v"}.Contains(Filepath.GetExt(p.NativeSourceFile)) Then Exit Sub
+        If Not {"vob", "m2v"}.Contains(Filepath.GetExt(p.LastOriginalSourceFile)) Then Exit Sub
         Dim ifoPath = GetIfoFile()
         If ifoPath = "" Then Exit Sub
         If File.Exists(p.TempDir + Filepath.GetBase(p.SourceFile) + ".idx") Then Exit Sub
@@ -3012,17 +3012,31 @@ Public Class MainForm
     End Sub
 
     Sub avsIndexing()
-        Dim srcScript = p.AvsDoc.GetFilter("Source").Script.ToLower
+        Dim code = p.AvsDoc.GetFilter("Source").Script.ToLower
 
-        If srcScript.Contains("directshowsource") Then Exit Sub
+        If code.Contains("ffvideosource(") Then
+            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
+                p.SourceFile = p.LastOriginalSourceFile
 
-        If srcScript.Contains("ffvideosource") Then
-            If srcScript.Contains("cachefile") Then
+                BlockSourceTextBoxTextChanged = True
+                tbSourceFile.Text = p.SourceFile
+                BlockSourceTextBoxTextChanged = False
+            End If
+
+            If code.Contains("cachefile") Then
                 ffmsindex(p.SourceFile, p.TempDir + Filepath.GetBase(p.SourceFile) + ".ffindex")
             Else
                 ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")
             End If
-        ElseIf srcScript.Contains("lwlibavvideosource") Then
+        ElseIf code.Contains("lwlibavvideosource(") Then
+            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
+                p.SourceFile = p.LastOriginalSourceFile
+
+                BlockSourceTextBoxTextChanged = True
+                tbSourceFile.Text = p.SourceFile
+                BlockSourceTextBoxTextChanged = False
+            End If
+
             If Not File.Exists(p.SourceFile + ".lwi") AndAlso File.Exists(p.AvsDoc.Path) AndAlso
                 Not FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) Then
 
@@ -3034,6 +3048,30 @@ Public Class MainForm
                     proc.AllowedExitCodes = {0, 1}
                     proc.Start()
                 End Using
+            End If
+        ElseIf code.Contains("dgsource(") AndAlso Not p.SourceFile.Ext = "dgi" Then
+            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
+            Dim dgIndexNV = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexNV")
+            Dim outFile = p.TempDir + p.SourceFile.Base + ".dgi"
+            If Not File.Exists(outFile) Then dgIndexNV.Run()
+
+            If File.Exists(outFile) Then
+                p.SourceFile = outFile
+                BlockSourceTextBoxTextChanged = True
+                tbSourceFile.Text = outFile
+                BlockSourceTextBoxTextChanged = False
+            End If
+        ElseIf code.Contains("dgsourceim(") AndAlso Not p.SourceFile.Ext = "dgim" Then
+            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
+            Dim dgIndexIM = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexIM")
+            Dim outFile = p.TempDir + p.SourceFile.Base + ".dgim"
+            If Not File.Exists(outFile) Then dgIndexIM.Run()
+
+            If File.Exists(outFile) Then
+                p.SourceFile = outFile
+                BlockSourceTextBoxTextChanged = True
+                tbSourceFile.Text = outFile
+                BlockSourceTextBoxTextChanged = False
             End If
         End If
     End Sub
@@ -3644,9 +3682,9 @@ Public Class MainForm
         End If
     End Sub
 
-    <Command("Dialog | Compare and extract images", "Compare and extract images for codec comparisons.")>
-    Sub ImageGrabber()
-        Dim f As New CodecComparisonForm
+    <Command("Dialog | Compare and extract images", "Compare and extract images for video comparisons.")>
+    Sub ShowVideoComparison()
+        Dim f As New VideoComparisonForm
         f.Show()
         f.Add()
     End Sub
@@ -4299,7 +4337,7 @@ Public Class MainForm
         ret.Add("Tools|Launch", "DynamicMenuItem", DynamicMenuItemID.LaunchApplications)
 
         ret.Add("Tools|Advanced|AVSMeter...", "ExecuteCmdl", """%app:AVSMeter%"" ""%avs_file%""" + CrLf + "pause", False, False, True)
-        ret.Add("Tools|Advanced|Codec Comparison...", "ImageGrabber")
+        ret.Add("Tools|Advanced|Video Comparison...", "ShowVideoComparison")
         ret.Add("Tools|Advanced|Command Prompt...", "ShowCommandPrompt")
         ret.Add("Tools|Advanced|Event Commands...", "OpenEventCommandsDialog")
         ret.Add("Tools|Advanced|Hardcoded Subtitle...", "AddHardcodedSubtitle")
@@ -4317,10 +4355,10 @@ Public Class MainForm
             ret.Add("Help|Support Forum", "ExecuteCmdl", "http://forum.videohelp.com/threads/369913-StaxRip-support-%28encoder-GUI-for-x265-h265-hevc-mkv-4K%29")
         End If
 
-        ret.Add("Help|Guides", "ExecuteCmdl", "http://sourceforge.net/p/staxmedia/wiki/Guides")
+        ret.Add("Help|Guides", "ExecuteCmdl", "http://github.com/stax76/staxrip/wiki/Guides")
         ret.Add("Help|Bug Report", "MakeBugReport")
         ret.Add("Help|Mail", "ExecuteCmdl", "mailto:frank_skare@yahoo.de?subject=StaxRip%20feedback")
-        ret.Add("Help|Website", "ExecuteCmdl", "http://staxmedia.sourceforge.net")
+        ret.Add("Help|Website", "ExecuteCmdl", "http://github.com/stax76/staxrip")
         ret.Add("Help|Donate", "ExecuteCmdl", Strings.DonationsURL)
         ret.Add("Help|Changelog", "OpenHelpTopic", "changelog")
         ret.Add("Help|Command Line", "OpenCmdlHelp")
@@ -5761,8 +5799,8 @@ Public Class MainForm
                 Dim temp = i
 
                 Dim menuAction = Sub()
-                                     If ap.File <> p.NativeSourceFile Then
-                                         tb.Text = p.NativeSourceFile
+                                     If ap.File <> p.LastOriginalSourceFile Then
+                                         tb.Text = p.LastOriginalSourceFile
                                      End If
 
                                      tb.Text = temp.Name + " (" + Filepath.GetExt(ap.File) + ")"

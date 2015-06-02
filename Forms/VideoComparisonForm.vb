@@ -3,7 +3,7 @@ Imports System.Drawing.Imaging
 
 Imports StaxRip.UI
 
-Public Class CodecComparisonForm
+Public Class VideoComparisonForm
     Shared Property Pos As Integer
 
     Public CropLeft, CropTop, CropRight, CropBottom As Integer
@@ -27,27 +27,27 @@ Public Class CodecComparisonForm
         TabControl.ContextMenuStrip = Menu
 
         Menu.Add("Add files to compare", AddressOf Add, Keys.O, Nothing, "Video files to compare, the file browser has multiselect enabled.")
-        menu.Add("Close selected tab", AddressOf Remove, Keys.Delete, enabledFunc)
+        Menu.Add("Close selected tab", AddressOf Remove, Keys.Delete, enabledFunc)
         Menu.Add("Save PNGs at current position", AddressOf Save, Keys.S, enabledFunc, "Saves a PNG image for every file/tab at the current position in the directory of the source file.")
         Menu.Add("Crop and Zoom", AddressOf CropZoom, Keys.C, enabledFunc)
         Menu.Add("Go To Frame", AddressOf GoToFrame, Keys.F, enabledFunc)
         Menu.Add("Go To Time", AddressOf GoToTime, Keys.T, enabledFunc)
-        menu.Add("Select next tab", AddressOf NextTab, Keys.Space, enabledFunc)
-        menu.Add("Navigate | 1 frame backward", Sub() TrackBar.Value -= 1, Keys.Left, enabledFunc)
-        menu.Add("Navigate | 1 frame forward", Sub() TrackBar.Value += 1, Keys.Right, enabledFunc)
-        menu.Add("Navigate | 100 frame backward", Sub() TrackBar.Value -= 100, Keys.Left Or Keys.Control, enabledFunc)
-        menu.Add("Navigate | 100 frame forward", Sub() TrackBar.Value += 100, Keys.Right Or Keys.Control, enabledFunc)
-        menu.Add("Help", AddressOf Me.Help, Keys.F1, Nothing)
+        Menu.Add("Select next tab", AddressOf NextTab, Keys.Space, enabledFunc)
+        Menu.Add("Navigate | 1 frame backward", Sub() TrackBar.Value -= 1, Keys.Left, enabledFunc)
+        Menu.Add("Navigate | 1 frame forward", Sub() TrackBar.Value += 1, Keys.Right, enabledFunc)
+        Menu.Add("Navigate | 100 frame backward", Sub() TrackBar.Value -= 100, Keys.Left Or Keys.Control, enabledFunc)
+        Menu.Add("Navigate | 100 frame forward", Sub() TrackBar.Value += 100, Keys.Right Or Keys.Control, enabledFunc)
+        Menu.Add("Help", AddressOf Me.Help, Keys.F1, Nothing)
     End Sub
 
     Sub Add()
         Using f As New OpenFileDialog
             f.SetFilter({"mkv", "mp4", "png", "webm", "m4v"})
             f.Multiselect = True
-            f.SetInitDir(s.Storage.GetString("codec comparison folder"))
+            f.SetInitDir(s.Storage.GetString("video comparison folder"))
 
             If f.ShowDialog() = DialogResult.OK Then
-                s.Storage.SetString("codec comparison folder", Filepath.GetDir(f.FileName))
+                s.Storage.SetString("video comparison folder", Filepath.GetDir(f.FileName))
 
                 For Each i In f.FileNames
                     Add(i)
@@ -100,7 +100,7 @@ Public Class CodecComparisonForm
     Sub Help()
         Dim f As New HelpForm()
         f.Doc.WriteStart(Text)
-        f.Doc.WriteP("In the statistic tab of the x265 dialog choose Log Level Frame and enable CSV log file creation, the codec comparison tool can displays containing frame info.")
+        f.Doc.WriteP("In the statistic tab of the x265 dialog choose Log Level Frame and enable CSV log file creation, the video comparison tool can displays containing frame info.")
         f.Doc.WriteTips(Menu.GetTips)
         f.Doc.WriteTable("Shortcut Keys", Menu.GetKeys, False)
         f.Show()
@@ -214,7 +214,7 @@ Public Class CodecComparisonForm
         Inherits TabPage
 
         Property AVI As AVIFile
-        Property Form As CodecComparisonForm
+        Property Form As VideoComparisonForm
         Property SourceFile As String
 
         Private FrameInfo As String()

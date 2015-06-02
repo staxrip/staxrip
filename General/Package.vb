@@ -1,4 +1,5 @@
 Imports Microsoft.Win32
+Imports StaxRip
 
 Public Class Packs
     Public Shared autocrop As New AutoCropPackage
@@ -47,10 +48,12 @@ Public Class Packs
     Public Shared xvid_encraw As New xvid_encrawPackage
     Public Shared flash3kyuu_deband As New flash3kyuu_debandPackage
     Public Shared Decomb As New DecombPackage
+    Public Shared vinverse As New vinversePackage
 
     Public Shared Property Packages As New Dictionary(Of String, Package)
 
     Shared Sub Init()
+        AddPackage(vinverse)
         AddPackage(Decomb)
         AddPackage(flash3kyuu_deband)
         AddPackage(autocrop)
@@ -60,7 +63,6 @@ Public Class Packs
         AddPackage(BDSup2SubPP)
         AddPackage(BeSweet)
         AddPackage(checkmate)
-        'AddPackage(DGDecode)
         AddPackage(DGDecodeIM)
         AddPackage(DGDecodeNV)
         AddPackage(DGIndex)
@@ -124,6 +126,8 @@ Public Class Packs
 End Class
 
 Public Class Package
+    Implements IComparable(Of Package)
+
     Property Name As String
     Property FileNotFoundMessage As String
     Property SetupAction As Action
@@ -312,6 +316,10 @@ Public Class Package
 
     Overrides Function ToString() As String
         Return Name
+    End Function
+
+    Function CompareTo(other As Package) As Integer Implements System.IComparable(Of Package).CompareTo
+        Return Name.CompareTo(other.Name)
     End Function
 End Class
 
@@ -725,6 +733,19 @@ Public Class DSS2modPackage
         WebURL = "http://code.google.com/p/xvid4psp/downloads/detail?name=DSS2%20mod%20%2B%20LAVFilters.7z&can=2&q="
         Description = "Direct Show source filter"
         FilterNames = {"DSS2"}
+    End Sub
+End Class
+
+Public Class vinversePackage
+    Inherits AviSynthPluginPackage
+
+    Sub New()
+        Name = "vinverse"
+        Filename = "vinverse.dll"
+        WebURL = "http://avisynth.nl/index.php/Vinverse"
+        HelpURL = "http://avisynth.nl/index.php/Vinverse"
+        Description = "A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Didée and then written as a plugin by tritical."
+        FilterNames = {"vinverse", "vinverse2"}
     End Sub
 End Class
 

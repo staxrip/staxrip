@@ -1,7 +1,7 @@
 ﻿Imports StaxRip.UI
 
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class CodecComparisonForm
+Partial Class VideoComparisonForm
     Inherits FormBase
 
     'Form overrides dispose to clean up the component list.
@@ -119,7 +119,7 @@ Partial Class CodecComparisonForm
         Me.Location = New System.Drawing.Point(0, 0)
         Me.Name = "CodecComparisonForm"
         Me.ShowIcon = False
-        Me.Text = "Codec Comparison"
+        Me.Text = "Video Comparison"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         CType(Me.TrackBar, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TableLayoutPanel1.ResumeLayout(False)

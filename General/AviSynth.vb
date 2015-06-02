@@ -225,7 +225,7 @@ Public Class AviSynthDocument
 
         doc.Filters.Add(New AviSynthFilter("Source", "Automatic", "", True))
         doc.Filters.Add(New AviSynthFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", False))
-        doc.Filters.Add(New AviSynthFilter("Misc", "TDeint", "TDeint()", False))
+        doc.Filters.Add(New AviSynthFilter("Field", "TDeint", "TDeint()", False))
         doc.Filters.Add(New AviSynthFilter("Misc", "RemoveGrain", "RemoveGrain()", False))
         doc.Filters.Add(New AviSynthFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", False))
 
@@ -403,23 +403,25 @@ Public Class AviSynthCategory
         ret.Add(src)
 
         Dim misc As New AviSynthCategory("Misc")
-
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "SelectEven", "SelectEven()", True))
+        misc.Filters.Add(New AviSynthFilter(misc.Name, "Prefetch(4) ", "Prefetch(4) ", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "checkmate", "checkmate()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "Clense", "Clense()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "f3kdb", "f3kdb()", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "nnedi3", "nnedi3()", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "Prefetch(4) ", "Prefetch(4) ", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "QTGMC | QTGMC Medium", "QTGMC(Preset=""Medium"")", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "QTGMC | QTGMC Slow", "QTGMC(Preset=""Slow"")", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "RemoveGrain", "RemoveGrain()", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "SangNom2", "SangNom2()", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "SelectEven", "SelectEven()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "TDeint", "TDeint()", True))
         misc.Filters.Add(New AviSynthFilter(misc.Name, "UnDot", "UnDot()", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "IVTC", "Telecide(guide=1).Decimate()", True))
-        misc.Filters.Add(New AviSynthFilter(misc.Name, "FieldDeinterlace", "FieldDeinterlace()", True))
-
         ret.Add(misc)
+
+        Dim field As New AviSynthCategory("Field")
+        field.Filters.Add(New AviSynthFilter(field.Name, "IVTC", "Telecide(guide=1).Decimate()", True))
+        field.Filters.Add(New AviSynthFilter(field.Name, "FieldDeinterlace", "FieldDeinterlace()", True))
+        field.Filters.Add(New AviSynthFilter(field.Name, "SangNom2", "SangNom2()", True))
+        field.Filters.Add(New AviSynthFilter(field.Name, "nnedi3", "nnedi3()", True))
+        field.Filters.Add(New AviSynthFilter(field.Name, "vinverse2", "vinverse2()", True))
+        field.Filters.Add(New AviSynthFilter(field.Name, "QTGMC | QTGMC Medium", "QTGMC(Preset=""Medium"")", True))
+        field.Filters.Add(New AviSynthFilter(field.Name, "QTGMC | QTGMC Slow", "QTGMC(Preset=""Slow"")", True))
+        ret.Add(field)
 
         Dim resize As New AviSynthCategory("Resize")
         resize.Filters.Add(New AviSynthFilter(resize.Name, "BilinearResize", "BilinearResize(%target_width%, %target_height%)", True))

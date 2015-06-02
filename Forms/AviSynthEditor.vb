@@ -261,10 +261,9 @@ Class AviSynthEditor
             Menu.Items.Add(New ToolStripSeparator)
 
             Menu.Add("Remove", AddressOf RemoveClick).ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Delete)
-
-            Menu.Items.Add(New ActionMenuItem("Profiles...", AddressOf g.MainForm.OpenAviSynthFilterProfilesDialog, "Dialog to edit profiles."))
-            Menu.Items.Add(New ActionMenuItem("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to edit profiles."))
-            Menu.Items.Add(New ActionMenuItem("Script Preview...", AddressOf CodePreview, "Previews the script with solved macros."))
+            Menu.Add("Profiles...", AddressOf g.MainForm.OpenAviSynthFilterProfilesDialog, "Dialog to edit profiles.")
+            Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to edit profiles.")
+            Menu.Add("Script Preview...", AddressOf CodePreview, "Previews the script with solved macros.")
 
             Dim mi = Menu.Add("Video Preview...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
             mi.Enabled = p.SourceFile <> ""
@@ -289,9 +288,9 @@ Class AviSynthEditor
                                   rtbScript.ScrollToCaret()
                               End Sub
 
-            Menu.Items.Add(New ActionMenuItem("Cut", cutAction, Nothing, rtbScript.SelectionLength > 0 AndAlso Not rtbScript.ReadOnly))
-            Menu.Items.Add(New ActionMenuItem("Copy", copyAction, Nothing, rtbScript.SelectionLength > 0))
-            Menu.Items.Add(New ActionMenuItem("Paste", pasteAction, Nothing, Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly))
+            Menu.Add("Cut", cutAction).Enabled = rtbScript.SelectionLength > 0 AndAlso Not rtbScript.ReadOnly
+            Menu.Add("Copy", copyAction).Enabled = rtbScript.SelectionLength > 0
+            Menu.Add("Paste", pasteAction).Enabled = Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly
 
             Menu.Items.Add(New ToolStripSeparator)
 
@@ -301,7 +300,7 @@ Class AviSynthEditor
                         Dim path = i.GetHelpPath()
 
                         If path <> "" Then
-                            Menu.Items.Add(New ActionMenuItem(i.Name + " Help", Sub() g.ShellExecute(path), path))
+                            Menu.Add("Help | " + i.Name, Sub() g.ShellExecute(path), path)
                         End If
                     End If
                 Next
@@ -316,16 +315,26 @@ Class AviSynthEditor
             Dim filterPath = installDir + "\Docs\English\corefilters\" + helpText + ".htm"
 
             If File.Exists(filterPath) Then
-                Menu.Items.Add(New ActionMenuItem(helpText + " Help", Sub() g.ShellExecute(filterPath), filterPath))
+                Menu.Add("Help | " + helpText, Sub() g.ShellExecute(filterPath), filterPath)
             End If
 
-            Dim helpIndex = installDir + "\Docs\English\index.htm"
+            Dim helpIndex = installDir + "\Docs\English\overview.htm"
 
             If File.Exists(helpIndex) Then
-                Menu.Items.Add(New ActionMenuItem("AviSynth Help", Sub() g.ShellExecute(helpIndex), helpIndex))
-            Else
-                Menu.Items.Add(New ActionMenuItem("AviSynth Help", Sub() g.ShellExecute("http://avisynth.nl"), "http://avisynth.nl"))
+                Menu.Add("Help | AviSynth", Sub() g.ShellExecute(helpIndex), helpIndex)
             End If
+
+            Menu.Add("Help | AviSynth.nl", Sub() g.ShellExecute("http://avisynth.nl"), "http://avisynth.nl")
+
+            For Each i In Packs.Packages.Values.Sort
+                If TypeOf i Is AviSynthPluginPackage Then
+                    Dim helpPath = i.GetHelpPath
+
+                    If helpPath <> "" Then
+                        Menu.Add("Help | Plugins | " + i.Name, Sub() g.ShellExecute(helpPath), i.Description)
+                    End If
+                End If
+            Next
         End Sub
 
         Sub MoveUp()

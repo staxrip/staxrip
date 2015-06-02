@@ -62,7 +62,7 @@ Public Class Paths
     <DebuggerNonUserCode()>
     Shared Property AviSynthPluginsDir() As String
         Get
-            Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir2_5"))
+            Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+"))
         End Get
         Set(Value As String)
             If Misc.IsAdmin Then
@@ -351,8 +351,13 @@ Public Class GlobalClass
                 End If
             End If
 
-            If {"d2v", "dga"}.Contains(Filepath.GetExt(i)) Then
+            If {"d2v", "dga"}.Contains(i.Ext) Then
                 MsgError("There are no properly working x64 source filters available for D2V and DGA.")
+                Return True
+            End If
+
+            If i.Ext = "dgi" AndAlso File.ReadAllText(i).Contains("DGIndexIM") Then
+                MsgError("Please rename the file extension from dgi to dgim.")
                 Return True
             End If
         Next
@@ -2521,13 +2526,13 @@ Public Class Macro
 
         If value.Contains("%media_info_video:") Then
             For Each i As Match In Regex.Matches(value, "%media_info_video:(.+?)%")
-                value = value.Replace(i.Value, MediaInfo.GetVideo(p.NativeSourceFile, i.Groups(1).Value))
+                value = value.Replace(i.Value, MediaInfo.GetVideo(p.LastOriginalSourceFile, i.Groups(1).Value))
             Next
         End If
 
         If value.Contains("%media_info_audio:") Then
             For Each i As Match In Regex.Matches(value, "%media_info_audio:(.+?)%")
-                value = value.Replace(i.Value, MediaInfo.GetAudio(p.NativeSourceFile, i.Groups(1).Value))
+                value = value.Replace(i.Value, MediaInfo.GetAudio(p.LastOriginalSourceFile, i.Groups(1).Value))
             Next
         End If
 
@@ -2811,7 +2816,14 @@ Public Class GlobalCommands
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.5 " + GetReleaseType() + " (2015-05-??)")
 
-                f.Doc.WriteList("Replaced LinkLabels with Buttons in eac3to dialog for better usability")
+                f.Doc.WriteList("New: Added possibility to switch dynamically between any source filter back and forth including DGSource and DGSourceIM. Indexing is triggered automatically in case no index file is present",
+                                "New: Added vinverse plugin to remove residual combing from NTSC",
+                                "Fix: Disabled audio demuxing for MKV and MP4 by DGIndexNV and DGIndexIM because it's already demuxed by MP4Box and mkvextract",
+                                "Fix: Tools/Directories/Plugins wasn't pointing to the AviSynth+ plugin directory",
+                                "Update: QSVEncC 2.0 beta 7",
+                                "Tweak: Moved field processing filters to dedicated category like before in StaxRip x86",
+                                "Tweak: Replaced LinkLabels with Buttons in eac3to dialog",
+                                "Tweak: The help for all included AviSynth plugins can now be accessed per menu in the AviSynth editor")
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.4 " + GetReleaseType() + " (2015-05-31)")
 
@@ -3691,7 +3703,7 @@ Class FileTypes
     Shared Property VideoOnly As String() = {"m4v", "m2v", "y4m", "mpv", "avc", "hevc", "264", "h264", "265", "h265"}
     Shared Property VideoRaw As String() = {"h264", "h265", "264", "265", "avc", "hevc"}
     Shared Property qaacInput As String() = {"wav", "flac"}
-    Shared Property VideoText As String() = {"d2v", "dgi", "dga", "avs"}
+    Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs"}
     Shared Property VirtualDubModInput As String() = {"ac3", "mp3", "mp2", "mpa", "wav"}
     Shared Property AudioVideo As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
 

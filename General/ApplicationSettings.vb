@@ -124,7 +124,7 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(Demuxers, "Demuxers", 97) Then Demuxers = Demuxer.GetDefaults()
+        If Check(Demuxers, "Demuxers", 98) Then Demuxers = Demuxer.GetDefaults()
 
         If Check(FilterPreferences, "Filter Preference", 22) Then
             FilterPreferences = New StringPairList
@@ -222,7 +222,7 @@ Public Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 122) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 125) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 

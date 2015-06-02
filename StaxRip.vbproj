@@ -170,10 +170,10 @@
     <Compile Include="Forms\AviSynthEditor.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CodecComparisonForm.Designer.vb">
-      <DependentUpon>CodecComparisonForm.vb</DependentUpon>
+    <Compile Include="Forms\VideoComparisonForm.Designer.vb">
+      <DependentUpon>VideoComparisonForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CodecComparisonForm.vb">
+    <Compile Include="Forms\VideoComparisonForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\SimpleSettingsForm.vb">
@@ -424,8 +424,8 @@
     <EmbeddedResource Include="Forms\AviSynthEditor.resx">
       <DependentUpon>AviSynthEditor.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CodecComparisonForm.resx">
-      <DependentUpon>CodecComparisonForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\VideoComparisonForm.resx">
+      <DependentUpon>VideoComparisonForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SimpleSettingsForm.resx">
       <DependentUpon>SimpleSettingsForm.vb</DependentUpon>

@@ -73,7 +73,7 @@ Public MustInherit Class Demuxer
 
         Dim dgindex As New CommandLineDemuxer
         dgindex.Name = "DGIndex"
-        dgindex.InputExtensions = {"mpg", "vob", "ts"}
+        dgindex.InputExtensions = {"mpg", "vob", "ts", "m2ts", "mts", "m2t"}
         dgindex.OutputExtensions = {"m2v"}
         dgindex.InputFormats = {"mpeg2"}
         dgindex.Command = "%app:DGIndex%"
@@ -81,27 +81,49 @@ Public MustInherit Class Demuxer
         dgindex.SourceFilter = "MPEG2Source"
         ret.Add(dgindex)
 
-        Dim dgnv As New CommandLineDemuxer
-        dgnv.Name = "DGIndexNV"
-        dgnv.InputExtensions = FileTypes.DGDecNVInput
-        dgnv.OutputExtensions = {"dgi"}
-        dgnv.InputFormats = {"avc", "vc1", "mpeg2"}
-        dgnv.Command = "%app:DGIndexNV%"
-        dgnv.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgi"" -a -h"
-        dgnv.SourceFilter = "DGSource"
-        dgnv.Active = False
-        ret.Add(dgnv)
+        Dim dgnvNoDemux As New CommandLineDemuxer
+        dgnvNoDemux.Name = "DGIndexNV"
+        dgnvNoDemux.InputExtensions = {"264", "h264", "avc", "mkv", "mp4"}
+        dgnvNoDemux.OutputExtensions = {"dgi"}
+        dgnvNoDemux.InputFormats = {"avc", "vc1", "mpeg2"}
+        dgnvNoDemux.Command = "%app:DGIndexNV%"
+        dgnvNoDemux.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgi"" -h"
+        dgnvNoDemux.SourceFilter = "DGSource"
+        dgnvNoDemux.Active = False
+        ret.Add(dgnvNoDemux)
 
-        Dim dgim As New CommandLineDemuxer
-        dgim.Name = "DGIndexIM"
-        dgim.InputExtensions = FileTypes.DGDecNVInput
-        dgim.OutputExtensions = {"dgim"}
-        dgim.InputFormats = {"avc", "vc1", "mpeg2"}
-        dgim.Command = "%app:DGIndexIM%"
-        dgim.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgim"" -a -h"
-        dgim.SourceFilter = "DGSourceIM"
-        dgim.Active = False
-        ret.Add(dgim)
+        Dim dgnvDemux As New CommandLineDemuxer
+        dgnvDemux.Name = "DGIndexNV"
+        dgnvDemux.InputExtensions = {"mpg", "vob", "ts", "m2ts", "mts", "m2t"}
+        dgnvDemux.OutputExtensions = {"dgi"}
+        dgnvDemux.InputFormats = {"avc", "vc1", "mpeg2"}
+        dgnvDemux.Command = "%app:DGIndexNV%"
+        dgnvDemux.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgi"" -a -h"
+        dgnvDemux.SourceFilter = "DGSource"
+        dgnvDemux.Active = False
+        ret.Add(dgnvDemux)
+
+        Dim dgimNoDemux As New CommandLineDemuxer
+        dgimNoDemux.Name = "DGIndexIM"
+        dgimNoDemux.InputExtensions = {"264", "h264", "avc", "mkv", "mp4"}
+        dgimNoDemux.OutputExtensions = {"dgim"}
+        dgimNoDemux.InputFormats = {"avc", "vc1", "mpeg2"}
+        dgimNoDemux.Command = "%app:DGIndexIM%"
+        dgimNoDemux.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgim"" -h"
+        dgimNoDemux.SourceFilter = "DGSourceIM"
+        dgimNoDemux.Active = False
+        ret.Add(dgimNoDemux)
+
+        Dim dgimDemux As New CommandLineDemuxer
+        dgimDemux.Name = "DGIndexIM"
+        dgimDemux.InputExtensions = {"mpg", "vob", "ts", "m2ts", "mts", "m2t"}
+        dgimDemux.OutputExtensions = {"dgim"}
+        dgimDemux.InputFormats = {"avc", "vc1", "mpeg2"}
+        dgimDemux.Command = "%app:DGIndexIM%"
+        dgimDemux.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgim"" -a -h"
+        dgimDemux.SourceFilter = "DGSourceIM"
+        dgimDemux.Active = False
+        ret.Add(dgimDemux)
 
         Return ret
     End Function

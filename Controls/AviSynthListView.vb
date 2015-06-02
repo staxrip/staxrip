@@ -146,12 +146,6 @@ Public Class AviSynthListView
 
             g.PopulateProfileMenu(setup.DropDownItems, s.AviSynthProfiles, AddressOf g.MainForm.OpenAviSynthProfilesDialog, AddressOf g.MainForm.LoadAviSynthProfile)
         End If
-
-        Menu.Items.Add(New ToolStripSeparator)
-
-        ActionMenuItem.Add(Menu.Items, "Help | AviSynth", Sub() ShowAviSynthHelp())
-        ActionMenuItem.Add(Menu.Items, "Help | Scintilla", Sub() g.ShellExecute("http://www.aquilinestudios.org/avsfilters/index.html"))
-        ActionMenuItem.Add(Menu.Items, "Help | A && E", Sub() g.ShellExecute("http://www.animemusicvideos.org/guides/avtech3/amvapp-avisynth.html"))
     End Sub
 
     Sub ShowEditor()
@@ -159,11 +153,6 @@ Public Class AviSynthListView
             Load()
             RaiseScriptChanged()
         End If
-    End Sub
-
-    Sub ShowAviSynthHelp()
-        Dim installDir = Registry.LocalMachine.GetString("SOFTWARE\AviSynth", Nothing)
-        g.ShellExecute(installDir + "\Docs\English\index.htm")
     End Sub
 
     Sub ReplaceClick(f As AviSynthFilter)

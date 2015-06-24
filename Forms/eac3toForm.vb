@@ -541,6 +541,7 @@ Public Class eac3toForm
         lvSubtitles.View = View.SmallIcon
         lvSubtitles.CheckBoxes = True
         lvSubtitles.HeaderStyle = ColumnHeaderStyle.None
+        lvSubtitles.AutoCheckMode = AutoCheckMode.SingleClick
 
         cmdlOptions.Presets = s.CmdlPresetsEac3to
         cmdlOptions.RestoreFunc = Function() ApplicationSettings.GetDefaultEac3toMenu.FormatColumn("=")
@@ -704,10 +705,10 @@ Public Class eac3toForm
                     i.ListViewItem = lvAudio.Items.Add(i.ToString)
                     i.ListViewItem.Tag = i
 
-                    If i.Language.CultureInfo.TwoLetterISOLanguageName = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
+                    If i.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
                         bnAudioNative.Visible = True
                         i.ListViewItem.Checked = True
-                    ElseIf i.Language.CultureInfo.TwoLetterISOLanguageName = "en" Then
+                    ElseIf i.Language.TwoLetterCode = "en" Then
                         bnAudioEnglish.Visible = True
                         i.ListViewItem.Checked = True
                     ElseIf i.Language.TwoLetterCode = "iv" Then
@@ -722,13 +723,11 @@ Public Class eac3toForm
                         bnSubtitleEnglish.Visible = True
                     End If
 
-                    Dim lang = i.Language.ToString
-
-                    Dim item = lvSubtitles.Items.Add(lang)
+                    Dim item = lvSubtitles.Items.Add(i.Language.ToString)
                     item.Tag = i
 
-                    For Each i2 In p.AutoSubtitles.SplitNoEmptyAndWhiteSpace(",", ";")
-                        If i2.ToLower = "all" OrElse i2.ToLower = i.Language.TwoLetterCode Then
+                    For Each i2 In p.AutoSubtitles.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                        If i2.ToLower = "all" OrElse i2.ToLower = i.Language.TwoLetterCode OrElse i.Language.TwoLetterCode = "iv" Then
                             item.Checked = True
                         End If
                     Next
@@ -856,19 +855,6 @@ Public Class eac3toForm
 
     Private Sub tbTempDir_TextChanged(sender As Object, e As EventArgs) Handles tbTempDir.TextChanged
         OutputFolder = DirPath.AppendSeparator(tbTempDir.Text)
-    End Sub
-
-    Private Sub lvSubtitles_Click(sender As Object, e As EventArgs) Handles lvSubtitles.Click
-        Dim pos = lvSubtitles.ClientMousePos
-        Dim item = lvSubtitles.GetItemAt(pos.X, pos.Y)
-
-        If Not item Is Nothing Then
-            Dim b = item.GetBounds(ItemBoundsPortion.Entire)
-
-            If pos.X > b.Left + b.Height Then
-                item.Checked = Not item.Checked
-            End If
-        End If
     End Sub
 
     Private Sub lvSubtitles_ItemCheck(sender As Object, e As System.Windows.Forms.ItemCheckEventArgs) Handles lvSubtitles.ItemCheck

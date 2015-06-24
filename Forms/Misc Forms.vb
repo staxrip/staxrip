@@ -2,7 +2,7 @@ Imports StaxRip.UI
 
 Imports System.ComponentModel
 
-Public Class AviSynthScriptEditor
+Public Class ScriptEditor
     Inherits MacroEditor
 
     Sub New(script As String)

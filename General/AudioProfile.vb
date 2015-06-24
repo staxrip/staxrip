@@ -92,7 +92,7 @@ Public MustInherit Class AudioProfile
             StreamValue = value
 
             If Not Stream Is Nothing Then
-                If Not p.AvsDoc.GetFilter("Source").Script.Contains("DirectShowSource") Then
+                If Not p.VideoScript.GetFilter("Source").Script.Contains("DirectShowSource") Then
                     Delay = Stream.Delay
                 End If
 
@@ -571,12 +571,6 @@ Public Class GUIAudioProfile
             Select Case Params.Codec
                 Case AudioCodec.Flac
                     Return CInt(((If(TargetSamplingRate = 0, 48000, TargetSamplingRate) * bitDepth * Channels) / 1000) * 0.55)
-                Case AudioCodec.DTS
-                    If Channels = 6 Then
-                        Return 1536
-                    Else
-                        Return 768
-                    End If
                 Case AudioCodec.WAV
                     Return CInt((If(TargetSamplingRate = 0, 48000, TargetSamplingRate) * bitDepth * Channels) / 1000)
             End Select
@@ -689,15 +683,11 @@ Public Class GUIAudioProfile
                 Case AudioCodec.AC3
                     r += " -" & Bitrate
 
-                    If Not IsOneOf(CInt(Bitrate), 192, 224, 384, 448, 640) Then
+                    If Not {192, 224, 384, 448, 640}.Contains(CInt(Bitrate)) Then
                         Return "Invalid bitrate, choose 192, 224, 384, 448 or 640"
                     End If
                 Case AudioCodec.DTS
                     r += " -" & Bitrate
-
-                    If Not IsOneOf(CInt(Bitrate), 768, 1536) Then
-                        Return "Invalid bitrate, choose either 768 or 1536"
-                    End If
             End Select
 
             If Params.Normalize Then r += " -normalize"
@@ -813,16 +803,12 @@ Public Class GUIAudioProfile
                     ret += " -b:a " & CInt(Bitrate) & "k"
                 End If
             Case AudioCodec.AC3
-                If Not IsOneOf(CInt(Bitrate), 192, 224, 384, 448, 640) Then
+                If Not {192, 224, 384, 448, 640}.Contains(CInt(Bitrate)) Then
                     Return "Invalid bitrate, choose 192, 224, 384, 448 or 640"
                 End If
 
                 ret += " -b:a " & CInt(Bitrate) & "k"
             Case AudioCodec.DTS
-                If Not IsOneOf(CInt(Bitrate), 768, 1536) Then
-                    Return "Invalid bitrate, choose either 768 or 1536"
-                End If
-
                 ret += " -strict -2 -b:a " & CInt(Bitrate) & "k"
             Case AudioCodec.Flac, AudioCodec.WAV
             Case AudioCodec.Vorbis

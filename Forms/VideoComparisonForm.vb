@@ -232,35 +232,30 @@ Public Class VideoComparisonForm
             Text = Filepath.GetBase(sourePath)
             SourceFile = sourePath
 
-            Dim avs As New AviSynthDocument
+            Dim avs As New VideoScript
+            avs.Engine = ScriptingEngine.AviSynth
             avs.Path = CommonDirs.Temp + Guid.NewGuid.ToString + ".avs"
             AddHandler Disposed, Sub() FileHelp.Delete(avs.Path)
 
-            avs.Filters.Add(New AviSynthFilter("SetMemoryMax(512)"))
+            avs.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
 
             If Filepath.GetExtFull(sourePath) = ".png" Then
-                avs.Filters.Add(New AviSynthFilter("ImageSource(""" + sourePath + """, end = 0)"))
+                avs.Filters.Add(New VideoFilter("ImageSource(""" + sourePath + """, end = 0)"))
             Else
                 Dim cachefile = CommonDirs.Temp + Guid.NewGuid.ToString + ".ffindex"
                 AddHandler Disposed, Sub() FileHelp.Delete(cachefile)
-                avs.Filters.Add(New AviSynthFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachefile + """)"))
+                avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachefile + """)"))
             End If
 
             If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
-                avs.Filters.Add(New AviSynthFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
-            End If
-
-            If p.SourceHeight > 576 Then
-                avs.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec709"")"))
-            Else
-                avs.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec601"")"))
+                avs.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
             End If
 
             If Form.Zoom <> 100 Then
-                avs.Filters.Add(New AviSynthFilter("LanczosResize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
+                avs.Filters.Add(New VideoFilter("LanczosResize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
             End If
 
-            avs.Synchronize()
+            avs.Synchronize(True)
             AVI = New AVIFile(avs.Path)
 
             If Form.TrackBar.Maximum < AVI.FrameCount - 1 Then

@@ -110,124 +110,116 @@ Class MediaInfo
         End Get
     End Property
 
-    Private AudioStreamsValue As List(Of AudioStream)
-
     ReadOnly Property AudioStreams() As List(Of AudioStream)
         Get
-            If AudioStreamsValue Is Nothing Then
-                AudioStreamsValue = New List(Of AudioStream)
-                Dim count = MediaInfo_Count_Get(Handle, MediaInfoStreamKind.Audio, -1)
+            Dim ret As New List(Of AudioStream)
+            Dim count = MediaInfo_Count_Get(Handle, MediaInfoStreamKind.Audio, -1)
 
-                If count > 0 Then
-                    For i = 0 To count - 1
-                        Dim at As New AudioStream
+            If count > 0 Then
+                For i = 0 To count - 1
+                    Dim at As New AudioStream
 
-                        Dim streamOrder = GetAudio(i, "StreamOrder")
-                        If Not streamOrder.IsInt Then streamOrder = (i + 1).ToString
-                        at.StreamOrder = streamOrder.ToInt
+                    Dim streamOrder = GetAudio(i, "StreamOrder")
+                    If Not streamOrder.IsInt Then streamOrder = (i + 1).ToString
+                    at.StreamOrder = streamOrder.ToInt
 
-                        Dim id = GetAudio(i, "ID")
-                        If Not id.IsInt Then id = (i + 2).ToString
-                        at.ID = id.ToInt
+                    Dim id = GetAudio(i, "ID")
+                    If Not id.IsInt Then id = (i + 2).ToString
+                    at.ID = id.ToInt
 
-                        at.SamplingRate = GetAudio(i, "SamplingRate").ToInt
-                        at.BitDepth = GetAudio(i, "BitDepth").ToInt
-                        at.CodecString = GetAudio(i, "Codec/String")
-                        at.Codec = GetAudio(i, "Codec")
-                        at.Format = GetAudio(i, "Format")
-                        at.FormatProfile = GetAudio(i, "Format_Profile")
-                        at.Title = GetAudio(i, "Title").Trim
+                    at.SamplingRate = GetAudio(i, "SamplingRate").ToInt
+                    at.BitDepth = GetAudio(i, "BitDepth").ToInt
+                    at.CodecString = GetAudio(i, "Codec/String")
+                    at.Codec = GetAudio(i, "Codec")
+                    at.Format = GetAudio(i, "Format")
+                    at.FormatProfile = GetAudio(i, "Format_Profile")
+                    at.Title = GetAudio(i, "Title").Trim
 
-                        If at.Title.Contains("IsoMedia") OrElse at.Title.Contains("GPAC") OrElse at.Title.Contains("PID ") OrElse
+                    If at.Title.Contains("IsoMedia") OrElse at.Title.Contains("GPAC") OrElse at.Title.Contains("PID ") OrElse
                             {"Surround 7.1", "Surround 5.1", "Stereo", "3/2+1", "2/0"}.Contains(at.Title) Then
 
-                            at.Title = ""
-                        End If
+                        at.Title = ""
+                    End If
 
-                        If Not Filepath.IsValidFileSystemName(at.Title) Then
-                            at.Title = Filepath.RemoveIllegalCharsFromName(at.Title)
-                        End If
+                    If Not Filepath.IsValidFileSystemName(at.Title) Then
+                        at.Title = Filepath.RemoveIllegalCharsFromName(at.Title)
+                    End If
 
-                        Dim lm = GetAudio(i, "Language_More")
+                    Dim lm = GetAudio(i, "Language_More")
 
-                        If lm <> "" Then
-                            If at.Title = "" Then
-                                at.Title = lm
-                            Else
-                                at.Title += " - " + lm
-                            End If
-                        End If
-
-                        Dim bitrate = GetAudio(i, "BitRate")
-
-                        If bitrate.IsInt Then
-                            at.Bitrate = CInt(bitrate.ToInt / 1000)
+                    If lm <> "" Then
+                        If at.Title = "" Then
+                            at.Title = lm
                         Else
-                            Dim match = Regex.Match(bitrate, "(.+)/(.+)")
+                            at.Title += " - " + lm
+                        End If
+                    End If
 
-                            If match.Success Then
-                                If match.Groups(1).Value.IsInt Then
-                                    at.Bitrate = CInt(match.Groups(1).Value.ToInt / 1000)
-                                End If
+                    Dim bitrate = GetAudio(i, "BitRate")
 
-                                If match.Groups(2).Value.IsInt Then
-                                    at.BitrateCore = CInt(match.Groups(2).Value.ToInt / 1000)
-                                End If
+                    If bitrate.IsInt Then
+                        at.Bitrate = CInt(bitrate.ToInt / 1000)
+                    Else
+                        Dim match = Regex.Match(bitrate, "(.+)/(.+)")
+
+                        If match.Success Then
+                            If match.Groups(1).Value.IsInt Then
+                                at.Bitrate = CInt(match.Groups(1).Value.ToInt / 1000)
+                            End If
+
+                            If match.Groups(2).Value.IsInt Then
+                                at.BitrateCore = CInt(match.Groups(2).Value.ToInt / 1000)
                             End If
                         End If
+                    End If
 
-                        at.Delay = GetAudio(i, "Video_Delay").ToInt
-                        If at.Delay = 0 Then at.Delay = GetAudio(i, "Source_Delay").ToInt
+                    at.Delay = GetAudio(i, "Video_Delay").ToInt
+                    If at.Delay = 0 Then at.Delay = GetAudio(i, "Source_Delay").ToInt
 
-                        Dim channels = GetAudio(i, "Channel(s)")
-                        at.Channels = channels.ToInt
-                        If at.Channels = 0 Then at.Channels = GetAudio(i, "Channel(s)_Original").ToInt
+                    Dim channels = GetAudio(i, "Channel(s)")
+                    at.Channels = channels.ToInt
+                    If at.Channels = 0 Then at.Channels = GetAudio(i, "Channel(s)_Original").ToInt
 
-                        If at.Channels = 0 Then
-                            Dim match = Regex.Match(channels, "(\d+) */ *(\d+)")
+                    If at.Channels = 0 Then
+                        Dim match = Regex.Match(channels, "(\d+) */ *(\d+)")
 
-                            If match.Success Then
-                                at.Channels = match.Groups(1).Value.ToInt
-                                at.ChannelsCore = match.Groups(2).Value.ToInt
-                            Else
-                                at.Channels = 2
-                            End If
+                        If match.Success Then
+                            at.Channels = match.Groups(1).Value.ToInt
+                            at.ChannelsCore = match.Groups(2).Value.ToInt
+                        Else
+                            at.Channels = 2
                         End If
+                    End If
 
-                        at.Language = New Language(GetAudio(i, "Language/String2"))
-                        AudioStreamsValue.Add(at)
-                    Next
-                End If
+                    at.Language = New Language(GetAudio(i, "Language/String2"))
+                    ret.Add(at)
+                Next
             End If
 
-            Return AudioStreamsValue
+            Return ret
         End Get
     End Property
 
-    Private SubtitlesValue As List(Of Subtitle)
-
     ReadOnly Property Subtitles() As List(Of Subtitle)
         Get
-            If SubtitlesValue Is Nothing Then
-                SubtitlesValue = New List(Of Subtitle)
-                Dim count = MediaInfo_Count_Get(Handle, MediaInfoStreamKind.Text, -1)
+            Dim ret As New List(Of Subtitle)
+            Dim count = MediaInfo_Count_Get(Handle, MediaInfoStreamKind.Text, -1)
 
-                If count > 0 Then
-                    For i = 0 To count - 1
-                        Dim s As New Subtitle(New Language(GetInfo(MediaInfoStreamKind.Text, i, "Language")))
+            If count > 0 Then
+                For i = 0 To count - 1
+                    Dim s As New Subtitle(New Language(GetInfo(MediaInfoStreamKind.Text, i, "Language")))
 
-                        s.StreamOrder = GetInfo(MediaInfoStreamKind.Text, i, "StreamOrder").ToInt
-                        s.ID = GetInfo(MediaInfoStreamKind.Text, i, "ID").ToInt
-                        s.Title = GetInfo(MediaInfoStreamKind.Text, i, "Title").Trim
-                        s.CodecString = GetInfo(MediaInfoStreamKind.Text, i, "Codec/String")
-                        s.Format = GetInfo(MediaInfoStreamKind.Text, i, "Format")
+                    s.StreamOrder = GetInfo(MediaInfoStreamKind.Text, i, "StreamOrder").ToInt
+                    s.ID = GetInfo(MediaInfoStreamKind.Text, i, "ID").ToInt
+                    s.Title = GetInfo(MediaInfoStreamKind.Text, i, "Title").Trim
+                    s.CodecString = GetInfo(MediaInfoStreamKind.Text, i, "Codec/String")
+                    s.Format = GetInfo(MediaInfoStreamKind.Text, i, "Format")
 
-                        SubtitlesValue.Add(s)
-                    Next
-                End If
+                    ret.Add(s)
+                Next
             End If
 
-            Return SubtitlesValue
+            Return ret
         End Get
     End Property
 

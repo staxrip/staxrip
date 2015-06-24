@@ -68,6 +68,12 @@ Public Class CommonDirs
         End Get
     End Property
 
+    Shared ReadOnly Property Windows() As String
+        Get
+            Return DirPath.AppendSeparator(GetFolderPath(Environment.SpecialFolder.Windows))
+        End Get
+    End Property
+
     Shared ReadOnly Property UserAppDataLocal() As String
         Get
             Return DirPath.AppendSeparator(GetFolderPath(Environment.SpecialFolder.LocalApplicationData))
@@ -1317,9 +1323,7 @@ Public Module MainModule
     End Function
 
     Function OK(ParamArray values As String()) As Boolean
-        If values Is Nothing OrElse values.Length = 0 Then
-            Return False
-        End If
+        If values Is Nothing OrElse values.Length = 0 Then Return False
 
         For Each i In values
             If i = "" Then Return False

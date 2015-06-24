@@ -598,8 +598,16 @@ Public Class AudioForm
                 End If
 
                 TempProfile.Params.RateMode = AudioRateMode.CBR
-            Case AudioCodec.DTS, AudioCodec.Flac, AudioCodec.WAV
+            Case AudioCodec.Flac, AudioCodec.WAV
                 numBitrate.Value = TempProfile.GetBitrate
+                TempProfile.Params.RateMode = AudioRateMode.CBR
+            Case AudioCodec.DTS
+                If TempProfile.Channels = 6 Then
+                    numBitrate.Value = 1536
+                Else
+                    numBitrate.Value = 768
+                End If
+
                 TempProfile.Params.RateMode = AudioRateMode.CBR
             Case AudioCodec.MP3
                 SetQuality(4)

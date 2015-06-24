@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Public Class x264Control
+Class x264Control
     Inherits UserControl
 
 #Region " Designer "

@@ -1,11 +1,13 @@
 ﻿Imports StaxRip.UI
 Imports System.ComponentModel
 Imports Microsoft.Win32
+Imports System.Text.RegularExpressions
 
-Class AviSynthEditor
+Class ScriptingEditor
     Property ActiveTable As FilterTable
+    Property Engine As ScriptingEngine
 
-    Sub New(doc As AviSynthDocument)
+    Sub New(doc As VideoScript)
         InitializeComponent()
 
         KeyPreview = True
@@ -13,6 +15,8 @@ Class AviSynthEditor
         MainFlowLayoutPanel.Margin = New Padding(0)
         MainFlowLayoutPanel.Padding = New Padding(0, 3, 0, 0)
         MainFlowLayoutPanel.SuspendLayout()
+
+        Engine = doc.Engine
 
         For Each i In doc.Filters
             MainFlowLayoutPanel.Controls.Add(GetFilterTable(i))
@@ -40,7 +44,7 @@ Class AviSynthEditor
         MyBase.OnKeyDown(e)
     End Sub
 
-    Shared Function GetFilterTable(filter As AviSynthFilter) As FilterTable
+    Shared Function GetFilterTable(filter As VideoFilter) As FilterTable
         Dim ret As New FilterTable
 
         ret.Margin = New Padding(3, 0, 3, 0)
@@ -54,11 +58,11 @@ Class AviSynthEditor
         Return ret
     End Function
 
-    Function GetFilters() As List(Of AviSynthFilter)
-        Dim ret As New List(Of AviSynthFilter)
+    Function GetFilters() As List(Of VideoFilter)
+        Dim ret As New List(Of VideoFilter)
 
         For Each i As FilterTable In MainFlowLayoutPanel.Controls
-            Dim f As New AviSynthFilter()
+            Dim f As New VideoFilter()
             f.Active = i.cbActive.Checked
             f.Category = i.cbActive.Text
             f.Path = i.tbName.Text
@@ -69,19 +73,22 @@ Class AviSynthEditor
         Return ret
     End Function
 
+    Sub Play()
+        If p.SourceFile = "" Then Exit Sub
+        Dim doc As New VideoScript
+        doc.Engine = Engine
+        doc.Path = p.TempDir + p.Name + "_avsEditor." + doc.FileType
+        doc.Filters = GetFilters()
+        g.PlayScript(doc)
+    End Sub
+
     Sub VideoPreview()
         If p.SourceFile = "" Then Exit Sub
-        Dim doc As New AviSynthDocument
-        doc.Path = p.TempDir + p.Name + "_avsEditor.avs"
+        Dim doc As New VideoScript
+        doc.Engine = Engine
+        doc.Path = p.TempDir + p.Name + "_avsEditor." + doc.FileType
         doc.Filters = GetFilters()
-
-        If p.SourceHeight > 576 Then
-            doc.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec709"")"))
-        Else
-            doc.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec601"")"))
-        End If
-
-        doc.Synchronize()
+        doc.Synchronize(True)
 
         Dim f As New PreviewForm(doc)
         f.Owner = g.MainForm
@@ -111,7 +118,7 @@ Class AviSynthEditor
         Property cbActive As New CheckBox
         Property Menu As New ContextMenuStripEx
         Property LastTextSize As Size
-        Property Editor As AviSynthEditor
+        Property Editor As ScriptingEditor
 
         Sub New()
             AutoSize = True
@@ -176,7 +183,7 @@ Class AviSynthEditor
 
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
             Menu.Form = FindForm()
-            Editor = DirectCast(Menu.Form, AviSynthEditor)
+            Editor = DirectCast(Menu.Form, ScriptingEditor)
             MyBase.OnHandleCreated(e)
         End Sub
 
@@ -198,10 +205,60 @@ Class AviSynthEditor
             End Get
         End Property
 
+        Sub SetParameters(parameters As FilterParameters)
+            Dim code = rtbScript.Text.FixBreak
+            Dim match = Regex.Match(code, parameters.FunctionName + "\((.+)\)")
+            Dim args = FilterParameters.SplitCSV(match.Groups(1).Value)
+            Dim newParameters As New List(Of String)
+
+            For Each argument In args
+                Dim skip = False
+
+                For Each parameter In parameters.Parameters
+                    If argument Like "*" + parameter.Name + "*=*" Then
+                        skip = True
+                    End If
+                Next
+
+                If Not skip Then
+                    newParameters.Add(argument)
+                End If
+            Next
+
+            For Each parameter In parameters.Parameters
+                newParameters.Add(parameter.Name + " = " + parameter.Value)
+            Next
+
+            rtbScript.Text = Regex.Replace(code, parameters.FunctionName + "\((.+)\)",
+                                           parameters.FunctionName + "(" + newParameters.Join(", ") + ")")
+        End Sub
+
         Sub MenuOpening(sender As Object, e As CancelEventArgs)
+            Dim filterProfiles As List(Of FilterCategory)
+
+            If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+                filterProfiles = s.AviSynthProfiles
+            Else
+                filterProfiles = s.VapourSynthProfiles
+            End If
+
             Menu.Items.Clear()
 
-            For Each i In s.AviSynthCategories
+            Dim code = rtbScript.Text.FixBreak
+
+            For Each i In FilterParameters.Definitions
+                If code.Contains(i.FunctionName + "(") Then
+                    Dim match = Regex.Match(code, i.FunctionName + "\((.+)\)")
+
+                    If match.Success Then
+                        ActionMenuItem.Add(Menu.Items, i.Text, AddressOf SetParameters, i)
+                    End If
+                End If
+            Next
+
+            If Menu.Items.Count > 0 Then Menu.Items.Add(New ToolStripSeparator)
+
+            For Each i In filterProfiles
                 If i.Name = cbActive.Text Then
                     For Each i2 In i.Filters
                         Dim tip = i2.Script
@@ -211,7 +268,7 @@ Class AviSynthEditor
                 End If
             Next
 
-            ActionMenuItem.Add(Menu.Items, "Blank", AddressOf ReplaceClick, New AviSynthFilter("Misc", "", "", True))
+            ActionMenuItem.Add(Menu.Items, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", "", True))
 
             Menu.Items.Add(New ToolStripSeparator)
 
@@ -221,7 +278,7 @@ Class AviSynthEditor
             Menu.Items.Add(replace)
             Menu.Items.Add(insert)
 
-            For Each i In s.AviSynthCategories
+            For Each i In filterProfiles
                 For Each i2 In i.Filters
                     Dim tip = i2.Script
 
@@ -237,13 +294,13 @@ Class AviSynthEditor
                 Next
             Next
 
-            ActionMenuItem.Add(replace.DropDownItems, "Blank", AddressOf ReplaceClick, New AviSynthFilter("Misc", "", "", True))
-            ActionMenuItem.Add(insert.DropDownItems, "Blank", AddressOf InsertClick, New AviSynthFilter("Misc", "", "", True))
+            ActionMenuItem.Add(replace.DropDownItems, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", "", True))
+            ActionMenuItem.Add(insert.DropDownItems, "Blank", AddressOf InsertClick, New VideoFilter("Misc", "", "", True))
 
             Dim add As New MenuItemEx("Add")
             Menu.Items.Add(add)
 
-            For Each i In s.AviSynthCategories
+            For Each i In filterProfiles
                 For Each i2 In i.Filters
                     Dim tip = i2.Script
 
@@ -251,23 +308,24 @@ Class AviSynthEditor
                         tip = Macro.Solve(tip)
                     End If
 
-                    ActionMenuItem.Add(add.DropDownItems,
-                        i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
+                    ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
                 Next
             Next
 
-            ActionMenuItem.Add(add.DropDownItems, "Blank", AddressOf AddClick, New AviSynthFilter("Misc", "", "", True))
+            ActionMenuItem.Add(add.DropDownItems, "Blank", AddressOf AddClick, New VideoFilter("Misc", "", "", True))
 
             Menu.Items.Add(New ToolStripSeparator)
 
             Menu.Add("Remove", AddressOf RemoveClick).ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Delete)
-            Menu.Add("Profiles...", AddressOf g.MainForm.OpenAviSynthFilterProfilesDialog, "Dialog to edit profiles.")
+            Menu.Add("Profiles...", AddressOf g.MainForm.OpenFilterProfilesDialog, "Dialog to edit profiles.")
             Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to edit profiles.")
             Menu.Add("Script Preview...", AddressOf CodePreview, "Previews the script with solved macros.")
 
             Dim mi = Menu.Add("Video Preview...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
             mi.Enabled = p.SourceFile <> ""
             mi.ShortcutKeyDisplayString = "F5"
+
+            Menu.Add("Play...", AddressOf Editor.Play, "Plays the current script with MPC.")
 
             Menu.Items.Add(New ToolStripSeparator)
 
@@ -294,16 +352,18 @@ Class AviSynthEditor
 
             Menu.Items.Add(New ToolStripSeparator)
 
-            For Each i In Packs.Packages.Values.OfType(Of AviSynthPluginPackage)()
-                For Each i2 In i.FilterNames
-                    If rtbScript.Text.Contains(i2) Then
-                        Dim path = i.GetHelpPath()
+            For Each i In Packs.Packages.OfType(Of PluginPackage)()
+                If Not i.AviSynthFilterNames Is Nothing Then
+                    For Each i2 In i.AviSynthFilterNames
+                        If rtbScript.Text.Contains(i2) Then
+                            Dim path = i.GetHelpPath()
 
-                        If path <> "" Then
-                            Menu.Add("Help | " + i.Name, Sub() g.ShellExecute(path), path)
+                            If path <> "" Then
+                                Menu.Add("Help | " + i.Name, Sub() g.ShellExecute(path), path)
+                            End If
                         End If
-                    End If
-                Next
+                    Next
+                End If
             Next
 
             Dim installDir = Registry.LocalMachine.GetString("SOFTWARE\AviSynth", Nothing)
@@ -325,9 +385,10 @@ Class AviSynthEditor
             End If
 
             Menu.Add("Help | AviSynth.nl", Sub() g.ShellExecute("http://avisynth.nl"), "http://avisynth.nl")
+            Menu.Add("Help | vapoursynth.com", Sub() g.ShellExecute("http://www.vapoursynth.com"), "http://www.vapoursynth.com")
 
-            For Each i In Packs.Packages.Values.Sort
-                If TypeOf i Is AviSynthPluginPackage Then
+            For Each i In Packs.Packages
+                If TypeOf i Is PluginPackage Then
                     Dim helpPath = i.GetHelpPath
 
                     If helpPath <> "" Then
@@ -354,14 +415,15 @@ Class AviSynthEditor
         End Sub
 
         Sub CodePreview()
-            Dim doc As New AviSynthDocument
+            Dim doc As New VideoScript
+            doc.Engine = Editor.Engine
             doc.Filters = Editor.GetFilters()
 
             Using f As New StringEditorForm
                 f.tb.ReadOnly = True
                 f.cbWrap.Checked = False
                 f.cbWrap.Visible = False
-                f.tb.Text = Macro.Solve(doc.GetScript).Trim
+                f.tb.Text = Macro.Solve(VideoScript.ModifyScript(doc.GetScript)).Trim
                 f.tb.SelectionStart = f.tb.Text.Length
                 f.tb.SelectionLength = 0
                 f.Text = "Script Preview"
@@ -383,26 +445,26 @@ Class AviSynthEditor
             End If
         End Sub
 
-        Sub ReplaceClick(f As AviSynthFilter)
+        Sub ReplaceClick(f As VideoFilter)
             cbActive.Checked = f.Active
             cbActive.Text = f.Category
             tbName.Text = f.Name
             rtbScript.Text = f.Script
         End Sub
 
-        Sub InsertClick(f As AviSynthFilter)
+        Sub InsertClick(f As VideoFilter)
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim index = flow.Controls.IndexOf(Me)
-            Dim filterTable = AviSynthEditor.GetFilterTable(f)
+            Dim filterTable = ScriptingEditor.GetFilterTable(f)
             flow.SuspendLayout()
             flow.Controls.Add(filterTable)
             flow.Controls.SetChildIndex(filterTable, index)
             flow.ResumeLayout()
         End Sub
 
-        Sub AddClick(f As AviSynthFilter)
+        Sub AddClick(f As VideoFilter)
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
-            Dim filterTable = AviSynthEditor.GetFilterTable(f)
+            Dim filterTable = ScriptingEditor.GetFilterTable(f)
             flow.Controls.Add(filterTable)
         End Sub
     End Class

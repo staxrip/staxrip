@@ -248,17 +248,11 @@ Public Class CropForm
         pTopActive.BackColor = SelectedBorderColor
         Side = AnchorStyles.Top
 
-        Dim doc As New AviSynthDocument
-        doc.Path = p.TempDir + p.Name + "_Crop.avs"
-        doc.Filters.Add(p.AvsDoc.GetFilter("Source").GetCopy)
-
-        If p.SourceHeight > 576 Then
-            doc.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec709"")"))
-        Else
-            doc.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec601"")"))
-        End If
-
-        doc.Synchronize()
+        Dim doc As New VideoScript
+        doc.Engine = p.VideoScript.Engine
+        doc.Path = p.TempDir + p.Name + "_Crop." + doc.FileType
+        doc.Filters.Add(p.VideoScript.GetFilter("Source").GetCopy)
+        doc.Synchronize(True)
 
         AVI = New AVIFile(doc.Path)
         Drawer = New VideoDrawer(pVideo, AVI)
@@ -414,7 +408,7 @@ Public Class CropForm
         Dim cropw = p.SourceWidth - p.CropLeft - p.CropRight
         Dim croph = p.SourceHeight - p.CropTop - p.CropBottom
 
-        Dim isResized = p.AvsDoc.IsFilterActive("Resize")
+        Dim isResized = p.VideoScript.IsFilterActive("Resize")
         Dim isValidAnamorphicSize = (p.TargetWidth = 1440 AndAlso p.TargetHeight = 1080) OrElse (p.TargetWidth = 960 AndAlso p.TargetHeight = 720)
         Dim err = If(isResized AndAlso Not isValidAnamorphicSize, Calc.GetAspectRatioError.ToString("f2") + "%", "n/a")
 
@@ -451,7 +445,7 @@ Public Class CropForm
     End Sub
 
     Private Sub CropForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        Dim m = p.AvsDoc.GetErrorMessage
+        Dim m = p.VideoScript.GetErrorMessage
 
         If Not m Is Nothing Then
             e.Cancel = True

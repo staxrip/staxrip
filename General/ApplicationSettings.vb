@@ -1,21 +1,16 @@
-Imports System
-Imports System.Runtime.Serialization
-Imports System.Runtime.Serialization.Formatters.Binary
-Imports System.Reflection
-Imports System.Resources
 Imports System.Globalization
-Imports System.Xml.Linq
 
 Imports StaxRip.UI
 
 <Serializable()>
-Public Class ApplicationSettings
+Class ApplicationSettings
     Implements ISafeSerialization
 
     Friend FilterPreferences As StringPairList
     Public AudioProfiles As List(Of AudioProfile)
-    Public AviSynthCategories As List(Of AviSynthCategory)
-    Public AviSynthProfiles As List(Of TargetAviSynthDocument)
+    Public AviSynthProfiles As List(Of FilterCategory)
+    Public VapourSynthProfiles As List(Of FilterCategory)
+    Public FilterSetupProfiles As List(Of TargetAviSynthDocument)
     Public CmdlPresetsEac3to As String
     Public CmdlPresetsMKV As String
     Public CmdlPresetsMP4 As String
@@ -88,7 +83,7 @@ Public Class ApplicationSettings
             Storage = New ObjectStorage
         End If
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 179) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 180) Then
             If VideoEncoderProfiles Is Nothing Then
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
             Else
@@ -124,7 +119,7 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(Demuxers, "Demuxers", 98) Then Demuxers = Demuxer.GetDefaults()
+        If Check(Demuxers, "Demuxers", 100) Then Demuxers = Demuxer.GetDefaults()
 
         If Check(FilterPreferences, "Filter Preference", 22) Then
             FilterPreferences = New StringPairList
@@ -222,7 +217,7 @@ Public Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 125) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 127) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 
@@ -234,13 +229,13 @@ Public Class ApplicationSettings
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 
-        If Check(AviSynthCategories, "Filter Profiles", 128) Then
-            If AviSynthCategories Is Nothing Then
-                AviSynthCategories = AviSynthCategory.GetDefaults
+        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 131) Then
+            If AviSynthProfiles Is Nothing Then
+                AviSynthProfiles = FilterCategory.GetAviSynthDefaults
             Else
-                Dim backup As New AviSynthCategory("Backup")
+                Dim backup As New FilterCategory("Backup")
 
-                For Each c In AviSynthCategories.ToList
+                For Each c In AviSynthProfiles.ToList
                     For Each f In c.Filters.ToList
                         If f.Category <> "Backup" Then
                             f.Path = f.Category + " | " + f.Path
@@ -252,18 +247,39 @@ Public Class ApplicationSettings
                     Next
                 Next
 
-                AviSynthCategories = AviSynthCategory.GetDefaults
-                AviSynthCategories.Add(backup)
+                AviSynthProfiles = FilterCategory.GetAviSynthDefaults
+                AviSynthProfiles.Add(backup)
             End If
         End If
 
-        If Check(AviSynthProfiles, "Filter Setup Profiles", 85) Then
-            AviSynthProfiles = AviSynthDocument.GetDefaults
+        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 12) Then
+            If VapourSynthProfiles Is Nothing Then
+                VapourSynthProfiles = FilterCategory.GetVapourSynthDefaults
+            Else
+                Dim backup As New FilterCategory("Backup")
+
+                For Each c In VapourSynthProfiles.ToList
+                    For Each f In c.Filters.ToList
+                        If f.Category <> "Backup" Then
+                            f.Path = f.Category + " | " + f.Path
+                            f.Category = "Backup"
+                            backup.Filters.Add(f)
+                        End If
+
+                        c.Filters.Remove(f)
+                    Next
+                Next
+
+                VapourSynthProfiles = FilterCategory.GetVapourSynthDefaults
+                VapourSynthProfiles.Add(backup)
+            End If
         End If
 
-        If LastSourceDirValue Is Nothing Then
-            LastSourceDirValue = ""
+        If Check(FilterSetupProfiles, "Filter Setup Profiles", 99) Then
+            FilterSetupProfiles = VideoScript.GetDefaults
         End If
+
+        If LastSourceDirValue Is Nothing Then LastSourceDirValue = ""
     End Sub
 
     Property LastSourceDir() As String

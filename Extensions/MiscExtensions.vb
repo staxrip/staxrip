@@ -4,6 +4,7 @@ Imports System.IO
 Imports System.Drawing.Drawing2D
 
 Imports Microsoft.Win32
+Imports System.Globalization
 
 Public Module MiscExtensions
     <Extension()>
@@ -88,6 +89,16 @@ Public Module MiscExtensions
         End Using
 
         Return ret
+    End Function
+
+    <Extension()>
+    Function ToStringEx(obj As Object) As String
+        If obj Is Nothing Then Return "" Else Return obj.ToString
+    End Function
+
+    <Extension()>
+    Function NeutralCulture(ci As CultureInfo) As CultureInfo
+        If ci.IsNeutralCulture Then Return ci Else Return ci.Parent
     End Function
 End Module
 

@@ -11,11 +11,6 @@ Imports System.Text
 Public MustInherit Class Demuxer
     MustOverride Sub Run()
 
-    Property DemuxSubtitles As Boolean = True
-    Property DemuxAudio As Boolean = True
-    Property DemuxChapters As Boolean = True
-    Property DemuxAttachments As Boolean = True
-
     Overridable Property Active As Boolean = True
     Overridable Property InputExtensions As String() = {}
     Overridable Property InputFormats As String() = {}
@@ -39,9 +34,7 @@ Public MustInherit Class Demuxer
 
     Overridable Function GetHelp() As String
         For Each i In Packs.Packages
-            If Name = i.Value.Name Then
-                Return i.Value.Description
-            End If
+            If Name = i.Name Then Return i.Description
         Next
     End Function
 
@@ -55,14 +48,13 @@ Public MustInherit Class Demuxer
         prx.InputFormats = {"mpeg2"}
         prx.Command = "%app:Java%"
         prx.Arguments = "-jar ""%app:ProjectX%"" %source_files% -out ""%working_dir%"""
-        prx.Active = False
+        prx.Active = Not Packs.Java.IsStatusCritical
         ret.Add(prx)
 
         Dim dsmux As New CommandLineDemuxer
         dsmux.Name = "dsmux"
         dsmux.InputExtensions = {"ts"}
         dsmux.OutputExtensions = {"mkv"}
-        dsmux.InputFormats = {"avc"}
         dsmux.Command = "%app:dsmux%"
         dsmux.Arguments = """%temp_file%.mkv"" ""%source_file%"""
         ret.Add(dsmux)
@@ -73,7 +65,7 @@ Public MustInherit Class Demuxer
 
         Dim dgindex As New CommandLineDemuxer
         dgindex.Name = "DGIndex"
-        dgindex.InputExtensions = {"mpg", "vob", "ts", "m2ts", "mts", "m2t"}
+        dgindex.InputExtensions = {"mpg", "vob", "m2ts", "mts", "m2t"}
         dgindex.OutputExtensions = {"m2v"}
         dgindex.InputFormats = {"mpeg2"}
         dgindex.Command = "%app:DGIndex%"
@@ -143,7 +135,7 @@ Public Class CommandLineDemuxer
     End Property
 
     Overrides Function ShowConfigDialog() As DialogResult
-        Using f As New DemuxingForm(Me)
+        Using f As New DemuxForm(Me)
             Return f.ShowDialog
         End Using
     End Function
@@ -191,19 +183,39 @@ Public Class MP4BoxDemuxer
     End Sub
 
     Overrides Sub Run()
-        If DemuxAudio Then
-            For Each i In MediaInfo.GetAudioStreams(p.SourceFile)
-                Audio.DemuxMP4(p.SourceFile, i, Nothing)
-            Next
+        Dim audioStreams As List(Of AudioStream)
+        Dim subtitles As List(Of Subtitle)
+
+        If Not p.BatchMode AndAlso (MediaInfo.GetAudioCount(p.SourceFile) > 0 OrElse
+            MediaInfo.GetSubtitleCount(p.SourceFile) > 0) Then
+
+            ProcessForm.CloseProcessForm()
+
+            Using f As New StreamDemuxForm(p.SourceFile)
+                If f.ShowDialog() = DialogResult.OK Then
+                    audioStreams = f.AudioStreams
+                    subtitles = f.Subtitles
+                Else
+                    Throw New AbortException
+                End If
+            End Using
         End If
 
-        If Not DemuxSubtitles Then Exit Sub
+        If audioStreams Is Nothing Then
+            audioStreams = MediaInfo.GetAudioStreams(p.SourceFile)
+        End If
 
-        Dim subs = MediaInfo.GetSubtitles(p.SourceFile)
+        If subtitles Is Nothing Then
+            subtitles = MediaInfo.GetSubtitles(p.SourceFile)
+        End If
 
-        If subs.Count = 0 Then Exit Sub
+        For Each i In audioStreams
+            If i.Enabled Then Audio.DemuxMP4(p.SourceFile, i, Nothing)
+        Next
 
-        For Each i In subs
+        For Each i In subtitles
+            If Not i.Enabled Then Continue For
+
             Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " " + i.Filename + i.Extension
 
             If outpath.Length > 259 Then
@@ -234,40 +246,6 @@ Public Class MP4BoxDemuxer
             End Using
         Next
     End Sub
-
-    Public Overrides Function ShowConfigDialog() As DialogResult
-        Using f As New SimpleSettingsForm("MP4 Demuxing Options")
-            f.Size = New Size(500, 250)
-
-            Dim ui = f.SimpleUI
-
-            Dim page = ui.CreateFlowPage("main page")
-
-            Dim cb = ui.AddCheckBox(page)
-            cb.Text = "Demux audio"
-            cb.Checked = DemuxAudio
-            cb.SaveAction = Sub(value) DemuxAudio = value
-
-            cb = ui.AddCheckBox(page)
-            cb.Text = "Demux subtitles"
-            cb.Checked = DemuxSubtitles
-            cb.SaveAction = Sub(value) DemuxSubtitles = value
-
-            Dim ret = f.ShowDialog()
-
-            If ret = DialogResult.OK Then
-                ui.Save()
-            End If
-
-            Return ret
-        End Using
-    End Function
-
-    Public Overrides ReadOnly Property HasConfigDialog As Boolean
-        Get
-            Return True
-        End Get
-    End Property
 End Class
 
 <Serializable()>
@@ -326,139 +304,107 @@ Public Class mkvDemuxer
         InputExtensions = {"mkv", "webm"}
     End Sub
 
-    Sub DemuxMKVSubtitles()
-        If Not DemuxSubtitles Then Exit Sub
+    Sub DemuxMKVSubtitles(subtitles As List(Of Subtitle))
+        If subtitles.Where(Function(subtitle) subtitle.Enabled).Count = 0 Then Exit Sub
 
-        Dim subs = MediaInfo.GetSubtitles(p.SourceFile)
+        Dim arguments = "tracks """ + p.SourceFile + """"
 
-        If subs.Count = 0 Then Exit Sub
+        For Each i In subtitles
+            If Not i.Enabled Then Continue For
 
-        Dim args = "tracks """ + p.SourceFile + """"
-
-        For Each i In subs
             Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " " + i.Filename + i.Extension
 
             If outpath.Length > 259 Then
                 outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(10) + " " + i.Filename.Shorten(10) + i.Extension
             End If
 
-            args += " " & i.StreamOrder & ":""" + outpath + """"
+            arguments += " " & i.StreamOrder & ":""" + outpath + """"
         Next
 
-        args += " --ui-language en"
+        arguments += " --ui-language en"
 
         Using proc As New Proc
             proc.Init("Demux subtitles using mkvextract", "Progress: ")
             proc.Encoding = Encoding.UTF8
             proc.File = Packs.Mkvmerge.GetDir + "mkvextract.exe"
-            proc.Arguments = args
+            proc.Arguments = arguments
             proc.AllowedExitCodes = {0, 1}
             proc.Start()
         End Using
     End Sub
 
     Overrides Sub Run()
-        If DemuxAudio Then
-            For Each i In MediaInfo.GetAudioStreams(p.SourceFile)
-                Audio.DemuxMKV(p.SourceFile, i, Nothing)
-            Next
+        Dim audioStreams As List(Of AudioStream)
+        Dim subtitles As List(Of Subtitle)
+
+        If Not p.BatchMode AndAlso (MediaInfo.GetAudioCount(p.SourceFile) > 0 OrElse
+            MediaInfo.GetSubtitleCount(p.SourceFile) > 0) Then
+
+            ProcessForm.CloseProcessForm()
+
+            Using f As New StreamDemuxForm(p.SourceFile)
+                If f.ShowDialog() = DialogResult.OK Then
+                    audioStreams = f.AudioStreams
+                    subtitles = f.Subtitles
+                Else
+                    Throw New AbortException
+                End If
+            End Using
         End If
 
-        If DemuxSubtitles Then
-            DemuxMKVSubtitles()
+        If audioStreams Is Nothing Then
+            audioStreams = MediaInfo.GetAudioStreams(p.SourceFile)
         End If
 
-        If DemuxChapters Then
-            Dim output = ProcessHelp.GetStandardOutput(
+        If subtitles Is Nothing Then
+            subtitles = MediaInfo.GetSubtitles(p.SourceFile)
+        End If
+
+        For Each i In audioStreams
+            If i.Enabled Then Audio.DemuxMKV(p.SourceFile, i, Nothing)
+        Next
+
+        DemuxMKVSubtitles(subtitles)
+
+        Dim output = ProcessHelp.GetStandardOutput(
                 Packs.Mkvmerge.GetDir + "mkvinfo.exe", "--ui-language en """ + p.SourceFile + """")
 
-            If output.Contains("|+ Chapters") Then
-                Using proc As New Proc
-                    proc.Init("Demux chapters using mkvextract", "Progress: ")
-                    proc.Encoding = Encoding.UTF8
-                    proc.File = Packs.Mkvmerge.GetDir + "mkvextract.exe"
-                    proc.Arguments = "chapters """ + p.SourceFile + """ --redirect-output """ +
+        If output.Contains("|+ Chapters") Then
+            Using proc As New Proc
+                proc.Init("Demux chapters using mkvextract", "Progress: ")
+                proc.Encoding = Encoding.UTF8
+                proc.File = Packs.Mkvmerge.GetDir + "mkvextract.exe"
+                proc.Arguments = "chapters """ + p.SourceFile + """ --redirect-output """ +
                         p.TempDir + Filepath.GetBase(p.SourceFile) + "_Chapters.xml"""
-                    proc.Start()
-                End Using
-            End If
+                proc.Start()
+            End Using
         End If
 
-        If DemuxAttachments Then
-            Dim output = ProcessHelp.GetStandardOutput(Packs.Mkvmerge.GetPath, "--identify-verbose --ui-language en """ + p.SourceFile + """")
+        output = ProcessHelp.GetStandardOutput(Packs.Mkvmerge.GetPath, "--identify-verbose --ui-language en """ + p.SourceFile + """")
 
-            Dim params As String
+        Dim params As String
 
-            For Each i In output.SplitLinesNoEmpty
-                If i.StartsWith("Attachment ID ") Then
-                    Dim m = Regex.Match(i, "Attachment ID (\d+):.+, file name '(.+)'")
+        For Each i In output.SplitLinesNoEmpty
+            If i.StartsWith("Attachment ID ") Then
+                Dim m = Regex.Match(i, "Attachment ID (\d+):.+, file name '(.+)'")
 
-                    If m.Success Then
-                        params += " " + m.Groups(1).Value + ":""" + p.TempDir + Filepath.GetBase(p.SourceFile) + "_attachment_" + m.Groups(2).Value + """"
-                    End If
+                If m.Success Then
+                    params += " " + m.Groups(1).Value + ":""" + p.TempDir + Filepath.GetBase(p.SourceFile) + "_attachment_" + m.Groups(2).Value + """"
                 End If
-            Next
-
-            If params <> "" Then
-                params += " --ui-language en"
-
-                Using proc As New Proc
-                    proc.Init("Demux attachments using mkvextract", "Progress: ")
-                    proc.WriteLine(output)
-                    proc.Encoding = Encoding.UTF8
-                    proc.File = Packs.Mkvmerge.GetDir + "mkvextract.exe"
-                    proc.Arguments = "attachments """ + p.SourceFile + """" + params
-                    proc.Start()
-                End Using
             End If
+        Next
+
+        If params <> "" Then
+            params += " --ui-language en"
+
+            Using proc As New Proc
+                proc.Init("Demux attachments using mkvextract", "Progress: ")
+                proc.WriteLine(output)
+                proc.Encoding = Encoding.UTF8
+                proc.File = Packs.Mkvmerge.GetDir + "mkvextract.exe"
+                proc.Arguments = "attachments """ + p.SourceFile + """" + params
+                proc.Start()
+            End Using
         End If
     End Sub
-
-    Public Overrides Function ShowConfigDialog() As DialogResult
-        Using f As New SimpleSettingsForm("MKV Demuxing Options")
-            f.Size = New Size(500, 300)
-
-            Dim ui = f.SimpleUI
-
-            Dim page = ui.CreateFlowPage("main page")
-
-            Dim cb = ui.AddCheckBox(page)
-            cb.Text = "Demux audio"
-            cb.Tooltip = "Due to the new stream selection feature audio demuxing is no longer necessary."
-            cb.Checked = DemuxAudio
-            cb.SaveAction = Sub(value) DemuxAudio = value
-
-            cb = ui.AddCheckBox(page)
-            cb.Text = "Demux subtitles"
-            cb.Tooltip = "MKV and MP4 files can be used as subtitle source files so demuxing isn't necessary, one limitation is the preview don't work."
-            cb.Checked = DemuxSubtitles
-            cb.SaveAction = Sub(value) DemuxSubtitles = value
-
-            cb = ui.AddCheckBox(page)
-            cb.Text = "Demux chapters"
-            cb.Tooltip = "Chapters still require demuxing."
-            cb.Checked = DemuxChapters
-            cb.SaveAction = Sub(value) DemuxChapters = value
-
-            cb = ui.AddCheckBox(page)
-            cb.Text = "Demux attachments"
-            cb.Tooltip = "Attachments still require demuxing."
-            cb.Checked = DemuxAttachments
-            cb.SaveAction = Sub(value) DemuxAttachments = value
-
-            Dim ret = f.ShowDialog()
-
-            If ret = DialogResult.OK Then
-                ui.Save()
-            End If
-
-            Return ret
-        End Using
-    End Function
-
-    Overrides ReadOnly Property HasConfigDialog As Boolean
-        Get
-            Return True
-        End Get
-    End Property
 End Class

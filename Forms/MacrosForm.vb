@@ -169,11 +169,11 @@ Public Class MacrosForm
             Macros(i.Name) = i.Description
         Next
 
-        For Each i In Packs.Packages.Values
+        For Each i In Packs.Packages
             Macros("%app:" + i.Name + "%") = ""
         Next
 
-        For Each i In Packs.Packages.Values
+        For Each i In Packs.Packages
             Macros("%app_dir:" + i.Name + "%") = ""
         Next
 

@@ -296,7 +296,6 @@ Public Class TaskDialog(Of T)
         Dim isChecked As Boolean
         Dim hr = TaskDialogIndirect(Config, Nothing, Nothing, isChecked)
         CheckBoxChecked = isChecked
-
         If hr < 0 Then Marshal.ThrowExceptionForHR(hr)
 
         If TypeOf SelectedValue Is DialogResult Then

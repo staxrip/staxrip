@@ -15,7 +15,7 @@ Imports System.Windows.Forms.VisualStyles
 Imports System.Management
 Imports System.Reflection
 
-Public Module ShortcutModule
+Module ShortcutModule
     Public g As New GlobalClass
     Public p As New Project
     Public s As New ApplicationSettings
@@ -45,13 +45,11 @@ Public Class Paths
             Next
         End If
 
-        For Each i As Package In Packs.Packages.Values
-            If i.VerifyOK = False Then
-                Return False
-            End If
+        For Each i As Package In Packs.Packages
+            If Not i.VerifyOK Then Return False
         Next
 
-        If Not p.AvsDoc.IsFilterActive("Source") Then
+        If Not p.VideoScript.IsFilterActive("Source") Then
             MsgWarn("No active filter of category 'Source' found.")
             Return False
         End If
@@ -221,7 +219,7 @@ Public Class Paths
                 fresh = True
             End If
 
-            Dim version = 36
+            Dim version = 38
 
             If fresh OrElse Not s.Storage.GetInt("template update") = version Then
                 s.Storage.SetInt("template update", version)
@@ -259,7 +257,7 @@ Public Class Paths
                                 proj.MaxAspectRatioError = 4
                                 proj.AutoResizeImage = 0
                                 proj.AutoSmartOvercrop = 2
-                                proj.AvsDoc.GetFilter("Resize").Active = True
+                                proj.VideoScript.GetFilter("Resize").Active = True
                                 proj.VideoEncoder = VideoEncoder.Getx264Encoder("x264 | " + name, device)
                                 proj.VideoEncoder.Muxer = New MP4Muxer("MP4")
                                 proj.Audio0 = aaclc
@@ -318,7 +316,7 @@ Public Enum MediaInformation
     DAR
 End Enum
 
-Public Class GlobalClass
+Class GlobalClass
     Property ProjectPath As String
     Property MainForm As MainForm
     Property MinimizedWindows As Boolean
@@ -351,8 +349,13 @@ Public Class GlobalClass
                 End If
             End If
 
-            If {"d2v", "dga"}.Contains(i.Ext) Then
-                MsgError("There are no properly working x64 source filters available for D2V and DGA.")
+            If i.Ext = "d2v" Then
+                MsgError("There is no properly working x64 source filters available for D2V. DGIndex can also demux video as m2v which StaxRip can open.")
+                Return True
+            End If
+
+            If i.Ext = "dga" Then
+                MsgError("There is no properly working x64 source filters available for DGA. There are several newer and faster x64 source filters available.")
                 Return True
             End If
 
@@ -363,54 +366,51 @@ Public Class GlobalClass
         Next
     End Function
 
-    Sub PlayScript()
+    Sub PlayScript(doc As VideoScript)
         If File.Exists(p.Audio0.File) Then
-            PlayScript(p.Audio0)
+            PlayScript(doc, p.Audio0)
         Else
-            PlayScript(p.Audio1)
+            PlayScript(doc, p.Audio1)
         End If
     End Sub
 
-    Sub PlayScript(ap As AudioProfile)
-        Dim avs As New AviSynthDocument
-        avs.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play.avs"
-        avs.Filters = p.AvsDoc.GetFiltersCopy
+    Sub PlayScript(doc As VideoScript, ap As AudioProfile)
+        Dim avs As New VideoScript
+        avs.Engine = doc.Engine
+        avs.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play." + avs.FileType
+        avs.Filters = doc.GetFiltersCopy
 
-        Dim par = Calc.GetTargetPAR
+        If avs.Engine = ScriptingEngine.AviSynth Then
+            Dim par = Calc.GetTargetPAR
 
-        If Not par = New Point(1, 1) Then
-            Dim w = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
-            avs.Filters.Add(New AviSynthFilter("LanczosResize(" & w & "," & p.TargetHeight & ")"))
-        End If
-
-        If File.Exists(ap.File) Then
-            avs.Filters.Add(New AviSynthFilter("KillAudio()"))
-
-            Dim nic = Audio.GetNicAudioCode(ap)
-
-            If nic <> "" Then
-                avs.Filters.Add(New AviSynthFilter(nic))
-            Else
-                avs.Filters.Add(New AviSynthFilter("AudioDub(last, DirectShowSource(""" + ap.File + """, video = false))"))
+            If Not par = New Point(1, 1) Then
+                Dim w = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
+                avs.Filters.Add(New VideoFilter("LanczosResize(" & w & "," & p.TargetHeight & ")"))
             End If
 
-            avs.Filters.Add(New AviSynthFilter("DelayAudio(" & (ap.Delay / 1000).ToString(CultureInfo.InvariantCulture) & ")"))
+            If File.Exists(ap.File) Then
+                avs.Filters.Add(New VideoFilter("KillAudio()"))
 
-            Dim cutFilter = avs.GetFilter("Cutting")
+                Dim nic = Audio.GetNicAudioCode(ap)
 
-            If Not cutFilter Is Nothing Then
-                avs.Remove("Cutting")
-                avs.Filters.Add(cutFilter)
+                If nic <> "" Then
+                    avs.Filters.Add(New VideoFilter(nic))
+                Else
+                    avs.Filters.Add(New VideoFilter("AudioDub(last, DirectShowSource(""" + ap.File + """, video = false))"))
+                End If
+
+                avs.Filters.Add(New VideoFilter("DelayAudio(" & (ap.Delay / 1000).ToString(CultureInfo.InvariantCulture) & ")"))
+
+                Dim cutFilter = avs.GetFilter("Cutting")
+
+                If Not cutFilter Is Nothing Then
+                    avs.Remove("Cutting")
+                    avs.Filters.Add(cutFilter)
+                End If
             End If
         End If
 
-        If p.SourceHeight > 576 Then
-            avs.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec709"")"))
-        Else
-            avs.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec601"")"))
-        End If
-
-        avs.Synchronize()
+        avs.Synchronize(True)
         g.Play(avs.Path)
     End Sub
 
@@ -522,7 +522,7 @@ Public Class GlobalClass
     End Function
 
     Function GetPreviewPosMS() As Integer
-        Dim fr = p.AvsDoc.GetFramerate
+        Dim fr = p.VideoScript.GetFramerate
         If fr = 0 Then fr = 25
         Return CInt((s.LastPosition / fr) * 1000)
     End Function
@@ -565,7 +565,7 @@ Public Class GlobalClass
                     End If
                 Next
 
-                If i.CriteriaList.Count = 0 OrElse (i.OrOnly AndAlso matches > 0) OrElse _
+                If i.CriteriaList.Count = 0 OrElse (i.OrOnly AndAlso matches > 0) OrElse
                     (Not i.OrOnly AndAlso matches = i.CriteriaList.Count) Then
 
                     Log.WriteHeader("Process Event Command '" + i.Name + "'")
@@ -591,9 +591,7 @@ Public Class GlobalClass
                     p.TempDir = Filepath.GetDir(p.SourceFile)
                 Else
                     Dim base = Filepath.GetBase(p.SourceFile)
-
                     If base.Length > 60 Then base = base.Shorten(30) + "..."
-
                     p.TempDir = Filepath.GetDir(p.SourceFile) + base + " temp files\"
                 End If
             End If
@@ -908,7 +906,7 @@ Public Class GlobalClass
     End Sub
 
     Function EnableFilter(cat As String) As Boolean
-        For Each i In p.AvsDoc.Filters
+        For Each i In p.VideoScript.Filters
             If i.Category = cat Then
                 If Not i.Active Then
                     i.Active = True
@@ -947,22 +945,25 @@ Public Class GlobalClass
     End Sub
 
     Sub AutoCrop()
-        Dim f = p.AvsDoc.GetFilter("Source")
+        If p.VideoScript.Engine <> ScriptingEngine.AviSynth Then Exit Sub
 
-        Dim d As New AviSynthDocument
-        d.Path = p.TempDir + p.Name + "_AutoCrop.avs"
-        d.Filters.Add(f.GetCopy)
+        Dim f = p.VideoScript.GetFilter("Source")
 
-        d.Filters.Add(New AviSynthFilter("AutoCrop", "AutoCrop", "AutoCrop(mode = 2, samples = 20)", True))
+        Dim doc As New VideoScript
+        doc.Engine = p.VideoScript.Engine
+        doc.Path = p.TempDir + p.Name + "_AutoCrop." + doc.FileType
+        doc.Filters.Add(f.GetCopy)
+
+        doc.Filters.Add(New VideoFilter("AutoCrop", "AutoCrop", "AutoCrop(mode = 2, samples = 20)", True))
 
         Log.WriteHeader("Autocrop")
         Log.WriteLine("Autocrop sometimes hangs depending on source file and source filter.")
         Log.WriteLine("In case it hangs uncheck the crop filter or disable it in the options." + CrLf2)
-        Log.WriteLine(d.GetScript)
+        Log.WriteLine(doc.GetScript)
         Log.Save()
 
-        d.Synchronize()
-        Dim fp = Filepath.GetDir(d.Path) + "AutoCrop.log"
+        doc.Synchronize()
+        Dim fp = Filepath.GetDir(doc.Path) + "AutoCrop.log"
 
         If File.Exists(fp) Then
             Dim line = File.ReadAllLines(fp)(0)
@@ -977,7 +978,7 @@ Public Class GlobalClass
     End Sub
 
     Sub SmartCrop()
-        If Not p.AvsDoc.IsFilterActive("Resize") Then
+        If Not p.VideoScript.IsFilterActive("Resize") Then
             Exit Sub
         End If
 
@@ -1069,7 +1070,7 @@ Public Class GlobalClass
 
     Sub ForceCropMod()
         If Not g.EnableFilter("Crop") Then
-            p.AvsDoc.InsertAfter("Source", New AviSynthFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))
+            p.VideoScript.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))
         End If
 
         CorrectCropMod(True)
@@ -1085,7 +1086,7 @@ Public Class GlobalClass
 
             Dim modValue = 4
 
-            If Not p.AvsDoc.IsFilterActive("Resize") Then
+            If Not p.VideoScript.IsFilterActive("Resize") Then
                 modValue = p.ForcedOutputMod
             End If
 
@@ -1292,7 +1293,7 @@ Public Class Calc
     End Function
 
     Shared Function GetBPF() As Double
-        Dim framerate = p.AvsDoc.GetFramerate
+        Dim framerate = p.VideoScript.GetFramerate
 
         If framerate = 0 Then Return 0
         If p.TargetWidth = 0 Then Return 0
@@ -1321,7 +1322,7 @@ Public Class Calc
 
     Shared Function GetOverheadAndSubtitlesKBytes() As Integer
         Dim ret As Double
-        Dim frames = p.AvsDoc.GetFrames
+        Dim frames = p.VideoScript.GetFrames
 
         If IsOneOf(p.VideoEncoder.Muxer.OutputType, "avi", "divx") Then
             ret += frames * 0.024
@@ -1377,11 +1378,11 @@ Public Class Calc
     End Function
 
     Shared Function IsARSignalingRequired() As Boolean
-        If Not p.AvsDoc Is Nothing AndAlso p.AutoARSignaling Then
+        If Not p.VideoScript Is Nothing AndAlso p.AutoARSignaling Then
             Dim par = GetTargetPAR()
 
             If par.X <> par.Y Then
-                If p.AvsDoc.IsFilterActive("Resize") Then
+                If p.VideoScript.IsFilterActive("Resize") Then
                     Return Math.Abs(GetAspectRatioError()) > p.MaxAspectRatioError
                 Else
                     Return True
@@ -1512,7 +1513,7 @@ Public Class Calc
             Dim cw = p.SourceWidth
             Dim ch = p.SourceHeight
 
-            If p.AvsDoc.IsFilterActive("Crop") Then
+            If p.VideoScript.IsFilterActive("Crop") Then
                 cw -= p.CropLeft + p.CropRight
                 ch -= p.CropTop + p.CropBottom
             End If
@@ -1534,7 +1535,7 @@ Public Class Calc
         Dim w = p.SourceWidth, h = p.SourceHeight
         Dim cropw = w, croph = h
 
-        If p.AvsDoc.IsFilterActive("Crop") Then
+        If p.VideoScript.IsFilterActive("Crop") Then
             cropw = w - p.CropLeft - p.CropRight
             croph = h - p.CropTop - p.CropBottom
         End If
@@ -2167,7 +2168,7 @@ Public Class Macro
 
         Dim names As New List(Of String)
 
-        For Each i As Package In Packs.Packages.Values
+        For Each i In Packs.Packages
             names.Add(i.Name)
         Next
 
@@ -2185,7 +2186,8 @@ Public Class Macro
         ret.Add(New Macro("audio_bitrate", "Audio Bitrate", GetType(Integer), "Overall audio bitrate."))
         ret.Add(New Macro("audio_file1", "Audio File 1", GetType(String), "File path of the first audio file."))
         ret.Add(New Macro("audio_file2", "Audio File 2", GetType(String), "File path of the second audio file."))
-        ret.Add(New Macro("avs_file", "AviSynth script path", GetType(String), "Path of the AviSynth script."))
+        ret.Add(New Macro("script_file", "AviSynth/VapourSynth script path", GetType(String), "Path of the AviSynth script."))
+        ret.Add(New Macro("script_ext", "AviSynth or VapourSynth script file type", GetType(String), "File type of the AviSynth or VapourSynth script so either avs or vpy."))
         ret.Add(New Macro("compressibility", "Compressibility", GetType(Integer), "Compressibility value."))
         ret.Add(New Macro("crop_bottom", "Crop Bottom", GetType(Integer), "Bottom crop value."))
         ret.Add(New Macro("crop_height", "Crop Height", GetType(Integer), "Crop height."))
@@ -2341,7 +2343,7 @@ Public Class Macro
         If value.Contains("%source_frames%") Then value = value.Replace("%source_frames%", p.SourceFrames.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_framerate%") Then value = value.Replace("%source_framerate%", p.SourceFramerate.ToString("f6", CultureInfo.InvariantCulture))
+        If value.Contains("%source_framerate%") Then value = value.Replace("%source_framerate%", p.SourceFrameRate.ToString("f6", CultureInfo.InvariantCulture))
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_dir%") Then value = value.Replace("%source_dir%", Filepath.GetDir(p.SourceFile))
@@ -2362,10 +2364,10 @@ Public Class Macro
         If value.Contains("%target_seconds%") Then value = value.Replace("%target_seconds%", p.TargetSeconds.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_frames%") Then value = value.Replace("%target_frames%", p.AvsDoc.GetFrames.ToString)
+        If value.Contains("%target_frames%") Then value = value.Replace("%target_frames%", p.VideoScript.GetFrames.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_framerate%") Then value = value.Replace("%target_framerate%", p.AvsDoc.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
+        If value.Contains("%target_framerate%") Then value = value.Replace("%target_framerate%", p.VideoScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_size%") Then value = value.Replace("%target_size%", (p.Size * 1024).ToString)
@@ -2480,10 +2482,12 @@ Public Class Macro
         If value.Contains("%processing%") Then value = value.Replace("%processing%", g.IsProcessing.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%avs_file%") Then
-            p.AvsDoc.Synchronize()
-            value = value.Replace("%avs_file%", p.AvsDoc.Path)
+        If value.Contains("%script_file%") Then
+            p.VideoScript.Synchronize()
+            value = value.Replace("%script_file%", p.VideoScript.Path)
         End If
+
+        If value.Contains("%script_ext%") Then value = value.Replace("%script_ext%", p.VideoScript.FileType)
 
         If Not value.Contains("%") Then Return value
 
@@ -2509,16 +2513,14 @@ Public Class Macro
             Dim mc = Regex.Matches(value, "%app:(.+?)%")
 
             For Each i As Match In mc
-                If Packs.Packages.ContainsKey(i.Groups(1).Value) Then
-                    Dim pack = Packs.Packages(i.Groups(1).Value)
+                Dim package = Packs.Packages.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
 
-                    If pack.VerifyOK() Then
-                        Dim path = pack.GetPath
+                If package?.VerifyOK Then
+                    Dim path = package.GetPath
 
-                        If path <> "" Then
-                            value = value.Replace(i.Value, path)
-                            If Not value.Contains("%") Then Return value
-                        End If
+                    If path <> "" Then
+                        value = value.Replace(i.Value, path)
+                        If Not value.Contains("%") Then Return value
                     End If
                 End If
             Next
@@ -2540,16 +2542,14 @@ Public Class Macro
 
         If value.Contains("%app_dir:") Then
             For Each i As Match In Regex.Matches(value, "%app_dir:(.+?)%")
-                If Packs.Packages.ContainsKey(i.Groups(1).Value) Then
-                    Dim pack = Packs.Packages(i.Groups(1).Value)
+                Dim package = Packs.Packages.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
 
-                    If pack.VerifyOK() Then
-                        Dim path = pack.GetPath
+                If package?.VerifyOK Then
+                    Dim path = package.GetPath
 
-                        If path <> "" Then
-                            value = value.Replace(i.Value, Filepath.GetDir(path))
-                            If Not value.Contains("%") Then Return value
-                        End If
+                    If path <> "" Then
+                        value = value.Replace(i.Value, Filepath.GetDir(path))
+                        If Not value.Contains("%") Then Return value
                     End If
                 End If
             Next
@@ -2561,7 +2561,7 @@ Public Class Macro
             Dim mc = Regex.Matches(value, "%filter:(.+?)%")
 
             For Each i As Match In mc
-                For Each i2 In p.AvsDoc.Filters
+                For Each i2 In p.VideoScript.Filters
                     If i2.Active AndAlso i2.Path.ToUpper = i.Groups(1).Value.ToUpper Then
                         value = value.Replace(i.Value, i2.Script)
                         If Not value.Contains("%") Then Return value
@@ -2816,14 +2816,27 @@ Public Class GlobalCommands
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.5 " + GetReleaseType() + " (2015-05-??)")
 
-                f.Doc.WriteList("New: Added possibility to switch dynamically between any source filter back and forth including DGSource and DGSourceIM. Indexing is triggered automatically in case no index file is present",
+                f.Doc.WriteList("New: Added full first class VapourSynth support including plugins and profile for QTGMC",
+                                "New: Added possibility to switch dynamically between any source filter back and forth including DGSource and DGSourceIM. Indexing is triggered automatically in case no index file is present",
                                 "New: Added vinverse plugin to remove residual combing from NTSC",
+                                "New: Added GUI for demuxing MKV and MP4",
+                                "New: Added feature to easily enable certain parameters for certain filters in the AviSynth editor. Currently supported are FFVideoSource and DGSource, more parameters and filters might be supported on request. Use it by right-clicking on FFVideoSource or DGSource in the AviSynth editor, the menu shows then NTSC options and hardware cropping and resizing options.",
+                                "New: Added Play option for MPC playback in the AviSynth editor",
+                                "New: Added two new options in the dialog to define files for batch processing to add a entire folder and a entire folder including sub-folders",
+                                "New: Added new subtitle UI based on data view",
+                                "New: Added option to generate subtitle names based on the subtitle language",
                                 "Fix: Disabled audio demuxing for MKV and MP4 by DGIndexNV and DGIndexIM because it's already demuxed by MP4Box and mkvextract",
                                 "Fix: Tools/Directories/Plugins wasn't pointing to the AviSynth+ plugin directory",
                                 "Update: QSVEncC 2.0 beta 7",
+                                "Update: x265 1.7+207",
+                                "Tweak: DTS bitrate is now unrestricted",
                                 "Tweak: Moved field processing filters to dedicated category like before in StaxRip x86",
                                 "Tweak: Replaced LinkLabels with Buttons in eac3to dialog",
-                                "Tweak: The help for all included AviSynth plugins can now be accessed per menu in the AviSynth editor")
+                                "Tweak: The help for all included AviSynth plugins can now be accessed per menu in the AviSynth editor",
+                                "Tweak: ProjectX is enabled by default in case Java exists, other dsmux will handle MPEG-2 TS",
+                                "Tweak: In the dialog to define files for batch processing the 'Create Jobs' option was renamed to 'Demux and index before adding jobs', regardless of if this option is enabled jobs are always created",
+                                "Tweak: Removed x86 and VS C++ 2013 from AviSynth+ installer bringing it from 18 MB down to 4 MB. Very often VS C++ 2013 is already installed and in case it ain't already installed StaxRip will show the Apps dialog which has a download button for VS C++ 2013.",
+                                "Tweak: replaced avs4x26x with ffmpeg")
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.4 " + GetReleaseType() + " (2015-05-31)")
 
@@ -2964,8 +2977,8 @@ Public Class GlobalCommands
     <Command("Perform | Write Log Message", "Writes a log message to the process window.")>
     Sub WriteLog(
         <DispName("Header"), Description("Header is optional.")>
-        header As String, _
-        <DispName("Message"), Description("Message is optional and may contain macros."), _
+        header As String,
+        <DispName("Message"), Description("Message is optional and may contain macros."),
         Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
         message As String)
 
@@ -3086,7 +3099,7 @@ Public Class GlobalCommands
                   <Editor(GetType(MacroStringTypeEditor),
                   GetType(UITypeEditor))> script As String)
 
-        p.AvsDoc.Filters.Add(New AviSynthFilter(category, name, script, active))
+        p.VideoScript.Filters.Add(New VideoFilter(category, name, script, active))
         g.MainForm.AviSynthListView.Load()
         g.MainForm.Assistant()
     End Sub
@@ -3097,7 +3110,7 @@ Public Class GlobalCommands
                   category As String,
                   <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> script As String)
 
-        For Each i In p.AvsDoc.Filters
+        For Each i In p.VideoScript.Filters
             If i.Category.ToLower = category.ToLower Then
                 i.Active = active
                 i.Path = name
@@ -3304,9 +3317,7 @@ Public Class Startup
 
         If args.Count = 2 AndAlso args(0) = "-mediainfo" Then
             ToolStripManager.Renderer = New ToolStripRendererEx(ToolStripRenderMode.SystemDefault)
-
-            Application.Run(New MediaInfoForm(args(1)) With {.StartPosition = FormStartPosition.CenterScreen,
-                                                             .ShowInTaskbar = True})
+            Application.Run(New MediaInfoForm(args(1)) With {.StartPosition = FormStartPosition.CenterScreen, .ShowInTaskbar = True})
         Else
             Application.Run(New MainForm())
         End If
@@ -3390,6 +3401,7 @@ Public Class AudioStream
     Property SamplingRate As Integer
     Property StreamOrder As Integer
     Property Title As String
+    Property Enabled As Boolean = True
 
     ReadOnly Property Name As String
         Get
@@ -3544,15 +3556,7 @@ End Class
 
 <Serializable()>
 Public Class Subtitle
-    Sub New()
-        Language = New Language
-    End Sub
-
-    Sub New(l As Language)
-        Language = l
-    End Sub
-
-    Property Title As String
+    Property Title As String = ""
     Property Path As String
     Property CodecString As String
     Property Format As String
@@ -3562,6 +3566,15 @@ Public Class Subtitle
     Property Language As Language
     Property [Default] As Boolean
     Property Forced As Boolean
+    Property Enabled As Boolean = True
+
+    Sub New()
+        Language = New Language
+    End Sub
+
+    Sub New(l As Language)
+        Language = l
+    End Sub
 
     ReadOnly Property Filename As String
         Get
@@ -3616,14 +3629,17 @@ Public Class Subtitle
 
     Shared Function Create(path As String) As List(Of Subtitle)
         Dim ret As New List(Of Subtitle)
+        If New FileInfo(path).Length = 0 Then Return ret
 
-        If Filepath.GetExtFull(path) = ".idx" Then
+        If path.Ext = "idx" Then
             Dim indexData As Integer
             Dim st As Subtitle = Nothing
 
             For Each i In File.ReadAllText(path).SplitLinesNoEmpty
                 If i.StartsWith("id: ") AndAlso i Like "id: ??, index: *" Then
                     st = New Subtitle
+
+                    If path.Contains("forced") Then st.Forced = True
 
                     Try
                         st.Language = New Language(New CultureInfo(i.Substring(4, 2)))
@@ -3644,7 +3660,7 @@ Public Class Subtitle
                     st = Nothing
                 End If
             Next
-        ElseIf IsOneOf(Filepath.GetExtFull(path), ".mkv", ".mp4") Then
+        ElseIf {"mkv", "mp4"}.Contains(path.Ext) Then
             Dim subs = MediaInfo.GetSubtitles(path)
 
             For Each i In subs
@@ -3692,18 +3708,18 @@ End Enum
 Class FileTypes
     Shared Property Audio As String() = {"aac", "ac3", "dts", "dtsma", "dtshr", "dtshd", "eac3", "flac", "m4a", "mka", "mp2", "mp3", "mpa", "ogg", "opus", "thd", "thd+ac3", "true-hd", "truehd", "wav"}
     Shared Property BeSweetInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "ogg"}
-    Shared Property DGDecNVInput As String() = {"264", "h264", "avc", "mkv", "mp4", "mpg", "vob", "ts", "m2ts", "mts", "m2t"}
+    Shared Property DGDecNVInput As String() = {"264", "h264", "avc", "mkv", "mp4", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}
     Shared Property eac3toInput As String() = {"ac3", "dts", "dtshd", "dtshr", "dtsma", "eac3", "evo", "flac", "m2ts", "mlp", "pcm", "raw", "thd", "thd+ac3", "ts", "vob", "wav", "mp2", "mpa"}
     Shared Property NicAudioInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "dts"}
     Shared Property SubtitleExludingContainers As String() = {"ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property SubtitleIncludingContainers As String() = {"ass", "idx", "mkv", "mp4", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
-    Shared Property Video As String() = {"264", "avc", "avi", "avs", "d2v", "dgi", "divx", "flv", "h264", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m"}
+    Shared Property Video As String() = {"264", "avc", "avi", "avs", "d2v", "dgi", "divx", "flv", "h264", "m2t", "mts", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m"}
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
     Shared Property VideoOnly As String() = {"m4v", "m2v", "y4m", "mpv", "avc", "hevc", "264", "h264", "265", "h265"}
     Shared Property VideoRaw As String() = {"h264", "h265", "264", "265", "avc", "hevc"}
     Shared Property qaacInput As String() = {"wav", "flac"}
-    Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs"}
+    Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs", "vpy"}
     Shared Property VirtualDubModInput As String() = {"ac3", "mp3", "mp2", "mpa", "wav"}
     Shared Property AudioVideo As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
 
@@ -3717,7 +3733,7 @@ Class FileTypes
                                                  "mp2", "mpa", "mp3",
                                                  "ogg", "ogm",
                                                  "dts", "dtsma", "dtshr", "dtshd",
-                                                 "mpg", "m2v",
+                                                 "mpg", "m2v", "mpv",
                                                  "ts", "m2ts",
                                                  "opus", "flac"}
 

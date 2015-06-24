@@ -36,7 +36,7 @@ Public Class MediaInfoFolderViewForm
         'MediaInfoFolderViewForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(144.0!, 144.0!)
-        Me.ClientSize = New System.Drawing.Size(914, 601)
+        Me.ClientSize = New System.Drawing.Size(1200, 601)
         Me.Controls.Add(Me.lv)
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
@@ -54,7 +54,7 @@ Public Class MediaInfoFolderViewForm
 
     Dim Completed As Boolean
     Dim Abort As Boolean
-    Dim Files As String()
+    Dim Files As New List(Of String)
     Dim Folder As String
 
     Sub New(folder As String)
@@ -67,9 +67,10 @@ Public Class MediaInfoFolderViewForm
         lv.FullRowSelect = True
 
         For Each i In {"Filename", "Type", "Codec", "Ratio", "Dimension", "Bitrate",
-                       "Duration", "Filesize", "Framerate", "Audiocodec"}
+                       "Duration", "Filesize", "Framerate", "Audiocodec", "Folder",
+                       "Scan Type", "Interlacement", "Colorimetry", "Profile"}
 
-            Dim ch = lv.Columns.Add(i)
+            lv.Columns.Add(i)
         Next
 
         For Each i As ColumnHeader In lv.Columns
@@ -77,11 +78,19 @@ Public Class MediaInfoFolderViewForm
         Next
 
         Me.Folder = folder
-        Files = Directory.GetFiles(folder)
+
+        For Each i In Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories)
+            If FileTypes.Audio.Contains(i.Ext) OrElse FileTypes.Video.Contains(i.Ext) Then
+                Files.Add(i)
+            Else
+                MsgWarn("Unknown file type " + i.Ext)
+            End If
+        Next
 
         Dim cms As New ContextMenuStripEx()
         cms.Form = Me
 
+        lv.SendMessageHideFocus()
         lv.ContextMenuStrip = cms
         Dim enabledFunc = Function() lv.SelectedItems.Count = 1
         Dim pathFunc = Function() folder + lv.SelectedItems(0).Text
@@ -107,7 +116,7 @@ Public Class MediaInfoFolderViewForm
     Sub Populate()
         Dim kind = MediaInfoStreamKind.Video
 
-        For x = 0 To Files.Length - 1
+        For x = 0 To Files.Count - 1
             If Abort Then Exit For
 
             Dim fp = Files(x)
@@ -115,7 +124,7 @@ Public Class MediaInfoFolderViewForm
             If codec = "" Then Continue For
 
             Using mi As New MediaInfo(fp)
-                Dim audioCodecs = MediaInfo.GetAudioCodecs(fp)
+                Dim audioCodecs = MediaInfo.GetAudioCodecs(fp).Replace(" ", "")
 
                 Dim item As New ListViewItem
                 item.Text = Path.GetFileName(fp)
@@ -133,26 +142,30 @@ Public Class MediaInfoFolderViewForm
                 item.SubItems.Add(GetSubItem(mi.GetInfo(MediaInfoStreamKind.General, "FileSize/String"), CLng(mi.GetInfo(MediaInfoStreamKind.General, "FileSize"))))
                 item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "FrameRate/String"), mi.GetInfo(kind, "FrameRate").ToSingle))
                 item.SubItems.Add(GetSubItem(audioCodecs))
+                item.SubItems.Add(Filepath.GetDir(fp).TrimEnd("\"c))
+                item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "ScanType")))
+                item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "Interlacement")))
+                item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "Colorimetry")))
+                item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "Format_Profile")))
 
-                Invoke(Sub()
-                           lv.Items.Add(item)
-                           If lv.Items.Count = 9 Then AutoResizeColumnsAndWidth()
-                       End Sub)
+                BeginInvoke(Sub()
+                                lv.Items.Add(item)
+                                If lv.Items.Count = 9 Then AutoResizeColumns()
+                            End Sub)
             End Using
         Next
 
         Invoke(Sub()
                    lv.ListViewItemSorter = New ListViewEx.ColumnSorter
-                   AutoResizeColumnsAndWidth()
+                   AutoResizeColumns()
                    Completed = True
                    If Abort Then Close()
                End Sub)
     End Sub
 
-    Sub AutoResizeColumnsAndWidth()
+    Sub AutoResizeColumns()
         lv.AutoResizeColumns(False)
         Dim max = Aggregate i2 In lv.Columns.OfType(Of ColumnHeader)() Into Sum(i2.Width)
-        ClientSize = New Size(max + SystemInformation.VerticalScrollBarWidth + 5, ClientSize.Height)
     End Sub
 
     Function GetSubItem(text As String, Optional sort As Object = Nothing) As ListViewItem.ListViewSubItem

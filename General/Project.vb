@@ -9,7 +9,7 @@ Imports System.Text
 Imports StaxRip.UI
 
 <Serializable()>
-Public Class Project
+Class Project
     Implements ISafeSerialization
 
     Private Storage As ObjectStorage
@@ -26,7 +26,7 @@ Public Class Project
     Public AutoSmartOvercrop As Double
     Public AutoSubtitles As String
     Public AvsCodeAtTop As String = ""
-    Public AvsDoc As TargetAviSynthDocument
+    Public VideoScript As TargetAviSynthDocument
     Public BatchMode As Boolean
     Public CompCheckAction As CompCheckAction = StaxRip.CompCheckAction.AdjustImageSize
     Public CompCheckRange As Integer = 5
@@ -58,7 +58,7 @@ Public Class Project
     Public SourceAviSynthDocument As SourceAviSynthDocument
     Public SourceFile As String
     Public SourceFiles As List(Of String)
-    Public SourceFramerate As Double
+    Public SourceFrameRate As Double
     Public SourceFrames As Integer
     Public SourceHeight As Integer = 576
     Public SourcePAR As Point = New Point(1, 1)
@@ -77,7 +77,8 @@ Public Class Project
     Public VideoEncoder As VideoEncoder
     Public LastOriginalSourceFile As String
     Public FirstOriginalSourceFile As String
-
+    Public CutFrameRate As Double
+    Public CutFrameCount As Integer
     Public Codec As String
     Public CodecProfile As String
 
@@ -137,8 +138,8 @@ Public Class Project
             Audio1.Language = New Language("en", True)
         End If
 
-        If Check(AvsDoc, "Filter Setup", 50) Then
-            AvsDoc = AviSynthDocument.GetDefaults()(0)
+        If Check(VideoScript, "Filter Setup", 50) Then
+            VideoScript = StaxRip.VideoScript.GetDefaults()(0)
         End If
     End Sub
 

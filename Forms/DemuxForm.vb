@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Public Class DemuxingForm
+Public Class DemuxForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -459,9 +459,9 @@ Public Class DemuxingForm
 
     Private Sub HelpToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HelpToolStripMenuItem.Click
         For Each i In Packs.Packages
-            If tbName.Text = i.Value.Name Then
-                If i.Value.GetHelpPath <> "" Then
-                    g.ShellExecute(i.Value.GetHelpPath)
+            If tbName.Text = i.Name Then
+                If i.GetHelpPath <> "" Then
+                    g.ShellExecute(i.GetHelpPath)
                 Else
                     MsgWarn("There is no help available for this app.")
                 End If
@@ -471,6 +471,6 @@ Public Class DemuxingForm
         Next
 
         MsgWarn("The demuxer name '" + tbName.Text + "' does not match with the name of one of StaxRip's apps. StaxRip includes the following apps:" + CrLf2 +
-                Packs.Packages.Where(Function(b) Not TypeOf b.Value Is AviSynthPluginPackage).Select(Function(a) a.Value.Name).ToArray.Sort.Join(", "))
+                Packs.Packages.Where(Function(package) Not TypeOf package Is PluginPackage).Select(Function(package) package.Name).ToArray.Sort.Join(", "))
     End Sub
 End Class

@@ -1,17 +1,11 @@
-Imports Microsoft.Win32
-
 Imports System.Globalization
-Imports System.Runtime.Serialization
-Imports System.Reflection
-Imports System.Text.RegularExpressions
 Imports System.Text
 
 Imports StaxRip.UI
 Imports StaxRip.CommandLine
-Imports System.Collections.Specialized
 
 <Serializable()>
-Public MustInherit Class VideoEncoder
+MustInherit Class VideoEncoder
     Inherits Profile
     Implements IComparable(Of VideoEncoder)
 
@@ -98,7 +92,7 @@ Public MustInherit Class VideoEncoder
 
     Sub AutoSetImageSize()
         If p.VideoEncoder.AutoCompCheckValue > 0 AndAlso Calc.GetPercent <> 0 AndAlso
-            p.AvsDoc.IsFilterActive("Resize") Then
+            p.VideoScript.IsFilterActive("Resize") Then
 
             Dim oldWidth = p.TargetWidth
             Dim oldHeight = p.TargetHeight
@@ -138,7 +132,7 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Overridable Function GetFrameRate() As Double
-        Return p.AvsDoc.GetFramerate
+        Return p.VideoScript.GetFramerate
     End Function
 
     Overridable Function GetError() As String
@@ -268,7 +262,7 @@ Public MustInherit Class VideoEncoder
         xvid.Name = "XviD"
         xvid.Muxer = New ffmpegMuxer("AVI")
         xvid.QualityMode = True
-        xvid.CommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%avs_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
+        xvid.CommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
         ret.Add(xvid)
 
         ret.Add(New NullEncoder("Just Mux"))
@@ -286,9 +280,9 @@ Public MustInherit Class VideoEncoder
         xvid2pass.OutputFileTypeValue = "avi"
         xvid2pass.Name = "2 pass | XviD"
         xvid2pass.Muxer = New ffmpegMuxer("AVI")
-        xvid2pass.CommandLines = """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -turbo -pass1 ""%temp_file%.stats"" -i ""%avs_file%"" || exit" + CrLf +
-                                 """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -pass2 ""%temp_file%.stats"" -i ""%avs_file%"" -avi ""%encoder_out_file%"""
-        xvid2pass.CompCheckCommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -par %target_sar% -i ""%temp_file%_CompCheck.avs"" -avi ""%temp_file%_CompCheck.avi"""
+        xvid2pass.CommandLines = """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -turbo -pass1 ""%temp_file%.stats"" -i ""%script_file%"" || exit" + CrLf +
+                                 """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -pass2 ""%temp_file%.stats"" -i ""%script_file%"" -avi ""%encoder_out_file%"""
+        xvid2pass.CompCheckCommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -par %target_sar% -i ""%temp_file%_CompCheck.%script_ext%"" -avi ""%temp_file%_CompCheck.avi"""
         ret.Add(xvid2pass)
 
         Dim x264cli As New BatchEncoder()
@@ -296,15 +290,15 @@ Public MustInherit Class VideoEncoder
         x264cli.Name = "Command Line | x264"
         x264cli.Muxer = New MkvMuxer()
         x264cli.AutoCompCheckValue = 50
-        x264cli.CommandLines = """%app:x264%"" --pass 1 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output NUL ""%avs_file%"" || exit" + CrLf + """%app:x264%"" --pass 2 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output ""%encoder_out_file%"" ""%avs_file%"""
-        x264cli.CompCheckCommandLines = """%app:x264%"" --crf 18 --output ""%temp_file%_CompCheck%encoder_ext%"" ""%temp_file%_CompCheck.avs"""
+        x264cli.CommandLines = """%app:x264%"" --pass 1 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output NUL ""%script_file%"" || exit" + CrLf + """%app:x264%"" --pass 2 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
+        x264cli.CompCheckCommandLines = """%app:x264%"" --crf 18 --output ""%temp_file%_CompCheck%encoder_ext%"" ""%temp_file%_CompCheck.%script_ext%"""
         ret.Add(x264cli)
 
         Dim divx As New BatchEncoder()
         divx.OutputFileTypeValue = "h265"
         divx.Name = "Command Line | DivX H.265"
         divx.Muxer = New MkvMuxer()
-        divx.CommandLines = """%app:DivX265%"" -i ""%avs_file%"" -o ""%encoder_out_file%"" -br %video_bitrate% -10"
+        divx.CommandLines = """%app:DivX265%"" -i ""%script_file%"" -o ""%encoder_out_file%"" -br %video_bitrate% -10"
         ret.Add(divx)
 
         Dim nvencH265 As New BatchEncoder()
@@ -312,7 +306,7 @@ Public MustInherit Class VideoEncoder
         nvencH265.Name = "Command Line | NVIDIA H.265"
         nvencH265.Muxer = New MkvMuxer()
         nvencH265.QualityMode = True
-        nvencH265.CommandLines = """%app:ffmpeg%"" -i ""%avs_file%"" -f yuv4mpegpipe -pix_fmt yuv420p - | ""%app:NVEncC%"" --sar %target_sar% --codec h265 --y4m --cqp 20 --input - --output ""%encoder_out_file%"""
+        nvencH265.CommandLines = """%app:ffmpeg%"" -i ""%script_file%"" -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | ""%app:NVEncC%"" --sar %target_sar% --codec h265 --y4m --cqp 20 --input - --output ""%encoder_out_file%"""
         ret.Add(nvencH265)
 
         ret.Add(Getx264Encoder("Devices | DivX Plus", x264DeviceMode.DivXPlus))
@@ -343,7 +337,7 @@ Public MustInherit Class VideoEncoder
     Public Class MenuList
         Inherits List(Of KeyValuePair(Of String, Action))
 
-        Overloads Sub Add(text As String, action As action)
+        Overloads Sub Add(text As String, action As Action)
             Add(New KeyValuePair(Of String, Action)(text, action))
         End Sub
     End Class
@@ -401,7 +395,7 @@ Class BatchEncoder
         ElseIf commands.Contains("x264") Then
             Return {"frames,"}
         ElseIf commands.Contains("NVEncC") Then
-            Return {"frame= ", "frames: "}
+            Return {"frames: "}
         Else
             Return {" [ETA ", ", eta ", "frames: ", "frame= "}
         End If
@@ -463,13 +457,24 @@ Class BatchEncoder
         ProcessForm.ShowForm()
         Log.WriteHeader("Compressibility Check")
 
-        Dim doc As New AviSynthDocument
-        doc.Filters = p.AvsDoc.GetFiltersCopy
-        Dim code = "SelectRangeEvery(" + ((100 \ p.CompCheckRange) * 14).ToString + ",14)"
+        Dim script As New VideoScript
+        script.Engine = p.VideoScript.Engine
+        script.Filters = p.VideoScript.GetFiltersCopy
+        Dim code As String
+        Dim every = ((100 \ p.CompCheckRange) * 14).ToString
+
+        If script.Engine = ScriptingEngine.AviSynth Then
+            code = "SelectRangeEvery(" + every + ",14)"
+        Else
+            code = "fpsnum = clip.fps_num" + CrLf + "fpsden = clip.fps_den" + CrLf +
+                "clip = core.std.SelectEvery(clip = clip, cycle = " + every + ", offsets = range(14))" + CrLf +
+                "clip = core.std.AssumeFPS(clip = clip, fpsnum = fpsnum, fpsden = fpsden)"
+        End If
+
         Log.WriteLine(code + CrLf2)
-        doc.Filters.Add(New AviSynthFilter("SelectRangeEvery", "SelectRangeEvery", code, True))
-        doc.Path = p.TempDir + p.Name + "_CompCheck.avs"
-        doc.Synchronize()
+        script.Filters.Add(New VideoFilter("aaa", "aaa", code, True))
+        script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
+        script.Synchronize()
 
         Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_CompCheck.bat"
         Dim command = Macro.Solve(CompCheckCommandLines)
@@ -497,7 +502,7 @@ Class BatchEncoder
         End Using
 
         Dim bits = (New FileInfo(p.TempDir + p.Name + "_CompCheck." + OutputfileType).Length) * 8
-        p.Compressibility = (bits / doc.GetFrames) / (p.TargetWidth * p.TargetHeight)
+        p.Compressibility = (bits / script.GetFrames) / (p.TargetWidth * p.TargetHeight)
 
         OnAfterCompCheck()
 
@@ -510,7 +515,7 @@ Class BatchEncoder
 End Class
 
 <Serializable()>
-Public Class NullEncoder
+Class NullEncoder
     Inherits VideoEncoder
 
     Sub New(name As String)
@@ -644,15 +649,15 @@ Class ffmpegEncoder
     End Property
 
     Overrides Sub Encode()
-        p.AvsDoc.Synchronize()
+        p.VideoScript.Synchronize()
 
         Params.RaiseValueChanged(Nothing)
 
         If Params.Mode.OptionText = "Two Pass" Then
-            Encode(Params.GetArgs(1, p.AvsDoc.Path, "NUL", True))
-            Encode(Params.GetArgs(2, p.AvsDoc.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+            Encode(Params.GetArgs(1, p.VideoScript.Path, "NUL", True))
+            Encode(Params.GetArgs(2, p.VideoScript.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
         Else
-            Encode(Params.GetArgs(1, p.AvsDoc.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+            Encode(Params.GetArgs(1, p.VideoScript.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
         End If
 
         AfterEncoding()
@@ -785,7 +790,7 @@ Class ffmpegEncoder
         End Sub
 
         Overloads Overrides Function GetArgs(includePaths As Boolean) As String
-            Return GetArgs(1, p.AvsDoc.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
+            Return GetArgs(1, p.VideoScript.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths)
         End Function
 
@@ -796,7 +801,7 @@ Class ffmpegEncoder
             Dim ret As String
 
             If includePaths Then
-                ret += "-i """ + p.AvsDoc.Path + """"
+                ret += "-i """ + p.VideoScript.Path + """"
             End If
 
             Dim q = From i In Items Where i.GetArgs <> ""
@@ -911,19 +916,35 @@ Class NvidiaEncoder
     End Property
 
     Overrides Sub Encode()
-        p.AvsDoc.Synchronize()
-        Encode(Params.GetArgs(1, p.AvsDoc.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+        p.VideoScript.Synchronize()
+        Encode(Params.GetArgs(1, p.VideoScript.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
         AfterEncoding()
     End Sub
 
     Overloads Sub Encode(args As String)
-        Using proc As New Proc
-            proc.Init("Encoding using NVEncC")
-            proc.SkipStrings = {"%]"}
-            proc.File = Packs.NVEncC.GetPath
-            proc.Arguments = args
-            proc.Start()
-        End Using
+        If p.VideoScript.Engine = ScriptingEngine.VapourSynth Then
+            Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_venc.bat"
+            Dim cli = """" + Packs.vspipe.GetPath + """ """ + p.VideoScript.Path + """ - --y4m | """ + Packs.NVEncC.GetPath + """ " + args
+            File.WriteAllText(batchPath, cli, Encoding.GetEncoding(850))
+
+            Using proc As New Proc
+                proc.Init("Encoding using NVEncC")
+                proc.SkipStrings = {"%]"}
+                proc.WriteLine(cli + CrLf2)
+                proc.File = "cmd.exe"
+                proc.Arguments = "/C call """ + batchPath + """"
+                proc.BatchCode = cli
+                proc.Start()
+            End Using
+        Else
+            Using proc As New Proc
+                proc.Init("Encoding using NVEncC")
+                proc.SkipStrings = {"%]"}
+                proc.File = Packs.NVEncC.GetPath
+                proc.Arguments = args
+                proc.Start()
+            End Using
+        End If
     End Sub
 
     Overrides Function GetMenu() As MenuList
@@ -1056,7 +1077,7 @@ Class NvidiaEncoder
         End Sub
 
         Overloads Overrides Function GetArgs(includePaths As Boolean) As String
-            Return GetArgs(1, p.AvsDoc.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
+            Return GetArgs(1, p.VideoScript.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths)
         End Function
 
@@ -1084,6 +1105,11 @@ Class NvidiaEncoder
             If p.AutoARSignaling Then
                 Dim par = Calc.GetTargetPAR
                 If par <> New Point(1, 1) Then ret += " --sar " & par.X & ":" & par.Y
+            End If
+
+            If sourcePath = "-" Then
+                ret += " --y4m --input-res " & p.TargetWidth & "x" & p.TargetHeight & " --fps " &
+                    p.VideoScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture)
             End If
 
             If includePaths Then
@@ -1162,20 +1188,37 @@ Class IntelEncoder
     End Property
 
     Overrides Sub Encode()
-        p.AvsDoc.Synchronize()
+        p.VideoScript.Synchronize()
         Params.RaiseValueChanged(Nothing)
-        Encode(Params.GetArgs(1, p.AvsDoc.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+        Dim input = If(p.VideoScript.Engine = ScriptingEngine.VapourSynth, "-", p.VideoScript.Path)
+        Encode(Params.GetArgs(1, input, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
         AfterEncoding()
     End Sub
 
     Overloads Sub Encode(args As String)
-        Using proc As New Proc
-            proc.Init("Encoding using QSVEncC")
-            proc.SkipStrings = {"%]", "frames:"}
-            proc.File = Packs.QSVEncC.GetPath
-            proc.Arguments = args
-            proc.Start()
-        End Using
+        If p.VideoScript.Engine = ScriptingEngine.VapourSynth Then
+            Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_venc.bat"
+            Dim cli = """" + Packs.vspipe.GetPath + """ """ + p.VideoScript.Path + """ - --y4m | """ + Packs.QSVEncC.GetPath + """ " + args
+            File.WriteAllText(batchPath, cli, Encoding.GetEncoding(850))
+
+            Using proc As New Proc
+                proc.Init("Video encoding using intel encoder")
+                proc.SkipStrings = {"%]", "frames:"}
+                proc.WriteLine(cli + CrLf2)
+                proc.File = "cmd.exe"
+                proc.Arguments = "/C call """ + batchPath + """"
+                proc.BatchCode = cli
+                proc.Start()
+            End Using
+        Else
+            Using proc As New Proc
+                proc.Init("Video encoding using intel encoder")
+                proc.SkipStrings = {"%]", "frames:"}
+                proc.File = Packs.QSVEncC.GetPath
+                proc.Arguments = args
+                proc.Start()
+            End Using
+        End If
     End Sub
 
     Overrides Function GetMenu() As MenuList
@@ -1351,7 +1394,7 @@ Class IntelEncoder
         End Sub
 
         Overloads Overrides Function GetArgs(includePaths As Boolean) As String
-            Return GetArgs(1, p.AvsDoc.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
+            Return GetArgs(1, p.VideoScript.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths)
         End Function
 
@@ -1378,8 +1421,8 @@ Class IntelEncoder
                     ret += " --" + Mode.ValueText + " " & p.VideoBitrate
             End Select
 
-            If p.AvsDoc.IsFilterActive("Resize", "Hardware Encoder") OrElse
-                (HardwareDecoding.Value AndAlso p.AvsDoc.IsFilterActive("Resize")) Then
+            If p.VideoScript.IsFilterActive("Resize", "Hardware Encoder") OrElse
+                (HardwareDecoding.Value AndAlso p.VideoScript.IsFilterActive("Resize")) Then
 
                 ret += " --output-res " & p.TargetWidth & "x" & p.TargetHeight
             ElseIf p.AutoARSignaling Then
@@ -1387,10 +1430,9 @@ Class IntelEncoder
                 If par <> New Point(1, 1) Then ret += " --sar " & par.X & ":" & par.Y
             End If
 
-
             If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
-                (p.AvsDoc.IsFilterActive("Crop", "Hardware Encoder") OrElse
-                (HardwareDecoding.Value AndAlso p.AvsDoc.IsFilterActive("Crop"))) Then
+                (p.VideoScript.IsFilterActive("Crop", "Hardware Encoder") OrElse
+                (HardwareDecoding.Value AndAlso p.VideoScript.IsFilterActive("Crop"))) Then
 
                 ret += " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom
             End If
@@ -1405,6 +1447,11 @@ Class IntelEncoder
                 Else
                     sourcePath = p.SourceFile
                 End If
+            End If
+
+            If sourcePath = "-" Then
+                ret += " --y4m --input-res " & p.TargetWidth & "x" & p.TargetHeight & " --fps " &
+                    p.VideoScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture)
             End If
 
             If includePaths Then ret += " --input-file """ + sourcePath + """ --output-file """ + targetPath + """"

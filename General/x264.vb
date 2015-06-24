@@ -6,7 +6,7 @@ Imports System.Text.RegularExpressions
 Imports System.Globalization
 
 <Serializable()>
-Public Class x264Encoder
+Class x264Encoder
     Inherits VideoEncoder
 
     Sub New()
@@ -32,78 +32,93 @@ Public Class x264Encoder
     End Property
 
     Overrides Sub Encode()
-        p.AvsDoc.Synchronize()
+        p.VideoScript.Synchronize()
 
-        Encode("x264", GetArgs(1))
+        Encode("x264", GetArgs(1), p.VideoScript)
 
         If Params.Mode.Value = x264Mode.TwoPass OrElse
             Params.Mode.Value = x264Mode.ThreePass Then
 
-            Encode("x264 Second Pass", GetArgs(2))
+            Encode("x264 Second Pass", GetArgs(2), p.VideoScript)
         End If
 
         If Params.Mode.Value = x264Mode.ThreePass Then
-            Encode("x264 Third Pass", GetArgs(3))
+            Encode("x264 Third Pass", GetArgs(3), p.VideoScript)
         End If
 
         AfterEncoding()
     End Sub
 
-    Overloads Sub Encode(passName As String, args As String)
-        Using proc As New Proc
-            proc.Init(passName, "kb/s, eta", "%]")
-            proc.File = Packs.x264.GetPath
-            proc.Arguments = args
-            proc.Start()
-        End Using
+    Overloads Sub Encode(passName As String, args As String, script As VideoScript)
+        If p.VideoScript.Engine = ScriptingEngine.VapourSynth Then
+            Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
+            Dim cli = """" + Packs.vspipe.GetPath + """ """ + script.Path + """ - --y4m | """ + Packs.x264.GetPath + """ " + args
+            File.WriteAllText(batchPath, cli, Encoding.GetEncoding(850))
+
+            Using proc As New Proc
+                proc.Init(passName)
+                proc.SkipStrings = {"kb/s, eta", "%]"}
+                proc.WriteLine(cli + CrLf2)
+                proc.File = "cmd.exe"
+                proc.Arguments = "/C call """ + batchPath + """"
+                proc.BatchCode = cli
+                proc.Start()
+            End Using
+        Else
+            Using proc As New Proc
+                proc.Init(passName)
+                proc.SkipStrings = {"kb/s, eta", "%]"}
+                proc.File = Packs.x264.GetPath
+                proc.Arguments = args
+                proc.Start()
+            End Using
+        End If
     End Sub
 
     Overrides Sub RunCompCheck()
-        Dim avsPath = p.TempDir + p.Name + "_CompCheck.avs"
+        If Not Paths.VerifyRequirements Then Exit Sub
+        If Not g.IsValidSource Then Exit Sub
+
         Dim enc As New x264Encoder
         enc.Params = ObjectHelp.GetCopy(Of x264Params)(Params)
         enc.Params.Mode.Value = x264Mode.SingleCRF
         enc.Params.Quant.Value = enc.Params.QuantCompCheck.Value
-        Dim args = enc.GetArgs(0, avsPath, p.TempDir + p.Name + "_CompCheck." + OutputFileType)
-        RunCompCheck(Packs.x264.GetPath, args, " kb/s, eta ")
-    End Sub
 
-    Protected Overloads Sub RunCompCheck(executable As String,
-                                         arguments As String,
-                                         ParamArray logValuesToSkip As String())
+        Dim script As New VideoScript
+        script.Engine = p.VideoScript.Engine
+        script.Filters = p.VideoScript.GetFiltersCopy
+        Dim code As String
+        Dim every = ((100 \ p.CompCheckRange) * 14).ToString
 
-        If Not Paths.VerifyRequirements Then Exit Sub
-        If Not g.IsValidSource Then Exit Sub
+        If script.Engine = ScriptingEngine.AviSynth Then
+            code = "SelectRangeEvery(" + every + ",14)"
+        Else
+            code = "fpsnum = clip.fps_num" + CrLf + "fpsden = clip.fps_den" + CrLf +
+                "clip = core.std.SelectEvery(clip = clip, cycle = " + every + ", offsets = range(14))" + CrLf +
+                "clip = core.std.AssumeFPS(clip = clip, fpsnum = fpsnum, fpsden = fpsden)"
+        End If
 
-        Dim avsPath = p.TempDir + p.Name + "_CompCheck.avs"
+        Log.WriteLine(code + CrLf2)
+        script.Filters.Add(New VideoFilter("aaa", "aaa", code, True))
+        script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
+        script.Synchronize()
 
-        Dim script = Macro.Solve(p.AvsDoc.GetScript.Trim) + CrLf + "SelectRangeEvery(" +
-            ((100 \ p.CompCheckRange) * 14).ToString + ",14)"
+        Dim sourcePath = If(p.VideoScript.Engine = ScriptingEngine.VapourSynth, "-", p.TempDir + p.Name + "_CompCheck.avs")
+        Dim arguments = enc.GetArgs(0, sourcePath, p.TempDir + p.Name + "_CompCheck." + OutputFileType, script)
 
-        script = AviSynthDocument.SetPlugins(script)
-        script.WriteFile(avsPath)
-
-        Using proc As New Proc
-            proc.Init("Compressibility Check", logValuesToSkip)
-            proc.File = executable
-            proc.Arguments = arguments
-            proc.WriteLine(script + CrLf2)
-
-            Try
-                proc.Start()
-            Catch ex As AbortException
-                Exit Sub
-            Finally
-                ProcessForm.CloseProcessForm()
-            End Try
-        End Using
+        Try
+            Encode("Compressibility Check", arguments, script)
+        Catch ex As AbortException
+            ProcessForm.CloseProcessForm()
+            Exit Sub
+        Catch ex As Exception
+            ProcessForm.CloseProcessForm()
+            g.ShowException(ex)
+            Exit Sub
+        End Try
 
         Dim bits = (New FileInfo(p.TempDir + p.Name + "_CompCheck." + OutputFileType).Length) * 8
-
-        Using avi As New AVIFile(avsPath)
-            p.Compressibility = (bits / avi.FrameCount) / (p.TargetWidth * p.TargetHeight)
-        End Using
-
+        p.Compressibility = (bits / script.GetFrames) / (p.TargetWidth * p.TargetHeight)
         OnAfterCompCheck()
         g.MainForm.Assistant()
 
@@ -134,12 +149,14 @@ Public Class x264Encoder
     End Function
 
     Function GetArgs(pass As Integer, Optional includePaths As Boolean = True) As String
-        Return GetArgs(pass, p.AvsDoc.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, includePaths)
+        Dim sourcePath = If(p.VideoScript.Engine = ScriptingEngine.VapourSynth, "-", p.VideoScript.Path)
+        Return GetArgs(pass, sourcePath, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, p.VideoScript, includePaths)
     End Function
 
     Function GetArgs(pass As Integer,
                      sourcePath As String,
                      targetPath As String,
+                     script As VideoScript,
                      Optional includePaths As Boolean = True) As String
 
         Dim sb As New StringBuilder
@@ -442,7 +459,9 @@ Public Class x264Encoder
             End If
         End If
 
-        If sourcePath <> "" AndAlso includePaths Then
+        If sourcePath = "-" Then ret += " --demuxer y4m --frames " & script.GetFrames
+
+        If includePaths Then
             If Params.Mode.Value = x264Mode.TwoPass OrElse Params.Mode.Value = x264Mode.ThreePass Then
                 ret += " --stats """ + p.TempDir + p.Name + ".stats"""
             End If
@@ -862,7 +881,7 @@ Public Class x264Params
                     temp.BFrames.Value = 3
                 End If
 
-                temp.GOPSizeMax.Value = 4 * If(p.SourceFramerate = 0, 25, CInt(p.SourceFramerate))
+                temp.GOPSizeMax.Value = 4 * If(p.SourceFrameRate = 0, 25, CInt(p.SourceFrameRate))
             Case x264DeviceMode.BluRay
                 temp.Level.Value = x264LevelMode.L41
                 temp.VBVBufSize.Value = 30000

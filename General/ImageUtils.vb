@@ -22,10 +22,10 @@ Public Class Thumbnails
         width = width - width Mod 4
         height = height - height Mod 4
 
-        Dim avsdoc As New AviSynthDocument
+        Dim avsdoc As New VideoScript
         avsdoc.Path = Paths.SettingsDir + "Thumbnails.avs"
-        avsdoc.Filters.Add(New AviSynthFilter("DirectShowSource(""" + inputFile + """, audio=false, convertfps=true).LanczosResize(" & width & "," & height & ")"))
-        avsdoc.Filters.Add(New AviSynthFilter("ConvertToRGB()"))
+        avsdoc.Filters.Add(New VideoFilter("DirectShowSource(""" + inputFile + """, audio=false, convertfps=true).LanczosResize(" & width & "," & height & ")"))
+        avsdoc.Filters.Add(New VideoFilter("ConvertToRGB()"))
 
         Dim errorMsg = ""
 
@@ -90,6 +90,8 @@ Public Class Thumbnails
 
         Using bitmap As New Bitmap(imageWidth, imageHeight)
             Using g = Graphics.FromImage(bitmap)
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic
+                g.SmoothingMode = SmoothingMode.AntiAlias
                 g.Clear(backgroundColor)
                 Dim rect = New RectangleF(shadowDistance + gap, 0, imageWidth - (shadowDistance + gap) * 2, captionHeight)
                 Dim format As New StringFormat

@@ -25,7 +25,7 @@ Public Class SourceFilesForm
     Friend WithEvents bnRemove As ButtonEx
     Friend WithEvents bnAdd As ButtonEx
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
-    Friend WithEvents cbCreateJobs As System.Windows.Forms.CheckBox
+    Friend WithEvents cbDemuxAndIndex As System.Windows.Forms.CheckBox
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents flpButtons As System.Windows.Forms.FlowLayoutPanel
@@ -41,7 +41,7 @@ Public Class SourceFilesForm
         Me.bnRemove = New StaxRip.UI.ButtonEx()
         Me.bnAdd = New StaxRip.UI.ButtonEx()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
-        Me.cbCreateJobs = New System.Windows.Forms.CheckBox()
+        Me.cbDemuxAndIndex = New System.Windows.Forms.CheckBox()
         Me.DirTree = New StaxRip.UI.MultiFolderTree()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
@@ -93,24 +93,22 @@ Public Class SourceFilesForm
         Me.bnAdd.Location = New System.Drawing.Point(3, 3)
         Me.bnAdd.Size = New System.Drawing.Size(100, 34)
         Me.bnAdd.Text = "&Add..."
-        Me.TipProvider.SetTipText(Me.bnAdd, "Adds source files with a multi-select enabled file browser. Alternative methods a" & _
+        Me.TipProvider.SetTipText(Me.bnAdd, "Adds source files with a multi-select enabled file browser. Alternative methods a" &
         "re Drag & Drop and command line, in all cases files are alphabetically sorted.")
         '
-        'cbCreateJobs
+        'cbDemuxAndIndex
         '
-        Me.cbCreateJobs.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cbCreateJobs.AutoSize = True
-        Me.cbCreateJobs.Checked = True
-        Me.cbCreateJobs.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.cbCreateJobs.Location = New System.Drawing.Point(400, 370)
-        Me.cbCreateJobs.Name = "cbCreateJobs"
-        Me.cbCreateJobs.Size = New System.Drawing.Size(129, 29)
-        Me.cbCreateJobs.TabIndex = 3
-        Me.cbCreateJobs.Text = "&Create Jobs"
-        Me.TipProvider.SetTipText(Me.cbCreateJobs, "Opens files in batch mode and creates jobs. Disabling this option is useful to ba" & _
+        Me.cbDemuxAndIndex.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cbDemuxAndIndex.AutoSize = True
+        Me.cbDemuxAndIndex.Location = New System.Drawing.Point(12, 370)
+        Me.cbDemuxAndIndex.Name = "cbDemuxAndIndex"
+        Me.cbDemuxAndIndex.Size = New System.Drawing.Size(340, 29)
+        Me.cbDemuxAndIndex.TabIndex = 3
+        Me.cbDemuxAndIndex.Text = "Demux and index before creating jobs"
+        Me.TipProvider.SetTipText(Me.cbDemuxAndIndex, "Opens files in batch mode and creates jobs. Disabling this option is useful to ba" &
         "tch perform preparation (demuxing etc.).")
-        Me.cbCreateJobs.UseVisualStyleBackColor = True
-        Me.cbCreateJobs.Visible = False
+        Me.cbDemuxAndIndex.UseVisualStyleBackColor = True
+        Me.cbDemuxAndIndex.Visible = False
         '
         'DirTree
         '
@@ -166,7 +164,7 @@ Public Class SourceFilesForm
         Me.Controls.Add(Me.flpButtons)
         Me.Controls.Add(Me.bnCancel)
         Me.Controls.Add(Me.bnOK)
-        Me.Controls.Add(Me.cbCreateJobs)
+        Me.Controls.Add(Me.cbDemuxAndIndex)
         Me.Controls.Add(Me.DirTree)
         Me.Controls.Add(Me.lb)
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -218,20 +216,39 @@ Public Class SourceFilesForm
         bnUp.Enabled = lb.CanMoveUp() AndAlso Mode <> SourceInputMode.DirectoryBatch
         bnDown.Enabled = lb.CanMoveDown() AndAlso Mode <> SourceInputMode.DirectoryBatch
         bnOK.Enabled = lb.Items.Count > 0 OrElse DirTree.Paths.Count > 0
-        cbCreateJobs.Visible = Mode <> SourceInputMode.Combine
+        cbDemuxAndIndex.Visible = Mode <> SourceInputMode.Combine
     End Sub
 
     Private Sub bAdd_Click() Handles bnAdd.Click
-        Using d As New OpenFileDialog
-            d.Multiselect = True
-            d.SetFilter(FileTypes.Video)
-            d.SetInitDir(s.LastSourceDir)
+        Using td As New TaskDialog(Of String)
+            td.AddCommandLink("Add files", "files")
+            td.AddCommandLink("Add folder", "folder")
+            td.AddCommandLink("Add folder including sub-folders", "sub-folders")
 
-            If d.ShowDialog() = DialogResult.OK Then
-                s.LastSourceDir = Filepath.GetDir(d.FileName)
-                lb.Items.AddRange(d.FileNames.Sort.ToArray)
-                UpdateControls()
-            End If
+            Select Case td.Show
+                Case "files"
+                    Using d As New OpenFileDialog
+                        d.Multiselect = True
+                        d.SetFilter(FileTypes.Video)
+                        d.SetInitDir(s.LastSourceDir)
+
+                        If d.ShowDialog() = DialogResult.OK Then
+                            s.LastSourceDir = Filepath.GetDir(d.FileName)
+                            lb.Items.AddRange(d.FileNames.Sort.ToArray)
+                            UpdateControls()
+                        End If
+                    End Using
+                Case "folder", "sub-folders"
+                    Using d As New FolderBrowserDialog
+                        d.Description = "Please choose a directory."
+
+                        If d.ShowDialog = DialogResult.OK Then
+                            Dim opt = If(td.SelectedValue = "sub-folders", SearchOption.AllDirectories, SearchOption.TopDirectoryOnly)
+                            lb.Items.AddRange(Directory.GetFiles(d.SelectedPath, "*.*", opt))
+                            UpdateControls()
+                        End If
+                    End Using
+            End Select
         End Using
     End Sub
 
@@ -318,7 +335,7 @@ Public Class SourceFilesForm
 
     Private Sub SourceFilesForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         If e.KeyData = (Keys.Alt Or Keys.M) Then
-            cbCreateJobs.Focus()
+            cbDemuxAndIndex.Focus()
         End If
     End Sub
 

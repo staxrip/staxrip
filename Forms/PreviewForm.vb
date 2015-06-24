@@ -1,12 +1,8 @@
 Imports System.ComponentModel
-Imports System.Text.RegularExpressions
-Imports System.Drawing.Design
-Imports System.Threading
-Imports System.Text
 
 Imports StaxRip.UI
 
-Public Class PreviewForm
+Class PreviewForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -272,8 +268,8 @@ Public Class PreviewForm
     Public AVI As AVIFile
     Public RangeStart As Integer = -1
 
-    Private InfoAviSynthDocument As AviSynthDocument
-    Private AviSynthDocument As AviSynthDocument
+    Private InfoAviSynthDocument As VideoScript
+    Private AviSynthDocument As VideoScript
     Private SizeFactor As Double = 1
     Private TargetFrames As Integer
     Private WithEvents GenericMenu As CustomMenu
@@ -286,7 +282,7 @@ Public Class PreviewForm
 
     Private Shared Instances As New List(Of PreviewForm)
 
-    Sub New(aviSynthDocument As AviSynthDocument)
+    Sub New(aviSynthDocument As VideoScript)
         MyBase.New()
         InitializeComponent()
         Icon = My.Resources.MainIcon
@@ -320,7 +316,7 @@ Public Class PreviewForm
     End Sub
 
     Sub RefreshScript()
-        TargetFrames = p.AvsDoc.GetFrames
+        TargetFrames = p.VideoScript.GetFrames
         If Not AVI Is Nothing Then AVI.Dispose()
         AVI = New AVIFile(AviSynthDocument.Path)
         Drawer = New VideoDrawer(pVideo, AVI)
@@ -530,17 +526,17 @@ Public Class PreviewForm
                 End If
 
                 Using rangePen As New Pen(c, trackWidth)
-                    g.DrawLine(rangePen, GetDrawPos(p.Ranges(x).Start) - TrackBarPosition \ 2, _
+                    g.DrawLine(rangePen, GetDrawPos(p.Ranges(x).Start) - TrackBarPosition \ 2,
                         pTrack.Height \ 2, GetDrawPos(p.Ranges(x).End) + TrackBarPosition \ 2, pTrack.Height \ 2)
                 End Using
             Next
         End If
 
-        Dim rangeSetPen As New Pen(Color.Yellow, trackWidth)
+        Dim rangeSetPen As New Pen(Color.DarkOrange, trackWidth)
 
         If RangeStart > -1 AndAlso RangeStart <= AVI.Position Then
-            g.DrawLine(rangeSetPen, GetDrawPos(RangeStart) - TrackBarPosition \ 2, _
-                pTrack.Height \ 2, GetDrawPos(AVI.Position) + _
+            g.DrawLine(rangeSetPen, GetDrawPos(RangeStart) - TrackBarPosition \ 2,
+                pTrack.Height \ 2, GetDrawPos(AVI.Position) +
                 TrackBarPosition \ 2, pTrack.Height \ 2)
         End If
 
@@ -549,7 +545,7 @@ Public Class PreviewForm
         Dim posPen As Pen
 
         If RangeStart > -1 Then
-            posPen = New Pen(Color.Yellow, trackWidth)
+            posPen = New Pen(Color.DarkOrange, trackWidth)
         Else
             posPen = New Pen(Color.Blue, trackWidth)
         End If
@@ -641,7 +637,7 @@ Public Class PreviewForm
     End Sub
 
     <Command("Parameter | Relative Position", "Jumps a given frame count.")>
-    Sub SetRelativePos(<DispName("Position"), _
+    Sub SetRelativePos(<DispName("Position"),
         Description("Frames to jump, negative values jump backward.")>
         pos As Integer)
 
@@ -790,7 +786,7 @@ Public Class PreviewForm
     <Command("Perform | Show External Player", "Shows the AviSynth script using the player currently associated with AVI files.")>
     Sub ShowExternalPlayer()
         UpdateTrim()
-        g.PlayScript()
+        g.PlayScript(p.VideoScript)
     End Sub
 
     <Command("Perform | Reload Script", "Reloads the script.")>
@@ -1002,20 +998,23 @@ Public Class PreviewForm
     End Sub
 
     Sub UpdateTrim()
-        Dim cut = p.AvsDoc.GetFilter("Cutting")
+        p.CutFrameCount = AviSynthDocument.GetFrames
+        p.CutFrameRate = AviSynthDocument.GetFramerate
+
+        Dim cut = p.VideoScript.GetFilter("Cutting")
 
         If p.Ranges.Count = 0 Then
             If Not cut Is Nothing Then
-                p.AvsDoc.Filters.Remove(cut)
+                p.VideoScript.Filters.Remove(cut)
             End If
         Else
             If cut Is Nothing Then
-                cut = New AviSynthFilter
+                cut = New VideoFilter
                 cut.Path = "Cutting"
                 cut.Category = "Cutting"
                 cut.Script = GetTrim()
                 cut.Active = True
-                p.AvsDoc.Filters.Add(cut)
+                p.VideoScript.Filters.Add(cut)
             End If
         End If
     End Sub
@@ -1026,14 +1025,22 @@ Public Class PreviewForm
         For Each i In p.Ranges
             If ret <> "" Then ret += " + "
 
-            ret += "Trim(" & i.Start & ", " & i.End & ")"
+            If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+                ret += "Trim(" & i.Start & ", " & i.End & ")"
 
-            If p.TrimAvsCode <> "" Then
-                ret += "." + p.TrimAvsCode.TrimStart("."c)
+                If p.TrimAvsCode <> "" Then
+                    ret += "." + p.TrimAvsCode.TrimStart("."c)
+                End If
+            Else
+                ret += "core.std.Trim(clip, " & i.Start & ", " & i.End & ")"
             End If
         Next
 
-        Return ret
+        If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+            Return ret
+        Else
+            Return "clip = " + ret
+        End If
     End Function
 
     Private Sub Control_Enter() Handles bBackward100.Enter, bBackward10.Enter, bBackward1.Enter, bForward1.Enter, bForward10.Enter, bForward100.Enter, bRangeEnd.Enter, bRangeStart.Enter, bDeleteRange.Enter, bExtras.Enter

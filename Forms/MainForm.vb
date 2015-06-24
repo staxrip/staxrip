@@ -14,7 +14,7 @@ Imports VB6 = Microsoft.VisualBasic
 Imports System.Threading.Tasks
 Imports System.Runtime.InteropServices
 
-Public Class MainForm
+Class MainForm
     Inherits FormBase
 
 #Region " Designer "
@@ -187,7 +187,7 @@ Public Class MainForm
         Me.bNext.Location = New System.Drawing.Point(906, 36)
         Me.bNext.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.bNext.Name = "bNext"
-        Me.bNext.Size = New System.Drawing.Size(65, 34)
+        Me.bNext.Size = New System.Drawing.Size(70, 34)
         Me.bNext.TabIndex = 39
         Me.bNext.Text = "Next"
         '
@@ -224,10 +224,9 @@ Public Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lTip.Cursor = System.Windows.Forms.Cursors.Hand
         Me.lTip.ForeColor = System.Drawing.Color.Blue
-        Me.lTip.Location = New System.Drawing.Point(6, 21)
-        Me.lTip.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lTip.Location = New System.Drawing.Point(3, 25)
         Me.lTip.Name = "lTip"
-        Me.lTip.Size = New System.Drawing.Size(896, 68)
+        Me.lTip.Size = New System.Drawing.Size(900, 64)
         Me.lTip.TabIndex = 40
         Me.lTip.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -863,7 +862,7 @@ Public Class MainForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.AviSynthListView.CheckBoxes = True
-        Me.AviSynthListView.DoubleClickDoesCheck = False
+        Me.AviSynthListView.AutoCheckMode = AutoCheckMode.None
         Me.AviSynthListView.FullRowSelect = True
         Me.AviSynthListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.AviSynthListView.HideSelection = False
@@ -1330,7 +1329,7 @@ Public Class MainForm
 
                     Dim sd As New SortedDictionary(Of String, Action)
 
-                    For Each i2 In Packs.Packages.Values
+                    For Each i2 In Packs.Packages
                         If Not i2.LaunchAction Is Nothing AndAlso Not i2.IsStatusCritical Then
                             sd(i2.LaunchTitle) = i2.LaunchAction
                         End If
@@ -1346,12 +1345,23 @@ Public Class MainForm
                 If i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.HelpApplications) Then
                     i.DropDownItems.Clear()
 
-                    For Each i2 In Packs.Packages.Values.Sort
+                    For Each i2 In Packs.Packages
                         Dim helpPath = i2.GetHelpPath
 
                         If helpPath <> "" Then
-                            ActionMenuItem.Add(i.DropDownItems, i2.TreePath + " | " + i2.Name,
-                                               Sub() g.ShellExecute(helpPath))
+                            Dim plugin = TryCast(i2, PluginPackage)
+
+                            If plugin Is Nothing Then
+                                ActionMenuItem.Add(i.DropDownItems, "Apps | " + i2.Name, Sub() g.ShellExecute(helpPath))
+                            Else
+                                If plugin.AviSynthFilterNames?.Length > 0 Then
+                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | AviSynth | " + i2.Name, Sub() g.ShellExecute(helpPath))
+                                End If
+
+                                If plugin.VapourSynthFilterNames?.Length > 0 Then
+                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | VapourSynth | " + i2.Name, Sub() g.ShellExecute(helpPath))
+                                End If
+                            End If
                         End If
                     Next
                 End If
@@ -1553,7 +1563,7 @@ Public Class MainForm
     End Sub
 
     Sub OpenSingleFile(files As IEnumerable(Of String))
-        Dim filter As AviSynthFilter
+        Dim filter As VideoFilter
 
         If files.Count = 1 Then
             Dim td As New TaskDialog(Of String)
@@ -1562,42 +1572,55 @@ Public Class MainForm
             td.AddCommandLink("Automatic", "Automatic")
 
             If FileTypes.DGDecNVInput.Contains(files(0).Ext) Then
-                If Packs.DGDecodeNV.GetPath <> "" Then td.AddCommandLink("DGSource", "DGSource")
-                If Packs.DGDecodeIM.GetPath <> "" Then td.AddCommandLink("DGSourceIM", "DGSourceIM")
+                If Packs.DGDecodeNV.GetPath <> "" Then td.AddCommandLink("DGSource using AviSynth+", "DGSource")
+                If Packs.DGDecodeIM.GetPath <> "" Then td.AddCommandLink("DGSourceIM using AviSynth+", "DGSourceIM")
             End If
 
-            td.AddCommandLink("FFVideoSource", "FFVideoSource")
-            td.AddCommandLink("LWLibavVideoSource", "LWLibavVideoSource")
+            td.AddCommandLink("FFVideoSource using AviSynth+", "FFVideoSource")
+            td.AddCommandLink("LWLibavVideoSource using AviSynth+", "LWLibavVideoSource")
 
             If {"mp4", "m4v", "mov"}.Contains(files(0).Ext) Then
-                td.AddCommandLink("LSMASHVideoSource", "LSMASHVideoSource")
+                td.AddCommandLink("LSMASHVideoSource using AviSynth+", "LSMASHVideoSource")
             End If
 
             If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso
                 g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
 
-                td.AddCommandLink("DSS2", "DSS2")
+                td.AddCommandLink("DSS2 using AviSynth+", "DSS2")
             End If
 
-            If files(0).Ext = "avi" Then td.AddCommandLink("AVISource", "AVISource")
+            If files(0).Ext = "avi" Then td.AddCommandLink("AVISource using AviSynth+", "AVISource")
+
+            If {"mp4", "m4v", "mov"}.Contains(files(0).Ext) Then
+                td.AddCommandLink("LibavSMASHSource using VapourSynth", "vsLibavSMASHSource")
+            End If
+
+            td.AddCommandLink("ffms2 using VapourSynth", "vsffms2")
+            td.AddCommandLink("LWLibavSource using VapourSynth", "vsLWLibavSource")
 
             Select Case td.Show
                 Case "Automatic"
-                    filter = New AviSynthFilter("Source", "Automatic", "", True)
+                    filter = New VideoFilter("Source", "Automatic", "", True)
                 Case "DGSource"
-                    filter = New AviSynthFilter("Source", "DGSource", "DGSource(""%source_file%"")")
+                    filter = New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
                 Case "DGSourceIM"
-                    filter = New AviSynthFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
+                    filter = New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
                 Case "FFVideoSource"
-                    filter = New AviSynthFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")")
+                    filter = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")")
                 Case "LWLibavVideoSource"
-                    filter = New AviSynthFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")")
+                    filter = New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")")
                 Case "LSMASHVideoSource"
-                    filter = New AviSynthFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")")
+                    filter = New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")")
                 Case "DSS2"
-                    filter = New AviSynthFilter("Source", "DSS2", "DSS2(""%source_file%"")")
+                    filter = New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")")
                 Case "AVISource"
-                    filter = New AviSynthFilter("Source", "AVISource", "AviSource(""%source_file%"", audio = false)")
+                    filter = New VideoFilter("Source", "AVISource", "AviSource(""%source_file%"", audio = false)")
+                Case "vsffms2"
+                    filter = New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')")
+                Case "vsLibavSMASHSource"
+                    filter = New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(source = r'%source_file%')")
+                Case "vsLWLibavSource"
+                    filter = New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(source = r'%source_file%')")
             End Select
         End If
 
@@ -1628,14 +1651,14 @@ Public Class MainForm
     End Sub
 
     Sub OpenVideoSourceFiles(files As IEnumerable(Of String),
-                             Optional preferredSourceFilter As AviSynthFilter = Nothing)
+                             Optional preferredSourceFilter As VideoFilter = Nothing)
 
         OpenVideoSourceFiles(files, True, preferredSourceFilter)
     End Sub
 
     Sub OpenVideoSourceFiles(files As IEnumerable(Of String),
                              autoMode As Boolean,
-                             Optional preferredSourceFilter As AviSynthFilter = Nothing)
+                             Optional preferredSourceFilter As VideoFilter = Nothing)
 
         Dim recoverPath = g.ProjectPath
         Dim recoverProjectPath = CommonDirs.Temp + Guid.NewGuid.ToString + ".bin"
@@ -1646,6 +1669,10 @@ Public Class MainForm
 
         Try
             If g.ShowVideoSourceWarnings(files) Then Throw New AbortException
+
+            If Not p.BatchMode AndAlso files(0).Ext = "vob" Then
+                MsgWarn("Please note that opening VOB has many disadvantages. The easiest and most reliable method is ripping DVDs with MakeMKV and open MKV with StaxRip.")
+            End If
 
             For Each i In files
                 Dim name = Filepath.GetName(i)
@@ -1710,10 +1737,21 @@ Public Class MainForm
                         End If
                     End If
                 Next
-            ElseIf Filepath.GetExtFull(p.SourceFile) = ".avs" Then
+            ElseIf p.SourceFile.Ext = "avs" Then
                 Dim code = File.ReadAllText(p.SourceFile)
-
                 Dim match = Regex.Match(code, "source\(""(.+?)""", RegexOptions.IgnoreCase)
+
+                If match.Success Then
+                    Dim fp = match.Groups(1).Value
+
+                    If File.Exists(fp) AndAlso FileTypes.Video.Contains(Filepath.GetExt(fp)) Then
+                        p.LastOriginalSourceFile = fp
+                        p.FirstOriginalSourceFile = fp
+                    End If
+                End If
+            ElseIf p.SourceFile.Ext = "vpy" Then
+                Dim code = File.ReadAllText(p.SourceFile)
+                Dim match = Regex.Match(code, "source\(source='(.+)'", RegexOptions.IgnoreCase)
 
                 If match.Success Then
                     Dim fp = match.Groups(1).Value
@@ -1733,7 +1771,6 @@ Public Class MainForm
             End If
 
             p.Codec = MediaInfo.GetVideoCodec(p.LastOriginalSourceFile)
-
             p.CodecProfile = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format_Profile")
 
             If autoMode AndAlso p.BatchMode Then
@@ -1793,7 +1830,23 @@ Public Class MainForm
             Next
 
             If Not preferredSourceFilter Is Nothing Then
-                p.AvsDoc.SetFilter(preferredSourceFilter.Category,
+                Dim isVapourSynth = preferredSourceFilter.Script.Contains("clip = core.")
+
+                If isVapourSynth Then
+                    If Not Packs.Python.VerifyOK(True) OrElse Not Packs.VapourSynth.VerifyOK(True) Then
+                        Throw New AbortException
+                    End If
+
+                    If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+                        p.VideoScript = VideoScript.GetDefaults()(1)
+                    End If
+                Else
+                    If p.VideoScript.Engine = ScriptingEngine.VapourSynth Then
+                        p.VideoScript = VideoScript.GetDefaults()(0)
+                    End If
+                End If
+
+                p.VideoScript.SetFilter(preferredSourceFilter.Category,
                                    preferredSourceFilter.Name,
                                    preferredSourceFilter.Script)
             End If
@@ -1812,23 +1865,28 @@ Public Class MainForm
 
             s.LastSourceDir = Filepath.GetDir(p.SourceFile)
 
-            Dim sourceFilter = p.AvsDoc.GetFilter("Source")
+            Dim sourceFilter = p.VideoScript.GetFilter("Source")
 
             If Not sourceFilter.Script.Contains("(") Then
-                If Filepath.GetExt(p.SourceFile) = "avs" Then
-                    p.AvsDoc.Filters.Clear()
-                    p.AvsDoc.Filters.Add(New AviSynthFilter("Source", "AVS Import", File.ReadAllText(p.SourceFile), True))
+                If p.SourceFile.Ext = "avs" Then
+                    p.VideoScript.Engine = ScriptingEngine.AviSynth
+                    p.VideoScript.Filters.Clear()
+                    p.VideoScript.Filters.Add(New VideoFilter("Source", "AviSynth Import", File.ReadAllText(p.SourceFile), True))
+                ElseIf p.SourceFile.Ext = "vpy" Then
+                    p.VideoScript.Engine = ScriptingEngine.VapourSynth
+                    p.VideoScript.Filters.Clear()
+                    p.VideoScript.Filters.Add(New VideoFilter("Source", "VapourSynth Import", File.ReadAllText(p.SourceFile), True))
                 Else
                     For Each i In s.FilterPreferences
                         Dim name = i.Name.SplitNoEmptyAndWhiteSpace({",", " "})
 
                         If name.Contains(Filepath.GetExt(p.SourceFile)) Then
-                            Dim filters = s.AviSynthCategories.Where(
+                            Dim filters = s.AviSynthProfiles.Where(
                                 Function(v) v.Name = "Source").First.Filters.Where(
                                 Function(v) v.Name = i.Value)
 
                             If filters.Count > 0 Then
-                                p.AvsDoc.SetFilter("Source", filters(0).Name, filters(0).Script)
+                                p.VideoScript.SetFilter("Source", filters(0).Name, filters(0).Script)
                                 Exit For
                             End If
                         End If
@@ -1838,20 +1896,20 @@ Public Class MainForm
                         Dim def = s.FilterPreferences.Where(Function(v) v.Name = "default")
 
                         If def.Count > 0 Then
-                            Dim filters = s.AviSynthCategories.Where(
+                            Dim filters = s.AviSynthProfiles.Where(
                                 Function(v) v.Name = "Source").First.Filters.Where(
                                 Function(v) v.Name = def(0).Value)
 
                             If filters.Count > 0 Then
-                                p.AvsDoc.SetFilter("Source", filters(0).Name, filters(0).Script)
+                                p.VideoScript.SetFilter("Source", filters(0).Name, filters(0).Script)
                             End If
                         End If
                     End If
 
                     If Not sourceFilter.Script.Contains("(") Then
-                        Dim filter = AviSynthCategory.GetDefaults.Where(Function(v) v.Name = "Source").First.Filters.Where(Function(v) v.Name = "FFVideoSource").First
-                        p.AvsDoc.SetFilter(filter.Category, filter.Name, filter.Script)
-                        avsIndexing()
+                        Dim filter = FilterCategory.GetAviSynthDefaults.Where(Function(v) v.Name = "Source").First.Filters.Where(Function(v) v.Name = "FFVideoSource").First
+                        p.VideoScript.SetFilter(filter.Category, filter.Name, filter.Script)
+                        Indexing()
                     End If
 
                     If Not sourceFilter.Script.Contains("Crop(") Then
@@ -1859,7 +1917,7 @@ Public Class MainForm
                         Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
 
                         If sourceWidth Mod 4 <> 0 OrElse sourceHeight Mod 4 <> 0 Then
-                            p.AvsDoc.GetFilter("Source").Script += CrLf + "Crop(0, 0, -" & sourceWidth Mod 4 & ", -" & sourceHeight Mod 4 & ")"
+                            p.VideoScript.GetFilter("Source").Script += CrLf + "Crop(0, 0, -" & sourceWidth Mod 4 & ", -" & sourceHeight Mod 4 & ")"
                         End If
                     End If
 
@@ -1880,7 +1938,7 @@ Public Class MainForm
                                 End If
                             End If
 
-                            p.AvsDoc.GetFilter("Source").Script += CrLf + "ConvertToYV12(" + matrix + ")"
+                            p.VideoScript.GetFilter("Source").Script += CrLf + "ConvertToYV12(" + matrix + ")"
                         End If
                     End If
                 End If
@@ -1904,7 +1962,7 @@ Public Class MainForm
             DetectAudioFiles(1, False, False)
 
             If p.UseAvsAsAudioSource Then
-                tbAudioFile0.Text = p.AvsDoc.Path
+                tbAudioFile0.Text = p.VideoScript.Path
             Else
                 If p.Audio0.File = "" AndAlso p.Audio1.File = "" Then
                     If Not TypeOf p.Audio0 Is NullAudioProfile AndAlso
@@ -2001,7 +2059,7 @@ Public Class MainForm
                     If td.Show = DialogResult.OK Then
                         TryAnotherFilter()
                     Else
-                        p.AvsDoc.Synchronize()
+                        p.VideoScript.Synchronize()
                         Throw New AbortException
                     End If
                 End Using
@@ -2017,22 +2075,24 @@ Public Class MainForm
 
                 If errorMsg <> "" Then
                     MsgError("Failed to open source", errorMsg)
-                    p.AvsDoc.Synchronize()
+                    p.VideoScript.Synchronize()
                     Throw New AbortException
                 End If
             End If
 
-            Dim miFPS = MediaInfo.GetFrameRate(p.FirstOriginalSourceFile)
-            Dim avsFPS = p.SourceAviSynthDocument.GetFramerate
+            If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+                Dim miFPS = MediaInfo.GetFrameRate(p.FirstOriginalSourceFile)
+                Dim avsFPS = p.SourceAviSynthDocument.GetFramerate
 
-            If (CInt(miFPS) * 2) = CInt(avsFPS) Then
-                Dim src = p.AvsDoc.GetFilter("Source")
-                src.Script = src.Script + CrLf + "SelectEven().AssumeFPS(" & miFPS.ToString(CultureInfo.InvariantCulture) + ")"
-                p.SourceAviSynthDocument.Synchronize()
-            ElseIf miFPS <> avsFPS
-                Dim src = p.AvsDoc.GetFilter("Source")
-                src.Script = src.Script + CrLf + "# AssumeFPS(" + miFPS.ToString(CultureInfo.InvariantCulture) + ")"
-                p.SourceAviSynthDocument.Synchronize()
+                If (CInt(miFPS) * 2) = CInt(avsFPS) Then
+                    Dim src = p.VideoScript.GetFilter("Source")
+                    src.Script = src.Script + CrLf + "SelectEven().AssumeFPS(" & miFPS.ToString(CultureInfo.InvariantCulture) + ")"
+                    p.SourceAviSynthDocument.Synchronize()
+                ElseIf miFPS <> avsFPS
+                    Dim src = p.VideoScript.GetFilter("Source")
+                    src.Script = src.Script + CrLf + "# AssumeFPS(" + miFPS.ToString(CultureInfo.InvariantCulture) + ")"
+                    p.SourceAviSynthDocument.Synchronize()
+                End If
             End If
 
             UpdateSourceParameters()
@@ -2052,7 +2112,7 @@ Public Class MainForm
             ExtractForcedVobSubSubtitles()
             p.VideoEncoder.Muxer.Init()
 
-            Dim crop = p.AvsDoc.IsFilterActive("Crop")
+            Dim crop = p.VideoScript.IsFilterActive("Crop")
 
             If crop Then
                 g.AutoCrop()
@@ -2095,12 +2155,12 @@ Public Class MainForm
     End Sub
 
     Sub TryAnotherFilter(Optional recursive As Boolean = True)
-        If p.AvsDoc.GetFilter("Source").Script.ToLower.Contains("directshowsource") Then
+        If p.VideoScript.GetFilter("Source").Script.ToLower.Contains("directshowsource") Then
             Dim src = "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")" + CrLf +
                           "Crop(0, 0, -Width % 4, -Height % 4)" + CrLf + "ConvertToYV12()"
 
-            p.AvsDoc.SetFilter("Source", "FFVideoSource", src)
-            avsIndexing()
+            p.VideoScript.SetFilter("Source", "FFVideoSource", src)
+            Indexing()
         Else
             Dim fpsParam = ""
             Dim fps = MediaInfo.GetFrameRate(p.SourceFile)
@@ -2112,7 +2172,7 @@ Public Class MainForm
             End If
 
             Dim script = "DirectShowSource(""%source_file%"", audio=false" + fpsParam + ")" + CrLf + "ConvertToYV12()"
-            p.AvsDoc.SetFilter("Source", "DirectShow", script)
+            p.VideoScript.SetFilter("Source", "DirectShow", script)
         End If
 
         AviSynthListView.Load()
@@ -2139,7 +2199,7 @@ Public Class MainForm
     End Sub
 
     Sub AutoResize()
-        If p.AvsDoc.IsFilterActive("Resize") Then
+        If p.VideoScript.IsFilterActive("Resize") Then
             If p.AutoResizeImage <> 0 Then
                 SetTargetImageSizeByPixel(p.AutoResizeImage)
             Else
@@ -2271,16 +2331,15 @@ Public Class MainForm
             ProcessForm.ShowForm()
 
             Log.WriteHeader("AviSynth Filters")
-            Log.WriteLine(Macro.Solve(p.AvsDoc.GetScript))
-
+            Log.WriteLine(Macro.Solve(p.VideoScript.GetScript))
             Log.WriteHeader("AviSynth Properties")
 
             Dim props = "source frame count: " & p.SourceAviSynthDocument.GetFrames & CrLf +
                 "source frame rate: " & p.SourceAviSynthDocument.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + CrLf +
                 "source duration: " + TimeSpan.FromSeconds(p.SourceAviSynthDocument.GetFrames / p.SourceAviSynthDocument.GetFramerate).ToString + CrLf +
-                "target frame count: " & p.AvsDoc.GetFrames & CrLf +
-                "target frame rate: " & p.AvsDoc.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + CrLf +
-                "target duration: " + TimeSpan.FromSeconds(p.AvsDoc.GetFrames / p.AvsDoc.GetFramerate).ToString
+                "target frame count: " & p.VideoScript.GetFrames & CrLf +
+                "target frame rate: " & p.VideoScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + CrLf +
+                "target duration: " + TimeSpan.FromSeconds(p.VideoScript.GetFrames / p.VideoScript.GetFramerate).ToString
 
             Log.WriteLine(props.FormatColumn(":"))
 
@@ -2344,8 +2403,8 @@ Public Class MainForm
             Return False
         End If
 
-        Dim isCropped = p.AvsDoc.IsFilterActive("Crop")
-        Dim isResized = p.AvsDoc.IsFilterActive("Resize")
+        Dim isCropped = p.VideoScript.IsFilterActive("Crop")
+        Dim isResized = p.VideoScript.IsFilterActive("Resize")
 
         tbTargetWidth.ReadOnly = Not isResized
         tbTargetHeight.ReadOnly = Not isResized
@@ -2450,7 +2509,7 @@ Public Class MainForm
 
         lbSourceLength.Text = GetLengthString(p.SourceSeconds)
         lSourceImageSize.Text = p.SourceWidth.ToString + "/" + p.SourceHeight.ToString
-        lSourceFramerate.Text = p.SourceFramerate.ToString("f3")
+        lSourceFramerate.Text = p.SourceFrameRate.ToString("f3")
 
         lCodec.Text = p.Codec
         lCodecProfile.Text = p.CodecProfile
@@ -2470,9 +2529,9 @@ Public Class MainForm
                 End If
             End If
 
-            If p.AvsDoc.Filters.Count = 0 OrElse
-                Not p.AvsDoc.Filters(0).Active OrElse
-                p.AvsDoc.Filters(0).Category <> "Source" Then
+            If p.VideoScript.Filters.Count = 0 OrElse
+                Not p.VideoScript.Filters(0).Active OrElse
+                p.VideoScript.Filters(0).Category <> "Source" Then
 
                 If ProcessTip("The first filter must have the category Source.") Then
                     gbAssistant.Text = "Invalid filter setup"
@@ -2509,7 +2568,7 @@ Public Class MainForm
             End If
 
             If p.RemindToCrop AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
-                p.AvsDoc.IsFilterActive("Crop") AndAlso
+                p.VideoScript.IsFilterActive("Crop") AndAlso
                 ProcessTip("Click here to open the crop dialog. When done continue with Next.") Then
 
                 AssistantMethod = AddressOf OpenCropDialog
@@ -2550,8 +2609,15 @@ Public Class MainForm
             End If
 
             If Math.Abs(p.Audio0.Delay) > 2000 Then
-                If ProcessTip("The audio delay is unusual high, tools that can prevent such delays are MakeMKV, ProjectX, dsmux, gdsmux or TS-Doctor." + CrLf +
-                              "Visit the support forum for help on individual cases.") Then
+                Dim tip As String
+
+                If GetIfoFile() <> "" Then
+                    tip = "The audio delay is unusual high indicating a sync problem. The best method to prevent such problems is ripping with MakeMKV. Alternativly DGIndex or DGIndexNV can be used manually to trim the studio intro at the beginning of the DVD."
+                Else
+                    tip = "The audio delay is unusual high indicating a sync problem. Tools that can prevent such problems are ProjectX, dsmux or gdsmux."
+                End If
+
+                If ProcessTip(tip) Then
                     lTip.Font = New Font(Font.FontFamily, 8)
                     ResetAssistantFont = True
                     g.Highlight(True, tbAudioFile0)
@@ -2620,7 +2686,7 @@ Public Class MainForm
             If Not isValidAnamorphicSize AndAlso
                 (ae > p.MaxAspectRatioError OrElse
                 ae < -p.MaxAspectRatioError) _
-                AndAlso p.AvsDoc.IsFilterActive("Resize") Then
+                AndAlso p.VideoScript.IsFilterActive("Resize") Then
 
                 If ProcessTip("Use the resize slider to correct the aspect ratio error.") Then
                     g.Highlight(True, lAspectRatioError)
@@ -2643,7 +2709,14 @@ Public Class MainForm
                     Return False
                 End If
             Else
-                If Not p.AvsDoc.IsFilterActive("Cutting") AndAlso Form.ActiveForm Is Me Then
+                If p.CutFrameRate <> p.VideoScript.GetFramerate Then
+                    If ProcessTip("The frame rate was changed after cutting was performed, please ensure that this change is happening after the Cutting filter section in the AviSynth script.") Then
+                        gbAssistant.Text = "Illegal frame rate change"
+                        Return False
+                    End If
+                End If
+
+                If Not p.VideoScript.IsFilterActive("Cutting") AndAlso Form.ActiveForm Is Me Then
                     If ProcessTip("The cutting filter settings don't match with the cutting settings used in the preview.") Then
                         gbAssistant.Text = "Invalid Cutting Settings"
                         CanIgnoreTip = False
@@ -2651,7 +2724,7 @@ Public Class MainForm
                     End If
                 End If
 
-                If p.VideoEncoder.Muxer.Subtitles.Count > 0 Then
+                If p.VideoEncoder.Muxer.Subtitles.Where(Function(subtitle) subtitle.Enabled).Count > 0 Then
                     If ProcessTip("Subtitle cutting is not supported, please remove the subtitles from the container options.") Then
                         gbAssistant.Text = "Subtitle cutting unsupported"
                         CanIgnoreTip = False
@@ -2690,7 +2763,7 @@ Public Class MainForm
                 End If
             End If
 
-            If p.AvsDoc.IsFilterActive("Resize") Then
+            If p.VideoScript.IsFilterActive("Resize") Then
                 If p.TargetWidth Mod p.ForcedOutputMod <> 0 Then
                     If ProcessTip("Move the resize slider to adjust the target width to be divisible by " & p.ForcedOutputMod & " or customize Options > Image > Output Mod.") Then
                         CanIgnoreTip = Not p.AutoCorrectCropValues
@@ -2766,17 +2839,17 @@ Public Class MainForm
             End If
 
             If Not (MouseButtons = MouseButtons.Left AndAlso ActiveControl Is tbResize) Then
-                If Not p.AvsDoc.GetErrorMessage Is Nothing AndAlso Not Paths.VerifyRequirements Then
-                    If ProcessTip(p.AvsDoc.GetErrorMessage) Then
+                If Not p.VideoScript.GetErrorMessage Is Nothing AndAlso Not Paths.VerifyRequirements Then
+                    If ProcessTip(p.VideoScript.GetErrorMessage) Then
                         CanIgnoreTip = False
                         gbAssistant.Text = "AviSynth Error"
                         Return False
                     End If
                 End If
 
-                If Not p.AvsDoc.GetErrorMessage Is Nothing Then
-                    If ProcessTip(p.AvsDoc.GetErrorMessage) Then
-                        MsgError(p.AvsDoc.GetErrorMessage)
+                If Not p.VideoScript.GetErrorMessage Is Nothing Then
+                    If ProcessTip(p.VideoScript.GetErrorMessage) Then
+                        MsgError(p.VideoScript.GetErrorMessage)
                         CanIgnoreTip = False
                         gbAssistant.Text = "AviSynth Error"
                         Return False
@@ -2826,7 +2899,7 @@ Public Class MainForm
             If tb.Text <> ap.File Then
                 ap.File = tb.Text
 
-                If Not p.AvsDoc.GetFilter("Source").Script.Contains("DirectShowSource") Then
+                If Not p.VideoScript.GetFilter("Source").Script.Contains("DirectShowSource") Then
                     ap.Delay = g.ExtractDelay(ap.File)
                 End If
 
@@ -2946,7 +3019,7 @@ Public Class MainForm
                             Return ret.ToLower
                         End Function
 
-        Dim srcScript = p.AvsDoc.GetFilter("Source").Script.ToLower
+        Dim srcScript = p.VideoScript.GetFilter("Source").Script.ToLower
 
         For Each i In s.Demuxers
             If i.Name = "dsmux" Then
@@ -2960,8 +3033,8 @@ Public Class MainForm
                     Continue For
                 End If
 
-                If p.AvsDoc.Contains("Source", "DGSource(") OrElse
-                    p.AvsDoc.Contains("Source", "DGSourceIM(") Then
+                If p.VideoScript.Contains("Source", "DGSource(") OrElse
+                    p.VideoScript.Contains("Source", "DGSourceIM(") Then
 
                     Continue For
                 End If
@@ -3008,48 +3081,53 @@ Public Class MainForm
             End If
         Next
 
-        avsIndexing()
+        Indexing()
     End Sub
 
-    Sub avsIndexing()
-        Dim code = p.AvsDoc.GetFilter("Source").Script.ToLower
+    Sub Indexing()
+        Dim codeLower = p.VideoScript.GetFilter("Source").Script.ToLower
 
-        If code.Contains("ffvideosource(") Then
+        If codeLower.Contains("ffvideosource(") OrElse codeLower.Contains("ffms2.source") Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
                 p.SourceFile = p.LastOriginalSourceFile
-
                 BlockSourceTextBoxTextChanged = True
                 tbSourceFile.Text = p.SourceFile
                 BlockSourceTextBoxTextChanged = False
             End If
 
-            If code.Contains("cachefile") Then
+            If codeLower.Contains("cachefile") Then
                 ffmsindex(p.SourceFile, p.TempDir + Filepath.GetBase(p.SourceFile) + ".ffindex")
             Else
                 ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")
             End If
-        ElseIf code.Contains("lwlibavvideosource(") Then
+        ElseIf codeLower.Contains("lwlibavvideosource(") OrElse codeLower.Contains("lwlibavsource(") Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
                 p.SourceFile = p.LastOriginalSourceFile
-
                 BlockSourceTextBoxTextChanged = True
                 tbSourceFile.Text = p.SourceFile
                 BlockSourceTextBoxTextChanged = False
             End If
 
-            If Not File.Exists(p.SourceFile + ".lwi") AndAlso File.Exists(p.AvsDoc.Path) AndAlso
+            If Not File.Exists(p.SourceFile + ".lwi") AndAlso File.Exists(p.VideoScript.Path) AndAlso
                 Not FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) Then
 
                 Using proc As New Proc
-                    proc.Init("Index LWLibavVideoSource")
+                    proc.Init("Index LWLibav")
                     proc.Encoding = Encoding.UTF8
-                    proc.File = Packs.ffmpeg.GetPath
-                    proc.Arguments = "-i """ + p.AvsDoc.Path + """"
+
+                    If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+                        proc.File = Packs.ffmpeg.GetPath
+                        proc.Arguments = "-i """ + p.VideoScript.Path + """"
+                    Else
+                        proc.File = Packs.vspipe.GetPath
+                        proc.Arguments = """" + p.VideoScript.Path + """ NUL -i"
+                    End If
+
                     proc.AllowedExitCodes = {0, 1}
                     proc.Start()
                 End Using
             End If
-        ElseIf code.Contains("dgsource(") AndAlso Not p.SourceFile.Ext = "dgi" Then
+        ElseIf codeLower.Contains("dgsource(") AndAlso Not p.SourceFile.Ext = "dgi" Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
             Dim dgIndexNV = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexNV")
             Dim outFile = p.TempDir + p.SourceFile.Base + ".dgi"
@@ -3061,7 +3139,7 @@ Public Class MainForm
                 tbSourceFile.Text = outFile
                 BlockSourceTextBoxTextChanged = False
             End If
-        ElseIf code.Contains("dgsourceim(") AndAlso Not p.SourceFile.Ext = "dgim" Then
+        ElseIf codeLower.Contains("dgsourceim(") AndAlso Not p.SourceFile.Ext = "dgim" Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
             Dim dgIndexIM = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexIM")
             Dim outFile = p.TempDir + p.SourceFile.Base + ".dgim"
@@ -3217,7 +3295,7 @@ Public Class MainForm
                                Dim ret As New StringPairList
                                ret.Add(" Filters Menu", "StaxRip allows to assign a source filter profile to a particular source file type. The source filter profiles can be customized by right-clicking the filters menu in the main dialog.")
 
-                               For Each i In s.AviSynthCategories.Where(
+                               For Each i In s.AviSynthProfiles.Where(
                                    Function(v) v.Name = "Source").First.Filters
 
                                    If i.Script <> "" Then
@@ -3239,7 +3317,7 @@ Public Class MainForm
             c2.HeaderText = "Prefered Source Filter"
             c2.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
 
-            Dim filterNames = s.AviSynthCategories.Where(
+            Dim filterNames = s.AviSynthProfiles.Where(
                 Function(v) v.Name = "Source").First.Filters.Where(
                 Function(v) v.Name <> "Automatic").Select(Function(v) v.Name).Sort.ToArray
 
@@ -3347,7 +3425,7 @@ Public Class MainForm
             Dim found As Boolean
 
             If s.StringDictionary.ContainsKey("RecentExternalApplicationControl") Then
-                For Each i As Package In Packs.Packages.Values
+                For Each i As Package In Packs.Packages
                     If i.Name = s.StringDictionary("RecentExternalApplicationControl") Then
                         f.ShowPackage(i)
                         found = True
@@ -3445,7 +3523,7 @@ Public Class MainForm
                     Case DynamicMenuItemID.Audio2Profiles
                         g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() OpenAudioProfilesDialog(1), AddressOf LoadAudioProfile1)
                     Case DynamicMenuItemID.FilterSetupProfiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.AviSynthProfiles, AddressOf OpenAviSynthProfilesDialog, AddressOf LoadAviSynthProfile)
+                        g.PopulateProfileMenu(i.DropDownItems, s.FilterSetupProfiles, AddressOf OpenAviSynthProfilesDialog, AddressOf LoadScriptProfile)
                 End Select
 
                 Exit For
@@ -3455,14 +3533,18 @@ Public Class MainForm
 
     <Command("Dialog | Crop", "Dialog to crop borders.")>
     Sub OpenCropDialog()
-        If Not OK(p.SourceFile) Then
+        If p.SourceFile = "" Then
             OpenSourceFiles()
         Else
             If Not Paths.VerifyRequirements Then Exit Sub
             If Not g.IsValidSource Then Exit Sub
 
             If Not g.EnableFilter("Crop") Then
-                p.AvsDoc.InsertAfter("Source", New AviSynthFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))
+                If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+                    p.VideoScript.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))
+                Else
+                    p.VideoScript.InsertAfter("Source", New VideoFilter("Crop", "CropAbs", "cropwidth = clip.width - %crop_left% - %crop_right%" + CrLf + "cropheight = clip.height - %crop_top% - %crop_bottom%" + CrLf + "clip = core.std.CropAbs(clip, cropwidth, cropheight, %crop_left%, %crop_top%)", True))
+                End If
             End If
 
             Using f As New CropForm
@@ -3477,40 +3559,33 @@ Public Class MainForm
 
     <Command("Dialog | Preview", "Dialog to preview or cut the video.")>
     Sub OpenPreview()
-        If Not OK(p.SourceFile) Then
+        If p.SourceFile = "" Then
             OpenSourceFiles()
         Else
             If Not Paths.VerifyRequirements OrElse Not g.IsValidSource Then
                 Exit Sub
             End If
 
-            Dim m = p.AvsDoc.GetErrorMessage
+            Dim m = p.VideoScript.GetErrorMessage
 
             If Not m Is Nothing Then
                 MsgError(m)
                 Exit Sub
             End If
 
-            Dim cutting = p.AvsDoc.GetFilter("Cutting")
+            Dim cutting = p.VideoScript.GetFilter("Cutting")
 
             If Not cutting Is Nothing Then
-                p.AvsDoc.Filters.Remove(cutting)
+                p.VideoScript.Filters.Remove(cutting)
                 g.MainForm.AviSynthListView.Load()
-                g.MainForm.SetTargetLength(p.AvsDoc.GetSeconds)
+                g.MainForm.SetTargetLength(p.VideoScript.GetSeconds)
             End If
 
-            Dim doc As New AviSynthDocument
-            doc = New AviSynthDocument()
-            doc.Filters = p.AvsDoc.GetFiltersCopy
-
-            If p.SourceHeight > 576 Then
-                doc.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec709"")"))
-            Else
-                doc.Filters.Add(New AviSynthFilter("ConvertToRGB(matrix=""Rec601"")"))
-            End If
-
-            doc.Path = p.TempDir + p.Name + "_Preview.avs"
-            doc.Synchronize()
+            Dim doc As New VideoScript
+            doc.Engine = p.VideoScript.Engine
+            doc.Filters = p.VideoScript.GetFiltersCopy
+            doc.Path = p.TempDir + p.Name + "_Preview." + doc.FileType
+            doc.Synchronize(True)
 
             Dim f As New PreviewForm(doc)
             f.Owner = g.MainForm
@@ -3659,27 +3734,23 @@ Public Class MainForm
         <DispName("Template Name"), Description("Name of the template to be loaded after the job was added. Empty to load no template.")>
         templateName As String)
 
-        If Not Paths.VerifyRequirements() Then
-            Exit Sub
-        End If
+        AddJob(showConfirmation, templateName, True)
+    End Sub
 
-        If Not IsLoading AndAlso Not g.MainForm.AssistantPassed Then
+    Sub AddJob(showConfirmation As Boolean, templateName As String, showAssistant As Boolean)
+        If Not Paths.VerifyRequirements() Then Exit Sub
+
+        If showAssistant AndAlso Not IsLoading AndAlso Not g.MainForm.AssistantPassed Then
             MsgWarn("Please follow the assistant.")
             Exit Sub
         End If
 
         Dim path = GetJobPath()
         g.MainForm.SaveProjectByPath(path)
-
         JobsForm.AddJob(path)
 
-        If showConfirmation Then
-            MsgInfo("Job added")
-        End If
-
-        If templateName <> "" Then
-            LoadProject(Paths.TemplateDir + templateName + ".srip")
-        End If
+        If showConfirmation Then MsgInfo("Job added")
+        If templateName <> "" Then LoadProject(Paths.TemplateDir + templateName + ".srip")
     End Sub
 
     <Command("Dialog | Compare and extract images", "Compare and extract images for video comparisons.")>
@@ -4067,7 +4138,7 @@ Public Class MainForm
     End Function
 
     Sub DisableCropFilter()
-        Dim f = p.AvsDoc.GetFilter("Crop")
+        Dim f = p.VideoScript.GetFilter("Crop")
 
         If Not f Is Nothing AndAlso CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
             f.Active = False
@@ -4076,10 +4147,10 @@ Public Class MainForm
 
     <Command("Dialog | Filter Setup Profiles", "Dialog to configure filter setup profiles.")>
     Sub OpenAviSynthProfilesDialog()
-        Using f As New ProfilesForm("AviSynth Profiles", s.AviSynthProfiles,
-                                    AddressOf LoadAviSynthProfile,
+        Using f As New ProfilesForm("AviSynth Profiles", s.FilterSetupProfiles,
+                                    AddressOf LoadScriptProfile,
                                     AddressOf GetAVSDocAsProfile,
-                                    AddressOf AviSynthDocument.GetDefaults)
+                                    AddressOf VideoScript.GetDefaults)
 
             If f.ShowDialog() = DialogResult.OK Then
                 PopulateProfileMenu(DynamicMenuItemID.FilterSetupProfiles)
@@ -4087,7 +4158,7 @@ Public Class MainForm
         End Using
     End Sub
 
-    Function GetFilterProfilesText(categories As List(Of AviSynthCategory)) As String
+    Function GetFilterProfilesText(categories As List(Of FilterCategory)) As String
         Dim ret = ""
 
         For Each i In categories
@@ -4118,8 +4189,19 @@ Public Class MainForm
     End Function
 
     <Command("Dialog | AviSynth Filter Profiles", "Dialog to configure AviSynth filter profiles.")>
-    Sub OpenAviSynthFilterProfilesDialog()
-        Using f As New AviSynthScriptEditor(GetFilterProfilesText(s.AviSynthCategories))
+    Sub OpenFilterProfilesDialog()
+        Dim filterProfiles As List(Of FilterCategory)
+        Dim getDefaults As Func(Of List(Of FilterCategory))
+
+        If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+            filterProfiles = s.AviSynthProfiles
+            getDefaults = Function() FilterCategory.GetAviSynthDefaults
+        Else
+            filterProfiles = s.VapourSynthProfiles
+            getDefaults = Function() FilterCategory.GetVapourSynthDefaults
+        End If
+
+        Using f As New ScriptEditor(GetFilterProfilesText(filterProfiles))
             f.Text = "Filter Profiles"
 
             f.bnContext.Text = " Restore Defaults... "
@@ -4129,24 +4211,24 @@ Public Class MainForm
 
             Dim resetAction = Sub()
                                   If MsgOK("Restore defaults?") Then
-                                      t.MacroEditorControl.Value = GetFilterProfilesText(AviSynthCategory.GetDefaults)
+                                      t.MacroEditorControl.Value = GetFilterProfilesText(getDefaults())
                                   End If
                               End Sub
 
             f.bnContext.AddClickAction(resetAction)
 
             If f.ShowDialog(Me) = DialogResult.OK Then
-                s.AviSynthCategories.Clear()
-                Dim cat As AviSynthCategory
-                Dim filter As AviSynthFilter
+                filterProfiles.Clear()
+                Dim cat As FilterCategory
+                Dim filter As VideoFilter
 
                 For Each i In f.MacroEditorControl.Value.SplitLinesNoEmpty
                     Dim multiline = i.StartsWith(VB6.vbTab) OrElse i.StartsWith(" "c)
                     i = i.Trim()
 
                     If i.StartsWith("[") AndAlso i.EndsWith("]") Then
-                        cat = New AviSynthCategory(i.Substring(1, i.Length - 2).Trim)
-                        s.AviSynthCategories.Add(cat)
+                        cat = New FilterCategory(i.Substring(1, i.Length - 2).Trim)
+                        filterProfiles.Add(cat)
                     End If
 
                     If multiline Then
@@ -4158,30 +4240,27 @@ Public Class MainForm
                         Dim filterName = i.Left("=").Trim
 
                         If filterName <> "" Then
-                            filter = New AviSynthFilter(cat.Name, filterName, i.Right("=").Trim, True)
+                            filter = New VideoFilter(cat.Name, filterName, i.Right("=").Trim, True)
                             cat.Filters.Add(filter)
                         End If
                     End If
                 Next
 
-                For Each i In AviSynthCategory.GetDefaults
-                    Dim found = False
+                For Each i In getDefaults()
+                    Dim found As Boolean
 
-                    For Each i2 In s.AviSynthCategories
-                        If i.Name = i2.Name Then
-                            found = True
-                        End If
+                    For Each i2 In filterProfiles
+                        If i.Name = i2.Name Then found = True
                     Next
 
-                    If Not found AndAlso IsOneOf(i.Name, "Source", "Crop", "Resize") Then
+                    If Not found AndAlso {"Source", "Crop", "Resize"}.Contains(i.Name) Then
                         MsgWarn("The category '" + i.Name + "' was recreated. A Source, Crop and Resize category is mandatory.")
-                        s.AviSynthCategories.Add(i)
+                        filterProfiles.Add(i)
                     End If
                 Next
 
-                Dim src = s.AviSynthCategories.Where(Function(v) v.Name = "Source").First
-                src.Filters.Insert(0, New AviSynthFilter("Source", "Automatic", "", True))
-
+                Dim src = filterProfiles.Where(Function(v) v.Name = "Source").First
+                src.Filters.Insert(0, New VideoFilter("Source", "Automatic", "", True))
                 g.MainForm.SaveSettings()
             End If
         End Using
@@ -4322,8 +4401,7 @@ Public Class MainForm
         ret.Add("Tools|Jobs...", "OpenJobsDialog", Keys.F6)
         ret.Add("Tools|Apps...", "OpenApplicationsDialog")
 
-        ret.Add("Tools|Files|Log File", "ExecuteCmdl", """%text_editor%"" ""%working_dir%%target_name%_StaxRip.log""")
-        ret.Add("Tools|Files|AviSynth Script", "ExecuteCmdl", """%text_editor%"" ""%avs_file%""")
+        ret.Add("Tools|Log File", "ExecuteCmdl", """%text_editor%"" ""%working_dir%%target_name%_StaxRip.log""")
 
         ret.Add("Tools|Directories|Source", "ExecuteCmdl", """%source_dir%""")
         ret.Add("Tools|Directories|Working", "ExecuteCmdl", """%working_dir%""")
@@ -4336,7 +4414,7 @@ Public Class MainForm
         ret.Add("Tools|Directories|System", "ExecuteCmdl", """%system_dir%""")
         ret.Add("Tools|Launch", "DynamicMenuItem", DynamicMenuItemID.LaunchApplications)
 
-        ret.Add("Tools|Advanced|AVSMeter...", "ExecuteCmdl", """%app:AVSMeter%"" ""%avs_file%""" + CrLf + "pause", False, False, True)
+        ret.Add("Tools|Advanced|AVSMeter...", "ExecuteCmdl", """%app:AVSMeter%"" ""%script_file%""" + CrLf + "pause", False, False, True)
         ret.Add("Tools|Advanced|Video Comparison...", "ShowVideoComparison")
         ret.Add("Tools|Advanced|Command Prompt...", "ShowCommandPrompt")
         ret.Add("Tools|Advanced|Event Commands...", "OpenEventCommandsDialog")
@@ -4349,12 +4427,7 @@ Public Class MainForm
         ret.Add("Tools|Edit Menu...", "OpenMainMenuEditor")
         ret.Add("Tools|Settings...", "OpenSettingsDialog", "")
 
-        If g.IsCulture("de") Then
-            ret.Add("Help|Support Forum", "ExecuteCmdl", "http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-(Diskussion)")
-        Else
-            ret.Add("Help|Support Forum", "ExecuteCmdl", "http://forum.videohelp.com/threads/369913-StaxRip-support-%28encoder-GUI-for-x265-h265-hevc-mkv-4K%29")
-        End If
-
+        ret.Add("Help|Support Forum", "ExecuteCmdl", GetSupportThread)
         ret.Add("Help|Guides", "ExecuteCmdl", "http://github.com/stax76/staxrip/wiki/Guides")
         ret.Add("Help|Bug Report", "MakeBugReport")
         ret.Add("Help|Mail", "ExecuteCmdl", "mailto:frank_skare@yahoo.de?subject=StaxRip%20feedback")
@@ -4367,6 +4440,14 @@ Public Class MainForm
         ret.Add("Help|Info...", "OpenHelpTopic", "info")
 
         Return ret
+    End Function
+
+    Shared Function GetSupportThread() As String
+        If g.IsCulture("de") Then
+            Return "http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-(Diskussion)"
+        Else
+            Return "http://forum.videohelp.com/threads/369913-StaxRip-support-%28encoder-GUI-for-x265-h265-hevc-mkv-4K%29"
+        End If
     End Function
 
     <Command("Perform | Add Hardcoded Subtitle", "Adds a hardcoded subtitle.")>
@@ -4400,7 +4481,7 @@ Public Class MainForm
                                   sb.SelectedItem.IndexIDX.ToString).WriteFile(d.FileName)
                 End If
 
-                Dim filter As New AviSynthFilter
+                Dim filter As New VideoFilter
 
                 filter.Category = "Subtitle"
                 filter.Path = Filepath.GetName(d.FileName)
@@ -4412,8 +4493,8 @@ Public Class MainForm
                     filter.Script = "TextSub(""" + d.FileName + """)"
                 End If
 
-                Dim insertCat = If(p.AvsDoc.IsFilterActive("Crop"), "Crop", "Source")
-                p.AvsDoc.InsertAfter(insertCat, filter)
+                Dim insertCat = If(p.VideoScript.IsFilterActive("Crop"), "Crop", "Source")
+                p.VideoScript.InsertAfter(insertCat, filter)
                 AviSynthListView.Load()
             End If
         End Using
@@ -4427,7 +4508,12 @@ Public Class MainForm
         SkipAssistant = True
 
         If Not g.EnableFilter("Resize") Then
-            p.AvsDoc.Filters.Add(New AviSynthFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
+            If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+                p.VideoScript.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
+            Else
+                p.VideoScript.Filters.Add(New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)", True))
+            End If
+
             AviSynthListView.Load()
         End If
 
@@ -4592,7 +4678,7 @@ Public Class MainForm
     <Command("Parameter | Target Image Size", "Sets the target image size.")>
     Sub SetTargetImageSize(width As Integer, height As Integer)
         If Not g.EnableFilter("Resize") Then
-            p.AvsDoc.Filters.Add(New AviSynthFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
+            p.VideoScript.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
             AviSynthListView.Load()
         End If
 
@@ -4608,7 +4694,7 @@ Public Class MainForm
     <Command("Parameter | Target Image Size By Pixel", "Sets the target image size by pixels (width x height).")>
     Sub SetTargetImageSizeByPixel(pixel As Integer)
         If Not g.EnableFilter("Resize") Then
-            p.AvsDoc.Filters.Add(New AviSynthFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
+            p.VideoScript.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
             AviSynthListView.Load()
         End If
 
@@ -4670,9 +4756,9 @@ Public Class MainForm
         sb.Title = "New Profile"
         sb.Text = "Please choose a profile."
 
-        sb.AddItem("Current Project", p.AvsDoc)
+        sb.AddItem("Current Project", p.VideoScript)
 
-        For Each i In AviSynthDocument.GetDefaults
+        For Each i In VideoScript.GetDefaults
             sb.AddItem(i)
         Next
 
@@ -4683,14 +4769,21 @@ Public Class MainForm
         Return Nothing
     End Function
 
-    Function GetTargetAviSynthDocument() As AviSynthDocument
-        Return p.AvsDoc
+    Function GetTargetAviSynthDocument() As VideoScript
+        Return p.VideoScript
     End Function
 
-    Sub LoadAviSynthProfile(profileInterface As Profile)
-        p.AvsDoc = DirectCast(ObjectHelp.GetCopy(profileInterface), TargetAviSynthDocument)
-        AviSynthListView.Load()
-        Assistant()
+    Sub LoadScriptProfile(profileInterface As Profile)
+        Dim profile = DirectCast(ObjectHelp.GetCopy(profileInterface), TargetAviSynthDocument)
+
+        If profile.Engine = ScriptingEngine.AviSynth OrElse
+                (Packs.Python.VerifyOK(True) AndAlso Packs.VapourSynth.VerifyOK(True)) Then
+
+            p.VideoScript = profile
+            AviSynthListView.Load()
+            AviSynthListView.RaiseScriptChanged()
+            Assistant()
+        End If
     End Sub
 
     Private Sub MainForm_Shown() Handles Me.Shown
@@ -4822,7 +4915,7 @@ Public Class MainForm
         '    f.ShowDialog()
         'End Using
 
-        'LoadProject("D:\Temp\test temp files\test.srip")
+        'LoadProject("E:\Video\Samples\MKV\MPEG-2 - AC3 - VobSub - Interlaced temp files\MPEG-2 - AC3 - VobSub - Interlaced_new.srip")
     End Sub
 
     <Command("Dialog | LAV Filters video decoder configuration", "Shows LAV Filters video decoder configuration")>
@@ -4955,7 +5048,7 @@ Public Class MainForm
                         Refresh()
 
                         Select Case Filepath.GetExt(f.Files(0))
-                            Case "mpg", "mpeg", "vob", "mpv", "m2v", "m2t", "ts", "pva", "trp"
+                            Case "mpg", "vob"
                                 OpenVideoSourceFiles(f.Files)
                             Case Else
                                 Using proc As New Proc
@@ -4964,8 +5057,15 @@ Public Class MainForm
                                     proc.File = Packs.Mkvmerge.GetPath
                                     Dim outFile = Filepath.GetDirAndBase(f.Files(0)) + "_merged.mkv"
                                     proc.Arguments = "-o """ + outFile + """ """ + f.Files.Join(""" + """) + """"
-                                    proc.AllowedExitCodes = {0, 1}
-                                    proc.Start()
+
+                                    Try
+                                        proc.Start()
+                                    Catch ex As Exception
+                                        ProcessForm.CloseProcessForm()
+                                        g.ShowException(ex)
+                                        MsgInfo("Manual Merging", "Please merge the files manually with a appropriate tool or visit the [" + GetSupportThread() + " support forum].")
+                                        Throw New AbortException
+                                    End Try
 
                                     If Not g.WasFileJustWritten(outFile) Then
                                         Log.Write("Error merged output file is missing", outFile)
@@ -4979,9 +5079,7 @@ Public Class MainForm
                 End Using
             Case "batch"
                 Using f As New SourceFilesForm()
-                    If p.DefaultTargetName = "%source_dir_name%" Then
-                        p.DefaultTargetName = "%source_name%"
-                    End If
+                    If p.DefaultTargetName = "%source_dir_name%" Then p.DefaultTargetName = "%source_name%"
 
                     f.Mode = SourceInputMode.FileBatch
                     f.UpdateControls()
@@ -4989,41 +5087,25 @@ Public Class MainForm
                     If f.ShowDialog() = DialogResult.OK Then
                         Refresh()
 
-                        If p.SourceFiles.Count > 0 AndAlso
-                            Not LoadTemplateWithSelectionDialog() Then
-
+                        If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then
                             Exit Sub
                         End If
 
                         Dim tempPath = Paths.TemplateDir + "temp.srip"
-
-                        If f.cbCreateJobs.Checked Then p.BatchMode = True
-
+                        p.BatchMode = Not f.cbDemuxAndIndex.Checked
                         SaveProjectByPath(tempPath)
 
                         For Each i In f.Files
                             OpenProject(tempPath, False)
                             OpenVideoSourceFile(i)
-
-                            If f.cbCreateJobs.Checked Then
-                                Try
-                                    g.SetTempDir()
-                                Catch ex As Exception
-                                    FileHelp.Delete(tempPath)
-                                    Exit Sub
-                                End Try
-
-                                AddJob(False, Nothing)
-                            End If
+                            g.SetTempDir()
+                            AddJob(False, Nothing, False)
                         Next
 
                         OpenProject(tempPath, False)
                         FileHelp.Delete(tempPath)
                         UpdateRecentProjectsMenuItems()
-
-                        If f.cbCreateJobs.Checked Then
-                            OpenJobsDialog()
-                        End If
+                        OpenJobsDialog()
                     End If
                 End Using
             Case "batch2"
@@ -5040,7 +5122,7 @@ Public Class MainForm
 
                         Dim tempPath = Paths.TemplateDir + "temp.srip"
 
-                        If f.cbCreateJobs.Checked Then p.BatchMode = True
+                        If f.cbDemuxAndIndex.Checked Then p.BatchMode = True
 
                         SaveProjectByPath(tempPath)
 
@@ -5048,7 +5130,7 @@ Public Class MainForm
                             OpenProject(tempPath, False)
                             OpenVideoSourceFiles(GetSourceFilesFromDir(i))
 
-                            If f.cbCreateJobs.Checked Then
+                            If f.cbDemuxAndIndex.Checked Then
                                 Try
                                     g.SetTempDir()
                                 Catch ex As Exception
@@ -5064,7 +5146,7 @@ Public Class MainForm
                         FileHelp.Delete(tempPath)
                         UpdateRecentProjectsMenuItems()
 
-                        If f.cbCreateJobs.Checked Then
+                        If f.cbDemuxAndIndex.Checked Then
                             OpenJobsDialog()
                         End If
                     End If
@@ -5502,7 +5584,7 @@ Public Class MainForm
         If Not IsLoading Then
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
-                SetTargetLength(p.AvsDoc.GetSeconds)
+                SetTargetLength(p.VideoScript.GetSeconds)
             End If
 
             Assistant()
@@ -5513,7 +5595,7 @@ Public Class MainForm
         AviSynthListView.Load()
 
         If g.IsValidSource(False) Then
-            SetTargetLength(p.AvsDoc.GetSeconds)
+            SetTargetLength(p.VideoScript.GetSeconds)
         End If
     End Sub
 
@@ -5685,7 +5767,7 @@ Public Class MainForm
         p.CustomPAR = ""
         p.CustomDAR = ""
 
-        If p.AvsDoc.IsFilterActive("Resize)") Then
+        If p.VideoScript.IsFilterActive("Resize)") Then
             SetTargetImageSize(p.TargetWidth, 0)
         End If
 
@@ -5731,7 +5813,7 @@ Public Class MainForm
                 p.SourceWidth = p.SourceAviSynthDocument.GetSize.Width
                 p.SourceHeight = p.SourceAviSynthDocument.GetSize.Height
                 p.SourceSeconds = CInt(p.SourceAviSynthDocument.GetFrames / p.SourceAviSynthDocument.GetFramerate)
-                p.SourceFramerate = p.SourceAviSynthDocument.GetFramerate
+                p.SourceFrameRate = p.SourceAviSynthDocument.GetFramerate
                 p.SourceFrames = p.SourceAviSynthDocument.GetFrames
             Catch ex As Exception
                 MsgError("Source filter returned invalid parameters", Macro.Solve(p.SourceAviSynthDocument.GetScript))
@@ -5831,7 +5913,7 @@ Public Class MainForm
 
         m.Items.Add(New ActionMenuItem("Open", a, "Change the audio source file."))
         m.Items.Add(New ActionMenuItem("Play audio", Sub() PlayAudio(ap), "Plays the audio source file with MPC.", exist))
-        m.Items.Add(New ActionMenuItem("Play audio and video", Sub() g.PlayScript(ap), "Plays the audio source file together with the AviSynth script.", exist))
+        m.Items.Add(New ActionMenuItem("Play audio and video", Sub() g.PlayScript(p.VideoScript, ap), "Plays the audio source file together with the AviSynth script.", exist))
         m.Items.Add(New ActionMenuItem("MediaInfo", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), "Show MediaInfo for the audio source file.", exist))
         m.Items.Add(New ActionMenuItem("Explore", Sub() g.OpenDirAndSelectFile(ap.File, Handle), "Open the audio source file directory with Windows Explorer.", exist))
         m.Items.Add("-")
@@ -5879,7 +5961,7 @@ Public Class MainForm
     Sub ShowCommandPrompt()
         Dim batchCode = "@echo off" + CrLf
 
-        For Each i In Packs.Packages.Values
+        For Each i In Packs.Packages
             Dim dir = i.GetDir
 
             If Directory.Exists(dir) AndAlso

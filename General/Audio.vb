@@ -34,7 +34,7 @@ Public Class Audio
                     Case ".mp4"
                         DemuxMP4(ap.File, ap.Stream, ap)
                     Case Else
-                        If p.AvsDoc.GetFilter("Source").Script.ToLower.Contains("directshowsource") AndAlso
+                        If p.VideoScript.GetFilter("Source").Script.ToLower.Contains("directshowsource") AndAlso
                             Not TypeOf ap Is MuxAudioProfile Then
 
                             DecodeDirectShowSource(ap)
@@ -216,7 +216,7 @@ Public Class Audio
             DecodeDirectShowSource(ap)
         End If
 
-        If p.AvsDoc.GetFilter("Source").Script.ToLower.Contains("directshowsource") Then
+        If p.VideoScript.GetFilter("Source").Script.ToLower.Contains("directshowsource") Then
             DecodeDirectShowSource(ap)
         End If
 
@@ -229,12 +229,12 @@ Public Class Audio
         If ap.File.Contains("_cut_") Then Exit Sub
         If Not IsOneOf(Filepath.GetExt(ap.File), FileTypes.NicAudioInput) Then Exit Sub
         ap.Delay = 0
-        Dim d As New AviSynthDocument
-        d.Filters.AddRange(p.AvsDoc.Filters)
+        Dim d As New VideoScript
+        d.Filters.AddRange(p.VideoScript.Filters)
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_na.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_na.avs"
-        d.Filters.Insert(1, New AviSynthFilter(GetNicAudioCode(ap)))
-        If ap.Channels = 2 Then d.Filters.Add(New AviSynthFilter(GetDown2Code))
+        d.Filters.Insert(1, New VideoFilter(GetNicAudioCode(ap)))
+        If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
         Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
@@ -260,13 +260,13 @@ Public Class Audio
         If Filepath.GetExtFull(ap.File) = ".wav" Then Exit Sub
         If Not FileTypes.NicAudioInput.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
         ap.Delay = 0
-        Dim d As New AviSynthDocument
-        d.Filters.AddRange(p.AvsDoc.Filters)
+        Dim d As New VideoScript
+        d.Filters.AddRange(p.VideoScript.Filters)
         d.Remove("Cutting")
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeNicAudio.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeNicAudio.avs"
-        d.Filters.Insert(1, New AviSynthFilter(GetNicAudioCode(ap)))
-        If ap.Channels = 2 Then d.Filters.Add(New AviSynthFilter(GetDown2Code))
+        d.Filters.Insert(1, New VideoFilter(GetNicAudioCode(ap)))
+        If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
         Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
@@ -397,13 +397,13 @@ Public Class Audio
     Shared Sub DecodeDirectShowSource(ap As AudioProfile, Optional useFlac As Boolean = False)
         If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
         ap.Delay = 0
-        Dim d As New AviSynthDocument
-        d.Filters.AddRange(p.AvsDoc.Filters)
+        Dim d As New VideoScript
+        d.Filters.AddRange(p.VideoScript.Filters)
         d.Remove("Cutting")
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecDSS.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecDSS.avs"
-        d.Filters.Insert(1, New AviSynthFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
-        If ap.Channels = 2 Then d.Filters.Add(New AviSynthFilter(GetDown2Code))
+        d.Filters.Insert(1, New VideoFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
+        If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
         Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
@@ -430,13 +430,13 @@ Public Class Audio
         ap.Delay = 0
         Dim cachefile = p.TempDir + Filepath.GetBase(ap.File) + ".ffindex"
         g.MainForm.ffmsindex(ap.File, cachefile)
-        Dim d As New AviSynthDocument
-        d.Filters.AddRange(p.AvsDoc.Filters)
+        Dim d As New VideoScript
+        d.Filters.AddRange(p.VideoScript.Filters)
         d.Remove("Cutting")
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeFFAudioSource.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeFFAudioSource.avs"
-        d.Filters.Insert(1, New AviSynthFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))
-        If ap.Channels = 2 Then d.Filters.Add(New AviSynthFilter(GetDown2Code))
+        d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))
+        If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
         Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
@@ -461,12 +461,12 @@ Public Class Audio
     Shared Sub CutDirectShowSource(ap As AudioProfile)
         If ap.File.Contains("_cut_") Then Exit Sub
         ap.Delay = 0
-        Dim d As New AviSynthDocument
-        d.Filters.AddRange(p.AvsDoc.Filters)
+        Dim d As New VideoScript
+        d.Filters.AddRange(p.VideoScript.Filters)
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ds.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ds.avs"
-        d.Filters.Insert(1, New AviSynthFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
-        If ap.Channels = 2 Then d.Filters.Add(New AviSynthFilter(GetDown2Code))
+        d.Filters.Insert(1, New VideoFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
+        If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
         Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
@@ -493,12 +493,12 @@ Public Class Audio
         ap.Delay = 0
         Dim cachefile = p.TempDir + Filepath.GetBase(ap.File) + ".ffindex"
         g.MainForm.ffmsindex(ap.File, cachefile)
-        Dim d As New AviSynthDocument
-        d.Filters.AddRange(p.AvsDoc.Filters)
+        Dim d As New VideoScript
+        d.Filters.AddRange(p.VideoScript.Filters)
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ff.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ff.avs"
-        d.Filters.Insert(1, New AviSynthFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))
-        If ap.Channels = 2 Then d.Filters.Add(New AviSynthFilter(GetDown2Code))
+        d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))
+        If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
         Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
@@ -525,8 +525,8 @@ Public Class Audio
 
         Dim code = String.Format("BlankClip(length = {0}, fps = {1}, width = 16, height = 16, pixel_type = ""YV12"")" +
                                  CrLf + "KillAudio()",
-                                 p.SourceAviSynthDocument.GetFrames,
-                                 p.SourceAviSynthDocument.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
+                                 p.CutFrameCount,
+                                 p.CutFrameRate.ToString("f6", CultureInfo.InvariantCulture))
 
         Dim scriptPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_mm.avs"
         Dim aviPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_mm.avi"

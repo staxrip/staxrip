@@ -42,86 +42,92 @@ Namespace x265
         End Property
 
         Overrides Sub Encode()
-            p.AvsDoc.Synchronize()
-            Encode("x265", GetArgs(1))
+            p.VideoScript.Synchronize()
+            Encode("x265", GetArgs(1, p.VideoScript), p.VideoScript)
 
             If Params.Mode.Value = RateMode.TwoPass OrElse
                 Params.Mode.Value = RateMode.ThreePass Then
 
-                Encode("x265 Second Pass", GetArgs(2))
+                Encode("x265 Second Pass", GetArgs(2, p.VideoScript), p.VideoScript)
             End If
 
             If Params.Mode.Value = RateMode.ThreePass Then
-                Encode("x265 Third Pass", GetArgs(3))
+                Encode("x265 Third Pass", GetArgs(3, p.VideoScript), p.VideoScript)
             End If
 
             AfterEncoding()
         End Sub
 
-        Overloads Sub Encode(passName As String, args As String)
+        Overloads Sub Encode(passName As String, args As String, script As VideoScript)
+            Dim cli As String
+
+            If p.VideoScript.Engine = ScriptingEngine.VapourSynth Then
+                cli = """" + Packs.vspipe.GetPath + """ """ + script.Path + """ - --y4m | """ + Packs.x265.GetPath + """ " + args
+            Else
+                cli = """" + Packs.ffmpeg.GetPath + """ -i """ + script.Path + """ -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | """ + Packs.x265.GetPath + """ " + args
+            End If
+
+            Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
+            File.WriteAllText(batchPath, cli, Encoding.GetEncoding(850))
+
             Using proc As New Proc
-                proc.Init(passName, " frames, ")
-                proc.File = Packs.avs4x26x.GetPath
-                proc.Arguments = args
+                proc.Init(passName)
+                proc.SkipStrings = {"%] "}
+                proc.WriteLine(cli + CrLf2)
+                proc.File = "cmd.exe"
+                proc.Arguments = "/C call """ + batchPath + """"
+                proc.BatchCode = cli
                 proc.Start()
             End Using
         End Sub
 
         Overrides Sub RunCompCheck()
+            If Not Paths.VerifyRequirements Then Exit Sub
+            If Not g.IsValidSource Then Exit Sub
+
             Dim newParams As New x265Params
             Dim newStore = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
             newParams.Init(newStore)
 
-            Dim avsPath = p.TempDir + p.Name + "_CompCheck.avs"
             Dim enc As New x265Encoder
             enc.Params = newParams
             enc.Params.Mode.Value = RateMode.SingleCRF
             enc.Params.Quant.Value = enc.Params.CompCheckQuant.Value
 
-            Dim args = enc.Params.GetArgs(0, avsPath, p.TempDir + p.Name + "_CompCheck." + OutputFileType)
-            RunCompCheck(Packs.avs4x26x.GetPath, args, " kb/s, eta ")
-        End Sub
+            Dim script As New VideoScript
+            script.Engine = p.VideoScript.Engine
+            script.Filters = p.VideoScript.GetFiltersCopy
+            Dim code As String
+            Dim every = ((100 \ p.CompCheckRange) * 14).ToString
 
-        Overloads Function GetArgs(pass As Integer, Optional includePaths As Boolean = True) As String
-            Return Params.GetArgs(pass, p.AvsDoc.Path, Filepath.GetDirAndBase(OutputPath) +
-                           "." + OutputFileType, includePaths)
-        End Function
+            If script.Engine = ScriptingEngine.AviSynth Then
+                code = "SelectRangeEvery(" + every + ",14)"
+            Else
+                code = "fpsnum = clip.fps_num" + CrLf + "fpsden = clip.fps_den" + CrLf +
+                "clip = core.std.SelectEvery(clip = clip, cycle = " + every + ", offsets = range(14))" + CrLf +
+                "clip = core.std.AssumeFPS(clip = clip, fpsnum = fpsnum, fpsden = fpsden)"
+            End If
 
-        Protected Overloads Sub RunCompCheck(executable As String,
-                                             arguments As String,
-                                             ParamArray logValuesToSkip As String())
+            Log.WriteLine(code + CrLf2)
+            script.Filters.Add(New VideoFilter("aaa", "aaa", code, True))
+            script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
+            script.Synchronize()
 
-            If Not Paths.VerifyRequirements Then Exit Sub
-            If Not g.IsValidSource Then Exit Sub
+            Dim arguments = enc.Params.GetArgs(0, script, p.TempDir + p.Name + "_CompCheck." + OutputFileType)
 
-            Dim avsPath = p.TempDir + p.Name + "_CompCheck.avs"
-
-            Dim script = Macro.Solve(p.AvsDoc.GetScript.Trim) + CrLf + "SelectRangeEvery(" +
-                ((100 \ p.CompCheckRange) * 14).ToString + ",14)"
-
-            script = AviSynthDocument.SetPlugins(script)
-            script.WriteFile(avsPath)
-
-            Using proc As New Proc
-                proc.Init("Compressibility Check", logValuesToSkip)
-                proc.File = executable
-                proc.Arguments = arguments
-                proc.WriteLine(script + CrLf2)
-
-                Try
-                    proc.Start()
-                Catch ex As AbortException
-                    Exit Sub
-                Finally
-                    ProcessForm.CloseProcessForm()
-                End Try
-            End Using
+            Try
+                Encode("Compressibility Check", arguments, script)
+            Catch ex As AbortException
+                ProcessForm.CloseProcessForm()
+                Exit Sub
+            Catch ex As Exception
+                ProcessForm.CloseProcessForm()
+                g.ShowException(ex)
+                Exit Sub
+            End Try
 
             Dim bits = (New FileInfo(p.TempDir + p.Name + "_CompCheck." + OutputFileType).Length) * 8
-
-            Using avi As New AVIFile(avsPath)
-                p.Compressibility = (bits / avi.FrameCount) / (p.TargetWidth * p.TargetHeight)
-            End Using
+            p.Compressibility = (bits / script.GetFrames) / (p.TargetWidth * p.TargetHeight)
 
             OnAfterCompCheck()
             g.MainForm.Assistant()
@@ -132,6 +138,11 @@ Namespace x265
 
             ProcessForm.CloseProcessForm()
         End Sub
+
+        Overloads Function GetArgs(pass As Integer, script As VideoScript, Optional includePaths As Boolean = True) As String
+            Return Params.GetArgs(pass, script, Filepath.GetDirAndBase(OutputPath) +
+                           "." + OutputFileType, includePaths)
+        End Function
 
         Overrides Sub ShowConfigDialog()
             Dim newParams As New x265Params
@@ -806,12 +817,12 @@ Namespace x265
         End Sub
 
         Overloads Overrides Function GetArgs(includePaths As Boolean) As String
-            Return GetArgs(1, p.AvsDoc.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
+            Return GetArgs(1, p.VideoScript, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths)
         End Function
 
         Overloads Function GetArgs(pass As Integer,
-                                   sourcePath As String,
+                                   script As VideoScript,
                                    targetPath As String,
                                    Optional includePaths As Boolean = True) As String
 
@@ -819,10 +830,6 @@ Namespace x265
             ApplyTuneDefaultValues()
 
             Dim sb As New StringBuilder
-
-            If includePaths Then
-                sb.Append(" --x26x-binary """ + Packs.x265.GetPath + """")
-            End If
 
             If Mode.Value = RateMode.TwoPass OrElse Mode.Value = RateMode.ThreePass Then
                 sb.Append(" --pass " & pass)
@@ -844,9 +851,10 @@ Namespace x265
                 sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
             End If
 
-            If sourcePath <> "" AndAlso includePaths Then
+            If includePaths Then
                 sb.Append(" --input-res " & p.TargetWidth & "x" & p.TargetHeight)
-                sb.Append(" --fps " + p.AvsDoc.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
+                sb.Append(" --frames " & script.GetFrames)
+                sb.Append(" --fps " + script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
 
                 If Calc.IsARSignalingRequired Then
                     Dim par = Calc.GetTargetPAR
@@ -860,9 +868,9 @@ Namespace x265
                 If (Mode.Value = RateMode.ThreePass AndAlso pass < 3) OrElse
                     Mode.Value = RateMode.TwoPass AndAlso pass = 1 Then
 
-                    sb.Append(" --output NUL """ + sourcePath + """")
+                    sb.Append(" --output NUL -")
                 Else
-                    sb.Append(" --output """ + targetPath + """ """ + sourcePath + """")
+                    sb.Append(" --output """ + targetPath + """ - ")
                 End If
             End If
 
@@ -877,7 +885,7 @@ Namespace x265
 
                     Return ""
                 Else
-                    Return "--deblock " & DeblockA.Value & ":" & DeblockB.Value
+                    Return " - -Deblock " & DeblockA.Value & ": " & DeblockB.Value
                 End If
             ElseIf Deblock.DefaultValue Then
                 Return "--no-deblock"

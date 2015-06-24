@@ -158,16 +158,25 @@
     <Compile Include="Controls\DemuxingControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\SubtitleControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\x265Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\x264Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\AviSynthEditor.Designer.vb">
-      <DependentUpon>AviSynthEditor.vb</DependentUpon>
+    <Compile Include="Forms\ScriptingEditor.Designer.vb">
+      <DependentUpon>ScriptingEditor.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\AviSynthEditor.vb">
+    <Compile Include="Forms\ScriptingEditor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\StreamDemuxForm.Designer.vb">
+      <DependentUpon>StreamDemuxForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\StreamDemuxForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\VideoComparisonForm.Designer.vb">
@@ -193,7 +202,7 @@
     <Compile Include="Forms\AudioForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\DemuxingForm.vb">
+    <Compile Include="Forms\DemuxForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\HelpForm.vb">
@@ -203,9 +212,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\CommandLineControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SubtitleControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\MacroEditorControl.vb">
@@ -277,7 +283,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="General\AudioProfile.vb" />
-    <Compile Include="General\AviSynth.vb">
+    <Compile Include="General\VideoScript.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="General\AVIFile.vb" />
@@ -421,8 +427,11 @@
     <EmbeddedResource Include="Forms\AudioForm.resx">
       <DependentUpon>AudioForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AviSynthEditor.resx">
-      <DependentUpon>AviSynthEditor.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\ScriptingEditor.resx">
+      <DependentUpon>ScriptingEditor.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\StreamDemuxForm.resx">
+      <DependentUpon>StreamDemuxForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\VideoComparisonForm.resx">
       <DependentUpon>VideoComparisonForm.vb</DependentUpon>
@@ -442,8 +451,8 @@
     <EmbeddedResource Include="Forms\CropForm.resx">
       <DependentUpon>CropForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\DemuxingForm.resx">
-      <DependentUpon>DemuxingForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\DemuxForm.resx">
+      <DependentUpon>DemuxForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MediaInfoForm.resx">
       <DependentUpon>MediaInfoForm.vb</DependentUpon>

@@ -177,6 +177,7 @@ Public Class ApplicationsForm
     Private Headers As New Dictionary(Of String, Label)
     Private Contents As New Dictionary(Of String, Label)
     Private SetupButton As New ButtonEx
+    Private DownloadButton As New ButtonEx
 
     Sub New()
         MyBase.New()
@@ -189,11 +190,14 @@ Public Class ApplicationsForm
 
         AddHandler SetupButton.Click, Sub() RunSetup()
         SetupButton.ForeColor = Color.Red
-        SetupButton.Font = New Font("Segoe UI", 9)
         SetupButton.AutoSize = True
         SetupButton.AutoSizeMode = Windows.Forms.AutoSizeMode.GrowAndShrink
         SetupButton.TextImageRelation = TextImageRelation.ImageBeforeText
         SetupButton.Image = StockIcon.GetSmallImage(StockIconIdentifier.Shield)
+
+        AddHandler DownloadButton.Click, Sub() g.ShellExecute(ActivePackage.DownloadURL)
+        DownloadButton.AutoSize = True
+        DownloadButton.AutoSizeMode = Windows.Forms.AutoSizeMode.GrowAndShrink
 
         Dim title = New Label With {.Font = New Font(flp.Font.FontFamily, 14, FontStyle.Bold),
                                     .AutoSize = True,
@@ -202,9 +206,11 @@ Public Class ApplicationsForm
         flp.Controls.Add(title)
         AddSection("Status")
         flp.Controls.Add(SetupButton)
+        flp.Controls.Add(DownloadButton)
         AddSection("Location")
         AddSection("Version")
-        AddSection("Filters")
+        AddSection("AviSynth Filters")
+        AddSection("VapourSynth Filters")
         AddSection("Description")
     End Sub
 
@@ -212,8 +218,12 @@ Public Class ApplicationsForm
         Dim path = ActivePackage.GetPath
 
         Headers("Title").Text = ActivePackage.Name
+
         SetupButton.Text = "Install " + ActivePackage.Name
         SetupButton.Visible = Not ActivePackage.SetupAction Is Nothing AndAlso ActivePackage.IsStatusCritical
+
+        DownloadButton.Text = "Download " + ActivePackage.Name
+        DownloadButton.Visible = ActivePackage.DownloadURL <> "" AndAlso ActivePackage.IsStatusCritical
 
         tsbOpenDir.Enabled = path <> ""
         tsbLaunch.Enabled = Not ActivePackage.LaunchAction Is Nothing AndAlso Not ActivePackage.IsStatusCritical
@@ -228,7 +238,6 @@ Public Class ApplicationsForm
         Contents("Location").Text = path
         Contents("Version").Text = ActivePackage.Version
         Contents("Description").Text = ActivePackage.Description
-        Contents("Filters").Text = ActivePackage.Description
 
         Contents("Location").Visible = path <> ""
         Headers("Location").Visible = path <> ""
@@ -236,12 +245,26 @@ Public Class ApplicationsForm
         Contents("Version").Visible = ActivePackage.Version <> ""
         Headers("Version").Visible = ActivePackage.Version <> ""
 
-        Headers("Filters").Visible = TypeOf ActivePackage Is AviSynthPluginPackage
-        Contents("Filters").Visible = TypeOf ActivePackage Is AviSynthPluginPackage
+        Headers("AviSynth Filters").Visible = False
+        Contents("AviSynth Filters").Visible = False
 
-        If TypeOf ActivePackage Is AviSynthPluginPackage Then
-            Dim avsPackage = DirectCast(ActivePackage, AviSynthPluginPackage)
-            Contents("Filters").Text = avsPackage.FilterNames.Join(", ")
+        Headers("VapourSynth Filters").Visible = False
+        Contents("VapourSynth Filters").Visible = False
+
+        If TypeOf ActivePackage Is PluginPackage Then
+            Dim plugin = DirectCast(ActivePackage, PluginPackage)
+
+            If Not plugin.AviSynthFilterNames Is Nothing Then
+                Headers("AviSynth Filters").Visible = True
+                Contents("AviSynth Filters").Text = plugin.AviSynthFilterNames.Join(", ")
+                Contents("AviSynth Filters").Visible = True
+            End If
+
+            If Not plugin.VapourSynthFilterNames Is Nothing Then
+                Headers("VapourSynth Filters").Visible = True
+                Contents("VapourSynth Filters").Text = plugin.VapourSynthFilterNames.Join(", ")
+                Contents("VapourSynth Filters").Visible = True
+            End If
         End If
 
         flp.ResumeLayout()
@@ -298,13 +321,11 @@ Public Class ApplicationsForm
     End Sub
 
     Private Sub tv_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles tv.AfterSelect
-        If e.Node.Parent Is Nothing AndAlso e.Node.Nodes.Count > 0 Then
+        If e.Node.Tag Is Nothing AndAlso e.Node.Nodes.Count > 0 Then
             tv.SelectedNode = e.Node.Nodes(0)
-        Else
-            If Not e.Node.Tag Is Nothing Then
-                ShowPackage(e.Node)
-            End If
         End If
+
+        If Not e.Node.Tag Is Nothing Then ShowPackage(e.Node)
     End Sub
 
     Private Sub ApplicationsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
@@ -337,7 +358,7 @@ Public Class ApplicationsForm
 
                     Dim t As String
 
-                    For Each i In Packs.Packages.Values
+                    For Each i In Packs.Packages
                         If i.Version <> "" Then
                             t += i.Name + " = " + i.Version + "; " + i.VersionDate.ToString("yyyy-MM-dd") + CrLf
                         End If
@@ -353,15 +374,37 @@ Public Class ApplicationsForm
     Private Sub SearchTextBox_TextChanged() Handles SearchTextBox.TextChanged
         tv.Nodes.Clear()
 
-        For Each i In Packs.Packages.Values
+        For Each i In Packs.Packages
             Dim search = SearchTextBox.Text.ToLower
 
             If i.Name.ToLower.Contains(search) OrElse i.Description.ToLower.Contains(search) OrElse
                 i.Version?.ToLower.Contains(search) Then
 
-                Dim n = tv.AddNode(i.TreePath + "|" + i.Name)
-                Nodes.Add(n)
-                n.Tag = i
+                Dim plugin = TryCast(i, PluginPackage)
+
+                If plugin Is Nothing Then
+                    If i Is Packs.Java OrElse i Is Packs.Python OrElse i Is Packs.vscpp2013 OrElse i Is Packs.vscpp2010 Then
+                        Dim n = tv.AddNode("Runtimes|" + i.Name)
+                        Nodes.Add(n)
+                        n.Tag = i
+                    Else
+                        Dim n = tv.AddNode("Apps|" + i.Name)
+                        Nodes.Add(n)
+                        n.Tag = i
+                    End If
+                Else
+                    If plugin.AviSynthFilterNames?.Length > 0 Then
+                        Dim n = tv.AddNode("Plugins|AviSynth|" + i.Name)
+                        Nodes.Add(n)
+                        n.Tag = i
+                    End If
+
+                    If plugin.VapourSynthFilterNames?.Length > 0 Then
+                        Dim n = tv.AddNode("Plugins|VapourSynth|" + i.Name)
+                        Nodes.Add(n)
+                        n.Tag = i
+                    End If
+                End If
             End If
         Next
 

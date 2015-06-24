@@ -3,7 +3,7 @@ Imports System.ComponentModel
 Imports StaxRip.UI
 Imports Microsoft.Win32
 
-Public Class AviSynthListView
+Class AviSynthListView
     Inherits ListViewEx
 
     Private BlockItemCheck As Boolean
@@ -30,7 +30,7 @@ Public Class AviSynthListView
 
     <Browsable(False),
     DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-    Property ProfileFunc As Func(Of AviSynthDocument)
+    Property ProfileFunc As Func(Of VideoScript)
 
     Sub Load()
         BlockItemCheck = True
@@ -66,22 +66,25 @@ Public Class AviSynthListView
     End Sub
 
     Sub UpdateMenu()
+        Dim filterProfiles As List(Of FilterCategory)
+
+        If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+            filterProfiles = s.AviSynthProfiles
+        Else
+            filterProfiles = s.VapourSynthProfiles
+        End If
+
         Menu.Items.Clear()
 
         If SelectedItems.Count > 0 Then
-            Dim selectedFilter = DirectCast(SelectedItems(0).Tag, AviSynthFilter)
+            Dim selectedFilter = DirectCast(SelectedItems(0).Tag, VideoFilter)
 
-            For Each i In s.AviSynthCategories
+            For Each i In filterProfiles
                 If i.Name = selectedFilter.Category Then
                     For Each i2 In i.Filters
                         Dim tip = i2.Script
-
-                        If Not tip.Contains("%app:") Then
-                            tip = Macro.Solve(tip)
-                        End If
-
-                        ActionMenuItem.Add(Menu.Items,
-                            i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
+                        If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
+                        ActionMenuItem.Add(Menu.Items, i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
                     Next
                 End If
             Next
@@ -94,19 +97,12 @@ Public Class AviSynthListView
             Menu.Items.Add(replace)
             Menu.Items.Add(insert)
 
-            For Each i In s.AviSynthCategories
+            For Each i In filterProfiles
                 For Each i2 In i.Filters
                     Dim tip = i2.Script
-
-                    If Not tip.Contains("%app:") Then
-                        tip = Macro.Solve(tip)
-                    End If
-
-                    ActionMenuItem.Add(replace.DropDownItems,
-                        i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
-
-                    ActionMenuItem.Add(insert.DropDownItems,
-                        i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
+                    If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
+                    ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
+                    ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
                 Next
             Next
         End If
@@ -114,16 +110,11 @@ Public Class AviSynthListView
         Dim add As New MenuItemEx("Add")
         Menu.Items.Add(add)
 
-        For Each i In s.AviSynthCategories
+        For Each i In filterProfiles
             For Each i2 In i.Filters
                 Dim tip = i2.Script
-
-                If Not tip.Contains("%app:") Then
-                    tip = Macro.Solve(tip)
-                End If
-
-                ActionMenuItem.Add(add.DropDownItems,
-                    i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
+                If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
+                ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
             Next
         Next
 
@@ -133,19 +124,12 @@ Public Class AviSynthListView
         End If
 
         Menu.Items.Add(New ActionMenuItem("Edit...", AddressOf ShowEditor, "Dialog to edit filters."))
+        Menu.Items.Add(New ActionMenuItem("Play", Sub() g.PlayScript(p.VideoScript), "Plays the script with the AVI player.", p.SourceFile <> ""))
+        Menu.Items.Add(New ActionMenuItem("Profiles...", AddressOf g.MainForm.OpenFilterProfilesDialog, "Dialog to edit profiles."))
 
-        If TypeOf FindForm() Is MainForm Then
-            Menu.Items.Add(New ActionMenuItem("Play", AddressOf g.PlayScript, "Plays the script with the AVI player.", p.SourceFile <> ""))
-        End If
-
-        Menu.Items.Add(New ActionMenuItem("Profiles...", AddressOf g.MainForm.OpenAviSynthFilterProfilesDialog, "Dialog to edit profiles."))
-
-        If TypeOf FindForm() Is MainForm Then
-            Dim setup As New MenuItemEx("Filter Setup")
-            Menu.Items.Add(setup)
-
-            g.PopulateProfileMenu(setup.DropDownItems, s.AviSynthProfiles, AddressOf g.MainForm.OpenAviSynthProfilesDialog, AddressOf g.MainForm.LoadAviSynthProfile)
-        End If
+        Dim setup As New MenuItemEx("Filter Setup")
+        Menu.Items.Add(setup)
+        g.PopulateProfileMenu(setup.DropDownItems, s.FilterSetupProfiles, AddressOf g.MainForm.OpenAviSynthProfilesDialog, AddressOf g.MainForm.LoadScriptProfile)
     End Sub
 
     Sub ShowEditor()
@@ -155,7 +139,7 @@ Public Class AviSynthListView
         End If
     End Sub
 
-    Sub ReplaceClick(f As AviSynthFilter)
+    Sub ReplaceClick(f As VideoFilter)
         Dim index = SelectedItems(0).Index
         ProfileFunc.Invoke.Filters(index) = f
         Load()
@@ -163,7 +147,7 @@ Public Class AviSynthListView
         RaiseChangedAsync()
     End Sub
 
-    Private Sub InsertClick(f As AviSynthFilter)
+    Private Sub InsertClick(f As VideoFilter)
         Dim index = SelectedItems(0).Index
         ProfileFunc.Invoke.Filters.Insert(index, f)
         Load()
@@ -171,7 +155,7 @@ Public Class AviSynthListView
         RaiseChangedAsync()
     End Sub
 
-    Private Sub AddClick(f As AviSynthFilter)
+    Private Sub AddClick(f As VideoFilter)
         ProfileFunc.Invoke.Filters.Add(f)
         Load()
         Items(Items.Count - 1).Selected = True
@@ -180,38 +164,6 @@ Public Class AviSynthListView
 
     Sub RaiseScriptChanged()
         RaiseEvent ScriptChanged()
-    End Sub
-
-    Protected Overrides Sub OnBeforeShowControl(e As BeforeShowControlEventArgs)
-        MyBase.OnBeforeShowControl(e)
-
-        If Not e.Cancel AndAlso e.Position.X = 1 Then
-            Dim cb = DirectCast(e.Control, ComboBox)
-            cb.Items.Clear()
-
-            Dim categories As New List(Of String)
-
-            For Each i In s.AviSynthCategories
-                categories.Add(i.Name)
-            Next
-
-            cb.Items.AddRange(categories.ToArray)
-        End If
-    End Sub
-
-    Protected Overrides Sub OnEdited(value As Object, pos As Point)
-        Dim f = DirectCast(Items(pos.Y).Tag, AviSynthFilter)
-
-        Select Case pos.X
-            Case 1
-                f.Category = value.ToString
-            Case 2
-                f.Path = value.ToString
-            Case 3
-                f.Script = value.ToString
-        End Select
-
-        MyBase.OnEdited(value, pos)
     End Sub
 
     Private Sub RemoveClick()
@@ -227,7 +179,7 @@ Public Class AviSynthListView
         ProfileFunc.Invoke.Filters.Clear()
 
         For Each i As ListViewItem In Items
-            ProfileFunc.Invoke.Filters.Add(DirectCast(i.Tag, AviSynthFilter))
+            ProfileFunc.Invoke.Filters.Add(DirectCast(i.Tag, VideoFilter))
         Next
 
         RaiseEvent ScriptChanged()
@@ -244,7 +196,7 @@ Public Class AviSynthListView
         MyBase.OnItemCheck(e)
 
         If Not BlockItemCheck AndAlso Focused Then
-            Dim filter = DirectCast(Items(e.Index).Tag, AviSynthFilter)
+            Dim filter = DirectCast(Items(e.Index).Tag, VideoFilter)
 
             If e.NewValue = CheckState.Checked AndAlso filter.Category = "Resize" Then
                 Dim f = FindForm()

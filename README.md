@@ -1,6 +1,6 @@
 # StaxRip x64
 
-Modern x64 video encoding GUI for many powerfull x64 video tools such as AviSynth+, VapourSynth, mkvtoolnix, x264, x265, Intel and NVIDIA GPU encoding, eac3to, ffmpeg and many more. All tools and more then 20 AviSynth+ or VapourSynth plugins are included.
+Modern x64 video encoding GUI for many powerful x64 video tools such as AviSynth+, VapourSynth, mkvtoolnix, x264, x265, Intel and NVIDIA GPU encoding, eac3to, ffmpeg and many more. All tools and more then 20 AviSynth+ or VapourSynth plugins are included.
 
 # Features
 

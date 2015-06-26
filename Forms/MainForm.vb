@@ -1571,6 +1571,10 @@ Class MainForm
             td.Content = "A description of the available source filters can be found in the [http://github.com/stax76/staxrip/wiki/Source-Filters wiki]."
             td.AddCommandLink("Automatic", "Automatic")
 
+            If Not p.VideoScript.IsFilterActive("Source", "Automatic") Then
+                td.AddCommandLink(p.VideoScript.GetFilter("Source").Name, "current")
+            End If
+
             If FileTypes.DGDecNVInput.Contains(files(0).Ext) Then
                 If Packs.DGDecodeNV.GetPath <> "" Then td.AddCommandLink("DGSource using AviSynth+", "DGSource")
                 If Packs.DGDecodeIM.GetPath <> "" Then td.AddCommandLink("DGSourceIM using AviSynth+", "DGSourceIM")
@@ -1601,6 +1605,8 @@ Class MainForm
             Select Case td.Show
                 Case "Automatic"
                     filter = New VideoFilter("Source", "Automatic", "", True)
+                Case "current"
+                    filter = Nothing
                 Case "DGSource"
                     filter = New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
                 Case "DGSourceIM"
@@ -1840,10 +1846,10 @@ Class MainForm
                     If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
                         p.VideoScript = VideoScript.GetDefaults()(1)
                     End If
-                Else
-                    If p.VideoScript.Engine = ScriptingEngine.VapourSynth Then
-                        p.VideoScript = VideoScript.GetDefaults()(0)
-                    End If
+                ElseIf p.VideoScript.Engine = ScriptingEngine.VapourSynth AndAlso
+                    preferredSourceFilter.Script <> "" Then
+
+                    p.VideoScript = VideoScript.GetDefaults()(0)
                 End If
 
                 p.VideoScript.SetFilter(preferredSourceFilter.Category,
@@ -2849,7 +2855,6 @@ Class MainForm
 
                 If Not p.VideoScript.GetErrorMessage Is Nothing Then
                     If ProcessTip(p.VideoScript.GetErrorMessage) Then
-                        MsgError(p.VideoScript.GetErrorMessage)
                         CanIgnoreTip = False
                         gbAssistant.Text = "AviSynth Error"
                         Return False
@@ -3040,7 +3045,7 @@ Class MainForm
                 End If
             End If
 
-            If Not i.Active AndAlso Not srcScript.Contains(i.SourceFilter.ToLower + "(") Then Continue For
+            If Not i.Active AndAlso (i.SourceFilter = "" OrElse Not srcScript.Contains(i.SourceFilter.ToLower + "(")) Then Continue For
 
             If i.InputExtensions?.Length = 0 OrElse i.InputExtensions.Contains(Filepath.GetExt(p.SourceFile)) Then
                 If srcScript = "" OrElse i.SourceFilter = "" OrElse
@@ -4751,7 +4756,7 @@ Class MainForm
     End Sub
 
     Private Function GetAVSDocAsProfile() As Profile
-        Dim sb As New SelectionBox(Of TargetAviSynthDocument)
+        Dim sb As New SelectionBox(Of TargetVideoScript)
 
         sb.Title = "New Profile"
         sb.Text = "Please choose a profile."
@@ -4774,7 +4779,7 @@ Class MainForm
     End Function
 
     Sub LoadScriptProfile(profileInterface As Profile)
-        Dim profile = DirectCast(ObjectHelp.GetCopy(profileInterface), TargetAviSynthDocument)
+        Dim profile = DirectCast(ObjectHelp.GetCopy(profileInterface), TargetVideoScript)
 
         If profile.Engine = ScriptingEngine.AviSynth OrElse
                 (Packs.Python.VerifyOK(True) AndAlso Packs.VapourSynth.VerifyOK(True)) Then
@@ -5920,6 +5925,8 @@ Class MainForm
         m.Items.Add(New ActionMenuItem("Copy Path", Sub() Clipboard.SetText(ap.File), Nothing, tb.Text <> ""))
         m.Items.Add(New ActionMenuItem("Copy Selection", Sub() tb.Copy(), Nothing, tb.Text <> ""))
         m.Items.Add(New ActionMenuItem("Paste", Sub() tb.Paste(), Nothing, Clipboard.GetText.Trim <> ""))
+        m.Items.Add("-")
+        m.Items.Add(New ActionMenuItem("Clear", Sub() tb.Text = "", "Remove audio file", tb.Text <> ""))
     End Sub
 
     Sub PlayAudio(ap As AudioProfile)

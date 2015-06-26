@@ -349,11 +349,6 @@ Class GlobalClass
                 End If
             End If
 
-            If i.Ext = "d2v" Then
-                MsgError("There is no properly working x64 source filters available for D2V. DGIndex can also demux video as m2v which StaxRip can open.")
-                Return True
-            End If
-
             If i.Ext = "dga" Then
                 MsgError("There is no properly working x64 source filters available for DGA. There are several newer and faster x64 source filters available.")
                 Return True
@@ -1219,30 +1214,6 @@ Public Class Log
             "LAV Filters: " + Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\lavfilters_is1", "DisplayName")
 
         WriteLine(temp.FormatColumn(":"))
-
-        WriteHeader(".NET")
-
-        Dim keys As New List(Of RegistryKey)
-        Dim k = Registry.LocalMachine.OpenSubKey("SOFTWARE\Microsoft\NET Framework Setup\NDP")
-        k.GetSubKeys(keys)
-
-        Dim remove = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\"
-        temp = ""
-
-        For Each i In keys
-            Dim v = CStr(i.GetValue("Version", Nothing))
-
-            If Not v Is Nothing AndAlso
-                Not i.Name Like "*NDP*Setup*" AndAlso
-                Not i.Name.EndsWith("\1033") Then
-
-                temp += i.Name.Replace(remove, "") + " : " + v + CrLf
-            End If
-
-            i.Close()
-        Next
-
-        WriteLine(temp.FormatColumn(":"))
     End Sub
 
     Shared Sub Save()
@@ -1779,6 +1750,8 @@ Public Class Language
                             ThreeLetterCodeValue = "geo"
                         Case "isl"
                             ThreeLetterCodeValue = "ice"
+                        Case "bng"
+                            ThreeLetterCodeValue = "ben"
                         Case Else
                             ThreeLetterCodeValue = CultureInfo.ThreeLetterISOLanguageName
                     End Select
@@ -2814,7 +2787,11 @@ Public Class GlobalCommands
             Case "changelog" 'cl:
                 f.Doc.WriteStart("Changelog")
 
-                f.Doc.WriteP("StaxRip x64 1.3.1.5 " + GetReleaseType() + " (2015-05-??)")
+                f.Doc.WriteP("StaxRip x64 1.3.1.6 " + GetReleaseType() + " (2015-0?-??)")
+
+                f.Doc.WriteList("Tweak: Added clear feature to audio file context menu to easily remove a audio file.")
+
+                f.Doc.WriteP("StaxRip x64 1.3.1.5 " + GetReleaseType() + " (2015-05-25)")
 
                 f.Doc.WriteList("New: Added full first class VapourSynth support including plugins and profile for QTGMC",
                                 "New: Added possibility to switch dynamically between any source filter back and forth including DGSource and DGSourceIM. Indexing is triggered automatically in case no index file is present",
@@ -2825,10 +2802,12 @@ Public Class GlobalCommands
                                 "New: Added two new options in the dialog to define files for batch processing to add a entire folder and a entire folder including sub-folders",
                                 "New: Added new subtitle UI based on data view",
                                 "New: Added option to generate subtitle names based on the subtitle language",
+                                "New: x265 switch --limit-refs added",
                                 "Fix: Disabled audio demuxing for MKV and MP4 by DGIndexNV and DGIndexIM because it's already demuxed by MP4Box and mkvextract",
                                 "Fix: Tools/Directories/Plugins wasn't pointing to the AviSynth+ plugin directory",
-                                "Update: QSVEncC 2.0 beta 7",
-                                "Update: x265 1.7+207",
+                                "Fix: Wrong command line generated for --deblock",
+                                "Update: QSVEncC 2.0 beta 11",
+                                "Update: x265 1.7+234",
                                 "Tweak: DTS bitrate is now unrestricted",
                                 "Tweak: Moved field processing filters to dedicated category like before in StaxRip x86",
                                 "Tweak: Replaced LinkLabels with Buttons in eac3to dialog",
@@ -2837,54 +2816,6 @@ Public Class GlobalCommands
                                 "Tweak: In the dialog to define files for batch processing the 'Create Jobs' option was renamed to 'Demux and index before adding jobs', regardless of if this option is enabled jobs are always created",
                                 "Tweak: Removed x86 and VS C++ 2013 from AviSynth+ installer bringing it from 18 MB down to 4 MB. Very often VS C++ 2013 is already installed and in case it ain't already installed StaxRip will show the Apps dialog which has a download button for VS C++ 2013.",
                                 "Tweak: replaced avs4x26x with ffmpeg")
-
-                f.Doc.WriteP("StaxRip x64 1.3.1.4 " + GetReleaseType() + " (2015-05-31)")
-
-                f.Doc.WriteList("Added feature To choose which source filter To use When a Single file Is opened, this gives more MeGUI manual workflow Like control without giving up much Of StaxRip's automated character",
-                                "Fixed failing to show log file from main menu",
-                                "Updated qaac to 2.49",
-                                "Updated ffms2 to 2.22 RC2")
-
-                f.Doc.WriteP("StaxRip x64 1.3.1.3 " + GetReleaseType() + " (2015-05-21)")
-
-                f.Doc.WriteList("Added Decomb x64 plugin",
-                                "Greatly improved AviSynth editor",
-                                "eac3to dialog Is now surpressed In batch mode",
-                                "Improved framerate correction",
-                                "Replaced DGAVCDec With dsmux",
-                                "Re-added backup feature To keep backup Of filter, audio And video encoder profiles. It means When filter, audio Or video encoder profiles are reset, previous profiles are still available In a Backup Sub menu, the menu Structure Is customizable so profiles Of the backup Sub menu can be moved To top level Using the profiles editor which supports multi selection.",
-                                "Fixed wrong DGIndexNV demux configuration",
-                                "Updated ffms2 To 2.21")
-
-                f.Doc.WriteP("StaxRip x64 1.3.1.2 " + GetReleaseType() + " (2015-05-19)")
-
-                f.Doc.WriteList("Added x265 switch --output-depth To choose between 8bit And 10bit output",
-                                "Improved 'Demux Configuration' dialog",
-                                "Fixed and changed cropping and resizing with QSVEncC, there is now for both crop and resize a special AviSynth filter profile 'Hardware Encoder' but if AviSynth is bypassed by enabling hardware decoding in QSVEncC then it's not necessary to use this special profiles, any crop or resize profile will do in this case.",
-                                "Fixed bug audio streams not being detected for M2TS files",
-                                "Updated x265 to x265_1.7+2",
-                                "Updated QSVEncC to 2.0 beta 3")
-
-                f.Doc.WriteP("StaxRip x64 1.3.1.1 " + GetReleaseType() + " (2015-05-15)")
-
-                f.Doc.WriteList("Added DGAVCIndex As AVC TS demuxer, dsmux Is still available but disabled by Default",
-                                "Added plugin flash3kyuu_deband v1.5.1",
-                                "Added QSVEncC hardware decoding bypassing AviSynth And Using StaxRip's cut/trim and crop values. On my Win10 development OS it don't work however and I didn't test on Win7",
-                                "Changed DGIndex to demux and output m2v because DGDecode does not work on Win10, this means the old DVD workflow is fully supported again, MakeMKV is still recommended instead",
-                                "Instead of always adding AssumeFPS it's now only added if necessary",
-                                "The Applications dialog was renamed to Apps and Version and Description info was improved (only 50% completed)",
-                                "Improved AviSynth editor and filter profiles",
-                                "Improved 'Just Mux' feature supporting more formats",
-                                "Fixed qaac executed with command window, improved qaac description in applications dialog",
-                                "Fixed crash in preview window caused by AviSynth, StaxRip shows a error message instead now",
-                                "Fixed crash caused by stream title containing character that are illegal in windows file system",
-                                "Fixed two bugs in the 'Execute Command Line' command of StaxRip's command engine which powers StaxRip CLI, various menus and event commands",
-                                "Updated MP4Box to 0.5.2-DEV-rev376 static mingw build, I made some basic tests which succeeded, Selur said -hint don't work but nobody ever requested -hint support in StaxRip.",
-                                "Updated MKVToolNix 7.9.0 x64",
-                                "Updated nnedi3 0.9.4.9 x64, nnedi3 and DGDecNV are now working on Win8 and Win10, DGDecNV 2049 has to be re-downloaded",
-                                "Updated AVSMeter 2.0.2 x64, the main menu can be customized to add custom CLI switches",
-                                "Updated qaac 2.48 x64 and improved intergration",
-                                "Updated l-Smash-Works 785 x64")
             Case "CRF Value"
                 f.Doc.WriteStart("CRF Value")
                 f.Doc.WriteP("Low values produce high quality, large file size, large value produces small file size and poor quality. A balanced value is 23 which is the defalt in x264. Common values are 18-26 where 18 produces near transparent quality at the cost of a huge file size. The quality 26 produces is rather poor so such a high value should only be used when a small file size is the only criterium.")

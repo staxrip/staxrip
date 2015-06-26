@@ -1383,6 +1383,15 @@ Class IntelEncoder
         End Property
 
         Protected Overrides Sub OnValueChanged(item As CommandLineItem)
+            If item Is Deinterlace Then
+                If Deinterlace.ValueText = "normal" OrElse Deinterlace.ValueText = "bob" Then
+                    If Not TFF.Value AndAlso Not BFF.Value Then TFF.Value = True
+                Else
+                    TFF.Value = False
+                    BFF.Value = False
+                End If
+            End If
+
             Quality.Visible = {"icq", "la-icq", "qvbr-q"}.Contains(Mode.ValueText)
             QPB.Visible = {"cqp", "vqp"}.Contains(Mode.ValueText)
             QPI.Visible = {"cqp", "vqp"}.Contains(Mode.ValueText)

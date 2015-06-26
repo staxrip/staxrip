@@ -105,8 +105,7 @@ Public Class SourceFilesForm
         Me.cbDemuxAndIndex.Size = New System.Drawing.Size(340, 29)
         Me.cbDemuxAndIndex.TabIndex = 3
         Me.cbDemuxAndIndex.Text = "Demux and index before creating jobs"
-        Me.TipProvider.SetTipText(Me.cbDemuxAndIndex, "Opens files in batch mode and creates jobs. Disabling this option is useful to ba" &
-        "tch perform preparation (demuxing etc.).")
+        Me.TipProvider.SetTipText(Me.cbDemuxAndIndex, "Demuxes and indexes instantly instead of with the encoding process.")
         Me.cbDemuxAndIndex.UseVisualStyleBackColor = True
         Me.cbDemuxAndIndex.Visible = False
         '

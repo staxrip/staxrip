@@ -567,8 +567,7 @@ Namespace x265
             .Text = "Depth:",
             .Options = {"8", "10"},
             .Values = {"8", "10"},
-            .Value = 1,
-            .DefaultValue = 1}
+            .Value = 1}
 
         Property Level As New OptionParam With {
             .Switch = "--level-idc",
@@ -737,9 +736,14 @@ Namespace x265
 
         Property MaxTuSize As New OptionParam With {
             .Switch = "--max-tu-size",
-            .Text = "Max TU Size",
+            .Text = "Max TU Size:",
             .Options = {"32", "16", "8", "4"},
             .Values = {"32", "16", "8", "4"}}
+
+        Property LimitRefs As New OptionParam With {
+            .Switch = "--limit-refs",
+            .Text = "Limit References:",
+            .Options = {"0", "1", "2", "3"}}
 
         Property CSV As New BoolParam With {
             .Switch = "--csv",
@@ -754,7 +758,7 @@ Namespace x265
                     ItemsValue = New List(Of CommandLineItem)
 
                     Add("Basic", Quant, Preset, Tune, Profile, OutputDepth, Level, Mode)
-                    Add("Analysis 1", RD, MinCuSize, MaxCuSize, MaxTuSize, TUintra, TUinter, rdoqLevel)
+                    Add("Analysis 1", RD, MinCuSize, MaxCuSize, MaxTuSize, LimitRefs, TUintra, TUinter, rdoqLevel)
                     Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra, CUlossless, Tskip, TskipFast)
                     Add("Rate Control 1", AQmode, qgSize, AQStrength, IPRatio, PBRatio, QComp, CBQPoffs, Qstep, QBlur, Cplxblur, CUtree, Lossless, StrictCBR)
                     Add("Rate Control 2", NRintra, NRinter, CRFmin, CRFmax, VBVbufsize, VBVmaxrate, VBVinit, qpstep)
@@ -852,9 +856,8 @@ Namespace x265
             End If
 
             If includePaths Then
-                sb.Append(" --input-res " & p.TargetWidth & "x" & p.TargetHeight)
                 sb.Append(" --frames " & script.GetFrames)
-                sb.Append(" --fps " + script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
+                sb.Append(" --y4m")
 
                 If Calc.IsARSignalingRequired Then
                     Dim par = Calc.GetTargetPAR
@@ -885,7 +888,7 @@ Namespace x265
 
                     Return ""
                 Else
-                    Return " - -Deblock " & DeblockA.Value & ": " & DeblockB.Value
+                    Return "--deblock " & DeblockA.Value & ":" & DeblockB.Value
                 End If
             ElseIf Deblock.DefaultValue Then
                 Return "--no-deblock"

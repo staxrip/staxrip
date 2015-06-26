@@ -548,63 +548,8 @@ Public Class MkvMuxer
 
         args.Append(" """ + p.VideoEncoder.OutputPath + """")
 
-        If File.Exists(p.Audio0.File) AndAlso IsSupported(p.Audio0.OutputFileType) Then
-            Dim tid = 0
-
-            If Not p.Audio0.Stream Is Nothing Then
-                tid = p.Audio0.Stream.StreamOrder
-            Else
-                tid = MediaInfo.GetAudio(p.Audio0.File, "StreamOrder").ToInt
-            End If
-
-            args.Append(" --novideo --nosubs --no-chapters --no-attachments --no-track-tags --no-global-tags --audio-tracks " & tid)
-            args.Append(" --language " & tid & ":" + p.Audio0.Language.ThreeLetterCode)
-
-            If p.Audio0.OutputFileType = "aac" AndAlso p.Audio0.File.ToLower.Contains("sbr") Then
-                args.Append(" --aac-is-sbr " & tid)
-            End If
-
-            If p.Audio0.StreamName <> "" Then
-                args.Append(" --track-name """ & tid & ":" + p.Audio0.SolveMacros(p.Audio0.StreamName, False) + """")
-            End If
-
-            If p.Audio0.Delay <> 0 AndAlso Not p.Audio0.HandlesDelay AndAlso
-                Not (p.Audio0.HasStream AndAlso p.Audio0.Stream.Delay <> 0) Then
-
-                args.Append(" --sync " & tid & ":" + p.Audio0.Delay.ToString)
-            End If
-
-            args.Append(" """ + p.Audio0.File + """")
-        End If
-
-        If File.Exists(p.Audio1.File) AndAlso IsSupported(p.Audio1.OutputFileType) Then
-            Dim tid = 0
-
-            If Not p.Audio1.Stream Is Nothing Then
-                tid = p.Audio1.Stream.StreamOrder
-            Else
-                tid = MediaInfo.GetAudio(p.Audio1.File, "StreamOrder").ToInt
-            End If
-
-            args.Append(" --novideo --nosubs --no-chapters --no-attachments --no-track-tags --no-global-tags --audio-tracks " & tid)
-            args.Append(" --language " & tid & ":" + p.Audio1.Language.ThreeLetterCode)
-
-            If p.Audio1.OutputFileType = "aac" AndAlso p.Audio1.File.ToLower.Contains("sbr") Then
-                args.Append(" --aac-is-sbr " & tid)
-            End If
-
-            If p.Audio1.StreamName <> "" Then
-                args.Append(" --track-name """ & tid & ":" + p.Audio1.SolveMacros(p.Audio1.StreamName, False) + """")
-            End If
-
-            If p.Audio1.Delay <> 0 AndAlso Not p.Audio1.HandlesDelay AndAlso
-                Not (p.Audio1.HasStream AndAlso p.Audio1.Stream.Delay <> 0) Then
-
-                args.Append(" --sync " & tid & ":" + p.Audio1.Delay.ToString)
-            End If
-
-            args.Append(" """ + p.Audio1.File + """")
-        End If
+        AddAudioArgs(p.Audio0, args)
+        AddAudioArgs(p.Audio1, args)
 
         For Each i In Subtitles
             If i.Enabled AndAlso File.Exists(i.Path) Then
@@ -653,6 +598,42 @@ Public Class MkvMuxer
 
         Return args.ToString
     End Function
+
+    Sub AddAudioArgs(ap As AudioProfile, args As StringBuilder)
+        If File.Exists(ap.File) AndAlso IsSupported(ap.OutputFileType) Then
+            Dim tid = 0
+            Dim isCombo As Boolean
+
+            If Not ap.Stream Is Nothing Then
+                tid = ap.Stream.StreamOrder
+                isCombo = ap.Stream.Name.Contains("THD+AC3")
+            Else
+                tid = MediaInfo.GetAudio(ap.File, "StreamOrder").ToInt
+                isCombo = ap.File.Ext = "thd+ac3"
+            End If
+
+            args.Append(" --novideo --nosubs --no-chapters --no-attachments --no-track-tags --no-global-tags --audio-tracks " + If(isCombo, tid & "," & tid + 1, tid.ToString))
+
+            args.Append(" --language " & tid & ":" + ap.Language.ThreeLetterCode)
+            If isCombo Then args.Append(" --language " & tid + 1 & ":" + ap.Language.ThreeLetterCode)
+
+            If ap.OutputFileType = "aac" AndAlso ap.File.ToLower.Contains("sbr") Then
+                args.Append(" --aac-is-sbr " & tid)
+            End If
+
+            If ap.StreamName <> "" Then
+                args.Append(" --track-name """ & tid & ":" + ap.SolveMacros(ap.StreamName, False) + """")
+                If isCombo Then args.Append(" --track-name """ & tid + 1 & ":" + ap.SolveMacros(ap.StreamName, False) + """")
+            End If
+
+            If ap.Delay <> 0 AndAlso Not ap.HandlesDelay AndAlso Not (ap.HasStream AndAlso ap.Stream.Delay <> 0) Then
+                args.Append(" --sync " & tid & ":" + ap.Delay.ToString)
+                If isCombo Then args.Append(" --sync " & tid + 1 & ":" + ap.Delay.ToString)
+            End If
+
+            args.Append(" """ + ap.File + """")
+        End If
+    End Sub
 
     Overrides ReadOnly Property SupportedInputTypes() As String()
         Get

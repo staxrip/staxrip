@@ -10,7 +10,7 @@ Class ApplicationSettings
     Public AudioProfiles As List(Of AudioProfile)
     Public AviSynthProfiles As List(Of FilterCategory)
     Public VapourSynthProfiles As List(Of FilterCategory)
-    Public FilterSetupProfiles As List(Of TargetAviSynthDocument)
+    Public FilterSetupProfiles As List(Of TargetVideoScript)
     Public CmdlPresetsEac3to As String
     Public CmdlPresetsMKV As String
     Public CmdlPresetsMP4 As String
@@ -229,7 +229,7 @@ Class ApplicationSettings
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 
-        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 131) Then
+        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 133) Then
             If AviSynthProfiles Is Nothing Then
                 AviSynthProfiles = FilterCategory.GetAviSynthDefaults
             Else
@@ -252,7 +252,7 @@ Class ApplicationSettings
             End If
         End If
 
-        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 12) Then
+        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 17) Then
             If VapourSynthProfiles Is Nothing Then
                 VapourSynthProfiles = FilterCategory.GetVapourSynthDefaults
             Else
@@ -275,7 +275,7 @@ Class ApplicationSettings
             End If
         End If
 
-        If Check(FilterSetupProfiles, "Filter Setup Profiles", 99) Then
+        If Check(FilterSetupProfiles, "Filter Setup Profiles", 100) Then
             FilterSetupProfiles = VideoScript.GetDefaults
         End If
 

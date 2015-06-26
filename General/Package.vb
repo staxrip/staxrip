@@ -496,7 +496,7 @@ Public Class vscpp2013Package
     Sub New()
         Name = "Visual C++ 2013"
         Filename = "msvcr120.dll"
-        Description = "Visual C++ Redistributable Packages."
+        Description = "Visual C++ 2013 Redistributable Packages which is required by various tools used by StaxRip."
         DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=40784"
         FixedDirValue = CommonDirs.System
     End Sub
@@ -508,7 +508,7 @@ Public Class vscpp2010Package
     Sub New()
         Name = "Visual C++ 2010"
         Filename = "msvcr100.dll"
-        Description = "Visual C++ Redistributable Packages."
+        Description = "Visual C++ 2010 Redistributable Packages. Only MP4Box requires this outdated runtime. MP4Box is used to demux and mux MP4."
         DownloadURL = "https://www.microsoft.com/en-us/download/details.aspx?id=13523"
         FixedDirValue = CommonDirs.System
     End Sub
@@ -733,7 +733,7 @@ Public Class ffms2Package
         Name = "ffms2"
         Filename = "ffms2.dll"
         WebURL = "https://github.com/FFMS/ffms2"
-        Description = "AviSynth source filter supporting various input formats."
+        Description = "AviSynth+ and VapourSynth source filter supporting various input formats."
         AviSynthFilterNames = {"FFVideoSource", "FFAudioSource"}
         VapourSynthFilterNames = {"ffms2"}
         HelpDir = "doc"
@@ -766,7 +766,7 @@ Public Class vslsmashsourcePackage
     Sub New()
         Name = "vslsmashsource"
         Filename = "vslsmashsource.dll"
-        Description = "AviSynth and VapourSynth source filter based on Libav supporting a wide range of input formats."
+        Description = "VapourSynth source filter based on Libav supporting a wide range of input formats."
         VapourSynthFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"}
     End Sub
 
@@ -1167,8 +1167,18 @@ Public Class havsfuncPackage
     Sub New()
         Name = "havsfunc"
         Filename = "havsfunc.py"
-        VapourSynthFilterNames = {"havsfunc.QTGMC"}
+        VapourSynthFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa", "havsfunc.maa",
+                                  "havsfunc.SharpAAMCmod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
+                                  "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.ivtc_txt60mc",
+                                  "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.logoNR",
+                                  "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.GSMC",
+                                  "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD",
+                                  "havsfunc.LSFmod", "havsfunc.GrainFactory3"}
+
         Dependencies = {"fmtconv", "mvtools", "nnedi3", "scenechange", "temporalsoften"}
+        Description = "Various popular AviSynth scripts ported to VapourSynth."
+        HelpURL = "http://forum.doom9.org/showthread.php?t=166582"
+        WebURL = "http://forum.doom9.org/showthread.php?t=166582"
     End Sub
 End Class
 

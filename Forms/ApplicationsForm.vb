@@ -377,7 +377,7 @@ Public Class ApplicationsForm
         For Each i In Packs.Packages
             Dim search = SearchTextBox.Text.ToLower
 
-            If i.Name.ToLower.Contains(search) OrElse i.Description.ToLower.Contains(search) OrElse
+            If i.Name.ToLower.Contains(search) OrElse i.Description?.ToLower.Contains(search) OrElse
                 i.Version?.ToLower.Contains(search) Then
 
                 Dim plugin = TryCast(i, PluginPackage)

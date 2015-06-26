@@ -26,7 +26,7 @@ Class Project
     Public AutoSmartOvercrop As Double
     Public AutoSubtitles As String
     Public AvsCodeAtTop As String = ""
-    Public VideoScript As TargetAviSynthDocument
+    Public VideoScript As TargetVideoScript
     Public BatchMode As Boolean
     Public CompCheckAction As CompCheckAction = StaxRip.CompCheckAction.AdjustImageSize
     Public CompCheckRange As Integer = 5
@@ -55,7 +55,7 @@ Class Project
     Public Size As Integer = 700
     Public SkippedAssistantTips As List(Of String)
     Public SourceAnamorphic As Boolean
-    Public SourceAviSynthDocument As SourceAviSynthDocument
+    Public SourceAviSynthDocument As SourceVideoScript
     Public SourceFile As String
     Public SourceFiles As List(Of String)
     Public SourceFrameRate As Double
@@ -113,7 +113,7 @@ Class Project
         End If
 
         If SourceAviSynthDocument Is Nothing Then
-            SourceAviSynthDocument = New SourceAviSynthDocument
+            SourceAviSynthDocument = New SourceVideoScript
         End If
 
         If SkippedAssistantTips Is Nothing Then

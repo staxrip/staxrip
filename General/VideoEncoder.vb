@@ -92,7 +92,7 @@ MustInherit Class VideoEncoder
 
     Sub AutoSetImageSize()
         If p.VideoEncoder.AutoCompCheckValue > 0 AndAlso Calc.GetPercent <> 0 AndAlso
-            p.VideoScript.IsFilterActive("Resize") Then
+            p.Script.IsFilterActive("Resize") Then
 
             Dim oldWidth = p.TargetWidth
             Dim oldHeight = p.TargetHeight
@@ -132,7 +132,7 @@ MustInherit Class VideoEncoder
     End Sub
 
     Overridable Function GetFrameRate() As Double
-        Return p.VideoScript.GetFramerate
+        Return p.Script.GetFramerate
     End Function
 
     Overridable Function GetError() As String
@@ -458,8 +458,8 @@ Class BatchEncoder
         Log.WriteHeader("Compressibility Check")
 
         Dim script As New VideoScript
-        script.Engine = p.VideoScript.Engine
-        script.Filters = p.VideoScript.GetFiltersCopy
+        script.Engine = p.Script.Engine
+        script.Filters = p.Script.GetFiltersCopy
         Dim code As String
         Dim every = ((100 \ p.CompCheckRange) * 14).ToString
 
@@ -649,15 +649,15 @@ Class ffmpegEncoder
     End Property
 
     Overrides Sub Encode()
-        p.VideoScript.Synchronize()
+        p.Script.Synchronize()
 
         Params.RaiseValueChanged(Nothing)
 
         If Params.Mode.OptionText = "Two Pass" Then
-            Encode(Params.GetArgs(1, p.VideoScript.Path, "NUL", True))
-            Encode(Params.GetArgs(2, p.VideoScript.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+            Encode(Params.GetArgs(1, p.Script.Path, "NUL", True))
+            Encode(Params.GetArgs(2, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
         Else
-            Encode(Params.GetArgs(1, p.VideoScript.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+            Encode(Params.GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
         End If
 
         AfterEncoding()
@@ -790,7 +790,7 @@ Class ffmpegEncoder
         End Sub
 
         Overloads Overrides Function GetArgs(includePaths As Boolean) As String
-            Return GetArgs(1, p.VideoScript.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
+            Return GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths)
         End Function
 
@@ -801,7 +801,7 @@ Class ffmpegEncoder
             Dim ret As String
 
             If includePaths Then
-                ret += "-i """ + p.VideoScript.Path + """"
+                ret += "-i """ + p.Script.Path + """"
             End If
 
             Dim q = From i In Items Where i.GetArgs <> ""
@@ -916,15 +916,15 @@ Class NvidiaEncoder
     End Property
 
     Overrides Sub Encode()
-        p.VideoScript.Synchronize()
-        Encode(Params.GetArgs(1, p.VideoScript.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+        p.Script.Synchronize()
+        Encode(Params.GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
         AfterEncoding()
     End Sub
 
     Overloads Sub Encode(args As String)
-        If p.VideoScript.Engine = ScriptingEngine.VapourSynth Then
+        If p.Script.Engine = ScriptingEngine.VapourSynth Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_venc.bat"
-            Dim cli = """" + Packs.vspipe.GetPath + """ """ + p.VideoScript.Path + """ - --y4m | """ + Packs.NVEncC.GetPath + """ " + args
+            Dim cli = """" + Packs.vspipe.GetPath + """ """ + p.Script.Path + """ - --y4m | """ + Packs.NVEncC.GetPath + """ " + args
             File.WriteAllText(batchPath, cli, Encoding.GetEncoding(850))
 
             Using proc As New Proc
@@ -1077,7 +1077,7 @@ Class NvidiaEncoder
         End Sub
 
         Overloads Overrides Function GetArgs(includePaths As Boolean) As String
-            Return GetArgs(1, p.VideoScript.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
+            Return GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths)
         End Function
 
@@ -1109,7 +1109,7 @@ Class NvidiaEncoder
 
             If sourcePath = "-" Then
                 ret += " --y4m --input-res " & p.TargetWidth & "x" & p.TargetHeight & " --fps " &
-                    p.VideoScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture)
+                    p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture)
             End If
 
             If includePaths Then
@@ -1188,17 +1188,17 @@ Class IntelEncoder
     End Property
 
     Overrides Sub Encode()
-        p.VideoScript.Synchronize()
+        p.Script.Synchronize()
         Params.RaiseValueChanged(Nothing)
-        Dim input = If(p.VideoScript.Engine = ScriptingEngine.VapourSynth, "-", p.VideoScript.Path)
+        Dim input = If(p.Script.Engine = ScriptingEngine.VapourSynth, "-", p.Script.Path)
         Encode(Params.GetArgs(1, input, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
         AfterEncoding()
     End Sub
 
     Overloads Sub Encode(args As String)
-        If p.VideoScript.Engine = ScriptingEngine.VapourSynth Then
+        If p.Script.Engine = ScriptingEngine.VapourSynth Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_venc.bat"
-            Dim cli = """" + Packs.vspipe.GetPath + """ """ + p.VideoScript.Path + """ - --y4m | """ + Packs.QSVEncC.GetPath + """ " + args
+            Dim cli = """" + Packs.vspipe.GetPath + """ """ + p.Script.Path + """ - --y4m | """ + Packs.QSVEncC.GetPath + """ " + args
             File.WriteAllText(batchPath, cli, Encoding.GetEncoding(850))
 
             Using proc As New Proc
@@ -1403,7 +1403,7 @@ Class IntelEncoder
         End Sub
 
         Overloads Overrides Function GetArgs(includePaths As Boolean) As String
-            Return GetArgs(1, p.VideoScript.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
+            Return GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths)
         End Function
 
@@ -1430,8 +1430,8 @@ Class IntelEncoder
                     ret += " --" + Mode.ValueText + " " & p.VideoBitrate
             End Select
 
-            If p.VideoScript.IsFilterActive("Resize", "Hardware Encoder") OrElse
-                (HardwareDecoding.Value AndAlso p.VideoScript.IsFilterActive("Resize")) Then
+            If p.Script.IsFilterActive("Resize", "Hardware Encoder") OrElse
+                (HardwareDecoding.Value AndAlso p.Script.IsFilterActive("Resize")) Then
 
                 ret += " --output-res " & p.TargetWidth & "x" & p.TargetHeight
             ElseIf p.AutoARSignaling Then
@@ -1440,8 +1440,8 @@ Class IntelEncoder
             End If
 
             If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
-                (p.VideoScript.IsFilterActive("Crop", "Hardware Encoder") OrElse
-                (HardwareDecoding.Value AndAlso p.VideoScript.IsFilterActive("Crop"))) Then
+                (p.Script.IsFilterActive("Crop", "Hardware Encoder") OrElse
+                (HardwareDecoding.Value AndAlso p.Script.IsFilterActive("Crop"))) Then
 
                 ret += " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom
             End If
@@ -1460,7 +1460,7 @@ Class IntelEncoder
 
             If sourcePath = "-" Then
                 ret += " --y4m --input-res " & p.TargetWidth & "x" & p.TargetHeight & " --fps " &
-                    p.VideoScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture)
+                    p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture)
             End If
 
             If includePaths Then ret += " --input-file """ + sourcePath + """ --output-file """ + targetPath + """"

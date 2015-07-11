@@ -32,25 +32,25 @@ Class x264Encoder
     End Property
 
     Overrides Sub Encode()
-        p.VideoScript.Synchronize()
+        p.Script.Synchronize()
 
-        Encode("x264", GetArgs(1), p.VideoScript)
+        Encode("x264", GetArgs(1), p.Script)
 
         If Params.Mode.Value = x264Mode.TwoPass OrElse
             Params.Mode.Value = x264Mode.ThreePass Then
 
-            Encode("x264 Second Pass", GetArgs(2), p.VideoScript)
+            Encode("x264 Second Pass", GetArgs(2), p.Script)
         End If
 
         If Params.Mode.Value = x264Mode.ThreePass Then
-            Encode("x264 Third Pass", GetArgs(3), p.VideoScript)
+            Encode("x264 Third Pass", GetArgs(3), p.Script)
         End If
 
         AfterEncoding()
     End Sub
 
     Overloads Sub Encode(passName As String, args As String, script As VideoScript)
-        If p.VideoScript.Engine = ScriptingEngine.VapourSynth Then
+        If p.Script.Engine = ScriptingEngine.VapourSynth Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
             Dim cli = """" + Packs.vspipe.GetPath + """ """ + script.Path + """ - --y4m | """ + Packs.x264.GetPath + """ " + args
             File.WriteAllText(batchPath, cli, Encoding.GetEncoding(850))
@@ -85,8 +85,8 @@ Class x264Encoder
         enc.Params.Quant.Value = enc.Params.QuantCompCheck.Value
 
         Dim script As New VideoScript
-        script.Engine = p.VideoScript.Engine
-        script.Filters = p.VideoScript.GetFiltersCopy
+        script.Engine = p.Script.Engine
+        script.Filters = p.Script.GetFiltersCopy
         Dim code As String
         Dim every = ((100 \ p.CompCheckRange) * 14).ToString
 
@@ -103,7 +103,7 @@ Class x264Encoder
         script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
         script.Synchronize()
 
-        Dim sourcePath = If(p.VideoScript.Engine = ScriptingEngine.VapourSynth, "-", p.TempDir + p.Name + "_CompCheck.avs")
+        Dim sourcePath = If(p.Script.Engine = ScriptingEngine.VapourSynth, "-", p.TempDir + p.Name + "_CompCheck.avs")
         Dim arguments = enc.GetArgs(0, sourcePath, p.TempDir + p.Name + "_CompCheck." + OutputFileType, script)
 
         Try
@@ -149,8 +149,8 @@ Class x264Encoder
     End Function
 
     Function GetArgs(pass As Integer, Optional includePaths As Boolean = True) As String
-        Dim sourcePath = If(p.VideoScript.Engine = ScriptingEngine.VapourSynth, "-", p.VideoScript.Path)
-        Return GetArgs(pass, sourcePath, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, p.VideoScript, includePaths)
+        Dim sourcePath = If(p.Script.Engine = ScriptingEngine.VapourSynth, "-", p.Script.Path)
+        Return GetArgs(pass, sourcePath, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, p.Script, includePaths)
     End Function
 
     Function GetArgs(pass As Integer,

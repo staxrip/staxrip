@@ -81,14 +81,14 @@ Public Class SubtitleControl
         'bnBDSup2SubPP
         '
         Me.bnBDSup2SubPP.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnBDSup2SubPP.Location = New System.Drawing.Point(559, 213)
+        Me.bnBDSup2SubPP.Location = New System.Drawing.Point(559, 255)
         Me.bnBDSup2SubPP.Size = New System.Drawing.Size(172, 36)
         Me.bnBDSup2SubPP.Text = "BDSup2Sub++"
         '
         'bnPlay
         '
         Me.bnPlay.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnPlay.Location = New System.Drawing.Point(559, 171)
+        Me.bnPlay.Location = New System.Drawing.Point(559, 213)
         Me.bnPlay.Size = New System.Drawing.Size(172, 36)
         Me.bnPlay.Text = "Play"
         '
@@ -107,7 +107,7 @@ Public Class SubtitleControl
         'bnSetNames
         '
         Me.bnSetNames.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnSetNames.Location = New System.Drawing.Point(559, 255)
+        Me.bnSetNames.Location = New System.Drawing.Point(559, 171)
         Me.bnSetNames.Size = New System.Drawing.Size(172, 36)
         Me.bnSetNames.Text = "Set Names"
         '
@@ -143,6 +143,7 @@ Public Class SubtitleControl
         dgv.ShowCellToolTips = False
         dgv.AllowUserToResizeRows = False
         dgv.AllowUserToResizeColumns = False
+        dgv.RowHeadersVisible = False
 
         Dim enabledColumn As New DataGridViewCheckBoxColumn
         enabledColumn.HeaderText = "Enabled"
@@ -376,9 +377,9 @@ Public Class SubtitleControl
                 Dim fp = st.Path
 
                 Dim avs As New VideoScript
-                avs.Engine = p.VideoScript.Engine
+                avs.Engine = p.Script.Engine
                 avs.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play." + avs.FileType
-                avs.Filters = p.VideoScript.GetFiltersCopy
+                avs.Filters = p.Script.GetFiltersCopy
 
                 If avs.Engine = ScriptingEngine.AviSynth Then
                     If FileTypes.TextSub.Contains(Filepath.GetExt(fp)) Then

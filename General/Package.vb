@@ -435,7 +435,7 @@ Public Class PythonPackage
 
     Public Overrides ReadOnly Property IsRequired As Boolean
         Get
-            Return p.VideoScript.Engine = ScriptingEngine.VapourSynth
+            Return p.Script.Engine = ScriptingEngine.VapourSynth
         End Get
     End Property
 End Class
@@ -454,7 +454,7 @@ Public Class VapourSynthPackage
 
     Public Overrides ReadOnly Property IsRequired As Boolean
         Get
-            Return p.VideoScript.Engine = ScriptingEngine.VapourSynth
+            Return p.Script.Engine = ScriptingEngine.VapourSynth
         End Get
     End Property
 
@@ -479,7 +479,7 @@ Public Class vspipePackage
 
     Public Overrides ReadOnly Property IsRequired As Boolean
         Get
-            Return p.VideoScript.Engine = ScriptingEngine.VapourSynth
+            Return p.Script.Engine = ScriptingEngine.VapourSynth
         End Get
     End Property
 
@@ -754,8 +754,8 @@ Public Class LSmashWorksAviSynthPackage
 
     Overrides ReadOnly Property IsRequired As Boolean
         Get
-            Return p.VideoScript.GetFilter("Source").Script.Contains("LSMASHVideoSource") OrElse
-                p.VideoScript.GetFilter("Source").Script.Contains("LWLibavVideoSource")
+            Return p.Script.GetFilter("Source").Script.Contains("LSMASHVideoSource") OrElse
+                p.Script.GetFilter("Source").Script.Contains("LWLibavVideoSource")
         End Get
     End Property
 End Class
@@ -772,8 +772,8 @@ Public Class vslsmashsourcePackage
 
     Overrides ReadOnly Property IsRequired As Boolean
         Get
-            Return p.VideoScript.GetFilter("Source").Script.Contains("lsmas.LibavSMASHSource") OrElse
-                p.VideoScript.GetFilter("Source").Script.Contains("lsmas.LWLibavSource")
+            Return p.Script.GetFilter("Source").Script.Contains("lsmas.LibavSMASHSource") OrElse
+                p.Script.GetFilter("Source").Script.Contains("lsmas.LWLibavSource")
         End Get
     End Property
 End Class

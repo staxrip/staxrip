@@ -25,10 +25,11 @@ Class Project
     Public AutoSmartCrop As Boolean
     Public AutoSmartOvercrop As Double
     Public AutoSubtitles As String
-    Public AvsCodeAtTop As String = ""
-    Public VideoScript As TargetVideoScript
+    Public CodeAtTop As String = ""
+    Public Script As TargetVideoScript
     Public BatchMode As Boolean
-    Public CompCheckAction As CompCheckAction = StaxRip.CompCheckAction.AdjustImageSize
+    Public BatchDemuxingAndIndexing As Boolean
+    Public CompCheckAction As CompCheckAction = CompCheckAction.AdjustImageSize
     Public CompCheckRange As Integer = 5
     Public Compressibility As Double
     Public ConvertSup2Sub As Boolean
@@ -55,7 +56,7 @@ Class Project
     Public Size As Integer = 700
     Public SkippedAssistantTips As List(Of String)
     Public SourceAnamorphic As Boolean
-    Public SourceAviSynthDocument As SourceVideoScript
+    Public SourceScript As SourceVideoScript
     Public SourceFile As String
     Public SourceFiles As List(Of String)
     Public SourceFrameRate As Double
@@ -70,8 +71,8 @@ Class Project
     Public TargetWidth As Integer = 720
     Public TempDir As String
     Public TemplateName As String = ""
-    Public TrimAvsCode As String = ""
-    Public UseAvsAsAudioSource As Boolean
+    Public TrimCode As String = ""
+    Public UseScriptAsAudioSource As Boolean
     Public Versions As Dictionary(Of String, Integer)
     Public VideoBitrate As Integer = 1000
     Public VideoEncoder As VideoEncoder
@@ -112,8 +113,8 @@ Class Project
             End If
         End If
 
-        If SourceAviSynthDocument Is Nothing Then
-            SourceAviSynthDocument = New SourceVideoScript
+        If SourceScript Is Nothing Then
+            SourceScript = New SourceVideoScript
         End If
 
         If SkippedAssistantTips Is Nothing Then
@@ -138,8 +139,8 @@ Class Project
             Audio1.Language = New Language("en", True)
         End If
 
-        If Check(VideoScript, "Filter Setup", 50) Then
-            VideoScript = StaxRip.VideoScript.GetDefaults()(0)
+        If Check(Script, "Filter Setup", 50) Then
+            Script = StaxRip.VideoScript.GetDefaults()(0)
         End If
     End Sub
 

@@ -24,9 +24,7 @@ Namespace UI
             KeyPreview = True
             SetTabIndexes(Me)
 
-            If AutoScaleDimensions.IsEmpty Then
-                AutoScaleDimensions = New SizeF(144.0!, 144.0!)
-            End If
+            If AutoScaleDimensions.IsEmpty Then AutoScaleDimensions = New SizeF(144.0!, 144.0!)
 
             If AutoScaleDimensions <> CurrentDPIDimension Then
                 ScaleFactor = New SizeF(CurrentDPIDimension.Width / AutoScaleDimensions.Width,
@@ -44,10 +42,7 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
-            If Not s.WindowPositions Is Nothing Then
-                s.WindowPositions.Save(Me)
-            End If
-
+            If Not s.WindowPositions Is Nothing Then s.WindowPositions.Save(Me)
             MyBase.OnFormClosing(e)
         End Sub
 
@@ -77,6 +72,57 @@ Namespace UI
                 Return CurrentDPIDimensionValue.Value
             End Get
         End Property
+
+        Protected Overrides Sub WndProc(ByRef m As Message)
+            Snap(m)
+            MyBase.WndProc(m)
+        End Sub
+
+        Private IsResizing As Boolean
+
+        Sub Snap(ByRef m As Message)
+            Const WM_SIZING = &H214, WM_EXITSIZEMOVE = &H232, WM_WINDOWPOSCHANGING = &H46
+
+            Select Case m.Msg
+                Case WM_SIZING
+                    IsResizing = True
+                Case WM_EXITSIZEMOVE
+                    IsResizing = False
+                Case WM_WINDOWPOSCHANGING
+                    If Not IsResizing Then Snap(m.LParam)
+            End Select
+        End Sub
+
+        Sub Snap(handle As IntPtr)
+            Dim workingArea = Screen.FromControl(Me).WorkingArea
+            Dim newPos = DirectCast(Marshal.PtrToStructure(handle, GetType(WindowPos)), WindowPos)
+            Dim snapMargin = CInt(Control.DefaultFont.Height * 1.5)
+
+            If Math.Abs(newPos.Y - workingArea.Y) < snapMargin Then
+                newPos.Y = workingArea.Y
+            ElseIf Math.Abs(newPos.Y + Height - workingArea.Bottom) < snapMargin Then
+                newPos.Y = (workingArea.Bottom - Height)
+            End If
+
+            If Math.Abs(newPos.X - workingArea.X) < snapMargin Then
+                newPos.X = workingArea.X
+            ElseIf Math.Abs(newPos.X + Width - workingArea.Right) < snapMargin Then
+                newPos.X = workingArea.Right - Width
+            End If
+
+            Marshal.StructureToPtr(newPos, handle, True)
+        End Sub
+
+        <StructLayout(LayoutKind.Sequential)>
+        Structure WindowPos
+            Public Hwnd As IntPtr
+            Public HwndInsertAfter As IntPtr
+            Public X As Integer
+            Public Y As Integer
+            Public Width As Integer
+            Public Height As Integer
+            Public Flags As Integer
+        End Structure
     End Class
 
     Public Class DialogBase

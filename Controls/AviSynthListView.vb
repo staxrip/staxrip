@@ -68,7 +68,7 @@ Class AviSynthListView
     Sub UpdateMenu()
         Dim filterProfiles As List(Of FilterCategory)
 
-        If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+        If p.Script.Engine = ScriptingEngine.AviSynth Then
             filterProfiles = s.AviSynthProfiles
         Else
             filterProfiles = s.VapourSynthProfiles
@@ -124,7 +124,7 @@ Class AviSynthListView
         End If
 
         Menu.Items.Add(New ActionMenuItem("Edit...", AddressOf ShowEditor, "Dialog to edit filters."))
-        Menu.Items.Add(New ActionMenuItem("Play", Sub() g.PlayScript(p.VideoScript), "Plays the script with the AVI player.", p.SourceFile <> ""))
+        Menu.Items.Add(New ActionMenuItem("Play", Sub() g.PlayScript(p.Script), "Plays the script with the AVI player.", p.SourceFile <> ""))
         Menu.Items.Add(New ActionMenuItem("Profiles...", AddressOf g.MainForm.OpenFilterProfilesDialog, "Dialog to edit profiles."))
 
         Dim setup As New MenuItemEx("Filter Setup")

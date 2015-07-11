@@ -42,17 +42,17 @@ Namespace x265
         End Property
 
         Overrides Sub Encode()
-            p.VideoScript.Synchronize()
-            Encode("x265", GetArgs(1, p.VideoScript), p.VideoScript)
+            p.Script.Synchronize()
+            Encode("x265", GetArgs(1, p.Script), p.Script)
 
             If Params.Mode.Value = RateMode.TwoPass OrElse
                 Params.Mode.Value = RateMode.ThreePass Then
 
-                Encode("x265 Second Pass", GetArgs(2, p.VideoScript), p.VideoScript)
+                Encode("x265 Second Pass", GetArgs(2, p.Script), p.Script)
             End If
 
             If Params.Mode.Value = RateMode.ThreePass Then
-                Encode("x265 Third Pass", GetArgs(3, p.VideoScript), p.VideoScript)
+                Encode("x265 Third Pass", GetArgs(3, p.Script), p.Script)
             End If
 
             AfterEncoding()
@@ -61,7 +61,7 @@ Namespace x265
         Overloads Sub Encode(passName As String, args As String, script As VideoScript)
             Dim cli As String
 
-            If p.VideoScript.Engine = ScriptingEngine.VapourSynth Then
+            If p.Script.Engine = ScriptingEngine.VapourSynth Then
                 cli = """" + Packs.vspipe.GetPath + """ """ + script.Path + """ - --y4m | """ + Packs.x265.GetPath + """ " + args
             Else
                 cli = """" + Packs.ffmpeg.GetPath + """ -i """ + script.Path + """ -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | """ + Packs.x265.GetPath + """ " + args
@@ -95,8 +95,8 @@ Namespace x265
             enc.Params.Quant.Value = enc.Params.CompCheckQuant.Value
 
             Dim script As New VideoScript
-            script.Engine = p.VideoScript.Engine
-            script.Filters = p.VideoScript.GetFiltersCopy
+            script.Engine = p.Script.Engine
+            script.Filters = p.Script.GetFiltersCopy
             Dim code As String
             Dim every = ((100 \ p.CompCheckRange) * 14).ToString
 
@@ -821,7 +821,7 @@ Namespace x265
         End Sub
 
         Overloads Overrides Function GetArgs(includePaths As Boolean) As String
-            Return GetArgs(1, p.VideoScript, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
+            Return GetArgs(1, p.Script, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths)
         End Function
 

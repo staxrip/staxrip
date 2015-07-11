@@ -249,9 +249,9 @@ Public Class CropForm
         Side = AnchorStyles.Top
 
         Dim doc As New VideoScript
-        doc.Engine = p.VideoScript.Engine
+        doc.Engine = p.Script.Engine
         doc.Path = p.TempDir + p.Name + "_Crop." + doc.FileType
-        doc.Filters.Add(p.VideoScript.GetFilter("Source").GetCopy)
+        doc.Filters.Add(p.Script.GetFilter("Source").GetCopy)
         doc.Synchronize(True)
 
         AVI = New AVIFile(doc.Path)
@@ -408,7 +408,7 @@ Public Class CropForm
         Dim cropw = p.SourceWidth - p.CropLeft - p.CropRight
         Dim croph = p.SourceHeight - p.CropTop - p.CropBottom
 
-        Dim isResized = p.VideoScript.IsFilterActive("Resize")
+        Dim isResized = p.Script.IsFilterActive("Resize")
         Dim isValidAnamorphicSize = (p.TargetWidth = 1440 AndAlso p.TargetHeight = 1080) OrElse (p.TargetWidth = 960 AndAlso p.TargetHeight = 720)
         Dim err = If(isResized AndAlso Not isValidAnamorphicSize, Calc.GetAspectRatioError.ToString("f2") + "%", "n/a")
 
@@ -445,7 +445,7 @@ Public Class CropForm
     End Sub
 
     Private Sub CropForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        Dim m = p.VideoScript.GetErrorMessage
+        Dim m = p.Script.GetErrorMessage
 
         If Not m Is Nothing Then
             e.Cancel = True

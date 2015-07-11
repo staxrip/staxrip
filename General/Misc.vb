@@ -49,7 +49,7 @@ Public Class Paths
             If Not i.VerifyOK Then Return False
         Next
 
-        If Not p.VideoScript.IsFilterActive("Source") Then
+        If Not p.Script.IsFilterActive("Source") Then
             MsgWarn("No active filter of category 'Source' found.")
             Return False
         End If
@@ -257,7 +257,7 @@ Public Class Paths
                                 proj.MaxAspectRatioError = 4
                                 proj.AutoResizeImage = 0
                                 proj.AutoSmartOvercrop = 2
-                                proj.VideoScript.GetFilter("Resize").Active = True
+                                proj.Script.GetFilter("Resize").Active = True
                                 proj.VideoEncoder = VideoEncoder.Getx264Encoder("x264 | " + name, device)
                                 proj.VideoEncoder.Muxer = New MP4Muxer("MP4")
                                 proj.Audio0 = aaclc
@@ -370,43 +370,50 @@ Class GlobalClass
     End Sub
 
     Sub PlayScript(doc As VideoScript, ap As AudioProfile)
-        Dim avs As New VideoScript
-        avs.Engine = doc.Engine
-        avs.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play." + avs.FileType
-        avs.Filters = doc.GetFiltersCopy
+        Dim script As New VideoScript
+        script.Engine = doc.Engine
+        script.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play." + script.FileType
+        script.Filters = doc.GetFiltersCopy
 
-        If avs.Engine = ScriptingEngine.AviSynth Then
+        If script.Engine = ScriptingEngine.AviSynth Then
             Dim par = Calc.GetTargetPAR
 
             If Not par = New Point(1, 1) Then
-                Dim w = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
-                avs.Filters.Add(New VideoFilter("LanczosResize(" & w & "," & p.TargetHeight & ")"))
+                Dim targetWidth = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
+                script.Filters.Add(New VideoFilter("LanczosResize(" & targetWidth & "," & p.TargetHeight & ")"))
             End If
 
             If File.Exists(ap.File) Then
-                avs.Filters.Add(New VideoFilter("KillAudio()"))
+                script.Filters.Add(New VideoFilter("KillAudio()"))
 
                 Dim nic = Audio.GetNicAudioCode(ap)
 
                 If nic <> "" Then
-                    avs.Filters.Add(New VideoFilter(nic))
+                    script.Filters.Add(New VideoFilter(nic))
                 Else
-                    avs.Filters.Add(New VideoFilter("AudioDub(last, DirectShowSource(""" + ap.File + """, video = false))"))
+                    script.Filters.Add(New VideoFilter("AudioDub(last, DirectShowSource(""" + ap.File + """, video = false))"))
                 End If
 
-                avs.Filters.Add(New VideoFilter("DelayAudio(" & (ap.Delay / 1000).ToString(CultureInfo.InvariantCulture) & ")"))
+                script.Filters.Add(New VideoFilter("DelayAudio(" & (ap.Delay / 1000).ToString(CultureInfo.InvariantCulture) & ")"))
 
-                Dim cutFilter = avs.GetFilter("Cutting")
+                Dim cutFilter = script.GetFilter("Cutting")
 
                 If Not cutFilter Is Nothing Then
-                    avs.Remove("Cutting")
-                    avs.Filters.Add(cutFilter)
+                    script.Remove("Cutting")
+                    script.Filters.Add(cutFilter)
                 End If
+            End If
+        Else
+            Dim par = Calc.GetTargetPAR
+
+            If Not par = New Point(1, 1) Then
+                Dim targetWidth = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
+                script.Filters.Add(New VideoFilter("clip = core.resize.Bicubic(clip, " & targetWidth & "," & p.TargetHeight & ")"))
             End If
         End If
 
-        avs.Synchronize(True)
-        g.Play(avs.Path)
+        script.Synchronize(True)
+        g.Play(script.Path)
     End Sub
 
     Function ExtractDelay(value As String) As Integer
@@ -517,7 +524,7 @@ Class GlobalClass
     End Function
 
     Function GetPreviewPosMS() As Integer
-        Dim fr = p.VideoScript.GetFramerate
+        Dim fr = p.Script.GetFramerate
         If fr = 0 Then fr = 25
         Return CInt((s.LastPosition / fr) * 1000)
     End Function
@@ -644,7 +651,7 @@ Class GlobalClass
     End Sub
 
     Function IsValidSource(Optional warn As Boolean = True) As Boolean
-        If p.SourceAviSynthDocument.GetFrames = 0 Then
+        If p.SourceScript.GetFrames = 0 Then
             If warn Then
                 MsgWarn("Failed to load source.")
             End If
@@ -652,8 +659,8 @@ Class GlobalClass
             Return False
         End If
 
-        If Not p.SourceAviSynthDocument.GetErrorMessage Is Nothing Then
-            MsgError(p.SourceAviSynthDocument.GetErrorMessage)
+        If Not p.SourceScript.GetErrorMessage Is Nothing Then
+            MsgError(p.SourceScript.GetErrorMessage)
             Return False
         End If
 
@@ -901,7 +908,7 @@ Class GlobalClass
     End Sub
 
     Function EnableFilter(cat As String) As Boolean
-        For Each i In p.VideoScript.Filters
+        For Each i In p.Script.Filters
             If i.Category = cat Then
                 If Not i.Active Then
                     i.Active = True
@@ -940,12 +947,12 @@ Class GlobalClass
     End Sub
 
     Sub AutoCrop()
-        If p.VideoScript.Engine <> ScriptingEngine.AviSynth Then Exit Sub
+        If p.Script.Engine <> ScriptingEngine.AviSynth Then Exit Sub
 
-        Dim f = p.VideoScript.GetFilter("Source")
+        Dim f = p.Script.GetFilter("Source")
 
         Dim doc As New VideoScript
-        doc.Engine = p.VideoScript.Engine
+        doc.Engine = p.Script.Engine
         doc.Path = p.TempDir + p.Name + "_AutoCrop." + doc.FileType
         doc.Filters.Add(f.GetCopy)
 
@@ -973,7 +980,7 @@ Class GlobalClass
     End Sub
 
     Sub SmartCrop()
-        If Not p.VideoScript.IsFilterActive("Resize") Then
+        If Not p.Script.IsFilterActive("Resize") Then
             Exit Sub
         End If
 
@@ -1065,7 +1072,7 @@ Class GlobalClass
 
     Sub ForceCropMod()
         If Not g.EnableFilter("Crop") Then
-            p.VideoScript.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))
+            p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))
         End If
 
         CorrectCropMod(True)
@@ -1081,7 +1088,7 @@ Class GlobalClass
 
             Dim modValue = 4
 
-            If Not p.VideoScript.IsFilterActive("Resize") Then
+            If Not p.Script.IsFilterActive("Resize") Then
                 modValue = p.ForcedOutputMod
             End If
 
@@ -1264,7 +1271,7 @@ Public Class Calc
     End Function
 
     Shared Function GetBPF() As Double
-        Dim framerate = p.VideoScript.GetFramerate
+        Dim framerate = p.Script.GetFramerate
 
         If framerate = 0 Then Return 0
         If p.TargetWidth = 0 Then Return 0
@@ -1293,7 +1300,7 @@ Public Class Calc
 
     Shared Function GetOverheadAndSubtitlesKBytes() As Integer
         Dim ret As Double
-        Dim frames = p.VideoScript.GetFrames
+        Dim frames = p.Script.GetFrames
 
         If IsOneOf(p.VideoEncoder.Muxer.OutputType, "avi", "divx") Then
             ret += frames * 0.024
@@ -1349,11 +1356,11 @@ Public Class Calc
     End Function
 
     Shared Function IsARSignalingRequired() As Boolean
-        If Not p.VideoScript Is Nothing AndAlso p.AutoARSignaling Then
+        If Not p.Script Is Nothing AndAlso p.AutoARSignaling Then
             Dim par = GetTargetPAR()
 
             If par.X <> par.Y Then
-                If p.VideoScript.IsFilterActive("Resize") Then
+                If p.Script.IsFilterActive("Resize") Then
                     Return Math.Abs(GetAspectRatioError()) > p.MaxAspectRatioError
                 Else
                     Return True
@@ -1484,7 +1491,7 @@ Public Class Calc
             Dim cw = p.SourceWidth
             Dim ch = p.SourceHeight
 
-            If p.VideoScript.IsFilterActive("Crop") Then
+            If p.Script.IsFilterActive("Crop") Then
                 cw -= p.CropLeft + p.CropRight
                 ch -= p.CropTop + p.CropBottom
             End If
@@ -1506,7 +1513,7 @@ Public Class Calc
         Dim w = p.SourceWidth, h = p.SourceHeight
         Dim cropw = w, croph = h
 
-        If p.VideoScript.IsFilterActive("Crop") Then
+        If p.Script.IsFilterActive("Crop") Then
             cropw = w - p.CropLeft - p.CropRight
             croph = h - p.CropTop - p.CropBottom
         End If
@@ -2337,10 +2344,10 @@ Public Class Macro
         If value.Contains("%target_seconds%") Then value = value.Replace("%target_seconds%", p.TargetSeconds.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_frames%") Then value = value.Replace("%target_frames%", p.VideoScript.GetFrames.ToString)
+        If value.Contains("%target_frames%") Then value = value.Replace("%target_frames%", p.Script.GetFrames.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_framerate%") Then value = value.Replace("%target_framerate%", p.VideoScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
+        If value.Contains("%target_framerate%") Then value = value.Replace("%target_framerate%", p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_size%") Then value = value.Replace("%target_size%", (p.Size * 1024).ToString)
@@ -2456,11 +2463,11 @@ Public Class Macro
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%script_file%") Then
-            p.VideoScript.Synchronize()
-            value = value.Replace("%script_file%", p.VideoScript.Path)
+            p.Script.Synchronize()
+            value = value.Replace("%script_file%", p.Script.Path)
         End If
 
-        If value.Contains("%script_ext%") Then value = value.Replace("%script_ext%", p.VideoScript.FileType)
+        If value.Contains("%script_ext%") Then value = value.Replace("%script_ext%", p.Script.FileType)
 
         If Not value.Contains("%") Then Return value
 
@@ -2534,7 +2541,7 @@ Public Class Macro
             Dim mc = Regex.Matches(value, "%filter:(.+?)%")
 
             For Each i As Match In mc
-                For Each i2 In p.VideoScript.Filters
+                For Each i2 In p.Script.Filters
                     If i2.Active AndAlso i2.Path.ToUpper = i.Groups(1).Value.ToUpper Then
                         value = value.Replace(i.Value, i2.Script)
                         If Not value.Contains("%") Then Return value
@@ -2789,7 +2796,11 @@ Public Class GlobalCommands
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.6 " + GetReleaseType() + " (2015-0?-??)")
 
-                f.Doc.WriteList("Tweak: Added clear feature to audio file context menu to easily remove a audio file.")
+                f.Doc.WriteList("Tweak: Play feature adds resize filter to VapourSynth play script if the source PAR is non 1:1",
+                                "Tweak: Added clear feature to audio file context menu to easily remove a audio file.",
+                                "Tweak: Added screen bounds magnet docking feature",
+                                "todo: update qaac",
+                                "Update: ffmpeg")
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.5 " + GetReleaseType() + " (2015-05-25)")
 
@@ -3030,7 +3041,7 @@ Public Class GlobalCommands
                   <Editor(GetType(MacroStringTypeEditor),
                   GetType(UITypeEditor))> script As String)
 
-        p.VideoScript.Filters.Add(New VideoFilter(category, name, script, active))
+        p.Script.Filters.Add(New VideoFilter(category, name, script, active))
         g.MainForm.AviSynthListView.Load()
         g.MainForm.Assistant()
     End Sub
@@ -3041,7 +3052,7 @@ Public Class GlobalCommands
                   category As String,
                   <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> script As String)
 
-        For Each i In p.VideoScript.Filters
+        For Each i In p.Script.Filters
             If i.Category.ToLower = category.ToLower Then
                 i.Active = active
                 i.Path = name
@@ -3638,10 +3649,12 @@ End Enum
 
 Class FileTypes
     Shared Property Audio As String() = {"aac", "ac3", "dts", "dtsma", "dtshr", "dtshd", "eac3", "flac", "m4a", "mka", "mp2", "mp3", "mpa", "ogg", "opus", "thd", "thd+ac3", "true-hd", "truehd", "wav"}
+    Shared Property AudioVideo As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
     Shared Property BeSweetInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "ogg"}
     Shared Property DGDecNVInput As String() = {"264", "h264", "avc", "mkv", "mp4", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}
     Shared Property eac3toInput As String() = {"ac3", "dts", "dtshd", "dtshr", "dtsma", "eac3", "evo", "flac", "m2ts", "mlp", "pcm", "raw", "thd", "thd+ac3", "ts", "vob", "wav", "mp2", "mpa"}
     Shared Property NicAudioInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "dts"}
+    Shared Property qaacInput As String() = {"wav", "flac"}
     Shared Property SubtitleExludingContainers As String() = {"ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property SubtitleIncludingContainers As String() = {"ass", "idx", "mkv", "mp4", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
@@ -3649,10 +3662,8 @@ Class FileTypes
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
     Shared Property VideoOnly As String() = {"m4v", "m2v", "y4m", "mpv", "avc", "hevc", "264", "h264", "265", "h265"}
     Shared Property VideoRaw As String() = {"h264", "h265", "264", "265", "avc", "hevc"}
-    Shared Property qaacInput As String() = {"wav", "flac"}
     Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs", "vpy"}
     Shared Property VirtualDubModInput As String() = {"ac3", "mp3", "mp2", "mpa", "wav"}
-    Shared Property AudioVideo As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
 
     Shared Property mkvmergeInput As String() = {"avi", "wav",
                                                  "mp4", "m4a", "aac",

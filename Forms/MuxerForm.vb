@@ -37,18 +37,18 @@ Public Class MuxerForm
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.tc = New System.Windows.Forms.TabControl()
+        Me.tpSubtitles = New System.Windows.Forms.TabPage()
+        Me.SubtitleControl = New StaxRip.SubtitleControl()
         Me.tpOptions = New System.Windows.Forms.TabPage()
         Me.SimpleUI = New StaxRip.SimpleUI()
         Me.tpCommandLine = New System.Windows.Forms.TabPage()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.tpSubtitles = New System.Windows.Forms.TabPage()
-        Me.SubtitleControl = New StaxRip.SubtitleControl()
         Me.tc.SuspendLayout()
+        Me.tpSubtitles.SuspendLayout()
         Me.tpOptions.SuspendLayout()
         Me.tpCommandLine.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
-        Me.tpSubtitles.SuspendLayout()
         Me.SuspendLayout()
         '
         'CmdlControl
@@ -59,14 +59,14 @@ Public Class MuxerForm
         Me.CmdlControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CmdlControl.Location = New System.Drawing.Point(3, 28)
         Me.CmdlControl.Name = "CmdlControl"
-        Me.CmdlControl.Size = New System.Drawing.Size(923, 367)
+        Me.CmdlControl.Size = New System.Drawing.Size(1020, 372)
         Me.CmdlControl.TabIndex = 0
         '
         'buCmdlPreview
         '
         Me.buCmdlPreview.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.buCmdlPreview.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.buCmdlPreview.Location = New System.Drawing.Point(516, 470)
+        Me.buCmdlPreview.Location = New System.Drawing.Point(767, 470)
         Me.buCmdlPreview.Name = "buCmdlPreview"
         Me.buCmdlPreview.Size = New System.Drawing.Size(175, 34)
         Me.buCmdlPreview.TabIndex = 4
@@ -77,7 +77,7 @@ Public Class MuxerForm
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(865, 470)
+        Me.bnCancel.Location = New System.Drawing.Point(1116, 470)
         Me.bnCancel.Size = New System.Drawing.Size(100, 34)
         Me.bnCancel.Text = "Cancel"
         '
@@ -85,7 +85,7 @@ Public Class MuxerForm
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(759, 470)
+        Me.bnOK.Location = New System.Drawing.Point(1010, 470)
         Me.bnOK.Size = New System.Drawing.Size(100, 34)
         Me.bnOK.Text = "OK"
         '
@@ -100,16 +100,36 @@ Public Class MuxerForm
         Me.tc.Location = New System.Drawing.Point(12, 12)
         Me.tc.Name = "tc"
         Me.tc.SelectedIndex = 0
-        Me.tc.Size = New System.Drawing.Size(953, 452)
+        Me.tc.Size = New System.Drawing.Size(1204, 452)
         Me.tc.TabIndex = 5
+        '
+        'tpSubtitles
+        '
+        Me.tpSubtitles.Controls.Add(Me.SubtitleControl)
+        Me.tpSubtitles.Location = New System.Drawing.Point(4, 34)
+        Me.tpSubtitles.Name = "tpSubtitles"
+        Me.tpSubtitles.Padding = New System.Windows.Forms.Padding(3)
+        Me.tpSubtitles.Size = New System.Drawing.Size(1196, 414)
+        Me.tpSubtitles.TabIndex = 3
+        Me.tpSubtitles.Text = "Subtitles"
+        Me.tpSubtitles.UseVisualStyleBackColor = True
+        '
+        'SubtitleControl
+        '
+        Me.SubtitleControl.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SubtitleControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.SubtitleControl.Location = New System.Drawing.Point(3, 3)
+        Me.SubtitleControl.Name = "SubtitleControl"
+        Me.SubtitleControl.Size = New System.Drawing.Size(1190, 408)
+        Me.SubtitleControl.TabIndex = 0
         '
         'tpOptions
         '
         Me.tpOptions.Controls.Add(Me.SimpleUI)
-        Me.tpOptions.Location = New System.Drawing.Point(4, 34)
+        Me.tpOptions.Location = New System.Drawing.Point(4, 29)
         Me.tpOptions.Name = "tpOptions"
         Me.tpOptions.Padding = New System.Windows.Forms.Padding(3)
-        Me.tpOptions.Size = New System.Drawing.Size(945, 414)
+        Me.tpOptions.Size = New System.Drawing.Size(1042, 419)
         Me.tpOptions.TabIndex = 2
         Me.tpOptions.Text = "Options"
         Me.tpOptions.UseVisualStyleBackColor = True
@@ -119,17 +139,17 @@ Public Class MuxerForm
         Me.SimpleUI.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SimpleUI.Location = New System.Drawing.Point(3, 3)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(939, 408)
+        Me.SimpleUI.Size = New System.Drawing.Size(1036, 413)
         Me.SimpleUI.TabIndex = 0
         Me.SimpleUI.Text = "SimpleUI1"
         '
         'tpCommandLine
         '
         Me.tpCommandLine.Controls.Add(Me.TableLayoutPanel1)
-        Me.tpCommandLine.Location = New System.Drawing.Point(4, 34)
+        Me.tpCommandLine.Location = New System.Drawing.Point(4, 29)
         Me.tpCommandLine.Name = "tpCommandLine"
         Me.tpCommandLine.Padding = New System.Windows.Forms.Padding(8)
-        Me.tpCommandLine.Size = New System.Drawing.Size(945, 414)
+        Me.tpCommandLine.Size = New System.Drawing.Size(1042, 419)
         Me.tpCommandLine.TabIndex = 1
         Me.tpCommandLine.Text = "Command Line"
         Me.tpCommandLine.UseVisualStyleBackColor = True
@@ -147,7 +167,7 @@ Public Class MuxerForm
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(929, 398)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1026, 403)
         Me.TableLayoutPanel1.TabIndex = 2
         '
         'Label1
@@ -159,32 +179,12 @@ Public Class MuxerForm
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "Additional custom switches:"
         '
-        'tpSubtitles2
-        '
-        Me.tpSubtitles.Controls.Add(Me.SubtitleControl)
-        Me.tpSubtitles.Location = New System.Drawing.Point(4, 34)
-        Me.tpSubtitles.Name = "tpSubtitles2"
-        Me.tpSubtitles.Padding = New System.Windows.Forms.Padding(3)
-        Me.tpSubtitles.Size = New System.Drawing.Size(945, 414)
-        Me.tpSubtitles.TabIndex = 3
-        Me.tpSubtitles.Text = "Subtitles"
-        Me.tpSubtitles.UseVisualStyleBackColor = True
-        '
-        'SubtitleControl2
-        '
-        Me.SubtitleControl.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SubtitleControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.SubtitleControl.Location = New System.Drawing.Point(3, 3)
-        Me.SubtitleControl.Name = "SubtitleControl2"
-        Me.SubtitleControl.Size = New System.Drawing.Size(939, 408)
-        Me.SubtitleControl.TabIndex = 0
-        '
         'MuxerForm
         '
         Me.AcceptButton = Me.bnOK
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(977, 516)
+        Me.ClientSize = New System.Drawing.Size(1228, 516)
         Me.Controls.Add(Me.tc)
         Me.Controls.Add(Me.bnCancel)
         Me.Controls.Add(Me.bnOK)
@@ -195,11 +195,11 @@ Public Class MuxerForm
         Me.Name = "MuxerForm"
         Me.Text = "Container"
         Me.tc.ResumeLayout(False)
+        Me.tpSubtitles.ResumeLayout(False)
         Me.tpOptions.ResumeLayout(False)
         Me.tpCommandLine.ResumeLayout(False)
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.TableLayoutPanel1.PerformLayout()
-        Me.tpSubtitles.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub

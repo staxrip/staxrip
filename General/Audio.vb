@@ -34,7 +34,7 @@ Public Class Audio
                     Case ".mp4"
                         DemuxMP4(ap.File, ap.Stream, ap)
                     Case Else
-                        If p.VideoScript.GetFilter("Source").Script.ToLower.Contains("directshowsource") AndAlso
+                        If p.Script.GetFilter("Source").Script.ToLower.Contains("directshowsource") AndAlso
                             Not TypeOf ap Is MuxAudioProfile Then
 
                             DecodeDirectShowSource(ap)
@@ -216,7 +216,7 @@ Public Class Audio
             DecodeDirectShowSource(ap)
         End If
 
-        If p.VideoScript.GetFilter("Source").Script.ToLower.Contains("directshowsource") Then
+        If p.Script.GetFilter("Source").Script.ToLower.Contains("directshowsource") Then
             DecodeDirectShowSource(ap)
         End If
 
@@ -230,7 +230,7 @@ Public Class Audio
         If Not IsOneOf(Filepath.GetExt(ap.File), FileTypes.NicAudioInput) Then Exit Sub
         ap.Delay = 0
         Dim d As New VideoScript
-        d.Filters.AddRange(p.VideoScript.Filters)
+        d.Filters.AddRange(p.Script.Filters)
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_na.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_na.avs"
         d.Filters.Insert(1, New VideoFilter(GetNicAudioCode(ap)))
@@ -261,7 +261,7 @@ Public Class Audio
         If Not FileTypes.NicAudioInput.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
         ap.Delay = 0
         Dim d As New VideoScript
-        d.Filters.AddRange(p.VideoScript.Filters)
+        d.Filters.AddRange(p.Script.Filters)
         d.Remove("Cutting")
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeNicAudio.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeNicAudio.avs"
@@ -398,7 +398,7 @@ Public Class Audio
         If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
         ap.Delay = 0
         Dim d As New VideoScript
-        d.Filters.AddRange(p.VideoScript.Filters)
+        d.Filters.AddRange(p.Script.Filters)
         d.Remove("Cutting")
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecDSS.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecDSS.avs"
@@ -431,7 +431,7 @@ Public Class Audio
         Dim cachefile = p.TempDir + Filepath.GetBase(ap.File) + ".ffindex"
         g.MainForm.ffmsindex(ap.File, cachefile)
         Dim d As New VideoScript
-        d.Filters.AddRange(p.VideoScript.Filters)
+        d.Filters.AddRange(p.Script.Filters)
         d.Remove("Cutting")
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeFFAudioSource.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeFFAudioSource.avs"
@@ -462,7 +462,7 @@ Public Class Audio
         If ap.File.Contains("_cut_") Then Exit Sub
         ap.Delay = 0
         Dim d As New VideoScript
-        d.Filters.AddRange(p.VideoScript.Filters)
+        d.Filters.AddRange(p.Script.Filters)
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ds.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ds.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
@@ -494,7 +494,7 @@ Public Class Audio
         Dim cachefile = p.TempDir + Filepath.GetBase(ap.File) + ".ffindex"
         g.MainForm.ffmsindex(ap.File, cachefile)
         Dim d As New VideoScript
-        d.Filters.AddRange(p.VideoScript.Filters)
+        d.Filters.AddRange(p.Script.Filters)
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ff.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ff.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))

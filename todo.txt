@@ -1,14 +1,1 @@
-Uwe Brickmann: Gibt es eine Möglichkeit, dass das auch automatisiert abläuft, sodass alles indexiert und demuxt wird UND automatisch der entsprechende Job erstellt wird?
-
-Rename also – if it’s possible – the log window (Still says StaxRip without x64)
-
-If you select Hardware Encoder filter in the resizer, the values of resizing are passed automatically to QSVEncC.
-
-If you un-select Hardware Resizer, the resize button is still selected inside QSVEncC and if you go on with the transcoding procedure it complains with a warning message and doesn’t allow you to go on – so the automatic procedure is one way.
-####
-If you select Hardware Encoder filter in the resizer, the values of resizing are passed automatically to QSVEncC.
-If you un-select Hardware Resizer, the resize button is still selected inside QSVEncC and if you go on with the transcoding procedure it complains with a warning message and doesn’t allow you to go on – so the automatic procedure is one way.
-Is it possible to do it double way ? To automatically un-select the inside GUI resize button ?
-Also, the help-hint frame with blue letters say something about “Empty” resize filter which doesn’t exist.
-Moreover, if you decide to un-select Resize from inside QSVEncC GUI is not possible if the external Hardware Encoder filter is selected (not bad if it was possible to remove Hardware resize from outside, but now you have to go out and then go in again!)
-###
+Could you add option in your Video Comparison tool seek to key-frames? (Shift+right/left). Also frame number in yellow in right top corner would be useful.

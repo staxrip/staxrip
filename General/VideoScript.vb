@@ -48,7 +48,7 @@ Class VideoScript
     Overridable Function GetScript(skipCategory As String) As String
         Dim sb As New StringBuilder()
 
-        If p.AvsCodeAtTop <> "" Then sb.AppendLine(p.AvsCodeAtTop)
+        If p.CodeAtTop <> "" Then sb.AppendLine(p.CodeAtTop)
 
         For Each i As VideoFilter In Filters
             If i.Active Then
@@ -378,14 +378,14 @@ Class SourceVideoScript
     Overrides Property Path() As String
         Get
             If p.SourceFile = "" Then Return ""
-            Return p.TempDir + p.Name + "_Source." + p.VideoScript.FileType
+            Return p.TempDir + p.Name + "_Source." + p.Script.FileType
         End Get
         Set(value As String)
         End Set
     End Property
 
     Overrides Function GetScript() As String
-        Return p.VideoScript.Filters(0).Script
+        Return p.Script.Filters(0).Script
     End Function
 End Class
 

@@ -63,24 +63,18 @@ Class MediaInfo
         MediaInfo_Open(Handle, path)
     End Sub
 
-    Private WasDisposed As Boolean
+    Private Disposed As Boolean
 
-    Protected Overridable Sub Dispose(disposing As Boolean)
-        If Not WasDisposed Then
+    Sub Dispose() Implements IDisposable.Dispose
+        If Not Disposed Then
+            Disposed = True
             MediaInfo_Close(Handle)
             MediaInfo_Delete(Handle)
-            WasDisposed = True
         End If
     End Sub
 
-    Sub Dispose() Implements IDisposable.Dispose
-        Dispose(True)
-        GC.SuppressFinalize(Me)
-    End Sub
-
     Protected Overrides Sub Finalize()
-        Dispose(False)
-        MyBase.Finalize()
+        Dispose()
     End Sub
 
     Private VideoStreamsValue As List(Of VideoStream)

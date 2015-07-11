@@ -92,7 +92,7 @@ Public MustInherit Class AudioProfile
             StreamValue = value
 
             If Not Stream Is Nothing Then
-                If Not p.VideoScript.GetFilter("Source").Script.Contains("DirectShowSource") Then
+                If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
                     Delay = Stream.Delay
                 End If
 

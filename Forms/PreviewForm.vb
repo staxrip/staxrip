@@ -316,7 +316,7 @@ Class PreviewForm
     End Sub
 
     Sub RefreshScript()
-        TargetFrames = p.VideoScript.GetFrames
+        TargetFrames = p.Script.GetFrames
         If Not AVI Is Nothing Then AVI.Dispose()
         AVI = New AVIFile(AviSynthDocument.Path)
         Drawer = New VideoDrawer(pVideo, AVI)
@@ -786,7 +786,7 @@ Class PreviewForm
     <Command("Perform | Show External Player", "Shows the AviSynth script using the player currently associated with AVI files.")>
     Sub ShowExternalPlayer()
         UpdateTrim()
-        g.PlayScript(p.VideoScript)
+        g.PlayScript(p.Script)
     End Sub
 
     <Command("Perform | Reload Script", "Reloads the script.")>
@@ -1001,11 +1001,11 @@ Class PreviewForm
         p.CutFrameCount = AviSynthDocument.GetFrames
         p.CutFrameRate = AviSynthDocument.GetFramerate
 
-        Dim cut = p.VideoScript.GetFilter("Cutting")
+        Dim cut = p.Script.GetFilter("Cutting")
 
         If p.Ranges.Count = 0 Then
             If Not cut Is Nothing Then
-                p.VideoScript.Filters.Remove(cut)
+                p.Script.Filters.Remove(cut)
             End If
         Else
             If cut Is Nothing Then
@@ -1014,7 +1014,7 @@ Class PreviewForm
                 cut.Category = "Cutting"
                 cut.Script = GetTrim()
                 cut.Active = True
-                p.VideoScript.Filters.Add(cut)
+                p.Script.Filters.Add(cut)
             End If
         End If
     End Sub
@@ -1025,18 +1025,18 @@ Class PreviewForm
         For Each i In p.Ranges
             If ret <> "" Then ret += " + "
 
-            If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+            If p.Script.Engine = ScriptingEngine.AviSynth Then
                 ret += "Trim(" & i.Start & ", " & i.End & ")"
 
-                If p.TrimAvsCode <> "" Then
-                    ret += "." + p.TrimAvsCode.TrimStart("."c)
+                If p.TrimCode <> "" Then
+                    ret += "." + p.TrimCode.TrimStart("."c)
                 End If
             Else
                 ret += "core.std.Trim(clip, " & i.Start & ", " & i.End & ")"
             End If
         Next
 
-        If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+        If p.Script.Engine = ScriptingEngine.AviSynth Then
             Return ret
         Else
             Return "clip = " + ret

@@ -106,26 +106,34 @@ Public Module ControlExtensions
     <Extension()>
     Sub MoveSelectionUp(dgv As DataGridView)
         If dgv.CurrentCell Is Nothing Then Exit Sub
-        dgv.CurrentRow.Selected = True
+
+        For Each i As DataGridViewCell In dgv.SelectedCells
+            i.OwningRow.Selected = True
+        Next
+
         Dim items = DirectCast(dgv.DataSource, BindingSource).List
         Dim selectedIndices = dgv.SelectedRows.Cast(Of DataGridViewRow).Select(Function(row) row.Index).Sort
         Dim indexAbove = selectedIndices(0) - 1
         If indexAbove = -1 Then Exit Sub
         Dim itemAbove = items(indexAbove)
         items.RemoveAt(indexAbove)
-        Dim indexLastItem = selectedIndices(selectedIndices.Count - 1)
+        Dim indexLastSelectedItem = selectedIndices(selectedIndices.Count - 1)
 
-        If indexLastItem = items.Count Then
+        If indexLastSelectedItem = items.Count Then
             items.Add(itemAbove)
         Else
-            items.Insert(indexLastItem + 1, itemAbove)
+            items.Insert(indexLastSelectedItem + 1, itemAbove)
         End If
     End Sub
 
     <Extension()>
     Sub MoveSelectionDown(dgv As DataGridView)
         If dgv.CurrentCell Is Nothing Then Exit Sub
-        dgv.CurrentRow.Selected = True
+
+        For Each i As DataGridViewCell In dgv.SelectedCells
+            i.OwningRow.Selected = True
+        Next
+
         Dim items = DirectCast(dgv.DataSource, BindingSource).List
         Dim selectedIndices = dgv.SelectedRows.Cast(Of DataGridViewRow).Select(Function(row) row.Index).Sort
         Dim indexBelow = selectedIndices(selectedIndices.Count - 1) + 1

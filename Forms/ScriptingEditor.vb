@@ -77,7 +77,7 @@ Class ScriptingEditor
         If p.SourceFile = "" Then Exit Sub
         Dim doc As New VideoScript
         doc.Engine = Engine
-        doc.Path = p.TempDir + p.Name + "_avsEditor." + doc.FileType
+        doc.Path = p.TempDir + p.Name + "_scriptEditor." + doc.FileType
         doc.Filters = GetFilters()
         g.PlayScript(doc)
     End Sub
@@ -236,7 +236,7 @@ Class ScriptingEditor
         Sub MenuOpening(sender As Object, e As CancelEventArgs)
             Dim filterProfiles As List(Of FilterCategory)
 
-            If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
+            If p.Script.Engine = ScriptingEngine.AviSynth Then
                 filterProfiles = s.AviSynthProfiles
             Else
                 filterProfiles = s.VapourSynthProfiles

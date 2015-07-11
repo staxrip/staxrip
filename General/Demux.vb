@@ -186,7 +186,8 @@ Public Class MP4BoxDemuxer
         Dim audioStreams As List(Of AudioStream)
         Dim subtitles As List(Of Subtitle)
 
-        If Not p.BatchMode AndAlso (MediaInfo.GetAudioCount(p.SourceFile) > 0 OrElse
+        If Not p.BatchDemuxingAndIndexing AndAlso Not p.BatchMode AndAlso
+            (MediaInfo.GetAudioCount(p.SourceFile) > 0 OrElse
             MediaInfo.GetSubtitleCount(p.SourceFile) > 0) Then
 
             ProcessForm.CloseProcessForm()
@@ -259,7 +260,7 @@ Public Class eac3toDemuxer
     End Sub
 
     Overrides Sub Run()
-        If p.BatchMode Then Exit Sub
+        If p.BatchDemuxingAndIndexing OrElse p.BatchMode Then Exit Sub
 
         Using f As New eac3toForm
             f.M2TSFile = p.SourceFile
@@ -337,7 +338,8 @@ Public Class mkvDemuxer
         Dim audioStreams As List(Of AudioStream)
         Dim subtitles As List(Of Subtitle)
 
-        If Not p.BatchMode AndAlso (MediaInfo.GetAudioCount(p.SourceFile) > 0 OrElse
+        If Not p.BatchDemuxingAndIndexing AndAlso Not p.BatchMode AndAlso
+            (MediaInfo.GetAudioCount(p.SourceFile) > 0 OrElse
             MediaInfo.GetSubtitleCount(p.SourceFile) > 0) Then
 
             ProcessForm.CloseProcessForm()

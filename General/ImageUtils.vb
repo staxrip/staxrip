@@ -31,7 +31,7 @@ Public Class Thumbnails
 
         Try
             avsdoc.Synchronize()
-            errorMsg = p.SourceAviSynthDocument.GetErrorMessage
+            errorMsg = p.SourceScript.GetErrorMessage
         Catch ex As Exception
             errorMsg = ex.Message
         End Try

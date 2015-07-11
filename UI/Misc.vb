@@ -101,7 +101,7 @@ Namespace UI
             If Math.Abs(newPos.Y - workingArea.Y) < snapMargin Then
                 newPos.Y = workingArea.Y
             ElseIf Math.Abs(newPos.Y + Height - workingArea.Bottom) < snapMargin Then
-                newPos.Y = (workingArea.Bottom - Height)
+                newPos.Y = workingArea.Bottom - Height
             End If
 
             If Math.Abs(newPos.X - workingArea.X) < snapMargin Then

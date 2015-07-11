@@ -1,1 +1,3 @@
-Could you add option in your Video Comparison tool seek to key-frames? (Shift+right/left). Also frame number in yellow in right top corner would be useful.
+atak: Could you add option in your Video Comparison tool seek to key-frames? (Shift+right/left).
+Also frame number in yellow in right top corner would be useful.
+---

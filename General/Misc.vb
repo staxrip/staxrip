@@ -1280,17 +1280,18 @@ Public Class Calc
         Return (CLng(p.VideoBitrate) * CLng(1024)) / (CLng(p.TargetWidth) * CLng(p.TargetHeight) * CLng(framerate))
     End Function
 
+    Shared Function GetSize() As Double
+        Return (Calc.GetVideoKBytes() + Calc.GetAudioKBytes() + Calc.GetOverheadAndSubtitlesKBytes()) / 1024
+    End Function
+
     Shared Function GetVideoBitrate() As Double
+        If p.FixedBitrate > 0 Then Return p.FixedBitrate
         Return Calc.GetTotalBitrate - Calc.GetAudioBitrate()
     End Function
 
     Shared Function GetTotalBitrate() As Double
-        If p.TargetSeconds = 0 Then
-            Return 0
-        End If
-
+        If p.TargetSeconds = 0 Then Return 0
         Dim kb = p.Size * 1024 - GetOverheadAndSubtitlesKBytes()
-
         Return (kb * 8 * 1.024) / p.TargetSeconds
     End Function
 
@@ -2796,10 +2797,12 @@ Public Class GlobalCommands
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.6 " + GetReleaseType() + " (2015-0?-??)")
 
-                f.Doc.WriteList("Tweak: Play feature adds resize filter to VapourSynth play script if the source PAR is non 1:1",
+                f.Doc.WriteList("New: Added option for fixed bitrate even though using a fixed bitrate is not recommended. It was added because over the years it was requested dozens of times. StaxRip will show a warning telling to rather use quality mode and constrain the maximum data rate if necessary.",
+                                "Tweak: Play feature adds resize filter to VapourSynth play script if the source PAR is non 1:1",
                                 "Tweak: Added clear feature to audio file context menu to easily remove a audio file.",
                                 "Tweak: Added screen bounds magnet docking feature",
                                 "todo: update qaac",
+                                "todo: update AVSMeter",
                                 "Update: ffmpeg")
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.5 " + GetReleaseType() + " (2015-05-25)")

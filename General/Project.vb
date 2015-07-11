@@ -20,7 +20,6 @@ Class Project
     Public AutoARSignaling As Boolean = True
     Public AutoCompCheck As Boolean
     Public AutoCorrectCropValues As Boolean = True
-    Public AutoForceFilmThreshold As Integer = 95
     Public AutoResizeImage As Integer
     Public AutoSmartCrop As Boolean
     Public AutoSmartOvercrop As Double
@@ -82,6 +81,7 @@ Class Project
     Public CutFrameCount As Integer
     Public Codec As String
     Public CodecProfile As String
+    Public FixedBitrate As Integer
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

@@ -2023,7 +2023,7 @@ Class MainForm
                     If m.Success Then
                         Dim film = CInt(m.Groups(1).Value)
 
-                        If film >= p.AutoForceFilmThreshold Then
+                        If film >= 95 Then
                             content = content.Replace("Field_Operation=0" + CrLf + "Frame_Rate=29970 (30000/1001)", "Field_Operation=1" + CrLf + "Frame_Rate=23976 (24000/1001)")
                             content.WriteFile(p.SourceFile)
                         End If
@@ -4064,11 +4064,10 @@ Class MainForm
             cb.SaveAction = Sub(value) p.DeleteTempFilesDir = value
 
             nb = ui.AddNumericBlock(miscPage)
-            nb.Label.Text = "Auto Force Film Threshold (Percent):"
-            nb.Label.Tooltip = "Threshold at which force film is applied automatically."
-            nb.NumEdit.Init(0, 100, 1)
-            nb.NumEdit.Value = p.AutoForceFilmThreshold
-            nb.NumEdit.SaveAction = Sub(value) p.AutoForceFilmThreshold = CInt(value)
+            nb.Label.Text = "Use fixed bitrate:"
+            nb.Label.Tooltip = "Never recommended but frequently requested."
+            nb.NumEdit.Value = p.FixedBitrate
+            nb.NumEdit.SaveAction = Sub(value) p.FixedBitrate = CInt(value)
 
             ui.AddLine(miscPage, "Compressibility Check")
 
@@ -4100,17 +4099,13 @@ Class MainForm
             If form.ShowDialog() = DialogResult.OK Then
                 ui.Save()
 
-                If p.CompCheckRange < 2 OrElse p.CompCheckRange > 20 Then
-                    p.CompCheckRange = 5
-                End If
+                If p.CompCheckRange < 2 OrElse p.CompCheckRange > 20 Then p.CompCheckRange = 5
+                If p.TempDir <> "" Then p.TempDir = DirPath.AppendSeparator(p.TempDir)
+                If p.DefaultTargetFolder <> "" Then p.DefaultTargetFolder = DirPath.AppendSeparator(p.DefaultTargetFolder)
+                If p.FixedBitrate > 0 Then MsgWarn("Using a fixed bitrate is not recommended. Use quality mode and constrain the maximum data rate if necessary.")
 
-                If OK(p.TempDir) Then
-                    p.TempDir = DirPath.AppendSeparator(p.TempDir)
-                End If
-
-                If OK(p.DefaultTargetFolder) Then
-                    p.DefaultTargetFolder = DirPath.AppendSeparator(p.DefaultTargetFolder)
-                End If
+                tbSize_TextChanged()
+                tbBitrate_TextChanged()
 
                 SetSlider()
                 Assistant()
@@ -4583,13 +4578,9 @@ Class MainForm
     Sub tbSize_TextChanged() Handles tbSize.TextChanged
         Try
             If Integer.TryParse(tbSize.Text, Nothing) Then
-                p.Size = CInt(tbSize.Text)
+                p.Size = If(p.FixedBitrate > 0, CInt(Calc.GetSize), CInt(tbSize.Text))
                 BlockSize = True
-
-                If Not BlockBitrate Then
-                    tbBitrate.Text = CInt(Calc.GetVideoBitrate).ToString
-                End If
-
+                If Not BlockBitrate Then tbBitrate.Text = CInt(Calc.GetVideoBitrate).ToString
                 BlockSize = False
                 Assistant()
             End If
@@ -4600,13 +4591,9 @@ Class MainForm
     Sub tbBitrate_TextChanged() Handles tbBitrate.TextChanged
         Try
             If Integer.TryParse(tbBitrate.Text, Nothing) Then
-                p.VideoBitrate = CInt(tbBitrate.Text)
+                p.VideoBitrate = If(p.FixedBitrate > 0, CInt(Calc.GetVideoBitrate), CInt(tbBitrate.Text))
                 BlockBitrate = True
-
-                If Not BlockSize Then
-                    tbSize.Text = CInt((Calc.GetVideoKBytes() + Calc.GetAudioKBytes() + Calc.GetOverheadAndSubtitlesKBytes()) / 1024).ToString
-                End If
-
+                If Not BlockSize Then tbSize.Text = CInt(Calc.GetSize).ToString
                 BlockBitrate = False
                 Assistant()
             End If

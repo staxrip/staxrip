@@ -109,8 +109,8 @@ Public Class AVIFile
         Log.WriteHeader("AviSynth script failed to load")
         Log.WriteLine(File.ReadAllText(Sourcefile, Encoding.Default) + CrLf)
 
-        If Directory.Exists(Paths.AviSynthPluginsDir) Then
-            Log.WriteLine("AviSynth Plugins: " + Directory.GetFiles(Paths.AviSynthPluginsDir, "*.dll").ToArray.Join(", ").Replace(Paths.AviSynthPluginsDir, "").Replace(".dll", ""))
+        If Directory.Exists(Paths.PluginsDir) Then
+            Log.WriteLine("AviSynth Plugins: " + Directory.GetFiles(Paths.PluginsDir, "*.dll").ToArray.Join(", ").Replace(Paths.PluginsDir, "").Replace(".dll", ""))
         Else
             Log.WriteLine("AviSynth plugin directory is missing!")
         End If

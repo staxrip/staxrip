@@ -58,10 +58,12 @@ Public Class Packs
     Public Shared temporalsoften As New temporalsoftenPackage
     Public Shared havsfunc As New havsfuncPackage
     Public Shared LSmashWorksVapourSynth As New vslsmashsourcePackage
+    Public Shared KNLMeansCL As New KNLMeansCLPackage
 
     Public Shared Property Packages As New List(Of Package)
 
     Shared Sub Init()
+        Packages.Add(KNLMeansCL)
         Packages.Add(LSmashWorksVapourSynth)
         Packages.Add(havsfunc)
         Packages.Add(temporalsoften)
@@ -414,7 +416,7 @@ Public Class AviSynthPackage
     End Sub
 
     Public Overrides Function GetStatus() As String
-        If Not Directory.Exists(Paths.AviSynthPluginsDir) Then
+        If Not Directory.Exists(Paths.PluginsDir) Then
             Return "The AviSynth setup is damaged because the plugins directory doesn't exist. Please click the 'Setup' button above."
         End If
     End Function
@@ -1138,6 +1140,20 @@ Public Class nnedi3Package
         HelpURL = "http://github.com/dubhater/vapoursynth-nnedi3"
         Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field."
         VapourSynthFilterNames = {"nnedi3.nnedi3", "nnedi3.nnedi3_rpow2"}
+    End Sub
+End Class
+
+Public Class KNLMeansCLPackage
+    Inherits PluginPackage
+
+    Sub New()
+        Name = "KNLMeansCL"
+        Filename = "KNLMeansCL.dll"
+        WebURL = "http://forum.doom9.org/showthread.php?t=171379"
+        HelpFile = "README.txt"
+        Description = "KNLMeansCL is an optimized pixelwise OpenCL implementation of the Non-local means denoising algorithm. Every pixel is restored by the weighted average of all pixels in its search window. The level of averaging is determined by the filtering parameter h."
+        VapourSynthFilterNames = {"knlm.KNLMeansCL"}
+        AviSynthFilterNames = {"KNLMeansCL"}
     End Sub
 End Class
 

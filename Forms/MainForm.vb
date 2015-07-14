@@ -2088,10 +2088,6 @@ Class MainForm
                     Dim src = p.Script.GetFilter("Source")
                     src.Script = src.Script + CrLf + "SelectEven().AssumeFPS(" & miFPS.ToString(CultureInfo.InvariantCulture) + ")"
                     p.SourceScript.Synchronize()
-                ElseIf miFPS <> avsFPS
-                    Dim src = p.Script.GetFilter("Source")
-                    src.Script = src.Script + CrLf + "# AssumeFPS(" + miFPS.ToString(CultureInfo.InvariantCulture) + ")"
-                    p.SourceScript.Synchronize()
                 End If
             End If
 

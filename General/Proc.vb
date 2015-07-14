@@ -172,13 +172,8 @@ Public Class Proc
             Dim h = Native.GetForegroundWindow()
             Process.Start()
 
-            If ReadError Then
-                Process.BeginErrorReadLine()
-            End If
-
-            If ReadOutput Then
-                Process.BeginOutputReadLine()
-            End If
+            If ReadError Then Process.BeginErrorReadLine()
+            If ReadOutput Then Process.BeginOutputReadLine()
 
             'WindowStyle.Hidden yield to window handle zero
             If HideAfterStart Then

@@ -23,16 +23,16 @@ End Module
 
 Public Class Paths
     Shared Function VerifyRequirements() As Boolean
-        If Directory.Exists(Paths.AviSynthPluginsDir) Then
-            If File.Exists(Paths.AviSynthPluginsDir + "MPEG2Dec.dll") OrElse
-                File.Exists(Paths.AviSynthPluginsDir + "MPEG2Dec2.dll") OrElse
-                File.Exists(Paths.AviSynthPluginsDir + "MPEG2Dec3.dll") Then
+        If Directory.Exists(Paths.PluginsDir) Then
+            If File.Exists(Paths.PluginsDir + "MPEG2Dec.dll") OrElse
+                File.Exists(Paths.PluginsDir + "MPEG2Dec2.dll") OrElse
+                File.Exists(Paths.PluginsDir + "MPEG2Dec3.dll") Then
 
-                MsgWarn("The obsolete plugin MPEG2Dec must be removed from the plugin:" + CrLf2 + Paths.AviSynthPluginsDir)
+                MsgWarn("The obsolete plugin MPEG2Dec must be removed from the plugin:" + CrLf2 + Paths.PluginsDir)
                 Return False
             End If
 
-            For Each i In Directory.GetFiles(Paths.AviSynthPluginsDir)
+            For Each i In Directory.GetFiles(Paths.PluginsDir)
                 If Regex.IsMatch(i, "(?i:decomb.+\.dll$)") Then
                     If Msg("A legacy Decomb version was found." + CrLf2 + "Please confirm to solve this conflict.", MessageBoxIcon.Warning, MessageBoxButtons.OKCancel) = DialogResult.OK Then
                         FileHelp.Delete(i)
@@ -58,15 +58,14 @@ Public Class Paths
     End Function
 
     <DebuggerNonUserCode()>
-    Shared Property AviSynthPluginsDir() As String
+    Shared ReadOnly Property PluginsDir() As String
         Get
-            Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+"))
-        End Get
-        Set(Value As String)
-            If Misc.IsAdmin Then
-                Registry.LocalMachine.Write("SOFTWARE\AviSynth", "plugindir2_5", Value)
+            If p.Script.Engine = ScriptingEngine.AviSynth Then
+                Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+"))
+            Else
+                Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64"))
             End If
-        End Set
+        End Get
     End Property
 
     Shared Function BrowseFolder(defaultFolder As String) As String
@@ -2418,7 +2417,7 @@ Public Class Macro
         If value.Contains("%programs_dir%") Then value = value.Replace("%programs_dir%", CommonDirs.Programs)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%plugin_dir%") Then value = value.Replace("%plugin_dir%", Paths.AviSynthPluginsDir)
+        If value.Contains("%plugin_dir%") Then value = value.Replace("%plugin_dir%", Paths.PluginsDir)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_files_comma%") Then value = value.Replace("%source_files_comma%", """" + String.Join(""",""", p.SourceFiles.ToArray) + """")
@@ -2797,13 +2796,14 @@ Public Class GlobalCommands
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.6 " + GetReleaseType() + " (2015-0?-??)")
 
-                f.Doc.WriteList("New: Added option for fixed bitrate even though using a fixed bitrate is not recommended. It was added because over the years it was requested dozens of times. StaxRip will show a warning telling to rather use quality mode and constrain the maximum data rate if necessary.",
+                f.Doc.WriteList("New: KNLMeansCL plugin added",
+                                "New: Added option for fixed bitrate even though using a fixed bitrate is not recommended. It was added because over the years it was requested dozens of times. StaxRip will show a warning telling to rather use quality mode and constrain the maximum data rate if necessary.",
                                 "Tweak: Play feature adds resize filter to VapourSynth play script if the source PAR is non 1:1",
                                 "Tweak: Added clear feature to audio file context menu to easily remove a audio file.",
                                 "Tweak: Added screen bounds magnet docking feature",
                                 "todo: update qaac",
                                 "todo: update AVSMeter",
-                                "Update: ffmpeg")
+                                "todo: update ffmpeg")
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.5 " + GetReleaseType() + " (2015-05-25)")
 

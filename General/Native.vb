@@ -345,6 +345,10 @@ Public Class Native
     Shared Function GetForegroundWindow() As IntPtr
     End Function
 
+    <DllImport("user32.dll", SetLastError:=True)>
+    Shared Function GetWindowThreadProcessId(hwnd As IntPtr, ByRef lpdwProcessId As Integer) As Integer
+    End Function
+
     <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
     Shared Function SetWindowText(hWnd As IntPtr, lpString As String) As Boolean
     End Function

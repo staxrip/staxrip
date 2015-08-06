@@ -274,7 +274,7 @@ Public Class MP4Muxer
             temp = ":par=" & par.X & ":" & par.Y
         End If
 
-        args.Append(" -add """ + p.VideoEncoder.OutputPath + "#video:name=Video" + temp + """")
+        args.Append(" -add """ + p.VideoEncoder.OutputPath + "#video" + temp + """")
 
         If File.Exists(p.Audio0.File) AndAlso IsSupported(p.Audio0.OutputFileType) Then
             args.Append(" -add """ + p.Audio0.File)
@@ -291,9 +291,7 @@ Public Class MP4Muxer
                 args.Append(":delay=" + p.Audio0.Delay.ToString)
             End If
 
-            If p.Audio0.StreamName = "" Then p.Audio0.StreamName = " "
             args.Append(":name=" + p.Audio0.SolveMacros(p.Audio0.StreamName))
-
             args.Append("""")
         End If
 
@@ -312,9 +310,7 @@ Public Class MP4Muxer
                 args.Append(":delay=" + p.Audio1.Delay.ToString)
             End If
 
-            If p.Audio1.StreamName = "" Then p.Audio1.StreamName = " "
             args.Append(":name=" + p.Audio1.SolveMacros(p.Audio1.StreamName))
-
             args.Append("""")
         End If
 

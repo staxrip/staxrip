@@ -48,7 +48,6 @@ Public MustInherit Class Demuxer
         prx.InputFormats = {"mpeg2"}
         prx.Command = "%app:Java%"
         prx.Arguments = "-jar ""%app:ProjectX%"" %source_files% -out ""%working_dir%"""
-        prx.Active = Not Packs.Java.IsStatusCritical
         ret.Add(prx)
 
         Dim dsmux As New CommandLineDemuxer
@@ -145,8 +144,10 @@ Public Class CommandLineDemuxer
             If Command?.Contains("DGIndex") Then
                 proc.SkipPatterns = {"^\d+$"}
             ElseIf Command?.Contains("dsmux")
+                If Not Packs.Haali.VerifyOK(True) Then Throw New AbortException
                 proc.SkipStrings = {"Muxing..."}
             ElseIf Command?.Contains("Java")
+                If Not Packs.Java.VerifyOK(True) Then Throw New AbortException
                 proc.SkipPatterns = {"^\d+ %$"}
             End If
 

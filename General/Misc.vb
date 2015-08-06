@@ -218,7 +218,7 @@ Public Class Paths
                 fresh = True
             End If
 
-            Dim version = 38
+            Dim version = 39
 
             If fresh OrElse Not s.Storage.GetInt("template update") = version Then
                 s.Storage.SetInt("template update", version)
@@ -340,12 +340,6 @@ Class GlobalClass
             If i.Length > 170 Then
                 MsgError("Generated temp files might exceed 260 character file path limit, please use shorter file paths." + CrLf2 + i)
                 Return True
-            End If
-
-            If Filepath.GetExtFull(i) = ".ts" AndAlso CommandLineDemuxer.IsActive("dsmux") AndAlso MediaInfo.GetVideo(i, "Format") = "AVC" Then
-                If Not Packs.Haali.VerifyOK(True) Then
-                    Return True
-                End If
             End If
 
             If i.Ext = "dga" Then
@@ -553,17 +547,14 @@ Class GlobalClass
         End If
     End Function
 
-    Sub RaiseApplicationEvent(ae As ApplicationEvent)
+    Sub RaiseAppEvent(appEvent As ApplicationEvent)
         For Each i In s.EventCommands
-            If i.Event = ae Then
+            If i.Enabled AndAlso i.Event = appEvent Then
                 Dim matches = 0
 
                 For Each i2 In i.CriteriaList
                     i2.PropertyString = Macro.Solve(i2.Macro)
-
-                    If i2.Eval Then
-                        matches += 1
-                    End If
+                    If i2.Eval Then matches += 1
                 Next
 
                 If i.CriteriaList.Count = 0 OrElse (i.OrOnly AndAlso matches > 0) OrElse
@@ -571,8 +562,8 @@ Class GlobalClass
 
                     Log.WriteHeader("Process Event Command '" + i.Name + "'")
                     Log.WriteLine("Event: " + DispNameAttribute.GetValueForEnum(i.Event))
-                    Dim c = g.MainForm.CustomMainMenu.CommandManager.GetCommand(i.CommandParameters.MethodName)
-                    Log.WriteLine("Arguments: " + c.GetParameterHelp(i.CommandParameters.Parameters))
+                    Dim command = g.MainForm.CustomMainMenu.CommandManager.GetCommand(i.CommandParameters.MethodName)
+                    Log.WriteLine("Arguments: " + command.GetParameterHelp(i.CommandParameters.Parameters))
 
                     g.MainForm.CustomMainMenu.CommandManager.Process(i.CommandParameters)
                 End If
@@ -681,12 +672,10 @@ Class GlobalClass
     Function GetFilesInTempDirAndParent() As List(Of String)
         Dim ret As New List(Of String)
 
-        If p.TempDir <> "" Then
-            ret = Directory.GetFiles(p.TempDir).ToList
-        End If
+        If p.TempDir <> "" Then ret = Directory.GetFiles(p.TempDir).ToList
 
-        If p.TempDir <> Filepath.GetDir(p.SourceFile) Then
-            ret.AddRange(Directory.GetFiles(Filepath.GetDir(p.SourceFile)))
+        If p.TempDir <> Filepath.GetDir(p.FirstOriginalSourceFile) Then
+            ret.AddRange(Directory.GetFiles(Filepath.GetDir(p.FirstOriginalSourceFile)))
         End If
 
         Return ret
@@ -948,27 +937,20 @@ Class GlobalClass
     Sub AutoCrop()
         If p.Script.Engine <> ScriptingEngine.AviSynth Then Exit Sub
 
-        Dim f = p.Script.GetFilter("Source")
+        Dim filter = p.Script.GetFilter("Source")
 
-        Dim doc As New VideoScript
-        doc.Engine = p.Script.Engine
-        doc.Path = p.TempDir + p.Name + "_AutoCrop." + doc.FileType
-        doc.Filters.Add(f.GetCopy)
+        Dim script As New VideoScript
+        script.Engine = p.Script.Engine
+        script.Path = p.TempDir + p.Name + "_AutoCrop." + script.FileType
+        script.Filters.Add(filter.GetCopy)
+        script.Filters.Add(New VideoFilter("AutoCrop", "AutoCrop", "AutoCrop(mode = 2, samples = 10)", True))
+        script.Synchronize()
 
-        doc.Filters.Add(New VideoFilter("AutoCrop", "AutoCrop", "AutoCrop(mode = 2, samples = 20)", True))
+        Dim logfile = Filepath.GetDir(script.Path) + "AutoCrop.log"
 
-        Log.WriteHeader("Autocrop")
-        Log.WriteLine("Autocrop sometimes hangs depending on source file and source filter.")
-        Log.WriteLine("In case it hangs uncheck the crop filter or disable it in the options." + CrLf2)
-        Log.WriteLine(doc.GetScript)
-        Log.Save()
-
-        doc.Synchronize()
-        Dim fp = Filepath.GetDir(doc.Path) + "AutoCrop.log"
-
-        If File.Exists(fp) Then
-            Dim line = File.ReadAllLines(fp)(0)
-            FileHelp.Delete(fp)
+        If File.Exists(logfile) Then
+            Dim line = File.ReadAllLines(logfile)(0)
+            FileHelp.Delete(logfile)
             Dim sa = line.Left(")").Right("(").SplitNoEmpty(",")
             p.CropLeft = CInt(sa(0))
             p.CropTop = CInt(sa(1))
@@ -2691,7 +2673,7 @@ End Enum
 
 Public Class GlobalCommands
     <Command("Perform | Execute Command Line", "Executes command lines separated by a line break line by line.")>
-    Sub ExecuteCmdl(
+    Sub ExecuteCommandLine(
         <DispName("Command Line"),
         Description("One or more command lines to be executed or if batch mode is used content of the batch file."),
         Editor(GetType(CmdlTypeEditor), GetType(UITypeEditor))>
@@ -2801,9 +2783,9 @@ Public Class GlobalCommands
                                 "Tweak: Play feature adds resize filter to VapourSynth play script if the source PAR is non 1:1",
                                 "Tweak: Added clear feature to audio file context menu to easily remove a audio file.",
                                 "Tweak: Added screen bounds magnet docking feature",
-                                "todo: update qaac",
-                                "todo: update AVSMeter",
-                                "todo: update ffmpeg")
+                                "Tweak: When jobs are completed StaxRip activates now the main window again like it did before but now StaxRip checks if a player is in the foreground and prevents activation if true, it works with MPC, VLC and MediaMonkey, other players might be added on request.",
+                                "Tweak: ProjectX and dsmux are always enabled by default but StaxRip checks only if Java and Haali is installed in case of ProjectX and dsmux are actually executed.",
+                                "Update: x265 1.7+338")
 
                 f.Doc.WriteP("StaxRip x64 1.3.1.5 " + GetReleaseType() + " (2015-05-25)")
 
@@ -3071,64 +3053,56 @@ End Class
 
 <Serializable()>
 Public Class EventCommand
-    Private NameValue As String = "???"
-
-    Property Name() As String
-        Get
-            Return NameValue
-        End Get
-        Set(Value As String)
-            NameValue = Value
-        End Set
-    End Property
-
+    'legacy
+    Private NameValue As String
     Private CriteriaListValue As List(Of Criteria)
-
-    Property CriteriaList() As List(Of Criteria)
-        Get
-            If CriteriaListValue Is Nothing Then
-                CriteriaListValue = New List(Of Criteria)
-            End If
-
-            Return CriteriaListValue
-        End Get
-        Set(Value As List(Of Criteria))
-            CriteriaListValue = Value
-        End Set
-    End Property
-
     Private OrOnlyValue As Boolean
-
-    Property OrOnly() As Boolean
-        Get
-            Return OrOnlyValue
-        End Get
-        Set(Value As Boolean)
-            OrOnlyValue = Value
-        End Set
-    End Property
-
+    Private OrOnlyMigrated As Boolean = True
     Private CommandParametersValue As CommandParameters
-
-    Property CommandParameters() As CommandParameters
-        Get
-            Return CommandParametersValue
-        End Get
-        Set(Value As CommandParameters)
-            CommandParametersValue = Value
-        End Set
-    End Property
-
     Private EventValue As ApplicationEvent
+    Private EventMigrated As Boolean = True
+    Private EnabledMigrated As Boolean = True
 
-    Property [Event]() As ApplicationEvent
-        Get
-            Return EventValue
-        End Get
-        Set(Value As ApplicationEvent)
-            EventValue = Value
-        End Set
-    End Property
+    Property Name As String = "???"
+    Property Enabled As Boolean = True
+    Property CriteriaList As List(Of Criteria) = New List(Of Criteria)
+    Property OrOnly As Boolean
+    Property CommandParameters As CommandParameters
+    Property [Event] As ApplicationEvent
+
+    'legacy
+    <OnDeserialized()>
+    Sub OnDeserialized(ByVal context As StreamingContext)
+        If NameValue <> "" Then
+            Name = NameValue
+            NameValue = ""
+        End If
+
+        If Not CriteriaListValue Is Nothing Then
+            CriteriaList = CriteriaListValue
+            CriteriaListValue = Nothing
+        End If
+
+        If Not OrOnlyMigrated Then
+            OrOnly = OrOnlyValue
+            OrOnlyMigrated = True
+        End If
+
+        If Not CommandParametersValue Is Nothing Then
+            CommandParameters = CommandParametersValue
+            CommandParametersValue = Nothing
+        End If
+
+        If Not EventMigrated Then
+            Me.Event = EventValue
+            EventMigrated = True
+        End If
+
+        If Not EnabledMigrated Then
+            EnabledMigrated = True
+            Enabled = True
+        End If
+    End Sub
 
     Overrides Function ToString() As String
         Return Name

@@ -490,7 +490,7 @@ Namespace UI
                     Dim c = CustomMenuItem.CustomMenu.CommandManager.GetCommand(CustomMenuItem.MethodName)
 
                     If c.MethodInfo.Name <> "DynamicMenuItem" Then
-                        If c.MethodInfo.Name = "ExecuteCmdl" Then
+                        If c.MethodInfo.Name = "ExecuteCommandLine" Then
                             Help = CustomMenuItem.Parameters(0).ToString.Trim(""""c)
                         Else
                             Help = c.Attribute.Description

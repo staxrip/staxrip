@@ -490,8 +490,8 @@ Namespace x265
         Property LogLevel As New OptionParam With {
             .Switch = "--log-level",
             .Text = "Log Level:",
-            .Options = {"None", "Error", "Warning", "Info", "Frame", "Debug", "Full"},
-            .Values = {"none", "error", "warning", "info", "frame", "debug", "full"},
+            .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"},
+            .Values = {"none", "error", "warning", "info", "debug", "full"},
             .Value = 3,
             .DefaultValue = 3}
 

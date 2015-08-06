@@ -594,13 +594,8 @@ Public Class JavaPackage
         WebURL = "http://java.com"
         Description = "Java is required by ProjectX. " + Strings.ProjectX
         DownloadURL = "http://java.com/en/download"
+        IsRequiredValue = False
     End Sub
-
-    Overrides ReadOnly Property IsRequired As Boolean
-        Get
-            Return Packs.ProjectX.IsRequired
-        End Get
-    End Property
 
     Public Overrides Function GetPath() As String
         Dim ret = MyBase.GetPath()
@@ -625,13 +620,8 @@ Public Class ProjectXPackage
         Filename = "ProjectX.jar"
         WebURL = "http://project-x.sourceforge.net"
         Description = Strings.ProjectX
+        IsRequiredValue = False
     End Sub
-
-    Overrides ReadOnly Property IsRequired As Boolean
-        Get
-            Return CommandLineDemuxer.IsActive("ProjectX")
-        End Get
-    End Property
 
     Overrides ReadOnly Property LaunchAction As Action
         Get
@@ -968,8 +958,8 @@ Public Class NVEncCPackage
 
     Sub New()
         Name = "NVEncC"
-        Filename = "NVEncC.exe"
-        WebURL = "http://forum.videohelp.com/threads/370223-NVEncC-by-rigaya-NVIDIA-GPU-encoding"
+        Filename = "NVEncC64.exe"
+        WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!2293"
         Description = "nvidia GPU accelerated H.264/H.265 encoder."
         HelpFile = "help.txt"
     End Sub
@@ -1055,18 +1045,13 @@ Public Class HaaliSplitter
         WebURL = "http://haali.su/mkv"
         SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\MatroskaSplitter.exe")
         Description = "Haali Splitter is used by eac3to and dsmux to write MKV files. Haali Splitter and LAV Filters overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
+        IsRequiredValue = False
     End Sub
 
     Public Overrides Function GetPath() As String
         Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing)
         If File.Exists(ret) Then Return ret
     End Function
-
-    Overrides ReadOnly Property IsRequired As Boolean
-        Get
-            Return CommandLineDemuxer.IsActive("dsmux")
-        End Get
-    End Property
 End Class
 
 Public Class DGDecodePackage

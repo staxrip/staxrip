@@ -415,15 +415,15 @@ Class ScriptingEditor
         End Sub
 
         Sub CodePreview()
-            Dim doc As New VideoScript
-            doc.Engine = Editor.Engine
-            doc.Filters = Editor.GetFilters()
+            Dim script As New VideoScript
+            script.Engine = Editor.Engine
+            script.Filters = Editor.GetFilters()
 
             Using f As New StringEditorForm
                 f.tb.ReadOnly = True
                 f.cbWrap.Checked = False
                 f.cbWrap.Visible = False
-                f.tb.Text = Macro.Solve(VideoScript.ModifyScript(doc.GetScript)).Trim
+                f.tb.Text = Macro.Solve(VideoScript.ModifyScript(script.GetScript, script.Engine)).Trim
                 f.tb.SelectionStart = f.tb.Text.Length
                 f.tb.SelectionLength = 0
                 f.Text = "Script Preview"

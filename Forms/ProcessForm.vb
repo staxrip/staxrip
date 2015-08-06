@@ -378,11 +378,32 @@ Public Class ProcessForm
         End Try
     End Sub
 
-    Shared Sub CloseProcessForm(Optional activate As Boolean = True)
+    Shared Sub ActivateForm()
+        Dim procid As Integer
+        Dim procName = ""
+        Native.GetWindowThreadProcessId(Native.GetForegroundWindow(), procid)
+
+        For Each i In Process.GetProcesses
+            If i.Id = procid Then
+                procName = i.ProcessName.ToLower
+                Exit For
+            End If
+        Next
+
+        If procName.Contains("mpc") OrElse procName.Contains("vlc") OrElse
+            procName.Contains("staxplayer") OrElse procName.Contains("mediamonkey") Then
+
+            Exit Sub
+        End If
+
+        g.MainForm.Activate()
+    End Sub
+
+    Shared Sub CloseProcessForm()
         Try
             If Not Instance Is Nothing Then
                 g.MainForm.Show()
-                If activate Then g.MainForm.Activate()
+                ActivateForm()
                 g.MainForm.Refresh()
 
                 If Not Instance.IsDisposed Then

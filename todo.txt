@@ -1,7 +1,1 @@
-atak: Could you add option in your Video Comparison tool seek to key-frames? (Shift+right/left).
-Also frame number in yellow in right top corner would be useful.
----
-There is a new version of QSVEncC v2.03, which among other things adds two new video editing functions.
-a) A 180 degrees rotation (vpp-half-turn)
-b) A removal of half-transparent logos from video 
----
+I probably can add a audio only processing job feature, this would simply save a job with 'Just Mux' as video profile and 'No Muxing' as container profile so video encoding and muxing are skipped.

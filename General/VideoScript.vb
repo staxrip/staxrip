@@ -1,4 +1,5 @@
 Imports System.Text
+Imports StaxRip
 
 <Serializable()>
 Class VideoScript
@@ -12,7 +13,9 @@ Class VideoScript
     <NonSerialized()> Public LastSync As String
 
     Property Filters As New List(Of VideoFilter)
-    Property Engine As ScriptingEngine = ScriptingEngine.AviSynth
+
+    Overridable Property Engine As ScriptingEngine = ScriptingEngine.AviSynth
+    Overridable Property Path As String = ""
 
     Sub New()
         Me.New(Nothing)
@@ -22,21 +25,9 @@ Class VideoScript
         MyBase.New(name)
     End Sub
 
-    Private PathValue As String = ""
-
-    Overridable Property Path() As String
-        Get
-            Return PathValue
-        End Get
-        Set(Value As String)
-            PathValue = Value
-        End Set
-    End Property
-
     Overridable ReadOnly Property FileType As String
         Get
             If Engine = ScriptingEngine.VapourSynth Then Return "vpy"
-
             Return "avs"
         End Get
     End Property
@@ -141,7 +132,7 @@ Class VideoScript
 
             If Frames = 240 OrElse current <> LastSync Then
                 If Directory.Exists(Filepath.GetDir(Path)) Then
-                    script = ModifyScript(script)
+                    script = ModifyScript(script, Engine)
                     script.WriteFile(Path)
 
                     If g.MainForm.Visible Then
@@ -164,14 +155,12 @@ Class VideoScript
         End If
     End Sub
 
-    Shared Function ModifyScript(script As String) As String
+    Shared Function ModifyScript(script As String, engine As ScriptingEngine) As String
         Dim scriptLower = script.ToLower
 
         Dim code = ""
 
-        Dim vs = scriptLower.Contains("clip = core.")
-
-        If vs AndAlso Not scriptLower.Contains("import vapoursynth") Then
+        If engine = ScriptingEngine.VapourSynth AndAlso Not scriptLower.Contains("import vapoursynth") Then
             code = "import vapoursynth as vs" + CrLf + "core = vs.get_core()" + CrLf
         End If
 
@@ -181,7 +170,7 @@ Class VideoScript
             Dim fp = i.GetPath
 
             If fp <> "" Then
-                If vs Then
+                If engine = ScriptingEngine.VapourSynth AndAlso code.Contains("core = vs.") Then
                     If Not i.VapourSynthFilterNames Is Nothing Then
                         For Each iFilterName In i.VapourSynthFilterNames
                             If scriptLower.Contains(iFilterName.ToLower) Then
@@ -255,7 +244,7 @@ Class VideoScript
             clip = script
         End If
 
-        If vs AndAlso Not clip.Contains(".set_output()") Then
+        If engine = ScriptingEngine.VapourSynth AndAlso Not clip.Contains(".set_output()") Then
             If clip.EndsWith(CrLf) Then
                 clip += "clip.set_output()"
             Else
@@ -381,6 +370,14 @@ Class SourceVideoScript
             Return p.TempDir + p.Name + "_Source." + p.Script.FileType
         End Get
         Set(value As String)
+        End Set
+    End Property
+
+    Public Overrides Property Engine As ScriptingEngine
+        Get
+            Return p.Script.Engine
+        End Get
+        Set(value As ScriptingEngine)
         End Set
     End Property
 
@@ -636,6 +633,15 @@ Class FilterParameters
                 item.Parameters.Add(New FilterParameter("rffmode", "1"))
 
                 item = add("FFVideoSource", "rffmode = 2 (force film)")
+                item.Parameters.Add(New FilterParameter("rffmode", "2"))
+
+                item = add("ffms2.Source", "rffmode = 0 (ignore all flags (default))")
+                item.Parameters.Add(New FilterParameter("rffmode", "0"))
+
+                item = add("ffms2.Source", "rffmode = 1 (honor all pulldown flags)")
+                item.Parameters.Add(New FilterParameter("rffmode", "1"))
+
+                item = add("ffms2.Source", "rffmode = 2 (force film)")
                 item.Parameters.Add(New FilterParameter("rffmode", "2"))
 
                 item = add("DGSource", "deinterlace = 0 (no deinterlacing)")

@@ -113,17 +113,9 @@ Class Project
             End If
         End If
 
-        If SourceScript Is Nothing Then
-            SourceScript = New SourceVideoScript
-        End If
-
-        If SkippedAssistantTips Is Nothing Then
-            SkippedAssistantTips = New List(Of String)
-        End If
-
-        If SourceFiles Is Nothing Then
-            SourceFiles = New List(Of String)
-        End If
+        If SourceScript Is Nothing Then SourceScript = New SourceVideoScript
+        If SkippedAssistantTips Is Nothing Then SkippedAssistantTips = New List(Of String)
+        If SourceFiles Is Nothing Then SourceFiles = New List(Of String)
 
         If Check(VideoEncoder, "Video Encoder", 68) Then
             VideoEncoder = VideoEncoder.Getx264Encoder("x264", x264DeviceMode.Disabled)
@@ -141,6 +133,7 @@ Class Project
 
         If Check(Script, "Filter Setup", 50) Then
             Script = StaxRip.VideoScript.GetDefaults()(0)
+            Script.SetFilter("Source", "Automatic", "")
         End If
     End Sub
 

@@ -1530,8 +1530,8 @@ Class MainForm
 
         Assistant()
         UpdateRecentProjectsMenuItems(path)
-        g.RaiseApplicationEvent(ApplicationEvent.ProjectLoaded)
-        g.RaiseApplicationEvent(ApplicationEvent.ProjectOrSourceLoaded)
+        g.RaiseAppEvent(ApplicationEvent.ProjectLoaded)
+        g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
 
         Return True
     End Function
@@ -1562,74 +1562,78 @@ Class MainForm
         End If
     End Sub
 
-    Sub OpenSingleFile(files As IEnumerable(Of String))
-        Dim filter As VideoFilter
+    Function ShowSourceFilterSelection(inputFile As String) As VideoFilter
+        Dim ret As VideoFilter
 
-        If files.Count = 1 Then
-            Dim td As New TaskDialog(Of String)
-            td.MainInstruction = "Choose a preferred source filter"
-            td.Content = "A description of the available source filters can be found in the [http://github.com/stax76/staxrip/wiki/Source-Filters wiki]."
-            td.AddCommandLink("Automatic", "Automatic")
+        Dim td As New TaskDialog(Of String)
+        td.MainInstruction = "Choose a preferred source filter"
+        td.Content = "A description of the available source filters can be found in the [http://github.com/stax76/staxrip/wiki/Source-Filters wiki]."
+        td.AddCommandLink("Automatic", "Automatic")
 
-            If Not p.Script.IsFilterActive("Source", "Automatic") Then
-                td.AddCommandLink(p.Script.GetFilter("Source").Name, "current")
-            End If
-
-            If FileTypes.DGDecNVInput.Contains(files(0).Ext) Then
-                If Packs.DGDecodeNV.GetPath <> "" Then td.AddCommandLink("DGSource using AviSynth+", "DGSource")
-                If Packs.DGDecodeIM.GetPath <> "" Then td.AddCommandLink("DGSourceIM using AviSynth+", "DGSourceIM")
-            End If
-
-            td.AddCommandLink("FFVideoSource using AviSynth+", "FFVideoSource")
-            td.AddCommandLink("LWLibavVideoSource using AviSynth+", "LWLibavVideoSource")
-
-            If {"mp4", "m4v", "mov"}.Contains(files(0).Ext) Then
-                td.AddCommandLink("LSMASHVideoSource using AviSynth+", "LSMASHVideoSource")
-            End If
-
-            If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso
-                g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
-
-                td.AddCommandLink("DSS2 using AviSynth+", "DSS2")
-            End If
-
-            If files(0).Ext = "avi" Then td.AddCommandLink("AVISource using AviSynth+", "AVISource")
-
-            If {"mp4", "m4v", "mov"}.Contains(files(0).Ext) Then
-                td.AddCommandLink("LibavSMASHSource using VapourSynth", "vsLibavSMASHSource")
-            End If
-
-            td.AddCommandLink("ffms2 using VapourSynth", "vsffms2")
-            td.AddCommandLink("LWLibavSource using VapourSynth", "vsLWLibavSource")
-
-            Select Case td.Show
-                Case "Automatic"
-                    filter = New VideoFilter("Source", "Automatic", "", True)
-                Case "current"
-                    filter = Nothing
-                Case "DGSource"
-                    filter = New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
-                Case "DGSourceIM"
-                    filter = New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
-                Case "FFVideoSource"
-                    filter = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")")
-                Case "LWLibavVideoSource"
-                    filter = New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")")
-                Case "LSMASHVideoSource"
-                    filter = New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")")
-                Case "DSS2"
-                    filter = New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")")
-                Case "AVISource"
-                    filter = New VideoFilter("Source", "AVISource", "AviSource(""%source_file%"", audio = false)")
-                Case "vsffms2"
-                    filter = New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')")
-                Case "vsLibavSMASHSource"
-                    filter = New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(source = r'%source_file%')")
-                Case "vsLWLibavSource"
-                    filter = New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(source = r'%source_file%')")
-            End Select
+        If Not p.Script.IsFilterActive("Source", "Automatic") Then
+            td.AddCommandLink(p.Script.GetFilter("Source").Name, "current")
         End If
 
+        If FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then
+            If Packs.DGDecodeNV.GetPath <> "" Then td.AddCommandLink("DGSource using AviSynth+", "DGSource")
+            If Packs.DGDecodeIM.GetPath <> "" Then td.AddCommandLink("DGSourceIM using AviSynth+", "DGSourceIM")
+        End If
+
+        td.AddCommandLink("FFVideoSource using AviSynth+", "FFVideoSource")
+        td.AddCommandLink("LWLibavVideoSource using AviSynth+", "LWLibavVideoSource")
+
+        If {"mp4", "m4v", "mov"}.Contains(inputFile.Ext) Then
+            td.AddCommandLink("LSMASHVideoSource using AviSynth+", "LSMASHVideoSource")
+        End If
+
+        If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso
+                g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
+
+            td.AddCommandLink("DSS2 using AviSynth+", "DSS2")
+        End If
+
+        If inputFile.Ext = "avi" Then td.AddCommandLink("AVISource using AviSynth+", "AVISource")
+
+        If {"mp4", "m4v", "mov"}.Contains(inputFile.Ext) Then
+            td.AddCommandLink("LibavSMASHSource using VapourSynth", "vsLibavSMASHSource")
+        End If
+
+        td.AddCommandLink("ffms2 using VapourSynth", "vsffms2")
+        td.AddCommandLink("LWLibavSource using VapourSynth", "vsLWLibavSource")
+
+        Select Case td.Show
+            Case "Automatic"
+                ret = New VideoFilter("Source", "Automatic", "", True)
+            Case "current"
+                ret = Nothing
+            Case "DGSource"
+                ret = New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")", True)
+            Case "DGSourceIM"
+                ret = New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")", True)
+            Case "FFVideoSource"
+                ret = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")", True)
+            Case "LWLibavVideoSource"
+                ret = New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")", True)
+            Case "LSMASHVideoSource"
+                ret = New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")", True)
+            Case "DSS2"
+                ret = New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")", True)
+            Case "AVISource"
+                ret = New VideoFilter("Source", "AVISource", "AviSource(""%source_file%"", audio = false)", True)
+            Case "vsffms2"
+                ret = New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')", True)
+            Case "vsLibavSMASHSource"
+                ret = New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(source = r'%source_file%')", True)
+            Case "vsLWLibavSource"
+                ret = New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(source = r'%source_file%')", True)
+        End Select
+
+        Return ret
+    End Function
+
+    Sub OpenSingleFile(files As IEnumerable(Of String))
+        Dim filter As VideoFilter
+        If files.Count = 1 Then filter = ShowSourceFilterSelection(files(0))
         OpenVideoSourceFiles(files, filter)
     End Sub
 
@@ -1867,79 +1871,77 @@ Class MainForm
 
             Dim sourceFilter = p.Script.GetFilter("Source")
 
-            If Not sourceFilter.Script.Contains("(") Then
-                If p.SourceFile.Ext = "avs" Then
-                    p.Script.Engine = ScriptingEngine.AviSynth
-                    p.Script.Filters.Clear()
-                    p.Script.Filters.Add(New VideoFilter("Source", "AviSynth Import", File.ReadAllText(p.SourceFile), True))
-                ElseIf p.SourceFile.Ext = "vpy" Then
-                    p.Script.Engine = ScriptingEngine.VapourSynth
-                    p.Script.Filters.Clear()
-                    p.Script.Filters.Add(New VideoFilter("Source", "VapourSynth Import", File.ReadAllText(p.SourceFile), True))
-                Else
-                    For Each i In s.FilterPreferences
-                        Dim name = i.Name.SplitNoEmptyAndWhiteSpace({",", " "})
+            If p.SourceFile.Ext = "avs" Then
+                p.Script.Engine = ScriptingEngine.AviSynth
+                p.Script.Filters.Clear()
+                p.Script.Filters.Add(New VideoFilter("Source", "AviSynth Import", File.ReadAllText(p.SourceFile), True))
+            ElseIf p.SourceFile.Ext = "vpy" Then
+                p.Script.Engine = ScriptingEngine.VapourSynth
+                p.Script.Filters.Clear()
+                p.Script.Filters.Add(New VideoFilter("Source", "VapourSynth Import", File.ReadAllText(p.SourceFile), True))
+            ElseIf Not sourceFilter.Script.Contains("(") Then
+                For Each i In s.FilterPreferences
+                    Dim name = i.Name.SplitNoEmptyAndWhiteSpace({",", " "})
 
-                        If name.Contains(Filepath.GetExt(p.SourceFile)) Then
-                            Dim filters = s.AviSynthProfiles.Where(
+                    If name.Contains(Filepath.GetExt(p.SourceFile)) Then
+                        Dim filters = s.AviSynthProfiles.Where(
                                 Function(v) v.Name = "Source").First.Filters.Where(
                                 Function(v) v.Name = i.Value)
 
-                            If filters.Count > 0 Then
-                                p.Script.SetFilter("Source", filters(0).Name, filters(0).Script)
-                                Exit For
-                            End If
+                        If filters.Count > 0 Then
+                            p.Script.SetFilter("Source", filters(0).Name, filters(0).Script)
+                            Exit For
                         End If
-                    Next
+                    End If
+                Next
 
-                    If Not sourceFilter.Script.Contains("(") Then
-                        Dim def = s.FilterPreferences.Where(Function(v) v.Name = "default")
+                If Not sourceFilter.Script.Contains("(") Then
+                    Dim def = s.FilterPreferences.Where(Function(v) v.Name = "default")
 
-                        If def.Count > 0 Then
-                            Dim filters = s.AviSynthProfiles.Where(
+                    If def.Count > 0 Then
+                        Dim filters = s.AviSynthProfiles.Where(
                                 Function(v) v.Name = "Source").First.Filters.Where(
                                 Function(v) v.Name = def(0).Value)
 
-                            If filters.Count > 0 Then
-                                p.Script.SetFilter("Source", filters(0).Name, filters(0).Script)
+                        If filters.Count > 0 Then
+                            p.Script.SetFilter("Source", filters(0).Name, filters(0).Script)
+                        End If
+                    End If
+                End If
+
+                If Not sourceFilter.Script.Contains("(") Then
+                    Dim filter = FilterCategory.GetAviSynthDefaults.Where(Function(v) v.Name = "Source").First.Filters.Where(Function(v) v.Name = "FFVideoSource").First
+                    p.Script.SetFilter(filter.Category, filter.Name, filter.Script)
+                    Indexing()
+                End If
+
+                If Not sourceFilter.Script.Contains("Crop(") Then
+                    Dim sourceWidth = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Width").ToInt
+                    Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
+
+                    If sourceWidth Mod 4 <> 0 OrElse sourceHeight Mod 4 <> 0 Then
+                        p.Script.GetFilter("Source").Script += CrLf + "Crop(0, 0, -" & sourceWidth Mod 4 & ", -" & sourceHeight Mod 4 & ")"
+                    End If
+                End If
+
+                If Not sourceFilter.Script.Contains("ConvertToYV12") Then
+                    Dim ChromaSubsampling = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ChromaSubsampling")
+
+                    If ChromaSubsampling <> "4:2:0" Then
+                        Dim format = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format")
+                        Dim matrix As String
+
+                        If format = "RGB" Then
+                            Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
+
+                            If sourceHeight > 576 Then
+                                matrix = "matrix=""Rec709"""
+                            Else
+                                matrix = "matrix=""Rec601"""
                             End If
                         End If
-                    End If
 
-                    If Not sourceFilter.Script.Contains("(") Then
-                        Dim filter = FilterCategory.GetAviSynthDefaults.Where(Function(v) v.Name = "Source").First.Filters.Where(Function(v) v.Name = "FFVideoSource").First
-                        p.Script.SetFilter(filter.Category, filter.Name, filter.Script)
-                        Indexing()
-                    End If
-
-                    If Not sourceFilter.Script.Contains("Crop(") Then
-                        Dim sourceWidth = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Width").ToInt
-                        Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
-
-                        If sourceWidth Mod 4 <> 0 OrElse sourceHeight Mod 4 <> 0 Then
-                            p.Script.GetFilter("Source").Script += CrLf + "Crop(0, 0, -" & sourceWidth Mod 4 & ", -" & sourceHeight Mod 4 & ")"
-                        End If
-                    End If
-
-                    If Not sourceFilter.Script.Contains("ConvertToYV12") Then
-                        Dim ChromaSubsampling = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ChromaSubsampling")
-
-                        If ChromaSubsampling <> "4:2:0" Then
-                            Dim format = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format")
-                            Dim matrix As String
-
-                            If format = "RGB" Then
-                                Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
-
-                                If sourceHeight > 576 Then
-                                    matrix = "matrix=""Rec709"""
-                                Else
-                                    matrix = "matrix=""Rec601"""
-                                End If
-                            End If
-
-                            p.Script.GetFilter("Source").Script += CrLf + "ConvertToYV12(" + matrix + ")"
-                        End If
+                        p.Script.GetFilter("Source").Script += CrLf + "ConvertToYV12(" + matrix + ")"
                     End If
                 End If
             End If
@@ -2051,13 +2053,13 @@ Class MainForm
                 g.ShowDirectShowWarning()
 
                 Using td As New TaskDialog(Of DialogResult)
-                    td.Timeout = 60
-                    td.MainInstruction = "Failed to open source, try another method?"
+                    td.MainInstruction = "Failed to open source, try another source filter?"
                     td.Content = errorMsg
                     td.CommonButtons = TaskDialogButtons.OkCancel
 
                     If td.Show = DialogResult.OK Then
-                        TryAnotherFilter()
+                        p.Script.Filters(0) = ShowSourceFilterSelection(p.SourceFile)
+                        AviSynthListView.Load()
                     Else
                         p.Script.Synchronize()
                         Throw New AbortException
@@ -2134,8 +2136,8 @@ Class MainForm
 
             If Not p.BatchMode Then ProcessForm.CloseProcessForm()
 
-            g.RaiseApplicationEvent(ApplicationEvent.AfterSourceLoaded)
-            g.RaiseApplicationEvent(ApplicationEvent.ProjectOrSourceLoaded)
+            g.RaiseAppEvent(ApplicationEvent.AfterSourceLoaded)
+            g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
             Log.Save()
         Catch ex As AbortException
             Log.Save()
@@ -2148,50 +2150,6 @@ Class MainForm
         Catch ex As Exception
             g.OnException(ex)
         End Try
-    End Sub
-
-    Sub TryAnotherFilter(Optional recursive As Boolean = True)
-        If p.Script.GetFilter("Source").Script.ToLower.Contains("directshowsource") Then
-            Dim src = "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")" + CrLf +
-                          "Crop(0, 0, -Width % 4, -Height % 4)" + CrLf + "ConvertToYV12()"
-
-            p.Script.SetFilter("Source", "FFVideoSource", src)
-            Indexing()
-        Else
-            Dim fpsParam = ""
-            Dim fps = MediaInfo.GetFrameRate(p.SourceFile)
-
-            If fps <> 0.0! Then
-                fpsParam = ", convertfps=true, fps=" + fps.ToString(CultureInfo.InvariantCulture)
-            ElseIf MediaInfo.GetVideo(p.SourceFile, "Format") = "Screen Video" Then
-                fpsParam = ", convertfps=true, fps=10"
-            End If
-
-            Dim script = "DirectShowSource(""%source_file%"", audio=false" + fpsParam + ")" + CrLf + "ConvertToYV12()"
-            p.Script.SetFilter("Source", "DirectShow", script)
-        End If
-
-        AviSynthListView.Load()
-
-        Dim errorMsg = ""
-
-        Try
-            p.SourceScript.Synchronize()
-            errorMsg = p.SourceScript.GetErrorMessage
-        Catch ex As Exception
-            errorMsg = ex.Message
-        End Try
-
-        If errorMsg <> "" Then
-            g.ShowDirectShowWarning()
-
-            If recursive Then
-                TryAnotherFilter(False)
-            Else
-                MsgError(errorMsg)
-                Throw New AbortException
-            End If
-        End If
     End Sub
 
     Sub AutoResize()
@@ -2310,7 +2268,7 @@ Class MainForm
     Sub Encode()
         Try
             g.IsProcessing = True
-            g.RaiseApplicationEvent(ApplicationEvent.BeforeEncoding)
+            g.RaiseAppEvent(ApplicationEvent.BeforeEncoding)
             Dim startTime = DateTime.Now
 
             If p.BatchMode Then
@@ -2354,7 +2312,7 @@ Class MainForm
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
 
-            g.RaiseApplicationEvent(ApplicationEvent.JobEncoded)
+            g.RaiseAppEvent(ApplicationEvent.JobEncoded)
         Finally
             g.IsProcessing = False
         End Try
@@ -3189,7 +3147,7 @@ Class MainForm
     Sub OpenEventCommandsDialog()
         Using f As New EventCommandsEditor(s.EventCommands)
             If f.ShowDialog() = DialogResult.OK Then
-                s.EventCommands = f.lb.Items.OfType(Of EventCommand).ToList
+                s.EventCommands = f.clb.Items.OfType(Of EventCommand).ToList
             End If
         End Using
 
@@ -3621,8 +3579,8 @@ Class MainForm
         SaveSettings()
         RunJobRecursive()
         OpenProject(g.ProjectPath, False)
-        ProcessForm.CloseProcessForm(False)
-        g.RaiseApplicationEvent(ApplicationEvent.JobsEncoded)
+        ProcessForm.CloseProcessForm()
+        g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
         g.ShutdownPC()
     End Sub
 
@@ -4139,7 +4097,7 @@ Class MainForm
     Sub OpenAviSynthProfilesDialog()
         Using f As New ProfilesForm("AviSynth Profiles", s.FilterSetupProfiles,
                                     AddressOf LoadScriptProfile,
-                                    AddressOf GetAVSDocAsProfile,
+                                    AddressOf GetScriptAsProfile,
                                     AddressOf VideoScript.GetDefaults)
 
             If f.ShowDialog() = DialogResult.OK Then
@@ -4391,20 +4349,20 @@ Class MainForm
         ret.Add("Tools|Jobs...", "OpenJobsDialog", Keys.F6)
         ret.Add("Tools|Apps...", "OpenApplicationsDialog")
 
-        ret.Add("Tools|Log File", "ExecuteCmdl", """%text_editor%"" ""%working_dir%%target_name%_StaxRip.log""")
+        ret.Add("Tools|Log File", "ExecuteCommandLine", """%text_editor%"" ""%working_dir%%target_name%_StaxRip.log""")
 
-        ret.Add("Tools|Directories|Source", "ExecuteCmdl", """%source_dir%""")
-        ret.Add("Tools|Directories|Working", "ExecuteCmdl", """%working_dir%""")
-        ret.Add("Tools|Directories|Target", "ExecuteCmdl", """%target_dir%""")
-        ret.Add("Tools|Directories|Settings", "ExecuteCmdl", """%settings_dir%""")
-        ret.Add("Tools|Directories|Templates", "ExecuteCmdl", """%settings_dir%Templates""")
-        ret.Add("Tools|Directories|Plugins", "ExecuteCmdl", """%plugin_dir%""")
-        ret.Add("Tools|Directories|Startup", "ExecuteCmdl", """%startup_dir%""")
-        ret.Add("Tools|Directories|Programs", "ExecuteCmdl", """%programs_dir%""")
-        ret.Add("Tools|Directories|System", "ExecuteCmdl", """%system_dir%""")
+        ret.Add("Tools|Directories|Source", "ExecuteCommandLine", """%source_dir%""")
+        ret.Add("Tools|Directories|Working", "ExecuteCommandLine", """%working_dir%""")
+        ret.Add("Tools|Directories|Target", "ExecuteCommandLine", """%target_dir%""")
+        ret.Add("Tools|Directories|Settings", "ExecuteCommandLine", """%settings_dir%""")
+        ret.Add("Tools|Directories|Templates", "ExecuteCommandLine", """%settings_dir%Templates""")
+        ret.Add("Tools|Directories|Plugins", "ExecuteCommandLine", """%plugin_dir%""")
+        ret.Add("Tools|Directories|Startup", "ExecuteCommandLine", """%startup_dir%""")
+        ret.Add("Tools|Directories|Programs", "ExecuteCommandLine", """%programs_dir%""")
+        ret.Add("Tools|Directories|System", "ExecuteCommandLine", """%system_dir%""")
         ret.Add("Tools|Launch", "DynamicMenuItem", DynamicMenuItemID.LaunchApplications)
 
-        ret.Add("Tools|Advanced|AVSMeter...", "ExecuteCmdl", """%app:AVSMeter%"" ""%script_file%""" + CrLf + "pause", False, False, True)
+        ret.Add("Tools|Advanced|AVSMeter...", "ExecuteCommandLine", """%app:AVSMeter%"" ""%script_file%""" + CrLf + "pause", False, False, True)
         ret.Add("Tools|Advanced|Video Comparison...", "ShowVideoComparison")
         ret.Add("Tools|Advanced|Command Prompt...", "ShowCommandPrompt")
         ret.Add("Tools|Advanced|Event Commands...", "OpenEventCommandsDialog")
@@ -4417,13 +4375,13 @@ Class MainForm
         ret.Add("Tools|Edit Menu...", "OpenMainMenuEditor")
         ret.Add("Tools|Settings...", "OpenSettingsDialog", "")
 
-        ret.Add("Help|Support Forum", "ExecuteCmdl", GetSupportThread)
-        ret.Add("Help|Guides", "ExecuteCmdl", "http://github.com/stax76/staxrip/wiki/Guides")
+        ret.Add("Help|Support Forum", "ExecuteCommandLine", GetSupportThread)
+        ret.Add("Help|Guides", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki/Guides")
         ret.Add("Help|Bug Report", "MakeBugReport")
-        ret.Add("Help|Mail", "ExecuteCmdl", "mailto:frank_skare@yahoo.de?subject=StaxRip%20feedback")
-        ret.Add("Help|Website", "ExecuteCmdl", "http://github.com/stax76/staxrip")
-        ret.Add("Help|Donate", "ExecuteCmdl", Strings.DonationsURL)
-        ret.Add("Help|Changelog", "OpenHelpTopic", "changelog")
+        ret.Add("Help|Mail", "ExecuteCommandLine", "mailto:frank_skare@yahoo.de?subject=StaxRip%20feedback")
+        ret.Add("Help|Website", "ExecuteCommandLine", "https://github.com/stax76/staxrip")
+        ret.Add("Help|Donate", "ExecuteCommandLine", Strings.DonationsURL)
+        ret.Add("Help|Changelog", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki/Changelog")
         ret.Add("Help|Command Line", "OpenCmdlHelp")
         ret.Add("Help|Apps", "DynamicMenuItem", DynamicMenuItemID.HelpApplications)
         ret.Add("Help|-")
@@ -4732,7 +4690,7 @@ Class MainForm
         Next
     End Sub
 
-    Private Function GetAVSDocAsProfile() As Profile
+    Private Function GetScriptAsProfile() As Profile
         Dim sb As New SelectionBox(Of TargetVideoScript)
 
         sb.Title = "New Profile"
@@ -4744,11 +4702,7 @@ Class MainForm
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then
-            Return sb.SelectedItem
-        End If
-
-        Return Nothing
+        If sb.Show = DialogResult.OK Then Return sb.SelectedItem
     End Function
 
     Function GetTargetAviSynthDocument() As VideoScript
@@ -5472,7 +5426,7 @@ Class MainForm
 
         Hide()
         SaveSettings()
-        g.RaiseApplicationEvent(ApplicationEvent.ApplicationExit)
+        g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
     End Sub
 
     Sub SaveSettings()

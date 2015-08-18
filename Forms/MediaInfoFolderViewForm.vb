@@ -96,7 +96,7 @@ Public Class MediaInfoFolderViewForm
         Dim pathFunc = Function() folder + lv.SelectedItems(0).Text
 
         cms.Add("Show Media Info", AddressOf ShowMediaInfo, Keys.None, enabledFunc)
-        cms.Add("Show in windows explorer", Sub() g.OpenDirAndSelectFile(pathFunc(), Handle), Keys.None, enabledFunc)
+        cms.Add("Show in File Explorer", Sub() g.OpenDirAndSelectFile(pathFunc(), Handle), Keys.None, enabledFunc)
         cms.Add("Play", Sub() g.Play(pathFunc()), Keys.None, enabledFunc)
         cms.Add("Copy path to clipboard", Sub() Clipboard.SetText(pathFunc()), Keys.None, enabledFunc)
         cms.Add("Open with StaxRip", Sub() g.MainForm.OpenVideoSourceFile(pathFunc()), Keys.None, enabledFunc)

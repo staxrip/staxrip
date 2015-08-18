@@ -223,7 +223,7 @@ Public Class Proc
                 If TrowException Then Throw New AbortException
 
                 If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCodeValue) Then
-                    Dim errorText = Header + " failed with exit code " &
+                    Dim errorText = Header + " failed with error code " &
                         ExitCodeValue & CrLf2 + ProcessForm.CommandLineLog.ToString() + CrLf
 
                     ProcessForm.ClearCommandLineOutput()

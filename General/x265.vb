@@ -566,8 +566,7 @@ Namespace x265
             .Switch = "--output-depth",
             .Text = "Depth:",
             .Options = {"8", "10"},
-            .Values = {"8", "10"},
-            .Value = 1}
+            .Values = {"8", "10"}}
 
         Property Level As New OptionParam With {
             .Switch = "--level-idc",

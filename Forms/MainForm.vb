@@ -1563,6 +1563,11 @@ Class MainForm
     End Sub
 
     Function ShowSourceFilterSelection(inputFile As String) As VideoFilter
+        Select Case inputFile.Ext
+            Case "dgi"
+                Return New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")", True)
+        End Select
+
         Dim ret As VideoFilter
 
         Dim td As New TaskDialog(Of String)
@@ -5857,13 +5862,25 @@ Class MainForm
         m.Items.Add(New ActionMenuItem("Play audio", Sub() PlayAudio(ap), "Plays the audio source file with MPC.", exist))
         m.Items.Add(New ActionMenuItem("Play audio and video", Sub() g.PlayScript(p.Script, ap), "Plays the audio source file together with the AviSynth script.", exist))
         m.Items.Add(New ActionMenuItem("MediaInfo", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), "Show MediaInfo for the audio source file.", exist))
-        m.Items.Add(New ActionMenuItem("Explore", Sub() g.OpenDirAndSelectFile(ap.File, Handle), "Open the audio source file directory with Windows Explorer.", exist))
+        m.Items.Add(New ActionMenuItem("Explore", Sub() g.OpenDirAndSelectFile(ap.File, Handle), "Open the audio source file directory with File Explorer.", exist))
+        m.Items.Add(New ActionMenuItem("Execute", Sub() ExecuteAudio(ap), "Processes the audio profile.", exist))
         m.Items.Add("-")
         m.Items.Add(New ActionMenuItem("Copy Path", Sub() Clipboard.SetText(ap.File), Nothing, tb.Text <> ""))
         m.Items.Add(New ActionMenuItem("Copy Selection", Sub() tb.Copy(), Nothing, tb.Text <> ""))
         m.Items.Add(New ActionMenuItem("Paste", Sub() tb.Paste(), Nothing, Clipboard.GetText.Trim <> ""))
         m.Items.Add("-")
         m.Items.Add(New ActionMenuItem("Clear", Sub() tb.Text = "", "Remove audio file", tb.Text <> ""))
+    End Sub
+
+    Sub ExecuteAudio(ap As AudioProfile)
+        Try
+            If p.TempDir = "" Then p.TempDir = Filepath.GetDir(ap.File)
+            ap = ObjectHelp.GetCopy(Of AudioProfile)(ap)
+            Audio.Process(ap)
+            ap.Encode()
+        Finally
+            ProcessForm.CloseProcessForm()
+        End Try
     End Sub
 
     Sub PlayAudio(ap As AudioProfile)
@@ -5875,7 +5892,7 @@ Class MainForm
         TargetFileMenu.Items.Add(New ActionMenuItem("Edit...", AddressOf tbTargetPath_DoubleClick, "Change the path of the target file."))
         TargetFileMenu.Items.Add(New ActionMenuItem("Play...", Sub() g.Play(p.TargetFile), "Play the target file.", File.Exists(p.TargetFile)))
         TargetFileMenu.Items.Add(New ActionMenuItem("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), "Show MediaInfo for the target file.", File.Exists(p.TargetFile)))
-        TargetFileMenu.Items.Add(New ActionMenuItem("Explore...", Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle), "Open the target file directory with Windows Explorer.", Directory.Exists(Filepath.GetDir(p.TargetFile))))
+        TargetFileMenu.Items.Add(New ActionMenuItem("Explore...", Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle), "Open the target file directory with File Explorer.", Directory.Exists(Filepath.GetDir(p.TargetFile))))
         TargetFileMenu.Items.Add("-")
         TargetFileMenu.Items.Add(New ActionMenuItem("Copy", Sub() tbTargetFile.Copy(), "", tbTargetFile.Text <> ""))
         TargetFileMenu.Items.Add(New ActionMenuItem("Paste", Sub() tbTargetFile.Paste(), "", Clipboard.GetText.Trim <> ""))
@@ -5888,7 +5905,7 @@ Class MainForm
         SourceFileMenu.Items.Add(New ActionMenuItem("Open...", AddressOf OpenSourceFiles, "Open source files"))
         SourceFileMenu.Items.Add(New ActionMenuItem("Play...", Sub() g.Play(p.SourceFile), "Play the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex))
         SourceFileMenu.Items.Add(New ActionMenuItem("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.SourceFile), "Show MediaInfo for the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex))
-        SourceFileMenu.Items.Add(New ActionMenuItem("Explore...", Sub() g.OpenDirAndSelectFile(p.SourceFile, Handle), "Open the source file directory with Windows Explorer.", File.Exists(p.SourceFile)))
+        SourceFileMenu.Items.Add(New ActionMenuItem("Explore...", Sub() g.OpenDirAndSelectFile(p.SourceFile, Handle), "Open the source file directory with File Explorer.", File.Exists(p.SourceFile)))
         SourceFileMenu.Items.Add("-")
         SourceFileMenu.Items.Add(New ActionMenuItem("Copy", Sub() tbSourceFile.Copy(), "Copies the selected text to the clipboard.", tbSourceFile.Text <> ""))
         SourceFileMenu.Items.Add(New ActionMenuItem("Paste", Sub() tbSourceFile.Paste(), "Copies the full source file path to the clipboard.", Clipboard.GetText.Trim <> ""))

@@ -593,7 +593,7 @@ Public Class eac3toForm
 
             If o.ExitCode <> 0 Then
                 Invoke(Sub()
-                           MsgError("eac3to failed with exit code " & o.ExitCode, Output)
+                           MsgError("eac3to failed with error code " & o.ExitCode, Output)
                            bnCancel.PerformClick()
                        End Sub)
             Else

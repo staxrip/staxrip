@@ -97,17 +97,24 @@ Namespace UI
             Dim workingArea = Screen.FromControl(Me).WorkingArea
             Dim newPos = DirectCast(Marshal.PtrToStructure(handle, GetType(WindowPos)), WindowPos)
             Dim snapMargin = CInt(Control.DefaultFont.Height * 1.5)
+            Dim border As Integer
+
+            Dim os = Environment.OSVersion
+
+            If (os.Version.Major = 6 AndAlso os.Version.Minor >= 2) OrElse os.Version.Major > 6 Then
+                border = (Width - ClientSize.Width) \ 2 - 1
+            End If
 
             If Math.Abs(newPos.Y - workingArea.Y) < snapMargin Then
                 newPos.Y = workingArea.Y
-            ElseIf Math.Abs(newPos.Y + Height - workingArea.Bottom) < snapMargin Then
-                newPos.Y = workingArea.Bottom - Height
+            ElseIf Math.Abs(newPos.Y + Height - (workingArea.Bottom + border)) < snapMargin Then
+                newPos.Y = (workingArea.Bottom + border) - Height
             End If
 
-            If Math.Abs(newPos.X - workingArea.X) < snapMargin Then
-                newPos.X = workingArea.X
-            ElseIf Math.Abs(newPos.X + Width - workingArea.Right) < snapMargin Then
-                newPos.X = workingArea.Right - Width
+            If Math.Abs(newPos.X - (workingArea.X - border)) < snapMargin Then
+                newPos.X = workingArea.X - border
+            ElseIf Math.Abs(newPos.X + Width - (workingArea.Right + border)) < snapMargin Then
+                newPos.X = (workingArea.Right + border) - Width
             End If
 
             Marshal.StructureToPtr(newPos, handle, True)

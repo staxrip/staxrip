@@ -141,7 +141,10 @@ Public Class CommandLineDemuxer
 
     Overrides Sub Run()
         Using proc As New Proc
-            If Command?.Contains("DGIndex") Then
+            If Command?.Contains("DGIndexNV") Then
+                If Not Packs.DGIndexNV.VerifyOK(True) Then Throw New AbortException
+                proc.SkipPatterns = {"^\d+$"}
+            ElseIf Command?.Contains("DGIndex")
                 proc.SkipPatterns = {"^\d+$"}
             ElseIf Command?.Contains("dsmux")
                 If Not Packs.Haali.VerifyOK(True) Then Throw New AbortException

@@ -1566,6 +1566,8 @@ Class MainForm
         Select Case inputFile.Ext
             Case "dgi"
                 Return New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")", True)
+            Case "dgim"
+                Return New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")", True)
         End Select
 
         Dim ret As VideoFilter
@@ -1580,8 +1582,8 @@ Class MainForm
         End If
 
         If FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then
-            If Packs.DGDecodeNV.GetPath <> "" Then td.AddCommandLink("DGSource using AviSynth+", "DGSource")
-            If Packs.DGDecodeIM.GetPath <> "" Then td.AddCommandLink("DGSourceIM using AviSynth+", "DGSourceIM")
+            td.AddCommandLink("DGSource using AviSynth+", "DGSource")
+            td.AddCommandLink("DGSourceIM using AviSynth+", "DGSourceIM")
         End If
 
         td.AddCommandLink("FFVideoSource using AviSynth+", "FFVideoSource")
@@ -1862,10 +1864,6 @@ Class MainForm
 
             Demux()
 
-            If Filepath.GetExt(p.SourceFile) = "dgi" AndAlso Not Packs.DGDecodeNV.VerifyOK(True) Then
-                Throw New AbortException
-            End If
-
             If p.LastOriginalSourceFile <> p.SourceFile AndAlso
                 Not FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) Then
 
@@ -1952,6 +1950,11 @@ Class MainForm
             End If
 
             AviSynthListView.Load()
+
+            If Not Packs.DGDecodeNV.VerifyOK() OrElse Not Packs.DGDecodeIM.VerifyOK() Then
+                Throw New AbortException
+            End If
+
             RenameDVDTracks()
 
             If FileTypes.AudioVideo.Contains(Filepath.GetExt(p.LastOriginalSourceFile)) Then
@@ -5529,6 +5532,9 @@ Class MainForm
 
     Private Sub AviSynthListView_ScriptChanged() Handles AviSynthListView.ScriptChanged
         If Not IsLoading Then
+            Packs.DGDecodeNV.VerifyOK()
+            Packs.DGDecodeIM.VerifyOK()
+
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
                 SetTargetLength(p.Script.GetSeconds)

@@ -250,8 +250,12 @@ MustInherit Class VideoEncoder
         nv265.Params.Codec.Value = 1
         ret.Add(nv265)
 
-        Dim quickSync As New IntelEncoder("Intel H.264")
-        ret.Add(quickSync)
+        Dim qs264 As New IntelEncoder("Intel H.264")
+        ret.Add(qs264)
+
+        Dim qs265 As New IntelEncoder("Intel H.265")
+        qs265.Params.Codec.Value = 1
+        ret.Add(qs265)
 
         Dim vp9ffmpeg = New ffmpegEncoder()
         vp9ffmpeg.Name = "VP9"
@@ -973,8 +977,7 @@ Class NvidiaEncoder
             .Switch = "--codec",
             .Text = "Codec:",
             .Options = {"H264/AVC", "H265/HEVC"},
-            .Values = {"h264", "h265"},
-            .DefaultValue = -1}
+            .Values = {"h264", "h265"}}
 
         Property Mode As New OptionParam With {
             .Name = "Mode",
@@ -1183,7 +1186,8 @@ Class IntelEncoder
 
     Overrides ReadOnly Property OutputFileType() As String
         Get
-            Return "h264"
+            If Params.Codec.ValueText = "mpeg2" Then Return "m2v"
+            Return Params.Codec.ValueText
         End Get
     End Property
 
@@ -1256,6 +1260,12 @@ Class IntelEncoder
         Sub New()
             Title = "Intel Encoding Options"
         End Sub
+
+        Property Codec As New OptionParam With {
+            .Switch = "--codec",
+            .Text = "Codec:",
+            .Options = {"H264/AVC", "H265/HEVC", "MPEG-2"},
+            .Values = {"h264", "hevc", "mpeg2"}}
 
         Property Mode As New OptionParam With {
             .Name = "Mode",
@@ -1375,12 +1385,27 @@ Class IntelEncoder
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineItem)
-                    ItemsValue.AddRange({Mode, QualitySpeed, Deinterlace, Quality, QPI, QPP, QPB, BFrames, Ref, GOPLength, LookaheadDepth, TFF, BFF, HardwareDecoding, Scenechange, MBBRC, Custom})
+
+                    Add("Basic", Codec, QualitySpeed, Mode, Quality, QPI, QPP, QPB, BFrames, Ref, GOPLength, LookaheadDepth, HardwareDecoding, Scenechange, MBBRC, Custom)
+                    Add("Deinterlace", Deinterlace, TFF, BFF)
                 End If
 
                 Return ItemsValue
             End Get
         End Property
+
+        Private AddedList As New List(Of String)
+
+        Private Sub Add(path As String, ParamArray items As CommandLineItem())
+            For Each i In items
+                i.Path = path
+                ItemsValue.Add(i)
+
+                If i.GetKey = "" OrElse AddedList.Contains(i.GetKey) Then
+                    Throw New Exception
+                End If
+            Next
+        End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineItem)
             If item Is Deinterlace Then

@@ -49,7 +49,7 @@ Class ApplicationSettings
     Public WindowPositions As WindowPositions
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
-    Public WindowStatePreview As FormWindowState
+    Public PreviewFormBorderStyle As FormBorderStyle
 
     Public DeleteTempFilesToRecycleBin As Boolean = True
 
@@ -217,7 +217,7 @@ Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 128) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 129) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 

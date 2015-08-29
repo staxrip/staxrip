@@ -144,6 +144,9 @@ Public Class CommandLineDemuxer
             If Command?.Contains("DGIndexNV") Then
                 If Not Packs.DGIndexNV.VerifyOK(True) Then Throw New AbortException
                 proc.SkipPatterns = {"^\d+$"}
+            ElseIf Command?.Contains("DGIndexIM")
+                If Not Packs.DGIndexIM.VerifyOK(True) Then Throw New AbortException
+                proc.SkipPatterns = {"^\d+$"}
             ElseIf Command?.Contains("DGIndex")
                 proc.SkipPatterns = {"^\d+$"}
             ElseIf Command?.Contains("dsmux")

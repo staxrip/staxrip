@@ -306,11 +306,10 @@ Class PreviewForm
 
         Me.AviSynthDocument = aviSynthDocument
 
-        RefreshScript()
+        NormalRectangle.Size = Size
+        NormalRectangle.Location = Location
 
-        If WindowState <> s.WindowStatePreview Then
-            SwitchWindowState()
-        End If
+        RefreshScript()
 
         ShowButtons(Not s.HidePreviewButtons)
     End Sub
@@ -321,10 +320,10 @@ Class PreviewForm
         AVI = New AVIFile(AviSynthDocument.Path)
         Drawer = New VideoDrawer(pVideo, AVI)
 
-        If WindowState = FormWindowState.Normal Then
-            Normal()
+        If FormBorderStyle = FormBorderStyle.None Then
+            Fullscreen()
         Else
-            Full()
+            NormalScreen()
         End If
 
         If s.LastPosition < (AVI.FrameCount - 1) Then
@@ -332,15 +331,28 @@ Class PreviewForm
         End If
 
         Drawer.Draw()
-
         AfterPositionChanged()
     End Sub
 
-    Private Sub Full()
+    Public NormalRectangle As Rectangle
+
+    Private Sub Fullscreen()
         pTrack.Visible = False
 
-        FormBorderStyle = Windows.Forms.FormBorderStyle.None
-        WindowState = FormWindowState.Maximized
+        NormalRectangle.Size = Size
+        NormalRectangle.Location = Location
+
+        FormBorderStyle = FormBorderStyle.None
+
+        Const SWP_NOZORDER = &H4UI
+        Const SWP_NOSENDCHANGING = &H400UI
+
+        Dim screenBounds = Screen.FromControl(Me).Bounds
+
+        Native.SetWindowPos(Handle, IntPtr.Zero,
+                            screenBounds.X, screenBounds.Y,
+                            screenBounds.Width, screenBounds.Height,
+                            SWP_NOZORDER Or SWP_NOSENDCHANGING)
 
         Dim ratio As Double
 
@@ -371,36 +383,51 @@ Class PreviewForm
         pTrack.Visible = True
     End Sub
 
-    Private Sub Normal()
-        WindowState = FormWindowState.Normal
-        FormBorderStyle = Windows.Forms.FormBorderStyle.FixedDialog
-        pVideo.Dock = DockStyle.Fill
+    Private Sub NormalScreen()
+        FormBorderStyle = FormBorderStyle.FixedDialog
 
-        Dim w = AVI.FrameSize.Width, h = AVI.FrameSize.Height
-        Dim newSize As Size
-        Dim b = Screen.FromControl(Me).WorkingArea
+        Const SWP_NOZORDER = &H4UI
+        Const SWP_NOSENDCHANGING = &H400UI
+
+        If NormalRectangle.Location <> Point.Empty Then
+            Native.SetWindowPos(Handle, IntPtr.Zero,
+                                NormalRectangle.X, NormalRectangle.Y,
+                                NormalRectangle.Width, NormalRectangle.Height,
+                                SWP_NOZORDER Or SWP_NOSENDCHANGING)
+        End If
+
+
+        pVideo.Dock = DockStyle.Fill
+        ClientSize = GetNormalSize()
+    End Sub
+
+    Function GetNormalSize() As Size
+        Dim ret As Size
+        Dim frameWidth = AVI.FrameSize.Width
+        Dim frameHeight = AVI.FrameSize.Height
+        Dim workingArea = Screen.FromControl(Me).WorkingArea
 
         If Calc.IsARSignalingRequired Then
-            newSize = New Size(CInt(h * SizeFactor * Calc.GetTargetDAR), CInt(h * SizeFactor))
+            ret = New Size(CInt(frameHeight * SizeFactor * Calc.GetTargetDAR), CInt(frameHeight * SizeFactor))
         Else
-            newSize = New Size(CInt(w * SizeFactor), CInt(h * SizeFactor))
+            ret = New Size(CInt(frameWidth * SizeFactor), CInt(frameHeight * SizeFactor))
         End If
 
-        If newSize.Width > b.Width * 0.8 Then
-            Dim w2 = CInt(b.Width * 0.8)
-            newSize.Height = CInt(w2 * newSize.Height / newSize.Width)
-            newSize.Width = w2
+        If ret.Width > workingArea.Width * 0.8 Then
+            Dim w = CInt(workingArea.Width * 0.8)
+            ret.Height = CInt(w * ret.Height / ret.Width)
+            ret.Width = w
         End If
 
-        ClientSize = newSize
-    End Sub
+        Return ret
+    End Function
 
     <Command("Perform | Switch Window State", "Switches the window state between full and normal.")>
     Sub SwitchWindowState()
-        If WindowState = FormWindowState.Normal Then
-            Full()
+        If FormBorderStyle = FormBorderStyle.None Then
+            NormalScreen()
         Else
-            Normal()
+            Fullscreen()
         End If
 
         AfterPositionChanged()
@@ -767,7 +794,7 @@ Class PreviewForm
     <Command("Parameter | Change Size", "Changes the size.")>
     Sub Zoom(<DispName("Factor")> factor As Single)
         SizeFactor += factor
-        Normal()
+        NormalScreen()
 
         Left = (Screen.FromControl(Me).WorkingArea.Width - Width) \ 2
         Top = (Screen.FromControl(Me).WorkingArea.Height - Height) \ 2
@@ -981,17 +1008,21 @@ Class PreviewForm
         Drawer.ShowInfos = s.PreviewToggleInfos
         Drawer.Draw()
 
-        If WindowState = FormWindowState.Normal Then
-            Normal()
+        If s.PreviewFormBorderStyle = FormBorderStyle.None Then
+            Fullscreen()
+            Dim screenBounds = Screen.FromControl(Me).Bounds
+            Dim normalSize = GetNormalSize()
+            NormalRectangle.Location = New Point((screenBounds.Width - normalSize.Width) \ 2,
+                                                 (screenBounds.Height - normalSize.Height) \ 2)
         Else
-            Full()
+            NormalScreen()
         End If
     End Sub
 
     Private Sub PreviewForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         Instances.Remove(Me)
         s.LastPosition = AVI.Position
-        s.WindowStatePreview = WindowState
+        s.PreviewFormBorderStyle = FormBorderStyle
         AVI.Dispose()
         UpdateTrim()
         g.MainForm.UpdateFilters()

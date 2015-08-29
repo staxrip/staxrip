@@ -321,6 +321,16 @@ Public Class Native
 #Region "Function"
 
 #Region "user32.dll"
+    <DllImport("user32.dll", SetLastError:=True)>
+    Shared Function SetWindowPos(hWnd As IntPtr,
+                                 hWndInsertAfter As IntPtr,
+                                 X As Integer,
+                                 Y As Integer,
+                                 cx As Integer,
+                                 cy As Integer,
+                                 uFlags As UInteger) As Boolean
+    End Function
+
     <DllImport("user32")>
     Shared Function GetWindowLong(hWnd As IntPtr, nIndex As Integer) As Integer
     End Function

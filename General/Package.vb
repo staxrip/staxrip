@@ -891,7 +891,7 @@ Public Class DGDecodeNVPackage
 
     Overrides ReadOnly Property IsRequired As Boolean
         Get
-            Return CommandLineDemuxer.IsActive("DGIndexNV")
+            Return p.Script.Filters(0).Script.Contains("DGSource(")
         End Get
     End Property
 End Class
@@ -936,7 +936,7 @@ Public Class DGDecodeIMPackage
 
     Overrides ReadOnly Property IsRequired As Boolean
         Get
-            Return CommandLineDemuxer.IsActive("DGIndexIM")
+            Return p.Script.Filters(0).Script.Contains("DGSourceIM(")
         End Get
     End Property
 End Class

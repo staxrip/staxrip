@@ -133,7 +133,12 @@ Class VideoScript
             If Frames = 240 OrElse current <> LastSync Then
                 If Directory.Exists(Filepath.GetDir(Path)) Then
                     script = ModifyScript(script, Engine)
-                    script.WriteFile(Path)
+
+                    If Engine = ScriptingEngine.VapourSynth Then
+                        script.WriteFile(Path, New UTF8Encoding(False))
+                    Else
+                        script.WriteFile(Path)
+                    End If
 
                     If g.MainForm.Visible Then
                         g.MainForm.Indexing()
@@ -501,7 +506,6 @@ Public Class FilterCategory
         field.Filters.Add(New VideoFilter(field.Name, "TDeint", "TDeint()", True))
         field.Filters.Add(New VideoFilter(field.Name, "FieldDeinterlace", "FieldDeinterlace()", True))
         field.Filters.Add(New VideoFilter(field.Name, "SangNom2", "SangNom2()", True))
-        field.Filters.Add(New VideoFilter(field.Name, "nnedi3", "nnedi3()", True))
         field.Filters.Add(New VideoFilter(field.Name, "vinverse2", "vinverse2()", True))
         ret.Add(field)
 

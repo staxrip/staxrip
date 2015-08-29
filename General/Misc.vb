@@ -1198,8 +1198,7 @@ Public Class Log
             "OS: " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + CrLf +
             "Language: " + CultureInfo.CurrentCulture.EnglishName + CrLf +
             "CPU: " + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + CrLf +
-            "GPU: " + String.Join(", ", videoControllerCaptions) + CrLf +
-            "LAV Filters: " + Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\lavfilters_is1", "DisplayName")
+            "GPU: " + String.Join(", ", videoControllerCaptions)
 
         WriteLine(temp.FormatColumn(":"))
     End Sub

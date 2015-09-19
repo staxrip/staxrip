@@ -22,6 +22,12 @@ Namespace CommandLine
         End Sub
 
         Protected Overridable Sub OnValueChanged(item As CommandLineItem)
+            For Each i In Items
+                If Not i.VisibleFunc Is Nothing Then
+                    i.Visible = i.Visible
+                End If
+            Next
+
             RaiseEvent ValueChanged(item)
         End Sub
     End Class
@@ -34,6 +40,7 @@ Namespace CommandLine
         Property Path As String
         Property NoSwitch As String
         Property ArgsFunc As Func(Of String)
+        Property VisibleFunc As Func(Of Boolean)
         Property LabelMargin As Padding
         Property Switch As String
         Property AlwaysOn As Boolean
@@ -51,6 +58,7 @@ Namespace CommandLine
 
         Property Visible As Boolean
             Get
+                If Not VisibleFunc Is Nothing Then Return VisibleFunc.Invoke
                 Return VisibleValue
             End Get
             Set(value As Boolean)
@@ -151,8 +159,8 @@ Namespace CommandLine
     Class NumParam
         Inherits CommandLineItem
 
-        Property DefaultValue As Single
         Property NumEdit As NumEdit
+        Property DefaultValue As Single
 
         Private MinMaxStepDecValue As Decimal()
 
@@ -243,11 +251,12 @@ Namespace CommandLine
     Class OptionParam
         Inherits CommandLineItem
 
-        Property DefaultValue As Integer
         Property Options As String()
         Property Values As String()
         Property Expand As Boolean
         Property MenuButton As MenuButton
+        Property ValueIsName As Boolean
+        Property DefaultValue As Integer
 
         Overloads Sub Init(mb As MenuButton)
             MenuButton = mb
@@ -257,6 +266,16 @@ Namespace CommandLine
                                                 RemoveHandler MenuButton.ValueChangedUser, AddressOf ValueChangedUser
                                                 MenuButton = Nothing
                                             End Sub
+        End Sub
+
+        Sub HideOptions(visible As Boolean, ParamArray values As Integer())
+            If Not MenuButton Is Nothing Then
+                For Each i In MenuButton.Menu.Items.OfType(Of ToolStripMenuItem)
+                    For Each i2 In values
+                        If i2.Equals(i.Tag) Then i.Visible = visible
+                    Next
+                Next
+            End If
         End Sub
 
         Public Overloads Overrides Sub Init(store As PrimitiveStore, params As CommandLineParams)
@@ -293,14 +312,8 @@ Namespace CommandLine
             End Get
             Set(value As Integer)
                 ValueValue = value
-
-                If Not Store Is Nothing Then
-                    Store.Int(GetKey) = value
-                End If
-
-                If Not MenuButton Is Nothing Then
-                    MenuButton.Value = ValueValue
-                End If
+                If Not Store Is Nothing Then Store.Int(GetKey) = value
+                If Not MenuButton Is Nothing Then MenuButton.Value = ValueValue
             End Set
         End Property
 
@@ -312,7 +325,11 @@ Namespace CommandLine
                     If Not Values Is Nothing Then
                         Return Switch + " " & Values(Value)
                     Else
-                        Return Switch + " " & Value
+                        If ValueIsName Then
+                            Return Switch + " " & Options(Value)
+                        Else
+                            Return Switch + " " & Value
+                        End If
                     End If
                 End If
             Else

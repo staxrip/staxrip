@@ -158,10 +158,7 @@ Namespace UI
 
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
             MyBase.OnHandleCreated(e)
-
-            If Environment.OSVersion.Version.Major >= 6 Then
-                Native.SetWindowTheme(Handle, "explorer", Nothing)
-            End If
+            Native.SetWindowTheme(Handle, "explorer", Nothing)
         End Sub
 
         Function AddNode(path As String) As TreeNode
@@ -946,9 +943,7 @@ Namespace UI
                 End If
 
                 For Each i In Menu.Items.OfType(Of ActionMenuItem)()
-                    If value.Equals(i.Tag) Then
-                        Text = i.Text
-                    End If
+                    If value.Equals(i.Tag) Then Text = i.Text
                 Next
 
                 If Text = "" AndAlso Not value Is Nothing Then

@@ -146,65 +146,20 @@ Public Class MediaInfoForm
         AddHandler stb.TextChanged, Sub() If tv.SelectedNode Is tv.Nodes(1) Then UpdateItems() Else tv.SelectedNode = tv.Nodes(1)
     End Sub
 
-    Function IsBasic(name As String) As Boolean
-        Select Case name
-            Case "Audio_Codec_List"
-            Case "Audio_Language_List"
-            Case "BitRate/String"
-            Case "BitRate_Mode"
-            Case "Channel(s)/String"
-            Case "Codec/String"
-            Case "Compression_Mode"
-            Case "Default"
-            Case "DisplayAspectRatio/String"
-            Case "Duration/String1"
-            Case "Encoded_Application"
-            Case "Encoded_Date"
-            Case "Encoded_Library"
-            Case "File_Created_Date_Local"
-            Case "File_Modified_Date_Local"
-            Case "FileSize/String4"
-            Case "Forced"
-            Case "Format_Profile"
-            Case "FrameCount"
-            Case "FrameRate/String"
-            Case "Height/String"
-            Case "ID"
-            Case "Language/String"
-            Case "OverallBitRate/String"
-            Case "PixelAspectRatio"
-            Case "Resolution/String"
-            Case "SamplingRate/String"
-            Case "ScanType"
-            Case "Source_Delay"
-            Case "StreamSize/String"
-            Case "Text_Format_List"
-            Case "Text_Language_List"
-            Case "Title"
-            Case "Video_Delay"
-            Case "Width/String"
-            Case Else
-                Return False
-        End Select
-
-        Return True
-    End Function
-
     Sub UpdateItems()
         Dim newText As New StringBuilder
 
         Dim items As IEnumerable(Of Item)
 
         If ActiveGroup = "Advanced" Then
-            items = Me.Items
+            items = Me.Items.Where(Function(i) i.IsComplete)
         ElseIf ActiveGroup = "Basic" Then
-            items = Me.Items.Where(Function(i) IsBasic(i.Name))
+            items = Me.Items.Where(Function(i) Not i.IsComplete)
         Else
-            items = Me.Items.Where(Function(i) IsBasic(i.Name) AndAlso i.Group = ActiveGroup)
             Dim l As New List(Of Item)
-            l.AddRange(items)
+            l.AddRange(Me.Items.Where(Function(i) Not i.IsComplete AndAlso i.Group = ActiveGroup))
             l.Add(New Item With {.Name = "", .Value = "", .Group = ActiveGroup})
-            l.AddRange(Me.Items.Where(Function(i) i.Group = ActiveGroup))
+            l.AddRange(Me.Items.Where(Function(i) i.IsComplete AndAlso i.Group = ActiveGroup))
             items = l
         End If
 
@@ -286,17 +241,38 @@ Public Class MediaInfoForm
         Property Name As String
         Property Value As String
         Property Group As String
+        Property IsComplete As Boolean
     End Class
 
     Sub Parse()
         tv.Nodes.Clear()
         Items.Clear()
 
-        Dim output = MediaInfo.GetFullSummary(SourcePath)
+        Dim output = MediaInfo.GetCompleteSummary(SourcePath)
         Dim group As String
 
         tv.Nodes.Add("Basic")
         tv.Nodes.Add("Advanced")
+
+        For Each i In output.SplitLinesNoEmpty
+            If i.Contains(":") Then
+                Dim item As New Item
+                item.Name = i.Left(":").Trim
+                item.Value = i.Right(":").Trim
+                item.Group = group
+                item.IsComplete = True
+
+                If item.Name Is Nothing Then item.Name = ""
+                If item.Value Is Nothing Then item.Value = ""
+
+                Items.Add(item)
+            Else
+                group = i.Trim
+                tv.Nodes.Add(i.Trim)
+            End If
+        Next
+
+        output = MediaInfo.GetSummary(SourcePath)
 
         For Each i In output.SplitLinesNoEmpty
             If i.Contains(":") Then
@@ -311,7 +287,6 @@ Public Class MediaInfoForm
                 Items.Add(item)
             Else
                 group = i.Trim
-                tv.Nodes.Add(i.Trim)
             End If
         Next
 

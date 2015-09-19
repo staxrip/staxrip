@@ -1803,6 +1803,8 @@ Class PowerRequest
     Private Shared CurrentPowerRequest As IntPtr
 
     Shared Sub SuppressStandby()
+        If OSVersion.Current < OSVersion.Windows7 Then Exit Sub
+
         'Clear current power request if there is any.
         If CurrentPowerRequest <> IntPtr.Zero Then
             PowerClearRequest(CurrentPowerRequest, PowerRequestType.PowerRequestSystemRequired)
@@ -1840,6 +1842,8 @@ Class PowerRequest
     End Sub
 
     Shared Sub EnableStandby()
+        If OSVersion.Current < OSVersion.Windows7 Then Exit Sub
+
         'only try to clear power request if any power request is set.
         If CurrentPowerRequest <> IntPtr.Zero Then
             Dim success = PowerClearRequest(CurrentPowerRequest, PowerRequestType.PowerRequestSystemRequired)

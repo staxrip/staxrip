@@ -167,7 +167,7 @@ Class AviSynthListView
     End Sub
 
     Private Sub RemoveClick()
-        If SelectedItems.Count > 0 Then
+        If SelectedItems.Count > 1 Then
             Dim index = SelectedItems(0).Index
             ProfileFunc.Invoke.Filters.RemoveAt(SelectedItems(0).Index)
             Load()

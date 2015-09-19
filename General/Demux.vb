@@ -1,9 +1,4 @@
-Imports StaxRip.UI
-
 Imports System.Text.RegularExpressions
-Imports System.Runtime.Serialization
-
-Imports Microsoft.Win32
 Imports VB6 = Microsoft.VisualBasic
 Imports System.Text
 
@@ -43,7 +38,7 @@ Public MustInherit Class Demuxer
 
         Dim prx As New CommandLineDemuxer
         prx.Name = "ProjectX"
-        prx.InputExtensions = {"mpg", "ts"}
+        prx.InputExtensions = {"vob", "mpg", "ts"}
         prx.OutputExtensions = {"m2v"}
         prx.InputFormats = {"mpeg2"}
         prx.Command = "%app:Java%"
@@ -56,21 +51,12 @@ Public MustInherit Class Demuxer
         dsmux.OutputExtensions = {"mkv"}
         dsmux.Command = "%app:dsmux%"
         dsmux.Arguments = """%temp_file%.mkv"" ""%source_file%"""
+        dsmux.Active = False
         ret.Add(dsmux)
 
         ret.Add(New mkvDemuxer)
         ret.Add(New MP4BoxDemuxer)
         ret.Add(New eac3toDemuxer)
-
-        Dim dgindex As New CommandLineDemuxer
-        dgindex.Name = "DGIndex"
-        dgindex.InputExtensions = {"mpg", "vob", "m2ts", "mts", "m2t"}
-        dgindex.OutputExtensions = {"m2v"}
-        dgindex.InputFormats = {"mpeg2"}
-        dgindex.Command = "%app:DGIndex%"
-        dgindex.Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -od ""%temp_file%"" -hide -exit"
-        dgindex.SourceFilter = "MPEG2Source"
-        ret.Add(dgindex)
 
         Dim dgnvNoDemux As New CommandLineDemuxer
         dgnvNoDemux.Name = "DGIndexNV"
@@ -147,8 +133,6 @@ Public Class CommandLineDemuxer
             ElseIf Command?.Contains("DGIndexIM")
                 If Not Packs.DGIndexIM.VerifyOK(True) Then Throw New AbortException
                 proc.SkipPatterns = {"^\d+$"}
-            ElseIf Command?.Contains("DGIndex")
-                proc.SkipPatterns = {"^\d+$"}
             ElseIf Command?.Contains("dsmux")
                 If Not Packs.Haali.VerifyOK(True) Then Throw New AbortException
                 proc.SkipStrings = {"Muxing..."}
@@ -162,9 +146,7 @@ Public Class CommandLineDemuxer
             proc.Arguments = Macro.Solve(Arguments)
             proc.Start()
 
-            If Command?.Contains("DGIndexIM") Then
-                FileHelp.Move(Filepath.GetDirAndBase(p.SourceFile) + ".log", p.TempDir + Filepath.GetBase(p.SourceFile) + "_DG.log")
-            ElseIf Command?.Contains("DGIndex") Then
+            If Command?.Contains("DGIndex") Then
                 FileHelp.Move(Filepath.GetDirAndBase(p.SourceFile) + ".log", p.TempDir + Filepath.GetBase(p.SourceFile) + "_DG.log")
                 FileHelp.Move(p.TempDir + Filepath.GetBase(p.SourceFile) + ".demuxed.m2v", p.TempDir + Filepath.GetBase(p.SourceFile) + ".m2v")
             End If

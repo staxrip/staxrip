@@ -320,7 +320,7 @@ Namespace x265
         Property AQmode As New OptionParam With {
             .Switch = "--aq-mode",
             .Text = "AQ Mode:",
-            .Options = {"Disabled", "Enabled", "Auto-Variance"}}
+            .Options = {"Disabled", "Enabled", "Auto-Variance", "Auto-Variance and bias to dark scenes"}}
 
         Property Videoformat As New OptionParam With {
             .Switch = "--videoformat",

@@ -347,18 +347,11 @@ Public Class ToolStripRendererEx
     End Function
 
     Shared Function IsFlat() As Boolean
-        If RenderMode = ToolStripRenderMode.Win8Default Then
-            Return True
-        End If
+        If RenderMode = ToolStripRenderMode.Win8Default Then Return True
+        If RenderMode = ToolStripRenderMode.Win8Auto Then Return True
 
-        If RenderMode = ToolStripRenderMode.Win8Auto Then
-            Return True
-        End If
-
-        If (RenderMode = ToolStripRenderMode.SystemDefault OrElse RenderMode = ToolStripRenderMode.SystemAuto) AndAlso
-            (Environment.OSVersion.Version.Major = 6 AndAlso Environment.OSVersion.Version.Minor = 2) Then
-
-            Return True
-        End If
+        If (RenderMode = ToolStripRenderMode.SystemDefault OrElse
+            RenderMode = ToolStripRenderMode.SystemAuto) AndAlso
+            OSVersion.Current >= OSVersion.Windows8 Then Return True
     End Function
 End Class

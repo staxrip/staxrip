@@ -993,8 +993,6 @@ Class MainForm
             AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf g.OnUnhandledException
             AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
 
-            Paths.CheckIfSettingsDirIsWriteable()
-
             s = DirectCast(SafeSerialization.Deserialize(New ApplicationSettings, Paths.SettingsFile, New LegacySerializationBinder), ApplicationSettings)
 
             MenuItemEx.UseTooltips = s.EnableTooltips
@@ -1226,44 +1224,26 @@ Class MainForm
         'ObjectHelp.GetCompareString(p).WriteFile(CommonDirs.UserDesktop + "test2.txt")
 
         If ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p) Then
-            If Environment.OSVersion.Version.Major >= 6 Then
-                Using td As New TaskDialog(Of DialogResult)
-                    td.MainInstruction = "Save changed project?"
-                    td.AddButton(DialogResult.Yes, "Save")
-                    td.AddButton(DialogResult.No, "Don't Save")
-                    td.AddButton(DialogResult.Cancel, "Cancel")
-                    td.Show()
-                    Refresh()
-
-                    If td.SelectedValue = DialogResult.Yes Then
-                        If g.ProjectPath Is Nothing Then
-                            If Not ShowSaveDialog() Then
-                                Return True
-                            End If
-                        Else
-                            SaveProjectByPath(g.ProjectPath)
-                        End If
-                    ElseIf td.SelectedValue = DialogResult.Cancel Then
-                        Return True
-                    End If
-                End Using
-            Else
-                Dim result = MsgQuestion("Save changed project?", MessageBoxButtons.YesNoCancel)
+            Using td As New TaskDialog(Of DialogResult)
+                td.MainInstruction = "Save changed project?"
+                td.AddButton(DialogResult.Yes, "Save")
+                td.AddButton(DialogResult.No, "Don't Save")
+                td.AddButton(DialogResult.Cancel, "Cancel")
+                td.Show()
                 Refresh()
 
-                Select Case result
-                    Case DialogResult.Yes
-                        If g.ProjectPath Is Nothing Then
-                            If Not ShowSaveDialog() Then
-                                Return True
-                            End If
-                        Else
-                            SaveProjectByPath(g.ProjectPath)
+                If td.SelectedValue = DialogResult.Yes Then
+                    If g.ProjectPath Is Nothing Then
+                        If Not ShowSaveDialog() Then
+                            Return True
                         End If
-                    Case DialogResult.Cancel
-                        Return True
-                End Select
-            End If
+                    Else
+                        SaveProjectByPath(g.ProjectPath)
+                    End If
+                ElseIf td.SelectedValue = DialogResult.Cancel Then
+                    Return True
+                End If
+            End Using
         End If
     End Function
 
@@ -1577,10 +1557,6 @@ Class MainForm
         td.Content = "A description of the available source filters can be found in the [http://github.com/stax76/staxrip/wiki/Source-Filters wiki]."
         td.AddCommandLink("Automatic", "Automatic")
 
-        If Not p.Script.IsFilterActive("Source", "Automatic") Then
-            td.AddCommandLink(p.Script.GetFilter("Source").Name, "current")
-        End If
-
         If FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then
             td.AddCommandLink("DGSource using AviSynth+", "DGSource")
             td.AddCommandLink("DGSourceIM using AviSynth+", "DGSourceIM")
@@ -1611,8 +1587,6 @@ Class MainForm
         Select Case td.Show
             Case "Automatic"
                 ret = New VideoFilter("Source", "Automatic", "", True)
-            Case "current"
-                ret = Nothing
             Case "DGSource"
                 ret = New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")", True)
             Case "DGSourceIM"
@@ -1638,23 +1612,12 @@ Class MainForm
         Return ret
     End Function
 
-    Sub OpenSingleFile(files As IEnumerable(Of String))
-        Dim filter As VideoFilter
-        If files.Count = 1 Then filter = ShowSourceFilterSelection(files(0))
-        OpenVideoSourceFiles(files, filter)
-    End Sub
-
     Sub OpenAnyFile(files As IEnumerable(Of String), Optional silent As Boolean = True)
         If Filepath.GetExtFull(files(0)) = ".srip" Then
             OpenProject(files(0))
         ElseIf FileTypes.Video.Contains(Filepath.GetExt(files(0)).ToLower) Then
             files.Sort()
-
-            If silent Then
-                OpenVideoSourceFiles(files)
-            Else
-                OpenSingleFile(files)
-            End If
+            OpenVideoSourceFiles(files, silent)
         ElseIf FileTypes.Audio.Contains(Filepath.GetExt(files(0)).ToLower) Then
             tbAudioFile0.Text = files(0)
         Else
@@ -1667,15 +1630,13 @@ Class MainForm
         OpenVideoSourceFiles({fp})
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String),
-                             Optional preferredSourceFilter As VideoFilter = Nothing)
-
-        OpenVideoSourceFiles(files, True, preferredSourceFilter)
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), Optional silent As Boolean = False)
+        OpenVideoSourceFiles(files, True, silent)
     End Sub
 
     Sub OpenVideoSourceFiles(files As IEnumerable(Of String),
                              isNotEncoding As Boolean,
-                             Optional preferredSourceFilter As VideoFilter = Nothing)
+                             silent As Boolean)
 
         Dim recoverPath = g.ProjectPath
         Dim recoverProjectPath = CommonDirs.Temp + Guid.NewGuid.ToString + ".bin"
@@ -1688,7 +1649,9 @@ Class MainForm
             If g.ShowVideoSourceWarnings(files) Then Throw New AbortException
 
             If Not p.BatchMode AndAlso files(0).Ext = "vob" Then
-                MsgWarn("Please note that opening VOB has many disadvantages. The easiest and most reliable method is ripping DVDs with MakeMKV and open MKV with StaxRip.")
+                If MsgQuestion("Opening VOB has disadvantages, it's better to rip with MakeMKV, continue anyway?", MessageBoxButtons.OKCancel) = DialogResult.Cancel Then
+                    Throw New AbortException
+                End If
             End If
 
             For Each i In files
@@ -1716,18 +1679,49 @@ Class MainForm
                 Dim templates = Directory.GetFiles(Paths.TemplateDir, "*.srip")
 
                 If templates.Length = 1 Then
-                    If Not OpenProject(templates(0), True) Then
-                        Throw New AbortException
-                    End If
+                    If Not OpenProject(templates(0), True) Then Throw New AbortException
                 Else
-                    If Not LoadTemplateWithSelectionDialog() Then
-                        Throw New AbortException
+                    If s.ShowTemplateSelection Then
+                        If Not LoadTemplateWithSelectionDialog() Then Throw New AbortException
+                    Else
+                        If Not OpenProject(Paths.StartupTemplatePath, True) Then Throw New AbortException
                     End If
                 End If
             End If
 
             p.SourceFiles = files.ToList
             p.SourceFile = files(0)
+
+            Dim preferredSourceFilter As VideoFilter
+
+            If p.SourceFiles.Count = 1 AndAlso
+                p.Script.Filters(0).Name = "Manual" AndAlso
+                Not p.BatchMode Then
+
+                preferredSourceFilter = ShowSourceFilterSelection(files(0))
+            End If
+
+            If Not preferredSourceFilter Is Nothing Then
+                Dim isVapourSynth = preferredSourceFilter.Script.Contains("clip = core.")
+
+                If isVapourSynth Then
+                    If Not Packs.Python.VerifyOK(True) OrElse Not Packs.VapourSynth.VerifyOK(True) Then
+                        Throw New AbortException
+                    End If
+
+                    If p.Script.Engine = ScriptingEngine.AviSynth Then
+                        p.Script = VideoScript.GetDefaults()(1)
+                    End If
+                ElseIf p.Script.Engine = ScriptingEngine.VapourSynth AndAlso
+                    preferredSourceFilter.Script <> "" Then
+
+                    p.Script = VideoScript.GetDefaults()(0)
+                End If
+
+                p.Script.SetFilter(preferredSourceFilter.Category,
+                                   preferredSourceFilter.Name,
+                                   preferredSourceFilter.Script)
+            End If
 
             g.SetTempDir()
 
@@ -1840,28 +1834,6 @@ Class MainForm
                 End If
             Next
 
-            If Not preferredSourceFilter Is Nothing Then
-                Dim isVapourSynth = preferredSourceFilter.Script.Contains("clip = core.")
-
-                If isVapourSynth Then
-                    If Not Packs.Python.VerifyOK(True) OrElse Not Packs.VapourSynth.VerifyOK(True) Then
-                        Throw New AbortException
-                    End If
-
-                    If p.Script.Engine = ScriptingEngine.AviSynth Then
-                        p.Script = VideoScript.GetDefaults()(1)
-                    End If
-                ElseIf p.Script.Engine = ScriptingEngine.VapourSynth AndAlso
-                    preferredSourceFilter.Script <> "" Then
-
-                    p.Script = VideoScript.GetDefaults()(0)
-                End If
-
-                p.Script.SetFilter(preferredSourceFilter.Category,
-                                   preferredSourceFilter.Name,
-                                   preferredSourceFilter.Script)
-            End If
-
             Demux()
 
             If p.LastOriginalSourceFile <> p.SourceFile AndAlso
@@ -1882,7 +1854,10 @@ Class MainForm
                 p.Script.Engine = ScriptingEngine.VapourSynth
                 p.Script.Filters.Clear()
                 p.Script.Filters.Add(New VideoFilter("Source", "VapourSynth Import", File.ReadAllText(p.SourceFile), True))
-            ElseIf Not sourceFilter.Script.Contains("(") Then
+            ElseIf Not sourceFilter.Script.Contains("(") OrElse
+                p.Script.Filters(0).Name = "Automatic" OrElse
+                p.Script.Filters(0).Name = "Manual" Then
+
                 For Each i In s.FilterPreferences
                     Dim name = i.Name.SplitNoEmptyAndWhiteSpace({",", " "})
 
@@ -2285,7 +2260,7 @@ Class MainForm
                 End If
 
                 SaveProjectByPath(g.ProjectPath)
-                OpenVideoSourceFiles(p.SourceFiles, False)
+                OpenVideoSourceFiles(p.SourceFiles, False, True)
                 p.BatchMode = False
                 SaveProjectByPath(g.ProjectPath)
             End If
@@ -2571,15 +2546,7 @@ Class MainForm
             End If
 
             If Math.Abs(p.Audio0.Delay) > 2000 Then
-                Dim tip As String
-
-                If GetIfoFile() <> "" Then
-                    tip = "The audio delay is unusual high indicating a sync problem. The best method to prevent such problems is ripping with MakeMKV. Alternativly DGIndex or DGIndexNV can be used manually to trim the studio intro at the beginning of the DVD."
-                Else
-                    tip = "The audio delay is unusual high indicating a sync problem. Tools that can prevent such problems are ProjectX, dsmux or gdsmux."
-                End If
-
-                If ProcessTip(tip) Then
+                If ProcessTip("The audio delay is unusual high indicating a sync problem, MakeMKV and ProjectX can prevent this problem.") Then
                     lTip.Font = New Font(Font.FontFamily, 8)
                     ResetAssistantFont = True
                     g.Highlight(True, tbAudioFile0)
@@ -3175,6 +3142,11 @@ Class MainForm
             cb.Tooltip = "If you disable this you can still right-click menu items to show the tooltip."
             cb.Checked = s.EnableTooltips
             cb.SaveAction = Sub(value) s.EnableTooltips = value
+
+            cb = ui.AddCheckBox(generalPage)
+            cb.Text = "Show template selection loading new files"
+            cb.Checked = s.ShowTemplateSelection
+            cb.SaveAction = Sub(value) s.ShowTemplateSelection = value
 
             Dim mb = ui.AddMenuButtonBlock(Of String)(generalPage)
             mb.Label.Text = "Startup Template:"
@@ -4121,10 +4093,6 @@ Class MainForm
             ret += "[" + i.Name + "]" + CrLf
 
             For Each i2 In i.Filters
-                If i2.Category = "Source" AndAlso i2.Name = "Automatic" Then
-                    Continue For
-                End If
-
                 If i2.Script.Contains(CrLf) Then
                     Dim lines = i2.Script.SplitLinesNoEmpty
 
@@ -4215,8 +4183,6 @@ Class MainForm
                     End If
                 Next
 
-                Dim src = filterProfiles.Where(Function(v) v.Name = "Source").First
-                src.Filters.Insert(0, New VideoFilter("Source", "Automatic", "", True))
                 g.MainForm.SaveSettings()
             End If
         End Using
@@ -4734,24 +4700,10 @@ Class MainForm
         Activate() 'needed for custom settings dir option
         Refresh()
 
-        Packs.Init()
-
         If Not File.Exists(Packs.NeroAACEnc.GetPath) Then
             MsgError("Files included with StaxRip are missing, maybe the 7-Zip archive wasn't properly unpacked. You can find a packer at [http://www.7-zip.org www.7-zip.org].")
             Close()
             Exit Sub
-        End If
-
-        If Application.StartupPath.Contains(":\Program Files") Then
-            Try
-                Dim fp = Application.StartupPath + "\write privileges check"
-                File.WriteAllText(fp, "aaa")
-                File.Delete(fp)
-            Catch ex As Exception
-                MsgWarn("Please move StaxRip out of the Program Files directory.")
-                Close()
-                Exit Sub
-            End Try
         End If
 
         UpdateRecentProjectsMenuItems()
@@ -4927,9 +4879,7 @@ Class MainForm
             End Try
         Next
 
-        If files.Count > 0 Then
-            OpenAnyFile(files)
-        End If
+        If files.Count > 0 Then OpenAnyFile(files)
     End Sub
 
     <Command("Perform | Standby", "Puts PC in standby mode.", Switch:="standby")>
@@ -4980,7 +4930,7 @@ Class MainForm
                     d.SetInitDir(s.LastSourceDir)
 
                     If d.ShowDialog() = DialogResult.OK Then
-                        OpenSingleFile(d.FileNames)
+                        OpenVideoSourceFiles(d.FileNames)
                     End If
                 End Using
             Case "merge"
@@ -5298,7 +5248,7 @@ Class MainForm
 
                 Dim l As New List(Of String)(d.FileNames)
                 l.Sort()
-                OpenSingleFile(l)
+                OpenVideoSourceFiles(l)
             End If
         End Using
     End Sub

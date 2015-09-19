@@ -135,7 +135,7 @@ Class VideoScript
                     script = ModifyScript(script, Engine)
 
                     If Engine = ScriptingEngine.VapourSynth Then
-                        script.WriteFile(Path, New UTF8Encoding(False))
+                        script.WriteFile(Path, Encoding.UTF8)
                     Else
                         script.WriteFile(Path)
                     End If
@@ -152,6 +152,11 @@ Class VideoScript
                         Frames = avi.FrameCount
                         Size = avi.FrameSize
                         ErrorMessage = avi.ErrorMessage
+
+                        If Double.IsNaN(Framerate) Then
+                            Throw New ErrorAbortException("AviSynth/VapourSynth Error",
+                                                          "AviSynth/VapourSynth script returned invalid framerate.")
+                        End If
                     End Using
 
                     LastSync = current
@@ -410,7 +415,7 @@ Public Class VideoFilter
     Sub New(category As String,
             name As String,
             script As String,
-            Optional active As Boolean = False)
+            Optional active As Boolean = True)
 
         Me.Path = name
         Me.Script = script
@@ -436,7 +441,7 @@ Public Class VideoFilter
 End Class
 
 <Serializable()>
-Public Class FilterCategory
+Class FilterCategory
     Sub New(name As String)
         Me.Name = name
     End Sub
@@ -459,12 +464,51 @@ Public Class FilterCategory
         Return Name
     End Function
 
+    Shared Sub AddFilter(filter As VideoFilter, list As List(Of FilterCategory))
+        Dim matchingCategory = list.Where(Function(category) category.Name = filter.Category).FirstOrDefault
+
+        If matchingCategory Is Nothing Then
+            Dim newCategory As New FilterCategory(filter.Category)
+            newCategory.Filters.Add(filter)
+            list.Add(newCategory)
+        Else
+            matchingCategory.Filters.Add(filter)
+        End If
+    End Sub
+
+    Shared Sub AddDefaults(engine As ScriptingEngine, list As List(Of FilterCategory))
+        For Each i In Packs.Packages.OfType(Of PluginPackage)
+            Dim filters As VideoFilter() = Nothing
+
+            If engine = ScriptingEngine.AviSynth Then
+                If Not i.avsFiltersFunc Is Nothing Then filters = i.avsFiltersFunc.Invoke
+            Else
+                If Not i.vsFiltersFunc Is Nothing Then filters = i.vsFiltersFunc.Invoke
+            End If
+
+            If Not filters Is Nothing Then
+                For Each iFilter In filters
+                    Dim matchingCategory = list.Where(Function(category) category.Name = iFilter.Category).FirstOrDefault
+
+                    If matchingCategory Is Nothing Then
+                        Dim newCategory As New FilterCategory(iFilter.Category)
+                        newCategory.Filters.Add(iFilter)
+                        list.Add(newCategory)
+                    Else
+                        matchingCategory.Filters.Add(iFilter)
+                    End If
+                Next
+            End If
+        Next
+    End Sub
+
     Shared Function GetAviSynthDefaults() As List(Of FilterCategory)
         Dim ret As New List(Of FilterCategory)
 
         Dim src As New FilterCategory("Source")
         src.Filters.AddRange(
-            {New VideoFilter("Source", "Automatic", "", True),
+            {New VideoFilter("Source", "Manual", "# shows the filter selection dialog", True),
+             New VideoFilter("Source", "Automatic", "# can be configured at main menu > Tools > Settings > Source Filters", True),
              New VideoFilter("Source", "AviSource", "AviSource(""%source_file%"", Audio = False)", True),
              New VideoFilter("Source", "DirectShowSource", "DirectShowSource(""%source_file%"", audio = False)", True),
              New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")", True),
@@ -476,29 +520,19 @@ Public Class FilterCategory
         ret.Add(src)
 
         Dim misc As New FilterCategory("Misc")
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "AssumeFPS(%media_info_video:FrameRate%)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(24000, 1001)", "AssumeFPS(24000, 1001)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(30000, 1001)", "AssumeFPS(30000, 1001)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(60000, 1001)", "AssumeFPS(60000, 1001)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(24)", "AssumeFPS(24)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(25)", "AssumeFPS(25)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(50)", "AssumeFPS(50)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "SelectEven", "SelectEven()", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "SelectOdd", "SelectOdd()", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "Prefetch(4) ", "Prefetch(4) ", True))
+        misc.Filters.Add(New VideoFilter(misc.Name, "Prefetch(4)", "Prefetch(4)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "checkmate", "checkmate()", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "Clense", "Clense()", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "f3kdb", "f3kdb()", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "RemoveGrain", "RemoveGrain()", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "UnDot", "UnDot()", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "KNLMeansCL | Spatial Light", "KNLMeansCL(D = 0, A = 2, h = 2)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "KNLMeansCL | Spatial Medium", "KNLMeansCL(D = 0, A = 4, h = 4)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "KNLMeansCL | Spatial Strong", "KNLMeansCL(D = 0, A = 6, h = 6)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "KNLMeansCL | Temporal Light", "KNLMeansCL(D = 1, A = 0, h = 3)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "KNLMeansCL | Temporal Medium", "KNLMeansCL(D = 1, A = 0, h = 6)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "KNLMeansCL | Temporal Strong", "KNLMeansCL(D = 1, A = 0, h = 9)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "KNLMeansCL | Spatio-Temporal Light", "KNLMeansCL(D = 1, A = 1, h = 2)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "KNLMeansCL | Spatio-Temporal Medium", "KNLMeansCL(D = 1, A = 1, h = 4)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "KNLMeansCL | Spatio-Temporal Strong", "KNLMeansCL(D = 1, A = 1, h = 8)", True))
         ret.Add(misc)
 
         Dim field As New FilterCategory("Field")
@@ -507,6 +541,8 @@ Public Class FilterCategory
         field.Filters.Add(New VideoFilter(field.Name, "FieldDeinterlace", "FieldDeinterlace()", True))
         field.Filters.Add(New VideoFilter(field.Name, "SangNom2", "SangNom2()", True))
         field.Filters.Add(New VideoFilter(field.Name, "vinverse2", "vinverse2()", True))
+        field.Filters.Add(New VideoFilter(field.Name, "SelectEven", "SelectEven()", True))
+        field.Filters.Add(New VideoFilter(field.Name, "SelectOdd", "SelectOdd()", True))
         ret.Add(field)
 
         Dim resize As New FilterCategory("Resize")
@@ -529,6 +565,8 @@ Public Class FilterCategory
         crop.Filters.Add(New VideoFilter(crop.Name, "Hardware Encoder", "# hardware encoder crops", True))
         ret.Add(crop)
 
+        FilterCategory.AddDefaults(ScriptingEngine.AviSynth, ret)
+
         Return ret
     End Function
 
@@ -537,7 +575,8 @@ Public Class FilterCategory
 
         Dim src As New FilterCategory("Source")
         src.Filters.AddRange(
-            {New VideoFilter("Source", "Automatic", "", True),
+            {New VideoFilter("Source", "Manual", "# shows filter selection dialog", True),
+             New VideoFilter("Source", "Automatic", "# can be configured at main menu > Tools > Settings > Source Filters", True),
              New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')", True),
              New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(source = r'%source_file%')", True),
              New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(source = r'%source_file%')", True)})
@@ -566,32 +605,26 @@ Public Class FilterCategory
         field.Filters.Add(New VideoFilter(field.Name, "nnedi3", "clip = core.nnedi3.nnedi3(clip = clip, field = 1)", True))
         field.Filters.Add(New VideoFilter(field.Name, "IVTC", "clip = core.vivtc.VFM(clip, 1)" + CrLf + "clip = core.vivtc.VDecimate(clip)", True))
         field.Filters.Add(New VideoFilter(field.Name, "Vinverse", "clip = core.vinverse.Vinverse(clip)", True))
+        field.Filters.Add(New VideoFilter(field.Name, "Select Even", "clip = clip[::2]", True))
+        field.Filters.Add(New VideoFilter(field.Name, "Select Odd", "clip = clip[1::2]", True))
         ret.Add(field)
 
         Dim noise As New FilterCategory("Noise")
         noise.Filters.Add(New VideoFilter(noise.Name, "SMDegrain", "clip = havsfunc.SMDegrain(input = clip, contrasharp = True)", True))
         noise.Filters.Add(New VideoFilter(noise.Name, "RemoveGrain", "clip = core.rgvs.RemoveGrain(clip, 1)", True))
-        noise.Filters.Add(New VideoFilter(noise.Name, "KNLMeansCL | Spatial Light", "clip = core.knlm.KNLMeansCL(clip = clip, d = 0, a = 2, h = 2)", True))
-        noise.Filters.Add(New VideoFilter(noise.Name, "KNLMeansCL | Spatial Medium", "clip = core.knlm.KNLMeansCL(clip = clip, d = 0, a = 4, h = 4)", True))
-        noise.Filters.Add(New VideoFilter(noise.Name, "KNLMeansCL | Spatial Strong", "clip = core.knlm.KNLMeansCL(clip = clip, d = 0, a = 6, h = 6)", True))
-        noise.Filters.Add(New VideoFilter(noise.Name, "KNLMeansCL | Temporal Light", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 0, h = 3)", True))
-        noise.Filters.Add(New VideoFilter(noise.Name, "KNLMeansCL | Temporal Medium", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 0, h = 6)", True))
-        noise.Filters.Add(New VideoFilter(noise.Name, "KNLMeansCL | Temporal Strong", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 0, h = 9)", True))
-        noise.Filters.Add(New VideoFilter(noise.Name, "KNLMeansCL | Spatio-Temporal Light", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 1, h = 2)", True))
-        noise.Filters.Add(New VideoFilter(noise.Name, "KNLMeansCL | Spatio-Temporal Medium", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 1, h = 4)", True))
-        noise.Filters.Add(New VideoFilter(noise.Name, "KNLMeansCL | Spatio-Temporal Strong", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 1, h = 8)", True))
         ret.Add(noise)
 
         Dim misc As New FilterCategory("Misc")
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "clip = core.std.AssumeFPS(clip = clip, fpsnum = int(%media_info_video:FrameRate% * 1000), fpsden = 1000)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 24000/1001", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 24000, fpsden = 1001)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 30000/1001", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 30000, fpsden = 1001)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 60000/1001", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 60000, fpsden = 1001)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 24", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 24, fpsden = 1)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 25", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 25, fpsden = 1)", True))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 50", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 50, fpsden = 1)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "Select Even", "clip = clip[::2]", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "Select Odd", "clip = clip[1::2]", True))
         ret.Add(misc)
+
+        FilterCategory.AddDefaults(ScriptingEngine.VapourSynth, ret)
 
         Return ret
     End Function

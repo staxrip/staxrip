@@ -227,8 +227,8 @@ Public Class ApplicationsForm
 
         tsbOpenDir.Enabled = path <> ""
         tsbLaunch.Enabled = Not ActivePackage.LaunchAction Is Nothing AndAlso Not ActivePackage.IsStatusCritical
-        tsbWebsite.Enabled = OK(ActivePackage.WebURL)
-        tsbHelp.Enabled = (ActivePackage.HelpDir + ActivePackage.HelpFile + ActivePackage.HelpURL) <> ""
+        tsbWebsite.Enabled = ActivePackage.WebURL <> ""
+        tsbHelp.Enabled = ActivePackage.GetHelpPath <> ""
 
         s.StringDictionary("RecentExternalApplicationControl") = ActivePackage.Name
 

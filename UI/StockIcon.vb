@@ -99,8 +99,6 @@ Namespace UI
     End Enum
 
     Friend NotInheritable Class StockIcon
-        Public Shared Property IsSupported As Boolean = Environment.OSVersion.Version.Major >= 6
-
         Private Sub New()
         End Sub
 
@@ -123,21 +121,17 @@ Namespace UI
         End Function
 
         Shared Function GetSmallImage(identifier As StockIconIdentifier) As Bitmap
-            If IsSupported Then
-                Dim h = GetIcon(identifier, StockIconOptions.Handle Or StockIconOptions.Small)
-                Dim r = Icon.FromHandle(h).ToBitmap
-                DestroyIcon(h)
-                Return r
-            End If
+            Dim h = GetIcon(identifier, StockIconOptions.Handle Or StockIconOptions.Small)
+            Dim r = Icon.FromHandle(h).ToBitmap
+            DestroyIcon(h)
+            Return r
         End Function
 
         Shared Function GetImage(identifier As StockIconIdentifier) As Image
-            If IsSupported Then
-                Dim h = GetIcon(identifier, StockIconOptions.Handle Or StockIconOptions.ShellSize)
-                Dim r = Icon.FromHandle(h).ToBitmap
-                DestroyIcon(h)
-                Return r
-            End If
+            Dim h = GetIcon(identifier, StockIconOptions.Handle Or StockIconOptions.ShellSize)
+            Dim r = Icon.FromHandle(h).ToBitmap
+            DestroyIcon(h)
+            Return r
         End Function
 
         Private Shared Function GetIcon(identifier As StockIconIdentifier, flags As StockIconOptions) As IntPtr

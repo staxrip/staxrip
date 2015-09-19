@@ -133,7 +133,7 @@ Class Project
 
         If Check(Script, "Filter Setup", 50) Then
             Script = StaxRip.VideoScript.GetDefaults()(0)
-            Script.SetFilter("Source", "Automatic", "")
+            Script.SetFilter("Source", "Manual", "# shows filter selection dialog")
         End If
     End Sub
 

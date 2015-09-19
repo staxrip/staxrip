@@ -251,10 +251,12 @@ MustInherit Class VideoEncoder
         ret.Add(nv265)
 
         Dim qs264 As New IntelEncoder("Intel H.264")
+        qs264.Params.BFrames.Value = 3
         ret.Add(qs264)
 
         Dim qs265 As New IntelEncoder("Intel H.265")
         qs265.Params.Codec.Value = 1
+        qs265.Params.BFrames.Value = 2
         ret.Add(qs265)
 
         Dim vp9ffmpeg = New ffmpegEncoder()
@@ -921,19 +923,20 @@ Class NvidiaEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode(Params.GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+        Dim sourcePath = If(Params.QSVEncCDecoder.Value, "-", p.Script.Path)
+        Encode(Params.GetArgs(1, sourcePath, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
         AfterEncoding()
     End Sub
 
     Overloads Sub Encode(args As String)
-        If p.Script.Engine = ScriptingEngine.VapourSynth Then
+        If Params.QSVEncCDecoder.Value Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_venc.bat"
-            Dim cli = """" + Packs.vspipe.GetPath + """ """ + p.Script.Path + """ - --y4m | """ + Packs.NVEncC.GetPath + """ " + args
+            Dim cli = """" + Packs.QSVEncC.GetPath + """ --avqsv --output-file - --codec raw --output-res " & p.TargetWidth & "x" & p.TargetHeight & " --input-file """ + p.SourceFile + """ | """ + Packs.NVEncC.GetPath + """ " + args
             File.WriteAllText(batchPath, cli, Encoding.GetEncoding(850))
 
             Using proc As New Proc
                 proc.Init("Encoding using NVEncC")
-                proc.SkipStrings = {"%]"}
+                proc.SkipStrings = {"%]", " frames: "}
                 proc.WriteLine(cli + CrLf2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
@@ -1054,6 +1057,9 @@ Class NvidiaEncoder
             .DefaultValue = 3,
             .MinMaxStep = {0, 16, 1}}
 
+        Property QSVEncCDecoder As New BoolParam With {
+            .Text = "Use QSVEncC as decoder (bypasses AviSynth/VapourSynth)"}
+
         Property Custom As New StringParam With {
             .Text = "Custom Switches:",
             .ArgsFunc = Function() Custom.Value}
@@ -1064,13 +1070,28 @@ Class NvidiaEncoder
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineItem)
-                    ItemsValue.AddRange({Codec, Mode, Profile, LevelH264, LevelH265, mvPrecision,
-                                         QPI, QPP, QPB, MaxBitrate, GOPLength, BFrames, Ref, Custom})
+                    Add("Basic", Codec, Mode, Profile, LevelH264, LevelH265,
+                        QPI, QPP, QPB, GOPLength, BFrames, Ref)
+
+                    Add("Advanced", mvPrecision, MaxBitrate, QSVEncCDecoder, Custom)
                 End If
 
                 Return ItemsValue
             End Get
         End Property
+
+        Private AddedList As New List(Of String)
+
+        Private Sub Add(path As String, ParamArray items As CommandLineItem())
+            For Each i In items
+                i.Path = path
+                ItemsValue.Add(i)
+
+                If i.GetKey = "" OrElse AddedList.Contains(i.GetKey) Then
+                    Throw New Exception
+                End If
+            Next
+        End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineItem)
             Profile.Visible = Codec.ValueText = "h264"
@@ -1111,7 +1132,7 @@ Class NvidiaEncoder
             End If
 
             If sourcePath = "-" Then
-                ret += " --y4m --input-res " & p.TargetWidth & "x" & p.TargetHeight & " --fps " &
+                ret += " --y4m --fps " &
                     p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture)
             End If
 
@@ -1194,35 +1215,18 @@ Class IntelEncoder
     Overrides Sub Encode()
         p.Script.Synchronize()
         Params.RaiseValueChanged(Nothing)
-        Dim input = If(p.Script.Engine = ScriptingEngine.VapourSynth, "-", p.Script.Path)
-        Encode(Params.GetArgs(1, input, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+        Encode(Params.GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
         AfterEncoding()
     End Sub
 
     Overloads Sub Encode(args As String)
-        If p.Script.Engine = ScriptingEngine.VapourSynth Then
-            Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_venc.bat"
-            Dim cli = """" + Packs.vspipe.GetPath + """ """ + p.Script.Path + """ - --y4m | """ + Packs.QSVEncC.GetPath + """ " + args
-            File.WriteAllText(batchPath, cli, Encoding.GetEncoding(850))
-
-            Using proc As New Proc
-                proc.Init("Video encoding using intel encoder")
-                proc.SkipStrings = {"%]", "frames:"}
-                proc.WriteLine(cli + CrLf2)
-                proc.File = "cmd.exe"
-                proc.Arguments = "/C call """ + batchPath + """"
-                proc.BatchCode = cli
-                proc.Start()
-            End Using
-        Else
-            Using proc As New Proc
-                proc.Init("Video encoding using intel encoder")
-                proc.SkipStrings = {"%]", "frames:"}
-                proc.File = Packs.QSVEncC.GetPath
-                proc.Arguments = args
-                proc.Start()
-            End Using
-        End If
+        Using proc As New Proc
+            proc.Init("Video encoding using intel encoder")
+            proc.SkipStrings = {"%]", "frames:"}
+            proc.File = Packs.QSVEncC.GetPath
+            proc.Arguments = args
+            proc.Start()
+        End Using
     End Sub
 
     Overrides Function GetMenu() As MenuList
@@ -1284,9 +1288,6 @@ Class IntelEncoder
             .Value = 3,
             .DefaultValue = 3}
 
-        '.Options = {"None", "Normal", "Inverse Telecine", "Inverse Telecine 32", "Inverse Telecine 2332", "Inverse Telecine repeat", "Inverse Telecine 41", "Double Framerate", "Automatic", "Automatic Double Framerate"},
-        '.Values = {"none", "normal", "it", "it-manual ""32""", "it-manual ""2332""", "it-manual ""repeat""", "it-manual ""41""", "bob", "auto", "auto-bob"}}
-
         Property Deinterlace As New OptionParam With {
             .Switch = "--vpp-deinterlace",
             .Text = "Deinterlace:",
@@ -1305,24 +1306,28 @@ Class IntelEncoder
             .Text = "Quality:",
             .Value = 23,
             .DefaultValue = 23,
+            .VisibleFunc = Function() {"icq", "la-icq", "qvbr-q"}.Contains(Mode.ValueText),
             .MinMaxStep = {0, 51, 1}}
 
         Property QPI As New NumParam With {
             .Text = "QP I:",
             .Value = 24,
             .DefaultValue = 24,
+            .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText),
             .MinMaxStep = {0, 51, 1}}
 
         Property QPP As New NumParam With {
             .Text = "QP P:",
             .Value = 26,
             .DefaultValue = 26,
+            .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText),
             .MinMaxStep = {0, 51, 1}}
 
         Property QPB As New NumParam With {
             .Text = "QP B:",
             .Value = 27,
             .DefaultValue = 27,
+            .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText),
             .MinMaxStep = {0, 51, 1}}
 
         Property MaxBitrate As New NumParam With {
@@ -1340,14 +1345,13 @@ Class IntelEncoder
         Property BFrames As New NumParam With {
             .Switch = "--bframes",
             .Text = "B Frames:",
-            .Value = 3,
-            .DefaultValue = 3,
             .MinMaxStep = {0, 16, 1}}
 
         Property LookaheadDepth As New NumParam With {
             .Switch = "--la-depth",
             .Text = "Lookahead Depth:",
             .Value = 30,
+            .VisibleFunc = Function() {"la", "la-hrd", "la-icq"}.Contains(Mode.ValueText),
             .MinMaxStep = {0, 100, 1}}
 
         Property Ref As New NumParam With {
@@ -1356,15 +1360,16 @@ Class IntelEncoder
             .MinMaxStep = {0, 16, 1}}
 
         Property Scenechange As New BoolParam With {
+            .Switch = "--scenechange",
             .NoSwitch = "--no-scenechange",
-            .Text = "Scenechange",
-            .Value = True,
-            .DefaultValue = True}
+            .VisibleFunc = Function() Not HardwareDecoding.Value,
+            .Text = "Scenechange"}
 
         Property MBBRC As New BoolParam With {
             .Switch = "--mbbrc",
             .NoSwitch = "--no-mbbrc",
             .Text = "Per macro block rate control",
+            .VisibleFunc = Function() Not {"cqp", "la", "la-hrd", "la-icq", "vqp", "icq"}.Contains(Mode.ValueText),
             .Value = False,
             .DefaultValue = False}
 
@@ -1374,10 +1379,56 @@ Class IntelEncoder
 
         Property HardwareDecoding As New BoolParam With {
             .Switch = "--avqsv",
-            .Text = "Use hardware decoding (bypasses AviSynth)",
+            .Text = "Use hardware decoding (bypasses AviSynth/VapourSynth)",
             .Help = "Uses the source file as input for QSVEncC as well as StaxRip's cut/trim and crop values.",
             .Value = False,
             .DefaultValue = False}
+
+        Property LevelH264 As New OptionParam With {
+            .Switch = "--level",
+            .Text = "Level:",
+            .ValueIsName = True,
+            .VisibleFunc = Function() Codec.Value = 0,
+            .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}}
+
+        Property LevelHEVC As New OptionParam With {
+            .Name = "LevelHEVC",
+            .Switch = "--level",
+            .Text = "Level:",
+            .ValueIsName = True,
+            .VisibleFunc = Function() Codec.Value = 1,
+            .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}}
+
+        Property LevelMPEG2 As New OptionParam With {
+            .Name = "LevelMPEG2",
+            .Switch = "--level",
+            .Text = "Level:",
+            .ValueIsName = True,
+            .VisibleFunc = Function() Codec.Value = 2,
+            .Options = {"Automatic", "low", "main", "high", "High1440"}}
+
+        Property ProfileH264 As New OptionParam With {
+            .Switch = "--profile",
+            .Text = "Profile:",
+            .ValueIsName = True,
+            .VisibleFunc = Function() Codec.Value = 0,
+            .Options = {"Automatic", "Baseline", "Main", "High"}}
+
+        Property ProfileHEVC As New OptionParam With {
+            .Name = "ProfileHEVC",
+            .Switch = "--profile",
+            .Text = "Profile:",
+            .ValueIsName = True,
+            .VisibleFunc = Function() Codec.Value = 1,
+            .Options = {"Main"}}
+
+        Property ProfileMPEG2 As New OptionParam With {
+            .Name = "ProfileMPEG2",
+            .Switch = "--profile",
+            .Text = "Profile:",
+            .ValueIsName = True,
+            .VisibleFunc = Function() Codec.Value = 2,
+            .Options = {"Automatic", "Simple", "Main", "High"}}
 
         Private ItemsValue As List(Of CommandLineItem)
 
@@ -1386,7 +1437,8 @@ Class IntelEncoder
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineItem)
 
-                    Add("Basic", Codec, QualitySpeed, Mode, Quality, QPI, QPP, QPB, BFrames, Ref, GOPLength, LookaheadDepth, HardwareDecoding, Scenechange, MBBRC, Custom)
+                    Add("Basic", Codec, QualitySpeed, Mode, Quality, QPI, QPP, QPB)
+                    Add("Advanced", ProfileH264, ProfileHEVC, ProfileMPEG2, LevelHEVC, LevelH264, LevelMPEG2, BFrames, Ref, GOPLength, LookaheadDepth, HardwareDecoding, Scenechange, MBBRC, Custom)
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                 End If
 
@@ -1407,6 +1459,12 @@ Class IntelEncoder
             Next
         End Sub
 
+        Function GetMode(name As String) As Integer
+            For x = 0 To Modes.Count - 1
+                If Modes(x).Name = name Then Return x
+            Next
+        End Function
+
         Protected Overrides Sub OnValueChanged(item As CommandLineItem)
             If item Is Deinterlace Then
                 If Deinterlace.ValueText = "normal" OrElse Deinterlace.ValueText = "bob" Then
@@ -1417,13 +1475,28 @@ Class IntelEncoder
                 End If
             End If
 
-            Quality.Visible = {"icq", "la-icq", "qvbr-q"}.Contains(Mode.ValueText)
-            QPB.Visible = {"cqp", "vqp"}.Contains(Mode.ValueText)
-            QPI.Visible = {"cqp", "vqp"}.Contains(Mode.ValueText)
-            QPP.Visible = {"cqp", "vqp"}.Contains(Mode.ValueText)
-            LookaheadDepth.Visible = {"la", "la-hrd", "la-icq"}.Contains(Mode.ValueText)
-            MBBRC.Visible = Not {"cqp", "la", "la-hrd", "la-icq", "vqp", "icq"}.Contains(Mode.ValueText)
-            Scenechange.Visible = Not HardwareDecoding.Value
+            If item Is Codec OrElse item Is Nothing Then
+                If Codec.ValueText = "hevc" Then
+                    BFrames.DefaultValue = 2
+                Else
+                    BFrames.DefaultValue = 3
+                End If
+            End If
+
+            If item Is Codec Then
+                Mode.Value = 2
+
+                If Codec.ValueText = "hevc" Then
+                    BFrames.Value = 2
+                Else
+                    BFrames.Value = 3
+                End If
+            End If
+
+            Mode.HideOptions(Codec.ValueText = "h264", GetMode("avbr"), GetMode("la"),
+                             GetMode("la-hrd"), GetMode("la-icq"), GetMode("qvbr"),
+                             GetMode("qvbr-q"), GetMode("vcm"))
+
             MyBase.OnValueChanged(item)
         End Sub
 

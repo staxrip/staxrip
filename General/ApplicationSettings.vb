@@ -50,8 +50,8 @@ Class ApplicationSettings
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
     Public PreviewFormBorderStyle As FormBorderStyle
-
     Public DeleteTempFilesToRecycleBin As Boolean = True
+    Public ShowTemplateSelection As Boolean
 
     Private WasUpdatedValue As Boolean
 
@@ -119,7 +119,7 @@ Class ApplicationSettings
             End If
         End If
 
-        If Check(Demuxers, "Demuxers", 101) Then Demuxers = Demuxer.GetDefaults()
+        If Check(Demuxers, "Demuxers", 102) Then Demuxers = Demuxer.GetDefaults()
 
         If Check(FilterPreferences, "Filter Preference", 22) Then
             FilterPreferences = New StringPairList
@@ -229,49 +229,43 @@ Class ApplicationSettings
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 
-        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 135) Then
+        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 147) Then
             If AviSynthProfiles Is Nothing Then
                 AviSynthProfiles = FilterCategory.GetAviSynthDefaults
             Else
-                Dim backup As New FilterCategory("Backup")
-
-                For Each c In AviSynthProfiles.ToList
-                    For Each f In c.Filters.ToList
-                        If f.Category <> "Backup" Then
-                            f.Path = f.Category + " | " + f.Path
-                            f.Category = "Backup"
-                            backup.Filters.Add(f)
-                        End If
-
-                        c.Filters.Remove(f)
-                    Next
-                Next
-
+                Dim current = AviSynthProfiles.SelectMany(Function(category) category.Filters)
                 AviSynthProfiles = FilterCategory.GetAviSynthDefaults
-                AviSynthProfiles.Add(backup)
+                Dim defaults = AviSynthProfiles.SelectMany(Function(category) category.Filters)
+                Dim defaultScripts = defaults.Select(Function(filter) filter.Script)
+                Dim unknown = current.Where(Function(filter) Not defaultScripts.Contains(filter.Script))
+
+                For Each i In unknown
+                    If Not i.Path?.StartsWith("Backup | ") Then
+                        i.Path = "Backup | " + i.Path
+                    End If
+
+                    FilterCategory.AddFilter(i, AviSynthProfiles)
+                Next
             End If
         End If
 
-        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 18) Then
+        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 22) Then
             If VapourSynthProfiles Is Nothing Then
                 VapourSynthProfiles = FilterCategory.GetVapourSynthDefaults
             Else
-                Dim backup As New FilterCategory("Backup")
-
-                For Each c In VapourSynthProfiles.ToList
-                    For Each f In c.Filters.ToList
-                        If f.Category <> "Backup" Then
-                            f.Path = f.Category + " | " + f.Path
-                            f.Category = "Backup"
-                            backup.Filters.Add(f)
-                        End If
-
-                        c.Filters.Remove(f)
-                    Next
-                Next
-
+                Dim current = VapourSynthProfiles.SelectMany(Function(category) category.Filters)
                 VapourSynthProfiles = FilterCategory.GetVapourSynthDefaults
-                VapourSynthProfiles.Add(backup)
+                Dim defaults = VapourSynthProfiles.SelectMany(Function(category) category.Filters)
+                Dim defaultScripts = defaults.Select(Function(filter) filter.Script)
+                Dim unknown = current.Where(Function(filter) Not defaultScripts.Contains(filter.Script))
+
+                For Each i In unknown
+                    If Not i.Path?.StartsWith("Backup | ") Then
+                        i.Path = "Backup | " + i.Path
+                    End If
+
+                    FilterCategory.AddFilter(i, VapourSynthProfiles)
+                Next
             End If
         End If
 

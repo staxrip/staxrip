@@ -79,134 +79,77 @@ Public Class Paths
         End Using
     End Function
 
-    Private Shared Function IsDirValid(path As String) As Boolean
-        Return OK(path) AndAlso path.EndsWith("\") AndAlso Directory.Exists(path)
-    End Function
-
     Private Shared SettingsDirValue As String
 
-    Shared Property SettingsDir() As String
+    Shared ReadOnly Property SettingsDir() As String
         Get
             If SettingsDirValue Is Nothing Then
-                SettingsDirValue = Paths.SolveDirMacros(Registry.CurrentUser.GetString("Software\" + Application.ProductName, "SettingsDir64"))
+                SettingsDirValue = Registry.CurrentUser.GetString("Software\StaxRip", CommonDirs.Startup)
 
-                If Not IsDirValid(SettingsDirValue) Then
-                    If File.Exists(CommonDirs.Startup + "Settings.dat") Then
-                        Paths.SettingsDir = CommonDirs.Startup
-                    ElseIf File.Exists(CommonDirs.Startup + "Settings\Settings.dat") Then
-                        Paths.SettingsDir = CommonDirs.Startup + "Settings\"
-                    Else
-                        Dim td As New TaskDialog(Of String)
+                If Not Directory.Exists(SettingsDirValue) Then
+                    For Each i In {
+                        CommonDirs.Startup + "Settings",
+                        CommonDirs.CommonAppData + "StaxRip x64",
+                        CommonDirs.UserAppDataLocal + "StaxRip x64",
+                        CommonDirs.UserAppDataRoaming + "StaxRip x64",
+                        CommonDirs.CommonAppData + "StaxRip64",
+                        CommonDirs.UserAppDataLocal + "StaxRip64",
+                        CommonDirs.UserAppDataRoaming + "StaxRip64"}
 
-                        td.MainInstruction = "Settings Directory"
-                        td.Content = "Choose the location of the settings directory."
-
-                        td.AddCommandLink("Common Application Data", CommonDirs.CommonAppData + "StaxRip64", CommonDirs.CommonAppData + "StaxRip64")
-                        td.AddCommandLink("User Application Data Local", CommonDirs.UserAppDataLocal + "StaxRip64", CommonDirs.UserAppDataLocal + "StaxRip64")
-                        td.AddCommandLink("User Application Data Roaming", CommonDirs.UserAppDataRoaming + "StaxRip64", CommonDirs.UserAppDataRoaming + "StaxRip64")
-                        td.AddCommandLink("Browse for custom directory", "custom")
-
-                        Dim dir = td.Show
-
-                        If dir = "custom" Then
-                            Using d As New FolderBrowserDialog
-                                d.Description = "Please select a directory."
-                                d.SelectedPath = CommonDirs.Startup
-
-                                If d.ShowDialog = DialogResult.OK Then
-                                    dir = d.SelectedPath
-                                Else
-                                    dir = CommonDirs.CommonAppData + "StaxRip64"
-                                End If
-                            End Using
-                        ElseIf dir = "" Then
-                            dir = CommonDirs.CommonAppData + "StaxRip64"
+                        If Directory.Exists(i) Then
+                            SettingsDirValue = DirPath.AppendSeparator(i)
+                            Registry.CurrentUser.Write("Software\StaxRip", CommonDirs.Startup, SettingsDirValue)
+                            Exit For
                         End If
+                    Next
+                End If
 
-                        If Not Directory.Exists(dir) Then
-                            Try
-                                Directory.CreateDirectory(dir)
-                            Catch
-                                dir = CommonDirs.CommonAppData + "StaxRip64"
-                                If Not Directory.Exists(dir) Then Directory.CreateDirectory(dir)
-                            End Try
-                        End If
+                If Not Directory.Exists(SettingsDirValue) Then
+                    Dim td As New TaskDialog(Of String)
 
-                        Paths.SettingsDir = dir
+                    td.MainInstruction = "Settings Directory"
+                    td.Content = "Choose the location of the settings directory."
+
+                    td.AddCommandLink("Common Application Data", CommonDirs.CommonAppData + "StaxRip x64", CommonDirs.CommonAppData + "StaxRip x64")
+                    td.AddCommandLink("User Application Data Local", CommonDirs.UserAppDataLocal + "StaxRip x64", CommonDirs.UserAppDataLocal + "StaxRip x64")
+                    td.AddCommandLink("User Application Data Roaming", CommonDirs.UserAppDataRoaming + "StaxRip x64", CommonDirs.UserAppDataRoaming + "StaxRip x64")
+                    td.AddCommandLink("Startup", CommonDirs.Startup + "Settings", CommonDirs.Startup + "Settings")
+                    td.AddCommandLink("Browse for custom directory", "custom")
+
+                    Dim dir = td.Show
+
+                    If dir = "custom" Then
+                        Using d As New FolderBrowserDialog
+                            d.Description = "Please select a directory."
+                            d.SelectedPath = CommonDirs.Startup
+
+                            If d.ShowDialog = DialogResult.OK Then
+                                dir = d.SelectedPath
+                            Else
+                                dir = CommonDirs.CommonAppData + "StaxRip x64"
+                            End If
+                        End Using
+                    ElseIf dir = "" Then
+                        dir = CommonDirs.CommonAppData + "StaxRip x64"
                     End If
+
+                    If Not Directory.Exists(dir) Then
+                        Try
+                            Directory.CreateDirectory(dir)
+                        Catch
+                            dir = CommonDirs.CommonAppData + "StaxRip x64"
+                            If Not Directory.Exists(dir) Then Directory.CreateDirectory(dir)
+                        End Try
+                    End If
+
+                    SettingsDirValue = DirPath.AppendSeparator(dir)
+                    Registry.CurrentUser.Write("Software\StaxRip", CommonDirs.Startup, SettingsDirValue)
                 End If
             End If
 
             Return SettingsDirValue
         End Get
-        Set(value As String)
-            If value <> "" Then
-                If Not value.EndsWith("\") Then value += "\"
-                SettingsDirValue = value
-                Registry.CurrentUser.Write("Software\" + Application.ProductName, "SettingsDir64", InjectDirMacros(value))
-            End If
-        End Set
     End Property
-
-    Shared Sub CheckIfSettingsDirIsWriteable()
-        Static writeableChecked As Boolean
-
-        If Not writeableChecked Then
-            writeableChecked = True
-
-            Dim checkFile = SettingsDir + "StaxRip writeable check"
-
-            Try
-                Using File.Create(checkFile)
-                End Using
-            Catch
-                Dim d = CommonDirs.CommonAppData + "StaxRip"
-                MsgError("Failed to write to the settings directory:" + CrLf2 +
-                         DirPath.TrimTrailingSeparator(SettingsDir) + CrLf2 +
-                         "Changing settings directory now to:" + CrLf2 + d)
-
-                If Not Directory.Exists(d) Then
-                    Directory.CreateDirectory(d)
-                End If
-
-                Paths.SettingsDir = d
-            Finally
-                FileHelp.Delete(checkFile)
-            End Try
-        End If
-    End Sub
-
-    Shared Function SolveDirMacros(value As String) As String
-        If Not OK(value) Then
-            Return Nothing
-        End If
-
-        If value.Contains("%user_app_data_local_dir%") Then
-            value = value.Replace("%user_app_data_local_dir%", CommonDirs.UserAppDataLocal)
-        End If
-
-        If value.Contains("%startup_dir%") Then
-            value = value.Replace("%startup_dir%", CommonDirs.Startup)
-        End If
-
-        Return value
-    End Function
-
-    Private Shared Function InjectDirMacros(value As String) As String
-        If Not OK(value) Then
-            Return Nothing
-        End If
-
-        If value.Contains(CommonDirs.UserAppDataLocal) Then
-            value = value.Replace(CommonDirs.UserAppDataLocal, "%user_app_data_local_dir%")
-        End If
-
-        If value.Contains(CommonDirs.Startup) Then
-            value = value.Replace(CommonDirs.Startup, "%startup_dir%")
-        End If
-
-        Return value
-    End Function
 
     Shared ReadOnly Property TemplateDir() As String
         Get
@@ -218,7 +161,7 @@ Public Class Paths
                 fresh = True
             End If
 
-            Dim version = 39
+            Dim version = 42
 
             If fresh OrElse Not s.Storage.GetInt("template update") = version Then
                 s.Storage.SetInt("template update", version)
@@ -2772,45 +2715,6 @@ Public Class GlobalCommands
                 f.Doc.WriteH2("Special Thanks")
                 f.Doc.WriteList("DivX Network giving a open source development sponsorship award",
                                 "Brother John writing [http://encodingwissen.de/staxrip german tutorial]")
-            Case "changelog" 'cl:
-                f.Doc.WriteStart("Changelog")
-
-                f.Doc.WriteP("StaxRip x64 1.3.1.6 " + GetReleaseType() + " (2015-0?-??)")
-
-                f.Doc.WriteList("New: KNLMeansCL plugin added",
-                                "New: Added option for fixed bitrate even though using a fixed bitrate is not recommended. It was added because over the years it was requested dozens of times. StaxRip will show a warning telling to rather use quality mode and constrain the maximum data rate if necessary.",
-                                "Tweak: Play feature adds resize filter to VapourSynth play script if the source PAR is non 1:1",
-                                "Tweak: Added clear feature to audio file context menu to easily remove a audio file.",
-                                "Tweak: Added screen bounds magnet docking feature",
-                                "Tweak: When jobs are completed StaxRip activates now the main window again like it did before but now StaxRip checks if a player is in the foreground and prevents activation if true, it works with MPC, VLC and MediaMonkey, other players might be added on request.",
-                                "Tweak: ProjectX and dsmux are always enabled by default but StaxRip checks only if Java and Haali is installed in case of ProjectX and dsmux are actually executed.",
-                                "Update: x265 1.7+338")
-
-                f.Doc.WriteP("StaxRip x64 1.3.1.5 " + GetReleaseType() + " (2015-05-25)")
-
-                f.Doc.WriteList("New: Added full first class VapourSynth support including plugins and profile for QTGMC",
-                                "New: Added possibility to switch dynamically between any source filter back and forth including DGSource and DGSourceIM. Indexing is triggered automatically in case no index file is present",
-                                "New: Added vinverse plugin to remove residual combing from NTSC",
-                                "New: Added GUI for demuxing MKV and MP4",
-                                "New: Added feature to easily enable certain parameters for certain filters in the AviSynth editor. Currently supported are FFVideoSource and DGSource, more parameters and filters might be supported on request. Use it by right-clicking on FFVideoSource or DGSource in the AviSynth editor, the menu shows then NTSC options and hardware cropping and resizing options.",
-                                "New: Added Play option for MPC playback in the AviSynth editor",
-                                "New: Added two new options in the dialog to define files for batch processing to add a entire folder and a entire folder including sub-folders",
-                                "New: Added new subtitle UI based on data view",
-                                "New: Added option to generate subtitle names based on the subtitle language",
-                                "New: x265 switch --limit-refs added",
-                                "Fix: Disabled audio demuxing for MKV and MP4 by DGIndexNV and DGIndexIM because it's already demuxed by MP4Box and mkvextract",
-                                "Fix: Tools/Directories/Plugins wasn't pointing to the AviSynth+ plugin directory",
-                                "Fix: Wrong command line generated for --deblock",
-                                "Update: QSVEncC 2.0 beta 11",
-                                "Update: x265 1.7+234",
-                                "Tweak: DTS bitrate is now unrestricted",
-                                "Tweak: Moved field processing filters to dedicated category like before in StaxRip x86",
-                                "Tweak: Replaced LinkLabels with Buttons in eac3to dialog",
-                                "Tweak: The help for all included AviSynth plugins can now be accessed per menu in the AviSynth editor",
-                                "Tweak: ProjectX is enabled by default in case Java exists, other dsmux will handle MPEG-2 TS",
-                                "Tweak: In the dialog to define files for batch processing the 'Create Jobs' option was renamed to 'Demux and index before adding jobs', regardless of if this option is enabled jobs are always created",
-                                "Tweak: Removed x86 and VS C++ 2013 from AviSynth+ installer bringing it from 18 MB down to 4 MB. Very often VS C++ 2013 is already installed and in case it ain't already installed StaxRip will show the Apps dialog which has a download button for VS C++ 2013.",
-                                "Tweak: replaced avs4x26x with ffmpeg")
             Case "CRF Value"
                 f.Doc.WriteStart("CRF Value")
                 f.Doc.WriteP("Low values produce high quality, large file size, large value produces small file size and poor quality. A balanced value is 23 which is the defalt in x264. Common values are 18-26 where 18 produces near transparent quality at the cost of a huge file size. The quality 26 produces is rather poor so such a high value should only be used when a small file size is the only criterium.")
@@ -3666,4 +3570,17 @@ Class StringBooleanPair
         Me.Key = key
         Me.Value = value
     End Sub
+End Class
+
+Class OSVersion
+    Shared Property Windows7 As Single = 6.1
+    Shared Property Windows8 As Single = 6.2
+    Shared Property Windows10 As Single = 10.0
+
+    Shared ReadOnly Property Current As Single
+        Get
+            Return CSng(Environment.OSVersion.Version.Major +
+                Environment.OSVersion.Version.Minor / 10)
+        End Get
+    End Property
 End Class

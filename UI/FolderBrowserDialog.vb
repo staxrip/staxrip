@@ -1,8 +1,5 @@
-Imports System.Collections.Generic
 Imports System.Text
-Imports System.Windows.Forms
 Imports System.ComponentModel
-Imports System.IO
 Imports System.Runtime.InteropServices
 Imports System.Runtime.CompilerServices
 
@@ -49,27 +46,14 @@ Public Class FolderBrowserDialog
     ''' <param name="forceDownlevel">true to force the use of the old style folder browser dialog, even when the Vista
     ''' style dialog is supported; otherwise, false.</param>
     Public Sub New(forceDownlevel As Boolean)
-        If forceDownlevel OrElse Not IsVistaFolderDialogSupported Then
-            _downlevelDialog = New System.Windows.Forms.FolderBrowserDialog()
+        If forceDownlevel Then
+            _downlevelDialog = New Windows.Forms.FolderBrowserDialog()
         Else
             Reset()
         End If
     End Sub
 
 #Region "Public Properties"
-
-    ''' <summary>
-    ''' Gets a value that indicates whether the current OS supports Vista-style common userToken dialogs.
-    ''' </summary>
-    ''' <value>
-    ''' Returns true on Windows Vista or newer operating systems; otherwise, false.
-    ''' </value>
-    <Browsable(False)> _
-    Public Shared ReadOnly Property IsVistaFolderDialogSupported() As Boolean
-        Get
-            Return Environment.OSVersion.Platform = PlatformID.Win32NT AndAlso Environment.OSVersion.Version.Major >= 6
-        End Get
-    End Property
 
     ''' <summary>
     ''' Gets or sets the descriptive text displayed above the tree view control in the dialog box, or below the list view control
@@ -817,20 +801,10 @@ Public Class FolderBrowserDialog
     Friend NotInheritable Class NativeMethods
         Private Sub New()
         End Sub
-        ''' <value>
-        ''' Returns true on Windows Vista or newer operating systems; otherwise, false.
-        ''' </value>
-        <Browsable(False)> _
-        Public Shared ReadOnly Property IsVistaOrLater() As Boolean
-            Get
-                Return Environment.OSVersion.Platform = PlatformID.Win32NT AndAlso Environment.OSVersion.Version.Major >= 6
-            End Get
-        End Property
 
         Public Const BS_COMMANDLINK As Integer = &HE
         Public Const BCM_SETNOTE As Integer = &H1609
         Public Const BCM_SETSHIELD As Integer = &H160C
-
         Public Const TV_FIRST As Integer = &H1100
         Public Const TVM_SETEXTENDEDSTYLE As Integer = TV_FIRST + 44
         Public Const TVM_GETEXTENDEDSTYLE As Integer = TV_FIRST + 45

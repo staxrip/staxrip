@@ -99,9 +99,7 @@ Namespace UI
             Dim snapMargin = CInt(Control.DefaultFont.Height * 1.5)
             Dim border As Integer
 
-            Dim os = Environment.OSVersion
-
-            If (os.Version.Major = 6 AndAlso os.Version.Minor >= 2) OrElse os.Version.Major > 6 Then
+            If OSVersion.Current >= OSVersion.Windows8 Then
                 border = (Width - ClientSize.Width) \ 2 - 1
             End If
 

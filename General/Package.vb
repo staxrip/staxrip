@@ -1,16 +1,15 @@
 Imports Microsoft.Win32
 Imports StaxRip
 
-Public Class Packs
+Class Packs
     Public Shared autocrop As New AutoCropPackage
-    Public Shared AviSynth As New AviSynthPackage
+    Public Shared AviSynth As New AviSynthPlusPackage
     Public Shared AVSMeter As New AVSMeterPackage
     Public Shared BDSup2SubPP As New BDSup2SubPackage
     Public Shared BeSweet As New BeSweetPackage
     Public Shared checkmate As New checkmatePackage
     Public Shared DGDecodeIM As New DGDecodeIMPackage
     Public Shared DGDecodeNV As New DGDecodeNVPackage
-    Public Shared DGIndex As New DGIndexPackage
     Public Shared DGIndexIM As New DGIndexIMPackage
     Public Shared DGIndexNV As New DGIndexNVPackage
     Public Shared DivX265 As New DivX265Package
@@ -35,7 +34,6 @@ Public Class Packs
     Public Shared ProjectX As New ProjectXPackage
     Public Shared qaac As New qaacPackage
     Public Shared QSVEncC As New QSVEncCPackage
-    Public Shared QTGMC As New QTGMCPackage
     Public Shared RgTools As New RgToolsPackage
     Public Shared SangNom2 As New SangNom2Package
     Public Shared TDeint As New TDeintPackage
@@ -53,22 +51,18 @@ Public Class Packs
     Public Shared Python As New PythonPackage
     Public Shared vscpp2013 As New vscpp2013Package
     Public Shared vscpp2010 As New vscpp2010Package
-    Public Shared fmtconv As New fmtconvPackage
     Public Shared scenechange As New scenechangePackage
     Public Shared temporalsoften As New temporalsoftenPackage
     Public Shared havsfunc As New havsfuncPackage
     Public Shared LSmashWorksVapourSynth As New vslsmashsourcePackage
-    Public Shared KNLMeansCL As New KNLMeansCLPackage
 
     Public Shared Property Packages As New List(Of Package)
 
-    Shared Sub Init()
-        Packages.Add(KNLMeansCL)
+    Shared Sub New()
         Packages.Add(LSmashWorksVapourSynth)
         Packages.Add(havsfunc)
         Packages.Add(temporalsoften)
         Packages.Add(scenechange)
-        Packages.Add(fmtconv)
         Packages.Add(vscpp2010)
         Packages.Add(vscpp2013)
         Packages.Add(Python)
@@ -85,7 +79,6 @@ Public Class Packs
         Packages.Add(checkmate)
         Packages.Add(DGDecodeIM)
         Packages.Add(DGDecodeNV)
-        Packages.Add(DGIndex)
         Packages.Add(DGIndexIM)
         Packages.Add(DGIndexNV)
         Packages.Add(DivX265)
@@ -110,7 +103,6 @@ Public Class Packs
         Packages.Add(ProjectX)
         Packages.Add(qaac)
         Packages.Add(QSVEncC)
-        Packages.Add(QTGMC)
         Packages.Add(RgTools)
         Packages.Add(SangNom2)
         Packages.Add(TDeint)
@@ -120,6 +112,92 @@ Public Class Packs
         Packages.Add(x264)
         Packages.Add(x265)
         Packages.Add(xvid_encraw)
+
+        Packages.Add(New PluginPackage With {
+            .Name = "KNLMeansCL",
+            .Filename = "KNLMeansCL.dll",
+            .WebURL = "http://forum.doom9.org/showthread.php?t=171379",
+            .HelpFile = "README.txt",
+            .Description = "KNLMeansCL is an optimized pixelwise OpenCL implementation of the Non-local means denoising algorithm. Every pixel is restored by the weighted average of all pixels in its search window. The level of averaging is determined by the filtering parameter h.",
+            .VapourSynthFilterNames = {"knlm.KNLMeansCL"},
+            .AviSynthFilterNames = {"KNLMeansCL"},
+            .avsFiltersFunc = Function() {
+                New VideoFilter("Noise", "KNLMeansCL | Spatial Light", "KNLMeansCL(D = 0, A = 2, h = 2)", True),
+                New VideoFilter("Noise", "KNLMeansCL | Spatial Medium", "KNLMeansCL(D = 0, A = 4, h = 4)", True),
+                New VideoFilter("Noise", "KNLMeansCL | Spatial Strong", "KNLMeansCL(D = 0, A = 6, h = 6)", True),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Light", "KNLMeansCL(D = 1, A = 0, h = 3)", True),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Medium", "KNLMeansCL(D = 1, A = 0, h = 6)", True),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Strong", "KNLMeansCL(D = 1, A = 0, h = 9)", True),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "KNLMeansCL(D = 1, A = 1, h = 2)", True),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "KNLMeansCL(D = 1, A = 1, h = 4)", True),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "KNLMeansCL(D = 1, A = 1, h = 8)", True)},
+            .vsFiltersFunc = Function() {
+                New VideoFilter("Noise", "KNLMeansCL | Spatial Light", "clip = core.knlm.KNLMeansCL(clip = clip, d = 0, a = 2, h = 2)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatial Medium", "clip = core.knlm.KNLMeansCL(clip = clip, d = 0, a = 4, h = 4)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatial Strong", "clip = core.knlm.KNLMeansCL(clip = clip, d = 0, a = 6, h = 6)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Light", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 0, h = 3)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Medium", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 0, h = 6)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Strong", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 0, h = 9)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 1, h = 2)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 1, h = 4)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 1, h = 8)")}})
+
+        Packages.Add(New PluginPackage With {
+            .Name = "FluxSmooth",
+            .Filename = "libfluxsmooth.dll",
+            .VapourSynthFilterNames = {"SmoothT", "SmoothST"},
+            .Description = "FluxSmooth is a filter for smoothing of fluctuations.",
+            .WebURL = "https://github.com/dubhater/vapoursynth-fluxsmooth",
+            .vsFiltersFunc = Function() {
+                New VideoFilter("Noise", "FluxSmooth SmoothT", "clip = core.flux.SmoothT(clip = clip, temporal_threshold = 7, planes = [0, 1, 2])"),
+                New VideoFilter("Noise", "FluxSmooth SmoothST", "clip = core.flux.SmoothST(clip = clip, temporal_threshold = 7, spatial_threshold = 7, planes = [0, 1, 2])")}})
+
+        Packages.Add(New PluginPackage With {
+            .Name = "msmoosh",
+            .Filename = "libmsmoosh.dll",
+            .VapourSynthFilterNames = {"msmoosh.MSmooth", "msmoosh.MSharpen"},
+            .Description = "MSmooth is a spatial smoother that doesn't touch edges." + CrLf + "MSharpen is a sharpener that tries to sharpen only edges.",
+            .WebURL = "https://github.com/dubhater/vapoursynth-msmoosh",
+            .vsFiltersFunc = Function() {
+                New VideoFilter("Noise", "MSmooth", "clip = core.msmoosh.MSmooth(clip = clip, threshold = 6.0, strength = 3)"),
+                New VideoFilter("Misc", "MSharpen", "clip = core.msmoosh.MSharpen(clip = clip, threshold = 6.0, strength = 39)")}})
+
+        Packages.Add(New PluginPackage With {
+            .Name = "fmtconv",
+            .Filename = "fmtconv.dll",
+            .WebURL = "http://github.com/EleonoreMizo/fmtconv",
+            .HelpFile = "fmtconv.html",
+            .Description = "Fmtconv is a format-conversion plug-in for the Vapoursynth video processing engine. It does resizing, bitdepth conversion with dithering and colorspace conversion.",
+            .VapourSynthFilterNames = {"fmtc.bitdepth", "fmtc.convert", "fmtc.matrix", "fmtc.resample", "fmtc.transfer"}})
+
+        Packages.Add(New PluginPackage With {
+            .Name = "finesharp",
+            .Filename = "finesharp.py",
+            .VapourSynthFilterNames = {"finesharp.sharpen"},
+            .Description = "Port of Didée's FineSharp script to VapourSynth.",
+            .WebURL = "http://forum.doom9.org/showthread.php?t=166524",
+            .vsFiltersFunc = Function() {
+                New VideoFilter("Misc", "finesharp", "clip = finesharp.sharpen(clip = clip)")}})
+
+        Packages.Add(New PluginPackage With {
+            .Name = "aWarpSharp2",
+            .Filename = "aWarpSharp.dll",
+            .HelpFile = "aWarpSharp.txt",
+            .AviSynthFilterNames = {"aBlur", "aSobel", "aWarp", "aWarp4", "aWarpSharp", "aWarpSharp2"},
+            .Description = "This filter implements the same warp sharpening algorithm as aWarpSharp by Marc FD, but with several bugfixes and optimizations.",
+            .WebURL = "http://avisynth.nl/index.php/AWarpSharp2",
+            .avsFiltersFunc = Function() {
+                New VideoFilter("Misc", "aWarpSharp2", "aWarpSharp2(thresh=128, blur=2, type=0, depth=16, chroma=4)")}})
+
+        Packages.Add(New PluginPackage With {
+            .Name = "FluxSmooth",
+            .Filename = "FluxSmoothSSSE3.dll",
+            .AviSynthFilterNames = {"FluxSmoothT", "FluxSmoothST"},
+            .Description = "One of the fundamental properties of noise is that it's random. One of the fundamental properties of motion is that it's not. This is the premise behind FluxSmooth, which examines each pixel and compares it to the corresponding pixel in the previous and last frame. Smoothing occurs if both the previous frame's value and the next frame's value are greater, or if both are less, than the value in the current frame.",
+            .WebURL = "http://avisynth.nl/index.php/FluxSmooth",
+            .avsFiltersFunc = Function() {
+                New VideoFilter("Noise", "FluxSmoothT", "FluxSmoothT(temporal_threshold = 8)"),
+                New VideoFilter("Noise", "FluxSmoothST", "FluxSmoothST(temporal_threshold = 8, spatial_threshold = 8)")}})
 
         Packages.Sort()
 
@@ -141,6 +219,18 @@ Public Class Packs
             Next
         End If
     End Sub
+
+    Shared Function GetFilterProfiles(engine As ScriptingEngine) As List(Of VideoFilter)
+        Dim ret As New List(Of VideoFilter)
+
+        For Each i In Packages.OfType(Of PluginPackage)
+            If engine = ScriptingEngine.AviSynth Then
+                ret.AddRange(i.avsFiltersFunc.Invoke)
+            Else
+                ret.AddRange(i.vsFiltersFunc.Invoke)
+            End If
+        Next
+    End Function
 End Class
 
 Public Class Package
@@ -150,14 +240,14 @@ Public Class Package
     Property FileNotFoundMessage As String
     Property SetupAction As Action
     Property Version As String
-    Property WebURL As String
     Property Description As String
     Property VersionDate As DateTime
     Property HelpFile As String
     Property HelpDir As String
-    Property HelpURL As String
-    Property DownloadURL As String
     Property Filenames As String()
+    Property WebURL As String
+    Property DownloadURL As String
+    Property HelpURL As String
 
     Protected FixedDirValue As String
 
@@ -225,6 +315,8 @@ Public Class Package
             Return GetDir() + HelpDir
         ElseIf HelpURL <> "" Then
             Return HelpURL
+        ElseIf WebURL <> "" Then
+            Return WebURL
         End If
     End Function
 
@@ -357,7 +449,6 @@ Public Class AutoCropPackage
         Name = "AutoCrop"
         Filename = "AutoCrop.dll"
         WebURL = "http://avisynth.org.ru/docs/english/externalfilters/autocrop.htm"
-        HelpURL = "http://avisynth.org.ru/docs/english/externalfilters/autocrop.htm"
         Description = "AutoCrop is an AviSynth filter that automatically crops the black borders from a clip. It operates in either preview mode where it overlays the recommended cropping information on the existing clip, or cropping mode where it really crops the clip."
         AviSynthFilterNames = {"AutoCrop"}
     End Sub
@@ -371,7 +462,6 @@ Public Class VSFilterPackage
         Filename = "VSFilter.dll"
         Description = "AviSynth subtitle plugin. The format of the subtitles can be *.sub, *.srt, *.ssa, *.ass, etc. (ssa = Sub Station Alpha)."
         WebURL = "http://avisynth.org.ru/docs/english/externalfilters/vsfilter.htm"
-        HelpURL = "http://avisynth.org.ru/docs/english/externalfilters/vsfilter.htm"
         AviSynthFilterNames = {"VobSub", "TextSub"}
     End Sub
 End Class
@@ -383,7 +473,6 @@ Public Class UnDotPackage
         Name = "UnDot"
         Filename = "UnDot.dll"
         WebURL = "http://avisynth.nl/index.php/UnDot"
-        HelpURL = "http://avisynth.nl/index.php/UnDot"
         Description = "UnDot is a simple median filter for removing dots, that is stray orphan pixels and mosquito noise."
         AviSynthFilterNames = {"UnDot"}
     End Sub
@@ -395,24 +484,22 @@ Public Class NicAudioPackage
     Sub New()
         Name = "NicAudio"
         Filename = "NicAudio.dll"
-        WebURL = "http://www.codeplex.com/NicAudio"
-        HelpURL = "http://avisynth.org.ru/docs/english/externalfilters/nicaudio.htm"
+        WebURL = "http://avisynth.org.ru/docs/english/externalfilters/nicaudio.htm"
         Description = "AviSynth audio source filter."
         AviSynthFilterNames = {"NicAC3Source", "NicDTSSource", "NicMPASource", "RaWavSource"}
     End Sub
 End Class
 
-Public Class AviSynthPackage
+Public Class AviSynthPlusPackage
     Inherits Package
 
     Sub New()
         Name = "AviSynth+"
         Filename = "avisynth.dll"
-        WebURL = "http://avisynth.nl"
+        WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        HelpURL = "http://avisynth.nl/index.php/Main_Page"
         FixedDirValue = CommonDirs.System
-        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\AviSynth+_r1825.exe")
+        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\AviSynth+ r1825.exe")
     End Sub
 
     Public Overrides Function GetStatus() As String
@@ -430,7 +517,6 @@ Public Class PythonPackage
         Filename = "py.exe"
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        HelpURL = "http://docs.python.org/3"
         FixedDirValue = CommonDirs.Windows
         DownloadURL = "http://www.python.org/downloads/windows"
     End Sub
@@ -448,8 +534,8 @@ Public Class VapourSynthPackage
     Sub New()
         Name = "VapourSynth"
         Filename = "vapoursynth.dll"
-        WebURL = "http://www.vapoursynth.com"
         Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
+        WebURL = "http://www.vapoursynth.com"
         HelpURL = "http://www.vapoursynth.com/doc"
         DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases"
     End Sub
@@ -475,7 +561,6 @@ Public Class vspipePackage
         Filename = "vspipe.exe"
         Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps."
         WebURL = "http://www.vapoursynth.com/doc/vspipe.html"
-        HelpURL = "http://www.vapoursynth.com/doc/vspipe.html"
         DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases"
     End Sub
 
@@ -516,12 +601,14 @@ Public Class vscpp2010Package
     End Sub
 End Class
 
-Public MustInherit Class PluginPackage
+Public Class PluginPackage
     Inherits Package
 
     Property AviSynthFilterNames As String()
     Property VapourSynthFilterNames As String()
     Property Dependencies As String()
+    Property vsFiltersFunc As Func(Of VideoFilter())
+    Property avsFiltersFunc As Func(Of VideoFilter())
 End Class
 
 Public Class BeSweetPackage
@@ -654,8 +741,8 @@ Public Class x265Package
         Name = "x265"
         Filename = "x265.exe"
         WebURL = "http://x265.org"
-        Description = "H.265 video encoding command line app."
         HelpURL = "http://x265.readthedocs.org"
+        Description = "H.265 video encoding command line app."
     End Sub
 End Class
 
@@ -666,8 +753,8 @@ Public Class MP4BoxPackage
         Name = "MP4Box"
         Filename = "MP4Box.exe"
         WebURL = "http://gpac.wp.mines-telecom.fr/"
-        Description = "MP4Box is a MP4 muxing and demuxing command line app."
         HelpURL = "http://gpac.wp.mines-telecom.fr/mp4box/mp4box-documentation"
+        Description = "MP4Box is a MP4 muxing and demuxing command line app."
     End Sub
 End Class
 
@@ -678,8 +765,8 @@ Public Class MKVToolNixPackage
         Name = "MKVToolNix"
         Filename = "mkvmerge.exe"
         WebURL = "http://www.bunkus.org/videotools/mkvtoolnix"
-        Description = "MKVtoolnix contains mkvmerge and mkvextract to mux and demux Matroska (MKV) files."
         HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html"
+        Description = "MKVtoolnix contains mkvmerge and mkvextract to mux and demux Matroska (MKV) files."
     End Sub
 End Class
 
@@ -701,8 +788,8 @@ Public Class ffmpegPackage
         Name = "ffmpeg"
         Filename = "ffmpeg.exe"
         WebURL = "http://ffmpeg.org"
-        Description = "Versatile audio video converter."
         HelpURL = "https://www.ffmpeg.org/ffmpeg-all.html"
+        Description = "Versatile audio video converter."
     End Sub
 End Class
 
@@ -713,8 +800,8 @@ Public Class eac3toPackage
         Name = "eac3to"
         Filename = "eac3to.exe"
         WebURL = "http://forum.doom9.org/showthread.php?t=125966"
-        Description = "Audio conversion command line app."
         HelpURL = "http://en.wikibooks.org/wiki/Eac3to/How_to_Use"
+        Description = "Audio conversion command line app."
     End Sub
 End Class
 
@@ -806,7 +893,6 @@ Public Class checkmatePackage
         Name = "checkmate"
         Filename = "checkmate.dll"
         WebURL = "http://github.com/tp7/checkmate"
-        HelpURL = "http://github.com/tp7/checkmate"
         Description = "Spatial and temporal dot crawl reducer. Checkmate is most effective in static or low motion scenes. When using in high motion scenes (or areas) be careful, it's known to cause artifacts with its default values."
         AviSynthFilterNames = {"checkmate"}
     End Sub
@@ -819,7 +905,6 @@ Public Class SangNom2Package
         Name = "SangNom2"
         Filename = "SangNom2.dll"
         WebURL = "http://avisynth.nl/index.php/SangNom2"
-        HelpURL = "http://avisynth.nl/index.php/SangNom2"
         Description = "SangNom2 is a reimplementation of MarcFD's old SangNom filter. Originally it's a single field deinterlacer using edge-directed interpolation but nowadays it's mainly used in anti-aliasing scripts. The output is not completely but mostly identical to the original SangNom."
         AviSynthFilterNames = {"SangNom2"}
     End Sub
@@ -844,7 +929,6 @@ Public Class vinversePackage
         Name = "vinverse"
         Filename = "vinverse.dll"
         WebURL = "http://avisynth.nl/index.php/Vinverse"
-        HelpURL = "http://avisynth.nl/index.php/Vinverse"
         Description = "A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Didée and then written as a plugin by tritical."
         AviSynthFilterNames = {"vinverse", "vinverse2"}
     End Sub
@@ -856,7 +940,7 @@ Public Class DGIndexNVPackage
     Sub New()
         Name = "DGIndexNV"
         Filename = "DGIndexNV.exe"
-        WebURL = "http://neuron2.net/dgdecnv/dgdecnv.html"
+        WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html"
         Description = Strings.DGDecNV
         HelpFile = "DGIndexNVManual.html"
         LaunchName = Filename
@@ -882,7 +966,7 @@ Public Class DGDecodeNVPackage
     Sub New()
         Name = "DGDecodeNV"
         Filename = "DGDecodeNV.dll"
-        WebURL = "http://neuron2.net/dgdecnv/dgdecnv.html"
+        WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html"
         Description = Strings.DGDecNV
         HelpFile = "DGDecodeNVManual.html"
         AviSynthFilterNames = {"DGSource"}
@@ -1009,6 +1093,7 @@ Public Class xvid_encrawPackage
         Filename = "xvid_encraw.exe"
         Description = "XviD command line encoder"
         HelpFile = "help.txt"
+        WebURL = "https://www.xvid.com"
     End Sub
 End Class
 
@@ -1054,34 +1139,6 @@ Public Class HaaliSplitter
     End Function
 End Class
 
-Public Class DGDecodePackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "DGDecode"
-        Filename = "DGDecode.dll"
-        WebURL = "http://www.neuron2.net/dgmpgdec/dgmpgdec.html"
-        Description = Strings.DGMPGDec
-        AviSynthFilterNames = {"MPEG2Source", "Deblock"}
-        HelpFile = "DGDecodeManual.html"
-        FixedDirValue = CommonDirs.Startup + "Apps\DGMPGDec\"
-    End Sub
-End Class
-
-Public Class DGIndexPackage
-    Inherits Package
-
-    Sub New()
-        Name = "DGIndex"
-        Filename = "DGIndex.exe"
-        WebURL = "http://www.neuron2.net/dgmpgdec/dgmpgdec.html"
-        Description = Strings.DGMPGDec
-        HelpFile = "DGIndexManual.html"
-        LaunchName = Filename
-        FixedDirValue = CommonDirs.Startup + "Apps\DGMPGDec\"
-    End Sub
-End Class
-
 Public Class MPCPackage
     Inherits Package
 
@@ -1109,7 +1166,6 @@ Public Class TDeintPackage
         Name = "TDeint"
         Filename = "TDeint.dll"
         WebURL = "http://avisynth.nl/index.php/TDeint"
-        HelpURL = "http://avisynth.nl/index.php/TDeint"
         Description = "TDeint is a bi-directionally, motion adaptive, sharp deinterlacer. It can adaptively choose between using per-field and per-pixel motion adaptivity, and can use cubic interpolation, kernel interpolation (with temporal direction switching), or one of two forms of modified ELA interpolation which help to reduce ""jaggy"" edges in moving areas where interpolation must be used."
         AviSynthFilterNames = {"TDeint"}
     End Sub
@@ -1122,23 +1178,8 @@ Public Class nnedi3Package
         Name = "nnedi3"
         Filename = "libnnedi3.dll"
         WebURL = "http://github.com/dubhater/vapoursynth-nnedi3"
-        HelpURL = "http://github.com/dubhater/vapoursynth-nnedi3"
         Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field."
         VapourSynthFilterNames = {"nnedi3.nnedi3", "nnedi3.nnedi3_rpow2"}
-    End Sub
-End Class
-
-Public Class KNLMeansCLPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "KNLMeansCL"
-        Filename = "KNLMeansCL.dll"
-        WebURL = "http://forum.doom9.org/showthread.php?t=171379"
-        HelpFile = "README.txt"
-        Description = "KNLMeansCL is an optimized pixelwise OpenCL implementation of the Non-local means denoising algorithm. Every pixel is restored by the weighted average of all pixels in its search window. The level of averaging is determined by the filtering parameter h."
-        VapourSynthFilterNames = {"knlm.KNLMeansCL"}
-        AviSynthFilterNames = {"KNLMeansCL"}
     End Sub
 End Class
 
@@ -1179,7 +1220,6 @@ Public Class havsfuncPackage
         Dependencies = {"fmtconv", "mvtools", "nnedi3", "scenechange", "temporalsoften"}
         Description = "Various popular AviSynth scripts ported to VapourSynth."
         HelpURL = "http://forum.doom9.org/showthread.php?t=166582"
-        WebURL = "http://forum.doom9.org/showthread.php?t=166582"
     End Sub
 End Class
 
@@ -1190,7 +1230,6 @@ Public Class mvtoolsPackage
         Name = "mvtools"
         Filename = "libmvtools.dll"
         WebURL = "http://github.com/dubhater/vapoursynth-mvtools"
-        HelpURL = "http://github.com/dubhater/vapoursynth-mvtools"
         Description = "MVTools is a set of filters for motion estimation and compensation."
         VapourSynthFilterNames = {"mv.Super", "mv.Analyse", "mv.Recalculate", "mv.Compensate", "mv.Degrain1", "mv.Degrain2",
             "mv.Degrain3", "mv.Mask", "mv.Finest", "mv.FlowBlur", "mv.FlowInter", "mv.FlowFPS", "mv.BlockFPS", "mv.SCDetection"}
@@ -1204,7 +1243,6 @@ Public Class masktools2Package
         Name = "masktools2"
         Filename = "masktools2.dll"
         WebURL = "http://avisynth.nl/index.php/MaskTools2"
-        HelpURL = "http://avisynth.nl/index.php/MaskTools2"
         Description = "MaskTools2 contain a set of filters designed to create, manipulate and use masks. Masks, in video processing, are a way to give a relative importance to each pixel. You can, for example, create a mask that selects only the green parts of the video, and then replace those parts with another video."
         AviSynthFilterNames = {"Mt_edge", "Mt_motion"}
     End Sub
@@ -1217,7 +1255,6 @@ Public Class RgToolsPackage
         Name = "RgTools"
         Filename = "RgTools.dll"
         WebURL = "http://avisynth.nl/index.php/RgTools"
-        HelpURL = "http://avisynth.nl/index.php/RgTools"
         Description = "RgTools is a modern rewrite of RemoveGrain, Repair, BackwardClense, Clense, ForwardClense and VerticalCleaner all in a single plugin."
         AviSynthFilterNames = {"RemoveGrain", "Clense", "ForwardClense", "BackwardClense", "Repair", "VerticalCleaner"}
     End Sub
@@ -1229,7 +1266,7 @@ Public Class DecombPackage
     Sub New()
         Name = "Decomb"
         Filename = "Decomb.dll"
-        WebURL = "http://neuron2.net/decomb/decombnew.html"
+        WebURL = "http://rationalqm.us/decomb/decombnew.html"
         HelpFile = "DecombReferenceManual.html"
         Description = "This package of plugin functions for Avisynth provides the means for removing combing artifacts from telecined progressive streams, interlaced streams, and mixtures thereof. Functions can be combined to implement inverse telecine (IVTC) for both NTSC and PAL streams."
         AviSynthFilterNames = {"Telecide", "FieldDeinterlace", "Decimate", "IsCombed"}
@@ -1246,32 +1283,5 @@ Public Class flash3kyuu_debandPackage
         HelpFile = "flash3kyuu_deband.txt"
         Description = "Simple debanding filter that can be quite effective for some anime sources."
         AviSynthFilterNames = {"f3kdb"}
-    End Sub
-End Class
-
-Public Class QTGMCPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "QTGMC"
-        Filename = "QTGMC.avsi"
-        WebURL = "http://avisynth.nl/index.php/QTGMC"
-        HelpFile = "QTGMC.html"
-        Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée."
-        AviSynthFilterNames = {"QTGMC"}
-        Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}
-    End Sub
-End Class
-
-Public Class fmtconvPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "fmtconv"
-        Filename = "fmtconv.dll"
-        WebURL = "http://github.com/EleonoreMizo/fmtconv"
-        HelpFile = "fmtconv.html"
-        Description = "Fmtconv is a format-conversion plug-in for the Vapoursynth video processing engine. It does resizing, bitdepth conversion with dithering and colorspace conversion."
-        VapourSynthFilterNames = {"fmtc.bitdepth", "fmtc.convert", "fmtc.matrix", "fmtc.resample", "fmtc.transfer"}
     End Sub
 End Class

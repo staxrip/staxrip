@@ -381,11 +381,15 @@ Class ScriptingEditor
             Dim helpIndex = installDir + "\Docs\English\overview.htm"
 
             If File.Exists(helpIndex) Then
-                Menu.Add("Help | AviSynth", Sub() g.ShellExecute(helpIndex), helpIndex)
+                Menu.Add("Help | AviSynth local", Sub() g.ShellExecute(helpIndex), helpIndex)
             End If
 
             Menu.Add("Help | AviSynth.nl", Sub() g.ShellExecute("http://avisynth.nl"), "http://avisynth.nl")
+            Menu.Add("Help | AviSynth+", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B"), "http://avisynth.nl/index.php/AviSynth%2B")
+            Menu.Add("Help | AviSynth+ plugins", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins"), "http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins")
+
             Menu.Add("Help | vapoursynth.com", Sub() g.ShellExecute("http://www.vapoursynth.com"), "http://www.vapoursynth.com")
+            Menu.Add("Help | VapourSynth plugins", Sub() g.ShellExecute("http://www.vapoursynth.com/doc/pluginlist.html"), "http://www.vapoursynth.com/doc/pluginlist.html")
 
             For Each i In Packs.Packages
                 If TypeOf i Is PluginPackage Then

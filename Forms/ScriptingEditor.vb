@@ -268,7 +268,7 @@ Class ScriptingEditor
                 End If
             Next
 
-            ActionMenuItem.Add(Menu.Items, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", "", True))
+            ActionMenuItem.Add(Menu.Items, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""))
 
             Menu.Items.Add(New ToolStripSeparator)
 
@@ -294,8 +294,8 @@ Class ScriptingEditor
                 Next
             Next
 
-            ActionMenuItem.Add(replace.DropDownItems, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", "", True))
-            ActionMenuItem.Add(insert.DropDownItems, "Blank", AddressOf InsertClick, New VideoFilter("Misc", "", "", True))
+            ActionMenuItem.Add(replace.DropDownItems, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""))
+            ActionMenuItem.Add(insert.DropDownItems, "Blank", AddressOf InsertClick, New VideoFilter("Misc", "", ""))
 
             Dim add As New MenuItemEx("Add")
             Menu.Items.Add(add)
@@ -312,7 +312,7 @@ Class ScriptingEditor
                 Next
             Next
 
-            ActionMenuItem.Add(add.DropDownItems, "Blank", AddressOf AddClick, New VideoFilter("Misc", "", "", True))
+            ActionMenuItem.Add(add.DropDownItems, "Blank", AddressOf AddClick, New VideoFilter("Misc", "", ""))
 
             Menu.Items.Add(New ToolStripSeparator)
 

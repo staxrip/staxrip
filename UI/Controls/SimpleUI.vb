@@ -23,7 +23,7 @@ Class SimpleUI
     Sub InitControls()
         Tree.Scrollable = False
         Tree.SelectOnMouseDown = True
-        Tree.ItemHeight = FontHeight * 2
+        Tree.ItemHeight = Tree.Font.Height * 2
         Tree.ShowLines = False
         Tree.HideSelection = False
         Tree.FullRowSelect = True

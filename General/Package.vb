@@ -2,68 +2,99 @@ Imports Microsoft.Win32
 Imports StaxRip
 
 Class Packs
-    Public Shared autocrop As New AutoCropPackage
-    Public Shared AviSynth As New AviSynthPlusPackage
-    Public Shared AVSMeter As New AVSMeterPackage
-    Public Shared BDSup2SubPP As New BDSup2SubPackage
-    Public Shared BeSweet As New BeSweetPackage
-    Public Shared checkmate As New checkmatePackage
-    Public Shared DGDecodeIM As New DGDecodeIMPackage
-    Public Shared DGDecodeNV As New DGDecodeNVPackage
-    Public Shared DGIndexIM As New DGIndexIMPackage
-    Public Shared DGIndexNV As New DGIndexNVPackage
-    Public Shared DivX265 As New DivX265Package
-    Public Shared dsmux As New dsmuxPackage
-    Public Shared DSS2mod As New DSS2modPackage
-    Public Shared eac3to As New eac3toPackage
-    Public Shared ffmpeg As New ffmpegPackage
-    Public Shared ffms2 As New ffms2Package
-    Public Shared Haali As New HaaliSplitter
-    Public Shared Java As New JavaPackage
-    Public Shared lsmashWorks As New LSmashWorksAviSynthPackage
-    Public Shared masktools2 As New masktools2Package
-    Public Shared MediaInfo As New MediaInfoPackage
-    Public Shared Mkvmerge As New MKVToolNixPackage
-    Public Shared MP4Box As New MP4BoxPackage
-    Public Shared MPC As New MPCPackage
-    Public Shared mvtools As New mvtoolsPackage
-    Public Shared NeroAACEnc As New NeroAACEncPackage
-    Public Shared NicAudio As New NicAudioPackage
-    Public Shared nnedi3 As New nnedi3Package
-    Public Shared NVEncC As New NVEncCPackage
-    Public Shared ProjectX As New ProjectXPackage
-    Public Shared qaac As New qaacPackage
-    Public Shared QSVEncC As New QSVEncCPackage
-    Public Shared RgTools As New RgToolsPackage
-    Public Shared SangNom2 As New SangNom2Package
-    Public Shared TDeint As New TDeintPackage
-    Public Shared UnDot As New UnDotPackage
-    Public Shared VSFilter As New VSFilterPackage
-    Public Shared VSRip As New VSRipPackage
-    Public Shared x264 As New x264Package
-    Public Shared x265 As New x265Package
-    Public Shared xvid_encraw As New xvid_encrawPackage
-    Public Shared flash3kyuu_deband As New flash3kyuu_debandPackage
-    Public Shared Decomb As New DecombPackage
-    Public Shared vinverse As New vinversePackage
-    Public Shared vspipe As New vspipePackage
-    Public Shared VapourSynth As New VapourSynthPackage
-    Public Shared Python As New PythonPackage
-    Public Shared vscpp2013 As New vscpp2013Package
-    Public Shared vscpp2010 As New vscpp2010Package
-    Public Shared scenechange As New scenechangePackage
-    Public Shared temporalsoften As New temporalsoftenPackage
-    Public Shared havsfunc As New havsfuncPackage
-    Public Shared LSmashWorksVapourSynth As New vslsmashsourcePackage
+    Shared Property autocrop As New AutoCropPackage
+    Shared Property AviSynth As New AviSynthPlusPackage
+    Shared Property AVSMeter As New AVSMeterPackage
+    Shared Property BDSup2SubPP As New BDSup2SubPackage
+    Shared Property BeSweet As New BeSweetPackage
+    Shared Property checkmate As New checkmatePackage
+    Shared Property DGDecodeIM As New DGDecodeIMPackage
+    Shared Property DGIndexIM As New DGIndexIMPackage
+    Shared Property DGIndexNV As New DGIndexNVPackage
+    Shared Property DivX265 As New DivX265Package
+    Shared Property dsmux As New dsmuxPackage
+    Shared Property DSS2mod As New DSS2modPackage
+    Shared Property eac3to As New eac3toPackage
+    Shared Property ffmpeg As New ffmpegPackage
+    Shared Property ffms2 As New ffms2Package
+    Shared Property Haali As New HaaliSplitter
+    Shared Property Java As New JavaPackage
+    Shared Property lsmashWorks As New LSmashWorksAviSynthPackage
+    Shared Property masktools2 As New masktools2Package
+    Shared Property MediaInfo As New MediaInfoPackage
+    Shared Property Mkvmerge As New MKVToolNixPackage
+    Shared Property MP4Box As New MP4BoxPackage
+    Shared Property MPC As New MPCPackage
+    Shared Property mvtools As New mvtoolsPackage
+    Shared Property NeroAACEnc As New NeroAACEncPackage
+    Shared Property NicAudio As New NicAudioPackage
+    Shared Property nnedi3 As New nnedi3Package
+    Shared Property NVEncC As New NVEncCPackage
+    Shared Property ProjectX As New ProjectXPackage
+    Shared Property qaac As New qaacPackage
+    Shared Property RgTools As New RgToolsPackage
+    Shared Property SangNom2 As New SangNom2Package
+    Shared Property TDeint As New TDeintPackage
+    Shared Property UnDot As New UnDotPackage
+    Shared Property VSFilter As New VSFilterPackage
+    Shared Property VSRip As New VSRipPackage
+    Shared Property x264 As New x264Package
+    Shared Property x265 As New x265Package
+    Shared Property xvid_encraw As New xvid_encrawPackage
+    Shared Property flash3kyuu_deband As New flash3kyuu_debandPackage
+    Shared Property Decomb As New DecombPackage
+    Shared Property vinverse As New vinversePackage
+    Shared Property vspipe As New vspipePackage
+    Shared Property VapourSynth As New VapourSynthPackage
+    Shared Property Python As New PythonPackage
+    Shared Property vscpp2013 As New vscpp2013Package
+    Shared Property scenechange As New scenechangePackage
+    Shared Property temporalsoften As New temporalsoftenPackage
+    Shared Property havsfunc As New havsfuncPackage
+    Shared Property LSmashWorksVapourSynth As New vslsmashsourcePackage
+
+    Shared Property QSVEncC As New Package With {
+        .Name = "QSVEncC",
+        .Filename = "QSVEncC64.exe",
+        .Description = "Intel Quick Sync GPU accelerated H.264 encoder.",
+        .HelpFile = "help.txt",
+        .WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!482"}
+
+    Shared Property VCEEncC As New Package With {
+        .Name = "VCEEncC",
+        .Filename = "VCEEncC64.exe",
+        .Description = "AMD GPU accelerated H.264 encoder.",
+        .HelpFile = "help.txt",
+        .WebURL = "https://www.dropbox.com/sh/c4q2ekr269fd4w9/6zuEnjBI-Q"}
+
+    Shared Function GetDGDecodeNVStatus() As String
+        If Not DGDecodeNV.IsCorrectVersion Then
+            Return "Use version 2050, locate it with F11, press F12 to edit the version."
+        End If
+    End Function
+
+    Public Shared DGDecodeNV As New PluginPackage With {
+        .Name = "DGDecodeNV",
+        .Filename = "DGDecodeNV.dll",
+        .WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html",
+        .Description = Strings.DGDecNV,
+        .HelpFile = "DGDecodeNVManual.html",
+        .AviSynthFilterNames = {"DGSource"},
+        .VapourSynthFilterNames = {"dgdecodenv.DGSource"},
+        .avsFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")},
+        .vsFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.dgdecodenv.DGSource(r'%source_file%')")},
+        .FileNotFoundMessage = "Application not found, locate it with F11 or disable DGIndexNV under Tools/Settings/Demux.",
+        .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource("),
+        .StatusFunc = AddressOf GetDGDecodeNVStatus}
 
     Public Shared Property Packages As New List(Of Package)
 
     Shared Sub New()
+        Packages.Add(VCEEncC)
         Packages.Add(LSmashWorksVapourSynth)
         Packages.Add(havsfunc)
         Packages.Add(temporalsoften)
         Packages.Add(scenechange)
-        Packages.Add(vscpp2010)
         Packages.Add(vscpp2013)
         Packages.Add(Python)
         Packages.Add(VapourSynth)
@@ -122,15 +153,15 @@ Class Packs
             .VapourSynthFilterNames = {"knlm.KNLMeansCL"},
             .AviSynthFilterNames = {"KNLMeansCL"},
             .avsFiltersFunc = Function() {
-                New VideoFilter("Noise", "KNLMeansCL | Spatial Light", "KNLMeansCL(D = 0, A = 2, h = 2)", True),
-                New VideoFilter("Noise", "KNLMeansCL | Spatial Medium", "KNLMeansCL(D = 0, A = 4, h = 4)", True),
-                New VideoFilter("Noise", "KNLMeansCL | Spatial Strong", "KNLMeansCL(D = 0, A = 6, h = 6)", True),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Light", "KNLMeansCL(D = 1, A = 0, h = 3)", True),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Medium", "KNLMeansCL(D = 1, A = 0, h = 6)", True),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Strong", "KNLMeansCL(D = 1, A = 0, h = 9)", True),
-                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "KNLMeansCL(D = 1, A = 1, h = 2)", True),
-                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "KNLMeansCL(D = 1, A = 1, h = 4)", True),
-                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "KNLMeansCL(D = 1, A = 1, h = 8)", True)},
+                New VideoFilter("Noise", "KNLMeansCL | Spatial Light", "KNLMeansCL(D = 0, A = 2, h = 2)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatial Medium", "KNLMeansCL(D = 0, A = 4, h = 4)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatial Strong", "KNLMeansCL(D = 0, A = 6, h = 6)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Light", "KNLMeansCL(D = 1, A = 0, h = 3)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Medium", "KNLMeansCL(D = 1, A = 0, h = 6)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Strong", "KNLMeansCL(D = 1, A = 0, h = 9)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "KNLMeansCL(D = 1, A = 1, h = 2)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "KNLMeansCL(D = 1, A = 1, h = 4)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "KNLMeansCL(D = 1, A = 1, h = 8)")},
             .vsFiltersFunc = Function() {
                 New VideoFilter("Noise", "KNLMeansCL | Spatial Light", "clip = core.knlm.KNLMeansCL(clip = clip, d = 0, a = 2, h = 2)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatial Medium", "clip = core.knlm.KNLMeansCL(clip = clip, d = 0, a = 4, h = 4)"),
@@ -248,6 +279,8 @@ Public Class Package
     Property WebURL As String
     Property DownloadURL As String
     Property HelpURL As String
+    Property IsRequiredFunc As Func(Of Boolean)
+    Property StatusFunc As Func(Of String)
 
     Protected FixedDirValue As String
 
@@ -292,6 +325,7 @@ Public Class Package
 
     Overridable ReadOnly Property IsRequired() As Boolean
         Get
+            If Not IsRequiredFunc Is Nothing Then Return IsRequiredFunc.Invoke
             Return IsRequiredValue
         End Get
     End Property
@@ -339,6 +373,7 @@ Public Class Package
     End Function
 
     Overridable Function GetStatus() As String
+        If Not StatusFunc Is Nothing Then Return StatusFunc.Invoke
     End Function
 
     Function GetStatusDisplay() As String
@@ -352,7 +387,7 @@ Public Class Package
     End Function
 
     Function GetStatusVersion() As String
-        If Version <> "" AndAlso Not IsCorrectVersion(GetPath) Then
+        If Version <> "" AndAlso Not IsCorrectVersion() Then
             Dim text = "Unknown version, use at your own risk, press F12 to edit the version."
 
             If SetupAction Is Nothing Then
@@ -381,9 +416,11 @@ Public Class Package
         End If
     End Function
 
-    Overridable Function IsCorrectVersion(path As String) As Boolean
-        If path <> "" Then
-            Dim dt = File.GetLastWriteTimeUtc(path)
+    Overridable Function IsCorrectVersion() As Boolean
+        Dim fp = GetPath()
+
+        If fp <> "" Then
+            Dim dt = File.GetLastWriteTimeUtc(fp)
             Return dt.AddDays(-2) < VersionDate AndAlso dt.AddDays(2) > VersionDate
         End If
     End Function
@@ -504,8 +541,11 @@ Public Class AviSynthPlusPackage
 
     Public Overrides Function GetStatus() As String
         If Not Directory.Exists(Paths.PluginsDir) Then
-            Return "The AviSynth setup is damaged because the plugins directory doesn't exist. Please click the 'Setup' button above."
+            Return "The AviSynth+ plugins directory is missing, run the AviSynth+ setup."
         End If
+
+        If Not IsCorrectVersion() Then Return "Install AviSynth+ r1825. Press F12 to edit the version."
+        Return MyBase.GetStatus()
     End Function
 End Class
 
@@ -514,11 +554,10 @@ Public Class PythonPackage
 
     Sub New()
         Name = "Python"
-        Filename = "py.exe"
+        Filename = "python.exe"
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        FixedDirValue = CommonDirs.Windows
-        DownloadURL = "http://www.python.org/downloads/windows"
+        DownloadURL = "https://www.python.org/ftp/python/3.5.0/python-3.5.0-amd64-webinstall.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -526,6 +565,16 @@ Public Class PythonPackage
             Return p.Script.Engine = ScriptingEngine.VapourSynth
         End Get
     End Property
+
+    Public Overrides Function GetPath() As String
+        Dim ret = Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath")
+
+        If ret = "" Then
+            ret = Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath")
+        End If
+
+        If ret <> "" Then Return ret
+    End Function
 End Class
 
 Public Class VapourSynthPackage
@@ -537,7 +586,7 @@ Public Class VapourSynthPackage
         Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         WebURL = "http://www.vapoursynth.com"
         HelpURL = "http://www.vapoursynth.com/doc"
-        DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases"
+        DownloadURL = "https://dl.dropboxusercontent.com/u/73468194/vapoursynth-r28-test6.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -551,6 +600,11 @@ Public Class VapourSynthPackage
             Return Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"
         End Get
     End Property
+
+    Public Overrides Function GetStatus() As String
+        If Not IsCorrectVersion() Then Return "Install VapourSynth R28 test6. Press F12 to edit the version."
+        Return MyBase.GetStatus()
+    End Function
 End Class
 
 Public Class vspipePackage
@@ -585,18 +639,6 @@ Public Class vscpp2013Package
         Filename = "msvcr120.dll"
         Description = "Visual C++ 2013 Redistributable Packages which is required by various tools used by StaxRip."
         DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=40784"
-        FixedDirValue = CommonDirs.System
-    End Sub
-End Class
-
-Public Class vscpp2010Package
-    Inherits Package
-
-    Sub New()
-        Name = "Visual C++ 2010"
-        Filename = "msvcr100.dll"
-        Description = "Visual C++ 2010 Redistributable Packages. Only MP4Box requires this outdated runtime. MP4Box is used to demux and mux MP4."
-        DownloadURL = "https://www.microsoft.com/en-us/download/details.aspx?id=13523"
         FixedDirValue = CommonDirs.System
     End Sub
 End Class
@@ -864,7 +906,7 @@ Public Class qaacPackage
         Name = "qaac"
         Filename = "qaac64.exe"
         WebURL = "http://github.com/nu774/qaac"
-        Description = "qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the x64 iTunes installer using 7-Zip. The makeportable script found on the qaac website can also be used."
+        Description = "qaac is a command line AAC encoder frontend based on the Apple AAC encoder."
     End Sub
 
     Overrides ReadOnly Property IsRequired As Boolean
@@ -882,6 +924,12 @@ Public Class qaacPackage
         If Not File.Exists(path) AndAlso Not File.Exists(GetDir() + "QTfiles64\CoreAudioToolbox.dll") Then
             Return "Failed to locate CoreAudioToolbox, read the description below. Expected paths:" +
                 CrLf2 + path + CrLf2 + GetDir() + "QTfiles64\CoreAudioToolbox.dll"
+        End If
+
+        If Not File.Exists(GetDir() + "libFLAC.dll") AndAlso
+            Not File.Exists(CommonDirs.System + "libFLAC.dll") Then
+
+            Return "Failed to locate libFLAC.dll"
         End If
     End Function
 End Class
@@ -944,7 +992,7 @@ Public Class DGIndexNVPackage
         Description = Strings.DGDecNV
         HelpFile = "DGIndexNVManual.html"
         LaunchName = Filename
-        FileNotFoundMessage = "Application not found, please locate it by pressing F11 or disable the DGIndexNV feature under Tools/Settings/Demux."
+        FileNotFoundMessage = "Application not found, locate it with F11 or disable DGIndexNV under Tools/Settings/Demux."
     End Sub
 
     Overrides Function GetStatus() As String
@@ -956,26 +1004,6 @@ Public Class DGIndexNVPackage
     Overrides ReadOnly Property IsRequired As Boolean
         Get
             Return CommandLineDemuxer.IsActive("DGIndexNV")
-        End Get
-    End Property
-End Class
-
-Public Class DGDecodeNVPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "DGDecodeNV"
-        Filename = "DGDecodeNV.dll"
-        WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html"
-        Description = Strings.DGDecNV
-        HelpFile = "DGDecodeNVManual.html"
-        AviSynthFilterNames = {"DGSource"}
-        FileNotFoundMessage = "Application not found, please locate it by pressing F11 or disable the DGIndexNV feature under Tools/Settings/Demux."
-    End Sub
-
-    Overrides ReadOnly Property IsRequired As Boolean
-        Get
-            Return p.Script.Filters(0).Script.Contains("DGSource(")
         End Get
     End Property
 End Class
@@ -1046,18 +1074,6 @@ Public Class NVEncCPackage
         WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!2293"
         Description = "nvidia GPU accelerated H.264/H.265 encoder."
         HelpFile = "help.txt"
-    End Sub
-End Class
-
-Public Class QSVEncCPackage
-    Inherits Package
-
-    Sub New()
-        Name = "QSVEncC"
-        Filename = "QSVEncC64.exe"
-        Description = "Intel Quick Sync GPU accelerated H.264 encoder."
-        HelpFile = "help.txt"
-        WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!482"
     End Sub
 End Class
 

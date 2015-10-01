@@ -241,23 +241,27 @@ MustInherit Class VideoEncoder
         x265crf.Params.ApplyPresetValues()
         ret.Add(x265crf)
 
-        Dim nv264 As New NvidiaEncoder("NVIDIA H.264")
-        nv264.Params.Mode.Value = 2
-        ret.Add(nv264)
+        Dim intel264 As New IntelEncoder("Intel H.264")
+        intel264.Params.BFrames.Value = 3
+        ret.Add(intel264)
 
-        Dim nv265 As New NvidiaEncoder("NVIDIA H.265")
-        nv265.Params.Mode.Value = 2
-        nv265.Params.Codec.Value = 1
-        ret.Add(nv265)
+        Dim intel265 As New IntelEncoder("Intel H.265")
+        intel265.Params.Codec.Value = 1
+        intel265.Params.BFrames.Value = 2
+        ret.Add(intel265)
 
-        Dim qs264 As New IntelEncoder("Intel H.264")
-        qs264.Params.BFrames.Value = 3
-        ret.Add(qs264)
+        Dim nvidia264 As New NvidiaEncoder("NVIDIA H.264")
+        nvidia264.Params.Mode.Value = 2
+        ret.Add(nvidia264)
 
-        Dim qs265 As New IntelEncoder("Intel H.265")
-        qs265.Params.Codec.Value = 1
-        qs265.Params.BFrames.Value = 2
-        ret.Add(qs265)
+        Dim nvidia265 As New NvidiaEncoder("NVIDIA H.265")
+        nvidia265.Params.Mode.Value = 2
+        nvidia265.Params.Codec.Value = 1
+        ret.Add(nvidia265)
+
+        Dim amd264 As New AMDEncoder("AMD H.264")
+        amd264.Params.Mode.Value = 2
+        ret.Add(amd264)
 
         Dim vp9ffmpeg = New ffmpegEncoder()
         vp9ffmpeg.Name = "VP9"
@@ -478,7 +482,7 @@ Class BatchEncoder
         End If
 
         Log.WriteLine(code + CrLf2)
-        script.Filters.Add(New VideoFilter("aaa", "aaa", code, True))
+        script.Filters.Add(New VideoFilter("aaa", "aaa", code))
         script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
         script.Synchronize()
 
@@ -1019,16 +1023,19 @@ Class NvidiaEncoder
         Property QPI As New NumParam With {
             .Text = "Constant QP I:",
             .Value = 20,
+            .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}
 
         Property QPP As New NumParam With {
             .Text = "Constant QP P:",
             .Value = 23,
+            .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}
 
         Property QPB As New NumParam With {
             .Text = "Constant QP B:",
             .Value = 25,
+            .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}
 
         Property MaxBitrate As New NumParam With {
@@ -1568,6 +1575,239 @@ Class IntelEncoder
 
         Public Overrides Function GetPackage() As Package
             Return Packs.QSVEncC
+        End Function
+    End Class
+End Class
+
+<Serializable()>
+Class AMDEncoder
+    Inherits VideoEncoder
+
+    Property ParamsStore As New PrimitiveStore
+
+    Sub New(profileName As String)
+        MyBase.New(profileName)
+    End Sub
+
+    <NonSerialized>
+    Private ParamsValue As EncoderParams
+
+    Property Params As EncoderParams
+        Get
+            If ParamsValue Is Nothing Then
+                ParamsValue = New EncoderParams
+                ParamsValue.Init(ParamsStore)
+            End If
+
+            Return ParamsValue
+        End Get
+        Set(value As EncoderParams)
+            ParamsValue = value
+        End Set
+    End Property
+
+    Overrides Sub ShowConfigDialog()
+        Dim newParams As New EncoderParams
+        Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
+        newParams.Init(store)
+
+        Using f As New CommandLineForm(newParams)
+            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStandardOutput(Packs.NVEncC.GetPath, "--check-vce"))))
+
+            If f.ShowDialog() = DialogResult.OK Then
+                Params = newParams
+                ParamsStore = store
+                OnStateChange()
+            End If
+        End Using
+    End Sub
+
+    Overrides ReadOnly Property OutputFileType() As String
+        Get
+            Return "h264"
+        End Get
+    End Property
+
+    Overrides Sub Encode()
+        p.Script.Synchronize()
+        Encode(Params.GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+        AfterEncoding()
+    End Sub
+
+    Overloads Sub Encode(args As String)
+        Using proc As New Proc
+            proc.Init("Encoding using VCEEncC")
+            proc.SkipStrings = {"%]"}
+            proc.File = Packs.VCEEncC.GetPath
+            proc.Arguments = args
+            proc.Start()
+        End Using
+    End Sub
+
+    Overrides Function GetMenu() As MenuList
+        Dim r As New MenuList
+        r.Add("Encoder Options", AddressOf ShowConfigDialog)
+        r.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
+        Return r
+    End Function
+
+    Overrides Property QualityMode() As Boolean
+        Get
+            Return Params.Mode.OptionText = "CQP"
+        End Get
+        Set(Value As Boolean)
+        End Set
+    End Property
+
+    Class EncoderParams
+        Inherits CommandLineParams
+
+        Sub New()
+            Title = "AMD Encoding Options"
+        End Sub
+
+        Property Quality As New OptionParam With {
+            .Switch = "--quality",
+            .Text = "Quality:",
+            .ValueIsName = True,
+            .Options = {"fast", "balanced", "slow"},
+            .Value = 1,
+            .DefaultValue = 1}
+
+        Property Mode As New OptionParam With {
+            .Name = "Mode",
+            .Text = "Mode:",
+            .Options = {"CBR", "VBR", "CQP"}}
+
+        Property QPI As New NumParam With {
+            .Text = "Constant QP I:",
+            .Value = 22,
+            .VisibleFunc = Function() "CQP" = Mode.OptionText,
+            .MinMaxStep = {0, 51, 1}}
+
+        Property QPP As New NumParam With {
+            .Text = "Constant QP P:",
+            .Value = 24,
+            .VisibleFunc = Function() "CQP" = Mode.OptionText,
+            .MinMaxStep = {0, 51, 1}}
+
+        Property QPB As New NumParam With {
+            .Text = "Constant QP B:",
+            .Value = 27,
+            .VisibleFunc = Function() "CQP" = Mode.OptionText,
+            .MinMaxStep = {0, 51, 1}}
+
+        Property MaxBitrate As New NumParam With {
+            .Switch = "--max-bitrate",
+            .Text = "Maximum Bitrate:",
+            .Value = 20000,
+            .DefaultValue = 20000,
+            .MinMaxStep = {0, 1000000, 1}}
+
+        Property GOPLength As New NumParam With {
+            .Switch = "--gop-len",
+            .Text = "GOP Length (0=auto):",
+            .MinMaxStep = {0, 10000, 1}}
+
+        Property BFrames As New NumParam With {
+            .Switch = "--bframes",
+            .Text = "B Frames:",
+            .MinMaxStep = {0, 16, 1}}
+
+        Property QPMax As New NumParam With {
+            .Switch = "--qp-max",
+            .Text = "QP Max:",
+            .MinMaxStep = {0, 100, 1},
+            .Value = 100,
+            .DefaultValue = 100}
+
+        Property QPMin As New NumParam With {
+            .Switch = "--qp-min",
+            .Text = "QP Min:",
+            .MinMaxStep = {0, 100, 1}}
+
+        Property VBVBufsize As New NumParam With {
+            .Switch = "--vbv-bufsize",
+            .Text = "VBV Bufsize:",
+            .MinMaxStep = {0, 1000000, 1},
+            .Value = 20000,
+            .DefaultValue = 20000}
+
+        Property Custom As New StringParam With {
+            .Text = "Custom Switches:",
+            .ArgsFunc = Function() Custom.Value}
+
+        Private ItemsValue As List(Of CommandLineItem)
+
+        Overrides ReadOnly Property Items As List(Of CommandLineItem)
+            Get
+                If ItemsValue Is Nothing Then
+                    ItemsValue = New List(Of CommandLineItem)
+                    Add("Basic", Mode, Quality, QPI, QPP, QPB, GOPLength, BFrames)
+                    Add("Advanced", MaxBitrate, VBVBufsize, QPMin, QPMax, Custom)
+                End If
+
+                Return ItemsValue
+            End Get
+        End Property
+
+        Private AddedList As New List(Of String)
+
+        Private Sub Add(path As String, ParamArray items As CommandLineItem())
+            For Each i In items
+                i.Path = path
+                ItemsValue.Add(i)
+
+                If i.GetKey = "" OrElse AddedList.Contains(i.GetKey) Then
+                    Throw New Exception
+                End If
+            Next
+        End Sub
+
+        Protected Overrides Sub OnValueChanged(item As CommandLineItem)
+            MyBase.OnValueChanged(item)
+        End Sub
+
+        Overloads Overrides Function GetArgs(includePaths As Boolean) As String
+            Return GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
+                           "." + p.VideoEncoder.OutputFileType, includePaths)
+        End Function
+
+        Overloads Function GetArgs(pass As Integer,
+                                   sourcePath As String,
+                                   targetPath As String,
+                                   Optional includePaths As Boolean = True) As String
+            Dim ret As String
+
+            Dim q = From i In Items Where i.GetArgs <> ""
+
+            If q.Count > 0 Then
+                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+            End If
+
+            Select Case Mode.OptionText
+                Case "CBR"
+                    ret += " --cbr " & p.VideoBitrate
+                Case "VBR"
+                    ret += " --vbr " & p.VideoBitrate
+                Case "CQP"
+                    ret += " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
+            End Select
+
+            If sourcePath = "-" Then
+                ret += " --y4m --fps " &
+                    p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture)
+            End If
+
+            If includePaths Then
+                ret += " --input """ + sourcePath + """ --output """ + targetPath + """"
+            End If
+
+            Return ret.Trim
+        End Function
+
+        Public Overrides Function GetPackage() As Package
+            Return Packs.VCEEncC
         End Function
     End Class
 End Class

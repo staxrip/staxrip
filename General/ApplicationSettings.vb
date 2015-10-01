@@ -83,7 +83,7 @@ Class ApplicationSettings
             Storage = New ObjectStorage
         End If
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 180) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 182) Then
             If VideoEncoderProfiles Is Nothing Then
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
             Else
@@ -119,7 +119,7 @@ Class ApplicationSettings
             End If
         End If
 
-        If Check(Demuxers, "Demuxers", 102) Then Demuxers = Demuxer.GetDefaults()
+        If Check(Demuxers, "Demuxers", 103) Then Demuxers = Demuxer.GetDefaults()
 
         If Check(FilterPreferences, "Filter Preference", 22) Then
             FilterPreferences = New StringPairList
@@ -249,7 +249,7 @@ Class ApplicationSettings
             End If
         End If
 
-        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 22) Then
+        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 24) Then
             If VapourSynthProfiles Is Nothing Then
                 VapourSynthProfiles = FilterCategory.GetVapourSynthDefaults
             Else

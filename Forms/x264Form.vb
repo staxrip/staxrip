@@ -438,8 +438,8 @@ Class x264Form
         '
         'nudQPComp
         '
-        Me.nudQPComp.DecimalPlaces = 1
-        Me.nudQPComp.Increment = New Decimal(New Integer() {1, 0, 0, 65536})
+        Me.nudQPComp.DecimalPlaces = 2
+        Me.nudQPComp.Increment = New Decimal(New Integer() {1, 0, 0, 131072})
         Me.nudQPComp.Location = New System.Drawing.Point(168, 85)
         Me.nudQPComp.Margin = New System.Windows.Forms.Padding(4)
         Me.nudQPComp.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
@@ -707,7 +707,7 @@ Class x264Form
         Me.cbFastPSkip.Location = New System.Drawing.Point(10, 91)
         Me.cbFastPSkip.Margin = New System.Windows.Forms.Padding(4)
         Me.cbFastPSkip.Name = "cbFastPSkip"
-        Me.cbFastPSkip.Size = New System.Drawing.Size(124, 29)
+        Me.cbFastPSkip.Size = New System.Drawing.Size(123, 29)
         Me.cbFastPSkip.TabIndex = 2
         Me.cbFastPSkip.Text = "Fast P Skip"
         Me.cbFastPSkip.UseVisualStyleBackColor = True
@@ -748,7 +748,7 @@ Class x264Form
         Me.lTrellis.Location = New System.Drawing.Point(215, 32)
         Me.lTrellis.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lTrellis.Name = "lTrellis"
-        Me.lTrellis.Size = New System.Drawing.Size(60, 25)
+        Me.lTrellis.Size = New System.Drawing.Size(58, 25)
         Me.lTrellis.TabIndex = 6
         Me.lTrellis.Text = "Trellis:"
         '
@@ -758,7 +758,7 @@ Class x264Form
         Me.cbMixedReferences.Location = New System.Drawing.Point(10, 30)
         Me.cbMixedReferences.Margin = New System.Windows.Forms.Padding(4)
         Me.cbMixedReferences.Name = "cbMixedReferences"
-        Me.cbMixedReferences.Size = New System.Drawing.Size(176, 29)
+        Me.cbMixedReferences.Size = New System.Drawing.Size(175, 29)
         Me.cbMixedReferences.TabIndex = 0
         Me.cbMixedReferences.Text = "Mixed References"
         Me.cbMixedReferences.UseVisualStyleBackColor = True
@@ -769,7 +769,7 @@ Class x264Form
         Me.lSubpixelRefinement.Location = New System.Drawing.Point(8, 25)
         Me.lSubpixelRefinement.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lSubpixelRefinement.Name = "lSubpixelRefinement"
-        Me.lSubpixelRefinement.Size = New System.Drawing.Size(178, 25)
+        Me.lSubpixelRefinement.Size = New System.Drawing.Size(177, 25)
         Me.lSubpixelRefinement.TabIndex = 0
         Me.lSubpixelRefinement.Text = "Subpixel Refinement:"
         '
@@ -808,10 +808,10 @@ Class x264Form
         '
         Me.cbWeightB.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cbWeightB.AutoSize = True
-        Me.cbWeightB.Location = New System.Drawing.Point(177, 57)
+        Me.cbWeightB.Location = New System.Drawing.Point(178, 57)
         Me.cbWeightB.Margin = New System.Windows.Forms.Padding(4)
         Me.cbWeightB.Name = "cbWeightB"
-        Me.cbWeightB.Size = New System.Drawing.Size(228, 29)
+        Me.cbWeightB.Size = New System.Drawing.Size(227, 29)
         Me.cbWeightB.TabIndex = 4
         Me.cbWeightB.Text = "Weighted Pred. B-frame"
         '
@@ -1232,7 +1232,7 @@ Class x264Form
         Me.lPsyTrellis.Location = New System.Drawing.Point(243, 123)
         Me.lPsyTrellis.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lPsyTrellis.Name = "lPsyTrellis"
-        Me.lPsyTrellis.Size = New System.Drawing.Size(60, 25)
+        Me.lPsyTrellis.Size = New System.Drawing.Size(58, 25)
         Me.lPsyTrellis.TabIndex = 7
         Me.lPsyTrellis.Text = "Trellis:"
         '
@@ -1379,7 +1379,7 @@ Class x264Form
         Me.lWeightP.Location = New System.Drawing.Point(10, 97)
         Me.lWeightP.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lWeightP.Name = "lWeightP"
-        Me.lWeightP.Size = New System.Drawing.Size(202, 25)
+        Me.lWeightP.Size = New System.Drawing.Size(201, 25)
         Me.lWeightP.TabIndex = 2
         Me.lWeightP.Text = "Weighted Pred. P-frame"
         '
@@ -1401,7 +1401,7 @@ Class x264Form
         Me.lNoiseReduction.Location = New System.Drawing.Point(260, 97)
         Me.lNoiseReduction.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lNoiseReduction.Name = "lNoiseReduction"
-        Me.lNoiseReduction.Size = New System.Drawing.Size(146, 25)
+        Me.lNoiseReduction.Size = New System.Drawing.Size(145, 25)
         Me.lNoiseReduction.TabIndex = 5
         Me.lNoiseReduction.Text = "Noise Reduction:"
         '
@@ -1616,7 +1616,7 @@ Class x264Form
         Me.lStrength.Location = New System.Drawing.Point(55, 10)
         Me.lStrength.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lStrength.Name = "lStrength"
-        Me.lStrength.Size = New System.Drawing.Size(84, 25)
+        Me.lStrength.Size = New System.Drawing.Size(83, 25)
         Me.lStrength.TabIndex = 0
         Me.lStrength.Text = "Strength:"
         '
@@ -1686,7 +1686,7 @@ Class x264Form
         Me.lReferenceFrames.Location = New System.Drawing.Point(15, 25)
         Me.lReferenceFrames.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lReferenceFrames.Name = "lReferenceFrames"
-        Me.lReferenceFrames.Size = New System.Drawing.Size(155, 25)
+        Me.lReferenceFrames.Size = New System.Drawing.Size(154, 25)
         Me.lReferenceFrames.TabIndex = 0
         Me.lReferenceFrames.Text = "Reference Frames:"
         '
@@ -1784,7 +1784,7 @@ Class x264Form
         Me.cbMBTree.Location = New System.Drawing.Point(18, 274)
         Me.cbMBTree.Margin = New System.Windows.Forms.Padding(4)
         Me.cbMBTree.Name = "cbMBTree"
-        Me.cbMBTree.Size = New System.Drawing.Size(102, 29)
+        Me.cbMBTree.Size = New System.Drawing.Size(100, 29)
         Me.cbMBTree.TabIndex = 10
         Me.cbMBTree.Text = "MB Tree"
         Me.cbMBTree.UseVisualStyleBackColor = True
@@ -1829,7 +1829,7 @@ Class x264Form
         Me.Label2.Location = New System.Drawing.Point(8, 116)
         Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(115, 25)
+        Me.Label2.Size = New System.Drawing.Size(114, 25)
         Me.Label2.TabIndex = 1
         Me.Label2.Text = "AQ Strength:"
         '
@@ -2049,7 +2049,7 @@ Class x264Form
         '
         Me.cbPicStruct.AutoSize = True
         Me.cbPicStruct.Location = New System.Drawing.Point(292, 49)
-        Me.cbPicStruct.Size = New System.Drawing.Size(111, 29)
+        Me.cbPicStruct.Size = New System.Drawing.Size(110, 29)
         Me.cbPicStruct.Text = "Pic Struct"
         Me.cbPicStruct.UseVisualStyleBackColor = True
         '
@@ -2079,7 +2079,7 @@ Class x264Form
         Me.lTransfer.Location = New System.Drawing.Point(13, 173)
         Me.lTransfer.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lTransfer.Name = "lTransfer"
-        Me.lTransfer.Size = New System.Drawing.Size(79, 25)
+        Me.lTransfer.Size = New System.Drawing.Size(77, 25)
         Me.lTransfer.TabIndex = 30
         Me.lTransfer.Text = "Transfer:"
         '
@@ -2362,7 +2362,7 @@ Class x264Form
         Me.cbGoTo.Size = New System.Drawing.Size(172, 33)
         Me.cbGoTo.TabIndex = 3
         '
-        'bProfiles
+        'bnProfiles
         '
         Me.bnProfiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.bnProfiles.Location = New System.Drawing.Point(194, 471)

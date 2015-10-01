@@ -27,7 +27,7 @@ Class Project
     Public CodeAtTop As String = ""
     Public Script As TargetVideoScript
     Public BatchMode As Boolean
-    Public BatchDemuxingAndIndexing As Boolean
+    Public NoDialogs As Boolean
     Public CompCheckAction As CompCheckAction = CompCheckAction.AdjustImageSize
     Public CompCheckRange As Integer = 5
     Public Compressibility As Double

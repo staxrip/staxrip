@@ -99,7 +99,7 @@ Class x264Encoder
         End If
 
         Log.WriteLine(code + CrLf2)
-        script.Filters.Add(New VideoFilter("aaa", "aaa", code, True))
+        script.Filters.Add(New VideoFilter("aaa", "aaa", code))
         script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
         script.Synchronize()
 

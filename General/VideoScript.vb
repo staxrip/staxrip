@@ -299,7 +299,7 @@ Class VideoScript
 
         Dim script As New TargetVideoScript("AviSynth")
         script.Engine = ScriptingEngine.AviSynth
-        script.Filters.Add(New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")", True))
+        script.Filters.Add(New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")"))
         script.Filters.Add(New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", False))
         script.Filters.Add(New VideoFilter("Field", "TDeint", "TDeint()", False))
         script.Filters.Add(New VideoFilter("Misc", "RemoveGrain", "RemoveGrain()", False))
@@ -308,7 +308,7 @@ Class VideoScript
 
         script = New TargetVideoScript("VapourSynth")
         script.Engine = ScriptingEngine.VapourSynth
-        script.Filters.Add(New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')", True))
+        script.Filters.Add(New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')"))
         script.Filters.Add(New VideoFilter("Crop", "CropAbs", "cropwidth = clip.width - %crop_left% - %crop_right%" + CrLf + "cropheight = clip.height - %crop_top% - %crop_bottom%" + CrLf + "clip = core.std.CropAbs(clip, cropwidth, cropheight, %crop_left%, %crop_top%)", False))
         script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", "clip = havsfunc.QTGMC(Input = clip, TFF = True, Preset = 'Medium')", False))
         script.Filters.Add(New VideoFilter("Noise", "SMDegrain", "clip = havsfunc.SMDegrain(input = clip, contrasharp = True)", False))
@@ -507,62 +507,61 @@ Class FilterCategory
 
         Dim src As New FilterCategory("Source")
         src.Filters.AddRange(
-            {New VideoFilter("Source", "Manual", "# shows the filter selection dialog", True),
-             New VideoFilter("Source", "Automatic", "# can be configured at main menu > Tools > Settings > Source Filters", True),
-             New VideoFilter("Source", "AviSource", "AviSource(""%source_file%"", Audio = False)", True),
-             New VideoFilter("Source", "DirectShowSource", "DirectShowSource(""%source_file%"", audio = False)", True),
-             New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")", True),
-             New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")", True),
-             New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")", True),
-             New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")", True),
-             New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")", True),
-             New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")", True)})
+            {New VideoFilter("Source", "Manual", "# shows the filter selection dialog"),
+             New VideoFilter("Source", "Automatic", "# can be configured at main menu > Tools > Settings > Source Filters"),
+             New VideoFilter("Source", "AviSource", "AviSource(""%source_file%"", Audio = False)"),
+             New VideoFilter("Source", "DirectShowSource", "DirectShowSource(""%source_file%"", audio = False)"),
+             New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")"),
+             New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")"),
+             New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")"),
+             New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")"),
+             New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")})
         ret.Add(src)
 
         Dim misc As New FilterCategory("Misc")
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "AssumeFPS(%media_info_video:FrameRate%)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(24000, 1001)", "AssumeFPS(24000, 1001)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(30000, 1001)", "AssumeFPS(30000, 1001)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(60000, 1001)", "AssumeFPS(60000, 1001)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(24)", "AssumeFPS(24)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(25)", "AssumeFPS(25)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(50)", "AssumeFPS(50)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "Prefetch(4)", "Prefetch(4)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "checkmate", "checkmate()", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "Clense", "Clense()", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "f3kdb", "f3kdb()", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "RemoveGrain", "RemoveGrain()", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "UnDot", "UnDot()", True))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "AssumeFPS(%media_info_video:FrameRate%)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(24000, 1001)", "AssumeFPS(24000, 1001)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(30000, 1001)", "AssumeFPS(30000, 1001)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(60000, 1001)", "AssumeFPS(60000, 1001)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(24)", "AssumeFPS(24)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(25)", "AssumeFPS(25)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(50)", "AssumeFPS(50)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "Prefetch(4)", "Prefetch(4)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "checkmate", "checkmate()"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "Clense", "Clense()"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "f3kdb", "f3kdb()"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "RemoveGrain", "RemoveGrain()"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "UnDot", "UnDot()"))
         ret.Add(misc)
 
         Dim field As New FilterCategory("Field")
-        field.Filters.Add(New VideoFilter(field.Name, "IVTC", "Telecide(guide=1).Decimate()", True))
-        field.Filters.Add(New VideoFilter(field.Name, "TDeint", "TDeint()", True))
-        field.Filters.Add(New VideoFilter(field.Name, "FieldDeinterlace", "FieldDeinterlace()", True))
-        field.Filters.Add(New VideoFilter(field.Name, "SangNom2", "SangNom2()", True))
-        field.Filters.Add(New VideoFilter(field.Name, "vinverse2", "vinverse2()", True))
-        field.Filters.Add(New VideoFilter(field.Name, "SelectEven", "SelectEven()", True))
-        field.Filters.Add(New VideoFilter(field.Name, "SelectOdd", "SelectOdd()", True))
+        field.Filters.Add(New VideoFilter(field.Name, "IVTC", "Telecide(guide=1).Decimate()"))
+        field.Filters.Add(New VideoFilter(field.Name, "TDeint", "TDeint()"))
+        field.Filters.Add(New VideoFilter(field.Name, "FieldDeinterlace", "FieldDeinterlace()"))
+        field.Filters.Add(New VideoFilter(field.Name, "SangNom2", "SangNom2()"))
+        field.Filters.Add(New VideoFilter(field.Name, "vinverse2", "vinverse2()"))
+        field.Filters.Add(New VideoFilter(field.Name, "SelectEven", "SelectEven()"))
+        field.Filters.Add(New VideoFilter(field.Name, "SelectOdd", "SelectOdd()"))
         ret.Add(field)
 
         Dim resize As New FilterCategory("Resize")
-        resize.Filters.Add(New VideoFilter(resize.Name, "BilinearResize", "BilinearResize(%target_width%, %target_height%)", True))
-        resize.Filters.Add(New VideoFilter(resize.Name, "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
-        resize.Filters.Add(New VideoFilter(resize.Name, "LanczosResize", "LanczosResize(%target_width%, %target_height%)", True))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Lanczos4Resize", "Lanczos4Resize(%target_width%, %target_height%)", True))
-        resize.Filters.Add(New VideoFilter(resize.Name, "BlackmanResize", "BlackmanResize(%target_width%, %target_height%)", True))
-        resize.Filters.Add(New VideoFilter(resize.Name, "GaussResize", "GaussResize(%target_width%, %target_height%)", True))
-        resize.Filters.Add(New VideoFilter(resize.Name, "SincResize", "SincResize(%target_width%, %target_height%)", True))
-        resize.Filters.Add(New VideoFilter(resize.Name, "PointResize", "PointResize(%target_width%, %target_height%)", True))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Hardware Encoder", "# hardware encoder resizes", True))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Spline | Spline16Resize", "Spline16Resize(%target_width%, %target_height%)", True))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Spline | Spline36Resize", "Spline36Resize(%target_width%, %target_height%)", True))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Spline | Spline64Resize", "Spline64Resize(%target_width%, %target_height%)", True))
+        resize.Filters.Add(New VideoFilter(resize.Name, "BilinearResize", "BilinearResize(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "LanczosResize", "LanczosResize(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Lanczos4Resize", "Lanczos4Resize(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "BlackmanResize", "BlackmanResize(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "GaussResize", "GaussResize(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "SincResize", "SincResize(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "PointResize", "PointResize(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Hardware Encoder", "# hardware encoder resizes"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Spline | Spline16Resize", "Spline16Resize(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Spline | Spline36Resize", "Spline36Resize(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Spline | Spline64Resize", "Spline64Resize(%target_width%, %target_height%)"))
         ret.Add(resize)
 
         Dim crop As New FilterCategory("Crop")
-        crop.Filters.Add(New VideoFilter(crop.Name, "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))
-        crop.Filters.Add(New VideoFilter(crop.Name, "Hardware Encoder", "# hardware encoder crops", True))
+        crop.Filters.Add(New VideoFilter(crop.Name, "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
+        crop.Filters.Add(New VideoFilter(crop.Name, "Hardware Encoder", "# hardware encoder crops"))
         ret.Add(crop)
 
         FilterCategory.AddDefaults(ScriptingEngine.AviSynth, ret)
@@ -575,11 +574,11 @@ Class FilterCategory
 
         Dim src As New FilterCategory("Source")
         src.Filters.AddRange(
-            {New VideoFilter("Source", "Manual", "# shows filter selection dialog", True),
-             New VideoFilter("Source", "Automatic", "# can be configured at main menu > Tools > Settings > Source Filters", True),
-             New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')", True),
-             New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(source = r'%source_file%')", True),
-             New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(source = r'%source_file%')", True)})
+            {New VideoFilter("Source", "Manual", "# shows filter selection dialog"),
+             New VideoFilter("Source", "Automatic", "# can be configured at main menu > Tools > Settings > Source Filters"),
+             New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')"),
+             New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(source = r'%source_file%')"),
+             New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(source = r'%source_file%')")})
         ret.Add(src)
 
         Dim crop As New FilterCategory("Crop")
@@ -589,39 +588,39 @@ Class FilterCategory
 
         Dim resize As New FilterCategory("Resize")
         resize.Filters.AddRange(
-            {New VideoFilter("Resize", "Bilinear", "clip = core.resize.Bilinear(clip, %target_width%, %target_height%)", True),
-             New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)", True),
-             New VideoFilter("Resize", "Point", "clip = core.resize.Point(clip, %target_width%, %target_height%)", True),
-             New VideoFilter("Resize", "Gauss", "clip = core.resize.Gauss(clip, %target_width%, %target_height%)", True),
-             New VideoFilter("Resize", "Sinc", "clip = core.resize.Sinc(clip, %target_width%, %target_height%)", True),
-             New VideoFilter("Resize", "Lanczos", "clip = core.resize.Lanczos(clip, %target_width%, %target_height%)", True),
-             New VideoFilter("Resize", "Spline", "clip = core.resize.Spline(clip, %target_width%, %target_height%)", True)})
+            {New VideoFilter("Resize", "Bilinear", "clip = core.resize.Bilinear(clip, %target_width%, %target_height%)"),
+             New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)"),
+             New VideoFilter("Resize", "Point", "clip = core.resize.Point(clip, %target_width%, %target_height%)"),
+             New VideoFilter("Resize", "Gauss", "clip = core.resize.Gauss(clip, %target_width%, %target_height%)"),
+             New VideoFilter("Resize", "Sinc", "clip = core.resize.Sinc(clip, %target_width%, %target_height%)"),
+             New VideoFilter("Resize", "Lanczos", "clip = core.resize.Lanczos(clip, %target_width%, %target_height%)"),
+             New VideoFilter("Resize", "Spline", "clip = core.resize.Spline(clip, %target_width%, %target_height%)")})
         ret.Add(resize)
 
         Dim field As New FilterCategory("Field")
-        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Fast", "clip = havsfunc.QTGMC(Input = clip, TFF = True, Preset = 'Fast')", True))
-        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Medium", "clip = havsfunc.QTGMC(Input = clip, TFF = True, Preset = 'Medium')", True))
-        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Slow", "clip = havsfunc.QTGMC(Input = clip, TFF = True, Preset = 'Slow')", True))
-        field.Filters.Add(New VideoFilter(field.Name, "nnedi3", "clip = core.nnedi3.nnedi3(clip = clip, field = 1)", True))
-        field.Filters.Add(New VideoFilter(field.Name, "IVTC", "clip = core.vivtc.VFM(clip, 1)" + CrLf + "clip = core.vivtc.VDecimate(clip)", True))
-        field.Filters.Add(New VideoFilter(field.Name, "Vinverse", "clip = core.vinverse.Vinverse(clip)", True))
-        field.Filters.Add(New VideoFilter(field.Name, "Select Even", "clip = clip[::2]", True))
-        field.Filters.Add(New VideoFilter(field.Name, "Select Odd", "clip = clip[1::2]", True))
+        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Fast", "clip = havsfunc.QTGMC(Input = clip, TFF = True, Preset = 'Fast')"))
+        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Medium", "clip = havsfunc.QTGMC(Input = clip, TFF = True, Preset = 'Medium')"))
+        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Slow", "clip = havsfunc.QTGMC(Input = clip, TFF = True, Preset = 'Slow')"))
+        field.Filters.Add(New VideoFilter(field.Name, "nnedi3", "clip = core.nnedi3.nnedi3(clip = clip, field = 1)"))
+        field.Filters.Add(New VideoFilter(field.Name, "IVTC", "clip = core.vivtc.VFM(clip, 1)" + CrLf + "clip = core.vivtc.VDecimate(clip)"))
+        field.Filters.Add(New VideoFilter(field.Name, "Vinverse", "clip = core.vinverse.Vinverse(clip)"))
+        field.Filters.Add(New VideoFilter(field.Name, "Select Even", "clip = clip[::2]"))
+        field.Filters.Add(New VideoFilter(field.Name, "Select Odd", "clip = clip[1::2]"))
         ret.Add(field)
 
         Dim noise As New FilterCategory("Noise")
-        noise.Filters.Add(New VideoFilter(noise.Name, "SMDegrain", "clip = havsfunc.SMDegrain(input = clip, contrasharp = True)", True))
-        noise.Filters.Add(New VideoFilter(noise.Name, "RemoveGrain", "clip = core.rgvs.RemoveGrain(clip, 1)", True))
+        noise.Filters.Add(New VideoFilter(noise.Name, "SMDegrain", "clip = havsfunc.SMDegrain(input = clip, contrasharp = True)"))
+        noise.Filters.Add(New VideoFilter(noise.Name, "RemoveGrain", "clip = core.rgvs.RemoveGrain(clip, 1)"))
         ret.Add(noise)
 
         Dim misc As New FilterCategory("Misc")
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "clip = core.std.AssumeFPS(clip = clip, fpsnum = int(%media_info_video:FrameRate% * 1000), fpsden = 1000)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 24000/1001", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 24000, fpsden = 1001)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 30000/1001", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 30000, fpsden = 1001)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 60000/1001", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 60000, fpsden = 1001)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 24", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 24, fpsden = 1)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 25", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 25, fpsden = 1)", True))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 50", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 50, fpsden = 1)", True))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "clip = core.std.AssumeFPS(clip = clip, fpsnum = int(%media_info_video:FrameRate% * 1000), fpsden = 1000)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 24000/1001", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 24000, fpsden = 1001)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 30000/1001", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 30000, fpsden = 1001)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 60000/1001", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 60000, fpsden = 1001)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 24", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 24, fpsden = 1)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 25", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 25, fpsden = 1)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 50", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 50, fpsden = 1)"))
         ret.Add(misc)
 
         FilterCategory.AddDefaults(ScriptingEngine.VapourSynth, ret)

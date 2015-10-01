@@ -886,7 +886,7 @@ Class GlobalClass
         script.Engine = p.Script.Engine
         script.Path = p.TempDir + p.Name + "_AutoCrop." + script.FileType
         script.Filters.Add(filter.GetCopy)
-        script.Filters.Add(New VideoFilter("AutoCrop", "AutoCrop", "AutoCrop(mode = 2, samples = 10)", True))
+        script.Filters.Add(New VideoFilter("AutoCrop", "AutoCrop", "AutoCrop(mode = 2, samples = 10)"))
         script.Synchronize()
 
         Dim logfile = Filepath.GetDir(script.Path) + "AutoCrop.log"
@@ -996,7 +996,7 @@ Class GlobalClass
 
     Sub ForceCropMod()
         If Not g.EnableFilter("Crop") Then
-            p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))
+            p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
         End If
 
         CorrectCropMod(True)

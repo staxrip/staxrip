@@ -1,14 +1,13 @@
 # StaxRip x64
 
-Modern x64 video encoding GUI for many powerful x64 video tools such as AviSynth+, VapourSynth, mkvtoolnix, x264, x265, Intel and NVIDIA GPU encoding, eac3to, ffmpeg and many more. All tools and more then 20 AviSynth+ or VapourSynth plugins are included.
+Modern x64 video encoding GUI for many powerful x64 video tools such as AviSynth+, VapourSynth, mkvtoolnix, x264, x265, AMD/Intel/NVIDIA GPU encoding, eac3to, ffmpeg and many more. All tools and more then 30 AviSynth+ or VapourSynth plugins are included.
 
 # Features
 
-- Feature rich and mature due to active development since 15 years
 - Clean user interface with High DPI awareness
 - Context sensitiv and dynamic help
 - Handles almost any input format and allows to config how files are loaded and processed
-- x264, x265, Intel Quick Sync H.264 and NVIDIA H.264/H.265 Encoding, VP9, XVID
+- x264, x265, AMD VCE H.264 encoding, Intel Quick Sync H.264 encoding, NVIDIA H.264/H.265 encoding, VP9, XVID
 - Output Formats: AVI, MP4, MKV, WEBM
 - Output Codecs: XVID, H.264, H.265, VP9, MP3, AC3, AAC, VORBIS, DTS, FLAC, OPUS, DTS
 - Batch Processing including support for processing sub-directories recursivly

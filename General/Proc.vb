@@ -1,7 +1,5 @@
 Imports System.Threading
 Imports System.Text.RegularExpressions
-
-Imports StaxRip.UI
 Imports System.Text
 
 Public Class Proc

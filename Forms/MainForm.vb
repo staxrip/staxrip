@@ -1538,16 +1538,16 @@ Class MainForm
 
         If OK(files) Then
             Activate()
-            BeginInvoke(Sub() OpenAnyFile(files.ToList, False))
+            BeginInvoke(Sub() OpenAnyFile(files.ToList))
         End If
     End Sub
 
     Function ShowSourceFilterSelection(inputFile As String) As VideoFilter
         Select Case inputFile.Ext
             Case "dgi"
-                Return New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")", True)
+                Return New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
             Case "dgim"
-                Return New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")", True)
+                Return New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
         End Select
 
         Dim ret As VideoFilter
@@ -1584,40 +1584,46 @@ Class MainForm
         td.AddCommandLink("ffms2 using VapourSynth", "vsffms2")
         td.AddCommandLink("LWLibavSource using VapourSynth", "vsLWLibavSource")
 
+        If FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then
+            td.AddCommandLink("DGSource using VapourSynth", "vsDGSource")
+        End If
+
         Select Case td.Show
             Case "Automatic"
-                ret = New VideoFilter("Source", "Automatic", "", True)
+                ret = New VideoFilter("Source", "Automatic", "")
             Case "DGSource"
-                ret = New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")", True)
+                ret = New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
             Case "DGSourceIM"
-                ret = New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")", True)
+                ret = New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
             Case "FFVideoSource"
-                ret = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")", True)
+                ret = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")")
             Case "LWLibavVideoSource"
-                ret = New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")", True)
+                ret = New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")")
             Case "LSMASHVideoSource"
-                ret = New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")", True)
+                ret = New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")")
             Case "DSS2"
-                ret = New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")", True)
+                ret = New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")")
             Case "AVISource"
-                ret = New VideoFilter("Source", "AVISource", "AviSource(""%source_file%"", audio = false)", True)
+                ret = New VideoFilter("Source", "AVISource", "AviSource(""%source_file%"", audio = false)")
             Case "vsffms2"
-                ret = New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')", True)
+                ret = New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')")
             Case "vsLibavSMASHSource"
-                ret = New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(source = r'%source_file%')", True)
+                ret = New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(source = r'%source_file%')")
             Case "vsLWLibavSource"
-                ret = New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(source = r'%source_file%')", True)
+                ret = New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(source = r'%source_file%')")
+            Case "vsDGSource"
+                ret = New VideoFilter("Source", "DGSource", "clip = core.dgdecodenv.DGSource(r'%source_file%')")
         End Select
 
         Return ret
     End Function
 
-    Sub OpenAnyFile(files As IEnumerable(Of String), Optional silent As Boolean = True)
+    Sub OpenAnyFile(files As IEnumerable(Of String))
         If Filepath.GetExtFull(files(0)) = ".srip" Then
             OpenProject(files(0))
         ElseIf FileTypes.Video.Contains(Filepath.GetExt(files(0)).ToLower) Then
             files.Sort()
-            OpenVideoSourceFiles(files, silent)
+            OpenVideoSourceFiles(files)
         ElseIf FileTypes.Audio.Contains(Filepath.GetExt(files(0)).ToLower) Then
             tbAudioFile0.Text = files(0)
         Else
@@ -1630,14 +1636,11 @@ Class MainForm
         OpenVideoSourceFiles({fp})
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), Optional silent As Boolean = False)
-        OpenVideoSourceFiles(files, True, silent)
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String))
+        OpenVideoSourceFiles(files, True)
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String),
-                             isNotEncoding As Boolean,
-                             silent As Boolean)
-
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isNotEncoding As Boolean)
         Dim recoverPath = g.ProjectPath
         Dim recoverProjectPath = CommonDirs.Temp + Guid.NewGuid.ToString + ".bin"
         Dim recoverText = Text
@@ -1696,7 +1699,7 @@ Class MainForm
 
             If p.SourceFiles.Count = 1 AndAlso
                 p.Script.Filters(0).Name = "Manual" AndAlso
-                Not p.BatchMode Then
+                Not p.NoDialogs AndAlso Not p.BatchMode Then
 
                 preferredSourceFilter = ShowSourceFilterSelection(files(0))
             End If
@@ -1849,11 +1852,11 @@ Class MainForm
             If p.SourceFile.Ext = "avs" Then
                 p.Script.Engine = ScriptingEngine.AviSynth
                 p.Script.Filters.Clear()
-                p.Script.Filters.Add(New VideoFilter("Source", "AviSynth Import", File.ReadAllText(p.SourceFile), True))
+                p.Script.Filters.Add(New VideoFilter("Source", "AviSynth Import", File.ReadAllText(p.SourceFile)))
             ElseIf p.SourceFile.Ext = "vpy" Then
                 p.Script.Engine = ScriptingEngine.VapourSynth
                 p.Script.Filters.Clear()
-                p.Script.Filters.Add(New VideoFilter("Source", "VapourSynth Import", File.ReadAllText(p.SourceFile), True))
+                p.Script.Filters.Add(New VideoFilter("Source", "VapourSynth Import", File.ReadAllText(p.SourceFile)))
             ElseIf Not sourceFilter.Script.Contains("(") OrElse
                 p.Script.Filters(0).Name = "Automatic" OrElse
                 p.Script.Filters(0).Name = "Manual" Then
@@ -2260,7 +2263,7 @@ Class MainForm
                 End If
 
                 SaveProjectByPath(g.ProjectPath)
-                OpenVideoSourceFiles(p.SourceFiles, False, True)
+                OpenVideoSourceFiles(p.SourceFiles, False)
                 p.BatchMode = False
                 SaveProjectByPath(g.ProjectPath)
             End If
@@ -3055,6 +3058,13 @@ Class MainForm
                     proc.Start()
                 End Using
             End If
+        ElseIf codeLower.Contains("lsmashvideosource(") OrElse codeLower.Contains("libavsmashsource(") Then
+            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
+                p.SourceFile = p.LastOriginalSourceFile
+                BlockSourceTextBoxTextChanged = True
+                tbSourceFile.Text = p.SourceFile
+                BlockSourceTextBoxTextChanged = False
+            End If
         ElseIf codeLower.Contains("dgsource(") AndAlso Not p.SourceFile.Ext = "dgi" Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
             Dim dgIndexNV = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexNV")
@@ -3474,9 +3484,9 @@ Class MainForm
 
             If Not g.EnableFilter("Crop") Then
                 If p.Script.Engine = ScriptingEngine.AviSynth Then
-                    p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))
+                    p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
                 Else
-                    p.Script.InsertAfter("Source", New VideoFilter("Crop", "CropAbs", "cropwidth = clip.width - %crop_left% - %crop_right%" + CrLf + "cropheight = clip.height - %crop_top% - %crop_bottom%" + CrLf + "clip = core.std.CropAbs(clip, cropwidth, cropheight, %crop_left%, %crop_top%)", True))
+                    p.Script.InsertAfter("Source", New VideoFilter("Crop", "CropAbs", "cropwidth = clip.width - %crop_left% - %crop_right%" + CrLf + "cropheight = clip.height - %crop_top% - %crop_bottom%" + CrLf + "clip = core.std.CropAbs(clip, cropwidth, cropheight, %crop_left%, %crop_top%)"))
                 End If
             End If
 
@@ -4164,7 +4174,7 @@ Class MainForm
                         Dim filterName = i.Left("=").Trim
 
                         If filterName <> "" Then
-                            filter = New VideoFilter(cat.Name, filterName, i.Right("=").Trim, True)
+                            filter = New VideoFilter(cat.Name, filterName, i.Right("=").Trim)
                             cat.Filters.Add(filter)
                         End If
                     End If
@@ -4194,7 +4204,7 @@ Class MainForm
         f.Owner = Me
 
         f.Doc.WriteStart("Command Line Help")
-        f.Doc.WriteP("StaxRip uses a similar command line syntax as the .NET framework tools as it simplifies development and usage. The arguments are processed sequentially in the order they appear in the command line so it would be fatal to put the shutdown switch before the encode switch or to put the source files after the encode switch. Don't forget to enclose strings containing blanks with quotes and ensure to study the examples at the bottom of this page.")
+        f.Doc.WriteP("StaxRip uses a similar command line syntax as the .NET framework tools as it simplifies development and usage. The arguments are processed sequentially in the order they appear in the command line so for certain switches the order is critical.")
         f.Doc.WriteP("Many of the available switches might not be useful from the command line, the reason why these switches are available is they are provided by StaxRip's command engine that is also used for customizable menu's and event commands.")
 
         Dim commands As New List(Of Command)(CommandManager.Commands.Values)
@@ -4273,17 +4283,12 @@ Class MainForm
         f.Doc.WriteTable("Advanced Switches", advanced)
 
         f.Doc.WriteElement("h2", "Examples")
-        f.Doc.WriteP("StaxRip C:\Movie\project.srip")
         f.Doc.WriteP("StaxRip ""C:\Movie 2\project.srip""")
         f.Doc.WriteP("StaxRip ""C:\Movie 2\VTS_01_1.VOB""")
         f.Doc.WriteP("StaxRip ""C:\Movie 2\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB""")
         f.Doc.WriteP("StaxRip -template:DVB ""C:\Movie 2\capture.mpg"" -encode -standby")
-        f.Doc.WriteP("StaxRip -template:""beware of blanks"" ""C:\Movie 2\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB"" -encode -shutdown")
-        f.Doc.WriteP("StaxRip -Perform/ShowMessageBox:""beware of blanks"",title,info")
-        f.Doc.WriteP("StaxRip -Perform/ShowMessageBox:no_blanks_no_quotes,""wasted_quotes"",info")
-        f.Doc.WriteP("StaxRip -Perform/ShowMessageBox:no_blanks_no_quotes,nothingToWaste,info")
-        f.Doc.WriteP("StaxRip -perform/showmessagebox:""Windows and VB don't care about case, Unix and C do"",title,info")
-        f.Doc.WriteP("StaxRip /perform/showmessagebox:""I hope StaxRip CLI don't suck since I've seen too many ugly CLI's"",title,info")
+        f.Doc.WriteP("StaxRip -template:""C:\Movie 2\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB"" -encode -shutdown")
+        f.Doc.WriteP("StaxRip -Perform/ShowMessageBox:""message text"",""message title"",info")
 
         f.Show()
     End Sub
@@ -4431,9 +4436,9 @@ Class MainForm
 
         If Not g.EnableFilter("Resize") Then
             If p.Script.Engine = ScriptingEngine.AviSynth Then
-                p.Script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
+                p.Script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
             Else
-                p.Script.Filters.Add(New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)", True))
+                p.Script.Filters.Add(New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)"))
             End If
 
             AviSynthListView.Load()
@@ -4592,7 +4597,7 @@ Class MainForm
     <Command("Parameter | Target Image Size", "Sets the target image size.")>
     Sub SetTargetImageSize(width As Integer, height As Integer)
         If Not g.EnableFilter("Resize") Then
-            p.Script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
+            p.Script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
             AviSynthListView.Load()
         End If
 
@@ -4608,7 +4613,7 @@ Class MainForm
     <Command("Parameter | Target Image Size By Pixel", "Sets the target image size by pixels (width x height).")>
     Sub SetTargetImageSizeByPixel(pixel As Integer)
         If Not g.EnableFilter("Resize") Then
-            p.Script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
+            p.Script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
             AviSynthListView.Load()
         End If
 
@@ -4709,7 +4714,7 @@ Class MainForm
         UpdateRecentProjectsMenuItems()
         UpdateTemplateProjectsMenuItems()
         UpdateDynamicMenu()
-        ProcessCmdl(Environment.GetCommandLineArgs)
+        ProcessCommandLine(Environment.GetCommandLineArgs)
 
         IsLoading = False
 
@@ -4855,13 +4860,14 @@ Class MainForm
         End Try
     End Sub
 
-    Private Sub ProcessCmdl(a As String())
+    Private Sub ProcessCommandLine(a As String())
         Dim files As New List(Of String)
 
         For Each i In CLIArg.GetArgs(a)
             Try
                 If Not i.IsFile AndAlso files.Count > 0 Then
                     Dim l As New List(Of String)(files)
+                    p.NoDialogs = True
                     OpenAnyFile(l)
                     files.Clear()
                 End If
@@ -4879,7 +4885,10 @@ Class MainForm
             End Try
         Next
 
-        If files.Count > 0 Then OpenAnyFile(files)
+        If files.Count > 0 Then
+            p.NoDialogs = True
+            OpenAnyFile(files)
+        End If
     End Sub
 
     <Command("Perform | Standby", "Puts PC in standby mode.", Switch:="standby")>
@@ -4992,7 +5001,7 @@ Class MainForm
 
                         Dim tempPath = Paths.TemplateDir + "temp.srip"
                         p.BatchMode = Not f.cbDemuxAndIndex.Checked
-                        p.BatchDemuxingAndIndexing = f.cbDemuxAndIndex.Checked
+                        p.NoDialogs = f.cbDemuxAndIndex.Checked
                         SaveProjectByPath(tempPath)
 
                         For Each i In f.Files

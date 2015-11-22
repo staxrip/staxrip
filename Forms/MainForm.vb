@@ -2239,7 +2239,7 @@ Class MainForm
                             proc.WriteLine(args + CrLf2)
                             proc.File = Packs.VSRip.GetPath
                             proc.Arguments = """" + fileContent + """"
-                            proc.Directory = Packs.VSRip.GetDir
+                            proc.WorkingDirectory = Packs.VSRip.GetDir
                             proc.AllowedExitCodes = {0, 1, 2}
                             proc.Start()
                         End Using
@@ -2760,7 +2760,7 @@ Class MainForm
 
             If TypeOf p.VideoEncoder.Muxer Is MP4Muxer Then
                 For Each i In p.VideoEncoder.Muxer.Subtitles
-                    If Not IsOneOf(Filepath.GetExtFull(i.Path), ".idx", ".srt") Then
+                    If Not {"idx", "srt"}.Contains(i.Path.Ext) Then
                         If ProcessTip("MP4 supports only SRT and IDX subtitles.") Then
                             CanIgnoreTip = False
                             gbAssistant.Text = "Invalid subtitle format"

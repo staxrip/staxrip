@@ -47,7 +47,6 @@ Class Packs
     Shared Property vspipe As New vspipePackage
     Shared Property VapourSynth As New VapourSynthPackage
     Shared Property Python As New PythonPackage
-    Shared Property vscpp2013 As New vscpp2013Package
     Shared Property scenechange As New scenechangePackage
     Shared Property temporalsoften As New temporalsoftenPackage
     Shared Property havsfunc As New havsfuncPackage
@@ -66,6 +65,20 @@ Class Packs
         .Description = "AMD GPU accelerated H.264 encoder.",
         .HelpFile = "help.txt",
         .WebURL = "https://www.dropbox.com/sh/c4q2ekr269fd4w9/6zuEnjBI-Q"}
+
+    Shared Property vscpp2013 As New Package With {
+        .Name = "Visual C++ 2013",
+        .Filename = "msvcr120.dll",
+        .Description = "Visual C++ 2013 Redistributable Packages which is required by some tools used by StaxRip.",
+        .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=40784",
+        .FixedDir = CommonDirs.System}
+
+    Shared Property vscpp2015 As New Package With {
+        .Name = "Visual C++ 2015",
+        .Filename = "msvcp140.dll",
+        .Description = "Visual C++ 2015 Redistributable Packages which is required by some tools used by StaxRip.",
+        .DownloadURL = "https://www.microsoft.com/en-us/download/details.aspx?id=48145",
+        .FixedDir = CommonDirs.System}
 
     Shared Function GetDGDecodeNVStatus() As String
         If Not DGDecodeNV.IsCorrectVersion Then
@@ -95,7 +108,6 @@ Class Packs
         Packages.Add(havsfunc)
         Packages.Add(temporalsoften)
         Packages.Add(scenechange)
-        Packages.Add(vscpp2013)
         Packages.Add(Python)
         Packages.Add(VapourSynth)
         Packages.Add(vspipe)
@@ -143,12 +155,14 @@ Class Packs
         Packages.Add(x264)
         Packages.Add(x265)
         Packages.Add(xvid_encraw)
+        Packages.Add(vscpp2013)
+        Packages.Add(vscpp2015)
 
         Packages.Add(New PluginPackage With {
             .Name = "KNLMeansCL",
             .Filename = "KNLMeansCL.dll",
             .WebURL = "http://forum.doom9.org/showthread.php?t=171379",
-            .HelpFile = "README.txt",
+            .HelpFile = "DOC.txt",
             .Description = "KNLMeansCL is an optimized pixelwise OpenCL implementation of the Non-local means denoising algorithm. Every pixel is restored by the weighted average of all pixels in its search window. The level of averaging is determined by the filtering parameter h.",
             .VapourSynthFilterNames = {"knlm.KNLMeansCL"},
             .AviSynthFilterNames = {"KNLMeansCL"},
@@ -282,12 +296,15 @@ Public Class Package
     Property IsRequiredFunc As Func(Of Boolean)
     Property StatusFunc As Func(Of String)
 
-    Protected FixedDirValue As String
+    Private FixedDirValue As String
 
-    Overridable ReadOnly Property FixedDir As String
+    Overridable Property FixedDir As String
         Get
             Return FixedDirValue
         End Get
+        Set(value As String)
+            FixedDirValue = value
+        End Set
     End Property
 
     Private FilenameValue As String
@@ -535,7 +552,7 @@ Public Class AviSynthPlusPackage
         Filename = "avisynth.dll"
         WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        FixedDirValue = CommonDirs.System
+        FixedDir = CommonDirs.System
         SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\AviSynth+ r1825.exe")
     End Sub
 
@@ -586,7 +603,7 @@ Public Class VapourSynthPackage
         Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         WebURL = "http://www.vapoursynth.com"
         HelpURL = "http://www.vapoursynth.com/doc"
-        DownloadURL = "https://dl.dropboxusercontent.com/u/73468194/vapoursynth-r28-test6.exe"
+        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R28/vapoursynth-r28.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -595,14 +612,16 @@ Public Class VapourSynthPackage
         End Get
     End Property
 
-    Public Overrides ReadOnly Property FixedDir As String
+    Public Overrides Property FixedDir As String
         Get
             Return Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"
         End Get
+        Set(value As String)
+        End Set
     End Property
 
     Public Overrides Function GetStatus() As String
-        If Not IsCorrectVersion() Then Return "Install VapourSynth R28 test6. Press F12 to edit the version."
+        If Not IsCorrectVersion() Then Return "Install VapourSynth R28. Press F12 to edit the version."
         Return MyBase.GetStatus()
     End Function
 End Class
@@ -624,23 +643,13 @@ Public Class vspipePackage
         End Get
     End Property
 
-    Public Overrides ReadOnly Property FixedDir As String
+    Public Overrides Property FixedDir As String
         Get
             Return Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"
         End Get
+        Set(value As String)
+        End Set
     End Property
-End Class
-
-Public Class vscpp2013Package
-    Inherits Package
-
-    Sub New()
-        Name = "Visual C++ 2013"
-        Filename = "msvcr120.dll"
-        Description = "Visual C++ 2013 Redistributable Packages which is required by various tools used by StaxRip."
-        DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=40784"
-        FixedDirValue = CommonDirs.System
-    End Sub
 End Class
 
 Public Class PluginPackage
@@ -710,7 +719,7 @@ Public Class NeroAACEncPackage
         Description = "Free AAC encoder"
         WebURL = "http://www.nero.com/enu/downloads-nerodigital-nero-aac-codec.php"
         HelpFile = "nero readme.txt"
-        FixedDirValue = CommonDirs.Startup + "Apps\BeSweet\"
+        FixedDir = CommonDirs.Startup + "Apps\BeSweet\"
     End Sub
 End Class
 
@@ -906,7 +915,7 @@ Public Class qaacPackage
         Name = "qaac"
         Filename = "qaac64.exe"
         WebURL = "http://github.com/nu774/qaac"
-        Description = "qaac is a command line AAC encoder frontend based on the Apple AAC encoder."
+        Description = "qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the x64 iTunes installer using a decompression tool like 7-Zip. The makeportable script found on the qaac website can also be used."
     End Sub
 
     Overrides ReadOnly Property IsRequired As Boolean
@@ -924,12 +933,6 @@ Public Class qaacPackage
         If Not File.Exists(path) AndAlso Not File.Exists(GetDir() + "QTfiles64\CoreAudioToolbox.dll") Then
             Return "Failed to locate CoreAudioToolbox, read the description below. Expected paths:" +
                 CrLf2 + path + CrLf2 + GetDir() + "QTfiles64\CoreAudioToolbox.dll"
-        End If
-
-        If Not File.Exists(GetDir() + "libFLAC.dll") AndAlso
-            Not File.Exists(CommonDirs.System + "libFLAC.dll") Then
-
-            Return "Failed to locate libFLAC.dll"
         End If
     End Function
 End Class

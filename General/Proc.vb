@@ -1,6 +1,8 @@
 Imports System.Threading
 Imports System.Text.RegularExpressions
 Imports System.Text
+Imports System.ComponentModel
+Imports System.Runtime.InteropServices
 
 Public Class Proc
     Implements IDisposable
@@ -18,6 +20,7 @@ Public Class Proc
     Property SkipPatterns As String()
     Property TrimChars As Char()
     Property RemoveChars As Char()
+    Property ExitCode As Integer
 
     Private ReadOutput As Boolean
     Private ReadError As Boolean
@@ -41,23 +44,13 @@ Public Class Proc
         ProcessForm.ShowForm()
     End Sub
 
-    Property Directory() As String
+    Property WorkingDirectory() As String
         Get
             Return Process.StartInfo.WorkingDirectory
         End Get
         Set(Value As String)
-            If IO.Directory.Exists(Value) Then
-                Process.StartInfo.WorkingDirectory = Value
-            End If
+            If Directory.Exists(Value) Then Process.StartInfo.WorkingDirectory = Value
         End Set
-    End Property
-
-    Private ExitCodeValue As Integer
-
-    ReadOnly Property ExitCode() As Integer
-        Get
-            Return ExitCodeValue
-        End Get
     End Property
 
     Property File() As String
@@ -134,10 +127,7 @@ Public Class Proc
                             For idx = 0 To procsByName.Length - 1
                                 tempIndexdName = If(idx = 0, procName, Convert.ToString(procName) & "#" & idx)
                                 Dim procId = New PerformanceCounter("Process", "ID Process", tempIndexdName)
-
-                                If CInt(procId.NextValue()) = i.Id Then
-                                    procIndexdName = tempIndexdName
-                                End If
+                                If CInt(procId.NextValue()) = i.Id Then procIndexdName = tempIndexdName
                             Next
 
                             Dim parentId = New PerformanceCounter("Process", "Creating Process ID", procIndexdName)
@@ -147,6 +137,7 @@ Public Class Proc
                                 Msg("Confirm to kill " + i.ProcessName + ".exe",
                                     MessageBoxIcon.Question,
                                     MessageBoxButtons.OKCancel) = DialogResult.OK Then
+
                                 If Not i.HasExited Then i.Kill()
                             End If
                         End If
@@ -215,18 +206,53 @@ Public Class Proc
 
             If Wait Then
                 Process.WaitForExit()
-                ExitCodeValue = Process.ExitCode
+                ExitCode = Process.ExitCode
                 Process.Close()
 
                 If TrowException Then Throw New AbortException
 
-                If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCodeValue) Then
-                    Dim errorText = Header + " failed with error code " &
-                        ExitCodeValue & CrLf2 + ProcessForm.CommandLineLog.ToString() + CrLf
+                If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCode) Then
+                    Dim ntdllHandle = Native.LoadLibrary("NTDLL.DLL")
+                    Dim systemErrorMessage As String
+
+                    Dim retval = Native.FormatMessageW(Native.FORMAT_MESSAGE_ALLOCATE_BUFFER Or
+                                                   Native.FORMAT_MESSAGE_FROM_SYSTEM Or
+                                                   Native.FORMAT_MESSAGE_FROM_HMODULE,
+                                                   ntdllHandle, ExitCode, 0, systemErrorMessage, 0, IntPtr.Zero)
+
+                    Native.FreeLibrary(ntdllHandle)
+
+                    Const ERROR_MR_MID_NOT_FOUND = 317
+
+                    If retval = 0 AndAlso Marshal.GetLastWin32Error <> ERROR_MR_MID_NOT_FOUND Then
+                        Throw New Win32Exception(Marshal.GetLastWin32Error)
+                    End If
+
+                    Dim errorMessage = Header + " failed with exit code: " & ExitCode & " (" + "0x" + ExitCode.ToString("X") + ")"
+
+                    If systemErrorMessage <> "" Then
+                        errorMessage += CrLf2 + "The exit code might be a system error code: " + systemErrorMessage.Trim
+                    End If
+
+                    systemErrorMessage = Nothing
+
+                    retval = Native.FormatMessageW(Native.FORMAT_MESSAGE_ALLOCATE_BUFFER Or
+                                                   Native.FORMAT_MESSAGE_FROM_SYSTEM,
+                                                   IntPtr.Zero, ExitCode, 0, systemErrorMessage, 0, IntPtr.Zero)
+
+                    If retval = 0 AndAlso Marshal.GetLastWin32Error <> ERROR_MR_MID_NOT_FOUND Then
+                        Throw New Win32Exception(Marshal.GetLastWin32Error)
+                    End If
+
+                    If systemErrorMessage <> "" Then
+                        errorMessage += CrLf2 + "The exit code might be a system error code: " + systemErrorMessage.Trim
+                    End If
+
+                    errorMessage += CrLf2 + ProcessForm.CommandLineLog.ToString() + CrLf
 
                     ProcessForm.ClearCommandLineOutput()
 
-                    Throw New ErrorAbortException("Error " + Header, errorText)
+                    Throw New ErrorAbortException("Error " + Header, errorMessage)
                 End If
             End If
         Catch e As ErrorAbortException

@@ -677,6 +677,7 @@ Class ffmpegEncoder
         Using proc As New Proc
             proc.Init("Encoding " + Params.Codec.OptionText + " using ffmpeg", "frame=")
             proc.Encoding = Encoding.UTF8
+            proc.WorkingDirectory = p.TempDir
             proc.File = Packs.ffmpeg.GetPath
             proc.Arguments = args
             proc.Start()
@@ -995,8 +996,8 @@ Class NvidiaEncoder
             .Switch = "--profile",
             .Name = "Profile",
             .Text = "Profile:",
-            .Options = {"Baseline", "Main", "High"},
-            .Values = {"baseline", "main", "high"},
+            .ValueIsName = True,
+            .Options = {"baseline", "main", "high", "high444"},
             .Value = 2,
             .DefaultValue = 2}
 
@@ -1067,6 +1068,12 @@ Class NvidiaEncoder
         Property QSVEncCDecoder As New BoolParam With {
             .Text = "Use QSVEncC as decoder (bypasses AviSynth/VapourSynth)"}
 
+        Property Lossless As New BoolParam With {
+            .Switch = "--lossless",
+            .Text = "Lossless",
+            .Value = False,
+            .DefaultValue = False}
+
         Property Custom As New StringParam With {
             .Text = "Custom Switches:",
             .ArgsFunc = Function() Custom.Value}
@@ -1080,7 +1087,7 @@ Class NvidiaEncoder
                     Add("Basic", Codec, Mode, Profile, LevelH264, LevelH265,
                         QPI, QPP, QPB, GOPLength, BFrames, Ref)
 
-                    Add("Advanced", mvPrecision, MaxBitrate, QSVEncCDecoder, Custom)
+                    Add("Advanced", mvPrecision, MaxBitrate, Lossless, QSVEncCDecoder, Custom)
                 End If
 
                 Return ItemsValue
@@ -1102,6 +1109,7 @@ Class NvidiaEncoder
 
         Protected Overrides Sub OnValueChanged(item As CommandLineItem)
             Profile.Visible = Codec.ValueText = "h264"
+            Lossless.Visible = Profile.Visible
             LevelH264.Visible = Codec.ValueText = "h264"
             LevelH265.Visible = Codec.ValueText = "h265"
             MyBase.OnValueChanged(item)
@@ -1124,14 +1132,16 @@ Class NvidiaEncoder
                 ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
             End If
 
-            Select Case Mode.OptionText
-                Case "CBR"
-                    ret += " --cbr " & p.VideoBitrate
-                Case "VBR"
-                    ret += " --vbr " & p.VideoBitrate
-                Case "CQP"
-                    ret += " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
-            End Select
+            If Not Lossless.Value Then
+                Select Case Mode.OptionText
+                    Case "CBR"
+                        ret += " --cbr " & p.VideoBitrate
+                    Case "VBR"
+                        ret += " --vbr " & p.VideoBitrate
+                    Case "CQP"
+                        ret += " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
+                End Select
+            End If
 
             If p.AutoARSignaling Then
                 Dim par = Calc.GetTargetPAR
@@ -1437,6 +1447,12 @@ Class IntelEncoder
             .VisibleFunc = Function() Codec.Value = 2,
             .Options = {"Automatic", "Simple", "Main", "High"}}
 
+        Property Rotate As New OptionParam With {
+            .Switch = "--vpp-rotate",
+            .Text = "Rotate:",
+            .ValueIsName = True,
+            .Options = {"0", "90", "180", "270"}}
+
         Private ItemsValue As List(Of CommandLineItem)
 
         Overrides ReadOnly Property Items As List(Of CommandLineItem)
@@ -1445,7 +1461,7 @@ Class IntelEncoder
                     ItemsValue = New List(Of CommandLineItem)
 
                     Add("Basic", Codec, QualitySpeed, Mode, Quality, QPI, QPP, QPB)
-                    Add("Advanced", ProfileH264, ProfileHEVC, ProfileMPEG2, LevelHEVC, LevelH264, LevelMPEG2, BFrames, Ref, GOPLength, LookaheadDepth, HardwareDecoding, Scenechange, MBBRC, Custom)
+                    Add("Advanced", ProfileH264, ProfileHEVC, ProfileMPEG2, LevelHEVC, LevelH264, LevelMPEG2, Rotate, BFrames, Ref, GOPLength, LookaheadDepth, HardwareDecoding, Scenechange, MBBRC, Custom)
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                 End If
 
@@ -1800,7 +1816,7 @@ Class AMDEncoder
             End If
 
             If includePaths Then
-                ret += " --input """ + sourcePath + """ --output """ + targetPath + """"
+                ret += " --input-file """ + sourcePath + """ --output-file """ + targetPath + """"
             End If
 
             Return ret.Trim

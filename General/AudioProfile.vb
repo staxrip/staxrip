@@ -663,58 +663,60 @@ Public Class GUIAudioProfile
         End Set
     End Property
 
-    Function GetEeac3toCommandLine(includePaths As Boolean) As String
-        Dim r, id As String
+    Function GetEac3toCommandLine(includePaths As Boolean) As String
+        Dim ret, id As String
 
-        If IsOneOf(Filepath.GetExtFull(File), ".ts", ".m2ts") AndAlso Not Stream Is Nothing Then
+        If {"ts", "m2ts"}.Contains(File.Ext) AndAlso Not Stream Is Nothing Then
             id = (Stream.StreamOrder + 1) & ": "
         End If
 
         If includePaths Then
-            r = """" + Packs.eac3to.GetPath + """ " + id + """" + File + """ """ + GetOutputFile() + """"
+            ret = """" + Packs.eac3to.GetPath + """ " + id + """" + File + """ """ + GetOutputFile() + """"
         Else
-            r = "eac3to"
+            ret = "eac3to"
         End If
 
         If Not (Params.Codec = AudioCodec.DTS AndAlso Params.eac3toExtractDtsCore) Then
             Select Case Params.Codec
                 Case AudioCodec.AAC
-                    r += " -quality=" & Params.Quality.ToString(CultureInfo.InvariantCulture)
+                    ret += " -quality=" & Params.Quality.ToString(CultureInfo.InvariantCulture)
                 Case AudioCodec.AC3
-                    r += " -" & Bitrate
+                    ret += " -" & Bitrate
 
                     If Not {192, 224, 384, 448, 640}.Contains(CInt(Bitrate)) Then
                         Return "Invalid bitrate, choose 192, 224, 384, 448 or 640"
                     End If
                 Case AudioCodec.DTS
-                    r += " -" & Bitrate
+                    ret += " -" & Bitrate
             End Select
 
-            If Params.Normalize Then r += " -normalize"
-            If Params.Down16 Then r += " -down16"
-            If Params.SamplingRate <> 0 Then r += " -resampleTo" & Params.SamplingRate
-            If Params.FrameRateMode = AudioFrameRateMode.Speedup Then r += " -speedup"
-            If Params.FrameRateMode = AudioFrameRateMode.Slowdown Then r += " -slowdown"
-            If Delay <> 0 Then r += " " + If(Delay > 0, "+", "") & Delay & "ms"
+            If Params.Normalize Then ret += " -normalize"
+            If Params.Down16 Then ret += " -down16"
+            If Params.SamplingRate <> 0 Then ret += " -resampleTo" & Params.SamplingRate
+            If Params.FrameRateMode = AudioFrameRateMode.Speedup Then ret += " -speedup"
+            If Params.FrameRateMode = AudioFrameRateMode.Slowdown Then ret += " -slowdown"
+            If Delay <> 0 Then ret += " " + If(Delay > 0, "+", "") & Delay & "ms"
+            If Gain < 0 Then ret += " " & CInt(Gain) & "dB"
+            If Gain > 0 Then ret += " +" & CInt(Gain) & "dB"
 
             If Channels = 2 Then
                 If Params.eac3toStereoDownmixMode = 0 Then
-                    r += " -downStereo"
+                    ret += " -downStereo"
                 Else
-                    r += " -downDpl"
+                    ret += " -downDpl"
                 End If
             End If
 
             If Params.CustomSwitches <> "" Then
-                r += " " + Params.CustomSwitches
+                ret += " " + Params.CustomSwitches
             End If
         ElseIf Params.eac3toExtractDtsCore Then
-            r += " -core"
+            ret += " -core"
         End If
 
-        If includePaths Then r += " -progressnumbers"
+        If includePaths Then ret += " -progressnumbers"
 
-        Return r
+        Return ret
     End Function
 
     Function GetqaacCommandLine(includePaths As Boolean) As String
@@ -1039,7 +1041,7 @@ Public Class GUIAudioProfile
             Case GuiAudioEncoder.BeSweet
                 Return GetBeSweetCommandLine(includePaths)
             Case GuiAudioEncoder.Eac3to
-                Return GetEeac3toCommandLine(includePaths)
+                Return GetEac3toCommandLine(includePaths)
             Case GuiAudioEncoder.qaac
                 Return GetqaacCommandLine(includePaths)
             Case Else

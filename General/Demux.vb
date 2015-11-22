@@ -232,6 +232,7 @@ Public Class MP4BoxDemuxer
                 proc.File = Packs.MP4Box.GetPath
                 proc.Arguments = args
                 proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
+                proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
                 proc.Start()
             End Using
         Next
@@ -380,7 +381,12 @@ Public Class mkvDemuxer
                 Dim m = Regex.Match(i, "Attachment ID (\d+):.+, file name '(.+)'")
 
                 If m.Success Then
-                    params += " " + m.Groups(1).Value + ":""" + p.TempDir + Filepath.GetBase(p.SourceFile) + "_attachment_" + m.Groups(2).Value + """"
+                    Dim attachmentPath = Filepath.GetShortPath(p.TempDir,
+                                                               p.SourceFile.Base,
+                                                               "_attachment_" + m.Groups(2).Value.Base,
+                                                               m.Groups(2).Value.Ext)
+
+                    params += " " + m.Groups(1).Value + ":""" + attachmentPath + """"
                 End If
             End If
         Next

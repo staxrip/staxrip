@@ -1226,7 +1226,7 @@ Public Class Calc
         Dim ret As Double
         Dim frames = p.Script.GetFrames
 
-        If IsOneOf(p.VideoEncoder.Muxer.OutputType, "avi", "divx") Then
+        If {"avi", "divx"}.Contains(p.VideoEncoder.Muxer.OutputType) Then
             ret += frames * 0.024
 
             If OK(p.Audio0.File) Then

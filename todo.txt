@@ -1,1 +1,0 @@
-I probably can add a audio only processing job feature, this would simply save a job with 'Just Mux' as video profile and 'No Muxing' as container profile so video encoding and muxing are skipped.

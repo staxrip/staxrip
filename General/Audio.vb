@@ -123,6 +123,7 @@ Public Class Audio
             proc.File = Packs.MP4Box.GetPath
             proc.Arguments = args
             proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
+            proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
             proc.Start()
         End Using
 
@@ -165,6 +166,7 @@ Public Class Audio
                     Dim m4aPath = Filepath.GetChangeExt(outPath, "m4a")
                     proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new """ + m4aPath + """"
                     proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
+                    proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
                     proc.Start()
 
                     If File.Exists(m4aPath) Then
@@ -227,7 +229,7 @@ Public Class Audio
 
     Shared Sub CutNicAudio(ap As AudioProfile)
         If ap.File.Contains("_cut_") Then Exit Sub
-        If Not IsOneOf(Filepath.GetExt(ap.File), FileTypes.NicAudioInput) Then Exit Sub
+        If Not FileTypes.NicAudioInput.Contains(ap.File.Ext) Then Exit Sub
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -299,7 +301,7 @@ Public Class Audio
             Case CuttingMode.mkvmerge
                 CutMkvmerge(ap)
             Case CuttingMode.NicAudio
-                If IsOneOf(Filepath.GetExt(ap.File), FileTypes.NicAudioInput) AndAlso
+                If FileTypes.NicAudioInput.Contains(ap.File.Ext) AndAlso
                     Not TypeOf ap Is MuxAudioProfile Then
 
                     CutNicAudio(ap)
@@ -331,10 +333,7 @@ Public Class Audio
 
     Shared Sub DecodeEac3to(ap As AudioProfile, Optional useFlac As Boolean = False)
         If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
-
-        If Not IsOneOf(Filepath.GetExt(ap.File), FileTypes.eac3toInput) Then
-            Exit Sub
-        End If
+        If Not FileTypes.eac3toInput.Contains(ap.File.Ext) Then Exit Sub
 
         Dim outPath = p.TempDir + Filepath.GetBase(ap.File) + If(useFlac, ".flac", ".wav")
         Dim args = """" + ap.File + """ """ + outPath + """"

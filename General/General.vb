@@ -195,12 +195,8 @@ Public Class DirPath
     End Function
 
     Shared Function GetName(path As String) As String
-        If String.IsNullOrEmpty(path) Then
-            Return ""
-        End If
-
+        If path = "" Then Return ""
         path = TrimTrailingSeparator(path)
-
         Return path.RightLast(Separator)
     End Function
 
@@ -227,14 +223,8 @@ Public Class Filepath
     End Sub
 
     Shared Function GetDir(path As String) As String
-        If String.IsNullOrEmpty(path) Then
-            Return ""
-        End If
-
-        If path.Contains(Separator) Then
-            path = path.LeftLast(Separator) + Separator
-        End If
-
+        If path = "" Then Return ""
+        If path.Contains("\") Then path = path.LeftLast("\") + "\"
         Return path
     End Function
 
@@ -318,6 +308,18 @@ Public Class Filepath
 
     Shared Function GetDirNameOnly(path As String) As String
         Return Filepath.GetDirNoSep(path).RightLast("\")
+    End Function
+
+    Shared Function GetShortPath(dir As String,
+                                 base1 As String,
+                                 base2 As String,
+                                 ext As String) As String
+
+        Dim ret = dir + base1 + base2 + "." + ext
+        If ret.Length > 260 Then ret = dir + base1.Shorten(10) + base2 + "." + ext
+        If ret.Length > 260 Then ret = dir + base1.Shorten(10) + base2.Shorten(10) + "." + ext
+
+        Return ret
     End Function
 End Class
 
@@ -1314,12 +1316,12 @@ Public Class CommandManager
     End Function
 End Class
 
-Public Module MainModule
-    Public Const CrLf As String = VB6.vbCrLf
-    Public Const CrLf2 As String = VB6.vbCrLf + VB6.vbCrLf
+Friend Module MainModule
+    Friend Const CrLf As String = VB6.vbCrLf
+    Friend Const CrLf2 As String = VB6.vbCrLf + VB6.vbCrLf
 
     Function OK(value As String) As Boolean
-        Return Not String.IsNullOrEmpty(value)
+        Return value <> ""
     End Function
 
     Function OK(ParamArray values As String()) As Boolean
@@ -1344,22 +1346,6 @@ Public Module MainModule
         Next
 
         Return True
-    End Function
-
-    Function IsOneOf(value As Integer, ParamArray values As Integer()) As Boolean
-        For Each i In values
-            If value = i Then
-                Return True
-            End If
-        Next
-    End Function
-
-    Function IsOneOf(value As String, ParamArray values As String()) As Boolean
-        For Each i In values
-            If value = i Then
-                Return True
-            End If
-        Next
     End Function
 
     Sub MsgInfo(text As String, Optional content As String = Nothing)

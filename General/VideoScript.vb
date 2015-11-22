@@ -192,7 +192,9 @@ Class VideoScript
                                     If OK(i.Dependencies) Then
                                         For Each i3 In i.Dependencies
                                             For Each i4 In plugins
-                                                If i3 = i4.Name AndAlso Not i4.VapourSynthFilterNames Is Nothing Then
+                                                If Not File.Exists(Paths.PluginsDir + i.Filename) AndAlso
+                                                    i3 = i4.Name AndAlso Not i4.VapourSynthFilterNames Is Nothing Then
+
                                                     Dim load = "core.std.LoadPlugin(r'" + i4.GetPath + "')" + CrLf
 
                                                     If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
@@ -203,7 +205,9 @@ Class VideoScript
                                         Next
                                     End If
                                 Else
-                                    code += "core.std.LoadPlugin(r'" + fp + "')" + CrLf
+                                    If Not File.Exists(Paths.PluginsDir + i.Filename) Then
+                                        code += "core.std.LoadPlugin(r'" + fp + "')" + CrLf
+                                    End If
                                 End If
                             End If
                         Next

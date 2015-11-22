@@ -340,6 +340,7 @@ Public Class MP4Muxer
             proc.File = Packs.MP4Box.GetPath
             proc.Arguments = GetArgs()
             proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
+            proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
             proc.Start()
         End Using
 

@@ -240,24 +240,25 @@ Public Class FolderBrowserDialog
 #Region "Private Methods"
 
     Private Sub SetDialogProperties(dialog As IFileDialog)
-        ' Description
-        If Not String.IsNullOrEmpty(_description) Then
+        If _description <> "" Then
             If _useDescriptionForTitle Then
                 dialog.SetTitle(_description)
             Else
-                Dim customize As IFileDialogCustomize = DirectCast(dialog, IFileDialogCustomize)
-                customize.AddText(0, _description)
+                DirectCast(dialog, IFileDialogCustomize).AddText(0, _description)
             End If
         End If
 
-        dialog.SetOptions(NativeMethods.FOS.FOS_PICKFOLDERS Or NativeMethods.FOS.FOS_FORCEFILESYSTEM Or NativeMethods.FOS.FOS_FILEMUSTEXIST)
+        dialog.SetOptions(NativeMethods.FOS.FOS_PICKFOLDERS Or
+                          NativeMethods.FOS.FOS_FORCEFILESYSTEM Or
+                          NativeMethods.FOS.FOS_FILEMUSTEXIST)
 
-        If Not String.IsNullOrEmpty(_selectedPath) Then
-            Dim parent As String = Path.GetDirectoryName(_selectedPath)
+        If _selectedPath <> "" Then
+            Dim parent = Path.GetDirectoryName(_selectedPath)
+
             If parent Is Nothing OrElse Not Directory.Exists(parent) Then
                 dialog.SetFileName(_selectedPath)
             Else
-                Dim folder As String = Path.GetFileName(_selectedPath)
+                Dim folder = Path.GetFileName(_selectedPath)
                 dialog.SetFolder(NativeMethods.CreateItemFromParsingName(parent))
                 dialog.SetFileName(folder)
             End If
@@ -802,17 +803,17 @@ Public Class FolderBrowserDialog
         Private Sub New()
         End Sub
 
-        Public Const BS_COMMANDLINK As Integer = &HE
-        Public Const BCM_SETNOTE As Integer = &H1609
-        Public Const BCM_SETSHIELD As Integer = &H160C
-        Public Const TV_FIRST As Integer = &H1100
-        Public Const TVM_SETEXTENDEDSTYLE As Integer = TV_FIRST + 44
-        Public Const TVM_GETEXTENDEDSTYLE As Integer = TV_FIRST + 45
-        Public Const TVM_SETAUTOSCROLLINFO As Integer = TV_FIRST + 59
-        Public Const TVS_NOHSCROLL As Integer = &H8000
-        Public Const TVS_EX_AUTOHSCROLL As Integer = &H20
-        Public Const TVS_EX_FADEINOUTEXPANDOS As Integer = &H40
-        Public Const GWL_STYLE As Integer = -16
+        Friend Const BS_COMMANDLINK As Integer = &HE
+        Friend Const BCM_SETNOTE As Integer = &H1609
+        Friend Const BCM_SETSHIELD As Integer = &H160C
+        Friend Const TV_FIRST As Integer = &H1100
+        Friend Const TVM_SETEXTENDEDSTYLE As Integer = TV_FIRST + 44
+        Friend Const TVM_GETEXTENDEDSTYLE As Integer = TV_FIRST + 45
+        Friend Const TVM_SETAUTOSCROLLINFO As Integer = TV_FIRST + 59
+        Friend Const TVS_NOHSCROLL As Integer = &H8000
+        Friend Const TVS_EX_AUTOHSCROLL As Integer = &H20
+        Friend Const TVS_EX_FADEINOUTEXPANDOS As Integer = &H40
+        Friend Const GWL_STYLE As Integer = -16
 
         <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
         Friend Shared Function SendMessage(hWnd As IntPtr, Msg As UInt32, wParam As Integer, lParam As Integer) As Integer
@@ -828,23 +829,19 @@ Public Class FolderBrowserDialog
 
 #Region "General Definitions"
 
-
         ' Various important window messages
         Friend Const WM_USER As Integer = &H400
         Friend Const WM_ENTERIDLE As Integer = &H121
-
-        ' FormatMessage constants and structs
-        Friend Const FORMAT_MESSAGE_FROM_SYSTEM As Integer = &H1000
 
 #End Region
 
 #Region "File Operations Definitions"
 
-        <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)> _
+        <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)>
         Friend Structure COMDLG_FILTERSPEC
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszName As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszSpec As String
         End Structure
 
@@ -895,7 +892,7 @@ Public Class FolderBrowserDialog
             ' SHGDN_INFOLDER
         End Enum
 
-        <Flags()> _
+        <Flags()>
         Friend Enum FOS As UInteger
             FOS_OVERWRITEPROMPT = &H2
             FOS_STRICTFILETYPES = &H4
@@ -936,27 +933,27 @@ Public Class FolderBrowserDialog
             FFFP_NEARESTPARENTMATCH
         End Enum
 
-        <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)> _
+        <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)>
         Friend Structure KNOWNFOLDER_DEFINITION
             Friend category As NativeMethods.KF_CATEGORY
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszName As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszCreator As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszDescription As String
             Friend fidParent As Guid
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszRelativePath As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszParsingName As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszToolTip As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszLocalizedName As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszIcon As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszSecurity As String
             Friend dwAttributes As UInteger
             Friend kfdFlags As NativeMethods.KF_DEFINITION_FLAGS
@@ -970,16 +967,15 @@ Public Class FolderBrowserDialog
             KF_CATEGORY_PERUSER = &H4
         End Enum
 
-        <Flags()> _
+        <Flags()>
         Friend Enum KF_DEFINITION_FLAGS
             KFDF_PERSONALIZE = &H1
             KFDF_LOCAL_REDIRECT_ONLY = &H2
             KFDF_ROAMABLE = &H4
         End Enum
 
-
         ' Property System structs and consts
-        <StructLayout(LayoutKind.Sequential, Pack:=4)> _
+        <StructLayout(LayoutKind.Sequential, Pack:=4)>
         Friend Structure PROPERTYKEY
             Friend fmtid As Guid
             Friend pid As UInteger
@@ -987,25 +983,7 @@ Public Class FolderBrowserDialog
 
 #End Region
 
-        '800704C7
-
-        Public Const ERROR_CANCELLED As Integer = &H800704C7 'UI
-
-        <Flags()> _
-        Public Enum FormatMessageFlags
-            FORMAT_MESSAGE_ALLOCATE_BUFFER = &H100
-            FORMAT_MESSAGE_IGNORE_INSERTS = &H200
-            FORMAT_MESSAGE_FROM_STRING = &H400
-            FORMAT_MESSAGE_FROM_HMODULE = &H800
-            FORMAT_MESSAGE_FROM_SYSTEM = &H1000
-            FORMAT_MESSAGE_ARGUMENT_ARRAY = &H2000
-        End Enum
-
-        'HRESULT SHCreateItemFromParsingName(          PCWSTR pszPath,
-        '    IBindCtx *pbc,
-        '    REFIID riid,
-        '    void **ppv
-        ');
+        Friend Const ERROR_CANCELLED As Integer = &H800704C7
 
         <DllImport("kernel32.dll", CharSet:=CharSet.Unicode, SetLastError:=True)> _
         Public Shared Function LoadLibrary(name As String) As SafeModuleHandle
@@ -1017,10 +995,6 @@ Public Class FolderBrowserDialog
 
         <DllImport("user32.dll", SetLastError:=True, CharSet:=CharSet.Unicode)>
         Public Shared Function LoadString(hInstance As SafeModuleHandle, uID As UInteger, lpBuffer As StringBuilder, nBufferMax As Integer) As Integer
-        End Function
-
-        <DllImport("Kernel32.dll", SetLastError:=True, CharSet:=CharSet.Unicode)>
-        Public Shared Function FormatMessage(<MarshalAs(UnmanagedType.U4)> dwFlags As FormatMessageFlags, lpSource As IntPtr, dwMessageId As UInteger, dwLanguageId As UInteger, ByRef lpBuffer As IntPtr, nSize As UInteger, Arguments As String()) As UInteger
         End Function
 
         <DllImport("shell32.dll", CharSet:=CharSet.Unicode)>

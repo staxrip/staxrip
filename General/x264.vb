@@ -34,22 +34,26 @@ Class x264Encoder
     Overrides Sub Encode()
         p.Script.Synchronize()
 
-        Encode("x264", GetArgs(1), p.Script)
+        Encode("x264", GetArgs(1), p.Script, s.ProcessPriority)
 
         If Params.Mode.Value = x264Mode.TwoPass OrElse
             Params.Mode.Value = x264Mode.ThreePass Then
 
-            Encode("x264 Second Pass", GetArgs(2), p.Script)
+            Encode("x264 Second Pass", GetArgs(2), p.Script, s.ProcessPriority)
         End If
 
         If Params.Mode.Value = x264Mode.ThreePass Then
-            Encode("x264 Third Pass", GetArgs(3), p.Script)
+            Encode("x264 Third Pass", GetArgs(3), p.Script, s.ProcessPriority)
         End If
 
         AfterEncoding()
     End Sub
 
-    Overloads Sub Encode(passName As String, args As String, script As VideoScript)
+    Overloads Sub Encode(passName As String,
+                         args As String,
+                         script As VideoScript,
+                         priority As ProcessPriorityClass)
+
         If p.Script.Engine = ScriptingEngine.VapourSynth Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
             Dim cli = """" + Packs.vspipe.GetPath + """ """ + script.Path + """ - --y4m | """ + Packs.x264.GetPath + """ " + args
@@ -57,6 +61,7 @@ Class x264Encoder
 
             Using proc As New Proc
                 proc.Init(passName)
+                proc.Priority = priority
                 proc.SkipStrings = {"kb/s, eta", "%]"}
                 proc.WriteLine(cli + CrLf2)
                 proc.File = "cmd.exe"
@@ -67,6 +72,7 @@ Class x264Encoder
         Else
             Using proc As New Proc
                 proc.Init(passName)
+                proc.Priority = priority
                 proc.SkipStrings = {"kb/s, eta", "%]"}
                 proc.File = Packs.x264.GetPath
                 proc.Arguments = args
@@ -107,7 +113,7 @@ Class x264Encoder
         Dim arguments = enc.GetArgs(0, sourcePath, p.TempDir + p.Name + "_CompCheck." + OutputFileType, script)
 
         Try
-            Encode("Compressibility Check", arguments, script)
+            Encode("Compressibility Check", arguments, script, ProcessPriorityClass.Normal)
         Catch ex As AbortException
             ProcessForm.CloseProcessForm()
             Exit Sub
@@ -185,7 +191,7 @@ Class x264Encoder
         ElseIf Params.Mode.Value = x264Mode.ThreePass Then
             sb.Append(" --pass " & pass)
 
-            If IsOneOf(pass, 1, 2) AndAlso Params.SlowFirstpass.Value Then
+            If (pass = 1 OrElse pass = 2) AndAlso Params.SlowFirstpass.Value Then
                 sb.Append(" --slow-firstpass")
             End If
         End If

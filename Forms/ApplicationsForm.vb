@@ -383,7 +383,11 @@ Public Class ApplicationsForm
                 Dim plugin = TryCast(i, PluginPackage)
 
                 If plugin Is Nothing Then
-                    If i Is Packs.Java OrElse i Is Packs.Python OrElse i Is Packs.vscpp2013 Then
+                    If i Is Packs.Java OrElse
+                        i Is Packs.Python OrElse
+                        i Is Packs.vscpp2013 OrElse
+                        i Is Packs.vscpp2015 Then
+
                         Dim n = tv.AddNode("Runtimes|" + i.Name)
                         Nodes.Add(n)
                         n.Tag = i

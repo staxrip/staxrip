@@ -183,10 +183,7 @@ Public Module StringExtensions
 
     <Extension()>
     Function LeftLast(value As String, start As String) As String
-        If Not value.Contains(start) Then
-            Return ""
-        End If
-
+        If Not value.Contains(start) Then Return ""
         Return value.Substring(0, value.LastIndexOf(start))
     End Function
 
@@ -299,7 +296,7 @@ Public Module StringExtensions
 
     <Extension()>
     Sub ToClipboard(value As String)
-        If OK(value) Then
+        If value <> "" Then
             Clipboard.SetText(value)
         Else
             Clipboard.Clear()

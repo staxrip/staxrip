@@ -1,20 +1,20 @@
-Public Class Strings
-    Public Const BatchMode As String = "Normally StaxRip performs various tasks directly after a source file is opened like demuxing, auto crop, auto resize etc. In Batch Mode all this tasks are performed when the encoding is started."
-    Public Const EventCommands As String = "A Event Command allows to define a command to be executed on a defined event. Furthermore criteria can be defined to execute the command only if certain criteria is matched."
-    Public Const MacrosHelp As String = "Macros are placeholders that can be used in command lines and other places, on execution StaxRip replaces the macros with the actual values."
-    Public Const DonationsURL As String = "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L7R6AKUHJQLM6&lc=EN&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"
-    Public Const TaskDialogFooter As String = "[copymsg: Copy Message]"
-    Public Const ParRegexPattern As String = "^([1-9]+\d*)(/|:)([1-9]+\d*)$"
-    Public Const VisitForum As String = "Please copy the message and post it to the support forum or mail it."
-    Public Const NoUnicode As String = "Unicode filenames are not supported by AviSynth."
-    Public Const ProjectX As String = "ProjectX demuxes MPEG-2 DVD and DVB sources, H.264/AVC and H.265/HEVC are not supported. ProjectX can be enabled or disabled in the settings on the Demuxing tab."
-    Public Const dsmux As String = "dsmux is installed by the Haali Splitter and is used to mux TS containing AVC into MKV in order to fix av sync problems, dsmux handles av sync much better then many other TS tools. dsmux can be enabled or disabled in the settings on the Demuxing tab, if no audio is present or DGDecNV/DGDecIM is used, dsmux is not necessary and skipped automatically. LAV Filters and Haali Splitter overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
-    Public Const Muxer As String = "A muxer merges different video, audio and subtitle files into a single container file which is the actual output file. Using x264 or subtitles MKV or MP4 is required as container."
-    Public Const DGDecNV As String = "DGDecNV is a shareware AviSynth/VapourSynth source filter using NVIDIA hardware acceleration. DGIndexNV can be configured at Tools/Setting/Demux."
-    Public Const DGDecIM As String = "DGDecIM is a shareware AviSynth source filter using Intel Quick Sync powered hardware acceleration. DGIndexIM can be enabled and configured at Tools/Setting/Demux. Which file types DGIndexIM handles can be configured. DGIndexIM can demux audio with proper av sync."
-    Public Const DGMPGDec As String = "StaxRip x64 uses DGIndex only for demuxing because the AviSynth source filter does not work on Win10. DGIndex can be enabled at Tools/Settings/Demuxing. Which file types DGIndex handles can be configured. DGIndex can process TS keeping audio in sync, an alternative method to process TS is using dsmux from Haali splitter which converts TS to MKV, it does this with better AV sync then mkvmerge. MPEG-2 can also be processed with ProjectX."
+Friend Class Strings
+    Friend Const BatchMode As String = "Normally StaxRip performs various tasks directly after a source file is opened like demuxing, auto crop, auto resize etc. In Batch Mode all this tasks are performed when the encoding is started."
+    Friend Const EventCommands As String = "A Event Command allows to define a command to be executed on a defined event. Furthermore criteria can be defined to execute the command only if certain criteria is matched."
+    Friend Const MacrosHelp As String = "Macros are placeholders that can be used in command lines and other places, on execution StaxRip replaces the macros with the actual values."
+    Friend Const DonationsURL As String = "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L7R6AKUHJQLM6&lc=EN&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"
+    Friend Const TaskDialogFooter As String = "[copymsg: Copy Message]"
+    Friend Const ParRegexPattern As String = "^([1-9]+\d*)(/|:)([1-9]+\d*)$"
+    Friend Const VisitForum As String = "Please copy the message and post it to the support forum or mail it."
+    Friend Const NoUnicode As String = "Unicode filenames are not supported by AviSynth."
+    Friend Const ProjectX As String = "ProjectX demuxes MPEG-2 DVD and DVB sources, H.264/AVC and H.265/HEVC are not supported. ProjectX can be enabled or disabled in the settings on the Demuxing tab."
+    Friend Const dsmux As String = "dsmux is installed by the Haali Splitter and is used to mux TS containing AVC into MKV in order to fix av sync problems, dsmux handles av sync much better then many other TS tools. dsmux can be enabled or disabled in the settings on the Demuxing tab, if no audio is present or DGDecNV/DGDecIM is used, dsmux is not necessary and skipped automatically. LAV Filters and Haali Splitter overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
+    Friend Const Muxer As String = "A muxer merges different video, audio and subtitle files into a single container file which is the actual output file. Using x264 or subtitles MKV or MP4 is required as container."
+    Friend Const DGDecNV As String = "DGDecNV is a shareware AviSynth/VapourSynth source filter using NVIDIA hardware acceleration. DGIndexNV can be configured at Tools/Setting/Demux."
+    Friend Const DGDecIM As String = "DGDecIM is a shareware AviSynth source filter using Intel Quick Sync powered hardware acceleration. DGIndexIM can be enabled and configured at Tools/Setting/Demux. Which file types DGIndexIM handles can be configured. DGIndexIM can demux audio with proper av sync."
+    Friend Const DGMPGDec As String = "StaxRip x64 uses DGIndex only for demuxing because the AviSynth source filter does not work on Win10. DGIndex can be enabled at Tools/Settings/Demuxing. Which file types DGIndex handles can be configured. DGIndex can process TS keeping audio in sync, an alternative method to process TS is using dsmux from Haali splitter which converts TS to MKV, it does this with better AV sync then mkvmerge. MPEG-2 can also be processed with ProjectX."
 
-    Public Shared Intel As String = <div>
+    Friend Shared Intel As String = <div>
                                         <b>CBR: constant bitrate control algorithm</b>
                                         <p>Use case: streaming or recording with a constant bit rate.</p>
                                         <p>Description: Bitrate is determined by the "Max Bitrate" setting in Encoding->Video Encoding or TargetKbps if "use global Max Bitrate" in Quick Sync Encoder Settings is unchecked.</p>

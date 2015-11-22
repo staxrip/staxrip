@@ -43,22 +43,26 @@ Namespace x265
 
         Overrides Sub Encode()
             p.Script.Synchronize()
-            Encode("x265", GetArgs(1, p.Script), p.Script)
+            Encode("x265", GetArgs(1, p.Script), p.Script, s.ProcessPriority)
 
             If Params.Mode.Value = RateMode.TwoPass OrElse
                 Params.Mode.Value = RateMode.ThreePass Then
 
-                Encode("x265 Second Pass", GetArgs(2, p.Script), p.Script)
+                Encode("x265 Second Pass", GetArgs(2, p.Script), p.Script, s.ProcessPriority)
             End If
 
             If Params.Mode.Value = RateMode.ThreePass Then
-                Encode("x265 Third Pass", GetArgs(3, p.Script), p.Script)
+                Encode("x265 Third Pass", GetArgs(3, p.Script), p.Script, s.ProcessPriority)
             End If
 
             AfterEncoding()
         End Sub
 
-        Overloads Sub Encode(passName As String, args As String, script As VideoScript)
+        Overloads Sub Encode(passName As String,
+                             args As String,
+                             script As VideoScript,
+                             priority As ProcessPriorityClass)
+
             Dim cli As String
 
             If p.Script.Engine = ScriptingEngine.VapourSynth Then
@@ -72,6 +76,7 @@ Namespace x265
 
             Using proc As New Proc
                 proc.Init(passName)
+                proc.Priority = priority
                 proc.SkipStrings = {"%] "}
                 proc.WriteLine(cli + CrLf2)
                 proc.File = "cmd.exe"
@@ -116,7 +121,7 @@ Namespace x265
             Dim arguments = enc.Params.GetArgs(0, script, p.TempDir + p.Name + "_CompCheck." + OutputFileType)
 
             Try
-                Encode("Compressibility Check", arguments, script)
+                Encode("Compressibility Check", arguments, script, ProcessPriorityClass.Normal)
             Catch ex As AbortException
                 ProcessForm.CloseProcessForm()
                 Exit Sub
@@ -368,8 +373,10 @@ Namespace x265
         Property qgSize As New OptionParam With {
             .Switch = "--qg-size",
             .Text = "QG Size:",
+            .ValueIsName = True,
             .Options = {"64", "32", "16"},
-            .Values = {"64", "32", "16"}}
+            .Value = 1,
+            .DefaultValue = 1}
 
         Property qpstep As New NumParam With {
             .Switch = "--qpstep",
@@ -490,32 +497,28 @@ Namespace x265
         Property LogLevel As New OptionParam With {
             .Switch = "--log-level",
             .Text = "Log Level:",
-            .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"},
-            .Values = {"none", "error", "warning", "info", "debug", "full"},
+            .ValueIsName = True,
+            .Options = {"none", "error", "warning", "info", "debug", "full"},
             .Value = 3,
             .DefaultValue = 3}
 
         Property Colorprim As New OptionParam With {
             .Switch = "--colorprim",
             .Text = "Colorprim:",
-            .Options = {"undefined", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "film", "bt2020"},
-            .Values = {"", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "film", "bt2020"}}
+            .ValueIsName = True,
+            .Options = {"undefined", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "film", "bt2020"}}
 
         Property Transfer As New OptionParam With {
             .Switch = "--transfer",
             .Text = "Transfer:",
-            .Options = {"undefined", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte-st-2084", "smpte-st-428"},
-            .Values = {"", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte-st-2084", "smpte-st-428"}}
+            .ValueIsName = True,
+            .Options = {"undefined", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte-st-2084", "smpte-st-428", "arib-std-b67"}}
 
         Property Colormatrix As New OptionParam With {
             .Switch = "--colormatrix",
             .Text = "Colormatrix:",
-            .Options = {"undefined", "GBR", "bt709", "fcc", "bt470bg", "smpte170m", "smpte240m", "YCgCo", "bt2020nc", "bt2020c"},
-            .Values = {"", "GBR", "bt709", "fcc", "bt470bg", "smpte170m", "smpte240m", "YCgCo", "bt2020nc", "bt2020c"}}
-
-        Property CuStats As New BoolParam With {
-            .Switch = "--cu-stats",
-            .Text = "Record statistics on how each CU was coded"}
+            .ValueIsName = True,
+            .Options = {"undefined", "GBR", "bt709", "fcc", "bt470bg", "smpte170m", "smpte240m", "YCgCo", "bt2020nc", "bt2020c"}}
 
         Property Pools As New StringParam With {
             .Switch = "--pools",
@@ -523,8 +526,8 @@ Namespace x265
             .UseQuotes = True}
 
         Property Qstep As New NumParam With {
-            .Switch = "--qstep",
-            .Text = "Q Step:",
+            .Switch = "--qpstep",
+            .Text = "QP Step:",
             .MinMaxStep = {0, Integer.MaxValue, 1},
             .Value = 4,
             .DefaultValue = 4}
@@ -550,8 +553,16 @@ Namespace x265
             .Switch = "--dither",
             .Text = "Enable high quality downscaling"}
 
+        Property minLuma As New NumParam With {
+            .Switch = "--min-luma",
+            .Text = "Minimum Luma:"}
+
+        Property maxLuma As New NumParam With {
+            .Switch = "--max-luma",
+            .Text = "Maximum Luma:"}
+
         Property InterlaceMode As New OptionParam With {
-            .Switch = "--interlaceMode",
+            .Switch = "--interlace",
             .Text = "Interlace Mode:",
             .Options = {"Progressive", "Top field first", "Bottom field first"},
             .Values = {"", "tff", "bff"}}
@@ -559,20 +570,20 @@ Namespace x265
         Property Profile As New OptionParam With {
             .Switch = "--profile",
             .Text = "Profile:",
-            .Options = {"Unrestricted", "main", "main10", "mainstillpicture", "main422-8", "main422-10", "main444-8", "main444-10"},
-            .Values = {"", "main", "main10", "mainstillpicture", "main422-8", "main422-10", "main444-8", "main444-10"}}
+            .ValueIsName = True,
+            .Options = {"Unrestricted", "main", "main-intra", "mainstillpicture", "main422-8", "main444-intra", "main444-stillpicture", "main444-8", "main10", "main10-intra", "main422-10", "main422-10-intra", "main444-10", "main444-10-intra"}}
 
         Property OutputDepth As New OptionParam With {
             .Switch = "--output-depth",
             .Text = "Depth:",
-            .Options = {"8", "10"},
-            .Values = {"8", "10"}}
+            .ValueIsName = True,
+            .Options = {"8", "10", "12"}}
 
         Property Level As New OptionParam With {
             .Switch = "--level-idc",
             .Text = "Level:",
-            .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"},
-            .Values = {"", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}}
+            .ValueIsName = True,
+            .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}}
 
         Property Hash As New OptionParam With {
             .Switch = "--hash",
@@ -717,6 +728,10 @@ Namespace x265
             .Switch = "--aud",
             .Text = "AUD"}
 
+        Property AllowNonConformance As New BoolParam With {
+            .Switch = "--allow-non-conformance",
+            .Text = "Allow non conformance"}
+
         Property Custom As New StringParam With {
             .Text = "Custom Switches:"}
 
@@ -749,6 +764,11 @@ Namespace x265
             .Text = "Write encoding results to a comma separated value log file",
             .ArgsFunc = Function() If(CSV.Value, "--csv """ + Filepath.GetDirAndBase(p.TargetFile) + ".csv""", Nothing)}
 
+        Property csvloglevel As New OptionParam With {
+            .Switch = "--csv-log-level",
+            .Text = "CSV Log Level:",
+            .Options = {"Default", "Summary", "Frame"}}
+
         Private ItemsValue As List(Of CommandLineItem)
 
         Overrides ReadOnly Property Items As List(Of CommandLineItem)
@@ -765,10 +785,11 @@ Namespace x265
                     Add("Slice Decision", BAdapt, BFrames, BFrameBias, RCLookahead, LookaheadSlices, Scenecut, Ref, MinKeyint, Keyint, Bpyramid, OpenGop)
                     Add("Spatial/Intra", StrongIntraSmoothing, ConstrainedIntra, RDpenalty)
                     Add("Performance", Pools, FrameThreads, WPP, Pmode, PME)
-                    Add("Statistic", LogLevel, CSV, SSIM, PSNR, CuStats)
-                    Add("VUI", Videoformat, Colorprim, Colormatrix, Transfer)
+                    Add("Statistic", LogLevel, csvloglevel, CSV, SSIM, PSNR)
+                    Add("VUI", Videoformat, Colorprim, Colormatrix, Transfer, minLuma, maxLuma)
                     Add("Bitstream", Hash, RepeatHeaders, Info, HRD, AUD)
-                    Add("Other", InterlaceMode, Deblock, DeblockA, DeblockB, PsyRD, PsyRDOQ, CompCheckQuant, SAO, HighTier, SAOnonDeblock, Dither, SlowFirstpass, SignHide, Custom)
+                    Add("Other 1", InterlaceMode, Deblock, DeblockA, DeblockB, PsyRD, PsyRDOQ, CompCheckQuant, Custom)
+                    Add("Other 2", SAO, HighTier, SAOnonDeblock, Dither, SlowFirstpass, SignHide, AllowNonConformance)
 
                     For Each i In ItemsValue
                         If i.Switch <> "" Then
@@ -1433,17 +1454,19 @@ Namespace x265
             QComp.Value = 0.6
             DeblockA.Value = 0
             DeblockB.Value = 0
+            rdoqLevel.Value = 0
 
             Select Case Tune.Value
                 Case 3 'grain
                     PsyRD.Value = 0.5
-                    PsyRDOQ.Value = 30
+                    PsyRDOQ.Value = 10
                     AQStrength.Value = 0.3
                     PBRatio.Value = 1.1
                     IPRatio.Value = 1.1
                     QComp.Value = 0.8
                     DeblockA.Value = -2
                     DeblockB.Value = -2
+                    rdoqLevel.Value = 2
             End Select
         End Sub
 
@@ -1456,17 +1479,19 @@ Namespace x265
             QComp.DefaultValue = 0.6
             DeblockA.DefaultValue = 0
             DeblockB.DefaultValue = 0
+            rdoqLevel.DefaultValue = 0
 
             Select Case Tune.Value
                 Case 3 'grain
                     PsyRD.DefaultValue = 0.5
-                    PsyRDOQ.DefaultValue = 30
+                    PsyRDOQ.DefaultValue = 10
                     AQStrength.DefaultValue = 0.3
                     PBRatio.DefaultValue = 1.1
                     IPRatio.DefaultValue = 1.1
                     QComp.DefaultValue = 0.8
                     DeblockA.DefaultValue = -2
                     DeblockB.DefaultValue = -2
+                    rdoqLevel.DefaultValue = 2
             End Select
         End Sub
 

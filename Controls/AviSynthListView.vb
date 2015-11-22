@@ -167,7 +167,7 @@ Class AviSynthListView
     End Sub
 
     Private Sub RemoveClick()
-        If SelectedItems.Count > 1 Then
+        If Items.Count > 1 Then
             Dim index = SelectedItems(0).Index
             ProfileFunc.Invoke.Filters.RemoveAt(SelectedItems(0).Index)
             Load()
@@ -247,10 +247,7 @@ Class AviSynthListView
     End Sub
 
     Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
-        If e.KeyData = Keys.Delete Then
-            RemoveClick()
-        End If
-
+        If e.KeyData = Keys.Delete Then RemoveClick()
         MyBase.OnKeyDown(e)
     End Sub
 End Class

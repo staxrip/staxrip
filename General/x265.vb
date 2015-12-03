@@ -840,7 +840,9 @@ Namespace x265
             MyBase.OnValueChanged(item)
         End Sub
 
-        Overloads Overrides Function GetArgs(includePaths As Boolean) As String
+        Overloads Overrides Function GetCommandLine(includePaths As Boolean,
+                                                    includeExecutable As Boolean) As String
+
             Return GetArgs(1, p.Script, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths)
         End Function

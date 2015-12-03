@@ -251,11 +251,11 @@ MustInherit Class VideoEncoder
         ret.Add(intel265)
 
         Dim nvidia264 As New NvidiaEncoder("NVIDIA H.264")
-        nvidia264.Params.Mode.Value = 2
+        nvidia264.Params.Mode.Value = 3
         ret.Add(nvidia264)
 
         Dim nvidia265 As New NvidiaEncoder("NVIDIA H.265")
-        nvidia265.Params.Mode.Value = 2
+        nvidia265.Params.Mode.Value = 3
         nvidia265.Params.Codec.Value = 1
         ret.Add(nvidia265)
 
@@ -800,7 +800,9 @@ Class ffmpegEncoder
             MyBase.OnValueChanged(item)
         End Sub
 
-        Overloads Overrides Function GetArgs(includePaths As Boolean) As String
+        Overloads Overrides Function GetCommandLine(includePaths As Boolean,
+                                                    includeExecutable As Boolean) As String
+
             Return GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths)
         End Function
@@ -928,24 +930,19 @@ Class NvidiaEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Dim sourcePath = If(Params.QSVEncCDecoder.Value, "-", p.Script.Path)
-        Encode(Params.GetArgs(1, sourcePath, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
-        AfterEncoding()
-    End Sub
+        Dim cl = Params.GetCommandLine(True, False)
 
-    Overloads Sub Encode(args As String)
-        If Params.QSVEncCDecoder.Value Then
+        If cl.Contains(" | ") Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_venc.bat"
-            Dim cli = """" + Packs.QSVEncC.GetPath + """ --avqsv --output-file - --codec raw --output-res " & p.TargetWidth & "x" & p.TargetHeight & " --input-file """ + p.SourceFile + """ | """ + Packs.NVEncC.GetPath + """ " + args
-            File.WriteAllText(batchPath, cli, Encoding.GetEncoding(850))
+            File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
 
             Using proc As New Proc
                 proc.Init("Encoding using NVEncC")
                 proc.SkipStrings = {"%]", " frames: "}
-                proc.WriteLine(cli + CrLf2)
+                proc.WriteLine(cl + CrLf2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
-                proc.BatchCode = cli
+                proc.BatchCode = cl
                 proc.Start()
             End Using
         Else
@@ -953,10 +950,12 @@ Class NvidiaEncoder
                 proc.Init("Encoding using NVEncC")
                 proc.SkipStrings = {"%]"}
                 proc.File = Packs.NVEncC.GetPath
-                proc.Arguments = args
+                proc.Arguments = cl
                 proc.Start()
             End Using
         End If
+
+        AfterEncoding()
     End Sub
 
     Overrides Function GetMenu() As MenuList
@@ -987,14 +986,17 @@ Class NvidiaEncoder
             .Options = {"H264/AVC", "H265/HEVC"},
             .Values = {"h264", "h265"}}
 
+        Property Decoder As New OptionParam With {
+            .Text = "Decoder:",
+            .Options = {"AviSynth/VapourSynth", "NVEncC cuvid", "QSVEncC Quick Sync", "ffmpeg dxva2"},
+            .Values = {"avs", "nv", "qs", "ff"}}
+
         Property Mode As New OptionParam With {
-            .Name = "Mode",
             .Text = "Mode:",
-            .Options = {"CBR", "VBR", "CQP"}}
+            .Options = {"CBR", "VBR", "VBR2", "CQP"}}
 
         Property Profile As New OptionParam With {
             .Switch = "--profile",
-            .Name = "Profile",
             .Text = "Profile:",
             .ValueIsName = True,
             .Options = {"baseline", "main", "high", "high444"},
@@ -1071,6 +1073,20 @@ Class NvidiaEncoder
         Property Lossless As New BoolParam With {
             .Switch = "--lossless",
             .Text = "Lossless",
+            .VisibleFunc = Function() Codec.ValueText = "h264",
+            .Value = False,
+            .DefaultValue = False}
+
+        Property FullRange As New BoolParam With {
+            .Switch = "--fullrange",
+            .Text = "Full Range",
+            .VisibleFunc = Function() Codec.ValueText = "h264",
+            .Value = False,
+            .DefaultValue = False}
+
+        Property AQ As New BoolParam With {
+            .Switch = "--aq",
+            .Text = "Adaptive Quantization",
             .Value = False,
             .DefaultValue = False}
 
@@ -1084,10 +1100,10 @@ Class NvidiaEncoder
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineItem)
-                    Add("Basic", Codec, Mode, Profile, LevelH264, LevelH265,
+                    Add("Basic", Decoder, Codec, Mode, Profile, LevelH264, LevelH265,
                         QPI, QPP, QPB, GOPLength, BFrames, Ref)
 
-                    Add("Advanced", mvPrecision, MaxBitrate, Lossless, QSVEncCDecoder, Custom)
+                    Add("Advanced", mvPrecision, MaxBitrate, AQ, Lossless, FullRange, QSVEncCDecoder, Custom)
                 End If
 
                 Return ItemsValue
@@ -1115,16 +1131,30 @@ Class NvidiaEncoder
             MyBase.OnValueChanged(item)
         End Sub
 
-        Overloads Overrides Function GetArgs(includePaths As Boolean) As String
-            Return GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
-                           "." + p.VideoEncoder.OutputFileType, includePaths)
-        End Function
-
-        Overloads Function GetArgs(pass As Integer,
-                                   sourcePath As String,
-                                   targetPath As String,
-                                   Optional includePaths As Boolean = True) As String
+        Overrides Function GetCommandLine(includePaths As Boolean, includeExecutable As Boolean) As String
             Dim ret As String
+            Dim sourcePath As String
+            Dim targetPath = Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) + "." + p.VideoEncoder.OutputFileType
+            Dim applyCrop = CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso p.Script.IsFilterActive("Crop")
+
+            If includePaths AndAlso includeExecutable Then
+                ret = """" + Packs.NVEncC.GetPath + """"
+            End If
+
+            Select Case Decoder.ValueText
+                Case "avs"
+                    sourcePath = p.Script.Path
+                Case "nv"
+                    sourcePath = p.SourceFile
+                    If applyCrop Then ret += " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom
+                Case "qs"
+                    sourcePath = "-"
+                    If includePaths Then ret = If(includePaths, """" + Packs.QSVEncC.GetPath + """", "QSVEncC") + " --output-file - --codec raw" + If(applyCrop, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "") + If(p.Script.IsFilterActive("Resize"), " --output-res " & p.TargetWidth & "x" & p.TargetHeight, "") + " --input-file """ + If(includePaths, p.SourceFile, "path") + """ | " + If(includePaths, """" + Packs.NVEncC.GetPath + """", "NVEncC")
+                Case "ff"
+                    sourcePath = "-"
+                    If includePaths Then ret = If(includePaths, """" + Packs.ffmpeg.GetPath + """", "ffmpeg") + " -threads 1 -hwaccel dxva2 -i """ + If(includePaths, p.SourceFile, "path") + """ -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, """" + Packs.NVEncC.GetPath + """", "NVEncC")
+                    If applyCrop Then ret += " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom
+            End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
 
@@ -1138,6 +1168,8 @@ Class NvidiaEncoder
                         ret += " --cbr " & p.VideoBitrate
                     Case "VBR"
                         ret += " --vbr " & p.VideoBitrate
+                    Case "VBR2"
+                        ret += " --vbr2 " & p.VideoBitrate
                     Case "CQP"
                         ret += " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
                 End Select
@@ -1232,7 +1264,7 @@ Class IntelEncoder
     Overrides Sub Encode()
         p.Script.Synchronize()
         Params.RaiseValueChanged(Nothing)
-        Encode(Params.GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+        Encode(Params.GetCommandLine(1, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
         AfterEncoding()
     End Sub
 
@@ -1523,15 +1555,17 @@ Class IntelEncoder
             MyBase.OnValueChanged(item)
         End Sub
 
-        Overloads Overrides Function GetArgs(includePaths As Boolean) As String
-            Return GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
+        Overloads Overrides Function GetCommandLine(includePaths As Boolean,
+                                                    includeExecutable As Boolean) As String
+
+            Return GetCommandLine(1, p.Script.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths)
         End Function
 
-        Overloads Function GetArgs(pass As Integer,
-                                   sourcePath As String,
-                                   targetPath As String,
-                                   Optional includePaths As Boolean = True) As String
+        Overloads Function GetCommandLine(pass As Integer,
+                                          sourcePath As String,
+                                          targetPath As String,
+                                          Optional includePaths As Boolean = True) As String
             Dim ret As String
 
             Dim q = From i In Items Where i.GetArgs <> ""
@@ -1646,7 +1680,7 @@ Class AMDEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode(Params.GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+        Encode(Params.GetCommandLine(1, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
         AfterEncoding()
     End Sub
 
@@ -1784,12 +1818,14 @@ Class AMDEncoder
             MyBase.OnValueChanged(item)
         End Sub
 
-        Overloads Overrides Function GetArgs(includePaths As Boolean) As String
-            Return GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
+        Overloads Overrides Function GetCommandLine(includePaths As Boolean,
+                                                    includeExecutable As Boolean) As String
+
+            Return GetCommandLine(1, p.Script.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths)
         End Function
 
-        Overloads Function GetArgs(pass As Integer,
+        Overloads Function GetCommandLine(pass As Integer,
                                    sourcePath As String,
                                    targetPath As String,
                                    Optional includePaths As Boolean = True) As String

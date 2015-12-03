@@ -23,8 +23,8 @@ Class CommandLineForm
         cbGoTo.SendMessageCue("Search")
         cbGoTo.Select()
 
-        cms.Items.Add(New ActionMenuItem("Execute Command Line", Sub() g.ShellExecute(params.GetPackage.GetPath, params.GetArgs(True)), Nothing, p.SourceFile <> ""))
-        cms.Items.Add(New ActionMenuItem("Copy Command Line", Sub() Clipboard.SetText("""" + params.GetPackage.GetPath + """ " + params.GetArgs(True))))
+        cms.Items.Add(New ActionMenuItem("Execute Command Line", Sub() params.Execute(), Nothing, p.SourceFile <> ""))
+        cms.Items.Add(New ActionMenuItem("Copy Command Line", Sub() Clipboard.SetText(params.GetCommandLine(True, True))))
         cms.Items.Add(New ActionMenuItem("Help", Sub() ShowHelp()))
         cms.Items.Add(New ActionMenuItem(params.GetPackage.Name + " Help", Sub() g.ShellExecute(params.GetPackage.GetHelpPath)))
 
@@ -32,7 +32,7 @@ Class CommandLineForm
     End Sub
 
     Sub ValueChanged(item As CommandLineItem)
-        rtbCmdl.SetText(Params.GetArgs(False))
+        rtbCmdl.SetText(Params.GetCommandLine(False, False))
         rtbCmdl.SelectionLength = 0
         UpdateHeight()
     End Sub

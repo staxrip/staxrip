@@ -1,5 +1,6 @@
 ﻿Imports StaxRip.UI
 Imports System.Globalization
+Imports System.Text
 
 Namespace CommandLine
     MustInherit Class CommandLineParams
@@ -8,7 +9,9 @@ Namespace CommandLine
 
         MustOverride ReadOnly Property Items As List(Of CommandLineItem)
 
-        MustOverride Function GetArgs(includePaths As Boolean) As String
+        MustOverride Function GetCommandLine(includePaths As Boolean,
+                                             includeExecutable As Boolean) As String
+
         MustOverride Function GetPackage() As Package
 
         Sub Init(store As PrimitiveStore)
@@ -29,6 +32,17 @@ Namespace CommandLine
             Next
 
             RaiseEvent ValueChanged(item)
+        End Sub
+
+        Sub Execute()
+            Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_vexe.bat"
+            File.WriteAllText(batchPath, GetCommandLine(True, True), Encoding.GetEncoding(850))
+
+            Dim batchProcess As New Process
+            batchProcess.StartInfo.FileName = "cmd.exe"
+            batchProcess.StartInfo.Arguments = "/k """ + batchPath + """"
+            batchProcess.StartInfo.WorkingDirectory = p.TempDir
+            batchProcess.Start()
         End Sub
     End Class
 

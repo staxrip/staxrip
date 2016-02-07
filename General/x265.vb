@@ -118,7 +118,7 @@ Namespace x265
             script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
             script.Synchronize()
 
-            Dim arguments = enc.Params.GetArgs(0, script, p.TempDir + p.Name + "_CompCheck." + OutputFileType)
+            Dim arguments = enc.Params.GetArgs(0, script, p.TempDir + p.Name + "_CompCheck." + OutputFileType, True, False)
 
             Try
                 Encode("Compressibility Check", arguments, script, ProcessPriorityClass.Normal)
@@ -146,7 +146,7 @@ Namespace x265
 
         Overloads Function GetArgs(pass As Integer, script As VideoScript, Optional includePaths As Boolean = True) As String
             Return Params.GetArgs(pass, script, Filepath.GetDirAndBase(OutputPath) +
-                           "." + OutputFileType, includePaths)
+                           "." + OutputFileType, includePaths, False)
         End Function
 
         Overrides Sub ShowConfigDialog()
@@ -210,8 +210,8 @@ Namespace x265
         Property Tune As New OptionParam With {
             .Switch = "--tune",
             .Text = "Tune:",
-            .Options = {"None", "PSNR", "SSIM", "Grain", "Fast Decode", "Zero Latency", "CBR"},
-            .Values = {"none", "psnr", "ssim", "grain", "fastdecode", "zerolatency", "cbr"}}
+            .Options = {"None", "PSNR", "SSIM", "Grain", "Fast Decode", "Zero Latency"},
+            .Values = {"none", "psnr", "ssim", "grain", "fastdecode", "zerolatency"}}
 
         Property Mode As New OptionParam With {
             .Name = "Mode",
@@ -336,9 +336,7 @@ Namespace x265
         Property AQStrength As New NumParam With {
             .Switch = "--aq-strength",
             .Text = "AQ Strength:",
-            .MinMaxStepDec = {0D, 3D, 0.05D, 2D},
-            .Value = 1,
-            .DefaultValue = 1}
+            .MinMaxStepDec = {0D, 3D, 0.05D, 2D}}
 
         Property CUtree As New BoolParam With {
             .Switch = "--cutree",
@@ -439,16 +437,12 @@ Namespace x265
         Property PsyRD As New NumParam With {
             .Switch = "--psy-rd",
             .Text = "Psy RD:",
-            .MinMaxStepDec = {0D, 2D, 0.05D, 2D},
-            .Value = 0.3,
-            .DefaultValue = 0.3}
+            .MinMaxStepDec = {0D, 2D, 0.05D, 2D}}
 
         Property PsyRDOQ As New NumParam With {
             .Switch = "--psy-rdoq",
             .Text = "Psy RDOQ:",
-            .MinMaxStepDec = {0D, 50D, 0.05D, 2D},
-            .Value = 1,
-            .DefaultValue = 1}
+            .MinMaxStepDec = {0D, 50D, 0.05D, 2D}}
 
         Property CRFmax As New NumParam With {
             .Switch = "--crf-max",
@@ -465,20 +459,17 @@ Namespace x265
         Property PBRatio As New NumParam With {
             .Switch = "--pbratio",
             .Text = "PB Ratio:",
-            .MinMaxStepDec = {0D, 1000D, 0.05D, 2D},
-            .Value = 1.3}
+            .MinMaxStepDec = {0D, 1000D, 0.05D, 2D}}
 
         Property IPRatio As New NumParam With {
             .Switch = "--ipratio",
             .Text = "IP Ratio:",
-            .MinMaxStepDec = {0D, 1000D, 0.05D, 2D},
-            .Value = 1.4}
+            .MinMaxStepDec = {0D, 1000D, 0.05D, 2D}}
 
         Property QComp As New NumParam With {
             .Switch = "--qcomp",
             .Text = "qComp:",
-            .MinMaxStepDec = {0D, 1000D, 0.05D, 2D},
-            .Value = 0.6}
+            .MinMaxStepDec = {0D, 1000D, 0.05D, 2D}}
 
         Property QBlur As New NumParam With {
             .Switch = "--qblur",
@@ -732,6 +723,18 @@ Namespace x265
             .Switch = "--allow-non-conformance",
             .Text = "Allow non conformance"}
 
+        Property LimitModes As New BoolParam With {
+            .Switch = "--limit-modes",
+            .Text = "Limit Modes"}
+
+        Property RdRefine As New BoolParam With {
+            .Switch = "--rd-refine",
+            .Text = "RD Refine"}
+
+        Property IntraRefresh As New BoolParam With {
+            .Switch = "--intra-refresh",
+            .Text = "Intra Refresh"}
+
         Property Custom As New StringParam With {
             .Text = "Custom Switches:"}
 
@@ -778,11 +781,11 @@ Namespace x265
 
                     Add("Basic", Quant, Preset, Tune, Profile, OutputDepth, Level, Mode)
                     Add("Analysis 1", RD, MinCuSize, MaxCuSize, MaxTuSize, LimitRefs, TUintra, TUinter, rdoqLevel)
-                    Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra, CUlossless, Tskip, TskipFast)
+                    Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra, CUlossless, Tskip, TskipFast, LimitModes, RdRefine)
                     Add("Rate Control 1", AQmode, qgSize, AQStrength, IPRatio, PBRatio, QComp, CBQPoffs, Qstep, QBlur, Cplxblur, CUtree, Lossless, StrictCBR)
                     Add("Rate Control 2", NRintra, NRinter, CRFmin, CRFmax, VBVbufsize, VBVmaxrate, VBVinit, qpstep)
                     Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP)
-                    Add("Slice Decision", BAdapt, BFrames, BFrameBias, RCLookahead, LookaheadSlices, Scenecut, Ref, MinKeyint, Keyint, Bpyramid, OpenGop)
+                    Add("Slice Decision", BAdapt, BFrames, BFrameBias, RCLookahead, LookaheadSlices, Scenecut, Ref, MinKeyint, Keyint, Bpyramid, OpenGop, IntraRefresh)
                     Add("Spatial/Intra", StrongIntraSmoothing, ConstrainedIntra, RDpenalty)
                     Add("Performance", Pools, FrameThreads, WPP, Pmode, PME)
                     Add("Statistic", LogLevel, csvloglevel, CSV, SSIM, PSNR)
@@ -822,14 +825,9 @@ Namespace x265
                 Exit Sub
             End If
 
-            If item Is Preset Then
+            If item Is Preset OrElse item Is Tune Then
                 BlockValueChanged = True
                 ApplyPresetValues()
-                BlockValueChanged = False
-            End If
-
-            If item Is Tune Then
-                BlockValueChanged = True
                 ApplyTuneValues()
                 BlockValueChanged = False
             End If
@@ -844,18 +842,27 @@ Namespace x265
                                                     includeExecutable As Boolean) As String
 
             Return GetArgs(1, p.Script, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
-                           "." + p.VideoEncoder.OutputFileType, includePaths)
+                           "." + p.VideoEncoder.OutputFileType, includePaths, includeExecutable)
         End Function
 
         Overloads Function GetArgs(pass As Integer,
                                    script As VideoScript,
                                    targetPath As String,
-                                   Optional includePaths As Boolean = True) As String
+                                   includePaths As Boolean,
+                                   includeExecutable As Boolean) As String
 
             ApplyPresetDefaultValues()
             ApplyTuneDefaultValues()
 
             Dim sb As New StringBuilder
+
+            If includePaths AndAlso includeExecutable Then
+                If p.Script.Engine = ScriptingEngine.VapourSynth Then
+                    sb.Append("""" + Packs.vspipe.GetPath + """ """ + script.Path + """ - --y4m | """ + Packs.x265.GetPath + """")
+                Else
+                    sb.Append("""" + Packs.ffmpeg.GetPath + """ -i """ + script.Path + """ -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | """ + Packs.x265.GetPath + """")
+                End If
+            End If
 
             If Mode.Value = RateMode.TwoPass OrElse Mode.Value = RateMode.ThreePass Then
                 sb.Append(" --pass " & pass)
@@ -918,15 +925,25 @@ Namespace x265
         End Function
 
         Sub ApplyPresetValues()
-            MinCuSize.Value = 3
-            MaxCuSize.Value = 0
             AQmode.Value = 1
+            AQStrength.Value = 1
+            DeblockA.Value = 0
+            DeblockB.Value = 0
+            FrameThreads.Value = 0
+            IPRatio.Value = 1.4
+            MaxCuSize.Value = 0
+            MinCuSize.Value = 3
+            PBRatio.Value = 1.3
+            PsyRD.Value = 0.3
+            PsyRDOQ.Value = 1
+            QComp.Value = 0.6
 
             Select Case Preset.Value
                 Case 0 'ultrafast
                     [Me].Value = 0
                     AMP.Value = False
                     AQmode.Value = 0
+                    AQStrength.Value = 0
                     BAdapt.Value = 0
                     BFrames.Value = 3
                     BIntra.Value = False
@@ -955,6 +972,7 @@ Namespace x265
                     [Me].Value = 1
                     AMP.Value = False
                     AQmode.Value = 0
+                    AQStrength.Value = 0
                     BAdapt.Value = 0
                     BFrames.Value = 3
                     BIntra.Value = False
@@ -1183,15 +1201,25 @@ Namespace x265
         End Sub
 
         Sub ApplyPresetDefaultValues()
-            MinCuSize.DefaultValue = 3
-            MaxCuSize.DefaultValue = 0
             AQmode.DefaultValue = 1
+            AQStrength.DefaultValue = 1
+            DeblockA.DefaultValue = 0
+            DeblockB.DefaultValue = 0
+            FrameThreads.DefaultValue = 0
+            IPRatio.DefaultValue = 1.4
+            MaxCuSize.DefaultValue = 0
+            MinCuSize.DefaultValue = 3
+            PBRatio.DefaultValue = 1.3
+            PsyRD.DefaultValue = 0.3
+            PsyRDOQ.DefaultValue = 1
+            QComp.DefaultValue = 0.6
 
             Select Case Preset.Value
                 Case 0 'ultrafast
                     [Me].DefaultValue = 0
                     AMP.DefaultValue = False
                     AQmode.DefaultValue = 0
+                    AQStrength.DefaultValue = 0
                     BAdapt.DefaultValue = 0
                     BFrames.DefaultValue = 3
                     BIntra.DefaultValue = False
@@ -1220,6 +1248,7 @@ Namespace x265
                     [Me].DefaultValue = 1
                     AMP.DefaultValue = False
                     AQmode.DefaultValue = 0
+                    AQStrength.DefaultValue = 0
                     BAdapt.DefaultValue = 0
                     BFrames.DefaultValue = 3
                     BIntra.DefaultValue = False
@@ -1448,52 +1477,76 @@ Namespace x265
         End Sub
 
         Sub ApplyTuneValues()
-            PsyRD.Value = 0.3
-            PsyRDOQ.Value = 1
-            AQStrength.Value = 1
-            PBRatio.Value = 1.3
-            IPRatio.Value = 1.4
-            QComp.Value = 0.6
-            DeblockA.Value = 0
-            DeblockB.Value = 0
-            rdoqLevel.Value = 0
-
             Select Case Tune.Value
+                Case 1 '"psnr"
+                    AQStrength.Value = 0.0
+                    PsyRD.Value = 0.0
+                    PsyRDOQ.Value = 0.0
+                Case 2 '"ssim"
+                    AQmode.Value = 2
+                    PsyRD.Value = 0.0
+                    PsyRDOQ.Value = 0.0
                 Case 3 'grain
-                    PsyRD.Value = 0.5
-                    PsyRDOQ.Value = 10
-                    AQStrength.Value = 0.3
-                    PBRatio.Value = 1.1
-                    IPRatio.Value = 1.1
-                    QComp.Value = 0.8
                     DeblockA.Value = -2
                     DeblockB.Value = -2
-                    rdoqLevel.Value = 2
+                    BIntra.Value = False
+                    rdoqLevel.Value = 1
+                    PsyRDOQ.Value = 30
+                    PsyRD.Value = 0.5
+                    IPRatio.Value = 1.1
+                    PBRatio.Value = 1.1
+                    AQStrength.Value = 0.3
+                    QComp.Value = 0.8
+                Case 4 '"fastdecode"
+                    Deblock.Value = False
+                    SAO.Value = False
+                    Weightp.Value = False
+                    Weightb.Value = False
+                    BIntra.Value = False
+                Case 5 '"zerolatency"
+                    BAdapt.Value = 0
+                    BFrames.Value = 0
+                    RCLookahead.Value = 0
+                    Scenecut.Value = 0
+                    CUtree.Value = False
+                    FrameThreads.Value = 1
             End Select
         End Sub
 
         Sub ApplyTuneDefaultValues()
-            PsyRD.DefaultValue = 0.3
-            PsyRDOQ.DefaultValue = 1
-            AQStrength.DefaultValue = 1
-            PBRatio.DefaultValue = 1.3
-            IPRatio.DefaultValue = 1.4
-            QComp.DefaultValue = 0.6
-            DeblockA.DefaultValue = 0
-            DeblockB.DefaultValue = 0
-            rdoqLevel.DefaultValue = 0
-
             Select Case Tune.Value
+                Case 1 '"psnr"
+                    AQStrength.DefaultValue = 0.0
+                    PsyRD.DefaultValue = 0.0
+                    PsyRDOQ.DefaultValue = 0.0
+                Case 2 '"ssim"
+                    AQmode.DefaultValue = 2
+                    PsyRD.DefaultValue = 0.0
+                    PsyRDOQ.DefaultValue = 0.0
                 Case 3 'grain
-                    PsyRD.DefaultValue = 0.5
-                    PsyRDOQ.DefaultValue = 10
-                    AQStrength.DefaultValue = 0.3
-                    PBRatio.DefaultValue = 1.1
-                    IPRatio.DefaultValue = 1.1
-                    QComp.DefaultValue = 0.8
                     DeblockA.DefaultValue = -2
                     DeblockB.DefaultValue = -2
-                    rdoqLevel.DefaultValue = 2
+                    BIntra.DefaultValue = False
+                    rdoqLevel.DefaultValue = 1
+                    PsyRDOQ.DefaultValue = 30
+                    PsyRD.DefaultValue = 0.5
+                    IPRatio.DefaultValue = 1.1
+                    PBRatio.DefaultValue = 1.1
+                    AQStrength.DefaultValue = 0.3
+                    QComp.DefaultValue = 0.8
+                Case 4 '"fastdecode"
+                    Deblock.DefaultValue = False
+                    SAO.DefaultValue = False
+                    Weightp.DefaultValue = False
+                    Weightb.DefaultValue = False
+                    BIntra.DefaultValue = False
+                Case 5 '"zerolatency"
+                    BAdapt.DefaultValue = 0
+                    BFrames.DefaultValue = 0
+                    RCLookahead.DefaultValue = 0
+                    Scenecut.DefaultValue = 0
+                    CUtree.DefaultValue = False
+                    FrameThreads.DefaultValue = 1
             End Select
         End Sub
 

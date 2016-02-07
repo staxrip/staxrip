@@ -799,11 +799,14 @@ Public Class GUIAudioProfile
             Case AudioCodec.MP3
                 ret += " -c:a libmp3lame"
 
-                If Params.RateMode = AudioRateMode.VBR Then
-                    ret += " -q:a " & CInt(Params.Quality)
-                Else
-                    ret += " -b:a " & CInt(Bitrate) & "k"
-                End If
+                Select Case Params.RateMode
+                    Case AudioRateMode.ABR
+                        ret += " -b:a " & CInt(Bitrate) & "k -abr 1"
+                    Case AudioRateMode.CBR
+                        ret += " -b:a " & CInt(Bitrate) & "k"
+                    Case AudioRateMode.VBR
+                        ret += " -q:a " & CInt(Params.Quality)
+                End Select
             Case AudioCodec.AC3
                 If Not {192, 224, 384, 448, 640}.Contains(CInt(Bitrate)) Then
                     Return "Invalid bitrate, choose 192, 224, 384, 448 or 640"

@@ -197,7 +197,9 @@ Class x265Control
         Dim offset = If(Params.Mode.Value = RateMode.SingleCRF, 0, 1)
 
         Params.Preset.Value = value
+
         Params.ApplyPresetValues()
+        Params.ApplyTuneValues()
 
         lv.Items(1 - offset).SubItems(1).Text = value.ToString
         lv.Items(1 - offset).Selected = False
@@ -209,6 +211,8 @@ Class x265Control
         Dim offset = If(Params.Mode.Value = RateMode.SingleCRF, 0, 1)
 
         Params.Tune.Value = value
+
+        Params.ApplyPresetValues()
         Params.ApplyTuneValues()
 
         lv.Items(2 - offset).SubItems(1).Text = value.ToString

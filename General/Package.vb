@@ -603,7 +603,7 @@ Public Class VapourSynthPackage
         Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         WebURL = "http://www.vapoursynth.com"
         HelpURL = "http://www.vapoursynth.com/doc"
-        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R28/vapoursynth-r28.exe"
+        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R30/vapoursynth-r30.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -621,7 +621,7 @@ Public Class VapourSynthPackage
     End Property
 
     Public Overrides Function GetStatus() As String
-        If Not IsCorrectVersion() Then Return "Install VapourSynth R28. Press F12 to edit the version."
+        If Not IsCorrectVersion() Then Return "Install VapourSynth R31. Press F12 to edit the version."
         Return MyBase.GetStatus()
     End Function
 End Class

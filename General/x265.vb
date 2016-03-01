@@ -760,7 +760,9 @@ Namespace x265
         Property LimitRefs As New OptionParam With {
             .Switch = "--limit-refs",
             .Text = "Limit References:",
-            .Options = {"0", "1", "2", "3"}}
+            .Options = {"0", "1", "2", "3"},
+            .Value = 3,
+            .DefaultValue = 3}
 
         Property CSV As New BoolParam With {
             .Switch = "--csv",
@@ -934,9 +936,10 @@ Namespace x265
             MaxCuSize.Value = 0
             MinCuSize.Value = 3
             PBRatio.Value = 1.3
-            PsyRD.Value = 0.3
+            PsyRD.Value = 2.0
             PsyRDOQ.Value = 1
             QComp.Value = 0.6
+            LookaheadSlices.Value = 8
 
             Select Case Preset.Value
                 Case 0 'ultrafast
@@ -947,16 +950,18 @@ Namespace x265
                     BAdapt.Value = 0
                     BFrames.Value = 3
                     BIntra.Value = False
-                    MaxCuSize.Value = 1
-                    MinCuSize.Value = 2
                     CUtree.Value = False
                     Deblock.Value = True
                     EarlySkip.Value = True
                     FastIntra.Value = True
+                    LimitRefs.Value = 0
+                    MaxCuSize.Value = 1
                     MaxMerge.Value = 2
                     MErange.Value = 25
+                    MinCuSize.Value = 2
                     RCLookahead.Value = 5
                     RD.Value = 2
+                    rdoqLevel.Value = 0
                     Rect.Value = False
                     Ref.Value = 1
                     SAO.Value = False
@@ -967,7 +972,6 @@ Namespace x265
                     TUintra.Value = 1
                     Weightb.Value = False
                     Weightp.Value = False
-                    rdoqLevel.Value = 0
                 Case 1 'superfast
                     [Me].Value = 1
                     AMP.Value = False
@@ -976,15 +980,17 @@ Namespace x265
                     BAdapt.Value = 0
                     BFrames.Value = 3
                     BIntra.Value = False
-                    MaxCuSize.Value = 1
                     CUtree.Value = False
                     Deblock.Value = True
                     EarlySkip.Value = True
                     FastIntra.Value = True
+                    LimitRefs.Value = 0
+                    MaxCuSize.Value = 1
                     MaxMerge.Value = 2
                     MErange.Value = 44
                     RCLookahead.Value = 10
                     RD.Value = 2
+                    rdoqLevel.Value = 0
                     Rect.Value = False
                     Ref.Value = 1
                     SAO.Value = False
@@ -995,24 +1001,24 @@ Namespace x265
                     TUintra.Value = 1
                     Weightb.Value = False
                     Weightp.Value = False
-                    rdoqLevel.Value = 0
                 Case 2 'veryfast
                     [Me].Value = 1
                     AMP.Value = False
                     BAdapt.Value = 0
                     BFrames.Value = 4
                     BIntra.Value = False
-                    MaxCuSize.Value = 1
                     CUtree.Value = False
                     Deblock.Value = True
                     EarlySkip.Value = True
                     FastIntra.Value = True
+                    MaxCuSize.Value = 1
                     MaxMerge.Value = 2
                     MErange.Value = 57
                     RCLookahead.Value = 15
                     RD.Value = 2
+                    rdoqLevel.Value = 0
                     Rect.Value = False
-                    Ref.Value = 1
+                    Ref.Value = 2
                     SAO.Value = True
                     Scenecut.Value = 40
                     SignHide.Value = True
@@ -1021,7 +1027,6 @@ Namespace x265
                     TUintra.Value = 1
                     Weightb.Value = False
                     Weightp.Value = True
-                    rdoqLevel.Value = 0
                 Case 3 'faster
                     [Me].Value = 1
                     AMP.Value = False
@@ -1036,8 +1041,9 @@ Namespace x265
                     MErange.Value = 57
                     RCLookahead.Value = 15
                     RD.Value = 2
+                    rdoqLevel.Value = 0
                     Rect.Value = False
-                    Ref.Value = 1
+                    Ref.Value = 2
                     SAO.Value = True
                     Scenecut.Value = 40
                     SignHide.Value = True
@@ -1046,7 +1052,6 @@ Namespace x265
                     TUintra.Value = 1
                     Weightb.Value = False
                     Weightp.Value = True
-                    rdoqLevel.Value = 0
                 Case 4 'fast
                     [Me].Value = 1
                     AMP.Value = False
@@ -1061,6 +1066,7 @@ Namespace x265
                     MErange.Value = 57
                     RCLookahead.Value = 15
                     RD.Value = 2
+                    rdoqLevel.Value = 0
                     Rect.Value = False
                     Ref.Value = 3
                     SAO.Value = True
@@ -1071,7 +1077,6 @@ Namespace x265
                     TUintra.Value = 1
                     Weightb.Value = False
                     Weightp.Value = True
-                    rdoqLevel.Value = 0
                 Case 5 'medium
                     [Me].Value = 1
                     AMP.Value = False
@@ -1086,6 +1091,7 @@ Namespace x265
                     MErange.Value = 57
                     RCLookahead.Value = 20
                     RD.Value = 3
+                    rdoqLevel.Value = 0
                     Rect.Value = False
                     Ref.Value = 3
                     SAO.Value = True
@@ -1096,7 +1102,6 @@ Namespace x265
                     TUintra.Value = 1
                     Weightb.Value = False
                     Weightp.Value = True
-                    rdoqLevel.Value = 0
                 Case 6 'slow
                     [Me].Value = 3
                     AMP.Value = False
@@ -1107,12 +1112,15 @@ Namespace x265
                     Deblock.Value = True
                     EarlySkip.Value = False
                     FastIntra.Value = False
+                    LimitModes.Value = True
+                    LookaheadSlices.Value = 4
                     MaxMerge.Value = 3
                     MErange.Value = 57
                     RCLookahead.Value = 25
                     RD.Value = 4
+                    rdoqLevel.Value = 2
                     Rect.Value = True
-                    Ref.Value = 3
+                    Ref.Value = 4
                     SAO.Value = True
                     Scenecut.Value = 40
                     SignHide.Value = True
@@ -1121,7 +1129,6 @@ Namespace x265
                     TUintra.Value = 1
                     Weightb.Value = False
                     Weightp.Value = True
-                    rdoqLevel.Value = 2
                 Case 7 'slower
                     [Me].Value = 3
                     AMP.Value = True
@@ -1132,12 +1139,16 @@ Namespace x265
                     Deblock.Value = True
                     EarlySkip.Value = False
                     FastIntra.Value = False
+                    LimitModes.Value = True
+                    LimitRefs.Value = 2
+                    LookaheadSlices.Value = 4
                     MaxMerge.Value = 3
                     MErange.Value = 57
                     RCLookahead.Value = 30
                     RD.Value = 6
+                    rdoqLevel.Value = 2
                     Rect.Value = True
-                    Ref.Value = 3
+                    Ref.Value = 4
                     SAO.Value = True
                     Scenecut.Value = 40
                     SignHide.Value = True
@@ -1146,7 +1157,6 @@ Namespace x265
                     TUintra.Value = 2
                     Weightb.Value = True
                     Weightp.Value = True
-                    rdoqLevel.Value = 2
                 Case 8 'veryslow
                     [Me].Value = 3
                     AMP.Value = True
@@ -1157,6 +1167,7 @@ Namespace x265
                     Deblock.Value = True
                     EarlySkip.Value = False
                     FastIntra.Value = False
+                    LimitModes.Value = True
                     MaxMerge.Value = 4
                     MErange.Value = 57
                     RCLookahead.Value = 40
@@ -1172,6 +1183,7 @@ Namespace x265
                     Weightb.Value = True
                     Weightp.Value = True
                     rdoqLevel.Value = 2
+                    LookaheadSlices.Value = 4
                 Case 9 'placebo
                     [Me].Value = 3
                     AMP.Value = True
@@ -1182,10 +1194,13 @@ Namespace x265
                     Deblock.Value = True
                     EarlySkip.Value = False
                     FastIntra.Value = False
+                    LimitRefs.Value = 0
+                    LookaheadSlices.Value = 0
                     MaxMerge.Value = 5
                     MErange.Value = 92
                     RCLookahead.Value = 60
                     RD.Value = 6
+                    rdoqLevel.Value = 2
                     Rect.Value = True
                     Ref.Value = 5
                     SAO.Value = True
@@ -1196,7 +1211,6 @@ Namespace x265
                     TUintra.Value = 4
                     Weightb.Value = True
                     Weightp.Value = True
-                    rdoqLevel.Value = 2
             End Select
         End Sub
 
@@ -1210,9 +1224,10 @@ Namespace x265
             MaxCuSize.DefaultValue = 0
             MinCuSize.DefaultValue = 3
             PBRatio.DefaultValue = 1.3
-            PsyRD.DefaultValue = 0.3
+            PsyRD.DefaultValue = 2.0
             PsyRDOQ.DefaultValue = 1
             QComp.DefaultValue = 0.6
+            LookaheadSlices.DefaultValue = 8
 
             Select Case Preset.Value
                 Case 0 'ultrafast
@@ -1223,16 +1238,18 @@ Namespace x265
                     BAdapt.DefaultValue = 0
                     BFrames.DefaultValue = 3
                     BIntra.DefaultValue = False
-                    MaxCuSize.DefaultValue = 1
-                    MinCuSize.DefaultValue = 2
                     CUtree.DefaultValue = False
                     Deblock.DefaultValue = True
                     EarlySkip.DefaultValue = True
                     FastIntra.DefaultValue = True
+                    LimitRefs.DefaultValue = 0
+                    MaxCuSize.DefaultValue = 1
                     MaxMerge.DefaultValue = 2
                     MErange.DefaultValue = 25
+                    MinCuSize.DefaultValue = 2
                     RCLookahead.DefaultValue = 5
                     RD.DefaultValue = 2
+                    rdoqLevel.DefaultValue = 0
                     Rect.DefaultValue = False
                     Ref.DefaultValue = 1
                     SAO.DefaultValue = False
@@ -1243,7 +1260,6 @@ Namespace x265
                     TUintra.DefaultValue = 1
                     Weightb.DefaultValue = False
                     Weightp.DefaultValue = False
-                    rdoqLevel.DefaultValue = 0
                 Case 1 'superfast
                     [Me].DefaultValue = 1
                     AMP.DefaultValue = False
@@ -1252,15 +1268,17 @@ Namespace x265
                     BAdapt.DefaultValue = 0
                     BFrames.DefaultValue = 3
                     BIntra.DefaultValue = False
-                    MaxCuSize.DefaultValue = 1
                     CUtree.DefaultValue = False
                     Deblock.DefaultValue = True
                     EarlySkip.DefaultValue = True
                     FastIntra.DefaultValue = True
+                    LimitRefs.DefaultValue = 0
+                    MaxCuSize.DefaultValue = 1
                     MaxMerge.DefaultValue = 2
                     MErange.DefaultValue = 44
                     RCLookahead.DefaultValue = 10
                     RD.DefaultValue = 2
+                    rdoqLevel.DefaultValue = 0
                     Rect.DefaultValue = False
                     Ref.DefaultValue = 1
                     SAO.DefaultValue = False
@@ -1271,24 +1289,24 @@ Namespace x265
                     TUintra.DefaultValue = 1
                     Weightb.DefaultValue = False
                     Weightp.DefaultValue = False
-                    rdoqLevel.DefaultValue = 0
                 Case 2 'veryfast
                     [Me].DefaultValue = 1
                     AMP.DefaultValue = False
                     BAdapt.DefaultValue = 0
                     BFrames.DefaultValue = 4
                     BIntra.DefaultValue = False
-                    MaxCuSize.DefaultValue = 1
                     CUtree.DefaultValue = False
                     Deblock.DefaultValue = True
                     EarlySkip.DefaultValue = True
                     FastIntra.DefaultValue = True
+                    MaxCuSize.DefaultValue = 1
                     MaxMerge.DefaultValue = 2
                     MErange.DefaultValue = 57
                     RCLookahead.DefaultValue = 15
                     RD.DefaultValue = 2
+                    rdoqLevel.DefaultValue = 0
                     Rect.DefaultValue = False
-                    Ref.DefaultValue = 1
+                    Ref.DefaultValue = 2
                     SAO.DefaultValue = True
                     Scenecut.DefaultValue = 40
                     SignHide.DefaultValue = True
@@ -1297,7 +1315,6 @@ Namespace x265
                     TUintra.DefaultValue = 1
                     Weightb.DefaultValue = False
                     Weightp.DefaultValue = True
-                    rdoqLevel.DefaultValue = 0
                 Case 3 'faster
                     [Me].DefaultValue = 1
                     AMP.DefaultValue = False
@@ -1312,8 +1329,9 @@ Namespace x265
                     MErange.DefaultValue = 57
                     RCLookahead.DefaultValue = 15
                     RD.DefaultValue = 2
+                    rdoqLevel.DefaultValue = 0
                     Rect.DefaultValue = False
-                    Ref.DefaultValue = 1
+                    Ref.DefaultValue = 2
                     SAO.DefaultValue = True
                     Scenecut.DefaultValue = 40
                     SignHide.DefaultValue = True
@@ -1322,7 +1340,6 @@ Namespace x265
                     TUintra.DefaultValue = 1
                     Weightb.DefaultValue = False
                     Weightp.DefaultValue = True
-                    rdoqLevel.DefaultValue = 0
                 Case 4 'fast
                     [Me].DefaultValue = 1
                     AMP.DefaultValue = False
@@ -1337,6 +1354,7 @@ Namespace x265
                     MErange.DefaultValue = 57
                     RCLookahead.DefaultValue = 15
                     RD.DefaultValue = 2
+                    rdoqLevel.DefaultValue = 0
                     Rect.DefaultValue = False
                     Ref.DefaultValue = 3
                     SAO.DefaultValue = True
@@ -1347,7 +1365,6 @@ Namespace x265
                     TUintra.DefaultValue = 1
                     Weightb.DefaultValue = False
                     Weightp.DefaultValue = True
-                    rdoqLevel.DefaultValue = 0
                 Case 5 'medium
                     [Me].DefaultValue = 1
                     AMP.DefaultValue = False
@@ -1362,6 +1379,7 @@ Namespace x265
                     MErange.DefaultValue = 57
                     RCLookahead.DefaultValue = 20
                     RD.DefaultValue = 3
+                    rdoqLevel.DefaultValue = 0
                     Rect.DefaultValue = False
                     Ref.DefaultValue = 3
                     SAO.DefaultValue = True
@@ -1372,7 +1390,6 @@ Namespace x265
                     TUintra.DefaultValue = 1
                     Weightb.DefaultValue = False
                     Weightp.DefaultValue = True
-                    rdoqLevel.DefaultValue = 0
                 Case 6 'slow
                     [Me].DefaultValue = 3
                     AMP.DefaultValue = False
@@ -1383,12 +1400,15 @@ Namespace x265
                     Deblock.DefaultValue = True
                     EarlySkip.DefaultValue = False
                     FastIntra.DefaultValue = False
+                    LimitModes.DefaultValue = True
+                    LookaheadSlices.DefaultValue = 4
                     MaxMerge.DefaultValue = 3
                     MErange.DefaultValue = 57
                     RCLookahead.DefaultValue = 25
                     RD.DefaultValue = 4
+                    rdoqLevel.DefaultValue = 2
                     Rect.DefaultValue = True
-                    Ref.DefaultValue = 3
+                    Ref.DefaultValue = 4
                     SAO.DefaultValue = True
                     Scenecut.DefaultValue = 40
                     SignHide.DefaultValue = True
@@ -1397,7 +1417,6 @@ Namespace x265
                     TUintra.DefaultValue = 1
                     Weightb.DefaultValue = False
                     Weightp.DefaultValue = True
-                    rdoqLevel.DefaultValue = 2
                 Case 7 'slower
                     [Me].DefaultValue = 3
                     AMP.DefaultValue = True
@@ -1408,12 +1427,16 @@ Namespace x265
                     Deblock.DefaultValue = True
                     EarlySkip.DefaultValue = False
                     FastIntra.DefaultValue = False
+                    LimitModes.DefaultValue = True
+                    LimitRefs.DefaultValue = 2
+                    LookaheadSlices.DefaultValue = 4
                     MaxMerge.DefaultValue = 3
                     MErange.DefaultValue = 57
                     RCLookahead.DefaultValue = 30
                     RD.DefaultValue = 6
+                    rdoqLevel.DefaultValue = 2
                     Rect.DefaultValue = True
-                    Ref.DefaultValue = 3
+                    Ref.DefaultValue = 4
                     SAO.DefaultValue = True
                     Scenecut.DefaultValue = 40
                     SignHide.DefaultValue = True
@@ -1422,7 +1445,6 @@ Namespace x265
                     TUintra.DefaultValue = 2
                     Weightb.DefaultValue = True
                     Weightp.DefaultValue = True
-                    rdoqLevel.DefaultValue = 2
                 Case 8 'veryslow
                     [Me].DefaultValue = 3
                     AMP.DefaultValue = True
@@ -1433,10 +1455,13 @@ Namespace x265
                     Deblock.DefaultValue = True
                     EarlySkip.DefaultValue = False
                     FastIntra.DefaultValue = False
+                    LimitModes.DefaultValue = True
+                    LookaheadSlices.DefaultValue = 4
                     MaxMerge.DefaultValue = 4
                     MErange.DefaultValue = 57
                     RCLookahead.DefaultValue = 40
                     RD.DefaultValue = 6
+                    rdoqLevel.DefaultValue = 2
                     Rect.DefaultValue = True
                     Ref.DefaultValue = 5
                     SAO.DefaultValue = True
@@ -1447,7 +1472,6 @@ Namespace x265
                     TUintra.DefaultValue = 3
                     Weightb.DefaultValue = True
                     Weightp.DefaultValue = True
-                    rdoqLevel.DefaultValue = 2
                 Case 9 'placebo
                     [Me].DefaultValue = 3
                     AMP.DefaultValue = True
@@ -1458,10 +1482,13 @@ Namespace x265
                     Deblock.DefaultValue = True
                     EarlySkip.DefaultValue = False
                     FastIntra.DefaultValue = False
+                    LimitRefs.DefaultValue = 0
+                    LookaheadSlices.DefaultValue = 0
                     MaxMerge.DefaultValue = 5
                     MErange.DefaultValue = 92
                     RCLookahead.DefaultValue = 60
                     RD.DefaultValue = 6
+                    rdoqLevel.DefaultValue = 2
                     Rect.DefaultValue = True
                     Ref.DefaultValue = 5
                     SAO.DefaultValue = True
@@ -1472,7 +1499,6 @@ Namespace x265
                     TUintra.DefaultValue = 4
                     Weightb.DefaultValue = True
                     Weightp.DefaultValue = True
-                    rdoqLevel.DefaultValue = 2
             End Select
         End Sub
 

@@ -68,7 +68,7 @@ Class Packs
 
     Shared Property vscpp2013 As New Package With {
         .Name = "Visual C++ 2013",
-        .Filename = "msvcr120.dll",
+        .Filename = "msvcp120.dll",
         .Description = "Visual C++ 2013 Redistributable Packages which is required by some tools used by StaxRip.",
         .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=40784",
         .FixedDir = CommonDirs.System}
@@ -371,8 +371,8 @@ Public Class Package
         End If
     End Function
 
-    Function VerifyOK(Optional showAnyway As Boolean = False) As Boolean
-        If (IsRequired() OrElse showAnyway) AndAlso IsStatusCritical() Then
+    Function VerifyOK(Optional showEvenIfNotRequired As Boolean = False) As Boolean
+        If (IsRequired() OrElse showEvenIfNotRequired) AndAlso IsStatusCritical() Then
             Using f As New ApplicationsForm
                 f.ShowPackage(Me)
                 f.ShowDialog()
@@ -556,6 +556,12 @@ Public Class AviSynthPlusPackage
         SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\AviSynth+ r1825.exe")
     End Sub
 
+    Public Overrides ReadOnly Property IsRequired As Boolean
+        Get
+            Return p.Script.Engine = ScriptingEngine.AviSynth
+        End Get
+    End Property
+
     Public Overrides Function GetStatus() As String
         If Not Directory.Exists(Paths.PluginsDir) Then
             Return "The AviSynth+ plugins directory is missing, run the AviSynth+ setup."
@@ -574,7 +580,7 @@ Public Class PythonPackage
         Filename = "python.exe"
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        DownloadURL = "https://www.python.org/ftp/python/3.5.0/python-3.5.0-amd64-webinstall.exe"
+        DownloadURL = "https://www.python.org/ftp/python/3.5.1/python-3.5.1-amd64-webinstall.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -603,7 +609,7 @@ Public Class VapourSynthPackage
         Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         WebURL = "http://www.vapoursynth.com"
         HelpURL = "http://www.vapoursynth.com/doc"
-        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R30/vapoursynth-r30.exe"
+        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R31/vapoursynth-r31.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -790,7 +796,7 @@ Public Class x265Package
 
     Sub New()
         Name = "x265"
-        Filename = "x265.exe"
+        Filename = "x265_ml.exe"
         WebURL = "http://x265.org"
         HelpURL = "http://x265.readthedocs.org"
         Description = "H.265 video encoding command line app."
@@ -898,6 +904,8 @@ Public Class vslsmashsourcePackage
         Filename = "vslsmashsource.dll"
         Description = "VapourSynth source filter based on Libav supporting a wide range of input formats."
         VapourSynthFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"}
+        HelpFile = "README.txt"
+        WebURL = "http://avisynth.nl/index.php/LSMASHSource"
     End Sub
 
     Overrides ReadOnly Property IsRequired As Boolean

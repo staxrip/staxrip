@@ -120,10 +120,18 @@ Class VideoScript
                         script += CrLf + "ConvertToRGB(matrix=""Rec601"")"
                     End If
                 Else
-                    If script.Contains(".set_output()") Then
-                        script = script.Replace(".set_output()", ".resize.Bicubic(format=vs.COMPATBGR32).set_output()")
+                    If p.SourceHeight > 576 Then
+                        If script.Contains(".set_output()") Then
+                            script = script.Replace(".set_output()", ".resize.Bicubic(matrix_in_s = '709', format = vs.COMPATBGR32).set_output()")
+                        Else
+                            script += CrLf + "clip = clip.resize.Bicubic(matrix_in_s = '709', format = vs.COMPATBGR32)"
+                        End If
                     Else
-                        script += CrLf + "clip = clip.resize.Bicubic(format=vs.COMPATBGR32)"
+                        If script.Contains(".set_output()") Then
+                            script = script.Replace(".set_output()", ".resize.Bicubic(matrix_in_s = '470bg', format = vs.COMPATBGR32).set_output()")
+                        Else
+                            script += CrLf + "clip = clip.resize.Bicubic(matrix_in_s = '470bg', format = vs.COMPATBGR32)"
+                        End If
                     End If
                 End If
             End If
@@ -184,31 +192,7 @@ Class VideoScript
                     If Not i.VapourSynthFilterNames Is Nothing Then
                         For Each iFilterName In i.VapourSynthFilterNames
                             If scriptLower.Contains(iFilterName.ToLower) Then
-                                If i.Filename.Ext = "py" Then
-                                    code += "import importlib.machinery" + CrLf + Filepath.GetBase(i.Filename) +
-                                        " = importlib.machinery.SourceFileLoader('" + Filepath.GetBase(i.Filename) +
-                                        "', r'" + i.GetPath + "').load_module()" + CrLf
-
-                                    If OK(i.Dependencies) Then
-                                        For Each i3 In i.Dependencies
-                                            For Each i4 In plugins
-                                                If Not File.Exists(Paths.PluginsDir + i.Filename) AndAlso
-                                                    i3 = i4.Name AndAlso Not i4.VapourSynthFilterNames Is Nothing Then
-
-                                                    Dim load = "core.std.LoadPlugin(r'" + i4.GetPath + "')" + CrLf
-
-                                                    If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
-                                                        code += load
-                                                    End If
-                                                End If
-                                            Next
-                                        Next
-                                    End If
-                                Else
-                                    If Not File.Exists(Paths.PluginsDir + i.Filename) Then
-                                        code += "core.std.LoadPlugin(r'" + fp + "')" + CrLf
-                                    End If
-                                End If
+                                PluginPackage.WriteVSCode(script, code, i)
                             End If
                         Next
                     End If
@@ -313,7 +297,7 @@ Class VideoScript
         script = New TargetVideoScript("VapourSynth")
         script.Engine = ScriptingEngine.VapourSynth
         script.Filters.Add(New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')"))
-        script.Filters.Add(New VideoFilter("Crop", "CropAbs", "cropwidth = clip.width - %crop_left% - %crop_right%" + CrLf + "cropheight = clip.height - %crop_top% - %crop_bottom%" + CrLf + "clip = core.std.CropAbs(clip, cropwidth, cropheight, %crop_left%, %crop_top%)", False))
+        script.Filters.Add(New VideoFilter("Crop", "CropRel", "clip = core.std.CropRel(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)", False))
         script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", "clip = havsfunc.QTGMC(Input = clip, TFF = True, Preset = 'Medium')", False))
         script.Filters.Add(New VideoFilter("Noise", "SMDegrain", "clip = havsfunc.SMDegrain(input = clip, contrasharp = True)", False))
         script.Filters.Add(New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)", False))
@@ -587,7 +571,7 @@ Class FilterCategory
 
         Dim crop As New FilterCategory("Crop")
         crop.Filters.AddRange(
-            {New VideoFilter("Crop", "CropAbs", "cropwidth = clip.width - %crop_left% - %crop_right%" + CrLf + "cropheight = clip.height - %crop_top% - %crop_bottom%" + CrLf + "clip = core.std.CropAbs(clip, cropwidth, cropheight, %crop_left%, %crop_top%)", False)})
+            {New VideoFilter("Crop", "CropRel", "clip = core.std.CropRel(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)", False)})
         ret.Add(crop)
 
         Dim resize As New FilterCategory("Resize")

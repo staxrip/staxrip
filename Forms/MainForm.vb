@@ -4,8 +4,6 @@ Imports System.Globalization
 Imports System.Reflection
 Imports System.Text
 Imports System.Text.RegularExpressions
-Imports System.Threading
-Imports System.Windows.Forms.VisualStyles
 
 Imports Microsoft.Win32
 Imports StaxRip.UI
@@ -2077,6 +2075,14 @@ Class MainForm
                     src.Script = src.Script + CrLf + "SelectEven().AssumeFPS(" & miFPS.ToString(CultureInfo.InvariantCulture) + ")"
                     p.SourceScript.Synchronize()
                 End If
+            Else
+                Dim scanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
+
+                If scanType = "Interlaced" Then
+                    Dim src = p.Script.GetFilter("Source")
+                    src.Script = src.Script + CrLf + "clip = mvsfunc.AssumeFrame(clip)"
+                    p.SourceScript.Synchronize()
+                End If
             End If
 
             UpdateSourceParameters()
@@ -2774,7 +2780,7 @@ Class MainForm
                 If Not p.Script.GetErrorMessage Is Nothing AndAlso Not Paths.VerifyRequirements Then
                     If ProcessTip(p.Script.GetErrorMessage) Then
                         CanIgnoreTip = False
-                        gbAssistant.Text = "AviSynth Error"
+                        gbAssistant.Text = "Script Error"
                         Return False
                     End If
                 End If
@@ -2782,7 +2788,7 @@ Class MainForm
                 If Not p.Script.GetErrorMessage Is Nothing Then
                     If ProcessTip(p.Script.GetErrorMessage) Then
                         CanIgnoreTip = False
-                        gbAssistant.Text = "AviSynth Error"
+                        gbAssistant.Text = "Script Error"
                         Return False
                     End If
                 End If
@@ -3486,7 +3492,7 @@ Class MainForm
                 If p.Script.Engine = ScriptingEngine.AviSynth Then
                     p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
                 Else
-                    p.Script.InsertAfter("Source", New VideoFilter("Crop", "CropAbs", "cropwidth = clip.width - %crop_left% - %crop_right%" + CrLf + "cropheight = clip.height - %crop_top% - %crop_bottom%" + CrLf + "clip = core.std.CropAbs(clip, cropwidth, cropheight, %crop_left%, %crop_top%)"))
+                    p.Script.InsertAfter("Source", New VideoFilter("Crop", "CropRel", "clip = core.std.CropRel(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)"))
                 End If
             End If
 
@@ -4357,7 +4363,7 @@ Class MainForm
         ret.Add("Help|Support Forum", "ExecuteCommandLine", GetSupportThread)
         ret.Add("Help|Guides", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki/Guides")
         ret.Add("Help|Bug Report", "MakeBugReport")
-        ret.Add("Help|Mail", "ExecuteCommandLine", "mailto:frank_skare@yahoo.de?subject=StaxRip%20feedback")
+        ret.Add("Help|Mail", "ExecuteCommandLine", "mailto:frank.skare.de@gmail.com?subject=StaxRip%20feedback")
         ret.Add("Help|Website", "ExecuteCommandLine", "https://github.com/stax76/staxrip")
         ret.Add("Help|Donate", "ExecuteCommandLine", Strings.DonationsURL)
         ret.Add("Help|Changelog", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki/Changelog")

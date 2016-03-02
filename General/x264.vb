@@ -66,7 +66,6 @@ Class x264Encoder
                 proc.WriteLine(cli + CrLf2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
-                proc.BatchCode = cli
                 proc.Start()
             End Using
         Else

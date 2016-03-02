@@ -431,7 +431,6 @@ Public Class BatchMuxer
             proc.WriteLine(commands + CrLf2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
-            proc.BatchCode = commands
 
             Try
                 proc.Start()

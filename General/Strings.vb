@@ -2,7 +2,7 @@ Friend Class Strings
     Friend Const BatchMode As String = "Normally StaxRip performs various tasks directly after a source file is opened like demuxing, auto crop, auto resize etc. In Batch Mode all this tasks are performed when the encoding is started."
     Friend Const EventCommands As String = "A Event Command allows to define a command to be executed on a defined event. Furthermore criteria can be defined to execute the command only if certain criteria is matched."
     Friend Const MacrosHelp As String = "Macros are placeholders that can be used in command lines and other places, on execution StaxRip replaces the macros with the actual values."
-    Friend Const DonationsURL As String = "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L7R6AKUHJQLM6&lc=EN&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"
+    Friend Const DonationsURL As String = "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L7R6AKUHJQLM6&lc=GB&no_note=1&cn=Message%3a&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"
     Friend Const TaskDialogFooter As String = "[copymsg: Copy Message]"
     Friend Const ParRegexPattern As String = "^([1-9]+\d*)(/|:)([1-9]+\d*)$"
     Friend Const VisitForum As String = "Please copy the message and post it to the support forum or mail it."

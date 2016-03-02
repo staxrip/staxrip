@@ -167,6 +167,12 @@
     <Compile Include="Controls\x264Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="UI\DataForm.Designer.vb">
+      <DependentUpon>DataForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DataForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\ScriptingEditor.Designer.vb">
       <DependentUpon>ScriptingEditor.vb</DependentUpon>
     </Compile>
@@ -426,6 +432,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AudioForm.resx">
       <DependentUpon>AudioForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\DataForm.resx">
+      <DependentUpon>DataForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ScriptingEditor.resx">
       <DependentUpon>ScriptingEditor.vb</DependentUpon>

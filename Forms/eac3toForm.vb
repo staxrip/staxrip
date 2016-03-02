@@ -1,11 +1,8 @@
 Imports StaxRip.UI
 
 Imports System.Text.RegularExpressions
-Imports System.Threading
 Imports System.Globalization
 Imports System.Threading.Tasks
-
-Imports Microsoft.Win32
 Imports System.ComponentModel
 
 Public Class eac3toForm
@@ -518,13 +515,14 @@ Public Class eac3toForm
 
     Private Output As String
     Private Streams As New BindingList(Of M2TSStream)
+    Private AudioOutputFormats As String() = {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd"}
 
     Sub New()
         MyBase.New()
         InitializeComponent()
 
         cbAudioOutput.Sorted = True
-        cbAudioOutput.Items.AddRange({"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd"})
+        cbAudioOutput.Items.AddRange(AudioOutputFormats)
 
         tlp.Enabled = False
         cbChapters.Checked = s.Storage.GetBool("demux Blu-ray chapters", True)
@@ -562,11 +560,61 @@ Public Class eac3toForm
             End Try
         End If
 
+        cms.Items.Add(New ActionMenuItem("Audio Stream Profiles...", AddressOf ShowAudioStreamProfiles))
         cms.Items.Add(New ActionMenuItem("Show eac3to wikibook", Sub() g.ShellExecute("http://en.wikibooks.org/wiki/Eac3to")))
         cms.Items.Add(New ActionMenuItem("Show eac3to support forum", Sub() g.ShellExecute("http://forum.doom9.org/showthread.php?t=125966")))
         cms.Items.Add(New ActionMenuItem("Execute eac3to.exe -test", Sub() g.ShellExecute("cmd.exe", "/k """ + Packs.eac3to.GetPath + """ -test")))
 
         ActiveControl = Nothing
+    End Sub
+
+    Sub ShowAudioStreamProfilesHelp()
+        Dim f As New HelpForm
+        f.Doc.WriteStart("Audio Stream Profiles")
+        f.Doc.WriteP("Allows to automatically apply default values for audio streams.")
+        f.Doc.WriteTable({New StringPair("Match All", "space separated, if all match then the Output Format and Options are applied"),
+                          New StringPair("Output Format", "applied to the stream if Match All succeeds"),
+                          New StringPair("Options", "applied to the stream if Match All succeeds")})
+        f.Show()
+    End Sub
+
+    Sub ShowAudioStreamProfiles()
+        Using f As New DataForm
+            f.Text = "Audio Stream Profiles"
+            f.FormBorderStyle = FormBorderStyle.Sizable
+            f.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+            f.dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
+            f.dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+            f.dgv.AllowUserToDeleteRows = True
+            f.dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+            f.HelpAction = AddressOf ShowAudioStreamProfilesHelp
+
+            Dim match = f.dgv.AddTextColumn()
+            match.DataPropertyName = "Match"
+            match.HeaderText = "Match All"
+
+            Dim out = f.dgv.AddComboBoxColumn()
+            out.DataPropertyName = "Output"
+            out.HeaderText = "Output Format"
+            out.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            out.Items.AddRange(AudioOutputFormats)
+
+            Dim opt = f.dgv.AddTextColumn()
+            opt.DataPropertyName = "Options"
+            opt.HeaderText = "Options"
+
+            f.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+
+            Dim bs As New BindingSource
+
+            bs.DataSource = ObjectHelp.GetCopy(s.eac3toProfiles)
+            f.dgv.DataSource = bs
+
+            If f.ShowDialog = DialogResult.OK Then
+                s.eac3toProfiles = DirectCast(bs.DataSource, List(Of eac3toProfile))
+            End If
+        End Using
     End Sub
 
     Sub StartAnalyze()
@@ -592,12 +640,15 @@ Public Class eac3toForm
             o.WaitForExit()
 
             If o.ExitCode <> 0 Then
-                Invoke(Sub()
-                           MsgError("eac3to failed with error code " & o.ExitCode, Output)
-                           bnCancel.PerformClick()
-                       End Sub)
+                Dim exitCode = o.ExitCode
+
+                BeginInvoke(Sub()
+                                MsgError("eac3to failed with error code " & exitCode, Output)
+                                tlp.Enabled = True 'without form won't close
+                                bnCancel.PerformClick()
+                            End Sub)
             Else
-                Invoke(Sub() Init())
+                BeginInvoke(Sub() Init())
             End If
         End Using
     End Sub
@@ -672,23 +723,24 @@ Public Class eac3toForm
                             Case "DTS-ES", "DTS Express"
                                 ms.OutputType = "dts"
                             Case "DTS Master Audio", "DTS Hi-Res"
-                                If s.Storage.GetBool("eac3to hd output", False) Then
-                                    Select Case ms.Codec
-                                        Case "DTS Master Audio"
-                                            ms.OutputType = "dtsma"
-                                        Case "DTS Hi-Res"
-                                            ms.OutputType = "dtshr"
-                                    End Select
-                                Else
-                                    ms.OutputType = "dts"
-                                    If ms.Text.Contains("(DTS,") Then ms.Options = "-core"
-                                End If
+                                ms.OutputType = "dts"
+                                If ms.Text.Contains("(DTS,") Then ms.Options = "-core"
                             Case "RAW/PCM"
                                 ms.OutputType = "flac"
                             Case Else
                                 ms.OutputType = ms.Codec.ToLower.Replace("-", "")
                         End Select
                     End If
+
+                    For Each iProfile In s.eac3toProfiles
+                        Dim searchWords = iProfile.Match.SplitNoEmptyAndWhiteSpace(" ")
+                        If Not OK(searchWords) Then Continue For
+
+                        If searchWords.All(Function(arg) ms.Text.Contains(arg)) Then
+                            ms.OutputType = iProfile.Output
+                            ms.Options = iProfile.Options
+                        End If
+                    Next
 
                     If Not ms.IsVideo AndAlso Not ms.IsAudio AndAlso
                         Not ms.IsSubtitle AndAlso Not ms.IsChapters Then
@@ -777,7 +829,6 @@ Public Class eac3toForm
             End If
         Next
 
-        s.Storage.SetBool("eac3to hd output", hdCounter > 0)
         s.CmdlPresetsEac3to = cmdlOptions.Presets
 
         If Not bnOK.Enabled Then e.Cancel = True
@@ -894,6 +945,10 @@ Public Class eac3toForm
                 ms.UpdateListViewItem()
                 cmdlOptions.tb.Text = ms.Options
             ElseIf {"dtsma", "dtshr"}.Contains(ms.OutputType) AndAlso ms.Options.Contains("-core") Then
+                ms.Options = ms.Options.Replace(" -core ", "").Replace(" -core", "").Replace("-core ", "").Replace("-core", "")
+                ms.UpdateListViewItem()
+                cmdlOptions.tb.Text = ms.Options
+            ElseIf ms.OutputType <> "dts" AndAlso ms.Options.Contains("-core") Then
                 ms.Options = ms.Options.Replace(" -core ", "").Replace(" -core", "").Replace("-core ", "").Replace("-core", "")
                 ms.UpdateListViewItem()
                 cmdlOptions.tb.Text = ms.Options

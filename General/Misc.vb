@@ -798,7 +798,7 @@ Class GlobalClass
 
         g.OpenDirAndSelectFile(fp, g.MainForm.Handle)
         g.ShellExecute(g.GetTextEditor(), """" + fp + """")
-        g.ShellExecute("mailto:frank_skare@yahoo.de?subject=StaxRip%20feedback&body=please%20paste%20the%20log%20file%20content%20here")
+        g.ShellExecute("mailto:frank.skare.de@gmail.com?subject=StaxRip%20feedback&body=please%20paste%20the%20log%20file%20content%20here")
     End Sub
 
     Function WasFileJustWritten(path As String) As Boolean
@@ -2651,7 +2651,6 @@ Public Class GlobalCommands
                 proc.WriteLine(batchCode + CrLf2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
-                proc.BatchCode = batchCode
                 proc.Wait = waitForExit
 
                 Try
@@ -3583,4 +3582,23 @@ Class OSVersion
                 Environment.OSVersion.Version.Minor / 10)
         End Get
     End Property
+End Class
+
+<Serializable>
+Class eac3toProfile
+    Property Match As String
+    Property Output As String
+    Property Options As String
+
+    Sub New()
+    End Sub
+
+    Sub New(match As String,
+            output As String,
+            options As String)
+
+        Me.Match = match
+        Me.Output = output
+        Me.Options = options
+    End Sub
 End Class

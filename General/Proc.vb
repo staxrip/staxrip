@@ -15,7 +15,6 @@ Public Class Proc
     Property HideAfterStart As Boolean
     Property AllowedExitCodes As Integer() = {0}
     Property BeginOutputReadLine As Boolean
-    Property BatchCode As String
     Property SkipStrings As String()
     Property SkipPatterns As String()
     Property TrimChars As Char()
@@ -112,43 +111,20 @@ Public Class Proc
     Sub KillAndThrow()
         TrowException = True
 
-        Try
-            If BatchCode <> "" Then
-                Dim code = BatchCode.ToLower
+        If Process.ProcessName = "cmd" Then
+            For Each i In ProcessHelp.GetChilds(Process)
+                If {"conhost", "vspipe"}.Contains(i.ProcessName) Then Continue For
 
-                For Each i In Process.GetProcesses()
-                    Try
-                        If code.Contains(i.ProcessName.ToLower + ".exe") Then
-                            Dim procName = Process.GetProcessById(i.Id).ProcessName
-                            Dim procsByName = Process.GetProcessesByName(procName)
-                            Dim procIndexdName As String = Nothing
-                            Dim tempIndexdName As String = Nothing
+                If Msg("Confirm to kill " + i.ProcessName + ".exe",
+                       MessageBoxIcon.Question,
+                       MessageBoxButtons.OKCancel) = DialogResult.OK Then
 
-                            For idx = 0 To procsByName.Length - 1
-                                tempIndexdName = If(idx = 0, procName, Convert.ToString(procName) & "#" & idx)
-                                Dim procId = New PerformanceCounter("Process", "ID Process", tempIndexdName)
-                                If CInt(procId.NextValue()) = i.Id Then procIndexdName = tempIndexdName
-                            Next
-
-                            Dim parentId = New PerformanceCounter("Process", "Creating Process ID", procIndexdName)
-                            Dim ppid = CInt(parentId.NextValue())
-
-                            If ppid = Process.Id AndAlso Not i.HasExited AndAlso
-                                Msg("Confirm to kill " + i.ProcessName + ".exe",
-                                    MessageBoxIcon.Question,
-                                    MessageBoxButtons.OKCancel) = DialogResult.OK Then
-
-                                If Not i.HasExited Then i.Kill()
-                            End If
-                        End If
-                    Catch
-                    End Try
-                Next
-            Else
-                Process.Kill()
-            End If
-        Catch
-        End Try
+                    If Not i.HasExited Then i.Kill()
+                End If
+            Next
+        Else
+            If Not Process.HasExited Then Process.Kill()
+        End If
     End Sub
 
     Sub Start()
@@ -216,9 +192,9 @@ Public Class Proc
                     Dim systemErrorMessage As String
 
                     Dim retval = Native.FormatMessageW(Native.FORMAT_MESSAGE_ALLOCATE_BUFFER Or
-                                                   Native.FORMAT_MESSAGE_FROM_SYSTEM Or
-                                                   Native.FORMAT_MESSAGE_FROM_HMODULE,
-                                                   ntdllHandle, ExitCode, 0, systemErrorMessage, 0, IntPtr.Zero)
+                                                       Native.FORMAT_MESSAGE_FROM_SYSTEM Or
+                                                       Native.FORMAT_MESSAGE_FROM_HMODULE,
+                                                       ntdllHandle, ExitCode, 0, systemErrorMessage, 0, IntPtr.Zero)
 
                     Native.FreeLibrary(ntdllHandle)
 

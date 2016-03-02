@@ -7,6 +7,7 @@ Class ApplicationSettings
     Implements ISafeSerialization
 
     Friend FilterPreferences As StringPairList
+    Public eac3toProfiles As List(Of eac3toProfile)
     Public AudioProfiles As List(Of AudioProfile)
     Public AviSynthProfiles As List(Of FilterCategory)
     Public VapourSynthProfiles As List(Of FilterCategory)
@@ -133,6 +134,10 @@ Class ApplicationSettings
             FilterPreferences.Add("wmv", "DSS2")
         End If
 
+        If Check(eac3toProfiles, "eac3to Audio Stream Profiles", 4) Then
+            eac3toProfiles = New List(Of eac3toProfile)
+        End If
+
         If Check(EventCommands, "Event Commands", 0) Then
             EventCommands = New List(Of EventCommand)
         End If
@@ -217,7 +222,7 @@ Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 129) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 130) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 

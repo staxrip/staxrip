@@ -81,7 +81,6 @@ Namespace x265
                 proc.WriteLine(cli + CrLf2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
-                proc.BatchCode = cli
                 proc.Start()
             End Using
         End Sub

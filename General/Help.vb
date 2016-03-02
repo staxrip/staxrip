@@ -1,21 +1,11 @@
-Imports Microsoft.Win32
 Imports System.Globalization
-Imports System.IO
 Imports System.Reflection
-Imports System.Runtime.InteropServices
-Imports System.Runtime.Serialization
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Text
-Imports System.Text.RegularExpressions
-Imports System.Threading
-Imports System.Windows.Forms
-Imports System.Security.Cryptography
 Imports System.ComponentModel
-Imports System.Xml.Serialization
-Imports System.Xml
 
 Imports Microsoft.VisualBasic.FileIO
-Imports StaxRip.UI
+Imports System.Management
 
 Public Class ObjectHelp
     'parse recursive serializable fields and lists 
@@ -278,6 +268,31 @@ Public Class ProcessHelp
         proc.Start()
         ret = proc.StandardError.ReadToEnd()
         proc.WaitForExit()
+        Return ret
+    End Function
+
+    Private Sub KillProcessAndChildren(pid As Integer)
+        Dim searcher As New ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" & pid)
+        Dim moc As ManagementObjectCollection = searcher.[Get]()
+        For Each mo As ManagementObject In moc
+            KillProcessAndChildren(Convert.ToInt32(mo("ProcessID")))
+        Next
+        Try
+            Dim proc As Process = Process.GetProcessById(pid)
+            proc.Kill()
+            ' process already exited 
+        Catch generatedExceptionName As ArgumentException
+        End Try
+    End Sub
+
+    Shared Function GetChilds(inputProcess As Process) As List(Of Process)
+        Dim searcher As New ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" & inputProcess.Id)
+        Dim ret As New List(Of Process)
+
+        For Each i As ManagementObject In searcher.Get()
+            ret.Add(Process.GetProcessById(CInt(i("ProcessID"))))
+        Next
+
         Return ret
     End Function
 End Class

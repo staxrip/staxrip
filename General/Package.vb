@@ -49,7 +49,6 @@ Class Packs
     Shared Property Python As New PythonPackage
     Shared Property scenechange As New scenechangePackage
     Shared Property temporalsoften As New temporalsoftenPackage
-    Shared Property havsfunc As New havsfuncPackage
     Shared Property LSmashWorksVapourSynth As New vslsmashsourcePackage
 
     Shared Property QSVEncC As New Package With {
@@ -105,7 +104,6 @@ Class Packs
     Shared Sub New()
         Packages.Add(VCEEncC)
         Packages.Add(LSmashWorksVapourSynth)
-        Packages.Add(havsfunc)
         Packages.Add(temporalsoften)
         Packages.Add(scenechange)
         Packages.Add(Python)
@@ -157,6 +155,42 @@ Class Packs
         Packages.Add(xvid_encraw)
         Packages.Add(vscpp2013)
         Packages.Add(vscpp2015)
+
+        Packages.Add(New PluginPackage With {
+            .Name = "adjust",
+            .Filename = "adjust.py",
+            .VapourSynthFilterNames = {"adjust.Tweak"},
+            .Description = "very basic port of the built-in Avisynth filter Tweak.",
+            .HelpURL = "https://github.com/dubhater/vapoursynth-adjust"})
+
+        Packages.Add(New PluginPackage With {
+            .Name = "mvsfunc",
+            .Filename = "mvsfunc.py",
+            .VapourSynthFilterNames = {"mvsfunc.Depth", "mvsfunc.ToRGB", "mvsfunc.ToYUV", "mvsfunc.BM3D",
+                                       "mvsfunc.PlaneStatistics", "mvsfunc.PlaneCompare", "mvsfunc.ShowAverage",
+                                       "mvsfunc.FilterIf", "mvsfunc.FilterCombed", "mvsfunc.Min", "mvsfunc.Max",
+                                       "mvsfunc.Avg", "mvsfunc.MinFilter", "mvsfunc.MaxFilter", "mvsfunc.LimitFilter",
+                                       "mvsfunc.PointPower", "mvsfunc.SetColorSpace", "mvsfunc.AssumeFrame",
+                                       "mvsfunc.AssumeTFF", "mvsfunc.AssumeBFF", "mvsfunc.AssumeField",
+                                       "mvsfunc.AssumeCombed", "mvsfunc.CheckVersion", "mvsfunc.GetMatrix",
+                                       "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage"},
+            .Dependencies = {"fmtconv", "adjust"},
+            .Description = "mawen1250's VapourSynth functions.",
+            .HelpURL = "http://forum.doom9.org/showthread.php?t=172564"})
+
+        Packages.Add(New PluginPackage With {
+            .Name = "havsfunc",
+            .Filename = "havsfunc.py",
+            .VapourSynthFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa", "havsfunc.maa",
+                                      "havsfunc.SharpAAMCmod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
+                                      "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.ivtc_txt60mc",
+                                      "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.logoNR",
+                                      "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.GSMC",
+                                      "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD",
+                                      "havsfunc.LSFmod", "havsfunc.GrainFactory3"},
+            .Dependencies = {"fmtconv", "mvtools", "nnedi3", "scenechange", "temporalsoften", "mvsfunc"},
+            .Description = "Various popular AviSynth scripts ported to VapourSynth.",
+            .HelpURL = "http://forum.doom9.org/showthread.php?t=166582"})
 
         Packages.Add(New PluginPackage With {
             .Name = "KNLMeansCL",
@@ -666,6 +700,50 @@ Public Class PluginPackage
     Property Dependencies As String()
     Property vsFiltersFunc As Func(Of VideoFilter())
     Property avsFiltersFunc As Func(Of VideoFilter())
+
+    Function GetDependencies() As List(Of PluginPackage)
+        Dim plugins = Packs.Packages.OfType(Of PluginPackage)()
+        Dim ret As New List(Of PluginPackage)
+
+        If Not Dependencies Is Nothing Then
+            For Each iPlugin In plugins
+                For Each i In Dependencies
+                    If iPlugin.Name = i Then
+                        ret.Add(iPlugin)
+                    End If
+                Next
+            Next
+        End If
+
+        Return ret
+    End Function
+
+    Shared Sub WriteVSCode(ByRef script As String, ByRef code As String, plugin As PluginPackage)
+        For Each i In plugin.GetDependencies
+            WriteVSCode(script, code, i)
+        Next
+
+        If plugin.Filename.Ext = "py" Then
+            If Not script.Contains("import importlib.machinery") AndAlso
+                Not code.Contains("import importlib.machinery") Then
+
+                code += "import importlib.machinery" + CrLf
+            End If
+
+            Dim line = plugin.Name + " = importlib.machinery.SourceFileLoader('" +
+                plugin.Name + "', r'" + plugin.GetPath + "').load_module()" + CrLf
+
+            If Not script.Contains(line) AndAlso Not code.Contains(line) Then code += line
+        ElseIf Not plugin.VapourSynthFilterNames Is Nothing Then
+            If Not File.Exists(Paths.PluginsDir + plugin.Filename) Then
+                Dim line = "core.std.LoadPlugin(r'" + plugin.GetPath + "')" + CrLf
+
+                If Not script.Contains(line) AndAlso Not code.Contains(line) Then
+                    code += line
+                End If
+            End If
+        End If
+    End Sub
 End Class
 
 Public Class BeSweetPackage
@@ -1227,26 +1305,6 @@ Public Class temporalsoftenPackage
         Name = "temporalsoften"
         Filename = "temporalsoften.dll"
         VapourSynthFilterNames = {"temporalsoften"}
-    End Sub
-End Class
-
-Public Class havsfuncPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "havsfunc"
-        Filename = "havsfunc.py"
-        VapourSynthFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa", "havsfunc.maa",
-                                  "havsfunc.SharpAAMCmod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
-                                  "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.ivtc_txt60mc",
-                                  "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.logoNR",
-                                  "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.GSMC",
-                                  "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD",
-                                  "havsfunc.LSFmod", "havsfunc.GrainFactory3"}
-
-        Dependencies = {"fmtconv", "mvtools", "nnedi3", "scenechange", "temporalsoften"}
-        Description = "Various popular AviSynth scripts ported to VapourSynth."
-        HelpURL = "http://forum.doom9.org/showthread.php?t=166582"
     End Sub
 End Class
 

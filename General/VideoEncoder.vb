@@ -50,15 +50,15 @@ MustInherit Class VideoEncoder
     End Sub
 
     Overrides Function CreateEditControl() As Control
-        Dim r As New ToolStripEx
+        Dim ret As New ToolStripEx
 
-        r.ShowItemToolTips = False
-        r.GripStyle = ToolStripGripStyle.Hidden
-        r.BackColor = System.Drawing.SystemColors.Window
-        r.Dock = DockStyle.Fill
-        r.BackColor = System.Drawing.SystemColors.Window
-        r.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow
-        r.Padding = New Padding(1, 1, 0, 0)
+        ret.ShowItemToolTips = False
+        ret.GripStyle = ToolStripGripStyle.Hidden
+        ret.BackColor = System.Drawing.SystemColors.Window
+        ret.Dock = DockStyle.Fill
+        ret.BackColor = System.Drawing.SystemColors.Window
+        ret.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow
+        ret.Padding = New Padding(1, 1, 0, 0)
 
         For Each i In GetMenu()
             Dim b As New ToolStripButton
@@ -68,10 +68,10 @@ MustInherit Class VideoEncoder
             Dim happy = i
             AddHandler b.Click, Sub() happy.Value.Invoke()
             b.TextAlign = ContentAlignment.MiddleLeft
-            r.Items.Add(b)
+            ret.Items.Add(b)
         Next
 
-        Return r
+        Return ret
     End Function
 
     Overridable ReadOnly Property IsCompCheckEnabled() As Boolean
@@ -424,7 +424,6 @@ Class BatchEncoder
                 proc.WriteLine(commands + CrLf2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
-                proc.BatchCode = commands
 
                 Try
                     proc.Start()
@@ -497,7 +496,6 @@ Class BatchEncoder
             proc.SkipStrings = GetSkipStrings(command)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
-            proc.BatchCode = command
 
             Try
                 proc.Start()
@@ -942,7 +940,6 @@ Class NvidiaEncoder
                 proc.WriteLine(cl + CrLf2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
-                proc.BatchCode = cl
                 proc.Start()
             End Using
         Else

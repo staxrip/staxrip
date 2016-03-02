@@ -683,6 +683,10 @@ a {
         Writer.WriteEndElement()
     End Sub
 
+    Sub WriteTable(list As IEnumerable(Of StringPair))
+        WriteTable(Nothing, Nothing, New StringPairList(list), True)
+    End Sub
+
     Sub WriteTable(list As StringPairList)
         WriteTable(Nothing, Nothing, list, True)
     End Sub

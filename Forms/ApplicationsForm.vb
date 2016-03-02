@@ -1,9 +1,3 @@
-Imports System.Drawing.Drawing2D
-Imports System.Windows.Forms.VisualStyles
-Imports System.Threading
-
-Imports Microsoft.Win32
-
 Imports StaxRip.UI
 
 Public Class ApplicationsForm

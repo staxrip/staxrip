@@ -520,7 +520,7 @@ Public Class ProcessForm
     End Sub
 
     Private Sub bnSuspend_Click(sender As Object, e As EventArgs) Handles bnSuspend.Click
-        For Each i As ProcessThread In ProcInstance.Process.Threads
+        For Each i As ProcessThread In GetProcess.Threads
             Dim h = OpenThread(ThreadAccess.SUSPEND_RESUME, False, i.Id)
             SuspendThread(h)
             CloseHandle(h)
@@ -528,10 +528,23 @@ Public Class ProcessForm
     End Sub
 
     Private Sub bnResume_Click(sender As Object, e As EventArgs) Handles bnResume.Click
-        For x = ProcInstance.Process.Threads.Count - 1 To 0 Step -1
-            Dim h = OpenThread(ThreadAccess.SUSPEND_RESUME, False, ProcInstance.Process.Threads(x).Id)
+        Dim proc = GetProcess()
+
+        For x = proc.Threads.Count - 1 To 0 Step -1
+            Dim h = OpenThread(ThreadAccess.SUSPEND_RESUME, False, proc.Threads(x).Id)
             ResumeThread(h)
             CloseHandle(h)
         Next
     End Sub
+
+    Function GetProcess() As Process
+        If ProcInstance.Process.ProcessName = "cmd" Then
+            For Each i In ProcessHelp.GetChilds(ProcInstance.Process)
+                If {"conhost", "vspipe"}.Contains(i.ProcessName) Then Continue For
+                Return i
+            Next
+        Else
+            Return ProcInstance.Process
+        End If
+    End Function
 End Class

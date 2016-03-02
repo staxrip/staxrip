@@ -3171,6 +3171,20 @@ Class MainForm
             mb.MenuButton.SaveAction = Sub(value) s.StartupTemplate = value
             mb.MenuButton.Add(From i In Directory.GetFiles(Paths.TemplateDir) Select Filepath.GetBase(i))
 
+            Dim mbLang = ui.AddMenuButtonBlock(Of Language)(generalPage)
+            mbLang.Label.Text = "Default Audio Language:"
+            mbLang.Label.Tooltip = "Language used in case the audio file language is undetermined."
+            mbLang.MenuButton.Value = s.DefaultAudioLanguage
+            mbLang.MenuButton.SaveAction = Sub(value) s.DefaultAudioLanguage = value
+
+            For Each i In Language.Languages
+                If i.IsCommon Then
+                    mbLang.MenuButton.Add(i.ToString, i)
+                Else
+                    mbLang.MenuButton.Add("More | " + i.ToString.Substring(0, 1) + " | " + i.ToString, i)
+                End If
+            Next
+
             Dim tb = ui.AddTextBlock(generalPage)
             tb.Label.Text = "Remember Window Positions:"
             tb.Label.Tooltip = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."

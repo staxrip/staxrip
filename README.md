@@ -29,3 +29,7 @@ Modern x64 video encoding GUI for many powerful x64 video tools such as AviSynth
 - Windows 7 x64 or Windows 10 x64
 - .NET 4.5
 - LAV Filters x64
+
+# Download
+
+https://github.com/stax76/staxrip/releases

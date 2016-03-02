@@ -53,6 +53,7 @@ Class ApplicationSettings
     Public PreviewFormBorderStyle As FormBorderStyle
     Public DeleteTempFilesToRecycleBin As Boolean = True
     Public ShowTemplateSelection As Boolean
+    Public DefaultAudioLanguage As Language
 
     Private WasUpdatedValue As Boolean
 
@@ -121,6 +122,10 @@ Class ApplicationSettings
         End If
 
         If Check(Demuxers, "Demuxers", 103) Then Demuxers = Demuxer.GetDefaults()
+
+        If Check(DefaultAudioLanguage, "Default Audio Language", 1) Then
+            DefaultAudioLanguage = New Language
+        End If
 
         If Check(FilterPreferences, "Filter Preference", 22) Then
             FilterPreferences = New StringPairList

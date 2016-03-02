@@ -67,7 +67,7 @@ Public MustInherit Class AudioProfile
                 End If
             Next
 
-            Language = New Language
+            Language = s.DefaultAudioLanguage
         Else
             For Each i In Streams
                 If i.Language.Equals(Language) Then

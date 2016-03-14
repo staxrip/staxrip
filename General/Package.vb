@@ -2,7 +2,6 @@ Imports Microsoft.Win32
 Imports StaxRip
 
 Class Packs
-    Shared Property autocrop As New AutoCropPackage
     Shared Property AviSynth As New AviSynthPlusPackage
     Shared Property AVSMeter As New AVSMeterPackage
     Shared Property BDSup2SubPP As New BDSup2SubPackage
@@ -32,7 +31,6 @@ Class Packs
     Shared Property NVEncC As New NVEncCPackage
     Shared Property ProjectX As New ProjectXPackage
     Shared Property qaac As New qaacPackage
-    Shared Property RgTools As New RgToolsPackage
     Shared Property SangNom2 As New SangNom2Package
     Shared Property TDeint As New TDeintPackage
     Shared Property UnDot As New UnDotPackage
@@ -79,12 +77,6 @@ Class Packs
         .DownloadURL = "https://www.microsoft.com/en-us/download/details.aspx?id=48145",
         .FixedDir = CommonDirs.System}
 
-    Shared Function GetDGDecodeNVStatus() As String
-        If Not DGDecodeNV.IsCorrectVersion Then
-            Return "Use version 2050, locate it with F11, press F12 to edit the version."
-        End If
-    End Function
-
     Public Shared DGDecodeNV As New PluginPackage With {
         .Name = "DGDecodeNV",
         .Filename = "DGDecodeNV.dll",
@@ -92,12 +84,10 @@ Class Packs
         .Description = Strings.DGDecNV,
         .HelpFile = "DGDecodeNVManual.html",
         .AviSynthFilterNames = {"DGSource"},
-        .VapourSynthFilterNames = {"dgdecodenv.DGSource"},
-        .avsFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")},
-        .vsFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.dgdecodenv.DGSource(r'%source_file%')")},
+        .avsFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")"),
+                                      New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")},
         .FileNotFoundMessage = "Application not found, locate it with F11 or disable DGIndexNV under Tools/Settings/Demux.",
-        .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource("),
-        .StatusFunc = AddressOf GetDGDecodeNVStatus}
+        .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource(")}
 
     Public Shared Property Packages As New List(Of Package)
 
@@ -112,7 +102,6 @@ Class Packs
         Packages.Add(vinverse)
         Packages.Add(Decomb)
         Packages.Add(flash3kyuu_deband)
-        Packages.Add(autocrop)
         Packages.Add(AviSynth)
         Packages.Add(AVSMeter)
         Packages.Add(BDSup2SubPP)
@@ -144,7 +133,6 @@ Class Packs
         Packages.Add(ProjectX)
         Packages.Add(qaac)
         Packages.Add(QSVEncC)
-        Packages.Add(RgTools)
         Packages.Add(SangNom2)
         Packages.Add(TDeint)
         Packages.Add(UnDot)
@@ -211,15 +199,15 @@ Class Packs
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "KNLMeansCL(D = 1, A = 1, h = 4)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "KNLMeansCL(D = 1, A = 1, h = 8)")},
             .vsFiltersFunc = Function() {
-                New VideoFilter("Noise", "KNLMeansCL | Spatial Light", "clip = core.knlm.KNLMeansCL(clip = clip, d = 0, a = 2, h = 2)"),
-                New VideoFilter("Noise", "KNLMeansCL | Spatial Medium", "clip = core.knlm.KNLMeansCL(clip = clip, d = 0, a = 4, h = 4)"),
-                New VideoFilter("Noise", "KNLMeansCL | Spatial Strong", "clip = core.knlm.KNLMeansCL(clip = clip, d = 0, a = 6, h = 6)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Light", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 0, h = 3)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Medium", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 0, h = 6)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Strong", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 0, h = 9)"),
-                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 1, h = 2)"),
-                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 1, h = 4)"),
-                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "clip = core.knlm.KNLMeansCL(clip = clip, d = 1, a = 1, h = 8)")}})
+                New VideoFilter("Noise", "KNLMeansCL | Spatial Light", "clip = core.knlm.KNLMeansCL(clip, d = 0, a = 2, h = 2)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatial Medium", "clip = core.knlm.KNLMeansCL(clip, d = 0, a = 4, h = 4)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatial Strong", "clip = core.knlm.KNLMeansCL(clip, d = 0, a = 6, h = 6)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Light", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 0, h = 3)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Medium", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 0, h = 6)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 0, h = 9)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 2)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 4)"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 8)")}})
 
         Packages.Add(New PluginPackage With {
             .Name = "FluxSmooth",
@@ -228,8 +216,8 @@ Class Packs
             .Description = "FluxSmooth is a filter for smoothing of fluctuations.",
             .WebURL = "https://github.com/dubhater/vapoursynth-fluxsmooth",
             .vsFiltersFunc = Function() {
-                New VideoFilter("Noise", "FluxSmooth SmoothT", "clip = core.flux.SmoothT(clip = clip, temporal_threshold = 7, planes = [0, 1, 2])"),
-                New VideoFilter("Noise", "FluxSmooth SmoothST", "clip = core.flux.SmoothST(clip = clip, temporal_threshold = 7, spatial_threshold = 7, planes = [0, 1, 2])")}})
+                New VideoFilter("Noise", "FluxSmooth SmoothT", "clip = core.flux.SmoothT(clip, temporal_threshold = 7, planes = [0, 1, 2])"),
+                New VideoFilter("Noise", "FluxSmooth SmoothST", "clip = core.flux.SmoothST(clip, temporal_threshold = 7, spatial_threshold = 7, planes = [0, 1, 2])")}})
 
         Packages.Add(New PluginPackage With {
             .Name = "msmoosh",
@@ -238,14 +226,13 @@ Class Packs
             .Description = "MSmooth is a spatial smoother that doesn't touch edges." + CrLf + "MSharpen is a sharpener that tries to sharpen only edges.",
             .WebURL = "https://github.com/dubhater/vapoursynth-msmoosh",
             .vsFiltersFunc = Function() {
-                New VideoFilter("Noise", "MSmooth", "clip = core.msmoosh.MSmooth(clip = clip, threshold = 6.0, strength = 3)"),
-                New VideoFilter("Misc", "MSharpen", "clip = core.msmoosh.MSharpen(clip = clip, threshold = 6.0, strength = 39)")}})
+                New VideoFilter("Noise", "MSmooth", "clip = core.msmoosh.MSmooth(clip, threshold = 6.0, strength = 3)"),
+                New VideoFilter("Misc", "MSharpen", "clip = core.msmoosh.MSharpen(clip, threshold = 6.0, strength = 39)")}})
 
         Packages.Add(New PluginPackage With {
             .Name = "fmtconv",
             .Filename = "fmtconv.dll",
             .WebURL = "http://github.com/EleonoreMizo/fmtconv",
-            .HelpFile = "fmtconv.html",
             .Description = "Fmtconv is a format-conversion plug-in for the Vapoursynth video processing engine. It does resizing, bitdepth conversion with dithering and colorspace conversion.",
             .VapourSynthFilterNames = {"fmtc.bitdepth", "fmtc.convert", "fmtc.matrix", "fmtc.resample", "fmtc.transfer"}})
 
@@ -256,7 +243,7 @@ Class Packs
             .Description = "Port of Didée's FineSharp script to VapourSynth.",
             .WebURL = "http://forum.doom9.org/showthread.php?t=166524",
             .vsFiltersFunc = Function() {
-                New VideoFilter("Misc", "finesharp", "clip = finesharp.sharpen(clip = clip)")}})
+                New VideoFilter("Misc", "finesharp", "clip = finesharp.sharpen(clip)")}})
 
         Packages.Add(New PluginPackage With {
             .Name = "aWarpSharp2",
@@ -269,6 +256,24 @@ Class Packs
                 New VideoFilter("Misc", "aWarpSharp2", "aWarpSharp2(thresh=128, blur=2, type=0, depth=16, chroma=4)")}})
 
         Packages.Add(New PluginPackage With {
+            .Name = "TComb",
+            .Filename = "TComb.dll",
+            .HelpFile = "ReadMe.txt",
+            .AviSynthFilterNames = {"TComb"},
+            .Description = "TComb is a temporal comb filter.",
+            .WebURL = "http://avisynth.nl/index.php/TComb",
+            .avsFiltersFunc = Function() {
+                New VideoFilter("Misc", "TComb", "TComb(mode = 0, fthreshL = 255, othreshL = 255)")}})
+
+        Packages.Add(New PluginPackage With {
+            .Name = "RgTools",
+            .Filename = "RgTools.dll",
+            .WebURL = "http://avisynth.nl/index.php/RgTools",
+            .Description = "RgTools is a modern rewrite of RemoveGrain, Repair, BackwardClense, Clense, ForwardClense and VerticalCleaner all in a single plugin.",
+            .AviSynthFilterNames = {"RemoveGrain", "Clense", "ForwardClense", "BackwardClense", "Repair", "VerticalCleaner"},
+            .avsFiltersFunc = Function() {New VideoFilter("Noise", "RemoveGrain", "RemoveGrain()")}})
+
+        Packages.Add(New PluginPackage With {
             .Name = "FluxSmooth",
             .Filename = "FluxSmoothSSSE3.dll",
             .AviSynthFilterNames = {"FluxSmoothT", "FluxSmoothST"},
@@ -277,6 +282,15 @@ Class Packs
             .avsFiltersFunc = Function() {
                 New VideoFilter("Noise", "FluxSmoothT", "FluxSmoothT(temporal_threshold = 8)"),
                 New VideoFilter("Noise", "FluxSmoothST", "FluxSmoothST(temporal_threshold = 8, spatial_threshold = 8)")}})
+
+        Packages.Add(New PluginPackage With {
+            .Name = "yadifmod2",
+            .Filename = "yadifmod2_avx.dll",
+            .AviSynthFilterNames = {"yadifmod2"},
+            .Description = "Yet Another Deinterlacing Filter mod  for Avisynth2.6/Avisynth+",
+            .HelpFile = "readme.md",
+            .WebURL = "https://github.com/chikuzen/yadifmod2",
+            .avsFiltersFunc = Function() {New VideoFilter("Field", "yadifmod2", "yadifmod2()")}})
 
         Packages.Sort()
 
@@ -345,7 +359,7 @@ Public Class Package
 
     Overridable Property Filename As String
         Get
-            If FilenameValue = "" AndAlso OK(Filenames) Then
+            If FilenameValue = "" AndAlso Not Filenames.ContainsNothingOrEmpty Then
                 FilenameValue = Filenames(0)
             End If
 
@@ -439,12 +453,12 @@ Public Class Package
 
     Function GetStatusVersion() As String
         If Version <> "" AndAlso Not IsCorrectVersion() Then
-            Dim text = "Unknown version, use at your own risk, press F12 to edit the version."
+            Dim text = "Unknown version, it can be changed by pressing F12, F11 allows to change the location."
 
             If SetupAction Is Nothing Then
                 Return text
             Else
-                Return text + " In case of problems click the 'Setup' button above to install the recommended version."
+                Return text + " In case of problems download and install the required version."
             End If
         End If
     End Function
@@ -530,18 +544,6 @@ Public Class Package
     End Function
 End Class
 
-Public Class AutoCropPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "AutoCrop"
-        Filename = "AutoCrop.dll"
-        WebURL = "http://avisynth.org.ru/docs/english/externalfilters/autocrop.htm"
-        Description = "AutoCrop is an AviSynth filter that automatically crops the black borders from a clip. It operates in either preview mode where it overlays the recommended cropping information on the existing clip, or cropping mode where it really crops the clip."
-        AviSynthFilterNames = {"AutoCrop"}
-    End Sub
-End Class
-
 Public Class VSFilterPackage
     Inherits PluginPackage
 
@@ -601,7 +603,6 @@ Public Class AviSynthPlusPackage
             Return "The AviSynth+ plugins directory is missing, run the AviSynth+ setup."
         End If
 
-        If Not IsCorrectVersion() Then Return "Install AviSynth+ r1825. Press F12 to edit the version."
         Return MyBase.GetStatus()
     End Function
 End Class
@@ -659,11 +660,6 @@ Public Class VapourSynthPackage
         Set(value As String)
         End Set
     End Property
-
-    Public Overrides Function GetStatus() As String
-        If Not IsCorrectVersion() Then Return "Install VapourSynth R31. Press F12 to edit the version."
-        Return MyBase.GetStatus()
-    End Function
 End Class
 
 Public Class vspipePackage
@@ -731,12 +727,12 @@ Public Class PluginPackage
             End If
 
             Dim line = plugin.Name + " = importlib.machinery.SourceFileLoader('" +
-                plugin.Name + "', r'" + plugin.GetPath + "').load_module()" + CrLf
+                plugin.Name + "', r""" + plugin.GetPath + """).load_module()" + CrLf
 
             If Not script.Contains(line) AndAlso Not code.Contains(line) Then code += line
         ElseIf Not plugin.VapourSynthFilterNames Is Nothing Then
             If Not File.Exists(Paths.PluginsDir + plugin.Filename) Then
-                Dim line = "core.std.LoadPlugin(r'" + plugin.GetPath + "')" + CrLf
+                Dim line = "core.std.LoadPlugin(r""" + plugin.GetPath + """)" + CrLf
 
                 If Not script.Contains(line) AndAlso Not code.Contains(line) Then
                     code += line
@@ -1330,18 +1326,6 @@ Public Class masktools2Package
         WebURL = "http://avisynth.nl/index.php/MaskTools2"
         Description = "MaskTools2 contain a set of filters designed to create, manipulate and use masks. Masks, in video processing, are a way to give a relative importance to each pixel. You can, for example, create a mask that selects only the green parts of the video, and then replace those parts with another video."
         AviSynthFilterNames = {"Mt_edge", "Mt_motion"}
-    End Sub
-End Class
-
-Public Class RgToolsPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "RgTools"
-        Filename = "RgTools.dll"
-        WebURL = "http://avisynth.nl/index.php/RgTools"
-        Description = "RgTools is a modern rewrite of RemoveGrain, Repair, BackwardClense, Clense, ForwardClense and VerticalCleaner all in a single plugin."
-        AviSynthFilterNames = {"RemoveGrain", "Clense", "ForwardClense", "BackwardClense", "Repair", "VerticalCleaner"}
     End Sub
 End Class
 

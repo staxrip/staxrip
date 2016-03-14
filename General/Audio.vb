@@ -1,8 +1,8 @@
 ﻿Imports System.Text
-
-Imports VB6 = Microsoft.VisualBasic
 Imports System.Text.RegularExpressions
 Imports System.Globalization
+
+Imports VB6 = Microsoft.VisualBasic
 
 Public Class Audio
     Shared Sub Process(ap As AudioProfile)
@@ -15,9 +15,7 @@ Public Class Audio
             Log.WriteLine(MediaInfo.GetSummary(ap.File))
         End If
 
-        If p.DecodingMode <> DecodingMode.Disabled Then
-            Decode(ap)
-        End If
+        If p.DecodingMode <> DecodingMode.Disabled Then Decode(ap)
 
         If ap.HasStream Then
             Dim cutting = p.Ranges.Count > 0
@@ -92,7 +90,7 @@ Public Class Audio
 
         If MediaInfo.GetAudioCount(sourcefile) > 1 Then args += " -map 0:" & stream.StreamOrder
 
-        args += " -c:a copy -vn -sn -y """ + outPath + """"
+        args += " -c:a copy -vn -sn -y -hide_banner """ + outPath + """"
 
         Using proc As New Proc
             proc.Init("Demux audio using ffmpeg", {"Media Export: |", "File Export: |", "ISO File Writing: |"})
@@ -160,10 +158,8 @@ Public Class Audio
                 Using proc As New Proc
                     proc.Init("Mux AAC to M4A", "|")
                     proc.File = Packs.MP4Box.GetPath
-
                     Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
-
-                    Dim m4aPath = Filepath.GetChangeExt(outPath, "m4a")
+                    Dim m4aPath = outPath.ChangeExt("m4a")
                     proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new """ + m4aPath + """"
                     proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
                     proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
@@ -190,7 +186,7 @@ Public Class Audio
 
         If Filepath.GetExtFull(ap.File) = ".avs" Then
             Dim outPath = Filepath.GetDirAndBase(ap.File) + ext
-            Dim args = "-i """ + ap.File + """ -y """ + outPath + """"
+            Dim args = "-i """ + ap.File + """ -y -hide_banner """ + outPath + """"
 
             Using proc As New Proc
                 proc.Init("AVS to FLAC/WAV using ffmpeg", "frame=", "size=", "Multiple")
@@ -240,7 +236,7 @@ Public Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
+        Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg", "frame=", "size=", "Multiple")
@@ -273,7 +269,7 @@ Public Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
+        Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg", "frame=", "size=", "Multiple")
@@ -374,7 +370,7 @@ Public Class Audio
 
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
 
-        args += " -y -ac " & ap.Channels
+        args += " -y -hide_banner -ac " & ap.Channels
         args += " """ + outPath + """"
 
         Using proc As New Proc
@@ -408,7 +404,7 @@ Public Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
+        Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg", "frame=", "size=", "Multiple")
@@ -442,7 +438,7 @@ Public Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
+        Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg", "frame=", "size=", "Multiple")
@@ -473,7 +469,7 @@ Public Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
+        Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg", "frame=", "size=", "Multiple")
@@ -506,7 +502,7 @@ Public Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i """ + d.Path + """ -y """ + wavPath + """"
+        Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg", "frame=", "size=", "Multiple")
@@ -529,22 +525,12 @@ Public Class Audio
         If ap.File.Contains("_cut_") Then Exit Sub
         If Not Packs.AviSynth.VerifyOK(True) Then Throw New AbortException
 
-        Dim code = String.Format("BlankClip(length = {0}, fps = {1}, width = 16, height = 16, pixel_type = ""YV12"")" +
-                                 CrLf + "KillAudio()",
-                                 p.CutFrameCount,
-                                 p.CutFrameRate.ToString("f6", CultureInfo.InvariantCulture))
-
-        Dim scriptPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_mm.avs"
         Dim aviPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_mm.avi"
-
-        File.WriteAllText(scriptPath, code)
-
-        Dim args = "-i """ + scriptPath + """ -c:v copy -y """ + aviPath + """"
+        Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0} -r {1} -y -hide_banner -c:v copy """ + aviPath + """", (p.CutFrameCount / p.CutFrameRate).ToString("f6", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f6", CultureInfo.InvariantCulture))
 
         Using proc As New Proc
             proc.Init("Create avi file with ffmpeg", "frame=", "size=", "Multiple")
-            proc.WriteLine("mkvmerge cannot cut audio without video so we create" + CrLf +
-                           "a 16x16 pixel avi file using the following script:" + CrLf2 + code + CrLf2)
+            proc.WriteLine("mkvmerge cannot cut audio without video so we create a fake avi file." + CrLf)
             proc.Encoding = Encoding.UTF8
             proc.File = Packs.ffmpeg.GetPath
             proc.Arguments = args
@@ -559,15 +545,15 @@ Public Class Audio
 
         Dim mkvPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_.mkv"
 
-        args = "-o """ + mkvPath + """ """ + aviPath + """ """ + ap.File + """"
-        args += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")
-        args += " --ui-language en"
+        Dim args2 = "-o """ + mkvPath + """ """ + aviPath + """ """ + ap.File + """"
+        args2 += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")
+        args2 += " --ui-language en"
 
         Using proc As New Proc
             proc.Init("Cut using mkvmerge", "Progress: ")
             proc.Encoding = Encoding.UTF8
             proc.File = Packs.Mkvmerge.GetPath
-            proc.Arguments = args
+            proc.Arguments = args2
             proc.AllowedExitCodes = {0, 1, 2}
             proc.Start()
         End Using
@@ -601,7 +587,7 @@ Public Class Audio
     End Sub
 
     Shared Function GetDown2Code() As String
-        Dim a = _
+        Dim a =
       <a>
 Audiochannels() >= 6 ? Down2(last) : last
 

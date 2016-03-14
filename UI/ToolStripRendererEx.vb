@@ -1,13 +1,5 @@
-Imports System.Collections.Generic
-Imports System.Text
-Imports System.Windows.Forms
-Imports System.Drawing
 Imports System.Drawing.Drawing2D
-Imports System.Diagnostics
-Imports System.Windows.Forms.VisualStyles
 Imports Microsoft.Win32
-
-Imports VB6 = Microsoft.VisualBasic
 
 Public Class ToolStripRendererEx
     Inherits ToolStripSystemRenderer
@@ -73,19 +65,6 @@ Public Class ToolStripRendererEx
         ColorToolStrip2 = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(ColorBorder, 0.7)))
         ColorToolStrip3 = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(ColorBorder, 0.1)))
         ColorToolStrip4 = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(ColorBorder, 0.4)))
-    End Sub
-
-    'works with ToolStrip.Renderer but not ToolStripManager.Renderer
-    Protected Overrides Sub Initialize(ts As ToolStrip)
-        MyBase.Initialize(ts)
-
-        For Each i In ts.Items.OfType(Of ToolStripMenuItem)()
-            If i.DropDownItems.Count > 0 Then
-                If Not i.Text.EndsWith("   ") Then
-                    i.Text += "   "
-                End If
-            End If
-        Next
     End Sub
 
     'works with ToolStrip.Renderer but not ToolStripManager.Renderer
@@ -199,15 +178,6 @@ Public Class ToolStripRendererEx
 
             End If
         End If
-
-        If TypeOf e.Item.Owner Is MenuStrip AndAlso e.Item.Text.EndsWith("  ") Then
-            Dim s = "6"
-            Dim font = New Font("Marlett", e.Item.Font.Size - 2)
-            Dim size = g.MeasureString(s, font)
-            Dim x = CInt(e.Item.Width - size.Width)
-            Dim y = CInt((e.Item.Height - size.Height) / 2) + 1
-            g.DrawString(s, font, Brushes.Black, x, y)
-        End If
     End Sub
 
     Sub DrawHotToolStripButton(e As ToolStripItemRenderEventArgs)
@@ -271,17 +241,12 @@ Public Class ToolStripRendererEx
     End Sub
 
     Protected Overrides Sub OnRenderDropDownButtonBackground(e As ToolStripItemRenderEventArgs)
-        If e.Item.Selected Then
-            DrawHotToolStripButton(e)
-        End If
+        If e.Item.Selected Then DrawHotToolStripButton(e)
     End Sub
 
     Protected Overrides Sub OnRenderButtonBackground(e As ToolStripItemRenderEventArgs)
         Dim button = DirectCast(e.Item, ToolStripButton)
-
-        If e.Item.Selected OrElse button.Checked Then
-            DrawHotToolStripButton(e)
-        End If
+        If e.Item.Selected OrElse button.Checked Then DrawHotToolStripButton(e)
     End Sub
 
     Protected Overloads Overrides Sub OnRenderArrow(e As ToolStripArrowRenderEventArgs)
@@ -302,7 +267,6 @@ Public Class ToolStripRendererEx
     Protected Overloads Overrides Sub OnRenderSeparator(e As ToolStripSeparatorRenderEventArgs)
         If e.Item.IsOnDropDown Then
             e.Graphics.Clear(ColorBackground)
-
             Dim right = e.Item.Width - 3
             Dim top = e.Item.Height \ 2
             top -= 1

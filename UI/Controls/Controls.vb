@@ -902,7 +902,6 @@ Namespace UI
         Public Sub New()
             Menu.ShowImageMargin = False
             ShowMenuSymbol = True
-
             AddHandler Menu.Opening, AddressOf MenuOpening
         End Sub
 
@@ -942,9 +941,11 @@ Namespace UI
                     End If
                 End If
 
-                For Each i In Menu.Items.OfType(Of ActionMenuItem)()
-                    If value.Equals(i.Tag) Then Text = i.Text
-                Next
+                If Not value Is Nothing Then
+                    For Each i In Menu.Items.OfType(Of ActionMenuItem)()
+                        If value.Equals(i.Tag) Then Text = i.Text
+                    Next
+                End If
 
                 If Text = "" AndAlso Not value Is Nothing Then
                     Text = value.ToString
@@ -974,11 +975,7 @@ Namespace UI
 
         Sub Add(path As String, obj As Object, Optional tip As String = Nothing)
             Dim name = path
-
-            If path.Contains("|") Then
-                name = path.RightLast("|").Trim
-            End If
-
+            If path.Contains("|") Then name = path.RightLast("|").Trim
             ActionMenuItem.Add(Menu.Items, path, Sub(o As Object) OnAction(name, o), obj, tip).Tag = obj
         End Sub
 
@@ -1956,7 +1953,7 @@ Namespace UI
     Class DataGridViewEx
         Inherits DataGridView
 
-        Function AddTextColumn() As DataGridViewTextBoxColumn
+        Function AddTextBoxColumn() As DataGridViewTextBoxColumn
             Dim ret As New DataGridViewTextBoxColumn
             Columns.Add(ret)
             Return ret

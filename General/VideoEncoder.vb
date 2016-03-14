@@ -179,7 +179,7 @@ MustInherit Class VideoEncoder
         Muxer.Init()
 
         g.MainForm.llMuxer.Text = Muxer.OutputType.ToUpper
-        g.MainForm.tbTargetFile.Text = Filepath.GetChangeExt(p.TargetFile, Muxer.GetExtension)
+        g.MainForm.tbTargetFile.Text = p.TargetFile.ChangeExt(Muxer.GetExtension)
         g.MainForm.RecalcBitrate()
         g.MainForm.Assistant()
     End Sub
@@ -196,9 +196,7 @@ MustInherit Class VideoEncoder
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then
-            Return sb.SelectedItem
-        End If
+        If sb.Show = DialogResult.OK Then Return sb.SelectedItem
 
         Return Nothing
     End Function
@@ -908,8 +906,8 @@ Class NvidiaEncoder
         newParams.Init(store)
 
         Using f As New CommandLineForm(newParams)
-            f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStandardOutput(Packs.NVEncC.GetPath, "--check-hw"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStandardOutput(Packs.NVEncC.GetPath, "--check-features"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.NVEncC.GetPath, "--check-hw"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Packs.NVEncC.GetPath, "--check-features"))))
             f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetErrorOutput(Packs.NVEncC.GetPath, "--check-environment"))))
 
             If f.ShowDialog() = DialogResult.OK Then
@@ -931,7 +929,7 @@ Class NvidiaEncoder
         Dim cl = Params.GetCommandLine(True, False)
 
         If cl.Contains(" | ") Then
-            Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_venc.bat"
+            Dim batchPath = p.TempDir + p.TargetFile.Base + "_NVEncC.bat"
             File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
 
             Using proc As New Proc
@@ -977,12 +975,6 @@ Class NvidiaEncoder
             Title = "NVIDIA Encoding Options"
         End Sub
 
-        Property Codec As New OptionParam With {
-            .Switch = "--codec",
-            .Text = "Codec:",
-            .Options = {"H264/AVC", "H265/HEVC"},
-            .Values = {"h264", "h265"}}
-
         Property Decoder As New OptionParam With {
             .Text = "Decoder:",
             .Options = {"AviSynth/VapourSynth", "NVEncC cuvid", "QSVEncC Quick Sync", "ffmpeg dxva2"},
@@ -991,6 +983,12 @@ Class NvidiaEncoder
         Property Mode As New OptionParam With {
             .Text = "Mode:",
             .Options = {"CBR", "VBR", "VBR2", "CQP"}}
+
+        Property Codec As New OptionParam With {
+            .Switch = "--codec",
+            .Text = "Codec:",
+            .Options = {"H264/AVC", "H265/HEVC"},
+            .Values = {"h264", "h265"}}
 
         Property Profile As New OptionParam With {
             .Switch = "--profile",
@@ -1094,7 +1092,7 @@ Class NvidiaEncoder
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineItem)
-                    Add("Basic", Decoder, Codec, Mode, Profile, LevelH264, LevelH265,
+                    Add("Basic", Decoder, Mode, Codec, Profile, LevelH264, LevelH265,
                         QPI, QPP, QPB, GOPLength, BFrames, Ref)
 
                     Add("Advanced", mvPrecision, MaxBitrate, AQ, Lossless, FullRange, Custom)
@@ -1128,23 +1126,23 @@ Class NvidiaEncoder
         Overrides Function GetCommandLine(includePaths As Boolean, includeExecutable As Boolean) As String
             Dim ret As String
             Dim sourcePath As String
-            Dim targetPath = Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) + "." + p.VideoEncoder.OutputFileType
+            Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
 
             If includePaths AndAlso includeExecutable Then
-                ret = """" + Packs.NVEncC.GetPath + """"
+                ret = Packs.NVEncC.GetPath.AddPathQuotes
             End If
 
             Select Case Decoder.ValueText
                 Case "avs"
                     sourcePath = p.Script.Path
                 Case "nv"
-                    sourcePath = p.SourceFile
+                    sourcePath = p.LastOriginalSourceFile
                 Case "qs"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, """" + Packs.QSVEncC.GetPath + """", "QSVEncC") + " --output-file - --codec raw" + " --input-file """ + If(includePaths, p.SourceFile, "path") + """ | " + If(includePaths, """" + Packs.NVEncC.GetPath + """", "NVEncC")
+                    If includePaths Then ret = If(includePaths, Packs.QSVEncC.GetPath.AddPathQuotes, "QSVEncC") + " --output-file - --codec raw" + " --input-file " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " | " + If(includePaths, Packs.NVEncC.GetPath.AddPathQuotes, "NVEncC")
                 Case "ff"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, """" + Packs.ffmpeg.GetPath + """", "ffmpeg") + " -threads 1 -hwaccel dxva2 -i """ + If(includePaths, p.SourceFile, "path") + """ -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, """" + Packs.NVEncC.GetPath + """", "NVEncC")
+                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.AddPathQuotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.NVEncC.GetPath.AddPathQuotes, "NVEncC")
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
@@ -1187,7 +1185,7 @@ Class NvidiaEncoder
             End If
 
             If includePaths Then
-                ret += " --input """ + sourcePath + """ --output """ + targetPath + """"
+                ret += " --input " + sourcePath.AddPathQuotes + " --output " + targetPath.AddPathQuotes
             End If
 
             Return ret.Trim
@@ -1242,10 +1240,10 @@ Class IntelEncoder
         Using f As New CommandLineForm(newParams)
             f.HTMLHelp = Strings.Intel
 
-            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetStandardOutput(Packs.QSVEncC.GetPath, "--check-environment"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStandardOutput(Packs.QSVEncC.GetPath, "--check-hw"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStandardOutput(Packs.QSVEncC.GetPath, "--check-features"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Library", Sub() MsgInfo(ProcessHelp.GetStandardOutput(Packs.QSVEncC.GetPath, "--check-lib"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetStdOut(Packs.QSVEncC.GetPath, "--check-environment"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.QSVEncC.GetPath, "--check-hw"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Packs.QSVEncC.GetPath, "--check-features"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Library", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.QSVEncC.GetPath, "--check-lib"))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = newParams
@@ -1265,18 +1263,31 @@ Class IntelEncoder
     Overrides Sub Encode()
         p.Script.Synchronize()
         Params.RaiseValueChanged(Nothing)
-        Encode(Params.GetCommandLine(True, False))
-        AfterEncoding()
-    End Sub
+        Dim cl = Params.GetCommandLine(True, False)
 
-    Overloads Sub Encode(args As String)
-        Using proc As New Proc
-            proc.Init("Video encoding using intel encoder")
-            proc.SkipStrings = {"%]", "frames:"}
-            proc.File = Packs.QSVEncC.GetPath
-            proc.Arguments = args
-            proc.Start()
-        End Using
+        If cl.Contains(" | ") Then
+            Dim batchPath = p.TempDir + p.TargetFile.Base + "_QSVEncC.bat"
+            File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
+
+            Using proc As New Proc
+                proc.Init("Encoding using QSVEncC")
+                proc.SkipStrings = {"%]", " frames: "}
+                proc.WriteLine(cl + CrLf2)
+                proc.File = "cmd.exe"
+                proc.Arguments = "/C call """ + batchPath + """"
+                proc.Start()
+            End Using
+        Else
+            Using proc As New Proc
+                proc.Init("Encoding using QSVEncC")
+                proc.SkipStrings = {"%]"}
+                proc.File = Packs.QSVEncC.GetPath
+                proc.Arguments = cl
+                proc.Start()
+            End Using
+        End If
+
+        AfterEncoding()
     End Sub
 
     Overrides Function GetMenu() As MenuList
@@ -1314,6 +1325,11 @@ Class IntelEncoder
         Sub New()
             Title = "Intel Encoding Options"
         End Sub
+
+        Property Decoder As New OptionParam With {
+            .Text = "Decoder:",
+            .Options = {"AviSynth/VapourSynth", "NVEncC", "VCEEncC", "QSVEncC", "ffmpeg dxva2"},
+            .Values = {"avs", "nv", "vce", "qs", "ff"}}
 
         Property Codec As New OptionParam With {
             .Switch = "--codec",
@@ -1412,7 +1428,7 @@ Class IntelEncoder
         Property Scenechange As New BoolParam With {
             .Switch = "--scenechange",
             .NoSwitch = "--no-scenechange",
-            .VisibleFunc = Function() Not HardwareDecoding.Value,
+            .VisibleFunc = Function() Decoder.ValueText = "avs",
             .Text = "Scenechange"}
 
         Property MBBRC As New BoolParam With {
@@ -1426,13 +1442,6 @@ Class IntelEncoder
         Property Custom As New StringParam With {
             .Text = "Custom Switches:",
             .ArgsFunc = Function() Custom.Value}
-
-        Property HardwareDecoding As New BoolParam With {
-            .Switch = "--avqsv",
-            .Text = "Use hardware decoding (bypasses AviSynth/VapourSynth)",
-            .Help = "Uses the source file as input for QSVEncC as well as StaxRip's cut/trim and crop values.",
-            .Value = False,
-            .DefaultValue = False}
 
         Property LevelH264 As New OptionParam With {
             .Switch = "--level",
@@ -1493,8 +1502,8 @@ Class IntelEncoder
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineItem)
 
-                    Add("Basic", Codec, QualitySpeed, Mode, Quality, QPI, QPP, QPB)
-                    Add("Advanced", ProfileH264, ProfileHEVC, ProfileMPEG2, LevelHEVC, LevelH264, LevelMPEG2, Rotate, BFrames, Ref, GOPLength, LookaheadDepth, HardwareDecoding, Scenechange, MBBRC, Custom)
+                    Add("Basic", Decoder, Codec, QualitySpeed, Mode, Quality, QPI, QPP, QPB)
+                    Add("Advanced", ProfileH264, ProfileHEVC, ProfileMPEG2, LevelHEVC, LevelH264, LevelMPEG2, Rotate, BFrames, Ref, GOPLength, LookaheadDepth, Scenechange, MBBRC, Custom)
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                 End If
 
@@ -1557,14 +1566,30 @@ Class IntelEncoder
         End Sub
 
         Overrides Function GetCommandLine(includePaths As Boolean, includeExecutable As Boolean) As String
-            Dim sourcePath = p.Script.Path
-            Dim targetPath = Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) + "." + p.VideoEncoder.OutputFileType
-
             Dim ret As String
+            Dim sourcePath = p.Script.Path
+            Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
 
             If includePaths AndAlso includeExecutable Then
-                ret = """" + Packs.QSVEncC.GetPath + """"
+                ret = Packs.QSVEncC.GetPath.AddPathQuotes
             End If
+
+            Select Case Decoder.ValueText
+                Case "avs"
+                    sourcePath = p.Script.Path
+                Case "nv"
+                    sourcePath = "-"
+                    If includePaths Then ret = If(includePaths, Packs.NVEncC.GetPath.AddPathQuotes, "NVEncC") + " --output-file - --codec raw" + " --input-file " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " | " + If(includePaths, Packs.QSVEncC.GetPath.AddPathQuotes, "QSVEncC")
+                Case "vce"
+                    sourcePath = "-"
+                    If includePaths Then ret = If(includePaths, Packs.VCEEncC.GetPath.AddPathQuotes, "VCEEncC") + " --output-file - --codec raw" + " --input-file " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " | " + If(includePaths, Packs.QSVEncC.GetPath.AddPathQuotes, "QSVEncC")
+                Case "qs"
+                    sourcePath = p.LastOriginalSourceFile
+                    ret = " --avqsv"
+                Case "ff"
+                    sourcePath = "-"
+                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.AddPathQuotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.QSVEncC.GetPath.AddPathQuotes, "QSVEncC")
+            End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
 
@@ -1584,7 +1609,7 @@ Class IntelEncoder
             End Select
 
             If p.Script.IsFilterActive("Resize", "Hardware Encoder") OrElse
-                (HardwareDecoding.Value AndAlso p.Script.IsFilterActive("Resize")) Then
+                (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Resize")) Then
 
                 ret += " --output-res " & p.TargetWidth & "x" & p.TargetHeight
             ElseIf p.AutoARSignaling Then
@@ -1594,12 +1619,12 @@ Class IntelEncoder
 
             If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
                 (p.Script.IsFilterActive("Crop", "Hardware Encoder") OrElse
-                (HardwareDecoding.Value AndAlso p.Script.IsFilterActive("Crop"))) Then
+                (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop"))) Then
 
                 ret += " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom
             End If
 
-            If HardwareDecoding.Value Then
+            If Decoder.ValueText <> "avs" Then
                 If p.Ranges.Count > 0 Then
                     ret += " --trim " + p.Ranges.Select(Function(range) range.Start & ":" & range.End).Join(",")
                 End If
@@ -1616,7 +1641,7 @@ Class IntelEncoder
                     p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture)
             End If
 
-            If includePaths Then ret += " --input-file """ + sourcePath + """ --output-file """ + targetPath + """"
+            If includePaths Then ret += " --input-file " + sourcePath.AddPathQuotes + " --output-file " + targetPath.AddPathQuotes
 
             Return ret.Trim
         End Function
@@ -1660,7 +1685,7 @@ Class AMDEncoder
         newParams.Init(store)
 
         Using f As New CommandLineForm(newParams)
-            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStandardOutput(Packs.NVEncC.GetPath, "--check-vce"))))
+            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.NVEncC.GetPath, "--check-vce"))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = newParams
@@ -1678,18 +1703,31 @@ Class AMDEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode(Params.GetCommandLine(1, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
-        AfterEncoding()
-    End Sub
+        Dim cl = Params.GetCommandLine(True, False)
 
-    Overloads Sub Encode(args As String)
-        Using proc As New Proc
-            proc.Init("Encoding using VCEEncC")
-            proc.SkipStrings = {"%]"}
-            proc.File = Packs.VCEEncC.GetPath
-            proc.Arguments = args
-            proc.Start()
-        End Using
+        If cl.Contains(" | ") Then
+            Dim batchPath = p.TempDir + p.TargetFile.Base + "_VCEEncC.bat"
+            File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
+
+            Using proc As New Proc
+                proc.Init("Encoding using VCEEncC")
+                proc.SkipStrings = {"%]", " frames: "}
+                proc.WriteLine(cl + CrLf2)
+                proc.File = "cmd.exe"
+                proc.Arguments = "/C call """ + batchPath + """"
+                proc.Start()
+            End Using
+        Else
+            Using proc As New Proc
+                proc.Init("Encoding using VCEEncC")
+                proc.SkipStrings = {"%]"}
+                proc.File = Packs.VCEEncC.GetPath
+                proc.Arguments = cl
+                proc.Start()
+            End Using
+        End If
+
+        AfterEncoding()
     End Sub
 
     Overrides Function GetMenu() As MenuList
@@ -1714,6 +1752,16 @@ Class AMDEncoder
             Title = "AMD Encoding Options"
         End Sub
 
+        Property Mode As New OptionParam With {
+            .Name = "Mode",
+            .Text = "Mode:",
+            .Options = {"CBR", "VBR", "CQP"}}
+
+        Property Decoder As New OptionParam With {
+            .Text = "Decoder:",
+            .Options = {"AviSynth/VapourSynth", "VCEEncC", "QSVEncC Quick Sync", "ffmpeg dxva2"},
+            .Values = {"avs", "vce", "qs", "ff"}}
+
         Property Quality As New OptionParam With {
             .Switch = "--quality",
             .Text = "Quality:",
@@ -1721,11 +1769,6 @@ Class AMDEncoder
             .Options = {"fast", "balanced", "slow"},
             .Value = 1,
             .DefaultValue = 1}
-
-        Property Mode As New OptionParam With {
-            .Name = "Mode",
-            .Text = "Mode:",
-            .Options = {"CBR", "VBR", "CQP"}}
 
         Property QPI As New NumParam With {
             .Text = "Constant QP I:",
@@ -1791,7 +1834,7 @@ Class AMDEncoder
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineItem)
-                    Add("Basic", Mode, Quality, QPI, QPP, QPB, GOPLength, BFrames)
+                    Add("Basic", Decoder, Mode, Quality, QPI, QPP, QPB, GOPLength, BFrames)
                     Add("Advanced", MaxBitrate, VBVBufsize, QPMin, QPMax, Custom)
                 End If
 
@@ -1816,18 +1859,27 @@ Class AMDEncoder
             MyBase.OnValueChanged(item)
         End Sub
 
-        Overloads Overrides Function GetCommandLine(includePaths As Boolean,
-                                                    includeExecutable As Boolean) As String
-
-            Return GetCommandLine(1, p.Script.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
-                           "." + p.VideoEncoder.OutputFileType, includePaths)
-        End Function
-
-        Overloads Function GetCommandLine(pass As Integer,
-                                   sourcePath As String,
-                                   targetPath As String,
-                                   Optional includePaths As Boolean = True) As String
+        Overrides Function GetCommandLine(includePaths As Boolean, includeExecutable As Boolean) As String
             Dim ret As String
+            Dim sourcePath As String
+            Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
+
+            If includePaths AndAlso includeExecutable Then
+                ret = Packs.VCEEncC.GetPath.AddPathQuotes
+            End If
+
+            Select Case Decoder.ValueText
+                Case "avs"
+                    sourcePath = p.Script.Path
+                Case "vce"
+                    sourcePath = p.LastOriginalSourceFile
+                Case "qs"
+                    sourcePath = "-"
+                    If includePaths Then ret = If(includePaths, Packs.QSVEncC.GetPath.AddPathQuotes, "QSVEncC") + " --output-file - --codec raw" + " --input-file " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " | " + If(includePaths, Packs.VCEEncC.GetPath.AddPathQuotes, "VCEEncC")
+                Case "ff"
+                    sourcePath = "-"
+                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.AddPathQuotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.VCEEncC.GetPath.AddPathQuotes, "VCEEncC")
+            End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
 
@@ -1850,7 +1902,7 @@ Class AMDEncoder
             End If
 
             If includePaths Then
-                ret += " --input-file """ + sourcePath + """ --output-file """ + targetPath + """"
+                ret += " --input-file " + sourcePath.AddPathQuotes + " --output-file " + targetPath.AddPathQuotes
             End If
 
             Return ret.Trim

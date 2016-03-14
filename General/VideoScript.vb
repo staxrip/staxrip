@@ -52,6 +52,10 @@ Class VideoScript
         Return sb.ToString
     End Function
 
+    Function GetFullScript() As String
+        Return Macro.Solve(ModifyScript(GetScript, Engine)).Trim
+    End Function
+
     Sub Remove(category As String, Optional name As String = Nothing)
         For Each i In Filters.ToArray
             If i.Category = category AndAlso (name Is Nothing OrElse i.Path = name) Then
@@ -148,11 +152,17 @@ Class VideoScript
                         script.WriteFile(Path)
                     End If
 
-                    If g.MainForm.Visible Then
-                        g.MainForm.Indexing()
-                        ProcessForm.CloseProcessForm()
-                    Else
-                        g.MainForm.Indexing()
+                    If p.SourceFile <> "" Then
+                        If g.MainForm.Visible Then
+                            g.MainForm.Indexing()
+                            ProcessForm.CloseProcessForm()
+                        Else
+                            g.MainForm.Indexing()
+                        End If
+                    End If
+
+                    If Not Packs.AviSynth.VerifyOK OrElse Not Packs.VapourSynth.VerifyOK Then
+                        Throw New AbortException
                     End If
 
                     Using avi As New AVIFile(Path)
@@ -207,7 +217,7 @@ Class VideoScript
                                         code += load
                                     End If
 
-                                    If OK(i.Dependencies) Then
+                                    If Not i.Dependencies.ContainsNothingOrEmpty Then
                                         For Each i3 In i.Dependencies
                                             For Each i4 In plugins
                                                 If i3 = i4.Name Then
@@ -290,16 +300,16 @@ Class VideoScript
         script.Filters.Add(New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")"))
         script.Filters.Add(New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", False))
         script.Filters.Add(New VideoFilter("Field", "TDeint", "TDeint()", False))
-        script.Filters.Add(New VideoFilter("Misc", "RemoveGrain", "RemoveGrain()", False))
+        script.Filters.Add(New VideoFilter("Noise", "RemoveGrain", "RemoveGrain()", False))
         script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", False))
         ret.Add(script)
 
         script = New TargetVideoScript("VapourSynth")
         script.Engine = ScriptingEngine.VapourSynth
-        script.Filters.Add(New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')"))
+        script.Filters.Add(New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%temp_file%.ffindex"")"))
         script.Filters.Add(New VideoFilter("Crop", "CropRel", "clip = core.std.CropRel(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)", False))
-        script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", "clip = havsfunc.QTGMC(Input = clip, TFF = True, Preset = 'Medium')", False))
-        script.Filters.Add(New VideoFilter("Noise", "SMDegrain", "clip = havsfunc.SMDegrain(input = clip, contrasharp = True)", False))
+        script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = 'Medium')", False))
+        script.Filters.Add(New VideoFilter("Noise", "SMDegrain", "clip = havsfunc.SMDegrain(clip, contrasharp = True)", False))
         script.Filters.Add(New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)", False))
         ret.Add(script)
 
@@ -386,6 +396,7 @@ End Class
 
 <Serializable()>
 Public Class VideoFilter
+    Implements IComparable(Of VideoFilter)
 
     Property Active As Boolean
     Property Category As String
@@ -425,6 +436,10 @@ Public Class VideoFilter
 
     Overrides Function ToString() As String
         Return Path
+    End Function
+
+    Function CompareTo(other As VideoFilter) As Integer Implements System.IComparable(Of VideoFilter).CompareTo
+        Return Path.CompareTo(other.Path)
     End Function
 End Class
 
@@ -502,8 +517,7 @@ Class FilterCategory
              New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")"),
              New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")"),
              New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")"),
-             New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")"),
-             New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")})
+             New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")")})
         ret.Add(src)
 
         Dim misc As New FilterCategory("Misc")
@@ -518,12 +532,11 @@ Class FilterCategory
         misc.Filters.Add(New VideoFilter(misc.Name, "checkmate", "checkmate()"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Clense", "Clense()"))
         misc.Filters.Add(New VideoFilter(misc.Name, "f3kdb", "f3kdb()"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "RemoveGrain", "RemoveGrain()"))
         misc.Filters.Add(New VideoFilter(misc.Name, "UnDot", "UnDot()"))
         ret.Add(misc)
 
         Dim field As New FilterCategory("Field")
-        field.Filters.Add(New VideoFilter(field.Name, "IVTC", "Telecide(guide=1).Decimate()"))
+        field.Filters.Add(New VideoFilter(field.Name, "IVTC", "Telecide(guide = 1).Decimate()"))
         field.Filters.Add(New VideoFilter(field.Name, "TDeint", "TDeint()"))
         field.Filters.Add(New VideoFilter(field.Name, "FieldDeinterlace", "FieldDeinterlace()"))
         field.Filters.Add(New VideoFilter(field.Name, "SangNom2", "SangNom2()"))
@@ -554,6 +567,10 @@ Class FilterCategory
 
         FilterCategory.AddDefaults(ScriptingEngine.AviSynth, ret)
 
+        For Each i In ret
+            i.Filters.Sort()
+        Next
+
         Return ret
     End Function
 
@@ -564,9 +581,9 @@ Class FilterCategory
         src.Filters.AddRange(
             {New VideoFilter("Source", "Manual", "# shows filter selection dialog"),
              New VideoFilter("Source", "Automatic", "# can be configured at main menu > Tools > Settings > Source Filters"),
-             New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')"),
-             New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(source = r'%source_file%')"),
-             New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(source = r'%source_file%')")})
+             New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%temp_file%.ffindex"")"),
+             New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")"),
+             New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")})
         ret.Add(src)
 
         Dim crop As New FilterCategory("Crop")
@@ -586,32 +603,38 @@ Class FilterCategory
         ret.Add(resize)
 
         Dim field As New FilterCategory("Field")
-        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Fast", "clip = havsfunc.QTGMC(Input = clip, TFF = True, Preset = 'Fast')"))
-        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Medium", "clip = havsfunc.QTGMC(Input = clip, TFF = True, Preset = 'Medium')"))
-        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Slow", "clip = havsfunc.QTGMC(Input = clip, TFF = True, Preset = 'Slow')"))
-        field.Filters.Add(New VideoFilter(field.Name, "nnedi3", "clip = core.nnedi3.nnedi3(clip = clip, field = 1)"))
+        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Fast", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = 'Fast')"))
+        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Medium", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = 'Medium')"))
+        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Slow", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = 'Slow')"))
+        field.Filters.Add(New VideoFilter(field.Name, "nnedi3", "clip = core.nnedi3.nnedi3(clip, field = 1)"))
         field.Filters.Add(New VideoFilter(field.Name, "IVTC", "clip = core.vivtc.VFM(clip, 1)" + CrLf + "clip = core.vivtc.VDecimate(clip)"))
         field.Filters.Add(New VideoFilter(field.Name, "Vinverse", "clip = core.vinverse.Vinverse(clip)"))
         field.Filters.Add(New VideoFilter(field.Name, "Select Even", "clip = clip[::2]"))
         field.Filters.Add(New VideoFilter(field.Name, "Select Odd", "clip = clip[1::2]"))
+        field.Filters.Add(New VideoFilter(field.Name, "AssumeFrame", "clip = mvsfunc.AssumeFrame(clip)"))
+
         ret.Add(field)
 
         Dim noise As New FilterCategory("Noise")
-        noise.Filters.Add(New VideoFilter(noise.Name, "SMDegrain", "clip = havsfunc.SMDegrain(input = clip, contrasharp = True)"))
+        noise.Filters.Add(New VideoFilter(noise.Name, "SMDegrain", "clip = havsfunc.SMDegrain(clip, contrasharp = True)"))
         noise.Filters.Add(New VideoFilter(noise.Name, "RemoveGrain", "clip = core.rgvs.RemoveGrain(clip, 1)"))
         ret.Add(noise)
 
         Dim misc As New FilterCategory("Misc")
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "clip = core.std.AssumeFPS(clip = clip, fpsnum = int(%media_info_video:FrameRate% * 1000), fpsden = 1000)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 24000/1001", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 24000, fpsden = 1001)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 30000/1001", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 30000, fpsden = 1001)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 60000/1001", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 60000, fpsden = 1001)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 24", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 24, fpsden = 1)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 25", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 25, fpsden = 1)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 50", "clip = core.std.AssumeFPS(clip = clip, fpsnum = 50, fpsden = 1)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "clip = core.std.AssumeFPS(clip, fpsnum = int(%media_info_video:FrameRate% * 1000), fpsden = 1000)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 24000/1001", "clip = core.std.AssumeFPS(clip, fpsnum = 24000, fpsden = 1001)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 30000/1001", "clip = core.std.AssumeFPS(clip, fpsnum = 30000, fpsden = 1001)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 60000/1001", "clip = core.std.AssumeFPS(clip, fpsnum = 60000, fpsden = 1001)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 24", "clip = core.std.AssumeFPS(clip, fpsnum = 24, fpsden = 1)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 25", "clip = core.std.AssumeFPS(clip, fpsnum = 25, fpsden = 1)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 50", "clip = core.std.AssumeFPS(clip, fpsnum = 50, fpsden = 1)"))
         ret.Add(misc)
 
         FilterCategory.AddDefaults(ScriptingEngine.VapourSynth, ret)
+
+        For Each i In ret
+            i.Filters.Sort()
+        Next
 
         Return ret
     End Function

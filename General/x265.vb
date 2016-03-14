@@ -1,9 +1,8 @@
 ﻿Imports System.Globalization
-Imports System.Runtime.Serialization
 Imports System.Text
 
-Imports StaxRip.UI
 Imports StaxRip.CommandLine
+Imports VB6 = Microsoft.VisualBasic
 
 Namespace x265
     <Serializable()>
@@ -401,6 +400,11 @@ Namespace x265
             .NoSwitch = "--no-rect",
             .Text = "Enable analysis of rectangular motion partitions Nx2N and 2NxN"}
 
+        Property rcGrain As New BoolParam With {
+            .Switch = "--rc-grain",
+            .NoSwitch = "--no-rc-grain",
+            .Text = "Specialised ratecontrol for film grain content"}
+
         Property AMP As New BoolParam With {
             .Switch = "--amp",
             .NoSwitch = "--no-amp",
@@ -436,7 +440,7 @@ Namespace x265
         Property PsyRD As New NumParam With {
             .Switch = "--psy-rd",
             .Text = "Psy RD:",
-            .MinMaxStepDec = {0D, 2D, 0.05D, 2D}}
+            .MinMaxStepDec = {0D, 5D, 0.05D, 2D}}
 
         Property PsyRDOQ As New NumParam With {
             .Switch = "--psy-rdoq",
@@ -515,16 +519,9 @@ Namespace x265
             .Text = "Pools:",
             .UseQuotes = True}
 
-        Property Qstep As New NumParam With {
-            .Switch = "--qpstep",
-            .Text = "QP Step:",
-            .MinMaxStep = {0, Integer.MaxValue, 1},
-            .Value = 4,
-            .DefaultValue = 4}
-
         Property WPP As New BoolParam With {
             .Switch = "--wpp",
-            .noSwitch = "--no-wpp",
+            .NoSwitch = "--no-wpp",
             .Text = "Wavefront Parallel Processing",
             .Value = True,
             .DefaultValue = True}
@@ -735,7 +732,14 @@ Namespace x265
             .Text = "Intra Refresh"}
 
         Property Custom As New StringParam With {
-            .Text = "Custom Switches:"}
+            .Text = "Custom:",
+            .InitAction = Sub(tb)
+                              tb.Label.Visible = False
+                              tb.Expand(tb.Edit)
+                              tb.Edit.Height = CInt(tb.Edit.Font.Height * 15)
+                              tb.Edit.TextBox.Multiline = True
+                              tb.Edit.TextBox.Font = New Font("Consolas", 10)
+                          End Sub}
 
         Property Deblock As New BoolParam With {
             .Switch = "--deblock",
@@ -783,8 +787,8 @@ Namespace x265
                     Add("Basic", Quant, Preset, Tune, Profile, OutputDepth, Level, Mode)
                     Add("Analysis 1", RD, MinCuSize, MaxCuSize, MaxTuSize, LimitRefs, TUintra, TUinter, rdoqLevel)
                     Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra, CUlossless, Tskip, TskipFast, LimitModes, RdRefine)
-                    Add("Rate Control 1", AQmode, qgSize, AQStrength, IPRatio, PBRatio, QComp, CBQPoffs, Qstep, QBlur, Cplxblur, CUtree, Lossless, StrictCBR)
-                    Add("Rate Control 2", NRintra, NRinter, CRFmin, CRFmax, VBVbufsize, VBVmaxrate, VBVinit, qpstep)
+                    Add("Rate Control 1", AQmode, qgSize, AQStrength, QComp, CBQPoffs, QBlur, Cplxblur, CUtree, Lossless, StrictCBR, rcGrain)
+                    Add("Rate Control 2", NRintra, NRinter, CRFmin, CRFmax, VBVbufsize, VBVmaxrate, VBVinit, qpstep, IPRatio, PBRatio)
                     Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP)
                     Add("Slice Decision", BAdapt, BFrames, BFrameBias, RCLookahead, LookaheadSlices, Scenecut, Ref, MinKeyint, Keyint, Bpyramid, OpenGop, IntraRefresh)
                     Add("Spatial/Intra", StrongIntraSmoothing, ConstrainedIntra, RDpenalty)
@@ -792,8 +796,9 @@ Namespace x265
                     Add("Statistic", LogLevel, csvloglevel, CSV, SSIM, PSNR)
                     Add("VUI", Videoformat, Colorprim, Colormatrix, Transfer, minLuma, maxLuma)
                     Add("Bitstream", Hash, RepeatHeaders, Info, HRD, AUD)
-                    Add("Other 1", InterlaceMode, Deblock, DeblockA, DeblockB, PsyRD, PsyRDOQ, CompCheckQuant, Custom)
+                    Add("Other 1", InterlaceMode, Deblock, DeblockA, DeblockB, PsyRD, PsyRDOQ, CompCheckQuant)
                     Add("Other 2", SAO, HighTier, SAOnonDeblock, Dither, SlowFirstpass, SignHide, AllowNonConformance)
+                    Add("Custom", Custom)
 
                     For Each i In ItemsValue
                         If i.Switch <> "" Then
@@ -859,9 +864,9 @@ Namespace x265
 
             If includePaths AndAlso includeExecutable Then
                 If p.Script.Engine = ScriptingEngine.VapourSynth Then
-                    sb.Append("""" + Packs.vspipe.GetPath + """ """ + script.Path + """ - --y4m | """ + Packs.x265.GetPath + """")
+                    sb.Append(Packs.vspipe.GetPath.AddPathQuotes + " " + script.Path.AddPathQuotes + " - --y4m | " + Packs.x265.GetPath.AddPathQuotes)
                 Else
-                    sb.Append("""" + Packs.ffmpeg.GetPath + """ -i """ + script.Path + """ -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | """ + Packs.x265.GetPath + """")
+                    sb.Append(Packs.ffmpeg.GetPath.AddPathQuotes + " -i " + script.Path.AddPathQuotes + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + Packs.x265.GetPath.AddPathQuotes)
                 End If
             End If
 
@@ -870,16 +875,16 @@ Namespace x265
             End If
 
             If Mode.Value = RateMode.SingleQuant Then
-                sb.Append(" --qp " + CInt(Quant.Value).ToString)
+                If Not IsCustom("--qp") Then sb.Append(" --qp " + CInt(Quant.Value).ToString)
             ElseIf Mode.Value = RateMode.SingleCRF Then
-                If Quant.Value <> 28 Then
+                If Quant.Value <> 28 AndAlso Not IsCustom("--crf") Then
                     sb.Append(" --crf " + Quant.Value.ToString(CultureInfo.InvariantCulture))
                 End If
             Else
-                sb.Append(" --bitrate " & p.VideoBitrate)
+                If Not IsCustom("--bitrate") Then sb.Append(" --bitrate " & p.VideoBitrate)
             End If
 
-            Dim q = From i In Items Where i.GetArgs <> ""
+            Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.Switch)
 
             If q.Count > 0 Then
                 sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
@@ -889,7 +894,7 @@ Namespace x265
                 sb.Append(" --frames " & script.GetFrames)
                 sb.Append(" --y4m")
 
-                If Calc.IsARSignalingRequired Then
+                If Calc.IsARSignalingRequired AndAlso Not IsCustom("--sar") Then
                     Dim par = Calc.GetTargetPAR
                     sb.Append(" --sar " & par.X & ":" & par.Y)
                 End If
@@ -907,7 +912,13 @@ Namespace x265
                 End If
             End If
 
-            Return Macro.Solve(sb.ToString.Trim)
+            Return Macro.Solve(sb.ToString.Trim.FixBreak.Replace(CrLf, " "))
+        End Function
+
+        Function IsCustom(switch As String) As Boolean
+            If switch = "" OrElse Custom.Value = "" Then Return False
+            If Custom.Value.Contains(switch + " ") Then Return True
+            If Custom.Value.EndsWith(switch) Then Return True
         End Function
 
         Function GetDeblockArgs() As String
@@ -1512,16 +1523,12 @@ Namespace x265
                     PsyRD.Value = 0.0
                     PsyRDOQ.Value = 0.0
                 Case 3 'grain
-                    DeblockA.Value = -2
-                    DeblockB.Value = -2
-                    BIntra.Value = False
-                    rdoqLevel.Value = 1
-                    PsyRDOQ.Value = 30
-                    PsyRD.Value = 0.5
                     IPRatio.Value = 1.1
-                    PBRatio.Value = 1.1
-                    AQStrength.Value = 0.3
-                    QComp.Value = 0.8
+                    PBRatio.Value = 1
+                    CUtree.Value = False
+                    AQmode.Value = 0
+                    qpstep.Value = 1
+                    rcGrain.Value = True
                 Case 4 '"fastdecode"
                     Deblock.Value = False
                     SAO.Value = False
@@ -1549,16 +1556,12 @@ Namespace x265
                     PsyRD.DefaultValue = 0.0
                     PsyRDOQ.DefaultValue = 0.0
                 Case 3 'grain
-                    DeblockA.DefaultValue = -2
-                    DeblockB.DefaultValue = -2
-                    BIntra.DefaultValue = False
-                    rdoqLevel.DefaultValue = 1
-                    PsyRDOQ.DefaultValue = 30
-                    PsyRD.DefaultValue = 0.5
                     IPRatio.DefaultValue = 1.1
-                    PBRatio.DefaultValue = 1.1
-                    AQStrength.DefaultValue = 0.3
-                    QComp.DefaultValue = 0.8
+                    PBRatio.DefaultValue = 1
+                    CUtree.DefaultValue = False
+                    AQmode.DefaultValue = 0
+                    qpstep.DefaultValue = 1
+                    rcGrain.DefaultValue = True
                 Case 4 '"fastdecode"
                     Deblock.DefaultValue = False
                     SAO.DefaultValue = False

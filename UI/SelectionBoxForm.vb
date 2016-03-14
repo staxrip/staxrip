@@ -23,21 +23,22 @@ Public Class SelectionBoxForm
 
     Friend WithEvents bnCancel As System.Windows.Forms.Button
     Public WithEvents bnOK As System.Windows.Forms.Button
+    Friend WithEvents mb As MenuButton
     Public WithEvents lText As System.Windows.Forms.Label
-    Public WithEvents cbItems As System.Windows.Forms.ComboBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.lText = New System.Windows.Forms.Label()
         Me.bnCancel = New System.Windows.Forms.Button()
         Me.bnOK = New System.Windows.Forms.Button()
-        Me.cbItems = New System.Windows.Forms.ComboBox()
+        Me.mb = New StaxRip.UI.MenuButton()
         Me.SuspendLayout()
         '
         'lText
         '
         Me.lText.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lText.Location = New System.Drawing.Point(13, 6)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lText.Location = New System.Drawing.Point(13, 5)
         Me.lText.Name = "lText"
         Me.lText.Size = New System.Drawing.Size(408, 40)
         Me.lText.TabIndex = 0
@@ -65,29 +66,27 @@ Public Class SelectionBoxForm
         Me.bnOK.TabIndex = 2
         Me.bnOK.Text = "OK"
         '
-        'cbItems
+        'mb
         '
-        Me.cbItems.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cbItems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbItems.FormattingEnabled = True
-        Me.cbItems.Location = New System.Drawing.Point(12, 51)
-        Me.cbItems.MaxDropDownItems = 20
-        Me.cbItems.Name = "cbItems"
-        Me.cbItems.Size = New System.Drawing.Size(409, 33)
-        Me.cbItems.TabIndex = 1
+        Me.mb.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.mb.Location = New System.Drawing.Point(12, 48)
+        Me.mb.ShowMenuSymbol = True
+        Me.mb.Size = New System.Drawing.Size(409, 36)
         '
         'SelectionBoxForm
         '
         Me.AcceptButton = Me.bnOK
         Me.CancelButton = Me.bnCancel
         Me.ClientSize = New System.Drawing.Size(433, 136)
-        Me.Controls.Add(Me.cbItems)
+        Me.Controls.Add(Me.mb)
         Me.Controls.Add(Me.bnOK)
         Me.Controls.Add(Me.bnCancel)
         Me.Controls.Add(Me.lText)
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        Me.KeyPreview = True
+        Me.Location = New System.Drawing.Point(0, 0)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "SelectionBoxForm"
@@ -99,24 +98,12 @@ Public Class SelectionBoxForm
 
 #End Region
 
-    Private ReturnValueValue As Object
-
-    Property ReturnValue() As Object
-        Get
-            Return ReturnValueValue
-        End Get
-        Set(value As Object)
-            ReturnValueValue = value
-        End Set
-    End Property
+    Property ReturnValue As Object
 
     Private Sub lText_TextChanged() Handles lText.TextChanged
-        Dim g As Graphics = lText.CreateGraphics
-        Dim s As SizeF = g.MeasureString(lText.Text, lText.Font, lText.Width)
-        g.Dispose()
-
-        If s.Height > lText.Height Then
-            Height += CInt(s.Height - lText.Height)
-        End If
+        Using g = lText.CreateGraphics
+            Dim s = g.MeasureString(lText.Text, lText.Font, lText.Width)
+            If s.Height > lText.Height Then Height += CInt(s.Height - lText.Height)
+        End Using
     End Sub
 End Class

@@ -25,7 +25,7 @@ Public Module MiscExtensions
     Function GetAttribute(Of T)(mi As MemberInfo) As T
         Dim attributes = mi.GetCustomAttributes(True)
 
-        If OK(attributes) Then
+        If Not attributes.IsAnythingNothingOrEmpty Then
             If attributes.Length = 1 Then
                 If TypeOf attributes(0) Is T Then
                     Return DirectCast(attributes(0), T)
@@ -46,10 +46,7 @@ Public Module MiscExtensions
     End Function
 
     <Extension()>
-    Function EnsureRange(value As Integer,
-                         min As Integer,
-                         max As Integer) As Integer
-
+    Function EnsureRange(value As Integer, min As Integer, max As Integer) As Integer
         If value < min Then
             value = min
         ElseIf value > max Then
@@ -60,38 +57,6 @@ Public Module MiscExtensions
     End Function
 
     <Extension()>
-    Function ResizeToSmallIconSize(img As Image) As Image
-        If Not img Is Nothing AndAlso img.Size <> SystemInformation.SmallIconSize Then
-            Dim s = SystemInformation.SmallIconSize
-            Dim r As New Bitmap(s.Width, s.Height)
-
-            Using g = Graphics.FromImage(DirectCast(r, Image))
-                g.SmoothingMode = SmoothingMode.AntiAlias
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic
-                g.PixelOffsetMode = PixelOffsetMode.HighQuality
-                g.DrawImage(img, 0, 0, s.Width, s.Height)
-            End Using
-
-            Return r
-        End If
-
-        Return img
-    End Function
-
-    <Extension()>
-    Function ResizeImage(image As Image, ByVal height As Integer) As Image
-        Dim percentHeight = height / image.Height
-        Dim ret = New Bitmap(CInt(image.Width * percentHeight), CInt(height))
-
-        Using g = Graphics.FromImage(ret)
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic
-            g.DrawImage(image, 0, 0, ret.Width, ret.Height)
-        End Using
-
-        Return ret
-    End Function
-
-    <Extension()>
     Function ToStringEx(obj As Object) As String
         If obj Is Nothing Then Return "" Else Return obj.ToString
     End Function
@@ -99,6 +64,24 @@ Public Module MiscExtensions
     <Extension()>
     Function NeutralCulture(ci As CultureInfo) As CultureInfo
         If ci.IsNeutralCulture Then Return ci Else Return ci.Parent
+    End Function
+
+    <Extension()>
+    Function ContainsNothingOrEmpty(strings As IEnumerable(Of String)) As Boolean
+        If strings Is Nothing OrElse strings.Count = 0 Then Return True
+
+        For Each i In strings
+            If i = "" Then Return True
+        Next
+    End Function
+
+    <Extension()>
+    Function IsAnythingNothingOrEmpty(objects As IEnumerable(Of Object)) As Boolean
+        If objects Is Nothing OrElse objects.Count = 0 Then Return True
+
+        For Each i In objects
+            If i Is Nothing Then Return True
+        Next
     End Function
 End Module
 

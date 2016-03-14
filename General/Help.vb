@@ -243,7 +243,7 @@ Public Class FileHelp
 End Class
 
 Public Class ProcessHelp
-    Shared Function GetStandardOutput(file As String, arguments As String) As String
+    Shared Function GetStdOut(file As String, arguments As String) As String
         Dim ret = ""
         Dim proc As New Process
         proc.StartInfo.UseShellExecute = False

@@ -198,16 +198,32 @@ Class MediaInfo
         Get
             Dim ret As New List(Of Subtitle)
             Dim count = MediaInfo_Count_Get(Handle, MediaInfoStreamKind.Text, -1)
+            Dim offset As Integer
 
             If count > 0 Then
+                For Each i In AudioStreams
+                    If i.Codec = "TrueHD / AC3" Then offset += 1
+                Next
+
                 For i = 0 To count - 1
                     Dim s As New Subtitle(New Language(GetInfo(MediaInfoStreamKind.Text, i, "Language")))
+                    Dim streamOrder = GetInfo(MediaInfoStreamKind.Text, i, "StreamOrder")
 
-                    s.StreamOrder = GetInfo(MediaInfoStreamKind.Text, i, "StreamOrder").ToInt
+                    If streamOrder <> "" Then
+                        If streamOrder.Contains("-") Then
+                            s.StreamOrder = streamOrder.Right("-").ToInt + offset
+                        Else
+                            s.StreamOrder = streamOrder.ToInt
+                        End If
+                    End If
+
                     s.ID = GetInfo(MediaInfoStreamKind.Text, i, "ID").ToInt
                     s.Title = GetInfo(MediaInfoStreamKind.Text, i, "Title").Trim
                     s.CodecString = GetInfo(MediaInfoStreamKind.Text, i, "Codec/String")
                     s.Format = GetInfo(MediaInfoStreamKind.Text, i, "Format")
+
+                    Dim twoLetterCodes = p.AutoSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    s.Enabled = twoLetterCodes.Contains("all") OrElse twoLetterCodes.Contains(s.Language.TwoLetterCode)
 
                     ret.Add(s)
                 Next

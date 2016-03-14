@@ -1,3 +1,4 @@
+Imports System.Globalization
 Imports StaxRip.UI
 
 Public Class ApplicationsForm
@@ -331,7 +332,7 @@ Public Class ApplicationsForm
             Case Keys.F11
                 Using d As New OpenFileDialog
                     d.SetInitDir(s.Storage.GetString(ActivePackage.Name + "custom path"))
-                    If OK(ActivePackage.Filenames) Then
+                    If Not ActivePackage.Filenames.ContainsNothingOrEmpty Then
                         d.Filter = "|" + ActivePackage.Filenames.Join(";") + "|All Files|*.*"
                     Else
                         d.Filter = "|" + ActivePackage.Filename + "|All Files|*.*"
@@ -344,21 +345,24 @@ Public Class ApplicationsForm
             Case Keys.F12
                 If Not File.Exists(ActivePackage.GetPath) Then Exit Sub
 
-                Dim input = InputBox.Show("Version name?", "StaxRip", ActivePackage.Version)
+                Dim input = InputBox.Show("What's the name of this version?", "StaxRip", ActivePackage.Version)
 
                 If input <> "" Then
+                    input = input.Replace(";", "_")
                     ActivePackage.Version = input
                     ActivePackage.VersionDate = File.GetLastWriteTimeUtc(ActivePackage.GetPath)
 
-                    Dim t As String
+                    Dim textContent As String
 
                     For Each i In Packs.Packages
                         If i.Version <> "" Then
-                            t += i.Name + " = " + i.Version + "; " + i.VersionDate.ToString("yyyy-MM-dd") + CrLf
+                            textContent += i.Name + " = " + i.Version + "; " +
+                                i.VersionDate.ToString("yyyy-MM-dd",
+                                                       CultureInfo.InvariantCulture) + CrLf 'persian calendar
                         End If
                     Next
 
-                    File.WriteAllText(CommonDirs.Startup + "Apps\Versions.txt", t.FormatColumn("="))
+                    File.WriteAllText(CommonDirs.Startup + "Apps\Versions.txt", textContent.FormatColumn("="))
                 End If
         End Select
 

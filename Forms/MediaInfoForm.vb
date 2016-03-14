@@ -220,21 +220,18 @@ Public Class MediaInfoForm
     End Sub
 
     Private Sub MediaInfoForm_DragDrop(sender As Object, e As DragEventArgs) Handles Me.DragDrop
-        Dim a = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
-        If OK(a) Then
-            SourcePath = a(0)
+        If Not files.ContainsNothingOrEmpty Then
+            SourcePath = files(0)
             Text = "MediaInfo - " + SourcePath
             Parse()
         End If
     End Sub
 
     Private Sub MediaInfoForm_DragEnter(sender As Object, e As DragEventArgs) Handles Me.DragEnter
-        Dim a = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
-
-        If OK(a) Then
-            e.Effect = DragDropEffects.Copy
-        End If
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+        If Not files.ContainsNothingOrEmpty Then e.Effect = DragDropEffects.Copy
     End Sub
 
     Class Item
@@ -283,6 +280,12 @@ Public Class MediaInfoForm
 
                 If item.Name Is Nothing Then item.Name = ""
                 If item.Value Is Nothing Then item.Value = ""
+
+                If item.Name = "File size" AndAlso item.Value.EndsWith("GiB") Then
+                    item.Value += " (" + CInt(CLng(MediaInfo.GetGeneral(SourcePath, "FileSize")) / 1024 / 1024).ToString + " MB)"
+                End If
+
+                If item.Name = "Unique ID" Then Continue For
 
                 Items.Add(item)
             Else

@@ -893,34 +893,24 @@ Class PreviewForm
     Sub SaveBitmap()
         Using d As New SaveFileDialog
             d.SetFilter("bmp")
-            d.FileName = Filepath.GetBase(p.TargetFile) + " - " & AVI.Position
+            d.FileName = p.TargetFile.Base + " - " & AVI.Position
 
             If d.ShowDialog = DialogResult.OK Then
-                AVI.GetBitmap.Save(d.FileName)
+                AVI.GetBitmap.Save(d.FileName, Imaging.ImageFormat.Bmp)
             End If
         End Using
     End Sub
 
     <Command("Perform | Save JPG", "Saves the current frame as JPG.")>
     Sub SaveJPG()
-        Dim quality = InputBox.Show("Enter quality up to 100%", "Quality", "90")
+        Using d As New SaveFileDialog
+            d.SetFilter("jpg")
+            d.FileName = p.TargetFile.Base + " - " & AVI.Position
 
-        If quality <> "" Then
-            Using d As New SaveFileDialog
-                d.SetFilter("jpg")
-                d.FileName = Filepath.GetBase(p.TargetFile) + " - " & AVI.Position
-
-                If d.ShowDialog = DialogResult.OK Then
-                    Dim encoder = Imaging.ImageCodecInfo.GetImageDecoders.Where(
-                        Function(a) a.FormatID = Imaging.ImageFormat.Jpeg.Guid).First()
-
-                    Dim params As New Imaging.EncoderParameters(1)
-                    Dim param As New Imaging.EncoderParameter(Imaging.Encoder.Quality, quality.ToInt)
-                    params.Param(0) = param
-                    AVI.GetBitmap.Save(d.FileName, encoder, params)
-                End If
-            End Using
-        End If
+            If d.ShowDialog = DialogResult.OK Then
+                AVI.GetBitmap.Save(d.FileName, Imaging.ImageFormat.Jpeg)
+            End If
+        End Using
     End Sub
 
     Shared Function GetDefaultMenuPreview() As CustomMenuItem
@@ -1057,13 +1047,13 @@ Class PreviewForm
             If ret <> "" Then ret += " + "
 
             If p.Script.Engine = ScriptingEngine.AviSynth Then
-                ret += "Trim(" & i.Start & ", " & i.End & ")"
+                ret += "Trim(" & i.Start & ", " & i.End - 1 & ")"
 
                 If p.TrimCode <> "" Then
                     ret += "." + p.TrimCode.TrimStart("."c)
                 End If
             Else
-                ret += "core.std.Trim(clip, " & i.Start & ", " & i.End & ")"
+                ret += "clip[" & i.Start & ":" & i.End & "]"
             End If
         Next
 

@@ -151,45 +151,24 @@ Namespace UI
     End Class
 
     Public Class ListBag(Of T)
+        Implements IComparable(Of ListBag(Of T))
+
+        Property Text As String
+        Property Value As T
+
         Sub New(text As String, value As T)
             Me.Text = text
             Me.Value = value
         End Sub
 
-        Private TextValue As String
-
-        Property Text() As String
-            Get
-                Return TextValue
-            End Get
-            Set(Value As String)
-                TextValue = Value
-            End Set
-        End Property
-
-        Private ValueValue As T
-
-        Property Value() As T
-            Get
-                Return ValueValue
-            End Get
-            Set(Value As T)
-                ValueValue = Value
-            End Set
-        End Property
-
         Shared Sub SelectItem(cb As ComboBox, value As T)
             Dim selectItem As Object = Nothing
 
             For Each i As ListBag(Of T) In cb.Items
-                If i.Value.Equals(value) Then
-                    selectItem = i
-                End If
+                If i.Value.Equals(value) Then selectItem = i
             Next
 
-            If Not selectItem Is Nothing Then
-                cb.SelectedItem = selectItem
-            End If
+            If Not selectItem Is Nothing Then cb.SelectedItem = selectItem
         End Sub
 
         Shared Function GetValue(cb As ComboBox) As T
@@ -197,17 +176,21 @@ Namespace UI
         End Function
 
         Shared Function GetBagsForEnumType() As ListBag(Of T)()
-            Dim l As New List(Of ListBag(Of T))
+            Dim ret As New List(Of ListBag(Of T))
 
             For Each i As T In System.Enum.GetValues(GetType(T))
-                l.Add(New ListBag(Of T)(DispNameAttribute.GetValueForEnum(i), i))
+                ret.Add(New ListBag(Of T)(DispNameAttribute.GetValueForEnum(i), i))
             Next
 
-            Return l.ToArray
+            Return ret.ToArray
         End Function
 
         Overrides Function ToString() As String
             Return Text
+        End Function
+
+        Public Function CompareTo(other As ListBag(Of T)) As Integer Implements IComparable(Of ListBag(Of T)).CompareTo
+            Return Text.CompareTo(other.Text)
         End Function
     End Class
 
@@ -257,7 +240,9 @@ Namespace UI
         Sub RestorePosition(f As Form)
             Dim v = GetText(f)
 
-            If OK(s.WindowPositionsCenterScreen) AndAlso Not TypeOf f Is InputBoxForm Then
+            If Not s.WindowPositionsCenterScreen.ContainsNothingOrEmpty AndAlso
+                Not TypeOf f Is InputBoxForm Then
+
                 For Each i In s.WindowPositionsCenterScreen
                     If v.StartsWith(i) OrElse i = "all" Then
                         f.StartPosition = FormStartPosition.Manual
@@ -269,7 +254,9 @@ Namespace UI
                 Next
             End If
 
-            If OK(s.WindowPositionsRemembered) AndAlso Not TypeOf f Is InputBoxForm Then
+            If Not s.WindowPositionsRemembered.ContainsNothingOrEmpty AndAlso
+                Not TypeOf f Is InputBoxForm Then
+
                 For Each i In s.WindowPositionsRemembered
                     If v.StartsWith(i) OrElse i = "all" Then
                         RestorePositionInternal(f)

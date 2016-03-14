@@ -8,18 +8,61 @@ Imports VB6 = Microsoft.VisualBasic
 
 Public Module StringExtensions
     <Extension()>
-    Function Ext(value As String) As String
-        Return Filepath.GetExt(value)
+    Function ChangeExt(path As String, value As String) As String
+        If path = "" Then Return ""
+        If value = "" Then Return path
+        If Not value.StartsWith(".") Then value = "." + value
+        Return Filepath.GetDirAndBase(path) + value.ToLower
     End Function
 
     <Extension()>
-    Function ExtFull(value As String) As String
-        Return Filepath.GetExtFull(value)
+    Function AddPathQuotes(instance As String) As String
+        If instance = "" Then Return ""
+        If instance.Contains(" ") Then Return """" + instance + """"
+        Return instance
     End Function
 
     <Extension()>
-    Function Base(value As String) As String
-        Return Filepath.GetBase(value)
+    Function Parent(instance As String) As String
+        Return DirPath.GetParent(instance)
+    End Function
+
+    <Extension()>
+    Function Ext(instance As String) As String
+        Return Filepath.GetExt(instance)
+    End Function
+
+    <Extension()>
+    Function ExtFull(instance As String) As String
+        Return Filepath.GetExtFull(instance)
+    End Function
+
+    <Extension()>
+    Function Base(instance As String) As String
+        Return Filepath.GetBase(instance)
+    End Function
+
+    <Extension()>
+    Function ContainsAll(instance As String, all As IEnumerable(Of String)) As Boolean
+        If instance <> "" Then Return all.All(Function(arg) instance.Contains(arg))
+    End Function
+
+    <Extension()>
+    Function EqualsAny(instance As String, ParamArray param As String()) As Boolean
+        If instance = "" OrElse param.ContainsNothingOrEmpty Then Return False
+        Return param.Contains(instance)
+    End Function
+
+    <Extension()>
+    Function Append(instance As String, value As String) As String
+        If instance Is Nothing AndAlso value Is Nothing Then Return ""
+        Return instance + value
+    End Function
+
+    <Extension()>
+    Function AppendSeparator(instance As String) As String
+        If instance?.EndsWith(DirPath.Separator) Then Return instance
+        Return instance + DirPath.Separator
     End Function
 
     <Extension()>
@@ -133,7 +176,6 @@ Public Module StringExtensions
         Next
 
         Dim highest = Aggregate i In leftSides Into Max(i.Length)
-
         Dim ret As New List(Of String)
 
         For i = 0 To lines.Length - 1
@@ -198,10 +240,7 @@ Public Module StringExtensions
 
     <Extension()>
     Function RightLast(value As String, start As String) As String
-        If Not value.Contains(start) Then
-            Return ""
-        End If
-
+        If Not value.Contains(start) Then Return ""
         Return value.Substring(value.LastIndexOf(start) + start.Length)
     End Function
 

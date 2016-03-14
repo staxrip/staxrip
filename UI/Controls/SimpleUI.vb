@@ -62,20 +62,27 @@ Class SimpleUI
     End Sub
 
     Private Sub Tree_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles Tree.AfterSelect
+        Dim node = e.Node
+
         For Each i In Pages
-            If Not i.Node Is e.Node Then
+            If Not i.Node Is node Then
                 DirectCast(i, Control).Visible = False
             End If
         Next
 
         For Each i In Pages
-            If i.Node Is e.Node Then
+            If i.Node Is node Then
                 DirectCast(i, Control).Visible = True
                 DirectCast(i, Control).BringToFront()
                 ActivePage = i
                 PerformLayout()
+                Exit For
             End If
         Next
+
+        If Pages.Where(Function(arg) arg.Node Is node).Count = 0 Then
+            If node.Nodes.Count > 0 Then Tree.SelectedNode = node.Nodes(0)
+        End If
     End Sub
 
     Sub ShowPage(pagePath As String)

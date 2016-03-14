@@ -1,48 +1,48 @@
 Imports StaxRip.UI
 
-Public Class SelectionBox(Of T)
-    Property Items As New List(Of Object)
-    Property SelectedItem As T
+Class SelectionBox(Of T)
     Property Text As String
     Property Title As String
+    Property Items As New List(Of ListBag(Of T))
+    Property SelectedBag As ListBag(Of T)
+
+    Property SelectedItem As T
+        Get
+            Return SelectedBag.Value
+        End Get
+        Set(value As T)
+            For Each i In Items
+                If i.Value.Equals(value) Then SelectedBag = i
+            Next
+        End Set
+    End Property
 
     Sub AddItem(text As String, item As T)
         Items.Add(New ListBag(Of T)(text, item))
+        If SelectedBag Is Nothing Then SelectedBag = Items.Last
     End Sub
 
     Sub AddItem(item As T)
-        Items.Add(item)
+        AddItem(item.ToString, item)
     End Sub
 
     Function Show() As DialogResult
         Using Form As New SelectionBoxForm
             If Items.Count > 0 Then
-                Form.cbItems.Items.AddRange(Items.ToArray)
-
-                If Not SelectedItem Is Nothing Then
-                    Form.cbItems.SelectedItem = SelectedItem
-                End If
-
-                If Form.cbItems.SelectedIndex = -1 Then
-                    Form.cbItems.SelectedIndex = 0
-                End If
+                Form.mb.Add(Items)
+                Form.mb.Value = SelectedBag
             End If
+
+            For Each i In Items
+                Dim textWidth = TextRenderer.MeasureText(i.ToString, Form.mb.Font).Width
+                If Form.mb.Width < textWidth Then Form.Width += textWidth - Form.mb.Width
+            Next
 
             Form.Text = Title
-
-            If Not OK(Form.Text) Then
-                Form.Text = Application.ProductName
-            End If
-
+            If Form.Text = "" Then Form.Text = Application.ProductName
             Form.lText.Text = Text
-
-            Dim ret As DialogResult = Form.ShowDialog
-
-            If TypeOf Form.cbItems.SelectedItem Is ListBag(Of T) Then
-                SelectedItem = ListBag(Of T).GetValue(Form.cbItems)
-            Else
-                SelectedItem = DirectCast(Form.cbItems.SelectedItem, T)
-            End If
+            Dim ret = Form.ShowDialog
+            SelectedBag = DirectCast(Form.mb.Value, ListBag(Of T))
 
             Return ret
         End Using

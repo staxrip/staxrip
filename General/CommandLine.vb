@@ -362,6 +362,7 @@ Namespace CommandLine
         Property DefaultValue As String
         Property TextEdit As TextEdit
         Property UseQuotes As Boolean
+        Property InitAction As Action(Of SimpleUI.TextBlock)
 
         Public Overloads Overrides Sub Init(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
@@ -372,14 +373,18 @@ Namespace CommandLine
             End If
         End Sub
 
-        Overloads Sub Init(te As TextEdit)
-            TextEdit = te
+        Overloads Sub Init(te As SimpleUI.TextBlock)
+            TextEdit = te.Edit
             TextEdit.Text = Value
             AddHandler TextEdit.TextChanged, AddressOf TextChanged
             AddHandler TextEdit.Disposed, Sub()
-                                              RemoveHandler TextEdit.TextChanged, AddressOf TextChanged
-                                              TextEdit = Nothing
+                                              If Not TextEdit Is Nothing Then
+                                                  RemoveHandler TextEdit.TextChanged, AddressOf TextChanged
+                                                  TextEdit = Nothing
+                                              End If
                                           End Sub
+
+            If Not InitAction Is Nothing Then InitAction.Invoke(te)
         End Sub
 
         Sub TextChanged()

@@ -1,12 +1,8 @@
 Imports System.Text
-Imports System.Runtime.Serialization
-Imports System.Reflection
 Imports System.Text.RegularExpressions
 Imports System.Globalization
 
 Imports vb6 = Microsoft.VisualBasic
-
-Imports StaxRip.UI
 
 <Serializable()>
 Public MustInherit Class Muxer
@@ -85,10 +81,10 @@ Public MustInherit Class Muxer
         Dim so As New Sorter(Of String)
 
         For Each i In files
-            Dim m = Regex.Match(i, pattern)
+            Dim match = Regex.Match(i, pattern)
 
-            If m.Success Then
-                so.Add(m.Groups(1).Value, i)
+            If match.Success Then
+                so.Add(match.Groups(1).Value, i)
             Else
                 so.Add(i, i)
             End If
@@ -125,24 +121,16 @@ Public MustInherit Class Muxer
 
                 For Each iSubtitle In Subtitle.Create(iFile)
                     If p.AutoSubtitles <> "" Then
-                        iSubtitle.Enabled = False
+                        Dim match = Regex.Match(iFile, pattern)
 
-                        For Each i3 In p.AutoSubtitles.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-                            If i3.ToLower = "all" OrElse i3.ToLower = iSubtitle.Language.TwoLetterCode.ToLower Then
-                                iSubtitle.Enabled = True
-                            End If
-                        Next
-
-                        Dim m = Regex.Match(iFile, pattern)
-
-                        If m.Success Then
+                        If match.Success Then
                             For Each i4 In Language.Languages
-                                If i4.ThreeLetterCode = m.Groups(2).Value Then
+                                If i4.ThreeLetterCode = match.Groups(2).Value Then
                                     iSubtitle.Language = i4
                                 End If
                             Next
 
-                            iSubtitle.Title = m.Groups(3).Value
+                            iSubtitle.Title = match.Groups(3).Value
                         End If
 
                         If iFile.Contains("_Forced.") Then
@@ -163,17 +151,11 @@ Public MustInherit Class Muxer
         Next
 
         If p.AutoSubtitles <> "" AndAlso Subtitles.Count = 0 AndAlso
-            {"mkv", "mp4"}.Contains(p.SourceFile.Ext) AndAlso
-            MediaInfo.GetSubtitleCount(p.SourceFile) > 0 AndAlso
+            p.FirstOriginalSourceFile.Ext.EqualsAny("mkv", "mp4", "m2ts") AndAlso
+            MediaInfo.GetSubtitleCount(p.FirstOriginalSourceFile) > 0 AndAlso
             TypeOf Me Is MkvMuxer Then
 
-            For Each i In Subtitle.Create(p.SourceFile)
-                For Each i2 In p.AutoSubtitles.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-                    If i2.ToLower = "all" OrElse i2.ToLower = i.Language.TwoLetterCode.ToLower Then
-                        Subtitles.Add(i)
-                    End If
-                Next
-            Next
+            Subtitles.AddRange(Subtitle.Create(p.FirstOriginalSourceFile))
         End If
 
         For Each i In files
@@ -264,7 +246,6 @@ Public Class MP4Muxer
 
     Private Function GetArgs() As String
         Dim args As New StringBuilder
-
         args.Append(" -fps " + p.VideoEncoder.GetFrameRate.ToString("f6", CultureInfo.InvariantCulture))
 
         Dim temp As String = Nothing
@@ -276,47 +257,16 @@ Public Class MP4Muxer
 
         args.Append(" -add """ + p.VideoEncoder.OutputPath + "#video" + temp + """")
 
-        If File.Exists(p.Audio0.File) AndAlso IsSupported(p.Audio0.OutputFileType) Then
-            args.Append(" -add """ + p.Audio0.File)
+        AddAudio(p.Audio0, args)
+        AddAudio(p.Audio1, args)
 
-            If p.Audio0.HasStream AndAlso Filepath.GetExtFull(p.Audio0.File) = ".mp4" Then
-                args.Append("#trackID=" & p.Audio0.Stream.ID)
-            Else
-                args.Append("#audio")
-            End If
-
-            args.Append(":lang=" + p.Audio0.Language.ThreeLetterCode)
-
-            If p.Audio0.Delay <> 0 AndAlso Not p.Audio0.HandlesDelay Then
-                args.Append(":delay=" + p.Audio0.Delay.ToString)
-            End If
-
-            args.Append(":name=" + p.Audio0.SolveMacros(p.Audio0.StreamName))
-            args.Append("""")
-        End If
-
-        If File.Exists(p.Audio1.File) AndAlso IsSupported(p.Audio1.OutputFileType) AndAlso p.Audio1.File <> "" Then
-            args.Append(" -add """ + p.Audio1.File)
-
-            If p.Audio1.HasStream AndAlso Filepath.GetExtFull(p.Audio1.File) = ".mp4" Then
-                args.Append("#trackID=" & p.Audio1.Stream.ID)
-            Else
-                args.Append("#audio")
-            End If
-
-            args.Append(":lang=" + p.Audio1.Language.ThreeLetterCode)
-
-            If p.Audio1.Delay <> 0 AndAlso Not p.Audio1.HandlesDelay Then
-                args.Append(":delay=" + p.Audio1.Delay.ToString)
-            End If
-
-            args.Append(":name=" + p.Audio1.SolveMacros(p.Audio1.StreamName))
-            args.Append("""")
-        End If
+        For Each i In p.AudioTracks
+            AddAudio(i, args)
+        Next
 
         For Each i In Subtitles
             If i.Enabled AndAlso File.Exists(i.Path) Then
-                If Filepath.GetExtFull(i.Path) = ".idx" Then
+                If i.Path.Ext = "idx" Then
                     If i.Title = "" Then i.Title = " "
                     args.Append(" -add """ + i.Path + "#" & i.IndexIDX + 1 & ":name=" + Macro.Solve(i.Title, True) & """")
                 Else
@@ -333,6 +283,27 @@ Public Class MP4Muxer
 
         Return args.ToString.Trim
     End Function
+
+    Sub AddAudio(ap As AudioProfile, args As StringBuilder)
+        If File.Exists(ap.File) AndAlso IsSupported(ap.OutputFileType) Then
+            args.Append(" -add """ + ap.File)
+
+            If ap.HasStream AndAlso Filepath.GetExtFull(ap.File) = ".mp4" Then
+                args.Append("#trackID=" & ap.Stream.ID)
+            Else
+                args.Append("#audio")
+            End If
+
+            args.Append(":lang=" + ap.Language.ThreeLetterCode)
+
+            If ap.Delay <> 0 AndAlso Not ap.HandlesDelay Then
+                args.Append(":delay=" + ap.Delay.ToString)
+            End If
+
+            args.Append(":name=" + ap.SolveMacros(ap.StreamName))
+            args.Append("""")
+        End If
+    End Sub
 
     Overrides Sub Mux()
         Using proc As New Proc
@@ -547,11 +518,15 @@ Public Class MkvMuxer
         AddAudioArgs(p.Audio0, args)
         AddAudioArgs(p.Audio1, args)
 
+        For Each i In p.AudioTracks
+            AddAudioArgs(i, args)
+        Next
+
         For Each i In Subtitles
             If i.Enabled AndAlso File.Exists(i.Path) Then
                 Dim id = i.StreamOrder
 
-                If {"mkv", "mp4", "idx"}.Contains(Filepath.GetExt(i.Path)) Then
+                If {"mkv", "mp4", "m2ts", "idx"}.Contains(Filepath.GetExt(i.Path)) Then
                     args.Append(" --no-audio --no-video --no-chapters --no-attachments --no-track-tags --no-global-tags")
                     args.Append(" --subtitle-tracks " & id)
                 Else
@@ -711,16 +686,20 @@ Public Class ffmpegMuxer
     Overrides Sub Mux()
         Dim args = "-i """ + p.VideoEncoder.OutputPath + """"
 
-        If File.Exists(p.Audio0.File) Then
-            args += " -i """ + p.Audio0.File + """"
-        End If
+        Dim id As Integer
+        Dim mapping = " -map 0:v"
 
-        If File.Exists(p.Audio1.File) Then
-            args += " -i """ + p.Audio1.File + """"
-        End If
+        For Each i In {p.Audio0, p.Audio1}
+            If File.Exists(i.File) AndAlso IsSupported(i.OutputFileType) Then
+                id += 1
+                args += " -i """ + i.File + """"
+                mapping += " -map " & id
+                If Not i.Stream Is Nothing Then mapping += ":" & i.Stream.StreamOrder
+            End If
+        Next
 
+        args += mapping
         args += " -c:v copy -c:a copy -y"
-
         args += " """ + p.TargetFile + """"
 
         Using proc As New Proc

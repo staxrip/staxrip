@@ -549,7 +549,7 @@ Public Class CropForm
 
     <Command("Perform | Auto Crop", "Detects the crop values automatically.")>
     Private Sub AutoCrop()
-        g.AutoCrop()
+        g.RunAutoCrop()
         UpdateAll()
     End Sub
 

@@ -14,6 +14,7 @@ Imports System.ComponentModel
 Imports System.Windows.Forms.VisualStyles
 Imports System.Management
 Imports System.Reflection
+Imports System.Drawing.Imaging
 
 Module ShortcutModule
     Public g As New GlobalClass
@@ -24,23 +25,13 @@ End Module
 Public Class Paths
     Shared Function VerifyRequirements() As Boolean
         If Directory.Exists(Paths.PluginsDir) Then
-            If File.Exists(Paths.PluginsDir + "MPEG2Dec.dll") OrElse
-                File.Exists(Paths.PluginsDir + "MPEG2Dec2.dll") OrElse
-                File.Exists(Paths.PluginsDir + "MPEG2Dec3.dll") Then
-
-                MsgWarn("The obsolete plugin MPEG2Dec must be removed from the plugin:" + CrLf2 + Paths.PluginsDir)
-                Return False
-            End If
-
             For Each i In Directory.GetFiles(Paths.PluginsDir)
                 If Regex.IsMatch(i, "(?i:decomb.+\.dll$)") Then
                     If Msg("A legacy Decomb version was found." + CrLf2 + "Please confirm to solve this conflict.", MessageBoxIcon.Warning, MessageBoxButtons.OKCancel) = DialogResult.OK Then
                         FileHelp.Delete(i)
                     End If
 
-                    If File.Exists(i) Then
-                        Return False
-                    End If
+                    If File.Exists(i) Then Return False
                 End If
             Next
         End If
@@ -88,13 +79,13 @@ Public Class Paths
 
                 If Not Directory.Exists(SettingsDirValue) Then
                     For Each i In {
-                        CommonDirs.Startup + "Settings",
-                        CommonDirs.CommonAppData + "StaxRip x64",
-                        CommonDirs.UserAppDataLocal + "StaxRip x64",
-                        CommonDirs.UserAppDataRoaming + "StaxRip x64",
-                        CommonDirs.CommonAppData + "StaxRip64",
-                        CommonDirs.UserAppDataLocal + "StaxRip64",
-                        CommonDirs.UserAppDataRoaming + "StaxRip64"}
+                            CommonDirs.Startup + "Settings",
+                            CommonDirs.CommonAppData + "StaxRip x64",
+                            CommonDirs.UserAppDataLocal + "StaxRip x64",
+                            CommonDirs.UserAppDataRoaming + "StaxRip x64",
+                            CommonDirs.CommonAppData + "StaxRip64",
+                            CommonDirs.UserAppDataLocal + "StaxRip64",
+                            CommonDirs.UserAppDataRoaming + "StaxRip64"}
 
                         If Directory.Exists(i) Then
                             SettingsDirValue = DirPath.AppendSeparator(i)
@@ -109,6 +100,16 @@ Public Class Paths
 
                     td.MainInstruction = "Settings Directory"
                     td.Content = "Choose the location of the settings directory."
+
+                    If Directory.Exists(CommonDirs.Home + "Google Drive") Then
+                        td.AddCommandLink("Google Drive", CommonDirs.Home + "Google Drive\Apps\Settings\StaxRip",
+                                          CommonDirs.Home + "Google Drive\Apps\Settings\StaxRip")
+                    End If
+
+                    If Directory.Exists(CommonDirs.Home + "OneDrive") Then
+                        td.AddCommandLink("OneDrive", CommonDirs.Home + "OneDrive\Apps\Settings\StaxRip",
+                                          CommonDirs.Home + "OneDrive\Apps\Settings\StaxRip")
+                    End If
 
                     td.AddCommandLink("Common Application Data", CommonDirs.CommonAppData + "StaxRip x64", CommonDirs.CommonAppData + "StaxRip x64")
                     td.AddCommandLink("User Application Data Local", CommonDirs.UserAppDataLocal + "StaxRip x64", CommonDirs.UserAppDataLocal + "StaxRip x64")
@@ -297,6 +298,14 @@ Class GlobalClass
         Next
     End Function
 
+    Function Get0ForInfinityOrNaN(arg As Double) As Double
+        If Double.IsNaN(arg) OrElse Double.IsInfinity(arg) Then
+            Return 0
+        Else
+            Return arg
+        End If
+    End Function
+
     Sub PlayScript(doc As VideoScript)
         If File.Exists(p.Audio0.File) Then
             PlayScript(doc, p.Audio0)
@@ -443,7 +452,7 @@ Class GlobalClass
 
         For i = 1 To 100000
             p.Size = i
-            p.VideoBitrate = CInt(Calc.GetTotalBitrate() - Calc.GetAudioBitrate())
+            p.VideoBitrate = CInt(Calc.GetVideoBitrate)
 
             If CInt(Calc.GetPercent) >= percentage Then
                 ret = i
@@ -521,13 +530,13 @@ Class GlobalClass
             If p.TempDir = "" Then
                 If FileTypes.VideoOnly.Contains(Filepath.GetExt(p.SourceFile)) OrElse
                     FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile)) OrElse
-                    Filepath.GetDir(p.SourceFile).EndsWith(" temp files\") Then
+                    Filepath.GetDir(p.SourceFile).EndsWith("_temp\") Then
 
                     p.TempDir = Filepath.GetDir(p.SourceFile)
                 Else
                     Dim base = Filepath.GetBase(p.SourceFile)
                     If base.Length > 60 Then base = base.Shorten(30) + "..."
-                    p.TempDir = Filepath.GetDir(p.SourceFile) + base + " temp files\"
+                    p.TempDir = Filepath.GetDir(p.SourceFile) + base + "_temp\"
                 End If
             End If
 
@@ -552,7 +561,7 @@ Class GlobalClass
                     Directory.CreateDirectory(p.TempDir)
                 Catch
                     Try
-                        p.TempDir = Filepath.GetDirAndBase(p.SourceFile) + " temp files\"
+                        p.TempDir = Filepath.GetDirAndBase(p.SourceFile) + "_temp\"
                         If Not Directory.Exists(p.TempDir) Then Directory.CreateDirectory(p.TempDir)
                     Catch
                         MsgWarn("Failed to create a temp directory. By default it's created in the directory of the source file so it's not possible to open files directly from a optical drive unless a temp directory is defined in the options. Usually discs are copied to the hard drive first using a application like MakeMKV, DVDfab or AnyDVD.")
@@ -877,30 +886,30 @@ Class GlobalClass
         End If
     End Sub
 
-    Sub AutoCrop()
-        If p.Script.Engine <> ScriptingEngine.AviSynth Then Exit Sub
+    Sub RunAutoCrop()
+        p.SourceScript.Synchronize(True)
 
-        Dim filter = p.Script.GetFilter("Source")
+        Using avi As New AVIFile(p.SourceScript.Path)
+            Dim segmentCount = 7
 
-        Dim script As New VideoScript
-        script.Engine = p.Script.Engine
-        script.Path = p.TempDir + p.Name + "_AutoCrop." + script.FileType
-        script.Filters.Add(filter.GetCopy)
-        script.Filters.Add(New VideoFilter("AutoCrop", "AutoCrop", "AutoCrop(mode = 2, samples = 10)"))
-        script.Synchronize()
+            Dim len = avi.FrameCount \ (segmentCount + 1)
+            Dim crops(segmentCount - 1) As AutoCrop
 
-        Dim logfile = Filepath.GetDir(script.Path) + "AutoCrop.log"
+            For x = 1 To segmentCount
+                avi.Position = len * x
 
-        If File.Exists(logfile) Then
-            Dim line = File.ReadAllLines(logfile)(0)
-            FileHelp.Delete(logfile)
-            Dim sa = line.Left(")").Right("(").SplitNoEmpty(",")
-            p.CropLeft = CInt(sa(0))
-            p.CropTop = CInt(sa(1))
-            p.CropRight = p.SourceWidth - p.CropLeft - CInt(sa(2))
-            p.CropBottom = p.SourceHeight - p.CropTop - CInt(sa(3))
+                Using bmp = avi.GetBitmap
+                    crops(x - 1) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb))
+                End Using
+            Next
+
+            p.CropLeft = crops.SelectMany(Function(arg) arg.Left).GroupBy(Function(arg) arg).OrderByDescending(Function(arg) arg.Count).First.First
+            p.CropTop = crops.SelectMany(Function(arg) arg.Top).GroupBy(Function(arg) arg).OrderByDescending(Function(arg) arg.Count).First.First
+            p.CropRight = crops.SelectMany(Function(arg) arg.Right).GroupBy(Function(arg) arg).OrderByDescending(Function(arg) arg.Count).First.First
+            p.CropBottom = crops.SelectMany(Function(arg) arg.Bottom).GroupBy(Function(arg) arg).OrderByDescending(Function(arg) arg.Count).First.First
+
             CorrectCropMod()
-        End If
+        End Using
     End Sub
 
     Sub SmartCrop()
@@ -1186,10 +1195,7 @@ Public Class Calc
     End Function
 
     Shared Function GetPercent() As Double
-        If p.Compressibility = 0 Then
-            Return 0
-        End If
-
+        If p.Compressibility = 0 Then Return 0
         Return (GetBPF() / p.Compressibility) * 100
     End Function
 
@@ -1200,53 +1206,43 @@ Public Class Calc
         If p.TargetWidth = 0 Then Return 0
         If p.TargetHeight = 0 Then Return 0
 
-        Return (CLng(p.VideoBitrate) * CLng(1024)) / (CLng(p.TargetWidth) * CLng(p.TargetHeight) * CLng(framerate))
+        Return (CLng(p.VideoBitrate) * CLng(1024)) / (CLng(p.TargetWidth) *
+            CLng(p.TargetHeight) * CLng(framerate))
     End Function
 
     Shared Function GetSize() As Double
-        Return (Calc.GetVideoKBytes() + Calc.GetAudioKBytes() + Calc.GetOverheadAndSubtitlesKBytes()) / 1024
+        Return (Calc.GetVideoKBytes() + Calc.GetAudioKBytes() +
+            GetSubtitlesKBytes() + Calc.GetOverheadKBytes()) / 1024
     End Function
 
     Shared Function GetVideoBitrate() As Double
         If p.FixedBitrate > 0 Then Return p.FixedBitrate
-        Return Calc.GetTotalBitrate - Calc.GetAudioBitrate()
-    End Function
-
-    Shared Function GetTotalBitrate() As Double
         If p.TargetSeconds = 0 Then Return 0
-        Dim kb = p.Size * 1024 - GetOverheadAndSubtitlesKBytes()
-        Return (kb * 8 * 1.024) / p.TargetSeconds
+        Dim kbytes = p.Size * 1024 - GetAudioKBytes() - GetSubtitlesKBytes() - GetOverheadKBytes()
+        Return (kbytes * 8 * 1.024) / p.TargetSeconds
     End Function
 
     Shared Function GetVideoKBytes() As Double
         Return ((p.VideoBitrate * p.TargetSeconds) / 8) / 1.024
     End Function
 
-    Shared Function GetOverheadAndSubtitlesKBytes() As Integer
+    Shared Function GetSubtitlesKBytes() As Integer
+        Return Aggregate i In p.VideoEncoder.Muxer.Subtitles Into Sum(If(i.Enabled, CInt(i.Size / 3), 0))
+    End Function
+
+    Shared Function GetOverheadKBytes() As Integer
         Dim ret As Double
         Dim frames = p.Script.GetFrames
 
         If {"avi", "divx"}.Contains(p.VideoEncoder.Muxer.OutputType) Then
             ret += frames * 0.024
-
-            If OK(p.Audio0.File) Then
-                ret += frames * 0.04
-            End If
-
-            If OK(p.Audio1.File) Then
-                ret += frames * 0.04
-            End If
+            If p.Audio0.File <> "" Then ret += frames * 0.04
+            If p.Audio1.File <> "" Then ret += frames * 0.04
         ElseIf p.VideoEncoder.Muxer.OutputType = "mp4" Then
             ret += (10.4 / 1024) * frames
         ElseIf p.VideoEncoder.Muxer.OutputType = "mkv" Then
             ret += frames * 0.013
         End If
-
-        For Each i In p.VideoEncoder.Muxer.Subtitles
-            If Filepath.GetExtFull(i.Path) = ".idx" Then
-                ret += CInt(p.TargetSeconds * 0.256)
-            End If
-        Next
 
         Return CInt(ret)
     End Function
@@ -1258,21 +1254,16 @@ Public Class Calc
     Shared Function GetAudioBitrate() As Double
         Dim b0, b1 As Double
 
-        If p.Audio0.File <> "" Then
-            b0 = p.Audio0.Bitrate
-        End If
+        If p.Audio0.File <> "" Then b0 = p.Audio0.Bitrate
+        If p.Audio1.File <> "" Then b1 = p.Audio1.Bitrate
 
-        If p.Audio1.File <> "" Then
-            b1 = p.Audio1.Bitrate
-        End If
-
-        Return b0 + b1
+        Return b0 + b1 + p.AudioTracks.Sum(Function(arg) arg.Bitrate)
     End Function
 
     Shared Function GetBitrateFromFile(path As String, seconds As Integer) As Double
         Try
             If path = "" OrElse seconds = 0 Then Return 0
-            Dim kBits = ((New FileInfo(path).Length) * 8) / 1000
+            Dim kBits = New FileInfo(path).Length * 8 / 1000
             Return kBits / seconds
         Catch ex As Exception
             g.ShowException(ex)
@@ -1586,11 +1577,7 @@ Public Class Calc
 End Class
 
 Public Structure VideoFormat
-    Sub New(
-           width As Integer,
-           height As Integer,
-           samplingRate As Double)
-
+    Sub New(width As Integer, height As Integer, samplingRate As Double)
         Me.Width = width
         Me.Height = height
         Me.SamplingRate = samplingRate
@@ -1703,9 +1690,9 @@ Public Class Language
         End Get
     End Property
 
-    Private Shared LanguagesValue As Language()
+    Private Shared LanguagesValue As List(Of Language)
 
-    Shared ReadOnly Property Languages() As Language()
+    Shared ReadOnly Property Languages() As List(Of Language)
         Get
             If LanguagesValue Is Nothing Then
                 Dim l As New List(Of Language)
@@ -1742,7 +1729,7 @@ Public Class Language
 
                 l2.Sort()
                 l.AddRange(l2)
-                LanguagesValue = l.ToArray
+                LanguagesValue = l
             End If
 
             Return LanguagesValue
@@ -1751,7 +1738,7 @@ Public Class Language
 
     Shared ReadOnly Property CurrentCulture As Language
         Get
-            Return New Language(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, True)
+            Return New Language(CultureInfo.CurrentCulture, True)
         End Get
     End Property
 
@@ -3048,7 +3035,7 @@ Public Class BoolStringIntConverter
     End Function
 
     Overloads Overrides Function GetStandardValues(context As ITypeDescriptorContext) As StandardValuesCollection
-        Return New StandardValuesCollection(New String() {"String", "Integer", "Boolean"})
+        Return New StandardValuesCollection({"String", "Integer", "Boolean"})
     End Function
 
     Overloads Overrides Function CanConvertFrom(context As ITypeDescriptorContext, sourceType As Type) As Boolean
@@ -3241,7 +3228,7 @@ Public Class AudioStream
                     Case "AC3+"
                         sb.Append(" E-AC3")
                     Case Else
-                        If CodecString = "AC3" AndAlso Codec = "TrueHD / AC3" Then
+                        If Codec = "TrueHD / AC3" Then
                             sb.Append(" THD+AC3")
                         ElseIf FormatProfile = "MA / Core" Then
                             sb.Append(" DTS MA/Core")
@@ -3327,6 +3314,10 @@ Public Class AudioStream
             End Select
         End Get
     End Property
+
+    Public Overrides Function ToString() As String
+        Return Name
+    End Function
 End Class
 
 Class VideoStream
@@ -3388,19 +3379,19 @@ Public Class Subtitle
     Property [Default] As Boolean
     Property Forced As Boolean
     Property Enabled As Boolean = True
+    Property Size As Integer
 
     Sub New()
         Language = New Language
     End Sub
 
-    Sub New(l As Language)
-        Language = l
+    Sub New(lang As Language)
+        Language = lang
     End Sub
 
     ReadOnly Property Filename As String
         Get
             Dim ret = "ID" & (StreamOrder + 1)
-
             ret += " " + Language.Name
 
             If Title <> "" AndAlso Title <> " " AndAlso Not Title.ContainsUnicode AndAlso
@@ -3441,9 +3432,7 @@ Public Class Subtitle
     ReadOnly Property TypeName As String
         Get
             Dim ret = Extension
-
             If ret = "" Then ret = Filepath.GetExtFull(Path)
-
             Return ret.TrimStart("."c).ToUpper.Replace("SUP", "PGS").Replace("IDX", "VobSub")
         End Get
     End Property
@@ -3468,6 +3457,9 @@ Public Class Subtitle
                         st.Language = New Language(CultureInfo.InvariantCulture)
                     End Try
 
+                    Dim twoLetterCodes = p.AutoSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    st.Enabled = twoLetterCodes.Contains("all") OrElse twoLetterCodes.Contains(st.Language.TwoLetterCode)
+
                     If Not st Is Nothing Then
                         st.IndexIDX = CInt(Regex.Match(i, ", index: (\d+)").Groups(1).Value)
                     End If
@@ -3477,20 +3469,30 @@ Public Class Subtitle
                     st.StreamOrder = indexData
                     st.Path = path
                     indexData += 1
+                    st.Size = CInt(New FileInfo(path).Length / 1024)
+                    Dim subFile = path.ChangeExt("sub")
+                    If File.Exists(subFile) Then st.Size += CInt(New FileInfo(subFile).Length / 1024)
                     ret.Add(st)
                     st = Nothing
                 End If
             Next
-        ElseIf {"mkv", "mp4"}.Contains(path.Ext) Then
-            Dim subs = MediaInfo.GetSubtitles(path)
+        ElseIf {"mkv", "mp4", "m2ts"}.Contains(path.Ext) Then
+            For Each i In MediaInfo.GetSubtitles(path)
+                Select Case ""
+                    Case "SRT"
+                        i.Size = CInt(0.5 * p.TargetSeconds)
+                    Case "VobSub"
+                        i.Size = CInt(50 * p.TargetSeconds)
+                    Case "PGS"
+                        i.Size = CInt(200 * p.TargetSeconds)
+                End Select
 
-            For Each i In subs
                 i.Path = path
                 ret.Add(i)
             Next
         Else
             Dim st As New Subtitle()
-
+            st.Size = CInt(New FileInfo(path).Length / 1024)
             Dim match = Regex.Match(path, " ID(\d+)")
             If match.Success Then st.StreamOrder = match.Groups(1).Value.ToInt - 1
 
@@ -3500,6 +3502,9 @@ Public Class Subtitle
                     Exit For
                 End If
             Next
+
+            Dim twoLetterCodes = p.AutoSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+            st.Enabled = twoLetterCodes.Contains("all") OrElse twoLetterCodes.Contains(st.Language.TwoLetterCode)
 
             st.Path = path
             ret.Add(st)
@@ -3535,7 +3540,7 @@ Class FileTypes
     Shared Property NicAudioInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "dts"}
     Shared Property qaacInput As String() = {"wav", "flac"}
     Shared Property SubtitleExludingContainers As String() = {"ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
-    Shared Property SubtitleIncludingContainers As String() = {"ass", "idx", "mkv", "mp4", "smi", "srt", "ssa", "sup", "ttxt"}
+    Shared Property SubtitleIncludingContainers As String() = {"m2ts", "mkv", "mp4", "ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
     Shared Property Video As String() = {"264", "avc", "avi", "avs", "d2v", "dgi", "divx", "flv", "h264", "m2t", "mts", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m"}
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
@@ -3601,4 +3606,103 @@ Class eac3toProfile
         Me.Output = output
         Me.Options = options
     End Sub
+End Class
+
+Class BitmapUtil
+    Property Data As Byte()
+    Property BitmapData As BitmapData
+
+    Shared Function Create(bmp As Bitmap) As BitmapUtil
+        Dim ret As New BitmapUtil
+        Dim rect As New Rectangle(0, 0, bmp.Width, bmp.Height)
+        ret.BitmapData = bmp.LockBits(rect, Imaging.ImageLockMode.ReadWrite, bmp.PixelFormat)
+        ' address of first line so different value for backward and forward layout
+        Dim ptr = ret.BitmapData.Scan0
+        Dim bytesCount = Math.Abs(ret.BitmapData.Stride) * bmp.Height
+        ret.Data = New Byte(bytesCount - 1) {}
+        ' works only with forward layout, easy way to get forward layout is Bitmap.Clone
+        Marshal.Copy(ptr, ret.Data, 0, bytesCount)
+        bmp.UnlockBits(ret.BitmapData)
+        Return ret
+    End Function
+
+    Function GetPixel(x As Integer, y As Integer) As Color
+        Dim pos = y * BitmapData.Stride + x * 4
+        Return Color.FromArgb(Data(pos), Data(pos + 1), Data(pos + 2))
+    End Function
+
+    Function GetMax(x As Integer, y As Integer) As Integer
+        Dim c = GetPixel(x, y)
+        Dim ret = Math.Max(c.R, c.G)
+        Return Math.Max(ret, c.B)
+    End Function
+End Class
+
+Class AutoCrop
+    Public Top As Integer()
+    Public Bottom As Integer()
+    Public Left As Integer()
+    Public Right As Integer()
+
+    Shared Function Start(bmp As Bitmap) As AutoCrop
+        Dim ret As New AutoCrop
+        Dim u = BitmapUtil.Create(bmp)
+        Dim max = 30
+
+        Dim xValues = {
+            u.BitmapData.Width \ 3,
+            u.BitmapData.Width \ 2,
+            u.BitmapData.Width \ 3 * 2
+        }
+
+        ret.Top = New Integer(xValues.Length - 1) {}
+        ret.Bottom = New Integer(xValues.Length - 1) {}
+
+        For xValue = 0 To xValues.Length - 1
+            For y = 0 To u.BitmapData.Height \ 4
+                If u.GetMax(xValues(xValue), y) < max Then
+                    ret.Top(xValue) = y + 1
+                Else
+                    Exit For
+                End If
+            Next
+
+            For y = u.BitmapData.Height - 1 To u.BitmapData.Height - u.BitmapData.Height \ 4 Step -1
+                If u.GetMax(xValues(xValue), y) < max Then
+                    ret.Bottom(xValue) = u.BitmapData.Height - y
+                Else
+                    Exit For
+                End If
+            Next
+        Next
+
+        Dim yValues = {
+            u.BitmapData.Height \ 3,
+            u.BitmapData.Height \ 2,
+            u.BitmapData.Height \ 3 * 2
+        }
+
+        ret.Left = New Integer(yValues.Length - 1) {}
+        ret.Right = New Integer(yValues.Length - 1) {}
+
+        For yValue = 0 To yValues.Length - 1
+            For x = 0 To u.BitmapData.Width \ 4
+                If u.GetMax(x, yValues(yValue)) < max Then
+                    ret.Left(yValue) = x + 1
+                Else
+                    Exit For
+                End If
+            Next
+
+            For x = u.BitmapData.Width - 1 To u.BitmapData.Width - u.BitmapData.Width \ 4 Step -1
+                If u.GetMax(x, yValues(yValue)) < max Then
+                    ret.Right(yValue) = u.BitmapData.Width - x
+                Else
+                    Exit For
+                End If
+            Next
+        Next
+
+        Return ret
+    End Function
 End Class

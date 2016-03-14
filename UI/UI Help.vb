@@ -1,8 +1,4 @@
-Imports System.Runtime.InteropServices
-Imports System.Text
 Imports System.ComponentModel
-Imports System.Threading
-Imports System.Reflection
 
 Namespace UI
     Public Class KeysHelp

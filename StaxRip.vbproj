@@ -95,6 +95,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\</OutputPath>
@@ -203,7 +204,7 @@
     <Compile Include="Forms\eac3toForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Extensions\UI Extensions.vb" />
+    <Compile Include="Extensions\UIExtensions.vb" />
     <Compile Include="Extensions\MiscExtensions.vb" />
     <Compile Include="Forms\AudioForm.vb">
       <SubType>Form</SubType>
@@ -395,6 +396,7 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
+    <None Include="My Project\DataSources\AudioProfile.datasource" />
     <None Include="Resources\play.png" />
     <None Include="Resources\arrow.png" />
     <None Include="Resources\X.png" />

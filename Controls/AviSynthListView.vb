@@ -1,7 +1,6 @@
 Imports System.ComponentModel
 
 Imports StaxRip.UI
-Imports Microsoft.Win32
 
 Class AviSynthListView
     Inherits ListViewEx
@@ -126,6 +125,7 @@ Class AviSynthListView
         Menu.Items.Add(New ActionMenuItem("Edit...", AddressOf ShowEditor, "Dialog to edit filters."))
         Menu.Items.Add(New ActionMenuItem("Play", Sub() g.PlayScript(p.Script), "Plays the script with the AVI player.", p.SourceFile <> ""))
         Menu.Items.Add(New ActionMenuItem("Profiles...", AddressOf g.MainForm.OpenFilterProfilesDialog, "Dialog to edit profiles."))
+        Menu.Items.Add(New ActionMenuItem("Code Preview...", AddressOf CodePreview, "Script code preview."))
 
         Dim setup As New MenuItemEx("Filter Setup")
         Menu.Items.Add(setup)
@@ -249,5 +249,22 @@ Class AviSynthListView
     Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
         If e.KeyData = Keys.Delete Then RemoveClick()
         MyBase.OnKeyDown(e)
+    End Sub
+
+    Sub CodePreview()
+        Using f As New StringEditorForm
+            f.tb.ReadOnly = True
+            f.cbWrap.Checked = False
+            f.cbWrap.Visible = False
+            f.tb.Text = p.Script.GetFullScript
+            f.tb.SelectionStart = f.tb.Text.Length
+            f.tb.SelectionLength = 0
+            f.Text = "Script Preview"
+            f.Width = 800
+            f.Height = 500
+            f.bOK.Visible = False
+            f.bCancel.Text = "Close"
+            f.ShowDialog()
+        End Using
     End Sub
 End Class

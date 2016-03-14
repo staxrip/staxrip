@@ -144,6 +144,8 @@ Public Class SubtitleControl
         dgv.AllowUserToResizeRows = False
         dgv.AllowUserToResizeColumns = False
         dgv.RowHeadersVisible = False
+        dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+        dgv.MultiSelect = False
 
         Dim enabledColumn As New DataGridViewCheckBoxColumn
         enabledColumn.HeaderText = "Enabled"
@@ -152,7 +154,7 @@ Public Class SubtitleControl
 
         Dim languageColumn As New DataGridViewComboBoxColumn
         languageColumn.HeaderText = "Language"
-        languageColumn.Items.AddRange(Language.Languages)
+        languageColumn.Items.AddRange(Language.Languages.ToArray)
         languageColumn.DataPropertyName = "Language"
         dgv.Columns.Add(languageColumn)
 
@@ -267,12 +269,12 @@ Public Class SubtitleControl
 
     Sub UpdateControls()
         dgv.AutoResizeColumnsExtended(Of SubtitleItem)
-        Dim selected = Not dgv.CurrentRow Is Nothing
+        Dim selected = dgv.SelectedRows.Count > 0
         Dim path = If(selected AndAlso dgv.CurrentRow.Index < Items.Count, Items(dgv.CurrentRow.Index).Subtitle.Path, "")
         bnBDSup2SubPP.Enabled = selected AndAlso {"idx", "sup"}.Contains(path.Ext)
         bnPlay.Enabled = FileTypes.SubtitleExludingContainers.Contains(path.Ext) AndAlso p.SourceFile <> ""
-        bnUp.Enabled = selected AndAlso dgv.CurrentRow.Index > 0
-        bnDown.Enabled = selected AndAlso dgv.CurrentRow.Index < Items.Count - 1
+        bnUp.Enabled = dgv.CanMoveUp
+        bnDown.Enabled = dgv.CanMoveDown
         bnSetNames.Enabled = selected
         bnRemove.Enabled = selected
     End Sub
@@ -283,14 +285,10 @@ Public Class SubtitleControl
                 Dim size As String
 
                 If Not FileTypes.Video.Contains(Filepath.GetExt(i.Path)) Then
-                    Dim len = New FileInfo(i.Path).Length
-
-                    If len > 1024 ^ 2 Then
-                        size = (len / 1024 ^ 2).ToString("f1") & " MB"
-                    ElseIf len > 1024 Then
-                        size = CInt(len / 1024).ToString("f1") & " KB"
+                    If i.Size > 1024 Then
+                        size = (i.Size / 1024).ToString("f1") & " MB"
                     Else
-                        size = CInt(len) & " B"
+                        size = CInt(i.Size).ToString("f1") & " KB"
                     End If
                 End If
 
@@ -331,10 +329,6 @@ Public Class SubtitleControl
                 Items.Add(item)
             End If
         Next
-    End Sub
-
-    Private Sub dgv_SelectionChanged(sender As Object, e As EventArgs) Handles dgv.SelectionChanged
-        UpdateControls()
     End Sub
 
     Class SubtitleItem
@@ -468,5 +462,9 @@ Public Class SubtitleControl
                     BindingSource.ResetBindings(False)
             End Select
         End Using
+    End Sub
+
+    Private Sub dgv_MouseUp(sender As Object, e As MouseEventArgs) Handles dgv.MouseUp
+        UpdateControls()
     End Sub
 End Class

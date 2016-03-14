@@ -56,18 +56,11 @@ Public Class StreamDemuxForm
         Next
 
         For Each i In Subtitles
-            i.Enabled = False
             Dim text = i.Language.ToString
             If Subtitles.Count <= 12 Then text += " (" + i.TypeName + ")"
             Dim item = lvSubtitles.Items.Add(text)
             item.Tag = i
-
-            For Each i2 In p.AutoSubtitles.SplitNoEmptyAndWhiteSpace(", ", ";", " ")
-                If i2.ToLower = "all" OrElse i2.ToLower = i.Language.TwoLetterCode OrElse i.Language.TwoLetterCode = "iv" Then
-                    i.Enabled = True
-                    item.Checked = True
-                End If
-            Next
+            item.Checked = i.Enabled
         Next
     End Sub
 

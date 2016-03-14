@@ -19,11 +19,11 @@ Public Class AVIFile
             Const OF_SHARE_DENY_WRITE = 32
 
             If AVIFileOpen(AviFile, path, OF_SHARE_DENY_WRITE, IntPtr.Zero) <> 0 Then
-                Throw New Exception("AVIFileOpen failed")
+                ThrowException("AVIFileOpen failed to execute")
             End If
 
             If AVIFileGetStream(AviFile, AviStream, mmioStringToFOURCC("vids", 0), 0) <> 0 Then 'FourCC for vids
-                Throw New Exception("AVIFileGetStream failed")
+                ThrowException("AVIFileGetStream failed to execute")
             End If
 
             FrameCountValue = AVIStreamLength(AviStream)
@@ -51,13 +51,17 @@ Public Class AVIFile
             StreamInfo = New _AVISTREAMINFO()
 
             If AVIStreamInfo(AviStream, StreamInfo, Marshal.SizeOf(StreamInfo)) <> 0 Then
-                Throw New Exception("AVIStreamInfo failed")
+                ThrowException("AVIStreamInfo failed to execute")
             End If
         Catch ex As Exception
             Dispose()
             LogAVS()
             Throw ex
         End Try
+    End Sub
+
+    Sub ThrowException(message As String)
+        Throw New Exception(message + CrLf2 + "The AviSynth+ x64 or VapourSynth x64 setup might be damaged. You can verify this by opening the avs or vpy file with VirtualDub x64 and MPC-HC x64. avs is a AviSynth script, vpy is a VapourSynth script, StaxRip generates these scripts in the folder for temporary files and both VirtualDub x64 and MPC-HC x64 should be able to open it.")
     End Sub
 
     Private FrameCountValue As Integer

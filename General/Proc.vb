@@ -67,7 +67,7 @@ Public Class Proc
 
     Property CommandLine() As String
         Get
-            Return """" + File + """ " + Arguments
+            Return File.AddPathQuotes + " " + Arguments
         End Get
         Set(Value As String)
             Try
@@ -225,7 +225,6 @@ Public Class Proc
                     End If
 
                     errorMessage += CrLf2 + ProcessForm.CommandLineLog.ToString() + CrLf
-
                     ProcessForm.ClearCommandLineOutput()
 
                     Throw New ErrorAbortException("Error " + Header, errorMessage)

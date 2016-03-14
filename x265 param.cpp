@@ -222,6 +222,7 @@ void x265_param_default(x265_param* param)
     param->rc.zones = NULL;
     param->rc.bEnableSlowFirstPass = 0;
     param->rc.bStrictCbr = 0;
+    param->rc.bEnableGrain = 0;
 
     /* Video Usability Information (VUI) */
     param->vui.aspectRatioIdc = 0;
@@ -246,7 +247,7 @@ void x265_param_default(x265_param* param)
     param->maxCLL = 0;
     param->maxFALL = 0;
     param->minLuma = 0;
-    param->maxLuma = (1 << X265_DEPTH) - 1;
+    param->maxLuma = 0;
 }
 
 int x265_param_default_preset(x265_param* param, const char* preset, const char* tune)
@@ -454,16 +455,12 @@ int x265_param_default_preset(x265_param* param, const char* preset, const char*
         }
         else if (!strcmp(tune, "grain"))
         {
-            param->deblockingFilterBetaOffset = -2;
-            param->deblockingFilterTCOffset = -2;
-            param->bIntraInBFrames = 0;
-            param->rdoqLevel = 2;
-            param->psyRdoq = 10.0;
-            param->psyRd = 0.5;
             param->rc.ipFactor = 1.1;
-            param->rc.pbFactor = 1.1;
-            param->rc.aqStrength = 0.3;
-            param->rc.qCompress = 0.8;
+            param->rc.pbFactor = 1.0;
+            param->rc.cuTree = 0;
+            param->rc.aqMode = 0;
+            param->rc.qpStep = 1;
+            param->rc.bEnableGrain = 1;
         }
         else
             return -1;
@@ -759,6 +756,7 @@ int x265_param_parse(x265_param* p, const char* name, const char* value)
         p->rc.qp = atoi(value);
         p->rc.rateControlMode = X265_RC_CQP;
     }
+    OPT("rc-grain") p->rc.bEnableGrain = atobool(value);
     OPT("zones")
     {
         p->rc.zoneCount = 1;
@@ -1200,6 +1198,8 @@ int x265_check_params(x265_param* param)
           "Constant QP is incompatible with 2pass");
     CHECK(param->rc.bStrictCbr && (param->rc.bitrate <= 0 || param->rc.vbvBufferSize <=0),
           "Strict-cbr cannot be applied without specifying target bitrate or vbv bufsize");
+    CHECK(param->analysisMode && (param->analysisMode < X265_ANALYSIS_OFF || param->analysisMode > X265_ANALYSIS_LOAD),
+        "Invalid analysis mode. Analysis mode 0: OFF 1: SAVE : 2 LOAD");
     return check_failed;
 }
 
@@ -1379,29 +1379,16 @@ void x265_print_reconfigured_params(x265_param* param, x265_param* reconfiguredP
     char tmp[40];
 #define TOOLCMP(COND1, COND2, STR, VAL)  if (COND1 != COND2) { sprintf(tmp, STR, VAL); appendtool(param, buf, sizeof(buf), tmp); }
     TOOLCMP(param->maxNumReferences, reconfiguredParam->maxNumReferences, "ref=%d", reconfiguredParam->maxNumReferences);
-    TOOLCMP(param->maxTUSize, reconfiguredParam->maxTUSize, "max-tu-size=%d", reconfiguredParam->maxTUSize);
+    TOOLCMP(param->bEnableFastIntra, reconfiguredParam->bEnableFastIntra, "fast-intra=%d", reconfiguredParam->bEnableFastIntra);
+    TOOLCMP(param->bEnableEarlySkip, reconfiguredParam->bEnableEarlySkip, "early-skip=%d", reconfiguredParam->bEnableEarlySkip);
+    TOOLCMP(param->searchMethod, reconfiguredParam->searchMethod, "me=%d", reconfiguredParam->searchMethod);
     TOOLCMP(param->searchRange, reconfiguredParam->searchRange, "merange=%d", reconfiguredParam->searchRange);
     TOOLCMP(param->subpelRefine, reconfiguredParam->subpelRefine, "subme= %d", reconfiguredParam->subpelRefine);
     TOOLCMP(param->rdLevel, reconfiguredParam->rdLevel, "rd=%d", reconfiguredParam->rdLevel);
-    TOOLCMP(param->psyRd, reconfiguredParam->psyRd, "psy-rd=%.2lf", reconfiguredParam->psyRd);
     TOOLCMP(param->rdoqLevel, reconfiguredParam->rdoqLevel, "rdoq=%d", reconfiguredParam->rdoqLevel);
-    TOOLCMP(param->psyRdoq, reconfiguredParam->psyRdoq, "psy-rdoq=%.2lf", reconfiguredParam->psyRdoq);
-    TOOLCMP(param->noiseReductionIntra, reconfiguredParam->noiseReductionIntra, "nr-intra=%d", reconfiguredParam->noiseReductionIntra);
-    TOOLCMP(param->noiseReductionInter, reconfiguredParam->noiseReductionInter, "nr-inter=%d", reconfiguredParam->noiseReductionInter);
-    TOOLCMP(param->bEnableTSkipFast, reconfiguredParam->bEnableTSkipFast, "tskip-fast=%d", reconfiguredParam->bEnableTSkipFast);
-    TOOLCMP(param->bEnableSignHiding, reconfiguredParam->bEnableSignHiding, "signhide=%d", reconfiguredParam->bEnableSignHiding);
-    TOOLCMP(param->bEnableFastIntra, reconfiguredParam->bEnableFastIntra, "fast-intra=%d", reconfiguredParam->bEnableFastIntra);
-    if (param->bEnableLoopFilter && (param->deblockingFilterBetaOffset != reconfiguredParam->deblockingFilterBetaOffset 
-        || param->deblockingFilterTCOffset != reconfiguredParam->deblockingFilterTCOffset))
-    {
-        sprintf(tmp, "deblock(tC=%d:B=%d)", param->deblockingFilterTCOffset, param->deblockingFilterBetaOffset);
-        appendtool(param, buf, sizeof(buf), tmp);
-    }
-    else
-        TOOLCMP(param->bEnableLoopFilter,  reconfiguredParam->bEnableLoopFilter, "deblock=%d", reconfiguredParam->bEnableLoopFilter);
-
-    TOOLCMP(param->bEnableTemporalMvp, reconfiguredParam->bEnableTemporalMvp, "tmvp=%d", reconfiguredParam->bEnableTemporalMvp);
-    TOOLCMP(param->bEnableEarlySkip, reconfiguredParam->bEnableEarlySkip, "early-skip=%d", reconfiguredParam->bEnableEarlySkip);
+    TOOLCMP(param->bEnableRectInter, reconfiguredParam->bEnableRectInter, "rect=%d", reconfiguredParam->bEnableRectInter);
+    TOOLCMP(param->maxNumMergeCand, reconfiguredParam->maxNumMergeCand, "max-merge=%d", reconfiguredParam->maxNumMergeCand);
+    TOOLCMP(param->bIntraInBFrames, reconfiguredParam->bIntraInBFrames, "b-intra=%d", reconfiguredParam->bIntraInBFrames);
     x265_log(param, X265_LOG_INFO, "tools:%s\n", buf);
 }
 

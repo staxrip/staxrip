@@ -52,9 +52,85 @@ Public MustInherit Class AudioProfile
             If FileValue <> value Then
                 FileValue = value
                 Stream = Nothing
+                OnFileChanged()
             End If
         End Set
     End Property
+
+    Private StreamValue As AudioStream
+
+    Property Stream As AudioStream
+        Get
+            Return StreamValue
+        End Get
+        Set(value As AudioStream)
+            If Not value Is StreamValue Then
+                StreamValue = value
+
+                If Not Stream Is Nothing Then
+                    If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
+                        Delay = Stream.Delay
+                    End If
+
+                    Language = Stream.Language
+                    StreamName = Stream.Title
+                End If
+
+                OnStreamChanged()
+            End If
+        End Set
+    End Property
+
+    Property DisplayName As String
+        Get
+            Dim ret = ""
+
+            If Stream Is Nothing Then
+                Dim streams = MediaInfo.GetAudioStreams(File)
+                If streams.Count > 0 Then ret = GetAudioText(streams(0), File)
+            Else
+                ret = Stream.Name + " (" + Filepath.GetExt(File) + ")"
+            End If
+
+            Return ret
+        End Get
+        Set(value As String)
+        End Set
+    End Property
+
+    Overridable Sub OnFileChanged()
+    End Sub
+
+    Overridable Sub OnStreamChanged()
+    End Sub
+
+    Function GetAudioText(stream As AudioStream, path As String) As String
+        For Each i In Language.Languages
+            If path.Contains(i.CultureInfo.EnglishName) Then
+                stream.Language = i
+                Exit For
+            End If
+        Next
+
+        Dim matchDelay = Regex.Match(path, " (-?\d+)ms")
+        If matchDelay.Success Then stream.Delay = matchDelay.Groups(1).Value.ToInt
+
+        Dim matchID = Regex.Match(path, " ID(\d+)")
+        Dim name As String
+
+        If matchID.Success Then
+            stream.StreamOrder = matchID.Groups(1).Value.ToInt - 1
+            name = stream.Name
+        Else
+            name = stream.Name.Substring(4)
+        End If
+
+        If Filepath.GetBase(File) = Filepath.GetBase(p.SourceFile) Then
+            Return name + " (" + Filepath.GetExt(File) + ")"
+        Else
+            Return name + " (" + Filepath.GetName(File) + ")"
+        End If
+    End Function
 
     Sub SetStreamOrLanguage()
         If File = "" Then Exit Sub
@@ -66,8 +142,6 @@ Public MustInherit Class AudioProfile
                     Exit Sub
                 End If
             Next
-
-            Language = s.DefaultAudioLanguage
         Else
             For Each i In Streams
                 If i.Language.Equals(Language) Then
@@ -81,26 +155,6 @@ Public MustInherit Class AudioProfile
             End If
         End If
     End Sub
-
-    Private StreamValue As AudioStream
-
-    Property Stream As AudioStream
-        Get
-            Return StreamValue
-        End Get
-        Set(value As AudioStream)
-            StreamValue = value
-
-            If Not Stream Is Nothing Then
-                If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
-                    Delay = Stream.Delay
-                End If
-
-                Language = Stream.Language
-                StreamName = Stream.Title
-            End If
-        End Set
-    End Property
 
     Function IsInputSupported() As Boolean
         Return SupportedInput.Contains(Filepath.GetExt(File))
@@ -132,21 +186,20 @@ Public MustInherit Class AudioProfile
             If HandlesDelay() Then
                 If base.Contains("ms") Then
                     Dim re As New Regex(" (-?\d+)ms")
-
-                    If re.IsMatch(base) Then
-                        base = re.Replace(base, "")
-                    End If
+                    If re.IsMatch(base) Then base = re.Replace(base, "")
                 End If
             Else
-                If Not base.Contains("ms") Then
-                    base += " " & Delay & "ms"
-                End If
+                If Not base.Contains("ms") Then base += " " & Delay & "ms"
             End If
         End If
 
         Dim targetDir = If(p.TempDir <> "", p.TempDir, Filepath.GetDir(File))
+        Dim track As String
 
-        Return targetDir + base + "_out." + OutputFileType
+        If Me Is p.Audio0 Then track = "1"
+        If Me Is p.Audio1 Then track = "2"
+
+        Return targetDir + base + "_out" + track + "." + OutputFileType
     End Function
 
     Function SolveMacros(value As String) As String
@@ -288,10 +341,10 @@ Public Class BatchAudioProfile
             If g.WasFileJustWritten(targetPath) Then
                 File = targetPath
                 Bitrate = Calc.GetBitrateFromFile(File, p.TargetSeconds)
-                p.VideoBitrate = CInt(Calc.GetTotalBitrate - Calc.GetAudioBitrate())
+                p.VideoBitrate = CInt(Calc.GetVideoBitrate)
 
                 If Not p.VideoEncoder.QualityMode Then
-                    Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " + p.VideoBitrate.ToString)
+                    Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & CrLf)
                 End If
 
                 Log.WriteLine(MediaInfo.GetSummary(File))
@@ -400,7 +453,25 @@ Public Class MuxAudioProfile
         Edit(True)
     End Sub
 
-    Public Overrides Sub Encode()
+    Overrides Sub Encode()
+    End Sub
+
+    Overrides Sub OnFileChanged()
+        MyBase.OnFileChanged()
+        SetBitrate()
+    End Sub
+
+    Overrides Sub OnStreamChanged()
+        MyBase.OnStreamChanged()
+        SetBitrate()
+    End Sub
+
+    Sub SetBitrate()
+        If Stream Is Nothing Then
+            Bitrate = Calc.GetBitrateFromFile(File, p.SourceSeconds)
+        Else
+            Bitrate = Stream.Bitrate + Stream.BitrateCore
+        End If
     End Sub
 
     Private Overloads Function Edit(showProjectSettings As Boolean) As DialogResult
@@ -608,10 +679,10 @@ Public Class GUIAudioProfile
                 If g.WasFileJustWritten(targetPath) Then
                     File = targetPath
                     Bitrate = Calc.GetBitrateFromFile(File, p.TargetSeconds)
-                    p.VideoBitrate = CInt(Calc.GetTotalBitrate - Calc.GetAudioBitrate())
+                    p.VideoBitrate = CInt(Calc.GetVideoBitrate)
 
                     If Not p.VideoEncoder.QualityMode Then
-                        Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " + p.VideoBitrate.ToString)
+                        Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & CrLf)
                     End If
 
                     Log.WriteLine(MediaInfo.GetSummary(File))
@@ -855,7 +926,7 @@ Public Class GUIAudioProfile
             ret += " -ar " & Params.SamplingRate
         End If
 
-        ret += " -y"
+        ret += " -y -hide_banner"
 
         If includePaths AndAlso File <> "" Then
             ret += " """ + GetOutputFile() + """"

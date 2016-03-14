@@ -590,7 +590,7 @@ Public Class eac3toForm
 
             f.HelpAction = AddressOf ShowAudioStreamProfilesHelp
 
-            Dim match = f.dgv.AddTextColumn()
+            Dim match = f.dgv.AddTextBoxColumn()
             match.DataPropertyName = "Match"
             match.HeaderText = "Match All"
 
@@ -600,7 +600,7 @@ Public Class eac3toForm
             out.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             out.Items.AddRange(AudioOutputFormats)
 
-            Dim opt = f.dgv.AddTextColumn()
+            Dim opt = f.dgv.AddTextBoxColumn()
             opt.DataPropertyName = "Options"
             opt.HeaderText = "Options"
 
@@ -644,13 +644,17 @@ Public Class eac3toForm
 
                 BeginInvoke(Sub()
                                 MsgError("eac3to failed with error code " & exitCode, Output)
-                                tlp.Enabled = True 'without form won't close
-                                bnCancel.PerformClick()
+                                Cancel()
                             End Sub)
             Else
                 BeginInvoke(Sub() Init())
             End If
         End Using
+    End Sub
+
+    Sub Cancel()
+        tlp.Enabled = True 'bnCancel is child of tlp
+        bnCancel.PerformClick()
     End Sub
 
     Sub OutputDataReceived(sender As Object, e As DataReceivedEventArgs)
@@ -667,7 +671,13 @@ Public Class eac3toForm
         Text = "eac3to"
         tlp.Enabled = True
 
-        If Output <> "" Then
+        If Output = "" Then
+            MsgWarn("eac3to output was empty")
+            Cancel()
+        ElseIf Output.ContainsAll({"left eye", "right eye"}) Then
+            MsgError("3D demuxing isn't supported.")
+            Cancel()
+        ElseIf Output <> "" Then
             Log.WriteLine(Output)
 
             If Output.Contains(CrLf + "   (embedded: ") Then
@@ -734,9 +744,9 @@ Public Class eac3toForm
 
                     For Each iProfile In s.eac3toProfiles
                         Dim searchWords = iProfile.Match.SplitNoEmptyAndWhiteSpace(" ")
-                        If Not OK(searchWords) Then Continue For
+                        If searchWords.ContainsNothingOrEmpty Then Continue For
 
-                        If searchWords.All(Function(arg) ms.Text.Contains(arg)) Then
+                        If ms.Text.ContainsAll(searchWords) Then
                             ms.OutputType = iProfile.Output
                             ms.Options = iProfile.Options
                         End If
@@ -788,9 +798,7 @@ Public Class eac3toForm
                 End If
             Next
 
-            If cbVideoStream.Items.Count < 2 Then
-                cbVideoStream.Enabled = False
-            End If
+            If cbVideoStream.Items.Count < 2 Then cbVideoStream.Enabled = False
 
             If cbVideoStream.Items.Count > 0 Then
                 cbVideoStream.SelectedIndex = 0
@@ -810,9 +818,6 @@ Public Class eac3toForm
             End If
 
             lvAudio.Columns(0).Width = lvAudio.ClientSize.Width
-        Else
-            MsgWarn("eac3to output was empty")
-            bnCancel.PerformClick()
         End If
     End Sub
 
@@ -905,7 +910,7 @@ Public Class eac3toForm
     End Sub
 
     Private Sub tbTempDir_TextChanged(sender As Object, e As EventArgs) Handles tbTempDir.TextChanged
-        OutputFolder = DirPath.AppendSeparator(tbTempDir.Text)
+        OutputFolder = tbTempDir.Text.AppendSeparator
     End Sub
 
     Private Sub lvSubtitles_ItemCheck(sender As Object, e As System.Windows.Forms.ItemCheckEventArgs) Handles lvSubtitles.ItemCheck

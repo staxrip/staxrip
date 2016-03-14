@@ -1,10 +1,39 @@
 ﻿Imports System.Runtime.CompilerServices
-Imports System.Reflection
-Imports System.IO
-Imports StaxRip.UI
 Imports System.Drawing.Drawing2D
 
-Public Module ControlExtensions
+Public Module UIExtensions
+    <Extension()>
+    Function ResizeToSmallIconSize(img As Image) As Image
+        If Not img Is Nothing AndAlso img.Size <> SystemInformation.SmallIconSize Then
+            Dim s = SystemInformation.SmallIconSize
+            Dim r As New Bitmap(s.Width, s.Height)
+
+            Using g = Graphics.FromImage(DirectCast(r, Image))
+                g.SmoothingMode = SmoothingMode.AntiAlias
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality
+                g.DrawImage(img, 0, 0, s.Width, s.Height)
+            End Using
+
+            Return r
+        End If
+
+        Return img
+    End Function
+
+    <Extension()>
+    Function ResizeImage(image As Image, ByVal height As Integer) As Image
+        Dim percentHeight = height / image.Height
+        Dim ret = New Bitmap(CInt(image.Width * percentHeight), CInt(height))
+
+        Using g = Graphics.FromImage(ret)
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic
+            g.DrawImage(image, 0, 0, ret.Width, ret.Height)
+        End Using
+
+        Return ret
+    End Function
+
     <Extension()>
     Sub AddClickAction(c As Control, action As Action)
         AddHandler c.Click, Sub() action()
@@ -23,9 +52,7 @@ Public Module ControlExtensions
         If Not Directory.Exists(path) Then path = DirPath.GetParent(path)
         If Not Directory.Exists(path) Then path = DirPath.GetParent(path)
 
-        If Directory.Exists(path) Then
-            d.SelectedPath = path
-        End If
+        If Directory.Exists(path) Then d.SelectedPath = path
     End Sub
 
     <Extension()>
@@ -96,51 +123,54 @@ Public Module ControlExtensions
 
     <Extension()>
     Sub RemoveSelection(dgv As DataGridView)
-        If Not dgv.CurrentCell Is Nothing Then dgv.CurrentCell.OwningRow.Selected = True
-
         For Each i As DataGridViewRow In dgv.SelectedRows
             dgv.Rows.Remove(i)
         Next
+
+        If dgv.SelectedRows.Count = 0 AndAlso dgv.RowCount > 0 Then
+            dgv.Rows(dgv.RowCount - 1).Selected = True
+        End If
     End Sub
 
     <Extension()>
+    Function CanMoveUp(dgv As DataGridView) As Boolean
+        Return dgv.SelectedRows.Count > 0 AndAlso dgv.SelectedRows(0).Index > 0
+    End Function
+
+    <Extension()>
+    Function CanMoveDown(dgv As DataGridView) As Boolean
+        Return dgv.SelectedRows.Count > 0 AndAlso dgv.SelectedRows(0).Index < dgv.RowCount - 1
+    End Function
+
+    <Extension()>
     Sub MoveSelectionUp(dgv As DataGridView)
-        If dgv.CurrentCell Is Nothing Then Exit Sub
-
-        For Each i As DataGridViewCell In dgv.SelectedCells
-            i.OwningRow.Selected = True
-        Next
-
-        Dim items = DirectCast(dgv.DataSource, BindingSource).List
-        Dim selectedIndices = dgv.SelectedRows.Cast(Of DataGridViewRow).Select(Function(row) row.Index).Sort
-        Dim indexAbove = selectedIndices(0) - 1
-        If indexAbove = -1 Then Exit Sub
-        Dim itemAbove = items(indexAbove)
-        items.RemoveAt(indexAbove)
-        Dim indexLastSelectedItem = selectedIndices(selectedIndices.Count - 1)
-
-        If indexLastSelectedItem = items.Count Then
-            items.Add(itemAbove)
-        Else
-            items.Insert(indexLastSelectedItem + 1, itemAbove)
+        If CanMoveUp(dgv) Then
+            Dim bs = DirectCast(dgv.DataSource, BindingSource)
+            Dim pos = bs.Position
+            bs.RaiseListChangedEvents = False
+            Dim current = bs.Current
+            bs.Remove(current)
+            pos -= 1
+            bs.Insert(pos, current)
+            bs.Position = pos
+            bs.RaiseListChangedEvents = True
+            bs.ResetBindings(False)
         End If
     End Sub
 
     <Extension()>
     Sub MoveSelectionDown(dgv As DataGridView)
-        If dgv.CurrentCell Is Nothing Then Exit Sub
-
-        For Each i As DataGridViewCell In dgv.SelectedCells
-            i.OwningRow.Selected = True
-        Next
-
-        Dim items = DirectCast(dgv.DataSource, BindingSource).List
-        Dim selectedIndices = dgv.SelectedRows.Cast(Of DataGridViewRow).Select(Function(row) row.Index).Sort
-        Dim indexBelow = selectedIndices(selectedIndices.Count - 1) + 1
-        If indexBelow >= items.Count Then Exit Sub
-        Dim itemBelow = items(indexBelow)
-        items.RemoveAt(indexBelow)
-        Dim indexAbove = selectedIndices(0) - 1
-        items.Insert(indexAbove + 1, itemBelow)
+        If CanMoveDown(dgv) Then
+            Dim bs = DirectCast(dgv.DataSource, BindingSource)
+            Dim pos = bs.Position
+            bs.RaiseListChangedEvents = False
+            Dim current = bs.Current
+            bs.Remove(current)
+            pos += 1
+            bs.Insert(pos, current)
+            bs.Position = pos
+            bs.RaiseListChangedEvents = True
+            bs.ResetBindings(False)
+        End If
     End Sub
 End Module

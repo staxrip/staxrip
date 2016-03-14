@@ -27,7 +27,6 @@ Class Project
     Public CodeAtTop As String = ""
     Public Script As TargetVideoScript
     Public BatchMode As Boolean
-    Public NoDialogs As Boolean
     Public CompCheckAction As CompCheckAction = CompCheckAction.AdjustImageSize
     Public CompCheckRange As Integer = 5
     Public Compressibility As Double
@@ -82,6 +81,9 @@ Class Project
     Public Codec As String
     Public CodecProfile As String
     Public FixedBitrate As Integer
+    Public AudioTracks As List(Of AudioProfile)
+    Public ShowDialogsCLI As Boolean
+    Public NoDialogs As Boolean
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -105,17 +107,18 @@ Class Project
         If Name Is Nothing Then Name = ""
         If SourceFile Is Nothing Then SourceFile = ""
 
-        If AutoSubtitles Is Nothing Then
+        If Check(AutoSubtitles, "Automatically Included Subtitles", 1) Then
             If CultureInfo.CurrentCulture.TwoLetterISOLanguageName = "en" Then
-                AutoSubtitles = "en"
+                AutoSubtitles = "en iv"
             Else
-                AutoSubtitles = CultureInfo.CurrentCulture.TwoLetterISOLanguageName + ", en"
+                AutoSubtitles = CultureInfo.CurrentCulture.TwoLetterISOLanguageName + ", en, iv"
             End If
         End If
 
         If SourceScript Is Nothing Then SourceScript = New SourceVideoScript
         If SkippedAssistantTips Is Nothing Then SkippedAssistantTips = New List(Of String)
         If SourceFiles Is Nothing Then SourceFiles = New List(Of String)
+        If AudioTracks Is Nothing Then AudioTracks = New List(Of AudioProfile)
 
         If Check(VideoEncoder, "Video Encoder", 68) Then
             VideoEncoder = VideoEncoder.Getx264Encoder("x264", x264DeviceMode.Disabled)
@@ -180,4 +183,14 @@ Class Project
             CropBottomValue = If(value >= 0, value, 0)
         End Set
     End Property
+
+    Function GetAudioTracks() As List(Of AudioProfile)
+        Dim ret As New List(Of AudioProfile)
+
+        ret.Add(p.Audio0)
+        ret.Add(p.Audio1)
+        ret.AddRange(p.AudioTracks)
+
+        Return ret
+    End Function
 End Class

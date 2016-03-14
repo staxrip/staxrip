@@ -1,28 +1,17 @@
-Imports System
 Imports System.Runtime.Serialization
-Imports System.Collections.Specialized
 Imports System.ComponentModel
-Imports System.Drawing.Design
-Imports System.Globalization
-Imports System.IO
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Runtime.InteropServices
 Imports System.Reflection
 Imports System.Text.RegularExpressions
-Imports System.Net
-Imports System.Resources
 Imports System.Xml
 Imports System.Xml.Linq
 Imports System.Text
 Imports System.Security.Permissions
-Imports Microsoft.Win32
 Imports System.Management
 Imports System.Security.Principal
 
-Imports SWF = System.Windows.Forms
-
 Imports StaxRip.UI
-
 Imports VB6 = Microsoft.VisualBasic
 
 Public Class CommonDirs
@@ -56,27 +45,33 @@ Public Class CommonDirs
         End Get
     End Property
 
+    Shared ReadOnly Property Home() As String
+        Get
+            Return GetFolderPath(Environment.SpecialFolder.UserProfile).AppendSeparator
+        End Get
+    End Property
+
     Shared ReadOnly Property CommonAppData() As String
         Get
-            Return DirPath.AppendSeparator(GetFolderPath(Environment.SpecialFolder.CommonApplicationData))
-        End Get
-    End Property
-
-    Shared ReadOnly Property UserAppDataRoaming() As String
-        Get
-            Return DirPath.AppendSeparator(GetFolderPath(Environment.SpecialFolder.ApplicationData))
-        End Get
-    End Property
-
-    Shared ReadOnly Property Windows() As String
-        Get
-            Return DirPath.AppendSeparator(GetFolderPath(Environment.SpecialFolder.Windows))
+            Return GetFolderPath(Environment.SpecialFolder.CommonApplicationData).AppendSeparator
         End Get
     End Property
 
     Shared ReadOnly Property UserAppDataLocal() As String
         Get
-            Return DirPath.AppendSeparator(GetFolderPath(Environment.SpecialFolder.LocalApplicationData))
+            Return GetFolderPath(Environment.SpecialFolder.LocalApplicationData).AppendSeparator
+        End Get
+    End Property
+
+    Shared ReadOnly Property UserAppDataRoaming() As String
+        Get
+            Return GetFolderPath(Environment.SpecialFolder.ApplicationData).AppendSeparator
+        End Get
+    End Property
+
+    Shared ReadOnly Property Windows() As String
+        Get
+            Return GetFolderPath(Environment.SpecialFolder.Windows).AppendSeparator
         End Get
     End Property
 
@@ -116,17 +111,11 @@ Public Class PathBase
 
     Shared Function IsValidFileSystemName(name As String) As Boolean
         If name = "" Then Return False
-
         Dim chars = """*/:<>?\|".ToCharArray
 
         For Each i In name.ToCharArray
-            If chars.Contains(i) Then
-                Return False
-            End If
-
-            If Convert.ToInt32(i) < 32 Then
-                Return False
-            End If
+            If chars.Contains(i) Then Return False
+            If Convert.ToInt32(i) < 32 Then Return False
         Next
 
         Return True
@@ -184,13 +173,8 @@ Public Class DirPath
 
     Shared Function GetParent(path As String) As String
         If path = "" Then Return ""
-
         Dim tmp = TrimTrailingSeparator(path)
-
-        If tmp.Contains(Separator) Then
-            path = tmp.LeftLast(Separator) + Separator
-        End If
-
+        If tmp.Contains(Separator) Then path = tmp.LeftLast(Separator) + Separator
         Return path
     End Function
 
@@ -254,45 +238,27 @@ Public Class Filepath
 
     Shared Function GetExt(filepath As String, dot As Boolean) As String
         If filepath = "" Then Return ""
-
         Dim chars = filepath.ToCharArray
 
         For x = filepath.Length - 1 To 0 Step -1
             If chars(x) = Separator Then Return ""
-
-            If chars(x) = "."c Then
-                Return filepath.Substring(x + If(dot, 0, 1)).ToLower
-            End If
+            If chars(x) = "."c Then Return filepath.Substring(x + If(dot, 0, 1)).ToLower
         Next
 
         Return ""
     End Function
 
-    Shared Function GetChangeExt(path As String, value As String) As String
-        If path = "" Then Return Nothing
-
-        If Not value.StartsWith(".") Then value = "." + value
-
-        Return GetDirAndBase(path) + value.ToLower
-    End Function
-
     Shared Function GetDirNoSep(path As String) As String
         path = GetDir(path)
-
         If path.EndsWith(Separator) Then path = TrimSep(path)
-
         Return path
     End Function
 
     Shared Function GetBase(path As String) As String
         If path = "" Then Return ""
-
         Dim ret = path
-
         If ret.Contains(Separator) Then ret = ret.RightLast(Separator)
-
         If ret.Contains(".") Then ret = ret.LeftLast(".")
-
         Return ret
     End Function
 
@@ -523,32 +489,42 @@ Public Class HelpDocument
         Dim style As XElement =
 <style type="text/css">
 body {
-    background-image:url('StaxRipBackground.gif');
-    background-repeat:repeat-x;
-    font-family:Arial,Helvetica,sans-serif;
+    background-image: url('StaxRipBackground.gif');
+    background-repeat: repeat-x;
+    font-family: Arial,Helvetica,sans-serif;
 }
 
 h1 {
-    font-size:150%;
-    color:#333333;
-    margin-bottom:-4pt;
+    font-size: 150%;
+    color: #333333;
+    margin-bottom: -4pt;
 }
 
 h2 {
-    font-size:120%;
-    color:#666666;
-    margin-bottom:-8pt;
+    font-size: 120%;
+    color: #666666;
+    margin-bottom: -8pt;
 }
 
 h3 {
-    font-size:100%;
-    color:#333333;
-    margin-bottom:-8pt;
+    font-size: 100%;
+    color: #333333;
+    margin-bottom: -8pt;
 }
 
 a {
     color: #666666;
 }
+
+td {
+    width: 50%;
+    vertical-align: top;
+}
+
+table {
+    table-layout: fixed;
+}
+
 </style>
 
         Me.Title = title
@@ -655,7 +631,7 @@ a {
     End Function
 
     Sub WriteTips(ParamArray tips As StringPairList())
-        If Not OK(tips) Then Exit Sub
+        If tips.IsAnythingNothingOrEmpty Then Exit Sub
 
         Dim l As New StringPairList
 
@@ -727,11 +703,9 @@ a {
 
         For Each i As StringPair In list
             Writer.WriteStartElement("tr")
-
             Writer.WriteStartElement("td")
             WriteElement("p", i.Name)
             Writer.WriteEndElement() 'td
-
             Writer.WriteStartElement("td")
 
             If i.Value Is Nothing Then
@@ -1252,9 +1226,7 @@ Public Class CommandManager
     End Sub
 
     Sub Process(name As String, params As List(Of Object))
-        If HasCommand(name) Then
-            Process(GetCommand(name), params)
-        End If
+        If HasCommand(name) Then Process(GetCommand(name), params)
     End Sub
 
     Sub Process(command As Command, params As List(Of Object))
@@ -1266,42 +1238,42 @@ Public Class CommandManager
     End Sub
 
     Function ProcessCmdlArgument(value As String) As Boolean
-        If value.Contains("/") Then
-            value = value.Replace("/", "|")
-        End If
-
         For Each i As Command In Commands.Values
-            Dim s As String = i.Attribute.Name.ToUpper.Replace(" ", "")
+            Dim s = i.Attribute.Name.ToUpper.Replace(" ", "")
 
             Dim switches As New List(Of String)
             switches.Add(s)
 
-            If OK(i.Attribute.Switch) Then
-                switches.AddRange(i.Attribute.Switch.ToUpper.SplitNoEmpty("|"))
+            If i.Attribute.Switch <> "" Then
+                switches.AddRange(i.Attribute.Switch.ToUpper.SplitNoEmpty("|").Select(Function(arg) arg.Replace("-", "|")))
             End If
 
             For Each iSwitch As String In switches
                 If value.ToUpper = "-" + iSwitch OrElse value.ToUpper = "/" + iSwitch Then
                     Process(i.MethodInfo.Name, New List(Of Object))
                     Return True
-                ElseIf value.ToUpper.StartsWith("-" + iSwitch + ":") OrElse _
-                    value.ToUpper.StartsWith("/" + iSwitch + ":") Then
+                Else
+                    Dim test = value.Replace("/", "|").Replace("-", "|").Replace("=", ":").ToUpper
 
-                    Dim mc = Regex.Matches(value.Right(":"), """(?<a>.+?)""|(?<a>[^,]+)")
-                    Dim args As New List(Of Object)
+                    If test.StartsWith("|" + iSwitch + ":") Then
+                        Dim mc = Regex.Matches(test.Right(":"), """(?<a>.+?)""|(?<a>[^,]+)")
+                        Dim args As New List(Of Object)
 
-                    For Each iMatch As Match In mc
-                        args.Add(iMatch.Groups("a").Value)
-                    Next
+                        For Each iMatch As Match In mc
+                            args.Add(iMatch.Groups("a").Value)
+                        Next
 
-                    Dim params = i.MethodInfo.GetParameters
+                        Dim params = i.MethodInfo.GetParameters
 
-                    For x = 0 To params.Length - 1
-                        args(x) = TypeDescriptor.GetConverter(params(x).ParameterType).ConvertFrom(args(x))
-                    Next
+                        For x = 0 To params.Length - 1
+                            If args.Count > x Then
+                                args(x) = TypeDescriptor.GetConverter(params(x).ParameterType).ConvertFrom(args(x))
+                            End If
+                        Next
 
-                    Process(i.MethodInfo.Name, args)
-                    Return True
+                        Process(i.MethodInfo.Name, args)
+                        Return True
+                    End If
                 End If
             Next
         Next
@@ -1326,30 +1298,6 @@ Friend Module MainModule
 
     Function OK(value As String) As Boolean
         Return value <> ""
-    End Function
-
-    Function OK(ParamArray values As String()) As Boolean
-        If values Is Nothing OrElse values.Length = 0 Then Return False
-
-        For Each i In values
-            If i = "" Then Return False
-        Next
-
-        Return True
-    End Function
-
-    Function OK(ParamArray values As Object()) As Boolean
-        If values Is Nothing OrElse values.Length = 0 Then
-            Return False
-        End If
-
-        For Each i In values
-            If i Is Nothing Then
-                Return False
-            End If
-        Next
-
-        Return True
     End Function
 
     Sub MsgInfo(text As String, Optional content As String = Nothing)

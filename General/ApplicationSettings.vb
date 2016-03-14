@@ -6,7 +6,8 @@ Imports StaxRip.UI
 Class ApplicationSettings
     Implements ISafeSerialization
 
-    Friend FilterPreferences As StringPairList
+    Friend AviSynthFilterPreferences As StringPairList
+    Friend VapourSynthFilterPreferences As StringPairList
     Public eac3toProfiles As List(Of eac3toProfile)
     Public AudioProfiles As List(Of AudioProfile)
     Public AviSynthProfiles As List(Of FilterCategory)
@@ -53,7 +54,6 @@ Class ApplicationSettings
     Public PreviewFormBorderStyle As FormBorderStyle
     Public DeleteTempFilesToRecycleBin As Boolean = True
     Public ShowTemplateSelection As Boolean
-    Public DefaultAudioLanguage As Language
 
     Private WasUpdatedValue As Boolean
 
@@ -85,7 +85,7 @@ Class ApplicationSettings
             Storage = New ObjectStorage
         End If
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 183) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 184) Then
             If VideoEncoderProfiles Is Nothing Then
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
             Else
@@ -103,7 +103,7 @@ Class ApplicationSettings
             End If
         End If
 
-        If Check(AudioProfiles, "Audio Profiles", 112) Then
+        If Check(AudioProfiles, "Audio Profiles", 113) Then
             If AudioProfiles Is Nothing Then
                 AudioProfiles = AudioProfile.GetDefaults()
             Else
@@ -123,20 +123,25 @@ Class ApplicationSettings
 
         If Check(Demuxers, "Demuxers", 103) Then Demuxers = Demuxer.GetDefaults()
 
-        If Check(DefaultAudioLanguage, "Default Audio Language", 1) Then
-            DefaultAudioLanguage = New Language
+        If Check(AviSynthFilterPreferences, "AviSynth Filter Preferences", 1) Then
+            AviSynthFilterPreferences = New StringPairList
+            AviSynthFilterPreferences.Add("264, h264, avc", "LWLibavVideoSource")
+            AviSynthFilterPreferences.Add("265, h265, hevc", "LWLibavVideoSource")
+            AviSynthFilterPreferences.Add("default", "FFVideoSource")
+            AviSynthFilterPreferences.Add("dgi", "DGSource")
+            AviSynthFilterPreferences.Add("dgim", "DGSourceIM")
+            AviSynthFilterPreferences.Add("mp4, m4v, mov", "LSMASHVideoSource")
+            AviSynthFilterPreferences.Add("ts, m2ts, mts, m2t", "LWLibavVideoSource")
+            AviSynthFilterPreferences.Add("wmv", "DSS2")
         End If
 
-        If Check(FilterPreferences, "Filter Preference", 22) Then
-            FilterPreferences = New StringPairList
-            FilterPreferences.Add("264, h264, avc", "LWLibavVideoSource")
-            FilterPreferences.Add("265, h265, hevc", "LWLibavVideoSource")
-            FilterPreferences.Add("default", "FFVideoSource")
-            FilterPreferences.Add("dgi", "DGSource")
-            FilterPreferences.Add("dgim", "DGSourceIM")
-            FilterPreferences.Add("mp4, m4v, mov", "LSMASHVideoSource")
-            FilterPreferences.Add("ts, m2ts, mts, m2t", "LWLibavVideoSource")
-            FilterPreferences.Add("wmv", "DSS2")
+        If Check(VapourSynthFilterPreferences, "VapourSynth Filter Preference", 1) Then
+            VapourSynthFilterPreferences = New StringPairList
+            VapourSynthFilterPreferences.Add("264, h264, avc", "LWLibavSource")
+            VapourSynthFilterPreferences.Add("265, h265, hevc", "LWLibavSource")
+            VapourSynthFilterPreferences.Add("default", "ffms2")
+            VapourSynthFilterPreferences.Add("mp4, m4v, mov", "LibavSMASHSource")
+            VapourSynthFilterPreferences.Add("ts, m2ts, mts, m2t", "LWLibavSource")
         End If
 
         If Check(eac3toProfiles, "eac3to Audio Stream Profiles", 4) Then
@@ -227,7 +232,7 @@ Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 130) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 135) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 
@@ -259,7 +264,7 @@ Class ApplicationSettings
             End If
         End If
 
-        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 24) Then
+        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 25) Then
             If VapourSynthProfiles Is Nothing Then
                 VapourSynthProfiles = FilterCategory.GetVapourSynthDefaults
             Else

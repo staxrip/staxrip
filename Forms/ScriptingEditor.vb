@@ -319,7 +319,7 @@ Class ScriptingEditor
             Menu.Add("Remove", AddressOf RemoveClick).ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Delete)
             Menu.Add("Profiles...", AddressOf g.MainForm.OpenFilterProfilesDialog, "Dialog to edit profiles.")
             Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to edit profiles.")
-            Menu.Add("Script Preview...", AddressOf CodePreview, "Previews the script with solved macros.")
+            Menu.Add("Code Preview...", AddressOf CodePreview, "Previews the script with solved macros.")
 
             Dim mi = Menu.Add("Video Preview...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
             mi.Enabled = p.SourceFile <> ""
@@ -427,7 +427,7 @@ Class ScriptingEditor
                 f.tb.ReadOnly = True
                 f.cbWrap.Checked = False
                 f.cbWrap.Visible = False
-                f.tb.Text = Macro.Solve(VideoScript.ModifyScript(script.GetScript, script.Engine)).Trim
+                f.tb.Text = script.GetFullScript
                 f.tb.SelectionStart = f.tb.Text.Length
                 f.tb.SelectionLength = 0
                 f.Text = "Script Preview"

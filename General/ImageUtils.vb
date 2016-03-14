@@ -108,17 +108,17 @@ Public Class Thumbnails
                 Next
             End Using
 
-            bitmap.Save(Filepath.GetChangeExt(inputFile, "jpg"), Imaging.ImageFormat.Jpeg)
+            bitmap.Save(inputFile.ChangeExt("jpg"), Imaging.ImageFormat.Jpeg)
         End Using
     End Sub
 
-    Private Shared Sub DropShadow(ByRef sourceImage As Bitmap,
-                          shadowColor As Color,
-                          backgroundColor As Color,
-                          Optional shadowDistance As Integer = 5,
-                          Optional shadowOpacity As Integer = 150,
-                          Optional shadowSoftness As Integer = 4,
-                          Optional shadowRoundedEdges As Boolean = True)
+    Private Shared Sub DropShadow(sourceImage As Bitmap,
+                                  shadowColor As Color,
+                                  backgroundColor As Color,
+                                  Optional shadowDistance As Integer = 5,
+                                  Optional shadowOpacity As Integer = 150,
+                                  Optional shadowSoftness As Integer = 4,
+                                  Optional shadowRoundedEdges As Boolean = True)
 
         If sourceImage IsNot Nothing Then
             shadowOpacity = shadowOpacity.EnsureRange(0, 255)

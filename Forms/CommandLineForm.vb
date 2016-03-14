@@ -15,7 +15,12 @@ Class CommandLineForm
         Me.Params = params
         Text = params.Title
         InitUI()
-        SimpleUI.SelectLast(params.Title + "page selection")
+
+        If SimpleUI.Tree.Nodes.Count > 10 Then
+            SimpleUI.Tree.ItemHeight = CInt(SimpleUI.Tree.Height / SimpleUI.Tree.Nodes.Count) - 3
+        End If
+
+        SelectLastPage()
         AddHandler params.ValueChanged, AddressOf ValueChanged
         params.RaiseValueChanged(Nothing)
 
@@ -25,10 +30,15 @@ Class CommandLineForm
 
         cms.Items.Add(New ActionMenuItem("Execute Command Line", Sub() params.Execute(), Nothing, p.SourceFile <> ""))
         cms.Items.Add(New ActionMenuItem("Copy Command Line", Sub() Clipboard.SetText(params.GetCommandLine(True, True))))
+        cms.Items.Add(New ActionMenuItem("Show Command Line", Sub() g.ShowCommandLinePreview(params.GetCommandLine(True, True))))
         cms.Items.Add(New ActionMenuItem("Help", Sub() ShowHelp()))
         cms.Items.Add(New ActionMenuItem(params.GetPackage.Name + " Help", Sub() g.ShellExecute(params.GetPackage.GetHelpPath)))
 
         UpdateSearchComboBox()
+    End Sub
+
+    Sub SelectLastPage()
+        SimpleUI.SelectLast(Params.Title + "page selection")
     End Sub
 
     Sub ValueChanged(item As CommandLineItem)
@@ -146,11 +156,14 @@ Class CommandLineForm
                 AddHandler tb.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
                 tb.Expand(tb.Edit)
                 Dim sp = DirectCast(item, StringParam)
-                sp.Init(tb.Edit)
+                sp.Init(tb)
             End If
 
-            If item.Switch <> "" AndAlso Not helpControl Is Nothing Then
-                SwitchControlDic(item.Switch) = helpControl
+            Dim listText = item.Switch
+            If listText = "" AndAlso item.Text <> "" Then listText = item.Text.Trim(" "c, ":"c)
+
+            If listText <> "" AndAlso Not helpControl Is Nothing Then
+                SearchControlDic(listText) = helpControl
                 ControlFlowDic(helpControl) = currentFlow
                 ControlHelpDic(helpControl) = item.Help
             End If
@@ -181,7 +194,7 @@ Class CommandLineForm
     End Sub
 
     Private SearchIndex As Integer
-    Private SwitchControlDic As New Dictionary(Of String, Control)
+    Private SearchControlDic As New Dictionary(Of String, Control)
     Private ControlFlowDic As New Dictionary(Of Control, SimpleUI.FlowPage)
     Private ControlHelpDic As New Dictionary(Of Control, String)
 
@@ -200,7 +213,7 @@ Class CommandLineForm
         Dim matchedControls As New List(Of Control)
 
         If q.Length > 1 Then
-            For Each i In SwitchControlDic
+            For Each i In SearchControlDic
                 If i.Key.ToLower.Contains(q) Then
                     matchedControls.Add(i.Value)
                 End If
@@ -244,8 +257,8 @@ Class CommandLineForm
     Sub UpdateSearchComboBox()
         cbGoTo.Items.Clear()
 
-        For Each i In SwitchControlDic
-            If cbGoTo.Text = "" OrElse SwitchControlDic.ContainsKey(cbGoTo.Text) OrElse
+        For Each i In SearchControlDic
+            If cbGoTo.Text = "" OrElse SearchControlDic.ContainsKey(cbGoTo.Text) OrElse
                 i.Key.ToLower.Contains(cbGoTo.Text.ToLower) Then
 
                 cbGoTo.Items.Add(i.Key)

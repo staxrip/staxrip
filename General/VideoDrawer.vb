@@ -20,7 +20,7 @@
 
         Using g
             If Control.Visible Then
-                Dim rectDest As RectangleF
+                Dim rectDest As Rectangle
                 Dim img As Image
 
                 Try
@@ -45,13 +45,13 @@
                     rectDest = Control.ClientRectangle
                     g.DrawImage(img, rectDest)
                 Else
-                    Dim factorX = CSng(Control.Width / img.Width)
-                    Dim factorY = CSng(Control.Height / img.Height)
+                    Dim factorX = Control.Width / img.Width
+                    Dim factorY = Control.Height / img.Height
 
-                    Dim left = CropLeft * factorX
-                    Dim right = CropRight * factorX
-                    Dim top = CropTop * factorY
-                    Dim bottom = CropBottom * factorY
+                    Dim left = CInt(CropLeft * factorX)
+                    Dim right = CInt(CropRight * factorX)
+                    Dim top = CInt(CropTop * factorY)
+                    Dim bottom = CInt(CropBottom * factorY)
 
                     rectDest.X = left
                     rectDest.Y = top
@@ -97,7 +97,7 @@
 
                     'right magnifier
 
-                    rectSrc.X = img.Width - CropRight - 8
+                    rectSrc.X = img.Width - CropRight - 8 - 1
                     rectSrc.Y = img.Height \ 2 - 8
                     rectSrc.Width = 8
                     rectSrc.Height = 16
@@ -112,7 +112,7 @@
                     'bottom magnifier
 
                     rectSrc.X = img.Width \ 2 - 8
-                    rectSrc.Y = img.Height - CropBottom - 8
+                    rectSrc.Y = img.Height - CropBottom - 8 - 1
                     rectSrc.Width = 16
                     rectSrc.Height = 8
 
@@ -143,12 +143,21 @@
                     lengthtDate = lengthtDate.AddSeconds(AVI.FrameCount / AVI.FrameRate)
                     Dim frameSize = AVI.FrameSize
 
-                    Dim text = "Frame: " & AVI.Position & " of " & AVI.FrameCount & CrLf &
-                               "Time: " & currentDate.ToString("HH:mm:ss.fff") + " of " + lengthtDate.ToString("HH:mm:ss.fff") + CrLf +
-                               "Width x Height: " & frameSize.Width & " x " & frameSize.Height & CrLf +
-                               "Framerate: " & AVI.FrameRate.ToString("f6")
+                    Dim format = If(lengthtDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff")
 
-                    g.DrawString(text, New Font("Segoe UI", 12, FontStyle.Bold), Brushes.White, rectDest)
+                    Dim text = "Frame: " & AVI.Position & " (" & AVI.FrameCount & ")" + CrLf &
+                               "Time: " & currentDate.ToString(format) + " (" + lengthtDate.ToString(format) + ")" + CrLf +
+                               "Size: " & frameSize.Width & " x " & frameSize.Height & CrLf +
+                               "Rate: " & AVI.FrameRate.ToString("f6")
+
+                    Dim font = New Font("Segoe UI", 10, FontStyle.Bold)
+                    Dim textSize = TextRenderer.MeasureText(text, font)
+
+                    Using brush As New SolidBrush(Color.FromArgb(100, 0, 0, 0))
+                        g.FillRectangle(brush, New Rectangle(10, 10, textSize.Width, textSize.Height))
+                    End Using
+
+                    g.DrawString(text, font, Brushes.White, rectDest)
                 End If
             End If
         End Using

@@ -1,7 +1,7 @@
 Imports System.Drawing.Drawing2D
 Imports Microsoft.Win32
 
-Public Class ToolStripRendererEx
+Class ToolStripRendererEx
     Inherits ToolStripSystemRenderer
 
     Private ColorSeperatorLight As Color = Color.White

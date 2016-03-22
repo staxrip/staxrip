@@ -3,7 +3,7 @@ Imports System.Drawing.Imaging
 
 Imports StaxRip.UI
 
-Public Class VideoComparisonForm
+Class VideoComparisonForm
     Shared Property Pos As Integer
 
     Public CropLeft, CropTop, CropRight, CropBottom As Integer

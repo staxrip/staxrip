@@ -8,7 +8,7 @@ Imports System.Text.RegularExpressions
 Imports System.Text
 
 <Serializable()>
-Public MustInherit Class AudioProfile
+MustInherit Class AudioProfile
     Inherits Profile
 
     Property Language As New Language
@@ -266,7 +266,7 @@ Public MustInherit Class AudioProfile
 End Class
 
 <Serializable()>
-Public Class BatchAudioProfile
+Class BatchAudioProfile
     Inherits AudioProfile
 
     Sub New(name As String,
@@ -280,17 +280,6 @@ Public Class BatchAudioProfile
         Me.CommandLines = commandLines
         CanEditValue = True
     End Sub
-
-    Private CommandValue As String
-
-    Overrides Property CommandLines() As String
-        Get
-            Return CommandValue
-        End Get
-        Set(Value As String)
-            CommandValue = Value
-        End Set
-    End Property
 
     Overrides Function Edit() As DialogResult
         Using f As New CommandLineAudioForm(Me)
@@ -374,7 +363,7 @@ Public Class BatchAudioProfile
 End Class
 
 <Serializable()>
-Public Class NullAudioProfile
+Class NullAudioProfile
     Inherits AudioProfile
 
     Sub New()
@@ -417,7 +406,7 @@ Public Class NullAudioProfile
 End Class
 
 <Serializable()>
-Public Class MuxAudioProfile
+Class MuxAudioProfile
     Inherits AudioProfile
 
     Sub New()
@@ -527,7 +516,7 @@ Public Class MuxAudioProfile
 End Class
 
 <Serializable()>
-Public Class GUIAudioProfile
+Class GUIAudioProfile
     Inherits AudioProfile
 
     Property Params As New Parameters
@@ -1032,35 +1021,24 @@ Public Class GUIAudioProfile
         Return r
     End Function
 
-    Public ReadOnly Property CustomName() As String
+    Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return MyBase.Name
+            If Params Is Nothing Then Exit Property
+
+            Dim ch = If(Channels = 6, " 5.1", If(Channels = 2, " 2.0", " Mono"))
+            Dim circa = If(Params.RateMode = AudioRateMode.VBR OrElse Params.Codec = AudioCodec.Flac, "~", "")
+            Dim rate = If(Params.RateMode = AudioRateMode.VBR, " " & Params.RateMode.ToString, "")
+            Dim co = Params.Codec.ToString
+
+            Select Case Params.Codec
+                Case AudioCodec.AAC
+                    If Params.AacProfile <> AudioAacProfile.Automatic Then
+                        co += "-" + Params.AacProfile.ToString
+                    End If
+            End Select
+
+            Return co + rate & ch & " " & circa & Bitrate & " Kbps"
         End Get
-    End Property
-
-    Public Overrides Property Name As String
-        Get
-            If MyBase.Name = "" Then
-                Dim ch = If(Channels = 6, " 5.1", If(Channels = 2, " 2.0", " Mono"))
-                Dim circa = If(Params.RateMode = AudioRateMode.VBR OrElse Params.Codec = AudioCodec.Flac, "~", "")
-                Dim rate = If(Params.RateMode = AudioRateMode.VBR, " " & Params.RateMode.ToString, "")
-                Dim co = Params.Codec.ToString
-
-                Select Case Params.Codec
-                    Case AudioCodec.AAC
-                        If Params.AacProfile <> AudioAacProfile.Automatic Then
-                            co += "-" + Params.AacProfile.ToString
-                        End If
-                End Select
-
-                Return co + rate & ch & " " & circa & Bitrate & " Kbps"
-            End If
-
-            Return MyBase.Name
-        End Get
-        Set(value As String)
-            MyBase.Name = value
-        End Set
     End Property
 
     Overrides Property CommandLines() As String
@@ -1140,7 +1118,7 @@ Public Class GUIAudioProfile
     End Property
 
     <Serializable()>
-    Public Class Parameters
+    Class Parameters
         Implements ISerializable
 
         Property AacProfile As AudioAacProfile

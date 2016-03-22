@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Public Class UserControlTemplate
+Class UserControlTemplate
     Inherits UserControl
 
 #Region " Designer "

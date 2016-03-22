@@ -52,7 +52,7 @@ Class Packs
     Shared Property QSVEncC As New Package With {
         .Name = "QSVEncC",
         .Filename = "QSVEncC64.exe",
-        .Description = "Intel Quick Sync GPU accelerated H.264 encoder.",
+        .Description = "Intel hardware accelerated H.264, H.265 and MPEG2 encoder.",
         .HelpFile = "help.txt",
         .WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!482"}
 
@@ -164,7 +164,11 @@ Class Packs
                                        "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage"},
             .Dependencies = {"fmtconv", "adjust"},
             .Description = "mawen1250's VapourSynth functions.",
-            .HelpURL = "http://forum.doom9.org/showthread.php?t=172564"})
+            .HelpURL = "http://forum.doom9.org/showthread.php?t=172564",
+            .vsFiltersFunc = Function() {New VideoFilter("Field", "Assume | AssumeFrame", "clip = mvsfunc.AssumeFrame(clip)"),
+                                         New VideoFilter("Field", "Assume | AssumeTFF", "clip = mvsfunc.AssumeTFF(clip)"),
+                                         New VideoFilter("Field", "Assume | AssumeBFF", "clip = mvsfunc.AssumeBFF(clip)"),
+                                         New VideoFilter("Field", "Assume | AssumeCombed", "clip = mvsfunc.AssumeCombed(clip)")}})
 
         Packages.Add(New PluginPackage With {
             .Name = "havsfunc",
@@ -192,9 +196,9 @@ Class Packs
                 New VideoFilter("Noise", "KNLMeansCL | Spatial Light", "KNLMeansCL(D = 0, A = 2, h = 2)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatial Medium", "KNLMeansCL(D = 0, A = 4, h = 4)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatial Strong", "KNLMeansCL(D = 0, A = 6, h = 6)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Light", "KNLMeansCL(D = 1, A = 0, h = 3)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Medium", "KNLMeansCL(D = 1, A = 0, h = 6)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Strong", "KNLMeansCL(D = 1, A = 0, h = 9)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Light", "KNLMeansCL(D = 1, A = 1, h = 3)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Medium", "KNLMeansCL(D = 1, A = 1, h = 6)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Strong", "KNLMeansCL(D = 1, A = 1, h = 9)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "KNLMeansCL(D = 1, A = 1, h = 2)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "KNLMeansCL(D = 1, A = 1, h = 4)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "KNLMeansCL(D = 1, A = 1, h = 8)")},
@@ -202,9 +206,9 @@ Class Packs
                 New VideoFilter("Noise", "KNLMeansCL | Spatial Light", "clip = core.knlm.KNLMeansCL(clip, d = 0, a = 2, h = 2)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatial Medium", "clip = core.knlm.KNLMeansCL(clip, d = 0, a = 4, h = 4)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatial Strong", "clip = core.knlm.KNLMeansCL(clip, d = 0, a = 6, h = 6)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Light", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 0, h = 3)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Medium", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 0, h = 6)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 0, h = 9)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Light", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 3)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Medium", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 6)"),
+                New VideoFilter("Noise", "KNLMeansCL | Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 9)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 2)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 4)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 8)")}})
@@ -233,6 +237,7 @@ Class Packs
             .Name = "fmtconv",
             .Filename = "fmtconv.dll",
             .WebURL = "http://github.com/EleonoreMizo/fmtconv",
+            .HelpFile = "fmtconv.html",
             .Description = "Fmtconv is a format-conversion plug-in for the Vapoursynth video processing engine. It does resizing, bitdepth conversion with dithering and colorspace conversion.",
             .VapourSynthFilterNames = {"fmtc.bitdepth", "fmtc.convert", "fmtc.matrix", "fmtc.resample", "fmtc.transfer"}})
 
@@ -326,7 +331,7 @@ Class Packs
     End Function
 End Class
 
-Public Class Package
+Class Package
     Implements IComparable(Of Package)
 
     Property Name As String
@@ -344,16 +349,7 @@ Public Class Package
     Property IsRequiredFunc As Func(Of Boolean)
     Property StatusFunc As Func(Of String)
 
-    Private FixedDirValue As String
-
     Overridable Property FixedDir As String
-        Get
-            Return FixedDirValue
-        End Get
-        Set(value As String)
-            FixedDirValue = value
-        End Set
-    End Property
 
     Private FilenameValue As String
 
@@ -374,9 +370,7 @@ Public Class Package
 
     Overridable ReadOnly Property LaunchAction As Action
         Get
-            If LaunchName <> "" Then
-                Return Sub() g.ShellExecute(GetDir() + LaunchName)
-            End If
+            If LaunchName <> "" Then Return Sub() g.ShellExecute(GetDir() + LaunchName)
         End Get
     End Property
 
@@ -421,7 +415,7 @@ Public Class Package
 
     Function VerifyOK(Optional showEvenIfNotRequired As Boolean = False) As Boolean
         If (IsRequired() OrElse showEvenIfNotRequired) AndAlso IsStatusCritical() Then
-            Using f As New ApplicationsForm
+            Using f As New AppsForm
                 f.ShowPackage(Me)
                 f.ShowDialog()
                 g.MainForm.Refresh()
@@ -544,7 +538,7 @@ Public Class Package
     End Function
 End Class
 
-Public Class VSFilterPackage
+Class VSFilterPackage
     Inherits PluginPackage
 
     Sub New()
@@ -556,7 +550,7 @@ Public Class VSFilterPackage
     End Sub
 End Class
 
-Public Class UnDotPackage
+Class UnDotPackage
     Inherits PluginPackage
 
     Sub New()
@@ -568,7 +562,7 @@ Public Class UnDotPackage
     End Sub
 End Class
 
-Public Class NicAudioPackage
+Class NicAudioPackage
     Inherits PluginPackage
 
     Sub New()
@@ -580,7 +574,7 @@ Public Class NicAudioPackage
     End Sub
 End Class
 
-Public Class AviSynthPlusPackage
+Class AviSynthPlusPackage
     Inherits Package
 
     Sub New()
@@ -607,7 +601,7 @@ Public Class AviSynthPlusPackage
     End Function
 End Class
 
-Public Class PythonPackage
+Class PythonPackage
     Inherits Package
 
     Sub New()
@@ -635,7 +629,7 @@ Public Class PythonPackage
     End Function
 End Class
 
-Public Class VapourSynthPackage
+Class VapourSynthPackage
     Inherits Package
 
     Sub New()
@@ -662,7 +656,7 @@ Public Class VapourSynthPackage
     End Property
 End Class
 
-Public Class vspipePackage
+Class vspipePackage
     Inherits Package
 
     Sub New()
@@ -688,7 +682,7 @@ Public Class vspipePackage
     End Property
 End Class
 
-Public Class PluginPackage
+Class PluginPackage
     Inherits Package
 
     Property AviSynthFilterNames As String()
@@ -742,7 +736,7 @@ Public Class PluginPackage
     End Sub
 End Class
 
-Public Class BeSweetPackage
+Class BeSweetPackage
     Inherits Package
 
     Sub New()
@@ -778,7 +772,7 @@ Public Class BeSweetPackage
     End Function
 End Class
 
-Public Class VSRipPackage
+Class VSRipPackage
     Inherits Package
 
     Sub New()
@@ -790,7 +784,7 @@ Public Class VSRipPackage
     End Sub
 End Class
 
-Public Class NeroAACEncPackage
+Class NeroAACEncPackage
     Inherits Package
 
     Sub New()
@@ -803,7 +797,7 @@ Public Class NeroAACEncPackage
     End Sub
 End Class
 
-Public Class JavaPackage
+Class JavaPackage
     Inherits Package
 
     Sub New()
@@ -830,7 +824,7 @@ Public Class JavaPackage
     End Function
 End Class
 
-Public Class ProjectXPackage
+Class ProjectXPackage
     Inherits Package
 
     Sub New()
@@ -853,7 +847,7 @@ Public Class ProjectXPackage
     End Function
 End Class
 
-Public Class x264Package
+Class x264Package
     Inherits Package
 
     Sub New()
@@ -865,7 +859,7 @@ Public Class x264Package
     End Sub
 End Class
 
-Public Class x265Package
+Class x265Package
     Inherits Package
 
     Sub New()
@@ -877,7 +871,7 @@ Public Class x265Package
     End Sub
 End Class
 
-Public Class MP4BoxPackage
+Class MP4BoxPackage
     Inherits Package
 
     Sub New()
@@ -889,7 +883,7 @@ Public Class MP4BoxPackage
     End Sub
 End Class
 
-Public Class MKVToolNixPackage
+Class MKVToolNixPackage
     Inherits Package
 
     Sub New()
@@ -901,7 +895,7 @@ Public Class MKVToolNixPackage
     End Sub
 End Class
 
-Public Class MediaInfoPackage
+Class MediaInfoPackage
     Inherits Package
 
     Sub New()
@@ -912,7 +906,7 @@ Public Class MediaInfoPackage
     End Sub
 End Class
 
-Public Class ffmpegPackage
+Class ffmpegPackage
     Inherits Package
 
     Sub New()
@@ -924,7 +918,7 @@ Public Class ffmpegPackage
     End Sub
 End Class
 
-Public Class eac3toPackage
+Class eac3toPackage
     Inherits Package
 
     Sub New()
@@ -936,7 +930,7 @@ Public Class eac3toPackage
     End Sub
 End Class
 
-Public Class ffms2Package
+Class ffms2Package
     Inherits PluginPackage
 
     Sub New()
@@ -950,7 +944,7 @@ Public Class ffms2Package
     End Sub
 End Class
 
-Public Class LSmashWorksAviSynthPackage
+Class LSmashWorksAviSynthPackage
     Inherits PluginPackage
 
     Sub New()
@@ -970,7 +964,7 @@ Public Class LSmashWorksAviSynthPackage
     End Property
 End Class
 
-Public Class vslsmashsourcePackage
+Class vslsmashsourcePackage
     Inherits PluginPackage
 
     Sub New()
@@ -990,7 +984,7 @@ Public Class vslsmashsourcePackage
     End Property
 End Class
 
-Public Class qaacPackage
+Class qaacPackage
     Inherits Package
 
     Sub New()
@@ -1019,7 +1013,7 @@ Public Class qaacPackage
     End Function
 End Class
 
-Public Class checkmatePackage
+Class checkmatePackage
     Inherits PluginPackage
 
     Sub New()
@@ -1031,7 +1025,7 @@ Public Class checkmatePackage
     End Sub
 End Class
 
-Public Class SangNom2Package
+Class SangNom2Package
     Inherits PluginPackage
 
     Sub New()
@@ -1043,7 +1037,7 @@ Public Class SangNom2Package
     End Sub
 End Class
 
-Public Class DSS2modPackage
+Class DSS2modPackage
     Inherits PluginPackage
 
     Sub New()
@@ -1055,7 +1049,7 @@ Public Class DSS2modPackage
     End Sub
 End Class
 
-Public Class vinversePackage
+Class vinversePackage
     Inherits PluginPackage
 
     Sub New()
@@ -1067,7 +1061,7 @@ Public Class vinversePackage
     End Sub
 End Class
 
-Public Class DGIndexNVPackage
+Class DGIndexNVPackage
     Inherits Package
 
     Sub New()
@@ -1093,7 +1087,7 @@ Public Class DGIndexNVPackage
     End Property
 End Class
 
-Public Class DGIndexIMPackage
+Class DGIndexIMPackage
     Inherits Package
 
     Sub New()
@@ -1118,7 +1112,7 @@ Public Class DGIndexIMPackage
     End Property
 End Class
 
-Public Class DGDecodeIMPackage
+Class DGDecodeIMPackage
     Inherits PluginPackage
 
     Sub New()
@@ -1138,7 +1132,7 @@ Public Class DGDecodeIMPackage
     End Property
 End Class
 
-Public Class BDSup2SubPackage
+Class BDSup2SubPackage
     Inherits Package
 
     Sub New()
@@ -1150,7 +1144,7 @@ Public Class BDSup2SubPackage
     End Sub
 End Class
 
-Public Class NVEncCPackage
+Class NVEncCPackage
     Inherits Package
 
     Sub New()
@@ -1162,7 +1156,7 @@ Public Class NVEncCPackage
     End Sub
 End Class
 
-Public Class AVSMeterPackage
+Class AVSMeterPackage
     Inherits Package
 
     Sub New()
@@ -1174,7 +1168,7 @@ Public Class AVSMeterPackage
     End Sub
 End Class
 
-Public Class DivX265Package
+Class DivX265Package
     Inherits Package
 
     Sub New()
@@ -1186,7 +1180,7 @@ Public Class DivX265Package
     End Sub
 End Class
 
-Public Class xvid_encrawPackage
+Class xvid_encrawPackage
     Inherits Package
 
     Sub New()
@@ -1198,7 +1192,7 @@ Public Class xvid_encrawPackage
     End Sub
 End Class
 
-Public Class dsmuxPackage
+Class dsmuxPackage
     Inherits Package
 
     Sub New()
@@ -1222,7 +1216,7 @@ Public Class dsmuxPackage
     End Property
 End Class
 
-Public Class HaaliSplitter
+Class HaaliSplitter
     Inherits Package
 
     Sub New()
@@ -1240,7 +1234,7 @@ Public Class HaaliSplitter
     End Function
 End Class
 
-Public Class MPCPackage
+Class MPCPackage
     Inherits Package
 
     Sub New()
@@ -1255,12 +1249,12 @@ Public Class MPCPackage
 
     Public Overrides ReadOnly Property LaunchAction As Action
         Get
-            Return Sub() g.ShellExecute(GetPath)
+            Return Sub() g.ShellExecute(GetPath, If(p.SourceFile <> "" AndAlso Not p.SourceFile.EqualsAny(FileTypes.VideoIndex), """" + p.SourceFile, """"))
         End Get
     End Property
 End Class
 
-Public Class TDeintPackage
+Class TDeintPackage
     Inherits PluginPackage
 
     Sub New()
@@ -1272,7 +1266,7 @@ Public Class TDeintPackage
     End Sub
 End Class
 
-Public Class nnedi3Package
+Class nnedi3Package
     Inherits PluginPackage
 
     Sub New()
@@ -1284,7 +1278,7 @@ Public Class nnedi3Package
     End Sub
 End Class
 
-Public Class scenechangePackage
+Class scenechangePackage
     Inherits PluginPackage
 
     Sub New()
@@ -1294,7 +1288,7 @@ Public Class scenechangePackage
     End Sub
 End Class
 
-Public Class temporalsoftenPackage
+Class temporalsoftenPackage
     Inherits PluginPackage
 
     Sub New()
@@ -1304,7 +1298,7 @@ Public Class temporalsoftenPackage
     End Sub
 End Class
 
-Public Class mvtoolsPackage
+Class mvtoolsPackage
     Inherits PluginPackage
 
     Sub New()
@@ -1317,7 +1311,7 @@ Public Class mvtoolsPackage
     End Sub
 End Class
 
-Public Class masktools2Package
+Class masktools2Package
     Inherits PluginPackage
 
     Sub New()
@@ -1329,7 +1323,7 @@ Public Class masktools2Package
     End Sub
 End Class
 
-Public Class DecombPackage
+Class DecombPackage
     Inherits PluginPackage
 
     Sub New()
@@ -1342,7 +1336,7 @@ Public Class DecombPackage
     End Sub
 End Class
 
-Public Class flash3kyuu_debandPackage
+Class flash3kyuu_debandPackage
     Inherits PluginPackage
 
     Sub New()

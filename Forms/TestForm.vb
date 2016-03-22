@@ -1,7 +1,7 @@
 ﻿Imports StaxRip.UI
 Imports System.Reflection
 
-Public Class TestForm
+Class TestForm
     Private CMS As ContextMenuStripEx
 
     Sub New()

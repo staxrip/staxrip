@@ -1,7 +1,7 @@
 Imports StaxRip.UI
 Imports System.Windows.Forms.VisualStyles
 
-Public Class AudioForm
+Class AudioForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -513,7 +513,7 @@ Public Class AudioForm
         gap.Language = TempProfile.Language
         gap.Channels = TempProfile.Channels
         gap.Delay = TempProfile.Delay
-        gap.Name = TempProfile.CustomName
+        gap.Name = TempProfile.Name
         gap.StreamName = TempProfile.StreamName
         gap.Gain = TempProfile.Gain
 
@@ -758,7 +758,10 @@ Public Class AudioForm
     End Sub
 
     Sub LoadProfile()
-        tbName.Text = TempProfile.CustomName
+        If TempProfile.Name <> TempProfile.DefaultName Then
+            tbName.Text = TempProfile.Name
+        End If
+
         tbName.SendMessageCue(TempProfile.Name, False)
 
         mbCodec.Value = TempProfile.Params.Codec

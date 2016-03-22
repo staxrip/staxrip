@@ -75,6 +75,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\</OutputPath>
@@ -312,7 +313,7 @@
     <Compile Include="Forms\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ApplicationsForm.vb">
+    <Compile Include="Forms\AppsForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\PreviewForm.vb">
@@ -429,8 +430,8 @@
     <EmbeddedResource Include="Controls\x264Control.resx">
       <DependentUpon>x264Control.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ApplicationsForm.resx">
-      <DependentUpon>ApplicationsForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\AppsForm.resx">
+      <DependentUpon>AppsForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AudioForm.resx">
       <DependentUpon>AudioForm.vb</DependentUpon>

@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Public Class ControlHostForm
+Class ControlHostForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -60,7 +60,7 @@ Public Class ControlHostForm
 #End Region
 
     Private HelpAction As Action
-    
+
     Sub New(title As String)
         MyBase.New()
         InitializeComponent()

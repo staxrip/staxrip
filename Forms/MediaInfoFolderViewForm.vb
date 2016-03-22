@@ -2,7 +2,7 @@ Imports StaxRip.UI
 Imports System.Threading
 Imports System.Threading.Tasks
 
-Public Class MediaInfoFolderViewForm
+Class MediaInfoFolderViewForm
     Inherits DialogBase
 
 #Region " Designer "

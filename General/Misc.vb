@@ -22,7 +22,7 @@ Module ShortcutModule
     Public s As New ApplicationSettings
 End Module
 
-Public Class Paths
+Class Paths
     Shared Function VerifyRequirements() As Boolean
         If Directory.Exists(Paths.PluginsDir) Then
             For Each i In Directory.GetFiles(Paths.PluginsDir)
@@ -76,24 +76,6 @@ Public Class Paths
         Get
             If SettingsDirValue Is Nothing Then
                 SettingsDirValue = Registry.CurrentUser.GetString("Software\StaxRip", CommonDirs.Startup)
-
-                If Not Directory.Exists(SettingsDirValue) Then
-                    For Each i In {
-                            CommonDirs.Startup + "Settings",
-                            CommonDirs.CommonAppData + "StaxRip x64",
-                            CommonDirs.UserAppDataLocal + "StaxRip x64",
-                            CommonDirs.UserAppDataRoaming + "StaxRip x64",
-                            CommonDirs.CommonAppData + "StaxRip64",
-                            CommonDirs.UserAppDataLocal + "StaxRip64",
-                            CommonDirs.UserAppDataRoaming + "StaxRip64"}
-
-                        If Directory.Exists(i) Then
-                            SettingsDirValue = DirPath.AppendSeparator(i)
-                            Registry.CurrentUser.Write("Software\StaxRip", CommonDirs.Startup, SettingsDirValue)
-                            Exit For
-                        End If
-                    Next
-                End If
 
                 If Not Directory.Exists(SettingsDirValue) Then
                     Dim td As New TaskDialog(Of String)
@@ -154,7 +136,7 @@ Public Class Paths
 
     Shared ReadOnly Property TemplateDir() As String
         Get
-            Dim ret = SettingsDir + "Templates\"
+            Dim ret = SettingsDir + "TemplatesV2\"
             Dim fresh As Boolean
 
             If Not Directory.Exists(ret) Then
@@ -162,7 +144,7 @@ Public Class Paths
                 fresh = True
             End If
 
-            Dim version = 42
+            Dim version = 43
 
             If fresh OrElse Not s.Storage.GetInt("template update") = version Then
                 s.Storage.SetInt("template update", version)
@@ -236,7 +218,7 @@ Public Class Paths
 
     Shared ReadOnly Property SettingsFile() As String
         Get
-            Return SettingsDir + "Settings.dat"
+            Return SettingsDir + "SettingsV2.dat"
         End Get
     End Property
 
@@ -499,6 +481,10 @@ Class GlobalClass
         End If
     End Function
 
+    Sub SaveSettings()
+        SafeSerialization.Serialize(s, Paths.SettingsFile)
+    End Sub
+
     Sub RaiseAppEvent(appEvent As ApplicationEvent)
         For Each i In s.EventCommands
             If i.Enabled AndAlso i.Event = appEvent Then
@@ -675,7 +661,7 @@ Class GlobalClass
                     g.MainForm.SaveProjectByPath(path)
                 End If
 
-                g.MainForm.SaveSettings()
+                g.SaveSettings()
             Catch
             End Try
 
@@ -1060,7 +1046,7 @@ Public Enum RegistryRoot
 End Enum
 
 <Serializable()>
-Public Class Range
+Class Range
     Implements IComparable(Of Range)
 
     Public Start As Integer
@@ -1080,7 +1066,7 @@ Public Class Range
     End Function
 End Class
 
-Public Class Log
+Class Log
     Shared StartTime As DateTime
 
     Shared Event Update(text As String)
@@ -1140,6 +1126,19 @@ Public Class Log
     End Function
 
     Shared Sub WriteEnvironment()
+        If p.Log.ToString.Contains("StaxRip x64: " + Application.ProductVersion) Then Exit Sub
+
+        Dim staxrip =
+"-----------------------------------------------------------
+      _________ __                __________.__        
+     /   _____//  |______  ___  __\______   \__|_____  
+     \_____  \\   __\__  \ \  \/  /|       _/  \____ \ 
+     /        \|  |  / __ \_>    < |    |   \  |  |_> >
+    /_______  /|__| (____  /__/\_ \|____|_  /__|   __/ 
+            \/           \/      \/       \/   |__|   "
+
+        WriteLine(staxrip)
+
         WriteHeader("Environment")
 
         Dim mc As New ManagementClass("Win32_VideoController")
@@ -1188,7 +1187,7 @@ Public Class Log
     End Sub
 End Class
 
-Public Class Calc
+Class Calc
     Shared Function GetYFromTwoPointForm(x1 As Single, y1 As Single, x2 As Single, y2 As Single, x As Single) As Integer
         'Zweipunkteform nach y aufgelöst
         Return CInt((((y2 - y1) / (x2 - x1)) * (x - x1)) + y1)
@@ -1511,19 +1510,6 @@ Public Class Calc
         End If
     End Function
 
-
-    Shared Function GetMod(value As Integer) As Integer
-        Dim ret As Integer
-
-        For Each i In New Integer() {1, 2, 4, 8, 16}
-            If value Mod i = 0 Then
-                ret = i
-            End If
-        Next
-
-        Return ret
-    End Function
-
     Shared Function GetNextMod(val As Integer, step1 As Integer) As Integer
         Do
             val += 1
@@ -1589,7 +1575,7 @@ Public Structure VideoFormat
 End Structure
 
 <Serializable()>
-Public Class Language
+Class Language
     Implements IComparable(Of Language)
 
     <NonSerialized>
@@ -1758,7 +1744,7 @@ Public Class Language
     End Function
 End Class
 
-Public Class CmdlTypeEditor
+Class CmdlTypeEditor
     Inherits UITypeEditor
 
     Overloads Overrides Function EditValue(context As ITypeDescriptorContext,
@@ -1781,7 +1767,7 @@ Public Class CmdlTypeEditor
     End Function
 End Class
 
-Public Class ScriptTypeEditor
+Class ScriptTypeEditor
     Inherits UITypeEditor
 
     Overloads Overrides Function EditValue(context As ITypeDescriptorContext, provider As IServiceProvider, value As Object) As Object
@@ -1802,7 +1788,7 @@ Public Class ScriptTypeEditor
     End Function
 End Class
 
-Public Class MacroStringTypeEditor
+Class MacroStringTypeEditor
     Inherits UITypeEditor
 
     Overloads Overrides Function EditValue(context As ITypeDescriptorContext,
@@ -1829,6 +1815,9 @@ End Class
 Public MustInherit Class Profile
     Implements IComparable(Of Profile)
 
+    Sub New()
+    End Sub
+
     Sub New(name As String)
         Me.Name = name
     End Sub
@@ -1837,11 +1826,22 @@ Public MustInherit Class Profile
 
     Overridable Property Name() As String
         Get
+            If NameValue = "" Then Return DefaultName
             Return NameValue
         End Get
         Set(Value As String)
-            NameValue = Value
+            If Value = DefaultName Then
+                Value = Nothing
+            Else
+                NameValue = Value
+            End If
         End Set
+    End Property
+
+    Overridable ReadOnly Property DefaultName As String
+        Get
+            Return "untitled"
+        End Get
     End Property
 
     Protected CanEditValue As Boolean
@@ -1877,7 +1877,7 @@ End Class
 
 <Serializable(),
  TypeConverter(GetType(PropertyOrderConverter))>
-Public Class Macro
+Class Macro
     Implements IComparable(Of Macro)
 
     Sub New()
@@ -2529,7 +2529,7 @@ Public Class Macro
 End Class
 
 <Serializable()>
-Public Class ObjectStorage
+Class ObjectStorage
     Private StringDictionary As New Dictionary(Of String, String)
     Private IntDictionary As New Dictionary(Of String, Integer)
 
@@ -2600,7 +2600,7 @@ Public Enum CompCheckAction
     <DispName("file size")> AdjustFileSize
 End Enum
 
-Public Class GlobalCommands
+Class GlobalCommands
     <Command("Perform | Execute Command Line", "Executes command lines separated by a line break line by line.")>
     Sub ExecuteCommandLine(
         <DispName("Command Line"),
@@ -2941,57 +2941,13 @@ Public Class GlobalCommands
 End Class
 
 <Serializable()>
-Public Class EventCommand
-    'legacy
-    Private NameValue As String
-    Private CriteriaListValue As List(Of Criteria)
-    Private OrOnlyValue As Boolean
-    Private OrOnlyMigrated As Boolean = True
-    Private CommandParametersValue As CommandParameters
-    Private EventValue As ApplicationEvent
-    Private EventMigrated As Boolean = True
-    Private EnabledMigrated As Boolean = True
-
+Class EventCommand
     Property Name As String = "???"
     Property Enabled As Boolean = True
-    Property CriteriaList As List(Of Criteria) = New List(Of Criteria)
+    Property CriteriaList As New List(Of Criteria)
     Property OrOnly As Boolean
     Property CommandParameters As CommandParameters
     Property [Event] As ApplicationEvent
-
-    'legacy
-    <OnDeserialized()>
-    Sub OnDeserialized(ByVal context As StreamingContext)
-        If NameValue <> "" Then
-            Name = NameValue
-            NameValue = ""
-        End If
-
-        If Not CriteriaListValue Is Nothing Then
-            CriteriaList = CriteriaListValue
-            CriteriaListValue = Nothing
-        End If
-
-        If Not OrOnlyMigrated Then
-            OrOnly = OrOnlyValue
-            OrOnlyMigrated = True
-        End If
-
-        If Not CommandParametersValue Is Nothing Then
-            CommandParameters = CommandParametersValue
-            CommandParametersValue = Nothing
-        End If
-
-        If Not EventMigrated Then
-            Me.Event = EventValue
-            EventMigrated = True
-        End If
-
-        If Not EnabledMigrated Then
-            EnabledMigrated = True
-            Enabled = True
-        End If
-    End Sub
 
     Overrides Function ToString() As String
         Return Name
@@ -3027,7 +2983,7 @@ Public Enum SourceInputMode
     DirectoryBatch
 End Enum
 
-Public Class BoolStringIntConverter
+Class BoolStringIntConverter
     Inherits TypeConverter
 
     Overloads Overrides Function GetStandardValuesSupported(context As ITypeDescriptorContext) As Boolean
@@ -3097,7 +3053,7 @@ Public NotInheritable Class LegacySerializationBinder
     End Function
 End Class
 
-Public Class CmdlBuilder
+Class CmdlBuilder
     Public SB As New StringBuilder
 
     Sub Add(value As Integer, defaultValue As Integer, prefix As String)
@@ -3113,7 +3069,7 @@ Public Class CmdlBuilder
     End Sub
 End Class
 
-Public Class Startup
+Class Startup
     <STAThread()>
     Shared Sub Main()
         SetProcessDPIAware()
@@ -3137,10 +3093,10 @@ Public Class Startup
 End Class
 
 <Serializable()>
-Public Class Dummy
+Class Dummy
 End Class
 
-Public Class KeyValueList(Of T1, T2)
+Class KeyValueList(Of T1, T2)
     Inherits List(Of KeyValuePair(Of T1, T2))
 
     Overloads Sub Add(key As T1, value As T2)
@@ -3148,13 +3104,13 @@ Public Class KeyValueList(Of T1, T2)
     End Sub
 End Class
 
-Public Class GUIDS
+Class GUIDS
     Shared Property LAVSplitter As String = "{171252A0-8820-4AFE-9DF8-5C92B2D66B04}"
     Shared Property LAVVideoDecoder As String = "{EE30215D-164F-4A92-A4EB-9D4C13390F9F}"
     Shared Property HaaliMuxer As String = "{A28F324B-DDC5-4999-AA25-D3A7E25EF7A8}"
 End Class
 
-Public Class M2TSStream
+Class M2TSStream
     Property Text As String = "Nothing"
     Property Codec As String = ""
     Property OutputType As String = ""
@@ -3193,7 +3149,7 @@ Public Class M2TSStream
 End Class
 
 <Serializable>
-Public Class AudioStream
+Class AudioStream
     Property BitDepth As Integer
     Property Bitrate As Integer
     Property BitrateCore As Integer
@@ -3367,7 +3323,7 @@ Class Video
 End Class
 
 <Serializable()>
-Public Class Subtitle
+Class Subtitle
     Property Title As String = ""
     Property Path As String
     Property CodecString As String

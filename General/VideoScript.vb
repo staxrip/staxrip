@@ -17,14 +17,6 @@ Class VideoScript
     Overridable Property Engine As ScriptingEngine = ScriptingEngine.AviSynth
     Overridable Property Path As String = ""
 
-    Sub New()
-        Me.New(Nothing)
-    End Sub
-
-    Sub New(name As String)
-        MyBase.New(name)
-    End Sub
-
     Overridable ReadOnly Property FileType As String
         Get
             If Engine = ScriptingEngine.VapourSynth Then Return "vpy"
@@ -345,7 +337,7 @@ Class TargetVideoScript
     Inherits VideoScript
 
     Sub New(name As String)
-        MyBase.New(name)
+        Me.Name = name
         CanEditValue = True
     End Sub
 
@@ -363,14 +355,6 @@ End Class
 <Serializable()>
 Class SourceVideoScript
     Inherits VideoScript
-
-    Sub New()
-        Me.New(Nothing)
-    End Sub
-
-    Sub New(name As String)
-        MyBase.New(name)
-    End Sub
 
     Overrides Property Path() As String
         Get
@@ -395,7 +379,7 @@ Class SourceVideoScript
 End Class
 
 <Serializable()>
-Public Class VideoFilter
+Class VideoFilter
     Implements IComparable(Of VideoFilter)
 
     Property Active As Boolean
@@ -611,7 +595,6 @@ Class FilterCategory
         field.Filters.Add(New VideoFilter(field.Name, "Vinverse", "clip = core.vinverse.Vinverse(clip)"))
         field.Filters.Add(New VideoFilter(field.Name, "Select Even", "clip = clip[::2]"))
         field.Filters.Add(New VideoFilter(field.Name, "Select Odd", "clip = clip[1::2]"))
-        field.Filters.Add(New VideoFilter(field.Name, "AssumeFrame", "clip = mvsfunc.AssumeFrame(clip)"))
 
         ret.Add(field)
 
@@ -663,42 +646,28 @@ Class FilterParameters
             If DefinitionsValue Is Nothing Then
                 DefinitionsValue = New List(Of FilterParameters)
 
-                Dim add = Function(functionName As String, text As String) As FilterParameters
+                Dim add = Function(func As String, text As String) As FilterParameters
                               Dim ret As New FilterParameters
-                              ret.FunctionName = functionName
+                              ret.FunctionName = func
                               ret.Text = text
                               DefinitionsValue.Add(ret)
                               Return ret
                           End Function
 
+                Dim add2 = Function(func As String,
+                                    param As String,
+                                    value As String,
+                                    text As String) As FilterParameters
+
+                               Dim ret As New FilterParameters
+                               ret.FunctionName = func
+                               ret.Text = text
+                               DefinitionsValue.Add(ret)
+                               ret.Parameters.Add(New FilterParameter(param, value))
+                               Return ret
+                           End Function
+
                 Dim item As FilterParameters
-
-                item = add("FFVideoSource", "rffmode = 0 (ignore all flags (default))")
-                item.Parameters.Add(New FilterParameter("rffmode", "0"))
-
-                item = add("FFVideoSource", "rffmode = 1 (honor all pulldown flags)")
-                item.Parameters.Add(New FilterParameter("rffmode", "1"))
-
-                item = add("FFVideoSource", "rffmode = 2 (force film)")
-                item.Parameters.Add(New FilterParameter("rffmode", "2"))
-
-                item = add("ffms2.Source", "rffmode = 0 (ignore all flags (default))")
-                item.Parameters.Add(New FilterParameter("rffmode", "0"))
-
-                item = add("ffms2.Source", "rffmode = 1 (honor all pulldown flags)")
-                item.Parameters.Add(New FilterParameter("rffmode", "1"))
-
-                item = add("ffms2.Source", "rffmode = 2 (force film)")
-                item.Parameters.Add(New FilterParameter("rffmode", "2"))
-
-                item = add("DGSource", "deinterlace = 0 (no deinterlacing)")
-                item.Parameters.Add(New FilterParameter("deinterlace", "0"))
-
-                item = add("DGSource", "deinterlace = 1 (single rate deinterlacing)")
-                item.Parameters.Add(New FilterParameter("deinterlace", "1"))
-
-                item = add("DGSource", "deinterlace = 2 (double rate deinterlacing)")
-                item.Parameters.Add(New FilterParameter("deinterlace", "2"))
 
                 item = add("DGSource", "Hardware Resizing")
                 item.Parameters.Add(New FilterParameter("resize_w", "%target_width%"))
@@ -709,6 +678,33 @@ Class FilterParameters
                 item.Parameters.Add(New FilterParameter("crop_t", "%crop_top%"))
                 item.Parameters.Add(New FilterParameter("crop_r", "%crop_right%"))
                 item.Parameters.Add(New FilterParameter("crop_b", "%crop_bottom%"))
+
+                add2("FFVideoSource", "rffmode", "0", "rffmode | rffmode = 0 (ignore all flags (default))")
+                add2("FFVideoSource", "rffmode", "1", "rffmode | rffmode = 1 (honor all pulldown flags)")
+                add2("FFVideoSource", "rffmode", "2", "rffmode | rffmode = 2 (force film)")
+
+                add2("ffms2.Source", "rffmode", "0", "rffmode | rffmode = 0 (ignore all flags (default))")
+                add2("ffms2.Source", "rffmode", "1", "rffmode | rffmode = 1 (honor all pulldown flags)")
+                add2("ffms2.Source", "rffmode", "2", "rffmode | rffmode = 2 (force film)")
+
+                add2("DGSource", "deinterlace", "0", "deinterlace | deinterlace = 0 (no deinterlacing)")
+                add2("DGSource", "deinterlace", "1", "deinterlace | deinterlace = 1 (single rate deinterlacing)")
+                add2("DGSource", "deinterlace", "2", "deinterlace | deinterlace = 2 (double rate deinterlacing)")
+
+                add2("havsfunc.QTGMC", "TFF", "True", "TFF | TFF = True (top field first)")
+                add2("havsfunc.QTGMC", "TFF", "False", "TFF | TFF = False (bottom field first)")
+
+                add2("havsfunc.QTGMC", "Preset", "'draft'", "Preset | Preset = 'draft'")
+                add2("havsfunc.QTGMC", "Preset", "'ultra fast'", "Preset | Preset = 'ultra fast'")
+                add2("havsfunc.QTGMC", "Preset", "'super fast'", "Preset | Preset = 'super fast'")
+                add2("havsfunc.QTGMC", "Preset", "'very fast'", "Preset | Preset = 'very fast'")
+                add2("havsfunc.QTGMC", "Preset", "'faster'", "Preset | Preset = 'faster'")
+                add2("havsfunc.QTGMC", "Preset", "'fast'", "Preset | Preset = 'fast'")
+                add2("havsfunc.QTGMC", "Preset", "'medium'", "Preset | Preset = 'medium'")
+                add2("havsfunc.QTGMC", "Preset", "'slow'", "Preset | Preset = 'slow'")
+                add2("havsfunc.QTGMC", "Preset", "'slower'", "Preset | Preset = 'slower'")
+                add2("havsfunc.QTGMC", "Preset", "'very slow'", "Preset | Preset = 'very slow'")
+                add2("havsfunc.QTGMC", "Preset", "'placebo'", "Preset | Preset = 'placebo'")
             End If
 
             Return DefinitionsValue

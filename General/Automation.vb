@@ -2,7 +2,7 @@
 
 Imports Microsoft.VisualBasic
 
-Public Class Explorer
+Class Explorer
     Shared ShellApp As Object = CreateObject("Shell.Application")
 
     Shared Sub SelectFile(handle As IntPtr, filepath As String)

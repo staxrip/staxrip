@@ -14,7 +14,7 @@ Imports System.Security.Principal
 Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
 
-Public Class CommonDirs
+Class CommonDirs
     Shared ReadOnly Property Startup() As String
         Get
             Return DirPath.AppendSeparator(Application.StartupPath)
@@ -88,7 +88,7 @@ Public Class CommonDirs
     End Function
 End Class
 
-Public Class PathBase
+Class PathBase
     Shared ReadOnly Property Separator() As Char
         Get
             Return Path.DirectorySeparatorChar
@@ -142,7 +142,7 @@ Public Class PathBase
     End Function
 End Class
 
-Public Class DirPath
+Class DirPath
     Inherits PathBase
 
     Shared Function GetRoot(path As String) As String
@@ -173,8 +173,8 @@ Public Class DirPath
 
     Shared Function GetParent(path As String) As String
         If path = "" Then Return ""
-        Dim tmp = TrimTrailingSeparator(path)
-        If tmp.Contains(Separator) Then path = tmp.LeftLast(Separator) + Separator
+        Dim temp = TrimTrailingSeparator(path)
+        If temp.Contains(Separator) Then path = temp.LeftLast(Separator) + Separator
         Return path
     End Function
 
@@ -197,7 +197,7 @@ Public Class DirPath
     End Function
 End Class
 
-Public Class Filepath
+Class Filepath
     Inherits PathBase
 
     Private Value As String
@@ -289,7 +289,7 @@ Public Class Filepath
     End Function
 End Class
 
-Public Class SafeSerialization
+Class SafeSerialization
     Shared Sub Serialize(o As Object, path As String)
         Dim list As New List(Of Object)
 
@@ -317,9 +317,12 @@ Public Class SafeSerialization
 
         Dim bf As New BinaryFormatter
 
-        Using fs As New FileStream(path, FileMode.Create)
-            bf.Serialize(fs, list)
-        End Using
+        Try
+            Using fs As New FileStream(path, FileMode.Create)
+                bf.Serialize(fs, list)
+            End Using
+        Catch
+        End Try
     End Sub
 
     Shared Function Deserialize(instance As Object,
@@ -373,7 +376,7 @@ Public Class SafeSerialization
     End Function
 
     Private Shared Function IsSimpleType(t As Type) As Boolean
-        Return t.IsPrimitive OrElse _
+        Return t.IsPrimitive OrElse
             t Is GetType(String) OrElse
             t Is GetType(SettingBag(Of String)) OrElse
             t Is GetType(SettingBag(Of Boolean)) OrElse
@@ -404,7 +407,7 @@ Public Class SafeSerialization
     End Function
 
     <Serializable()>
-    Public Class FieldContainer
+    Class FieldContainer
         Public Value As Object
         Public Name As String
     End Class
@@ -431,7 +434,7 @@ Public Interface ISafeSerialization
     Sub Init()
 End Interface
 
-Public Class Sorter(Of T)
+Class Sorter(Of T)
     Private List As New List(Of SortObject(Of T))
 
     Sub Add(sortValue As IComparable, o As T)
@@ -466,7 +469,7 @@ Public Class Sorter(Of T)
     End Class
 End Class
 
-Public Class HelpDocument
+Class HelpDocument
     Private Path As String
     Private Title As String
     Private IsClosed As Boolean
@@ -741,7 +744,7 @@ table {
 End Class
 
 <Serializable()>
-Public Class SettingBag(Of T)
+Class SettingBag(Of T)
     Sub New()
     End Sub
 
@@ -749,19 +752,10 @@ Public Class SettingBag(Of T)
         Me.Value = value
     End Sub
 
-    Private ValueValue As T
-
-    Overridable Property Value() As T
-        Get
-            Return ValueValue
-        End Get
-        Set(Value As T)
-            ValueValue = Value
-        End Set
-    End Property
+    Overridable Property Value As T
 End Class
 
-Public Class FieldSettingBag(Of T)
+Class FieldSettingBag(Of T)
     Inherits SettingBag(Of T)
 
     Private Obj As Object
@@ -782,7 +776,7 @@ Public Class FieldSettingBag(Of T)
     End Property
 End Class
 
-Public Class ReflectionSettingBag(Of T)
+Class ReflectionSettingBag(Of T)
     Inherits SettingBag(Of T)
 
     Private Obj As Object
@@ -816,7 +810,7 @@ Public Class ReflectionSettingBag(Of T)
 End Class
 
 <Serializable>
-Public Class StringPair
+Class StringPair
     Implements IComparable(Of StringPair)
 
     Property Name As String
@@ -835,7 +829,7 @@ Public Class StringPair
     End Function
 End Class
 
-Public Class Misc
+Class Misc
     Public Shared IsAdmin As Boolean = New WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator)
 
     Shared Sub PlayAudioFile(path As String, volume As Integer)
@@ -891,7 +885,7 @@ Public Class Misc
     End Function
 End Class
 
-Public Class ErrorAbortException
+Class ErrorAbortException
     Inherits ApplicationException
 
     Property Title As String
@@ -904,25 +898,16 @@ Public Class ErrorAbortException
     End Sub
 End Class
 
-Public Class AbortException
+Class AbortException
     Inherits ApplicationException
 End Class
 
-Public Class CLIArg
+Class CLIArg
     Sub New(value As String)
         Me.Value = value
     End Sub
 
-    Private ValueValue As String
-
-    Property Value() As String
-        Get
-            Return ValueValue
-        End Get
-        Set(Value As String)
-            ValueValue = Value
-        End Set
-    End Property
+    Property Value As String
 
     Shared Function GetArgs(a As String()) As List(Of CLIArg)
         Dim ret As New List(Of CLIArg)
@@ -941,8 +926,8 @@ Public Class CLIArg
             i = i.ToUpper
             Dim val As String = Value.ToUpper
 
-            If "-" + i = val OrElse "/" + i = val OrElse _
-                val.ToUpper.StartsWith("-" + i + ":") OrElse _
+            If "-" + i = val OrElse "/" + i = val OrElse
+                val.ToUpper.StartsWith("-" + i + ":") OrElse
                 val.ToUpper.StartsWith("/" + i + ":") Then
 
                 Return True
@@ -964,7 +949,7 @@ Public Class CLIArg
 End Class
 
 <Serializable()>
-Public Class StringPairList
+Class StringPairList
     Inherits List(Of StringPair)
 
     Sub New()
@@ -980,59 +965,21 @@ Public Class StringPairList
 End Class
 
 <Serializable()>
-Public Class CommandParameters
+Class CommandParameters
     Sub New(methodName As String, ParamArray params As Object())
         Me.MethodName = methodName
         Parameters = New List(Of Object)(params)
     End Sub
 
-    Private MethodNameValue As String
-
-    Property MethodName() As String
-        Get
-            Return MethodNameValue
-        End Get
-        Set(Value As String)
-            MethodNameValue = Value
-        End Set
-    End Property
-
-    Private ParametersValue As List(Of Object)
-
-    Property Parameters() As List(Of Object)
-        Get
-            Return ParametersValue
-        End Get
-        Set(Value As List(Of Object))
-            ParametersValue = Value
-        End Set
-    End Property
+    Property MethodName As String
+    Property Parameters As List(Of Object)
 End Class
 
-Public Class Command
+Class Command
     Implements IComparable(Of Command)
 
-    Private FunctionAttributeValue As CommandAttribute
-
-    Property Attribute() As CommandAttribute
-        Get
-            Return FunctionAttributeValue
-        End Get
-        Set(Value As CommandAttribute)
-            FunctionAttributeValue = Value
-        End Set
-    End Property
-
-    Private MethodInfoValue As MethodInfo
-
-    Property MethodInfo() As MethodInfo
-        Get
-            Return MethodInfoValue
-        End Get
-        Set(Value As MethodInfo)
-            MethodInfoValue = Value
-        End Set
-    End Property
+    Property Attribute As CommandAttribute
+    Property MethodInfo As MethodInfo
 
     Function FixParameters(params As List(Of Object)) As List(Of Object)
         Dim copiedParams As New List(Of Object)(params)
@@ -1084,16 +1031,7 @@ Public Class Command
         Return ""
     End Function
 
-    Private ObjectValue As Object
-
-    Property [Object]() As Object
-        Get
-            Return ObjectValue
-        End Get
-        Set(Value As Object)
-            ObjectValue = Value
-        End Set
-    End Property
+    Property [Object] As Object
 
     Function CompareTo(other As Command) As Integer Implements System.IComparable(Of Command).CompareTo
         Return Attribute.Name.CompareTo(other.Attribute.Name)
@@ -1129,7 +1067,7 @@ Public Class Command
 End Class
 
 <AttributeUsage(AttributeTargets.Method)>
-Public Class CommandAttribute
+Class CommandAttribute
     Inherits Attribute
 
     Sub New(name As String, description As String)
@@ -1137,51 +1075,13 @@ Public Class CommandAttribute
         Me.Description = description
     End Sub
 
-    Private NameValue As String
-
-    Property Name() As String
-        Get
-            Return NameValue
-        End Get
-        Set(Value As String)
-            NameValue = Value
-        End Set
-    End Property
-
-    Private DescriptionValue As String
-
-    Property Description() As String
-        Get
-            Return DescriptionValue
-        End Get
-        Set(Value As String)
-            DescriptionValue = Value
-        End Set
-    End Property
-
-    Private SwitchValue As String
-
-    Property Switch() As String
-        Get
-            Return SwitchValue
-        End Get
-        Set(Value As String)
-            SwitchValue = Value
-        End Set
-    End Property
+    Property Name As String
+    Property Description As String
+    Property Switch As String
 End Class
 
-Public Class CommandManager
-    Private CommandsValue As New Dictionary(Of String, Command)
-
-    Property Commands() As Dictionary(Of String, Command)
-        Get
-            Return CommandsValue
-        End Get
-        Set(Value As Dictionary(Of String, Command))
-            CommandsValue = Value
-        End Set
-    End Property
+Class CommandManager
+    Property Commands As New Dictionary(Of String, Command)
 
     Function HasCommand(name As String) As Boolean
         Return Not name Is Nothing AndAlso Commands.ContainsKey(name)
@@ -1406,7 +1306,7 @@ Friend Module MainModule
     End Function
 End Module
 
-Public Class Reflector
+Class Reflector
     Public Type As Type
     Private BasicFlags As BindingFlags = BindingFlags.Static Or BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.NonPublic
 
@@ -1493,7 +1393,7 @@ Public Class Reflector
     End Function
 End Class
 
-Public Class WindowsScript
+Class WindowsScript
     Private R As New Reflector("MSScriptControl.ScriptControl")
 
     Sub AddCode(code As String)
@@ -1588,7 +1488,7 @@ Public Enum WshLanguage
     JScript
 End Enum
 
-Public Class Shutdown
+Class Shutdown
     Shared Sub Commit(mode As ShutdownMode)
         Select Case mode
             Case ShutdownMode.Standby
@@ -1619,7 +1519,7 @@ Public Enum ShutdownMode
     Shutdown
 End Enum
 
-Public Class NativeWindow
+Class NativeWindow
     Private Shared WindowHandles As New ArrayList
     Private Shared ChildHandles As New ArrayList
 

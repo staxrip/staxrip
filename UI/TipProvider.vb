@@ -10,7 +10,7 @@ Imports System.Text.RegularExpressions
 
 Namespace UI
     <ProvideProperty("TipText", GetType(Control))>
-    Public Class TipProvider
+    Class TipProvider
         Inherits Component
         Implements IExtenderProvider
 
@@ -103,7 +103,7 @@ Namespace UI
                     If HasContextMenu(c) Then
                         tipText = Nothing
                     Else
-                        tipText = "Please right-click for help"
+                        tipText = "Right-click for help"
                     End If
                 ElseIf HelpDocument.MustConvert(tipText) Then
                     tipText = HelpDocument.ConvertMarkup(tipText, True)

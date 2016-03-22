@@ -9,8 +9,10 @@ Imports System.Globalization
 Class x264Encoder
     Inherits VideoEncoder
 
+    Property Params As New x264Params
+
     Sub New()
-        MyBase.New("x264")
+        Name = "x264"
         AutoCompCheckValue = 50
     End Sub
 
@@ -18,17 +20,6 @@ Class x264Encoder
         Get
             Return "h264"
         End Get
-    End Property
-
-    Private ParamsValue As New x264Params
-
-    Property Params() As x264Params
-        Get
-            Return ParamsValue
-        End Get
-        Set(Value As x264Params)
-            ParamsValue = Value
-        End Set
     End Property
 
     Overrides Sub Encode()
@@ -103,7 +94,9 @@ Class x264Encoder
                 "clip = core.std.AssumeFPS(clip = clip, fpsnum = fpsnum, fpsden = fpsden)"
         End If
 
+        Log.WriteHeader("Compressibility Check Script")
         Log.WriteLine(code + CrLf2)
+
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
         script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
         script.Synchronize()
@@ -533,7 +526,7 @@ Class x264Encoder
 End Class
 
 <Serializable()>
-Public Class x264Params
+Class x264Params
     Implements ISerializable
 
     Public AdaptiveDCT As New SettingBag(Of Boolean)(True)
@@ -768,10 +761,10 @@ Public Class x264Params
                 'param->analyse.i_luma_deadzone[0] = 6;
                 'param->analyse.i_luma_deadzone[1] = 6;
                 defaults.QComp.Value = 0.8
-            Case x264TuneMode.Psnr
+            Case x264TuneMode.PSNR
                 defaults.AQMode.Value = x264AQMode.Disabled
                 defaults.Psy.Value = False
-            Case x264TuneMode.Ssim
+            Case x264TuneMode.SSIM
                 defaults.AQMode.Value = x264AQMode.AutoVariance
                 defaults.Psy.Value = False
             Case x264TuneMode.Fastdecode

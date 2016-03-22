@@ -11,7 +11,7 @@
 
     Private HueValue As Double
 
-    Public Property Hue() As Integer
+    Property Hue As Integer
         Get
             Return CInt(HueValue * 240)
         End Get
@@ -22,7 +22,7 @@
 
     Private SaturationValue As Double
 
-    Public Property Saturation() As Integer
+    Property Saturation As Integer
         Get
             Return CInt(SaturationValue * 240)
         End Get
@@ -33,7 +33,7 @@
 
     Private LuminosityValue As Double
 
-    Public Property Luminosity() As Integer
+    Property Luminosity As Integer
         Get
             Return CInt(LuminosityValue * 240)
         End Get

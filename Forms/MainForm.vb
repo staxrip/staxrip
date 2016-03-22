@@ -36,17 +36,11 @@ Class MainForm
     Public WithEvents tbTargetFile As StaxRip.UI.TextBoxEx
     Public WithEvents gbAssistant As System.Windows.Forms.GroupBox
     Friend WithEvents lgbFilters As LinkGroupBox
-    Friend WithEvents lTargetLength As System.Windows.Forms.Label
     Friend WithEvents tbSize As System.Windows.Forms.TextBox
-    Public WithEvents lAudioBitrate As System.Windows.Forms.Label
-    Public WithEvents lAudioBitrateText As System.Windows.Forms.Label
     Friend WithEvents lBitrate As System.Windows.Forms.Label
     Friend WithEvents tbBitrate As System.Windows.Forms.TextBox
-    Friend WithEvents lTargetLengthText As System.Windows.Forms.Label
-    Friend WithEvents lbSourceLength As System.Windows.Forms.Label
-    Friend WithEvents lbSourceLengthText As System.Windows.Forms.Label
-    Friend WithEvents lSourceFramerate As System.Windows.Forms.Label
-    Friend WithEvents lSourceFramerateText As System.Windows.Forms.Label
+    Friend WithEvents lTarget1 As System.Windows.Forms.Label
+    Friend WithEvents lSource1 As System.Windows.Forms.Label
     Friend WithEvents lgbResize As LinkGroupBox
     Friend WithEvents lPixel As System.Windows.Forms.Label
     Friend WithEvents lPixelText As System.Windows.Forms.Label
@@ -62,15 +56,12 @@ Class MainForm
     Public WithEvents lCrop As System.Windows.Forms.Label
     Friend WithEvents lCropText As System.Windows.Forms.Label
     Friend WithEvents lgbSource As LinkGroupBox
-    Friend WithEvents lSourceImageSize As System.Windows.Forms.Label
-    Friend WithEvents lSourceImageSizeText As System.Windows.Forms.Label
+    Friend WithEvents lSource2 As System.Windows.Forms.Label
     Friend WithEvents lgbTarget As LinkGroupBox
     Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
     Friend WithEvents lTip As System.Windows.Forms.Label
     Friend WithEvents lgbEncoder As LinkGroupBox
-    Public WithEvents lQuality As System.Windows.Forms.Label
-    Public WithEvents lQualityText As System.Windows.Forms.Label
-    Public WithEvents lCompCheck As System.Windows.Forms.Label
+    Public WithEvents lTarget2 As System.Windows.Forms.Label
     Friend WithEvents MenuStrip As System.Windows.Forms.MenuStrip
     Friend WithEvents llAudioProfile0 As LinkLabel
     Friend WithEvents llAudioProfile1 As LinkLabel
@@ -90,12 +81,6 @@ Class MainForm
     Friend WithEvents lSAR As StaxRip.UI.LabelEx
     Friend WithEvents lSarText As StaxRip.UI.LabelEx
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
-    Friend WithEvents lCodec As System.Windows.Forms.Label
-    Friend WithEvents lCodecProfile As System.Windows.Forms.Label
-    Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents Label3 As System.Windows.Forms.Label
-    Public WithEvents lCompCheckText As System.Windows.Forms.Label
 
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
@@ -112,37 +97,22 @@ Class MainForm
         Me.tbAudioFile1 = New StaxRip.UI.TextBoxEx()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
         Me.lgbTarget = New StaxRip.UI.LinkGroupBox()
-        Me.lCompCheck = New System.Windows.Forms.Label()
-        Me.lAudioBitrate = New System.Windows.Forms.Label()
         Me.llFilesize = New System.Windows.Forms.LinkLabel()
-        Me.lTargetLength = New System.Windows.Forms.Label()
         Me.tbSize = New System.Windows.Forms.TextBox()
-        Me.lAudioBitrateText = New System.Windows.Forms.Label()
-        Me.lQuality = New System.Windows.Forms.Label()
-        Me.lQualityText = New System.Windows.Forms.Label()
-        Me.lCompCheckText = New System.Windows.Forms.Label()
+        Me.lTarget2 = New System.Windows.Forms.Label()
         Me.lBitrate = New System.Windows.Forms.Label()
         Me.tbBitrate = New System.Windows.Forms.TextBox()
-        Me.lTargetLengthText = New System.Windows.Forms.Label()
+        Me.lTarget1 = New System.Windows.Forms.Label()
         Me.tbTargetFile = New StaxRip.UI.TextBoxEx()
         Me.lgbSource = New StaxRip.UI.LinkGroupBox()
-        Me.lCodec = New System.Windows.Forms.Label()
-        Me.lCodecProfile = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
         Me.lCrop = New System.Windows.Forms.Label()
-        Me.lSourceImageSize = New System.Windows.Forms.Label()
-        Me.lbSourceLength = New System.Windows.Forms.Label()
-        Me.lSourceFramerate = New System.Windows.Forms.Label()
         Me.lSourceDar = New System.Windows.Forms.Label()
         Me.lSourceDarText = New System.Windows.Forms.Label()
         Me.lSourcePAR = New System.Windows.Forms.Label()
         Me.llSourceParText = New System.Windows.Forms.LinkLabel()
         Me.lCropText = New System.Windows.Forms.Label()
-        Me.lSourceImageSizeText = New System.Windows.Forms.Label()
-        Me.lbSourceLengthText = New System.Windows.Forms.Label()
-        Me.lSourceFramerateText = New System.Windows.Forms.Label()
+        Me.lSource2 = New System.Windows.Forms.Label()
+        Me.lSource1 = New System.Windows.Forms.Label()
         Me.tbSourceFile = New StaxRip.UI.TextBoxEx()
         Me.lgbResize = New StaxRip.UI.LinkGroupBox()
         Me.lPAR = New StaxRip.UI.LabelEx()
@@ -310,18 +280,12 @@ Class MainForm
         '
         'lgbTarget
         '
-        Me.lgbTarget.Controls.Add(Me.lCompCheck)
-        Me.lgbTarget.Controls.Add(Me.lAudioBitrate)
         Me.lgbTarget.Controls.Add(Me.llFilesize)
-        Me.lgbTarget.Controls.Add(Me.lTargetLength)
         Me.lgbTarget.Controls.Add(Me.tbSize)
-        Me.lgbTarget.Controls.Add(Me.lAudioBitrateText)
-        Me.lgbTarget.Controls.Add(Me.lQuality)
-        Me.lgbTarget.Controls.Add(Me.lQualityText)
-        Me.lgbTarget.Controls.Add(Me.lCompCheckText)
+        Me.lgbTarget.Controls.Add(Me.lTarget2)
         Me.lgbTarget.Controls.Add(Me.lBitrate)
         Me.lgbTarget.Controls.Add(Me.tbBitrate)
-        Me.lgbTarget.Controls.Add(Me.lTargetLengthText)
+        Me.lgbTarget.Controls.Add(Me.lTarget1)
         Me.lgbTarget.Controls.Add(Me.tbTargetFile)
         Me.lgbTarget.Location = New System.Drawing.Point(508, 47)
         Me.lgbTarget.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
@@ -331,26 +295,6 @@ Class MainForm
         Me.lgbTarget.TabIndex = 58
         Me.lgbTarget.TabStop = False
         Me.lgbTarget.Text = "Target"
-        '
-        'lCompCheck
-        '
-        Me.lCompCheck.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lCompCheck.Location = New System.Drawing.Point(354, 129)
-        Me.lCompCheck.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lCompCheck.Name = "lCompCheck"
-        Me.lCompCheck.Size = New System.Drawing.Size(122, 30)
-        Me.lCompCheck.TabIndex = 46
-        Me.lCompCheck.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lAudioBitrate
-        '
-        Me.lAudioBitrate.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lAudioBitrate.Location = New System.Drawing.Point(330, 98)
-        Me.lAudioBitrate.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lAudioBitrate.Name = "lAudioBitrate"
-        Me.lAudioBitrate.Size = New System.Drawing.Size(146, 30)
-        Me.lAudioBitrate.TabIndex = 52
-        Me.lAudioBitrate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'llFilesize
         '
@@ -363,15 +307,6 @@ Class MainForm
         Me.llFilesize.Text = "Size:"
         Me.llFilesize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'lTargetLength
-        '
-        Me.lTargetLength.Location = New System.Drawing.Point(86, 98)
-        Me.lTargetLength.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lTargetLength.Name = "lTargetLength"
-        Me.lTargetLength.Size = New System.Drawing.Size(118, 30)
-        Me.lTargetLength.TabIndex = 56
-        Me.lTargetLength.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
         'tbSize
         '
         Me.tbSize.Location = New System.Drawing.Point(86, 66)
@@ -381,48 +316,15 @@ Class MainForm
         Me.tbSize.TabIndex = 55
         Me.tbSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
-        'lAudioBitrateText
+        'lTarget2
         '
-        Me.lAudioBitrateText.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lAudioBitrateText.Location = New System.Drawing.Point(205, 98)
-        Me.lAudioBitrateText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lAudioBitrateText.Name = "lAudioBitrateText"
-        Me.lAudioBitrateText.Size = New System.Drawing.Size(124, 30)
-        Me.lAudioBitrateText.TabIndex = 51
-        Me.lAudioBitrateText.Text = "Audio Bitrate:"
-        Me.lAudioBitrateText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lQuality
-        '
-        Me.lQuality.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lQuality.Location = New System.Drawing.Point(86, 129)
-        Me.lQuality.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lQuality.Name = "lQuality"
-        Me.lQuality.Size = New System.Drawing.Size(118, 30)
-        Me.lQuality.TabIndex = 48
-        Me.lQuality.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lQualityText
-        '
-        Me.lQualityText.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lQualityText.Location = New System.Drawing.Point(7, 129)
-        Me.lQualityText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lQualityText.Name = "lQualityText"
-        Me.lQualityText.Size = New System.Drawing.Size(78, 30)
-        Me.lQualityText.TabIndex = 47
-        Me.lQualityText.Text = "Quality:"
-        Me.lQualityText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lCompCheckText
-        '
-        Me.lCompCheckText.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lCompCheckText.Location = New System.Drawing.Point(205, 129)
-        Me.lCompCheckText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lCompCheckText.Name = "lCompCheckText"
-        Me.lCompCheckText.Size = New System.Drawing.Size(148, 30)
-        Me.lCompCheckText.TabIndex = 45
-        Me.lCompCheckText.Text = "Compressibility:"
-        Me.lCompCheckText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.lTarget2.ImeMode = System.Windows.Forms.ImeMode.NoControl
+        Me.lTarget2.Location = New System.Drawing.Point(7, 129)
+        Me.lTarget2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lTarget2.Name = "lTarget2"
+        Me.lTarget2.Size = New System.Drawing.Size(471, 30)
+        Me.lTarget2.TabIndex = 47
+        Me.lTarget2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lBitrate
         '
@@ -443,15 +345,14 @@ Class MainForm
         Me.tbBitrate.TabIndex = 41
         Me.tbBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
-        'lTargetLengthText
+        'lTarget1
         '
-        Me.lTargetLengthText.Location = New System.Drawing.Point(7, 98)
-        Me.lTargetLengthText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lTargetLengthText.Name = "lTargetLengthText"
-        Me.lTargetLengthText.Size = New System.Drawing.Size(78, 30)
-        Me.lTargetLengthText.TabIndex = 39
-        Me.lTargetLengthText.Text = "Length:"
-        Me.lTargetLengthText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.lTarget1.Location = New System.Drawing.Point(7, 98)
+        Me.lTarget1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lTarget1.Name = "lTarget1"
+        Me.lTarget1.Size = New System.Drawing.Size(471, 30)
+        Me.lTarget1.TabIndex = 39
+        Me.lTarget1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'tbTargetFile
         '
@@ -463,23 +364,14 @@ Class MainForm
         '
         'lgbSource
         '
-        Me.lgbSource.Controls.Add(Me.lCodec)
-        Me.lgbSource.Controls.Add(Me.lCodecProfile)
-        Me.lgbSource.Controls.Add(Me.Label1)
-        Me.lgbSource.Controls.Add(Me.Label2)
-        Me.lgbSource.Controls.Add(Me.Label3)
         Me.lgbSource.Controls.Add(Me.lCrop)
-        Me.lgbSource.Controls.Add(Me.lSourceImageSize)
-        Me.lgbSource.Controls.Add(Me.lbSourceLength)
-        Me.lgbSource.Controls.Add(Me.lSourceFramerate)
         Me.lgbSource.Controls.Add(Me.lSourceDar)
         Me.lgbSource.Controls.Add(Me.lSourceDarText)
         Me.lgbSource.Controls.Add(Me.lSourcePAR)
         Me.lgbSource.Controls.Add(Me.llSourceParText)
         Me.lgbSource.Controls.Add(Me.lCropText)
-        Me.lgbSource.Controls.Add(Me.lSourceImageSizeText)
-        Me.lgbSource.Controls.Add(Me.lbSourceLengthText)
-        Me.lgbSource.Controls.Add(Me.lSourceFramerateText)
+        Me.lgbSource.Controls.Add(Me.lSource2)
+        Me.lgbSource.Controls.Add(Me.lSource1)
         Me.lgbSource.Controls.Add(Me.tbSourceFile)
         Me.lgbSource.Location = New System.Drawing.Point(13, 47)
         Me.lgbSource.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
@@ -490,52 +382,6 @@ Class MainForm
         Me.lgbSource.TabStop = False
         Me.lgbSource.Text = "Source"
         '
-        'lCodec
-        '
-        Me.lCodec.Location = New System.Drawing.Point(373, 68)
-        Me.lCodec.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lCodec.Name = "lCodec"
-        Me.lCodec.Size = New System.Drawing.Size(105, 30)
-        Me.lCodec.TabIndex = 55
-        Me.lCodec.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lCodecProfile
-        '
-        Me.lCodecProfile.Location = New System.Drawing.Point(373, 102)
-        Me.lCodecProfile.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lCodecProfile.Name = "lCodecProfile"
-        Me.lCodecProfile.Size = New System.Drawing.Size(111, 60)
-        Me.lCodecProfile.TabIndex = 57
-        '
-        'Label1
-        '
-        Me.Label1.Location = New System.Drawing.Point(307, 67)
-        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(70, 30)
-        Me.Label1.TabIndex = 52
-        Me.Label1.Text = "Codec:"
-        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'Label2
-        '
-        Me.Label2.Location = New System.Drawing.Point(307, 98)
-        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(70, 30)
-        Me.Label2.TabIndex = 54
-        Me.Label2.Text = "Profile:"
-        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'Label3
-        '
-        Me.Label3.Location = New System.Drawing.Point(307, 129)
-        Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(70, 30)
-        Me.Label3.TabIndex = 53
-        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
         'lCrop
         '
         Me.lCrop.Location = New System.Drawing.Point(72, 129)
@@ -545,36 +391,9 @@ Class MainForm
         Me.lCrop.TabIndex = 16
         Me.lCrop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'lSourceImageSize
-        '
-        Me.lSourceImageSize.Location = New System.Drawing.Point(72, 98)
-        Me.lSourceImageSize.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lSourceImageSize.Name = "lSourceImageSize"
-        Me.lSourceImageSize.Size = New System.Drawing.Size(100, 30)
-        Me.lSourceImageSize.TabIndex = 35
-        Me.lSourceImageSize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lbSourceLength
-        '
-        Me.lbSourceLength.Location = New System.Drawing.Point(72, 67)
-        Me.lbSourceLength.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lbSourceLength.Name = "lbSourceLength"
-        Me.lbSourceLength.Size = New System.Drawing.Size(100, 30)
-        Me.lbSourceLength.TabIndex = 42
-        Me.lbSourceLength.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lSourceFramerate
-        '
-        Me.lSourceFramerate.Location = New System.Drawing.Point(229, 67)
-        Me.lSourceFramerate.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lSourceFramerate.Name = "lSourceFramerate"
-        Me.lSourceFramerate.Size = New System.Drawing.Size(77, 30)
-        Me.lSourceFramerate.TabIndex = 40
-        Me.lSourceFramerate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
         'lSourceDar
         '
-        Me.lSourceDar.Location = New System.Drawing.Point(229, 98)
+        Me.lSourceDar.Location = New System.Drawing.Point(387, 129)
         Me.lSourceDar.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lSourceDar.Name = "lSourceDar"
         Me.lSourceDar.Size = New System.Drawing.Size(77, 30)
@@ -583,7 +402,7 @@ Class MainForm
         '
         'lSourceDarText
         '
-        Me.lSourceDarText.Location = New System.Drawing.Point(173, 98)
+        Me.lSourceDarText.Location = New System.Drawing.Point(331, 129)
         Me.lSourceDarText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lSourceDarText.Name = "lSourceDarText"
         Me.lSourceDarText.Size = New System.Drawing.Size(55, 30)
@@ -623,35 +442,23 @@ Class MainForm
         Me.lCropText.Text = "Crop:"
         Me.lCropText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'lSourceImageSizeText
+        'lSource2
         '
-        Me.lSourceImageSizeText.Location = New System.Drawing.Point(1, 98)
-        Me.lSourceImageSizeText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lSourceImageSizeText.Name = "lSourceImageSizeText"
-        Me.lSourceImageSizeText.Size = New System.Drawing.Size(70, 30)
-        Me.lSourceImageSizeText.TabIndex = 33
-        Me.lSourceImageSizeText.Text = "Size:"
-        Me.lSourceImageSizeText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.lSource2.Location = New System.Drawing.Point(1, 98)
+        Me.lSource2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lSource2.Name = "lSource2"
+        Me.lSource2.Size = New System.Drawing.Size(483, 30)
+        Me.lSource2.TabIndex = 33
+        Me.lSource2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'lbSourceLengthText
+        'lSource1
         '
-        Me.lbSourceLengthText.Location = New System.Drawing.Point(1, 67)
-        Me.lbSourceLengthText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lbSourceLengthText.Name = "lbSourceLengthText"
-        Me.lbSourceLengthText.Size = New System.Drawing.Size(70, 30)
-        Me.lbSourceLengthText.TabIndex = 41
-        Me.lbSourceLengthText.Text = "Length:"
-        Me.lbSourceLengthText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lSourceFramerateText
-        '
-        Me.lSourceFramerateText.Location = New System.Drawing.Point(173, 67)
-        Me.lSourceFramerateText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lSourceFramerateText.Name = "lSourceFramerateText"
-        Me.lSourceFramerateText.Size = New System.Drawing.Size(55, 30)
-        Me.lSourceFramerateText.TabIndex = 39
-        Me.lSourceFramerateText.Text = "FPS:"
-        Me.lSourceFramerateText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.lSource1.Location = New System.Drawing.Point(1, 67)
+        Me.lSource1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lSource1.Name = "lSource1"
+        Me.lSource1.Size = New System.Drawing.Size(483, 30)
+        Me.lSource1.TabIndex = 41
+        Me.lSource1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'tbSourceFile
         '
@@ -859,8 +666,8 @@ Class MainForm
         Me.AviSynthListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.AviSynthListView.AutoCheckMode = StaxRip.UI.AutoCheckMode.None
         Me.AviSynthListView.CheckBoxes = True
-        Me.AviSynthListView.AutoCheckMode = AutoCheckMode.None
         Me.AviSynthListView.FullRowSelect = True
         Me.AviSynthListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.AviSynthListView.HideSelection = False
@@ -1062,7 +869,7 @@ Class MainForm
             g.SetRenderer(MenuStrip)
             SetMenuStyle()
         Catch ex As Exception
-            VB6.MsgBox(ex.ToString, Microsoft.VisualBasic.MsgBoxStyle.Critical)
+            VB6.MsgBox(ex.ToString, VB6.MsgBoxStyle.Critical)
         End Try
     End Sub
 
@@ -1313,7 +1120,7 @@ Class MainForm
                         End If
                     Next
 
-                    sd("mkvinfo GUI") = Sub() g.ShellExecute(Packs.Mkvmerge.GetDir + "mkvinfo.exe", "-g")
+                    sd("mkvinfo GUI") = Sub() g.ShellExecute(Packs.Mkvmerge.GetDir + "mkvinfo.exe", "-g" + If(p.SourceFile.Ext = "mkv", " " + p.SourceFile.Quotes, ""))
 
                     For Each i2 In sd
                         i.DropDownItems.Add(New ActionMenuItem(i2.Key, i2.Value))
@@ -1705,10 +1512,14 @@ Class MainForm
                     If p.Script.Engine = ScriptingEngine.AviSynth Then
                         p.Script = VideoScript.GetDefaults()(1)
                     End If
-                ElseIf p.Script.Engine = ScriptingEngine.VapourSynth AndAlso
-                    preferredSourceFilter.Script <> "" Then
+                Else
+                    If Not Packs.AviSynth.VerifyOK(True) OrElse Not Packs.AviSynth.VerifyOK(True) Then
+                        Throw New AbortException
+                    End If
 
-                    p.Script = VideoScript.GetDefaults()(0)
+                    If p.Script.Engine = ScriptingEngine.VapourSynth Then
+                        p.Script = VideoScript.GetDefaults()(0)
+                    End If
                 End If
 
                 p.Script.SetFilter(preferredSourceFilter.Category,
@@ -1771,6 +1582,13 @@ Class MainForm
 
             p.Codec = MediaInfo.GetVideoCodec(p.LastOriginalSourceFile)
             p.CodecProfile = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format_Profile")
+            p.BitDepth = MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitDepth").ToInt
+            p.ColorSpace = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ColorSpace")
+            p.ChromaSubsampling = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ChromaSubsampling")
+            p.SourceSize = New FileInfo(p.LastOriginalSourceFile).Length
+            p.SourceBitrate = MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitRate").ToInt
+            p.ScanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
+            p.ScanOrder = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanOrder")
 
             Dim movieName = MediaInfo.GetGeneral(p.LastOriginalSourceFile, "Movie")
 
@@ -1948,51 +1766,6 @@ Class MainForm
                 p.Audio1.Streams = p.Audio0.Streams
             End If
 
-            DetectAudioFiles(0, True, True)
-            DetectAudioFiles(1, True, True)
-
-            DetectAudioFiles(0, False, True)
-            DetectAudioFiles(1, False, True)
-
-            DetectAudioFiles(0, False, False)
-            DetectAudioFiles(1, False, False)
-
-            If p.UseScriptAsAudioSource Then
-                tbAudioFile0.Text = p.Script.Path
-            Else
-                If p.Audio0.File = "" AndAlso p.Audio1.File = "" Then
-                    If Not TypeOf p.Audio0 Is NullAudioProfile AndAlso
-                        Not FileTypes.VideoText.Contains(Filepath.GetExt(p.LastOriginalSourceFile)) Then
-
-                        tbAudioFile0.Text = p.LastOriginalSourceFile
-                        If p.Audio0.Streams.Count = 0 Then tbAudioFile0.Text = ""
-
-                        If Not TypeOf p.Audio1 Is NullAudioProfile AndAlso
-                            p.Audio0.Streams.Count > 1 Then
-
-                            tbAudioFile1.Text = p.LastOriginalSourceFile
-
-                            For Each i In p.Audio1.Streams
-                                If Not p.Audio0.Stream Is Nothing AndAlso
-                                    Not p.Audio1.Stream Is Nothing Then
-
-                                    If p.Audio0.Stream.StreamOrder = p.Audio1.Stream.StreamOrder Then
-                                        For Each i2 In p.Audio1.Streams
-                                            If i2.StreamOrder <> p.Audio1.Stream.StreamOrder Then
-                                                tbAudioFile1.Text = i2.Name + " (" + Filepath.GetExt(p.Audio1.File) + ")"
-                                                p.Audio1.Stream = i2
-                                                UpdateAudio(p.Audio1)
-                                                Exit For
-                                            End If
-                                        Next
-                                    End If
-                                End If
-                            Next
-                        End If
-                    End If
-                End If
-            End If
-
             If Filepath.GetExtFull(p.SourceFile) = ".d2v" Then
                 Dim content = File.ReadAllText(p.SourceFile)
 
@@ -2053,7 +1826,20 @@ Class MainForm
                         td.CommonButtons = TaskDialogButtons.OkCancel
 
                         If td.Show = DialogResult.OK Then
-                            p.Script.Filters(0) = ShowSourceFilterSelection(p.SourceFile)
+                            Dim f = ShowSourceFilterSelection(p.SourceFile)
+                            Dim isVapourSynth = f.Script?.Contains("clip = core.")
+
+                            If isVapourSynth Then
+                                If p.Script.Engine = ScriptingEngine.AviSynth Then
+                                    p.Script = VideoScript.GetDefaults()(1)
+                                End If
+                            Else
+                                If p.Script.Engine = ScriptingEngine.VapourSynth Then
+                                    p.Script = VideoScript.GetDefaults()(0)
+                                End If
+                            End If
+
+                            If f.Script?.Contains("(") Then p.Script.Filters(0) = f
                             AviSynthListView.Load()
                         Else
                             p.Script.Synchronize()
@@ -2104,6 +1890,51 @@ Class MainForm
             UpdateSourceParameters()
             SetSlider()
 
+            DetectAudioFiles(0, True, True)
+            DetectAudioFiles(1, True, True)
+
+            DetectAudioFiles(0, False, True)
+            DetectAudioFiles(1, False, True)
+
+            DetectAudioFiles(0, False, False)
+            DetectAudioFiles(1, False, False)
+
+            If p.UseScriptAsAudioSource Then
+                tbAudioFile0.Text = p.Script.Path
+            Else
+                If p.Audio0.File = "" AndAlso p.Audio1.File = "" Then
+                    If Not TypeOf p.Audio0 Is NullAudioProfile AndAlso
+                        Not FileTypes.VideoText.Contains(Filepath.GetExt(p.LastOriginalSourceFile)) Then
+
+                        tbAudioFile0.Text = p.LastOriginalSourceFile
+                        If p.Audio0.Streams.Count = 0 Then tbAudioFile0.Text = ""
+
+                        If Not TypeOf p.Audio1 Is NullAudioProfile AndAlso
+                            p.Audio0.Streams.Count > 1 Then
+
+                            tbAudioFile1.Text = p.LastOriginalSourceFile
+
+                            For Each i In p.Audio1.Streams
+                                If Not p.Audio0.Stream Is Nothing AndAlso
+                                    Not p.Audio1.Stream Is Nothing Then
+
+                                    If p.Audio0.Stream.StreamOrder = p.Audio1.Stream.StreamOrder Then
+                                        For Each i2 In p.Audio1.Streams
+                                            If i2.StreamOrder <> p.Audio1.Stream.StreamOrder Then
+                                                tbAudioFile1.Text = i2.Name + " (" + Filepath.GetExt(p.Audio1.File) + ")"
+                                                p.Audio1.Stream = i2
+                                                tbSize_TextChanged()
+                                                Exit For
+                                            End If
+                                        Next
+                                    End If
+                                End If
+                            Next
+                        End If
+                    End If
+                End If
+            End If
+
             BlockSourceTextBoxTextChanged = True
             tbSourceFile.Text = p.SourceFile
             BlockSourceTextBoxTextChanged = False
@@ -2111,7 +1942,6 @@ Class MainForm
             s.LastPosition = 0
 
             SetTargetLength(p.SourceSeconds)
-            lbSourceLength.Text = lTargetLength.Text
 
             DemuxVobSubSubtitles()
             ConvertBluRaySubtitles()
@@ -2379,9 +2209,7 @@ Class MainForm
         g.Highlight(False, lSAR)
         g.Highlight(False, llAudioProfile0)
         g.Highlight(False, llAudioProfile1)
-        g.Highlight(False, lCompCheck)
         g.Highlight(False, lAspectRatioError)
-        g.Highlight(False, lQuality)
         g.Highlight(False, lZoom)
         g.Highlight(False, tbAudioFile0)
         g.Highlight(False, tbAudioFile1)
@@ -2393,6 +2221,7 @@ Class MainForm
         g.Highlight(False, tbTargetWidth)
         g.Highlight(False, llMuxer)
         g.Highlight(False, lgbEncoder.ll)
+        g.Highlight(False, lTarget2)
 
         If ResetAssistantFont Then
             lTip.Font = New Font(Font.FontFamily, 9)
@@ -2451,9 +2280,6 @@ Class MainForm
         End If
 
         tbResize.Value = trackBarValue
-        lCompCheck.Text = p.Compressibility.ToString("f2")
-        lQuality.Text = CInt(Calc.GetPercent).ToString() + " %"
-        lAudioBitrate.Text = CInt(Calc.GetAudioBitrate).ToString
 
         Dim par = Calc.GetTargetPAR
 
@@ -2464,22 +2290,34 @@ Class MainForm
         End If
 
         lDAR.Text = Calc.GetTargetDAR.ToString.Shorten(5)
-
-        lSAR.Text = (p.TargetWidth / p.TargetHeight).ToString.Shorten(5) +
-            " " + Calc.GetMod(p.TargetWidth, p.TargetHeight)
-
+        lSAR.Text = (p.TargetWidth / p.TargetHeight).ToString.Shorten(5)
         lSourceDar.Text = Calc.GetSourceDAR.ToString.Shorten(5)
-
         par = Calc.GetSimpleSourcePAR
-
         lSourcePAR.Text = par.X & ":" & par.Y
 
-        lbSourceLength.Text = GetLengthString(p.SourceSeconds)
-        lSourceImageSize.Text = p.SourceWidth.ToString + "/" + p.SourceHeight.ToString
-        lSourceFramerate.Text = p.SourceFrameRate.ToString("f3")
+        If p.SourceSeconds > 0 Then
+            lTarget1.Text = p.SourceSeconds \ 60 & "m " + (p.SourceSeconds Mod 60).ToString("00") + "s, " &
+                p.Script.GetFramerate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) + "fps, Audio Bitrate: " &
+                CInt(Calc.GetAudioBitrate)
 
-        lCodec.Text = p.Codec
-        lCodecProfile.Text = p.CodecProfile
+            If p.VideoEncoder.IsCompCheckEnabled Then
+                lTarget2.Text = "Quality: " & CInt(Calc.GetPercent).ToString() + " %, Compressibility: " + p.Compressibility.ToString("f2")
+            End If
+
+            lSource1.Text = p.SourceSeconds \ 60 & "m " + (p.SourceSeconds Mod 60).ToString("00") + "s " +
+                If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB ",
+                (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB ") & If(p.SourceBitrate > 0,
+                (p.SourceBitrate / 1000 ^ 2).ToString("f1") + "Mbps ", "") & p.SourceFrameRate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) +
+                "fps " + p.Codec + " " + p.CodecProfile
+
+            lSource2.Text = p.SourceWidth.ToString + "x" + p.SourceHeight.ToString + " " + p.ColorSpace + " " +
+            p.ChromaSubsampling + " " & p.BitDepth & "Bits " + p.ScanType + " " + If(p.ScanType = "Interlaced", p.ScanOrder, "")
+        Else
+            lTarget1.Text = ""
+            lSource1.Text = ""
+            lTarget2.Text = ""
+            lSource2.Text = ""
+        End If
 
         lTip.Text = ""
         gbAssistant.Text = ""
@@ -2693,7 +2531,7 @@ Class MainForm
             If p.RemindToDoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled AndAlso p.Compressibility = 0 Then
                 If ProcessTip("Click here to start the compressibility check. The compressibility check helps to finds the ideal bitrate or image size.") Then
                     AssistantMethod = AddressOf p.VideoEncoder.RunCompCheck
-                    g.Highlight(True, lCompCheck)
+                    g.Highlight(True, lTarget2)
                     gbAssistant.Text = "Compressibility Check"
                     Return False
                 End If
@@ -2775,8 +2613,8 @@ Class MainForm
                         g.Highlight(True, tbBitrate)
                         g.Highlight(True, tbTargetWidth)
                         g.Highlight(True, tbTargetHeight)
-                        g.Highlight(True, lQuality)
-                        lQuality.BackColor = Color.Red
+                        g.Highlight(True, lTarget2)
+                        lTarget2.BackColor = Color.Red
                         gbAssistant.Text = "Quality"
                         Return False
                     End If
@@ -2863,19 +2701,14 @@ Class MainForm
                 ap.SetStreamOrLanguage()
             End If
 
-            UpdateAudio(ap)
+            tbSize_TextChanged()
             BlockAudioTextChanged = True
             tb.Text = ap.DisplayName
             BlockAudioTextChanged = False
         ElseIf tb.Text = "" Then
             ap.File = ""
-            UpdateAudio(ap)
+            tbSize_TextChanged()
         End If
-    End Sub
-
-    Sub UpdateAudio(ap As AudioProfile)
-        lAudioBitrate.Text = CInt(Calc.GetAudioBitrate).ToString
-        tbSize_TextChanged()
     End Sub
 
     Sub tbAudioFile0_TextChanged() Handles tbAudioFile0.TextChanged
@@ -3117,7 +2950,7 @@ Class MainForm
             End If
         End Using
 
-        SaveSettings()
+        g.SaveSettings()
     End Sub
 
     <Command("Dialog | Settings", "Dialog to edit settings.")>
@@ -3229,7 +3062,7 @@ Class MainForm
                 ui.Save()
                 g.SetRenderer(MenuStrip)
                 SetMenuStyle()
-                SaveSettings()
+                g.SaveSettings()
             End If
 
             ui.SaveLast("last settings page")
@@ -3358,8 +3191,8 @@ Class MainForm
     End Sub
 
     <Command("Dialog | Applications", "Dialog to manage external applications.")>
-    Sub OpenApplicationsDialog()
-        Using f As New ApplicationsForm
+    Sub OpenAppsDialog()
+        Using f As New AppsForm
             Dim found As Boolean
 
             If s.StringDictionary.ContainsKey("RecentExternalApplicationControl") Then
@@ -3372,11 +3205,10 @@ Class MainForm
                 Next
             End If
 
-            If Not found Then
-                f.ShowPackage(Packs.x264)
-            End If
+            If Not found Then f.ShowPackage(Packs.x264)
 
             f.ShowDialog()
+            g.SaveSettings()
         End Using
     End Sub
 
@@ -3537,7 +3369,7 @@ Class MainForm
         UpdateRecentProjectsMenuItems()
         UpdateTemplateProjectsMenuItems()
         UpdateDynamicMenu()
-        SaveSettings()
+        g.SaveSettings()
     End Sub
 
     <Command("Dialog | Jobs", "Dialog to manage batch jobs.")>
@@ -3558,7 +3390,7 @@ Class MainForm
     <Command("Perform | Run Jobs", "Runs all active jobs of the job list.")>
     Sub RunJobs()
         If Not Paths.VerifyRequirements() Then Exit Sub
-        SaveSettings()
+        g.SaveSettings()
         RunJobRecursive()
         OpenProject(g.ProjectPath, False)
         ProcessForm.CloseProcessForm()
@@ -3609,7 +3441,7 @@ Class MainForm
             Log.Save()
             OpenProject(g.ProjectPath, False)
             ProcessForm.CloseProcessForm()
-            g.ShowException(ex, Nothing, 120)
+            g.ShowException(ex, Nothing, 100)
             g.ShellExecute(p.TempDir + p.Name + "_StaxRip.log")
         Catch ex As Exception
             Log.Save()
@@ -4038,6 +3870,11 @@ Class MainForm
 
                 If p.CompCheckRange < 2 OrElse p.CompCheckRange > 20 Then p.CompCheckRange = 5
                 If p.TempDir <> "" Then p.TempDir = DirPath.AppendSeparator(p.TempDir)
+
+                If Not p.TempDir?.EndsWith("_temp\") AndAlso p.DeleteTempFilesDir Then
+                    MsgInfo("Temp dir will only be deleted when it ends with _temp")
+                End If
+
                 If p.DefaultTargetFolder <> "" Then p.DefaultTargetFolder = DirPath.AppendSeparator(p.DefaultTargetFolder)
                 If p.FixedBitrate > 0 Then MsgWarn("Using a fixed bitrate is not recommended. Use quality mode and constrain the maximum data rate if necessary.")
 
@@ -4186,7 +4023,7 @@ Class MainForm
                     End If
                 Next
 
-                g.MainForm.SaveSettings()
+                g.SaveSettings()
             End If
         End Using
     End Sub
@@ -4314,7 +4151,7 @@ Class MainForm
         ret.Add("Options", "OpenOptionsDialog", Keys.F8)
 
         ret.Add("Tools|Jobs...", "OpenJobsDialog", Keys.F6)
-        ret.Add("Tools|Apps...", "OpenApplicationsDialog")
+        ret.Add("Tools|Apps...", "OpenAppsDialog")
 
         ret.Add("Tools|Log File", "ExecuteCommandLine", """%text_editor%"" ""%working_dir%%target_name%_StaxRip.log""")
 
@@ -4916,10 +4753,7 @@ Class MainForm
         tbSize.Visible = Not p.VideoEncoder.QualityMode
         lBitrate.Visible = Not p.VideoEncoder.QualityMode
         tbBitrate.Visible = Not p.VideoEncoder.QualityMode
-        lQualityText.Visible = p.VideoEncoder.IsCompCheckEnabled
-        lQuality.Visible = p.VideoEncoder.IsCompCheckEnabled
-        lCompCheckText.Visible = p.VideoEncoder.IsCompCheckEnabled
-        lCompCheck.Visible = p.VideoEncoder.IsCompCheckEnabled
+        lTarget2.Visible = p.VideoEncoder.IsCompCheckEnabled
     End Sub
 
     <Command("Dialog | Open Source Files", "Dialog to open source files.")>
@@ -5078,6 +4912,7 @@ Class MainForm
                             Exit Sub
                         End If
 
+                        Log.WriteEnvironment()
                         Log.Write("Process Blu-Ray folder using eac3to", """" + Packs.eac3to.GetPath + """ """ + srcPath + """" + CrLf2)
 
                         Dim output = ProcessHelp.GetStdOut(Packs.eac3to.GetPath, """" + srcPath + """").Replace(VB6.vbBack, "")
@@ -5116,26 +4951,33 @@ Class MainForm
             If Directory.Exists(p.TempDir) Then
                 rootWorkDir = p.TempDir
             Else
-                rootWorkDir = s.Storage.GetString("last blu-ray target folder").Parent
+                Dim lastDir = s.Storage.GetString("last blu-ray target folder").Parent
+                If Directory.Exists(lastDir) Then rootWorkDir = lastDir
             End If
+
+            Dim di As DriveInfo
 
             If Directory.Exists(rootWorkDir) Then
                 Dim movieName = InputBox.Show("Please enter the movie name.", "Movie Name", "Untitled")
 
                 If movieName <> "" Then
+                    If Not Filepath.IsValidFileSystemName(movieName) Then
+                        MsgError("Name is not compatible with the file system.")
+                        Exit Sub
+                    End If
+
                     workDir = rootWorkDir + movieName
                 Else
                     Exit Sub
                 End If
             End If
 
-            Dim di As DriveInfo
-            If Directory.Exists(rootWorkDir) Then di = New DriveInfo(rootWorkDir)
+            Try
+                di = New DriveInfo(rootWorkDir)
+            Catch
+            End Try
 
-            If Not Directory.Exists(rootWorkDir) OrElse
-                Not Filepath.IsValidFileSystemName(DirPath.GetName(workDir)) OrElse
-                workDir.StartsWith("\\") OrElse di.DriveType <> DriveType.Fixed Then
-
+            If di Is Nothing OrElse di.DriveType <> DriveType.Fixed OrElse workDir.StartsWith("\\") Then
                 Using d As New FolderBrowserDialog
                     d.Description = "Please choose a directory for temporary files on a fixed local drive."
 
@@ -5265,12 +5107,7 @@ Class MainForm
         p.Audio0.Delay = delay
 
         llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
-        lAudioBitrate.Text = CInt(Calc.GetAudioBitrate).ToString
-
-        If Not p.VideoEncoder.QualityMode Then
-            tbSize_TextChanged()
-        End If
-
+        tbSize_TextChanged()
         Assistant()
     End Sub
 
@@ -5290,7 +5127,6 @@ Class MainForm
         p.Audio1.Delay = delay
 
         llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
-        lAudioBitrate.Text = CInt(Calc.GetAudioBitrate).ToString
         tbSize_TextChanged()
         Assistant()
     End Sub
@@ -5354,19 +5190,8 @@ Class MainForm
 
     Sub SetTargetLength(seconds As Integer)
         p.TargetSeconds = seconds
-        lTargetLength.Text = GetLengthString(seconds)
         tbSize_TextChanged()
     End Sub
-
-    Function GetLengthString(seconds As Integer) As String
-        Dim sec As Integer = seconds Mod 60
-
-        If sec <= 9 Then
-            Return (seconds \ 60).ToString + ":0" + sec.ToString
-        Else
-            Return (seconds \ 60).ToString + ":" + sec.ToString
-        End If
-    End Function
 
     Private Sub MainForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If IsSaveCanceled() Then
@@ -5375,12 +5200,8 @@ Class MainForm
         End If
 
         Hide()
-        SaveSettings()
+        g.SaveSettings()
         g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
-    End Sub
-
-    Sub SaveSettings()
-        SafeSerialization.Serialize(s, Paths.SettingsFile)
     End Sub
 
     Private Sub pEncoder_MouseLeave() Handles pEncoder.MouseLeave
@@ -5676,16 +5497,10 @@ Class MainForm
             .SetTip("Zoom factor between source and target image size", lZoom, lZoomText)
             .SetTip("Press Ctrl while using the slider to resize anamorphic.", tbResize)
             .SetTip("Aspect Ratio Error", lAspectRatioError, lAspectRatioErrorText)
-            .SetTip("Source Framerate (frames/seconds)", lSourceFramerate, lSourceFramerateText)
-            .SetTip("Source Length (minutes:seconds)", lbSourceLength, lbSourceLengthText)
-            .SetTip("Storage source image size in pixel (width/height)", lSourceImageSize, lSourceImageSizeText)
             .SetTip("Cropped image size", lCrop, lCropText)
             .SetTip("Source Display Aspect Ratio", lSourceDar, lSourceDarText)
             .SetTip("Source Pixel Aspect Ratio", lSourcePAR, llSourceParText)
             .SetTip("Target Video Bitrate in Kbps (Up/Down key)", tbBitrate, lBitrate)
-            .SetTip("Target Length (minutes:seconds)", lTargetLength, lTargetLengthText)
-            .SetTip("Compressibility value", lCompCheck, lCompCheckText)
-            .SetTip("Audio Bitrate of both tracks in Kbps", lAudioBitrate, lAudioBitrateText)
             .SetTip("Target Image Width in pixel (Up/Down key)", tbTargetWidth, lTargetWidth)
             .SetTip("Target Image Height in pixel (Up/Down key)", tbTargetHeight, lTargetHeight)
             .SetTip("Target File Size (Up/Down key)", tbSize)
@@ -5780,7 +5595,7 @@ Class MainForm
 
                                      tb.Text = temp.Name + " (" + ap.File.Ext + ")"
                                      ap.Stream = temp
-                                     UpdateAudio(ap)
+                                     tbSize_TextChanged()
                                  End Sub
 
                 m.Items.Add(New ActionMenuItem(i.Name, menuAction, Nothing))

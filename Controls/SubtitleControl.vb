@@ -4,7 +4,7 @@ Imports System.Globalization
 Imports StaxRip.UI
 Imports System.ComponentModel
 
-Public Class SubtitleControl
+Class SubtitleControl
     Inherits UserControl
 
     Private BindingSource As New BindingSource
@@ -138,7 +138,7 @@ Public Class SubtitleControl
 
         Text = "Subtitles"
 
-        dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
+        dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
         dgv.AutoGenerateColumns = False
         dgv.ShowCellToolTips = False
         dgv.AllowUserToResizeRows = False
@@ -204,7 +204,6 @@ Public Class SubtitleControl
 
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
-        dgv.AutoResizeColumnsExtended(Of SubtitleItem)
         UpdateControls()
     End Sub
 
@@ -268,7 +267,6 @@ Public Class SubtitleControl
     End Sub
 
     Sub UpdateControls()
-        dgv.AutoResizeColumnsExtended(Of SubtitleItem)
         Dim selected = dgv.SelectedRows.Count > 0
         Dim path = If(selected AndAlso dgv.CurrentRow.Index < Items.Count, Items(dgv.CurrentRow.Index).Subtitle.Path, "")
         bnBDSup2SubPP.Enabled = selected AndAlso {"idx", "sup"}.Contains(path.Ext)

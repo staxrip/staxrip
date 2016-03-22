@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Public Class CommandLineAudioForm
+Class CommandLineAudioForm
     Inherits DialogBase
 
 #Region " Designer "

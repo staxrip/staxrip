@@ -2,7 +2,7 @@ Imports System.Reflection
 
 Imports StaxRip.UI
 
-Public Class EventCommandEditor
+Class EventCommandEditor
     Inherits DialogBase
 
 #Region " Designer "

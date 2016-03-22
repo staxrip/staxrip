@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Public Class SelectionBoxForm
+Class SelectionBoxForm
     Inherits FormBase
 
 #Region " Designer "

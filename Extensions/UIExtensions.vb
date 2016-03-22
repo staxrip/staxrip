@@ -1,7 +1,7 @@
 ﻿Imports System.Runtime.CompilerServices
 Imports System.Drawing.Drawing2D
 
-Public Module UIExtensions
+Module UIExtensions
     <Extension()>
     Function ResizeToSmallIconSize(img As Image) As Image
         If Not img Is Nothing AndAlso img.Size <> SystemInformation.SmallIconSize Then
@@ -85,36 +85,6 @@ Public Module UIExtensions
     <Extension()>
     Sub SendMessageCue(c As ComboBox, value As String)
         Native.SendMessage(c.Handle, Native.CB_SETCUEBANNER, 1, value)
-    End Sub
-
-    <Extension()>
-    Sub AutoResizeColumnsExtended(Of T)(dgv As DataGridView)
-        For Each i As DataGridViewColumn In dgv.Columns
-            If i.ValueType Is GetType(Boolean) Then
-                i.Width = TextRenderer.MeasureText(i.HeaderText + "_", dgv.Font).Width
-            Else
-                Dim bindingSource = TryCast(dgv.DataSource, BindingSource)
-
-                If Not bindingSource Is Nothing Then
-                    Dim items = TryCast(bindingSource.List, IEnumerable(Of T))
-                    Dim max As Integer
-
-                    If items.Count > 0 Then
-                        max = items.Select(Function(item) TextRenderer.MeasureText(MiscExtensions.ToStringEx(item.GetType.GetProperty(i.DataPropertyName).GetValue(item)), dgv.Font).Width).Max
-                    End If
-
-                    Dim width = Math.Max(max, TextRenderer.MeasureText(i.HeaderText, dgv.Font).Width)
-
-                    If i.CellType Is GetType(DataGridViewComboBoxCell) Then
-                        width += dgv.Font.Height
-                    Else
-                        width += dgv.Font.Height \ 3
-                    End If
-
-                    i.Width = width
-                End If
-            End If
-        Next
     End Sub
 
     Function GetPropertyValue(obj As String, propertyName As String) As Object

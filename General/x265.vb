@@ -2,7 +2,6 @@
 Imports System.Text
 
 Imports StaxRip.CommandLine
-Imports VB6 = Microsoft.VisualBasic
 
 Namespace x265
     <Serializable()>
@@ -12,7 +11,7 @@ Namespace x265
         Property ParamsStore As New PrimitiveStore
 
         Sub New()
-            MyBase.New("x265")
+            Name = "x265"
             AutoCompCheckValue = 50
         End Sub
 
@@ -477,14 +476,14 @@ Namespace x265
         Property QBlur As New NumParam With {
             .Switch = "--qblur",
             .Text = "Q Blur:",
-            .MinMaxStepDec = {Integer.MinValue, Integer.MaxValue, 0.05D, 2D},
+            .MinMaxStepDec = {Decimal.MinValue, Decimal.MaxValue, 0.05D, 2D},
             .Value = 0.5,
             .DefaultValue = 0.5}
 
         Property Cplxblur As New NumParam With {
             .Switch = "--cplxblur",
             .Text = "Blur Complexity:",
-            .MinMaxStepDec = {Integer.MinValue, Integer.MaxValue, 0.05D, 2D},
+            .MinMaxStepDec = {Decimal.MinValue, Decimal.MaxValue, 0.05D, 2D},
             .Value = 20,
             .DefaultValue = 20}
 
@@ -845,7 +844,8 @@ Namespace x265
         End Sub
 
         Overloads Overrides Function GetCommandLine(includePaths As Boolean,
-                                                    includeExecutable As Boolean) As String
+                                                    includeExecutable As Boolean,
+                                                    Optional pass As Integer = 0) As String
 
             Return GetArgs(1, p.Script, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                            "." + p.VideoEncoder.OutputFileType, includePaths, includeExecutable)
@@ -864,9 +864,9 @@ Namespace x265
 
             If includePaths AndAlso includeExecutable Then
                 If p.Script.Engine = ScriptingEngine.VapourSynth Then
-                    sb.Append(Packs.vspipe.GetPath.AddPathQuotes + " " + script.Path.AddPathQuotes + " - --y4m | " + Packs.x265.GetPath.AddPathQuotes)
+                    sb.Append(Packs.vspipe.GetPath.Quotes + " " + script.Path.Quotes + " - --y4m | " + Packs.x265.GetPath.Quotes)
                 Else
-                    sb.Append(Packs.ffmpeg.GetPath.AddPathQuotes + " -i " + script.Path.AddPathQuotes + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + Packs.x265.GetPath.AddPathQuotes)
+                    sb.Append(Packs.ffmpeg.GetPath.Quotes + " -i " + script.Path.Quotes + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + Packs.x265.GetPath.Quotes)
                 End If
             End If
 

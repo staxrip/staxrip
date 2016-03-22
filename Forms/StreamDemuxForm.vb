@@ -1,7 +1,7 @@
 ﻿Imports System.Globalization
 Imports StaxRip.UI
 
-Public Class StreamDemuxForm
+Class StreamDemuxForm
     Property AudioStreams As List(Of AudioStream)
     Property Subtitles As List(Of Subtitle)
 

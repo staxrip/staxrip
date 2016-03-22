@@ -1,7 +1,7 @@
 ﻿Imports System.Drawing.Drawing2D
 Imports System.Globalization
 
-Public Class Thumbnails
+Class Thumbnails
     Shared Sub SaveThumbnails(inputFile As String)
         If Not File.Exists(inputFile) Then Exit Sub
         If Not Packs.AviSynth.VerifyOK(True) Then Exit Sub

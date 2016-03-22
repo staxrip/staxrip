@@ -1,7 +1,7 @@
 Imports StaxRip.UI
 Imports System.Text
 
-Public Class MediaInfoForm
+Class MediaInfoForm
     Inherits DialogBase
 
 #Region " Designer "

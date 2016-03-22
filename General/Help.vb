@@ -7,7 +7,7 @@ Imports System.ComponentModel
 Imports Microsoft.VisualBasic.FileIO
 Imports System.Management
 
-Public Class ObjectHelp
+Class ObjectHelp
     'parse recursive serializable fields and lists 
     Shared Function GetCompareString(obj As Object) As String
         Dim sb As New StringBuilder
@@ -126,7 +126,7 @@ Public Class ObjectHelp
     End Function
 End Class
 
-Public Class DirectoryHelp
+Class DirectoryHelp
     Shared Sub Delete(filepath As String,
                       Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
 
@@ -204,7 +204,7 @@ Public Class DirectoryHelp
     End Sub
 End Class
 
-Public Class FileHelp
+Class FileHelp
     Shared Sub Move(src As String, dest As String)
         If File.Exists(src) Then
             If File.Exists(dest) Then Delete(dest)
@@ -242,7 +242,7 @@ Public Class FileHelp
     End Sub
 End Class
 
-Public Class ProcessHelp
+Class ProcessHelp
     Shared Function GetStdOut(file As String, arguments As String) As String
         Dim ret = ""
         Dim proc As New Process

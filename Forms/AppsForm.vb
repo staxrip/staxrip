@@ -1,7 +1,7 @@
 Imports System.Globalization
 Imports StaxRip.UI
 
-Public Class ApplicationsForm
+Class AppsForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -215,10 +215,10 @@ Public Class ApplicationsForm
         Headers("Title").Text = ActivePackage.Name
 
         SetupButton.Text = "Install " + ActivePackage.Name
-        SetupButton.Visible = Not ActivePackage.SetupAction Is Nothing AndAlso ActivePackage.IsStatusCritical
+        SetupButton.Visible = Not ActivePackage.SetupAction Is Nothing AndAlso (ActivePackage.IsStatusCritical OrElse (Not ActivePackage.IsCorrectVersion AndAlso ActivePackage.Version <> ""))
 
         DownloadButton.Text = "Download " + ActivePackage.Name
-        DownloadButton.Visible = ActivePackage.DownloadURL <> "" AndAlso ActivePackage.IsStatusCritical
+        DownloadButton.Visible = ActivePackage.DownloadURL <> "" AndAlso (ActivePackage.IsStatusCritical OrElse (Not ActivePackage.IsCorrectVersion AndAlso ActivePackage.Version <> ""))
 
         tsbOpenDir.Enabled = path <> ""
         tsbLaunch.Enabled = Not ActivePackage.LaunchAction Is Nothing AndAlso Not ActivePackage.IsStatusCritical

@@ -55,16 +55,7 @@ Class ApplicationSettings
     Public DeleteTempFilesToRecycleBin As Boolean = True
     Public ShowTemplateSelection As Boolean
 
-    Private WasUpdatedValue As Boolean
-
-    Property WasUpdated() As Boolean Implements ISafeSerialization.WasUpdated
-        Get
-            Return WasUpdatedValue
-        End Get
-        Set(value As Boolean)
-            WasUpdatedValue = value
-        End Set
-    End Property
+    Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
     ReadOnly Property VersionsProperty() As Dictionary(Of String, Integer) Implements ISafeSerialization.Versions
         Get
@@ -232,7 +223,7 @@ Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 135) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 136) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 

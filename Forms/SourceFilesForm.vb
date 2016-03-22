@@ -4,7 +4,7 @@ Imports System.Text.RegularExpressions
 
 Imports VB6 = Microsoft.VisualBasic
 
-Public Class SourceFilesForm
+Class SourceFilesForm
     Inherits DialogBase
 
 #Region " Designer "

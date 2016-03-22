@@ -4,7 +4,7 @@ Imports System.Text
 Imports System.ComponentModel
 Imports System.Runtime.InteropServices
 
-Public Class Proc
+Class Proc
     Implements IDisposable
 
     Property TrowException As Boolean
@@ -67,7 +67,7 @@ Public Class Proc
 
     Property CommandLine() As String
         Get
-            Return File.AddPathQuotes + " " + Arguments
+            Return File.Quotes + " " + Arguments
         End Get
         Set(Value As String)
             Try

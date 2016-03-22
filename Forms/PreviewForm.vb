@@ -226,7 +226,7 @@ Class PreviewForm
         '
         Me.cmsMain.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.cmsMain.Name = "cmsMain"
-        Me.cmsMain.Size = New System.Drawing.Size(61, 4)
+        Me.cmsMain.Size = New System.Drawing.Size(74, 4)
         '
         'pTrack
         '
@@ -312,6 +312,7 @@ Class PreviewForm
         RefreshScript()
 
         ShowButtons(Not s.HidePreviewButtons)
+        SetStyle(ControlStyles.OptimizedDoubleBuffer Or ControlStyles.AllPaintingInWmPaint, True)
     End Sub
 
     Sub RefreshScript()
@@ -319,6 +320,7 @@ Class PreviewForm
         If Not AVI Is Nothing Then AVI.Dispose()
         AVI = New AVIFile(AviSynthDocument.Path)
         Drawer = New VideoDrawer(pVideo, AVI)
+        Drawer.ShowInfos = s.PreviewToggleInfos
 
         If FormBorderStyle = FormBorderStyle.None Then
             Fullscreen()
@@ -326,10 +328,7 @@ Class PreviewForm
             NormalScreen()
         End If
 
-        If s.LastPosition < (AVI.FrameCount - 1) Then
-            AVI.Position = s.LastPosition
-        End If
-
+        If s.LastPosition < AVI.FrameCount - 1 Then AVI.Position = s.LastPosition
         Drawer.Draw()
         AfterPositionChanged()
     End Sub
@@ -537,10 +536,10 @@ Class PreviewForm
 
         Dim trackWidth = pTrack.Height - TrackBarBorder * 2 - TrackBarGap * 2
 
-        Dim borderPen As New Pen(Color.Black, TrackBarBorder)
-        borderPen.Alignment = Drawing2D.PenAlignment.Inset
-        g.DrawRectangle(borderPen, 0, 0, pTrack.Width - 1, pTrack.Height - 1)
-        borderPen.Dispose()
+        Using borderPen As New Pen(Color.Black, TrackBarBorder)
+            borderPen.Alignment = Drawing2D.PenAlignment.Inset
+            g.DrawRectangle(borderPen, 0, 0, pTrack.Width - 1, pTrack.Height - 1)
+        End Using
 
         If p.Ranges.Count > 0 Then
             For x = 0 To p.Ranges.Count - 1
@@ -553,21 +552,20 @@ Class PreviewForm
                 End If
 
                 Using rangePen As New Pen(c, trackWidth)
-                    g.DrawLine(rangePen, GetDrawPos(p.Ranges(x).Start) - TrackBarPosition \ 2,
-                        pTrack.Height \ 2, GetDrawPos(p.Ranges(x).End) + TrackBarPosition \ 2, pTrack.Height \ 2)
+                    g.DrawLine(rangePen, GetDrawPos(p.Ranges(x).Start) - CInt(TrackBarPosition / 2),
+                        CInt(pTrack.Height / 2), GetDrawPos(p.Ranges(x).End) + CInt(TrackBarPosition / 2),
+                               CInt(pTrack.Height / 2))
                 End Using
             Next
         End If
 
-        Dim rangeSetPen As New Pen(Color.DarkOrange, trackWidth)
-
-        If RangeStart > -1 AndAlso RangeStart <= AVI.Position Then
-            g.DrawLine(rangeSetPen, GetDrawPos(RangeStart) - TrackBarPosition \ 2,
-                pTrack.Height \ 2, GetDrawPos(AVI.Position) +
-                TrackBarPosition \ 2, pTrack.Height \ 2)
-        End If
-
-        rangeSetPen.Dispose()
+        Using rangeSetPen As New Pen(Color.DarkOrange, trackWidth)
+            If RangeStart > -1 AndAlso RangeStart <= AVI.Position Then
+                g.DrawLine(rangeSetPen, GetDrawPos(RangeStart) - CInt(TrackBarPosition / 2),
+                    CInt(pTrack.Height / 2), GetDrawPos(AVI.Position) +
+                    CInt(TrackBarPosition / 2), CInt(pTrack.Height / 2))
+            End If
+        End Using
 
         Dim posPen As Pen
 
@@ -577,8 +575,14 @@ Class PreviewForm
             posPen = New Pen(Color.Blue, trackWidth)
         End If
 
+        posPen.Alignment = Drawing2D.PenAlignment.Center
+
         Dim pos = GetDrawPos(AVI.Position)
-        g.DrawLine(posPen, pos - TrackBarPosition \ 2, pTrack.Height \ 2, pos + TrackBarPosition \ 2, pTrack.Height \ 2)
+        g.DrawLine(posPen, pos - CInt(TrackBarPosition / 2),
+                   CInt(pTrack.Height / 2),
+                   pos + CInt(TrackBarPosition / 2),
+                   CInt(pTrack.Height / 2))
+
         posPen.Dispose()
 
         g.Dispose()
@@ -586,14 +590,12 @@ Class PreviewForm
 
     Private Function GetDrawPos(frame As Integer) As Integer
         Dim values = TrackBarBorder * 2 + TrackBarGap * 2 + TrackBarPosition
-        Dim width = CInt(((pTrack.Width - values) / TargetFrames) * frame)
-        Return width + values \ 2
+        Dim width = CInt(((pTrack.Width - values) / CInt(TargetFrames - 1)) * frame)
+        Return width + CInt(values / 2)
     End Function
 
     Private Sub pTrack_MouseMove(sender As Object, e As MouseEventArgs) Handles pTrack.MouseMove
-        If e.Button = Windows.Forms.MouseButtons.Left Then
-            HandleMouseOntrackBar()
-        End If
+        If e.Button = MouseButtons.Left Then HandleMouseOntrackBar()
     End Sub
 
     Private Sub pTrack_MouseDown(sender As Object, e As MouseEventArgs) Handles pTrack.MouseDown
@@ -602,12 +604,8 @@ Class PreviewForm
 
     Private Sub HandleMouseOntrackBar()
         Dim pos = CInt((TargetFrames / pTrack.Width) * pTrack.PointToClient(Control.MousePosition).X)
-
         Dim remainder = pos Mod 4
-
-        If remainder <> 0 Then
-            pos -= remainder
-        End If
+        If remainder <> 0 Then pos -= remainder
 
         For Each i In Instances
             i.SetAbsolutePos(pos)
@@ -624,6 +622,18 @@ Class PreviewForm
 
     <Command("Parameter | Absolute Position", "Jumps to a given frame.")>
     Sub SetAbsolutePos(<DispName("Position")> pos As Integer)
+        SetPos(pos)
+    End Sub
+
+    <Command("Parameter | Relative Position", "Jumps a given frame count.")>
+    Sub SetRelativePos(<DispName("Position"),
+        Description("Frames to jump, negative values jump backward.")>
+        pos As Integer)
+
+        SetPos(AVI.Position + pos)
+    End Sub
+
+    Sub SetPos(pos As Integer)
         AVI.Position = pos
         Drawer.Draw()
         AfterPositionChanged()
@@ -663,20 +673,10 @@ Class PreviewForm
         End If
     End Sub
 
-    <Command("Parameter | Relative Position", "Jumps a given frame count.")>
-    Sub SetRelativePos(<DispName("Position"),
-        Description("Frames to jump, negative values jump backward.")>
-        pos As Integer)
-
-        AVI.Position += pos
-        Drawer.Draw()
-        AfterPositionChanged()
-    End Sub
-
     <Command("Dialog | Menu Editor", "Opens the menu editor.")>
     Sub OpenMenuEditor()
         s.CustomMenuPreview = GenericMenu.Edit()
-        g.MainForm.SaveSettings()
+        g.SaveSettings()
     End Sub
 
     <Command("Dialog | Help", "Opens the help.")>
@@ -990,12 +990,10 @@ Class PreviewForm
     End Sub
 
     Sub ProcessMenu(item As CustomMenuItem)
-        Drawer.Draw()
         GenericMenu.Process(item)
     End Sub
 
     Private Sub PreviewForm_Load() Handles Me.Load
-        Drawer.ShowInfos = s.PreviewToggleInfos
         Drawer.Draw()
 
         If s.PreviewFormBorderStyle = FormBorderStyle.None Then

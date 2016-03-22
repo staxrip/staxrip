@@ -10,7 +10,8 @@ Namespace CommandLine
         MustOverride ReadOnly Property Items As List(Of CommandLineItem)
 
         MustOverride Function GetCommandLine(includePaths As Boolean,
-                                             includeExecutable As Boolean) As String
+                                             includeExecutable As Boolean,
+                                             Optional pass As Integer = 0) As String
 
         MustOverride Function GetPackage() As Package
 
@@ -154,14 +155,8 @@ Namespace CommandLine
             End Get
             Set(value As Boolean)
                 ValueValue = value
-
-                If Not Store Is Nothing Then
-                    Store.Bool(GetKey) = value
-                End If
-
-                If Not CheckBox Is Nothing Then
-                    CheckBox.Checked = value
-                End If
+                If Not Store Is Nothing Then Store.Bool(GetKey) = value
+                If Not CheckBox Is Nothing Then CheckBox.Checked = value
             End Set
         End Property
 
@@ -282,11 +277,11 @@ Namespace CommandLine
                                             End Sub
         End Sub
 
-        Sub HideOptions(visible As Boolean, ParamArray values As Integer())
+        Sub ShowOption(value As Integer, visible As Boolean)
             If Not MenuButton Is Nothing Then
                 For Each i In MenuButton.Menu.Items.OfType(Of ToolStripMenuItem)
-                    For Each i2 In values
-                        If i2.Equals(i.Tag) Then i.Visible = visible
+                    For Each i2 In Values
+                        If value.Equals(i.Tag) Then i.Visible = visible
                     Next
                 Next
             End If

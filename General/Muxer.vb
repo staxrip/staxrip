@@ -5,7 +5,7 @@ Imports System.Globalization
 Imports vb6 = Microsoft.VisualBasic
 
 <Serializable()>
-Public MustInherit Class Muxer
+MustInherit Class Muxer
     Inherits Profile
 
     Property ChapterFile As String
@@ -19,6 +19,9 @@ Public MustInherit Class Muxer
             Return New String() {}
         End Get
     End Property
+
+    Sub New()
+    End Sub
 
     Sub New(name As String)
         MyBase.New(name)
@@ -203,7 +206,7 @@ Public MustInherit Class Muxer
 End Class
 
 <Serializable()>
-Public MustInherit Class EncoderMuxerBase
+MustInherit Class EncoderMuxerBase
     Inherits Muxer
 
     MustOverride ReadOnly Property Encoder() As Type
@@ -221,7 +224,7 @@ Public MustInherit Class EncoderMuxerBase
 End Class
 
 <Serializable()>
-Public Class MP4Muxer
+Class MP4Muxer
     Inherits Muxer
 
     Sub New(name As String)
@@ -340,7 +343,7 @@ Public Class MP4Muxer
 End Class
 
 <Serializable()>
-Public Class NullMuxer
+Class NullMuxer
     Inherits Muxer
 
     Sub New(name As String)
@@ -370,7 +373,7 @@ Public Class NullMuxer
 End Class
 
 <Serializable()>
-Public Class BatchMuxer
+Class BatchMuxer
     Inherits Muxer
 
     Property OutputTypeValue As String = "mp4"
@@ -450,14 +453,18 @@ Public Class BatchMuxer
 End Class
 
 <Serializable()>
-Public Class MkvMuxer
+Class MkvMuxer
     Inherits Muxer
 
     Property VideoTrackName As String = ""
     Property VideoTrackLanguage As New Language(CultureInfo.InvariantCulture)
     Property Title As String = ""
 
-    Sub New(Optional name As String = "MKV")
+    Sub New()
+        Name = "MKV"
+    End Sub
+
+    Sub New(name As String)
         MyBase.New(name)
     End Sub
 
@@ -614,7 +621,7 @@ Public Class MkvMuxer
 End Class
 
 <Serializable()>
-Public Class DivXPluxMuxer
+Class DivXPluxMuxer
     Inherits MkvMuxer
 
     Sub New()
@@ -629,7 +636,7 @@ Public Class DivXPluxMuxer
 End Class
 
 <Serializable()>
-Public Class WebMMuxer
+Class WebMMuxer
     Inherits MkvMuxer
 
     Sub New()
@@ -650,7 +657,7 @@ Public Class WebMMuxer
 End Class
 
 <Serializable()>
-Public Class ffmpegMuxer
+Class ffmpegMuxer
     Inherits Muxer
 
     Property OutputTypeValue As String = "avi"

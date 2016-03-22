@@ -83,7 +83,7 @@ Class AviSynthListView
                     For Each i2 In i.Filters
                         Dim tip = i2.Script
                         If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
-                        ActionMenuItem.Add(Menu.Items, i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
+                        ActionMenuItem.Add(Menu.Items, i2.Category + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
                     Next
                 End If
             Next

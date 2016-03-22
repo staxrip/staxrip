@@ -9,7 +9,7 @@ Imports System.Windows.Forms
 Imports System.Text.RegularExpressions
 
 Namespace UI
-    Public Class FormBase
+    Class FormBase
         Inherits Form
 
         <Browsable(False)>
@@ -130,7 +130,7 @@ Namespace UI
         End Structure
     End Class
 
-    Public Class DialogBase
+    Class DialogBase
         Inherits FormBase
 
         Sub New()
@@ -150,7 +150,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class ListBag(Of T)
+    Class ListBag(Of T)
         Implements IComparable(Of ListBag(Of T))
 
         Property Text As String
@@ -189,13 +189,13 @@ Namespace UI
             Return Text
         End Function
 
-        Public Function CompareTo(other As ListBag(Of T)) As Integer Implements IComparable(Of ListBag(Of T)).CompareTo
+        Function CompareTo(other As ListBag(Of T)) As Integer Implements IComparable(Of ListBag(Of T)).CompareTo
             Return Text.CompareTo(other.Text)
         End Function
     End Class
 
     <Serializable()>
-    Public Class WindowPositions
+    Class WindowPositions
         Private Positions As New Dictionary(Of String, Point)
         Private WindowStates As New Dictionary(Of String, FormWindowState)
 
@@ -275,7 +275,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class OpenFileDialogEditor
+    Class OpenFileDialogEditor
         Inherits UITypeEditor
 
         Overloads Overrides Function EditValue(context As ITypeDescriptorContext, provider As IServiceProvider, value As Object) As Object
@@ -293,7 +293,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class StringEditor
+    Class StringEditor
         Inherits UITypeEditor
 
         Sub New()

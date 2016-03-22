@@ -3,7 +3,7 @@ Imports System.Runtime.Serialization.Formatters.Binary
 
 Imports StaxRip.UI
 
-Public Class ProfilesForm
+Class ProfilesForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -228,12 +228,12 @@ Public Class ProfilesForm
 
         Text = title
 
-        Me.Profiles = Profiles
+        Me.Profiles = profiles
         Me.LoadProfileMethod = loadAction
         Me.AddProfileMethod = addFunc
-        Me.DefaultsFunc = DefaultsFunc
+        Me.DefaultsFunc = defaultsFunc
 
-        For Each i As Profile In Profiles
+        For Each i As Profile In profiles
             lb.Items.Add(i.GetCopy)
         Next
 
@@ -359,7 +359,7 @@ Public Class ProfilesForm
                 Profiles.Add(i)
             Next
 
-            g.MainForm.SaveSettings()
+            g.SaveSettings()
         End If
     End Sub
 

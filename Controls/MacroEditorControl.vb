@@ -3,7 +3,7 @@ Imports System.ComponentModel
 Imports StaxRip.UI
 Imports System.Text
 
-Public Class MacroEditorControl
+Class MacroEditorControl
     Inherits UserControl
 
 #Region " Designer "

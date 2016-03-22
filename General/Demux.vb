@@ -107,7 +107,7 @@ Public MustInherit Class Demuxer
 End Class
 
 <Serializable()>
-Public Class CommandLineDemuxer
+Class CommandLineDemuxer
     Inherits Demuxer
 
     Property Command As String = ""
@@ -130,13 +130,13 @@ Public Class CommandLineDemuxer
             If Command?.Contains("DGIndexNV") Then
                 If Not Packs.DGIndexNV.VerifyOK(True) Then Throw New AbortException
                 proc.SkipPatterns = {"^\d+$"}
-            ElseIf Command?.Contains("DGIndexIM")
+            ElseIf Command?.Contains("DGIndexIM") Then
                 If Not Packs.DGIndexIM.VerifyOK(True) Then Throw New AbortException
                 proc.SkipPatterns = {"^\d+$"}
-            ElseIf Command?.Contains("dsmux")
+            ElseIf Command?.Contains("dsmux") Then
                 If Not Packs.Haali.VerifyOK(True) Then Throw New AbortException
                 proc.SkipStrings = {"Muxing..."}
-            ElseIf Command?.Contains("Java")
+            ElseIf Command?.Contains("Java") Then
                 If Not Packs.Java.VerifyOK(True) Then Throw New AbortException
                 proc.SkipPatterns = {"^\d+ %$"}
             End If
@@ -163,7 +163,7 @@ Public Class CommandLineDemuxer
 End Class
 
 <Serializable()>
-Public Class MP4BoxDemuxer
+Class MP4BoxDemuxer
     Inherits Demuxer
 
     Sub New()
@@ -240,7 +240,7 @@ Public Class MP4BoxDemuxer
 End Class
 
 <Serializable()>
-Public Class eac3toDemuxer
+Class eac3toDemuxer
     Inherits Demuxer
 
     Sub New()
@@ -287,7 +287,7 @@ Public Class eac3toDemuxer
 End Class
 
 <Serializable()>
-Public Class mkvDemuxer
+Class mkvDemuxer
     Inherits Demuxer
 
     Sub New()

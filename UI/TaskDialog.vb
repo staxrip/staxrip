@@ -4,7 +4,7 @@ Imports System.Text.RegularExpressions
 
 Public Delegate Function PFTASKDIALOGCALLBACK(hwnd As IntPtr, msg As UInteger, wParam As IntPtr, lParam As IntPtr, lpRefData As IntPtr) As Integer
 
-Public Class TaskDialog(Of T)
+Class TaskDialog(Of T)
     Inherits TaskDialog
     Implements IDisposable
 
@@ -175,7 +175,7 @@ Public Class TaskDialog(Of T)
 
     Private SelectedIDValue As Integer = -1
 
-    Property SelectedID() As Integer
+    Property SelectedID As Integer
         Get
             Return SelectedIDValue
         End Get
@@ -229,7 +229,7 @@ Public Class TaskDialog(Of T)
 
     Private TimeoutValue As Integer
 
-    Property Timeout() As Integer
+    Property Timeout As Integer
         Get
             Return CInt(TimeoutValue / 1000)
         End Get
@@ -414,13 +414,13 @@ Public Class TaskDialog(Of T)
 
 End Class
 
-Public Class TaskDialog
+Class TaskDialog
     <DllImport("comctl32", CharSet:=CharSet.Unicode, SetLastError:=True)>
     Shared Function TaskDialogIndirect(<[In]()> pTaskConfig As TASKDIALOGCONFIG, <Out()> ByRef pnButton As Integer, <Out()> ByRef pnRadioButton As Integer, <MarshalAs(UnmanagedType.Bool)> <Out()> ByRef pVerificationFlagChecked As Boolean) As Integer
     End Function
 
     <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)>
-    Public Class TASKDIALOGCONFIG
+    Class TASKDIALOGCONFIG
         Public cbSize As UInteger
         Public hwndParent As IntPtr
         Public hInstance As IntPtr

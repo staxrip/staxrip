@@ -4,7 +4,7 @@ Imports System.Globalization
 
 Imports VB6 = Microsoft.VisualBasic
 
-Public Class Audio
+Class Audio
     Shared Sub Process(ap As AudioProfile)
         If Not File.Exists(ap.File) OrElse TypeOf ap Is NullAudioProfile Then
             Exit Sub

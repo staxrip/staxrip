@@ -21,8 +21,7 @@ MustInherit Class VideoEncoder
 
     Public MustOverride Sub ShowConfigDialog()
 
-    Sub New(name As String)
-        MyBase.New(name)
+    Sub New()
         CanEditValue = True
     End Sub
 
@@ -239,31 +238,27 @@ MustInherit Class VideoEncoder
         x265crf.Params.ApplyPresetValues()
         ret.Add(x265crf)
 
-        Dim intel264 As New IntelEncoder("Intel H.264")
+        Dim intel264 As New IntelEncoder()
         intel264.Params.BFrames.Value = 3
         ret.Add(intel264)
 
-        Dim intel265 As New IntelEncoder("Intel H.265")
+        Dim intel265 As New IntelEncoder()
         intel265.Params.Codec.Value = 1
         intel265.Params.BFrames.Value = 2
         ret.Add(intel265)
 
-        Dim nvidia264 As New NvidiaEncoder("NVIDIA H.264")
+        Dim nvidia264 As New NvidiaEncoder()
         nvidia264.Params.Mode.Value = 3
         ret.Add(nvidia264)
 
-        Dim nvidia265 As New NvidiaEncoder("NVIDIA H.265")
+        Dim nvidia265 As New NvidiaEncoder()
         nvidia265.Params.Mode.Value = 3
         nvidia265.Params.Codec.Value = 1
         ret.Add(nvidia265)
 
-        Dim amd264 As New AMDEncoder("AMD H.264")
+        Dim amd264 As New AMDEncoder()
         amd264.Params.Mode.Value = 2
         ret.Add(amd264)
-
-        Dim vp9ffmpeg = New ffmpegEncoder()
-        vp9ffmpeg.Name = "VP9"
-        ret.Add(vp9ffmpeg)
 
         Dim xvid As New BatchEncoder()
         xvid.OutputFileTypeValue = "avi"
@@ -273,7 +268,7 @@ MustInherit Class VideoEncoder
         xvid.CommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
         ret.Add(xvid)
 
-        ret.Add(New NullEncoder("Just Mux"))
+        ret.Add(New NullEncoder())
 
         ret.Add(Getx264Encoder("2 pass | x264", x264Mode.TwoPass, x264PresetMode.Medium, x264TuneMode.Disabled, x264DeviceMode.Disabled))
 
@@ -292,6 +287,14 @@ MustInherit Class VideoEncoder
                                  """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -pass2 ""%temp_file%.stats"" -i ""%script_file%"" -avi ""%encoder_out_file%"""
         xvid2pass.CompCheckCommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -par %target_sar% -i ""%temp_file%_CompCheck.%script_ext%"" -avi ""%temp_file%_CompCheck.avi"""
         ret.Add(xvid2pass)
+
+        Dim ffmpeg = New ffmpegEncoder()
+
+        For x = 0 To ffmpeg.Params.Codec.Options.Length - 1
+            Dim ffmpeg2 = New ffmpegEncoder()
+            ffmpeg2.Params.Codec.Value = x
+            ret.Add(ffmpeg2)
+        Next
 
         Dim x264cli As New BatchEncoder()
         x264cli.OutputFileTypeValue = "h264"
@@ -314,7 +317,7 @@ MustInherit Class VideoEncoder
         nvencH265.Name = "Command Line | NVIDIA H.265"
         nvencH265.Muxer = New MkvMuxer()
         nvencH265.QualityMode = True
-        nvencH265.CommandLines = """%app:ffmpeg%"" -i ""%script_file%"" -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | ""%app:NVEncC%"" --sar %target_sar% --codec h265 --y4m --cqp 20 --input - --output ""%encoder_out_file%"""
+        nvencH265.CommandLines = """%app:ffmpeg%"" -i ""%script_file%"" -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | ""%app:NVEncC%"" --sar %target_sar% --codec h265 --y4m --cqp 20 -i - -o ""%encoder_out_file%"""
         ret.Add(nvencH265)
 
         ret.Add(Getx264Encoder("Devices | DivX Plus", x264DeviceMode.DivXPlus))
@@ -342,7 +345,7 @@ MustInherit Class VideoEncoder
         Return DialogResult.OK
     End Function
 
-    Public Class MenuList
+    Class MenuList
         Inherits List(Of KeyValuePair(Of String, Action))
 
         Overloads Sub Add(text As String, action As Action)
@@ -356,7 +359,7 @@ Class BatchEncoder
     Inherits VideoEncoder
 
     Sub New()
-        MyBase.New("Command Line")
+        Name = "Command Line"
         Muxer = New MkvMuxer()
     End Sub
 
@@ -524,8 +527,8 @@ End Class
 Class NullEncoder
     Inherits VideoEncoder
 
-    Sub New(name As String)
-        MyBase.New(name)
+    Sub New()
+        Name = "Just Mux"
         Muxer = New MkvMuxer()
         QualityMode = True
     End Sub
@@ -534,7 +537,7 @@ Class NullEncoder
         For Each i In {".h264", ".avc", ".h265", ".hevc", ".mpg", ".avi"}
             If File.Exists(Filepath.GetDirAndBase(p.SourceFile) + "_out" + i) Then
                 Return Filepath.GetDirAndBase(p.SourceFile) + "_out" + i
-            ElseIf File.Exists(p.TempDir + p.Name + "_out" + i)
+            ElseIf File.Exists(p.TempDir + p.Name + "_out" + i) Then
                 Return p.TempDir + p.Name + "_out" + i
             End If
         Next
@@ -598,8 +601,13 @@ Class ffmpegEncoder
 
     Property ParamsStore As New PrimitiveStore
 
+    Public Overrides ReadOnly Property DefaultName As String
+        Get
+            Return "ffmpeg | " + Params.Codec.OptionText
+        End Get
+    End Property
+
     Sub New()
-        MyBase.New("ffmpeg")
         Muxer = New ffmpegMuxer("AVI")
     End Sub
 
@@ -640,8 +648,6 @@ Class ffmpegEncoder
             Select Case Params.Codec.OptionText
                 Case "Xvid", "ASP"
                     Return "avi"
-                Case "VP9"
-                    Return "webm"
                 Case Else
                     Return "mkv"
             End Select
@@ -656,14 +662,13 @@ Class ffmpegEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-
         Params.RaiseValueChanged(Nothing)
 
         If Params.Mode.OptionText = "Two Pass" Then
-            Encode(Params.GetArgs(1, p.Script.Path, "NUL", True))
-            Encode(Params.GetArgs(2, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+            Encode(Params.GetCommandLine(True, False, 1))
+            Encode(Params.GetCommandLine(True, False, 2))
         Else
-            Encode(Params.GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, True))
+            Encode(Params.GetCommandLine(True, False))
         End If
 
         AfterEncoding()
@@ -700,6 +705,91 @@ Class ffmpegEncoder
     Class ffmpegParams
         Inherits CommandLineParams
 
+        'h264_qsv encoder AVOptions:
+        '  -async_depth       <int>        E..V.... Maximum processing parallelism (from 0 to INT_MAX) (default 4)
+        '  -avbr_accuracy     <int>        E..V.... Accuracy of the AVBR ratecontrol (from 0 to INT_MAX) (default 0)
+        '  -avbr_convergence  <int>        E..V.... Convergence of the AVBR ratecontrol (from 0 to INT_MAX) (default 0)
+        '  -preset            <int>        E..V.... (from 1 to 7) (default medium)
+        '     veryfast                     E..V....
+        '     faster                       E..V....
+        '     fast                         E..V....
+        '     medium                       E..V....
+        '     slow                         E..V....
+        '     slower                       E..V....
+        '     veryslow                     E..V....
+        '  -vcm               <int>        E..V.... Use the video conferencing mode ratecontrol (from 0 to 1) (default 0)
+        '  -rdo               <int>        E..V.... Enable rate distortion optimization (from -1 to 1) (default -1)
+        '  -max_frame_size    <int>        E..V.... Maximum encoded frame size in bytes (from -1 to 65535) (default -1)
+        '  -max_slice_size    <int>        E..V.... Maximum encoded slice size in bytes (from -1 to 65535) (default -1)
+        '  -bitrate_limit     <int>        E..V.... Toggle bitrate limitations (from -1 to 1) (default -1)
+        '  -mbbrc             <int>        E..V.... MB level bitrate control (from -1 to 1) (default -1)
+        '  -extbrc            <int>        E..V.... Extended bitrate control (from -1 to 1) (default -1)
+        '  -adaptive_i        <int>        E..V.... Adaptive I-frame placement (from -1 to 1) (default -1)
+        '  -adaptive_b        <int>        E..V.... Adaptive B-frame placement (from -1 to 1) (default -1)
+        '  -b_strategy        <int>        E..V.... Strategy to choose between I/P/B-frames (from -1 to 1) (default -1)
+        '  -cavlc             <int>        E..V.... Enable CAVLC (from 0 to 1) (default 0)
+        '  -idr_interval      <int>        E..V.... Distance (in I-frames) between IDR frames (from 0 to INT_MAX) (default 0)
+        '  -pic_timing_sei    <int>        E..V.... Insert picture timing SEI with pic_struct_syntax element (from 0 to 1) (default 1)
+        '  -single_sei_nal_unit <int>        E..V.... Put all the SEI messages into one NALU (from -1 to 1) (default -1)
+        '  -max_dec_frame_buffering <int>        E..V.... Maximum number of frames buffered in the DPB (from 0 to 65535) (default 0)
+        '  -look_ahead        <int>        E..V.... Use VBR algorithm with look ahead (from 0 to 1) (default 1)
+        '  -look_ahead_depth  <int>        E..V.... Depth of look ahead in number frames (from 0 to 100) (default 0)
+        '  -look_ahead_downsampling <int>        E..V.... (from 0 to 2) (default unknown)
+        '     unknown                      E..V....
+        '     off                          E..V....
+        '     2x                           E..V....
+        '  -int_ref_type      <int>        E..V.... Intra refresh type (from -1 to 65535) (default -1)
+        '     none                         E..V....
+        '     vertical                     E..V....
+        '  -int_ref_cycle_size <int>        E..V.... Number of frames in the intra refresh cycle (from -1 to 65535) (default -1)
+        '  -int_ref_qp_delta  <int>        E..V.... QP difference for the refresh MBs (from -32768 to 32767) (default -32768)
+        '  -recovery_point_sei <int>        E..V.... Insert recovery point SEI messages (from -1 to 1) (default -1)
+        '  -trellis           <flags>      E..V.... Trellis quantization (default 0)
+        '     off                          E..V....
+        '     I                            E..V....
+        '     P                            E..V....
+        '     B                            E..V....
+        '  -profile           <int>        E..V.... (from 0 to INT_MAX) (default unknown)
+        '     unknown                      E..V....
+        '     baseline                     E..V....
+        '     main                         E..V....
+        '     high                         E..V....
+        '  -a53cc             <int>        E..V.... Use A53 Closed Captions (if available) (from 0 to 1) (default 0)
+
+        'hevc_qsv encoder AVOptions:
+        '  -async_depth       <int>        E..V.... Maximum processing parallelism (from 0 to INT_MAX) (default 4)
+        '  -avbr_accuracy     <int>        E..V.... Accuracy of the AVBR ratecontrol (from 0 to INT_MAX) (default 0)
+        '  -avbr_convergence  <int>        E..V.... Convergence of the AVBR ratecontrol (from 0 to INT_MAX) (default 0)
+        '  -preset            <int>        E..V.... (from 1 to 7) (default medium)
+        '     veryfast                     E..V....
+        '     faster                       E..V....
+        '     fast                         E..V....
+        '     medium                       E..V....
+        '     slow                         E..V....
+        '     slower                       E..V....
+        '     veryslow                     E..V....
+        '  -vcm               <int>        E..V.... Use the video conferencing mode ratecontrol (from 0 to 1) (default 0)
+        '  -rdo               <int>        E..V.... Enable rate distortion optimization (from -1 to 1) (default -1)
+        '  -max_frame_size    <int>        E..V.... Maximum encoded frame size in bytes (from -1 to 65535) (default -1)
+        '  -max_slice_size    <int>        E..V.... Maximum encoded slice size in bytes (from -1 to 65535) (default -1)
+        '  -bitrate_limit     <int>        E..V.... Toggle bitrate limitations (from -1 to 1) (default -1)
+        '  -mbbrc             <int>        E..V.... MB level bitrate control (from -1 to 1) (default -1)
+        '  -extbrc            <int>        E..V.... Extended bitrate control (from -1 to 1) (default -1)
+        '  -adaptive_i        <int>        E..V.... Adaptive I-frame placement (from -1 to 1) (default -1)
+        '  -adaptive_b        <int>        E..V.... Adaptive B-frame placement (from -1 to 1) (default -1)
+        '  -b_strategy        <int>        E..V.... Strategy to choose between I/P/B-frames (from -1 to 1) (default -1)
+        '  -cavlc             <int>        E..V.... Enable CAVLC (from 0 to 1) (default 0)
+        '  -load_plugin       <int>        E..V.... A user plugin to load in an internal session (from 0 to 2) (default hevc_sw)
+        '     none                         E..V....
+        '     hevc_sw                      E..V....
+        '     hevc_hw                      E..V....
+        '  -load_plugins      <string>     E..V.... A :-separate list of hexadecimal plugin UIDs to load in an internal session (default '')
+        '  -profile           <int>        E..V.... (from 0 to INT_MAX) (default unknown)
+        '     unknown                      E..V....
+        '     main                         E..V....
+        '     main10                       E..V....
+        '     mainsp                       E..V....
+
         Sub New()
             Title = "ffmpeg Encoding Options"
         End Sub
@@ -708,8 +798,8 @@ Class ffmpegEncoder
             .Switch = "-c:v",
             .Text = "Codec:",
             .AlwaysOn = True,
-            .Options = {"VP9", "Xvid", "ASP", "Theora"},
-            .Values = {"libvpx-vp9", "libxvid", "mpeg4", "libtheora"}}
+            .Options = {"VP9", "Xvid", "ASP", "Theora", "H.264 Intel", "H.265 Intel", "H.264 NVIDIA"},
+            .Values = {"libvpx-vp9", "libxvid", "mpeg4", "libtheora", "h264_qsv", "hevc_qsv", "nvenc_h264"}}
 
         Property Mode As New OptionParam With {
             .Name = "Mode",
@@ -720,6 +810,7 @@ Class ffmpegEncoder
             .Switch = "-speed",
             .Text = "Speed:",
             .AlwaysOn = True,
+            .VisibleFunc = Function() Codec.OptionText = "VP9",
             .Options = {"6 - Fastest", "5 - Faster", "4 - Fast", "3 - Medium", "2 - Slow", "1 - Slower", "0 - Slowest"},
             .Values = {"6", "5", "4", "3", "2", "1", "0"},
             .Value = 5}
@@ -727,44 +818,62 @@ Class ffmpegEncoder
         Property AQmode As New OptionParam With {
             .Switch = "-aq-mode",
             .Text = "AQ Mode:",
+            .VisibleFunc = Function() Codec.OptionText = "VP9",
             .Options = {"Disabled", "0", "1", "2", "3"},
             .Values = {"Disabled", "0", "1", "2", "3"}}
 
         Property Quality As New NumParam With {
             .Name = "Quality",
             .Text = "Quality:",
+            .VisibleFunc = Function() Mode.Value = EncodingMode.Quality,
             .MinMaxStep = {1, 63, 1},
             .Value = 25}
 
-        Property Threads As New NumParam With {
+        Property EncodingThreads As New NumParam With {
             .Switch = "-threads",
-            .Text = "Threads:",
+            .Text = "Encoding Threads:",
+            .VisibleFunc = Function() Codec.OptionText = "VP9",
             .Value = 8,
             .DefaultValue = -1}
 
         Property TileColumns As New NumParam With {
             .Switch = "-tile-columns",
             .Text = "Tile Columns:",
+            .VisibleFunc = Function() Codec.OptionText = "VP9",
             .Value = 6,
             .DefaultValue = -1}
 
         Property FrameParallel As New NumParam With {
             .Switch = "-frame-parallel",
             .Text = "Frame Parallel:",
+            .VisibleFunc = Function() Codec.OptionText = "VP9",
             .Value = 1,
             .DefaultValue = -1}
 
         Property AutoAltRef As New NumParam With {
             .Switch = "-auto-alt-ref",
             .Text = "Auto Alt Ref:",
+            .VisibleFunc = Function() Codec.OptionText = "VP9",
             .Value = 1,
             .DefaultValue = -1}
 
         Property LagInFrames As New NumParam With {
             .Switch = "-lag-in-frames",
             .Text = "Lag In Frames:",
+            .VisibleFunc = Function() Codec.OptionText = "VP9",
             .Value = 25,
             .DefaultValue = -1}
+
+        Property DecodingThreads As New NumParam With {
+            .Text = "Decoding Threads:",
+            .MinMaxStep = {0, 64, 1},
+            .Value = 1,
+            .DefaultValue = 0}
+
+        Property Decoder As New OptionParam With {
+            .Text = "Decoder:",
+            .Options = {"AviSynth/VapourSynth", "Intel", "DXVA2"},
+            .Values = {"avs", "qsv", "dxva2"}}
 
         Property Custom As New StringParam With {
             .Text = "Custom Switches:"}
@@ -776,7 +885,9 @@ Class ffmpegEncoder
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineItem)
 
-                    ItemsValue.AddRange({Codec, Mode, Speed, AQmode, Quality, Threads, TileColumns, FrameParallel, AutoAltRef, LagInFrames, Custom})
+                    ItemsValue.AddRange({Decoder, Codec, Mode, Speed, AQmode, Quality,
+                                        DecodingThreads, EncodingThreads, TileColumns,
+                                        FrameParallel, AutoAltRef, LagInFrames, Custom})
                 End If
 
                 Return ItemsValue
@@ -784,40 +895,42 @@ Class ffmpegEncoder
         End Property
 
         Protected Overrides Sub OnValueChanged(item As CommandLineItem)
-            Speed.Visible = Codec.OptionText = "VP9"
-            Threads.Visible = Codec.OptionText = "VP9"
-            TileColumns.Visible = Codec.OptionText = "VP9"
-            FrameParallel.Visible = Codec.OptionText = "VP9"
-            AutoAltRef.Visible = Codec.OptionText = "VP9"
-            LagInFrames.Visible = Codec.OptionText = "VP9"
-            AQmode.Visible = Codec.OptionText = "VP9"
-
-            Quality.Visible = Mode.Value = EncodingMode.Quality
             MyBase.OnValueChanged(item)
         End Sub
 
         Overloads Overrides Function GetCommandLine(includePaths As Boolean,
-                                                    includeExecutable As Boolean) As String
-
-            Return GetArgs(1, p.Script.Path, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
-                           "." + p.VideoEncoder.OutputFileType, includePaths)
-        End Function
-
-        Overloads Function GetArgs(pass As Integer,
-                                   sourcePath As String,
-                                   targetPath As String,
-                                   Optional includePaths As Boolean = True) As String
+                                                    includeExecutable As Boolean,
+                                                    Optional pass As Integer = 0) As String
+            Dim sourcePath = p.Script.Path
+            Dim targetPath As String
             Dim ret As String
 
-            If includePaths Then
-                ret += "-i """ + p.Script.Path + """"
+            If Mode.OptionText = "Two Pass" AndAlso pass = 1 Then
+                targetPath = "NUL"
+            Else
+                targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
             End If
 
-            Dim q = From i In Items Where i.GetArgs <> ""
+            If includePaths AndAlso includeExecutable Then ret = Packs.ffmpeg.GetPath.Quotes
 
-            If q.Count > 0 Then
-                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+            Select Case Decoder.ValueText
+                Case "qsv"
+                    sourcePath = p.LastOriginalSourceFile
+                    ret += " -hwaccel qsv"
+                Case "dxva2"
+                    sourcePath = p.LastOriginalSourceFile
+                    ret += " -hwaccel dxva2"
+            End Select
+
+            If DecodingThreads.Value <> DecodingThreads.DefaultValue Then
+                ret += " -threads " + DecodingThreads.Value.ToString
             End If
+
+            If includePaths Then ret += " -i " + sourcePath.Quotes
+
+            Dim items = From i In Me.Items Where i.GetArgs <> ""
+
+            If items.Count > 0 Then ret += " " + items.Select(Function(item) item.GetArgs).Join(" ")
 
             If Calc.IsARSignalingRequired Then
                 ret += " -aspect " + Calc.GetTargetDAR.ToString(CultureInfo.InvariantCulture).Shorten(8)
@@ -828,7 +941,9 @@ Class ffmpegEncoder
                     If Codec.OptionText = "VP9" Then
                         ret += " -crf " & Quality.Value & " -b:v 0"
                     Else
-                        ret += " -q:v " & Quality.Value
+                        If Codec.OptionText = "h264_qsv" Then
+                            ret += " -q:v " & Quality.Value
+                        End If
                     End If
                 Case EncodingMode.TwoPass
                     ret += " -pass " & pass
@@ -850,13 +965,9 @@ Class ffmpegEncoder
                     ret += " -tag:v xvid"
             End Select
 
-            If Custom.Value <> "" Then ret += " " + Custom.Value
+            ret += " -an -y -hide_banner"
 
-            ret += " -y"
-
-            If includePaths Then
-                ret += " """ + targetPath + """"
-            End If
+            If includePaths Then ret += " " + targetPath.Quotes
 
             Return ret.Trim
         End Function
@@ -879,9 +990,11 @@ Class NvidiaEncoder
 
     Property ParamsStore As New PrimitiveStore
 
-    Sub New(profileName As String)
-        MyBase.New(profileName)
-    End Sub
+    Public Overrides ReadOnly Property DefaultName As String
+        Get
+            Return "NVIDIA " + Params.Codec.OptionText
+        End Get
+    End Property
 
     <NonSerialized>
     Private ParamsValue As EncoderParams
@@ -977,8 +1090,8 @@ Class NvidiaEncoder
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder:",
-            .Options = {"AviSynth/VapourSynth", "NVEncC cuvid", "QSVEncC Quick Sync", "ffmpeg dxva2"},
-            .Values = {"avs", "nv", "qs", "ff"}}
+            .Options = {"AviSynth/VapourSynth", "NVEncC (NVIDIA CUVID)", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
+            .Values = {"avs", "nv", "qs", "ffqsv", "ffdxva"}}
 
         Property Mode As New OptionParam With {
             .Text = "Mode:",
@@ -987,7 +1100,7 @@ Class NvidiaEncoder
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec:",
-            .Options = {"H264/AVC", "H265/HEVC"},
+            .Options = {"H.264", "H.265"},
             .Values = {"h264", "h265"}}
 
         Property Profile As New OptionParam With {
@@ -1123,13 +1236,15 @@ Class NvidiaEncoder
             MyBase.OnValueChanged(item)
         End Sub
 
-        Overrides Function GetCommandLine(includePaths As Boolean, includeExecutable As Boolean) As String
+        Overrides Function GetCommandLine(includePaths As Boolean,
+                                          includeExecutable As Boolean,
+                                          Optional pass As Integer = 0) As String
             Dim ret As String
             Dim sourcePath As String
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
 
             If includePaths AndAlso includeExecutable Then
-                ret = Packs.NVEncC.GetPath.AddPathQuotes
+                ret = Packs.NVEncC.GetPath.Quotes
             End If
 
             Select Case Decoder.ValueText
@@ -1139,10 +1254,13 @@ Class NvidiaEncoder
                     sourcePath = p.LastOriginalSourceFile
                 Case "qs"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.QSVEncC.GetPath.AddPathQuotes, "QSVEncC") + " --output-file - --codec raw" + " --input-file " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " | " + If(includePaths, Packs.NVEncC.GetPath.AddPathQuotes, "NVEncC")
-                Case "ff"
+                    If includePaths Then ret = If(includePaths, Packs.QSVEncC.GetPath.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Packs.NVEncC.GetPath.Quotes, "NVEncC")
+                Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.AddPathQuotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.NVEncC.GetPath.AddPathQuotes, "NVEncC")
+                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.NVEncC.GetPath.Quotes, "NVEncC")
+                Case "ffqsv"
+                    sourcePath = "-"
+                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.NVEncC.GetPath.Quotes, "NVEncC")
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
@@ -1179,14 +1297,9 @@ Class NvidiaEncoder
                 If par <> New Point(1, 1) Then ret += " --sar " & par.X & ":" & par.Y
             End If
 
-            If sourcePath = "-" Then
-                ret += " --y4m --fps " &
-                    p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture)
-            End If
+            If sourcePath = "-" Then ret += " --y4m"
 
-            If includePaths Then
-                ret += " --input " + sourcePath.AddPathQuotes + " --output " + targetPath.AddPathQuotes
-            End If
+            If includePaths Then ret += " -i " + sourcePath.Quotes + " -o " + targetPath.Quotes
 
             Return ret.Trim
         End Function
@@ -1203,9 +1316,11 @@ Class IntelEncoder
 
     Property ParamsStore As New PrimitiveStore
 
-    Sub New(profileName As String)
-        MyBase.New(profileName)
-    End Sub
+    Public Overrides ReadOnly Property DefaultName As String
+        Get
+            Return "Intel " + Params.Codec.OptionText
+        End Get
+    End Property
 
     <NonSerialized>
     Private ParamsValue As EncoderParams
@@ -1271,7 +1386,7 @@ Class IntelEncoder
 
             Using proc As New Proc
                 proc.Init("Encoding using QSVEncC")
-                proc.SkipStrings = {"%]", " frames: "}
+                proc.SkipStrings = {" frames: "}
                 proc.WriteLine(cl + CrLf2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
@@ -1280,7 +1395,7 @@ Class IntelEncoder
         Else
             Using proc As New Proc
                 proc.Init("Encoding using QSVEncC")
-                proc.SkipStrings = {"%]"}
+                proc.SkipStrings = {" frames: "}
                 proc.File = Packs.QSVEncC.GetPath
                 proc.Arguments = cl
                 proc.Start()
@@ -1328,13 +1443,13 @@ Class IntelEncoder
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder:",
-            .Options = {"AviSynth/VapourSynth", "NVEncC", "VCEEncC", "QSVEncC", "ffmpeg dxva2"},
-            .Values = {"avs", "nv", "vce", "qs", "ff"}}
+            .Options = {"AviSynth/VapourSynth", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
+            .Values = {"avs", "qs", "ffqsv", "ffdxva"}}
 
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec:",
-            .Options = {"H264/AVC", "H265/HEVC", "MPEG-2"},
+            .Options = {"H.264", "H.265", "MPEG-2"},
             .Values = {"h264", "hevc", "mpeg2"}}
 
         Property Mode As New OptionParam With {
@@ -1431,6 +1546,11 @@ Class IntelEncoder
             .VisibleFunc = Function() Decoder.ValueText = "avs",
             .Text = "Scenechange"}
 
+        Property Fallback As New BoolParam With {
+            .Switch = "--fallback-rc",
+            .Text = "Enable fallback for unsupported modes",
+            .Value = True}
+
         Property MBBRC As New BoolParam With {
             .Switch = "--mbbrc",
             .NoSwitch = "--no-mbbrc",
@@ -1495,6 +1615,12 @@ Class IntelEncoder
             .ValueIsName = True,
             .Options = {"0", "90", "180", "270"}}
 
+        Property OutputBuf As New OptionParam With {
+            .Switch = "--output-buf",
+            .Text = "Output Buffer:",
+            .Options = {"8", "16", "32", "64", "128"},
+            .ValueIsName = True}
+
         Private ItemsValue As List(Of CommandLineItem)
 
         Overrides ReadOnly Property Items As List(Of CommandLineItem)
@@ -1503,7 +1629,7 @@ Class IntelEncoder
                     ItemsValue = New List(Of CommandLineItem)
 
                     Add("Basic", Decoder, Codec, QualitySpeed, Mode, Quality, QPI, QPP, QPB)
-                    Add("Advanced", ProfileH264, ProfileHEVC, ProfileMPEG2, LevelHEVC, LevelH264, LevelMPEG2, Rotate, BFrames, Ref, GOPLength, LookaheadDepth, Scenechange, MBBRC, Custom)
+                    Add("Advanced", ProfileH264, ProfileHEVC, ProfileMPEG2, LevelHEVC, LevelH264, LevelMPEG2, Rotate, OutputBuf, BFrames, Ref, GOPLength, LookaheadDepth, Scenechange, Fallback, MBBRC, Custom)
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                 End If
 
@@ -1558,37 +1684,43 @@ Class IntelEncoder
                 End If
             End If
 
-            Mode.HideOptions(Codec.ValueText = "h264", GetMode("avbr"), GetMode("la"),
-                             GetMode("la-hrd"), GetMode("la-icq"), GetMode("qvbr"),
-                             GetMode("qvbr-q"), GetMode("vcm"))
+            If item Is Codec OrElse item Is Nothing Then
+                For Each i In Modes
+                    Select Case Codec.ValueText
+                        Case "h264"
+                            Mode.ShowOption(GetMode(i.Name), True)
+                        Case "hevc"
+                            Mode.ShowOption(GetMode(i.Name), i.Name.EqualsAny("cbr", "vbr", "cqp", "vqp", "icq", "vcm"))
+                        Case "mpeg2"
+                            Mode.ShowOption(GetMode(i.Name), i.Name.EqualsAny("cbr", "vbr", "avbr", "cqp", "vqp"))
+                    End Select
+                Next
+            End If
 
             MyBase.OnValueChanged(item)
         End Sub
 
-        Overrides Function GetCommandLine(includePaths As Boolean, includeExecutable As Boolean) As String
+        Overrides Function GetCommandLine(includePaths As Boolean,
+                                          includeExecutable As Boolean,
+                                          Optional pass As Integer = 0) As String
             Dim ret As String
             Dim sourcePath = p.Script.Path
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
 
-            If includePaths AndAlso includeExecutable Then
-                ret = Packs.QSVEncC.GetPath.AddPathQuotes
-            End If
+            If includePaths AndAlso includeExecutable Then ret = Packs.QSVEncC.GetPath.Quotes
 
             Select Case Decoder.ValueText
                 Case "avs"
                     sourcePath = p.Script.Path
-                Case "nv"
-                    sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.NVEncC.GetPath.AddPathQuotes, "NVEncC") + " --output-file - --codec raw" + " --input-file " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " | " + If(includePaths, Packs.QSVEncC.GetPath.AddPathQuotes, "QSVEncC")
-                Case "vce"
-                    sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.VCEEncC.GetPath.AddPathQuotes, "VCEEncC") + " --output-file - --codec raw" + " --input-file " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " | " + If(includePaths, Packs.QSVEncC.GetPath.AddPathQuotes, "QSVEncC")
                 Case "qs"
                     sourcePath = p.LastOriginalSourceFile
-                    ret = " --avqsv"
-                Case "ff"
+                Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.AddPathQuotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.QSVEncC.GetPath.AddPathQuotes, "QSVEncC")
+                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.LastOriginalSourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.QSVEncC.GetPath.Quotes, "QSVEncC")
+                Case "ffqsv"
+                    sourcePath = "-"
+                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.QSVEncC.GetPath.Quotes, "QSVEncC")
+
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
@@ -1628,20 +1760,11 @@ Class IntelEncoder
                 If p.Ranges.Count > 0 Then
                     ret += " --trim " + p.Ranges.Select(Function(range) range.Start & ":" & range.End).Join(",")
                 End If
-
-                If FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) Then
-                    sourcePath = p.LastOriginalSourceFile
-                Else
-                    sourcePath = p.SourceFile
-                End If
             End If
 
-            If sourcePath = "-" Then
-                ret += " --y4m --input-res " & p.TargetWidth & "x" & p.TargetHeight & " --fps " &
-                    p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture)
-            End If
+            If sourcePath = "-" Then ret += " --y4m"
 
-            If includePaths Then ret += " --input-file " + sourcePath.AddPathQuotes + " --output-file " + targetPath.AddPathQuotes
+            If includePaths Then ret += " -i " + sourcePath.Quotes + " -o " + targetPath.Quotes
 
             Return ret.Trim
         End Function
@@ -1656,11 +1779,11 @@ End Class
 Class AMDEncoder
     Inherits VideoEncoder
 
-    Property ParamsStore As New PrimitiveStore
-
-    Sub New(profileName As String)
-        MyBase.New(profileName)
+    Sub New()
+        Name = "AMD H.264"
     End Sub
+
+    Property ParamsStore As New PrimitiveStore
 
     <NonSerialized>
     Private ParamsValue As EncoderParams
@@ -1759,8 +1882,8 @@ Class AMDEncoder
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder:",
-            .Options = {"AviSynth/VapourSynth", "VCEEncC", "QSVEncC Quick Sync", "ffmpeg dxva2"},
-            .Values = {"avs", "vce", "qs", "ff"}}
+            .Options = {"AviSynth/VapourSynth", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
+            .Values = {"avs", "qs", "ffqsv", "ffdxva"}}
 
         Property Quality As New OptionParam With {
             .Switch = "--quality",
@@ -1859,26 +1982,29 @@ Class AMDEncoder
             MyBase.OnValueChanged(item)
         End Sub
 
-        Overrides Function GetCommandLine(includePaths As Boolean, includeExecutable As Boolean) As String
+        Overrides Function GetCommandLine(includePaths As Boolean,
+                                          includeExecutable As Boolean,
+                                          Optional pass As Integer = 0) As String
             Dim ret As String
             Dim sourcePath As String
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
 
             If includePaths AndAlso includeExecutable Then
-                ret = Packs.VCEEncC.GetPath.AddPathQuotes
+                ret = Packs.VCEEncC.GetPath.Quotes
             End If
 
             Select Case Decoder.ValueText
                 Case "avs"
                     sourcePath = p.Script.Path
-                Case "vce"
-                    sourcePath = p.LastOriginalSourceFile
                 Case "qs"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.QSVEncC.GetPath.AddPathQuotes, "QSVEncC") + " --output-file - --codec raw" + " --input-file " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " | " + If(includePaths, Packs.VCEEncC.GetPath.AddPathQuotes, "VCEEncC")
-                Case "ff"
+                    If includePaths Then ret = If(includePaths, Packs.QSVEncC.GetPath.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Packs.VCEEncC.GetPath.Quotes, "VCEEncC")
+                Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.AddPathQuotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.AddPathQuotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.VCEEncC.GetPath.AddPathQuotes, "VCEEncC")
+                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.VCEEncC.GetPath.Quotes, "VCEEncC")
+                Case "ffqsv"
+                    sourcePath = "-"
+                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.VCEEncC.GetPath.Quotes, "VCEEncC")
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
@@ -1896,14 +2022,9 @@ Class AMDEncoder
                     ret += " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
             End Select
 
-            If sourcePath = "-" Then
-                ret += " --y4m --fps " &
-                    p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture)
-            End If
+            If sourcePath = "-" Then ret += " --y4m"
 
-            If includePaths Then
-                ret += " --input-file " + sourcePath.AddPathQuotes + " --output-file " + targetPath.AddPathQuotes
-            End If
+            If includePaths Then ret += " -i " + sourcePath.Quotes + " -o " + targetPath.Quotes
 
             Return ret.Trim
         End Function

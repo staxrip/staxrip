@@ -265,9 +265,9 @@ Class SimpleUI
         Inherits DataGridViewEx
         Implements IPage
 
-        Public Property Node As TreeNode Implements IPage.Node
-        Public Property Path As String Implements IPage.Path
-        Public Property TipProvider As TipProvider Implements IPage.TipProvider
+        Property Node As TreeNode Implements IPage.Node
+        Property Path As String Implements IPage.Path
+        Property TipProvider As TipProvider Implements IPage.TipProvider
 
         Sub New()
             TipProvider = New TipProvider(Nothing)

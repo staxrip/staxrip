@@ -1,12 +1,10 @@
 ﻿Imports System.Runtime.CompilerServices
 Imports System.Reflection
-Imports System.IO
-Imports System.Drawing.Drawing2D
 
 Imports Microsoft.Win32
 Imports System.Globalization
 
-Public Module MiscExtensions
+Module MiscExtensions
     <Extension()>
     Function Sort(Of T)(value As IEnumerable(Of T)) As IEnumerable(Of T)
         Dim a As T() = value.ToArray
@@ -85,7 +83,7 @@ Public Module MiscExtensions
     End Function
 End Module
 
-Public Module RegistryKeyExtensions
+Module RegistryKeyExtensions
     '<Extension()>
     'Sub Delete(rootKey As RegistryKey, key As String)
     '    Dim k = rootKey.OpenSubKey(key)

@@ -3,7 +3,7 @@
 Imports System.Text
 Imports System.ComponentModel
 
-Public Class CommandLineControl
+Class CommandLineControl
     Inherits UserControl
 
 #Region "Designer"

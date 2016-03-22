@@ -10,7 +10,7 @@ Imports StaxRip.UI
 
 Namespace UI
     <Serializable()>
-    Public Class CustomMenuItem
+    Class CustomMenuItem
         Sub New()
         End Sub
 
@@ -19,60 +19,13 @@ Namespace UI
         End Sub
 
         <NonSerialized()>
-        Private CustomMenuValue As CustomMenu
+        Public CustomMenu As CustomMenu
 
-        Property CustomMenu() As CustomMenu
-            Get
-                Return CustomMenuValue
-            End Get
-            Set(Value As CustomMenu)
-                CustomMenuValue = Value
-            End Set
-        End Property
+        Overridable Property Text As String
 
-        Private TextValue As String
-
-        Overridable Property Text() As String
-            Get
-                Return TextValue
-            End Get
-            Set(Value As String)
-                TextValue = Value
-            End Set
-        End Property
-
-        Private SubItemsValue As New List(Of CustomMenuItem)
-
-        Property SubItems() As List(Of CustomMenuItem)
-            Get
-                Return SubItemsValue
-            End Get
-            Set(Value As List(Of CustomMenuItem))
-                SubItemsValue = Value
-            End Set
-        End Property
-
-        Private KeyDataValue As Keys
-
-        Property KeyData() As Keys
-            Get
-                Return KeyDataValue
-            End Get
-            Set(Value As Keys)
-                KeyDataValue = Value
-            End Set
-        End Property
-
-        Private MethodNameValue As String
-
-        Property MethodName() As String
-            Get
-                Return MethodNameValue
-            End Get
-            Set(Value As String)
-                MethodNameValue = Value
-            End Set
-        End Property
+        Property SubItems As New List(Of CustomMenuItem)
+        Property KeyData As Keys
+        Property MethodName As String
 
         Private ParametersValue As List(Of Object)
 
@@ -138,16 +91,7 @@ Namespace UI
         End Sub
 
         <NonSerialized()>
-        Private ParentValue As CustomMenuItem
-
-        Property Parent() As CustomMenuItem
-            Get
-                Return ParentValue
-            End Get
-            Set(Value As CustomMenuItem)
-                ParentValue = Value
-            End Set
-        End Property
+        Public Parent As CustomMenuItem
 
         Shared Sub SetParents(item As CustomMenuItem)
             For Each i In item.SubItems
@@ -178,8 +122,16 @@ Namespace UI
         End Function
     End Class
 
-    Public Class CustomMenu
+    Class CustomMenu
         Private Items As New List(Of CustomMenuItem)
+
+        Property Menu As Menu
+        Property MenuStrip As MenuStrip
+        Property ToolStrip As ToolStrip
+        Property MenuItems As New List(Of MenuItemEx)
+        Property DefaultMenu As Func(Of CustomMenuItem)
+        Property MenuItem As CustomMenuItem
+        Property CommandManager As CommandManager
 
         Event Command(e As CustomMenuItemEventArgs)
 
@@ -193,83 +145,6 @@ Namespace UI
             Me.MenuItem = menuItem
             Me.ToolStrip = toolStrip
         End Sub
-
-        Private MenuValue As Menu
-
-        Property Menu() As Menu
-            Get
-                Return MenuValue
-            End Get
-            Set(Value As Menu)
-                MenuValue = Value
-            End Set
-        End Property
-
-        Private MenuStripValue As MenuStrip
-
-        Property MenuStrip() As MenuStrip
-            Get
-                Return MenuStripValue
-            End Get
-            Set(Value As MenuStrip)
-                MenuStripValue = Value
-            End Set
-        End Property
-
-        Private ToolStripValue As ToolStrip
-
-        Property ToolStrip() As ToolStrip
-            Get
-                Return ToolStripValue
-            End Get
-            Set(Value As ToolStrip)
-                ToolStripValue = Value
-            End Set
-        End Property
-
-        Private MenuItemsValue As New List(Of MenuItemEx)
-
-        Property MenuItems() As List(Of MenuItemEx)
-            Get
-                Return MenuItemsValue
-            End Get
-            Set(Value As List(Of MenuItemEx))
-                MenuItemsValue = Value
-            End Set
-        End Property
-
-        Private DefaultMenuValue As Func(Of CustomMenuItem)
-
-        Property DefaultMenu() As Func(Of CustomMenuItem)
-            Get
-                Return DefaultMenuValue
-            End Get
-            Set(Value As Func(Of CustomMenuItem))
-                DefaultMenuValue = Value
-            End Set
-        End Property
-
-        Private MenuItemValue As CustomMenuItem
-
-        Property MenuItem() As CustomMenuItem
-            Get
-                Return MenuItemValue
-            End Get
-            Set(Value As CustomMenuItem)
-                MenuItemValue = Value
-            End Set
-        End Property
-
-        Private CommandManagerValue As CommandManager
-
-        Property CommandManager() As CommandManager
-            Get
-                Return CommandManagerValue
-            End Get
-            Set(Value As CommandManager)
-                CommandManagerValue = Value
-            End Set
-        End Property
 
         Sub AddKeyDownHandler(control As Control)
             AddHandler control.KeyDown, AddressOf OnKeyDown
@@ -347,16 +222,9 @@ Namespace UI
             If item.MethodName <> "" Then
                 Dim e As New CustomMenuItemEventArgs(item)
                 RaiseEvent Command(e)
-
-                If Not e.Handled Then
-                    Process(item)
-                End If
-
+                If Not e.Handled Then Process(item)
                 Dim f As Form = ToolStrip.FindForm
-
-                If Not f Is Nothing Then
-                    f.Refresh()
-                End If
+                If Not f Is Nothing Then f.Refresh()
             End If
         End Sub
 
@@ -407,37 +275,18 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class CustomMenuItemEventArgs
+    Class CustomMenuItemEventArgs
         Inherits EventArgs
+
+        Property Handled As Boolean
+        Property Item As CustomMenuItem
 
         Sub New(item As CustomMenuItem)
             Me.Item = item
         End Sub
-
-        Private HandledValue As Boolean
-
-        Property Handled() As Boolean
-            Get
-                Return HandledValue
-            End Get
-            Set(Value As Boolean)
-                HandledValue = Value
-            End Set
-        End Property
-
-        Private ItemValue As CustomMenuItem
-
-        Property Item() As CustomMenuItem
-            Get
-                Return ItemValue
-            End Get
-            Set(Value As CustomMenuItem)
-                ItemValue = Value
-            End Set
-        End Property
     End Class
 
-    Public Class MenuItemEx
+    Class MenuItemEx
         Inherits ToolStripMenuItem
 
         Shared Property UseTooltips As Boolean
@@ -554,7 +403,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class ActionMenuItem
+    Class ActionMenuItem
         Inherits MenuItemEx
 
         Private Action As Action
@@ -660,7 +509,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class TextCustomMenu
+    Class TextCustomMenu
         Shared Function EditMenu(value As String, owner As Form) As String
             Return EditMenu(value, Nothing, Nothing, owner)
         End Function
@@ -737,6 +586,10 @@ Namespace UI
                 FormValue = value
             End Set
         End Property
+
+        Sub Add(path As String)
+            ActionMenuItem.Add(Items, path, Nothing)
+        End Sub
 
         Function Add(path As String,
                      action As Action,

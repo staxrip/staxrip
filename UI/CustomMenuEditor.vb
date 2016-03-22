@@ -4,7 +4,7 @@ Imports System.Globalization
 Imports System.Drawing.Drawing2D
 
 Namespace UI
-    Public Class CustomMenuEditor
+    Class CustomMenuEditor
         Inherits DialogBase
 
 #Region " Designer "
@@ -738,7 +738,7 @@ Namespace UI
         End Sub
 
         Private Sub RemoveSelectedItem()
-            If Not tv.SelectedNode Is Nothing AndAlso _
+            If Not tv.SelectedNode Is Nothing AndAlso
                 Not tv.SelectedNode.Parent Is Nothing Then
 
                 tv.SelectedNode.Remove()

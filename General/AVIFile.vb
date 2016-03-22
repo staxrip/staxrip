@@ -2,7 +2,7 @@ Imports System.Runtime.InteropServices
 Imports System.Reflection
 Imports System.Text
 
-Public Class AVIFile
+Class AVIFile
     Implements IDisposable
 
     Private AviFile As IntPtr
@@ -29,20 +29,12 @@ Public Class AVIFile
             FrameCountValue = AVIStreamLength(AviStream)
 
             If FrameCountValue = 240 Then
-                Dim o = Marshal.GetObjectForIUnknown(AviFile)
+                Dim clipInfo = TryCast(Marshal.GetObjectForIUnknown(AviFile), IAvisynthClipInfo)
 
-                If Not o Is Nothing Then
-                    Dim i = CType(o, IAvisynthClipInfo)
-
-                    If Not i Is Nothing Then
-                        Dim ptr As IntPtr
-
-                        If i.GetError(ptr) = 0 Then
-                            ErrorMessageValue = Marshal.PtrToStringAnsi(ptr)
-                        End If
-
-                        Marshal.ReleaseComObject(i)
-                    End If
+                If Not clipInfo Is Nothing Then
+                    Dim ptr As IntPtr
+                    If clipInfo.GetError(ptr) = 0 Then ErrorMessageValue = Marshal.PtrToStringAnsi(ptr)
+                    Marshal.ReleaseComObject(clipInfo)
                 End If
             Else
                 ErrorMessageValue = Nothing
@@ -61,12 +53,12 @@ Public Class AVIFile
     End Sub
 
     Sub ThrowException(message As String)
-        Throw New Exception(message + CrLf2 + "The AviSynth+ x64 or VapourSynth x64 setup might be damaged. You can verify this by opening the avs or vpy file with VirtualDub x64 and MPC-HC x64. avs is a AviSynth script, vpy is a VapourSynth script, StaxRip generates these scripts in the folder for temporary files and both VirtualDub x64 and MPC-HC x64 should be able to open it.")
+        Throw New Exception(message + CrLf2 + "The AviSynth+ x64 or VapourSynth x64 setup might be damaged. You can verify this by opening the avs or vpy file with VirtualDub x64. avs is a AviSynth script, vpy is a VapourSynth script, StaxRip generates these scripts in the folder for temporary files and VirtualDub should be able to open it.")
     End Sub
 
     Private FrameCountValue As Integer
 
-    ReadOnly Property FrameCount() As Integer
+    ReadOnly Property FrameCount As Integer
         Get
             Return FrameCountValue
         End Get
@@ -94,7 +86,7 @@ Public Class AVIFile
 
     Private PositionValue As Integer
 
-    Property Position() As Integer
+    Property Position As Integer
         Get
             Return PositionValue
         End Get
@@ -120,17 +112,19 @@ Public Class AVIFile
         End If
     End Sub
 
-    Function GetBitmap() As Bitmap
+    Function GetDIB() As IntPtr
         If FrameObject = IntPtr.Zero Then
             Const AVIGETFRAMEF_BESTDISPLAYFMT = 1
             FrameObject = AVIStreamGetFrameOpen(AviStream, AVIGETFRAMEF_BESTDISPLAYFMT)
             If FrameObject = IntPtr.Zero Then FrameObject = AVIStreamGetFrameOpen(AviStream, 0)
         End If
 
-        If FrameObject <> IntPtr.Zero Then
-            Dim ptr = AVIStreamGetFrame(FrameObject, Position)
-            If ptr <> IntPtr.Zero Then Return GetBMPFromDib(ptr)
-        End If
+        If FrameObject <> IntPtr.Zero Then Return AVIStreamGetFrame(FrameObject, Position)
+    End Function
+
+    Function GetBitmap() As Bitmap
+        Dim dib = GetDIB()
+        If dib <> IntPtr.Zero Then Return GetBMPFromDib(dib)
     End Function
 
     Private Function GetBMPFromDib(pDIB As IntPtr) As Bitmap

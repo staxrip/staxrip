@@ -4,7 +4,7 @@ Imports System.Drawing.Drawing2D
 Imports VB6 = Microsoft.VisualBasic
 Imports StaxRip.UI
 
-Public Class SearchTextBox
+Class SearchTextBox
     Inherits UserControl
 
     Private tb As TextBoxEx

@@ -1,4 +1,4 @@
-﻿Public Class DataForm
+﻿Class DataForm
     Property HelpAction As Action
 
     Public Sub New()

@@ -2,7 +2,7 @@ Imports System.ComponentModel
 
 Imports StaxRip.UI
 
-Public Class MacroEditor
+Class MacroEditor
     Inherits DialogBase
 
 #Region " Designer "

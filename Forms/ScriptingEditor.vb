@@ -19,7 +19,7 @@ Class ScriptingEditor
         Engine = doc.Engine
 
         For Each i In doc.Filters
-            MainFlowLayoutPanel.Controls.Add(GetFilterTable(i))
+            MainFlowLayoutPanel.Controls.Add(CreateFilterTable(i))
         Next
 
         MainFlowLayoutPanel.ResumeLayout()
@@ -44,7 +44,7 @@ Class ScriptingEditor
         MyBase.OnKeyDown(e)
     End Sub
 
-    Shared Function GetFilterTable(filter As VideoFilter) As FilterTable
+    Shared Function CreateFilterTable(filter As VideoFilter) As FilterTable
         Dim ret As New FilterTable
 
         ret.Margin = New Padding(3, 0, 3, 0)
@@ -133,6 +133,7 @@ Class ScriptingEditor
             rtbScript.Dock = DockStyle.Fill
             rtbScript.WordWrap = False
             rtbScript.ScrollBars = RichTextBoxScrollBars.None
+            rtbScript.AcceptsTab = True
 
             AddHandler Disposed, Sub() Menu.Dispose()
             AddHandler Menu.Opening, AddressOf MenuOpening
@@ -201,7 +202,13 @@ Class ScriptingEditor
 
         ReadOnly Property TextSize As Size
             Get
-                Return TextRenderer.MeasureText(rtbScript.Text, rtbScript.Font, New Size(2000, 2000))
+                Dim ret = TextRenderer.MeasureText(rtbScript.Text, rtbScript.Font, New Size(2000, 2000))
+
+                If ret.Width > Screen.GetWorkingArea(Me).Width * 0.7 Then
+                    ret.Width = CInt(Screen.GetWorkingArea(Me).Width * 0.7)
+                End If
+
+                Return ret
             End Get
         End Property
 
@@ -220,9 +227,7 @@ Class ScriptingEditor
                     End If
                 Next
 
-                If Not skip Then
-                    newParameters.Add(argument)
-                End If
+                If Not skip Then newParameters.Add(argument)
             Next
 
             For Each parameter In parameters.Parameters
@@ -263,7 +268,7 @@ Class ScriptingEditor
                     For Each i2 In i.Filters
                         Dim tip = i2.Script
                         If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
-                        ActionMenuItem.Add(Menu.Items, i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
+                        ActionMenuItem.Add(Menu.Items, i2.Category + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
                     Next
                 End If
             Next
@@ -282,9 +287,7 @@ Class ScriptingEditor
                 For Each i2 In i.Filters
                     Dim tip = i2.Script
 
-                    If Not tip.Contains("%app:") Then
-                        tip = Macro.Solve(tip)
-                    End If
+                    If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
 
                     ActionMenuItem.Add(replace.DropDownItems,
                         i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
@@ -303,11 +306,7 @@ Class ScriptingEditor
             For Each i In filterProfiles
                 For Each i2 In i.Filters
                     Dim tip = i2.Script
-
-                    If Not tip.Contains("%app:") Then
-                        tip = Macro.Solve(tip)
-                    End If
-
+                    If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
                     ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
                 Next
             Next
@@ -320,6 +319,7 @@ Class ScriptingEditor
             Menu.Add("Profiles...", AddressOf g.MainForm.OpenFilterProfilesDialog, "Dialog to edit profiles.")
             Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to edit profiles.")
             Menu.Add("Code Preview...", AddressOf CodePreview, "Previews the script with solved macros.")
+            Menu.Add("Join Filters", AddressOf JoinFilters, "Joins all filters into one filter.").Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
 
             Dim mi = Menu.Add("Video Preview...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
             mi.Enabled = p.SourceFile <> ""
@@ -366,39 +366,60 @@ Class ScriptingEditor
                 End If
             Next
 
-            Dim installDir = Registry.LocalMachine.GetString("SOFTWARE\AviSynth", Nothing)
-            Dim helpText = rtbScript.Text.Left("(")
+            If p.Script.Engine = ScriptingEngine.AviSynth Then
+                Dim installDir = Registry.LocalMachine.GetString("SOFTWARE\AviSynth", Nothing)
+                Dim helpText = rtbScript.Text.Left("(")
 
-            If helpText.EndsWith("Resize") Then helpText = "Resize"
-            If helpText.StartsWith("ConvertTo") Then helpText = "Convert"
+                If helpText.EndsWith("Resize") Then helpText = "Resize"
+                If helpText.StartsWith("ConvertTo") Then helpText = "Convert"
 
-            Dim filterPath = installDir + "\Docs\English\corefilters\" + helpText + ".htm"
+                Dim filterPath = installDir + "\Docs\English\corefilters\" + helpText + ".htm"
 
-            If File.Exists(filterPath) Then
-                Menu.Add("Help | " + helpText, Sub() g.ShellExecute(filterPath), filterPath)
-            End If
+                If File.Exists(filterPath) Then
+                    Menu.Add("Help | " + helpText, Sub() g.ShellExecute(filterPath), filterPath)
+                End If
 
-            Dim helpIndex = installDir + "\Docs\English\overview.htm"
+                Dim helpIndex = installDir + "\Docs\English\overview.htm"
 
-            If File.Exists(helpIndex) Then
-                Menu.Add("Help | AviSynth local", Sub() g.ShellExecute(helpIndex), helpIndex)
-            End If
+                If File.Exists(helpIndex) Then
+                    Menu.Add("Help | AviSynth local", Sub() g.ShellExecute(helpIndex), helpIndex)
+                End If
 
-            Menu.Add("Help | AviSynth.nl", Sub() g.ShellExecute("http://avisynth.nl"), "http://avisynth.nl")
-            Menu.Add("Help | AviSynth+", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B"), "http://avisynth.nl/index.php/AviSynth%2B")
-            Menu.Add("Help | AviSynth+ plugins", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins"), "http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins")
+                Menu.Add("Help | AviSynth.nl", Sub() g.ShellExecute("http://avisynth.nl"), "http://avisynth.nl")
+                Menu.Add("Help | AviSynth+", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B"), "http://avisynth.nl/index.php/AviSynth%2B")
+                Menu.Add("Help | AviSynth+ plugins", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins"), "http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins")
+                Menu.Add("Help | -")
 
-            Menu.Add("Help | vapoursynth.com", Sub() g.ShellExecute("http://www.vapoursynth.com"), "http://www.vapoursynth.com")
-            Menu.Add("Help | VapourSynth plugins", Sub() g.ShellExecute("http://www.vapoursynth.com/doc/pluginlist.html"), "http://www.vapoursynth.com/doc/pluginlist.html")
-
-            For Each i In Packs.Packages
-                If TypeOf i Is PluginPackage Then
+                For Each i In Packs.Packages.OfType(Of PluginPackage)
                     Dim helpPath = i.GetHelpPath
 
-                    If helpPath <> "" Then
-                        Menu.Add("Help | Plugins | " + i.Name, Sub() g.ShellExecute(helpPath), i.Description)
+                    If helpPath <> "" AndAlso Not i.AviSynthFilterNames Is Nothing Then
+                        Menu.Add("Help | " + i.Name, Sub() g.ShellExecute(helpPath), i.Description)
                     End If
-                End If
+                Next
+            Else
+                Menu.Add("Help | vapoursynth.com", Sub() g.ShellExecute("http://www.vapoursynth.com"), "http://www.vapoursynth.com")
+                Menu.Add("Help | VapourSynth plugins", Sub() g.ShellExecute("http://www.vapoursynth.com/doc/pluginlist.html"), "http://www.vapoursynth.com/doc/pluginlist.html")
+                Menu.Add("Help | -")
+
+                For Each i In Packs.Packages.OfType(Of PluginPackage)
+                    Dim helpPath = i.GetHelpPath
+
+                    If helpPath <> "" AndAlso Not i.VapourSynthFilterNames Is Nothing Then
+                        Menu.Add("Help | " + i.Name, Sub() g.ShellExecute(helpPath), i.Description)
+                    End If
+                Next
+            End If
+        End Sub
+
+        Sub JoinFilters()
+            Dim flow = DirectCast(Parent, FlowLayoutPanel)
+            Dim firstTable = DirectCast(flow.Controls(0), FilterTable)
+            firstTable.tbName.Text = "merged"
+            firstTable.rtbScript.Text = flow.Controls.OfType(Of FilterTable).Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(CrLf, "# " + CrLf))).Join(CrLf) + CrLf2 + CrLf2 + "#"
+
+            For x = flow.Controls.Count - 1 To 1 Step -1
+                flow.Controls.RemoveAt(x)
             Next
         End Sub
 
@@ -459,7 +480,7 @@ Class ScriptingEditor
         Sub InsertClick(f As VideoFilter)
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim index = flow.Controls.IndexOf(Me)
-            Dim filterTable = ScriptingEditor.GetFilterTable(f)
+            Dim filterTable = ScriptingEditor.CreateFilterTable(f)
             flow.SuspendLayout()
             flow.Controls.Add(filterTable)
             flow.Controls.SetChildIndex(filterTable, index)
@@ -468,7 +489,7 @@ Class ScriptingEditor
 
         Sub AddClick(f As VideoFilter)
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
-            Dim filterTable = ScriptingEditor.GetFilterTable(f)
+            Dim filterTable = ScriptingEditor.CreateFilterTable(f)
             flow.Controls.Add(filterTable)
         End Sub
     End Class

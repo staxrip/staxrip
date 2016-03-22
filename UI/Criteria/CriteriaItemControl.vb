@@ -3,7 +3,7 @@ Imports System.ComponentModel
 
 Namespace UI
     <ToolboxItem(False)>
-    Public Class CriteriaItemControl
+    Class CriteriaItemControl
         Private IsLoading As Boolean
 
         Sub New(allCriteria As List(Of Criteria))

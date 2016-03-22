@@ -6,33 +6,14 @@ Imports StaxRip.UI
 Namespace UI
     <Serializable()>
     Public MustInherit Class Criteria
+        Property Name As String
+        Property Macro As String
+
         MustOverride Function Eval() As Boolean
         MustOverride Property ValueString() As String
         MustOverride Property PropertyString() As String
         MustOverride ReadOnly Property ConditionNames() As String()
         MustOverride Property ConditionName() As String
-
-        Private NameValue As String
-
-        Property Name() As String
-            Get
-                Return NameValue
-            End Get
-            Set(Value As String)
-                NameValue = Value
-            End Set
-        End Property
-
-        Private MacroValue As String
-
-        Property Macro() As String
-            Get
-                Return MacroValue
-            End Get
-            Set(Value As String)
-                MacroValue = Value
-            End Set
-        End Property
 
         Shared Function Create(t As Type) As Criteria
             If t Is GetType(String) Then
@@ -52,41 +33,12 @@ Namespace UI
     End Class
 
     <Serializable()>
-    Public MustInherit Class GenericCriteria(Of TCondition, TType)
+    MustInherit Class GenericCriteria(Of TCondition, TType)
         Inherits Criteria
 
-        Private PropertyValueValue As TType
-
-        Property PropertyValue() As TType
-            Get
-                Return PropertyValueValue
-            End Get
-            Set(Value As TType)
-                PropertyValueValue = Value
-            End Set
-        End Property
-
-        Private ValueValue As TType
-
-        Property Value() As TType
-            Get
-                Return ValueValue
-            End Get
-            Set(Value As TType)
-                ValueValue = Value
-            End Set
-        End Property
-
-        Private ConditionValue As TCondition
-
-        Property Condition() As TCondition
-            Get
-                Return ConditionValue
-            End Get
-            Set(Value As TCondition)
-                ConditionValue = Value
-            End Set
-        End Property
+        Property Value As TType
+        Property PropertyValue As TType
+        Property Condition As TCondition
 
         Overrides ReadOnly Property ConditionNames() As String()
             Get
@@ -109,7 +61,7 @@ Namespace UI
     End Class
 
     <Serializable()>
-    Public Class IntCriteria
+    Class IntCriteria
         Inherits GenericCriteria(Of IntegerCondition, Integer)
 
         Overrides Function Eval() As Boolean
@@ -145,7 +97,7 @@ Namespace UI
     End Class
 
     <Serializable()>
-    Public Class StringCriteria
+    Class StringCriteria
         Inherits GenericCriteria(Of StringCondition, String)
 
         Overrides Function Eval() As Boolean
@@ -189,7 +141,7 @@ Namespace UI
     End Class
 
     <Serializable()>
-    Public Class BooleanCriteria
+    Class BooleanCriteria
         Inherits GenericCriteria(Of BooleanCondition, Boolean)
 
         Overrides Function Eval() As Boolean

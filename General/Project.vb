@@ -1,12 +1,5 @@
-Imports System.Collections
-
-Imports System.Runtime.Serialization
-Imports System.Runtime.Serialization.Formatters.Binary
-Imports System.Reflection
 Imports System.Globalization
 Imports System.Text
-
-Imports StaxRip.UI
 
 <Serializable()>
 Class Project
@@ -84,6 +77,13 @@ Class Project
     Public AudioTracks As List(Of AudioProfile)
     Public ShowDialogsCLI As Boolean
     Public NoDialogs As Boolean
+    Public BitDepth As Integer
+    Public ColorSpace As String
+    Public ChromaSubsampling As String
+    Public SourceSize As Long
+    Public SourceBitrate As Integer
+    Public ScanType As String
+    Public ScanOrder As String
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -142,7 +142,7 @@ Class Project
 
     Private CropRightValue As Integer
 
-    Public Property CropRight() As Integer
+    Property CropRight As Integer
         Get
             Return CropRightValue
         End Get
@@ -153,7 +153,7 @@ Class Project
 
     Private CropLeftValue As Integer
 
-    Public Property CropLeft() As Integer
+    Property CropLeft As Integer
         Get
             Return CropLeftValue
         End Get
@@ -164,7 +164,7 @@ Class Project
 
     Private CropTopValue As Integer
 
-    Public Property CropTop() As Integer
+    Property CropTop As Integer
         Get
             Return CropTopValue
         End Get
@@ -175,7 +175,7 @@ Class Project
 
     Private CropBottomValue As Integer
 
-    Public Property CropBottom() As Integer
+    Property CropBottom As Integer
         Get
             Return CropBottomValue
         End Get

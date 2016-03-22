@@ -8,7 +8,7 @@ Imports Microsoft.Win32
 Imports StaxRip.UI
 Imports System.Text.RegularExpressions
 
-Public Class ProcessForm
+Class ProcessForm
     Inherits FormBase
 
 #Region " Designer "

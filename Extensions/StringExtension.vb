@@ -1,12 +1,11 @@
 ﻿Imports System.Text
-Imports System.IO
 Imports System.Security.Cryptography
 Imports System.Runtime.CompilerServices
 Imports System.Globalization
 
 Imports VB6 = Microsoft.VisualBasic
 
-Public Module StringExtensions
+Module StringExtensions
     <Extension()>
     Function ChangeExt(path As String, value As String) As String
         If path = "" Then Return ""
@@ -16,7 +15,7 @@ Public Module StringExtensions
     End Function
 
     <Extension()>
-    Function AddPathQuotes(instance As String) As String
+    Function Quotes(instance As String) As String
         If instance = "" Then Return ""
         If instance.Contains(" ") Then Return """" + instance + """"
         Return instance
@@ -66,7 +65,7 @@ Public Module StringExtensions
     End Function
 
     <Extension()>
-    Public Function FixBreak(value As String) As String
+    Function FixBreak(value As String) As String
         value = value.Replace(VB6.ChrW(13) + VB6.ChrW(10), VB6.ChrW(10))
         value = value.Replace(VB6.ChrW(13), VB6.ChrW(10))
         Return value.Replace(VB6.ChrW(10), VB6.ChrW(13) + VB6.ChrW(10))

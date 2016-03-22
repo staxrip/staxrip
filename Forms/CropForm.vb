@@ -2,7 +2,7 @@ Imports System.ComponentModel
 
 Imports StaxRip.UI
 
-Public Class CropForm
+Class CropForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -439,9 +439,7 @@ Public Class CropForm
     End Sub
 
     Private Sub CropForm_SizeChanged() Handles MyBase.SizeChanged
-        If Not Drawer Is Nothing Then
-            Drawer.Draw()
-        End If
+        If Not Drawer Is Nothing Then Drawer.Draw()
     End Sub
 
     Private Sub CropForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
@@ -562,7 +560,7 @@ Public Class CropForm
     <Command("Dialog | Menu Editor", "Dialog to configure the menu.")>
     Private Sub OpenMenuEditor()
         s.CustomMenuCrop = CustomMenu.Edit()
-        g.MainForm.SaveSettings()
+        g.SaveSettings()
     End Sub
 
     <Command("Perform | Exit Dialog", "Exits the dialog.")>

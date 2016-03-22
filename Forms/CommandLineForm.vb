@@ -10,6 +10,9 @@ Class CommandLineForm
 
     Public HTMLHelp As String
 
+    Private SearchIndex As Integer
+    Private Items As New List(Of Item)
+
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
         Me.Params = params
@@ -33,8 +36,6 @@ Class CommandLineForm
         cms.Items.Add(New ActionMenuItem("Show Command Line", Sub() g.ShowCommandLinePreview(params.GetCommandLine(True, True))))
         cms.Items.Add(New ActionMenuItem("Help", Sub() ShowHelp()))
         cms.Items.Add(New ActionMenuItem(params.GetPackage.Name + " Help", Sub() g.ShellExecute(params.GetPackage.GetHelpPath)))
-
-        UpdateSearchComboBox()
     End Sub
 
     Sub SelectLastPage()
@@ -45,6 +46,7 @@ Class CommandLineForm
         rtbCmdl.SetText(Params.GetCommandLine(False, False))
         rtbCmdl.SelectionLength = 0
         UpdateHeight()
+        UpdateSearchComboBox()
     End Sub
 
     Sub UpdateHeight()
@@ -93,8 +95,9 @@ Class CommandLineForm
                     End If
                 ElseIf TypeOf item Is NumParam Then
                     Dim param = DirectCast(item, NumParam)
-                    help += CrLf2 + "Default: " & param.DefaultValue.ToString(CultureInfo.InvariantCulture) + CrLf +
-                        "Minimum: " & param.MinMaxStepDec(0) & CrLf + "Maximum: " & param.MinMaxStepDec(1)
+                    help += CrLf2 + "Default: " & param.DefaultValue.ToString(CultureInfo.InvariantCulture)
+                    If param.MinMaxStepDec(0) <> Decimal.MinValue Then help += CrLf + "Minimum: " & param.MinMaxStepDec(0)
+                    If param.MinMaxStepDec(1) <> Decimal.MaxValue Then help += CrLf + "Maximum: " & param.MinMaxStepDec(1)
                 ElseIf TypeOf item Is OptionParam Then
                     Dim param = DirectCast(item, OptionParam)
 
@@ -102,7 +105,7 @@ Class CommandLineForm
                         help += CrLf2 + "Default: " + param.Options(param.DefaultValue)
                     End If
                 ElseIf TypeOf item Is StringParam Then
-                    help += CrLf2 + "Default: " & DirectCast(item, StringParam).DefaultValue
+                        help += CrLf2 + "Default: " & DirectCast(item, StringParam).DefaultValue
                 End If
 
                 If item.Help <> "" Then help += CrLf2 + item.Help
@@ -163,9 +166,13 @@ Class CommandLineForm
             If listText = "" AndAlso item.Text <> "" Then listText = item.Text.Trim(" "c, ":"c)
 
             If listText <> "" AndAlso Not helpControl Is Nothing Then
-                SearchControlDic(listText) = helpControl
-                ControlFlowDic(helpControl) = currentFlow
-                ControlHelpDic(helpControl) = item.Help
+                Dim item2 As New Item
+                item2.Control = helpControl
+                item2.Page = currentFlow
+                If item.Help <> "" Then item2.Help = item.Help
+                If listText <> "" Then item2.Text = listText
+                item2.Item = item
+                Items.Add(item2)
             End If
         Next
 
@@ -173,6 +180,14 @@ Class CommandLineForm
             i.ResumeLayout()
         Next
     End Sub
+
+    Class Item
+        Property Page As SimpleUI.FlowPage
+        Property Control As Control
+        Property Text As String = ""
+        Property Help As String = ""
+        Property Item As CommandLineItem
+    End Class
 
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
         SimpleUI.SaveLast(Params.Title + "page selection")
@@ -193,11 +208,6 @@ Class CommandLineForm
         f.Show()
     End Sub
 
-    Private SearchIndex As Integer
-    Private SearchControlDic As New Dictionary(Of String, Control)
-    Private ControlFlowDic As New Dictionary(Of Control, SimpleUI.FlowPage)
-    Private ControlHelpDic As New Dictionary(Of Control, String)
-
     Private Sub cbGoTo_KeyDown(sender As Object, e As KeyEventArgs) Handles cbGoTo.KeyDown
         If e.KeyData = Keys.Enter Then
             SearchIndex += 1
@@ -208,41 +218,37 @@ Class CommandLineForm
     End Sub
 
     Private Sub cbGoTo_TextChanged(sender As Object, e As EventArgs) Handles cbGoTo.TextChanged
-        Dim q = cbGoTo.Text.ToLower
+        Dim find = cbGoTo.Text.ToLower
 
-        Dim matchedControls As New List(Of Control)
+        Dim matchedItems As New List(Of Item)
 
-        If q.Length > 1 Then
-            For Each i In SearchControlDic
-                If i.Key.ToLower.Contains(q) Then
-                    matchedControls.Add(i.Value)
+        If find.Length > 1 Then
+            For Each i In Items
+                If i.Text.ToLower.Contains(find) Then
+                    matchedItems.Add(i)
                 End If
             Next
 
-            For Each i In ControlHelpDic
-                If i.Value <> "" AndAlso i.Value.ToLower.Contains(q) AndAlso
-                    Not matchedControls.Contains(i.Key) Then
+            For Each i In Items
+                If i.Help <> "" AndAlso i.Help.ToLower.Contains(find) AndAlso
+                    Not matchedItems.Contains(i) Then
 
-                    matchedControls.Add(i.Key)
+                    matchedItems.Add(i)
                 End If
             Next
 
-            If matchedControls.Count > 0 Then
-                If SearchIndex >= matchedControls.Count Then
-                    SearchIndex = 0
-                End If
+            Dim visibleItems = matchedItems.Where(Function(arg) arg.Item.Visible)
 
-                ShowControl(matchedControls(SearchIndex))
+            If visibleItems.Count > 0 Then
+                If SearchIndex >= visibleItems.Count Then SearchIndex = 0
+                Dim control = visibleItems(SearchIndex).Control
+                SimpleUI.ShowPage(visibleItems(SearchIndex).Page)
+
+                control.Font = New Font(control.Font, FontStyle.Bold)
+                control.ForeColor = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0.1)
+                ResetFontAsync(control)
             End If
         End If
-    End Sub
-
-    Sub ShowControl(c As Control)
-        Dim flow = ControlFlowDic(c)
-        SimpleUI.ShowPage(flow)
-        c.Font = New Font(c.Font, FontStyle.Bold)
-        c.ForeColor = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0.1)
-        ResetFontAsync(c)
     End Sub
 
     Async Sub ResetFontAsync(c As Control)
@@ -257,15 +263,11 @@ Class CommandLineForm
     Sub UpdateSearchComboBox()
         cbGoTo.Items.Clear()
 
-        For Each i In SearchControlDic
-            If cbGoTo.Text = "" OrElse SearchControlDic.ContainsKey(cbGoTo.Text) OrElse
-                i.Key.ToLower.Contains(cbGoTo.Text.ToLower) Then
-
-                cbGoTo.Items.Add(i.Key)
+        For Each i In Items
+            If i.Item.Visible AndAlso Not cbGoTo.Items.Contains(i.Text) Then
+                cbGoTo.Items.Add(i.Text)
             End If
         Next
-
-        If cbGoTo.Items.Count < 20 Then cbGoTo.Visible = False
     End Sub
 
     Private Sub CommandLineForm_Load(sender As Object, e As EventArgs) Handles Me.Load

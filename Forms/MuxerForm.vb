@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Public Class MuxerForm
+Class MuxerForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -35,6 +35,8 @@ Public Class MuxerForm
     Friend WithEvents bnAddAudio As ButtonEx
     Friend WithEvents dgvAudio As DataGridViewEx
     Friend WithEvents bnEdit As ButtonEx
+    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
+    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -48,6 +50,7 @@ Public Class MuxerForm
         Me.tpSubtitles = New System.Windows.Forms.TabPage()
         Me.SubtitleControl = New StaxRip.SubtitleControl()
         Me.tpAudio = New System.Windows.Forms.TabPage()
+        Me.bnEdit = New StaxRip.UI.ButtonEx()
         Me.bnPlay = New StaxRip.UI.ButtonEx()
         Me.bnDown = New StaxRip.UI.ButtonEx()
         Me.bnUp = New StaxRip.UI.ButtonEx()
@@ -59,7 +62,8 @@ Public Class MuxerForm
         Me.tpCommandLine = New System.Windows.Forms.TabPage()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.bnEdit = New StaxRip.UI.ButtonEx()
+        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.tc.SuspendLayout()
         Me.tpSubtitles.SuspendLayout()
         Me.tpAudio.SuspendLayout()
@@ -67,6 +71,8 @@ Public Class MuxerForm
         Me.tpOptions.SuspendLayout()
         Me.tpCommandLine.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
+        Me.FlowLayoutPanel1.SuspendLayout()
+        Me.TableLayoutPanel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'CmdlControl
@@ -77,15 +83,15 @@ Public Class MuxerForm
         Me.CmdlControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CmdlControl.Location = New System.Drawing.Point(3, 28)
         Me.CmdlControl.Name = "CmdlControl"
-        Me.CmdlControl.Size = New System.Drawing.Size(1174, 372)
+        Me.CmdlControl.Size = New System.Drawing.Size(1174, 367)
         Me.CmdlControl.TabIndex = 0
         '
-        'buCmdlPreview
+        'bnCommandLinePreview
         '
         Me.bnCommandLinePreview.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCommandLinePreview.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.bnCommandLinePreview.Location = New System.Drawing.Point(767, 470)
-        Me.bnCommandLinePreview.Name = "buCmdlPreview"
+        Me.bnCommandLinePreview.Name = "bnCommandLinePreview"
         Me.bnCommandLinePreview.Size = New System.Drawing.Size(175, 34)
         Me.bnCommandLinePreview.TabIndex = 4
         Me.bnCommandLinePreview.Text = "Command Line..."
@@ -144,13 +150,7 @@ Public Class MuxerForm
         '
         'tpAudio
         '
-        Me.tpAudio.Controls.Add(Me.bnEdit)
-        Me.tpAudio.Controls.Add(Me.bnPlay)
-        Me.tpAudio.Controls.Add(Me.bnDown)
-        Me.tpAudio.Controls.Add(Me.bnUp)
-        Me.tpAudio.Controls.Add(Me.bnRemove)
-        Me.tpAudio.Controls.Add(Me.bnAddAudio)
-        Me.tpAudio.Controls.Add(Me.dgvAudio)
+        Me.tpAudio.Controls.Add(Me.TableLayoutPanel2)
         Me.tpAudio.Location = New System.Drawing.Point(4, 34)
         Me.tpAudio.Name = "tpAudio"
         Me.tpAudio.Padding = New System.Windows.Forms.Padding(3)
@@ -159,38 +159,45 @@ Public Class MuxerForm
         Me.tpAudio.Text = "Audio"
         Me.tpAudio.UseVisualStyleBackColor = True
         '
+        'bnEdit
+        '
+        Me.bnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnEdit.Location = New System.Drawing.Point(3, 213)
+        Me.bnEdit.Size = New System.Drawing.Size(100, 36)
+        Me.bnEdit.Text = "Edit"
+        '
         'bnPlay
         '
         Me.bnPlay.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnPlay.Location = New System.Drawing.Point(1090, 174)
+        Me.bnPlay.Location = New System.Drawing.Point(3, 171)
         Me.bnPlay.Size = New System.Drawing.Size(100, 36)
         Me.bnPlay.Text = "Play"
         '
         'bnDown
         '
         Me.bnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnDown.Location = New System.Drawing.Point(1090, 132)
+        Me.bnDown.Location = New System.Drawing.Point(3, 129)
         Me.bnDown.Size = New System.Drawing.Size(100, 36)
         Me.bnDown.Text = "Down"
         '
         'bnUp
         '
         Me.bnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnUp.Location = New System.Drawing.Point(1090, 90)
+        Me.bnUp.Location = New System.Drawing.Point(3, 87)
         Me.bnUp.Size = New System.Drawing.Size(100, 36)
         Me.bnUp.Text = "Up"
         '
         'bnRemove
         '
         Me.bnRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRemove.Location = New System.Drawing.Point(1090, 48)
+        Me.bnRemove.Location = New System.Drawing.Point(3, 45)
         Me.bnRemove.Size = New System.Drawing.Size(100, 36)
         Me.bnRemove.Text = "Remove"
         '
-        'bnAdd
+        'bnAddAudio
         '
         Me.bnAddAudio.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnAddAudio.Location = New System.Drawing.Point(1090, 6)
+        Me.bnAddAudio.Location = New System.Drawing.Point(3, 3)
         Me.bnAddAudio.Size = New System.Drawing.Size(100, 36)
         Me.bnAddAudio.Text = "Add..."
         '
@@ -200,19 +207,19 @@ Public Class MuxerForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvAudio.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvAudio.Location = New System.Drawing.Point(6, 6)
+        Me.dgvAudio.Location = New System.Drawing.Point(3, 3)
         Me.dgvAudio.Name = "dgvAudio"
         Me.dgvAudio.RowTemplate.Height = 28
-        Me.dgvAudio.Size = New System.Drawing.Size(1078, 387)
+        Me.dgvAudio.Size = New System.Drawing.Size(1078, 402)
         Me.dgvAudio.TabIndex = 0
         '
         'tpOptions
         '
         Me.tpOptions.Controls.Add(Me.SimpleUI)
-        Me.tpOptions.Location = New System.Drawing.Point(4, 29)
+        Me.tpOptions.Location = New System.Drawing.Point(4, 34)
         Me.tpOptions.Name = "tpOptions"
         Me.tpOptions.Padding = New System.Windows.Forms.Padding(3)
-        Me.tpOptions.Size = New System.Drawing.Size(1196, 419)
+        Me.tpOptions.Size = New System.Drawing.Size(1196, 414)
         Me.tpOptions.TabIndex = 2
         Me.tpOptions.Text = "Options"
         Me.tpOptions.UseVisualStyleBackColor = True
@@ -222,17 +229,17 @@ Public Class MuxerForm
         Me.SimpleUI.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SimpleUI.Location = New System.Drawing.Point(3, 3)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(1190, 413)
+        Me.SimpleUI.Size = New System.Drawing.Size(1190, 408)
         Me.SimpleUI.TabIndex = 0
         Me.SimpleUI.Text = "SimpleUI1"
         '
         'tpCommandLine
         '
         Me.tpCommandLine.Controls.Add(Me.TableLayoutPanel1)
-        Me.tpCommandLine.Location = New System.Drawing.Point(4, 29)
+        Me.tpCommandLine.Location = New System.Drawing.Point(4, 34)
         Me.tpCommandLine.Name = "tpCommandLine"
         Me.tpCommandLine.Padding = New System.Windows.Forms.Padding(8)
-        Me.tpCommandLine.Size = New System.Drawing.Size(1196, 419)
+        Me.tpCommandLine.Size = New System.Drawing.Size(1196, 414)
         Me.tpCommandLine.TabIndex = 1
         Me.tpCommandLine.Text = "Command Line"
         Me.tpCommandLine.UseVisualStyleBackColor = True
@@ -250,7 +257,7 @@ Public Class MuxerForm
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1180, 403)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1180, 398)
         Me.TableLayoutPanel1.TabIndex = 2
         '
         'Label1
@@ -262,12 +269,37 @@ Public Class MuxerForm
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "Additional custom switches:"
         '
-        'bnEdit
+        'FlowLayoutPanel1
         '
-        Me.bnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnEdit.Location = New System.Drawing.Point(1090, 216)
-        Me.bnEdit.Size = New System.Drawing.Size(100, 36)
-        Me.bnEdit.Text = "Edit"
+        Me.FlowLayoutPanel1.AutoSize = True
+        Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnAddAudio)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnRemove)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnUp)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnDown)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnPlay)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnEdit)
+        Me.FlowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(1084, 0)
+        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0)
+        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(106, 252)
+        Me.FlowLayoutPanel1.TabIndex = 6
+        '
+        'TableLayoutPanel2
+        '
+        Me.TableLayoutPanel2.ColumnCount = 2
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel2.Controls.Add(Me.FlowLayoutPanel1, 1, 0)
+        Me.TableLayoutPanel2.Controls.Add(Me.dgvAudio, 0, 0)
+        Me.TableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel2.Location = New System.Drawing.Point(3, 3)
+        Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
+        Me.TableLayoutPanel2.RowCount = 1
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(1190, 408)
+        Me.TableLayoutPanel2.TabIndex = 7
         '
         'MuxerForm
         '
@@ -292,6 +324,9 @@ Public Class MuxerForm
         Me.tpCommandLine.ResumeLayout(False)
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.TableLayoutPanel1.PerformLayout()
+        Me.FlowLayoutPanel1.ResumeLayout(False)
+        Me.TableLayoutPanel2.ResumeLayout(False)
+        Me.TableLayoutPanel2.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -470,7 +505,7 @@ Public Class MuxerForm
                             ap.Stream = sb2.SelectedItem
                         End If
 
-                        g.MainForm.UpdateAudio(ap)
+                        g.MainForm.tbSize_TextChanged()
 
                         AudioBindingSource.Add(sb.SelectedItem)
                         AudioBindingSource.Position = AudioBindingSource.Count - 1

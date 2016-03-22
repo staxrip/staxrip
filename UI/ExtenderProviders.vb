@@ -4,7 +4,7 @@ Imports System.Text.RegularExpressions
 
 Namespace UI
     <ProvideProperty("Pattern", GetType(Control))>
-    Public Class ValidationProvider
+    Class ValidationProvider
         Inherits Component
         Implements IExtenderProvider
 

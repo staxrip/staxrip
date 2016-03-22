@@ -1,6 +1,6 @@
 ﻿Imports StaxRip.UI
 
-Public Class SimpleSettingsForm
+Class SimpleSettingsForm
     Inherits DialogBase
 
 #Region " Designer "

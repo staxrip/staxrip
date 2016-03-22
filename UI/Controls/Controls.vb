@@ -11,7 +11,7 @@ Imports System.Threading
 Imports System.Threading.Tasks
 
 Namespace UI
-    Public Class TreeViewEx
+    Class TreeViewEx
         Inherits TreeView
 
         Private AutoCollapsValue As Boolean
@@ -214,7 +214,7 @@ Namespace UI
         InclusiveChilds
     End Enum
 
-    Public Class ToolStripEx
+    Class ToolStripEx
         Inherits ToolStrip
 
         Sub New()
@@ -278,7 +278,7 @@ Namespace UI
         End Property
     End Class
 
-    Public Class LineControl
+    Class LineControl
         Inherits Control
 
         Public Sub New()
@@ -311,7 +311,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class CommandLink
+    Class CommandLink
         Inherits Button
 
         Const BS_COMMANDLINK As Integer = &HE
@@ -355,7 +355,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class TextBoxEx
+    Class TextBoxEx
         Inherits TextBox
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
@@ -372,7 +372,7 @@ Namespace UI
         End Property
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Shadows Property TabIndex() As Integer
+        Shadows Property TabIndex As Integer
             Get
                 Return MyBase.TabIndex
             End Get
@@ -390,7 +390,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class PanelEx
+    Class PanelEx
         Inherits Panel
 
         Private ShowNiceBorderValue As Boolean
@@ -420,7 +420,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class CheckBoxEx
+    Class CheckBoxEx
         Inherits CheckBox
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
@@ -434,7 +434,7 @@ Namespace UI
         End Property
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Shadows Property TabIndex() As Integer
+        Shadows Property TabIndex As Integer
             Get
                 Return MyBase.TabIndex
             End Get
@@ -444,7 +444,7 @@ Namespace UI
         End Property
     End Class
 
-    Public Class RichTextBoxEx
+    Class RichTextBoxEx
         Inherits RichTextBox
 
         Property BlockPaint As Boolean
@@ -577,7 +577,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class TrackBarEx
+    Class TrackBarEx
         Inherits TrackBar
 
         Shadows Property Value As Integer
@@ -592,7 +592,7 @@ Namespace UI
         End Property
     End Class
 
-    Public Class LabelEx
+    Class LabelEx
         Inherits Label
 
         Sub New()
@@ -610,7 +610,7 @@ Namespace UI
         End Property
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Shadows Property TabIndex() As Integer
+        Shadows Property TabIndex As Integer
             Get
                 Return MyBase.TabIndex
             End Get
@@ -620,7 +620,7 @@ Namespace UI
         End Property
     End Class
 
-    Public Class MultiFolderTree
+    Class MultiFolderTree
         Inherits TreeViewEx
 
         Property Paths As List(Of String) = New List(Of String)
@@ -734,14 +734,14 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class FolderTreeNode
+    Class FolderTreeNode
         Inherits TreeNode
 
         Public Path As String
         Public WasInitialized As Boolean
     End Class
 
-    Public Class BeforeShowControlEventArgs
+    Class BeforeShowControlEventArgs
         Inherits EventArgs
 
         Public Control As Control
@@ -749,7 +749,7 @@ Namespace UI
         Public Cancel As Boolean
     End Class
 
-    Public Class PropertyGridEx
+    Class PropertyGridEx
         Inherits PropertyGrid
 
         Sub New()
@@ -784,7 +784,7 @@ Namespace UI
     End Class
 
     <DefaultEvent("LinkClick")>
-    Public Class LinkGroupBox
+    Class LinkGroupBox
         Inherits GroupBox
 
         Public WithEvents ll As New LinkLabel
@@ -817,7 +817,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class CheckedListBoxEx
+    Class CheckedListBoxEx
         Inherits CheckedListBox
 
         <DefaultValue(CStr(Nothing))> Property UpButton As Button
@@ -892,7 +892,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class MenuButton
+    Class MenuButton
         Inherits ButtonEx
 
         Event ValueChangedUser(value As Object)
@@ -999,7 +999,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class CmdlRichTextBox
+    Class CmdlRichTextBox
         Inherits RichTextBoxEx
 
         Public Sub New()
@@ -1073,7 +1073,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class StockIconLinkLabel
+    Class StockIconLinkLabel
         Inherits LinkLabel
 
         Private Img As Image
@@ -1099,19 +1099,18 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class WikiLinkLabel
+    Class WikiLinkLabel
         Inherits LinkLabel
 
         Private MarkupValue As String
 
         <Editor(GetType(StringEditor), GetType(UITypeEditor))>
-        Public Property Markup As String
+        Property Markup As String
             Get
                 Return MarkupValue
             End Get
             Set(value As String)
                 MarkupValue = value
-
                 Links.Clear()
 
                 If value.Contains("[") Then
@@ -1270,7 +1269,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class ButtonEx
+    Class ButtonEx
         Inherits Button
 
         <DefaultValue(False)>
@@ -1295,7 +1294,7 @@ Namespace UI
 
         <DefaultValue(0), Browsable(False),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Shadows Property TabIndex() As Integer
+        Shadows Property TabIndex As Integer
             Get
                 Return MyBase.TabIndex
             End Get
@@ -1402,7 +1401,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class ListBoxEx
+    Class ListBoxEx
         Inherits ListBox
 
         <DefaultValue(GetType(Button), Nothing)> Property UpButton As Button
@@ -1684,11 +1683,11 @@ Namespace UI
 
         <Category("Data")>
         <DefaultValue(GetType(Decimal), "-2147483648")>
-        Public Property Minimum As Decimal = -2147483648
+        Property Minimum As Decimal = -2147483648
 
         <Category("Data")>
         <DefaultValue(GetType(Decimal), "2147483647")>
-        Public Property Maximum As Decimal = 2147483647
+        Property Maximum As Decimal = 2147483647
 
         <Category("Data")>
         <DefaultValue(GetType(Decimal), "1")>
@@ -1885,7 +1884,7 @@ Namespace UI
         End Class
     End Class
 
-    Public Class TextEdit
+    Class TextEdit
         Inherits UserControl
 
         Public WithEvents TextBox As New TextBoxEx
@@ -1966,7 +1965,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class TabControlEx
+    Class TabControlEx
         Inherits TabControl
 
         Private DragStartPosition As Point = Point.Empty

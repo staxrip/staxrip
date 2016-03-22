@@ -4,7 +4,7 @@ Imports System.Drawing.Design
 
 Namespace UI
     <Serializable()>
-    Public Class PropertyGridOption
+    Class PropertyGridOption
         Public Name As String
         Public Value As Object
 
@@ -18,7 +18,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class DefaultValuesConverter
+    Class DefaultValuesConverter
         Inherits TypeConverter
 
         Overloads Overrides Function GetStandardValuesSupported(context As ITypeDescriptorContext) As Boolean
@@ -26,7 +26,7 @@ Namespace UI
         End Function
 
         Overloads Overrides Function GetStandardValues(context As ITypeDescriptorContext) As StandardValuesCollection
-            Return New StandardValuesCollection(CType(context.PropertyDescriptor,  _
+            Return New StandardValuesCollection(CType(context.PropertyDescriptor,
                 GridPropertyDescriptor).GridProperty.DefaultValues)
         End Function
 
@@ -84,7 +84,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class GridProperty
+    Class GridProperty
         Public Name As String
         Public Category As String
         Public Description As String
@@ -121,7 +121,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class GridTypeDescriptor
+    Class GridTypeDescriptor
         Implements ICustomTypeDescriptor
 
         Private YesNoConverter As Type
@@ -136,16 +136,7 @@ Namespace UI
             Me.YesNoConverter = yesNoConverter
         End Sub
 
-        Private ItemsValue As List(Of Object)
-
-        Property Items() As List(Of Object)
-            Get
-                Return ItemsValue
-            End Get
-            Set(Value As List(Of Object))
-                ItemsValue = Value
-            End Set
-        End Property
+        Property Items As List(Of Object)
 
 #Region "ICustomTypeDescriptor"
         Function GetAttributes() As AttributeCollection Implements ICustomTypeDescriptor.GetAttributes
@@ -215,13 +206,13 @@ Namespace UI
                     End If
                 End If
 
-                Dim d As New GridPropertyDescriptor(gp.Name, gp, _
+                Dim d As New GridPropertyDescriptor(gp.Name, gp,
                     CType(a.ToArray(GetType(Attribute)), Attribute()))
 
                 p.Add(d)
             Next
 
-            Return New PropertyDescriptorCollection(CType(p.ToArray(GetType( _
+            Return New PropertyDescriptorCollection(CType(p.ToArray(GetType(
                 PropertyDescriptor)), PropertyDescriptor()))
         End Function
 
@@ -261,7 +252,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class GridPropertyDescriptor
+    Class GridPropertyDescriptor
         Inherits PropertyDescriptor
 
         Public GridProperty As GridProperty
@@ -308,7 +299,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class YesNoConverter
+    Class YesNoConverter
         Inherits TypeConverter
 
         Protected Yes As String = "Yes"
@@ -363,7 +354,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class NonDisplayConverter
+    Class NonDisplayConverter
         Inherits TypeConverter
 
         Overloads Overrides Function ConvertTo(context As ITypeDescriptorContext, culture As CultureInfo, value As Object, destinationType As Type) As Object
@@ -377,7 +368,7 @@ Namespace UI
 
     'base cannot be applied on enums
     <AttributeUsage(AttributeTargets.All)>
-    Public Class DispNameAttribute
+    Class DispNameAttribute
         Inherits DisplayNameAttribute
 
         Sub New(name As String)
@@ -422,26 +413,17 @@ Namespace UI
     End Class
 
     <AttributeUsage(AttributeTargets.All)>
-    Public Class OrderAttribute
+    Class OrderAttribute
         Inherits Attribute
+
+        Property Order As Integer
 
         Sub New(order As Integer)
             Me.Order = order
         End Sub
-
-        Private OrderValue As Integer
-
-        Property Order() As Integer
-            Get
-                Return OrderValue
-            End Get
-            Set(Value As Integer)
-                OrderValue = Value
-            End Set
-        End Property
     End Class
 
-    Public Class PropertyOrderConverter
+    Class PropertyOrderConverter
         Inherits TypeConverter
 
         Overloads Overrides Function GetPropertiesSupported(context As ITypeDescriptorContext) As Boolean
@@ -472,7 +454,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class DescriptionAttributeHelp
+    Class DescriptionAttributeHelp
         Shared Function GetDescription(attributes As Object()) As String
             For Each i In attributes
                 If TypeOf i Is DescriptionAttribute Then
@@ -484,7 +466,7 @@ Namespace UI
         End Function
     End Class
 
-    Public Class EditorAttributeHelp
+    Class EditorAttributeHelp
         Shared Function GetEditor(attributes As Object()) As Type
             For Each i In attributes
                 If TypeOf i Is EditorAttribute Then

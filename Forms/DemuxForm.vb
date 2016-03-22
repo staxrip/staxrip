@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Public Class DemuxForm
+Class DemuxForm
     Inherits DialogBase
 
 #Region " Designer "

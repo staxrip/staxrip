@@ -1,7 +1,7 @@
 Imports System.ComponentModel
 
 Namespace UI
-    Public Class CriteriaControl
+    Class CriteriaControl
         Inherits PanelEx
 
         Private buAdd As StaxRip.UI.ButtonEx

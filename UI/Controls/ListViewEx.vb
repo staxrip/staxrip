@@ -354,13 +354,13 @@ Namespace UI
             End If
         End Sub
 
-        Public Class ColumnSorter
+        Class ColumnSorter
             Implements IComparer
 
             Property LastColumn As Integer
             Property ColumnIndex As Integer
 
-            Public Function Compare(o1 As Object, o2 As Object) As Integer Implements IComparer.Compare
+            Function Compare(o1 As Object, o2 As Object) As Integer Implements IComparer.Compare
                 Dim item1 = DirectCast(o2, ListViewItem)
                 Dim item2 = DirectCast(o1, ListViewItem)
 

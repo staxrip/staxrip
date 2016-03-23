@@ -648,16 +648,16 @@ Class GUIAudioProfile
 
                 Using proc As New Proc
                     If i.Contains("BeSweet.exe") Then
-                        proc.Init("Audio encoding using BeSweet", "Processed", "transcoding", "Maximum Gain Found : ", "Asserting gain")
+                        proc.Init("Audio encoding using BeSweet " + Packs.BeSweet.Version, "Processed", "transcoding", "Maximum Gain Found : ", "Asserting gain")
                     ElseIf i.Contains("eac3to.exe") Then
-                        proc.Init("Audio encoding using eac3to", "process: ", "analyze: ")
+                        proc.Init("Audio encoding using eac3to " + Packs.eac3to.Version, "process: ", "analyze: ")
                         proc.TrimChars = {"-"c, " "c}
                         proc.RemoveChars = {VB6.ChrW(8)} 'backspace
                     ElseIf i.Contains("ffmpeg.exe") Then
-                        proc.Init("Audio encoding using ffmpeg", "size=", "decoding is not implemented", "unsupported frame type", "upload a sample")
+                        proc.Init("Audio encoding using ffmpeg " + Packs.ffmpeg.Version, "size=", "decoding is not implemented", "unsupported frame type", "upload a sample")
                         proc.Encoding = Encoding.UTF8
                     ElseIf i.Contains("qaac64.exe") Then
-                        proc.Init("Audio encoding using qaac", ", ETA ")
+                        proc.Init("Audio encoding using qaac " + Packs.qaac.Version, ", ETA ")
                     End If
 
                     proc.CommandLine = i

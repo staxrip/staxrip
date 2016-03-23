@@ -185,15 +185,16 @@ Class DirPath
     End Function
 
     Shared Function IsInSysDir(path As String) As Boolean
-        If Not OK(path) Then
-            Return False
-        End If
-
-        If Not path.EndsWith("\") Then
-            path += "\"
-        End If
-
+        If path = "" Then Return False
+        If Not path.EndsWith("\") Then path += "\"
         Return path.ToUpper.Contains(CommonDirs.Programs.ToUpper)
+    End Function
+
+    Shared Function IsFixedDrive(path As String) As Boolean
+        Try
+            If path <> "" Then Return New DriveInfo(path).DriveType = DriveType.Fixed
+        Catch ex As Exception
+        End Try
     End Function
 End Class
 

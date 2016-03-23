@@ -60,6 +60,7 @@ Class Project
     Public TargetHeight As Integer = 576
     Public TargetSeconds As Integer = 5400
     Public TargetWidth As Integer = 720
+    Public TargetFrameRate As Double
     Public TempDir As String
     Public TemplateName As String = ""
     Public TrimCode As String = ""

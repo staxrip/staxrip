@@ -228,7 +228,7 @@ Class MP4BoxDemuxer
             args += i.ID & " -out """ + outpath + """ """ + p.SourceFile + """"
 
             Using proc As New Proc
-                proc.Init("Demux subtitle using MP4Box", {"Media Export: |", "File Export: |", "ISO File Writing: |", "VobSub Export: |"})
+                proc.Init("Demux subtitle using MP4Box " + Packs.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |", "VobSub Export: |"})
                 proc.File = Packs.MP4Box.GetPath
                 proc.Arguments = args
                 proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
@@ -260,7 +260,7 @@ Class eac3toDemuxer
                 Using proc As New Proc
                     proc.TrimChars = {"-"c, " "c}
                     proc.RemoveChars = {CChar(VB6.vbBack)}
-                    proc.Init("Demux M2TS using eac3to", "analyze: ", "process: ")
+                    proc.Init("Demux M2TS using eac3to " + Packs.eac3to.Version, "analyze: ", "process: ")
                     proc.File = Packs.eac3to.GetPath
                     proc.Arguments = f.GetArgs("""" + p.SourceFile + """", Filepath.GetBase(p.SourceFile))
 
@@ -315,7 +315,7 @@ Class mkvDemuxer
         arguments += " --ui-language en"
 
         Using proc As New Proc
-            proc.Init("Demux subtitles using mkvextract", "Progress: ")
+            proc.Init("Demux subtitles using mkvextract " + Packs.Mkvmerge.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
             proc.File = Packs.Mkvmerge.GetDir + "mkvextract.exe"
             proc.Arguments = arguments
@@ -363,7 +363,7 @@ Class mkvDemuxer
 
         If output.Contains("|+ Chapters") Then
             Using proc As New Proc
-                proc.Init("Demux chapters using mkvextract", "Progress: ")
+                proc.Init("Demux chapters using mkvextract " + Packs.Mkvmerge.Version, "Progress: ")
                 proc.Encoding = Encoding.UTF8
                 proc.File = Packs.Mkvmerge.GetDir + "mkvextract.exe"
                 proc.Arguments = "chapters """ + p.SourceFile + """ --redirect-output """ +
@@ -395,7 +395,7 @@ Class mkvDemuxer
             params += " --ui-language en"
 
             Using proc As New Proc
-                proc.Init("Demux attachments using mkvextract", "Progress: ")
+                proc.Init("Demux attachments using mkvextract " + Packs.Mkvmerge.Version, "Progress: ")
                 proc.WriteLine(output)
                 proc.Encoding = Encoding.UTF8
                 proc.File = Packs.Mkvmerge.GetDir + "mkvextract.exe"

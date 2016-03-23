@@ -1046,7 +1046,7 @@ Class NvidiaEncoder
             File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
 
             Using proc As New Proc
-                proc.Init("Encoding using NVEncC")
+                proc.Init("Encoding using NVEncC " + Packs.NVEncC.Version)
                 proc.SkipStrings = {"%]", " frames: "}
                 proc.WriteLine(cl + CrLf2)
                 proc.File = "cmd.exe"
@@ -1055,7 +1055,7 @@ Class NvidiaEncoder
             End Using
         Else
             Using proc As New Proc
-                proc.Init("Encoding using NVEncC")
+                proc.Init("Encoding using NVEncC " + Packs.NVEncC.Version)
                 proc.SkipStrings = {"%]"}
                 proc.File = Packs.NVEncC.GetPath
                 proc.Arguments = cl
@@ -1385,7 +1385,7 @@ Class IntelEncoder
             File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
 
             Using proc As New Proc
-                proc.Init("Encoding using QSVEncC")
+                proc.Init("Encoding using QSVEncC " + Packs.QSVEncC.Version)
                 proc.SkipStrings = {" frames: "}
                 proc.WriteLine(cl + CrLf2)
                 proc.File = "cmd.exe"
@@ -1394,7 +1394,7 @@ Class IntelEncoder
             End Using
         Else
             Using proc As New Proc
-                proc.Init("Encoding using QSVEncC")
+                proc.Init("Encoding using QSVEncC " + Packs.QSVEncC.Version)
                 proc.SkipStrings = {" frames: "}
                 proc.File = Packs.QSVEncC.GetPath
                 proc.Arguments = cl
@@ -1833,7 +1833,7 @@ Class AMDEncoder
             File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
 
             Using proc As New Proc
-                proc.Init("Encoding using VCEEncC")
+                proc.Init("Encoding using VCEEncC " + Packs.VCEEncC.Version)
                 proc.SkipStrings = {"%]", " frames: "}
                 proc.WriteLine(cl + CrLf2)
                 proc.File = "cmd.exe"
@@ -1842,7 +1842,7 @@ Class AMDEncoder
             End Using
         Else
             Using proc As New Proc
-                proc.Init("Encoding using VCEEncC")
+                proc.Init("Encoding using VCEEncC " + Packs.VCEEncC.Version)
                 proc.SkipStrings = {"%]"}
                 proc.File = Packs.VCEEncC.GetPath
                 proc.Arguments = cl

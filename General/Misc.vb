@@ -3305,7 +3305,7 @@ Class Video
         Dim outPath = p.TempDir + Filepath.GetBase(sourcefile) + "_out" + stream.Extension
 
         Using proc As New Proc
-            proc.Init("Demux video using mkvextract", "Progress: ")
+            proc.Init("Demux video using mkvextract " + Packs.Mkvmerge.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
             proc.File = Packs.Mkvmerge.GetDir + "mkvextract.exe"
             proc.Arguments = "tracks """ + sourcefile + """ " & stream.StreamOrder &

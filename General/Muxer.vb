@@ -310,7 +310,7 @@ Class MP4Muxer
 
     Overrides Sub Mux()
         Using proc As New Proc
-            proc.Init("Muxing using MP4Box", {"|"})
+            proc.Init("Muxing using MP4Box " + Packs.MP4Box.Version, {"|"})
             proc.File = Packs.MP4Box.GetPath
             proc.Arguments = GetArgs()
             proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
@@ -482,7 +482,7 @@ Class MkvMuxer
 
     Overrides Sub Mux()
         Using proc As New Proc
-            proc.Init("Muxing using mkvmerge", "Progress: ")
+            proc.Init("Muxing using mkvmerge " + Packs.Mkvmerge.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
             proc.File = Packs.Mkvmerge.GetPath
             proc.Arguments = GetArgs()
@@ -710,7 +710,7 @@ Class ffmpegMuxer
         args += " """ + p.TargetFile + """"
 
         Using proc As New Proc
-            proc.Init("Muxing to " + OutputTypeValue + " using ffmpeg", "frame=")
+            proc.Init("Muxing to " + OutputTypeValue + " using ffmpeg " + Packs.ffmpeg.Version, "frame=")
             proc.Encoding = Encoding.UTF8
             proc.File = Packs.ffmpeg.GetPath
             proc.Arguments = args

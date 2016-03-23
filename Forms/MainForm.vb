@@ -1273,8 +1273,6 @@ Class MainForm
         Dim size = p.Size
         Dim bitrate = p.VideoBitrate
 
-        SetTargetLength(p.TargetSeconds)
-
         AviSynthListView.Load()
         AviSynthListView.Items(0).Selected = True
         p.VideoEncoder.OnStateChange()
@@ -1302,7 +1300,9 @@ Class MainForm
         p.Audio0.Delay = delay0
         p.Audio1.Delay = delay1
 
+        tbSize.Text = ""
         tbSize.Text = size.ToString()
+
         SetSlider()
 
         tbTargetWidth.Text = width.ToString
@@ -1941,8 +1941,7 @@ Class MainForm
 
             s.LastPosition = 0
 
-            SetTargetLength(p.SourceSeconds)
-
+            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
             DemuxVobSubSubtitles()
             ConvertBluRaySubtitles()
             ExtractForcedVobSubSubtitles()
@@ -2296,14 +2295,6 @@ Class MainForm
         lSourcePAR.Text = par.X & ":" & par.Y
 
         If p.SourceSeconds > 0 Then
-            lTarget1.Text = p.SourceSeconds \ 60 & "m " + (p.SourceSeconds Mod 60).ToString("00") + "s, " &
-                p.Script.GetFramerate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) + "fps, Audio Bitrate: " &
-                CInt(Calc.GetAudioBitrate)
-
-            If p.VideoEncoder.IsCompCheckEnabled Then
-                lTarget2.Text = "Quality: " & CInt(Calc.GetPercent).ToString() + " %, Compressibility: " + p.Compressibility.ToString("f2")
-            End If
-
             lSource1.Text = p.SourceSeconds \ 60 & "m " + (p.SourceSeconds Mod 60).ToString("00") + "s " +
                 If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB ",
                 (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB ") & If(p.SourceBitrate > 0,
@@ -2311,7 +2302,15 @@ Class MainForm
                 "fps " + p.Codec + " " + p.CodecProfile
 
             lSource2.Text = p.SourceWidth.ToString + "x" + p.SourceHeight.ToString + " " + p.ColorSpace + " " +
-            p.ChromaSubsampling + " " & p.BitDepth & "Bits " + p.ScanType + " " + If(p.ScanType = "Interlaced", p.ScanOrder, "")
+                p.ChromaSubsampling + " " & p.BitDepth & "Bits " + p.ScanType + " " + If(p.ScanType = "Interlaced", p.ScanOrder, "")
+
+            lTarget1.Text = p.TargetSeconds \ 60 & "m " + (p.TargetSeconds Mod 60).ToString("00") + "s, " &
+                p.TargetFrameRate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) + "fps, Audio Bitrate: " &
+                CInt(Calc.GetAudioBitrate)
+
+            If p.VideoEncoder.IsCompCheckEnabled Then
+                lTarget2.Text = "Quality: " & CInt(Calc.GetPercent).ToString() + " %, Compressibility: " + p.Compressibility.ToString("f2")
+            End If
         Else
             lTarget1.Text = ""
             lSource1.Text = ""
@@ -3345,7 +3344,7 @@ Class MainForm
             If Not cutting Is Nothing Then
                 p.Script.Filters.Remove(cutting)
                 g.MainForm.AviSynthListView.Load()
-                g.MainForm.SetTargetLength(p.Script.GetSeconds)
+                g.MainForm.UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
             End If
 
             Dim doc As New VideoScript
@@ -4789,7 +4788,7 @@ Class MainForm
                                 OpenVideoSourceFiles(f.Files)
                             Case Else
                                 Using proc As New Proc
-                                    proc.Init("Merge source files")
+                                    proc.Init("Merge source files using Mkvmerge " + Packs.Mkvmerge.Version)
 
                                     For Each i In f.Files
                                         Log.WriteLine(MediaInfo.GetSummary(i) + "---------------------------------------------------------" + CrLf2)
@@ -4945,41 +4944,19 @@ Class MainForm
             f.PlaylistFolder = playlistFolder
             f.PlaylistID = playlistID
 
-            Dim workDir As String
-            Dim rootWorkDir As String
+            Dim workDir = playlistFolder.Parent.Parent + "Temp\"
 
-            If Directory.Exists(p.TempDir) Then
-                rootWorkDir = p.TempDir
-            Else
-                Dim lastDir = s.Storage.GetString("last blu-ray target folder").Parent
-                If Directory.Exists(lastDir) Then rootWorkDir = lastDir
+            If DirPath.IsFixedDrive(workDir) AndAlso Not Directory.Exists(workDir) Then
+                Try
+                    Directory.CreateDirectory(workDir)
+                Catch ex As Exception
+                End Try
             End If
 
-            Dim di As DriveInfo
-
-            If Directory.Exists(rootWorkDir) Then
-                Dim movieName = InputBox.Show("Please enter the movie name.", "Movie Name", "Untitled")
-
-                If movieName <> "" Then
-                    If Not Filepath.IsValidFileSystemName(movieName) Then
-                        MsgError("Name is not compatible with the file system.")
-                        Exit Sub
-                    End If
-
-                    workDir = rootWorkDir + movieName
-                Else
-                    Exit Sub
-                End If
-            End If
-
-            Try
-                di = New DriveInfo(rootWorkDir)
-            Catch
-            End Try
-
-            If di Is Nothing OrElse di.DriveType <> DriveType.Fixed OrElse workDir.StartsWith("\\") Then
+            If Not DirPath.IsFixedDrive(workDir) OrElse Not Directory.Exists(workDir) Then
                 Using d As New FolderBrowserDialog
                     d.Description = "Please choose a directory for temporary files on a fixed local drive."
+                    d.SetSelectedPath(s.Storage.GetString("last blu-ray target folder").Parent)
 
                     If d.ShowDialog = DialogResult.OK Then
                         workDir = d.SelectedPath.AppendSeparator
@@ -4988,9 +4965,7 @@ Class MainForm
                     End If
                 End Using
 
-                di = New DriveInfo(workDir)
-
-                If workDir.StartsWith("\\") OrElse di.DriveType <> DriveType.Fixed Then
+                If Not DirPath.IsFixedDrive(workDir) OrElse Not Directory.Exists(workDir) Then
                     MsgError("Only fixed local drives are supported as temp dir.")
                     Exit Sub
                 End If
@@ -5009,19 +4984,10 @@ Class MainForm
                         End If
                     End If
 
-                    If Not Directory.Exists(f.OutputFolder) Then
-                        Try
-                            Directory.CreateDirectory(f.OutputFolder)
-                        Catch ex As Exception
-                            g.ShowException(ex, "Failed to create directory for temporary files." + CrLf2 + f.OutputFolder)
-                            Exit Sub
-                        End Try
-                    End If
-
                     Using proc As New Proc
                         proc.TrimChars = {"-"c, " "c}
                         proc.RemoveChars = {CChar(VB6.vbBack)}
-                        proc.Init("Demux M2TS using eac3to", "analyze: ", "process: ")
+                        proc.Init("Demux M2TS using eac3to " + Packs.eac3to.Version, "analyze: ", "process: ")
                         proc.File = Packs.eac3to.GetPath
                         proc.Process.StartInfo.Arguments = f.GetArgs(
                             """" + playlistFolder + """ " & playlistID & ")", DirPath.GetName(workDir))
@@ -5188,8 +5154,9 @@ Class MainForm
         End If
     End Sub
 
-    Sub SetTargetLength(seconds As Integer)
+    Sub UpdateTargetParameters(seconds As Integer, frameRate As Double)
         p.TargetSeconds = seconds
+        p.TargetFrameRate = frameRate
         tbSize_TextChanged()
     End Sub
 
@@ -5298,7 +5265,7 @@ Class MainForm
 
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
-                SetTargetLength(p.Script.GetSeconds)
+                UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
             End If
 
             Assistant()
@@ -5307,10 +5274,7 @@ Class MainForm
 
     Sub UpdateFilters()
         AviSynthListView.Load()
-
-        If g.IsValidSource(False) Then
-            SetTargetLength(p.Script.GetSeconds)
-        End If
+        If g.IsValidSource(False) Then UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
     End Sub
 
     Private Sub tbTargetFile_Validating(sender As Object, e As CancelEventArgs) Handles tbTargetFile.Validating

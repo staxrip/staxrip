@@ -447,7 +447,7 @@ Class Package
 
     Function GetStatusVersion() As String
         If Version <> "" AndAlso Not IsCorrectVersion() Then
-            Dim text = "Unknown version, it can be changed by pressing F12, F11 allows to change the location."
+            Dim text = "Unknown version, F11 changes the location, F12 edits the version."
 
             If SetupAction Is Nothing Then
                 Return text
@@ -619,13 +619,14 @@ Class PythonPackage
     End Property
 
     Public Overrides Function GetPath() As String
-        Dim ret = Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath")
+        For Each i In {
+            Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath"),
+            Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath"),
+            Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", Nothing).AppendSeparator + "python.exe",
+            Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", Nothing).AppendSeparator + "python.exe"}
 
-        If ret = "" Then
-            ret = Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath")
-        End If
-
-        If ret <> "" Then Return ret
+            If File.Exists(i) Then Return i
+        Next
     End Function
 End Class
 

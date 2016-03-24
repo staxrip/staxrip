@@ -221,6 +221,7 @@ Class MediaInfo
                     s.Title = GetInfo(MediaInfoStreamKind.Text, i, "Title").Trim
                     s.CodecString = GetInfo(MediaInfoStreamKind.Text, i, "Codec/String")
                     s.Format = GetInfo(MediaInfoStreamKind.Text, i, "Format")
+                    s.Size = GetInfo(MediaInfoStreamKind.Text, i, "StreamSize").ToInt
 
                     Dim twoLetterCodes = p.AutoSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
                     s.Enabled = twoLetterCodes.Contains("all") OrElse twoLetterCodes.Contains(s.Language.TwoLetterCode)

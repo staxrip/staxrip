@@ -465,7 +465,7 @@ Class MuxerForm
 
     Private Sub bnAddAudio_Click(sender As Object, e As EventArgs) Handles bnAddAudio.Click
         Using d As New OpenFileDialog
-            d.SetFilter(FileTypes.Audio)
+            d.SetFilter(FileTypes.Audio.Union(FileTypes.AudioVideo))
             If Directory.Exists(p.TempDir) Then d.SetInitDir(p.TempDir)
 
             If d.ShowDialog = DialogResult.OK Then

@@ -72,8 +72,8 @@ Module UIExtensions
     End Sub
 
     <Extension()>
-    Sub SetFilter(d As FileDialog, ParamArray value As String())
-        d.Filter = "*." + value.Join(";*.") + "|*." + value.Join(";*.") + "|All Files|*.*"
+    Sub SetFilter(d As FileDialog, values As IEnumerable(Of String))
+        d.Filter = "*." + values.Join(";*.") + "|*." + values.Join(";*.") + "|All Files|*.*"
     End Sub
 
     <Extension()>

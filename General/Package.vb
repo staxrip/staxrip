@@ -86,7 +86,6 @@ Class Packs
         .AviSynthFilterNames = {"DGSource"},
         .avsFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")"),
                                       New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")},
-        .FileNotFoundMessage = "Application not found, locate it with F11 or disable DGIndexNV under Tools/Settings/Demux.",
         .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource(")}
 
     Public Shared Property Packages As New List(Of Package)
@@ -447,7 +446,7 @@ Class Package
 
     Function GetStatusVersion() As String
         If Version <> "" AndAlso Not IsCorrectVersion() Then
-            Dim text = "Unknown version, F11 changes the location, F12 edits the version."
+            Dim text = "Unknown version, press F12 to edit the version."
 
             If SetupAction Is Nothing Then
                 Return text
@@ -460,18 +459,18 @@ Class Package
     Function GetStatusLocation() As String
         Dim path = GetPath()
 
-        If path Is Nothing Then
+        If path = "" Then
             If FileNotFoundMessage <> "" Then
-                Return FileNotFoundMessage
+                Return "App Not found, press F11 to locate the App. " + FileNotFoundMessage
             ElseIf Not SetupAction Is Nothing Then
                 Return "Please install " + Name + "."
             End If
 
-            Return "App not found"
+            Return "App Not found, press F11 to locate the App."
         End If
 
         If FixedDir <> "" AndAlso path <> "" AndAlso Not path.ToLower.StartsWith(FixedDir.ToLower) Then
-            Return "The application has to be located at: " + FixedDir
+            Return "The App has To be located at: " + FixedDir
         End If
     End Function
 
@@ -619,6 +618,9 @@ Class PythonPackage
     End Property
 
     Public Overrides Function GetPath() As String
+        Dim ret = MyBase.GetPath
+        If File.Exists(ret) Then Return ret
+
         For Each i In {
             Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath"),
             Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath"),
@@ -1072,7 +1074,7 @@ Class DGIndexNVPackage
         Description = Strings.DGDecNV
         HelpFile = "DGIndexNVManual.html"
         LaunchName = Filename
-        FileNotFoundMessage = "Application not found, locate it with F11 or disable DGIndexNV under Tools/Settings/Demux."
+        FileNotFoundMessage = "DGIndexNV can be disabled under Tools/Settings/Demux."
     End Sub
 
     Overrides Function GetStatus() As String
@@ -1097,7 +1099,7 @@ Class DGIndexIMPackage
         WebURL = "http://rationalqm.us/mine.html"
         Description = Strings.DGDecIM
         HelpFile = "Notes.txt"
-        FileNotFoundMessage = "Application not found, please locate it by pressing F11 or disable the DGIndexIM feature under Tools/Settings/Demux."
+        FileNotFoundMessage = "DGIndexIM can be disabled under Tools/Settings/Demux."
     End Sub
 
     Overrides Function GetStatus() As String
@@ -1123,7 +1125,6 @@ Class DGDecodeIMPackage
         Description = Strings.DGDecIM
         HelpFile = "Notes.txt"
         AviSynthFilterNames = {"DGSourceIM"}
-        FileNotFoundMessage = "Application not found, please locate it by pressing F11 or disable the DGIndexIM feature under Tools/Settings/Demux."
     End Sub
 
     Overrides ReadOnly Property IsRequired As Boolean
@@ -1245,7 +1246,6 @@ Class MPCPackage
         WebURL = "http://mpc-hc.org"
         HelpURL = "http://forum.doom9.org/showthread.php?p=1719479&goto=newpost"
         IsRequiredValue = False
-        FileNotFoundMessage = "MPC player could not be found, please locate it by pressing F11."
     End Sub
 
     Public Overrides ReadOnly Property LaunchAction As Action

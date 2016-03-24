@@ -2295,21 +2295,21 @@ Class MainForm
         lSourcePAR.Text = par.X & ":" & par.Y
 
         If p.SourceSeconds > 0 Then
-            lSource1.Text = p.SourceSeconds \ 60 & "m " + (p.SourceSeconds Mod 60).ToString("00") + "s " +
-                If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB ",
-                (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB ") & If(p.SourceBitrate > 0,
-                (p.SourceBitrate / 1000 ^ 2).ToString("f1") + "Mbps ", "") & p.SourceFrameRate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) +
-                "fps " + p.Codec + " " + p.CodecProfile
+            lSource1.Text = p.SourceSeconds \ 60 & "m " + (p.SourceSeconds Mod 60).ToString("00") + "s  " +
+                If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB  ",
+                (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB  ") & If(p.SourceBitrate > 0,
+                (p.SourceBitrate / 1000 ^ 2).ToString("f1") + "Mbps  ", "") & p.SourceFrameRate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) +
+                "fps  " + p.Codec + " " + p.CodecProfile
 
-            lSource2.Text = p.SourceWidth.ToString + "x" + p.SourceHeight.ToString + " " + p.ColorSpace + " " +
-                p.ChromaSubsampling + " " & p.BitDepth & "Bits " + p.ScanType + " " + If(p.ScanType = "Interlaced", p.ScanOrder, "")
+            lSource2.Text = p.SourceWidth.ToString + "x" + p.SourceHeight.ToString + "   " + p.ColorSpace + " " +
+                p.ChromaSubsampling + " " & p.BitDepth & "Bits   " + p.ScanType + "  " + If(p.ScanType = "Interlaced", p.ScanOrder, "")
 
-            lTarget1.Text = p.TargetSeconds \ 60 & "m " + (p.TargetSeconds Mod 60).ToString("00") + "s, " &
-                p.TargetFrameRate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) + "fps, Audio Bitrate: " &
+            lTarget1.Text = p.TargetSeconds \ 60 & "m " + (p.TargetSeconds Mod 60).ToString("00") + "s   " &
+                p.TargetFrameRate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) + "fps   Audio Bitrate: " &
                 CInt(Calc.GetAudioBitrate)
 
             If p.VideoEncoder.IsCompCheckEnabled Then
-                lTarget2.Text = "Quality: " & CInt(Calc.GetPercent).ToString() + " %, Compressibility: " + p.Compressibility.ToString("f2")
+                lTarget2.Text = "Quality: " & CInt(Calc.GetPercent).ToString() + " %   Compressibility: " + p.Compressibility.ToString("f2")
             End If
         Else
             lTarget1.Text = ""
@@ -4311,6 +4311,14 @@ Class MainForm
         End Try
     End Sub
 
+    Sub SetImageWidth()
+        Try
+            Dim modval = p.ForcedOutputMod
+            tbTargetWidth.Text = (CInt(p.TargetHeight * Calc.GetTargetDAR / modval) * modval).ToString()
+        Catch
+        End Try
+    End Sub
+
     Private Sub tbBitrate_KeyDown(sender As Object, e As KeyEventArgs) Handles tbBitrate.KeyDown
         If e.KeyData = Keys.Up Then
             e.Handled = True
@@ -4439,11 +4447,14 @@ Class MainForm
             AviSynthListView.Load()
         End If
 
-        tbTargetWidth.Text = width.ToString
-
-        If height = 0 Then
+        If height = 0 AndAlso width > 0 Then
+            tbTargetWidth.Text = width.ToString
             SetImageHeight()
+        ElseIf width = 0 AndAlso height > 0 Then
+            tbTargetHeight.Text = height.ToString
+            SetImageWidth()
         Else
+            tbTargetWidth.Text = width.ToString
             tbTargetHeight.Text = height.ToString
         End If
     End Sub
@@ -4944,7 +4955,14 @@ Class MainForm
             f.PlaylistFolder = playlistFolder
             f.PlaylistID = playlistID
 
-            Dim workDir = playlistFolder.Parent.Parent + "Temp\"
+            Dim workDir = playlistFolder.Parent.Parent
+            Dim folderName = DirPath.GetName(playlistFolder.Parent.Parent)
+
+            If folderName <> "" AndAlso folderName.Length < 20 Then
+                workDir += folderName
+            Else
+                workDir += "Temp\"
+            End If
 
             If DirPath.IsFixedDrive(workDir) AndAlso Not Directory.Exists(workDir) Then
                 Try
@@ -5429,11 +5447,13 @@ Class MainForm
             Exit Sub
         End If
 
-        Dim a = value.SplitNoEmptyAndWhiteSpace("x")
+        If value?.Contains("x") Then
+            Dim a = value.SplitNoEmptyAndWhiteSpace("x")
 
-        If a.Length = 2 AndAlso a(0).IsInt AndAlso a(1).IsInt Then
-            SetTargetImageSize(a(0).ToInt, a(1).ToInt)
-            Exit Sub
+            If a.Length = 2 AndAlso a(0).IsInt AndAlso a(1).IsInt Then
+                SetTargetImageSize(a(0).ToInt, a(1).ToInt)
+                Exit Sub
+            End If
         End If
 
         MsgWarn("Invalid format")

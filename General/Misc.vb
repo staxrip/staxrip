@@ -24,19 +24,7 @@ End Module
 
 Class Paths
     Shared Function VerifyRequirements() As Boolean
-        If Directory.Exists(Paths.PluginsDir) Then
-            For Each i In Directory.GetFiles(Paths.PluginsDir)
-                If Regex.IsMatch(i, "(?i:decomb.+\.dll$)") Then
-                    If Msg("A legacy Decomb version was found." + CrLf2 + "Please confirm to solve this conflict.", MessageBoxIcon.Warning, MessageBoxButtons.OKCancel) = DialogResult.OK Then
-                        FileHelp.Delete(i)
-                    End If
-
-                    If File.Exists(i) Then Return False
-                End If
-            Next
-        End If
-
-        For Each i As Package In Packs.Packages
+        For Each i In Packs.Packages
             If Not i.VerifyOK Then Return False
         Next
 
@@ -1211,13 +1199,13 @@ Class Calc
 
     Shared Function GetSize() As Double
         Return (Calc.GetVideoKBytes() + Calc.GetAudioKBytes() +
-            GetSubtitlesKBytes() + Calc.GetOverheadKBytes()) / 1024
+            GetSubtitlesInKBytes() + Calc.GetOverheadKBytes()) / 1024
     End Function
 
     Shared Function GetVideoBitrate() As Double
         If p.FixedBitrate > 0 Then Return p.FixedBitrate
         If p.TargetSeconds = 0 Then Return 0
-        Dim kbytes = p.Size * 1024 - GetAudioKBytes() - GetSubtitlesKBytes() - GetOverheadKBytes()
+        Dim kbytes = p.Size * 1024 - GetAudioKBytes() - GetSubtitlesInKBytes() - GetOverheadKBytes()
         Return (kbytes * 8 * 1.024) / p.TargetSeconds
     End Function
 
@@ -1225,8 +1213,8 @@ Class Calc
         Return ((p.VideoBitrate * p.TargetSeconds) / 8) / 1.024
     End Function
 
-    Shared Function GetSubtitlesKBytes() As Integer
-        Return Aggregate i In p.VideoEncoder.Muxer.Subtitles Into Sum(If(i.Enabled, CInt(i.Size / 3), 0))
+    Shared Function GetSubtitlesInKBytes() As Integer
+        Return Aggregate i In p.VideoEncoder.Muxer.Subtitles Into Sum(If(i.Enabled, CInt(i.Size / 1024), 0))
     End Function
 
     Shared Function GetOverheadKBytes() As Integer
@@ -3335,7 +3323,7 @@ Class Subtitle
     Property [Default] As Boolean
     Property Forced As Boolean
     Property Enabled As Boolean = True
-    Property Size As Integer
+    Property Size As Long
 
     Sub New()
         Language = New Language
@@ -3388,7 +3376,7 @@ Class Subtitle
     ReadOnly Property TypeName As String
         Get
             Dim ret = Extension
-            If ret = "" Then ret = Filepath.GetExtFull(Path)
+            If ret = "" Then ret = Path.ExtFull
             Return ret.TrimStart("."c).ToUpper.Replace("SUP", "PGS").Replace("IDX", "VobSub")
         End Get
     End Property
@@ -3427,28 +3415,30 @@ Class Subtitle
                     indexData += 1
                     st.Size = CInt(New FileInfo(path).Length / 1024)
                     Dim subFile = path.ChangeExt("sub")
-                    If File.Exists(subFile) Then st.Size += CInt(New FileInfo(subFile).Length / 1024)
+                    If File.Exists(subFile) Then st.Size += New FileInfo(subFile).Length
                     ret.Add(st)
                     st = Nothing
                 End If
             Next
-        ElseIf {"mkv", "mp4", "m2ts"}.Contains(path.Ext) Then
+        ElseIf path.Ext.EqualsAny("mkv", "mp4", "m2ts") Then
             For Each i In MediaInfo.GetSubtitles(path)
-                Select Case ""
-                    Case "SRT"
-                        i.Size = CInt(0.5 * p.TargetSeconds)
-                    Case "VobSub"
-                        i.Size = CInt(50 * p.TargetSeconds)
-                    Case "PGS"
-                        i.Size = CInt(200 * p.TargetSeconds)
-                End Select
+                If i.Size = 0 Then
+                    Select Case i.TypeName
+                        Case "SRT"
+                            i.Size = CInt(0.5 * p.TargetSeconds) * 1024
+                        Case "VobSub"
+                            i.Size = CInt(50 * p.TargetSeconds) * 1024
+                        Case "PGS"
+                            i.Size = CInt(200 * p.TargetSeconds) * 1024
+                    End Select
+                End If
 
                 i.Path = path
                 ret.Add(i)
             Next
         Else
             Dim st As New Subtitle()
-            st.Size = CInt(New FileInfo(path).Length / 1024)
+            st.Size = New FileInfo(path).Length
             Dim match = Regex.Match(path, " ID(\d+)")
             If match.Success Then st.StreamOrder = match.Groups(1).Value.ToInt - 1
 

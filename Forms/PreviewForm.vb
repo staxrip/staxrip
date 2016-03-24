@@ -892,7 +892,7 @@ Class PreviewForm
     <Command("Perform | Save Bitmap", "Saves the current frame as bitmap.")>
     Sub SaveBitmap()
         Using d As New SaveFileDialog
-            d.SetFilter("bmp")
+            d.SetFilter({"bmp"})
             d.FileName = p.TargetFile.Base + " - " & AVI.Position
 
             If d.ShowDialog = DialogResult.OK Then
@@ -904,7 +904,7 @@ Class PreviewForm
     <Command("Perform | Save JPG", "Saves the current frame as JPG.")>
     Sub SaveJPG()
         Using d As New SaveFileDialog
-            d.SetFilter("jpg")
+            d.SetFilter({"jpg"})
             d.FileName = p.TargetFile.Base + " - " & AVI.Position
 
             If d.ShowDialog = DialogResult.OK Then

@@ -47,9 +47,9 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function EqualsAny(instance As String, ParamArray param As String()) As Boolean
-        If instance = "" OrElse param.ContainsNothingOrEmpty Then Return False
-        Return param.Contains(instance)
+    Function EqualsAny(instance As String, ParamArray values As String()) As Boolean
+        If instance = "" OrElse values.ContainsNothingOrEmpty Then Return False
+        Return values.Contains(instance)
     End Function
 
     <Extension()>
@@ -91,10 +91,7 @@ Module StringExtensions
 
     <Extension()>
     Function ToInt(value As String, Optional defaultValue As Integer = 0) As Integer
-        If Not Integer.TryParse(value, Nothing) Then
-            Return defaultValue
-        End If
-
+        If Not Integer.TryParse(value, Nothing) Then Return defaultValue
         Return CInt(value)
     End Function
 

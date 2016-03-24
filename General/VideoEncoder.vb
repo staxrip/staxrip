@@ -1283,7 +1283,8 @@ Class NvidiaEncoder
             End If
 
             If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
-                p.Script.IsFilterActive("Crop") Then
+                (p.Script.IsFilterActive("Crop", "Hardware Encoder") OrElse
+                (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop"))) Then
 
                 ret += " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom
             End If

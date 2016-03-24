@@ -282,11 +282,11 @@ Class SubtitleControl
             If File.Exists(i.Path) Then
                 Dim size As String
 
-                If Not FileTypes.Video.Contains(Filepath.GetExt(i.Path)) Then
-                    If i.Size > 1024 Then
-                        size = (i.Size / 1024).ToString("f1") & " MB"
+                If i.Size > 0 Then
+                    If i.Size > 1024 ^ 2 Then
+                        size = (i.Size / 1024 ^ 2).ToString("f1") & " MB"
                     Else
-                        size = CInt(i.Size).ToString("f1") & " KB"
+                        size = CInt(i.Size / 1024).ToString("f1") & " KB"
                     End If
                 End If
 

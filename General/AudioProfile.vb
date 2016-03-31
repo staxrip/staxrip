@@ -242,9 +242,7 @@ MustInherit Class AudioProfile
         Dim cmdl = """%app:BeSweet%"" -core( -input ""%input%"" -output ""%output%"" )"
         cmdl += " -azid( -c normal"
 
-        If channels = 2 Then
-            cmdl += " -L -3db"
-        End If
+        If channels = 2 Then cmdl += " -L -3db"
 
         cmdl += " ) -ota( -d %delay% -g max ) "
         cmdl += params
@@ -259,7 +257,7 @@ MustInherit Class AudioProfile
             fileType = "ogg"
         End If
 
-        Dim input = If(channels = 6, New String() {"ac3"}, "ac3 mpa mp2 mp3 wav ogg".Split(" "c))
+        Dim input = If(channels = 6, {"ac3"}, {"ac3", "mpa", "mp2", "mp3", "wav", "ogg"})
 
         Return New BatchAudioProfile(name, bitrate, input, fileType, channels, cmdl)
     End Function
@@ -598,7 +596,7 @@ Class GUIAudioProfile
         If Params.RateMode = AudioRateMode.VBR Then
             Select Case Params.Codec
                 Case AudioCodec.AAC
-                    If Channels = 6 Then
+                    If Channels >= 6 Then
                         Select Case Params.Encoder
                             Case GuiAudioEncoder.qaac
                                 Return Calc.GetYFromTwoPointForm(0, 50, 127, 500, Params.Quality)
@@ -616,7 +614,7 @@ Class GUIAudioProfile
                 Case AudioCodec.MP3
                     Return Calc.GetYFromTwoPointForm(9, 65, 0, 245, Params.Quality)
                 Case AudioCodec.Vorbis
-                    If Channels = 6 Then
+                    If Channels >= 6 Then
                         Return Calc.GetYFromTwoPointForm(0, 120, 10, 1440, Params.Quality)
                     Else
                         Return Calc.GetYFromTwoPointForm(0, 64, 10, 500, Params.Quality)
@@ -766,9 +764,7 @@ Class GUIAudioProfile
                 End If
             End If
 
-            If Params.CustomSwitches <> "" Then
-                ret += " " + Params.CustomSwitches
-            End If
+            If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
         ElseIf Params.eac3toExtractDtsCore Then
             ret += " -core"
         End If
@@ -951,17 +947,12 @@ Class GUIAudioProfile
             t += " -L -3db"
         End If
 
-        If Params.BeSweetAzid <> "" Then
-            t += " " + Params.BeSweetAzid
-        End If
-
-        If t <> "" Then
-            r += " -azid(" + t + " )"
-        End If
+        If Params.BeSweetAzid <> "" Then t += " " + Params.BeSweetAzid
+        If t <> "" Then r += " -azid(" + t + " )"
 
         Dim ota = If(Delay <> 0, " -d " & Delay, "")
 
-        If Params.Normalize AndAlso OK(Params.BeSweetGainAndNormalization) Then
+        If Params.Normalize AndAlso Params.BeSweetGainAndNormalization <> "" Then
             ota += " " + Params.BeSweetGainAndNormalization
         End If
 
@@ -973,17 +964,13 @@ Class GUIAudioProfile
             ota += " -r 25000 23976"
         End If
 
-        If ota <> "" Then
-            r += " -ota(" & ota & " )"
-        End If
+        If ota <> "" Then r += " -ota(" & ota & " )"
 
         If Params.SamplingRate <> 0 Then
             r += " -ssrc( --rate " & Params.SamplingRate & " )"
         End If
 
-        If Params.BeSweetCustom <> "" Then
-            r += " " + Params.BeSweetCustom
-        End If
+        If Params.BeSweetCustom <> "" Then r += " " + Params.BeSweetCustom
 
         Select Case Params.Codec
             Case AudioCodec.AAC
@@ -1025,7 +1012,21 @@ Class GUIAudioProfile
         Get
             If Params Is Nothing Then Exit Property
 
-            Dim ch = If(Channels = 6, " 5.1", If(Channels = 2, " 2.0", " Mono"))
+            Dim ch As String
+
+            Select Case Channels
+                Case 8
+                    ch += " 7.1"
+                Case 6
+                    ch += " 5.1"
+                Case 2
+                    ch += " 2.0"
+                Case 1
+                    ch += " Mono"
+                Case Else
+                    ch += " " & Channels & "ch"
+            End Select
+
             Dim circa = If(Params.RateMode = AudioRateMode.VBR OrElse Params.Codec = AudioCodec.Flac, "~", "")
             Dim rate = If(Params.RateMode = AudioRateMode.VBR, " " & Params.RateMode.ToString, "")
             Dim co = Params.Codec.ToString

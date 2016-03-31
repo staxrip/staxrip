@@ -130,10 +130,6 @@ MustInherit Class VideoEncoder
         Muxer.Clean()
     End Sub
 
-    Overridable Function GetFrameRate() As Double
-        Return p.Script.GetFramerate
-    End Function
-
     Overridable Function GetError() As String
         Return Nothing
     End Function
@@ -1340,14 +1336,6 @@ Class IntelEncoder
         End Set
     End Property
 
-    Public Overrides Function GetFrameRate() As Double
-        If Params.Deinterlace.OptionText = "Double Framerate" Then
-            Return MyBase.GetFrameRate() * 2
-        End If
-
-        Return MyBase.GetFrameRate()
-    End Function
-
     Overrides Sub ShowConfigDialog()
         Dim newParams As New EncoderParams
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
@@ -1622,6 +1610,11 @@ Class IntelEncoder
             .Options = {"8", "16", "32", "64", "128"},
             .ValueIsName = True}
 
+        Property vppDetailEnhance As New NumParam With {
+            .Switch = "--vpp-detail-enhance",
+            .Text = "Detail Enhancement:",
+            .MinMaxStep = {0, 100, 1}}
+
         Private ItemsValue As List(Of CommandLineItem)
 
         Overrides ReadOnly Property Items As List(Of CommandLineItem)
@@ -1630,7 +1623,7 @@ Class IntelEncoder
                     ItemsValue = New List(Of CommandLineItem)
 
                     Add("Basic", Decoder, Codec, QualitySpeed, Mode, Quality, QPI, QPP, QPB)
-                    Add("Advanced", ProfileH264, ProfileHEVC, ProfileMPEG2, LevelHEVC, LevelH264, LevelMPEG2, Rotate, OutputBuf, BFrames, Ref, GOPLength, LookaheadDepth, Scenechange, Fallback, MBBRC, Custom)
+                    Add("Advanced", ProfileH264, ProfileHEVC, ProfileMPEG2, LevelHEVC, LevelH264, LevelMPEG2, Rotate, OutputBuf, BFrames, Ref, GOPLength, LookaheadDepth, vppDetailEnhance, Scenechange, Fallback, MBBRC, Custom)
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                 End If
 

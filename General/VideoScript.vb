@@ -202,7 +202,7 @@ Class VideoScript
                     If Not i.AviSynthFilterNames Is Nothing Then
                         For Each i2 In i.AviSynthFilterNames
                             If scriptLower.Contains(i2.ToLower + "(") Then
-                                If i.Filename.Ext = ".avsi" Then
+                                If i.Filename.Ext = "avsi" Then
                                     Dim load = "Import(""" + fp + """)" + CrLf
 
                                     If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
@@ -211,7 +211,7 @@ Class VideoScript
 
                                     If Not i.Dependencies.ContainsNothingOrEmpty Then
                                         For Each i3 In i.Dependencies
-                                            For Each i4 In plugins
+                                            For Each i4 In plugins.Where(Function(arg) Not arg.AviSynthFilterNames.ContainsNothingOrEmpty)
                                                 If i3 = i4.Name Then
                                                     load = "LoadPlugin(""" + i4.GetPath + """)" + CrLf
 
@@ -468,9 +468,9 @@ Class FilterCategory
             Dim filters As VideoFilter() = Nothing
 
             If engine = ScriptingEngine.AviSynth Then
-                If Not i.avsFiltersFunc Is Nothing Then filters = i.avsFiltersFunc.Invoke
+                If Not i.AviSynthFiltersFunc Is Nothing Then filters = i.AviSynthFiltersFunc.Invoke
             Else
-                If Not i.vsFiltersFunc Is Nothing Then filters = i.vsFiltersFunc.Invoke
+                If Not i.VapourSynthFiltersFunc Is Nothing Then filters = i.VapourSynthFiltersFunc.Invoke
             End If
 
             If Not filters Is Nothing Then
@@ -587,10 +587,6 @@ Class FilterCategory
         ret.Add(resize)
 
         Dim field As New FilterCategory("Field")
-        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Fast", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = 'Fast')"))
-        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Medium", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = 'Medium')"))
-        field.Filters.Add(New VideoFilter(field.Name, "QTGMC | QTGMC Slow", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = 'Slow')"))
-        field.Filters.Add(New VideoFilter(field.Name, "nnedi3", "clip = core.nnedi3.nnedi3(clip, field = 1)"))
         field.Filters.Add(New VideoFilter(field.Name, "IVTC", "clip = core.vivtc.VFM(clip, 1)" + CrLf + "clip = core.vivtc.VDecimate(clip)"))
         field.Filters.Add(New VideoFilter(field.Name, "Vinverse", "clip = core.vinverse.Vinverse(clip)"))
         field.Filters.Add(New VideoFilter(field.Name, "Select Even", "clip = clip[::2]"))
@@ -694,17 +690,17 @@ Class FilterParameters
                 add2("havsfunc.QTGMC", "TFF", "True", "TFF | TFF = True (top field first)")
                 add2("havsfunc.QTGMC", "TFF", "False", "TFF | TFF = False (bottom field first)")
 
-                add2("havsfunc.QTGMC", "Preset", "'draft'", "Preset | Preset = 'draft'")
-                add2("havsfunc.QTGMC", "Preset", "'ultra fast'", "Preset | Preset = 'ultra fast'")
-                add2("havsfunc.QTGMC", "Preset", "'super fast'", "Preset | Preset = 'super fast'")
-                add2("havsfunc.QTGMC", "Preset", "'very fast'", "Preset | Preset = 'very fast'")
-                add2("havsfunc.QTGMC", "Preset", "'faster'", "Preset | Preset = 'faster'")
-                add2("havsfunc.QTGMC", "Preset", "'fast'", "Preset | Preset = 'fast'")
-                add2("havsfunc.QTGMC", "Preset", "'medium'", "Preset | Preset = 'medium'")
-                add2("havsfunc.QTGMC", "Preset", "'slow'", "Preset | Preset = 'slow'")
-                add2("havsfunc.QTGMC", "Preset", "'slower'", "Preset | Preset = 'slower'")
-                add2("havsfunc.QTGMC", "Preset", "'very slow'", "Preset | Preset = 'very slow'")
-                add2("havsfunc.QTGMC", "Preset", "'placebo'", "Preset | Preset = 'placebo'")
+                add2("QTGMC", "Preset", """Draft""", "Preset | Preset = ""Draft""")
+                add2("QTGMC", "Preset", """Ultra Fast""", "Preset | Preset = ""Ultra Fast""")
+                add2("QTGMC", "Preset", """Super Fast""", "Preset | Preset = ""Super Fast""")
+                add2("QTGMC", "Preset", """Very Fast""", "Preset | Preset = ""Very Fast""")
+                add2("QTGMC", "Preset", """Faster""", "Preset | Preset = ""Faster""")
+                add2("QTGMC", "Preset", """Fast""", "Preset | Preset = ""Fast""")
+                add2("QTGMC", "Preset", """Medium""", "Preset | Preset = ""Medium""")
+                add2("QTGMC", "Preset", """Slow""", "Preset | Preset = ""Slow""")
+                add2("QTGMC", "Preset", """Slower""", "Preset | Preset = ""Slower""")
+                add2("QTGMC", "Preset", """Very Slow""", "Preset | Preset = ""Very Slow""")
+                add2("QTGMC", "Preset", """Placebo""", "Preset | Preset = ""Placebo""")
             End If
 
             Return DefinitionsValue

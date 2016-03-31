@@ -1039,7 +1039,7 @@ Class MainForm
 
                 If td.SelectedValue = DialogResult.Yes Then
                     If g.ProjectPath Is Nothing Then
-                        If Not ShowSaveDialog() Then
+                        If Not OpenSaveDialog() Then
                             Return True
                         End If
                     Else
@@ -1120,7 +1120,7 @@ Class MainForm
                         End If
                     Next
 
-                    sd("mkvinfo GUI") = Sub() g.ShellExecute(Packs.Mkvmerge.GetDir + "mkvinfo.exe", "-g" + If(p.SourceFile.Ext = "mkv", " " + p.SourceFile.Quotes, ""))
+                    sd("mkvinfo GUI") = Sub() g.ShellExecute(Packs.Mkvmerge.GetDir + "mkvinfo.exe", If(p.SourceFile.Ext = "mkv", p.SourceFile.Quotes, ""))
 
                     For Each i2 In sd
                         i.DropDownItems.Add(New ActionMenuItem(i2.Key, i2.Value))
@@ -1217,7 +1217,7 @@ Class MainForm
         End If
     End Sub
 
-    Function ShowSaveDialog() As Boolean
+    Function OpenSaveDialog() As Boolean
         Using d As New SWF.SaveFileDialog
             d.SetInitDir(p.TempDir)
 
@@ -1344,7 +1344,7 @@ Class MainForm
         End If
     End Sub
 
-    Function ShowSourceFilterSelection(inputFile As String) As VideoFilter
+    Function OpenSourceFilterSelection(inputFile As String) As VideoFilter
         Select Case inputFile.Ext
             Case "dgi"
                 Return New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
@@ -1498,7 +1498,7 @@ Class MainForm
                 Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
                 Not p.SourceFile.Ext = "avs" AndAlso Not p.SourceFile.Ext = "vpy" Then
 
-                preferredSourceFilter = ShowSourceFilterSelection(files(0))
+                preferredSourceFilter = OpenSourceFilterSelection(files(0))
             End If
 
             If Not preferredSourceFilter Is Nothing Then
@@ -1826,7 +1826,7 @@ Class MainForm
                         td.CommonButtons = TaskDialogButtons.OkCancel
 
                         If td.Show = DialogResult.OK Then
-                            Dim f = ShowSourceFilterSelection(p.SourceFile)
+                            Dim f = OpenSourceFilterSelection(p.SourceFile)
                             Dim isVapourSynth = f.Script?.Contains("clip = core.")
 
                             If isVapourSynth Then
@@ -2840,9 +2840,9 @@ Class MainForm
             End If
 
             If codeLower.Contains("cachefile") Then
-                ffmsindex(p.SourceFile, p.TempDir + Filepath.GetBase(p.SourceFile) + ".ffindex")
+                g.ffmsindex(p.SourceFile, p.TempDir + Filepath.GetBase(p.SourceFile) + ".ffindex")
             Else
-                ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")
+                g.ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")
             End If
         ElseIf codeLower.Contains("lwlibavvideosource(") OrElse codeLower.Contains("lwlibavsource(") Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
@@ -2902,19 +2902,6 @@ Class MainForm
                 tbSourceFile.Text = outFile
                 BlockSourceTextBoxTextChanged = False
             End If
-        End If
-    End Sub
-
-    Sub ffmsindex(sourcePath As String, cachePath As String, Optional indexAudio As Boolean = False)
-        If File.Exists(sourcePath) AndAlso Not File.Exists(cachePath) AndAlso
-            Not FileTypes.VideoText.Contains(Filepath.GetExt(sourcePath)) Then
-
-            Using o As New Proc
-                o.Init("Index with ffmsindex", "Indexing, please wait...")
-                o.File = Packs.ffms2.GetDir + "ffmsindex.exe"
-                o.Arguments = If(indexAudio, "-t -1 ", "") + """" + sourcePath + """ """ + cachePath + """"
-                o.Start()
-            End Using
         End If
     End Sub
 
@@ -3120,7 +3107,7 @@ Class MainForm
     <Command("Project | Save", "Saves the current project.")>
     Sub SaveProject()
         If g.ProjectPath Is Nothing Then
-            ShowSaveDialog()
+            OpenSaveDialog()
         Else
             SaveProjectByPath(g.ProjectPath)
         End If
@@ -3153,7 +3140,7 @@ Class MainForm
 
     <Command("Project | Save As", "Saves the current project.")>
     Sub SaveProjectAs()
-        ShowSaveDialog()
+        OpenSaveDialog()
     End Sub
 
     <Command("Project | Save As Template", "Saves the current project as template.")>
@@ -3205,6 +3192,11 @@ Class MainForm
             End If
 
             If Not found Then f.ShowPackage(Packs.x264)
+
+            For Each i In Packs.Packages
+                If i.Version = "" OrElse (Not i.Version.ContainsAny({"x86", "x64"}) AndAlso
+                    Not i.Filename.ContainsAny({".jar", ".py", ".avsi"})) Then f.ShowPackage(i)
+            Next
 
             f.ShowDialog()
             g.SaveSettings()
@@ -3332,10 +3324,10 @@ Class MainForm
                 Exit Sub
             End If
 
-            Dim m = p.Script.GetErrorMessage
+            Dim errMsg = p.Script.GetErrorMessage
 
-            If Not m Is Nothing Then
-                MsgError(m)
+            If Not errMsg Is Nothing Then
+                MsgError(errMsg)
                 Exit Sub
             End If
 
@@ -3516,7 +3508,7 @@ Class MainForm
     End Sub
 
     <Command("Dialog | Compare And Extract Images", "Compare and extract images for video comparisons.")>
-    Sub ShowVideoComparison()
+    Sub OpenVideoComparison()
         Dim f As New VideoComparisonForm
         f.Show()
         f.Add()
@@ -4166,8 +4158,8 @@ Class MainForm
         ret.Add("Tools|Launch", "DynamicMenuItem", DynamicMenuItemID.LaunchApplications)
 
         ret.Add("Tools|Advanced|AVSMeter...", "ExecuteCommandLine", """%app:AVSMeter%"" ""%script_file%""" + CrLf + "pause", False, False, True)
-        ret.Add("Tools|Advanced|Video Comparison...", "ShowVideoComparison")
-        ret.Add("Tools|Advanced|Command Prompt...", "ShowCommandPrompt")
+        ret.Add("Tools|Advanced|Video Comparison...", "OpenVideoComparison")
+        ret.Add("Tools|Advanced|Command Prompt...", "OpenCommandPrompt")
         ret.Add("Tools|Advanced|Event Commands...", "OpenEventCommandsDialog")
         ret.Add("Tools|Advanced|Hardcoded Subtitle...", "AddHardcodedSubtitle", Keys.Control Or Keys.H)
         ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", "OpenLAVFiltersConfiguration")
@@ -4177,9 +4169,9 @@ Class MainForm
         ret.Add("Tools|Edit Menu...", "OpenMainMenuEditor")
         ret.Add("Tools|Settings...", "OpenSettingsDialog", "")
 
-        ret.Add("Help|Support Forum|doom9", "ExecuteCommandLine", "http://forum.doom9.org/showthread.php?t=172068&page=999999")
-        ret.Add("Help|Support Forum|videohelp", "ExecuteCommandLine", "http://forum.videohelp.com/threads/369913-StaxRip-x64-for-AviSynth-VapourSynth-x264-x265-GPU-encoding/page999999")
-        If g.IsCulture("de") Then ret.Add("Help|Support Forum|gleitz", "ExecuteCommandLine", "http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-%28Diskussion%29/page999999")
+        ret.Add("Help|Support Forum|forum.doom9.org", "ExecuteCommandLine", "http://forum.doom9.org/showthread.php?t=172068&page=999999")
+        If g.IsCulture("de") Then ret.Add("Help|Support Forum|forum.gleitz.info", "ExecuteCommandLine", "http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-%28Diskussion%29/page999999")
+        ret.Add("Help|Support Forum|forum.videohelp.com", "ExecuteCommandLine", "http://forum.videohelp.com/threads/369913-StaxRip-x64-for-AviSynth-VapourSynth-x264-x265-GPU-encoding/page999999")
         ret.Add("Help|Website|Issue Tracker", "ExecuteCommandLine", "https://github.com/stax76/staxrip/issues")
         ret.Add("Help|Website|Wiki", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki")
         ret.Add("Help|Website|Guides", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki/Guides")
@@ -4944,13 +4936,13 @@ Class MainForm
 
                         If td2.Show() = 0 Then Exit Sub
 
-                        Showeac3toDemuxForm(srcPath, td2.SelectedValue)
+                        OpenEac3toDemuxForm(srcPath, td2.SelectedValue)
                     End If
                 End Using
         End Select
     End Sub
 
-    Sub Showeac3toDemuxForm(playlistFolder As String, playlistID As Integer)
+    Sub OpenEac3toDemuxForm(playlistFolder As String, playlistID As Integer)
         Using f As New eac3toForm
             f.PlaylistFolder = playlistFolder
             f.PlaylistID = playlistID
@@ -5664,7 +5656,7 @@ Class MainForm
     End Sub
 
     <Command("Perform | Show Command Prompt", "Shows a command prompt with the temp directory of the current project.")>
-    Sub ShowCommandPrompt()
+    Sub OpenCommandPrompt()
         Dim batchCode = "@echo off" + CrLf
 
         For Each i In Packs.Packages

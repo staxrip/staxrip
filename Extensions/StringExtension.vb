@@ -47,6 +47,11 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function ContainsAny(instance As String, any As IEnumerable(Of String)) As Boolean
+        If instance <> "" Then Return any.Any(Function(arg) instance.Contains(arg))
+    End Function
+
+    <Extension()>
     Function EqualsAny(instance As String, ParamArray values As String()) As Boolean
         If instance = "" OrElse values.ContainsNothingOrEmpty Then Return False
         Return values.Contains(instance)

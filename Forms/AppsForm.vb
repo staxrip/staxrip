@@ -206,6 +206,7 @@ Class AppsForm
         AddSection("Version")
         AddSection("AviSynth Filters")
         AddSection("VapourSynth Filters")
+        AddSection("Filters")
         AddSection("Description")
     End Sub
 
@@ -246,19 +247,30 @@ Class AppsForm
         Headers("VapourSynth Filters").Visible = False
         Contents("VapourSynth Filters").Visible = False
 
+        Headers("Filters").Visible = False
+        Contents("Filters").Visible = False
+
         If TypeOf ActivePackage Is PluginPackage Then
             Dim plugin = DirectCast(ActivePackage, PluginPackage)
 
-            If Not plugin.AviSynthFilterNames Is Nothing Then
+            If Not plugin.AviSynthFilterNames Is Nothing AndAlso
+                Not plugin.VapourSynthFilterNames Is Nothing Then
+
                 Headers("AviSynth Filters").Visible = True
                 Contents("AviSynth Filters").Text = plugin.AviSynthFilterNames.Join(", ")
                 Contents("AviSynth Filters").Visible = True
-            End If
 
-            If Not plugin.VapourSynthFilterNames Is Nothing Then
                 Headers("VapourSynth Filters").Visible = True
                 Contents("VapourSynth Filters").Text = plugin.VapourSynthFilterNames.Join(", ")
                 Contents("VapourSynth Filters").Visible = True
+            ElseIf Not plugin.AviSynthFilterNames Is Nothing Then
+                Headers("Filters").Visible = True
+                Contents("Filters").Text = plugin.AviSynthFilterNames.Join(", ")
+                Contents("Filters").Visible = True
+            ElseIf Not plugin.VapourSynthFilterNames Is Nothing Then
+                Headers("Filters").Visible = True
+                Contents("Filters").Text = plugin.VapourSynthFilterNames.Join(", ")
+                Contents("Filters").Visible = True
             End If
         End If
 
@@ -356,7 +368,7 @@ Class AppsForm
 
                     For Each i In Packs.Packages
                         If i.Version <> "" Then
-                            textContent += i.Name + " = " + i.Version + "; " +
+                            textContent += i.ID + " = " + i.Version + "; " +
                                 i.VersionDate.ToString("yyyy-MM-dd",
                                                        CultureInfo.InvariantCulture) + CrLf 'persian calendar
                         End If

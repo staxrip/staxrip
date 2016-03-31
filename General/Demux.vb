@@ -359,7 +359,7 @@ Class mkvDemuxer
         DemuxMKVSubtitles(subtitles)
 
         Dim output = ProcessHelp.GetStdOut(
-                Packs.Mkvmerge.GetDir + "mkvinfo.exe", "--ui-language en """ + p.SourceFile + """")
+                Packs.Mkvmerge.GetDir + "mkvinfo.exe", "--no-gui --ui-language en """ + p.SourceFile + """")
 
         If output.Contains("|+ Chapters") Then
             Using proc As New Proc

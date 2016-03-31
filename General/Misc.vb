@@ -566,6 +566,19 @@ Class GlobalClass
         End Using
     End Sub
 
+    Sub ffmsindex(sourcePath As String, cachePath As String, Optional indexAudio As Boolean = False)
+        If File.Exists(sourcePath) AndAlso Not File.Exists(cachePath) AndAlso
+            Not FileTypes.VideoText.Contains(Filepath.GetExt(sourcePath)) Then
+
+            Using o As New Proc
+                o.Init("Index with ffmsindex", "Indexing, please wait...")
+                o.File = Packs.ffms2.GetDir + "ffmsindex.exe"
+                o.Arguments = If(indexAudio, "-t -1 ", "") + """" + sourcePath + """ """ + cachePath + """"
+                o.Start()
+            End Using
+        End If
+    End Sub
+
     Function IsValidSource(Optional warn As Boolean = True) As Boolean
         If p.SourceScript.GetFrames = 0 Then
             If warn Then
@@ -864,7 +877,7 @@ Class GlobalClass
         p.SourceScript.Synchronize(True)
 
         Using avi As New AVIFile(p.SourceScript.Path)
-            Dim segmentCount = 7
+            Dim segmentCount = 20
 
             Dim len = avi.FrameCount \ (segmentCount + 1)
             Dim crops(segmentCount - 1) As AutoCrop
@@ -873,14 +886,21 @@ Class GlobalClass
                 avi.Position = len * x
 
                 Using bmp = avi.GetBitmap
-                    crops(x - 1) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb))
+                    crops(x - 1) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), avi.Position)
                 End Using
             Next
 
-            p.CropLeft = crops.SelectMany(Function(arg) arg.Left).GroupBy(Function(arg) arg).OrderByDescending(Function(arg) arg.Count).First.First
-            p.CropTop = crops.SelectMany(Function(arg) arg.Top).GroupBy(Function(arg) arg).OrderByDescending(Function(arg) arg.Count).First.First
-            p.CropRight = crops.SelectMany(Function(arg) arg.Right).GroupBy(Function(arg) arg).OrderByDescending(Function(arg) arg.Count).First.First
-            p.CropBottom = crops.SelectMany(Function(arg) arg.Bottom).GroupBy(Function(arg) arg).OrderByDescending(Function(arg) arg.Count).First.First
+            Dim leftCrops = crops.SelectMany(Function(arg) arg.Left).OrderBy(Function(arg) arg)
+            p.CropLeft = leftCrops(leftCrops.Count \ 10)
+
+            Dim topCrops = crops.SelectMany(Function(arg) arg.Top).OrderBy(Function(arg) arg)
+            p.CropTop = topCrops(topCrops.Count \ 10)
+
+            Dim rightCrops = crops.SelectMany(Function(arg) arg.Right).OrderBy(Function(arg) arg)
+            p.CropRight = rightCrops(rightCrops.Count \ 10)
+
+            Dim bottomCrops = crops.SelectMany(Function(arg) arg.Bottom).OrderBy(Function(arg) arg)
+            p.CropBottom = bottomCrops(bottomCrops.Count \ 10)
 
             CorrectCropMod()
         End Using
@@ -1199,25 +1219,27 @@ Class Calc
 
     Shared Function GetSize() As Double
         Return (Calc.GetVideoKBytes() + Calc.GetAudioKBytes() +
-            GetSubtitlesInKBytes() + Calc.GetOverheadKBytes()) / 1024
+            GetSubtitleKBytes() + Calc.GetOverheadKBytes()) / 1024
     End Function
 
     Shared Function GetVideoBitrate() As Double
         If p.FixedBitrate > 0 Then Return p.FixedBitrate
         If p.TargetSeconds = 0 Then Return 0
-        Dim kbytes = p.Size * 1024 - GetAudioKBytes() - GetSubtitlesInKBytes() - GetOverheadKBytes()
-        Return (kbytes * 8 * 1.024) / p.TargetSeconds
+        Dim kbytes = p.Size * 1024 - GetAudioKBytes() - GetSubtitleKBytes() - GetOverheadKBytes()
+        Dim ret = kbytes * 8 * 1.024 / p.TargetSeconds
+        If ret < 0 Then ret = 0
+        Return ret
     End Function
 
     Shared Function GetVideoKBytes() As Double
         Return ((p.VideoBitrate * p.TargetSeconds) / 8) / 1.024
     End Function
 
-    Shared Function GetSubtitlesInKBytes() As Integer
-        Return Aggregate i In p.VideoEncoder.Muxer.Subtitles Into Sum(If(i.Enabled, CInt(i.Size / 1024), 0))
+    Shared Function GetSubtitleKBytes() As Double
+        Return Aggregate i In p.VideoEncoder.Muxer.Subtitles Into Sum(If(i.Enabled, i.Size / 1024 / 3, 0))
     End Function
 
-    Shared Function GetOverheadKBytes() As Integer
+    Shared Function GetOverheadKBytes() As Double
         Dim ret As Double
         Dim frames = p.Script.GetFrames
 
@@ -1226,12 +1248,12 @@ Class Calc
             If p.Audio0.File <> "" Then ret += frames * 0.04
             If p.Audio1.File <> "" Then ret += frames * 0.04
         ElseIf p.VideoEncoder.Muxer.OutputType = "mp4" Then
-            ret += (10.4 / 1024) * frames
+            ret += 10.4 / 1024 * frames
         ElseIf p.VideoEncoder.Muxer.OutputType = "mkv" Then
             ret += frames * 0.013
         End If
 
-        Return CInt(ret)
+        Return ret
     End Function
 
     Shared Function GetAudioKBytes() As Double
@@ -3590,16 +3612,18 @@ Class AutoCrop
     Public Left As Integer()
     Public Right As Integer()
 
-    Shared Function Start(bmp As Bitmap) As AutoCrop
+    Shared Function Start(bmp As Bitmap, position As Integer) As AutoCrop
         Dim ret As New AutoCrop
         Dim u = BitmapUtil.Create(bmp)
-        Dim max = 30
+        Dim max = 20
+        Dim xCount = 20
+        Dim yCount = 20
 
-        Dim xValues = {
-            u.BitmapData.Width \ 3,
-            u.BitmapData.Width \ 2,
-            u.BitmapData.Width \ 3 * 2
-        }
+        Dim xValues(xCount) As Integer
+
+        For x = 0 To xCount
+            xValues(x) = CInt(bmp.Width / (xCount + 1) * x)
+        Next
 
         ret.Top = New Integer(xValues.Length - 1) {}
         ret.Bottom = New Integer(xValues.Length - 1) {}
@@ -3622,17 +3646,21 @@ Class AutoCrop
             Next
         Next
 
-        Dim yValues = {
-            u.BitmapData.Height \ 3,
-            u.BitmapData.Height \ 2,
-            u.BitmapData.Height \ 3 * 2
-        }
+        Dim yValues(yCount) As Integer
+
+        For x = 0 To yCount
+            yValues(x) = CInt(bmp.Height / (yCount + 1) * x)
+        Next
 
         ret.Left = New Integer(yValues.Length - 1) {}
         ret.Right = New Integer(yValues.Length - 1) {}
 
         For yValue = 0 To yValues.Length - 1
             For x = 0 To u.BitmapData.Width \ 4
+                If x = 0 Then
+                    Debug.WriteLine("x: " & x & " y: " & yValues(yValue) & " max: " & u.GetMax(x, yValues(yValue)))
+                End If
+
                 If u.GetMax(x, yValues(yValue)) < max Then
                     ret.Left(yValue) = x + 1
                 Else

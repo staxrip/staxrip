@@ -428,7 +428,7 @@ Class Audio
         If Not Packs.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim cachefile = p.TempDir + Filepath.GetBase(ap.File) + ".ffindex"
-        g.MainForm.ffmsindex(ap.File, cachefile)
+        g.ffmsindex(ap.File, cachefile)
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
         d.Remove("Cutting")
@@ -493,7 +493,7 @@ Class Audio
         If Not Packs.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim cachefile = p.TempDir + Filepath.GetBase(ap.File) + ".ffindex"
-        g.MainForm.ffmsindex(ap.File, cachefile)
+        g.ffmsindex(ap.File, cachefile)
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ff.wav"

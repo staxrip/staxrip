@@ -398,6 +398,17 @@ Class PreviewForm
 
         pVideo.Dock = DockStyle.Fill
         ClientSize = GetNormalSize()
+
+        Dim workingArea = Screen.GetWorkingArea(Me)
+        Dim screenRect = RectangleToScreen(ClientRectangle)
+
+        If screenRect.Bottom > workingArea.Height Then
+            Top -= screenRect.Bottom - workingArea.Height
+        End If
+
+        If screenRect.Right > workingArea.Width Then
+            Left -= screenRect.Right - workingArea.Width
+        End If
     End Sub
 
     Function GetNormalSize() As Size
@@ -412,10 +423,16 @@ Class PreviewForm
             ret = New Size(CInt(frameWidth * SizeFactor), CInt(frameHeight * SizeFactor))
         End If
 
-        If ret.Width > workingArea.Width * 0.8 Then
-            Dim w = CInt(workingArea.Width * 0.8)
+        If ret.Width > workingArea.Width * 0.9 Then
+            Dim w = CInt(workingArea.Width * 0.9)
             ret.Height = CInt(w * ret.Height / ret.Width)
             ret.Width = w
+        End If
+
+        If ret.Height > workingArea.Height * 0.9 Then
+            Dim h = CInt(workingArea.Height * 0.9)
+            ret.Width = CInt(h * ret.Width / ret.Height)
+            ret.Height = h
         End If
 
         Return ret

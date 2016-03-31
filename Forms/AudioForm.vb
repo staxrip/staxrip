@@ -462,6 +462,7 @@ Class AudioForm
         mbChannels.Add("1 (Mono)", 1)
         mbChannels.Add("2 (Stereo)", 2)
         mbChannels.Add("6 (5.1)", 6)
+        mbChannels.Add("8 (7.1)", 8)
 
         mbSamplingRate.Add("Original", 0)
         mbSamplingRate.Add("11025 Hz", 11025)

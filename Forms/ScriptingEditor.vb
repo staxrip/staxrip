@@ -88,6 +88,14 @@ Class ScriptingEditor
         doc.Engine = Engine
         doc.Path = p.TempDir + p.Name + "_avsEditor." + doc.FileType
         doc.Filters = GetFilters()
+
+        Dim errMsg = doc.GetErrorMessage
+
+        If Not errMsg Is Nothing Then
+            MsgError(errMsg)
+            Exit Sub
+        End If
+
         doc.Synchronize(True)
 
         Dim f As New PreviewForm(doc)

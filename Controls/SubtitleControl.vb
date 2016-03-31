@@ -286,7 +286,7 @@ Class SubtitleControl
                     If i.Size > 1024 ^ 2 Then
                         size = (i.Size / 1024 ^ 2).ToString("f1") & " MB"
                     Else
-                        size = CInt(i.Size / 1024).ToString("f1") & " KB"
+                        size = (i.Size / 1024).ToString("f1") & " KB"
                     End If
                 End If
 

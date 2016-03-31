@@ -81,11 +81,15 @@ Class VideoComparisonForm
     Sub Add(sourePath As String)
         Dim tab = New VideoTab()
         tab.Form = Me
-        tab.Open(sourePath)
-        TabControl.TabPages.Add(tab)
-        DirectCast(TabControl.SelectedTab, VideoTab).TrackBarValueChanged()
-        RaiseEvent UpdateMenu()
-        Application.DoEvents()
+
+        If tab.Open(sourePath) Then
+            TabControl.TabPages.Add(tab)
+            DirectCast(TabControl.SelectedTab, VideoTab).TrackBarValueChanged()
+            RaiseEvent UpdateMenu()
+            Application.DoEvents()
+        Else
+            tab.Dispose()
+        End If
     End Sub
 
     Private Sub TrackBar_ValueChanged(sender As Object, e As EventArgs) Handles TrackBar.ValueChanged
@@ -230,7 +234,7 @@ Class VideoComparisonForm
             Open(SourceFile)
         End Sub
 
-        Sub Open(sourePath As String)
+        Function Open(sourePath As String) As Boolean
             Text = Filepath.GetBase(sourePath)
             SourceFile = sourePath
 
@@ -244,9 +248,18 @@ Class VideoComparisonForm
             If Filepath.GetExtFull(sourePath) = ".png" Then
                 avs.Filters.Add(New VideoFilter("ImageSource(""" + sourePath + """, end = 0)"))
             Else
-                Dim cachefile = CommonDirs.Temp + Guid.NewGuid.ToString + ".ffindex"
-                AddHandler Disposed, Sub() FileHelp.Delete(cachefile)
-                avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachefile + """)"))
+                Dim cachePath = CommonDirs.Temp + Guid.NewGuid.ToString + ".ffindex"
+                AddHandler Disposed, Sub() FileHelp.Delete(cachePath)
+                avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """)"))
+
+                Try
+                    g.ffmsindex(sourePath, cachePath)
+                Catch ex As AbortException
+                    Return False
+                Finally
+                    ProcessForm.CloseProcessForm()
+                    Form.Activate()
+                End Try
             End If
 
             If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
@@ -289,7 +302,9 @@ Class VideoComparisonForm
                     Next
                 End If
             End If
-        End Sub
+
+            Return True
+        End Function
 
         Sub Draw()
             Dim padding As Padding
@@ -375,7 +390,7 @@ Class VideoComparisonForm
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
-            AVI.Dispose()
+            If Not AVI Is Nothing Then AVI.Dispose()
             MyBase.Dispose(disposing)
         End Sub
     End Class

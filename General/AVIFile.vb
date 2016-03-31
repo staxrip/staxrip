@@ -53,7 +53,7 @@ Class AVIFile
     End Sub
 
     Sub ThrowException(message As String)
-        Throw New Exception(message + CrLf2 + "The AviSynth+ x64 or VapourSynth x64 setup might be damaged. You can verify this by opening the avs or vpy file with VirtualDub x64. avs is a AviSynth script, vpy is a VapourSynth script, StaxRip generates these scripts in the folder for temporary files and VirtualDub should be able to open it.")
+        Throw New Exception(message + CrLf2 + "The AviSynth+ x64 or VapourSynth x64 setup might be damaged. You can verify this by opening the avs or vpy file with VirtualDub x64. avs is a AviSynth script, vpy is a VapourSynth script, StaxRip generates these scripts in the folder for temp files and VirtualDub should be able to open it.")
     End Sub
 
     Private FrameCountValue As Integer

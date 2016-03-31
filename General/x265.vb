@@ -41,16 +41,16 @@ Namespace x265
 
         Overrides Sub Encode()
             p.Script.Synchronize()
-            Encode("x265", GetArgs(1, p.Script), p.Script, s.ProcessPriority)
+            Encode("Encoding video using x265 " + Packs.x265.Version, GetArgs(1, p.Script), p.Script, s.ProcessPriority)
 
             If Params.Mode.Value = RateMode.TwoPass OrElse
                 Params.Mode.Value = RateMode.ThreePass Then
 
-                Encode("x265 Second Pass", GetArgs(2, p.Script), p.Script, s.ProcessPriority)
+                Encode("Encoding video second pass using x265 " + Packs.x265.Version, GetArgs(2, p.Script), p.Script, s.ProcessPriority)
             End If
 
             If Params.Mode.Value = RateMode.ThreePass Then
-                Encode("x265 Third Pass", GetArgs(3, p.Script), p.Script, s.ProcessPriority)
+                Encode("Encoding video third pass using x265 " + Packs.x265.Version, GetArgs(3, p.Script), p.Script, s.ProcessPriority)
             End If
 
             AfterEncoding()

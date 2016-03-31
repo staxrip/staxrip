@@ -25,16 +25,16 @@ Class x264Encoder
     Overrides Sub Encode()
         p.Script.Synchronize()
 
-        Encode("x264", GetArgs(1), p.Script, s.ProcessPriority)
+        Encode("Encoding video using x264 " + Packs.x264.Version, GetArgs(1), p.Script, s.ProcessPriority)
 
         If Params.Mode.Value = x264Mode.TwoPass OrElse
             Params.Mode.Value = x264Mode.ThreePass Then
 
-            Encode("x264 Second Pass", GetArgs(2), p.Script, s.ProcessPriority)
+            Encode("Encoding video second pass using x264 " + Packs.x264.Version, GetArgs(2), p.Script, s.ProcessPriority)
         End If
 
         If Params.Mode.Value = x264Mode.ThreePass Then
-            Encode("x264 Third Pass", GetArgs(3), p.Script, s.ProcessPriority)
+            Encode("Encoding video third pass using x264 " + Packs.x264.Version, GetArgs(3), p.Script, s.ProcessPriority)
         End If
 
         AfterEncoding()

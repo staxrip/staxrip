@@ -502,8 +502,8 @@ Class GlobalClass
             p.TempDir = Macro.Solve(p.TempDir)
 
             If p.TempDir = "" Then
-                If FileTypes.VideoOnly.Contains(Filepath.GetExt(p.SourceFile)) OrElse
-                    FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile)) OrElse
+                If FileTypes.VideoOnly.Contains(p.SourceFile.Ext) OrElse
+                    FileTypes.VideoText.Contains(p.SourceFile.Ext) OrElse
                     Filepath.GetDir(p.SourceFile).EndsWith("_temp\") Then
 
                     p.TempDir = Filepath.GetDir(p.SourceFile)
@@ -527,7 +527,6 @@ Class GlobalClass
             End If
 
             If p.TempDir.StartsWith("\\") Then Throw New AbortException
-
             p.TempDir = DirPath.AppendSeparator(p.TempDir)
 
             If Not Directory.Exists(p.TempDir) Then
@@ -2026,7 +2025,7 @@ Class Macro
     Shared Function GetTips() As StringPairList
         Dim ret As New StringPairList
 
-        For Each i In GetMacrosWithParams()
+        For Each i In GetMacros(True)
             ret.Add(i.Name, i.Description)
         Next
 
@@ -2055,35 +2054,22 @@ Class Macro
         Return Name.CompareTo(other.Name)
     End Function
 
-    Shared Function GetMacrosWithParams() As List(Of Macro)
-        Dim ret = GetMacros()
-
-        ret.Add(New Macro("$enter_text:<prompt>$", "Enter Text (Params)", GetType(String), "Text entered in a input box."))
-        ret.Add(New Macro("eval:<expression>", "Eval Math Expression", GetType(String), "Evaluates a math expression which may contain default macros."))
-        ret.Add(New Macro("eval_js:<expression>", "Eval JScript Expression", GetType(String), "Evaluates a JScript expression which may contain default macros."))
-        ret.Add(New Macro("eval_vb:<expression>", "Eval VBScript Expression", GetType(String), "Evaluates a VBScript expression which may contain default macros."))
-        ret.Add(New Macro("filter:<name>", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
-        ret.Add(New Macro("$select:<param1;param2;...>$", "Select", GetType(String), "String selected from dropdown."))
-        ret.Add(New Macro("media_info_video:<property>", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
-        ret.Add(New Macro("media_info_audio:<property>", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
-
-        Dim names As New List(Of String)
-
-        For Each i In Packs.Packages
-            names.Add(i.Name)
-        Next
-
-        ret.Add(New Macro("app:<name>", "Application File Path", GetType(String), "Returns the path of a aplication. Possible names are: " + String.Join(", ", names.ToArray)))
-        ret.Add(New Macro("app_dir:<name>", "Application Directory", GetType(String), "Returns the directory of a aplication. Possible names are: " + String.Join(", ", names.ToArray)))
-
-        Return ret
-    End Function
-
-    Shared Function GetMacros() As List(Of Macro)
+    Shared Function GetMacros(Optional includeSpecial As Boolean = False) As List(Of Macro)
         Dim ret As New List(Of Macro)
 
-        ret.Add(New Macro("$browse_file$", "Browse For File", GetType(String), "Filepath returned from a file browser."))
-        ret.Add(New Macro("$enter_text$", "Enter Text", GetType(String), "Text entered in a input box."))
+        If includeSpecial Then
+            ret.Add(New Macro("eval:<expression>", "Eval Math Expression", GetType(String), "Evaluates a math expression which may contain default macros."))
+            ret.Add(New Macro("filter:<name>", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
+            ret.Add(New Macro("media_info_video:<property>", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
+            ret.Add(New Macro("media_info_audio:<property>", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
+            ret.Add(New Macro("app:<name>", "Application File Path", GetType(String), "Returns the path of a aplication. Possible names are: " + Packs.Packages.Select(Function(arg) arg.Name).Join(", ")))
+            ret.Add(New Macro("app_dir:<name>", "Application Directory", GetType(String), "Returns the directory of a aplication. Possible names are: " + Packs.Packages.Select(Function(arg) arg.Name).Join(", ")))
+            ret.Add(New Macro("$select:<param1;param2;...>$", "Select", GetType(String), "String selected from dropdown."))
+            ret.Add(New Macro("$enter_text:<prompt>$", "Enter Text (Params)", GetType(String), "Text entered in a input box."))
+            ret.Add(New Macro("$browse_file$", "Browse For File", GetType(String), "Filepath returned from a file browser."))
+            ret.Add(New Macro("$enter_text$", "Enter Text", GetType(String), "Text entered in a input box."))
+        End If
+
         ret.Add(New Macro("audio_bitrate", "Audio Bitrate", GetType(Integer), "Overall audio bitrate."))
         ret.Add(New Macro("audio_file1", "Audio File 1", GetType(String), "File path of the first audio file."))
         ret.Add(New Macro("audio_file2", "Audio File 2", GetType(String), "File path of the second audio file."))
@@ -2494,46 +2480,6 @@ Class Macro
             End If
         End If
 
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%eval_vb:") Then
-            If Not value.Contains("%eval_vb:<expression>%") Then
-                Dim mc = Regex.Matches(value, "%eval_vb:(.+?)%")
-
-                For Each i As Match In mc
-                    Try
-                        value = value.Replace(i.Value, WindowsScript.EvalVB(i.Groups(1).Value).ToString)
-
-                        If Not value.Contains("%") Then
-                            Return value
-                        End If
-                    Catch ex As Exception
-                        MsgWarn("Failed to solve macro '" + i.Value + "': " + ex.Message)
-                    End Try
-                Next
-            End If
-        End If
-
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%eval_js:") Then
-            If Not value.Contains("%eval_js:<expression>%") Then
-                Dim mc = Regex.Matches(value, "%eval_js:(.+?)%")
-
-                For Each i As Match In mc
-                    Try
-                        value = value.Replace(i.Value, WindowsScript.EvalJS(i.Groups(1).Value).ToString)
-
-                        If Not value.Contains("%") Then
-                            Return value
-                        End If
-                    Catch ex As Exception
-                        MsgWarn("Failed to solve macro '" + i.Value + "': " + ex.Message)
-                    End Try
-                Next
-            End If
-        End If
-
         Return value
     End Function
 End Class
@@ -2677,6 +2623,56 @@ Class GlobalCommands
         If closeNeeded Then ProcessForm.CloseProcessForm()
     End Sub
 
+    <Command("Perform | Execute Batch Script", "Saves a batch script as bat file and executes it. Macros are passed in as environment variables.")>
+    Sub ExecuteBatchScript(
+        <DispName("Batch Script"),
+        Description("Batch script to be executed."),
+        Editor(GetType(CmdlTypeEditor), GetType(UITypeEditor))>
+        batchScript As String,
+        <DispName("Interpret Output"),
+        Description("Interprets each output line as StaxRip command."),
+        DefaultValue(False)>
+        interpretOutput As Boolean)
+
+        Dim closeNeeded As Boolean
+
+        If Not ProcessForm.IsActive Then closeNeeded = True
+
+        Dim batchPath = CommonDirs.Temp + Guid.NewGuid.ToString + ".bat"
+        Dim batchCode = Macro.Solve(batchScript)
+
+        File.WriteAllText(batchPath, batchCode, Encoding.GetEncoding(850))
+        AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
+
+        Using proc As New Proc
+            proc.Init("Execute Batch Script")
+            proc.WriteLine(batchCode + CrLf2)
+            proc.File = "cmd.exe"
+            proc.Arguments = "/C call """ + batchPath + """"
+            proc.Wait = True
+            proc.Process.StartInfo.UseShellExecute = False
+
+            For Each i In Macro.GetMacros
+                proc.Process.StartInfo.EnvironmentVariables(i.Name.Trim("%"c)) = Macro.Solve(i.Name)
+            Next
+
+            Try
+                proc.Start()
+
+                For Each i In ProcessForm.CommandLineLog.ToString.SplitLinesNoEmpty
+                    If Not g.MainForm.CommandManager.ProcessCommandLineArgument(i) Then
+                        Log.WriteLine("Failed to interpret output:" + CrLf2 + i)
+                    End If
+                Next
+            Catch ex As Exception
+                g.ShowException(ex)
+                Log.WriteLine(ex.Message)
+            End Try
+        End Using
+
+        If closeNeeded Then ProcessForm.CloseProcessForm()
+    End Sub
+
     <Command("Perform | Play Sound", "Plays a mp3, wav or wmv sound file.")>
     Sub PlaySound(<Editor(GetType(OpenFileDialogEditor), GetType(UITypeEditor)),
         Description("Filepath to a mp3, wav or wmv sound file.")> Filepath As String,
@@ -2729,46 +2725,11 @@ Class GlobalCommands
         f.Show()
     End Sub
 
-    <Command("Perform | Execute Windows Script", "Executes a windows script such as VBScript or JScript.")>
-    Sub ExecuteWindowsScript(
-        <DispName("Script Language"),
-        DefaultValue(GetType(WshLanguage), "VBScript")>
-        language As WshLanguage,
-        <DispName("Show Process Window"),
-        Description("Shows the process window.")>
-        showProcessWindow As Boolean,
-        <DispName("Script Code"),
-        Description("The script code may contain macros."),
-        Editor(GetType(ScriptTypeEditor), GetType(UITypeEditor))>
-        code As String)
-
-        Dim ws As New WindowsScript
-        ws.Language = language
-
-        Dim closeNeeded As Boolean
-
-        If showProcessWindow AndAlso Not ProcessForm.IsActive Then
-            closeNeeded = True
-            ProcessForm.ShowForm(False)
-            Log.WriteLine(Macro.Solve(code))
-        End If
-
-        Try
-            ws.ExecuteStatement(Macro.Solve(code))
-        Catch ex As Exception
-            g.ShowException(ex)
-        End Try
-
-        If closeNeeded Then
-            ProcessForm.CloseProcessForm()
-        End If
-    End Sub
-
     <Command("Perform | Show Message Box", "Shows a message box with given arguments.")>
     Sub ShowMsgBox(
         <Description("The message may contain macros."), Editor(GetType(MacroStringTypeEditor),
-        GetType(UITypeEditor))> Message As String, <DefaultValue(GetType(MessageBoxIcon), "Information")>
-        Icon As MessageBoxIcon)
+        GetType(UITypeEditor))> Message As String, <DefaultValue(GetType(MsgIcon), "Info")>
+        Icon As MsgIcon)
 
         Msg(Macro.Solve(Message), Icon, MessageBoxButtons.OK)
     End Sub
@@ -3501,7 +3462,7 @@ End Enum
 
 Class FileTypes
     Shared Property Audio As String() = {"aac", "ac3", "dts", "dtsma", "dtshr", "dtshd", "eac3", "flac", "m4a", "mka", "mp2", "mp3", "mpa", "ogg", "opus", "thd", "thd+ac3", "true-hd", "truehd", "wav"}
-    Shared Property AudioVideo As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
+    Shared Property VideoAudio As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
     Shared Property BeSweetInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "ogg"}
     Shared Property DGDecNVInput As String() = {"264", "h264", "avc", "mkv", "mp4", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}
     Shared Property eac3toInput As String() = {"ac3", "dts", "dtshd", "dtshr", "dtsma", "eac3", "evo", "flac", "m2ts", "mlp", "pcm", "raw", "thd", "thd+ac3", "ts", "vob", "wav", "mp2", "mpa"}
@@ -3510,7 +3471,8 @@ Class FileTypes
     Shared Property SubtitleExludingContainers As String() = {"ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property SubtitleIncludingContainers As String() = {"m2ts", "mkv", "mp4", "ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
-    Shared Property Video As String() = {"264", "avc", "avi", "avs", "d2v", "dgi", "divx", "flv", "h264", "m2t", "mts", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m"}
+    Shared Property Video As String() = {"264", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "m2t", "mts", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m"}
+    Shared Property VideoNoText As String() = {"264", "avc", "avi", "divx", "flv", "h264", "m2t", "mts", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m"}
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
     Shared Property VideoOnly As String() = {"m4v", "m2v", "y4m", "mpv", "avc", "hevc", "264", "h264", "265", "h265"}
     Shared Property VideoRaw As String() = {"h264", "h265", "264", "265", "avc", "hevc"}
@@ -3680,3 +3642,11 @@ Class AutoCrop
         Return ret
     End Function
 End Class
+
+Enum MsgIcon
+    None = MessageBoxIcon.None
+    Info = MessageBoxIcon.Information
+    [Error] = MessageBoxIcon.Error
+    Warning = MessageBoxIcon.Warning
+    Question = MessageBoxIcon.Question
+End Enum

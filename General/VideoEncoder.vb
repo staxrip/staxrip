@@ -332,6 +332,25 @@ MustInherit Class VideoEncoder
     Overridable Sub RunCompCheck()
     End Sub
 
+    Shared Sub SaveProfile(encoder As VideoEncoder)
+        Dim name = InputBox.Show("Please enter a profile name.", "Profile Name", encoder.Name)
+
+        If name <> "" Then
+            encoder.Name = name
+
+            For Each i In From prof In s.VideoEncoderProfiles.ToArray
+                          Where prof.GetType Is encoder.GetType
+
+                If i.Name = name Then
+                    s.VideoEncoderProfiles(s.VideoEncoderProfiles.IndexOf(i)) = encoder
+                    Exit Sub
+                End If
+            Next
+
+            s.VideoEncoderProfiles.Insert(0, encoder)
+        End If
+    End Sub
+
     Overrides Function Edit() As DialogResult
         Using f As New ControlHostForm(Name)
             f.AddControl(CreateEditControl, Nothing)
@@ -608,29 +627,41 @@ Class ffmpegEncoder
     End Sub
 
     <NonSerialized>
-    Private ParamsValue As ffmpegParams
+    Private ParamsValue As EncoderParams
 
-    Property Params As ffmpegParams
+    Property Params As EncoderParams
         Get
             If ParamsValue Is Nothing Then
-                ParamsValue = New ffmpegParams
+                ParamsValue = New EncoderParams
 
                 ParamsValue.Init(ParamsStore)
             End If
 
             Return ParamsValue
         End Get
-        Set(value As ffmpegParams)
+        Set(value As EncoderParams)
             ParamsValue = value
         End Set
     End Property
 
     Overrides Sub ShowConfigDialog()
-        Dim newParams As New ffmpegParams
+        Dim newParams As New EncoderParams
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
         newParams.Init(store)
 
         Using f As New CommandLineForm(newParams)
+            Dim saveProfileAction = Sub()
+                                        Dim enc = ObjectHelp.GetCopy(Of ffmpegEncoder)(Me)
+                                        Dim params2 As New EncoderParams
+                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
+                                        params2.Init(store2)
+                                        enc.Params = params2
+                                        enc.ParamsStore = store2
+                                        SaveProfile(enc)
+                                    End Sub
+
+            f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
+
             If f.ShowDialog() = DialogResult.OK Then
                 Params = newParams
                 ParamsStore = store
@@ -698,93 +729,8 @@ Class ffmpegEncoder
         End Set
     End Property
 
-    Class ffmpegParams
+    Class EncoderParams
         Inherits CommandLineParams
-
-        'h264_qsv encoder AVOptions:
-        '  -async_depth       <int>        E..V.... Maximum processing parallelism (from 0 to INT_MAX) (default 4)
-        '  -avbr_accuracy     <int>        E..V.... Accuracy of the AVBR ratecontrol (from 0 to INT_MAX) (default 0)
-        '  -avbr_convergence  <int>        E..V.... Convergence of the AVBR ratecontrol (from 0 to INT_MAX) (default 0)
-        '  -preset            <int>        E..V.... (from 1 to 7) (default medium)
-        '     veryfast                     E..V....
-        '     faster                       E..V....
-        '     fast                         E..V....
-        '     medium                       E..V....
-        '     slow                         E..V....
-        '     slower                       E..V....
-        '     veryslow                     E..V....
-        '  -vcm               <int>        E..V.... Use the video conferencing mode ratecontrol (from 0 to 1) (default 0)
-        '  -rdo               <int>        E..V.... Enable rate distortion optimization (from -1 to 1) (default -1)
-        '  -max_frame_size    <int>        E..V.... Maximum encoded frame size in bytes (from -1 to 65535) (default -1)
-        '  -max_slice_size    <int>        E..V.... Maximum encoded slice size in bytes (from -1 to 65535) (default -1)
-        '  -bitrate_limit     <int>        E..V.... Toggle bitrate limitations (from -1 to 1) (default -1)
-        '  -mbbrc             <int>        E..V.... MB level bitrate control (from -1 to 1) (default -1)
-        '  -extbrc            <int>        E..V.... Extended bitrate control (from -1 to 1) (default -1)
-        '  -adaptive_i        <int>        E..V.... Adaptive I-frame placement (from -1 to 1) (default -1)
-        '  -adaptive_b        <int>        E..V.... Adaptive B-frame placement (from -1 to 1) (default -1)
-        '  -b_strategy        <int>        E..V.... Strategy to choose between I/P/B-frames (from -1 to 1) (default -1)
-        '  -cavlc             <int>        E..V.... Enable CAVLC (from 0 to 1) (default 0)
-        '  -idr_interval      <int>        E..V.... Distance (in I-frames) between IDR frames (from 0 to INT_MAX) (default 0)
-        '  -pic_timing_sei    <int>        E..V.... Insert picture timing SEI with pic_struct_syntax element (from 0 to 1) (default 1)
-        '  -single_sei_nal_unit <int>        E..V.... Put all the SEI messages into one NALU (from -1 to 1) (default -1)
-        '  -max_dec_frame_buffering <int>        E..V.... Maximum number of frames buffered in the DPB (from 0 to 65535) (default 0)
-        '  -look_ahead        <int>        E..V.... Use VBR algorithm with look ahead (from 0 to 1) (default 1)
-        '  -look_ahead_depth  <int>        E..V.... Depth of look ahead in number frames (from 0 to 100) (default 0)
-        '  -look_ahead_downsampling <int>        E..V.... (from 0 to 2) (default unknown)
-        '     unknown                      E..V....
-        '     off                          E..V....
-        '     2x                           E..V....
-        '  -int_ref_type      <int>        E..V.... Intra refresh type (from -1 to 65535) (default -1)
-        '     none                         E..V....
-        '     vertical                     E..V....
-        '  -int_ref_cycle_size <int>        E..V.... Number of frames in the intra refresh cycle (from -1 to 65535) (default -1)
-        '  -int_ref_qp_delta  <int>        E..V.... QP difference for the refresh MBs (from -32768 to 32767) (default -32768)
-        '  -recovery_point_sei <int>        E..V.... Insert recovery point SEI messages (from -1 to 1) (default -1)
-        '  -trellis           <flags>      E..V.... Trellis quantization (default 0)
-        '     off                          E..V....
-        '     I                            E..V....
-        '     P                            E..V....
-        '     B                            E..V....
-        '  -profile           <int>        E..V.... (from 0 to INT_MAX) (default unknown)
-        '     unknown                      E..V....
-        '     baseline                     E..V....
-        '     main                         E..V....
-        '     high                         E..V....
-        '  -a53cc             <int>        E..V.... Use A53 Closed Captions (if available) (from 0 to 1) (default 0)
-
-        'hevc_qsv encoder AVOptions:
-        '  -async_depth       <int>        E..V.... Maximum processing parallelism (from 0 to INT_MAX) (default 4)
-        '  -avbr_accuracy     <int>        E..V.... Accuracy of the AVBR ratecontrol (from 0 to INT_MAX) (default 0)
-        '  -avbr_convergence  <int>        E..V.... Convergence of the AVBR ratecontrol (from 0 to INT_MAX) (default 0)
-        '  -preset            <int>        E..V.... (from 1 to 7) (default medium)
-        '     veryfast                     E..V....
-        '     faster                       E..V....
-        '     fast                         E..V....
-        '     medium                       E..V....
-        '     slow                         E..V....
-        '     slower                       E..V....
-        '     veryslow                     E..V....
-        '  -vcm               <int>        E..V.... Use the video conferencing mode ratecontrol (from 0 to 1) (default 0)
-        '  -rdo               <int>        E..V.... Enable rate distortion optimization (from -1 to 1) (default -1)
-        '  -max_frame_size    <int>        E..V.... Maximum encoded frame size in bytes (from -1 to 65535) (default -1)
-        '  -max_slice_size    <int>        E..V.... Maximum encoded slice size in bytes (from -1 to 65535) (default -1)
-        '  -bitrate_limit     <int>        E..V.... Toggle bitrate limitations (from -1 to 1) (default -1)
-        '  -mbbrc             <int>        E..V.... MB level bitrate control (from -1 to 1) (default -1)
-        '  -extbrc            <int>        E..V.... Extended bitrate control (from -1 to 1) (default -1)
-        '  -adaptive_i        <int>        E..V.... Adaptive I-frame placement (from -1 to 1) (default -1)
-        '  -adaptive_b        <int>        E..V.... Adaptive B-frame placement (from -1 to 1) (default -1)
-        '  -b_strategy        <int>        E..V.... Strategy to choose between I/P/B-frames (from -1 to 1) (default -1)
-        '  -cavlc             <int>        E..V.... Enable CAVLC (from 0 to 1) (default 0)
-        '  -load_plugin       <int>        E..V.... A user plugin to load in an internal session (from 0 to 2) (default hevc_sw)
-        '     none                         E..V....
-        '     hevc_sw                      E..V....
-        '     hevc_hw                      E..V....
-        '  -load_plugins      <string>     E..V.... A :-separate list of hexadecimal plugin UIDs to load in an internal session (default '')
-        '  -profile           <int>        E..V.... (from 0 to INT_MAX) (default unknown)
-        '     unknown                      E..V....
-        '     main                         E..V....
-        '     main10                       E..V....
-        '     mainsp                       E..V....
 
         Sub New()
             Title = "ffmpeg Encoding Options"
@@ -1015,6 +961,17 @@ Class NvidiaEncoder
         newParams.Init(store)
 
         Using f As New CommandLineForm(newParams)
+            Dim saveProfileAction = Sub()
+                                        Dim enc = ObjectHelp.GetCopy(Of NvidiaEncoder)(Me)
+                                        Dim params2 As New EncoderParams
+                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
+                                        params2.Init(store2)
+                                        enc.Params = params2
+                                        enc.ParamsStore = store2
+                                        SaveProfile(enc)
+                                    End Sub
+
+            f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
             f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.NVEncC.GetPath, "--check-hw"))))
             f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Packs.NVEncC.GetPath, "--check-features"))))
             f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetErrorOutput(Packs.NVEncC.GetPath, "--check-environment"))))
@@ -1337,20 +1294,31 @@ Class IntelEncoder
     End Property
 
     Overrides Sub ShowConfigDialog()
-        Dim newParams As New EncoderParams
+        Dim params1 As New EncoderParams
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
-        newParams.Init(store)
+        params1.Init(store)
 
-        Using f As New CommandLineForm(newParams)
+        Using f As New CommandLineForm(params1)
             f.HTMLHelp = Strings.Intel
 
+            Dim saveProfileAction = Sub()
+                                        Dim enc = ObjectHelp.GetCopy(Of IntelEncoder)(Me)
+                                        Dim params2 As New EncoderParams
+                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
+                                        params2.Init(store2)
+                                        enc.Params = params2
+                                        enc.ParamsStore = store2
+                                        SaveProfile(enc)
+                                    End Sub
+
+            f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
             f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetStdOut(Packs.QSVEncC.GetPath, "--check-environment"))))
             f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.QSVEncC.GetPath, "--check-hw"))))
             f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Packs.QSVEncC.GetPath, "--check-features"))))
             f.cms.Items.Add(New ActionMenuItem("Check Library", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.QSVEncC.GetPath, "--check-lib"))))
 
             If f.ShowDialog() = DialogResult.OK Then
-                Params = newParams
+                Params = params1
                 ParamsStore = store
                 OnStateChange()
             End If
@@ -1503,8 +1471,6 @@ Class IntelEncoder
         Property MaxBitrate As New NumParam With {
             .Switch = "--max-bitrate",
             .Text = "Maximum Bitrate:",
-            .Value = 17500,
-            .DefaultValue = 17500,
             .MinMaxStep = {0, 1000000, 1}}
 
         Property GOPLength As New NumParam With {
@@ -1516,6 +1482,10 @@ Class IntelEncoder
             .Switch = "--bframes",
             .Text = "B Frames:",
             .MinMaxStep = {0, 16, 1}}
+
+        Property bPyramid As New BoolParam With {
+            .Switch = "--b-pyramid",
+            .Text = "B Pyramid"}
 
         Property LookaheadDepth As New NumParam With {
             .Switch = "--la-depth",
@@ -1623,7 +1593,9 @@ Class IntelEncoder
                     ItemsValue = New List(Of CommandLineItem)
 
                     Add("Basic", Decoder, Codec, QualitySpeed, Mode, Quality, QPI, QPP, QPB)
-                    Add("Advanced", ProfileH264, ProfileHEVC, ProfileMPEG2, LevelHEVC, LevelH264, LevelMPEG2, Rotate, OutputBuf, BFrames, Ref, GOPLength, LookaheadDepth, vppDetailEnhance, Scenechange, Fallback, MBBRC, Custom)
+                    Add("Advanced", ProfileH264, ProfileHEVC, ProfileMPEG2, LevelHEVC, LevelH264,
+                        LevelMPEG2, Rotate, OutputBuf, BFrames, Ref, GOPLength, LookaheadDepth,
+                        vppDetailEnhance, MaxBitrate, bPyramid, Scenechange, Fallback, MBBRC, Custom)
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                 End If
 
@@ -1797,15 +1769,26 @@ Class AMDEncoder
     End Property
 
     Overrides Sub ShowConfigDialog()
-        Dim newParams As New EncoderParams
+        Dim params1 As New EncoderParams
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
-        newParams.Init(store)
+        params1.Init(store)
 
-        Using f As New CommandLineForm(newParams)
+        Using f As New CommandLineForm(params1)
+            Dim saveProfileAction = Sub()
+                                        Dim enc = ObjectHelp.GetCopy(Of AMDEncoder)(Me)
+                                        Dim params2 As New EncoderParams
+                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
+                                        params2.Init(store2)
+                                        enc.Params = params2
+                                        enc.ParamsStore = store2
+                                        SaveProfile(enc)
+                                    End Sub
+
+            f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
             f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.NVEncC.GetPath, "--check-vce"))))
 
             If f.ShowDialog() = DialogResult.OK Then
-                Params = newParams
+                Params = params1
                 ParamsStore = store
                 OnStateChange()
             End If

@@ -764,6 +764,7 @@ Class MainForm
     Public WithEvents CustomSizeMenu As CustomMenu
     Public CurrentAssistantTipKey As String
     Public AssistantPassed As Boolean
+    Public CommandManager As New CommandManager
 
     Private AudioMenu0 As ContextMenuStrip
     Private AudioMenu1 As ContextMenuStrip
@@ -783,7 +784,6 @@ Class MainForm
     Private CanChangeBitrate As Boolean = True
     Private CanIgnoreTip As Boolean = True
     Private IsLoading As Boolean = True
-    Private CommandManager As New CommandManager
     Private BlockBitrate, BlockSize As Boolean
     Private IsManualCheckForUpdates As Boolean
     Private SkipAssistant As Boolean
@@ -1344,12 +1344,26 @@ Class MainForm
         End If
     End Sub
 
+    Function GetPathFromIndexFile(sourcePath As String) As String
+        For Each i In File.ReadAllLines(sourcePath)
+            If i.Contains(":\") Then
+                If Regex.IsMatch(i, "^.+ \d+$") Then i = i.LeftLast(" ")
+
+                If File.Exists(i) AndAlso FileTypes.Video.Contains(i.Ext) Then
+                    Return i
+                End If
+            End If
+        Next
+    End Function
+
     Function OpenSourceFilterSelection(inputFile As String) As VideoFilter
         Select Case inputFile.Ext
             Case "dgi"
                 Return New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
             Case "dgim"
                 Return New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
+            Case "d2v"
+                Return New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")
         End Select
 
         Dim ret As VideoFilter
@@ -1357,38 +1371,52 @@ Class MainForm
         Dim td As New TaskDialog(Of String)
         td.MainInstruction = "Choose a preferred source filter"
         td.Content = "A description of the available source filters can be found in the [http://github.com/stax76/staxrip/wiki/Source-Filters wiki]."
-        td.AddCommandLink("Automatic", "Automatic")
+
+        td.AddCommandLink("Automatic AviSynth+", "avs")
+        td.AddCommandLink("Automatic VapourSynth", "vs")
 
         If FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then
             td.AddCommandLink("AviSynth+ DGSource", "DGSource")
             td.AddCommandLink("AviSynth+ DGSourceIM", "DGSourceIM")
         End If
 
-        td.AddCommandLink("AviSynth+ FFVideoSource", "FFVideoSource")
-        td.AddCommandLink("AviSynth+ LWLibavVideoSource", "LWLibavVideoSource")
-
-        If {"mp4", "m4v", "mov"}.Contains(inputFile.Ext) Then
+        If inputFile.Ext.EqualsAny("mp4", "m4v", "mov") Then
             td.AddCommandLink("AviSynth+ LSMASHVideoSource", "LSMASHVideoSource")
         End If
 
-        If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso
-                g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
+        If FileTypes.VideoNoText.Contains(inputFile.Ext) Then
+            td.AddCommandLink("AviSynth+ FFVideoSource", "FFVideoSource")
+            td.AddCommandLink("AviSynth+ LWLibavVideoSource", "LWLibavVideoSource")
 
-            td.AddCommandLink("AviSynth+ DSS2", "DSS2")
+            If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso
+                    g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
+
+                td.AddCommandLink("AviSynth+ DSS2", "DSS2")
+            End If
         End If
 
-        If inputFile.Ext = "avi" Then td.AddCommandLink("AviSynth+ AVISource", "AVISource")
+        If inputFile.Ext = "avi" Then
+            td.AddCommandLink("AviSynth+ AVISource", "AVISource")
+        End If
 
-        If {"mp4", "m4v", "mov"}.Contains(inputFile.Ext) Then
+        If inputFile.Ext.EqualsAny("avi", "avs") Then
+            td.AddCommandLink("VapourSynth AVISource", "vsAVISource")
+        End If
+
+        If inputFile.Ext.EqualsAny("mp4", "m4v", "mov") Then
             td.AddCommandLink("VapourSynth LibavSMASHSource", "vsLibavSMASHSource")
         End If
 
-        td.AddCommandLink("VapourSynth ffms2", "vsffms2")
-        td.AddCommandLink("VapourSynth LWLibavSource", "vsLWLibavSource")
+        If FileTypes.VideoNoText.Contains(inputFile.Ext) Then
+            td.AddCommandLink("VapourSynth ffms2", "vsffms2")
+            td.AddCommandLink("VapourSynth LWLibavSource", "vsLWLibavSource")
+        End If
 
         Select Case td.Show
-            Case "Automatic"
-                ret = New VideoFilter("Source", "Automatic", "")
+            Case "avs"
+                ret = New VideoFilter("Source", "Automatic", "#avs")
+            Case "vs"
+                ret = New VideoFilter("Source", "Automatic", "#vs")
             Case "DGSource"
                 ret = New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
             Case "DGSourceIM"
@@ -1396,9 +1424,9 @@ Class MainForm
             Case "FFVideoSource"
                 ret = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")")
             Case "LWLibavVideoSource"
-                ret = New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")")
+                ret = New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")")
             Case "LSMASHVideoSource"
-                ret = New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")")
+                ret = New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"")")
             Case "DSS2"
                 ret = New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")")
             Case "AVISource"
@@ -1409,8 +1437,8 @@ Class MainForm
                 ret = New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")")
             Case "vsLWLibavSource"
                 ret = New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")
-            Case "vsDGSource"
-                ret = New VideoFilter("Source", "DGSource", "clip = core.dgdecodenv.DGSource(r""%source_file%"")")
+            Case "vsAVISource"
+                ret = New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r""%source_file%"")")
         End Select
 
         Return ret
@@ -1461,7 +1489,7 @@ Class MainForm
                 If name.ToUpper Like "VTS_0#_0.VOB" Then
                     If Msg("Are you sure you want to open the file " + name + "," + CrLf +
                            "the first VOB file usually contains a menu!", Nothing,
-                           MessageBoxIcon.Question, MessageBoxButtons.YesNo,
+                           MsgIcon.Question, MessageBoxButtons.YesNo,
                            DialogResult.No) <> DialogResult.Yes Then
 
                         Throw New AbortException
@@ -1496,13 +1524,14 @@ Class MainForm
             If p.SourceFiles.Count = 1 AndAlso
                 p.Script.Filters(0).Name = "Manual" AndAlso
                 Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
-                Not p.SourceFile.Ext = "avs" AndAlso Not p.SourceFile.Ext = "vpy" Then
+                Not p.SourceFile.Ext = "vpy" Then
 
                 preferredSourceFilter = OpenSourceFilterSelection(files(0))
             End If
 
             If Not preferredSourceFilter Is Nothing Then
-                Dim isVapourSynth = preferredSourceFilter.Script.Contains("clip = core.")
+                Dim isVapourSynth = preferredSourceFilter.Script.Contains("clip = core.") OrElse
+                    preferredSourceFilter.Script = "#vs"
 
                 If isVapourSynth Then
                     If Not Packs.Python.VerifyOK(True) OrElse Not Packs.VapourSynth.VerifyOK(True) Then
@@ -1533,42 +1562,33 @@ Class MainForm
             p.LastOriginalSourceFile = p.SourceFile
             p.FirstOriginalSourceFile = p.SourceFile
 
-            If FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile)) Then
-                For Each i In File.ReadAllLines(p.SourceFile)
-                    If i.Contains(":\") Then
-                        If Regex.IsMatch(i, "^.+ \d+$") Then
-                            i = i.LeftLast(" ")
-                        End If
+            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
+                Dim path = GetPathFromIndexFile(p.SourceFile)
 
-                        If File.Exists(i) AndAlso FileTypes.Video.Contains(Filepath.GetExt(i)) Then
-                            p.LastOriginalSourceFile = i
-                            p.FirstOriginalSourceFile = i
-                            Exit For
-                        End If
-                    End If
-                Next
-            ElseIf p.SourceFile.Ext = "avs" Then
-                Dim code = File.ReadAllText(p.SourceFile)
-                Dim match = Regex.Match(code, "source\(""(.+?)""", RegexOptions.IgnoreCase)
-
-                If match.Success Then
-                    Dim fp = match.Groups(1).Value
-
-                    If File.Exists(fp) AndAlso FileTypes.Video.Contains(Filepath.GetExt(fp)) Then
-                        p.LastOriginalSourceFile = fp
-                        p.FirstOriginalSourceFile = fp
-                    End If
+                If path <> "" Then
+                    p.LastOriginalSourceFile = path
+                    p.FirstOriginalSourceFile = path
                 End If
-            ElseIf p.SourceFile.Ext = "vpy" Then
+            ElseIf p.SourceFile.Ext.EqualsAny({"avs", "vpy"}) Then
                 Dim code = File.ReadAllText(p.SourceFile)
-                Dim match = Regex.Match(code, "source\(source='(.+)'", RegexOptions.IgnoreCase)
+                Dim reg = If(p.SourceFile.Ext = "vpy", "source\(.*?('|"")(.+?)\1", "(source)\(""(.+?)""")
+                Dim match = Regex.Match(code, reg, RegexOptions.IgnoreCase)
 
                 If match.Success Then
-                    Dim fp = match.Groups(1).Value
+                    Dim path = match.Groups(2).Value
 
-                    If File.Exists(fp) AndAlso FileTypes.Video.Contains(Filepath.GetExt(fp)) Then
-                        p.LastOriginalSourceFile = fp
-                        p.FirstOriginalSourceFile = fp
+                    If File.Exists(path) AndAlso FileTypes.Video.Contains(path.Ext) Then
+                        If FileTypes.VideoIndex.Contains(path.Ext) Then
+                            path = GetPathFromIndexFile(path)
+
+                            If path <> "" Then
+                                p.LastOriginalSourceFile = path
+                                p.FirstOriginalSourceFile = path
+                            End If
+                        Else
+                            p.LastOriginalSourceFile = path
+                            p.FirstOriginalSourceFile = path
+                        End If
                     End If
                 End If
             End If
@@ -1661,11 +1681,9 @@ Class MainForm
             End If
 
             s.LastSourceDir = Filepath.GetDir(p.SourceFile)
-
             Dim sourceFilter = p.Script.GetFilter("Source")
 
-            If p.SourceFile.Ext = "avs" Then
-                p.Script.Engine = ScriptingEngine.AviSynth
+            If p.SourceFile.Ext = "avs" AndAlso p.Script.Engine = ScriptingEngine.AviSynth Then
                 p.Script.Filters.Clear()
                 p.Script.Filters.Add(New VideoFilter("Source", "AviSynth Import", File.ReadAllText(p.SourceFile)))
             ElseIf p.SourceFile.Ext = "vpy" Then
@@ -1761,12 +1779,12 @@ Class MainForm
 
             RenameDVDTracks()
 
-            If FileTypes.AudioVideo.Contains(Filepath.GetExt(p.LastOriginalSourceFile)) Then
+            If FileTypes.VideoAudio.Contains(Filepath.GetExt(p.LastOriginalSourceFile)) Then
                 p.Audio0.Streams = MediaInfo.GetAudioStreams(p.LastOriginalSourceFile)
                 p.Audio1.Streams = p.Audio0.Streams
             End If
 
-            If Filepath.GetExtFull(p.SourceFile) = ".d2v" Then
+            If p.SourceFile.Ext = "d2v" Then
                 Dim content = File.ReadAllText(p.SourceFile)
 
                 If content.Contains("Aspect_Ratio=16:9") Then
@@ -1776,10 +1794,7 @@ Class MainForm
 
                     If ifoFile <> "" Then
                         Dim dar2 = MediaInfo.GetVideo(ifoFile, "DisplayAspectRatio")
-
-                        If dar2 = "1.778" Then
-                            p.SourceAnamorphic = True
-                        End If
+                        If dar2 = "1.778" Then p.SourceAnamorphic = True
                     End If
                 End If
 
@@ -1787,7 +1802,7 @@ Class MainForm
                     Dim m = Regex.Match(content, "FINISHED +(\d+).+FILM")
 
                     If m.Success Then
-                        Dim film = CInt(m.Groups(1).Value)
+                        Dim film = m.Groups(1).Value.ToInt
 
                         If film >= 95 Then
                             content = content.Replace("Field_Operation=0" + CrLf + "Frame_Rate=29970 (30000/1001)", "Field_Operation=1" + CrLf + "Frame_Rate=23976 (24000/1001)")
@@ -2829,6 +2844,8 @@ Class MainForm
     End Sub
 
     Sub Indexing()
+        If p.SourceFile.Ext.EqualsAny("avs", "vpy") Then Exit Sub
+
         Dim codeLower = p.Script.GetFilter("Source").Script.ToLower
 
         If codeLower.Contains("ffvideosource(") OrElse codeLower.Contains("ffms2.source") Then
@@ -3867,7 +3884,6 @@ Class MainForm
                 End If
 
                 If p.DefaultTargetFolder <> "" Then p.DefaultTargetFolder = DirPath.AppendSeparator(p.DefaultTargetFolder)
-                If p.FixedBitrate > 0 Then MsgWarn("Using a fixed bitrate is not recommended. Use quality mode and constrain the maximum data rate if necessary.")
 
                 tbSize_TextChanged()
                 tbBitrate_TextChanged()
@@ -4020,7 +4036,7 @@ Class MainForm
     End Sub
 
     <Command("Help | Command Line", "Opens the command line help.", Switch:="help|h|?")>
-    Private Sub OpenCmdlHelp()
+    Private Sub OpenCommandLineHelp()
         Dim f As New HelpForm()
         f.Owner = Me
 
@@ -4180,7 +4196,7 @@ Class MainForm
         ret.Add("Help|Website|Changelog", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki/Changelog")
         ret.Add("Help|Mail", "ExecuteCommandLine", "mailto:frank.skare.de@gmail.com?subject=StaxRip%20feedback")
         ret.Add("Help|Donate (PayPal/Bitcoin)", "Donate")
-        ret.Add("Help|Command Line", "OpenCmdlHelp")
+        ret.Add("Help|Command Line", "OpenCommandLineHelp")
         ret.Add("Help|Apps", "DynamicMenuItem", DynamicMenuItemID.HelpApplications)
         ret.Add("Help|-")
         ret.Add("Help|Info...", "OpenHelpTopic", "info")
@@ -4686,13 +4702,13 @@ Class MainForm
             For Each i In switches.SplitLinesNoEmpty
                 errorArg = i
 
-                If Not CommandManager.ProcessCmdlArgument(i) Then
+                If Not CommandManager.ProcessCommandLineArgument(i) Then
                     Throw New Exception
                 End If
             Next
         Catch ex As Exception
             MsgWarn("Error parsing argument:" + CrLf2 + errorArg + CrLf2 + ex.Message)
-            OpenCmdlHelp()
+            OpenCommandLineHelp()
         End Try
     End Sub
 
@@ -4711,11 +4727,11 @@ Class MainForm
                 If i.IsFile Then
                     files.Add(i.Value)
                 Else
-                    If Not CommandManager.ProcessCmdlArgument(i.Value) Then Throw New Exception
+                    If Not CommandManager.ProcessCommandLineArgument(i.Value) Then Throw New Exception
                 End If
             Catch ex As Exception
                 MsgWarn("Error parsing argument:" + CrLf2 + i.Value + CrLf2 + ex.Message)
-                OpenCmdlHelp()
+                OpenCommandLineHelp()
             End Try
         Next
 

@@ -5,6 +5,7 @@ Imports System.Text
 Namespace CommandLine
     MustInherit Class CommandLineParams
         Property Title As String
+
         Event ValueChanged(item As CommandLineItem)
 
         MustOverride ReadOnly Property Items As List(Of CommandLineItem)

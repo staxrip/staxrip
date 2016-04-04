@@ -108,6 +108,7 @@ Class MediaInfo
         Get
             Dim ret As New List(Of AudioStream)
             Dim count = MediaInfo_Count_Get(Handle, MediaInfoStreamKind.Audio, -1)
+            Dim offset As Integer
 
             If count > 0 Then
                 For i = 0 To count - 1
@@ -115,16 +116,18 @@ Class MediaInfo
 
                     Dim streamOrder = GetAudio(i, "StreamOrder")
                     If Not streamOrder.IsInt Then streamOrder = (i + 1).ToString
-                    at.StreamOrder = streamOrder.ToInt
+                    at.StreamOrder = streamOrder.ToInt + offset
 
                     Dim id = GetAudio(i, "ID")
                     If Not id.IsInt Then id = (i + 2).ToString
-                    at.ID = id.ToInt
+                    at.ID = id.ToInt + offset
+
+                    at.Codec = GetAudio(i, "Codec")
+                    If at.Codec = "TrueHD / AC3" Then offset += 1
 
                     at.SamplingRate = GetAudio(i, "SamplingRate").ToInt
                     at.BitDepth = GetAudio(i, "BitDepth").ToInt
                     at.CodecString = GetAudio(i, "Codec/String")
-                    at.Codec = GetAudio(i, "Codec")
                     at.Format = GetAudio(i, "Format")
                     at.FormatProfile = GetAudio(i, "Format_Profile")
                     at.Title = GetAudio(i, "Title").Trim

@@ -83,7 +83,7 @@ Class Packs
         .HelpFile = "DGDecodeNVManual.html",
         .AviSynthFilterNames = {"DGSource"},
         .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")"),
-                                      New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")},
+                                           New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")},
         .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource(")}
 
     Public Shared Property Packages As New List(Of Package)
@@ -215,6 +215,16 @@ Class Packs
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 8)")}})
 
         Packages.Add(New PluginPackage With {
+            .Name = "d2vsource",
+            .Filename = "d2vsource.dll",
+            .VapourSynthFilterNames = {"d2v.Source"},
+            .Description = "D2V parser and decoder for VapourSynth.",
+            .WebURL = "https://github.com/dwbuiten/d2vsource",
+            .HelpURL = "https://github.com/dwbuiten/d2vsource",
+            .VapourSynthFiltersFunc = Function() {
+                New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})
+
+        Packages.Add(New PluginPackage With {
             .Name = "FluxSmooth",
             .Filename = "libfluxsmooth.dll",
             .VapourSynthFilterNames = {"SmoothT", "SmoothST"},
@@ -300,7 +310,7 @@ Class Packs
             .HelpFile = "Readme.txt",
             .Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field.",
             .AviSynthFilterNames = {"nnedi3"},
-            .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "nnedi3", "clip = core.nnedi3.nnedi3(clip, field = 1)")}})
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "nnedi3", "nnedi3(field = 1)")}})
 
         Packages.Add(New PluginPackage With {
             .Name = "mvtools2",

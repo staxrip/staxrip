@@ -654,11 +654,7 @@ Namespace UI
                     For i = 0 To params.Length - 1
                         Dim gp As New GridProperty
                         gp.Name = DispNameAttribute.GetValue(params(i).GetCustomAttributes(False))
-
-                        If gp.Name Is Nothing Then
-                            gp.Name = params(i).Name.ToTitleCase
-                        End If
-
+                        If gp.Name Is Nothing Then gp.Name = params(i).Name.ToTitleCase
                         gp.Value = c.FixParameters(item.Parameters)(i)
                         gp.Description = DescriptionAttributeHelp.GetDescription(params(i).GetCustomAttributes(False))
                         gp.TypeEditor = EditorAttributeHelp.GetEditor(params(i).GetCustomAttributes(False))

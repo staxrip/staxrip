@@ -1,9 +1,6 @@
 Imports StaxRip.UI
 
 Imports System.Threading
-Imports System.Threading.Tasks
-Imports System.ComponentModel
-Imports Microsoft.Win32
 Imports System.Runtime.Serialization.Formatters.Binary
 
 Friend Class JobsForm

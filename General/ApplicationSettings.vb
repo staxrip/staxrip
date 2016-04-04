@@ -126,10 +126,11 @@ Class ApplicationSettings
             AviSynthFilterPreferences.Add("wmv", "DSS2")
         End If
 
-        If Check(VapourSynthFilterPreferences, "VapourSynth Filter Preference", 1) Then
+        If Check(VapourSynthFilterPreferences, "VapourSynth Filter Preference", 2) Then
             VapourSynthFilterPreferences = New StringPairList
             VapourSynthFilterPreferences.Add("264, h264, avc", "LWLibavSource")
             VapourSynthFilterPreferences.Add("265, h265, hevc", "LWLibavSource")
+            VapourSynthFilterPreferences.Add("avi, avs", "AVISource")
             VapourSynthFilterPreferences.Add("default", "ffms2")
             VapourSynthFilterPreferences.Add("mp4, m4v, mov", "LibavSMASHSource")
             VapourSynthFilterPreferences.Add("ts, m2ts, mts, m2t", "LWLibavSource")
@@ -223,7 +224,7 @@ Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 137) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 138) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 
@@ -235,7 +236,7 @@ Class ApplicationSettings
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 
-        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 148) Then
+        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 150) Then
             If AviSynthProfiles Is Nothing Then
                 AviSynthProfiles = FilterCategory.GetAviSynthDefaults
             Else
@@ -255,7 +256,7 @@ Class ApplicationSettings
             End If
         End If
 
-        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 26) Then
+        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 29) Then
             If VapourSynthProfiles Is Nothing Then
                 VapourSynthProfiles = FilterCategory.GetVapourSynthDefaults
             Else

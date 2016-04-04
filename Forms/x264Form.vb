@@ -3354,7 +3354,7 @@ Class x264Form
     End Sub
 
     Sub SaveProfile()
-        Dim name = InputBox.Show("Please enter a name.", "Name", NameOfLastProfile)
+        Dim name = InputBox.Show("Please enter a profile name.", "Profile Name", NameOfLastProfile)
 
         If name <> "" Then
             For Each i In s.VideoEncoderProfiles.OfType(Of x264Encoder)()

@@ -116,7 +116,7 @@ Class Proc
                 If {"conhost", "vspipe"}.Contains(i.ProcessName) Then Continue For
 
                 If Msg("Confirm to kill " + i.ProcessName + ".exe",
-                       MessageBoxIcon.Question,
+                       MsgIcon.Question,
                        MessageBoxButtons.OKCancel) = DialogResult.OK Then
 
                     If Not i.HasExited Then i.Kill()

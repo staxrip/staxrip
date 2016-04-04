@@ -415,7 +415,7 @@ Class ProcessForm
     End Sub
 
     Private Sub bnAbort_Click() Handles bnAbort.Click
-        If Msg("Abort processing?", MessageBoxIcon.Question,
+        If Msg("Abort processing?", MsgIcon.Question,
             MessageBoxButtons.OKCancel) = DialogResult.OK Then
 
             Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", 0)

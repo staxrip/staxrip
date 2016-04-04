@@ -500,8 +500,8 @@ Class FilterCategory
              New VideoFilter("Source", "DirectShowSource", "DirectShowSource(""%source_file%"", audio = False)"),
              New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")"),
              New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")"),
-             New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")"),
-             New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")")})
+             New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"")"),
+             New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")")})
         ret.Add(src)
 
         Dim misc As New FilterCategory("Misc")
@@ -517,6 +517,7 @@ Class FilterCategory
         misc.Filters.Add(New VideoFilter(misc.Name, "Clense", "Clense()"))
         misc.Filters.Add(New VideoFilter(misc.Name, "f3kdb", "f3kdb()"))
         misc.Filters.Add(New VideoFilter(misc.Name, "UnDot", "UnDot()"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "Tweak", "Tweak(hue = 0, sat = 1, bright = 0, cont = 1, coring = true)"))
         ret.Add(misc)
 
         Dim field As New FilterCategory("Field")
@@ -565,6 +566,7 @@ Class FilterCategory
         src.Filters.AddRange(
             {New VideoFilter("Source", "Manual", "# shows filter selection dialog"),
              New VideoFilter("Source", "Automatic", "# can be configured at main menu > Tools > Settings > Source Filters"),
+             New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r""%source_file%"")"),
              New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%temp_file%.ffindex"")"),
              New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")"),
              New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")})

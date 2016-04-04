@@ -163,7 +163,7 @@ Class MacrosForm
 
         ActiveControl = stb
 
-        For Each i In Macro.GetMacrosWithParams
+        For Each i In Macro.GetMacros
             Macros(i.Name) = i.Description
         Next
 

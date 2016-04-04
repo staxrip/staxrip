@@ -582,7 +582,7 @@ table {
         value = value.FixBreak
 
         If value.Contains("<") Then value = value.Replace("<", "&lt;")
-        If value.Contains(">") Then value = value.Replace("<", "&gt;")
+        If value.Contains(">") Then value = value.Replace(">", "&gt;")
         If value.Contains(CrLf) Then value = value.Replace(CrLf, "<br>")
 
         Return value
@@ -684,9 +684,7 @@ table {
     End Sub
 
     Private Sub WriteTable(title As String, text As String, list As StringPairList, sort As Boolean)
-        If sort Then
-            list.Sort()
-        End If
+        If sort Then list.Sort()
 
         If Not title Is Nothing Then
             Writer.WriteElementString("h2", title)
@@ -708,14 +706,14 @@ table {
         For Each i As StringPair In list
             Writer.WriteStartElement("tr")
             Writer.WriteStartElement("td")
-            WriteElement("p", i.Name)
+            WriteElement("p", HelpDocument.ConvertChars(i.Name))
             Writer.WriteEndElement() 'td
             Writer.WriteStartElement("td")
 
             If i.Value Is Nothing Then
                 WriteElement("p", "&nbsp;")
             Else
-                WriteElement("p", i.Value)
+                WriteElement("p", HelpDocument.ConvertChars(i.Value))
             End If
 
             Writer.WriteEndElement() 'td
@@ -1089,11 +1087,7 @@ Class CommandManager
     End Function
 
     Function GetCommand(name As String) As Command
-        If HasCommand(name) Then
-            Return Commands(name)
-        End If
-
-        Return Nothing
+        If HasCommand(name) Then Return Commands(name)
     End Function
 
     Sub AddCommandsFromObject(obj As Object)
@@ -1138,7 +1132,7 @@ Class CommandManager
         End Try
     End Sub
 
-    Function ProcessCmdlArgument(value As String) As Boolean
+    Function ProcessCommandLineArgument(value As String) As Boolean
         For Each i As Command In Commands.Values
             Dim s = i.Attribute.Name.ToUpper.Replace(" ", "")
 
@@ -1154,10 +1148,10 @@ Class CommandManager
                     Process(i.MethodInfo.Name, New List(Of Object))
                     Return True
                 Else
-                    Dim test = value.Replace("/", "|").Replace("-", "|").Replace("=", ":").ToUpper
+                    Dim test = value.Replace("/", "|").Replace("-", "|").ToUpper
 
                     If test.StartsWith("|" + iSwitch + ":") Then
-                        Dim mc = Regex.Matches(test.Right(":"), """(?<a>.+?)""|(?<a>[^,]+)")
+                        Dim mc = Regex.Matches(value.Right(":"), """(?<a>.+?)""|(?<a>[^,]+)")
                         Dim args As New List(Of Object)
 
                         For Each iMatch As Match In mc
@@ -1202,7 +1196,7 @@ Friend Module MainModule
     End Function
 
     Sub MsgInfo(text As String, Optional content As String = Nothing)
-        Msg(text, content, MessageBoxIcon.Information, MessageBoxButtons.OK)
+        Msg(text, content, MsgIcon.Info, MessageBoxButtons.OK)
     End Sub
 
     Sub MsgError(text As String, Optional content As String = Nothing)
@@ -1230,26 +1224,26 @@ Friend Module MainModule
     End Sub
 
     Sub MsgWarn(text As String, Optional content As String = Nothing)
-        Msg(text, content, MessageBoxIcon.Warning, MessageBoxButtons.OK)
+        Msg(text, content, MsgIcon.Warning, MessageBoxButtons.OK)
     End Sub
 
     Function MsgOK(text As String) As Boolean
-        Return Msg(text, Nothing, MessageBoxIcon.Question, MessageBoxButtons.OKCancel) = DialogResult.OK
+        Return Msg(text, Nothing, MsgIcon.Question, MessageBoxButtons.OKCancel) = DialogResult.OK
     End Function
 
     Function MsgQuestion(text As String,
                          Optional buttons As MessageBoxButtons = MessageBoxButtons.OKCancel) As DialogResult
-        Return Msg(text, Nothing, MessageBoxIcon.Question, buttons)
+        Return Msg(text, Nothing, MsgIcon.Question, buttons)
     End Function
 
     Function MsgQuestion(heading As String,
                          content As String,
                          Optional buttons As MessageBoxButtons = MessageBoxButtons.OKCancel) As DialogResult
-        Return Msg(heading, content, MessageBoxIcon.Question, buttons)
+        Return Msg(heading, content, MsgIcon.Question, buttons)
     End Function
 
     Function Msg(text As String,
-                 icon As MessageBoxIcon,
+                 icon As MsgIcon,
                  buttons As MessageBoxButtons) As DialogResult
 
         Return Msg(text, Nothing, icon, buttons)
@@ -1257,7 +1251,7 @@ Friend Module MainModule
 
     Function Msg(mainInstruction As String,
                  content As String,
-                 icon As MessageBoxIcon,
+                 icon As MsgIcon,
                  buttons As MessageBoxButtons,
                  Optional defaultButton As DialogResult = DialogResult.None) As DialogResult
 
@@ -1279,11 +1273,11 @@ Friend Module MainModule
             End If
 
             Select Case icon
-                Case MessageBoxIcon.Error
+                Case MsgIcon.Error
                     td.MainIcon = TaskDialogIcon.Error
-                Case MessageBoxIcon.Warning
+                Case MsgIcon.Warning
                     td.MainIcon = TaskDialogIcon.Warn
-                Case MessageBoxIcon.Information
+                Case MsgIcon.Info
                     td.MainIcon = TaskDialogIcon.Info
             End Select
 
@@ -1393,101 +1387,6 @@ Class Reflector
         Return New Reflector(Type.InvokeMember(name, flags, Nothing, Value, args))
     End Function
 End Class
-
-Class WindowsScript
-    Private R As New Reflector("MSScriptControl.ScriptControl")
-
-    Sub AddCode(code As String)
-        R.Invoke("AddCode", code)
-    End Sub
-
-    Sub AddObject(name As String, obj As Object)
-        R.Invoke("AddObject", name, obj, False)
-    End Sub
-
-    Private Sub ThrowException()
-        Throw New Exception("Line" + R.Invoke("Error",
-            BindingFlags.GetProperty).Invoke("Line",
-            BindingFlags.GetProperty).ToInt.ToString + ": " +
-            R.Invoke("Error", BindingFlags.GetProperty).Invoke(
-            "Description", BindingFlags.GetProperty).ToString)
-    End Sub
-
-    WriteOnly Property Language() As WshLanguage
-        Set(value As WshLanguage)
-            R.Invoke("Language", BindingFlags.PutDispProperty, value.ToString)
-        End Set
-    End Property
-
-    Sub ExecuteStatement(statement As String)
-        Try
-            R.Invoke("ExecuteStatement", statement)
-        Catch ex As Exception
-            ThrowException()
-        End Try
-    End Sub
-
-    Shared Sub ExecuteVB(code As String)
-        Execute(code, WshLanguage.VBScript)
-    End Sub
-
-    Shared Sub ExecuteJS(code As String)
-        Execute(code, WshLanguage.JScript)
-    End Sub
-
-    Private Shared Sub Execute(code As String, language As WshLanguage)
-        Static ws As WindowsScript
-
-        If ws Is Nothing Then
-            Try
-                ws = New WindowsScript
-                ws.Language = language
-            Catch
-                Throw New Exception("Failed to create scripting control.")
-            End Try
-        End If
-
-        ws.ExecuteStatement(code)
-    End Sub
-
-    Function Eval(expression As String) As Object
-        Try
-            Return R.Invoke("Eval", expression).Value
-        Catch ex As Exception
-            ThrowException()
-        End Try
-
-        Return Nothing
-    End Function
-
-    Shared Function EvalVB(code As String) As Object
-        Return Eval(code, WshLanguage.VBScript)
-    End Function
-
-    Shared Function EvalJS(code As String) As Object
-        Return Eval(code, WshLanguage.JScript)
-    End Function
-
-    Private Shared Function Eval(code As String, language As WshLanguage) As Object
-        Static ws As WindowsScript
-
-        If ws Is Nothing Then
-            Try
-                ws = New WindowsScript
-                ws.Language = language
-            Catch
-                Throw New Exception("Failed to create scripting control.")
-            End Try
-        End If
-
-        Return ws.Eval(code)
-    End Function
-End Class
-
-Public Enum WshLanguage
-    VBScript
-    JScript
-End Enum
 
 Class Shutdown
     Shared Sub Commit(mode As ShutdownMode)

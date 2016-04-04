@@ -1111,7 +1111,7 @@ Class GUIAudioProfile
                 Case GuiAudioEncoder.qaac
                     Return FileTypes.qaacInput
                 Case Else
-                    Return FileTypes.Audio.Concat(FileTypes.AudioVideo).ToArray
+                    Return FileTypes.Audio.Concat(FileTypes.VideoAudio).ToArray
             End Select
         End Get
         Set(value As String())

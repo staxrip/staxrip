@@ -1452,7 +1452,7 @@ Namespace UI
         Sub RemoveSelection()
             If SelectedIndex > -1 Then
                 If SelectionMode = Windows.Forms.SelectionMode.One Then
-                    Dim index As Integer = SelectedIndex
+                    Dim index = SelectedIndex
 
                     If Items.Count - 1 > SelectedIndex Then
                         SelectedIndex += 1
@@ -1462,7 +1462,7 @@ Namespace UI
 
                     Items.RemoveAt(index)
                 Else
-                    Dim iFirst As Integer = SelectedIndex
+                    Dim iFirst = SelectedIndex
 
                     Dim indices(SelectedIndices.Count - 1) As Integer
                     SelectedIndices.CopyTo(indices, 0)

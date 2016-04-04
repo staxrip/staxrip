@@ -483,14 +483,15 @@ Class GlobalClass
                     If i2.Eval Then matches += 1
                 Next
 
-                If i.CriteriaList.Count = 0 OrElse (i.OrOnly AndAlso matches > 0) OrElse
-                    (Not i.OrOnly AndAlso matches = i.CriteriaList.Count) Then
+                If (i.CriteriaList.Count = 0 OrElse (i.OrOnly AndAlso matches > 0) OrElse
+                    (Not i.OrOnly AndAlso matches = i.CriteriaList.Count)) AndAlso
+                    Not i.CommandParameters Is Nothing Then
 
                     Log.WriteHeader("Process Event Command '" + i.Name + "'")
                     Log.WriteLine("Event: " + DispNameAttribute.GetValueForEnum(i.Event))
                     Dim command = g.MainForm.CustomMainMenu.CommandManager.GetCommand(i.CommandParameters.MethodName)
-                    Log.WriteLine("Arguments: " + command.GetParameterHelp(i.CommandParameters.Parameters))
-
+                    Log.WriteLine("Command: " + command.Attribute.Name)
+                    Log.WriteLine(command.GetParameterHelp(i.CommandParameters.Parameters))
                     g.MainForm.CustomMainMenu.CommandManager.Process(i.CommandParameters)
                 End If
             End If
@@ -2926,7 +2927,6 @@ Class EventCommand
 End Class
 
 Public Enum ApplicationEvent
-    Disabled
     <DispName("After Project Loaded")> ProjectLoaded
     <DispName("After Project Encoded")> JobEncoded
     <DispName("Before Project Encoding")> BeforeEncoding

@@ -10,9 +10,9 @@ Class EventCommandsEditor
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents LineControl1 As StaxRip.UI.LineControl
-    Friend WithEvents clb As CheckedListBoxEx
     Friend WithEvents bnDown As ButtonEx
     Friend WithEvents bnUp As ButtonEx
+    Friend WithEvents lv As ListViewEx
     Friend WithEvents bnEdit As ButtonEx
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -23,9 +23,9 @@ Class EventCommandsEditor
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.LineControl1 = New StaxRip.UI.LineControl()
-        Me.clb = New StaxRip.UI.CheckedListBoxEx()
         Me.bnDown = New StaxRip.UI.ButtonEx()
         Me.bnUp = New StaxRip.UI.ButtonEx()
+        Me.lv = New StaxRip.UI.ListViewEx()
         Me.SuspendLayout()
         '
         'bnEdit
@@ -82,18 +82,6 @@ Class EventCommandsEditor
         Me.LineControl1.Size = New System.Drawing.Size(559, 17)
         Me.LineControl1.TabIndex = 7
         '
-        'clb
-        '
-        Me.clb.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.clb.FormattingEnabled = True
-        Me.clb.IntegralHeight = False
-        Me.clb.Location = New System.Drawing.Point(12, 12)
-        Me.clb.Name = "clb"
-        Me.clb.Size = New System.Drawing.Size(453, 435)
-        Me.clb.TabIndex = 14
-        '
         'bnDown
         '
         Me.bnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -108,15 +96,26 @@ Class EventCommandsEditor
         Me.bnUp.Size = New System.Drawing.Size(100, 34)
         Me.bnUp.Text = "Up"
         '
+        'lv
+        '
+        Me.lv.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lv.Location = New System.Drawing.Point(12, 12)
+        Me.lv.Name = "lv"
+        Me.lv.Size = New System.Drawing.Size(453, 435)
+        Me.lv.TabIndex = 21
+        Me.lv.UseCompatibleStateImageBehavior = False
+        '
         'EventCommandsEditor
         '
         Me.AcceptButton = Me.bnOK
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnCancel
         Me.ClientSize = New System.Drawing.Size(583, 522)
+        Me.Controls.Add(Me.lv)
         Me.Controls.Add(Me.bnUp)
         Me.Controls.Add(Me.bnDown)
-        Me.Controls.Add(Me.clb)
         Me.Controls.Add(Me.LineControl1)
         Me.Controls.Add(Me.bnCancel)
         Me.Controls.Add(Me.bnOK)
@@ -138,29 +137,56 @@ Class EventCommandsEditor
 
 #End Region
 
-    Sub New(actions As List(Of EventCommand))
+    Sub New(eventCommands As List(Of EventCommand))
         MyBase.New()
         InitializeComponent()
 
-        clb.UpButton = bnUp
-        clb.DownButton = bnDown
-        clb.RemoveButton = bnRemove
+        lv.UpButton = bnUp
+        lv.DownButton = bnDown
+        lv.RemoveButton = bnRemove
+        lv.View = View.Details
+        lv.FullRowSelect = True
+        lv.Columns.Add("")
+        lv.HeaderStyle = ColumnHeaderStyle.None
+        lv.Scrollable = False
+        lv.CheckBoxes = True
+        lv.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent)
+        lv.MultiSelect = False
 
-        Dim items = DirectCast(ObjectHelp.GetCopy(actions), List(Of EventCommand))
+        AddHandler lv.Layout, Sub() lv.Columns(0).Width = lv.Width - 4
+        AddHandler Load, Sub() lv.Columns(0).Width = lv.Width - 4
 
-        For Each i In items
-            clb.Items.Add(i, i.Enabled)
+        For Each i In ObjectHelp.GetCopy(Of List(Of EventCommand))(eventCommands)
+            Dim item = lv.Items.Add(i.ToString)
+            item.Tag = i
+            item.Checked = i.Enabled
         Next
 
-        UpdateControls()
+        AddHandler lv.ItemCheck, Sub(sender As Object, e As ItemCheckEventArgs)
+                                     lv.Items(e.Index).Selected = True
+                                     DirectCast(lv.SelectedItems(0).Tag, EventCommand).Enabled = e.NewValue = CheckState.Checked
+                                 End Sub
 
-        If clb.SelectedIndex = -1 AndAlso clb.Items.Count > 0 Then clb.SelectedIndex = 0
+        If lv.Items.Count > 0 Then lv.Items(0).Selected = True
+        UpdateControls()
+    End Sub
+
+    Private Sub bnAdd_Click() Handles bnAdd.Click
+        Dim ec As New EventCommand
+
+        Using f As New EventCommandEditor(ec)
+            If f.ShowDialog = DialogResult.OK Then
+                Dim item = lv.Items.Add(ec.ToString)
+                item.Tag = ec
+                item.Selected = True
+            End If
+        End Using
     End Sub
 
     Sub UpdateControls()
-        bnEdit.Enabled = clb.SelectedIndex > -1
-        bnClone.Enabled = clb.SelectedIndex > -1
-        clb.UpdateControls()
+        bnEdit.Enabled = lv.SelectedItems.Count > 0
+        bnClone.Enabled = lv.SelectedItems.Count > 0
+        lv.UpdateControls()
     End Sub
 
     Private Sub EventCommandsEditor_HelpRequested() Handles Me.HelpRequested
@@ -170,33 +196,25 @@ Class EventCommandsEditor
         f.Show()
     End Sub
 
-    Private Sub bnAdd_Click() Handles bnAdd.Click
-        Dim ec As New EventCommand
-
-        Using f As New EventCommandEditor(ec)
-            If f.ShowDialog = DialogResult.OK Then clb.SelectedIndex = clb.Items.Add(ec)
-        End Using
-    End Sub
-
     Private Sub bnClone_Click() Handles bnClone.Click
-        clb.SelectedIndex = clb.Items.Add(ObjectHelp.GetCopy(clb.SelectedItem))
+        Dim ec = DirectCast(ObjectHelp.GetCopy(lv.SelectedItems(0).Tag), EventCommand)
+        Dim item = lv.Items.Add(ec.ToString)
+        item.Selected = True
+        item.Tag = ec
+        item.Checked = ec.Enabled
     End Sub
 
     Private Sub bnEdit_Click(sender As Object, e As EventArgs) Handles bnEdit.Click
-        Using f As New EventCommandEditor(DirectCast(clb.SelectedItem, EventCommand))
+        Dim ec = DirectCast(lv.SelectedItems(0).Tag, EventCommand)
+
+        Using f As New EventCommandEditor(ec)
             If f.ShowDialog = DialogResult.OK Then
-                clb.Items(clb.SelectedIndex) = clb.SelectedItem
+                lv.SelectedItems(0).Text = ec.ToString
             End If
         End Using
     End Sub
 
-    Private Sub clb_SelectedIndexChanged(sender As Object, e As EventArgs) Handles clb.SelectedIndexChanged
+    Private Sub lv_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lv.SelectedIndexChanged
         UpdateControls()
-    End Sub
-
-    Private Sub clb_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles clb.ItemCheck
-        If Visible Then
-            DirectCast(clb.SelectedItem, EventCommand).Enabled = e.NewValue = CheckState.Checked
-        End If
     End Sub
 End Class

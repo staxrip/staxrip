@@ -2949,7 +2949,11 @@ Class MainForm
     Sub OpenEventCommandsDialog()
         Using f As New EventCommandsEditor(s.EventCommands)
             If f.ShowDialog() = DialogResult.OK Then
-                s.EventCommands = f.clb.Items.OfType(Of EventCommand).ToList
+                s.EventCommands.Clear()
+
+                For Each i As ListViewItem In f.lv.Items
+                    s.EventCommands.Add(DirectCast(i.Tag, EventCommand))
+                Next
             End If
         End Using
 

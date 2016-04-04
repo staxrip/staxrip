@@ -142,6 +142,7 @@ Class ScriptingEditor
             rtbScript.WordWrap = False
             rtbScript.ScrollBars = RichTextBoxScrollBars.None
             rtbScript.AcceptsTab = True
+            rtbScript.Font = New Font("Consolas", 10)
 
             AddHandler Disposed, Sub() Menu.Dispose()
             AddHandler Menu.Opening, AddressOf MenuOpening
@@ -350,7 +351,7 @@ Class ScriptingEditor
             Dim copyAction = Sub() Clipboard.SetText(rtbScript.SelectedText)
 
             Dim pasteAction = Sub()
-                                  rtbScript.Paste()
+                                  rtbScript.SelectedText = Clipboard.GetText
                                   rtbScript.ScrollToCaret()
                               End Sub
 

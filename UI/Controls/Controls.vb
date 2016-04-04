@@ -475,13 +475,26 @@ Namespace UI
 
             AddHandler copyItem.Click, Sub() Clipboard.SetText(SelectedText)
 
-            AddHandler pasteItem.Click, Sub() Paste()
+            AddHandler pasteItem.Click, Sub()
+                                            SelectedText = Clipboard.GetText
+                                            ScrollToCaret()
+                                        End Sub
 
             AddHandler ContextMenuStrip.Opening, Sub()
                                                      cutItem.Enabled = SelectionLength > 0 AndAlso Not [ReadOnly]
                                                      copyItem.Enabled = SelectionLength > 0
                                                      pasteItem.Enabled = Clipboard.GetText <> "" AndAlso Not [ReadOnly]
                                                  End Sub
+        End Sub
+
+        Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
+            If e.KeyData = (Keys.Control Or Keys.V) Then
+                e.SuppressKeyPress = True
+                SelectedText = Clipboard.GetText
+                ScrollToCaret()
+            End If
+
+            MyBase.OnKeyDown(e)
         End Sub
 
         Protected Overrides Sub WndProc(ByRef m As Message)

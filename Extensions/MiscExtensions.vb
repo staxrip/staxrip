@@ -55,11 +55,6 @@ Module MiscExtensions
     End Function
 
     <Extension()>
-    Function ToStringEx(obj As Object) As String
-        If obj Is Nothing Then Return "" Else Return obj.ToString
-    End Function
-
-    <Extension()>
     Function NeutralCulture(ci As CultureInfo) As CultureInfo
         If ci.IsNeutralCulture Then Return ci Else Return ci.Parent
     End Function

@@ -1047,21 +1047,19 @@ Class Command
     Function GetParameterHelp(parameters As List(Of Object)) As String
         If parameters.Count > 0 Then
             Dim paramList As New List(Of String)
-            Dim params As ParameterInfo() = MethodInfo.GetParameters
+            Dim params = MethodInfo.GetParameters
 
-            For iParams As Integer = 0 To params.Length - 1
+            For iParams = 0 To params.Length - 1
                 Dim paramInfo As ParameterInfo = params(iParams)
-                Dim attributs As Object() = paramInfo.GetCustomAttributes(GetType(DispNameAttribute), False)
+                Dim attributs = paramInfo.GetCustomAttributes(GetType(DispNameAttribute), False)
 
                 If attributs.Length > 0 Then
-                    paramList.Add(DirectCast(attributs(0), DispNameAttribute).DisplayName + " = " + FixParameters(parameters)(iParams).ToString)
+                    paramList.Add("Parameter " + DirectCast(attributs(0), DispNameAttribute).DisplayName + ": " + FixParameters(parameters)(iParams).ToString)
                 End If
             Next
 
-            Return String.Join(", ", paramList.ToArray)
+            Return paramList.Join(CrLf)
         End If
-
-        Return Nothing
     End Function
 End Class
 
@@ -1115,9 +1113,7 @@ Class CommandManager
     End Sub
 
     Sub Process(cp As CommandParameters)
-        If Not cp Is Nothing Then
-            Process(cp.MethodName, cp.Parameters)
-        End If
+        If Not cp Is Nothing Then Process(cp.MethodName, cp.Parameters)
     End Sub
 
     Sub Process(name As String, params As List(Of Object))

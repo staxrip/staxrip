@@ -88,12 +88,10 @@ Class DemuxingControl
         Me.lv.CheckBoxes = True
         Me.lv.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1})
         Me.lv.DownButton = Me.bnDown
-        Me.lv.EditButton = Me.bnEdit
         Me.lv.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.lv.Location = New System.Drawing.Point(0, 0)
         Me.lv.MultiSelect = False
         Me.lv.Name = "lv"
-        Me.lv.RemoveButton = Me.bnRemove
         Me.lv.Size = New System.Drawing.Size(300, 303)
         Me.lv.TabIndex = 0
         Me.lv.UpButton = Me.bnUp

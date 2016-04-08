@@ -161,7 +161,7 @@ Class x265Control
     Sub UpdateMenu()
         cms.Items.Clear()
 
-        Dim offset = If(Params.Mode.Value = RateMode.SingleCRF, 0, 1)
+        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
 
         If lv.SelectedItems.Count > 0 Then
             Select Case lv.SelectedIndices(0)
@@ -194,7 +194,7 @@ Class x265Control
     End Sub
 
     Sub SetPreset(value As Integer)
-        Dim offset = If(Params.Mode.Value = RateMode.SingleCRF, 0, 1)
+        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
 
         Params.Preset.Value = value
 
@@ -208,7 +208,7 @@ Class x265Control
     End Sub
 
     Sub SetTune(value As Integer)
-        Dim offset = If(Params.Mode.Value = RateMode.SingleCRF, 0, 1)
+        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
 
         Params.Tune.Value = value
 
@@ -232,7 +232,7 @@ Class x265Control
     End Function
 
     Sub UpdateControls()
-        If Params.Mode.Value = RateMode.SingleCRF AndAlso lv.Items.Count < 4 Then
+        If Params.Mode.Value = x265RateMode.SingleCRF AndAlso lv.Items.Count < 4 Then
             lv.Items.Clear()
             lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.Quant.Value)}))
             lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
@@ -243,8 +243,8 @@ Class x265Control
             lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
         End If
 
-        Dim offset = If(Params.Mode.Value = RateMode.SingleCRF, 0, 1)
-        llCompCheck.Visible = Params.Mode.Value = RateMode.TwoPass Or Params.Mode.Value = RateMode.ThreePass
+        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
+        llCompCheck.Visible = Params.Mode.Value = x265RateMode.TwoPass Or Params.Mode.Value = x265RateMode.ThreePass
     End Sub
 
     Private Sub llAdvanced_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llConfigCodec.LinkClicked

@@ -743,7 +743,7 @@ table {
 End Class
 
 <Serializable()>
-Class SettingBag(Of T)
+Public Class SettingBag(Of T)
     Sub New()
     End Sub
 
@@ -809,7 +809,7 @@ Class ReflectionSettingBag(Of T)
 End Class
 
 <Serializable>
-Class StringPair
+Public Class StringPair
     Implements IComparable(Of StringPair)
 
     Property Name As String
@@ -948,7 +948,7 @@ Class CLIArg
 End Class
 
 <Serializable()>
-Class StringPairList
+Public Class StringPairList
     Inherits List(Of StringPair)
 
     Sub New()
@@ -1130,23 +1130,19 @@ Class CommandManager
 
     Function ProcessCommandLineArgument(value As String) As Boolean
         For Each i As Command In Commands.Values
-            Dim s = i.Attribute.Name.ToUpper.Replace(" ", "")
-
             Dim switches As New List(Of String)
-            switches.Add(s)
+            switches.Add(i.Attribute.Name.Replace(" ", ""))
+            If i.Attribute.Switch <> "" Then switches.AddRange(i.Attribute.Switch.SplitNoEmpty("|"))
 
-            If i.Attribute.Switch <> "" Then
-                switches.AddRange(i.Attribute.Switch.ToUpper.SplitNoEmpty("|").Select(Function(arg) arg.Replace("-", "|")))
-            End If
+            For Each switch In switches
+                switch = switch.Replace("-", "|").Replace("/", "|").ToUpper
+                Dim test = value.Replace("-", "|").Replace("/", "|").ToUpper
 
-            For Each iSwitch As String In switches
-                If value.ToUpper = "-" + iSwitch OrElse value.ToUpper = "/" + iSwitch Then
+                If test = "|" + switch Then
                     Process(i.MethodInfo.Name, New List(Of Object))
                     Return True
                 Else
-                    Dim test = value.Replace("/", "|").Replace("-", "|").ToUpper
-
-                    If test.StartsWith("|" + iSwitch + ":") Then
+                    If test.StartsWith("|" + switch + ":") Then
                         Dim mc = Regex.Matches(value.Right(":"), """(?<a>.+?)""|(?<a>[^,]+)")
                         Dim args As New List(Of Object)
 
@@ -1240,7 +1236,7 @@ Friend Module MainModule
 
     Function Msg(text As String,
                  icon As MsgIcon,
-                 buttons As MessageBoxButtons) As DialogResult
+                 Optional buttons As MessageBoxButtons = MessageBoxButtons.OK) As DialogResult
 
         Return Msg(text, Nothing, icon, buttons)
     End Function

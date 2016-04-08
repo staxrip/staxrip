@@ -5,7 +5,7 @@ Imports StaxRip.UI
 Imports StaxRip.CommandLine
 
 <Serializable()>
-MustInherit Class VideoEncoder
+Public MustInherit Class VideoEncoder
     Inherits Profile
     Implements IComparable(Of VideoEncoder)
 
@@ -39,6 +39,10 @@ MustInherit Class VideoEncoder
 
     Overridable Function GetMenu() As MenuList
     End Function
+
+    Overridable Sub ImportCommandLine(commandLine As String)
+        Throw New NotImplementedException("import is not implemented for this encoder")
+    End Sub
 
     Sub AfterEncoding()
         If Not g.WasFileJustWritten(OutputPath) Then
@@ -229,18 +233,15 @@ MustInherit Class VideoEncoder
 
         ret.Add(Getx264Encoder("x264", x264Mode.SingleCRF, x264PresetMode.Medium, x264TuneMode.Disabled, x264DeviceMode.Disabled))
 
-        Dim x265crf = New x265.x265Encoder
+        Dim x265crf = New x265Encoder
         x265crf.Params.ApplyPresetDefaultValues()
         x265crf.Params.ApplyPresetValues()
         ret.Add(x265crf)
 
-        Dim intel264 As New IntelEncoder()
-        intel264.Params.BFrames.Value = 3
-        ret.Add(intel264)
+        ret.Add(New IntelEncoder())
 
         Dim intel265 As New IntelEncoder()
         intel265.Params.Codec.Value = 1
-        intel265.Params.BFrames.Value = 2
         ret.Add(intel265)
 
         Dim nvidia264 As New NvidiaEncoder()
@@ -268,9 +269,9 @@ MustInherit Class VideoEncoder
 
         ret.Add(Getx264Encoder("2 pass | x264", x264Mode.TwoPass, x264PresetMode.Medium, x264TuneMode.Disabled, x264DeviceMode.Disabled))
 
-        Dim x265_2pass = New x265.x265Encoder
+        Dim x265_2pass = New x265Encoder
         x265_2pass.Name = "2 pass | x265"
-        x265_2pass.Params.Mode.Value = x265.RateMode.TwoPass
+        x265_2pass.Params.Mode.Value = x265RateMode.TwoPass
         x265_2pass.Params.ApplyPresetDefaultValues()
         x265_2pass.Params.ApplyPresetValues()
         ret.Add(x265_2pass)
@@ -367,6 +368,64 @@ MustInherit Class VideoEncoder
             Add(New KeyValuePair(Of String, Action)(text, action))
         End Sub
     End Class
+End Class
+
+<Serializable()>
+Public MustInherit Class BasicVideoEncoder
+    Inherits VideoEncoder
+
+    MustOverride ReadOnly Property CommandLineParams As CommandLineParams
+
+    Public Overrides Sub ImportCommandLine(commandLine As String)
+        If commandLine = "" Then Exit Sub
+
+        Dim a = commandLine.SplitNoEmptyAndWhiteSpace(" ")
+
+        For x = 0 To a.Length - 1
+            For Each i In CommandLineParams.Items
+                If TypeOf i Is BoolParam Then
+                    Dim boolParam = DirectCast(i, BoolParam)
+
+                    If a(x) = boolParam.Switch?.ToLower Then
+                        boolParam.Value = True
+                        Exit For
+                    End If
+                ElseIf TypeOf i Is NumParam Then
+                    Dim numParam = DirectCast(i, NumParam)
+
+                    If a(x) = numParam.Switch?.ToLower AndAlso
+                        a.Length - 1 > x AndAlso a(x + 1).IsSingle Then
+
+                        numParam.Value = a(x + 1).ToSingle
+                        Exit For
+                    End If
+                ElseIf TypeOf i Is OptionParam Then
+                    Dim optionParam = DirectCast(i, OptionParam)
+
+                    If a(x) = optionParam.Switch?.ToLower AndAlso a.Length - 1 > x Then
+                        Dim exitFor As Boolean
+
+                        For xOpt = 0 To optionParam.Options.Length - 1
+                            If a(x + 1).Trim(""""c) = optionParam.Options(xOpt) Then
+                                optionParam.Value = xOpt
+                                exitFor = True
+                                Exit For
+                            End If
+                        Next
+
+                        If exitFor Then Exit For
+                    End If
+                ElseIf TypeOf i Is StringParam Then
+                    Dim stringParam = DirectCast(i, StringParam)
+
+                    If a(x) = stringParam.Switch?.ToLower AndAlso a.Length - 1 > x Then
+                        stringParam.Value = a(x + 1).Trim(""""c)
+                        Exit For
+                    End If
+                End If
+            Next
+        Next
+    End Sub
 End Class
 
 <Serializable()>
@@ -612,7 +671,7 @@ End Class
 
 <Serializable()>
 Class ffmpegEncoder
-    Inherits VideoEncoder
+    Inherits BasicVideoEncoder
 
     Property ParamsStore As New PrimitiveStore
 
@@ -727,6 +786,12 @@ Class ffmpegEncoder
         End Get
         Set(Value As Boolean)
         End Set
+    End Property
+
+    Public Overrides ReadOnly Property CommandLineParams As CommandLineParams
+        Get
+            Return Params
+        End Get
     End Property
 
     Class EncoderParams
@@ -928,7 +993,7 @@ End Class
 
 <Serializable()>
 Class NvidiaEncoder
-    Inherits VideoEncoder
+    Inherits BasicVideoEncoder
 
     Property ParamsStore As New PrimitiveStore
 
@@ -1032,6 +1097,12 @@ Class NvidiaEncoder
         End Get
         Set(Value As Boolean)
         End Set
+    End Property
+
+    Public Overrides ReadOnly Property CommandLineParams As CommandLineParams
+        Get
+            Return Params
+        End Get
     End Property
 
     Class EncoderParams
@@ -1266,7 +1337,7 @@ End Class
 
 <Serializable()>
 Class IntelEncoder
-    Inherits VideoEncoder
+    Inherits BasicVideoEncoder
 
     Property ParamsStore As New PrimitiveStore
 
@@ -1377,6 +1448,12 @@ Class IntelEncoder
         End Set
     End Property
 
+    Public Overrides ReadOnly Property CommandLineParams As CommandLineParams
+        Get
+            Return Params
+        End Get
+    End Property
+
     Class EncoderParams
         Inherits CommandLineParams
 
@@ -1481,6 +1558,8 @@ Class IntelEncoder
         Property BFrames As New NumParam With {
             .Switch = "--bframes",
             .Text = "B Frames:",
+            .Value = 3,
+            .DefaultValue = 3,
             .MinMaxStep = {0, 16, 1}}
 
         Property bPyramid As New BoolParam With {
@@ -1633,24 +1712,6 @@ Class IntelEncoder
             End If
 
             If item Is Codec OrElse item Is Nothing Then
-                If Codec.ValueText = "hevc" Then
-                    BFrames.DefaultValue = 2
-                Else
-                    BFrames.DefaultValue = 3
-                End If
-            End If
-
-            If item Is Codec Then
-                Mode.Value = 2
-
-                If Codec.ValueText = "hevc" Then
-                    BFrames.Value = 2
-                Else
-                    BFrames.Value = 3
-                End If
-            End If
-
-            If item Is Codec OrElse item Is Nothing Then
                 For Each i In Modes
                     Select Case Codec.ValueText
                         Case "h264"
@@ -1743,7 +1804,7 @@ End Class
 
 <Serializable()>
 Class AMDEncoder
-    Inherits VideoEncoder
+    Inherits BasicVideoEncoder
 
     Sub New()
         Name = "AMD H.264"
@@ -1843,6 +1904,12 @@ Class AMDEncoder
         End Get
         Set(Value As Boolean)
         End Set
+    End Property
+
+    Public Overrides ReadOnly Property CommandLineParams As CommandLineParams
+        Get
+            Return Params
+        End Get
     End Property
 
     Class EncoderParams

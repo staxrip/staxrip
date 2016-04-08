@@ -129,7 +129,7 @@ Class x264Control
         End If
 
         lv.Columns(0).Width = CInt(Width * (32 / 100))
-        lv.Columns(1).Width = CInt(Width * (66 / 100))
+        lv.Columns(1).Width = lv.Width - lv.Columns(0).Width - 4
 
         'couldn't get scaling to work trying everything
         llConfigCodec.Left = 5

@@ -8,7 +8,7 @@ Class AviSynthListView
     Private BlockItemCheck As Boolean
     WithEvents Menu As New ContextMenuStrip
 
-    Event ScriptChanged()
+    Event Changed()
 
     Sub New()
         AllowDrop = True
@@ -23,8 +23,12 @@ Class AviSynthListView
         Columns.Add("Type")
         Columns.Add("Name")
         ContextMenuStrip = Menu
-
         SendMessageHideFocus()
+        AddHandler VideoScript.Changed, Sub(script As VideoScript)
+                                            If Not ProfileFunc Is Nothing AndAlso script Is ProfileFunc.Invoke Then
+                                                OnChanged()
+                                            End If
+                                        End Sub
     End Sub
 
     <Browsable(False),
@@ -133,46 +137,42 @@ Class AviSynthListView
     End Sub
 
     Sub ShowEditor()
-        If ProfileFunc().Invoke.Edit = DialogResult.OK Then
-            Load()
-            RaiseScriptChanged()
-        End If
+        If ProfileFunc().Invoke.Edit = DialogResult.OK Then OnChanged()
     End Sub
 
     Sub ReplaceClick(f As VideoFilter)
         Dim index = SelectedItems(0).Index
-        ProfileFunc.Invoke.Filters(index) = f
-        Load()
+        ProfileFunc.Invoke.SetFilter(index, f)
         Items(index).Selected = True
-        RaiseChangedAsync()
     End Sub
 
     Private Sub InsertClick(f As VideoFilter)
         Dim index = SelectedItems(0).Index
-        ProfileFunc.Invoke.Filters.Insert(index, f)
-        Load()
+        ProfileFunc.Invoke.InsertFilter(index, f)
         Items(index).Selected = True
-        RaiseChangedAsync()
     End Sub
 
     Private Sub AddClick(f As VideoFilter)
-        ProfileFunc.Invoke.Filters.Add(f)
-        Load()
+        ProfileFunc.Invoke.AddFilter(f)
         Items(Items.Count - 1).Selected = True
-        RaiseChangedAsync()
     End Sub
 
-    Sub RaiseScriptChanged()
-        RaiseEvent ScriptChanged()
+    Sub OnChanged()
+        Load()
+        RaiseEvent Changed()
+    End Sub
+
+    Sub RaiseChangedAsync()
+        Dim async = Sub()
+                        Application.DoEvents()
+                        OnChanged()
+                    End Sub
+
+        g.MainForm.BeginInvoke(async)
     End Sub
 
     Private Sub RemoveClick()
-        If Items.Count > 1 Then
-            Dim index = SelectedItems(0).Index
-            ProfileFunc.Invoke.Filters.RemoveAt(SelectedItems(0).Index)
-            Load()
-            RaiseChangedAsync()
-        End If
+        If Items.Count > 1 Then ProfileFunc.Invoke.RemoveFilterAt(SelectedItems(0).Index)
     End Sub
 
     Sub UpdateDocument()
@@ -182,7 +182,7 @@ Class AviSynthListView
             ProfileFunc.Invoke.Filters.Add(DirectCast(i.Tag, VideoFilter))
         Next
 
-        RaiseEvent ScriptChanged()
+        OnChanged()
     End Sub
 
     Protected Overrides Sub OnDragDrop(e As DragEventArgs)
@@ -211,20 +211,8 @@ Class AviSynthListView
         End If
     End Sub
 
-    Sub RaiseChangedAsync()
-        Dim async = Sub()
-                        Application.DoEvents()
-                        RaiseEvent ScriptChanged()
-                    End Sub
-
-        g.MainForm.BeginInvoke(async)
-    End Sub
-
     Protected Overrides Sub OnMouseUp(e As MouseEventArgs)
-        If e.Button = MouseButtons.Right Then
-            UpdateMenu()
-        End If
-
+        If e.Button = MouseButtons.Right Then UpdateMenu()
         MyBase.OnMouseUp(e)
     End Sub
 

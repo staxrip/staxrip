@@ -5,7 +5,7 @@ Imports System.Globalization
 Imports vb6 = Microsoft.VisualBasic
 
 <Serializable()>
-MustInherit Class Muxer
+Public MustInherit Class Muxer
     Inherits Profile
 
     Property ChapterFile As String

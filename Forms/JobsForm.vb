@@ -9,18 +9,17 @@ Friend Class JobsForm
 #Region " Designer "
 
     Friend WithEvents bnRemove As ButtonEx
-    Friend WithEvents clb As CheckedListBoxEx
     Private WithEvents bnClose As StaxRip.UI.ButtonEx
     Friend WithEvents bnStart As StaxRip.UI.ButtonEx
     Friend WithEvents bnNew As StaxRip.UI.ButtonEx
     Friend WithEvents bnDown As StaxRip.UI.ButtonEx
     Friend WithEvents bnUp As StaxRip.UI.ButtonEx
     Friend WithEvents bnLoad As StaxRip.UI.ButtonEx
+    Friend WithEvents lv As ListViewEx
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.clb = New StaxRip.UI.CheckedListBoxEx()
         Me.bnDown = New StaxRip.UI.ButtonEx()
         Me.bnRemove = New StaxRip.UI.ButtonEx()
         Me.bnUp = New StaxRip.UI.ButtonEx()
@@ -28,23 +27,8 @@ Friend Class JobsForm
         Me.bnStart = New StaxRip.UI.ButtonEx()
         Me.bnNew = New StaxRip.UI.ButtonEx()
         Me.bnLoad = New StaxRip.UI.ButtonEx()
+        Me.lv = New StaxRip.UI.ListViewEx()
         Me.SuspendLayout()
-        '
-        'clb
-        '
-        Me.clb.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.clb.DownButton = Me.bnDown
-        Me.clb.FormattingEnabled = True
-        Me.clb.HorizontalScrollbar = True
-        Me.clb.IntegralHeight = False
-        Me.clb.Location = New System.Drawing.Point(12, 12)
-        Me.clb.Name = "clb"
-        Me.clb.RemoveButton = Me.bnRemove
-        Me.clb.Size = New System.Drawing.Size(905, 394)
-        Me.clb.TabIndex = 0
-        Me.clb.UpButton = Me.bnUp
         '
         'bnDown
         '
@@ -98,18 +82,32 @@ Friend Class JobsForm
         Me.bnLoad.Size = New System.Drawing.Size(100, 36)
         Me.bnLoad.Text = "Load"
         '
+        'lv
+        '
+        Me.lv.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lv.ItemCheckProperty = Nothing
+        Me.lv.Location = New System.Drawing.Point(12, 12)
+        Me.lv.MultiSelectionButtons = Nothing
+        Me.lv.Name = "lv"
+        Me.lv.SingleSelectionButtons = Nothing
+        Me.lv.Size = New System.Drawing.Size(905, 395)
+        Me.lv.TabIndex = 7
+        Me.lv.UseCompatibleStateImageBehavior = False
+        '
         'JobsForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnClose
         Me.ClientSize = New System.Drawing.Size(929, 461)
+        Me.Controls.Add(Me.lv)
         Me.Controls.Add(Me.bnLoad)
         Me.Controls.Add(Me.bnDown)
         Me.Controls.Add(Me.bnUp)
         Me.Controls.Add(Me.bnNew)
         Me.Controls.Add(Me.bnStart)
         Me.Controls.Add(Me.bnClose)
-        Me.Controls.Add(Me.clb)
         Me.Controls.Add(Me.bnRemove)
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.KeyPreview = True
@@ -140,9 +138,18 @@ Friend Class JobsForm
         bnDown.ZoomImage = My.Resources.ArrowLeft
         bnDown.ZoomImage.RotateFlip(RotateFlipType.Rotate270FlipNone)
 
-        LoadItems()
+        KeyPreview = True
 
-        If clb.Items.Count > 0 Then clb.SelectedIndex = 0
+        lv.UpButton = bnUp
+        lv.DownButton = bnDown
+        lv.RemoveButton = bnRemove
+        lv.SingleSelectionButtons = {bnLoad}
+        lv.CheckBoxes = True
+        lv.EnableListBoxMode()
+        lv.ItemCheckProperty = NameOf(StringBooleanPair.Value)
+        lv.AddItems(GetJobs())
+        lv.SelectFirst()
+        UpdateControls()
 
         FileWatcher.Path = Paths.SettingsDir
         FileWatcher.NotifyFilter = NotifyFilters.LastWrite Or NotifyFilters.CreationTime
@@ -151,38 +158,31 @@ Friend Class JobsForm
         AddHandler FileWatcher.Created, AddressOf Reload
         FileWatcher.EnableRaisingEvents = True
 
-        AddHandler clb.ItemsChanged, AddressOf SaveJobs
-        AddHandler clb.KeyUp, AddressOf SaveJobs
-        AddHandler clb.MouseUp, AddressOf SaveJobs
-
-        UpdateControls()
+        AddHandler lv.ItemsChanged, Sub()
+                                        SaveJobs()
+                                        UpdateControls()
+                                    End Sub
     End Sub
+
+    Private IsLoading As Boolean
 
     Sub Reload(sender As Object, e As FileSystemEventArgs)
-        If IsHandleCreated Then Invoke(Sub() LoadItems())
-    End Sub
-
-    Sub LoadItems()
-        clb.Items.Clear()
-
-        For Each i In GetJobs()
-            clb.Items.Add(i.Key, i.Value)
-        Next
+        If IsHandleCreated Then Invoke(Sub()
+                                           IsLoading = True
+                                           lv.Items.Clear()
+                                           lv.AddItems(GetJobs())
+                                           lv.SelectFirst()
+                                           UpdateControls()
+                                           IsLoading = False
+                                       End Sub)
     End Sub
 
     Private Sub UpdateControls()
-        Dim hasActiveJob As Boolean
+        Dim activeJobs = From item In lv.Items.OfType(Of ListViewItem)
+                         Where DirectCast(item.Tag, StringBooleanPair).Value
 
-        For i = 0 To clb.Items.Count - 1
-            If clb.GetItemChecked(i) Then
-                hasActiveJob = True
-            End If
-        Next
-
-        bnRemove.Enabled = clb.SelectedIndex > -1
-        bnLoad.Enabled = clb.SelectedIndex > -1
-        bnStart.Enabled = hasActiveJob AndAlso Not ProcessForm.IsActive
-        bnNew.Enabled = hasActiveJob
+        bnNew.Enabled = activeJobs.Count > 0
+        bnStart.Enabled = bnNew.Enabled AndAlso Not ProcessForm.IsActive
     End Sub
 
     Private Sub JobsForm_HelpRequested() Handles Me.HelpRequested
@@ -197,10 +197,11 @@ Friend Class JobsForm
     End Sub
 
     Sub SaveJobs()
+        If IsLoading Then Exit Sub
         Dim jobs As New List(Of StringBooleanPair)
 
-        For i = 0 To clb.Items.Count - 1
-            jobs.Add(New StringBooleanPair(clb.Items(i).ToString, clb.GetItemChecked(i)))
+        For Each i As ListViewItem In lv.Items
+            jobs.Add(DirectCast(i.Tag, StringBooleanPair))
         Next
 
         FileWatcher.EnableRaisingEvents = False
@@ -279,9 +280,7 @@ Friend Class JobsForm
         Dim jobs = GetJobs()
 
         For Each i In jobs
-            If i.Key = jobPath Then
-                i.Value = isActive
-            End If
+            If i.Key = jobPath Then i.Value = isActive
         Next
 
         SaveJobs(jobs)
@@ -291,21 +290,11 @@ Friend Class JobsForm
         Dim jobs = GetJobs()
 
         For Each i In jobs.ToArray
-            If i.Key = jobPath Then
-                jobs.Remove(i)
-            End If
+            If i.Key = jobPath Then jobs.Remove(i)
         Next
 
         jobs.Add(New StringBooleanPair(jobPath, isActive))
         SaveJobs(jobs)
-    End Sub
-
-    Private Sub clb_MouseUp(sender As Object, e As MouseEventArgs) Handles clb.MouseUp
-        UpdateControls()
-    End Sub
-
-    Private Sub clb_SelectedIndexChanged() Handles clb.SelectedIndexChanged
-        UpdateControls()
     End Sub
 
     Private Sub bnStart_Click(sender As Object, e As EventArgs) Handles bnStart.Click
@@ -314,19 +303,27 @@ Friend Class JobsForm
     End Sub
 
     Private Sub bnNew_Click(sender As Object, e As EventArgs) Handles bnNew.Click
-        If Not ProcessForm.IsActive Then
-            If g.MainForm.IsSaveCanceled Then Exit Sub
-        End If
-
+        If Not ProcessForm.IsActive Then If g.MainForm.IsSaveCanceled Then Exit Sub
         g.ShellExecute(Application.ExecutablePath, "-Perform/RunJobs")
     End Sub
 
     Private Sub bnLoad_Click(sender As Object, e As EventArgs) Handles bnLoad.Click
-        g.MainForm.LoadProject(clb.Text)
+        g.MainForm.LoadProject(lv.SelectedItem.ToString)
     End Sub
 
     Protected Overrides Sub Dispose(disposing As Boolean)
         MyBase.Dispose(disposing)
         FileWatcher.Dispose()
+    End Sub
+
+    Private Sub JobsForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        Select Case e.KeyData
+            Case Keys.Control Or Keys.A
+                For Each i As ListViewItem In lv.Items
+                    i.Selected = True
+                Next
+            Case Keys.Delete
+                lv.RemoveSelection()
+        End Select
     End Sub
 End Class

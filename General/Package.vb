@@ -72,7 +72,7 @@ Class Packs
         .Name = "Visual C++ 2015",
         .Filename = "msvcp140.dll",
         .Description = "Visual C++ 2015 Redistributable Packages which is required by some tools used by StaxRip.",
-        .DownloadURL = "https://www.microsoft.com/en-us/download/details.aspx?id=48145",
+        .DownloadURL = "http://download.microsoft.com/download/8/c/b/8cb4af84-165e-4b36-978d-e867e07fc707/vc_redist.x64.exe",
         .FixedDir = CommonDirs.System}
 
     Public Shared DGDecodeNV As New PluginPackage With {
@@ -161,11 +161,7 @@ Class Packs
             .Dependencies = {"fmtconv", "adjust"},
             .Description = "mawen1250's VapourSynth functions.",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=172564",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/mvsfunc",
-            .VapourSynthFiltersFunc = Function() {New VideoFilter("Field", "Assume | AssumeFrame", "clip = mvsfunc.AssumeFrame(clip)"),
-                                         New VideoFilter("Field", "Assume | AssumeTFF", "clip = mvsfunc.AssumeTFF(clip)"),
-                                         New VideoFilter("Field", "Assume | AssumeBFF", "clip = mvsfunc.AssumeBFF(clip)"),
-                                         New VideoFilter("Field", "Assume | AssumeCombed", "clip = mvsfunc.AssumeCombed(clip)")}})
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/mvsfunc"})
 
         Packages.Add(New PluginPackage With {
             .Name = "havsfunc",
@@ -389,7 +385,7 @@ Class Packs
     End Function
 End Class
 
-Class Package
+Public Class Package
     Implements IComparable(Of Package)
 
     Property Name As String
@@ -406,7 +402,6 @@ Class Package
     Property HelpURL As String
     Property IsRequiredFunc As Func(Of Boolean)
     Property StatusFunc As Func(Of String)
-    Property ForceCorrectVersion As Boolean
 
     ReadOnly Property ID As String
         Get
@@ -511,10 +506,7 @@ Class Package
     End Function
 
     Overridable Function GetStatus() As String
-        If ForceCorrectVersion AndAlso Not IsCorrectVersion() Then
-            Return "Incompatible Version"
-        End If
-
+        If IsOutdated() Then Return "Unsupported outdated version"
         If Not StatusFunc Is Nothing Then Return StatusFunc.Invoke
     End Function
 
@@ -558,6 +550,11 @@ Class Package
         End If
     End Function
 
+    Function IsOutdated() As Boolean
+        Dim fp = GetPath()
+        If fp <> "" Then If (VersionDate - File.GetLastWriteTimeUtc(fp)).TotalDays > 3 Then Return True
+    End Function
+
     Overridable Function IsCorrectVersion() As Boolean
         Dim fp = GetPath()
 
@@ -570,6 +567,10 @@ Class Package
     Function GetDir() As String
         Return Filepath.GetDir(GetPath)
     End Function
+
+    Sub SetPath(path As String)
+        s?.Storage?.SetString(Name + "custom path", path)
+    End Sub
 
     Overridable Function GetPath() As String
         Dim ret As String
@@ -666,8 +667,7 @@ Class AviSynthPlusPackage
         WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         FixedDir = CommonDirs.System
-        ForceCorrectVersion = True
-        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\AviSynth+_r1828.exe")
+        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\AviSynth+_r1841.exe")
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -714,6 +714,18 @@ Class PythonPackage
 
             If File.Exists(i) Then Return i
         Next
+
+        Dim paths = Environment.ExpandEnvironmentVariables("%Path%").SplitNoEmptyAndWhiteSpace(";").ToList
+        paths.AddRange(Environment.ExpandEnvironmentVariables("%PATH%").SplitNoEmptyAndWhiteSpace(";"))
+
+        For Each i In paths
+            i = i.Trim(" "c, """"c).AppendSeparator
+
+            If File.Exists(i + "python.exe") Then
+                SetPath(i + "python.exe")
+                Return i + "python.exe"
+            End If
+        Next
     End Function
 End Class
 
@@ -726,7 +738,7 @@ Class VapourSynthPackage
         Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         WebURL = "http://www.vapoursynth.com"
         HelpURL = "http://www.vapoursynth.com/doc"
-        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R31/vapoursynth-r31.exe"
+        DownloadURL = "https://dl.dropboxusercontent.com/u/73468194/VapourSynth-R32-RC2.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean

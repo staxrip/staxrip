@@ -443,12 +443,20 @@ Class CropForm
     End Sub
 
     Private Sub CropForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        Dim m = p.Script.GetErrorMessage
+        Dim err = p.Script.GetErrorMessage
 
-        If Not m Is Nothing Then
-            e.Cancel = True
-            MsgWarn(m)
-            Exit Sub
+        If err <> "" Then
+            Using td As New TaskDialog(Of String)
+                td.MainInstruction = "Script Error"
+                td.Content = err
+                td.AddButton("OK", "OK")
+                td.AddButton("Exit", "Exit")
+
+                If td.Show() = "OK" Then
+                    e.Cancel = True
+                    Exit Sub
+                End If
+            End Using
         End If
 
         p.RemindToCrop = False

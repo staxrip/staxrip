@@ -798,7 +798,15 @@ Class MainForm
             AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf g.OnUnhandledException
             AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
 
-            s = DirectCast(SafeSerialization.Deserialize(New ApplicationSettings, Paths.SettingsFile, New LegacySerializationBinder), ApplicationSettings)
+            Try
+                s = DirectCast(SafeSerialization.Deserialize(New ApplicationSettings,
+                                                             Paths.SettingsFile,
+                                                             New LegacySerializationBinder), ApplicationSettings)
+            Catch ex As Exception
+                g.ShowException(ex)
+                s = New ApplicationSettings
+                s.Init()
+            End Try
 
             MenuItemEx.UseTooltips = s.EnableTooltips
 
@@ -851,8 +859,7 @@ Class MainForm
 
             CustomMainMenu.AddKeyDownHandler(Me)
             CustomMainMenu.BuildMenu()
-
-            LoadMainMenuDynamic()
+            UpdateDynamicMenu()
             UpdateAudioMenu()
             MenuStrip.ResumeLayout()
             OpenProject(Paths.StartupTemplatePath)
@@ -1052,11 +1059,11 @@ Class MainForm
         End If
     End Function
 
-    Sub UpdateRecentProjectsMenuItems()
-        UpdateRecentProjectsMenuItems(Nothing)
+    Sub UpdateRecentProjectsMenu()
+        UpdateRecentProjectsMenuAsync(Nothing)
     End Sub
 
-    Async Sub UpdateRecentProjectsMenuItems(path As String)
+    Async Sub UpdateRecentProjectsMenuAsync(path As String)
         Await Task.Run(Sub()
                            Dim list As New List(Of String)
 
@@ -1107,6 +1114,12 @@ Class MainForm
     End Sub
 
     Sub UpdateDynamicMenu()
+        PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
+        PopulateProfileMenu(DynamicMenuItemID.MuxerProfiles)
+        PopulateProfileMenu(DynamicMenuItemID.Audio1Profiles)
+        PopulateProfileMenu(DynamicMenuItemID.Audio2Profiles)
+        PopulateProfileMenu(DynamicMenuItemID.FilterSetupProfiles)
+
         For Each i In CustomMainMenu.MenuItems
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" Then
                 If i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.LaunchApplications) Then
@@ -1125,9 +1138,7 @@ Class MainForm
                     For Each i2 In sd
                         i.DropDownItems.Add(New ActionMenuItem(i2.Key, i2.Value))
                     Next
-                End If
-
-                If i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.HelpApplications) Then
+                ElseIf i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.HelpApplications) Then
                     i.DropDownItems.Clear()
 
                     For Each i2 In Packs.Packages
@@ -1154,7 +1165,26 @@ Class MainForm
         Next
     End Sub
 
-    Sub UpdateTemplateProjectsMenuItems()
+    Sub UpdateScriptsMenu()
+        For Each i In CustomMainMenu.MenuItems
+            If i.CustomMenuItem.MethodName = "DynamicMenuItem" Then
+                If i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.Scripts) Then
+                    i.DropDownItems.Clear()
+
+                    For Each i2 In Directory.GetFiles(Paths.ScriptDir)
+                        ActionMenuItem.Add(i.DropDownItems,
+                                           i2.FileName,
+                                           Sub() g.DefaultCommands.ExecuteScriptFile(i2))
+                    Next
+
+                    i.DropDownItems.Add(New ToolStripSeparator)
+                    ActionMenuItem.Add(i.DropDownItems, "Open scripts folder", Sub() g.ShellExecute(Paths.ScriptDir))
+                End If
+            End If
+        Next
+    End Sub
+
+    Sub UpdateTemplatesMenu()
         For Each i In CustomMainMenu.MenuItems
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
                 i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.TemplateProjects) Then
@@ -1167,15 +1197,8 @@ Class MainForm
 
                 For Each i2 In Directory.GetFiles(Paths.TemplateDir, "*.srip", SearchOption.AllDirectories)
                     Dim base = Filepath.GetBase(i2)
-
-                    If i2 = Paths.StartupTemplatePath Then
-                        base += " (Startup)"
-                    End If
-
-                    If i2.Contains("Backup\") Then
-                        base = "Backup | " + base
-                    End If
-
+                    If i2 = Paths.StartupTemplatePath Then base += " (Startup)"
+                    If i2.Contains("Backup\") Then base = "Backup | " + base
                     ActionMenuItem.Add(i.DropDownItems, base, AddressOf LoadProject, i2, Nothing)
                 Next
 
@@ -1193,7 +1216,7 @@ Class MainForm
             Try
                 DirectoryHelp.Delete(Paths.TemplateDir)
                 Paths.TemplateDir.ToString()
-                UpdateTemplateProjectsMenuItems()
+                UpdateTemplatesMenu()
             Catch ex As Exception
                 g.ShowException(ex)
             End Try
@@ -1210,8 +1233,7 @@ Class MainForm
 
         If Not File.Exists(path) Then
             MsgWarn("Project file not found.")
-            UpdateTemplateProjectsMenuItems()
-            UpdateRecentProjectsMenuItems()
+            UpdateRecentProjectsMenu()
         Else
             OpenProject(path)
         End If
@@ -1254,7 +1276,12 @@ Class MainForm
         Dim safeInstance = New Project
         safeInstance.Init()
 
-        p = DirectCast(SafeSerialization.Deserialize(safeInstance, path, New LegacySerializationBinder), Project)
+        Try
+            p = DirectCast(SafeSerialization.Deserialize(safeInstance, path, New LegacySerializationBinder), Project)
+        Catch ex As Exception
+            g.ShowException(ex)
+            Exit Function
+        End Try
 
         Text = Application.ProductName + " x64 - " + Filepath.GetBase(path)
         SkipAssistant = True
@@ -1314,7 +1341,7 @@ Class MainForm
         SkipAssistant = False
 
         Assistant()
-        UpdateRecentProjectsMenuItems(path)
+        UpdateRecentProjectsMenuAsync(path)
         g.RaiseAppEvent(ApplicationEvent.ProjectLoaded)
         g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
 
@@ -1745,7 +1772,17 @@ Class MainForm
                     Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
 
                     If sourceWidth Mod 4 <> 0 OrElse sourceHeight Mod 4 <> 0 Then
-                        p.Script.GetFilter("Source").Script += CrLf + "Crop(0, 0, -" & sourceWidth Mod 4 & ", -" & sourceHeight Mod 4 & ")"
+                        If p.Script.Engine = ScriptingEngine.AviSynth Then
+                            If Not p.SourceFile.Ext = "avs" Then
+                                p.Script.GetFilter("Source").Script += CrLf + "Crop(0, 0, -" &
+                                    sourceWidth Mod 4 & ", -" & sourceHeight Mod 4 & ")"
+                            End If
+                        Else
+                            If Not p.SourceFile.Ext = "vpy" Then
+                                p.Script.GetFilter("Source").Script += CrLf +
+                                    "clip = core.std.CropRel(clip, 0, " & sourceWidth Mod 4 & ", 0, " & sourceHeight Mod 4 & ")"
+                            End If
+                        End If
                     End If
                 End If
 
@@ -1854,8 +1891,7 @@ Class MainForm
                                 End If
                             End If
 
-                            If f.Script?.Contains("(") Then p.Script.Filters(0) = f
-                            AviSynthListView.Load()
+                            If f.Script?.Contains("(") Then p.Script.SetFilter(0, f)
                         Else
                             p.Script.Synchronize()
                             Throw New AbortException
@@ -1887,16 +1923,6 @@ Class MainForm
                     If (CInt(miFPS) * 2) = CInt(avsFPS) Then
                         Dim src = p.Script.GetFilter("Source")
                         src.Script = src.Script + CrLf + "SelectEven().AssumeFPS(" & miFPS.ToString(CultureInfo.InvariantCulture) + ")"
-                        p.SourceScript.Synchronize()
-                    End If
-                End If
-            Else
-                If p.SourceFile.Ext <> "vpy" Then
-                    Dim scanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
-
-                    If scanType.EqualsAny("Interlaced", "MBAFF") Then
-                        Dim src = p.Script.GetFilter("Source")
-                        src.Script = src.Script + CrLf + "clip = mvsfunc.AssumeFrame(clip)"
                         p.SourceScript.Synchronize()
                     End If
                 End If
@@ -1967,7 +1993,6 @@ Class MainForm
             If crop Then
                 g.RunAutoCrop()
                 DisableCropFilter()
-                AviSynthListView.Load()
             End If
 
             AutoResize()
@@ -3153,7 +3178,7 @@ Class MainForm
             SafeSerialization.Serialize(p, path)
             SetSavedProject()
             Text = Application.ProductName + " x64 - " + Filepath.GetBase(path)
-            UpdateRecentProjectsMenuItems(path)
+            UpdateRecentProjectsMenuAsync(path)
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -3176,7 +3201,7 @@ Class MainForm
             If b.Show = DialogResult.OK Then
                 p.TemplateName = b.Value.RemoveChars(Path.GetInvalidFileNameChars)
                 SaveProjectByPath(Paths.TemplateDir + p.TemplateName + ".srip")
-                UpdateTemplateProjectsMenuItems()
+                UpdateTemplatesMenu()
 
                 If b.Checked Then
                     s.StartupTemplate = b.Value
@@ -3246,7 +3271,7 @@ Class MainForm
         Assistant()
     End Sub
 
-    Sub LoadVideoEncoder(profile As Profile)
+    Function LoadVideoEncoder(profile As Profile) As VideoEncoder
         Dim currentMuxer = p.VideoEncoder.Muxer
         p.VideoEncoder = DirectCast(ObjectHelp.GetCopy(profile), VideoEncoder)
 
@@ -3260,7 +3285,8 @@ Class MainForm
         p.VideoEncoder.OnStateChange()
         RecalcBitrate()
         Assistant()
-    End Sub
+        Return p.VideoEncoder
+    End Function
 
     Sub RecalcBitrate()
         tbSize_TextChanged()
@@ -3331,7 +3357,6 @@ Class MainForm
             End Using
 
             DisableCropFilter()
-            AviSynthListView.Load()
             Assistant()
         End If
     End Sub
@@ -3375,12 +3400,12 @@ Class MainForm
     <Command("Dialog | Main Menu Editor", "Dialog to configure the main menu.")>
     Sub OpenMainMenuEditor()
         s.CustomMenuMainForm = CustomMainMenu.Edit()
+        UpdateTemplatesMenu()
+        UpdateScriptsMenu()
+        UpdateRecentProjectsMenu()
+        UpdateDynamicMenu()
         g.SetRenderer(MenuStrip)
         Refresh()
-        LoadMainMenuDynamic()
-        UpdateRecentProjectsMenuItems()
-        UpdateTemplateProjectsMenuItems()
-        UpdateDynamicMenu()
         g.SaveSettings()
     End Sub
 
@@ -3921,6 +3946,7 @@ Class MainForm
 
         If Not f Is Nothing AndAlso CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
             f.Active = False
+            AviSynthListView.Load()
         End If
     End Sub
 
@@ -4073,14 +4099,11 @@ Class MainForm
             Next
 
             Dim desc = iCommand.Attribute.Description
-
-            If desc Is Nothing Then
-                desc = "n/a"
-            End If
+            If desc Is Nothing Then desc = "n/a"
 
             If params.Length = 0 Then
                 If switch Is Nothing Then
-                    advanced.Add(String.Join("<br>", switches), desc)
+                    advanced.Add(String.Join(CrLf, switches), desc)
                 Else
                     basic.Add(String.Join(", ", switches), desc)
                 End If
@@ -4099,17 +4122,18 @@ Class MainForm
                         enumList.Add(iParam.ParameterType.Name + ": " + String.Join(", ", l.ToArray))
                     End If
 
-                    paramList.Add("&lt;" + DispNameAttribute.GetValue(iParam.GetCustomAttributes(False)) + iParam.ParameterType.Name.Replace("Int32", "Integer") + "&gt;")
+                    Dim paramName = DispNameAttribute.GetValue(iParam.GetCustomAttributes(False))
+                    paramList.Add("<" + paramName + If(paramName = "", "", " as ") + iParam.ParameterType.Name.Replace("Int32", "Integer") + ">")
                 Next
 
                 For iSwitch = 0 To switches.Length - 1
-                    switches(iSwitch) += ":<i>" + String.Join(",", paramList.ToArray) + "</i>"
+                    switches(iSwitch) += ":" + String.Join(",", paramList.ToArray)
                 Next
 
-                Dim switchcell = String.Join("<br>", switches)
+                Dim switchcell = String.Join(CrLf, switches)
 
                 If enumList.Count > 0 Then
-                    switchcell += "<br><br>" + String.Join("<br>", enumList.ToArray)
+                    switchcell += CrLf2 + String.Join(CrLf, enumList.ToArray)
                 End If
 
                 If switch Is Nothing Then
@@ -4128,8 +4152,7 @@ Class MainForm
         f.Doc.WriteP("StaxRip ""C:\Movie 2\VTS_01_1.VOB""")
         f.Doc.WriteP("StaxRip ""C:\Movie 2\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB""")
         f.Doc.WriteP("StaxRip -template:DVB ""C:\Movie 2\capture.mpg"" -encode -standby")
-        f.Doc.WriteP("StaxRip -template:""C:\Movie 2\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB"" -encode -shutdown")
-        f.Doc.WriteP("StaxRip -Perform/ShowMessageBox:""message text"",""message title"",info")
+        f.Doc.WriteP("StaxRip -Perform-ShowMessageBox:""message text"",""message title"",info")
 
         f.Show()
     End Sub
@@ -4175,6 +4198,8 @@ Class MainForm
         ret.Add("Tools|Directories|Startup", "ExecuteCommandLine", """%startup_dir%""")
         ret.Add("Tools|Directories|Programs", "ExecuteCommandLine", """%programs_dir%""")
         ret.Add("Tools|Directories|System", "ExecuteCommandLine", """%system_dir%""")
+        ret.Add("Tools|Directories|Scripts", "ExecuteCommandLine", """%script_dir%""")
+
         ret.Add("Tools|Launch", "DynamicMenuItem", DynamicMenuItemID.LaunchApplications)
 
         ret.Add("Tools|Advanced|AVSMeter...", "ExecuteCommandLine", """%app:AVSMeter%"" ""%script_file%""" + CrLf + "pause", False, False, True)
@@ -4186,6 +4211,7 @@ Class MainForm
         ret.Add("Tools|Advanced|MediaInfo Folder View...", "OpenMediaInfoFolderView")
         ret.Add("Tools|Advanced|Reset Setting...", "ResetSettings")
         ret.Add("Tools|Advanced|Thumbnails Generator...", "BatchGenerateThumbnails")
+        ret.Add("Tools|Scripts", "DynamicMenuItem", DynamicMenuItemID.Scripts)
         ret.Add("Tools|Edit Menu...", "OpenMainMenuEditor")
         ret.Add("Tools|Settings...", "OpenSettingsDialog", "")
 
@@ -4272,7 +4298,6 @@ Class MainForm
 
                 Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")
                 p.Script.InsertAfter(insertCat, filter)
-                AviSynthListView.Load()
             End If
         End Using
     End Sub
@@ -4286,12 +4311,10 @@ Class MainForm
 
         If Not g.EnableFilter("Resize") Then
             If p.Script.Engine = ScriptingEngine.AviSynth Then
-                p.Script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
+                p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
             Else
-                p.Script.Filters.Add(New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)"))
+                p.Script.AddFilter(New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)"))
             End If
-
-            AviSynthListView.Load()
         End If
 
         tbTargetWidth.Text = CInt(320 + tbResize.Value * p.ForcedOutputMod).ToString
@@ -4455,8 +4478,7 @@ Class MainForm
     <Command("Parameter | Target Image Size", "Sets the target image size.")>
     Sub SetTargetImageSize(width As Integer, height As Integer)
         If Not g.EnableFilter("Resize") Then
-            p.Script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
-            AviSynthListView.Load()
+            p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
         End If
 
         If height = 0 AndAlso width > 0 Then
@@ -4474,8 +4496,7 @@ Class MainForm
     <Command("Parameter | Target Image Size By Pixel", "Sets the target image size by pixels (width x height).")>
     Sub SetTargetImageSizeByPixel(pixel As Integer)
         If Not g.EnableFilter("Resize") Then
-            p.Script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
-            AviSynthListView.Load()
+            p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
         End If
 
         Dim cropw = p.SourceWidth - p.CropLeft - p.CropRight
@@ -4556,28 +4577,44 @@ Class MainForm
                 (Packs.Python.VerifyOK(True) AndAlso Packs.VapourSynth.VerifyOK(True)) Then
 
             p.Script = profile
-            AviSynthListView.Load()
-            AviSynthListView.RaiseScriptChanged()
+            AviSynthListView.OnChanged()
             Assistant()
         End If
+    End Sub
+
+    Private Sub MainForm_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+        UpdateTemplatesMenu()
+        UpdateScriptsMenu()
+        UpdateRecentProjectsMenu()
+        UpdateDynamicMenu()
     End Sub
 
     Private Sub MainForm_Shown() Handles Me.Shown
         Activate() 'needed for custom settings dir option
         Refresh()
 
-        If Not File.Exists(Packs.NeroAACEnc.GetPath) Then
+        Task.Run(Sub() Scripting.RunCSharp("1+1"))
+
+        If Not File.Exists(Packs.x264.GetPath) Then
             MsgError("Files included with StaxRip are missing, maybe the 7-Zip archive wasn't properly unpacked. You can find a packer at [http://www.7-zip.org www.7-zip.org].")
             Close()
             Exit Sub
         End If
 
-        UpdateRecentProjectsMenuItems()
-        UpdateTemplateProjectsMenuItems()
-        UpdateDynamicMenu()
         ProcessCommandLine(Environment.GetCommandLineArgs)
-
         IsLoading = False
+
+        If Directory.Exists(CommonDirs.Startup + "Apps\Scripts") Then
+            For Each i In Directory.GetFiles(CommonDirs.Startup + "Apps\Scripts")
+                If Not s.Storage.GetBool(i.FileName) AndAlso
+                    Not File.Exists(Paths.ScriptDir + i.FileName) Then
+
+                    FileHelp.Copy(i, Paths.ScriptDir + i.FileName)
+                    s.Storage.SetBool(i.FileName, True)
+                    UpdateScriptsMenu()
+                End If
+            Next
+        End If
 
         'Using f As New TestForm
         '    f.StartPosition = FormStartPosition.CenterScreen
@@ -4697,13 +4734,14 @@ Class MainForm
     End Sub
 
     <Command("Perform | Execute Multiple Commands", "Executes multiple StaxRip commands using command line switches.")>
-    Private Sub EcecuteStaxRipCmdlArgs(<Description("Requires a single command line switch on each line."),
-        Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> switches As String)
+    Private Sub EcecuteStaxRipCmdlArgs(<Description("Requires a single command line switch on each line.")>
+                                       <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
+                                       Commands As String)
 
         Dim errorArg As String = Nothing
 
         Try
-            For Each i In switches.SplitLinesNoEmpty
+            For Each i In Commands.SplitLinesNoEmpty
                 errorArg = i
 
                 If Not CommandManager.ProcessCommandLineArgument(i) Then
@@ -4869,7 +4907,7 @@ Class MainForm
 
                         OpenProject(tempPath, False)
                         FileHelp.Delete(tempPath)
-                        UpdateRecentProjectsMenuItems()
+                        UpdateRecentProjectsMenuAsync(Nothing)
                         OpenJobsDialog()
                     End If
                 End Using
@@ -4909,7 +4947,7 @@ Class MainForm
 
                         OpenProject(tempPath, False)
                         FileHelp.Delete(tempPath)
-                        UpdateRecentProjectsMenuItems()
+                        UpdateRecentProjectsMenu()
 
                         If f.cbDemuxAndIndex.Checked Then
                             OpenJobsDialog()
@@ -5268,14 +5306,6 @@ Class MainForm
         PopulateProfileMenu(DynamicMenuItemID.Audio2Profiles)
     End Sub
 
-    Private Sub LoadMainMenuDynamic()
-        PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
-        PopulateProfileMenu(DynamicMenuItemID.MuxerProfiles)
-        PopulateProfileMenu(DynamicMenuItemID.Audio1Profiles)
-        PopulateProfileMenu(DynamicMenuItemID.Audio2Profiles)
-        PopulateProfileMenu(DynamicMenuItemID.FilterSetupProfiles)
-    End Sub
-
     Sub UpdateAudioMenu()
         AudioMenu0.Items.Clear()
         AudioMenu1.Items.Clear()
@@ -5288,7 +5318,7 @@ Class MainForm
         p.VideoEncoder.LoadMuxer(profile)
     End Sub
 
-    Private Sub AviSynthListView_ScriptChanged() Handles AviSynthListView.ScriptChanged
+    Private Sub AviSynthListView_ScriptChanged() Handles AviSynthListView.Changed
         If Not IsLoading Then
             Packs.DGDecodeNV.VerifyOK()
             Packs.DGDecodeIM.VerifyOK()

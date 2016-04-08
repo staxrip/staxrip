@@ -2,7 +2,7 @@ Imports System.Globalization
 Imports System.Text
 
 <Serializable()>
-Class Project
+Public Class Project
     Implements ISafeSerialization
 
     Private Storage As ObjectStorage

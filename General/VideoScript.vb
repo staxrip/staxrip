@@ -2,7 +2,7 @@ Imports System.Text
 Imports StaxRip
 
 <Serializable()>
-Class VideoScript
+Public Class VideoScript
     Inherits Profile
 
     <NonSerialized()> Private Framerate As Double
@@ -16,6 +16,12 @@ Class VideoScript
 
     Overridable Property Engine As ScriptingEngine = ScriptingEngine.AviSynth
     Overridable Property Path As String = ""
+
+    Shared Event Changed(script As VideoScript)
+
+    Sub RaiseChanged()
+        RaiseEvent Changed(Me)
+    End Sub
 
     Overridable ReadOnly Property FileType As String
         Get
@@ -48,12 +54,42 @@ Class VideoScript
         Return Macro.Solve(ModifyScript(GetScript, Engine)).Trim
     End Function
 
-    Sub Remove(category As String, Optional name As String = Nothing)
+    Sub RemoveFilter(category As String, Optional name As String = Nothing)
         For Each i In Filters.ToArray
-            If i.Category = category AndAlso (name Is Nothing OrElse i.Path = name) Then
+            If i.Category = category AndAlso (name = "" OrElse i.Path = name) Then
                 Filters.Remove(i)
+                RaiseChanged()
             End If
         Next
+    End Sub
+
+    Sub RemoveFilterAt(index As Integer)
+        If Filters.Count > 0 AndAlso index < Filters.Count Then
+            Filters.RemoveAt(index)
+            RaiseChanged()
+        End If
+    End Sub
+
+    Sub RemoveFilter(filter As VideoFilter)
+        If Filters.Contains(filter) Then
+            Filters.Remove(filter)
+            RaiseChanged()
+        End If
+    End Sub
+
+    Sub InsertFilter(index As Integer, filter As VideoFilter)
+        Filters.Insert(index, filter)
+        RaiseChanged()
+    End Sub
+
+    Sub AddFilter(filter As VideoFilter)
+        Filters.Add(filter)
+        RaiseChanged()
+    End Sub
+
+    Sub SetFilter(index As Integer, filter As VideoFilter)
+        Filters(index) = filter
+        RaiseChanged()
     End Sub
 
     Sub SetFilter(category As String, name As String, script As String)
@@ -62,14 +98,21 @@ Class VideoScript
                 i.Path = name
                 i.Script = script
                 i.Active = True
-                Exit For
+                RaiseChanged()
+                Exit Sub
             End If
         Next
+
+        If Filters.Count > 0 Then
+            Filters.Insert(1, New VideoFilter(category, name, script))
+            RaiseChanged()
+        End If
     End Sub
 
     Sub InsertAfter(category As String, af As VideoFilter)
         Dim f = GetFilter(category)
         Filters.Insert(Filters.IndexOf(f) + 1, af)
+        RaiseChanged()
     End Sub
 
     Function Contains(category As String, search As String) As Boolean
@@ -333,7 +376,7 @@ Class VideoScript
 End Class
 
 <Serializable()>
-Class TargetVideoScript
+Public Class TargetVideoScript
     Inherits VideoScript
 
     Sub New(name As String)
@@ -353,7 +396,7 @@ Class TargetVideoScript
 End Class
 
 <Serializable()>
-Class SourceVideoScript
+Public Class SourceVideoScript
     Inherits VideoScript
 
     Overrides Property Path() As String
@@ -379,7 +422,7 @@ Class SourceVideoScript
 End Class
 
 <Serializable()>
-Class VideoFilter
+Public Class VideoFilter
     Implements IComparable(Of VideoFilter)
 
     Property Active As Boolean
@@ -593,6 +636,9 @@ Class FilterCategory
         field.Filters.Add(New VideoFilter(field.Name, "Vinverse", "clip = core.vinverse.Vinverse(clip)"))
         field.Filters.Add(New VideoFilter(field.Name, "Select Even", "clip = clip[::2]"))
         field.Filters.Add(New VideoFilter(field.Name, "Select Odd", "clip = clip[1::2]"))
+        field.Filters.Add(New VideoFilter(field.Name, "Set Frame Based", "clip = core.std.SetFieldBased(clip, 0)"))
+        field.Filters.Add(New VideoFilter(field.Name, "Set Bottom Field First", "clip = core.std.SetFieldBased(clip, 1)"))
+        field.Filters.Add(New VideoFilter(field.Name, "Set Top Field First", "clip = core.std.SetFieldBased(clip, 2)"))
 
         ret.Add(field)
 
@@ -752,7 +798,7 @@ Class FilterParameters
     End Function
 End Class
 
-Enum ScriptingEngine
+Public Enum ScriptingEngine
     AviSynth
     VapourSynth
 End Enum

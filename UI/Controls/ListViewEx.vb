@@ -14,15 +14,16 @@ Namespace UI
         <DefaultValue(CStr(Nothing))> Property UpButton As Button
         <DefaultValue(CStr(Nothing))> Property DownButton As Button
         <DefaultValue(CStr(Nothing))> Property RemoveButton As Button
-        <DefaultValue(CStr(Nothing))> Property EditButton As Button
 
-        Event Edited(value As Object, pos As Point)
-        Event BeforeShowControl(e As BeforeShowControlEventArgs)
-        Event ControlsUpdated()
+        Property SingleSelectionButtons As Button()
+        Property MultiSelectionButtons As Button()
+        Property ItemCheckProperty As String
 
-        Private ColumnsDic As New Dictionary(Of Control, List(Of Integer))
-        Private CurrentPos As Point
-        Private IsInit As Boolean
+        Event ItemsChanged()
+
+        Sub OnItemsChanged()
+            RaiseEvent ItemsChanged()
+        End Sub
 
         <DefaultValue(False)>
         Property ShowContextMenuOnLeftClick As Boolean
@@ -34,22 +35,72 @@ Namespace UI
             DoubleBuffered = True
         End Sub
 
-        Sub UpdateControls()
-            If Not RemoveButton Is Nothing Then RemoveButton.Enabled = SelectedItems.Count > 0
-            If Not UpButton Is Nothing Then UpButton.Enabled = CanMoveUp()
-            If Not DownButton Is Nothing Then DownButton.Enabled = CanMoveDown()
-            If Not EditButton Is Nothing Then EditButton.Enabled = SelectedItems.Count = 1
-
-            RaiseEvent ControlsUpdated()
+        Sub SelectFirst()
+            If Items.Count > 0 Then Items(0).Selected = True
+            UpdateControls()
         End Sub
 
-        Protected Overrides Sub OnCreateControl()
-            MyBase.OnCreateControl()
+        Function SelectedItem(Of T)() As T
+            If SelectedItems.Count > 0 Then Return DirectCast(SelectedItems(0).Tag, T)
+        End Function
 
-            If Not DesignMode Then
-                If Not UpButton Is Nothing Then UpButton.AddClickAction(AddressOf MoveSelectionUp)
-                If Not DownButton Is Nothing Then DownButton.AddClickAction(AddressOf MoveSelectionDown)
-                If Not RemoveButton Is Nothing Then RemoveButton.AddClickAction(AddressOf RemoveSelection)
+        Function SelectedItem() As Object
+            If SelectedItems.Count > 0 Then Return SelectedItems(0).Tag
+        End Function
+
+        Function AddItem(item As Object) As ListViewItem
+            Dim listItem = Items.Add("")
+            listItem.Tag = item
+            RefreshItem(listItem.Index)
+            OnItemsChanged()
+            Return listItem
+        End Function
+
+        Sub AddItems(items As IEnumerable)
+            For Each i In items
+                AddItem(i)
+            Next
+        End Sub
+
+        Sub RefreshItem(index As Integer)
+            If ItemCheckProperty <> "" Then
+                Items(index).Checked = CBool(Items(index).Tag.GetType.GetProperty(
+                    ItemCheckProperty).GetValue(Items(index).Tag))
+            End If
+
+            Items(index).Text = Items(index).Tag.ToString
+        End Sub
+
+        Sub RefreshSelection()
+            For Each i As ListViewItem In SelectedItems
+                RefreshItem(i.Index)
+            Next
+        End Sub
+
+        Sub EnableListBoxMode()
+            View = View.Details
+            FullRowSelect = True
+            Columns.Add("")
+            HeaderStyle = ColumnHeaderStyle.None
+            AddHandler Layout, Sub() Columns(0).Width = Width - 4
+            AddHandler HandleCreated, Sub() Columns(0).Width = Width - 4
+        End Sub
+
+        Sub UpdateControls()
+            If Not UpButton Is Nothing Then UpButton.Enabled = CanMoveUp()
+            If Not DownButton Is Nothing Then DownButton.Enabled = CanMoveDown()
+            If Not RemoveButton Is Nothing Then RemoveButton.Enabled = Not SelectedItem() Is Nothing
+
+            If Not SingleSelectionButtons Is Nothing Then
+                For Each i In SingleSelectionButtons
+                    i.Enabled = SelectedItems.Count = 1
+                Next
+            End If
+
+            If Not MultiSelectionButtons Is Nothing Then
+                For Each i In MultiSelectionButtons
+                    i.Enabled = SelectedItems.Count > 0
+                Next
             End If
         End Sub
 
@@ -70,6 +121,7 @@ Namespace UI
                 Dim iLastItem = SelectedIndices(SelectedIndices.Count - 1)
                 Items.Insert(iLastItem + 1, itemAbove)
                 UpdateControls()
+                OnItemsChanged()
                 EnsureVisible(indexAbove)
             End If
         End Sub
@@ -83,6 +135,7 @@ Namespace UI
                 Dim iAbove = SelectedIndices(0) - 1
                 Items.Insert(iAbove + 1, itemBelow)
                 UpdateControls()
+                OnItemsChanged()
                 EnsureVisible(indexBelow)
             End If
         End Sub
@@ -118,6 +171,7 @@ Namespace UI
                 End If
 
                 UpdateControls()
+                OnItemsChanged()
             End If
         End Sub
 
@@ -163,9 +217,7 @@ Namespace UI
         Event UpdateContextMenu()
 
         Protected Overrides Sub OnMouseUp(e As MouseEventArgs)
-            If e.Button = MouseButtons.Right Then
-                RaiseEvent UpdateContextMenu()
-            End If
+            If e.Button = MouseButtons.Right Then RaiseEvent UpdateContextMenu()
 
             If ShowContextMenuOnLeftClick AndAlso e.Button = MouseButtons.Left Then
                 RaiseEvent UpdateContextMenu()
@@ -173,7 +225,6 @@ Namespace UI
             End If
 
             DragActive = False
-
             MyBase.OnMouseUp(e)
         End Sub
 
@@ -329,8 +380,18 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
-            Native.SetWindowTheme(Handle, "explorer", Nothing)
             MyBase.OnHandleCreated(e)
+            Native.SetWindowTheme(Handle, "explorer", Nothing)
+            If Not UpButton Is Nothing Then UpButton.AddClickAction(AddressOf MoveSelectionUp)
+            If Not DownButton Is Nothing Then DownButton.AddClickAction(AddressOf MoveSelectionDown)
+            If Not RemoveButton Is Nothing Then RemoveButton.AddClickAction(AddressOf RemoveSelection)
+
+            If ItemCheckProperty <> "" Then
+                AddHandler ItemCheck, Sub(sender As Object, e2 As ItemCheckEventArgs)
+                                          Items(e2.Index).Tag.GetType.GetProperty(ItemCheckProperty).SetValue(Items(e2.Index).Tag, e2.NewValue = CheckState.Checked)
+                                          OnItemsChanged()
+                                      End Sub
+            End If
         End Sub
 
         Protected Overrides Sub OnColumnClick(e As ColumnClickEventArgs)

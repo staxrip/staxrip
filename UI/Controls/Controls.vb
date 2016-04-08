@@ -11,7 +11,7 @@ Imports System.Threading
 Imports System.Threading.Tasks
 
 Namespace UI
-    Class TreeViewEx
+    Public Class TreeViewEx
         Inherits TreeView
 
         Private AutoCollapsValue As Boolean
@@ -355,7 +355,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class TextBoxEx
+    Public Class TextBoxEx
         Inherits TextBox
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
@@ -420,7 +420,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class CheckBoxEx
+    Public Class CheckBoxEx
         Inherits CheckBox
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
@@ -605,7 +605,7 @@ Namespace UI
         End Property
     End Class
 
-    Class LabelEx
+    Public Class LabelEx
         Inherits Label
 
         Sub New()
@@ -824,88 +824,11 @@ Namespace UI
         End Sub
 
         Private Sub ShowContext()
-            If Not ll.ContextMenuStrip Is Nothing Then
-                ll.ContextMenuStrip.Show(ll, 0, 16)
-            End If
+            If Not ll.ContextMenuStrip Is Nothing Then ll.ContextMenuStrip.Show(ll, 0, 16)
         End Sub
     End Class
 
-    Class CheckedListBoxEx
-        Inherits CheckedListBox
-
-        <DefaultValue(CStr(Nothing))> Property UpButton As Button
-        <DefaultValue(CStr(Nothing))> Property DownButton As Button
-        <DefaultValue(CStr(Nothing))> Property RemoveButton As Button
-
-        Event ItemsChanged()
-
-        Sub OnItemsChanged()
-            RaiseEvent ItemsChanged()
-        End Sub
-
-        Sub MoveSelectedItemUp()
-            Dim i = SelectedIndex
-
-            If i > 0 Then
-                Dim state = GetItemChecked(i)
-                Items.Insert(i - 1, SelectedItem)
-                Items.RemoveAt(i + 1)
-                SelectedIndex = i - 1
-                SetItemChecked(SelectedIndex, state)
-                OnItemsChanged()
-            End If
-        End Sub
-
-        Sub MoveSelectedItemDown()
-            Dim i = SelectedIndex
-
-            If i < Items.Count - 1 Then
-                Dim state = GetItemChecked(i)
-                Items.Insert(i + 2, SelectedItem)
-                Items.RemoveAt(i)
-                SelectedIndex = i + 1
-                SetItemChecked(SelectedIndex, state)
-                OnItemsChanged()
-            End If
-        End Sub
-
-        Sub RemoveSelection()
-            Dim i = SelectedIndex
-            Items.Remove(SelectedItem)
-            OnItemsChanged()
-
-            If Items.Count > i Then
-                SelectedIndex = i
-            Else
-                If Items.Count > 0 Then
-                    SelectedIndex = Items.Count - 1
-                End If
-            End If
-        End Sub
-
-        Protected Overrides Sub OnSelectedIndexChanged(e As EventArgs)
-            MyBase.OnSelectedIndexChanged(e)
-            UpdateControls()
-        End Sub
-
-        Sub UpdateControls()
-            If Not RemoveButton Is Nothing Then RemoveButton.Enabled = Not SelectedItem Is Nothing
-            If Not UpButton Is Nothing Then UpButton.Enabled = SelectedIndex > 0
-            If Not DownButton Is Nothing Then DownButton.Enabled = SelectedIndex < Items.Count - 1 AndAlso SelectedIndex >= 0
-        End Sub
-
-        Protected Overrides Sub OnCreateControl()
-            MyBase.OnCreateControl()
-
-            If Not DesignMode Then
-                If Not UpButton Is Nothing Then UpButton.AddClickAction(AddressOf MoveSelectedItemUp)
-                If Not DownButton Is Nothing Then DownButton.AddClickAction(AddressOf MoveSelectedItemDown)
-                If Not RemoveButton Is Nothing Then RemoveButton.AddClickAction(AddressOf RemoveSelection)
-            End If
-        End Sub
-    End Class
-
-    Class MenuButton
+    Public Class MenuButton
         Inherits ButtonEx
 
         Event ValueChangedUser(value As Object)
@@ -1168,7 +1091,7 @@ Namespace UI
     End Class
 
     <ProvideProperty("Expand", GetType(Control))>
-    Class FlowLayoutPanelEx
+    Public Class FlowLayoutPanelEx
         Inherits FlowLayoutPanel
         Implements IExtenderProvider
 
@@ -1282,7 +1205,7 @@ Namespace UI
         End Function
     End Class
 
-    Class ButtonEx
+    Public Class ButtonEx
         Inherits Button
 
         <DefaultValue(False)>
@@ -1605,7 +1528,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class NumEdit
+    Public Class NumEdit
         Inherits UserControl
 
         WithEvents TextBox As New Edit
@@ -1897,7 +1820,7 @@ Namespace UI
         End Class
     End Class
 
-    Class TextEdit
+    Public Class TextEdit
         Inherits UserControl
 
         Public WithEvents TextBox As New TextBoxEx
@@ -1956,13 +1879,13 @@ Namespace UI
         End Sub
     End Class
 
-    Interface IPage
+    Public Interface IPage
         Property Node As TreeNode
         Property Path As String
         Property TipProvider As TipProvider
     End Interface
 
-    Class DataGridViewEx
+    Public Class DataGridViewEx
         Inherits DataGridView
 
         Function AddTextBoxColumn() As DataGridViewTextBoxColumn

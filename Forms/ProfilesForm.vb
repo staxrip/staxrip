@@ -375,10 +375,10 @@ Class ProfilesForm
     End Sub
 
     Private Sub bEdit_Click() Handles bnEdit.Click
-        Dim o = ObjectHelp.GetCopy(Of Profile)(lb.SelectedItem)
+        Dim profile = DirectCast(ObjectHelp.GetCopy(lb.SelectedItem), Profile)
 
-        If o.Edit = DialogResult.OK Then
-            lb.Items(lb.SelectedIndex) = o
+        If profile.Edit = DialogResult.OK Then
+            lb.Items(lb.SelectedIndex) = profile
             UpdateControls()
         End If
     End Sub

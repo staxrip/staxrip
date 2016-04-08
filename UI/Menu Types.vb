@@ -443,7 +443,9 @@ Namespace UI
         End Property
 
         Sub KeyDown(sender As Object, e As KeyEventArgs)
-            If Enabled AndAlso e.KeyData = Shortcut Then
+            If Enabled AndAlso e.KeyData = Shortcut AndAlso
+                If(EnabledFunc Is Nothing, True, EnabledFunc.Invoke) Then
+
                 PerformClick()
                 e.Handled = True
             End If

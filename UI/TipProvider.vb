@@ -10,7 +10,7 @@ Imports System.Text.RegularExpressions
 
 Namespace UI
     <ProvideProperty("TipText", GetType(Control))>
-    Class TipProvider
+    Public Class TipProvider
         Inherits Component
         Implements IExtenderProvider
 

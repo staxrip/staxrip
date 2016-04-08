@@ -7,11 +7,19 @@ Imports VB6 = Microsoft.VisualBasic
 
 Module StringExtensions
     <Extension()>
-    Function ChangeExt(path As String, value As String) As String
-        If path = "" Then Return ""
-        If value = "" Then Return path
+    Function FileName(instance As String) As String
+        If instance = "" Then Return ""
+        Dim index = instance.LastIndexOf(Path.DirectorySeparatorChar)
+        If index > -1 Then Return instance.Substring(index + 1)
+        Return instance
+    End Function
+
+    <Extension()>
+    Function ChangeExt(instance As String, value As String) As String
+        If instance = "" Then Return ""
+        If value = "" Then Return instance
         If Not value.StartsWith(".") Then value = "." + value
-        Return Filepath.GetDirAndBase(path) + value.ToLower
+        Return Filepath.GetDirAndBase(instance) + value.ToLower
     End Function
 
     <Extension()>

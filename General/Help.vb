@@ -91,17 +91,7 @@ Class ObjectHelp
     End Function
 
     <DebuggerHidden()>
-    Shared Function GetCopy(o As Object) As Object
-        Using ms As New MemoryStream
-            Dim bf As New BinaryFormatter
-            bf.Serialize(ms, o)
-            ms.Position = 0
-            Return bf.Deserialize(ms)
-        End Using
-    End Function
-
-    <DebuggerHidden()>
-    Shared Function GetCopy(Of T)(o As Object) As T
+    Shared Function GetCopy(Of T)(o As T) As T
         Using ms As New MemoryStream
             Dim bf As New BinaryFormatter
             bf.Serialize(ms, o)

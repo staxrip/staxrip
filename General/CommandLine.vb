@@ -3,7 +3,7 @@ Imports System.Globalization
 Imports System.Text
 
 Namespace CommandLine
-    MustInherit Class CommandLineParams
+    Public MustInherit Class CommandLineParams
         Property Title As String
 
         Event ValueChanged(item As CommandLineItem)
@@ -48,7 +48,7 @@ Namespace CommandLine
         End Sub
     End Class
 
-    MustInherit Class CommandLineItem
+    Public MustInherit Class CommandLineItem
         Property Name As String
         Property Text As String
         Property Help As String
@@ -101,7 +101,7 @@ Namespace CommandLine
         End Function
     End Class
 
-    Class BoolParam
+    Public Class BoolParam
         Inherits CommandLineItem
 
         Property DefaultValue As Boolean
@@ -166,7 +166,7 @@ Namespace CommandLine
         End Function
     End Class
 
-    Class NumParam
+    Public Class NumParam
         Inherits CommandLineItem
 
         Property NumEdit As NumEdit
@@ -230,19 +230,14 @@ Namespace CommandLine
             End Get
             Set(value As Single)
                 ValueValue = value
-
-                If Not Store Is Nothing Then
-                    Store.Sng(GetKey) = value
-                End If
-
-                If Not NumEdit Is Nothing Then
-                    NumEdit.Value = CDec(value)
-                End If
+                If Not Store Is Nothing Then Store.Sng(GetKey) = value
+                If Not NumEdit Is Nothing Then NumEdit.Value = CDec(value)
             End Set
         End Property
 
         Overrides Function GetArgs() As String
-            If Switch = "" OrElse Not Visible Then Return Nothing
+            If Not Visible Then Return Nothing
+            If Switch = "" AndAlso ArgsFunc Is Nothing Then Return Nothing
 
             If ArgsFunc Is Nothing Then
                 If Value <> DefaultValue OrElse AlwaysOn Then
@@ -258,7 +253,7 @@ Namespace CommandLine
         End Function
     End Class
 
-    Class OptionParam
+    Public Class OptionParam
         Inherits CommandLineItem
 
         Property Options As String()
@@ -352,7 +347,7 @@ Namespace CommandLine
         End Function
     End Class
 
-    Class StringParam
+    Public Class StringParam
         Inherits CommandLineItem
 
         Property DefaultValue As String

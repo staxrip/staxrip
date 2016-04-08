@@ -1,7 +1,6 @@
 ﻿Imports StaxRip.UI
-Imports System.ComponentModel
 
-Class SimpleUI
+Public Class SimpleUI
     Inherits Control
 
     Public WithEvents Tree As New TreeViewEx
@@ -253,15 +252,15 @@ Class SimpleUI
         ret.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
         ret.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Pages.Add(ret)
-        ret.Path = Path
+        ret.Path = path
         ret.Dock = DockStyle.Fill
-        ret.Node = Tree.AddNode(Path)
+        ret.Node = Tree.AddNode(path)
         Host.Controls.Add(ret)
         ActivePage = ret
         Return ret
     End Function
 
-    Class DataPage
+    Public Class DataPage
         Inherits DataGridViewEx
         Implements IPage
 
@@ -275,7 +274,7 @@ Class SimpleUI
         End Sub
     End Class
 
-    Class FlowPage
+    Public Class FlowPage
         Inherits FlowLayoutPanelEx
         Implements IPage
 
@@ -389,7 +388,7 @@ Class SimpleUI
         End Sub
     End Class
 
-    Class SimpleUITextEdit
+    Public Class SimpleUITextEdit
         Inherits TextEdit
 
         Property SaveAction As Action(Of String)
@@ -487,7 +486,7 @@ Class SimpleUI
         End Sub
     End Class
 
-    Class SimpleUILabel
+    Public Class SimpleUILabel
         Inherits LabelEx
 
         Private OffsetValue As Integer
@@ -588,7 +587,7 @@ Class SimpleUI
         End Sub
     End Class
 
-    Class TextBlock
+    Public Class TextBlock
         Inherits LabelBlock
 
         Property Edit As SimpleUITextEdit
@@ -629,7 +628,7 @@ Class SimpleUI
             AddMenu(menuText, action)
         End Sub
 
-        Sub AddMenu(menuText As String, menuAction As action)
+        Sub AddMenu(menuText As String, menuAction As Action)
             ActionMenuItem.Add(Button.ContextMenuStrip.Items, menuText, menuAction)
         End Sub
     End Class

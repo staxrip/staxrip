@@ -144,49 +144,23 @@ Class EventCommandsEditor
         lv.UpButton = bnUp
         lv.DownButton = bnDown
         lv.RemoveButton = bnRemove
-        lv.View = View.Details
-        lv.FullRowSelect = True
-        lv.Columns.Add("")
-        lv.HeaderStyle = ColumnHeaderStyle.None
+        lv.SingleSelectionButtons = {bnEdit, bnClone}
+        lv.UpdateControls()
+        lv.EnableListBoxMode()
         lv.Scrollable = False
         lv.CheckBoxes = True
-        lv.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent)
         lv.MultiSelect = False
-
-        AddHandler lv.Layout, Sub() lv.Columns(0).Width = lv.Width - 4
-        AddHandler Load, Sub() lv.Columns(0).Width = lv.Width - 4
-
-        For Each i In ObjectHelp.GetCopy(Of List(Of EventCommand))(eventCommands)
-            Dim item = lv.Items.Add(i.ToString)
-            item.Tag = i
-            item.Checked = i.Enabled
-        Next
-
-        AddHandler lv.ItemCheck, Sub(sender As Object, e As ItemCheckEventArgs)
-                                     lv.Items(e.Index).Selected = True
-                                     DirectCast(lv.SelectedItems(0).Tag, EventCommand).Enabled = e.NewValue = CheckState.Checked
-                                 End Sub
-
-        If lv.Items.Count > 0 Then lv.Items(0).Selected = True
-        UpdateControls()
+        lv.ItemCheckProperty = NameOf(EventCommand.Enabled)
+        lv.AddItems(ObjectHelp.GetCopy(eventCommands))
+        lv.SelectFirst()
     End Sub
 
     Private Sub bnAdd_Click() Handles bnAdd.Click
         Dim ec As New EventCommand
 
         Using f As New EventCommandEditor(ec)
-            If f.ShowDialog = DialogResult.OK Then
-                Dim item = lv.Items.Add(ec.ToString)
-                item.Tag = ec
-                item.Selected = True
-            End If
+            If f.ShowDialog = DialogResult.OK Then lv.AddItem(ec).Selected = True
         End Using
-    End Sub
-
-    Sub UpdateControls()
-        bnEdit.Enabled = lv.SelectedItems.Count > 0
-        bnClone.Enabled = lv.SelectedItems.Count > 0
-        lv.UpdateControls()
     End Sub
 
     Private Sub EventCommandsEditor_HelpRequested() Handles Me.HelpRequested
@@ -197,24 +171,12 @@ Class EventCommandsEditor
     End Sub
 
     Private Sub bnClone_Click() Handles bnClone.Click
-        Dim ec = DirectCast(ObjectHelp.GetCopy(lv.SelectedItems(0).Tag), EventCommand)
-        Dim item = lv.Items.Add(ec.ToString)
-        item.Selected = True
-        item.Tag = ec
-        item.Checked = ec.Enabled
+        lv.AddItem(ObjectHelp.GetCopy(lv.SelectedItem)).Selected = True
     End Sub
 
     Private Sub bnEdit_Click(sender As Object, e As EventArgs) Handles bnEdit.Click
-        Dim ec = DirectCast(lv.SelectedItems(0).Tag, EventCommand)
-
-        Using f As New EventCommandEditor(ec)
-            If f.ShowDialog = DialogResult.OK Then
-                lv.SelectedItems(0).Text = ec.ToString
-            End If
+        Using f As New EventCommandEditor(lv.SelectedItem(Of EventCommand))
+            If f.ShowDialog = DialogResult.OK Then lv.RefreshSelection()
         End Using
-    End Sub
-
-    Private Sub lv_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lv.SelectedIndexChanged
-        UpdateControls()
     End Sub
 End Class

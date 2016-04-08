@@ -6,7 +6,7 @@ Imports System.Text.RegularExpressions
 Imports System.Globalization
 
 <Serializable()>
-Class x264Encoder
+Public Class x264Encoder
     Inherits VideoEncoder
 
     Property Params As New x264Params
@@ -24,7 +24,6 @@ Class x264Encoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-
         Encode("Encoding video using x264 " + Packs.x264.Version, GetArgs(1), p.Script, s.ProcessPriority)
 
         If Params.Mode.Value = x264Mode.TwoPass OrElse
@@ -526,7 +525,7 @@ Class x264Encoder
 End Class
 
 <Serializable()>
-Class x264Params
+Public Class x264Params
     Implements ISerializable
 
     Public AdaptiveDCT As New SettingBag(Of Boolean)(True)

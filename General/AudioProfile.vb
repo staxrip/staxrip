@@ -8,7 +8,7 @@ Imports System.Text.RegularExpressions
 Imports System.Text
 
 <Serializable()>
-MustInherit Class AudioProfile
+Public MustInherit Class AudioProfile
     Inherits Profile
 
     Property Language As New Language
@@ -264,7 +264,7 @@ MustInherit Class AudioProfile
 End Class
 
 <Serializable()>
-Class BatchAudioProfile
+Public Class BatchAudioProfile
     Inherits AudioProfile
 
     Sub New(name As String,

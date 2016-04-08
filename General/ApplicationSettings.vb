@@ -76,7 +76,7 @@ Class ApplicationSettings
             Storage = New ObjectStorage
         End If
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 184) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 185) Then
             If VideoEncoderProfiles Is Nothing Then
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
             Else
@@ -168,7 +168,7 @@ Class ApplicationSettings
             RecentProjects = New List(Of String)
         End If
 
-        If Check(MuxerProfiles, "Container Profiles", 36) Then
+        If Check(MuxerProfiles, "Container Profiles", 37) Then
             MuxerProfiles = New List(Of Muxer)
             MuxerProfiles.AddRange(Muxer.GetDefaults())
         End If
@@ -224,7 +224,7 @@ Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 138) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 139) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 
@@ -256,7 +256,7 @@ Class ApplicationSettings
             End If
         End If
 
-        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 29) Then
+        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 30) Then
             If VapourSynthProfiles Is Nothing Then
                 VapourSynthProfiles = FilterCategory.GetVapourSynthDefaults
             Else

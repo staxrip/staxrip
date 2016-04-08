@@ -262,7 +262,7 @@ Class Audio
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
-        d.Remove("Cutting")
+        d.RemoveFilter("Cutting")
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeNicAudio.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeNicAudio.avs"
         d.Filters.Insert(1, New VideoFilter(GetNicAudioCode(ap)))
@@ -397,7 +397,7 @@ Class Audio
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
-        d.Remove("Cutting")
+        d.RemoveFilter("Cutting")
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecDSS.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecDSS.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
@@ -431,7 +431,7 @@ Class Audio
         g.ffmsindex(ap.File, cachefile)
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
-        d.Remove("Cutting")
+        d.RemoveFilter("Cutting")
         Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeFFAudioSource.wav"
         d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeFFAudioSource.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))

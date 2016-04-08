@@ -1,6 +1,6 @@
 Imports StaxRip.UI
-Imports System.Threading
 Imports System.Threading.Tasks
+Imports System.Text
 
 Class MediaInfoFolderViewForm
     Inherits DialogBase
@@ -65,10 +65,13 @@ Class MediaInfoFolderViewForm
 
         lv.View = View.Details
         lv.FullRowSelect = True
+        lv.MultiSelect = False
+
+        AddHandler lv.MouseDoubleClick, Sub() ShowMediaInfo()
 
         For Each i In {"Filename", "Type", "Codec", "Ratio", "Dimension", "Bitrate",
-                       "Duration", "Filesize", "Framerate", "Audiocodec", "Folder",
-                       "Scan Type", "Interlacement", "Colorimetry", "Profile"}
+                               "Duration", "Filesize", "Framerate", "Audiocodec", "Folder",
+                               "Scan Type", "Interlacement", "Colorimetry", "Profile"}
 
             lv.Columns.Add(i)
         Next
@@ -79,13 +82,17 @@ Class MediaInfoFolderViewForm
 
         Me.Folder = folder
 
+        Dim hs As New HashSet(Of String)
+
         For Each i In Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories)
             If FileTypes.Audio.Contains(i.Ext) OrElse FileTypes.Video.Contains(i.Ext) Then
                 Files.Add(i)
             Else
-                MsgWarn("Unknown file type " + i.Ext)
+                hs.Add(i.Ext)
             End If
         Next
+
+        If hs.Count > 0 Then MsgWarn("Unknown file type(s): " + CrLf2 + hs.Join(", "))
 
         Dim cms As New ContextMenuStripEx()
         cms.Form = Me
@@ -93,17 +100,40 @@ Class MediaInfoFolderViewForm
         lv.SendMessageHideFocus()
         lv.ContextMenuStrip = cms
         Dim enabledFunc = Function() lv.SelectedItems.Count = 1
-        Dim pathFunc = Function() folder + lv.SelectedItems(0).Text
+        Dim pathFunc = Function() DirectCast(lv.SelectedItems(0), ListViewItemEx).Path
 
-        cms.Add("Show Media Info", AddressOf ShowMediaInfo, Keys.None, enabledFunc)
-        cms.Add("Show in File Explorer", Sub() g.OpenDirAndSelectFile(pathFunc(), Handle), Keys.None, enabledFunc)
-        cms.Add("Play", Sub() g.Play(pathFunc()), Keys.None, enabledFunc)
-        cms.Add("Copy path to clipboard", Sub() Clipboard.SetText(pathFunc()), Keys.None, enabledFunc)
-        cms.Add("Open with StaxRip", Sub() g.MainForm.OpenVideoSourceFile(pathFunc()), Keys.None, enabledFunc)
+        cms.Add("Show Media Info", AddressOf ShowMediaInfo, Keys.I, enabledFunc)
+        cms.Add("Show in File Explorer", Sub() g.OpenDirAndSelectFile(pathFunc(), Handle), Keys.E, enabledFunc)
+        cms.Add("Play", Sub() g.Play(pathFunc()), Keys.P, enabledFunc)
+        cms.Add("Copy path to clipboard", Sub() Clipboard.SetText(pathFunc()), Keys.C, enabledFunc)
+        cms.Add("Open with StaxRip", Sub() g.MainForm.OpenVideoSourceFile(pathFunc()), Keys.O, enabledFunc)
+        cms.Add("Save table as CSV", AddressOf SaveCSV, Keys.S, enabledFunc)
+    End Sub
+
+    Sub SaveCSV()
+        Dim sb As New StringBuilder
+
+        sb.Append(lv.Columns.Cast(Of ColumnHeader).Select(Function(arg) If(arg.Text.Contains(","), """" + arg.Text + """", arg.Text)).Join(",") + CrLf)
+
+        For Each i As ListViewItem In lv.Items
+            sb.Append(i.SubItems.Cast(Of ListViewItem.ListViewSubItem).Select(Function(arg) If(arg.Text.Contains(","), """" + arg.Text + """", arg.Text)).Join(",") + CrLf)
+        Next
+
+        Using f As New SaveFileDialog()
+            f.AddExtension = True
+            f.DefaultExt = "csv"
+            f.FileName = "MediaInfo.csv"
+
+            If f.ShowDialog = DialogResult.OK Then
+                File.WriteAllText(f.FileName, sb.ToString)
+            End If
+        End Using
     End Sub
 
     Sub ShowMediaInfo()
-        Using f As New MediaInfoForm(Folder + lv.SelectedItems(0).Text)
+        If lv.SelectedItems.Count = 0 Then Exit Sub
+
+        Using f As New MediaInfoForm(DirectCast(lv.SelectedItems(0), ListViewItemEx).Path)
             f.ShowDialog()
         End Using
     End Sub
@@ -126,9 +156,10 @@ Class MediaInfoFolderViewForm
             Using mi As New MediaInfo(fp)
                 Dim audioCodecs = MediaInfo.GetAudioCodecs(fp).Replace(" ", "")
 
-                Dim item As New ListViewItem
+                Dim item As New ListViewItemEx
                 item.Text = Path.GetFileName(fp)
                 item.Tag = item.Text
+                item.Path = fp
 
                 Dim width = mi.GetInfo(kind, "Width")
                 Dim height = mi.GetInfo(kind, "Height")
@@ -150,22 +181,17 @@ Class MediaInfoFolderViewForm
 
                 BeginInvoke(Sub()
                                 lv.Items.Add(item)
-                                If lv.Items.Count = 9 Then AutoResizeColumns()
+                                If lv.Items.Count = 9 Then lv.AutoResizeColumns(False)
                             End Sub)
             End Using
         Next
 
         Invoke(Sub()
                    lv.ListViewItemSorter = New ListViewEx.ColumnSorter
-                   AutoResizeColumns()
+                   lv.AutoResizeColumns(False)
                    Completed = True
                    If Abort Then Close()
                End Sub)
-    End Sub
-
-    Sub AutoResizeColumns()
-        lv.AutoResizeColumns(False)
-        Dim max = Aggregate i2 In lv.Columns.OfType(Of ColumnHeader)() Into Sum(i2.Width)
     End Sub
 
     Function GetSubItem(text As String, Optional sort As Object = Nothing) As ListViewItem.ListViewSubItem
@@ -185,4 +211,10 @@ Class MediaInfoFolderViewForm
         Abort = True
         If Not Completed Then e.Cancel = True
     End Sub
+
+    Class ListViewItemEx
+        Inherits ListViewItem
+
+        Property Path As String
+    End Class
 End Class

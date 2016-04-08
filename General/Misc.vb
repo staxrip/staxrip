@@ -51,12 +51,17 @@ Class Paths
         Using d As New FolderBrowserDialog
             d.Description = "Please select a directory."
             d.SetSelectedPath(defaultFolder)
-
-            If d.ShowDialog = DialogResult.OK Then
-                Return d.SelectedPath
-            End If
+            If d.ShowDialog = DialogResult.OK Then Return d.SelectedPath
         End Using
     End Function
+
+    Shared ReadOnly Property ScriptDir As String
+        Get
+            Dim ret = SettingsDir + "Scripts\"
+            If Not Directory.Exists(ret) Then Directory.CreateDirectory(ret)
+            Return ret
+        End Get
+    End Property
 
     Private Shared SettingsDirValue As String
 
@@ -113,7 +118,7 @@ Class Paths
                         End Try
                     End If
 
-                    SettingsDirValue = DirPath.AppendSeparator(dir)
+                    SettingsDirValue = dir.AppendSeparator
                     Registry.CurrentUser.Write("Software\StaxRip", CommonDirs.Startup, SettingsDirValue)
                 End If
             End If
@@ -314,7 +319,7 @@ Class GlobalClass
                 Dim cutFilter = script.GetFilter("Cutting")
 
                 If Not cutFilter Is Nothing Then
-                    script.Remove("Cutting")
+                    script.RemoveFilter("Cutting")
                     script.Filters.Add(cutFilter)
                 End If
             End If
@@ -470,7 +475,11 @@ Class GlobalClass
     End Function
 
     Sub SaveSettings()
-        SafeSerialization.Serialize(s, Paths.SettingsFile)
+        Try
+            SafeSerialization.Serialize(s, Paths.SettingsFile)
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
     End Sub
 
     Sub RaiseAppEvent(appEvent As ApplicationEvent)
@@ -1003,7 +1012,6 @@ Class GlobalClass
         End If
 
         CorrectCropMod(True)
-        g.MainForm.AviSynthListView.Load()
     End Sub
 
     Private Sub CorrectCropMod(force As Boolean)
@@ -1038,6 +1046,8 @@ Class GlobalClass
                 p.CropBottom += hhalf - hhalf Mod 2
                 p.CropTop += hhalf + hhalf Mod 2
             End If
+
+            g.MainForm.AviSynthListView.Load()
         End If
     End Sub
 End Class
@@ -1054,7 +1064,7 @@ Public Enum RegistryRoot
 End Enum
 
 <Serializable()>
-Class Range
+Public Class Range
     Implements IComparable(Of Range)
 
     Public Start As Integer
@@ -1165,7 +1175,9 @@ Class Log
     Shared Sub Save()
         If p.SourceFile <> "" Then
             SyncLock p.Log
-                p.Log.ToString.WriteFile(p.TempDir + p.Name + "_StaxRip.log")
+                If Directory.Exists(p.TempDir) Then
+                    p.Log.ToString.WriteFile(p.TempDir + p.Name + "_StaxRip.log")
+                End If
             End SyncLock
         End If
     End Sub
@@ -1585,7 +1597,7 @@ Public Structure VideoFormat
 End Structure
 
 <Serializable()>
-Class Language
+Public Class Language
     Implements IComparable(Of Language)
 
     <NonSerialized>
@@ -2112,6 +2124,7 @@ Class Macro
         ret.Add(New Macro("source_seconds", "Source Seconds", GetType(Integer), "Length in seconds of the source video."))
         ret.Add(New Macro("source_width", "Source Image Width", GetType(Integer), "Image width of the source video."))
         ret.Add(New Macro("startup_dir", "Startup Directory", GetType(String), "Directory of the application."))
+        ret.Add(New Macro("script_dir", "Users scripts directory", GetType(String), "Users scripts directory."))
         ret.Add(New Macro("system_dir", "System Directory", GetType(String), "System directory."))
         ret.Add(New Macro("target_dir", "Target Directory", GetType(String), "Directory of the target file."))
         ret.Add(New Macro("target_file", "Target File Path", GetType(String), "File path of the target file."))
@@ -2320,6 +2333,9 @@ Class Macro
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%system_dir%") Then value = value.Replace("%system_dir%", CommonDirs.System)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%script_dir%") Then value = value.Replace("%script_dir%", Paths.ScriptDir)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%programs_dir%") Then value = value.Replace("%programs_dir%", CommonDirs.Programs)
@@ -2558,10 +2574,10 @@ Public Enum CompCheckAction
 End Enum
 
 Class GlobalCommands
-    <Command("Perform | Execute Command Line", "Executes command lines separated by a line break line by line.")>
+    <Command("Perform | Execute Command Line", "Executes command lines separated by a line break line by line. Macros are solved as well as passed in as environment variables.")>
     Sub ExecuteCommandLine(
         <DispName("Command Line"),
-        Description("One or more command lines to be executed or if batch mode is used content of the batch file."),
+        Description("One or more command lines to be executed or if batch mode is used content of the batch file. Macros are solved as well as passed in as environment variables."),
         Editor(GetType(CmdlTypeEditor), GetType(UITypeEditor))>
         commandLines As String,
         <DispName("Wait For Exit"),
@@ -2596,6 +2612,11 @@ Class GlobalCommands
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
                 proc.Wait = waitForExit
+                proc.Process.StartInfo.UseShellExecute = False
+
+                For Each i In Macro.GetMacros
+                    proc.Process.StartInfo.EnvironmentVariables(i.Name.Trim("%"c)) = Macro.Solve(i.Name)
+                Next
 
                 Try
                     proc.Start()
@@ -2611,6 +2632,14 @@ Class GlobalCommands
                     proc.CommandLine = i
                     proc.Wait = waitForExit
 
+                    If i.Ext = "exe" Then
+                        proc.Process.StartInfo.UseShellExecute = False
+
+                        For Each i2 In Macro.GetMacros
+                            proc.Process.StartInfo.EnvironmentVariables(i2.Name.Trim("%"c)) = Macro.Solve(i2.Name)
+                        Next
+                    End If
+
                     Try
                         proc.Start()
                     Catch ex As Exception
@@ -2624,10 +2653,10 @@ Class GlobalCommands
         If closeNeeded Then ProcessForm.CloseProcessForm()
     End Sub
 
-    <Command("Perform | Execute Batch Script", "Saves a batch script as bat file and executes it. Macros are passed in as environment variables.")>
+    <Command("Perform | Execute Batch Script", "Saves a batch script as bat file and executes it. Macros are solved as well as passed in as environment variables.")>
     Sub ExecuteBatchScript(
-        <DispName("Batch Script"),
-        Description("Batch script to be executed."),
+        <DispName("Batch Script Code"),
+        Description("Batch script code to be executed. Macros are solved as well as passed in as environment variables."),
         Editor(GetType(CmdlTypeEditor), GetType(UITypeEditor))>
         batchScript As String,
         <DispName("Interpret Output"),
@@ -2672,6 +2701,44 @@ Class GlobalCommands
         End Using
 
         If closeNeeded Then ProcessForm.CloseProcessForm()
+    End Sub
+
+    <Command("Perform | Execute Script File", "Executes a csx (C#) or ps1 (PowerShell) script.")>
+    Sub ExecuteScriptFile(<DispName("File Path")>
+                          <Description("Filepath to a csx (C#) or ps1 (PowerShell) file, the path may contain macros.")>
+                          <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
+                          filepath As String)
+
+        If File.Exists(filepath) Then
+            Select Case filepath.Ext
+                Case "csx"
+                    Scripting.RunCSharp(File.ReadAllText(filepath))
+                Case "ps1"
+                    Scripting.RunPowershell(File.ReadAllText(filepath))
+                Case Else
+                    MsgError("Only csx (C#) and ps1 (PowerShell) are supported at this time.")
+            End Select
+        Else
+            MsgError("File is missing:" + CrLf2 + filepath)
+        End If
+    End Sub
+
+    <Command("Perform | Execute CSharp Script", "Executes C# script code.")>
+    Sub ExecuteCSharpScript(<DispName("Script Code")>
+                            <Description("C# script code to be executed.")>
+                            <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
+                            scriptCode As String)
+
+        Scripting.RunCSharp(scriptCode)
+    End Sub
+
+    <Command("Perform | Execute PowerShell Script", "Executes PowerShell script code.")>
+    Sub ExecutePowerShellScript(<DispName("Script Code")>
+                                <Description("PowerShell script code to be executed.")>
+                                <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
+                                scriptCode As String)
+
+        Scripting.RunPowershell(scriptCode)
     End Sub
 
     <Command("Perform | Play Sound", "Plays a mp3, wav or wmv sound file.")>
@@ -2726,20 +2793,24 @@ Class GlobalCommands
         f.Show()
     End Sub
 
-    <Command("Perform | Show Message Box", "Shows a message box with given arguments.")>
-    Sub ShowMsgBox(
-        <Description("The message may contain macros."), Editor(GetType(MacroStringTypeEditor),
-        GetType(UITypeEditor))> Message As String, <DefaultValue(GetType(MsgIcon), "Info")>
-        Icon As MsgIcon)
+    <Command("Perform | Show Message Box", "Shows a message box.")>
+    Sub ShowMessageBox(<Description("Main instruction may contain macros.")>
+                       <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
+                       MainInstruction As String,
+                       <Description("Content may contain macros.")>
+                       <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
+                       Content As String,
+                       <DefaultValue(GetType(MsgIcon), "Info")>
+                       Icon As MsgIcon)
 
-        Msg(Macro.Solve(Message), Icon, MessageBoxButtons.OK)
+        Msg(Macro.Solve(MainInstruction), Macro.Solve(Content), Icon, MessageBoxButtons.OK)
     End Sub
 
     <Command("Perform | Show Media Info", "Shows media info on a given file.")>
-    Sub ShowMediaInfo(
-        <Description("The filepath may contain macros."),
-        Editor(GetType(MacroStringTypeEditor),
-        GetType(UITypeEditor))> filepath As String)
+    Sub ShowMediaInfo(<DispName("File Path")>
+                      <Description("The filepath may contain macros.")>
+                      <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
+                      filepath As String)
 
         filepath = Macro.Solve(filepath)
 
@@ -2887,8 +2958,7 @@ Class GlobalCommands
                   <Editor(GetType(MacroStringTypeEditor),
                   GetType(UITypeEditor))> script As String)
 
-        p.Script.Filters.Add(New VideoFilter(category, name, script, active))
-        g.MainForm.AviSynthListView.Load()
+        p.Script.AddFilter(New VideoFilter(category, name, script, active))
         g.MainForm.Assistant()
     End Sub
 
@@ -2946,6 +3016,7 @@ Public Enum DynamicMenuItemID
     TemplateProjects
     LaunchApplications
     HelpApplications
+    Scripts
 End Enum
 
 Public Enum SourceInputMode
@@ -3120,7 +3191,7 @@ Class M2TSStream
 End Class
 
 <Serializable>
-Class AudioStream
+Public Class AudioStream
     Property BitDepth As Integer
     Property Bitrate As Integer
     Property BitrateCore As Integer
@@ -3294,7 +3365,7 @@ Class Video
 End Class
 
 <Serializable()>
-Class Subtitle
+Public Class Subtitle
     Property Title As String = ""
     Property Path As String
     Property CodecString As String
@@ -3444,7 +3515,7 @@ Class Subtitle
 End Class
 
 <Serializable>
-Class PrimitiveStore
+Public Class PrimitiveStore
     Property Bool As New Dictionary(Of String, Boolean)
     Property Int As New Dictionary(Of String, Integer)
     Property Sng As New Dictionary(Of String, Single)
@@ -3504,6 +3575,10 @@ Class StringBooleanPair
         Me.Key = key
         Me.Value = value
     End Sub
+
+    Public Overrides Function ToString() As String
+        Return Key
+    End Function
 End Class
 
 Class OSVersion

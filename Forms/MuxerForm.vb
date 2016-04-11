@@ -142,7 +142,6 @@ Class MuxerForm
         'SubtitleControl
         '
         Me.SubtitleControl.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SubtitleControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.SubtitleControl.Location = New System.Drawing.Point(3, 3)
         Me.SubtitleControl.Name = "SubtitleControl"
         Me.SubtitleControl.Size = New System.Drawing.Size(1190, 408)

@@ -788,8 +788,12 @@ Class eac3toForm
                     Dim item = lvSubtitles.Items.Add(i.Language.ToString)
                     item.Tag = i
 
-                    For Each i2 In p.AutoSubtitles.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-                        If i2.ToLower = "all" OrElse i2.ToLower = i.Language.TwoLetterCode OrElse i.Language.TwoLetterCode = "iv" Then
+                    For Each autoCode In p.AutoSubtitles.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                        If autoCode.ToLower = "all" OrElse
+                            autoCode.ToLower = i.Language.TwoLetterCode OrElse
+                            autoCode.ToLower = i.Language.ThreeLetterCode OrElse
+                            i.Language.TwoLetterCode = "iv" Then
+
                             item.Checked = True
                         End If
                     Next

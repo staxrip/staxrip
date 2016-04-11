@@ -86,7 +86,7 @@ Class ScriptingEditor
         If p.SourceFile = "" Then Exit Sub
         Dim doc As New VideoScript
         doc.Engine = Engine
-        doc.Path = p.TempDir + p.Name + "_avsEditor." + doc.FileType
+        doc.Path = p.TempDir + p.Name + "_Editor." + doc.FileType
         doc.Filters = GetFilters()
 
         Dim errMsg = doc.GetErrorMessage
@@ -106,15 +106,15 @@ Class ScriptingEditor
     Sub MainFlowLayoutPanelLayout(sender As Object, e As LayoutEventArgs)
         Dim filterTables = MainFlowLayoutPanel.Controls.OfType(Of FilterTable)
         If filterTables.Count = 0 Then Exit Sub
-        Dim maxTextWidth = Aggregate i In filterTables Into Max(i.TextSize.Width)
+        Dim maxTextWidth = Aggregate i In filterTables Into Max(i.TrimmedTextSize.Width)
 
-        For Each i As FilterTable In MainFlowLayoutPanel.Controls
+        For Each table As FilterTable In MainFlowLayoutPanel.Controls
             Dim rtbSize As Size
             rtbSize.Width = maxTextWidth + FontHeight
             If rtbSize.Width < 300 Then rtbSize.Width = 300
-            rtbSize.Height = i.TextSize.Height + CInt(FontHeight * 0.5)
-            i.rtbScript.Size = rtbSize
-            i.rtbScript.Refresh()
+            rtbSize.Height = table.TrimmedTextSize.Height + CInt(FontHeight * 0.5)
+            table.rtbScript.Size = rtbSize
+            table.rtbScript.Refresh()
         Next
     End Sub
 
@@ -142,7 +142,7 @@ Class ScriptingEditor
             rtbScript.WordWrap = False
             rtbScript.ScrollBars = RichTextBoxScrollBars.None
             rtbScript.AcceptsTab = True
-            rtbScript.Font = New Font("Consolas", 10)
+            rtbScript.Font = New Font("Consolas", 10 * s.UIScaleFactor)
 
             AddHandler Disposed, Sub() Menu.Dispose()
             AddHandler Menu.Opening, AddressOf MenuOpening
@@ -152,23 +152,22 @@ Class ScriptingEditor
             AddHandler rtbScript.TextChanged, Sub()
                                                   If Parent Is Nothing Then Exit Sub
                                                   Dim filterTables = Parent.Controls.OfType(Of FilterTable)
-                                                  Dim maxTextWidth = Aggregate i In filterTables Into Max(i.TextSize.Width)
+                                                  Dim maxTextWidth = Aggregate i In filterTables Into Max(i.TrimmedTextSize.Width)
 
-                                                  Dim textSizeVar = TextSize
+                                                  Dim textSizeVar = TrimmedTextSize
 
                                                   If textSizeVar.Width > maxTextWidth OrElse
                                                       (textSizeVar.Width = maxTextWidth AndAlso
                                                       textSizeVar.Width <> LastTextSize.Width) OrElse
                                                       LastTextSize.Height <> textSizeVar.Height AndAlso
-                                                      textSizeVar.Height > FontHeight * 2 Then
+                                                      textSizeVar.Height > FontHeight Then
 
                                                       Parent.PerformLayout()
-                                                      LastTextSize = TextSize
+                                                      LastTextSize = TrimmedTextSize
                                                   End If
 
                                                   rtbScript.ScrollToCaret()
                                               End Sub
-
             ColumnCount = 2
             ColumnStyles.Add(New ColumnStyle(SizeType.AutoSize))
             ColumnStyles.Add(New ColumnStyle(SizeType.AutoSize))
@@ -211,7 +210,13 @@ Class ScriptingEditor
 
         ReadOnly Property TextSize As Size
             Get
-                Dim ret = TextRenderer.MeasureText(rtbScript.Text, rtbScript.Font, New Size(2000, 2000))
+                Return TextRenderer.MeasureText(rtbScript.Text, rtbScript.Font, New Size(10000, 5000))
+            End Get
+        End Property
+
+        ReadOnly Property TrimmedTextSize As Size
+            Get
+                Dim ret = TextSize
 
                 If ret.Width > Screen.GetWorkingArea(Me).Width * 0.7 Then
                     ret.Width = CInt(Screen.GetWorkingArea(Me).Width * 0.7)

@@ -766,17 +766,17 @@ Class MainForm
     Public AssistantPassed As Boolean
     Public CommandManager As New CommandManager
 
-    Private AudioMenu0 As ContextMenuStrip
-    Private AudioMenu1 As ContextMenuStrip
-    Private TargetAspectRatioMenu As ContextMenuStrip
-    Private SizeContextMenuStrip As ContextMenuStrip
-    Private EncoderMenu As ContextMenuStrip
-    Private ContainerMenu As ContextMenuStrip
-    Private SourceAspectRatioMenu As ContextMenuStrip
-    Private TargetFileMenu As ContextMenuStrip
-    Private SourceFileMenu As ContextMenuStrip
-    Private Audio0FileMenu As ContextMenuStrip
-    Private Audio1FileMenu As ContextMenuStrip
+    Private AudioMenu0 As ContextMenuStripEx
+    Private AudioMenu1 As ContextMenuStripEx
+    Private TargetAspectRatioMenu As ContextMenuStripEx
+    Private SizeContextMenuStrip As ContextMenuStripEx
+    Private EncoderMenu As ContextMenuStripEx
+    Private ContainerMenu As ContextMenuStripEx
+    Private SourceAspectRatioMenu As ContextMenuStripEx
+    Private TargetFileMenu As ContextMenuStripEx
+    Private SourceFileMenu As ContextMenuStripEx
+    Private Audio0FileMenu As ContextMenuStripEx
+    Private Audio1FileMenu As ContextMenuStripEx
     Private ResetAssistantFont As Boolean
 
     Private BlockAviSynthItemCheck As Boolean
@@ -812,29 +812,26 @@ Class MainForm
 
             InitializeComponent()
 
-            If components Is Nothing Then
-                components = New System.ComponentModel.Container
-            End If
+            If components Is Nothing Then components = New System.ComponentModel.Container
 
             SetTip()
 
-            TargetAspectRatioMenu = New ContextMenuStrip(components)
-            SizeContextMenuStrip = New ContextMenuStrip(components)
-            EncoderMenu = New ContextMenuStrip(components)
-            ContainerMenu = New ContextMenuStrip(components)
-            SourceAspectRatioMenu = New ContextMenuStrip(components)
-            TargetFileMenu = New ContextMenuStrip(components)
-            SourceFileMenu = New ContextMenuStrip(components)
-            Audio0FileMenu = New ContextMenuStrip(components)
-            Audio1FileMenu = New ContextMenuStrip(components)
+            AudioMenu0 = New ContextMenuStripEx(components)
+            AudioMenu1 = New ContextMenuStripEx(components)
+            TargetAspectRatioMenu = New ContextMenuStripEx(components)
+            SizeContextMenuStrip = New ContextMenuStripEx(components)
+            EncoderMenu = New ContextMenuStripEx(components)
+            ContainerMenu = New ContextMenuStripEx(components)
+            SourceAspectRatioMenu = New ContextMenuStripEx(components)
+            TargetFileMenu = New ContextMenuStripEx(components)
+            SourceFileMenu = New ContextMenuStripEx(components)
+            Audio0FileMenu = New ContextMenuStripEx(components)
+            Audio1FileMenu = New ContextMenuStripEx(components)
 
             tbTargetFile.ContextMenuStrip = TargetFileMenu
             tbSourceFile.ContextMenuStrip = SourceFileMenu
             tbAudioFile0.ContextMenuStrip = Audio0FileMenu
             tbAudioFile1.ContextMenuStrip = Audio1FileMenu
-
-            AudioMenu0 = New ContextMenuStrip
-            AudioMenu1 = New ContextMenuStrip
 
             Dim rc = "right-click"
             tbAudioFile0.SendMessageCue(rc, False)
@@ -850,6 +847,7 @@ Class MainForm
             AviSynthListView.ProfileFunc = AddressOf GetTargetAviSynthDocument
 
             MenuStrip.SuspendLayout()
+            MenuStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
             CommandManager.AddCommandsFromObject(Me)
             CommandManager.AddCommandsFromObject(g.DefaultCommands)
@@ -1166,19 +1164,31 @@ Class MainForm
     End Sub
 
     Sub UpdateScriptsMenu()
-        For Each i In CustomMainMenu.MenuItems
-            If i.CustomMenuItem.MethodName = "DynamicMenuItem" Then
-                If i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.Scripts) Then
-                    i.DropDownItems.Clear()
+        For Each menuItem In CustomMainMenu.MenuItems
+            If menuItem.CustomMenuItem.MethodName = "DynamicMenuItem" Then
+                If menuItem.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.Scripts) Then
+                    If Directory.Exists(CommonDirs.Startup + "Apps\Scripts") Then
+                        For Each script In Directory.GetFiles(CommonDirs.Startup + "Apps\Scripts")
+                            If Not s.Storage.GetBool(script.FileName) AndAlso
+                                Not File.Exists(Paths.ScriptDir + script.FileName) Then
 
-                    For Each i2 In Directory.GetFiles(Paths.ScriptDir)
-                        ActionMenuItem.Add(i.DropDownItems,
-                                           i2.FileName,
-                                           Sub() g.DefaultCommands.ExecuteScriptFile(i2))
+                                FileHelp.Copy(script, Paths.ScriptDir + script.FileName)
+                                s.Storage.SetBool(script.FileName, True)
+                                UpdateScriptsMenu()
+                            End If
+                        Next
+                    End If
+
+                    menuItem.DropDownItems.Clear()
+
+                    For Each path In Directory.GetFiles(Paths.ScriptDir)
+                        ActionMenuItem.Add(menuItem.DropDownItems,
+                                           path.FileName,
+                                           Sub() g.DefaultCommands.ExecuteScriptFile(path))
                     Next
 
-                    i.DropDownItems.Add(New ToolStripSeparator)
-                    ActionMenuItem.Add(i.DropDownItems, "Open scripts folder", Sub() g.ShellExecute(Paths.ScriptDir))
+                    menuItem.DropDownItems.Add(New ToolStripSeparator)
+                    ActionMenuItem.Add(menuItem.DropDownItems, "Open Scripts Folder", Sub() g.ShellExecute(Paths.ScriptDir))
                 End If
             End If
         Next
@@ -2206,9 +2216,9 @@ Class MainForm
         If Not p.SkippedAssistantTips.Contains(CurrentAssistantTipKey) Then
             If message <> "" Then
                 If message.Length > 130 Then
-                    lTip.Font = New Font(lTip.Font.FontFamily, 8)
+                    lTip.Font = New Font(lTip.Font.FontFamily, 8 * s.UIScaleFactor)
                 Else
-                    lTip.Font = New Font(lTip.Font.FontFamily, 9)
+                    lTip.Font = New Font(lTip.Font.FontFamily, 9 * s.UIScaleFactor)
                 End If
             End If
 
@@ -2335,21 +2345,27 @@ Class MainForm
         lSourcePAR.Text = par.X & ":" & par.Y
 
         If p.SourceSeconds > 0 Then
-            lSource1.Text = p.SourceSeconds \ 60 & "m " + (p.SourceSeconds Mod 60).ToString("00") + "s  " +
-                If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB  ",
-                (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB  ") & If(p.SourceBitrate > 0,
-                (p.SourceBitrate / 1000 ^ 2).ToString("f1") + "Mbps  ", "") & p.SourceFrameRate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) +
-                "fps  " + p.Codec + " " + p.CodecProfile
+            lSource1.Text = lSource1.GetMaxTextSpace(
+                p.SourceSeconds \ 60 & "m " + (p.SourceSeconds Mod 60).ToString("00") + "s",
+                If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB", (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB"),
+                If(p.SourceBitrate > 0, (p.SourceBitrate / 1000 ^ 2).ToString("f1") + "Mbps", ""),
+                p.SourceFrameRate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) + "fps",
+                p.Codec, p.CodecProfile)
 
-            lSource2.Text = p.SourceWidth.ToString + "x" + p.SourceHeight.ToString + "   " + p.ColorSpace + " " +
-                p.ChromaSubsampling + " " & p.BitDepth & "Bits   " + p.ScanType + "  " + If(p.ScanType = "Interlaced", p.ScanOrder, "")
+            lSource2.Text = lSource1.GetMaxTextSpace(
+                p.SourceWidth.ToString + "x" + p.SourceHeight.ToString, p.ColorSpace,
+                p.ChromaSubsampling, If(p.BitDepth <> 0, p.BitDepth & "Bits", ""),
+                p.ScanType, If(p.ScanType = "Interlaced", p.ScanOrder, ""))
 
-            lTarget1.Text = p.TargetSeconds \ 60 & "m " + (p.TargetSeconds Mod 60).ToString("00") + "s   " &
-                p.TargetFrameRate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) + "fps   Audio Bitrate: " &
-                CInt(Calc.GetAudioBitrate)
+            lTarget1.Text = lSource1.GetMaxTextSpace(
+                p.TargetSeconds \ 60 & "m " + (p.TargetSeconds Mod 60).ToString("00") + "s",
+                p.TargetFrameRate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) + "fps",
+                "Audio Bitrate: " & CInt(Calc.GetAudioBitrate))
 
             If p.VideoEncoder.IsCompCheckEnabled Then
-                lTarget2.Text = "Quality: " & CInt(Calc.GetPercent).ToString() + " %   Compressibility: " + p.Compressibility.ToString("f2")
+                lTarget2.Text = lSource1.GetMaxTextSpace(
+                    "Quality: " & CInt(Calc.GetPercent).ToString() + " %",
+                    "Compressibility: " + p.Compressibility.ToString("f2"))
             End If
         Else
             lTarget1.Text = ""
@@ -2728,9 +2744,6 @@ Class MainForm
 
         If tb.Text.Contains(":\") Then
             If tb.Text <> ap.File Then
-                If FileTypes.VideoOnly.Contains(tb.Text.Ext) OrElse
-                    MediaInfo.GetAudioCount(tb.Text) = 0 Then Return
-
                 ap.File = tb.Text
 
                 If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
@@ -3011,6 +3024,13 @@ Class MainForm
             mb.MenuButton.SaveAction = Sub(value) s.StartupTemplate = value
             mb.MenuButton.Add(From i In Directory.GetFiles(Paths.TemplateDir) Select Filepath.GetBase(i))
 
+            Dim num = ui.AddNumericBlock(generalPage)
+            num.Label.Text = "UI Scale Factor:"
+            num.Label.Tooltip = "Requires to restart StaxRip."
+            num.NumEdit.Init(0.3D, 3, 0.05D, 2)
+            num.NumEdit.Value = CDec(s.UIScaleFactor)
+            num.NumEdit.SaveAction = Sub(value) s.UIScaleFactor = value
+
             Dim tb = ui.AddTextBlock(generalPage)
             tb.Label.Text = "Remember Window Positions:"
             tb.Label.Tooltip = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
@@ -3029,7 +3049,7 @@ Class MainForm
 
             ui.AddLine(generalPage, "Thumbnails")
 
-            Dim num = ui.AddNumericBlock(generalPage)
+            num = ui.AddNumericBlock(generalPage)
             num.Label.Text = "Width:"
             num.NumEdit.Init(0, 10000, 16)
             num.NumEdit.Value = s.ThumbnailWidth
@@ -3494,6 +3514,7 @@ Class MainForm
 
     Function GetJobPath() As String
         Dim name = Filepath.GetBase(p.TargetFile)
+        If name = "" Then name = Macro.Solve(p.DefaultTargetName)
         If name = "" Then name = Filepath.GetBase(p.SourceFile)
         Return p.TempDir + name + ".srip"
     End Function
@@ -3755,7 +3776,7 @@ Class MainForm
 
             tb = ui.AddTextBlock(subPage)
             tb.Label.Text = "Auto load subtitles:"
-            tb.Label.Tooltip = "Subtitles loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two letter language] code separated by comma or the magic word 'all'." + CrLf2 + String.Join(CrLf, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode)
+            tb.Label.Tooltip = "Subtitles loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + CrLf2 + String.Join(CrLf, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
             tb.Edit.Text = p.AutoSubtitles
             tb.Edit.SaveAction = Sub(value) p.AutoSubtitles = value
 
@@ -3969,21 +3990,21 @@ Class MainForm
         For Each i In categories
             ret += "[" + i.Name + "]" + CrLf
 
-            For Each i2 In i.Filters
-                If i2.Script.Contains(CrLf) Then
-                    Dim lines = i2.Script.SplitLinesNoEmpty
+            For Each filter In i.Filters
+                If filter.Script.Contains(CrLf) Then
+                    Dim lines = filter.Script.SplitLinesNoEmpty
 
                     For x = 0 To lines.Length - 1
                         lines(x) = VB6.vbTab + lines(x)
                     Next
 
-                    ret += If(ret.EndsWith(CrLf2), "", CrLf) + i2.Path + " =" + CrLf + lines.Join(CrLf) + CrLf2
+                    ret += CrLf + filter.Path + " =" + CrLf + lines.Join(CrLf) + CrLf2
                 Else
-                    ret += i2.Path + " = " + i2.Script + CrLf
+                    ret += filter.Path + " = " + filter.Script + CrLf
                 End If
             Next
 
-            ret += CrLf
+            If Not ret.EndsWith(CrLf2) Then ret += CrLf
         Next
 
         Return ret
@@ -4004,7 +4025,6 @@ Class MainForm
 
         Using f As New ScriptEditor(GetFilterProfilesText(filterProfiles))
             f.Text = "Filter Profiles"
-
             f.bnContext.Text = " Restore Defaults... "
             f.bnContext.Visible = True
 
@@ -4024,8 +4044,8 @@ Class MainForm
                 Dim filter As VideoFilter
 
                 For Each i In f.MacroEditorControl.Value.SplitLinesNoEmpty
-                    Dim multiline = i.StartsWith(VB6.vbTab) OrElse i.StartsWith(" "c)
-                    i = i.Trim()
+                    If i.StartsWith("    ") Then i = VB6.vbTab + i.Substring(4)
+                    Dim multiline = i.StartsWith(VB6.vbTab)
 
                     If i.StartsWith("[") AndAlso i.EndsWith("]") Then
                         cat = New FilterCategory(i.Substring(1, i.Length - 2).Trim)
@@ -4034,8 +4054,11 @@ Class MainForm
 
                     If multiline Then
                         If Not filter Is Nothing Then
-                            filter.Script += CrLf + i.Trim
-                            filter.Script = filter.Script.Trim
+                            If filter.Script = "" Then
+                                filter.Script += i.Substring(1)
+                            Else
+                                filter.Script += CrLf + i.Substring(1)
+                            End If
                         End If
                     Else
                         Dim filterName = i.Left("=").Trim
@@ -4199,9 +4222,8 @@ Class MainForm
         ret.Add("Tools|Directories|Programs", "ExecuteCommandLine", """%programs_dir%""")
         ret.Add("Tools|Directories|System", "ExecuteCommandLine", """%system_dir%""")
         ret.Add("Tools|Directories|Scripts", "ExecuteCommandLine", """%script_dir%""")
-
         ret.Add("Tools|Launch", "DynamicMenuItem", DynamicMenuItemID.LaunchApplications)
-
+        If Application.StartupPath = "D:\Projekte\GitHub\staxrip\bin" Then ret.Add("Tools|Advanced|Test...", "Test", Keys.F12)
         ret.Add("Tools|Advanced|AVSMeter...", "ExecuteCommandLine", """%app:AVSMeter%"" ""%script_file%""" + CrLf + "pause", False, False, True)
         ret.Add("Tools|Advanced|Video Comparison...", "OpenVideoComparison")
         ret.Add("Tools|Advanced|Command Prompt...", "OpenCommandPrompt")
@@ -4357,42 +4379,40 @@ Class MainForm
     Private Sub tbBitrate_KeyDown(sender As Object, e As KeyEventArgs) Handles tbBitrate.KeyDown
         If e.KeyData = Keys.Up Then
             e.Handled = True
-            tbBitrate.Text = Calc.GetPreviousMod(tbBitrate.Text.ToInt(1), 50).ToString
+            tbBitrate.Text = Math.Max(1, Calc.GetPreviousMod(tbBitrate.Text.ToInt, 50)).ToString
         ElseIf e.KeyData = Keys.Down Then
             e.Handled = True
-            tbBitrate.Text = Calc.GetNextMod(tbBitrate.Text.ToInt(1), 50).ToString
+            tbBitrate.Text = Math.Max(1, Calc.GetNextMod(tbBitrate.Text.ToInt, 50)).ToString
         End If
     End Sub
 
     Private Sub tbSize_KeyDown(sender As Object, e As KeyEventArgs) Handles tbSize.KeyDown
-        Dim l As Integer
+        Dim modValue As Integer
 
         Select Case p.TargetSeconds
-            Case Is > 80 * 60
-                l = 50
-            Case Is > 40 * 60
-                l = 20
-            Case Is > 20 * 60
-                l = 10
+            Case Is > 50 * 60
+                modValue = 50
             Case Is > 10 * 60
-                l = 5
+                modValue = 10
+            Case Is > 60
+                modValue = 5
             Case Else
-                l = 1
+                modValue = 1
         End Select
 
         If e.KeyData = Keys.Up Then
             e.Handled = True
-            tbSize.Text = Calc.GetPreviousMod(tbSize.Text.ToInt(1), l).ToString
+            tbSize.Text = Math.Max(1, Calc.GetPreviousMod(tbSize.Text.ToInt, modValue)).ToString
         ElseIf e.KeyData = Keys.Down Then
             e.Handled = True
-            tbSize.Text = Calc.GetNextMod(tbSize.Text.ToInt(1), l).ToString
+            tbSize.Text = Math.Max(1, Calc.GetNextMod(tbSize.Text.ToInt, modValue)).ToString
         End If
     End Sub
 
     Sub tbSize_TextChanged() Handles tbSize.TextChanged
         Try
             If Integer.TryParse(tbSize.Text, Nothing) Then
-                p.Size = If(p.FixedBitrate > 0, CInt(Calc.GetSize), CInt(tbSize.Text))
+                p.Size = If(p.FixedBitrate > 0, CInt(Calc.GetSize), Math.Max(1, CInt(tbSize.Text)))
                 BlockSize = True
                 If Not BlockBitrate Then tbBitrate.Text = CInt(Calc.GetVideoBitrate).ToString
                 BlockSize = False
@@ -4405,7 +4425,7 @@ Class MainForm
     Sub tbBitrate_TextChanged() Handles tbBitrate.TextChanged
         Try
             If Integer.TryParse(tbBitrate.Text, Nothing) Then
-                p.VideoBitrate = If(p.FixedBitrate > 0, CInt(Calc.GetVideoBitrate), CInt(tbBitrate.Text))
+                p.VideoBitrate = If(p.FixedBitrate > 0, CInt(Calc.GetVideoBitrate), Math.Max(1, CInt(tbBitrate.Text)))
                 BlockBitrate = True
                 If Not BlockSize Then tbSize.Text = CInt(Calc.GetSize).ToString
                 BlockBitrate = False
@@ -4603,112 +4623,6 @@ Class MainForm
 
         ProcessCommandLine(Environment.GetCommandLineArgs)
         IsLoading = False
-
-        If Directory.Exists(CommonDirs.Startup + "Apps\Scripts") Then
-            For Each i In Directory.GetFiles(CommonDirs.Startup + "Apps\Scripts")
-                If Not s.Storage.GetBool(i.FileName) AndAlso
-                    Not File.Exists(Paths.ScriptDir + i.FileName) Then
-
-                    FileHelp.Copy(i, Paths.ScriptDir + i.FileName)
-                    s.Storage.SetBool(i.FileName, True)
-                    UpdateScriptsMenu()
-                End If
-            Next
-        End If
-
-        'Using f As New TestForm
-        '    f.StartPosition = FormStartPosition.CenterScreen
-        '    f.ShowDialog()
-        'End Using
-
-        'AddHandler tbAudioFile0.TextChanged, Sub()
-        '                                         MsgInfo(Environment.StackTrace)
-        '                                     End Sub
-
-        'OpenVideoSourceFiles({"D:\Video\Samples\M2TS\1080p - VC-1 - AC3 - AC3 TrueHD - PCM.m2ts"}.ToList)
-
-        'For Each i In Directory.GetFiles("E:\Video\Samples\misc", "*.*", SearchOption.AllDirectories)
-        '    If i.EndsWith(".wmv") Then Continue For
-
-        '    Dim fpsMediaInfo = MediaInfo.GetFrameRate(i).ToSingle
-        '    Dim fps As Double
-
-        '    Dim doc As New AviSynthDocument
-        '    doc.Path = "D:\Temp\test.avs"
-        '    Dim cachefile = "D:\Temp\test.ffindex"
-        '    doc.Filters.Add(New AviSynthFilter("FFVideoSource(""" + i + """, cachefile = """ + cachefile + """)"))
-        '    doc.Synchronize()
-
-        '    Using avs As New AVIFile(doc.Path)
-        '        fps = avs.FrameRate
-        '    End Using
-
-        '    File.Delete(doc.Path)
-        '    File.Delete(cachefile)
-
-        '    Debug.WriteLine(fpsMediaInfo.ToString.PadRight(7) + "; " & fps.ToString.PadRight(15) + "; " + i)
-        'Next
-
-        'Using f As New MediaInfoForm("C:\Daten\Temp\Filme\The Rewrite.mkv")
-        '    f.ShowDialog()
-        'End Using
-
-        'MsgInfo(ProcessHelp.GetStandardOutput("C:\Daten\Projekte\VS\CPP\cpp_console\Debug\cpp_console.exe", ""))
-        'MsgInfo(ProcessHelp.GetErrorOutput("C:\Daten\Projekte\VS\CPP\cpp_console\Debug\cpp_console.exe", ""))
-
-        'Using pp As New Process
-        '    'pp.StartInfo.FileName = Packs.eac3to.GetPath
-        '    pp.StartInfo.FileName = "C:\Daten\Projekte\VS\CPP\cpp_console\Debug\cpp_console.exe"
-        '    'pp.StartInfo.Arguments = "aaa"
-        '    pp.StartInfo.CreateNoWindow = True
-        '    pp.StartInfo.RedirectStandardError = True
-        '    pp.StartInfo.RedirectStandardOutput = True
-        '    pp.StartInfo.UseShellExecute = False
-        '    pp.Start()
-        '    Dim aaa = pp.StandardError.ReadToEnd()
-        '    Dim bbb = pp.StandardOutput.ReadToEnd()
-        '    pp.WaitForExit()
-        '    MsgInfo(aaa)
-        '    MsgInfo(bbb)
-        'End Using
-
-        ''Exit Sub
-
-        'Using pr As New Proc
-        '    pr.BeginReadBoth("aaa")
-        '    'pr.File = Packs.eac3to.GetPath
-        '    'pr.Arguments = "aaa"
-        '    pr.File = "C:\Daten\Projekte\VS\CPP\cpp_console\Debug\cpp_console.exe"
-        '    pr.AllowedExitCodes = {0, 1}
-        '    pr.Start()
-        '    MsgInfo(ProcessForm.CmdlLog.ToString, "")
-        'End Using
-
-        'ProcessForm.CloseProcessForm()
-
-        'Dim fp2 = "C:\Daten\Temp\test.mkv"
-        'MediaInfo.GetVideo(fp2, "Format")
-
-        'Try
-        '    File.Delete(fp2)
-        'Catch ex As Exception
-        '    g.ShowException(ex)
-        'End Try
-
-        'FileHelp.Delete("C:\Daten\Temp\test.mp4", VB6.FileIO.RecycleOption.SendToRecycleBin)
-
-        'Dim sw As New Stopwatch
-        'sw.Start()
-        'Dim output = ProcessHelp.GetStandardOutput(Packs.QSVEncC.GetPath, "--check-lib")
-        'sw.Stop()
-        'MsgInfo(sw.ElapsedMilliseconds.ToString)
-
-        'MsgInfo(Registry.LocalMachine.GetString("SOFTWARE\Intel\GFX", "Version"))
-
-        'Using f As New AviSynthEditor
-        '    f.StartPosition = FormStartPosition.CenterParent
-        '    f.ShowDialog()
-        'End Using
     End Sub
 
     <Command("Dialog | LAV Filters Configuration", "Shows LAV Filters video decoder configuration")>
@@ -4820,14 +4734,14 @@ Class MainForm
     Private Sub OpenSourceFiles()
         Dim td As New TaskDialog(Of String)
         td.MainInstruction = "Choose a method for opening a source."
-        td.AddCommandLink("Single File", "DVD and Blu-ray discs can be ripped very easily using MakeMKV.", "single")
-        td.AddCommandLink("Blu-ray folder", "Blu-ray folder directly on the Blu-ray drive or on the hard drive.", "blu")
-        td.AddCommandLink("Merge Files", "Merge multiple source files.", "merge")
-        td.AddCommandLink("File Batch", "Fully automated batch processing where every file is a separate encoding.", "batch")
-        td.AddCommandLink("Directory Batch", "Directories are processed as separate encoding, containing files are merged.", "batch2")
+        td.AddCommandLink("Single File", "DVD and Blu-ray discs can be ripped very easily using MakeMKV.", "Single File")
+        td.AddCommandLink("Blu-ray Folder", "Blu-ray folder directly on the Blu-ray drive or on the hard drive.", "Blu-ray Folder")
+        td.AddCommandLink("Merge Files", "Merge multiple source files.", "Merge Files")
+        td.AddCommandLink("File Batch", "Fully automated batch processing where every file is a separate encoding.", "File Batch")
+        td.AddCommandLink("Directory Batch", "Directories are processed as separate encoding, containing files are merged.", "Directory Batch")
 
         Select Case td.Show
-            Case "single"
+            Case "Single File"
                 Using d As New OpenFileDialog
                     d.SetFilter(FileTypes.Video)
                     d.SetInitDir(s.LastSourceDir)
@@ -4836,7 +4750,7 @@ Class MainForm
                         OpenVideoSourceFiles(d.FileNames)
                     End If
                 End Using
-            Case "merge"
+            Case "Merge Files"
                 Using f As New SourceFilesForm()
                     f.Mode = SourceInputMode.Combine
                     f.UpdateControls()
@@ -4879,7 +4793,7 @@ Class MainForm
                         End Select
                     End If
                 End Using
-            Case "batch"
+            Case "File Batch"
                 Using f As New SourceFilesForm()
                     If p.DefaultTargetName = "%source_dir_name%" Then p.DefaultTargetName = "%source_name%"
 
@@ -4911,7 +4825,7 @@ Class MainForm
                         OpenJobsDialog()
                     End If
                 End Using
-            Case "batch2"
+            Case "Directory Batch"
                 Using f As New SourceFilesForm()
                     f.Mode = SourceInputMode.DirectoryBatch
                     f.UpdateControls()
@@ -4954,7 +4868,7 @@ Class MainForm
                         End If
                     End If
                 End Using
-            Case "blu"
+            Case "Blu-ray Folder"
                 Using d As New FolderBrowserDialog
                     d.Description = "Please choose a Blu-ray source folder."
                     d.SetSelectedPath(s.Storage.GetString("last blu-ray source folder"))
@@ -5195,23 +5109,21 @@ Class MainForm
 
     Sub tbAudioFile0_DoubleClick() Handles tbAudioFile0.DoubleClick
         Using d As New SWF.OpenFileDialog
-            d.SetFilter(FileTypes.Audio)
+            Dim filter = FileTypes.Audio.ToList
+            filter.Insert(0, "avs")
+            d.SetFilter(filter)
             d.SetInitDir(p.TempDir, s.LastSourceDir)
-
-            If d.ShowDialog() = DialogResult.OK Then
-                tbAudioFile0.Text = d.FileName
-            End If
+            If d.ShowDialog() = DialogResult.OK Then tbAudioFile0.Text = d.FileName
         End Using
     End Sub
 
     Sub tbAudioFile1_DoubleClick() Handles tbAudioFile1.DoubleClick
         Using d As New SWF.OpenFileDialog
-            d.SetFilter(FileTypes.Audio)
+            Dim filter = FileTypes.Audio.ToList
+            filter.Insert(0, "avs")
+            d.SetFilter(filter)
             d.SetInitDir(p.TempDir, s.LastSourceDir)
-
-            If d.ShowDialog() = DialogResult.OK Then
-                tbAudioFile1.Text = d.FileName
-            End If
+            If d.ShowDialog() = DialogResult.OK Then tbAudioFile1.Text = d.FileName
         End Using
     End Sub
 
@@ -5448,7 +5360,6 @@ Class MainForm
         cms.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.SourceAspectRatioMenu = TextCustomMenu.EditMenu(s.SourceAspectRatioMenu, "Source Image Help...", ApplicationSettings.GetDefaultSourceAspectRatioMenu, Me)))
         cms.Items.Add(New ActionMenuItem("Help...", helpAction))
 
-        cms.Font = New Font("Consolas", 9)
         cms.Show(llSourceParText, 0, llSourceParText.Height)
     End Sub
 

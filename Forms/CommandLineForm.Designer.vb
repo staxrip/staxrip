@@ -27,11 +27,11 @@ Partial Class CommandLineForm
         Me.components = New System.ComponentModel.Container()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
-        Me.rtbCmdl = New StaxRip.UI.CmdlRichTextBox()
+        Me.rtbCommandLine = New StaxRip.UI.CommandLineRichTextBox()
         Me.SimpleUI = New StaxRip.SimpleUI()
         Me.cbGoTo = New System.Windows.Forms.ComboBox()
         Me.bnMenu = New StaxRip.UI.ButtonEx()
-        Me.cms = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.cms = New ContextMenuStripEx(Me.components)
         Me.SuspendLayout()
         '
         'bnCancel
@@ -52,20 +52,19 @@ Partial Class CommandLineForm
         '
         'rtbCmdl
         '
-        Me.rtbCmdl.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.rtbCommandLine.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.rtbCmdl.BlockPaint = False
-        Me.rtbCmdl.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.rtbCmdl.Font = New System.Drawing.Font("Tahoma", 9.0!)
-        Me.rtbCmdl.LastCmdl = Nothing
-        Me.rtbCmdl.Location = New System.Drawing.Point(12, 583)
-        Me.rtbCmdl.Margin = New System.Windows.Forms.Padding(4)
-        Me.rtbCmdl.Name = "rtbCmdl"
-        Me.rtbCmdl.ReadOnly = True
-        Me.rtbCmdl.Size = New System.Drawing.Size(910, 35)
-        Me.rtbCmdl.TabIndex = 4
-        Me.rtbCmdl.Text = ""
+        Me.rtbCommandLine.BlockPaint = False
+        Me.rtbCommandLine.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.rtbCommandLine.LastCommandLine = Nothing
+        Me.rtbCommandLine.Location = New System.Drawing.Point(12, 583)
+        Me.rtbCommandLine.Margin = New System.Windows.Forms.Padding(4)
+        Me.rtbCommandLine.Name = "rtbCmdl"
+        Me.rtbCommandLine.ReadOnly = True
+        Me.rtbCommandLine.Size = New System.Drawing.Size(910, 35)
+        Me.rtbCommandLine.TabIndex = 4
+        Me.rtbCommandLine.Text = ""
         '
         'SimpleUI
         '
@@ -111,7 +110,7 @@ Partial Class CommandLineForm
         Me.Controls.Add(Me.SimpleUI)
         Me.Controls.Add(Me.bnCancel)
         Me.Controls.Add(Me.bnOK)
-        Me.Controls.Add(Me.rtbCmdl)
+        Me.Controls.Add(Me.rtbCommandLine)
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(0, 0)
@@ -123,9 +122,9 @@ Partial Class CommandLineForm
     End Sub
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
-    Friend WithEvents rtbCmdl As StaxRip.UI.CmdlRichTextBox
+    Friend WithEvents rtbCommandLine As StaxRip.UI.CommandLineRichTextBox
     Friend WithEvents SimpleUI As StaxRip.SimpleUI
     Friend WithEvents cbGoTo As System.Windows.Forms.ComboBox
     Friend WithEvents bnMenu As StaxRip.UI.ButtonEx
-    Friend WithEvents cms As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents cms As ContextMenuStripEx
 End Class

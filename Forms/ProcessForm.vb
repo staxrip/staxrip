@@ -86,7 +86,6 @@ Class ProcessForm
         Me.tbLog.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbLog.Font = New System.Drawing.Font("Consolas", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tbLog.Location = New System.Drawing.Point(12, 12)
         Me.tbLog.Multiline = True
         Me.tbLog.Name = "tbLog"
@@ -219,6 +218,8 @@ Class ProcessForm
         bnAbort.Visible = IsProcess
         bnResume.Visible = IsProcess
         bnSuspend.Visible = IsProcess
+
+        tbLog.Font = New Font("Consolas", 9 * s.UIScaleFactor)
 
         AddHandler Log.Update, AddressOf LogUpdate
         NotifyIcon.Icon = My.Resources.MainIcon

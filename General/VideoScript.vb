@@ -287,7 +287,7 @@ Public Class VideoScript
             clip = script
         End If
 
-        If engine = ScriptingEngine.VapourSynth AndAlso Not clip.Contains(".set_output()") Then
+        If engine = ScriptingEngine.VapourSynth AndAlso Not clip.Contains(".set_output(") Then
             If clip.EndsWith(CrLf) Then
                 clip += "clip.set_output()"
             Else

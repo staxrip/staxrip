@@ -6,7 +6,7 @@ Class AviSynthListView
     Inherits ListViewEx
 
     Private BlockItemCheck As Boolean
-    WithEvents Menu As New ContextMenuStrip
+    WithEvents Menu As New ContextMenuStripEx
 
     Event Changed()
 
@@ -22,6 +22,7 @@ Class AviSynthListView
         Columns.Add("")
         Columns.Add("Type")
         Columns.Add("Name")
+        Menu.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         ContextMenuStrip = Menu
         SendMessageHideFocus()
         AddHandler VideoScript.Changed, Sub(script As VideoScript)

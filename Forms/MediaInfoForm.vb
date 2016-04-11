@@ -78,7 +78,6 @@ Class MediaInfoForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.rtb.BlockPaint = False
         Me.rtb.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.rtb.Font = New System.Drawing.Font("Consolas", 9.15607!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.rtb.Location = New System.Drawing.Point(147, 8)
         Me.rtb.Name = "rtb"
         Me.rtb.Size = New System.Drawing.Size(797, 659)
@@ -87,7 +86,6 @@ Class MediaInfoForm
         '
         'stb
         '
-        Me.stb.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.stb.Location = New System.Drawing.Point(6, 8)
         Me.stb.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.stb.Name = "stb"
@@ -128,9 +126,9 @@ Class MediaInfoForm
         rtb.WordWrap = False
         rtb.ReadOnly = True
         rtb.BackColor = Color.White
+        rtb.Font = New Font("Consolas", 10 * s.UIScaleFactor)
 
         tv.SelectOnMouseDown = True
-        tv.ItemHeight = FontHeight * 2
         tv.ShowLines = False
         tv.HideSelection = False
         tv.FullRowSelect = True
@@ -199,7 +197,7 @@ Class MediaInfoForm
 
         rtb.BlockPaint = True
         rtb.Text = ""
-        rtb.SelectionFont = New Font("Consolas", 9)
+        rtb.SelectionFont = New Font("Consolas", 10 * s.UIScaleFactor)
         rtb.SelectionColor = Color.Black
         rtb.Text = newText.ToString
 
@@ -208,7 +206,7 @@ Class MediaInfoForm
         For x = 0 To lines.Length - 1
             If groups.Contains(lines(x)) Then
                 rtb.Select(rtb.GetFirstCharIndexFromLine(x), lines(x).Length)
-                rtb.SelectionFont = New Font("Consolas", 10, FontStyle.Bold)
+                rtb.SelectionFont = New Font("Consolas", 10 * s.UIScaleFactor, FontStyle.Bold)
                 rtb.SelectionColor = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)
             End If
         Next
@@ -311,5 +309,9 @@ Class MediaInfoForm
             Clipboard.SetText(rtb.SelectedText)
             e.Handled = True
         End If
+    End Sub
+
+    Private Sub MediaInfoForm_Load(sender As Object, e As EventArgs) Handles Me.Load
+        tv.ItemHeight = FontHeight * 2
     End Sub
 End Class

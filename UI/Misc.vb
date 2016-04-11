@@ -26,9 +26,13 @@ Namespace UI
 
             If AutoScaleDimensions.IsEmpty Then AutoScaleDimensions = New SizeF(144.0!, 144.0!)
 
-            If AutoScaleDimensions <> CurrentDPIDimension Then
-                ScaleFactor = New SizeF(CurrentDPIDimension.Width / AutoScaleDimensions.Width,
-                                       CurrentDPIDimension.Height / AutoScaleDimensions.Height)
+            If s.UIScaleFactor <> 1 Then
+                Font = New Font(Font.FontFamily, Font.Size * s.UIScaleFactor)
+            End If
+
+            If AutoScaleDimensions <> CurrentDPIDimension OrElse s.UIScaleFactor <> 1 Then
+                ScaleFactor = New SizeF(CurrentDPIDimension.Width / AutoScaleDimensions.Width * s.UIScaleFactor,
+                                       CurrentDPIDimension.Height / AutoScaleDimensions.Height * s.UIScaleFactor)
 
                 AutoScaleDimensions = CurrentDPIDimension
                 Scale(ScaleFactor)

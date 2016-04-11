@@ -1,5 +1,4 @@
 Imports StaxRip.UI
-Imports StaxRip.x265
 
 Class x265Control
     Inherits UserControl
@@ -87,7 +86,6 @@ Class x265Control
         Me.Controls.Add(Me.llConfigCodec)
         Me.Controls.Add(Me.llCompCheck)
         Me.Controls.Add(Me.lv)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "x265Control"
         Me.Size = New System.Drawing.Size(367, 213)
         Me.ResumeLayout(False)
@@ -133,16 +131,13 @@ Class x265Control
         lv.ShowContextMenuOnLeftClick = True
 
         UpdateControls()
-
         AddHandler lv.UpdateContextMenu, AddressOf UpdateMenu
     End Sub
 
     Protected Overrides Sub OnLayout(e As LayoutEventArgs)
         MyBase.OnLayout(e)
 
-        If lv.Columns.Count = 0 Then
-            lv.Columns.AddRange({New ColumnHeader, New ColumnHeader})
-        End If
+        If lv.Columns.Count = 0 Then lv.Columns.AddRange({New ColumnHeader, New ColumnHeader})
 
         lv.Columns(0).Width = CInt(Width * (32 / 100))
         lv.Columns(1).Width = CInt(Width * (66 / 100))
@@ -247,7 +242,7 @@ Class x265Control
         llCompCheck.Visible = Params.Mode.Value = x265RateMode.TwoPass Or Params.Mode.Value = x265RateMode.ThreePass
     End Sub
 
-    Private Sub llAdvanced_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llConfigCodec.LinkClicked
+    Private Sub llConfigCodec_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llConfigCodec.LinkClicked
         Encoder.ShowConfigDialog()
     End Sub
 

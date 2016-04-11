@@ -53,7 +53,6 @@ Namespace UI
             Me.tb.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                         Or System.Windows.Forms.AnchorStyles.Left) _
                         Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.tb.Font = New System.Drawing.Font("Courier New", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
             Me.tb.Location = New System.Drawing.Point(12, 12)
             Me.tb.Multiline = True
             Me.tb.Name = "tb"
@@ -99,6 +98,7 @@ Namespace UI
         Sub New()
             MyBase.New()
             InitializeComponent()
+
             cbWrap.Checked = True
         End Sub
 

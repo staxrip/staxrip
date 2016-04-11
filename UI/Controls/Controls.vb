@@ -448,7 +448,6 @@ Namespace UI
         Inherits RichTextBox
 
         Property BlockPaint As Boolean
-
         Private BorderRect As Native.RECT
 
         Sub New(Optional cms As ContextMenuStrip = Nothing)
@@ -457,7 +456,7 @@ Namespace UI
             End If
 
             If cms Is Nothing Then
-                ContextMenuStrip = New ContextMenuStrip
+                ContextMenuStrip = New ContextMenuStripEx
             Else
                 ContextMenuStrip = cms
             End If
@@ -491,7 +490,6 @@ Namespace UI
             If e.KeyData = (Keys.Control Or Keys.V) Then
                 e.SuppressKeyPress = True
                 SelectedText = Clipboard.GetText
-                ScrollToCaret()
             End If
 
             MyBase.OnKeyDown(e)
@@ -833,7 +831,7 @@ Namespace UI
 
         Event ValueChangedUser(value As Object)
 
-        Property Menu As New ContextMenuStrip
+        Property Menu As New ContextMenuStripEx
 
         Public Sub New()
             Menu.ShowImageMargin = False
@@ -845,11 +843,7 @@ Namespace UI
             Menu.MinimumSize = New Size(Width, 0)
 
             For Each i As ActionMenuItem In Menu.Items
-                If Not Value Is Nothing AndAlso Value.Equals(i.Tag) Then
-                    i.Font = New Font(i.Font, FontStyle.Bold)
-                Else
-                    i.Font = New Font(i.Font, FontStyle.Regular)
-                End If
+                i.Font = New Font("Segoe UI", 9 * s.UIScaleFactor, If(Not Value Is Nothing AndAlso Value.Equals(i.Tag), FontStyle.Bold, FontStyle.Regular))
 
                 If (Menu.Width - i.Width) > 2 Then
                     i.AutoSize = False
@@ -935,39 +929,37 @@ Namespace UI
         End Sub
     End Class
 
-    Class CmdlRichTextBox
+    Class CommandLineRichTextBox
         Inherits RichTextBoxEx
 
-        Public Sub New()
-            Font = New Font("Tahoma", 9, FontStyle.Regular)
+        Property LastCommandLine As String
+
+        Sub New()
+            Font = New Font("Consolas", 10)
         End Sub
 
-        Property LastCmdl As String
+        Sub SetText(commandLine As String)
+            If commandLine = LastCommandLine Then Exit Sub
 
-        Sub SetText(cmdl As String)
-            If cmdl = LastCmdl Then
-                Exit Sub
-            End If
-
-            If Not OK(cmdl) Then
+            If commandLine = "" Then
                 Text = ""
-                LastCmdl = ""
+                LastCommandLine = ""
                 Exit Sub
             End If
 
             BlockPaint = True
-            Text = cmdl
+            Text = commandLine
             SelectAll()
             SelectionColor = ForeColor
             SelectionFont = New Font(Font, FontStyle.Regular)
 
-            If LastCmdl <> "" Then
-                Dim selStart = GetCompareIndex(cmdl, LastCmdl)
-                Dim selEnd = cmdl.Length - GetCompareIndex(ReverseString(cmdl), ReverseString(LastCmdl))
+            If LastCommandLine <> "" Then
+                Dim selStart = GetCompareIndex(commandLine, LastCommandLine)
+                Dim selEnd = commandLine.Length - GetCompareIndex(ReverseString(commandLine), ReverseString(LastCommandLine))
 
-                If selEnd > selStart AndAlso selEnd - selStart < cmdl.Length - 1 Then
-                    While selStart > 0 AndAlso selStart + 1 < cmdl.Length AndAlso
-                        Not cmdl(selStart - 1) + cmdl(selStart) = " -"
+                If selEnd > selStart AndAlso selEnd - selStart < commandLine.Length - 1 Then
+                    While selStart > 0 AndAlso selStart + 1 < commandLine.Length AndAlso
+                        Not commandLine(selStart - 1) + commandLine(selStart) = " -"
 
                         selStart = selStart - 1
                     End While
@@ -975,7 +967,7 @@ Namespace UI
                     If selEnd - selStart < 25 Then
                         SelectionStart = selStart
 
-                        If selEnd - selStart = cmdl.Length Then
+                        If selEnd - selStart = commandLine.Length Then
                             SelectionLength = 0
                         Else
                             SelectionLength = selEnd - selStart
@@ -986,10 +978,10 @@ Namespace UI
                 End If
             End If
 
-            SelectionStart = cmdl.Length
+            SelectionStart = commandLine.Length
             BlockPaint = False
             Refresh()
-            LastCmdl = cmdl
+            LastCommandLine = commandLine
         End Sub
 
         Function GetCompareIndex(a As String, b As String) As Integer

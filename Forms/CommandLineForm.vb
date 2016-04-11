@@ -15,14 +15,18 @@ Class CommandLineForm
 
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
+
+        Dim l As New List(Of String)
+
+        For Each i In params.Items
+            If i.Switch = "" OrElse Not i.VisibleFunc Is Nothing Then Continue For
+            If l.Contains(i.Switch) Then Throw New Exception("switch found twice:" + CrLf2 + i.Switch)
+            l.Add(i.Switch)
+        Next
+
         Me.Params = params
         Text = params.Title
         InitUI()
-
-        If SimpleUI.Tree.Nodes.Count > 10 Then
-            SimpleUI.Tree.ItemHeight = CInt(SimpleUI.Tree.Height / SimpleUI.Tree.Nodes.Count) - 3
-        End If
-
         SelectLastPage()
         AddHandler params.ValueChanged, AddressOf ValueChanged
         params.RaiseValueChanged(Nothing)
@@ -42,19 +46,19 @@ Class CommandLineForm
         SimpleUI.SelectLast(Params.Title + "page selection")
     End Sub
 
-    Sub ValueChanged(item As CommandLineItem)
-        rtbCmdl.SetText(Params.GetCommandLine(False, False))
-        rtbCmdl.SelectionLength = 0
+    Sub ValueChanged(item As CommandLineParam)
+        rtbCommandLine.SetText(Params.GetCommandLine(False, False))
+        rtbCommandLine.SelectionLength = 0
         UpdateHeight()
         UpdateSearchComboBox()
     End Sub
 
     Sub UpdateHeight()
-        Dim s = TextRenderer.MeasureText(rtbCmdl.Text, rtbCmdl.Font,
-                                         New Size(rtbCmdl.ClientSize.Width, Integer.MaxValue),
+        Dim s = TextRenderer.MeasureText(rtbCommandLine.Text, rtbCommandLine.Font,
+                                         New Size(rtbCommandLine.ClientSize.Width, Integer.MaxValue),
                                          TextFormatFlags.WordBreak)
-        Height += CInt(s.Height * 1.2) - rtbCmdl.Height
-        rtbCmdl.Refresh()
+        Height += CInt(s.Height * 1.2) - rtbCommandLine.Height
+        rtbCommandLine.Refresh()
     End Sub
 
     Sub InitUI()
@@ -88,16 +92,20 @@ Class CommandLineForm
                 End If
 
                 If TypeOf item Is BoolParam Then
-                    If DirectCast(item, BoolParam).DefaultValue Then
-                        help += CrLf2 + "Default: enabled"
+                    If item.NoSwitch <> "" Then
+                        help += CrLf2 + "Default: automatic"
                     Else
-                        help += CrLf2 + "Default: disabled"
+                        If DirectCast(item, BoolParam).DefaultValue Then
+                            help += CrLf2 + "Default: enabled"
+                        Else
+                            help += CrLf2 + "Default: disabled"
+                        End If
                     End If
                 ElseIf TypeOf item Is NumParam Then
                     Dim param = DirectCast(item, NumParam)
                     help += CrLf2 + "Default: " & param.DefaultValue.ToString(CultureInfo.InvariantCulture)
-                    If param.MinMaxStepDec(0) <> Decimal.MinValue Then help += CrLf + "Minimum: " & param.MinMaxStepDec(0)
-                    If param.MinMaxStepDec(1) <> Decimal.MaxValue Then help += CrLf + "Maximum: " & param.MinMaxStepDec(1)
+                    If param.MinMaxStepDec(0) > Integer.MinValue Then help += CrLf + "Minimum: " & param.MinMaxStepDec(0)
+                    If param.MinMaxStepDec(1) < Integer.MaxValue Then help += CrLf + "Maximum: " & param.MinMaxStepDec(1)
                 ElseIf TypeOf item Is OptionParam Then
                     Dim param = DirectCast(item, OptionParam)
 
@@ -105,7 +113,7 @@ Class CommandLineForm
                         help += CrLf2 + "Default: " + param.Options(param.DefaultValue)
                     End If
                 ElseIf TypeOf item Is StringParam Then
-                        help += CrLf2 + "Default: " & DirectCast(item, StringParam).DefaultValue
+                    help += CrLf2 + "Default: " & DirectCast(item, StringParam).DefaultValue
                 End If
 
                 If item.Help <> "" Then help += CrLf2 + item.Help
@@ -162,16 +170,14 @@ Class CommandLineForm
                 sp.Init(tb)
             End If
 
-            Dim listText = item.Switch
-            If listText = "" AndAlso item.Text <> "" Then listText = item.Text.Trim(" "c, ":"c)
-
-            If listText <> "" AndAlso Not helpControl Is Nothing Then
+            If Not helpControl Is Nothing Then
                 Dim item2 As New Item
                 item2.Control = helpControl
                 item2.Page = currentFlow
-                If item.Help <> "" Then item2.Help = item.Help
-                If listText <> "" Then item2.Text = listText
-                item2.Item = item
+                item2.Help = item.Help
+                item2.Switch = If(item.Switch = "", item.Text.Trim(" "c, ":"c), item.Switch)
+                item2.Param = item
+                item2.Text = item.Text
                 Items.Add(item2)
             End If
         Next
@@ -184,9 +190,10 @@ Class CommandLineForm
     Class Item
         Property Page As SimpleUI.FlowPage
         Property Control As Control
-        Property Text As String = ""
+        Property Switch As String = ""
         Property Help As String = ""
-        Property Item As CommandLineItem
+        Property Text As String = ""
+        Property Param As CommandLineParam
     End Class
 
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
@@ -219,43 +226,51 @@ Class CommandLineForm
 
     Private Sub cbGoTo_TextChanged(sender As Object, e As EventArgs) Handles cbGoTo.TextChanged
         Dim find = cbGoTo.Text.ToLower
-
-        Dim matchedItems As New List(Of Item)
+        Dim matchedItems As New HashSet(Of Item)
 
         If find.Length > 1 Then
-            For Each i In Items
-                If i.Text.ToLower.Contains(find) Then
-                    matchedItems.Add(i)
+            For Each item In Items
+                If item.Switch?.ToLower?.Contains(find) Then matchedItems.Add(item)
+                If item.Help?.ToLower?.Contains(find) Then matchedItems.Add(item)
+                If item.Text?.ToLower?.Contains(find) Then matchedItems.Add(item)
+
+                If Not item.Param.Switches Is Nothing Then
+                    For Each switch In item.Param.Switches
+                        If switch.ToLower.Contains(find) Then matchedItems.Add(item)
+                    Next
                 End If
             Next
 
-            For Each i In Items
-                If i.Help <> "" AndAlso i.Help.ToLower.Contains(find) AndAlso
-                    Not matchedItems.Contains(i) Then
-
-                    matchedItems.Add(i)
-                End If
-            Next
-
-            Dim visibleItems = matchedItems.Where(Function(arg) arg.Item.Visible)
+            Dim visibleItems = matchedItems.Where(Function(arg) arg.Param.Visible)
 
             If visibleItems.Count > 0 Then
                 If SearchIndex >= visibleItems.Count Then SearchIndex = 0
                 Dim control = visibleItems(SearchIndex).Control
                 SimpleUI.ShowPage(visibleItems(SearchIndex).Page)
-
-                control.Font = New Font(control.Font, FontStyle.Bold)
-                control.ForeColor = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0.1)
-                ResetFontAsync(control)
+                Highlight(control)
             End If
         End If
+    End Sub
+
+    Private LastHighlightedControl As Control
+
+    Sub Highlight(c As Control)
+        If Not LastHighlightedControl Is Nothing Then
+            LastHighlightedControl.Font = New Font(c.Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Regular)
+            LastHighlightedControl.ForeColor = Color.Black
+        End If
+
+        c.Font = New Font(c.Font.FontFamily, 11 * s.UIScaleFactor, FontStyle.Bold)
+        c.ForeColor = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0.1)
+        LastHighlightedControl = c
+        ResetFontAsync(c)
     End Sub
 
     Async Sub ResetFontAsync(c As Control)
         Await Task.Run(Sub() Thread.Sleep(1000))
 
         If Not c.IsDisposed AndAlso Not c.Disposing Then
-            c.Font = New Font(c.Font, FontStyle.Regular)
+            c.Font = New Font(c.Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Regular)
             c.ForeColor = Color.Black
         End If
     End Sub
@@ -264,8 +279,16 @@ Class CommandLineForm
         cbGoTo.Items.Clear()
 
         For Each i In Items
-            If i.Item.Visible AndAlso Not cbGoTo.Items.Contains(i.Text) Then
-                cbGoTo.Items.Add(i.Text)
+            If i.Param.Visible Then
+                If Not i.Param.Switches Is Nothing Then
+                    For Each switch In i.Param.Switches
+                        If Not cbGoTo.Items.Contains(switch) Then cbGoTo.Items.Add(switch)
+                    Next
+                End If
+
+                If i.Switch <> "" AndAlso Not cbGoTo.Items.Contains(i.Switch) Then
+                    cbGoTo.Items.Add(i.Switch)
+                End If
             End If
         Next
     End Sub

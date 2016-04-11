@@ -1,5 +1,4 @@
 ﻿Imports System.ComponentModel
-Imports System.Runtime.InteropServices
 
 Namespace UI
     Enum AutoCheckMode
@@ -250,7 +249,8 @@ Namespace UI
             Next
 
             For Each i As ListViewItem In Items
-                Dim bounds As Rectangle = i.GetBounds(ItemBoundsPortion.Entire)
+                Dim bounds = i.GetBounds(ItemBoundsPortion.Entire)
+
                 If mousePos.Y >= bounds.Top AndAlso mousePos.Y <= bounds.Bottom Then
                     y = bounds.Top
                     h = bounds.Height
@@ -284,7 +284,7 @@ Namespace UI
             Next
 
             For Each i As ListViewItem In Items
-                Dim bounds As Rectangle = i.GetBounds(ItemBoundsPortion.Entire)
+                Dim bounds = i.GetBounds(ItemBoundsPortion.Entire)
 
                 If mousePos.Y >= bounds.Top AndAlso mousePos.Y <= bounds.Bottom Then
                     y = i.Index

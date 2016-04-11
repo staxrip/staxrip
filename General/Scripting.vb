@@ -12,7 +12,8 @@ Public Class Scripting
     End Sub
 
     Private Shared Async Function RunCSharpAsync(code As String) As Task(Of Object)
-        Dim options = ScriptOptions.Default.WithImports("StaxRip").
+        Dim options = ScriptOptions.Default.WithImports(
+            "StaxRip", "System.Linq", "System.IO", "System.Text.RegularExpressions").
             WithReferences(GetType(Scripting).Assembly)
 
         Dim script = CSharpScript.Create(code, options, GetType(Globals))

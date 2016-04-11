@@ -37,7 +37,7 @@ Class x264Control
         Me.llConfigCodec.Location = New System.Drawing.Point(3, 185)
         Me.llConfigCodec.Margin = New System.Windows.Forms.Padding(3)
         Me.llConfigCodec.Name = "llConfigCodec"
-        Me.llConfigCodec.Size = New System.Drawing.Size(120, 25)
+        Me.llConfigCodec.Size = New System.Drawing.Size(64, 20)
         Me.llConfigCodec.TabIndex = 1
         Me.llConfigCodec.TabStop = True
         Me.llConfigCodec.Text = "Options"
@@ -51,7 +51,7 @@ Class x264Control
         Me.llConfigContainer.Location = New System.Drawing.Point(218, 185)
         Me.llConfigContainer.Margin = New System.Windows.Forms.Padding(3)
         Me.llConfigContainer.Name = "llConfigContainer"
-        Me.llConfigContainer.Size = New System.Drawing.Size(146, 25)
+        Me.llConfigContainer.Size = New System.Drawing.Size(137, 20)
         Me.llConfigContainer.TabIndex = 2
         Me.llConfigContainer.TabStop = True
         Me.llConfigContainer.Text = "Container Options"
@@ -65,7 +65,7 @@ Class x264Control
         Me.llCompCheck.Location = New System.Drawing.Point(3, 154)
         Me.llCompCheck.Margin = New System.Windows.Forms.Padding(3)
         Me.llCompCheck.Name = "llCompCheck"
-        Me.llCompCheck.Size = New System.Drawing.Size(222, 25)
+        Me.llCompCheck.Size = New System.Drawing.Size(197, 20)
         Me.llCompCheck.TabIndex = 3
         Me.llCompCheck.TabStop = True
         Me.llCompCheck.Text = "Run Compressibility Check"
@@ -73,21 +73,22 @@ Class x264Control
         'lv
         '
         Me.lv.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lv.ItemCheckProperty = Nothing
         Me.lv.Location = New System.Drawing.Point(0, 0)
+        Me.lv.MultiSelectionButtons = Nothing
         Me.lv.Name = "lv"
+        Me.lv.SingleSelectionButtons = Nothing
         Me.lv.Size = New System.Drawing.Size(367, 213)
         Me.lv.TabIndex = 0
         Me.lv.UseCompatibleStateImageBehavior = False
         '
         'x264Control
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(144.0!, 144.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.Controls.Add(Me.llConfigContainer)
         Me.Controls.Add(Me.llConfigCodec)
         Me.Controls.Add(Me.llCompCheck)
         Me.Controls.Add(Me.lv)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "x264Control"
         Me.Size = New System.Drawing.Size(367, 213)
         Me.ResumeLayout(False)
@@ -113,11 +114,12 @@ Class x264Control
         lv.MultiSelect = False
 
         cms = New ContextMenuStrip(components)
+        cms.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+
         lv.ContextMenuStrip = cms
         lv.ShowContextMenuOnLeftClick = True
 
         UpdateControls()
-
         AddHandler lv.UpdateContextMenu, AddressOf UpdateMenu
     End Sub
 
@@ -150,8 +152,7 @@ Class x264Control
         If lv.SelectedItems.Count > 0 Then
             Select Case lv.SelectedIndices(0)
                 Case 0 - offset
-                    Dim fn = Function(value As Integer, text As String, tooltip As String) New ActionMenuItem(value & " - " + text, Sub() SetQuality(value), tooltip) With {.Font = If(Encoder.Params.Quant.Value = value, New Font(.Font, FontStyle.Bold), .Font)}
-
+                    Dim fn = Function(value As Integer, text As String, tooltip As String) New ActionMenuItem(value & " - " + text, Sub() SetQuality(value), tooltip) With {.Font = If(Encoder.Params.Quant.Value = value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))}
                     cms.Items.Add(fn(18, "Super High", "Super high quality and file size (-crf 18)"))
                     cms.Items.Add(fn(19, "Very High", "Very high quality and file size (-crf 19)"))
                     cms.Items.Add(fn(20, "Higher", "Higher quality and file size (-crf 20)"))
@@ -167,18 +168,18 @@ Class x264Control
 
                         cms.Items.Add(New ActionMenuItem(
                                       DispNameAttribute.GetValueForEnum(a), Sub() SetPreset(a),
-                                      "Use values between Fast and Slower otherwise the quality and compression will either be poor or the encoding will be painful slow. Slower is three times slower than Medium, Veryslow is 6 times slower than Medium with little gains compared to Slower.") With {.Font = If(Encoder.Params.Preset.Value = a, New Font(.Font, FontStyle.Bold), .Font)})
+                                      "Use values between Fast and Slower otherwise the quality and compression will either be poor or the encoding will be painful slow. Slower is three times slower than Medium, Veryslow is 6 times slower than Medium with little gains compared to Slower.") With {.Font = If(Encoder.Params.Preset.Value = a, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
                 Case 2 - offset
                     For Each i In System.Enum.GetValues(GetType(x264TuneMode))
                         Dim a = CType(i, x264TuneMode)
                         cms.Items.Add(New ActionMenuItem(
-                                      DispNameAttribute.GetValueForEnum(a), Sub() SetTune(a)) With {.Font = If(Encoder.Params.Tune.Value = a, New Font(.Font, FontStyle.Bold), .Font)})
+                                      DispNameAttribute.GetValueForEnum(a), Sub() SetTune(a)) With {.Font = If(Encoder.Params.Tune.Value = a, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
                 Case 3 - offset
                     For Each i In System.Enum.GetValues(GetType(x264DeviceMode))
                         Dim a = CType(i, x264DeviceMode)
-                        cms.Items.Add(New ActionMenuItem(DispNameAttribute.GetValueForEnum(a), Sub() SetDevice(a)) With {.Font = If(Encoder.Params.Device.Value = a, New Font(.Font, FontStyle.Bold), .Font)})
+                        cms.Items.Add(New ActionMenuItem(DispNameAttribute.GetValueForEnum(a), Sub() SetDevice(a)) With {.Font = If(Encoder.Params.Device.Value = a, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
             End Select
         End If

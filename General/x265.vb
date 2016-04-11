@@ -753,7 +753,7 @@ Public Class x265Params
                           tb.Expand(tb.Edit)
                           tb.Edit.Height = CInt(tb.Edit.Font.Height * 15)
                           tb.Edit.TextBox.Multiline = True
-                          tb.Edit.TextBox.Font = New Font("Consolas", 10)
+                          tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
 
     Property Deblock As New BoolParam With {
@@ -792,12 +792,12 @@ Public Class x265Params
         .Text = "CSV Log Level:",
         .Options = {"Default", "Summary", "Frame"}}
 
-    Private ItemsValue As List(Of CommandLineItem)
+    Private ItemsValue As List(Of CommandLineParam)
 
-    Overrides ReadOnly Property Items As List(Of CommandLineItem)
+    Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
             If ItemsValue Is Nothing Then
-                ItemsValue = New List(Of CommandLineItem)
+                ItemsValue = New List(Of CommandLineParam)
 
                 Add("Basic", Quant, Preset, Tune, Profile, OutputDepth, Level, Mode)
                 Add("Analysis 1", RD, MinCuSize, MaxCuSize, MaxTuSize, LimitRefs, TUintra, TUinter, rdoqLevel)
@@ -828,7 +828,7 @@ Public Class x265Params
 
     Private AddedList As New List(Of String)
 
-    Private Sub Add(path As String, ParamArray items As CommandLineItem())
+    Private Sub Add(path As String, ParamArray items As CommandLineParam())
         For Each i In items
             i.Path = path
             ItemsValue.Add(i)
@@ -841,7 +841,7 @@ Public Class x265Params
 
     Private BlockValueChanged As Boolean
 
-    Protected Overrides Sub OnValueChanged(item As CommandLineItem)
+    Protected Overrides Sub OnValueChanged(item As CommandLineParam)
         If BlockValueChanged Then
             Exit Sub
         End If

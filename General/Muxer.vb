@@ -538,11 +538,7 @@ Class MkvMuxer
                 args.Append(" --forced-track " & id & ":" & If(i.Forced, 1, 0))
                 args.Append(" --default-track " & id & ":" & If(i.Default, 1, 0))
                 args.Append(" --language " & id & ":" + i.Language.ThreeLetterCode)
-
-                If i.Title <> "" AndAlso i.Title <> " " Then
-                    args.Append(" --track-name """ & id & ":" + i.Title + """")
-                End If
-
+                args.Append(" --track-name """ & id & ":" + i.Title?.Trim + """")
                 args.Append(" """ + i.Path + """")
             End If
         Next

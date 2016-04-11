@@ -6,9 +6,8 @@ Namespace CommandLine
     Public MustInherit Class CommandLineParams
         Property Title As String
 
-        Event ValueChanged(item As CommandLineItem)
-
-        MustOverride ReadOnly Property Items As List(Of CommandLineItem)
+        Event ValueChanged(item As CommandLineParam)
+        MustOverride ReadOnly Property Items As List(Of CommandLineParam)
 
         MustOverride Function GetCommandLine(includePaths As Boolean,
                                              includeExecutable As Boolean,
@@ -16,17 +15,18 @@ Namespace CommandLine
 
         MustOverride Function GetPackage() As Package
 
+
         Sub Init(store As PrimitiveStore)
             For Each i In Items
                 i.Init(store, Me)
             Next
         End Sub
 
-        Sub RaiseValueChanged(item As CommandLineItem)
+        Sub RaiseValueChanged(item As CommandLineParam)
             OnValueChanged(item)
         End Sub
 
-        Protected Overridable Sub OnValueChanged(item As CommandLineItem)
+        Protected Overridable Sub OnValueChanged(item As CommandLineParam)
             For Each i In Items
                 If Not i.VisibleFunc Is Nothing Then
                     i.Visible = i.Visible
@@ -48,18 +48,19 @@ Namespace CommandLine
         End Sub
     End Class
 
-    Public MustInherit Class CommandLineItem
-        Property Name As String
-        Property Text As String
-        Property Help As String
-        Property URL As String
-        Property Path As String
-        Property NoSwitch As String
-        Property ArgsFunc As Func(Of String)
-        Property VisibleFunc As Func(Of Boolean)
-        Property LabelMargin As Padding
-        Property Switch As String
+    Public MustInherit Class CommandLineParam
         Property AlwaysOn As Boolean
+        Property ArgsFunc As Func(Of String)
+        Property Help As String
+        Property LabelMargin As Padding
+        Property Name As String
+        Property NoSwitch As String
+        Property Path As String
+        Property Switch As String
+        Property Switches As IEnumerable(Of String)
+        Property Text As String
+        Property URL As String
+        Property VisibleFunc As Func(Of Boolean)
 
         Friend Store As PrimitiveStore
         Friend Params As CommandLineParams
@@ -102,7 +103,7 @@ Namespace CommandLine
     End Class
 
     Public Class BoolParam
-        Inherits CommandLineItem
+        Inherits CommandLineParam
 
         Property DefaultValue As Boolean
         Property CheckBox As CheckBox
@@ -161,13 +162,20 @@ Namespace CommandLine
             End Set
         End Property
 
+        WriteOnly Property InitValue As Boolean
+            Set(value As Boolean)
+                Me.Value = value
+                DefaultValue = value
+            End Set
+        End Property
+
         Public Overrides Function GetControl() As Control
             Return CheckBox
         End Function
     End Class
 
     Public Class NumParam
-        Inherits CommandLineItem
+        Inherits CommandLineParam
 
         Property NumEdit As NumEdit
         Property DefaultValue As Single
@@ -235,6 +243,13 @@ Namespace CommandLine
             End Set
         End Property
 
+        WriteOnly Property InitValue As Single
+            Set(value As Single)
+                Me.Value = value
+                DefaultValue = value
+            End Set
+        End Property
+
         Overrides Function GetArgs() As String
             If Not Visible Then Return Nothing
             If Switch = "" AndAlso ArgsFunc Is Nothing Then Return Nothing
@@ -254,7 +269,7 @@ Namespace CommandLine
     End Class
 
     Public Class OptionParam
-        Inherits CommandLineItem
+        Inherits CommandLineParam
 
         Property Options As String()
         Property Values As String()
@@ -322,10 +337,19 @@ Namespace CommandLine
             End Set
         End Property
 
+        WriteOnly Property InitValue As Integer
+            Set(value As Integer)
+                Me.Value = value
+                DefaultValue = value
+            End Set
+        End Property
+
         Overrides Function GetArgs() As String
-            If Switch = "" OrElse Not Visible Then Return Nothing
+            If Not Visible Then Return Nothing
 
             If ArgsFunc Is Nothing Then
+                If Switch = "" Then Return Nothing
+
                 If Value <> DefaultValue OrElse AlwaysOn Then
                     If Not Values Is Nothing Then
                         Return Switch + " " & Values(Value)
@@ -348,7 +372,7 @@ Namespace CommandLine
     End Class
 
     Public Class StringParam
-        Inherits CommandLineItem
+        Inherits CommandLineParam
 
         Property DefaultValue As String
         Property TextEdit As TextEdit

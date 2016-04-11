@@ -87,7 +87,11 @@ Public MustInherit Class AudioProfile
 
             If Stream Is Nothing Then
                 Dim streams = MediaInfo.GetAudioStreams(File)
-                If streams.Count > 0 Then ret = GetAudioText(streams(0), File)
+                If streams.Count > 0 Then
+                    ret = GetAudioText(streams(0), File)
+                Else
+                    ret = File.FileName
+                End If
             Else
                 ret = Stream.Name + " (" + Filepath.GetExt(File) + ")"
             End If

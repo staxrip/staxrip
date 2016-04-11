@@ -1,8 +1,10 @@
-﻿Imports System.Text
-Imports System.Security.Cryptography
-Imports System.Runtime.CompilerServices
+﻿Imports System.Drawing.Drawing2D
 Imports System.Globalization
-
+Imports System.Reflection
+Imports System.Runtime.CompilerServices
+Imports System.Security.Cryptography
+Imports System.Text
+Imports Microsoft.Win32
 Imports VB6 = Microsoft.VisualBasic
 
 Module StringExtensions
@@ -348,6 +350,328 @@ Module StringExtensions
             Clipboard.SetText(value)
         Else
             Clipboard.Clear()
+        End If
+    End Sub
+End Module
+
+Module MiscExtensions
+    <Extension()>
+    Function ContainsAny(Of T)(instance As IEnumerable(Of T), ParamArray values As T()) As Boolean
+        Return instance.Where(Function(arg) values.Contains(arg)).Count > 0
+    End Function
+
+    <Extension()>
+    Function Sort(Of T)(instance As IEnumerable(Of T)) As IEnumerable(Of T)
+        Dim ret = instance.ToArray
+        Array.Sort(Of T)(ret)
+        Return ret
+    End Function
+
+    <Extension()>
+    Function Join(instance As IEnumerable(Of String), delimiter As String) As String
+        If instance Is Nothing Then Return Nothing
+        Dim containsEmpty As Boolean
+
+        For Each item In instance
+            If item = "" Then
+                containsEmpty = True
+                Exit For
+            End If
+        Next
+
+        If containsEmpty Then instance = instance.Where(Function(arg) arg <> "")
+        Return String.Join(delimiter, instance)
+    End Function
+
+    <Extension()>
+    Function GetAttribute(Of T)(mi As MemberInfo) As T
+        Dim attributes = mi.GetCustomAttributes(True)
+
+        If Not attributes.IsAnythingNothingOrEmpty Then
+            If attributes.Length = 1 Then
+                If TypeOf attributes(0) Is T Then
+                    Return DirectCast(attributes(0), T)
+                End If
+            Else
+                For Each i In attributes
+                    If TypeOf i Is T Then
+                        Return DirectCast(i, T)
+                    End If
+                Next
+            End If
+        End If
+    End Function
+
+    <Extension()>
+    Function IsDigit(c As Char) As Boolean
+        Return Char.IsDigit(c)
+    End Function
+
+    <Extension()>
+    Function EnsureRange(value As Integer, min As Integer, max As Integer) As Integer
+        If value < min Then
+            value = min
+        ElseIf value > max Then
+            value = max
+        End If
+
+        Return value
+    End Function
+
+    <Extension()>
+    Function NeutralCulture(ci As CultureInfo) As CultureInfo
+        If ci.IsNeutralCulture Then Return ci Else Return ci.Parent
+    End Function
+
+    <Extension()>
+    Function ContainsNothingOrEmpty(strings As IEnumerable(Of String)) As Boolean
+        If strings Is Nothing OrElse strings.Count = 0 Then Return True
+
+        For Each i In strings
+            If i = "" Then Return True
+        Next
+    End Function
+
+    <Extension()>
+    Function IsAnythingNothingOrEmpty(objects As IEnumerable(Of Object)) As Boolean
+        If objects Is Nothing OrElse objects.Count = 0 Then Return True
+
+        For Each i In objects
+            If i Is Nothing Then Return True
+        Next
+    End Function
+End Module
+
+Module RegistryKeyExtensions
+    Private Function GetValue(Of T)(rootKey As RegistryKey, key As String, name As String) As T
+        Using k = rootKey.OpenSubKey(key)
+            If Not k Is Nothing Then
+                Dim r = k.GetValue(name)
+
+                If Not r Is Nothing Then
+                    Try
+                        Return CType(r, T)
+                    Catch ex As Exception
+                    End Try
+                End If
+            End If
+        End Using
+    End Function
+
+    <Extension()>
+    Function GetString(rootKey As RegistryKey, subKey As String, name As String) As String
+        Return GetValue(Of String)(rootKey, subKey, name)
+    End Function
+
+    <Extension()>
+    Function GetInt(rootKey As RegistryKey, subKey As String, name As String) As Integer
+        Return GetValue(Of Integer)(rootKey, subKey, name)
+    End Function
+
+    <Extension()>
+    Function GetBoolean(rootKey As RegistryKey, subKey As String, name As String) As Boolean
+        Return GetValue(Of Boolean)(rootKey, subKey, name)
+    End Function
+
+    <Extension()>
+    Function GetValueNames(rootKey As RegistryKey, subKeyName As String) As IEnumerable(Of String)
+        Using k = rootKey.OpenSubKey(subKeyName)
+            If Not k Is Nothing Then
+                Return k.GetValueNames
+            End If
+        End Using
+
+        Return {}
+    End Function
+
+    <Extension()>
+    Sub GetSubKeys(rootKey As RegistryKey, keys As List(Of RegistryKey))
+        If Not rootKey Is Nothing Then
+            keys.Add(rootKey)
+
+            For Each i In rootKey.GetSubKeyNames
+                GetSubKeys(rootKey.OpenSubKey(i), keys)
+            Next
+        End If
+    End Sub
+
+    <Extension()>
+    Sub Write(rootKey As RegistryKey, subKey As String, valueName As String, valueValue As Object)
+        Dim k = rootKey.OpenSubKey(subKey, True)
+
+        If k Is Nothing Then
+            k = rootKey.CreateSubKey(subKey, RegistryKeyPermissionCheck.ReadWriteSubTree)
+        End If
+
+        k.SetValue(valueName, valueValue)
+        k.Close()
+    End Sub
+
+    <Extension()>
+    Sub DeleteValue(rootKey As RegistryKey, key As String, valueName As String)
+        Using k = rootKey.OpenSubKey(key, True)
+            If Not k Is Nothing Then
+                k.DeleteValue(valueName, False)
+            End If
+        End Using
+    End Sub
+End Module
+
+Module ControlExtension
+    <Extension()>
+    Sub AddClickAction(instance As Control, action As Action)
+        AddHandler instance.Click, Sub() action()
+    End Sub
+
+    <Extension()>
+    Function ClientMousePos(instance As Control) As Point
+        Return instance.PointToClient(Control.MousePosition)
+    End Function
+
+    <Extension()>
+    Function GetMaxTextSpace(instance As Control, ParamArray values As String()) As String
+        Dim ret As String
+
+        For x = 4 To 2 Step -1
+            ret = values.Join("".PadRight(x))
+            Dim testWidth = TextRenderer.MeasureText(ret, instance.Font).Width
+            If testWidth < instance.Width - 2 OrElse x = 2 Then Return ret
+        Next
+
+        Return ret
+    End Function
+End Module
+
+Module UIExtensions
+    <Extension()>
+    Function ResizeToSmallIconSize(img As Image) As Image
+        If Not img Is Nothing AndAlso img.Size <> SystemInformation.SmallIconSize Then
+            Dim s = SystemInformation.SmallIconSize
+            Dim r As New Bitmap(s.Width, s.Height)
+
+            Using g = Graphics.FromImage(DirectCast(r, Image))
+                g.SmoothingMode = SmoothingMode.AntiAlias
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality
+                g.DrawImage(img, 0, 0, s.Width, s.Height)
+            End Using
+
+            Return r
+        End If
+
+        Return img
+    End Function
+
+    <Extension()>
+    Function ResizeImage(image As Image, ByVal height As Integer) As Image
+        Dim percentHeight = height / image.Height
+        Dim ret = New Bitmap(CInt(image.Width * percentHeight), CInt(height))
+
+        Using g = Graphics.FromImage(ret)
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic
+            g.DrawImage(image, 0, 0, ret.Width, ret.Height)
+        End Using
+
+        Return ret
+    End Function
+
+    <Extension()>
+    Sub SetSelectedPath(d As FolderBrowserDialog, path As String)
+        If Not Directory.Exists(path) Then path = DirPath.GetParent(path)
+        If Not Directory.Exists(path) Then path = DirPath.GetParent(path)
+        If Not Directory.Exists(path) Then path = DirPath.GetParent(path)
+        If Not Directory.Exists(path) Then path = DirPath.GetParent(path)
+        If Not Directory.Exists(path) Then path = DirPath.GetParent(path)
+
+        If Directory.Exists(path) Then d.SelectedPath = path
+    End Sub
+
+    <Extension()>
+    Sub SetInitDir(d As FileDialog, ParamArray paths As String())
+        For Each i In paths
+            If Not Directory.Exists(i) Then i = DirPath.GetParent(i)
+            If Not Directory.Exists(i) Then i = DirPath.GetParent(i)
+            If Not Directory.Exists(i) Then i = DirPath.GetParent(i)
+            If Not Directory.Exists(i) Then i = DirPath.GetParent(i)
+            If Not Directory.Exists(i) Then i = DirPath.GetParent(i)
+
+            If Directory.Exists(i) Then
+                d.InitialDirectory = i
+                Exit For
+            End If
+        Next
+    End Sub
+
+    <Extension()>
+    Sub SetFilter(d As FileDialog, values As IEnumerable(Of String))
+        d.Filter = "*." + values.Join(";*.") + "|*." + values.Join(";*.") + "|All Files|*.*"
+    End Sub
+
+    <Extension()>
+    Sub SendMessageCue(tb As TextBox, value As String, hideWhenFocused As Boolean)
+        Dim wParam = If(hideWhenFocused, 0, 1)
+        Native.SendMessage(tb.Handle, Native.EM_SETCUEBANNER, wParam, value)
+    End Sub
+
+    <Extension()>
+    Sub SendMessageCue(c As ComboBox, value As String)
+        Native.SendMessage(c.Handle, Native.CB_SETCUEBANNER, 1, value)
+    End Sub
+
+    Function GetPropertyValue(obj As String, propertyName As String) As Object
+        obj.GetType.GetProperty(propertyName).GetValue(obj)
+    End Function
+
+    <Extension()>
+    Sub RemoveSelection(dgv As DataGridView)
+        For Each i As DataGridViewRow In dgv.SelectedRows
+            dgv.Rows.Remove(i)
+        Next
+
+        If dgv.SelectedRows.Count = 0 AndAlso dgv.RowCount > 0 Then
+            dgv.Rows(dgv.RowCount - 1).Selected = True
+        End If
+    End Sub
+
+    <Extension()>
+    Function CanMoveUp(dgv As DataGridView) As Boolean
+        Return dgv.SelectedRows.Count > 0 AndAlso dgv.SelectedRows(0).Index > 0
+    End Function
+
+    <Extension()>
+    Function CanMoveDown(dgv As DataGridView) As Boolean
+        Return dgv.SelectedRows.Count > 0 AndAlso dgv.SelectedRows(0).Index < dgv.RowCount - 1
+    End Function
+
+    <Extension()>
+    Sub MoveSelectionUp(dgv As DataGridView)
+        If CanMoveUp(dgv) Then
+            Dim bs = DirectCast(dgv.DataSource, BindingSource)
+            Dim pos = bs.Position
+            bs.RaiseListChangedEvents = False
+            Dim current = bs.Current
+            bs.Remove(current)
+            pos -= 1
+            bs.Insert(pos, current)
+            bs.Position = pos
+            bs.RaiseListChangedEvents = True
+            bs.ResetBindings(False)
+        End If
+    End Sub
+
+    <Extension()>
+    Sub MoveSelectionDown(dgv As DataGridView)
+        If CanMoveDown(dgv) Then
+            Dim bs = DirectCast(dgv.DataSource, BindingSource)
+            Dim pos = bs.Position
+            bs.RaiseListChangedEvents = False
+            Dim current = bs.Current
+            bs.Remove(current)
+            pos += 1
+            bs.Insert(pos, current)
+            bs.Position = pos
+            bs.RaiseListChangedEvents = True
+            bs.ResetBindings(False)
         End If
     End Sub
 End Module

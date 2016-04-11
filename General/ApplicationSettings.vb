@@ -54,6 +54,7 @@ Class ApplicationSettings
     Public PreviewFormBorderStyle As FormBorderStyle
     Public DeleteTempFilesToRecycleBin As Boolean = True
     Public ShowTemplateSelection As Boolean
+    Public UIScaleFactor As Single = 1
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -204,7 +205,7 @@ Class ApplicationSettings
                               "Stats = --stats ""%temp_file%.stats"""
         End If
 
-        If Check(SourceAspectRatioMenu, "Source aspect ratio menu", 22) Then
+        If Check(SourceAspectRatioMenu, "Source aspect ratio menu", 24) Then
             SourceAspectRatioMenu = GetDefaultSourceAspectRatioMenu()
         End If
 
@@ -307,14 +308,14 @@ Class ApplicationSettings
                 "DAR |  4:3 = 1.333333" + CrLf +
                 "DAR | 16:9 = 1.777777" + CrLf +
                 "DAR | -" + CrLf +
-                "DAR | 16:9 PAL  ITU 1.823361 = 1.823361" + CrLf +
-                "DAR |  4:3 PAL  ITU 1.367521 = 1.367521" + CrLf +
+                "DAR | 16:9 PAL ITU 1.823361 = 1.823361" + CrLf +
+                "DAR |  4:3 PAL ITU 1.367521 = 1.367521" + CrLf +
                 "DAR | 16:9 NTSC ITU 1.822784 = 1.822784" + CrLf +
                 "DAR |  4:3 NTSC ITU 1.367088 = 1.367088" + CrLf +
                 "PAR |  1:1 = 1:1" + CrLf +
                 "PAR | -" + CrLf +
-                "PAR | 16:9 PAL  DVD MPEG-4 16:11 = 16:11" + CrLf +
-                "PAR |  4:3 PAL  DVD MPEG-4 12:11 = 12:11" + CrLf +
+                "PAR | 16:9 PAL DVD MPEG-4 16:11 = 16:11" + CrLf +
+                "PAR |  4:3 PAL DVD MPEG-4 12:11 = 12:11" + CrLf +
                 "PAR | 16:9 NTSC DVD MPEG-4 40:33 = 40:33" + CrLf +
                 "PAR |  4:3 NTSC DVD MPEG-4 10:11 = 10:11"
 

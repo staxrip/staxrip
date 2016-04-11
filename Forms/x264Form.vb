@@ -1,8 +1,6 @@
 Imports StaxRip.UI
 
 Imports System.Globalization
-Imports System.Reflection
-Imports System.Text.RegularExpressions
 
 Class x264Form
     Inherits DialogBase
@@ -67,7 +65,7 @@ Class x264Form
     Friend WithEvents lQPComp As StaxRip.UI.LabelEx
     Friend WithEvents nudPBRatio As NumEdit
     Friend WithEvents lPBRatio As StaxRip.UI.LabelEx
-    Friend WithEvents rtbCmdl As CmdlRichTextBox
+    Friend WithEvents rtbCommandLine As CommandLineRichTextBox
     Friend WithEvents tcMain As System.Windows.Forms.TabControl
     Friend WithEvents TabPage1 As System.Windows.Forms.TabPage
     Friend WithEvents TabPage3 As System.Windows.Forms.TabPage
@@ -257,7 +255,7 @@ Class x264Form
         Me.lCRFValueDefining100Quality = New System.Windows.Forms.Label()
         Me.lAimedQuality = New System.Windows.Forms.Label()
         Me.nudPercent = New StaxRip.UI.NumEdit()
-        Me.rtbCmdl = New StaxRip.UI.CmdlRichTextBox()
+        Me.rtbCommandLine = New StaxRip.UI.CommandLineRichTextBox()
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
         Me.tcMain = New System.Windows.Forms.TabControl()
         Me.tpBasic = New System.Windows.Forms.TabPage()
@@ -879,20 +877,19 @@ Class x264Form
         '
         'rtbCmdl
         '
-        Me.rtbCmdl.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.rtbCommandLine.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.rtbCmdl.BlockPaint = False
-        Me.rtbCmdl.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.rtbCmdl.Font = New System.Drawing.Font("Tahoma", 9.0!)
-        Me.rtbCmdl.LastCmdl = Nothing
-        Me.rtbCmdl.Location = New System.Drawing.Point(15, 435)
-        Me.rtbCmdl.Margin = New System.Windows.Forms.Padding(4)
-        Me.rtbCmdl.Name = "rtbCmdl"
-        Me.rtbCmdl.ReadOnly = True
-        Me.rtbCmdl.Size = New System.Drawing.Size(867, 22)
-        Me.rtbCmdl.TabIndex = 1
-        Me.rtbCmdl.Text = ""
+        Me.rtbCommandLine.BlockPaint = False
+        Me.rtbCommandLine.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.rtbCommandLine.LastCommandLine = Nothing
+        Me.rtbCommandLine.Location = New System.Drawing.Point(15, 435)
+        Me.rtbCommandLine.Margin = New System.Windows.Forms.Padding(4)
+        Me.rtbCommandLine.Name = "rtbCmdl"
+        Me.rtbCommandLine.ReadOnly = True
+        Me.rtbCommandLine.Size = New System.Drawing.Size(867, 22)
+        Me.rtbCommandLine.TabIndex = 1
+        Me.rtbCommandLine.Text = ""
         '
         'ToolStripMenuItem1
         '
@@ -2400,7 +2397,7 @@ Class x264Form
         Me.Controls.Add(Me.bnProfiles)
         Me.Controls.Add(Me.cbGoTo)
         Me.Controls.Add(Me.tcMain)
-        Me.Controls.Add(Me.rtbCmdl)
+        Me.Controls.Add(Me.rtbCommandLine)
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(0, 0)
@@ -2536,9 +2533,9 @@ Class x264Form
         cbGoTo.SendMessageCue("Search")
 
         ToolTip.SetToolTip(lAimedQuality, "A well balanced value is 50%. The assistant warns" & CrLf & "if it's more then 10% off.")
-        ToolTip.SetToolTip(rtbCmdl, "Right-click to show a context menu")
+        ToolTip.SetToolTip(rtbCommandLine, "Right-click to show a context menu")
 
-        rtbCmdl.ScrollBars = RichTextBoxScrollBars.None
+        rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
         AcceptButton = Nothing
 
         LoadParams(Encoder.Params)
@@ -2859,7 +2856,7 @@ Class x264Form
         Dim cmdl = ""
 
         If OK(GetWarning) Then
-            rtbCmdl.Text = warning
+            rtbCommandLine.Text = warning
         Else
             Static tempEnc As x264Encoder = DirectCast(ObjectHelp.GetCopy(Encoder), x264Encoder)
             tempEnc.Params = Params
@@ -2876,19 +2873,19 @@ Class x264Form
                 cmdl = """" + Packs.x264.GetPath + """ " + cmdl
             End If
 
-            rtbCmdl.SetText(cmdl)
-            rtbCmdl.SelectionLength = 0
+            rtbCommandLine.SetText(cmdl)
+            rtbCommandLine.SelectionLength = 0
         End If
 
         UpdateHeight()
     End Sub
 
     Sub UpdateHeight()
-        Dim s = TextRenderer.MeasureText(rtbCmdl.Text, rtbCmdl.Font,
-                                         New Size(rtbCmdl.ClientSize.Width, Integer.MaxValue),
+        Dim s = TextRenderer.MeasureText(rtbCommandLine.Text, rtbCommandLine.Font,
+                                         New Size(rtbCommandLine.ClientSize.Width, Integer.MaxValue),
                                          TextFormatFlags.WordBreak)
-        Height += CInt(s.Height * 1.2) - rtbCmdl.Height
-        rtbCmdl.Refresh()
+        Height += CInt(s.Height * 1.2) - rtbCommandLine.Height
+        rtbCommandLine.Refresh()
     End Sub
 
     Function GetEnum(Of T)(o As Object) As T
@@ -2918,8 +2915,8 @@ Class x264Form
 
         If g.IsCulture("de") Then
             f.Doc.WriteH2("Deutsche Anleitungen")
-            f.Doc.WriteList("[http://encodingwissen.de/x264 Anleitung von Brother John]", _
-                            "[http://www.flaskmpeg.info/board/thread.php?threadid=5571 Anleitung von selur]", _
+            f.Doc.WriteList("[http://encodingwissen.de/x264 Anleitung von Brother John]",
+                            "[http://www.flaskmpeg.info/board/thread.php?threadid=5571 Anleitung von selur]",
                             "[http://www.mplayerhq.hu/DOCS/HTML/de/menc-feat-x264.html Anleitung für mencoder]")
         ElseIf g.IsCulture("fr") Then
             f.Doc.WriteH2("French Guides")
@@ -2930,9 +2927,9 @@ Class x264Form
         End If
 
         f.Doc.WriteH2("English Guides")
-        f.Doc.WriteList("[http://www.avidemux.org/admWiki/index.php?title=H264 guide for AviDemux]", _
-                        "[http://www.digital-digest.com/articles/x264_options_page1.html guide by DVDGuy]", _
-                        "[http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-x264.html guide for mencoder]", _
+        f.Doc.WriteList("[http://www.avidemux.org/admWiki/index.php?title=H264 guide for AviDemux]",
+                        "[http://www.digital-digest.com/articles/x264_options_page1.html guide by DVDGuy]",
+                        "[http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-x264.html guide for mencoder]",
                         "[http://mewiki.project357.com/wiki/X264_Settings switches at MeGUI wiki]")
         f.Show()
     End Sub
@@ -3383,10 +3380,10 @@ Class x264Form
     End Sub
 
     Sub CopyCmdl()
-        If rtbCmdl.SelectionLength = 0 Then
-            rtbCmdl.Text.ToClipboard()
+        If rtbCommandLine.SelectionLength = 0 Then
+            rtbCommandLine.Text.ToClipboard()
         Else
-            rtbCmdl.SelectedText.ToClipboard()
+            rtbCommandLine.SelectedText.ToClipboard()
         End If
     End Sub
 
@@ -3487,8 +3484,8 @@ Class x264Form
 
                     ImportedSwitchesCount += 1
                 ElseIf _
-                    Not a(x) Like "output *" AndAlso _
-                    Not a(x) Like "sar *" AndAlso _
+                    Not a(x) Like "output *" AndAlso
+                    Not a(x) Like "sar *" AndAlso
                     Not a(x) Like "stats *" Then
 
                     failed.Add("--" + a(x))
@@ -3603,12 +3600,12 @@ Class x264Form
         Return r
     End Function
 
-    Private Sub rtbCmdl_MouseDown(sender As Object, e As MouseEventArgs) Handles rtbCmdl.MouseDown
-        If Not rtbCmdl.ContextMenuStrip Is Nothing Then
-            rtbCmdl.ContextMenuStrip.Dispose()
+    Private Sub rtbCmdl_MouseDown(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseDown
+        If Not rtbCommandLine.ContextMenuStrip Is Nothing Then
+            rtbCommandLine.ContextMenuStrip.Dispose()
         End If
 
-        rtbCmdl.ContextMenuStrip = GetCommandLineMenu()
+        rtbCommandLine.ContextMenuStrip = GetCommandLineMenu()
     End Sub
 
     Private Sub x264Form_Load(sender As Object, e As EventArgs) Handles Me.Load

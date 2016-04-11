@@ -53,7 +53,6 @@ Class MacrosForm
         'stb
         '
         Me.stb.BackColor = System.Drawing.Color.Aqua
-        Me.stb.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.stb.Location = New System.Drawing.Point(12, 12)
         Me.stb.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.stb.Name = "stb"
@@ -174,8 +173,6 @@ Class MacrosForm
         For Each i In Packs.Packages
             Macros("%app_dir:" + i.Name + "%") = ""
         Next
-
-        Populate(False)
     End Sub
 
     Public Shared Sub ShowDialogForm()
@@ -294,6 +291,6 @@ Class MacrosForm
     End Sub
 
     Private Sub MacrosForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        lv.TileSize = New Size(lv.Width - SystemInformation.VerticalScrollBarWidth - 4, CInt(Font.Height * 1.5))
+        Populate(False)
     End Sub
 End Class

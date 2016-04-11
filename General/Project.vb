@@ -108,11 +108,11 @@ Public Class Project
         If Name Is Nothing Then Name = ""
         If SourceFile Is Nothing Then SourceFile = ""
 
-        If Check(AutoSubtitles, "Automatically Included Subtitles", 1) Then
+        If Check(AutoSubtitles, "Automatically Included Subtitles", 2) Then
             If CultureInfo.CurrentCulture.TwoLetterISOLanguageName = "en" Then
-                AutoSubtitles = "en iv"
+                AutoSubtitles = "eng und"
             Else
-                AutoSubtitles = CultureInfo.CurrentCulture.TwoLetterISOLanguageName + ", en, iv"
+                AutoSubtitles = New Language(CultureInfo.CurrentCulture).ThreeLetterCode + ", eng, und"
             End If
         End If
 

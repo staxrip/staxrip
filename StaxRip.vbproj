@@ -213,6 +213,7 @@
     <Compile Include="Controls\x264Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Encoding\NVIDIAEncoder.vb" />
     <Compile Include="General\Scripting.vb" />
     <Compile Include="UI\DataForm.Designer.vb">
       <DependentUpon>DataForm.vb</DependentUpon>
@@ -250,8 +251,7 @@
     <Compile Include="Forms\eac3toForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Extensions\UIExtensions.vb" />
-    <Compile Include="Extensions\MiscExtensions.vb" />
+    <Compile Include="General\Extensions.vb" />
     <Compile Include="Forms\AudioForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -307,7 +307,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\Dynamic.vb" />
-    <Compile Include="Extensions\StringExtension.vb" />
     <Compile Include="Forms\BatchEncoderForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -442,6 +441,7 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
+    <None Include="md\changelog.md" />
     <None Include="My Project\DataSources\AudioProfile.datasource" />
     <None Include="packages.config" />
     <None Include="Resources\play.png" />
@@ -641,7 +641,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
-    <Folder Include="Controls\Settings\" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\vb\Microsoft.CodeAnalysis.Analyzers.dll" />

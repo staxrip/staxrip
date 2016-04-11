@@ -201,13 +201,15 @@ Class CropForm
         CommandManager.AddCommandsFromObject(Me)
         CommandManager.AddCommandsFromObject(g.DefaultCommands)
 
-        ContextMenuStrip = New ContextMenuStrip
+        ContextMenuStrip = New ContextMenuStripEx
 
         CustomMenu = New CustomMenu(AddressOf GetDefaultMenu,
             s.CustomMenuCrop, CommandManager, ContextMenuStrip)
 
         CustomMenu.AddKeyDownHandler(Me)
         CustomMenu.BuildMenu()
+
+        StatusStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
         pVideo.Left = 10
         pVideo.Top = 10

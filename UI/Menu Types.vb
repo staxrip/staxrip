@@ -10,7 +10,7 @@ Imports StaxRip.UI
 
 Namespace UI
     <Serializable()>
-    Class CustomMenuItem
+    Public Class CustomMenuItem
         Sub New()
         End Sub
 
@@ -122,7 +122,7 @@ Namespace UI
         End Function
     End Class
 
-    Class CustomMenu
+    Public Class CustomMenu
         Private Items As New List(Of CustomMenuItem)
 
         Property Menu As Menu
@@ -223,7 +223,7 @@ Namespace UI
                 Dim e As New CustomMenuItemEventArgs(item)
                 RaiseEvent Command(e)
                 If Not e.Handled Then Process(item)
-                Dim f As Form = ToolStrip.FindForm
+                Dim f = ToolStrip.FindForm
                 If Not f Is Nothing Then f.Refresh()
             End If
         End Sub
@@ -275,7 +275,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class CustomMenuItemEventArgs
+    Public Class CustomMenuItemEventArgs
         Inherits EventArgs
 
         Property Handled As Boolean
@@ -286,7 +286,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class MenuItemEx
+    Public Class MenuItemEx
         Inherits ToolStripMenuItem
 
         Shared Property UseTooltips As Boolean
@@ -403,7 +403,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class ActionMenuItem
+    Public Class ActionMenuItem
         Inherits MenuItemEx
 
         Private Action As Action
@@ -553,7 +553,7 @@ Namespace UI
                                 action As Action(Of String)) As ContextMenuStrip
 
             If owner.ContextMenuStrip Is Nothing Then
-                owner.ContextMenuStrip = New ContextMenuStrip(components)
+                owner.ContextMenuStrip = New ContextMenuStripEx(components)
             End If
 
             Dim r = owner.ContextMenuStrip
@@ -574,10 +574,22 @@ Namespace UI
         End Function
     End Class
 
-    Class ContextMenuStripEx
+    Public Class ContextMenuStripEx
         Inherits ContextMenuStrip
 
         Private FormValue As Form
+
+        Sub New()
+        End Sub
+
+        Sub New(container As IContainer)
+            MyBase.New(container)
+        End Sub
+
+        Protected Overrides Sub OnHandleCreated(e As EventArgs)
+            MyBase.OnHandleCreated(e)
+            Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        End Sub
 
         Property Form As Form
             Get
@@ -607,7 +619,7 @@ Namespace UI
             Return ret
         End Function
 
-        Function Add(path As String, action As action, shortcut As Keys,
+        Function Add(path As String, action As Action, shortcut As Keys,
                      enabledFunc As Func(Of Boolean),
                      Optional help As String = Nothing) As ActionMenuItem
 

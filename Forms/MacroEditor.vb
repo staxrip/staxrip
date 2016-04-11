@@ -1,5 +1,3 @@
-Imports System.ComponentModel
-
 Imports StaxRip.UI
 
 Class MacroEditor
@@ -38,7 +36,6 @@ Class MacroEditor
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlp.SetColumnSpan(Me.MacroEditorControl, 3)
-        Me.MacroEditorControl.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.MacroEditorControl.Location = New System.Drawing.Point(3, 3)
         Me.MacroEditorControl.Name = "MacroEditorControl"
         Me.MacroEditorControl.Size = New System.Drawing.Size(646, 393)
@@ -114,7 +111,7 @@ Class MacroEditor
     Sub New()
         MyBase.New()
         InitializeComponent()
-        MinimumSize = New Size(950, 600)
+        MinimumSize = New Size(800, 600)
     End Sub
 
     Sub SetBatchDefaults()
@@ -135,7 +132,7 @@ Class MacroEditor
         Text = "Script Editor"
         HelpText = "Editor for scripts that may contain macros."
         MacroEditorControl.SetScriptDefaults()
-        Size = New Size(600, 400)
+        Size = New Size(1400, 1000)
     End Sub
 
     Private Sub UniversalEditor_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
@@ -148,23 +145,12 @@ Class MacroEditor
     End Sub
 
     Protected Overrides Sub OnLoad(e As EventArgs)
-        Dim c = MacroEditorControl
-        Dim s = TextRenderer.MeasureText(c.rtbEdit.Text, c.rtbEdit.Font)
-        Dim w = c.TabControl.Width - s.Width - 150
-        Dim h = c.TabControl.Height - s.Height - 150
-
-        Width -= w
-        Height -= h
-
-        Dim b = Screen.FromControl(Me).WorkingArea
-
-        If Width > b.Width * 0.7 Then Width = CInt(b.Width * 0.7)
-        If Height > b.Height * 0.7 Then Height = CInt(b.Height * 0.7)
-
         MyBase.OnLoad(e)
-    End Sub
-
-    Private Sub MacroEditor_Load(sender As Object, e As EventArgs) Handles Me.Load
         bnContext.AutoSize = True
+        Dim editorControl = MacroEditorControl
+        Dim textSize = TextRenderer.MeasureText(editorControl.rtbEdit.Text, editorControl.rtbEdit.Font)
+        Dim workingArea = Screen.FromControl(Me).WorkingArea
+        If Width > workingArea.Width * 0.7 Then Width = CInt(workingArea.Width * 0.7)
+        If Height > workingArea.Height * 0.9 Then Height = CInt(workingArea.Height * 0.9)
     End Sub
 End Class

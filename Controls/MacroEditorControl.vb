@@ -182,7 +182,6 @@ Class MacroEditorControl
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.Controls.Add(Me.gb)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "MacroEditorControl"
         Me.Size = New System.Drawing.Size(620, 550)
         Me.TabControl.ResumeLayout(False)
@@ -213,7 +212,7 @@ Class MacroEditorControl
         MyBase.New()
         InitializeComponent()
         rtbEdit.EnableAutoDragDrop = True
-        rtbEdit.Font = New Font("Consolas", 10)
+        rtbEdit.Font = New Font("Consolas", 10 * s.UIScaleFactor)
         rtbPreview.Font = rtbEdit.Font
 
         Dim c = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)

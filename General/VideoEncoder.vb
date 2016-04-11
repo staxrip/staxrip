@@ -244,11 +244,11 @@ Public MustInherit Class VideoEncoder
         intel265.Params.Codec.Value = 1
         ret.Add(intel265)
 
-        Dim nvidia264 As New NvidiaEncoder()
+        Dim nvidia264 As New NVIDIAEncoder()
         nvidia264.Params.Mode.Value = 3
         ret.Add(nvidia264)
 
-        Dim nvidia265 As New NvidiaEncoder()
+        Dim nvidia265 As New NVIDIAEncoder()
         nvidia265.Params.Mode.Value = 3
         nvidia265.Params.Codec.Value = 1
         ret.Add(nvidia265)
@@ -885,12 +885,12 @@ Class ffmpegEncoder
         Property Custom As New StringParam With {
             .Text = "Custom Switches:"}
 
-        Private ItemsValue As List(Of CommandLineItem)
+        Private ItemsValue As List(Of CommandLineParam)
 
-        Overrides ReadOnly Property Items As List(Of CommandLineItem)
+        Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
-                    ItemsValue = New List(Of CommandLineItem)
+                    ItemsValue = New List(Of CommandLineParam)
 
                     ItemsValue.AddRange({Decoder, Codec, Mode, Speed, AQmode, Quality,
                                         DecodingThreads, EncodingThreads, TileColumns,
@@ -901,7 +901,7 @@ Class ffmpegEncoder
             End Get
         End Property
 
-        Protected Overrides Sub OnValueChanged(item As CommandLineItem)
+        Protected Overrides Sub OnValueChanged(item As CommandLineParam)
             MyBase.OnValueChanged(item)
         End Sub
 
@@ -992,351 +992,7 @@ Class ffmpegEncoder
 End Class
 
 <Serializable()>
-Class NvidiaEncoder
-    Inherits BasicVideoEncoder
-
-    Property ParamsStore As New PrimitiveStore
-
-    Public Overrides ReadOnly Property DefaultName As String
-        Get
-            Return "NVIDIA " + Params.Codec.OptionText
-        End Get
-    End Property
-
-    <NonSerialized>
-    Private ParamsValue As EncoderParams
-
-    Property Params As EncoderParams
-        Get
-            If ParamsValue Is Nothing Then
-                ParamsValue = New EncoderParams
-                ParamsValue.Init(ParamsStore)
-            End If
-
-            Return ParamsValue
-        End Get
-        Set(value As EncoderParams)
-            ParamsValue = value
-        End Set
-    End Property
-
-    Overrides Sub ShowConfigDialog()
-        Dim newParams As New EncoderParams
-        Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
-        newParams.Init(store)
-
-        Using f As New CommandLineForm(newParams)
-            Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of NvidiaEncoder)(Me)
-                                        Dim params2 As New EncoderParams
-                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
-                                        params2.Init(store2)
-                                        enc.Params = params2
-                                        enc.ParamsStore = store2
-                                        SaveProfile(enc)
-                                    End Sub
-
-            f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
-            f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.NVEncC.GetPath, "--check-hw"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Packs.NVEncC.GetPath, "--check-features"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetErrorOutput(Packs.NVEncC.GetPath, "--check-environment"))))
-
-            If f.ShowDialog() = DialogResult.OK Then
-                Params = newParams
-                ParamsStore = store
-                OnStateChange()
-            End If
-        End Using
-    End Sub
-
-    Overrides ReadOnly Property OutputFileType() As String
-        Get
-            Return Params.Codec.ValueText
-        End Get
-    End Property
-
-    Overrides Sub Encode()
-        p.Script.Synchronize()
-        Dim cl = Params.GetCommandLine(True, False)
-
-        If cl.Contains(" | ") Then
-            Dim batchPath = p.TempDir + p.TargetFile.Base + "_NVEncC.bat"
-            File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
-
-            Using proc As New Proc
-                proc.Init("Encoding using NVEncC " + Packs.NVEncC.Version)
-                proc.SkipStrings = {"%]", " frames: "}
-                proc.WriteLine(cl + CrLf2)
-                proc.File = "cmd.exe"
-                proc.Arguments = "/C call """ + batchPath + """"
-                proc.Start()
-            End Using
-        Else
-            Using proc As New Proc
-                proc.Init("Encoding using NVEncC " + Packs.NVEncC.Version)
-                proc.SkipStrings = {"%]"}
-                proc.File = Packs.NVEncC.GetPath
-                proc.Arguments = cl
-                proc.Start()
-            End Using
-        End If
-
-        AfterEncoding()
-    End Sub
-
-    Overrides Function GetMenu() As MenuList
-        Dim r As New MenuList
-        r.Add("Encoder Options", AddressOf ShowConfigDialog)
-        r.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
-        Return r
-    End Function
-
-    Overrides Property QualityMode() As Boolean
-        Get
-            Return Params.Mode.OptionText = "CQP"
-        End Get
-        Set(Value As Boolean)
-        End Set
-    End Property
-
-    Public Overrides ReadOnly Property CommandLineParams As CommandLineParams
-        Get
-            Return Params
-        End Get
-    End Property
-
-    Class EncoderParams
-        Inherits CommandLineParams
-
-        Sub New()
-            Title = "NVIDIA Encoding Options"
-        End Sub
-
-        Property Decoder As New OptionParam With {
-            .Text = "Decoder:",
-            .Options = {"AviSynth/VapourSynth", "NVEncC (NVIDIA CUVID)", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
-            .Values = {"avs", "nv", "qs", "ffqsv", "ffdxva"}}
-
-        Property Mode As New OptionParam With {
-            .Text = "Mode:",
-            .Options = {"CBR", "VBR", "VBR2", "CQP"}}
-
-        Property Codec As New OptionParam With {
-            .Switch = "--codec",
-            .Text = "Codec:",
-            .Options = {"H.264", "H.265"},
-            .Values = {"h264", "h265"}}
-
-        Property Profile As New OptionParam With {
-            .Switch = "--profile",
-            .Text = "Profile:",
-            .ValueIsName = True,
-            .Options = {"baseline", "main", "high", "high444"},
-            .Value = 2,
-            .DefaultValue = 2}
-
-        Property LevelH264 As New OptionParam With {
-            .Name = "LevelH264",
-            .Switch = "--level",
-            .Text = "Level:",
-            .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"},
-            .Values = {"", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}}
-
-        Property LevelH265 As New OptionParam With {
-            .Name = "LevelH265",
-            .Switch = "--level",
-            .Text = "Level:",
-            .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"},
-            .Values = {"", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}}
-
-        Property mvPrecision As New OptionParam With {
-            .Switch = "--mv-precision",
-            .Text = "MV Precision:",
-            .Options = {"Q-pel", "half-pel", "full-pel"},
-            .Values = {"Q-pel", "half-pel", "full-pel"}}
-
-        Property QPI As New NumParam With {
-            .Text = "Constant QP I:",
-            .Value = 20,
-            .VisibleFunc = Function() "CQP" = Mode.OptionText,
-            .MinMaxStep = {0, 51, 1}}
-
-        Property QPP As New NumParam With {
-            .Text = "Constant QP P:",
-            .Value = 23,
-            .VisibleFunc = Function() "CQP" = Mode.OptionText,
-            .MinMaxStep = {0, 51, 1}}
-
-        Property QPB As New NumParam With {
-            .Text = "Constant QP B:",
-            .Value = 25,
-            .VisibleFunc = Function() "CQP" = Mode.OptionText,
-            .MinMaxStep = {0, 51, 1}}
-
-        Property MaxBitrate As New NumParam With {
-            .Switch = "--max-bitrate",
-            .Text = "Maximum Bitrate:",
-            .Value = 17500,
-            .DefaultValue = 17500,
-            .MinMaxStep = {0, 1000000, 1}}
-
-        Property GOPLength As New NumParam With {
-            .Switch = "--gop-len",
-            .Text = "GOP Length (0=auto):",
-            .MinMaxStep = {0, 10000, 1}}
-
-        Property BFrames As New NumParam With {
-            .Switch = "--bframes",
-            .Text = "B Frames:",
-            .Value = 3,
-            .DefaultValue = 3,
-            .MinMaxStep = {0, 16, 1}}
-
-        Property Ref As New NumParam With {
-            .Switch = "--ref",
-            .Text = "Reference Frames:",
-            .Value = 3,
-            .DefaultValue = 3,
-            .MinMaxStep = {0, 16, 1}}
-
-        Property Lossless As New BoolParam With {
-            .Switch = "--lossless",
-            .Text = "Lossless",
-            .VisibleFunc = Function() Codec.ValueText = "h264",
-            .Value = False,
-            .DefaultValue = False}
-
-        Property FullRange As New BoolParam With {
-            .Switch = "--fullrange",
-            .Text = "Full Range",
-            .VisibleFunc = Function() Codec.ValueText = "h264",
-            .Value = False,
-            .DefaultValue = False}
-
-        Property AQ As New BoolParam With {
-            .Switch = "--aq",
-            .Text = "Adaptive Quantization",
-            .Value = False,
-            .DefaultValue = False}
-
-        Property Custom As New StringParam With {
-            .Text = "Custom Switches:",
-            .ArgsFunc = Function() Custom.Value}
-
-        Private ItemsValue As List(Of CommandLineItem)
-
-        Overrides ReadOnly Property Items As List(Of CommandLineItem)
-            Get
-                If ItemsValue Is Nothing Then
-                    ItemsValue = New List(Of CommandLineItem)
-                    Add("Basic", Decoder, Mode, Codec, Profile, LevelH264, LevelH265,
-                        QPI, QPP, QPB, GOPLength, BFrames, Ref)
-
-                    Add("Advanced", mvPrecision, MaxBitrate, AQ, Lossless, FullRange, Custom)
-                End If
-
-                Return ItemsValue
-            End Get
-        End Property
-
-        Private AddedList As New List(Of String)
-
-        Private Sub Add(path As String, ParamArray items As CommandLineItem())
-            For Each i In items
-                i.Path = path
-                ItemsValue.Add(i)
-
-                If i.GetKey = "" OrElse AddedList.Contains(i.GetKey) Then
-                    Throw New Exception
-                End If
-            Next
-        End Sub
-
-        Protected Overrides Sub OnValueChanged(item As CommandLineItem)
-            Profile.Visible = Codec.ValueText = "h264"
-            Lossless.Visible = Profile.Visible
-            LevelH264.Visible = Codec.ValueText = "h264"
-            LevelH265.Visible = Codec.ValueText = "h265"
-            MyBase.OnValueChanged(item)
-        End Sub
-
-        Overrides Function GetCommandLine(includePaths As Boolean,
-                                          includeExecutable As Boolean,
-                                          Optional pass As Integer = 0) As String
-            Dim ret As String
-            Dim sourcePath As String
-            Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
-
-            If includePaths AndAlso includeExecutable Then
-                ret = Packs.NVEncC.GetPath.Quotes
-            End If
-
-            Select Case Decoder.ValueText
-                Case "avs"
-                    sourcePath = p.Script.Path
-                Case "nv"
-                    sourcePath = p.LastOriginalSourceFile
-                Case "qs"
-                    sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.QSVEncC.GetPath.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Packs.NVEncC.GetPath.Quotes, "NVEncC")
-                Case "ffdxva"
-                    sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.NVEncC.GetPath.Quotes, "NVEncC")
-                Case "ffqsv"
-                    sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.NVEncC.GetPath.Quotes, "NVEncC")
-            End Select
-
-            Dim q = From i In Items Where i.GetArgs <> ""
-
-            If q.Count > 0 Then
-                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
-            End If
-
-            If Not Lossless.Value Then
-                Select Case Mode.OptionText
-                    Case "CBR"
-                        ret += " --cbr " & p.VideoBitrate
-                    Case "VBR"
-                        ret += " --vbr " & p.VideoBitrate
-                    Case "VBR2"
-                        ret += " --vbr2 " & p.VideoBitrate
-                    Case "CQP"
-                        ret += " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
-                End Select
-            End If
-
-            If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
-                (p.Script.IsFilterActive("Crop", "Hardware Encoder") OrElse
-                (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop"))) Then
-
-                ret += " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom
-            End If
-
-            If p.Script.IsFilterActive("Resize", "Hardware Encoder") OrElse
-                (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Resize")) Then
-
-                ret += " --output-res " & p.TargetWidth & "x" & p.TargetHeight
-            ElseIf p.AutoARSignaling Then
-                Dim par = Calc.GetTargetPAR
-                If par <> New Point(1, 1) Then ret += " --sar " & par.X & ":" & par.Y
-            End If
-
-            If sourcePath = "-" Then ret += " --y4m"
-
-            If includePaths Then ret += " -i " + sourcePath.Quotes + " -o " + targetPath.Quotes
-
-            Return ret.Trim
-        End Function
-
-        Public Overrides Function GetPackage() As Package
-            Return Packs.NVEncC
-        End Function
-    End Class
-End Class
-
-<Serializable()>
-Class IntelEncoder
+Public Class IntelEncoder
     Inherits BasicVideoEncoder
 
     Property ParamsStore As New PrimitiveStore
@@ -1475,207 +1131,72 @@ Class IntelEncoder
             Title = "Intel Encoding Options"
         End Sub
 
-        Property Decoder As New OptionParam With {
-            .Text = "Decoder:",
-            .Options = {"AviSynth/VapourSynth", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
-            .Values = {"avs", "qs", "ffqsv", "ffdxva"}}
-
-        Property Codec As New OptionParam With {
-            .Switch = "--codec",
-            .Text = "Codec:",
-            .Options = {"H.264", "H.265", "MPEG-2"},
-            .Values = {"h264", "hevc", "mpeg2"}}
+        Property Decoder As New OptionParam With {.Text = "Decoder:", .Options = {"AviSynth/VapourSynth", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"}, .Values = {"avs", "qs", "ffqsv", "ffdxva"}}
+        Property Codec As New OptionParam With {.Switch = "--codec", .Text = "Codec:", .Options = {"H.264", "H.265", "MPEG-2"}, .Values = {"h264", "hevc", "mpeg2"}}
 
         Property Mode As New OptionParam With {
-            .Name = "Mode",
-            .Text = "Mode:",
-            .Expand = True,
-            .Options = Modes.Select(Function(a) a.Value).ToArray,
-            .Values = Modes.Select(Function(a) a.Name).ToArray,
-            .Value = 2,
-            .DefaultValue = 2}
+            .Switches = {"avbr", "--cbr", "--vbr", "--qvbr-q", "--cqp", "--vqp", "--icq", "--la-icq", "--vcm", "--la", "--la-hrd", "--qvbr"},
+            .Name = "Mode", .Text = "Mode:", .Expand = True, .Options = Modes.Select(Function(a) a.Value).ToArray, .Values = Modes.Select(Function(a) a.Name).ToArray, .InitValue = 2}
 
-        Property QualitySpeed As New OptionParam With {
-            .Switch = "--quality",
-            .Text = "Quality/Speed:",
-            .Options = {"best", "higher", "high", "balanced", "fast", "faster", "fastest"},
-            .Values = {"best", "higher", "high", "balanced", "fast", "faster", "fastest"},
-            .Value = 3,
-            .DefaultValue = 3}
+        Property Deinterlace As New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace:", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}}
 
-        Property Deinterlace As New OptionParam With {
-            .Switch = "--vpp-deinterlace",
-            .Text = "Deinterlace:",
-            .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"},
-            .Values = {"none", "normal", "it", "bob"}}
+        Property Quality As New NumParam With {.Text = "Quality:", .Value = 23, .DefaultValue = 23, .VisibleFunc = Function() {"icq", "la-icq", "qvbr-q"}.Contains(Mode.ValueText), .MinMaxStep = {0, 51, 1}}
+        Property QPI As New NumParam With {.Switches = {"--cqp", "--vqp"}, .Text = "QP I:", .Value = 24, .DefaultValue = 24, .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText), .MinMaxStep = {0, 51, 1}}
+        Property QPP As New NumParam With {.Switches = {"--cqp", "--vqp"}, .Text = "QP P:", .Value = 26, .DefaultValue = 26, .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText), .MinMaxStep = {0, 51, 1}}
+        Property QPB As New NumParam With {.Switches = {"--cqp", "--vqp"}, .Text = "QP B:", .Value = 27, .DefaultValue = 27, .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText), .MinMaxStep = {0, 51, 1}}
 
-        Property TFF As New BoolParam With {
-            .Switch = "--tff",
-            .Text = "Top Field First"}
+        Property TFF As New BoolParam With {.Switch = "--tff", .Text = "Top Field First"}
+        Property BFF As New BoolParam With {.Switch = "--bff", .Text = "Bottom Field First"}
 
-        Property BFF As New BoolParam With {
-            .Switch = "--bff",
-            .Text = "Bottom Field First"}
+        Property Custom As New StringParam With {.Text = "Custom Switches:", .ArgsFunc = Function() Custom.Value}
 
-        Property Quality As New NumParam With {
-            .Text = "Quality:",
-            .Value = 23,
-            .DefaultValue = 23,
-            .VisibleFunc = Function() {"icq", "la-icq", "qvbr-q"}.Contains(Mode.ValueText),
-            .MinMaxStep = {0, 51, 1}}
+        Private ItemsValue As List(Of CommandLineParam)
 
-        Property QPI As New NumParam With {
-            .Text = "QP I:",
-            .Value = 24,
-            .DefaultValue = 24,
-            .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText),
-            .MinMaxStep = {0, 51, 1}}
-
-        Property QPP As New NumParam With {
-            .Text = "QP P:",
-            .Value = 26,
-            .DefaultValue = 26,
-            .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText),
-            .MinMaxStep = {0, 51, 1}}
-
-        Property QPB As New NumParam With {
-            .Text = "QP B:",
-            .Value = 27,
-            .DefaultValue = 27,
-            .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText),
-            .MinMaxStep = {0, 51, 1}}
-
-        Property MaxBitrate As New NumParam With {
-            .Switch = "--max-bitrate",
-            .Text = "Maximum Bitrate:",
-            .MinMaxStep = {0, 1000000, 1}}
-
-        Property GOPLength As New NumParam With {
-            .Switch = "--gop-len",
-            .Text = "GOP Length (0=auto):",
-            .MinMaxStep = {0, 10000, 1}}
-
-        Property BFrames As New NumParam With {
-            .Switch = "--bframes",
-            .Text = "B Frames:",
-            .Value = 3,
-            .DefaultValue = 3,
-            .MinMaxStep = {0, 16, 1}}
-
-        Property bPyramid As New BoolParam With {
-            .Switch = "--b-pyramid",
-            .Text = "B Pyramid"}
-
-        Property LookaheadDepth As New NumParam With {
-            .Switch = "--la-depth",
-            .Text = "Lookahead Depth:",
-            .Value = 30,
-            .VisibleFunc = Function() {"la", "la-hrd", "la-icq"}.Contains(Mode.ValueText),
-            .MinMaxStep = {0, 100, 1}}
-
-        Property Ref As New NumParam With {
-            .Switch = "--ref",
-            .Text = "Ref Frames (0=auto):",
-            .MinMaxStep = {0, 16, 1}}
-
-        Property Scenechange As New BoolParam With {
-            .Switch = "--scenechange",
-            .NoSwitch = "--no-scenechange",
-            .VisibleFunc = Function() Decoder.ValueText = "avs",
-            .Text = "Scenechange"}
-
-        Property Fallback As New BoolParam With {
-            .Switch = "--fallback-rc",
-            .Text = "Enable fallback for unsupported modes",
-            .Value = True}
-
-        Property MBBRC As New BoolParam With {
-            .Switch = "--mbbrc",
-            .NoSwitch = "--no-mbbrc",
-            .Text = "Per macro block rate control",
-            .VisibleFunc = Function() Not {"cqp", "la", "la-hrd", "la-icq", "vqp", "icq"}.Contains(Mode.ValueText),
-            .Value = False,
-            .DefaultValue = False}
-
-        Property Custom As New StringParam With {
-            .Text = "Custom Switches:",
-            .ArgsFunc = Function() Custom.Value}
-
-        Property LevelH264 As New OptionParam With {
-            .Switch = "--level",
-            .Text = "Level:",
-            .ValueIsName = True,
-            .VisibleFunc = Function() Codec.Value = 0,
-            .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}}
-
-        Property LevelHEVC As New OptionParam With {
-            .Name = "LevelHEVC",
-            .Switch = "--level",
-            .Text = "Level:",
-            .ValueIsName = True,
-            .VisibleFunc = Function() Codec.Value = 1,
-            .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}}
-
-        Property LevelMPEG2 As New OptionParam With {
-            .Name = "LevelMPEG2",
-            .Switch = "--level",
-            .Text = "Level:",
-            .ValueIsName = True,
-            .VisibleFunc = Function() Codec.Value = 2,
-            .Options = {"Automatic", "low", "main", "high", "High1440"}}
-
-        Property ProfileH264 As New OptionParam With {
-            .Switch = "--profile",
-            .Text = "Profile:",
-            .ValueIsName = True,
-            .VisibleFunc = Function() Codec.Value = 0,
-            .Options = {"Automatic", "Baseline", "Main", "High"}}
-
-        Property ProfileHEVC As New OptionParam With {
-            .Name = "ProfileHEVC",
-            .Switch = "--profile",
-            .Text = "Profile:",
-            .ValueIsName = True,
-            .VisibleFunc = Function() Codec.Value = 1,
-            .Options = {"Main"}}
-
-        Property ProfileMPEG2 As New OptionParam With {
-            .Name = "ProfileMPEG2",
-            .Switch = "--profile",
-            .Text = "Profile:",
-            .ValueIsName = True,
-            .VisibleFunc = Function() Codec.Value = 2,
-            .Options = {"Automatic", "Simple", "Main", "High"}}
-
-        Property Rotate As New OptionParam With {
-            .Switch = "--vpp-rotate",
-            .Text = "Rotate:",
-            .ValueIsName = True,
-            .Options = {"0", "90", "180", "270"}}
-
-        Property OutputBuf As New OptionParam With {
-            .Switch = "--output-buf",
-            .Text = "Output Buffer:",
-            .Options = {"8", "16", "32", "64", "128"},
-            .ValueIsName = True}
-
-        Property vppDetailEnhance As New NumParam With {
-            .Switch = "--vpp-detail-enhance",
-            .Text = "Detail Enhancement:",
-            .MinMaxStep = {0, 100, 1}}
-
-        Private ItemsValue As List(Of CommandLineItem)
-
-        Overrides ReadOnly Property Items As List(Of CommandLineItem)
+        Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
-                    ItemsValue = New List(Of CommandLineItem)
+                    ItemsValue = New List(Of CommandLineParam)
 
-                    Add("Basic", Decoder, Codec, QualitySpeed, Mode, Quality, QPI, QPP, QPB)
-                    Add("Advanced", ProfileH264, ProfileHEVC, ProfileMPEG2, LevelHEVC, LevelH264,
-                        LevelMPEG2, Rotate, OutputBuf, BFrames, Ref, GOPLength, LookaheadDepth,
-                        vppDetailEnhance, MaxBitrate, bPyramid, Scenechange, Fallback, MBBRC, Custom)
+                    Add("Basic", Decoder, Codec,
+                        New OptionParam With {.Switch = "--quality", .Text = "Quality/Speed:", .Options = {"best", "higher", "high", "balanced", "fast", "faster", "fastest"}, .Values = {"best", "higher", "high", "balanced", "fast", "faster", "fastest"}, .Value = 3, .DefaultValue = 3},
+                        Mode, Quality, QPI, QPP, QPB)
+                    Add("Advanced 1",
+                        New OptionParam With {.Switch = "--profile", .Text = "Profile:", .ValueIsName = True, .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "Baseline", "Main", "High"}},
+                        New OptionParam With {.Switch = "--profile", .Name = "ProfileHEVC", .Text = "Profile:", .ValueIsName = True, .VisibleFunc = Function() Codec.Value = 1, .Options = {"Main"}},
+                        New OptionParam With {.Switch = "--profile", .Name = "ProfileMPEG2", .Text = "Profile:", .ValueIsName = True, .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "Simple", "Main", "High"}},
+                        New OptionParam With {.Switch = "--level", .Name = "LevelHEVC", .Text = "Level:", .ValueIsName = True, .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
+                        New OptionParam With {.Switch = "--level", .Text = "Level:", .ValueIsName = True, .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
+                        New OptionParam With {.Switch = "--level", .Name = "LevelMPEG2", .Text = "Level:", .ValueIsName = True, .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "low", "main", "high", "High1440"}},
+                        New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate:", .ValueIsName = True, .Options = {"0", "90", "180", "270"}},
+                        New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer:", .Options = {"8", "16", "32", "64", "128"}, .ValueIsName = True},
+                        New OptionParam With {.Switch = "--trellis", .Text = "Trellis:", .ValueIsName = True, .Options = {"auto", "off", "i", "ip", "all"}},
+                        New NumParam With {.Switch = "--bframes", .Text = "B Frames:", .InitValue = 3, .MinMaxStep = {0, 16, 1}},
+                        New NumParam With {.Switch = "--ref", .Text = "Ref Frames (0=auto):", .MinMaxStep = {0, 16, 1}},
+                        New NumParam With {.Switch = "--gop-len", .Text = "GOP Length (0=auto):", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--la-depth", .Text = "Lookahead Depth:", .Value = 30, .VisibleFunc = Function() Mode.ValueText.EqualsAny("la", "la-hrd", "la-icq"), .MinMaxStep = {0, 100, 1}},
+                        New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhancement:", .MinMaxStep = {0, 100, 1}},
+                        New NumParam With {.Switch = "--max-bitrate", .Text = "Maximum Bitrate:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--la-window-size", .Text = "Lookahead Window Size:"})
+                    Add("Advanced 2", New BoolParam With {.Switch = "--b-pyramid", .NoSwitch = "--no-b-pyramid", .Text = "B Pyramid"},
+                        New BoolParam With {.Switch = "--scenechange", .NoSwitch = "--no-scenechange", .VisibleFunc = Function() Decoder.ValueText = "avs", .Text = "Scenechange"},
+                        New BoolParam With {.Switch = "--fallback-rc", .Text = "Enable fallback for unsupported modes", .Value = True},
+                        New BoolParam With {.Switch = "--mbbrc", .NoSwitch = "--no-mbbrc", .Text = "Per macro block rate control", .VisibleFunc = Function() Not {"cqp", "la", "la-hrd", "la-icq", "vqp", "icq"}.Contains(Mode.ValueText)},
+                        New BoolParam With {.Switch = "--extbrc", .NoSwitch = "--no-extbrc", .Text = "Extended Rate Control"},
+                        New BoolParam With {.Switch = "--direct-bias-adjust", .NoSwitch = "--no-direct-bias-adjust", .Text = "Direct Bias Adjust"},
+                        New BoolParam With {.Switch = "--open-gop", .Text = "Open Gop"},
+                        New BoolParam With {.Switch = "--strict-gop", .Text = "Strict Gop"},
+                        New BoolParam With {.Switch = "--i-adapt", .Text = "Adaptive I Frame Insert"},
+                        New BoolParam With {.Switch = "--b-adapt", .Text = "Adaptive B Frame Insert"},
+                        New BoolParam With {.Switch = "--weightb", .Text = "B Frame Weight Prediction"},
+                        New BoolParam With {.Switch = "--weightp", .Text = "P Frame Weight Prediction"},
+                        New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"})
                     Add("Deinterlace", Deinterlace, TFF, BFF)
+                    Add("VUI",
+                        New BoolParam With {.Switch = "--fullrange", .Text = "Fullrange"},
+                        New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat:", .Options = {"undef", "ntsc", "component", "pal", "secam", "mac"}, .ValueIsName = True},
+                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR"}, .ValueIsName = True},
+                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "film"}, .ValueIsName = True},
+                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "linear", "log100", "log316"}, .ValueIsName = True})
                 End If
 
                 Return ItemsValue
@@ -1684,7 +1205,7 @@ Class IntelEncoder
 
         Private AddedList As New List(Of String)
 
-        Private Sub Add(path As String, ParamArray items As CommandLineItem())
+        Private Sub Add(path As String, ParamArray items As CommandLineParam())
             For Each i In items
                 i.Path = path
                 ItemsValue.Add(i)
@@ -1701,7 +1222,7 @@ Class IntelEncoder
             Next
         End Function
 
-        Protected Overrides Sub OnValueChanged(item As CommandLineItem)
+        Protected Overrides Sub OnValueChanged(item As CommandLineParam)
             If item Is Deinterlace Then
                 If Deinterlace.ValueText = "normal" OrElse Deinterlace.ValueText = "bob" Then
                     If Not TFF.Value AndAlso Not BFF.Value Then TFF.Value = True
@@ -1995,12 +1516,12 @@ Class AMDEncoder
             .Text = "Custom Switches:",
             .ArgsFunc = Function() Custom.Value}
 
-        Private ItemsValue As List(Of CommandLineItem)
+        Private ItemsValue As List(Of CommandLineParam)
 
-        Overrides ReadOnly Property Items As List(Of CommandLineItem)
+        Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
-                    ItemsValue = New List(Of CommandLineItem)
+                    ItemsValue = New List(Of CommandLineParam)
                     Add("Basic", Decoder, Mode, Quality, QPI, QPP, QPB, GOPLength, BFrames)
                     Add("Advanced", MaxBitrate, VBVBufsize, QPMin, QPMax, Custom)
                 End If
@@ -2011,7 +1532,7 @@ Class AMDEncoder
 
         Private AddedList As New List(Of String)
 
-        Private Sub Add(path As String, ParamArray items As CommandLineItem())
+        Private Sub Add(path As String, ParamArray items As CommandLineParam())
             For Each i In items
                 i.Path = path
                 ItemsValue.Add(i)
@@ -2022,7 +1543,7 @@ Class AMDEncoder
             Next
         End Sub
 
-        Protected Overrides Sub OnValueChanged(item As CommandLineItem)
+        Protected Overrides Sub OnValueChanged(item As CommandLineParam)
             MyBase.OnValueChanged(item)
         End Sub
 

@@ -1,7 +1,5 @@
-﻿Imports System.Windows.Forms.VisualStyles
-Imports System.Drawing.Drawing2D
+﻿Imports System.Drawing.Drawing2D
 
-Imports VB6 = Microsoft.VisualBasic
 Imports StaxRip.UI
 
 Class SearchTextBox
@@ -29,10 +27,10 @@ Class SearchTextBox
         Me.tb.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.tb.Size = New System.Drawing.Size(236, 31)
         '
-        'bu
+        'bn
         '
         Me.bn.Location = New System.Drawing.Point(170, 10)
-        Me.bn.Name = "bu"
+        Me.bn.Name = "bn"
         Me.bn.Size = New System.Drawing.Size(75, 23)
         Me.bn.TabIndex = 2
         Me.bn.Text = "Button1"
@@ -44,7 +42,6 @@ Class SearchTextBox
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.Controls.Add(Me.bn)
         Me.Controls.Add(Me.tb)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Name = "SearchTextBox"
         Me.Size = New System.Drawing.Size(236, 31)
@@ -66,9 +63,7 @@ Class SearchTextBox
         bn.Width = bn.Height
         bn.Left = Width - bn.Width - bn.Top
 
-        If Height <> tb.Height Then
-            Height = tb.Height
-        End If
+        If Height <> tb.Height Then Height = tb.Height
 
         tb.Width = Width
     End Sub

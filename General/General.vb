@@ -547,7 +547,8 @@ table {
         Dim dummy = HelpForm.BackgroundImagePath
     End Sub
 
-    Sub WriteP(rawText As String)
+    Sub WriteP(rawText As String, Optional convert As Boolean = False)
+        If convert Then rawText = ConvertChars(rawText)
         WriteElement("p", rawText)
     End Sub
 
@@ -964,7 +965,7 @@ Public Class StringPairList
 End Class
 
 <Serializable()>
-Class CommandParameters
+Public Class CommandParameters
     Sub New(methodName As String, ParamArray params As Object())
         Me.MethodName = methodName
         Parameters = New List(Of Object)(params)
@@ -974,7 +975,7 @@ Class CommandParameters
     Property Parameters As List(Of Object)
 End Class
 
-Class Command
+Public Class Command
     Implements IComparable(Of Command)
 
     Property Attribute As CommandAttribute
@@ -1064,7 +1065,7 @@ Class Command
 End Class
 
 <AttributeUsage(AttributeTargets.Method)>
-Class CommandAttribute
+Public Class CommandAttribute
     Inherits Attribute
 
     Sub New(name As String, description As String)
@@ -1077,7 +1078,7 @@ Class CommandAttribute
     Property Switch As String
 End Class
 
-Class CommandManager
+Public Class CommandManager
     Property Commands As New Dictionary(Of String, Command)
 
     Function HasCommand(name As String) As Boolean
@@ -1235,7 +1236,7 @@ Friend Module MainModule
     End Function
 
     Function Msg(text As String,
-                 icon As MsgIcon,
+                 Optional icon As MsgIcon = MsgIcon.None,
                  Optional buttons As MessageBoxButtons = MessageBoxButtons.OK) As DialogResult
 
         Return Msg(text, Nothing, icon, buttons)

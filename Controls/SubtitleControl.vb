@@ -122,7 +122,6 @@ Class SubtitleControl
         Me.Controls.Add(Me.bnDown)
         Me.Controls.Add(Me.bnRemove)
         Me.Controls.Add(Me.bnUp)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "SubtitleControl"
         Me.Size = New System.Drawing.Size(734, 412)
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).EndInit()

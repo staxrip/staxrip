@@ -68,7 +68,13 @@ Class Paths
     Shared ReadOnly Property SettingsDir() As String
         Get
             If SettingsDirValue Is Nothing Then
-                SettingsDirValue = Registry.CurrentUser.GetString("Software\StaxRip", CommonDirs.Startup)
+                For Each location In Registry.CurrentUser.GetValueNames("Software\StaxRip\SettingsLocation")
+                    If Not Directory.Exists(location) Then
+                        Registry.CurrentUser.DeleteValue("Software\StaxRip\SettingsLocation", location)
+                    End If
+                Next
+
+                SettingsDirValue = Registry.CurrentUser.GetString("Software\StaxRip\SettingsLocation", CommonDirs.Startup)
 
                 If Not Directory.Exists(SettingsDirValue) Then
                     Dim td As New TaskDialog(Of String)
@@ -76,20 +82,29 @@ Class Paths
                     td.MainInstruction = "Settings Directory"
                     td.Content = "Choose the location of the settings directory."
 
+                    Dim folders As New HashSet(Of String)
+
                     If Directory.Exists(CommonDirs.Home + "Google Drive") Then
-                        td.AddCommandLink("Google Drive", CommonDirs.Home + "Google Drive\Apps\Settings\StaxRip",
-                                          CommonDirs.Home + "Google Drive\Apps\Settings\StaxRip")
+                        folders.Add(CommonDirs.Home + "Google Drive\Apps\Settings\StaxRip\")
                     End If
 
                     If Directory.Exists(CommonDirs.Home + "OneDrive") Then
-                        td.AddCommandLink("OneDrive", CommonDirs.Home + "OneDrive\Apps\Settings\StaxRip",
-                                          CommonDirs.Home + "OneDrive\Apps\Settings\StaxRip")
+                        folders.Add(CommonDirs.Home + "OneDrive\Apps\Settings\StaxRip")
                     End If
 
-                    td.AddCommandLink("Common Application Data", CommonDirs.CommonAppData + "StaxRip x64", CommonDirs.CommonAppData + "StaxRip x64")
-                    td.AddCommandLink("User Application Data Local", CommonDirs.UserAppDataLocal + "StaxRip x64", CommonDirs.UserAppDataLocal + "StaxRip x64")
-                    td.AddCommandLink("User Application Data Roaming", CommonDirs.UserAppDataRoaming + "StaxRip x64", CommonDirs.UserAppDataRoaming + "StaxRip x64")
-                    td.AddCommandLink("Startup", CommonDirs.Startup + "Settings", CommonDirs.Startup + "Settings")
+                    folders.Add(CommonDirs.CommonAppData + "StaxRip x64")
+                    folders.Add(CommonDirs.UserAppDataLocal + "StaxRip x64")
+                    folders.Add(CommonDirs.UserAppDataRoaming + "StaxRip x64")
+                    folders.Add(CommonDirs.Startup + "Settings")
+
+                    For Each location In Registry.CurrentUser.GetValueNames("Software\StaxRip\SettingsLocation")
+                        If Directory.Exists(location) Then folders.Add(location)
+                    Next
+
+                    For Each folder In folders.Sort
+                        td.AddCommandLink(folder, folder)
+                    Next
+
                     td.AddCommandLink("Browse for custom directory", "custom")
 
                     Dim dir = td.Show
@@ -119,7 +134,7 @@ Class Paths
                     End If
 
                     SettingsDirValue = dir.AppendSeparator
-                    Registry.CurrentUser.Write("Software\StaxRip", CommonDirs.Startup, SettingsDirValue)
+                    Registry.CurrentUser.Write("Software\StaxRip\SettingsLocation", CommonDirs.Startup, SettingsDirValue)
                 End If
             End If
 
@@ -1230,8 +1245,11 @@ Class Calc
     End Function
 
     Shared Function GetSize() As Double
-        Return (Calc.GetVideoKBytes() + Calc.GetAudioKBytes() +
+        Dim ret = (Calc.GetVideoKBytes() + Calc.GetAudioKBytes() +
             GetSubtitleKBytes() + Calc.GetOverheadKBytes()) / 1024
+
+        If ret < 1 Then ret = 1
+        Return ret
     End Function
 
     Shared Function GetVideoBitrate() As Double
@@ -1239,7 +1257,7 @@ Class Calc
         If p.TargetSeconds = 0 Then Return 0
         Dim kbytes = p.Size * 1024 - GetAudioKBytes() - GetSubtitleKBytes() - GetOverheadKBytes()
         Dim ret = kbytes * 8 * 1.024 / p.TargetSeconds
-        If ret < 0 Then ret = 0
+        If ret < 1 Then ret = 1
         Return ret
     End Function
 
@@ -2714,7 +2732,7 @@ Class GlobalCommands
                 Case "csx"
                     Scripting.RunCSharp(File.ReadAllText(filepath))
                 Case "ps1"
-                    Scripting.RunPowershell(File.ReadAllText(filepath))
+                    ExecutePowerShellScript(File.ReadAllText(filepath))
                 Case Else
                     MsgError("Only csx (C#) and ps1 (PowerShell) are supported at this time.")
             End Select
@@ -2738,7 +2756,43 @@ Class GlobalCommands
                                 <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
                                 scriptCode As String)
 
-        Scripting.RunPowershell(scriptCode)
+        Try
+            Scripting.RunPowershell(scriptCode)
+        Catch ex As Exception
+            MsgError("Failed to execute PowerShell script, on systems prior Windows 10 PowerShell 5 or higher must be installed.", ex.ToString)
+        End Try
+    End Sub
+
+    <Command("Perform | Test", "Test")>
+    Sub Test()
+        Dim except = "--help --version --check-device
+--check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
+--check-filters --device --input --output --raw --avs --vpy --vpy-mt --avcuvid --avcuvid-analyze
+--audio-source --audio-file --trim --seek --format --audio-copy --audio-copy --audio-codec
+--audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
+--audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
+--avsync --mux-option --input-res --fps --dar
+--log --log-framelist".Split((" " + CrLf).ToCharArray())
+        Dim nvhelp = File.ReadAllText(".\Apps\NVEncC\help.txt").Replace("(no-)", "")
+        Dim nvhelpSwitches = Regex.Matches(nvhelp, "--\w+-?\w*").OfType(Of Match)().Select(Function(x) x.Value)
+        Dim nvCode = File.ReadAllText("D:\Projekte\GitHub\staxrip\Encoding\NVIDIAEncoder.vb")
+        Dim nvpresent = Regex.Matches(nvCode, "--\w+-?\w*").OfType(Of Match)().Select(Function(x) x.Value)
+        Dim missing = nvpresent.Where(Function(arg) Not nvhelpSwitches.Contains(arg))
+        Dim nvunknown = nvhelpSwitches.Where(Function(x) Not nvpresent.Contains(x) AndAlso Not except.Contains(x)).ToList()
+        nvunknown.Sort()
+        Dim noNeedToExcept = except.Where(Function(arg) nvpresent.Contains(arg))
+        If noNeedToExcept.Count > 0 Then Msg(noNeedToExcept.Join(" "))
+        If missing.Count > 0 Then Msg(missing.Join(" "))
+        MsgInfo("NVIDIA Status", "todo:" + CrLf2 + nvunknown.Join(" ") + CrLf2 + "done:" + CrLf2 + nvpresent.Join(" "))
+
+        'Dim qs = New IntelEncoder()
+        'Dim qspresent = qs.Params.Items.Select(Function(x) x.Switch)
+        'Dim qshelp = File.ReadAllText(".\Apps\QSVEncC\help.txt").Replace("(no-)", "")
+        'Dim qshelpSwitches = Regex.Matches(qshelp, "--\w+-?\w+").OfType(Of Match)().Select(Function(x) x.Value)
+        'Dim qsunknown = qshelpSwitches.Where(Function(x) Not qspresent.Contains(x) AndAlso Not except.Contains(x)).ToList()
+        'qsunknown.Sort()
+
+        'Msg("QSVEncC switches StaxRip might support in the future:" & CrLf & String.Join(" ", qsunknown) & CrLf)
     End Sub
 
     <Command("Perform | Play Sound", "Plays a mp3, wav or wmv sound file.")>
@@ -2751,9 +2805,8 @@ Class GlobalCommands
 
     Function GetReleaseType() As String
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
-        If version.MinorRevision <> 0 Then Return "beta"
-        If version.Minor <> 0 Then Return "pre-release"
-        Return "stable"
+        If version.MinorRevision <> 0 Then Return "Unstable Test Build"
+        Return "Rock Stable Final"
     End Function
 
     <Command("Dialog | Help Topic", "Opens a given help topic in the help browser.")>
@@ -2766,15 +2819,10 @@ Class GlobalCommands
         Select Case topic
             Case "info"
                 f.Doc.WriteStart("StaxRip x64 " + Application.ProductVersion + " " + GetReleaseType())
-                f.Doc.WriteP("This program is free software and may be distributed according to the terms of the [http://www.gnu.org/licenses/gpl.html GNU General Public License].")
-
-                f.Doc.WriteH2("Patches")
-                f.Doc.WriteList("paulotwo fixing MediaInfo crash on Vista",
-                                "Nico Hanus fixing various DivX ASP bugs")
-
-                f.Doc.WriteH2("Special Thanks")
-                f.Doc.WriteList("DivX Network giving a open source development sponsorship award",
-                                "Brother John writing [http://encodingwissen.de/staxrip german tutorial]")
+                f.Doc.WriteP($"Copyright © {Date.Now.Year} Frank Skare frank.skare.de@gmail.com
+This work is free. You can redistribute it and/or modify it under the
+terms of the Do What The Fuck You Want To Public License, Version 2,
+as published by Sam Hocevar. See the COPYING file for more details.", True)
             Case "CRF Value"
                 f.Doc.WriteStart("CRF Value")
                 f.Doc.WriteP("Low values produce high quality, large file size, large value produces small file size and poor quality. A balanced value is 23 which is the defalt in x264. Common values are 18-26 where 18 produces near transparent quality at the cost of a huge file size. The quality 26 produces is rather poor so such a high value should only be used when a small file size is the only criterium.")
@@ -3455,8 +3503,8 @@ Public Class Subtitle
                         st.Language = New Language(CultureInfo.InvariantCulture)
                     End Try
 
-                    Dim twoLetterCodes = p.AutoSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-                    st.Enabled = twoLetterCodes.Contains("all") OrElse twoLetterCodes.Contains(st.Language.TwoLetterCode)
+                    Dim autoCode = p.AutoSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    st.Enabled = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
 
                     If Not st Is Nothing Then
                         st.IndexIDX = CInt(Regex.Match(i, ", index: (\d+)").Groups(1).Value)
@@ -3503,8 +3551,8 @@ Public Class Subtitle
                 End If
             Next
 
-            Dim twoLetterCodes = p.AutoSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-            st.Enabled = twoLetterCodes.Contains("all") OrElse twoLetterCodes.Contains(st.Language.TwoLetterCode)
+            Dim autoCode = p.AutoSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+            st.Enabled = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
 
             st.Path = path
             ret.Add(st)

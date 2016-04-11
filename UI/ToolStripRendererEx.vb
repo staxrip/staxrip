@@ -36,11 +36,7 @@ Class ToolStripRendererEx
     Shared Sub InitColors(renderMode As ToolStripRenderMode)
         If ToolStripRendererEx.IsAutoRenderMode Then
             Dim argb = CInt(Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", 0))
-
-            If argb = 0 Then
-                argb = Color.LightBlue.ToArgb
-            End If
-
+            If argb = 0 Then argb = Color.LightBlue.ToArgb
             InitColors(Color.FromArgb(argb))
         Else
             ColorBorder = Color.FromArgb(&HFF83ABDC)
@@ -95,7 +91,7 @@ Class ToolStripRendererEx
         If TypeOf e.Item Is ToolStripMenuItem AndAlso Not TypeOf e.Item.Owner Is MenuStrip Then
             Dim r = e.TextRectangle  'TextAlign don't work
             TextOffset = r.Height
-            e.TextRectangle = New Rectangle(TextOffset, (e.Item.Height - r.Height) \ 2, r.Width, r.Height)
+            e.TextRectangle = New Rectangle(TextOffset, CInt((e.Item.Height - r.Height) / 2), r.Width, r.Height)
         End If
 
         MyBase.OnRenderItemText(e)

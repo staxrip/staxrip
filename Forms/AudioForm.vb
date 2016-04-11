@@ -26,7 +26,7 @@ Class AudioForm
     Friend WithEvents lLanguage As System.Windows.Forms.Label
     Friend WithEvents numDelay As NumEdit
     Friend WithEvents lDelay As System.Windows.Forms.Label
-    Friend WithEvents rtbCmdlPreview As CmdlRichTextBox
+    Friend WithEvents rtbCmdlPreview As CommandLineRichTextBox
     Friend WithEvents mbChannels As StaxRip.UI.MenuButton
     Friend WithEvents lChannels As System.Windows.Forms.Label
     Friend WithEvents gbAdvanced As System.Windows.Forms.GroupBox
@@ -80,7 +80,7 @@ Class AudioForm
         Me.lQualiy = New System.Windows.Forms.Label()
         Me.mbCodec = New StaxRip.UI.MenuButton()
         Me.lCodec = New System.Windows.Forms.Label()
-        Me.rtbCmdlPreview = New StaxRip.UI.CmdlRichTextBox()
+        Me.rtbCmdlPreview = New StaxRip.UI.CommandLineRichTextBox()
         Me.gbAdvanced = New System.Windows.Forms.GroupBox()
         Me.SimpleUI = New StaxRip.SimpleUI()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
@@ -310,7 +310,7 @@ Class AudioForm
         Me.rtbCmdlPreview.BlockPaint = False
         Me.rtbCmdlPreview.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.rtbCmdlPreview.Font = New System.Drawing.Font("Tahoma", 9.0!)
-        Me.rtbCmdlPreview.LastCmdl = Nothing
+        Me.rtbCmdlPreview.LastCommandLine = Nothing
         Me.rtbCmdlPreview.Location = New System.Drawing.Point(14, 506)
         Me.rtbCmdlPreview.Name = "rtbCmdlPreview"
         Me.rtbCmdlPreview.ReadOnly = True

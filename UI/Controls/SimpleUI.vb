@@ -22,7 +22,6 @@ Public Class SimpleUI
     Sub InitControls()
         Tree.Scrollable = False
         Tree.SelectOnMouseDown = True
-        Tree.ItemHeight = Tree.Font.Height * 2
         Tree.ShowLines = False
         Tree.HideSelection = False
         Tree.FullRowSelect = True
@@ -32,6 +31,18 @@ Public Class SimpleUI
 
         Controls.Add(Tree)
         Controls.Add(Host)
+    End Sub
+
+    Protected Overrides Sub OnHandleCreated(e As EventArgs)
+        MyBase.OnHandleCreated(e)
+
+        AddHandler FindForm.Load, Sub()
+                                      Tree.ItemHeight = CInt(Tree.Height / (Tree.Nodes.Count)) - 2
+
+                                      If Tree.ItemHeight > Tree.Font.Height * 2 Then
+                                          Tree.ItemHeight = Tree.Font.Height * 2
+                                      End If
+                                  End Sub
     End Sub
 
     Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
@@ -537,11 +548,7 @@ Public Class SimpleUI
         Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
             If Offset > 0 Then
                 Dim ret = MyBase.GetPreferredSize(proposedSize)
-
-                If ret.Width < Offset * FontHeight Then
-                    ret.Width = Offset * FontHeight
-                End If
-
+                If ret.Width < Offset * FontHeight Then ret.Width = Offset * FontHeight
                 Return ret
             Else
                 Return MyBase.GetPreferredSize(proposedSize)
@@ -553,7 +560,7 @@ Public Class SimpleUI
         Inherits FlowLayoutPanelEx
 
         Sub New()
-            Font = New Font("Segoe UI", 9.0!)
+            Font = New Font("Segoe UI", 9.0! * s.UIScaleFactor)
         End Sub
 
         Protected Overrides Sub OnControlAdded(e As ControlEventArgs)
@@ -610,7 +617,7 @@ Public Class SimpleUI
             Button.Width = 36
             Button.Height = 36
             Button.ShowMenuSymbol = True
-            Button.ContextMenuStrip = New ContextMenuStrip
+            Button.ContextMenuStrip = New ContextMenuStripEx
 
             Controls.Add(Button)
         End Sub

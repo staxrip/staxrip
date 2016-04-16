@@ -20,7 +20,6 @@ http://1drv.ms/1OqPDOe
 - new ffmpeg encoder output options 'H.264 NVIDIA', 'H.264 Intel', 'H.265 Intel', the currently used ffmpeg built doesn't yet support NVIDIA
 - video encoder profiles added for all encoding codecs StaxRip supports for ffmpeg: 'VP9', 'Xvid', 'ASP', 'Theora', 'H.264 Intel', 'H.265 Intel', 'H.264 NVIDIA'
 - ffmpeg decoding option -threads added, multi-threading is enabled by default but not recommended for dxva2 decoding and maybe for hardware decoding in general
-- VapourSynth filter profiles added for mvsfunc functions AssumeFrame, AssumeTFF, AssumeBFF, AssumeCombed
 - VapourSynth QTGMC parameters TFF and Preset added to menu
 - more source and target parameters are now shown in the main dialog
 - in the scripting editor there is a Join feature to join all filters into one
@@ -31,14 +30,16 @@ http://1drv.ms/1OqPDOe
 - three VapourSynth filter profiles added based on std.SetFieldBased
 - added user contributed script 'Convert Bluray (BT709) to 10bit 400nits (MaxFALL) HDR (rev2)'
 - in the options dialog the subtitles to auto load can now be defined with both two and three letter code, this is useful for people more familiar with three letter codes, both can be mixed, for undetermined previously 'iv' had to be used, now 'und' can also be used.
-- many new switches added to QSVEncC Intel Quick Sync GUI
 - added setting to scale the UI to a custom factor
+- many new switches added to Intel Quick Sync encoding GUI for QSVEncC
+- many new switches added to NVIDIA encoding GUI for NVEncC
+- added option to set audio default stream
 
 ### Fixed Bugs
 
 - fixed window freeze in eac3to dialog happening when eac3to fails on the input.
 - fixed showing filter selection dialog even if the source is vpy or avs
-- fixed StaxRip trying to auto correct the script even if the source is avs
+- fixed StaxRip trying to auto correct the script even if the source is avs or vpy
 - fixed StaxRip recalculating the video bitrate even when the fixed bitrate option is used
 - avi muxer supports two audio tracks now
 - in some cases the two audio output file paths were identical 
@@ -47,7 +48,6 @@ http://1drv.ms/1OqPDOe
 - fixed editing dates in apps dialog not working with Persian calendar
 - fixed crash using ' character in file paths using VapourSynth
 - fixed inaccurate right and bottom magnifiers in crop dialog
-- removed one x265 switch that was accidentally added twice :-)
 - fixed Python installed by miniconda not being detected
 - cropping values were multiplied by 2 using NVEncC
 - fixed subtitle size detection
@@ -60,7 +60,7 @@ http://1drv.ms/1OqPDOe
 - in the media info folder view (Tools > Advanced) the context menu functionality did not work for sub folders
 - in same situations it wasn't possible to close the crop dialog due to an script error, now the message box showing the error has an additional exit button
 - fixed High DPI scaling bug in the navigation bar of the x265 dialog
-- in case the subtitle source file is mkv and has a title but the title was deleted in StaxRip it was still used
+- in case the audio or subtitle source file is mkv the original stream title was muxed even if it was deleted in StaxRip
 - line indentation wasn't preserved for multiline filter profiles
 
 ### Tweaks
@@ -84,14 +84,14 @@ http://1drv.ms/1OqPDOe
 ### Updated Tools
 
 - AviSynth+ 1841
-- AVSMeter 2.1.7
+- AVSMeter 2.2.0
 - ffmpeg 2016-03-10
-- fmtconv (vs) 18
+- fmtconv (vs) 20
 - mkvtoolnix 9.0.1
 - mp4box 0.6.0
 - mvtools (vs) v13
-- NVEncC 2.04
-- QSVEncC 2.44
-- x264 2665
-- x265 1.9+125
+- NVEncC 2.05
+- QSVEncC 2.45
+- x264 2692
+- x265 1.9+140
 - yadifmod2 (avs) 0.0.3

@@ -3259,11 +3259,6 @@ Class MainForm
 
             If Not found Then f.ShowPackage(Packs.x264)
 
-            For Each i In Packs.Packages
-                If i.Version = "" OrElse (Not i.Version.ContainsAny({"x86", "x64"}) AndAlso
-                    Not i.Filename.ContainsAny({".jar", ".py", ".avsi"})) Then f.ShowPackage(i)
-            Next
-
             f.ShowDialog()
             g.SaveSettings()
         End Using
@@ -4209,9 +4204,7 @@ Class MainForm
 
         ret.Add("Tools|Jobs...", "OpenJobsDialog", Keys.F6)
         ret.Add("Tools|Apps...", "OpenAppsDialog")
-
         ret.Add("Tools|Log File", "ExecuteCommandLine", """%text_editor%"" ""%working_dir%%target_name%_StaxRip.log""")
-
         ret.Add("Tools|Directories|Source", "ExecuteCommandLine", """%source_dir%""")
         ret.Add("Tools|Directories|Working", "ExecuteCommandLine", """%working_dir%""")
         ret.Add("Tools|Directories|Target", "ExecuteCommandLine", """%target_dir%""")
@@ -4244,8 +4237,7 @@ Class MainForm
         ret.Add("Help|Website|Wiki", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki")
         ret.Add("Help|Website|Guides", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki/Guides")
         ret.Add("Help|Website|Release Build", "ExecuteCommandLine", "https://github.com/stax76/staxrip/releases")
-        ret.Add("Help|Website|Test Build", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki/Test-Build")
-        ret.Add("Help|Website|Changelog", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki/Changelog")
+        ret.Add("Help|Website|Test Build", "ExecuteCommandLine", "https://github.com/stax76/staxrip/blob/master/md/test-build.md")
         ret.Add("Help|Mail", "ExecuteCommandLine", "mailto:frank.skare.de@gmail.com?subject=StaxRip%20feedback")
         ret.Add("Help|Donate (PayPal/Bitcoin)", "Donate")
         ret.Add("Help|Command Line", "OpenCommandLineHelp")
@@ -5266,7 +5258,7 @@ Class MainForm
             tbTargetFile.Text = p.TargetFile
         End If
 
-        p.Name = Filepath.GetBase(tbTargetFile.Text)
+        p.Name = tbTargetFile.Text.Base
         p.TargetFile = tbTargetFile.Text
     End Sub
 

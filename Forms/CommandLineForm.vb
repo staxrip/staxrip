@@ -16,12 +16,14 @@ Class CommandLineForm
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
 
-        Dim l As New List(Of String)
+        Dim singleList As New List(Of String)
 
         For Each i In params.Items
-            If i.Switch = "" OrElse Not i.VisibleFunc Is Nothing Then Continue For
-            If l.Contains(i.Switch) Then Throw New Exception("switch found twice:" + CrLf2 + i.Switch)
-            l.Add(i.Switch)
+            If i.GetKey = "" OrElse singleList.Contains(i.GetKey) Then
+                Throw New Exception("key found twice: " + i.GetKey)
+            End If
+
+            singleList.Add(i.GetKey)
         Next
 
         Me.Params = params
@@ -148,10 +150,7 @@ Class CommandLineForm
                 If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, mb.Label, mb.MenuButton)
                 helpControl = mb.Label
                 AddHandler mb.Label.MouseDoubleClick, Sub() tempItem.ValueChangedUser(tempItem.DefaultValue)
-
-                If os.Expand Then
-                    mb.Expand(mb.MenuButton)
-                End If
+                If os.Expand Then mb.Expand(mb.MenuButton)
 
                 For x2 = 0 To os.Options.Length - 1
                     mb.MenuButton.Add(os.Options(x2), x2)
@@ -175,7 +174,7 @@ Class CommandLineForm
                 item2.Control = helpControl
                 item2.Page = currentFlow
                 item2.Help = item.Help
-                item2.Switch = If(item.Switch = "", item.Text.Trim(" "c, ":"c), item.Switch)
+                item2.Switch = item.Switch
                 item2.Param = item
                 item2.Text = item.Text
                 Items.Add(item2)

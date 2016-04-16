@@ -133,7 +133,7 @@ Class MediaInfo
                     at.Title = GetAudio(i, "Title").Trim
 
                     If at.Title.Contains("IsoMedia") OrElse at.Title.Contains("GPAC") OrElse at.Title.Contains("PID ") OrElse
-                            {"Surround 7.1", "Surround 5.1", "Stereo", "3/2+1", "2/0"}.Contains(at.Title) Then
+                            at.Title.EqualsAny("Surround 7.1", "Surround 5.1", "Stereo", "3/2+1", "2/0") Then
 
                         at.Title = ""
                     End If
@@ -298,11 +298,12 @@ Class MediaInfo
     End Function
 
     Function GetFrameRate() As Double
+        Dim num = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Num").ToInt
+        Dim den = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Den").ToInt
+        If num > 0 AndAlso den > 0 Then Return num / den
         Dim ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate")
-
         If ret = "" Then ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Original")
         If ret = "" Then ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Nominal")
-
         If ret.IsDouble Then Return ret.ToDouble Else Return 25
     End Function
 

@@ -2175,7 +2175,7 @@ Class Macro
     End Function
 
     Shared Function Solve(value As String, rekursive As Boolean, silent As Boolean) As String
-        If value Is Nothing Then Return ""
+        If value = "" Then Return ""
 
         If Not silent AndAlso value.Contains("$") Then
             If value.Contains("$browse_file$") Then
@@ -2765,34 +2765,67 @@ Class GlobalCommands
 
     <Command("Perform | Test", "Test")>
     Sub Test()
-        Dim except = "--help --version --check-device
+        If Not Application.StartupPath = "D:\Projekte\GitHub\staxrip\bin" Then
+            MsgError("Command is meant for development.")
+            Exit Sub
+        End If
+
+        Dim nvexcept = "--help --version --check-device
 --check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
 --check-filters --device --input --output --raw --avs --vpy --vpy-mt --avcuvid --avcuvid-analyze
---audio-source --audio-file --trim --seek --format --audio-copy --audio-copy --audio-codec
+--audio-source --audio-file --seek --format --audio-copy --audio-copy --audio-codec
 --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
 --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
---avsync --mux-option --input-res --fps --dar
+--avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
 --log --log-framelist".Split((" " + CrLf).ToCharArray())
-        Dim nvhelp = File.ReadAllText(".\Apps\NVEncC\help.txt").Replace("(no-)", "")
-        Dim nvhelpSwitches = Regex.Matches(nvhelp, "--\w+-?\w*").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim nvCode = File.ReadAllText("D:\Projekte\GitHub\staxrip\Encoding\NVIDIAEncoder.vb")
-        Dim nvpresent = Regex.Matches(nvCode, "--\w+-?\w*").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim missing = nvpresent.Where(Function(arg) Not nvhelpSwitches.Contains(arg))
-        Dim nvunknown = nvhelpSwitches.Where(Function(x) Not nvpresent.Contains(x) AndAlso Not except.Contains(x)).ToList()
+        Dim nvhelp = File.ReadAllText(".\Apps\NVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
+        Dim nvhelpSwitches = Regex.Matches(nvhelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
+        Dim nvCode = File.ReadAllText("D:\Projekte\GitHub\staxrip\Encoding\NVIDIAEncoder.vb").Replace("--no-", "--")
+        Dim nvpresent = Regex.Matches(nvCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
+        Dim nvMissing = nvpresent.Where(Function(arg) Not nvhelpSwitches.Contains(arg))
+        Dim nvunknown = nvhelpSwitches.Where(Function(x) Not nvpresent.Contains(x) AndAlso Not nvexcept.Contains(x)).ToList()
         nvunknown.Sort()
-        Dim noNeedToExcept = except.Where(Function(arg) nvpresent.Contains(arg))
-        If noNeedToExcept.Count > 0 Then Msg(noNeedToExcept.Join(" "))
-        If missing.Count > 0 Then Msg(missing.Join(" "))
-        MsgInfo("NVIDIA Status", "todo:" + CrLf2 + nvunknown.Join(" ") + CrLf2 + "done:" + CrLf2 + nvpresent.Join(" "))
+        Dim noNeedToExcept = nvexcept.Where(Function(arg) nvpresent.Contains(arg))
+        If noNeedToExcept.Count > 0 Then MsgInfo("Unnecessary NVEncC Exception:", noNeedToExcept.Join(" "))
+        If nvMissing.Count > 0 Then MsgInfo("Removed from NVEncC:", nvMissing.Join(" "))
+        If nvunknown.Count > 0 Then MsgInfo("NVEncC Todo", nvunknown.Join(" "))
 
-        'Dim qs = New IntelEncoder()
-        'Dim qspresent = qs.Params.Items.Select(Function(x) x.Switch)
-        'Dim qshelp = File.ReadAllText(".\Apps\QSVEncC\help.txt").Replace("(no-)", "")
-        'Dim qshelpSwitches = Regex.Matches(qshelp, "--\w+-?\w+").OfType(Of Match)().Select(Function(x) x.Value)
-        'Dim qsunknown = qshelpSwitches.Where(Function(x) Not qspresent.Contains(x) AndAlso Not except.Contains(x)).ToList()
-        'qsunknown.Sort()
+        Dim qsExcept = "--help --version --check-device
+--check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
+--check-filters --device --input --output --raw --avs --vpy --vpy-mt
+--audio-source --audio-file --seek --format --audio-copy --audio-copy --audio-codec
+--audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
+--audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
+--avsync --mux-option --input-res --fps --dar --avqsv-analyze --benchmark --bench-quality
+--log --log-framelist --audio-thread --avi --avqsv --input-file --audio-ignore-decode-error
+--audio-ignore-notrack-error --nv12 --output-file --check-features-html --perf-monitor
+--perf-monitor-plot --perf-monitor-interval --python --qvbr-quality --sharpness --vpp-delogo
+--vpp-delogo-select --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb
+--vpp-delogo-cr --vpp-half-turn".Split((" " + CrLf).ToCharArray())
+        Dim qsHelp = File.ReadAllText(".\Apps\QSVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
+        Dim qsHelpSwitches = Regex.Matches(qsHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
+        Dim qsCode = File.ReadAllText("D:\Projekte\GitHub\staxrip\Encoding\IntelEncoder.vb").Replace("--no-", "--")
+        Dim qsPresent = Regex.Matches(qsCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
+        Dim qsMissing = qsPresent.Where(Function(arg) Not qsHelpSwitches.Contains(arg))
+        Dim qsUnknown = qsHelpSwitches.Where(Function(x) Not qsPresent.Contains(x) AndAlso Not qsExcept.Contains(x)).ToList()
+        qsUnknown.Sort()
+        Dim qsNoNeedToExcept = qsExcept.Where(Function(arg) qsPresent.Contains(arg))
+        If qsNoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary QSVEncC Exception:", qsNoNeedToExcept.Join(" "))
+        If qsMissing.Count > 0 Then MsgInfo("Removed from QSVEncC:", qsMissing.Join(" "))
+        If qsUnknown.Count > 0 Then MsgInfo("QSVEncC Todo", qsUnknown.Join(" "))
 
-        'Msg("QSVEncC switches StaxRip might support in the future:" & CrLf & String.Join(" ", qsunknown) & CrLf)
+        For Each i In Packs.Packages
+            If i.GetPath = "" Then Continue For
+
+            If i.Version = "" OrElse (Not i.Version.ContainsAny({"x86", "x64"}) AndAlso
+                Not i.Filename.ContainsAny({".jar", ".py", ".avsi"})) OrElse
+                Not i.IsCorrectVersion Then
+
+                Using f As New AppsForm
+                    f.ShowPackage(i)
+                End Using
+            End If
+        Next
     End Sub
 
     <Command("Perform | Play Sound", "Plays a mp3, wav or wmv sound file.")>
@@ -2806,7 +2839,7 @@ Class GlobalCommands
     Function GetReleaseType() As String
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
         If version.MinorRevision <> 0 Then Return "Unstable Test Build"
-        Return "Rock Stable Final"
+        Return "Stable Final Release"
     End Function
 
     <Command("Dialog | Help Topic", "Opens a given help topic in the help browser.")>

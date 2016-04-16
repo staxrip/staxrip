@@ -17,6 +17,7 @@ Public MustInherit Class AudioProfile
     Property Channels As Integer = 2
     Property Gain As Single
     Property Streams As List(Of AudioStream) = New List(Of AudioStream)
+    Property [Default] As Boolean
 
     Overridable Property OutputFileType As String = "unknown"
     Overridable Property Bitrate As Double
@@ -87,6 +88,7 @@ Public MustInherit Class AudioProfile
 
             If Stream Is Nothing Then
                 Dim streams = MediaInfo.GetAudioStreams(File)
+
                 If streams.Count > 0 Then
                     ret = GetAudioText(streams(0), File)
                 Else
@@ -211,6 +213,7 @@ Public MustInherit Class AudioProfile
     End Function
 
     Function SolveMacros(value As String, silent As Boolean) As String
+        If value = "" Then Return ""
         value = value.Replace("%input%", File)
         value = value.Replace("%output%", GetOutputFile)
         value = value.Replace("%bitrate%", Bitrate.ToString)
@@ -503,6 +506,12 @@ Class MuxAudioProfile
                     mbi.MenuButton.Add("More | " + i.ToString.Substring(0, 1) + " | " + i.ToString, i)
                 End If
             Next
+
+            Dim cb = ui.AddCheckBox(page)
+            cb.Text = "Default Stream"
+            cb.Tooltip = "Make this stream default in MKV container."
+            cb.Checked = [Default]
+            cb.SaveAction = Sub(value) [Default] = value
 
             page.ResumeLayout()
 

@@ -213,6 +213,7 @@
     <Compile Include="Controls\x264Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Encoding\IntelEncoder.vb" />
     <Compile Include="Encoding\NVIDIAEncoder.vb" />
     <Compile Include="General\Scripting.vb" />
     <Compile Include="UI\DataForm.Designer.vb">
@@ -289,7 +290,7 @@
     <Compile Include="General\Automation.vb" />
     <Compile Include="General\CommandLine.vb" />
     <Compile Include="General\ImageUtils.vb" />
-    <Compile Include="General\x265.vb" />
+    <Compile Include="Encoding\x265.vb" />
     <Compile Include="UI\Controls\ListViewEx.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -297,7 +298,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="General\VideoDrawer.vb" />
-    <Compile Include="General\x264.vb" />
+    <Compile Include="Encoding\x264.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -381,7 +382,7 @@
     <Compile Include="General\Project.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="General\VideoEncoder.vb">
+    <Compile Include="Encoding\VideoEncoder.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="General\Misc.vb">
@@ -441,7 +442,7 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
-    <None Include="md\changelog.md" />
+    <None Include="md\test-build.md" />
     <None Include="My Project\DataSources\AudioProfile.datasource" />
     <None Include="packages.config" />
     <None Include="Resources\play.png" />

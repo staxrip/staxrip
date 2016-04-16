@@ -275,8 +275,8 @@ Namespace CommandLine
         Property Values As String()
         Property Expand As Boolean
         Property MenuButton As MenuButton
-        Property ValueIsName As Boolean
         Property DefaultValue As Integer
+        Property IntegerValue As Boolean
 
         Overloads Sub Init(mb As MenuButton)
             MenuButton = mb
@@ -348,16 +348,18 @@ Namespace CommandLine
             If Not Visible Then Return Nothing
 
             If ArgsFunc Is Nothing Then
-                If Switch = "" Then Return Nothing
-
                 If Value <> DefaultValue OrElse AlwaysOn Then
                     If Not Values Is Nothing Then
-                        Return Switch + " " & Values(Value)
-                    Else
-                        If ValueIsName Then
-                            Return Switch + " " & Options(Value)
-                        Else
+                        If Values(Value).StartsWith("--") Then
+                            Return Values(Value)
+                        ElseIf Switch <> "" Then
+                            Return Switch + " " & Values(Value)
+                        End If
+                    ElseIf Switch <> "" Then
+                        If IntegerValue Then
                             Return Switch + " " & Value
+                        Else
+                            Return Switch + " " & Options(Value)
                         End If
                     End If
                 End If

@@ -265,7 +265,7 @@ Class Packs
             .Description = "This filter implements the same warp sharpening algorithm as aWarpSharp by Marc FD, but with several bugfixes and optimizations.",
             .WebURL = "http://avisynth.nl/index.php/AWarpSharp2",
             .AviSynthFiltersFunc = Function() {
-                New VideoFilter("Misc", "aWarpSharp2", "aWarpSharp2(thresh=128, blur=2, type=0, depth=16, chroma=4)")}})
+                New VideoFilter("Misc", "aWarpSharp2", "aWarpSharp2(thresh = 128, blur = 2, type = 0, depth = 16, chroma = 4)")}})
 
         Packages.Add(New PluginPackage With {
             .Name = "TComb",
@@ -313,7 +313,7 @@ Class Packs
             .Filename = "mvtools2.dll",
             .WebURL = "https://github.com/pinterf/mvtools",
             .HelpURL = "http://avisynth.org.ru/mvtools/mvtools2.html",
-            .Description = "MVTools plugin for AviSynth 2.5 is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
+            .Description = "MVTools is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
             .AviSynthFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDeGrain1", "MDeGrain2", "MDegrain3"}})
 
         Packages.Add(New PluginPackage With {

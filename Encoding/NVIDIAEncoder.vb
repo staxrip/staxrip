@@ -132,19 +132,18 @@ Public Class NVIDIAEncoder
             .Text = "Mode:",
             .Switches = {"--cbr", "--vbr", "--vbr2", "--cqp"},
             .Options = {"CBR", "VBR", "VBR2", "CQP"},
+            .VisibleFunc = Function() Not Lossless.Value,
             .ArgsFunc = Function() As String
-                            If Not Lossless.Value Then
-                                Select Case Mode.OptionText
-                                    Case "CBR"
-                                        Return " --cbr " & p.VideoBitrate
-                                    Case "VBR"
-                                        Return " --vbr " & p.VideoBitrate
-                                    Case "VBR2"
-                                        Return " --vbr2 " & p.VideoBitrate
-                                    Case "CQP"
-                                        Return " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
-                                End Select
-                            End If
+                            Select Case Mode.OptionText
+                                Case "CBR"
+                                    Return " --cbr " & p.VideoBitrate
+                                Case "VBR"
+                                    Return " --vbr " & p.VideoBitrate
+                                Case "VBR2"
+                                    Return " --vbr2 " & p.VideoBitrate
+                                Case "CQP"
+                                    Return " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
+                            End Select
                         End Function}
 
         Property Codec As New OptionParam With {
@@ -172,49 +171,30 @@ Public Class NVIDIAEncoder
         Property Profile As New OptionParam With {
             .Switch = "--profile",
             .Text = "Profile:",
-            .ValueIsName = True,
             .VisibleFunc = Function() Codec.ValueText = "h264",
             .Options = {"baseline", "main", "high", "high444"},
             .InitValue = 2}
 
-        Property mvPrecision As New OptionParam With {
-            .Switch = "--mv-precision",
-            .Text = "MV Precision:",
-            .Options = {"Q-pel", "half-pel", "full-pel"},
-            .Values = {"Q-pel", "half-pel", "full-pel"}}
-
         Property QPI As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "Constant QP I:",
-            .Value = 20,
+            .InitValue = 20,
             .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}
 
         Property QPP As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "Constant QP P:",
-            .Value = 23,
+            .InitValue = 23,
             .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}
 
         Property QPB As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "Constant QP B:",
-            .Value = 25,
+            .InitValue = 25,
             .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}
-
-        Property MaxBitrate As New NumParam With {
-            .Switch = "--max-bitrate",
-            .Text = "Maximum Bitrate:",
-            .Value = 17500,
-            .DefaultValue = 17500,
-            .MinMaxStep = {0, 1000000, 1}}
-
-        Property GOPLength As New NumParam With {
-            .Switch = "--gop-len",
-            .Text = "GOP Length (0=auto):",
-            .MinMaxStep = {0, 10000, 1}}
 
         Property BFrames As New NumParam With {
             .Switch = "--bframes",
@@ -225,7 +205,7 @@ Public Class NVIDIAEncoder
 
         Property Ref As New NumParam With {
             .Switch = "--ref",
-            .Text = "Reference Frames:",
+            .Text = "References:",
             .Value = 3,
             .DefaultValue = 3,
             .MinMaxStep = {0, 16, 1}}
@@ -237,21 +217,8 @@ Public Class NVIDIAEncoder
             .Value = False,
             .DefaultValue = False}
 
-        Property FullRange As New BoolParam With {
-            .Switch = "--fullrange",
-            .Text = "Full Range",
-            .VisibleFunc = Function() Codec.ValueText = "h264",
-            .Value = False,
-            .DefaultValue = False}
-
-        Property AQ As New BoolParam With {
-            .Switch = "--aq",
-            .Text = "Adaptive Quantization",
-            .Value = False,
-            .DefaultValue = False}
-
         Property Custom As New StringParam With {
-            .Text = "Custom Switches:",
+            .Text = "Custom:",
             .ArgsFunc = Function() Custom.Value}
 
         Private ItemsValue As List(Of CommandLineParam)
@@ -260,28 +227,50 @@ Public Class NVIDIAEncoder
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
-                    Add("Basic", Decoder, Mode, Codec, LevelH264, LevelH265, Profile,
-                        QPI, QPP, QPB, GOPLength, BFrames, Ref)
-
-                    Add("Advanced", mvPrecision,
-                        New OptionParam With {.Switch = "--interlaced", .Text = "Interlaced:", .Options = {"Disabled", "TFF", "BFF"}, .Values = {"", "tff", "bff"}},
-                        MaxBitrate, AQ, Lossless, FullRange, Custom)
+                    Add("Basic", Decoder, Mode, Codec, QPI, QPP, QPB)
+                    Add("Rate Control",
+                        New NumParam With {.Switch = "--qp-init", .Text = "Initial QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--max-bitrate", .Text = "Maximum Bitrate:", .InitValue = 17500, .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New BoolParam With {.Switch = "--aq", .Text = "Adaptive Quantization", .Value = False, .DefaultValue = False},
+                        Lossless)
+                    Add("Profile", LevelH264, LevelH265, Profile,
+                        New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"})
+                    Add("Performance",
+                        New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer:", .Options = {"8", "16", "32", "64", "128"}},
+                        New OptionParam With {.Switch = "--output-thread", .Text = "Output Thread:", .Options = {"Automatic", "Disabled", "One Thread"}, .Values = {"-1", "0", "1"}},
+                        New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
+                    Add("VUI",
+                        New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat:", .Options = {"undef", "ntsc", "component", "pal", "secam", "mac"}},
+                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR", "bt2020nc", "bt2020c"}},
+                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "film", "bt2020"}},
+                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte-st-2084", "smpte-st-428", "arib-srd-b67"}},
+                        New BoolParam With {.Switch = "--fullrange", .Text = "Full Range", .VisibleFunc = Function() Codec.ValueText = "h264"})
+                    Add("Other",
+                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace:", .VisibleFunc = Function() Decoder.ValueText = "nv", .Options = {"none", "adaptive", "bob"}},
+                        New OptionParam With {.Switch = "--interlaced", .Switches = {"--tff", "--bff"}, .Text = "Interlaced:", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
+                        New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision:", .Options = {"Q-pel", "half-pel", "full-pel"}, .Values = {"Q-pel", "half-pel", "full-pel"}},
+                        New OptionParam With {.Switch = "--log-level", .Text = "Log Level:", .Options = {"info", "debug", "warn", "error"}},
+                        BFrames, Ref,
+                        New NumParam With {.Switch = "--gop-len", .Text = "GOP Length:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--cu-max", .Text = "Max CU Size:", .MinMaxStep = {0, 64, 16}},
+                        New NumParam With {.Switch = "--cu-min", .Text = "Min CU Size:", .MinMaxStep = {0, 32, 16}},
+                        New BoolParam With {.Switch = "--deblock", .Text = "Deblock"},
+                        New BoolParam With {.Switch = "--cabac", .Text = "Cabac"},
+                        New BoolParam With {.Switch = "--cavlc", .Text = "Cavlc"},
+                        Custom)
                 End If
 
                 Return ItemsValue
             End Get
         End Property
 
-        Private AddedList As New List(Of String)
-
         Private Sub Add(path As String, ParamArray items As CommandLineParam())
             For Each i In items
                 i.Path = path
                 ItemsValue.Add(i)
-
-                If i.GetKey = "" OrElse AddedList.Contains(i.GetKey) Then
-                    Throw New Exception
-                End If
             Next
         End Sub
 
@@ -329,6 +318,12 @@ Public Class NVIDIAEncoder
             ElseIf p.AutoARSignaling Then
                 Dim par = Calc.GetTargetPAR
                 If par <> New Point(1, 1) Then ret += " --sar " & par.X & ":" & par.Y
+            End If
+
+            If Decoder.ValueText <> "avs" Then
+                If p.Ranges.Count > 0 Then
+                    ret += " --trim " + p.Ranges.Select(Function(range) range.Start & ":" & range.End).Join(",")
+                End If
             End If
 
             If sourcePath = "-" Then ret += " --y4m"

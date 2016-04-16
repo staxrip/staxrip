@@ -2,6 +2,7 @@
 Imports System.Text
 
 Imports StaxRip.CommandLine
+Imports StaxRip.UI
 
 <Serializable()>
 Public Class x265Encoder
@@ -63,9 +64,9 @@ Public Class x265Encoder
         Dim cli As String
 
         If p.Script.Engine = ScriptingEngine.VapourSynth Then
-            cli = """" + Packs.vspipe.GetPath + """ """ + script.Path + """ - --y4m | """ + Packs.x265.GetPath + """ " + args
+            cli = Packs.vspipe.GetPath.Quotes + " " + script.Path.Quotes + " - --y4m | " + Packs.x265.GetPath.Quotes + " " + args
         Else
-            cli = """" + Packs.ffmpeg.GetPath + """ -i """ + script.Path + """ -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | """ + Packs.x265.GetPath + """ " + args
+            cli = Packs.ffmpeg.GetPath.Quotes + " -i " + script.Path.Quotes + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + Packs.x265.GetPath.Quotes + " " + args
         End If
 
         Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
@@ -153,6 +154,18 @@ Public Class x265Encoder
         newParams.ApplyTuneDefaultValues()
 
         Using f As New CommandLineForm(newParams)
+            Dim saveProfileAction = Sub()
+                                        Dim enc = ObjectHelp.GetCopy(Of x265Encoder)(Me)
+                                        Dim params2 As New x265Params
+                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
+                                        params2.Init(store2)
+                                        enc.Params = params2
+                                        enc.ParamsStore = store2
+                                        SaveProfile(enc)
+                                    End Sub
+
+            f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
+
             If f.ShowDialog() = DialogResult.OK Then
                 Params = newParams
                 ParamsStore = store
@@ -242,6 +255,7 @@ Public Class x265Params
     Property BAdapt As New OptionParam With {
         .Switch = "--b-adapt",
         .Text = "B Adapt:",
+        .IntegerValue = True,
         .Options = {"None", "Fast", "Full"}}
 
     Property RCLookahead As New NumParam With {
@@ -279,6 +293,7 @@ Public Class x265Params
     Property SubME As New OptionParam With {
         .Switch = "--subme",
         .Text = "Subpel Refinement:",
+        .IntegerValue = True,
         .Options = {"0 - HPEL 1/4 - QPEL 0/4 - HPEL SATD false",
                     "1 - HPEL 1/4 - QPEL 1/4 - HPEL SATD false",
                     "2 - HPEL 1/4 - QPEL 1/4 - HPEL SATD true",
@@ -327,6 +342,7 @@ Public Class x265Params
     Property AQmode As New OptionParam With {
         .Switch = "--aq-mode",
         .Text = "AQ Mode:",
+        .IntegerValue = True,
         .Options = {"Disabled", "Enabled", "Auto-Variance", "Auto-Variance and bias to dark scenes"}}
 
     Property Videoformat As New OptionParam With {
@@ -349,14 +365,15 @@ Public Class x265Params
     Property RD As New OptionParam With {
         .Switch = "--rd",
         .Text = "RD:",
+        .IntegerValue = True,
+        .Expand = True,
         .Options = {"0 - SA8D mode and split decisions, intra w/ source pixels",
                     "1 - Recon generated (better intra), RDO merge/skip selection",
                     "2 - RDO splits and merge/skip selection",
                     "3 - RDO mode and split decisions, chroma residual used for sa8d",
                     "4 - Currently same as 3",
                     "5 - Adds RDO prediction decisions",
-                    "6 - Currently same as 5"},
-        .Expand = True}
+                    "6 - Currently same as 5"}}
 
     Property MinCuSize As New OptionParam With {
         .Switch = "--min-cu-size",
@@ -373,7 +390,6 @@ Public Class x265Params
     Property qgSize As New OptionParam With {
         .Switch = "--qg-size",
         .Text = "QG Size:",
-        .ValueIsName = True,
         .Options = {"64", "32", "16"},
         .Value = 1,
         .DefaultValue = 1}
@@ -495,7 +511,6 @@ Public Class x265Params
     Property LogLevel As New OptionParam With {
         .Switch = "--log-level",
         .Text = "Log Level:",
-        .ValueIsName = True,
         .Options = {"none", "error", "warning", "info", "debug", "full"},
         .Value = 3,
         .DefaultValue = 3}
@@ -503,19 +518,16 @@ Public Class x265Params
     Property Colorprim As New OptionParam With {
         .Switch = "--colorprim",
         .Text = "Colorprim:",
-        .ValueIsName = True,
         .Options = {"undefined", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "film", "bt2020"}}
 
     Property Transfer As New OptionParam With {
         .Switch = "--transfer",
         .Text = "Transfer:",
-        .ValueIsName = True,
         .Options = {"undefined", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte-st-2084", "smpte-st-428", "arib-std-b67"}}
 
     Property Colormatrix As New OptionParam With {
         .Switch = "--colormatrix",
         .Text = "Colormatrix:",
-        .ValueIsName = True,
         .Options = {"undefined", "GBR", "bt709", "fcc", "bt470bg", "smpte170m", "smpte240m", "YCgCo", "bt2020nc", "bt2020c"}}
 
     Property Pools As New StringParam With {
@@ -552,35 +564,32 @@ Public Class x265Params
         .Switch = "--max-luma",
         .Text = "Maximum Luma:"}
 
-    Property InterlaceMode As New OptionParam With {
+    Property Interlace As New OptionParam With {
         .Switch = "--interlace",
-        .Text = "Interlace Mode:",
-        .Options = {"Progressive", "Top field first", "Bottom field first"},
+        .Text = "Interlace:",
+        .Options = {"Progressive", "Top Field First", "Bottom Field First"},
         .Values = {"", "tff", "bff"}}
 
     Property Profile As New OptionParam With {
         .Switch = "--profile",
         .Text = "Profile:",
-        .ValueIsName = True,
         .Options = {"Unrestricted", "main", "main-intra", "mainstillpicture", "main422-8", "main444-intra", "main444-stillpicture", "main444-8", "main10", "main10-intra", "main422-10", "main422-10-intra", "main444-10", "main444-10-intra"}}
 
     Property OutputDepth As New OptionParam With {
         .Switch = "--output-depth",
         .Text = "Depth:",
-        .ValueIsName = True,
         .Options = {"8", "10", "12"}}
 
     Property Level As New OptionParam With {
         .Switch = "--level-idc",
         .Text = "Level:",
-        .ValueIsName = True,
         .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}}
 
     Property Hash As New OptionParam With {
         .Switch = "--hash",
         .Text = "Hash:",
-        .Options = {"None", "MD5", "CRC", "Checksum"},
-        .Values = {"", "MD5", "CRC", "Checksum"}}
+        .IntegerValue = True,
+        .Options = {"None", "MD5", "CRC", "Checksum"}}
 
     Property HighTier As New BoolParam With {
         .Switch = "--high-tier",
@@ -616,8 +625,7 @@ Public Class x265Params
         .Switch = "--open-gop",
         .NoSwitch = "--no-open-gop",
         .Text = "Open GOP",
-        .Value = True,
-        .DefaultValue = True}
+        .InitValue = True}
 
     Property Bpyramid As New BoolParam With {
         .Switch = "--b-pyramid",
@@ -790,6 +798,7 @@ Public Class x265Params
     Property csvloglevel As New OptionParam With {
         .Switch = "--csv-log-level",
         .Text = "CSV Log Level:",
+        .IntegerValue = True,
         .Options = {"Default", "Summary", "Frame"}}
 
     Private ItemsValue As List(Of CommandLineParam)
@@ -811,7 +820,7 @@ Public Class x265Params
                 Add("Statistic", LogLevel, csvloglevel, CSV, SSIM, PSNR)
                 Add("VUI", Videoformat, Colorprim, Colormatrix, Transfer, minLuma, maxLuma, MaxCLL, MaxFALL)
                 Add("Bitstream", Hash, RepeatHeaders, Info, HRD, AUD)
-                Add("Other 1", InterlaceMode, Deblock, DeblockA, DeblockB, PsyRD, PsyRDOQ, CompCheckQuant)
+                Add("Other 1", Interlace, Deblock, DeblockA, DeblockB, PsyRD, PsyRDOQ, CompCheckQuant)
                 Add("Other 2", SAO, HighTier, SAOnonDeblock, Dither, SlowFirstpass, SignHide, AllowNonConformance)
                 Add("Custom", Custom)
 
@@ -826,25 +835,17 @@ Public Class x265Params
         End Get
     End Property
 
-    Private AddedList As New List(Of String)
-
     Private Sub Add(path As String, ParamArray items As CommandLineParam())
         For Each i In items
             i.Path = path
             ItemsValue.Add(i)
-
-            If i.GetKey = "" OrElse AddedList.Contains(i.GetKey) Then
-                Throw New Exception
-            End If
         Next
     End Sub
 
     Private BlockValueChanged As Boolean
 
     Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-        If BlockValueChanged Then
-            Exit Sub
-        End If
+        If BlockValueChanged Then Exit Sub
 
         If item Is Preset OrElse item Is Tune Then
             BlockValueChanged = True
@@ -924,7 +925,7 @@ Public Class x265Params
 
                 sb.Append(" --output NUL -")
             Else
-                sb.Append(" --output """ + targetPath + """ - ")
+                sb.Append(" --output " + targetPath.Quotes + " - ")
             End If
         End If
 

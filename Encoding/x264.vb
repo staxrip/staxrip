@@ -467,9 +467,9 @@ Public Class x264Encoder
                 (pass = 1 OrElse pass = 2)) OrElse
                 Params.Mode.Value = x264Mode.TwoPass AndAlso pass = 1 Then
 
-                ret += " --output NUL """ + sourcePath + """"
+                ret += " --output NUL " + sourcePath.Quotes
             Else
-                ret += " --output """ + targetPath + """ """ + sourcePath + """"
+                ret += " --output " + targetPath.Quotes + " " + sourcePath.Quotes
             End If
         End If
 

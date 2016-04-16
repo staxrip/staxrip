@@ -108,7 +108,6 @@ Class DemuxingControl
         Me.Controls.Add(Me.bnRemove)
         Me.Controls.Add(Me.bnUp)
         Me.Controls.Add(Me.lv)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "DemuxingControl"
         Me.Size = New System.Drawing.Size(405, 303)
         Me.ResumeLayout(False)

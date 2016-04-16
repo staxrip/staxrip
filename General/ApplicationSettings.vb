@@ -77,7 +77,7 @@ Class ApplicationSettings
             Storage = New ObjectStorage
         End If
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 185) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 186) Then
             If VideoEncoderProfiles Is Nothing Then
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
             Else
@@ -225,7 +225,7 @@ Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 139) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 141) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 

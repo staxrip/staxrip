@@ -163,7 +163,7 @@ Class MuxerForm
         Me.bnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnEdit.Location = New System.Drawing.Point(3, 213)
         Me.bnEdit.Size = New System.Drawing.Size(100, 36)
-        Me.bnEdit.Text = "Edit"
+        Me.bnEdit.Text = "Edit..."
         '
         'bnPlay
         '
@@ -465,21 +465,22 @@ Class MuxerForm
     Private Sub bnAddAudio_Click(sender As Object, e As EventArgs) Handles bnAddAudio.Click
         Using d As New OpenFileDialog
             d.SetFilter(FileTypes.Audio.Union(FileTypes.VideoAudio))
-            If Directory.Exists(p.TempDir) Then d.SetInitDir(p.TempDir)
+            d.Multiselect = True
+            d.SetInitDir(p.TempDir)
 
             If d.ShowDialog = DialogResult.OK Then
-                For Each i In d.FileNames
-                    Dim sb As New SelectionBox(Of AudioProfile)
-                    sb.Title = "Audio Profile"
-                    sb.Text = "Please select a audio profile."
+                Dim sb As New SelectionBox(Of AudioProfile)
+                sb.Title = "Audio Profile"
+                sb.Text = "Please select a audio profile."
 
-                    For Each i2 In s.AudioProfiles
-                        sb.AddItem(ObjectHelp.GetCopy(Of AudioProfile)(i2))
-                    Next
+                For Each audioProfile In s.AudioProfiles
+                    sb.AddItem(audioProfile)
+                Next
 
-                    If sb.Show = DialogResult.OK Then
-                        Dim ap = sb.SelectedItem
-                        ap.File = i
+                If sb.Show = DialogResult.OK Then
+                    For Each path In d.FileNames
+                        Dim ap = ObjectHelp.GetCopy(sb.SelectedItem)
+                        ap.File = path
 
                         If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
                             ap.Delay = g.ExtractDelay(ap.File)
@@ -505,12 +506,11 @@ Class MuxerForm
                         End If
 
                         g.MainForm.tbSize_TextChanged()
-
-                        AudioBindingSource.Add(sb.SelectedItem)
+                        AudioBindingSource.Add(ap)
                         AudioBindingSource.Position = AudioBindingSource.Count - 1
                         UpdateAudioControls()
-                    End If
-                Next
+                    Next
+                End If
             End If
         End Using
     End Sub

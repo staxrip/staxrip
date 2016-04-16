@@ -590,16 +590,15 @@ Class MkvMuxer
                 args.Append(" --aac-is-sbr " & tid)
             End If
 
-            If ap.StreamName <> "" Then
-                args.Append(" --track-name """ & tid & ":" + ap.SolveMacros(ap.StreamName, False) + """")
-                If isCombo Then args.Append(" --track-name """ & tid + 1 & ":" + ap.SolveMacros(ap.StreamName, False) + """")
-            End If
+            args.Append(" --track-name """ & tid & ":" + ap.SolveMacros(ap.StreamName, False) + """")
+            If isCombo Then args.Append(" --track-name """ & tid + 1 & ":" + ap.SolveMacros(ap.StreamName, False) + """")
 
             If ap.Delay <> 0 AndAlso Not ap.HandlesDelay AndAlso Not (ap.HasStream AndAlso ap.Stream.Delay <> 0) Then
                 args.Append(" --sync " & tid & ":" + ap.Delay.ToString)
                 If isCombo Then args.Append(" --sync " & tid + 1 & ":" + ap.Delay.ToString)
             End If
 
+            args.Append(" --default-track " & tid & ":" & If(ap.Default, 1, 0))
             args.Append(" """ + ap.File + """")
         End If
     End Sub

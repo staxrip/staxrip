@@ -1,5 +1,4 @@
 Imports StaxRip.UI
-Imports System.Windows.Forms.VisualStyles
 
 Class AudioForm
     Inherits DialogBase
@@ -504,9 +503,7 @@ Class AudioForm
     End Sub
 
     Private Sub AudioForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
-        If DialogResult = DialogResult.OK Then
-            SetValues(Profile)
-        End If
+        If DialogResult = DialogResult.OK Then SetValues(Profile)
     End Sub
 
     Sub SetValues(gap As GUIAudioProfile)
@@ -517,7 +514,7 @@ Class AudioForm
         gap.Name = TempProfile.Name
         gap.StreamName = TempProfile.StreamName
         gap.Gain = TempProfile.Gain
-
+        gap.Default = TempProfile.Default
         gap.Params = TempProfile.Params
     End Sub
 
@@ -812,6 +809,8 @@ Class AudioForm
         tb.Edit.Text = TempProfile.Params.CustomSwitches
         tb.Edit.SaveAction = Sub(value) TempProfile.Params.CustomSwitches = value
 
+        Dim cb As SimpleUI.SimpleUICheckBox
+
         Select Case TempProfile.GetEncoder
             Case GuiAudioEncoder.BeSweet
                 Dim mb = ui.AddMenuButtonBlock(Of String)(page)
@@ -873,7 +872,6 @@ Class AudioForm
                 mbStereoDownmix.MenuButton.Value = TempProfile.Params.eac3toStereoDownmixMode
                 mbStereoDownmix.MenuButton.SaveAction = Sub(value) TempProfile.Params.eac3toStereoDownmixMode = value
 
-                Dim cb As SimpleUI.SimpleUICheckBox
                 cb = ui.AddCheckBox(page)
                 cb.Text = "Downconvert to 16 bit"
                 cb.Checked = TempProfile.Params.Down16
@@ -882,6 +880,7 @@ Class AudioForm
                                     UpdateBitrate()
                                     UpdateControls()
                                 End Sub
+
                 If (TempProfile.File = "" OrElse TempProfile.File.ToLower.Contains("dts") OrElse
                     (Not TempProfile.Stream Is Nothing AndAlso
                      TempProfile.Stream.Name.Contains("DTS"))) AndAlso
@@ -926,18 +925,23 @@ Class AudioForm
                 num.NumEdit.Value = TempProfile.Params.qaacLowpass
                 num.NumEdit.SaveAction = Sub(value) TempProfile.Params.qaacLowpass = CInt(value)
 
-                Dim cbHE = ui.AddCheckBox(page)
-                cbHE.Text = "High Efficiency"
-                cbHE.Checked = TempProfile.Params.qaacHE
-                cbHE.SaveAction = Sub(value) TempProfile.Params.qaacHE = value
-                AddHandler cbHE.CheckedChanged, Sub() If cbHE.Checked Then mbMode.MenuButton.Value = 1
-                AddHandler mbMode.MenuButton.ValueChangedUser, Sub() If mbMode.MenuButton.Value = 0 Then cbHE.Checked = False
+                cb = ui.AddCheckBox(page)
+                cb.Text = "High Efficiency"
+                cb.Checked = TempProfile.Params.qaacHE
+                cb.SaveAction = Sub(value) TempProfile.Params.qaacHE = value
+                AddHandler cb.CheckedChanged, Sub() If cb.Checked Then mbMode.MenuButton.Value = 1
+                AddHandler mbMode.MenuButton.ValueChangedUser, Sub() If mbMode.MenuButton.Value = 0 Then cb.Checked = False
 
-                Dim cb = ui.AddCheckBox(page)
+                cb = ui.AddCheckBox(page)
                 cb.Text = "No dither when quantizing to lower bit depth"
                 cb.Checked = TempProfile.Params.qaacNoDither
                 cb.SaveAction = Sub(value) TempProfile.Params.qaacNoDither = value
         End Select
+
+        cb = ui.AddCheckBox(page)
+        cb.Text = "Default Stream"
+        cb.Checked = TempProfile.Default
+        cb.SaveAction = Sub(value) TempProfile.Default = value
 
         If ui.Visible AndAlso ScaleFactor <> New SizeF(1, 1) Then
             ui.Scale(ScaleFactor)

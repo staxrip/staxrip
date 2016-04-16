@@ -935,7 +935,7 @@ Namespace UI
         Property LastCommandLine As String
 
         Sub New()
-            Font = New Font("Consolas", 10)
+            Font = New Font("Consolas", 10 * s.UIScaleFactor)
         End Sub
 
         Sub SetText(commandLine As String)

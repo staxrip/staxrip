@@ -344,6 +344,7 @@ Class AppsForm
             Case Keys.F11
                 Using d As New OpenFileDialog
                     d.SetInitDir(s.Storage.GetString(ActivePackage.Name + "custom path"))
+
                     If Not ActivePackage.Filenames.ContainsNothingOrEmpty Then
                         d.Filter = "|" + ActivePackage.Filenames.Join(";") + "|All Files|*.*"
                     Else
@@ -422,13 +423,9 @@ Class AppsForm
             End If
         Next
 
-        If tv.Nodes.Count > 0 Then
-            tv.SelectedNode = tv.Nodes(0)
-        End If
-
+        If tv.Nodes.Count > 0 Then tv.SelectedNode = tv.Nodes(0)
         ToolStrip.Enabled = tv.Nodes.Count > 0
         flp.Enabled = tv.Nodes.Count > 0
-
         If SearchTextBox.Text <> "" Then tv.ExpandAll()
     End Sub
 

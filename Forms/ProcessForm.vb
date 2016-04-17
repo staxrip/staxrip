@@ -381,19 +381,17 @@ Class ProcessForm
 
     Shared Sub ActivateForm()
         Dim procid As Integer
-        Dim procName = ""
+        Dim nameLower As String
         Native.GetWindowThreadProcessId(Native.GetForegroundWindow(), procid)
 
         For Each i In Process.GetProcesses
             If i.Id = procid Then
-                procName = i.ProcessName.ToLower
+                nameLower = i.ProcessName.ToLower
                 Exit For
             End If
         Next
 
-        If procName.Contains("mpc") OrElse procName.Contains("vlc") OrElse
-            procName.Contains("staxplayer") OrElse procName.Contains("mediamonkey") Then
-
+        If nameLower.ContainsAny(s.PreventActivation.SplitNoEmptyAndWhiteSpace(",", ";", " ")) Then
             Exit Sub
         End If
 

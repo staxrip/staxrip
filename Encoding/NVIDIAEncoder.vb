@@ -205,7 +205,7 @@ Public Class NVIDIAEncoder
 
         Property Ref As New NumParam With {
             .Switch = "--ref",
-            .Text = "References:",
+            .Text = "Ref Frames:",
             .Value = 3,
             .DefaultValue = 3,
             .MinMaxStep = {0, 16, 1}}

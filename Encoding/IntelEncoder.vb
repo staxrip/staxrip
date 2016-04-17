@@ -225,7 +225,8 @@ Public Class IntelEncoder
                         New BoolParam With {.Switch = "--timer-period-tuning", .NoSwitch = "--no-timer-period-tuning", .Text = "Timer Period Tuning", .InitValue = True},
                         New BoolParam With {.Switch = "--i-adapt", .Text = "Adaptive I Frame Insert"},
                         New BoolParam With {.Switch = "--fixed-func", .Text = "Use fixed func instead of GPU EU"},
-                        New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"})
+                        New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"},
+                        Custom)
                 End If
 
                 Return ItemsValue

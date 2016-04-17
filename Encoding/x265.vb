@@ -275,7 +275,7 @@ Public Class x265Params
 
     Property Ref As New NumParam With {
         .Switch = "--ref",
-        .Text = "References:",
+        .Text = "Ref Frames:",
         .MinMaxStep = {1, 16, 1}}
 
     Property [Me] As New OptionParam With {
@@ -670,14 +670,14 @@ Public Class x265Params
 
     Property Keyint As New NumParam With {
         .Switch = "--keyint",
-        .Text = "Maximum GOP Size:",
+        .Text = "Max GOP Size:",
         .MinMaxStep = {0, 10000, 10},
         .Value = 250,
         .DefaultValue = 250}
 
     Property MinKeyint As New NumParam With {
         .Switch = "--min-keyint",
-        .Text = "Minimum GOP Size:",
+        .Text = "Min GOP Size:",
         .MinMaxStep = {0, 10000, 10}}
 
     Property VBVbufsize As New NumParam With {

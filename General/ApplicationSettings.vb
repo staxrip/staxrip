@@ -6,8 +6,8 @@ Imports StaxRip.UI
 Class ApplicationSettings
     Implements ISafeSerialization
 
-    Friend AviSynthFilterPreferences As StringPairList
-    Friend VapourSynthFilterPreferences As StringPairList
+    Public AviSynthFilterPreferences As StringPairList
+    Public VapourSynthFilterPreferences As StringPairList
     Public eac3toProfiles As List(Of eac3toProfile)
     Public AudioProfiles As List(Of AudioProfile)
     Public AviSynthProfiles As List(Of FilterCategory)
@@ -55,6 +55,7 @@ Class ApplicationSettings
     Public DeleteTempFilesToRecycleBin As Boolean = True
     Public ShowTemplateSelection As Boolean
     Public UIScaleFactor As Single = 1
+    Public PreventActivation As String
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -136,6 +137,8 @@ Class ApplicationSettings
             VapourSynthFilterPreferences.Add("mp4, m4v, mov", "LibavSMASHSource")
             VapourSynthFilterPreferences.Add("ts, m2ts, mts, m2t", "LWLibavSource")
         End If
+
+        If PreventActivation = "" Then PreventActivation = "mpc vlc media play kodi"
 
         If Check(eac3toProfiles, "eac3to Audio Stream Profiles", 4) Then
             eac3toProfiles = New List(Of eac3toProfile)

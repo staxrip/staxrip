@@ -3074,6 +3074,13 @@ Class MainForm
             Dim systemPage = ui.CreateFlowPage("System")
             systemPage.SuspendLayout()
 
+            tb = ui.AddTextBlock(systemPage)
+            tb.Label.Text = "Prevent Activation:"
+            tb.Label.Tooltip = "Prevents the StaxRip window to become the active foreground window if certain applications are currently in the foreground."
+            tb.Expand(tb.Edit)
+            tb.Edit.Text = s.PreventActivation
+            tb.Edit.SaveAction = Sub(value) s.PreventActivation = value.ToLower
+
             Dim mb2 = ui.AddMenuButtonBlock(Of ProcessPriorityClass)(systemPage)
             mb2.Label.Text = "Process Priority:"
             mb2.Label.Tooltip = "Process priority of the applications StaxRip launches."

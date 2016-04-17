@@ -2839,7 +2839,7 @@ Class GlobalCommands
     Function GetReleaseType() As String
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
         If version.MinorRevision <> 0 Then Return "Unstable Test Build"
-        Return "Stable Final Release"
+        Return "Stable Release"
     End Function
 
     <Command("Dialog | Help Topic", "Opens a given help topic in the help browser.")>

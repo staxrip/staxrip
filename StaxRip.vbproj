@@ -443,7 +443,6 @@
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
     <None Include="md\test-build.md" />
-    <None Include="My Project\DataSources\AudioProfile.datasource" />
     <None Include="packages.config" />
     <None Include="Resources\play.png" />
     <None Include="Resources\arrow.png" />
@@ -642,6 +641,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
+    <Folder Include="My Project\DataSources\" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\vb\Microsoft.CodeAnalysis.Analyzers.dll" />

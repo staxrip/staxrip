@@ -19,10 +19,10 @@ Class MacrosForm
     Friend WithEvents stb As StaxRip.SearchTextBox
     Friend WithEvents lName As System.Windows.Forms.Label
     Friend WithEvents lValue As System.Windows.Forms.Label
-    Friend WithEvents lDescription1 As System.Windows.Forms.Label
+    Friend WithEvents lDescriptionTitle As System.Windows.Forms.Label
     Friend WithEvents lDescription As System.Windows.Forms.Label
-    Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents lNameTitle As System.Windows.Forms.Label
+    Friend WithEvents lValueTitle As System.Windows.Forms.Label
     Friend WithEvents bCopy As System.Windows.Forms.Button
 
     Private components As System.ComponentModel.IContainer
@@ -33,10 +33,10 @@ Class MacrosForm
         Me.stb = New StaxRip.SearchTextBox()
         Me.lName = New System.Windows.Forms.Label()
         Me.lValue = New System.Windows.Forms.Label()
-        Me.lDescription1 = New System.Windows.Forms.Label()
+        Me.lDescriptionTitle = New System.Windows.Forms.Label()
         Me.lDescription = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.Label2 = New System.Windows.Forms.Label()
+        Me.lNameTitle = New System.Windows.Forms.Label()
+        Me.lValueTitle = New System.Windows.Forms.Label()
         Me.bCopy = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
@@ -75,15 +75,14 @@ Class MacrosForm
         Me.lValue.TabIndex = 6
         Me.lValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'lDescription1
+        'lDescriptionTitle
         '
-        Me.lDescription1.AutoSize = True
-        Me.lDescription1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lDescription1.Location = New System.Drawing.Point(331, 169)
-        Me.lDescription1.Name = "lDescription1"
-        Me.lDescription1.Size = New System.Drawing.Size(114, 25)
-        Me.lDescription1.TabIndex = 7
-        Me.lDescription1.Text = "Description:"
+        Me.lDescriptionTitle.AutoSize = True
+        Me.lDescriptionTitle.Location = New System.Drawing.Point(331, 169)
+        Me.lDescriptionTitle.Name = "lDescriptionTitle"
+        Me.lDescriptionTitle.Size = New System.Drawing.Size(106, 25)
+        Me.lDescriptionTitle.TabIndex = 7
+        Me.lDescriptionTitle.Text = "Description:"
         '
         'lDescription
         '
@@ -94,25 +93,23 @@ Class MacrosForm
         Me.lDescription.Size = New System.Drawing.Size(403, 467)
         Me.lDescription.TabIndex = 8
         '
-        'Label1
+        'lNameTitle
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(331, 15)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(67, 25)
-        Me.Label1.TabIndex = 9
-        Me.Label1.Text = "Name:"
+        Me.lNameTitle.AutoSize = True
+        Me.lNameTitle.Location = New System.Drawing.Point(331, 15)
+        Me.lNameTitle.Name = "lNameTitle"
+        Me.lNameTitle.Size = New System.Drawing.Size(63, 25)
+        Me.lNameTitle.TabIndex = 9
+        Me.lNameTitle.Text = "Name:"
         '
-        'Label2
+        'lValueTitle
         '
-        Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(331, 92)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(65, 25)
-        Me.Label2.TabIndex = 10
-        Me.Label2.Text = "Value:"
+        Me.lValueTitle.AutoSize = True
+        Me.lValueTitle.Location = New System.Drawing.Point(331, 92)
+        Me.lValueTitle.Name = "lValueTitle"
+        Me.lValueTitle.Size = New System.Drawing.Size(58, 25)
+        Me.lValueTitle.TabIndex = 10
+        Me.lValueTitle.Text = "Value:"
         '
         'bCopy
         '
@@ -128,10 +125,10 @@ Class MacrosForm
         '
         Me.ClientSize = New System.Drawing.Size(744, 674)
         Me.Controls.Add(Me.bCopy)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.lValueTitle)
+        Me.Controls.Add(Me.lNameTitle)
         Me.Controls.Add(Me.lDescription)
-        Me.Controls.Add(Me.lDescription1)
+        Me.Controls.Add(Me.lDescriptionTitle)
         Me.Controls.Add(Me.lValue)
         Me.Controls.Add(Me.lName)
         Me.Controls.Add(Me.stb)
@@ -148,8 +145,6 @@ Class MacrosForm
 
 #End Region
 
-    Private Macros As New SortedDictionary(Of String, String)
-
     Public Sub New()
         InitializeComponent()
 
@@ -161,18 +156,6 @@ Class MacrosForm
         Native.SetWindowTheme(lv.Handle, "explorer", Nothing)
 
         ActiveControl = stb
-
-        For Each i In Macro.GetMacros
-            Macros(i.Name) = i.Description
-        Next
-
-        For Each i In Packs.Packages
-            Macros("%app:" + i.Name + "%") = ""
-        Next
-
-        For Each i In Packs.Packages
-            Macros("%app_dir:" + i.Name + "%") = ""
-        Next
     End Sub
 
     Public Shared Sub ShowDialogForm()
@@ -193,10 +176,24 @@ Class MacrosForm
         lv.BeginUpdate()
         lv.Items.Clear()
 
-        For Each i In Macros
-            If stb.Text = "" OrElse Match(stb.Text, i.Key, i.Value) Then
+        Dim macros As New StringPairList
+
+        For Each i In Macro.GetMacros
+            macros.Add(i.Name, i.Description)
+        Next
+
+        For Each i In Packs.Packages
+            macros.Add("%app:" + i.Name + "%", "")
+        Next
+
+        For Each i In Packs.Packages
+            macros.Add("%app_dir:" + i.Name + "%", "")
+        Next
+
+        For Each i In macros
+            If stb.Text = "" OrElse Match(stb.Text, i.Name, i.Value) Then
                 Dim item As New ListViewItem
-                item.Text = i.Key
+                item.Text = i.Name
                 item.Tag = i.Value
                 lv.Items.Add(item)
             End If
@@ -292,5 +289,8 @@ Class MacrosForm
 
     Private Sub MacrosForm_Load(sender As Object, e As EventArgs) Handles Me.Load
         Populate(False)
+        lDescriptionTitle.SetFontStyle(FontStyle.Bold)
+        lNameTitle.SetFontStyle(FontStyle.Bold)
+        lValueTitle.SetFontStyle(FontStyle.Bold)
     End Sub
 End Class

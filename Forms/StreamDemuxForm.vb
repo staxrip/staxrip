@@ -50,8 +50,8 @@ Class StreamDemuxForm
             If i.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName OrElse
                 i.Language.TwoLetterCode = "en" OrElse i.Language.TwoLetterCode = "iv" Then
 
-                i.Enabled = True
-                item.Checked = True
+                i.Enabled = p.DemuxAudio
+                item.Checked = p.DemuxAudio
             End If
         Next
 
@@ -60,7 +60,7 @@ Class StreamDemuxForm
             If Subtitles.Count <= 12 Then text += " (" + i.TypeName + ")"
             Dim item = lvSubtitles.Items.Add(text)
             item.Tag = i
-            item.Checked = i.Enabled
+            item.Checked = i.Enabled AndAlso p.DemuxSubtitles
         Next
     End Sub
 

@@ -11,7 +11,7 @@ Class CommandLineAudioForm
         End If
         MyBase.Dispose(disposing)
     End Sub
-    Friend WithEvents CmdlControl As StaxRip.MacroEditorControl
+    Friend WithEvents EditControl As StaxRip.MacroEditorControl
     Friend WithEvents tbStreamName As System.Windows.Forms.TextBox
     Friend WithEvents lStreamName As System.Windows.Forms.Label
     Friend WithEvents lInput As System.Windows.Forms.Label
@@ -39,7 +39,7 @@ Class CommandLineAudioForm
         Me.tbStreamName = New System.Windows.Forms.TextBox()
         Me.tbChannels = New System.Windows.Forms.TextBox()
         Me.ValidationProvider = New StaxRip.UI.ValidationProvider()
-        Me.CmdlControl = New StaxRip.MacroEditorControl()
+        Me.EditControl = New StaxRip.MacroEditorControl()
         Me.lStreamName = New System.Windows.Forms.Label()
         Me.lChannels = New System.Windows.Forms.Label()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
@@ -60,7 +60,7 @@ Class CommandLineAudioForm
         Me.lInput.AutoSize = True
         Me.lInput.Location = New System.Drawing.Point(12, 11)
         Me.lInput.Name = "lInput"
-        Me.lInput.Size = New System.Drawing.Size(199, 25)
+        Me.lInput.Size = New System.Drawing.Size(198, 25)
         Me.lInput.TabIndex = 0
         Me.lInput.Text = "Supported Input Types:"
         '
@@ -69,7 +69,7 @@ Class CommandLineAudioForm
         Me.lType.AutoSize = True
         Me.lType.Location = New System.Drawing.Point(414, 10)
         Me.lType.Name = "lType"
-        Me.lType.Size = New System.Drawing.Size(147, 25)
+        Me.lType.Size = New System.Drawing.Size(146, 25)
         Me.lType.TabIndex = 11
         Me.lType.Text = "Output File Type:"
         '
@@ -134,24 +134,23 @@ Class CommandLineAudioForm
         Me.tbChannels.TabIndex = 6
         Me.tbChannels.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
-        'CmdlControl
+        'EditControl
         '
-        Me.CmdlControl.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.EditControl.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.CmdlControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CmdlControl.Location = New System.Drawing.Point(12, 149)
-        Me.CmdlControl.Name = "CmdlControl"
-        Me.CmdlControl.Size = New System.Drawing.Size(974, 241)
-        Me.CmdlControl.TabIndex = 5
-        Me.CmdlControl.Text = "Command Lines"
+        Me.EditControl.Location = New System.Drawing.Point(12, 149)
+        Me.EditControl.Name = "EditControl"
+        Me.EditControl.Size = New System.Drawing.Size(974, 241)
+        Me.EditControl.TabIndex = 5
+        Me.EditControl.Text = "Batch Code"
         '
         'lStreamName
         '
         Me.lStreamName.AutoSize = True
         Me.lStreamName.Location = New System.Drawing.Point(294, 79)
         Me.lStreamName.Name = "lStreamName"
-        Me.lStreamName.Size = New System.Drawing.Size(124, 25)
+        Me.lStreamName.Size = New System.Drawing.Size(123, 25)
         Me.lStreamName.TabIndex = 9
         Me.lStreamName.Text = "Stream Name:"
         '
@@ -205,7 +204,7 @@ Class CommandLineAudioForm
         Me.Controls.Add(Me.lChannels)
         Me.Controls.Add(Me.lStreamName)
         Me.Controls.Add(Me.tbStreamName)
-        Me.Controls.Add(Me.CmdlControl)
+        Me.Controls.Add(Me.EditControl)
         Me.Controls.Add(Me.lLanguage)
         Me.Controls.Add(Me.tbDelay)
         Me.Controls.Add(Me.lDelay)
@@ -247,14 +246,14 @@ Class CommandLineAudioForm
         TempProfile = ObjectHelp.GetCopy(Of BatchAudioProfile)(profile)
 
         tbType.Text = TempProfile.OutputFileType
-        tbInput.Text = TempProfile.SupportedInput.Join(", ")
+        tbInput.Text = TempProfile.SupportedInput.Join(" ")
 
-        CmdlControl.SetCommandLineDefaults()
-        CmdlControl.Value = TempProfile.CommandLines
-        CmdlControl.SpecialMacrosFunction = AddressOf TempProfile.SolveMacros
-        CmdlControl.llExecute.Visible = TempProfile.File <> "" AndAlso TempProfile.SupportedInput.Contains(Filepath.GetExt(TempProfile.File))
+        EditControl.SetCommandLineDefaults()
+        EditControl.Value = TempProfile.CommandLines
+        EditControl.SpecialMacrosFunction = AddressOf TempProfile.SolveMacros
+        EditControl.llExecute.Visible = TempProfile.File <> "" AndAlso TempProfile.SupportedInput.Contains(Filepath.GetExt(TempProfile.File))
 
-        AddHandler CmdlControl.rtbEdit.TextChanged, AddressOf tbEditTextChanged
+        AddHandler EditControl.rtbEdit.TextChanged, AddressOf tbEditTextChanged
 
         tbStreamName.Text = TempProfile.StreamName
         tbBitrate.Text = TempProfile.Bitrate.ToString
@@ -275,7 +274,7 @@ Class CommandLineAudioForm
         TipProvider.SetTip("Display language of the track.", mbLanguage, lLanguage)
         TipProvider.SetTip("The targeted bitrate of the output file.", tbBitrate, lBitrate)
         TipProvider.SetTip("Audio delay to be fixed.", tbDelay, lDelay)
-        TipProvider.SetTip("The file types the application accepts as input.", tbInput, lInput)
+        TipProvider.SetTip("File types accepted as input, leave empty to support any file type.", tbInput, lInput)
         TipProvider.SetTip("Stream name used by the muxer. The stream name may contain macros.", tbStreamName, lStreamName)
 
         ActiveControl = bnOK
@@ -297,42 +296,42 @@ Class CommandLineAudioForm
 
     Private Sub tbStreamName_TextChanged() Handles tbStreamName.TextChanged
         TempProfile.StreamName = tbStreamName.Text
-        CmdlControl.UpdatePreview()
+        EditControl.UpdatePreview()
     End Sub
 
     Private Sub tbInput_TextChanged() Handles tbInput.TextChanged
-        TempProfile.SupportedInput = tbInput.Text.ToLower.SplitNoEmptyAndWhiteSpace(",", ";")
-        CmdlControl.UpdatePreview()
+        TempProfile.SupportedInput = tbInput.Text.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+        EditControl.UpdatePreview()
     End Sub
 
     Private Sub tbType_TextChanged() Handles tbType.TextChanged
         TempProfile.OutputFileType = tbType.Text
-        CmdlControl.UpdatePreview()
+        EditControl.UpdatePreview()
     End Sub
 
     Private Sub tbBitrate_TextChanged() Handles tbBitrate.TextChanged
         TempProfile.Bitrate = tbBitrate.Text.ToInt
-        CmdlControl.UpdatePreview()
+        EditControl.UpdatePreview()
     End Sub
 
     Private Sub tbChannels_TextChanged() Handles tbChannels.TextChanged
         TempProfile.Channels = tbChannels.Text.ToInt
-        CmdlControl.UpdatePreview()
+        EditControl.UpdatePreview()
     End Sub
 
     Private Sub mbLanguage_ValueChangedUser(value As Object) Handles mbLanguage.ValueChangedUser
         TempProfile.Language = DirectCast(mbLanguage.Value, Language)
-        CmdlControl.UpdatePreview()
+        EditControl.UpdatePreview()
     End Sub
 
     Private Sub tbEditTextChanged(sender As Object, args As EventArgs)
-        TempProfile.CommandLines = CmdlControl.rtbEdit.Text
-        CmdlControl.UpdatePreview()
+        TempProfile.CommandLines = EditControl.rtbEdit.Text
+        EditControl.UpdatePreview()
     End Sub
 
     Private Sub tbDelay_TextChanged() Handles tbDelay.TextChanged
         TempProfile.Delay = tbDelay.Text.ToInt
-        CmdlControl.UpdatePreview()
+        EditControl.UpdatePreview()
     End Sub
 
     Private Sub CommandLineAudioSettingsForm_HelpRequested() Handles Me.HelpRequested
@@ -340,7 +339,7 @@ Class CommandLineAudioForm
 
         f.Doc.WriteStart(Text)
         f.Doc.WriteP("The command line audio settings define a audio conversion command line. If there is a piping symbol or line break then it's executed as batch file.")
-        f.Doc.WriteTips(TipProvider.GetTips, CmdlControl.TipProvider.GetTips)
+        f.Doc.WriteTips(TipProvider.GetTips, EditControl.TipProvider.GetTips)
         f.Doc.WriteP("Macros", Strings.MacrosHelp)
 
         Dim l As New StringPairList

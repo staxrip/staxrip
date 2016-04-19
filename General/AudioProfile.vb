@@ -163,7 +163,7 @@ Public MustInherit Class AudioProfile
     End Sub
 
     Function IsInputSupported() As Boolean
-        Return SupportedInput.Contains(Filepath.GetExt(File))
+        Return SupportedInput.NothingOrEmpty OrElse SupportedInput.Contains(File.Ext)
     End Function
 
     Function IsMuxProfile() As Boolean
@@ -233,40 +233,11 @@ Public MustInherit Class AudioProfile
         ret.Add(New GUIAudioProfile(AudioCodec.Vorbis, 1))
         ret.Add(New GUIAudioProfile(AudioCodec.MP3, 4))
         ret.Add(New GUIAudioProfile(AudioCodec.AC3, 1.0) With {.Channels = 6, .Bitrate = 448})
-        ret.Add(GetProfile("Command Line", 48, "-bsn( -abr %bitrate% -aacprofile_hev2 )"))
+        ret.Add(New BatchAudioProfile("Command Line", 100, {}, "mp3", 2, "ffmpeg -i ""%input%"" -hide_banner -y ""%output%"""))
         ret.Add(New MuxAudioProfile())
         ret.Add(New NullAudioProfile())
 
         Return ret
-    End Function
-
-    Shared Function GetProfile(
-        name As String,
-        bitrate As Integer,
-        params As String,
-        Optional channels As Integer = 2) As BatchAudioProfile
-
-        Dim cmdl = """%app:BeSweet%"" -core( -input ""%input%"" -output ""%output%"" )"
-        cmdl += " -azid( -c normal"
-
-        If channels = 2 Then cmdl += " -L -3db"
-
-        cmdl += " ) -ota( -d %delay% -g max ) "
-        cmdl += params
-
-        Dim fileType = ""
-
-        If params.Contains("-bsn( ") Then
-            fileType = "m4a"
-        ElseIf params.Contains("-lame( ") Then
-            fileType = "mp3"
-        ElseIf params.Contains("-ogg( ") Then
-            fileType = "ogg"
-        End If
-
-        Dim input = If(channels = 6, {"ac3"}, {"ac3", "mpa", "mp2", "mp3", "wav", "ogg"})
-
-        Return New BatchAudioProfile(name, bitrate, input, fileType, channels, cmdl)
     End Function
 End Class
 
@@ -279,10 +250,10 @@ Public Class BatchAudioProfile
             input As String(),
             fileType As String,
             channels As Integer,
-            commandLines As String)
+            batchCode As String)
 
         MyBase.New(name, bitrate, input, fileType, channels)
-        Me.CommandLines = commandLines
+        Me.CommandLines = batchCode
         CanEditValue = True
     End Sub
 
@@ -301,36 +272,35 @@ Public Class BatchAudioProfile
             Dim bitrateBefore = p.VideoBitrate
             Dim targetPath = GetOutputFile()
 
-            Dim commands = SolveMacros(CommandLines).Trim
+            Dim batchCode = "@echo off" + CrLf2 + {
+                Packs.ffmpeg.GetDir,
+                Packs.eac3to.GetDir,
+                Packs.BeSweet.GetDir}.
+                Select(Function(arg) "set PATH=%PATH%;" + arg).
+                Join(CrLf) + CrLf2 +
+                "cd /D """ + p.TempDir + """" + CrLf2 +
+                SolveMacros(CommandLines).Trim
 
-            If commands.Contains("|") OrElse commands.Contains(CrLf) Then
-                Dim batchPath = p.TempDir + Filepath.GetBase(File) + "_audio.bat"
+            Dim batchPath = p.TempDir + Filepath.GetBase(File) + "_audio.bat"
+            IO.File.WriteAllText(batchPath, batchCode, Encoding.GetEncoding(850))
 
-                IO.File.WriteAllText(batchPath, commands, Encoding.GetEncoding(850))
+            Using proc As New Proc
+                proc.Init("Audio encoding: " + Name)
+                proc.SkipStrings = {"Maximum Gain Found", "transcoding ...", "size=", "process: ", "analyze: "}
+                proc.WriteLine(batchCode + CrLf2)
+                proc.File = "cmd.exe"
+                proc.Arguments = "/C call """ + batchPath + """"
 
-                Using proc As New Proc
-                    proc.Init("Audio encoding: " + Name, "Maximum Gain Found", "transcoding ...")
-                    proc.WriteLine(commands + CrLf2)
-                    proc.File = "cmd.exe"
-                    proc.Arguments = "/C call """ + batchPath + """"
-
-                    Try
-                        proc.Start()
-                    Catch ex As AbortException
-                        Throw ex
-                    Catch ex As Exception
-                        ProcessForm.CloseProcessForm()
-                        g.ShowException(ex)
-                        Throw New AbortException
-                    End Try
-                End Using
-            Else
-                Using proc As New Proc
-                    proc.Init("Audio encoding: " + Name, "Maximum Gain Found", "transcoding ...")
-                    proc.CommandLine = commands
+                Try
                     proc.Start()
-                End Using
-            End If
+                Catch ex As AbortException
+                    Throw ex
+                Catch ex As Exception
+                    ProcessForm.CloseProcessForm()
+                    g.ShowException(ex)
+                    Throw New AbortException
+                End Try
+            End Using
 
             If g.WasFileJustWritten(targetPath) Then
                 File = targetPath

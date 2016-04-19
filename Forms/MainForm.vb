@@ -1407,7 +1407,7 @@ Class MainForm
 
         Dim td As New TaskDialog(Of String)
         td.MainInstruction = "Choose a preferred source filter"
-        td.Content = "A description of the available source filters can be found in the [http://github.com/stax76/staxrip/wiki/Source-Filters wiki]."
+        td.Content = "A description of the available source filters can be found [https://stax76.gitbooks.io/staxrip-handbook/content/avisynth+vapoursynth.html here]."
 
         td.AddCommandLink("Automatic AviSynth+", "avs")
         td.AddCommandLink("Automatic VapourSynth", "vs")
@@ -3748,12 +3748,6 @@ Class MainForm
             Dim audioPage = ui.CreateFlowPage("Audio")
             audioPage.SuspendLayout()
 
-            cb = ui.AddCheckBox(audioPage)
-            cb.Text = "Use AviSynth script as audio source"
-            cb.Tooltip = "Sets the AviSynth script (*.avs) as audio source file when loading a source file."
-            cb.Checked = p.UseScriptAsAudioSource
-            cb.SaveAction = Sub(value) p.UseScriptAsAudioSource = value
-
             Dim dec = ui.AddMenuButtonBlock(Of DecodingMode)(audioPage)
             dec.Label.Text = "Force decoding using:"
             dec.Tooltip = "Defines if audio should be processed without decoding if possible or if decoding should be forced with a certain decoder."
@@ -3766,21 +3760,39 @@ Class MainForm
             cut.MenuButton.Value = p.CuttingMode
             cut.MenuButton.SaveAction = Sub(value) p.CuttingMode = value
 
+            cb = ui.AddCheckBox(audioPage)
+            cb.Text = "Demux"
+            cb.Tooltip = "Demuxes audio files from the source file."
+            cb.Checked = p.DemuxAudio
+            cb.SaveAction = Sub(value) p.DemuxAudio = value
+
+            cb = ui.AddCheckBox(audioPage)
+            cb.Text = "Use AviSynth script as audio source"
+            cb.Tooltip = "Sets the AviSynth script (*.avs) as audio source file when loading a source file."
+            cb.Checked = p.UseScriptAsAudioSource
+            cb.SaveAction = Sub(value) p.UseScriptAsAudioSource = value
+
             audioPage.ResumeLayout()
 
             Dim subPage = ui.CreateFlowPage("Subtitles")
-
-            cb = ui.AddCheckBox(subPage)
-            cb.Text = "Convert Sup (PGS/Blu-ray) to Sub (IDX/DVD)"
-            cb.Tooltip = "Works only with demuxed subtitles."
-            cb.Checked = p.ConvertSup2Sub
-            cb.SaveAction = Sub(value) p.ConvertSup2Sub = value
 
             tb = ui.AddTextBlock(subPage)
             tb.Label.Text = "Auto load subtitles:"
             tb.Label.Tooltip = "Subtitles loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + CrLf2 + String.Join(CrLf, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
             tb.Edit.Text = p.AutoSubtitles
             tb.Edit.SaveAction = Sub(value) p.AutoSubtitles = value
+
+            cb = ui.AddCheckBox(subPage)
+            cb.Text = "Demux"
+            cb.Tooltip = "Demuxes subtitles from the source file."
+            cb.Checked = p.DemuxSubtitles
+            cb.SaveAction = Sub(value) p.DemuxSubtitles = value
+
+            cb = ui.AddCheckBox(subPage)
+            cb.Text = "Convert Sup (PGS/Blu-ray) to Sub (IDX/DVD)"
+            cb.Tooltip = "Works only with demuxed subtitles."
+            cb.Checked = p.ConvertSup2Sub
+            cb.SaveAction = Sub(value) p.ConvertSup2Sub = value
 
             Dim pathPage = ui.CreateFlowPage("Paths")
 
@@ -4237,12 +4249,11 @@ Class MainForm
         ret.Add("Tools|Edit Menu...", "OpenMainMenuEditor")
         ret.Add("Tools|Settings...", "OpenSettingsDialog", "")
 
+        ret.Add("Help|Documentation", "ExecuteCommandLine", "https://stax76.gitbooks.io/staxrip-handbook/content/")
         ret.Add("Help|Support Forum|forum.doom9.org", "ExecuteCommandLine", "http://forum.doom9.org/showthread.php?t=172068&page=999999")
         If g.IsCulture("de") Then ret.Add("Help|Support Forum|forum.gleitz.info", "ExecuteCommandLine", "http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-%28Diskussion%29/page999999")
         ret.Add("Help|Support Forum|forum.videohelp.com", "ExecuteCommandLine", "http://forum.videohelp.com/threads/369913-StaxRip-x64-for-AviSynth-VapourSynth-x264-x265-GPU-encoding/page999999")
         ret.Add("Help|Website|Issue Tracker", "ExecuteCommandLine", "https://github.com/stax76/staxrip/issues")
-        ret.Add("Help|Website|Wiki", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki")
-        ret.Add("Help|Website|Guides", "ExecuteCommandLine", "https://github.com/stax76/staxrip/wiki/Guides")
         ret.Add("Help|Website|Release Build", "ExecuteCommandLine", "https://github.com/stax76/staxrip/releases")
         ret.Add("Help|Website|Test Build", "ExecuteCommandLine", "https://github.com/stax76/staxrip/blob/master/md/test-build.md")
         ret.Add("Help|Mail", "ExecuteCommandLine", "mailto:frank.skare.de@gmail.com?subject=StaxRip%20feedback")

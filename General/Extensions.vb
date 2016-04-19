@@ -387,7 +387,7 @@ Module MiscExtensions
     Function GetAttribute(Of T)(mi As MemberInfo) As T
         Dim attributes = mi.GetCustomAttributes(True)
 
-        If Not attributes.IsAnythingNothingOrEmpty Then
+        If Not attributes.NothingOrEmpty Then
             If attributes.Length = 1 Then
                 If TypeOf attributes(0) Is T Then
                     Return DirectCast(attributes(0), T)
@@ -433,7 +433,7 @@ Module MiscExtensions
     End Function
 
     <Extension()>
-    Function IsAnythingNothingOrEmpty(objects As IEnumerable(Of Object)) As Boolean
+    Function NothingOrEmpty(objects As IEnumerable(Of Object)) As Boolean
         If objects Is Nothing OrElse objects.Count = 0 Then Return True
 
         For Each i In objects
@@ -518,6 +518,11 @@ Module RegistryKeyExtensions
 End Module
 
 Module ControlExtension
+    <Extension()>
+    Sub SetFontStyle(instance As Control, style As FontStyle)
+        instance.Font = New Font(instance.Font.FontFamily, instance.Font.Size, style)
+    End Sub
+
     <Extension()>
     Sub AddClickAction(instance As Control, action As Action)
         AddHandler instance.Click, Sub() action()

@@ -176,8 +176,9 @@ Class MP4BoxDemuxer
         Dim subtitles As List(Of Subtitle)
 
         If Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
-            (MediaInfo.GetAudioCount(p.SourceFile) > 0 OrElse
-            MediaInfo.GetSubtitleCount(p.SourceFile) > 0) Then
+                (p.DemuxAudio OrElse p.DemuxSubtitles) AndAlso
+                (MediaInfo.GetAudioCount(p.SourceFile) > 0 OrElse
+                MediaInfo.GetSubtitleCount(p.SourceFile) > 0) Then
 
             ProcessForm.CloseProcessForm()
 
@@ -191,20 +192,15 @@ Class MP4BoxDemuxer
             End Using
         End If
 
-        If audioStreams Is Nothing Then
-            audioStreams = MediaInfo.GetAudioStreams(p.SourceFile)
-        End If
-
-        If subtitles Is Nothing Then
-            subtitles = MediaInfo.GetSubtitles(p.SourceFile)
-        End If
+        If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(p.SourceFile)
+        If subtitles Is Nothing Then subtitles = MediaInfo.GetSubtitles(p.SourceFile)
 
         For Each i In audioStreams
-            If i.Enabled Then Audio.DemuxMP4(p.SourceFile, i, Nothing)
+            If p.DemuxAudio AndAlso i.Enabled Then Audio.DemuxMP4(p.SourceFile, i, Nothing)
         Next
 
         For Each i In subtitles
-            If Not i.Enabled Then Continue For
+            If Not i.Enabled OrElse Not p.DemuxSubtitles Then Continue For
 
             Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " " + i.Filename + i.Extension
 
@@ -296,6 +292,7 @@ Class mkvDemuxer
     End Sub
 
     Sub DemuxMKVSubtitles(subtitles As List(Of Subtitle))
+        If Not p.DemuxSubtitles Then Exit Sub
         If subtitles.Where(Function(subtitle) subtitle.Enabled).Count = 0 Then Exit Sub
 
         Dim arguments = "tracks """ + p.SourceFile + """"
@@ -329,8 +326,9 @@ Class mkvDemuxer
         Dim subtitles As List(Of Subtitle)
 
         If Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
-            (MediaInfo.GetAudioCount(p.SourceFile) > 0 OrElse
-            MediaInfo.GetSubtitleCount(p.SourceFile) > 0) Then
+                (p.DemuxAudio OrElse p.DemuxSubtitles) AndAlso
+                (MediaInfo.GetAudioCount(p.SourceFile) > 0 OrElse
+                MediaInfo.GetSubtitleCount(p.SourceFile) > 0) Then
 
             ProcessForm.CloseProcessForm()
 
@@ -344,16 +342,11 @@ Class mkvDemuxer
             End Using
         End If
 
-        If audioStreams Is Nothing Then
-            audioStreams = MediaInfo.GetAudioStreams(p.SourceFile)
-        End If
-
-        If subtitles Is Nothing Then
-            subtitles = MediaInfo.GetSubtitles(p.SourceFile)
-        End If
+        If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(p.SourceFile)
+        If subtitles Is Nothing Then subtitles = MediaInfo.GetSubtitles(p.SourceFile)
 
         For Each i In audioStreams
-            If i.Enabled Then Audio.DemuxMKV(p.SourceFile, i, Nothing)
+            If p.DemuxAudio AndAlso i.Enabled Then Audio.DemuxMKV(p.SourceFile, i, Nothing)
         Next
 
         DemuxMKVSubtitles(subtitles)

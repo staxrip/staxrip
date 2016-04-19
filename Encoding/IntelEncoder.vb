@@ -152,7 +152,7 @@ Public Class IntelEncoder
         Property QPB As New NumParam With {.Switches = {"--cqp", "--vqp"}, .Text = "QP B:", .Value = 27, .DefaultValue = 27, .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText), .MinMaxStep = {0, 51, 1}}
         Property TFF As New BoolParam With {.Switch = "--tff", .Text = "Top Field First"}
         Property BFF As New BoolParam With {.Switch = "--bff", .Text = "Bottom Field First"}
-        Property Custom As New StringParam With {.Text = "Custom Switches:", .ArgsFunc = Function() Custom.Value}
+        Property Custom As New StringParam With {.Text = "Custom:", .ArgsFunc = Function() Custom.Value}
 
         Private ItemsValue As List(Of CommandLineParam)
 
@@ -167,7 +167,7 @@ Public Class IntelEncoder
                     Add("Slice Decision",
                         New OptionParam With {.Switch = "--la-quality", .Text = "LA Quality:", .Options = {"auto", "fast", "medium", "slow"}},
                         New NumParam With {.Switch = "--slices", .Text = "Slices:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--la-depth", .Text = "Lookahead Depth:", .Value = 30, .VisibleFunc = Function() Mode.ValueText.EqualsAny("la", "la-hrd", "la-icq"), .MinMaxStep = {0, 100, 1}},
+                        New NumParam With {.Switch = "--la-depth", .VisibleFunc = Function() Mode.ValueText.EqualsAny("la", "la-hrd", "la-icq"), .Text = "Lookahead Depth:", .Value = 30, .MinMaxStep = {0, 100, 1}},
                         New NumParam With {.Switch = "--la-window-size", .Text = "LA Window Size:"},
                         New NumParam With {.Switch = "--bframes", .Text = "B Frames:", .InitValue = 3, .MinMaxStep = {0, 16, 1}},
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames:", .MinMaxStep = {0, 16, 1}},
@@ -175,7 +175,7 @@ Public Class IntelEncoder
                         New BoolParam With {.Switch = "--b-pyramid", .Text = "B Pyramid"},
                         New BoolParam With {.Switch = "--b-adapt", .Text = "Adaptive B Frame Insert"},
                         New BoolParam With {.Switch = "--direct-bias-adjust", .Text = "Direct Bias Adjust"},
-                        New BoolParam With {.Switch = "--scenechange", .VisibleFunc = Function() Decoder.ValueText = "avs", .Text = "Scenechange"},
+                        New BoolParam With {.Switch = "--scenechange", .Text = "Scenechange"},
                         New BoolParam With {.Switch = "--strict-gop", .Text = "Strict Gop"},
                         New BoolParam With {.Switch = "--open-gop", .Text = "Open Gop"})
                     Add("Rate Control",
@@ -183,7 +183,7 @@ Public Class IntelEncoder
                         New NumParam With {.Switch = "--qpmax", .Text = "Maximum QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qpmin", .Text = "Minimum QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--avbr-unitsize", .Text = "AVBR Unitsize:", .InitValue = 90},
-                        New BoolParam With {.Switch = "--mbbrc", .Text = "Per macro block rate control", .VisibleFunc = Function() Not Mode.ValueText.EqualsAny("cqp", "la", "la-hrd", "la-icq", "vqp", "icq")},
+                        New BoolParam With {.Switch = "--mbbrc", .Text = "Per macro block rate control"},
                         New BoolParam With {.Switch = "--extbrc", .Text = "Extended Rate Control"})
                     Add("Motion Search",
                         New OptionParam With {.Switch = "--mv-scaling", .Text = "MV Scaling:", .IntegerValue = True, .Options = {"Default", "MV cost to be 0", "MV cost 1/2 of default", "MV cost 1/4 of default", "MV cost 1/8 of default"}},

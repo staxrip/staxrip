@@ -636,7 +636,7 @@ table {
     End Function
 
     Sub WriteTips(ParamArray tips As StringPairList())
-        If tips.IsAnythingNothingOrEmpty Then Exit Sub
+        If tips.NothingOrEmpty Then Exit Sub
 
         Dim l As New StringPairList
 

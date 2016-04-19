@@ -85,6 +85,8 @@ Public Class Project
     Public SourceBitrate As Integer
     Public ScanType As String
     Public ScanOrder As String
+    Public DemuxAudio As Boolean = True
+    Public DemuxSubtitles As Boolean = True
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

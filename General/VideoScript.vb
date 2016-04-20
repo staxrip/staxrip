@@ -252,9 +252,9 @@ Public Class VideoScript
                                         code += load
                                     End If
 
-                                    If Not i.Dependencies.ContainsNothingOrEmpty Then
+                                    If Not i.Dependencies.NothingOrEmpty Then
                                         For Each i3 In i.Dependencies
-                                            For Each i4 In plugins.Where(Function(arg) Not arg.AviSynthFilterNames.ContainsNothingOrEmpty)
+                                            For Each i4 In plugins.Where(Function(arg) Not arg.AviSynthFilterNames.NothingOrEmpty)
                                                 If i3 = i4.Name Then
                                                     load = "LoadPlugin(""" + i4.GetPath + """)" + CrLf
 

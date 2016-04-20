@@ -345,7 +345,7 @@ Class AppsForm
                 Using d As New OpenFileDialog
                     d.SetInitDir(s.Storage.GetString(ActivePackage.Name + "custom path"))
 
-                    If Not ActivePackage.Filenames.ContainsNothingOrEmpty Then
+                    If Not ActivePackage.Filenames.NothingOrEmpty Then
                         d.Filter = "|" + ActivePackage.Filenames.Join(";") + "|All Files|*.*"
                     Else
                         d.Filter = "|" + ActivePackage.Filename + "|All Files|*.*"

@@ -71,6 +71,20 @@ Namespace CommandLine
         Overridable Function GetArgs() As String
         End Function
 
+        Function GetSwitches() As HashSet(Of String)
+            Dim ret As New HashSet(Of String)
+
+            If Switch <> "" Then ret.Add(Switch)
+
+            If Not Switches.NothingOrEmpty Then
+                For Each i In Switches
+                    ret.Add(i)
+                Next
+            End If
+
+            Return ret
+        End Function
+
         Property VisibleValue As Boolean = True
 
         Property Visible As Boolean

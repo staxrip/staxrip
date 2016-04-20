@@ -83,7 +83,7 @@ Partial Class CommandLineForm
         Me.cbGoTo.Location = New System.Drawing.Point(11, 633)
         Me.cbGoTo.Margin = New System.Windows.Forms.Padding(4)
         Me.cbGoTo.Name = "cbGoTo"
-        Me.cbGoTo.Size = New System.Drawing.Size(193, 33)
+        Me.cbGoTo.Size = New System.Drawing.Size(240, 33)
         Me.cbGoTo.TabIndex = 8
         '
         'bnMenu

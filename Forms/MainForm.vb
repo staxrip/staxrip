@@ -188,13 +188,14 @@ Class MainForm
         '
         'lTip
         '
-        Me.lTip.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.lTip.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lTip.Cursor = System.Windows.Forms.Cursors.Hand
         Me.lTip.ForeColor = System.Drawing.Color.Blue
         Me.lTip.Location = New System.Drawing.Point(3, 25)
         Me.lTip.Name = "lTip"
-        Me.lTip.Size = New System.Drawing.Size(900, 64)
+        Me.lTip.Size = New System.Drawing.Size(900, 60)
         Me.lTip.TabIndex = 40
         Me.lTip.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -671,10 +672,13 @@ Class MainForm
         Me.AviSynthListView.FullRowSelect = True
         Me.AviSynthListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.AviSynthListView.HideSelection = False
+        Me.AviSynthListView.ItemCheckProperty = Nothing
         Me.AviSynthListView.Location = New System.Drawing.Point(8, 26)
         Me.AviSynthListView.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.AviSynthListView.MultiSelect = False
+        Me.AviSynthListView.MultiSelectionButtons = Nothing
         Me.AviSynthListView.Name = "AviSynthListView"
+        Me.AviSynthListView.SingleSelectionButtons = Nothing
         Me.AviSynthListView.Size = New System.Drawing.Size(304, 180)
         Me.AviSynthListView.TabIndex = 0
         Me.AviSynthListView.UseCompatibleStateImageBehavior = False
@@ -777,8 +781,6 @@ Class MainForm
     Private SourceFileMenu As ContextMenuStripEx
     Private Audio0FileMenu As ContextMenuStripEx
     Private Audio1FileMenu As ContextMenuStripEx
-    Private ResetAssistantFont As Boolean
-
     Private BlockAviSynthItemCheck As Boolean
     Private CanChangeSize As Boolean = True
     Private CanChangeBitrate As Boolean = True
@@ -1369,13 +1371,13 @@ Class MainForm
 
     Sub FormMain_DragEnter(sender As Object, e As DragEventArgs) Handles MyBase.DragEnter
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
-        If Not files.ContainsNothingOrEmpty Then e.Effect = DragDropEffects.Copy
+        If Not files.NothingOrEmpty Then e.Effect = DragDropEffects.Copy
     End Sub
 
     Sub FormMain_DragDrop(sender As Object, e As DragEventArgs) Handles MyBase.DragDrop
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
-        If Not files.ContainsNothingOrEmpty Then
+        If Not files.NothingOrEmpty Then
             Activate()
             BeginInvoke(Sub() OpenAnyFile(files.ToList))
         End If
@@ -2216,7 +2218,7 @@ Class MainForm
         If Not p.SkippedAssistantTips.Contains(CurrentAssistantTipKey) Then
             If message <> "" Then
                 If message.Length > 130 Then
-                    lTip.Font = New Font(lTip.Font.FontFamily, 8 * s.UIScaleFactor)
+                    lTip.Font = New Font(lTip.Font.FontFamily, 7 * s.UIScaleFactor)
                 Else
                     lTip.Font = New Font(lTip.Font.FontFamily, 9 * s.UIScaleFactor)
                 End If
@@ -2245,9 +2247,7 @@ Class MainForm
     End Property
 
     Function Assistant() As Boolean
-        If SkipAssistant Then
-            Return False
-        End If
+        If SkipAssistant Then Return False
 
         Dim isCropped = p.Script.IsFilterActive("Crop")
         Dim isResized = p.Script.IsFilterActive("Resize")
@@ -2271,11 +2271,6 @@ Class MainForm
         g.Highlight(False, llMuxer)
         g.Highlight(False, lgbEncoder.ll)
         g.Highlight(False, lTarget2)
-
-        If ResetAssistantFont Then
-            lTip.Font = New Font(Font.FontFamily, 9)
-            ResetAssistantFont = False
-        End If
 
         Dim cropw = p.SourceWidth
         Dim croph = p.SourceHeight
@@ -2475,8 +2470,6 @@ Class MainForm
             For Each i In audioTracks
                 If Math.Abs(i.Delay) > 2000 Then
                     If ProcessTip("The audio delay is unusual high indicating a sync problem, MakeMKV and ProjectX can prevent this problem.") Then
-                        lTip.Font = New Font(Font.FontFamily, 8)
-                        ResetAssistantFont = True
                         g.Highlight(True, tbAudioFile0)
                         gbAssistant.Text = "Unusual high audio delay"
                         Return False
@@ -2717,13 +2710,8 @@ Class MainForm
         End If
 
         gbAssistant.Text = "Add Job"
-
-        If lTip.Font.Size <> 9 Then
-            lTip.Font = New Font(lTip.Font.FontFamily, 9)
-        End If
-
+        If lTip.Font.Size <> 9 Then lTip.Font = New Font(lTip.Font.FontFamily, 9)
         lTip.Text = "Click on the next button to add a job."
-
         AssistantPassed = True
     End Function
 
@@ -2842,7 +2830,7 @@ Class MainForm
                 If Not srcScript?.Contains("(") OrElse i.SourceFilter = "" OrElse
                     srcScript.Contains(i.SourceFilter.ToLower + "(") Then
 
-                    Dim inputFormats = i.InputFormats.ContainsNothingOrEmpty OrElse
+                    Dim inputFormats = i.InputFormats.NothingOrEmpty OrElse
                         i.InputFormats.Contains(getFormat())
 
                     If inputFormats Then

@@ -9,7 +9,8 @@ http://1drv.ms/1OqPDOe
 - added setting to prevent the StaxRip window to become the active foreground window if certain applications are currently in the foreground
 - added new option to disable audio and subtitle demuxing
 - added subtitle formats column to MediaInfo Folder View
-- x265 switches added --analysis-mode --analysis-file --asm --fps --frames --seek --input-depth --input-csp
+- added all missing x265 switches
+- added hardware decoding methods to x265 'Other' tab, this will bypass AviSynth though
 
 ### Fixed Bugs
 

@@ -220,7 +220,7 @@ Class MediaInfoForm
     Private Sub MediaInfoForm_DragDrop(sender As Object, e As DragEventArgs) Handles Me.DragDrop
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
-        If Not files.ContainsNothingOrEmpty Then
+        If Not files.NothingOrEmpty Then
             SourcePath = files(0)
             Text = "MediaInfo - " + SourcePath
             Parse()
@@ -229,7 +229,7 @@ Class MediaInfoForm
 
     Private Sub MediaInfoForm_DragEnter(sender As Object, e As DragEventArgs) Handles Me.DragEnter
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
-        If Not files.ContainsNothingOrEmpty Then e.Effect = DragDropEffects.Copy
+        If Not files.NothingOrEmpty Then e.Effect = DragDropEffects.Copy
     End Sub
 
     Class Item

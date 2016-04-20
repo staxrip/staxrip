@@ -244,7 +244,7 @@ Namespace UI
         Sub RestorePosition(f As Form)
             Dim v = GetText(f)
 
-            If Not s.WindowPositionsCenterScreen.ContainsNothingOrEmpty AndAlso
+            If Not s.WindowPositionsCenterScreen.NothingOrEmpty AndAlso
                 Not TypeOf f Is InputBoxForm Then
 
                 For Each i In s.WindowPositionsCenterScreen
@@ -258,7 +258,7 @@ Namespace UI
                 Next
             End If
 
-            If Not s.WindowPositionsRemembered.ContainsNothingOrEmpty AndAlso
+            If Not s.WindowPositionsRemembered.NothingOrEmpty AndAlso
                 Not TypeOf f Is InputBoxForm Then
 
                 For Each i In s.WindowPositionsRemembered

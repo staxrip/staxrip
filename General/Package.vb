@@ -413,13 +413,13 @@ Public Class Package
             If TypeOf Me Is PluginPackage Then
                 Dim plugin = DirectCast(Me, PluginPackage)
 
-                If Not plugin.AviSynthFilterNames.ContainsNothingOrEmpty AndAlso
-                    Not plugin.VapourSynthFilterNames.ContainsNothingOrEmpty Then
+                If Not plugin.AviSynthFilterNames.NothingOrEmpty AndAlso
+                    Not plugin.VapourSynthFilterNames.NothingOrEmpty Then
 
                     Return Name + " avs+vs"
-                ElseIf Not plugin.AviSynthFilterNames.ContainsNothingOrEmpty Then
+                ElseIf Not plugin.AviSynthFilterNames.NothingOrEmpty Then
                     Return Name + " avs"
-                ElseIf Not plugin.VapourSynthFilterNames.ContainsNothingOrEmpty Then
+                ElseIf Not plugin.VapourSynthFilterNames.NothingOrEmpty Then
                     Return Name + " vs"
                 End If
             End If
@@ -434,7 +434,7 @@ Public Class Package
 
     Overridable Property Filename As String
         Get
-            If FilenameValue = "" AndAlso Not Filenames.ContainsNothingOrEmpty Then
+            If FilenameValue = "" AndAlso Not Filenames.NothingOrEmpty Then
                 FilenameValue = Filenames(0)
             End If
 
@@ -839,30 +839,6 @@ Class BeSweetPackage
         Description = "Alternative audio converter, for most formats StaxRip uses now eac3to by default."
         HelpDir = "help"
     End Sub
-
-    Overrides Function GetStatus() As String
-        For Each i In {p.Audio0, p.Audio1}
-            If TypeOf i Is BatchAudioProfile Then
-                Dim profile = DirectCast(i, BatchAudioProfile)
-
-                If profile.CommandLines.Contains("-lame(") Then
-                    If Not CheckLib(GetDir() + "lame_enc.dll", New DateTime(2005, 12, 22)) Then
-                        Return "There is a problem with the lame library."
-                    End If
-                End If
-
-                If profile.CommandLines.Contains("-bsn(") Then
-                    If Not CheckLib(GetDir() + "bsn.dll", New DateTime(2006, 5, 22)) Then
-                        Return "There is a problem with the bsn library."
-                    End If
-                End If
-            End If
-        Next
-    End Function
-
-    Private Function CheckLib(filename As String, dt As DateTime) As Boolean
-        Return File.Exists(filename) AndAlso File.GetLastWriteTime(filename) > dt.AddDays(-2)
-    End Function
 End Class
 
 Class VSRipPackage

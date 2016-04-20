@@ -744,7 +744,7 @@ Class eac3toForm
 
                     For Each iProfile In s.eac3toProfiles
                         Dim searchWords = iProfile.Match.SplitNoEmptyAndWhiteSpace(" ")
-                        If searchWords.ContainsNothingOrEmpty Then Continue For
+                        If searchWords.NothingOrEmpty Then Continue For
 
                         If ms.Text.ContainsAll(searchWords) Then
                             ms.OutputType = iProfile.Output

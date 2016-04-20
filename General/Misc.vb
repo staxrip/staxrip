@@ -2814,8 +2814,9 @@ Class GlobalCommands
         If qsMissing.Count > 0 Then MsgInfo("Removed from QSVEncC:", qsMissing.Join(" "))
         If qsUnknown.Count > 0 Then MsgInfo("QSVEncC Todo", qsUnknown.Join(" "))
 
-        Dim x265Except = "--cip --crop-rect".Split((" " + CrLf).ToCharArray())
-        Dim x265RemoveExcept = "".Split((" " + CrLf).ToCharArray())
+        Dim x265Except = "--crop-rect --display-window --fast-cbf --frame-skip --help
+--input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version".Split((" " + CrLf).ToCharArray())
+        Dim x265RemoveExcept = "--crop --pb-factor --ip-factor --level --log".Split((" " + CrLf).ToCharArray())
 
         Dim x265HelpSwitches = Regex.Matches(
             File.ReadAllText("D:\Projekte\GitHub\staxrip\x265\param.cpp"),

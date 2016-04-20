@@ -63,7 +63,7 @@ Module StringExtensions
 
     <Extension()>
     Function EqualsAny(instance As String, ParamArray values As String()) As Boolean
-        If instance = "" OrElse values.ContainsNothingOrEmpty Then Return False
+        If instance = "" OrElse values.NothingOrEmpty Then Return False
         Return values.Contains(instance)
     End Function
 
@@ -424,7 +424,7 @@ Module MiscExtensions
     End Function
 
     <Extension()>
-    Function ContainsNothingOrEmpty(strings As IEnumerable(Of String)) As Boolean
+    Function NothingOrEmpty(strings As IEnumerable(Of String)) As Boolean
         If strings Is Nothing OrElse strings.Count = 0 Then Return True
 
         For Each i In strings

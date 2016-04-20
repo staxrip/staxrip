@@ -387,14 +387,14 @@ Public MustInherit Class BasicVideoEncoder
                 If TypeOf i Is BoolParam Then
                     Dim boolParam = DirectCast(i, BoolParam)
 
-                    If a(x) = boolParam.Switch?.ToLower Then
+                    If boolParam.GetSwitches.Contains(a(x)) Then
                         boolParam.Value = True
                         Exit For
                     End If
                 ElseIf TypeOf i Is NumParam Then
                     Dim numParam = DirectCast(i, NumParam)
 
-                    If a(x) = numParam.Switch?.ToLower AndAlso
+                    If numParam.GetSwitches.Contains(a(x)) AndAlso
                         a.Length - 1 > x AndAlso a(x + 1).IsSingle Then
 
                         numParam.Value = a(x + 1).ToSingle
@@ -403,7 +403,7 @@ Public MustInherit Class BasicVideoEncoder
                 ElseIf TypeOf i Is OptionParam Then
                     Dim optionParam = DirectCast(i, OptionParam)
 
-                    If a(x) = optionParam.Switch?.ToLower AndAlso a.Length - 1 > x Then
+                    If optionParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
                         Dim exitFor As Boolean
 
                         For xOpt = 0 To optionParam.Options.Length - 1
@@ -419,7 +419,7 @@ Public MustInherit Class BasicVideoEncoder
                 ElseIf TypeOf i Is StringParam Then
                     Dim stringParam = DirectCast(i, StringParam)
 
-                    If a(x) = stringParam.Switch?.ToLower AndAlso a.Length - 1 > x Then
+                    If stringParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
                         stringParam.Value = a(x + 1).Trim(""""c)
                         Exit For
                     End If

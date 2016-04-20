@@ -293,6 +293,10 @@ Class MediaInfo
         Return GetInfo(path, MediaInfoStreamKind.Video, parameter)
     End Function
 
+    Function GetGeneral(parameter As String) As String
+        Return GetInfo(MediaInfoStreamKind.General, parameter)
+    End Function
+
     Shared Function GetGeneral(path As String, parameter As String) As String
         Return GetInfo(path, MediaInfoStreamKind.General, parameter)
     End Function

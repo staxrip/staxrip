@@ -4325,7 +4325,7 @@ Class MainForm
                 If Filepath.GetExtFull(d.FileName) = ".idx" Then
                     filter.Script = "VobSub(""" + d.FileName + """)"
                 Else
-                    filter.Script = "TextSub(""" + d.FileName + """)"
+                    filter.Script = "TextSubMod(""" + d.FileName + """)"
                 End If
 
                 Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")

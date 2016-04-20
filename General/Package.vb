@@ -32,7 +32,6 @@ Class Packs
     Shared Property SangNom2 As New SangNom2Package
     Shared Property TDeint As New TDeintPackage
     Shared Property UnDot As New UnDotPackage
-    Shared Property VSFilter As New VSFilterPackage
     Shared Property VSRip As New VSRipPackage
     Shared Property x264 As New x264Package
     Shared Property x265 As New x265Package
@@ -131,7 +130,6 @@ Class Packs
         Packages.Add(SangNom2)
         Packages.Add(TDeint)
         Packages.Add(UnDot)
-        Packages.Add(VSFilter)
         Packages.Add(VSRip)
         Packages.Add(x264)
         Packages.Add(x265)
@@ -266,6 +264,13 @@ Class Packs
             .WebURL = "http://avisynth.nl/index.php/AWarpSharp2",
             .AviSynthFiltersFunc = Function() {
                 New VideoFilter("Misc", "aWarpSharp2", "aWarpSharp2(thresh = 128, blur = 2, type = 0, depth = 16, chroma = 4)")}})
+
+        Packages.Add(New PluginPackage With {
+            .Name = "VSFilterMod",
+            .Filename = "VSFilterMod64.dll",
+            .Description = "AviSynth subtitle plugin with support for vobsub srt and ass.",
+            .WebURL = "http://avisynth.org.ru/docs/english/externalfilters/vsfilter.htm",
+            .AviSynthFilterNames = {"VobSub", "TextSubMod"}})
 
         Packages.Add(New PluginPackage With {
             .Name = "TComb",
@@ -620,18 +625,6 @@ Public Class Package
     Function CompareTo(other As Package) As Integer Implements System.IComparable(Of Package).CompareTo
         Return Name.CompareTo(other.Name)
     End Function
-End Class
-
-Class VSFilterPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "VSFilter"
-        Filename = "VSFilter.dll"
-        Description = "AviSynth subtitle plugin. The format of the subtitles can be *.sub, *.srt, *.ssa, *.ass, etc. (ssa = Sub Station Alpha)."
-        WebURL = "http://avisynth.org.ru/docs/english/externalfilters/vsfilter.htm"
-        AviSynthFilterNames = {"VobSub", "TextSub"}
-    End Sub
 End Class
 
 Class UnDotPackage

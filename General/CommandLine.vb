@@ -378,7 +378,7 @@ Namespace CommandLine
 
         Property DefaultValue As String
         Property TextEdit As TextEdit
-        Property UseQuotes As Boolean
+        Property Quotes As Boolean
         Property InitAction As Action(Of SimpleUI.TextBlock)
 
         Public Overloads Overrides Sub Init(store As PrimitiveStore, params As CommandLineParams)
@@ -417,13 +417,13 @@ Namespace CommandLine
             Else
                 If Value <> DefaultValue Then
                     If Switch = "" Then
-                        If UseQuotes Then
+                        If Quotes Then
                             Return """" + Value + """"
                         Else
                             Return Value
                         End If
                     Else
-                        If UseQuotes Then
+                        If Quotes Then
                             Return Switch + " """ + Value + """"
                         Else
                             Return Switch + " " + Value

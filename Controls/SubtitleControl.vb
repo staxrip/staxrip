@@ -386,7 +386,7 @@ Class SubtitleControl
 
                             avs.InsertAfter(insertCat, New VideoFilter("VobSub(""" + fp + """)"))
                         Else
-                            avs.InsertAfter(insertCat, New VideoFilter("TextSub(""" + fp + """)"))
+                            avs.InsertAfter(insertCat, New VideoFilter("TextSubMod(""" + fp + """)"))
                         End If
                     End If
 

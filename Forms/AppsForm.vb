@@ -386,13 +386,13 @@ Class AppsForm
         tv.Nodes.Clear()
 
         For Each i In Packs.Packages
-            Dim search = SearchTextBox.Text.ToLower
+            Dim plugin = TryCast(i, PluginPackage)
 
-            If i.Name.ToLower.Contains(search) OrElse i.Description?.ToLower.Contains(search) OrElse
-                i.Version?.ToLower.Contains(search) Then
+            Dim searchString = i.Name + i.Description + i.Version +
+                plugin?.VapourSynthFilterNames.Join(" ") +
+                plugin?.AviSynthFilterNames.Join(" ")
 
-                Dim plugin = TryCast(i, PluginPackage)
-
+            If searchString?.ToLower.Contains(SearchTextBox.Text?.ToLower) Then
                 If plugin Is Nothing Then
                     If i Is Packs.Java OrElse
                         i Is Packs.Python OrElse

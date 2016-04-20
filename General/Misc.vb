@@ -2791,17 +2791,17 @@ Class GlobalCommands
         If nvunknown.Count > 0 Then MsgInfo("NVEncC Todo", nvunknown.Join(" "))
 
         Dim qsExcept = "--help --version --check-device
---check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
---check-filters --device --input --output --raw --avs --vpy --vpy-mt
---audio-source --audio-file --seek --format --audio-copy --audio-copy --audio-codec
---audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
---audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
---avsync --mux-option --input-res --fps --dar --avqsv-analyze --benchmark --bench-quality
---log --log-framelist --audio-thread --avi --avqsv --input-file --audio-ignore-decode-error
---audio-ignore-notrack-error --nv12 --output-file --check-features-html --perf-monitor
---perf-monitor-plot --perf-monitor-interval --python --qvbr-quality --sharpness --vpp-delogo
---vpp-delogo-select --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb
---vpp-delogo-cr --vpp-half-turn".Split((" " + CrLf).ToCharArray())
+        --check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
+        --check-filters --device --input --output --raw --avs --vpy --vpy-mt
+        --audio-source --audio-file --seek --format --audio-copy --audio-copy --audio-codec
+        --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
+        --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
+        --avsync --mux-option --input-res --fps --dar --avqsv-analyze --benchmark --bench-quality
+        --log --log-framelist --audio-thread --avi --avqsv --input-file --audio-ignore-decode-error
+        --audio-ignore-notrack-error --nv12 --output-file --check-features-html --perf-monitor
+        --perf-monitor-plot --perf-monitor-interval --python --qvbr-quality --sharpness --vpp-delogo
+        --vpp-delogo-select --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb
+        --vpp-delogo-cr --vpp-half-turn".Split((" " + CrLf).ToCharArray())
         Dim qsHelp = File.ReadAllText(".\Apps\QSVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim qsHelpSwitches = Regex.Matches(qsHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim qsCode = File.ReadAllText("D:\Projekte\GitHub\staxrip\Encoding\IntelEncoder.vb").Replace("--no-", "--")
@@ -2813,6 +2813,36 @@ Class GlobalCommands
         If qsNoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary QSVEncC Exception:", qsNoNeedToExcept.Join(" "))
         If qsMissing.Count > 0 Then MsgInfo("Removed from QSVEncC:", qsMissing.Join(" "))
         If qsUnknown.Count > 0 Then MsgInfo("QSVEncC Todo", qsUnknown.Join(" "))
+
+        Dim x265Except = "--cip --crop-rect".Split((" " + CrLf).ToCharArray())
+        Dim x265RemoveExcept = "".Split((" " + CrLf).ToCharArray())
+
+        Dim x265HelpSwitches = Regex.Matches(
+            File.ReadAllText("D:\Projekte\GitHub\staxrip\x265\param.cpp"),
+            "OPT2?\(""(.+?)""").
+            OfType(Of Match)().
+            Select(Function(x) "--" + x.Groups(1).Value).
+            Union(Regex.Matches(
+            File.ReadAllText("D:\Projekte\GitHub\staxrip\x265\x265cli.h"),
+            "{ *""(.+?)"" *, *\w+argument *,").
+            OfType(Of Match)().
+            Select(Function(x) "--" + x.Groups(1).Value)).
+            Where(Function(arg) Not arg.StartsWith("--no-"))
+
+        Dim x265Code = File.ReadAllText("D:\Projekte\GitHub\staxrip\Encoding\x265.vb").Replace("--no-", "--")
+        Dim x265Present As New HashSet(Of String)
+
+        For Each switch In Regex.Matches(x265Code, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
+            x265Present.Add(switch)
+        Next
+
+        Dim x265Missing = x265Present.Where(Function(arg) Not x265HelpSwitches.Contains(arg) AndAlso Not x265RemoveExcept.Contains(arg))
+        Dim x265Unknown = x265HelpSwitches.Where(Function(x) Not x265Present.Contains(x) AndAlso Not x265Except.Contains(x)).ToList()
+        x265Unknown.Sort()
+        Dim x265NoNeedToExcept = x265Except.Where(Function(arg) x265Present.Contains(arg))
+        If x265NoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary x265 Exception:", x265NoNeedToExcept.Join(" "))
+        If x265Missing.Count > 0 Then MsgInfo("Removed from x265:", x265Missing.Join(" "))
+        If x265Unknown.Count > 0 Then MsgInfo("x265 Todo", x265Unknown.Join(" "))
 
         For Each i In Packs.Packages
             If i.GetPath = "" Then Continue For
@@ -3560,11 +3590,11 @@ Public Class Subtitle
                 If i.Size = 0 Then
                     Select Case i.TypeName
                         Case "SRT"
-                            i.Size = CInt(0.5 * p.TargetSeconds) * 1024
+                            i.Size = 10L * p.TargetSeconds
                         Case "VobSub"
-                            i.Size = CInt(50 * p.TargetSeconds) * 1024
+                            i.Size = 1250L * p.TargetSeconds
                         Case "PGS"
-                            i.Size = CInt(200 * p.TargetSeconds) * 1024
+                            i.Size = 5000L * p.TargetSeconds
                     End Select
                 End If
 

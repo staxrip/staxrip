@@ -533,7 +533,7 @@ Public Class x265Params
     Property Pools As New StringParam With {
         .Switch = "--pools",
         .Text = "Pools:",
-        .UseQuotes = True}
+        .Quotes = True}
 
     Property WPP As New BoolParam With {
         .Switch = "--wpp",
@@ -552,10 +552,6 @@ Public Class x265Params
         .NoSwitch = "--no-pme",
         .Text = "Parallel Motion Estimation"}
 
-    Property Dither As New BoolParam With {
-        .Switch = "--dither",
-        .Text = "Enable high quality downscaling"}
-
     Property minLuma As New NumParam With {
         .Switch = "--min-luma",
         .Text = "Minimum Luma:"}
@@ -563,12 +559,6 @@ Public Class x265Params
     Property maxLuma As New NumParam With {
         .Switch = "--max-luma",
         .Text = "Maximum Luma:"}
-
-    Property Interlace As New OptionParam With {
-        .Switch = "--interlace",
-        .Text = "Interlace:",
-        .Options = {"Progressive", "Top Field First", "Bottom Field First"},
-        .Values = {"", "tff", "bff"}}
 
     Property Profile As New OptionParam With {
         .Switch = "--profile",
@@ -809,19 +799,32 @@ Public Class x265Params
                 ItemsValue = New List(Of CommandLineParam)
 
                 Add("Basic", Quant, Preset, Tune, Profile, OutputDepth, Level, Mode)
-                Add("Analysis 1", RD, MinCuSize, MaxCuSize, MaxTuSize, LimitRefs, TUintra, TUinter, rdoqLevel)
+                Add("Analysis 1", RD,
+                    New StringParam With {.Switch = "--analysis-file", .Text = "Analysis File:", .Quotes = True},
+                    New OptionParam With {.Switch = "--analysis-mode", .Text = "Analysis Mode:", .Options = {"off", "save", "load"}},
+                MinCuSize, MaxCuSize, MaxTuSize, LimitRefs, TUintra, TUinter, rdoqLevel)
                 Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra, CUlossless, Tskip, TskipFast, LimitModes, RdRefine)
                 Add("Rate Control 1", AQmode, qgSize, AQStrength, QComp, CBQPoffs, QBlur, Cplxblur, CUtree, Lossless, StrictCBR, rcGrain)
                 Add("Rate Control 2", NRintra, NRinter, CRFmin, CRFmax, VBVbufsize, VBVmaxrate, VBVinit, qpstep, IPRatio, PBRatio)
                 Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP)
                 Add("Slice Decision", BAdapt, BFrames, BFrameBias, RCLookahead, LookaheadSlices, Scenecut, Ref, MinKeyint, Keyint, Bpyramid, OpenGop, IntraRefresh)
                 Add("Spatial/Intra", StrongIntraSmoothing, ConstrainedIntra, RDpenalty)
-                Add("Performance", Pools, FrameThreads, WPP, Pmode, PME)
+                Add("Performance", Pools, FrameThreads, WPP, Pmode, PME,
+                    New BoolParam With {.Switch = "--asm", .NoSwitch = "--no-asm", .Text = "ASM", .InitValue = True})
                 Add("Statistic", LogLevel, csvloglevel, CSV, SSIM, PSNR)
                 Add("VUI", Videoformat, Colorprim, Colormatrix, Transfer, minLuma, maxLuma, MaxCLL, MaxFALL)
-                Add("Bitstream", Hash, RepeatHeaders, Info, HRD, AUD)
-                Add("Other 1", Interlace, Deblock, DeblockA, DeblockB, PsyRD, PsyRDOQ, CompCheckQuant)
-                Add("Other 2", SAO, HighTier, SAOnonDeblock, Dither, SlowFirstpass, SignHide, AllowNonConformance)
+                Add("Bitstream", Hash, RepeatHeaders, Info, HRD, AUD,
+                    New BoolParam With {.Switch = "--annexb", .Text = "Annex B"})
+                Add("Input/Output",
+                    New OptionParam With {.Switch = "--input-depth", .Text = "Input Depth:", .Options = {"Automatic", "8", "10", "12", "14", "16"}},
+                    New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP:", .Options = {"Automatic", "i400", "i420", "i422", "i444", "nv12", "nv16"}},
+                    New OptionParam With {.Switch = "--interlace", .Text = "Interlace:", .Options = {"Progressive", "Top Field First", "Bottom Field First"}, .Values = {"", "tff", "bff"}},
+                    New OptionParam With {.Switch = "--fps", .Text = "FPS:", .Options = {"Automatic", "24", "24000/1001", "25", "30000/1001", "50", "60000/1001"}},
+                    New NumParam With {.Switch = "--frames", .Text = "Frames:"},
+                    New NumParam With {.Switch = "--seek", .Text = "Seek:"},
+                    New BoolParam With {.Switch = "--dither", .Text = "Dither (High Quality Downscaling)"})
+                Add("Other 1", Deblock, DeblockA, DeblockB, PsyRD, PsyRDOQ, CompCheckQuant)
+                Add("Other 2", SAO, HighTier, SAOnonDeblock, SlowFirstpass, SignHide, AllowNonConformance)
                 Add("Custom", Custom)
 
                 For Each i In ItemsValue

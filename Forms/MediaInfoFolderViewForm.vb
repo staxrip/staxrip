@@ -70,8 +70,8 @@ Class MediaInfoFolderViewForm
         AddHandler lv.MouseDoubleClick, Sub() ShowMediaInfo()
 
         For Each i In {"Filename", "Type", "Codec", "Ratio", "Dimension", "Bitrate",
-                               "Duration", "Filesize", "Framerate", "Audiocodec", "Folder",
-                               "Scan Type", "Interlacement", "Colorimetry", "Profile"}
+                       "Duration", "Filesize", "Framerate", "Audiocodec", "Subtitle Format",
+                       "Folder", "Scan Type", "Interlacement", "Colorimetry", "Profile"}
 
             lv.Columns.Add(i)
         Next
@@ -173,6 +173,7 @@ Class MediaInfoFolderViewForm
                 item.SubItems.Add(GetSubItem(mi.GetInfo(MediaInfoStreamKind.General, "FileSize/String"), CLng(mi.GetInfo(MediaInfoStreamKind.General, "FileSize"))))
                 item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "FrameRate/String"), mi.GetInfo(kind, "FrameRate").ToSingle))
                 item.SubItems.Add(GetSubItem(audioCodecs))
+                item.SubItems.Add(GetSubItem(mi.GetGeneral("Text_Format_List")))
                 item.SubItems.Add(Filepath.GetDir(fp).TrimEnd("\"c))
                 item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "ScanType")))
                 item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "Interlacement")))

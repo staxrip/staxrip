@@ -182,11 +182,11 @@ Class MacrosForm
             macros.Add(i.Name, i.Description)
         Next
 
-        For Each i In Packs.Packages
+        For Each i In Package.Items.Values
             macros.Add("%app:" + i.Name + "%", "")
         Next
 
-        For Each i In Packs.Packages
+        For Each i In Package.Items.Values
             macros.Add("%app_dir:" + i.Name + "%", "")
         Next
 

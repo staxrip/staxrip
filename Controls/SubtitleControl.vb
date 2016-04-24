@@ -355,14 +355,14 @@ Class SubtitleControl
                 FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
             End If
 
-            g.ShellExecute(Packs.BDSup2SubPP.GetPath, """" + fp + """")
+            g.ShellExecute(Package.BDSup2SubPP.GetPath, """" + fp + """")
         Catch ex As Exception
             g.ShowException(ex)
         End Try
     End Sub
 
     Private Sub bnPlay_Click() Handles bnPlay.Click
-        If Packs.MPC.VerifyOK(True) Then
+        If Package.MPC.VerifyOK(True) Then
             Try
                 Dim st = Items(dgv.CurrentRow.Index).Subtitle
                 Dim fp = st.Path

@@ -1,11 +1,29 @@
 Imports Microsoft.Win32
 Imports StaxRip
 
-Class Packs
+Public Class Package
+    Implements IComparable(Of Package)
+
+    Property Name As String
+    Property FileNotFoundMessage As String
+    Property SetupAction As Action
+    Property Version As String
+    Property Description As String
+    Property VersionDate As DateTime
+    Property HelpFile As String
+    Property Filenames As String()
+    Property WebURL As String
+    Property DownloadURL As String
+    Property HelpURL As String
+    Property IsRequiredFunc As Func(Of Boolean)
+    Property StatusFunc As Func(Of String)
+    Property LaunchName As String
+
+    Shared Property Items As New SortedDictionary(Of String, Package)
+
     Shared Property AviSynth As New AviSynthPlusPackage
     Shared Property AVSMeter As New AVSMeterPackage
     Shared Property BDSup2SubPP As New BDSup2SubPackage
-    Shared Property BeSweet As New BeSweetPackage
     Shared Property checkmate As New checkmatePackage
     Shared Property DGDecodeIM As New DGDecodeIMPackage
     Shared Property DGIndexIM As New DGIndexIMPackage
@@ -15,17 +33,14 @@ Class Packs
     Shared Property DSS2mod As New DSS2modPackage
     Shared Property eac3to As New eac3toPackage
     Shared Property ffmpeg As New ffmpegPackage
-    Shared Property ffms2 As New ffms2Package
     Shared Property Haali As New HaaliSplitter
     Shared Property Java As New JavaPackage
     Shared Property lsmashWorks As New LSmashWorksAviSynthPackage
     Shared Property MediaInfo As New MediaInfoPackage
-    Shared Property Mkvmerge As New MKVToolNixPackage
     Shared Property MP4Box As New MP4BoxPackage
     Shared Property MPC As New MPCPackage
     Shared Property NeroAACEnc As New NeroAACEncPackage
     Shared Property NicAudio As New NicAudioPackage
-    Shared Property nnedi3 As New nnedi3Package
     Shared Property NVEncC As New NVEncCPackage
     Shared Property ProjectX As New ProjectXPackage
     Shared Property qaac As New qaacPackage
@@ -45,6 +60,27 @@ Class Packs
     Shared Property scenechange As New scenechangePackage
     Shared Property temporalsoften As New temporalsoftenPackage
     Shared Property LSmashWorksVapourSynth As New vslsmashsourcePackage
+
+    Shared Property BeSweet As New Package With {
+        .Name = "BeSweet",
+        .Filename = "BeSweet.exe",
+        .Description = "Alternative audio converter, for most formats StaxRip uses now eac3to by default."}
+
+    Shared Property mkvmerge As New Package With {
+        .Name = "mkvmerge",
+        .Filename = "mkvmerge.exe",
+        .FixedDir = CommonDirs.Startup + "Apps\MKVToolNix\",
+        .WebURL = "http://www.bunkus.org/videotools/mkvtoolnix",
+        .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
+        .Description = "MKV muxing tool."}
+
+    Shared Property mkvextract As New Package With {
+        .Name = "mkvextract",
+        .Filename = "mkvextract.exe",
+        .FixedDir = CommonDirs.Startup + "Apps\MKVToolNix\",
+        .WebURL = "http://www.bunkus.org/videotools/mkvtoolnix",
+        .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
+        .Description = "MKV demuxing tool."}
 
     Shared Property QSVEncC As New Package With {
         .Name = "QSVEncC",
@@ -80,106 +116,86 @@ Class Packs
         .WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html",
         .Description = Strings.DGDecNV,
         .HelpFile = "DGDecodeNVManual.html",
+        .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource("),
         .AviSynthFilterNames = {"DGSource"},
         .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")"),
-                                           New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")},
-        .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource(")}
+                                           New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")}}
 
-    Public Shared Property Packages As New List(Of Package)
+    Public Shared ffms2 As New PluginPackage With {
+        .Name = "ffms2",
+        .Filename = "ffms2.dll",
+        .WebURL = "https://github.com/FFMS/ffms2",
+        .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
+        .AviSynthFilterNames = {"FFVideoSource", "FFAudioSource"},
+        .VapourSynthFilterNames = {"ffms2"},
+        .HelpFile = "ffms2-avisynth.html"}
+
+    Shared Sub Add(pack As Package)
+        Items(pack.ID) = pack
+    End Sub
 
     Shared Sub New()
-        Packages.Add(VCEEncC)
-        Packages.Add(LSmashWorksVapourSynth)
-        Packages.Add(temporalsoften)
-        Packages.Add(scenechange)
-        Packages.Add(Python)
-        Packages.Add(VapourSynth)
-        Packages.Add(vspipe)
-        Packages.Add(vinverse)
-        Packages.Add(Decomb)
-        Packages.Add(flash3kyuu_deband)
-        Packages.Add(AviSynth)
-        Packages.Add(AVSMeter)
-        Packages.Add(BDSup2SubPP)
-        Packages.Add(BeSweet)
-        Packages.Add(checkmate)
-        Packages.Add(DGDecodeIM)
-        Packages.Add(DGDecodeNV)
-        Packages.Add(DGIndexIM)
-        Packages.Add(DGIndexNV)
-        Packages.Add(DivX265)
-        Packages.Add(dsmux)
-        Packages.Add(DSS2mod)
-        Packages.Add(eac3to)
-        Packages.Add(ffmpeg)
-        Packages.Add(ffms2)
-        Packages.Add(Haali)
-        Packages.Add(Java)
-        Packages.Add(lsmashWorks)
-        Packages.Add(MediaInfo)
-        Packages.Add(Mkvmerge)
-        Packages.Add(MP4Box)
-        Packages.Add(MPC)
-        Packages.Add(NeroAACEnc)
-        Packages.Add(NicAudio)
-        Packages.Add(nnedi3)
-        Packages.Add(NVEncC)
-        Packages.Add(ProjectX)
-        Packages.Add(qaac)
-        Packages.Add(QSVEncC)
-        Packages.Add(SangNom2)
-        Packages.Add(TDeint)
-        Packages.Add(UnDot)
-        Packages.Add(VSRip)
-        Packages.Add(x264)
-        Packages.Add(x265)
-        Packages.Add(xvid_encraw)
-        Packages.Add(vscpp2013)
-        Packages.Add(vscpp2015)
+        Add(VCEEncC)
+        Add(LSmashWorksVapourSynth)
+        Add(temporalsoften)
+        Add(scenechange)
+        Add(Python)
+        Add(VapourSynth)
+        Add(vspipe)
+        Add(vinverse)
+        Add(Decomb)
+        Add(flash3kyuu_deband)
+        Add(AviSynth)
+        Add(AVSMeter)
+        Add(BDSup2SubPP)
+        Add(BeSweet)
+        Add(checkmate)
+        Add(DGDecodeIM)
+        Add(DGDecodeNV)
+        Add(DGIndexIM)
+        Add(DGIndexNV)
+        Add(DivX265)
+        Add(dsmux)
+        Add(DSS2mod)
+        Add(eac3to)
+        Add(ffmpeg)
+        Add(Haali)
+        Add(Java)
+        Add(lsmashWorks)
+        Add(MediaInfo)
+        Add(mkvmerge)
+        Add(mkvextract)
+        Add(MP4Box)
+        Add(MPC)
+        Add(NeroAACEnc)
+        Add(NicAudio)
+        Add(NVEncC)
+        Add(ProjectX)
+        Add(qaac)
+        Add(QSVEncC)
+        Add(SangNom2)
+        Add(TDeint)
+        Add(UnDot)
+        Add(VSRip)
+        Add(x264)
+        Add(x265)
+        Add(xvid_encraw)
+        Add(vscpp2013)
+        Add(vscpp2015)
+        Add(ffms2)
 
-        Packages.Add(New PluginPackage With {
-            .Name = "adjust",
-            .Filename = "adjust.py",
-            .VapourSynthFilterNames = {"adjust.Tweak"},
-            .Description = "very basic port of the built-in Avisynth filter Tweak.",
-            .WebURL = "https://github.com/dubhater/vapoursynth-adjust",
-            .HelpURL = "https://github.com/dubhater/vapoursynth-adjust"})
+#Region "misc"
 
-        Packages.Add(New PluginPackage With {
-            .Name = "mvsfunc",
-            .Filename = "mvsfunc.py",
-            .VapourSynthFilterNames = {"mvsfunc.Depth", "mvsfunc.ToRGB", "mvsfunc.ToYUV", "mvsfunc.BM3D",
-                                       "mvsfunc.PlaneStatistics", "mvsfunc.PlaneCompare", "mvsfunc.ShowAverage",
-                                       "mvsfunc.FilterIf", "mvsfunc.FilterCombed", "mvsfunc.Min", "mvsfunc.Max",
-                                       "mvsfunc.Avg", "mvsfunc.MinFilter", "mvsfunc.MaxFilter", "mvsfunc.LimitFilter",
-                                       "mvsfunc.PointPower", "mvsfunc.SetColorSpace", "mvsfunc.AssumeFrame",
-                                       "mvsfunc.AssumeTFF", "mvsfunc.AssumeBFF", "mvsfunc.AssumeField",
-                                       "mvsfunc.AssumeCombed", "mvsfunc.CheckVersion", "mvsfunc.GetMatrix",
-                                       "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage"},
-            .Dependencies = {"fmtconv", "adjust"},
-            .Description = "mawen1250's VapourSynth functions.",
-            .HelpURL = "http://forum.doom9.org/showthread.php?t=172564",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/mvsfunc"})
+        Add(New Package With {
+            .Name = "Demux",
+            .Filename = "Demux.exe",
+            .Description = "Demuxing standalone tool.",
+            .FixedDir = CommonDirs.Startup + "Apps\Toolbox\",
+            .LaunchName = "Demux.exe",
+            .HelpURL = "http://forum.doom9.org/showthread.php?t=173427",
+            .WebURL = "http://forum.doom9.org/showthread.php?t=173427"})
 
-        Packages.Add(New PluginPackage With {
-            .Name = "havsfunc",
-            .Filename = "havsfunc.py",
-            .VapourSynthFiltersFunc = Function() {
-                New VideoFilter("Field", "QTGMC | QTGMC Fast", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Fast"")"),
-                New VideoFilter("Field", "QTGMC | QTGMC Medium", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Medium"")"),
-                New VideoFilter("Field", "QTGMC | QTGMC Slow", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Slow"")")},
-            .VapourSynthFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa", "havsfunc.maa",
-                                      "havsfunc.SharpAAMCmod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
-                                      "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.ivtc_txt60mc",
-                                      "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.logoNR",
-                                      "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.GSMC",
-                                      "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD",
-                                      "havsfunc.LSFmod", "havsfunc.GrainFactory3"},
-            .Dependencies = {"fmtconv", "mvtools", "nnedi3", "scenechange", "temporalsoften", "mvsfunc"},
-            .Description = "Various popular AviSynth scripts ported to VapourSynth.",
-            .HelpURL = "http://forum.doom9.org/showthread.php?t=166582"})
-
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "KNLMeansCL",
             .Filename = "KNLMeansCL.dll",
             .WebURL = "http://forum.doom9.org/showthread.php?t=171379",
@@ -208,7 +224,68 @@ Class Packs
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 4)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 8)")}})
 
-        Packages.Add(New PluginPackage With {
+#End Region
+
+#Region "VapourSynth"
+
+        Add(New PluginPackage With {
+            .Name = "nnedi3",
+            .Filename = "libnnedi3.dll",
+            .WebURL = "http://github.com/dubhater/vapoursynth-nnedi3",
+            .Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field.",
+            .VapourSynthFilterNames = {"nnedi3.nnedi3", "nnedi3.nnedi3_rpow2"}})
+
+        Add(New PluginPackage With {
+            .Name = "mvtools",
+            .Filename = "libmvtools.dll",
+            .WebURL = "http://github.com/dubhater/vapoursynth-mvtools",
+            .Description = "MVTools is a set of filters for motion estimation and compensation.",
+            .VapourSynthFilterNames = {"mv.Super", "mv.Analyse", "mv.Recalculate", "mv.Compensate", "mv.Degrain1", "mv.Degrain2",
+                "mv.Degrain3", "mv.Mask", "mv.Finest", "mv.FlowBlur", "mv.FlowInter", "mv.FlowFPS", "mv.BlockFPS", "mv.SCDetection"}})
+
+        Add(New PluginPackage With {
+            .Name = "adjust",
+            .Filename = "adjust.py",
+            .VapourSynthFilterNames = {"adjust.Tweak"},
+            .Description = "very basic port of the built-in Avisynth filter Tweak.",
+            .WebURL = "https://github.com/dubhater/vapoursynth-adjust",
+            .HelpURL = "https://github.com/dubhater/vapoursynth-adjust"})
+
+        Add(New PluginPackage With {
+            .Name = "mvsfunc",
+            .Filename = "mvsfunc.py",
+            .VapourSynthFilterNames = {"mvsfunc.Depth", "mvsfunc.ToRGB", "mvsfunc.ToYUV", "mvsfunc.BM3D",
+                                       "mvsfunc.PlaneStatistics", "mvsfunc.PlaneCompare", "mvsfunc.ShowAverage",
+                                       "mvsfunc.FilterIf", "mvsfunc.FilterCombed", "mvsfunc.Min", "mvsfunc.Max",
+                                       "mvsfunc.Avg", "mvsfunc.MinFilter", "mvsfunc.MaxFilter", "mvsfunc.LimitFilter",
+                                       "mvsfunc.PointPower", "mvsfunc.SetColorSpace", "mvsfunc.AssumeFrame",
+                                       "mvsfunc.AssumeTFF", "mvsfunc.AssumeBFF", "mvsfunc.AssumeField",
+                                       "mvsfunc.AssumeCombed", "mvsfunc.CheckVersion", "mvsfunc.GetMatrix",
+                                       "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage"},
+            .Dependencies = {"fmtconv", "adjust"},
+            .Description = "mawen1250's VapourSynth functions.",
+            .HelpURL = "http://forum.doom9.org/showthread.php?t=172564",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/mvsfunc"})
+
+        Add(New PluginPackage With {
+            .Name = "havsfunc",
+            .Filename = "havsfunc.py",
+            .VapourSynthFiltersFunc = Function() {
+                New VideoFilter("Field", "QTGMC | QTGMC Fast", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Fast"")"),
+                New VideoFilter("Field", "QTGMC | QTGMC Medium", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Medium"")"),
+                New VideoFilter("Field", "QTGMC | QTGMC Slow", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Slow"")")},
+            .VapourSynthFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa", "havsfunc.maa",
+                                      "havsfunc.SharpAAMCmod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
+                                      "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.ivtc_txt60mc",
+                                      "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.logoNR",
+                                      "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.GSMC",
+                                      "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD",
+                                      "havsfunc.LSFmod", "havsfunc.GrainFactory3"},
+            .Dependencies = {"fmtconv", "mvtools", "nnedi3", "scenechange", "temporalsoften", "mvsfunc"},
+            .Description = "Various popular AviSynth scripts ported to VapourSynth.",
+            .HelpURL = "http://forum.doom9.org/showthread.php?t=166582"})
+
+        Add(New PluginPackage With {
             .Name = "d2vsource",
             .Filename = "d2vsource.dll",
             .VapourSynthFilterNames = {"d2v.Source"},
@@ -218,7 +295,7 @@ Class Packs
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})
 
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "FluxSmooth",
             .Filename = "libfluxsmooth.dll",
             .VapourSynthFilterNames = {"SmoothT", "SmoothST"},
@@ -228,7 +305,7 @@ Class Packs
                 New VideoFilter("Noise", "FluxSmooth SmoothT", "clip = core.flux.SmoothT(clip, temporal_threshold = 7, planes = [0, 1, 2])"),
                 New VideoFilter("Noise", "FluxSmooth SmoothST", "clip = core.flux.SmoothST(clip, temporal_threshold = 7, spatial_threshold = 7, planes = [0, 1, 2])")}})
 
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "msmoosh",
             .Filename = "libmsmoosh.dll",
             .VapourSynthFilterNames = {"msmoosh.MSmooth", "msmoosh.MSharpen"},
@@ -238,7 +315,7 @@ Class Packs
                 New VideoFilter("Noise", "MSmooth", "clip = core.msmoosh.MSmooth(clip, threshold = 6.0, strength = 3)"),
                 New VideoFilter("Misc", "MSharpen", "clip = core.msmoosh.MSharpen(clip, threshold = 6.0, strength = 39)")}})
 
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "fmtconv",
             .Filename = "fmtconv.dll",
             .WebURL = "http://github.com/EleonoreMizo/fmtconv",
@@ -246,7 +323,7 @@ Class Packs
             .Description = "Fmtconv is a format-conversion plug-in for the Vapoursynth video processing engine. It does resizing, bitdepth conversion with dithering and colorspace conversion.",
             .VapourSynthFilterNames = {"fmtc.bitdepth", "fmtc.convert", "fmtc.matrix", "fmtc.resample", "fmtc.transfer"}})
 
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "finesharp",
             .Filename = "finesharp.py",
             .Description = "Port of Didée's FineSharp script to VapourSynth.",
@@ -255,7 +332,11 @@ Class Packs
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Misc", "finesharp", "clip = finesharp.sharpen(clip)")}})
 
-        Packages.Add(New PluginPackage With {
+#End Region
+
+#Region "AviSynth"
+
+        Add(New PluginPackage With {
             .Name = "aWarpSharp2",
             .Filename = "aWarpSharp.dll",
             .HelpFile = "aWarpSharp.txt",
@@ -265,14 +346,14 @@ Class Packs
             .AviSynthFiltersFunc = Function() {
                 New VideoFilter("Misc", "aWarpSharp2", "aWarpSharp2(thresh = 128, blur = 2, type = 0, depth = 16, chroma = 4)")}})
 
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "VSFilterMod",
             .Filename = "VSFilterMod64.dll",
             .Description = "AviSynth subtitle plugin with support for vobsub srt and ass.",
             .WebURL = "http://avisynth.org.ru/docs/english/externalfilters/vsfilter.htm",
             .AviSynthFilterNames = {"VobSub", "TextSubMod"}})
 
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "TComb",
             .Filename = "TComb.dll",
             .HelpFile = "ReadMe.txt",
@@ -282,7 +363,7 @@ Class Packs
             .AviSynthFiltersFunc = Function() {
                 New VideoFilter("Misc", "TComb", "TComb(mode = 0, fthreshL = 255, othreshL = 255)")}})
 
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "QTGMC",
             .Filename = "QTGMC.avsi",
             .WebURL = "http://avisynth.nl/index.php/QTGMC",
@@ -295,7 +376,7 @@ Class Packs
                 New VideoFilter("Field", "QTGMC | QTGMC Slow", "QTGMC(Preset = ""Slow"")")},
             .Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}})
 
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "RgTools",
             .Filename = "RgTools.dll",
             .WebURL = "http://avisynth.nl/index.php/RgTools",
@@ -304,7 +385,7 @@ Class Packs
             .AviSynthFilterNames = {"RemoveGrain", "Clense", "ForwardClense", "BackwardClense", "Repair", "VerticalCleaner"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Noise", "RemoveGrain", "RemoveGrain()")}})
 
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "nnedi3",
             .Filename = "nnedi3.dll",
             .WebURL = "http://forum.doom9.org/showthread.php?t=170083",
@@ -313,7 +394,7 @@ Class Packs
             .AviSynthFilterNames = {"nnedi3"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "nnedi3", "nnedi3(field = 1)")}})
 
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "mvtools2",
             .Filename = "mvtools2.dll",
             .WebURL = "https://github.com/pinterf/mvtools",
@@ -321,15 +402,7 @@ Class Packs
             .Description = "MVTools is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
             .AviSynthFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDeGrain1", "MDeGrain2", "MDegrain3"}})
 
-        Packages.Add(New PluginPackage With {
-            .Name = "mvtools",
-            .Filename = "libmvtools.dll",
-            .WebURL = "http://github.com/dubhater/vapoursynth-mvtools",
-            .Description = "MVTools is a set of filters for motion estimation and compensation.",
-            .VapourSynthFilterNames = {"mv.Super", "mv.Analyse", "mv.Recalculate", "mv.Compensate", "mv.Degrain1", "mv.Degrain2",
-                "mv.Degrain3", "mv.Mask", "mv.Finest", "mv.FlowBlur", "mv.FlowInter", "mv.FlowFPS", "mv.BlockFPS", "mv.SCDetection"}})
-
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "masktools2",
             .Filename = "masktools2.dll",
             .WebURL = "http://avisynth.nl/index.php/MaskTools2",
@@ -337,7 +410,7 @@ Class Packs
             .Description = "MaskTools2 contain a set of filters designed to create, manipulate and use masks. Masks, in video processing, are a way to give a relative importance to each pixel. You can, for example, create a mask that selects only the green parts of the video, and then replace those parts with another video.",
             .AviSynthFilterNames = {"Mt_edge", "Mt_motion"}})
 
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "FluxSmooth",
             .Filename = "FluxSmoothSSSE3.dll",
             .AviSynthFilterNames = {"FluxSmoothT", "FluxSmoothST"},
@@ -347,7 +420,7 @@ Class Packs
                 New VideoFilter("Noise", "FluxSmoothT", "FluxSmoothT(temporal_threshold = 8)"),
                 New VideoFilter("Noise", "FluxSmoothST", "FluxSmoothST(temporal_threshold = 8, spatial_threshold = 8)")}})
 
-        Packages.Add(New PluginPackage With {
+        Add(New PluginPackage With {
             .Name = "yadifmod2",
             .Filename = "yadifmod2_avx.dll",
             .AviSynthFilterNames = {"yadifmod2"},
@@ -356,13 +429,13 @@ Class Packs
             .WebURL = "https://github.com/chikuzen/yadifmod2",
             .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "yadifmod2", "yadifmod2()")}})
 
-        Packages.Sort()
+#End Region
 
         Dim fp = CommonDirs.Startup + "Apps\Versions.txt"
 
         If File.Exists(fp) Then
             For Each i In File.ReadAllLines(CommonDirs.Startup + "Apps\Versions.txt")
-                For Each i2 In Packages
+                For Each i2 In Items.Values
                     If i Like "*=*;*" Then
                         Dim name = i.Left("=").Trim
 
@@ -376,37 +449,6 @@ Class Packs
             Next
         End If
     End Sub
-
-    Shared Function GetFilterProfiles(engine As ScriptingEngine) As List(Of VideoFilter)
-        Dim ret As New List(Of VideoFilter)
-
-        For Each i In Packages.OfType(Of PluginPackage)
-            If engine = ScriptingEngine.AviSynth Then
-                ret.AddRange(i.AviSynthFiltersFunc.Invoke)
-            Else
-                ret.AddRange(i.VapourSynthFiltersFunc.Invoke)
-            End If
-        Next
-    End Function
-End Class
-
-Public Class Package
-    Implements IComparable(Of Package)
-
-    Property Name As String
-    Property FileNotFoundMessage As String
-    Property SetupAction As Action
-    Property Version As String
-    Property Description As String
-    Property VersionDate As DateTime
-    Property HelpFile As String
-    Property HelpDir As String
-    Property Filenames As String()
-    Property WebURL As String
-    Property DownloadURL As String
-    Property HelpURL As String
-    Property IsRequiredFunc As Func(Of Boolean)
-    Property StatusFunc As Func(Of String)
 
     ReadOnly Property ID As String
         Get
@@ -445,9 +487,7 @@ Public Class Package
         End Set
     End Property
 
-    Protected LaunchName As String
-
-    Overridable ReadOnly Property LaunchAction As Action
+    Overridable ReadOnly Property StartAction As Action
         Get
             If LaunchName <> "" Then Return Sub() g.ShellExecute(GetDir() + LaunchName)
         End Get
@@ -471,7 +511,7 @@ Public Class Package
     Sub LaunchWithJava()
         Try
             Dim p As New Process
-            p.StartInfo.FileName = Packs.Java.GetDir + "javaw.exe"
+            p.StartInfo.FileName = Package.Java.GetDir + "javaw.exe"
             p.StartInfo.Arguments = "-jar """ + GetPath() + """"
             p.StartInfo.WorkingDirectory = GetDir()
             p.Start()
@@ -483,8 +523,6 @@ Public Class Package
     Function GetHelpPath() As String
         If HelpFile <> "" Then
             Return GetDir() + HelpFile
-        ElseIf HelpDir <> "" Then
-            Return GetDir() + HelpDir
         ElseIf HelpURL <> "" Then
             Return HelpURL
         ElseIf WebURL <> "" Then
@@ -627,7 +665,7 @@ Public Class Package
     End Function
 End Class
 
-Class UnDotPackage
+Public Class UnDotPackage
     Inherits PluginPackage
 
     Sub New()
@@ -639,7 +677,7 @@ Class UnDotPackage
     End Sub
 End Class
 
-Class NicAudioPackage
+Public Class NicAudioPackage
     Inherits PluginPackage
 
     Sub New()
@@ -651,7 +689,7 @@ Class NicAudioPackage
     End Sub
 End Class
 
-Class AviSynthPlusPackage
+Public Class AviSynthPlusPackage
     Inherits Package
 
     Sub New()
@@ -678,7 +716,7 @@ Class AviSynthPlusPackage
     End Function
 End Class
 
-Class PythonPackage
+Public Class PythonPackage
     Inherits Package
 
     Sub New()
@@ -722,7 +760,7 @@ Class PythonPackage
     End Function
 End Class
 
-Class VapourSynthPackage
+Public Class VapourSynthPackage
     Inherits Package
 
     Sub New()
@@ -749,7 +787,7 @@ Class VapourSynthPackage
     End Property
 End Class
 
-Class vspipePackage
+Public Class vspipePackage
     Inherits Package
 
     Sub New()
@@ -775,7 +813,7 @@ Class vspipePackage
     End Property
 End Class
 
-Class PluginPackage
+Public Class PluginPackage
     Inherits Package
 
     Property AviSynthFilterNames As String()
@@ -785,15 +823,13 @@ Class PluginPackage
     Property AviSynthFiltersFunc As Func(Of VideoFilter())
 
     Function GetDependencies() As List(Of PluginPackage)
-        Dim plugins = Packs.Packages.OfType(Of PluginPackage)()
+        Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
         Dim ret As New List(Of PluginPackage)
 
         If Not Dependencies Is Nothing Then
-            For Each iPlugin In plugins
+            For Each plugin In plugins
                 For Each i In Dependencies
-                    If iPlugin.Name = i Then
-                        ret.Add(iPlugin)
-                    End If
+                    If plugin.Name = i Then ret.Add(plugin)
                 Next
             Next
         End If
@@ -829,19 +865,7 @@ Class PluginPackage
     End Sub
 End Class
 
-Class BeSweetPackage
-    Inherits Package
-
-    Sub New()
-        Name = "BeSweet"
-        Filename = "BeSweet.exe"
-        WebURL = "http://dspguru.doom9.net"
-        Description = "Alternative audio converter, for most formats StaxRip uses now eac3to by default."
-        HelpDir = "help"
-    End Sub
-End Class
-
-Class VSRipPackage
+Public Class VSRipPackage
     Inherits Package
 
     Sub New()
@@ -853,7 +877,7 @@ Class VSRipPackage
     End Sub
 End Class
 
-Class NeroAACEncPackage
+Public Class NeroAACEncPackage
     Inherits Package
 
     Sub New()
@@ -866,7 +890,7 @@ Class NeroAACEncPackage
     End Sub
 End Class
 
-Class JavaPackage
+Public Class JavaPackage
     Inherits Package
 
     Sub New()
@@ -893,7 +917,7 @@ Class JavaPackage
     End Function
 End Class
 
-Class ProjectXPackage
+Public Class ProjectXPackage
     Inherits Package
 
     Sub New()
@@ -904,19 +928,19 @@ Class ProjectXPackage
         IsRequiredValue = False
     End Sub
 
-    Overrides ReadOnly Property LaunchAction As Action
+    Overrides ReadOnly Property StartAction As Action
         Get
             Return AddressOf LaunchWithJava
         End Get
     End Property
 
     Public Overrides Function GetStatus() As String
-        If Packs.Java.GetPath = "" Then Return "Failed to locate Java, ProjectX requires Java."
+        If Package.Java.GetPath = "" Then Return "Failed to locate Java, ProjectX requires Java."
         Return MyBase.GetStatus()
     End Function
 End Class
 
-Class x264Package
+Public Class x264Package
     Inherits Package
 
     Sub New()
@@ -928,7 +952,7 @@ Class x264Package
     End Sub
 End Class
 
-Class x265Package
+Public Class x265Package
     Inherits Package
 
     Sub New()
@@ -940,7 +964,7 @@ Class x265Package
     End Sub
 End Class
 
-Class MP4BoxPackage
+Public Class MP4BoxPackage
     Inherits Package
 
     Sub New()
@@ -952,19 +976,7 @@ Class MP4BoxPackage
     End Sub
 End Class
 
-Class MKVToolNixPackage
-    Inherits Package
-
-    Sub New()
-        Name = "MKVToolNix"
-        Filename = "mkvmerge.exe"
-        WebURL = "http://www.bunkus.org/videotools/mkvtoolnix"
-        HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html"
-        Description = "MKVtoolnix contains mkvmerge and mkvextract to mux and demux Matroska (MKV) files."
-    End Sub
-End Class
-
-Class MediaInfoPackage
+Public Class MediaInfoPackage
     Inherits Package
 
     Sub New()
@@ -975,7 +987,7 @@ Class MediaInfoPackage
     End Sub
 End Class
 
-Class ffmpegPackage
+Public Class ffmpegPackage
     Inherits Package
 
     Sub New()
@@ -987,7 +999,7 @@ Class ffmpegPackage
     End Sub
 End Class
 
-Class eac3toPackage
+Public Class eac3toPackage
     Inherits Package
 
     Sub New()
@@ -999,21 +1011,7 @@ Class eac3toPackage
     End Sub
 End Class
 
-Class ffms2Package
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "ffms2"
-        Filename = "ffms2.dll"
-        WebURL = "https://github.com/FFMS/ffms2"
-        Description = "AviSynth+ and VapourSynth source filter supporting various input formats."
-        AviSynthFilterNames = {"FFVideoSource", "FFAudioSource"}
-        VapourSynthFilterNames = {"ffms2"}
-        HelpDir = "doc"
-    End Sub
-End Class
-
-Class LSmashWorksAviSynthPackage
+Public Class LSmashWorksAviSynthPackage
     Inherits PluginPackage
 
     Sub New()
@@ -1033,7 +1031,7 @@ Class LSmashWorksAviSynthPackage
     End Property
 End Class
 
-Class vslsmashsourcePackage
+Public Class vslsmashsourcePackage
     Inherits PluginPackage
 
     Sub New()
@@ -1053,7 +1051,7 @@ Class vslsmashsourcePackage
     End Property
 End Class
 
-Class qaacPackage
+Public Class qaacPackage
     Inherits Package
 
     Sub New()
@@ -1082,7 +1080,7 @@ Class qaacPackage
     End Function
 End Class
 
-Class checkmatePackage
+Public Class checkmatePackage
     Inherits PluginPackage
 
     Sub New()
@@ -1094,7 +1092,7 @@ Class checkmatePackage
     End Sub
 End Class
 
-Class SangNom2Package
+Public Class SangNom2Package
     Inherits PluginPackage
 
     Sub New()
@@ -1106,7 +1104,7 @@ Class SangNom2Package
     End Sub
 End Class
 
-Class DSS2modPackage
+Public Class DSS2modPackage
     Inherits PluginPackage
 
     Sub New()
@@ -1118,7 +1116,7 @@ Class DSS2modPackage
     End Sub
 End Class
 
-Class vinversePackage
+Public Class vinversePackage
     Inherits PluginPackage
 
     Sub New()
@@ -1130,7 +1128,7 @@ Class vinversePackage
     End Sub
 End Class
 
-Class DGIndexNVPackage
+Public Class DGIndexNVPackage
     Inherits Package
 
     Sub New()
@@ -1156,7 +1154,7 @@ Class DGIndexNVPackage
     End Property
 End Class
 
-Class DGIndexIMPackage
+Public Class DGIndexIMPackage
     Inherits Package
 
     Sub New()
@@ -1181,7 +1179,7 @@ Class DGIndexIMPackage
     End Property
 End Class
 
-Class DGDecodeIMPackage
+Public Class DGDecodeIMPackage
     Inherits PluginPackage
 
     Sub New()
@@ -1200,7 +1198,7 @@ Class DGDecodeIMPackage
     End Property
 End Class
 
-Class BDSup2SubPackage
+Public Class BDSup2SubPackage
     Inherits Package
 
     Sub New()
@@ -1212,7 +1210,7 @@ Class BDSup2SubPackage
     End Sub
 End Class
 
-Class NVEncCPackage
+Public Class NVEncCPackage
     Inherits Package
 
     Sub New()
@@ -1224,7 +1222,7 @@ Class NVEncCPackage
     End Sub
 End Class
 
-Class AVSMeterPackage
+Public Class AVSMeterPackage
     Inherits Package
 
     Sub New()
@@ -1236,7 +1234,7 @@ Class AVSMeterPackage
     End Sub
 End Class
 
-Class DivX265Package
+Public Class DivX265Package
     Inherits Package
 
     Sub New()
@@ -1248,7 +1246,7 @@ Class DivX265Package
     End Sub
 End Class
 
-Class xvid_encrawPackage
+Public Class xvid_encrawPackage
     Inherits Package
 
     Sub New()
@@ -1260,7 +1258,7 @@ Class xvid_encrawPackage
     End Sub
 End Class
 
-Class dsmuxPackage
+Public Class dsmuxPackage
     Inherits Package
 
     Sub New()
@@ -1284,7 +1282,7 @@ Class dsmuxPackage
     End Property
 End Class
 
-Class HaaliSplitter
+Public Class HaaliSplitter
     Inherits Package
 
     Sub New()
@@ -1302,7 +1300,7 @@ Class HaaliSplitter
     End Function
 End Class
 
-Class MPCPackage
+Public Class MPCPackage
     Inherits Package
 
     Sub New()
@@ -1314,14 +1312,14 @@ Class MPCPackage
         IsRequiredValue = False
     End Sub
 
-    Public Overrides ReadOnly Property LaunchAction As Action
+    Public Overrides ReadOnly Property StartAction As Action
         Get
             Return Sub() g.ShellExecute(GetPath, If(p.SourceFile <> "" AndAlso Not p.SourceFile.EqualsAny(FileTypes.VideoIndex), """" + p.SourceFile, """"))
         End Get
     End Property
 End Class
 
-Class TDeintPackage
+Public Class TDeintPackage
     Inherits PluginPackage
 
     Sub New()
@@ -1333,19 +1331,7 @@ Class TDeintPackage
     End Sub
 End Class
 
-Class nnedi3Package
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "nnedi3"
-        Filename = "libnnedi3.dll"
-        WebURL = "http://github.com/dubhater/vapoursynth-nnedi3"
-        Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field."
-        VapourSynthFilterNames = {"nnedi3.nnedi3", "nnedi3.nnedi3_rpow2"}
-    End Sub
-End Class
-
-Class scenechangePackage
+Public Class scenechangePackage
     Inherits PluginPackage
 
     Sub New()
@@ -1355,7 +1341,7 @@ Class scenechangePackage
     End Sub
 End Class
 
-Class temporalsoftenPackage
+Public Class temporalsoftenPackage
     Inherits PluginPackage
 
     Sub New()
@@ -1365,7 +1351,7 @@ Class temporalsoftenPackage
     End Sub
 End Class
 
-Class DecombPackage
+Public Class DecombPackage
     Inherits PluginPackage
 
     Sub New()
@@ -1378,7 +1364,7 @@ Class DecombPackage
     End Sub
 End Class
 
-Class flash3kyuu_debandPackage
+Public Class flash3kyuu_debandPackage
     Inherits PluginPackage
 
     Sub New()

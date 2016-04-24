@@ -366,7 +366,7 @@ Class ScriptingEditor
 
             Menu.Items.Add(New ToolStripSeparator)
 
-            For Each i In Packs.Packages.OfType(Of PluginPackage)()
+            For Each i In Package.Items.Values.OfType(Of PluginPackage)()
                 If Not i.AviSynthFilterNames Is Nothing Then
                     For Each i2 In i.AviSynthFilterNames
                         If rtbScript.Text.Contains(i2) Then
@@ -404,7 +404,7 @@ Class ScriptingEditor
                 Menu.Add("Help | AviSynth+ plugins", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins"), "http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins")
                 Menu.Add("Help | -")
 
-                For Each i In Packs.Packages.OfType(Of PluginPackage)
+                For Each i In Package.Items.Values.OfType(Of PluginPackage)
                     Dim helpPath = i.GetHelpPath
 
                     If helpPath <> "" AndAlso Not i.AviSynthFilterNames Is Nothing Then
@@ -416,7 +416,7 @@ Class ScriptingEditor
                 Menu.Add("Help | VapourSynth plugins", Sub() g.ShellExecute("http://www.vapoursynth.com/doc/pluginlist.html"), "http://www.vapoursynth.com/doc/pluginlist.html")
                 Menu.Add("Help | -")
 
-                For Each i In Packs.Packages.OfType(Of PluginPackage)
+                For Each i In Package.Items.Values.OfType(Of PluginPackage)
                     Dim helpPath = i.GetHelpPath
 
                     If helpPath <> "" AndAlso Not i.VapourSynthFilterNames Is Nothing Then

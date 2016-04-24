@@ -244,7 +244,7 @@ Class MP4Muxer
     End Function
 
     Overrides Function GetCommandLine() As String
-        Return """" + Packs.MP4Box.GetPath + """ " + GetArgs()
+        Return """" + Package.MP4Box.GetPath + """ " + GetArgs()
     End Function
 
     Private Function GetArgs() As String
@@ -309,8 +309,8 @@ Class MP4Muxer
 
     Overrides Sub Mux()
         Using proc As New Proc
-            proc.Init("Muxing using MP4Box " + Packs.MP4Box.Version, {"|"})
-            proc.File = Packs.MP4Box.GetPath
+            proc.Init("Muxing using MP4Box " + Package.MP4Box.Version, {"|"})
+            proc.File = Package.MP4Box.GetPath
             proc.Arguments = GetArgs()
             proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
             proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
@@ -481,9 +481,9 @@ Class MkvMuxer
 
     Overrides Sub Mux()
         Using proc As New Proc
-            proc.Init("Muxing using mkvmerge " + Packs.Mkvmerge.Version, "Progress: ")
+            proc.Init("Muxing using mkvmerge " + Package.mkvmerge.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.Mkvmerge.GetPath
+            proc.File = Package.mkvmerge.GetPath
             proc.Arguments = GetArgs()
             proc.AllowedExitCodes = {0, 1}
             proc.Start()
@@ -497,7 +497,7 @@ Class MkvMuxer
     End Sub
 
     Overrides Function GetCommandLine() As String
-        Return """" + Packs.Mkvmerge.GetPath + """ " + GetArgs()
+        Return """" + Package.mkvmerge.GetPath + """ " + GetArgs()
     End Function
 
     Private Function GetArgs() As String
@@ -700,9 +700,9 @@ Class ffmpegMuxer
         args += " """ + p.TargetFile + """"
 
         Using proc As New Proc
-            proc.Init("Muxing to " + OutputTypeValue + " using ffmpeg " + Packs.ffmpeg.Version, "frame=")
+            proc.Init("Muxing to " + OutputTypeValue + " using ffmpeg " + Package.ffmpeg.Version, "frame=")
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.GetPath
             proc.Arguments = args
             proc.Start()
         End Using

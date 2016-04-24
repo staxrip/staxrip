@@ -563,7 +563,7 @@ Class eac3toForm
         cms.Items.Add(New ActionMenuItem("Audio Stream Profiles...", AddressOf ShowAudioStreamProfiles))
         cms.Items.Add(New ActionMenuItem("Show eac3to wikibook", Sub() g.ShellExecute("http://en.wikibooks.org/wiki/Eac3to")))
         cms.Items.Add(New ActionMenuItem("Show eac3to support forum", Sub() g.ShellExecute("http://forum.doom9.org/showthread.php?t=125966")))
-        cms.Items.Add(New ActionMenuItem("Execute eac3to.exe -test", Sub() g.ShellExecute("cmd.exe", "/k """ + Packs.eac3to.GetPath + """ -test")))
+        cms.Items.Add(New ActionMenuItem("Execute eac3to.exe -test", Sub() g.ShellExecute("cmd.exe", "/k """ + Package.eac3to.GetPath + """ -test")))
 
         ActiveControl = Nothing
     End Sub
@@ -622,15 +622,15 @@ Class eac3toForm
 
         If File.Exists(M2TSFile) Then
             args = """" + M2TSFile + """ -progressnumbers"
-            Log.Write("Process M2TS file using eac3to", """" + Packs.eac3to.GetPath + """ " + args + CrLf2)
+            Log.Write("Process M2TS file using eac3to", """" + Package.eac3to.GetPath + """ " + args + CrLf2)
         ElseIf Directory.Exists(PlaylistFolder) Then
             args = """" + PlaylistFolder + """ " & PlaylistID & ") -progressnumbers"
-            Log.Write("Process playlist file using eac3to", """" + Packs.eac3to.GetPath + """ " + args + CrLf2)
+            Log.Write("Process playlist file using eac3to", """" + Package.eac3to.GetPath + """ " + args + CrLf2)
         End If
 
         Using o As New Process
             AddHandler o.OutputDataReceived, AddressOf OutputDataReceived
-            o.StartInfo.FileName = Packs.eac3to.GetPath
+            o.StartInfo.FileName = Package.eac3to.GetPath
             o.StartInfo.Arguments = args
             o.StartInfo.CreateNoWindow = True
             o.StartInfo.UseShellExecute = False
@@ -843,7 +843,7 @@ Class eac3toForm
         If Not bnOK.Enabled Then e.Cancel = True
 
         If DialogResult = DialogResult.OK Then
-            If cbVideoOutput.Text = "MKV" AndAlso Not Packs.Haali.VerifyOK(True) Then
+            If cbVideoOutput.Text = "MKV" AndAlso Not Package.Haali.VerifyOK(True) Then
                 e.Cancel = True
             End If
 

@@ -56,7 +56,7 @@ Class MediaInfo
     Sub New(path As String)
         If Not Loaded Then
             Loaded = True
-            Native.LoadLibrary(Packs.MediaInfo.GetPath)
+            Native.LoadLibrary(Package.MediaInfo.GetPath)
         End If
 
         Handle = MediaInfo_New()

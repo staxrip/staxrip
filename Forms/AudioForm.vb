@@ -461,6 +461,7 @@ Class AudioForm
         mbChannels.Add("1 (Mono)", 1)
         mbChannels.Add("2 (Stereo)", 2)
         mbChannels.Add("6 (5.1)", 6)
+        mbChannels.Add("7 (6.1)", 7)
         mbChannels.Add("8 (7.1)", 8)
 
         mbSamplingRate.Add("Original", 0)
@@ -492,7 +493,7 @@ Class AudioForm
         End If
 
         ActionMenuItem.Add(miHelp.DropDownItems, "eac3to wiki", Sub() g.ShellExecute("http://en.wikibooks.org/wiki/Eac3to"))
-        ActionMenuItem.Add(miHelp.DropDownItems, "ffmpeg help file", Sub() g.ShellExecute(Packs.ffmpeg.GetHelpPath))
+        ActionMenuItem.Add(miHelp.DropDownItems, "ffmpeg help file", Sub() g.ShellExecute(Package.ffmpeg.GetHelpPath))
         ActionMenuItem.Add(miHelp.DropDownItems, "KpeX Audio FAQ", Sub() g.ShellExecute("http://forum.doom9.org/showthread.php?t=68300"))
 
         g.SetRenderer(MenuStrip)
@@ -685,13 +686,6 @@ Class AudioForm
                 mbLanguage.Add(i.ToString, i)
             Else
                 mbLanguage.Add("More | " + i.ToString.Substring(0, 1) + " | " + i.ToString, i)
-            End If
-        Next
-
-        For Each i In Directory.GetFiles(Packs.BeSweet.GetDir + "help")
-            If Filepath.GetExtFull(i) <> ".lst" Then
-                Dim tmp = i
-                ActionMenuItem.Add(miHelp.DropDownItems, "BeSweet | " + Filepath.GetBase(i), Sub() g.ShellExecute(tmp))
             End If
         Next
 

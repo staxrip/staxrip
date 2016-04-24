@@ -24,7 +24,7 @@ End Module
 
 Class Paths
     Shared Function VerifyRequirements() As Boolean
-        For Each i In Packs.Packages
+        For Each i In Package.Items.Values
             If Not i.VerifyOK Then Return False
         Next
 
@@ -596,7 +596,7 @@ Class GlobalClass
 
             Using o As New Proc
                 o.Init("Index with ffmsindex", "Indexing, please wait...")
-                o.File = Packs.ffms2.GetDir + "ffmsindex.exe"
+                o.File = Package.ffms2.GetDir + "ffmsindex.exe"
                 o.Arguments = If(indexAudio, "-t -1 ", "") + """" + sourcePath + """ """ + cachePath + """"
                 o.Start()
             End Using
@@ -737,10 +737,10 @@ Class GlobalClass
     End Sub
 
     Sub Play(file As String, Optional cliOptions As String = Nothing)
-        If Packs.MPC.VerifyOK(True) Then
+        If Package.MPC.VerifyOK(True) Then
             Dim args = """" + file + """"
             If cliOptions <> "" Then args += " " + cliOptions
-            g.ShellExecute(Packs.MPC.GetPath, args)
+            g.ShellExecute(Package.MPC.GetPath, args)
         End If
     End Sub
 
@@ -2093,8 +2093,8 @@ Class Macro
             ret.Add(New Macro("filter:<name>", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
             ret.Add(New Macro("media_info_video:<property>", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
             ret.Add(New Macro("media_info_audio:<property>", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
-            ret.Add(New Macro("app:<name>", "Application File Path", GetType(String), "Returns the path of a aplication. Possible names are: " + Packs.Packages.Select(Function(arg) arg.Name).Join(", ")))
-            ret.Add(New Macro("app_dir:<name>", "Application Directory", GetType(String), "Returns the directory of a aplication. Possible names are: " + Packs.Packages.Select(Function(arg) arg.Name).Join(", ")))
+            ret.Add(New Macro("app:<name>", "Application File Path", GetType(String), "Returns the path of a aplication. Possible names are: " + Package.Items.Values.Select(Function(arg) arg.Name).Join(", ")))
+            ret.Add(New Macro("app_dir:<name>", "Application Directory", GetType(String), "Returns the directory of a aplication. Possible names are: " + Package.Items.Values.Select(Function(arg) arg.Name).Join(", ")))
             ret.Add(New Macro("$select:<param1;param2;...>$", "Select", GetType(String), "String selected from dropdown."))
             ret.Add(New Macro("$enter_text:<prompt>$", "Enter Text (Params)", GetType(String), "Text entered in a input box."))
             ret.Add(New Macro("$browse_file$", "Browse For File", GetType(String), "Filepath returned from a file browser."))
@@ -2395,7 +2395,7 @@ Class Macro
         If value.Contains("%settings_dir%") Then value = value.Replace("%settings_dir%", Paths.SettingsDir)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%player%") Then value = value.Replace("%player%", Packs.MPC.GetPath)
+        If value.Contains("%player%") Then value = value.Replace("%player%", Package.MPC.GetPath)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%text_editor%") Then value = value.Replace("%text_editor%", g.GetTextEditor)
@@ -2435,7 +2435,7 @@ Class Macro
             Dim mc = Regex.Matches(value, "%app:(.+?)%")
 
             For Each i As Match In mc
-                Dim package = Packs.Packages.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
+                Dim package = StaxRip.Package.Items.Values.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
 
                 If package?.VerifyOK Then
                     Dim path = package.GetPath
@@ -2464,7 +2464,7 @@ Class Macro
 
         If value.Contains("%app_dir:") Then
             For Each i As Match In Regex.Matches(value, "%app_dir:(.+?)%")
-                Dim package = Packs.Packages.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
+                Dim package = StaxRip.Package.Items.Values.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
 
                 If package?.VerifyOK Then
                     Dim path = package.GetPath
@@ -2750,6 +2750,18 @@ Class GlobalCommands
         Scripting.RunCSharp(scriptCode)
     End Sub
 
+    <Command("Perform | Start Tool", "Starts a tool by name as shown in the app manage dialog.")>
+    Sub StartTool(<DispName("Tool Name")>
+                  <Description("Tool name as shown in the app manage dialog.")>
+                  name As String)
+
+        Try
+            Package.Items(name).StartAction.Invoke
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
+    End Sub
+
     <Command("Perform | Execute PowerShell Script", "Executes PowerShell script code.")>
     Sub ExecutePowerShellScript(<DispName("Script Code")>
                                 <Description("PowerShell script code to be executed.")>
@@ -2845,7 +2857,7 @@ Class GlobalCommands
         If x265Missing.Count > 0 Then MsgInfo("Removed from x265:", x265Missing.Join(" "))
         If x265Unknown.Count > 0 Then MsgInfo("x265 Todo", x265Unknown.Join(" "))
 
-        For Each i In Packs.Packages
+        For Each i In Package.Items.Values
             If i.GetPath = "" Then Continue For
 
             If i.Version = "" OrElse (Not i.Version.ContainsAny({"x86", "x64"}) AndAlso
@@ -2854,6 +2866,7 @@ Class GlobalCommands
 
                 Using f As New AppsForm
                     f.ShowPackage(i)
+                    f.ShowDialog()
                 End Using
             End If
         Next
@@ -3126,7 +3139,6 @@ Public Enum DynamicMenuItemID
     MuxerProfiles
     RecentProjects
     TemplateProjects
-    LaunchApplications
     HelpApplications
     Scripts
 End Enum
@@ -3459,9 +3471,9 @@ Class Video
         Dim outPath = p.TempDir + Filepath.GetBase(sourcefile) + "_out" + stream.Extension
 
         Using proc As New Proc
-            proc.Init("Demux video using mkvextract " + Packs.Mkvmerge.Version, "Progress: ")
+            proc.Init("Demux video using mkvextract " + Package.mkvextract.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.Mkvmerge.GetDir + "mkvextract.exe"
+            proc.File = Package.mkvextract.GetPath
             proc.Arguments = "tracks """ + sourcefile + """ " & stream.StreamOrder &
                 ":""" + outPath + """ --ui-language en"
             proc.AllowedExitCodes = {0, 1, 2}

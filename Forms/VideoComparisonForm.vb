@@ -41,7 +41,7 @@ Class VideoComparisonForm
     End Sub
 
     Sub Add()
-        If Not Packs.AviSynth.VerifyOK(True) Then Exit Sub
+        If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
 
         Using f As New OpenFileDialog
             f.SetFilter({"mkv", "mp4", "png", "webm", "m4v"})

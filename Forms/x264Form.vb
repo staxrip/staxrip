@@ -2870,7 +2870,7 @@ Class x264Form
             End If
 
             If s.ShowPathsInCommandLine Then
-                cmdl = """" + Packs.x264.GetPath + """ " + cmdl
+                cmdl = """" + Package.x264.GetPath + """ " + cmdl
             End If
 
             rtbCommandLine.SetText(cmdl)

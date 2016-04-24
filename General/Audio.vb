@@ -28,7 +28,7 @@ Class Audio
             If (cutting OrElse Not ap.IsInputSupported) AndAlso Not directMux Then
                 Select Case Filepath.GetExtFull(ap.File)
                     Case ".mkv", ".webm"
-                        DemuxMKV(ap.File, ap.Stream, ap)
+                        DemuxMKV(ap.File, {ap.Stream}, ap)
                     Case ".mp4"
                         DemuxMP4(ap.File, ap.Stream, ap)
                     Case Else
@@ -93,9 +93,9 @@ Class Audio
         args += " -c:a copy -vn -sn -y -hide_banner """ + outPath + """"
 
         Using proc As New Proc
-            proc.Init("Demux audio using ffmpeg " + Packs.ffmpeg.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
+            proc.Init("Demux audio using ffmpeg " + Package.ffmpeg.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.GetPath
             proc.Arguments = args
             proc.Start()
         End Using
@@ -117,8 +117,8 @@ Class Audio
         args += " " & stream.ID & " -out """ + outPath + """ """ + sourcefile + """"
 
         Using proc As New Proc
-            proc.Init("Demux audio using MP4Box " + Packs.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
-            proc.File = Packs.MP4Box.GetPath
+            proc.Init("Demux audio using MP4Box " + Package.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
+            proc.File = Package.MP4Box.GetPath
             proc.Arguments = args
             proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
             proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
@@ -134,50 +134,61 @@ Class Audio
         End If
     End Sub
 
-    Shared Sub DemuxMKV(sourcefile As String, stream As AudioStream, ap As AudioProfile)
-        Dim ext = stream.Extension
-        If ext = ".m4a" Then ext = ".aac"
-        Dim outPath = p.TempDir + If(sourcefile = p.SourceFile, GetBaseNameForStream(sourcefile, stream), Filepath.GetBase(sourcefile)) + ext
-        If outPath.Length > 259 Then outPath = p.TempDir + If(sourcefile = p.SourceFile, GetBaseNameForStream(sourcefile, stream, True), Filepath.GetBase(sourcefile).Shorten(10)) + ext
+    Shared Sub DemuxMKV(sourcefile As String, streams As IEnumerable(Of AudioStream), ap As AudioProfile)
+        streams = streams.Where(Function(arg) arg.Enabled)
+        If streams.Count = 0 Then Exit Sub
+
+        Dim args = "tracks " + sourcefile.Quotes
+        Dim outPaths As New Dictionary(Of String, AudioStream)
+
+        For Each stream In streams
+            Dim ext = stream.Extension
+            If ext = ".m4a" Then ext = ".aac"
+            Dim outPath = p.TempDir + If(sourcefile = p.SourceFile, GetBaseNameForStream(sourcefile, stream), Filepath.GetBase(sourcefile)) + ext
+            If outPath.Length > 259 Then outPath = p.TempDir + If(sourcefile = p.SourceFile, GetBaseNameForStream(sourcefile, stream, True), Filepath.GetBase(sourcefile).Shorten(10)) + ext
+            outPaths.Add(outPath, stream)
+            args += " " & stream.StreamOrder & ":" + outPath.Quotes
+        Next
 
         Using proc As New Proc
-            proc.Init("Demux audio using mkvextract " + Packs.Mkvmerge.Version, "Progress: ")
+            proc.Init("Demux audio using mkvextract " + Package.mkvextract.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.Mkvmerge.GetDir + "mkvextract.exe"
-            proc.Arguments = "tracks """ + sourcefile + """ " & stream.StreamOrder &
-                ":""" + outPath + """ --ui-language en"
+            proc.File = Package.mkvextract.GetPath
+            proc.Arguments = args + " --ui-language en"
             proc.AllowedExitCodes = {0, 1, 2}
             proc.Start()
         End Using
 
-        If File.Exists(outPath) Then
-            If Not ap Is Nothing Then ap.File = outPath
-            Log.WriteLine(MediaInfo.GetSummary(outPath))
+        For Each outPath In outPaths.Keys
+            If File.Exists(outPath) Then
+                If Not ap Is Nothing Then ap.File = outPath
+                Log.WriteLine(MediaInfo.GetSummary(outPath) + CrLf)
 
-            If Filepath.GetExtFull(outPath) = ".aac" Then
-                Using proc As New Proc
-                    proc.Init("Mux AAC to M4A using MP4Box " + Packs.MP4Box.Version, "|")
-                    proc.File = Packs.MP4Box.GetPath
-                    Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
-                    Dim m4aPath = outPath.ChangeExt("m4a")
-                    proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new """ + m4aPath + """"
-                    proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
-                    proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
-                    proc.Start()
+                If outPath.Ext = "aac" Then
+                    Using proc As New Proc
+                        proc.Init("Mux AAC to M4A using MP4Box " + Package.MP4Box.Version, "|")
+                        proc.File = Package.MP4Box.GetPath
+                        Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
+                        Dim m4aPath = outPath.ChangeExt("m4a")
+                        proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new """ + m4aPath + """"
+                        proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
+                        proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
+                        proc.Start()
 
-                    If File.Exists(m4aPath) Then
-                        If Not ap Is Nothing Then ap.File = m4aPath
-                        FileHelp.Delete(outPath)
-                        Log.WriteLine(CrLf + MediaInfo.GetSummary(m4aPath))
-                    Else
-                        Throw New ErrorAbortException("Error mux AAC to M4A", outPath)
-                    End If
-                End Using
+                        If File.Exists(m4aPath) Then
+                            If Not ap Is Nothing Then ap.File = m4aPath
+                            FileHelp.Delete(outPath)
+                            Log.WriteLine(CrLf + MediaInfo.GetSummary(m4aPath))
+                        Else
+                            Throw New ErrorAbortException("Error mux AAC to M4A", outPath)
+                        End If
+                    End Using
+                End If
+            Else
+                Log.Write("Error", "no output found")
+                Demuxffmpeg(sourcefile, outPaths(outPath), ap)
             End If
-        Else
-            Log.Write("Error", "no output found")
-            Demuxffmpeg(sourcefile, stream, ap)
-        End If
+        Next
     End Sub
 
     Shared Sub Decode(ap As AudioProfile, Optional useFlac As Boolean = False)
@@ -189,9 +200,9 @@ Class Audio
             Dim args = "-i """ + ap.File + """ -y -hide_banner """ + outPath + """"
 
             Using proc As New Proc
-                proc.Init("AVS to FLAC/WAV using ffmpeg " + Packs.ffmpeg.Version, "frame=", "size=", "Multiple")
+                proc.Init("AVS to FLAC/WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
                 proc.Encoding = Encoding.UTF8
-                proc.File = Packs.ffmpeg.GetPath
+                proc.File = Package.ffmpeg.GetPath
                 proc.Arguments = args
                 proc.Start()
             End Using
@@ -226,7 +237,7 @@ Class Audio
     Shared Sub CutNicAudio(ap As AudioProfile)
         If ap.File.Contains("_cut_") Then Exit Sub
         If Not FileTypes.NicAudioInput.Contains(ap.File.Ext) Then Exit Sub
-        If Not Packs.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -239,10 +250,10 @@ Class Audio
         Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
 
         Using proc As New Proc
-            proc.Init("AVS to WAV using ffmpeg " + Packs.ffmpeg.Version, "frame=", "size=", "Multiple")
+            proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine(Macro.Solve(d.GetScript) + CrLf)
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.GetPath
             proc.Arguments = args
             proc.Start()
         End Using
@@ -258,7 +269,7 @@ Class Audio
     Shared Sub DecodeNicAudio(ap As AudioProfile)
         If Filepath.GetExtFull(ap.File) = ".wav" Then Exit Sub
         If Not FileTypes.NicAudioInput.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
-        If Not Packs.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -272,10 +283,10 @@ Class Audio
         Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
 
         Using proc As New Proc
-            proc.Init("AVS to WAV using ffmpeg " + Packs.ffmpeg.Version, "frame=", "size=", "Multiple")
+            proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine(Macro.Solve(d.GetScript) + CrLf)
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.GetPath
             proc.Arguments = args
             proc.Start()
         End Using
@@ -345,8 +356,8 @@ Class Audio
         args += " -simple -progressnumbers"
 
         Using proc As New Proc
-            proc.Init("Convert to WAV/FLAC using eac3to " + Packs.eac3to.Version)
-            proc.File = Packs.eac3to.GetPath
+            proc.Init("Convert to WAV/FLAC using eac3to " + Package.eac3to.Version)
+            proc.File = Package.eac3to.GetPath
             proc.Arguments = args
             proc.TrimChars = {"-"c, " "c}
             proc.RemoveChars = {VB6.ChrW(8)} 'backspace
@@ -374,10 +385,10 @@ Class Audio
         args += " """ + outPath + """"
 
         Using proc As New Proc
-            proc.Init("Convert from " + Filepath.GetExt(ap.File).ToUpper + " to " + Filepath.GetExt(outPath).ToUpper + " using ffmpeg " + Packs.ffmpeg.Version,
+            proc.Init("Convert from " + Filepath.GetExt(ap.File).ToUpper + " to " + Filepath.GetExt(outPath).ToUpper + " using ffmpeg " + Package.ffmpeg.Version,
                                 "frame=", "size=", "Multiple", "decoding is not implemented", "unsupported frame type", "upload a sample")
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.GetPath
             proc.Arguments = args
             proc.AllowedExitCodes = {0, 1}
             proc.Start()
@@ -393,7 +404,7 @@ Class Audio
 
     Shared Sub DecodeDirectShowSource(ap As AudioProfile, Optional useFlac As Boolean = False)
         If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
-        If Not Packs.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -407,10 +418,10 @@ Class Audio
         Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
 
         Using proc As New Proc
-            proc.Init("AVS to WAV using ffmpeg " + Packs.ffmpeg.Version, "frame=", "size=", "Multiple")
+            proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine(Macro.Solve(d.GetScript) + CrLf)
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.GetPath
             proc.Arguments = args
             proc.Start()
         End Using
@@ -425,7 +436,7 @@ Class Audio
 
     Shared Sub DecodeFFAudioSource(ap As AudioProfile)
         If Filepath.GetExtFull(ap.File) = ".wav" Then Exit Sub
-        If Not Packs.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim cachefile = p.TempDir + Filepath.GetBase(ap.File) + ".ffindex"
         g.ffmsindex(ap.File, cachefile)
@@ -441,10 +452,10 @@ Class Audio
         Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
 
         Using proc As New Proc
-            proc.Init("AVS to WAV using ffmpeg " + Packs.ffmpeg.Version, "frame=", "size=", "Multiple")
+            proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine(Macro.Solve(d.GetScript) + CrLf)
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.GetPath
             proc.Arguments = args
             proc.Start()
         End Using
@@ -459,7 +470,7 @@ Class Audio
 
     Shared Sub CutDirectShowSource(ap As AudioProfile)
         If ap.File.Contains("_cut_") Then Exit Sub
-        If Not Packs.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -472,10 +483,10 @@ Class Audio
         Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
 
         Using proc As New Proc
-            proc.Init("AVS to WAV using ffmpeg " + Packs.ffmpeg.Version, "frame=", "size=", "Multiple")
+            proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine(Macro.Solve(d.GetScript) + CrLf)
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.GetPath
             proc.Arguments = args
             proc.Start()
         End Using
@@ -490,7 +501,7 @@ Class Audio
 
     Shared Sub CutFFAudioSource(ap As AudioProfile)
         If ap.File.Contains("_cut_") Then Exit Sub
-        If Not Packs.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim cachefile = p.TempDir + Filepath.GetBase(ap.File) + ".ffindex"
         g.ffmsindex(ap.File, cachefile)
@@ -505,10 +516,10 @@ Class Audio
         Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
 
         Using proc As New Proc
-            proc.Init("AVS to WAV using ffmpeg " + Packs.ffmpeg.Version, "frame=", "size=", "Multiple")
+            proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine(Macro.Solve(d.GetScript) + CrLf)
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.GetPath
             proc.Arguments = args
             proc.Start()
         End Using
@@ -523,16 +534,16 @@ Class Audio
 
     Shared Sub CutMkvmerge(ap As AudioProfile)
         If ap.File.Contains("_cut_") Then Exit Sub
-        If Not Packs.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
 
         Dim aviPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_mm.avi"
         Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0} -r {1} -y -hide_banner -c:v copy """ + aviPath + """", (p.CutFrameCount / p.CutFrameRate).ToString("f6", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f6", CultureInfo.InvariantCulture))
 
         Using proc As New Proc
-            proc.Init("Create avi file with ffmpeg " + Packs.ffmpeg.Version, "frame=", "size=", "Multiple")
+            proc.Init("Create avi file with ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine("mkvmerge cannot cut audio without video so we create a fake avi file." + CrLf)
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.GetPath
             proc.Arguments = args
             proc.Start()
         End Using
@@ -550,9 +561,9 @@ Class Audio
         args2 += " --ui-language en"
 
         Using proc As New Proc
-            proc.Init("Cut using mkvmerge " + Packs.Mkvmerge.Version, "Progress: ")
+            proc.Init("Cut using mkvmerge " + Package.mkvmerge.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.Mkvmerge.GetPath
+            proc.File = Package.mkvmerge.GetPath
             proc.Arguments = args2
             proc.AllowedExitCodes = {0, 1, 2}
             proc.Start()
@@ -566,7 +577,7 @@ Class Audio
             Dim streams = MediaInfo.GetAudioStreams(mkvPath)
 
             If streams.Count > 0 Then
-                DemuxMKV(mkvPath, streams(0), ap)
+                DemuxMKV(mkvPath, {streams(0)}, ap)
             Else
                 fail = True
             End If
@@ -621,9 +632,9 @@ function Down2(clip a)
         args += " -af volumedetect -f null NUL"
 
         Using proc As New Proc
-            proc.Init("Find Gain using ffmpeg " + Packs.ffmpeg.Version, "frame=", "size=", "Multiple", "decoding is not implemented", "unsupported frame type", "upload a sample")
+            proc.Init("Find Gain using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple", "decoding is not implemented", "unsupported frame type", "upload a sample")
             proc.Encoding = Encoding.UTF8
-            proc.File = Packs.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.GetPath
             proc.Arguments = args
             proc.Start()
 

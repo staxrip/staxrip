@@ -196,7 +196,7 @@ Public Class VideoScript
                         End If
                     End If
 
-                    If Not Packs.AviSynth.VerifyOK OrElse Not Packs.VapourSynth.VerifyOK Then
+                    If Not Package.AviSynth.VerifyOK OrElse Not Package.VapourSynth.VerifyOK Then
                         Throw New AbortException
                     End If
 
@@ -227,33 +227,33 @@ Public Class VideoScript
             code = "import vapoursynth as vs" + CrLf + "core = vs.get_core()" + CrLf
         End If
 
-        Dim plugins = Packs.Packages.OfType(Of PluginPackage)()
+        Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
 
-        For Each i In plugins
-            Dim fp = i.GetPath
+        For Each plugin In plugins
+            Dim fp = plugin.GetPath
 
             If fp <> "" Then
                 If engine = ScriptingEngine.VapourSynth AndAlso code.Contains("core = vs.") Then
-                    If Not i.VapourSynthFilterNames Is Nothing Then
-                        For Each iFilterName In i.VapourSynthFilterNames
-                            If scriptLower.Contains(iFilterName.ToLower) Then
-                                PluginPackage.WriteVSCode(script, code, i)
+                    If Not plugin.VapourSynthFilterNames Is Nothing Then
+                        For Each filterName In plugin.VapourSynthFilterNames
+                            If scriptLower.Contains(filterName.ToLower) Then
+                                PluginPackage.WriteVSCode(script, code, plugin)
                             End If
                         Next
                     End If
                 Else
-                    If Not i.AviSynthFilterNames Is Nothing Then
-                        For Each i2 In i.AviSynthFilterNames
+                    If Not plugin.AviSynthFilterNames Is Nothing Then
+                        For Each i2 In plugin.AviSynthFilterNames
                             If scriptLower.Contains(i2.ToLower + "(") Then
-                                If i.Filename.Ext = "avsi" Then
+                                If plugin.Filename.Ext = "avsi" Then
                                     Dim load = "Import(""" + fp + """)" + CrLf
 
                                     If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
                                         code += load
                                     End If
 
-                                    If Not i.Dependencies.NothingOrEmpty Then
-                                        For Each i3 In i.Dependencies
+                                    If Not plugin.Dependencies.NothingOrEmpty Then
+                                        For Each i3 In plugin.Dependencies
                                             For Each i4 In plugins.Where(Function(arg) Not arg.AviSynthFilterNames.NothingOrEmpty)
                                                 If i3 = i4.Name Then
                                                     load = "LoadPlugin(""" + i4.GetPath + """)" + CrLf
@@ -507,7 +507,7 @@ Class FilterCategory
     End Sub
 
     Shared Sub AddDefaults(engine As ScriptingEngine, list As List(Of FilterCategory))
-        For Each i In Packs.Packages.OfType(Of PluginPackage)
+        For Each i In Package.Items.Values.OfType(Of PluginPackage)
             Dim filters As VideoFilter() = Nothing
 
             If engine = ScriptingEngine.AviSynth Then

@@ -1122,26 +1122,10 @@ Class MainForm
 
         For Each i In CustomMainMenu.MenuItems
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" Then
-                If i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.LaunchApplications) Then
+                If i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.HelpApplications) Then
                     i.DropDownItems.Clear()
 
-                    Dim sd As New SortedDictionary(Of String, Action)
-
-                    For Each i2 In Packs.Packages
-                        If Not i2.LaunchAction Is Nothing AndAlso Not i2.IsStatusCritical Then
-                            sd(i2.LaunchTitle) = i2.LaunchAction
-                        End If
-                    Next
-
-                    sd("mkvinfo GUI") = Sub() g.ShellExecute(Packs.Mkvmerge.GetDir + "mkvinfo.exe", If(p.SourceFile.Ext = "mkv", p.SourceFile.Quotes, ""))
-
-                    For Each i2 In sd
-                        i.DropDownItems.Add(New ActionMenuItem(i2.Key, i2.Value))
-                    Next
-                ElseIf i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.HelpApplications) Then
-                    i.DropDownItems.Clear()
-
-                    For Each i2 In Packs.Packages
+                    For Each i2 In Package.Items.Values
                         Dim helpPath = i2.GetHelpPath
 
                         If helpPath <> "" Then
@@ -1573,7 +1557,7 @@ Class MainForm
                     preferredSourceFilter.Script = "#vs"
 
                 If isVapourSynth Then
-                    If Not Packs.Python.VerifyOK(True) OrElse Not Packs.VapourSynth.VerifyOK(True) Then
+                    If Not Package.Python.VerifyOK(True) OrElse Not Package.VapourSynth.VerifyOK(True) Then
                         Throw New AbortException
                     End If
 
@@ -1581,7 +1565,7 @@ Class MainForm
                         p.Script = VideoScript.GetDefaults()(1)
                     End If
                 Else
-                    If Not Packs.AviSynth.VerifyOK(True) OrElse Not Packs.AviSynth.VerifyOK(True) Then
+                    If Not Package.AviSynth.VerifyOK(True) OrElse Not Package.AviSynth.VerifyOK(True) Then
                         Throw New AbortException
                     End If
 
@@ -1822,7 +1806,7 @@ Class MainForm
 
             AviSynthListView.Load()
 
-            If Not Packs.DGDecodeNV.VerifyOK() OrElse Not Packs.DGDecodeIM.VerifyOK() Then
+            If Not Package.DGDecodeNV.VerifyOK() OrElse Not Package.DGDecodeIM.VerifyOK() Then
                 Throw New AbortException
             End If
 
@@ -2067,7 +2051,7 @@ Class MainForm
 
                 Using proc As New Proc
                     proc.Init("Convert sup to sub: " + Filepath.GetName(i), "#>", "#<", "Decoding frame")
-                    proc.File = Packs.BDSup2SubPP.GetPath
+                    proc.File = Package.BDSup2SubPP.GetPath
                     proc.Arguments = "-o """ + Filepath.GetDirAndBase(i) + ".idx"" """ + i + """"
                     proc.AllowedExitCodes = {}
                     proc.Start()
@@ -2092,7 +2076,7 @@ Class MainForm
                 Using proc As New Proc
                     proc.Init("Extract forced subtitles if existing", "# ")
                     proc.WriteLine(Filepath.GetName(i) + CrLf2)
-                    proc.File = Packs.BDSup2SubPP.GetPath
+                    proc.File = Package.BDSup2SubPP.GetPath
                     proc.Arguments = "--forced-only -o """ + Filepath.GetDirAndBase(i) + "_Forced.idx"" """ + i + """"
                     proc.AllowedExitCodes = {}
                     proc.Start()
@@ -2140,9 +2124,9 @@ Class MainForm
                         Using proc As New Proc
                             proc.Init("Demux subtitles using VSRip")
                             proc.WriteLine(args + CrLf2)
-                            proc.File = Packs.VSRip.GetPath
+                            proc.File = Package.VSRip.GetPath
                             proc.Arguments = """" + fileContent + """"
-                            proc.WorkingDirectory = Packs.VSRip.GetDir
+                            proc.WorkingDirectory = Package.VSRip.GetDir
                             proc.AllowedExitCodes = {0, 1, 2}
                             proc.Start()
                         End Using
@@ -2903,10 +2887,10 @@ Class MainForm
                     proc.Encoding = Encoding.UTF8
 
                     If p.Script.Engine = ScriptingEngine.AviSynth Then
-                        proc.File = Packs.ffmpeg.GetPath
+                        proc.File = Package.ffmpeg.GetPath
                         proc.Arguments = "-i """ + p.Script.Path + """"
                     Else
-                        proc.File = Packs.vspipe.GetPath
+                        proc.File = Package.vspipe.GetPath
                         proc.Arguments = """" + p.Script.Path + """ NUL -i"
                     End If
 
@@ -3243,7 +3227,7 @@ Class MainForm
             Dim found As Boolean
 
             If s.StringDictionary.ContainsKey("RecentExternalApplicationControl") Then
-                For Each i As Package In Packs.Packages
+                For Each i In Package.Items.Values
                     If i.Name = s.StringDictionary("RecentExternalApplicationControl") Then
                         f.ShowPackage(i)
                         found = True
@@ -3252,7 +3236,7 @@ Class MainForm
                 Next
             End If
 
-            If Not found Then f.ShowPackage(Packs.x264)
+            If Not found Then f.ShowPackage(Package.x264)
 
             f.ShowDialog()
             g.SaveSettings()
@@ -4210,7 +4194,6 @@ Class MainForm
         ret.Add("Options", "OpenOptionsDialog", Keys.F8)
 
         ret.Add("Tools|Jobs...", "OpenJobsDialog", Keys.F6)
-        ret.Add("Tools|Apps...", "OpenAppsDialog")
         ret.Add("Tools|Log File", "ExecuteCommandLine", """%text_editor%"" ""%working_dir%%target_name%_StaxRip.log""")
         ret.Add("Tools|Directories|Source", "ExecuteCommandLine", """%source_dir%""")
         ret.Add("Tools|Directories|Working", "ExecuteCommandLine", """%working_dir%""")
@@ -4222,9 +4205,7 @@ Class MainForm
         ret.Add("Tools|Directories|Programs", "ExecuteCommandLine", """%programs_dir%""")
         ret.Add("Tools|Directories|System", "ExecuteCommandLine", """%system_dir%""")
         ret.Add("Tools|Directories|Scripts", "ExecuteCommandLine", """%script_dir%""")
-        ret.Add("Tools|Launch", "DynamicMenuItem", DynamicMenuItemID.LaunchApplications)
         If Application.StartupPath = "D:\Projekte\GitHub\staxrip\bin" Then ret.Add("Tools|Advanced|Test...", "Test", Keys.F12)
-        ret.Add("Tools|Advanced|AVSMeter...", "ExecuteCommandLine", """%app:AVSMeter%"" ""%script_file%""" + CrLf + "pause", False, False, True)
         ret.Add("Tools|Advanced|Video Comparison...", "OpenVideoComparison")
         ret.Add("Tools|Advanced|Command Prompt...", "OpenCommandPrompt")
         ret.Add("Tools|Advanced|Event Commands...", "OpenEventCommandsDialog")
@@ -4236,6 +4217,16 @@ Class MainForm
         ret.Add("Tools|Scripts", "DynamicMenuItem", DynamicMenuItemID.Scripts)
         ret.Add("Tools|Edit Menu...", "OpenMainMenuEditor")
         ret.Add("Tools|Settings...", "OpenSettingsDialog", "")
+
+        ret.Add("Apps|AVSMeter...", "ExecuteCommandLine", """%app:AVSMeter%"" ""%script_file%""" + CrLf + "pause", False, False, True)
+        ret.Add("Apps|BDSup2Sub++...", "StartTool", "BDSup2Sub++")
+        ret.Add("Apps|Demux...", "StartTool", "Demux")
+        ret.Add("Apps|DGIndexNV...", "StartTool", "DGIndexNV")
+        ret.Add("Apps|ProjectX...", "StartTool", "ProjectX")
+        ret.Add("Apps|VSRip...", "StartTool", "VSRip")
+
+        ret.Add("Apps|-")
+        ret.Add("Apps|Manage...", "OpenAppsDialog")
 
         ret.Add("Help|Documentation", "ExecuteCommandLine", "https://stax76.gitbooks.io/staxrip-handbook/content/")
         ret.Add("Help|Support Forum|forum.doom9.org", "ExecuteCommandLine", "http://forum.doom9.org/showthread.php?t=172068&page=999999")
@@ -4592,7 +4583,7 @@ Class MainForm
         Dim profile = DirectCast(ObjectHelp.GetCopy(profileInterface), TargetVideoScript)
 
         If profile.Engine = ScriptingEngine.AviSynth OrElse
-                (Packs.Python.VerifyOK(True) AndAlso Packs.VapourSynth.VerifyOK(True)) Then
+                (Package.Python.VerifyOK(True) AndAlso Package.VapourSynth.VerifyOK(True)) Then
 
             p.Script = profile
             AviSynthListView.OnChanged()
@@ -4613,7 +4604,7 @@ Class MainForm
 
         Task.Run(Sub() Scripting.RunCSharp("1+1"))
 
-        If Not File.Exists(Packs.x264.GetPath) Then
+        If Not File.Exists(Package.x264.GetPath) Then
             MsgError("Files included with StaxRip are missing, maybe the 7-Zip archive wasn't properly unpacked. You can find a packer at [http://www.7-zip.org www.7-zip.org].")
             Close()
             Exit Sub
@@ -4761,14 +4752,14 @@ Class MainForm
                                 OpenVideoSourceFiles(f.Files)
                             Case Else
                                 Using proc As New Proc
-                                    proc.Init("Merge source files using Mkvmerge " + Packs.Mkvmerge.Version)
+                                    proc.Init("Merge source files using Mkvmerge " + Package.mkvmerge.Version)
 
                                     For Each i In f.Files
                                         Log.WriteLine(MediaInfo.GetSummary(i) + "---------------------------------------------------------" + CrLf2)
                                     Next
 
                                     proc.Encoding = Encoding.UTF8
-                                    proc.File = Packs.Mkvmerge.GetPath
+                                    proc.File = Package.mkvmerge.GetPath
                                     Dim outFile = Filepath.GetDirAndBase(f.Files(0)) + "_merged.mkv"
                                     proc.Arguments = "-o """ + outFile + """ """ + f.Files.Join(""" + """) + """"
 
@@ -4885,9 +4876,9 @@ Class MainForm
                         End If
 
                         Log.WriteEnvironment()
-                        Log.Write("Process Blu-Ray folder using eac3to", """" + Packs.eac3to.GetPath + """ """ + srcPath + """" + CrLf2)
+                        Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.GetPath + """ """ + srcPath + """" + CrLf2)
 
-                        Dim output = ProcessHelp.GetStdOut(Packs.eac3to.GetPath, """" + srcPath + """").Replace(VB6.vbBack, "")
+                        Dim output = ProcessHelp.GetStdOut(Package.eac3to.GetPath, """" + srcPath + """").Replace(VB6.vbBack, "")
 
                         Log.WriteLine(output)
 
@@ -4967,8 +4958,8 @@ Class MainForm
                     Using proc As New Proc
                         proc.TrimChars = {"-"c, " "c}
                         proc.RemoveChars = {CChar(VB6.vbBack)}
-                        proc.Init("Demux M2TS using eac3to " + Packs.eac3to.Version, "analyze: ", "process: ")
-                        proc.File = Packs.eac3to.GetPath
+                        proc.Init("Demux M2TS using eac3to " + Package.eac3to.Version, "analyze: ", "process: ")
+                        proc.File = Package.eac3to.GetPath
                         proc.Process.StartInfo.Arguments = f.GetArgs(
                             """" + playlistFolder + """ " & playlistID & ")", DirPath.GetName(workDir))
 
@@ -5230,8 +5221,8 @@ Class MainForm
 
     Private Sub AviSynthListView_ScriptChanged() Handles AviSynthListView.Changed
         If Not IsLoading Then
-            Packs.DGDecodeNV.VerifyOK()
-            Packs.DGDecodeIM.VerifyOK()
+            Package.DGDecodeNV.VerifyOK()
+            Package.DGDecodeIM.VerifyOK()
 
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
@@ -5618,7 +5609,7 @@ Class MainForm
     Sub OpenCommandPrompt()
         Dim batchCode = "@echo off" + CrLf
 
-        For Each i In Packs.Packages
+        For Each i In Package.Items.Values
             Dim dir = i.GetDir
 
             If Directory.Exists(dir) AndAlso

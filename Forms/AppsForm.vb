@@ -178,6 +178,7 @@ Class AppsForm
         MyBase.New()
         InitializeComponent()
 
+        Text = "Apps (" & Package.Items.Count & " apps/plugins)"
         SearchTextBox_TextChanged()
 
         tv.Scrollable = True
@@ -222,7 +223,7 @@ Class AppsForm
         DownloadButton.Visible = ActivePackage.DownloadURL <> "" AndAlso (ActivePackage.IsStatusCritical OrElse (Not ActivePackage.IsCorrectVersion AndAlso ActivePackage.Version <> ""))
 
         tsbOpenDir.Enabled = path <> ""
-        tsbLaunch.Enabled = Not ActivePackage.LaunchAction Is Nothing AndAlso Not ActivePackage.IsStatusCritical
+        tsbLaunch.Enabled = Not ActivePackage.StartAction Is Nothing AndAlso Not ActivePackage.IsStatusCritical
         tsbWebsite.Enabled = ActivePackage.WebURL <> ""
         tsbHelp.Enabled = ActivePackage.GetHelpPath <> ""
 
@@ -300,15 +301,11 @@ Class AppsForm
 
     Sub ShowPackage(package As Package)
         For Each i As TreeNode In tv.Nodes
-            If i.IsExpanded Then
-                i.Collapse()
-            End If
+            If i.IsExpanded Then i.Collapse()
         Next
 
         For Each i In tv.GetNodes
-            If package Is i.Tag Then
-                tv.SelectedNode = i
-            End If
+            If package Is i.Tag Then tv.SelectedNode = i
         Next
     End Sub
 
@@ -367,7 +364,7 @@ Class AppsForm
 
                     Dim textContent As String
 
-                    For Each i In Packs.Packages
+                    For Each i In Package.Items.Values
                         If i.Version <> "" Then
                             textContent += i.ID + " = " + i.Version + "; " +
                                 i.VersionDate.ToString("yyyy-MM-dd",
@@ -385,39 +382,39 @@ Class AppsForm
     Private Sub SearchTextBox_TextChanged() Handles SearchTextBox.TextChanged
         tv.Nodes.Clear()
 
-        For Each i In Packs.Packages
-            Dim plugin = TryCast(i, PluginPackage)
+        For Each pack In Package.Items.Values
+            Dim plugin = TryCast(pack, PluginPackage)
 
-            Dim searchString = i.Name + i.Description + i.Version +
+            Dim searchString = pack.Name + pack.Description + pack.Version +
                 plugin?.VapourSynthFilterNames.Join(" ") +
                 plugin?.AviSynthFilterNames.Join(" ")
 
             If searchString?.ToLower.Contains(SearchTextBox.Text?.ToLower) Then
                 If plugin Is Nothing Then
-                    If i Is Packs.Java OrElse
-                        i Is Packs.Python OrElse
-                        i Is Packs.vscpp2013 OrElse
-                        i Is Packs.vscpp2015 Then
+                    If pack Is Package.Java OrElse
+                        pack Is Package.Python OrElse
+                        pack Is Package.vscpp2013 OrElse
+                        pack Is Package.vscpp2015 Then
 
-                        Dim n = tv.AddNode("Runtimes|" + i.Name)
+                        Dim n = tv.AddNode("Runtimes|" + pack.Name)
                         Nodes.Add(n)
-                        n.Tag = i
+                        n.Tag = pack
                     Else
-                        Dim n = tv.AddNode("Apps|" + i.Name)
+                        Dim n = tv.AddNode("Apps|" + pack.Name)
                         Nodes.Add(n)
-                        n.Tag = i
+                        n.Tag = pack
                     End If
                 Else
                     If plugin.AviSynthFilterNames?.Length > 0 Then
-                        Dim n = tv.AddNode("Plugins|AviSynth|" + i.Name)
+                        Dim n = tv.AddNode("Plugins|AviSynth|" + pack.Name)
                         Nodes.Add(n)
-                        n.Tag = i
+                        n.Tag = pack
                     End If
 
                     If plugin.VapourSynthFilterNames?.Length > 0 Then
-                        Dim n = tv.AddNode("Plugins|VapourSynth|" + i.Name)
+                        Dim n = tv.AddNode("Plugins|VapourSynth|" + pack.Name)
                         Nodes.Add(n)
-                        n.Tag = i
+                        n.Tag = pack
                     End If
                 End If
             End If
@@ -430,7 +427,7 @@ Class AppsForm
     End Sub
 
     Private Sub tsbLaunch_Click(sender As Object, e As EventArgs) Handles tsbLaunch.Click
-        ActivePackage.LaunchAction.Invoke()
+        ActivePackage.StartAction.Invoke()
     End Sub
 
     <DebuggerNonUserCode()>

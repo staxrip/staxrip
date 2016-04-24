@@ -458,7 +458,7 @@ Class DemuxForm
     End Sub
 
     Private Sub HelpToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HelpToolStripMenuItem.Click
-        For Each i In Packs.Packages
+        For Each i In Package.Items.Values
             If tbName.Text = i.Name Then
                 If i.GetHelpPath <> "" Then
                     g.ShellExecute(i.GetHelpPath)
@@ -471,6 +471,6 @@ Class DemuxForm
         Next
 
         MsgWarn("The demuxer name '" + tbName.Text + "' does not match with the name of one of StaxRip's apps. StaxRip includes the following apps:" + CrLf2 +
-                Packs.Packages.Where(Function(package) Not TypeOf package Is PluginPackage).Select(Function(package) package.Name).ToArray.Sort.Join(", "))
+                Package.Items.Values.Where(Function(package) Not TypeOf package Is PluginPackage).Select(Function(package) package.Name).ToArray.Sort.Join(", "))
     End Sub
 End Class

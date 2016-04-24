@@ -4,7 +4,7 @@ Imports System.Globalization
 Class Thumbnails
     Shared Sub SaveThumbnails(inputFile As String)
         If Not File.Exists(inputFile) Then Exit Sub
-        If Not Packs.AviSynth.VerifyOK(True) Then Exit Sub
+        If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
 
         Log.WriteHeader("Saving Thumnails")
         Log.WriteLine(inputFile)

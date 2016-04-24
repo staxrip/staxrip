@@ -766,7 +766,7 @@ Class ffmpegEncoder
             proc.Init("Encoding " + Params.Codec.OptionText + " using ffmpeg", "frame=")
             proc.Encoding = Encoding.UTF8
             proc.WorkingDirectory = p.TempDir
-            proc.File = Packs.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.GetPath
             proc.Arguments = args
             proc.Start()
         End Using
@@ -919,7 +919,7 @@ Class ffmpegEncoder
                 targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
             End If
 
-            If includePaths AndAlso includeExecutable Then ret = Packs.ffmpeg.GetPath.Quotes
+            If includePaths AndAlso includeExecutable Then ret = Package.ffmpeg.GetPath.Quotes
 
             Select Case Decoder.ValueText
                 Case "qsv"
@@ -981,7 +981,7 @@ Class ffmpegEncoder
         End Function
 
         Public Overrides Function GetPackage() As Package
-            Return Packs.ffmpeg
+            Return Package.ffmpeg
         End Function
     End Class
 
@@ -1036,7 +1036,7 @@ Class AMDEncoder
                                     End Sub
 
             f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
-            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.NVEncC.GetPath, "--check-vce"))))
+            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.NVEncC.GetPath, "--check-vce"))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = params1
@@ -1061,7 +1061,7 @@ Class AMDEncoder
             File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
 
             Using proc As New Proc
-                proc.Init("Encoding using VCEEncC " + Packs.VCEEncC.Version)
+                proc.Init("Encoding using VCEEncC " + Package.VCEEncC.Version)
                 proc.SkipStrings = {"%]", " frames: "}
                 proc.WriteLine(cl + CrLf2)
                 proc.File = "cmd.exe"
@@ -1070,9 +1070,9 @@ Class AMDEncoder
             End Using
         Else
             Using proc As New Proc
-                proc.Init("Encoding using VCEEncC " + Packs.VCEEncC.Version)
+                proc.Init("Encoding using VCEEncC " + Package.VCEEncC.Version)
                 proc.SkipStrings = {"%]"}
-                proc.File = Packs.VCEEncC.GetPath
+                proc.File = Package.VCEEncC.GetPath
                 proc.Arguments = cl
                 proc.Start()
             End Using
@@ -1217,7 +1217,7 @@ Class AMDEncoder
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
 
             If includePaths AndAlso includeExecutable Then
-                ret = Packs.VCEEncC.GetPath.Quotes
+                ret = Package.VCEEncC.GetPath.Quotes
             End If
 
             Select Case Decoder.ValueText
@@ -1225,13 +1225,13 @@ Class AMDEncoder
                     sourcePath = p.Script.Path
                 Case "qs"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.QSVEncC.GetPath.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Packs.VCEEncC.GetPath.Quotes, "VCEEncC")
+                    If includePaths Then ret = If(includePaths, Package.QSVEncC.GetPath.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Package.VCEEncC.GetPath.Quotes, "VCEEncC")
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.VCEEncC.GetPath.Quotes, "VCEEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.VCEEncC.GetPath.Quotes, "VCEEncC")
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.VCEEncC.GetPath.Quotes, "VCEEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.VCEEncC.GetPath.Quotes, "VCEEncC")
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
@@ -1257,7 +1257,7 @@ Class AMDEncoder
         End Function
 
         Public Overrides Function GetPackage() As Package
-            Return Packs.VCEEncC
+            Return Package.VCEEncC
         End Function
     End Class
 End Class

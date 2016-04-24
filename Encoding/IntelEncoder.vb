@@ -50,10 +50,10 @@ Public Class IntelEncoder
                                     End Sub
 
             f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
-            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetStdOut(Packs.QSVEncC.GetPath, "--check-environment"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.QSVEncC.GetPath, "--check-hw"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Packs.QSVEncC.GetPath, "--check-features"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Library", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.QSVEncC.GetPath, "--check-lib"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetStdOut(Package.QSVEncC.GetPath, "--check-environment"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.QSVEncC.GetPath, "--check-hw"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.QSVEncC.GetPath, "--check-features"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Library", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.QSVEncC.GetPath, "--check-lib"))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = params1
@@ -80,7 +80,7 @@ Public Class IntelEncoder
             File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
 
             Using proc As New Proc
-                proc.Init("Encoding using QSVEncC " + Packs.QSVEncC.Version)
+                proc.Init("Encoding using QSVEncC " + Package.QSVEncC.Version)
                 proc.SkipStrings = {" frames: "}
                 proc.WriteLine(cl + CrLf2)
                 proc.File = "cmd.exe"
@@ -89,9 +89,9 @@ Public Class IntelEncoder
             End Using
         Else
             Using proc As New Proc
-                proc.Init("Encoding using QSVEncC " + Packs.QSVEncC.Version)
+                proc.Init("Encoding using QSVEncC " + Package.QSVEncC.Version)
                 proc.SkipStrings = {" frames: "}
-                proc.File = Packs.QSVEncC.GetPath
+                proc.File = Package.QSVEncC.GetPath
                 proc.Arguments = cl
                 proc.Start()
             End Using
@@ -152,7 +152,6 @@ Public Class IntelEncoder
         Property QPB As New NumParam With {.Switches = {"--cqp", "--vqp"}, .Text = "QP B:", .Value = 27, .DefaultValue = 27, .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText), .MinMaxStep = {0, 51, 1}}
         Property TFF As New BoolParam With {.Switch = "--tff", .Text = "Top Field First"}
         Property BFF As New BoolParam With {.Switch = "--bff", .Text = "Bottom Field First"}
-        Property Custom As New StringParam With {.Text = "Custom:", .ArgsFunc = Function() Custom.Value}
 
         Private ItemsValue As List(Of CommandLineParam)
 
@@ -217,6 +216,10 @@ Public Class IntelEncoder
                         New BoolParam With {.Switch = "--fullrange", .Text = "Fullrange"})
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                     Add("Other",
+                        New StringParam With {.Text = "Custom:"},
+                        New StringParam With {.Switch = "--vpp-sub", .Text = "Sub File:", .Quotes = True},
+                        New StringParam With {.Switch = "--vpp-sub-charset", .Text = "Sub Charset:", .Quotes = True},
+                        New OptionParam With {.Switch = "--vpp-sub-shaping", .Text = "Sub Shaping:", .Options = {"simple", "complex"}},
                         New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D:", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .InitValue = 3},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level:", .Options = {"info", "debug", "warn", "error"}},
                         New OptionParam With {.Switch = "--trellis", .Text = "Trellis:", .Options = {"auto", "off", "i", "ip", "all"}},
@@ -225,8 +228,7 @@ Public Class IntelEncoder
                         New BoolParam With {.Switch = "--timer-period-tuning", .NoSwitch = "--no-timer-period-tuning", .Text = "Timer Period Tuning", .InitValue = True},
                         New BoolParam With {.Switch = "--i-adapt", .Text = "Adaptive I Frame Insert"},
                         New BoolParam With {.Switch = "--fixed-func", .Text = "Use fixed func instead of GPU EU"},
-                        New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"},
-                        Custom)
+                        New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"})
                 End If
 
                 Return ItemsValue
@@ -279,7 +281,7 @@ Public Class IntelEncoder
             Dim sourcePath = p.Script.Path
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
 
-            If includePaths AndAlso includeExecutable Then ret = Packs.QSVEncC.GetPath.Quotes
+            If includePaths AndAlso includeExecutable Then ret = Package.QSVEncC.GetPath.Quotes
 
             Select Case Decoder.ValueText
                 Case "avs"
@@ -288,10 +290,10 @@ Public Class IntelEncoder
                     sourcePath = p.LastOriginalSourceFile
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.LastOriginalSourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.QSVEncC.GetPath.Quotes, "QSVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.LastOriginalSourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.QSVEncC.GetPath.Quotes, "QSVEncC")
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.QSVEncC.GetPath.Quotes, "QSVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.QSVEncC.GetPath.Quotes, "QSVEncC")
 
             End Select
 
@@ -342,7 +344,7 @@ Public Class IntelEncoder
         End Function
 
         Public Overrides Function GetPackage() As Package
-            Return Packs.QSVEncC
+            Return Package.QSVEncC
         End Function
     End Class
 End Class

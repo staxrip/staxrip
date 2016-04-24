@@ -48,9 +48,9 @@ Public Class NVIDIAEncoder
                                     End Sub
 
             f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
-            f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Packs.NVEncC.GetPath, "--check-hw"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Packs.NVEncC.GetPath, "--check-features"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetErrorOutput(Packs.NVEncC.GetPath, "--check-environment"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.NVEncC.GetPath, "--check-hw"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.NVEncC.GetPath, "--check-features"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetErrorOutput(Package.NVEncC.GetPath, "--check-environment"))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = newParams
@@ -75,7 +75,7 @@ Public Class NVIDIAEncoder
             File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
 
             Using proc As New Proc
-                proc.Init("Encoding using NVEncC " + Packs.NVEncC.Version)
+                proc.Init("Encoding using NVEncC " + Package.NVEncC.Version)
                 proc.SkipStrings = {"%]", " frames: "}
                 proc.WriteLine(cl + CrLf2)
                 proc.File = "cmd.exe"
@@ -84,9 +84,9 @@ Public Class NVIDIAEncoder
             End Using
         Else
             Using proc As New Proc
-                proc.Init("Encoding using NVEncC " + Packs.NVEncC.Version)
+                proc.Init("Encoding using NVEncC " + Package.NVEncC.Version)
                 proc.SkipStrings = {"%]"}
-                proc.File = Packs.NVEncC.GetPath
+                proc.File = Package.NVEncC.GetPath
                 proc.Arguments = cl
                 proc.Start()
             End Using
@@ -282,7 +282,7 @@ Public Class NVIDIAEncoder
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
 
             If includePaths AndAlso includeExecutable Then
-                ret = Packs.NVEncC.GetPath.Quotes
+                ret = Package.NVEncC.GetPath.Quotes
             End If
 
             Select Case Decoder.ValueText
@@ -292,13 +292,13 @@ Public Class NVIDIAEncoder
                     sourcePath = p.LastOriginalSourceFile
                 Case "qs"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.QSVEncC.GetPath.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Packs.NVEncC.GetPath.Quotes, "NVEncC")
+                    If includePaths Then ret = If(includePaths, Package.QSVEncC.GetPath.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Package.NVEncC.GetPath.Quotes, "NVEncC")
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.NVEncC.GetPath.Quotes, "NVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.NVEncC.GetPath.Quotes, "NVEncC")
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Packs.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Packs.NVEncC.GetPath.Quotes, "NVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.NVEncC.GetPath.Quotes, "NVEncC")
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
@@ -333,7 +333,7 @@ Public Class NVIDIAEncoder
         End Function
 
         Public Overrides Function GetPackage() As Package
-            Return Packs.NVEncC
+            Return Package.NVEncC
         End Function
     End Class
 End Class

@@ -273,9 +273,9 @@ Public Class BatchAudioProfile
             Dim targetPath = GetOutputFile()
 
             Dim batchCode = "@echo off" + CrLf2 + {
-                Packs.ffmpeg.GetDir,
-                Packs.eac3to.GetDir,
-                Packs.BeSweet.GetDir}.
+                Package.ffmpeg.GetDir,
+                Package.eac3to.GetDir,
+                Package.BeSweet.GetDir}.
                 Select(Function(arg) "set PATH=%PATH%;" + arg).
                 Join(CrLf) + CrLf2 +
                 "cd /D """ + p.TempDir + """" + CrLf2 +
@@ -351,9 +351,7 @@ Class NullAudioProfile
     Overrides Sub EditProject()
         Using f As New SimpleSettingsForm("Null Audio Profile Options")
             f.Size = New Size(500, 300)
-
             Dim ui = f.SimpleUI
-
             Dim page = ui.CreateFlowPage("main page")
 
             Dim nb = ui.AddNumericBlock(page)
@@ -362,9 +360,7 @@ Class NullAudioProfile
             nb.NumEdit.Value = CDec(Bitrate)
             nb.NumEdit.SaveAction = Sub(value) Bitrate = CDec(value)
 
-            If f.ShowDialog() = DialogResult.OK Then
-                ui.Save()
-            End If
+            If f.ShowDialog() = DialogResult.OK Then ui.Save()
         End Using
     End Sub
 
@@ -629,16 +625,16 @@ Class GUIAudioProfile
 
                 Using proc As New Proc
                     If i.Contains("BeSweet.exe") Then
-                        proc.Init("Audio encoding using BeSweet " + Packs.BeSweet.Version, "Processed", "transcoding", "Maximum Gain Found : ", "Asserting gain")
+                        proc.Init("Audio encoding using BeSweet " + Package.BeSweet.Version, "Processed", "transcoding", "Maximum Gain Found : ", "Asserting gain")
                     ElseIf i.Contains("eac3to.exe") Then
-                        proc.Init("Audio encoding using eac3to " + Packs.eac3to.Version, "process: ", "analyze: ")
+                        proc.Init("Audio encoding using eac3to " + Package.eac3to.Version, "process: ", "analyze: ")
                         proc.TrimChars = {"-"c, " "c}
                         proc.RemoveChars = {VB6.ChrW(8)} 'backspace
                     ElseIf i.Contains("ffmpeg.exe") Then
-                        proc.Init("Audio encoding using ffmpeg " + Packs.ffmpeg.Version, "size=", "decoding is not implemented", "unsupported frame type", "upload a sample")
+                        proc.Init("Audio encoding using ffmpeg " + Package.ffmpeg.Version, "size=", "decoding is not implemented", "unsupported frame type", "upload a sample")
                         proc.Encoding = Encoding.UTF8
                     ElseIf i.Contains("qaac64.exe") Then
-                        proc.Init("Audio encoding using qaac " + Packs.qaac.Version, ", ETA ")
+                        proc.Init("Audio encoding using qaac " + Package.qaac.Version, ", ETA ")
                     End If
 
                     proc.CommandLine = i
@@ -711,7 +707,7 @@ Class GUIAudioProfile
         End If
 
         If includePaths Then
-            ret = """" + Packs.eac3to.GetPath + """ " + id + """" + File + """ """ + GetOutputFile() + """"
+            ret = """" + Package.eac3to.GetPath + """ " + id + """" + File + """ """ + GetOutputFile() + """"
         Else
             ret = "eac3to"
         End If
@@ -763,7 +759,7 @@ Class GUIAudioProfile
         includePaths = includePaths And File <> ""
 
         If includePaths Then
-            r = """" + Packs.qaac.GetPath + """ -o """ + GetOutputFile() + """"
+            r = """" + Package.qaac.GetPath + """ -o """ + GetOutputFile() + """"
         Else
             r = "qaac"
         End If
@@ -826,7 +822,7 @@ Class GUIAudioProfile
         Dim ret As String
 
         If includePaths AndAlso File <> "" Then
-            ret = """" + Packs.ffmpeg.GetPath + """ -i """ + File + """"
+            ret = """" + Package.ffmpeg.GetPath + """ -i """ + File + """"
         Else
             ret = "ffmpeg"
         End If
@@ -907,7 +903,7 @@ Class GUIAudioProfile
         Dim r As String
 
         If includePaths Then
-            r = """" + Packs.BeSweet.GetPath + """"
+            r = """" + Package.BeSweet.GetPath + """"
         Else
             r = "BeSweet"
         End If

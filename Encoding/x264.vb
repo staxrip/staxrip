@@ -24,16 +24,16 @@ Public Class x264Encoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode("Encoding video using x264 " + Packs.x264.Version, GetArgs(1), p.Script, s.ProcessPriority)
+        Encode("Encoding video using x264 " + Package.x264.Version, GetArgs(1), p.Script, s.ProcessPriority)
 
         If Params.Mode.Value = x264Mode.TwoPass OrElse
             Params.Mode.Value = x264Mode.ThreePass Then
 
-            Encode("Encoding video second pass using x264 " + Packs.x264.Version, GetArgs(2), p.Script, s.ProcessPriority)
+            Encode("Encoding video second pass using x264 " + Package.x264.Version, GetArgs(2), p.Script, s.ProcessPriority)
         End If
 
         If Params.Mode.Value = x264Mode.ThreePass Then
-            Encode("Encoding video third pass using x264 " + Packs.x264.Version, GetArgs(3), p.Script, s.ProcessPriority)
+            Encode("Encoding video third pass using x264 " + Package.x264.Version, GetArgs(3), p.Script, s.ProcessPriority)
         End If
 
         AfterEncoding()
@@ -46,7 +46,7 @@ Public Class x264Encoder
 
         If p.Script.Engine = ScriptingEngine.VapourSynth Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
-            Dim cli = """" + Packs.vspipe.GetPath + """ """ + script.Path + """ - --y4m | """ + Packs.x264.GetPath + """ " + args
+            Dim cli = """" + Package.vspipe.GetPath + """ """ + script.Path + """ - --y4m | """ + Package.x264.GetPath + """ " + args
             File.WriteAllText(batchPath, cli, Encoding.GetEncoding(850))
 
             Using proc As New Proc
@@ -63,7 +63,7 @@ Public Class x264Encoder
                 proc.Init(passName)
                 proc.Priority = priority
                 proc.SkipStrings = {"kb/s, eta", "%]"}
-                proc.File = Packs.x264.GetPath
+                proc.File = Package.x264.GetPath
                 proc.Arguments = args
                 proc.Start()
             End Using

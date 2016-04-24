@@ -52,10 +52,7 @@ Class TaskDialog(Of T)
         Dim r As New StringBuilder(260)
         Dim h = Native.GetForegroundWindow
         Native.GetWindowModuleFileName(h, r, 260)
-
-        If r.ToString.Contains("StaxRip") Then
-            Return h
-        End If
+        If r.ToString.Replace(".vshost", "").Base = Application.ExecutablePath.Base Then Return h
     End Function
 
 #Region "Constants"

@@ -216,15 +216,6 @@
     <Compile Include="Encoding\IntelEncoder.vb" />
     <Compile Include="Encoding\NVIDIAEncoder.vb" />
     <Compile Include="General\Scripting.vb" />
-    <Compile Include="Toolbox\Demux\Extensions.vb" />
-    <Compile Include="Toolbox\Demux\MainForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Toolbox\Demux\misc.vb" />
-    <Compile Include="Toolbox\Demux\My Project\Application.Designer.vb" />
-    <Compile Include="Toolbox\Demux\My Project\AssemblyInfo.vb" />
-    <Compile Include="Toolbox\Demux\My Project\Resources.Designer.vb" />
-    <Compile Include="Toolbox\Demux\My Project\Settings.Designer.vb" />
     <Compile Include="UI\DataForm.Designer.vb">
       <DependentUpon>DataForm.vb</DependentUpon>
     </Compile>
@@ -451,21 +442,6 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
-    <Content Include="Toolbox\Demux\bin\Demux.exe" />
-    <Content Include="Toolbox\Demux\bin\Demux.pdb" />
-    <Content Include="Toolbox\Demux\bin\Demux.vshost.exe" />
-    <Content Include="Toolbox\Demux\bin\MediaInfo.dll" />
-    <Content Include="Toolbox\Demux\Demux.sln" />
-    <Content Include="Toolbox\Demux\Demux.vbproj" />
-    <Content Include="Toolbox\Demux\My Project\Application.myapp" />
-    <Content Include="Toolbox\Demux\obj\Debug\Demux.exe" />
-    <Content Include="Toolbox\Demux\obj\Debug\Demux.pdb" />
-    <Content Include="Toolbox\Demux\obj\Debug\Demux.vbproj.FileListAbsolute.txt" />
-    <Content Include="Toolbox\Demux\obj\Debug\TempPE\My Project.Resources.Designer.vb.dll" />
-    <Content Include="Toolbox\Demux\obj\Release\Demux.exe" />
-    <Content Include="Toolbox\Demux\obj\Release\Demux.pdb" />
-    <Content Include="Toolbox\Demux\obj\Release\Demux.vbproj.FileListAbsolute.txt" />
-    <Content Include="Toolbox\Demux\obj\Release\TempPE\My Project.Resources.Designer.vb.dll" />
     <None Include="md\test-build.md" />
     <None Include="packages.config" />
     <None Include="Resources\play.png" />
@@ -506,14 +482,6 @@
     <EmbeddedResource Include="Forms\AudioForm.resx">
       <DependentUpon>AudioForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Toolbox\Demux\MainForm.resx">
-      <DependentUpon>MainForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Toolbox\Demux\My Project\Resources.resx" />
-    <EmbeddedResource Include="Toolbox\Demux\obj\Debug\Demux.MainForm.resources" />
-    <EmbeddedResource Include="Toolbox\Demux\obj\Debug\Demux.Resources.resources" />
-    <EmbeddedResource Include="Toolbox\Demux\obj\Release\Demux.MainForm.resources" />
-    <EmbeddedResource Include="Toolbox\Demux\obj\Release\Demux.Resources.resources" />
     <EmbeddedResource Include="UI\DataForm.resx">
       <DependentUpon>DataForm.vb</DependentUpon>
     </EmbeddedResource>
@@ -635,18 +603,6 @@
     <EmbeddedResource Include="UI\Templates\UserControlTemplate.resx">
       <DependentUpon>UserControlTemplate.vb</DependentUpon>
     </EmbeddedResource>
-    <None Include="Toolbox\Demux\App.config" />
-    <None Include="Toolbox\Demux\bin\Demux.exe.config" />
-    <None Include="Toolbox\Demux\bin\Demux.vshost.exe.config" />
-    <None Include="Toolbox\Demux\bin\Demux.vshost.exe.manifest" />
-    <None Include="Toolbox\Demux\My Project\app.manifest" />
-    <None Include="Toolbox\Demux\My Project\Settings.settings" />
-    <None Include="Toolbox\Demux\obj\Debug\Demux.vbproj.GenerateResource.Cache" />
-    <None Include="Toolbox\Demux\obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
-    <None Include="Toolbox\Demux\obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
-    <None Include="Toolbox\Demux\obj\Release\Demux.vbproj.GenerateResource.Cache" />
-    <None Include="Toolbox\Demux\obj\Release\Demux.vbprojResolveAssemblyReference.cache" />
-    <None Include="Toolbox\Demux\obj\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

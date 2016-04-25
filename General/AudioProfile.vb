@@ -702,7 +702,7 @@ Class GUIAudioProfile
     Function GetEac3toCommandLine(includePaths As Boolean) As String
         Dim ret, id As String
 
-        If {"ts", "m2ts"}.Contains(File.Ext) AndAlso Not Stream Is Nothing Then
+        If File.Ext.EqualsAny("ts", "m2ts") AndAlso Not Stream Is Nothing Then
             id = (Stream.StreamOrder + 1) & ": "
         End If
 
@@ -735,13 +735,16 @@ Class GUIAudioProfile
             If Gain < 0 Then ret += " " & CInt(Gain) & "dB"
             If Gain > 0 Then ret += " +" & CInt(Gain) & "dB"
 
-            If Channels = 2 Then
-                If Params.eac3toStereoDownmixMode = 0 Then
-                    ret += " -downStereo"
-                Else
-                    ret += " -downDpl"
-                End If
-            End If
+            Select Case Channels
+                Case 6
+                    ret += " -down6"
+                Case 2
+                    If Params.eac3toStereoDownmixMode = 0 Then
+                        ret += " -downStereo"
+                    Else
+                        ret += " -downDpl"
+                    End If
+            End Select
 
             If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
         ElseIf Params.eac3toExtractDtsCore Then

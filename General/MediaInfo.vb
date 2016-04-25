@@ -22,7 +22,7 @@ Class MediaInfo
     Private Shared Function MediaInfo_Close(Handle As IntPtr) As Integer
     End Function
 
-    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
+    <DllImport("MediaInfo.dll")>
     Private Shared Function MediaInfo_Inform(Handle As IntPtr,
                                              Reserved As Integer) As IntPtr
     End Function

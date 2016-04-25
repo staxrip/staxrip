@@ -14,6 +14,8 @@ http://1drv.ms/1OqPDOe
 - added new standalone mkvextract GUI (Main Menu > Apps > Demux)
 - added new QSVEncC switches for hordcoded subtitles
 - added MP4 support to standalone demux app
+- when AVSMeter is started without a source opened the -avsinfo switch is used to shows useful info
+- added support for unicode file names using VapourSynth, AviSynth don't support it
 
 ### Fixed Bugs
 
@@ -36,3 +38,5 @@ http://1drv.ms/1OqPDOe
 - MP4Box 0.6.2
 - nnedi3 0.9.4.21
 - StaxRip Toolbox Demux 1.1
+- mvsfunc 7
+- L-SMASH-Works 877

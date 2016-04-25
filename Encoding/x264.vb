@@ -46,14 +46,19 @@ Public Class x264Encoder
 
         If p.Script.Engine = ScriptingEngine.VapourSynth Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
-            Dim cli = """" + Package.vspipe.GetPath + """ """ + script.Path + """ - --y4m | """ + Package.x264.GetPath + """ " + args
-            File.WriteAllText(batchPath, cli, Encoding.GetEncoding(850))
+
+            Dim batchCode = "@echo off" + CrLf + "CHCP 65001" + CrLf +
+                Package.vspipe.GetPath.Quotes + " " + script.Path.Quotes + " - --y4m | " +
+                Package.x264.GetPath.Quotes + " " + args
+
+            File.WriteAllText(batchPath, batchCode, New UTF8Encoding(False))
 
             Using proc As New Proc
                 proc.Init(passName)
+                proc.Encoding = Encoding.UTF8
                 proc.Priority = priority
                 proc.SkipStrings = {"kb/s, eta", "%]"}
-                proc.WriteLine(cli + CrLf2)
+                proc.WriteLine(batchCode + CrLf2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
                 proc.Start()

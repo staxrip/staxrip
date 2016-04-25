@@ -184,7 +184,7 @@ Public Class VideoScript
                     If Engine = ScriptingEngine.VapourSynth Then
                         script.WriteFile(Path, Encoding.UTF8)
                     Else
-                        script.WriteFile(Path)
+                        script.WriteANSIFile(Path)
                     End If
 
                     If p.SourceFile <> "" Then

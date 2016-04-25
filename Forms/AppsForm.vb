@@ -178,7 +178,13 @@ Class AppsForm
         MyBase.New()
         InitializeComponent()
 
-        Text = "Apps (" & Package.Items.Count & " apps/plugins)"
+        Dim plugins = Package.Items.Values.OfType(Of PluginPackage)
+        Dim avs = plugins.Where(Function(arg) Not arg.AviSynthFilterNames.NothingOrEmpty).Count
+        Dim vs = plugins.Where(Function(arg) Not arg.VapourSynthFilterNames.NothingOrEmpty).Count
+        Dim exe = Package.Items.Values.Where(Function(arg) arg.Filename.Ext = "exe").Count
+        Dim dll = Package.Items.Values.Where(Function(arg) arg.Filename.Ext = "dll" AndAlso Not TypeOf arg Is PluginPackage).Count
+
+        Text = $"Apps ({Package.Items.Count } packages, {exe} tools, {avs} AviSynth plugins, {vs} VapourSynth plugins, {dll} libraries)"
         SearchTextBox_TextChanged()
 
         tv.Scrollable = True

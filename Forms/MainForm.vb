@@ -1839,7 +1839,7 @@ Class MainForm
 
                         If film >= 95 Then
                             content = content.Replace("Field_Operation=0" + CrLf + "Frame_Rate=29970 (30000/1001)", "Field_Operation=1" + CrLf + "Frame_Rate=23976 (24000/1001)")
-                            content.WriteFile(p.SourceFile)
+                            content.WriteANSIFile(p.SourceFile)
                         End If
                     End If
                 End If
@@ -2119,7 +2119,7 @@ Class MainForm
                             "CLOSE"
 
                         Dim fileContent = p.TempDir + Filepath.GetBase(p.TargetFile) + "_vsrip.txt"
-                        args.WriteFile(fileContent)
+                        args.WriteANSIFile(fileContent)
 
                         Using proc As New Proc
                             proc.Init("Demux subtitles using VSRip")
@@ -2708,7 +2708,7 @@ Class MainForm
     Sub AudioTextChanged(tb As TextBox, ap As AudioProfile)
         If BlockAudioTextChanged Then Exit Sub
 
-        If tb.Text.ContainsUnicode Then
+        If tb.Text.ContainsUnicode AndAlso p.Script.Engine = ScriptingEngine.AviSynth Then
             MsgWarn(Strings.NoUnicode)
             tb.Text = ""
             Exit Sub
@@ -4218,7 +4218,7 @@ Class MainForm
         ret.Add("Tools|Edit Menu...", "OpenMainMenuEditor")
         ret.Add("Tools|Settings...", "OpenSettingsDialog", "")
 
-        ret.Add("Apps|AVSMeter...", "ExecuteCommandLine", """%app:AVSMeter%"" ""%script_file%""" + CrLf + "pause", False, False, True)
+        ret.Add("Apps|AVSMeter...", "StartTool", "AVSMeter")
         ret.Add("Apps|BDSup2Sub++...", "StartTool", "BDSup2Sub++")
         ret.Add("Apps|Demux...", "StartTool", "Demux")
         ret.Add("Apps|DGIndexNV...", "StartTool", "DGIndexNV")
@@ -4292,7 +4292,7 @@ Class MainForm
                     If sb.Show = DialogResult.Cancel Then Exit Sub
 
                     Regex.Replace(File.ReadAllText(d.FileName), "langidx: \d+", "langidx: " +
-                                  sb.SelectedItem.IndexIDX.ToString).WriteFile(d.FileName)
+                                  sb.SelectedItem.IndexIDX.ToString).WriteANSIFile(d.FileName)
                 End If
 
                 Dim filter As New VideoFilter
@@ -5250,7 +5250,7 @@ Class MainForm
             tbTargetFile.Text = p.TargetFile
         End If
 
-        If tbTargetFile.Text.ContainsUnicode Then
+        If tbTargetFile.Text.ContainsUnicode AndAlso p.Script.Engine = ScriptingEngine.AviSynth Then
             MsgWarn(Strings.NoUnicode)
             tbTargetFile.Text = p.TargetFile
         End If

@@ -259,7 +259,7 @@ Class GlobalClass
 
     Function ShowVideoSourceWarnings(files As IEnumerable(Of String)) As Boolean
         For Each i In files
-            If i.ContainsUnicode Then
+            If i.ContainsUnicode AndAlso p.Script.Engine = ScriptingEngine.AviSynth Then
                 MsgError(Strings.NoUnicode)
                 Return True
             End If
@@ -813,7 +813,7 @@ Class GlobalClass
                     p.TempDir + p.Name + "_StaxRip.log", Paths.SettingsDir + "Log.txt")
 
         SyncLock p.Log
-            p.Log.ToString.WriteFile(fp)
+            p.Log.ToString.WriteANSIFile(fp)
         End SyncLock
 
         g.OpenDirAndSelectFile(fp, g.MainForm.Handle)
@@ -1191,7 +1191,7 @@ Class Log
         If p.SourceFile <> "" Then
             SyncLock p.Log
                 If Directory.Exists(p.TempDir) Then
-                    p.Log.ToString.WriteFile(p.TempDir + p.Name + "_StaxRip.log")
+                    p.Log.ToString.WriteFile(p.TempDir + p.Name + "_StaxRip.log", Encoding.UTF8)
                 End If
             End SyncLock
         End If
@@ -2680,7 +2680,7 @@ Class GlobalCommands
         <DispName("Interpret Output"),
         Description("Interprets each output line as StaxRip command."),
         DefaultValue(False)>
-        interpretOutput As Boolean)
+        Optional interpretOutput As Boolean = False)
 
         Dim closeNeeded As Boolean
 

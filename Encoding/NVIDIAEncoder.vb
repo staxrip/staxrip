@@ -68,29 +68,19 @@ Public Class NVIDIAEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Dim cl = Params.GetCommandLine(True, False)
+        Dim batchCode = "@echo off" + CrLf + "CHCP 65001" + CrLf + Params.GetCommandLine(True, True)
+        Dim batchPath = p.TempDir + p.TargetFile.Base + "_NVEncC.bat"
+        File.WriteAllText(batchPath, batchCode, New UTF8Encoding(False))
 
-        If cl.Contains(" | ") Then
-            Dim batchPath = p.TempDir + p.TargetFile.Base + "_NVEncC.bat"
-            File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
-
-            Using proc As New Proc
-                proc.Init("Encoding using NVEncC " + Package.NVEncC.Version)
-                proc.SkipStrings = {"%]", " frames: "}
-                proc.WriteLine(cl + CrLf2)
-                proc.File = "cmd.exe"
-                proc.Arguments = "/C call """ + batchPath + """"
-                proc.Start()
-            End Using
-        Else
-            Using proc As New Proc
-                proc.Init("Encoding using NVEncC " + Package.NVEncC.Version)
-                proc.SkipStrings = {"%]"}
-                proc.File = Package.NVEncC.GetPath
-                proc.Arguments = cl
-                proc.Start()
-            End Using
-        End If
+        Using proc As New Proc
+            proc.Init("Encoding using NVEncC " + Package.NVEncC.Version)
+            proc.Encoding = Encoding.UTF8
+            proc.SkipStrings = {"%]", " frames: "}
+            proc.WriteLine(batchCode + CrLf2)
+            proc.File = "cmd.exe"
+            proc.Arguments = "/C call """ + batchPath + """"
+            proc.Start()
+        End Using
 
         AfterEncoding()
     End Sub

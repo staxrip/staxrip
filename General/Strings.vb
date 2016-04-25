@@ -6,7 +6,7 @@ Friend Class Strings
     Friend Const TaskDialogFooter As String = "[copymsg: Copy Message]"
     Friend Const ParRegexPattern As String = "^([1-9]+\d*)(/|:)([1-9]+\d*)$"
     Friend Const VisitForum As String = "Please copy the message and post it to the support forum or mail it."
-    Friend Const NoUnicode As String = "Unicode filenames are not supported by AviSynth."
+    Friend Const NoUnicode As String = "Unicode filenames are not supported by AviSynth, it works with VapourSynth."
     Friend Const ProjectX As String = "ProjectX demuxes MPEG-2 DVD and DVB sources, H.264/AVC and H.265/HEVC are not supported. ProjectX can be enabled or disabled in the settings on the Demuxing tab."
     Friend Const dsmux As String = "dsmux is installed by the Haali Splitter and is used to mux TS containing AVC into MKV in order to fix av sync problems, dsmux handles av sync much better then many other TS tools. dsmux can be enabled or disabled in the settings on the Demuxing tab, if no audio is present or DGDecNV/DGDecIM is used, dsmux is not necessary and skipped automatically. LAV Filters and Haali Splitter overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
     Friend Const Muxer As String = "A muxer merges different video, audio and subtitle files into a single container file which is the actual output file. Using x264 or subtitles MKV or MP4 is required as container."

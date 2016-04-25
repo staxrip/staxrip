@@ -151,7 +151,7 @@ Class AVIFile
     Private Shared Sub AVIFileInit()
     End Sub
 
-    <DllImport("avifil32.dll")>
+    <DllImport("avifil32.dll", CharSet:=CharSet.Unicode)>
     Private Shared Function AVIFileOpen(ByRef ppfile As IntPtr, szFile As String, uMode As Integer, pclsidHandler As IntPtr) As Integer
     End Function
 

@@ -203,16 +203,14 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Sub WriteFile(value As String, path As String)
-        WriteFile(value, path, Encoding.Default)
+    Sub WriteANSIFile(instance As String, path As String)
+        WriteFile(instance, path, Encoding.Default)
     End Sub
 
     <Extension()>
     Sub WriteFile(value As String, path As String, encoding As Encoding)
         Try
-            Using sw As New StreamWriter(File.Create(path), encoding)
-                sw.Write(value)
-            End Using
+            File.WriteAllText(path, value, encoding)
         Catch ex As Exception
             g.ShowException(ex)
         End Try

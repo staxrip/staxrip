@@ -57,18 +57,20 @@ Public Class x265Encoder
     End Sub
 
     Overloads Sub Encode(passName As String,
-                         commandLine As String,
+                         batchCode As String,
                          script As VideoScript,
                          priority As ProcessPriorityClass)
 
+        batchCode = "@echo off" + CrLf + "CHCP 65001" + CrLf + batchCode
         Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
-        File.WriteAllText(batchPath, commandLine, Encoding.GetEncoding(850))
+        File.WriteAllText(batchPath, batchCode, New UTF8Encoding(False))
 
         Using proc As New Proc
             proc.Init(passName)
+            proc.Encoding = Encoding.UTF8
             proc.Priority = priority
             proc.SkipStrings = {"%] "}
-            proc.WriteLine(commandLine + CrLf2)
+            proc.WriteLine(batchCode + CrLf2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
             proc.Start()

@@ -22,7 +22,6 @@ Public Class Package
     Shared Property Items As New SortedDictionary(Of String, Package)
 
     Shared Property AviSynth As New AviSynthPlusPackage
-    Shared Property AVSMeter As New AVSMeterPackage
     Shared Property BDSup2SubPP As New BDSup2SubPackage
     Shared Property checkmate As New checkmatePackage
     Shared Property DGDecodeIM As New DGDecodeIMPackage
@@ -146,7 +145,6 @@ Public Class Package
         Add(Decomb)
         Add(flash3kyuu_deband)
         Add(AviSynth)
-        Add(AVSMeter)
         Add(BDSup2SubPP)
         Add(BeSweet)
         Add(checkmate)
@@ -185,6 +183,20 @@ Public Class Package
         Add(ffms2)
 
 #Region "misc"
+
+        Add(New Package With {
+            .Name = "AVSMeter",
+            .Filename = "AVSMeter64.exe",
+            .Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.",
+            .StartActionValue = Sub()
+                                    If p.SourceFile = "" Then
+                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").GetPath.Quotes + " -avsinfo" + CrLf + "pause", False, False, True)
+                                    Else
+                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").GetPath.Quotes + " " + p.Script.Path.Quotes + CrLf + "pause", False, False, True)
+                                    End If
+                                End Sub,
+            .HelpFile = "doc\AVSMeter.html",
+            .WebURL = "http: //forum.doom9.org/showthread.php?t=165528"})
 
         Add(New Package With {
             .Name = "Demux",
@@ -487,9 +499,12 @@ Public Class Package
         End Set
     End Property
 
+    Private StartActionValue As Action
+
     Overridable ReadOnly Property StartAction As Action
         Get
             If LaunchName <> "" Then Return Sub() g.ShellExecute(GetDir() + LaunchName)
+            If Not StartActionValue Is Nothing Then Return StartActionValue
         End Get
     End Property
 
@@ -508,7 +523,7 @@ Public Class Package
         End Get
     End Property
 
-    Sub LaunchWithJava()
+    Sub StartWithJava()
         Try
             Dim p As New Process
             p.StartInfo.FileName = Package.Java.GetDir + "javaw.exe"
@@ -930,7 +945,7 @@ Public Class ProjectXPackage
 
     Overrides ReadOnly Property StartAction As Action
         Get
-            Return AddressOf LaunchWithJava
+            Return AddressOf StartWithJava
         End Get
     End Property
 
@@ -1219,18 +1234,6 @@ Public Class NVEncCPackage
         WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!2293"
         Description = "nvidia GPU accelerated H.264/H.265 encoder."
         HelpFile = "help.txt"
-    End Sub
-End Class
-
-Public Class AVSMeterPackage
-    Inherits Package
-
-    Sub New()
-        Name = "AVSMeter"
-        Filename = "AVSMeter64.exe"
-        Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements."
-        HelpFile = "doc\AVSMeter.html"
-        WebURL = "http://forum.doom9.org/showthread.php?t=165528"
     End Sub
 End Class
 

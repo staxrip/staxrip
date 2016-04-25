@@ -350,7 +350,7 @@ Class SubtitleControl
                 fp = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Temp.idx"
 
                 Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
-                    st.IndexIDX.ToString).WriteFile(fp)
+                    st.IndexIDX.ToString).WriteANSIFile(fp)
 
                 FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
             End If
@@ -380,7 +380,7 @@ Class SubtitleControl
                             fp = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play.idx"
 
                             Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
-                                st.IndexIDX.ToString).WriteFile(fp)
+                                st.IndexIDX.ToString).WriteANSIFile(fp)
 
                             FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
 

@@ -374,13 +374,13 @@ Public Class x265Params
 
     Property MinCuSize As New OptionParam With {
         .Switch = "--min-cu-size",
-        .Text = "Minimum CU size:",
+        .Text = "Min CU size:",
         .Options = {"64", "32", "16", "8"},
         .Values = {"64", "32", "16", "8"}}
 
     Property MaxCuSize As New OptionParam With {
         .Switch = "--ctu",
-        .Text = "Maximum CU size:",
+        .Text = "Max CU size:",
         .Options = {"64", "32", "16"},
         .Values = {"64", "32", "16"}}
 
@@ -774,7 +774,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--level-idc", .Switches = {"--level"}, .Text = "Level:", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}},
                     Mode)
                 Add("Analysis 1", RD,
-                    New StringParam With {.Switch = "--analysis-file", .Text = "Analysis File:", .Quotes = True},
+                    New StringParam With {.Switch = "--analysis-file", .Text = "Analysis File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                     New OptionParam With {.Switch = "--analysis-mode", .Text = "Analysis Mode:", .Options = {"off", "save", "load"}},
                 MinCuSize, MaxCuSize, MaxTuSize, LimitRefs, TUintra, TUinter, rdoqLevel)
                 Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra,
@@ -816,9 +816,9 @@ Public Class x265Params
                     New NumParam With {.Switch = "--recon-depth", .Text = "Recon Depth:"},
                     CompCheckQuant)
                 Add("Other 2",
-                    New StringParam With {.Switch = "--lambda-file", .Text = "Lambda File:", .Quotes = True},
-                    New StringParam With {.Switch = "--qpfile", .Text = "QP File:", .Quotes = True},
-                    New StringParam With {.Switch = "--recon", .Text = "Recon File:", .Quotes = True},
+                    New StringParam With {.Switch = "--lambda-file", .Text = "Lambda File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
+                    New StringParam With {.Switch = "--qpfile", .Text = "QP File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
+                    New StringParam With {.Switch = "--recon", .Text = "Recon File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                     New StringParam With {.Switch = "--scaling-list", .Text = "Scaling List:", .Quotes = True},
                     Decoder, SAO, HighTier, SAOnonDeblock, SlowFirstpass, SignHide,
                     New BoolParam With {.Switch = "--allow-non-conformance", .Text = "Allow non conformance"},

@@ -1,10 +1,10 @@
 # StaxRip x64
 
-Modern x64 video encoding GUI for many powerful x64 video tools such as AviSynth+, VapourSynth, mkvtoolnix, x264, x265, AMD/Intel/NVIDIA HW encoding, eac3to, ffmpeg and many more.
+Multiformat video encoding application.
 
 # Features
 
-- Clean user interface with High DPI awareness
+- Clean user interface with High DPI support
 - Context sensitive and dynamic help
 - Handles almost any input format and allows to config how files are loaded and processed
 - x264, x265, AMD VCE H.264 encoding, Intel Quick Sync H.264/H.265/MPEG-2 encoding, NVIDIA H.264/H.265 encoding, VP9, XVID
@@ -20,6 +20,7 @@ Modern x64 video encoding GUI for many powerful x64 video tools such as AviSynth
 - copy modes for audio and video for plain remuxing
 - Cut/Trim/Edit feature
 - A large amount of macros can be used in scrips and command lines allowing to change all settings with the GUI at any time which is much more convenient then a serialized step by step approach
+- Scripable with C# and PowerShell scripts
 - External AviSynth filters and command line tools can be integrated
 - Rich project, project template and profiles support
 - Job processing
@@ -27,7 +28,7 @@ Modern x64 video encoding GUI for many powerful x64 video tools such as AviSynth
 # Requirements
 
 - Windows 7 x64 or Windows 10 x64
-- .NET 4.5
+- .NET 4.6.1
 - LAV Filters x64
 
 # Download

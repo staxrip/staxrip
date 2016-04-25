@@ -451,20 +451,6 @@ Public Class SimpleUI
                 End If
             End Using
         End Sub
-
-        Sub BrowseFile(filter As String)
-            Using d As New OpenFileDialog
-                d.Filter = filter
-
-                If File.Exists(Text) Then
-                    d.FileName = Text
-                End If
-
-                If d.ShowDialog = DialogResult.OK Then
-                    Text = d.FileName
-                End If
-            End Using
-        End Sub
     End Class
 
     Class SimpleUIMenuButton(Of T)
@@ -650,8 +636,21 @@ Public Class SimpleUI
             Button.Width = 36
             Button.Height = 36
             Button.AutoSize = True
-
+            Button.Text = "..."
             Controls.Add(Button)
+        End Sub
+
+        Sub BrowseFile(filter As String)
+            Button.ClickAction = Sub()
+                                     Using d As New OpenFileDialog
+                                         d.Filter = filter
+                                         d.InitialDirectory = p.TempDir
+
+                                         If d.ShowDialog = DialogResult.OK Then
+                                             Edit.Text = d.FileName
+                                         End If
+                                     End Using
+                                 End Sub
         End Sub
     End Class
 

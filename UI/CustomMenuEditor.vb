@@ -1,7 +1,4 @@
 Imports System.Reflection
-Imports System.ComponentModel
-Imports System.Globalization
-Imports System.Drawing.Drawing2D
 
 Namespace UI
     Class CustomMenuEditor
@@ -99,7 +96,7 @@ Namespace UI
             'lHotkey
             '
             Me.lHotkey.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.lHotkey.AutoSize = True
             Me.lHotkey.Location = New System.Drawing.Point(359, 114)
             Me.lHotkey.Margin = New System.Windows.Forms.Padding(3, 8, 3, 0)
@@ -111,7 +108,7 @@ Namespace UI
             'lParameters
             '
             Me.lParameters.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.lParameters.AutoSize = True
             Me.lParameters.Location = New System.Drawing.Point(359, 255)
             Me.lParameters.Margin = New System.Windows.Forms.Padding(3, 8, 3, 0)
@@ -124,8 +121,8 @@ Namespace UI
             'pg
             '
             Me.pg.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.pg.LineColor = System.Drawing.SystemColors.ScrollBar
             Me.pg.Location = New System.Drawing.Point(359, 283)
             Me.pg.Name = "pg"
@@ -138,7 +135,7 @@ Namespace UI
             'tbText
             '
             Me.tbText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.tbText.Location = New System.Drawing.Point(359, 72)
             Me.tbText.Name = "tbText"
             Me.tbText.Size = New System.Drawing.Size(342, 31)
@@ -147,7 +144,7 @@ Namespace UI
             'lText
             '
             Me.lText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.lText.AutoSize = True
             Me.lText.Location = New System.Drawing.Point(359, 44)
             Me.lText.Name = "lText"
@@ -159,14 +156,13 @@ Namespace UI
             '
             Me.tv.AllowDrop = True
             Me.tv.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.tv.HideSelection = False
             Me.tv.Location = New System.Drawing.Point(11, 47)
             Me.tv.Margin = New System.Windows.Forms.Padding(3, 3, 8, 3)
             Me.tv.Name = "tv"
             Me.TableLayoutPanel1.SetRowSpan(Me.tv, 8)
-            Me.tv.SelectOnMouseDown = False
             Me.tv.Size = New System.Drawing.Size(337, 541)
             Me.tv.TabIndex = 2
             '
@@ -175,7 +171,7 @@ Namespace UI
             Me.tbHotkey.AcceptsReturn = True
             Me.tbHotkey.AcceptsTab = True
             Me.tbHotkey.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.tbHotkey.Location = New System.Drawing.Point(359, 142)
             Me.tbHotkey.Name = "tbHotkey"
             Me.tbHotkey.Size = New System.Drawing.Size(342, 31)
@@ -259,49 +255,33 @@ Namespace UI
             'tsbMoveLeft
             '
             Me.tsbMoveLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-            Me.tsbMoveLeft.Font = New System.Drawing.Font("Marlett", 9.0!)
-            Me.tsbMoveLeft.Image = CType(resources.GetObject("tsbMoveLeft.Image"), System.Drawing.Image)
-            Me.tsbMoveLeft.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbMoveLeft.Name = "tsbMoveLeft"
             Me.tsbMoveLeft.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbMoveLeft.Size = New System.Drawing.Size(32, 32)
-            Me.tsbMoveLeft.Text = "3"
+            Me.tsbMoveLeft.Size = New System.Drawing.Size(23, 32)
             Me.tsbMoveLeft.ToolTipText = "Move Left"
             '
             'tsbMoveRight
             '
             Me.tsbMoveRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-            Me.tsbMoveRight.Font = New System.Drawing.Font("Marlett", 9.0!)
-            Me.tsbMoveRight.Image = CType(resources.GetObject("tsbMoveRight.Image"), System.Drawing.Image)
-            Me.tsbMoveRight.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbMoveRight.Name = "tsbMoveRight"
             Me.tsbMoveRight.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbMoveRight.Size = New System.Drawing.Size(32, 32)
-            Me.tsbMoveRight.Text = "4"
+            Me.tsbMoveRight.Size = New System.Drawing.Size(23, 32)
             Me.tsbMoveRight.ToolTipText = "Move Right"
             '
             'tsbMoveUp
             '
             Me.tsbMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-            Me.tsbMoveUp.Font = New System.Drawing.Font("Marlett", 9.0!)
-            Me.tsbMoveUp.Image = CType(resources.GetObject("tsbMoveUp.Image"), System.Drawing.Image)
-            Me.tsbMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbMoveUp.Name = "tsbMoveUp"
             Me.tsbMoveUp.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbMoveUp.Size = New System.Drawing.Size(32, 32)
-            Me.tsbMoveUp.Text = "5"
+            Me.tsbMoveUp.Size = New System.Drawing.Size(23, 32)
             Me.tsbMoveUp.ToolTipText = "Move Up"
             '
             'tsbMoveDown
             '
             Me.tsbMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-            Me.tsbMoveDown.Font = New System.Drawing.Font("Marlett", 9.0!)
-            Me.tsbMoveDown.Image = CType(resources.GetObject("tsbMoveDown.Image"), System.Drawing.Image)
-            Me.tsbMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbMoveDown.Name = "tsbMoveDown"
             Me.tsbMoveDown.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbMoveDown.Size = New System.Drawing.Size(32, 32)
-            Me.tsbMoveDown.Text = "6"
+            Me.tsbMoveDown.Size = New System.Drawing.Size(23, 32)
             Me.tsbMoveDown.ToolTipText = "Move Down"
             '
             'ToolStripSeparator1
@@ -328,19 +308,19 @@ Namespace UI
             Me.ToolsToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.ToolsToolStripDropDownButton.Name = "ToolsToolStripDropDownButton"
             Me.ToolsToolStripDropDownButton.Padding = New System.Windows.Forms.Padding(2)
-            Me.ToolsToolStripDropDownButton.Size = New System.Drawing.Size(41, 32)
+            Me.ToolsToolStripDropDownButton.Size = New System.Drawing.Size(46, 32)
             Me.ToolsToolStripDropDownButton.Text = "Tools"
             '
             'NewFromDefaultsToolStripMenuItem
             '
             Me.NewFromDefaultsToolStripMenuItem.Name = "NewFromDefaultsToolStripMenuItem"
-            Me.NewFromDefaultsToolStripMenuItem.Size = New System.Drawing.Size(248, 30)
+            Me.NewFromDefaultsToolStripMenuItem.Size = New System.Drawing.Size(261, 30)
             Me.NewFromDefaultsToolStripMenuItem.Text = "New From Defaults..."
             '
             'ResetToolStripMenuItem
             '
             Me.ResetToolStripMenuItem.Name = "ResetToolStripMenuItem"
-            Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(248, 30)
+            Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(261, 30)
             Me.ResetToolStripMenuItem.Text = "Reset Everything"
             '
             'bCommand
@@ -353,8 +333,9 @@ Namespace UI
             '
             'cmsCommand
             '
+            Me.cmsCommand.ImageScalingSize = New System.Drawing.Size(24, 24)
             Me.cmsCommand.Name = "cmsCommand"
-            Me.cmsCommand.Size = New System.Drawing.Size(61, 4)
+            Me.cmsCommand.Size = New System.Drawing.Size(74, 4)
             '
             'lCommand
             '
@@ -439,7 +420,7 @@ Namespace UI
             'TableLayoutPanel2
             '
             Me.TableLayoutPanel2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.TableLayoutPanel2.AutoSize = True
             Me.TableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
             Me.TableLayoutPanel2.ColumnCount = 2
@@ -457,12 +438,13 @@ Namespace UI
             'CustomMenuEditor
             '
             Me.AcceptButton = Me.bnOK
-            Me.AutoScaleDimensions = New System.Drawing.SizeF(144.0!, 144.0!)
             Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
             Me.CancelButton = Me.bnCancel
             Me.ClientSize = New System.Drawing.Size(713, 644)
             Me.Controls.Add(Me.TableLayoutPanel1)
             Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+            Me.KeyPreview = True
+            Me.Location = New System.Drawing.Point(0, 0)
             Me.Name = "CustomMenuEditor"
             Me.Text = "Menu Editor"
             Me.ToolStrip.ResumeLayout(False)
@@ -487,6 +469,17 @@ Namespace UI
         Sub New(menu As CustomMenu)
             MyBase.New()
             InitializeComponent()
+
+            tsbMoveLeft.Image = My.Resources.ArrowLeft
+
+            tsbMoveUp.Image = My.Resources.ArrowLeft
+            tsbMoveUp.Image.RotateFlip(RotateFlipType.Rotate90FlipNone)
+
+            tsbMoveRight.Image = My.Resources.ArrowLeft
+            tsbMoveRight.Image.RotateFlip(RotateFlipType.Rotate180FlipNone)
+
+            tsbMoveDown.Image = My.Resources.ArrowLeft
+            tsbMoveDown.Image.RotateFlip(RotateFlipType.Rotate270FlipNone)
 
             GenericMenu = menu
             GridTypeDescriptor = New GridTypeDescriptor

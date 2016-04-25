@@ -217,7 +217,7 @@ Public Class IntelEncoder
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                     Add("Other",
                         New StringParam With {.Text = "Custom:"},
-                        New StringParam With {.Switch = "--vpp-sub", .Text = "Sub File:", .Quotes = True},
+                        New StringParam With {.Switch = "--vpp-sub", .Text = "Sub File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                         New StringParam With {.Switch = "--vpp-sub-charset", .Text = "Sub Charset:", .Quotes = True},
                         New OptionParam With {.Switch = "--vpp-sub-shaping", .Text = "Sub Shaping:", .Options = {"simple", "complex"}},
                         New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D:", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .InitValue = 3},

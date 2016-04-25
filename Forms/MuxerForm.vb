@@ -381,8 +381,7 @@ Class MuxerForm
             tbb.Expand(tbb.Edit)
             tbb.Edit.Text = muxer.ChapterFile
             tbb.Edit.SaveAction = Sub(value) muxer.ChapterFile = If(value <> "", value, Nothing)
-            tbb.Button.Text = "..."
-            tbb.Button.ClickAction = Sub() tbb.Edit.BrowseFile("txt, xml|*.txt;*.xml")
+            tbb.BrowseFile("txt, xml|*.txt;*.xml")
         End If
 
         If TypeOf muxer Is MkvMuxer Then

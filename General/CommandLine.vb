@@ -394,6 +394,8 @@ Namespace CommandLine
         Property TextEdit As TextEdit
         Property Quotes As Boolean
         Property InitAction As Action(Of SimpleUI.TextBlock)
+        Property BrowseFileFilter As String
+        Property BrowseFolderText As String
 
         Public Overloads Overrides Sub Init(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store

@@ -172,14 +172,23 @@ Class CommandLineForm
                 os.Init(mb.MenuButton)
             ElseIf TypeOf item Is StringParam Then
                 Dim tempItem = DirectCast(item, StringParam)
-                Dim tb = SimpleUI.AddTextBlock(parent)
-                tb.Label.Text = item.Text
-                tb.Label.Tooltip = help
-                helpControl = tb.Label
-                AddHandler tb.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
-                tb.Expand(tb.Edit)
+                Dim textBlock As SimpleUI.TextBlock
+
+                If tempItem.BrowseFileFilter <> "" Then
+                    Dim textButtonBlock = SimpleUI.AddTextButtonBlock(parent)
+                    textButtonBlock.BrowseFile(tempItem.BrowseFileFilter)
+                    textBlock = textButtonBlock
+                Else
+                    textBlock = SimpleUI.AddTextBlock(parent)
+                End If
+
+                textBlock.Label.Text = item.Text
+                textBlock.Label.Tooltip = help
+                helpControl = textBlock.Label
+                AddHandler textBlock.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
+                textBlock.Expand(textBlock.Edit)
                 Dim sp = DirectCast(item, StringParam)
-                sp.Init(tb)
+                sp.Init(textBlock)
             End If
 
             If Not helpControl Is Nothing Then

@@ -27,9 +27,17 @@ Multiformat video encoding application.
 
 # Requirements
 
-- Windows 7 x64 or Windows 10 x64
-- .NET 4.6.1
-- LAV Filters x64
+* [.NET 4.6.1](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
+* [Intel Skylake CPU](https://en.wikipedia.org/wiki/Skylake_%28microarchitecture%29) for HEVC/H.265 hardware encoding
+* [NVIDIA Maxwell gen2 card](https://en.wikipedia.org/wiki/Maxwell_%28microarchitecture%29#Second_generation_Maxwell_.28GM20x.29) for HEVC/H.265 hardware encoding
+* [Java](https://java.com/en/download) for ProjectX in case MPEG-2 files are opened
+* AviSynth+ x64, the installer is bundled with StaxRip x64
+* [VapourSynth x64](https://github.com/vapoursynth/vapoursynth/releases) as optional AviSynth+ alternative
+* [Python x64](https://www.python.org/downloads/windows) in case VapourSynth x64 is used
+
+# Documentation
+
+https://stax76.gitbooks.io/staxrip-handbook/content/
 
 # Download
 

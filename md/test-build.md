@@ -13,6 +13,7 @@ http://1drv.ms/1OqPDOe
 - added hardware decoding methods to x265 'Other' tab, this will bypass AviSynth though
 - added new standalone mkvextract GUI (Main Menu > Apps > Demux)
 - added new QSVEncC switches for hordcoded subtitles
+- added MP4 support to standalone demux app
 
 ### Fixed Bugs
 
@@ -34,3 +35,4 @@ http://1drv.ms/1OqPDOe
 - QSVEncC 2.46
 - MP4Box 0.6.2
 - nnedi3 0.9.4.21
+- StaxRip Toolbox Demux 1.1

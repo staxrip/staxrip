@@ -35,4 +35,4 @@ Multiformat video encoding application.
 
 https://github.com/stax76/staxrip/releases
 
-https://github.com/stax76/staxrip/wiki/test-build
+https://github.com/stax76/staxrip/blob/master/md/test-build.md

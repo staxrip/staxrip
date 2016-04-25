@@ -555,15 +555,14 @@ Class MkvMuxer
             args.Append(" --chapters """ + ChapterFile + """")
         End If
 
-        If Title <> "" Then
-            args.Append(" --title """ + Macro.Solve(Title) + """")
+        If Title <> "" Then args.Append(" --title """ + Macro.Solve(Title) + """")
+
+        If TypeOf p.VideoEncoder Is NullEncoder AndAlso p.Ranges.Count > 0 Then
+            args.Append(" --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+"))
         End If
 
         args.Append(" --ui-language en")
-
-        If AdditionalSwitches <> "" Then
-            args.Append(" " + Macro.Solve(AdditionalSwitches))
-        End If
+        If AdditionalSwitches <> "" Then args.Append(" " + Macro.Solve(AdditionalSwitches))
 
         Return args.ToString
     End Function

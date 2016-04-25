@@ -16,6 +16,7 @@ http://1drv.ms/1OqPDOe
 - added MP4 support to standalone demux app
 - when AVSMeter is started without a source opened the -avsinfo switch is used to shows useful info
 - added support for unicode file names using VapourSynth, AviSynth don't support it
+- added mkv cutting support without encoding
 
 ### Fixed Bugs
 

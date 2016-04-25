@@ -300,7 +300,9 @@ Class Audio
     End Sub
 
     Shared Sub Cut(ap As AudioProfile)
-        If p.Ranges.Count = 0 OrElse Not File.Exists(ap.File) OrElse
+        If p.Ranges.Count = 0 OrElse
+            Not File.Exists(ap.File) OrElse
+            TypeOf p.VideoEncoder Is NullEncoder OrElse
             ap.File.Contains("_cut_.") Then
 
             Exit Sub

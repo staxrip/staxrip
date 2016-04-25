@@ -2551,7 +2551,7 @@ Class MainForm
                     End If
                 End If
 
-                If p.VideoEncoder.Muxer.Subtitles.Where(Function(subtitle) subtitle.Enabled).Count > 0 Then
+                If p.VideoEncoder.Muxer.Subtitles.Where(Function(subtitle) subtitle.Enabled).Count > 0 AndAlso Not TypeOf p.VideoEncoder Is NullEncoder Then
                     If ProcessTip("Subtitle cutting is not supported, please remove the subtitles from the container options.") Then
                         gbAssistant.Text = "Subtitle cutting unsupported"
                         CanIgnoreTip = False

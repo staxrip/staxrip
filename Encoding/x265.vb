@@ -947,7 +947,7 @@ Public Class x265Params
             End If
         End If
 
-        Return Macro.Solve(sb.ToString.Trim.FixBreak.Replace(CrLf, " "))
+        Return Macro.Solve(sb.ToString.Trim.FixBreak.Replace(BR, " "))
     End Function
 
     Function IsCustom(switch As String) As Boolean

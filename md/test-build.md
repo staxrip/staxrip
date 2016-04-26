@@ -33,6 +33,7 @@ http://1drv.ms/1OqPDOe
 - removed mkvinfo.exe which is 18 MB large and not really needed. It's large due to QT toolkit being used
 - mkv audio demuxing happens now all streams together instead of every stream separate, it's much faster now.
 - changed filter profiles editor to support both tab and 4 spaces for multiline profiles, tabs are converted to 4 spaces which is the standard in Python and Visual Studio
+- log file improvements
 
 ### Updated Tools
 

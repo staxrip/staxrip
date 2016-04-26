@@ -430,7 +430,7 @@ Class ScriptingEditor
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim firstTable = DirectCast(flow.Controls(0), FilterTable)
             firstTable.tbName.Text = "merged"
-            firstTable.rtbScript.Text = flow.Controls.OfType(Of FilterTable).Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(CrLf, "# " + BR))).Join(BR) + BR2 + BR2 + "#"
+            firstTable.rtbScript.Text = flow.Controls.OfType(Of FilterTable).Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(BR, "# " + BR))).Join(BR) + BR2 + BR2 + "#"
 
             For x = flow.Controls.Count - 1 To 1 Step -1
                 flow.Controls.RemoveAt(x)

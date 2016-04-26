@@ -73,14 +73,10 @@ Class x264Control
         'lv
         '
         Me.lv.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lv.ItemCheckProperty = Nothing
         Me.lv.Location = New System.Drawing.Point(0, 0)
-        Me.lv.MultiSelectionButtons = Nothing
         Me.lv.Name = "lv"
-        Me.lv.SingleSelectionButtons = Nothing
         Me.lv.Size = New System.Drawing.Size(367, 213)
         Me.lv.TabIndex = 0
-        Me.lv.UseCompatibleStateImageBehavior = False
         '
         'x264Control
         '

@@ -48,7 +48,6 @@ Class MacrosForm
         Me.lv.Name = "lv"
         Me.lv.Size = New System.Drawing.Size(310, 613)
         Me.lv.TabIndex = 2
-        Me.lv.UseCompatibleStateImageBehavior = False
         '
         'stb
         '

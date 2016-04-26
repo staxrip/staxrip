@@ -101,7 +101,7 @@ Public MustInherit Class Muxer
 
                 If v.Contains(vb6.ChrW(&HA) + vb6.ChrW(&H0) + vb6.ChrW(&HD) + vb6.ChrW(&HA)) Then
                     v = v.FixBreak
-                    v = v.Replace(CrLf + vb6.ChrW(&H0) + BR, CrLf + "langidx: 0" + BR)
+                    v = v.Replace(BR + vb6.ChrW(&H0) + BR, BR + "langidx: 0" + BR)
                     File.WriteAllText(iFile, v, Encoding.Default)
                 End If
             End If

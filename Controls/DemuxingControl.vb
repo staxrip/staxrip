@@ -95,7 +95,6 @@ Class DemuxingControl
         Me.lv.Size = New System.Drawing.Size(300, 303)
         Me.lv.TabIndex = 0
         Me.lv.UpButton = Me.bnUp
-        Me.lv.UseCompatibleStateImageBehavior = False
         Me.lv.View = System.Windows.Forms.View.Details
         '
         'DemuxingControl

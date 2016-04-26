@@ -370,6 +370,7 @@ Class mkvDemuxer
         If output.Contains("Chapters: ") Then
             Using proc As New Proc
                 proc.Init("Demux chapters using mkvextract " + Package.mkvmerge.Version, "Progress: ")
+                proc.WriteLine(output + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.File = Package.mkvextract.GetPath
                 proc.Arguments = "chapters " + p.SourceFile.Quotes + " --redirect-output " +
@@ -400,7 +401,7 @@ Class mkvDemuxer
 
             Using proc As New Proc
                 proc.Init("Demux attachments using mkvextract " + Package.mkvmerge.Version, "Progress: ")
-                proc.WriteLine(output)
+                proc.WriteLine(output + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.File = Package.mkvextract.GetPath
                 proc.Arguments = "attachments " + p.SourceFile.Quotes + params

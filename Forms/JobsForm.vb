@@ -34,14 +34,14 @@ Friend Class JobsForm
         '
         Me.bnDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnDown.Enabled = False
-        Me.bnDown.Location = New System.Drawing.Point(478, 413)
+        Me.bnDown.Location = New System.Drawing.Point(474, 413)
         Me.bnDown.Margin = New System.Windows.Forms.Padding(4)
         Me.bnDown.Size = New System.Drawing.Size(36, 36)
         '
         'bnRemove
         '
         Me.bnRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRemove.Location = New System.Drawing.Point(711, 413)
+        Me.bnRemove.Location = New System.Drawing.Point(702, 413)
         Me.bnRemove.Size = New System.Drawing.Size(100, 36)
         Me.bnRemove.Text = "Remove"
         '
@@ -49,7 +49,7 @@ Friend Class JobsForm
         '
         Me.bnUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnUp.Enabled = False
-        Me.bnUp.Location = New System.Drawing.Point(434, 413)
+        Me.bnUp.Location = New System.Drawing.Point(430, 413)
         Me.bnUp.Margin = New System.Windows.Forms.Padding(4)
         Me.bnUp.Size = New System.Drawing.Size(36, 36)
         '
@@ -57,7 +57,7 @@ Friend Class JobsForm
         '
         Me.bnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnClose.Location = New System.Drawing.Point(817, 413)
+        Me.bnClose.Location = New System.Drawing.Point(808, 413)
         Me.bnClose.Size = New System.Drawing.Size(100, 36)
         Me.bnClose.Text = "Close"
         '
@@ -78,7 +78,7 @@ Friend Class JobsForm
         'bnLoad
         '
         Me.bnLoad.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnLoad.Location = New System.Drawing.Point(605, 413)
+        Me.bnLoad.Location = New System.Drawing.Point(596, 413)
         Me.bnLoad.Size = New System.Drawing.Size(100, 36)
         Me.bnLoad.Text = "Load"
         '
@@ -87,20 +87,16 @@ Friend Class JobsForm
         Me.lv.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lv.ItemCheckProperty = Nothing
         Me.lv.Location = New System.Drawing.Point(12, 12)
-        Me.lv.MultiSelectionButtons = Nothing
         Me.lv.Name = "lv"
-        Me.lv.SingleSelectionButtons = Nothing
-        Me.lv.Size = New System.Drawing.Size(905, 395)
+        Me.lv.Size = New System.Drawing.Size(896, 395)
         Me.lv.TabIndex = 7
-        Me.lv.UseCompatibleStateImageBehavior = False
         '
         'JobsForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnClose
-        Me.ClientSize = New System.Drawing.Size(929, 461)
+        Me.ClientSize = New System.Drawing.Size(920, 461)
         Me.Controls.Add(Me.lv)
         Me.Controls.Add(Me.bnLoad)
         Me.Controls.Add(Me.bnDown)

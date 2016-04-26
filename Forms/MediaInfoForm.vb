@@ -179,7 +179,7 @@ Class MediaInfoForm
             If newText.Length = 0 Then
                 newText.Append(i + BR2)
             Else
-                newText.Append(CrLf + i + BR2)
+                newText.Append(BR + i + BR2)
             End If
 
             Dim itemsInGroup = items.Where(Function(v) v.Group = i)

@@ -1146,14 +1146,14 @@ Class AMDEncoder
 
         Property MaxBitrate As New NumParam With {
             .Switch = "--max-bitrate",
-            .Text = "Maximum Bitrate:",
+            .Text = "Max Bitrate:",
             .Value = 20000,
             .DefaultValue = 20000,
             .MinMaxStep = {0, 1000000, 1}}
 
         Property GOPLength As New NumParam With {
             .Switch = "--gop-len",
-            .Text = "GOP Length (0=auto):",
+            .Text = "GOP Length:",
             .MinMaxStep = {0, 10000, 1}}
 
         Property BFrames As New NumParam With {

@@ -8,6 +8,17 @@ Imports Microsoft.Win32
 Imports VB6 = Microsoft.VisualBasic
 
 Module StringExtensions
+    <Extension>
+    Public Function Multiply(instance As String, multiplier As Integer) As String
+        Dim sb As New StringBuilder(multiplier * instance.Length)
+
+        For i = 0 To multiplier - 1
+            sb.Append(instance)
+        Next
+
+        Return sb.ToString()
+    End Function
+
     <Extension()>
     Function FileName(instance As String) As String
         If instance = "" Then Return ""
@@ -366,7 +377,10 @@ Module MiscExtensions
     End Function
 
     <Extension()>
-    Function Join(instance As IEnumerable(Of String), delimiter As String) As String
+    Function Join(instance As IEnumerable(Of String),
+                  delimiter As String,
+                  Optional removeEmpty As Boolean = False) As String
+
         If instance Is Nothing Then Return Nothing
         Dim containsEmpty As Boolean
 
@@ -377,7 +391,7 @@ Module MiscExtensions
             End If
         Next
 
-        If containsEmpty Then instance = instance.Where(Function(arg) arg <> "")
+        If containsEmpty AndAlso removeEmpty Then instance = instance.Where(Function(arg) arg <> "")
         Return String.Join(delimiter, instance)
     End Function
 

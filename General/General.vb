@@ -537,8 +537,8 @@ table {
         Writer.WriteStartElement("html")
         Writer.WriteStartElement("head")
         Writer.WriteElementString("title", title)
-        Writer.WriteRaw(CrLf + style.ToString + BR)
-        Writer.WriteRaw(CrLf + script.ToString + BR)
+        Writer.WriteRaw(BR + style.ToString + BR)
+        Writer.WriteRaw(BR + script.ToString + BR)
         Writer.WriteEndElement() 'head
         Writer.WriteStartElement("body")
         WriteElement("p", "<img src=""" + HelpForm.MainImagePath + """ style=""margin-bottom:-8pt;margin-left:-4pt"">")
@@ -584,7 +584,7 @@ table {
 
         If value.Contains("<") Then value = value.Replace("<", "&lt;")
         If value.Contains(">") Then value = value.Replace(">", "&gt;")
-        If value.Contains(BR) Then value = value.Replace(CrLf, "<br>")
+        If value.Contains(BR) Then value = value.Replace(BR, "<br>")
 
         Return value
     End Function
@@ -1182,9 +1182,7 @@ End Class
 
 Public Module MainModule
     Public Const BR As String = VB6.vbCrLf
-    Public Const BR2 As String = VB6.vbCrLf
-    Public Const CrLf As String = VB6.vbCrLf
-    Public Const CrLf2 As String = VB6.vbCrLf + VB6.vbCrLf
+    Public Const BR2 As String = VB6.vbCrLf + VB6.vbCrLf
 
     Function OK(value As String) As Boolean
         Return value <> ""

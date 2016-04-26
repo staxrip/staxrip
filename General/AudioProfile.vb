@@ -308,7 +308,7 @@ Public Class BatchAudioProfile
                 p.VideoBitrate = CInt(Calc.GetVideoBitrate)
 
                 If Not p.VideoEncoder.QualityMode Then
-                    Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & CrLf)
+                    Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR)
                 End If
 
                 Log.WriteLine(MediaInfo.GetSummary(File))
@@ -648,7 +648,7 @@ Class GUIAudioProfile
                     p.VideoBitrate = CInt(Calc.GetVideoBitrate)
 
                     If Not p.VideoEncoder.QualityMode Then
-                        Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & CrLf)
+                        Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR)
                     End If
 
                     Log.WriteLine(MediaInfo.GetSummary(File))

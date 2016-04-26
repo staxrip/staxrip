@@ -87,14 +87,10 @@ Partial Class StreamDemuxForm
         Me.lvAudio.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvAudio.ItemCheckProperty = Nothing
         Me.lvAudio.Location = New System.Drawing.Point(3, 3)
-        Me.lvAudio.MultiSelectionButtons = Nothing
         Me.lvAudio.Name = "lvAudio"
-        Me.lvAudio.SingleSelectionButtons = Nothing
         Me.lvAudio.Size = New System.Drawing.Size(843, 299)
         Me.lvAudio.TabIndex = 8
-        Me.lvAudio.UseCompatibleStateImageBehavior = False
         '
         'flpAudioButtons
         '
@@ -185,14 +181,13 @@ Partial Class StreamDemuxForm
         Me.lvSubtitles.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvSubtitles.ItemCheckProperty = Nothing
+
         Me.lvSubtitles.Location = New System.Drawing.Point(3, 3)
-        Me.lvSubtitles.MultiSelectionButtons = Nothing
+
         Me.lvSubtitles.Name = "lvSubtitles"
-        Me.lvSubtitles.SingleSelectionButtons = Nothing
+
         Me.lvSubtitles.Size = New System.Drawing.Size(843, 167)
         Me.lvSubtitles.TabIndex = 9
-        Me.lvSubtitles.UseCompatibleStateImageBehavior = False
         '
         'flpSubtitleButtons
         '

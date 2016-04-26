@@ -179,7 +179,6 @@ Class eac3toForm
         Me.lvAudio.Name = "lvAudio"
         Me.lvAudio.Size = New System.Drawing.Size(1018, 292)
         Me.lvAudio.TabIndex = 8
-        Me.lvAudio.UseCompatibleStateImageBehavior = False
         '
         'lvSubtitles
         '
@@ -191,7 +190,6 @@ Class eac3toForm
         Me.lvSubtitles.Name = "lvSubtitles"
         Me.lvSubtitles.Size = New System.Drawing.Size(1018, 131)
         Me.lvSubtitles.TabIndex = 9
-        Me.lvSubtitles.UseCompatibleStateImageBehavior = False
         '
         'flpSubtitleLinks
         '
@@ -680,16 +678,16 @@ Class eac3toForm
         ElseIf Output <> "" Then
             Log.WriteLine(Output)
 
-            If Output.Contains(CrLf + "   (embedded: ") Then
-                Output = Output.Replace(CrLf + "   (embedded: ", "(embedded: ")
+            If Output.Contains(BR + "   (embedded: ") Then
+                Output = Output.Replace(BR + "   (embedded: ", "(embedded: ")
             End If
 
             While Output.Contains("  (embedded: ")
                 Output = Output.Replace("  (embedded: ", " (embedded: ")
             End While
 
-            If Output.Contains(CrLf + "   (core: ") Then
-                Output = Output.Replace(CrLf + "   (core: ", "(core: ")
+            If Output.Contains(BR + "   (core: ") Then
+                Output = Output.Replace(BR + "   (core: ", "(core: ")
             End If
 
             While Output.Contains("  (core: ")
@@ -699,14 +697,14 @@ Class eac3toForm
             Output = Output.Replace(" channels, ", "ch, ").Replace(" bits, ", "bits, ").Replace("dialnorm", "dn")
             Output = Output.Replace("(core: ", "(").Replace("(embedded: ", "(")
 
-            For Each i In Output.SplitLinesNoEmpty
-                Dim m = Regex.Match(i, "^(\d+): (.+)$")
+            For Each line In Output.SplitLinesNoEmpty
+                Dim match = Regex.Match(line, "^(\d+): (.+)$")
 
-                If m.Success Then
+                If match.Success Then
                     Dim ms As New M2TSStream
-                    ms.Text = i.Trim
-                    ms.ID = m.Groups(1).Value.ToInt
-                    ms.Codec = m.Groups(2).Value
+                    ms.Text = line.Trim
+                    ms.ID = match.Groups(1).Value.ToInt
+                    ms.Codec = match.Groups(2).Value
 
                     If ms.Codec.Contains(",") Then ms.Codec = ms.Codec.Left(",")
 
@@ -755,49 +753,49 @@ Class eac3toForm
                     If Not ms.IsVideo AndAlso Not ms.IsAudio AndAlso
                         Not ms.IsSubtitle AndAlso Not ms.IsChapters Then
 
-                        Throw New Exception("Failed to detect stream: " + i)
+                        Throw New Exception("Failed to detect stream: " + line)
                     End If
 
                     Streams.Add(ms)
                 End If
             Next
 
-            For Each i In Streams
-                If i.IsAudio Then
-                    i.ListViewItem = lvAudio.Items.Add(i.ToString)
-                    i.ListViewItem.Tag = i
+            For Each stream In Streams
+                If stream.IsAudio Then
+                    stream.ListViewItem = lvAudio.Items.Add(stream.ToString)
+                    stream.ListViewItem.Tag = stream
 
-                    If i.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
+                    If stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
                         bnAudioNative.Visible = True
-                        i.ListViewItem.Checked = True
-                    ElseIf i.Language.TwoLetterCode = "en" Then
+                        stream.ListViewItem.Checked = True
+                    ElseIf stream.Language.TwoLetterCode = "en" Then
                         bnAudioEnglish.Visible = True
-                        i.ListViewItem.Checked = True
-                    ElseIf i.Language.TwoLetterCode = "iv" Then
-                        i.ListViewItem.Checked = True
+                        stream.ListViewItem.Checked = True
+                    ElseIf stream.Language.TwoLetterCode = "iv" Then
+                        stream.ListViewItem.Checked = True
                     End If
-                ElseIf i.IsVideo Then
-                    cbVideoStream.Items.Add(i)
-                ElseIf i.IsSubtitle Then
-                    If i.Language.CultureInfo.TwoLetterISOLanguageName = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
+                ElseIf stream.IsVideo Then
+                    cbVideoStream.Items.Add(stream)
+                ElseIf stream.IsSubtitle Then
+                    If stream.Language.CultureInfo.TwoLetterISOLanguageName = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
                         bnSubtitleNative.Visible = True
-                    ElseIf i.Language.CultureInfo.TwoLetterISOLanguageName = "en" Then
+                    ElseIf stream.Language.CultureInfo.TwoLetterISOLanguageName = "en" Then
                         bnSubtitleEnglish.Visible = True
                     End If
 
-                    Dim item = lvSubtitles.Items.Add(i.Language.ToString)
-                    item.Tag = i
+                    Dim item = lvSubtitles.Items.Add(stream.Language.ToString)
+                    item.Tag = stream
 
                     For Each autoCode In p.AutoSubtitles.SplitNoEmptyAndWhiteSpace(",", ";", " ")
                         If autoCode.ToLower = "all" OrElse
-                            autoCode.ToLower = i.Language.TwoLetterCode OrElse
-                            autoCode.ToLower = i.Language.ThreeLetterCode OrElse
-                            i.Language.TwoLetterCode = "iv" Then
+                            autoCode.ToLower = stream.Language.TwoLetterCode OrElse
+                            autoCode.ToLower = stream.Language.ThreeLetterCode OrElse
+                            stream.Language.TwoLetterCode = "iv" Then
 
                             item.Checked = True
                         End If
                     Next
-                ElseIf i.IsChapters Then
+                ElseIf stream.IsChapters Then
                     cbChapters.Visible = True
                 End If
             Next

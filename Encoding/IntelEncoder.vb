@@ -284,14 +284,10 @@ Public Class IntelEncoder
                 Case "ffqsv"
                     sourcePath = "-"
                     If includePaths Then ret = If(includePaths, Package.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.QSVEncC.GetPath.Quotes, "QSVEncC")
-
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
-
-            If q.Count > 0 Then
-                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
-            End If
+            If q.Count > 0 Then ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
 
             Select Case Mode.ValueText
                 Case "icq", "la-icq"

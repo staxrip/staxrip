@@ -2433,7 +2433,7 @@ Class x264Form
         cbGoTo.Sorted = True
         cbGoTo.SendMessageCue("Search")
 
-        ToolTip.SetToolTip(lAimedQuality, "A well balanced value is 50%. The assistant warns" & CrLf & "if it's more then 10% off.")
+        ToolTip.SetToolTip(lAimedQuality, "A well balanced value is 50%. The assistant warns" & BR & "if it's more then 10% off.")
         ToolTip.SetToolTip(rtbCommandLine, "Right-click to show a context menu")
 
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
@@ -3395,9 +3395,8 @@ Class x264Form
         If failed.Count = 0 Then
             m += BR2 + "No errors"
         Else
-            m += BR2 + "Count of switches failed to import: " &
-                failed.Count & CrLf2 & "Failed Switches:" & CrLf2 &
-                failed.Join(BR)
+            m += BR2 + "Count of switches failed to import: " & failed.Count &
+                BR2 & "Failed Switches:" & BR2 & failed.Join(BR)
         End If
 
         Using td As New TaskDialog(Of String)

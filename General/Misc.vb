@@ -1108,6 +1108,7 @@ Class Log
         StartTime = DateTime.Now
 
         SyncLock p.Log
+            If Not p.Log.ToString.EndsWith(BR2) Then p.Log.AppendLine()
             p.Log.Append(FormatHeader(header))
         End SyncLock
 
@@ -1131,6 +1132,7 @@ Class Log
 
         If value <> "" Then
             SyncLock p.Log
+                If Not p.Log.ToString.EndsWith(BR2) Then p.Log.AppendLine()
                 p.Log.Append(FormatHeader(value))
             End SyncLock
 
@@ -1155,15 +1157,16 @@ Class Log
     End Sub
 
     Shared Function FormatHeader(value As String) As String
-        Return CrLf + "".PadLeft(60, "-"c) + BR + value.PadLeft(30 + value.Length \ 2) + BR + "".PadLeft(60, "-"c) + BR2
+        Return "-=".Multiply(30) + "-" + BR +
+            value.PadLeft(30 + value.Length \ 2) +
+            BR + "-=".Multiply(30) + "-" + BR2
     End Function
 
     Shared Sub WriteEnvironment()
         If p.Log.ToString.Contains("StaxRip x64: " + Application.ProductVersion) Then Exit Sub
 
-        Dim staxrip =
-"-----------------------------------------------------------
-      _________ __                __________.__        
+        Dim staxrip = "-=".Multiply(30) + "-" + BR +
+"      _________ __                __________.__        
      /   _____//  |______  ___  __\______   \__|_____  
      \_____  \\   __\__  \ \  \/  /|       _/  \____ \ 
      /        \|  |  / __ \_>    < |    |   \  |  |_> >
@@ -1171,7 +1174,6 @@ Class Log
             \/           \/      \/       \/   |__|   "
 
         WriteLine(staxrip)
-
         WriteHeader("Environment")
 
         Dim mc As New ManagementClass("Win32_VideoController")
@@ -1205,7 +1207,7 @@ Class Log
         Dim n = DateTime.Now.Subtract(start)
 
         SyncLock p.Log
-            p.Log.AppendLine()
+            If Not p.Log.ToString.EndsWith(BR2) Then p.Log.AppendLine()
             p.Log.Append("Start: ".PadRight(10) + start.ToLongTimeString + BR)
             p.Log.Append("End: ".PadRight(10) + DateTime.Now.ToLongTimeString + BR)
             p.Log.Append("Duration: " + CInt(Math.Floor(n.TotalHours)).ToString("d2") + ":" + n.Minutes.ToString("d2") + ":" + n.Seconds.ToString("d2") + BR)

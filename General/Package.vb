@@ -1111,7 +1111,7 @@ Public Class qaacPackage
 
         If Not File.Exists(path) AndAlso Not File.Exists(GetDir() + "QTfiles64\CoreAudioToolbox.dll") Then
             Return "Failed to locate CoreAudioToolbox, read the description below. Expected paths:" +
-                CrLf2 + path + BR2 + GetDir() + "QTfiles64\CoreAudioToolbox.dll"
+                BR2 + path + BR2 + GetDir() + "QTfiles64\CoreAudioToolbox.dll"
         End If
     End Function
 End Class

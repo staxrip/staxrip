@@ -66,7 +66,6 @@ Class Thumbnails
         Dim infoWidth = MediaInfo.GetVideo(inputFile, "Width")
         Dim infoHeight = MediaInfo.GetVideo(inputFile, "Height")
         Dim infoLength = New FileInfo(inputFile).Length
-
         Dim infoDuration = MediaInfo.GetGeneral(inputFile, "Duration").ToInt
 
         If infoLength / 1024 ^ 3 > 1 Then

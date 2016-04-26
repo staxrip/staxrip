@@ -31,7 +31,6 @@ Class MediaInfoFolderViewForm
         Me.lv.Name = "lv"
         Me.lv.Size = New System.Drawing.Size(914, 601)
         Me.lv.TabIndex = 0
-        Me.lv.UseCompatibleStateImageBehavior = False
         '
         'MediaInfoFolderViewForm
         '

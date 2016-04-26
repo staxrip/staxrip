@@ -10,12 +10,22 @@ Namespace UI
     Class ListViewEx
         Inherits ListView
 
-        <DefaultValue(CStr(Nothing))> Property UpButton As Button
-        <DefaultValue(CStr(Nothing))> Property DownButton As Button
-        <DefaultValue(CStr(Nothing))> Property RemoveButton As Button
+        <DefaultValue(GetType(Button), Nothing)>
+        Property UpButton As Button
 
+        <DefaultValue(GetType(Button), Nothing)>
+        Property DownButton As Button
+
+        <DefaultValue(GetType(Button), Nothing)>
+        Property RemoveButton As Button
+
+        <DefaultValue(GetType(Button()), Nothing)>
         Property SingleSelectionButtons As Button()
+
+        <DefaultValue(GetType(Button()), Nothing)>
         Property MultiSelectionButtons As Button()
+
+        <DefaultValue(CStr(Nothing))>
         Property ItemCheckProperty As String
 
         Event ItemsChanged()

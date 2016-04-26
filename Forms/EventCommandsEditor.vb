@@ -105,7 +105,6 @@ Class EventCommandsEditor
         Me.lv.Name = "lv"
         Me.lv.Size = New System.Drawing.Size(453, 435)
         Me.lv.TabIndex = 21
-        Me.lv.UseCompatibleStateImageBehavior = False
         '
         'EventCommandsEditor
         '

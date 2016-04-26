@@ -136,7 +136,7 @@
 
                         Dim text = "Frame: " & AVI.Position & " (" & AVI.FrameCount & ")" + BR &
                                    "Time: " & currentDate.ToString(format) + " (" + lengthtDate.ToString(format) + ")" + BR +
-                                   "Size: " & frameSize.Width & " x " & frameSize.Height & CrLf +
+                                   "Size: " & frameSize.Width & " x " & frameSize.Height & BR +
                                    "Rate: " & AVI.FrameRate.ToString("f6")
 
                         Dim font = New Font("Segoe UI", 10, FontStyle.Bold)

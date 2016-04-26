@@ -672,16 +672,12 @@ Class MainForm
         Me.AviSynthListView.FullRowSelect = True
         Me.AviSynthListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.AviSynthListView.HideSelection = False
-        Me.AviSynthListView.ItemCheckProperty = Nothing
         Me.AviSynthListView.Location = New System.Drawing.Point(8, 26)
         Me.AviSynthListView.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.AviSynthListView.MultiSelect = False
-        Me.AviSynthListView.MultiSelectionButtons = Nothing
         Me.AviSynthListView.Name = "AviSynthListView"
-        Me.AviSynthListView.SingleSelectionButtons = Nothing
         Me.AviSynthListView.Size = New System.Drawing.Size(304, 180)
         Me.AviSynthListView.TabIndex = 0
-        Me.AviSynthListView.UseCompatibleStateImageBehavior = False
         Me.AviSynthListView.View = System.Windows.Forms.View.Details
         '
         'lgbEncoder
@@ -1684,7 +1680,7 @@ Class MainForm
                 Log.WriteLine(i)
             Next
 
-            Log.WriteLine(CrLf + MediaInfo.GetSummary(p.SourceFile))
+            Log.WriteLine(BR + MediaInfo.GetSummary(p.SourceFile))
 
             For Each i In DriveInfo.GetDrives()
                 If i.DriveType = DriveType.CDRom AndAlso
@@ -2069,7 +2065,7 @@ Class MainForm
 
                 If idxContent.Contains(VB6.ChrW(&HA) + VB6.ChrW(&H0) + VB6.ChrW(&HD) + VB6.ChrW(&HA)) Then
                     idxContent = idxContent.FixBreak
-                    idxContent = idxContent.Replace(CrLf + VB6.ChrW(&H0) + BR, CrLf + "langidx: 0" + BR)
+                    idxContent = idxContent.Replace(BR + VB6.ChrW(&H0) + BR, BR + "langidx: 0" + BR)
                     File.WriteAllText(i, idxContent, Encoding.Default)
                 End If
 
@@ -2113,7 +2109,7 @@ Class MainForm
                         Dim args =
                             ifoPath + BR +
                             p.TempDir + Filepath.GetBase(p.SourceFile) + BR &
-                            (i + 1) & CrLf +
+                            (i + 1) & BR +
                             "1" + BR +
                             "ALL" + BR +
                             "CLOSE"
@@ -2161,10 +2157,10 @@ Class MainForm
             Log.WriteLine(p.Script.GetFullScript)
             Log.WriteHeader("Script Properties")
 
-            Dim props = "source frame count: " & p.SourceScript.GetFrames & CrLf +
+            Dim props = "source frame count: " & p.SourceScript.GetFrames & BR +
                 "source frame rate: " & p.SourceScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
                 "source duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.SourceScript.GetFrames / p.SourceScript.GetFramerate)).ToString + BR +
-                "target frame count: " & p.Script.GetFrames & CrLf +
+                "target frame count: " & p.Script.GetFrames & BR +
                 "target frame rate: " & p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
                 "target duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.Script.GetFrames / p.Script.GetFramerate)).ToString
 
@@ -3749,7 +3745,7 @@ Class MainForm
 
             tb = ui.AddTextBlock(subPage)
             tb.Label.Text = "Auto load subtitles:"
-            tb.Label.Tooltip = "Subtitles loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + BR2 + String.Join(CrLf, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+            tb.Label.Tooltip = "Subtitles loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
             tb.Edit.Text = p.AutoSubtitles
             tb.Edit.SaveAction = Sub(value) p.AutoSubtitles = value
 
@@ -3993,7 +3989,7 @@ Class MainForm
                 End If
             Next
 
-            If Not ret.EndsWith(CrLf2) Then ret += BR
+            If Not ret.EndsWith(BR2) Then ret += BR
         Next
 
         Return ret
@@ -4116,7 +4112,7 @@ Class MainForm
 
             If params.Length = 0 Then
                 If switch Is Nothing Then
-                    advanced.Add(String.Join(CrLf, switches), desc)
+                    advanced.Add(String.Join(BR, switches), desc)
                 Else
                     basic.Add(String.Join(", ", switches), desc)
                 End If
@@ -4143,10 +4139,10 @@ Class MainForm
                     switches(iSwitch) += ":" + String.Join(",", paramList.ToArray)
                 Next
 
-                Dim switchcell = String.Join(CrLf, switches)
+                Dim switchcell = String.Join(BR, switches)
 
                 If enumList.Count > 0 Then
-                    switchcell += BR2 + String.Join(CrLf, enumList.ToArray)
+                    switchcell += BR2 + String.Join(BR, enumList.ToArray)
                 End If
 
                 If switch Is Nothing Then

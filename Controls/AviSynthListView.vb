@@ -1,5 +1,4 @@
 Imports System.ComponentModel
-
 Imports StaxRip.UI
 
 Class AviSynthListView
@@ -57,16 +56,6 @@ Class AviSynthListView
         EndUpdate()
 
         BlockItemCheck = False
-    End Sub
-
-    Protected Overrides Sub OnCreateControl()
-        MyBase.OnCreateControl()
-        AutoResizeColumns(True)
-    End Sub
-
-    Protected Overrides Sub OnLayout(e As LayoutEventArgs)
-        MyBase.OnLayout(e)
-        AutoResizeColumns(True)
     End Sub
 
     Sub UpdateMenu()
@@ -186,6 +175,16 @@ Class AviSynthListView
         OnChanged()
     End Sub
 
+    Protected Overrides Sub OnCreateControl()
+        MyBase.OnCreateControl()
+        AutoResizeColumns(True)
+    End Sub
+
+    Protected Overrides Sub OnLayout(e As LayoutEventArgs)
+        MyBase.OnLayout(e)
+        AutoResizeColumns(True)
+    End Sub
+
     Protected Overrides Sub OnDragDrop(e As DragEventArgs)
         BlockItemCheck = True
         MyBase.OnDragDrop(e)
@@ -233,11 +232,6 @@ Class AviSynthListView
         f.Doc.WriteP("The mini filter editor in the main dialog has a similar but limited feature set. It supports the context menu, Drag & Drop to reorder, the script editor shows with a simple double-click.")
         f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
         f.Show()
-    End Sub
-
-    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
-        If e.KeyData = Keys.Delete Then RemoveClick()
-        MyBase.OnKeyDown(e)
     End Sub
 
     Sub CodePreview()

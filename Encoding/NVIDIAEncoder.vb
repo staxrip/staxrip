@@ -220,9 +220,9 @@ Public Class NVIDIAEncoder
                     Add("Basic", Decoder, Mode, Codec, QPI, QPP, QPB)
                     Add("Rate Control",
                         New NumParam With {.Switch = "--qp-init", .Text = "Initial QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--max-bitrate", .Text = "Maximum Bitrate:", .InitValue = 17500, .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Max QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Min QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate:", .InitValue = 17500, .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New BoolParam With {.Switch = "--aq", .Text = "Adaptive Quantization", .Value = False, .DefaultValue = False},
                         Lossless)

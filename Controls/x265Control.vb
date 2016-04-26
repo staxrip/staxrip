@@ -77,7 +77,6 @@ Class x265Control
         Me.lv.Name = "lv"
         Me.lv.Size = New System.Drawing.Size(367, 213)
         Me.lv.TabIndex = 0
-        Me.lv.UseCompatibleStateImageBehavior = False
         '
         'x265Control
         '

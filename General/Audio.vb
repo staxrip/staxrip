@@ -178,7 +178,7 @@ Class Audio
                         If File.Exists(m4aPath) Then
                             If Not ap Is Nothing Then ap.File = m4aPath
                             FileHelp.Delete(outPath)
-                            Log.WriteLine(CrLf + MediaInfo.GetSummary(m4aPath))
+                            Log.WriteLine(BR + MediaInfo.GetSummary(m4aPath))
                         Else
                             Throw New ErrorAbortException("Error mux AAC to M4A", outPath)
                         End If

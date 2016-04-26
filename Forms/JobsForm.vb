@@ -254,7 +254,7 @@ Friend Class JobsForm
                     counter += 1
 
                     If counter > 9 Then
-                        g.ShowException(ex, "Failed to load job file:" + CrLf2 + jobsPath)
+                        g.ShowException(ex, "Failed to load job file:" + BR2 + jobsPath)
                         FileHelp.Delete(jobsPath)
                         Exit While
                     End If

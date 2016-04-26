@@ -101,7 +101,7 @@ Public MustInherit Class Muxer
 
                 If v.Contains(vb6.ChrW(&HA) + vb6.ChrW(&H0) + vb6.ChrW(&HD) + vb6.ChrW(&HA)) Then
                     v = v.FixBreak
-                    v = v.Replace(CrLf + vb6.ChrW(&H0) + CrLf, CrLf + "langidx: 0" + CrLf)
+                    v = v.Replace(CrLf + vb6.ChrW(&H0) + BR, CrLf + "langidx: 0" + BR)
                     File.WriteAllText(iFile, v, Encoding.Default)
                 End If
             End If
@@ -401,7 +401,7 @@ Class BatchMuxer
 
         Using proc As New Proc
             proc.Init("Encoding video command line encoder: " + Name)
-            proc.WriteLine(commands + CrLf2)
+            proc.WriteLine(commands + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
 

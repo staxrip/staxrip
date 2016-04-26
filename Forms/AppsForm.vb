@@ -179,12 +179,13 @@ Class AppsForm
         InitializeComponent()
 
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)
+        Dim x64 = Package.Items.Values.Where(Function(arg) Not arg.Version Is Nothing AndAlso Not arg.Version.Contains("x86")).Count
         Dim avs = plugins.Where(Function(arg) Not arg.AviSynthFilterNames.NothingOrEmpty).Count
         Dim vs = plugins.Where(Function(arg) Not arg.VapourSynthFilterNames.NothingOrEmpty).Count
-        Dim exe = Package.Items.Values.Where(Function(arg) arg.Filename.Ext = "exe").Count
+        Dim exe = Package.Items.Values.Where(Function(arg) arg.Filename.Ext = "exe" AndAlso Not arg.Version Is Nothing AndAlso arg.Version.Contains("x64")).Count
         Dim dll = Package.Items.Values.Where(Function(arg) arg.Filename.Ext = "dll" AndAlso Not TypeOf arg Is PluginPackage).Count
 
-        Text = $"Apps ({Package.Items.Count } packages, {exe} tools, {avs} AviSynth plugins, {vs} VapourSynth plugins, {dll} libraries)"
+        Text = $"{x64} x64 packages   {avs} AVS x64 plugins   {exe} x64 tools   {vs} VS x64 plugins   {dll} x64 libraries"
         SearchTextBox_TextChanged()
 
         tv.Scrollable = True
@@ -339,7 +340,7 @@ Class AppsForm
     End Sub
 
     Private Sub ApplicationsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        MsgInfo("Shorcuts", "F11: Edit location" + CrLf + "F12: Edit version")
+        MsgInfo("Shorcuts", "F11: Edit location" + BR + "F12: Edit version")
     End Sub
 
     Private Sub ApplicationsForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
@@ -374,7 +375,7 @@ Class AppsForm
                         If i.Version <> "" Then
                             textContent += i.ID + " = " + i.Version + "; " +
                                 i.VersionDate.ToString("yyyy-MM-dd",
-                                                       CultureInfo.InvariantCulture) + CrLf 'persian calendar
+                                                       CultureInfo.InvariantCulture) + BR 'persian calendar
                         End If
                     Next
 

@@ -92,7 +92,7 @@ Class MediaInfoFolderViewForm
             End If
         Next
 
-        If hs.Count > 0 Then MsgWarn("Unknown file type(s): " + CrLf2 + hs.Join(", "))
+        If hs.Count > 0 Then MsgWarn("Unknown file type(s): " + BR2 + hs.Join(", "))
 
         Dim cms As New ContextMenuStripEx()
         cms.Form = Me
@@ -113,10 +113,10 @@ Class MediaInfoFolderViewForm
     Sub SaveCSV()
         Dim sb As New StringBuilder
 
-        sb.Append(lv.Columns.Cast(Of ColumnHeader).Select(Function(arg) If(arg.Text.Contains(","), """" + arg.Text + """", arg.Text)).Join(",") + CrLf)
+        sb.Append(lv.Columns.Cast(Of ColumnHeader).Select(Function(arg) If(arg.Text.Contains(","), """" + arg.Text + """", arg.Text)).Join(",") + BR)
 
         For Each i As ListViewItem In lv.Items
-            sb.Append(i.SubItems.Cast(Of ListViewItem.ListViewSubItem).Select(Function(arg) If(arg.Text.Contains(","), """" + arg.Text + """", arg.Text)).Join(",") + CrLf)
+            sb.Append(i.SubItems.Cast(Of ListViewItem.ListViewSubItem).Select(Function(arg) If(arg.Text.Contains(","), """" + arg.Text + """", arg.Text)).Join(",") + BR)
         Next
 
         Using f As New SaveFileDialog()

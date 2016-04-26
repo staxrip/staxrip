@@ -130,7 +130,7 @@ Class Proc
     Sub Start()
         Try
             If ReadError OrElse ReadOutput Then
-                Log.WriteLine(CommandLine + CrLf2)
+                Log.WriteLine(CommandLine + BR2)
                 Log.Save()
             End If
 
@@ -163,11 +163,11 @@ Class Proc
             Dim m = ex.Message
 
             If File <> "" Then
-                m += CrLf2 + "File: " + File
+                m += BR2 + "File: " + File
             End If
 
             If Arguments <> "" Then
-                m += CrLf2 + "Arguments: " + Arguments
+                m += BR2 + "Arguments: " + Arguments
             End If
 
             MsgError(m)
@@ -207,7 +207,7 @@ Class Proc
                     Dim errorMessage = Header + " failed with exit code: " & ExitCode & " (" + "0x" + ExitCode.ToString("X") + ")"
 
                     If systemErrorMessage <> "" Then
-                        errorMessage += CrLf2 + "The exit code might be a system error code: " + systemErrorMessage.Trim
+                        errorMessage += BR2 + "The exit code might be a system error code: " + systemErrorMessage.Trim
                     End If
 
                     systemErrorMessage = Nothing
@@ -221,10 +221,10 @@ Class Proc
                     End If
 
                     If systemErrorMessage <> "" Then
-                        errorMessage += CrLf2 + "The exit code might be a system error code: " + systemErrorMessage.Trim
+                        errorMessage += BR2 + "The exit code might be a system error code: " + systemErrorMessage.Trim
                     End If
 
-                    errorMessage += CrLf2 + ProcessForm.CommandLineLog.ToString() + CrLf
+                    errorMessage += BR2 + ProcessForm.CommandLineLog.ToString() + BR
                     ProcessForm.ClearCommandLineOutput()
 
                     Throw New ErrorAbortException("Error " + Header, errorMessage)

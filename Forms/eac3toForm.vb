@@ -622,10 +622,10 @@ Class eac3toForm
 
         If File.Exists(M2TSFile) Then
             args = """" + M2TSFile + """ -progressnumbers"
-            Log.Write("Process M2TS file using eac3to", """" + Package.eac3to.GetPath + """ " + args + CrLf2)
+            Log.Write("Process M2TS file using eac3to", """" + Package.eac3to.GetPath + """ " + args + BR2)
         ElseIf Directory.Exists(PlaylistFolder) Then
             args = """" + PlaylistFolder + """ " & PlaylistID & ") -progressnumbers"
-            Log.Write("Process playlist file using eac3to", """" + Package.eac3to.GetPath + """ " + args + CrLf2)
+            Log.Write("Process playlist file using eac3to", """" + Package.eac3to.GetPath + """ " + args + BR2)
         End If
 
         Using o As New Process
@@ -662,7 +662,7 @@ Class eac3toForm
             BeginInvoke(Sub() Text = e.Data)
 
             If Not e.Data.StartsWith("analyze: ") Then
-                Output += e.Data + CrLf
+                Output += e.Data + BR
             End If
         End If
     End Sub

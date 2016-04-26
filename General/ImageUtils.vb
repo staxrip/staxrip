@@ -37,7 +37,7 @@ Class Thumbnails
         End Try
 
         If errorMsg <> "" Then
-            MsgError("Failed to open file." + CrLf2 + inputFile, errorMsg)
+            MsgError("Failed to open file." + BR2 + inputFile, errorMsg)
             Exit Sub
         End If
 
@@ -78,9 +78,9 @@ Class Thumbnails
         Dim infoDate As Date
         infoDate = infoDate.AddMilliseconds(infoDuration)
 
-        Dim caption = Filepath.GetName(inputFile) + CrLf & "Size: " & infoSize & ", Duration: " +
-            infoDate.ToString("HH:mm:ss") + ", Bitrate: " & CInt((infoLength * 8) / 1000 / (infoDuration / 1000)) & " Kbps" + CrLf +
-            "Audio: " + MediaInfo.GetAudioCodecs(inputFile) + CrLf +
+        Dim caption = Filepath.GetName(inputFile) + BR & "Size: " & infoSize & ", Duration: " +
+            infoDate.ToString("HH:mm:ss") + ", Bitrate: " & CInt((infoLength * 8) / 1000 / (infoDuration / 1000)) & " Kbps" + BR +
+            "Audio: " + MediaInfo.GetAudioCodecs(inputFile) + BR +
             "Video: " + MediaInfo.GetVideoCodec(inputFile) + ", " & infoWidth & " x " & infoHeight & ", " & MediaInfo.GetVideo(inputFile, "FrameRate/String")
 
         Dim captionHeight = 110

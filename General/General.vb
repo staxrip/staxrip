@@ -537,8 +537,8 @@ table {
         Writer.WriteStartElement("html")
         Writer.WriteStartElement("head")
         Writer.WriteElementString("title", title)
-        Writer.WriteRaw(CrLf + style.ToString + CrLf)
-        Writer.WriteRaw(CrLf + script.ToString + CrLf)
+        Writer.WriteRaw(CrLf + style.ToString + BR)
+        Writer.WriteRaw(CrLf + script.ToString + BR)
         Writer.WriteEndElement() 'head
         Writer.WriteStartElement("body")
         WriteElement("p", "<img src=""" + HelpForm.MainImagePath + """ style=""margin-bottom:-8pt;margin-left:-4pt"">")
@@ -584,7 +584,7 @@ table {
 
         If value.Contains("<") Then value = value.Replace("<", "&lt;")
         If value.Contains(">") Then value = value.Replace(">", "&gt;")
-        If value.Contains(CrLf) Then value = value.Replace(CrLf, "<br>")
+        If value.Contains(BR) Then value = value.Replace(CrLf, "<br>")
 
         Return value
     End Function
@@ -729,7 +729,7 @@ table {
         If Not IsClosed Then
             IsClosed = True
 
-            Writer.WriteRaw("<p>&nbsp;</p>" + CrLf)
+            Writer.WriteRaw("<p>&nbsp;</p>" + BR)
             Writer.WriteRaw("<h5 align=""center"">Copyright &copy; " & DateTime.Now.Year & " by stax76. All rights reserved.</h5><br>")
             Writer.WriteEndElement() 'body
             Writer.WriteEndElement() 'html
@@ -1059,7 +1059,7 @@ Public Class Command
                 End If
             Next
 
-            Return paramList.Join(CrLf)
+            Return paramList.Join(BR)
         End If
     End Function
 End Class
@@ -1180,9 +1180,11 @@ Public Class CommandManager
     End Function
 End Class
 
-Friend Module MainModule
-    Friend Const CrLf As String = VB6.vbCrLf
-    Friend Const CrLf2 As String = VB6.vbCrLf + VB6.vbCrLf
+Public Module MainModule
+    Public Const BR As String = VB6.vbCrLf
+    Public Const BR2 As String = VB6.vbCrLf
+    Public Const CrLf As String = VB6.vbCrLf
+    Public Const CrLf2 As String = VB6.vbCrLf + VB6.vbCrLf
 
     Function OK(value As String) As Boolean
         Return value <> ""

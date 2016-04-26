@@ -70,15 +70,10 @@ Class ApplicationSettings
     End Function
 
     Sub Init() Implements ISafeSerialization.Init
-        If Versions Is Nothing Then
-            Versions = New Dictionary(Of String, Integer)
-        End If
+        If Versions Is Nothing Then Versions = New Dictionary(Of String, Integer)
+        If Check(Storage, "Misc", 2) Then Storage = New ObjectStorage
 
-        If Check(Storage, "Misc", 2) Then
-            Storage = New ObjectStorage
-        End If
-
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 186) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 188) Then
             If VideoEncoderProfiles Is Nothing Then
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
             Else
@@ -96,7 +91,7 @@ Class ApplicationSettings
             End If
         End If
 
-        If Check(AudioProfiles, "Audio Profiles", 113) Then
+        If Check(AudioProfiles, "Audio Profiles", 115) Then
             If AudioProfiles Is Nothing Then
                 AudioProfiles = AudioProfile.GetDefaults()
             Else
@@ -186,8 +181,8 @@ Class ApplicationSettings
         End If
 
         If Check(CmdlPresetsMKV, "MKV custom command line menu presets", 7) Then
-            CmdlPresetsMKV = "File Attachment = --attach-file ""$browse_file$""" + CrLf +
-                             "Attachment Description = --attachment-description ""$enter_text$""" + CrLf +
+            CmdlPresetsMKV = "File Attachment = --attach-file ""$browse_file$""" + BR +
+                             "Attachment Description = --attachment-description ""$enter_text$""" + BR +
                              "Process Priority = --priority $select:lowest;lower;normal;higher;highest$"
         End If
 
@@ -200,11 +195,11 @@ Class ApplicationSettings
         End If
 
         If Check(CmdlPresetsX264, "x264 custom command line menu presets", 6) OrElse Not OK(CmdlPresetsX264) Then
-            CmdlPresetsX264 = "SAR | PAL | 4:3 = --sar 12:11" + CrLf +
-                              "SAR | PAL | 16:9 = --sar 16:11" + CrLf +
-                              "SAR | NTSC | 4:3 = --sar 10:11" + CrLf +
-                              "SAR | NTSC | 16:9 = --sar 40:33" + CrLf +
-                              "Enter SAR = --sar $enter_text:Please enter the SAR.$" + CrLf +
+            CmdlPresetsX264 = "SAR | PAL | 4:3 = --sar 12:11" + BR +
+                              "SAR | PAL | 16:9 = --sar 16:11" + BR +
+                              "SAR | NTSC | 4:3 = --sar 10:11" + BR +
+                              "SAR | NTSC | 16:9 = --sar 40:33" + BR +
+                              "Enter SAR = --sar $enter_text:Please enter the SAR.$" + BR +
                               "Stats = --stats ""%temp_file%.stats"""
         End If
 
@@ -216,13 +211,9 @@ Class ApplicationSettings
             TargetImageSizeMenu = GetDefaultTargetImageSizeMenu()
         End If
 
-        If StringList Is Nothing Then
-            StringList = New List(Of String)
-        End If
+        If StringList Is Nothing Then StringList = New List(Of String)
 
-        If RecentFramePositions Is Nothing Then
-            RecentFramePositions = New List(Of String)
-        End If
+        If RecentFramePositions Is Nothing Then RecentFramePositions = New List(Of String)
 
         If Check(CustomMenuCrop, "Menu in crop dialog", 11) Then
             CustomMenuCrop = CropForm.GetDefaultMenu
@@ -240,7 +231,7 @@ Class ApplicationSettings
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 
-        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 150) Then
+        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 152) Then
             If AviSynthProfiles Is Nothing Then
                 AviSynthProfiles = FilterCategory.GetAviSynthDefaults
             Else
@@ -251,16 +242,13 @@ Class ApplicationSettings
                 Dim unknown = current.Where(Function(filter) Not defaultScripts.Contains(filter.Script))
 
                 For Each i In unknown
-                    If Not i.Path?.StartsWith("Backup | ") Then
-                        i.Path = "Backup | " + i.Path
-                    End If
-
+                    If Not i.Path?.StartsWith("Backup | ") Then i.Path = "Backup | " + i.Path
                     FilterCategory.AddFilter(i, AviSynthProfiles)
                 Next
             End If
         End If
 
-        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 30) Then
+        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 35) Then
             If VapourSynthProfiles Is Nothing Then
                 VapourSynthProfiles = FilterCategory.GetVapourSynthDefaults
             Else
@@ -308,72 +296,72 @@ Class ApplicationSettings
 
     Shared Function GetDefaultSourceAspectRatioMenu() As String
         Dim r =
-                "DAR |  4:3 = 1.333333" + CrLf +
-                "DAR | 16:9 = 1.777777" + CrLf +
-                "DAR | -" + CrLf +
-                "DAR | 16:9 PAL ITU 1.823361 = 1.823361" + CrLf +
-                "DAR |  4:3 PAL ITU 1.367521 = 1.367521" + CrLf +
-                "DAR | 16:9 NTSC ITU 1.822784 = 1.822784" + CrLf +
-                "DAR |  4:3 NTSC ITU 1.367088 = 1.367088" + CrLf +
-                "PAR |  1:1 = 1:1" + CrLf +
-                "PAR | -" + CrLf +
-                "PAR | 16:9 PAL DVD MPEG-4 16:11 = 16:11" + CrLf +
-                "PAR |  4:3 PAL DVD MPEG-4 12:11 = 12:11" + CrLf +
-                "PAR | 16:9 NTSC DVD MPEG-4 40:33 = 40:33" + CrLf +
+                "DAR |  4:3 = 1.333333" + BR +
+                "DAR | 16:9 = 1.777777" + BR +
+                "DAR | -" + BR +
+                "DAR | 16:9 PAL ITU 1.823361 = 1.823361" + BR +
+                "DAR |  4:3 PAL ITU 1.367521 = 1.367521" + BR +
+                "DAR | 16:9 NTSC ITU 1.822784 = 1.822784" + BR +
+                "DAR |  4:3 NTSC ITU 1.367088 = 1.367088" + BR +
+                "PAR |  1:1 = 1:1" + BR +
+                "PAR | -" + BR +
+                "PAR | 16:9 PAL DVD MPEG-4 16:11 = 16:11" + BR +
+                "PAR |  4:3 PAL DVD MPEG-4 12:11 = 12:11" + BR +
+                "PAR | 16:9 NTSC DVD MPEG-4 40:33 = 40:33" + BR +
                 "PAR |  4:3 NTSC DVD MPEG-4 10:11 = 10:11"
 
         Return r.Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
     End Function
 
     Shared Function GetDefaultTargetImageSizeMenu() As String
-        Return "1920 x auto = 1920 x 0" + CrLf +
-               "1280 x auto = 1280 x 0" + CrLf2 +
-               "640 x auto = 640 x 0" + CrLf +
-               "480 x auto = 480 x 0" + CrLf2 +
-               "300 k Pixel = 300000" + CrLf +
+        Return "1920 x auto = 1920 x 0" + BR +
+               "1280 x auto = 1280 x 0" + BR2 +
+               "640 x auto = 640 x 0" + BR +
+               "480 x auto = 480 x 0" + BR2 +
+               "300 k Pixel = 300000" + BR +
                "200 k Pixel = 200000"
     End Function
 
     Shared Function GetDefaultEac3toMenu() As String
         Return _
-"AAC 96 Kbps - 2ch - Normalize - 16bit = -down16 -downStereo -normalize -quality=0.3" + CrLf +
-"AAC 132 Kbps - 2ch - Normalize - 16bit = -down16 -downStereo -normalize -quality=0.4" + CrLf +
-"AAC 240 Kbps 5.1ch - Normalize - 16bit = -down16 -down6 -normalize -quality=0.3" + CrLf +
-"Normalize = -normalize" + CrLf +
-"Convert to 16 bit = -down16" + CrLf +
-"Extract DTS Core = -core" + CrLf +
-"Downmix | Multichannel to stereo = -downStereo" + CrLf +
-"Downmix | Multichannel to stereo (DPL II) = -downDpl" + CrLf +
-"Downmix | 7 or 8 channels to 6 channels = -down6" + CrLf +
-"Downmix | Mix LFE in (stereo downmixing) = -mixlfe" + CrLf +
-"AAC Quality | 0.10 = -quality=0.10" + CrLf +
-"AAC Quality | 0.15 = -quality=0.15" + CrLf +
-"AAC Quality | 0.20 = -quality=0.20" + CrLf +
-"AAC Quality | 0.25 = -quality=0.25" + CrLf +
-"AAC Quality | 0.30 = -quality=0.30" + CrLf +
-"AAC Quality | 0.35 = -quality=0.35" + CrLf +
-"AAC Quality | 0.40 = -quality=0.40" + CrLf +
-"AAC Quality | 0.45 = -quality=0.45" + CrLf +
-"AAC Quality | 0.50 = -quality=0.50" + CrLf +
-"AAC Quality | 0.55 = -quality=0.55" + CrLf +
-"AAC Quality | 0.60 = -quality=0.60" + CrLf +
-"AAC Quality | 0.65 = -quality=0.65" + CrLf +
-"AAC Quality | 0.70 = -quality=0.70" + CrLf +
-"AAC Quality | 0.75 = -quality=0.75" + CrLf +
-"AAC Quality | 0.80 = -quality=0.80" + CrLf +
-"AAC Quality | 0.85 = -quality=0.85" + CrLf +
-"AAC Quality | 0.90 = -quality=0.90" + CrLf +
-"AAC Quality | 0.95 = -quality=0.95" + CrLf +
-"AC3 Encoding | 192 = -192" + CrLf +
-"AC3 Encoding | 224 = -224" + CrLf +
-"AC3 Encoding | 384 = -384" + CrLf +
-"AC3 Encoding | 448 = -448" + CrLf +
-"AC3 Encoding | 640 = -640" + CrLf +
-"DTS Encoding | 768 = -768" + CrLf +
-"DTS Encoding | 1536 = -1536" + CrLf +
-"Resample | 44100 = -resampleTo44100" + CrLf +
-"Resample | 48000 = -resampleTo48000" + CrLf +
-"Resample | 88200 = -resampleTo88200" + CrLf +
+"AAC 96 Kbps - 2ch - Normalize - 16bit = -down16 -downStereo -normalize -quality=0.3" + BR +
+"AAC 132 Kbps - 2ch - Normalize - 16bit = -down16 -downStereo -normalize -quality=0.4" + BR +
+"AAC 240 Kbps 5.1ch - Normalize - 16bit = -down16 -down6 -normalize -quality=0.3" + BR +
+"Normalize = -normalize" + BR +
+"Convert to 16 bit = -down16" + BR +
+"Extract DTS Core = -core" + BR +
+"Downmix | Multichannel to stereo = -downStereo" + BR +
+"Downmix | Multichannel to stereo (DPL II) = -downDpl" + BR +
+"Downmix | 7 or 8 channels to 6 channels = -down6" + BR +
+"Downmix | Mix LFE in (stereo downmixing) = -mixlfe" + BR +
+"AAC Quality | 0.10 = -quality=0.10" + BR +
+"AAC Quality | 0.15 = -quality=0.15" + BR +
+"AAC Quality | 0.20 = -quality=0.20" + BR +
+"AAC Quality | 0.25 = -quality=0.25" + BR +
+"AAC Quality | 0.30 = -quality=0.30" + BR +
+"AAC Quality | 0.35 = -quality=0.35" + BR +
+"AAC Quality | 0.40 = -quality=0.40" + BR +
+"AAC Quality | 0.45 = -quality=0.45" + BR +
+"AAC Quality | 0.50 = -quality=0.50" + BR +
+"AAC Quality | 0.55 = -quality=0.55" + BR +
+"AAC Quality | 0.60 = -quality=0.60" + BR +
+"AAC Quality | 0.65 = -quality=0.65" + BR +
+"AAC Quality | 0.70 = -quality=0.70" + BR +
+"AAC Quality | 0.75 = -quality=0.75" + BR +
+"AAC Quality | 0.80 = -quality=0.80" + BR +
+"AAC Quality | 0.85 = -quality=0.85" + BR +
+"AAC Quality | 0.90 = -quality=0.90" + BR +
+"AAC Quality | 0.95 = -quality=0.95" + BR +
+"AC3 Encoding | 192 = -192" + BR +
+"AC3 Encoding | 224 = -224" + BR +
+"AC3 Encoding | 384 = -384" + BR +
+"AC3 Encoding | 448 = -448" + BR +
+"AC3 Encoding | 640 = -640" + BR +
+"DTS Encoding | 768 = -768" + BR +
+"DTS Encoding | 1536 = -1536" + BR +
+"Resample | 44100 = -resampleTo44100" + BR +
+"Resample | 48000 = -resampleTo48000" + BR +
+"Resample | 88200 = -resampleTo88200" + BR +
 "Resample | 96000 = -resampleTo96000"
     End Function
 End Class

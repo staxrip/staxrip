@@ -37,8 +37,8 @@ Class ObjectHelp
 
                             If IsGoodType(o) Then
                                 If IsToString(o) Then
-                                    sb.Append(i.Name + "=" + o.ToString + CrLf)
-                                    'sb.Append(i.Name + "=" + o.ToString + " [" + t.Name + "]" + CrLf)
+                                    sb.Append(i.Name + "=" + o.ToString + BR)
+                                    'sb.Append(i.Name + "=" + o.ToString + " [" + t.Name + "]" + BR)
                                 Else
                                     If Not o Is declaringObj Then
                                         ParseCompareString(o, obj, sb)

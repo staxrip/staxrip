@@ -272,13 +272,13 @@ Public Class BatchAudioProfile
             Dim bitrateBefore = p.VideoBitrate
             Dim targetPath = GetOutputFile()
 
-            Dim batchCode = "@echo off" + CrLf2 + {
+            Dim batchCode = "@echo off" + BR2 + {
                 Package.ffmpeg.GetDir,
                 Package.eac3to.GetDir,
                 Package.BeSweet.GetDir}.
                 Select(Function(arg) "set PATH=%PATH%;" + arg).
-                Join(CrLf) + CrLf2 +
-                "cd /D """ + p.TempDir + """" + CrLf2 +
+                Join(BR) + BR2 +
+                "cd /D """ + p.TempDir + """" + BR2 +
                 SolveMacros(CommandLines).Trim
 
             Dim batchPath = p.TempDir + Filepath.GetBase(File) + "_audio.bat"
@@ -287,7 +287,7 @@ Public Class BatchAudioProfile
             Using proc As New Proc
                 proc.Init("Audio encoding: " + Name)
                 proc.SkipStrings = {"Maximum Gain Found", "transcoding ...", "size=", "process: ", "analyze: "}
-                proc.WriteLine(batchCode + CrLf2)
+                proc.WriteLine(batchCode + BR2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
 
@@ -1102,8 +1102,6 @@ Class GUIAudioProfile
 
     <Serializable()>
     Class Parameters
-        Implements ISerializable
-
         Property AacProfile As AudioAacProfile
         Property BeSweetAzid As String = ""
         Property BeSweetCustom As String = ""
@@ -1126,25 +1124,6 @@ Class GUIAudioProfile
         Property Quality As Single = 0.3
         Property RateMode As AudioRateMode
         Property SamplingRate As Integer
-
-        Sub New()
-        End Sub
-
-        <DebuggerNonUserCode()>
-        Sub New(info As SerializationInfo, context As StreamingContext)
-            For Each i In Me.GetType.GetProperties()
-                Try
-                    i.SetValue(Me, info.GetValue(i.Name, i.PropertyType), Nothing)
-                Catch
-                End Try
-            Next
-        End Sub
-
-        Sub GetObjectData(info As SerializationInfo, context As StreamingContext) Implements ISerializable.GetObjectData
-            For Each i In Me.GetType.GetProperties()
-                info.AddValue(i.Name, i.GetValue(Me, Nothing))
-            Next
-        End Sub
     End Class
 End Class
 

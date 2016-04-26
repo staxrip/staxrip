@@ -134,8 +134,8 @@
 
                         Dim format = If(lengthtDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff")
 
-                        Dim text = "Frame: " & AVI.Position & " (" & AVI.FrameCount & ")" + CrLf &
-                                   "Time: " & currentDate.ToString(format) + " (" + lengthtDate.ToString(format) + ")" + CrLf +
+                        Dim text = "Frame: " & AVI.Position & " (" & AVI.FrameCount & ")" + BR &
+                                   "Time: " & currentDate.ToString(format) + " (" + lengthtDate.ToString(format) + ")" + BR +
                                    "Size: " & frameSize.Width & " x " & frameSize.Height & CrLf +
                                    "Rate: " & AVI.FrameRate.ToString("f6")
 

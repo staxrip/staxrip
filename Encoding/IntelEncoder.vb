@@ -73,7 +73,7 @@ Public Class IntelEncoder
     Overrides Sub Encode()
         p.Script.Synchronize()
         Params.RaiseValueChanged(Nothing)
-        Dim batchCode = "@echo off" + CrLf + "CHCP 65001" + CrLf + Params.GetCommandLine(True, True)
+        Dim batchCode = "@echo off" + BR + "CHCP 65001" + BR + Params.GetCommandLine(True, True)
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_QSVEncC.bat"
         File.WriteAllText(batchPath, batchCode, New UTF8Encoding(False))
 
@@ -81,7 +81,7 @@ Public Class IntelEncoder
             proc.Init("Encoding using QSVEncC " + Package.QSVEncC.Version)
             proc.Encoding = Encoding.UTF8
             proc.SkipStrings = {" frames: "}
-            proc.WriteLine(batchCode + CrLf2)
+            proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
             proc.Start()

@@ -993,7 +993,7 @@ Class AudioForm
     Private Sub miExecute_Click(sender As Object, e As EventArgs) Handles miExecute.Click
         If TempProfile.File <> "" Then
             If Not TempProfile.SupportedInput.Contains(Filepath.GetExt(TempProfile.File)) Then
-                MsgWarn("The input format isn't supported," + CrLf + "please decode first using:" + CrLf2 + "Codec: WAV" + CrLf + "Encoder: ffmpeg")
+                MsgWarn("The input format isn't supported," + BR + "please decode first using:" + BR2 + "Codec: WAV" + BR + "Encoder: ffmpeg")
             Else
                 Proc.StartComandLine(TempProfile.GetCommandLine(True))
             End If

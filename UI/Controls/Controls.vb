@@ -348,7 +348,7 @@ Namespace UI
 
         Protected Overrides Sub OnCreateControl()
             If OK(Note) Then
-                Text += CrLf2 + Note
+                Text += BR2 + Note
             End If
 
             MyBase.OnCreateControl()

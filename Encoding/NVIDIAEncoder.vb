@@ -68,7 +68,7 @@ Public Class NVIDIAEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Dim batchCode = "@echo off" + CrLf + "CHCP 65001" + CrLf + Params.GetCommandLine(True, True)
+        Dim batchCode = "@echo off" + BR + "CHCP 65001" + BR + Params.GetCommandLine(True, True)
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_NVEncC.bat"
         File.WriteAllText(batchPath, batchCode, New UTF8Encoding(False))
 
@@ -76,7 +76,7 @@ Public Class NVIDIAEncoder
             proc.Init("Encoding using NVEncC " + Package.NVEncC.Version)
             proc.Encoding = Encoding.UTF8
             proc.SkipStrings = {"%]", " frames: "}
-            proc.WriteLine(batchCode + CrLf2)
+            proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
             proc.Start()

@@ -14,9 +14,11 @@ http://1drv.ms/1OqPDOe
 - added new standalone mkvextract GUI (Main Menu > Apps > Demux)
 - added new QSVEncC switches for hordcoded subtitles
 - added MP4 support to standalone demux app
-- when AVSMeter is started without a source opened the -avsinfo switch is used to shows useful info
+- added -avsinfo starting AVSMeter without a source opened
 - added support for unicode file names using VapourSynth, AviSynth don't support it
 - added mkv cutting support without encoding
+- added MSharpen x64 filter for AviSynth+ x64
+- added x264 10-Bit support, binary is not included, StaxRip will ask for the location
 
 ### Fixed Bugs
 
@@ -30,6 +32,7 @@ http://1drv.ms/1OqPDOe
 - enabled audio demuxing using MP4Box for mov files
 - removed mkvinfo.exe which is 18 MB large and not really needed. It's large due to QT toolkit being used
 - mkv audio demuxing happens now all streams together instead of every stream separate, it's much faster now.
+- changed filter profiles editor to support both tab and 4 spaces for multiline profiles, tabs are converted to 4 spaces which is the standard in Python and Visual Studio
 
 ### Updated Tools
 

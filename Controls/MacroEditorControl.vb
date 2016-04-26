@@ -272,7 +272,7 @@ Class MacroEditorControl
 
     Private Sub UpdateWrapMode(rtb As RichTextBox)
         If AutoWrap Then
-            rtb.WordWrap = Not rtb.Text.FixBreak.Contains(CrLf)
+            rtb.WordWrap = Not rtb.Text.FixBreak.Contains(BR)
 
             Dim s = TextRenderer.MeasureText(rtb.Text, rtb.Font)
 

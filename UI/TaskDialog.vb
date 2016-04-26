@@ -276,7 +276,7 @@ Class TaskDialog(Of T)
         Dim id = 1000 + IdValueDic.Count + 1
         IdValueDic(id) = value
         If setShield Then CommandLinkShieldList.Add(id)
-        If description <> "" Then text = text + CrLf + description
+        If description <> "" Then text = text + BR + description
         Buttons.Add(New TASKDIALOG_BUTTON(id, text))
         Config.dwFlags = Config.dwFlags Or Flags.TDF_USE_COMMAND_LINKS
     End Sub
@@ -332,7 +332,7 @@ Class TaskDialog(Of T)
                 If url.StartsWith("mailto:") OrElse url Like "http*://*" Then
                     g.ShellExecute(url)
                 ElseIf url = "copymsg:" Then
-                    Clipboard.SetText(MainInstruction + CrLf2 + Content + CrLf2 + ExpandedInformation)
+                    Clipboard.SetText(MainInstruction + BR2 + Content + BR2 + ExpandedInformation)
                     MessageBox.Show("Message was copied to clipboard.")
                 End If
             Case TDN_CREATED

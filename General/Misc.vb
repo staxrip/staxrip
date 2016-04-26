@@ -152,7 +152,7 @@ Class Paths
                 fresh = True
             End If
 
-            Dim version = 43
+            Dim version = 44
 
             If fresh OrElse Not s.Storage.GetInt("template update") = version Then
                 s.Storage.SetInt("template update", version)
@@ -266,13 +266,13 @@ Class GlobalClass
 
             If i.Contains("#") Then
                 If Filepath.GetExtFull(i) = ".mp4" OrElse MediaInfo.GetGeneral(i, "Audio_Codec_List").Contains("AAC") Then
-                    MsgError("Character # can't be processed by MP4Box, please rename." + CrLf2 + i)
+                    MsgError("Character # can't be processed by MP4Box, please rename." + BR2 + i)
                     Return True
                 End If
             End If
 
             If i.Length > 170 Then
-                MsgError("Generated temp files might exceed 260 character file path limit, please use shorter file paths." + CrLf2 + i)
+                MsgError("Generated temp files might exceed 260 character file path limit, please use shorter file paths." + BR2 + i)
                 Return True
             End If
 
@@ -577,7 +577,7 @@ Class GlobalClass
     Sub ShowCommandLinePreview(value As String)
         Using f As New StringEditorForm
             f.tb.ReadOnly = True
-            f.cbWrap.Checked = Not value.Contains(CrLf)
+            f.cbWrap.Checked = Not value.Contains(BR)
             f.tb.Text = value
             f.tb.SelectionStart = 0
             f.tb.SelectionLength = 0
@@ -749,13 +749,13 @@ Class GlobalClass
             Process.Start(cmd, args)
         Catch ex As Exception
             If cmd Like "http*://*" Then
-                MsgError("Failed to open URL with browser." + CrLf2 + cmd, ex.Message)
+                MsgError("Failed to open URL with browser." + BR2 + cmd, ex.Message)
             ElseIf File.Exists(cmd) Then
-                MsgError("Failed to launch file." + CrLf2 + cmd, ex.Message)
+                MsgError("Failed to launch file." + BR2 + cmd, ex.Message)
             ElseIf Directory.Exists(cmd) Then
-                MsgError("Failed to launch directory." + CrLf2 + cmd, ex.Message)
+                MsgError("Failed to launch directory." + BR2 + cmd, ex.Message)
             Else
-                g.ShowException(ex, "Failed to execute command:" + CrLf2 + cmd + CrLf2 + "Arguments:" + CrLf2 + args)
+                g.ShowException(ex, "Failed to execute command:" + BR2 + cmd + BR2 + "Arguments:" + BR2 + args)
             End If
         End Try
     End Sub
@@ -1112,7 +1112,7 @@ Class Log
         End SyncLock
 
         If content <> "" Then
-            If content.EndsWith(CrLf) Then
+            If content.EndsWith(BR) Then
                 SyncLock p.Log
                     p.Log.Append(content)
                 End SyncLock
@@ -1140,7 +1140,7 @@ Class Log
 
     Shared Sub WriteLine(value As String)
         If value <> "" Then
-            If value.EndsWith(CrLf) Then
+            If value.EndsWith(BR) Then
                 SyncLock p.Log
                     p.Log.Append(value)
                 End SyncLock
@@ -1155,7 +1155,7 @@ Class Log
     End Sub
 
     Shared Function FormatHeader(value As String) As String
-        Return CrLf + "".PadLeft(60, "-"c) + CrLf + value.PadLeft(30 + value.Length \ 2) + CrLf + "".PadLeft(60, "-"c) + CrLf2
+        Return CrLf + "".PadLeft(60, "-"c) + BR + value.PadLeft(30 + value.Length \ 2) + BR + "".PadLeft(60, "-"c) + BR2
     End Function
 
     Shared Sub WriteEnvironment()
@@ -1178,10 +1178,10 @@ Class Log
         Dim videoControllerCaptions = From i2 In mc.GetInstances().OfType(Of ManagementBaseObject)() Select CStr(i2("Caption"))
 
         Dim temp =
-            "StaxRip x64: " + Application.ProductVersion + CrLf +
-            "OS: " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + CrLf +
-            "Language: " + CultureInfo.CurrentCulture.EnglishName + CrLf +
-            "CPU: " + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + CrLf +
+            "StaxRip x64: " + Application.ProductVersion + BR +
+            "OS: " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + BR +
+            "Language: " + CultureInfo.CurrentCulture.EnglishName + BR +
+            "CPU: " + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + BR +
             "GPU: " + String.Join(", ", videoControllerCaptions)
 
         WriteLine(temp.FormatColumn(":"))
@@ -1206,9 +1206,9 @@ Class Log
 
         SyncLock p.Log
             p.Log.AppendLine()
-            p.Log.Append("Start: ".PadRight(10) + start.ToLongTimeString + CrLf)
-            p.Log.Append("End: ".PadRight(10) + DateTime.Now.ToLongTimeString + CrLf)
-            p.Log.Append("Duration: " + CInt(Math.Floor(n.TotalHours)).ToString("d2") + ":" + n.Minutes.ToString("d2") + ":" + n.Seconds.ToString("d2") + CrLf)
+            p.Log.Append("Start: ".PadRight(10) + start.ToLongTimeString + BR)
+            p.Log.Append("End: ".PadRight(10) + DateTime.Now.ToLongTimeString + BR)
+            p.Log.Append("Duration: " + CInt(Math.Floor(n.TotalHours)).ToString("d2") + ":" + n.Minutes.ToString("d2") + ":" + n.Seconds.ToString("d2") + BR)
             p.Log.AppendLine()
         End SyncLock
 
@@ -2626,7 +2626,7 @@ Class GlobalCommands
 
             Using proc As New Proc
                 If showProcessWindow Then proc.Init("Execute Command Line")
-                proc.WriteLine(batchCode + CrLf2)
+                proc.WriteLine(batchCode + BR2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
                 proc.Wait = waitForExit
@@ -2694,7 +2694,7 @@ Class GlobalCommands
 
         Using proc As New Proc
             proc.Init("Execute Batch Script")
-            proc.WriteLine(batchCode + CrLf2)
+            proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
             proc.Wait = True
@@ -2709,7 +2709,7 @@ Class GlobalCommands
 
                 For Each i In ProcessForm.CommandLineLog.ToString.SplitLinesNoEmpty
                     If Not g.MainForm.CommandManager.ProcessCommandLineArgument(i) Then
-                        Log.WriteLine("Failed to interpret output:" + CrLf2 + i)
+                        Log.WriteLine("Failed to interpret output:" + BR2 + i)
                     End If
                 Next
             Catch ex As Exception
@@ -2737,7 +2737,7 @@ Class GlobalCommands
                     MsgError("Only csx (C#) and ps1 (PowerShell) are supported at this time.")
             End Select
         Else
-            MsgError("File is missing:" + CrLf2 + filepath)
+            MsgError("File is missing:" + BR2 + filepath)
         End If
     End Sub
 
@@ -2789,7 +2789,7 @@ Class GlobalCommands
 --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
 --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
 --avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
---log --log-framelist".Split((" " + CrLf).ToCharArray())
+--log --log-framelist".Split((" " + BR).ToCharArray())
         Dim nvhelp = File.ReadAllText(".\Apps\NVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim nvhelpSwitches = Regex.Matches(nvhelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim nvCode = File.ReadAllText("D:\Projekte\GitHub\staxrip\Encoding\NVIDIAEncoder.vb").Replace("--no-", "--")
@@ -2813,7 +2813,7 @@ Class GlobalCommands
         --audio-ignore-notrack-error --nv12 --output-file --check-features-html --perf-monitor
         --perf-monitor-plot --perf-monitor-interval --python --qvbr-quality --sharpness --vpp-delogo
         --vpp-delogo-select --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb
-        --vpp-delogo-cr --vpp-half-turn".Split((" " + CrLf).ToCharArray())
+        --vpp-delogo-cr --vpp-half-turn".Split((" " + BR).ToCharArray())
         Dim qsHelp = File.ReadAllText(".\Apps\QSVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim qsHelpSwitches = Regex.Matches(qsHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim qsCode = File.ReadAllText("D:\Projekte\GitHub\staxrip\Encoding\IntelEncoder.vb").Replace("--no-", "--")
@@ -2827,8 +2827,8 @@ Class GlobalCommands
         If qsUnknown.Count > 0 Then MsgInfo("QSVEncC Todo", qsUnknown.Join(" "))
 
         Dim x265Except = "--crop-rect --display-window --fast-cbf --frame-skip --help
---input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version".Split((" " + CrLf).ToCharArray())
-        Dim x265RemoveExcept = "--crop --pb-factor --ip-factor --level --log".Split((" " + CrLf).ToCharArray())
+--input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version".Split((" " + BR).ToCharArray())
+        Dim x265RemoveExcept = "--crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
 
         Dim x265HelpSwitches = Regex.Matches(
             File.ReadAllText("D:\Projekte\GitHub\staxrip\x265\param.cpp"),
@@ -3011,7 +3011,7 @@ as published by Sam Hocevar. See the COPYING file for more details.", True)
 
             Using f As New StringEditorForm
                 f.Text = "x264 custom command line switches"
-                f.cbWrap.Checked = Not b.Value.Contains(CrLf)
+                f.cbWrap.Checked = Not b.Value.Contains(BR)
                 f.tb.Text = b.Value
 
                 If Not OK(b.Value) Then
@@ -3061,7 +3061,7 @@ as published by Sam Hocevar. See the COPYING file for more details.", True)
 
             Using f As New StringEditorForm
                 f.Text = "x264 custom command line switches"
-                f.cbWrap.Checked = Not value.Contains(CrLf)
+                f.cbWrap.Checked = Not value.Contains(BR)
                 f.tb.Text = value
                 f.tb.Text = value
                 f.Width = 800
@@ -3842,7 +3842,7 @@ Class AutoCrop
     End Function
 End Class
 
-Enum MsgIcon
+Public Enum MsgIcon
     None = MessageBoxIcon.None
     Info = MessageBoxIcon.Information
     [Error] = MessageBoxIcon.Error

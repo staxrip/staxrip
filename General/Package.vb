@@ -47,7 +47,6 @@ Public Class Package
     Shared Property TDeint As New TDeintPackage
     Shared Property UnDot As New UnDotPackage
     Shared Property VSRip As New VSRipPackage
-    Shared Property x264 As New x264Package
     Shared Property x265 As New x265Package
     Shared Property xvid_encraw As New xvid_encrawPackage
     Shared Property flash3kyuu_deband As New flash3kyuu_debandPackage
@@ -59,6 +58,30 @@ Public Class Package
     Shared Property scenechange As New scenechangePackage
     Shared Property temporalsoften As New temporalsoftenPackage
     Shared Property LSmashWorksVapourSynth As New vslsmashsourcePackage
+
+    Shared ReadOnly Property x264 As Package
+        Get
+            If IsX264_10Required() Then Return x264_10 Else Return x264_8
+        End Get
+    End Property
+
+    Shared Property x264_8 As New Package With {
+        .Name = "x264",
+        .Filename = "x264.exe",
+        .WebURL = "http://www.videolan.org/developers/x264.html",
+        .Description = "H.264 video encoding command line app.",
+        .HelpFile = "Help.txt"}
+
+    Shared Property x264_10 As New Package With {
+        .Name = "x264 10-Bit",
+        .Filename = "x264.exe",
+        .WebURL = "http://www.videolan.org/developers/x264.html",
+        .Description = "H.264 video encoding command line app.",
+        .IsRequiredFunc = AddressOf IsX264_10Required}
+
+    Shared Function IsX264_10Required() As Boolean
+        Return TypeOf p.VideoEncoder Is x264Encoder AndAlso DirectCast(p.VideoEncoder, x264Encoder).Params.Depth.Value = 1
+    End Function
 
     Shared Property BeSweet As New Package With {
         .Name = "BeSweet",
@@ -175,7 +198,8 @@ Public Class Package
         Add(TDeint)
         Add(UnDot)
         Add(VSRip)
-        Add(x264)
+        Add(x264_8)
+        Add(x264_10)
         Add(x265)
         Add(xvid_encraw)
         Add(vscpp2013)
@@ -190,9 +214,9 @@ Public Class Package
             .Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.",
             .StartActionValue = Sub()
                                     If p.SourceFile = "" Then
-                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").GetPath.Quotes + " -avsinfo" + CrLf + "pause", False, False, True)
+                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").GetPath.Quotes + " -avsinfo" + BR + "pause", False, False, True)
                                     Else
-                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").GetPath.Quotes + " " + p.Script.Path.Quotes + CrLf + "pause", False, False, True)
+                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").GetPath.Quotes + " " + p.Script.Path.Quotes + BR + "pause", False, False, True)
                                     End If
                                 End Sub,
             .HelpFile = "doc\AVSMeter.html",
@@ -283,9 +307,9 @@ Public Class Package
             .Name = "havsfunc",
             .Filename = "havsfunc.py",
             .VapourSynthFiltersFunc = Function() {
-                New VideoFilter("Field", "QTGMC | QTGMC Fast", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Fast"")"),
-                New VideoFilter("Field", "QTGMC | QTGMC Medium", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Medium"")"),
-                New VideoFilter("Field", "QTGMC | QTGMC Slow", "clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Slow"")")},
+                New VideoFilter("Field", "QTGMC | QTGMC Fast", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Fast"")"),
+                New VideoFilter("Field", "QTGMC | QTGMC Medium", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Medium"")"),
+                New VideoFilter("Field", "QTGMC | QTGMC Slow", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Slow"")")},
             .VapourSynthFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa", "havsfunc.maa",
                                       "havsfunc.SharpAAMCmod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
                                       "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.ivtc_txt60mc",
@@ -321,7 +345,7 @@ Public Class Package
             .Name = "msmoosh",
             .Filename = "libmsmoosh.dll",
             .VapourSynthFilterNames = {"msmoosh.MSmooth", "msmoosh.MSharpen"},
-            .Description = "MSmooth is a spatial smoother that doesn't touch edges." + CrLf + "MSharpen is a sharpener that tries to sharpen only edges.",
+            .Description = "MSmooth is a spatial smoother that doesn't touch edges." + BR + "MSharpen is a sharpener that tries to sharpen only edges.",
             .WebURL = "https://github.com/dubhater/vapoursynth-msmoosh",
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Noise", "MSmooth", "clip = core.msmoosh.MSmooth(clip, threshold = 6.0, strength = 3)"),
@@ -347,6 +371,15 @@ Public Class Package
 #End Region
 
 #Region "AviSynth"
+
+        Add(New PluginPackage With {
+            .Name = "MSharpen",
+            .Filename = "msharpen.dll",
+            .WebURL = "https://github.com/tp7/msharpen",
+            .HelpURL = "http://forum.doom9.org/showthread.php?t=169832",
+            .AviSynthFilterNames = {"MSharpen"},
+            .AviSynthFiltersFunc = Function() {
+                New VideoFilter("Misc", "MSharpen", "MSharpen(threshold = 10, strength = 100, highq = true, mask = false)")}})
 
         Add(New PluginPackage With {
             .Name = "aWarpSharp2",
@@ -861,16 +894,16 @@ Public Class PluginPackage
             If Not script.Contains("import importlib.machinery") AndAlso
                 Not code.Contains("import importlib.machinery") Then
 
-                code += "import importlib.machinery" + CrLf
+                code += "import importlib.machinery" + BR
             End If
 
             Dim line = plugin.Name + " = importlib.machinery.SourceFileLoader('" +
-                plugin.Name + "', r""" + plugin.GetPath + """).load_module()" + CrLf
+                plugin.Name + "', r""" + plugin.GetPath + """).load_module()" + BR
 
             If Not script.Contains(line) AndAlso Not code.Contains(line) Then code += line
         ElseIf Not plugin.VapourSynthFilterNames Is Nothing Then
             If Not File.Exists(Paths.PluginsDir + plugin.Filename) Then
-                Dim line = "core.std.LoadPlugin(r""" + plugin.GetPath + """)" + CrLf
+                Dim line = "core.std.LoadPlugin(r""" + plugin.GetPath + """)" + BR
 
                 If Not script.Contains(line) AndAlso Not code.Contains(line) Then
                     code += line
@@ -953,18 +986,6 @@ Public Class ProjectXPackage
         If Package.Java.GetPath = "" Then Return "Failed to locate Java, ProjectX requires Java."
         Return MyBase.GetStatus()
     End Function
-End Class
-
-Public Class x264Package
-    Inherits Package
-
-    Sub New()
-        Name = "x264"
-        Filename = "x264.exe"
-        WebURL = "http://www.videolan.org/developers/x264.html"
-        Description = "H.264 video encoding command line app."
-        HelpFile = "Help.txt"
-    End Sub
 End Class
 
 Public Class x265Package
@@ -1090,7 +1111,7 @@ Public Class qaacPackage
 
         If Not File.Exists(path) AndAlso Not File.Exists(GetDir() + "QTfiles64\CoreAudioToolbox.dll") Then
             Return "Failed to locate CoreAudioToolbox, read the description below. Expected paths:" +
-                CrLf2 + path + CrLf2 + GetDir() + "QTfiles64\CoreAudioToolbox.dll"
+                CrLf2 + path + BR2 + GetDir() + "QTfiles64\CoreAudioToolbox.dll"
         End If
     End Function
 End Class

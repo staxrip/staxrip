@@ -101,38 +101,38 @@ Class CommandLineForm
 
             If item.Switch <> "" Then
                 If item.NoSwitch <> "" Then
-                    help = item.Switch + CrLf2 + item.NoSwitch
+                    help = item.Switch + BR2 + item.NoSwitch
                 Else
                     help = item.Switch
                 End If
 
                 If TypeOf item Is BoolParam Then
                     If item.NoSwitch <> "" Then
-                        help += CrLf2 + "Default: automatic"
+                        help += BR2 + "Default: automatic"
                     Else
                         If DirectCast(item, BoolParam).DefaultValue Then
-                            help += CrLf2 + "Default: enabled"
+                            help += BR2 + "Default: enabled"
                         Else
-                            help += CrLf2 + "Default: disabled"
+                            help += BR2 + "Default: disabled"
                         End If
                     End If
                 ElseIf TypeOf item Is NumParam Then
                     Dim param = DirectCast(item, NumParam)
-                    help += CrLf2 + "Default: " & param.DefaultValue.ToString(CultureInfo.InvariantCulture)
-                    If param.MinMaxStepDec(0) > Integer.MinValue Then help += CrLf + "Minimum: " & param.MinMaxStepDec(0)
-                    If param.MinMaxStepDec(1) < Integer.MaxValue Then help += CrLf + "Maximum: " & param.MinMaxStepDec(1)
+                    help += BR2 + "Default: " & param.DefaultValue.ToString(CultureInfo.InvariantCulture)
+                    If param.MinMaxStepDec(0) > Integer.MinValue Then help += BR + "Minimum: " & param.MinMaxStepDec(0)
+                    If param.MinMaxStepDec(1) < Integer.MaxValue Then help += BR + "Maximum: " & param.MinMaxStepDec(1)
                 ElseIf TypeOf item Is OptionParam Then
                     Dim param = DirectCast(item, OptionParam)
 
                     If param.DefaultValue >= 0 AndAlso param.DefaultValue < param.Options.Length Then
-                        help += CrLf2 + "Default: " + param.Options(param.DefaultValue)
+                        help += BR2 + "Default: " + param.Options(param.DefaultValue)
                     End If
                 ElseIf TypeOf item Is StringParam Then
-                    help += CrLf2 + "Default: " & DirectCast(item, StringParam).DefaultValue
+                    help += BR2 + "Default: " & DirectCast(item, StringParam).DefaultValue
                 End If
 
-                If item.Help <> "" Then help += CrLf2 + item.Help
-                If item.URL <> "" Then help += CrLf2 + "[" + item.URL + " " + item.URL + "]"
+                If item.Help <> "" Then help += BR2 + item.Help
+                If item.URL <> "" Then help += BR2 + "[" + item.URL + " " + item.URL + "]"
             End If
 
             If TypeOf item Is BoolParam Then

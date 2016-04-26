@@ -52,7 +52,7 @@ Class ScriptingEditor
         ret.cbActive.Checked = filter.Active
         ret.cbActive.Text = filter.Category
         ret.tbName.Text = filter.Name
-        ret.rtbScript.Text = If(filter.Script = "", "", filter.Script + CrLf)
+        ret.rtbScript.Text = If(filter.Script = "", "", filter.Script + BR)
         ret.SetColor()
 
         Return ret
@@ -430,7 +430,7 @@ Class ScriptingEditor
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim firstTable = DirectCast(flow.Controls(0), FilterTable)
             firstTable.tbName.Text = "merged"
-            firstTable.rtbScript.Text = flow.Controls.OfType(Of FilterTable).Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(CrLf, "# " + CrLf))).Join(CrLf) + CrLf2 + CrLf2 + "#"
+            firstTable.rtbScript.Text = flow.Controls.OfType(Of FilterTable).Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(CrLf, "# " + BR))).Join(BR) + BR2 + BR2 + "#"
 
             For x = flow.Controls.Count - 1 To 1 Step -1
                 flow.Controls.RemoveAt(x)

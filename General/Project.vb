@@ -123,16 +123,16 @@ Public Class Project
         If SourceFiles Is Nothing Then SourceFiles = New List(Of String)
         If AudioTracks Is Nothing Then AudioTracks = New List(Of AudioProfile)
 
-        If Check(VideoEncoder, "Video Encoder", 68) Then
+        If Check(VideoEncoder, "Video Encoder", 69) Then
             VideoEncoder = VideoEncoder.Getx264Encoder("x264", x264DeviceMode.Disabled)
         End If
 
-        If Check(Audio0, "Audio Track 1", 34) Then
+        If Check(Audio0, "Audio Track 1", 35) Then
             Audio0 = New GUIAudioProfile(AudioCodec.AAC, 0.35)
             Audio0.Language = New Language(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, True)
         End If
 
-        If Check(Audio1, "Audio Track 2", 34) Then
+        If Check(Audio1, "Audio Track 2", 35) Then
             Audio1 = New GUIAudioProfile(AudioCodec.AAC, 0.35)
             Audio1.Language = New Language("en", True)
         End If

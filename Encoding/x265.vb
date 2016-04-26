@@ -61,7 +61,7 @@ Public Class x265Encoder
                          script As VideoScript,
                          priority As ProcessPriorityClass)
 
-        batchCode = "@echo off" + CrLf + "CHCP 65001" + CrLf + batchCode
+        batchCode = "@echo off" + BR + "CHCP 65001" + BR + batchCode
         Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
         File.WriteAllText(batchPath, batchCode, New UTF8Encoding(False))
 
@@ -70,7 +70,7 @@ Public Class x265Encoder
             proc.Encoding = Encoding.UTF8
             proc.Priority = priority
             proc.SkipStrings = {"%] "}
-            proc.WriteLine(batchCode + CrLf2)
+            proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
             proc.Start()
@@ -99,12 +99,12 @@ Public Class x265Encoder
         If script.Engine = ScriptingEngine.AviSynth Then
             code = "SelectRangeEvery(" + every + ",14)"
         Else
-            code = "fpsnum = clip.fps_num" + CrLf + "fpsden = clip.fps_den" + CrLf +
-            "clip = core.std.SelectEvery(clip = clip, cycle = " + every + ", offsets = range(14))" + CrLf +
+            code = "fpsnum = clip.fps_num" + BR + "fpsden = clip.fps_den" + BR +
+            "clip = core.std.SelectEvery(clip = clip, cycle = " + every + ", offsets = range(14))" + BR +
             "clip = core.std.AssumeFPS(clip = clip, fpsnum = fpsnum, fpsden = fpsden)"
         End If
 
-        Log.WriteLine(code + CrLf2)
+        Log.WriteLine(code + BR2)
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
         script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
         script.Synchronize()

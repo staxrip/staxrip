@@ -42,7 +42,7 @@ Public Class VideoScript
         For Each i As VideoFilter In Filters
             If i.Active Then
                 If skipCategory Is Nothing OrElse i.Category <> skipCategory Then
-                    sb.Append(i.Script + CrLf)
+                    sb.Append(i.Script + BR)
                 End If
             End If
         Next
@@ -154,22 +154,22 @@ Public Class VideoScript
             If convertToRGB Then
                 If Engine = ScriptingEngine.AviSynth Then
                     If p.SourceHeight > 576 Then
-                        script += CrLf + "ConvertToRGB(matrix=""Rec709"")"
+                        script += BR + "ConvertToRGB(matrix=""Rec709"")"
                     Else
-                        script += CrLf + "ConvertToRGB(matrix=""Rec601"")"
+                        script += BR + "ConvertToRGB(matrix=""Rec601"")"
                     End If
                 Else
                     If p.SourceHeight > 576 Then
                         If script.Contains(".set_output()") Then
                             script = script.Replace(".set_output()", ".resize.Bicubic(matrix_in_s = '709', format = vs.COMPATBGR32).set_output()")
                         Else
-                            script += CrLf + "clip = clip.resize.Bicubic(matrix_in_s = '709', format = vs.COMPATBGR32)"
+                            script += BR + "clip = clip.resize.Bicubic(matrix_in_s = '709', format = vs.COMPATBGR32)"
                         End If
                     Else
                         If script.Contains(".set_output()") Then
                             script = script.Replace(".set_output()", ".resize.Bicubic(matrix_in_s = '470bg', format = vs.COMPATBGR32).set_output()")
                         Else
-                            script += CrLf + "clip = clip.resize.Bicubic(matrix_in_s = '470bg', format = vs.COMPATBGR32)"
+                            script += BR + "clip = clip.resize.Bicubic(matrix_in_s = '470bg', format = vs.COMPATBGR32)"
                         End If
                     End If
                 End If
@@ -224,7 +224,7 @@ Public Class VideoScript
         Dim code = ""
 
         If engine = ScriptingEngine.VapourSynth AndAlso Not scriptLower.Contains("import vapoursynth") Then
-            code = "import vapoursynth as vs" + CrLf + "core = vs.get_core()" + CrLf
+            code = "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR
         End If
 
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
@@ -246,7 +246,7 @@ Public Class VideoScript
                         For Each i2 In plugin.AviSynthFilterNames
                             If scriptLower.Contains(i2.ToLower + "(") Then
                                 If plugin.Filename.Ext = "avsi" Then
-                                    Dim load = "Import(""" + fp + """)" + CrLf
+                                    Dim load = "Import(""" + fp + """)" + BR
 
                                     If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
                                         code += load
@@ -256,7 +256,7 @@ Public Class VideoScript
                                         For Each i3 In plugin.Dependencies
                                             For Each i4 In plugins.Where(Function(arg) Not arg.AviSynthFilterNames.NothingOrEmpty)
                                                 If i3 = i4.Name Then
-                                                    load = "LoadPlugin(""" + i4.GetPath + """)" + CrLf
+                                                    load = "LoadPlugin(""" + i4.GetPath + """)" + BR
 
                                                     If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
                                                         code += load
@@ -266,7 +266,7 @@ Public Class VideoScript
                                         Next
                                     End If
                                 Else
-                                    Dim load = "LoadPlugin(""" + fp + """)" + CrLf
+                                    Dim load = "LoadPlugin(""" + fp + """)" + BR
 
                                     If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
                                         code += load
@@ -288,10 +288,10 @@ Public Class VideoScript
         End If
 
         If engine = ScriptingEngine.VapourSynth AndAlso Not clip.Contains(".set_output(") Then
-            If clip.EndsWith(CrLf) Then
+            If clip.EndsWith(BR) Then
                 clip += "clip.set_output()"
             Else
-                clip += CrLf + "clip.set_output()"
+                clip += BR + "clip.set_output()"
             End If
         End If
 
@@ -632,13 +632,13 @@ Class FilterCategory
         ret.Add(resize)
 
         Dim field As New FilterCategory("Field")
-        field.Filters.Add(New VideoFilter(field.Name, "IVTC", "clip = core.vivtc.VFM(clip, 1)" + CrLf + "clip = core.vivtc.VDecimate(clip)"))
+        field.Filters.Add(New VideoFilter(field.Name, "IVTC", "clip = core.vivtc.VFM(clip, 1)" + BR + "clip = core.vivtc.VDecimate(clip)"))
         field.Filters.Add(New VideoFilter(field.Name, "Vinverse", "clip = core.vinverse.Vinverse(clip)"))
         field.Filters.Add(New VideoFilter(field.Name, "Select Even", "clip = clip[::2]"))
         field.Filters.Add(New VideoFilter(field.Name, "Select Odd", "clip = clip[1::2]"))
-        field.Filters.Add(New VideoFilter(field.Name, "Set Frame Based", "clip = core.std.SetFieldBased(clip, 0)"))
-        field.Filters.Add(New VideoFilter(field.Name, "Set Bottom Field First", "clip = core.std.SetFieldBased(clip, 1)"))
-        field.Filters.Add(New VideoFilter(field.Name, "Set Top Field First", "clip = core.std.SetFieldBased(clip, 2)"))
+        field.Filters.Add(New VideoFilter(field.Name, "Set Frame Based", "clip = core.std.SetFieldBased(clip, 0) # 1 = BFF, 2 = TFF"))
+        field.Filters.Add(New VideoFilter(field.Name, "Set Bottom Field First", "clip = core.std.SetFieldBased(clip, 1) # 1 = BFF, 2 = TFF"))
+        field.Filters.Add(New VideoFilter(field.Name, "Set Top Field First", "clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF"))
 
         ret.Add(field)
 

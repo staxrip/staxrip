@@ -559,7 +559,7 @@ Namespace UI
             Dim r = owner.ContextMenuStrip
             r.Items.Clear()
 
-            For Each i In definition.SplitKeepEmpty(CrLf)
+            For Each i In definition.SplitKeepEmpty(BR)
                 If i.Contains("=") Then
                     Dim arg = i.Right("=").Trim
                     ActionMenuItem.Add(r.Items, i.Left("="), action, arg, Nothing)

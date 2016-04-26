@@ -151,14 +151,7 @@ Class x264Form
     Friend WithEvents lDevice As System.Windows.Forms.Label
     Friend WithEvents lWeightP As System.Windows.Forms.Label
     Friend WithEvents cbWeightP As System.Windows.Forms.ComboBox
-    Friend WithEvents llHelp As System.Windows.Forms.LinkLabel
     Friend WithEvents cbMode As System.Windows.Forms.ComboBox
-    Friend WithEvents llHelpMode As StaxRip.UI.StockIconLinkLabel
-    Friend WithEvents llHelpTune As StaxRip.UI.StockIconLinkLabel
-    Friend WithEvents llHelpProfile As StaxRip.UI.StockIconLinkLabel
-    Friend WithEvents llHelpDevice As StaxRip.UI.StockIconLinkLabel
-    Friend WithEvents llHelpPreset As StaxRip.UI.StockIconLinkLabel
-    Friend WithEvents llHelpQuant As StaxRip.UI.StockIconLinkLabel
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
@@ -203,7 +196,8 @@ Class x264Form
     Friend WithEvents buImport As StaxRip.UI.ButtonEx
     Friend WithEvents cbBlurayCompat As System.Windows.Forms.CheckBox
     Friend WithEvents cbOpenGOP As System.Windows.Forms.CheckBox
-
+    Friend WithEvents cbDepth As ComboBox
+    Friend WithEvents Label4 As Label
     Private components As System.ComponentModel.IContainer
 
     '<System.Diagnostics.DebuggerStepThrough()>
@@ -259,14 +253,9 @@ Class x264Form
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
         Me.tcMain = New System.Windows.Forms.TabControl()
         Me.tpBasic = New System.Windows.Forms.TabPage()
-        Me.llHelpMode = New StaxRip.UI.StockIconLinkLabel()
-        Me.llHelpTune = New StaxRip.UI.StockIconLinkLabel()
-        Me.llHelpProfile = New StaxRip.UI.StockIconLinkLabel()
-        Me.llHelpDevice = New StaxRip.UI.StockIconLinkLabel()
-        Me.llHelpPreset = New StaxRip.UI.StockIconLinkLabel()
-        Me.llHelpQuant = New StaxRip.UI.StockIconLinkLabel()
+        Me.cbDepth = New System.Windows.Forms.ComboBox()
+        Me.Label4 = New System.Windows.Forms.Label()
         Me.cbMode = New System.Windows.Forms.ComboBox()
-        Me.llHelp = New System.Windows.Forms.LinkLabel()
         Me.cbDevice = New System.Windows.Forms.ComboBox()
         Me.lDevice = New System.Windows.Forms.Label()
         Me.cbSlowFirstpass = New System.Windows.Forms.CheckBox()
@@ -631,7 +620,7 @@ Class x264Form
         'lMode2
         '
         Me.lMode2.AutoSize = True
-        Me.lMode2.Location = New System.Drawing.Point(290, 249)
+        Me.lMode2.Location = New System.Drawing.Point(290, 289)
         Me.lMode2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lMode2.Name = "lMode2"
         Me.lMode2.Size = New System.Drawing.Size(63, 25)
@@ -875,17 +864,18 @@ Class x264Form
         Me.nudPercent.Size = New System.Drawing.Size(90, 36)
         Me.nudPercent.TabIndex = 2
         '
-        'rtbCmdl
+        'rtbCommandLine
         '
         Me.rtbCommandLine.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.rtbCommandLine.BlockPaint = False
         Me.rtbCommandLine.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.rtbCommandLine.Font = New System.Drawing.Font("Consolas", 10.0!)
         Me.rtbCommandLine.LastCommandLine = Nothing
         Me.rtbCommandLine.Location = New System.Drawing.Point(15, 435)
         Me.rtbCommandLine.Margin = New System.Windows.Forms.Padding(4)
-        Me.rtbCommandLine.Name = "rtbCmdl"
+        Me.rtbCommandLine.Name = "rtbCommandLine"
         Me.rtbCommandLine.ReadOnly = True
         Me.rtbCommandLine.Size = New System.Drawing.Size(867, 22)
         Me.rtbCommandLine.TabIndex = 1
@@ -916,14 +906,9 @@ Class x264Form
         '
         'tpBasic
         '
-        Me.tpBasic.Controls.Add(Me.llHelpMode)
-        Me.tpBasic.Controls.Add(Me.llHelpTune)
-        Me.tpBasic.Controls.Add(Me.llHelpProfile)
-        Me.tpBasic.Controls.Add(Me.llHelpDevice)
-        Me.tpBasic.Controls.Add(Me.llHelpPreset)
-        Me.tpBasic.Controls.Add(Me.llHelpQuant)
+        Me.tpBasic.Controls.Add(Me.cbDepth)
+        Me.tpBasic.Controls.Add(Me.Label4)
         Me.tpBasic.Controls.Add(Me.cbMode)
-        Me.tpBasic.Controls.Add(Me.llHelp)
         Me.tpBasic.Controls.Add(Me.cbDevice)
         Me.tpBasic.Controls.Add(Me.lDevice)
         Me.tpBasic.Controls.Add(Me.cbSlowFirstpass)
@@ -945,105 +930,37 @@ Class x264Form
         Me.tpBasic.Text = "Basic"
         Me.tpBasic.UseVisualStyleBackColor = True
         '
-        'llHelpMode
+        'cbDepth
         '
-        Me.llHelpMode.AutoSize = True
-        Me.llHelpMode.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.llHelpMode.Icon = StaxRip.UI.StockIconIdentifier.Help
-        Me.llHelpMode.Location = New System.Drawing.Point(505, 251)
-        Me.llHelpMode.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.llHelpMode.MinimumSize = New System.Drawing.Size(25, 25)
-        Me.llHelpMode.Name = "llHelpMode"
-        Me.llHelpMode.Padding = New System.Windows.Forms.Padding(23, 0, 0, 0)
-        Me.llHelpMode.Size = New System.Drawing.Size(25, 25)
-        Me.llHelpMode.TabIndex = 18
+        Me.cbDepth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbDepth.FormattingEnabled = True
+        Me.cbDepth.Location = New System.Drawing.Point(369, 244)
+        Me.cbDepth.Margin = New System.Windows.Forms.Padding(4)
+        Me.cbDepth.MaxDropDownItems = 20
+        Me.cbDepth.Name = "cbDepth"
+        Me.cbDepth.Size = New System.Drawing.Size(119, 33)
+        Me.cbDepth.TabIndex = 21
         '
-        'llHelpTune
+        'Label4
         '
-        Me.llHelpTune.AutoSize = True
-        Me.llHelpTune.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.llHelpTune.Icon = StaxRip.UI.StockIconIdentifier.Help
-        Me.llHelpTune.Location = New System.Drawing.Point(505, 125)
-        Me.llHelpTune.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.llHelpTune.MinimumSize = New System.Drawing.Size(25, 25)
-        Me.llHelpTune.Name = "llHelpTune"
-        Me.llHelpTune.Padding = New System.Windows.Forms.Padding(23, 0, 0, 0)
-        Me.llHelpTune.Size = New System.Drawing.Size(25, 25)
-        Me.llHelpTune.TabIndex = 15
-        '
-        'llHelpProfile
-        '
-        Me.llHelpProfile.AutoSize = True
-        Me.llHelpProfile.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.llHelpProfile.Icon = StaxRip.UI.StockIconIdentifier.Help
-        Me.llHelpProfile.Location = New System.Drawing.Point(505, 209)
-        Me.llHelpProfile.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.llHelpProfile.MinimumSize = New System.Drawing.Size(25, 25)
-        Me.llHelpProfile.Name = "llHelpProfile"
-        Me.llHelpProfile.Padding = New System.Windows.Forms.Padding(23, 0, 0, 0)
-        Me.llHelpProfile.Size = New System.Drawing.Size(25, 25)
-        Me.llHelpProfile.TabIndex = 17
-        '
-        'llHelpDevice
-        '
-        Me.llHelpDevice.AutoSize = True
-        Me.llHelpDevice.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.llHelpDevice.Icon = StaxRip.UI.StockIconIdentifier.Help
-        Me.llHelpDevice.Location = New System.Drawing.Point(505, 167)
-        Me.llHelpDevice.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.llHelpDevice.MinimumSize = New System.Drawing.Size(25, 25)
-        Me.llHelpDevice.Name = "llHelpDevice"
-        Me.llHelpDevice.Padding = New System.Windows.Forms.Padding(23, 0, 0, 0)
-        Me.llHelpDevice.Size = New System.Drawing.Size(25, 25)
-        Me.llHelpDevice.TabIndex = 16
-        '
-        'llHelpPreset
-        '
-        Me.llHelpPreset.AutoSize = True
-        Me.llHelpPreset.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.llHelpPreset.Icon = StaxRip.UI.StockIconIdentifier.Help
-        Me.llHelpPreset.Location = New System.Drawing.Point(505, 83)
-        Me.llHelpPreset.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.llHelpPreset.MinimumSize = New System.Drawing.Size(25, 25)
-        Me.llHelpPreset.Name = "llHelpPreset"
-        Me.llHelpPreset.Padding = New System.Windows.Forms.Padding(23, 0, 0, 0)
-        Me.llHelpPreset.Size = New System.Drawing.Size(25, 25)
-        Me.llHelpPreset.TabIndex = 14
-        '
-        'llHelpQuant
-        '
-        Me.llHelpQuant.AutoSize = True
-        Me.llHelpQuant.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.llHelpQuant.Icon = StaxRip.UI.StockIconIdentifier.Help
-        Me.llHelpQuant.Location = New System.Drawing.Point(505, 41)
-        Me.llHelpQuant.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.llHelpQuant.MinimumSize = New System.Drawing.Size(25, 25)
-        Me.llHelpQuant.Name = "llHelpQuant"
-        Me.llHelpQuant.Padding = New System.Windows.Forms.Padding(23, 0, 0, 0)
-        Me.llHelpQuant.Size = New System.Drawing.Size(25, 25)
-        Me.llHelpQuant.TabIndex = 13
+        Me.Label4.AutoSize = True
+        Me.Label4.Location = New System.Drawing.Point(290, 248)
+        Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(65, 25)
+        Me.Label4.TabIndex = 20
+        Me.Label4.Text = "Depth:"
         '
         'cbMode
         '
         Me.cbMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbMode.FormattingEnabled = True
-        Me.cbMode.Location = New System.Drawing.Point(369, 245)
+        Me.cbMode.Location = New System.Drawing.Point(369, 285)
         Me.cbMode.Margin = New System.Windows.Forms.Padding(4)
         Me.cbMode.MaxDropDownItems = 20
         Me.cbMode.Name = "cbMode"
         Me.cbMode.Size = New System.Drawing.Size(119, 33)
         Me.cbMode.TabIndex = 11
-        '
-        'llHelp
-        '
-        Me.llHelp.AutoSize = True
-        Me.llHelp.Location = New System.Drawing.Point(755, 324)
-        Me.llHelp.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.llHelp.Name = "llHelp"
-        Me.llHelp.Size = New System.Drawing.Size(91, 25)
-        Me.llHelp.TabIndex = 19
-        Me.llHelp.TabStop = True
-        Me.llHelp.Text = "Hide Help"
         '
         'cbDevice
         '
@@ -1069,7 +986,7 @@ Class x264Form
         'cbSlowFirstpass
         '
         Me.cbSlowFirstpass.AutoSize = True
-        Me.cbSlowFirstpass.Location = New System.Drawing.Point(369, 299)
+        Me.cbSlowFirstpass.Location = New System.Drawing.Point(369, 327)
         Me.cbSlowFirstpass.Margin = New System.Windows.Forms.Padding(4)
         Me.cbSlowFirstpass.Name = "cbSlowFirstpass"
         Me.cbSlowFirstpass.Size = New System.Drawing.Size(150, 29)
@@ -1143,11 +1060,11 @@ Class x264Form
         'tpAnalysis
         '
         Me.tpAnalysis.Controls.Add(Me.TableLayoutPanel1)
-        Me.tpAnalysis.Location = New System.Drawing.Point(4, 34)
+        Me.tpAnalysis.Location = New System.Drawing.Point(4, 29)
         Me.tpAnalysis.Margin = New System.Windows.Forms.Padding(4)
         Me.tpAnalysis.Name = "tpAnalysis"
         Me.tpAnalysis.Padding = New System.Windows.Forms.Padding(4)
-        Me.tpAnalysis.Size = New System.Drawing.Size(860, 372)
+        Me.tpAnalysis.Size = New System.Drawing.Size(860, 377)
         Me.tpAnalysis.TabIndex = 1
         Me.tpAnalysis.Text = "Analysis"
         Me.tpAnalysis.UseVisualStyleBackColor = True
@@ -1167,7 +1084,7 @@ Class x264Form
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(852, 364)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(852, 369)
         Me.TableLayoutPanel1.TabIndex = 0
         '
         'gbQuantOptions
@@ -1187,7 +1104,7 @@ Class x264Form
         Me.gbQuantOptions.Margin = New System.Windows.Forms.Padding(4)
         Me.gbQuantOptions.Name = "gbQuantOptions"
         Me.gbQuantOptions.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbQuantOptions.Size = New System.Drawing.Size(418, 174)
+        Me.gbQuantOptions.Size = New System.Drawing.Size(418, 176)
         Me.gbQuantOptions.TabIndex = 2
         Me.gbQuantOptions.TabStop = False
         Me.gbQuantOptions.Text = "Quant Options"
@@ -1253,11 +1170,11 @@ Class x264Form
         Me.gbPartitions.Controls.Add(Me.cbI8x8)
         Me.gbPartitions.Controls.Add(Me.cbb8x8)
         Me.gbPartitions.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbPartitions.Location = New System.Drawing.Point(4, 186)
+        Me.gbPartitions.Location = New System.Drawing.Point(4, 188)
         Me.gbPartitions.Margin = New System.Windows.Forms.Padding(4)
         Me.gbPartitions.Name = "gbPartitions"
         Me.gbPartitions.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbPartitions.Size = New System.Drawing.Size(418, 174)
+        Me.gbPartitions.Size = New System.Drawing.Size(418, 177)
         Me.gbPartitions.TabIndex = 1
         Me.gbPartitions.TabStop = False
         Me.gbPartitions.Text = "Partitions"
@@ -1336,7 +1253,7 @@ Class x264Form
         Me.gbMotionEstimation.Margin = New System.Windows.Forms.Padding(4)
         Me.gbMotionEstimation.Name = "gbMotionEstimation"
         Me.gbMotionEstimation.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbMotionEstimation.Size = New System.Drawing.Size(418, 174)
+        Me.gbMotionEstimation.Size = New System.Drawing.Size(418, 176)
         Me.gbMotionEstimation.TabIndex = 0
         Me.gbMotionEstimation.TabStop = False
         Me.gbMotionEstimation.Text = "Motion Estimation"
@@ -1351,11 +1268,11 @@ Class x264Form
         Me.gbAnalysisMisc.Controls.Add(Me.cbWeightB)
         Me.gbAnalysisMisc.Controls.Add(Me.lDirectMode)
         Me.gbAnalysisMisc.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbAnalysisMisc.Location = New System.Drawing.Point(430, 186)
+        Me.gbAnalysisMisc.Location = New System.Drawing.Point(430, 188)
         Me.gbAnalysisMisc.Margin = New System.Windows.Forms.Padding(4)
         Me.gbAnalysisMisc.Name = "gbAnalysisMisc"
         Me.gbAnalysisMisc.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbAnalysisMisc.Size = New System.Drawing.Size(418, 174)
+        Me.gbAnalysisMisc.Size = New System.Drawing.Size(418, 177)
         Me.gbAnalysisMisc.TabIndex = 3
         Me.gbAnalysisMisc.TabStop = False
         Me.gbAnalysisMisc.Text = "Misc"
@@ -1405,11 +1322,11 @@ Class x264Form
         'tpFrameOptions
         '
         Me.tpFrameOptions.Controls.Add(Me.TableLayoutPanel2)
-        Me.tpFrameOptions.Location = New System.Drawing.Point(4, 34)
+        Me.tpFrameOptions.Location = New System.Drawing.Point(4, 29)
         Me.tpFrameOptions.Margin = New System.Windows.Forms.Padding(4)
         Me.tpFrameOptions.Name = "tpFrameOptions"
         Me.tpFrameOptions.Padding = New System.Windows.Forms.Padding(4)
-        Me.tpFrameOptions.Size = New System.Drawing.Size(860, 372)
+        Me.tpFrameOptions.Size = New System.Drawing.Size(860, 377)
         Me.tpFrameOptions.TabIndex = 2
         Me.tpFrameOptions.Text = "Frame Options"
         Me.tpFrameOptions.UseVisualStyleBackColor = True
@@ -1426,7 +1343,7 @@ Class x264Form
         Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
         Me.TableLayoutPanel2.RowCount = 1
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(852, 364)
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(852, 369)
         Me.TableLayoutPanel2.TabIndex = 0
         '
         'gbBFrames
@@ -1444,7 +1361,7 @@ Class x264Form
         Me.gbBFrames.Margin = New System.Windows.Forms.Padding(4)
         Me.gbBFrames.Name = "gbBFrames"
         Me.gbBFrames.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbBFrames.Size = New System.Drawing.Size(418, 356)
+        Me.gbBFrames.Size = New System.Drawing.Size(418, 361)
         Me.gbBFrames.TabIndex = 0
         Me.gbBFrames.TabStop = False
         Me.gbBFrames.Text = "B-frames"
@@ -1531,7 +1448,7 @@ Class x264Form
         Me.gbFrameOptions.Margin = New System.Windows.Forms.Padding(4)
         Me.gbFrameOptions.Name = "gbFrameOptions"
         Me.gbFrameOptions.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbFrameOptions.Size = New System.Drawing.Size(418, 356)
+        Me.gbFrameOptions.Size = New System.Drawing.Size(418, 361)
         Me.gbFrameOptions.TabIndex = 1
         Me.gbFrameOptions.TabStop = False
         '
@@ -1651,7 +1568,7 @@ Class x264Form
         '
         Me.LineControl1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LineControl1.Location = New System.Drawing.Point(147, 236)
+        Me.LineControl1.Location = New System.Drawing.Point(147, 241)
         Me.LineControl1.Margin = New System.Windows.Forms.Padding(4, 2, 5, 2)
         Me.LineControl1.Name = "LineControl1"
         Me.LineControl1.Size = New System.Drawing.Size(253, 13)
@@ -1710,11 +1627,11 @@ Class x264Form
         'tpRateControl
         '
         Me.tpRateControl.Controls.Add(Me.TableLayoutPanel3)
-        Me.tpRateControl.Location = New System.Drawing.Point(4, 34)
+        Me.tpRateControl.Location = New System.Drawing.Point(4, 29)
         Me.tpRateControl.Margin = New System.Windows.Forms.Padding(4)
         Me.tpRateControl.Name = "tpRateControl"
         Me.tpRateControl.Padding = New System.Windows.Forms.Padding(4)
-        Me.tpRateControl.Size = New System.Drawing.Size(860, 372)
+        Me.tpRateControl.Size = New System.Drawing.Size(860, 377)
         Me.tpRateControl.TabIndex = 3
         Me.tpRateControl.Text = "Rate Control"
         Me.tpRateControl.UseVisualStyleBackColor = True
@@ -1731,7 +1648,7 @@ Class x264Form
         Me.TableLayoutPanel3.Name = "TableLayoutPanel3"
         Me.TableLayoutPanel3.RowCount = 1
         Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel3.Size = New System.Drawing.Size(852, 364)
+        Me.TableLayoutPanel3.Size = New System.Drawing.Size(852, 369)
         Me.TableLayoutPanel3.TabIndex = 0
         '
         'gbRC2
@@ -1752,7 +1669,7 @@ Class x264Form
         Me.gbRC2.Margin = New System.Windows.Forms.Padding(4)
         Me.gbRC2.Name = "gbRC2"
         Me.gbRC2.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbRC2.Size = New System.Drawing.Size(418, 356)
+        Me.gbRC2.Size = New System.Drawing.Size(418, 361)
         Me.gbRC2.TabIndex = 1
         Me.gbRC2.TabStop = False
         '
@@ -1805,7 +1722,7 @@ Class x264Form
         Me.gbRC1.Margin = New System.Windows.Forms.Padding(4)
         Me.gbRC1.Name = "gbRC1"
         Me.gbRC1.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbRC1.Size = New System.Drawing.Size(418, 356)
+        Me.gbRC1.Size = New System.Drawing.Size(418, 361)
         Me.gbRC1.TabIndex = 0
         Me.gbRC1.TabStop = False
         '
@@ -2318,7 +2235,7 @@ Class x264Form
         Me.tpStaxrip.Padding = New System.Windows.Forms.Padding(4)
         Me.tpStaxrip.Size = New System.Drawing.Size(860, 377)
         Me.tpStaxrip.TabIndex = 6
-        Me.tpStaxrip.Text = "StaxRip"
+        Me.tpStaxrip.Text = "Other"
         Me.tpStaxrip.UseVisualStyleBackColor = True
         '
         'gbCompressibilityCheck
@@ -2504,30 +2421,14 @@ Class x264Form
         Populate(Of x264TransferMode)(cbTransfer.Items)
         Populate(Of x264ColormatrixMode)(cbColormatrix.Items)
 
-        Dim isHelpVisible = s.Storage.GetBool("x264 basic help", True)
-
-        If isHelpVisible Then
-            llHelp.Text = "Hide Help"
-        Else
-            llHelp.Text = "Show Help"
-        End If
-
-        llHelpQuant.Visible = isHelpVisible
-        llHelpMode.Visible = isHelpVisible
-        llHelpPreset.Visible = isHelpVisible
-        llHelpTune.Visible = isHelpVisible
-        llHelpProfile.Visible = isHelpVisible
-        llHelpDevice.Visible = isHelpVisible
+        Populate(cbDepth.Items, "8-Bit", "10-Bit")
 
         AddCmdlControl.Presets = s.CmdlPresetsX264
         RemoveTurboCmdlControl.Presets = s.CmdlPresetsX264
         AddTurboCmdlControl.Presets = s.CmdlPresetsX264
 
         Dim lastTabIndex = s.Storage.GetInt("x264 tab")
-
-        If lastTabIndex < tcMain.TabPages.Count Then
-            tcMain.SelectedIndex = lastTabIndex
-        End If
+        If lastTabIndex < tcMain.TabPages.Count Then tcMain.SelectedIndex = lastTabIndex
 
         cbGoTo.Sorted = True
         cbGoTo.SendMessageCue("Search")
@@ -2582,36 +2483,27 @@ Class x264Form
         LoadCheckBox(cbOpenGOP, Params.OpenGopV2)
 
         LoadComboBox(cbAQMode, Params.AQMode)
-        LoadComboBox(cbDirectMode, Params.DirectMode)
-        LoadComboBox(cbMEMethod, Params.MEMethod)
-        LoadComboBox(cbSubME, Params.SubME)
-        LoadComboBox(cbTrellis, Params.Trellis)
-        LoadComboBox(cbNalHrd, Params.NalHrdMode)
-        LoadComboBox(cbLevel, Params.Level)
         LoadComboBox(cbBAdapt, Params.BAdapt)
-        LoadComboBox(cbPreset, Params.Preset)
-        LoadComboBox(cbTune, Params.Tune)
-        LoadComboBox(cbProfile, Params.Profile)
-        LoadComboBox(cbDevice, Params.Device)
         LoadComboBox(cbBPyramidMode, Params.BPyramidMode)
-        LoadComboBox(cbWeightP, Params.WeightP)
+        LoadComboBox(cbColormatrix, Params.Colormatrix)
+        LoadComboBox(cbColorprim, Params.Colorprim)
+        LoadComboBox(cbDevice, Params.Device)
+        LoadComboBox(cbDirectMode, Params.DirectMode)
+        LoadComboBox(cbFullrange, Params.Fullrange)
+        LoadComboBox(cbLevel, Params.Level)
+        LoadComboBox(cbMEMethod, Params.MEMethod)
         LoadComboBox(cbMode, Params.Mode)
-
+        LoadComboBox(cbNalHrd, Params.NalHrdMode)
         LoadComboBox(cbOverscan, Params.Overscan)
-        LoadComboBox(cbVideoformat, Params.Videoformat)
-        LoadComboBox(cbFullrange, Params.Fullrange)
-        LoadComboBox(cbColorprim, Params.Colorprim)
+        LoadComboBox(cbPreset, Params.Preset)
+        LoadComboBox(cbProfile, Params.Profile)
+        LoadComboBox(cbSubME, Params.SubME)
         LoadComboBox(cbTransfer, Params.Transfer)
-        LoadComboBox(cbColormatrix, Params.Colormatrix)
-
+        LoadComboBox(cbTrellis, Params.Trellis)
+        LoadComboBox(cbTune, Params.Tune)
         LoadComboBox(cbVideoformat, Params.Videoformat)
-        LoadComboBox(cbFullrange, Params.Fullrange)
-        LoadComboBox(cbColorprim, Params.Colorprim)
-        LoadComboBox(cbTransfer, Params.Transfer)
-        LoadComboBox(cbOverscan, Params.Overscan)
-        LoadComboBox(cbOverscan, Params.Overscan)
-        LoadComboBox(cbOverscan, Params.Overscan)
-        LoadComboBox(cbColormatrix, Params.Colormatrix)
+        LoadComboBox(cbWeightP, Params.WeightP)
+        LoadComboBox(cbDepth, Params.Depth)
 
         LoadNumericUpDown(nudBFrames, Params.BFrames)
         LoadNumericUpDown(nudBFramesBias, Params.BFramesBias)
@@ -2664,8 +2556,8 @@ Class x264Form
         Init(cbPSNR, "--psnr")
         Init(cbSSIM, "--ssim")
         Init(cbAud, "--aud")
-        Init(nudSlices, lSlices, "--slices", "Number of slices per frame. Forces rectangular" + CrLf + "slices and is overridden by other slicing options")
-        Init(cbBPyramidMode, lBPyramidMode, "--b-pyramid", "Keep some B-frames as references." + CrLf2 + "None: Disabled" + CrLf + "Strict: Strictly hierarchical pyramid" + CrLf + "Normal: Non-strict (not Blu-ray compatible)")
+        Init(nudSlices, lSlices, "--slices", "Number of slices per frame. Forces rectangular" + BR + "slices and is overridden by other slicing options")
+        Init(cbBPyramidMode, lBPyramidMode, "--b-pyramid", "Keep some B-frames as references." + BR2 + "None: Disabled" + BR + "Strict: Strictly hierarchical pyramid" + BR + "Normal: Non-strict (not Blu-ray compatible)")
         Init(cbProgress, "--no-progress", "Don't show the progress indicator while encoding.")
         Init(cbPsy, "--no-psy", "Disable all visual optimizations that worsen both PSNR and SSIM.")
         Init(cbWeightB, "--no-weightb")
@@ -2680,10 +2572,10 @@ Class x264Form
         Init(cbSubME, lSubpixelRefinement, "--subme", "Subpixel motion estimation and mode decision.")
         Init(cbTrellis, lTrellis, "--trellis", "Trellis RD quantization. Requires CABAC.")
         Init(cbLevel, lLevel, "--level")
-        Init(cbBAdapt, lBAdapt, "--b-adapt", "Adaptive B-frame decision method." + CrLf + "Higher values may lower threading efficiency.")
+        Init(cbBAdapt, lBAdapt, "--b-adapt", "Adaptive B-frame decision method." + BR + "Higher values may lower threading efficiency.")
         Init(cbProfile, lProfile, "--profile", "Force H.264 profile, overrides all settings.")
         Init(cbPreset, lPreset, "--preset", "Overriden by user settings.")
-        Init(cbTune, lTune, "--tune", "Tune for particular source type." + CrLf2 + "Overridden by user settings.")
+        Init(cbTune, lTune, "--tune", "Tune for particular source type." + BR2 + "Overridden by user settings.")
         Init(nudAQStrength, lAQStrengthHint, "--aq-strength", "Reduces blocking and blurring in flat and textured areas.")
         Init(nudBFrames, lBFrames, "--bframes", "Number of B-frames between I and P.")
         Init(nudBFramesBias, lBias, "--b-bias", "Influences how often B-frames are used.")
@@ -2708,7 +2600,7 @@ Class x264Form
         Init(nudVBVMaxRate, lMaxBitrate, "--vbv-maxrate")
         Init(nudRcLookahead, lRcLookahead, "--rc-lookahead", "Number of frames for frametype lookahead.")
         Init(nudNoiseReduction, lNoiseReduction, "--nr")
-        Init(cbWeightP, lWeightP, "--weightp", "Weighted prediction for P-frames" + CrLf2 + "0: Disabled" + CrLf + "1: Blind offset" + CrLf + "2: Smart analysis")
+        Init(cbWeightP, lWeightP, "--weightp", "Weighted prediction for P-frames" + BR2 + "0: Disabled" + BR + "1: Blind offset" + BR + "2: Smart analysis")
 
         Init(cbNalHrd, lNalHrd, "--nal-hrd", "Signal HRD information (requires vbv-bufsize, cbr not allowed in .mp4)")
         Init(cbOverscan, lOverscan, "--overscan", "Specify crop overscan setting.")
@@ -2869,10 +2761,7 @@ Class x264Form
                 cmdl = tempEnc.GetArgs(1, s.ShowPathsInCommandLine)
             End If
 
-            If s.ShowPathsInCommandLine Then
-                cmdl = """" + Package.x264.GetPath + """ " + cmdl
-            End If
-
+            If s.ShowPathsInCommandLine Then cmdl = """" + Package.x264.GetPath + """ " + cmdl
             rtbCommandLine.SetText(cmdl)
             rtbCommandLine.SelectionLength = 0
         End If
@@ -2965,15 +2854,15 @@ Class x264Form
         Dim caption As String = Nothing
 
         If Not c2 Is Nothing Then
-            caption = c2.Text.Trim(":"c) + CrLf2
+            caption = c2.Text.Trim(":"c) + BR2
         Else
-            caption = c.Text + CrLf2
+            caption = c.Text + BR2
         End If
 
         If tip Is Nothing Then
             tip = caption + switch
         Else
-            tip = caption + switch + CrLf2 + tip
+            tip = caption + switch + BR2 + tip
         End If
 
         If Not c2 Is Nothing Then
@@ -3072,6 +2961,12 @@ Class x264Form
         For Each i As T In System.Enum.GetValues(GetType(T))
             Dim o As Object = i
             l.Add(New ListBag(Of Integer)(DispNameAttribute.GetValueForEnum(i), CInt(o)))
+        Next
+    End Sub
+
+    Sub Populate(l As IList, ParamArray items As String())
+        For index = 0 To items.Length - 1
+            l.Add(New ListBag(Of Integer)(items(index), index))
         Next
     End Sub
 
@@ -3498,11 +3393,11 @@ Class x264Form
         Dim m = "Count of imported switches: " & ImportedSwitchesCount
 
         If failed.Count = 0 Then
-            m += CrLf2 + "No errors"
+            m += BR2 + "No errors"
         Else
-            m += CrLf2 + "Count of switches failed to import: " &
+            m += BR2 + "Count of switches failed to import: " &
                 failed.Count & CrLf2 & "Failed Switches:" & CrLf2 &
-                failed.Join(CrLf)
+                failed.Join(BR)
         End If
 
         Using td As New TaskDialog(Of String)
@@ -3551,53 +3446,12 @@ Class x264Form
         NameOfLastProfile = value.Name
     End Sub
 
-    Sub ll_various() Handles llHelpPreset.Click, llHelpProfile.Click, llHelpTune.Click
-        If g.IsCulture("de") Then
-            g.ShellExecute("http://encodingwissen.de/x264/referenz.html#vorlagen")
-        Else
-            g.ShellExecute("http://translate.google.de/translate?js=y&prev=_t&hl=de&ie=UTF-8&layout=1&eotf=1&u=http%3A%2F%2Fencodingwissen.de%2Fx264%2Freferenz.html%23vorlagen&sl=de&tl=en")
-        End If
-    End Sub
-
-    Private Sub llHelpQuant_Click(sender As Object, e As EventArgs) Handles llHelpQuant.Click
-        g.DefaultCommands.OpenHelpTopic("CRF Value")
-    End Sub
-
-    Private Sub llHelpMode_Click(sender As Object, e As EventArgs) Handles llHelpMode.Click
-        g.DefaultCommands.OpenHelpTopic("x264 Mode")
-    End Sub
-
-    Private Sub llHelpDevice_Click(sender As Object, e As EventArgs) Handles llHelpDevice.Click
-        MsgInfo("Ensures device limitations aren't exceeded.")
-    End Sub
-
-    Private Sub llHelp_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llHelp.LinkClicked
-        Dim isVisible As Boolean
-
-        If llHelp.Text = "Hide Help" Then
-            llHelp.Text = "Show Help"
-            isVisible = False
-        Else
-            llHelp.Text = "Hide Help"
-            isVisible = True
-        End If
-
-        llHelpQuant.Visible = isVisible
-        llHelpMode.Visible = isVisible
-        llHelpPreset.Visible = isVisible
-        llHelpTune.Visible = isVisible
-        llHelpProfile.Visible = isVisible
-        llHelpDevice.Visible = isVisible
-
-        s.Storage.SetBool("x264 basic help", isVisible)
-    End Sub
-
     Function GetCommandLineMenu() As ContextMenuStrip
-        Dim r As New ContextMenuStrip(components)
-        r.Items.Add(New ActionMenuItem("Copy", Sub() CopyCmdl()))
-        r.Items.Add(New ActionMenuItem("Import", Sub() ImportCommandLine(), "Imports x264 settings from a x264 command line in the clipboard") With {.Enabled = Clipboard.GetText.Contains("--")})
-        r.Items.Add(New ActionMenuItem("Show Paths", Sub() ToogleShowPaths()) With {.Checked = s.ShowPathsInCommandLine, .CheckOnClick = True})
-        Return r
+        Dim ret As New ContextMenuStrip(components)
+        ret.Items.Add(New ActionMenuItem("Copy", Sub() CopyCmdl()))
+        ret.Items.Add(New ActionMenuItem("Import", Sub() ImportCommandLine(), "Imports x264 settings from a x264 command line in the clipboard") With {.Enabled = Clipboard.GetText.Contains("--")})
+        ret.Items.Add(New ActionMenuItem("Show Paths", Sub() ToogleShowPaths()) With {.Checked = s.ShowPathsInCommandLine, .CheckOnClick = True})
+        Return ret
     End Function
 
     Private Sub rtbCmdl_MouseDown(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseDown
@@ -3610,11 +3464,6 @@ Class x264Form
 
     Private Sub x264Form_Load(sender As Object, e As EventArgs) Handles Me.Load
         UpdateHeight()
-
-        'on small screensizes like netbooks dialogs get cut at screensize
-        If llHelp.Right > tpBasic.Width Then
-            Width += llHelp.Right - tpBasic.Width + 5
-        End If
     End Sub
 
     Private Sub buImport_Click() Handles buImport.Click

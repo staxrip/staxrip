@@ -47,7 +47,7 @@ Public Class x264Encoder
         If p.Script.Engine = ScriptingEngine.VapourSynth Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
 
-            Dim batchCode = "@echo off" + CrLf + "CHCP 65001" + CrLf +
+            Dim batchCode = "@echo off" + BR + "CHCP 65001" + BR +
                 Package.vspipe.GetPath.Quotes + " " + script.Path.Quotes + " - --y4m | " +
                 Package.x264.GetPath.Quotes + " " + args
 
@@ -58,7 +58,7 @@ Public Class x264Encoder
                 proc.Encoding = Encoding.UTF8
                 proc.Priority = priority
                 proc.SkipStrings = {"kb/s, eta", "%]"}
-                proc.WriteLine(batchCode + CrLf2)
+                proc.WriteLine(batchCode + BR2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
                 proc.Start()
@@ -93,13 +93,13 @@ Public Class x264Encoder
         If script.Engine = ScriptingEngine.AviSynth Then
             code = "SelectRangeEvery(" + every + ",14)"
         Else
-            code = "fpsnum = clip.fps_num" + CrLf + "fpsden = clip.fps_den" + CrLf +
-                "clip = core.std.SelectEvery(clip = clip, cycle = " + every + ", offsets = range(14))" + CrLf +
+            code = "fpsnum = clip.fps_num" + BR + "fpsden = clip.fps_den" + BR +
+                "clip = core.std.SelectEvery(clip = clip, cycle = " + every + ", offsets = range(14))" + BR +
                 "clip = core.std.AssumeFPS(clip = clip, fpsnum = fpsnum, fpsden = fpsden)"
         End If
 
         Log.WriteHeader("Compressibility Check Script")
-        Log.WriteLine(code + CrLf2)
+        Log.WriteLine(code + BR2)
 
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
         script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
@@ -531,55 +531,71 @@ End Class
 
 <Serializable()>
 Public Class x264Params
-    Implements ISerializable
-
     Public AdaptiveDCT As New SettingBag(Of Boolean)(True)
     Public AddAll As New SettingBag(Of String)("")
     Public AQMode As New SettingBag(Of Integer)(1)
     Public AQStrengthV2 As New SettingBag(Of Single)(1)
+    Public Aud As New SettingBag(Of Boolean)(False)
     Public BAdapt As New SettingBag(Of Integer)(x264BAdaptMode.Fast)
-    Public BPyramidMode As New SettingBag(Of Integer)(x264BPyramidMode.Normal)
     Public BFrames As New SettingBag(Of Integer)(3)
     Public BFramesBias As New SettingBag(Of Integer)(0)
+    Public BlurayCompat As New SettingBag(Of Boolean)(False)
+    Public BPyramidMode As New SettingBag(Of Integer)(x264BPyramidMode.Normal)
     Public CABAC As New SettingBag(Of Boolean)(True)
+    Public Chromaloc As New SettingBag(Of Integer)(0)
     Public ChromaMe As New SettingBag(Of Boolean)(True)
+    Public Colormatrix As New SettingBag(Of Integer)(0)
+    Public Colorprim As New SettingBag(Of Integer)(0)
     Public DctDecimate As New SettingBag(Of Boolean)(True)
+    Public Deblock As New SettingBag(Of Boolean)(True)
     Public DeblockAlpha As New SettingBag(Of Integer)(0)
     Public DeblockBeta As New SettingBag(Of Integer)(0)
+    Public Depth As New SettingBag(Of Integer)(0)
+    Public Device As New SettingBag(Of Integer)(x264DeviceMode.Disabled)
     Public DirectMode As New SettingBag(Of Integer)(x264DirectMode.Spatial)
     Public FastPSkip As New SettingBag(Of Boolean)(True)
+    Public Fullrange As New SettingBag(Of Integer)(0)
     Public GOPSizeMax As New SettingBag(Of Integer)(250)
     Public GOPSizeMin As New SettingBag(Of Integer)(25)
     Public IPRatio As New SettingBag(Of Single)(1.4)
     Public Level As New SettingBag(Of Integer)(x264LevelMode.Unrestricted)
-    Public Deblock As New SettingBag(Of Boolean)(True)
+    Public MbTree As New SettingBag(Of Boolean)(True)
     Public MEMethod As New SettingBag(Of Integer)(x264MeMethodMode.hex)
     Public MeRange As New SettingBag(Of Integer)(16)
     Public MixedRefs As New SettingBag(Of Boolean)(True)
     Public Mode As New SettingBag(Of Integer)(x264Mode.SingleCRF)
+    Public NalHrdMode As New SettingBag(Of Integer)(x264NalHrdMode.None)
+    Public NoiseReduction As New SettingBag(Of Integer)(0)
+    Public OpenGopV2 As New SettingBag(Of Boolean)(False)
+    Public Overscan As New SettingBag(Of Integer)(0)
     Public PartitionB8x8 As New SettingBag(Of Boolean)(True)
     Public PartitionI4x4 As New SettingBag(Of Boolean)(True)
     Public PartitionI8x8 As New SettingBag(Of Boolean)(True)
     Public PartitionP4x4 As New SettingBag(Of Boolean)(False)
     Public PartitionP8x8 As New SettingBag(Of Boolean)(True)
     Public PBRatio As New SettingBag(Of Single)(1.3)
+    Public PicStruct As New SettingBag(Of Boolean)(False)
     Public Preset As New SettingBag(Of Integer)(x264PresetMode.Medium)
     Public Profile As New SettingBag(Of Integer)(x264ProfileMode.High)
     Public Progress As New SettingBag(Of Boolean)(True)
     Public PSNR As New SettingBag(Of Boolean)(False)
+    Public Psy As New SettingBag(Of Boolean)(True)
     Public PsyRD As New SettingBag(Of Single)(1.0)
     Public PsyTrellis As New SettingBag(Of Single)(0.0)
     Public QComp As New SettingBag(Of Single)(0.6)
     Public QPMin As New SettingBag(Of Integer)(10)
     Public Quant As New SettingBag(Of Single)(22)
     Public QuantCompCheck As New SettingBag(Of Integer)(18)
+    Public RcLookahead As New SettingBag(Of Integer)(40)
     Public RefFrames As New SettingBag(Of Integer)(3)
     Public SceneCut As New SettingBag(Of Integer)(40)
+    Public Slices As New SettingBag(Of Integer)(0)
     Public SlowFirstpass As New SettingBag(Of Boolean)(False)
     Public SSIM As New SettingBag(Of Boolean)(False)
     Public SubME As New SettingBag(Of Integer)(x264SubMEMode.d7)
     Public ThreadInput As New SettingBag(Of Boolean)(True)
     Public Threads As New SettingBag(Of Integer)(0)
+    Public Transfer As New SettingBag(Of Integer)(0)
     Public Trellis As New SettingBag(Of Integer)(x264TrellisMode.FinalMB)
     Public Tune As New SettingBag(Of Integer)(x264TuneMode.Disabled)
     Public TurboAdd As New SettingBag(Of String)("")
@@ -587,49 +603,9 @@ Public Class x264Params
     Public VBVBufSize As New SettingBag(Of Integer)(0)
     Public VBVInit As New SettingBag(Of Single)(0.9)
     Public VBVMaxRate As New SettingBag(Of Integer)(0)
-    Public MbTree As New SettingBag(Of Boolean)(True)
-    Public RcLookahead As New SettingBag(Of Integer)(40)
-    Public NoiseReduction As New SettingBag(Of Integer)(0)
-    Public Aud As New SettingBag(Of Boolean)(False)
-    Public Slices As New SettingBag(Of Integer)(0)
-    Public Psy As New SettingBag(Of Boolean)(True)
-
-    Public Device As New SettingBag(Of Integer)(x264DeviceMode.Disabled)
+    Public Videoformat As New SettingBag(Of Integer)(0)
     Public WeightB As New SettingBag(Of Boolean)(True)
     Public WeightP As New SettingBag(Of Integer)(2)
-    Public NalHrdMode As New SettingBag(Of Integer)(x264NalHrdMode.None)
-
-    Public Overscan As New SettingBag(Of Integer)(0)
-    Public Videoformat As New SettingBag(Of Integer)(0)
-    Public Fullrange As New SettingBag(Of Integer)(0)
-    Public Colorprim As New SettingBag(Of Integer)(0)
-    Public Transfer As New SettingBag(Of Integer)(0)
-    Public Colormatrix As New SettingBag(Of Integer)(0)
-
-    Public PicStruct As New SettingBag(Of Boolean)(False)
-    Public Chromaloc As New SettingBag(Of Integer)(0)
-
-    Public OpenGopV2 As New SettingBag(Of Boolean)(False)
-    Public BlurayCompat As New SettingBag(Of Boolean)(False)
-
-    Sub New()
-    End Sub
-
-    <DebuggerNonUserCode()>
-    Sub New(info As SerializationInfo, context As StreamingContext)
-        For Each i In Me.GetType.GetFields()
-            Try
-                i.SetValue(Me, info.GetValue(i.Name, i.FieldType))
-            Catch
-            End Try
-        Next
-    End Sub
-
-    Sub GetObjectData(info As SerializationInfo, context As StreamingContext) Implements ISerializable.GetObjectData
-        For Each i In Me.GetType.GetFields()
-            info.AddValue(i.Name, i.GetValue(Me))
-        Next
-    End Sub
 
     Sub ApplyDefaults(profileTunePreset As x264Params)
         Dim defaults As New x264Params

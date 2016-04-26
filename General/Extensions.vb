@@ -173,7 +173,7 @@ Module StringExtensions
     <Extension()>
     Function FormatColumn(value As String, delimiter As String) As String
         If value = "" Then Return ""
-        Dim lines = value.SplitKeepEmpty(CrLf)
+        Dim lines = value.SplitKeepEmpty(BR)
         Dim leftSides As New List(Of String)
 
         For Each i In lines
@@ -199,7 +199,7 @@ Module StringExtensions
             End If
         Next
 
-        Return ret.Join(CrLf)
+        Return ret.Join(BR)
     End Function
 
     <Extension()>

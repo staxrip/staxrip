@@ -1510,7 +1510,7 @@ Class MainForm
                 Dim name = Filepath.GetName(i)
 
                 If name.ToUpper Like "VTS_0#_0.VOB" Then
-                    If Msg("Are you sure you want to open the file " + name + "," + CrLf +
+                    If Msg("Are you sure you want to open the file " + name + "," + BR +
                            "the first VOB file usually contains a menu!", Nothing,
                            MsgIcon.Question, MessageBoxButtons.YesNo,
                            DialogResult.No) <> DialogResult.Yes Then
@@ -1770,12 +1770,12 @@ Class MainForm
                     If sourceWidth Mod 4 <> 0 OrElse sourceHeight Mod 4 <> 0 Then
                         If p.Script.Engine = ScriptingEngine.AviSynth Then
                             If Not p.SourceFile.Ext = "avs" Then
-                                p.Script.GetFilter("Source").Script += CrLf + "Crop(0, 0, -" &
+                                p.Script.GetFilter("Source").Script += BR + "Crop(0, 0, -" &
                                     sourceWidth Mod 4 & ", -" & sourceHeight Mod 4 & ")"
                             End If
                         Else
                             If Not p.SourceFile.Ext = "vpy" Then
-                                p.Script.GetFilter("Source").Script += CrLf +
+                                p.Script.GetFilter("Source").Script += BR +
                                     "clip = core.std.CropRel(clip, 0, " & sourceWidth Mod 4 & ", 0, " & sourceHeight Mod 4 & ")"
                             End If
                         End If
@@ -1799,7 +1799,7 @@ Class MainForm
                             End If
                         End If
 
-                        p.Script.GetFilter("Source").Script += CrLf + "ConvertToYV12(" + matrix + ")"
+                        p.Script.GetFilter("Source").Script += BR + "ConvertToYV12(" + matrix + ")"
                     End If
                 End If
             End If
@@ -1838,7 +1838,7 @@ Class MainForm
                         Dim film = m.Groups(1).Value.ToInt
 
                         If film >= 95 Then
-                            content = content.Replace("Field_Operation=0" + CrLf + "Frame_Rate=29970 (30000/1001)", "Field_Operation=1" + CrLf + "Frame_Rate=23976 (24000/1001)")
+                            content = content.Replace("Field_Operation=0" + BR + "Frame_Rate=29970 (30000/1001)", "Field_Operation=1" + BR + "Frame_Rate=23976 (24000/1001)")
                             content.WriteANSIFile(p.SourceFile)
                         End If
                     End If
@@ -1860,7 +1860,7 @@ Class MainForm
                     Throw New AbortException
                 Else
                     Log.WriteHeader("Error opening source")
-                    Log.WriteLine(errorMsg + CrLf2)
+                    Log.WriteLine(errorMsg + BR2)
                     Log.WriteLine(p.SourceScript.GetFullScript)
                     Log.Save()
 
@@ -1918,7 +1918,7 @@ Class MainForm
 
                     If (CInt(miFPS) * 2) = CInt(avsFPS) Then
                         Dim src = p.Script.GetFilter("Source")
-                        src.Script = src.Script + CrLf + "SelectEven().AssumeFPS(" & miFPS.ToString(CultureInfo.InvariantCulture) + ")"
+                        src.Script = src.Script + BR + "SelectEven().AssumeFPS(" & miFPS.ToString(CultureInfo.InvariantCulture) + ")"
                         p.SourceScript.Synchronize()
                     End If
                 End If
@@ -2069,13 +2069,13 @@ Class MainForm
 
                 If idxContent.Contains(VB6.ChrW(&HA) + VB6.ChrW(&H0) + VB6.ChrW(&HD) + VB6.ChrW(&HA)) Then
                     idxContent = idxContent.FixBreak
-                    idxContent = idxContent.Replace(CrLf + VB6.ChrW(&H0) + CrLf, CrLf + "langidx: 0" + CrLf)
+                    idxContent = idxContent.Replace(CrLf + VB6.ChrW(&H0) + BR, CrLf + "langidx: 0" + BR)
                     File.WriteAllText(i, idxContent, Encoding.Default)
                 End If
 
                 Using proc As New Proc
                     proc.Init("Extract forced subtitles if existing", "# ")
-                    proc.WriteLine(Filepath.GetName(i) + CrLf2)
+                    proc.WriteLine(Filepath.GetName(i) + BR2)
                     proc.File = Package.BDSup2SubPP.GetPath
                     proc.Arguments = "--forced-only -o """ + Filepath.GetDirAndBase(i) + "_Forced.idx"" """ + i + """"
                     proc.AllowedExitCodes = {}
@@ -2111,11 +2111,11 @@ Class MainForm
 
                     If Math.Abs(p.SourceSeconds - ((hour * 60 ^ 2) + (min * 60) + sec)) < 30 Then
                         Dim args =
-                            ifoPath + CrLf +
-                            p.TempDir + Filepath.GetBase(p.SourceFile) + CrLf &
+                            ifoPath + BR +
+                            p.TempDir + Filepath.GetBase(p.SourceFile) + BR &
                             (i + 1) & CrLf +
-                            "1" + CrLf +
-                            "ALL" + CrLf +
+                            "1" + BR +
+                            "ALL" + BR +
                             "CLOSE"
 
                         Dim fileContent = p.TempDir + Filepath.GetBase(p.TargetFile) + "_vsrip.txt"
@@ -2123,7 +2123,7 @@ Class MainForm
 
                         Using proc As New Proc
                             proc.Init("Demux subtitles using VSRip")
-                            proc.WriteLine(args + CrLf2)
+                            proc.WriteLine(args + BR2)
                             proc.File = Package.VSRip.GetPath
                             proc.Arguments = """" + fileContent + """"
                             proc.WorkingDirectory = Package.VSRip.GetDir
@@ -2162,10 +2162,10 @@ Class MainForm
             Log.WriteHeader("Script Properties")
 
             Dim props = "source frame count: " & p.SourceScript.GetFrames & CrLf +
-                "source frame rate: " & p.SourceScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + CrLf +
-                "source duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.SourceScript.GetFrames / p.SourceScript.GetFramerate)).ToString + CrLf +
+                "source frame rate: " & p.SourceScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
+                "source duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.SourceScript.GetFrames / p.SourceScript.GetFramerate)).ToString + BR +
                 "target frame count: " & p.Script.GetFrames & CrLf +
-                "target frame rate: " & p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + CrLf +
+                "target frame rate: " & p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
                 "target duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.Script.GetFrames / p.Script.GetFramerate)).ToString
 
             Log.WriteLine(props.FormatColumn(":"))
@@ -2582,7 +2582,7 @@ Class MainForm
                 Else
                     AssistantMethod = Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle)
 
-                    If ProcessTip("The target file already exist, usually this means it was encoded successfully." + CrLf + "Click here to to open the containing directory.") Then
+                    If ProcessTip("The target file already exist, usually this means it was encoded successfully." + BR + "Click here to to open the containing directory.") Then
                         tbTargetFile.BackColor = Color.Yellow
                         gbAssistant.Text = "Target File"
                         Return False
@@ -3236,8 +3236,7 @@ Class MainForm
                 Next
             End If
 
-            If Not found Then f.ShowPackage(Package.x264)
-
+            If Not found Then f.ShowPackage(Package.x265)
             f.ShowDialog()
             g.SaveSettings()
         End Using
@@ -3586,7 +3585,7 @@ Class MainForm
 
             Dim cb = ui.AddCheckBox(imagePage)
             cb.Text = "Save Thumbnails"
-            cb.Tooltip = "Saves thumbnails in the target folder. Customizations can be made in the settings under:" + CrLf2 + "General > Advanced > Thumbnails"
+            cb.Tooltip = "Saves thumbnails in the target folder. Customizations can be made in the settings under:" + BR2 + "General > Advanced > Thumbnails"
             cb.Checked = p.SaveThumbnails
             cb.SaveAction = Sub(value) p.SaveThumbnails = value
 
@@ -3620,7 +3619,7 @@ Class MainForm
 
             cb = ui.AddCheckBox(aspectRatioPage)
             cb.Text = "Auto Aspect Ratio Signaling"
-            cb.Tooltip = "In case no resize filter is used or the aspect ratio error exceeds the defined maximal value StaxRip signals the encoder to write the aspect ratio to the bitstream so players that support aspect ratio signaling playback still the proper aspect ratio." + CrLf2
+            cb.Tooltip = "In case no resize filter is used or the aspect ratio error exceeds the defined maximal value StaxRip signals the encoder to write the aspect ratio to the bitstream so players that support aspect ratio signaling playback still the proper aspect ratio." + BR2
             cb.Checked = p.AutoARSignaling
             cb.SaveAction = Sub(value) p.AutoARSignaling = value
 
@@ -3750,7 +3749,7 @@ Class MainForm
 
             tb = ui.AddTextBlock(subPage)
             tb.Label.Text = "Auto load subtitles:"
-            tb.Label.Tooltip = "Subtitles loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + CrLf2 + String.Join(CrLf, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+            tb.Label.Tooltip = "Subtitles loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + BR2 + String.Join(CrLf, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
             tb.Edit.Text = p.AutoSubtitles
             tb.Edit.SaveAction = Sub(value) p.AutoSubtitles = value
 
@@ -3945,7 +3944,7 @@ Class MainForm
             End If
         End If
 
-        MsgWarn("Invalid format, please use:" + CrLf2 + "4/3 or 4:3 or " & 1.333333)
+        MsgWarn("Invalid format, please use:" + BR2 + "4/3 or 4:3 or " & 1.333333)
     End Function
 
     Sub DisableCropFilter()
@@ -3972,25 +3971,29 @@ Class MainForm
 
     Function GetFilterProfilesText(categories As List(Of FilterCategory)) As String
         Dim ret = ""
+        Dim wasMultiline As Boolean
 
         For Each i In categories
-            ret += "[" + i.Name + "]" + CrLf
+            ret += "[" + i.Name + "]" + BR
 
             For Each filter In i.Filters
-                If filter.Script.Contains(CrLf) Then
+                If filter.Script.Contains(BR) Then
                     Dim lines = filter.Script.SplitLinesNoEmpty
 
                     For x = 0 To lines.Length - 1
-                        lines(x) = VB6.vbTab + lines(x)
+                        lines(x) = "    " + lines(x)
                     Next
 
-                    ret += CrLf + filter.Path + " =" + CrLf + lines.Join(CrLf) + CrLf2
+                    ret += BR + filter.Path + " =" + BR + lines.Join(BR) + BR
+                    wasMultiline = True
                 Else
-                    ret += filter.Path + " = " + filter.Script + CrLf
+                    If wasMultiline Then ret += BR
+                    ret += filter.Path + " = " + filter.Script + BR
+                    wasMultiline = False
                 End If
             Next
 
-            If Not ret.EndsWith(CrLf2) Then ret += CrLf
+            If Not ret.EndsWith(CrLf2) Then ret += BR
         Next
 
         Return ret
@@ -4029,28 +4032,29 @@ Class MainForm
                 Dim cat As FilterCategory
                 Dim filter As VideoFilter
 
-                For Each i In f.MacroEditorControl.Value.SplitLinesNoEmpty
-                    If i.StartsWith("    ") Then i = VB6.vbTab + i.Substring(4)
-                    Dim multiline = i.StartsWith(VB6.vbTab)
+                For Each line In f.MacroEditorControl.Value.SplitLinesNoEmpty
+                    Dim multiline = line.StartsWith("    ") OrElse line.StartsWith(VB6.vbTab)
 
-                    If i.StartsWith("[") AndAlso i.EndsWith("]") Then
-                        cat = New FilterCategory(i.Substring(1, i.Length - 2).Trim)
+                    If line.StartsWith("[") AndAlso line.EndsWith("]") Then
+                        cat = New FilterCategory(line.Substring(1, line.Length - 2).Trim)
                         filterProfiles.Add(cat)
                     End If
 
                     If multiline Then
                         If Not filter Is Nothing Then
                             If filter.Script = "" Then
-                                filter.Script += i.Substring(1)
+                                If line.StartsWith(VB6.vbTab) Then filter.Script += line.Substring(1)
+                                If line.StartsWith("    ") Then filter.Script += line.Substring(4)
                             Else
-                                filter.Script += CrLf + i.Substring(1)
+                                If line.StartsWith(VB6.vbTab) Then filter.Script += BR + line.Substring(1)
+                                If line.StartsWith("    ") Then filter.Script += BR + line.Substring(4)
                             End If
                         End If
                     Else
-                        Dim filterName = i.Left("=").Trim
+                        Dim filterName = line.Left("=").Trim
 
                         If filterName <> "" Then
-                            filter = New VideoFilter(cat.Name, filterName, i.Right("=").Trim)
+                            filter = New VideoFilter(cat.Name, filterName, line.Right("=").Trim)
                             cat.Filters.Add(filter)
                         End If
                     End If
@@ -4142,7 +4146,7 @@ Class MainForm
                 Dim switchcell = String.Join(CrLf, switches)
 
                 If enumList.Count > 0 Then
-                    switchcell += CrLf2 + String.Join(CrLf, enumList.ToArray)
+                    switchcell += BR2 + String.Join(CrLf, enumList.ToArray)
                 End If
 
                 If switch Is Nothing Then
@@ -4604,7 +4608,7 @@ Class MainForm
 
         Task.Run(Sub() Scripting.RunCSharp("1+1"))
 
-        If Not File.Exists(Package.x264.GetPath) Then
+        If Not File.Exists(Package.x265.GetPath) Then
             MsgError("Files included with StaxRip are missing, maybe the 7-Zip archive wasn't properly unpacked. You can find a packer at [http://www.7-zip.org www.7-zip.org].")
             Close()
             Exit Sub
@@ -4652,7 +4656,7 @@ Class MainForm
                 End If
             Next
         Catch ex As Exception
-            MsgWarn("Error parsing argument:" + CrLf2 + errorArg + CrLf2 + ex.Message)
+            MsgWarn("Error parsing argument:" + BR2 + errorArg + BR2 + ex.Message)
             OpenCommandLineHelp()
         End Try
     End Sub
@@ -4675,7 +4679,7 @@ Class MainForm
                     If Not CommandManager.ProcessCommandLineArgument(i.Value) Then Throw New Exception
                 End If
             Catch ex As Exception
-                MsgWarn("Error parsing argument:" + CrLf2 + i.Value + CrLf2 + ex.Message)
+                MsgWarn("Error parsing argument:" + BR2 + i.Value + BR2 + ex.Message)
                 OpenCommandLineHelp()
             End Try
         Next
@@ -4755,7 +4759,7 @@ Class MainForm
                                     proc.Init("Merge source files using Mkvmerge " + Package.mkvmerge.Version)
 
                                     For Each i In f.Files
-                                        Log.WriteLine(MediaInfo.GetSummary(i) + "---------------------------------------------------------" + CrLf2)
+                                        Log.WriteLine(MediaInfo.GetSummary(i) + "---------------------------------------------------------" + BR2)
                                     Next
 
                                     proc.Encoding = Encoding.UTF8
@@ -4876,7 +4880,7 @@ Class MainForm
                         End If
 
                         Log.WriteEnvironment()
-                        Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.GetPath + """ """ + srcPath + """" + CrLf2)
+                        Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.GetPath + """ """ + srcPath + """" + BR2)
 
                         Dim output = ProcessHelp.GetStdOut(Package.eac3to.GetPath, """" + srcPath + """").Replace(VB6.vbBack, "")
 
@@ -4890,8 +4894,8 @@ Class MainForm
                         td2.MainInstruction = "Please choose a playlist."
 
                         For Each i In a
-                            If i.Contains(CrLf) Then
-                                td2.AddCommandLink(i.Left(CrLf).Trim, i.Right(CrLf).TrimEnd, a.IndexOf(i) + 1)
+                            If i.Contains(BR) Then
+                                td2.AddCommandLink(i.Left(BR).Trim, i.Right(BR).TrimEnd, a.IndexOf(i) + 1)
                             End If
                         Next
 
@@ -5375,7 +5379,7 @@ Class MainForm
             Exit Sub
         End If
 
-        MsgWarn("Invalid format, please use:" + CrLf2 + "4/3 or 4:3 or " & 1.333333)
+        MsgWarn("Invalid format, please use:" + BR2 + "4/3 or 4:3 or " & 1.333333)
         s.SourceAspectRatioMenu = TextCustomMenu.EditMenu(s.SourceAspectRatioMenu, Me)
     End Sub
 
@@ -5607,7 +5611,7 @@ Class MainForm
 
     <Command("Perform | Show Command Prompt", "Shows a command prompt with the temp directory of the current project.")>
     Sub OpenCommandPrompt()
-        Dim batchCode = "@echo off" + CrLf
+        Dim batchCode = "@echo off" + BR
 
         For Each i In Package.Items.Values
             Dim dir = i.GetDir
@@ -5616,7 +5620,7 @@ Class MainForm
                 Not dir.ToLower.Contains("system32") AndAlso
                 Not batchCode.Contains(dir) Then
 
-                batchCode += "@set PATH=" + dir + ";%PATH%" + CrLf
+                batchCode += "@set PATH=" + dir + ";%PATH%" + BR
             End If
         Next
 

@@ -281,7 +281,7 @@ Public MustInherit Class VideoEncoder
         xvid2pass.OutputFileTypeValue = "avi"
         xvid2pass.Name = "2 pass | XviD"
         xvid2pass.Muxer = New ffmpegMuxer("AVI")
-        xvid2pass.CommandLines = """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -turbo -pass1 ""%temp_file%.stats"" -i ""%script_file%"" || exit" + CrLf +
+        xvid2pass.CommandLines = """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -turbo -pass1 ""%temp_file%.stats"" -i ""%script_file%"" || exit" + BR +
                                  """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -pass2 ""%temp_file%.stats"" -i ""%script_file%"" -avi ""%encoder_out_file%"""
         xvid2pass.CompCheckCommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -par %target_sar% -i ""%temp_file%_CompCheck.%script_ext%"" -avi ""%temp_file%_CompCheck.avi"""
         ret.Add(xvid2pass)
@@ -299,7 +299,7 @@ Public MustInherit Class VideoEncoder
         x264cli.Name = "Command Line | x264"
         x264cli.Muxer = New MkvMuxer()
         x264cli.AutoCompCheckValue = 50
-        x264cli.CommandLines = """%app:x264%"" --pass 1 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output NUL ""%script_file%"" || exit" + CrLf + """%app:x264%"" --pass 2 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
+        x264cli.CommandLines = """%app:x264%"" --pass 1 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output NUL ""%script_file%"" || exit" + BR + """%app:x264%"" --pass 2 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
         x264cli.CompCheckCommandLines = """%app:x264%"" --crf 18 --output ""%temp_file%_CompCheck%encoder_ext%"" ""%temp_file%_CompCheck.%script_ext%"""
         ret.Add(x264cli)
 
@@ -490,14 +490,14 @@ Class BatchEncoder
     Overrides Sub Encode()
         Dim commands = Macro.Solve(CommandLines).Trim
 
-        If commands.Contains("|") OrElse commands.Contains(CrLf) Then
+        If commands.Contains("|") OrElse commands.Contains(BR) Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
             File.WriteAllText(batchPath, commands, Encoding.GetEncoding(850))
 
             Using proc As New Proc
                 proc.Init("Encoding video command line encoder: " + Name)
                 proc.SkipStrings = GetSkipStrings(commands)
-                proc.WriteLine(commands + CrLf2)
+                proc.WriteLine(commands + BR2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
 
@@ -551,12 +551,12 @@ Class BatchEncoder
         If script.Engine = ScriptingEngine.AviSynth Then
             code = "SelectRangeEvery(" + every + ",14)"
         Else
-            code = "fpsnum = clip.fps_num" + CrLf + "fpsden = clip.fps_den" + CrLf +
-                "clip = core.std.SelectEvery(clip = clip, cycle = " + every + ", offsets = range(14))" + CrLf +
+            code = "fpsnum = clip.fps_num" + BR + "fpsden = clip.fps_den" + BR +
+                "clip = core.std.SelectEvery(clip = clip, cycle = " + every + ", offsets = range(14))" + BR +
                 "clip = core.std.AssumeFPS(clip = clip, fpsnum = fpsnum, fpsden = fpsden)"
         End If
 
-        Log.WriteLine(code + CrLf2)
+        Log.WriteLine(code + BR2)
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
         script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
         script.Synchronize()
@@ -565,7 +565,7 @@ Class BatchEncoder
         Dim command = Macro.Solve(CompCheckCommandLines)
 
         File.WriteAllText(batchPath, command, Encoding.GetEncoding(850))
-        Log.WriteLine(command + CrLf2)
+        Log.WriteLine(command + BR2)
 
         Using proc As New Proc
             proc.Init(Nothing)
@@ -1063,7 +1063,7 @@ Class AMDEncoder
             Using proc As New Proc
                 proc.Init("Encoding using VCEEncC " + Package.VCEEncC.Version)
                 proc.SkipStrings = {"%]", " frames: "}
-                proc.WriteLine(cl + CrLf2)
+                proc.WriteLine(cl + BR2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
                 proc.Start()

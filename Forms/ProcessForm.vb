@@ -282,7 +282,7 @@ Class ProcessForm
                     End If
                 End If
             Catch ex As Exception
-                Dim text = "Exception reading console: " + d.Data + CrLf2 + ex.Message
+                Dim text = "Exception reading console: " + d.Data + BR2 + ex.Message
                 Log.WriteLine(text)
                 CommandLineLog.AppendLine(text)
             End Try
@@ -301,7 +301,7 @@ Class ProcessForm
                 LastStatus = value
 
                 If value.Length < 55 Then
-                    value = "StaxRip" + CrLf + value
+                    value = "StaxRip" + BR + value
                 ElseIf value.Length > 63 Then 'throws exception if length is > 63
                     value = value.Substring(0, 63)
                 End If

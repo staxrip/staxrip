@@ -278,7 +278,7 @@ Class SourceFilesForm
 
                         If a <> b Then
                             If a.StartsWith(b) Then
-                                MsgWarn("Files starting with the names of other files can't be used.", b + CrLf2 + a)
+                                MsgWarn("Files starting with the names of other files can't be used.", b + BR2 + a)
                                 e.Cancel = True
                                 Exit For
                             End If

@@ -11,10 +11,9 @@ Namespace CommandLine
 
         MustOverride Function GetCommandLine(includePaths As Boolean,
                                              includeExecutable As Boolean,
-                                             Optional pass As Integer = 0) As String
+                                             Optional pass As Integer = 1) As String
 
         MustOverride Function GetPackage() As Package
-
 
         Sub Init(store As PrimitiveStore)
             For Each i In Items

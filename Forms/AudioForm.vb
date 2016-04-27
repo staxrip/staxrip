@@ -784,9 +784,7 @@ Class AudioForm
         Dim ui = SimpleUI
         ui.Host.Controls.Clear()
 
-        If Not ui.ActivePage Is Nothing Then
-            DirectCast(ui.ActivePage, Control).Dispose()
-        End If
+        If Not ui.ActivePage Is Nothing Then DirectCast(ui.ActivePage, Control).Dispose()
 
         Dim page = ui.CreateFlowPage("main page")
         page.SuspendLayout()

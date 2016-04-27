@@ -1,6 +1,5 @@
 ﻿Imports System.Globalization
 Imports System.Text
-
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -865,7 +864,7 @@ Public Class x265Params
 
     Overloads Overrides Function GetCommandLine(includePaths As Boolean,
                                                 includeExecutable As Boolean,
-                                                Optional pass As Integer = 0) As String
+                                                Optional pass As Integer = 1) As String
 
         Return GetArgs(1, p.Script, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
                        "." + p.VideoEncoder.OutputFileType, includePaths, includeExecutable)

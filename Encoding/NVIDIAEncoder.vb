@@ -266,7 +266,7 @@ Public Class NVIDIAEncoder
 
         Overrides Function GetCommandLine(includePaths As Boolean,
                                           includeExecutable As Boolean,
-                                          Optional pass As Integer = 0) As String
+                                          Optional pass As Integer = 1) As String
             Dim ret As String
             Dim sourcePath As String
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)

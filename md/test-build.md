@@ -19,6 +19,8 @@ http://1drv.ms/1OqPDOe
 - added mkv cutting support without encoding
 - added MSharpen x64 filter for AviSynth+ x64
 - added x264 10-Bit support, binary is not included, StaxRip will ask for the location
+- added ffmpeg codecs x264, x265 and ProRes
+- added codec help menu to ffmpeg options dialog which shows help for the currently selected codec, it displayes the output queried with 'ffmpeg -h encoder=name'
 
 ### Fixed Bugs
 
@@ -45,3 +47,4 @@ http://1drv.ms/1OqPDOe
 - StaxRip Toolbox Demux 1.1
 - mvsfunc 7
 - L-SMASH-Works 877
+- x265 1.9 144

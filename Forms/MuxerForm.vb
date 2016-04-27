@@ -372,12 +372,11 @@ Class MuxerForm
         UI.BackColor = Color.Transparent
 
         Dim page = UI.CreateFlowPage("main page")
+        page.SuspendLayout()
 
         If Not TypeOf muxer Is WebMMuxer Then
-            UI.AddLabel(page, "Chapters:")
-
             Dim tbb = UI.AddTextButtonBlock(page)
-            tbb.Label.Visible = False
+            tbb.Label.Text = "Chapters:"
             tbb.Expand(tbb.Edit)
             tbb.Edit.Text = muxer.ChapterFile
             tbb.Edit.SaveAction = Sub(value) muxer.ChapterFile = If(value <> "", value, Nothing)
@@ -387,28 +386,23 @@ Class MuxerForm
         If TypeOf muxer Is MkvMuxer Then
             CmdlControl.Presets = s.CmdlPresetsMKV
 
-            Dim offset = 9
-
             Dim tb = UI.AddTextBlock(page)
             tb.Label.Text = "Title:"
             tb.Label.Tooltip = "Optional title of the output file that may contain macros."
-            tb.Label.Offset = offset
             tb.Expand(tb.Edit)
             tb.Edit.Text = DirectCast(muxer, MkvMuxer).Title
             tb.Edit.SaveAction = Sub(value) DirectCast(muxer, MkvMuxer).Title = value
 
             tb = UI.AddTextBlock(page)
-            tb.Label.Text = "Video Stream Name:"
+            tb.Label.Text = "Video Track Name:"
             tb.Label.Tooltip = "Optional name of the video stream that may contain macro."
-            tb.Label.Offset = offset
             tb.Expand(tb.Edit)
             tb.Edit.Text = DirectCast(muxer, MkvMuxer).VideoTrackName
             tb.Edit.SaveAction = Sub(value) DirectCast(muxer, MkvMuxer).VideoTrackName = value
 
             Dim mb = UI.AddMenuButtonBlock(Of Language)(page)
-            mb.Label.Text = "Video Stream Language:"
+            mb.Label.Text = "Video Track Language:"
             mb.Label.Tooltip = "Optional language of the video stream."
-            mb.Label.Offset = offset
             mb.MenuButton.Value = DirectCast(muxer, MkvMuxer).VideoTrackLanguage
             mb.MenuButton.SaveAction = Sub(value) DirectCast(muxer, MkvMuxer).VideoTrackLanguage = value
 
@@ -419,6 +413,8 @@ Class MuxerForm
                     mb.MenuButton.Add("More | " + i.ToString.Substring(0, 1) + " | " + i.ToString, i)
                 End If
             Next
+
+            page.ResumeLayout()
         ElseIf TypeOf muxer Is MP4Muxer Then
             CmdlControl.Presets = s.CmdlPresetsMP4
         End If

@@ -215,6 +215,7 @@
     <Compile Include="Controls\x264Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Encoding\ffmpegEncoder.vb" />
     <Compile Include="Encoding\IntelEncoder.vb" />
     <Compile Include="Encoding\NVIDIAEncoder.vb" />
     <Compile Include="General\Scripting.vb" />

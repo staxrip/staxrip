@@ -47,7 +47,6 @@ Public Class Package
     Shared Property TDeint As New TDeintPackage
     Shared Property UnDot As New UnDotPackage
     Shared Property VSRip As New VSRipPackage
-    Shared Property x265 As New x265Package
     Shared Property xvid_encraw As New xvid_encrawPackage
     Shared Property flash3kyuu_deband As New flash3kyuu_debandPackage
     Shared Property Decomb As New DecombPackage
@@ -58,6 +57,13 @@ Public Class Package
     Shared Property scenechange As New scenechangePackage
     Shared Property temporalsoften As New temporalsoftenPackage
     Shared Property LSmashWorksVapourSynth As New vslsmashsourcePackage
+
+    Shared Property x265 As New Package With {
+        .Name = "x265",
+        .Filename = "x265.exe",
+        .WebURL = "http://x265.org",
+        .HelpURL = "http://x265.readthedocs.org",
+        .Description = "H.265 video encoding command line app."}
 
     Shared ReadOnly Property x264 As Package
         Get
@@ -986,18 +992,6 @@ Public Class ProjectXPackage
         If Package.Java.GetPath = "" Then Return "Failed to locate Java, ProjectX requires Java."
         Return MyBase.GetStatus()
     End Function
-End Class
-
-Public Class x265Package
-    Inherits Package
-
-    Sub New()
-        Name = "x265"
-        Filename = "x265_ml.exe"
-        WebURL = "http://x265.org"
-        HelpURL = "http://x265.readthedocs.org"
-        Description = "H.265 video encoding command line app."
-    End Sub
 End Class
 
 Public Class MP4BoxPackage

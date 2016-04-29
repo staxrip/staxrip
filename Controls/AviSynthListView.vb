@@ -6,6 +6,7 @@ Public Class AviSynthListView
 
     Private BlockItemCheck As Boolean
     WithEvents Menu As New ContextMenuStripEx
+    Property IsLoading As Boolean
 
     Event Changed()
 
@@ -61,7 +62,7 @@ Public Class AviSynthListView
     Sub UpdateMenu()
         Dim filterProfiles As List(Of FilterCategory)
 
-        If p.Script.Engine = ScriptingEngine.AviSynth Then
+        If p.Script.Engine = ScriptEngine.AviSynth Then
             filterProfiles = s.AviSynthProfiles
         Else
             filterProfiles = s.VapourSynthProfiles
@@ -148,6 +149,7 @@ Public Class AviSynthListView
     End Sub
 
     Sub OnChanged()
+        If IsLoading Then Exit Sub
         Load()
         RaiseEvent Changed()
     End Sub

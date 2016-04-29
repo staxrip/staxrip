@@ -94,7 +94,7 @@ Public Class x265Encoder
         Dim code As String
         Dim every = ((100 \ p.CompCheckRange) * 14).ToString
 
-        If script.Engine = ScriptingEngine.AviSynth Then
+        If script.Engine = ScriptEngine.AviSynth Then
             code = "SelectRangeEvery(" + every + ",14)"
         Else
             code = "fpsnum = clip.fps_num" + BR + "fpsden = clip.fps_den" + BR +
@@ -891,7 +891,7 @@ Public Class x265Params
 
             Select Case Decoder.ValueText
                 Case "avs"
-                    If p.Script.Engine = ScriptingEngine.VapourSynth Then
+                    If p.Script.Engine = ScriptEngine.VapourSynth Then
                         sb.Append(Package.vspipe.Path.Quotes + " " + script.Path.Quotes + " - --y4m | " + Package.x265.Path.Quotes)
                     Else
                         sb.Append(Package.ffmpeg.Path.Quotes + " -i " + script.Path.Quotes + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + Package.x265.Path.Quotes)

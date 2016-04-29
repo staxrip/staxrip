@@ -268,7 +268,7 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(FilterSetupProfiles, "Filter Setup Profiles", 100) Then
+        If Check(FilterSetupProfiles, "Filter Setup Profiles", 101) Then
             FilterSetupProfiles = VideoScript.GetDefaults
         End If
 

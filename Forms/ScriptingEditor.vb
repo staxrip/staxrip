@@ -5,7 +5,7 @@ Imports System.Text.RegularExpressions
 
 Class ScriptingEditor
     Property ActiveTable As FilterTable
-    Property Engine As ScriptingEngine
+    Property Engine As ScriptEngine
 
     Sub New(doc As VideoScript)
         InitializeComponent()
@@ -255,7 +255,7 @@ Class ScriptingEditor
         Sub MenuOpening(sender As Object, e As CancelEventArgs)
             Dim filterProfiles As List(Of FilterCategory)
 
-            If p.Script.Engine = ScriptingEngine.AviSynth Then
+            If p.Script.Engine = ScriptEngine.AviSynth Then
                 filterProfiles = s.AviSynthProfiles
             Else
                 filterProfiles = s.VapourSynthProfiles
@@ -380,7 +380,7 @@ Class ScriptingEditor
                 End If
             Next
 
-            If p.Script.Engine = ScriptingEngine.AviSynth Then
+            If p.Script.Engine = ScriptEngine.AviSynth Then
                 Dim installDir = Registry.LocalMachine.GetString("SOFTWARE\AviSynth", Nothing)
                 Dim helpText = rtbScript.Text.Left("(")
 

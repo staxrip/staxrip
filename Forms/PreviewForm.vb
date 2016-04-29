@@ -1061,7 +1061,7 @@ Class PreviewForm
         For Each i In p.Ranges
             If ret <> "" Then ret += " + "
 
-            If p.Script.Engine = ScriptingEngine.AviSynth Then
+            If p.Script.Engine = ScriptEngine.AviSynth Then
                 ret += "Trim(" & i.Start & ", " & i.End - 1 & ")"
 
                 If p.TrimCode <> "" Then
@@ -1072,7 +1072,7 @@ Class PreviewForm
             End If
         Next
 
-        If p.Script.Engine = ScriptingEngine.AviSynth Then
+        If p.Script.Engine = ScriptEngine.AviSynth Then
             Return ret
         Else
             Return "clip = " + ret

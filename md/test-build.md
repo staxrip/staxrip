@@ -39,6 +39,7 @@ http://1drv.ms/1OqPDOe
 - changed filter profiles editor to support both tab and 4 spaces for multiline profiles, tabs are converted to 4 spaces which is the standard in Python and Visual Studio
 - log file improvements
 - filters list view did not accept drag and drop with source files 
+- enabled posibility to remux mov to mp4
 
 ### Updated Tools
 
@@ -52,3 +53,4 @@ http://1drv.ms/1OqPDOe
 - QSVEncC 2.46
 - StaxRip Toolbox Demux 1.1
 - x265 1.9 144
+- mvtools2 2.7.0.22

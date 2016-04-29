@@ -44,7 +44,7 @@ Public Class x264Encoder
                          script As VideoScript,
                          priority As ProcessPriorityClass)
 
-        If p.Script.Engine = ScriptingEngine.VapourSynth Then
+        If p.Script.Engine = ScriptEngine.VapourSynth Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
 
             Dim batchCode = "@echo off" + BR + "CHCP 65001" + BR +
@@ -90,7 +90,7 @@ Public Class x264Encoder
         Dim code As String
         Dim every = ((100 \ p.CompCheckRange) * 14).ToString
 
-        If script.Engine = ScriptingEngine.AviSynth Then
+        If script.Engine = ScriptEngine.AviSynth Then
             code = "SelectRangeEvery(" + every + ",14)"
         Else
             code = "fpsnum = clip.fps_num" + BR + "fpsden = clip.fps_den" + BR +
@@ -105,7 +105,7 @@ Public Class x264Encoder
         script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
         script.Synchronize()
 
-        Dim sourcePath = If(p.Script.Engine = ScriptingEngine.VapourSynth, "-", p.TempDir + p.Name + "_CompCheck.avs")
+        Dim sourcePath = If(p.Script.Engine = ScriptEngine.VapourSynth, "-", p.TempDir + p.Name + "_CompCheck.avs")
         Dim arguments = enc.GetArgs(0, sourcePath, p.TempDir + p.Name + "_CompCheck." + OutputFileType, script)
 
         Try
@@ -151,7 +151,7 @@ Public Class x264Encoder
     End Function
 
     Function GetArgs(pass As Integer, Optional includePaths As Boolean = True) As String
-        Dim sourcePath = If(p.Script.Engine = ScriptingEngine.VapourSynth, "-", p.Script.Path)
+        Dim sourcePath = If(p.Script.Engine = ScriptEngine.VapourSynth, "-", p.Script.Path)
         Return GetArgs(pass, sourcePath, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, p.Script, includePaths)
     End Function
 

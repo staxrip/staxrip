@@ -553,7 +553,7 @@ Class BatchEncoder
         Dim code As String
         Dim every = ((100 \ p.CompCheckRange) * 14).ToString
 
-        If script.Engine = ScriptingEngine.AviSynth Then
+        If script.Engine = ScriptEngine.AviSynth Then
             code = "SelectRangeEvery(" + every + ",14)"
         Else
             code = "fpsnum = clip.fps_num" + BR + "fpsden = clip.fps_den" + BR +

@@ -26,7 +26,7 @@ Public Class GlobalCommands
 
     <Command("Loads VapourSynth if it's not already loaded.")>
     Sub EnsureVapourSynth()
-        If Not p.Script.Engine = ScriptingEngine.VapourSynth Then
+        If Not p.Script.Engine = ScriptEngine.VapourSynth Then
             LoadVapourSynthDefaults()
         End If
     End Sub

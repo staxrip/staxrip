@@ -14,7 +14,7 @@ Public Class VideoScript
 
     Property Filters As New List(Of VideoFilter)
 
-    Overridable Property Engine As ScriptingEngine = ScriptingEngine.AviSynth
+    Overridable Property Engine As ScriptEngine = ScriptEngine.AviSynth
     Overridable Property Path As String = ""
 
     Shared Event Changed(script As VideoScript)
@@ -25,7 +25,7 @@ Public Class VideoScript
 
     Overridable ReadOnly Property FileType As String
         Get
-            If Engine = ScriptingEngine.VapourSynth Then Return "vpy"
+            If Engine = ScriptEngine.VapourSynth Then Return "vpy"
             Return "avs"
         End Get
     End Property
@@ -152,7 +152,7 @@ Public Class VideoScript
             Dim script = Macro.Solve(GetScript())
 
             If convertToRGB Then
-                If Engine = ScriptingEngine.AviSynth Then
+                If Engine = ScriptEngine.AviSynth Then
                     If p.SourceHeight > 576 Then
                         script += BR + "ConvertToRGB(matrix=""Rec709"")"
                     Else
@@ -181,7 +181,7 @@ Public Class VideoScript
                 If Directory.Exists(Filepath.GetDir(Path)) Then
                     script = ModifyScript(script, Engine)
 
-                    If Engine = ScriptingEngine.VapourSynth Then
+                    If Engine = ScriptEngine.VapourSynth Then
                         script.WriteFile(Path, Encoding.UTF8)
                     Else
                         script.WriteANSIFile(Path)
@@ -218,12 +218,12 @@ Public Class VideoScript
         End If
     End Sub
 
-    Shared Function ModifyScript(script As String, engine As ScriptingEngine) As String
+    Shared Function ModifyScript(script As String, engine As ScriptEngine) As String
         Dim scriptLower = script.ToLower
 
         Dim code = ""
 
-        If engine = ScriptingEngine.VapourSynth AndAlso Not scriptLower.Contains("import vapoursynth") Then
+        If engine = ScriptEngine.VapourSynth AndAlso Not scriptLower.Contains("import vapoursynth") Then
             code = "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR
         End If
 
@@ -233,7 +233,7 @@ Public Class VideoScript
             Dim fp = plugin.Path
 
             If fp <> "" Then
-                If engine = ScriptingEngine.VapourSynth AndAlso code.Contains("core = vs.") Then
+                If engine = ScriptEngine.VapourSynth AndAlso code.Contains("core = vs.") Then
                     If Not plugin.VapourSynthFilterNames Is Nothing Then
                         For Each filterName In plugin.VapourSynthFilterNames
                             If scriptLower.Contains(filterName.ToLower) Then
@@ -287,7 +287,7 @@ Public Class VideoScript
             clip = script
         End If
 
-        If engine = ScriptingEngine.VapourSynth AndAlso Not clip.Contains(".set_output(") Then
+        If engine = ScriptEngine.VapourSynth AndAlso Not clip.Contains(".set_output(") Then
             If clip.EndsWith(BR) Then
                 clip += "clip.set_output()"
             Else
@@ -331,7 +331,7 @@ Public Class VideoScript
         Dim ret As New List(Of TargetVideoScript)
 
         Dim script As New TargetVideoScript("AviSynth")
-        script.Engine = ScriptingEngine.AviSynth
+        script.Engine = ScriptEngine.AviSynth
         script.Filters.Add(New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")"))
         script.Filters.Add(New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", False))
         script.Filters.Add(New VideoFilter("Field", "TDeint", "TDeint()", False))
@@ -340,7 +340,7 @@ Public Class VideoScript
         ret.Add(script)
 
         script = New TargetVideoScript("VapourSynth")
-        script.Engine = ScriptingEngine.VapourSynth
+        script.Engine = ScriptEngine.VapourSynth
         script.Filters.Add(New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%temp_file%.ffindex"")"))
         script.Filters.Add(New VideoFilter("Crop", "CropRel", "clip = core.std.CropRel(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)", False))
         script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = 'Medium')", False))
@@ -408,11 +408,11 @@ Public Class SourceVideoScript
         End Set
     End Property
 
-    Public Overrides Property Engine As ScriptingEngine
+    Public Overrides Property Engine As ScriptEngine
         Get
             Return p.Script.Engine
         End Get
-        Set(value As ScriptingEngine)
+        Set(value As ScriptEngine)
         End Set
     End Property
 
@@ -506,11 +506,11 @@ Public Class FilterCategory
         End If
     End Sub
 
-    Shared Sub AddDefaults(engine As ScriptingEngine, list As List(Of FilterCategory))
+    Shared Sub AddDefaults(engine As ScriptEngine, list As List(Of FilterCategory))
         For Each i In Package.Items.Values.OfType(Of PluginPackage)
             Dim filters As VideoFilter() = Nothing
 
-            If engine = ScriptingEngine.AviSynth Then
+            If engine = ScriptEngine.AviSynth Then
                 If Not i.AviSynthFiltersFunc Is Nothing Then filters = i.AviSynthFiltersFunc.Invoke
             Else
                 If Not i.VapourSynthFiltersFunc Is Nothing Then filters = i.VapourSynthFiltersFunc.Invoke
@@ -593,7 +593,7 @@ Public Class FilterCategory
         crop.Filters.Add(New VideoFilter(crop.Name, "Hardware Encoder", "# hardware encoder crops"))
         ret.Add(crop)
 
-        FilterCategory.AddDefaults(ScriptingEngine.AviSynth, ret)
+        FilterCategory.AddDefaults(ScriptEngine.AviSynth, ret)
 
         For Each i In ret
             i.Filters.Sort()
@@ -657,7 +657,7 @@ Public Class FilterCategory
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 50", "clip = core.std.AssumeFPS(clip, fpsnum = 50, fpsden = 1)"))
         ret.Add(misc)
 
-        FilterCategory.AddDefaults(ScriptingEngine.VapourSynth, ret)
+        FilterCategory.AddDefaults(ScriptEngine.VapourSynth, ret)
 
         For Each i In ret
             i.Filters.Sort()
@@ -798,7 +798,7 @@ Class FilterParameters
     End Function
 End Class
 
-Public Enum ScriptingEngine
+Public Enum ScriptEngine
     AviSynth
     VapourSynth
 End Enum

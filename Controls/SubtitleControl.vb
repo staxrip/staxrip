@@ -372,7 +372,7 @@ Class SubtitleControl
                 avs.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play." + avs.FileType
                 avs.Filters = p.Script.GetFiltersCopy
 
-                If avs.Engine = ScriptingEngine.AviSynth Then
+                If avs.Engine = ScriptEngine.AviSynth Then
                     If FileTypes.TextSub.Contains(Filepath.GetExt(fp)) Then
                         Dim insertCat = If(avs.IsFilterActive("Crop"), "Crop", "Source")
 

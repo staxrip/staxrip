@@ -39,7 +39,7 @@ Class Paths
     <DebuggerNonUserCode()>
     Shared ReadOnly Property PluginsDir() As String
         Get
-            If p.Script.Engine = ScriptingEngine.AviSynth Then
+            If p.Script.Engine = ScriptEngine.AviSynth Then
                 Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+"))
             Else
                 Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64"))
@@ -259,7 +259,7 @@ Public Class GlobalClass
 
     Function ShowVideoSourceWarnings(files As IEnumerable(Of String)) As Boolean
         For Each i In files
-            If i.ContainsUnicode AndAlso p.Script.Engine = ScriptingEngine.AviSynth Then
+            If i.ContainsUnicode AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
                 MsgError(Strings.NoUnicode)
                 Return True
             End If
@@ -310,7 +310,7 @@ Public Class GlobalClass
         script.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play." + script.FileType
         script.Filters = doc.GetFiltersCopy
 
-        If script.Engine = ScriptingEngine.AviSynth Then
+        If script.Engine = ScriptEngine.AviSynth Then
             Dim par = Calc.GetTargetPAR
 
             If Not par = New Point(1, 1) Then

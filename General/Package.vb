@@ -759,7 +759,7 @@ Public Class AviSynthPlusPackage
 
     Public Overrides ReadOnly Property IsRequired As Boolean
         Get
-            Return p.Script.Engine = ScriptingEngine.AviSynth
+            Return p.Script.Engine = ScriptEngine.AviSynth
         End Get
     End Property
 
@@ -785,7 +785,7 @@ Public Class PythonPackage
 
     Public Overrides ReadOnly Property IsRequired As Boolean
         Get
-            Return p.Script.Engine = ScriptingEngine.VapourSynth
+            Return p.Script.Engine = ScriptEngine.VapourSynth
         End Get
     End Property
 
@@ -832,7 +832,7 @@ Public Class VapourSynthPackage
 
     Public Overrides ReadOnly Property IsRequired As Boolean
         Get
-            Return p.Script.Engine = ScriptingEngine.VapourSynth
+            Return p.Script.Engine = ScriptEngine.VapourSynth
         End Get
     End Property
 
@@ -858,7 +858,7 @@ Public Class vspipePackage
 
     Public Overrides ReadOnly Property IsRequired As Boolean
         Get
-            Return p.Script.Engine = ScriptingEngine.VapourSynth
+            Return p.Script.Engine = ScriptEngine.VapourSynth
         End Get
     End Property
 

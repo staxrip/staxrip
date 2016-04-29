@@ -333,7 +333,7 @@ Class MP4Muxer
             Return {"ts", "m2ts",
                     "mpg", "m2v",
                     "avi", "ac3",
-                    "mp4", "m4a", "aac",
+                    "mp4", "m4a", "aac", "mov",
                     "264", "h264", "avc",
                     "265", "h265", "hevc",
                     "mp2", "mpa", "mp3"}

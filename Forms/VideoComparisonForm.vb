@@ -239,7 +239,7 @@ Class VideoComparisonForm
             SourceFile = sourePath
 
             Dim avs As New VideoScript
-            avs.Engine = ScriptingEngine.AviSynth
+            avs.Engine = ScriptEngine.AviSynth
             avs.Path = CommonDirs.Temp + Guid.NewGuid.ToString + ".avs"
             AddHandler Disposed, Sub() FileHelp.Delete(avs.Path)
 

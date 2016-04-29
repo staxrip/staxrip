@@ -15,12 +15,14 @@ http://1drv.ms/1OqPDOe
 - added new QSVEncC switches for hordcoded subtitles
 - added MP4 support to standalone demux app
 - added -avsinfo starting AVSMeter without a source opened
-- added support for unicode file names using VapourSynth, AviSynth don't support it
+- added support for unicode filenames using VapourSynth, AviSynth don't support it
 - added mkv cutting support without encoding
 - added MSharpen x64 filter for AviSynth+ x64
 - added x264 10-Bit support, binary is not included, StaxRip will ask for the location
 - added ffmpeg codecs x264, x265 and ProRes
 - added codec help menu to ffmpeg options dialog which shows help for the currently selected codec, it displayes the output queried with 'ffmpeg -h encoder=name'
+- added option to define preferred audio languages
+- added audio and subtitle demuxing modes 'Show Dialog', 'Preferred', 'All', 'None'
 
 ### Fixed Bugs
 
@@ -36,15 +38,17 @@ http://1drv.ms/1OqPDOe
 - mkv audio demuxing happens now all streams together instead of every stream separate, it's much faster now.
 - changed filter profiles editor to support both tab and 4 spaces for multiline profiles, tabs are converted to 4 spaces which is the standard in Python and Visual Studio
 - log file improvements
+- filters list view did not accept drag and drop with source files 
 
 ### Updated Tools
 
 - AviSynth 1847
-- mkvtoolnix 9.1.0
-- QSVEncC 2.46
-- MP4Box 0.6.2
-- nnedi3 0.9.4.21
-- StaxRip Toolbox Demux 1.1
-- mvsfunc 7
+- ffmpeg 2016-04-25
 - L-SMASH-Works 877
+- mkvtoolnix 9.1.0
+- MP4Box 0.6.2
+- mvsfunc 7
+- nnedi3 0.9.4.21
+- QSVEncC 2.46
+- StaxRip Toolbox Demux 1.1
 - x265 1.9 144

@@ -54,7 +54,7 @@ Class ffmpegEncoder
                                     End Sub
 
             f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
-            f.cms.Items.Add(New ActionMenuItem("Codec Help", Sub() g.ShowCode(newParams.Codec.OptionText + " Help", ProcessHelp.GetStdOut(Package.ffmpeg.GetPath, "-hide_banner -h encoder=" + newParams.Codec.ValueText))))
+            f.cms.Items.Add(New ActionMenuItem("Codec Help", Sub() g.ShowCode(newParams.Codec.OptionText + " Help", ProcessHelp.GetStdOut(Package.ffmpeg.Path, "-hide_banner -h encoder=" + newParams.Codec.ValueText))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = newParams
@@ -99,10 +99,10 @@ Class ffmpegEncoder
 
     Overloads Sub Encode(args As String)
         Using proc As New Proc
-            proc.Init("Encoding " + Params.Codec.OptionText + " using ffmpeg", "frame=")
+            proc.Init("Encoding " + Params.Codec.OptionText + " using ffmpeg " + Package.ffmpeg.Version, "frame=")
             proc.Encoding = Encoding.UTF8
             proc.WorkingDirectory = p.TempDir
-            proc.File = Package.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.Path
             proc.Arguments = args
             proc.Start()
         End Using
@@ -236,6 +236,7 @@ Class ffmpegEncoder
 
                     ItemsValue.AddRange({Decoder, Codec, Mode,
                                         New OptionParam With {.Name = "x264/x265 preset", .Text = "Preset:", .Switch = "-preset", .InitValue = 5, .Options = {"ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
+                                        New OptionParam With {.Name = "x264/x265 tune", .Text = "Tune:", .Switch = "-tune", .Options = {"none", "film", "animation", "grain", "stillimage", "psnr", "ssim", "fastdecode", "zerolatency"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
                                         ProResProfile, Speed, AQmode,
                                         Quality, DecodingThreads, EncodingThreads, TileColumns,
                                         FrameParallel, AutoAltRef, LagInFrames,
@@ -254,7 +255,7 @@ Class ffmpegEncoder
             Dim sourcePath = p.Script.Path
             Dim ret As String
 
-            If includePaths AndAlso includeExecutable Then ret = Package.ffmpeg.GetPath.Quotes
+            If includePaths AndAlso includeExecutable Then ret = Package.ffmpeg.Path.Quotes
 
             Select Case Decoder.ValueText
                 Case "qsv"

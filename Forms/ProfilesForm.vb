@@ -415,15 +415,15 @@ Class ProfilesForm
     End Sub
 
     Private Sub bRight_Click(sender As Object, e As EventArgs) Handles bnRight.Click
-        Dim r = InputBox.Show("Enter a name for a sub menu.")
+        Dim inputName = InputBox.Show("Enter a name for a sub menu.")
 
-        If OK(r) Then
+        If inputName <> "" Then
             lb.SaveSelection()
 
             For x = 0 To lb.Items.Count - 1
                 If lb.GetSelected(x) Then
                     Dim p = DirectCast(lb.Items(x), Profile)
-                    p.Name = r + " | " + p.Name
+                    p.Name = inputName + " | " + p.Name
                     lb.Items(x) = lb.Items(x)
                 End If
             Next

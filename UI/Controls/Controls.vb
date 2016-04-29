@@ -347,10 +347,7 @@ Namespace UI
         End Property
 
         Protected Overrides Sub OnCreateControl()
-            If OK(Note) Then
-                Text += BR2 + Note
-            End If
-
+            If Note <> "" Then Text += BR2 + Note
             MyBase.OnCreateControl()
         End Sub
     End Class
@@ -795,7 +792,7 @@ Namespace UI
     End Class
 
     <DefaultEvent("LinkClick")>
-    Class LinkGroupBox
+    Public Class LinkGroupBox
         Inherits GroupBox
 
         Public WithEvents ll As New LinkLabel

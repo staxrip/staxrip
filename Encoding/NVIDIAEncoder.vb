@@ -48,9 +48,9 @@ Public Class NVIDIAEncoder
                                     End Sub
 
             f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
-            f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.NVEncC.GetPath, "--check-hw"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.NVEncC.GetPath, "--check-features"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetErrorOutput(Package.NVEncC.GetPath, "--check-environment"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.NVEncC.Path, "--check-hw"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.NVEncC.Path, "--check-features"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetErrorOutput(Package.NVEncC.Path, "--check-environment"))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = newParams
@@ -142,22 +142,6 @@ Public Class NVIDIAEncoder
             .Options = {"H.264", "H.265"},
             .Values = {"h264", "h265"}}
 
-        Property LevelH264 As New OptionParam With {
-            .Name = "LevelH264",
-            .Switch = "--level",
-            .Text = "Level:",
-            .VisibleFunc = Function() Codec.ValueText = "h264",
-            .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"},
-            .Values = {"", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}}
-
-        Property LevelH265 As New OptionParam With {
-            .Name = "LevelH265",
-            .Switch = "--level",
-            .Text = "Level:",
-            .VisibleFunc = Function() Codec.ValueText = "h265",
-            .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"},
-            .Values = {"", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}}
-
         Property Profile As New OptionParam With {
             .Switch = "--profile",
             .Text = "Profile:",
@@ -186,30 +170,12 @@ Public Class NVIDIAEncoder
             .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}
 
-        Property BFrames As New NumParam With {
-            .Switch = "--bframes",
-            .Text = "B Frames:",
-            .Value = 3,
-            .DefaultValue = 3,
-            .MinMaxStep = {0, 16, 1}}
-
-        Property Ref As New NumParam With {
-            .Switch = "--ref",
-            .Text = "Ref Frames:",
-            .Value = 3,
-            .DefaultValue = 3,
-            .MinMaxStep = {0, 16, 1}}
-
         Property Lossless As New BoolParam With {
             .Switch = "--lossless",
             .Text = "Lossless",
             .VisibleFunc = Function() Codec.ValueText = "h264" AndAlso Profile.Visible,
             .Value = False,
             .DefaultValue = False}
-
-        Property Custom As New StringParam With {
-            .Text = "Custom:",
-            .ArgsFunc = Function() Custom.Value}
 
         Private ItemsValue As List(Of CommandLineParam)
 
@@ -226,7 +192,10 @@ Public Class NVIDIAEncoder
                         New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New BoolParam With {.Switch = "--aq", .Text = "Adaptive Quantization", .Value = False, .DefaultValue = False},
                         Lossless)
-                    Add("Profile", LevelH264, LevelH265, Profile,
+                    Add("Profile",
+                        New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level:", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
+                        New OptionParam With {.Name = "LevelH265", .Switch = "--level", .Text = "Level:", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
+                        Profile,
                         New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"})
                     Add("Performance",
                         New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer:", .Options = {"8", "16", "32", "64", "128"}},
@@ -239,18 +208,18 @@ Public Class NVIDIAEncoder
                         New OptionParam With {.Switch = "--transfer", .Text = "Transfer:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte-st-2084", "smpte-st-428", "arib-srd-b67"}},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Full Range", .VisibleFunc = Function() Codec.ValueText = "h264"})
                     Add("Other",
+                        New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision:", .Options = {"Q-pel", "half-pel", "full-pel"}, .Values = {"Q-pel", "half-pel", "full-pel"}},
+                        New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc:", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace:", .VisibleFunc = Function() Decoder.ValueText = "nv", .Options = {"none", "adaptive", "bob"}},
                         New OptionParam With {.Switch = "--interlaced", .Switches = {"--tff", "--bff"}, .Text = "Interlaced:", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
-                        New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision:", .Options = {"Q-pel", "half-pel", "full-pel"}, .Values = {"Q-pel", "half-pel", "full-pel"}},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level:", .Options = {"info", "debug", "warn", "error"}},
-                        BFrames, Ref,
+                        New NumParam With {.Switch = "--bframes", .Text = "B Frames:", .Value = 3, .DefaultValue = 3, .MinMaxStep = {0, 16, 1}},
+                        New NumParam With {.Switch = "--ref", .Text = "Ref Frames:", .Value = 3, .DefaultValue = 3, .MinMaxStep = {0, 16, 1}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--cu-max", .Text = "Max CU Size:", .MinMaxStep = {0, 64, 16}},
                         New NumParam With {.Switch = "--cu-min", .Text = "Min CU Size:", .MinMaxStep = {0, 32, 16}},
-                        New BoolParam With {.Switch = "--deblock", .Text = "Deblock"},
-                        New BoolParam With {.Switch = "--cabac", .Text = "Cabac"},
-                        New BoolParam With {.Switch = "--cavlc", .Text = "Cavlc"},
-                        Custom)
+                        New BoolParam With {.Switch = "--deblock", .NoSwitch = "--no-deblock", .Text = "Deblock", .InitValue = True},
+                        New StringParam With {.Text = "Custom:"})
                 End If
 
                 Return ItemsValue
@@ -272,7 +241,7 @@ Public Class NVIDIAEncoder
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
 
             If includePaths AndAlso includeExecutable Then
-                ret = Package.NVEncC.GetPath.Quotes
+                ret = Package.NVEncC.Path.Quotes
             End If
 
             Select Case Decoder.ValueText
@@ -282,13 +251,13 @@ Public Class NVIDIAEncoder
                     sourcePath = p.LastOriginalSourceFile
                 Case "qs"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.QSVEncC.GetPath.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Package.NVEncC.GetPath.Quotes, "NVEncC")
+                    If includePaths Then ret = If(includePaths, Package.QSVEncC.Path.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Package.NVEncC.Path.Quotes, "NVEncC")
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.NVEncC.GetPath.Quotes, "NVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.NVEncC.Path.Quotes, "NVEncC")
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.NVEncC.GetPath.Quotes, "NVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.NVEncC.Path.Quotes, "NVEncC")
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
@@ -305,7 +274,7 @@ Public Class NVIDIAEncoder
                 (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Resize")) Then
 
                 ret += " --output-res " & p.TargetWidth & "x" & p.TargetHeight
-            ElseIf p.AutoARSignaling Then
+            ElseIf p.AutoARSignaling AndAlso p.SourceFile <> "" Then
                 Dim par = Calc.GetTargetPAR
                 If par <> New Point(1, 1) Then ret += " --sar " & par.X & ":" & par.Y
             End If

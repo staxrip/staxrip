@@ -1,15 +1,9 @@
-Imports System.Reflection
 Imports System.ComponentModel
-Imports System.Text
 Imports System.Drawing.Design
 Imports System.Runtime.InteropServices
-Imports System.IO
-Imports System.Drawing
-Imports System.Windows.Forms
-Imports System.Text.RegularExpressions
 
 Namespace UI
-    Class FormBase
+    Public Class FormBase
         Inherits Form
 
         <Browsable(False)>
@@ -199,7 +193,7 @@ Namespace UI
     End Class
 
     <Serializable()>
-    Class WindowPositions
+    Public Class WindowPositions
         Private Positions As New Dictionary(Of String, Point)
         Private WindowStates As New Dictionary(Of String, FormWindowState)
 

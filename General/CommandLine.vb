@@ -36,14 +36,15 @@ Namespace CommandLine
         End Sub
 
         Sub Execute()
-            Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_vexe.bat"
-            File.WriteAllText(batchPath, GetCommandLine(True, True), Encoding.GetEncoding(850))
+            Dim batchPath = p.TempDir + p.TargetFile.Base + "_vexe.bat"
+            Dim batchCode = "@echo off" + BR + "CHCP 65001" + BR + GetCommandLine(True, True)
+            File.WriteAllText(batchPath, batchCode, New UTF8Encoding(False))
 
-            Dim batchProcess As New Process
-            batchProcess.StartInfo.FileName = "cmd.exe"
-            batchProcess.StartInfo.Arguments = "/k """ + batchPath + """"
-            batchProcess.StartInfo.WorkingDirectory = p.TempDir
-            batchProcess.Start()
+            Dim batchProc As New Process
+            batchProc.StartInfo.FileName = "cmd.exe"
+            batchProc.StartInfo.Arguments = "/k """ + batchPath + """"
+            batchProc.StartInfo.WorkingDirectory = p.TempDir
+            batchProc.Start()
         End Sub
     End Class
 
@@ -60,6 +61,7 @@ Namespace CommandLine
         Property Text As String
         Property URL As String
         Property VisibleFunc As Func(Of Boolean)
+        Property ImportAction As Action(Of String)
 
         Friend Store As PrimitiveStore
         Friend Params As CommandLineParams

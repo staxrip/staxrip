@@ -10,32 +10,46 @@ Public Class Project
     Public AdjustHeight As Boolean = True
     Public Audio0 As AudioProfile
     Public Audio1 As AudioProfile
+    Public AudioTracks As List(Of AudioProfile)
     Public AutoARSignaling As Boolean = True
     Public AutoCompCheck As Boolean
     Public AutoCorrectCropValues As Boolean = True
     Public AutoResizeImage As Integer
     Public AutoSmartCrop As Boolean
     Public AutoSmartOvercrop As Double
-    Public AutoSubtitles As String
-    Public CodeAtTop As String = ""
-    Public Script As TargetVideoScript
     Public BatchMode As Boolean
+    Public BitDepth As Integer
+    Public ChromaSubsampling As String
+    Public CodeAtTop As String = ""
+    Public Codec As String
+    Public CodecProfile As String
+    Public ColorSpace As String
     Public CompCheckAction As CompCheckAction = CompCheckAction.AdjustImageSize
     Public CompCheckRange As Integer = 5
     Public Compressibility As Double
     Public ConvertSup2Sub As Boolean
     Public CustomDAR As String = ""
     Public CustomPAR As String = ""
+    Public CutFrameCount As Integer
+    Public CutFrameRate As Double
     Public CuttingMode As CuttingMode
     Public DecodingMode As DecodingMode
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
     Public DeleteTempFilesDir As Boolean
+    Public DemuxAudio As DemuxMode
+    Public DemuxSubtitles As DemuxMode
+    Public FirstOriginalSourceFile As String
+    Public FixedBitrate As Integer
     Public ForcedOutputMod As Integer = 16
     Public ITU As Boolean = True
+    Public LastOriginalSourceFile As String
     Public Log As StringBuilder
     Public MaxAspectRatioError As Integer = 2
     Public Name As String
+    Public NoDialogs As Boolean
+    Public PreferredAudio As String
+    Public PreferredSubtitles As String
     Public Ranges As List(Of Range)
     Public RemindOversize As Boolean = True
     Public RemindToCrop As Boolean = False
@@ -44,23 +58,29 @@ Public Class Project
     Public RemindToSetFilters As Boolean = False
     Public ResizeSliderMaxWidth As Integer
     Public SaveThumbnails As Boolean
-    Public Size As Integer = 700
+    Public ScanOrder As String
+    Public ScanType As String
+    Public Script As TargetVideoScript
+    Public ShowDialogsCLI As Boolean
     Public SkippedAssistantTips As List(Of String)
     Public SourceAnamorphic As Boolean
-    Public SourceScript As SourceVideoScript
+    Public SourceBitrate As Integer
     Public SourceFile As String
     Public SourceFiles As List(Of String)
     Public SourceFrameRate As Double
     Public SourceFrames As Integer
     Public SourceHeight As Integer = 576
     Public SourcePAR As Point = New Point(1, 1)
+    Public SourceScript As SourceVideoScript
     Public SourceSeconds As Integer
+    Public SourceSize As Long
     Public SourceWidth As Integer = 720
     Public TargetFile As String
+    Public TargetFrameRate As Double
     Public TargetHeight As Integer = 576
     Public TargetSeconds As Integer = 5400
+    Public TargetSize As Integer = 700
     Public TargetWidth As Integer = 720
-    Public TargetFrameRate As Double
     Public TempDir As String
     Public TemplateName As String = ""
     Public TrimCode As String = ""
@@ -68,25 +88,6 @@ Public Class Project
     Public Versions As Dictionary(Of String, Integer)
     Public VideoBitrate As Integer = 1000
     Public VideoEncoder As VideoEncoder
-    Public LastOriginalSourceFile As String
-    Public FirstOriginalSourceFile As String
-    Public CutFrameRate As Double
-    Public CutFrameCount As Integer
-    Public Codec As String
-    Public CodecProfile As String
-    Public FixedBitrate As Integer
-    Public AudioTracks As List(Of AudioProfile)
-    Public ShowDialogsCLI As Boolean
-    Public NoDialogs As Boolean
-    Public BitDepth As Integer
-    Public ColorSpace As String
-    Public ChromaSubsampling As String
-    Public SourceSize As Long
-    Public SourceBitrate As Integer
-    Public ScanType As String
-    Public ScanOrder As String
-    Public DemuxAudio As Boolean = True
-    Public DemuxSubtitles As Boolean = True
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -110,11 +111,19 @@ Public Class Project
         If Name Is Nothing Then Name = ""
         If SourceFile Is Nothing Then SourceFile = ""
 
-        If Check(AutoSubtitles, "Automatically Included Subtitles", 2) Then
-            If CultureInfo.CurrentCulture.TwoLetterISOLanguageName = "en" Then
-                AutoSubtitles = "eng und"
+        If Check(PreferredSubtitles, "Automatically Included Subtitles", 2) Then
+            If Language.CurrentCulture.TwoLetterCode = "en" Then
+                PreferredSubtitles = "eng und"
             Else
-                AutoSubtitles = New Language(CultureInfo.CurrentCulture).ThreeLetterCode + ", eng, und"
+                PreferredSubtitles = Language.CurrentCulture.ThreeLetterCode + ", eng, und"
+            End If
+        End If
+
+        If Check(PreferredAudio, "Preferred Audio Languages", 1) Then
+            If Language.CurrentCulture.TwoLetterCode = "en" Then
+                PreferredAudio = "eng und"
+            Else
+                PreferredAudio = Language.CurrentCulture.ThreeLetterCode + ", eng, und"
             End If
         End If
 

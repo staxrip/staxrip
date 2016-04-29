@@ -355,7 +355,7 @@ Class SubtitleControl
                 FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
             End If
 
-            g.ShellExecute(Package.BDSup2SubPP.GetPath, """" + fp + """")
+            g.ShellExecute(Package.BDSup2SubPP.Path, """" + fp + """")
         Catch ex As Exception
             g.ShowException(ex)
         End Try

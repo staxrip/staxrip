@@ -84,9 +84,9 @@ Public MustInherit Class VideoEncoder
 
     Protected Sub OnAfterCompCheck()
         If p.CompCheckAction = CompCheckAction.AdjustFileSize Then
-            Dim oldSize = g.MainForm.tbSize.Text
-            g.MainForm.tbSize.Text = g.GetAutoSize(AutoCompCheckValue).ToString
-            Log.WriteLine("Target size: " & oldSize & " MB -> " + g.MainForm.tbSize.Text + " MB")
+            Dim oldSize = g.MainForm.tbTargetSize.Text
+            g.MainForm.tbTargetSize.Text = g.GetAutoSize(AutoCompCheckValue).ToString
+            Log.WriteLine("Target size: " & oldSize & " MB -> " + g.MainForm.tbTargetSize.Text + " MB")
         ElseIf p.CompCheckAction = CompCheckAction.AdjustImageSize Then
             AutoSetImageSize()
         End If
@@ -124,7 +124,7 @@ Public MustInherit Class VideoEncoder
             Log.WriteLine("Target image size: " & oldWidth.ToString & "x" & oldHeight.ToString & " -> " & p.TargetWidth.ToString & "x" & p.TargetHeight.ToString)
 
             If p.AutoSmartCrop Then
-                g.MainForm.PerformSmartCrop()
+                g.MainForm.StartSmartCrop()
             End If
         End If
     End Sub
@@ -381,16 +381,23 @@ Public MustInherit Class BasicVideoEncoder
         Dim a = commandLine.SplitNoEmptyAndWhiteSpace(" ")
 
         For x = 0 To a.Length - 1
-            For Each i In CommandLineParams.Items
-                If TypeOf i Is BoolParam Then
-                    Dim boolParam = DirectCast(i, BoolParam)
+            For Each param In CommandLineParams.Items
+                If Not param.ImportAction Is Nothing AndAlso
+                    param.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
+
+                    param.ImportAction.Invoke(a(x + 1))
+                    Exit For
+                End If
+
+                If TypeOf param Is BoolParam Then
+                    Dim boolParam = DirectCast(param, BoolParam)
 
                     If boolParam.GetSwitches.Contains(a(x)) Then
                         boolParam.Value = True
                         Exit For
                     End If
-                ElseIf TypeOf i Is NumParam Then
-                    Dim numParam = DirectCast(i, NumParam)
+                ElseIf TypeOf param Is NumParam Then
+                    Dim numParam = DirectCast(param, NumParam)
 
                     If numParam.GetSwitches.Contains(a(x)) AndAlso
                         a.Length - 1 > x AndAlso a(x + 1).IsSingle Then
@@ -398,8 +405,8 @@ Public MustInherit Class BasicVideoEncoder
                         numParam.Value = a(x + 1).ToSingle
                         Exit For
                     End If
-                ElseIf TypeOf i Is OptionParam Then
-                    Dim optionParam = DirectCast(i, OptionParam)
+                ElseIf TypeOf param Is OptionParam Then
+                    Dim optionParam = DirectCast(param, OptionParam)
 
                     If optionParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
                         Dim exitFor As Boolean
@@ -414,8 +421,8 @@ Public MustInherit Class BasicVideoEncoder
 
                         If exitFor Then Exit For
                     End If
-                ElseIf TypeOf i Is StringParam Then
-                    Dim stringParam = DirectCast(i, StringParam)
+                ElseIf TypeOf param Is StringParam Then
+                    Dim stringParam = DirectCast(param, StringParam)
 
                     If stringParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
                         stringParam.Value = a(x + 1).Trim(""""c)
@@ -712,7 +719,7 @@ Class AMDEncoder
                                     End Sub
 
             f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
-            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.NVEncC.GetPath, "--check-vce"))))
+            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.NVEncC.Path, "--check-vce"))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = params1
@@ -748,7 +755,7 @@ Class AMDEncoder
             Using proc As New Proc
                 proc.Init("Encoding using VCEEncC " + Package.VCEEncC.Version)
                 proc.SkipStrings = {"%]"}
-                proc.File = Package.VCEEncC.GetPath
+                proc.File = Package.VCEEncC.Path
                 proc.Arguments = cl
                 proc.Start()
             End Using
@@ -889,7 +896,7 @@ Class AMDEncoder
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
 
             If includePaths AndAlso includeExecutable Then
-                ret = Package.VCEEncC.GetPath.Quotes
+                ret = Package.VCEEncC.Path.Quotes
             End If
 
             Select Case Decoder.ValueText
@@ -897,13 +904,13 @@ Class AMDEncoder
                     sourcePath = p.Script.Path
                 Case "qs"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.QSVEncC.GetPath.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Package.VCEEncC.GetPath.Quotes, "VCEEncC")
+                    If includePaths Then ret = If(includePaths, Package.QSVEncC.Path.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Package.VCEEncC.Path.Quotes, "VCEEncC")
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.VCEEncC.GetPath.Quotes, "VCEEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.VCEEncC.Path.Quotes, "VCEEncC")
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.GetPath.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.VCEEncC.GetPath.Quotes, "VCEEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.VCEEncC.Path.Quotes, "VCEEncC")
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""

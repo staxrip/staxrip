@@ -123,7 +123,7 @@ Public MustInherit Class Muxer
                 End If
 
                 For Each iSubtitle In Subtitle.Create(iFile)
-                    If p.AutoSubtitles <> "" Then
+                    If p.PreferredSubtitles <> "" Then
                         Dim match = Regex.Match(iFile, pattern)
 
                         If match.Success Then
@@ -153,7 +153,7 @@ Public MustInherit Class Muxer
             End If
         Next
 
-        If p.AutoSubtitles <> "" AndAlso Subtitles.Count = 0 AndAlso
+        If p.PreferredSubtitles <> "" AndAlso Subtitles.Count = 0 AndAlso
             p.FirstOriginalSourceFile.Ext.EqualsAny("mkv", "mp4", "m2ts") AndAlso
             MediaInfo.GetSubtitleCount(p.FirstOriginalSourceFile) > 0 AndAlso
             TypeOf Me Is MkvMuxer Then
@@ -244,7 +244,7 @@ Class MP4Muxer
     End Function
 
     Overrides Function GetCommandLine() As String
-        Return """" + Package.MP4Box.GetPath + """ " + GetArgs()
+        Return """" + Package.MP4Box.Path + """ " + GetArgs()
     End Function
 
     Private Function GetArgs() As String
@@ -310,7 +310,7 @@ Class MP4Muxer
     Overrides Sub Mux()
         Using proc As New Proc
             proc.Init("Muxing using MP4Box " + Package.MP4Box.Version, {"|"})
-            proc.File = Package.MP4Box.GetPath
+            proc.File = Package.MP4Box.Path
             proc.Arguments = GetArgs()
             proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
             proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
@@ -483,7 +483,7 @@ Class MkvMuxer
         Using proc As New Proc
             proc.Init("Muxing using mkvmerge " + Package.mkvmerge.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.mkvmerge.GetPath
+            proc.File = Package.mkvmerge.Path
             proc.Arguments = GetArgs()
             proc.AllowedExitCodes = {0, 1}
             proc.Start()
@@ -497,7 +497,7 @@ Class MkvMuxer
     End Sub
 
     Overrides Function GetCommandLine() As String
-        Return """" + Package.mkvmerge.GetPath + """ " + GetArgs()
+        Return """" + Package.mkvmerge.Path + """ " + GetArgs()
     End Function
 
     Private Function GetArgs() As String
@@ -701,7 +701,7 @@ Class ffmpegMuxer
         Using proc As New Proc
             proc.Init("Muxing to " + OutputTypeValue + " using ffmpeg " + Package.ffmpeg.Version, "frame=")
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.Path
             proc.Arguments = args
             proc.Start()
         End Using

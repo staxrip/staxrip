@@ -1,4 +1,5 @@
-﻿Imports System.Management.Automation.Runspaces
+﻿Imports System.Dynamic
+Imports System.Management.Automation.Runspaces
 Imports System.Threading.Tasks
 Imports Microsoft.CodeAnalysis.CSharp.Scripting
 Imports Microsoft.CodeAnalysis.Scripting
@@ -16,18 +17,14 @@ Public Class Scripting
             "StaxRip", "System.Linq", "System.IO", "System.Text.RegularExpressions").
             WithReferences(GetType(Scripting).Assembly)
 
-        Dim script = CSharpScript.Create(code, options, GetType(Globals))
+        Dim script = CSharpScript.Create(code, options)
 
         Try
-            Await script.RunAsync(New Globals With {.app = App})
+            Await script.RunAsync()
         Catch ex As Exception
             MsgError(ex.Message)
         End Try
     End Function
-
-    Public Class Globals
-        Public app As ScriptingApp
-    End Class
 
     Shared Sub RunPowershell(code As String)
         Using runspace = RunspaceFactory.CreateRunspace()
@@ -48,54 +45,19 @@ Public Class Scripting
 End Class
 
 Public Class ScriptingApp
-    ' the currently active project
-    ReadOnly Property Project As Project
-        Get
-            Return p
-        End Get
-    End Property
+    Inherits DynamicObject
 
-    ' the currently active script
-    ReadOnly Property Script As VideoScript
-        Get
-            Return p.Script
-        End Get
-    End Property
+    Public Overrides Function TryInvokeMember(
+        binder As InvokeMemberBinder,
+        args() As Object, ByRef result As Object) As Boolean
 
-    ' the currently active video encoder
-    ReadOnly Property VideoEncoder As VideoEncoder
-        Get
-            Return p.VideoEncoder
-        End Get
-    End Property
-
-    ' show message box
-    Sub Msg(text As String)
-        StaxRip.Msg(text, MsgIcon.None)
-    End Sub
-
-    ' load x265 defaults
-    Function Loadx265Defaults() As x265Encoder
-        Dim ret = New x265Encoder
-        ret.Params.ApplyPresetDefaultValues()
-        ret.Params.ApplyPresetValues()
-        Return DirectCast(g.MainForm.LoadVideoEncoder(ret), x265Encoder)
+        Try
+            g.MainForm.CommandManager.Process(binder.Name, args)
+            Return True
+        Catch ex As Exception
+            g.ShowException(ex)
+            result = Nothing
+            Return False
+        End Try
     End Function
-
-    ' ensure the current encoder is x265
-    Sub Ensurex265()
-        If Not TypeOf p.VideoEncoder Is x265Encoder Then Loadx265Defaults()
-    End Sub
-
-    ' load VapourSynth defaults
-    Sub LoadVapourSynthDefaults()
-        g.MainForm.LoadScriptProfile(VideoScript.GetDefaults()(1))
-    End Sub
-
-    ' ensure the current scripting engine is VapourSynth
-    Sub EnsureVapourSynth()
-        If Not p.Script.Engine = ScriptingEngine.VapourSynth Then
-            LoadVapourSynthDefaults()
-        End If
-    End Sub
 End Class

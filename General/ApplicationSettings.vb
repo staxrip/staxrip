@@ -3,7 +3,7 @@ Imports System.Globalization
 Imports StaxRip.UI
 
 <Serializable()>
-Class ApplicationSettings
+Public Class ApplicationSettings
     Implements ISafeSerialization
 
     Public AviSynthFilterPreferences As StringPairList
@@ -73,21 +73,21 @@ Class ApplicationSettings
         If Versions Is Nothing Then Versions = New Dictionary(Of String, Integer)
         If Check(Storage, "Misc", 2) Then Storage = New ObjectStorage
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 188) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 189) Then
             If VideoEncoderProfiles Is Nothing Then
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
             Else
-                Dim l As New List(Of VideoEncoder)
+                Dim profiles As New List(Of VideoEncoder)
 
                 For Each i In VideoEncoderProfiles
                     If Not i.Name.Contains("Backup") Then
                         i.Name = "Backup | " + i.Name
-                        l.Add(i)
+                        profiles.Add(i)
                     End If
                 Next
 
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
-                VideoEncoderProfiles.AddRange(l)
+                VideoEncoderProfiles.AddRange(profiles)
             End If
         End If
 
@@ -194,7 +194,7 @@ Class ApplicationSettings
             CmdlPresetsMP4 = "iPod = -ipod"
         End If
 
-        If Check(CmdlPresetsX264, "x264 custom command line menu presets", 6) OrElse Not OK(CmdlPresetsX264) Then
+        If Check(CmdlPresetsX264, "x264 custom command line menu presets", 6) OrElse CmdlPresetsX264 = "" Then
             CmdlPresetsX264 = "SAR | PAL | 4:3 = --sar 12:11" + BR +
                               "SAR | PAL | 16:9 = --sar 16:11" + BR +
                               "SAR | NTSC | 4:3 = --sar 10:11" + BR +
@@ -215,19 +215,19 @@ Class ApplicationSettings
 
         If RecentFramePositions Is Nothing Then RecentFramePositions = New List(Of String)
 
-        If Check(CustomMenuCrop, "Menu in crop dialog", 11) Then
+        If Check(CustomMenuCrop, "Menu in crop dialog", 15) Then
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 151) Then
-            CustomMenuMainForm = MainForm.GetDefaultMainMenu
+        If Check(CustomMenuMainForm, "Main menu in main window", 156) Then
+            CustomMenuMainForm = MainForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuPreview, "Menu in preview dialog", 46) Then
+        If Check(CustomMenuPreview, "Menu in preview dialog", 49) Then
             CustomMenuPreview = PreviewForm.GetDefaultMenuPreview
         End If
 
-        If Check(CustomMenuSize, "Target size menu in main dialog", 24) Then
+        If Check(CustomMenuSize, "Target size menu in main dialog", 29) Then
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 
@@ -288,9 +288,7 @@ Class ApplicationSettings
             Return LastSourceDirValue
         End Get
         Set(Value As String)
-            If OK(Value) AndAlso Directory.Exists(Value) Then
-                LastSourceDirValue = Value
-            End If
+            If Directory.Exists(Value) Then LastSourceDirValue = Value
         End Set
     End Property
 

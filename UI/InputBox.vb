@@ -64,7 +64,7 @@ Namespace UI
                 f.Text = Title
                 f.StartPosition = StartPosition
 
-                If OK(VerificationText) Then
+                If VerificationText <> "" Then
                     f.cb.Checked = Checked
                     f.cb.Text = VerificationText
                 End If

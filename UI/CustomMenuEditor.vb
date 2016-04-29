@@ -501,7 +501,7 @@ Namespace UI
         End Sub
 
         Private Sub SetCommand(c As Command)
-            tbCommand.Text = c.Attribute.Name
+            tbCommand.Text = c.MethodInfo.Name
         End Sub
 
         Private Sub tv_DragDrop(sender As Object, e As DragEventArgs) Handles tv.DragDrop
@@ -584,10 +584,10 @@ Namespace UI
 
                 For Each i As Command In GenericMenu.CommandManager.Commands.Values
                     If i.MethodInfo.Name = item.MethodName Then
-                        If tbCommand.Text = i.Attribute.Name Then
+                        If tbCommand.Text = i.MethodInfo.Name Then
                             tbCommand_TextChanged()
                         Else
-                            tbCommand.Text = i.Attribute.Name
+                            tbCommand.Text = i.MethodInfo.Name
                         End If
 
                         found = True
@@ -880,7 +880,7 @@ Namespace UI
                     Dim selectedCommand As Command = Nothing
 
                     For Each i As Command In GenericMenu.CommandManager.Commands.Values
-                        If i.Attribute.Name = tbCommand.Text Then
+                        If i.MethodInfo.Name = tbCommand.Text Then
                             selectedCommand = i
                         End If
                     Next

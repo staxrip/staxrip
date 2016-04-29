@@ -2,17 +2,16 @@ Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Globalization
 Imports System.Reflection
+Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
-
+Imports System.Threading.Tasks
 Imports Microsoft.Win32
 Imports StaxRip.UI
 Imports SWF = System.Windows.Forms
 Imports VB6 = Microsoft.VisualBasic
-Imports System.Threading.Tasks
-Imports System.Runtime.InteropServices
 
-Class MainForm
+Public Class MainForm
     Inherits FormBase
 
 #Region " Designer "
@@ -29,58 +28,58 @@ Class MainForm
 
     Public WithEvents tbAudioFile0 As StaxRip.UI.TextBoxEx
     Public WithEvents tbAudioFile1 As StaxRip.UI.TextBoxEx
-    Friend WithEvents llEditAudio1 As System.Windows.Forms.LinkLabel
-    Friend WithEvents llEditAudio0 As System.Windows.Forms.LinkLabel
+    Public WithEvents llEditAudio1 As System.Windows.Forms.LinkLabel
+    Public WithEvents llEditAudio0 As System.Windows.Forms.LinkLabel
     Public WithEvents bNext As System.Windows.Forms.Button
     Public WithEvents tbSourceFile As StaxRip.UI.TextBoxEx
     Public WithEvents tbTargetFile As StaxRip.UI.TextBoxEx
     Public WithEvents gbAssistant As System.Windows.Forms.GroupBox
-    Friend WithEvents lgbFilters As LinkGroupBox
-    Friend WithEvents tbSize As System.Windows.Forms.TextBox
-    Friend WithEvents lBitrate As System.Windows.Forms.Label
-    Friend WithEvents tbBitrate As System.Windows.Forms.TextBox
-    Friend WithEvents lTarget1 As System.Windows.Forms.Label
-    Friend WithEvents lSource1 As System.Windows.Forms.Label
-    Friend WithEvents lgbResize As LinkGroupBox
-    Friend WithEvents lPixel As System.Windows.Forms.Label
-    Friend WithEvents lPixelText As System.Windows.Forms.Label
-    Friend WithEvents tbResize As System.Windows.Forms.TrackBar
-    Friend WithEvents lZoom As System.Windows.Forms.Label
-    Friend WithEvents lZoomText As System.Windows.Forms.Label
+    Public WithEvents lgbFilters As LinkGroupBox
+    Public WithEvents tbTargetSize As System.Windows.Forms.TextBox
+    Public WithEvents lBitrate As System.Windows.Forms.Label
+    Public WithEvents tbBitrate As System.Windows.Forms.TextBox
+    Public WithEvents lTarget1 As System.Windows.Forms.Label
+    Public WithEvents lSource1 As System.Windows.Forms.Label
+    Public WithEvents lgbResize As LinkGroupBox
+    Public WithEvents lPixel As System.Windows.Forms.Label
+    Public WithEvents lPixelText As System.Windows.Forms.Label
+    Public WithEvents tbResize As System.Windows.Forms.TrackBar
+    Public WithEvents lZoom As System.Windows.Forms.Label
+    Public WithEvents lZoomText As System.Windows.Forms.Label
     Public WithEvents tbTargetHeight As System.Windows.Forms.TextBox
     Public WithEvents tbTargetWidth As System.Windows.Forms.TextBox
-    Friend WithEvents lTargetHeight As System.Windows.Forms.Label
-    Friend WithEvents lTargetWidth As System.Windows.Forms.Label
-    Friend WithEvents lDAR As System.Windows.Forms.Label
-    Friend WithEvents lDarText As System.Windows.Forms.Label
+    Public WithEvents lTargetHeight As System.Windows.Forms.Label
+    Public WithEvents lTargetWidth As System.Windows.Forms.Label
+    Public WithEvents lDAR As System.Windows.Forms.Label
+    Public WithEvents lDarText As System.Windows.Forms.Label
     Public WithEvents lCrop As System.Windows.Forms.Label
-    Friend WithEvents lCropText As System.Windows.Forms.Label
-    Friend WithEvents lgbSource As LinkGroupBox
-    Friend WithEvents lSource2 As System.Windows.Forms.Label
-    Friend WithEvents lgbTarget As LinkGroupBox
-    Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
-    Friend WithEvents lTip As System.Windows.Forms.Label
-    Friend WithEvents lgbEncoder As LinkGroupBox
+    Public WithEvents lCropText As System.Windows.Forms.Label
+    Public WithEvents lgbSource As LinkGroupBox
+    Public WithEvents lSource2 As System.Windows.Forms.Label
+    Public WithEvents lgbTarget As LinkGroupBox
+    Public WithEvents GroupBox1 As System.Windows.Forms.GroupBox
+    Public WithEvents lTip As System.Windows.Forms.Label
+    Public WithEvents lgbEncoder As LinkGroupBox
     Public WithEvents lTarget2 As System.Windows.Forms.Label
-    Friend WithEvents MenuStrip As System.Windows.Forms.MenuStrip
-    Friend WithEvents llAudioProfile0 As LinkLabel
-    Friend WithEvents llAudioProfile1 As LinkLabel
-    Friend WithEvents pEncoder As System.Windows.Forms.Panel
-    Friend WithEvents AviSynthListView As StaxRip.AviSynthListView
-    Friend WithEvents llFilesize As System.Windows.Forms.LinkLabel
-    Friend WithEvents llMuxer As System.Windows.Forms.LinkLabel
-    Friend WithEvents lPAR As StaxRip.UI.LabelEx
-    Friend WithEvents lParText As StaxRip.UI.LabelEx
-    Friend WithEvents lAspectRatioError As StaxRip.UI.LabelEx
-    Friend WithEvents lAspectRatioErrorText As StaxRip.UI.LabelEx
-    Friend WithEvents gbAudio As System.Windows.Forms.GroupBox
-    Friend WithEvents llSourceParText As System.Windows.Forms.LinkLabel
-    Friend WithEvents lSourcePAR As System.Windows.Forms.Label
-    Friend WithEvents lSourceDar As System.Windows.Forms.Label
-    Friend WithEvents lSourceDarText As System.Windows.Forms.Label
-    Friend WithEvents lSAR As StaxRip.UI.LabelEx
-    Friend WithEvents lSarText As StaxRip.UI.LabelEx
-    Friend WithEvents TipProvider As StaxRip.UI.TipProvider
+    Public WithEvents MenuStrip As System.Windows.Forms.MenuStrip
+    Public WithEvents llAudioProfile0 As LinkLabel
+    Public WithEvents llAudioProfile1 As LinkLabel
+    Public WithEvents pEncoder As System.Windows.Forms.Panel
+    Public WithEvents AviSynthListView As StaxRip.AviSynthListView
+    Public WithEvents llFilesize As System.Windows.Forms.LinkLabel
+    Public WithEvents llMuxer As System.Windows.Forms.LinkLabel
+    Public WithEvents lPAR As StaxRip.UI.LabelEx
+    Public WithEvents lParText As StaxRip.UI.LabelEx
+    Public WithEvents lAspectRatioError As StaxRip.UI.LabelEx
+    Public WithEvents lAspectRatioErrorText As StaxRip.UI.LabelEx
+    Public WithEvents gbAudio As System.Windows.Forms.GroupBox
+    Public WithEvents llSourceParText As System.Windows.Forms.LinkLabel
+    Public WithEvents lSourcePAR As System.Windows.Forms.Label
+    Public WithEvents lSourceDar As System.Windows.Forms.Label
+    Public WithEvents lSourceDarText As System.Windows.Forms.Label
+    Public WithEvents lSAR As StaxRip.UI.LabelEx
+    Public WithEvents lSarText As StaxRip.UI.LabelEx
+    Public WithEvents TipProvider As StaxRip.UI.TipProvider
 
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
@@ -98,7 +97,7 @@ Class MainForm
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
         Me.lgbTarget = New StaxRip.UI.LinkGroupBox()
         Me.llFilesize = New System.Windows.Forms.LinkLabel()
-        Me.tbSize = New System.Windows.Forms.TextBox()
+        Me.tbTargetSize = New System.Windows.Forms.TextBox()
         Me.lTarget2 = New System.Windows.Forms.Label()
         Me.lBitrate = New System.Windows.Forms.Label()
         Me.tbBitrate = New System.Windows.Forms.TextBox()
@@ -282,7 +281,7 @@ Class MainForm
         'lgbTarget
         '
         Me.lgbTarget.Controls.Add(Me.llFilesize)
-        Me.lgbTarget.Controls.Add(Me.tbSize)
+        Me.lgbTarget.Controls.Add(Me.tbTargetSize)
         Me.lgbTarget.Controls.Add(Me.lTarget2)
         Me.lgbTarget.Controls.Add(Me.lBitrate)
         Me.lgbTarget.Controls.Add(Me.tbBitrate)
@@ -310,12 +309,12 @@ Class MainForm
         '
         'tbSize
         '
-        Me.tbSize.Location = New System.Drawing.Point(86, 66)
-        Me.tbSize.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.tbSize.Name = "tbSize"
-        Me.tbSize.Size = New System.Drawing.Size(80, 31)
-        Me.tbSize.TabIndex = 55
-        Me.tbSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.tbTargetSize.Location = New System.Drawing.Point(86, 66)
+        Me.tbTargetSize.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.tbTargetSize.Name = "tbSize"
+        Me.tbTargetSize.Size = New System.Drawing.Size(80, 31)
+        Me.tbTargetSize.TabIndex = 55
+        Me.tbTargetSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'lTarget2
         '
@@ -850,7 +849,7 @@ Class MainForm
             CommandManager.AddCommandsFromObject(Me)
             CommandManager.AddCommandsFromObject(g.DefaultCommands)
 
-            CustomMainMenu = New CustomMenu(AddressOf GetDefaultMainMenu,
+            CustomMainMenu = New CustomMenu(AddressOf GetDefaultMenu,
                 s.CustomMenuMainForm, CommandManager, MenuStrip)
 
             CustomMainMenu.AddKeyDownHandler(Me)
@@ -1046,7 +1045,7 @@ Class MainForm
                             Return True
                         End If
                     Else
-                        SaveProjectByPath(g.ProjectPath)
+                        SaveProjectPath(g.ProjectPath)
                     End If
                 ElseIf td.SelectedValue = DialogResult.Cancel Then
                     Return True
@@ -1215,7 +1214,7 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Perform | Load Template", "Loads a template.", Switch:="template|t")>
+    <Command("Loads a template.")>
     Sub LoadTemplate(name As String)
         LoadProject(Paths.TemplateDir + name + ".srip")
     End Sub
@@ -1248,7 +1247,7 @@ Class MainForm
                     d.FileName += ".srip"
                 End If
 
-                SaveProjectByPath(d.FileName)
+                SaveProjectPath(d.FileName)
                 Return True
             End If
         End Using
@@ -1289,7 +1288,7 @@ Class MainForm
 
         Dim width = p.TargetWidth
         Dim height = p.TargetHeight
-        Dim size = p.Size
+        Dim size = p.TargetSize
         Dim bitrate = p.VideoBitrate
 
         AviSynthListView.Load()
@@ -1319,8 +1318,8 @@ Class MainForm
         p.Audio0.Delay = delay0
         p.Audio1.Delay = delay1
 
-        tbSize.Text = ""
-        tbSize.Text = size.ToString()
+        tbTargetSize.Text = ""
+        tbTargetSize.Text = size.ToString()
 
         SetSlider()
 
@@ -2047,7 +2046,7 @@ Class MainForm
 
                 Using proc As New Proc
                     proc.Init("Convert sup to sub: " + Filepath.GetName(i), "#>", "#<", "Decoding frame")
-                    proc.File = Package.BDSup2SubPP.GetPath
+                    proc.File = Package.BDSup2SubPP.Path
                     proc.Arguments = "-o """ + Filepath.GetDirAndBase(i) + ".idx"" """ + i + """"
                     proc.AllowedExitCodes = {}
                     proc.Start()
@@ -2072,7 +2071,7 @@ Class MainForm
                 Using proc As New Proc
                     proc.Init("Extract forced subtitles if existing", "# ")
                     proc.WriteLine(Filepath.GetName(i) + BR2)
-                    proc.File = Package.BDSup2SubPP.GetPath
+                    proc.File = Package.BDSup2SubPP.Path
                     proc.Arguments = "--forced-only -o """ + Filepath.GetDirAndBase(i) + "_Forced.idx"" """ + i + """"
                     proc.AllowedExitCodes = {}
                     proc.Start()
@@ -2120,7 +2119,7 @@ Class MainForm
                         Using proc As New Proc
                             proc.Init("Demux subtitles using VSRip")
                             proc.WriteLine(args + BR2)
-                            proc.File = Package.VSRip.GetPath
+                            proc.File = Package.VSRip.Path
                             proc.Arguments = """" + fileContent + """"
                             proc.WorkingDirectory = Package.VSRip.GetDir
                             proc.AllowedExitCodes = {0, 1, 2}
@@ -2145,10 +2144,10 @@ Class MainForm
                     g.ProjectPath = p.TempDir + Filepath.GetBase(p.SourceFiles(0)) + ".srip"
                 End If
 
-                SaveProjectByPath(g.ProjectPath)
+                SaveProjectPath(g.ProjectPath)
                 OpenVideoSourceFiles(p.SourceFiles, False)
                 p.BatchMode = False
-                SaveProjectByPath(g.ProjectPath)
+                SaveProjectPath(g.ProjectPath)
             End If
 
             ProcessForm.ShowForm()
@@ -2243,7 +2242,7 @@ Class MainForm
         g.Highlight(False, tbAudioFile0)
         g.Highlight(False, tbAudioFile1)
         g.Highlight(False, tbBitrate)
-        g.Highlight(False, tbSize)
+        g.Highlight(False, tbTargetSize)
         g.Highlight(False, tbSourceFile)
         g.Highlight(False, tbTargetHeight)
         g.Highlight(False, tbTargetFile)
@@ -2358,7 +2357,7 @@ Class MainForm
         If Not p.BatchMode Then
             If Filepath.GetExtFull(p.TargetFile) = ".mp4" AndAlso p.TargetFile.Contains("#") Then
                 If ProcessTip("Character # can't be processed by MP4Box, please rename target file.") Then
-                    gbAssistant.Text = "Invalid target file name"
+                    gbAssistant.Text = "Invalid target filename"
                     CanIgnoreTip = False
                     Return False
                 End If
@@ -2377,7 +2376,7 @@ Class MainForm
 
             If p.SourceSeconds = 0 Then
                 If ProcessTip("Click here to open a source file.") Then
-                    AssistantMethod = AddressOf OpenSourceFiles
+                    AssistantMethod = AddressOf ShowOpenSourceDialog
                     gbAssistant.Text = "Assistant"
                     CanIgnoreTip = False
                     Return False
@@ -2410,7 +2409,7 @@ Class MainForm
                 p.Script.IsFilterActive("Crop") AndAlso
                 ProcessTip("Click here to open the crop dialog. When done continue with Next.") Then
 
-                AssistantMethod = AddressOf OpenCropDialog
+                AssistantMethod = AddressOf ShowCropDialog
                 gbAssistant.Text = "Crop"
                 Return False
             End If
@@ -2527,7 +2526,7 @@ Class MainForm
                 If p.RemindToCut AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
                     ProcessTip("Click here to open the preview for cutting if necessary. When done continue with Next.") Then
 
-                    AssistantMethod = AddressOf OpenPreview
+                    AssistantMethod = AddressOf ShowPreview
                     gbAssistant.Text = "Cutting"
                     Return False
                 End If
@@ -2637,7 +2636,7 @@ Class MainForm
                     value > (p.VideoEncoder.AutoCompCheckValue + 20) Then
 
                     If ProcessTip("The aimed quality value is more than 20% off, change the image or file size to get something between 50% and 70% quality.") Then
-                        g.Highlight(True, tbSize)
+                        g.Highlight(True, tbTargetSize)
                         g.Highlight(True, tbBitrate)
                         g.Highlight(True, tbTargetWidth)
                         g.Highlight(True, tbTargetHeight)
@@ -2681,7 +2680,7 @@ Class MainForm
         Else
             If p.SourceFiles.Count = 0 Then
                 If ProcessTip("Click here to open a source file.") Then
-                    AssistantMethod = AddressOf OpenSourceFiles
+                    AssistantMethod = AddressOf ShowOpenSourceDialog
                     gbAssistant.Text = "Assistant"
                     CanIgnoreTip = False
                     Return False
@@ -2755,17 +2754,17 @@ Class MainForm
 
         If AssistantPassed Then
             AddJob(False, Nothing)
-            OpenJobsDialog()
+            ShowJobsDialog()
         Else
             Assistant()
         End If
     End Sub
 
-    <Command("Perform | Encode", "Creates a job and runs the job list.", Switch:="encode|e")>
+    <Command("Creates a job and runs the job list.")>
     Sub StartEncoding()
         AssistantPassed = True
         AddJob(False, Nothing)
-        RunJobs()
+        StartJobs()
     End Sub
 
     Private Sub Demux()
@@ -2883,10 +2882,10 @@ Class MainForm
                     proc.Encoding = Encoding.UTF8
 
                     If p.Script.Engine = ScriptingEngine.AviSynth Then
-                        proc.File = Package.ffmpeg.GetPath
+                        proc.File = Package.ffmpeg.Path
                         proc.Arguments = "-i """ + p.Script.Path + """"
                     Else
-                        proc.File = Package.vspipe.GetPath
+                        proc.File = Package.vspipe.Path
                         proc.Arguments = """" + p.Script.Path + """ NUL -i"
                     End If
 
@@ -2928,8 +2927,8 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Project | Open", "Opens a project.")>
-    Sub OpenProjectFile()
+    <Command("Shows a file browser to open a project file.")>
+    Sub ShowFileBrowserToOpenProject()
         Using d As New SWF.OpenFileDialog
             d.Filter = "Project Files|*.srip"
 
@@ -2951,8 +2950,8 @@ Class MainForm
         If td.Show <> "" Then Return OpenProject(td.SelectedValue, True)
     End Function
 
-    <Command("Dialog | Event Commands", Strings.EventCommands)>
-    Sub OpenEventCommandsDialog()
+    <Command(Strings.EventCommands)>
+    Sub ShowEventCommandsDialog()
         Using f As New EventCommandsEditor(s.EventCommands)
             If f.ShowDialog() = DialogResult.OK Then
                 s.EventCommands.Clear()
@@ -2966,8 +2965,8 @@ Class MainForm
         g.SaveSettings()
     End Sub
 
-    <Command("Dialog | Settings", "Dialog to edit settings.")>
-    Sub OpenSettingsDialog()
+    <Command("Shows the settings dialog.")>
+    Sub ShowSettingsDialog()
         Using form As New SimpleSettingsForm("Settings")
             Dim ui = form.SimpleUI
 
@@ -3145,17 +3144,17 @@ Class MainForm
         Return ret2
     End Function
 
-    <Command("Project | Save", "Saves the current project.")>
+    <Command("Saves the current project.")>
     Sub SaveProject()
         If g.ProjectPath Is Nothing Then
             OpenSaveDialog()
         Else
-            SaveProjectByPath(g.ProjectPath)
+            SaveProjectPath(g.ProjectPath)
         End If
     End Sub
 
-    <Command("Project | Save Path", "Saves the current project at the specified path.")>
-    Sub SaveProjectByPath(<Description("The path may contain macros."),
+    <Command("Saves the current project at the specified path.")>
+    Sub SaveProjectPath(<Description("The path may contain macros."),
         Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> path As String)
 
         path = Macro.Solve(path)
@@ -3179,12 +3178,12 @@ Class MainForm
         End Try
     End Sub
 
-    <Command("Project | Save As", "Saves the current project.")>
+    <Command("Saves the current project.")>
     Sub SaveProjectAs()
         OpenSaveDialog()
     End Sub
 
-    <Command("Project | Save As Template", "Saves the current project as template.")>
+    <Command("Saves the current project as template.")>
     Sub SaveProjectAsTemplate()
         If p.SourceFile = "" Then
             Dim b As New InputBox
@@ -3195,7 +3194,7 @@ Class MainForm
 
             If b.Show = DialogResult.OK Then
                 p.TemplateName = b.Value.RemoveChars(Path.GetInvalidFileNameChars)
-                SaveProjectByPath(Paths.TemplateDir + p.TemplateName + ".srip")
+                SaveProjectPath(Paths.TemplateDir + p.TemplateName + ".srip")
                 UpdateTemplatesMenu()
 
                 If b.Checked Then
@@ -3207,18 +3206,18 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Perform | Start Compressibility Check", "Starts the compressibility check.")>
-    Sub RunCompCheck()
+    <Command("Starts the compressibility check.")>
+    Sub StartCompCheck()
         p.VideoEncoder.RunCompCheck()
     End Sub
 
-    <Command("Perform | Exit StaxRip", "Exits StaxRip", Switch:="exit")>
-    Sub ExitStaxRip()
+    <Command("Exits StaxRip")>
+    Sub [Exit]()
         Close()
     End Sub
 
-    <Command("Dialog | Applications", "Dialog to manage external applications.")>
-    Sub OpenAppsDialog()
+    <Command("Dialog to manage external applications.")>
+    Sub ShowAppsDialog()
         Using f As New AppsForm
             Dim found As Boolean
 
@@ -3238,10 +3237,10 @@ Class MainForm
         End Using
     End Sub
 
-    <Command("Dialog | Encoder Profiles", "Dialog to manage encoder profiles.")>
-    Sub OpenEncoderProfilesDialog()
+    <Command("Dialog to manage encoder profiles.")>
+    Sub ShowEncoderProfilesDialog()
         Using f As New ProfilesForm("Encoder Profiles", s.VideoEncoderProfiles,
-                                    AddressOf LoadVideoEncoder,
+                                    AddressOf g.LoadVideoEncoder,
                                     AddressOf GetNewVideoEncoderProfile,
                                     AddressOf VideoEncoder.GetDefaults)
 
@@ -3251,31 +3250,14 @@ Class MainForm
         End Using
     End Sub
 
-    <Command("Dialog | Muxer Profiles", "Dialog to manage Muxer profiles.")>
-    Sub OpenMuxerProfilesDialog()
+    <Command("Dialog to manage Muxer profiles.")>
+    Sub ShowMuxerProfilesDialog()
         If p.VideoEncoder.OpenMuxerProfilesDialog() = DialogResult.OK Then
             PopulateProfileMenu(DynamicMenuItemID.MuxerProfiles)
         End If
 
         Assistant()
     End Sub
-
-    Function LoadVideoEncoder(profile As Profile) As VideoEncoder
-        Dim currentMuxer = p.VideoEncoder.Muxer
-        p.VideoEncoder = DirectCast(ObjectHelp.GetCopy(profile), VideoEncoder)
-
-        If currentMuxer.IsSupported(p.VideoEncoder.OutputFileType) Then
-            p.VideoEncoder.Muxer = currentMuxer
-        Else
-            p.VideoEncoder.Muxer.Init()
-        End If
-
-        tbTargetFile.Text = p.TargetFile.ChangeExt(p.VideoEncoder.Muxer.GetExtension)
-        p.VideoEncoder.OnStateChange()
-        RecalcBitrate()
-        Assistant()
-        Return p.VideoEncoder
-    End Function
 
     Sub RecalcBitrate()
         tbSize_TextChanged()
@@ -3292,11 +3274,9 @@ Class MainForm
         Next
 
         If sb.Show = DialogResult.OK Then Return sb.SelectedItem
-
-        Return Nothing
     End Function
 
-    <Command("Dynamic", "Placeholder for dynamically updated menu items.")>
+    <Command("Placeholder for dynamically updated menu items.")>
     Sub DynamicMenuItem(<DispName("ID")> id As DynamicMenuItemID)
     End Sub
 
@@ -3309,15 +3289,15 @@ Class MainForm
 
                 Select Case id
                     Case DynamicMenuItemID.EncoderProfiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.VideoEncoderProfiles, AddressOf OpenEncoderProfilesDialog, AddressOf LoadVideoEncoder)
+                        g.PopulateProfileMenu(i.DropDownItems, s.VideoEncoderProfiles, AddressOf ShowEncoderProfilesDialog, AddressOf g.LoadVideoEncoder)
                     Case DynamicMenuItemID.MuxerProfiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.MuxerProfiles, AddressOf OpenMuxerProfilesDialog, AddressOf LoadMuxer)
+                        g.PopulateProfileMenu(i.DropDownItems, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf LoadMuxer)
                     Case DynamicMenuItemID.Audio1Profiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() OpenAudioProfilesDialog(0), AddressOf LoadAudioProfile0)
+                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() ShowAudioProfilesDialog(0), AddressOf LoadAudioProfile0)
                     Case DynamicMenuItemID.Audio2Profiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() OpenAudioProfilesDialog(1), AddressOf LoadAudioProfile1)
+                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf LoadAudioProfile1)
                     Case DynamicMenuItemID.FilterSetupProfiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.FilterSetupProfiles, AddressOf OpenAviSynthProfilesDialog, AddressOf LoadScriptProfile)
+                        g.PopulateProfileMenu(i.DropDownItems, s.FilterSetupProfiles, AddressOf ShowFilterSetupProfilesDialog, AddressOf LoadScriptProfile)
                 End Select
 
                 Exit For
@@ -3325,10 +3305,10 @@ Class MainForm
         Next
     End Sub
 
-    <Command("Dialog | Crop", "Dialog to crop borders.")>
-    Sub OpenCropDialog()
+    <Command("Dialog to crop borders.")>
+    Sub ShowCropDialog()
         If p.SourceFile = "" Then
-            OpenSourceFiles()
+            ShowOpenSourceDialog()
         Else
             If Not Paths.VerifyRequirements Then Exit Sub
             If Not g.IsValidSource Then Exit Sub
@@ -3350,10 +3330,10 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Dialog | Preview", "Dialog to preview or cut the video.")>
-    Sub OpenPreview()
+    <Command("Dialog to preview or cut the video.")>
+    Sub ShowPreview()
         If p.SourceFile = "" Then
-            OpenSourceFiles()
+            ShowOpenSourceDialog()
         Else
             If Not Paths.VerifyRequirements OrElse Not g.IsValidSource Then
                 Exit Sub
@@ -3386,8 +3366,8 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Dialog | Main Menu Editor", "Dialog to configure the main menu.")>
-    Sub OpenMainMenuEditor()
+    <Command("Dialog to configure the main menu.")>
+    Sub ShowMainMenuEditor()
         s.CustomMenuMainForm = CustomMainMenu.Edit()
         UpdateTemplatesMenu()
         UpdateScriptsMenu()
@@ -3398,23 +3378,23 @@ Class MainForm
         g.SaveSettings()
     End Sub
 
-    <Command("Dialog | Jobs", "Dialog to manage batch jobs.")>
-    Sub OpenJobsDialog()
+    <Command("Dialog to manage batch jobs.")>
+    Sub ShowJobsDialog()
         Using f As New JobsForm()
             If f.ShowDialog() = DialogResult.OK Then
                 Refresh()
-                RunJobs()
+                StartJobs()
             End If
         End Using
     End Sub
 
-    <Command("Perform | Clear Jobs", "Clears the job list.")>
+    <Command("Clears the job list.")>
     Sub ClearJobs()
         FileHelp.Delete(Paths.SettingsDir + "Jobs.dat")
     End Sub
 
-    <Command("Perform | Run Jobs", "Runs all active jobs of the job list.")>
-    Sub RunJobs()
+    <Command("Runs all active jobs of the job list.")>
+    Sub StartJobs()
         If Not Paths.VerifyRequirements() Then Exit Sub
         g.SaveSettings()
         RunJobRecursive()
@@ -3488,16 +3468,14 @@ Class MainForm
         Return p.TempDir + name + ".srip"
     End Function
 
-    <Command("Perform | Load Profile", "Loads a audio or video profile.")>
+    <Command("Loads a audio or video profile.")>
     Sub LoadProfile(<DispName("Video")> videoProfile As String,
                     <DispName("Audio 1")> audioProfile1 As String,
                     <DispName("Audio 2")> audioProfile2 As String)
 
         If videoProfile <> "" Then
             For Each i In s.VideoEncoderProfiles
-                If i.Name = videoProfile Then
-                    LoadVideoEncoder(i)
-                End If
+                If i.Name = videoProfile Then g.LoadVideoEncoder(i)
             Next
         End If
 
@@ -3518,7 +3496,7 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Perform | Add Job", "Adds a job to the job list.")>
+    <Command("Adds a job to the job list.")>
     Sub AddJob(
         <DispName("Show Confirmation"), DefaultValue(True)> showConfirmation As Boolean,
         <DispName("Template Name"), Description("Name of the template to be loaded after the job was added. Empty to load no template.")>
@@ -3536,34 +3514,34 @@ Class MainForm
         End If
 
         Dim path = GetJobPath()
-        g.MainForm.SaveProjectByPath(path)
+        g.MainForm.SaveProjectPath(path)
         JobsForm.AddJob(path)
 
         If showConfirmation Then MsgInfo("Job added")
         If templateName <> "" Then LoadProject(Paths.TemplateDir + templateName + ".srip")
     End Sub
 
-    <Command("Dialog | Compare And Extract Images", "Compare and extract images for video comparisons.")>
-    Sub OpenVideoComparison()
+    <Command("Compare and extract images for video comparisons.")>
+    Sub ShowVideoComparison()
         Dim f As New VideoComparisonForm
         f.Show()
         f.Add()
     End Sub
 
-    <Command("Dialog | Filters", "Dialog to edit filters.")>
-    Sub OpenFiltersEditor()
+    <Command("Dialog to edit filters.")>
+    Sub ShowFiltersEditor()
         AviSynthListView.ShowEditor()
     End Sub
 
-    <Command("Dialog | Tasks", "Shows a dialog to perform a large collection of tasks.")>
-    Sub OpenTaskDialog()
+    <Command("Shows a dialog to perform a large collection of tasks.")>
+    Sub ShowTaskDialog()
         Using f As New MacrosForm
             f.ShowDialog()
         End Using
     End Sub
 
-    <Command("Dialog | Options", "Dialog to configure project options.")>
-    Sub OpenOptionsDialog()
+    <Command("Dialog to configure project options.")>
+    Sub ShowOptionsDialog()
         OpenOptionsDialog(Nothing)
     End Sub
 
@@ -3715,6 +3693,12 @@ Class MainForm
             Dim audioPage = ui.CreateFlowPage("Audio")
             audioPage.SuspendLayout()
 
+            tb = ui.AddTextBlock(audioPage)
+            tb.Label.Text = "Preferred Languages:"
+            tb.Label.Tooltip = "Preferred audio languages using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all languages just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+            tb.Edit.Text = p.PreferredAudio
+            tb.Edit.SaveAction = Sub(value) p.PreferredAudio = value
+
             Dim dec = ui.AddMenuButtonBlock(Of DecodingMode)(audioPage)
             dec.Label.Text = "Force decoding using:"
             dec.Tooltip = "Defines if audio should be processed without decoding if possible or if decoding should be forced with a certain decoder."
@@ -3727,11 +3711,10 @@ Class MainForm
             cut.MenuButton.Value = p.CuttingMode
             cut.MenuButton.SaveAction = Sub(value) p.CuttingMode = value
 
-            cb = ui.AddCheckBox(audioPage)
-            cb.Text = "Demux"
-            cb.Tooltip = "Demuxes audio files from the source file."
-            cb.Checked = p.DemuxAudio
-            cb.SaveAction = Sub(value) p.DemuxAudio = value
+            Dim audioDemux = ui.AddMenuButtonBlock(Of DemuxMode)(audioPage)
+            audioDemux.Label.Text = "Demux Audio:"
+            audioDemux.MenuButton.Value = p.DemuxAudio
+            audioDemux.MenuButton.SaveAction = Sub(value) p.DemuxAudio = value
 
             cb = ui.AddCheckBox(audioPage)
             cb.Text = "Use AviSynth script as audio source"
@@ -3742,24 +3725,26 @@ Class MainForm
             audioPage.ResumeLayout()
 
             Dim subPage = ui.CreateFlowPage("Subtitles")
+            subPage.SuspendLayout()
 
             tb = ui.AddTextBlock(subPage)
-            tb.Label.Text = "Auto load subtitles:"
-            tb.Label.Tooltip = "Subtitles loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
-            tb.Edit.Text = p.AutoSubtitles
-            tb.Edit.SaveAction = Sub(value) p.AutoSubtitles = value
+            tb.Label.Text = "Preferred Languages:"
+            tb.Label.Tooltip = "Subtitles demuxed and loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+            tb.Edit.Text = p.PreferredSubtitles
+            tb.Edit.SaveAction = Sub(value) p.PreferredSubtitles = value
 
-            cb = ui.AddCheckBox(subPage)
-            cb.Text = "Demux"
-            cb.Tooltip = "Demuxes subtitles from the source file."
-            cb.Checked = p.DemuxSubtitles
-            cb.SaveAction = Sub(value) p.DemuxSubtitles = value
+            Dim subDemux = ui.AddMenuButtonBlock(Of DemuxMode)(subPage)
+            subDemux.Label.Text = "Demux Subtitles:"
+            subDemux.MenuButton.Value = p.DemuxSubtitles
+            subDemux.MenuButton.SaveAction = Sub(value) p.DemuxSubtitles = value
 
             cb = ui.AddCheckBox(subPage)
             cb.Text = "Convert Sup (PGS/Blu-ray) to Sub (IDX/DVD)"
             cb.Tooltip = "Works only with demuxed subtitles."
             cb.Checked = p.ConvertSup2Sub
             cb.SaveAction = Sub(value) p.ConvertSup2Sub = value
+
+            subPage.ResumeLayout()
 
             Dim pathPage = ui.CreateFlowPage("Paths")
 
@@ -3776,7 +3761,7 @@ Class MainForm
             tm.AddMenu("Parent directory of source file directory", "%source_dir_parent%")
 
             l = ui.AddLabel(pathPage, "Default Target Name:")
-            l.Tooltip = "Leave empty to use the source file name"
+            l.Tooltip = "Leave empty to use the source filename"
             l.MarginTop = Font.Height
 
             tm = ui.AddTextMenuBlock(pathPage)
@@ -3952,8 +3937,8 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Dialog | Filter Setup Profiles", "Dialog to configure filter setup profiles.")>
-    Sub OpenAviSynthProfilesDialog()
+    <Command("Dialog to configure filter setup profiles.")>
+    Sub ShowFilterSetupProfilesDialog()
         Using f As New ProfilesForm("AviSynth Profiles", s.FilterSetupProfiles,
                                     AddressOf LoadScriptProfile,
                                     AddressOf GetScriptAsProfile,
@@ -3995,8 +3980,8 @@ Class MainForm
         Return ret
     End Function
 
-    <Command("Dialog | AviSynth Filter Profiles", "Dialog to configure AviSynth filter profiles.")>
-    Sub OpenFilterProfilesDialog()
+    <Command("Dialog to configure AviSynth filter profiles.")>
+    Sub ShowFilterProfilesDialog()
         Dim filterProfiles As List(Of FilterCategory)
         Dim getDefaults As Func(Of List(Of FilterCategory))
 
@@ -4074,100 +4059,119 @@ Class MainForm
         End Using
     End Sub
 
-    <Command("Help | Command Line", "Opens the command line help.", Switch:="help|h|?")>
-    Private Sub OpenCommandLineHelp()
+    <Command("Shows help for command line automation.")>
+    Private Sub ShowCommandLineHelp()
+        BeginInvoke(Sub() ShowCommandLineHelpInternal())
+    End Sub
+
+    <Command("Shows help for script automation.")>
+    Private Sub ShowScriptingHelp()
+        BeginInvoke(Sub() ShowScriptingHelpInternal())
+    End Sub
+
+    Private Sub ShowCommandLineHelpInternal()
         Dim f As New HelpForm()
         f.Owner = Me
 
-        f.Doc.WriteStart("Command Line Help")
-        f.Doc.WriteP("StaxRip uses a similar command line syntax as the .NET framework tools as it simplifies development and usage. The arguments are processed sequentially in the order they appear in the command line so for certain switches the order is critical.")
-        f.Doc.WriteP("Many of the available switches might not be useful from the command line, the reason why these switches are available is they are provided by StaxRip's command engine that is also used for customizable menu's and event commands.")
+        f.Doc.WriteStart("Command Line Reference")
+        f.Doc.WriteP("Switches are processed in the order they appear in the command line. For more info visit the support forum and read the automation topic in the [https://stax76.gitbooks.io/staxrip-handbook/content/automation.html handbook].")
 
         Dim commands As New List(Of Command)(CommandManager.Commands.Values)
         commands.Sort()
 
-        Dim basic, advanced As New StringPairList
+        Dim commandList As New StringPairList
 
-        For Each iCommand In commands
-            Dim params = iCommand.MethodInfo.GetParameters
-            Dim switches As String()
-            Dim switch = iCommand.Attribute.Switch
+        For Each command In commands
+            Dim params = command.MethodInfo.GetParameters
+            Dim cl = "-" + command.MethodInfo.Name + ":"
 
-            If switch Is Nothing Then
-                switches = {iCommand.Attribute.Name}
-            Else
-                If switch.Contains("|") Then
-                    switches = switch.SplitNoEmpty("|")
-                Else
-                    switches = {switch}
-                End If
-            End If
-
-            For iSwitch = 0 To switches.Length - 1
-                switches(iSwitch) = "-" + switches(iSwitch).Replace(" ", "").Replace("|", "-")
+            For Each param In params
+                cl += param.Name + ","
             Next
 
-            Dim desc = iCommand.Attribute.Description
-            If desc Is Nothing Then desc = "n/a"
+            cl = cl.TrimEnd(",:".ToCharArray)
+            f.Doc.WriteH2(cl)
 
-            If params.Length = 0 Then
-                If switch Is Nothing Then
-                    advanced.Add(String.Join(BR, switches), desc)
-                Else
-                    basic.Add(String.Join(", ", switches), desc)
+            For Each param In params
+                Dim d = param.GetCustomAttribute(Of DescriptionAttribute)
+
+                If Not d Is Nothing Then
+                    f.Doc.WriteP(param.Name + ": " + param.GetCustomAttribute(Of DescriptionAttribute).Description)
                 End If
-            Else
-                Dim paramList As New List(Of String)
-                Dim enumList As New List(Of String)
+            Next
 
-                For Each iParam As ParameterInfo In params
-                    If iParam.ParameterType.IsEnum Then
-                        Dim l As New List(Of String)
+            Dim enumList As New List(Of String)
 
-                        For Each i In System.Enum.GetNames(iParam.ParameterType)
-                            l.Add(i)
-                        Next
-
-                        enumList.Add(iParam.ParameterType.Name + ": " + String.Join(", ", l.ToArray))
-                    End If
-
-                    Dim paramName = DispNameAttribute.GetValue(iParam.GetCustomAttributes(False))
-                    paramList.Add("<" + paramName + If(paramName = "", "", " as ") + iParam.ParameterType.Name.Replace("Int32", "Integer") + ">")
-                Next
-
-                For iSwitch = 0 To switches.Length - 1
-                    switches(iSwitch) += ":" + String.Join(",", paramList.ToArray)
-                Next
-
-                Dim switchcell = String.Join(BR, switches)
-
-                If enumList.Count > 0 Then
-                    switchcell += BR2 + String.Join(BR, enumList.ToArray)
+            For Each param In params
+                If param.ParameterType.IsEnum Then
+                    enumList.Add(param.ParameterType.Name + ": " +
+                                 System.Enum.GetNames(param.ParameterType).Join(", "))
                 End If
+            Next
 
-                If switch Is Nothing Then
-                    advanced.Add(switchcell, desc)
-                Else
-                    basic.Add(switchcell, desc)
-                End If
-            End If
+            For Each en In enumList
+                f.Doc.WriteP(en)
+            Next
+
+            f.Doc.WriteP(command.Attribute.Description)
         Next
-
-        f.Doc.WriteTable("Basic Switches", basic)
-        f.Doc.WriteTable("Advanced Switches", advanced)
-
-        f.Doc.WriteElement("h2", "Examples")
-        f.Doc.WriteP("StaxRip ""C:\Movie 2\project.srip""")
-        f.Doc.WriteP("StaxRip ""C:\Movie 2\VTS_01_1.VOB""")
-        f.Doc.WriteP("StaxRip ""C:\Movie 2\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB""")
-        f.Doc.WriteP("StaxRip -template:DVB ""C:\Movie 2\capture.mpg"" -encode -standby")
-        f.Doc.WriteP("StaxRip -Perform-ShowMessageBox:""message text"",""message title"",info")
 
         f.Show()
     End Sub
 
-    <Command("Dialog | Help File", "Opens a given URL or local file in the help browser.")>
-    Sub OpenHelpURL(
+    Private Sub ShowScriptingHelpInternal()
+        Dim f As New HelpForm()
+        f.Owner = Me
+
+        f.Doc.WriteStart("Scripting")
+        f.Doc.WriteP("Below is a list with methods available for C# and PowerShell scripting. For more info visit the support forum and read the automation topic in the [https://stax76.gitbooks.io/staxrip-handbook/content/automation.html handbook].")
+
+        Dim commands As New List(Of Command)(CommandManager.Commands.Values)
+        commands.Sort()
+
+        Dim commandList As New StringPairList
+
+        For Each command In commands
+            Dim params = command.MethodInfo.GetParameters
+            Dim cs = command.MethodInfo.Name + "("
+
+            For Each param In params
+                cs += param.ParameterType.Name.Replace("Boolean", "bool").
+                    Replace("String", "string").Replace("Int32", "int") + " " + param.Name + ", "
+            Next
+
+            cs = cs.TrimEnd(", ".ToCharArray) + ")"
+            f.Doc.WriteH2(cs)
+
+            For Each param In params
+                Dim d = param.GetCustomAttribute(Of DescriptionAttribute)
+
+                If Not d Is Nothing Then
+                    f.Doc.WriteP(param.Name + ": " + param.GetCustomAttribute(Of DescriptionAttribute).Description)
+                End If
+            Next
+
+            Dim enumList As New List(Of String)
+
+            For Each param In params
+                If param.ParameterType.IsEnum Then
+                    enumList.Add(param.ParameterType.Name + ": " +
+                                 System.Enum.GetNames(param.ParameterType).Join(", "))
+                End If
+            Next
+
+            For Each en In enumList
+                f.Doc.WriteP(en)
+            Next
+
+            f.Doc.WriteP(command.Attribute.Description)
+        Next
+
+        f.Show()
+    End Sub
+
+    <Command("Opens a given URL or local file in the help browser.")>
+    Sub ShowHelpURL(
         <DispName("URL"),
         Description("URL or local file to be shown in the internet explorer powered help browser."),
         Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
@@ -4177,76 +4181,77 @@ Class MainForm
         f.Show()
     End Sub
 
-    Shared Function GetDefaultMainMenu() As CustomMenuItem
+    Shared Function GetDefaultMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
-        ret.Add("Project|Open...", "OpenProjectFile", Keys.O Or Keys.Control)
-        ret.Add("Project|Save", "SaveProject", Keys.S Or Keys.Control)
-        ret.Add("Project|Save As...", "SaveProjectAs")
-        ret.Add("Project|Save As Template...", "SaveProjectAsTemplate")
+        ret.Add("Project|Open...", NameOf(ShowFileBrowserToOpenProject), Keys.O Or Keys.Control)
+        ret.Add("Project|Save", NameOf(SaveProject), Keys.S Or Keys.Control)
+        ret.Add("Project|Save As...", NameOf(SaveProjectAs))
+        ret.Add("Project|Save As Template...", NameOf(SaveProjectAsTemplate))
         ret.Add("Project|-")
-        ret.Add("Project|Templates", "DynamicMenuItem", DynamicMenuItemID.TemplateProjects)
-        ret.Add("Project|Recent", "DynamicMenuItem", DynamicMenuItemID.RecentProjects)
+        ret.Add("Project|Templates", NameOf(DynamicMenuItem), DynamicMenuItemID.TemplateProjects)
+        ret.Add("Project|Recent", NameOf(DynamicMenuItem), DynamicMenuItemID.RecentProjects)
 
-        ret.Add("Crop", "OpenCropDialog", Keys.F4)
-        ret.Add("Preview", "OpenPreview", Keys.F5)
+        ret.Add("Crop", NameOf(ShowCropDialog), Keys.F4)
+        ret.Add("Preview", NameOf(ShowPreview), Keys.F5)
 
-        ret.Add("Options", "OpenOptionsDialog", Keys.F8)
+        ret.Add("Options", NameOf(ShowOptionsDialog), Keys.F8)
 
-        ret.Add("Tools|Jobs...", "OpenJobsDialog", Keys.F6)
-        ret.Add("Tools|Log File", "ExecuteCommandLine", """%text_editor%"" ""%working_dir%%target_name%_StaxRip.log""")
-        ret.Add("Tools|Directories|Source", "ExecuteCommandLine", """%source_dir%""")
-        ret.Add("Tools|Directories|Working", "ExecuteCommandLine", """%working_dir%""")
-        ret.Add("Tools|Directories|Target", "ExecuteCommandLine", """%target_dir%""")
-        ret.Add("Tools|Directories|Settings", "ExecuteCommandLine", """%settings_dir%""")
-        ret.Add("Tools|Directories|Templates", "ExecuteCommandLine", """%settings_dir%Templates""")
-        ret.Add("Tools|Directories|Plugins", "ExecuteCommandLine", """%plugin_dir%""")
-        ret.Add("Tools|Directories|Startup", "ExecuteCommandLine", """%startup_dir%""")
-        ret.Add("Tools|Directories|Programs", "ExecuteCommandLine", """%programs_dir%""")
-        ret.Add("Tools|Directories|System", "ExecuteCommandLine", """%system_dir%""")
-        ret.Add("Tools|Directories|Scripts", "ExecuteCommandLine", """%script_dir%""")
-        If Application.StartupPath = "D:\Projekte\GitHub\staxrip\bin" Then ret.Add("Tools|Advanced|Test...", "Test", Keys.F12)
-        ret.Add("Tools|Advanced|Video Comparison...", "OpenVideoComparison")
-        ret.Add("Tools|Advanced|Command Prompt...", "OpenCommandPrompt")
-        ret.Add("Tools|Advanced|Event Commands...", "OpenEventCommandsDialog")
-        ret.Add("Tools|Advanced|Hardcoded Subtitle...", "AddHardcodedSubtitle", Keys.Control Or Keys.H)
-        ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", "OpenLAVFiltersConfiguration")
-        ret.Add("Tools|Advanced|MediaInfo Folder View...", "OpenMediaInfoFolderView")
-        ret.Add("Tools|Advanced|Reset Setting...", "ResetSettings")
-        ret.Add("Tools|Advanced|Thumbnails Generator...", "BatchGenerateThumbnails")
-        ret.Add("Tools|Scripts", "DynamicMenuItem", DynamicMenuItemID.Scripts)
-        ret.Add("Tools|Edit Menu...", "OpenMainMenuEditor")
-        ret.Add("Tools|Settings...", "OpenSettingsDialog", "")
+        ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F6)
+        ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ExecuteCommandLine), """%text_editor%"" ""%working_dir%%target_name%_StaxRip.log""")
+        ret.Add("Tools|Directories|Source", NameOf(g.DefaultCommands.ExecuteCommandLine), """%source_dir%""")
+        ret.Add("Tools|Directories|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), """%working_dir%""")
+        ret.Add("Tools|Directories|Target", NameOf(g.DefaultCommands.ExecuteCommandLine), """%target_dir%""")
+        ret.Add("Tools|Directories|Settings", NameOf(g.DefaultCommands.ExecuteCommandLine), """%settings_dir%""")
+        ret.Add("Tools|Directories|Templates", NameOf(g.DefaultCommands.ExecuteCommandLine), """%settings_dir%Templates""")
+        ret.Add("Tools|Directories|Plugins", NameOf(g.DefaultCommands.ExecuteCommandLine), """%plugin_dir%""")
+        ret.Add("Tools|Directories|Startup", NameOf(g.DefaultCommands.ExecuteCommandLine), """%startup_dir%""")
+        ret.Add("Tools|Directories|Programs", NameOf(g.DefaultCommands.ExecuteCommandLine), """%programs_dir%""")
+        ret.Add("Tools|Directories|System", NameOf(g.DefaultCommands.ExecuteCommandLine), """%system_dir%""")
+        ret.Add("Tools|Directories|Scripts", NameOf(g.DefaultCommands.ExecuteCommandLine), """%script_dir%""")
+        If Application.StartupPath = "D:\Projekte\GitHub\staxrip\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
+        ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
+        ret.Add("Tools|Advanced|Command Prompt...", NameOf(ShowCommandPrompt))
+        ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog))
+        ret.Add("Tools|Advanced|Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
+        ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", NameOf(ShowLAVFiltersConfigDialog))
+        ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog))
+        ret.Add("Tools|Advanced|Reset Setting...", NameOf(ResetSettings))
+        ret.Add("Tools|Advanced|Thumbnails Generator...", NameOf(ShowBatchGenerateThumbnailsDialog))
+        ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), DynamicMenuItemID.Scripts)
+        ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
+        ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), "")
 
-        ret.Add("Apps|AVSMeter...", "StartTool", "AVSMeter")
-        ret.Add("Apps|BDSup2Sub++...", "StartTool", "BDSup2Sub++")
-        ret.Add("Apps|Demux...", "StartTool", "Demux")
-        ret.Add("Apps|DGIndexNV...", "StartTool", "DGIndexNV")
-        ret.Add("Apps|ProjectX...", "StartTool", "ProjectX")
-        ret.Add("Apps|VSRip...", "StartTool", "VSRip")
+        ret.Add("Apps|AVSMeter...", NameOf(g.DefaultCommands.StartTool), "AVSMeter")
+        ret.Add("Apps|BDSup2Sub++...", NameOf(g.DefaultCommands.StartTool), "BDSup2Sub++")
+        ret.Add("Apps|Demux...", NameOf(g.DefaultCommands.StartTool), "Demux")
+        ret.Add("Apps|DGIndexNV...", NameOf(g.DefaultCommands.StartTool), "DGIndexNV")
+        ret.Add("Apps|ProjectX...", NameOf(g.DefaultCommands.StartTool), "ProjectX")
+        ret.Add("Apps|VSRip...", NameOf(g.DefaultCommands.StartTool), "VSRip")
 
         ret.Add("Apps|-")
-        ret.Add("Apps|Manage...", "OpenAppsDialog")
+        ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
 
-        ret.Add("Help|Documentation", "ExecuteCommandLine", "https://stax76.gitbooks.io/staxrip-handbook/content/")
-        ret.Add("Help|Support Forum|forum.doom9.org", "ExecuteCommandLine", "http://forum.doom9.org/showthread.php?t=172068&page=999999")
-        If g.IsCulture("de") Then ret.Add("Help|Support Forum|forum.gleitz.info", "ExecuteCommandLine", "http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-%28Diskussion%29/page999999")
-        ret.Add("Help|Support Forum|forum.videohelp.com", "ExecuteCommandLine", "http://forum.videohelp.com/threads/369913-StaxRip-x64-for-AviSynth-VapourSynth-x264-x265-GPU-encoding/page999999")
-        ret.Add("Help|Website|Issue Tracker", "ExecuteCommandLine", "https://github.com/stax76/staxrip/issues")
-        ret.Add("Help|Website|Release Build", "ExecuteCommandLine", "https://github.com/stax76/staxrip/releases")
-        ret.Add("Help|Website|Test Build", "ExecuteCommandLine", "https://github.com/stax76/staxrip/blob/master/md/test-build.md")
-        ret.Add("Help|Mail", "ExecuteCommandLine", "mailto:frank.skare.de@gmail.com?subject=StaxRip%20feedback")
-        ret.Add("Help|Donate (PayPal/Bitcoin)", "Donate")
-        ret.Add("Help|Command Line", "OpenCommandLineHelp")
-        ret.Add("Help|Apps", "DynamicMenuItem", DynamicMenuItemID.HelpApplications)
+        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://stax76.gitbooks.io/staxrip-handbook/content/")
+        ret.Add("Help|Support Forum|forum.doom9.org", NameOf(g.DefaultCommands.ExecuteCommandLine), "http://forum.doom9.org/showthread.php?t=172068&page=999999")
+        If g.IsCulture("de") Then ret.Add("Help|Support Forum|forum.gleitz.info", NameOf(g.DefaultCommands.ExecuteCommandLine), "http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-%28Diskussion%29/page999999")
+        ret.Add("Help|Support Forum|forum.videohelp.com", NameOf(g.DefaultCommands.ExecuteCommandLine), "http://forum.videohelp.com/threads/369913-StaxRip-x64-for-AviSynth-VapourSynth-x264-x265-GPU-encoding/page999999")
+        ret.Add("Help|Website|Issue Tracker", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://github.com/stax76/staxrip/issues")
+        ret.Add("Help|Website|Release Build", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://github.com/stax76/staxrip/releases")
+        ret.Add("Help|Website|Test Build", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://github.com/stax76/staxrip/blob/master/md/test-build.md")
+        ret.Add("Help|Mail", NameOf(g.DefaultCommands.ExecuteCommandLine), "mailto:frank.skare.de@gmail.com?subject=StaxRip%20feedback")
+        ret.Add("Help|Donate (PayPal/Bitcoin)", NameOf(ShowDonateDialog))
+        ret.Add("Help|Scripting", NameOf(ShowScriptingHelp))
+        ret.Add("Help|Command Line", NameOf(ShowCommandLineHelp))
+        ret.Add("Help|Apps", NameOf(DynamicMenuItem), DynamicMenuItemID.HelpApplications)
         ret.Add("Help|-")
-        ret.Add("Help|Info...", "OpenHelpTopic", "info")
+        ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), "info")
 
         Return ret
     End Function
 
-    <Command("Perform | Donate", "Shows different donation options.")>
-    Sub Donate()
+    <Command("Shows different donation options.")>
+    Sub ShowDonateDialog()
         Dim td As New TaskDialog(Of String)
         td.MainInstruction = "If you are a satisfied user of StaxRip, please think about contributing to this project."
 
@@ -4266,8 +4271,8 @@ Class MainForm
         End Select
     End Sub
 
-    <Command("Perform | Add Hardcoded Subtitle", "Adds a hardcoded subtitle.")>
-    Sub AddHardcodedSubtitle()
+    <Command("Shows a dialog to add a hardcoded subtitle.")>
+    Sub ShowHardcodedSubtitleDialog()
         Using d As New SWF.OpenFileDialog
             d.SetFilter(FileTypes.SubtitleIncludingContainers)
             d.SetInitDir(s.LastSourceDir)
@@ -4375,7 +4380,7 @@ Class MainForm
         End If
     End Sub
 
-    Private Sub tbSize_KeyDown(sender As Object, e As KeyEventArgs) Handles tbSize.KeyDown
+    Private Sub tbSize_KeyDown(sender As Object, e As KeyEventArgs) Handles tbTargetSize.KeyDown
         Dim modValue As Integer
 
         Select Case p.TargetSeconds
@@ -4391,17 +4396,17 @@ Class MainForm
 
         If e.KeyData = Keys.Up Then
             e.Handled = True
-            tbSize.Text = Math.Max(1, Calc.GetPreviousMod(tbSize.Text.ToInt, modValue)).ToString
+            tbTargetSize.Text = Math.Max(1, Calc.GetPreviousMod(tbTargetSize.Text.ToInt, modValue)).ToString
         ElseIf e.KeyData = Keys.Down Then
             e.Handled = True
-            tbSize.Text = Math.Max(1, Calc.GetNextMod(tbSize.Text.ToInt, modValue)).ToString
+            tbTargetSize.Text = Math.Max(1, Calc.GetNextMod(tbTargetSize.Text.ToInt, modValue)).ToString
         End If
     End Sub
 
-    Sub tbSize_TextChanged() Handles tbSize.TextChanged
+    Sub tbSize_TextChanged() Handles tbTargetSize.TextChanged
         Try
-            If Integer.TryParse(tbSize.Text, Nothing) Then
-                p.Size = If(p.FixedBitrate > 0, CInt(Calc.GetSize), Math.Max(1, CInt(tbSize.Text)))
+            If Integer.TryParse(tbTargetSize.Text, Nothing) Then
+                p.TargetSize = If(p.FixedBitrate > 0, CInt(Calc.GetSize), Math.Max(1, CInt(tbTargetSize.Text)))
                 BlockSize = True
                 If Not BlockBitrate Then tbBitrate.Text = CInt(Calc.GetVideoBitrate).ToString
                 BlockSize = False
@@ -4416,7 +4421,7 @@ Class MainForm
             If Integer.TryParse(tbBitrate.Text, Nothing) Then
                 p.VideoBitrate = If(p.FixedBitrate > 0, CInt(Calc.GetVideoBitrate), Math.Max(1, CInt(tbBitrate.Text)))
                 BlockBitrate = True
-                If Not BlockSize Then tbSize.Text = CInt(Calc.GetSize).ToString
+                If Not BlockSize Then tbTargetSize.Text = CInt(Calc.GetSize).ToString
                 BlockBitrate = False
                 Assistant()
             End If
@@ -4469,22 +4474,19 @@ Class MainForm
     End Sub
 
     Shared Function GetDefaultMenuSize() As CustomMenuItem
-        Dim ret As CustomMenuItem = New CustomMenuItem("Root")
+        Dim ret = New CustomMenuItem("Root")
 
-        ret.Add("700 MB", "SetSize", 700)
-        ret.Add("800 MB", "SetSize", 800)
-        ret.Add("1/3 DVD", "SetSize", Keys.None, 1493)
-        ret.Add("1 DVD", "SetSize", 4480)
+        ret.Add("1 DVD", NameOf(SetSize), 4480)
         ret.Add("-")
-        ret.Add("50%", "SetPercent", 50)
-        ret.Add("60%", "SetPercent", 60)
+        ret.Add("50%", NameOf(SetPercent), 50)
+        ret.Add("60%", NameOf(SetPercent), 60)
         ret.Add("-")
-        ret.Add("Edit Menu...", "OpenSizeMenuEditor")
+        ret.Add("Edit Menu...", NameOf(ShowSizeMenuEditor))
 
         Return ret
     End Function
 
-    <Command("Parameter | Target Image Size", "Sets the target image size.")>
+    <Command("Sets the target image size.")>
     Sub SetTargetImageSize(width As Integer, height As Integer)
         If Not g.EnableFilter("Resize") Then
             p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
@@ -4502,7 +4504,7 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Parameter | Target Image Size By Pixel", "Sets the target image size by pixels (width x height).")>
+    <Command("Sets the target image size by pixels (width x height).")>
     Sub SetTargetImageSizeByPixel(pixel As Integer)
         If Not g.EnableFilter("Resize") Then
             p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
@@ -4520,35 +4522,35 @@ Class MainForm
         tbTargetHeight.Text = h.ToString()
     End Sub
 
-    <Command("Parameter | Target File Size", "Sets the target file size.")>
+    <Command("Sets the target file size in MB.")>
     Sub SetSize(<DispName("Target File Size")> targetSize As Integer)
-        tbSize.Text = targetSize.ToString
+        tbTargetSize.Text = targetSize.ToString
     End Sub
 
-    <Command("Parameter | Target Video Bitrate", "Sets the target video bitrate.")>
+    <Command("Sets the target video bitrate in Kbps.")>
     Sub SetBitrate(<DispName("Target Video Bitrate")> bitrate As Integer)
         tbBitrate.Text = bitrate.ToString
     End Sub
 
-    <Command("Perform | Auto Crop", "Crops borders automatically.")>
-    Sub PerformAutoCrop()
+    <Command("Crops borders automatically.")>
+    Sub StartAutoCrop()
         g.RunAutoCrop()
         Assistant()
     End Sub
 
-    <Command("Perform | Smart Crop", "Crops borders automatically until the proper aspect ratio is found.")>
-    Sub PerformSmartCrop()
+    <Command("Crops borders automatically until the proper aspect ratio is found.")>
+    Sub StartSmartCrop()
         g.SmartCrop()
         Assistant()
     End Sub
 
-    <Command("Parameter | Bitrate By Percent", "Sets the bitrate according to the compressibility.")>
+    <Command("Sets the bitrate according to the compressibility.")>
     Sub SetPercent(<DispName("Percent Value")> value As Integer)
-        tbSize.Text = g.GetAutoSize(value).ToString
+        tbTargetSize.Text = g.GetAutoSize(value).ToString
     End Sub
 
-    <Command("Dialog | Size Menu Editor", "Menu editor for the size menu.")>
-    Sub OpenSizeMenuEditor()
+    <Command("Menu editor for the size menu.")>
+    Sub ShowSizeMenuEditor()
         s.CustomMenuSize = CustomSizeMenu.Edit()
     End Sub
 
@@ -4604,7 +4606,7 @@ Class MainForm
 
         Task.Run(Sub() Scripting.RunCSharp("1+1"))
 
-        If Not File.Exists(Package.x265.GetPath) Then
+        If Not File.Exists(Package.x265.Path) Then
             MsgError("Files included with StaxRip are missing, maybe the 7-Zip archive wasn't properly unpacked. You can find a packer at [http://www.7-zip.org www.7-zip.org].")
             Close()
             Exit Sub
@@ -4614,8 +4616,8 @@ Class MainForm
         IsLoading = False
     End Sub
 
-    <Command("Dialog | LAV Filters Configuration", "Shows LAV Filters video decoder configuration")>
-    Private Sub OpenLAVFiltersConfiguration()
+    <Command("Shows LAV Filters video decoder configuration")>
+    Private Sub ShowLAVFiltersConfigDialog()
         Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.LAVVideoDecoder.ToString + "\InprocServer32", Nothing)
 
         If File.Exists(ret) Then
@@ -4634,27 +4636,6 @@ Class MainForm
 
     <DllImport("LAVVideo.ax")>
     Public Shared Sub OpenConfiguration(hwnd As IntPtr, hinst As IntPtr, lpszCmdLine As String, nCmdShow As Integer)
-    End Sub
-
-    <Command("Perform | Execute Multiple Commands", "Executes multiple StaxRip commands using command line switches.")>
-    Private Sub EcecuteStaxRipCmdlArgs(<Description("Requires a single command line switch on each line.")>
-                                       <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
-                                       Commands As String)
-
-        Dim errorArg As String = Nothing
-
-        Try
-            For Each i In Commands.SplitLinesNoEmpty
-                errorArg = i
-
-                If Not CommandManager.ProcessCommandLineArgument(i) Then
-                    Throw New Exception
-                End If
-            Next
-        Catch ex As Exception
-            MsgWarn("Error parsing argument:" + BR2 + errorArg + BR2 + ex.Message)
-            OpenCommandLineHelp()
-        End Try
     End Sub
 
     Private Sub ProcessCommandLine(a As String())
@@ -4676,7 +4657,7 @@ Class MainForm
                 End If
             Catch ex As Exception
                 MsgWarn("Error parsing argument:" + BR2 + i.Value + BR2 + ex.Message)
-                OpenCommandLineHelp()
+                ShowScriptingHelp()
             End Try
         Next
 
@@ -4686,17 +4667,17 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Option | Show All Dialogs", "Sets the project option 'Show all dialogs when invoked from CLI'", Switch:="show-dialogs")>
-    Private Sub EnableShowDialogsCLIOption(showDialogs As Boolean)
+    <Command("Sets the project option 'Show all dialogs when invoked from CLI'")>
+    Private Sub SetShowDialogsCLIOption(showDialogs As Boolean)
         p.ShowDialogsCLI = showDialogs
     End Sub
 
-    <Command("Perform | Standby", "Puts PC in standby mode.", Switch:="standby")>
+    <Command("Puts PC in standby mode.")>
     Private Sub Standby()
         g.ShutdownPC(ShutdownMode.Standby)
     End Sub
 
-    <Command("Perform | Shutdown", "Shuts PC down.", Switch:="shutdown")>
+    <Command("Shuts PC down.")>
     Private Sub Shutdown()
         g.ShutdownPC(ShutdownMode.Shutdown)
     End Sub
@@ -4713,14 +4694,14 @@ Class MainForm
 
     Sub UpdateEncoderStateRelatedControls()
         llFilesize.Visible = Not p.VideoEncoder.QualityMode
-        tbSize.Visible = Not p.VideoEncoder.QualityMode
+        tbTargetSize.Visible = Not p.VideoEncoder.QualityMode
         lBitrate.Visible = Not p.VideoEncoder.QualityMode
         tbBitrate.Visible = Not p.VideoEncoder.QualityMode
         lTarget2.Visible = p.VideoEncoder.IsCompCheckEnabled
     End Sub
 
-    <Command("Dialog | Open Source Files", "Dialog to open source files.")>
-    Private Sub OpenSourceFiles()
+    <Command("Dialog to open source files.")>
+    Private Sub ShowOpenSourceDialog()
         Dim td As New TaskDialog(Of String)
         td.MainInstruction = "Choose a method for opening a source."
         td.AddCommandLink("Single File", "DVD and Blu-ray discs can be ripped very easily using MakeMKV.", "Single File")
@@ -4759,7 +4740,7 @@ Class MainForm
                                     Next
 
                                     proc.Encoding = Encoding.UTF8
-                                    proc.File = Package.mkvmerge.GetPath
+                                    proc.File = Package.mkvmerge.Path
                                     Dim outFile = Filepath.GetDirAndBase(f.Files(0)) + "_merged.mkv"
                                     proc.Arguments = "-o """ + outFile + """ """ + f.Files.Join(""" + """) + """"
 
@@ -4799,7 +4780,7 @@ Class MainForm
                         Dim tempPath = Paths.TemplateDir + "temp.srip"
                         p.BatchMode = Not f.cbDemuxAndIndex.Checked
                         p.NoDialogs = f.cbDemuxAndIndex.Checked
-                        SaveProjectByPath(tempPath)
+                        SaveProjectPath(tempPath)
 
                         For Each i In f.Files
                             OpenProject(tempPath, False)
@@ -4811,7 +4792,7 @@ Class MainForm
                         OpenProject(tempPath, False)
                         FileHelp.Delete(tempPath)
                         UpdateRecentProjectsMenuAsync(Nothing)
-                        OpenJobsDialog()
+                        ShowJobsDialog()
                     End If
                 End Using
             Case "Directory Batch"
@@ -4830,7 +4811,7 @@ Class MainForm
 
                         If f.cbDemuxAndIndex.Checked Then p.BatchMode = True
 
-                        SaveProjectByPath(tempPath)
+                        SaveProjectPath(tempPath)
 
                         For Each i In f.DirTree.Paths
                             OpenProject(tempPath, False)
@@ -4853,7 +4834,7 @@ Class MainForm
                         UpdateRecentProjectsMenu()
 
                         If f.cbDemuxAndIndex.Checked Then
-                            OpenJobsDialog()
+                            ShowJobsDialog()
                         End If
                     End If
                 End Using
@@ -4876,9 +4857,9 @@ Class MainForm
                         End If
 
                         Log.WriteEnvironment()
-                        Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.GetPath + """ """ + srcPath + """" + BR2)
+                        Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + BR2)
 
-                        Dim output = ProcessHelp.GetStdOut(Package.eac3to.GetPath, """" + srcPath + """").Replace(VB6.vbBack, "")
+                        Dim output = ProcessHelp.GetStdOut(Package.eac3to.Path, """" + srcPath + """").Replace(VB6.vbBack, "")
 
                         Log.WriteLine(output)
 
@@ -4959,7 +4940,7 @@ Class MainForm
                         proc.TrimChars = {"-"c, " "c}
                         proc.RemoveChars = {CChar(VB6.vbBack)}
                         proc.Init("Demux M2TS using eac3to " + Package.eac3to.Version, "analyze: ", "process: ")
-                        proc.File = Package.eac3to.GetPath
+                        proc.File = Package.eac3to.Path
                         proc.Process.StartInfo.Arguments = f.GetArgs(
                             """" + playlistFolder + """ " & playlistID & ")", DirPath.GetName(workDir))
 
@@ -5166,7 +5147,7 @@ Class MainForm
         tbAudioFile1_DoubleClick()
     End Sub
 
-    <Command("Perform | Reset A Specific Setting", "Shows a dialog allowing to reset various settings.")>
+    <Command("Shows a dialog allowing to reset various settings.")>
     Sub ResetSettings()
         Dim sb As New SelectionBox(Of String)
 
@@ -5188,8 +5169,8 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Dialog | Audio Profiles", "Dialog to manage audio profiles.")>
-    Sub OpenAudioProfilesDialog(<DispName("Track Number")> number As Integer)
+    <Command("Dialog to manage audio profiles.")>
+    Sub ShowAudioProfilesDialog(<DispName("Track Number")> number As Integer)
         Dim f As ProfilesForm
 
         If number = 0 Then
@@ -5211,8 +5192,8 @@ Class MainForm
         AudioMenu0.Items.Clear()
         AudioMenu1.Items.Clear()
 
-        g.PopulateProfileMenu(AudioMenu0.Items, s.AudioProfiles, Sub() OpenAudioProfilesDialog(0), AddressOf LoadAudioProfile0)
-        g.PopulateProfileMenu(AudioMenu1.Items, s.AudioProfiles, Sub() OpenAudioProfilesDialog(1), AddressOf LoadAudioProfile1)
+        g.PopulateProfileMenu(AudioMenu0.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(0), AddressOf LoadAudioProfile0)
+        g.PopulateProfileMenu(AudioMenu1.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf LoadAudioProfile1)
     End Sub
 
     Sub LoadMuxer(profile As Profile)
@@ -5289,7 +5270,7 @@ Class MainForm
 
     Private Sub gbEncoder_LinkClick() Handles lgbEncoder.LinkClick
         EncoderMenu.Items.Clear()
-        g.PopulateProfileMenu(EncoderMenu.Items, s.VideoEncoderProfiles, AddressOf OpenEncoderProfilesDialog, AddressOf LoadVideoEncoder)
+        g.PopulateProfileMenu(EncoderMenu.Items, s.VideoEncoderProfiles, AddressOf ShowEncoderProfilesDialog, AddressOf g.LoadVideoEncoder)
         EncoderMenu.Show(lgbEncoder, 0, 16)
     End Sub
 
@@ -5308,7 +5289,7 @@ Class MainForm
 
     Private Sub llContainer_LinkClicked() Handles llMuxer.LinkClicked
         ContainerMenu.Items.Clear()
-        g.PopulateProfileMenu(ContainerMenu.Items, s.MuxerProfiles, AddressOf OpenMuxerProfilesDialog, AddressOf LoadMuxer)
+        g.PopulateProfileMenu(ContainerMenu.Items, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf LoadMuxer)
         ContainerMenu.Show(llMuxer, 0, 16)
     End Sub
 
@@ -5429,7 +5410,7 @@ Class MainForm
             .SetTip("Target Video Bitrate in Kbps (Up/Down key)", tbBitrate, lBitrate)
             .SetTip("Target Image Width in pixel (Up/Down key)", tbTargetWidth, lTargetWidth)
             .SetTip("Target Image Height in pixel (Up/Down key)", tbTargetHeight, lTargetHeight)
-            .SetTip("Target File Size (Up/Down key)", tbSize)
+            .SetTip("Target File Size (Up/Down key)", tbTargetSize)
             .SetTip("Source file", tbSourceFile)
             .SetTip("Target file", tbTargetFile)
             .SetTip("Opens audio settings for the current project/template", llEditAudio0, llEditAudio1)
@@ -5475,7 +5456,7 @@ Class MainForm
         If File.Exists(p.SourceFile) Then
             SourceFileMenu.Show(lgbSource, 0, lgbSource.ll.Height)
         Else
-            OpenSourceFiles()
+            ShowOpenSourceDialog()
         End If
     End Sub
 
@@ -5589,7 +5570,7 @@ Class MainForm
         SourceFileMenu.Items.Clear()
         Dim isIndex = FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile))
 
-        SourceFileMenu.Items.Add(New ActionMenuItem("Open...", AddressOf OpenSourceFiles, "Open source files"))
+        SourceFileMenu.Items.Add(New ActionMenuItem("Open...", AddressOf ShowOpenSourceDialog, "Open source files"))
         SourceFileMenu.Items.Add(New ActionMenuItem("Play...", Sub() g.Play(p.SourceFile), "Play the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex))
         SourceFileMenu.Items.Add(New ActionMenuItem("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.SourceFile), "Show MediaInfo for the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex))
         SourceFileMenu.Items.Add(New ActionMenuItem("Explore...", Sub() g.OpenDirAndSelectFile(p.SourceFile, Handle), "Open the source file directory with File Explorer.", File.Exists(p.SourceFile)))
@@ -5605,8 +5586,8 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Perform | Show Command Prompt", "Shows a command prompt with the temp directory of the current project.")>
-    Sub OpenCommandPrompt()
+    <Command("Shows a command prompt with the temp directory of the current project.")>
+    Sub ShowCommandPrompt()
         Dim batchCode = "@echo off" + BR
 
         For Each i In Package.Items.Values
@@ -5631,8 +5612,8 @@ Class MainForm
         batchProcess.Start()
     End Sub
 
-    <Command("Perform | Batch Generate Thumbnails", "Generates a thumbnails image.")>
-    Sub BatchGenerateThumbnails()
+    <Command("Shows a dialog to generate thumbnails.")>
+    Sub ShowBatchGenerateThumbnailsDialog()
         Using fd As New OpenFileDialog
             fd.Title = "Select files"
             fd.SetFilter(FileTypes.Video)
@@ -5699,8 +5680,8 @@ Class MainForm
         End Using
     End Sub
 
-    <Command("Perform | Show Folder MediaInfo", "Presents MediaInfo of all files in a folder in a list view.")>
-    Sub OpenMediaInfoFolderView()
+    <Command("Presents MediaInfo of all files in a folder in a list view.")>
+    Sub ShowMediaInfoFolderViewDialog()
         Using d As New FolderBrowserDialog
             d.Description = "Please choose a folder to be viewed."
             d.ShowNewFolderButton = False

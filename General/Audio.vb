@@ -95,7 +95,7 @@ Class Audio
         Using proc As New Proc
             proc.Init("Demux audio using ffmpeg " + Package.ffmpeg.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.Path
             proc.Arguments = args
             proc.Start()
         End Using
@@ -118,7 +118,7 @@ Class Audio
 
         Using proc As New Proc
             proc.Init("Demux audio using MP4Box " + Package.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
-            proc.File = Package.MP4Box.GetPath
+            proc.File = Package.MP4Box.Path
             proc.Arguments = args
             proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
             proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
@@ -153,7 +153,7 @@ Class Audio
         Using proc As New Proc
             proc.Init("Demux audio using mkvextract " + Package.mkvextract.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.mkvextract.GetPath
+            proc.File = Package.mkvextract.Path
             proc.Arguments = args + " --ui-language en"
             proc.AllowedExitCodes = {0, 1, 2}
             proc.Start()
@@ -167,7 +167,7 @@ Class Audio
                 If outPath.Ext = "aac" Then
                     Using proc As New Proc
                         proc.Init("Mux AAC to M4A using MP4Box " + Package.MP4Box.Version, "|")
-                        proc.File = Package.MP4Box.GetPath
+                        proc.File = Package.MP4Box.Path
                         Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
                         Dim m4aPath = outPath.ChangeExt("m4a")
                         proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new """ + m4aPath + """"
@@ -202,7 +202,7 @@ Class Audio
             Using proc As New Proc
                 proc.Init("AVS to FLAC/WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
                 proc.Encoding = Encoding.UTF8
-                proc.File = Package.ffmpeg.GetPath
+                proc.File = Package.ffmpeg.Path
                 proc.Arguments = args
                 proc.Start()
             End Using
@@ -253,7 +253,7 @@ Class Audio
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine(Macro.Solve(d.GetScript) + BR)
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.Path
             proc.Arguments = args
             proc.Start()
         End Using
@@ -286,7 +286,7 @@ Class Audio
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine(Macro.Solve(d.GetScript) + BR)
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.Path
             proc.Arguments = args
             proc.Start()
         End Using
@@ -359,7 +359,7 @@ Class Audio
 
         Using proc As New Proc
             proc.Init("Convert to WAV/FLAC using eac3to " + Package.eac3to.Version)
-            proc.File = Package.eac3to.GetPath
+            proc.File = Package.eac3to.Path
             proc.Arguments = args
             proc.TrimChars = {"-"c, " "c}
             proc.RemoveChars = {VB6.ChrW(8)} 'backspace
@@ -390,7 +390,7 @@ Class Audio
             proc.Init("Convert from " + Filepath.GetExt(ap.File).ToUpper + " to " + Filepath.GetExt(outPath).ToUpper + " using ffmpeg " + Package.ffmpeg.Version,
                                 "frame=", "size=", "Multiple", "decoding is not implemented", "unsupported frame type", "upload a sample")
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.Path
             proc.Arguments = args
             proc.AllowedExitCodes = {0, 1}
             proc.Start()
@@ -423,7 +423,7 @@ Class Audio
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine(Macro.Solve(d.GetScript) + BR)
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.Path
             proc.Arguments = args
             proc.Start()
         End Using
@@ -457,7 +457,7 @@ Class Audio
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine(Macro.Solve(d.GetScript) + BR)
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.Path
             proc.Arguments = args
             proc.Start()
         End Using
@@ -488,7 +488,7 @@ Class Audio
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine(Macro.Solve(d.GetScript) + BR)
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.Path
             proc.Arguments = args
             proc.Start()
         End Using
@@ -521,7 +521,7 @@ Class Audio
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine(Macro.Solve(d.GetScript) + BR)
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.Path
             proc.Arguments = args
             proc.Start()
         End Using
@@ -545,7 +545,7 @@ Class Audio
             proc.Init("Create avi file with ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
             proc.WriteLine("mkvmerge cannot cut audio without video so we create a fake avi file." + BR)
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.Path
             proc.Arguments = args
             proc.Start()
         End Using
@@ -565,7 +565,7 @@ Class Audio
         Using proc As New Proc
             proc.Init("Cut using mkvmerge " + Package.mkvmerge.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.mkvmerge.GetPath
+            proc.File = Package.mkvmerge.Path
             proc.Arguments = args2
             proc.AllowedExitCodes = {0, 1, 2}
             proc.Start()
@@ -575,7 +575,6 @@ Class Audio
 
         If File.Exists(mkvPath) Then
             Log.WriteLine(MediaInfo.GetSummary(mkvPath))
-
             Dim streams = MediaInfo.GetAudioStreams(mkvPath)
 
             If streams.Count > 0 Then
@@ -636,7 +635,7 @@ function Down2(clip a)
         Using proc As New Proc
             proc.Init("Find Gain using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple", "decoding is not implemented", "unsupported frame type", "upload a sample")
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.GetPath
+            proc.File = Package.ffmpeg.Path
             proc.Arguments = args
             proc.Start()
 

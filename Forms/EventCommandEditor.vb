@@ -378,7 +378,7 @@ Class EventCommandEditor
         End If
 
         Dim c = g.MainForm.CustomMainMenu.CommandManager.GetCommand(cp.MethodName)
-        tbCommand.Text = c.Attribute.Name
+        tbCommand.Text = cp.MethodName
 
         If cp.Parameters Is Nothing OrElse cp.Parameters.Count = 0 Then
             pgParameters.Visible = False

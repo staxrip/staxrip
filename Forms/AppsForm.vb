@@ -219,7 +219,7 @@ Class AppsForm
     End Sub
 
     Sub ShowActivePackage()
-        Dim path = ActivePackage.GetPath
+        Dim path = ActivePackage.Path
 
         Headers("Title").Text = ActivePackage.Name
 
@@ -360,14 +360,14 @@ Class AppsForm
                     End If
                 End Using
             Case Keys.F12
-                If Not File.Exists(ActivePackage.GetPath) Then Exit Sub
+                If Not File.Exists(ActivePackage.Path) Then Exit Sub
 
                 Dim input = InputBox.Show("What's the name of this version?", "StaxRip", ActivePackage.Version)
 
                 If input <> "" Then
                     input = input.Replace(";", "_")
                     ActivePackage.Version = input
-                    ActivePackage.VersionDate = File.GetLastWriteTimeUtc(ActivePackage.GetPath)
+                    ActivePackage.VersionDate = File.GetLastWriteTimeUtc(ActivePackage.Path)
 
                     Dim textContent As String
 
@@ -439,7 +439,7 @@ Class AppsForm
 
     <DebuggerNonUserCode()>
     Private Sub tsbOpenDir_Click(sender As Object, e As EventArgs) Handles tsbOpenDir.Click
-        g.OpenDirAndSelectFile(ActivePackage.GetPath, Handle)
+        g.OpenDirAndSelectFile(ActivePackage.Path, Handle)
     End Sub
 
     Private Sub tsbHelp_Click(sender As Object, e As EventArgs) Handles tsbHelp.Click

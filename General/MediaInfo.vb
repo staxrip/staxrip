@@ -56,7 +56,7 @@ Class MediaInfo
     Sub New(path As String)
         If Not Loaded Then
             Loaded = True
-            Native.LoadLibrary(Package.MediaInfo.GetPath)
+            Native.LoadLibrary(Package.MediaInfo.Path)
         End If
 
         Handle = MediaInfo_New()
@@ -189,6 +189,17 @@ Class MediaInfo
                     End If
 
                     at.Language = New Language(GetAudio(i, "Language/String2"))
+
+                    Select Case p.DemuxAudio
+                        Case DemuxMode.All
+                            at.Enabled = True
+                        Case DemuxMode.None
+                            at.Enabled = False
+                        Case DemuxMode.Preferred, DemuxMode.Dialog
+                            Dim autoCode = p.PreferredAudio.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                            at.Enabled = autoCode.ContainsAny("all", at.Language.TwoLetterCode, at.Language.ThreeLetterCode)
+                    End Select
+
                     ret.Add(at)
                 Next
             End If
@@ -208,27 +219,35 @@ Class MediaInfo
                     If i.Codec = "TrueHD / AC3" Then offset += 1
                 Next
 
-                For i = 0 To count - 1
-                    Dim s As New Subtitle(New Language(GetInfo(MediaInfoStreamKind.Text, i, "Language")))
-                    Dim streamOrder = GetInfo(MediaInfoStreamKind.Text, i, "StreamOrder")
+                For index = 0 To count - 1
+                    Dim subtitle As New Subtitle(New Language(GetInfo(MediaInfoStreamKind.Text, index, "Language")))
+                    Dim streamOrder = GetInfo(MediaInfoStreamKind.Text, index, "StreamOrder")
 
                     If streamOrder <> "" Then
                         If streamOrder.Contains("-") Then
-                            s.StreamOrder = streamOrder.Right("-").ToInt + offset
+                            subtitle.StreamOrder = streamOrder.Right("-").ToInt + offset
                         Else
-                            s.StreamOrder = streamOrder.ToInt
+                            subtitle.StreamOrder = streamOrder.ToInt
                         End If
                     End If
 
-                    s.ID = GetInfo(MediaInfoStreamKind.Text, i, "ID").ToInt
-                    s.Title = GetInfo(MediaInfoStreamKind.Text, i, "Title").Trim
-                    s.CodecString = GetInfo(MediaInfoStreamKind.Text, i, "Codec/String")
-                    s.Format = GetInfo(MediaInfoStreamKind.Text, i, "Format")
-                    s.Size = GetInfo(MediaInfoStreamKind.Text, i, "StreamSize").ToInt
+                    subtitle.ID = GetInfo(MediaInfoStreamKind.Text, index, "ID").ToInt
+                    subtitle.Title = GetInfo(MediaInfoStreamKind.Text, index, "Title").Trim
+                    subtitle.CodecString = GetInfo(MediaInfoStreamKind.Text, index, "Codec/String")
+                    subtitle.Format = GetInfo(MediaInfoStreamKind.Text, index, "Format")
+                    subtitle.Size = GetInfo(MediaInfoStreamKind.Text, index, "StreamSize").ToInt
 
-                    Dim autoCode = p.AutoSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-                    s.Enabled = autoCode.ContainsAny("all", s.Language.TwoLetterCode, s.Language.ThreeLetterCode)
-                    ret.Add(s)
+                    Select Case p.DemuxSubtitles
+                        Case DemuxMode.All
+                            subtitle.Enabled = True
+                        Case DemuxMode.None
+                            subtitle.Enabled = False
+                        Case DemuxMode.Preferred, DemuxMode.Dialog
+                            Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                            subtitle.Enabled = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode)
+                    End Select
+
+                    ret.Add(subtitle)
                 Next
             End If
 

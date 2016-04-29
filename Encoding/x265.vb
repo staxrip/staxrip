@@ -40,16 +40,16 @@ Public Class x265Encoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode("Encoding video using x265 " + Package.x265.Version, GetArgs(1, p.Script), p.Script, s.ProcessPriority)
+        Encode("Encoding video using x265 " + Package.x265.Version, GetArgs(1, p.Script), s.ProcessPriority)
 
         If Params.Mode.Value = x265RateMode.TwoPass OrElse
             Params.Mode.Value = x265RateMode.ThreePass Then
 
-            Encode("Encoding video second pass using x265 " + Package.x265.Version, GetArgs(2, p.Script), p.Script, s.ProcessPriority)
+            Encode("Encoding video second pass using x265 " + Package.x265.Version, GetArgs(2, p.Script), s.ProcessPriority)
         End If
 
         If Params.Mode.Value = x265RateMode.ThreePass Then
-            Encode("Encoding video third pass using x265 " + Package.x265.Version, GetArgs(3, p.Script), p.Script, s.ProcessPriority)
+            Encode("Encoding video third pass using x265 " + Package.x265.Version, GetArgs(3, p.Script), s.ProcessPriority)
         End If
 
         AfterEncoding()
@@ -57,11 +57,10 @@ Public Class x265Encoder
 
     Overloads Sub Encode(passName As String,
                          batchCode As String,
-                         script As VideoScript,
                          priority As ProcessPriorityClass)
 
         batchCode = "@echo off" + BR + "CHCP 65001" + BR + batchCode
-        Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
+        Dim batchPath = p.TempDir + p.TargetFile.Base + "_encode.bat"
         File.WriteAllText(batchPath, batchCode, New UTF8Encoding(False))
 
         Using proc As New Proc
@@ -111,7 +110,7 @@ Public Class x265Encoder
         Dim commandLine = enc.Params.GetArgs(0, script, p.TempDir + p.Name + "_CompCheck." + OutputFileType, True, True)
 
         Try
-            Encode("Compressibility Check", commandLine, script, ProcessPriorityClass.Normal)
+            Encode("Compressibility Check", commandLine, ProcessPriorityClass.Normal)
         Catch ex As AbortException
             ProcessForm.CloseProcessForm()
             Exit Sub
@@ -706,6 +705,11 @@ Public Class x265Params
         .Text = "Maximum CLL:",
         .Switch = "--max-cll",
         .MinMaxStep = {0, Integer.MaxValue, 50},
+        .ImportAction = Sub(arg As String)
+                            Dim a = arg.Split(","c)
+                            MaxCLL.Value = a(0).ToInt
+                            MaxFALL.Value = a(1).ToInt
+                        End Sub,
         .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", "")}
 
     Property MaxFALL As New NumParam With {
@@ -888,19 +892,19 @@ Public Class x265Params
             Select Case Decoder.ValueText
                 Case "avs"
                     If p.Script.Engine = ScriptingEngine.VapourSynth Then
-                        sb.Append(Package.vspipe.GetPath.Quotes + " " + script.Path.Quotes + " - --y4m | " + Package.x265.GetPath.Quotes)
+                        sb.Append(Package.vspipe.Path.Quotes + " " + script.Path.Quotes + " - --y4m | " + Package.x265.Path.Quotes)
                     Else
-                        sb.Append(Package.ffmpeg.GetPath.Quotes + " -i " + script.Path.Quotes + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + Package.x265.GetPath.Quotes)
+                        sb.Append(Package.ffmpeg.Path.Quotes + " -i " + script.Path.Quotes + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + Package.x265.Path.Quotes)
                     End If
                 Case "qs"
                     Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")
-                    sb.Append(Package.QSVEncC.GetPath.Quotes + " -o - -c raw" + crop + " -i " + p.SourceFile.Quotes + " | " + Package.x265.GetPath.Quotes)
+                    sb.Append(Package.QSVEncC.Path.Quotes + " -o - -c raw" + crop + " -i " + p.SourceFile.Quotes + " | " + Package.x265.Path.Quotes)
                 Case "ffqsv"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.GetPath.Quotes + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Quotes + " -f yuv4mpegpipe" + crop + " -loglevel error - | " + Package.x265.GetPath.Quotes)
+                    sb.Append(Package.ffmpeg.Path.Quotes + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Quotes + " -f yuv4mpegpipe" + crop + " -loglevel error - | " + Package.x265.Path.Quotes)
                 Case "ffdxva"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.GetPath.Quotes + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Quotes + " -f yuv4mpegpipe" + crop + " -loglevel error - | " + Package.x265.GetPath.Quotes)
+                    sb.Append(Package.ffmpeg.Path.Quotes + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Quotes + " -f yuv4mpegpipe" + crop + " -loglevel error - | " + Package.x265.Path.Quotes)
             End Select
         End If
 

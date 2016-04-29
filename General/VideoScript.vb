@@ -230,7 +230,7 @@ Public Class VideoScript
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
 
         For Each plugin In plugins
-            Dim fp = plugin.GetPath
+            Dim fp = plugin.Path
 
             If fp <> "" Then
                 If engine = ScriptingEngine.VapourSynth AndAlso code.Contains("core = vs.") Then
@@ -256,7 +256,7 @@ Public Class VideoScript
                                         For Each i3 In plugin.Dependencies
                                             For Each i4 In plugins.Where(Function(arg) Not arg.AviSynthFilterNames.NothingOrEmpty)
                                                 If i3 = i4.Name Then
-                                                    load = "LoadPlugin(""" + i4.GetPath + """)" + BR
+                                                    load = "LoadPlugin(""" + i4.Path + """)" + BR
 
                                                     If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
                                                         code += load
@@ -471,7 +471,7 @@ Public Class VideoFilter
 End Class
 
 <Serializable()>
-Class FilterCategory
+Public Class FilterCategory
     Sub New(name As String)
         Me.Name = name
     End Sub

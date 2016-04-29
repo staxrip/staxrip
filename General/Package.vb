@@ -220,9 +220,9 @@ Public Class Package
             .Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.",
             .StartActionValue = Sub()
                                     If p.SourceFile = "" Then
-                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").GetPath.Quotes + " -avsinfo" + BR + "pause", False, False, True)
+                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").Path.Quotes + " -avsinfo" + BR + "pause", False, False, True)
                                     Else
-                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").GetPath.Quotes + " " + p.Script.Path.Quotes + BR + "pause", False, False, True)
+                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").Path.Quotes + " " + p.Script.Path.Quotes + BR + "pause", False, False, True)
                                     End If
                                 End Sub,
             .HelpFile = "doc\AVSMeter.html",
@@ -566,7 +566,7 @@ Public Class Package
         Try
             Dim p As New Process
             p.StartInfo.FileName = Package.Java.GetDir + "javaw.exe"
-            p.StartInfo.Arguments = "-jar """ + GetPath() + """"
+            p.StartInfo.Arguments = "-jar """ + Path + """"
             p.StartInfo.WorkingDirectory = GetDir()
             p.Start()
         Catch ex As Exception
@@ -630,9 +630,9 @@ Public Class Package
     End Function
 
     Function GetStatusLocation() As String
-        Dim path = GetPath()
+        Dim pathVar = Path
 
-        If path = "" Then
+        If pathVar = "" Then
             If FileNotFoundMessage <> "" Then
                 Return "App Not found, press F11 to locate the App. " + FileNotFoundMessage
             ElseIf Not SetupAction Is Nothing Then
@@ -642,18 +642,18 @@ Public Class Package
             Return "App Not found, press F11 to locate the App."
         End If
 
-        If FixedDir <> "" AndAlso path <> "" AndAlso Not path.ToLower.StartsWith(FixedDir.ToLower) Then
+        If FixedDir <> "" AndAlso pathVar <> "" AndAlso Not pathVar.ToLower.StartsWith(FixedDir.ToLower) Then
             Return "The App has To be located at: " + FixedDir
         End If
     End Function
 
     Function IsOutdated() As Boolean
-        Dim fp = GetPath()
+        Dim fp = Path
         If fp <> "" Then If (VersionDate - File.GetLastWriteTimeUtc(fp)).TotalDays > 3 Then Return True
     End Function
 
     Overridable Function IsCorrectVersion() As Boolean
-        Dim fp = GetPath()
+        Dim fp = Path
 
         If fp <> "" Then
             Dim dt = File.GetLastWriteTimeUtc(fp)
@@ -662,53 +662,55 @@ Public Class Package
     End Function
 
     Function GetDir() As String
-        Return Filepath.GetDir(GetPath)
+        Return Filepath.GetDir(Path)
     End Function
 
-    Sub SetPath(path As String)
-        s?.Storage?.SetString(Name + "custom path", path)
+    Sub SetPath(pathParam As String)
+        s?.Storage?.SetString(Name + "custom path", pathParam)
     End Sub
 
-    Overridable Function GetPath() As String
-        Dim ret As String
+    Overridable ReadOnly Property Path As String
+        Get
+            Dim ret As String
 
-        If Not s Is Nothing AndAlso Not s.Storage Is Nothing Then
-            ret = s.Storage.GetString(Name + "custom path")
+            If Not s Is Nothing AndAlso Not s.Storage Is Nothing Then
+                ret = s.Storage.GetString(Name + "custom path")
 
-            If ret <> "" Then
-                If File.Exists(ret) Then
-                    Return ret
-                Else
-                    s.Storage.SetString(Name + "custom path", Nothing)
+                If ret <> "" Then
+                    If File.Exists(ret) Then
+                        Return ret
+                    Else
+                        s.Storage.SetString(Name + "custom path", Nothing)
+                    End If
                 End If
             End If
-        End If
 
-        If FixedDir <> "" Then
-            If File.Exists(FixedDir + Filename) Then Return FixedDir + Filename
-            Return Nothing
-        End If
+            If FixedDir <> "" Then
+                If File.Exists(FixedDir + Filename) Then Return FixedDir + Filename
+                Return Nothing
+            End If
 
-        Dim plugin = TryCast(Me, PluginPackage)
+            Dim plugin = TryCast(Me, PluginPackage)
 
-        If Not plugin Is Nothing Then
-            If Not plugin.VapourSynthFilterNames Is Nothing AndAlso Not plugin.AviSynthFilterNames Is Nothing Then
-                ret = CommonDirs.Startup + "Apps\Plugins\both\" + Name + "\" + Filename
-                If File.Exists(ret) Then Return ret
-            Else
-                If plugin.VapourSynthFilterNames Is Nothing Then
-                    ret = CommonDirs.Startup + "Apps\Plugins\avs\" + Name + "\" + Filename
+            If Not plugin Is Nothing Then
+                If Not plugin.VapourSynthFilterNames Is Nothing AndAlso Not plugin.AviSynthFilterNames Is Nothing Then
+                    ret = CommonDirs.Startup + "Apps\Plugins\both\" + Name + "\" + Filename
                     If File.Exists(ret) Then Return ret
                 Else
-                    ret = CommonDirs.Startup + "Apps\Plugins\vs\" + Name + "\" + Filename
-                    If File.Exists(ret) Then Return ret
+                    If plugin.VapourSynthFilterNames Is Nothing Then
+                        ret = CommonDirs.Startup + "Apps\Plugins\avs\" + Name + "\" + Filename
+                        If File.Exists(ret) Then Return ret
+                    Else
+                        ret = CommonDirs.Startup + "Apps\Plugins\vs\" + Name + "\" + Filename
+                        If File.Exists(ret) Then Return ret
+                    End If
                 End If
             End If
-        End If
 
-        ret = CommonDirs.Startup + "Apps\" + Name + "\" + Filename
-        If File.Exists(ret) Then Return ret
-    End Function
+            ret = CommonDirs.Startup + "Apps\" + Name + "\" + Filename
+            If File.Exists(ret) Then Return ret
+        End Get
+    End Property
 
     Overrides Function ToString() As String
         Return Name
@@ -787,31 +789,33 @@ Public Class PythonPackage
         End Get
     End Property
 
-    Public Overrides Function GetPath() As String
-        Dim ret = MyBase.GetPath
-        If File.Exists(ret) Then Return ret
+    Public Overrides ReadOnly Property Path As String
+        Get
+            Dim ret = MyBase.Path
+            If File.Exists(ret) Then Return ret
 
-        For Each i In {
-            Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath"),
-            Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath"),
-            Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", Nothing).AppendSeparator + "python.exe",
-            Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", Nothing).AppendSeparator + "python.exe"}
+            For Each i In {
+                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath"),
+                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath"),
+                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", Nothing).AppendSeparator + "python.exe",
+                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", Nothing).AppendSeparator + "python.exe"}
 
-            If File.Exists(i) Then Return i
-        Next
+                If File.Exists(i) Then Return i
+            Next
 
-        Dim paths = Environment.ExpandEnvironmentVariables("%Path%").SplitNoEmptyAndWhiteSpace(";").ToList
-        paths.AddRange(Environment.ExpandEnvironmentVariables("%PATH%").SplitNoEmptyAndWhiteSpace(";"))
+            Dim paths = Environment.ExpandEnvironmentVariables("%Path%").SplitNoEmptyAndWhiteSpace(";").ToList
+            paths.AddRange(Environment.ExpandEnvironmentVariables("%PATH%").SplitNoEmptyAndWhiteSpace(";"))
 
-        For Each i In paths
-            i = i.Trim(" "c, """"c).AppendSeparator
+            For Each i In paths
+                i = i.Trim(" "c, """"c).AppendSeparator
 
-            If File.Exists(i + "python.exe") Then
-                SetPath(i + "python.exe")
-                Return i + "python.exe"
-            End If
-        Next
-    End Function
+                If File.Exists(i + "python.exe") Then
+                    SetPath(i + "python.exe")
+                    Return i + "python.exe"
+                End If
+            Next
+        End Get
+    End Property
 End Class
 
 Public Class VapourSynthPackage
@@ -904,12 +908,12 @@ Public Class PluginPackage
             End If
 
             Dim line = plugin.Name + " = importlib.machinery.SourceFileLoader('" +
-                plugin.Name + "', r""" + plugin.GetPath + """).load_module()" + BR
+                plugin.Name + "', r""" + plugin.Path + """).load_module()" + BR
 
             If Not script.Contains(line) AndAlso Not code.Contains(line) Then code += line
         ElseIf Not plugin.VapourSynthFilterNames Is Nothing Then
             If Not File.Exists(Paths.PluginsDir + plugin.Filename) Then
-                Dim line = "core.std.LoadPlugin(r""" + plugin.GetPath + """)" + BR
+                Dim line = "core.std.LoadPlugin(r""" + plugin.Path + """)" + BR
 
                 If Not script.Contains(line) AndAlso Not code.Contains(line) Then
                     code += line
@@ -956,19 +960,21 @@ Public Class JavaPackage
         IsRequiredValue = False
     End Sub
 
-    Public Overrides Function GetPath() As String
-        Dim ret = MyBase.GetPath()
-        If ret <> "" Then Return ret
+    Public Overrides ReadOnly Property Path As String
+        Get
+            Dim ret = MyBase.Path
+            If ret <> "" Then Return ret
 
-        ret = "C:\ProgramData\Oracle\Java\javapath\" + Filename
-        If File.Exists(ret) Then Return ret
+            ret = "C:\ProgramData\Oracle\Java\javapath\" + Filename
+            If File.Exists(ret) Then Return ret
 
-        ret = "C:\Windows\Sysnative\" + Filename
-        If File.Exists(ret) Then Return ret
+            ret = "C:\Windows\Sysnative\" + Filename
+            If File.Exists(ret) Then Return ret
 
-        ret = "C:\Windows\System32\" + Filename
-        If File.Exists(ret) Then Return ret
-    End Function
+            ret = "C:\Windows\System32\" + Filename
+            If File.Exists(ret) Then Return ret
+        End Get
+    End Property
 End Class
 
 Public Class ProjectXPackage
@@ -989,7 +995,7 @@ Public Class ProjectXPackage
     End Property
 
     Public Overrides Function GetStatus() As String
-        If Package.Java.GetPath = "" Then Return "Failed to locate Java, ProjectX requires Java."
+        If Package.Java.Path = "" Then Return "Failed to locate Java, ProjectX requires Java."
         Return MyBase.GetStatus()
     End Function
 End Class
@@ -1101,11 +1107,11 @@ Public Class qaacPackage
     End Property
 
     Overrides Function GetStatus() As String
-        Dim path = CommonDirs.Programs + "Common Files\Apple\Apple Application Support\CoreAudioToolbox.dll"
+        Dim pathVar = CommonDirs.Programs + "Common Files\Apple\Apple Application Support\CoreAudioToolbox.dll"
 
-        If Not File.Exists(path) AndAlso Not File.Exists(GetDir() + "QTfiles64\CoreAudioToolbox.dll") Then
+        If Not File.Exists(pathVar) AndAlso Not File.Exists(GetDir() + "QTfiles64\CoreAudioToolbox.dll") Then
             Return "Failed to locate CoreAudioToolbox, read the description below. Expected paths:" +
-                BR2 + path + BR2 + GetDir() + "QTfiles64\CoreAudioToolbox.dll"
+                BR2 + pathVar + BR2 + GetDir() + "QTfiles64\CoreAudioToolbox.dll"
         End If
     End Function
 End Class
@@ -1287,11 +1293,13 @@ Public Class dsmuxPackage
         SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\MatroskaSplitter.exe")
     End Sub
 
-    Public Overrides Function GetPath() As String
-        Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing)
-        ret = Filepath.GetDir(ret) + Filename
-        If File.Exists(ret) Then Return ret
-    End Function
+    Public Overrides ReadOnly Property Path As String
+        Get
+            Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing)
+            ret = Filepath.GetDir(ret) + Filename
+            If File.Exists(ret) Then Return ret
+        End Get
+    End Property
 
     Overrides ReadOnly Property IsRequired As Boolean
         Get
@@ -1312,10 +1320,12 @@ Public Class HaaliSplitter
         IsRequiredValue = False
     End Sub
 
-    Public Overrides Function GetPath() As String
-        Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing)
-        If File.Exists(ret) Then Return ret
-    End Function
+    Public Overrides ReadOnly Property Path As String
+        Get
+            Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing)
+            If File.Exists(ret) Then Return ret
+        End Get
+    End Property
 End Class
 
 Public Class MPCPackage
@@ -1332,7 +1342,7 @@ Public Class MPCPackage
 
     Public Overrides ReadOnly Property StartAction As Action
         Get
-            Return Sub() g.ShellExecute(GetPath, If(p.SourceFile <> "" AndAlso Not p.SourceFile.EqualsAny(FileTypes.VideoIndex), """" + p.SourceFile, """"))
+            Return Sub() g.ShellExecute(Path, If(p.SourceFile <> "" AndAlso Not p.SourceFile.EqualsAny(FileTypes.VideoIndex), """" + p.SourceFile, """"))
         End Get
     End Property
 End Class

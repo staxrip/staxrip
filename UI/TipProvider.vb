@@ -93,14 +93,13 @@ Namespace UI
             Next
         End Sub
 
-        Sub Init(tipText As String, c As Control)
+        Sub Init(tipText As String, control As Control)
             If Not DesignMode Then
-                AddHandler c.MouseDown, AddressOf TipMouseDown
-
+                AddHandler control.MouseDown, AddressOf TipMouseDown
                 tipText = tipText.TrimEnd("."c)
 
                 If tipText.Length > 80 Then
-                    If HasContextMenu(c) Then
+                    If HasContextMenu(control) Then
                         tipText = Nothing
                     Else
                         tipText = "Right-click for help"
@@ -109,8 +108,8 @@ Namespace UI
                     tipText = HelpDocument.ConvertMarkup(tipText, True)
                 End If
 
-                If OK(tipText) Then
-                    AddHandler c.HandleCreated, Sub() ToolTip.SetToolTip(c, tipText)
+                If tipText <> "" Then
+                    AddHandler control.HandleCreated, Sub() ToolTip.SetToolTip(control, tipText)
                 End If
             End If
         End Sub

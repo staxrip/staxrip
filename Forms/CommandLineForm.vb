@@ -106,29 +106,11 @@ Class CommandLineForm
                     help = item.Switch
                 End If
 
-                If TypeOf item Is BoolParam Then
-                    If item.NoSwitch <> "" Then
-                        help += BR2 + "Default: automatic"
-                    Else
-                        If DirectCast(item, BoolParam).DefaultValue Then
-                            help += BR2 + "Default: enabled"
-                        Else
-                            help += BR2 + "Default: disabled"
-                        End If
-                    End If
-                ElseIf TypeOf item Is NumParam Then
+                If TypeOf item Is NumParam Then
                     Dim param = DirectCast(item, NumParam)
-                    help += BR2 + "Default: " & param.DefaultValue.ToString(CultureInfo.InvariantCulture)
+                    help += BR
                     If param.MinMaxStepDec(0) > Integer.MinValue Then help += BR + "Minimum: " & param.MinMaxStepDec(0)
                     If param.MinMaxStepDec(1) < Integer.MaxValue Then help += BR + "Maximum: " & param.MinMaxStepDec(1)
-                ElseIf TypeOf item Is OptionParam Then
-                    Dim param = DirectCast(item, OptionParam)
-
-                    If param.DefaultValue >= 0 AndAlso param.DefaultValue < param.Options.Length Then
-                        help += BR2 + "Default: " + param.Options(param.DefaultValue)
-                    End If
-                ElseIf TypeOf item Is StringParam Then
-                    help += BR2 + "Default: " & DirectCast(item, StringParam).DefaultValue
                 End If
 
                 If item.Help <> "" Then help += BR2 + item.Help

@@ -561,7 +561,7 @@ Class eac3toForm
         cms.Items.Add(New ActionMenuItem("Audio Stream Profiles...", AddressOf ShowAudioStreamProfiles))
         cms.Items.Add(New ActionMenuItem("Show eac3to wikibook", Sub() g.ShellExecute("http://en.wikibooks.org/wiki/Eac3to")))
         cms.Items.Add(New ActionMenuItem("Show eac3to support forum", Sub() g.ShellExecute("http://forum.doom9.org/showthread.php?t=125966")))
-        cms.Items.Add(New ActionMenuItem("Execute eac3to.exe -test", Sub() g.ShellExecute("cmd.exe", "/k """ + Package.eac3to.GetPath + """ -test")))
+        cms.Items.Add(New ActionMenuItem("Execute eac3to.exe -test", Sub() g.ShellExecute("cmd.exe", "/k """ + Package.eac3to.Path + """ -test")))
 
         ActiveControl = Nothing
     End Sub
@@ -620,15 +620,15 @@ Class eac3toForm
 
         If File.Exists(M2TSFile) Then
             args = """" + M2TSFile + """ -progressnumbers"
-            Log.Write("Process M2TS file using eac3to", """" + Package.eac3to.GetPath + """ " + args + BR2)
+            Log.Write("Process M2TS file using eac3to", """" + Package.eac3to.Path + """ " + args + BR2)
         ElseIf Directory.Exists(PlaylistFolder) Then
             args = """" + PlaylistFolder + """ " & PlaylistID & ") -progressnumbers"
-            Log.Write("Process playlist file using eac3to", """" + Package.eac3to.GetPath + """ " + args + BR2)
+            Log.Write("Process playlist file using eac3to", """" + Package.eac3to.Path + """ " + args + BR2)
         End If
 
         Using o As New Process
             AddHandler o.OutputDataReceived, AddressOf OutputDataReceived
-            o.StartInfo.FileName = Package.eac3to.GetPath
+            o.StartInfo.FileName = Package.eac3to.Path
             o.StartInfo.Arguments = args
             o.StartInfo.CreateNoWindow = True
             o.StartInfo.UseShellExecute = False
@@ -786,15 +786,8 @@ Class eac3toForm
                     Dim item = lvSubtitles.Items.Add(stream.Language.ToString)
                     item.Tag = stream
 
-                    For Each autoCode In p.AutoSubtitles.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-                        If autoCode.ToLower = "all" OrElse
-                            autoCode.ToLower = stream.Language.TwoLetterCode OrElse
-                            autoCode.ToLower = stream.Language.ThreeLetterCode OrElse
-                            stream.Language.TwoLetterCode = "iv" Then
-
-                            item.Checked = True
-                        End If
-                    Next
+                    Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    item.Checked = autoCode.ContainsAny("all", stream.Language.TwoLetterCode, stream.Language.ThreeLetterCode)
                 ElseIf stream.IsChapters Then
                     cbChapters.Visible = True
                 End If

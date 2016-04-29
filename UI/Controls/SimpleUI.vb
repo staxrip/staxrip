@@ -615,7 +615,7 @@ Public Class SimpleUI
         Sub AddMenu(menuText As String, menuFunc As Func(Of String))
             Dim action = Sub()
                              Dim v = menuFunc.Invoke
-                             If OK(v) Then Edit.Text = v
+                             If v <> "" Then Edit.Text = v
                          End Sub
 
             AddMenu(menuText, action)

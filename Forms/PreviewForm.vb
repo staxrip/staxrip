@@ -438,7 +438,7 @@ Class PreviewForm
         Return ret
     End Function
 
-    <Command("Perform | Switch Window State", "Switches the window state between full and normal.")>
+    <Command("Switches the window state between full and normal.")>
     Sub SwitchWindowState()
         If FormBorderStyle = FormBorderStyle.None Then
             NormalScreen()
@@ -637,12 +637,12 @@ Class PreviewForm
         cmsMain.Show(bExtras, New Point(1, bExtras.Height))
     End Sub
 
-    <Command("Parameter | Absolute Position", "Jumps to a given frame.")>
+    <Command("Jumps to a given frame.")>
     Sub SetAbsolutePos(<DispName("Position")> pos As Integer)
         SetPos(pos)
     End Sub
 
-    <Command("Parameter | Relative Position", "Jumps a given frame count.")>
+    <Command("Jumps a given frame count.")>
     Sub SetRelativePos(<DispName("Position"),
         Description("Frames to jump, negative values jump backward.")>
         pos As Integer)
@@ -662,7 +662,7 @@ Class PreviewForm
         Text = "Preview " & s.LastPosition
     End Sub
 
-    <Command("Dialog | Go To Time", "Dialog to jump to a specific time.")>
+    <Command("Dialog to jump to a specific time.")>
     Sub GoToTime()
         Dim d As Date
         d = d.AddSeconds(AVI.Position / AVI.FrameRate)
@@ -678,7 +678,7 @@ Class PreviewForm
         End If
     End Sub
 
-    <Command("Dialog | Go To Frame", "Dialog to jump to a specific frame.")>
+    <Command("Dialog to jump to a specific frame.")>
     Sub GoToFrame()
         Dim value = InputBox.Show("Frame:", "Go To Frame", AVI.Position.ToString)
         Dim pos As Integer
@@ -690,13 +690,13 @@ Class PreviewForm
         End If
     End Sub
 
-    <Command("Dialog | Menu Editor", "Opens the menu editor.")>
+    <Command("Opens the menu editor.")>
     Sub OpenMenuEditor()
         s.CustomMenuPreview = GenericMenu.Edit()
         g.SaveSettings()
     End Sub
 
-    <Command("Dialog | Help", "Opens the help.")>
+    <Command("Opens the help.")>
     Sub OpenHelp()
         Dim f As New HelpForm
         f.Doc.WriteStart("Preview")
@@ -706,7 +706,7 @@ Class PreviewForm
         f.Show()
     End Sub
 
-    <Command("Perform | Set Cut Start", "Sets the start cut position.")>
+    <Command("Sets the start cut position.")>
     Sub SetRangeStart()
         Dim r = GetCurrentRange()
 
@@ -720,7 +720,7 @@ Class PreviewForm
         AfterPositionChanged()
     End Sub
 
-    <Command("Perform | Set Cut End", "Sets the end cut position.")>
+    <Command("Sets the end cut position.")>
     Sub SetRangeEnd()
         If RangeStart > -1 Then
             p.Ranges.Add(New Range(RangeStart, AVI.Position))
@@ -758,7 +758,7 @@ Class PreviewForm
         p.Ranges.Sort()
     End Sub
 
-    <Command("Perform | Split", "Splits the clip or selection into two selections.")>
+    <Command("Splits the clip or selection into two selections.")>
     Sub SplitRange()
         If p.Ranges.Count = 0 Then
             p.Ranges.Add(New Range(0, AVI.FrameCount - 1))
@@ -778,13 +778,13 @@ Class PreviewForm
         AfterPositionChanged()
     End Sub
 
-    <Command("Perform | Clear Cuts", "Clears all cuts.")>
+    <Command("Clears all cuts.")>
     Sub ClearAllRanges()
         p.Ranges.Clear()
         AfterPositionChanged()
     End Sub
 
-    <Command("Perform | Delete Current Range", "Deletes the range that encloses the current position.")>
+    <Command("Deletes the range that encloses the current position.")>
     Sub DeleteRange()
         For Each i As Range In p.Ranges.ToArray
             If AVI.Position >= i.Start AndAlso AVI.Position <= i.End Then
@@ -795,20 +795,20 @@ Class PreviewForm
         AfterPositionChanged()
     End Sub
 
-    <Command("Perform | Show Hide Buttons", "Shows/hides the buttons.")>
+    <Command("Shows/hides the buttons.")>
     Sub ShowHideButtons()
         s.HidePreviewButtons = Not s.HidePreviewButtons
         ShowButtons(Not s.HidePreviewButtons)
         AfterPositionChanged()
     End Sub
 
-    <Command("Perform | Show Hide Trackbar", "Shows/hides the trackbar.")>
+    <Command("Shows/hides the trackbar.")>
     Sub ShowHideTrackbar()
         pTrack.Visible = Not pTrack.Visible
         AfterPositionChanged()
     End Sub
 
-    <Command("Parameter | Change Size", "Changes the size.")>
+    <Command("Changes the size.")>
     Sub Zoom(<DispName("Factor")> factor As Single)
         SizeFactor += factor
         NormalScreen()
@@ -819,7 +819,7 @@ Class PreviewForm
         AfterPositionChanged()
     End Sub
 
-    <Command("Perform | Show/Hide Infos", "Shows/hides various infos.")>
+    <Command("Shows/hides various infos.")>
     Sub ToggleInfos()
         s.PreviewToggleInfos = Not s.PreviewToggleInfos
         Drawer.ShowInfos = s.PreviewToggleInfos
@@ -827,19 +827,19 @@ Class PreviewForm
         GenericMenu.Check("ToggleInfos", s.PreviewToggleInfos)
     End Sub
 
-    <Command("Perform | Show External Player", "Shows the AviSynth script using the player currently associated with AVI files.")>
+    <Command("Shows the AviSynth script using the player currently associated with AVI files.")>
     Sub ShowExternalPlayer()
         UpdateTrim()
         g.PlayScript(p.Script)
     End Sub
 
-    <Command("Perform | Reload Script", "Reloads the script.")>
+    <Command("Reloads the script.")>
     Sub Reload()
         RefreshScript()
         AfterPositionChanged()
     End Sub
 
-    <Command("Perform | Exit", "Closes the dialog.")>
+    <Command("Closes the dialog.")>
     Sub CloseDialog()
         Close()
     End Sub
@@ -856,7 +856,7 @@ Class PreviewForm
         End If
     End Sub
 
-    <Command("Perform | Previous Cut Point", "Jumps to the previous cut point.")>
+    <Command("Jumps to the previous cut point.")>
     Sub JumpToThePreviousRangePos()
         Dim list As New List(Of Object)
 
@@ -878,14 +878,14 @@ Class PreviewForm
         End If
     End Sub
 
-    <Command("Perform | Copy Time", "Copies the time of the current position.")>
+    <Command("Copies the time of the current position.")>
     Sub CopyTime()
         Dim d As Date
         d = d.AddSeconds(AVI.Position / AVI.FrameRate)
         Clipboard.SetText(d.ToString("HH:mm:ss.fff"))
     End Sub
 
-    <Command("Perform | Next Cut Point", "Jumps to the next cut point.")>
+    <Command("Jumps to the next cut point.")>
     Sub JumpToTheNextRangePos()
         Dim list As New List(Of Object)
 
@@ -906,7 +906,7 @@ Class PreviewForm
         End If
     End Sub
 
-    <Command("Perform | Save Bitmap", "Saves the current frame as bitmap.")>
+    <Command("Saves the current frame as bitmap.")>
     Sub SaveBitmap()
         Using d As New SaveFileDialog
             d.SetFilter({"bmp"})
@@ -918,7 +918,7 @@ Class PreviewForm
         End Using
     End Sub
 
-    <Command("Perform | Save JPG", "Saves the current frame as JPG.")>
+    <Command("Saves the current frame as JPG.")>
     Sub SaveJPG()
         Using d As New SaveFileDialog
             d.SetFilter({"jpg"})
@@ -931,63 +931,63 @@ Class PreviewForm
     End Sub
 
     Shared Function GetDefaultMenuPreview() As CustomMenuItem
-        Dim r As New CustomMenuItem("Root")
+        Dim ret As New CustomMenuItem("Root")
 
-        r.Add("Navigation|Go To Start", "SetAbsolutePos", Keys.Control Or Keys.Left, 0)
-        r.Add("Navigation|Go To End", "SetAbsolutePos", Keys.Control Or Keys.Right, 1000000000)
-        r.Add("Navigation|-")
-        r.Add("Navigation|Go To Frame...", "GoToFrame", Keys.Control Or Keys.G)
-        r.Add("Navigation|Go To Time...", "GoToTime")
-        r.Add("Navigation|-")
-        r.Add("Navigation|Go To Previous Cut Point", "JumpToThePreviousRangePos", Keys.Control Or Keys.Up)
-        r.Add("Navigation|Go To Next Cut Point", "JumpToTheNextRangePos", Keys.Control Or Keys.Down)
-        r.Add("Navigation|-")
-        r.Add("Navigation|Backward 1 Frame", "SetRelativePos", Keys.Left, -1)
-        r.Add("Navigation|Backward 10 Frames", "SetRelativePos", Keys.Up, -10)
-        r.Add("Navigation|Backward 100 Frames", "SetRelativePos", Keys.Prior, -100)
-        r.Add("Navigation|Backward 1000 Frames", "SetRelativePos", Keys.Subtract, -1000)
-        r.Add("Navigation|-")
-        r.Add("Navigation|Forward 1000 Frames", "SetRelativePos", Keys.Add, 1000)
-        r.Add("Navigation|Forward 100 Frames", "SetRelativePos", Keys.Next, 100)
-        r.Add("Navigation|Forward 10 Frames", "SetRelativePos", Keys.Down, 10)
-        r.Add("Navigation|Forward 1 Frames", "SetRelativePos", Keys.Right, 1)
+        ret.Add("Navigation|Go To Start", NameOf(SetAbsolutePos), Keys.Control Or Keys.Left, 0)
+        ret.Add("Navigation|Go To End", NameOf(SetAbsolutePos), Keys.Control Or Keys.Right, 1000000000)
+        ret.Add("Navigation|-")
+        ret.Add("Navigation|Go To Frame...", NameOf(GoToFrame), Keys.Control Or Keys.G)
+        ret.Add("Navigation|Go To Time...", NameOf(GoToTime))
+        ret.Add("Navigation|-")
+        ret.Add("Navigation|Go To Previous Cut Point", NameOf(JumpToThePreviousRangePos), Keys.Control Or Keys.Up)
+        ret.Add("Navigation|Go To Next Cut Point", NameOf(JumpToTheNextRangePos), Keys.Control Or Keys.Down)
+        ret.Add("Navigation|-")
+        ret.Add("Navigation|Backward 1 Frame", NameOf(SetRelativePos), Keys.Left, -1)
+        ret.Add("Navigation|Backward 10 Frames", NameOf(SetRelativePos), Keys.Up, -10)
+        ret.Add("Navigation|Backward 100 Frames", NameOf(SetRelativePos), Keys.Prior, -100)
+        ret.Add("Navigation|Backward 1000 Frames", NameOf(SetRelativePos), Keys.Subtract, -1000)
+        ret.Add("Navigation|-")
+        ret.Add("Navigation|Forward 1000 Frames", NameOf(SetRelativePos), Keys.Add, 1000)
+        ret.Add("Navigation|Forward 100 Frames", NameOf(SetRelativePos), Keys.Next, 100)
+        ret.Add("Navigation|Forward 10 Frames", NameOf(SetRelativePos), Keys.Down, 10)
+        ret.Add("Navigation|Forward 1 Frames", NameOf(SetRelativePos), Keys.Right, 1)
 
-        r.Add("Cut|Begin Selection", "SetRangeStart", Keys.Home)
-        r.Add("Cut|End Selection", "SetRangeEnd", Keys.End)
-        r.Add("Cut|-")
-        r.Add("Cut|Split", "SplitRange", Keys.S)
-        r.Add("Cut|-")
-        r.Add("Cut|Delete Selection", "DeleteRange", Keys.Delete)
-        r.Add("Cut|Delete All Selections", "ClearAllRanges", Keys.Control Or Keys.Delete)
+        ret.Add("Cut|Begin Selection", NameOf(SetRangeStart), Keys.Home)
+        ret.Add("Cut|End Selection", NameOf(SetRangeEnd), Keys.End)
+        ret.Add("Cut|-")
+        ret.Add("Cut|Split", NameOf(SplitRange), Keys.S)
+        ret.Add("Cut|-")
+        ret.Add("Cut|Delete Selection", NameOf(DeleteRange), Keys.Delete)
+        ret.Add("Cut|Delete All Selections", NameOf(ClearAllRanges), Keys.Control Or Keys.Delete)
 
-        r.Add("View|Infos", "ToggleInfos", Keys.I)
-        r.Add("View|Fullscreen", "SwitchWindowState", Keys.Enter)
-        r.Add("View|-")
-        r.Add("View|Zoom In", "Zoom", Keys.OemMinus, -0.25F)
-        r.Add("View|Zoom Out", "Zoom", Keys.Oemplus, 0.25F)
-        r.Add("View|-")
-        r.Add("View|Buttons", "ShowHideButtons", Keys.B)
-        r.Add("View|Trackbar", "ShowHideTrackbar", Keys.T)
+        ret.Add("View|Infos", NameOf(ToggleInfos), Keys.I)
+        ret.Add("View|Fullscreen", NameOf(SwitchWindowState), Keys.Enter)
+        ret.Add("View|-")
+        ret.Add("View|Zoom In", NameOf(Zoom), Keys.OemMinus, -0.25F)
+        ret.Add("View|Zoom Out", NameOf(Zoom), Keys.Oemplus, 0.25F)
+        ret.Add("View|-")
+        ret.Add("View|Buttons", NameOf(ShowHideButtons), Keys.B)
+        ret.Add("View|Trackbar", NameOf(ShowHideTrackbar), Keys.T)
 
-        r.Add("Tools|Reload", "Reload", Keys.R)
-        r.Add("Tools|External Player", "ShowExternalPlayer", Keys.E)
-        r.Add("Tools|-")
-        r.Add("Tools|Copy Frame Number", "CopyToClipboard", "%pos_frame%")
-        r.Add("Tools|Copy Time", "CopyTime")
-        r.Add("Tools|-")
-        r.Add("Tools|Save Bitmap", "SaveBitmap", Keys.Control Or Keys.S)
-        r.Add("Tools|Save JPG", "SaveJPG")
-        r.Add("Tools|-")
-        r.Add("Tools|Set Start Zone", "AddX264Zone", "0", "%pos_frame%", "q=30")
-        r.Add("Tools|Set End Zone", "AddX264Zone", "%pos_frame%", "%eval:%source_frames%-1%", "q=35")
-        r.Add("Tools|-")
-        r.Add("Tools|Add Selection Zone", "AddX264Zone", "%sel_start%", "%sel_end%", "q=40")
+        ret.Add("Tools|Reload", NameOf(Reload), Keys.R)
+        ret.Add("Tools|External Player", NameOf(ShowExternalPlayer), Keys.E)
+        ret.Add("Tools|-")
+        ret.Add("Tools|Copy Frame Number", NameOf(g.DefaultCommands.CopyToClipboard), "%pos_frame%")
+        ret.Add("Tools|Copy Time", NameOf(CopyTime))
+        ret.Add("Tools|-")
+        ret.Add("Tools|Save Bitmap", NameOf(SaveBitmap), Keys.Control Or Keys.S)
+        ret.Add("Tools|Save JPG", NameOf(SaveJPG))
+        ret.Add("Tools|-")
+        ret.Add("Tools|Set Start Zone", NameOf(g.DefaultCommands.AddX264Zone), "0", "%pos_frame%", "q=30")
+        ret.Add("Tools|Set End Zone", NameOf(g.DefaultCommands.AddX264Zone), "%pos_frame%", "%eval:%source_frames%-1%", "q=35")
+        ret.Add("Tools|-")
+        ret.Add("Tools|Add Selection Zone", NameOf(g.DefaultCommands.AddX264Zone), "%sel_start%", "%sel_end%", "q=40")
 
-        r.Add("Edit Menu...", "OpenMenuEditor", Keys.M)
-        r.Add("Help...", "OpenHelp", Keys.F1)
-        r.Add("Exit", "CloseDialog", Keys.Escape)
+        ret.Add("Edit Menu...", NameOf(OpenMenuEditor), Keys.M)
+        ret.Add("Help...", NameOf(OpenHelp), Keys.F1)
+        ret.Add("Exit", NameOf(CloseDialog), Keys.Escape)
 
-        Return r
+        Return ret
     End Function
 
     Private Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pVideo.Paint

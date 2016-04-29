@@ -41,26 +41,18 @@ Class StreamDemuxForm
         bnSubtitleNative.Text = CultureInfo.CurrentCulture.NeutralCulture.EnglishName
         bnSubtitleNative.Enabled = Subtitles.Where(Function(stream) stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName).Count > 0
 
-        For Each i In AudioStreams
-            i.Enabled = False
-
-            Dim item = lvAudio.Items.Add(i.Name)
-            item.Tag = i
-
-            If i.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName OrElse
-                i.Language.TwoLetterCode = "en" OrElse i.Language.TwoLetterCode = "iv" Then
-
-                i.Enabled = p.DemuxAudio
-                item.Checked = p.DemuxAudio
-            End If
+        For Each audioStream In AudioStreams
+            Dim item = lvAudio.Items.Add(audioStream.Name)
+            item.Tag = audioStream
+            item.Checked = audioStream.Enabled
         Next
 
-        For Each i In Subtitles
-            Dim text = i.Language.ToString
-            If Subtitles.Count <= 12 Then text += " (" + i.TypeName + ")"
+        For Each subtitle In Subtitles
+            Dim text = subtitle.Language.ToString
+            If Subtitles.Count <= 12 Then text += " (" + subtitle.TypeName + ")"
             Dim item = lvSubtitles.Items.Add(text)
-            item.Tag = i
-            item.Checked = i.Enabled AndAlso p.DemuxSubtitles
+            item.Tag = subtitle
+            item.Checked = subtitle.Enabled
         Next
     End Sub
 

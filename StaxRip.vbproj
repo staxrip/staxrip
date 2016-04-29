@@ -218,6 +218,7 @@
     <Compile Include="Encoding\ffmpegEncoder.vb" />
     <Compile Include="Encoding\IntelEncoder.vb" />
     <Compile Include="Encoding\NVIDIAEncoder.vb" />
+    <Compile Include="General\GlobalCommands.vb" />
     <Compile Include="General\Scripting.vb" />
     <Compile Include="UI\DataForm.Designer.vb">
       <DependentUpon>DataForm.vb</DependentUpon>

@@ -487,36 +487,36 @@ Class CropForm
     Shared Function GetDefaultMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
-        ret.Add("No Crop", "SetCropValues", Keys.N, 0, 0, 0, 0)
-        ret.Add("Auto Crop", "AutoCrop", Keys.A)
-        ret.Add("Smart Crop", "SmartCrop", Keys.S)
+        ret.Add("No Crop", NameOf(SetCropValues), Keys.N, 0, 0, 0, 0)
+        ret.Add("Auto Crop", NameOf(RunAutoCrop), Keys.A)
+        ret.Add("Smart Crop", NameOf(RunSmartCrop), Keys.S)
         ret.Add("-")
-        ret.Add("Increase Active Side", "CropActiveSide", Keys.Add, 2, 2)
-        ret.Add("Decrease Active Side", "CropActiveSide", Keys.Subtract, -2, -2)
+        ret.Add("Increase Active Side", NameOf(CropActiveSide), Keys.Add, 2, 2)
+        ret.Add("Decrease Active Side", NameOf(CropActiveSide), Keys.Subtract, -2, -2)
         ret.Add("-")
-        ret.Add("Increase Active Side Large", "CropActiveSide", Keys.Add Or Keys.Shift, 8, 8)
-        ret.Add("Decrease Active Side Large", "CropActiveSide", Keys.Subtract Or Keys.Shift, -8, -8)
+        ret.Add("Increase Active Side Large", NameOf(CropActiveSide), Keys.Add Or Keys.Shift, 8, 8)
+        ret.Add("Decrease Active Side Large", NameOf(CropActiveSide), Keys.Subtract Or Keys.Shift, -8, -8)
         ret.Add("-")
-        ret.Add("Increase Active And Opposite Side", "CropActiveSideOpposite", Keys.Add Or Keys.Control, 2, 2)
-        ret.Add("Decrease Active And Opposite Side", "CropActiveSideOpposite", Keys.Subtract Or Keys.Control, -2, -2)
+        ret.Add("Increase Active And Opposite Side", NameOf(CropActiveAndOppositeSide), Keys.Add Or Keys.Control, 2, 2)
+        ret.Add("Decrease Active And Opposite Side", NameOf(CropActiveAndOppositeSide), Keys.Subtract Or Keys.Control, -2, -2)
         ret.Add("-")
-        ret.Add("Increase Active And Opposite Side Large", "CropActiveSideOpposite", Keys.Add Or Keys.Control Or Keys.Shift, 8, 8)
-        ret.Add("Decrease Active And Opposite Side Large", "CropActiveSideOpposite", Keys.Subtract Or Keys.Control Or Keys.Shift, -8, -8)
+        ret.Add("Increase Active And Opposite Side Large", NameOf(CropActiveAndOppositeSide), Keys.Add Or Keys.Control Or Keys.Shift, 8, 8)
+        ret.Add("Decrease Active And Opposite Side Large", NameOf(CropActiveAndOppositeSide), Keys.Subtract Or Keys.Control Or Keys.Shift, -8, -8)
         ret.Add("-")
-        ret.Add("Navigate 100 Frames Backward", "SetRelativePosition", Keys.PageUp, -100)
-        ret.Add("Navigate 1000 Frames Backward", "SetRelativePosition", Keys.PageUp Or Keys.Control, -1000)
-        ret.Add("Navigate 1000 Frames Forward", "SetRelativePosition", Keys.PageDown Or Keys.Control, 1000)
-        ret.Add("Navigate 100 Frames Forward", "SetRelativePosition", Keys.PageDown, 100)
+        ret.Add("Navigate 100 Frames Backward", NameOf(SetRelativePosition), Keys.PageUp, -100)
+        ret.Add("Navigate 1000 Frames Backward", NameOf(SetRelativePosition), Keys.PageUp Or Keys.Control, -1000)
+        ret.Add("Navigate 1000 Frames Forward", NameOf(SetRelativePosition), Keys.PageDown Or Keys.Control, 1000)
+        ret.Add("Navigate 100 Frames Forward", NameOf(SetRelativePosition), Keys.PageDown, 100)
         ret.Add("-")
-        ret.Add("Crop Options...", "OpenOptions", Keys.O)
-        ret.Add("Edit Menu...", "OpenMenuEditor", Keys.M)
-        ret.Add("Help...", "ShowHelpDialog", Keys.F1)
-        ret.Add("Exit", "CloseDialog", Keys.Escape)
+        ret.Add("Crop Options...", NameOf(ShowOptions), Keys.O)
+        ret.Add("Edit Menu...", NameOf(ShowMenuEditor), Keys.M)
+        ret.Add("Help...", NameOf(ShowHelpDialog), Keys.F1)
+        ret.Add("Exit", NameOf(CloseDialog), Keys.Escape)
 
         Return ret
     End Function
 
-    <Command("Parameter | Set Crop Values", "Sets the four crop values.")>
+    <Command("Sets the four crop values.")>
     Private Sub SetCropValues(
         left As Integer,
         top As Integer,
@@ -531,7 +531,7 @@ Class CropForm
         UpdateAll()
     End Sub
 
-    <Command("Parameter | Crop Active Side", "Crops the active side.")>
+    <Command("Crops the active side.")>
     Private Sub CropActiveSide(
         <DispName("Pixel (corrected)"),
         Description("Pixels to crop when 'Auto correct crop values' is enabled.")>
@@ -543,8 +543,8 @@ Class CropForm
         CropActiveSideInternal(FixMod(If(p.AutoCorrectCropValues, valueSafe, valueUnsafe)), False)
     End Sub
 
-    <Command("Parameter | Crop Active And Opposite Side", "Crops the active and the opposite side of the active side")>
-    Private Sub CropActiveSideOpposite(
+    <Command("Crops the active and the opposite side of the active side")>
+    Private Sub CropActiveAndOppositeSide(
         <DispName("Pixel (corrected)"),
         Description("Pixels to crop when 'Auto correct crop values' is enabled.")>
         valueSafe As Integer,
@@ -555,36 +555,36 @@ Class CropForm
         CropActiveSideInternal(FixMod(If(p.AutoCorrectCropValues, valueSafe, valueUnsafe)), True)
     End Sub
 
-    <Command("Perform | Auto Crop", "Detects the crop values automatically.")>
-    Private Sub AutoCrop()
+    <Command("Detects the crop values automatically.")>
+    Private Sub RunAutoCrop()
         g.RunAutoCrop()
         UpdateAll()
     End Sub
 
-    <Command("Perform | Smart Crop", "Crops until the proper aspect ratio is found.")>
-    Private Sub SmartCrop()
+    <Command("Crops until the proper aspect ratio is found.")>
+    Private Sub RunSmartCrop()
         g.SmartCrop()
         UpdateAll()
     End Sub
 
-    <Command("Dialog | Menu Editor", "Dialog to configure the menu.")>
-    Private Sub OpenMenuEditor()
+    <Command("Dialog to configure the menu.")>
+    Private Sub ShowMenuEditor()
         s.CustomMenuCrop = CustomMenu.Edit()
         g.SaveSettings()
     End Sub
 
-    <Command("Perform | Exit Dialog", "Exits the dialog.")>
+    <Command("Exits the dialog.")>
     Private Sub CloseDialog()
         Close()
     End Sub
 
-    <Command("Dialog | Crop Options", "Shows a dialog with crop options.")>
-    Private Sub OpenOptions()
+    <Command("Shows a dialog with crop options.")>
+    Private Sub ShowOptions()
         g.MainForm.OpenOptionsDialog("Image|Crop")
         UpdateAll()
     End Sub
 
-    <Command("Parameter | Relative Position", "Jumps a given frame count.")>
+    <Command("Jumps a given frame count.")>
     Private Sub SetRelativePosition(
         <DispName("Offset"), Description("Frames to jump, negative values jump backward.")>
         offset As Integer)
@@ -594,7 +594,7 @@ Class CropForm
         Drawer.Draw()
     End Sub
 
-    <Command("Dialog | Help", "Opens the help of the crop dialog.")>
+    <Command("Opens the help of the crop dialog.")>
     Private Sub ShowHelpDialog()
         Refresh()
 

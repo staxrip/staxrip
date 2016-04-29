@@ -1,7 +1,7 @@
 Imports System.ComponentModel
 Imports StaxRip.UI
 
-Class AviSynthListView
+Public Class AviSynthListView
     Inherits ListViewEx
 
     Private BlockItemCheck As Boolean
@@ -118,12 +118,12 @@ Class AviSynthListView
 
         Menu.Items.Add(New ActionMenuItem("Edit...", AddressOf ShowEditor, "Dialog to edit filters."))
         Menu.Items.Add(New ActionMenuItem("Play", Sub() g.PlayScript(p.Script), "Plays the script with the AVI player.", p.SourceFile <> ""))
-        Menu.Items.Add(New ActionMenuItem("Profiles...", AddressOf g.MainForm.OpenFilterProfilesDialog, "Dialog to edit profiles."))
+        Menu.Items.Add(New ActionMenuItem("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles."))
         Menu.Items.Add(New ActionMenuItem("Code Preview...", AddressOf CodePreview, "Script code preview."))
 
         Dim setup As New MenuItemEx("Filter Setup")
         Menu.Items.Add(setup)
-        g.PopulateProfileMenu(setup.DropDownItems, s.FilterSetupProfiles, AddressOf g.MainForm.OpenAviSynthProfilesDialog, AddressOf g.MainForm.LoadScriptProfile)
+        g.PopulateProfileMenu(setup.DropDownItems, s.FilterSetupProfiles, AddressOf g.MainForm.ShowFilterSetupProfilesDialog, AddressOf g.MainForm.LoadScriptProfile)
     End Sub
 
     Sub ShowEditor()

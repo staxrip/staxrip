@@ -354,7 +354,9 @@ Class SafeSerialization
                                     If i.Value.GetType Is GetType(Byte()) Then
                                         iFieldInfo.SetValue(instance, GetObjectInstance(DirectCast(i.Value, Byte()), binder))
                                     Else
-                                        iFieldInfo.SetValue(instance, i.Value)
+                                        If iFieldInfo.Name <> "_WasUpdated" Then
+                                            iFieldInfo.SetValue(instance, i.Value)
+                                        End If
                                     End If
                                 Catch ex As Exception
                                     safeInstance.WasUpdated = True
@@ -1024,24 +1026,32 @@ Public Class Command
     End Function
 
     Overrides Function ToString() As String
-        If Not Attribute Is Nothing Then
-            Return Attribute.Name
-        End If
-
-        Return ""
+        Return MethodInfo.Name
     End Function
 
     Property [Object] As Object
 
     Function CompareTo(other As Command) As Integer Implements System.IComparable(Of Command).CompareTo
-        Return Attribute.Name.CompareTo(other.Attribute.Name)
+        Return MethodInfo.Name.CompareTo(other.MethodInfo.Name)
     End Function
 
-    Shared Sub PopulateCommandMenu(items As ToolStripItemCollection, commands As List(Of Command), clickSub As Action(Of Command))
+    Shared Sub PopulateCommandMenu(items As ToolStripItemCollection,
+                                   commands As List(Of Command),
+                                   clickSub As Action(Of Command))
         commands.Sort()
 
         For Each i In commands
-            ActionMenuItem.Add(items, i.Attribute.Name, clickSub, i, i.Attribute.Description)
+            Dim path = i.MethodInfo.Name
+
+            If path.StartsWith("Run") Then path = "Run | " + path
+            If path.StartsWith("Save") Then path = "Save | " + path
+            If path.StartsWith("Show") Then path = "Show | " + path
+            If path.StartsWith("Set") Then path = "Set | " + path
+            If path.StartsWith("Start") Then path = "Start | " + path
+            If path.StartsWith("Execute") Then path = "Execute | " + path
+            If path.StartsWith("Add") Then path = "Add | " + path
+
+            ActionMenuItem.Add(items, path, clickSub, i, i.Attribute.Description)
         Next
     End Sub
 
@@ -1068,14 +1078,11 @@ End Class
 Public Class CommandAttribute
     Inherits Attribute
 
-    Sub New(name As String, description As String)
-        Me.Name = name
+    Sub New(description As String)
         Me.Description = description
     End Sub
 
-    Property Name As String
     Property Description As String
-    Property Switch As String
 End Class
 
 Public Class CommandManager
@@ -1090,16 +1097,14 @@ Public Class CommandManager
     End Function
 
     Sub AddCommandsFromObject(obj As Object)
-        For Each i As MethodInfo In obj.GetType.GetMethods(BindingFlags.Instance Or BindingFlags.NonPublic Or BindingFlags.Public)
-            Dim attributes As CommandAttribute() = DirectCast(i.GetCustomAttributes(GetType(CommandAttribute), False), CommandAttribute())
+        For Each i In obj.GetType.GetMethods(BindingFlags.Instance Or BindingFlags.NonPublic Or BindingFlags.Public)
+            Dim attributes = DirectCast(i.GetCustomAttributes(GetType(CommandAttribute), False), CommandAttribute())
 
             If attributes.Length > 0 Then
                 Dim c As New Command
-
                 c.MethodInfo = i
                 c.Attribute = attributes(0)
                 c.Object = obj
-
                 AddCommand(c)
             End If
         Next
@@ -1121,49 +1126,48 @@ Public Class CommandManager
         If HasCommand(name) Then Process(GetCommand(name), params)
     End Sub
 
+    Sub Process(name As String, ParamArray params As Object())
+        If HasCommand(name) Then Process(GetCommand(name), params.ToList)
+    End Sub
+
     Sub Process(command As Command, params As List(Of Object))
         Try
             command.MethodInfo.Invoke(command.Object, command.FixParameters(params).ToArray)
         Catch ex As TargetParameterCountException
-            MsgError("Parameter mismatch, for the command :" + command.Attribute.Name)
+            MsgError("Parameter mismatch, for the command :" + command.MethodInfo.Name)
         End Try
     End Sub
 
     Function ProcessCommandLineArgument(value As String) As Boolean
         For Each i As Command In Commands.Values
-            Dim switches As New List(Of String)
-            switches.Add(i.Attribute.Name.Replace(" ", ""))
-            If i.Attribute.Switch <> "" Then switches.AddRange(i.Attribute.Switch.SplitNoEmpty("|"))
+            Dim switch = i.MethodInfo.Name.Replace(" ", "")
+            switch = switch.ToUpper
+            Dim test = value.ToUpper
 
-            For Each switch In switches
-                switch = switch.Replace("-", "|").Replace("/", "|").ToUpper
-                Dim test = value.Replace("-", "|").Replace("/", "|").ToUpper
+            If test = "-" + switch Then
+                Process(i.MethodInfo.Name, New List(Of Object))
+                Return True
+            Else
+                If test.StartsWith("-" + switch + ":") Then
+                    Dim mc = Regex.Matches(value.Right(":"), """(?<a>.+?)""|(?<a>[^,]+)")
+                    Dim args As New List(Of Object)
 
-                If test = "|" + switch Then
-                    Process(i.MethodInfo.Name, New List(Of Object))
+                    For Each match As Match In mc
+                        args.Add(match.Groups("a").Value)
+                    Next
+
+                    Dim params = i.MethodInfo.GetParameters
+
+                    For x = 0 To params.Length - 1
+                        If args.Count > x Then
+                            args(x) = TypeDescriptor.GetConverter(params(x).ParameterType).ConvertFrom(args(x))
+                        End If
+                    Next
+
+                    Process(i.MethodInfo.Name, args)
                     Return True
-                Else
-                    If test.StartsWith("|" + switch + ":") Then
-                        Dim mc = Regex.Matches(value.Right(":"), """(?<a>.+?)""|(?<a>[^,]+)")
-                        Dim args As New List(Of Object)
-
-                        For Each iMatch As Match In mc
-                            args.Add(iMatch.Groups("a").Value)
-                        Next
-
-                        Dim params = i.MethodInfo.GetParameters
-
-                        For x = 0 To params.Length - 1
-                            If args.Count > x Then
-                                args(x) = TypeDescriptor.GetConverter(params(x).ParameterType).ConvertFrom(args(x))
-                            End If
-                        Next
-
-                        Process(i.MethodInfo.Name, args)
-                        Return True
-                    End If
                 End If
-            Next
+            End If
         Next
     End Function
 
@@ -1172,7 +1176,7 @@ Public Class CommandManager
 
         For Each i As Command In Commands.Values
             If Not i.Attribute.Description Is Nothing Then
-                l.Add(New StringPair(i.Attribute.Name, i.Attribute.Description))
+                l.Add(New StringPair(i.MethodInfo.Name, i.Attribute.Description))
             End If
         Next
 
@@ -1183,10 +1187,6 @@ End Class
 Public Module MainModule
     Public Const BR As String = VB6.vbCrLf
     Public Const BR2 As String = VB6.vbCrLf + VB6.vbCrLf
-
-    Function OK(value As String) As Boolean
-        Return value <> ""
-    End Function
 
     Sub MsgInfo(text As String, Optional content As String = Nothing)
         Msg(text, content, MsgIcon.Info, MessageBoxButtons.OK)
@@ -1233,13 +1233,6 @@ Public Module MainModule
                          content As String,
                          Optional buttons As MessageBoxButtons = MessageBoxButtons.OKCancel) As DialogResult
         Return Msg(heading, content, MsgIcon.Question, buttons)
-    End Function
-
-    Function Msg(text As String,
-                 Optional icon As MsgIcon = MsgIcon.None,
-                 Optional buttons As MessageBoxButtons = MessageBoxButtons.OK) As DialogResult
-
-        Return Msg(text, Nothing, icon, buttons)
     End Function
 
     Function Msg(mainInstruction As String,

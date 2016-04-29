@@ -1,13 +1,14 @@
 ﻿Imports System.ComponentModel
+Imports System.Reflection
 
 Namespace UI
-    Enum AutoCheckMode
+    Public Enum AutoCheckMode
         None
         SingleClick
         DoubleClick
     End Enum
 
-    Class ListViewEx
+    Public Class ListViewEx
         Inherits ListView
 
         <DefaultValue(GetType(Button), Nothing)>
@@ -305,6 +306,12 @@ Namespace UI
         End Function
 
         Protected Overrides Sub OnDragEnter(e As DragEventArgs)
+            If e.Data.GetDataPresent(DataFormats.FileDrop) Then
+                e.Effect = DragDropEffects.Copy
+                MyBase.OnDragEnter(e)
+                Exit Sub
+            End If
+
             e.Effect = DragDropEffects.Move
             MyBase.OnDragEnter(e)
         End Sub
@@ -329,6 +336,11 @@ Namespace UI
 
         'OnMouseMove doesn't work while dragging
         Protected Overrides Sub OnDragOver(e As DragEventArgs)
+            If e.Data.GetDataPresent(DataFormats.FileDrop) Then
+                MyBase.OnDragOver(e)
+                Exit Sub
+            End If
+
             If Control.MousePosition <> LastDragOverPos Then
                 Dim mousePos = GetMousePos()
                 Dim bounds = GetBounds(mousePos)
@@ -367,6 +379,14 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnDragDrop(e As DragEventArgs)
+            If e.Data.GetDataPresent(DataFormats.FileDrop) Then
+                Dim f = FindForm()
+
+                If f.AllowDrop Then f.GetType.GetMethod(
+                    "OnDragDrop", BindingFlags.Instance Or BindingFlags.NonPublic).Invoke(f, {e})
+                Exit Sub
+            End If
+
             Dim item = DirectCast(e.Data.GetData(GetType(ListViewItem)), ListViewItem)
             Dim mousePos = GetMousePos()
             Dim p = GetPos(mousePos)
@@ -380,10 +400,7 @@ Namespace UI
                 index = p.Y + 1
             End If
 
-            If index > item.Index Then
-                index -= 1
-            End If
-
+            If index > item.Index Then index -= 1
             item.Remove()
             Items.Insert(index, item)
             MyBase.OnDragDrop(e)

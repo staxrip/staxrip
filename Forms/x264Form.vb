@@ -2747,7 +2747,7 @@ Class x264Form
 
         Dim cmdl = ""
 
-        If OK(GetWarning) Then
+        If GetWarning() <> "" Then
             rtbCommandLine.Text = warning
         Else
             Static tempEnc As x264Encoder = DirectCast(ObjectHelp.GetCopy(Encoder), x264Encoder)
@@ -2761,7 +2761,7 @@ Class x264Form
                 cmdl = tempEnc.GetArgs(1, s.ShowPathsInCommandLine)
             End If
 
-            If s.ShowPathsInCommandLine Then cmdl = """" + Package.x264.GetPath + """ " + cmdl
+            If s.ShowPathsInCommandLine Then cmdl = """" + Package.x264.Path + """ " + cmdl
             rtbCommandLine.SetText(cmdl)
             rtbCommandLine.SelectionLength = 0
         End If
@@ -3284,97 +3284,95 @@ Class x264Form
 
     Sub ImportCommandLine()
         Dim clip = Clipboard.GetText()
-        Dim cmdl = clip
+        Dim commandLine = clip
         Dim failed As New List(Of String)
 
         ImportedSwitchesCount = 0
 
-        If OK(cmdl) AndAlso cmdl.Contains("--") Then
-            Dim p As New x264Params
+        If commandLine <> "" AndAlso commandLine.Contains("--") Then
+            Dim params As New x264Params
+            commandLine = commandLine.Substring(commandLine.IndexOf("--"))
 
-            cmdl = cmdl.Substring(cmdl.IndexOf("--"))
-
-            While cmdl.Contains("  ")
-                cmdl = cmdl.Replace("  ", " ")
+            While commandLine.Contains("  ")
+                commandLine = commandLine.Replace("  ", " ")
             End While
 
-            cmdl = cmdl.Trim.Trim("-"c)
-
-            Dim a = cmdl.SplitNoEmpty(" --")
+            commandLine = commandLine.Trim.Trim("-"c)
+            Dim a = commandLine.SplitNoEmpty(" --")
 
             For x = 0 To a.Length - 1
-                If SetParam("--aq-mode", a(x), p.AQMode) Then
-                ElseIf SetParam("--weightp", a(x), p.WeightP) Then
-                ElseIf SetParam("--aq-strength", a(x), p.AQStrengthV2) Then
-                ElseIf SetParam("--aud", a(x), p.Aud) Then
-                ElseIf SetParam("--pic-struct", a(x), p.PicStruct) Then
-                ElseIf SetParam("--b-adapt", a(x), p.BAdapt) Then
-                ElseIf SetParam("--b-bias", a(x), p.BFramesBias) Then
-                ElseIf SetParam("--chromaloc", a(x), p.Chromaloc) Then
-                ElseIf SetParam("--b-pyramid", a(x), p.BPyramidMode, GetType(x264BPyramidMode)) Then
-                ElseIf SetParam("--bframes", a(x), p.BFrames) Then
-                ElseIf SetParam("--bluray-compat", a(x), p.BlurayCompat) Then
-                ElseIf SetParam("--crf", a(x), p.Quant) Then : p.Mode.Value = x264Mode.SingleCRF
-                ElseIf SetParam("--deblock", a(x), p.DeblockAlpha, p.DeblockBeta) Then
-                ElseIf SetParam("--direct", a(x), p.DirectMode, GetType(x264DirectMode)) Then
-                ElseIf SetParam("--ipratio", a(x), p.IPRatio) Then
-                ElseIf SetParam("--keyint", a(x), p.GOPSizeMax) Then
-                ElseIf SetParam("--level", a(x), p.Level, GetType(x264LevelMode)) Then
-                ElseIf SetParam("--me", a(x), p.MEMethod, GetType(x264MeMethodMode)) Then
-                ElseIf SetParam("--nal-hrd", a(x), p.NalHrdMode, GetType(x264NalHrdMode)) Then
-                ElseIf SetParam("--overscan", a(x), p.Overscan, GetType(x264OverscanMode)) Then
-                ElseIf SetParam("--videoformat", a(x), p.Videoformat, GetType(x264VideoformatMode)) Then
-                ElseIf SetParam("--fullrange", a(x), p.Fullrange, GetType(x264FullrangeMode)) Then
-                ElseIf SetParam("--colorprim", a(x), p.Colorprim, GetType(x264ColorprimMode)) Then
-                ElseIf SetParam("--open-gop", a(x), p.OpenGopV2) Then
-                ElseIf SetParam("--transfer", a(x), p.Transfer, GetType(x264TransferMode)) Then
-                ElseIf SetParam("--Colormatrix", a(x), p.Colormatrix, GetType(x264ColormatrixMode)) Then
-                ElseIf SetParam("--merange", a(x), p.MeRange) Then
-                ElseIf SetParam("--min-keyint", a(x), p.GOPSizeMin) Then
-                ElseIf SetParam("--no-deblock", a(x), p.Deblock, True) Then
-                ElseIf SetParam("--no-8x8dct", a(x), p.AdaptiveDCT, True) Then
-                ElseIf SetParam("--no-cabac", a(x), p.CABAC, True) Then
-                ElseIf SetParam("--no-chroma-me", a(x), p.ChromaMe, True) Then
-                ElseIf SetParam("--no-dct-decimate", a(x), p.DctDecimate, True) Then
-                ElseIf SetParam("--no-fast-pskip", a(x), p.FastPSkip, True) Then
-                ElseIf SetParam("--no-mbtree", a(x), p.MbTree, True) Then
-                ElseIf SetParam("--no-mixed-refs", a(x), p.MixedRefs, True) Then
-                ElseIf SetParam("--no-progress", a(x), p.Progress, True) Then
-                ElseIf SetParam("--no-psy", a(x), p.Psy, True) Then
-                ElseIf SetParam("--no-weightb", a(x), p.WeightB, True) Then
-                ElseIf SetParam("--nr", a(x), p.NoiseReduction) Then
-                ElseIf SetParam("--partitions", a(x), p) Then
-                ElseIf SetParam("--pbratio", a(x), p.PBRatio) Then
-                ElseIf SetParam("--preset", a(x), p.Preset, GetType(x264PresetMode)) Then : p.ApplyDefaults(p)
-                ElseIf SetParam("--profile", a(x), p.Profile, GetType(x264ProfileMode)) Then : p.ApplyDefaults(p)
-                ElseIf SetParam("--psnr", a(x), p.PSNR) Then
-                ElseIf SetParam("--psy-rd", a(x), p.PsyRD, p.PsyTrellis) Then
-                ElseIf SetParam("--qcomp", a(x), p.QComp) Then
-                ElseIf SetParam("--qp", a(x), p.Quant) Then : p.Mode.Value = x264Mode.SingleQuant
-                ElseIf SetParam("--qpmin", a(x), p.QPMin) Then
-                ElseIf SetParam("--rc-lookahead", a(x), p.RcLookahead) Then
-                ElseIf SetParam("--ref", a(x), p.RefFrames) Then
-                ElseIf SetParam("--scenecut", a(x), p.SceneCut) Then
-                ElseIf SetParam("--slices", a(x), p.Slices) Then
-                ElseIf SetParam("--slow-firstpass", a(x), p.SlowFirstpass) Then
-                ElseIf SetParam("--ssim", a(x), p.SSIM) Then
-                ElseIf SetParam("--subme", a(x), p.SubME) Then
-                ElseIf SetParam("--thread-input", a(x), p.ThreadInput) Then
-                ElseIf SetParam("--threads", a(x), p.Threads) Then
-                ElseIf SetParam("--trellis", a(x), p.Trellis) Then
-                ElseIf SetParam("--tune", a(x), p.Tune, GetType(x264TuneMode)) Then : p.ApplyDefaults(p)
-                ElseIf SetParam("--vbv-bufsize", a(x), p.VBVBufSize) Then
-                ElseIf SetParam("--vbv-init", a(x), p.VBVInit) Then
-                ElseIf SetParam("--vbv-maxrate", a(x), p.VBVMaxRate) Then
+                If SetParam("--aq-mode", a(x), params.AQMode) Then
+                ElseIf SetParam("--weightp", a(x), params.WeightP) Then
+                ElseIf SetParam("--aq-strength", a(x), params.AQStrengthV2) Then
+                ElseIf SetParam("--aud", a(x), params.Aud) Then
+                ElseIf SetParam("--pic-struct", a(x), params.PicStruct) Then
+                ElseIf SetParam("--b-adapt", a(x), params.BAdapt) Then
+                ElseIf SetParam("--b-bias", a(x), params.BFramesBias) Then
+                ElseIf SetParam("--chromaloc", a(x), params.Chromaloc) Then
+                ElseIf SetParam("--b-pyramid", a(x), params.BPyramidMode, GetType(x264BPyramidMode)) Then
+                ElseIf SetParam("--bframes", a(x), params.BFrames) Then
+                ElseIf SetParam("--bluray-compat", a(x), params.BlurayCompat) Then
+                ElseIf SetParam("--crf", a(x), params.Quant) Then : params.Mode.Value = x264Mode.SingleCRF
+                ElseIf SetParam("--deblock", a(x), params.DeblockAlpha, params.DeblockBeta) Then
+                ElseIf SetParam("--direct", a(x), params.DirectMode, GetType(x264DirectMode)) Then
+                ElseIf SetParam("--ipratio", a(x), params.IPRatio) Then
+                ElseIf SetParam("--keyint", a(x), params.GOPSizeMax) Then
+                ElseIf SetParam("--level", a(x), params.Level, GetType(x264LevelMode)) Then
+                ElseIf SetParam("--me", a(x), params.MEMethod, GetType(x264MeMethodMode)) Then
+                ElseIf SetParam("--nal-hrd", a(x), params.NalHrdMode, GetType(x264NalHrdMode)) Then
+                ElseIf SetParam("--overscan", a(x), params.Overscan, GetType(x264OverscanMode)) Then
+                ElseIf SetParam("--videoformat", a(x), params.Videoformat, GetType(x264VideoformatMode)) Then
+                ElseIf SetParam("--fullrange", a(x), params.Fullrange, GetType(x264FullrangeMode)) Then
+                ElseIf SetParam("--colorprim", a(x), params.Colorprim, GetType(x264ColorprimMode)) Then
+                ElseIf SetParam("--open-gop", a(x), params.OpenGopV2) Then
+                ElseIf SetParam("--transfer", a(x), params.Transfer, GetType(x264TransferMode)) Then
+                ElseIf SetParam("--Colormatrix", a(x), params.Colormatrix, GetType(x264ColormatrixMode)) Then
+                ElseIf SetParam("--merange", a(x), params.MeRange) Then
+                ElseIf SetParam("--min-keyint", a(x), params.GOPSizeMin) Then
+                ElseIf SetParam("--no-deblock", a(x), params.Deblock, True) Then
+                ElseIf SetParam("--no-8x8dct", a(x), params.AdaptiveDCT, True) Then
+                ElseIf SetParam("--no-cabac", a(x), params.CABAC, True) Then
+                ElseIf SetParam("--no-chroma-me", a(x), params.ChromaMe, True) Then
+                ElseIf SetParam("--no-dct-decimate", a(x), params.DctDecimate, True) Then
+                ElseIf SetParam("--no-fast-pskip", a(x), params.FastPSkip, True) Then
+                ElseIf SetParam("--no-mbtree", a(x), params.MbTree, True) Then
+                ElseIf SetParam("--no-mixed-refs", a(x), params.MixedRefs, True) Then
+                ElseIf SetParam("--no-progress", a(x), params.Progress, True) Then
+                ElseIf SetParam("--no-psy", a(x), params.Psy, True) Then
+                ElseIf SetParam("--no-weightb", a(x), params.WeightB, True) Then
+                ElseIf SetParam("--nr", a(x), params.NoiseReduction) Then
+                ElseIf SetParam("--partitions", a(x), params) Then
+                ElseIf SetParam("--pbratio", a(x), params.PBRatio) Then
+                ElseIf SetParam("--preset", a(x), params.Preset, GetType(x264PresetMode)) Then : params.ApplyDefaults(params)
+                ElseIf SetParam("--profile", a(x), params.Profile, GetType(x264ProfileMode)) Then : params.ApplyDefaults(params)
+                ElseIf SetParam("--psnr", a(x), params.PSNR) Then
+                ElseIf SetParam("--psy-rd", a(x), params.PsyRD, params.PsyTrellis) Then
+                ElseIf SetParam("--qcomp", a(x), params.QComp) Then
+                ElseIf SetParam("--qp", a(x), params.Quant) Then : params.Mode.Value = x264Mode.SingleQuant
+                ElseIf SetParam("--qpmin", a(x), params.QPMin) Then
+                ElseIf SetParam("--rc-lookahead", a(x), params.RcLookahead) Then
+                ElseIf SetParam("--ref", a(x), params.RefFrames) Then
+                ElseIf SetParam("--scenecut", a(x), params.SceneCut) Then
+                ElseIf SetParam("--slices", a(x), params.Slices) Then
+                ElseIf SetParam("--slow-firstpass", a(x), params.SlowFirstpass) Then
+                ElseIf SetParam("--ssim", a(x), params.SSIM) Then
+                ElseIf SetParam("--subme", a(x), params.SubME) Then
+                ElseIf SetParam("--thread-input", a(x), params.ThreadInput) Then
+                ElseIf SetParam("--threads", a(x), params.Threads) Then
+                ElseIf SetParam("--trellis", a(x), params.Trellis) Then
+                ElseIf SetParam("--tune", a(x), params.Tune, GetType(x264TuneMode)) Then : params.ApplyDefaults(params)
+                ElseIf SetParam("--vbv-bufsize", a(x), params.VBVBufSize) Then
+                ElseIf SetParam("--vbv-init", a(x), params.VBVInit) Then
+                ElseIf SetParam("--vbv-maxrate", a(x), params.VBVMaxRate) Then
                 ElseIf a(x) = "pass 1" OrElse a(x) = "pass 2" Then
-                    p.Mode.Value = x264Mode.TwoPass
+                    params.Mode.Value = x264Mode.TwoPass
                     ImportedSwitchesCount += 1
                 ElseIf a(x) = "pass 3" Then
-                    p.Mode.Value = x264Mode.ThreePass
+                    params.Mode.Value = x264Mode.ThreePass
                     ImportedSwitchesCount += 1
                 ElseIf a(x) Like "bitrate #*" Then
                     If Not clip.Contains("--pass ") Then
-                        p.Mode.Value = x264Mode.SingleBitrate
+                        params.Mode.Value = x264Mode.SingleBitrate
                     End If
 
                     ImportedSwitchesCount += 1
@@ -3387,7 +3385,7 @@ Class x264Form
                 End If
             Next
 
-            LoadParams(p)
+            LoadParams(params)
         End If
 
         Dim m = "Count of imported switches: " & ImportedSwitchesCount

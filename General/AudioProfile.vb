@@ -707,7 +707,7 @@ Class GUIAudioProfile
         End If
 
         If includePaths Then
-            ret = """" + Package.eac3to.GetPath + """ " + id + """" + File + """ """ + GetOutputFile() + """"
+            ret = """" + Package.eac3to.Path + """ " + id + """" + File + """ """ + GetOutputFile() + """"
         Else
             ret = "eac3to"
         End If
@@ -762,7 +762,7 @@ Class GUIAudioProfile
         includePaths = includePaths And File <> ""
 
         If includePaths Then
-            r = """" + Package.qaac.GetPath + """ -o """ + GetOutputFile() + """"
+            r = """" + Package.qaac.Path + """ -o """ + GetOutputFile() + """"
         Else
             r = "qaac"
         End If
@@ -825,7 +825,7 @@ Class GUIAudioProfile
         Dim ret As String
 
         If includePaths AndAlso File <> "" Then
-            ret = """" + Package.ffmpeg.GetPath + """ -i """ + File + """"
+            ret = """" + Package.ffmpeg.Path + """ -i """ + File + """"
         Else
             ret = "ffmpeg"
         End If
@@ -906,7 +906,7 @@ Class GUIAudioProfile
         Dim r As String
 
         If includePaths Then
-            r = """" + Package.BeSweet.GetPath + """"
+            r = """" + Package.BeSweet.Path + """"
         Else
             r = "BeSweet"
         End If

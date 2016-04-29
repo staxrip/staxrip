@@ -48,8 +48,8 @@ Public Class x264Encoder
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
 
             Dim batchCode = "@echo off" + BR + "CHCP 65001" + BR +
-                Package.vspipe.GetPath.Quotes + " " + script.Path.Quotes + " - --y4m | " +
-                Package.x264.GetPath.Quotes + " " + args
+                Package.vspipe.Path.Quotes + " " + script.Path.Quotes + " - --y4m | " +
+                Package.x264.Path.Quotes + " " + args
 
             File.WriteAllText(batchPath, batchCode, New UTF8Encoding(False))
 
@@ -68,7 +68,7 @@ Public Class x264Encoder
                 proc.Init(passName)
                 proc.Priority = priority
                 proc.SkipStrings = {"kb/s, eta", "%]"}
-                proc.File = Package.x264.GetPath
+                proc.File = Package.x264.Path
                 proc.Arguments = args
                 proc.Start()
             End Using
@@ -298,7 +298,7 @@ Public Class x264Encoder
 
         Dim part = GetPartition(Params)
 
-        If OK(part) AndAlso part <> GetPartition(defaults) Then
+        If part <> "" AndAlso part <> GetPartition(defaults) Then
             sb.Append(part)
         End If
 
@@ -439,10 +439,7 @@ Public Class x264Encoder
             sb.Append(" --ssim")
         End If
 
-        If Params.AddAll.Value <> "" Then
-            sb.Append(" " + Params.AddAll.Value)
-        End If
-
+        If Params.AddAll.Value <> "" Then sb.Append(" " + Params.AddAll.Value)
         Dim ret = sb.ToString
 
         If IsTurboPass(pass) Then
@@ -480,6 +477,10 @@ Public Class x264Encoder
 
         Return Macro.Solve(ret.Trim)
     End Function
+
+    Public Overrides Sub ImportCommandLine(commandLine As String)
+        Params.AddAll.Value = (Params.AddAll.Value + " " + commandLine?.Trim)?.Trim
+    End Sub
 
     Function GetPartition(params As x264Params) As String
         Dim l As New List(Of String)

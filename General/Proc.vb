@@ -57,7 +57,7 @@ Class Proc
             Return Process.StartInfo.FileName
         End Get
         Set(Value As String)
-            If OK(Value) AndAlso Value.Contains("%") Then
+            If Value?.Contains("%") Then
                 Process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(Value)
             Else
                 Process.StartInfo.FileName = Value
@@ -115,10 +115,7 @@ Class Proc
             For Each i In ProcessHelp.GetChilds(Process)
                 If {"conhost", "vspipe"}.Contains(i.ProcessName) Then Continue For
 
-                If Msg("Confirm to kill " + i.ProcessName + ".exe",
-                       MsgIcon.Question,
-                       MessageBoxButtons.OKCancel) = DialogResult.OK Then
-
+                If MsgOK("Confirm to kill " + i.ProcessName + ".exe") Then
                     If Not i.HasExited Then i.Kill()
                 End If
             Next

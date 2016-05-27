@@ -1,9 +1,14 @@
+Imports System.ComponentModel
 Imports System.Globalization
+Imports System.Runtime.CompilerServices
 Imports System.Text
 
 <Serializable()>
 Public Class Project
-    Implements ISafeSerialization
+    Implements ISafeSerialization, INotifyPropertyChanged
+
+    <NonSerialized>
+    Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
     Private Storage As ObjectStorage
 
@@ -46,7 +51,6 @@ Public Class Project
     Public LastOriginalSourceFile As String
     Public Log As StringBuilder
     Public MaxAspectRatioError As Integer = 2
-    Public Name As String
     Public NoDialogs As Boolean
     Public PreferredAudio As String
     Public PreferredSubtitles As String
@@ -75,7 +79,6 @@ Public Class Project
     Public SourceSeconds As Integer
     Public SourceSize As Long
     Public SourceWidth As Integer = 720
-    Public TargetFile As String
     Public TargetFrameRate As Double
     Public TargetHeight As Integer = 576
     Public TargetSeconds As Integer = 5400
@@ -107,9 +110,8 @@ Public Class Project
         If Log Is Nothing Then Log = New StringBuilder
         If Storage Is Nothing Then Storage = New ObjectStorage
         If Ranges Is Nothing Then Ranges = New List(Of Range)
-        If TargetFile Is Nothing Then TargetFile = ""
-        If Name Is Nothing Then Name = ""
         If SourceFile Is Nothing Then SourceFile = ""
+        If TargetFile Is Nothing Then TargetFile = ""
 
         If Check(PreferredSubtitles, "Automatically Included Subtitles", 2) Then
             If Language.CurrentCulture.TwoLetterCode = "en" Then
@@ -205,4 +207,40 @@ Public Class Project
 
         Return ret
     End Function
+
+    Private Sub NotifyPropertyChanged(
+    <CallerMemberName()> Optional ByVal propertyName As String = Nothing)
+
+        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
+    End Sub
+
+    Private TargetFileValue As String
+
+    Public Property TargetFile As String
+        Get
+            Return TargetFileValue
+        End Get
+        Set(ByVal value As String)
+            If value <> TargetFileValue Then
+                If value <> "" AndAlso Not value.FileName.IsValidFileName Then
+                    MsgWarn("Filename contains invalid characters.")
+                    Exit Property
+                End If
+
+                If value.ContainsUnicode AndAlso Script.Engine = ScriptEngine.AviSynth Then
+                    MsgWarn(Strings.NoUnicode)
+                    Exit Property
+                End If
+
+                TargetFileValue = value
+                NotifyPropertyChanged()
+            End If
+        End Set
+    End Property
+
+    ReadOnly Property Name As String
+        Get
+            Return TargetFile.Base
+        End Get
+    End Property
 End Class

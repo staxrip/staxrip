@@ -333,7 +333,7 @@ Class TaskDialog(Of T)
                     g.ShellExecute(url)
                 ElseIf url = "copymsg:" Then
                     Clipboard.SetText(MainInstruction + BR2 + Content + BR2 + ExpandedInformation)
-                    MessageBox.Show("Message was copied to clipboard.")
+                    MsgInfo("Message was copied to clipboard.")
                 End If
             Case TDN_CREATED
                 For Each i In CommandLinkShieldList

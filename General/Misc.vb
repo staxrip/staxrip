@@ -723,7 +723,7 @@ Public Class GlobalClass
                 If TypeOf e Is ErrorAbortException Then
                     td.MainInstruction = DirectCast(e, ErrorAbortException).Title
                 Else
-                    td.MainInstruction = "Exception"
+                    td.MainInstruction = e.GetType.Name
                 End If
             Else
                 td.MainInstruction = msg

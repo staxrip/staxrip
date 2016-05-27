@@ -125,7 +125,7 @@ Public Class x264Encoder
         g.MainForm.Assistant()
 
         Log.WriteLine("Quality: " & CInt(Calc.GetPercent).ToString() + " %")
-        Log.WriteLine("Compressibility: " + p.Compressibility.ToString("f3"))
+        Log.WriteLine("Compressibility: " + p.Compressibility.ToString("f3") + BR)
         Log.Save()
 
         ProcessForm.CloseProcessForm()

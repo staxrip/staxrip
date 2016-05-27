@@ -231,7 +231,7 @@ Class MP4BoxDemuxer
                 args += i.ID & " -out """ + outpath + """ """ + p.SourceFile + """"
 
                 Using proc As New Proc
-                    proc.Init("Demux subtitle using MP4Box " + Package.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |", "VobSub Export: |"})
+                    proc.Init("Demux subtitle using MP4Box " + Package.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |", "VobSub Export: |", "SRT Extract: |"})
                     proc.File = Package.MP4Box.Path
                     proc.Arguments = args
                     proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir

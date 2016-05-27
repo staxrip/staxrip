@@ -29,12 +29,10 @@ Public Class Package
     Shared Property DGIndexNV As New DGIndexNVPackage
     Shared Property DivX265 As New DivX265Package
     Shared Property dsmux As New dsmuxPackage
-    Shared Property DSS2mod As New DSS2modPackage
     Shared Property eac3to As New eac3toPackage
     Shared Property ffmpeg As New ffmpegPackage
     Shared Property Haali As New HaaliSplitter
     Shared Property Java As New JavaPackage
-    Shared Property lsmashWorks As New LSmashWorksAviSynthPackage
     Shared Property MediaInfo As New MediaInfoPackage
     Shared Property MP4Box As New MP4BoxPackage
     Shared Property MPC As New MPCPackage
@@ -56,7 +54,6 @@ Public Class Package
     Shared Property Python As New PythonPackage
     Shared Property scenechange As New scenechangePackage
     Shared Property temporalsoften As New temporalsoftenPackage
-    Shared Property LSmashWorksVapourSynth As New vslsmashsourcePackage
 
     Shared Property x265 As New Package With {
         .Name = "x265",
@@ -154,9 +151,11 @@ Public Class Package
         .Filename = "ffms2.dll",
         .WebURL = "https://github.com/FFMS/ffms2",
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
+        .HelpFile = "ffms2-avisynth.html",
         .AviSynthFilterNames = {"FFVideoSource", "FFAudioSource"},
+        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")")},
         .VapourSynthFilterNames = {"ffms2"},
-        .HelpFile = "ffms2-avisynth.html"}
+        .VapourSynthFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%temp_file%.ffindex"")")}}
 
     Shared Sub Add(pack As Package)
         Items(pack.ID) = pack
@@ -164,7 +163,6 @@ Public Class Package
 
     Shared Sub New()
         Add(VCEEncC)
-        Add(LSmashWorksVapourSynth)
         Add(temporalsoften)
         Add(scenechange)
         Add(Python)
@@ -183,12 +181,10 @@ Public Class Package
         Add(DGIndexNV)
         Add(DivX265)
         Add(dsmux)
-        Add(DSS2mod)
         Add(eac3to)
         Add(ffmpeg)
         Add(Haali)
         Add(Java)
-        Add(lsmashWorks)
         Add(MediaInfo)
         Add(mkvmerge)
         Add(mkvextract)
@@ -271,6 +267,17 @@ Public Class Package
 #Region "VapourSynth"
 
         Add(New PluginPackage With {
+            .Name = "vslsmashsource",
+            .Filename = "vslsmashsource.dll",
+            .Description = "VapourSynth source filter based on Libav supporting a wide range of input formats.",
+            .HelpFile = "README.txt",
+            .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
+            .VapourSynthFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"},
+            .VapourSynthFiltersFunc = Function() {
+                New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")"),
+                New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")}})
+
+        Add(New PluginPackage With {
             .Name = "nnedi3",
             .Filename = "libnnedi3.dll",
             .WebURL = "http://github.com/dubhater/vapoursynth-nnedi3",
@@ -330,10 +337,10 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "d2vsource",
             .Filename = "d2vsource.dll",
-            .VapourSynthFilterNames = {"d2v.Source"},
             .Description = "D2V parser and decoder for VapourSynth.",
             .WebURL = "https://github.com/dwbuiten/d2vsource",
             .HelpURL = "https://github.com/dwbuiten/d2vsource",
+            .VapourSynthFilterNames = {"d2v.Source"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})
 
@@ -377,6 +384,25 @@ Public Class Package
 #End Region
 
 #Region "AviSynth"
+
+        Add(New PluginPackage With {
+            .Name = "DSS2mod",
+            .Filename = "DSS2.dll",
+            .WebURL = "http://code.google.com/p/xvid4psp/downloads/detail?name=DSS2%20mod%20%2B%20LAVFilters.7z&can=2&q=",
+            .Description = "Direct Show source filter",
+            .AviSynthFilterNames = {"DSS2"},
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")")}})
+
+        Add(New PluginPackage With {
+            .Name = "L-SMASH-Works",
+            .Filename = "LSMASHSource.dll",
+            .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
+            .Description = "AviSynth and VapourSynth source filter based on Libav supporting a wide range of input formats.",
+            .HelpFile = "README.txt",
+            .AviSynthFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"},
+            .AviSynthFiltersFunc = Function() {
+                New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"")"),
+                New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")")}})
 
         Add(New PluginPackage With {
             .Name = "MSharpen",
@@ -482,23 +508,30 @@ Public Class Package
 
 #End Region
 
-        Dim fp = CommonDirs.Startup + "Apps\Versions.txt"
+        Dim fp = Paths.SettingsDir + "Versions.txt"
 
-        If File.Exists(fp) Then
-            For Each i In File.ReadAllLines(CommonDirs.Startup + "Apps\Versions.txt")
-                For Each i2 In Items.Values
-                    If i Like "*=*;*" Then
-                        Dim name = i.Left("=").Trim
+        Try
+            If Not File.Exists(fp) OrElse Not File.ReadAllText(fp).Contains(Application.ProductVersion + BR2) Then
+                FileHelp.Delete(fp)
+                fp = CommonDirs.Startup + "Apps\Versions.txt"
+            End If
 
-                        If name = i2.ID Then
-                            i2.Version = i.Right("=").Left(";").Trim
-                            Dim a = i.Right("=").Right(";").Trim.Split("-"c)
-                            i2.VersionDate = New DateTime(CInt(a(0)), CInt(a(1)), CInt(a(2)))
+            For Each line In File.ReadAllLines(fp)
+                For Each pack In Items.Values
+                    If line Like "*=*;*" Then
+                        Dim name = line.Left("=").Trim
+
+                        If name = pack.ID Then
+                            pack.Version = line.Right("=").Right(";").Trim
+                            Dim a = line.Right("=").Left(";").Trim.Split("-"c)
+                            pack.VersionDate = New DateTime(CInt(a(0)), CInt(a(1)), CInt(a(2)))
                         End If
                     End If
                 Next
             Next
-        End If
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
     End Sub
 
     ReadOnly Property ID As String
@@ -1047,46 +1080,6 @@ Public Class eac3toPackage
     End Sub
 End Class
 
-Public Class LSmashWorksAviSynthPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "L-SMASH-Works"
-        Filename = "LSMASHSource.dll"
-        WebURL = "http://avisynth.nl/index.php/LSMASHSource"
-        Description = "AviSynth and VapourSynth source filter based on Libav supporting a wide range of input formats."
-        HelpFile = "README.txt"
-        AviSynthFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"}
-    End Sub
-
-    Overrides ReadOnly Property IsRequired As Boolean
-        Get
-            Return p.Script.GetFilter("Source").Script.Contains("LSMASHVideoSource") OrElse
-                p.Script.GetFilter("Source").Script.Contains("LWLibavVideoSource")
-        End Get
-    End Property
-End Class
-
-Public Class vslsmashsourcePackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "vslsmashsource"
-        Filename = "vslsmashsource.dll"
-        Description = "VapourSynth source filter based on Libav supporting a wide range of input formats."
-        VapourSynthFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"}
-        HelpFile = "README.txt"
-        WebURL = "http://avisynth.nl/index.php/LSMASHSource"
-    End Sub
-
-    Overrides ReadOnly Property IsRequired As Boolean
-        Get
-            Return p.Script.GetFilter("Source").Script.Contains("lsmas.LibavSMASHSource") OrElse
-                p.Script.GetFilter("Source").Script.Contains("lsmas.LWLibavSource")
-        End Get
-    End Property
-End Class
-
 Public Class qaacPackage
     Inherits Package
 
@@ -1137,18 +1130,6 @@ Public Class SangNom2Package
         WebURL = "http://avisynth.nl/index.php/SangNom2"
         Description = "SangNom2 is a reimplementation of MarcFD's old SangNom filter. Originally it's a single field deinterlacer using edge-directed interpolation but nowadays it's mainly used in anti-aliasing scripts. The output is not completely but mostly identical to the original SangNom."
         AviSynthFilterNames = {"SangNom2"}
-    End Sub
-End Class
-
-Public Class DSS2modPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "DSS2mod"
-        Filename = "DSS2.dll"
-        WebURL = "http://code.google.com/p/xvid4psp/downloads/detail?name=DSS2%20mod%20%2B%20LAVFilters.7z&can=2&q="
-        Description = "Direct Show source filter"
-        AviSynthFilterNames = {"DSS2"}
     End Sub
 End Class
 

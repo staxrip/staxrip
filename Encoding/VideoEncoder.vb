@@ -493,6 +493,7 @@ Class BatchEncoder
     End Function
 
     Overrides Sub Encode()
+        p.Script.Synchronize()
         Dim commands = Macro.Solve(CommandLines).Trim
 
         If commands.Contains("|") OrElse commands.Contains(BR) Then

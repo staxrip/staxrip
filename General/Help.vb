@@ -17,7 +17,7 @@ Class ObjectHelp
 
     Shared Sub ParseCompareString(obj As Object, declaringObj As Object, sb As StringBuilder)
         If TypeOf obj Is ICollection Then
-            For Each i As Object In DirectCast(obj, ICollection)
+            For Each i In DirectCast(obj, ICollection)
                 If IsGoodType(i) Then
                     If IsToString(i) Then
                         sb.Append(i.ToString)
@@ -55,38 +55,21 @@ Class ObjectHelp
     End Sub
 
     Private Shared Function IsGoodType(o As Object) As Boolean
-        If o Is Nothing Then
-            Return False
-        End If
-
-        If TypeOf o Is Pointer Then
-            Return False
-        End If
-
-        If Not o.GetType.IsSerializable Then
-            Return False
-        End If
-
+        If o Is Nothing Then Return False
+        If TypeOf o Is Pointer Then Return False
+        If TypeOf o Is PropertyChangedEventHandler Then Return False
+        If Not o.GetType.IsSerializable Then Return False
         Return True
     End Function
 
     Private Shared Function IsToString(o As Object) As Boolean
         If Not o Is Nothing Then
-            If o.GetType.IsPrimitive Then
-                Return True
-            End If
-
-            If TypeOf o Is String Then
-                Return True
-            End If
-
-            If TypeOf o Is CultureInfo Then 'some fields change here
-                Return True
-            End If
-
-            If TypeOf o Is StringBuilder Then 'some fields change here
-                Return True
-            End If
+            If o.GetType.IsPrimitive Then Return True
+            If TypeOf o Is String Then Return True
+            'some fields change here
+            If TypeOf o Is CultureInfo Then Return True
+            'some fields change here
+            If TypeOf o Is StringBuilder Then Return True
         End If
     End Function
 

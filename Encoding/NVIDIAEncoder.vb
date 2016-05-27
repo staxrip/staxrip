@@ -115,8 +115,13 @@ Public Class NVIDIAEncoder
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder:",
-            .Options = {"AviSynth/VapourSynth", "NVEncC (NVIDIA CUVID)", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
-            .Values = {"avs", "nv", "qs", "ffqsv", "ffdxva"}}
+            .Options = {"AviSynth/VapourSynth",
+                        "NVEncC (avcuvid native)",
+                        "NVEncC (avcuvid cuda)",
+                        "QSVEncC (Intel)",
+                        "ffmpeg (Intel)",
+                        "ffmpeg (DXVA2)"},
+            .Values = {"avs", "nvnative", "nvcuda", "qs", "ffqsv", "ffdxva"}}
 
         Property Mode As New OptionParam With {
             .Text = "Mode:",
@@ -126,13 +131,13 @@ Public Class NVIDIAEncoder
             .ArgsFunc = Function() As String
                             Select Case Mode.OptionText
                                 Case "CBR"
-                                    Return " --cbr " & p.VideoBitrate
+                                    Return "--cbr " & p.VideoBitrate
                                 Case "VBR"
-                                    Return " --vbr " & p.VideoBitrate
+                                    Return "--vbr " & p.VideoBitrate
                                 Case "VBR2"
-                                    Return " --vbr2 " & p.VideoBitrate
+                                    Return "--vbr2 " & p.VideoBitrate
                                 Case "CQP"
-                                    Return " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
+                                    Return "--cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
                             End Select
                         End Function}
 
@@ -234,21 +239,22 @@ Public Class NVIDIAEncoder
         End Sub
 
         Overrides Function GetCommandLine(includePaths As Boolean,
-                                          includeExecutable As Boolean,
+                                          includeExe As Boolean,
                                           Optional pass As Integer = 1) As String
             Dim ret As String
             Dim sourcePath As String
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
 
-            If includePaths AndAlso includeExecutable Then
-                ret = Package.NVEncC.Path.Quotes
-            End If
+            If includePaths AndAlso includeExe Then ret = Package.NVEncC.Path.Quotes
 
             Select Case Decoder.ValueText
                 Case "avs"
                     sourcePath = p.Script.Path
-                Case "nv"
+                Case "nvnative"
                     sourcePath = p.LastOriginalSourceFile
+                Case "nvcuda"
+                    sourcePath = p.LastOriginalSourceFile
+                    ret += " --avcuvid cuda"
                 Case "qs"
                     sourcePath = "-"
                     If includePaths Then ret = If(includePaths, Package.QSVEncC.Path.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Package.NVEncC.Path.Quotes, "NVEncC")

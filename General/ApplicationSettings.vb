@@ -73,7 +73,7 @@ Public Class ApplicationSettings
         If Versions Is Nothing Then Versions = New Dictionary(Of String, Integer)
         If Check(Storage, "Misc", 2) Then Storage = New ObjectStorage
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 189) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 190) Then
             If VideoEncoderProfiles Is Nothing Then
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
             Else

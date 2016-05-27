@@ -11,8 +11,8 @@ http://1drv.ms/1OqPDOe
 - added subtitle formats column to MediaInfo Folder View
 - added all missing x265 switches
 - added hardware decoding methods to x265 'Other' tab, this will bypass AviSynth though
-- added new standalone mkvextract GUI (Main Menu > Apps > Demux)
-- added new QSVEncC switches for hordcoded subtitles
+- added new standalone mkvextract GUI (Apps > Demux)
+- added new QSVEncC switches for hardcoded subtitles
 - added MP4 support to standalone demux app
 - added -avsinfo starting AVSMeter without a source opened
 - added support for unicode filenames using VapourSynth, AviSynth don't support it
@@ -23,6 +23,7 @@ http://1drv.ms/1OqPDOe
 - added codec help menu to ffmpeg options dialog which shows help for the currently selected codec, it displayes the output queried with 'ffmpeg -h encoder=name'
 - added option to define preferred audio languages
 - added audio and subtitle demuxing modes 'Show Dialog', 'Preferred', 'All', 'None'
+- added x265 changes for v1.9 183
 
 ### Fixed Bugs
 
@@ -40,6 +41,7 @@ http://1drv.ms/1OqPDOe
 - log file improvements
 - filters list view did not accept drag and drop with source files 
 - enabled posibility to remux mov to mp4
+- the apps dialog writes the customized versions now to the settings folder so it don't matter if the startup folder has no write access
 
 ### Updated Tools
 
@@ -49,8 +51,9 @@ http://1drv.ms/1OqPDOe
 - mkvtoolnix 9.1.0
 - MP4Box 0.6.2
 - mvsfunc 7
-- nnedi3 0.9.4.21
-- QSVEncC 2.46
-- StaxRip Toolbox Demux 1.1
-- x265 1.9 144
 - mvtools2 2.7.0.22
+- nnedi3 0.9.4.21
+- NVEncC 2.06
+- QSVEncC 2.47
+- StaxRip Toolbox Demux 1.1
+- x265 1.9 183

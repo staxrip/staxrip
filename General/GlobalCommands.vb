@@ -223,7 +223,7 @@ Public Class GlobalCommands
 
         Dim nvexcept = "--help --version --check-device
 --check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
---check-filters --device --input --output --raw --avs --vpy --vpy-mt --avcuvid --avcuvid-analyze
+--check-filters --device --input --output --raw --avs --vpy --vpy-mt --avcuvid-analyze
 --audio-source --audio-file --seek --format --audio-copy --audio-copy --audio-codec
 --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
 --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy

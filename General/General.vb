@@ -392,11 +392,7 @@ Class SafeSerialization
     Private Shared Function GetObjectInstance(ba As Byte(), binder As SerializationBinder) As Object
         Using ms As New MemoryStream(ba)
             Dim bf As New BinaryFormatter
-
-            If Not binder Is Nothing Then
-                bf.Binder = binder
-            End If
-
+            If Not binder Is Nothing Then bf.Binder = binder
             Return bf.Deserialize(ms)
         End Using
     End Function

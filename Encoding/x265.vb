@@ -98,14 +98,15 @@ Public Class x265Encoder
             code = "SelectRangeEvery(" + every + ",14)"
         Else
             code = "fpsnum = clip.fps_num" + BR + "fpsden = clip.fps_den" + BR +
-            "clip = core.std.SelectEvery(clip = clip, cycle = " + every + ", offsets = range(14))" + BR +
-            "clip = core.std.AssumeFPS(clip = clip, fpsnum = fpsnum, fpsden = fpsden)"
+                "clip = core.std.SelectEvery(clip = clip, cycle = " + every + ", offsets = range(14))" + BR +
+                "clip = core.std.AssumeFPS(clip = clip, fpsnum = fpsnum, fpsden = fpsden)"
         End If
 
-        Log.WriteLine(code + BR2)
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
         script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
         script.Synchronize()
+
+        Log.WriteLine(BR + script.GetFullScript + BR)
 
         Dim commandLine = enc.Params.GetArgs(0, script, p.TempDir + p.Name + "_CompCheck." + OutputFileType, True, True)
 
@@ -606,9 +607,9 @@ Public Class x265Params
 
     Property SlowFirstpass As New BoolParam With {
         .Switch = "--slow-firstpass",
+        .NoSwitch = "--no-slow-firstpass",
         .Text = "Slow Firstpass",
-        .Value = False,
-        .DefaultValue = False}
+        .InitValue = True}
 
     Property StrictCBR As New BoolParam With {
         .Switch = "--strict-cbr",
@@ -762,6 +763,12 @@ Public Class x265Params
         .Text = "Write encoding results to a comma separated value log file",
         .ArgsFunc = Function() If(CSV.Value, "--csv """ + Filepath.GetDirAndBase(p.TargetFile) + ".csv""", Nothing)}
 
+    Property RecursionSkip As New BoolParam With {
+        .Switch = "--recursion-skip",
+        .NoSwitch = "--no-recursion-skip",
+        .Text = "Recursion Skip",
+        .InitValue = True}
+
     Property csvloglevel As New OptionParam With {
         .Switch = "--csv-log-level",
         .Text = "CSV Log Level:",
@@ -784,7 +791,8 @@ Public Class x265Params
                 MinCuSize, MaxCuSize, MaxTuSize, LimitRefs, TUintra, TUinter, rdoqLevel)
                 Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra,
                     CUlossless, Tskip, TskipFast, LimitModes, RdRefine,
-                    New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"})
+                    New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
+                    RecursionSkip)
                 Add("Rate Control 1", AQmode, qgSize, AQStrength, QComp, CBQPoffs, QBlur, Cplxblur, CUtree, Lossless, StrictCBR, rcGrain)
                 Add("Rate Control 2",
                     New StringParam With {.Switch = "--zones", .Text = "Zones:"},
@@ -988,6 +996,7 @@ Public Class x265Params
         PsyRDOQ.Value = 1
         QComp.Value = 0.6
         LookaheadSlices.Value = 8
+        RecursionSkip.Value = True
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -1216,11 +1225,14 @@ Public Class x265Params
                 EarlySkip.Value = False
                 FastIntra.Value = False
                 LimitModes.Value = True
+                LookaheadSlices.Value = 4
                 MaxMerge.Value = 4
                 MErange.Value = 57
                 RCLookahead.Value = 40
                 RD.Value = 6
+                rdoqLevel.Value = 2
                 Rect.Value = True
+                RecursionSkip.Value = False
                 Ref.Value = 5
                 SAO.Value = True
                 Scenecut.Value = 40
@@ -1230,8 +1242,6 @@ Public Class x265Params
                 TUintra.Value = 3
                 Weightb.Value = True
                 Weightp.Value = True
-                rdoqLevel.Value = 2
-                LookaheadSlices.Value = 4
             Case 9 'placebo
                 [Me].Value = 3
                 AMP.Value = True
@@ -1250,6 +1260,7 @@ Public Class x265Params
                 RD.Value = 6
                 rdoqLevel.Value = 2
                 Rect.Value = True
+                RecursionSkip.Value = False
                 Ref.Value = 5
                 SAO.Value = True
                 Scenecut.Value = 40
@@ -1276,6 +1287,7 @@ Public Class x265Params
         PsyRDOQ.DefaultValue = 1
         QComp.DefaultValue = 0.6
         LookaheadSlices.DefaultValue = 8
+        RecursionSkip.DefaultValue = True
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -1511,6 +1523,7 @@ Public Class x265Params
                 RD.DefaultValue = 6
                 rdoqLevel.DefaultValue = 2
                 Rect.DefaultValue = True
+                RecursionSkip.DefaultValue = False
                 Ref.DefaultValue = 5
                 SAO.DefaultValue = True
                 Scenecut.DefaultValue = 40
@@ -1538,6 +1551,7 @@ Public Class x265Params
                 RD.DefaultValue = 6
                 rdoqLevel.DefaultValue = 2
                 Rect.DefaultValue = True
+                RecursionSkip.DefaultValue = False
                 Ref.DefaultValue = 5
                 SAO.DefaultValue = True
                 Scenecut.DefaultValue = 40
@@ -1567,6 +1581,10 @@ Public Class x265Params
                 AQmode.Value = 0
                 qpstep.Value = 1
                 rcGrain.Value = True
+                RecursionSkip.Value = False
+                PsyRD.Value = 4
+                PsyRDOQ.Value = 10
+                SAO.Value = False
             Case 4 '"fastdecode"
                 Deblock.Value = False
                 SAO.Value = False
@@ -1600,6 +1618,10 @@ Public Class x265Params
                 AQmode.DefaultValue = 0
                 qpstep.DefaultValue = 1
                 rcGrain.DefaultValue = True
+                RecursionSkip.DefaultValue = False
+                PsyRD.DefaultValue = 4
+                PsyRDOQ.DefaultValue = 10
+                SAO.DefaultValue = False
             Case 4 '"fastdecode"
                 Deblock.DefaultValue = False
                 SAO.DefaultValue = False

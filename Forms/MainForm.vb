@@ -8,7 +8,6 @@ Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
 Imports Microsoft.Win32
 Imports StaxRip.UI
-Imports SWF = System.Windows.Forms
 Imports VB6 = Microsoft.VisualBasic
 
 Public Class MainForm
@@ -1027,8 +1026,8 @@ Public Class MainForm
     End Sub
 
     Function IsSaveCanceled() As Boolean
-        'ObjectHelp.GetCompareString(g.SavedProject).WriteFile(CommonDirs.UserDesktop + "test1.txt")
-        'ObjectHelp.GetCompareString(p).WriteFile(CommonDirs.UserDesktop + "test2.txt")
+        'ObjectHelp.GetCompareString(g.SavedProject).WriteFile(Environment.GetFolderPath(SpecialFolder.DesktopDirectory) + "\test1.txt", Encoding.ASCII)
+        'ObjectHelp.GetCompareString(p).WriteFile(Environment.GetFolderPath(SpecialFolder.DesktopDirectory) + "\test2.txt", Encoding.ASCII)
 
         If ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p) Then
             Using td As New TaskDialog(Of DialogResult)
@@ -1231,7 +1230,7 @@ Public Class MainForm
     End Sub
 
     Function OpenSaveDialog() As Boolean
-        Using d As New SWF.SaveFileDialog
+        Using d As New SaveFileDialog
             d.SetInitDir(p.TempDir)
 
             If p.SourceFile <> "" Then
@@ -1257,10 +1256,34 @@ Public Class MainForm
         Return OpenProject(path, True)
     End Function
 
+    Sub SetBindings(proj As Project, add As Boolean)
+        SetTextBoxBinding(tbTargetFile, proj, NameOf(Project.TargetFile), add)
+
+        If add Then
+            AddHandler proj.PropertyChanged, AddressOf ProjectPropertyChanged
+        Else
+            RemoveHandler proj.PropertyChanged, AddressOf ProjectPropertyChanged
+        End If
+    End Sub
+
+    Sub ProjectPropertyChanged(sender As Object, e As PropertyChangedEventArgs)
+        Assistant()
+    End Sub
+
+    Sub SetTextBoxBinding(tb As TextBox, obj As Object, prop As String, add As Boolean)
+        If add Then
+            tbTargetFile.DataBindings.Add(New Binding(NameOf(TextBox.Text), obj, prop, False, DataSourceUpdateMode.OnPropertyChanged))
+        Else
+            tbTargetFile.DataBindings.Clear()
+        End If
+    End Sub
+
     Function OpenProject(path As String, saveCurrent As Boolean) As Boolean
         If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then
             Return False
         End If
+
+        SetBindings(p, False)
 
         If Not File.Exists(path) Then path = Paths.StartupTemplatePath
 
@@ -1271,8 +1294,11 @@ Public Class MainForm
             p = DirectCast(SafeSerialization.Deserialize(safeInstance, path, New LegacySerializationBinder), Project)
         Catch ex As Exception
             g.ShowException(ex)
-            Exit Function
+            p = New Project
+            p.Init()
         End Try
+
+        SetBindings(p, True)
 
         Text = Application.ProductName + " x64 - " + Filepath.GetBase(path)
         SkipAssistant = True
@@ -1325,7 +1351,6 @@ Public Class MainForm
 
         tbTargetWidth.Text = width.ToString
         tbTargetHeight.Text = height.ToString
-        tbTargetFile.Text = targetPath
 
         SetSavedProject()
 
@@ -1388,7 +1413,7 @@ Public Class MainForm
 
         Dim td As New TaskDialog(Of String)
         td.MainInstruction = "Choose a preferred source filter"
-        td.Content = "A description of the available source filters can be found [https://stax76.gitbooks.io/staxrip-handbook/content/avisynth+vapoursynth.html here]."
+        td.Content = "A description of the available source filters can be found in the [https://stax76.gitbooks.io/staxrip-handbook/content/ online documentation]."
 
         td.AddCommandLink("Automatic AviSynth+", "avs")
         td.AddCommandLink("Automatic VapourSynth", "vs")
@@ -1490,6 +1515,7 @@ Public Class MainForm
         Dim recoverText = Text
 
         SafeSerialization.Serialize(p, recoverProjectPath)
+
         AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(recoverProjectPath)
 
         Try
@@ -2949,7 +2975,7 @@ Public Class MainForm
 
     <Command("Shows a file browser to open a project file.")>
     Sub ShowFileBrowserToOpenProject()
-        Using d As New SWF.OpenFileDialog
+        Using d As New OpenFileDialog
             d.Filter = "Project Files|*.srip"
 
             If d.ShowDialog() = DialogResult.OK Then
@@ -3569,9 +3595,9 @@ Public Class MainForm
         Using form As New SimpleSettingsForm(
             "Project Options",
             "In order to save project options go to:",
-            "Main Menu > Project > Save As Template",
+            "Project > Save As Template",
             "In order to choose a template to be loaded on program startup go to:",
-            "Main Menu > Tools > Settings > General > Templates > Default Template")
+            "Tools > Settings > General > Templates > Default Template")
 
             Dim ui = form.SimpleUI
 
@@ -4293,7 +4319,7 @@ Public Class MainForm
 
     <Command("Shows a dialog to add a hardcoded subtitle.")>
     Sub ShowHardcodedSubtitleDialog()
-        Using d As New SWF.OpenFileDialog
+        Using d As New OpenFileDialog
             d.SetFilter(FileTypes.SubtitleIncludingContainers)
             d.SetInitDir(s.LastSourceDir)
 
@@ -5014,7 +5040,7 @@ Public Class MainForm
     End Sub
 
     Sub tbSource_DoubleClick() Handles tbSourceFile.DoubleClick
-        Using d As New SWF.OpenFileDialog
+        Using d As New OpenFileDialog
             d.SetFilter(FileTypes.Video)
             d.Multiselect = True
             d.SetInitDir(s.LastSourceDir)
@@ -5090,15 +5116,11 @@ Public Class MainForm
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then
-            Return sb.SelectedItem
-        End If
-
-        Return Nothing
+        If sb.Show = DialogResult.OK Then Return sb.SelectedItem
     End Function
 
     Sub tbAudioFile0_DoubleClick() Handles tbAudioFile0.DoubleClick
-        Using d As New SWF.OpenFileDialog
+        Using d As New OpenFileDialog
             Dim filter = FileTypes.Audio.ToList
             filter.Insert(0, "avs")
             d.SetFilter(filter)
@@ -5108,7 +5130,7 @@ Public Class MainForm
     End Sub
 
     Sub tbAudioFile1_DoubleClick() Handles tbAudioFile1.DoubleClick
-        Using d As New SWF.OpenFileDialog
+        Using d As New OpenFileDialog
             Dim filter = FileTypes.Audio.ToList
             filter.Insert(0, "avs")
             d.SetFilter(filter)
@@ -5237,46 +5259,6 @@ Public Class MainForm
     Sub UpdateFilters()
         AviSynthListView.Load()
         If g.IsValidSource(False) Then UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
-    End Sub
-
-    Private Sub tbTargetFile_Validating(sender As Object, e As CancelEventArgs) Handles tbTargetFile.Validating
-        Assistant() 'script path is based on target path
-    End Sub
-
-    Sub tbTargetPath_TextChanged() Handles tbTargetFile.TextChanged
-        If tbTargetFile.Text <> "" AndAlso Not Filepath.IsValidFileSystemName(
-            Filepath.GetName(tbTargetFile.Text)) Then
-
-            MsgWarn("Filename contains invalid characters.")
-            tbTargetFile.Text = p.TargetFile
-        End If
-
-        If tbTargetFile.Text.ContainsUnicode AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
-            MsgWarn(Strings.NoUnicode)
-            tbTargetFile.Text = p.TargetFile
-        End If
-
-        p.Name = tbTargetFile.Text.Base
-        p.TargetFile = tbTargetFile.Text
-    End Sub
-
-    Sub tbTargetPath_DoubleClick() Handles tbTargetFile.DoubleClick
-        Using d As New SWF.SaveFileDialog
-            d.FileName = Filepath.GetBase(p.TargetFile)
-            d.SetInitDir(Filepath.GetDir(p.TargetFile))
-
-            If d.ShowDialog() = DialogResult.OK Then
-                Dim ext = p.VideoEncoder.Muxer.GetExtension
-
-                If d.FileName.ToLower.EndsWith(ext) Then
-                    tbTargetFile.Text = d.FileName
-                Else
-                    tbTargetFile.Text = d.FileName + ext
-                End If
-
-                Assistant()
-            End If
-        End Using
     End Sub
 
     Private Sub AviSynthListView_DoubleClick() Handles AviSynthListView.DoubleClick
@@ -5480,16 +5462,24 @@ Public Class MainForm
         End If
     End Sub
 
+    Sub tbTargetFile_DoubleClick() Handles tbTargetFile.DoubleClick
+        Using d As New SaveFileDialog
+            d.FileName = p.TargetFile.Base
+            d.SetInitDir(p.TargetFile.Dir)
+
+            If d.ShowDialog() = DialogResult.OK Then
+                Dim ext = p.VideoEncoder.Muxer.GetExtension
+                p.TargetFile = If(d.FileName.Ext = ext, d.FileName, d.FileName + ext)
+            End If
+        End Using
+    End Sub
+
     Private Sub tbTargetFile_MouseDown(sender As Object, e As MouseEventArgs) Handles tbTargetFile.MouseDown
-        If e.Button = MouseButtons.Right Then
-            UpdateTargetFileMenu()
-        End If
+        If e.Button = MouseButtons.Right Then UpdateTargetFileMenu()
     End Sub
 
     Private Sub tbSourceFile_MouseDown(sender As Object, e As MouseEventArgs) Handles tbSourceFile.MouseDown
-        If e.Button = MouseButtons.Right Then
-            UpdateSourceFileMenu()
-        End If
+        If e.Button = MouseButtons.Right Then UpdateSourceFileMenu()
     End Sub
 
     Private Sub tbAudioFile0_MouseDown(sender As Object, e As MouseEventArgs) Handles tbAudioFile0.MouseDown
@@ -5577,7 +5567,7 @@ Public Class MainForm
 
     Sub UpdateTargetFileMenu()
         TargetFileMenu.Items.Clear()
-        TargetFileMenu.Items.Add(New ActionMenuItem("Edit...", AddressOf tbTargetPath_DoubleClick, "Change the path of the target file."))
+        TargetFileMenu.Items.Add(New ActionMenuItem("Edit...", AddressOf tbTargetFile_DoubleClick, "Change the path of the target file."))
         TargetFileMenu.Items.Add(New ActionMenuItem("Play...", Sub() g.Play(p.TargetFile), "Play the target file.", File.Exists(p.TargetFile)))
         TargetFileMenu.Items.Add(New ActionMenuItem("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), "Show MediaInfo for the target file.", File.Exists(p.TargetFile)))
         TargetFileMenu.Items.Add(New ActionMenuItem("Explore...", Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle), "Open the target file directory with File Explorer.", Directory.Exists(Filepath.GetDir(p.TargetFile))))

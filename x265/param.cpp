@@ -164,6 +164,7 @@ void x265_param_default(x265_param* param)
     param->bEnableWeightedPred = 1;
     param->bEnableWeightedBiPred = 0;
     param->bEnableEarlySkip = 0;
+    param->bEnableRecursionSkip = 1;
     param->bEnableAMP = 0;
     param->bEnableRectInter = 0;
     param->rdLevel = 3;
@@ -220,7 +221,7 @@ void x265_param_default(x265_param* param)
     param->rc.qblur = 0.5;
     param->rc.zoneCount = 0;
     param->rc.zones = NULL;
-    param->rc.bEnableSlowFirstPass = 0;
+    param->rc.bEnableSlowFirstPass = 1;
     param->rc.bStrictCbr = 0;
     param->rc.bEnableGrain = 0;
 
@@ -388,6 +389,7 @@ int x265_param_default_preset(x265_param* param, const char* preset, const char*
             param->maxNumMergeCand = 4;
             param->searchMethod = X265_STAR_SEARCH;
             param->maxNumReferences = 5;
+            param->bEnableRecursionSkip = 0;
             param->limitReferences = 1;
             param->limitModes = 1;
             param->bIntraInBFrames = 1;
@@ -410,9 +412,9 @@ int x265_param_default_preset(x265_param* param, const char* preset, const char*
             param->maxNumMergeCand = 5;
             param->searchMethod = X265_STAR_SEARCH;
             param->bEnableTransformSkip = 1;
+            param->bEnableRecursionSkip = 0;
             param->maxNumReferences = 5;
             param->limitReferences = 0;
-            param->rc.bEnableSlowFirstPass = 1;
             param->bIntraInBFrames = 1;
             param->lookaheadSlices = 0; // disabled for best quality
             // TODO: optimized esa
@@ -461,6 +463,10 @@ int x265_param_default_preset(x265_param* param, const char* preset, const char*
             param->rc.aqMode = 0;
             param->rc.qpStep = 1;
             param->rc.bEnableGrain = 1;
+            param->bEnableRecursionSkip = 0;
+            param->psyRd = 4.0;
+            param->psyRdoq = 10.0;
+            param->bEnableSAO = 0;
         }
         else
             return -1;
@@ -614,6 +620,7 @@ int x265_param_parse(x265_param* p, const char* name, const char* value)
     OPT("max-merge") p->maxNumMergeCand = (uint32_t)atoi(value);
     OPT("temporal-mvp") p->bEnableTemporalMvp = atobool(value);
     OPT("early-skip") p->bEnableEarlySkip = atobool(value);
+    OPT("recursion-skip") p->bEnableRecursionSkip = atobool(value);
     OPT("rdpenalty") p->rdPenalty = atoi(value);
     OPT("tskip") p->bEnableTransformSkip = atobool(value);
     OPT("no-tskip-fast") p->bEnableTSkipFast = atobool(value);
@@ -1344,6 +1351,7 @@ void x265_print_params(x265_param* param)
     TOOLVAL(param->psyRdoq, "psy-rdoq=%.2lf");
     TOOLOPT(param->bEnableRdRefine, "rd-refine");
     TOOLOPT(param->bEnableEarlySkip, "early-skip");
+    TOOLOPT(param->bEnableRecursionSkip, "recursion-skip");
     TOOLVAL(param->noiseReductionIntra, "nr-intra=%d");
     TOOLVAL(param->noiseReductionInter, "nr-inter=%d");
     TOOLOPT(param->bEnableTSkipFast, "tskip-fast");
@@ -1402,6 +1410,7 @@ char *x265_param2string(x265_param* p)
     s += sprintf(s, " max-merge=%d", p->maxNumMergeCand);
     BOOL(p->bEnableTemporalMvp, "temporal-mvp");
     BOOL(p->bEnableEarlySkip, "early-skip");
+    BOOL(p->bEnableRecursionSkip, "recursion-skip");
     s += sprintf(s, " rdpenalty=%d", p->rdPenalty);
     BOOL(p->bEnableTransformSkip, "tskip");
     BOOL(p->bEnableTSkipFast, "tskip-fast");

@@ -369,17 +369,25 @@ Class AppsForm
                     ActivePackage.Version = input
                     ActivePackage.VersionDate = File.GetLastWriteTimeUtc(ActivePackage.Path)
 
-                    Dim textContent As String
+                    Dim txt = Application.ProductVersion + BR2
 
                     For Each i In Package.Items.Values
                         If i.Version <> "" Then
-                            textContent += i.ID + " = " + i.Version + "; " +
-                                i.VersionDate.ToString("yyyy-MM-dd",
-                                                       CultureInfo.InvariantCulture) + BR 'persian calendar
+                            txt += i.ID + " = " + i.VersionDate.ToString("yyyy-MM-dd",
+                                CultureInfo.InvariantCulture) + "; " + i.Version + BR 'persian calendar
                         End If
                     Next
 
-                    File.WriteAllText(CommonDirs.Startup + "Apps\Versions.txt", textContent.FormatColumn("="))
+                    Try
+                        txt.FormatColumn("=").WriteUTF8File(CommonDirs.Startup + "Apps\Versions.txt")
+                    Catch
+                    End Try
+
+                    Try
+                        txt.FormatColumn("=").WriteUTF8File(Paths.SettingsDir + "Versions.txt")
+                    Catch ex As Exception
+                        g.ShowException(ex)
+                    End Try
                 End If
         End Select
 

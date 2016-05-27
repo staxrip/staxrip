@@ -10,8 +10,6 @@ Public Class VideoScript
     <NonSerialized()> Private Size As Size
     <NonSerialized()> Private ErrorMessage As String
 
-    <NonSerialized()> Public LastSync As String
-
     Property Filters As New List(Of VideoFilter)
 
     Overridable Property Engine As ScriptEngine = ScriptEngine.AviSynth
@@ -147,44 +145,45 @@ Public Class VideoScript
         Next
     End Function
 
-    Sub Synchronize(Optional convertToRGB As Boolean = False)
+    <NonSerialized()> Public LastCode As String
+    <NonSerialized()> Public LastPath As String
+
+    Sub Synchronize(Optional convertToRGB As Boolean = False,
+                    Optional comparePath As Boolean = True)
+
         If Path <> "" Then
-            Dim script = Macro.Solve(GetScript())
+            Dim code = Macro.Solve(GetScript())
 
             If convertToRGB Then
                 If Engine = ScriptEngine.AviSynth Then
                     If p.SourceHeight > 576 Then
-                        script += BR + "ConvertToRGB(matrix=""Rec709"")"
+                        code += BR + "ConvertToRGB(matrix=""Rec709"")"
                     Else
-                        script += BR + "ConvertToRGB(matrix=""Rec601"")"
+                        code += BR + "ConvertToRGB(matrix=""Rec601"")"
                     End If
                 Else
                     If p.SourceHeight > 576 Then
-                        If script.Contains(".set_output()") Then
-                            script = script.Replace(".set_output()", ".resize.Bicubic(matrix_in_s = '709', format = vs.COMPATBGR32).set_output()")
+                        If code.Contains(".set_output()") Then
+                            code = code.Replace(".set_output()", ".resize.Bicubic(matrix_in_s = '709', format = vs.COMPATBGR32).set_output()")
                         Else
-                            script += BR + "clip = clip.resize.Bicubic(matrix_in_s = '709', format = vs.COMPATBGR32)"
+                            code += BR + "clip = clip.resize.Bicubic(matrix_in_s = '709', format = vs.COMPATBGR32)"
                         End If
                     Else
-                        If script.Contains(".set_output()") Then
-                            script = script.Replace(".set_output()", ".resize.Bicubic(matrix_in_s = '470bg', format = vs.COMPATBGR32).set_output()")
+                        If code.Contains(".set_output()") Then
+                            code = code.Replace(".set_output()", ".resize.Bicubic(matrix_in_s = '470bg', format = vs.COMPATBGR32).set_output()")
                         Else
-                            script += BR + "clip = clip.resize.Bicubic(matrix_in_s = '470bg', format = vs.COMPATBGR32)"
+                            code += BR + "clip = clip.resize.Bicubic(matrix_in_s = '470bg', format = vs.COMPATBGR32)"
                         End If
                     End If
                 End If
             End If
 
-            Dim current = Path + script
-
-            If Frames = 240 OrElse current <> LastSync Then
+            If Frames = 240 OrElse code <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
                 If Directory.Exists(Filepath.GetDir(Path)) Then
-                    script = ModifyScript(script, Engine)
-
                     If Engine = ScriptEngine.VapourSynth Then
-                        script.WriteFile(Path, Encoding.UTF8)
+                        ModifyScript(code, Engine).WriteFile(Path, Encoding.UTF8)
                     Else
-                        script.WriteANSIFile(Path)
+                        ModifyScript(code, Engine).WriteANSIFile(Path)
                     End If
 
                     If p.SourceFile <> "" Then
@@ -212,7 +211,8 @@ Public Class VideoScript
                         End If
                     End Using
 
-                    LastSync = current
+                    LastCode = code
+                    LastPath = Path
                 End If
             End If
         End If
@@ -304,16 +304,14 @@ Public Class VideoScript
     End Function
 
     Function GetErrorMessage() As String
-        Synchronize()
+        Synchronize(False, False)
         Return ErrorMessage
     End Function
 
     Function GetSeconds() As Integer
         Dim fr = GetFramerate()
-
         If fr = 0 Then fr = p.SourceFrameRate
         If fr = 0 Then fr = 25
-
         Return CInt(GetFrames() / fr)
     End Function
 
@@ -538,13 +536,9 @@ Public Class FilterCategory
         Dim src As New FilterCategory("Source")
         src.Filters.AddRange(
             {New VideoFilter("Source", "Manual", "# shows the filter selection dialog"),
-             New VideoFilter("Source", "Automatic", "# can be configured at main menu > Tools > Settings > Source Filters"),
+             New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"),
              New VideoFilter("Source", "AviSource", "AviSource(""%source_file%"", Audio = False)"),
-             New VideoFilter("Source", "DirectShowSource", "DirectShowSource(""%source_file%"", audio = False)"),
-             New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")"),
-             New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")"),
-             New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"")"),
-             New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")")})
+             New VideoFilter("Source", "DirectShowSource", "DirectShowSource(""%source_file%"", audio = False)")})
         ret.Add(src)
 
         Dim misc As New FilterCategory("Misc")
@@ -608,11 +602,8 @@ Public Class FilterCategory
         Dim src As New FilterCategory("Source")
         src.Filters.AddRange(
             {New VideoFilter("Source", "Manual", "# shows filter selection dialog"),
-             New VideoFilter("Source", "Automatic", "# can be configured at main menu > Tools > Settings > Source Filters"),
-             New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r""%source_file%"")"),
-             New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%temp_file%.ffindex"")"),
-             New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")"),
-             New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")})
+             New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"),
+             New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r""%source_file%"")")})
         ret.Add(src)
 
         Dim crop As New FilterCategory("Crop")

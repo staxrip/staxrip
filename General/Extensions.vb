@@ -19,6 +19,19 @@ Module StringExtensions
         Return sb.ToString()
     End Function
 
+    <Extension>
+    Function IsValidFileName(instance As String) As Boolean
+        If instance = "" Then Return False
+        Dim chars = """*/:<>?\|"
+
+        For Each i In instance
+            If chars.Contains(i) Then Return False
+            If Convert.ToInt32(i) < 32 Then Return False
+        Next
+
+        Return True
+    End Function
+
     <Extension()>
     Function FileName(instance As String) As String
         If instance = "" Then Return ""
@@ -63,6 +76,11 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function Dir(instance As String) As String
+        Return Filepath.GetDir(instance)
+    End Function
+
+    <Extension()>
     Function ContainsAll(instance As String, all As IEnumerable(Of String)) As Boolean
         If instance <> "" Then Return all.All(Function(arg) instance.Contains(arg))
     End Function
@@ -99,6 +117,8 @@ Module StringExtensions
 
     <Extension()>
     Function ContainsUnicode(value As String) As Boolean
+        If value = "" Then Return False
+
         For Each i In value
             If Convert.ToInt32(i) > 255 Then Return True
         Next
@@ -216,6 +236,11 @@ Module StringExtensions
     <Extension()>
     Sub WriteANSIFile(instance As String, path As String)
         WriteFile(instance, path, Encoding.Default)
+    End Sub
+
+    <Extension()>
+    Sub WriteUTF8File(instance As String, path As String)
+        WriteFile(instance, path, Encoding.UTF8)
     End Sub
 
     <Extension()>

@@ -1179,7 +1179,7 @@ Class Log
     End Function
 
     Shared Sub WriteEnvironment()
-        If p.Log.ToString.Contains("StaxRip x64: " + Application.ProductVersion) Then Exit Sub
+        If p.Log.ToString.Contains("Environment" + BR + "-=") Then Exit Sub
 
         Dim staxrip = "-=".Multiply(30) + "-" + BR +
 "      _________ __                __________.__        

@@ -188,11 +188,11 @@ Class Proc
                     Dim ntdllHandle = Native.LoadLibrary("NTDLL.DLL")
                     Dim systemErrorMessage As String
 
-                    Dim retval = Native.FormatMessageW(Native.FORMAT_MESSAGE_ALLOCATE_BUFFER Or
-                                                       Native.FORMAT_MESSAGE_FROM_SYSTEM Or
-                                                       Native.FORMAT_MESSAGE_FROM_HMODULE,
-                                                       ntdllHandle, ExitCode, 0, systemErrorMessage, 0, IntPtr.Zero)
-
+                    Dim retval = Native.FormatMessage(Native.FORMAT_MESSAGE_ALLOCATE_BUFFER Or
+                                                      Native.FORMAT_MESSAGE_FROM_SYSTEM Or
+                                                      Native.FORMAT_MESSAGE_FROM_HMODULE,
+                                                      ntdllHandle, ExitCode, 0, systemErrorMessage,
+                                                      0, IntPtr.Zero)
                     Native.FreeLibrary(ntdllHandle)
 
                     Const ERROR_MR_MID_NOT_FOUND = 317
@@ -209,9 +209,10 @@ Class Proc
 
                     systemErrorMessage = Nothing
 
-                    retval = Native.FormatMessageW(Native.FORMAT_MESSAGE_ALLOCATE_BUFFER Or
-                                                   Native.FORMAT_MESSAGE_FROM_SYSTEM,
-                                                   IntPtr.Zero, ExitCode, 0, systemErrorMessage, 0, IntPtr.Zero)
+                    retval = Native.FormatMessage(Native.FORMAT_MESSAGE_ALLOCATE_BUFFER Or
+                                                  Native.FORMAT_MESSAGE_FROM_SYSTEM,
+                                                  IntPtr.Zero, ExitCode, 0, systemErrorMessage,
+                                                  0, IntPtr.Zero)
 
                     If retval = 0 AndAlso Marshal.GetLastWin32Error <> ERROR_MR_MID_NOT_FOUND Then
                         Throw New Win32Exception(Marshal.GetLastWin32Error)

@@ -482,13 +482,13 @@ Class Native
     End Function
 
     <DllImport("kernel32.dll", SetLastError:=True, CharSet:=CharSet.Unicode)>
-    Shared Function FormatMessageW(dwFlags As Integer,
-                                   lpSource As IntPtr,
-                                   dwMessageId As Integer,
-                                   dwLanguageId As Integer,
-                                   ByRef lpBuffer As String,
-                                   nSize As Integer,
-                                   Arguments As IntPtr) As Integer
+    Shared Function FormatMessage(dwFlags As Integer,
+                                  lpSource As IntPtr,
+                                  dwMessageId As Integer,
+                                  dwLanguageId As Integer,
+                                  ByRef lpBuffer As String,
+                                  nSize As Integer,
+                                  Arguments As IntPtr) As Integer
     End Function
 
 #End Region

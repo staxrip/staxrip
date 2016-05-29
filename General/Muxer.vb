@@ -79,7 +79,7 @@ Public MustInherit Class Muxer
         If Not File.Exists(p.SourceFile) Then Exit Sub
 
         Dim files = g.GetFilesInTempDirAndParent
-        files.Sort(StringLogicalComparer.Default)
+        files.Sort(New StringLogicalComparer)
 
         For Each file1 In files
             If Filepath.GetExtFull(file1) = ".idx" Then

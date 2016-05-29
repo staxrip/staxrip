@@ -42,13 +42,14 @@ http://1drv.ms/1OqPDOe
 - filters list view did not accept drag and drop with source files 
 - enabled posibility to remux mov to mp4
 - the apps dialog writes the customized versions now to the settings folder so it don't matter if the startup folder has no write access
+- demuxed subtitles are now detected by ID with proper numeric order
 
 ### Updated Tools
 
 - AviSynth 1847
 - ffmpeg 2016-04-25
 - L-SMASH-Works 877
-- mkvtoolnix 9.1.0
+- mkvtoolnix 9.2.0
 - MP4Box 0.6.2
 - mvsfunc 7
 - mvtools2 2.7.0.22
@@ -57,3 +58,4 @@ http://1drv.ms/1OqPDOe
 - QSVEncC 2.47
 - StaxRip Toolbox Demux 1.1
 - x265 1.9 183
+- yadifmod2 0.0.4

@@ -36,7 +36,6 @@ Public Class Package
     Shared Property MediaInfo As New MediaInfoPackage
     Shared Property MP4Box As New MP4BoxPackage
     Shared Property MPC As New MPCPackage
-    Shared Property NeroAACEnc As New NeroAACEncPackage
     Shared Property NicAudio As New NicAudioPackage
     Shared Property NVEncC As New NVEncCPackage
     Shared Property ProjectX As New ProjectXPackage
@@ -190,7 +189,6 @@ Public Class Package
         Add(mkvextract)
         Add(MP4Box)
         Add(MPC)
-        Add(NeroAACEnc)
         Add(NicAudio)
         Add(NVEncC)
         Add(ProjectX)
@@ -466,7 +464,7 @@ Public Class Package
             .Name = "nnedi3",
             .Filename = "nnedi3.dll",
             .WebURL = "http://forum.doom9.org/showthread.php?t=170083",
-            .HelpFile = "Readme.txt",
+            .HelpURL = "http://avisynth.nl/index.php/Nnedi3",
             .Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field.",
             .AviSynthFilterNames = {"nnedi3"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "nnedi3", "nnedi3(field = 1)")}})
@@ -499,7 +497,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "yadifmod2",
-            .Filename = "yadifmod2_avx.dll",
+            .Filename = "yadifmod2.dll",
             .AviSynthFilterNames = {"yadifmod2"},
             .Description = "Yet Another Deinterlacing Filter mod  for Avisynth2.6/Avisynth+",
             .HelpFile = "readme.md",
@@ -965,19 +963,6 @@ Public Class VSRipPackage
         Description = "VSRip rips VobSub subtitles."
         WebURL = "http://sourceforge.net/projects/guliverkli"
         LaunchName = Filename
-    End Sub
-End Class
-
-Public Class NeroAACEncPackage
-    Inherits Package
-
-    Sub New()
-        Name = "Nero AAC Encoder"
-        Filename = "neroAacEnc.exe"
-        Description = "Free AAC encoder"
-        WebURL = "http://www.nero.com/enu/downloads-nerodigital-nero-aac-codec.php"
-        HelpFile = "nero readme.txt"
-        FixedDir = CommonDirs.Startup + "Apps\BeSweet\"
     End Sub
 End Class
 

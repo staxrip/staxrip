@@ -79,64 +79,38 @@ Public MustInherit Class Muxer
         If Not File.Exists(p.SourceFile) Then Exit Sub
 
         Dim files = g.GetFilesInTempDirAndParent
-        Dim pattern = "^.+\.(\d\d)\.(\w\w\w)\.(.+)\..+$"
+        files.Sort(StringLogicalComparer.Default)
 
-        Dim so As New Sorter(Of String)
-
-        For Each i In files
-            Dim match = Regex.Match(i, pattern)
-
-            If match.Success Then
-                so.Add(match.Groups(1).Value, i)
-            Else
-                so.Add(i, i)
-            End If
-        Next
-
-        files = so.GetSortedList()
-
-        For Each iFile In files
-            If Filepath.GetExtFull(iFile) = ".idx" Then
-                Dim v = File.ReadAllText(iFile, Encoding.Default)
+        For Each file1 In files
+            If Filepath.GetExtFull(file1) = ".idx" Then
+                Dim v = File.ReadAllText(file1, Encoding.Default)
 
                 If v.Contains(vb6.ChrW(&HA) + vb6.ChrW(&H0) + vb6.ChrW(&HD) + vb6.ChrW(&HA)) Then
                     v = v.FixBreak
                     v = v.Replace(BR + vb6.ChrW(&H0) + BR, BR + "langidx: 0" + BR)
-                    File.WriteAllText(iFile, v, Encoding.Default)
+                    File.WriteAllText(file1, v, Encoding.Default)
                 End If
             End If
 
-            If FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExt(iFile)) AndAlso
-                g.IsSourceSameOrSimilar(iFile) AndAlso Not iFile.Contains("_Preview.") AndAlso
-                Not iFile.Contains("_Temp.") Then
+            If FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExt(file1)) AndAlso
+                g.IsSourceSameOrSimilar(file1) AndAlso Not file1.Contains("_Preview.") AndAlso
+                Not file1.Contains("_Temp.") Then
 
-                If p.ConvertSup2Sub AndAlso Filepath.GetExtFull(iFile) = ".sup" Then
+                If p.ConvertSup2Sub AndAlso Filepath.GetExtFull(file1) = ".sup" Then
                     Continue For
                 End If
 
-                If TypeOf Me Is MP4Muxer AndAlso Not {"idx", "srt"}.Contains(Filepath.GetExt(iFile)) Then
+                If TypeOf Me Is MP4Muxer AndAlso Not {"idx", "srt"}.Contains(Filepath.GetExt(file1)) Then
                     Continue For
                 End If
 
-                If iFile.Contains("_Forced.") AndAlso Not Filepath.GetBase(iFile).Contains(Language.CurrentCulture.Name) Then
+                If file1.Contains("_Forced.") AndAlso Not Filepath.GetBase(file1).Contains(Language.CurrentCulture.Name) Then
                     Continue For
                 End If
 
-                For Each iSubtitle In Subtitle.Create(iFile)
+                For Each iSubtitle In Subtitle.Create(file1)
                     If p.PreferredSubtitles <> "" Then
-                        Dim match = Regex.Match(iFile, pattern)
-
-                        If match.Success Then
-                            For Each i4 In Language.Languages
-                                If i4.ThreeLetterCode = match.Groups(2).Value Then
-                                    iSubtitle.Language = i4
-                                End If
-                            Next
-
-                            iSubtitle.Title = match.Groups(3).Value
-                        End If
-
-                        If iFile.Contains("_Forced.") Then
+                        If file1.Contains("_Forced.") Then
                             Static forcedAdded As Boolean
 
                             If forcedAdded Then

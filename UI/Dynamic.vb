@@ -412,48 +412,6 @@ Namespace UI
         End Function
     End Class
 
-    <AttributeUsage(AttributeTargets.All)>
-    Class OrderAttribute
-        Inherits Attribute
-
-        Property Order As Integer
-
-        Sub New(order As Integer)
-            Me.Order = order
-        End Sub
-    End Class
-
-    Class PropertyOrderConverter
-        Inherits TypeConverter
-
-        Overloads Overrides Function GetPropertiesSupported(context As ITypeDescriptorContext) As Boolean
-            Return True
-        End Function
-
-        Overloads Overrides Function GetProperties(context As ITypeDescriptorContext, value As Object, attributes As Attribute()) As PropertyDescriptorCollection
-            Dim c As PropertyDescriptorCollection = TypeDescriptor.GetProperties(value, attributes)
-            Dim s As New Sorter(Of PropertyDescriptor)
-
-            For Each i As PropertyDescriptor In c
-                Dim oa As OrderAttribute = DirectCast(i.Attributes(GetType(OrderAttribute)), OrderAttribute)
-
-                If oa Is Nothing Then
-                    s.Add(999, i)
-                Else
-                    s.Add(oa.Order, i)
-                End If
-            Next
-
-            Dim l As New List(Of String)
-
-            For Each i As PropertyDescriptor In s.GetSortedList
-                l.Add(i.Name)
-            Next
-
-            Return c.Sort(l.ToArray)
-        End Function
-    End Class
-
     Class DescriptionAttributeHelp
         Shared Function GetDescription(attributes As Object()) As String
             For Each i In attributes

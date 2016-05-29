@@ -433,41 +433,6 @@ Public Interface ISafeSerialization
     Sub Init()
 End Interface
 
-Class Sorter(Of T)
-    Private List As New List(Of SortObject(Of T))
-
-    Sub Add(sortValue As IComparable, o As T)
-        List.Add(New SortObject(Of T)(sortValue, o))
-    End Sub
-
-    Function GetSortedList() As List(Of T)
-        Dim r As New List(Of T)
-        List.Sort()
-
-        For Each i In List
-            r.Add(i.Value)
-        Next
-
-        Return r
-    End Function
-
-    Private Class SortObject(Of T2)
-        Implements IComparable
-
-        Public SortValue As IComparable
-        Public Value As T2
-
-        Sub New(sortValue As IComparable, o As T2)
-            Me.SortValue = sortValue
-            Me.Value = o
-        End Sub
-
-        Function CompareTo(obj As Object) As Integer Implements IComparable.CompareTo
-            Return SortValue.CompareTo(CType(obj, SortObject(Of T2)).SortValue)
-        End Function
-    End Class
-End Class
-
 Class HelpDocument
     Private Path As String
     Private Title As String

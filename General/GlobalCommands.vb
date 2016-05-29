@@ -296,17 +296,34 @@ Public Class GlobalCommands
         If x265Missing.Count > 0 Then MsgInfo("Removed from x265:", x265Missing.Join(" "))
         If x265Unknown.Count > 0 Then MsgInfo("x265 Todo", x265Unknown.Join(" "))
 
-        For Each i In Package.Items.Values
-            If i.Path = "" Then Continue For
+        'does the version contain x64 or x86?
+        For Each pack In Package.Items.Values
+            If pack.Path = "" Then Continue For
 
-            If i.Version = "" OrElse (Not i.Version.ContainsAny({"x86", "x64"}) AndAlso
-                Not i.Filename.ContainsAny({".jar", ".py", ".avsi"})) OrElse
-                Not i.IsCorrectVersion Then
+            If pack.Version = "" OrElse (Not pack.Version.ContainsAny({"x86", "x64"}) AndAlso
+                Not pack.Filename.ContainsAny({".jar", ".py", ".avsi"})) OrElse
+                Not pack.IsCorrectVersion Then
 
                 Using f As New AppsForm
-                    f.ShowPackage(i)
+                    f.ShowPackage(pack)
                     f.ShowDialog()
                 End Using
+            End If
+        Next
+
+        'does help file exist?
+        For Each pack In Package.Items.Values
+            If pack.Path <> "" AndAlso pack.HelpFile <> "" Then
+                If Not File.Exists(pack.GetDir + pack.HelpFile) Then
+                    MsgError($"Help file of {pack.Name} is missing!")
+
+                    Using form As New AppsForm
+                        form.ShowPackage(pack)
+                        form.ShowDialog()
+                    End Using
+
+                    Exit For
+                End If
             End If
         Next
     End Sub

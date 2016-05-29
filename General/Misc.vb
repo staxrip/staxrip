@@ -651,7 +651,7 @@ Public Class GlobalClass
     Function GetFilesInTempDirAndParent() As List(Of String)
         Dim ret As New List(Of String)
 
-        If p.TempDir <> "" Then ret = Directory.GetFiles(p.TempDir).ToList
+        If p.TempDir <> "" Then ret.AddRange(Directory.GetFiles(p.TempDir))
 
         If p.TempDir <> Filepath.GetDir(p.FirstOriginalSourceFile) Then
             ret.AddRange(Directory.GetFiles(Filepath.GetDir(p.FirstOriginalSourceFile)))
@@ -1931,8 +1931,7 @@ Public MustInherit Class Profile
     End Function
 End Class
 
-<Serializable(),
- TypeConverter(GetType(PropertyOrderConverter))>
+<Serializable()>
 Class Macro
     Implements IComparable(Of Macro)
 
@@ -1945,15 +1944,6 @@ Class Macro
             type As Type,
             description As String)
 
-        MyClass.New(name, friendlyName, type, Nothing, description)
-    End Sub
-
-    Sub New(name As String,
-            friendlyName As String,
-            type As Type,
-            customValue As String,
-            description As String)
-
         If name.StartsWith("$") Then
             Me.Name = name
         Else
@@ -1963,21 +1953,13 @@ Class Macro
         Me.FriendlyName = friendlyName
         Me.Type = type
         Me.Description = description
-        Me.CustomValue = customValue
     End Sub
 
     Private NameValue As String
 
-    <DisplayName("Macro"),
-    Order(1),
-    RefreshProperties(RefreshProperties.All),
-    Description("Name of macro, for example %foo_bar%.")>
     Property Name() As String
         Get
-            If NameValue Is Nothing Then
-                NameValue = ""
-            End If
-
+            If NameValue Is Nothing Then NameValue = ""
             Return NameValue
         End Get
         Set(Value As String)
@@ -1993,16 +1975,13 @@ Class Macro
 
     Private FriendlyNameValue As String
 
-    <DisplayName("Name"), Order(2), Description("Short and friendly name, for example 'Foo Bar'.")>
     Property FriendlyName() As String
         Get
             If FriendlyNameValue = "" AndAlso NameValue <> "" Then
                 FriendlyNameValue = NameValue.Replace("_", " ").Replace("%", " ").Trim(" "c).ToTitleCase
             End If
 
-            If FriendlyNameValue Is Nothing Then
-                FriendlyNameValue = ""
-            End If
+            If FriendlyNameValue Is Nothing Then FriendlyNameValue = ""
 
             Return FriendlyNameValue
         End Get
@@ -2011,29 +1990,9 @@ Class Macro
         End Set
     End Property
 
-    Private CustomValueValue As String
-
-    <DisplayName("Value"), Order(3),
-    Description("Returned value, may contain other macros."),
-    Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
-    Property CustomValue() As String
-        Get
-            If CustomValueValue Is Nothing Then
-                CustomValueValue = ""
-            End If
-
-            Return CustomValueValue
-        End Get
-        Set(Value As String)
-            CustomValueValue = Value
-        End Set
-    End Property
-
     Private TypeValue As Type
 
-    <Order(4), Description("Return type."),
-    TypeConverter(GetType(BoolStringIntConverter))>
-    Property Type() As Type
+    Property Type As Type
         Get
             If TypeValue Is Nothing Then TypeValue = GetType(String)
 
@@ -2046,7 +2005,6 @@ Class Macro
 
     Private DescriptionValue As String
 
-    <Order(5), Description("A short description.")>
     Property Description() As String
         Get
             If DescriptionValue Is Nothing Then DescriptionValue = ""
@@ -2057,17 +2015,6 @@ Class Macro
             DescriptionValue = Value
         End Set
     End Property
-
-    <Browsable(False)>
-    ReadOnly Property HasParameters() As Boolean
-        Get
-            Return Name Like "%*:<*>%"
-        End Get
-    End Property
-
-    Function Solve() As String
-        Return Solve(Name, True)
-    End Function
 
     Shared Function GetTips() As StringPairList
         Dim ret As New StringPairList
@@ -2080,17 +2027,17 @@ Class Macro
     End Function
 
     Shared Function GetTipsFriendly(convertHTMLChars As Boolean) As StringPairList
-        Dim l As New StringPairList
+        Dim ret As New StringPairList
 
         For Each i As Macro In GetMacros()
             If convertHTMLChars Then
-                l.Add(HelpDocument.ConvertChars(i.FriendlyName), i.Description)
+                ret.Add(HelpDocument.ConvertChars(i.FriendlyName), i.Description)
             Else
-                l.Add(i.FriendlyName, i.Description)
+                ret.Add(i.FriendlyName, i.Description)
             End If
         Next
 
-        Return l
+        Return ret
     End Function
 
     Overrides Function ToString() As String
@@ -2649,63 +2596,6 @@ Public Enum SourceInputMode
     DirectoryBatch
 End Enum
 
-Class BoolStringIntConverter
-    Inherits TypeConverter
-
-    Overloads Overrides Function GetStandardValuesSupported(context As ITypeDescriptorContext) As Boolean
-        Return True
-    End Function
-
-    Overloads Overrides Function GetStandardValues(context As ITypeDescriptorContext) As StandardValuesCollection
-        Return New StandardValuesCollection({"String", "Integer", "Boolean"})
-    End Function
-
-    Overloads Overrides Function CanConvertFrom(context As ITypeDescriptorContext, sourceType As Type) As Boolean
-        If sourceType Is GetType(String) Then
-            Return True
-        End If
-
-        Return MyBase.CanConvertFrom(context, sourceType)
-    End Function
-
-    Overloads Overrides Function CanConvertTo(context As ITypeDescriptorContext, destinationType As Type) As Boolean
-        If destinationType Is GetType(String) Then
-            Return True
-        End If
-
-        Return MyBase.CanConvertTo(context, destinationType)
-    End Function
-
-    Overloads Overrides Function ConvertFrom(context As ITypeDescriptorContext, culture As CultureInfo, value As Object) As Object
-        If TypeOf value Is String Then
-            Select Case value.ToString
-                Case "String"
-                    Return GetType(String)
-                Case "Integer"
-                    Return GetType(Integer)
-                Case "Boolean"
-                    Return GetType(Boolean)
-            End Select
-        End If
-
-        Return MyBase.ConvertFrom(context, culture, value)
-    End Function
-
-    Overloads Overrides Function ConvertTo(context As ITypeDescriptorContext, culture As CultureInfo, value As Object, destinationType As Type) As Object
-        If destinationType Is GetType(String) AndAlso TypeOf value Is Type Then
-            If value Is GetType(Boolean) Then
-                Return "Boolean"
-            ElseIf value Is GetType(String) Then
-                Return "String"
-            ElseIf value Is GetType(Integer) Then
-                Return "Integer"
-            End If
-        End If
-
-        Return MyBase.ConvertTo(context, culture, value, destinationType)
-    End Function
-End Class
-
 'legacy
 Public NotInheritable Class LegacySerializationBinder
     Inherits SerializationBinder
@@ -2717,22 +2607,6 @@ Public NotInheritable Class LegacySerializationBinder
 
         Return Type.GetType(typeName)
     End Function
-End Class
-
-Class CmdlBuilder
-    Public SB As New StringBuilder
-
-    Sub Add(value As Integer, defaultValue As Integer, prefix As String)
-        If value <> defaultValue Then
-            SB.Append(prefix + value.ToString)
-        End If
-    End Sub
-
-    Sub Add(value As Boolean, switch As String)
-        If value Then
-            SB.Append(switch)
-        End If
-    End Sub
 End Class
 
 Class Startup

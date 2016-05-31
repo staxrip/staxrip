@@ -178,9 +178,7 @@ Class TaskDialog(Of T)
         End Get
         Set(value As Integer)
             For Each i In IdValueDic
-                If i.Key = value Then
-                    SelectedIDValue = value
-                End If
+                If i.Key = value Then SelectedIDValue = value
             Next
         End Set
     End Property
@@ -189,10 +187,7 @@ Class TaskDialog(Of T)
 
     Property SelectedValue() As T
         Get
-            If IdValueDic.ContainsKey(SelectedID) Then
-                Return IdValueDic(SelectedID)
-            End If
-
+            If IdValueDic.ContainsKey(SelectedID) Then Return IdValueDic(SelectedID)
             Return SelectedValueValue
         End Get
         Set(value As T)
@@ -295,8 +290,7 @@ Class TaskDialog(Of T)
         If hr < 0 Then Marshal.ThrowExceptionForHR(hr)
 
         If TypeOf SelectedValue Is DialogResult Then
-            Dim o As Object = SelectedID
-            SelectedValue = DirectCast(o, T)
+            SelectedValue = DirectCast(CObj(SelectedID), T)
         End If
 
         Return SelectedValue

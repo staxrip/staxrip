@@ -240,7 +240,7 @@ Class VideoComparisonForm
 
             Dim avs As New VideoScript
             avs.Engine = ScriptEngine.AviSynth
-            avs.Path = CommonDirs.Temp + Guid.NewGuid.ToString + ".avs"
+            avs.Path = Folder.Temp + Guid.NewGuid.ToString + ".avs"
             AddHandler Disposed, Sub() FileHelp.Delete(avs.Path)
 
             avs.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
@@ -248,7 +248,7 @@ Class VideoComparisonForm
             If Filepath.GetExtFull(sourePath) = ".png" Then
                 avs.Filters.Add(New VideoFilter("ImageSource(""" + sourePath + """, end = 0)"))
             Else
-                Dim cachePath = CommonDirs.Temp + Guid.NewGuid.ToString + ".ffindex"
+                Dim cachePath = Folder.Temp + Guid.NewGuid.ToString + ".ffindex"
                 AddHandler Disposed, Sub() FileHelp.Delete(cachePath)
                 avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """)"))
 

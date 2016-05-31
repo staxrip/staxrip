@@ -64,7 +64,7 @@ Class HelpForm
     Property Doc() As HelpDocument
         Get
             If DocumentValue Is Nothing Then
-                Dim path = CommonDirs.Temp + Guid.NewGuid.ToString + ".htm"
+                Dim path = Folder.Temp + Guid.NewGuid.ToString + ".htm"
                 AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(path)
                 DocumentValue = New HelpDocument(path)
             End If
@@ -126,7 +126,7 @@ Class HelpForm
 
     Shared ReadOnly Property MainImagePath() As String
         Get
-            Dim filepath = CommonDirs.Temp + Guid.NewGuid.ToString + ".gif"
+            Dim filepath = Folder.Temp + Guid.NewGuid.ToString + ".gif"
 
             If Not File.Exists(filepath) Then
                 AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(filepath)
@@ -139,7 +139,7 @@ Class HelpForm
 
     Shared ReadOnly Property BackgroundImagePath() As String
         Get
-            Dim filepath = CommonDirs.Temp + Guid.NewGuid.ToString + ".gif"
+            Dim filepath = Folder.Temp + Guid.NewGuid.ToString + ".gif"
 
             If Not File.Exists(filepath) Then
                 AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(filepath)

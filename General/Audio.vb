@@ -586,9 +586,7 @@ Class Audio
             fail = True
         End If
 
-        If fail AndAlso TypeOf ap Is GUIAudioProfile AndAlso
-            Not Filepath.GetExtFull(ap.File) = ".wav" Then
-
+        If fail AndAlso TypeOf ap Is GUIAudioProfile AndAlso Not ap.File.ext = "wav" Then
             Log.Write("Error", "no output found")
             Decode(ap)
 

@@ -23,7 +23,7 @@ Class Thumbnails
         height = height - height Mod 4
 
         Dim avsdoc As New VideoScript
-        avsdoc.Path = Paths.SettingsDir + "Thumbnails.avs"
+        avsdoc.Path = Folder.Settings + "Thumbnails.avs"
         avsdoc.Filters.Add(New VideoFilter("DirectShowSource(""" + inputFile + """, audio=false, convertfps=true).LanczosResize(" & width & "," & height & ")"))
         avsdoc.Filters.Add(New VideoFilter("ConvertToRGB()"))
 

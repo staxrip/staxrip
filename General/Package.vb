@@ -4,20 +4,20 @@ Imports StaxRip
 Public Class Package
     Implements IComparable(Of Package)
 
-    Property Name As String
-    Property FileNotFoundMessage As String
-    Property SetupAction As Action
-    Property Version As String
     Property Description As String
-    Property VersionDate As DateTime
-    Property HelpFile As String
-    Property Filenames As String()
-    Property WebURL As String
     Property DownloadURL As String
+    Property Filenames As String()
+    Property FileNotFoundMessage As String
+    Property HelpFile As String
     Property HelpURL As String
     Property IsRequiredFunc As Func(Of Boolean)
-    Property StatusFunc As Func(Of String)
     Property LaunchName As String
+    Property Name As String
+    Property SetupFilename As String
+    Property StatusFunc As Func(Of String)
+    Property Version As String
+    Property VersionDate As DateTime
+    Property WebURL As String
 
     Shared Property Items As New SortedDictionary(Of String, Package)
 
@@ -93,7 +93,7 @@ Public Class Package
     Shared Property mkvmerge As New Package With {
         .Name = "mkvmerge",
         .Filename = "mkvmerge.exe",
-        .FixedDir = CommonDirs.Startup + "Apps\MKVToolNix\",
+        .FixedDir = Folder.Startup + "Apps\MKVToolNix\",
         .WebURL = "http://www.bunkus.org/videotools/mkvtoolnix",
         .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
         .Description = "MKV muxing tool."}
@@ -101,7 +101,7 @@ Public Class Package
     Shared Property mkvextract As New Package With {
         .Name = "mkvextract",
         .Filename = "mkvextract.exe",
-        .FixedDir = CommonDirs.Startup + "Apps\MKVToolNix\",
+        .FixedDir = Folder.Startup + "Apps\MKVToolNix\",
         .WebURL = "http://www.bunkus.org/videotools/mkvtoolnix",
         .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
         .Description = "MKV demuxing tool."}
@@ -125,14 +125,14 @@ Public Class Package
         .Filename = "msvcp120.dll",
         .Description = "Visual C++ 2013 Redistributable Packages which is required by some tools used by StaxRip.",
         .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=40784",
-        .FixedDir = CommonDirs.System}
+        .FixedDir = Folder.System}
 
     Shared Property vscpp2015 As New Package With {
         .Name = "Visual C++ 2015",
         .Filename = "msvcp140.dll",
         .Description = "Visual C++ 2015 Redistributable Packages which is required by some tools used by StaxRip.",
         .DownloadURL = "http://download.microsoft.com/download/8/c/b/8cb4af84-165e-4b36-978d-e867e07fc707/vc_redist.x64.exe",
-        .FixedDir = CommonDirs.System}
+        .FixedDir = Folder.System}
 
     Public Shared DGDecodeNV As New PluginPackage With {
         .Name = "DGDecodeNV",
@@ -226,7 +226,7 @@ Public Class Package
             .Name = "Demux",
             .Filename = "Demux.exe",
             .Description = "Demuxing standalone tool.",
-            .FixedDir = CommonDirs.Startup + "Apps\Toolbox\",
+            .FixedDir = Folder.Startup + "Apps\Toolbox\",
             .LaunchName = "Demux.exe",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=173427",
             .WebURL = "http://forum.doom9.org/showthread.php?t=173427"})
@@ -506,12 +506,12 @@ Public Class Package
 
 #End Region
 
-        Dim fp = Paths.SettingsDir + "Versions.txt"
+        Dim fp = Folder.Settings + "Versions.txt"
 
         Try
             If Not File.Exists(fp) OrElse Not File.ReadAllText(fp).Contains(Application.ProductVersion + BR2) Then
                 FileHelp.Delete(fp)
-                fp = CommonDirs.Startup + "Apps\Versions.txt"
+                fp = Folder.Startup + "Apps\Versions.txt"
             End If
 
             For Each line In File.ReadAllLines(fp)
@@ -652,7 +652,7 @@ Public Class Package
         If Not IsCorrectVersion() Then
             Dim text = "Unknown version, press F12 to edit the version."
 
-            If SetupAction Is Nothing Then
+            If SetupFilename = "" Then
                 Return text
             Else
                 Return text + " In case of problems download and install the required version."
@@ -666,7 +666,7 @@ Public Class Package
         If pathVar = "" Then
             If FileNotFoundMessage <> "" Then
                 Return "App Not found, press F11 to locate the App. " + FileNotFoundMessage
-            ElseIf Not SetupAction Is Nothing Then
+            ElseIf SetupFilename <> "" Then
                 Return "Please install " + Name + "."
             End If
 
@@ -725,20 +725,20 @@ Public Class Package
 
             If Not plugin Is Nothing Then
                 If Not plugin.VapourSynthFilterNames Is Nothing AndAlso Not plugin.AviSynthFilterNames Is Nothing Then
-                    ret = CommonDirs.Startup + "Apps\Plugins\both\" + Name + "\" + Filename
+                    ret = Folder.Startup + "Apps\Plugins\both\" + Name + "\" + Filename
                     If File.Exists(ret) Then Return ret
                 Else
                     If plugin.VapourSynthFilterNames Is Nothing Then
-                        ret = CommonDirs.Startup + "Apps\Plugins\avs\" + Name + "\" + Filename
+                        ret = Folder.Startup + "Apps\Plugins\avs\" + Name + "\" + Filename
                         If File.Exists(ret) Then Return ret
                     Else
-                        ret = CommonDirs.Startup + "Apps\Plugins\vs\" + Name + "\" + Filename
+                        ret = Folder.Startup + "Apps\Plugins\vs\" + Name + "\" + Filename
                         If File.Exists(ret) Then Return ret
                     End If
                 End If
             End If
 
-            ret = CommonDirs.Startup + "Apps\" + Name + "\" + Filename
+            ret = Folder.Apps + Name + "\" + Filename
             If File.Exists(ret) Then Return ret
         End Get
     End Property
@@ -784,8 +784,8 @@ Public Class AviSynthPlusPackage
         Filename = "avisynth.dll"
         WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        FixedDir = CommonDirs.System
-        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\AviSynth+_r1847.exe")
+        FixedDir = Folder.System
+        SetupFilename = "AviSynth+r1858.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -795,7 +795,7 @@ Public Class AviSynthPlusPackage
     End Property
 
     Public Overrides Function GetStatus() As String
-        If Not Directory.Exists(Paths.PluginsDir) Then
+        If Not Directory.Exists(Folder.Plugins) Then
             Return "The AviSynth+ plugins directory is missing, run the AviSynth+ setup."
         End If
 
@@ -943,7 +943,7 @@ Public Class PluginPackage
 
             If Not script.Contains(line) AndAlso Not code.Contains(line) Then code += line
         ElseIf Not plugin.VapourSynthFilterNames Is Nothing Then
-            If Not File.Exists(Paths.PluginsDir + plugin.Filename) Then
+            If Not File.Exists(Folder.Plugins + plugin.Filename) Then
                 Dim line = "core.std.LoadPlugin(r""" + plugin.Path + """)" + BR
 
                 If Not script.Contains(line) AndAlso Not code.Contains(line) Then
@@ -1085,7 +1085,7 @@ Public Class qaacPackage
     End Property
 
     Overrides Function GetStatus() As String
-        Dim pathVar = CommonDirs.Programs + "Common Files\Apple\Apple Application Support\CoreAudioToolbox.dll"
+        Dim pathVar = Folder.Programs + "Common Files\Apple\Apple Application Support\CoreAudioToolbox.dll"
 
         If Not File.Exists(pathVar) AndAlso Not File.Exists(GetDir() + "QTfiles64\CoreAudioToolbox.dll") Then
             Return "Failed to locate CoreAudioToolbox, read the description below. Expected paths:" +
@@ -1256,7 +1256,7 @@ Public Class dsmuxPackage
         Filename = "dsmux.x64.exe"
         Description = Strings.dsmux
         WebURL = "http://haali.su/mkv"
-        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\MatroskaSplitter.exe")
+        SetupFilename = "MatroskaSplitter.exe"
     End Sub
 
     Public Overrides ReadOnly Property Path As String
@@ -1281,7 +1281,7 @@ Public Class HaaliSplitter
         Name = "Haali Splitter"
         Filename = "splitter.ax"
         WebURL = "http://haali.su/mkv"
-        SetupAction = Sub() g.ShellExecute(CommonDirs.Startup + "Apps\MatroskaSplitter.exe")
+        SetupFilename = "MatroskaSplitter.exe"
         Description = "Haali Splitter is used by eac3to and dsmux to write MKV files. Haali Splitter and LAV Filters overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
         IsRequiredValue = False
     End Sub

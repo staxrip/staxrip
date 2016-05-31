@@ -147,7 +147,7 @@ Friend Class JobsForm
         lv.SelectFirst()
         UpdateControls()
 
-        FileWatcher.Path = Paths.SettingsDir
+        FileWatcher.Path = Folder.Settings
         FileWatcher.NotifyFilter = NotifyFilters.LastWrite Or NotifyFilters.CreationTime
         FileWatcher.Filter = "Jobs.dat"
         AddHandler FileWatcher.Changed, AddressOf Reload
@@ -211,7 +211,7 @@ Friend Class JobsForm
 
         While True
             Try
-                Using stream As New FileStream(Paths.SettingsDir + "Jobs.dat",
+                Using stream As New FileStream(Folder.Settings + "Jobs.dat",
                                                FileMode.Create,
                                                FileAccess.ReadWrite,
                                                FileShare.None)
@@ -230,7 +230,7 @@ Friend Class JobsForm
 
     Shared Function GetJobs() As List(Of StringBooleanPair)
         Dim formatter As New BinaryFormatter
-        Dim jobsPath = Paths.SettingsDir + "Jobs.dat"
+        Dim jobsPath = Folder.Settings + "Jobs.dat"
         Dim counter As Integer
 
         If File.Exists(jobsPath) Then

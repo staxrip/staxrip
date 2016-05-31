@@ -57,7 +57,7 @@ Public Class GlobalCommands
         End If
 
         If asBatch Then
-            Dim batchPath = CommonDirs.Temp + Guid.NewGuid.ToString + ".bat"
+            Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
             Dim batchCode = Macro.Solve(commandLines)
 
             File.WriteAllText(batchPath, batchCode, Encoding.GetEncoding(850))
@@ -125,7 +125,7 @@ Public Class GlobalCommands
 
         If Not ProcessForm.IsActive Then closeNeeded = True
 
-        Dim batchPath = CommonDirs.Temp + Guid.NewGuid.ToString + ".bat"
+        Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
         Dim batchCode = Macro.Solve(batchScript)
 
         File.WriteAllText(batchPath, batchCode, Encoding.GetEncoding(850))
@@ -311,21 +311,30 @@ Public Class GlobalCommands
             End If
         Next
 
-        'does help file exist?
         For Each pack In Package.Items.Values
+            'does help file exist?
             If pack.Path <> "" AndAlso pack.HelpFile <> "" Then
                 If Not File.Exists(pack.GetDir + pack.HelpFile) Then
-                    MsgError($"Help file of {pack.Name} is missing!")
-
-                    Using form As New AppsForm
-                        form.ShowPackage(pack)
-                        form.ShowDialog()
-                    End Using
-
+                    ShowPackageError(pack, $"Help file of {pack.Name} don't exist!")
                     Exit For
                 End If
             End If
+
+            'does setup file exist?
+            If pack.SetupFilename <> "" AndAlso Not File.Exists(Folder.Apps + pack.SetupFilename) Then
+                ShowPackageError(pack, $"Setup file of {pack.Name} don't exist!")
+                Exit For
+            End If
         Next
+    End Sub
+
+    Sub ShowPackageError(pack As Package, msg As String)
+        MsgError(msg)
+
+        Using form As New AppsForm
+            form.ShowPackage(pack)
+            form.ShowDialog()
+        End Using
     End Sub
 
     <Command("Plays a mp3, wav or wmv sound file.")>

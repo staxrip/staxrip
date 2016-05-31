@@ -13,8 +13,8 @@ Class AVIFile
 
     Sub New(path As String)
         Try
-            AVIFileInit()
             Sourcefile = path
+            AVIFileInit()
 
             Const OF_SHARE_DENY_WRITE = 32
 
@@ -53,7 +53,13 @@ Class AVIFile
     End Sub
 
     Sub ThrowException(message As String)
-        Throw New Exception(message + BR2 + "The AviSynth+ x64 or VapourSynth x64 setup might be damaged. You can verify this by opening the avs or vpy file with VirtualDub x64. avs is a AviSynth script, vpy is a VapourSynth script, StaxRip generates these scripts in the folder for temp files and VirtualDub should be able to open it.")
+        If Sourcefile.Ext = "avs" Then
+            Throw New Exception(message + BR2 + "Failed to open AviSynth script:" + BR2 + Sourcefile + BR2 + "You can try to open the script with VirtualDub x64, if it don't open it could be a problem with the script or the AviSynth+ x64 setup, if StaxRip don't report a script error and the script looks valid then reinstalling AviSynth+ x64 might fix the problem, the setup is located at:" + BR2 + Folder.Apps + Package.AviSynth.SetupFilename)
+        ElseIf Sourcefile.Ext = "vpy" Then
+            Throw New Exception(message + BR2 + "Failed to open VapourSynth script:" + BR2 + Sourcefile + BR2 + "You can try to open the script with VirtualDub x64, if it don't open it could be a problem with the script or the VapourSynth x64 setup, if StaxRip don't report a script error and the script looks valid then reinstalling VapourSynth x64 might fix the problem.")
+        Else
+            Throw New Exception(message + BR2 + "Failed to open script:" + BR2 + Sourcefile)
+        End If
     End Sub
 
     Private FrameCountValue As Integer
@@ -111,8 +117,8 @@ Class AVIFile
             Throw New ErrorAbortException("Failed to read script file", ex.Message)
         End Try
 
-        If Directory.Exists(Paths.PluginsDir) Then
-            Log.WriteLine("AviSynth Plugins: " + Directory.GetFiles(Paths.PluginsDir, "*.dll").Join(", ").Replace(Paths.PluginsDir, "").Replace(".dll", ""))
+        If Directory.Exists(Folder.Plugins) Then
+            Log.WriteLine("AviSynth Plugins: " + Directory.GetFiles(Folder.Plugins, "*.dll").Join(", ").Replace(Folder.Plugins, "").Replace(".dll", ""))
         Else
             Log.WriteLine("AviSynth plugin directory is missing!")
         End If

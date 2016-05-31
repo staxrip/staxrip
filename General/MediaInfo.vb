@@ -5,52 +5,6 @@ Class MediaInfo
     Implements IDisposable
 
     Private Handle As IntPtr
-
-    <DllImport("MediaInfo.dll")>
-    Private Shared Function MediaInfo_New() As IntPtr
-    End Function
-
-    <DllImport("MediaInfo.dll")>
-    Private Shared Sub MediaInfo_Delete(Handle As IntPtr)
-    End Sub
-
-    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
-    Private Shared Function MediaInfo_Open(Handle As IntPtr, FileName As String) As Integer
-    End Function
-
-    <DllImport("MediaInfo.dll")>
-    Private Shared Function MediaInfo_Close(Handle As IntPtr) As Integer
-    End Function
-
-    <DllImport("MediaInfo.dll")>
-    Private Shared Function MediaInfo_Inform(Handle As IntPtr,
-                                             Reserved As Integer) As IntPtr
-    End Function
-
-    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
-    Private Shared Function MediaInfo_Get(Handle As IntPtr,
-                                          StreamKind As MediaInfoStreamKind,
-                                          StreamNumber As Integer, Parameter As String,
-                                          KindOfInfo As MediaInfoInfoKind,
-                                          KindOfSearch As MediaInfoInfoKind) As IntPtr
-    End Function
-
-    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
-    Private Shared Function MediaInfo_Option(Handle As IntPtr,
-                                             OptionString As String,
-                                             Value As String) As IntPtr
-    End Function
-
-    <DllImport("MediaInfo.dll")>
-    Private Shared Function MediaInfo_State_Get(Handle As IntPtr) As Integer
-    End Function
-
-    <DllImport("MediaInfo.dll")>
-    Private Shared Function MediaInfo_Count_Get(Handle As IntPtr,
-                                                StreamKind As MediaInfoStreamKind,
-                                                StreamNumber As Integer) As Integer
-    End Function
-
     Private Shared Loaded As Boolean
 
     Sub New(path As String)
@@ -61,20 +15,6 @@ Class MediaInfo
 
         Handle = MediaInfo_New()
         MediaInfo_Open(Handle, path)
-    End Sub
-
-    Private Disposed As Boolean
-
-    Sub Dispose() Implements IDisposable.Dispose
-        If Not Disposed Then
-            Disposed = True
-            MediaInfo_Close(Handle)
-            MediaInfo_Delete(Handle)
-        End If
-    End Sub
-
-    Protected Overrides Sub Finalize()
-        Dispose()
     End Sub
 
     Private VideoStreamsValue As List(Of VideoStream)
@@ -183,8 +123,6 @@ Class MediaInfo
                         If match.Success Then
                             at.Channels = match.Groups(1).Value.ToInt
                             at.ChannelsCore = match.Groups(2).Value.ToInt
-                        Else
-                            at.Channels = 2
                         End If
                     End If
 
@@ -410,6 +348,74 @@ Class MediaInfo
 
         Cache.Clear()
     End Sub
+
+#Region "IDisposable"
+
+    Private Disposed As Boolean
+
+    Sub Dispose() Implements IDisposable.Dispose
+        If Not Disposed Then
+            Disposed = True
+            MediaInfo_Close(Handle)
+            MediaInfo_Delete(Handle)
+        End If
+    End Sub
+
+    Protected Overrides Sub Finalize()
+        Dispose()
+    End Sub
+
+#End Region
+
+#Region "native"
+
+    <DllImport("MediaInfo.dll")>
+    Private Shared Function MediaInfo_New() As IntPtr
+    End Function
+
+    <DllImport("MediaInfo.dll")>
+    Private Shared Sub MediaInfo_Delete(Handle As IntPtr)
+    End Sub
+
+    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
+    Private Shared Function MediaInfo_Open(Handle As IntPtr, FileName As String) As Integer
+    End Function
+
+    <DllImport("MediaInfo.dll")>
+    Private Shared Function MediaInfo_Close(Handle As IntPtr) As Integer
+    End Function
+
+    <DllImport("MediaInfo.dll")>
+    Private Shared Function MediaInfo_Inform(Handle As IntPtr,
+                                             Reserved As Integer) As IntPtr
+    End Function
+
+    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
+    Private Shared Function MediaInfo_Get(Handle As IntPtr,
+                                          StreamKind As MediaInfoStreamKind,
+                                          StreamNumber As Integer, Parameter As String,
+                                          KindOfInfo As MediaInfoInfoKind,
+                                          KindOfSearch As MediaInfoInfoKind) As IntPtr
+    End Function
+
+    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
+    Private Shared Function MediaInfo_Option(Handle As IntPtr,
+                                             OptionString As String,
+                                             Value As String) As IntPtr
+    End Function
+
+    <DllImport("MediaInfo.dll")>
+    Private Shared Function MediaInfo_State_Get(Handle As IntPtr) As Integer
+    End Function
+
+    <DllImport("MediaInfo.dll")>
+    Private Shared Function MediaInfo_Count_Get(Handle As IntPtr,
+                                                StreamKind As MediaInfoStreamKind,
+                                                StreamNumber As Integer) As Integer
+    End Function
+
+#End Region
+
 End Class
 
 Public Enum MediaInfoStreamKind

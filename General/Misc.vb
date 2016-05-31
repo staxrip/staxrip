@@ -22,228 +22,6 @@ Public Module ShortcutModule
     Public s As New ApplicationSettings
 End Module
 
-Class Paths
-    Shared Function VerifyRequirements() As Boolean
-        For Each i In Package.Items.Values
-            If Not i.VerifyOK Then Return False
-        Next
-
-        If Not p.Script.IsFilterActive("Source") Then
-            MsgWarn("No active filter of category 'Source' found.")
-            Return False
-        End If
-
-        Return True
-    End Function
-
-    <DebuggerNonUserCode()>
-    Shared ReadOnly Property PluginsDir() As String
-        Get
-            If p.Script.Engine = ScriptEngine.AviSynth Then
-                Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+"))
-            Else
-                Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64"))
-            End If
-        End Get
-    End Property
-
-    Shared Function BrowseFolder(defaultFolder As String) As String
-        Using d As New FolderBrowserDialog
-            d.Description = "Please select a directory."
-            d.SetSelectedPath(defaultFolder)
-            If d.ShowDialog = DialogResult.OK Then Return d.SelectedPath
-        End Using
-    End Function
-
-    Shared ReadOnly Property ScriptDir As String
-        Get
-            Dim ret = SettingsDir + "Scripts\"
-            If Not Directory.Exists(ret) Then Directory.CreateDirectory(ret)
-            Return ret
-        End Get
-    End Property
-
-    Private Shared SettingsDirValue As String
-
-    Shared ReadOnly Property SettingsDir() As String
-        Get
-            If SettingsDirValue Is Nothing Then
-                For Each location In Registry.CurrentUser.GetValueNames("Software\StaxRip\SettingsLocation")
-                    If Not Directory.Exists(location) Then
-                        Registry.CurrentUser.DeleteValue("Software\StaxRip\SettingsLocation", location)
-                    End If
-                Next
-
-                SettingsDirValue = Registry.CurrentUser.GetString("Software\StaxRip\SettingsLocation", CommonDirs.Startup)
-
-                If Not Directory.Exists(SettingsDirValue) Then
-                    Dim td As New TaskDialog(Of String)
-
-                    td.MainInstruction = "Settings Directory"
-                    td.Content = "Choose the location of the settings directory."
-
-                    Dim folders As New HashSet(Of String)
-
-                    If Directory.Exists(CommonDirs.Home + "Google Drive") Then
-                        folders.Add(CommonDirs.Home + "Google Drive\Apps\Settings\StaxRip\")
-                    End If
-
-                    If Directory.Exists(CommonDirs.Home + "OneDrive") Then
-                        folders.Add(CommonDirs.Home + "OneDrive\Apps\Settings\StaxRip")
-                    End If
-
-                    folders.Add(CommonDirs.CommonAppData + "StaxRip x64")
-                    folders.Add(CommonDirs.UserAppDataLocal + "StaxRip x64")
-                    folders.Add(CommonDirs.UserAppDataRoaming + "StaxRip x64")
-                    folders.Add(CommonDirs.Startup + "Settings")
-
-                    For Each location In Registry.CurrentUser.GetValueNames("Software\StaxRip\SettingsLocation")
-                        If Directory.Exists(location) Then folders.Add(location)
-                    Next
-
-                    For Each folder In folders.Sort
-                        td.AddCommandLink(folder, folder)
-                    Next
-
-                    td.AddCommandLink("Browse for custom directory", "custom")
-
-                    Dim dir = td.Show
-
-                    If dir = "custom" Then
-                        Using d As New FolderBrowserDialog
-                            d.Description = "Please select a directory."
-                            d.SelectedPath = CommonDirs.Startup
-
-                            If d.ShowDialog = DialogResult.OK Then
-                                dir = d.SelectedPath
-                            Else
-                                dir = CommonDirs.CommonAppData + "StaxRip x64"
-                            End If
-                        End Using
-                    ElseIf dir = "" Then
-                        dir = CommonDirs.CommonAppData + "StaxRip x64"
-                    End If
-
-                    If Not Directory.Exists(dir) Then
-                        Try
-                            Directory.CreateDirectory(dir)
-                        Catch
-                            dir = CommonDirs.CommonAppData + "StaxRip x64"
-                            If Not Directory.Exists(dir) Then Directory.CreateDirectory(dir)
-                        End Try
-                    End If
-
-                    SettingsDirValue = dir.AppendSeparator
-                    Registry.CurrentUser.Write("Software\StaxRip\SettingsLocation", CommonDirs.Startup, SettingsDirValue)
-                End If
-            End If
-
-            Return SettingsDirValue
-        End Get
-    End Property
-
-    Shared ReadOnly Property TemplateDir() As String
-        Get
-            Dim ret = SettingsDir + "TemplatesV2\"
-            Dim fresh As Boolean
-
-            If Not Directory.Exists(ret) Then
-                Directory.CreateDirectory(ret)
-                fresh = True
-            End If
-
-            Dim version = 44
-
-            If fresh OrElse Not s.Storage.GetInt("template update") = version Then
-                s.Storage.SetInt("template update", version)
-
-                Dim files = Directory.GetFiles(ret, "*.srip")
-
-                If files.Length > 0 Then
-                    DirectoryHelp.Delete(ret + "Backup")
-                    Directory.CreateDirectory(ret + "Backup")
-
-                    For Each i In files
-                        FileHelp.Move(i, Filepath.GetDir(i) + "Backup\" + Filepath.GetName(i))
-                    Next
-                End If
-
-                Dim x264 As New Project
-                x264.Init()
-                SafeSerialization.Serialize(x264, ret + "x264.srip")
-
-                'Dim x265 As New Project
-                'x265.Init()
-                'Dim x265enc = New x265.x265Encoder
-                'x265enc.Params.ApplyPresetDefaultValues()
-                'x265enc.Params.ApplyPresetValues()
-                'x265.VideoEncoder = x265enc
-
-                'SafeSerialization.Serialize(x265, ret + "x265.srip")
-
-                Dim aaclc = New GUIAudioProfile(AudioCodec.AAC, 0.4)
-
-                Dim apple = Function(name As String, device As x264DeviceMode) As Project
-                                Dim proj As New Project
-                                proj.Init()
-
-                                proj.MaxAspectRatioError = 4
-                                proj.AutoResizeImage = 0
-                                proj.AutoSmartOvercrop = 2
-                                proj.Script.GetFilter("Resize").Active = True
-                                proj.VideoEncoder = VideoEncoder.Getx264Encoder("x264 | " + name, device)
-                                proj.VideoEncoder.Muxer = New MP4Muxer("MP4")
-                                proj.Audio0 = aaclc
-
-                                Return proj
-                            End Function
-
-                Dim iPad = apple("iPad", x264DeviceMode.iPad)
-                iPad.TargetWidth = 1280
-                iPad.TargetHeight = 720
-                SafeSerialization.Serialize(iPad, ret + "iPad.srip")
-
-                Dim iPhone = apple("iPhone", x264DeviceMode.iPhone)
-                iPhone.TargetWidth = 960
-                iPhone.TargetHeight = 540
-                SafeSerialization.Serialize(iPhone, ret + "iPhone.srip")
-
-                Dim console = Sub(name As String, device As x264DeviceMode)
-                                  Dim proj As New Project
-                                  proj.Init()
-                                  proj.VideoEncoder = VideoEncoder.Getx264Encoder("x264 | " + name, device)
-                                  proj.Audio0 = aaclc
-                                  SafeSerialization.Serialize(proj, ret + name + ".srip")
-                              End Sub
-
-                console("PlayStation", x264DeviceMode.PlayStation)
-                console("Xbox", x264DeviceMode.Xbox)
-            End If
-
-            Return ret
-        End Get
-    End Property
-
-    Shared ReadOnly Property SettingsFile() As String
-        Get
-            Return SettingsDir + "SettingsV2.dat"
-        End Get
-    End Property
-
-    Shared ReadOnly Property StartupTemplatePath() As String
-        Get
-            Dim r = Paths.TemplateDir + s.StartupTemplate + ".srip"
-
-            If Not File.Exists(r) Then
-                r = Paths.TemplateDir + "x264.srip"
-                s.StartupTemplate = "x264"
-            End If
-
-            Return r
-        End Get
-    End Property
-End Class
-
 Public Enum MediaInformation
     VideoFormat
     DAR
@@ -256,6 +34,46 @@ Public Class GlobalClass
     Property SavedProject As New Project
     Property DefaultCommands As New GlobalCommands
     Property IsProcessing As Boolean
+
+    ReadOnly Property StartupTemplatePath() As String
+        Get
+            Dim ret = Folder.Template + s.StartupTemplate + ".srip"
+
+            If Not File.Exists(ret) Then
+                ret = Folder.Template + "x264.srip"
+                s.StartupTemplate = "x264"
+            End If
+
+            Return ret
+        End Get
+    End Property
+
+    ReadOnly Property SettingsFile() As String
+        Get
+            Return Folder.Settings + "SettingsV2.dat"
+        End Get
+    End Property
+
+    Function BrowseFolder(defaultFolder As String) As String
+        Using d As New FolderBrowserDialog
+            d.Description = "Please select a directory."
+            d.SetSelectedPath(defaultFolder)
+            If d.ShowDialog = DialogResult.OK Then Return d.SelectedPath
+        End Using
+    End Function
+
+    Function VerifyRequirements() As Boolean
+        For Each pack In Package.Items.Values
+            If Not pack.VerifyOK Then Return False
+        Next
+
+        If Not p.Script.IsFilterActive("Source") Then
+            MsgWarn("No active filter of category 'Source' found.")
+            Return False
+        End If
+
+        Return True
+    End Function
 
     Function ShowVideoSourceWarnings(files As IEnumerable(Of String)) As Boolean
         For Each i In files
@@ -491,7 +309,7 @@ Public Class GlobalClass
 
     Sub SaveSettings()
         Try
-            SafeSerialization.Serialize(s, Paths.SettingsFile)
+            SafeSerialization.Serialize(s, g.SettingsFile)
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -826,7 +644,7 @@ Public Class GlobalClass
         End If
 
         Dim fp = If(File.Exists(p.SourceFile) AndAlso Directory.Exists(p.TempDir),
-                    p.TempDir + p.Name + "_StaxRip.log", Paths.SettingsDir + "Log.txt")
+                    p.TempDir + p.Name + "_StaxRip.log", Folder.Settings + "Log.txt")
 
         SyncLock p.Log
             p.Log.ToString.WriteANSIFile(fp)
@@ -911,6 +729,15 @@ Public Class GlobalClass
                          "An error occurred that could possibly be solved by installing [http://code.google.com/p/lavfilters LAV Filters].")
             End If
         End If
+    End Sub
+
+    Sub AddHardcodedSubtitle()
+        For Each subtitle In p.VideoEncoder.Muxer.Subtitles
+            If subtitle.Path.Ext.EqualsAny("srt", "ass", "idx") Then
+                subtitle.Enabled = False
+                p.AddHardcodedSubtitleFilter(subtitle.Path)
+            End If
+        Next
     End Sub
 
     Sub RunAutoCrop()
@@ -2310,19 +2137,19 @@ Class Macro
         If value.Contains("%delay2%") Then value = value.Replace("%delay2%", p.Audio1.Delay.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%startup_dir%") Then value = value.Replace("%startup_dir%", CommonDirs.Startup)
+        If value.Contains("%startup_dir%") Then value = value.Replace("%startup_dir%", Folder.Startup)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%system_dir%") Then value = value.Replace("%system_dir%", CommonDirs.System)
+        If value.Contains("%system_dir%") Then value = value.Replace("%system_dir%", Folder.System)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%script_dir%") Then value = value.Replace("%script_dir%", Paths.ScriptDir)
+        If value.Contains("%script_dir%") Then value = value.Replace("%script_dir%", Folder.Script)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%programs_dir%") Then value = value.Replace("%programs_dir%", CommonDirs.Programs)
+        If value.Contains("%programs_dir%") Then value = value.Replace("%programs_dir%", Folder.Programs)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%plugin_dir%") Then value = value.Replace("%plugin_dir%", Paths.PluginsDir)
+        If value.Contains("%plugin_dir%") Then value = value.Replace("%plugin_dir%", Folder.Plugins)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_files_comma%") Then value = value.Replace("%source_files_comma%", """" + String.Join(""",""", p.SourceFiles.ToArray) + """")
@@ -2355,7 +2182,7 @@ Class Macro
         If value.Contains("%template_name%") Then value = value.Replace("%template_name%", p.TemplateName)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%settings_dir%") Then value = value.Replace("%settings_dir%", Paths.SettingsDir)
+        If value.Contains("%settings_dir%") Then value = value.Replace("%settings_dir%", Folder.Settings)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%player%") Then value = value.Replace("%player%", Package.MPC.Path)
@@ -2710,7 +2537,6 @@ Public Class AudioStream
     ReadOnly Property Name As String
         Get
             Dim sb As New StringBuilder()
-
             sb.Append("ID" & (StreamOrder + 1))
 
             If CodecString <> "" Then
@@ -2724,31 +2550,32 @@ Public Class AudioStream
                     Case "AC3+"
                         sb.Append(" E-AC3")
                     Case Else
-                        If Codec = "TrueHD / AC3" Then
-                            sb.Append(" THD+AC3")
-                        ElseIf FormatProfile = "MA / Core" Then
-                            sb.Append(" DTS MA/Core")
-                        ElseIf FormatProfile = "HRA / Core" Then
-                            sb.Append(" DTS HRA/Core")
-                        Else
-                            sb.Append(" " + CodecString)
-                        End If
+                        Select Case Codec
+                            Case "Atmos / TrueHD"
+                                sb.Append(" THD Atmos")
+                            Case "TrueHD / AC3"
+                                sb.Append(" THD+AC3")
+                            Case Else
+                                Select Case FormatProfile
+                                    Case "MA / Core"
+                                        sb.Append(" DTS MA/Core")
+                                    Case "HRA / Core"
+                                        sb.Append(" DTS HRA/Core")
+                                    Case Else
+                                        sb.Append(" " + CodecString)
+                                End Select
+                        End Select
                 End Select
             End If
 
             If ChannelsCore > 0 Then
                 sb.Append(" " & Channels & "/" & ChannelsCore & "ch")
-            Else
+            ElseIf Channels > 0 Then
                 sb.Append(" " & Channels & "ch")
             End If
 
-            If BitDepth > 0 Then
-                sb.Append(" " & BitDepth & "Bit")
-            End If
-
-            If SamplingRate > 0 Then
-                sb.Append(" " & SamplingRate & "Hz")
-            End If
+            If BitDepth > 0 Then sb.Append(" " & BitDepth & "Bit")
+            If SamplingRate > 0 Then sb.Append(" " & SamplingRate & "Hz")
 
             If BitrateCore > 0 Then
                 sb.Append(" " & If(Bitrate = 0, "?", Bitrate.ToString) & "/" & BitrateCore & "Kbps")
@@ -2757,14 +2584,8 @@ Public Class AudioStream
             End If
 
             If Delay <> 0 Then sb.Append(" " & Delay & "ms")
-
-            If Language.TwoLetterCode <> "iv" Then
-                sb.Append(" " + Language.Name)
-            End If
-
-            If Title <> "" AndAlso Title <> " " Then
-                sb.Append(" " + Title)
-            End If
+            If Language.TwoLetterCode <> "iv" Then sb.Append(" " + Language.Name)
+            If Title <> "" AndAlso Title <> " " Then sb.Append(" " + Title)
 
             Return sb.ToString
         End Get
@@ -2801,7 +2622,7 @@ Public Class AudioStream
                     Return ".ogg"
                 Case "Opus"
                     Return ".opus"
-                Case "TrueHD"
+                Case "TrueHD", "Atmos / TrueHD"
                     Return ".thd"
                 Case "AC3+"
                     Return ".eac3"

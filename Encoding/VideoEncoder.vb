@@ -542,7 +542,7 @@ Class BatchEncoder
             Exit Sub
         End If
 
-        If Not Paths.VerifyRequirements Then Exit Sub
+        If Not g.VerifyRequirements Then Exit Sub
         If Not g.IsValidSource Then Exit Sub
 
         ProcessForm.ShowForm()

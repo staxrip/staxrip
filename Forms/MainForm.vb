@@ -796,7 +796,7 @@ Public Class MainForm
 
             Try
                 s = DirectCast(SafeSerialization.Deserialize(New ApplicationSettings,
-                                                             Paths.SettingsFile,
+                                                             g.SettingsFile,
                                                              New LegacySerializationBinder), ApplicationSettings)
             Catch ex As Exception
                 g.ShowException(ex)
@@ -856,7 +856,7 @@ Public Class MainForm
             UpdateDynamicMenu()
             UpdateAudioMenu()
             MenuStrip.ResumeLayout()
-            OpenProject(Paths.StartupTemplatePath)
+            OpenProject(g.StartupTemplatePath)
             SizeContextMenuStrip.SuspendLayout()
 
             CustomSizeMenu = New CustomMenu(AddressOf GetDefaultMenuSize,
@@ -1061,7 +1061,7 @@ Public Class MainForm
         Await Task.Run(Sub()
                            Dim list As New List(Of String)
 
-                           If path <> "" AndAlso Not path.Contains(Paths.TemplateDir) AndAlso
+                           If path <> "" AndAlso Not path.Contains(Folder.Template) AndAlso
                                Not path.Contains("crash.srip") Then
 
                                list.Add(path)
@@ -1147,12 +1147,12 @@ Public Class MainForm
         For Each menuItem In CustomMainMenu.MenuItems
             If menuItem.CustomMenuItem.MethodName = "DynamicMenuItem" Then
                 If menuItem.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.Scripts) Then
-                    If Directory.Exists(CommonDirs.Startup + "Apps\Scripts") Then
-                        For Each script In Directory.GetFiles(CommonDirs.Startup + "Apps\Scripts")
+                    If Directory.Exists(Folder.Startup + "Apps\Scripts") Then
+                        For Each script In Directory.GetFiles(Folder.Startup + "Apps\Scripts")
                             If Not s.Storage.GetBool(script.FileName) AndAlso
-                                Not File.Exists(Paths.ScriptDir + script.FileName) Then
+                                Not File.Exists(Folder.Script + script.FileName) Then
 
-                                FileHelp.Copy(script, Paths.ScriptDir + script.FileName)
+                                FileHelp.Copy(script, Folder.Script + script.FileName)
                                 s.Storage.SetBool(script.FileName, True)
                                 UpdateScriptsMenu()
                             End If
@@ -1161,14 +1161,14 @@ Public Class MainForm
 
                     menuItem.DropDownItems.Clear()
 
-                    For Each path In Directory.GetFiles(Paths.ScriptDir)
+                    For Each path In Directory.GetFiles(Folder.Script)
                         ActionMenuItem.Add(menuItem.DropDownItems,
                                            path.FileName,
                                            Sub() g.DefaultCommands.ExecuteScriptFile(path))
                     Next
 
                     menuItem.DropDownItems.Add(New ToolStripSeparator)
-                    ActionMenuItem.Add(menuItem.DropDownItems, "Open Scripts Folder", Sub() g.ShellExecute(Paths.ScriptDir))
+                    ActionMenuItem.Add(menuItem.DropDownItems, "Open Scripts Folder", Sub() g.ShellExecute(Folder.Script))
                 End If
             End If
         Next
@@ -1181,19 +1181,19 @@ Public Class MainForm
 
                 i.DropDownItems.Clear()
 
-                For Each i2 In Directory.GetFiles(Paths.TemplateDir, "*.srip.backup")
+                For Each i2 In Directory.GetFiles(Folder.Template, "*.srip.backup")
                     FileHelp.Move(i2, Filepath.GetDir(i2) + "Backup\" + Filepath.GetBase(i2))
                 Next
 
-                For Each i2 In Directory.GetFiles(Paths.TemplateDir, "*.srip", SearchOption.AllDirectories)
+                For Each i2 In Directory.GetFiles(Folder.Template, "*.srip", SearchOption.AllDirectories)
                     Dim base = Filepath.GetBase(i2)
-                    If i2 = Paths.StartupTemplatePath Then base += " (Startup)"
+                    If i2 = g.StartupTemplatePath Then base += " (Startup)"
                     If i2.Contains("Backup\") Then base = "Backup | " + base
                     ActionMenuItem.Add(i.DropDownItems, base, AddressOf LoadProject, i2, Nothing)
                 Next
 
                 i.DropDownItems.Add("-")
-                ActionMenuItem.Add(i.DropDownItems, "Explore", Sub() g.ShellExecute(Paths.TemplateDir), "Opens the directory containing the templates.")
+                ActionMenuItem.Add(i.DropDownItems, "Explore", Sub() g.ShellExecute(Folder.Template), "Opens the directory containing the templates.")
                 ActionMenuItem.Add(i.DropDownItems, "Restore", AddressOf ResetTemplates, "Restores the default templates.")
 
                 Exit For
@@ -1204,8 +1204,8 @@ Public Class MainForm
     Sub ResetTemplates()
         If MsgQuestion("Restore the default templates?") = DialogResult.OK Then
             Try
-                DirectoryHelp.Delete(Paths.TemplateDir)
-                Paths.TemplateDir.ToString()
+                DirectoryHelp.Delete(Folder.Template)
+                Folder.Template.ToString()
                 UpdateTemplatesMenu()
             Catch ex As Exception
                 g.ShowException(ex)
@@ -1215,7 +1215,7 @@ Public Class MainForm
 
     <Command("Loads a template.")>
     Sub LoadTemplate(name As String)
-        LoadProject(Paths.TemplateDir + name + ".srip")
+        LoadProject(Folder.Template + name + ".srip")
     End Sub
 
     Sub LoadProject(path As String)
@@ -1285,7 +1285,7 @@ Public Class MainForm
 
         SetBindings(p, False)
 
-        If Not File.Exists(path) Then path = Paths.StartupTemplatePath
+        If Not File.Exists(path) Then path = g.StartupTemplatePath
 
         Dim safeInstance = New Project
         safeInstance.Init()
@@ -1303,7 +1303,7 @@ Public Class MainForm
         Text = Application.ProductName + " x64 - " + Filepath.GetBase(path)
         SkipAssistant = True
 
-        If path.StartsWith(Paths.TemplateDir) Then
+        If path.StartsWith(Folder.Template) Then
             g.ProjectPath = Nothing
             p.TemplateName = Filepath.GetBase(path)
         Else
@@ -1511,7 +1511,7 @@ Public Class MainForm
 
     Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isNotEncoding As Boolean)
         Dim recoverPath = g.ProjectPath
-        Dim recoverProjectPath = CommonDirs.Temp + Guid.NewGuid.ToString + ".bin"
+        Dim recoverProjectPath = Folder.Temp + Guid.NewGuid.ToString + ".bin"
         Dim recoverText = Text
 
         SafeSerialization.Serialize(p, recoverProjectPath)
@@ -1547,7 +1547,7 @@ Public Class MainForm
             Next
 
             If p.SourceFile <> "" AndAlso isNotEncoding Then
-                Dim templates = Directory.GetFiles(Paths.TemplateDir, "*.srip")
+                Dim templates = Directory.GetFiles(Folder.Template, "*.srip")
 
                 If templates.Length = 1 Then
                     If Not OpenProject(templates(0), True) Then Throw New AbortException
@@ -1555,7 +1555,7 @@ Public Class MainForm
                     If s.ShowTemplateSelection Then
                         If Not LoadTemplateWithSelectionDialog() Then Throw New AbortException
                     Else
-                        If Not OpenProject(Paths.StartupTemplatePath, True) Then Throw New AbortException
+                        If Not OpenProject(g.StartupTemplatePath, True) Then Throw New AbortException
                     End If
                 End If
             End If
@@ -1602,7 +1602,7 @@ Public Class MainForm
                                    preferredSourceFilter.Script)
             End If
 
-            If Not Paths.VerifyRequirements() Then Throw New AbortException
+            If Not g.VerifyRequirements() Then Throw New AbortException
             g.SetTempDir()
 
             p.LastOriginalSourceFile = p.SourceFile
@@ -2024,6 +2024,8 @@ Public Class MainForm
             ConvertBluRaySubtitles()
             ExtractForcedVobSubSubtitles()
             p.VideoEncoder.Muxer.Init()
+
+            If p.HarcodedSubtitle Then g.AddHardcodedSubtitle()
 
             Dim crop = p.Script.IsFilterActive("Crop")
 
@@ -2707,7 +2709,7 @@ Public Class MainForm
             End If
 
             If Not (MouseButtons = MouseButtons.Left AndAlso ActiveControl Is tbResize) Then
-                If Not p.Script.GetErrorMessage Is Nothing AndAlso Not Paths.VerifyRequirements Then
+                If Not p.Script.GetErrorMessage Is Nothing AndAlso Not g.VerifyRequirements Then
                     If ProcessTip(p.Script.GetErrorMessage) Then
                         CanIgnoreTip = False
                         gbAssistant.Text = "Script Error"
@@ -2794,7 +2796,7 @@ Public Class MainForm
             p.SkippedAssistantTips.Add(CurrentAssistantTipKey)
         End If
 
-        If Not Paths.VerifyRequirements() Then
+        If Not g.VerifyRequirements() Then
             Exit Sub
         End If
 
@@ -2989,7 +2991,7 @@ Public Class MainForm
         Dim td As New TaskDialog(Of String)
         td.MainInstruction = "Please select a template"
 
-        For Each i In Directory.GetFiles(Paths.TemplateDir, "*.srip")
+        For Each i In Directory.GetFiles(Folder.Template, "*.srip")
             td.AddCommandLink(Filepath.GetBase(i), i)
         Next
 
@@ -3035,7 +3037,7 @@ Public Class MainForm
             mb.Label.Tooltip = "Template loaded when StaxRip starts."
             mb.MenuButton.Value = s.StartupTemplate
             mb.MenuButton.SaveAction = Sub(value) s.StartupTemplate = value
-            mb.MenuButton.Add(From i In Directory.GetFiles(Paths.TemplateDir) Select Filepath.GetBase(i))
+            mb.MenuButton.Add(From i In Directory.GetFiles(Folder.Template) Select Filepath.GetBase(i))
 
             Dim num = ui.AddNumericBlock(generalPage)
             num.Label.Text = "UI Scale Factor:"
@@ -3205,7 +3207,7 @@ Public Class MainForm
 
         path = Macro.Solve(path)
 
-        If path.StartsWith(Paths.TemplateDir) Then
+        If path.StartsWith(Folder.Template) Then
             If p.SourceFile <> "" Then
                 MsgWarn("A template cannot be created after a source file was opened.")
                 Exit Sub
@@ -3240,7 +3242,7 @@ Public Class MainForm
 
             If b.Show = DialogResult.OK Then
                 p.TemplateName = b.Value.RemoveChars(Path.GetInvalidFileNameChars)
-                SaveProjectPath(Paths.TemplateDir + p.TemplateName + ".srip")
+                SaveProjectPath(Folder.Template + p.TemplateName + ".srip")
                 UpdateTemplatesMenu()
 
                 If b.Checked Then
@@ -3356,7 +3358,7 @@ Public Class MainForm
         If p.SourceFile = "" Then
             ShowOpenSourceDialog()
         Else
-            If Not Paths.VerifyRequirements Then Exit Sub
+            If Not g.VerifyRequirements Then Exit Sub
             If Not g.IsValidSource Then Exit Sub
 
             If Not g.EnableFilter("Crop") Then
@@ -3381,7 +3383,7 @@ Public Class MainForm
         If p.SourceFile = "" Then
             ShowOpenSourceDialog()
         Else
-            If Not Paths.VerifyRequirements OrElse Not g.IsValidSource Then
+            If Not g.VerifyRequirements OrElse Not g.IsValidSource Then
                 Exit Sub
             End If
 
@@ -3436,12 +3438,12 @@ Public Class MainForm
 
     <Command("Clears the job list.")>
     Sub ClearJobs()
-        FileHelp.Delete(Paths.SettingsDir + "Jobs.dat")
+        FileHelp.Delete(Folder.Settings + "Jobs.dat")
     End Sub
 
     <Command("Runs all active jobs of the job list.")>
     Sub StartJobs()
-        If Not Paths.VerifyRequirements() Then Exit Sub
+        If Not g.VerifyRequirements() Then Exit Sub
         g.SaveSettings()
         RunJobRecursive()
         OpenProject(g.ProjectPath, False)
@@ -3472,7 +3474,7 @@ Public Class MainForm
 
                     If moreJobsToProcessInTempDir.Count = 0 Then
                         Dim tempDir = p.TempDir
-                        OpenProject(Paths.StartupTemplatePath, False)
+                        OpenProject(g.StartupTemplatePath, False)
                         MediaInfo.ClearCache()
 
                         If s.DeleteTempFilesToRecycleBin Then
@@ -3552,7 +3554,7 @@ Public Class MainForm
     End Sub
 
     Sub AddJob(showConfirmation As Boolean, templateName As String, showAssistant As Boolean)
-        If Not Paths.VerifyRequirements() Then Exit Sub
+        If Not g.VerifyRequirements() Then Exit Sub
 
         If showAssistant AndAlso Not IsLoading AndAlso Not g.MainForm.AssistantPassed Then
             MsgWarn("Please follow the assistant.")
@@ -3564,7 +3566,7 @@ Public Class MainForm
         JobsForm.AddJob(path)
 
         If showConfirmation Then MsgInfo("Job added")
-        If templateName <> "" Then LoadProject(Paths.TemplateDir + templateName + ".srip")
+        If templateName <> "" Then LoadProject(Folder.Template + templateName + ".srip")
     End Sub
 
     <Command("Compare and extract images for video comparisons.")>
@@ -3790,6 +3792,12 @@ Public Class MainForm
             cb.Checked = p.ConvertSup2Sub
             cb.SaveAction = Sub(value) p.ConvertSup2Sub = value
 
+            cb = ui.AddCheckBox(subPage)
+            cb.Text = "Add hard coded subtitle"
+            cb.Tooltip = "Automatically hardcodes a subtitle." + BR2 + "Supported formats are SRT, ASS and VobSub."
+            cb.Checked = p.HarcodedSubtitle
+            cb.SaveAction = Sub(value) p.HarcodedSubtitle = value
+
             subPage.ResumeLayout()
 
             Dim pathPage = ui.CreateFlowPage("Paths")
@@ -3802,7 +3810,7 @@ Public Class MainForm
             tm.Expand(tm.Edit)
             tm.Edit.Text = p.DefaultTargetFolder
             tm.Edit.SaveAction = Sub(value) p.DefaultTargetFolder = value
-            tm.AddMenu("Edit...", Function() Paths.BrowseFolder(p.DefaultTargetFolder))
+            tm.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
             tm.AddMenu("Directory of source file", "%source_dir%")
             tm.AddMenu("Parent directory of source file directory", "%source_dir_parent%")
 
@@ -3823,7 +3831,7 @@ Public Class MainForm
             l.MarginTop = Font.Height
 
             Dim tempDirFunc = Function()
-                                  Dim tempDir = Paths.BrowseFolder(p.TempDir)
+                                  Dim tempDir = g.BrowseFolder(p.TempDir)
                                   If tempDir <> "" Then Return DirPath.AppendSeparator(tempDir) + "%source_name%_temp"
                               End Function
 
@@ -4259,7 +4267,7 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
         ret.Add("Tools|Advanced|Command Prompt...", NameOf(ShowCommandPrompt))
         ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog))
-        ret.Add("Tools|Advanced|Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
+        ret.Add("Tools|Advanced|Hard Coded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
         ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", NameOf(ShowLAVFiltersConfigDialog))
         ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog))
         ret.Add("Tools|Advanced|Reset Setting...", NameOf(ResetSettings))
@@ -4346,20 +4354,7 @@ Public Class MainForm
                                   sb.SelectedItem.IndexIDX.ToString).WriteANSIFile(d.FileName)
                 End If
 
-                Dim filter As New VideoFilter
-
-                filter.Category = "Subtitle"
-                filter.Path = Filepath.GetName(d.FileName)
-                filter.Active = True
-
-                If Filepath.GetExtFull(d.FileName) = ".idx" Then
-                    filter.Script = "VobSub(""" + d.FileName + """)"
-                Else
-                    filter.Script = "TextSubMod(""" + d.FileName + """)"
-                End If
-
-                Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")
-                p.Script.InsertAfter(insertCat, filter)
+                p.AddHardcodedSubtitleFilter(d.FileName)
             End If
         End Using
     End Sub
@@ -4823,7 +4818,7 @@ Public Class MainForm
                             Exit Sub
                         End If
 
-                        Dim tempPath = Paths.TemplateDir + "temp.srip"
+                        Dim tempPath = Folder.Template + "temp.srip"
                         p.BatchMode = Not f.cbDemuxAndIndex.Checked
                         p.NoDialogs = f.cbDemuxAndIndex.Checked
                         SaveProjectPath(tempPath)
@@ -4853,7 +4848,7 @@ Public Class MainForm
                             Exit Sub
                         End If
 
-                        Dim tempPath = Paths.TemplateDir + "temp.srip"
+                        Dim tempPath = Folder.Template + "temp.srip"
 
                         If f.cbDemuxAndIndex.Checked Then p.BatchMode = True
 
@@ -5611,7 +5606,7 @@ Public Class MainForm
             End If
         Next
 
-        Dim batchPath = CommonDirs.Temp + Guid.NewGuid.ToString + ".bat"
+        Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
         File.WriteAllText(batchPath, batchCode, Encoding.GetEncoding(850))
         AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 

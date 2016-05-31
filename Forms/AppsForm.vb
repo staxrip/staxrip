@@ -165,7 +165,7 @@ Class AppsForm
 
 #End Region
 
-    Private ActivePackage As Package
+    Private CurrentPackage As Package
     Private Directories As New Hashtable
     Private Nodes As New List(Of TreeNode)
     Private ControlDic As New Dictionary(Of String, Control)
@@ -198,7 +198,7 @@ Class AppsForm
         SetupButton.TextImageRelation = TextImageRelation.ImageBeforeText
         SetupButton.Image = StockIcon.GetSmallImage(StockIconIdentifier.Shield)
 
-        AddHandler DownloadButton.Click, Sub() g.ShellExecute(ActivePackage.DownloadURL)
+        AddHandler DownloadButton.Click, Sub() g.ShellExecute(CurrentPackage.DownloadURL)
         DownloadButton.AutoSize = True
         DownloadButton.AutoSizeMode = Windows.Forms.AutoSizeMode.GrowAndShrink
 
@@ -219,35 +219,35 @@ Class AppsForm
     End Sub
 
     Sub ShowActivePackage()
-        Dim path = ActivePackage.Path
+        Dim path = CurrentPackage.Path
 
-        Headers("Title").Text = ActivePackage.Name
+        Headers("Title").Text = CurrentPackage.Name
 
-        SetupButton.Text = "Install " + ActivePackage.Name
-        SetupButton.Visible = Not ActivePackage.SetupAction Is Nothing AndAlso (ActivePackage.IsStatusCritical OrElse (Not ActivePackage.IsCorrectVersion AndAlso ActivePackage.Version <> ""))
+        SetupButton.Text = "Install " + CurrentPackage.Name
+        SetupButton.Visible = CurrentPackage.SetupFilename <> "" AndAlso (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> ""))
 
-        DownloadButton.Text = "Download " + ActivePackage.Name
-        DownloadButton.Visible = ActivePackage.DownloadURL <> "" AndAlso (ActivePackage.IsStatusCritical OrElse (Not ActivePackage.IsCorrectVersion AndAlso ActivePackage.Version <> ""))
+        DownloadButton.Text = "Download " + CurrentPackage.Name
+        DownloadButton.Visible = CurrentPackage.DownloadURL <> "" AndAlso (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> ""))
 
         tsbOpenDir.Enabled = path <> ""
-        tsbLaunch.Enabled = Not ActivePackage.StartAction Is Nothing AndAlso Not ActivePackage.IsStatusCritical
-        tsbWebsite.Enabled = ActivePackage.WebURL <> ""
-        tsbHelp.Enabled = ActivePackage.GetHelpPath <> ""
+        tsbLaunch.Enabled = Not CurrentPackage.StartAction Is Nothing AndAlso Not CurrentPackage.IsStatusCritical
+        tsbWebsite.Enabled = CurrentPackage.WebURL <> ""
+        tsbHelp.Enabled = CurrentPackage.GetHelpPath <> ""
 
-        s.StringDictionary("RecentExternalApplicationControl") = ActivePackage.Name
+        s.StringDictionary("RecentExternalApplicationControl") = CurrentPackage.Name
 
         flp.SuspendLayout()
 
-        Contents("Status").Text = ActivePackage.GetStatusDisplay()
+        Contents("Status").Text = CurrentPackage.GetStatusDisplay()
         Contents("Location").Text = path
-        Contents("Version").Text = ActivePackage.Version
-        Contents("Description").Text = ActivePackage.Description
+        Contents("Version").Text = CurrentPackage.Version
+        Contents("Description").Text = CurrentPackage.Description
 
         Contents("Location").Visible = path <> ""
         Headers("Location").Visible = path <> ""
 
-        Contents("Version").Visible = ActivePackage.Version <> ""
-        Headers("Version").Visible = ActivePackage.Version <> ""
+        Contents("Version").Visible = CurrentPackage.Version <> ""
+        Headers("Version").Visible = CurrentPackage.Version <> ""
 
         Headers("AviSynth Filters").Visible = False
         Contents("AviSynth Filters").Visible = False
@@ -258,8 +258,8 @@ Class AppsForm
         Headers("Filters").Visible = False
         Contents("Filters").Visible = False
 
-        If TypeOf ActivePackage Is PluginPackage Then
-            Dim plugin = DirectCast(ActivePackage, PluginPackage)
+        If TypeOf CurrentPackage Is PluginPackage Then
+            Dim plugin = DirectCast(CurrentPackage, PluginPackage)
 
             If Not plugin.AviSynthFilterNames Is Nothing AndAlso
                 Not plugin.VapourSynthFilterNames Is Nothing Then
@@ -302,7 +302,7 @@ Class AppsForm
     End Sub
 
     Sub RunSetup()
-        ActivePackage.SetupAction.Invoke()
+        g.ShellExecute(Folder.Apps + CurrentPackage.SetupFilename)
         ShowActivePackage()
     End Sub
 
@@ -320,8 +320,8 @@ Class AppsForm
         If Not tn Is Nothing AndAlso Not tn.Tag Is Nothing Then
             Dim newPackage = DirectCast(tn.Tag, Package)
 
-            If Not newPackage Is ActivePackage Then
-                ActivePackage = newPackage
+            If Not newPackage Is CurrentPackage Then
+                CurrentPackage = newPackage
                 ShowActivePackage()
             End If
         End If
@@ -347,27 +347,27 @@ Class AppsForm
         Select Case e.KeyData
             Case Keys.F11
                 Using d As New OpenFileDialog
-                    d.SetInitDir(s.Storage.GetString(ActivePackage.Name + "custom path"))
+                    d.SetInitDir(s.Storage.GetString(CurrentPackage.Name + "custom path"))
 
-                    If Not ActivePackage.Filenames.NothingOrEmpty Then
-                        d.Filter = "|" + ActivePackage.Filenames.Join(";") + "|All Files|*.*"
+                    If Not CurrentPackage.Filenames.NothingOrEmpty Then
+                        d.Filter = "|" + CurrentPackage.Filenames.Join(";") + "|All Files|*.*"
                     Else
-                        d.Filter = "|" + ActivePackage.Filename + "|All Files|*.*"
+                        d.Filter = "|" + CurrentPackage.Filename + "|All Files|*.*"
                     End If
 
                     If d.ShowDialog = DialogResult.OK Then
-                        s.Storage.SetString(ActivePackage.Name + "custom path", d.FileName)
+                        s.Storage.SetString(CurrentPackage.Name + "custom path", d.FileName)
                     End If
                 End Using
             Case Keys.F12
-                If Not File.Exists(ActivePackage.Path) Then Exit Sub
+                If Not File.Exists(CurrentPackage.Path) Then Exit Sub
 
-                Dim input = InputBox.Show("What's the name of this version?", "StaxRip", ActivePackage.Version)
+                Dim input = InputBox.Show("What's the name of this version?", "StaxRip", CurrentPackage.Version)
 
                 If input <> "" Then
                     input = input.Replace(";", "_")
-                    ActivePackage.Version = input
-                    ActivePackage.VersionDate = File.GetLastWriteTimeUtc(ActivePackage.Path)
+                    CurrentPackage.Version = input
+                    CurrentPackage.VersionDate = File.GetLastWriteTimeUtc(CurrentPackage.Path)
 
                     Dim txt = Application.ProductVersion + BR2
 
@@ -379,12 +379,12 @@ Class AppsForm
                     Next
 
                     Try
-                        txt.FormatColumn("=").WriteUTF8File(CommonDirs.Startup + "Apps\Versions.txt")
+                        txt.FormatColumn("=").WriteUTF8File(Folder.Startup + "Apps\Versions.txt")
                     Catch
                     End Try
 
                     Try
-                        txt.FormatColumn("=").WriteUTF8File(Paths.SettingsDir + "Versions.txt")
+                        txt.FormatColumn("=").WriteUTF8File(Folder.Settings + "Versions.txt")
                     Catch ex As Exception
                         g.ShowException(ex)
                     End Try
@@ -442,19 +442,19 @@ Class AppsForm
     End Sub
 
     Private Sub tsbLaunch_Click(sender As Object, e As EventArgs) Handles tsbLaunch.Click
-        ActivePackage.StartAction.Invoke()
+        CurrentPackage.StartAction.Invoke()
     End Sub
 
     <DebuggerNonUserCode()>
     Private Sub tsbOpenDir_Click(sender As Object, e As EventArgs) Handles tsbOpenDir.Click
-        g.OpenDirAndSelectFile(ActivePackage.Path, Handle)
+        g.OpenDirAndSelectFile(CurrentPackage.Path, Handle)
     End Sub
 
     Private Sub tsbHelp_Click(sender As Object, e As EventArgs) Handles tsbHelp.Click
-        g.ShellExecute(ActivePackage.GetHelpPath)
+        g.ShellExecute(CurrentPackage.GetHelpPath)
     End Sub
 
     Private Sub tsbWebsite_Click(sender As Object, e As EventArgs) Handles tsbWebsite.Click
-        g.ShellExecute(ActivePackage.WebURL)
+        g.ShellExecute(CurrentPackage.WebURL)
     End Sub
 End Class

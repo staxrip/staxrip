@@ -91,6 +91,7 @@ Public Class Project
     Public Versions As Dictionary(Of String, Integer)
     Public VideoBitrate As Integer = 1000
     Public VideoEncoder As VideoEncoder
+    Public HarcodedSubtitle As Boolean
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -243,4 +244,14 @@ Public Class Project
             Return TargetFile.Base
         End Get
     End Property
+
+    Sub AddHardcodedSubtitleFilter(path As String)
+        Dim filter As New VideoFilter
+        filter.Category = "Subtitle"
+        filter.Path = Filepath.GetName(path)
+        filter.Active = True
+        filter.Script = If(path.Ext = "idx", "VobSub", "TextSubMod") + "(""" + path + """)"
+        Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")
+        Script.InsertAfter(insertCat, filter)
+    End Sub
 End Class

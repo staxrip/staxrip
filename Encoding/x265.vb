@@ -76,7 +76,7 @@ Public Class x265Encoder
     End Sub
 
     Overrides Sub RunCompCheck()
-        If Not Paths.VerifyRequirements Then Exit Sub
+        If Not g.VerifyRequirements Then Exit Sub
         If Not g.IsValidSource Then Exit Sub
 
         Dim newParams As New x265Params

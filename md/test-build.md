@@ -12,7 +12,7 @@ http://1drv.ms/1OqPDOe
 - added all missing x265 switches
 - added hardware decoding methods to x265 'Other' tab, this will bypass AviSynth though
 - added new standalone mkvextract GUI (Apps > Demux)
-- added new QSVEncC switches for hardcoded subtitles
+- added new QSVEncC switches for hard coded subtitles
 - added MP4 support to standalone demux app
 - added -avsinfo starting AVSMeter without a source opened
 - added support for unicode filenames using VapourSynth, AviSynth don't support it
@@ -24,6 +24,7 @@ http://1drv.ms/1OqPDOe
 - added option to define preferred audio languages
 - added audio and subtitle demuxing modes 'Show Dialog', 'Preferred', 'All', 'None'
 - added x265 changes for v1.9 183
+- added new option to automatically add hard coded subtitle
 
 ### Fixed Bugs
 
@@ -43,10 +44,10 @@ http://1drv.ms/1OqPDOe
 - enabled posibility to remux mov to mp4
 - the apps dialog writes the customized versions now to the settings folder so it don't matter if the startup folder has no write access
 - demuxed subtitles are now detected by ID with proper numeric order
+- improved Dolby Atmos handling 
 
 ### Updated Tools
 
-- AviSynth 1847
 - ffmpeg 2016-04-25
 - L-SMASH-Works 877
 - mkvtoolnix 9.2.0
@@ -59,3 +60,4 @@ http://1drv.ms/1OqPDOe
 - StaxRip Toolbox Demux 1.1
 - x265 1.9 183
 - yadifmod2 0.0.4
+- AviSynth 1858

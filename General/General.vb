@@ -13,15 +13,19 @@ Imports System.Security.Principal
 
 Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
+Imports Microsoft.Win32
 
-Class CommonDirs
+Class Folder
+
+#Region "System"
+
     Shared ReadOnly Property Startup() As String
         Get
             Return DirPath.AppendSeparator(Application.StartupPath)
         End Get
     End Property
 
-    Shared ReadOnly Property CurrentDirectory() As String
+    Shared ReadOnly Property Current() As String
         Get
             Return DirPath.AppendSeparator(Environment.CurrentDirectory)
         End Get
@@ -51,19 +55,19 @@ Class CommonDirs
         End Get
     End Property
 
-    Shared ReadOnly Property CommonAppData() As String
+    Shared ReadOnly Property AppDataCommon() As String
         Get
             Return GetFolderPath(Environment.SpecialFolder.CommonApplicationData).AppendSeparator
         End Get
     End Property
 
-    Shared ReadOnly Property UserAppDataLocal() As String
+    Shared ReadOnly Property AppDataLocal() As String
         Get
             Return GetFolderPath(Environment.SpecialFolder.LocalApplicationData).AppendSeparator
         End Get
     End Property
 
-    Shared ReadOnly Property UserAppDataRoaming() As String
+    Shared ReadOnly Property AppDataRoaming() As String
         Get
             Return GetFolderPath(Environment.SpecialFolder.ApplicationData).AppendSeparator
         End Get
@@ -75,11 +79,202 @@ Class CommonDirs
         End Get
     End Property
 
+#End Region
+
+#Region "StaxRip"
+
+    Shared ReadOnly Property Apps As String
+        Get
+            Return Folder.Startup + "Apps\"
+        End Get
+    End Property
+
+    Shared ReadOnly Property Plugins As String
+        Get
+            If p.Script.Engine = ScriptEngine.AviSynth Then
+                Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+"))
+            Else
+                Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64"))
+            End If
+        End Get
+    End Property
+
+    Shared ReadOnly Property Script As String
+        Get
+            Dim ret = Settings + "Scripts\"
+            If Not Directory.Exists(ret) Then Directory.CreateDirectory(ret)
+            Return ret
+        End Get
+    End Property
+
+    Private Shared SettingsValue As String
+
+    Shared ReadOnly Property Settings As String
+        Get
+            If SettingsValue Is Nothing Then
+                For Each location In Registry.CurrentUser.GetValueNames("Software\StaxRip\SettingsLocation")
+                    If Not Directory.Exists(location) Then
+                        Registry.CurrentUser.DeleteValue("Software\StaxRip\SettingsLocation", location)
+                    End If
+                Next
+
+                SettingsValue = Registry.CurrentUser.GetString("Software\StaxRip\SettingsLocation", Folder.Startup)
+
+                If Not Directory.Exists(SettingsValue) Then
+                    Dim td As New TaskDialog(Of String)
+
+                    td.MainInstruction = "Settings Directory"
+                    td.Content = "Choose the location of the settings directory."
+
+                    Dim folders As New HashSet(Of String)
+
+                    If Directory.Exists(Folder.Home + "Google Drive") Then
+                        folders.Add(Folder.Home + "Google Drive\Apps\Settings\StaxRip\")
+                    End If
+
+                    If Directory.Exists(Folder.Home + "OneDrive") Then
+                        folders.Add(Folder.Home + "OneDrive\Apps\Settings\StaxRip")
+                    End If
+
+                    folders.Add(Folder.AppDataCommon + "StaxRip x64")
+                    folders.Add(Folder.AppDataLocal + "StaxRip x64")
+                    folders.Add(Folder.AppDataRoaming + "StaxRip x64")
+                    folders.Add(Folder.Startup + "Settings")
+
+                    For Each location In Registry.CurrentUser.GetValueNames("Software\StaxRip\SettingsLocation")
+                        If Directory.Exists(location) Then folders.Add(location)
+                    Next
+
+                    For Each folder In folders.Sort
+                        td.AddCommandLink(folder, folder)
+                    Next
+
+                    td.AddCommandLink("Browse for custom directory", "custom")
+
+                    Dim dir = td.Show
+
+                    If dir = "custom" Then
+                        Using d As New FolderBrowserDialog
+                            d.Description = "Please select a directory."
+                            d.SelectedPath = Folder.Startup
+
+                            If d.ShowDialog = DialogResult.OK Then
+                                dir = d.SelectedPath
+                            Else
+                                dir = Folder.AppDataCommon + "StaxRip x64"
+                            End If
+                        End Using
+                    ElseIf dir = "" Then
+                        dir = Folder.AppDataCommon + "StaxRip x64"
+                    End If
+
+                    If Not Directory.Exists(dir) Then
+                        Try
+                            Directory.CreateDirectory(dir)
+                        Catch
+                            dir = Folder.AppDataCommon + "StaxRip x64"
+                            If Not Directory.Exists(dir) Then Directory.CreateDirectory(dir)
+                        End Try
+                    End If
+
+                    SettingsValue = dir.AppendSeparator
+                    Registry.CurrentUser.Write("Software\StaxRip\SettingsLocation", Folder.Startup, SettingsValue)
+                End If
+            End If
+
+            Return SettingsValue
+        End Get
+    End Property
+
+    Shared ReadOnly Property Template As String
+        Get
+            Dim ret = Settings + "TemplatesV2\"
+            Dim fresh As Boolean
+
+            If Not Directory.Exists(ret) Then
+                Directory.CreateDirectory(ret)
+                fresh = True
+            End If
+
+            Dim version = 44
+
+            If fresh OrElse Not s.Storage.GetInt("template update") = version Then
+                s.Storage.SetInt("template update", version)
+
+                Dim files = Directory.GetFiles(ret, "*.srip")
+
+                If files.Length > 0 Then
+                    DirectoryHelp.Delete(ret + "Backup")
+                    Directory.CreateDirectory(ret + "Backup")
+
+                    For Each i In files
+                        FileHelp.Move(i, Filepath.GetDir(i) + "Backup\" + Filepath.GetName(i))
+                    Next
+                End If
+
+                Dim x264 As New Project
+                x264.Init()
+                SafeSerialization.Serialize(x264, ret + "x264.srip")
+
+                'Dim x265 As New Project
+                'x265.Init()
+                'Dim x265enc = New x265.x265Encoder
+                'x265enc.Params.ApplyPresetDefaultValues()
+                'x265enc.Params.ApplyPresetValues()
+                'x265.VideoEncoder = x265enc
+
+                'SafeSerialization.Serialize(x265, ret + "x265.srip")
+
+                Dim aaclc = New GUIAudioProfile(AudioCodec.AAC, 0.4)
+
+                Dim apple = Function(name As String, device As x264DeviceMode) As Project
+                                Dim proj As New Project
+                                proj.Init()
+
+                                proj.MaxAspectRatioError = 4
+                                proj.AutoResizeImage = 0
+                                proj.AutoSmartOvercrop = 2
+                                proj.Script.GetFilter("Resize").Active = True
+                                proj.VideoEncoder = VideoEncoder.Getx264Encoder("x264 | " + name, device)
+                                proj.VideoEncoder.Muxer = New MP4Muxer("MP4")
+                                proj.Audio0 = aaclc
+
+                                Return proj
+                            End Function
+
+                Dim iPad = apple("iPad", x264DeviceMode.iPad)
+                iPad.TargetWidth = 1280
+                iPad.TargetHeight = 720
+                SafeSerialization.Serialize(iPad, ret + "iPad.srip")
+
+                Dim iPhone = apple("iPhone", x264DeviceMode.iPhone)
+                iPhone.TargetWidth = 960
+                iPhone.TargetHeight = 540
+                SafeSerialization.Serialize(iPhone, ret + "iPhone.srip")
+
+                Dim console = Sub(name As String, device As x264DeviceMode)
+                                  Dim proj As New Project
+                                  proj.Init()
+                                  proj.VideoEncoder = VideoEncoder.Getx264Encoder("x264 | " + name, device)
+                                  proj.Audio0 = aaclc
+                                  SafeSerialization.Serialize(proj, ret + name + ".srip")
+                              End Sub
+
+                console("PlayStation", x264DeviceMode.PlayStation)
+                console("Xbox", x264DeviceMode.Xbox)
+            End If
+
+            Return ret
+        End Get
+    End Property
+
+#End Region
+
     <DllImport("shfolder.dll", CharSet:=CharSet.Unicode)>
     Private Shared Function SHGetFolderPath(hwndOwner As IntPtr, nFolder As Integer, hToken As IntPtr, dwFlags As Integer, lpszPath As StringBuilder) As Integer
     End Function
 
-    Shared Function GetFolderPath(folder As Environment.SpecialFolder) As String
+    Private Shared Function GetFolderPath(folder As Environment.SpecialFolder) As String
         Dim sb As New StringBuilder(260)
         SHGetFolderPath(IntPtr.Zero, CInt(folder), IntPtr.Zero, 0, sb)
         Dim ret = DirPath.AppendSeparator(sb.ToString) '.NET fails on 'D:'
@@ -187,7 +382,7 @@ Class DirPath
     Shared Function IsInSysDir(path As String) As Boolean
         If path = "" Then Return False
         If Not path.EndsWith("\") Then path += "\"
-        Return path.ToUpper.Contains(CommonDirs.Programs.ToUpper)
+        Return path.ToUpper.Contains(Folder.Programs.ToUpper)
     End Function
 
     Shared Function IsFixedDrive(path As String) As Boolean

@@ -76,7 +76,7 @@ Public Class x264Encoder
     End Sub
 
     Overrides Sub RunCompCheck()
-        If Not Paths.VerifyRequirements Then Exit Sub
+        If Not g.VerifyRequirements Then Exit Sub
         If Not g.IsValidSource Then Exit Sub
 
         Dim enc As New x264Encoder

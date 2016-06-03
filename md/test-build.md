@@ -45,19 +45,22 @@ http://1drv.ms/1OqPDOe
 - the apps dialog writes the customized versions now to the settings folder so it don't matter if the startup folder has no write access
 - demuxed subtitles are now detected by ID with proper numeric order
 - improved Dolby Atmos handling 
+- added check if enough disk space is available before a job runs
+- replaced drop down menus in Event Commands editor with menu based drop downs
 
 ### Updated Tools
 
 - ffmpeg 2016-04-25
-- L-SMASH-Works 877
 - mkvtoolnix 9.2.0
 - MP4Box 0.6.2
 - mvsfunc 7
 - mvtools2 2.7.0.22
 - nnedi3 0.9.4.21
-- NVEncC 2.06
-- QSVEncC 2.47
 - StaxRip Toolbox Demux 1.1
-- x265 1.9 183
 - yadifmod2 0.0.4
 - AviSynth 1858
+- NVEncC 2.07
+- L-SMASH-Works 879
+- QSVEncC 2.50
+- qaac 2.59
+- x265 1.9 200

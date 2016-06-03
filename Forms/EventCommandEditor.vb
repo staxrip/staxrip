@@ -1,5 +1,3 @@
-Imports System.Reflection
-
 Imports StaxRip.UI
 
 Class EventCommandEditor
@@ -71,7 +69,7 @@ Class EventCommandEditor
         Me.tbName.Location = New System.Drawing.Point(8, 29)
         Me.tbName.Margin = New System.Windows.Forms.Padding(4)
         Me.tbName.Name = "tbName"
-        Me.tbName.Size = New System.Drawing.Size(342, 36)
+        Me.tbName.Size = New System.Drawing.Size(418, 31)
         Me.tbName.TabIndex = 0
         '
         'cbEvent
@@ -83,7 +81,7 @@ Class EventCommandEditor
         Me.cbEvent.Location = New System.Drawing.Point(8, 28)
         Me.cbEvent.Margin = New System.Windows.Forms.Padding(4)
         Me.cbEvent.Name = "cbEvent"
-        Me.cbEvent.Size = New System.Drawing.Size(343, 38)
+        Me.cbEvent.Size = New System.Drawing.Size(418, 33)
         Me.cbEvent.Sorted = True
         Me.cbEvent.TabIndex = 0
         '
@@ -95,14 +93,14 @@ Class EventCommandEditor
         Me.tbCommand.Margin = New System.Windows.Forms.Padding(4)
         Me.tbCommand.Name = "tbCommand"
         Me.tbCommand.ReadOnly = True
-        Me.tbCommand.Size = New System.Drawing.Size(669, 36)
+        Me.tbCommand.Size = New System.Drawing.Size(820, 31)
         Me.tbCommand.TabIndex = 0
         '
         'bnCommand
         '
         Me.bnCommand.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCommand.ContextMenuStrip = Me.cmsCommands
-        Me.bnCommand.Location = New System.Drawing.Point(685, 28)
+        Me.bnCommand.Location = New System.Drawing.Point(836, 28)
         Me.bnCommand.Margin = New System.Windows.Forms.Padding(4)
         Me.bnCommand.ShowMenuSymbol = True
         Me.bnCommand.Size = New System.Drawing.Size(33, 33)
@@ -123,7 +121,7 @@ Class EventCommandEditor
         Me.CriteriaControl.Margin = New System.Windows.Forms.Padding(4)
         Me.CriteriaControl.Name = "CriteriaControl"
         Me.CriteriaControl.ShowNiceBorder = True
-        Me.CriteriaControl.Size = New System.Drawing.Size(709, 211)
+        Me.CriteriaControl.Size = New System.Drawing.Size(860, 211)
         Me.CriteriaControl.TabIndex = 1
         '
         'rbMatchAllCriteria
@@ -132,7 +130,7 @@ Class EventCommandEditor
         Me.rbMatchAllCriteria.Location = New System.Drawing.Point(8, 27)
         Me.rbMatchAllCriteria.Margin = New System.Windows.Forms.Padding(4)
         Me.rbMatchAllCriteria.Name = "rbMatchAllCriteria"
-        Me.rbMatchAllCriteria.Size = New System.Drawing.Size(128, 34)
+        Me.rbMatchAllCriteria.Size = New System.Drawing.Size(111, 29)
         Me.rbMatchAllCriteria.TabIndex = 0
         Me.rbMatchAllCriteria.TabStop = True
         Me.rbMatchAllCriteria.Text = "Match All"
@@ -145,7 +143,7 @@ Class EventCommandEditor
         Me.rbMatchAnyCriteria.Location = New System.Drawing.Point(139, 27)
         Me.rbMatchAnyCriteria.Margin = New System.Windows.Forms.Padding(4)
         Me.rbMatchAnyCriteria.Name = "rbMatchAnyCriteria"
-        Me.rbMatchAnyCriteria.Size = New System.Drawing.Size(141, 34)
+        Me.rbMatchAnyCriteria.Size = New System.Drawing.Size(122, 29)
         Me.rbMatchAnyCriteria.TabIndex = 2
         Me.rbMatchAnyCriteria.TabStop = True
         Me.rbMatchAnyCriteria.Text = "Match Any"
@@ -161,7 +159,7 @@ Class EventCommandEditor
         Me.pgParameters.Margin = New System.Windows.Forms.Padding(4)
         Me.pgParameters.Name = "pgParameters"
         Me.pgParameters.PropertySort = System.Windows.Forms.PropertySort.Alphabetical
-        Me.pgParameters.Size = New System.Drawing.Size(709, 200)
+        Me.pgParameters.Size = New System.Drawing.Size(860, 200)
         Me.pgParameters.TabIndex = 2
         Me.pgParameters.ToolbarVisible = False
         '
@@ -171,7 +169,7 @@ Class EventCommandEditor
         Me.lParameters.Location = New System.Drawing.Point(8, 68)
         Me.lParameters.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lParameters.Name = "lParameters"
-        Me.lParameters.Size = New System.Drawing.Size(127, 30)
+        Me.lParameters.Size = New System.Drawing.Size(103, 25)
         Me.lParameters.TabIndex = 1
         Me.lParameters.Text = "Parameters:"
         '
@@ -188,7 +186,7 @@ Class EventCommandEditor
         Me.gbCriteria.Margin = New System.Windows.Forms.Padding(4)
         Me.gbCriteria.Name = "gbCriteria"
         Me.gbCriteria.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbCriteria.Size = New System.Drawing.Size(725, 280)
+        Me.gbCriteria.Size = New System.Drawing.Size(876, 280)
         Me.gbCriteria.TabIndex = 2
         Me.gbCriteria.TabStop = False
         Me.gbCriteria.Text = "Criteria"
@@ -207,7 +205,7 @@ Class EventCommandEditor
         Me.gbCommand.Margin = New System.Windows.Forms.Padding(4)
         Me.gbCommand.Name = "gbCommand"
         Me.gbCommand.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbCommand.Size = New System.Drawing.Size(725, 305)
+        Me.gbCommand.Size = New System.Drawing.Size(876, 305)
         Me.gbCommand.TabIndex = 4
         Me.gbCommand.TabStop = False
         Me.gbCommand.Text = "Command"
@@ -220,7 +218,7 @@ Class EventCommandEditor
         Me.gbName.Margin = New System.Windows.Forms.Padding(4)
         Me.gbName.Name = "gbName"
         Me.gbName.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbName.Size = New System.Drawing.Size(358, 70)
+        Me.gbName.Size = New System.Drawing.Size(434, 70)
         Me.gbName.TabIndex = 1
         Me.gbName.TabStop = False
         Me.gbName.Text = "Name"
@@ -229,11 +227,11 @@ Class EventCommandEditor
         '
         Me.gbEvent.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.gbEvent.Controls.Add(Me.cbEvent)
-        Me.gbEvent.Location = New System.Drawing.Point(370, 4)
+        Me.gbEvent.Location = New System.Drawing.Point(446, 4)
         Me.gbEvent.Margin = New System.Windows.Forms.Padding(4)
         Me.gbEvent.Name = "gbEvent"
         Me.gbEvent.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbEvent.Size = New System.Drawing.Size(359, 70)
+        Me.gbEvent.Size = New System.Drawing.Size(434, 70)
         Me.gbEvent.TabIndex = 3
         Me.gbEvent.TabStop = False
         Me.gbEvent.Text = "Event"
@@ -242,7 +240,7 @@ Class EventCommandEditor
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(642, 689)
+        Me.bnCancel.Location = New System.Drawing.Point(793, 689)
         Me.bnCancel.Margin = New System.Windows.Forms.Padding(4)
         Me.bnCancel.Size = New System.Drawing.Size(100, 34)
         Me.bnCancel.Text = "Cancel"
@@ -251,7 +249,7 @@ Class EventCommandEditor
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(534, 689)
+        Me.bnOK.Location = New System.Drawing.Point(685, 689)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(4)
         Me.bnOK.Size = New System.Drawing.Size(100, 34)
         Me.bnOK.Text = "OK"
@@ -274,7 +272,7 @@ Class EventCommandEditor
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 52.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(733, 679)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(884, 679)
         Me.TableLayoutPanel1.TabIndex = 6
         '
         'EventCommandEditor
@@ -282,7 +280,7 @@ Class EventCommandEditor
         Me.AcceptButton = Me.bnOK
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(757, 736)
+        Me.ClientSize = New System.Drawing.Size(908, 736)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Controls.Add(Me.bnOK)
         Me.Controls.Add(Me.bnCancel)
@@ -327,12 +325,15 @@ Class EventCommandEditor
 
         Dim allCriteria As New List(Of Criteria)
 
-        For Each i In Macro.GetMacros()
-            Dim c = Criteria.Create(i.Type)
-            c.Name = i.FriendlyName
-            c.Macro = i.Name
+        For Each m In Macro.GetMacros()
+            Dim c = Criteria.Create(m.Type)
+            c.Name = m.FriendlyName
+            c.Description = m.Description
+            c.Macro = m.Name
             allCriteria.Add(c)
         Next
+
+        allCriteria.Sort(New Comparer(Of Criteria)(NameOf(Criteria.Name)))
 
         CriteriaControl.AllCrieria = allCriteria
         CriteriaControl.CriteriaList = EventCommandValue.CriteriaList

@@ -134,8 +134,12 @@ Class Audio
         End If
     End Sub
 
-    Shared Sub DemuxMKV(sourcefile As String, streams As IEnumerable(Of AudioStream), ap As AudioProfile)
-        streams = streams.Where(Function(arg) arg.Enabled)
+    Shared Sub DemuxMKV(sourcefile As String,
+                        streams As IEnumerable(Of AudioStream),
+                        ap As AudioProfile,
+                        Optional onlyEnabled As Boolean = False)
+
+        If onlyEnabled Then streams = streams.Where(Function(arg) arg.Enabled)
         If streams.Count = 0 Then Exit Sub
 
         Dim args = "tracks " + sourcefile.Quotes

@@ -385,6 +385,18 @@ Namespace UI
 
             MyBase.OnValidating(e)
         End Sub
+
+        Sub SetTextWithoutTextChangedEvent(text As String)
+            BlockOnTextChanged = True
+            Me.Text = text
+            BlockOnTextChanged = False
+        End Sub
+
+        Private BlockOnTextChanged As Boolean
+
+        Protected Overrides Sub OnTextChanged(e As EventArgs)
+            If Not BlockOnTextChanged Then MyBase.OnTextChanged(e)
+        End Sub
     End Class
 
     Class PanelEx
@@ -827,7 +839,7 @@ Namespace UI
         Inherits ButtonEx
 
         Event ValueChangedUser(value As Object)
-
+        Property Items As New List(Of Object)
         Property Menu As New ContextMenuStripEx
 
         Public Sub New()
@@ -901,9 +913,15 @@ Namespace UI
         End Sub
 
         Sub Add(path As String, obj As Object, Optional tip As String = Nothing)
+            Items.Add(obj)
             Dim name = path
             If path.Contains("|") Then name = path.RightLast("|").Trim
             ActionMenuItem.Add(Menu.Items, path, Sub(o As Object) OnAction(name, o), obj, tip).Tag = obj
+        End Sub
+
+        Sub Clear()
+            Items.Clear()
+            Menu.Items.Clear()
         End Sub
 
         Private Sub OnAction(text As String, value As Object)

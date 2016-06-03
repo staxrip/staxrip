@@ -36,7 +36,7 @@ Namespace UI
             c.Top = GetTop(c)
             Controls.Add(c)
             SetAddButtonTop()
-            buAdd.Left = c.Right - c.buRemove.Margin.Right - buAdd.Width - 1
+            buAdd.Left = c.Right - c.bnRemove.Margin.Right - buAdd.Width - 1
         End Sub
 
         Private Sub SetAddButtonTop()
@@ -90,7 +90,7 @@ Namespace UI
             End Get
             Set(Value As List(Of Criteria))
                 While ControlList.Count > 0
-                    ControlList(ControlList.Count - 1).buRemove.PerformClick()
+                    ControlList(ControlList.Count - 1).bnRemove.PerformClick()
                 End While
 
                 If Not Value Is Nothing Then

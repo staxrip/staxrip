@@ -1,9 +1,8 @@
-Imports StaxRip.UI
-
-Imports System.Text.RegularExpressions
-Imports System.Globalization
-Imports System.Threading.Tasks
 Imports System.ComponentModel
+Imports System.Globalization
+Imports System.Text.RegularExpressions
+Imports System.Threading.Tasks
+Imports StaxRip.UI
 
 Class eac3toForm
     Inherits DialogBase
@@ -708,8 +707,8 @@ Class eac3toForm
 
                     If ms.Codec.Contains(",") Then ms.Codec = ms.Codec.Left(",")
 
-                    ms.IsVideo = {"h264/AVC", "VC-1", "MPEG2"}.Contains(ms.Codec)
-                    ms.IsAudio = {"AC3", "AC3 EX", "TrueHD/AC3", "TrueHD/AC3 (Atmos)", "AC3 Surround", "RAW/PCM", "DTS Master Audio", "DTS", "DTS-ES", "DTS Hi-Res", "DTS Express", "E-AC3"}.Contains(ms.Codec)
+                    ms.IsVideo = ms.Codec.EqualsAny("h264/AVC", "VC-1", "MPEG2")
+                    ms.IsAudio = ms.Codec.EqualsAny("DTS Master Audio", "DTS", "DTS-ES", "DTS Hi-Res", "DTS Express", "AC3", "AC3 EX", "AC3 Surround", "E-AC3", "E-AC3 Surround", "TrueHD/AC3", "TrueHD/AC3 (Atmos)", "RAW/PCM")
                     ms.IsSubtitle = ms.Codec.StartsWith("Subtitle")
                     ms.IsChapters = ms.Codec.StartsWith("Chapters")
 

@@ -20,11 +20,12 @@ Namespace UI
         'Do not modify it using the code editor.
         <System.Diagnostics.DebuggerStepThrough()>
         Private Sub InitializeComponent()
+            Me.components = New System.ComponentModel.Container()
             Me.LayoutPanel = New System.Windows.Forms.TableLayoutPanel()
-            Me.buRemove = New System.Windows.Forms.Button()
-            Me.cbCondition = New System.Windows.Forms.ComboBox()
-            Me.cbProperty = New System.Windows.Forms.ComboBox()
+            Me.bnRemove = New System.Windows.Forms.Button()
             Me.te = New StaxRip.UI.TextEdit()
+            Me.mbCondition = New StaxRip.UI.MenuButton()
+            Me.mbProperties = New StaxRip.UI.MenuButton()
             Me.LayoutPanel.SuspendLayout()
             Me.SuspendLayout()
             '
@@ -33,65 +34,55 @@ Namespace UI
             Me.LayoutPanel.AutoSize = True
             Me.LayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
             Me.LayoutPanel.ColumnCount = 4
-            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
-            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334!))
-            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334!))
+            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40.0!))
+            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30.0!))
+            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30.0!))
             Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-            Me.LayoutPanel.Controls.Add(Me.buRemove, 3, 0)
+            Me.LayoutPanel.Controls.Add(Me.mbProperties, 0, 0)
+            Me.LayoutPanel.Controls.Add(Me.bnRemove, 3, 0)
             Me.LayoutPanel.Controls.Add(Me.te, 2, 0)
-            Me.LayoutPanel.Controls.Add(Me.cbCondition, 1, 0)
-            Me.LayoutPanel.Controls.Add(Me.cbProperty, 0, 0)
+            Me.LayoutPanel.Controls.Add(Me.mbCondition, 1, 0)
             Me.LayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill
             Me.LayoutPanel.Location = New System.Drawing.Point(0, 0)
             Me.LayoutPanel.Name = "LayoutPanel"
             Me.LayoutPanel.RowCount = 1
             Me.LayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
-            Me.LayoutPanel.Size = New System.Drawing.Size(537, 46)
+            Me.LayoutPanel.Size = New System.Drawing.Size(582, 42)
             Me.LayoutPanel.TabIndex = 0
             '
             'buRemove
             '
-            Me.buRemove.Anchor = System.Windows.Forms.AnchorStyles.None
-            Me.buRemove.AutoSize = True
-            Me.buRemove.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-            Me.buRemove.Location = New System.Drawing.Point(470, 3)
-            Me.buRemove.Name = "buRemove"
-            Me.buRemove.Size = New System.Drawing.Size(63, 40)
-            Me.buRemove.TabIndex = 3
-            Me.buRemove.Text = "Add"
-            Me.buRemove.UseVisualStyleBackColor = True
-            '
-            'cbCondition
-            '
-            Me.cbCondition.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.cbCondition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-            Me.cbCondition.FormattingEnabled = True
-            Me.cbCondition.Location = New System.Drawing.Point(158, 2)
-            Me.cbCondition.Margin = New System.Windows.Forms.Padding(3, 0, 3, 3)
-            Me.cbCondition.Name = "cbCondition"
-            Me.cbCondition.Size = New System.Drawing.Size(150, 38)
-            Me.cbCondition.TabIndex = 1
-            '
-            'cbProperty
-            '
-            Me.cbProperty.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.cbProperty.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-            Me.cbProperty.FormattingEnabled = True
-            Me.cbProperty.Location = New System.Drawing.Point(3, 2)
-            Me.cbProperty.Margin = New System.Windows.Forms.Padding(3, 0, 3, 3)
-            Me.cbProperty.MaxDropDownItems = 30
-            Me.cbProperty.Name = "cbProperty"
-            Me.cbProperty.Size = New System.Drawing.Size(149, 38)
-            Me.cbProperty.Sorted = True
-            Me.cbProperty.TabIndex = 0
+            Me.bnRemove.Anchor = System.Windows.Forms.AnchorStyles.None
+            Me.bnRemove.AutoSize = True
+            Me.bnRemove.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+            Me.bnRemove.Location = New System.Drawing.Point(523, 3)
+            Me.bnRemove.Name = "buRemove"
+            Me.bnRemove.Size = New System.Drawing.Size(56, 35)
+            Me.bnRemove.TabIndex = 3
+            Me.bnRemove.Text = "Add"
+            Me.bnRemove.UseVisualStyleBackColor = True
             '
             'te
             '
             Me.te.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.te.Location = New System.Drawing.Point(314, 5)
+            Me.te.Location = New System.Drawing.Point(367, 3)
             Me.te.Name = "te"
             Me.te.Size = New System.Drawing.Size(150, 36)
             Me.te.TabIndex = 4
+            '
+            'mbCondition
+            '
+            Me.mbCondition.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.mbCondition.Location = New System.Drawing.Point(211, 3)
+            Me.mbCondition.ShowMenuSymbol = True
+            Me.mbCondition.Size = New System.Drawing.Size(150, 36)
+            '
+            'mbProperties
+            '
+            Me.mbProperties.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.mbProperties.Location = New System.Drawing.Point(3, 3)
+            Me.mbProperties.ShowMenuSymbol = True
+            Me.mbProperties.Size = New System.Drawing.Size(202, 36)
             '
             'CriteriaItemControl
             '
@@ -103,7 +94,7 @@ Namespace UI
             Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
             Me.Margin = New System.Windows.Forms.Padding(0)
             Me.Name = "CriteriaItemControl"
-            Me.Size = New System.Drawing.Size(537, 46)
+            Me.Size = New System.Drawing.Size(582, 42)
             Me.LayoutPanel.ResumeLayout(False)
             Me.LayoutPanel.PerformLayout()
             Me.ResumeLayout(False)
@@ -111,11 +102,10 @@ Namespace UI
 
         End Sub
         Friend WithEvents LayoutPanel As System.Windows.Forms.TableLayoutPanel
-        Public WithEvents buRemove As System.Windows.Forms.Button
-        Public WithEvents cbProperty As System.Windows.Forms.ComboBox
-        Public WithEvents cbCondition As System.Windows.Forms.ComboBox
+        Public WithEvents bnRemove As System.Windows.Forms.Button
         Friend WithEvents te As StaxRip.UI.TextEdit
-
+        Friend WithEvents mbCondition As MenuButton
+        Friend WithEvents mbProperties As MenuButton
     End Class
 End Namespace
 

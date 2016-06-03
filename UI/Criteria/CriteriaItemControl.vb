@@ -1,15 +1,38 @@
-Imports StaxRip.UI
 Imports System.ComponentModel
 
 Namespace UI
     <ToolboxItem(False)>
     Class CriteriaItemControl
-        Private IsLoading As Boolean
-
         Sub New(allCriteria As List(Of Criteria))
             InitializeComponent()
-            cbProperty.Items.AddRange(allCriteria.ToArray)
-            buRemove.Text = "Remove"
+
+            For Each c In allCriteria
+                If c.Name?.StartsWith("Source ") Then
+                    mbProperties.Add("Source | " + c.Name, c, c.Description)
+                ElseIf c.Name?.StartsWith("Target ") Then
+                    mbProperties.Add("Target | " + c.Name, c, c.Description)
+                ElseIf c.Name?.StartsWith("Audio ") Then
+                    mbProperties.Add("Audio | " + c.Name, c, c.Description)
+                ElseIf c.Name?.StartsWith("Crop ") Then
+                    mbProperties.Add("Crop | " + c.Name, c, c.Description)
+                ElseIf c.Name?.StartsWith("Encoder ") Then
+                    mbProperties.Add("Encoder | " + c.Name, c, c.Description)
+                ElseIf c.Name?.StartsWith("AviSynth/VapourSynth") Then
+                    mbProperties.Add("AviSynth/VapourSynth | " + c.Name, c, c.Description)
+                ElseIf Not c.Name?.EndsWith(" Directory") AndAlso Not c.Name?.EndsWith(" File") Then
+                    mbProperties.Add(c.Name, c, c.Description)
+                End If
+
+                If c.Name?.EndsWith(" Directory") Then
+                    mbProperties.Add("Directories | " + c.Name, c, c.Description)
+                End If
+
+                If c.Name?.EndsWith(" File") Then
+                    mbProperties.Add("Files | " + c.Name, c, c.Description)
+                End If
+            Next
+
+            bnRemove.Text = "Remove"
         End Sub
 
         Private CriteriaValue As Criteria
@@ -21,61 +44,47 @@ Namespace UI
             Set(Value As Criteria)
                 If Not Value Is Nothing Then
                     CriteriaValue = DirectCast(ObjectHelp.GetCopy(Value), Criteria)
-                    IsLoading = True
 
-                    For i = 0 To cbProperty.Items.Count - 1
-                        Dim c As Criteria = DirectCast(cbProperty.Items(i), Criteria)
-
-                        If c.Name = CriteriaValue.Name Then
-                            cbProperty.SelectedIndex = i
+                    For Each c As Criteria In mbProperties.Items
+                        If c.Name = Criteria.Name Then
+                            mbProperties.Value = c
                             Exit For
                         End If
                     Next
 
-                    cbCondition.Items.Clear()
-                    cbCondition.Items.AddRange(CriteriaValue.ConditionNames)
-                    cbCondition.SelectedItem = CriteriaValue.ConditionName
-                    te.Text = CriteriaValue.ValueString
+                    mbCondition.Menu.Items.Clear()
+                    mbCondition.Add(CriteriaValue.ConditionNames)
+                    mbCondition.Value = CriteriaValue.ConditionName
 
-                    IsLoading = False
+                    te.TextBox.SetTextWithoutTextChangedEvent(CriteriaValue.ValueString)
                 End If
             End Set
         End Property
 
-        Private Sub bRemove_Click() Handles buRemove.Click
+        Private Sub bnRemove_Click() Handles bnRemove.Click
             Parent.Controls.Remove(Me)
         End Sub
 
-        Private Sub cbProperty_SelectedIndexChanged() Handles cbProperty.SelectedIndexChanged
-            If Not IsLoading AndAlso Not cbProperty.SelectedItem Is Nothing Then
-                Criteria = DirectCast(cbProperty.SelectedItem, Criteria)
-            End If
-        End Sub
-
-        Private Sub cbCondition_SelectedIndexChanged() Handles cbCondition.SelectedIndexChanged
-            If Not IsLoading AndAlso Not cbCondition.SelectedItem Is Nothing Then
-                Criteria.ConditionName = cbCondition.SelectedItem.ToString
-            End If
-        End Sub
-
-        Private Sub tbValue_TextChanged() Handles te.TextChanged
-            If Not IsLoading Then
-                Criteria.ValueString = te.Text
-            End If
+        Private Sub te_TextChanged() Handles te.TextChanged
+            Criteria.ValueString = te.Text
         End Sub
 
         Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
             Dim ret = MyBase.GetPreferredSize(proposedSize)
-
-            If Not Parent Is Nothing Then
-                ret.Width = Parent.ClientSize.Width - 3
-            End If
-
+            If Not Parent Is Nothing Then ret.Width = Parent.ClientSize.Width - 3
             Return ret
         End Function
 
         Private Sub te_Layout(sender As Object, e As LayoutEventArgs) Handles te.Layout
-            te.Height = buRemove.Height
+            te.Height = bnRemove.Height
+        End Sub
+
+        Private Sub mbCondition_ValueChangedUser(value As Object) Handles mbCondition.ValueChangedUser
+            Criteria.ConditionName = mbCondition.Value.ToString
+        End Sub
+
+        Private Sub mbProperties_ValueChangedUser(value As Object) Handles mbProperties.ValueChangedUser
+            Criteria = DirectCast(value, Criteria)
         End Sub
     End Class
 End Namespace

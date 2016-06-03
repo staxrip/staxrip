@@ -241,7 +241,7 @@ Public Class GlobalCommands
         If nvMissing.Count > 0 Then MsgInfo("Removed from NVEncC:", nvMissing.Join(" "))
         If nvunknown.Count > 0 Then MsgInfo("NVEncC Todo", nvunknown.Join(" "))
 
-        Dim qsExcept = "--help --version --check-device
+        Dim qsExcept = "--help --version --check-device --video-streamid --video-track
         --check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
         --check-filters --device --input --output --raw --avs --vpy --vpy-mt
         --audio-source --audio-file --seek --format --audio-copy --audio-copy --audio-codec

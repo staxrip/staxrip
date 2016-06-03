@@ -354,7 +354,7 @@ Class mkvDemuxer
 
         If demuxAudio AndAlso p.DemuxAudio <> DemuxMode.None Then
             If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(p.SourceFile)
-            Audio.DemuxMKV(p.SourceFile, audioStreams, Nothing)
+            Audio.DemuxMKV(p.SourceFile, audioStreams, Nothing, True)
         End If
 
         If demuxSubtitles AndAlso p.DemuxSubtitles <> DemuxMode.None Then

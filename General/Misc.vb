@@ -1892,10 +1892,8 @@ Class Macro
         End If
 
         ret.Add(New Macro("audio_bitrate", "Audio Bitrate", GetType(Integer), "Overall audio bitrate."))
-        ret.Add(New Macro("audio_file1", "Audio File 1", GetType(String), "File path of the first audio file."))
-        ret.Add(New Macro("audio_file2", "Audio File 2", GetType(String), "File path of the second audio file."))
-        ret.Add(New Macro("script_file", "AviSynth/VapourSynth script path", GetType(String), "Path of the AviSynth script."))
-        ret.Add(New Macro("script_ext", "AviSynth or VapourSynth script file type", GetType(String), "File type of the AviSynth or VapourSynth script so either avs or vpy."))
+        ret.Add(New Macro("audio_file1", "First Audio File", GetType(String), "File path of the first audio file."))
+        ret.Add(New Macro("audio_file2", "Second Audio File", GetType(String), "File path of the second audio file."))
         ret.Add(New Macro("compressibility", "Compressibility", GetType(Integer), "Compressibility value."))
         ret.Add(New Macro("crop_bottom", "Crop Bottom", GetType(Integer), "Bottom crop value."))
         ret.Add(New Macro("crop_height", "Crop Height", GetType(Integer), "Crop height."))
@@ -1904,18 +1902,18 @@ Class Macro
         ret.Add(New Macro("crop_top", "Crop Top", GetType(Integer), "Top crop value."))
         ret.Add(New Macro("crop_width", "Crop Width", GetType(Integer), "Crop width."))
         ret.Add(New Macro("delay", "Audio Delay 1", GetType(Integer), "Audio delay of the first audio track."))
-        ret.Add(New Macro("delay1", "Audio Delay 1", GetType(Integer), "Audio delay of the first audio track."))
         ret.Add(New Macro("delay2", "Audio Delay 2", GetType(Integer), "Audio delay of the second audio track."))
-        ret.Add(New Macro("encoder_ext", "Encoder Extension", GetType(String), "File extension of the format the encoder of the active project outputs."))
+        ret.Add(New Macro("encoder_ext", "Encoder File Extension", GetType(String), "File extension of the format the encoder of the active project outputs."))
         ret.Add(New Macro("encoder_out_file", "Encoder Output File", GetType(String), "Output file of the video encoder."))
-        ret.Add(New Macro("encoder_out_file_track1", "Encoder Output File Track 1", GetType(String), "Audio output file of the first track."))
-        ret.Add(New Macro("encoder_out_file_track2", "Encoder Output File Track 2", GetType(String), "Audio output file of the second track."))
-        ret.Add(New Macro("player", "Player", GetType(Integer), "Path of the application currently associated with AVI files."))
-        ret.Add(New Macro("plugin_dir", "AviSynth Plugin Directory", GetType(String), "AviSynth plugin directory."))
+        ret.Add(New Macro("player", "Player", GetType(Integer), "Path of MPC Player."))
+        ret.Add(New Macro("plugin_dir", "Plugin Directory", GetType(String), "AviSynth/VapourSynth plugin directory."))
         ret.Add(New Macro("pos_frame", "Position In Frames", GetType(Integer), "Current preview position in frames."))
         ret.Add(New Macro("pos_ms", "Position In Millisecons", GetType(Integer), "Current preview position in milliseconds."))
         ret.Add(New Macro("processing", "Processing", GetType(String), "Returns 'True' if a job is currently processing otherwise 'False'."))
         ret.Add(New Macro("programs_dir", "Programs Directory", GetType(String), "Programs system directory."))
+        ret.Add(New Macro("script_dir", "Script Directory", GetType(String), "Users C# and PowerShell scripts directory."))
+        ret.Add(New Macro("script_ext", "Script File Extension", GetType(String), "File extension of the AviSynth/VapourSynth script so either avs or vpy."))
+        ret.Add(New Macro("script_file", "Script Path", GetType(String), "Path of the AviSynth/VapourSynth script."))
         ret.Add(New Macro("sel_end", "Selection End", GetType(Integer), "End position of the first selecion in the preview."))
         ret.Add(New Macro("sel_start", "Selection Start", GetType(Integer), "Start position of the first selecion in the preview."))
         ret.Add(New Macro("settings_dir", "Settings Directory", GetType(String), "Path of the settings direcory."))
@@ -1928,28 +1926,27 @@ Class Macro
         ret.Add(New Macro("source_framerate", "Source Framerate", GetType(Integer), "Frame rate returned by the source filter AviSynth section."))
         ret.Add(New Macro("source_frames", "Source Frames", GetType(Integer), "Length in frames of the source video."))
         ret.Add(New Macro("source_height", "Source Image Height", GetType(Integer), "Image height of the source video."))
-        ret.Add(New Macro("source_name", "Source Filename", GetType(String), "The name of the source file."))
+        ret.Add(New Macro("source_name", "Source Filename Without Extension", GetType(String), "The name of the source file without file extension."))
         ret.Add(New Macro("source_seconds", "Source Seconds", GetType(Integer), "Length in seconds of the source video."))
         ret.Add(New Macro("source_width", "Source Image Width", GetType(Integer), "Image width of the source video."))
         ret.Add(New Macro("startup_dir", "Startup Directory", GetType(String), "Directory of the application."))
-        ret.Add(New Macro("script_dir", "Users scripts directory", GetType(String), "Users scripts directory."))
         ret.Add(New Macro("system_dir", "System Directory", GetType(String), "System directory."))
         ret.Add(New Macro("target_dir", "Target Directory", GetType(String), "Directory of the target file."))
         ret.Add(New Macro("target_file", "Target File Path", GetType(String), "File path of the target file."))
         ret.Add(New Macro("target_framerate", "Target Framerate", GetType(Integer), "Frame rate of the target video."))
         ret.Add(New Macro("target_frames", "Target Frames", GetType(Integer), "Length in frames of the target video."))
         ret.Add(New Macro("target_height", "Target Image Height", GetType(Integer), "Image height of the target video."))
-        ret.Add(New Macro("target_name", "Target Filename", GetType(String), "Name of the target file."))
+        ret.Add(New Macro("target_name", "Target Filename Without Extension", GetType(String), "Name of the target file without file extension."))
+        ret.Add(New Macro("target_sar", "Target Sample Aspect Ratio", GetType(String), "Target sample aspect ratio (also known as PAR (pixel aspect ratio))."))
         ret.Add(New Macro("target_seconds", "Target Seconds", GetType(Integer), "Length in seconds of the target video."))
         ret.Add(New Macro("target_size", "Target Size", GetType(Integer), "Size of the target video in kilo bytes."))
         ret.Add(New Macro("target_width", "Target Image Width", GetType(Integer), "Image width of the target video."))
+        ret.Add(New Macro("temp_file", "Temp File", GetType(String), "File located in the temp directory using the same name as the source file."))
         ret.Add(New Macro("template_name", "Template Name", GetType(String), "Name of the template the active project is based on."))
         ret.Add(New Macro("text_editor", "Text Editor", GetType(String), "Path of the application currently associated with TXT files."))
         ret.Add(New Macro("version", "Version", GetType(String), "StaxRip version."))
         ret.Add(New Macro("video_bitrate", "Video Bitrate", GetType(Integer), "Video bitrate"))
         ret.Add(New Macro("working_dir", "Working Directory", GetType(String), "Directory of the source file or the temp directory if enabled."))
-        ret.Add(New Macro("temp_file", "Temp File", GetType(String), "File located in the temp directory using the same name as the source file."))
-        ret.Add(New Macro("target_sar", "Target Sample Aspect Ratio", GetType(String), "Target sample aspect ratio (also known as PAR (pixel aspect ratio))."))
 
         ret.Sort()
 
@@ -2131,9 +2128,6 @@ Class Macro
         If value.Contains("%delay%") Then value = value.Replace("%delay%", p.Audio0.Delay.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%delay1%") Then value = value.Replace("%delay1%", p.Audio0.Delay.ToString)
-        If Not value.Contains("%") Then Return value
-
         If value.Contains("%delay2%") Then value = value.Replace("%delay2%", p.Audio1.Delay.ToString)
         If Not value.Contains("%") Then Return value
 
@@ -2165,12 +2159,6 @@ Class Macro
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%encoder_out_file%") Then value = value.Replace("%encoder_out_file%", p.VideoEncoder.OutputPath)
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%encoder_out_file_track1%") Then value = value.Replace("%encoder_out_file_track1%", p.Audio0.File)
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%encoder_out_file_track2%") Then value = value.Replace("%encoder_out_file_track2%", p.Audio1.File)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%encoder_ext%") Then value = value.Replace("%encoder_ext%", "." + p.VideoEncoder.OutputFileType)
@@ -3065,5 +3053,30 @@ Public Class StringLogicalComparer
 
     Private Function IComparerOfString_Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
         Return StrCmpLogical(x, y)
+    End Function
+End Class
+
+Class Comparer(Of T)
+    Implements IComparer(Of T)
+
+    Property PropName As String
+    Property Ascending As Boolean = True
+
+    Sub New(propName As String, Optional ascending As Boolean = True)
+        Me.PropName = propName
+        Me.Ascending = ascending
+    End Sub
+
+    Public Function Compare(x As T, y As T) As Integer Implements IComparer(Of T).Compare
+        If Not Ascending Then
+            Dim x1 = x
+            x = y
+            y = x1
+        End If
+
+        Dim type = x.GetType
+        Dim propInfo = type.GetProperty(PropName)
+
+        Return DirectCast(propInfo.GetValue(x), IComparable).CompareTo(propInfo.GetValue(y))
     End Function
 End Class

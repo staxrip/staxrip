@@ -1,12 +1,8 @@
-Imports System.Reflection
-Imports System.ComponentModel
-
-Imports StaxRip.UI
-
 Namespace UI
     <Serializable()>
     Public MustInherit Class Criteria
         Property Name As String
+        Property Description As String
         Property Macro As String
 
         MustOverride Function Eval() As Boolean
@@ -115,10 +111,7 @@ Namespace UI
 
         Overrides Property ValueString() As String
             Get
-                If Value Is Nothing Then
-                    Value = ""
-                End If
-
+                If Value Is Nothing Then Value = ""
                 Return Value
             End Get
             Set(value As String)
@@ -128,10 +121,7 @@ Namespace UI
 
         Overrides Property PropertyString() As String
             Get
-                If PropertyValue Is Nothing Then
-                    PropertyValue = ""
-                End If
-
+                If PropertyValue Is Nothing Then PropertyValue = ""
                 Return Value
             End Get
             Set(value As String)

@@ -47,7 +47,7 @@ Class AVIFile
             End If
         Catch ex As Exception
             Dispose()
-            LogAVS()
+            WriteLog()
             Throw ex
         End Try
     End Sub
@@ -107,7 +107,7 @@ Class AVIFile
         End Set
     End Property
 
-    Sub LogAVS()
+    Sub WriteLog()
         Log.WriteHeader("Script file failed to load")
         Log.WriteLine("Source File Path: " + Sourcefile)
 
@@ -118,9 +118,9 @@ Class AVIFile
         End Try
 
         If Directory.Exists(Folder.Plugins) Then
-            Log.WriteLine("AviSynth Plugins: " + Directory.GetFiles(Folder.Plugins, "*.dll").Join(", ").Replace(Folder.Plugins, "").Replace(".dll", ""))
+            Log.WriteLine("Plugins: " + Directory.GetFiles(Folder.Plugins, "*.dll").Join(", ").Replace(Folder.Plugins, "").Replace(".dll", ""))
         Else
-            Log.WriteLine("AviSynth plugin directory is missing!")
+            Log.WriteLine("Plugin directory is missing!")
         End If
     End Sub
 

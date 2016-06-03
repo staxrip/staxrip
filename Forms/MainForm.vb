@@ -1588,9 +1588,7 @@ Public Class MainForm
                         p.Script = VideoScript.GetDefaults()(1)
                     End If
                 Else
-                    If Not Package.AviSynth.VerifyOK(True) OrElse Not Package.AviSynth.VerifyOK(True) Then
-                        Throw New AbortException
-                    End If
+                    If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
 
                     If p.Script.Engine = ScriptEngine.VapourSynth Then
                         p.Script = VideoScript.GetDefaults()(0)
@@ -3459,6 +3457,14 @@ Public Class MainForm
         JobsForm.ActivateJob(jobPath, False)
         g.MainForm.OpenProject(jobPath, False)
 
+        Dim di As New DriveInfo(p.TargetFile.Dir)
+
+        If di.AvailableFreeSpace < New FileInfo(p.FirstOriginalSourceFile).Length * 3 Then
+            ProcessForm.CloseProcessForm()
+            MsgError("The target drive has not enough free disk space.")
+            Exit Sub
+        End If
+
         Try
             If s.PreventStandby Then PowerRequest.SuppressStandby()
             StaxRip.ProcessForm.ShutdownVisible = True
@@ -3823,7 +3829,7 @@ Public Class MainForm
             tm.Expand(tm.Edit)
             tm.Edit.Text = p.DefaultTargetName
             tm.Edit.SaveAction = Sub(value) p.DefaultTargetName = value
-            tm.AddMenu("Name of source file", "%source_name%")
+            tm.AddMenu("Name of source file without extension", "%source_name%")
             tm.AddMenu("Name of source file directory", "%source_dir_name%")
 
             l = ui.AddLabel(pathPage, "Temp Files Directory:")
@@ -4899,6 +4905,7 @@ Public Class MainForm
 
                         Log.WriteEnvironment()
                         Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + BR2)
+                        Log.WriteLine("Source Drive Type: " + New DriveInfo(d.SelectedPath).DriveType.ToString + BR)
 
                         Dim output = ProcessHelp.GetStdOut(Package.eac3to.Path, """" + srcPath + """").Replace(VB6.vbBack, "")
 
@@ -4918,7 +4925,6 @@ Public Class MainForm
                         Next
 
                         If td2.Show() = 0 Then Exit Sub
-
                         OpenEac3toDemuxForm(srcPath, td2.SelectedValue)
                     End If
                 End Using
@@ -4968,13 +4974,11 @@ Public Class MainForm
 
             If f.ShowDialog() = DialogResult.OK Then
                 Try
-                    Dim di2 As New DriveInfo(f.OutputFolder)
+                    Dim di As New DriveInfo(f.OutputFolder)
 
-                    If di2.AvailableFreeSpace / 1024 ^ 3 < 50 Then
-                        If MsgQuestion("The drive has only " & CInt(di2.AvailableFreeSpace / 1024 ^ 3) &
-                                       " GB free space available. Depending on Blu-ray disc and processing options this might be insufficient, continue anyway?") = DialogResult.Cancel Then
-                            Exit Sub
-                        End If
+                    If di.AvailableFreeSpace / 1024 ^ 3 < 50 Then
+                        MsgError("The target drive has not enough free disk space.")
+                        Exit Sub
                     End If
 
                     Using proc As New Proc
@@ -4998,6 +5002,7 @@ Public Class MainForm
                     Dim fs = f.OutputFolder + DirPath.GetName(workDir) + "." + f.cbVideoOutput.Text.ToLower
 
                     If File.Exists(fs) Then
+                        Log.WriteLine(MediaInfo.GetSummary(fs)) 'TODO: remove when bug is found
                         p.TempDir = f.OutputFolder
                         OpenVideoSourceFile(fs)
                     End If

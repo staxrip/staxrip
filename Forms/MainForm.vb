@@ -1595,9 +1595,13 @@ Public Class MainForm
                     End If
                 End If
 
+                Log.Debug("Debug", "before SetFilter")
+
                 p.Script.SetFilter(preferredSourceFilter.Category,
                                    preferredSourceFilter.Name,
                                    preferredSourceFilter.Script)
+
+                Log.Debug("Debug", "after SetFilter")
             End If
 
             If Not g.VerifyRequirements() Then Throw New AbortException
@@ -3059,26 +3063,6 @@ Public Class MainForm
             tb.Expand(tb.Edit)
             tb.Edit.Text = s.WindowPositionsCenterScreen.Join(", ")
             tb.Edit.SaveAction = Sub(value) s.WindowPositionsCenterScreen = value.SplitNoEmptyAndWhiteSpace(",")
-
-            ui.AddLine(generalPage, "Thumbnails")
-
-            num = ui.AddNumericBlock(generalPage)
-            num.Label.Text = "Width:"
-            num.NumEdit.Init(0, 10000, 16)
-            num.NumEdit.Value = s.ThumbnailWidth
-            num.NumEdit.SaveAction = Sub(value) s.ThumbnailWidth = CInt(value)
-
-            num = ui.AddNumericBlock(generalPage)
-            num.Label.Text = "Rows:"
-            num.NumEdit.Init(0, 100, 1)
-            num.NumEdit.Value = s.ThumbnailRows
-            num.NumEdit.SaveAction = Sub(value) s.ThumbnailRows = CInt(value)
-
-            num = ui.AddNumericBlock(generalPage)
-            num.Label.Text = "Columns:"
-            num.NumEdit.Init(0, 100, 1)
-            num.NumEdit.Value = s.ThumbnailColumns
-            num.NumEdit.SaveAction = Sub(value) s.ThumbnailColumns = CInt(value)
 
             generalPage.ResumeLayout()
 
@@ -5002,7 +4986,7 @@ Public Class MainForm
                     Dim fs = f.OutputFolder + DirPath.GetName(workDir) + "." + f.cbVideoOutput.Text.ToLower
 
                     If File.Exists(fs) Then
-                        Log.WriteLine(MediaInfo.GetSummary(fs)) 'TODO: remove when bug is found
+                        Log.Debug("Debug: eac3to video output file", MediaInfo.GetSummary(fs))
                         p.TempDir = f.OutputFolder
                         OpenVideoSourceFile(fs)
                     End If
@@ -5243,7 +5227,7 @@ Public Class MainForm
     End Sub
 
     Private Sub AviSynthListView_ScriptChanged() Handles AviSynthListView.Changed
-        If Not IsLoading Then
+        If Not IsLoading AndAlso Not AviSynthListView.IsLoading Then
             Package.DGDecodeNV.VerifyOK()
             Package.DGDecodeIM.VerifyOK()
 
@@ -5631,32 +5615,39 @@ Public Class MainForm
 
             If fd.ShowDialog = DialogResult.OK Then
                 Using f As New SimpleSettingsForm("Thumbnails Options")
-                    f.Size = New Size(500, 300)
+                    f.Size = New Size(500, 310)
 
                     Dim ui = f.SimpleUI
 
                     Dim page = ui.CreateFlowPage("main page")
 
+                    page.SuspendLayout()
+
                     Dim nb = ui.AddNumericBlock(page)
                     nb.Label.Text = "Thumbnail Width:"
-                    nb.Label.Offset = 7
-                    nb.NumEdit.Init(260, 4000, 10)
-                    nb.NumEdit.Value = s.ThumbnailWidth
-                    nb.NumEdit.SaveAction = Sub(value) s.ThumbnailWidth = CInt(value)
+                    nb.NumEdit.Init(200, 4000, 10)
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Width", 260)
+                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Width", CInt(value))
 
                     nb = ui.AddNumericBlock(page)
                     nb.Label.Text = "Rows:"
-                    nb.Label.Offset = 7
                     nb.NumEdit.Init(1, 1000, 1)
-                    nb.NumEdit.Value = s.ThumbnailRows
-                    nb.NumEdit.SaveAction = Sub(value) s.ThumbnailRows = CInt(value)
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Rows", 12)
+                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Rows", CInt(value))
 
                     nb = ui.AddNumericBlock(page)
                     nb.Label.Text = "Columns:"
-                    nb.Label.Offset = 7
                     nb.NumEdit.Init(1, 1000, 1)
-                    nb.NumEdit.Value = s.ThumbnailColumns
-                    nb.NumEdit.SaveAction = Sub(value) s.ThumbnailColumns = CInt(value)
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Columns", 3)
+                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Columns", CInt(value))
+
+                    nb = ui.AddNumericBlock(page)
+                    nb.Label.Text = "Compression Quality:"
+                    nb.NumEdit.Init(1, 100, 1)
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Compression Quality", 95)
+                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Compression Quality", CInt(value))
+
+                    page.ResumeLayout()
 
                     If f.ShowDialog() = DialogResult.OK Then
                         ui.Save()

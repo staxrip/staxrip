@@ -1,5 +1,5 @@
 Imports System.ComponentModel
-
+Imports System.Drawing.Imaging
 Imports StaxRip.UI
 
 Class PreviewForm
@@ -921,11 +921,19 @@ Class PreviewForm
     <Command("Saves the current frame as JPG.")>
     Sub SaveJPG()
         Using d As New SaveFileDialog
-            d.SetFilter({"jpg"})
+            d.DefaultExt = "jpg"
             d.FileName = p.TargetFile.Base + " - " & AVI.Position
 
             If d.ShowDialog = DialogResult.OK Then
-                AVI.GetBitmap.Save(d.FileName, Imaging.ImageFormat.Jpeg)
+                Dim q = InputBox.Show("Enter the compression quality.", "Compression Quality", s.Storage.GetInt("preview compression quality", 95).ToString)
+
+                If q.IsInt Then
+                    s.Storage.SetInt("preview compression quality", q.ToInt)
+                    Dim params = New EncoderParameters(1)
+                    params.Param(0) = New EncoderParameter(Encoder.Quality, q.ToInt)
+                    Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Jpeg.Guid).First
+                    AVI.GetBitmap.Save(d.FileName, info, params)
+                End If
             End If
         End Using
     End Sub

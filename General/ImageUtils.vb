@@ -1,4 +1,5 @@
 ﻿Imports System.Drawing.Drawing2D
+Imports System.Drawing.Imaging
 Imports System.Globalization
 
 Class Thumbnails
@@ -10,9 +11,9 @@ Class Thumbnails
         Log.WriteLine(inputFile)
         Log.Save()
 
-        Dim width = s.ThumbnailWidth
-        Dim columns = s.ThumbnailColumns
-        Dim rows = s.ThumbnailRows
+        Dim width = s.Storage.GetInt("Thumbnail Width", 260)
+        Dim columns = s.Storage.GetInt("Thumbnail Columns", 3)
+        Dim rows = s.Storage.GetInt("Thumbnail Rows", 12)
         Dim dar = MediaInfo.GetVideo(inputFile, "DisplayAspectRatio")
         Dim height = CInt(width / Convert.ToSingle(dar, CultureInfo.InvariantCulture))
         Dim shadowDistance = 5
@@ -107,7 +108,10 @@ Class Thumbnails
                 Next
             End Using
 
-            bitmap.Save(inputFile.ChangeExt("jpg"), Imaging.ImageFormat.Jpeg)
+            Dim params = New EncoderParameters(1)
+            params.Param(0) = New EncoderParameter(Encoder.Quality, s.Storage.GetInt("Thumbnail Compression Quality", 95))
+            Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Jpeg.Guid).First
+            bitmap.Save(inputFile.ChangeExt("jpg"), info, params)
         End Using
     End Sub
 
@@ -124,13 +128,8 @@ Class Thumbnails
             shadowSoftness = shadowSoftness.EnsureRange(1, 30)
             shadowDistance = shadowDistance.EnsureRange(1, 50)
 
-            If shadowColor = Color.Transparent Then
-                shadowColor = Color.Black
-            End If
-
-            If backgroundColor = Color.Transparent Then
-                backgroundColor = Color.White
-            End If
+            If shadowColor = Color.Transparent Then shadowColor = Color.Black
+            If backgroundColor = Color.Transparent Then backgroundColor = Color.White
 
             'get shadow
             Dim shWidth = CInt(sourceImage.Width / shadowSoftness)
@@ -141,8 +140,7 @@ Class Thumbnails
                     g.Clear(Color.Transparent)
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic
                     g.SmoothingMode = SmoothingMode.AntiAlias
-                    Dim sre = 0
-
+                    Dim sre As Integer
                     If shadowRoundedEdges Then sre = 1
 
                     Using b = New SolidBrush(Color.FromArgb(shadowOpacity, shadowColor))
@@ -151,15 +149,15 @@ Class Thumbnails
                 End Using
 
                 'draw shadow
-                Dim d_shWidth = sourceImage.Width + shadowDistance
-                Dim d_shHeight = sourceImage.Height + shadowDistance
+                Dim dsWidth = sourceImage.Width + shadowDistance
+                Dim dsHeight = sourceImage.Height + shadowDistance
 
-                Using imgTarget = New Bitmap(d_shWidth, d_shHeight)
+                Using imgTarget = New Bitmap(dsWidth, dsHeight)
                     Using g = Graphics.FromImage(imgTarget)
                         g.Clear(backgroundColor)
                         g.InterpolationMode = InterpolationMode.HighQualityBicubic
                         g.SmoothingMode = SmoothingMode.AntiAlias
-                        g.DrawImage(imgShadow, New Rectangle(0, 0, d_shWidth, d_shHeight), 0, 0, imgShadow.Width, imgShadow.Height, GraphicsUnit.Pixel)
+                        g.DrawImage(imgShadow, New Rectangle(0, 0, dsWidth, dsHeight), 0, 0, imgShadow.Width, imgShadow.Height, GraphicsUnit.Pixel)
                         g.DrawImage(sourceImage, New Rectangle(0, 0, sourceImage.Width, sourceImage.Height), 0, 0, sourceImage.Width, sourceImage.Height, GraphicsUnit.Pixel)
                     End Using
 

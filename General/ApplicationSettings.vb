@@ -42,9 +42,6 @@ Public Class ApplicationSettings
     Public StringDictionary As Dictionary(Of String, String)
     Public StringList As List(Of String)
     Public TargetImageSizeMenu As String
-    Public ThumbnailColumns As Integer = 3
-    Public ThumbnailRows As Integer = 12
-    Public ThumbnailWidth As Integer = 260
     Public ToolStripRenderMode As ToolStripRenderMode
     Public Versions As Dictionary(Of String, Integer)
     Public VideoEncoderProfiles As List(Of VideoEncoder)

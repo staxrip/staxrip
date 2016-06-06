@@ -149,7 +149,9 @@ Public Class AviSynthListView
     End Sub
 
     Sub OnChanged()
+        Log.Debug("Debug: OnChanged IsLoading", IsLoading.ToString)
         If IsLoading Then Exit Sub
+        Log.Debug("Debug", "OnChanged after IsLoading")
         Load()
         RaiseEvent Changed()
     End Sub

@@ -220,7 +220,7 @@ Public Class Package
                                     End If
                                 End Sub,
             .HelpFile = "doc\AVSMeter.html",
-            .WebURL = "http: //forum.doom9.org/showthread.php?t=165528"})
+            .WebURL = "http://forum.doom9.org/showthread.php?t=165528"})
 
         Add(New Package With {
             .Name = "Demux",

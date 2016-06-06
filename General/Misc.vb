@@ -947,12 +947,12 @@ Class Log
 
     Shared Event Update(text As String)
 
-    Shared Sub Write(header As String, content As String)
+    Shared Sub Write(title As String, content As String)
         StartTime = DateTime.Now
 
         SyncLock p.Log
             If Not p.Log.ToString.EndsWith(BR2) Then p.Log.AppendLine()
-            p.Log.Append(FormatHeader(header))
+            p.Log.Append(FormatHeader(title))
         End SyncLock
 
         If content <> "" Then
@@ -981,6 +981,11 @@ Class Log
 
             RaiseUpdate()
         End If
+    End Sub
+
+    'TODO: hide when bug is found
+    Shared Sub Debug(title As String, value As String)
+        Write(title, value)
     End Sub
 
     Shared Sub WriteLine(value As String)
@@ -2843,7 +2848,7 @@ Class FileTypes
     Shared Property VideoAudio As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
     Shared Property BeSweetInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "ogg"}
     Shared Property DGDecNVInput As String() = {"264", "h264", "avc", "mkv", "mp4", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}
-    Shared Property eac3toInput As String() = {"ac3", "dts", "dtshd", "dtshr", "dtsma", "eac3", "evo", "flac", "m2ts", "mlp", "pcm", "raw", "thd", "thd+ac3", "ts", "vob", "wav", "mp2", "mpa"}
+    Shared Property eac3toInput As String() = {"dts", "dtshd", "dtshr", "dtsma", "evo", "mkv", "vob", "ts", "m2ts", "wav", "w64", "pcm", "raw", "flac", "ac3", "eac3", "thd", "thd+ac3", "mlp", "mp2", "mp3", "mpa"}
     Shared Property NicAudioInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "dts"}
     Shared Property qaacInput As String() = {"wav", "flac"}
     Shared Property SubtitleExludingContainers As String() = {"ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}

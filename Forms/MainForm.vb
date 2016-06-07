@@ -3441,13 +3441,16 @@ Public Class MainForm
         JobsForm.ActivateJob(jobPath, False)
         g.MainForm.OpenProject(jobPath, False)
 
-        Dim di As New DriveInfo(p.TargetFile.Dir)
+        Try 'with file batch target file is empty, also crashes with network shares 
+            Dim di As New DriveInfo(p.TargetFile.Dir)
 
-        If di.AvailableFreeSpace < New FileInfo(p.FirstOriginalSourceFile).Length * 3 Then
-            ProcessForm.CloseProcessForm()
-            MsgError("The target drive has not enough free disk space.")
-            Exit Sub
-        End If
+            If di.AvailableFreeSpace < New FileInfo(p.FirstOriginalSourceFile).Length Then
+                ProcessForm.CloseProcessForm()
+                MsgError("The target drive has not enough free disk space.")
+                Exit Sub
+            End If
+        Catch
+        End Try
 
         Try
             If s.PreventStandby Then PowerRequest.SuppressStandby()

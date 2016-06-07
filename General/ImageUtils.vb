@@ -81,7 +81,7 @@ Class Thumbnails
         Dim caption = Filepath.GetName(inputFile) + BR & "Size: " & infoSize & ", Duration: " +
             infoDate.ToString("HH:mm:ss") + ", Bitrate: " & CInt((infoLength * 8) / 1000 / (infoDuration / 1000)) & " Kbps" + BR +
             "Audio: " + MediaInfo.GetAudioCodecs(inputFile) + BR +
-            "Video: " + MediaInfo.GetVideoCodec(inputFile) + ", " & infoWidth & " x " & infoHeight & ", " & MediaInfo.GetVideo(inputFile, "FrameRate/String")
+            "Video: " + MediaInfo.GetVideoCodec(inputFile) + ", " & infoWidth & " x " & infoHeight & ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToString("f3", CultureInfo.InvariantCulture).TrimEnd({"0"c, "."c}) + "fps"
 
         Dim captionHeight = 110
 

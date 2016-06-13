@@ -44,6 +44,8 @@ Public Class x264Encoder
                          script As VideoScript,
                          priority As ProcessPriorityClass)
 
+        p.Script.Synchronize()
+
         If p.Script.Engine = ScriptEngine.VapourSynth Then
             Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
 

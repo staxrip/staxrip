@@ -59,6 +59,7 @@ Public Class x265Encoder
                          batchCode As String,
                          priority As ProcessPriorityClass)
 
+        p.Script.Synchronize()
         batchCode = Proc.BatchHeader + batchCode
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_encode.bat"
         File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)

@@ -299,7 +299,7 @@ Public Class VideoScript
     End Function
 
     Function GetFramerate() As Double
-        Synchronize()
+        Synchronize(False, False)
         Return Framerate
     End Function
 

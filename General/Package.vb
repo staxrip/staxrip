@@ -271,7 +271,7 @@ Public Class Package
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Yadifmod",
             .VapourSynthFilterNames = {"yadifmod.Yadifmod"},
             .VapourSynthFiltersFunc = Function() {
-                New VideoFilter("Field", "Yadifmod", "clip = yadifmod.Yadifmod(clip, nnedi3.nnedi3(clip), order = 1, field = -1, mode = 0)")}})
+                New VideoFilter("Field", "Yadifmod", "clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field = 0), order = 1, field = -1, mode = 0)")}})
 
         Add(New PluginPackage With {
             .Name = "vslsmashsource",

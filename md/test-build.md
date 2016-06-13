@@ -10,6 +10,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 - added new QSVEncC switches
 - added support to use network drive as temp folder
+- added yadifmod for VapourSynth. Due to popular request I didn't reset the filter profiles, to make the default filter profile for yadifmod available the filter profiles must be manually reset in the filter profile editor.
 
 #### Fixed Bugs
 
@@ -24,3 +25,4 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 #### Updated Tools
 
 - QSVEncC 2.51
+- yadifmod (VapourSynth) r9

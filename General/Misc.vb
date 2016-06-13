@@ -1077,8 +1077,7 @@ Class Calc
         If p.TargetWidth = 0 Then Return 0
         If p.TargetHeight = 0 Then Return 0
 
-        Return (CLng(p.VideoBitrate) * CLng(1024)) / (CLng(p.TargetWidth) *
-            CLng(p.TargetHeight) * CLng(framerate))
+        Return p.VideoBitrate * 1024L / (p.TargetWidth * p.TargetHeight * CLng(framerate))
     End Function
 
     Shared Function GetSize() As Double

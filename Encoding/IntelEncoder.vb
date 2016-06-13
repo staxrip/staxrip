@@ -79,7 +79,7 @@ Public Class IntelEncoder
 
         Using proc As New Proc
             proc.Init("Encoding using QSVEncC " + Package.QSVEncC.Version)
-            proc.Encoding = Proc.BatchEncoding
+            proc.Encoding = Proc.ProcessEncoding
             proc.SkipStrings = {" frames: "}
             proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"

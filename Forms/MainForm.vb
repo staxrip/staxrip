@@ -1595,13 +1595,13 @@ Public Class MainForm
                     End If
                 End If
 
-                Log.Debug("Debug", "before SetFilter")
+                Log.Debug("Debug", "before SetFilter", "eac3to")
 
                 p.Script.SetFilter(preferredSourceFilter.Category,
                                    preferredSourceFilter.Name,
                                    preferredSourceFilter.Script)
 
-                Log.Debug("Debug", "after SetFilter")
+                Log.Debug("Debug", "after SetFilter", "eac3to")
             End If
 
             If Not g.VerifyRequirements() Then Throw New AbortException

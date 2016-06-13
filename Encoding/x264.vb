@@ -56,7 +56,7 @@ Public Class x264Encoder
 
             Using proc As New Proc
                 proc.Init(passName)
-                proc.Encoding = Proc.BatchEncoding
+                proc.Encoding = Proc.ProcessEncoding
                 proc.Priority = priority
                 proc.SkipStrings = {"kb/s, eta", "%]"}
                 proc.WriteLine(batchCode + BR2)

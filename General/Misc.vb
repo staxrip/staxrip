@@ -971,7 +971,8 @@ Class Log
     End Sub
 
     'TODO: hide when bug is found
-    Shared Sub Debug(title As String, value As String)
+    Shared Sub Debug(title As String, value As String, Optional requiredContent As String = Nothing)
+        If requiredContent <> "" AndAlso Not p.Log.ToString.Contains(requiredContent) Then Exit Sub
         Write(title, value)
     End Sub
 

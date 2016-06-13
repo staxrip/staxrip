@@ -66,7 +66,7 @@ Public Class x265Encoder
 
         Using proc As New Proc
             proc.Init(passName)
-            proc.Encoding = Proc.BatchEncoding
+            proc.Encoding = Encoding.UTF8
             proc.Priority = priority
             proc.SkipStrings = {"%] "}
             proc.WriteLine(batchCode + BR2)

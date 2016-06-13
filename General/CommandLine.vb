@@ -37,10 +37,12 @@ Namespace CommandLine
 
         Sub Execute()
             Dim batchPath = p.TempDir + p.TargetFile.Base + "_vexe.bat"
-            Dim batchCode = "@echo off" + BR + "CHCP 65001" + BR + GetCommandLine(True, True)
-            File.WriteAllText(batchPath, batchCode, New UTF8Encoding(False))
+            Dim batchCode = Proc.BatchHeader + GetCommandLine(True, True)
+            File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
 
             Dim batchProc As New Process
+            batchProc.StartInfo.StandardErrorEncoding = Proc.BatchEncoding
+            batchProc.StartInfo.StandardOutputEncoding = Proc.BatchEncoding
             batchProc.StartInfo.FileName = "cmd.exe"
             batchProc.StartInfo.Arguments = "/k """ + batchPath + """"
             batchProc.StartInfo.WorkingDirectory = p.TempDir

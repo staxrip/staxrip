@@ -73,13 +73,13 @@ Public Class IntelEncoder
     Overrides Sub Encode()
         p.Script.Synchronize()
         Params.RaiseValueChanged(Nothing)
-        Dim batchCode = "@echo off" + BR + "CHCP 65001" + BR + Params.GetCommandLine(True, True)
+        Dim batchCode = Proc.BatchHeader + Params.GetCommandLine(True, True)
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_QSVEncC.bat"
-        File.WriteAllText(batchPath, batchCode, New UTF8Encoding(False))
+        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
 
         Using proc As New Proc
             proc.Init("Encoding using QSVEncC " + Package.QSVEncC.Version)
-            proc.Encoding = Encoding.UTF8
+            proc.Encoding = Proc.BatchEncoding
             proc.SkipStrings = {" frames: "}
             proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
@@ -169,8 +169,9 @@ Public Class IntelEncoder
                         New BoolParam With {.Switch = "--open-gop", .Text = "Open Gop"})
                     Add("Rate Control",
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--qpmax", .Text = "Maximum QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--qpmin", .Text = "Minimum QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--qp-offset", .Text = "QP Offset:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--avbr-unitsize", .Text = "AVBR Unitsize:", .InitValue = 90},
                         New BoolParam With {.Switch = "--mbbrc", .Text = "Per macro block rate control"},
                         New BoolParam With {.Switch = "--extbrc", .Text = "Extended Rate Control"})
@@ -196,6 +197,8 @@ Public Class IntelEncoder
                     Add("VPP",
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate:", .Options = {"0", "90", "180", "270"}},
                         New OptionParam With {.Switch = "--vpp-image-stab", .Text = "Image Stabilizer:", .Options = {"disabled", "upscale", "box"}},
+                        New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image:", .Options = {"disabled", "h", "v"}},
+                        New OptionParam With {.Switch = "--vpp-scaling", .Text = "Scaling Quality:", .Options = {"disabled", "fine"}},
                         New NumParam With {.Switch = "--vpp-denoise", .Text = "Denoise:", .MinMaxStep = {0, 100, 1}},
                         New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhancement:", .MinMaxStep = {0, 100, 1}})
                     Add("VUI",

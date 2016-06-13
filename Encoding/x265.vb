@@ -59,13 +59,13 @@ Public Class x265Encoder
                          batchCode As String,
                          priority As ProcessPriorityClass)
 
-        batchCode = "@echo off" + BR + "CHCP 65001" + BR + batchCode
+        batchCode = Proc.BatchHeader + batchCode
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_encode.bat"
-        File.WriteAllText(batchPath, batchCode, New UTF8Encoding(False))
+        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
 
         Using proc As New Proc
             proc.Init(passName)
-            proc.Encoding = Encoding.UTF8
+            proc.Encoding = Proc.BatchEncoding
             proc.Priority = priority
             proc.SkipStrings = {"%] "}
             proc.WriteLine(batchCode + BR2)
@@ -86,7 +86,7 @@ Public Class x265Encoder
         Dim enc As New x265Encoder
         enc.Params = newParams
         enc.Params.Mode.Value = x265RateMode.SingleCRF
-        enc.Params.Quant.Value = enc.Params.CompCheckQuant.Value
+        enc.Params.Quant.Value = enc.Params.CompCheck.Value
 
         Dim script As New VideoScript
         script.Engine = p.Script.Engine
@@ -321,9 +321,9 @@ Public Class x265Params
         .NoSwitch = "--no-signhide",
         .Text = "Hide sign bit of one coeff per TU (rdo)"}
 
-    Property CompCheckQuant As New NumParam With {
+    Property CompCheck As New NumParam With {
         .Name = "CompCheckQuant",
-        .Text = "Comp. Check Quant:",
+        .Text = "Comp. Check:",
         .Value = 18,
         .MinMaxStep = {1, 50, 1}}
 
@@ -827,7 +827,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--dither", .Text = "Dither (High Quality Downscaling)"})
                 Add("Other 1", Deblock, DeblockA, DeblockB, PsyRD, PsyRDOQ,
                     New NumParam With {.Switch = "--recon-depth", .Text = "Recon Depth:"},
-                    CompCheckQuant)
+                    CompCheck)
                 Add("Other 2",
                     New StringParam With {.Switch = "--lambda-file", .Text = "Lambda File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                     New StringParam With {.Switch = "--qpfile", .Text = "QP File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},

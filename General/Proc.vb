@@ -52,6 +52,22 @@ Class Proc
         End Set
     End Property
 
+    Shared ReadOnly Property BatchHeader As String
+        Get 'unicode don't work on Windows 7
+            If p.SourceFile.ContainsUnicode Then Return "@echo off" + BR + "CHCP 65001" + BR
+        End Get
+    End Property
+
+    Shared ReadOnly Property BatchEncoding As Encoding
+        Get 'unicode don't work on Windows 7
+            If p.SourceFile.ContainsUnicode Then
+                Return New UTF8Encoding(False)
+            Else
+                Return Encoding.Default
+            End If
+        End Get
+    End Property
+
     Property File() As String
         Get
             Return Process.StartInfo.FileName

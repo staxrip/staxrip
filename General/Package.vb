@@ -265,6 +265,15 @@ Public Class Package
 #Region "VapourSynth"
 
         Add(New PluginPackage With {
+            .Name = "Yadifmod",
+            .Filename = "Yadifmod.dll",
+            .Description = "Modified version of Fizick's avisynth filter port of yadif from mplayer. This version doesn't internally generate spatial predictions, but takes them from an external clip.",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Yadifmod",
+            .VapourSynthFilterNames = {"yadifmod.Yadifmod"},
+            .VapourSynthFiltersFunc = Function() {
+                New VideoFilter("Field", "Yadifmod", "clip = yadifmod.Yadifmod(clip, nnedi3.nnedi3(clip), order = 1, field = -1, mode = 0)")}})
+
+        Add(New PluginPackage With {
             .Name = "vslsmashsource",
             .Filename = "vslsmashsource.dll",
             .Description = "VapourSynth source filter based on Libav supporting a wide range of input formats.",

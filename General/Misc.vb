@@ -363,30 +363,17 @@ Public Class GlobalClass
             If p.TempDir = "" Then
                 If FileTypes.VideoOnly.Contains(p.SourceFile.Ext) OrElse
                     FileTypes.VideoText.Contains(p.SourceFile.Ext) OrElse
-                    Filepath.GetDir(p.SourceFile).EndsWith("_temp\") Then
+                    p.SourceFile.Dir.EndsWith("_temp\") Then
 
-                    p.TempDir = Filepath.GetDir(p.SourceFile)
+                    p.TempDir = p.SourceFile.Dir
                 Else
                     Dim base = Filepath.GetBase(p.SourceFile)
                     If base.Length > 60 Then base = base.Shorten(30) + "..."
-                    p.TempDir = Filepath.GetDir(p.SourceFile) + base + "_temp\"
+                    p.TempDir = p.SourceFile.Dir + base + "_temp\"
                 End If
             End If
 
-            If p.TempDir.StartsWith("\\") Then
-                Using d As New FolderBrowserDialog
-                    d.Description = "Please choose a local directory for temporary files."
-
-                    If d.ShowDialog = DialogResult.OK Then
-                        p.TempDir = d.SelectedPath
-                    Else
-                        Throw New AbortException
-                    End If
-                End Using
-            End If
-
-            If p.TempDir.StartsWith("\\") Then Throw New AbortException
-            p.TempDir = DirPath.AppendSeparator(p.TempDir)
+            p.TempDir = p.TempDir.AppendSeparator
 
             If Not Directory.Exists(p.TempDir) Then
                 Try

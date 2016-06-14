@@ -1,20 +1,16 @@
-Imports Microsoft.Win32
-
-Imports StaxRip.UI
-
-Imports System.Globalization
+Imports System.ComponentModel
 Imports System.Drawing.Design
+Imports System.Drawing.Imaging
+Imports System.Globalization
+Imports System.Management
 Imports System.Runtime.InteropServices
 Imports System.Runtime.Serialization
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
-Imports System.ComponentModel
-
 Imports System.Windows.Forms.VisualStyles
-Imports System.Management
-Imports System.Reflection
-Imports System.Drawing.Imaging
+Imports Microsoft.Win32
+Imports StaxRip.UI
 
 Public Module ShortcutModule
     Public g As New GlobalClass
@@ -2625,7 +2621,7 @@ Class VideoStream
                     Return ".mpg"
                 Case "AVC"
                     Return ".h264"
-                Case "MPEG-4 Visual"
+                Case "MPEG-4 Visual", "JPEG"
                     Return ".avi"
                 Case "HEVC"
                     Return "h265"

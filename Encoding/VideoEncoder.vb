@@ -623,7 +623,7 @@ Class NullEncoder
             End If
         Next
 
-        If FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile)) Then
+        If FileTypes.VideoText.Contains(p.SourceFile.Ext) Then
             Return p.LastOriginalSourceFile
         Else
             Return p.SourceFile
@@ -634,8 +634,8 @@ Class NullEncoder
         Get
             Dim source = GetSource()
 
-            If Not p.VideoEncoder.Muxer.IsSupported(Filepath.GetExt(source)) Then
-                Select Case Filepath.GetExt(source)
+            If Not p.VideoEncoder.Muxer.IsSupported(source.Ext) Then
+                Select Case source.ext
                     Case "mkv"
                         Dim streams = MediaInfo.GetVideoStreams(source)
                         If streams.Count = 0 Then Return source

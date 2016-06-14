@@ -1482,6 +1482,8 @@ Public Class MainForm
                 ret = New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")
             Case "vsAVISource"
                 ret = New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r""%source_file%"")")
+            Case Else
+                Throw New AbortException
         End Select
 
         Return ret

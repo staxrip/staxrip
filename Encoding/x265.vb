@@ -390,14 +390,12 @@ Public Class x265Params
         .Switch = "--qg-size",
         .Text = "QG Size:",
         .Options = {"64", "32", "16"},
-        .Value = 1,
-        .DefaultValue = 1}
+        .InitValue = 1}
 
     Property qpstep As New NumParam With {
         .Switch = "--qpstep",
         .Text = "QP Step:",
-        .Value = 4,
-        .DefaultValue = 4}
+        .InitValue = 4}
 
     Property TUintra As New NumParam With {
         .Switch = "--tu-intra-depth",
@@ -756,8 +754,7 @@ Public Class x265Params
         .Switch = "--limit-refs",
         .Text = "Limit References:",
         .Options = {"0", "1", "2", "3"},
-        .Value = 3,
-        .DefaultValue = 3}
+        .InitValue = 3}
 
     Property CSV As New BoolParam With {
         .Switch = "--csv",
@@ -998,6 +995,8 @@ Public Class x265Params
         QComp.Value = 0.6
         LookaheadSlices.Value = 8
         RecursionSkip.Value = True
+        LimitRefs.Value = 3
+        LimitModes.Value = False
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -1289,6 +1288,8 @@ Public Class x265Params
         QComp.DefaultValue = 0.6
         LookaheadSlices.DefaultValue = 8
         RecursionSkip.DefaultValue = True
+        LimitRefs.DefaultValue = 3
+        LimitModes.DefaultValue = False
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -1566,6 +1567,9 @@ Public Class x265Params
     End Sub
 
     Sub ApplyTuneValues()
+        rcGrain.Value = False
+        qpstep.Value = 4
+
         Select Case Tune.Value
             Case 1 '"psnr"
                 AQStrength.Value = 0.0
@@ -1603,6 +1607,9 @@ Public Class x265Params
     End Sub
 
     Sub ApplyTuneDefaultValues()
+        rcGrain.DefaultValue = False
+        qpstep.DefaultValue = 4
+
         Select Case Tune.Value
             Case 1 '"psnr"
                 AQStrength.DefaultValue = 0.0

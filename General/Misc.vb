@@ -34,6 +34,7 @@ Public Class GlobalClass
     Property SavedProject As New Project
     Property DefaultCommands As New GlobalCommands
     Property IsProcessing As Boolean
+    Property PreventSaveSettings As Boolean
 
     ReadOnly Property StartupTemplatePath() As String
         Get
@@ -309,7 +310,7 @@ Public Class GlobalClass
 
     Sub SaveSettings()
         Try
-            SafeSerialization.Serialize(s, g.SettingsFile)
+            If Not g.PreventSaveSettings Then SafeSerialization.Serialize(s, g.SettingsFile)
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -1950,10 +1951,6 @@ Class Macro
     End Function
 
     Shared Function Solve(value As String, silent As Boolean) As String
-        Return Solve(value, True, silent)
-    End Function
-
-    Shared Function Solve(value As String, rekursive As Boolean, silent As Boolean) As String
         If value = "" Then Return ""
 
         If Not silent AndAlso value.Contains("$") Then

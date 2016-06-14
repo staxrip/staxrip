@@ -261,10 +261,8 @@ Module StringExtensions
 
     <Extension()>
     Function Left(value As String, start As String) As String
-        If Not value.Contains(start) Then
-            Return ""
-        End If
-
+        If value = "" OrElse start = "" Then Return ""
+        If Not value.Contains(start) Then Return ""
         Return value.Substring(0, value.IndexOf(start))
     End Function
 
@@ -276,15 +274,14 @@ Module StringExtensions
 
     <Extension()>
     Function Right(value As String, start As String) As String
-        If Not value.Contains(start) Then
-            Return ""
-        End If
-
+        If value = "" OrElse start = "" Then Return ""
+        If Not value.Contains(start) Then Return ""
         Return value.Substring(value.IndexOf(start) + start.Length)
     End Function
 
     <Extension()>
     Function RightLast(value As String, start As String) As String
+        If value = "" OrElse start = "" Then Return ""
         If Not value.Contains(start) Then Return ""
         Return value.Substring(value.LastIndexOf(start) + start.Length)
     End Function

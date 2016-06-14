@@ -1,12 +1,9 @@
-Imports System.Threading
-Imports System.Text
 Imports System.Runtime.InteropServices
-Imports System.ComponentModel
-
-Imports Microsoft.Win32
-
-Imports StaxRip.UI
+Imports System.Text
 Imports System.Text.RegularExpressions
+Imports System.Threading
+Imports Microsoft.Win32
+Imports StaxRip.UI
 
 Class ProcessForm
     Inherits FormBase
@@ -207,6 +204,10 @@ Class ProcessForm
     Shared Property CommandLineLog As New StringBuilder
     Shared Property ProcInstance As Proc
 
+    Private TaskbarButtonCreatedMessage As Integer
+
+    Property Taskbar As Taskbar
+
     Sub New()
         InitializeComponent()
 
@@ -225,6 +226,8 @@ Class ProcessForm
         NotifyIcon.Icon = My.Resources.MainIcon
         NotifyIcon.Text = "StaxRip"
         Icon = My.Resources.MainIcon
+
+        TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
     End Sub
 
     Shared Sub ClearCommandLineOutput()
@@ -294,6 +297,8 @@ Class ProcessForm
     End Sub
 
     Private Shared Sub UpdateStatus(value As String)
+        If value = "" Then Exit Sub
+
         If Not Instance Is Nothing Then
             If Instance.Visible Then
                 Instance.lStatus.Text = value
@@ -308,6 +313,21 @@ Class ProcessForm
 
                 Instance.NotifyIcon.Text = value
             End If
+
+            If value?.Contains("%") Then
+                value = value.Left("%")
+
+                If value.Contains("[") Then value = value.Right("[")
+                If value.Contains(" ") Then value = value.RightLast(" ")
+
+                If value.IsSingle Then
+                    Instance.Taskbar.SetState(TaskbarStates.Normal)
+                    Instance.Taskbar.SetValue(value.ToSingle, 100)
+                    Exit Sub
+                End If
+            End If
+
+            Instance.Taskbar.SetState(TaskbarStates.NoProgress)
         End If
     End Sub
 
@@ -375,7 +395,7 @@ Class ProcessForm
             Instance.Close()
             Instance.Dispose()
             Instance = Nothing
-        Catch ex As Exception
+        Catch
         End Try
     End Sub
 
@@ -453,6 +473,8 @@ Class ProcessForm
                         bnAbort.PerformClick()
                         Exit Sub
                 End Select
+            Case TaskbarButtonCreatedMessage
+                Taskbar = New Taskbar(Handle)
         End Select
 
         MyBase.WndProc(m)

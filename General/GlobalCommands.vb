@@ -537,4 +537,9 @@ as published by Sam Hocevar. See the COPYING file for more details.", True)
 
         p.Script.SetFilter(category, name, script)
     End Sub
+
+    <Command("Command used internally.")>
+    Sub SetPreventSaveSettings(preventSaveSettings As Boolean)
+        g.PreventSaveSettings = preventSaveSettings
+    End Sub
 End Class

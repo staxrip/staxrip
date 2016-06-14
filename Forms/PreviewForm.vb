@@ -918,23 +918,30 @@ Class PreviewForm
         End Using
     End Sub
 
+    <Command("Saves the current frame as JPG to the given path which can contain macros.")>
+    Sub SaveJpgByPath(<DispName("File Path")>
+                      <Description("File path which can contain macros.")>
+                      path As String)
+
+        path = Macro.Solve(path)
+        Dim q = InputBox.Show("Enter the compression quality.", "Compression Quality", s.Storage.GetInt("preview compression quality", 95).ToString)
+
+        If q.IsInt Then
+            s.Storage.SetInt("preview compression quality", q.ToInt)
+            Dim params = New EncoderParameters(1)
+            params.Param(0) = New EncoderParameter(Encoder.Quality, q.ToInt)
+            Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Jpeg.Guid).First
+            AVI.GetBitmap.Save(path, info, params)
+        End If
+    End Sub
+
     <Command("Saves the current frame as JPG.")>
     Sub SaveJPG()
         Using d As New SaveFileDialog
             d.DefaultExt = "jpg"
             d.FileName = p.TargetFile.Base + " - " & AVI.Position
 
-            If d.ShowDialog = DialogResult.OK Then
-                Dim q = InputBox.Show("Enter the compression quality.", "Compression Quality", s.Storage.GetInt("preview compression quality", 95).ToString)
-
-                If q.IsInt Then
-                    s.Storage.SetInt("preview compression quality", q.ToInt)
-                    Dim params = New EncoderParameters(1)
-                    params.Param(0) = New EncoderParameter(Encoder.Quality, q.ToInt)
-                    Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Jpeg.Guid).First
-                    AVI.GetBitmap.Save(d.FileName, info, params)
-                End If
-            End If
+            If d.ShowDialog = DialogResult.OK Then SaveJpgByPath(d.FileName)
         End Using
     End Sub
 

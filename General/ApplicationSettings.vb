@@ -216,7 +216,7 @@ Public Class ApplicationSettings
             CustomMenuCrop = CropForm.GetDefaultMenu
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 156) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 157) Then
             CustomMenuMainForm = MainForm.GetDefaultMenu
         End If
 

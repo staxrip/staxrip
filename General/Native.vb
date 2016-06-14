@@ -562,3 +562,52 @@ Class Native
 #End Region
 
 End Class
+
+Public Class Taskbar
+    Private Taskbar As ITaskbarList3 = DirectCast(New TaskBarCommunication(), ITaskbarList3)
+
+    Property Handle As IntPtr
+
+    Public Sub New(handle As IntPtr)
+        Me.Handle = handle
+    End Sub
+
+    <ComImportAttribute>
+    <InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)>
+    <GuidAttribute("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf")>
+    Private Interface ITaskbarList3
+        'ITaskbarList
+        <PreserveSig> Sub HrInit()
+        <PreserveSig> Sub AddTab(hwnd As IntPtr)
+        <PreserveSig> Sub DeleteTab(hwnd As IntPtr)
+        <PreserveSig> Sub ActivateTab(hwnd As IntPtr)
+        <PreserveSig> Sub SetActiveAlt(hwnd As IntPtr)
+        'ITaskbarList2
+        <PreserveSig> Sub MarkFullscreenWindow(hwnd As IntPtr, <MarshalAs(UnmanagedType.Bool)> fFullscreen As Boolean)
+        'ITaskbarList3
+        <PreserveSig> Sub SetProgressValue(hwnd As IntPtr, ullCompleted As UInt64, ullTotal As UInt64)
+        <PreserveSig> Sub SetProgressState(hwnd As IntPtr, state As TaskbarStates)
+    End Interface
+
+    <ComImportAttribute>
+    <ClassInterfaceAttribute(ClassInterfaceType.None)>
+    <GuidAttribute("56FDF344-FD6D-11d0-958A-006097C9A090")>
+    Private Class TaskBarCommunication
+    End Class
+
+    Public Sub SetState(taskbarState As TaskbarStates)
+        Taskbar.SetProgressState(Handle, taskbarState)
+    End Sub
+
+    Public Sub SetValue(progressValue As Double, progressMax As Double)
+        Taskbar.SetProgressValue(Handle, CULng(Math.Truncate(progressValue)), CULng(Math.Truncate(progressMax)))
+    End Sub
+End Class
+
+Public Enum TaskbarStates
+    NoProgress = 0
+    Indeterminate = &H1
+    Normal = &H2
+    [Error] = &H4
+    Paused = &H8
+End Enum

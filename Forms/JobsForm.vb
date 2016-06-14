@@ -300,7 +300,7 @@ Friend Class JobsForm
 
     Private Sub bnNew_Click(sender As Object, e As EventArgs) Handles bnNew.Click
         If Not ProcessForm.IsActive Then If g.MainForm.IsSaveCanceled Then Exit Sub
-        g.ShellExecute(Application.ExecutablePath, "-Perform/RunJobs")
+        g.ShellExecute(Application.ExecutablePath, "-SetPreventSaveSettings:True -StartJobs -Exit")
     End Sub
 
     Private Sub bnLoad_Click(sender As Object, e As EventArgs) Handles bnLoad.Click

@@ -4250,7 +4250,7 @@ Public Class MainForm
         ret.Add("Tools|Directories|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), """%working_dir%""")
         ret.Add("Tools|Directories|Target", NameOf(g.DefaultCommands.ExecuteCommandLine), """%target_dir%""")
         ret.Add("Tools|Directories|Settings", NameOf(g.DefaultCommands.ExecuteCommandLine), """%settings_dir%""")
-        ret.Add("Tools|Directories|Templates", NameOf(g.DefaultCommands.ExecuteCommandLine), """%settings_dir%Templates""")
+        ret.Add("Tools|Directories|Templates", NameOf(g.DefaultCommands.ExecuteCommandLine), """%settings_dir%TemplatesV2""")
         ret.Add("Tools|Directories|Plugins", NameOf(g.DefaultCommands.ExecuteCommandLine), """%plugin_dir%""")
         ret.Add("Tools|Directories|Startup", NameOf(g.DefaultCommands.ExecuteCommandLine), """%startup_dir%""")
         ret.Add("Tools|Directories|Programs", NameOf(g.DefaultCommands.ExecuteCommandLine), """%programs_dir%""")

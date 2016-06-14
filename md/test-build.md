@@ -11,6 +11,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - added new QSVEncC switches
 - added support to use network drive as temp folder
 - added yadifmod for VapourSynth. Due to popular request I didn't reset the filter profiles, to make the default filter profile for yadifmod available the filter profiles must be manually reset in the filter profile editor.
+- added new command SaveJpgByPath to preview dialog which can be used to customize the menu to save a jpg file to a fixed path without the file browser showing, the path can contain macros.
+- added taskbar progress support
 
 #### Fixed Bugs
 
@@ -18,6 +20,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - fixed crash StaxRip checking for enough free space in file batch mode and if target directory is network share
 - fixed Umlaute don't work on Windows 7
 - fixed many avs/vs scripts are created when the target file name is changed by typing
+- fixed feature to run jobs in new instance and changed the behaviour of this feature in that when the jobs complete the instance exits without overwriting the settings
 
 #### Tweaks
 

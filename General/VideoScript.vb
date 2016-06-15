@@ -116,7 +116,7 @@ Public Class VideoScript
     Function Contains(category As String, search As String) As Boolean
         If category = "" OrElse search = "" Then Exit Function
         Dim filter = GetFilter(category)
-        If filter?.Script?.ToLower?.Contains(search.ToLower) Then Return True
+        If filter?.Script?.ToLower.Contains(search.ToLower) AndAlso filter.Active Then Return True
     End Function
 
     Function IsFilterActive(category As String) As Boolean

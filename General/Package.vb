@@ -18,6 +18,7 @@ Public Class Package
     Property Version As String
     Property VersionDate As DateTime
     Property WebURL As String
+    Property TreePath As String
 
     Shared Property Items As New SortedDictionary(Of String, Package)
 
@@ -120,20 +121,6 @@ Public Class Package
         .HelpFile = "help.txt",
         .WebURL = "https://www.dropbox.com/sh/c4q2ekr269fd4w9/6zuEnjBI-Q"}
 
-    Shared Property vscpp2013 As New Package With {
-        .Name = "Visual C++ 2013",
-        .Filename = "msvcp120.dll",
-        .Description = "Visual C++ 2013 Redistributable Packages which is required by some tools used by StaxRip.",
-        .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=40784",
-        .FixedDir = Folder.System}
-
-    Shared Property vscpp2015 As New Package With {
-        .Name = "Visual C++ 2015",
-        .Filename = "msvcp140.dll",
-        .Description = "Visual C++ 2015 Redistributable Packages which is required by some tools used by StaxRip.",
-        .DownloadURL = "http://download.microsoft.com/download/8/c/b/8cb4af84-165e-4b36-978d-e867e07fc707/vc_redist.x64.exe",
-        .FixedDir = Folder.System}
-
     Public Shared DGDecodeNV As New PluginPackage With {
         .Name = "DGDecodeNV",
         .Filename = "DGDecodeNV.dll",
@@ -202,11 +189,34 @@ Public Class Package
         Add(x264_10)
         Add(x265)
         Add(xvid_encraw)
-        Add(vscpp2013)
-        Add(vscpp2015)
         Add(ffms2)
 
 #Region "misc"
+
+        Add(New Package With {
+            .Name = "Visual C++ 2012",
+            .Filename = "msvcp110.dll",
+            .Description = "Visual C++ 2012 Redistributable is required by some tools used by StaxRip.",
+            .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=30679",
+            .FixedDir = Folder.System,
+            .IsRequiredFunc = Function() p.Script.Contains("Noise", "RemoveGrain("),
+            .TreePath = "Runtime"})
+
+        Add(New Package With {
+            .Name = "Visual C++ 2013",
+            .Filename = "msvcp120.dll",
+            .Description = "Visual C++ 2013 Redistributable is required by some tools used by StaxRip.",
+            .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=40784",
+            .FixedDir = Folder.System,
+            .TreePath = "Runtime"})
+
+        Add(New Package With {
+            .Name = "Visual C++ 2015",
+            .Filename = "msvcp140.dll",
+            .Description = "Visual C++ 2015 Redistributable is required by some tools used by StaxRip.",
+            .DownloadURL = "http://download.microsoft.com/download/8/c/b/8cb4af84-165e-4b36-978d-e867e07fc707/vc_redist.x64.exe",
+            .FixedDir = Folder.System,
+            .TreePath = "Runtime"})
 
         Add(New Package With {
             .Name = "AVSMeter",
@@ -669,17 +679,25 @@ Public Class Package
         End If
     End Function
 
+    Function GetAppNotFoundMessage() As String
+        If FixedDir <> "" Then
+            Return "App not found at '" + FixedDir.TrimEnd("\"c) + "'"
+        Else
+            Return "App not found, press F11 to locate the App."
+        End If
+    End Function
+
     Function GetStatusLocation() As String
         Dim pathVar = Path
 
         If pathVar = "" Then
             If FileNotFoundMessage <> "" Then
-                Return "App Not found, press F11 to locate the App. " + FileNotFoundMessage
+                Return GetAppNotFoundMessage() + " " + FileNotFoundMessage
             ElseIf SetupFilename <> "" Then
                 Return "Please install " + Name + "."
             End If
 
-            Return "App Not found, press F11 to locate the App."
+            Return GetAppNotFoundMessage()
         End If
 
         If FixedDir <> "" AndAlso pathVar <> "" AndAlso Not pathVar.ToLower.StartsWith(FixedDir.ToLower) Then
@@ -818,6 +836,7 @@ Public Class PythonPackage
     Sub New()
         Name = "Python"
         Filename = "python.exe"
+        TreePath = "Runtime"
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         DownloadURL = "https://www.python.org/ftp/python/3.5.1/python-3.5.1-amd64-webinstall.exe"
@@ -982,6 +1001,7 @@ Public Class JavaPackage
         Name = "Java"
         Filename = "Java.exe"
         WebURL = "http://java.com"
+        TreePath = "Runtime"
         Description = "Java is required by ProjectX. " + Strings.ProjectX
         DownloadURL = "http://java.com/en/download"
         IsRequiredValue = False

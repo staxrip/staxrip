@@ -406,12 +406,8 @@ Class AppsForm
 
             If searchString?.ToLower.Contains(SearchTextBox.Text?.ToLower) Then
                 If plugin Is Nothing Then
-                    If pack Is Package.Java OrElse
-                        pack Is Package.Python OrElse
-                        pack Is Package.vscpp2013 OrElse
-                        pack Is Package.vscpp2015 Then
-
-                        Dim n = tv.AddNode("Runtimes|" + pack.Name)
+                    If pack.TreePath <> "" Then
+                        Dim n = tv.AddNode(pack.TreePath + "|" + pack.Name)
                         Nodes.Add(n)
                         n.Tag = pack
                     Else

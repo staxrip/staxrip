@@ -12,7 +12,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 #### Fixed Bugs
 
-
+- fixed C# scripting not working on Windows 7
 
 #### Tweaks
 

@@ -198,7 +198,7 @@ Public Class IntelEncoder
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate:", .Options = {"0", "90", "180", "270"}},
                         New OptionParam With {.Switch = "--vpp-image-stab", .Text = "Image Stabilizer:", .Options = {"disabled", "upscale", "box"}},
                         New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image:", .Options = {"disabled", "h", "v"}},
-                        New OptionParam With {.Switch = "--vpp-scaling", .Text = "Scaling Quality:", .Options = {"disabled", "fine"}},
+                        New OptionParam With {.Switch = "--vpp-scaling", .Text = "Scaling Quality:", .Options = {"auto", "simple", "fine"}},
                         New NumParam With {.Switch = "--vpp-denoise", .Text = "Denoise:", .MinMaxStep = {0, 100, 1}},
                         New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhancement:", .MinMaxStep = {0, 100, 1}})
                     Add("VUI",

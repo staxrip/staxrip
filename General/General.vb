@@ -340,14 +340,10 @@ End Class
 Class DirPath
     Inherits PathBase
 
-    Shared Function GetRoot(path As String) As String
-        Return Regex.Match(path, "^.:\\").Value
-    End Function
-
     Shared Function TrimTrailingSeparator(path As String) As String
         If path = "" Then Return ""
 
-        If path.EndsWith(Separator) AndAlso Not path.EndsWith(":\") Then
+        If path.EndsWith(Separator) AndAlso Not path.Length <= 3 Then
             Return path.TrimEnd(Separator)
         End If
 
@@ -521,46 +517,38 @@ Class SafeSerialization
         End Try
     End Sub
 
-    Shared Function Deserialize(instance As Object,
-                                path As String,
-                                binder As SerializationBinder) As Object
-
+    Shared Function Deserialize(Of T)(instance As T, path As String) As T
         Dim safeInstance = DirectCast(instance, ISafeSerialization)
 
         If File.Exists(path) Then
-            Dim list As List(Of Object) = Nothing
+            Dim list As List(Of Object)
             Dim bf As New BinaryFormatter
 
             Using fs As New FileStream(path, FileMode.Open)
-                Try
-                    list = DirectCast(bf.Deserialize(fs), List(Of Object))
-                Catch
-                End Try
+                list = DirectCast(bf.Deserialize(fs), List(Of Object))
             End Using
 
-            If Not list Is Nothing Then
-                For Each i As FieldContainer In list
-                    For Each iFieldInfo In instance.GetType.GetFields(BindingFlags.Public Or
+            For Each i As FieldContainer In list
+                For Each iFieldInfo In instance.GetType.GetFields(BindingFlags.Public Or
                                                                       BindingFlags.NonPublic Or
                                                                       BindingFlags.Instance)
-                        If Not iFieldInfo.IsNotSerialized Then
-                            If i.Name = iFieldInfo.Name Then
-                                Try
-                                    If i.Value.GetType Is GetType(Byte()) Then
-                                        iFieldInfo.SetValue(instance, GetObjectInstance(DirectCast(i.Value, Byte()), binder))
-                                    Else
-                                        If iFieldInfo.Name <> "_WasUpdated" Then
-                                            iFieldInfo.SetValue(instance, i.Value)
-                                        End If
+                    If Not iFieldInfo.IsNotSerialized Then
+                        If i.Name = iFieldInfo.Name Then
+                            Try
+                                If i.Value.GetType Is GetType(Byte()) Then
+                                    iFieldInfo.SetValue(instance, GetObjectInstance(DirectCast(i.Value, Byte())))
+                                Else
+                                    If iFieldInfo.Name <> "_WasUpdated" Then
+                                        iFieldInfo.SetValue(instance, i.Value)
                                     End If
-                                Catch ex As Exception
-                                    safeInstance.WasUpdated = True
-                                End Try
-                            End If
+                                End If
+                            Catch ex As Exception
+                                safeInstance.WasUpdated = True
+                            End Try
                         End If
-                    Next
+                    End If
                 Next
-            End If
+            Next
         End If
 
         safeInstance.Init()
@@ -584,10 +572,11 @@ Class SafeSerialization
     End Function
 
     <DebuggerNonUserCode()>
-    Private Shared Function GetObjectInstance(ba As Byte(), binder As SerializationBinder) As Object
+    Private Shared Function GetObjectInstance(ba As Byte()) As Object
         Using ms As New MemoryStream(ba)
             Dim bf As New BinaryFormatter
-            If Not binder Is Nothing Then bf.Binder = binder
+            'Static binder As New LegacySerializationBinder
+            'bf.Binder = binder
             Return bf.Deserialize(ms)
         End Using
     End Function
@@ -620,6 +609,19 @@ Class SafeSerialization
             Return True
         End If
     End Function
+
+    'legacy
+    Private Class LegacySerializationBinder
+        Inherits SerializationBinder
+
+        Overrides Function BindToType(assemblyName As String, typeName As String) As Type
+            'If typeName.Contains("CLIEncoder") Then
+            '    typeName = typeName.Replace("CLIEncoder", "CmdlEncoder")
+            'End If
+
+            Return Type.GetType(typeName)
+        End Function
+    End Class
 End Class
 
 Public Interface ISafeSerialization
@@ -1352,24 +1354,28 @@ Public Module MainModule
         If text = "" Then text = content
         If text = "" Then Exit Sub
 
-        Using td As New TaskDialog(Of String)
-            td.AllowCancel = False
+        Try
+            Using td As New TaskDialog(Of String)
+                td.AllowCancel = False
 
-            If content Is Nothing Then
-                If text.Length < 80 Then
-                    td.MainInstruction = text
+                If content = "" Then
+                    If text.Length < 80 Then
+                        td.MainInstruction = text
+                    Else
+                        td.Content = text
+                    End If
                 Else
-                    td.Content = text
+                    td.MainInstruction = text
+                    td.Content = content
                 End If
-            Else
-                td.MainInstruction = text
-                td.Content = content
-            End If
 
-            td.MainIcon = TaskDialogIcon.Error
-            td.Footer = Strings.TaskDialogFooter
-            td.Show()
-        End Using
+                td.MainIcon = TaskDialogIcon.Error
+                td.Footer = Strings.TaskDialogFooter
+                td.Show()
+            End Using
+        Catch
+            VB6.MsgBox(text + BR2 + content, VB6.MsgBoxStyle.Critical)
+        End Try
     End Sub
 
     Sub MsgWarn(text As String, Optional content As String = Nothing)
@@ -1399,47 +1405,51 @@ Public Module MainModule
 
         If mainInstruction Is Nothing Then mainInstruction = ""
 
-        Using td As New TaskDialog(Of DialogResult)
-            td.AllowCancel = False
-            td.DefaultButton = defaultButton
+        Try
+            Using td As New TaskDialog(Of DialogResult)
+                td.AllowCancel = False
+                td.DefaultButton = defaultButton
 
-            If content Is Nothing Then
-                If mainInstruction.Length < 80 Then
-                    td.MainInstruction = mainInstruction
+                If content Is Nothing Then
+                    If mainInstruction.Length < 80 Then
+                        td.MainInstruction = mainInstruction
+                    Else
+                        td.Content = mainInstruction
+                    End If
                 Else
-                    td.Content = mainInstruction
+                    td.MainInstruction = mainInstruction
+                    td.Content = content
                 End If
-            Else
-                td.MainInstruction = mainInstruction
-                td.Content = content
-            End If
 
-            Select Case icon
-                Case MsgIcon.Error
-                    td.MainIcon = TaskDialogIcon.Error
-                Case MsgIcon.Warning
-                    td.MainIcon = TaskDialogIcon.Warn
-                Case MsgIcon.Info
-                    td.MainIcon = TaskDialogIcon.Info
-            End Select
+                Select Case icon
+                    Case MsgIcon.Error
+                        td.MainIcon = TaskDialogIcon.Error
+                    Case MsgIcon.Warning
+                        td.MainIcon = TaskDialogIcon.Warn
+                    Case MsgIcon.Info
+                        td.MainIcon = TaskDialogIcon.Info
+                End Select
 
-            Select Case buttons
-                Case MessageBoxButtons.OK
-                    td.CommonButtons = TaskDialogButtons.Ok
-                Case MessageBoxButtons.OKCancel
-                    td.CommonButtons = TaskDialogButtons.OkCancel
-                Case MessageBoxButtons.YesNo
-                    td.CommonButtons = TaskDialogButtons.YesNo
-                Case MessageBoxButtons.YesNoCancel
-                    td.CommonButtons = TaskDialogButtons.YesNoCancel
-                Case MessageBoxButtons.RetryCancel
-                    td.CommonButtons = TaskDialogButtons.RetryCancel
-                Case MessageBoxButtons.AbortRetryIgnore
-                    Throw New NotSupportedException
-            End Select
+                Select Case buttons
+                    Case MessageBoxButtons.OK
+                        td.CommonButtons = TaskDialogButtons.Ok
+                    Case MessageBoxButtons.OKCancel
+                        td.CommonButtons = TaskDialogButtons.OkCancel
+                    Case MessageBoxButtons.YesNo
+                        td.CommonButtons = TaskDialogButtons.YesNo
+                    Case MessageBoxButtons.YesNoCancel
+                        td.CommonButtons = TaskDialogButtons.YesNoCancel
+                    Case MessageBoxButtons.RetryCancel
+                        td.CommonButtons = TaskDialogButtons.RetryCancel
+                    Case MessageBoxButtons.AbortRetryIgnore
+                        Throw New NotSupportedException
+                End Select
 
-            Return td.Show()
-        End Using
+                Return td.Show()
+            End Using
+        Catch
+            VB6.MsgBox(mainInstruction + BR2 + content, CType(icon Or buttons, VB6.MsgBoxStyle))
+        End Try
     End Function
 End Module
 

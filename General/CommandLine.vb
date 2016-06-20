@@ -41,8 +41,6 @@ Namespace CommandLine
             File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
 
             Dim batchProc As New Process
-            batchProc.StartInfo.StandardErrorEncoding = Proc.ProcessEncoding
-            batchProc.StartInfo.StandardOutputEncoding = Proc.ProcessEncoding
             batchProc.StartInfo.FileName = "cmd.exe"
             batchProc.StartInfo.Arguments = "/k """ + batchPath + """"
             batchProc.StartInfo.WorkingDirectory = p.TempDir

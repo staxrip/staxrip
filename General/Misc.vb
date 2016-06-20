@@ -11,6 +11,7 @@ Imports System.Threading
 Imports System.Windows.Forms.VisualStyles
 Imports Microsoft.Win32
 Imports StaxRip.UI
+Imports VB6 = Microsoft.VisualBasic
 
 Public Module ShortcutModule
     Public g As New GlobalClass
@@ -520,24 +521,36 @@ Public Class GlobalClass
     End Sub
 
     Sub ShowException(e As Exception, Optional msg As String = Nothing, Optional timeout As Integer = 0)
-        Using td As New TaskDialog(Of String)
-            If msg Is Nothing Then
-                If TypeOf e Is ErrorAbortException Then
-                    td.MainInstruction = DirectCast(e, ErrorAbortException).Title
+        Try
+            Using td As New TaskDialog(Of String)
+                If msg = "" Then
+                    If TypeOf e Is ErrorAbortException Then
+                        td.MainInstruction = DirectCast(e, ErrorAbortException).Title
+                    Else
+                        td.MainInstruction = e.GetType.Name
+                    End If
                 Else
-                    td.MainInstruction = e.GetType.Name
+                    td.MainInstruction = msg
                 End If
+
+                td.Timeout = timeout
+                td.Content = e.Message
+                td.MainIcon = TaskDialogIcon.Error
+                td.ExpandedInformation = e.ToString
+                td.Footer = Strings.TaskDialogFooter
+                td.Show()
+            End Using
+        Catch
+            Dim title As String
+
+            If TypeOf e Is ErrorAbortException Then
+                title = DirectCast(e, ErrorAbortException).Title
             Else
-                td.MainInstruction = msg
+                title = e.GetType.Name
             End If
 
-            td.Timeout = timeout
-            td.Content = e.Message
-            td.MainIcon = TaskDialogIcon.Error
-            td.ExpandedInformation = e.ToString
-            td.Footer = Strings.TaskDialogFooter
-            td.Show()
-        End Using
+            VB6.MsgBox(title + BR2 + e.Message + BR2 + e.ToString, VB6.MsgBoxStyle.Critical)
+        End Try
     End Sub
 
     Sub SetRenderer(ms As MenuStrip)
@@ -2396,27 +2409,14 @@ Public Enum SourceInputMode
     DirectoryBatch
 End Enum
 
-'legacy
-Public NotInheritable Class LegacySerializationBinder
-    Inherits SerializationBinder
-
-    Overrides Function BindToType(assemblyName As String, typeName As String) As Type
-        'If typeName.Contains("CLIEncoder") Then
-        '    typeName = typeName.Replace("CLIEncoder", "CmdlEncoder")
-        'End If
-
-        Return Type.GetType(typeName)
-    End Function
-End Class
-
 Class Startup
     <STAThread()>
     Shared Sub Main()
+        AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf g.OnUnhandledException
         SetProcessDPIAware()
         Application.EnableVisualStyles()
         'use new GDI/TextRenderer by default instead of old GDI+/Graphics.DrawString
         Application.SetCompatibleTextRenderingDefault(False)
-
         Dim args = Environment.GetCommandLineArgs.Skip(1)
 
         If args.Count = 2 AndAlso args(0) = "-mediainfo" Then

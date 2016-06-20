@@ -216,11 +216,6 @@ Public Class GlobalCommands
 
     <Command("Test")>
     Sub Test()
-        If Not Application.StartupPath = "D:\Projekte\GitHub\staxrip\bin" Then
-            MsgError("Command is meant for development.")
-            Exit Sub
-        End If
-
         Dim nvexcept = "--help --version --check-device
 --check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
 --check-filters --device --input --output --raw --avs --vpy --vpy-mt --avcuvid-analyze
@@ -231,7 +226,7 @@ Public Class GlobalCommands
 --log --log-framelist".Split((" " + BR).ToCharArray())
         Dim nvhelp = File.ReadAllText(".\Apps\NVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim nvhelpSwitches = Regex.Matches(nvhelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim nvCode = File.ReadAllText("D:\Projekte\GitHub\staxrip\Encoding\NVIDIAEncoder.vb").Replace("--no-", "--")
+        Dim nvCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\NVIDIAEncoder.vb").Replace("--no-", "--")
         Dim nvpresent = Regex.Matches(nvCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim nvMissing = nvpresent.Where(Function(arg) Not nvhelpSwitches.Contains(arg))
         Dim nvunknown = nvhelpSwitches.Where(Function(x) Not nvpresent.Contains(x) AndAlso Not nvexcept.Contains(x)).ToList()
@@ -255,7 +250,7 @@ Public Class GlobalCommands
         --vpp-delogo-cr --vpp-half-turn".Split((" " + BR).ToCharArray())
         Dim qsHelp = File.ReadAllText(".\Apps\QSVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim qsHelpSwitches = Regex.Matches(qsHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim qsCode = File.ReadAllText("D:\Projekte\GitHub\staxrip\Encoding\IntelEncoder.vb").Replace("--no-", "--")
+        Dim qsCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\IntelEncoder.vb").Replace("--no-", "--")
         Dim qsPresent = Regex.Matches(qsCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim qsMissing = qsPresent.Where(Function(arg) Not qsHelpSwitches.Contains(arg))
         Dim qsUnknown = qsHelpSwitches.Where(Function(x) Not qsPresent.Contains(x) AndAlso Not qsExcept.Contains(x)).ToList()
@@ -270,18 +265,18 @@ Public Class GlobalCommands
         Dim x265RemoveExcept = "--crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
 
         Dim x265HelpSwitches = Regex.Matches(
-            File.ReadAllText("D:\Projekte\GitHub\staxrip\x265\param.cpp"),
+            File.ReadAllText(Folder.Startup.Parent + "x265\param.cpp"),
             "OPT2?\(""(.+?)""").
             OfType(Of Match)().
             Select(Function(x) "--" + x.Groups(1).Value).
             Union(Regex.Matches(
-            File.ReadAllText("D:\Projekte\GitHub\staxrip\x265\x265cli.h"),
+            File.ReadAllText(Folder.Startup.Parent + "x265\x265cli.h"),
             "{ *""(.+?)"" *, *\w+argument *,").
             OfType(Of Match)().
             Select(Function(x) "--" + x.Groups(1).Value)).
             Where(Function(arg) Not arg.StartsWith("--no-"))
 
-        Dim x265Code = File.ReadAllText("D:\Projekte\GitHub\staxrip\Encoding\x265.vb").Replace("--no-", "--")
+        Dim x265Code = File.ReadAllText(Folder.Startup.Parent + "Encoding\x265.vb").Replace("--no-", "--")
         Dim x265Present As New HashSet(Of String)
 
         For Each switch In Regex.Matches(x265Code, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
@@ -326,6 +321,8 @@ Public Class GlobalCommands
                 Exit For
             End If
         Next
+
+        MsgInfo("end")
     End Sub
 
     Sub ShowPackageError(pack As Package, msg As String)

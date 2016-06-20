@@ -8,15 +8,19 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 #### New Features
 
-
+- LSFmod added for both AviSynth and VapourSynth, to create the LSFmod default filter profile go to: 'Filters > Profiles > Restore Defaults > OK' or alternatively: 'Tools > Advanced > Reset Setting > AviSynth/VapourSynth Filter Profiles > OK'
 
 #### Fixed Bugs
 
 - fixed C# scripting not working on Windows 7
+- fixed bug in audio detection when using a network drive as temp folder
+- fixed crash in processing dialog
 
 #### Tweaks
 
-
+- improved audio detection using numeric order instead of alphanumeric order 
 
 #### Updated Tools
 
+LSFmod 1.9
+havsfunc 23

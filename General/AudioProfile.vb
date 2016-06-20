@@ -37,10 +37,10 @@ Public MustInherit Class AudioProfile
 
         MyBase.New(name)
 
-        Me.Bitrate = bitrate
-        Me.SupportedInput = input
-        Me.OutputFileType = fileType
         Me.Channels = channels
+        Me.Bitrate = bitrate
+        SupportedInput = input
+        OutputFileType = fileType
     End Sub
 
     Private FileValue As String = ""

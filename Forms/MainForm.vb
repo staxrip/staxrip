@@ -788,90 +788,82 @@ Public Class MainForm
     Sub New()
         MyBase.New()
 
+        AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
+        g.MainForm = Me
+
         Try
-            g.MainForm = Me
+            s = SafeSerialization.Deserialize(New ApplicationSettings, g.SettingsFile)
+        Catch ex As Exception
+            g.ShowException(ex, "The settings file failed to load, it will be reset to defaults." + BR2 + g.SettingsFile)
+            s = New ApplicationSettings
+            s.Init()
+        End Try
 
-            AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf g.OnUnhandledException
-            AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
+        MenuItemEx.UseTooltips = s.EnableTooltips
 
-            Try
-                s = DirectCast(SafeSerialization.Deserialize(New ApplicationSettings,
-                                                             g.SettingsFile,
-                                                             New LegacySerializationBinder), ApplicationSettings)
-            Catch ex As Exception
-                g.ShowException(ex)
-                s = New ApplicationSettings
-                s.Init()
-            End Try
+        InitializeComponent()
 
-            MenuItemEx.UseTooltips = s.EnableTooltips
+        If components Is Nothing Then components = New System.ComponentModel.Container
 
-            InitializeComponent()
+        SetTip()
 
-            If components Is Nothing Then components = New System.ComponentModel.Container
+        AudioMenu0 = New ContextMenuStripEx(components)
+        AudioMenu1 = New ContextMenuStripEx(components)
+        TargetAspectRatioMenu = New ContextMenuStripEx(components)
+        SizeContextMenuStrip = New ContextMenuStripEx(components)
+        EncoderMenu = New ContextMenuStripEx(components)
+        ContainerMenu = New ContextMenuStripEx(components)
+        SourceAspectRatioMenu = New ContextMenuStripEx(components)
+        TargetFileMenu = New ContextMenuStripEx(components)
+        SourceFileMenu = New ContextMenuStripEx(components)
+        Audio0FileMenu = New ContextMenuStripEx(components)
+        Audio1FileMenu = New ContextMenuStripEx(components)
 
-            SetTip()
+        tbTargetFile.ContextMenuStrip = TargetFileMenu
+        tbSourceFile.ContextMenuStrip = SourceFileMenu
+        tbAudioFile0.ContextMenuStrip = Audio0FileMenu
+        tbAudioFile1.ContextMenuStrip = Audio1FileMenu
 
-            AudioMenu0 = New ContextMenuStripEx(components)
-            AudioMenu1 = New ContextMenuStripEx(components)
-            TargetAspectRatioMenu = New ContextMenuStripEx(components)
-            SizeContextMenuStrip = New ContextMenuStripEx(components)
-            EncoderMenu = New ContextMenuStripEx(components)
-            ContainerMenu = New ContextMenuStripEx(components)
-            SourceAspectRatioMenu = New ContextMenuStripEx(components)
-            TargetFileMenu = New ContextMenuStripEx(components)
-            SourceFileMenu = New ContextMenuStripEx(components)
-            Audio0FileMenu = New ContextMenuStripEx(components)
-            Audio1FileMenu = New ContextMenuStripEx(components)
+        Dim rc = "right-click"
+        tbAudioFile0.SendMessageCue(rc, False)
+        tbAudioFile1.SendMessageCue(rc, False)
+        tbSourceFile.SendMessageCue(rc, False)
+        tbTargetFile.SendMessageCue(rc, False)
 
-            tbTargetFile.ContextMenuStrip = TargetFileMenu
-            tbSourceFile.ContextMenuStrip = SourceFileMenu
-            tbAudioFile0.ContextMenuStrip = Audio0FileMenu
-            tbAudioFile1.ContextMenuStrip = Audio1FileMenu
+        llEditAudio0.AddClickAction(AddressOf AudioEdit0ToolStripMenuItemClick)
+        llEditAudio1.AddClickAction(AddressOf AudioEdit1ToolStripMenuItemClick)
 
-            Dim rc = "right-click"
-            tbAudioFile0.SendMessageCue(rc, False)
-            tbAudioFile1.SendMessageCue(rc, False)
-            tbSourceFile.SendMessageCue(rc, False)
-            tbTargetFile.SendMessageCue(rc, False)
+        Icon = My.Resources.MainIcon
 
-            llEditAudio0.AddClickAction(AddressOf AudioEdit0ToolStripMenuItemClick)
-            llEditAudio1.AddClickAction(AddressOf AudioEdit1ToolStripMenuItemClick)
+        AviSynthListView.ProfileFunc = AddressOf GetTargetAviSynthDocument
 
-            Icon = My.Resources.MainIcon
+        MenuStrip.SuspendLayout()
+        MenuStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
-            AviSynthListView.ProfileFunc = AddressOf GetTargetAviSynthDocument
+        CommandManager.AddCommandsFromObject(Me)
+        CommandManager.AddCommandsFromObject(g.DefaultCommands)
 
-            MenuStrip.SuspendLayout()
-            MenuStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
-
-            CommandManager.AddCommandsFromObject(Me)
-            CommandManager.AddCommandsFromObject(g.DefaultCommands)
-
-            CustomMainMenu = New CustomMenu(AddressOf GetDefaultMenu,
+        CustomMainMenu = New CustomMenu(AddressOf GetDefaultMenu,
                 s.CustomMenuMainForm, CommandManager, MenuStrip)
 
-            CustomMainMenu.AddKeyDownHandler(Me)
-            CustomMainMenu.BuildMenu()
-            UpdateDynamicMenu()
-            UpdateAudioMenu()
-            MenuStrip.ResumeLayout()
-            OpenProject(g.StartupTemplatePath)
-            SizeContextMenuStrip.SuspendLayout()
+        CustomMainMenu.AddKeyDownHandler(Me)
+        CustomMainMenu.BuildMenu()
+        UpdateDynamicMenu()
+        UpdateAudioMenu()
+        MenuStrip.ResumeLayout()
+        OpenProject(g.StartupTemplatePath)
+        SizeContextMenuStrip.SuspendLayout()
 
-            CustomSizeMenu = New CustomMenu(AddressOf GetDefaultMenuSize,
+        CustomSizeMenu = New CustomMenu(AddressOf GetDefaultMenuSize,
                 s.CustomMenuSize, CommandManager, SizeContextMenuStrip)
 
-            CustomSizeMenu.AddKeyDownHandler(Me)
-            CustomSizeMenu.BuildMenu()
+        CustomSizeMenu.AddKeyDownHandler(Me)
+        CustomSizeMenu.BuildMenu()
 
-            SizeContextMenuStrip.ResumeLayout()
+        SizeContextMenuStrip.ResumeLayout()
 
-            g.SetRenderer(MenuStrip)
-            SetMenuStyle()
-        Catch ex As Exception
-            VB6.MsgBox(ex.ToString, VB6.MsgBoxStyle.Critical)
-        End Try
+        g.SetRenderer(MenuStrip)
+        SetMenuStyle()
     End Sub
 
     Sub SetMenuStyle()
@@ -975,7 +967,7 @@ Public Class MainForm
         End If
 
         Dim files = g.GetFilesInTempDirAndParent
-        files.Sort()
+        files.Sort(New StringLogicalComparer)
 
         For Each iExt In FileTypes.Audio
             If iExt = "avs" Then
@@ -1287,13 +1279,10 @@ Public Class MainForm
 
         If Not File.Exists(path) Then path = g.StartupTemplatePath
 
-        Dim safeInstance = New Project
-        safeInstance.Init()
-
         Try
-            p = DirectCast(SafeSerialization.Deserialize(safeInstance, path, New LegacySerializationBinder), Project)
+            p = SafeSerialization.Deserialize(New Project, path)
         Catch ex As Exception
-            g.ShowException(ex)
+            g.ShowException(ex, "The project file failed to load, it will be reset to defaults." + BR2 + path)
             p = New Project
             p.Init()
         End Try
@@ -1389,7 +1378,7 @@ Public Class MainForm
 
     Function GetPathFromIndexFile(sourcePath As String) As String
         For Each i In File.ReadAllLines(sourcePath)
-            If i.Contains(":\") Then
+            If i.Contains(":\") OrElse i.StartsWith("\\") Then
                 If Regex.IsMatch(i, "^.+ \d+$") Then i = i.LeftLast(" ")
 
                 If File.Exists(i) AndAlso FileTypes.Video.Contains(i.Ext) Then
@@ -2761,7 +2750,7 @@ Public Class MainForm
             Exit Sub
         End If
 
-        If tb.Text.Contains(":\") Then
+        If tb.Text.Contains(":\") OrElse tb.Text.StartsWith("\\") Then
             If tb.Text <> ap.File Then
                 ap.File = tb.Text
 
@@ -4258,7 +4247,7 @@ Public Class MainForm
         ret.Add("Tools|Directories|Programs", NameOf(g.DefaultCommands.ExecuteCommandLine), """%programs_dir%""")
         ret.Add("Tools|Directories|System", NameOf(g.DefaultCommands.ExecuteCommandLine), """%system_dir%""")
         ret.Add("Tools|Directories|Scripts", NameOf(g.DefaultCommands.ExecuteCommandLine), """%script_dir%""")
-        If Application.StartupPath = "D:\Projekte\GitHub\staxrip\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
+        If Application.StartupPath = "D:\Projekte\VS\VB\StaxRip\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
         ret.Add("Tools|Advanced|Command Prompt...", NameOf(ShowCommandPrompt))
         ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog))

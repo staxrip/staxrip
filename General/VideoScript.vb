@@ -114,9 +114,9 @@ Public Class VideoScript
     End Sub
 
     Function Contains(category As String, search As String) As Boolean
-        If category = "" OrElse search = "" Then Exit Function
+        If category = "" OrElse search = "" Then Return False
         Dim filter = GetFilter(category)
-        If filter?.Script?.ToLower.Contains(search.ToLower) AndAlso filter.Active Then Return True
+        If filter?.Script?.ToLower.Contains(search.ToLower) AndAlso filter?.Active Then Return True
     End Function
 
     Function IsFilterActive(category As String) As Boolean
@@ -542,13 +542,13 @@ Public Class FilterCategory
         ret.Add(src)
 
         Dim misc As New FilterCategory("Misc")
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "AssumeFPS(%media_info_video:FrameRate%)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(24000, 1001)", "AssumeFPS(24000, 1001)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(30000, 1001)", "AssumeFPS(30000, 1001)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(60000, 1001)", "AssumeFPS(60000, 1001)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(24)", "AssumeFPS(24)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(25)", "AssumeFPS(25)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS(50)", "AssumeFPS(50)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS | AssumeFPS MediaInfo", "AssumeFPS(%media_info_video:FrameRate%)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS | AssumeFPS(24000, 1001)", "AssumeFPS(24000, 1001)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS | AssumeFPS(30000, 1001)", "AssumeFPS(30000, 1001)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS | AssumeFPS(60000, 1001)", "AssumeFPS(60000, 1001)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS | AssumeFPS(24)", "AssumeFPS(24)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS | AssumeFPS(25)", "AssumeFPS(25)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS | AssumeFPS(50)", "AssumeFPS(50)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Prefetch(4)", "Prefetch(4)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "checkmate", "checkmate()"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Clense", "Clense()"))

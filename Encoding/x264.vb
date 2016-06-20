@@ -907,6 +907,11 @@ Public Class x264Params
         BPyramidMode.Value = temp.BPyramidMode.Value
         BlurayCompat.Value = temp.BlurayCompat.Value
     End Sub
+
+    <OnDeserialized()>
+    Sub OnDeserialized(context As StreamingContext)
+        If Depth Is Nothing Then Depth = New SettingBag(Of Integer)(0)
+    End Sub
 End Class
 
 Public Enum x264Mode

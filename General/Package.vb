@@ -337,16 +337,17 @@ Public Class Package
             .Name = "havsfunc",
             .Filename = "havsfunc.py",
             .VapourSynthFiltersFunc = Function() {
+                New VideoFilter("Misc", "LSFmod", "clip = havsfunc.LSFmod(clip, strength = 100)"),
                 New VideoFilter("Field", "QTGMC | QTGMC Fast", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Fast"")"),
                 New VideoFilter("Field", "QTGMC | QTGMC Medium", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Medium"")"),
                 New VideoFilter("Field", "QTGMC | QTGMC Slow", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Slow"")")},
             .VapourSynthFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa", "havsfunc.maa",
-                                      "havsfunc.SharpAAMCmod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
-                                      "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.ivtc_txt60mc",
-                                      "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.logoNR",
-                                      "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.GSMC",
-                                      "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD",
-                                      "havsfunc.LSFmod", "havsfunc.GrainFactory3"},
+                                       "havsfunc.SharpAAMCmod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
+                                       "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.ivtc_txt60mc",
+                                       "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.logoNR",
+                                       "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.GSMC",
+                                       "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD",
+                                       "havsfunc.LSFmod", "havsfunc.GrainFactory3"},
             .Dependencies = {"fmtconv", "mvtools", "nnedi3", "scenechange", "temporalsoften", "mvsfunc"},
             .Description = "Various popular AviSynth scripts ported to VapourSynth.",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=166582"})
@@ -469,6 +470,16 @@ Public Class Package
                 New VideoFilter("Field", "QTGMC | QTGMC Medium", "QTGMC(Preset = ""Medium"")"),
                 New VideoFilter("Field", "QTGMC | QTGMC Slow", "QTGMC(Preset = ""Slow"")")},
             .Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}})
+
+        Add(New PluginPackage With {
+            .Name = "LSFmod",
+            .Filename = "LSFmod.avsi",
+            .WebURL = "http://avisynth.nl/index.php/LSFmod",
+            .HelpURL = "http://avisynth.nl/index.php/LSFmod",
+            .Description = "A LimitedSharpenFaster mod with a lot of new features and optimizations.",
+            .AviSynthFilterNames = {"LSFmod"},
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Misc", "LSFmod", "LSFmod(strength = 100)")},
+            .Dependencies = {"RgTools", "masktools2"}})
 
         Add(New PluginPackage With {
             .Name = "RgTools",

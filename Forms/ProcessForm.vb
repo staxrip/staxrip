@@ -209,6 +209,8 @@ Class ProcessForm
     Property Taskbar As Taskbar
 
     Sub New()
+        AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
+
         InitializeComponent()
 
         cbShutdown.Items.AddRange(ListBag(Of ShutdownMode).GetBagsForEnumType())
@@ -321,13 +323,13 @@ Class ProcessForm
                 If value.Contains(" ") Then value = value.RightLast(" ")
 
                 If value.IsSingle Then
-                    Instance.Taskbar.SetState(TaskbarStates.Normal)
-                    Instance.Taskbar.SetValue(value.ToSingle, 100)
+                    Instance.Taskbar?.SetState(TaskbarStates.Normal)
+                    Instance.Taskbar?.SetValue(value.ToSingle, 100)
                     Exit Sub
                 End If
             End If
 
-            Instance.Taskbar.SetState(TaskbarStates.NoProgress)
+            Instance.Taskbar?.SetState(TaskbarStates.NoProgress)
         End If
     End Sub
 

@@ -1716,7 +1716,7 @@ Public MustInherit Class Profile
         End Get
         Set(Value As String)
             If Value = DefaultName Then
-                Value = Nothing
+                NameValue = Nothing
             Else
                 NameValue = Value
             End If

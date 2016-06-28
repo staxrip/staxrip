@@ -46,7 +46,8 @@ Class Audio
         Cut(ap)
 
         If Not TypeOf ap Is MuxAudioProfile AndAlso
-            Not ap.SupportedInput.Contains(Filepath.GetExt(ap.File)) Then
+            Not ap.SupportedInput.NothingOrEmpty AndAlso
+            Not ap.SupportedInput.Contains(ap.File.Ext) Then
 
             Decode(ap, ap.SupportedInput.Contains("flac"))
         End If
@@ -391,8 +392,8 @@ Class Audio
         args += " """ + outPath + """"
 
         Using proc As New Proc
-            proc.Init("Convert from " + Filepath.GetExt(ap.File).ToUpper + " to " + Filepath.GetExt(outPath).ToUpper + " using ffmpeg " + Package.ffmpeg.Version,
-                                "frame=", "size=", "Multiple", "decoding is not implemented", "unsupported frame type", "upload a sample")
+            proc.Init("Convert from " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " using ffmpeg " + Package.ffmpeg.Version,
+                      "frame=", "size=", "Multiple", "decoding is not implemented", "unsupported frame type", "upload a sample")
             proc.Encoding = Encoding.UTF8
             proc.File = Package.ffmpeg.Path
             proc.Arguments = args

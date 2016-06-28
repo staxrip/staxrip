@@ -539,4 +539,9 @@ as published by Sam Hocevar. See the COPYING file for more details.", True)
     Sub SetPreventSaveSettings(preventSaveSettings As Boolean)
         g.PreventSaveSettings = preventSaveSettings
     End Sub
+
+    <Command("Sets the file path of the target file.")>
+    Sub SetTargetFile(<DispName("Target File Path")> path As String)
+        g.MainForm.tbTargetFile.Text = path
+    End Sub
 End Class

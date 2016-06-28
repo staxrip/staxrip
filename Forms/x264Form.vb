@@ -3403,7 +3403,7 @@ Class x264Form
                 td.MainIcon = TaskDialogIcon.Info
             Else
                 td.Content = m
-                td.MainIcon = TaskDialogIcon.Warn
+                td.MainIcon = TaskDialogIcon.Warning
             End If
 
             td.Footer = Strings.TaskDialogFooter

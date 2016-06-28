@@ -494,7 +494,7 @@ Public Class Package
             .Name = "nnedi3",
             .Filename = "nnedi3.dll",
             .WebURL = "http://forum.doom9.org/showthread.php?t=170083",
-            .HelpURL = "http://avisynth.nl/index.php/Nnedi3",
+            .HelpFile = "Readme.txt",
             .Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field.",
             .AviSynthFilterNames = {"nnedi3"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "nnedi3", "nnedi3(field = 1)")}})

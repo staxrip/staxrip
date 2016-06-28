@@ -3437,8 +3437,14 @@ Public Class MainForm
 
             If di.AvailableFreeSpace < New FileInfo(p.FirstOriginalSourceFile).Length Then
                 ProcessForm.CloseProcessForm()
-                MsgError("The target drive has not enough free disk space.")
-                Exit Sub
+
+                Using td As New TaskDialog(Of String)
+                    td.MainInstruction = $"The target drive {Path.GetPathRoot(p.TargetFile)} has only {(di.AvailableFreeSpace / 1024 ^ 3).ToString("f2")} GB free disk space."
+                    td.MainIcon = TaskDialogIcon.Warning
+                    td.AddButton("Continue", "Continue")
+                    td.AddButton("Abort", "Abort")
+                    If td.Show <> "Continue" Then Exit Sub
+                End Using
             End If
         Catch
         End Try
@@ -4113,6 +4119,12 @@ Public Class MainForm
 
         f.Doc.WriteStart("Command Line Reference")
         f.Doc.WriteP("Switches are processed in the order they appear in the command line. For more info visit the support forum and read the automation topic in the [https://stax76.gitbooks.io/staxrip-handbook/content/automation.html handbook].")
+
+        f.Doc.WriteElement("h2", "Examples")
+        f.Doc.WriteP("StaxRip ""C:\Movie\project.srip""")
+        f.Doc.WriteP("StaxRip ""C:\Movie\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB""")
+        f.Doc.WriteP("StaxRip -LoadTemplate:DVB ""C:\Movie\capture.mpg"" -StartEncoding -Standby")
+        f.Doc.WriteP("StaxRip -ShowMsg:""main text..."",""text..."",info")
 
         Dim commands As New List(Of Command)(CommandManager.Commands.Values)
         commands.Sort()
@@ -4995,13 +5007,8 @@ Public Class MainForm
         For Each i In FileTypes.Video
             Dim files = Directory.GetFiles(path, "*." + i)
             Array.Sort(files)
-
-            If files.Length > 0 Then
-                Return files
-            End If
+            If files.Length > 0 Then Return files
         Next
-
-        Return Nothing
     End Function
 
     Protected Overrides Sub WndProc(ByRef m As Message)
@@ -5501,7 +5508,9 @@ Public Class MainForm
 
         If p.TempDir <> "" AndAlso Directory.Exists(p.TempDir) Then
             Dim audioFiles = Directory.GetFiles(p.TempDir).Where(
-                Function(audioPath) FileTypes.Audio.Contains(Filepath.GetExt(audioPath)))
+                Function(audioPath) FileTypes.Audio.Contains(audioPath.Ext)).ToList
+
+            audioFiles.Sort(New StringLogicalComparer)
 
             If audioFiles.Count > 0 Then
                 For Each i In audioFiles

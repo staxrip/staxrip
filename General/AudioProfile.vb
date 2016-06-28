@@ -388,7 +388,7 @@ Class MuxAudioProfile
     Public Overrides Property OutputFileType As String
         Get
             If Stream Is Nothing Then
-                Return Filepath.GetExt(File)
+                Return File.Ext
             Else
                 Return Stream.Extension.TrimStart("."c)
             End If
@@ -903,16 +903,16 @@ Class GUIAudioProfile
     End Function
 
     Function GetBeSweetCommandLine(includePaths As Boolean) As String
-        Dim r As String
+        Dim ret As String
 
         If includePaths Then
-            r = """" + Package.BeSweet.Path + """"
+            ret = """" + Package.BeSweet.Path + """"
         Else
-            r = "BeSweet"
+            ret = "BeSweet"
         End If
 
         If includePaths AndAlso File <> "" Then
-            r += " -core( -input """ + File + """ -output """ + GetOutputFile() & """ )"
+            ret += " -core( -input """ + File + """ -output """ + GetOutputFile() & """ )"
         End If
 
         Dim t = ""
@@ -930,7 +930,7 @@ Class GUIAudioProfile
         End If
 
         If Params.BeSweetAzid <> "" Then t += " " + Params.BeSweetAzid
-        If t <> "" Then r += " -azid(" + t + " )"
+        If t <> "" Then ret += " -azid(" + t + " )"
 
         Dim ota = If(Delay <> 0, " -d " & Delay, "")
 
@@ -946,13 +946,13 @@ Class GUIAudioProfile
             ota += " -r 25000 23976"
         End If
 
-        If ota <> "" Then r += " -ota(" & ota & " )"
+        If ota <> "" Then ret += " -ota(" & ota & " )"
 
         If Params.SamplingRate <> 0 Then
-            r += " -ssrc( --rate " & Params.SamplingRate & " )"
+            ret += " -ssrc( --rate " & Params.SamplingRate & " )"
         End If
 
-        If Params.BeSweetCustom <> "" Then r += " " + Params.BeSweetCustom
+        If Params.BeSweetCustom <> "" Then ret += " " + Params.BeSweetCustom
 
         Select Case Params.Codec
             Case AudioCodec.AAC
@@ -970,35 +970,38 @@ Class GUIAudioProfile
 
                 Select Case Params.RateMode
                     Case AudioRateMode.VBR
-                        r += " -bsn( -vbr " & Params.Quality.ToString(CultureInfo.InvariantCulture) & profile & ch & " )"
+                        ret += " -bsn( -vbr " & Params.Quality.ToString(CultureInfo.InvariantCulture) & profile & ch & " )"
                     Case AudioRateMode.ABR
-                        r += " -bsn( -abr " & CInt(Bitrate) & profile & ch & " )"
+                        ret += " -bsn( -abr " & CInt(Bitrate) & profile & ch & " )"
                     Case AudioRateMode.CBR
-                        r += " -bsn( -cbr " & CInt(Bitrate) & profile & ch & " )"
+                        ret += " -bsn( -cbr " & CInt(Bitrate) & profile & ch & " )"
                 End Select
             Case AudioCodec.MP3
                 Select Case Params.RateMode
                     Case AudioRateMode.VBR
-                        r += " -lame( -v --vbr-new -V " & CInt(Params.Quality) & " -b 32 -h )"
+                        ret += " -lame( -v --vbr-new -V " & CInt(Params.Quality) & " -b 32 -h )"
                     Case AudioRateMode.ABR
-                        r += " -lame( --abr " & CInt(Bitrate) & " -h )"
+                        ret += " -lame( --abr " & CInt(Bitrate) & " -h )"
                     Case AudioRateMode.CBR
-                        r += " -lame( -b " & CInt(Bitrate) & " -h )"
+                        ret += " -lame( -b " & CInt(Bitrate) & " -h )"
                 End Select
+            Case AudioCodec.AC3
+                ret += " -bsn( -exe aften.exe -b " & CInt(Bitrate) & If(Channels = 6, " -6chnew", "") + " )"
         End Select
 
-        Return r
+        Return ret
     End Function
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
             If Params Is Nothing Then Exit Property
-
             Dim ch As String
 
             Select Case Channels
                 Case 8
                     ch += " 7.1"
+                Case 7
+                    ch += " 6.1"
                 Case 6
                     ch += " 5.1"
                 Case 2
@@ -1046,7 +1049,7 @@ Class GUIAudioProfile
         Select Case Params.Encoder
             Case GuiAudioEncoder.BeSweet
                 Select Case Params.Codec
-                    Case AudioCodec.AAC, AudioCodec.MP3
+                    Case AudioCodec.AAC, AudioCodec.MP3, AudioCodec.AC3
                         Return GuiAudioEncoder.BeSweet
                 End Select
             Case GuiAudioEncoder.Eac3to

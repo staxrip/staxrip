@@ -1425,7 +1425,7 @@ Public Module MainModule
                     Case MsgIcon.Error
                         td.MainIcon = TaskDialogIcon.Error
                     Case MsgIcon.Warning
-                        td.MainIcon = TaskDialogIcon.Warn
+                        td.MainIcon = TaskDialogIcon.Warning
                     Case MsgIcon.Info
                         td.MainIcon = TaskDialogIcon.Info
                 End Select

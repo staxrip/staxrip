@@ -511,12 +511,10 @@ Public Enum TaskDialogButtons
 End Enum
 
 Public Enum TaskDialogIcon
-    Warn = 65535 'TD_WARNING_ICON
+    Warning = 65535 'TD_WARNING_ICON
     [Error] = 65534 'TD_ERROR_ICON
     Info = 65533 'TD_INFORMATION_ICON
     Shield = 65532 'TD_SHIELD_ICON
-    Warning = 65535
-    Information = 65533
     SecurityShieldBlue = 65531
     SecurityWarning = 65530
     SecurityError = 65529

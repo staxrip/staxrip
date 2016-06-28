@@ -947,10 +947,7 @@ Class AudioForm
     Private Sub nudBitrate_KeyUp(sender As Object, e As KeyEventArgs) Handles numBitrate.KeyUp
         Try
             Dim v = CInt(numBitrate.Text)
-
-            If v Mod 16 = 0 Then
-                numBitrate.Value = v
-            End If
+            If v Mod 16 = 0 Then numBitrate.Value = v
         Catch
         End Try
     End Sub

@@ -24,7 +24,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 #### Updated Tools
 
-LSFmod 1.9
-havsfunc 23
-aWarpSharp2 2016-06-24
-nnedi3 0.9.4.22
+- LSFmod 1.9
+- havsfunc 23
+- aWarpSharp2 2016-06-24
+- nnedi3 0.9.4.22

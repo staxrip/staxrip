@@ -158,10 +158,10 @@ Public Class IntelEncoder
                         New NumParam With {.Switch = "--slices", .Text = "Slices:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--la-depth", .VisibleFunc = Function() Mode.ValueText.EqualsAny("la", "la-hrd", "la-icq"), .Text = "Lookahead Depth:", .Value = 30, .MinMaxStep = {0, 100, 1}},
                         New NumParam With {.Switch = "--la-window-size", .Text = "LA Window Size:"},
-                        New NumParam With {.Switch = "--bframes", .Text = "B Frames:", .InitValue = 3, .MinMaxStep = {0, 16, 1}},
+                        New NumParam With {.Switch = "--bframes", .Text = "B-Frames:", .InitValue = 3, .MinMaxStep = {0, 16, 1}},
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames:", .MinMaxStep = {0, 16, 1}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New BoolParam With {.Switch = "--b-pyramid", .Text = "B Pyramid"},
+                        New BoolParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid"},
                         New BoolParam With {.Switch = "--b-adapt", .Text = "Adaptive B Frame Insert"},
                         New BoolParam With {.Switch = "--direct-bias-adjust", .Text = "Direct Bias Adjust"},
                         New BoolParam With {.Switch = "--scenechange", .Text = "Scenechange"},
@@ -177,8 +177,8 @@ Public Class IntelEncoder
                         New BoolParam With {.Switch = "--extbrc", .Text = "Extended Rate Control"})
                     Add("Motion Search",
                         New OptionParam With {.Switch = "--mv-scaling", .Text = "MV Scaling:", .IntegerValue = True, .Options = {"Default", "MV cost to be 0", "MV cost 1/2 of default", "MV cost 1/4 of default", "MV cost 1/8 of default"}},
-                        New BoolParam With {.Switch = "--weightb", .Text = "B Frame Weight Prediction"},
-                        New BoolParam With {.Switch = "--weightp", .Text = "P Frame Weight Prediction"})
+                        New BoolParam With {.Switch = "--weightb", .Text = "B-Frame Weight Prediction"},
+                        New BoolParam With {.Switch = "--weightp", .Text = "P-Frame Weight Prediction"})
                     Add("Profile",
                         New OptionParam With {.Switch = "--profile", .Text = "Profile:", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "Baseline", "Main", "High"}},
                         New OptionParam With {.Switch = "--profile", .Name = "ProfileMPEG2", .Text = "Profile:", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "Simple", "Main", "High"}},
@@ -303,6 +303,13 @@ Public Class IntelEncoder
                     ret += " --" + Mode.ValueText + " " & p.VideoBitrate
             End Select
 
+            If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
+                (p.Script.IsFilterActive("Crop", "Hardware Encoder") OrElse
+                (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop"))) Then
+
+                ret += " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom
+            End If
+
             If p.Script.IsFilterActive("Resize", "Hardware Encoder") OrElse
                 (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Resize")) Then
 
@@ -310,13 +317,6 @@ Public Class IntelEncoder
             ElseIf p.AutoARSignaling AndAlso p.SourceFile <> "" Then
                 Dim par = Calc.GetTargetPAR
                 If par <> New Point(1, 1) Then ret += " --sar " & par.X & ":" & par.Y
-            End If
-
-            If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
-                (p.Script.IsFilterActive("Crop", "Hardware Encoder") OrElse
-                (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop"))) Then
-
-                ret += " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom
             End If
 
             If Decoder.ValueText <> "avs" Then

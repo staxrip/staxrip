@@ -1264,9 +1264,9 @@ Public Class MainForm
 
     Sub SetTextBoxBinding(tb As TextBox, obj As Object, prop As String, add As Boolean)
         If add Then
-            tbTargetFile.DataBindings.Add(New Binding(NameOf(TextBox.Text), obj, prop, False, DataSourceUpdateMode.OnPropertyChanged))
+            tb.DataBindings.Add(New Binding(NameOf(TextBox.Text), obj, prop, False, DataSourceUpdateMode.OnPropertyChanged))
         Else
-            tbTargetFile.DataBindings.Clear()
+            tb.DataBindings.Clear()
         End If
     End Sub
 
@@ -3081,6 +3081,13 @@ Public Class MainForm
             mb3.MenuButton.Value = s.ToolStripRenderMode
             mb3.MenuButton.SaveAction = Sub(value) s.ToolStripRenderMode = value
 
+            num = ui.AddNumericBlock(systemPage)
+            num.Label.Text = "Minimum Disk Space:"
+            num.Label.Tooltip = "Minimum allowed disk space in GB."
+            num.NumEdit.Init(0, 10000, 1)
+            num.NumEdit.Value = s.MinimumDiskSpace
+            num.NumEdit.SaveAction = Sub(value) s.MinimumDiskSpace = CInt(value)
+
             cb = ui.AddCheckBox(systemPage)
             cb.Text = "Prevent system entering standby mode while encoding"
             cb.Checked = s.PreventStandby
@@ -3435,7 +3442,7 @@ Public Class MainForm
         Try 'with file batch target file is empty, also crashes with network shares 
             Dim di As New DriveInfo(p.TargetFile.Dir)
 
-            If di.AvailableFreeSpace < New FileInfo(p.FirstOriginalSourceFile).Length Then
+            If di.AvailableFreeSpace / 1024 ^ 3 < s.MinimumDiskSpace Then
                 ProcessForm.CloseProcessForm()
 
                 Using td As New TaskDialog(Of String)
@@ -4118,8 +4125,8 @@ Public Class MainForm
         f.Owner = Me
 
         f.Doc.WriteStart("Command Line Reference")
-        f.Doc.WriteP("Switches are processed in the order they appear in the command line. For more info visit the support forum and read the automation topic in the [https://stax76.gitbooks.io/staxrip-handbook/content/automation.html handbook].")
-
+        f.Doc.WriteP("Switches are processed in the order they appear in the command line.")
+        f.Doc.WriteP("The command line interface, main menu and Event Commands feature are built on top of a common command engine which exposes a rich set of commands.")
         f.Doc.WriteElement("h2", "Examples")
         f.Doc.WriteP("StaxRip ""C:\Movie\project.srip""")
         f.Doc.WriteP("StaxRip ""C:\Movie\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB""")
@@ -5426,9 +5433,7 @@ Public Class MainForm
 
     Private Sub tbSource_TextChanged(sender As Object, e As EventArgs) Handles tbSourceFile.TextChanged
         If Not BlockSourceTextBoxTextChanged Then
-            If File.Exists(tbSourceFile.Text) Then
-                OpenVideoSourceFile(tbSourceFile.Text)
-            End If
+            If File.Exists(tbSourceFile.Text) Then OpenVideoSourceFile(tbSourceFile.Text)
         End If
     End Sub
 

@@ -253,7 +253,7 @@ Class VideoComparisonForm
                 avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """)"))
 
                 Try
-                    g.ffmsindex(sourePath, cachePath)
+                    g.ffmsindex(sourePath, cachePath, False, True)
                 Catch ex As AbortException
                     Return False
                 Finally

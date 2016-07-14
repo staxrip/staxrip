@@ -243,17 +243,17 @@ Public Class x265Params
 
     Property BFrames As New NumParam With {
         .Switch = "--bframes",
-        .Text = "B Frames:",
+        .Text = "B-Frames:",
         .MinMaxStep = {0, 16, 1}}
 
     Property BFrameBias As New NumParam With {
         .Switch = "--bframe-bias",
-        .Text = "B Frame Bias:",
+        .Text = "B-Frame Bias:",
         .MinMaxStep = {-90, 100, 1}}
 
     Property BAdapt As New OptionParam With {
         .Switch = "--b-adapt",
-        .Text = "B Adapt:",
+        .Text = "B-Adapt:",
         .IntegerValue = True,
         .Options = {"None", "Fast", "Full"}}
 
@@ -596,7 +596,7 @@ Public Class x265Params
     Property Bpyramid As New BoolParam With {
         .Switch = "--b-pyramid",
         .NoSwitch = "--no-b-pyramid",
-        .Text = "B Pyramid",
+        .Text = "B-Pyramid",
         .Value = True,
         .DefaultValue = True}
 

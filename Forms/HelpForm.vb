@@ -83,11 +83,7 @@ Class HelpForm
     Overloads Shared Sub ShowDialog(heading As String, tips As StringPairList, summary As String)
         Dim f As New HelpForm()
         f.Doc.WriteStart(heading)
-
-        If Not summary Is Nothing Then
-            f.Doc.WriteP(summary)
-        End If
-
+        If Not summary Is Nothing Then f.Doc.WriteP(summary)
         f.Doc.WriteTips(tips)
         f.Show()
     End Sub
@@ -111,10 +107,7 @@ Class HelpForm
     Shadows Sub Show()
         MyBase.Show()
         Application.DoEvents()
-
-        If Not DocumentValue Is Nothing Then
-            DocumentValue.WriteDocument(Browser)
-        End If
+        If Not DocumentValue Is Nothing Then DocumentValue.WriteDocument(Browser)
     End Sub
 
     Private Sub Browser_Navigating(sender As Object, e As WebBrowserNavigatingEventArgs) Handles Browser.Navigating

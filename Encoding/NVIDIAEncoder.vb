@@ -189,6 +189,10 @@ Public Class NVIDIAEncoder
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
                     Add("Basic", Decoder, Mode, Codec, QPI, QPP, QPB)
+                    Add("Slice Decision",
+                        New NumParam With {.Switch = "--bframes", .Text = "B-Frames:", .Value = 3, .DefaultValue = 3, .MinMaxStep = {0, 16, 1}},
+                        New NumParam With {.Switch = "--ref", .Text = "Ref Frames:", .Value = 3, .DefaultValue = 3, .MinMaxStep = {0, 16, 1}},
+                        New NumParam With {.Switch = "--gop-len", .Text = "GOP Length:", .MinMaxStep = {0, Integer.MaxValue, 1}})
                     Add("Rate Control",
                         New NumParam With {.Switch = "--qp-init", .Text = "Initial QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-max", .Text = "Max QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
@@ -218,9 +222,6 @@ Public Class NVIDIAEncoder
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace:", .VisibleFunc = Function() Decoder.ValueText = "nv", .Options = {"none", "adaptive", "bob"}},
                         New OptionParam With {.Switch = "--interlaced", .Switches = {"--tff", "--bff"}, .Text = "Interlaced:", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level:", .Options = {"info", "debug", "warn", "error"}},
-                        New NumParam With {.Switch = "--bframes", .Text = "B Frames:", .Value = 3, .DefaultValue = 3, .MinMaxStep = {0, 16, 1}},
-                        New NumParam With {.Switch = "--ref", .Text = "Ref Frames:", .Value = 3, .DefaultValue = 3, .MinMaxStep = {0, 16, 1}},
-                        New NumParam With {.Switch = "--gop-len", .Text = "GOP Length:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--cu-max", .Text = "Max CU Size:", .MinMaxStep = {0, 64, 16}},
                         New NumParam With {.Switch = "--cu-min", .Text = "Min CU Size:", .MinMaxStep = {0, 32, 16}},
                         New BoolParam With {.Switch = "--deblock", .NoSwitch = "--no-deblock", .Text = "Deblock", .InitValue = True},

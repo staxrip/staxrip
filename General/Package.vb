@@ -119,7 +119,7 @@ Public Class Package
         .Filename = "VCEEncC64.exe",
         .Description = "AMD GPU accelerated H.264 encoder.",
         .HelpFile = "help.txt",
-        .WebURL = "https://www.dropbox.com/sh/c4q2ekr269fd4w9/6zuEnjBI-Q"}
+        .WebURL = "https://onedrive.live.com/?id=6BDD4375AC8933C6!516&cid=6BDD4375AC8933C6"}
 
     Public Shared DGDecodeNV As New PluginPackage With {
         .Name = "DGDecodeNV",
@@ -200,7 +200,7 @@ Public Class Package
             .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=30679",
             .FixedDir = Folder.System,
             .IsRequiredFunc = Function() p.Script.Contains("Noise", "RemoveGrain("),
-            .TreePath = "Runtime"})
+            .TreePath = "Runtimes"})
 
         Add(New Package With {
             .Name = "Visual C++ 2013",
@@ -208,7 +208,7 @@ Public Class Package
             .Description = "Visual C++ 2013 Redistributable is required by some tools used by StaxRip.",
             .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=40784",
             .FixedDir = Folder.System,
-            .TreePath = "Runtime"})
+            .TreePath = "Runtimes"})
 
         Add(New Package With {
             .Name = "Visual C++ 2015",
@@ -216,7 +216,7 @@ Public Class Package
             .Description = "Visual C++ 2015 Redistributable is required by some tools used by StaxRip.",
             .DownloadURL = "http://download.microsoft.com/download/8/c/b/8cb4af84-165e-4b36-978d-e867e07fc707/vc_redist.x64.exe",
             .FixedDir = Folder.System,
-            .TreePath = "Runtime"})
+            .TreePath = "Runtimes"})
 
         Add(New Package With {
             .Name = "AVSMeter",
@@ -469,6 +469,17 @@ Public Class Package
                 New VideoFilter("Field", "QTGMC | QTGMC Fast", "QTGMC(Preset = ""Fast"")"),
                 New VideoFilter("Field", "QTGMC | QTGMC Medium", "QTGMC(Preset = ""Medium"")"),
                 New VideoFilter("Field", "QTGMC | QTGMC Slow", "QTGMC(Preset = ""Slow"")")},
+            .Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}})
+
+        Add(New PluginPackage With {
+            .Name = "SMDegrain",
+            .Filename = "SMDegrain.avsi",
+            .WebURL = "http://avisynth.nl/index.php/SMDegrain",
+            .HelpURL = "http://avisynth.nl/index.php/SMDegrain",
+            .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
+            .AviSynthFilterNames = {"SMDegrain"},
+            .AviSynthFiltersFunc = Function() {
+                New VideoFilter("Noise", "SMDegrain", "SMDegrain(tr = 2, thSAD = 250, contrasharp = false, refinemotion = true, lsb = false)")},
             .Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}})
 
         Add(New PluginPackage With {
@@ -823,7 +834,7 @@ Public Class AviSynthPlusPackage
         WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         FixedDir = Folder.System
-        SetupFilename = "AviSynth+r1858.exe"
+        SetupFilename = "AviSynth+r2043.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -847,7 +858,7 @@ Public Class PythonPackage
     Sub New()
         Name = "Python"
         Filename = "python.exe"
-        TreePath = "Runtime"
+        TreePath = "Runtimes"
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         DownloadURL = "https://www.python.org/ftp/python/3.5.1/python-3.5.1-amd64-webinstall.exe"
@@ -1012,7 +1023,7 @@ Public Class JavaPackage
         Name = "Java"
         Filename = "Java.exe"
         WebURL = "http://java.com"
-        TreePath = "Runtime"
+        TreePath = "Runtimes"
         Description = "Java is required by ProjectX. " + Strings.ProjectX
         DownloadURL = "http://java.com/en/download"
         IsRequiredValue = False

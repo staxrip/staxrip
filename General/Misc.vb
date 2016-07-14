@@ -409,15 +409,20 @@ Public Class GlobalClass
         End Using
     End Sub
 
-    Sub ffmsindex(sourcePath As String, cachePath As String, Optional indexAudio As Boolean = False)
+    Sub ffmsindex(sourcePath As String,
+                  cachePath As String,
+                  Optional indexAudio As Boolean = False,
+                  Optional noLog As Boolean = False)
+
         If File.Exists(sourcePath) AndAlso Not File.Exists(cachePath) AndAlso
             Not FileTypes.VideoText.Contains(Filepath.GetExt(sourcePath)) Then
 
-            Using o As New Proc
-                o.Init("Index with ffmsindex", "Indexing, please wait...")
-                o.File = Package.ffms2.GetDir + "ffmsindex.exe"
-                o.Arguments = If(indexAudio, "-t -1 ", "") + """" + sourcePath + """ """ + cachePath + """"
-                o.Start()
+            Using proc As New Proc
+                proc.NoLog = noLog
+                proc.Init("Index with ffmsindex", "Indexing, please wait...")
+                proc.File = Package.ffms2.GetDir + "ffmsindex.exe"
+                proc.Arguments = If(indexAudio, "-t -1 ", "") + """" + sourcePath + """ """ + cachePath + """"
+                proc.Start()
             End Using
         End If
     End Sub

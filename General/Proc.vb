@@ -20,6 +20,7 @@ Class Proc
     Property TrimChars As Char()
     Property RemoveChars As Char()
     Property ExitCode As Integer
+    Property NoLog As Boolean
 
     Private ReadOutput As Boolean
     Private ReadError As Boolean
@@ -38,7 +39,7 @@ Class Proc
         ReadError = True
         Wait = True
         Priority = s.ProcessPriority
-        Log.WriteHeader(header)
+        If Not NoLog Then Log.WriteHeader(header)
         If skipStrings.Length > 0 Then Me.SkipStrings = skipStrings
         ProcessForm.ShowForm()
     End Sub
@@ -101,9 +102,9 @@ Class Proc
         End Get
         Set(Value As String)
             Try
-                Dim m = Regex.Match(Value, "((?<file>[^\s""]+)|""(?<file>.+?)"") *(?<args>[^\f\r]*)")
-                File = m.Groups("file").Value
-                Arguments = m.Groups("args").Value
+                Dim match = Regex.Match(Value, "((?<file>[^\s""]+)|""(?<file>.+?)"") *(?<args>[^\f\r]*)")
+                File = match.Groups("file").Value
+                Arguments = match.Groups("args").Value
             Catch
                 Throw New Exception("Failed to parse command line: " + Value)
             End Try
@@ -135,7 +136,7 @@ Class Proc
     End Property
 
     Sub WriteLine(value As String)
-        Log.WriteLine(value)
+        If Not NoLog Then Log.WriteLine(value)
     End Sub
 
     Sub KillAndThrow()
@@ -156,7 +157,7 @@ Class Proc
 
     Sub Start()
         Try
-            If ReadError OrElse ReadOutput Then
+            If (ReadError OrElse ReadOutput) AndAlso Not NoLog Then
                 Log.WriteLine(CommandLine + BR2)
                 Log.Save()
             End If
@@ -187,18 +188,10 @@ Class Proc
 
             Native.SetForegroundWindow(h)
         Catch ex As Exception
-            Dim m = ex.Message
-
-            If File <> "" Then
-                m += BR2 + "File: " + File
-            End If
-
-            If Arguments <> "" Then
-                m += BR2 + "Arguments: " + Arguments
-            End If
-
-            MsgError(m)
-
+            Dim msg = ex.Message
+            If File <> "" Then msg += BR2 + "File: " + File
+            If Arguments <> "" Then msg += BR2 + "Arguments: " + Arguments
+            MsgError(msg)
             If ReTrowException Then Throw New AbortException
         End Try
 
@@ -275,12 +268,7 @@ Class Proc
     Private DisposedValue As Boolean = False
 
     Protected Overridable Sub Dispose(disposing As Boolean)
-        If Not DisposedValue Then
-            If disposing Then
-                Cleanup()
-            End If
-        End If
-
+        If Not DisposedValue Then If disposing Then Cleanup()
         DisposedValue = True
     End Sub
 
@@ -306,13 +294,11 @@ Class Proc
             ProcessForm.ClearCommandLineOutput()
         End If
 
-        If writeLog Then
+        If writeLog AndAlso Not NoLog Then
             Log.WriteStats()
             Log.Save()
         End If
 
-        If Not Process Is Nothing Then
-            Process.Dispose()
-        End If
+        If Not Process Is Nothing Then Process.Dispose()
     End Sub
 End Class

@@ -216,25 +216,51 @@ Public Class GlobalCommands
 
     <Command("Test")>
     Sub Test()
-        Dim nvexcept = "--help --version --check-device
---check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
---check-filters --device --input --output --raw --avs --vpy --vpy-mt --avcuvid-analyze
---audio-source --audio-file --seek --format --audio-copy --audio-copy --audio-codec
---audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
---audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
---avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
---log --log-framelist".Split((" " + BR).ToCharArray())
-        Dim nvhelp = File.ReadAllText(".\Apps\NVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
-        Dim nvhelpSwitches = Regex.Matches(nvhelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
+        Dim nvExcept = "--help --version --check-device
+        --check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
+        --check-filters --device --input --output --raw --avs --vpy --vpy-mt --avcuvid-analyze
+        --audio-source --audio-file --seek --format --audio-copy --audio-copy --audio-codec
+        --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
+        --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
+        --avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
+        --log --log-framelist".Split((" " + BR).ToCharArray())
+        Dim nvHelp = File.ReadAllText(".\Apps\NVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
+        Dim nvHelpSwitches = Regex.Matches(nvHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim nvCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\NVIDIAEncoder.vb").Replace("--no-", "--")
-        Dim nvpresent = Regex.Matches(nvCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim nvMissing = nvpresent.Where(Function(arg) Not nvhelpSwitches.Contains(arg))
-        Dim nvunknown = nvhelpSwitches.Where(Function(x) Not nvpresent.Contains(x) AndAlso Not nvexcept.Contains(x)).ToList()
-        nvunknown.Sort()
-        Dim noNeedToExcept = nvexcept.Where(Function(arg) nvpresent.Contains(arg))
-        If noNeedToExcept.Count > 0 Then MsgInfo("Unnecessary NVEncC Exception:", noNeedToExcept.Join(" "))
+        Dim nvPresent = Regex.Matches(nvCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
+        Dim nvMissing = nvPresent.Where(Function(arg) Not nvHelpSwitches.Contains(arg))
+        Dim nvUnknown = nvHelpSwitches.Where(Function(x) Not nvPresent.Contains(x) AndAlso Not nvExcept.Contains(x)).ToList()
+        nvUnknown.Sort()
+        Dim nvNoNeedToExcept = nvExcept.Where(Function(arg) nvPresent.Contains(arg))
+        If nvNoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary NVEncC Exception:", nvNoNeedToExcept.Join(" "))
         If nvMissing.Count > 0 Then MsgInfo("Removed from NVEncC:", nvMissing.Join(" "))
-        If nvunknown.Count > 0 Then MsgInfo("NVEncC Todo", nvunknown.Join(" "))
+        If nvUnknown.Count > 0 Then MsgInfo("NVEncC Todo", nvUnknown.Join(" "))
+
+        Dim amdExcept = "--audio-bitrate --audio-codec --audio-copy --audio-file --audio-filter
+        --audio-ignore-decode-error --audio-ignore-notrack-error --audio-resampler
+        --audio-samplerate --audio-source --audio-stream --avs --avvce --avvce-analyze
+        --check-avversion --check-codecs --check-decoders --check-encoders --check-filters
+        --check-formats --check-protocols --dar --format --fps --help --input-file
+        --input-res --log-framelist --mux-option --output-file --raw --seek --skip-frame
+        --sub-copy --version --video-streamid --video-track --vpy --vpy-mt".Split((" " + BR).ToCharArray())
+        Dim amdHelp = File.ReadAllText(".\Apps\VCEEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
+        Dim amdHelpSwitches = Regex.Matches(amdHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
+        Dim amdCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\AMDEncoder.vb").Replace("--no-", "--")
+        Dim amdPresent = Regex.Matches(amdCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
+        Dim amdMissing = amdPresent.Where(Function(arg) Not amdHelpSwitches.Contains(arg))
+        Dim amdUnknown = amdHelpSwitches.Where(Function(x) Not amdPresent.Contains(x) AndAlso Not amdExcept.Contains(x)).ToList()
+        amdUnknown.Sort()
+        Dim amdNoNeedToExcept = amdExcept.Where(Function(arg) amdPresent.Contains(arg))
+        If amdNoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary VCEEncC Exception:", amdNoNeedToExcept.Join(" "))
+        If amdMissing.Count > 0 Then MsgInfo("Removed from VCEEncC:", amdMissing.Join(" "))
+
+        If amdUnknown.Count > 0 Then
+            MsgInfo("VCEEncC Todo", amdUnknown.Join(" "))
+
+            If MsgQuestion("Copy " + amdUnknown(0) + " ?") = DialogResult.OK Then
+                amdUnknown(0).ToClipboard
+            End If
+        End If
 
         Dim qsExcept = "--help --version --check-device --video-streamid --video-track
         --check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
@@ -542,6 +568,11 @@ as published by Sam Hocevar. See the COPYING file for more details.", True)
 
     <Command("Sets the file path of the target file.")>
     Sub SetTargetFile(<DispName("Target File Path")> path As String)
-        g.MainForm.tbTargetFile.Text = path
+        p.TargetFile = path
+    End Sub
+
+    <Command("Loads the source file.")>
+    Sub LoadSourceFile(<DispName("Source File Path")> path As String)
+        g.MainForm.OpenVideoSourceFile(path)
     End Sub
 End Class

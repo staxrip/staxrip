@@ -50,7 +50,7 @@ Public Class NVIDIAEncoder
             f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
             f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.NVEncC.Path, "--check-hw"))))
             f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.NVEncC.Path, "--check-features"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetErrorOutput(Package.NVEncC.Path, "--check-environment"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetErrorOut(Package.NVEncC.Path, "--check-environment"))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = newParams

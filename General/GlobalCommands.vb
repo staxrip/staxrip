@@ -59,8 +59,7 @@ Public Class GlobalCommands
         If asBatch Then
             Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
             Dim batchCode = Macro.Solve(commandLines)
-
-            File.WriteAllText(batchPath, batchCode, Encoding.GetEncoding(850))
+            File.WriteAllText(batchPath, batchCode, Console.InputEncoding)
             AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 
             Using proc As New Proc
@@ -127,8 +126,7 @@ Public Class GlobalCommands
 
         Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
         Dim batchCode = Macro.Solve(batchScript)
-
-        File.WriteAllText(batchPath, batchCode, Encoding.GetEncoding(850))
+        File.WriteAllText(batchPath, batchCode, Console.InputEncoding)
         AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 
         Using proc As New Proc
@@ -256,10 +254,7 @@ Public Class GlobalCommands
 
         If amdUnknown.Count > 0 Then
             MsgInfo("VCEEncC Todo", amdUnknown.Join(" "))
-
-            If MsgQuestion("Copy " + amdUnknown(0) + " ?") = DialogResult.OK Then
-                amdUnknown(0).ToClipboard
-            End If
+            If MsgQuestion("Copy " + amdUnknown(0) + " ?") = DialogResult.OK Then amdUnknown(0).ToClipboard
         End If
 
         Dim qsExcept = "--help --version --check-device --video-streamid --video-track
@@ -273,7 +268,8 @@ Public Class GlobalCommands
         --audio-ignore-notrack-error --nv12 --output-file --check-features-html --perf-monitor
         --perf-monitor-plot --perf-monitor-interval --python --qvbr-quality --sharpness --vpp-delogo
         --vpp-delogo-select --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb
-        --vpp-delogo-cr --vpp-half-turn".Split((" " + BR).ToCharArray())
+        --vpp-delogo-cr --vpp-half-turn --avsw --input-analyze --input-format --output-format
+        ".Split((" " + BR).ToCharArray())
         Dim qsHelp = File.ReadAllText(".\Apps\QSVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim qsHelpSwitches = Regex.Matches(qsHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim qsCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\IntelEncoder.vb").Replace("--no-", "--")
@@ -284,7 +280,10 @@ Public Class GlobalCommands
         Dim qsNoNeedToExcept = qsExcept.Where(Function(arg) qsPresent.Contains(arg))
         If qsNoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary QSVEncC Exception:", qsNoNeedToExcept.Join(" "))
         If qsMissing.Count > 0 Then MsgInfo("Removed from QSVEncC:", qsMissing.Join(" "))
-        If qsUnknown.Count > 0 Then MsgInfo("QSVEncC Todo", qsUnknown.Join(" "))
+        If qsUnknown.Count > 0 Then
+            MsgInfo("QSVEncC Todo", qsUnknown.Join(" "))
+            If MsgQuestion("Copy " + qsUnknown(0) + " ?") = DialogResult.OK Then qsUnknown(0).ToClipboard
+        End If
 
         Dim x265Except = "--crop-rect --display-window --fast-cbf --frame-skip --help
 --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version".Split((" " + BR).ToCharArray())

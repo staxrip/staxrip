@@ -564,10 +564,6 @@ Public Class x265Params
         .IntegerValue = True,
         .Options = {"None", "MD5", "CRC", "Checksum"}}
 
-    Property HighTier As New BoolParam With {
-        .Switch = "--high-tier",
-        .Text = "High Tier"}
-
     Property TemporalMVP As New BoolParam With {
         .Switch = "--temporal-mvp",
         .NoSwitch = "--no-temporal-mvp",
@@ -762,9 +758,9 @@ Public Class x265Params
         .ArgsFunc = Function() If(CSV.Value, "--csv """ + Filepath.GetDirAndBase(p.TargetFile) + ".csv""", Nothing)}
 
     Property RecursionSkip As New BoolParam With {
-        .Switch = "--recursion-skip",
-        .NoSwitch = "--no-recursion-skip",
-        .Text = "Recursion Skip",
+        .Switch = "--rskip",
+        .NoSwitch = "--no-rskip",
+        .Text = "Early CU depth recursion skip",
         .InitValue = True}
 
     Property csvloglevel As New OptionParam With {
@@ -831,7 +827,9 @@ Public Class x265Params
                     New StringParam With {.Switch = "--qpfile", .Text = "QP File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                     New StringParam With {.Switch = "--recon", .Text = "Recon File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                     New StringParam With {.Switch = "--scaling-list", .Text = "Scaling List:", .Quotes = True},
-                    Decoder, SAO, HighTier, SAOnonDeblock, SlowFirstpass, SignHide,
+                    Decoder, SAO,
+                    New BoolParam With {.Switch = "--high-tier", .Text = "High Tier", .Name = "HighTierV2", .InitValue = True},
+                    SAOnonDeblock, SlowFirstpass, SignHide,
                     New BoolParam With {.Switch = "--allow-non-conformance", .Text = "Allow non conformance"},
                     New BoolParam With {.Switch = "--uhd-bd", .Text = "Ultra HD Blu-ray"})
                 Add("Custom", Custom)

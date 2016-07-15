@@ -121,9 +121,9 @@ void x265_param_default(x265_param* param)
     /* Source specifications */
     param->internalBitDepth = X265_DEPTH;
     param->internalCsp = X265_CSP_I420;
-    param->levelIdc = 0;
+    param->levelIdc = 0; //Auto-detect level
     param->uhdBluray = 0;
-    param->bHighTier = 0;
+    param->bHighTier = 1; //Allow high tier by default
     param->interlaceMode = 0;
     param->bAnnexB = 1;
     param->bRepeatHeaders = 0;
@@ -389,7 +389,6 @@ int x265_param_default_preset(x265_param* param, const char* preset, const char*
             param->maxNumMergeCand = 4;
             param->searchMethod = X265_STAR_SEARCH;
             param->maxNumReferences = 5;
-            param->bEnableRecursionSkip = 0;
             param->limitReferences = 1;
             param->limitModes = 1;
             param->bIntraInBFrames = 1;
@@ -620,7 +619,7 @@ int x265_param_parse(x265_param* p, const char* name, const char* value)
     OPT("max-merge") p->maxNumMergeCand = (uint32_t)atoi(value);
     OPT("temporal-mvp") p->bEnableTemporalMvp = atobool(value);
     OPT("early-skip") p->bEnableEarlySkip = atobool(value);
-    OPT("recursion-skip") p->bEnableRecursionSkip = atobool(value);
+    OPT("rskip") p->bEnableRecursionSkip = atobool(value);
     OPT("rdpenalty") p->rdPenalty = atoi(value);
     OPT("tskip") p->bEnableTransformSkip = atobool(value);
     OPT("no-tskip-fast") p->bEnableTSkipFast = atobool(value);
@@ -1351,7 +1350,7 @@ void x265_print_params(x265_param* param)
     TOOLVAL(param->psyRdoq, "psy-rdoq=%.2lf");
     TOOLOPT(param->bEnableRdRefine, "rd-refine");
     TOOLOPT(param->bEnableEarlySkip, "early-skip");
-    TOOLOPT(param->bEnableRecursionSkip, "recursion-skip");
+    TOOLOPT(param->bEnableRecursionSkip, "rskip");
     TOOLVAL(param->noiseReductionIntra, "nr-intra=%d");
     TOOLVAL(param->noiseReductionInter, "nr-inter=%d");
     TOOLOPT(param->bEnableTSkipFast, "tskip-fast");
@@ -1410,7 +1409,7 @@ char *x265_param2string(x265_param* p)
     s += sprintf(s, " max-merge=%d", p->maxNumMergeCand);
     BOOL(p->bEnableTemporalMvp, "temporal-mvp");
     BOOL(p->bEnableEarlySkip, "early-skip");
-    BOOL(p->bEnableRecursionSkip, "recursion-skip");
+    BOOL(p->bEnableRecursionSkip, "rskip");
     s += sprintf(s, " rdpenalty=%d", p->rdPenalty);
     BOOL(p->bEnableTransformSkip, "tskip");
     BOOL(p->bEnableTSkipFast, "tskip-fast");

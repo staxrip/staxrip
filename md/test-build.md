@@ -13,6 +13,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - added setting to define the minimum required disk space and added Continue and Abort option to the message box
 - VCEEncC (AMD H.264 encoder) switches added
 - SMDegrain added, to create the SMDegrain default filter profile go to: 'Filters > Profiles > Restore Defaults > OK' or alternatively: 'Tools > Advanced > Reset Setting > AviSynth Filter Profiles > OK'
+- some x265 changes
 
 #### Fixed Bugs
 
@@ -21,6 +22,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - fixed crash in processing dialog
 - fixed bug with automatic generation of audio profile names
 - fixed video comparison overwriting the log file
+- fixed codepage problem of non western europe locales
 
 #### Tweaks
 
@@ -32,8 +34,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - havsfunc 23
 - aWarpSharp2 2016-06-24
 - nnedi3 0.9.4.22
-- x265 217
-- QSVEncC 2.53
 - VCEEncC 2.0
 - AviSynth+ r2043
 - MKVToolNix 9.3.1
+- QSVEncC 2.54
+- x265 2.0+4

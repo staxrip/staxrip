@@ -369,13 +369,13 @@ Class BatchMuxer
     Overrides Sub Mux()
         Log.WriteHeader("Batch Muxing")
 
-        Dim commands = Macro.Solve(CommandLines)
+        Dim batchCode = Proc.BatchHeader + Macro.Solve(CommandLines)
         Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_mux.bat"
-        File.WriteAllText(batchPath, commands, Encoding.GetEncoding(850))
+        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
 
         Using proc As New Proc
             proc.Init("Encoding video command line encoder: " + Name)
-            proc.WriteLine(commands + BR2)
+            proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
 
@@ -418,7 +418,10 @@ Class BatchMuxer
             tb.Edit.SaveAction = Sub(value) CommandLines = value
 
             Dim ret = f.ShowDialog()
-            If ret = DialogResult.OK Then ui.Save()
+            If ret = DialogResult.OK Then
+                ui.Save()
+                p.TargetFile = p.TargetFile.DirAndBase + "." + OutputTypeValue
+            End If
 
             Return ret
         End Using
@@ -698,6 +701,7 @@ Class ffmpegMuxer
 
             If ret = DialogResult.OK Then
                 ui.Save()
+                p.TargetFile = p.TargetFile.DirAndBase + "." + OutputTypeValue
             End If
 
             Return ret

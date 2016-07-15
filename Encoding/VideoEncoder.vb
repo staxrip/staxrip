@@ -313,7 +313,7 @@ Public MustInherit Class VideoEncoder
         nvencH265.Name = "Command Line | NVIDIA H.265"
         nvencH265.Muxer = New MkvMuxer()
         nvencH265.QualityMode = True
-        nvencH265.CommandLines = """%app:ffmpeg%"" -i ""%script_file%"" -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | ""%app:NVEncC%"" --sar %target_sar% --codec h265 --y4m --cqp 20 -i - -o ""%encoder_out_file%"""
+        nvencH265.CommandLines = """%app:NVEncC%"" --sar %target_sar% --codec h265 --cqp 20 -i ""%script_file%"" -o ""%encoder_out_file%"""
         ret.Add(nvencH265)
 
         ret.Add(Getx264Encoder("Devices | DivX Plus", x264DeviceMode.DivXPlus))
@@ -494,46 +494,27 @@ Class BatchEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Dim commands = Macro.Solve(CommandLines).Trim
+        Dim batchCode = Proc.BatchHeader + Macro.Solve(CommandLines).Trim
+        Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
+        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
 
-        If commands.Contains("|") OrElse commands.Contains(BR) Then
-            Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
-            File.WriteAllText(batchPath, commands, Encoding.GetEncoding(850))
+        Using proc As New Proc
+            proc.Init("Encoding video command line encoder: " + Name)
+            proc.SkipStrings = GetSkipStrings(batchCode)
+            proc.WriteLine(batchCode + BR2)
+            proc.File = "cmd.exe"
+            proc.Arguments = "/C call """ + batchPath + """"
 
-            Using proc As New Proc
-                proc.Init("Encoding video command line encoder: " + Name)
-                proc.SkipStrings = GetSkipStrings(commands)
-                proc.WriteLine(commands + BR2)
-                proc.File = "cmd.exe"
-                proc.Arguments = "/C call """ + batchPath + """"
-
-                Try
-                    proc.Start()
-                Catch ex As AbortException
-                    Throw ex
-                Catch ex As Exception
-                    ProcessForm.CloseProcessForm()
-                    g.ShowException(ex)
-                    Throw New AbortException
-                End Try
-            End Using
-        Else
-            Using proc As New Proc
-                proc.Init("Encoding video command line encoder: " + Name)
-                proc.SkipStrings = GetSkipStrings(commands)
-                proc.CommandLine = commands
-
-                Try
-                    proc.Start()
-                Catch ex As AbortException
-                    Throw ex
-                Catch ex As Exception
-                    ProcessForm.CloseProcessForm()
-                    g.ShowException(ex)
-                    Throw New AbortException
-                End Try
-            End Using
-        End If
+            Try
+                proc.Start()
+            Catch ex As AbortException
+                Throw ex
+            Catch ex As Exception
+                ProcessForm.CloseProcessForm()
+                g.ShowException(ex)
+                Throw New AbortException
+            End Try
+        End Using
     End Sub
 
     Overrides Sub RunCompCheck()
@@ -568,14 +549,13 @@ Class BatchEncoder
         script.Synchronize()
 
         Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_CompCheck.bat"
-        Dim command = Macro.Solve(CompCheckCommandLines)
-
-        File.WriteAllText(batchPath, command, Encoding.GetEncoding(850))
-        Log.WriteLine(command + BR2)
+        Dim batchCode = Proc.BatchHeader + Macro.Solve(CompCheckCommandLines)
+        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
+        Log.WriteLine(batchCode + BR2)
 
         Using proc As New Proc
             proc.Init(Nothing)
-            proc.SkipStrings = GetSkipStrings(command)
+            proc.SkipStrings = GetSkipStrings(batchCode)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
 

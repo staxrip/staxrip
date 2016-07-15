@@ -1,7 +1,5 @@
 Imports System.ComponentModel
-
 Imports StaxRip.UI
-Imports System.Text
 
 Class MacroEditorControl
     Inherits UserControl
@@ -316,8 +314,8 @@ Class MacroEditorControl
 
     Private Sub llExecute_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llExecute.LinkClicked
         UpdatePreview()
-        Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_execute.bat"
-        File.WriteAllText(batchPath, rtbPreview.Text, Encoding.GetEncoding(850))
+        Dim batchPath = p.TempDir + p.TargetFile.Base + "_execute.bat"
+        File.WriteAllText(batchPath, Proc.BatchHeader + rtbPreview.Text, Proc.BatchEncoding)
         g.ShellExecute(batchPath)
     End Sub
 

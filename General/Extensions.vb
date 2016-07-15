@@ -81,6 +81,11 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function DirAndBase(instance As String) As String
+        Return Filepath.GetDirAndBase(instance)
+    End Function
+
+    <Extension()>
     Function ContainsAll(instance As String, all As IEnumerable(Of String)) As Boolean
         If instance <> "" Then Return all.All(Function(arg) instance.Contains(arg))
     End Function

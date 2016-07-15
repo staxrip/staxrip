@@ -5590,7 +5590,7 @@ Public Class MainForm
 
     <Command("Shows a command prompt with the temp directory of the current project.")>
     Sub ShowCommandPrompt()
-        Dim batchCode = "@echo off" + BR
+        Dim batchCode = Proc.BatchHeader
 
         For Each i In Package.Items.Values
             Dim dir = i.GetDir
@@ -5604,7 +5604,7 @@ Public Class MainForm
         Next
 
         Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
-        File.WriteAllText(batchPath, batchCode, Encoding.GetEncoding(850))
+        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
         AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 
         Dim batchProcess As New Process

@@ -63,12 +63,21 @@ Class Proc
         End Get
     End Property
 
+    Private Shared ConsoleCPValue As Integer
+
+    Shared ReadOnly Property ConsoleCP As Integer
+        Get
+            If ConsoleCPValue = 0 Then ConsoleCPValue = Regex.Match(ProcessHelp.GetStdOut("cmd.exe", "/C CHCP"), "\d+").Value.ToInt
+            Return ConsoleCPValue
+        End Get
+    End Property
+
     Shared ReadOnly Property BatchEncoding As Encoding
         Get 'unicode don't work on Windows 7
             If p.SourceFile.ContainsUnicode Then
                 Return New UTF8Encoding(False)
             Else
-                Return Encoding.GetEncoding(850)
+                Return Encoding.GetEncoding(ConsoleCP)
             End If
         End Get
     End Property

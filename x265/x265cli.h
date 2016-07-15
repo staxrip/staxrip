@@ -97,8 +97,8 @@ static const struct option long_options[] =
     { "amp",                  no_argument, NULL, 0 },
     { "no-early-skip",        no_argument, NULL, 0 },
     { "early-skip",           no_argument, NULL, 0 },
-    { "no-recursion-skip",    no_argument, NULL, 0 },
-    { "recursion-skip",       no_argument, NULL, 0 },
+    { "no-rskip",             no_argument, NULL, 0 },
+    { "rskip",                no_argument, NULL, 0 },
     { "no-fast-cbf",          no_argument, NULL, 0 },
     { "fast-cbf",             no_argument, NULL, 0 },
     { "no-tskip",             no_argument, NULL, 0 },
@@ -314,7 +314,7 @@ static void showHelp(x265_param *param)
     H0("   --[no-]psy-rdoq <0..50.0>     Strength of psycho-visual optimization in RDO quantization, 0 to disable. Default %.1f\n", param->psyRdoq);
     H0("   --[no-]rd-refine              Enable QP based RD refinement for rd levels 5 and 6. Default %s\n", OPT(param->bEnableRdRefine));
     H0("   --[no-]early-skip             Enable early SKIP detection. Default %s\n", OPT(param->bEnableEarlySkip));
-    H0("   --[no-]recursion-skip         Enable early exit from recursion. Default %s\n", OPT(param->bEnableRecursionSkip));
+    H0("   --[no-]rskip                  Enable early exit from recursion. Default %s\n", OPT(param->bEnableRecursionSkip));
     H1("   --[no-]tskip-fast             Enable fast intra transform skipping. Default %s\n", OPT(param->bEnableTSkipFast));
     H1("   --nr-intra <integer>          An integer value in range of 0 to 2000, which denotes strength of noise reduction in intra CUs. Default 0\n");
     H1("   --nr-inter <integer>          An integer value in range of 0 to 2000, which denotes strength of noise reduction in inter CUs. Default 0\n");

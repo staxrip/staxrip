@@ -64,29 +64,18 @@ Class AMDEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Dim cl = Params.GetCommandLine(True, False)
+        Dim batchCode = Proc.BatchHeader + Params.GetCommandLine(True, False)
+        Dim batchPath = p.TempDir + p.TargetFile.Base + "_VCEEncC.bat"
+        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
 
-        If cl.Contains(" | ") Then
-            Dim batchPath = p.TempDir + p.TargetFile.Base + "_VCEEncC.bat"
-            File.WriteAllText(batchPath, cl, Encoding.GetEncoding(850))
-
-            Using proc As New Proc
-                proc.Init("Encoding using VCEEncC " + Package.VCEEncC.Version)
-                proc.SkipStrings = {"%]", " frames: "}
-                proc.WriteLine(cl + BR2)
-                proc.File = "cmd.exe"
-                proc.Arguments = "/C call """ + batchPath + """"
-                proc.Start()
-            End Using
-        Else
-            Using proc As New Proc
-                proc.Init("Encoding using VCEEncC " + Package.VCEEncC.Version)
-                proc.SkipStrings = {"%]"}
-                proc.File = Package.VCEEncC.Path
-                proc.Arguments = cl
-                proc.Start()
-            End Using
-        End If
+        Using proc As New Proc
+            proc.Init("Encoding using VCEEncC " + Package.VCEEncC.Version)
+            proc.SkipStrings = {"%]", " frames: "}
+            proc.WriteLine(batchCode + BR2)
+            proc.File = "cmd.exe"
+            proc.Arguments = "/C call """ + batchPath + """"
+            proc.Start()
+        End Using
 
         AfterEncoding()
     End Sub

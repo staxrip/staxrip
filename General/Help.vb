@@ -6,6 +6,7 @@ Imports System.ComponentModel
 
 Imports Microsoft.VisualBasic.FileIO
 Imports System.Management
+Imports System.Text.RegularExpressions
 
 Class ObjectHelp
     'parse recursive serializable fields and lists 
@@ -175,6 +176,17 @@ Class DirectoryHelp
         Catch
         End Try
     End Sub
+End Class
+
+Class ConsoleHelp
+    Private Shared DosCodePageValue As Integer
+
+    Shared ReadOnly Property DosCodePage As Integer
+        Get
+            If DosCodePageValue = 0 Then DosCodePageValue = Regex.Match(ProcessHelp.GetStdOut("cmd.exe", "/C CHCP"), "\d+").Value.ToInt
+            Return DosCodePageValue
+        End Get
+    End Property
 End Class
 
 Class FileHelp

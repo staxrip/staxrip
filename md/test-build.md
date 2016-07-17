@@ -23,6 +23,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - fixed bug with automatic generation of audio profile names
 - fixed video comparison overwriting the log file
 - fixed codepage problem of non western europe locales
+- replaced ffmpeg with avs2yuv for piping to x265 due to a character encoding bug with file names happening on non western locale systems
 
 #### Tweaks
 

@@ -55,6 +55,13 @@ Public Class Package
     Shared Property scenechange As New scenechangePackage
     Shared Property temporalsoften As New temporalsoftenPackage
 
+    Shared Property avs2yuv As New Package With {
+        .Name = "avs2yuv",
+        .Filename = "avs2yuv64.exe",
+        .WebURL = "http://avisynth.nl/index.php/Avs2YUV",
+        .HelpURL = "http://avisynth.nl/index.php/Avs2YUV",
+        .Description = "Command line app to pipe video (including high bit depth) to encoders like x265."}
+
     Shared Property x265 As New Package With {
         .Name = "x265",
         .Filename = "x265.exe",
@@ -190,6 +197,7 @@ Public Class Package
         Add(x265)
         Add(xvid_encraw)
         Add(ffms2)
+        Add(avs2yuv)
 
 #Region "misc"
 
@@ -214,7 +222,7 @@ Public Class Package
             .Name = "Visual C++ 2015",
             .Filename = "msvcp140.dll",
             .Description = "Visual C++ 2015 Redistributable is required by some tools used by StaxRip.",
-            .DownloadURL = "http://download.microsoft.com/download/8/c/b/8cb4af84-165e-4b36-978d-e867e07fc707/vc_redist.x64.exe",
+            .DownloadURL = "http://download.microsoft.com/download/4/2/F/42FF78CE-8DE0-4C88-AD7A-5F8DFFB49F74/vc_redist.x64.exe",
             .FixedDir = Folder.System,
             .TreePath = "Runtimes"})
 
@@ -908,7 +916,7 @@ Public Class VapourSynthPackage
         Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         WebURL = "http://www.vapoursynth.com"
         HelpURL = "http://www.vapoursynth.com/doc"
-        DownloadURL = "https://dl.dropboxusercontent.com/u/73468194/VapourSynth-R32-RC2.exe"
+        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R32/VapourSynth-R32.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean

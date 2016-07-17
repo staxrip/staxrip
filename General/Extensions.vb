@@ -4,6 +4,7 @@ Imports System.Reflection
 Imports System.Runtime.CompilerServices
 Imports System.Security.Cryptography
 Imports System.Text
+Imports System.Text.RegularExpressions
 Imports Microsoft.Win32
 Imports VB6 = Microsoft.VisualBasic
 
@@ -30,6 +31,13 @@ Module StringExtensions
         Next
 
         Return True
+    End Function
+
+    <Extension>
+    Function IsDosCompatible(instance As String) As Boolean
+        If instance = "" Then Return True
+        Dim bytes = Encoding.Convert(Encoding.Unicode, Encoding.GetEncoding(ConsoleHelp.DosCodePage), Encoding.Unicode.GetBytes(instance))
+        Return instance = Encoding.Unicode.GetString(Encoding.Convert(Encoding.GetEncoding(ConsoleHelp.DosCodePage), Encoding.Unicode, bytes))
     End Function
 
     <Extension>

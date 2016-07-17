@@ -54,7 +54,10 @@ Class Proc
     End Property
 
     Shared Function WriteBatchFile(path As String, content As String) As String
-        If content.IsANSICompatible Then
+        If content.IsDosCompatible Then
+            content = "@echo off" + BR + content
+            IO.File.WriteAllText(path, content, Encoding.GetEncoding(ConsoleHelp.DosCodePage))
+        ElseIf content.IsANSICompatible Then
             content = "@echo off" + BR + "CHCP " & Encoding.Default.CodePage & BR + content
             IO.File.WriteAllText(path, content, Encoding.Default)
         Else

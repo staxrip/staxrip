@@ -272,7 +272,7 @@ Public Class BatchAudioProfile
             Dim bitrateBefore = p.VideoBitrate
             Dim targetPath = GetOutputFile()
 
-            Dim batchCode = Proc.BatchHeader + {
+            Dim batchCode = {
                 Package.ffmpeg.GetDir,
                 Package.eac3to.GetDir,
                 Package.BeSweet.GetDir}.
@@ -282,7 +282,7 @@ Public Class BatchAudioProfile
                 SolveMacros(CommandLines).Trim
 
             Dim batchPath = p.TempDir + Filepath.GetBase(File) + "_audio.bat"
-            IO.File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
+            batchCode = Proc.WriteBatchFile(batchPath, batchCode)
 
             Using proc As New Proc
                 proc.Init("Audio encoding: " + Name)

@@ -315,7 +315,7 @@ Class MacroEditorControl
     Private Sub llExecute_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llExecute.LinkClicked
         UpdatePreview()
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_execute.bat"
-        File.WriteAllText(batchPath, Proc.BatchHeader + rtbPreview.Text, Proc.BatchEncoding)
+        Proc.WriteBatchFile(batchPath, rtbPreview.Text)
         g.ShellExecute(batchPath)
     End Sub
 

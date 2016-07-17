@@ -494,9 +494,8 @@ Class BatchEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Dim batchCode = Proc.BatchHeader + Macro.Solve(CommandLines).Trim
         Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
-        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
+        Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Solve(CommandLines).Trim)
 
         Using proc As New Proc
             proc.Init("Encoding video command line encoder: " + Name)
@@ -549,8 +548,7 @@ Class BatchEncoder
         script.Synchronize()
 
         Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_CompCheck.bat"
-        Dim batchCode = Proc.BatchHeader + Macro.Solve(CompCheckCommandLines)
-        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
+        Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Solve(CompCheckCommandLines))
         Log.WriteLine(batchCode + BR2)
 
         Using proc As New Proc

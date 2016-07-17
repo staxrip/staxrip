@@ -369,9 +369,8 @@ Class BatchMuxer
     Overrides Sub Mux()
         Log.WriteHeader("Batch Muxing")
 
-        Dim batchCode = Proc.BatchHeader + Macro.Solve(CommandLines)
         Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_mux.bat"
-        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
+        Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Solve(CommandLines))
 
         Using proc As New Proc
             proc.Init("Encoding video command line encoder: " + Name)

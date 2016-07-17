@@ -2744,7 +2744,7 @@ Public Class MainForm
     Sub AudioTextChanged(tb As TextBox, ap As AudioProfile)
         If BlockAudioTextChanged Then Exit Sub
 
-        If tb.Text.ContainsUnicode AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
+        If Not tb.Text.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
             MsgWarn(Strings.NoUnicode)
             tb.Text = ""
             Exit Sub
@@ -5590,21 +5590,22 @@ Public Class MainForm
 
     <Command("Shows a command prompt with the temp directory of the current project.")>
     Sub ShowCommandPrompt()
-        Dim batchCode = Proc.BatchHeader
+        Dim batchCode As String
 
-        For Each i In Package.Items.Values
-            Dim dir = i.GetDir
+        For Each pack In Package.Items.Values
+            Dim dir = pack.GetDir
 
             If Directory.Exists(dir) AndAlso
                 Not dir.ToLower.Contains("system32") AndAlso
-                Not batchCode.Contains(dir) Then
+                Not batchCode?.Contains(dir) Then
 
                 batchCode += "@set PATH=" + dir + ";%PATH%" + BR
             End If
         Next
 
         Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
-        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
+        Proc.WriteBatchFile(batchPath, batchCode)
+
         AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 
         Dim batchProcess As New Process

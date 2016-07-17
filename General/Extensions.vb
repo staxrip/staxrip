@@ -32,6 +32,13 @@ Module StringExtensions
         Return True
     End Function
 
+    <Extension>
+    Function IsANSICompatible(instance As String) As Boolean
+        If instance = "" Then Return True
+        Dim bytes = Encoding.Convert(Encoding.Unicode, Encoding.Default, Encoding.Unicode.GetBytes(instance))
+        Return instance = Encoding.Unicode.GetString(Encoding.Convert(Encoding.Default, Encoding.Unicode, bytes))
+    End Function
+
     <Extension()>
     Function FileName(instance As String) As String
         If instance = "" Then Return ""

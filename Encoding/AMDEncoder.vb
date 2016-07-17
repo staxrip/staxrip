@@ -64,9 +64,8 @@ Class AMDEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Dim batchCode = Proc.BatchHeader + Params.GetCommandLine(True, False)
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_VCEEncC.bat"
-        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
+        Dim batchCode = Proc.WriteBatchFile(batchPath, Params.GetCommandLine(True, False))
 
         Using proc As New Proc
             proc.Init("Encoding using VCEEncC " + Package.VCEEncC.Version)

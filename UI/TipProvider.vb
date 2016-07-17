@@ -132,17 +132,10 @@ Namespace UI
         End Sub
 
         Private Function GetTip(c As Control) As StringPair
-            Dim r As New StringPair
-
-            If TipTitles.ContainsKey(c) Then
-                r.Name = FormatName(TipTitles(c))
-            End If
-
-            If TipTexts.ContainsKey(c) Then
-                r.Value = TipTexts(c)
-            End If
-
-            Return r
+            Dim ret As New StringPair
+            If TipTitles.ContainsKey(c) Then ret.Name = FormatName(TipTitles(c))
+            If TipTexts.ContainsKey(c) Then ret.Value = TipTexts(c)
+            Return ret
         End Function
 
         Private Function HasContextMenu(c As Control) As Boolean

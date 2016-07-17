@@ -75,7 +75,7 @@ Public Class GlobalClass
 
     Function ShowVideoSourceWarnings(files As IEnumerable(Of String)) As Boolean
         For Each i In files
-            If i.ContainsUnicode AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
+            If Not i.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
                 MsgError(Strings.NoUnicode)
                 Return True
             End If

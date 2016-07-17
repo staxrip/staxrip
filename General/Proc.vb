@@ -53,44 +53,17 @@ Class Proc
         End Set
     End Property
 
-    Shared ReadOnly Property BatchHeader As String
-        Get 'unicode don't work on Windows 7
-            If p.SourceFile.ContainsUnicode Then
-                Return "@echo off" + BR + "CHCP 65001" + BR
-            Else
-                Return "@echo off" + BR
-            End If
-        End Get
-    End Property
+    Shared Function WriteBatchFile(path As String, content As String) As String
+        If content.IsANSICompatible Then
+            content = "@echo off" + BR + "CHCP " & Encoding.Default.CodePage & BR + content
+            IO.File.WriteAllText(path, content, Encoding.Default)
+        Else
+            content = "@echo off" + BR + "CHCP 65001" + BR + content
+            IO.File.WriteAllText(path, content, New UTF8Encoding(False))
+        End If
 
-    Private Shared ConsoleCPValue As Integer
-
-    Shared ReadOnly Property ConsoleCP As Integer
-        Get
-            If ConsoleCPValue = 0 Then ConsoleCPValue = Regex.Match(ProcessHelp.GetStdOut("cmd.exe", "/C CHCP"), "\d+").Value.ToInt
-            Return ConsoleCPValue
-        End Get
-    End Property
-
-    Shared ReadOnly Property BatchEncoding As Encoding
-        Get 'unicode don't work on Windows 7
-            If p.SourceFile.ContainsUnicode Then
-                Return New UTF8Encoding(False)
-            Else
-                Return Encoding.GetEncoding(ConsoleCP)
-            End If
-        End Get
-    End Property
-
-    Shared ReadOnly Property ProcessEncoding As Encoding
-        Get 'unicode don't work on Windows 7
-            If p.SourceFile.ContainsUnicode Then
-                Return Encoding.UTF8
-            Else
-                Return Encoding.Default
-            End If
-        End Get
-    End Property
+        Return content
+    End Function
 
     Property File() As String
         Get

@@ -59,7 +59,7 @@ Public Class GlobalCommands
         If asBatch Then
             Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
             Dim batchCode = Macro.Solve(commandLines)
-            File.WriteAllText(batchPath, batchCode, Console.InputEncoding)
+            File.WriteAllText(batchPath, batchCode, Encoding.Default)
             AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 
             Using proc As New Proc
@@ -126,7 +126,7 @@ Public Class GlobalCommands
 
         Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
         Dim batchCode = Macro.Solve(batchScript)
-        File.WriteAllText(batchPath, batchCode, Console.InputEncoding)
+        File.WriteAllText(batchPath, batchCode, Encoding.Default)
         AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 
         Using proc As New Proc

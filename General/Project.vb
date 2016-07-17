@@ -228,7 +228,7 @@ Public Class Project
                     Exit Property
                 End If
 
-                If value.ContainsUnicode AndAlso Script.Engine = ScriptEngine.AviSynth Then
+                If Not value.IsANSICompatible AndAlso Script.Engine = ScriptEngine.AviSynth Then
                     MsgWarn(Strings.NoUnicode)
                     Exit Property
                 End If

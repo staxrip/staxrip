@@ -1,7 +1,5 @@
 ﻿Imports System.Threading
 Imports System.Threading.Tasks
-Imports System.Globalization
-
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 

@@ -68,13 +68,11 @@ Public Class NVIDIAEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Dim batchCode = Proc.BatchHeader + Params.GetCommandLine(True, True)
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_NVEncC.bat"
-        File.WriteAllText(batchPath, batchCode, Proc.BatchEncoding)
+        Dim batchCode = Proc.WriteBatchFile(batchPath, Params.GetCommandLine(True, True))
 
         Using proc As New Proc
             proc.Init("Encoding using NVEncC " + Package.NVEncC.Version)
-            proc.Encoding = Proc.ProcessEncoding
             proc.SkipStrings = {"%]", " frames: "}
             proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"

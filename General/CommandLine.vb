@@ -1,6 +1,5 @@
 ﻿Imports StaxRip.UI
 Imports System.Globalization
-Imports System.Text
 
 Namespace CommandLine
     Public MustInherit Class CommandLineParams

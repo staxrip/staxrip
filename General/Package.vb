@@ -55,12 +55,12 @@ Public Class Package
     Shared Property scenechange As New scenechangePackage
     Shared Property temporalsoften As New temporalsoftenPackage
 
-    Shared Property avs2yuv As New Package With {
-        .Name = "avs2yuv",
-        .Filename = "avs2yuv64.exe",
-        .WebURL = "http://avisynth.nl/index.php/Avs2YUV",
-        .HelpURL = "http://avisynth.nl/index.php/Avs2YUV",
-        .Description = "Command line app to pipe video (including high bit depth) to encoders like x265."}
+    Shared Property avs2pipemod As New Package With {
+        .Name = "avs2pipemod",
+        .Filename = "avs2pipemod64.exe",
+        .WebURL = "http://avisynth.nl/index.php/Avs2pipemod",
+        .HelpURL = "http://avisynth.nl/index.php/Avs2pipemod",
+        .Description = "Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools."}
 
     Shared Property x265 As New Package With {
         .Name = "x265",
@@ -197,7 +197,7 @@ Public Class Package
         Add(x265)
         Add(xvid_encraw)
         Add(ffms2)
-        Add(avs2yuv)
+        Add(avs2pipemod)
 
 #Region "misc"
 

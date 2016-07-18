@@ -897,7 +897,7 @@ Public Class x265Params
                     If p.Script.Engine = ScriptEngine.VapourSynth Then
                         sb.Append(Package.vspipe.Path.Quotes + " " + script.Path.Quotes + " - --y4m | " + Package.x265.Path.Quotes)
                     Else
-                        sb.Append(Package.avs2yuv.Path.Quotes + " " + script.Path.Quotes + " - | " + Package.x265.Path.Quotes)
+                        sb.Append(Package.avs2pipemod.Path.Quotes + " -y4mp " + script.Path.Quotes + " | " + Package.x265.Path.Quotes)
                     End If
                 Case "qs"
                     Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")

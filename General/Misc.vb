@@ -4,7 +4,6 @@ Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Management
 Imports System.Runtime.InteropServices
-Imports System.Runtime.Serialization
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
@@ -2615,7 +2614,7 @@ Public Class AudioStream
     End Function
 End Class
 
-Class VideoStream
+Public Class VideoStream
     Property Format As String
     Property StreamOrder As Integer
 

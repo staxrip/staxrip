@@ -177,7 +177,7 @@ Class MacrosForm
 
         Dim macros As New StringPairList
 
-        For Each i In Macro.GetMacros
+        For Each i In Macro.GetMacros(True)
             macros.Add(i.Name, i.Description)
         Next
 

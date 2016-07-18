@@ -268,7 +268,7 @@ Public Class GlobalCommands
         --audio-ignore-notrack-error --nv12 --output-file --check-features-html --perf-monitor
         --perf-monitor-plot --perf-monitor-interval --python --qvbr-quality --sharpness --vpp-delogo
         --vpp-delogo-select --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb
-        --vpp-delogo-cr --vpp-half-turn --avsw --input-analyze --input-format --output-format
+        --vpp-delogo-cr --vpp-half-turn --input-analyze --input-format --output-format
         ".Split((" " + BR).ToCharArray())
         Dim qsHelp = File.ReadAllText(".\Apps\QSVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim qsHelpSwitches = Regex.Matches(qsHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
@@ -491,7 +491,7 @@ as published by Sam Hocevar. See the COPYING file for more details.", True)
         End Try
     End Sub
 
-    <Command("Adds x264 custom command line switches.")>
+    <Command("Changes the video encoders settings.")>
     Sub ImportVideoEncoderCommandLine(
         <DispName("Command Line")>
         commandLine As String)

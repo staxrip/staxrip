@@ -130,7 +130,7 @@ Public Class IntelEncoder
             Title = "Intel Encoding Options"
         End Sub
 
-        Property Decoder As New OptionParam With {.Text = "Decoder:", .Options = {"AviSynth/VapourSynth", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"}, .Values = {"avs", "qs", "ffqsv", "ffdxva"}}
+        Property Decoder As New OptionParam With {.Text = "Decoder:", .Options = {"AviSynth/VapourSynth", "QSVEncC Intel", "QSVEncC Software", "ffmpeg Intel", "ffmpeg DXVA2"}, .Values = {"avs", "qs", "qsw", "ffqsv", "ffdxva"}}
         Property Codec As New OptionParam With {.Switch = "--codec", .Text = "Codec:", .Options = {"H.264", "H.265", "MPEG-2"}, .Values = {"h264", "hevc", "mpeg2"}}
         Property Mode As New OptionParam With {.Switches = {"--avbr", "--cbr", "--vbr", "--qvbr-q", "--cqp", "--vqp", "--icq", "--la-icq", "--vcm", "--la", "--la-hrd", "--qvbr"}, .Name = "Mode", .Text = "Mode:", .Expand = True, .Options = Modes.Select(Function(a) a.Value).ToArray, .Values = Modes.Select(Function(a) a.Name).ToArray, .InitValue = 2}
         Property Deinterlace As New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace:", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}}
@@ -277,7 +277,7 @@ Public Class IntelEncoder
             Select Case Decoder.ValueText
                 Case "avs"
                     sourcePath = p.Script.Path
-                Case "qs"
+                Case "qs", "qsw"
                     sourcePath = p.LastOriginalSourceFile
                 Case "ffdxva"
                     sourcePath = "-"
@@ -324,7 +324,7 @@ Public Class IntelEncoder
             End If
 
             If sourcePath = "-" Then ret += " --y4m"
-
+            If Decoder.ValueText = "qsw" Then ret += " --avsw"
             If includePaths Then ret += " -i " + sourcePath.Quotes + " -o " + targetPath.Quotes
 
             Return ret.Trim

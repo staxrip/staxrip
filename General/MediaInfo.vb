@@ -1,7 +1,7 @@
 Imports System.Runtime.InteropServices
 Imports System.Text.RegularExpressions
 
-Class MediaInfo
+Public Class MediaInfo
     Implements IDisposable
 
     Private Handle As IntPtr

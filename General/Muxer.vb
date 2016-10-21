@@ -12,7 +12,13 @@ Public MustInherit Class Muxer
 
     MustOverride Sub Mux()
 
-    MustOverride ReadOnly Property OutputType As String
+    MustOverride ReadOnly Property OutputExt As String
+
+    ReadOnly Property OutputExtFull As String
+        Get
+            Return "." + OutputExt
+        End Get
+    End Property
 
     Overridable ReadOnly Property SupportedInputTypes As String()
         Get
@@ -69,10 +75,6 @@ Public MustInherit Class Muxer
 
     Overridable Function GetCommandLine() As String
         Return Nothing
-    End Function
-
-    Overridable Function GetExtension() As String
-        Return "." + OutputType.ToString.ToLower
     End Function
 
     Overridable Sub Init()
@@ -180,24 +182,6 @@ Public MustInherit Class Muxer
 End Class
 
 <Serializable()>
-MustInherit Class EncoderMuxerBase
-    Inherits Muxer
-
-    MustOverride ReadOnly Property Encoder() As Type
-
-    Sub New(name As String)
-        MyBase.New(name)
-    End Sub
-
-    Overrides Function GetExtension() As String
-        Return "." + p.VideoEncoder.OutputFileType
-    End Function
-
-    Overrides Sub Mux()
-    End Sub
-End Class
-
-<Serializable()>
 Class MP4Muxer
     Inherits Muxer
 
@@ -205,7 +189,7 @@ Class MP4Muxer
         MyBase.New(name)
     End Sub
 
-    Overrides ReadOnly Property OutputType As String
+    Overrides ReadOnly Property OutputExt As String
         Get
             Return "mp4"
         End Get
@@ -328,15 +312,11 @@ Class NullMuxer
         Return True
     End Function
 
-    Overrides ReadOnly Property OutputType As String
+    Overrides ReadOnly Property OutputExt As String
         Get
-            Return "N/A"
+            Return p.VideoEncoder.OutputExt
         End Get
     End Property
-
-    Overrides Function GetExtension() As String
-        Return "." + p.VideoEncoder.OutputFileType
-    End Function
 
     Overrides Sub Mux()
     End Sub
@@ -356,7 +336,7 @@ Class BatchMuxer
         MyBase.New(name)
     End Sub
 
-    Public Overrides ReadOnly Property OutputType As String
+    Public Overrides ReadOnly Property OutputExt As String
         Get
             Return OutputTypeValue
         End Get
@@ -443,7 +423,7 @@ Class MkvMuxer
         MyBase.New(name)
     End Sub
 
-    Overrides ReadOnly Property OutputType As String
+    Overrides ReadOnly Property OutputExt As String
         Get
             Return "mkv"
         End Get
@@ -477,7 +457,7 @@ Class MkvMuxer
     End Function
 
     Private Function GetArgs() As String
-        Dim args As New StringBuilder("-o """ + p.TargetFile + """")
+        Dim args As New StringBuilder("-o " + p.TargetFile.Quotes)
 
         Dim vID = -1 '-1 means all
 
@@ -488,10 +468,10 @@ Class MkvMuxer
         End If
 
         If VideoTrackName <> "" Then
-            args.Append(" --track-name """ & vID & ":" + Macro.Solve(VideoTrackName) + """")
+            args.Append(" --track-name """ & vID & ":" + Macro.Solve(VideoTrackName).Replace("""", "'") + """")
         End If
 
-        args.Append(" """ + p.VideoEncoder.OutputPath + """")
+        args.Append(" " + p.VideoEncoder.OutputPath.Quotes)
 
         AddAudioArgs(p.Audio0, args)
         AddAudioArgs(p.Audio1, args)
@@ -514,24 +494,16 @@ Class MkvMuxer
                 args.Append(" --forced-track " & id & ":" & If(i.Forced, 1, 0))
                 args.Append(" --default-track " & id & ":" & If(i.Default, 1, 0))
                 args.Append(" --language " & id & ":" + i.Language.ThreeLetterCode)
-                args.Append(" --track-name """ & id & ":" + i.Title?.Trim + """")
+                args.Append(" --track-name """ & id & ":" + i.Title?.Trim.Replace("""", "'") + """")
                 args.Append(" """ + i.Path + """")
             End If
         Next
 
         If Not TypeOf Me Is WebMMuxer AndAlso File.Exists(ChapterFile) Then
-            Dim chapterFileContent = File.ReadAllText(ChapterFile)
-
-            If chapterFileContent.Contains("</EBMLVoid>") Then
-                Stop
-                chapterFileContent = Regex.Replace(chapterFileContent, "<EBMLVoid.+?EBMLVoid>", "<!-- $0 -->")
-                File.WriteAllText(ChapterFile, chapterFileContent)
-            End If
-
-            args.Append(" --chapters """ + ChapterFile + """")
+            args.Append(" --chapters " + ChapterFile.Quotes)
         End If
 
-        If Title <> "" Then args.Append(" --title """ + Macro.Solve(Title) + """")
+        If Title <> "" Then args.Append(" --title """ + Macro.Solve(Title).Replace("""", "'") + """")
 
         If TypeOf p.VideoEncoder Is NullEncoder AndAlso p.Ranges.Count > 0 Then
             args.Append(" --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+"))
@@ -566,7 +538,7 @@ Class MkvMuxer
             End If
 
             args.Append(" --track-name """ & tid & ":" + ap.SolveMacros(ap.StreamName, False) + """")
-            If isCombo Then args.Append(" --track-name """ & tid + 1 & ":" + ap.SolveMacros(ap.StreamName, False) + """")
+            If isCombo Then args.Append(" --track-name """ & tid + 1 & ":" + ap.SolveMacros(ap.StreamName, False).Replace("""", "'") + """")
 
             If ap.Delay <> 0 AndAlso Not ap.HandlesDelay AndAlso Not (ap.HasStream AndAlso ap.Stream.Delay <> 0) Then
                 args.Append(" --sync " & tid & ":" + ap.Delay.ToString)
@@ -574,7 +546,7 @@ Class MkvMuxer
             End If
 
             args.Append(" --default-track " & tid & ":" & If(ap.Default, 1, 0))
-            args.Append(" """ + ap.File + """")
+            args.Append(" " + ap.File.Quotes)
         End If
     End Sub
 
@@ -614,7 +586,7 @@ Class WebMMuxer
         End Get
     End Property
 
-    Overrides ReadOnly Property OutputType As String
+    Overrides ReadOnly Property OutputExt As String
         Get
             Return "webm"
         End Get
@@ -637,7 +609,7 @@ Class ffmpegMuxer
         End Get
     End Property
 
-    Public Overrides ReadOnly Property OutputType As String
+    Public Overrides ReadOnly Property OutputExt As String
         Get
             Return OutputTypeValue
         End Get
@@ -645,13 +617,13 @@ Class ffmpegMuxer
 
     Public Overrides ReadOnly Property SupportedInputTypes As String()
         Get
-            If OutputType = "avi" Then Return AVITypes
+            If OutputExt = "avi" Then Return AVITypes
             Return MyBase.SupportedInputTypes
         End Get
     End Property
 
     Overrides Function IsSupported(type As String) As Boolean
-        If OutputType = "avi" Then Return AVITypes.Contains(type)
+        If OutputExt = "avi" Then Return AVITypes.Contains(type)
         Return True
     End Function
 

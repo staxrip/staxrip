@@ -9,7 +9,7 @@ Public MustInherit Class VideoEncoder
 
     MustOverride Sub Encode()
 
-    MustOverride ReadOnly Property OutputFileType As String
+    MustOverride ReadOnly Property OutputExt As String
 
     Overridable Property Passes As Integer
     Overridable Property QualityMode As Boolean
@@ -23,14 +23,20 @@ Public MustInherit Class VideoEncoder
         CanEditValue = True
     End Sub
 
+    ReadOnly Property OutputExtFull As String
+        Get
+            Return "." + OutputExt
+        End Get
+    End Property
+
     Private OutputPathValue As String
 
     Overridable ReadOnly Property OutputPath() As String
         Get
-            If TypeOf Muxer Is EncoderMuxerBase OrElse TypeOf Muxer Is NullMuxer Then
+            If TypeOf Muxer Is NullMuxer Then
                 Return p.TargetFile
             Else
-                Return p.TempDir + p.Name + "_out." + OutputFileType
+                Return p.TempDir + p.Name + "_out." + OutputExt
             End If
         End Get
     End Property
@@ -141,7 +147,7 @@ Public MustInherit Class VideoEncoder
         g.MainForm.UpdateEncoderStateRelatedControls()
         g.MainForm.SetEncoderControl(p.VideoEncoder.CreateEditControl)
         g.MainForm.lgbEncoder.Text = g.ConvertPath(p.VideoEncoder.Name).Shorten(38)
-        g.MainForm.llMuxer.Text = p.VideoEncoder.Muxer.OutputType.ToUpper
+        g.MainForm.llMuxer.Text = p.VideoEncoder.Muxer.OutputExt.ToUpper
         g.MainForm.tbSize_TextChanged()
     End Sub
 
@@ -156,7 +162,7 @@ Public MustInherit Class VideoEncoder
 
         If m.Edit = DialogResult.OK Then
             Muxer = m
-            g.MainForm.llMuxer.Text = Muxer.OutputType.ToUpper
+            g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpper
             g.MainForm.Refresh()
             g.MainForm.tbSize_TextChanged()
             g.MainForm.Assistant()
@@ -176,8 +182,8 @@ Public MustInherit Class VideoEncoder
         Muxer = DirectCast(ObjectHelp.GetCopy(profile), Muxer)
         Muxer.Init()
 
-        g.MainForm.llMuxer.Text = Muxer.OutputType.ToUpper
-        g.MainForm.tbTargetFile.Text = p.TargetFile.ChangeExt(Muxer.GetExtension)
+        g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpper
+        g.MainForm.tbTargetFile.Text = p.TargetFile.ChangeExt(Muxer.OutputExt)
         g.MainForm.RecalcBitrate()
         g.MainForm.Assistant()
     End Sub
@@ -298,7 +304,7 @@ Public MustInherit Class VideoEncoder
         x264cli.Muxer = New MkvMuxer()
         x264cli.AutoCompCheckValue = 50
         x264cli.CommandLines = """%app:x264%"" --pass 1 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output NUL ""%script_file%"" || exit" + BR + """%app:x264%"" --pass 2 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
-        x264cli.CompCheckCommandLines = """%app:x264%"" --crf 18 --output ""%temp_file%_CompCheck%encoder_ext%"" ""%temp_file%_CompCheck.%script_ext%"""
+        x264cli.CompCheckCommandLines = """%app:x264%"" --crf 18 --output ""%temp_file%_CompCheck.%encoder_ext%"" ""%temp_file%_CompCheck.%script_ext%"""
         ret.Add(x264cli)
 
         Dim divx As New BatchEncoder()
@@ -448,10 +454,9 @@ Class BatchEncoder
 
     Property OutputFileTypeValue As String
 
-    Overrides ReadOnly Property OutputfileType As String
+    Overrides ReadOnly Property OutputExt As String
         Get
             If OutputFileTypeValue = "" Then OutputFileTypeValue = "h264"
-
             Return OutputFileTypeValue
         End Get
     End Property
@@ -569,7 +574,7 @@ Class BatchEncoder
             End Try
         End Using
 
-        Dim bits = (New FileInfo(p.TempDir + p.Name + "_CompCheck." + OutputfileType).Length) * 8
+        Dim bits = (New FileInfo(p.TempDir + p.Name + "_CompCheck." + OutputExt).Length) * 8
         p.Compressibility = (bits / script.GetFrames) / (p.TargetWidth * p.TargetHeight)
 
         OnAfterCompCheck()
@@ -613,7 +618,7 @@ Class NullEncoder
             Dim source = GetSource()
 
             If Not p.VideoEncoder.Muxer.IsSupported(source.Ext) Then
-                Select Case source.ext
+                Select Case source.Ext
                     Case "mkv"
                         Dim streams = MediaInfo.GetVideoStreams(source)
                         If streams.Count = 0 Then Return source
@@ -627,9 +632,9 @@ Class NullEncoder
         End Get
     End Property
 
-    Overrides ReadOnly Property OutputFileType As String
+    Overrides ReadOnly Property OutputExt As String
         Get
-            Return Filepath.GetExt(OutputPath)
+            Return OutputPath.Ext
         End Get
     End Property
 

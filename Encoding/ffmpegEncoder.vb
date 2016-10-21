@@ -64,7 +64,7 @@ Class ffmpegEncoder
         End Using
     End Sub
 
-    Overrides ReadOnly Property OutputFileType() As String
+    Overrides ReadOnly Property OutputExt() As String
         Get
             Select Case Params.Codec.OptionText
                 Case "Xvid", "ASP"
@@ -302,7 +302,7 @@ Class ffmpegEncoder
             If Mode.OptionText = "Two Pass" AndAlso pass = 1 Then
                 targetPath = "NUL"
             Else
-                targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType).Quotes
+                targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt).Quotes
             End If
 
             ret += " -an -y -hide_banner"

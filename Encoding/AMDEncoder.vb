@@ -56,7 +56,7 @@ Class AMDEncoder
         End Using
     End Sub
 
-    Overrides ReadOnly Property OutputFileType() As String
+    Overrides ReadOnly Property OutputExt() As String
         Get
             Return "h264"
         End Get
@@ -188,7 +188,7 @@ Class AMDEncoder
                                           Optional pass As Integer = 1) As String
             Dim ret As String
             Dim sourcePath As String
-            Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
+            Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
             If includePaths AndAlso includeExecutable Then
                 ret = Package.VCEEncC.Path.Quotes

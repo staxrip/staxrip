@@ -60,7 +60,7 @@ Module StringExtensions
         If instance = "" Then Return ""
         If value = "" Then Return instance
         If Not value.StartsWith(".") Then value = "." + value
-        Return Filepath.GetDirAndBase(instance) + value.ToLower
+        Return instance.DirAndBase + value.ToLower
     End Function
 
     <Extension()>

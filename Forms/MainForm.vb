@@ -846,12 +846,12 @@ Public Class MainForm
         CustomMainMenu = New CustomMenu(AddressOf GetDefaultMenu,
                 s.CustomMenuMainForm, CommandManager, MenuStrip)
 
+        OpenProject(g.StartupTemplatePath)
         CustomMainMenu.AddKeyDownHandler(Me)
         CustomMainMenu.BuildMenu()
         UpdateDynamicMenu()
         UpdateAudioMenu()
         MenuStrip.ResumeLayout()
-        OpenProject(g.StartupTemplatePath)
         SizeContextMenuStrip.SuspendLayout()
 
         CustomSizeMenu = New CustomMenu(AddressOf GetDefaultMenuSize,
@@ -1121,11 +1121,11 @@ Public Class MainForm
                                 ActionMenuItem.Add(i.DropDownItems, "Apps | " + i2.Name, Sub() g.ShellExecute(helpPath))
                             Else
                                 If plugin.AviSynthFilterNames?.Length > 0 Then
-                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | AviSynth | " + i2.Name, Sub() g.ShellExecute(helpPath))
+                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | AviSynth | " + i2.Name, Sub() g.ShellExecute(i2.GetHelpPath(ScriptEngine.AviSynth)))
                                 End If
 
                                 If plugin.VapourSynthFilterNames?.Length > 0 Then
-                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | VapourSynth | " + i2.Name, Sub() g.ShellExecute(helpPath))
+                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | VapourSynth | " + i2.Name, Sub() g.ShellExecute(i2.GetHelpPath(ScriptEngine.VapourSynth)))
                                 End If
                             End If
                         End If
@@ -1685,7 +1685,7 @@ Public Class MainForm
                 targetName = Filepath.GetBase(p.SourceFile)
             End If
 
-            tbTargetFile.Text = targetDir + targetName + p.VideoEncoder.Muxer.GetExtension
+            tbTargetFile.Text = targetDir + targetName + p.VideoEncoder.Muxer.OutputExtFull
 
             If p.SourceFile = p.TargetFile OrElse
                 (FileTypes.VideoIndex.Contains(Filepath.GetExtFull(p.SourceFile)) AndAlso
@@ -2477,8 +2477,8 @@ Public Class MainForm
                 End If
             End If
 
-            If Not p.VideoEncoder.Muxer.IsSupported(p.VideoEncoder.OutputFileType) Then
-                If ProcessTip("The encoder outputs '" + p.VideoEncoder.OutputFileType + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ".") Then
+            If Not p.VideoEncoder.Muxer.IsSupported(p.VideoEncoder.OutputExt) Then
+                If ProcessTip("The encoder outputs '" + p.VideoEncoder.OutputExt + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ".") Then
                     gbAssistant.Text = "Encoder conflicts with container"
                     g.Highlight(True, llMuxer)
                     g.Highlight(True, lgbEncoder.ll)
@@ -2509,8 +2509,8 @@ Public Class MainForm
                 End If
             Next
 
-            If p.VideoEncoder.Muxer.GetExtension <> Filepath.GetExtFull(p.TargetFile) Then
-                If ProcessTip("The container requires " + p.VideoEncoder.Muxer.GetExtension.Trim("."c).ToUpper + " as target file type.") Then
+            If p.VideoEncoder.Muxer.OutputExtFull <> Filepath.GetExtFull(p.TargetFile) Then
+                If ProcessTip("The container requires " + p.VideoEncoder.Muxer.OutputExt.ToUpper + " as target file type.") Then
                     g.Highlight(True, tbTargetFile)
                     gbAssistant.Text = "Invalid File Type"
                     CanIgnoreTip = False
@@ -4297,7 +4297,6 @@ Public Class MainForm
         ret.Add("Help|Website|Release Build", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://github.com/stax76/staxrip/releases")
         ret.Add("Help|Website|Test Build", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://github.com/stax76/staxrip/blob/master/md/test-build.md")
         ret.Add("Help|Mail", NameOf(g.DefaultCommands.ExecuteCommandLine), "mailto:frank.skare.de@gmail.com?subject=StaxRip%20feedback")
-        ret.Add("Help|Donate (PayPal/Bitcoin)", NameOf(ShowDonateDialog))
         ret.Add("Help|Scripting", NameOf(ShowScriptingHelp))
         ret.Add("Help|Command Line", NameOf(ShowCommandLineHelp))
         ret.Add("Help|Apps", NameOf(DynamicMenuItem), DynamicMenuItemID.HelpApplications)
@@ -4306,27 +4305,6 @@ Public Class MainForm
 
         Return ret
     End Function
-
-    <Command("Shows different donation options.")>
-    Sub ShowDonateDialog()
-        Dim td As New TaskDialog(Of String)
-        td.MainInstruction = "If you are a satisfied user of StaxRip, please think about contributing to this project."
-
-        td.AddCommandLink("PayPal", "Donate via PayPal", "PayPal")
-        td.AddCommandLink("Bitcoin", "Copy Bitcoin address to clipboard", "Bitcoin")
-        If g.IsCulture("de") Then td.AddCommandLink("Amazon", "Email Adresse in Zwischenablage kopieren und Gutschein Seite öffnen", "Amazon")
-
-        Select Case td.Show
-            Case "PayPal"
-                g.ShellExecute(Strings.DonationsURL)
-            Case "Bitcoin"
-                Clipboard.SetText("19FjjVNYBUEowkqL3CwrJp6Ks191wYHtph")
-                MsgInfo("Address was copied to the clipboard.")
-            Case "Amazon"
-                Clipboard.SetText("frank.skare.de@gmail.com")
-                g.ShellExecute("https://www.amazon.de/Amazon-Gutschein-E-Mail-Verschiedene-Motive/dp/BT00DHI7WY")
-        End Select
-    End Sub
 
     <Command("Shows a dialog to add a hardcoded subtitle.")>
     Sub ShowHardcodedSubtitleDialog()
@@ -5458,7 +5436,7 @@ Public Class MainForm
             d.SetInitDir(p.TargetFile.Dir)
 
             If d.ShowDialog() = DialogResult.OK Then
-                Dim ext = p.VideoEncoder.Muxer.GetExtension
+                Dim ext = p.VideoEncoder.Muxer.OutputExtFull
                 p.TargetFile = If(d.FileName.Ext = ext, d.FileName, d.FileName + ext)
             End If
         End Using

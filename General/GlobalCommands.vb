@@ -286,7 +286,8 @@ Public Class GlobalCommands
         End If
 
         Dim x265Except = "--crop-rect --display-window --fast-cbf --frame-skip --help
---input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version".Split((" " + BR).ToCharArray())
+--input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version
+--opt-qp-pps --opt-ref-list-length-pps".Split((" " + BR).ToCharArray())
         Dim x265RemoveExcept = "--crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
 
         Dim x265HelpSwitches = Regex.Matches(
@@ -566,8 +567,11 @@ as published by Sam Hocevar. See the COPYING file for more details.", True)
     End Sub
 
     <Command("Sets the file path of the target file.")>
-    Sub SetTargetFile(<DispName("Target File Path")> path As String)
-        p.TargetFile = path
+    Sub SetTargetFile(<DispName("Target File Path")>
+                      <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
+                      path As String)
+
+        p.TargetFile = Macro.Solve(path)
     End Sub
 
     <Command("Loads the source file.")>

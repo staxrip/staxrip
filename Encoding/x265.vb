@@ -32,7 +32,7 @@ Public Class x265Encoder
         End Set
     End Property
 
-    Overrides ReadOnly Property OutputFileType As String
+    Overrides ReadOnly Property OutputExt As String
         Get
             Return "hevc"
         End Get
@@ -108,7 +108,7 @@ Public Class x265Encoder
 
         Log.WriteLine(BR + script.GetFullScript + BR)
 
-        Dim commandLine = enc.Params.GetArgs(0, script, p.TempDir + p.Name + "_CompCheck." + OutputFileType, True, True)
+        Dim commandLine = enc.Params.GetArgs(0, script, p.TempDir + p.Name + "_CompCheck." + OutputExt, True, True)
 
         Try
             Encode("Compressibility Check", commandLine, ProcessPriorityClass.Normal)
@@ -121,7 +121,7 @@ Public Class x265Encoder
             Exit Sub
         End Try
 
-        Dim bits = (New FileInfo(p.TempDir + p.Name + "_CompCheck." + OutputFileType).Length) * 8
+        Dim bits = (New FileInfo(p.TempDir + p.Name + "_CompCheck." + OutputExt).Length) * 8
         p.Compressibility = (bits / script.GetFrames) / (p.TargetWidth * p.TargetHeight)
 
         OnAfterCompCheck()
@@ -135,8 +135,7 @@ Public Class x265Encoder
     End Sub
 
     Overloads Function GetArgs(pass As Integer, script As VideoScript, Optional includePaths As Boolean = True) As String
-        Return Params.GetArgs(pass, script, Filepath.GetDirAndBase(OutputPath) +
-                       "." + OutputFileType, includePaths, True)
+        Return Params.GetArgs(pass, script, Filepath.GetDirAndBase(OutputPath) + OutputExtFull, includePaths, True)
     End Function
 
     Overrides Sub ShowConfigDialog()
@@ -395,6 +394,15 @@ Public Class x265Params
         .Switch = "--qpstep",
         .Text = "QP Step:",
         .InitValue = 4}
+
+    Property qpmin As New NumParam With {
+        .Switch = "--qpmin",
+        .Text = "QP Minimum:"}
+
+    Property qpmax As New NumParam With {
+        .Switch = "--qpmax",
+        .Text = "QP Maximum:",
+        .InitValue = 69}
 
     Property TUintra As New NumParam With {
         .Switch = "--tu-intra-depth",
@@ -667,7 +675,7 @@ Public Class x265Params
 
     Property FrameThreads As New NumParam With {
         .Switch = "--frame-threads",
-        .Text = "Frame Threads (0=auto):"}
+        .Text = "Frame Threads:"}
 
     Property RepeatHeaders As New BoolParam With {
         .Switch = "--repeat-headers",
@@ -751,6 +759,11 @@ Public Class x265Params
         .Options = {"0", "1", "2", "3"},
         .InitValue = 3}
 
+    Property LimitTU As New OptionParam With {
+        .Switch = "--limit-tu",
+        .Text = "Limit TU:",
+        .Options = {"0", "Level 1", "Level 2"}}
+
     Property CSV As New BoolParam With {
         .Switch = "--csv",
         .Text = "Write encoding results to a comma separated value log file",
@@ -781,22 +794,27 @@ Public Class x265Params
                 Add("Analysis 1", RD,
                     New StringParam With {.Switch = "--analysis-file", .Text = "Analysis File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                     New OptionParam With {.Switch = "--analysis-mode", .Text = "Analysis Mode:", .Options = {"off", "save", "load"}},
-                MinCuSize, MaxCuSize, MaxTuSize, LimitRefs, TUintra, TUinter, rdoqLevel)
+                MinCuSize, MaxCuSize, MaxTuSize, LimitRefs, LimitTU, TUintra, TUinter, rdoqLevel)
                 Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra,
                     CUlossless, Tskip, TskipFast, LimitModes, RdRefine,
                     New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
                     RecursionSkip)
-                Add("Rate Control 1", AQmode, qgSize, AQStrength, QComp, CBQPoffs, QBlur, Cplxblur, CUtree, Lossless, StrictCBR, rcGrain)
-                Add("Rate Control 2",
+                Add("Rate Control 1",
                     New StringParam With {.Switch = "--zones", .Text = "Zones:"},
-                    NRintra, NRinter, CRFmin, CRFmax, VBVbufsize, VBVmaxrate, VBVinit, qpstep, IPRatio, PBRatio)
-                Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP)
+                    AQmode, qgSize, AQStrength, QComp, CBQPoffs,
+                    QBlur, NRintra, NRinter, qpmin, qpmax, qpstep)
+                Add("Rate Control 2",
+                    CRFmin, CRFmax, VBVbufsize, VBVmaxrate, VBVinit,
+                    IPRatio, PBRatio, Cplxblur, CUtree, Lossless, StrictCBR, rcGrain)
+                Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP,
+                    New BoolParam With {.Switch = "--analyze-src-pics", .NoSwitch = "--no-analyze-src-pics", .Text = "Analyze SRC Pics"})
                 Add("Slice Decision", BAdapt, BFrames, BFrameBias, RCLookahead, LookaheadSlices, Scenecut, Ref, MinKeyint, Keyint, Bpyramid, OpenGop, IntraRefresh)
                 Add("Spatial/Intra", StrongIntraSmoothing,
-                    New BoolParam With {.Switch = "--constrained-intra", .NoSwitch = "--no-constrained-intra", .Switches = {"--cip"}, .Text = "Constrained Intra Prediction", .Value = True, .DefaultValue = True},
+                    New BoolParam With {.Switch = "--constrained-intra", .NoSwitch = "--no-constrained-intra", .Switches = {"--cip"}, .Text = "Constrained Intra Prediction", .InitValue = True},
                     RDpenalty)
                 Add("Performance",
                     New StringParam With {.Switch = "--pools", .Switches = {"--numa-pools"}, .Text = "Pools:", .Quotes = True},
+                    New NumParam With {.Switch = "--slices", .Text = "Slices:", .InitValue = 1},
                     FrameThreads, WPP, Pmode, PME,
                     New BoolParam With {.Switch = "--asm", .NoSwitch = "--no-asm", .Text = "ASM", .InitValue = True})
                 Add("Statistic",
@@ -808,9 +826,13 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"undefined", "show", "crop"}},
                     New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"undefined", "full", "limited"}},
                     minLuma, maxLuma, MaxCLL, MaxFALL)
-                Add("Bitstream", Hash, RepeatHeaders, Info, HRD, AUD,
+                Add("Bitstream", Hash,
+                    New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "log2-max-poc-lsb:", .InitValue = 8},
+                    RepeatHeaders, Info, HRD, AUD,
                     New BoolParam With {.Switch = "--annexb", .Text = "Annex B"},
-                    New BoolParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers"})
+                    New BoolParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers"},
+                    New BoolParam With {.Switch = "--vui-timing-info", .Text = "VUI Timing Info"},
+                    New BoolParam With {.Switch = "--vui-hrd-info", .Text = "VUI HRD Info"})
                 Add("Input/Output",
                     New OptionParam With {.Switch = "--input-depth", .Text = "Input Depth:", .Options = {"Automatic", "8", "10", "12", "14", "16"}},
                     New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP:", .Options = {"Automatic", "i400", "i420", "i422", "i444", "nv12", "nv16"}},
@@ -874,7 +896,7 @@ Public Class x265Params
                                                 Optional pass As Integer = 1) As String
 
         Return GetArgs(1, p.Script, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
-                       "." + p.VideoEncoder.OutputFileType, includePaths, includeExecutable)
+                       p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
     End Function
 
     Overloads Function GetArgs(pass As Integer,

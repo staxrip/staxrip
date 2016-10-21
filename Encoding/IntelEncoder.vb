@@ -63,7 +63,7 @@ Public Class IntelEncoder
         End Using
     End Sub
 
-    Overrides ReadOnly Property OutputFileType() As String
+    Overrides ReadOnly Property OutputExt() As String
         Get
             If Params.Codec.ValueText = "mpeg2" Then Return "m2v"
             Return Params.Codec.ValueText
@@ -270,7 +270,7 @@ Public Class IntelEncoder
                                           Optional pass As Integer = 1) As String
             Dim ret As String
             Dim sourcePath = p.Script.Path
-            Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputFileType)
+            Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
             If includePaths AndAlso includeExecutable Then ret = Package.QSVEncC.Path.Quotes
 

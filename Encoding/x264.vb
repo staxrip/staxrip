@@ -16,7 +16,7 @@ Public Class x264Encoder
         AutoCompCheckValue = 50
     End Sub
 
-    Overrides ReadOnly Property OutputFileType As String
+    Overrides ReadOnly Property OutputExt As String
         Get
             Return "h264"
         End Get
@@ -102,7 +102,7 @@ Public Class x264Encoder
         script.Synchronize()
 
         Dim sourcePath = If(p.Script.Engine = ScriptEngine.VapourSynth, "-", p.TempDir + p.Name + "_CompCheck.avs")
-        Dim arguments = enc.GetArgs(0, sourcePath, p.TempDir + p.Name + "_CompCheck." + OutputFileType, script)
+        Dim arguments = enc.GetArgs(0, sourcePath, p.TempDir + p.Name + "_CompCheck." + OutputExt, script)
 
         Try
             Encode("Compressibility Check", arguments, script, ProcessPriorityClass.Normal)
@@ -115,7 +115,7 @@ Public Class x264Encoder
             Exit Sub
         End Try
 
-        Dim bits = (New FileInfo(p.TempDir + p.Name + "_CompCheck." + OutputFileType).Length) * 8
+        Dim bits = (New FileInfo(p.TempDir + p.Name + "_CompCheck." + OutputExt).Length) * 8
         p.Compressibility = (bits / script.GetFrames) / (p.TargetWidth * p.TargetHeight)
         OnAfterCompCheck()
         g.MainForm.Assistant()
@@ -148,7 +148,7 @@ Public Class x264Encoder
 
     Function GetArgs(pass As Integer, Optional includePaths As Boolean = True) As String
         Dim sourcePath = If(p.Script.Engine = ScriptEngine.VapourSynth, "-", p.Script.Path)
-        Return GetArgs(pass, sourcePath, Filepath.GetDirAndBase(OutputPath) + "." + OutputFileType, p.Script, includePaths)
+        Return GetArgs(pass, sourcePath, Filepath.GetDirAndBase(OutputPath) + "." + OutputExt, p.Script, includePaths)
     End Function
 
     Function GetArgs(pass As Integer,

@@ -18,7 +18,6 @@ Class ProcessForm
     Friend WithEvents bnResume As System.Windows.Forms.Button
     Friend WithEvents bnJobs As System.Windows.Forms.Button
     Friend WithEvents lStatus As System.Windows.Forms.Label
-    Friend WithEvents bnDonations As System.Windows.Forms.Button
     Friend WithEvents bnSuspend As System.Windows.Forms.Button
     Friend WithEvents FlowLayoutPanel1 As System.Windows.Forms.FlowLayoutPanel
     Friend WithEvents tbLog As System.Windows.Forms.TextBox
@@ -42,7 +41,6 @@ Class ProcessForm
         Me.bnJobs = New System.Windows.Forms.Button()
         Me.bnResume = New System.Windows.Forms.Button()
         Me.lStatus = New System.Windows.Forms.Label()
-        Me.bnDonations = New System.Windows.Forms.Button()
         Me.bnSuspend = New System.Windows.Forms.Button()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.FlowLayoutPanel1.SuspendLayout()
@@ -53,7 +51,7 @@ Class ProcessForm
         Me.bnAbort.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnAbort.AutoSize = True
         Me.bnAbort.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.bnAbort.Location = New System.Drawing.Point(475, 3)
+        Me.bnAbort.Location = New System.Drawing.Point(474, 3)
         Me.bnAbort.Name = "bnAbort"
         Me.bnAbort.Size = New System.Drawing.Size(68, 35)
         Me.bnAbort.TabIndex = 2
@@ -73,7 +71,7 @@ Class ProcessForm
         '
         Me.cbShutdown.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cbShutdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbShutdown.Location = New System.Drawing.Point(165, 6)
+        Me.cbShutdown.Location = New System.Drawing.Point(165, 4)
         Me.cbShutdown.Name = "cbShutdown"
         Me.cbShutdown.Size = New System.Drawing.Size(116, 33)
         Me.cbShutdown.TabIndex = 5
@@ -100,7 +98,7 @@ Class ProcessForm
         Me.bnJobs.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnJobs.AutoSize = True
         Me.bnJobs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.bnJobs.Location = New System.Drawing.Point(549, 3)
+        Me.bnJobs.Location = New System.Drawing.Point(548, 3)
         Me.bnJobs.Name = "bnJobs"
         Me.bnJobs.Size = New System.Drawing.Size(58, 35)
         Me.bnJobs.TabIndex = 9
@@ -114,7 +112,7 @@ Class ProcessForm
         Me.bnResume.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.bnResume.Location = New System.Drawing.Point(384, 3)
         Me.bnResume.Name = "bnResume"
-        Me.bnResume.Size = New System.Drawing.Size(85, 35)
+        Me.bnResume.Size = New System.Drawing.Size(84, 35)
         Me.bnResume.TabIndex = 8
         Me.bnResume.Text = "Resume"
         Me.bnResume.UseVisualStyleBackColor = True
@@ -128,17 +126,6 @@ Class ProcessForm
         Me.lStatus.Size = New System.Drawing.Size(954, 29)
         Me.lStatus.TabIndex = 10
         Me.lStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'bnDonations
-        '
-        Me.bnDonations.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnDonations.AutoSize = True
-        Me.bnDonations.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.bnDonations.Location = New System.Drawing.Point(613, 3)
-        Me.bnDonations.Name = "bnDonations"
-        Me.bnDonations.Size = New System.Drawing.Size(80, 35)
-        Me.bnDonations.TabIndex = 11
-        Me.bnDonations.Text = "Donate"
         '
         'bnSuspend
         '
@@ -163,10 +150,9 @@ Class ProcessForm
         Me.FlowLayoutPanel1.Controls.Add(Me.bnResume)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnAbort)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnJobs)
-        Me.FlowLayoutPanel1.Controls.Add(Me.bnDonations)
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(273, 595)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(360, 595)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(696, 41)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(609, 41)
         Me.FlowLayoutPanel1.TabIndex = 13
         '
         'ProcessForm
@@ -534,10 +520,6 @@ Class ProcessForm
         Using f As New JobsForm()
             f.ShowDialog()
         End Using
-    End Sub
-
-    Private Sub bnDonations_Click(sender As Object, e As EventArgs) Handles bnDonations.Click
-        g.ShellExecute(Strings.DonationsURL)
     End Sub
 
     Private Sub bnSuspend_Click(sender As Object, e As EventArgs) Handles bnSuspend.Click

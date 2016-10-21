@@ -316,13 +316,13 @@ Public Class GlobalClass
         Dim currentMuxer = p.VideoEncoder.Muxer
         p.VideoEncoder = DirectCast(ObjectHelp.GetCopy(profile), VideoEncoder)
 
-        If currentMuxer.IsSupported(p.VideoEncoder.OutputFileType) Then
+        If currentMuxer.IsSupported(p.VideoEncoder.OutputExt) Then
             p.VideoEncoder.Muxer = currentMuxer
         Else
             p.VideoEncoder.Muxer.Init()
         End If
 
-        MainForm.tbTargetFile.Text = p.TargetFile.ChangeExt(p.VideoEncoder.Muxer.GetExtension)
+        MainForm.tbTargetFile.Text = p.TargetFile.ChangeExt(p.VideoEncoder.Muxer.OutputExt)
         p.VideoEncoder.OnStateChange()
         MainForm.RecalcBitrate()
         MainForm.Assistant()
@@ -1124,13 +1124,13 @@ Class Calc
         Dim ret As Double
         Dim frames = p.Script.GetFrames
 
-        If {"avi", "divx"}.Contains(p.VideoEncoder.Muxer.OutputType) Then
+        If {"avi", "divx"}.Contains(p.VideoEncoder.Muxer.OutputExt) Then
             ret += frames * 0.024
             If p.Audio0.File <> "" Then ret += frames * 0.04
             If p.Audio1.File <> "" Then ret += frames * 0.04
-        ElseIf p.VideoEncoder.Muxer.OutputType = "mp4" Then
+        ElseIf p.VideoEncoder.Muxer.OutputExt = "mp4" Then
             ret += 10.4 / 1024 * frames
-        ElseIf p.VideoEncoder.Muxer.OutputType = "mkv" Then
+        ElseIf p.VideoEncoder.Muxer.OutputExt = "mkv" Then
             ret += frames * 0.013
         End If
 
@@ -1911,6 +1911,7 @@ Class Macro
         ret.Add(New Macro("delay2", "Audio Delay 2", GetType(Integer), "Audio delay of the second audio track."))
         ret.Add(New Macro("encoder_ext", "Encoder File Extension", GetType(String), "File extension of the format the encoder of the active project outputs."))
         ret.Add(New Macro("encoder_out_file", "Encoder Output File", GetType(String), "Output file of the video encoder."))
+        ret.Add(New Macro("muxer_ext", "Muxer Extension", GetType(String), "Output extension of the active muxer."))
         ret.Add(New Macro("player", "Player", GetType(Integer), "Path of MPC Player."))
         ret.Add(New Macro("plugin_dir", "Plugin Directory", GetType(String), "AviSynth/VapourSynth plugin directory."))
         ret.Add(New Macro("pos_frame", "Position In Frames", GetType(Integer), "Current preview position in frames."))
@@ -2163,7 +2164,13 @@ Class Macro
         If value.Contains("%encoder_out_file%") Then value = value.Replace("%encoder_out_file%", p.VideoEncoder.OutputPath)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%encoder_ext%") Then value = value.Replace("%encoder_ext%", "." + p.VideoEncoder.OutputFileType)
+        If value.Contains("%encoder_ext%") Then value = value.Replace("%encoder_ext%", p.VideoEncoder.OutputExt)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%muxer_ext%") Then value = value.Replace("%muxer_ext%", p.VideoEncoder.Muxer.OutputExt)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%script_ext%") Then value = value.Replace("%script_ext%", p.Script.FileType)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%pos_frame%") Then value = value.Replace("%pos_frame%", s.LastPosition.ToString)
@@ -2188,10 +2195,6 @@ Class Macro
             p.Script.Synchronize()
             value = value.Replace("%script_file%", p.Script.Path)
         End If
-
-        If value.Contains("%script_ext%") Then value = value.Replace("%script_ext%", p.Script.FileType)
-
-        If Not value.Contains("%") Then Return value
 
         If p.Ranges.Count > 0 Then
             If value.Contains("%sel_start%") Then value = value.Replace("%sel_start%", p.Ranges(0).Start.ToString)

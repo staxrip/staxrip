@@ -14,6 +14,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - VCEEncC (AMD H.264 encoder) switches added
 - SMDegrain added, to create the SMDegrain default filter profile go to: 'Filters > Profiles > Restore Defaults > OK' or alternatively: 'Tools > Advanced > Reset Setting > AviSynth Filter Profiles > OK'
 - some x265 changes
+- nnedi3 added to VapourSynth, to create the nnedi3 default filter profile go to: 'Filters > Profiles > Restore Defaults > OK' or alternatively: 'Tools > Advanced > Reset Setting > VapourSynth Filter Profiles > OK'
 
 #### Fixed Bugs
 
@@ -34,9 +35,12 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - LSFmod 1.9
 - havsfunc 23
 - aWarpSharp2 2016-06-24
-- nnedi3 0.9.4.22
 - VCEEncC 2.0
-- AviSynth+ r2043
 - MKVToolNix 9.3.1
 - QSVEncC 2.54
-- x265 2.0+4
+- nnedi3 (avs) 0.9.4.31
+- VC++ Runtime 2015
+- AviSynth+ r2290
+- VapourSynth R35 RC1
+- x265 2.1+25
+- ffms2 2.23

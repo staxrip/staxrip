@@ -174,7 +174,7 @@ Class BatchEncoderForm
         Me.Encoder = encoder
 
         cbQualityMode.Checked = encoder.QualityMode
-        tbType.Text = encoder.OutputfileType
+        tbType.Text = encoder.OutputExt
 
         EncodingCliControl.SetCommandLineDefaults()
         EncodingCliControl.Value = encoder.CommandLines

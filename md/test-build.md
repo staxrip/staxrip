@@ -55,5 +55,5 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - nnedi3 (vs) 10
 - x264 2721
 - ffmpeg 3.1.5
-- mvtools2 2.7.1.22
+- mvtools2 (avs) 2.7.1.22
 - MP4Box 0.6.2 current snapshot

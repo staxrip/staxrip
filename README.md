@@ -5,7 +5,10 @@ Multiformat video encoding application.
 ## Features
 
 - Handles common input formats and allows to config how files are loaded and processed
-- x264, x265, AMD VCE H.264 encoding, Intel Quick Sync H.264/H.265/MPEG-2 encoding, NVIDIA H.264/H.265 encoding, VP9, XVID
+- x264, x265, VP9 and XVID encoding 
+- AMD VCE H.264 encoding
+- Intel Quick Sync H.264/H.265/MPEG-2 encoding
+- NVIDIA H.264/H.265 encoding
 - Output Formats: AVI, MP4, MKV, WEBM
 - Output Codecs: XVID, H.264, H.265, VP9, MP3, AC3, AAC, VORBIS, DTS, FLAC, OPUS
 - Batch Processing including support for processing sub-directories recursively
@@ -14,7 +17,7 @@ Multiformat video encoding application.
 - Minimal user interaction required due to ´flexible configuration and automation features
 - copy modes for audio and video for plain remuxing
 - Cut/Trim/Edit feature
-- Macros can be used in scrips and command lines allowing to change settings with the GUI at any time
+- Macros can be used in scrips and command lines allowing to change settings at any time
 - Scripable with C# and PowerShell scripts
 - External AviSynth filters and command line tools can be integrated
 - Project, project template and profiles support

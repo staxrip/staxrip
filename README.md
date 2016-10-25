@@ -1,8 +1,8 @@
-# staxrip x64
+## staxrip x64
 
 Multiformat video encoding application.
 
-# Features
+## Features
 
 - Handles the most popular input format and allows to config how files are loaded and processed
 - x264, x265, AMD VCE H.264 encoding, Intel Quick Sync H.264/H.265/MPEG-2 encoding, NVIDIA H.264/H.265 encoding, VP9, XVID
@@ -20,7 +20,7 @@ Multiformat video encoding application.
 - Project, project template and profiles support
 - Job processing
 
-# Requirements
+## Requirements
 
 * [.NET 4.6.1](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
 * [Intel Skylake CPU](https://en.wikipedia.org/wiki/Skylake_%28microarchitecture%29) for HEVC/H.265 hardware encoding
@@ -30,11 +30,11 @@ Multiformat video encoding application.
 * [VapourSynth x64](https://github.com/vapoursynth/vapoursynth/releases) as optional AviSynth+ alternative
 * [Python x64](https://www.python.org/downloads/windows) in case VapourSynth x64 is used
 
-# Documentation
+## Documentation
 
 https://stax76.gitbooks.io/staxrip-handbook/content/
 
-# Download
+## Download
 
 https://github.com/stax76/staxrip/releases
 

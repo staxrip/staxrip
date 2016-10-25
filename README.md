@@ -1,4 +1,4 @@
-# StaxRip x64
+# staxrip x64
 
 Multiformat video encoding application.
 

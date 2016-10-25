@@ -1104,7 +1104,6 @@ Class Calc
     End Function
 
     Shared Function GetVideoBitrate() As Double
-        If p.FixedBitrate > 0 Then Return p.FixedBitrate
         If p.TargetSeconds = 0 Then Return 0
         Dim kbytes = p.TargetSize * 1024 - GetAudioKBytes() - GetSubtitleKBytes() - GetOverheadKBytes()
         Dim ret = kbytes * 8 * 1.024 / p.TargetSeconds

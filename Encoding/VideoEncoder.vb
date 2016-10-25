@@ -148,7 +148,7 @@ Public MustInherit Class VideoEncoder
         g.MainForm.SetEncoderControl(p.VideoEncoder.CreateEditControl)
         g.MainForm.lgbEncoder.Text = g.ConvertPath(p.VideoEncoder.Name).Shorten(38)
         g.MainForm.llMuxer.Text = p.VideoEncoder.Muxer.OutputExt.ToUpper
-        g.MainForm.tbSize_TextChanged()
+        g.MainForm.UpdateSizeOrBitrate()
     End Sub
 
     Public Enum Modes
@@ -164,7 +164,7 @@ Public MustInherit Class VideoEncoder
             Muxer = m
             g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpper
             g.MainForm.Refresh()
-            g.MainForm.tbSize_TextChanged()
+            g.MainForm.UpdateSizeOrBitrate()
             g.MainForm.Assistant()
         End If
     End Sub

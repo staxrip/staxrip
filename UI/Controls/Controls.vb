@@ -600,6 +600,9 @@ Namespace UI
     Class TrackBarEx
         Inherits TrackBar
 
+        <DefaultValue(False)>
+        Property NoMouseWheelEvent As Boolean
+
         Shadows Property Value As Integer
             Get
                 Return MyBase.Value

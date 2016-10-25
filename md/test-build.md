@@ -15,6 +15,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - SMDegrain added, to create the SMDegrain default filter profile go to: 'Filters > Profiles > Restore Defaults > OK' or alternatively: 'Tools > Advanced > Reset Setting > AviSynth Filter Profiles > OK'
 - some x265 changes
 - nnedi3 added to VapourSynth, to create the nnedi3 default filter profile go to: 'Filters > Profiles > Restore Defaults > OK' or alternatively: 'Tools > Advanced > Reset Setting > VapourSynth Filter Profiles > OK'
+- added setting to reverse mouse wheel video seek direction
 
 #### Fixed Bugs
 
@@ -36,11 +37,23 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - havsfunc 23
 - aWarpSharp2 2016-06-24
 - VCEEncC 2.0
-- MKVToolNix 9.3.1
-- QSVEncC 2.54
 - nnedi3 (avs) 0.9.4.31
 - VC++ Runtime 2015
-- AviSynth+ r2290
-- VapourSynth R35 RC1
+- AviSynth+ 2290
 - x265 2.1+25
 - ffms2 2.23
+- QSVEncC 2.57
+- NVEncC 3.01
+- MKVToolNix 9.5.0
+- qaac 2.61
+- avs2pipemod 1.1.1
+- VapourSynth 34
+- MediaInfo 0.7.89
+- L-Smash-Works (avs/vs) 911
+- yadifmod2 (avs) 0.0.4-1
+- KNLMeansCL (avs/vs) 0.7.7
+- nnedi3 (vs) 10
+- x264 2721
+- ffmpeg 3.1.5
+- mvtools2 2.7.1.22
+- MP4Box 0.6.2 current snapshot

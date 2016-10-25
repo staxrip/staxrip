@@ -192,7 +192,13 @@ Public Class IntelEncoder
                         New NumParam With {.Switch = "--async-depth", .Text = "Async Depth:", .MinMaxStep = {0, 64, 1}},
                         New BoolParam With {.Switch = "--min-memory", .Text = "Minimize memory usage"},
                         New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
+                    Add("Bitstream",
+                        New BoolParam With {.Switch = "--aud", .Text = "Insert aud nal unit"},
+                        New BoolParam With {.Switch = "--pic-struct", .Text = "Insert pic-timing SEI with pic_struct"})
                     Add("VPP",
+                        New StringParam With {.Switch = "--vpp-sub", .Text = "Sub File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
+                        New StringParam With {.Switch = "--vpp-sub-charset", .Text = "Sub Charset:", .Quotes = True},
+                        New OptionParam With {.Switch = "--vpp-sub-shaping", .Text = "Sub Shaping:", .Options = {"simple", "complex"}},
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate:", .Options = {"0", "90", "180", "270"}},
                         New OptionParam With {.Switch = "--vpp-image-stab", .Text = "Image Stabilizer:", .Options = {"disabled", "upscale", "box"}},
                         New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image:", .Options = {"disabled", "h", "v"}},
@@ -208,9 +214,6 @@ Public Class IntelEncoder
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                     Add("Other",
                         New StringParam With {.Text = "Custom:"},
-                        New StringParam With {.Switch = "--vpp-sub", .Text = "Sub File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
-                        New StringParam With {.Switch = "--vpp-sub-charset", .Text = "Sub Charset:", .Quotes = True},
-                        New OptionParam With {.Switch = "--vpp-sub-shaping", .Text = "Sub Shaping:", .Options = {"simple", "complex"}},
                         New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D:", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .InitValue = 3},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level:", .Options = {"info", "debug", "warn", "error"}},
                         New OptionParam With {.Switch = "--trellis", .Text = "Trellis:", .Options = {"auto", "off", "i", "ip", "all"}},
@@ -218,8 +221,7 @@ Public Class IntelEncoder
                         New BoolParam With {.Switch = "--fallback-rc", .Text = "Enable fallback for unsupported modes", .Value = True},
                         New BoolParam With {.Switch = "--timer-period-tuning", .NoSwitch = "--no-timer-period-tuning", .Text = "Timer Period Tuning", .InitValue = True},
                         New BoolParam With {.Switch = "--i-adapt", .Text = "Adaptive I Frame Insert"},
-                        New BoolParam With {.Switch = "--fixed-func", .Text = "Use fixed func instead of GPU EU"},
-                        New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"})
+                        New BoolParam With {.Switch = "--fixed-func", .Text = "Use fixed func instead of GPU EU"})
                 End If
 
                 Return ItemsValue

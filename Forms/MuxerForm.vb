@@ -500,7 +500,7 @@ Class MuxerForm
                             ap.Stream = sb2.SelectedItem
                         End If
 
-                        g.MainForm.tbSize_TextChanged()
+                        g.MainForm.UpdateSizeOrBitrate()
                         AudioBindingSource.Add(ap)
                         AudioBindingSource.Position = AudioBindingSource.Count - 1
                         UpdateAudioControls()
@@ -533,7 +533,7 @@ Class MuxerForm
         Dim ap = DirectCast(AudioBindingSource(dgvAudio.SelectedRows(0).Index), AudioProfile)
         ap.EditProject()
         g.MainForm.UpdateAudioMenu()
-        g.MainForm.tbSize_TextChanged()
+        g.MainForm.UpdateSizeOrBitrate()
         AudioBindingSource.ResetBindings(False)
     End Sub
 

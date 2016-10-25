@@ -59,8 +59,7 @@ Public Class Package
     Shared Property avs2pipemod As New Package With {
         .Name = "avs2pipemod",
         .Filename = "avs2pipemod64.exe",
-        .WebURL = "http://avisynth.nl/index.php/Avs2pipemod",
-        .HelpURL = "http://avisynth.nl/index.php/Avs2pipemod",
+        .WebURL = "https://github.com/chikuzen/avs2pipemod",
         .Description = "Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools."}
 
     Shared Property x265 As New Package With {
@@ -223,7 +222,7 @@ Public Class Package
             .Name = "Visual C++ 2015",
             .Filename = "msvcp140.dll",
             .Description = "Visual C++ 2015 Redistributable is required by some tools used by StaxRip.",
-            .DownloadURL = "http://download.microsoft.com/download/4/2/F/42FF78CE-8DE0-4C88-AD7A-5F8DFFB49F74/vc_redist.x64.exe",
+            .DownloadURL = "http://download.microsoft.com/download/6/A/A/6AA4EDFF-645B-48C5-81CC-ED5963AEAD48/vc_redist.x64.exe",
             .FixedDir = Folder.System,
             .TreePath = "Runtimes"})
 
@@ -253,8 +252,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",
             .Filename = "KNLMeansCL.dll",
-            .WebURL = "http://forum.doom9.org/showthread.php?t=171379",
-            .HelpFile = "DOC.txt",
+            .WebURL = "https://github.com/Khanattila/KNLMeansCL",
             .Description = "KNLMeansCL is an optimized pixelwise OpenCL implementation of the Non-local means denoising algorithm. Every pixel is restored by the weighted average of all pixels in its search window. The level of averaging is determined by the filtering parameter h.",
             .VapourSynthFilterNames = {"knlm.KNLMeansCL"},
             .AviSynthFilterNames = {"KNLMeansCL"},
@@ -921,7 +919,7 @@ Public Class VapourSynthPackage
         Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         WebURL = "http://www.vapoursynth.com"
         HelpURL = "http://www.vapoursynth.com/doc"
-        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R32/VapourSynth-R32.exe"
+        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R34/VapourSynth-R34.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean

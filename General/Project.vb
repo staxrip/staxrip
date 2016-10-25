@@ -45,7 +45,6 @@ Public Class Project
     Public DemuxAudio As DemuxMode
     Public DemuxSubtitles As DemuxMode
     Public FirstOriginalSourceFile As String
-    Public FixedBitrate As Integer
     Public ForcedOutputMod As Integer = 16
     Public ITU As Boolean = True
     Public LastOriginalSourceFile As String
@@ -92,6 +91,7 @@ Public Class Project
     Public VideoBitrate As Integer = 1000
     Public VideoEncoder As VideoEncoder
     Public HarcodedSubtitle As Boolean
+    Public BitrateIsFixed As Boolean
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

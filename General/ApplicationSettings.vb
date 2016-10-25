@@ -54,6 +54,7 @@ Public Class ApplicationSettings
     Public UIScaleFactor As Single = 1
     Public PreventActivation As String
     Public MinimumDiskSpace As Integer = 20
+    Public ReverseVideoScrollDirection As Boolean
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

@@ -18,6 +18,7 @@ Class VideoComparisonForm
         KeyPreview = True
         bnMenu.TabStop = False
         TabControl.AllowDrop = True
+        TrackBar.NoMouseWheelEvent = True
 
         Dim enabledFunc = Function() Not TabControl.SelectedTab Is Nothing
         Menu = New ContextMenuStripEx()
@@ -96,6 +97,13 @@ Class VideoComparisonForm
         TrackBarValueChanged()
     End Sub
 
+    Private Sub CodecComparisonForm_MouseWheel(sender As Object, e As MouseEventArgs) Handles Me.MouseWheel
+        Dim value = 100
+        If e.Delta < 0 Then value = value * -1
+        If s.ReverseVideoScrollDirection Then value = value * -1
+        TrackBar.Value += value
+    End Sub
+
     Sub TrackBarValueChanged()
         If Not TabControl.SelectedTab Is Nothing Then
             DirectCast(TabControl.SelectedTab, VideoTab).TrackBarValueChanged()
@@ -133,14 +141,6 @@ Class VideoComparisonForm
         For Each i As VideoTab In TabControl.TabPages
             i.AVI.Position = Pos
         Next
-    End Sub
-
-    Private Sub CodecComparisonForm_MouseWheel(sender As Object, e As MouseEventArgs) Handles Me.MouseWheel
-        If e.Delta > 0 Then
-            TrackBar.Value += 100
-        Else
-            TrackBar.Value -= 100
-        End If
     End Sub
 
     Private Sub CodecComparisonForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed

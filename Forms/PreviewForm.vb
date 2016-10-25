@@ -521,28 +521,13 @@ Class PreviewForm
     End Sub
 
     Private Sub Wheel(sender As Object, e As MouseEventArgs) Handles MyBase.MouseWheel
-        If e.Delta > 0 Then
-            If Control.ModifierKeys = Keys.Alt Then
-                AVI.Position += 1000
-            ElseIf Control.ModifierKeys = Keys.Shift Then
-                AVI.Position += 100
-            ElseIf Control.ModifierKeys = Keys.Control Then
-                AVI.Position += 10
-            Else
-                AVI.Position += 1
-            End If
-        Else
-            If Control.ModifierKeys = Keys.Alt Then
-                AVI.Position -= 1000
-            ElseIf Control.ModifierKeys = Keys.Shift Then
-                AVI.Position -= 100
-            ElseIf Control.ModifierKeys = Keys.Control Then
-                AVI.Position -= 10
-            Else
-                AVI.Position -= 1
-            End If
-        End If
-
+        Dim pos = 1
+        If Control.ModifierKeys = Keys.Control Then pos = 10
+        If Control.ModifierKeys = Keys.Shift Then pos = 100
+        If Control.ModifierKeys = Keys.Alt Then pos = 1000
+        If e.Delta < 0 Then pos = pos * -1
+        If s.ReverseVideoScrollDirection Then pos = pos * -1
+        AVI.Position += pos
         Drawer.Draw()
         DrawTrack()
     End Sub

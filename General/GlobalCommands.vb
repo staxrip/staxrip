@@ -232,7 +232,11 @@ Public Class GlobalCommands
         Dim nvNoNeedToExcept = nvExcept.Where(Function(arg) nvPresent.Contains(arg))
         If nvNoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary NVEncC Exception:", nvNoNeedToExcept.Join(" "))
         If nvMissing.Count > 0 Then MsgInfo("Removed from NVEncC:", nvMissing.Join(" "))
-        If nvUnknown.Count > 0 Then MsgInfo("NVEncC Todo", nvUnknown.Join(" "))
+
+        If nvUnknown.Count > 0 Then
+            MsgInfo("NVEncC Todo", nvUnknown.Join(" "))
+            If MsgQuestion("Copy " + nvUnknown(0) + " ?") = DialogResult.OK Then nvUnknown(0).ToClipboard
+        End If
 
         Dim amdExcept = "--audio-bitrate --audio-codec --audio-copy --audio-file --audio-filter
         --audio-ignore-decode-error --audio-ignore-notrack-error --audio-resampler
@@ -268,7 +272,7 @@ Public Class GlobalCommands
         --audio-ignore-notrack-error --nv12 --output-file --check-features-html --perf-monitor
         --perf-monitor-plot --perf-monitor-interval --python --qvbr-quality --sharpness --vpp-delogo
         --vpp-delogo-select --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb
-        --vpp-delogo-cr --vpp-half-turn --input-analyze --input-format --output-format
+        --vpp-delogo-cr --vpp-delogo-add --vpp-half-turn --input-analyze --input-format --output-format
         ".Split((" " + BR).ToCharArray())
         Dim qsHelp = File.ReadAllText(".\Apps\QSVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim qsHelpSwitches = Regex.Matches(qsHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
@@ -280,6 +284,7 @@ Public Class GlobalCommands
         Dim qsNoNeedToExcept = qsExcept.Where(Function(arg) qsPresent.Contains(arg))
         If qsNoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary QSVEncC Exception:", qsNoNeedToExcept.Join(" "))
         If qsMissing.Count > 0 Then MsgInfo("Removed from QSVEncC:", qsMissing.Join(" "))
+
         If qsUnknown.Count > 0 Then
             MsgInfo("QSVEncC Todo", qsUnknown.Join(" "))
             If MsgQuestion("Copy " + qsUnknown(0) + " ?") = DialogResult.OK Then qsUnknown(0).ToClipboard
@@ -370,8 +375,8 @@ Public Class GlobalCommands
 
     Function GetReleaseType() As String
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
-        If version.MinorRevision <> 0 Then Return "Unstable Test Build"
-        Return "Stable Release"
+        If version.MinorRevision <> 0 Then Return "unstable test build"
+        Return "stable release"
     End Function
 
     <Command("Opens a given help topic in the help browser.")>

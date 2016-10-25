@@ -1333,8 +1333,13 @@ Public Class MainForm
         p.Audio0.Delay = delay0
         p.Audio1.Delay = delay1
 
-        tbTargetSize.Text = ""
-        tbTargetSize.Text = size.ToString()
+        If p.BitrateIsFixed Then
+            tbBitrate.Text = ""
+            tbBitrate.Text = bitrate.ToString
+        Else
+            tbTargetSize.Text = ""
+            tbTargetSize.Text = size.ToString()
+        End If
 
         SetSlider()
 
@@ -1994,7 +1999,7 @@ Public Class MainForm
                                             If i2.StreamOrder <> p.Audio1.Stream.StreamOrder Then
                                                 tbAudioFile1.Text = i2.Name + " (" + Filepath.GetExt(p.Audio1.File) + ")"
                                                 p.Audio1.Stream = i2
-                                                tbSize_TextChanged()
+                                                UpdateSizeOrBitrate()
                                                 Exit For
                                             End If
                                         Next
@@ -2761,13 +2766,13 @@ Public Class MainForm
                 ap.SetStreamOrLanguage()
             End If
 
-            tbSize_TextChanged()
+            UpdateSizeOrBitrate()
             BlockAudioTextChanged = True
             tb.Text = ap.DisplayName
             BlockAudioTextChanged = False
         ElseIf tb.Text = "" Then
             ap.File = ""
-            tbSize_TextChanged()
+            UpdateSizeOrBitrate()
         End If
     End Sub
 
@@ -3024,6 +3029,11 @@ Public Class MainForm
             cb.Text = "Show template selection when loading new files"
             cb.Checked = s.ShowTemplateSelection
             cb.SaveAction = Sub(value) s.ShowTemplateSelection = value
+
+            cb = ui.AddCheckBox(generalPage)
+            cb.Text = "Reverse mouse wheel video seek direction"
+            cb.Checked = s.ReverseVideoScrollDirection
+            cb.SaveAction = Sub(value) s.ReverseVideoScrollDirection = value
 
             Dim mb = ui.AddMenuButtonBlock(Of String)(generalPage)
             mb.Label.Text = "Startup Template:"
@@ -3288,7 +3298,7 @@ Public Class MainForm
     End Sub
 
     Sub RecalcBitrate()
-        tbSize_TextChanged()
+        UpdateSizeOrBitrate()
     End Sub
 
     Function GetNewVideoEncoderProfile() As Profile
@@ -3907,11 +3917,10 @@ Public Class MainForm
             cb.Checked = p.DeleteTempFilesDir
             cb.SaveAction = Sub(value) p.DeleteTempFilesDir = value
 
-            nb = ui.AddNumericBlock(miscPage)
-            nb.Label.Text = "Use fixed bitrate:"
-            nb.Label.Tooltip = "Never recommended but frequently requested."
-            nb.NumEdit.Value = p.FixedBitrate
-            nb.NumEdit.SaveAction = Sub(value) p.FixedBitrate = CInt(value)
+            cb = ui.AddCheckBox(miscPage)
+            cb.Text = "Use fixed bitrate"
+            cb.Checked = p.BitrateIsFixed
+            cb.SaveAction = Sub(value) p.BitrateIsFixed = value
 
             ui.AddLine(miscPage, "Compressibility Check")
 
@@ -3952,7 +3961,7 @@ Public Class MainForm
 
                 If p.DefaultTargetFolder <> "" Then p.DefaultTargetFolder = DirPath.AppendSeparator(p.DefaultTargetFolder)
 
-                tbSize_TextChanged()
+                UpdateSizeOrBitrate()
                 tbBitrate_TextChanged()
 
                 SetSlider()
@@ -4425,10 +4434,14 @@ Public Class MainForm
         End If
     End Sub
 
+    Sub UpdateSizeOrBitrate()
+        If p.BitrateIsFixed Then tbBitrate_TextChanged() Else tbSize_TextChanged()
+    End Sub
+
     Sub tbSize_TextChanged() Handles tbTargetSize.TextChanged
         Try
             If Integer.TryParse(tbTargetSize.Text, Nothing) Then
-                p.TargetSize = If(p.FixedBitrate > 0, CInt(Calc.GetSize), Math.Max(1, CInt(tbTargetSize.Text)))
+                p.TargetSize = Math.Max(1, CInt(tbTargetSize.Text))
                 BlockSize = True
                 If Not BlockBitrate Then tbBitrate.Text = CInt(Calc.GetVideoBitrate).ToString
                 BlockSize = False
@@ -4441,7 +4454,7 @@ Public Class MainForm
     Sub tbBitrate_TextChanged() Handles tbBitrate.TextChanged
         Try
             If Integer.TryParse(tbBitrate.Text, Nothing) Then
-                p.VideoBitrate = If(p.FixedBitrate > 0, CInt(Calc.GetVideoBitrate), Math.Max(1, CInt(tbBitrate.Text)))
+                p.VideoBitrate = Math.Max(1, CInt(tbBitrate.Text))
                 BlockBitrate = True
                 If Not BlockSize Then tbTargetSize.Text = CInt(Calc.GetSize).ToString
                 BlockBitrate = False
@@ -5041,7 +5054,7 @@ Public Class MainForm
         p.Audio0.Delay = delay
 
         llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
-        tbSize_TextChanged()
+        UpdateSizeOrBitrate()
         Assistant()
     End Sub
 
@@ -5061,7 +5074,7 @@ Public Class MainForm
         p.Audio1.Delay = delay
 
         llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
-        tbSize_TextChanged()
+        UpdateSizeOrBitrate()
         Assistant()
     End Sub
 
@@ -5119,7 +5132,7 @@ Public Class MainForm
     Sub UpdateTargetParameters(seconds As Integer, frameRate As Double)
         p.TargetSeconds = seconds
         p.TargetFrameRate = frameRate
-        tbSize_TextChanged()
+        UpdateSizeOrBitrate()
     End Sub
 
     Private Sub MainForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
@@ -5140,14 +5153,14 @@ Public Class MainForm
     Private Sub AudioEdit0ToolStripMenuItemClick()
         p.Audio0.EditProject()
         UpdateAudioMenu()
-        tbSize_TextChanged()
+        UpdateSizeOrBitrate()
         llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
     End Sub
 
     Private Sub AudioEdit1ToolStripMenuItemClick()
         p.Audio1.EditProject()
         UpdateAudioMenu()
-        tbSize_TextChanged()
+        UpdateSizeOrBitrate()
         llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
     End Sub
 
@@ -5480,7 +5493,7 @@ Public Class MainForm
 
                                      tb.Text = temp.Name + " (" + ap.File.Ext + ")"
                                      ap.Stream = temp
-                                     tbSize_TextChanged()
+                                     UpdateSizeOrBitrate()
                                  End Sub
 
                 m.Items.Add(New ActionMenuItem(i.Name, menuAction, Nothing))

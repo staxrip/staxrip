@@ -505,6 +505,7 @@ Public Class Package
                                        "havsfunc.LSFmod", "havsfunc.GrainFactory3"},
             .Dependencies = {"fmtconv", "mvtools", "nnedi3", "scenechange", "temporalsoften", "mvsfunc"},
             .Description = "Various popular AviSynth scripts ported to VapourSynth.",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/havsfunc",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=166582"})
 
         Add(New PluginPackage With {
@@ -549,7 +550,7 @@ Public Class Package
             .Name = "finesharp",
             .Filename = "finesharp.py",
             .Description = "Port of Didée's FineSharp script to VapourSynth.",
-            .WebURL = "http://forum.doom9.org/showthread.php?t=166524",
+            .WebURL = "http://forum.doom9.org/showthread.php?p=1777860#post1777860",
             .VapourSynthFilterNames = {"finesharp.sharpen"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Misc", "finesharp", "clip = finesharp.sharpen(clip)")}})
@@ -845,7 +846,7 @@ Public Class AviSynthPlusPackage
         WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         FixedDir = Folder.System
-        SetupFilename = "AviSynth+r2290.exe"
+        SetupFilename = "AviSynth+r2294.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean

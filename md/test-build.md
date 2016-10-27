@@ -26,6 +26,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - fixed video comparison overwriting the log file
 - fixed codepage problem of non western europe locales
 - replaced ffmpeg with avs2pipemod for piping to x265 due to a character encoding bug with file names happening on non western locale systems
+- fixed various DPI scaling issues
 
 #### Tweaks
 
@@ -39,7 +40,6 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - VCEEncC 2.0
 - nnedi3 (avs) 0.9.4.31
 - VC++ Runtime 2015
-- AviSynth+ 2290
 - x265 2.1+25
 - ffms2 2.23
 - QSVEncC 2.57
@@ -57,3 +57,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - ffmpeg 3.1.5
 - mvtools2 (avs) 2.7.1.22
 - MP4Box 0.6.2 current snapshot
+- finesharp (vs) 2016-08-21
+- havsfunc (vs) 24
+- mvtools (vs) 17
+- AviSynth+ 2294

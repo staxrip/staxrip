@@ -653,7 +653,6 @@ Class HelpDocument
         Dim style As XElement =
 <style type="text/css">
 body {
-    background-image: url('StaxRipBackground.gif');
     background-repeat: repeat-x;
     font-family: Arial,Helvetica,sans-serif;
 }
@@ -701,10 +700,8 @@ table {
         Writer.WriteRaw(BR + script.ToString + BR)
         Writer.WriteEndElement() 'head
         Writer.WriteStartElement("body")
-        WriteElement("p", "<img src=""" + HelpForm.MainImagePath + """ style=""margin-bottom:-8pt;margin-left:-4pt"">")
 
         If showTitle Then Writer.WriteElementString("h1", title)
-        Dim dummy = HelpForm.BackgroundImagePath
     End Sub
 
     Sub WriteP(rawText As String, Optional convert As Boolean = False)

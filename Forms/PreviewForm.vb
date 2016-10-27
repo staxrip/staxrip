@@ -278,7 +278,7 @@ Class PreviewForm
 
     Private Const TrackBarBorder As Integer = 1
     Private Const TrackBarGap As Integer = 1
-    Private Const TrackBarPosition As Integer = 4
+    Private TrackBarPosition As Integer = CInt(Control.DefaultFont.Height / 4) - 1
 
     Private Shared Instances As New List(Of PreviewForm)
 
@@ -536,7 +536,7 @@ Class PreviewForm
         Dim g = pTrack.CreateGraphics()
         g.FillRectangle(Brushes.White, pTrack.ClientRectangle)
 
-        Dim trackWidth = pTrack.Height - TrackBarBorder * 2 - TrackBarGap * 2
+        Dim trackHeight = pTrack.Height - TrackBarBorder * 2 - TrackBarGap * 2
 
         Using borderPen As New Pen(Color.Black, TrackBarBorder)
             borderPen.Alignment = Drawing2D.PenAlignment.Inset
@@ -553,7 +553,7 @@ Class PreviewForm
                     c = Color.LimeGreen
                 End If
 
-                Using rangePen As New Pen(c, trackWidth)
+                Using rangePen As New Pen(c, trackHeight)
                     g.DrawLine(rangePen, GetDrawPos(p.Ranges(x).Start) - CInt(TrackBarPosition / 2),
                         CInt(pTrack.Height / 2), GetDrawPos(p.Ranges(x).End) + CInt(TrackBarPosition / 2),
                                CInt(pTrack.Height / 2))
@@ -561,7 +561,7 @@ Class PreviewForm
             Next
         End If
 
-        Using rangeSetPen As New Pen(Color.DarkOrange, trackWidth)
+        Using rangeSetPen As New Pen(Color.DarkOrange, trackHeight)
             If RangeStart > -1 AndAlso RangeStart <= AVI.Position Then
                 g.DrawLine(rangeSetPen, GetDrawPos(RangeStart) - CInt(TrackBarPosition / 2),
                     CInt(pTrack.Height / 2), GetDrawPos(AVI.Position) +
@@ -572,14 +572,15 @@ Class PreviewForm
         Dim posPen As Pen
 
         If RangeStart > -1 Then
-            posPen = New Pen(Color.DarkOrange, trackWidth)
+            posPen = New Pen(Color.DarkOrange, trackHeight)
         Else
-            posPen = New Pen(Color.Blue, trackWidth)
+            posPen = New Pen(Color.Blue, trackHeight)
         End If
 
         posPen.Alignment = Drawing2D.PenAlignment.Center
 
         Dim pos = GetDrawPos(AVI.Position)
+
         g.DrawLine(posPen, pos - CInt(TrackBarPosition / 2),
                    CInt(pTrack.Height / 2),
                    pos + CInt(TrackBarPosition / 2),

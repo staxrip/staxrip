@@ -116,30 +116,4 @@ Class HelpForm
             g.ShellExecute(e.Url.ToString)
         End If
     End Sub
-
-    Shared ReadOnly Property MainImagePath() As String
-        Get
-            Dim filepath = Folder.Temp + Guid.NewGuid.ToString + ".gif"
-
-            If Not File.Exists(filepath) Then
-                AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(filepath)
-                File.WriteAllBytes(filepath, My.Resources.main_gif)
-            End If
-
-            Return filepath
-        End Get
-    End Property
-
-    Shared ReadOnly Property BackgroundImagePath() As String
-        Get
-            Dim filepath = Folder.Temp + Guid.NewGuid.ToString + ".gif"
-
-            If Not File.Exists(filepath) Then
-                AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(filepath)
-                File.WriteAllBytes(filepath, My.Resources.background_gif)
-            End If
-
-            Return filepath
-        End Get
-    End Property
 End Class

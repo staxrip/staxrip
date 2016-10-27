@@ -12,11 +12,16 @@ Namespace UI
 
         Public Sub New()
             AutoScaleMode = AutoScaleMode.None
+            Font = New Font("Segoe UI", 9.0!, FontStyle.Regular, GraphicsUnit.Point, CType(0, Byte))
         End Sub
 
         Protected Overrides Sub OnLoad(e As EventArgs)
             KeyPreview = True
             SetTabIndexes(Me)
+
+            Dim tempDimensions = AutoScaleDimensions
+            AutoScaleMode = AutoScaleMode.None
+            AutoScaleDimensions = tempDimensions
 
             If AutoScaleDimensions.IsEmpty Then AutoScaleDimensions = New SizeF(144.0!, 144.0!)
 
@@ -32,11 +37,22 @@ Namespace UI
                 Scale(ScaleFactor)
             End If
 
-            If Not DesignMode AndAlso Not s.WindowPositions Is Nothing Then
-                s.WindowPositions.RestorePosition(Me)
-            End If
-
             MyBase.OnLoad(e)
+
+            If Not DesignMode Then
+                If StartPosition = FormStartPosition.CenterParent Then
+                    Dim af = Form.ActiveForm
+
+                    If Not af Is Nothing Then
+                        Dim middleY = af.Top + CInt(af.Height / 2)
+                        Top = middleY - CInt(Height / 2)
+                    End If
+                End If
+
+                If Not s.WindowPositions Is Nothing Then
+                    s.WindowPositions.RestorePosition(Me)
+                End If
+            End If
         End Sub
 
         Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)

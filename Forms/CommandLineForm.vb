@@ -14,6 +14,8 @@ Class CommandLineForm
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
 
+        rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
+
         Dim singleList As New List(Of String)
 
         For Each i In params.Items
@@ -67,11 +69,10 @@ Class CommandLineForm
     End Sub
 
     Sub UpdateHeight()
-        Dim s = TextRenderer.MeasureText(rtbCommandLine.Text, rtbCommandLine.Font,
-                                         New Size(rtbCommandLine.ClientSize.Width, Integer.MaxValue),
-                                         TextFormatFlags.WordBreak)
-        Height += CInt(s.Height * 1.2) - rtbCommandLine.Height
-        rtbCommandLine.Refresh()
+        Using g = rtbCommandLine.CreateGraphics
+            Dim s = g.MeasureString(rtbCommandLine.Text, rtbCommandLine.Font, rtbCommandLine.ClientSize.Width)
+            rtbCommandLine.ClientSize = New Size(rtbCommandLine.ClientSize.Width, CInt(s.Height + rtbCommandLine.Font.Height / 7))
+        End Using
     End Sub
 
     Sub InitUI()
@@ -117,7 +118,6 @@ Class CommandLineForm
 
             If TypeOf item Is BoolParam Then
                 Dim cb = SimpleUI.AddCheckBox(parent)
-                cb.Margin = New Padding(3) With {.Left = 9}
                 cb.Text = item.Text
                 cb.Tooltip = help
                 If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, cb)

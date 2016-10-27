@@ -35,14 +35,17 @@ Public Class SimpleUI
 
     Protected Overrides Sub OnHandleCreated(e As EventArgs)
         MyBase.OnHandleCreated(e)
+        Dim f = FindForm()
 
-        AddHandler FindForm.Load, Sub()
-                                      Tree.ItemHeight = CInt(Tree.Height / (Tree.Nodes.Count)) - 2
+        If Not DesignMode Then
+            AddHandler FindForm.Load, Sub()
+                                          Tree.ItemHeight = CInt(Tree.Height / (Tree.Nodes.Count)) - 2
 
-                                      If Tree.ItemHeight > Tree.Font.Height * 2 Then
-                                          Tree.ItemHeight = Tree.Font.Height * 2
-                                      End If
-                                  End Sub
+                                          If Tree.ItemHeight > Tree.Font.Height * 2 Then
+                                              Tree.ItemHeight = Tree.Font.Height * 2
+                                          End If
+                                      End Sub
+        End If
     End Sub
 
     Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
@@ -56,9 +59,9 @@ Public Class SimpleUI
         End If
 
         Host.Top = 0
-        Host.Left = Tree.Right + 8
+        Host.Left = Tree.Right + CInt(FontHeight / 3)
         Host.Height = Height
-        Host.Width = Width - Tree.Width - 8
+        Host.Width = Width - Tree.Width - CInt(FontHeight / 3)
 
         MyBase.OnLayout(levent)
     End Sub
@@ -147,15 +150,15 @@ Public Class SimpleUI
 
     Function AddEdit(parent As FlowLayoutPanelEx) As SimpleUITextEdit
         Dim ret As New SimpleUITextEdit(Me)
-        ret.Height = 36
-        ret.Width = FontHeight * 10
+        ret.Height = CInt(FontHeight * 1.4)
+        ret.Width = FontHeight * 3
         parent.Controls.Add(ret)
         Return ret
     End Function
 
     Function AddNumeric(parent As FlowLayoutPanelEx) As SimpleUINumEdit
         Dim ret As New SimpleUINumEdit(Me)
-        ret.Height = 36
+        ret.Height = CInt(FontHeight * 1.4)
         ret.Width = FontHeight * 4
         parent.Controls.Add(ret)
         Return ret
@@ -230,8 +233,7 @@ Public Class SimpleUI
 
     Sub AddLine(parent As FlowLayoutPanelEx, Optional text As String = "")
         Dim line As New LineControl
-        line.Height = 36
-        line.Width = 100
+        line.Height = FontHeight * 2
         line.Text = text
         parent.ExpandedControls(line) = True
         parent.Controls.Add(line)
@@ -313,6 +315,11 @@ Public Class SimpleUI
             SimpleUI = ui
         End Sub
 
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            Margin = New Padding(CInt(FontHeight / 8)) With {.Left = CInt(FontHeight / 4)}
+            MyBase.OnLayout(levent)
+        End Sub
+
         Protected Overrides Sub OnCheckedChanged(e As EventArgs)
             MyBase.OnCheckedChanged(e)
             SimpleUI.RaiseChangeEvent()
@@ -327,14 +334,6 @@ Public Class SimpleUI
                 End While
 
                 DirectCast(parent, IPage).TipProvider.SetTip(value, Me)
-            End Set
-        End Property
-
-        WriteOnly Property MarginTop As Integer
-            Set(value As Integer)
-                Dim m = Margin
-                m.Top = value
-                Margin = m
             End Set
         End Property
 
@@ -354,8 +353,8 @@ Public Class SimpleUI
             If Offset > 0 Then
                 Dim ret = MyBase.GetPreferredSize(proposedSize)
 
-                If ret.Width < Offset * FontHeight - 6 Then
-                    ret.Width = Offset * FontHeight - 6
+                If ret.Width < Offset * FontHeight Then
+                    ret.Width = Offset * FontHeight
                 End If
 
                 Return ret
@@ -574,9 +573,16 @@ Public Class SimpleUI
 
         Sub New(ui As SimpleUI)
             NumEdit = New SimpleUINumEdit(ui)
-            NumEdit.Height = 36
-            NumEdit.Width = 100
             Controls.Add(NumEdit)
+        End Sub
+
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            If Not NumEdit Is Nothing Then
+                NumEdit.Height = CInt(FontHeight * 1.4)
+                NumEdit.Width = FontHeight * 4
+            End If
+
+            MyBase.OnLayout(levent)
         End Sub
     End Class
 
@@ -587,9 +593,16 @@ Public Class SimpleUI
 
         Sub New(ui As SimpleUI)
             Edit = New SimpleUITextEdit(ui)
-            Edit.Height = 36
-            Edit.Width = 250
             Controls.Add(Edit)
+        End Sub
+
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            If Not Edit Is Nothing Then
+                If Not Edit.TextBox.Multiline Then Edit.Height = CInt(FontHeight * 1.4)
+                Edit.Width = FontHeight * 10
+            End If
+
+            MyBase.OnLayout(levent)
         End Sub
     End Class
 
@@ -600,12 +613,18 @@ Public Class SimpleUI
 
         Sub New(ui As SimpleUI)
             MyBase.New(ui)
-            Button.Width = 36
-            Button.Height = 36
             Button.ShowMenuSymbol = True
             Button.ContextMenuStrip = New ContextMenuStripEx
-
             Controls.Add(Button)
+        End Sub
+
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            If Not Button Is Nothing Then
+                Button.Width = CInt(FontHeight * 1.4)
+                Button.Height = CInt(FontHeight * 1.4)
+            End If
+
+            MyBase.OnLayout(levent)
         End Sub
 
         Sub AddMenu(menuText As String, menuValue As String)
@@ -633,11 +652,17 @@ Public Class SimpleUI
 
         Sub New(ui As SimpleUI)
             MyBase.New(ui)
-            Button.Width = 36
-            Button.Height = 36
-            Button.AutoSize = True
             Button.Text = "..."
             Controls.Add(Button)
+        End Sub
+
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            If Not Button Is Nothing Then
+                Button.Width = CInt(FontHeight * 1.4)
+                Button.Height = CInt(FontHeight * 1.4)
+            End If
+
+            MyBase.OnLayout(levent)
         End Sub
 
         Sub BrowseFile(filter As String)
@@ -662,10 +687,16 @@ Public Class SimpleUI
         Sub New(ui As SimpleUI)
             MenuButton = New SimpleUIMenuButton(Of T)(ui)
 
-            MenuButton.Height = 36
-            MenuButton.Width = 250
-
             Controls.Add(MenuButton)
+        End Sub
+
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            If Not MenuButton Is Nothing Then
+                MenuButton.Height = CInt(FontHeight * 1.4)
+                MenuButton.Width = FontHeight * 10
+            End If
+
+            MyBase.OnLayout(levent)
         End Sub
 
         Public WriteOnly Property Tooltip As String

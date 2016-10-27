@@ -9,6 +9,8 @@ Class SubtitleControl
 
     Private BindingSource As New BindingSource
     Friend WithEvents bnSetNames As ButtonEx
+    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
+    Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Private Items As New BindingList(Of SubtitleItem)
 
 #Region " Designer "
@@ -35,62 +37,52 @@ Class SubtitleControl
         Me.bnDown = New System.Windows.Forms.Button()
         Me.bnRemove = New System.Windows.Forms.Button()
         Me.bnUp = New System.Windows.Forms.Button()
-        Me.bnBDSup2SubPP = New StaxRip.UI.ButtonEx()
-        Me.bnPlay = New StaxRip.UI.ButtonEx()
         Me.dgv = New System.Windows.Forms.DataGridView()
+        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.bnSetNames = New StaxRip.UI.ButtonEx()
+        Me.bnPlay = New StaxRip.UI.ButtonEx()
+        Me.bnBDSup2SubPP = New StaxRip.UI.ButtonEx()
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.FlowLayoutPanel1.SuspendLayout()
+        Me.TableLayoutPanel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'bnAdd
         '
         Me.bnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnAdd.Location = New System.Drawing.Point(559, 3)
+        Me.bnAdd.Location = New System.Drawing.Point(3, 3)
         Me.bnAdd.Name = "bnAdd"
-        Me.bnAdd.Size = New System.Drawing.Size(172, 36)
+        Me.bnAdd.Size = New System.Drawing.Size(280, 70)
         Me.bnAdd.TabIndex = 12
         Me.bnAdd.Text = "Add..."
         '
         'bnDown
         '
         Me.bnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnDown.Location = New System.Drawing.Point(559, 129)
+        Me.bnDown.Location = New System.Drawing.Point(3, 231)
         Me.bnDown.Name = "bnDown"
-        Me.bnDown.Size = New System.Drawing.Size(172, 36)
+        Me.bnDown.Size = New System.Drawing.Size(280, 70)
         Me.bnDown.TabIndex = 10
         Me.bnDown.Text = "Down"
         '
         'bnRemove
         '
         Me.bnRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRemove.Location = New System.Drawing.Point(559, 45)
+        Me.bnRemove.Location = New System.Drawing.Point(3, 79)
         Me.bnRemove.Name = "bnRemove"
-        Me.bnRemove.Size = New System.Drawing.Size(172, 36)
+        Me.bnRemove.Size = New System.Drawing.Size(280, 70)
         Me.bnRemove.TabIndex = 13
         Me.bnRemove.Text = "Remove"
         '
         'bnUp
         '
         Me.bnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnUp.Location = New System.Drawing.Point(559, 87)
+        Me.bnUp.Location = New System.Drawing.Point(3, 155)
         Me.bnUp.Name = "bnUp"
-        Me.bnUp.Size = New System.Drawing.Size(172, 36)
+        Me.bnUp.Size = New System.Drawing.Size(280, 70)
         Me.bnUp.TabIndex = 11
         Me.bnUp.Text = "Up"
-        '
-        'bnBDSup2SubPP
-        '
-        Me.bnBDSup2SubPP.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnBDSup2SubPP.Location = New System.Drawing.Point(559, 255)
-        Me.bnBDSup2SubPP.Size = New System.Drawing.Size(172, 36)
-        Me.bnBDSup2SubPP.Text = "BDSup2Sub++"
-        '
-        'bnPlay
-        '
-        Me.bnPlay.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnPlay.Location = New System.Drawing.Point(559, 213)
-        Me.bnPlay.Size = New System.Drawing.Size(172, 36)
-        Me.bnPlay.Text = "Play"
         '
         'dgv
         '
@@ -101,30 +93,73 @@ Class SubtitleControl
         Me.dgv.Location = New System.Drawing.Point(3, 3)
         Me.dgv.Name = "dgv"
         Me.dgv.RowTemplate.Height = 28
-        Me.dgv.Size = New System.Drawing.Size(550, 406)
+        Me.dgv.Size = New System.Drawing.Size(1920, 936)
         Me.dgv.TabIndex = 17
+        '
+        'FlowLayoutPanel1
+        '
+        Me.FlowLayoutPanel1.AutoSize = True
+        Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnAdd)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnRemove)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnUp)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnDown)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnSetNames)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnPlay)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnBDSup2SubPP)
+        Me.FlowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(1936, 0)
+        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(10, 0, 3, 3)
+        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(286, 532)
+        Me.FlowLayoutPanel1.TabIndex = 20
+        '
+        'TableLayoutPanel1
+        '
+        Me.TableLayoutPanel1.ColumnCount = 2
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel1.Controls.Add(Me.FlowLayoutPanel1, 1, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.dgv, 0, 0)
+        Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
+        Me.TableLayoutPanel1.RowCount = 1
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(2225, 942)
+        Me.TableLayoutPanel1.TabIndex = 21
         '
         'bnSetNames
         '
         Me.bnSetNames.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnSetNames.Location = New System.Drawing.Point(559, 171)
-        Me.bnSetNames.Size = New System.Drawing.Size(172, 36)
+        Me.bnSetNames.Location = New System.Drawing.Point(3, 307)
+        Me.bnSetNames.Size = New System.Drawing.Size(280, 70)
         Me.bnSetNames.Text = "Set Names"
+        '
+        'bnPlay
+        '
+        Me.bnPlay.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnPlay.Location = New System.Drawing.Point(3, 383)
+        Me.bnPlay.Size = New System.Drawing.Size(280, 70)
+        Me.bnPlay.Text = "Play"
+        '
+        'bnBDSup2SubPP
+        '
+        Me.bnBDSup2SubPP.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnBDSup2SubPP.Location = New System.Drawing.Point(3, 459)
+        Me.bnBDSup2SubPP.Size = New System.Drawing.Size(280, 70)
+        Me.bnBDSup2SubPP.Text = "BDSup2Sub++"
         '
         'SubtitleControl
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.Controls.Add(Me.bnSetNames)
-        Me.Controls.Add(Me.dgv)
-        Me.Controls.Add(Me.bnPlay)
-        Me.Controls.Add(Me.bnBDSup2SubPP)
-        Me.Controls.Add(Me.bnAdd)
-        Me.Controls.Add(Me.bnDown)
-        Me.Controls.Add(Me.bnRemove)
-        Me.Controls.Add(Me.bnUp)
+        Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Name = "SubtitleControl"
-        Me.Size = New System.Drawing.Size(734, 412)
+        Me.Size = New System.Drawing.Size(2225, 942)
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.FlowLayoutPanel1.ResumeLayout(False)
+        Me.TableLayoutPanel1.ResumeLayout(False)
+        Me.TableLayoutPanel1.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -463,5 +498,13 @@ Class SubtitleControl
 
     Private Sub dgv_MouseUp(sender As Object, e As MouseEventArgs) Handles dgv.MouseUp
         UpdateControls()
+    End Sub
+
+    Private Sub bnPlay_Click(sender As Object, e As EventArgs) Handles bnPlay.Click
+
+    End Sub
+
+    Private Sub bnBDSup2SubPP_Click(sender As Object, e As EventArgs)
+
     End Sub
 End Class

@@ -33,6 +33,10 @@ Class ProfilesForm
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
+    Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
+    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
+    Friend WithEvents TableLayoutPanel3 As TableLayoutPanel
+    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
     Friend WithEvents bnRename As System.Windows.Forms.Button
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
@@ -52,44 +56,53 @@ Class ProfilesForm
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
+        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
+        Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
+        Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
+        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.TableLayoutPanel1.SuspendLayout()
+        Me.TableLayoutPanel2.SuspendLayout()
+        Me.TableLayoutPanel3.SuspendLayout()
+        Me.FlowLayoutPanel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'bnDown
         '
-        Me.bnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnDown.Location = New System.Drawing.Point(579, 262)
-        Me.bnDown.Margin = New System.Windows.Forms.Padding(4)
-        Me.bnDown.Size = New System.Drawing.Size(34, 34)
+        Me.bnDown.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnDown.Location = New System.Drawing.Point(70, 140)
+        Me.bnDown.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnDown.Size = New System.Drawing.Size(70, 70)
         '
         'bnUp
         '
-        Me.bnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnUp.Location = New System.Drawing.Point(579, 196)
-        Me.bnUp.Margin = New System.Windows.Forms.Padding(4)
-        Me.bnUp.Size = New System.Drawing.Size(34, 34)
+        Me.bnUp.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnUp.Location = New System.Drawing.Point(70, 0)
+        Me.bnUp.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnUp.Size = New System.Drawing.Size(70, 70)
         '
         'bnRemove
         '
-        Me.bnRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRemove.Location = New System.Drawing.Point(545, 55)
+        Me.bnRemove.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnRemove.Location = New System.Drawing.Point(8, 94)
+        Me.bnRemove.Margin = New System.Windows.Forms.Padding(8)
         Me.bnRemove.Name = "bnRemove"
-        Me.bnRemove.Size = New System.Drawing.Size(100, 34)
+        Me.bnRemove.Size = New System.Drawing.Size(210, 70)
         Me.bnRemove.TabIndex = 2
         Me.bnRemove.Text = "Remove"
         '
         'bnRight
         '
-        Me.bnRight.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRight.Location = New System.Drawing.Point(612, 229)
-        Me.bnRight.Margin = New System.Windows.Forms.Padding(4)
-        Me.bnRight.Size = New System.Drawing.Size(34, 34)
+        Me.bnRight.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnRight.Location = New System.Drawing.Point(140, 70)
+        Me.bnRight.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnRight.Size = New System.Drawing.Size(70, 70)
         '
         'bnLeft
         '
-        Me.bnLeft.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnLeft.Location = New System.Drawing.Point(545, 229)
-        Me.bnLeft.Margin = New System.Windows.Forms.Padding(4)
-        Me.bnLeft.Size = New System.Drawing.Size(34, 34)
+        Me.bnLeft.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnLeft.Location = New System.Drawing.Point(0, 70)
+        Me.bnLeft.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnLeft.Size = New System.Drawing.Size(70, 70)
         '
         'lb
         '
@@ -98,66 +111,72 @@ Class ProfilesForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lb.FormattingEnabled = True
         Me.lb.IntegralHeight = False
-        Me.lb.ItemHeight = 25
-        Me.lb.Location = New System.Drawing.Point(13, 15)
-        Me.lb.Margin = New System.Windows.Forms.Padding(4)
+        Me.lb.ItemHeight = 48
+        Me.lb.Location = New System.Drawing.Point(16, 16)
+        Me.lb.Margin = New System.Windows.Forms.Padding(16, 16, 0, 0)
         Me.lb.Name = "lb"
         Me.lb.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lb.Size = New System.Drawing.Size(524, 425)
+        Me.lb.Size = New System.Drawing.Size(1017, 965)
         Me.lb.TabIndex = 0
         '
         'bnLoad
         '
-        Me.bnLoad.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnLoad.Location = New System.Drawing.Point(545, 364)
-        Me.bnLoad.Size = New System.Drawing.Size(100, 34)
+        Me.bnLoad.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnLoad.Location = New System.Drawing.Point(8, 664)
+        Me.bnLoad.Margin = New System.Windows.Forms.Padding(8)
+        Me.bnLoad.Size = New System.Drawing.Size(210, 70)
         Me.bnLoad.Text = "Load"
         '
         'bnAdd
         '
-        Me.bnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnAdd.Location = New System.Drawing.Point(545, 13)
+        Me.bnAdd.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnAdd.Location = New System.Drawing.Point(8, 8)
+        Me.bnAdd.Margin = New System.Windows.Forms.Padding(8)
         Me.bnAdd.Name = "bnAdd"
-        Me.bnAdd.Size = New System.Drawing.Size(100, 34)
+        Me.bnAdd.Size = New System.Drawing.Size(210, 70)
         Me.bnAdd.TabIndex = 1
         Me.bnAdd.Text = "Add..."
         '
         'bnRename
         '
-        Me.bnRename.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRename.Location = New System.Drawing.Point(545, 139)
+        Me.bnRename.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnRename.Location = New System.Drawing.Point(8, 266)
+        Me.bnRename.Margin = New System.Windows.Forms.Padding(8)
         Me.bnRename.Name = "bnRename"
-        Me.bnRename.Size = New System.Drawing.Size(100, 34)
+        Me.bnRename.Size = New System.Drawing.Size(210, 70)
         Me.bnRename.TabIndex = 5
         Me.bnRename.Text = "Rename"
         Me.bnRename.UseVisualStyleBackColor = True
         '
         'bnEdit
         '
-        Me.bnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnEdit.Location = New System.Drawing.Point(545, 97)
+        Me.bnEdit.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnEdit.Location = New System.Drawing.Point(8, 180)
+        Me.bnEdit.Margin = New System.Windows.Forms.Padding(8)
         Me.bnEdit.Name = "bnEdit"
-        Me.bnEdit.Size = New System.Drawing.Size(100, 34)
+        Me.bnEdit.Size = New System.Drawing.Size(210, 70)
         Me.bnEdit.TabIndex = 4
         Me.bnEdit.Text = "Edit..."
         Me.bnEdit.UseVisualStyleBackColor = True
         '
         'bnClone
         '
-        Me.bnClone.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnClone.Location = New System.Drawing.Point(545, 322)
+        Me.bnClone.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnClone.Location = New System.Drawing.Point(8, 578)
+        Me.bnClone.Margin = New System.Windows.Forms.Padding(8)
         Me.bnClone.Name = "bnClone"
-        Me.bnClone.Size = New System.Drawing.Size(100, 34)
+        Me.bnClone.Size = New System.Drawing.Size(210, 70)
         Me.bnClone.TabIndex = 6
         Me.bnClone.Text = "Clone"
         Me.bnClone.UseVisualStyleBackColor = True
         '
         'bnRestore
         '
-        Me.bnRestore.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRestore.Location = New System.Drawing.Point(545, 406)
+        Me.bnRestore.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnRestore.Location = New System.Drawing.Point(8, 750)
+        Me.bnRestore.Margin = New System.Windows.Forms.Padding(8)
         Me.bnRestore.Name = "bnRestore"
-        Me.bnRestore.Size = New System.Drawing.Size(100, 34)
+        Me.bnRestore.Size = New System.Drawing.Size(210, 70)
         Me.bnRestore.TabIndex = 15
         Me.bnRestore.Text = "Restore"
         Me.bnRestore.UseVisualStyleBackColor = True
@@ -166,44 +185,124 @@ Class ProfilesForm
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(545, 448)
-        Me.bnCancel.Size = New System.Drawing.Size(100, 34)
+        Me.bnCancel.Location = New System.Drawing.Point(234, 8)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(8)
+        Me.bnCancel.Size = New System.Drawing.Size(210, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(437, 448)
-        Me.bnOK.Size = New System.Drawing.Size(100, 34)
+        Me.bnOK.Location = New System.Drawing.Point(8, 8)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(8)
+        Me.bnOK.Size = New System.Drawing.Size(210, 70)
         Me.bnOK.Text = "OK"
+        '
+        'TableLayoutPanel1
+        '
+        Me.TableLayoutPanel1.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.TableLayoutPanel1.AutoSize = True
+        Me.TableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.TableLayoutPanel1.ColumnCount = 3
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.Controls.Add(Me.bnLeft, 0, 1)
+        Me.TableLayoutPanel1.Controls.Add(Me.bnRight, 2, 1)
+        Me.TableLayoutPanel1.Controls.Add(Me.bnUp, 1, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.bnDown, 1, 2)
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(8, 352)
+        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(8)
+        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
+        Me.TableLayoutPanel1.RowCount = 3
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(210, 210)
+        Me.TableLayoutPanel1.TabIndex = 21
+        '
+        'TableLayoutPanel2
+        '
+        Me.TableLayoutPanel2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TableLayoutPanel2.AutoSize = True
+        Me.TableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.TableLayoutPanel2.ColumnCount = 1
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel2.Controls.Add(Me.TableLayoutPanel1, 0, 4)
+        Me.TableLayoutPanel2.Controls.Add(Me.bnRemove, 0, 1)
+        Me.TableLayoutPanel2.Controls.Add(Me.bnRestore, 0, 7)
+        Me.TableLayoutPanel2.Controls.Add(Me.bnEdit, 0, 2)
+        Me.TableLayoutPanel2.Controls.Add(Me.bnClone, 0, 5)
+        Me.TableLayoutPanel2.Controls.Add(Me.bnLoad, 0, 6)
+        Me.TableLayoutPanel2.Controls.Add(Me.bnRename, 0, 3)
+        Me.TableLayoutPanel2.Controls.Add(Me.bnAdd, 0, 0)
+        Me.TableLayoutPanel2.Location = New System.Drawing.Point(1041, 8)
+        Me.TableLayoutPanel2.Margin = New System.Windows.Forms.Padding(8)
+        Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
+        Me.TableLayoutPanel2.RowCount = 8
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(226, 828)
+        Me.TableLayoutPanel2.TabIndex = 22
+        '
+        'TableLayoutPanel3
+        '
+        Me.TableLayoutPanel3.ColumnCount = 3
+        Me.TableLayoutPanel3.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel3.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel3.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel3.Controls.Add(Me.lb, 0, 0)
+        Me.TableLayoutPanel3.Controls.Add(Me.TableLayoutPanel2, 1, 0)
+        Me.TableLayoutPanel3.Controls.Add(Me.FlowLayoutPanel1, 0, 1)
+        Me.TableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel3.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel3.Name = "TableLayoutPanel3"
+        Me.TableLayoutPanel3.RowCount = 2
+        Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel3.Size = New System.Drawing.Size(1275, 1083)
+        Me.TableLayoutPanel3.TabIndex = 23
+        '
+        'FlowLayoutPanel1
+        '
+        Me.FlowLayoutPanel1.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.FlowLayoutPanel1.AutoSize = True
+        Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.TableLayoutPanel3.SetColumnSpan(Me.FlowLayoutPanel1, 2)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnOK)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnCancel)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(815, 989)
+        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(8)
+        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(452, 86)
+        Me.FlowLayoutPanel1.TabIndex = 23
         '
         'ProfilesForm
         '
         Me.AcceptButton = Me.bnOK
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(658, 495)
-        Me.Controls.Add(Me.bnCancel)
-        Me.Controls.Add(Me.bnOK)
-        Me.Controls.Add(Me.bnRestore)
-        Me.Controls.Add(Me.bnRight)
-        Me.Controls.Add(Me.bnLeft)
-        Me.Controls.Add(Me.bnClone)
-        Me.Controls.Add(Me.bnEdit)
-        Me.Controls.Add(Me.bnRename)
-        Me.Controls.Add(Me.bnRemove)
-        Me.Controls.Add(Me.bnDown)
-        Me.Controls.Add(Me.lb)
-        Me.Controls.Add(Me.bnUp)
-        Me.Controls.Add(Me.bnAdd)
-        Me.Controls.Add(Me.bnLoad)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+        Me.ClientSize = New System.Drawing.Size(1275, 1083)
+        Me.Controls.Add(Me.TableLayoutPanel3)
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(0, 0)
-        Me.Margin = New System.Windows.Forms.Padding(5)
+        Me.Margin = New System.Windows.Forms.Padding(10)
         Me.Name = "ProfilesForm"
         Me.Text = "Profiles"
+        Me.TableLayoutPanel1.ResumeLayout(False)
+        Me.TableLayoutPanel2.ResumeLayout(False)
+        Me.TableLayoutPanel2.PerformLayout()
+        Me.TableLayoutPanel3.ResumeLayout(False)
+        Me.TableLayoutPanel3.PerformLayout()
+        Me.FlowLayoutPanel1.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub

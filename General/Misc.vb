@@ -2427,7 +2427,7 @@ Class Startup
 
         If args.Count = 2 AndAlso args(0) = "-mediainfo" Then
             ToolStripManager.Renderer = New ToolStripRendererEx(ToolStripRenderMode.SystemDefault)
-            Application.Run(New MediaInfoForm(args(1)) With {.StartPosition = FormStartPosition.CenterScreen, .ShowInTaskbar = True})
+            Application.Run(New MediaInfoForm(args(1)) With {.ShowInTaskbar = True})
         Else
             Application.Run(New MainForm())
         End If

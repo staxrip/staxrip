@@ -814,7 +814,7 @@ Namespace UI
         Event LinkClick()
 
         Sub New()
-            ll.Left = 8
+            ll.Left = 7
             ll.AutoSize = True
             Controls.Add(ll)
         End Sub
@@ -1206,11 +1206,7 @@ Namespace UI
 
         Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
             Dim ret = MyBase.GetPreferredSize(proposedSize)
-
-            If UseParenWidth Then
-                ret.Width = Parent.Width
-            End If
-
+            If UseParenWidth Then ret.Width = Parent.Width
             Return ret
         End Function
     End Class
@@ -1714,9 +1710,7 @@ Namespace UI
             End Sub
 
             Protected Overrides Sub OnTextChanged(e As EventArgs)
-                If Not BlockTextChanged Then
-                    MyBase.OnTextChanged(e)
-                End If
+                If Not BlockTextChanged Then MyBase.OnTextChanged(e)
             End Sub
         End Class
 

@@ -2270,7 +2270,7 @@ Class x264Form
         '
         Me.cbGoTo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.cbGoTo.FormattingEnabled = True
-        Me.cbGoTo.Location = New System.Drawing.Point(14, 472)
+        Me.cbGoTo.Location = New System.Drawing.Point(14, 474)
         Me.cbGoTo.Margin = New System.Windows.Forms.Padding(4)
         Me.cbGoTo.Name = "cbGoTo"
         Me.cbGoTo.Size = New System.Drawing.Size(172, 33)

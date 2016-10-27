@@ -591,6 +591,7 @@ Namespace UI
             Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         End Sub
 
+        <DefaultValue(GetType(Form), Nothing)>
         Property Form As Form
             Get
                 Return FormValue

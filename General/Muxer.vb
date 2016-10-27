@@ -390,8 +390,8 @@ Class BatchMuxer
             tb = ui.AddTextBlock(page)
             tb.Label.Visible = False
             tb.Expand(tb.Edit)
-            tb.Edit.Height = f.Font.Height * 15
             tb.Edit.TextBox.Multiline = True
+            tb.Edit.Height = f.Font.Height * 15
             tb.Edit.Text = CommandLines
             tb.Edit.UseCommandlineEditor = True
             tb.Edit.SaveAction = Sub(value) CommandLines = value
@@ -399,7 +399,10 @@ Class BatchMuxer
             Dim ret = f.ShowDialog()
             If ret = DialogResult.OK Then
                 ui.Save()
-                p.TargetFile = p.TargetFile.DirAndBase + "." + OutputTypeValue
+
+                If p.TargetFile <> "" Then
+                    p.TargetFile = p.TargetFile.DirAndBase + "." + OutputTypeValue
+                End If
             End If
 
             Return ret

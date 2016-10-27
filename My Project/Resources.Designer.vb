@@ -71,16 +71,6 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized resource of type System.Byte[].
-        '''</summary>
-        Friend ReadOnly Property background_gif() As Byte()
-            Get
-                Dim obj As Object = ResourceManager.GetObject("background_gif", resourceCulture)
-                Return CType(obj,Byte())
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
         Friend ReadOnly Property BracketClose() As System.Drawing.Bitmap
@@ -147,16 +137,6 @@ Namespace My.Resources
             Get
                 Dim obj As Object = ResourceManager.GetObject("Left3", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.Byte[].
-        '''</summary>
-        Friend ReadOnly Property main_gif() As Byte()
-            Get
-                Dim obj As Object = ResourceManager.GetObject("main_gif", resourceCulture)
-                Return CType(obj,Byte())
             End Get
         End Property
         

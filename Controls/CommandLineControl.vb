@@ -1,6 +1,5 @@
 ﻿Imports StaxRip.UI
 
-Imports System.Text
 Imports System.ComponentModel
 
 Class CommandLineControl
@@ -35,20 +34,20 @@ Class CommandLineControl
         'tb
         '
         Me.tb.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tb.Location = New System.Drawing.Point(0, 0)
         Me.tb.Margin = New System.Windows.Forms.Padding(0)
         Me.tb.Multiline = True
-        Me.tb.Size = New System.Drawing.Size(790, 430)
+        Me.tb.Size = New System.Drawing.Size(754, 430)
         '
-        'bn
+        'bu
         '
         Me.bu.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bu.Location = New System.Drawing.Point(796, 0)
+        Me.bu.Location = New System.Drawing.Point(760, 0)
         Me.bu.Margin = New System.Windows.Forms.Padding(6, 0, 0, 0)
         Me.bu.ShowMenuSymbol = True
-        Me.bu.Size = New System.Drawing.Size(34, 34)
+        Me.bu.Size = New System.Drawing.Size(70, 70)
         '
         'TableLayoutPanel1
         '
@@ -65,12 +64,12 @@ Class CommandLineControl
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(830, 430)
         Me.TableLayoutPanel1.TabIndex = 2
         '
-        'CmdlControl
+        'CommandLineControl
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Name = "CmdlControl"
+        Me.Name = "CommandLineControl"
         Me.Size = New System.Drawing.Size(830, 430)
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.TableLayoutPanel1.PerformLayout()

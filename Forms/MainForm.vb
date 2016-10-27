@@ -3714,7 +3714,6 @@ Public Class MainForm
             ui.AddLabel(eb, "Left:", 2)
 
             Dim te = ui.AddEdit(eb)
-            te.Width = 60
             te.Text = p.CropLeft.ToString
             te.TextBox.TextAlign = HorizontalAlignment.Center
             te.SaveAction = Sub(value) If value.IsInt Then p.CropLeft = CInt(value)
@@ -3722,7 +3721,6 @@ Public Class MainForm
             Dim l = ui.AddLabel(eb, "Right:", 4)
 
             te = ui.AddEdit(eb)
-            te.Width = 60
             te.Text = p.CropRight.ToString
             te.TextBox.TextAlign = HorizontalAlignment.Center
             te.SaveAction = Sub(value) If value.IsInt Then p.CropRight = CInt(value)
@@ -3732,7 +3730,6 @@ Public Class MainForm
             ui.AddLabel(eb, "Top:", 2)
 
             te = ui.AddEdit(eb)
-            te.Width = 60
             te.Text = p.CropTop.ToString
             te.TextBox.TextAlign = HorizontalAlignment.Center
             te.SaveAction = Sub(value) If value.IsInt Then p.CropTop = CInt(value)
@@ -3740,7 +3737,6 @@ Public Class MainForm
             l = ui.AddLabel(eb, "Bottom:", 4)
 
             te = ui.AddEdit(eb)
-            te.Width = 60
             te.Text = p.CropBottom.ToString
             te.TextBox.TextAlign = HorizontalAlignment.Center
             te.SaveAction = Sub(value) If value.IsInt Then p.CropBottom = CInt(value)
@@ -3886,8 +3882,8 @@ Public Class MainForm
             tb = ui.AddTextBlock(filtersPage)
             tb.Label.Visible = False
             tb.Expand(tb.Edit)
-            tb.Edit.Height = CInt(Font.Height * 3)
             tb.Edit.TextBox.Multiline = True
+            tb.Edit.Height = CInt(Font.Height * 3)
             tb.Edit.UseMacroEditor = True
             tb.Edit.Text = p.TrimCode
             tb.Edit.SaveAction = Sub(value) p.TrimCode = value
@@ -3899,8 +3895,8 @@ Public Class MainForm
             tb = ui.AddTextBlock(filtersPage)
             tb.Label.Visible = False
             tb.Expand(tb.Edit)
-            tb.Edit.Height = CInt(Font.Height * 3)
             tb.Edit.TextBox.Multiline = True
+            tb.Edit.Height = CInt(Font.Height * 3)
             tb.Edit.UseMacroEditor = True
             tb.Edit.Text = p.CodeAtTop
             tb.Edit.SaveAction = Sub(value) p.CodeAtTop = value

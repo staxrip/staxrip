@@ -22,62 +22,105 @@ Class DemuxingControl
     Friend WithEvents bnAdd As ButtonEx
     Friend WithEvents ColumnHeader1 As System.Windows.Forms.ColumnHeader
     Friend WithEvents bnRestore As ButtonEx
-
+    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
+    Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Private components As System.ComponentModel.IContainer
 
     <DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.bnRestore = New StaxRip.UI.ButtonEx()
+        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.bnAdd = New StaxRip.UI.ButtonEx()
-        Me.bnDown = New StaxRip.UI.ButtonEx()
-        Me.bnEdit = New StaxRip.UI.ButtonEx()
         Me.bnRemove = New StaxRip.UI.ButtonEx()
+        Me.bnEdit = New StaxRip.UI.ButtonEx()
         Me.bnUp = New StaxRip.UI.ButtonEx()
+        Me.bnDown = New StaxRip.UI.ButtonEx()
+        Me.bnRestore = New StaxRip.UI.ButtonEx()
         Me.lv = New StaxRip.UI.ListViewEx()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.FlowLayoutPanel1.SuspendLayout()
+        Me.TableLayoutPanel1.SuspendLayout()
         Me.SuspendLayout()
         '
-        'buRestore
+        'FlowLayoutPanel1
         '
-        Me.bnRestore.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRestore.Location = New System.Drawing.Point(306, 199)
-        Me.bnRestore.Size = New System.Drawing.Size(100, 34)
-        Me.bnRestore.Text = "Restore..."
+        Me.FlowLayoutPanel1.AutoSize = True
+        Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnAdd)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnRemove)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnEdit)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnUp)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnDown)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnRestore)
+        Me.FlowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(647, 0)
+        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0)
+        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(222, 486)
+        Me.FlowLayoutPanel1.TabIndex = 6
+        '
+        'TableLayoutPanel1
+        '
+        Me.TableLayoutPanel1.ColumnCount = 2
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel1.Controls.Add(Me.FlowLayoutPanel1, 1, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.lv, 0, 0)
+        Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
+        Me.TableLayoutPanel1.RowCount = 1
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(869, 649)
+        Me.TableLayoutPanel1.TabIndex = 7
         '
         'bnAdd
         '
         Me.bnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnAdd.Location = New System.Drawing.Point(306, -1)
-        Me.bnAdd.Size = New System.Drawing.Size(100, 34)
+        Me.bnAdd.Location = New System.Drawing.Point(6, 0)
+        Me.bnAdd.Margin = New System.Windows.Forms.Padding(6, 0, 6, 6)
+        Me.bnAdd.Size = New System.Drawing.Size(210, 70)
         Me.bnAdd.Text = "Add..."
-        '
-        'bnDown
-        '
-        Me.bnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnDown.Location = New System.Drawing.Point(306, 159)
-        Me.bnDown.Size = New System.Drawing.Size(100, 34)
-        Me.bnDown.Text = "Down"
-        '
-        'bnEdit
-        '
-        Me.bnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnEdit.Location = New System.Drawing.Point(306, 79)
-        Me.bnEdit.Size = New System.Drawing.Size(100, 34)
-        Me.bnEdit.Text = "Edit..."
         '
         'bnRemove
         '
         Me.bnRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRemove.Location = New System.Drawing.Point(306, 39)
-        Me.bnRemove.Size = New System.Drawing.Size(100, 34)
+        Me.bnRemove.Location = New System.Drawing.Point(6, 82)
+        Me.bnRemove.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnRemove.Size = New System.Drawing.Size(210, 70)
         Me.bnRemove.Text = "Remove"
         '
-        'buUp
+        'bnEdit
+        '
+        Me.bnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnEdit.Location = New System.Drawing.Point(6, 164)
+        Me.bnEdit.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnEdit.Size = New System.Drawing.Size(210, 70)
+        Me.bnEdit.Text = "Edit..."
+        '
+        'bnUp
         '
         Me.bnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnUp.Location = New System.Drawing.Point(306, 119)
-        Me.bnUp.Size = New System.Drawing.Size(100, 34)
+        Me.bnUp.Location = New System.Drawing.Point(6, 246)
+        Me.bnUp.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnUp.Size = New System.Drawing.Size(210, 70)
         Me.bnUp.Text = "Up"
+        '
+        'bnDown
+        '
+        Me.bnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnDown.Location = New System.Drawing.Point(6, 328)
+        Me.bnDown.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnDown.Size = New System.Drawing.Size(210, 70)
+        Me.bnDown.Text = "Down"
+        '
+        'bnRestore
+        '
+        Me.bnRestore.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnRestore.Location = New System.Drawing.Point(6, 410)
+        Me.bnRestore.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnRestore.Size = New System.Drawing.Size(210, 70)
+        Me.bnRestore.Text = "Restore..."
         '
         'lv
         '
@@ -90,25 +133,25 @@ Class DemuxingControl
         Me.lv.DownButton = Me.bnDown
         Me.lv.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.lv.Location = New System.Drawing.Point(0, 0)
+        Me.lv.Margin = New System.Windows.Forms.Padding(0, 0, 8, 0)
         Me.lv.MultiSelect = False
         Me.lv.Name = "lv"
-        Me.lv.Size = New System.Drawing.Size(300, 303)
+        Me.lv.Size = New System.Drawing.Size(639, 649)
         Me.lv.TabIndex = 0
         Me.lv.UpButton = Me.bnUp
+        Me.lv.UseCompatibleStateImageBehavior = False
         Me.lv.View = System.Windows.Forms.View.Details
         '
         'DemuxingControl
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.Controls.Add(Me.bnRestore)
-        Me.Controls.Add(Me.bnAdd)
-        Me.Controls.Add(Me.bnDown)
-        Me.Controls.Add(Me.bnEdit)
-        Me.Controls.Add(Me.bnRemove)
-        Me.Controls.Add(Me.bnUp)
-        Me.Controls.Add(Me.lv)
+        Me.Controls.Add(Me.TableLayoutPanel1)
+        Me.Margin = New System.Windows.Forms.Padding(6)
         Me.Name = "DemuxingControl"
-        Me.Size = New System.Drawing.Size(405, 303)
+        Me.Size = New System.Drawing.Size(869, 649)
+        Me.FlowLayoutPanel1.ResumeLayout(False)
+        Me.TableLayoutPanel1.ResumeLayout(False)
+        Me.TableLayoutPanel1.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -213,5 +256,17 @@ Class DemuxingControl
     Private Sub lv_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lv.SelectedIndexChanged
         bnEdit.Enabled = lv.SelectedItems.Count = 1 AndAlso
             DirectCast(lv.SelectedItems(0).Tag, Demuxer).HasConfigDialog
+    End Sub
+
+    Private Sub bnAdd_Click(sender As Object, e As EventArgs)
+
+    End Sub
+
+    Private Sub bnEdit_Click(sender As Object, e As EventArgs)
+
+    End Sub
+
+    Private Sub bnRestore_Click(sender As Object, e As EventArgs) Handles bnRestore.Click
+
     End Sub
 End Class

@@ -460,8 +460,7 @@ Class AudioForm
         'AudioForm
         '
         Me.AcceptButton = Me.bnOK
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnCancel
         Me.ClientSize = New System.Drawing.Size(1928, 1309)
         Me.Controls.Add(Me.MenuStrip)
@@ -471,9 +470,8 @@ Class AudioForm
         Me.Controls.Add(Me.bnOK)
         Me.Controls.Add(Me.gbAdvanced)
         Me.Controls.Add(Me.gbBasic)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+        Me.DesignDPI = 288
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
         Me.MainMenuStrip = Me.MenuStrip
         Me.Margin = New System.Windows.Forms.Padding(8)
         Me.Name = "AudioForm"

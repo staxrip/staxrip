@@ -44,7 +44,7 @@ Partial Class VideoComparisonForm
         Me.TabControl.Margin = New System.Windows.Forms.Padding(0)
         Me.TabControl.Name = "TabControl"
         Me.TabControl.SelectedIndex = 0
-        Me.TabControl.Size = New System.Drawing.Size(656, 523)
+        Me.TabControl.Size = New System.Drawing.Size(1373, 931)
         Me.TabControl.TabIndex = 0
         '
         'TrackBar
@@ -52,9 +52,9 @@ Partial Class VideoComparisonForm
         Me.TrackBar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TrackBar.AutoSize = False
-        Me.TrackBar.Location = New System.Drawing.Point(3, 526)
+        Me.TrackBar.Location = New System.Drawing.Point(3, 934)
         Me.TrackBar.Name = "TrackBar"
-        Me.TrackBar.Size = New System.Drawing.Size(650, 40)
+        Me.TrackBar.Size = New System.Drawing.Size(1367, 60)
         Me.TrackBar.TabIndex = 1
         Me.TrackBar.TabStop = False
         Me.TrackBar.TickStyle = System.Windows.Forms.TickStyle.None
@@ -73,7 +73,7 @@ Partial Class VideoComparisonForm
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(656, 617)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1373, 1079)
         Me.TableLayoutPanel1.TabIndex = 2
         '
         'TableLayoutPanel2
@@ -85,20 +85,20 @@ Partial Class VideoComparisonForm
         Me.TableLayoutPanel2.Controls.Add(Me.lInfo, 1, 0)
         Me.TableLayoutPanel2.Controls.Add(Me.bnMenu, 0, 0)
         Me.TableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel2.Location = New System.Drawing.Point(3, 572)
+        Me.TableLayoutPanel2.Location = New System.Drawing.Point(3, 1000)
         Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
         Me.TableLayoutPanel2.RowCount = 1
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(650, 42)
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(1367, 76)
         Me.TableLayoutPanel2.TabIndex = 3
         '
         'lInfo
         '
         Me.lInfo.AutoSize = True
         Me.lInfo.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lInfo.Location = New System.Drawing.Point(45, 0)
+        Me.lInfo.Location = New System.Drawing.Point(79, 0)
         Me.lInfo.Name = "lInfo"
-        Me.lInfo.Size = New System.Drawing.Size(602, 42)
+        Me.lInfo.Size = New System.Drawing.Size(1285, 76)
         Me.lInfo.TabIndex = 4
         Me.lInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -106,18 +106,18 @@ Partial Class VideoComparisonForm
         '
         Me.bnMenu.Location = New System.Drawing.Point(3, 3)
         Me.bnMenu.ShowMenuSymbol = True
-        Me.bnMenu.Size = New System.Drawing.Size(36, 36)
+        Me.bnMenu.Size = New System.Drawing.Size(70, 70)
         '
-        'CodecComparisonForm
+        'VideoComparisonForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.ClientSize = New System.Drawing.Size(656, 617)
+        Me.ClientSize = New System.Drawing.Size(1373, 1079)
         Me.Controls.Add(Me.TableLayoutPanel1)
+        Me.DesignDPI = 288
         Me.DoubleBuffered = True
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
-        Me.Name = "CodecComparisonForm"
+        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.Name = "VideoComparisonForm"
         Me.ShowIcon = False
         Me.Text = "Video Comparison"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized

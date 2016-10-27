@@ -652,6 +652,8 @@ Public Class SimpleUI
 
         Sub New(ui As SimpleUI)
             MyBase.New(ui)
+            Button.AutoSizeMode = AutoSizeMode.GrowOnly
+            Button.AutoSize = True
             Button.Text = "..."
             Controls.Add(Button)
         End Sub

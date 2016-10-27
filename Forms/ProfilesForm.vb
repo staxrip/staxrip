@@ -287,13 +287,12 @@ Class ProfilesForm
         'ProfilesForm
         '
         Me.AcceptButton = Me.bnOK
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnCancel
         Me.ClientSize = New System.Drawing.Size(1275, 1083)
         Me.Controls.Add(Me.TableLayoutPanel3)
+        Me.DesignDPI = 288
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
         Me.Margin = New System.Windows.Forms.Padding(10)
         Me.Name = "ProfilesForm"
         Me.Text = "Profiles"

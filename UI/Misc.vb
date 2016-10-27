@@ -10,6 +10,8 @@ Namespace UI
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property ScaleFactor As SizeF = New SizeF(1, 1)
 
+        Property DesignDPI As Integer
+
         Public Sub New()
             AutoScaleMode = AutoScaleMode.None
             Font = New Font("Segoe UI", 9.0!, FontStyle.Regular, GraphicsUnit.Point, CType(0, Byte))
@@ -19,11 +21,13 @@ Namespace UI
             KeyPreview = True
             SetTabIndexes(Me)
 
-            Dim tempDimensions = AutoScaleDimensions
-            AutoScaleMode = AutoScaleMode.None
-            AutoScaleDimensions = tempDimensions
-
-            If AutoScaleDimensions.IsEmpty Then AutoScaleDimensions = New SizeF(144.0!, 144.0!)
+            If AutoScaleDimensions.IsEmpty Then
+                If DesignDPI <> 0 Then
+                    AutoScaleDimensions = New SizeF(DesignDPI, DesignDPI)
+                Else
+                    AutoScaleDimensions = New SizeF(144, 144)
+                End If
+            End If
 
             If s.UIScaleFactor <> 1 Then
                 Font = New Font(Font.FontFamily, Font.Size * s.UIScaleFactor)
@@ -75,6 +79,8 @@ Namespace UI
 
         Private CurrentDPIDimensionValue As SizeF?
 
+        <Browsable(False)>
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         ReadOnly Property CurrentDPIDimension As SizeF
             Get
                 If Not CurrentDPIDimensionValue.HasValue Then

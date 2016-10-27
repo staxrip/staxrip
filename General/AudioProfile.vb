@@ -350,7 +350,9 @@ Class NullAudioProfile
 
     Overrides Sub EditProject()
         Using f As New SimpleSettingsForm("Null Audio Profile Options")
-            f.Size = New Size(500, 300)
+            f.Width = CInt(f.Width * 0.6)
+            f.Height = CInt(f.Height * 0.4)
+
             Dim ui = f.SimpleUI
             Dim page = ui.CreateFlowPage("main page")
 
@@ -436,10 +438,8 @@ Class MuxAudioProfile
 
     Private Overloads Function Edit(showProjectSettings As Boolean) As DialogResult
         Using f As New SimpleSettingsForm("Audio Mux Options", "The Audio Mux options allow to add a audio file without reencoding.")
-            f.Size = New Size(800, 350)
-
+            f.Height = CInt(f.Height * 0.6)
             Dim ui = f.SimpleUI
-
             Dim page = ui.CreateFlowPage("main page")
             page.SuspendLayout()
 

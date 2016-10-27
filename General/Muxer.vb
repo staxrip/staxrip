@@ -372,13 +372,12 @@ Class BatchMuxer
 
     Overrides Function Edit() As DialogResult
         Using f As New SimpleSettingsForm("Batch Muxer", "The Batch Muxer dialog allows to configure StaxRip to use a command line or batch code as muxer.")
-            f.Size = New Size(1100, 600)
+            f.Height = CInt(f.Height * 0.6)
 
             Dim ui = f.SimpleUI
             Dim page = ui.CreateFlowPage("main page")
 
             Dim tb = ui.AddTextBlock(page)
-            tb.Label.Offset = 7
             tb.Label.Text = "Output File Type:"
             tb.Edit.Text = OutputTypeValue
             tb.Edit.SaveAction = Sub(value) OutputTypeValue = value
@@ -391,7 +390,7 @@ Class BatchMuxer
             tb.Label.Visible = False
             tb.Expand(tb.Edit)
             tb.Edit.TextBox.Multiline = True
-            tb.Edit.Height = f.Font.Height * 15
+            tb.Edit.Height = f.Font.Height * 6
             tb.Edit.Text = CommandLines
             tb.Edit.UseCommandlineEditor = True
             tb.Edit.SaveAction = Sub(value) CommandLines = value
@@ -660,10 +659,8 @@ Class ffmpegMuxer
 
     Overrides Function Edit() As DialogResult
         Using f As New SimpleSettingsForm(Name)
-            f.Size = New Size(500, 200)
-
+            f.Height = CInt(f.Height * 0.5)
             Dim ui = f.SimpleUI
-
             Dim page = ui.CreateFlowPage("main page")
 
             Dim tb = ui.AddTextBlock(page)

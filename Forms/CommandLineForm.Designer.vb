@@ -135,15 +135,14 @@ Partial Class CommandLineForm
         '
         'CommandLineForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.CancelButton = Me.bnCancel
         Me.ClientSize = New System.Drawing.Size(1868, 1255)
         Me.Controls.Add(Me.TableLayoutPanel1)
+        Me.DesignDPI = 288
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
         Me.Margin = New System.Windows.Forms.Padding(8)
         Me.Name = "CommandLineForm"
         Me.Text = "x265"

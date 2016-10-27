@@ -5611,7 +5611,8 @@ Public Class MainForm
 
             If fd.ShowDialog = DialogResult.OK Then
                 Using f As New SimpleSettingsForm("Thumbnails Options")
-                    f.Size = New Size(500, 310)
+                    f.Height = f.Height \ 2
+                    f.Width = f.Width \ 2
 
                     Dim ui = f.SimpleUI
 

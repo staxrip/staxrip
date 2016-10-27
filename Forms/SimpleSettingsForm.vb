@@ -95,14 +95,12 @@ Class SimpleSettingsForm
         '
         'SimpleSettingsForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnCancel
         Me.ClientSize = New System.Drawing.Size(1608, 1124)
         Me.Controls.Add(Me.TableLayoutPanel1)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+        Me.DesignDPI = 288
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
         Me.Margin = New System.Windows.Forms.Padding(0)
         Me.Name = "SimpleSettingsForm"
         Me.TableLayoutPanel1.ResumeLayout(False)

@@ -103,6 +103,7 @@ Friend Class JobsForm
         Me.lv.Location = New System.Drawing.Point(0, 0)
         Me.lv.Margin = New System.Windows.Forms.Padding(0, 0, 0, 16)
         Me.lv.Name = "lv"
+        Me.lv.Scrollable = False
         Me.lv.Size = New System.Drawing.Size(1804, 1232)
         Me.lv.TabIndex = 7
         Me.lv.UseCompatibleStateImageBehavior = False

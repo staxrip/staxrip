@@ -29,9 +29,7 @@ Namespace UI
                 End If
             End If
 
-            If s.UIScaleFactor <> 1 Then
-                Font = New Font(Font.FontFamily, Font.Size * s.UIScaleFactor)
-            End If
+            If s.UIScaleFactor <> 1 Then Font = New Font(Font.FontFamily, Font.Size * s.UIScaleFactor)
 
             If AutoScaleDimensions <> CurrentDPIDimension OrElse s.UIScaleFactor <> 1 Then
                 ScaleFactor = New SizeF(CurrentDPIDimension.Width / AutoScaleDimensions.Width * s.UIScaleFactor,

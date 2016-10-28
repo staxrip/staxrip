@@ -64,14 +64,14 @@ Class CommandLineForm
     Sub ValueChanged(item As CommandLineParam)
         rtbCommandLine.SetText(Params.GetCommandLine(False, False))
         rtbCommandLine.SelectionLength = 0
-        UpdateHeight()
+        UpdateHeight(rtbCommandLine)
         UpdateSearchComboBox()
     End Sub
 
-    Sub UpdateHeight()
-        Using g = rtbCommandLine.CreateGraphics
-            Dim s = g.MeasureString(rtbCommandLine.Text, rtbCommandLine.Font, rtbCommandLine.ClientSize.Width)
-            rtbCommandLine.ClientSize = New Size(rtbCommandLine.ClientSize.Width, CInt(s.Height + rtbCommandLine.Font.Height / 7))
+    Sub UpdateHeight(rtb As RichTextBox)
+        Using g = rtb.CreateGraphics
+            Dim s = g.MeasureString(rtb.Text, rtb.Font, rtb.ClientSize.Width)
+            rtb.ClientSize = New Size(rtb.ClientSize.Width, CInt(s.Height + rtb.Font.Height / 7))
         End Using
     End Sub
 
@@ -143,7 +143,7 @@ Class CommandLineForm
                 If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, mb.Label, mb.MenuButton)
                 helpControl = mb.Label
                 AddHandler mb.Label.MouseDoubleClick, Sub() tempItem.ValueChangedUser(tempItem.DefaultValue)
-                If os.Expand Then mb.Expand(mb.MenuButton)
+                If os.Expand Then mb.MenuButton.Expandet = True
 
                 For x2 = 0 To os.Options.Length - 1
                     mb.MenuButton.Add(os.Options(x2), x2)
@@ -166,7 +166,7 @@ Class CommandLineForm
                 textBlock.Label.Tooltip = help
                 helpControl = textBlock.Label
                 AddHandler textBlock.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
-                textBlock.Expand(textBlock.Edit)
+                textBlock.Edit.Expandet = True
                 Dim sp = DirectCast(item, StringParam)
                 sp.Init(textBlock)
             End If
@@ -295,6 +295,6 @@ Class CommandLineForm
     End Sub
 
     Private Sub CommandLineForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        UpdateHeight()
+        UpdateHeight(rtbCommandLine)
     End Sub
 End Class

@@ -728,9 +728,9 @@ Public Class x265Params
         .Text = "Custom:",
         .InitAction = Sub(tb)
                           tb.Label.Visible = False
-                          tb.Expand(tb.Edit)
+                          tb.Edit.Expandet = True
                           tb.Edit.TextBox.Multiline = True
-                          tb.Edit.Height = CInt(tb.Edit.Font.Height * 15)
+                          tb.Edit.MultilineHeightFactor = 20
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
 

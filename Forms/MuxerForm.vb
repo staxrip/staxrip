@@ -398,7 +398,7 @@ Class MuxerForm
         If Not TypeOf muxer Is WebMMuxer Then
             Dim tbb = UI.AddTextButtonBlock(page)
             tbb.Label.Text = "Chapters:"
-            tbb.Expand(tbb.Edit)
+            tbb.Edit.Expandet = True
             tbb.Edit.Text = muxer.ChapterFile
             tbb.Edit.SaveAction = Sub(value) muxer.ChapterFile = If(value <> "", value, Nothing)
             tbb.BrowseFile("txt, xml|*.txt;*.xml")
@@ -410,14 +410,14 @@ Class MuxerForm
             Dim tb = UI.AddTextBlock(page)
             tb.Label.Text = "Title:"
             tb.Label.Tooltip = "Optional title of the output file that may contain macros."
-            tb.Expand(tb.Edit)
+            tb.Edit.Expandet = True
             tb.Edit.Text = DirectCast(muxer, MkvMuxer).Title
             tb.Edit.SaveAction = Sub(value) DirectCast(muxer, MkvMuxer).Title = value
 
             tb = UI.AddTextBlock(page)
             tb.Label.Text = "Video Track Name:"
             tb.Label.Tooltip = "Optional name of the video stream that may contain macro."
-            tb.Expand(tb.Edit)
+            tb.Edit.Expandet = True
             tb.Edit.Text = DirectCast(muxer, MkvMuxer).VideoTrackName
             tb.Edit.SaveAction = Sub(value) DirectCast(muxer, MkvMuxer).VideoTrackName = value
 

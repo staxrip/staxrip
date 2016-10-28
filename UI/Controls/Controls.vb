@@ -278,7 +278,7 @@ Namespace UI
         End Property
     End Class
 
-    Class LineControl
+    Public Class LineControl
         Inherits Control
 
         Public Sub New()
@@ -1103,35 +1103,14 @@ Namespace UI
     <ProvideProperty("Expand", GetType(Control))>
     Public Class FlowLayoutPanelEx
         Inherits FlowLayoutPanel
-        Implements IExtenderProvider
 
         <DefaultValue(False)>
         Property UseParenWidth As Boolean
 
         Property AutomaticOffset As Boolean
 
-        <Browsable(False)>
-        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Property ExpandedControls As New Dictionary(Of Control, Boolean)
-
         Sub New()
             WrapContents = False
-        End Sub
-
-        <DefaultValue(False)>
-        <DisplayName("Expand")>
-        Function GetExpand(c As Control) As Boolean
-            Return ExpandedControls.ContainsKey(c) AndAlso ExpandedControls(c)
-        End Function
-
-        <DisplayName("Expand")>
-        Sub SetExpand(c As Control, value As Boolean)
-            ExpandedControls(c) = value
-            PerformLayout()
-        End Sub
-
-        Sub Expand(c As Control)
-            SetExpand(c, True)
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
@@ -1140,33 +1119,33 @@ Namespace UI
             If Not WrapContents AndAlso FlowDirection = FlowDirection.LeftToRight Then
                 Dim nextPos As Integer
 
-                For Each i As Control In Controls
-                    If nextPos = 0 Then
-                        nextPos = 3
-                    End If
+                For Each ctrl As Control In Controls
+                    If nextPos = 0 Then nextPos = 3
 
-                    If i.Visible Then
-                        nextPos += i.Margin.Left + i.Width + i.Margin.Right
+                    If ctrl.Visible Then
+                        nextPos += ctrl.Margin.Left + ctrl.Width + ctrl.Margin.Right
 
-                        If ExpandedControls.Keys.Contains(i) AndAlso
-                            ExpandedControls(i) Then
+                        Dim expandetControl = TryCast(ctrl, SimpleUI.SimpleUIControl)
 
+                        If Not expandetControl Is Nothing AndAlso expandetControl.Expandet Then
                             Dim diff = Aggregate i2 In Controls.OfType(Of Control)() Into Sum(If(i2.Visible, i2.Width + i2.Margin.Left + i2.Margin.Right, 0))
 
-                            If i.AutoSize Then
-                                nextPos += Width - diff
+                            Dim hostWidth = Width - 1
+
+                            If ctrl.AutoSize Then
+                                nextPos += hostWidth - diff
                             Else
-                                i.Width += Width - diff
-                                nextPos += Width - diff
+                                ctrl.Width += hostWidth - diff
+                                nextPos += hostWidth - diff
                             End If
                         End If
                     End If
 
-                    Dim index = Controls.IndexOf(i)
+                    Dim index = Controls.IndexOf(ctrl)
 
                     If index < Controls.Count - 1 Then
-                        Dim c = Controls(index + 1)
-                        c.Left = nextPos
+                        Dim ctrl2 = Controls(index + 1)
+                        ctrl2.Left = nextPos
                     End If
                 Next
             End If
@@ -1178,11 +1157,7 @@ Namespace UI
 
                 For Each i As Control In Controls
                     Dim offset = 0
-
-                    If TypeOf i Is CheckBox Then
-                        offset = 1
-                    End If
-
+                    If TypeOf i Is CheckBox Then offset = 1
                     i.Top = CInt((Height - i.Height) / 2) + offset
                 Next
             End If
@@ -1537,8 +1512,8 @@ Namespace UI
 
         WithEvents TextBox As New Edit
 
-        Private UpControl As New Button(True)
-        Private DownControl As New Button(False)
+        Private UpControl As New UpDownButton(True)
+        Private DownControl As New UpDownButton(False)
         Private BorderColor As Color = Color.CadetBlue
 
         Event ValueChanged(numEdit As NumEdit)
@@ -1714,7 +1689,7 @@ Namespace UI
             End Sub
         End Class
 
-        Private Class Button
+        Private Class UpDownButton
             Inherits Control
 
             Private IsUp As Boolean

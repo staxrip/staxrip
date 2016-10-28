@@ -388,9 +388,9 @@ Class BatchMuxer
 
             tb = ui.AddTextBlock(page)
             tb.Label.Visible = False
-            tb.Expand(tb.Edit)
+            tb.Edit.Expandet = True
+            tb.Edit.MultilineHeightFactor = 6
             tb.Edit.TextBox.Multiline = True
-            tb.Edit.Height = f.Font.Height * 6
             tb.Edit.Text = CommandLines
             tb.Edit.UseCommandlineEditor = True
             tb.Edit.SaveAction = Sub(value) CommandLines = value

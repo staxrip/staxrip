@@ -52,7 +52,8 @@ Class AudioForm
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents numGain As StaxRip.UI.NumEdit
     Friend WithEvents Label4 As System.Windows.Forms.Label
-
+    Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
+    Friend WithEvents FlowLayoutPanel2 As FlowLayoutPanel
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -95,13 +96,20 @@ Class AudioForm
         Me.miProfiles = New System.Windows.Forms.ToolStripMenuItem()
         Me.miHelp = New System.Windows.Forms.ToolStripMenuItem()
         Me.miDialogHelp = New StaxRip.UI.MenuItemEx()
+        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
+        Me.FlowLayoutPanel2 = New System.Windows.Forms.FlowLayoutPanel()
         Me.gbBasic.SuspendLayout()
         Me.gbAdvanced.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
+        Me.TableLayoutPanel1.SuspendLayout()
+        Me.FlowLayoutPanel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'gbBasic
         '
+        Me.gbBasic.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.gbBasic.Controls.Add(Me.numGain)
         Me.gbBasic.Controls.Add(Me.Label4)
         Me.gbBasic.Controls.Add(Me.numDelay)
@@ -123,11 +131,11 @@ Class AudioForm
         Me.gbBasic.Controls.Add(Me.lQualiy)
         Me.gbBasic.Controls.Add(Me.mbCodec)
         Me.gbBasic.Controls.Add(Me.lCodec)
-        Me.gbBasic.Location = New System.Drawing.Point(24, 88)
-        Me.gbBasic.Margin = New System.Windows.Forms.Padding(6)
+        Me.gbBasic.Location = New System.Drawing.Point(16, 16)
+        Me.gbBasic.Margin = New System.Windows.Forms.Padding(16, 16, 8, 16)
         Me.gbBasic.Name = "gbBasic"
         Me.gbBasic.Padding = New System.Windows.Forms.Padding(6)
-        Me.gbBasic.Size = New System.Drawing.Size(934, 912)
+        Me.gbBasic.Size = New System.Drawing.Size(950, 889)
         Me.gbBasic.TabIndex = 1
         Me.gbBasic.TabStop = False
         Me.gbBasic.Text = "Basic"
@@ -337,34 +345,40 @@ Class AudioForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.rtbCmdlPreview.BlockPaint = False
         Me.rtbCmdlPreview.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.TableLayoutPanel1.SetColumnSpan(Me.rtbCmdlPreview, 2)
         Me.rtbCmdlPreview.Font = New System.Drawing.Font("Tahoma", 9.0!)
         Me.rtbCmdlPreview.LastCommandLine = Nothing
-        Me.rtbCmdlPreview.Location = New System.Drawing.Point(24, 1012)
-        Me.rtbCmdlPreview.Margin = New System.Windows.Forms.Padding(6)
+        Me.rtbCmdlPreview.Location = New System.Drawing.Point(16, 921)
+        Me.rtbCmdlPreview.Margin = New System.Windows.Forms.Padding(16, 0, 16, 0)
         Me.rtbCmdlPreview.Name = "rtbCmdlPreview"
         Me.rtbCmdlPreview.ReadOnly = True
-        Me.rtbCmdlPreview.Size = New System.Drawing.Size(1880, 183)
+        Me.rtbCmdlPreview.Size = New System.Drawing.Size(1916, 70)
         Me.rtbCmdlPreview.TabIndex = 2
         Me.rtbCmdlPreview.Text = ""
         '
         'gbAdvanced
         '
+        Me.gbAdvanced.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.gbAdvanced.Controls.Add(Me.SimpleUI)
-        Me.gbAdvanced.Location = New System.Drawing.Point(970, 88)
-        Me.gbAdvanced.Margin = New System.Windows.Forms.Padding(6)
+        Me.gbAdvanced.Location = New System.Drawing.Point(982, 16)
+        Me.gbAdvanced.Margin = New System.Windows.Forms.Padding(8, 16, 16, 16)
         Me.gbAdvanced.Name = "gbAdvanced"
         Me.gbAdvanced.Padding = New System.Windows.Forms.Padding(6)
-        Me.gbAdvanced.Size = New System.Drawing.Size(934, 912)
+        Me.gbAdvanced.Size = New System.Drawing.Size(950, 889)
         Me.gbAdvanced.TabIndex = 3
         Me.gbAdvanced.TabStop = False
         Me.gbAdvanced.Text = "Advanced"
         '
         'SimpleUI
         '
-        Me.SimpleUI.Location = New System.Drawing.Point(12, 54)
-        Me.SimpleUI.Margin = New System.Windows.Forms.Padding(6)
+        Me.SimpleUI.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.SimpleUI.Location = New System.Drawing.Point(9, 46)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(910, 846)
+        Me.SimpleUI.Size = New System.Drawing.Size(932, 834)
         Me.SimpleUI.TabIndex = 0
         Me.SimpleUI.Text = "SimpleUI1"
         '
@@ -372,8 +386,8 @@ Class AudioForm
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(1492, 1219)
-        Me.bnOK.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnOK.Location = New System.Drawing.Point(16, 16)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(16)
         Me.bnOK.Size = New System.Drawing.Size(200, 68)
         Me.bnOK.Text = "OK"
         '
@@ -381,8 +395,8 @@ Class AudioForm
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(1704, 1219)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnCancel.Location = New System.Drawing.Point(232, 16)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(0, 16, 16, 16)
         Me.bnCancel.Size = New System.Drawing.Size(200, 68)
         Me.bnCancel.Text = "Cancel"
         '
@@ -391,7 +405,7 @@ Class AudioForm
         Me.FlowLayoutPanel1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.FlowLayoutPanel1.AutoSize = True
         Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(24, 1245)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(24, 1107)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(6)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
         Me.FlowLayoutPanel1.Size = New System.Drawing.Size(0, 0)
@@ -405,7 +419,7 @@ Class AudioForm
         Me.MenuStrip.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip.Name = "MenuStrip"
         Me.MenuStrip.Padding = New System.Windows.Forms.Padding(12, 4, 0, 4)
-        Me.MenuStrip.Size = New System.Drawing.Size(1928, 80)
+        Me.MenuStrip.Size = New System.Drawing.Size(1944, 80)
         Me.MenuStrip.TabIndex = 8
         Me.MenuStrip.Text = "MenuStrip1"
         '
@@ -457,19 +471,50 @@ Class AudioForm
         Me.miDialogHelp.Size = New System.Drawing.Size(225, 54)
         Me.miDialogHelp.Text = "Help"
         '
+        'TableLayoutPanel1
+        '
+        Me.TableLayoutPanel1.AutoSize = True
+        Me.TableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.TableLayoutPanel1.ColumnCount = 2
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel1.Controls.Add(Me.rtbCmdlPreview, 0, 1)
+        Me.TableLayoutPanel1.Controls.Add(Me.gbBasic, 0, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.FlowLayoutPanel2, 1, 2)
+        Me.TableLayoutPanel1.Controls.Add(Me.gbAdvanced, 1, 0)
+        Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 80)
+        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
+        Me.TableLayoutPanel1.RowCount = 3
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1944, 1091)
+        Me.TableLayoutPanel1.TabIndex = 11
+        '
+        'FlowLayoutPanel2
+        '
+        Me.FlowLayoutPanel2.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.FlowLayoutPanel2.AutoSize = True
+        Me.FlowLayoutPanel2.Controls.Add(Me.bnOK)
+        Me.FlowLayoutPanel2.Controls.Add(Me.bnCancel)
+        Me.FlowLayoutPanel2.Location = New System.Drawing.Point(1500, 991)
+        Me.FlowLayoutPanel2.Margin = New System.Windows.Forms.Padding(0)
+        Me.FlowLayoutPanel2.Name = "FlowLayoutPanel2"
+        Me.FlowLayoutPanel2.Size = New System.Drawing.Size(448, 100)
+        Me.FlowLayoutPanel2.TabIndex = 11
+        '
         'AudioForm
         '
         Me.AcceptButton = Me.bnOK
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoSize = True
+        Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1928, 1309)
+        Me.ClientSize = New System.Drawing.Size(1944, 1171)
+        Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Controls.Add(Me.MenuStrip)
-        Me.Controls.Add(Me.rtbCmdlPreview)
         Me.Controls.Add(Me.FlowLayoutPanel1)
-        Me.Controls.Add(Me.bnCancel)
-        Me.Controls.Add(Me.bnOK)
-        Me.Controls.Add(Me.gbAdvanced)
-        Me.Controls.Add(Me.gbBasic)
         Me.DesignDPI = 288
         Me.KeyPreview = True
         Me.MainMenuStrip = Me.MenuStrip
@@ -481,6 +526,9 @@ Class AudioForm
         Me.gbAdvanced.ResumeLayout(False)
         Me.MenuStrip.ResumeLayout(False)
         Me.MenuStrip.PerformLayout()
+        Me.TableLayoutPanel1.ResumeLayout(False)
+        Me.TableLayoutPanel1.PerformLayout()
+        Me.FlowLayoutPanel2.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -606,17 +654,16 @@ Class AudioForm
         End If
 
         numBitrate.Increment = If(TempProfile.Params.Codec = AudioCodec.AC3, 32D, 1D)
-
         tbName.SendMessageCue(TempProfile.Name, False)
-
         rtbCmdlPreview.SetText(TempProfile.GetCommandLine(s.ShowPathsInCommandLine))
+        UpdateHeight(rtbCmdlPreview)
+    End Sub
 
-        Dim textSize = TextRenderer.MeasureText(rtbCmdlPreview.Text, rtbCmdlPreview.Font,
-                                 New Size(rtbCmdlPreview.ClientSize.Width, Integer.MaxValue),
-                                 TextFormatFlags.WordBreak)
-
-        Height += CInt(textSize.Height * 1.2) - rtbCmdlPreview.Height
-        rtbCmdlPreview.Refresh()
+    Sub UpdateHeight(rtb As RichTextBox)
+        Using g = rtb.CreateGraphics
+            Dim s = g.MeasureString(rtb.Text, rtb.Font, rtb.ClientSize.Width)
+            rtb.ClientSize = New Size(rtb.ClientSize.Width, CInt(s.Height + rtb.Font.Height / 7))
+        End Using
     End Sub
 
     Private Sub mbCodec_ValueChangedUser() Handles mbCodec.ValueChangedUser
@@ -830,14 +877,14 @@ Class AudioForm
         Dim tb = ui.AddTextBlock(page)
         tb.Label.Text = "Stream Name:"
         tb.Label.Tooltip = "Stream name used by the muxer."
-        tb.Expand(tb.Edit)
+        tb.Edit.Expandet = True
         tb.Edit.Text = TempProfile.StreamName
         tb.Edit.SaveAction = Sub(value) TempProfile.StreamName = value
 
         tb = ui.AddTextBlock(page)
         tb.Label.Text = "Custom Switches:"
         tb.Label.Tooltip = "Custom command line arguments"
-        tb.Expand(tb.Edit)
+        tb.Edit.Expandet = True
         tb.Edit.Text = TempProfile.Params.CustomSwitches
         tb.Edit.SaveAction = Sub(value) TempProfile.Params.CustomSwitches = value
 
@@ -848,7 +895,7 @@ Class AudioForm
                 Dim mb = ui.AddMenuButtonBlock(Of String)(page)
                 mb.Label.Text = "Dynamic Compr.:"
                 mb.Label.Tooltip = "Sets the overall dynamic compression in the decoder (applied to every output speaker)."
-                mb.Expand(mb.MenuButton)
+                mb.MenuButton.Expandet = True
                 mb.MenuButton.Value = TempProfile.Params.BeSweetDynamicCompression
                 mb.MenuButton.SaveAction = Sub(value) TempProfile.Params.BeSweetDynamicCompression = value
                 mb.MenuButton.Add({"None", "Normal", "Light", "Heavy", "Inverse"})
@@ -856,59 +903,46 @@ Class AudioForm
                 If TempProfile.Params.Codec = AudioCodec.AAC Then
                     Dim mbaac = ui.AddMenuButtonBlock(Of AudioAacProfile)(page)
                     mbaac.Label.Text = "AAC Profile:"
-                    mbaac.Expand(mbaac.MenuButton)
+                    mbaac.MenuButton.Expandet = True
                     mbaac.MenuButton.Value = TempProfile.Params.AacProfile
                     mbaac.MenuButton.SaveAction = Sub(value) TempProfile.Params.AacProfile = value
                 End If
 
                 Dim mbRateMode = ui.AddMenuButtonBlock(Of AudioRateMode)(page)
                 mbRateMode.Label.Text = "Rate Mode:"
-                mbRateMode.Expand(mbRateMode.MenuButton)
+                mbRateMode.MenuButton.Expandet = True
                 mbRateMode.MenuButton.Value = TempProfile.Params.RateMode
                 mbRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.RateMode = value
 
                 Dim mbFramerate = ui.AddMenuButtonBlock(Of AudioFrameRateMode)(page)
                 mbFramerate.Label.Text = "Frame rate:"
-                mbFramerate.Expand(mbFramerate.MenuButton)
+                mbFramerate.MenuButton.Expandet = True
                 mbFramerate.MenuButton.Value = TempProfile.Params.FrameRateMode
                 mbFramerate.MenuButton.SaveAction = Sub(value) TempProfile.Params.FrameRateMode = value
-
-                Dim mbDownmixMode = ui.AddMenuButtonBlock(Of AudioDownMixMode)(page)
-                mbDownmixMode.Label.Text = "Stereo Downmix:"
-                mbDownmixMode.Expand(mbDownmixMode.MenuButton)
-                mbDownmixMode.MenuButton.Value = TempProfile.Params.BeSweetDownmixMode
-                mbDownmixMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.BeSweetDownmixMode = value
 
                 tb = ui.AddTextBlock(page)
                 tb.Label.Text = "Gain/Normalize:"
                 tb.Label.Tooltip = "Parameters added to ota section when the Normalize checkbox is enabled."
-                tb.Expand(tb.Edit)
+                tb.Edit.Expandet = True
                 tb.Edit.Text = TempProfile.Params.BeSweetGainAndNormalization
                 tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetGainAndNormalization = value
 
                 tb = ui.AddTextBlock(page)
                 tb.Label.Text = "Azid parameters:"
                 tb.Label.Tooltip = "Custom parameters used in the Azid section."
-                tb.Expand(tb.Edit)
+                tb.Edit.Expandet = True
                 tb.Edit.Text = TempProfile.Params.BeSweetAzid
                 tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetAzid = value
-
-                tb = ui.AddTextBlock(page)
-                tb.Label.Text = "Custom section:"
-                tb.Label.Tooltip = "For boost, shibatch etc."
-                tb.Expand(tb.Edit)
-                tb.Edit.Text = TempProfile.Params.BeSweetCustom
-                tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetCustom = value
             Case GuiAudioEncoder.Eac3to
                 Dim mbFrameRateMode = ui.AddMenuButtonBlock(Of AudioFrameRateMode)(page)
                 mbFrameRateMode.Label.Text = "Frame rate:"
-                mbFrameRateMode.Expand(mbFrameRateMode.MenuButton)
+                mbFrameRateMode.MenuButton.Expandet = True
                 mbFrameRateMode.MenuButton.Value = TempProfile.Params.FrameRateMode
                 mbFrameRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.FrameRateMode = value
 
                 Dim mbStereoDownmix = ui.AddMenuButtonBlock(Of Integer)(page)
                 mbStereoDownmix.Label.Text = "Stereo Downmix:"
-                mbStereoDownmix.Expand(mbStereoDownmix.MenuButton)
+                mbStereoDownmix.MenuButton.Expandet = True
                 mbStereoDownmix.MenuButton.Add("Simple", 0)
                 mbStereoDownmix.MenuButton.Add("DPL II", 1)
                 mbStereoDownmix.MenuButton.Value = TempProfile.Params.eac3toStereoDownmixMode
@@ -936,13 +970,13 @@ Class AudioForm
             Case GuiAudioEncoder.ffmpeg
                 Dim mbRateMode = ui.AddMenuButtonBlock(Of AudioRateMode)(page)
                 mbRateMode.Label.Text = "Rate Mode:"
-                mbRateMode.Expand(mbRateMode.MenuButton)
+                mbRateMode.MenuButton.Expandet = True
                 mbRateMode.MenuButton.Value = TempProfile.Params.RateMode
                 mbRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.RateMode = value
             Case GuiAudioEncoder.qaac
                 Dim mbMode = ui.AddMenuButtonBlock(Of Integer)(page)
                 mbMode.Label.Text = "Mode:"
-                mbMode.Expand(mbMode.MenuButton)
+                mbMode.MenuButton.Expandet = True
                 mbMode.MenuButton.Add("True VBR", 0)
                 mbMode.MenuButton.Add("Constrained VBR", 1)
                 mbMode.MenuButton.Add("ABR", 2)
@@ -957,7 +991,7 @@ Class AudioForm
 
                 Dim mbQuality = ui.AddMenuButtonBlock(Of Integer)(page)
                 mbQuality.Label.Text = "Quality:"
-                mbQuality.Expand(mbQuality.MenuButton)
+                mbQuality.MenuButton.Expandet = True
                 mbQuality.MenuButton.Add("Low", 0)
                 mbQuality.MenuButton.Add("Medium", 1)
                 mbQuality.MenuButton.Add("High", 2)
@@ -988,10 +1022,6 @@ Class AudioForm
         cb.Checked = TempProfile.Default
         cb.SaveAction = Sub(value) TempProfile.Default = value
 
-        If ui.Visible AndAlso ScaleFactor <> New SizeF(1, 1) Then
-            ui.Scale(ScaleFactor)
-        End If
-
         page.ResumeLayout(True)
 
         AddHandler SimpleUI.ValueChanged, AddressOf SimpleUIValueChanged
@@ -1021,13 +1051,6 @@ Class AudioForm
     Private Sub cbNormalize_CheckedChanged(sender As Object, e As EventArgs) Handles cbNormalize.CheckedChanged
         TempProfile.Params.Normalize = cbNormalize.Checked
         UpdateControls()
-    End Sub
-
-    Private Sub AudioForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'on small screensizes like netbooks dialogs get cut at screensize
-        If gbAdvanced.Right > Width Then
-            ClientSize = New Size(gbAdvanced.Right + gbBasic.Left, ClientSize.Height)
-        End If
     End Sub
 
     Private Sub miCopyComandLine_Click(sender As Object, e As EventArgs) Handles miCopyComandLine.Click

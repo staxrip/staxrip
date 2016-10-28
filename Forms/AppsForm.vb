@@ -46,13 +46,14 @@ Class AppsForm
         Me.tv.ExpandMode = StaxRip.UI.TreeNodeExpandMode.InclusiveChilds
         Me.tv.FullRowSelect = True
         Me.tv.HideSelection = False
-        Me.tv.Location = New System.Drawing.Point(12, 60)
+        Me.tv.Location = New System.Drawing.Point(24, 120)
+        Me.tv.Margin = New System.Windows.Forms.Padding(6)
         Me.tv.Name = "tv"
         Me.tv.Scrollable = False
         Me.tv.SelectOnMouseDown = True
         Me.tv.ShowLines = False
         Me.tv.ShowPlusMinus = False
-        Me.tv.Size = New System.Drawing.Size(232, 542)
+        Me.tv.Size = New System.Drawing.Size(460, 1036)
         Me.tv.Sorted = True
         Me.tv.TabIndex = 0
         '
@@ -65,10 +66,10 @@ Class AppsForm
         Me.ToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsbLaunch, Me.tsbOpenDir, Me.tsbWebsite, Me.tsbHelp})
-        Me.ToolStrip.Location = New System.Drawing.Point(250, 10)
+        Me.ToolStrip.Location = New System.Drawing.Point(500, 20)
         Me.ToolStrip.Name = "ToolStrip"
-        Me.ToolStrip.Padding = New System.Windows.Forms.Padding(3, 1, 1, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(740, 40)
+        Me.ToolStrip.Padding = New System.Windows.Forms.Padding(6, 2, 2, 0)
+        Me.ToolStrip.Size = New System.Drawing.Size(1446, 80)
         Me.ToolStrip.TabIndex = 1
         Me.ToolStrip.Text = "ToolStrip1"
         '
@@ -78,7 +79,7 @@ Class AppsForm
         Me.tsbLaunch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbLaunch.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbLaunch.Name = "tsbLaunch"
-        Me.tsbLaunch.Size = New System.Drawing.Size(76, 36)
+        Me.tsbLaunch.Size = New System.Drawing.Size(146, 75)
         Me.tsbLaunch.Text = "Launch "
         Me.tsbLaunch.ToolTipText = "Launches the application"
         '
@@ -87,7 +88,7 @@ Class AppsForm
         Me.tsbOpenDir.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbOpenDir.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbOpenDir.Name = "tsbOpenDir"
-        Me.tsbOpenDir.Size = New System.Drawing.Size(93, 36)
+        Me.tsbOpenDir.Size = New System.Drawing.Size(180, 75)
         Me.tsbOpenDir.Text = "Directory "
         Me.tsbOpenDir.ToolTipText = "Opens the directory containing the application"
         '
@@ -96,7 +97,7 @@ Class AppsForm
         Me.tsbWebsite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbWebsite.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbWebsite.Name = "tsbWebsite"
-        Me.tsbWebsite.Size = New System.Drawing.Size(84, 36)
+        Me.tsbWebsite.Size = New System.Drawing.Size(162, 75)
         Me.tsbWebsite.Text = "Website "
         Me.tsbWebsite.ToolTipText = "Opens the application's website"
         '
@@ -106,7 +107,7 @@ Class AppsForm
         Me.tsbHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbHelp.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbHelp.Name = "tsbHelp"
-        Me.tsbHelp.Size = New System.Drawing.Size(58, 36)
+        Me.tsbHelp.Size = New System.Drawing.Size(109, 75)
         Me.tsbHelp.Text = "Help "
         Me.tsbHelp.ToolTipText = "Opens the application's help"
         '
@@ -114,8 +115,9 @@ Class AppsForm
         '
         Me.bnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnClose.Location = New System.Drawing.Point(890, 608)
-        Me.bnClose.Size = New System.Drawing.Size(100, 34)
+        Me.bnClose.Location = New System.Drawing.Point(1746, 1172)
+        Me.bnClose.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnClose.Size = New System.Drawing.Size(200, 68)
         Me.bnClose.Text = "Close"
         '
         'flp
@@ -126,36 +128,35 @@ Class AppsForm
         Me.flp.BackColor = System.Drawing.Color.White
         Me.flp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.flp.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.flp.Location = New System.Drawing.Point(250, 60)
-        Me.flp.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
+        Me.flp.Location = New System.Drawing.Point(500, 120)
+        Me.flp.Margin = New System.Windows.Forms.Padding(6, 20, 6, 6)
         Me.flp.Name = "flp"
-        Me.flp.Size = New System.Drawing.Size(740, 542)
+        Me.flp.Size = New System.Drawing.Size(1444, 1038)
         Me.flp.TabIndex = 2
         '
         'SearchTextBox
         '
         Me.SearchTextBox.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.SearchTextBox.Location = New System.Drawing.Point(12, 16)
-        Me.SearchTextBox.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.SearchTextBox.Location = New System.Drawing.Point(24, 32)
+        Me.SearchTextBox.Margin = New System.Windows.Forms.Padding(6, 8, 6, 8)
         Me.SearchTextBox.Name = "SearchTextBox"
-        Me.SearchTextBox.Size = New System.Drawing.Size(232, 31)
+        Me.SearchTextBox.Size = New System.Drawing.Size(464, 55)
         Me.SearchTextBox.TabIndex = 4
         '
-        'ApplicationsForm
+        'AppsForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnClose
-        Me.ClientSize = New System.Drawing.Size(1002, 654)
+        Me.ClientSize = New System.Drawing.Size(1970, 1264)
         Me.Controls.Add(Me.SearchTextBox)
         Me.Controls.Add(Me.flp)
         Me.Controls.Add(Me.bnClose)
         Me.Controls.Add(Me.ToolStrip)
         Me.Controls.Add(Me.tv)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.DesignDPI = 288
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
-        Me.Margin = New System.Windows.Forms.Padding(1)
-        Me.Name = "ApplicationsForm"
+        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.Name = "AppsForm"
         Me.Text = "Apps"
         Me.ToolStrip.ResumeLayout(False)
         Me.ToolStrip.PerformLayout()

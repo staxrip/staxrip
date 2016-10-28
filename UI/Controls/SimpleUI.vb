@@ -158,8 +158,6 @@ Public Class SimpleUI
 
     Function AddNumeric(parent As FlowLayoutPanelEx) As SimpleUINumEdit
         Dim ret As New SimpleUINumEdit(Me)
-        ret.Height = CInt(FontHeight * 1.4)
-        ret.Width = FontHeight * 4
         parent.Controls.Add(ret)
         Return ret
     End Function
@@ -232,10 +230,9 @@ Public Class SimpleUI
     End Function
 
     Sub AddLine(parent As FlowLayoutPanelEx, Optional text As String = "")
-        Dim line As New LineControl
-        line.Height = FontHeight * 2
+        Dim line As New SimpleUILineControl
         line.Text = text
-        parent.ExpandedControls(line) = True
+        line.Expandet = True
         parent.Controls.Add(line)
     End Sub
 
@@ -300,6 +297,18 @@ Public Class SimpleUI
             AddHandler Disposed, Sub() TipProvider.Dispose()
 
             FlowDirection = FlowDirection.TopDown
+        End Sub
+    End Class
+
+    Class SimpleUILineControl
+        Inherits LineControl
+        Implements SimpleUIControl
+
+        Property Expandet As Boolean Implements SimpleUIControl.Expandet
+
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            Height = FontHeight * 2
+            MyBase.OnLayout(levent)
         End Sub
     End Class
 
@@ -379,6 +388,12 @@ Public Class SimpleUI
             SimpleUI = ui
         End Sub
 
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            Height = CInt(FontHeight * 1.4)
+            Width = FontHeight * 4
+            MyBase.OnLayout(levent)
+        End Sub
+
         Sub Save()
             SaveAction.Invoke(Value)
         End Sub
@@ -400,8 +415,12 @@ Public Class SimpleUI
 
     Public Class SimpleUITextEdit
         Inherits TextEdit
+        Implements SimpleUIControl
 
+        Property Expandet As Boolean Implements SimpleUIControl.Expandet
         Property SaveAction As Action(Of String)
+        Property MultilineHeightFactor As Integer = 4
+        Property WidthFactor As Integer = 10
 
         Private SimpleUI As SimpleUI
 
@@ -409,6 +428,17 @@ Public Class SimpleUI
             SimpleUI = ui
             AddHandler TextBox.TextChanged, Sub() SimpleUI.RaiseChangeEvent()
             AddHandler SimpleUI.SaveValues, AddressOf Save
+        End Sub
+
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            If TextBox.Multiline Then
+                Height = FontHeight * MultilineHeightFactor
+            Else
+                If Not Expandet Then Width = FontHeight * WidthFactor
+                Height = CInt(FontHeight * 1.4)
+            End If
+
+            MyBase.OnLayout(levent)
         End Sub
 
         Sub Save()
@@ -454,7 +484,9 @@ Public Class SimpleUI
 
     Class SimpleUIMenuButton(Of T)
         Inherits MenuButton
+        Implements SimpleUIControl
 
+        Property Expandet As Boolean Implements SimpleUIControl.Expandet
         Property SaveAction As Action(Of T)
 
         Private SimpleUI As SimpleUI
@@ -595,15 +627,6 @@ Public Class SimpleUI
             Edit = New SimpleUITextEdit(ui)
             Controls.Add(Edit)
         End Sub
-
-        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            If Not Edit Is Nothing Then
-                If Not Edit.TextBox.Multiline Then Edit.Height = CInt(FontHeight * 1.4)
-                Edit.Width = FontHeight * 10
-            End If
-
-            MyBase.OnLayout(levent)
-        End Sub
     End Class
 
     Class TextMenuBlock
@@ -713,4 +736,8 @@ Public Class SimpleUI
             End Set
         End Property
     End Class
+
+    Interface SimpleUIControl
+        Property Expandet As Boolean
+    End Interface
 End Class

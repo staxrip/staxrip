@@ -446,7 +446,7 @@ Class MuxAudioProfile
             Dim tbb = ui.AddTextButtonBlock(page)
             tbb.Label.Text = "Stream Name:"
             tbb.Label.Tooltip = "Stream name used by the muxer. The stream name may contain macros."
-            tbb.Expand(tbb.Edit)
+            tbb.Edit.Expandet = True
             tbb.Edit.Text = StreamName
             tbb.Edit.SaveAction = Sub(value) StreamName = value
             tbb.Button.Text = "Macro String Editor..."
@@ -917,10 +917,6 @@ Class GUIAudioProfile
 
         Dim t = ""
 
-        If Not Params.BeSweetAzid.Contains("-s") AndAlso Params.BeSweetDownmixMode <> AudioDownMixMode.Surround Then
-            t += " -s " + Params.BeSweetDownmixMode.ToString.ToLower
-        End If
-
         If Not Params.BeSweetAzid.Contains("-c") AndAlso Params.BeSweetDynamicCompression <> "None" Then
             t += " -c " + Params.BeSweetDynamicCompression.ToLower
         End If
@@ -952,7 +948,7 @@ Class GUIAudioProfile
             ret += " -ssrc( --rate " & Params.SamplingRate & " )"
         End If
 
-        If Params.BeSweetCustom <> "" Then ret += " " + Params.BeSweetCustom
+        If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
 
         Select Case Params.Codec
             Case AudioCodec.AAC
@@ -1107,8 +1103,6 @@ Class GUIAudioProfile
     Class Parameters
         Property AacProfile As AudioAacProfile
         Property BeSweetAzid As String = ""
-        Property BeSweetCustom As String = ""
-        Property BeSweetDownmixMode As AudioDownMixMode = AudioDownMixMode.Surround
         Property BeSweetDynamicCompression As String = "Normal"
         Property BeSweetGainAndNormalization As String = "-norm 0.97"
         Property Codec As AudioCodec

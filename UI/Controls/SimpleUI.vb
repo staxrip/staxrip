@@ -150,8 +150,6 @@ Public Class SimpleUI
 
     Function AddEdit(parent As FlowLayoutPanelEx) As SimpleUITextEdit
         Dim ret As New SimpleUITextEdit(Me)
-        ret.Height = CInt(FontHeight * 1.4)
-        ret.Width = FontHeight * 3
         parent.Controls.Add(ret)
         Return ret
     End Function
@@ -167,10 +165,8 @@ Public Class SimpleUI
                       Optional widthInFontHeights As Integer = 0) As SimpleUILabel
 
         Dim ret As New SimpleUILabel
-
         ret.Offset = widthInFontHeights
         ret.Text = text
-
         parent.Controls.Add(ret)
 
         Return ret
@@ -295,7 +291,6 @@ Public Class SimpleUI
         Sub New()
             TipProvider = New TipProvider(Nothing)
             AddHandler Disposed, Sub() TipProvider.Dispose()
-
             FlowDirection = FlowDirection.TopDown
         End Sub
     End Class
@@ -361,11 +356,7 @@ Public Class SimpleUI
         Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
             If Offset > 0 Then
                 Dim ret = MyBase.GetPreferredSize(proposedSize)
-
-                If ret.Width < Offset * FontHeight Then
-                    ret.Width = Offset * FontHeight
-                End If
-
+                If ret.Width < Offset * FontHeight Then ret.Width = Offset * FontHeight
                 Return ret
             Else
                 Return MyBase.GetPreferredSize(proposedSize)
@@ -711,7 +702,6 @@ Public Class SimpleUI
 
         Sub New(ui As SimpleUI)
             MenuButton = New SimpleUIMenuButton(Of T)(ui)
-
             Controls.Add(MenuButton)
         End Sub
 

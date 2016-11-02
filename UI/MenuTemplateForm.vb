@@ -13,8 +13,8 @@ Namespace UI
             'tv
             '
             Me.tv.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                        Or System.Windows.Forms.AnchorStyles.Left) _
-                        Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.tv.Location = New System.Drawing.Point(12, 13)
             Me.tv.Margin = New System.Windows.Forms.Padding(3, 3, 3, 8)
             Me.tv.Name = "tv"
@@ -40,14 +40,14 @@ Namespace UI
             'MenuTemplateForm
             '
             Me.AcceptButton = Me.bnOK
-            Me.AutoScaleDimensions = New System.Drawing.SizeF(144.0!, 144.0!)
             Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
             Me.CancelButton = Me.bnCancel
             Me.ClientSize = New System.Drawing.Size(441, 507)
             Me.Controls.Add(Me.bnCancel)
             Me.Controls.Add(Me.bnOK)
             Me.Controls.Add(Me.tv)
-            Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+            Me.KeyPreview = True
+            Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
             Me.Name = "MenuTemplateForm"
             Me.Text = "Default Menu"
             Me.ResumeLayout(False)

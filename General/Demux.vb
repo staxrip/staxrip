@@ -258,7 +258,7 @@ Class eac3toDemuxer
 
         Using f As New eac3toForm
             f.M2TSFile = p.SourceFile
-            f.tbTempDir.Text = p.TempDir
+            f.teTempDir.Text = p.TempDir
 
             If f.ShowDialog() = DialogResult.OK Then
                 Using proc As New Proc

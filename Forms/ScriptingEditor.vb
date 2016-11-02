@@ -12,8 +12,7 @@ Class ScriptingEditor
 
         KeyPreview = True
 
-        MainFlowLayoutPanel.Margin = New Padding(0)
-        MainFlowLayoutPanel.Padding = New Padding(0, 3, 0, 0)
+        MainFlowLayoutPanel.Padding = New Padding(0, 0, 0, 0)
         MainFlowLayoutPanel.SuspendLayout()
 
         Engine = doc.Engine
@@ -47,7 +46,7 @@ Class ScriptingEditor
     Shared Function CreateFilterTable(filter As VideoFilter) As FilterTable
         Dim ret As New FilterTable
 
-        ret.Margin = New Padding(3, 0, 3, 0)
+        ret.Margin = New Padding(0)
         ret.Size = New Size(950, 50)
         ret.cbActive.Checked = filter.Active
         ret.cbActive.Text = filter.Category
@@ -112,7 +111,7 @@ Class ScriptingEditor
             Dim rtbSize As Size
             rtbSize.Width = maxTextWidth + FontHeight
             If rtbSize.Width < 300 Then rtbSize.Width = 300
-            rtbSize.Height = table.TrimmedTextSize.Height + CInt(FontHeight * 0.5)
+            rtbSize.Height = table.TrimmedTextSize.Height + CInt(FontHeight * 0.3)
             table.rtbScript.Size = rtbSize
             table.rtbScript.Refresh()
         Next
@@ -130,11 +129,13 @@ Class ScriptingEditor
 
         Sub New()
             AutoSize = True
+
             cbActive.AutoSize = True
             cbActive.Anchor = AnchorStyles.Left Or AnchorStyles.Right
+            cbActive.Margin = New Padding(0)
+
             tbName.Dock = DockStyle.Top
-            tbName.Height = 36
-            tbName.Width = 180
+            tbName.Margin = New Padding(0, 0, 12, 0)
 
             rtbScript = New RichTextBoxEx(Menu)
             rtbScript.EnableAutoDragDrop = True
@@ -142,6 +143,7 @@ Class ScriptingEditor
             rtbScript.WordWrap = False
             rtbScript.ScrollBars = RichTextBoxScrollBars.None
             rtbScript.AcceptsTab = True
+            rtbScript.Margin = New Padding(0)
             rtbScript.Font = New Font("Consolas", 10 * s.UIScaleFactor)
 
             AddHandler Disposed, Sub() Menu.Dispose()
@@ -173,6 +175,7 @@ Class ScriptingEditor
             ColumnStyles.Add(New ColumnStyle(SizeType.AutoSize))
             RowCount = 1
             RowStyles.Add(New RowStyle(SizeType.AutoSize))
+
             Dim t As New TableLayoutPanel
             t.AutoSize = True
             t.SuspendLayout()
@@ -186,8 +189,15 @@ Class ScriptingEditor
             t.Controls.Add(cbActive, 0, 0)
             t.Controls.Add(tbName, 0, 1)
             t.ResumeLayout()
+
             Controls.Add(t, 0, 0)
             Controls.Add(rtbScript, 1, 0)
+        End Sub
+
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            tbName.Height = CInt(FontHeight * 1.2)
+            tbName.Width = FontHeight * 7
+            MyBase.OnLayout(levent)
         End Sub
 
         Protected Overrides Sub OnHandleCreated(e As EventArgs)

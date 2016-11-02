@@ -29,7 +29,7 @@ Class PreviewForm
     Private WithEvents bForward100 As System.Windows.Forms.Button
     Private WithEvents bBackward100 As System.Windows.Forms.Button
     Private WithEvents bBackward1 As System.Windows.Forms.Button
-    Friend WithEvents cmsMain As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents cmsMain As ContextMenuStripEx
     Friend WithEvents ToolTip As System.Windows.Forms.ToolTip
 
     '<System.Diagnostics.DebuggerStepThrough()>
@@ -47,7 +47,7 @@ Class PreviewForm
         Me.bForward100 = New System.Windows.Forms.Button()
         Me.bBackward100 = New System.Windows.Forms.Button()
         Me.pVideo = New System.Windows.Forms.Panel()
-        Me.cmsMain = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.cmsMain = New StaxRip.UI.ContextMenuStripEx(Me.components)
         Me.pTrack = New System.Windows.Forms.Panel()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.pVideo.SuspendLayout()
@@ -60,9 +60,10 @@ Class PreviewForm
         Me.bDeleteRange.BackgroundImage = Global.StaxRip.My.Resources.Resources.X
         Me.bDeleteRange.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bDeleteRange.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bDeleteRange.Location = New System.Drawing.Point(360, 274)
+        Me.bDeleteRange.Location = New System.Drawing.Point(332, 432)
+        Me.bDeleteRange.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.bDeleteRange.Name = "bDeleteRange"
-        Me.bDeleteRange.Size = New System.Drawing.Size(32, 32)
+        Me.bDeleteRange.Size = New System.Drawing.Size(25, 26)
         Me.bDeleteRange.TabIndex = 47
         Me.bDeleteRange.TabStop = False
         Me.ToolTip.SetToolTip(Me.bDeleteRange, "Deletes the cut selection that encloses the current position.")
@@ -75,9 +76,10 @@ Class PreviewForm
         Me.bForward1.BackgroundImage = Global.StaxRip.My.Resources.Resources.Right1
         Me.bForward1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bForward1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bForward1.Location = New System.Drawing.Point(240, 274)
+        Me.bForward1.Location = New System.Drawing.Point(251, 432)
+        Me.bForward1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.bForward1.Name = "bForward1"
-        Me.bForward1.Size = New System.Drawing.Size(32, 32)
+        Me.bForward1.Size = New System.Drawing.Size(25, 26)
         Me.bForward1.TabIndex = 46
         Me.bForward1.TabStop = False
         Me.ToolTip.SetToolTip(Me.bForward1, "Forward 1 Frames")
@@ -90,9 +92,10 @@ Class PreviewForm
         Me.bBackward1.BackgroundImage = Global.StaxRip.My.Resources.Resources.Left1
         Me.bBackward1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bBackward1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bBackward1.Location = New System.Drawing.Point(120, 274)
+        Me.bBackward1.Location = New System.Drawing.Point(170, 432)
+        Me.bBackward1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.bBackward1.Name = "bBackward1"
-        Me.bBackward1.Size = New System.Drawing.Size(32, 32)
+        Me.bBackward1.Size = New System.Drawing.Size(25, 26)
         Me.bBackward1.TabIndex = 45
         Me.bBackward1.TabStop = False
         Me.ToolTip.SetToolTip(Me.bBackward1, "Backward 1 Frame")
@@ -105,9 +108,10 @@ Class PreviewForm
         Me.bRangeStart.BackgroundImage = Global.StaxRip.My.Resources.Resources.BracketOpen
         Me.bRangeStart.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bRangeStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bRangeStart.Location = New System.Drawing.Point(160, 274)
+        Me.bRangeStart.Location = New System.Drawing.Point(197, 432)
+        Me.bRangeStart.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.bRangeStart.Name = "bRangeStart"
-        Me.bRangeStart.Size = New System.Drawing.Size(32, 32)
+        Me.bRangeStart.Size = New System.Drawing.Size(25, 26)
         Me.bRangeStart.TabIndex = 44
         Me.bRangeStart.TabStop = False
         Me.ToolTip.SetToolTip(Me.bRangeStart, "Sets a start cut point. Press F1 for help about cutting")
@@ -120,9 +124,10 @@ Class PreviewForm
         Me.bRangeEnd.BackgroundImage = Global.StaxRip.My.Resources.Resources.BracketClose
         Me.bRangeEnd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bRangeEnd.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bRangeEnd.Location = New System.Drawing.Point(200, 274)
+        Me.bRangeEnd.Location = New System.Drawing.Point(224, 432)
+        Me.bRangeEnd.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.bRangeEnd.Name = "bRangeEnd"
-        Me.bRangeEnd.Size = New System.Drawing.Size(32, 32)
+        Me.bRangeEnd.Size = New System.Drawing.Size(25, 26)
         Me.bRangeEnd.TabIndex = 43
         Me.bRangeEnd.TabStop = False
         Me.ToolTip.SetToolTip(Me.bRangeEnd, "Sets a end cut point. Press F1 for help about cutting")
@@ -135,9 +140,10 @@ Class PreviewForm
         Me.bForward10.BackgroundImage = Global.StaxRip.My.Resources.Resources.Right2
         Me.bForward10.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bForward10.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bForward10.Location = New System.Drawing.Point(280, 274)
+        Me.bForward10.Location = New System.Drawing.Point(278, 432)
+        Me.bForward10.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.bForward10.Name = "bForward10"
-        Me.bForward10.Size = New System.Drawing.Size(32, 32)
+        Me.bForward10.Size = New System.Drawing.Size(25, 26)
         Me.bForward10.TabIndex = 42
         Me.bForward10.TabStop = False
         Me.ToolTip.SetToolTip(Me.bForward10, "Forward 10 Frames")
@@ -150,9 +156,10 @@ Class PreviewForm
         Me.bBackward10.BackgroundImage = CType(resources.GetObject("bBackward10.BackgroundImage"), System.Drawing.Image)
         Me.bBackward10.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bBackward10.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bBackward10.Location = New System.Drawing.Point(80, 274)
+        Me.bBackward10.Location = New System.Drawing.Point(143, 432)
+        Me.bBackward10.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.bBackward10.Name = "bBackward10"
-        Me.bBackward10.Size = New System.Drawing.Size(32, 32)
+        Me.bBackward10.Size = New System.Drawing.Size(25, 26)
         Me.bBackward10.TabIndex = 41
         Me.bBackward10.TabStop = False
         Me.ToolTip.SetToolTip(Me.bBackward10, "Backward 10 Frames")
@@ -164,9 +171,10 @@ Class PreviewForm
         Me.bExtras.BackColor = System.Drawing.Color.White
         Me.bExtras.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bExtras.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.bExtras.Location = New System.Drawing.Point(400, 274)
+        Me.bExtras.Location = New System.Drawing.Point(359, 432)
+        Me.bExtras.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.bExtras.ShowMenuSymbol = True
-        Me.bExtras.Size = New System.Drawing.Size(32, 32)
+        Me.bExtras.Size = New System.Drawing.Size(25, 26)
         Me.bExtras.TabStop = False
         Me.ToolTip.SetToolTip(Me.bExtras, "Shows the menu")
         '
@@ -178,9 +186,10 @@ Class PreviewForm
         Me.bForward100.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bForward100.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bForward100.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.bForward100.Location = New System.Drawing.Point(320, 274)
+        Me.bForward100.Location = New System.Drawing.Point(305, 432)
+        Me.bForward100.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.bForward100.Name = "bForward100"
-        Me.bForward100.Size = New System.Drawing.Size(32, 32)
+        Me.bForward100.Size = New System.Drawing.Size(25, 26)
         Me.bForward100.TabIndex = 49
         Me.bForward100.TabStop = False
         Me.ToolTip.SetToolTip(Me.bForward100, "Forward 100 Frames")
@@ -195,9 +204,10 @@ Class PreviewForm
         Me.bBackward100.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bBackward100.Font = New System.Drawing.Font("Segoe UI", 4.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.bBackward100.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.bBackward100.Location = New System.Drawing.Point(40, 274)
+        Me.bBackward100.Location = New System.Drawing.Point(116, 432)
+        Me.bBackward100.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.bBackward100.Name = "bBackward100"
-        Me.bBackward100.Size = New System.Drawing.Size(32, 32)
+        Me.bBackward100.Size = New System.Drawing.Size(25, 26)
         Me.bBackward100.TabIndex = 48
         Me.bBackward100.TabStop = False
         Me.ToolTip.SetToolTip(Me.bBackward100, "Backward 100 Frames")
@@ -206,20 +216,21 @@ Class PreviewForm
         'pVideo
         '
         Me.pVideo.ContextMenuStrip = Me.cmsMain
-        Me.pVideo.Controls.Add(Me.pTrack)
+        Me.pVideo.Controls.Add(Me.bForward100)
+        Me.pVideo.Controls.Add(Me.bDeleteRange)
+        Me.pVideo.Controls.Add(Me.bForward10)
+        Me.pVideo.Controls.Add(Me.bExtras)
+        Me.pVideo.Controls.Add(Me.bForward1)
         Me.pVideo.Controls.Add(Me.bRangeEnd)
         Me.pVideo.Controls.Add(Me.bRangeStart)
         Me.pVideo.Controls.Add(Me.bBackward1)
-        Me.pVideo.Controls.Add(Me.bForward1)
-        Me.pVideo.Controls.Add(Me.bDeleteRange)
-        Me.pVideo.Controls.Add(Me.bBackward100)
-        Me.pVideo.Controls.Add(Me.bForward100)
-        Me.pVideo.Controls.Add(Me.bExtras)
         Me.pVideo.Controls.Add(Me.bBackward10)
-        Me.pVideo.Controls.Add(Me.bForward10)
-        Me.pVideo.Location = New System.Drawing.Point(16, 16)
+        Me.pVideo.Controls.Add(Me.bBackward100)
+        Me.pVideo.Controls.Add(Me.pTrack)
+        Me.pVideo.Location = New System.Drawing.Point(64, 25)
+        Me.pVideo.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.pVideo.Name = "pVideo"
-        Me.pVideo.Size = New System.Drawing.Size(472, 312)
+        Me.pVideo.Size = New System.Drawing.Size(500, 462)
         Me.pVideo.TabIndex = 50
         '
         'cmsMain
@@ -234,9 +245,10 @@ Class PreviewForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pTrack.BackColor = System.Drawing.SystemColors.Control
         Me.pTrack.Cursor = System.Windows.Forms.Cursors.SizeNS
-        Me.pTrack.Location = New System.Drawing.Point(16, 256)
+        Me.pTrack.Location = New System.Drawing.Point(5, 416)
+        Me.pTrack.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.pTrack.Name = "pTrack"
-        Me.pTrack.Size = New System.Drawing.Size(440, 12)
+        Me.pTrack.Size = New System.Drawing.Size(490, 12)
         Me.pTrack.TabIndex = 51
         '
         'ToolTip
@@ -250,12 +262,10 @@ Class PreviewForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.BackColor = System.Drawing.Color.Black
-        Me.ClientSize = New System.Drawing.Size(506, 352)
+        Me.ClientSize = New System.Drawing.Size(640, 513)
         Me.Controls.Add(Me.pVideo)
         Me.DoubleBuffered = True
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
         Me.Name = "PreviewForm"
         Me.Text = "Preview"
         Me.pVideo.ResumeLayout(False)
@@ -555,8 +565,8 @@ Class PreviewForm
 
                 Using rangePen As New Pen(c, trackHeight)
                     g.DrawLine(rangePen, GetDrawPos(p.Ranges(x).Start) - CInt(TrackBarPosition / 2),
-                        CInt(pTrack.Height / 2), GetDrawPos(p.Ranges(x).End) + CInt(TrackBarPosition / 2),
-                               CInt(pTrack.Height / 2))
+                        pTrack.Height \ 2, GetDrawPos(p.Ranges(x).End) + CInt(TrackBarPosition / 2),
+                               pTrack.Height \ 2)
                 End Using
             Next
         End If
@@ -564,8 +574,8 @@ Class PreviewForm
         Using rangeSetPen As New Pen(Color.DarkOrange, trackHeight)
             If RangeStart > -1 AndAlso RangeStart <= AVI.Position Then
                 g.DrawLine(rangeSetPen, GetDrawPos(RangeStart) - CInt(TrackBarPosition / 2),
-                    CInt(pTrack.Height / 2), GetDrawPos(AVI.Position) +
-                    CInt(TrackBarPosition / 2), CInt(pTrack.Height / 2))
+                    pTrack.Height \ 2, GetDrawPos(AVI.Position) +
+                    CInt(TrackBarPosition / 2), pTrack.Height \ 2)
             End If
         End Using
 
@@ -582,9 +592,9 @@ Class PreviewForm
         Dim pos = GetDrawPos(AVI.Position)
 
         g.DrawLine(posPen, pos - CInt(TrackBarPosition / 2),
-                   CInt(pTrack.Height / 2),
+                   pTrack.Height \ 2,
                    pos + CInt(TrackBarPosition / 2),
-                   CInt(pTrack.Height / 2))
+                   pTrack.Height \ 2)
 
         posPen.Dispose()
 

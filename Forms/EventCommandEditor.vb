@@ -32,7 +32,8 @@ Class EventCommandEditor
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
-
+    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
+    Friend WithEvents bnAdd As ButtonEx
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -49,6 +50,8 @@ Class EventCommandEditor
         Me.pgParameters = New StaxRip.UI.PropertyGridEx()
         Me.lParameters = New System.Windows.Forms.Label()
         Me.gbCriteria = New System.Windows.Forms.GroupBox()
+        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.bnAdd = New StaxRip.UI.ButtonEx()
         Me.gbCommand = New System.Windows.Forms.GroupBox()
         Me.gbName = New System.Windows.Forms.GroupBox()
         Me.gbEvent = New System.Windows.Forms.GroupBox()
@@ -56,6 +59,7 @@ Class EventCommandEditor
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.gbCriteria.SuspendLayout()
+        Me.FlowLayoutPanel1.SuspendLayout()
         Me.gbCommand.SuspendLayout()
         Me.gbName.SuspendLayout()
         Me.gbEvent.SuspendLayout()
@@ -69,7 +73,7 @@ Class EventCommandEditor
         Me.tbName.Location = New System.Drawing.Point(8, 29)
         Me.tbName.Margin = New System.Windows.Forms.Padding(4)
         Me.tbName.Name = "tbName"
-        Me.tbName.Size = New System.Drawing.Size(418, 31)
+        Me.tbName.Size = New System.Drawing.Size(418, 55)
         Me.tbName.TabIndex = 0
         '
         'cbEvent
@@ -81,7 +85,7 @@ Class EventCommandEditor
         Me.cbEvent.Location = New System.Drawing.Point(8, 28)
         Me.cbEvent.Margin = New System.Windows.Forms.Padding(4)
         Me.cbEvent.Name = "cbEvent"
-        Me.cbEvent.Size = New System.Drawing.Size(418, 33)
+        Me.cbEvent.Size = New System.Drawing.Size(418, 56)
         Me.cbEvent.Sorted = True
         Me.cbEvent.TabIndex = 0
         '
@@ -93,7 +97,7 @@ Class EventCommandEditor
         Me.tbCommand.Margin = New System.Windows.Forms.Padding(4)
         Me.tbCommand.Name = "tbCommand"
         Me.tbCommand.ReadOnly = True
-        Me.tbCommand.Size = New System.Drawing.Size(820, 31)
+        Me.tbCommand.Size = New System.Drawing.Size(820, 55)
         Me.tbCommand.TabIndex = 0
         '
         'bnCommand
@@ -109,7 +113,7 @@ Class EventCommandEditor
         '
         Me.cmsCommands.ImageScalingSize = New System.Drawing.Size(29, 29)
         Me.cmsCommands.Name = "cmsCommands"
-        Me.cmsCommands.Size = New System.Drawing.Size(61, 4)
+        Me.cmsCommands.Size = New System.Drawing.Size(111, 4)
         '
         'CriteriaControl
         '
@@ -117,20 +121,20 @@ Class EventCommandEditor
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.CriteriaControl.BackColor = System.Drawing.SystemColors.Window
+        Me.CriteriaControl.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
         Me.CriteriaControl.Location = New System.Drawing.Point(8, 61)
         Me.CriteriaControl.Margin = New System.Windows.Forms.Padding(4)
         Me.CriteriaControl.Name = "CriteriaControl"
-        Me.CriteriaControl.ShowNiceBorder = True
         Me.CriteriaControl.Size = New System.Drawing.Size(860, 211)
         Me.CriteriaControl.TabIndex = 1
         '
         'rbMatchAllCriteria
         '
         Me.rbMatchAllCriteria.AutoSize = True
-        Me.rbMatchAllCriteria.Location = New System.Drawing.Point(8, 27)
+        Me.rbMatchAllCriteria.Location = New System.Drawing.Point(4, 4)
         Me.rbMatchAllCriteria.Margin = New System.Windows.Forms.Padding(4)
         Me.rbMatchAllCriteria.Name = "rbMatchAllCriteria"
-        Me.rbMatchAllCriteria.Size = New System.Drawing.Size(111, 29)
+        Me.rbMatchAllCriteria.Size = New System.Drawing.Size(214, 52)
         Me.rbMatchAllCriteria.TabIndex = 0
         Me.rbMatchAllCriteria.TabStop = True
         Me.rbMatchAllCriteria.Text = "Match All"
@@ -140,10 +144,10 @@ Class EventCommandEditor
         'rbMatchAnyCriteria
         '
         Me.rbMatchAnyCriteria.AutoSize = True
-        Me.rbMatchAnyCriteria.Location = New System.Drawing.Point(139, 27)
+        Me.rbMatchAnyCriteria.Location = New System.Drawing.Point(226, 4)
         Me.rbMatchAnyCriteria.Margin = New System.Windows.Forms.Padding(4)
         Me.rbMatchAnyCriteria.Name = "rbMatchAnyCriteria"
-        Me.rbMatchAnyCriteria.Size = New System.Drawing.Size(122, 29)
+        Me.rbMatchAnyCriteria.Size = New System.Drawing.Size(233, 52)
         Me.rbMatchAnyCriteria.TabIndex = 2
         Me.rbMatchAnyCriteria.TabStop = True
         Me.rbMatchAnyCriteria.Text = "Match Any"
@@ -169,7 +173,7 @@ Class EventCommandEditor
         Me.lParameters.Location = New System.Drawing.Point(8, 68)
         Me.lParameters.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lParameters.Name = "lParameters"
-        Me.lParameters.Size = New System.Drawing.Size(103, 25)
+        Me.lParameters.Size = New System.Drawing.Size(205, 48)
         Me.lParameters.TabIndex = 1
         Me.lParameters.Text = "Parameters:"
         '
@@ -179,9 +183,8 @@ Class EventCommandEditor
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TableLayoutPanel1.SetColumnSpan(Me.gbCriteria, 2)
+        Me.gbCriteria.Controls.Add(Me.FlowLayoutPanel1)
         Me.gbCriteria.Controls.Add(Me.CriteriaControl)
-        Me.gbCriteria.Controls.Add(Me.rbMatchAnyCriteria)
-        Me.gbCriteria.Controls.Add(Me.rbMatchAllCriteria)
         Me.gbCriteria.Location = New System.Drawing.Point(4, 82)
         Me.gbCriteria.Margin = New System.Windows.Forms.Padding(4)
         Me.gbCriteria.Name = "gbCriteria"
@@ -190,6 +193,26 @@ Class EventCommandEditor
         Me.gbCriteria.TabIndex = 2
         Me.gbCriteria.TabStop = False
         Me.gbCriteria.Text = "Criteria"
+        '
+        'FlowLayoutPanel1
+        '
+        Me.FlowLayoutPanel1.AutoSize = True
+        Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.FlowLayoutPanel1.Controls.Add(Me.rbMatchAllCriteria)
+        Me.FlowLayoutPanel1.Controls.Add(Me.rbMatchAnyCriteria)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnAdd)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(5, 21)
+        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(564, 64)
+        Me.FlowLayoutPanel1.TabIndex = 3
+        '
+        'bnAdd
+        '
+        Me.bnAdd.AutoSize = True
+        Me.bnAdd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.bnAdd.Location = New System.Drawing.Point(466, 3)
+        Me.bnAdd.Size = New System.Drawing.Size(95, 58)
+        Me.bnAdd.Text = "Add"
         '
         'gbCommand
         '
@@ -284,16 +307,16 @@ Class EventCommandEditor
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Controls.Add(Me.bnOK)
         Me.Controls.Add(Me.bnCancel)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
         Me.Margin = New System.Windows.Forms.Padding(5)
         Me.MinimumSize = New System.Drawing.Size(671, 608)
         Me.Name = "EventCommandEditor"
         Me.Text = "Event Command Editor"
         Me.gbCriteria.ResumeLayout(False)
         Me.gbCriteria.PerformLayout()
+        Me.FlowLayoutPanel1.ResumeLayout(False)
+        Me.FlowLayoutPanel1.PerformLayout()
         Me.gbCommand.ResumeLayout(False)
         Me.gbCommand.PerformLayout()
         Me.gbName.ResumeLayout(False)
@@ -450,11 +473,6 @@ Class EventCommandEditor
         Next
     End Sub
 
-    Private Sub EventCommandEditor_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'weird scaling
-        Height = Width
-    End Sub
-
     Private Sub EventCommandEditor_Shown() Handles Me.Shown
         SetSplitter()
     End Sub
@@ -465,5 +483,9 @@ Class EventCommandEditor
 
     Sub SetSplitter()
         pgParameters.MoveSplitter(pgParameters.Width \ 3)
+    End Sub
+
+    Private Sub bnAdd_Click(sender As Object, e As EventArgs) Handles bnAdd.Click
+        CriteriaControl.AddItem(Nothing)
     End Sub
 End Class

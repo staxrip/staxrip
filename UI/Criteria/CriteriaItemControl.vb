@@ -31,8 +31,14 @@ Namespace UI
                     mbProperties.Add("Files | " + c.Name, c, c.Description)
                 End If
             Next
+        End Sub
 
-            bnRemove.Text = "Remove"
+        Protected Overrides Sub OnLayout(e As LayoutEventArgs)
+            Height = bnRemove.Height + 6
+            te.Height = bnRemove.Height
+            mbCondition.Height = bnRemove.Height
+            mbProperties.Height = bnRemove.Height
+            MyBase.OnLayout(e)
         End Sub
 
         Private CriteriaValue As Criteria
@@ -67,16 +73,6 @@ Namespace UI
 
         Private Sub te_TextChanged() Handles te.TextChanged
             Criteria.ValueString = te.Text
-        End Sub
-
-        Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
-            Dim ret = MyBase.GetPreferredSize(proposedSize)
-            If Not Parent Is Nothing Then ret.Width = Parent.ClientSize.Width - 3
-            Return ret
-        End Function
-
-        Private Sub te_Layout(sender As Object, e As LayoutEventArgs) Handles te.Layout
-            te.Height = bnRemove.Height
         End Sub
 
         Private Sub mbCondition_ValueChangedUser(value As Object) Handles mbCondition.ValueChangedUser

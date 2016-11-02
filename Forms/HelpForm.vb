@@ -30,12 +30,11 @@ Class HelpForm
         '
         'HelpForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(144.0!, 144.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.ClientSize = New System.Drawing.Size(960, 651)
         Me.Controls.Add(Me.Browser)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.KeyPreview = True
+        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "HelpForm"
         Me.ResumeLayout(False)
 

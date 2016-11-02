@@ -215,6 +215,10 @@ Class VideoComparisonForm
         End If
     End Sub
 
+    Private Sub VideoComparisonForm_Load(sender As Object, e As EventArgs) Handles Me.Load
+        WindowState = FormWindowState.Maximized
+    End Sub
+
     Class VideoTab
         Inherits TabPage
 

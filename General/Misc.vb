@@ -225,21 +225,7 @@ Public Class GlobalClass
         End If
 
         If profiles.Count > 0 Then
-            If TypeOf profiles(0) Is Muxer Then
-
-                Dim helpURL = If(g.IsCulture("de"),
-                    "http://encodingwissen.de/formate/container.html",
-                    "http://forum.doom9.org/showthread.php?t=54306")
-
-                ic.Add(New ActionMenuItem("Help...", Sub() g.ShellExecute(helpURL)))
-            ElseIf TypeOf profiles(0) Is AudioProfile Then
-
-                Dim helpURL = If(g.IsCulture("de"),
-                    "http://encodingwissen.de/formate/audio.html",
-                    "http://en.wikipedia.org/wiki/Advanced_Audio_Coding")
-
-                ic.Add(New ActionMenuItem("Help...", Sub() g.ShellExecute(helpURL)))
-            ElseIf TypeOf profiles(0) Is VideoEncoder Then
+            If TypeOf profiles(0) Is VideoEncoder Then
 
                 Dim helpURL = If(g.IsCulture("de"),
                     "http://encodingwissen.de/codecs",

@@ -920,7 +920,7 @@ Public Class VapourSynthPackage
         Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         WebURL = "http://www.vapoursynth.com"
         HelpURL = "http://www.vapoursynth.com/doc"
-        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R34/VapourSynth-R34.exe"
+        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R35/VapourSynth-R35.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean

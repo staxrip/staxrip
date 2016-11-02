@@ -16,6 +16,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - some x265 changes
 - nnedi3 added to VapourSynth, to create the nnedi3 default filter profile go to: 'Filters > Profiles > Restore Defaults > OK' or alternatively: 'Tools > Advanced > Reset Setting > VapourSynth Filter Profiles > OK'
 - added setting to reverse mouse wheel video seek direction
+- context menu to copy added to media info dialog
 
 #### Fixed Bugs
 
@@ -47,7 +48,6 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - MKVToolNix 9.5.0
 - qaac 2.61
 - avs2pipemod 1.1.1
-- VapourSynth 34
 - MediaInfo 0.7.89
 - L-Smash-Works (avs/vs) 911
 - yadifmod2 (avs) 0.0.4-1
@@ -61,3 +61,4 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - havsfunc (vs) 24
 - mvtools (vs) 17
 - AviSynth+ 2294
+- VapourSynth 35

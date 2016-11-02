@@ -27,8 +27,8 @@ Class ControlHostForm
         'pControl
         '
         Me.pControl.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pControl.Location = New System.Drawing.Point(12, 12)
         Me.pControl.Name = "pControl"
         Me.pControl.Size = New System.Drawing.Size(318, 216)
@@ -44,13 +44,13 @@ Class ControlHostForm
         '
         'ControlHostForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(144.0!, 144.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.ButtonEx1
         Me.ClientSize = New System.Drawing.Size(342, 280)
         Me.Controls.Add(Me.ButtonEx1)
         Me.Controls.Add(Me.pControl)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.KeyPreview = True
+        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "ControlHostForm"
         Me.Text = "DialogForm"
         Me.ResumeLayout(False)

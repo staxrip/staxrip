@@ -440,9 +440,6 @@
     <Compile Include="UI\Templates\DialogTemplate.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Templates\UserControlTemplate.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="UI\TipProvider.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -606,9 +603,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\StringEditorForm.resx">
       <DependentUpon>StringEditorForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Templates\UserControlTemplate.resx">
-      <DependentUpon>UserControlTemplate.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

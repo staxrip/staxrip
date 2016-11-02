@@ -459,7 +459,10 @@ Namespace UI
         Property BlockPaint As Boolean
         Private BorderRect As Native.RECT
 
-        Sub New(Optional cms As ContextMenuStrip = Nothing)
+        Sub New()
+        End Sub
+
+        Sub New(cms As ContextMenuStrip)
             If VisualStyleInformation.IsEnabledByUser Then
                 BorderStyle = BorderStyle.None
             End If
@@ -952,10 +955,6 @@ Namespace UI
 
         Property LastCommandLine As String
 
-        Sub New()
-            Font = New Font("Consolas", 10 * s.UIScaleFactor)
-        End Sub
-
         Sub SetText(commandLine As String)
             If commandLine = LastCommandLine Then Exit Sub
 
@@ -1017,6 +1016,10 @@ Namespace UI
             Array.Reverse(a)
             Return New String(a)
         End Function
+
+        Private Sub CommandLineRichTextBox_HandleCreated(sender As Object, e As EventArgs) Handles Me.HandleCreated
+            If Not DesignMode Then Font = New Font("Consolas", 10 * s.UIScaleFactor)
+        End Sub
     End Class
 
     Class StockIconLinkLabel
@@ -1232,7 +1235,7 @@ Namespace UI
 
         Protected Overrides ReadOnly Property DefaultSize As Size
             Get
-                Return New Size(100, 36)
+                Return New Size(100, 35)
             End Get
         End Property
 

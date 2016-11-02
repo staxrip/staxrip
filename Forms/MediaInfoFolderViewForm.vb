@@ -29,16 +29,18 @@ Class MediaInfoFolderViewForm
         Me.lv.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lv.Location = New System.Drawing.Point(0, 0)
         Me.lv.Name = "lv"
-        Me.lv.Size = New System.Drawing.Size(914, 601)
+        Me.lv.Size = New System.Drawing.Size(1200, 601)
         Me.lv.TabIndex = 0
+        Me.lv.UseCompatibleStateImageBehavior = False
         '
         'MediaInfoFolderViewForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(144.0!, 144.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.ClientSize = New System.Drawing.Size(1200, 601)
         Me.Controls.Add(Me.lv)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
+        Me.KeyPreview = True
+        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.MaximizeBox = True
         Me.MinimizeBox = True
         Me.Name = "MediaInfoFolderViewForm"

@@ -1,83 +1,86 @@
 ﻿Imports System.Drawing.Drawing2D
-
 Imports StaxRip.UI
 
 Class SearchTextBox
     Inherits UserControl
 
-    Private tb As TextBoxEx
-    Private bn As Button
-
-    Public Sub New()
-        InitializeComponent()
-        tb.SendMessageCue("Search", False)
-        AddHandler tb.TextChanged, Sub() OnTextChanged(New EventArgs)
-        AddHandler bn.Click, Sub() tb.Text = ""
-    End Sub
+#Region "Designer"
 
     Private Sub InitializeComponent()
-        Me.tb = New StaxRip.UI.TextBoxEx()
-        Me.bn = New StaxRip.SearchTextBox.Button()
+        Me.Edit = New StaxRip.UI.TextEdit()
+        Me.Button = New StaxRip.SearchTextBox.SearchTextBoxButton()
         Me.SuspendLayout()
         '
-        'tb
+        'Edit
         '
-        Me.tb.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tb.Location = New System.Drawing.Point(0, 0)
-        Me.tb.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.tb.Size = New System.Drawing.Size(236, 31)
+        Me.Edit.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Edit.Location = New System.Drawing.Point(0, 0)
+        Me.Edit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.Edit.Name = "Edit"
+        Me.Edit.Size = New System.Drawing.Size(200, 70)
+        Me.Edit.TabIndex = 3
         '
-        'bn
+        'Button
         '
-        Me.bn.Location = New System.Drawing.Point(170, 10)
-        Me.bn.Name = "bn"
-        Me.bn.Size = New System.Drawing.Size(75, 23)
-        Me.bn.TabIndex = 2
-        Me.bn.Text = "Button1"
-        Me.bn.Visible = False
+        Me.Button.Location = New System.Drawing.Point(90, 24)
+        Me.Button.Name = "Button"
+        Me.Button.Size = New System.Drawing.Size(27, 23)
+        Me.Button.TabIndex = 2
+        Me.Button.Text = "Button1"
+        Me.Button.Visible = False
         '
         'SearchTextBox
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(144.0!, 144.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.Controls.Add(Me.bn)
-        Me.Controls.Add(Me.tb)
+        Me.Controls.Add(Me.Button)
+        Me.Controls.Add(Me.Edit)
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Name = "SearchTextBox"
-        Me.Size = New System.Drawing.Size(236, 31)
+        Me.Size = New System.Drawing.Size(200, 70)
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 
+#End Region
+
+    Private Edit As TextEdit
+    Private Button As SearchTextBoxButton
+
+    Public Sub New()
+        InitializeComponent()
+        Edit.TextBox.SendMessageCue("Search", False)
+        AddHandler Edit.TextChanged, Sub() OnTextChanged(New EventArgs)
+        AddHandler Button.Click, Sub() Edit.Text = ""
+    End Sub
+
     Protected Overrides Sub OnTextChanged(e As EventArgs)
-        bn.Visible = tb.Text <> ""
+        Button.Visible = Edit.Text <> ""
         MyBase.OnTextChanged(e)
     End Sub
 
     Protected Overrides Sub OnLayout(e As LayoutEventArgs)
         MyBase.OnLayout(e)
 
-        bn.Top = 3
-        bn.Height = Height - 6
-        bn.Width = bn.Height
-        bn.Left = Width - bn.Width - bn.Top
+        Button.Top = 3
+        Button.Height = Height - 6
+        Button.Width = Button.Height
+        Button.Left = Width - Button.Width - Button.Top
 
-        If Height <> tb.Height Then Height = tb.Height
+        If Height <> Edit.Height Then Height = Edit.Height
 
-        tb.Width = Width
+        Edit.Width = Width
     End Sub
 
     Overrides Property Text As String
         Get
-            Return tb.Text
+            Return Edit.Text
         End Get
         Set(value As String)
-            tb.Text = value
+            Edit.Text = value
         End Set
     End Property
 
-    Private Class Button
+    Private Class SearchTextBoxButton
         Inherits Control
 
         Private MouseIsOver As Boolean

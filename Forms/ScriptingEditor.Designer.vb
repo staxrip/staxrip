@@ -47,7 +47,7 @@ Partial Class ScriptingEditor
         Me.MainTableLayoutPanel.RowCount = 2
         Me.MainTableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.MainTableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.MainTableLayoutPanel.Size = New System.Drawing.Size(910, 536)
+        Me.MainTableLayoutPanel.Size = New System.Drawing.Size(826, 669)
         Me.MainTableLayoutPanel.TabIndex = 0
         '
         'FlowLayoutPanel1
@@ -58,23 +58,26 @@ Partial Class ScriptingEditor
         Me.FlowLayoutPanel1.Controls.Add(Me.bnOK)
         Me.FlowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.FlowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(3, 491)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(6, 628)
+        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(6)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(904, 42)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(814, 35)
         Me.FlowLayoutPanel1.TabIndex = 0
         '
         'bnCancel
         '
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(801, 3)
-        Me.bnCancel.Size = New System.Drawing.Size(100, 36)
+        Me.bnCancel.Location = New System.Drawing.Point(714, 0)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(6, 0, 0, 0)
+        Me.bnCancel.Size = New System.Drawing.Size(100, 35)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(695, 3)
-        Me.bnOK.Size = New System.Drawing.Size(100, 36)
+        Me.bnOK.Location = New System.Drawing.Point(608, 0)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnOK.Size = New System.Drawing.Size(100, 35)
         Me.bnOK.Text = "OK"
         '
         'MainFlowLayoutPanel
@@ -83,19 +86,19 @@ Partial Class ScriptingEditor
         Me.MainFlowLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.MainFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill
         Me.MainFlowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.MainFlowLayoutPanel.Location = New System.Drawing.Point(3, 3)
+        Me.MainFlowLayoutPanel.Location = New System.Drawing.Point(6, 6)
+        Me.MainFlowLayoutPanel.Margin = New System.Windows.Forms.Padding(6, 6, 6, 0)
         Me.MainFlowLayoutPanel.Name = "MainFlowLayoutPanel"
-        Me.MainFlowLayoutPanel.Size = New System.Drawing.Size(904, 482)
+        Me.MainFlowLayoutPanel.Size = New System.Drawing.Size(814, 616)
         Me.MainFlowLayoutPanel.TabIndex = 1
         '
         'ScriptingEditor
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.ClientSize = New System.Drawing.Size(910, 536)
+        Me.ClientSize = New System.Drawing.Size(826, 669)
         Me.Controls.Add(Me.MainTableLayoutPanel)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
+        Me.Margin = New System.Windows.Forms.Padding(6)
         Me.Name = "ScriptingEditor"
         Me.Text = "Scripting Editor"
         Me.MainTableLayoutPanel.ResumeLayout(False)

@@ -28,9 +28,9 @@ Class SimpleSettingsForm
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(210, 0)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
-        Me.bnCancel.Size = New System.Drawing.Size(200, 68)
+        Me.bnCancel.Location = New System.Drawing.Point(106, 0)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Me.bnCancel.Size = New System.Drawing.Size(100, 35)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
@@ -39,7 +39,7 @@ Class SimpleSettingsForm
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.bnOK.Location = New System.Drawing.Point(0, 0)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnOK.Size = New System.Drawing.Size(200, 68)
+        Me.bnOK.Size = New System.Drawing.Size(100, 35)
         Me.bnOK.Text = "OK"
         '
         'SimpleUI
@@ -47,20 +47,20 @@ Class SimpleSettingsForm
         Me.SimpleUI.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.SimpleUI.Location = New System.Drawing.Point(16, 16)
-        Me.SimpleUI.Margin = New System.Windows.Forms.Padding(16, 16, 16, 10)
+        Me.SimpleUI.Location = New System.Drawing.Point(6, 6)
+        Me.SimpleUI.Margin = New System.Windows.Forms.Padding(6)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(1576, 991)
+        Me.SimpleUI.Size = New System.Drawing.Size(886, 555)
         Me.SimpleUI.TabIndex = 2
         '
         'LineControl1
         '
         Me.LineControl1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LineControl1.Location = New System.Drawing.Point(10, 1021)
-        Me.LineControl1.Margin = New System.Windows.Forms.Padding(10, 4, 10, 4)
+        Me.LineControl1.Location = New System.Drawing.Point(6, 567)
+        Me.LineControl1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.LineControl1.Name = "LineControl1"
-        Me.LineControl1.Size = New System.Drawing.Size(1588, 10)
+        Me.LineControl1.Size = New System.Drawing.Size(886, 14)
         Me.LineControl1.TabIndex = 5
         '
         'TableLayoutPanel1
@@ -77,7 +77,7 @@ Class SimpleSettingsForm
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1608, 1124)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(898, 622)
         Me.TableLayoutPanel1.TabIndex = 8
         '
         'FlowLayoutPanel1
@@ -87,19 +87,18 @@ Class SimpleSettingsForm
         Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.FlowLayoutPanel1.Controls.Add(Me.bnOK)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnCancel)
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(1188, 1041)
-        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0, 6, 0, 15)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(686, 581)
+        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0, 0, 0, 6)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(420, 68)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(212, 35)
         Me.FlowLayoutPanel1.TabIndex = 6
         '
         'SimpleSettingsForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1608, 1124)
+        Me.ClientSize = New System.Drawing.Size(898, 622)
         Me.Controls.Add(Me.TableLayoutPanel1)
-        Me.DesignDPI = 288
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(0)
         Me.Name = "SimpleSettingsForm"

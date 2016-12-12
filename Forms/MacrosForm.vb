@@ -48,6 +48,7 @@ Class MacrosForm
         Me.lv.Name = "lv"
         Me.lv.Size = New System.Drawing.Size(310, 613)
         Me.lv.TabIndex = 2
+        Me.lv.UseCompatibleStateImageBehavior = False
         '
         'stb
         '
@@ -79,7 +80,7 @@ Class MacrosForm
         Me.lDescriptionTitle.AutoSize = True
         Me.lDescriptionTitle.Location = New System.Drawing.Point(331, 169)
         Me.lDescriptionTitle.Name = "lDescriptionTitle"
-        Me.lDescriptionTitle.Size = New System.Drawing.Size(106, 25)
+        Me.lDescriptionTitle.Size = New System.Drawing.Size(209, 48)
         Me.lDescriptionTitle.TabIndex = 7
         Me.lDescriptionTitle.Text = "Description:"
         '
@@ -97,7 +98,7 @@ Class MacrosForm
         Me.lNameTitle.AutoSize = True
         Me.lNameTitle.Location = New System.Drawing.Point(331, 15)
         Me.lNameTitle.Name = "lNameTitle"
-        Me.lNameTitle.Size = New System.Drawing.Size(63, 25)
+        Me.lNameTitle.Size = New System.Drawing.Size(123, 48)
         Me.lNameTitle.TabIndex = 9
         Me.lNameTitle.Text = "Name:"
         '
@@ -106,16 +107,18 @@ Class MacrosForm
         Me.lValueTitle.AutoSize = True
         Me.lValueTitle.Location = New System.Drawing.Point(331, 92)
         Me.lValueTitle.Name = "lValueTitle"
-        Me.lValueTitle.Size = New System.Drawing.Size(58, 25)
+        Me.lValueTitle.Size = New System.Drawing.Size(113, 48)
         Me.lValueTitle.TabIndex = 10
         Me.lValueTitle.Text = "Value:"
         '
         'bCopy
         '
+        Me.bCopy.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bCopy.AutoSize = True
-        Me.bCopy.Location = New System.Drawing.Point(649, 49)
+        Me.bCopy.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.bCopy.Location = New System.Drawing.Point(623, 49)
         Me.bCopy.Name = "bCopy"
-        Me.bCopy.Size = New System.Drawing.Size(85, 35)
+        Me.bCopy.Size = New System.Drawing.Size(111, 58)
         Me.bCopy.TabIndex = 11
         Me.bCopy.Text = "Copy"
         Me.bCopy.UseVisualStyleBackColor = True
@@ -132,9 +135,8 @@ Class MacrosForm
         Me.Controls.Add(Me.lName)
         Me.Controls.Add(Me.stb)
         Me.Controls.Add(Me.lv)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
+        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "MacrosForm"
         Me.Text = "Macros"
         Me.ResumeLayout(False)

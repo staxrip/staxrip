@@ -887,7 +887,7 @@ table {
             IsClosed = True
 
             Writer.WriteRaw("<p>&nbsp;</p>" + BR)
-            Writer.WriteRaw("<h5 align=""center"">Copyright &copy; " & DateTime.Now.Year & " by stax76. All rights reserved.</h5><br>")
+            Writer.WriteRaw("<h5 align=""center"">Copyright &copy; " & DateTime.Now.Year & " by staxrip authors. All rights reserved.</h5><br>")
             Writer.WriteEndElement() 'body
             Writer.WriteEndElement() 'html
             Writer.Close()

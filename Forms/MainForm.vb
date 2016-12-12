@@ -4300,7 +4300,6 @@ Public Class MainForm
         ret.Add("Help|Website|Issue Tracker", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://github.com/stax76/staxrip/issues")
         ret.Add("Help|Website|Release Build", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://github.com/stax76/staxrip/releases")
         ret.Add("Help|Website|Test Build", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://github.com/stax76/staxrip/blob/master/md/test-build.md")
-        ret.Add("Help|Mail", NameOf(g.DefaultCommands.ExecuteCommandLine), "mailto:frank.skare.de@gmail.com?subject=StaxRip%20feedback")
         ret.Add("Help|Scripting", NameOf(ShowScriptingHelp))
         ret.Add("Help|Command Line", NameOf(ShowCommandLineHelp))
         ret.Add("Help|Apps", NameOf(DynamicMenuItem), DynamicMenuItemID.HelpApplications)

@@ -105,7 +105,6 @@ Friend Class JobsForm
         Me.lv.Location = New System.Drawing.Point(0, 0)
         Me.lv.Margin = New System.Windows.Forms.Padding(0, 0, 0, 8)
         Me.lv.Name = "lv"
-        Me.lv.Scrollable = False
         Me.lv.Size = New System.Drawing.Size(880, 560)
         Me.lv.TabIndex = 7
         Me.lv.UseCompatibleStateImageBehavior = False
@@ -122,7 +121,7 @@ Friend Class JobsForm
         Me.TableLayoutPanel1.Controls.Add(Me.TableLayoutPanel2, 0, 1)
         Me.TableLayoutPanel1.Controls.Add(Me.lv, 0, 0)
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(11, 11)
-        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(2)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666!))

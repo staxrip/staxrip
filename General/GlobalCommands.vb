@@ -389,10 +389,8 @@ Public Class GlobalCommands
         Select Case topic
             Case "info"
                 f.Doc.WriteStart("StaxRip x64 " + Application.ProductVersion + " " + GetReleaseType())
-                f.Doc.WriteP($"Copyright © {Date.Now.Year} Frank Skare frank.skare.de@gmail.com
-This work is free. You can redistribute it and/or modify it under the
-terms of the Do What The Fuck You Want To Public License, Version 2,
-as published by Sam Hocevar. See the COPYING file for more details.", True)
+                Dim licensePath = Folder.Startup + "License.txt"
+                If File.Exists(licensePath) Then f.Doc.WriteP(File.ReadAllText(licensePath), True)
             Case "CRF Value"
                 f.Doc.WriteStart("CRF Value")
                 f.Doc.WriteP("Low values produce high quality, large file size, large value produces small file size and poor quality. A balanced value is 23 which is the defalt in x264. Common values are 18-26 where 18 produces near transparent quality at the cost of a huge file size. The quality 26 produces is rather poor so such a high value should only be used when a small file size is the only criterium.")

@@ -612,12 +612,6 @@ Public Class GlobalClass
 
     Sub MakeBugReport(e As Exception)
         If e Is Nothing AndAlso Not g.IsValidSource(False) Then
-            MsgWarn("Making a bug report requires to have a project encoded or at least a source file opened.")
-            Exit Sub
-        End If
-
-        If MsgQuestion("Would you like to submit the log file?",
-                       "Please submit the log file via mail helping to fix the problem.") <> DialogResult.OK Then
             Exit Sub
         End If
 
@@ -639,7 +633,7 @@ Public Class GlobalClass
 
         g.OpenDirAndSelectFile(fp, g.MainForm.Handle)
         g.ShellExecute(g.GetTextEditor(), """" + fp + """")
-        g.ShellExecute("mailto:frank.skare.de@gmail.com?subject=StaxRip%20feedback&body=please%20paste%20the%20log%20file%20content%20here")
+        g.ShellExecute("https://github.com/stax76/staxrip/issues")
     End Sub
 
     Function WasFileJustWritten(path As String) As Boolean

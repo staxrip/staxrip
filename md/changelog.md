@@ -1,11 +1,5 @@
 # v1.4.0.0-stable (2016-12-12)
 
-#### Download
-
-https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
-
-https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
-
 #### New Features
 
 - LSFmod added for both AviSynth and VapourSynth, to create the LSFmod default filter profile go to: 'Filters > Profiles > Restore Defaults > OK' or alternatively: 'Tools > Advanced > Reset Setting > AviSynth/VapourSynth Filter Profiles > OK'

@@ -20,7 +20,7 @@ Class EventCommandEditor
     Friend WithEvents CriteriaControl As StaxRip.UI.CriteriaControl
     Friend WithEvents tbCommand As System.Windows.Forms.TextBox
     Friend WithEvents bnCommand As StaxRip.UI.ButtonEx
-    Friend WithEvents cmsCommands As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents cmsCommands As ContextMenuStripEx
     Friend WithEvents pgParameters As PropertyGridEx
     Friend WithEvents lParameters As System.Windows.Forms.Label
     Friend WithEvents rbMatchAllCriteria As System.Windows.Forms.RadioButton
@@ -42,7 +42,7 @@ Class EventCommandEditor
         Me.cbEvent = New System.Windows.Forms.ComboBox()
         Me.tbCommand = New System.Windows.Forms.TextBox()
         Me.bnCommand = New StaxRip.UI.ButtonEx()
-        Me.cmsCommands = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.cmsCommands = New ContextMenuStripEx(Me.components)
         Me.CriteriaControl = New StaxRip.UI.CriteriaControl()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
         Me.rbMatchAllCriteria = New System.Windows.Forms.RadioButton()

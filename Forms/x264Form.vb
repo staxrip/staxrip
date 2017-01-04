@@ -3484,11 +3484,11 @@ Class x264Form
         UpdateControls()
     End Sub
 
-    Dim ProfilesMenu As ContextMenuStrip
+    Dim ProfilesMenu As ContextMenuStripEx
 
     Private Sub bProfiles_Click() Handles bnProfiles.Click
         If ProfilesMenu Is Nothing Then
-            ProfilesMenu = New ContextMenuStrip(components)
+            ProfilesMenu = New ContextMenuStripEx(components)
         End If
 
         ProfilesMenu.Items.Clear()
@@ -3511,8 +3511,8 @@ Class x264Form
         NameOfLastProfile = value.Name
     End Sub
 
-    Function GetCommandLineMenu() As ContextMenuStrip
-        Dim ret As New ContextMenuStrip(components)
+    Function GetCommandLineMenu() As ContextMenuStripEx
+        Dim ret As New ContextMenuStripEx(components)
         ret.Items.Add(New ActionMenuItem("Copy", Sub() CopyCmdl()))
         ret.Items.Add(New ActionMenuItem("Import", Sub() ImportCommandLine(), "Imports x264 settings from a x264 command line in the clipboard") With {.Enabled = Clipboard.GetText.Contains("--")})
         ret.Items.Add(New ActionMenuItem("Show Paths", Sub() ToogleShowPaths()) With {.Checked = s.ShowPathsInCommandLine, .CheckOnClick = True})

@@ -42,7 +42,7 @@ Public Class ApplicationSettings
     Public StringDictionary As Dictionary(Of String, String)
     Public StringList As List(Of String)
     Public TargetImageSizeMenu As String
-    Public ToolStripRenderMode As ToolStripRenderMode
+    Public ToolStripRenderModeEx As ToolStripRenderModeEx
     Public Versions As Dictionary(Of String, Integer)
     Public VideoEncoderProfiles As List(Of VideoEncoder)
     Public WindowPositions As WindowPositions
@@ -110,11 +110,12 @@ Public Class ApplicationSettings
 
         If Check(Demuxers, "Demuxers", 103) Then Demuxers = Demuxer.GetDefaults()
 
-        If Check(AviSynthFilterPreferences, "AviSynth Filter Preferences", 1) Then
+        If Check(AviSynthFilterPreferences, "AviSynth Filter Preferences", 2) Then
             AviSynthFilterPreferences = New StringPairList
+            AviSynthFilterPreferences.Add("default", "FFVideoSource")
             AviSynthFilterPreferences.Add("264, h264, avc", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("265, h265, hevc", "LWLibavVideoSource")
-            AviSynthFilterPreferences.Add("default", "FFVideoSource")
+            AviSynthFilterPreferences.Add("d2v", "MPEG2Source")
             AviSynthFilterPreferences.Add("dgi", "DGSource")
             AviSynthFilterPreferences.Add("dgim", "DGSourceIM")
             AviSynthFilterPreferences.Add("mp4, m4v, mov", "LSMASHVideoSource")
@@ -122,14 +123,15 @@ Public Class ApplicationSettings
             AviSynthFilterPreferences.Add("wmv", "DSS2")
         End If
 
-        If Check(VapourSynthFilterPreferences, "VapourSynth Filter Preference", 2) Then
+        If Check(VapourSynthFilterPreferences, "VapourSynth Filter Preference", 3) Then
             VapourSynthFilterPreferences = New StringPairList
+            VapourSynthFilterPreferences.Add("default", "ffms2")
             VapourSynthFilterPreferences.Add("264, h264, avc", "LWLibavSource")
             VapourSynthFilterPreferences.Add("265, h265, hevc", "LWLibavSource")
             VapourSynthFilterPreferences.Add("avi, avs", "AVISource")
-            VapourSynthFilterPreferences.Add("default", "ffms2")
             VapourSynthFilterPreferences.Add("mp4, m4v, mov", "LibavSMASHSource")
             VapourSynthFilterPreferences.Add("ts, m2ts, mts, m2t", "LWLibavSource")
+            VapourSynthFilterPreferences.Add("d2v", "d2vsource")
         End If
 
         If PreventActivation = "" Then PreventActivation = "mpc vlc media play kodi"
@@ -230,7 +232,7 @@ Public Class ApplicationSettings
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 
-        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 152) Then
+        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 154) Then
             If AviSynthProfiles Is Nothing Then
                 AviSynthProfiles = FilterCategory.GetAviSynthDefaults
             Else

@@ -38,7 +38,7 @@ Class DemuxForm
     Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
     Friend WithEvents bnBrowse As ButtonEx
     Friend WithEvents bnArguments As ButtonEx
-    Friend WithEvents cmsArguments As ContextMenuStrip
+    Friend WithEvents cmsArguments As ContextMenuStripEx
     Friend WithEvents MacrosToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents HelpToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents TipProvider As TipProvider
@@ -68,7 +68,7 @@ Class DemuxForm
         Me.bnBrowse = New StaxRip.UI.ButtonEx()
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.bnArguments = New StaxRip.UI.ButtonEx()
-        Me.cmsArguments = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.cmsArguments = New ContextMenuStripEx(Me.components)
         Me.MacrosToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Label1 = New System.Windows.Forms.Label()

@@ -40,7 +40,7 @@ Class eac3toForm
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents bnMenu As StaxRip.UI.ButtonEx
-    Friend WithEvents cms As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents cms As ContextMenuStripEx
     Friend WithEvents bnAudioAll As ButtonEx
     Friend WithEvents bnAudioNone As ButtonEx
     Friend WithEvents bnAudioEnglish As ButtonEx
@@ -85,7 +85,7 @@ Class eac3toForm
         Me.teTempDir = New StaxRip.UI.TextEdit()
         Me.tlpBottom = New System.Windows.Forms.TableLayoutPanel()
         Me.bnMenu = New StaxRip.UI.ButtonEx()
-        Me.cms = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.cms = New ContextMenuStripEx(Me.components)
         Me.cbChapters = New System.Windows.Forms.CheckBox()
         Me.gbAudio = New System.Windows.Forms.GroupBox()
         Me.tlpAudio = New System.Windows.Forms.TableLayoutPanel()

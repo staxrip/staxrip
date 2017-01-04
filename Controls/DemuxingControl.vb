@@ -137,6 +137,7 @@ Class DemuxingControl
         Me.lv.Margin = New System.Windows.Forms.Padding(0)
         Me.lv.MultiSelect = False
         Me.lv.Name = "lv"
+        Me.lv.RemoveButton = Me.bnRemove
         Me.lv.Size = New System.Drawing.Size(375, 649)
         Me.lv.TabIndex = 0
         Me.lv.UpButton = Me.bnUp
@@ -175,6 +176,8 @@ Class DemuxingControl
         Next
 
         TipProvider.TipsFunc = AddressOf GetTips
+
+        lv.SingleSelectionButtons = {bnEdit}
         lv.UpdateControls()
     End Sub
 

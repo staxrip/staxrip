@@ -41,7 +41,7 @@ Namespace UI
         Friend WithEvents ToolStripSeparator1 As System.Windows.Forms.ToolStripSeparator
         Friend WithEvents tbCommand As System.Windows.Forms.TextBox
         Friend WithEvents bCommand As ButtonEx
-        Friend WithEvents cmsCommand As System.Windows.Forms.ContextMenuStrip
+        Friend WithEvents cmsCommand As ContextMenuStripEx
         Friend WithEvents lCommand As System.Windows.Forms.Label
         Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
         Friend WithEvents ImageList1 As System.Windows.Forms.ImageList
@@ -79,7 +79,7 @@ Namespace UI
             Me.NewFromDefaultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
             Me.ResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
             Me.bCommand = New StaxRip.UI.ButtonEx()
-            Me.cmsCommand = New System.Windows.Forms.ContextMenuStrip(Me.components)
+            Me.cmsCommand = New ContextMenuStripEx(Me.components)
             Me.lCommand = New System.Windows.Forms.Label()
             Me.bnCancel = New StaxRip.UI.ButtonEx()
             Me.bnOK = New StaxRip.UI.ButtonEx()

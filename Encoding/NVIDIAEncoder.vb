@@ -188,9 +188,10 @@ Public Class NVIDIAEncoder
                     ItemsValue = New List(Of CommandLineParam)
                     Add("Basic", Decoder, Mode, Codec, QPI, QPP, QPB)
                     Add("Slice Decision",
-                        New NumParam With {.Switch = "--bframes", .Text = "B-Frames:", .Value = 3, .DefaultValue = 3, .MinMaxStep = {0, 16, 1}},
-                        New NumParam With {.Switch = "--ref", .Text = "Ref Frames:", .Value = 3, .DefaultValue = 3, .MinMaxStep = {0, 16, 1}},
-                        New NumParam With {.Switch = "--gop-len", .Text = "GOP Length:", .MinMaxStep = {0, Integer.MaxValue, 1}})
+                        New NumParam With {.Switch = "--bframes", .Text = "B-Frames:", .InitValue = 3, .MinMaxStep = {0, 16, 1}},
+                        New NumParam With {.Switch = "--ref", .Text = "Ref Frames:", .InitValue = 3, .MinMaxStep = {0, 16, 1}},
+                        New NumParam With {.Switch = "--gop-len", .Text = "GOP Length:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--lookahead", .Text = "Lookahead:", .MinMaxStep = {0, 32, 1}, .InitValue = 16})
                     Add("Rate Control",
                         New NumParam With {.Switch = "--qp-init", .Text = "Initial QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-max", .Text = "Max QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},

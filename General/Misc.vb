@@ -543,18 +543,12 @@ Public Class GlobalClass
         End Try
     End Sub
 
-    Sub SetRenderer(ms As MenuStrip)
+    Sub SetRenderer(ms As ToolStrip)
         If VisualStyleInformation.IsEnabledByUser Then
-            If s.ToolStripRenderMode = ToolStripRenderMode.Professional Then
-                ms.Renderer = New ToolStripProfessionalRenderer()
-            Else
-                ms.Renderer = New ToolStripRendererEx(s.ToolStripRenderMode)
-            End If
+            ms.Renderer = New ToolStripRendererEx(s.ToolStripRenderModeEx)
         Else
             ms.Renderer = New ToolStripSystemRenderer()
         End If
-
-        ToolStripManager.Renderer = ms.Renderer
     End Sub
 
     Sub Play(file As String, Optional cliOptions As String = Nothing)
@@ -2406,7 +2400,7 @@ Class Startup
         Dim args = Environment.GetCommandLineArgs.Skip(1)
 
         If args.Count = 2 AndAlso args(0) = "-mediainfo" Then
-            ToolStripManager.Renderer = New ToolStripRendererEx(ToolStripRenderMode.SystemDefault)
+            ToolStripManager.Renderer = New ToolStripRendererEx(ToolStripRenderModeEx.SystemDefault)
             Application.Run(New MediaInfoForm(args(1)) With {.ShowInTaskbar = True})
         Else
             Application.Run(New MainForm())

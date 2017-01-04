@@ -83,7 +83,7 @@ Class CommandLineControl
     Property RestoreFunc As Func(Of String)
 
     Private HelpFileValue As String
-    Private cms As ContextMenuStrip
+    Private cms As ContextMenuStripEx
 
     Event PresetsChanged(presets As String)
     Event ValueChanged(value As String)

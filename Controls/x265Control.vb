@@ -97,7 +97,7 @@ Class x265Control
     Private Encoder As x265Encoder
     Private Params As x265Params
 
-    Private cms As ContextMenuStrip
+    Private cms As ContextMenuStripEx
     Private QualityDefinitions As List(Of QualityItem)
 
     Sub New(enc As x265Encoder)
@@ -120,7 +120,7 @@ Class x265Control
         Encoder = enc
         Params = Encoder.Params
 
-        cms = New ContextMenuStrip(components)
+        cms = New ContextMenuStripEx(components)
         cms.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
         lv.View = View.Details

@@ -13,13 +13,13 @@ Class ProcessForm
 
     Friend WithEvents bnAbort As System.Windows.Forms.Button
     Friend WithEvents lWhenfinisheddo As System.Windows.Forms.Label
-    Private WithEvents cbShutdown As System.Windows.Forms.ComboBox
     Friend WithEvents NotifyIcon As System.Windows.Forms.NotifyIcon
     Friend WithEvents bnResume As System.Windows.Forms.Button
     Friend WithEvents bnJobs As System.Windows.Forms.Button
     Friend WithEvents lStatus As System.Windows.Forms.Label
     Friend WithEvents bnSuspend As System.Windows.Forms.Button
     Friend WithEvents FlowLayoutPanel1 As System.Windows.Forms.FlowLayoutPanel
+    Friend WithEvents mbShutdown As MenuButton
     Friend WithEvents tbLog As System.Windows.Forms.TextBox
 
     <System.Diagnostics.DebuggerNonUserCode()>
@@ -33,9 +33,9 @@ Class ProcessForm
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ProcessForm))
         Me.bnAbort = New System.Windows.Forms.Button()
         Me.lWhenfinisheddo = New System.Windows.Forms.Label()
-        Me.cbShutdown = New System.Windows.Forms.ComboBox()
         Me.tbLog = New System.Windows.Forms.TextBox()
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.bnJobs = New System.Windows.Forms.Button()
@@ -43,17 +43,17 @@ Class ProcessForm
         Me.lStatus = New System.Windows.Forms.Label()
         Me.bnSuspend = New System.Windows.Forms.Button()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.mbShutdown = New StaxRip.UI.MenuButton()
         Me.FlowLayoutPanel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'bnAbort
         '
         Me.bnAbort.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnAbort.AutoSize = True
-        Me.bnAbort.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.bnAbort.Location = New System.Drawing.Point(474, 3)
+        Me.bnAbort.Location = New System.Drawing.Point(519, 3)
+        Me.bnAbort.Margin = New System.Windows.Forms.Padding(0, 3, 0, 3)
         Me.bnAbort.Name = "bnAbort"
-        Me.bnAbort.Size = New System.Drawing.Size(68, 35)
+        Me.bnAbort.Size = New System.Drawing.Size(115, 35)
         Me.bnAbort.TabIndex = 2
         Me.bnAbort.Text = "Abort"
         '
@@ -67,15 +67,6 @@ Class ProcessForm
         Me.lWhenfinisheddo.TabIndex = 6
         Me.lWhenfinisheddo.Text = "When finished do:"
         '
-        'cbShutdown
-        '
-        Me.cbShutdown.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.cbShutdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbShutdown.Location = New System.Drawing.Point(165, 4)
-        Me.cbShutdown.Name = "cbShutdown"
-        Me.cbShutdown.Size = New System.Drawing.Size(116, 33)
-        Me.cbShutdown.TabIndex = 5
-        '
         'tbLog
         '
         Me.tbLog.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -86,7 +77,7 @@ Class ProcessForm
         Me.tbLog.Name = "tbLog"
         Me.tbLog.ReadOnly = True
         Me.tbLog.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.tbLog.Size = New System.Drawing.Size(954, 547)
+        Me.tbLog.Size = New System.Drawing.Size(884, 537)
         Me.tbLog.TabIndex = 7
         Me.tbLog.WordWrap = False
         '
@@ -96,11 +87,9 @@ Class ProcessForm
         'bnJobs
         '
         Me.bnJobs.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnJobs.AutoSize = True
-        Me.bnJobs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.bnJobs.Location = New System.Drawing.Point(548, 3)
+        Me.bnJobs.Location = New System.Drawing.Point(637, 3)
         Me.bnJobs.Name = "bnJobs"
-        Me.bnJobs.Size = New System.Drawing.Size(58, 35)
+        Me.bnJobs.Size = New System.Drawing.Size(115, 35)
         Me.bnJobs.TabIndex = 9
         Me.bnJobs.Text = "Jobs"
         Me.bnJobs.UseVisualStyleBackColor = True
@@ -108,11 +97,9 @@ Class ProcessForm
         'bnResume
         '
         Me.bnResume.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnResume.AutoSize = True
-        Me.bnResume.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.bnResume.Location = New System.Drawing.Point(384, 3)
+        Me.bnResume.Location = New System.Drawing.Point(401, 3)
         Me.bnResume.Name = "bnResume"
-        Me.bnResume.Size = New System.Drawing.Size(84, 35)
+        Me.bnResume.Size = New System.Drawing.Size(115, 35)
         Me.bnResume.TabIndex = 8
         Me.bnResume.Text = "Resume"
         Me.bnResume.UseVisualStyleBackColor = True
@@ -121,20 +108,19 @@ Class ProcessForm
         '
         Me.lStatus.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lStatus.Location = New System.Drawing.Point(12, 563)
+        Me.lStatus.Location = New System.Drawing.Point(12, 553)
         Me.lStatus.Name = "lStatus"
-        Me.lStatus.Size = New System.Drawing.Size(954, 29)
+        Me.lStatus.Size = New System.Drawing.Size(884, 29)
         Me.lStatus.TabIndex = 10
         Me.lStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'bnSuspend
         '
         Me.bnSuspend.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnSuspend.AutoSize = True
-        Me.bnSuspend.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.bnSuspend.Location = New System.Drawing.Point(287, 3)
+        Me.bnSuspend.Location = New System.Drawing.Point(283, 3)
+        Me.bnSuspend.Margin = New System.Windows.Forms.Padding(0, 3, 0, 3)
         Me.bnSuspend.Name = "bnSuspend"
-        Me.bnSuspend.Size = New System.Drawing.Size(91, 35)
+        Me.bnSuspend.Size = New System.Drawing.Size(115, 35)
         Me.bnSuspend.TabIndex = 12
         Me.bnSuspend.Text = "Suspend"
         Me.bnSuspend.UseVisualStyleBackColor = True
@@ -145,26 +131,30 @@ Class ProcessForm
         Me.FlowLayoutPanel1.AutoSize = True
         Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.FlowLayoutPanel1.Controls.Add(Me.lWhenfinisheddo)
-        Me.FlowLayoutPanel1.Controls.Add(Me.cbShutdown)
+        Me.FlowLayoutPanel1.Controls.Add(Me.mbShutdown)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnSuspend)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnResume)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnAbort)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnJobs)
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(360, 595)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(144, 585)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(609, 41)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(755, 41)
         Me.FlowLayoutPanel1.TabIndex = 13
+        '
+        'mbShutdown
+        '
+        Me.mbShutdown.Location = New System.Drawing.Point(165, 3)
+        Me.mbShutdown.ShowMenuSymbol = True
+        Me.mbShutdown.Size = New System.Drawing.Size(115, 35)
         '
         'ProcessForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.ClientSize = New System.Drawing.Size(978, 645)
+        Me.ClientSize = New System.Drawing.Size(908, 635)
         Me.Controls.Add(Me.FlowLayoutPanel1)
         Me.Controls.Add(Me.tbLog)
         Me.Controls.Add(Me.lStatus)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
         Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "ProcessForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
@@ -199,9 +189,9 @@ Class ProcessForm
 
         InitializeComponent()
 
-        cbShutdown.Items.AddRange(ListBag(Of ShutdownMode).GetBagsForEnumType())
+        mbShutdown.Add(System.Enum.GetValues(GetType(ShutdownMode)).Cast(Of Object))
         lWhenfinisheddo.Visible = ShutdownVisible
-        cbShutdown.Visible = ShutdownVisible
+        mbShutdown.Visible = ShutdownVisible
         tbLog.WordWrap = True
 
         bnAbort.Visible = IsProcess
@@ -430,15 +420,15 @@ Class ProcessForm
 
     Private Sub ProcessForm_Activated(sender As Object, e As EventArgs) Handles Me.Activated
         RefreshTime = 500
-        cbShutdown.SelectedIndex = Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode")
+        mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
     End Sub
 
     Private Sub TaskForm_FormClosing() Handles Me.FormClosing
         RemoveHandler Log.Update, AddressOf LogUpdate
     End Sub
 
-    Private Sub cbShutdown_SelectedIndexChanged() Handles cbShutdown.SelectedIndexChanged
-        Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", CInt(ListBag(Of ShutdownMode).GetValue(cbShutdown)))
+    Private Sub cbShutdown_SelectedIndexChanged() Handles mbShutdown.ValueChangedUser
+        Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", CInt(mbShutdown.Value))
     End Sub
 
     Protected Overrides Sub WndProc(ByRef m As Message)

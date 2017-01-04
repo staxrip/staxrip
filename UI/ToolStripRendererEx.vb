@@ -7,7 +7,7 @@ Class ToolStripRendererEx
     Private ColorSeperatorLight As Color = Color.White
     Private ColorSeperatorDark As Color = Color.FromArgb(&HE0, &HE0, &HE0)
 
-    Shared RenderMode As ToolStripRenderMode
+    Shared RenderMode As ToolStripRenderModeEx
 
     Shared Property ColorBorder As Color
     Shared Property ColorTop As Color
@@ -21,19 +21,19 @@ Class ToolStripRendererEx
 
     Private TextOffset As Integer
 
-    Sub New(mode As ToolStripRenderMode)
+    Sub New(mode As ToolStripRenderModeEx)
         RenderMode = mode
         InitColors(mode)
     End Sub
 
     Shared Function IsAutoRenderMode() As Boolean
         Return _
-            RenderMode = ToolStripRenderMode.SystemAuto OrElse
-            RenderMode = ToolStripRenderMode.Win7Auto OrElse
-            RenderMode = ToolStripRenderMode.Win8Auto
+            RenderMode = ToolStripRenderModeEx.SystemAuto OrElse
+            RenderMode = ToolStripRenderModeEx.Win7Auto OrElse
+            RenderMode = ToolStripRenderModeEx.Win8Auto
     End Function
 
-    Shared Sub InitColors(renderMode As ToolStripRenderMode)
+    Shared Sub InitColors(renderMode As ToolStripRenderModeEx)
         If ToolStripRendererEx.IsAutoRenderMode Then
             Dim argb = CInt(Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", 0))
             If argb = 0 Then argb = Color.LightBlue.ToArgb
@@ -63,22 +63,6 @@ Class ToolStripRendererEx
         ColorToolStrip4 = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(ColorBorder, 0.4)))
     End Sub
 
-    'works with ToolStrip.Renderer but not ToolStripManager.Renderer
-    Protected Overloads Overrides Sub InitializeItem(item As ToolStripItem)
-        MyBase.InitializeItem(item)
-        InitializeToolStripItem(item)
-    End Sub
-
-    Sub InitializeToolStripItem(item As ToolStripItem)
-        If TypeOf item Is ToolStripDropDownItem Then
-            Dim dropDownItem = DirectCast(item, ToolStripDropDownItem)
-
-            For Each i As ToolStripItem In dropDownItem.DropDownItems
-                InitializeToolStripItem(i)
-            Next
-        End If
-    End Sub
-
     Protected Overrides Sub OnRenderToolStripBorder(e As ToolStripRenderEventArgs)
         ControlPaint.DrawBorder(e.Graphics, e.AffectedBounds, Color.FromArgb(160, 175, 195), ButtonBorderStyle.Solid)
     End Sub
@@ -89,7 +73,7 @@ Class ToolStripRendererEx
         End If
 
         If TypeOf e.Item Is ToolStripMenuItem AndAlso Not TypeOf e.Item.Owner Is MenuStrip Then
-            Dim r = e.TextRectangle  'TextAlign don't work
+            Dim r = e.TextRectangle 'TextAlign don't work
             TextOffset = r.Height
             e.TextRectangle = New Rectangle(TextOffset, CInt((e.Item.Height - r.Height) / 2), r.Width, r.Height)
         End If
@@ -307,11 +291,11 @@ Class ToolStripRendererEx
     End Function
 
     Shared Function IsFlat() As Boolean
-        If RenderMode = ToolStripRenderMode.Win8Default Then Return True
-        If RenderMode = ToolStripRenderMode.Win8Auto Then Return True
+        If RenderMode = ToolStripRenderModeEx.Win8Default Then Return True
+        If RenderMode = ToolStripRenderModeEx.Win8Auto Then Return True
 
-        If (RenderMode = ToolStripRenderMode.SystemDefault OrElse
-            RenderMode = ToolStripRenderMode.SystemAuto) AndAlso
+        If (RenderMode = ToolStripRenderModeEx.SystemDefault OrElse
+            RenderMode = ToolStripRenderModeEx.SystemAuto) AndAlso
             OSVersion.Current >= OSVersion.Windows8 Then Return True
     End Function
 End Class

@@ -1676,14 +1676,13 @@ Class NativeWindow
     End Sub
 End Class
 
-Public Enum ToolStripRenderMode
+Public Enum ToolStripRenderModeEx
     <DispName("System Window Color")> SystemAuto
     <DispName("System Default Color")> SystemDefault
     <DispName("Win 7 Window Color")> Win7Auto
     <DispName("Win 7 Default Color")> Win7Default
     <DispName("Win 8 Window Color")> Win8Auto
     <DispName("Win 8 Default Color")> Win8Default
-    <DispName(".NET Professional")> Professional
 End Enum
 
 Class PowerRequest

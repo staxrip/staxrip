@@ -278,8 +278,8 @@ Public Class x265Params
     Property [Me] As New OptionParam With {
         .Switch = "--me",
         .Text = "Motion Search Method:",
-        .Options = {"Diamond", "Hexagon", "Uneven Multi-Hexegon", "Star", "Full"},
-        .Values = {"dia", "hex", "umh", "star", "full"}}
+        .Options = {"Diamond", "Hexagon", "Uneven Multi-Hexegon", "Star", "SEA", "Full"},
+        .Values = {"dia", "hex", "umh", "star", "sea", "full"}}
 
     Property MErange As New NumParam With {
         .Switch = "--merange",

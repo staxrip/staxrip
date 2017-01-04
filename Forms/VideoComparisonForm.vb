@@ -27,12 +27,12 @@ Class VideoComparisonForm
         bnMenu.ContextMenuStrip = Menu
         TabControl.ContextMenuStrip = Menu
 
-        Menu.Add("Add files to compare", AddressOf Add, Keys.O, Nothing, "Video files to compare, the file browser has multiselect enabled.")
+        Menu.Add("Add files to compare...", AddressOf Add, Keys.O, Nothing, "Video files to compare, the file browser has multiselect enabled.")
         Menu.Add("Close selected tab", AddressOf Remove, Keys.Delete, enabledFunc)
         Menu.Add("Save PNGs at current position", AddressOf Save, Keys.S, enabledFunc, "Saves a PNG image for every file/tab at the current position in the directory of the source file.")
-        Menu.Add("Crop and Zoom", AddressOf CropZoom, Keys.C, enabledFunc)
-        Menu.Add("Go To Frame", AddressOf GoToFrame, Keys.F, enabledFunc)
-        Menu.Add("Go To Time", AddressOf GoToTime, Keys.T, enabledFunc)
+        Menu.Add("Crop and Zoom...", AddressOf CropZoom, Keys.C, enabledFunc)
+        Menu.Add("Go To Frame...", AddressOf GoToFrame, Keys.F, enabledFunc)
+        Menu.Add("Go To Time...", AddressOf GoToTime, Keys.T, enabledFunc)
         Menu.Add("Select next tab", AddressOf NextTab, Keys.Space, enabledFunc)
         Menu.Add("Navigate | 1 frame backward", Sub() TrackBar.Value -= 1, Keys.Left, enabledFunc)
         Menu.Add("Navigate | 1 frame forward", Sub() TrackBar.Value += 1, Keys.Right, enabledFunc)
@@ -71,7 +71,7 @@ Class VideoComparisonForm
     Private Sub Save()
         For Each i As VideoTab In TabControl.TabPages
             i.AVI.Position = Pos
-            Dim outputPath = Filepath.GetDir(i.SourceFile) & Pos & " " + Filepath.GetBase(i.SourceFile) + ".png"
+            Dim outputPath = i.SourceFile.Dir & Pos & " " + i.SourceFile.Base + ".png"
 
             Using b = i.GetBitmap
                 b.Save(outputPath, ImageFormat.Png)

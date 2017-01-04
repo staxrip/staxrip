@@ -50,14 +50,14 @@ Class AppsForm
         Me.tv.ExpandMode = StaxRip.UI.TreeNodeExpandMode.InclusiveChilds
         Me.tv.FullRowSelect = True
         Me.tv.HideSelection = False
-        Me.tv.Location = New System.Drawing.Point(6, 48)
+        Me.tv.Location = New System.Drawing.Point(6, 52)
         Me.tv.Margin = New System.Windows.Forms.Padding(6, 6, 6, 0)
         Me.tv.Name = "tv"
         Me.tv.Scrollable = False
         Me.tv.SelectOnMouseDown = True
         Me.tv.ShowLines = False
         Me.tv.ShowPlusMinus = False
-        Me.tv.Size = New System.Drawing.Size(188, 524)
+        Me.tv.Size = New System.Drawing.Size(188, 520)
         Me.tv.Sorted = True
         Me.tv.TabIndex = 0
         '
@@ -73,18 +73,17 @@ Class AppsForm
         Me.ToolStrip.Margin = New System.Windows.Forms.Padding(0, 6, 6, 0)
         Me.ToolStrip.Name = "ToolStrip"
         Me.ToolStrip.Padding = New System.Windows.Forms.Padding(3, 1, 1, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(700, 36)
+        Me.ToolStrip.Size = New System.Drawing.Size(700, 40)
         Me.ToolStrip.TabIndex = 1
         Me.ToolStrip.Text = "ToolStrip1"
         '
         'tsbLaunch
         '
-        Me.tsbLaunch.AutoToolTip = False
         Me.tsbLaunch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbLaunch.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbLaunch.Name = "tsbLaunch"
-        Me.tsbLaunch.Size = New System.Drawing.Size(76, 32)
-        Me.tsbLaunch.Text = "Launch "
+        Me.tsbLaunch.Size = New System.Drawing.Size(81, 36)
+        Me.tsbLaunch.Text = " Launch "
         Me.tsbLaunch.ToolTipText = "Launches the application"
         '
         'tsbOpenDir
@@ -92,8 +91,8 @@ Class AppsForm
         Me.tsbOpenDir.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbOpenDir.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbOpenDir.Name = "tsbOpenDir"
-        Me.tsbOpenDir.Size = New System.Drawing.Size(93, 32)
-        Me.tsbOpenDir.Text = "Directory "
+        Me.tsbOpenDir.Size = New System.Drawing.Size(98, 36)
+        Me.tsbOpenDir.Text = " Directory "
         Me.tsbOpenDir.ToolTipText = "Opens the directory containing the application"
         '
         'tsbWebsite
@@ -101,18 +100,17 @@ Class AppsForm
         Me.tsbWebsite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbWebsite.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbWebsite.Name = "tsbWebsite"
-        Me.tsbWebsite.Size = New System.Drawing.Size(84, 32)
-        Me.tsbWebsite.Text = "Website "
+        Me.tsbWebsite.Size = New System.Drawing.Size(89, 36)
+        Me.tsbWebsite.Text = " Website "
         Me.tsbWebsite.ToolTipText = "Opens the application's website"
         '
         'tsbHelp
         '
-        Me.tsbHelp.AutoToolTip = False
         Me.tsbHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbHelp.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbHelp.Name = "tsbHelp"
-        Me.tsbHelp.Size = New System.Drawing.Size(58, 32)
-        Me.tsbHelp.Text = "Help "
+        Me.tsbHelp.Size = New System.Drawing.Size(63, 36)
+        Me.tsbHelp.Text = " Help "
         Me.tsbHelp.ToolTipText = "Opens the application's help"
         '
         'bnClose
@@ -132,16 +130,16 @@ Class AppsForm
         Me.flp.BackColor = System.Drawing.Color.White
         Me.flp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.flp.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.flp.Location = New System.Drawing.Point(200, 48)
+        Me.flp.Location = New System.Drawing.Point(200, 52)
         Me.flp.Margin = New System.Windows.Forms.Padding(0, 6, 6, 0)
         Me.flp.Name = "flp"
-        Me.flp.Size = New System.Drawing.Size(700, 524)
+        Me.flp.Size = New System.Drawing.Size(700, 520)
         Me.flp.TabIndex = 2
         '
         'SearchTextBox
         '
         Me.SearchTextBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.SearchTextBox.Location = New System.Drawing.Point(6, 6)
+        Me.SearchTextBox.Location = New System.Drawing.Point(6, 8)
         Me.SearchTextBox.Margin = New System.Windows.Forms.Padding(6, 6, 6, 0)
         Me.SearchTextBox.Name = "SearchTextBox"
         Me.SearchTextBox.Size = New System.Drawing.Size(188, 36)
@@ -211,6 +209,7 @@ Class AppsForm
 
         tv.Scrollable = True
         ToolStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        g.SetRenderer(ToolStrip)
 
         AddHandler SetupButton.Click, Sub() RunSetup()
         SetupButton.ForeColor = Color.Red

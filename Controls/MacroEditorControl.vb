@@ -35,7 +35,7 @@ Class MacroEditorControl
         Me.tpEdit = New System.Windows.Forms.TabPage()
         Me.rtbEdit = New StaxRip.UI.RichTextBoxEx()
         Me.tpPreview = New System.Windows.Forms.TabPage()
-        Me.rtbPreview = New System.Windows.Forms.RichTextBox()
+        Me.rtbPreview = New StaxRip.UI.RichTextBoxEx()
         Me.gb = New System.Windows.Forms.GroupBox()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
@@ -211,6 +211,7 @@ Class MacroEditorControl
         InitializeComponent()
         rtbEdit.EnableAutoDragDrop = True
         rtbEdit.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+
         rtbPreview.Font = rtbEdit.Font
 
         Dim c = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)

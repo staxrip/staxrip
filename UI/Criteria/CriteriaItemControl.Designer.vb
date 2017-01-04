@@ -54,7 +54,6 @@ Namespace UI
             'mbProperties
             '
             Me.mbProperties.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.mbProperties.Items = CType(resources.GetObject("mbProperties.Items"), System.Collections.Generic.List(Of Object))
             Me.mbProperties.Location = New System.Drawing.Point(3, 70)
             Me.mbProperties.ShowMenuSymbol = True
             Me.mbProperties.Size = New System.Drawing.Size(292, 35)
@@ -82,7 +81,6 @@ Namespace UI
             'mbCondition
             '
             Me.mbCondition.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.mbCondition.Items = CType(resources.GetObject("mbCondition.Items"), System.Collections.Generic.List(Of Object))
             Me.mbCondition.Location = New System.Drawing.Point(301, 70)
             Me.mbCondition.ShowMenuSymbol = True
             Me.mbCondition.Size = New System.Drawing.Size(218, 35)

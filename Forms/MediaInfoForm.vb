@@ -15,46 +15,19 @@ Class MediaInfoForm
         MyBase.Dispose(disposing)
     End Sub
 
-    Friend WithEvents tv As StaxRip.UI.TreeViewEx
-    Friend WithEvents cms As System.Windows.Forms.ContextMenuStrip
-    Friend WithEvents CopySelectionToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents CopyEverythingToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents tv As TreeViewEx
     Friend WithEvents rtb As StaxRip.UI.RichTextBoxEx
     Friend WithEvents stb As StaxRip.SearchTextBox
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container()
-        Me.cms = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.CopySelectionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CopyEverythingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tv = New StaxRip.UI.TreeViewEx()
         Me.rtb = New StaxRip.UI.RichTextBoxEx()
         Me.stb = New StaxRip.SearchTextBox()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
-        Me.cms.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.SuspendLayout()
-        '
-        'cms
-        '
-        Me.cms.ImageScalingSize = New System.Drawing.Size(24, 24)
-        Me.cms.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopySelectionToolStripMenuItem, Me.CopyEverythingToolStripMenuItem})
-        Me.cms.Name = "cms"
-        Me.cms.Size = New System.Drawing.Size(228, 64)
-        '
-        'CopySelectionToolStripMenuItem
-        '
-        Me.CopySelectionToolStripMenuItem.Name = "CopySelectionToolStripMenuItem"
-        Me.CopySelectionToolStripMenuItem.Size = New System.Drawing.Size(227, 30)
-        Me.CopySelectionToolStripMenuItem.Text = "Copy Selection"
-        '
-        'CopyEverythingToolStripMenuItem
-        '
-        Me.CopyEverythingToolStripMenuItem.Name = "CopyEverythingToolStripMenuItem"
-        Me.CopyEverythingToolStripMenuItem.Size = New System.Drawing.Size(227, 30)
-        Me.CopyEverythingToolStripMenuItem.Text = "Copy Everything"
         '
         'tv
         '
@@ -64,7 +37,7 @@ Class MediaInfoForm
         Me.tv.Location = New System.Drawing.Point(6, 43)
         Me.tv.Margin = New System.Windows.Forms.Padding(6, 6, 0, 6)
         Me.tv.Name = "tv"
-        Me.tv.Size = New System.Drawing.Size(104, 600)
+        Me.tv.Size = New System.Drawing.Size(104, 628)
         Me.tv.TabIndex = 2
         '
         'rtb
@@ -74,12 +47,11 @@ Class MediaInfoForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.rtb.BlockPaint = False
         Me.rtb.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.rtb.ContextMenuStrip = Me.cms
         Me.rtb.Location = New System.Drawing.Point(116, 6)
         Me.rtb.Margin = New System.Windows.Forms.Padding(6)
         Me.rtb.Name = "rtb"
         Me.TableLayoutPanel1.SetRowSpan(Me.rtb, 2)
-        Me.rtb.Size = New System.Drawing.Size(753, 637)
+        Me.rtb.Size = New System.Drawing.Size(803, 665)
         Me.rtb.TabIndex = 4
         Me.rtb.Text = ""
         '
@@ -107,14 +79,14 @@ Class MediaInfoForm
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(875, 649)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(925, 677)
         Me.TableLayoutPanel1.TabIndex = 6
         '
         'MediaInfoForm
         '
         Me.AllowDrop = True
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.ClientSize = New System.Drawing.Size(875, 649)
+        Me.ClientSize = New System.Drawing.Size(925, 677)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.HelpButton = False
@@ -122,7 +94,6 @@ Class MediaInfoForm
         Me.Margin = New System.Windows.Forms.Padding(2)
         Me.Name = "MediaInfoForm"
         Me.Text = "MediaInfo"
-        Me.cms.ResumeLayout(False)
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -142,8 +113,6 @@ Class MediaInfoForm
         rtb.ReadOnly = True
         rtb.BackColor = Color.White
         rtb.Font = New Font("Consolas", 10 * s.UIScaleFactor)
-
-        cms.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
         tv.SelectOnMouseDown = True
         tv.ShowLines = False
@@ -228,6 +197,7 @@ Class MediaInfoForm
             End If
         Next
 
+        rtb.SelectionLength = 0
         rtb.SelectionStart = 0
         rtb.ScrollToCaret()
         rtb.BlockPaint = False
@@ -330,13 +300,5 @@ Class MediaInfoForm
 
     Private Sub MediaInfoForm_Load(sender As Object, e As EventArgs) Handles Me.Load
         tv.ItemHeight = CInt(FontHeight * 1.5)
-    End Sub
-
-    Private Sub CopySelectionToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopySelectionToolStripMenuItem.Click
-        rtb.Copy()
-    End Sub
-
-    Private Sub CopyEverythingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyEverythingToolStripMenuItem.Click
-        Clipboard.SetText(rtb.Text)
     End Sub
 End Class

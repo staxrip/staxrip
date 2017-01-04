@@ -1396,8 +1396,6 @@ Public Class MainForm
                 Return New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
             Case "dgim"
                 Return New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
-            Case "d2v"
-                Return New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")
         End Select
 
         Dim ret As VideoFilter
@@ -1433,6 +1431,11 @@ Public Class MainForm
             td.AddCommandLink("AviSynth+ AVISource", "AVISource")
         End If
 
+        If inputFile.Ext = "d2v" Then
+            td.AddCommandLink("AviSynth+ MPEG2Source", "MPEG2Source")
+            td.AddCommandLink("VapourSynth d2vsource", "d2vsource")
+        End If
+
         If inputFile.Ext.EqualsAny("avi", "avs") Then
             td.AddCommandLink("VapourSynth AVISource", "vsAVISource")
         End If
@@ -1451,6 +1454,10 @@ Public Class MainForm
                 ret = New VideoFilter("Source", "Automatic", "#avs")
             Case "vs"
                 ret = New VideoFilter("Source", "Automatic", "#vs")
+            Case "MPEG2Source"
+                ret = New VideoFilter("Source", "MPEG2Source", "MPEG2Source(""%source_file%"")")
+            Case "d2vsource"
+                ret = New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")
             Case "DGSource"
                 ret = New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
             Case "DGSourceIM"
@@ -1513,12 +1520,6 @@ Public Class MainForm
 
         Try
             If g.ShowVideoSourceWarnings(files) Then Throw New AbortException
-
-            If Not p.BatchMode AndAlso files(0).Ext = "vob" Then
-                If MsgQuestion("Opening VOB has disadvantages, it's better to rip with MakeMKV, continue anyway?", MessageBoxButtons.OKCancel) = DialogResult.Cancel Then
-                    Throw New AbortException
-                End If
-            End If
 
             For Each i In files
                 Dim name = Filepath.GetName(i)
@@ -1588,13 +1589,9 @@ Public Class MainForm
                     End If
                 End If
 
-                Log.Debug("Debug", "before SetFilter", "eac3to")
-
                 p.Script.SetFilter(preferredSourceFilter.Category,
                                    preferredSourceFilter.Name,
                                    preferredSourceFilter.Script)
-
-                Log.Debug("Debug", "after SetFilter", "eac3to")
             End If
 
             If Not g.VerifyRequirements() Then Throw New AbortException
@@ -2618,9 +2615,7 @@ Public Class MainForm
                         Return False
                     End If
                 Else
-                    AssistantMethod = Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle)
-
-                    If ProcessTip("The target file already exist, usually this means it was encoded successfully." + BR + "Click here to to open the containing directory.") Then
+                    If ProcessTip("The target file already exist, usually this means it was encoded successfully.") Then
                         tbTargetFile.BackColor = Color.Yellow
                         gbAssistant.Text = "Target File"
                         Return False
@@ -3082,11 +3077,11 @@ Public Class MainForm
             mb2.MenuButton.Value = s.ProcessPriority
             mb2.MenuButton.SaveAction = Sub(value) s.ProcessPriority = value
 
-            Dim mb3 = ui.AddMenuButtonBlock(Of ToolStripRenderMode)(systemPage)
+            Dim mb3 = ui.AddMenuButtonBlock(Of ToolStripRenderModeEx)(systemPage)
             mb3.Label.Text = "Menu Style:"
             mb3.Label.Tooltip = "Defines the style used to render main menus, context menus and toolbars."
-            mb3.MenuButton.Value = s.ToolStripRenderMode
-            mb3.MenuButton.SaveAction = Sub(value) s.ToolStripRenderMode = value
+            mb3.MenuButton.Value = s.ToolStripRenderModeEx
+            mb3.MenuButton.SaveAction = Sub(value) s.ToolStripRenderModeEx = value
 
             num = ui.AddNumericBlock(systemPage)
             num.Label.Text = "Minimum Disk Space:"
@@ -4984,7 +4979,6 @@ Public Class MainForm
                     Dim fs = f.OutputFolder + DirPath.GetName(workDir) + "." + f.cbVideoOutput.Text.ToLower
 
                     If File.Exists(fs) Then
-                        Log.Debug("Debug: eac3to video output file", MediaInfo.GetSummary(fs))
                         p.TempDir = f.OutputFolder
                         OpenVideoSourceFile(fs)
                     End If
@@ -5007,7 +5001,7 @@ Public Class MainForm
         Select Case m.Msg
             Case 800 'WM_DWMCOLORIZATIONCOLORCHANGED
                 If ToolStripRendererEx.IsAutoRenderMode Then
-                    ToolStripRendererEx.InitColors(s.ToolStripRenderMode)
+                    ToolStripRendererEx.InitColors(s.ToolStripRenderModeEx)
                     SetMenuStyle()
                     MenuStrip.Refresh()
                 End If
@@ -5469,7 +5463,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Sub UpdateAudioFileMenu(m As ContextMenuStrip,
+    Sub UpdateAudioFileMenu(m As ContextMenuStripEx,
                             a As Action,
                             ap As AudioProfile,
                             tb As TextBox)

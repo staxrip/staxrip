@@ -460,42 +460,39 @@ Namespace UI
         Private BorderRect As Native.RECT
 
         Sub New()
+            Me.New(Nothing)
         End Sub
 
-        Sub New(cms As ContextMenuStrip)
-            If VisualStyleInformation.IsEnabledByUser Then
-                BorderStyle = BorderStyle.None
-            End If
+        Sub New(cms As ContextMenuStripEx)
+            If VisualStyleInformation.IsEnabledByUser Then BorderStyle = BorderStyle.None
 
             If cms Is Nothing Then
-                ContextMenuStrip = New ContextMenuStripEx
-            Else
-                ContextMenuStrip = cms
+                cms = New ContextMenuStripEx()
+
+                Dim cutItem = cms.Add("Cut")
+                Dim copyItem = cms.Add("Copy", Sub() Copy())
+                Dim pasteItem = cms.Add("Paste")
+                cms.Add("Copy Everything", Sub() Clipboard.SetText(Text))
+
+                AddHandler cutItem.Click, Sub()
+                                              Clipboard.SetText(SelectedText)
+                                              SelectedText = ""
+                                          End Sub
+
+                AddHandler pasteItem.Click, Sub()
+                                                SelectedText = Clipboard.GetText
+                                                ScrollToCaret()
+                                            End Sub
+
+                AddHandler cms.Opening, Sub()
+                                            cutItem.Visible = SelectionLength > 0 AndAlso Not Me.ReadOnly
+                                            copyItem.Visible = SelectionLength > 0
+                                            pasteItem.Visible = Clipboard.GetText <> "" AndAlso Not Me.ReadOnly
+                                        End Sub
             End If
 
+            ContextMenuStrip = cms
             AddHandler Disposed, Sub() If Not ContextMenuStrip Is Nothing Then ContextMenuStrip.Dispose()
-
-            Dim cutItem = ContextMenuStrip.Items.Add("Cut")
-            Dim copyItem = ContextMenuStrip.Items.Add("Copy")
-            Dim pasteItem = ContextMenuStrip.Items.Add("Paste")
-
-            AddHandler cutItem.Click, Sub()
-                                          Clipboard.SetText(SelectedText)
-                                          SelectedText = ""
-                                      End Sub
-
-            AddHandler copyItem.Click, Sub() Clipboard.SetText(SelectedText)
-
-            AddHandler pasteItem.Click, Sub()
-                                            SelectedText = Clipboard.GetText
-                                            ScrollToCaret()
-                                        End Sub
-
-            AddHandler ContextMenuStrip.Opening, Sub()
-                                                     cutItem.Enabled = SelectionLength > 0 AndAlso Not [ReadOnly]
-                                                     copyItem.Enabled = SelectionLength > 0
-                                                     pasteItem.Enabled = Clipboard.GetText <> "" AndAlso Not [ReadOnly]
-                                                 End Sub
         End Sub
 
         Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
@@ -845,6 +842,8 @@ Namespace UI
         Inherits ButtonEx
 
         Event ValueChangedUser(value As Object)
+
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property Items As New List(Of Object)
         Property Menu As New ContextMenuStripEx
 

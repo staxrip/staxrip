@@ -95,7 +95,7 @@ Class x264Control
 #End Region
 
     Private Encoder As x264Encoder
-    Private cms As ContextMenuStrip
+    Private cms As ContextMenuStripEx
 
     Sub New(enc As x264Encoder)
         MyBase.New()
@@ -109,7 +109,7 @@ Class x264Control
         lv.FullRowSelect = True
         lv.MultiSelect = False
 
-        cms = New ContextMenuStrip(components)
+        cms = New ContextMenuStripEx(components)
         cms.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
         lv.ContextMenuStrip = cms

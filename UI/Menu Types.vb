@@ -298,6 +298,11 @@ Namespace UI
             MyBase.New(text)
         End Sub
 
+        Protected Overrides Sub OnOwnerChanged(e As EventArgs)
+            MyBase.OnOwnerChanged(e)
+            Padding = New Padding(0, CInt(Font.Height / 6), 0, CInt(Font.Height / 6))
+        End Sub
+
         Function GetHelp() As StringPair
             If Not CustomMenuItem Is Nothing AndAlso Not CustomMenuItem.CustomMenu Is Nothing AndAlso
                 CustomMenuItem.CustomMenu.CommandManager.HasCommand(CustomMenuItem.MethodName) Then
@@ -550,27 +555,27 @@ Namespace UI
         Shared Function GetMenu(definition As String,
                                 owner As Control,
                                 components As IContainer,
-                                action As Action(Of String)) As ContextMenuStrip
+                                action As Action(Of String)) As ContextMenuStripEx
 
             If owner.ContextMenuStrip Is Nothing Then
                 owner.ContextMenuStrip = New ContextMenuStripEx(components)
             End If
 
-            Dim r = owner.ContextMenuStrip
-            r.Items.Clear()
+            Dim ret = CType(owner.ContextMenuStrip, ContextMenuStripEx)
+            ret.Items.Clear()
 
             For Each i In definition.SplitKeepEmpty(BR)
                 If i.Contains("=") Then
                     Dim arg = i.Right("=").Trim
-                    ActionMenuItem.Add(r.Items, i.Left("="), action, arg, Nothing)
+                    ActionMenuItem.Add(ret.Items, i.Left("="), action, arg, Nothing)
                 ElseIf i.EndsWith(" | -") Then
-                    ActionMenuItem.Add(r.Items, i, Nothing, Nothing)
+                    ActionMenuItem.Add(ret.Items, i, Nothing, Nothing)
                 ElseIf i = "" Then
-                    r.Items.Add(New ToolStripSeparator)
+                    ret.Items.Add(New ToolStripSeparator)
                 End If
             Next
 
-            Return r
+            Return ret
         End Function
     End Class
 
@@ -584,6 +589,11 @@ Namespace UI
 
         Sub New(container As IContainer)
             MyBase.New(container)
+        End Sub
+
+        Protected Overrides Sub OnOpening(e As CancelEventArgs)
+            MyBase.OnOpening(e)
+            g.SetRenderer(Me)
         End Sub
 
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
@@ -602,9 +612,9 @@ Namespace UI
             End Set
         End Property
 
-        Sub Add(path As String)
-            ActionMenuItem.Add(Items, path, Nothing)
-        End Sub
+        Function Add(path As String) As ActionMenuItem
+            Return ActionMenuItem.Add(Items, path, Nothing)
+        End Function
 
         Function Add(path As String,
                      action As Action,

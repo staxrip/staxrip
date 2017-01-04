@@ -282,6 +282,14 @@ Public Class Package
 #Region "AviSynth"
 
         Add(New PluginPackage With {
+            .Name = "MPEG2DecPlus",
+            .Filename = "MPEG2DecPlus64.dll",
+            .WebURL = "https://github.com/chikuzen/MPEG2DecPlus",
+            .Description = "Decoder for d2v index files.",
+            .AviSynthFilterNames = {"MPEG2Source"},
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "MPEG2Source", "MPEG2Source(""%source_file%"")")}})
+
+        Add(New PluginPackage With {
             .Name = "DSS2mod",
             .Filename = "DSS2.dll",
             .WebURL = "http://code.google.com/p/xvid4psp/downloads/detail?name=DSS2%20mod%20%2B%20LAVFilters.7z&can=2&q=",

@@ -2232,7 +2232,7 @@ Public Class MainForm
     End Sub
 
     Function ProcessTip(message As String) As Boolean
-        CurrentAssistantTipKey = message.MD5Hash
+        CurrentAssistantTipKey = message.SHA512Hash
 
         If Not p.SkippedAssistantTips.Contains(CurrentAssistantTipKey) Then
             If message <> "" Then

@@ -383,8 +383,8 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function MD5Hash(value As String) As String
-        Dim crypt = MD5CryptoServiceProvider.Create()
+    Function SHA512Hash(value As String) As String
+        Dim crypt = SHA512CryptoServiceProvider.Create()
         Dim hash = crypt.ComputeHash(ASCIIEncoding.ASCII.GetBytes(value))
         Dim sb As New StringBuilder()
 

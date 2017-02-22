@@ -214,10 +214,16 @@ Public Class GlobalCommands
 
     <Command("Test")>
     Sub Test()
-        Dim nvExcept = "--help --version --check-device
-        --check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
-        --check-filters --device --input --output --raw --avs --vpy --vpy-mt --avcuvid-analyze
-        --audio-source --audio-file --seek --format --audio-copy --audio-copy --audio-codec
+        Dim msg = ""
+
+        Dim nvExcept = "--help --version --check-device --avsw --input-analyze
+        --input-format --output-format --video-streamid --video-track --vpp-delogo
+        --vpp-delogo-cb --vpp-delogo-cr --vpp-delogo-depth --vpp-delogo-pos
+        --vpp-delogo-select --vpp-delogo-y --check-avversion --check-codecs
+        --check-encoders --check-decoders --check-formats --check-protocols
+        --check-filters --device --input --output --raw --avs --vpy --vpy-mt
+        --avcuvid-analyze --audio-source --audio-file --seek --format --audio-copy
+        --audio-copy --audio-codec --vpp-perf-monitor
         --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
         --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
         --avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
@@ -230,15 +236,12 @@ Public Class GlobalCommands
         Dim nvUnknown = nvHelpSwitches.Where(Function(x) Not nvPresent.Contains(x) AndAlso Not nvExcept.Contains(x)).ToList()
         nvUnknown.Sort()
         Dim nvNoNeedToExcept = nvExcept.Where(Function(arg) nvPresent.Contains(arg))
-        If nvNoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary NVEncC Exception:", nvNoNeedToExcept.Join(" "))
-        If nvMissing.Count > 0 Then MsgInfo("Removed from NVEncC:", nvMissing.Join(" "))
+        If nvNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary NVEncC Exception:" + BR2 + nvNoNeedToExcept.Join(" ")
+        If nvMissing.Count > 0 Then msg += BR2 + "# Removed from NVEncC" + BR2 + nvMissing.Join(" ")
+        If nvUnknown.Count > 0 Then msg += BR2 + "# NVEncC Todo" + BR2 + nvUnknown.Join(" ")
 
-        If nvUnknown.Count > 0 Then
-            MsgInfo("NVEncC Todo", nvUnknown.Join(" "))
-            If MsgQuestion("Copy " + nvUnknown(0) + " ?") = DialogResult.OK Then nvUnknown(0).ToClipboard
-        End If
-
-        Dim amdExcept = "--audio-bitrate --audio-codec --audio-copy --audio-file --audio-filter
+        Dim amdExcept = "--audio-bitrate --audio-codec --audio-copy --audio-file
+        --audio-filter --avsw --device --input-analyze
         --audio-ignore-decode-error --audio-ignore-notrack-error --audio-resampler
         --audio-samplerate --audio-source --audio-stream --avs --avvce --avvce-analyze
         --check-avversion --check-codecs --check-decoders --check-encoders --check-filters
@@ -253,26 +256,24 @@ Public Class GlobalCommands
         Dim amdUnknown = amdHelpSwitches.Where(Function(x) Not amdPresent.Contains(x) AndAlso Not amdExcept.Contains(x)).ToList()
         amdUnknown.Sort()
         Dim amdNoNeedToExcept = amdExcept.Where(Function(arg) amdPresent.Contains(arg))
-        If amdNoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary VCEEncC Exception:", amdNoNeedToExcept.Join(" "))
-        If amdMissing.Count > 0 Then MsgInfo("Removed from VCEEncC:", amdMissing.Join(" "))
-
-        If amdUnknown.Count > 0 Then
-            MsgInfo("VCEEncC Todo", amdUnknown.Join(" "))
-            If MsgQuestion("Copy " + amdUnknown(0) + " ?") = DialogResult.OK Then amdUnknown(0).ToClipboard
-        End If
+        If amdNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary VCEEncC Exception" + BR2 + amdNoNeedToExcept.Join(" ")
+        If amdMissing.Count > 0 Then msg += BR2 + "# Removed from VCEEncC" + BR2 + amdMissing.Join(" ")
+        If amdUnknown.Count > 0 Then msg += BR2 + "# VCEEncC Todo" + BR2 + amdUnknown.Join(" ")
 
         Dim qsExcept = "--help --version --check-device --video-streamid --video-track
-        --check-avversion --check-codecs --check-encoders --check-decoders --check-formats --check-protocols
-        --check-filters --device --input --output --raw --avs --vpy --vpy-mt
-        --audio-source --audio-file --seek --format --audio-copy --audio-copy --audio-codec
-        --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
-        --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
-        --avsync --mux-option --input-res --fps --dar --avqsv-analyze --benchmark --bench-quality
-        --log --log-framelist --audio-thread --avi --avqsv --input-file --audio-ignore-decode-error
-        --audio-ignore-notrack-error --nv12 --output-file --check-features-html --perf-monitor
-        --perf-monitor-plot --perf-monitor-interval --python --qvbr-quality --sharpness --vpp-delogo
-        --vpp-delogo-select --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb
-        --vpp-delogo-cr --vpp-delogo-add --vpp-half-turn --input-analyze --input-format --output-format
+        --check-avversion --check-codecs --check-encoders --check-decoders --check-formats
+        --check-protocols --chapter-no-trim --check-filters --device --input --output
+        --raw --avs --vpy --vpy-mt --audio-source --audio-file --seek --format
+        --audio-copy --audio-copy --audio-codec --audio-bitrate --audio-ignore
+        --audio-ignore --audio-samplerate --audio-resampler --audio-stream --audio-stream
+        --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
+        --avsync --mux-option --input-res --fps --dar --avqsv-analyze --benchmark
+        --bench-quality --log --log-framelist --audio-thread --avi --avqsv --input-file
+        --audio-ignore-decode-error --audio-ignore-notrack-error --nv12 --output-file
+        --check-features-html --perf-monitor --perf-monitor-plot --perf-monitor-interval
+        --python --qvbr-quality --sharpness --vpp-delogo --vpp-delogo-select
+        --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb --vpp-delogo-cr
+        --vpp-delogo-add --vpp-half-turn --input-analyze --input-format --output-format
         ".Split((" " + BR).ToCharArray())
         Dim qsHelp = File.ReadAllText(".\Apps\QSVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim qsHelpSwitches = Regex.Matches(qsHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
@@ -282,17 +283,13 @@ Public Class GlobalCommands
         Dim qsUnknown = qsHelpSwitches.Where(Function(x) Not qsPresent.Contains(x) AndAlso Not qsExcept.Contains(x)).ToList()
         qsUnknown.Sort()
         Dim qsNoNeedToExcept = qsExcept.Where(Function(arg) qsPresent.Contains(arg))
-        If qsNoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary QSVEncC Exception:", qsNoNeedToExcept.Join(" "))
-        If qsMissing.Count > 0 Then MsgInfo("Removed from QSVEncC:", qsMissing.Join(" "))
-
-        If qsUnknown.Count > 0 Then
-            MsgInfo("QSVEncC Todo", qsUnknown.Join(" "))
-            If MsgQuestion("Copy " + qsUnknown(0) + " ?") = DialogResult.OK Then qsUnknown(0).ToClipboard
-        End If
+        If qsNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary QSVEncC Exception:" + BR2 + qsNoNeedToExcept.Join(" ")
+        If qsMissing.Count > 0 Then msg += BR2 + "# Removed from QSVEncC" + BR2 + qsMissing.Join(" ")
+        If qsUnknown.Count > 0 Then msg += BR2 + "# QSVEncC Todo" + BR2 + qsUnknown.Join(" ")
 
         Dim x265Except = "--crop-rect --display-window --fast-cbf --frame-skip --help
---input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version
---opt-qp-pps --opt-ref-list-length-pps".Split((" " + BR).ToCharArray())
+        --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version
+        --opt-qp-pps --opt-ref-list-length-pps".Split((" " + BR).ToCharArray())
         Dim x265RemoveExcept = "--crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
 
         Dim x265HelpSwitches = Regex.Matches(
@@ -319,41 +316,37 @@ Public Class GlobalCommands
         x265Unknown.Sort()
         Dim x265NoNeedToExcept = x265Except.Where(Function(arg) x265Present.Contains(arg))
         If x265NoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary x265 Exception:", x265NoNeedToExcept.Join(" "))
-        If x265Missing.Count > 0 Then MsgInfo("Removed from x265:", x265Missing.Join(" "))
-        If x265Unknown.Count > 0 Then MsgInfo("x265 Todo", x265Unknown.Join(" "))
+        If x265Missing.Count > 0 Then msg += BR2 + "# Removed from x265" + BR2 + x265Missing.Join(" ")
+        If x265Unknown.Count > 0 Then msg += BR2 + "# x265 Todo" + BR2 + x265Unknown.Join(" ")
 
-        'does the version contain x64 or x86?
         For Each pack In Package.Items.Values
-            If pack.Path = "" Then Continue For
+            If pack.Path = "" Then msg += BR2 + "# path missing for " + pack.Name
+            If Not pack.IsCorrectVersion Then msg += BR2 + "# wrong version for " + pack.Name
 
-            If pack.Version = "" OrElse (Not pack.Version.ContainsAny({"x86", "x64"}) AndAlso
-                Not pack.Filename.ContainsAny({".jar", ".py", ".avsi"})) OrElse
-                Not pack.IsCorrectVersion Then
+            If Not pack.Version.ContainsAny({"x86", "x64"}) AndAlso
+                Not pack.Filename.ContainsAny({".jar", ".py", ".avsi"}) Then
 
-                Using f As New AppsForm
-                    f.ShowPackage(pack)
-                    f.ShowDialog()
-                End Using
+                msg += BR2 + "# x86/x64 missing for " + pack.Name
             End If
-        Next
 
-        For Each pack In Package.Items.Values
             'does help file exist?
             If pack.Path <> "" AndAlso pack.HelpFile <> "" Then
                 If Not File.Exists(pack.GetDir + pack.HelpFile) Then
-                    ShowPackageError(pack, $"Help file of {pack.Name} don't exist!")
-                    Exit For
+                    msg += BR2 + $"# Help file of {pack.Name} don't exist!"
                 End If
             End If
 
             'does setup file exist?
             If pack.SetupFilename <> "" AndAlso Not File.Exists(Folder.Apps + pack.SetupFilename) Then
-                ShowPackageError(pack, $"Setup file of {pack.Name} don't exist!")
-                Exit For
+                msg += BR2 + $"Setup file of {pack.Name} don't exist!"
             End If
         Next
 
-        MsgInfo("end")
+        If msg <> "" Then
+            Dim fs = Folder.Desktop + "staxrip todo.txt"
+            File.WriteAllText(fs, msg)
+            g.ShellExecute(fs)
+        End If
     End Sub
 
     Sub ShowPackageError(pack As Package, msg As String)

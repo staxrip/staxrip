@@ -129,7 +129,7 @@ Class DirectoryHelp
     End Sub
 
     Shared Function Compare(dir1 As String, dir2 As String) As Boolean
-        Return DirPath.AppendSeparator(dir1).ToUpper = DirPath.AppendSeparator(dir2).ToUpper
+        Return dir1.AppendSeparator.ToUpper = dir2.AppendSeparator.ToUpper
     End Function
 
     Shared Function FindFiles(startDir As String,

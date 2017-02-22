@@ -714,17 +714,23 @@ Class FilterParameters
                 item.Parameters.Add(New FilterParameter("crop_r", "%crop_right%"))
                 item.Parameters.Add(New FilterParameter("crop_b", "%crop_bottom%"))
 
+                add2("DGSource", "deinterlace", "0", "deinterlace | deinterlace = 0 (no deinterlacing)")
+                add2("DGSource", "deinterlace", "1", "deinterlace | deinterlace = 1 (single rate deinterlacing)")
+                add2("DGSource", "deinterlace", "2", "deinterlace | deinterlace = 2 (double rate deinterlacing)")
+
                 add2("FFVideoSource", "rffmode", "0", "rffmode | rffmode = 0 (ignore all flags (default))")
                 add2("FFVideoSource", "rffmode", "1", "rffmode | rffmode = 1 (honor all pulldown flags)")
                 add2("FFVideoSource", "rffmode", "2", "rffmode | rffmode = 2 (force film)")
 
+                add2("LSMASHVideoSource", "decoder", """h264_qsv""", "decoder = ""h264_qsv""")
+                add2("LWLibavVideoSource", "decoder", """h264_qsv""", "decoder = ""h264_qsv""")
+
+                add2("lsmas.LibavSMASHSource", "decoder", """h264_qsv""", "decoder = ""h264_qsv""")
+                add2("lsmas.LWLibavSource", "decoder", """h264_qsv""", "decoder = ""h264_qsv""")
+
                 add2("ffms2.Source", "rffmode", "0", "rffmode | rffmode = 0 (ignore all flags (default))")
                 add2("ffms2.Source", "rffmode", "1", "rffmode | rffmode = 1 (honor all pulldown flags)")
                 add2("ffms2.Source", "rffmode", "2", "rffmode | rffmode = 2 (force film)")
-
-                add2("DGSource", "deinterlace", "0", "deinterlace | deinterlace = 0 (no deinterlacing)")
-                add2("DGSource", "deinterlace", "1", "deinterlace | deinterlace = 1 (single rate deinterlacing)")
-                add2("DGSource", "deinterlace", "2", "deinterlace | deinterlace = 2 (double rate deinterlacing)")
 
                 add2("havsfunc.QTGMC", "TFF", "True", "TFF | TFF = True (top field first)")
                 add2("havsfunc.QTGMC", "TFF", "False", "TFF | TFF = False (bottom field first)")

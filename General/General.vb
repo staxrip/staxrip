@@ -19,33 +19,39 @@ Class Folder
 
 #Region "System"
 
+    Shared ReadOnly Property Desktop() As String
+        Get
+            Return Environment.GetFolderPath(Environment.SpecialFolder.Desktop).AppendSeparator
+        End Get
+    End Property
+
     Shared ReadOnly Property Startup() As String
         Get
-            Return DirPath.AppendSeparator(Application.StartupPath)
+            Return Application.StartupPath.AppendSeparator
         End Get
     End Property
 
     Shared ReadOnly Property Current() As String
         Get
-            Return DirPath.AppendSeparator(Environment.CurrentDirectory)
+            Return Environment.CurrentDirectory.AppendSeparator
         End Get
     End Property
 
     Shared ReadOnly Property Temp() As String
         Get
-            Return DirPath.AppendSeparator(Path.GetTempPath)
+            Return Path.GetTempPath.AppendSeparator
         End Get
     End Property
 
     Shared ReadOnly Property System() As String
         Get
-            Return DirPath.AppendSeparator(Environment.SystemDirectory)
+            Return Environment.SystemDirectory.AppendSeparator
         End Get
     End Property
 
     Shared ReadOnly Property Programs() As String
         Get
-            Return DirPath.AppendSeparator(GetFolderPath(Environment.SpecialFolder.ProgramFiles))
+            Return GetFolderPath(Environment.SpecialFolder.ProgramFiles).AppendSeparator
         End Get
     End Property
 
@@ -92,9 +98,9 @@ Class Folder
     Shared ReadOnly Property Plugins As String
         Get
             If p.Script.Engine = ScriptEngine.AviSynth Then
-                Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+"))
+                Return Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+").AppendSeparator
             Else
-                Return Filepath.AppendSeparator(Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64"))
+                Return Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64").AppendSeparator
             End If
         End Get
     End Property
@@ -277,7 +283,7 @@ Class Folder
     Private Shared Function GetFolderPath(folder As Environment.SpecialFolder) As String
         Dim sb As New StringBuilder(260)
         SHGetFolderPath(IntPtr.Zero, CInt(folder), IntPtr.Zero, 0, sb)
-        Dim ret = DirPath.AppendSeparator(sb.ToString) '.NET fails on 'D:'
+        Dim ret = sb.ToString.AppendSeparator '.NET fails on 'D:'
         Call New FileIOPermission(FileIOPermissionAccess.PathDiscovery, ret).Demand()
         Return ret
     End Function
@@ -289,12 +295,6 @@ Class PathBase
             Return Path.DirectorySeparatorChar
         End Get
     End Property
-
-    Shared Function AppendSeparator(path As String) As String
-        If path = "" Then Return ""
-        If path.EndsWith(Separator) Then Return path
-        Return path + Separator
-    End Function
 
     Shared Function IsSameBase(a As String, b As String) As Boolean
         Return Filepath.GetBase(a).EqualIgnoreCase(Filepath.GetBase(b))

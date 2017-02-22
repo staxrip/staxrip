@@ -295,7 +295,7 @@ Class PreviewForm
     Sub New(aviSynthDocument As VideoScript)
         MyBase.New()
         InitializeComponent()
-        Icon = My.Resources.MainIcon
+        Icon = My.Resources.RipIcon
 
         CommandManager.AddCommandsFromObject(Me)
         CommandManager.AddCommandsFromObject(g.DefaultCommands)

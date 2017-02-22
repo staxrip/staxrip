@@ -762,7 +762,7 @@ Public Class x265Params
     Property LimitTU As New OptionParam With {
         .Switch = "--limit-tu",
         .Text = "Limit TU:",
-        .Options = {"0", "Level 1", "Level 2"}}
+        .Options = {"0", "1", "2"}}
 
     Property CSV As New BoolParam With {
         .Switch = "--csv",

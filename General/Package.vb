@@ -4,6 +4,7 @@ Imports StaxRip
 Public Class Package
     Implements IComparable(Of Package)
 
+    Property IgnoreVersion As Boolean
     Property Description As String
     Property DownloadURL As String
     Property Filenames As String()
@@ -42,7 +43,6 @@ Public Class Package
     Shared Property NVEncC As New NVEncCPackage
     Shared Property ProjectX As New ProjectXPackage
     Shared Property qaac As New qaacPackage
-    Shared Property SangNom2 As New SangNom2Package
     Shared Property TDeint As New TDeintPackage
     Shared Property UnDot As New UnDotPackage
     Shared Property VSRip As New VSRipPackage
@@ -126,6 +126,7 @@ Public Class Package
         .Filename = "VCEEncC64.exe",
         .Description = "AMD GPU accelerated H.264 encoder.",
         .HelpFile = "help.txt",
+        .IsRequiredFunc = Function() TypeOf p.VideoEncoder Is AMDEncoder,
         .WebURL = "https://onedrive.live.com/?id=6BDD4375AC8933C6!516&cid=6BDD4375AC8933C6"}
 
     Public Shared DGDecodeNV As New PluginPackage With {
@@ -188,7 +189,6 @@ Public Class Package
         Add(ProjectX)
         Add(qaac)
         Add(QSVEncC)
-        Add(SangNom2)
         Add(TDeint)
         Add(UnDot)
         Add(VSRip)
@@ -207,7 +207,8 @@ Public Class Package
             .Description = "Visual C++ 2012 Redistributable is required by some tools used by StaxRip.",
             .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=30679",
             .FixedDir = Folder.System,
-            .IsRequiredFunc = Function() p.Script.Contains("Noise", "RemoveGrain("),
+            .IsRequiredFunc = Function() Items("masktools2 avs").IsRequired OrElse
+                                         Items("SangNom2 avs").IsRequired,
             .TreePath = "Runtimes"})
 
         Add(New Package With {
@@ -280,6 +281,13 @@ Public Class Package
 #End Region
 
 #Region "AviSynth"
+
+        Add(New PluginPackage With {
+            .Name = "SangNom2",
+            .Filename = "SangNom2.dll",
+            .WebURL = "http://avisynth.nl/index.php/SangNom2",
+            .Description = "SangNom2 is a reimplementation of MarcFD's old SangNom filter. Originally it's a single field deinterlacer using edge-directed interpolation but nowadays it's mainly used in anti-aliasing scripts. The output is not completely but mostly identical to the original SangNom.",
+            .AviSynthFilterNames = {"SangNom2"}})
 
         Add(New PluginPackage With {
             .Name = "MPEG2DecPlus",
@@ -381,8 +389,8 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "RgTools",
             .Filename = "RgTools.dll",
-            .WebURL = "http://avisynth.nl/index.php/RgTools",
-            .HelpURL = "http://avisynth.nl/index.php/RgTools",
+            .WebURL = "https://github.com/pinterf/RgTools",
+            .HelpURL = "https://github.com/pinterf/RgTools",
             .Description = "RgTools is a modern rewrite of RemoveGrain, Repair, BackwardClense, Clense, ForwardClense and VerticalCleaner all in a single plugin.",
             .AviSynthFilterNames = {"RemoveGrain", "Clense", "ForwardClense", "BackwardClense", "Repair", "VerticalCleaner"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Noise", "RemoveGrain", "RemoveGrain()")}})
@@ -749,7 +757,10 @@ Public Class Package
 
     Function IsOutdated() As Boolean
         Dim fp = Path
-        If fp <> "" Then If (VersionDate - File.GetLastWriteTimeUtc(fp)).TotalDays > 3 Then Return True
+
+        If fp <> "" AndAlso Not IgnoreVersion Then
+            If (VersionDate - File.GetLastWriteTimeUtc(fp)).TotalDays > 3 Then Return True
+        End If
     End Function
 
     Overridable Function IsCorrectVersion() As Boolean
@@ -881,7 +892,7 @@ Public Class PythonPackage
         TreePath = "Runtimes"
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        DownloadURL = "https://www.python.org/ftp/python/3.5.1/python-3.5.1-amd64-webinstall.exe"
+        DownloadURL = "https://dl.dropboxusercontent.com/u/73468194/VapourSynth-R36-test3.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -896,10 +907,10 @@ Public Class PythonPackage
             If File.Exists(ret) Then Return ret
 
             For Each i In {
-                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath"),
-                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", "ExecutablePath"),
-                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", Nothing).AppendSeparator + "python.exe",
-                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.5\InstallPath", Nothing).AppendSeparator + "python.exe"}
+                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", "ExecutablePath"),
+                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", "ExecutablePath"),
+                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", Nothing).AppendSeparator + "python.exe",
+                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", Nothing).AppendSeparator + "python.exe"}
 
                 If File.Exists(i) Then Return i
             Next
@@ -928,7 +939,7 @@ Public Class VapourSynthPackage
         Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         WebURL = "http://www.vapoursynth.com"
         HelpURL = "http://www.vapoursynth.com/doc"
-        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R35/VapourSynth-R35.exe"
+        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R36/VapourSynth-R36.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -980,6 +991,56 @@ Public Class PluginPackage
     Property Dependencies As String()
     Property VapourSynthFiltersFunc As Func(Of VideoFilter())
     Property AviSynthFiltersFunc As Func(Of VideoFilter())
+
+    Public Overrides ReadOnly Property IsRequired As Boolean
+        Get
+            Return IsPluginPackageRequired(Me)
+        End Get
+    End Property
+
+    Shared Function IsPluginPackageRequired(package As PluginPackage) As Boolean
+        If p Is Nothing Then Return False
+
+        If p.Script.Engine = ScriptEngine.AviSynth AndAlso
+            Not package.AviSynthFilterNames.NothingOrEmpty Then
+
+            For Each filter In p.Script.Filters
+                If filter.Active Then
+                    For Each filterName In package.AviSynthFilterNames
+                        If filter.Script.ToLower.Contains(filterName.ToLower + "(") Then
+                            Return True
+                        End If
+                    Next
+                End If
+            Next
+        ElseIf p.Script.Engine = ScriptEngine.VapourSynth AndAlso
+            Not package.VapourSynthFilterNames.NothingOrEmpty Then
+
+            For Each filter In p.Script.Filters
+                If filter.Active Then
+                    For Each filterName In package.VapourSynthFilterNames
+                        If filter.Script.ToLower.Contains(filterName.ToLower + "(") Then
+                            Return True
+                        End If
+                    Next
+                End If
+            Next
+        End If
+
+        For Each package2 In Items.Values.OfType(Of PluginPackage)
+            If package2 Is package Then Continue For
+
+            If Not package2.Dependencies.NothingOrEmpty Then
+                For Each dependency In package2.Dependencies
+                    If dependency = package.Name Then
+                        If IsPluginPackageRequired(package2) Then
+                            Return True
+                        End If
+                    End If
+                Next
+            End If
+        Next
+    End Function
 
     Function GetDependencies() As List(Of PluginPackage)
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
@@ -1177,18 +1238,6 @@ Public Class checkmatePackage
     End Sub
 End Class
 
-Public Class SangNom2Package
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "SangNom2"
-        Filename = "SangNom2.dll"
-        WebURL = "http://avisynth.nl/index.php/SangNom2"
-        Description = "SangNom2 is a reimplementation of MarcFD's old SangNom filter. Originally it's a single field deinterlacer using edge-directed interpolation but nowadays it's mainly used in anti-aliasing scripts. The output is not completely but mostly identical to the original SangNom."
-        AviSynthFilterNames = {"SangNom2"}
-    End Sub
-End Class
-
 Public Class vinversePackage
     Inherits PluginPackage
 
@@ -1375,6 +1424,7 @@ Public Class MPCPackage
         WebURL = "http://mpc-hc.org"
         HelpURL = "http://forum.doom9.org/showthread.php?p=1719479&goto=newpost"
         IsRequiredValue = False
+        IgnoreVersion = True
     End Sub
 
     Public Overrides ReadOnly Property StartAction As Action

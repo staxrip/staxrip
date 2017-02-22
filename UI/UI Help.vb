@@ -54,9 +54,7 @@ Namespace UI
         End Sub
 
         Shared Function GetKeyString(k As Keys) As String
-            If k = Keys.None Then
-                Return ""
-            End If
+            If k = Keys.None Then Return ""
 
             Dim s = ""
 

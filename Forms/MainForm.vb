@@ -83,6 +83,7 @@ Public Class MainForm
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.bNext = New System.Windows.Forms.Button()
         Me.llEditAudio0 = New System.Windows.Forms.LinkLabel()
         Me.gbAssistant = New System.Windows.Forms.GroupBox()
@@ -728,6 +729,7 @@ Public Class MainForm
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.HelpButton = True
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.KeyPreview = True
         Me.MainMenuStrip = Me.MenuStrip
         Me.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
@@ -830,7 +832,7 @@ Public Class MainForm
         llEditAudio0.AddClickAction(AddressOf AudioEdit0ToolStripMenuItemClick)
         llEditAudio1.AddClickAction(AddressOf AudioEdit1ToolStripMenuItemClick)
 
-        Icon = My.Resources.MainIcon
+        Icon = My.Resources.RipIcon
 
         AviSynthListView.ProfileFunc = AddressOf GetTargetAviSynthDocument
 
@@ -1644,7 +1646,7 @@ Public Class MainForm
             p.ColorSpace = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ColorSpace")
             p.ChromaSubsampling = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ChromaSubsampling")
             p.SourceSize = New FileInfo(p.LastOriginalSourceFile).Length
-            p.SourceBitrate = MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitRate").ToInt
+            p.SourceBitrate = CInt(MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitRate").ToInt / 1000)
             p.ScanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
             p.ScanOrder = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanOrder")
 
@@ -1664,7 +1666,7 @@ Public Class MainForm
             Dim targetDir As String = Nothing
 
             If p.DefaultTargetFolder <> "" Then
-                targetDir = DirPath.AppendSeparator(Macro.Solve(p.DefaultTargetFolder)).Replace("\\", "\")
+                targetDir = Macro.Solve(p.DefaultTargetFolder).AppendSeparator.Replace("\\", "\")
 
                 If Not Directory.Exists(targetDir) Then
                     Try
@@ -2362,7 +2364,7 @@ Public Class MainForm
             lSource1.Text = lSource1.GetMaxTextSpace(
                 p.SourceSeconds \ 60 & "m " + (p.SourceSeconds Mod 60).ToString("00") + "s",
                 If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB", (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB"),
-                If(p.SourceBitrate > 0, (p.SourceBitrate / 1000 ^ 2).ToString("f1") + "Mbps", ""),
+                If(p.SourceBitrate > 0, (p.SourceBitrate / 1000).ToString("f1") + "Mbps", ""),
                 p.SourceFrameRate.ToString("f3").TrimEnd("0"c).TrimEnd(","c) + "fps",
                 p.Codec, p.CodecProfile)
 
@@ -2393,6 +2395,21 @@ Public Class MainForm
         AssistantMethod = Nothing
         CanIgnoreTip = True
         AssistantPassed = False
+
+        If TypeOf p.VideoEncoder Is BasicVideoEncoder Then
+            Dim enc = DirectCast(p.VideoEncoder, BasicVideoEncoder)
+            Dim param = enc.CommandLineParams.GetOptionParam("--vpp-resize")
+
+            If Not param Is Nothing AndAlso param.Value > 0 AndAlso
+                Not p.Script.IsFilterActive("Resize", "Hardware Encoder") Then
+
+                If ProcessTip("In order to use an resize filter of the hardware encoder choose 'Hardware Encoder' as resize filter from the filters menu.") Then
+                    gbAssistant.Text = "Invalid filter setting"
+                    CanIgnoreTip = False
+                    Return False
+                End If
+            End If
+        End If
 
         If Not p.BatchMode Then
             If Filepath.GetExtFull(p.TargetFile) = ".mp4" AndAlso p.TargetFile.Contains("#") Then
@@ -3133,8 +3150,9 @@ Public Class MainForm
         Dim filterPage = ui.CreateDataPage(pagePath)
 
         Dim tipsFunc = Function() As StringPairList
-                           Dim ret As New StringPairList
-                           ret.Add(" Filters Menu", "StaxRip allows to assign a source filter profile to a particular source file type. The source filter profiles can be customized by right-clicking the filters menu in the main dialog.")
+                           Dim ret As New StringPairList From {
+                               {" Filters Menu", "StaxRip allows to assign a source filter profile to a particular source file type. The source filter profiles can be customized by right-clicking the filters menu in the main dialog."}
+                           }
 
                            For Each i In profiles.Where(
                                Function(v) v.Name = "Source").First.Filters
@@ -3831,7 +3849,7 @@ Public Class MainForm
 
             Dim tempDirFunc = Function()
                                   Dim tempDir = g.BrowseFolder(p.TempDir)
-                                  If tempDir <> "" Then Return DirPath.AppendSeparator(tempDir) + "%source_name%_temp"
+                                  If tempDir <> "" Then Return tempDir.AppendSeparator + "%source_name%_temp"
                               End Function
 
             tm = ui.AddTextMenuBlock(pathPage)
@@ -3943,13 +3961,13 @@ Public Class MainForm
                 ui.Save()
 
                 If p.CompCheckRange < 2 OrElse p.CompCheckRange > 20 Then p.CompCheckRange = 5
-                If p.TempDir <> "" Then p.TempDir = DirPath.AppendSeparator(p.TempDir)
+                If p.TempDir <> "" Then p.TempDir = p.TempDir.AppendSeparator
 
                 If Not p.TempDir?.EndsWith("_temp\") AndAlso p.DeleteTempFilesDir Then
                     MsgInfo("Temp dir will only be deleted when it ends with _temp")
                 End If
 
-                If p.DefaultTargetFolder <> "" Then p.DefaultTargetFolder = DirPath.AppendSeparator(p.DefaultTargetFolder)
+                If p.DefaultTargetFolder <> "" Then p.DefaultTargetFolder = p.DefaultTargetFolder.AppendSeparator
 
                 UpdateSizeOrBitrate()
                 tbBitrate_TextChanged()
@@ -5679,7 +5697,7 @@ Public Class MainForm
 
             If d.ShowDialog = DialogResult.OK Then
                 s.Storage.SetString("MediaInfo Folder View folder", d.SelectedPath)
-                Dim f As New MediaInfoFolderViewForm(DirPath.AppendSeparator(d.SelectedPath))
+                Dim f As New MediaInfoFolderViewForm(d.SelectedPath.AppendSeparator)
                 f.Show()
             End If
         End Using

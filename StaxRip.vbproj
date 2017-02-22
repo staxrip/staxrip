@@ -7,7 +7,7 @@
     <ProjectGuid>{8DB07BD5-D3DD-49CB-85ED-AB35EAF3C951}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>MainIcon.ico</ApplicationIcon>
+    <ApplicationIcon>RIP.ico</ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>StaxRip</AssemblyName>
@@ -36,7 +36,7 @@
     <ManifestKeyFile>StaxRip_TemporaryKey.pfx</ManifestKeyFile>
     <TargetZone>LocalIntranet</TargetZone>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <OptionInfer>On</OptionInfer>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -445,6 +445,7 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
+    <Content Include="RIP.ico" />
     <None Include="md\changelog.md" />
     <None Include="md\test-build.md" />
     <None Include="packages.config" />
@@ -578,7 +579,6 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="MainIcon.ico" />
     <EmbeddedResource Include="UI\Controls\SearchTextBox.resx">
       <DependentUpon>SearchTextBox.vb</DependentUpon>
     </EmbeddedResource>

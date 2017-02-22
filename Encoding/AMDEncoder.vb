@@ -12,6 +12,12 @@ Class AMDEncoder
 
     Property ParamsStore As New PrimitiveStore
 
+    Public Overrides ReadOnly Property DefaultName As String
+        Get
+            Return "AMD " + Params.Codec.OptionText
+        End Get
+    End Property
+
     <NonSerialized>
     Private ParamsValue As EncoderParams
 
@@ -46,7 +52,8 @@ Class AMDEncoder
                                     End Sub
 
             f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
-            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.NVEncC.Path, "--check-vce"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.VCEEncC.Path, "--check-features"))))
+            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.VCEEncC.Path, "--check-vce"))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = params1
@@ -58,7 +65,7 @@ Class AMDEncoder
 
     Overrides ReadOnly Property OutputExt() As String
         Get
-            Return "h264"
+            Return Params.Codec.ValueText
         End Get
     End Property
 
@@ -112,6 +119,12 @@ Class AMDEncoder
             .Text = "Mode:",
             .Options = {"CBR", "VBR", "CQP"}}
 
+        Property Codec As New OptionParam With {
+            .Switch = "--codec",
+            .Text = "Codec:",
+            .Options = {"H.264", "H.265"},
+            .Values = {"h264", "hevc"}}
+
         Property Decoder As New OptionParam With {
             .Text = "Decoder:",
             .Options = {"AviSynth/VapourSynth", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
@@ -145,15 +158,18 @@ Class AMDEncoder
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
-                    Add("Basic", Decoder, Mode,
+                    Add("Basic", Decoder, Mode, Codec,
                         New OptionParam With {.Switch = "--quality", .Text = "Quality:", .Options = {"fast", "balanced", "slow"}, .InitValue = 1},
                         New OptionParam With {.Switch = "--profile", .Text = "Profile:", .Options = {"Baseline", "Main", "High"}},
+                        New OptionParam With {.Switch = "--tier", .Text = "Tier:", .Options = {"main", "high"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New OptionParam With {.Switch = "--level", .Text = "Level:", .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         QPI, QPP, QPB)
                     Add("Slice Decision",
                         New NumParam With {.Switch = "--slices", .Text = "Slices:", .InitValue = 1},
                         New NumParam With {.Switch = "--bframes", .Text = "B-Frames:", .MinMaxStep = {0, 16, 1}},
+                        New NumParam With {.Switch = "--ref", .Text = "Ref Frames:", .InitValue = 2, .MinMaxStep = {0, 16, 1}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--ltr", .Text = "LTR Frames:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New BoolParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid"})
                     Add("Rate Control",
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate:", .InitValue = 20000, .MinMaxStep = {0, Integer.MaxValue, 1}},
@@ -161,14 +177,20 @@ Class AMDEncoder
                         New NumParam With {.Switch = "--qp-min", .Text = "QP Min:", .MinMaxStep = {0, 100, 1}},
                         New NumParam With {.Switch = "--qp-max", .Text = "QP Max:", .MinMaxStep = {0, 100, 1}, .InitValue = 100},
                         New NumParam With {.Switch = "--b-deltaqp", .Text = "Non-ref bframe QP offset:"},
-                        New NumParam With {.Switch = "--bref-deltaqp", .Text = "Ref bframe QP offset:"})
+                        New NumParam With {.Switch = "--bref-deltaqp", .Text = "Ref bframe QP offset:"},
+                        New BoolParam With {.Switch = "--vbaq", .Text = "VBAQ"})
                     Add("Other",
                         New StringParam With {.Switch = "--chapter", .Text = "Chapters:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                         New StringParam With {.Switch = "--log", .Text = "Log File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level:", .Options = {"info", "debug", "warn", "error"}},
                         New OptionParam With {.Switch = "--motion-est", .Text = "Motion Estimation:", .Options = {"q-pel", "full-pel", "half-pel"}},
+                        New OptionParam With {.Switch = "--pre-analysis", .Name = "pre-analysis-h264", .Text = "Pre Analysis:", .Options = {"none", "full", "half", "quarter"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
+                        New OptionParam With {.Switch = "--pre-analysis", .Name = "pre-analysis-h265", .Text = "Pre Analysis:", .Options = {"none", "auto"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced:", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                         New BoolParam With {.Switch = "--chapter-copy", .Text = "Copy Chapters"},
+                        New BoolParam With {.Switch = "--filler", .Text = "Use filler data"},
+                        New BoolParam With {.Switch = "--fullrange", .Text = "Set yuv to fullrange", .VisibleFunc = Function() Codec.ValueText = "h264"},
+                        New BoolParam With {.Switch = "--enforce-hrd", .Text = "Enforce HRD compatibility"},
                         Custom)
                 End If
 

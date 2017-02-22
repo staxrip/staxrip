@@ -1925,7 +1925,7 @@ Class Macro
         ret.Add(New Macro("template_name", "Template Name", GetType(String), "Name of the template the active project is based on."))
         ret.Add(New Macro("text_editor", "Text Editor", GetType(String), "Path of the application currently associated with TXT files."))
         ret.Add(New Macro("version", "Version", GetType(String), "StaxRip version."))
-        ret.Add(New Macro("video_bitrate", "Video Bitrate", GetType(Integer), "Video bitrate"))
+        ret.Add(New Macro("video_bitrate", "Video Bitrate", GetType(Integer), "Video bitrate in Kbps"))
         ret.Add(New Macro("working_dir", "Working Directory", GetType(String), "Directory of the source file or the temp directory if enabled."))
 
         ret.Sort()
@@ -1964,7 +1964,6 @@ Class Macro
 
                 For Each i As Match In mc
                     Dim v = InputBox.Show(i.Groups(1).Value)
-
                     If v <> "" Then value = value.Replace(i.Value, v)
                 Next
 

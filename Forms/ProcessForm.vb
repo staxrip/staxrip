@@ -201,9 +201,9 @@ Class ProcessForm
         tbLog.Font = New Font("Consolas", 9 * s.UIScaleFactor)
 
         AddHandler Log.Update, AddressOf LogUpdate
-        NotifyIcon.Icon = My.Resources.MainIcon
+        NotifyIcon.Icon = My.Resources.RipIcon
         NotifyIcon.Text = "StaxRip"
-        Icon = My.Resources.MainIcon
+        Icon = My.Resources.RipIcon
 
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
     End Sub

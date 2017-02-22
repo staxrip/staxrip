@@ -1,4 +1,4 @@
-﻿Imports System.Text
+﻿Imports System.Globalization
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -123,17 +123,19 @@ Public Class NVIDIAEncoder
 
         Property Mode As New OptionParam With {
             .Text = "Mode:",
-            .Switches = {"--cbr", "--vbr", "--vbr2", "--cqp"},
-            .Options = {"CBR", "VBR", "VBR2", "CQP"},
+            .Switches = {"--cbr", "--cbrhq", "--vbr", "--vbrhq", "--cqp"},
+            .Options = {"CBR", "CBRHQ", "VBR", "VBRHQ", "CQP"},
             .VisibleFunc = Function() Not Lossless.Value,
             .ArgsFunc = Function() As String
                             Select Case Mode.OptionText
                                 Case "CBR"
                                     Return "--cbr " & p.VideoBitrate
+                                Case "CBRHQ"
+                                    Return "--cbrhq " & p.VideoBitrate
                                 Case "VBR"
                                     Return "--vbr " & p.VideoBitrate
-                                Case "VBR2"
-                                    Return "--vbr2 " & p.VideoBitrate
+                                Case "VBRHQ"
+                                    Return "--vbrhq " & p.VideoBitrate
                                 Case "CQP"
                                     Return "--cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
                             End Select
@@ -180,25 +182,78 @@ Public Class NVIDIAEncoder
             .Value = False,
             .DefaultValue = False}
 
+        Property KNN As New BoolParam With {
+            .Switch = "--vpp-knn",
+            .Text = "Denoise using K-nearest neighbor",
+            .ArgsFunc = AddressOf GetKnnArgs}
+
+        Property KnnRadius As New NumParam With {
+            .Text = "      Radius:",
+            .InitValue = 3}
+
+        Property KnnStrength As New NumParam With {
+            .Text = "      Strength:",
+            .InitValue = 0.08,
+            .MinMaxStepDec = {0, 1, 0.02D, 2}}
+
+        Property KnnLerp As New NumParam With {
+            .Text = "      Lerp:",
+            .InitValue = 0.2,
+            .MinMaxStepDec = {0, Integer.MaxValue, 0.1D, 1}}
+
+        Property KnnThLerp As New NumParam With {
+            .Text = "      TH Lerp:",
+            .InitValue = 0.8,
+            .MinMaxStepDec = {0, 1, 0.1D, 1}}
+
+        Property PMD As New BoolParam With {
+            .Switch = "--vpp-pmd",
+            .Text = "Denoise using PMD",
+            .ArgsFunc = AddressOf GetPmdArgs}
+
+        Property PmdApplyCount As New NumParam With {
+            .Text = "      Apply Count:",
+            .InitValue = 2}
+
+        Property PmdStrength As New NumParam With {
+            .Text = "      Strength:",
+            .Name = "PmdStrength",
+            .InitValue = 100.0,
+            .MinMaxStepDec = {0, 100, 1, 1}}
+
+        Property PmdThreshold As New NumParam With {
+            .Text = "      Threshold:",
+            .InitValue = 100.0,
+            .MinMaxStepDec = {0, 255, 1, 1}}
+
         Private ItemsValue As List(Of CommandLineParam)
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
-                    Add("Basic", Decoder, Mode, Codec, QPI, QPP, QPB)
+                    Add("Basic", Decoder, Mode, Codec,
+                        New OptionParam() With {.Switch = "--output-depth", .Text = "Depth:", .Options = {"8", "10"}},
+                        QPI, QPP, QPB)
                     Add("Slice Decision",
                         New NumParam With {.Switch = "--bframes", .Text = "B-Frames:", .InitValue = 3, .MinMaxStep = {0, 16, 1}},
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames:", .InitValue = 3, .MinMaxStep = {0, 16, 1}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--lookahead", .Text = "Lookahead:", .MinMaxStep = {0, 32, 1}, .InitValue = 16})
+                        New NumParam With {.Switch = "--lookahead", .Text = "Lookahead:", .MinMaxStep = {0, 32, 1}, .InitValue = 16},
+                        New BoolParam With {.Switch = "--strict-gop", .Text = "Strict GOP"},
+                        New BoolParam With {.NoSwitch = "--no-b-adapt", .Text = "B-Adapt", .InitValue = True},
+                        New BoolParam With {.NoSwitch = "--no-i-adapt", .Text = "I-Adapt", .InitValue = True},
+                        New BoolParam With {.Switch = "--enable-ltr", .Text = "LTR (Long Term Reference pictures)"})
                     Add("Rate Control",
                         New NumParam With {.Switch = "--qp-init", .Text = "Initial QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-max", .Text = "Max QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-min", .Text = "Min QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate:", .InitValue = 17500, .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New BoolParam With {.Switch = "--aq", .Text = "Adaptive Quantization", .Value = False, .DefaultValue = False},
+                        New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength:", .MinMaxStep = {0, 15, 1}, .VisibleFunc = Function() Codec.ValueText = "h264"},
+                        New NumParam With {.Switch = "--vbr-quality", .Text = "VBR Quality:", .MinMaxStep = {0, 51, 1}},
+                        New BoolParam With {.Switch = "--aq", .Text = "Adaptive Quantization"},
+                        New BoolParam With {.Switch = "--aq-temporal", .Text = "AQ Temporal"},
                         Lossless)
                     Add("Profile",
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level:", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
@@ -215,10 +270,15 @@ Public Class NVIDIAEncoder
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "film", "bt2020"}},
                         New OptionParam With {.Switch = "--transfer", .Text = "Transfer:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte-st-2084", "smpte-st-428", "arib-srd-b67"}},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Full Range", .VisibleFunc = Function() Codec.ValueText = "h264"})
+                    Add("VPP",
+                        New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize:", .Options = {"Disabled", "default", "bilinear", "cubic", "cubic_b05c03", "cubic_bspline", "cubic_catmull", "lanczos", "nn", "npp_linear", "spline36", "super"}},
+                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace:", .VisibleFunc = Function() Decoder.ValueText = "nv", .Options = {"none", "adaptive", "bob"}},
+                        New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss:", .Options = {"Disabled", "3", "5", "7"}},
+                        KNN, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
+                        PMD, PmdApplyCount, PmdStrength, PmdThreshold)
                     Add("Other",
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision:", .Options = {"Q-pel", "half-pel", "full-pel"}, .Values = {"Q-pel", "half-pel", "full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc:", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},
-                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace:", .VisibleFunc = Function() Decoder.ValueText = "nv", .Options = {"none", "adaptive", "bob"}},
                         New OptionParam With {.Switch = "--interlaced", .Switches = {"--tff", "--bff"}, .Text = "Interlaced:", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level:", .Options = {"info", "debug", "warn", "error"}},
                         New NumParam With {.Switch = "--cu-max", .Text = "Max CU Size:", .MinMaxStep = {0, 64, 16}},
@@ -230,6 +290,71 @@ Public Class NVIDIAEncoder
                 Return ItemsValue
             End Get
         End Property
+
+        Protected Overrides Sub OnValueChanged(item As CommandLineParam)
+            KnnRadius.NumEdit.Enabled = KNN.Value
+            KnnStrength.NumEdit.Enabled = KNN.Value
+            KnnLerp.NumEdit.Enabled = KNN.Value
+            KnnThLerp.NumEdit.Enabled = KNN.Value
+
+            PmdApplyCount.NumEdit.Enabled = PMD.Value
+            PmdStrength.NumEdit.Enabled = PMD.Value
+            PmdThreshold.NumEdit.Enabled = PMD.Value
+
+            MyBase.OnValueChanged(item)
+        End Sub
+
+        Function GetPmdArgs() As String
+            If PMD.Value Then
+                Dim ret = ""
+
+                If PmdApplyCount.Value <> PmdApplyCount.DefaultValue Then
+                    ret += ",apply_count=" & PmdApplyCount.Value
+                End If
+
+                If PmdStrength.Value <> PmdStrength.DefaultValue Then
+                    ret += ",strength=" & PmdStrength.Value
+                End If
+
+                If PmdThreshold.Value <> PmdThreshold.DefaultValue Then
+                    ret += ",threshold=" & PmdThreshold.Value
+                End If
+
+                If ret <> "" Then
+                    Return "--vpp-pmd " + ret.TrimStart(","c)
+                Else
+                    Return "--vpp-pmd"
+                End If
+            End If
+        End Function
+
+        Function GetKnnArgs() As String
+            If KNN.Value Then
+                Dim ret = ""
+
+                If KnnRadius.Value <> KnnRadius.DefaultValue Then
+                    ret += ",radius=" & KnnRadius.Value
+                End If
+
+                If KnnStrength.Value <> KnnStrength.DefaultValue Then
+                    ret += ",strength=" & KnnStrength.Value.ToString(CultureInfo.InvariantCulture)
+                End If
+
+                If KnnLerp.Value <> KnnLerp.DefaultValue Then
+                    ret += ",lerp=" & KnnLerp.Value.ToString(CultureInfo.InvariantCulture)
+                End If
+
+                If KnnThLerp.Value <> KnnThLerp.DefaultValue Then
+                    ret += ",th_lerp=" & KnnThLerp.Value.ToString(CultureInfo.InvariantCulture)
+                End If
+
+                If ret <> "" Then
+                    Return "--vpp-knn " + ret.TrimStart(","c)
+                Else
+                    Return "--vpp-knn"
+                End If
+            End If
+        End Function
 
         Private Sub Add(path As String, ParamArray items As CommandLineParam())
             For Each i In items

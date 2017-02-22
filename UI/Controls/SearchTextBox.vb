@@ -1,4 +1,5 @@
 ﻿Imports System.Drawing.Drawing2D
+Imports System.Windows.Forms.VisualStyles
 Imports StaxRip.UI
 
 Class SearchTextBox
@@ -67,7 +68,6 @@ Class SearchTextBox
         Button.Left = Width - Button.Width - Button.Top
 
         If Height <> Edit.Height Then Height = Edit.Height
-
         Edit.Width = Width
     End Sub
 
@@ -98,8 +98,8 @@ Class SearchTextBox
         End Sub
 
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
-            Using p = New Pen(Color.DarkGray, 2)
-                Dim offset = CSng(Width / 3.5)
+            Using p = New Pen(Color.DarkSlateGray, 5)
+                Dim offset = CSng(Width / 3.3)
                 e.Graphics.DrawLine(p, offset, offset, Width - offset, Height - offset)
                 e.Graphics.DrawLine(p, Width - offset, offset, offset, Height - offset)
             End Using
@@ -109,15 +109,20 @@ Class SearchTextBox
             If MouseIsOver Then
                 Dim r = New Rectangle(Point.Empty, Size)
 
-                Using path = ToolStripRendererEx.CreateRoundRectangle(New Rectangle(r.X, r.Y, r.Width - 1, r.Height - 1), 3)
-                    Using b As New LinearGradientBrush(New Point(0, 0), New Point(0, r.Height), Color.White, Color.LightGray)
-                        e.Graphics.FillPath(b, path)
-                    End Using
+                If VisualStyleInformation.IsEnabledByUser Then
+                    Dim Renderer = New VisualStyleRenderer(VisualStyleElement.Button.PushButton.Hot)
+                    Renderer.DrawBackground(e.Graphics, ClientRectangle)
+                Else
+                    Using path = ToolStripRendererEx.CreateRoundRectangle(New Rectangle(r.X, r.Y, r.Width - 1, r.Height - 1), 3)
+                        Using b As New LinearGradientBrush(New Point(0, 0), New Point(0, r.Height), Color.White, Color.LightGray)
+                            e.Graphics.FillPath(b, path)
+                        End Using
 
-                    Using p As New Pen(Brushes.LightGray)
-                        e.Graphics.DrawPath(p, path)
+                        Using p As New Pen(Brushes.LightGray)
+                            e.Graphics.DrawPath(p, path)
+                        End Using
                     End Using
-                End Using
+                End If
             Else
                 e.Graphics.Clear(Color.White)
             End If

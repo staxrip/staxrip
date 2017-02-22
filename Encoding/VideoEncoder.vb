@@ -262,6 +262,11 @@ Public MustInherit Class VideoEncoder
         amd264.Params.Mode.Value = 2
         ret.Add(amd264)
 
+        Dim amd265 As New AMDEncoder()
+        amd265.Params.Mode.Value = 2
+        amd265.Params.Codec.Value = 1
+        ret.Add(amd265)
+
         Dim xvid As New BatchEncoder()
         xvid.OutputFileTypeValue = "avi"
         xvid.Name = "XviD"

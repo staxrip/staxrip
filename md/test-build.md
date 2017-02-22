@@ -8,10 +8,10 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 #### New Features
 
-- NVEncC added --lookahead --cbrhq --vbrhq --aq-temporal --no-b-adapt --i-adapt --enable-ltr --output-depth --strict-gop --vbr-quality --vpp-gauss --vpp-knn --vpp-pmd
-- VCEncC added --check-features --codec --enforce-hrd --filler --fullrange --ltr --pre-analysis --ref --tier --vbaq
 - x265 --me sea added
 - MPEG2DecPlus filter added to open d2v files with AviSynth+
+- NVEncC added --lookahead --cbrhq --vbrhq --aq-temporal --no-b-adapt --i-adapt --enable-ltr --output-depth --strict-gop --vbr-quality --vpp-gauss --vpp-knn --vpp-pmd
+- VCEncC added --check-features --codec --enforce-hrd --filler --fullrange --ltr --pre-analysis --ref --tier --vbaq
 
 #### Fixed Bugs
 

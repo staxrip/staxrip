@@ -2,6 +2,7 @@
  * Copyright (C) 2013 x265 project
  *
  * Authors: Steve Borho <steve@borho.org>
+ *          Min Chen <chenm003@163.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,6 +85,7 @@ static const struct option long_options[] =
     { "max-tu-size",    required_argument, NULL, 0 },
     { "tu-intra-depth", required_argument, NULL, 0 },
     { "tu-inter-depth", required_argument, NULL, 0 },
+    { "limit-tu",       required_argument, NULL, 0 },
     { "me",             required_argument, NULL, 0 },
     { "subme",          required_argument, NULL, 'm' },
     { "merange",        required_argument, NULL, 0 },
@@ -152,6 +154,8 @@ static const struct option long_options[] =
     { "pbratio",        required_argument, NULL, 0 },
     { "qcomp",          required_argument, NULL, 0 },
     { "qpstep",         required_argument, NULL, 0 },
+    { "qpmin",          required_argument, NULL, 0 },
+    { "qpmax",          required_argument, NULL, 0 },
     { "ratetol",        required_argument, NULL, 0 },
     { "cplxblur",       required_argument, NULL, 0 },
     { "qblur",          required_argument, NULL, 0 },
@@ -204,6 +208,15 @@ static const struct option long_options[] =
     { "max-cll",        required_argument, NULL, 0 },
     { "min-luma",       required_argument, NULL, 0 },
     { "max-luma",       required_argument, NULL, 0 },
+    { "log2-max-poc-lsb", required_argument, NULL, 8 },
+    { "vui-timing-info",      no_argument, NULL, 0 },
+    { "no-vui-timing-info",   no_argument, NULL, 0 },
+    { "vui-hrd-info",         no_argument, NULL, 0 },
+    { "no-vui-hrd-info",      no_argument, NULL, 0 },
+    { "opt-qp-pps",           no_argument, NULL, 0 },
+    { "no-opt-qp-pps",        no_argument, NULL, 0 },
+    { "opt-ref-list-length-pps",         no_argument, NULL, 0 },
+    { "no-opt-ref-list-length-pps",      no_argument, NULL, 0 },
     { "no-dither",            no_argument, NULL, 0 },
     { "dither",               no_argument, NULL, 0 },
     { "no-repeat-headers",    no_argument, NULL, 0 },
@@ -230,6 +243,9 @@ static const struct option long_options[] =
     { "no-temporal-layers",   no_argument, NULL, 0 },
     { "qg-size",        required_argument, NULL, 0 },
     { "recon-y4m-exec", required_argument, NULL, 0 },
+    { "analyze-src-pics", no_argument, NULL, 0 },
+    { "no-analyze-src-pics", no_argument, NULL, 0 },
+    { "slices",         required_argument, NULL, 0 },
     { 0, 0, 0, 0 },
     { 0, 0, 0, 0 },
     { 0, 0, 0, 0 },
@@ -293,6 +309,7 @@ static void showHelp(x265_param *param)
     H0("                                 '-' implies no threads on node, '+' implies one thread per core on node\n");
     H0("-F/--frame-threads <integer>     Number of concurrently encoded frames. 0: auto-determined by core count\n");
     H0("   --[no-]wpp                    Enable Wavefront Parallel Processing. Default %s\n", OPT(param->bEnableWavefront));
+    H0("   --[no-]slices <integer>       Enable Multiple Slices feature. Default %d\n", param->maxSlices);
     H0("   --[no-]pmode                  Parallel mode analysis. Default %s\n", OPT(param->bDistributeModeAnalysis));
     H0("   --[no-]pme                    Parallel motion estimation. Default %s\n", OPT(param->bDistributeMotionEstimation));
     H0("   --[no-]asm <bool|int|string>  Override CPU detection. Default: auto\n");
@@ -307,6 +324,7 @@ static void showHelp(x265_param *param)
     H0("   --max-tu-size <32|16|8|4>     Maximum TU size (WxH). Default %d\n", param->maxTUSize);
     H0("   --tu-intra-depth <integer>    Max TU recursive depth for intra CUs. Default %d\n", param->tuQTMaxIntraDepth);
     H0("   --tu-inter-depth <integer>    Max TU recursive depth for inter CUs. Default %d\n", param->tuQTMaxInterDepth);
+    H0("   --limit-tu <integer>          Enable early exit from TU recursion for inter coded blocks. Default %d\n", param->limitTU);
     H0("\nAnalysis:\n");
     H0("   --rd <1..6>                   Level of RDO in mode decision 1:least....6:full RDO. Default %d\n", param->rdLevel);
     H0("   --[no-]psy-rd <0..5.0>        Strength of psycho-visual rate distortion optimization, 0 to disable. Default %.1f\n", param->psyRd);
@@ -375,19 +393,22 @@ static void showHelp(x265_param *param)
        "                                   - 2 : Last pass, does not overwrite stats file\n"
        "                                   - 3 : Nth pass, overwrites stats file\n");
     H0("   --stats                       Filename for stats file in multipass pass rate control. Default x265_2pass.log\n");
+    H0("   --[no-]analyze-src-pics       Motion estimation uses source frame planes. Default disable\n");
     H0("   --[no-]slow-firstpass         Enable a slow first pass in a multipass rate control mode. Default %s\n", OPT(param->rc.bEnableSlowFirstPass));
     H0("   --[no-]strict-cbr             Enable stricter conditions and tolerance for bitrate deviations in CBR mode. Default %s\n", OPT(param->rc.bStrictCbr));
     H0("   --analysis-mode <string|int>  save - Dump analysis info into file, load - Load analysis buffers from the file. Default %d\n", param->analysisMode);
     H0("   --analysis-file <filename>    Specify file name used for either dumping or reading analysis data.\n");
     H0("   --aq-mode <integer>           Mode for Adaptive Quantization - 0:none 1:uniform AQ 2:auto variance 3:auto variance with bias to dark scenes. Default %d\n", param->rc.aqMode);
     H0("   --aq-strength <float>         Reduces blocking and blurring in flat and textured areas (0 to 3.0). Default %.2f\n", param->rc.aqStrength);
-    H0("   --qg-size <int>               Specifies the size of the quantization group (64, 32, 16). Default %d\n", param->rc.qgSize);
+    H0("   --qg-size <int>               Specifies the size of the quantization group (64, 32, 16, 8). Default %d\n", param->rc.qgSize);
     H0("   --[no-]cutree                 Enable cutree for Adaptive Quantization. Default %s\n", OPT(param->rc.cuTree));
     H0("   --[no-]rc-grain               Enable ratecontrol mode to handle grains specifically. turned on with tune grain. Default %s\n", OPT(param->rc.bEnableGrain));
     H1("   --ipratio <float>             QP factor between I and P. Default %.2f\n", param->rc.ipFactor);
     H1("   --pbratio <float>             QP factor between P and B. Default %.2f\n", param->rc.pbFactor);
     H1("   --qcomp <float>               Weight given to predicted complexity. Default %.2f\n", param->rc.qCompress);
     H1("   --qpstep <integer>            The maximum single adjustment in QP allowed to rate control. Default %d\n", param->rc.qpStep);
+    H1("   --qpmin <integer>             sets a hard lower limit on QP allowed to ratecontrol. Default %d\n", param->rc.qpMin);
+    H1("   --qpmax <integer>             sets a hard upper limit on QP allowed to ratecontrol. Default %d\n", param->rc.qpMax);
     H1("   --cbqpoffs <integer>          Chroma Cb QP Offset [-12..12]. Default %d\n", param->cbQpOffset);
     H1("   --crqpoffs <integer>          Chroma Cr QP Offset [-12..12]. Default %d\n", param->crQpOffset);
     H1("   --scaling-list <string>       Specify a file containing HM style quant scaling lists or 'default' or 'off'. Default: off\n");
@@ -434,6 +455,11 @@ static void showHelp(x265_param *param)
     H0("   --[no-]temporal-layers        Enable a temporal sublayer for unreferenced B frames. Default %s\n", OPT(param->bEnableTemporalSubLayers));
     H0("   --[no-]aud                    Emit access unit delimiters at the start of each access unit. Default %s\n", OPT(param->bEnableAccessUnitDelimiters));
     H1("   --hash <integer>              Decoded Picture Hash SEI 0: disabled, 1: MD5, 2: CRC, 3: Checksum. Default %d\n", param->decodedPictureHashSEI);
+    H0("   --log2-max-poc-lsb <integer>  Maximum of the picture order count\n");
+    H0("   --[no-]vui-timing-info        Discard optional VUI timing information from the bistream. Default %s\n", OPT(param->bEmitVUITimingInfo));
+    H0("   --[no-]vui-hrd-info           Discard optional HRD timing information from the bistream. Default %s\n", OPT(param->bEmitVUIHRDInfo));
+    H0("   --[no-]opt-qp-pps             Discard optional HRD timing information from the bistream. Default %s\n", OPT(param->bOptQpPPS));
+    H0("   --[no-]opt-ref-list-length-pps  Discard optional HRD timing information from the bistream. Default %s\n", OPT(param->bOptRefListLengthPPS));
     H1("\nReconstructed video options (debugging):\n");
     H1("-r/--recon <filename>            Reconstructed raw image YUV or Y4M output file name\n");
     H1("   --recon-depth <integer>       Bit-depth of reconstructed raw image file. Defaults to input bit depth, or 8 if Y4M\n");

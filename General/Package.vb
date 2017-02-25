@@ -207,8 +207,7 @@ Public Class Package
             .Description = "Visual C++ 2012 Redistributable is required by some tools used by StaxRip.",
             .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=30679",
             .FixedDir = Folder.System,
-            .IsRequiredFunc = Function() Items("masktools2 avs").IsRequired OrElse
-                                         Items("SangNom2 avs").IsRequired,
+            .IsRequiredFunc = Function() Items("SangNom2 avs").IsRequired,
             .TreePath = "Runtimes"})
 
         Add(New Package With {
@@ -415,8 +414,8 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "masktools2",
             .Filename = "masktools2.dll",
-            .WebURL = "http://avisynth.nl/index.php/MaskTools2",
-            .HelpURL = "http://avisynth.nl/index.php/MaskTools2",
+            .WebURL = "https://github.com/pinterf/masktools",
+            .HelpURL = "https://github.com/pinterf/masktools",
             .Description = "MaskTools2 contain a set of filters designed to create, manipulate and use masks. Masks, in video processing, are a way to give a relative importance to each pixel. You can, for example, create a mask that selects only the green parts of the video, and then replace those parts with another video.",
             .AviSynthFilterNames = {"Mt_edge", "Mt_motion"}})
 
@@ -703,7 +702,7 @@ Public Class Package
     End Function
 
     Overridable Function GetStatus() As String
-        If IsOutdated() Then Return "Unsupported outdated version"
+        If IsOutdated() Then Return "Unsupported outdated version, continue with F12 if you must."
         If Not StatusFunc Is Nothing Then Return StatusFunc.Invoke
     End Function
 

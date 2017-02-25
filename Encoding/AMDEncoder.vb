@@ -127,8 +127,8 @@ Class AMDEncoder
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder:",
-            .Options = {"AviSynth/VapourSynth", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
-            .Values = {"avs", "qs", "ffqsv", "ffdxva"}}
+            .Options = {"AviSynth/VapourSynth", "VCEEncC (VCE)", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
+            .Values = {"avs", "vce", "qs", "ffqsv", "ffdxva"}}
 
         Property QPI As New NumParam With {
             .Text = "Constant QP I:",
@@ -160,9 +160,11 @@ Class AMDEncoder
                     ItemsValue = New List(Of CommandLineParam)
                     Add("Basic", Decoder, Mode, Codec,
                         New OptionParam With {.Switch = "--quality", .Text = "Quality:", .Options = {"fast", "balanced", "slow"}, .InitValue = 1},
-                        New OptionParam With {.Switch = "--profile", .Text = "Profile:", .Options = {"Baseline", "Main", "High"}},
+                        New OptionParam With {.Switch = "--profile", .Name = "profile264", .VisibleFunc = Function() Codec.ValueText = "h264", .Text = "Profile:", .Options = {"Automatic", "Baseline", "Main", "High"}},
+                        New OptionParam With {.Switch = "--profile", .Name = "profile265", .VisibleFunc = Function() Codec.ValueText = "hevc", .Text = "Profile:", .Options = {"Main"}},
                         New OptionParam With {.Switch = "--tier", .Text = "Tier:", .Options = {"main", "high"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
-                        New OptionParam With {.Switch = "--level", .Text = "Level:", .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
+                        New OptionParam With {.Switch = "--level", .Name = "LevelH264", .Text = "Level:", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
+                        New OptionParam With {.Switch = "--level", .Name = "LevelH265", .Text = "Level:", .VisibleFunc = Function() Codec.ValueText = "hevc", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         QPI, QPP, QPB)
                     Add("Slice Decision",
                         New NumParam With {.Switch = "--slices", .Text = "Slices:", .InitValue = 1},
@@ -228,6 +230,9 @@ Class AMDEncoder
                 Case "ffqsv"
                     sourcePath = "-"
                     If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.VCEEncC.Path.Quotes, "VCEEncC")
+                Case "vce"
+                    sourcePath = p.LastOriginalSourceFile
+                    ret += " --avvce"
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""

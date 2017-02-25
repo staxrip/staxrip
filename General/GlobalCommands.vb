@@ -243,7 +243,7 @@ Public Class GlobalCommands
         Dim amdExcept = "--audio-bitrate --audio-codec --audio-copy --audio-file
         --audio-filter --avsw --device --input-analyze
         --audio-ignore-decode-error --audio-ignore-notrack-error --audio-resampler
-        --audio-samplerate --audio-source --audio-stream --avs --avvce --avvce-analyze
+        --audio-samplerate --audio-source --audio-stream --avs --avvce-analyze
         --check-avversion --check-codecs --check-decoders --check-encoders --check-filters
         --check-formats --check-protocols --dar --format --fps --help --input-file
         --input-res --log-framelist --mux-option --output-file --raw --seek --skip-frame

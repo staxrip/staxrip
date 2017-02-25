@@ -8,10 +8,10 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 #### New Features
 
-- x265 --me sea added
 - MPEG2DecPlus filter added to open d2v files with AviSynth+
 - NVEncC added --lookahead --cbrhq --vbrhq --aq-temporal --no-b-adapt --i-adapt --enable-ltr --output-depth --strict-gop --vbr-quality --vpp-gauss --vpp-knn --vpp-pmd
 - VCEncC added --check-features --codec --enforce-hrd --filler --fullrange --ltr --pre-analysis --ref --tier --vbaq
+- x265 added --me sea --dynamic-rd --scenecut-bias --lookahead-threads --opt-cu-delta-qp --multi-pass-opt-analysis --multi-pass-opt-distortion --multi-pass-opt-rps --aq-motion --ssim-rd --hdr --hdr-opt
 
 #### Fixed Bugs
 
@@ -25,7 +25,6 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 #### Updated Tools
 
-- x265 2.2+17
 - vslsmashsource (vs) 921
 - L-SMASH-Works (avs) 921
 - RgTools (avs) 0.94
@@ -33,3 +32,5 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - VCEEncC 3.05v2
 - QSVEncC 2.62
 - mkvtoolnix 9.9.0
+- x265 2.3+8
+- masktools2 2.2.2

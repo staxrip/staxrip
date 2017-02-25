@@ -759,11 +759,6 @@ Public Class x265Params
         .Options = {"0", "1", "2", "3"},
         .InitValue = 3}
 
-    Property LimitTU As New OptionParam With {
-        .Switch = "--limit-tu",
-        .Text = "Limit TU:",
-        .Options = {"0", "1", "2"}}
-
     Property CSV As New BoolParam With {
         .Switch = "--csv",
         .Text = "Write encoding results to a comma separated value log file",
@@ -794,21 +789,36 @@ Public Class x265Params
                 Add("Analysis 1", RD,
                     New StringParam With {.Switch = "--analysis-file", .Text = "Analysis File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                     New OptionParam With {.Switch = "--analysis-mode", .Text = "Analysis Mode:", .Options = {"off", "save", "load"}},
-                MinCuSize, MaxCuSize, MaxTuSize, LimitRefs, LimitTU, TUintra, TUinter, rdoqLevel)
+                    MinCuSize, MaxCuSize, MaxTuSize, LimitRefs,
+                    New NumParam With {.Switch = "--limit-tu", .Text = "Limit TU:", .MinMaxStep = {0, 4, 1}},
+                    TUintra, TUinter, rdoqLevel,
+                    New NumParam() With {.Switch = "--dynamic-rd", .Text = "Dynamic RD:", .MinMaxStepDec = {0, 4, 1, 1}})
                 Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra,
                     CUlossless, Tskip, TskipFast, LimitModes, RdRefine,
                     New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
-                    RecursionSkip)
+                    RecursionSkip,
+                    New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"})
                 Add("Rate Control 1",
                     New StringParam With {.Switch = "--zones", .Text = "Zones:"},
                     AQmode, qgSize, AQStrength, QComp, CBQPoffs,
                     QBlur, NRintra, NRinter, qpmin, qpmax, qpstep)
                 Add("Rate Control 2",
                     CRFmin, CRFmax, VBVbufsize, VBVmaxrate, VBVinit,
-                    IPRatio, PBRatio, Cplxblur, CUtree, Lossless, StrictCBR, rcGrain)
+                    IPRatio, PBRatio, Cplxblur)
+                Add("Rate Control 3",
+                    CUtree, Lossless, StrictCBR, rcGrain,
+                    New BoolParam() With {.Switch = "--multi-pass-opt-analysis", .Text = "Multipass analysis refinement along with multipass ratecontrol"},
+                    New BoolParam() With {.Switch = "--multi-pass-opt-distortion", .Text = "Enable multipass refinement of qp based on distortion data"},
+                    New BoolParam() With {.Switch = "--aq-motion", .Text = "AQ Motion"})
                 Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP,
                     New BoolParam With {.Switch = "--analyze-src-pics", .NoSwitch = "--no-analyze-src-pics", .Text = "Analyze SRC Pics"})
-                Add("Slice Decision", BAdapt, BFrames, BFrameBias, RCLookahead, LookaheadSlices, Scenecut, Ref, MinKeyint, Keyint, Bpyramid, OpenGop, IntraRefresh)
+                Add("Slice Decision", BAdapt, BFrames, BFrameBias,
+                    RCLookahead,
+                    LookaheadSlices,
+                    New NumParam() With {.Switch = "--lookahead-threads", .Text = "Lookahead Threads:"},
+                    Scenecut,
+                    New NumParam() With {.Switch = "--scenecut-bias", .Text = "Scenecut Bias:", .InitValue = 5, .MinMaxStepDec = {0, 100, 1, 1}},
+                    Ref, MinKeyint, Keyint, Bpyramid, OpenGop, IntraRefresh)
                 Add("Spatial/Intra", StrongIntraSmoothing,
                     New BoolParam With {.Switch = "--constrained-intra", .NoSwitch = "--no-constrained-intra", .Switches = {"--cip"}, .Text = "Constrained Intra Prediction", .InitValue = True},
                     RDpenalty)
@@ -825,14 +835,19 @@ Public Class x265Params
                     Videoformat, Colorprim, Colormatrix, Transfer,
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"undefined", "show", "crop"}},
                     New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"undefined", "full", "limited"}},
-                    minLuma, maxLuma, MaxCLL, MaxFALL)
-                Add("Bitstream", Hash,
+                    minLuma, maxLuma, MaxCLL, MaxFALL,
+                    New BoolParam With {.Switch = "--hdr", .Text = "Force signalling of HDR parameters in SEI packets"},
+                    New BoolParam With {.Switch = "--hdr-opt", .Text = "Add luma and chroma offsets for HDR/WCG content"})
+                Add("Bitstream",
+                    Hash,
                     New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "log2-max-poc-lsb:", .InitValue = 8},
                     RepeatHeaders, Info, HRD, AUD,
                     New BoolParam With {.Switch = "--annexb", .Text = "Annex B"},
                     New BoolParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers"},
                     New BoolParam With {.Switch = "--vui-timing-info", .Text = "VUI Timing Info"},
-                    New BoolParam With {.Switch = "--vui-hrd-info", .Text = "VUI HRD Info"})
+                    New BoolParam With {.Switch = "--vui-hrd-info", .Text = "VUI HRD Info"},
+                    New BoolParam With {.Switch = "--opt-cu-delta-qp", .Text = "Optimize CU level QPs pulling up lower QPs close to meanQP"},
+                    New BoolParam With {.Switch = "--multi-pass-opt-rps", .Text = "Enable storing commonly used RPS in SPS in multi pass mode"})
                 Add("Input/Output",
                     New OptionParam With {.Switch = "--input-depth", .Text = "Input Depth:", .Options = {"Automatic", "8", "10", "12", "14", "16"}},
                     New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP:", .Options = {"Automatic", "i400", "i420", "i422", "i444", "nv12", "nv16"}},

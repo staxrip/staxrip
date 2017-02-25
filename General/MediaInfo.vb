@@ -259,18 +259,19 @@ Public Class MediaInfo
         Return GetInfo(path, MediaInfoStreamKind.General, parameter)
     End Function
 
-    Function GetFrameRate() As Double
+    Function GetFrameRate(Optional defaultValue As Double = 25) As Double
         Dim num = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Num").ToInt
         Dim den = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Den").ToInt
         If num > 0 AndAlso den > 0 Then Return num / den
         Dim ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate")
         If ret = "" Then ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Original")
         If ret = "" Then ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Nominal")
-        If ret.IsDouble Then Return ret.ToDouble Else Return 25
+        If ret.IsDouble Then Return ret.ToDouble Else Return defaultValue
     End Function
 
-    Shared Function GetFrameRate(path As String) As Double
-        Return GetMediaInfo(path).GetFrameRate
+    Shared Function GetFrameRate(path As String,
+                                 Optional defaultValue As Double = 25) As Double
+        Return GetMediaInfo(path).GetFrameRate(defaultValue)
     End Function
 
     Shared Function GetAudioCodecs(path As String) As String

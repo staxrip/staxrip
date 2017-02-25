@@ -272,7 +272,7 @@ Public Class NVIDIAEncoder
                         New BoolParam With {.Switch = "--fullrange", .Text = "Full Range", .VisibleFunc = Function() Codec.ValueText = "h264"})
                     Add("VPP",
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize:", .Options = {"Disabled", "default", "bilinear", "cubic", "cubic_b05c03", "cubic_bspline", "cubic_catmull", "lanczos", "nn", "npp_linear", "spline36", "super"}},
-                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace:", .VisibleFunc = Function() Decoder.ValueText = "nv", .Options = {"none", "adaptive", "bob"}},
+                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace:", .VisibleFunc = Function() Decoder.ValueText = "nvnative" OrElse Decoder.ValueText = "nvcuda", .Options = {"none", "adaptive", "bob"}},
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss:", .Options = {"Disabled", "3", "5", "7"}},
                         KNN, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
                         PMD, PmdApplyCount, PmdStrength, PmdThreshold)

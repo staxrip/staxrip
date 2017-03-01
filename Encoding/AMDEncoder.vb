@@ -51,9 +51,9 @@ Class AMDEncoder
                                         SaveProfile(enc)
                                     End Sub
 
-            f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
             f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.VCEEncC.Path, "--check-features"))))
             f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.VCEEncC.Path, "--check-vce"))))
+            ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction, Symbol.Save)
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = params1

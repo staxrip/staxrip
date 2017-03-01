@@ -1,5 +1,4 @@
 ﻿Imports StaxRip.UI
-Imports System.ComponentModel
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 
@@ -137,7 +136,7 @@ Class ScriptingEditor
             tbName.Dock = DockStyle.Top
             tbName.Margin = New Padding(0, 0, 12, 0)
 
-            rtbScript = New RichTextBoxEx(Menu)
+            rtbScript = New RichTextBoxEx(False)
             rtbScript.EnableAutoDragDrop = True
             rtbScript.Dock = DockStyle.Fill
             rtbScript.WordWrap = False
@@ -147,9 +146,8 @@ Class ScriptingEditor
             rtbScript.Font = New Font("Consolas", 10 * s.UIScaleFactor)
 
             AddHandler Disposed, Sub() Menu.Dispose()
-            AddHandler Menu.Opening, AddressOf MenuOpening
             AddHandler cbActive.CheckedChanged, Sub() SetColor()
-
+            AddHandler rtbScript.MouseUp, AddressOf HandleMouseUp
             AddHandler rtbScript.Enter, Sub() Editor.ActiveTable = Me
             AddHandler rtbScript.TextChanged, Sub()
                                                   If Parent Is Nothing Then Exit Sub
@@ -262,7 +260,8 @@ Class ScriptingEditor
                                            parameters.FunctionName + "(" + newParameters.Join(", ") + ")")
         End Sub
 
-        Sub MenuOpening(sender As Object, e As CancelEventArgs)
+        Sub HandleMouseUp(sender As Object, e As MouseEventArgs)
+            If e.Button <> MouseButtons.Right Then Exit Sub
             Dim filterProfiles As List(Of FilterCategory)
 
             If p.Script.Engine = ScriptEngine.AviSynth Then
@@ -272,7 +271,6 @@ Class ScriptingEditor
             End If
 
             Menu.Items.Clear()
-
             Dim code = rtbScript.Text.FixBreak
 
             For Each i In FilterParameters.Definitions
@@ -434,6 +432,8 @@ Class ScriptingEditor
                     End If
                 Next
             End If
+
+            Menu.Show(rtbScript, e.Location)
         End Sub
 
         Sub JoinFilters()

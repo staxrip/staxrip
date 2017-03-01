@@ -17,6 +17,7 @@
         If g Is Nothing Then g = Control.CreateGraphics()
 
         g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+        g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
 
         Using g
             If Control.Visible Then

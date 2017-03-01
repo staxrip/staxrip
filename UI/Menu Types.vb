@@ -25,6 +25,7 @@ Namespace UI
 
         Property SubItems As New List(Of CustomMenuItem)
         Property KeyData As Keys
+        Property Symbol As Symbol
         Property MethodName As String
 
         Private ParametersValue As List(Of Object)
@@ -43,23 +44,49 @@ Namespace UI
         End Property
 
         Sub Add(path As String)
-            Add(path, Nothing, Keys.None, Nothing)
+            Add(path, Nothing, Keys.None, Symbol.None, Nothing)
+        End Sub
+
+        Sub Add(path As String, symbol As Symbol)
+            Add(path, Nothing, Keys.None, symbol, Nothing)
         End Sub
 
         Sub Add(path As String, methodName As String)
-            Add(path, methodName, Keys.None, Nothing)
+            Add(path, methodName, Keys.None, Symbol.None, Nothing)
         End Sub
 
-        Sub Add(path As String, methodName As String, ParamArray params As Object())
+        Sub Add(path As String, methodName As String, symbol As Symbol)
+            Add(path, methodName, Keys.None, symbol, Nothing)
+        End Sub
+
+        Sub Add(path As String, methodName As String, symbol As Symbol, params As Object())
+            Add(path, methodName, Keys.None, symbol, params)
+        End Sub
+
+        Sub Add(path As String, methodName As String, keyData As Keys)
+            Add(path, methodName, keyData, Symbol.None, Nothing)
+        End Sub
+
+        Sub Add(path As String, methodName As String, keyData As Keys, symbol As Symbol)
+            Add(path, methodName, keyData, symbol, Nothing)
+        End Sub
+
+        Sub Add(path As String, methodName As String, keyData As Keys, params As Object())
+            Add(path, methodName, Keys.None, Symbol.None, params)
+        End Sub
+
+        Sub Add(path As String, methodName As String, params As Object())
             Add(path, methodName, Keys.None, params)
         End Sub
 
-        Sub Add(path As String, methodName As String, keyData As Keys, ParamArray params As Object())
-            Add(path.SplitNoEmpty("|"), methodName, keyData, params)
-        End Sub
+        Sub Add(path As String,
+                methodName As String,
+                keyData As Keys,
+                symbol As Symbol,
+                params As Object())
 
-        Private Sub Add(pathArray As String(), methodName As String, keyData As Keys, ParamArray params As Object())
-            Dim l As List(Of CustomMenuItem) = SubItems
+            Dim pathArray = path.SplitNoEmpty("|")
+            Dim l = SubItems
 
             For i = 0 To pathArray.Length - 1
                 Dim found As Boolean = False
@@ -81,10 +108,8 @@ Namespace UI
                     If i = pathArray.Length - 1 Then
                         item.MethodName = methodName
                         item.KeyData = keyData
-
-                        If Not params Is Nothing Then
-                            item.Parameters.AddRange(params)
-                        End If
+                        item.Symbol = symbol
+                        If Not params Is Nothing Then item.Parameters.AddRange(params)
                     End If
                 End If
             Next
@@ -236,6 +261,7 @@ Namespace UI
             ToolStrip.Items.Clear()
             Items.Clear()
             MenuItems.Clear()
+            Application.DoEvents()
             BuildMenu(ToolStrip, MenuItem)
         End Sub
 
@@ -253,9 +279,11 @@ Namespace UI
                     emi.CustomMenuItem = i
 
                     Dim keys = KeysHelp.GetKeyString(i.KeyData)
+                    If keys <> "" Then emi.ShortcutKeyDisplayString = keys
 
-                    If keys <> "" Then
-                        emi.ShortcutKeyDisplayString = keys
+                    If i.Symbol <> Symbol.None Then
+                        emi.ImageScaling = ToolStripItemImageScaling.None
+                        emi.SetImage(i.Symbol)
                     End If
 
                     AddHandler mi.Click, AddressOf MenuClick
@@ -300,7 +328,39 @@ Namespace UI
 
         Protected Overrides Sub OnOwnerChanged(e As EventArgs)
             MyBase.OnOwnerChanged(e)
-            Padding = New Padding(0, CInt(Font.Height / 6), 0, CInt(Font.Height / 6))
+            Dim leftRight As Integer
+            If TypeOf Owner Is MenuStrip Then leftRight = Font.Height \ 4
+            Padding = New Padding(leftRight, CInt(Font.Height / 6), leftRight, CInt(Font.Height / 6))
+        End Sub
+
+        Sub SetImage(symbol As Symbol)
+            SetImage(symbol, Me)
+        End Sub
+
+        Private _Symbol As Symbol
+
+        Property Symbol As Symbol
+            Get
+                Return _Symbol
+            End Get
+            Set(value As Symbol)
+                _Symbol = value
+                SetImage(value, Me)
+            End Set
+        End Property
+
+        Shared Async Sub SetImage(symbol As Symbol, mi As ToolStripMenuItem)
+            If symbol = Symbol.None Then
+                mi.Image = Nothing
+                Exit Sub
+            End If
+
+            Dim img = Await ImageHelp.GetSymbolImageAsync(symbol)
+
+            If Not mi.IsDisposed Then
+                mi.ImageScaling = ToolStripItemImageScaling.None
+                mi.Image = img
+            End If
         End Sub
 
         Function GetHelp() As StringPair
@@ -476,8 +536,30 @@ Namespace UI
         End Function
 
         Shared Function Add(items As ToolStripItemCollection,
+                            path As String) As ActionMenuItem
+
+            Return Add(items, path, Nothing)
+        End Function
+
+        Shared Function Add(items As ToolStripItemCollection,
+                            path As String,
+                            action As Action) As ActionMenuItem
+
+            Return Add(items, path, action, Symbol.None, Nothing)
+        End Function
+
+        Shared Function Add(items As ToolStripItemCollection,
                             path As String,
                             action As Action,
+                            tip As String) As ActionMenuItem
+
+            Return Add(items, path, action, Symbol.None, tip)
+        End Function
+
+        Shared Function Add(items As ToolStripItemCollection,
+                            path As String,
+                            action As Action,
+                            symbol As Symbol,
                             Optional tip As String = Nothing) As ActionMenuItem
 
             Dim a = path.SplitNoEmpty(" | ")
@@ -501,6 +583,7 @@ Namespace UI
                             l.Add(New ToolStripSeparator)
                         Else
                             Dim item As New ActionMenuItem(a(x), action, tip)
+                            item.SetImage(symbol)
                             l.Add(item)
                             l = item.DropDownItems
                             Return item
@@ -569,7 +652,7 @@ Namespace UI
                     Dim arg = i.Right("=").Trim
                     ActionMenuItem.Add(ret.Items, i.Left("="), action, arg, Nothing)
                 ElseIf i.EndsWith(" | -") Then
-                    ActionMenuItem.Add(ret.Items, i, Nothing, Nothing)
+                    ActionMenuItem.Add(ret.Items, i)
                 ElseIf i = "" Then
                     ret.Items.Add(New ToolStripSeparator)
                 End If

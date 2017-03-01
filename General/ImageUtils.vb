@@ -1,6 +1,48 @@
 ﻿Imports System.Drawing.Drawing2D
 Imports System.Drawing.Imaging
+Imports System.Drawing.Text
 Imports System.Globalization
+Imports System.Threading.Tasks
+
+Class ImageHelp
+    Private Shared PrivateFontCollection As New PrivateFontCollection()
+
+    Shared Async Function GetSymbolImageAsync(symbol As Symbol) As Task(Of Image)
+        Return Await Task.Run(Of Image)(Function() GetSymbolImage(symbol))
+    End Function
+
+    Shared Function GetSymbolImage(symbol As Symbol) As Image
+        Dim font As Font
+
+        If PrivateFontCollection.Families.Count = 0 Then
+            PrivateFontCollection.AddFontFile(Folder.Startup + "FontAwesome.ttf")
+            PrivateFontCollection.AddFontFile(Folder.Startup + "Segoe-MDL2-Assets.ttf")
+        End If
+
+        If CInt(symbol) > 61400 Then
+            font = New Font(PrivateFontCollection.Families(0), 11)
+        Else
+            If OSVersion.Current < OSVersion.Windows10 Then
+                font = New Font(PrivateFontCollection.Families(1), 11)
+            Else
+                font = New Font("Segoe MDL2 Assets", 11, FontStyle.Regular)
+            End If
+        End If
+
+        Dim bitmap As New Bitmap(font.Height + 7, font.Height + 7)
+        Dim graphics = Drawing.Graphics.FromImage(bitmap)
+        graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+        Dim format As New StringFormat
+        format.LineAlignment = StringAlignment.Center
+        format.Alignment = StringAlignment.Center
+        Dim rec As New RectangleF(0, CInt(font.Height / 14), bitmap.Width, bitmap.Height)
+        graphics.DrawString(Convert.ToChar(CInt(symbol)), font, Brushes.Black, rec, format)
+        graphics.Dispose()
+        font.Dispose()
+
+        Return bitmap
+    End Function
+End Class
 
 Class Thumbnails
     Shared Sub SaveThumbnails(inputFile As String)
@@ -92,6 +134,7 @@ Class Thumbnails
             Using g = Graphics.FromImage(bitmap)
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic
                 g.SmoothingMode = SmoothingMode.AntiAlias
+                g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
                 g.Clear(backgroundColor)
                 Dim rect = New RectangleF(shadowDistance + gap, 0, imageWidth - (shadowDistance + gap) * 2, captionHeight)
                 Dim format As New StringFormat

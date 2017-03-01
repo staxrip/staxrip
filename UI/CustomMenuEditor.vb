@@ -40,7 +40,7 @@ Namespace UI
         Friend WithEvents tsbMoveUp As ToolStripButton
         Friend WithEvents ToolStripSeparator1 As System.Windows.Forms.ToolStripSeparator
         Friend WithEvents tbCommand As System.Windows.Forms.TextBox
-        Friend WithEvents bCommand As ButtonEx
+        Friend WithEvents bnCommand As ButtonEx
         Friend WithEvents cmsCommand As ContextMenuStripEx
         Friend WithEvents lCommand As System.Windows.Forms.Label
         Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
@@ -49,10 +49,15 @@ Namespace UI
         Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
         Friend WithEvents TableLayoutPanel2 As System.Windows.Forms.TableLayoutPanel
         Friend WithEvents FlowLayoutPanel1 As System.Windows.Forms.FlowLayoutPanel
+        Friend WithEvents Label1 As Label
+        Friend WithEvents tlpSymbol As TableLayoutPanel
+        Friend WithEvents lSymbol As Label
+        Friend WithEvents pbSymbol As PictureBox
+        Friend WithEvents bnSymbol As ButtonEx
+        Friend WithEvents cmsSymbol As ContextMenuStrip
         Friend WithEvents bnOK As StaxRip.UI.ButtonEx
         <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
             Me.components = New System.ComponentModel.Container()
-            Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(CustomMenuEditor))
             Me.lHotkey = New System.Windows.Forms.Label()
             Me.lParameters = New System.Windows.Forms.Label()
             Me.pg = New StaxRip.UI.PropertyGridEx()
@@ -78,8 +83,8 @@ Namespace UI
             Me.ToolsToolStripDropDownButton = New System.Windows.Forms.ToolStripDropDownButton()
             Me.NewFromDefaultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
             Me.ResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-            Me.bCommand = New StaxRip.UI.ButtonEx()
-            Me.cmsCommand = New ContextMenuStripEx(Me.components)
+            Me.bnCommand = New StaxRip.UI.ButtonEx()
+            Me.cmsCommand = New StaxRip.UI.ContextMenuStripEx(Me.components)
             Me.lCommand = New System.Windows.Forms.Label()
             Me.bnCancel = New StaxRip.UI.ButtonEx()
             Me.bnOK = New StaxRip.UI.ButtonEx()
@@ -87,10 +92,18 @@ Namespace UI
             Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
             Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
             Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
+            Me.Label1 = New System.Windows.Forms.Label()
+            Me.tlpSymbol = New System.Windows.Forms.TableLayoutPanel()
+            Me.lSymbol = New System.Windows.Forms.Label()
+            Me.pbSymbol = New System.Windows.Forms.PictureBox()
+            Me.bnSymbol = New StaxRip.UI.ButtonEx()
+            Me.cmsSymbol = New System.Windows.Forms.ContextMenuStrip(Me.components)
             Me.ToolStrip.SuspendLayout()
             Me.TableLayoutPanel1.SuspendLayout()
             Me.FlowLayoutPanel1.SuspendLayout()
             Me.TableLayoutPanel2.SuspendLayout()
+            Me.tlpSymbol.SuspendLayout()
+            CType(Me.pbSymbol, System.ComponentModel.ISupportInitialize).BeginInit()
             Me.SuspendLayout()
             '
             'lHotkey
@@ -98,10 +111,10 @@ Namespace UI
             Me.lHotkey.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.lHotkey.AutoSize = True
-            Me.lHotkey.Location = New System.Drawing.Point(359, 114)
+            Me.lHotkey.Location = New System.Drawing.Point(359, 165)
             Me.lHotkey.Margin = New System.Windows.Forms.Padding(3, 8, 3, 0)
             Me.lHotkey.Name = "lHotkey"
-            Me.lHotkey.Size = New System.Drawing.Size(342, 25)
+            Me.lHotkey.Size = New System.Drawing.Size(342, 48)
             Me.lHotkey.TabIndex = 5
             Me.lHotkey.Text = "Shortcut Key:"
             '
@@ -110,10 +123,10 @@ Namespace UI
             Me.lParameters.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.lParameters.AutoSize = True
-            Me.lParameters.Location = New System.Drawing.Point(359, 255)
+            Me.lParameters.Location = New System.Drawing.Point(359, 494)
             Me.lParameters.Margin = New System.Windows.Forms.Padding(3, 8, 3, 0)
             Me.lParameters.Name = "lParameters"
-            Me.lParameters.Size = New System.Drawing.Size(342, 25)
+            Me.lParameters.Size = New System.Drawing.Size(342, 96)
             Me.lParameters.TabIndex = 9
             Me.lParameters.Text = "Command Parameters:"
             Me.lParameters.Visible = False
@@ -124,10 +137,10 @@ Namespace UI
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.pg.LineColor = System.Drawing.SystemColors.ScrollBar
-            Me.pg.Location = New System.Drawing.Point(359, 283)
+            Me.pg.Location = New System.Drawing.Point(359, 593)
             Me.pg.Name = "pg"
             Me.pg.PropertySort = System.Windows.Forms.PropertySort.NoSort
-            Me.pg.Size = New System.Drawing.Size(342, 305)
+            Me.pg.Size = New System.Drawing.Size(342, 17)
             Me.pg.TabIndex = 10
             Me.pg.ToolbarVisible = False
             Me.pg.Visible = False
@@ -136,9 +149,9 @@ Namespace UI
             '
             Me.tbText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.tbText.Location = New System.Drawing.Point(359, 72)
+            Me.tbText.Location = New System.Drawing.Point(359, 99)
             Me.tbText.Name = "tbText"
-            Me.tbText.Size = New System.Drawing.Size(342, 31)
+            Me.tbText.Size = New System.Drawing.Size(342, 55)
             Me.tbText.TabIndex = 4
             '
             'lText
@@ -146,9 +159,9 @@ Namespace UI
             Me.lText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.lText.AutoSize = True
-            Me.lText.Location = New System.Drawing.Point(359, 44)
+            Me.lText.Location = New System.Drawing.Point(359, 48)
             Me.lText.Name = "lText"
-            Me.lText.Size = New System.Drawing.Size(342, 25)
+            Me.lText.Size = New System.Drawing.Size(342, 48)
             Me.lText.TabIndex = 3
             Me.lText.Text = "Text:"
             '
@@ -159,11 +172,11 @@ Namespace UI
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.tv.HideSelection = False
-            Me.tv.Location = New System.Drawing.Point(11, 47)
+            Me.tv.Location = New System.Drawing.Point(11, 51)
             Me.tv.Margin = New System.Windows.Forms.Padding(3, 3, 8, 3)
             Me.tv.Name = "tv"
-            Me.TableLayoutPanel1.SetRowSpan(Me.tv, 8)
-            Me.tv.Size = New System.Drawing.Size(337, 541)
+            Me.TableLayoutPanel1.SetRowSpan(Me.tv, 10)
+            Me.tv.Size = New System.Drawing.Size(337, 559)
             Me.tv.TabIndex = 2
             '
             'tbHotkey
@@ -172,9 +185,9 @@ Namespace UI
             Me.tbHotkey.AcceptsTab = True
             Me.tbHotkey.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.tbHotkey.Location = New System.Drawing.Point(359, 142)
+            Me.tbHotkey.Location = New System.Drawing.Point(359, 216)
             Me.tbHotkey.Name = "tbHotkey"
-            Me.tbHotkey.Size = New System.Drawing.Size(342, 31)
+            Me.tbHotkey.Size = New System.Drawing.Size(342, 55)
             Me.tbHotkey.TabIndex = 6
             '
             'tbCommand
@@ -183,12 +196,13 @@ Namespace UI
             Me.tbCommand.Location = New System.Drawing.Point(0, 0)
             Me.tbCommand.Margin = New System.Windows.Forms.Padding(0)
             Me.tbCommand.Name = "tbCommand"
-            Me.tbCommand.Size = New System.Drawing.Size(306, 31)
+            Me.tbCommand.Size = New System.Drawing.Size(301, 55)
             Me.tbCommand.TabIndex = 8
             '
             'ToolStrip
             '
             Me.ToolStrip.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.ToolStrip.AutoSize = False
             Me.TableLayoutPanel1.SetColumnSpan(Me.ToolStrip, 4)
             Me.ToolStrip.Dock = System.Windows.Forms.DockStyle.None
             Me.ToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
@@ -198,105 +212,100 @@ Namespace UI
             Me.ToolStrip.Margin = New System.Windows.Forms.Padding(0, 0, 0, 8)
             Me.ToolStrip.Name = "ToolStrip"
             Me.ToolStrip.Padding = New System.Windows.Forms.Padding(3, 1, 1, 0)
-            Me.ToolStrip.Size = New System.Drawing.Size(713, 36)
+            Me.ToolStrip.Size = New System.Drawing.Size(713, 40)
             Me.ToolStrip.TabIndex = 1
             Me.ToolStrip.Text = "ToolStrip"
             '
             'tsbNew
             '
             Me.tsbNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-            Me.tsbNew.Image = CType(resources.GetObject("tsbNew.Image"), System.Drawing.Image)
             Me.tsbNew.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbNew.Name = "tsbNew"
-            Me.tsbNew.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbNew.Size = New System.Drawing.Size(32, 32)
+            Me.tsbNew.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
+            Me.tsbNew.Size = New System.Drawing.Size(24, 36)
             Me.tsbNew.Text = "New"
             '
             'ToolStripSeparator3
             '
             Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
-            Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 35)
+            Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 39)
             '
             'tsbCut
             '
             Me.tsbCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-            Me.tsbCut.Image = CType(resources.GetObject("tsbCut.Image"), System.Drawing.Image)
             Me.tsbCut.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbCut.Name = "tsbCut"
-            Me.tsbCut.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbCut.Size = New System.Drawing.Size(32, 32)
+            Me.tsbCut.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
+            Me.tsbCut.Size = New System.Drawing.Size(24, 36)
             Me.tsbCut.Text = "Cut"
             '
             'tsbCopy
             '
             Me.tsbCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-            Me.tsbCopy.Image = CType(resources.GetObject("tsbCopy.Image"), System.Drawing.Image)
             Me.tsbCopy.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbCopy.Name = "tsbCopy"
-            Me.tsbCopy.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbCopy.Size = New System.Drawing.Size(32, 32)
+            Me.tsbCopy.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
+            Me.tsbCopy.Size = New System.Drawing.Size(24, 36)
             Me.tsbCopy.Text = "Copy"
             '
             'tsbPaste
             '
             Me.tsbPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-            Me.tsbPaste.Image = CType(resources.GetObject("tsbPaste.Image"), System.Drawing.Image)
             Me.tsbPaste.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbPaste.Name = "tsbPaste"
-            Me.tsbPaste.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbPaste.Size = New System.Drawing.Size(32, 32)
+            Me.tsbPaste.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
+            Me.tsbPaste.Size = New System.Drawing.Size(24, 36)
             Me.tsbPaste.Text = "Paste"
             '
             'ToolStripSeparator4
             '
             Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-            Me.ToolStripSeparator4.Size = New System.Drawing.Size(6, 35)
+            Me.ToolStripSeparator4.Size = New System.Drawing.Size(6, 39)
             '
             'tsbMoveLeft
             '
             Me.tsbMoveLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
             Me.tsbMoveLeft.Name = "tsbMoveLeft"
-            Me.tsbMoveLeft.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbMoveLeft.Size = New System.Drawing.Size(23, 32)
+            Me.tsbMoveLeft.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
+            Me.tsbMoveLeft.Size = New System.Drawing.Size(24, 36)
             Me.tsbMoveLeft.ToolTipText = "Move Left"
             '
             'tsbMoveRight
             '
             Me.tsbMoveRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
             Me.tsbMoveRight.Name = "tsbMoveRight"
-            Me.tsbMoveRight.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbMoveRight.Size = New System.Drawing.Size(23, 32)
+            Me.tsbMoveRight.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
+            Me.tsbMoveRight.Size = New System.Drawing.Size(24, 36)
             Me.tsbMoveRight.ToolTipText = "Move Right"
             '
             'tsbMoveUp
             '
             Me.tsbMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
             Me.tsbMoveUp.Name = "tsbMoveUp"
-            Me.tsbMoveUp.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbMoveUp.Size = New System.Drawing.Size(23, 32)
+            Me.tsbMoveUp.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
+            Me.tsbMoveUp.Size = New System.Drawing.Size(24, 36)
             Me.tsbMoveUp.ToolTipText = "Move Up"
             '
             'tsbMoveDown
             '
             Me.tsbMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
             Me.tsbMoveDown.Name = "tsbMoveDown"
-            Me.tsbMoveDown.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbMoveDown.Size = New System.Drawing.Size(23, 32)
+            Me.tsbMoveDown.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
+            Me.tsbMoveDown.Size = New System.Drawing.Size(24, 36)
             Me.tsbMoveDown.ToolTipText = "Move Down"
             '
             'ToolStripSeparator1
             '
             Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-            Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 35)
+            Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 39)
             '
             'tsbRemove
             '
             Me.tsbRemove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-            Me.tsbRemove.Image = CType(resources.GetObject("tsbRemove.Image"), System.Drawing.Image)
             Me.tsbRemove.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbRemove.Name = "tsbRemove"
-            Me.tsbRemove.Padding = New System.Windows.Forms.Padding(2)
-            Me.tsbRemove.Size = New System.Drawing.Size(32, 32)
+            Me.tsbRemove.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
+            Me.tsbRemove.Size = New System.Drawing.Size(24, 36)
             Me.tsbRemove.Text = "Remove"
             '
             'ToolsToolStripDropDownButton
@@ -304,46 +313,45 @@ Namespace UI
             Me.ToolsToolStripDropDownButton.AutoToolTip = False
             Me.ToolsToolStripDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
             Me.ToolsToolStripDropDownButton.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewFromDefaultsToolStripMenuItem, Me.ResetToolStripMenuItem})
-            Me.ToolsToolStripDropDownButton.Image = Global.StaxRip.My.Resources.Resources.Config
             Me.ToolsToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.ToolsToolStripDropDownButton.Name = "ToolsToolStripDropDownButton"
             Me.ToolsToolStripDropDownButton.Padding = New System.Windows.Forms.Padding(2)
-            Me.ToolsToolStripDropDownButton.Size = New System.Drawing.Size(46, 32)
+            Me.ToolsToolStripDropDownButton.Size = New System.Drawing.Size(35, 36)
             Me.ToolsToolStripDropDownButton.Text = "Tools"
             '
             'NewFromDefaultsToolStripMenuItem
             '
             Me.NewFromDefaultsToolStripMenuItem.Name = "NewFromDefaultsToolStripMenuItem"
-            Me.NewFromDefaultsToolStripMenuItem.Size = New System.Drawing.Size(261, 30)
+            Me.NewFromDefaultsToolStripMenuItem.Size = New System.Drawing.Size(478, 54)
             Me.NewFromDefaultsToolStripMenuItem.Text = "New From Defaults..."
             '
             'ResetToolStripMenuItem
             '
             Me.ResetToolStripMenuItem.Name = "ResetToolStripMenuItem"
-            Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(261, 30)
+            Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(478, 54)
             Me.ResetToolStripMenuItem.Text = "Reset Everything"
             '
-            'bCommand
+            'bnCommand
             '
-            Me.bCommand.Anchor = System.Windows.Forms.AnchorStyles.None
-            Me.bCommand.Location = New System.Drawing.Point(310, 0)
-            Me.bCommand.Margin = New System.Windows.Forms.Padding(4, 0, 0, 0)
-            Me.bCommand.ShowMenuSymbol = True
-            Me.bCommand.Size = New System.Drawing.Size(32, 32)
+            Me.bnCommand.Anchor = System.Windows.Forms.AnchorStyles.None
+            Me.bnCommand.Location = New System.Drawing.Point(304, 10)
+            Me.bnCommand.ShowMenuSymbol = True
+            Me.bnCommand.Size = New System.Drawing.Size(35, 35)
             '
             'cmsCommand
             '
+            Me.cmsCommand.Font = New System.Drawing.Font("Segoe UI", 9.0!)
             Me.cmsCommand.ImageScalingSize = New System.Drawing.Size(24, 24)
             Me.cmsCommand.Name = "cmsCommand"
-            Me.cmsCommand.Size = New System.Drawing.Size(74, 4)
+            Me.cmsCommand.Size = New System.Drawing.Size(111, 4)
             '
             'lCommand
             '
             Me.lCommand.AutoSize = True
-            Me.lCommand.Location = New System.Drawing.Point(359, 184)
+            Me.lCommand.Location = New System.Drawing.Point(359, 377)
             Me.lCommand.Margin = New System.Windows.Forms.Padding(3, 8, 3, 0)
             Me.lCommand.Name = "lCommand"
-            Me.lCommand.Size = New System.Drawing.Size(100, 25)
+            Me.lCommand.Size = New System.Drawing.Size(192, 48)
             Me.lCommand.TabIndex = 7
             Me.lCommand.Text = "Command:"
             '
@@ -352,7 +360,7 @@ Namespace UI
             Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
             Me.bnCancel.Location = New System.Drawing.Point(109, 3)
-            Me.bnCancel.Size = New System.Drawing.Size(100, 34)
+            Me.bnCancel.Size = New System.Drawing.Size(100, 35)
             Me.bnCancel.Text = "Cancel"
             '
             'bnOK
@@ -360,7 +368,7 @@ Namespace UI
             Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
             Me.bnOK.Location = New System.Drawing.Point(3, 3)
-            Me.bnOK.Size = New System.Drawing.Size(100, 34)
+            Me.bnOK.Size = New System.Drawing.Size(100, 35)
             Me.bnOK.Text = "OK"
             '
             'ImageList1
@@ -376,21 +384,25 @@ Namespace UI
             Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
             Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
             Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 9.0!))
-            Me.TableLayoutPanel1.Controls.Add(Me.FlowLayoutPanel1, 2, 9)
-            Me.TableLayoutPanel1.Controls.Add(Me.pg, 2, 8)
-            Me.TableLayoutPanel1.Controls.Add(Me.lParameters, 2, 7)
-            Me.TableLayoutPanel1.Controls.Add(Me.TableLayoutPanel2, 2, 6)
-            Me.TableLayoutPanel1.Controls.Add(Me.lCommand, 2, 5)
+            Me.TableLayoutPanel1.Controls.Add(Me.FlowLayoutPanel1, 2, 11)
+            Me.TableLayoutPanel1.Controls.Add(Me.pg, 2, 10)
+            Me.TableLayoutPanel1.Controls.Add(Me.lParameters, 2, 9)
+            Me.TableLayoutPanel1.Controls.Add(Me.TableLayoutPanel2, 2, 8)
+            Me.TableLayoutPanel1.Controls.Add(Me.lCommand, 2, 7)
             Me.TableLayoutPanel1.Controls.Add(Me.ToolStrip, 0, 0)
             Me.TableLayoutPanel1.Controls.Add(Me.tbHotkey, 2, 4)
             Me.TableLayoutPanel1.Controls.Add(Me.tv, 1, 1)
             Me.TableLayoutPanel1.Controls.Add(Me.lHotkey, 2, 3)
             Me.TableLayoutPanel1.Controls.Add(Me.tbText, 2, 2)
             Me.TableLayoutPanel1.Controls.Add(Me.lText, 2, 1)
+            Me.TableLayoutPanel1.Controls.Add(Me.Label1, 2, 5)
+            Me.TableLayoutPanel1.Controls.Add(Me.tlpSymbol, 2, 6)
             Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
             Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
             Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
-            Me.TableLayoutPanel1.RowCount = 10
+            Me.TableLayoutPanel1.RowCount = 12
+            Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
+            Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
             Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
             Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
             Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
@@ -401,7 +413,7 @@ Namespace UI
             Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
             Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
             Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
-            Me.TableLayoutPanel1.Size = New System.Drawing.Size(713, 644)
+            Me.TableLayoutPanel1.Size = New System.Drawing.Size(713, 667)
             Me.TableLayoutPanel1.TabIndex = 11
             '
             'FlowLayoutPanel1
@@ -411,10 +423,10 @@ Namespace UI
             Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
             Me.FlowLayoutPanel1.Controls.Add(Me.bnOK)
             Me.FlowLayoutPanel1.Controls.Add(Me.bnCancel)
-            Me.FlowLayoutPanel1.Location = New System.Drawing.Point(492, 596)
+            Me.FlowLayoutPanel1.Location = New System.Drawing.Point(492, 618)
             Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0, 5, 0, 8)
             Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-            Me.FlowLayoutPanel1.Size = New System.Drawing.Size(212, 40)
+            Me.FlowLayoutPanel1.Size = New System.Drawing.Size(212, 41)
             Me.FlowLayoutPanel1.TabIndex = 12
             '
             'TableLayoutPanel2
@@ -426,25 +438,88 @@ Namespace UI
             Me.TableLayoutPanel2.ColumnCount = 2
             Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
             Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-            Me.TableLayoutPanel2.Controls.Add(Me.bCommand, 1, 0)
+            Me.TableLayoutPanel2.Controls.Add(Me.bnCommand, 1, 0)
             Me.TableLayoutPanel2.Controls.Add(Me.tbCommand, 0, 0)
-            Me.TableLayoutPanel2.Location = New System.Drawing.Point(359, 212)
+            Me.TableLayoutPanel2.Location = New System.Drawing.Point(359, 428)
             Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
             Me.TableLayoutPanel2.RowCount = 1
             Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
-            Me.TableLayoutPanel2.Size = New System.Drawing.Size(342, 32)
+            Me.TableLayoutPanel2.Size = New System.Drawing.Size(342, 55)
             Me.TableLayoutPanel2.TabIndex = 12
+            '
+            'Label1
+            '
+            Me.Label1.AutoSize = True
+            Me.Label1.Location = New System.Drawing.Point(359, 274)
+            Me.Label1.Name = "Label1"
+            Me.Label1.Size = New System.Drawing.Size(145, 48)
+            Me.Label1.TabIndex = 13
+            Me.Label1.Text = "Symbol:"
+            '
+            'tlpSymbol
+            '
+            Me.tlpSymbol.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.tlpSymbol.ColumnCount = 3
+            Me.tlpSymbol.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+            Me.tlpSymbol.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+            Me.tlpSymbol.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+            Me.tlpSymbol.Controls.Add(Me.lSymbol, 1, 0)
+            Me.tlpSymbol.Controls.Add(Me.pbSymbol, 0, 0)
+            Me.tlpSymbol.Controls.Add(Me.bnSymbol, 2, 0)
+            Me.tlpSymbol.Location = New System.Drawing.Point(359, 325)
+            Me.tlpSymbol.Name = "tlpSymbol"
+            Me.tlpSymbol.RowCount = 1
+            Me.tlpSymbol.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+            Me.tlpSymbol.Size = New System.Drawing.Size(342, 41)
+            Me.tlpSymbol.TabIndex = 14
+            '
+            'lSymbol
+            '
+            Me.lSymbol.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.lSymbol.Location = New System.Drawing.Point(44, 0)
+            Me.lSymbol.Name = "lSymbol"
+            Me.lSymbol.Size = New System.Drawing.Size(254, 41)
+            Me.lSymbol.TabIndex = 1
+            Me.lSymbol.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+            '
+            'pbSymbol
+            '
+            Me.pbSymbol.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.pbSymbol.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center
+            Me.pbSymbol.Location = New System.Drawing.Point(0, 0)
+            Me.pbSymbol.Margin = New System.Windows.Forms.Padding(0)
+            Me.pbSymbol.Name = "pbSymbol"
+            Me.pbSymbol.Size = New System.Drawing.Size(41, 41)
+            Me.pbSymbol.TabIndex = 2
+            Me.pbSymbol.TabStop = False
+            '
+            'bnSymbol
+            '
+            Me.bnSymbol.Anchor = System.Windows.Forms.AnchorStyles.None
+            Me.bnSymbol.ContextMenuStrip = Me.cmsSymbol
+            Me.bnSymbol.Location = New System.Drawing.Point(304, 3)
+            Me.bnSymbol.ShowMenuSymbol = True
+            Me.bnSymbol.Size = New System.Drawing.Size(35, 35)
+            '
+            'cmsSymbol
+            '
+            Me.cmsSymbol.ImageScalingSize = New System.Drawing.Size(48, 48)
+            Me.cmsSymbol.Name = "cmsSymbol"
+            Me.cmsSymbol.Size = New System.Drawing.Size(111, 4)
             '
             'CustomMenuEditor
             '
             Me.AcceptButton = Me.bnOK
             Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
             Me.CancelButton = Me.bnCancel
-            Me.ClientSize = New System.Drawing.Size(713, 644)
+            Me.ClientSize = New System.Drawing.Size(713, 667)
             Me.Controls.Add(Me.TableLayoutPanel1)
-            Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
             Me.KeyPreview = True
-            Me.Location = New System.Drawing.Point(0, 0)
+            Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
             Me.Name = "CustomMenuEditor"
             Me.Text = "Menu Editor"
             Me.ToolStrip.ResumeLayout(False)
@@ -454,6 +529,8 @@ Namespace UI
             Me.FlowLayoutPanel1.ResumeLayout(False)
             Me.TableLayoutPanel2.ResumeLayout(False)
             Me.TableLayoutPanel2.PerformLayout()
+            Me.tlpSymbol.ResumeLayout(False)
+            CType(Me.pbSymbol, System.ComponentModel.ISupportInitialize).EndInit()
             Me.ResumeLayout(False)
 
         End Sub
@@ -463,6 +540,7 @@ Namespace UI
         Private Block As Boolean
         Private GridTypeDescriptor As GridTypeDescriptor
         Private ClipboardNode As TreeNode
+        Private IsClosing As Boolean
 
         Property GenericMenu As CustomMenu
 
@@ -470,22 +548,30 @@ Namespace UI
             MyBase.New()
             InitializeComponent()
 
-            tsbMoveLeft.Image = My.Resources.ArrowLeft
+            g.SetRenderer(ToolStrip)
 
-            tsbMoveUp.Image = My.Resources.ArrowLeft
-            tsbMoveUp.Image.RotateFlip(RotateFlipType.Rotate90FlipNone)
+            tsbNew.Image = ImageHelp.GetSymbolImage(Symbol.Page)
+            tsbCopy.Image = ImageHelp.GetSymbolImage(Symbol.Copy)
+            tsbCut.Image = ImageHelp.GetSymbolImage(Symbol.Cut)
+            tsbPaste.Image = ImageHelp.GetSymbolImage(Symbol.Paste)
+            tsbRemove.Image = ImageHelp.GetSymbolImage(Symbol.Delete)
 
-            tsbMoveRight.Image = My.Resources.ArrowLeft
-            tsbMoveRight.Image.RotateFlip(RotateFlipType.Rotate180FlipNone)
+            tsbMoveLeft.Image = ImageHelp.GetSymbolImage(Symbol.Back)
+            tsbMoveUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
+            tsbMoveRight.Image = ImageHelp.GetSymbolImage(Symbol.Forward)
+            tsbMoveDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
 
-            tsbMoveDown.Image = My.Resources.ArrowLeft
-            tsbMoveDown.Image.RotateFlip(RotateFlipType.Rotate270FlipNone)
+            ToolsToolStripDropDownButton.Image = ImageHelp.GetSymbolImage(Symbol.More)
 
             GenericMenu = menu
             GridTypeDescriptor = New GridTypeDescriptor
             PopulateTreeView(menu.MenuItem.GetClone, Nothing)
             tv.ExpandAll()
+
             Command.PopulateCommandMenu(cmsCommand.Items, GenericMenu.CommandManager.Commands.Values.ToList, AddressOf SetCommand)
+
+            g.SetRenderer(cmsSymbol)
+
             tv.SelectedNode = tv.Nodes(0)
             CancelButton = Nothing
             ToolStrip.ImageScalingSize = SystemInformation.SmallIconSize
@@ -498,6 +584,41 @@ Namespace UI
             TipProvider.SetTip("Text to be displayed. Enter minus to create a separator.", tbText, lText)
             TipProvider.SetTip("A key can be deleted by pressing it two times.", tbHotkey, lHotkey)
             TipProvider.SetTip("Command to be executed. Please make a feature request if useful commands are missing.", tbCommand, lCommand)
+        End Sub
+
+        Sub PopulateSymbolMenu()
+            Dim enumNames = System.Enum.GetNames(GetType(Symbol)).ToList
+            enumNames.Sort()
+
+            For Each i In enumNames
+                If IsClosing Then Exit For
+                Dim symbol = DirectCast(System.Enum.Parse(GetType(Symbol), i), Symbol)
+                Dim path As String
+
+                If CInt(symbol) > 60000 Then
+                    path = "FontAwesome | " + i.Substring(3, 1).ToUpper + " | " + i.Substring(3).ToTitleCase.Replace("_", " ")
+                Else
+                    path = "Segoe MDL2 Assets | " + i.Substring(0, 1) + " | " + i
+                End If
+
+                Dim mi = ActionMenuItem.Add(Of Symbol)(cmsSymbol.Items, path, AddressOf HandleSymbol, symbol)
+                mi.ImageScaling = ToolStripItemImageScaling.None
+                SetImage(symbol, mi)
+                Application.DoEvents()
+            Next
+        End Sub
+
+        Async Sub SetImage(symbol As Symbol, mi As ToolStripMenuItem)
+            Dim img = Await ImageHelp.GetSymbolImageAsync(symbol)
+            If Not IsClosing AndAlso Not mi.IsDisposed Then mi.Image = img
+        End Sub
+
+        Sub HandleSymbol(symbol As Symbol)
+            If Not Block AndAlso Not tv.SelectedNode Is Nothing Then
+                Dim item = DirectCast(tv.SelectedNode.Tag, CustomMenuItem)
+                item.Symbol = symbol
+                UpdateControls()
+            End If
         End Sub
 
         Private Sub SetCommand(c As Command)
@@ -568,18 +689,18 @@ Namespace UI
         Private Sub UpdateControls()
             If Not Block Then
                 Block = True
-
                 Dim n As TreeNode = tv.SelectedNode
+                If n Is Nothing Then Exit Sub
+                Dim item = CType(n.Tag, CustomMenuItem)
+                tbText.Text = item.Text
 
-                If n Is Nothing Then
-                    Exit Sub
+                If item.Symbol = Symbol.None Then
+                    pbSymbol.BackgroundImage = Nothing
+                Else
+                    pbSymbol.BackgroundImage = ImageHelp.GetSymbolImage(item.Symbol)
                 End If
 
-                Dim item As CustomMenuItem = CType(n.Tag, CustomMenuItem)
-
-                tbText.Text = item.Text
                 tbHotkey.Text = KeysHelp.GetKeyString(item.KeyData)
-
                 Dim found As Boolean
 
                 For Each i As Command In GenericMenu.CommandManager.Commands.Values
@@ -598,9 +719,10 @@ Namespace UI
                     tbCommand.Text = ""
                 End If
 
-                Dim notRoot As Boolean = Not n.Parent Is Nothing
+                Dim notRoot = Not n.Parent Is Nothing
 
-                bCommand.Enabled = notRoot
+                bnSymbol.Enabled = notRoot
+                bnCommand.Enabled = notRoot
                 tbCommand.Enabled = notRoot
                 tbHotkey.Enabled = notRoot
                 tsbCopy.Enabled = notRoot
@@ -619,10 +741,10 @@ Namespace UI
 
         Private Sub tbText_TextChanged() Handles tbText.TextChanged
             If Not Block AndAlso Not tv.SelectedNode Is Nothing Then
-                Dim item As CustomMenuItem = DirectCast(tv.SelectedNode.Tag, CustomMenuItem)
+                Dim item = DirectCast(tv.SelectedNode.Tag, CustomMenuItem)
 
                 tbCommand.Enabled = tbText.Text <> "-"
-                bCommand.Enabled = tbText.Text <> "-"
+                bnCommand.Enabled = tbText.Text <> "-"
                 tbHotkey.Enabled = tbText.Text <> "-"
 
                 If tbText.Text = "-" Then
@@ -864,17 +986,19 @@ Namespace UI
             Dim f As New HelpForm()
             f.Doc.WriteStart(Text)
             f.Doc.WriteP("The menu editor allows to customize the text, location, shortcut key and command of a menu item. Menu items can be rearranged with '''Drag & Drop'''. Pressing Ctrl while dragging moves as sub-item.")
+            f.Doc.WriteP("[http://fontawesome.io/cheatsheet FontAwesome icons]")
+            f.Doc.WriteP("[https://docs.microsoft.com/en-us/windows/uwp/style/segoe-ui-symbol-font Segoe MDL2 icons]")
             f.Doc.WriteTable("Commands", GenericMenu.CommandManager.GetTips)
             f.Show()
         End Sub
 
-        Private Sub bCommand_Click() Handles bCommand.Click
-            cmsCommand.Show(bCommand, 0, bCommand.Height)
+        Private Sub bCommand_Click() Handles bnCommand.Click
+            cmsCommand.Show(bnCommand, 0, bnCommand.Height)
         End Sub
 
         Private Sub tbCommand_TextChanged() Handles tbCommand.TextChanged
             If Not tv.SelectedNode Is Nothing Then
-                Dim item As CustomMenuItem = DirectCast(tv.SelectedNode.Tag, CustomMenuItem)
+                Dim item = DirectCast(tv.SelectedNode.Tag, CustomMenuItem)
 
                 If Not Block Then
                     Dim selectedCommand As Command = Nothing
@@ -914,6 +1038,22 @@ Namespace UI
                 tv.SelectedNode.Nodes.Add(newNode)
                 tv.SelectedNode = newNode
             End If
+        End Sub
+
+        Private Sub CustomMenuEditor_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+            PopulateSymbolMenu()
+        End Sub
+
+        Private Sub CustomMenuEditor_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+            IsClosing = True
+        End Sub
+
+        Private Sub bnOK_Click(sender As Object, e As EventArgs) Handles bnOK.Click
+            IsClosing = True
+        End Sub
+
+        Private Sub bnCancel_Click(sender As Object, e As EventArgs) Handles bnCancel.Click
+            IsClosing = True
         End Sub
     End Class
 End Namespace

@@ -865,6 +865,27 @@ Public Class MainForm
         SetMenuStyle()
     End Sub
 
+    <Command("Shows different donation options.")>
+    Sub ShowDonateDialog()
+        Dim td As New TaskDialog(Of String)
+        td.MainInstruction = "If you are a satisfied user of StaxRip, please think about contributing to this project."
+
+        td.AddCommandLink("PayPal", "Donate via PayPal", "PayPal")
+        td.AddCommandLink("Bitcoin", "Copy Bitcoin address to clipboard", "Bitcoin")
+        If g.IsCulture("de") Then td.AddCommandLink("Amazon", "Email Adresse in Zwischenablage kopieren und Gutschein Seite öffnen", "Amazon")
+
+        Select Case td.Show
+            Case "PayPal"
+                g.ShellExecute(Strings.DonationsURL)
+            Case "Bitcoin"
+                Clipboard.SetText("19FjjVNYBUEowkqL3CwrJp6Ks191wYHtph")
+                MsgInfo("Address was copied to the clipboard.")
+            Case "Amazon"
+                Clipboard.SetText("frank.skare.de@gmail.com")
+                g.ShellExecute("https://www.amazon.de/Amazon-Gutschein-E-Mail-Verschiedene-Motive/dp/BT00DHI7WY")
+        End Select
+    End Sub
+
     Sub SetMenuStyle()
         If ToolStripRendererEx.IsAutoRenderMode Then
             Dim c = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)
@@ -1151,11 +1172,14 @@ Public Class MainForm
                     End If
 
                     menuItem.DropDownItems.Clear()
+                    Dim img = ImageHelp.GetSymbolImage(Symbol.Code)
 
                     For Each path In Directory.GetFiles(Folder.Script)
-                        ActionMenuItem.Add(menuItem.DropDownItems,
-                                           path.FileName,
-                                           Sub() g.DefaultCommands.ExecuteScriptFile(path))
+                        Dim mi = ActionMenuItem.Add(menuItem.DropDownItems,
+                                                    path.FileName.Base,
+                                                    Sub() g.DefaultCommands.ExecuteScriptFile(path))
+                        mi.ImageScaling = ToolStripItemImageScaling.None
+                        mi.Image = img
                     Next
 
                     menuItem.DropDownItems.Add(New ToolStripSeparator)
@@ -1465,7 +1489,7 @@ Public Class MainForm
             Case "DGSourceIM"
                 ret = New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
             Case "FFVideoSource"
-                ret = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")")
+                ret = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"", colorspace = ""YV12"")")
             Case "LWLibavVideoSource"
                 ret = New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")")
             Case "LSMASHVideoSource"
@@ -3486,7 +3510,6 @@ Public Class MainForm
             If p.DeleteTempFilesDir AndAlso p.TempDir.EndsWith("_temp\") Then
                 Try
                     FileHelp.Delete(p.TempDir + p.Name + "_StaxRip.log", VB6.FileIO.RecycleOption.SendToRecycleBin)
-
                     Dim moreJobsToProcessInTempDir = JobsForm.GetJobs.Where(Function(a) a.Value AndAlso a.Key.Contains(p.TempDir))
 
                     If moreJobsToProcessInTempDir.Count = 0 Then
@@ -3513,7 +3536,7 @@ Public Class MainForm
             OpenProject(g.ProjectPath, False)
             ProcessForm.CloseProcessForm()
             g.ShowException(ex, Nothing, 100)
-            g.ShellExecute(p.TempDir + p.Name + "_StaxRip.log")
+            g.ShellExecute(g.GetTextEditor(), """" + p.TempDir + p.Name + "_StaxRip.log" + """")
         Catch ex As Exception
             Log.Save()
             g.OnException(ex)
@@ -4258,66 +4281,72 @@ Public Class MainForm
     Shared Function GetDefaultMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
-        ret.Add("Project|Open...", NameOf(ShowFileBrowserToOpenProject), Keys.O Or Keys.Control)
-        ret.Add("Project|Save", NameOf(SaveProject), Keys.S Or Keys.Control)
+        ret.Add("Project|Open...", NameOf(ShowFileBrowserToOpenProject), Keys.O Or Keys.Control, Symbol.OpenFile)
+        ret.Add("Project|Save", NameOf(SaveProject), Keys.S Or Keys.Control, Symbol.Save)
         ret.Add("Project|Save As...", NameOf(SaveProjectAs))
         ret.Add("Project|Save As Template...", NameOf(SaveProjectAsTemplate))
         ret.Add("Project|-")
-        ret.Add("Project|Templates", NameOf(DynamicMenuItem), DynamicMenuItemID.TemplateProjects)
-        ret.Add("Project|Recent", NameOf(DynamicMenuItem), DynamicMenuItemID.RecentProjects)
+        ret.Add("Project|Templates", NameOf(DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
+        ret.Add("Project|Recent", NameOf(DynamicMenuItem), {DynamicMenuItemID.RecentProjects})
 
         ret.Add("Crop", NameOf(ShowCropDialog), Keys.F4)
         ret.Add("Preview", NameOf(ShowPreview), Keys.F5)
 
         ret.Add("Options", NameOf(ShowOptionsDialog), Keys.F8)
 
-        ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F6)
-        ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ExecuteCommandLine), """%text_editor%"" ""%working_dir%%target_name%_StaxRip.log""")
-        ret.Add("Tools|Directories|Source", NameOf(g.DefaultCommands.ExecuteCommandLine), """%source_dir%""")
-        ret.Add("Tools|Directories|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), """%working_dir%""")
-        ret.Add("Tools|Directories|Target", NameOf(g.DefaultCommands.ExecuteCommandLine), """%target_dir%""")
-        ret.Add("Tools|Directories|Settings", NameOf(g.DefaultCommands.ExecuteCommandLine), """%settings_dir%""")
-        ret.Add("Tools|Directories|Templates", NameOf(g.DefaultCommands.ExecuteCommandLine), """%settings_dir%TemplatesV2""")
-        ret.Add("Tools|Directories|Plugins", NameOf(g.DefaultCommands.ExecuteCommandLine), """%plugin_dir%""")
-        ret.Add("Tools|Directories|Startup", NameOf(g.DefaultCommands.ExecuteCommandLine), """%startup_dir%""")
-        ret.Add("Tools|Directories|Programs", NameOf(g.DefaultCommands.ExecuteCommandLine), """%programs_dir%""")
-        ret.Add("Tools|Directories|System", NameOf(g.DefaultCommands.ExecuteCommandLine), """%system_dir%""")
-        ret.Add("Tools|Directories|Scripts", NameOf(g.DefaultCommands.ExecuteCommandLine), """%script_dir%""")
+        ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F6, Symbol.MultiSelectLegacy)
+        ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Page, {"""%text_editor%"" ""%working_dir%%target_name%_StaxRip.log"""})
+        ret.Add("Tools|Directories", Symbol.Folder)
+        ret.Add("Tools|Directories|Source", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%source_dir%"""})
+        ret.Add("Tools|Directories|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%working_dir%"""})
+        ret.Add("Tools|Directories|Target", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%target_dir%"""})
+        ret.Add("Tools|Directories|Settings", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%"""})
+        ret.Add("Tools|Directories|Templates", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%TemplatesV2"""})
+        ret.Add("Tools|Directories|Plugins", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%plugin_dir%"""})
+        ret.Add("Tools|Directories|Startup", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%startup_dir%"""})
+        ret.Add("Tools|Directories|Programs", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%programs_dir%"""})
+        ret.Add("Tools|Directories|System", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%system_dir%"""})
+        ret.Add("Tools|Directories|Scripts", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%script_dir%"""})
+        ret.Add("Tools|Advanced", Symbol.More)
         If Application.StartupPath = "D:\Projekte\VS\VB\StaxRip\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
-        ret.Add("Tools|Advanced|Command Prompt...", NameOf(ShowCommandPrompt))
-        ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog))
-        ret.Add("Tools|Advanced|Hard Coded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
-        ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", NameOf(ShowLAVFiltersConfigDialog))
-        ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog))
+        ret.Add("Tools|Advanced|Command Prompt...", NameOf(ShowCommandPrompt), Symbol.fa_terminal)
+        ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
+        ret.Add("Tools|Advanced|Hard Coded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H, Symbol.Subtitles)
+        ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
+        ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog), Symbol.fa_info)
         ret.Add("Tools|Advanced|Reset Setting...", NameOf(ResetSettings))
         ret.Add("Tools|Advanced|Thumbnails Generator...", NameOf(ShowBatchGenerateThumbnailsDialog))
-        ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), DynamicMenuItemID.Scripts)
-        ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
-        ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), "")
 
-        ret.Add("Apps|AVSMeter...", NameOf(g.DefaultCommands.StartTool), "AVSMeter")
-        ret.Add("Apps|BDSup2Sub++...", NameOf(g.DefaultCommands.StartTool), "BDSup2Sub++")
-        ret.Add("Apps|Demux...", NameOf(g.DefaultCommands.StartTool), "Demux")
-        ret.Add("Apps|DGIndexNV...", NameOf(g.DefaultCommands.StartTool), "DGIndexNV")
-        ret.Add("Apps|ProjectX...", NameOf(g.DefaultCommands.StartTool), "ProjectX")
-        ret.Add("Apps|VSRip...", NameOf(g.DefaultCommands.StartTool), "VSRip")
+        ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
+        ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
+        ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
+
+        ret.Add("Apps|AVSMeter...", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
+        ret.Add("Apps|BDSup2Sub++...", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
+        ret.Add("Apps|Demux...", NameOf(g.DefaultCommands.StartTool), {"Demux"})
+        ret.Add("Apps|DGIndexNV...", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
+        ret.Add("Apps|ProjectX...", NameOf(g.DefaultCommands.StartTool), {"ProjectX"})
+        ret.Add("Apps|VSRip...", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
 
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
 
-        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://stax76.gitbooks.io/staxrip-handbook/content/")
-        ret.Add("Help|Support Forum|forum.doom9.org", NameOf(g.DefaultCommands.ExecuteCommandLine), "http://forum.doom9.org/showthread.php?t=172068&page=999999")
-        If g.IsCulture("de") Then ret.Add("Help|Support Forum|forum.gleitz.info", NameOf(g.DefaultCommands.ExecuteCommandLine), "http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-%28Diskussion%29/page999999")
-        ret.Add("Help|Support Forum|forum.videohelp.com", NameOf(g.DefaultCommands.ExecuteCommandLine), "http://forum.videohelp.com/threads/369913-StaxRip-x64-for-AviSynth-VapourSynth-x264-x265-GPU-encoding/page999999")
-        ret.Add("Help|Website|Issue Tracker", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://github.com/stax76/staxrip/issues")
-        ret.Add("Help|Website|Release Build", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://github.com/stax76/staxrip/releases")
-        ret.Add("Help|Website|Test Build", NameOf(g.DefaultCommands.ExecuteCommandLine), "https://github.com/stax76/staxrip/blob/master/md/test-build.md")
-        ret.Add("Help|Scripting", NameOf(ShowScriptingHelp))
-        ret.Add("Help|Command Line", NameOf(ShowCommandLineHelp))
-        ret.Add("Help|Apps", NameOf(DynamicMenuItem), DynamicMenuItemID.HelpApplications)
+        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Lightbulb, {"https://stax76.gitbooks.io/staxrip-handbook/content/"})
+        ret.Add("Help|Support Forum", Symbol.People)
+        ret.Add("Help|Support Forum|forum.doom9.org", NameOf(g.DefaultCommands.ExecuteCommandLine), {"http://forum.doom9.org/showthread.php?t=172068&page=999999"})
+        If g.IsCulture("de") Then ret.Add("Help|Support Forum|forum.gleitz.info", NameOf(g.DefaultCommands.ExecuteCommandLine), {"http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-%28Diskussion%29/page999999"})
+        ret.Add("Help|Support Forum|forum.videohelp.com", NameOf(g.DefaultCommands.ExecuteCommandLine), {"http://forum.videohelp.com/threads/369913-StaxRip-x64-for-AviSynth-VapourSynth-x264-x265-GPU-encoding/page999999"})
+        ret.Add("Help|Website", Symbol.Globe)
+        ret.Add("Help|Website|Issue Tracker", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.fa_bug, {"https://github.com/stax76/staxrip/issues"})
+        ret.Add("Help|Website|Release Build", NameOf(g.DefaultCommands.ExecuteCommandLine), {"https://github.com/stax76/staxrip/releases"})
+        ret.Add("Help|Website|Test Build", NameOf(g.DefaultCommands.ExecuteCommandLine), {"https://github.com/stax76/staxrip/blob/master/md/test-build.md"})
+        ret.Add("Help|Donate", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Heart, {Strings.DonationsURL})
+        ret.Add("Help|Scripting", NameOf(ShowScriptingHelp), Symbol.Code)
+        ret.Add("Help|Command Line", NameOf(ShowCommandLineHelp), Symbol.fa_terminal)
+        ret.Add("Help|Apps", NameOf(DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
         ret.Add("Help|-")
-        ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), "info")
+        ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.Info, {"info"})
 
         Return ret
     End Function
@@ -4518,10 +4547,10 @@ Public Class MainForm
     Shared Function GetDefaultMenuSize() As CustomMenuItem
         Dim ret = New CustomMenuItem("Root")
 
-        ret.Add("1 DVD", NameOf(SetSize), 4480)
+        ret.Add("1 DVD", NameOf(SetSize), {4480})
         ret.Add("-")
-        ret.Add("50%", NameOf(SetPercent), 50)
-        ret.Add("60%", NameOf(SetPercent), 60)
+        ret.Add("50%", NameOf(SetPercent), {50})
+        ret.Add("60%", NameOf(SetPercent), {60})
         ret.Add("-")
         ret.Add("Edit Menu...", NameOf(ShowSizeMenuEditor))
 

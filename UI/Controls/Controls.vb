@@ -459,40 +459,38 @@ Namespace UI
         Property BlockPaint As Boolean
         Private BorderRect As Native.RECT
 
-        Sub New()
-            Me.New(Nothing)
+        Sub New(Optional useMenu As Boolean = True)
+            If useMenu Then InitMenu()
+            If VisualStyleInformation.IsEnabledByUser Then BorderStyle = BorderStyle.None
         End Sub
 
-        Sub New(cms As ContextMenuStripEx)
-            If VisualStyleInformation.IsEnabledByUser Then BorderStyle = BorderStyle.None
+        Sub InitMenu()
+            Dim cms As New ContextMenuStripEx()
 
-            If cms Is Nothing Then
-                cms = New ContextMenuStripEx()
+            Dim cutItem = cms.Add("Cut")
+            Dim copyItem = cms.Add("Copy", Sub() Copy())
+            Dim pasteItem = cms.Add("Paste")
 
-                Dim cutItem = cms.Add("Cut")
-                Dim copyItem = cms.Add("Copy", Sub() Copy())
-                Dim pasteItem = cms.Add("Paste")
-                cms.Add("Copy Everything", Sub() Clipboard.SetText(Text))
+            cms.Add("Copy Everything", Sub() Clipboard.SetText(Text))
 
-                AddHandler cutItem.Click, Sub()
-                                              Clipboard.SetText(SelectedText)
-                                              SelectedText = ""
-                                          End Sub
+            AddHandler cutItem.Click, Sub()
+                                          Clipboard.SetText(SelectedText)
+                                          SelectedText = ""
+                                      End Sub
 
-                AddHandler pasteItem.Click, Sub()
-                                                SelectedText = Clipboard.GetText
-                                                ScrollToCaret()
-                                            End Sub
-
-                AddHandler cms.Opening, Sub()
-                                            cutItem.Visible = SelectionLength > 0 AndAlso Not Me.ReadOnly
-                                            copyItem.Visible = SelectionLength > 0
-                                            pasteItem.Visible = Clipboard.GetText <> "" AndAlso Not Me.ReadOnly
+            AddHandler pasteItem.Click, Sub()
+                                            SelectedText = Clipboard.GetText
+                                            ScrollToCaret()
                                         End Sub
-            End If
+
+            AddHandler cms.Opening, Sub()
+                                        cutItem.Visible = SelectionLength > 0 AndAlso Not Me.ReadOnly
+                                        copyItem.Visible = SelectionLength > 0
+                                        pasteItem.Visible = Clipboard.GetText <> "" AndAlso Not Me.ReadOnly
+                                    End Sub
 
             ContextMenuStrip = cms
-            AddHandler Disposed, Sub() If Not ContextMenuStrip Is Nothing Then ContextMenuStrip.Dispose()
+            AddHandler Disposed, Sub() ContextMenuStrip.Dispose()
         End Sub
 
         Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
@@ -917,12 +915,14 @@ Namespace UI
             Next
         End Sub
 
-        Sub Add(path As String, obj As Object, Optional tip As String = Nothing)
+        Function Add(path As String, obj As Object, Optional tip As String = Nothing) As ActionMenuItem
             Items.Add(obj)
             Dim name = path
             If path.Contains("|") Then name = path.RightLast("|").Trim
-            ActionMenuItem.Add(Menu.Items, path, Sub(o As Object) OnAction(name, o), obj, tip).Tag = obj
-        End Sub
+            Dim ret = ActionMenuItem.Add(Menu.Items, path, Sub(o As Object) OnAction(name, o), obj, tip)
+            ret.Tag = obj
+            Return ret
+        End Function
 
         Sub Clear()
             Items.Clear()
@@ -1240,11 +1240,7 @@ Namespace UI
 
         Protected Overrides Sub OnClick(e As EventArgs)
             If Not ClickAction Is Nothing Then ClickAction.Invoke()
-
-            If Not ContextMenuStrip Is Nothing Then
-                ContextMenuStrip.Show(Me, 0, Height)
-            End If
-
+            If Not ContextMenuStrip Is Nothing Then ContextMenuStrip.Show(Me, 0, Height)
             MyBase.OnClick(e)
         End Sub
 

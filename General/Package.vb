@@ -40,7 +40,14 @@ Public Class Package
     Shared Property MP4Box As New MP4BoxPackage
     Shared Property MPC As New MPCPackage
     Shared Property NicAudio As New NicAudioPackage
-    Shared Property NVEncC As New NVEncCPackage
+
+    Shared Property NVEncC As Package = Add(New Package With {
+        .Name = "NVEncC",
+        .Filename = "NVEncC64.exe",
+        .WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!2293",
+        .Description = "nvidia GPU accelerated H.264/H.265 encoder.",
+        .HelpFile = "help.txt"})
+
     Shared Property ProjectX As New ProjectXPackage
     Shared Property qaac As New qaacPackage
     Shared Property TDeint As New TDeintPackage
@@ -121,13 +128,13 @@ Public Class Package
         .HelpFile = "help.txt",
         .WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!482"}
 
-    Shared Property VCEEncC As New Package With {
+    Shared Property VCEEncC As Package = Add(New Package With {
         .Name = "VCEEncC",
         .Filename = "VCEEncC64.exe",
         .Description = "AMD GPU accelerated H.264 encoder.",
         .HelpFile = "help.txt",
         .IsRequiredFunc = Function() TypeOf p.VideoEncoder Is AMDEncoder,
-        .WebURL = "https://onedrive.live.com/?id=6BDD4375AC8933C6!516&cid=6BDD4375AC8933C6"}
+        .WebURL = "https://onedrive.live.com/?id=6BDD4375AC8933C6!516&cid=6BDD4375AC8933C6"})
 
     Public Shared DGDecodeNV As New PluginPackage With {
         .Name = "DGDecodeNV",
@@ -147,16 +154,16 @@ Public Class Package
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .HelpFileFunc = Function(engine) If(engine = ScriptEngine.AviSynth, "ffms2-avisynth.md", "ffms2-vapoursynth.md"),
         .AviSynthFilterNames = {"FFVideoSource", "FFAudioSource"},
-        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")")},
+        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"", colorspace = ""YV12"")")},
         .VapourSynthFilterNames = {"ffms2"},
         .VapourSynthFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%temp_file%.ffindex"")")}}
 
-    Shared Sub Add(pack As Package)
+    Shared Function Add(pack As Package) As Package
         Items(pack.ID) = pack
-    End Sub
+        Return pack
+    End Function
 
     Shared Sub New()
-        Add(VCEEncC)
         Add(temporalsoften)
         Add(scenechange)
         Add(Python)
@@ -185,7 +192,6 @@ Public Class Package
         Add(MP4Box)
         Add(MPC)
         Add(NicAudio)
-        Add(NVEncC)
         Add(ProjectX)
         Add(qaac)
         Add(QSVEncC)
@@ -400,7 +406,7 @@ Public Class Package
             .WebURL = "http://forum.doom9.org/showthread.php?t=170083",
             .HelpFile = "Readme.txt",
             .Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field.",
-            .AviSynthFilterNames = {"nnedi3"},
+            .AviSynthFilterNames = {"nnedi3", "nnedi3_rpow2"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "nnedi3", "nnedi3(field = 1)")}})
 
         Add(New PluginPackage With {
@@ -1328,18 +1334,6 @@ Public Class BDSup2SubPackage
         LaunchName = Filename
         WebURL = "http://forum.doom9.org/showthread.php?p=1613303"
         Description = "Converts Blu-ray subtitles to other formats like VobSub."
-    End Sub
-End Class
-
-Public Class NVEncCPackage
-    Inherits Package
-
-    Sub New()
-        Name = "NVEncC"
-        Filename = "NVEncC64.exe"
-        WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!2293"
-        Description = "nvidia GPU accelerated H.264/H.265 encoder."
-        HelpFile = "help.txt"
     End Sub
 End Class
 

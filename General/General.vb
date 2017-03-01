@@ -750,18 +750,12 @@ table {
         If stripOnly Then
             If value.Contains("[") Then
                 Dim re As New Regex("\[(.+?) (.+?)\]")
-
-                If re.IsMatch(value) Then
-                    value = re.Replace(value, "$2")
-                End If
+                If re.IsMatch(value) Then value = re.Replace(value, "$2")
             End If
 
             If value.Contains("'''") Then
                 Dim re As New Regex("'''(.+?)'''")
-
-                If re.IsMatch(value) Then
-                    value = re.Replace(value, "$1")
-                End If
+                If re.IsMatch(value) Then value = re.Replace(value, "$1")
             End If
         Else
             If value.Contains("[") Then

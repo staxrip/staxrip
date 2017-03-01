@@ -1,4 +1,5 @@
 Imports System.Drawing.Drawing2D
+Imports System.Drawing.Text
 Imports Microsoft.Win32
 
 Class ToolStripRendererEx
@@ -68,13 +69,11 @@ Class ToolStripRendererEx
     End Sub
 
     Protected Overloads Overrides Sub OnRenderItemText(e As ToolStripItemTextRenderEventArgs)
-        If TypeOf e.Item Is ToolStripButton Then
-            e.Graphics.TextRenderingHint = Text.TextRenderingHint.ClearTypeGridFit
-        End If
+        e.Graphics.TextRenderingHint = TextRenderingHint.AntiAlias
 
         If TypeOf e.Item Is ToolStripMenuItem AndAlso Not TypeOf e.Item.Owner Is MenuStrip Then
-            Dim r = e.TextRectangle 'TextAlign don't work
-            TextOffset = r.Height
+            Dim r = e.TextRectangle
+            TextOffset = CInt(e.Item.Height * 0.9)
             e.TextRectangle = New Rectangle(TextOffset, CInt((e.Item.Height - r.Height) / 2), r.Width, r.Height)
         End If
 

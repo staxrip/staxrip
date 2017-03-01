@@ -12,6 +12,7 @@ Friend Class Strings
     Public Shared DGDecNV As String = "DGDecNV is a shareware AviSynth source filter using NVIDIA hardware acceleration. DGIndexNV can be configured at Tools > Setting > Demux. DGDecNV is not included so must be downloaded manually."
     Public Shared DGDecIM As String = "DGDecIM is a shareware AviSynth source filter using Intel powered hardware acceleration. DGIndexIM can be enabled and configured at Tools/Setting/Demux. Which file types DGIndexIM handles can be configured. DGIndexIM can demux audio with proper av sync."
     Public Shared DGMPGDec As String = "StaxRip x64 uses DGIndex only for demuxing because the AviSynth source filter does not work on Win10. DGIndex can be enabled at Tools/Settings/Demuxing. Which file types DGIndex handles can be configured. DGIndex can process TS keeping audio in sync, an alternative method to process TS is using dsmux from Haali splitter which converts TS to MKV, it does this with better AV sync then mkvmerge. MPEG-2 can also be processed with ProjectX."
+    Public Shared DonationsURL As String = "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L7R6AKUHJQLM6&lc=GB&no_note=1&cn=Message%3a&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"
 
     Friend Shared Intel As String = <div>
                                         <b>CBR: constant bitrate control algorithm</b>

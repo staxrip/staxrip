@@ -330,7 +330,7 @@ Public Class VideoScript
 
         Dim script As New TargetVideoScript("AviSynth")
         script.Engine = ScriptEngine.AviSynth
-        script.Filters.Add(New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")"))
+        script.Filters.Add(New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"", colorspace = ""YV12"")"))
         script.Filters.Add(New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", False))
         script.Filters.Add(New VideoFilter("Field", "TDeint", "TDeint()", False))
         script.Filters.Add(New VideoFilter("Noise", "RemoveGrain", "RemoveGrain()", False))

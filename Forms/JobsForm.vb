@@ -201,12 +201,10 @@ Friend Class JobsForm
         Dim pad = New Padding(CInt(bnUp.Width / 8))
 
         bnUp.Padding = pad
-        bnUp.ZoomImage = My.Resources.ArrowLeft
-        bnUp.ZoomImage.RotateFlip(RotateFlipType.Rotate90FlipNone)
+        bnUp.ZoomImage = ImageHelp.GetSymbolImage(Symbol.Up)
 
         bnDown.Padding = pad
-        bnDown.ZoomImage = My.Resources.ArrowLeft
-        bnDown.ZoomImage.RotateFlip(RotateFlipType.Rotate270FlipNone)
+        bnDown.ZoomImage = ImageHelp.GetSymbolImage(Symbol.Down)
 
         KeyPreview = True
 

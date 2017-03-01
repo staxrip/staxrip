@@ -156,7 +156,7 @@ Public Class x265Encoder
                                         SaveProfile(enc)
                                     End Sub
 
-            f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
+            ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction).Symbol = Symbol.Save
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = newParams
@@ -387,7 +387,7 @@ Public Class x265Params
     Property qgSize As New OptionParam With {
         .Switch = "--qg-size",
         .Text = "QG Size:",
-        .Options = {"64", "32", "16"},
+        .Options = {"64", "32", "16", "8"},
         .InitValue = 1}
 
     Property qpstep As New NumParam With {

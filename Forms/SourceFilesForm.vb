@@ -1,9 +1,5 @@
 Imports StaxRip.UI
 
-Imports System.Text.RegularExpressions
-
-Imports VB6 = Microsoft.VisualBasic
-
 Class SourceFilesForm
     Inherits DialogBase
 

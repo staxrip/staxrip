@@ -340,19 +340,16 @@ Class ProfilesForm
         Dim pad = New Padding(CInt(bnLeft.Width / 8))
 
         bnLeft.Padding = pad
-        bnLeft.ZoomImage = My.Resources.ArrowLeft
+        bnLeft.ZoomImage = ImageHelp.GetSymbolImage(Symbol.Back)
 
         bnUp.Padding = pad
-        bnUp.ZoomImage = My.Resources.ArrowLeft
-        bnUp.ZoomImage.RotateFlip(RotateFlipType.Rotate90FlipNone)
+        bnUp.ZoomImage = ImageHelp.GetSymbolImage(Symbol.Up)
 
         bnRight.Padding = pad
-        bnRight.ZoomImage = My.Resources.ArrowLeft
-        bnRight.ZoomImage.RotateFlip(RotateFlipType.Rotate180FlipNone)
+        bnRight.ZoomImage = ImageHelp.GetSymbolImage(Symbol.Forward)
 
         bnDown.Padding = pad
-        bnDown.ZoomImage = My.Resources.ArrowLeft
-        bnDown.ZoomImage.RotateFlip(RotateFlipType.Rotate270FlipNone)
+        bnDown.ZoomImage = ImageHelp.GetSymbolImage(Symbol.Down)
 
         TipProvider.SetTip("Adds all default profiles.", bnRestore)
         TipProvider.SetTip("Moves items up, multiselect is available.", "Up", bnUp)

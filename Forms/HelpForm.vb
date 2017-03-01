@@ -25,13 +25,13 @@ Class HelpForm
         Me.Browser.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Browser.Location = New System.Drawing.Point(0, 0)
         Me.Browser.Name = "Browser"
-        Me.Browser.Size = New System.Drawing.Size(960, 651)
+        Me.Browser.Size = New System.Drawing.Size(1218, 791)
         Me.Browser.TabIndex = 0
         '
         'HelpForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.ClientSize = New System.Drawing.Size(960, 651)
+        Me.ClientSize = New System.Drawing.Size(1218, 791)
         Me.Controls.Add(Me.Browser)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)

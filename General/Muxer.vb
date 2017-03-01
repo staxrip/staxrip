@@ -249,7 +249,7 @@ Class MP4Muxer
     End Function
 
     Sub AddAudio(ap As AudioProfile, args As StringBuilder)
-        If File.Exists(ap.File) AndAlso IsSupported(ap.OutputFileType) Then
+        If File.Exists(ap.File) AndAlso IsSupported(ap.File.Ext) AndAlso IsSupported(ap.OutputFileType) Then
             args.Append(" -add """ + ap.File)
 
             If ap.HasStream AndAlso Filepath.GetExtFull(ap.File) = ".mp4" Then
@@ -526,7 +526,7 @@ Class MkvMuxer
     End Function
 
     Sub AddAudioArgs(ap As AudioProfile, args As StringBuilder)
-        If File.Exists(ap.File) AndAlso IsSupported(ap.OutputFileType) Then
+        If File.Exists(ap.File) AndAlso IsSupported(ap.File.Ext) AndAlso IsSupported(ap.OutputFileType) Then
             Dim tid = 0
             Dim isCombo As Boolean
 

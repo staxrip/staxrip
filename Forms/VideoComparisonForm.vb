@@ -253,7 +253,7 @@ Class VideoComparisonForm
             Else
                 Dim cachePath = Folder.Temp + Guid.NewGuid.ToString + ".ffindex"
                 AddHandler Disposed, Sub() FileHelp.Delete(cachePath)
-                avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """)"))
+                avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """, colorspace = ""YV12"")"))
 
                 Try
                     g.ffmsindex(sourePath, cachePath, False, True)
@@ -348,6 +348,7 @@ Class VideoComparisonForm
             Dim ret = AVI.GetBitmap
 
             Using g = Graphics.FromImage(ret)
+                g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
                 Dim text = Filepath.GetBase(SourceFile)
                 Dim fontSize = ret.Height \ 100
                 If fontSize < 10 Then fontSize = 10

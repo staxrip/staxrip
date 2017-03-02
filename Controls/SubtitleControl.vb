@@ -183,6 +183,7 @@ Class SubtitleControl
         Text = "Subtitles"
 
         dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+        dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
         dgv.AutoGenerateColumns = False
         dgv.ShowCellToolTips = False
         dgv.AllowUserToResizeRows = False

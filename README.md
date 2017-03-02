@@ -6,7 +6,7 @@ Multiformat video encoding application.
 
 - Handles common input formats and allows to config how files are loaded and processed
 - x264, x265, VP9 and XVID encoding 
-- AMD VCE H.264 encoding
+- AMD VCE H.264, H.265 encoding
 - Intel Quick Sync H.264/H.265/MPEG-2 encoding
 - NVIDIA H.264/H.265 encoding
 - Output Formats: AVI, MP4, MKV, WEBM

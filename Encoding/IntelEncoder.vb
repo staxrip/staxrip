@@ -178,8 +178,9 @@ Public Class IntelEncoder
                         New BoolParam With {.Switch = "--weightb", .Text = "B-Frame Weight Prediction"},
                         New BoolParam With {.Switch = "--weightp", .Text = "P-Frame Weight Prediction"})
                     Add("Profile",
-                        New OptionParam With {.Switch = "--profile", .Text = "Profile:", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "Baseline", "Main", "High"}},
-                        New OptionParam With {.Switch = "--profile", .Name = "ProfileMPEG2", .Text = "Profile:", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "Simple", "Main", "High"}},
+                        New OptionParam With {.Switch = "--profile", .Text = "Profile:", .Name = "ProfileH264", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "baseline", "main", "high"}},
+                        New OptionParam With {.Switch = "--profile", .Text = "Profile:", .Name = "ProfileH265", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "main", "main10"}},
+                        New OptionParam With {.Switch = "--profile", .Text = "Profile:", .Name = "ProfileMPEG2", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "simple", "main", "high"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelHEVC", .Text = "Level:", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Switch = "--level", .Text = "Level:", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelMPEG2", .Text = "Level:", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "low", "main", "high", "High1440"}},

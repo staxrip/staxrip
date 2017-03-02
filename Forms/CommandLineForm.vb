@@ -256,27 +256,57 @@ Class CommandLineForm
         End If
     End Sub
 
-    Private LastHighlightedControl As Control
-
     Sub Highlight(c As Control)
-        If Not LastHighlightedControl Is Nothing Then
-            LastHighlightedControl.Font = New Font(c.Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Regular)
-            LastHighlightedControl.ForeColor = Color.Black
-        End If
-
-        c.Font = New Font(c.Font.FontFamily, 11 * s.UIScaleFactor, FontStyle.Bold)
-        c.ForeColor = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0.1)
-        LastHighlightedControl = c
-        ResetFontAsync(c)
+        Task.Run(Sub() HighlightAsync(c))
     End Sub
 
-    Async Sub ResetFontAsync(c As Control)
-        Await Task.Run(Sub() Thread.Sleep(1000))
+    Private BlockHighlight As Boolean
+    Private EarlyExit As Boolean
 
-        If Not c.IsDisposed AndAlso Not c.Disposing Then
-            c.Font = New Font(c.Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Regular)
-            c.ForeColor = Color.Black
-        End If
+    Sub HighlightAsync(c As Control)
+        While BlockHighlight
+            EarlyExit = True
+            Thread.Sleep(1)
+        End While
+
+        EarlyExit = False
+        BlockHighlight = True
+
+        Try
+            Dim size As Double = 9
+
+            For x = 0 To 30
+                If EarlyExit Then Exit For
+                Thread.Sleep(1)
+                size += 0.1
+                Dim tempSize = size
+                Invoke(Sub()
+                           c.Font = New Font(c.Font.FontFamily, CSng(tempSize * s.UIScaleFactor), FontStyle.Bold)
+                           c.ForeColor = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0.1)
+                       End Sub)
+            Next
+
+            For x = 0 To 30
+                If EarlyExit Then Exit For
+                Thread.Sleep(1)
+                size -= 0.1
+                Dim tempSize = size
+                Invoke(Sub()
+                           c.Font = New Font(c.Font.FontFamily, CSng(tempSize * s.UIScaleFactor), FontStyle.Bold)
+                           c.ForeColor = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0.1)
+                       End Sub)
+            Next
+        Finally
+            Try
+                Invoke(Sub()
+                           c.Font = New Font(c.Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Regular)
+                           c.ForeColor = Color.Black
+                       End Sub)
+            Catch
+            End Try
+        End Try
+
+        BlockHighlight = False
     End Sub
 
     Sub UpdateSearchComboBox()

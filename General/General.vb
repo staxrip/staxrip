@@ -135,21 +135,17 @@ Class Folder
                     Dim folders As New HashSet(Of String)
 
                     If Directory.Exists(Folder.Home + "Google Drive") Then
-                        folders.Add(Folder.Home + "Google Drive\Apps\Settings\StaxRip\")
+                        folders.Add(Folder.Home + "Google Drive\Apps\Settings\StaxRip")
                     End If
 
                     If Directory.Exists(Folder.Home + "OneDrive") Then
                         folders.Add(Folder.Home + "OneDrive\Apps\Settings\StaxRip")
                     End If
 
-                    folders.Add(Folder.AppDataCommon + "StaxRip x64")
-                    folders.Add(Folder.AppDataLocal + "StaxRip x64")
-                    folders.Add(Folder.AppDataRoaming + "StaxRip x64")
+                    folders.Add(Folder.AppDataCommon + "StaxRip")
+                    folders.Add(Folder.AppDataLocal + "StaxRip")
+                    folders.Add(Folder.AppDataRoaming + "StaxRip")
                     folders.Add(Folder.Startup + "Settings")
-
-                    For Each location In Registry.CurrentUser.GetValueNames("Software\StaxRip\SettingsLocation")
-                        If Directory.Exists(location) Then folders.Add(location)
-                    Next
 
                     For Each folder In folders.Sort
                         td.AddCommandLink(folder, folder)
@@ -167,18 +163,18 @@ Class Folder
                             If d.ShowDialog = DialogResult.OK Then
                                 dir = d.SelectedPath
                             Else
-                                dir = Folder.AppDataCommon + "StaxRip x64"
+                                dir = Folder.AppDataCommon + "StaxRip"
                             End If
                         End Using
                     ElseIf dir = "" Then
-                        dir = Folder.AppDataCommon + "StaxRip x64"
+                        dir = Folder.AppDataCommon + "StaxRip"
                     End If
 
                     If Not Directory.Exists(dir) Then
                         Try
                             Directory.CreateDirectory(dir)
                         Catch
-                            dir = Folder.AppDataCommon + "StaxRip x64"
+                            dir = Folder.AppDataCommon + "StaxRip"
                             If Not Directory.Exists(dir) Then Directory.CreateDirectory(dir)
                         End Try
                     End If

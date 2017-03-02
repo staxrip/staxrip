@@ -72,7 +72,7 @@ Namespace UI
         End Sub
 
         Sub Add(path As String, methodName As String, keyData As Keys, params As Object())
-            Add(path, methodName, Keys.None, Symbol.None, params)
+            Add(path, methodName, keyData, Symbol.None, params)
         End Sub
 
         Sub Add(path As String, methodName As String, params As Object())

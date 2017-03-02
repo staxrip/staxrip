@@ -688,7 +688,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\" />
     <Folder Include="bin\" />
     <Folder Include="My Project\DataSources\" />
   </ItemGroup>

@@ -354,6 +354,7 @@ Class MuxerForm
         CmdlControl.tb.Text = muxer.AdditionalSwitches
         tc.SelectedIndex = s.Storage.GetInt("last selected muxer tab")
 
+        dgvAudio.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
         dgvAudio.MultiSelect = False
         dgvAudio.SelectionMode = DataGridViewSelectionMode.FullRowSelect
         dgvAudio.AllowUserToResizeRows = False

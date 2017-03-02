@@ -602,8 +602,7 @@ Namespace UI
                 End If
 
                 Dim mi = ActionMenuItem.Add(Of Symbol)(cmsSymbol.Items, path, AddressOf HandleSymbol, symbol)
-                mi.ImageScaling = ToolStripItemImageScaling.None
-                SetImage(symbol, mi)
+                mi.Symbol = symbol
                 Application.DoEvents()
             Next
         End Sub

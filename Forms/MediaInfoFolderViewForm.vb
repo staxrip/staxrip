@@ -70,9 +70,13 @@ Class MediaInfoFolderViewForm
 
         AddHandler lv.MouseDoubleClick, Sub() ShowMediaInfo()
 
-        For Each i In {"Filename", "Type", "Codec", "Ratio", "Dimension", "Bitrate",
-                       "Duration", "Filesize", "Framerate", "Audiocodec", "Subtitle Format",
-                       "Folder", "Scan Type", "Interlacement", "Colorimetry", "Profile"}
+        For Each i In {
+            " Path ", " Type ", " Codec ", " DAR ",
+            " Width ", " Height ", " Bitrate ",
+            " Duration ", " Filesize ", " Framerate ",
+            " Scan Type ", " Interlacement ", " Colorimetry ",
+            " Color Primaries ", " Profile ", " Audiocodec ",
+            " Subtitle Format "}
 
             lv.Columns.Add(i)
         Next
@@ -89,7 +93,7 @@ Class MediaInfoFolderViewForm
             If FileTypes.Audio.Contains(i.Ext) OrElse FileTypes.Video.Contains(i.Ext) Then
                 Files.Add(i)
             Else
-                hs.Add(i.Ext)
+                If i.Ext <> "ini" Then hs.Add(i.Ext)
             End If
         Next
 
@@ -109,6 +113,57 @@ Class MediaInfoFolderViewForm
         cms.Add("Copy path to clipboard", Sub() Clipboard.SetText(pathFunc()), Keys.C, enabledFunc)
         cms.Add("Open with StaxRip", Sub() g.MainForm.OpenVideoSourceFile(pathFunc()), Keys.O, enabledFunc)
         cms.Add("Save table as CSV", AddressOf SaveCSV, Keys.S, enabledFunc)
+    End Sub
+
+    Sub Populate()
+        For x = 0 To Files.Count - 1
+            If Abort Then Exit For
+
+            Dim fp = Files(x)
+            Dim codec = MediaInfo.GetVideoCodec(fp)
+            If codec = "" Then Continue For
+
+            Using mi As New MediaInfo(fp)
+                Dim audioCodecs = MediaInfo.GetAudioCodecs(fp).Replace(" ", "")
+
+                Dim item As New ListViewItemEx
+                item.Text = " " + fp + " "
+                item.Tag = item.Text
+                item.Path = fp
+
+                Dim width = mi.GetInfo(MediaInfoStreamKind.Video, "Width")
+                Dim height = mi.GetInfo(MediaInfoStreamKind.Video, "Height")
+
+                item.SubItems.Add(GetSubItem(" " + fp.Ext + " "))
+                item.SubItems.Add(GetSubItem(" " + codec + " "))
+                item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "DisplayAspectRatio") + " "))
+                item.SubItems.Add(GetSubItem(" " + width, width.ToInt))
+                item.SubItems.Add(GetSubItem(" " + height, height.ToInt))
+                item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "BitRate/String") + " ", mi.GetInfo(MediaInfoStreamKind.Video, "BitRate").ToInt))
+                item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.General, "Duration/String") + " ", mi.GetInfo(MediaInfoStreamKind.General, "Duration").ToInt))
+                item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.General, "FileSize/String") + " ", CLng(mi.GetInfo(MediaInfoStreamKind.General, "FileSize"))))
+                item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "FrameRate")))
+                item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "ScanType") + " "))
+                item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "Interlacement") + " "))
+                item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "Colorimetry") + " "))
+                item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "colour_primaries") + " "))
+                item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "Format_Profile") + " "))
+                item.SubItems.Add(GetSubItem(" " + audioCodecs + " "))
+                item.SubItems.Add(GetSubItem(" " + mi.GetGeneral("Text_Format_List") + " "))
+
+                BeginInvoke(Sub()
+                                lv.Items.Add(item)
+                                If lv.Items.Count = 9 Then lv.AutoResizeColumns(False)
+                            End Sub)
+            End Using
+        Next
+
+        Invoke(Sub()
+                   lv.ListViewItemSorter = New ListViewEx.ColumnSorter
+                   lv.AutoResizeColumns(False)
+                   Completed = True
+                   If Abort Then Close()
+               End Sub)
     End Sub
 
     Sub SaveCSV()
@@ -142,58 +197,6 @@ Class MediaInfoFolderViewForm
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
         Task.Run(AddressOf Populate)
-    End Sub
-
-    Sub Populate()
-        Dim kind = MediaInfoStreamKind.Video
-
-        For x = 0 To Files.Count - 1
-            If Abort Then Exit For
-
-            Dim fp = Files(x)
-            Dim codec = MediaInfo.GetVideoCodec(fp)
-            If codec = "" Then Continue For
-
-            Using mi As New MediaInfo(fp)
-                Dim audioCodecs = MediaInfo.GetAudioCodecs(fp).Replace(" ", "")
-
-                Dim item As New ListViewItemEx
-                item.Text = Path.GetFileName(fp)
-                item.Tag = item.Text
-                item.Path = fp
-
-                Dim width = mi.GetInfo(kind, "Width")
-                Dim height = mi.GetInfo(kind, "Height")
-
-                item.SubItems.Add(GetSubItem(Filepath.GetExt(fp).ToUpper))
-                item.SubItems.Add(GetSubItem(codec))
-                item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "DisplayAspectRatio")))
-                item.SubItems.Add(GetSubItem(width + " x " + height, width.ToInt * height.ToInt))
-                item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "BitRate/String"), mi.GetInfo(kind, "BitRate").ToInt))
-                item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "Duration/String"), mi.GetInfo(kind, "Duration").ToInt))
-                item.SubItems.Add(GetSubItem(mi.GetInfo(MediaInfoStreamKind.General, "FileSize/String"), CLng(mi.GetInfo(MediaInfoStreamKind.General, "FileSize"))))
-                item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "FrameRate/String"), mi.GetInfo(kind, "FrameRate").ToSingle))
-                item.SubItems.Add(GetSubItem(audioCodecs))
-                item.SubItems.Add(GetSubItem(mi.GetGeneral("Text_Format_List")))
-                item.SubItems.Add(Filepath.GetDir(fp).TrimEnd("\"c))
-                item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "ScanType")))
-                item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "Interlacement")))
-                item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "Colorimetry")))
-                item.SubItems.Add(GetSubItem(mi.GetInfo(kind, "Format_Profile")))
-
-                BeginInvoke(Sub()
-                                lv.Items.Add(item)
-                                If lv.Items.Count = 9 Then lv.AutoResizeColumns(False)
-                            End Sub)
-            End Using
-        Next
-
-        Invoke(Sub()
-                   lv.ListViewItemSorter = New ListViewEx.ColumnSorter
-                   lv.AutoResizeColumns(False)
-                   Completed = True
-                   If Abort Then Close()
-               End Sub)
     End Sub
 
     Function GetSubItem(text As String, Optional sort As Object = Nothing) As ListViewItem.ListViewSubItem

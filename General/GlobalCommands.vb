@@ -221,7 +221,7 @@ Public Class GlobalCommands
         --vpp-delogo-cb --vpp-delogo-cr --vpp-delogo-depth --vpp-delogo-pos
         --vpp-delogo-select --vpp-delogo-y --check-avversion --check-codecs
         --check-encoders --check-decoders --check-formats --check-protocols
-        --check-filters --device --input --output --raw --avs --vpy --vpy-mt
+        --check-filters --input --output --raw --avs --vpy --vpy-mt
         --avcuvid-analyze --audio-source --audio-file --seek --format --audio-copy
         --audio-copy --audio-codec --vpp-perf-monitor
         --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream

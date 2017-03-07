@@ -524,7 +524,7 @@ Public Class Package
                                        "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.GSMC",
                                        "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD",
                                        "havsfunc.LSFmod", "havsfunc.GrainFactory3"},
-            .Dependencies = {"fmtconv", "mvtools", "nnedi3", "scenechange", "temporalsoften", "mvsfunc"},
+            .Dependencies = {"fmtconv", "mvtools", "nnedi3", "scenechange", "temporalsoften", "mvsfunc", "KNLMeansCL"},
             .Description = "Various popular AviSynth scripts ported to VapourSynth.",
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/havsfunc",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=166582"})

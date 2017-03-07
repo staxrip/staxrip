@@ -58,19 +58,19 @@ Namespace UI
             Next
         End Sub
 
-        Private CurrentDPIDimensionValue As SizeF?
+        Private CurrentDPIDimensionValue As SizeF
 
         <Browsable(False)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         ReadOnly Property CurrentDPIDimension As SizeF
             Get
-                If Not CurrentDPIDimensionValue.HasValue Then
+                If CurrentDPIDimensionValue = SizeF.Empty Then
                     Using g = CreateGraphics()
                         CurrentDPIDimensionValue = New SizeF(g.DpiX, g.DpiY)
                     End Using
                 End If
 
-                Return CurrentDPIDimensionValue.Value
+                Return CurrentDPIDimensionValue
             End Get
         End Property
 

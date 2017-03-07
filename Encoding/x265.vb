@@ -135,7 +135,7 @@ Public Class x265Encoder
     End Sub
 
     Overloads Function GetArgs(pass As Integer, script As VideoScript, Optional includePaths As Boolean = True) As String
-        Return Params.GetArgs(pass, script, Filepath.GetDirAndBase(OutputPath) + OutputExtFull, includePaths, True)
+        Return Params.GetArgs(pass, script, OutputPath.DirAndBase + OutputExtFull, includePaths, True)
     End Function
 
     Overrides Sub ShowConfigDialog()
@@ -776,6 +776,14 @@ Public Class x265Params
         .IntegerValue = True,
         .Options = {"Default", "Summary", "Frame"}}
 
+    Property multi_pass_opt_analysis As New BoolParam() With {
+        .Switch = "--multi-pass-opt-analysis",
+        .Text = "Multipass analysis refinement along with multipass ratecontrol"}
+
+    Property multi_pass_opt_distortion As New BoolParam() With {
+        .Switch = "--multi-pass-opt-distortion",
+        .Text = "Multipass refinement of qp based on distortion data"}
+
     Private ItemsValue As List(Of CommandLineParam)
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -807,8 +815,8 @@ Public Class x265Params
                     IPRatio, PBRatio, Cplxblur)
                 Add("Rate Control 3",
                     CUtree, Lossless, StrictCBR, rcGrain,
-                    New BoolParam() With {.Switch = "--multi-pass-opt-analysis", .Text = "Multipass analysis refinement along with multipass ratecontrol"},
-                    New BoolParam() With {.Switch = "--multi-pass-opt-distortion", .Text = "Enable multipass refinement of qp based on distortion data"},
+                    multi_pass_opt_analysis,
+                    multi_pass_opt_distortion,
                     New BoolParam() With {.Switch = "--aq-motion", .Text = "AQ Motion"})
                 Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP,
                     New BoolParam With {.Switch = "--analyze-src-pics", .NoSwitch = "--no-analyze-src-pics", .Text = "Analyze SRC Pics"})
@@ -910,7 +918,7 @@ Public Class x265Params
                                                 includeExecutable As Boolean,
                                                 Optional pass As Integer = 1) As String
 
-        Return GetArgs(1, p.Script, Filepath.GetDirAndBase(p.VideoEncoder.OutputPath) +
+        Return GetArgs(1, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
                        p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
     End Function
 
@@ -950,6 +958,10 @@ Public Class x265Params
 
         If Mode.Value = x265RateMode.TwoPass OrElse Mode.Value = x265RateMode.ThreePass Then
             sb.Append(" --pass " & pass)
+
+            If includePaths AndAlso (multi_pass_opt_distortion.Value OrElse multi_pass_opt_analysis.Value) Then
+                sb.Append(" --analysis-file " + targetPath.ChangeExt("analysis").Quotes)
+            End If
         End If
 
         If Mode.Value = x265RateMode.SingleQuant Then

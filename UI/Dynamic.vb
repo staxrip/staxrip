@@ -53,7 +53,7 @@ Namespace UI
                     Return sourceValue
                 End If
 
-                Dim tc As TypeConverter = TypeDescriptor.GetConverter(gp.Value)
+                Dim tc = TypeDescriptor.GetConverter(gp.Value)
 
                 If Not tc Is Nothing Then
                     If tc.CanConvertFrom(GetType(String)) Then

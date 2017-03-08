@@ -25,13 +25,14 @@ Multiformat video encoding application.
 
 ## Requirements
 
-* [.NET 4.6.1](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
-* [Intel Skylake CPU](https://en.wikipedia.org/wiki/Skylake_%28microarchitecture%29) for HEVC/H.265 hardware encoding
-* [NVIDIA Maxwell gen2 card](https://en.wikipedia.org/wiki/Maxwell_%28microarchitecture%29#Second_generation_Maxwell_.28GM20x.29) for HEVC/H.265 hardware encoding
-* [Java](https://java.com/en/download) for ProjectX in case MPEG-2 files are opened
-* AviSynth+ x64, the installer is bundled with StaxRip x64
-* [VapourSynth x64](https://github.com/vapoursynth/vapoursynth/releases) as optional AviSynth+ alternative
-* [Python x64](https://www.python.org/downloads/windows) in case VapourSynth x64 is used
+- [.NET 4.6.1](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
+- [Intel Skylake CPU](https://en.wikipedia.org/wiki/Skylake_%28microarchitecture%29) for HEVC/H.265 hardware encoding
+- [NVIDIA Maxwell gen2 card](https://en.wikipedia.org/wiki/Maxwell_%28microarchitecture%29#Second_generation_Maxwell_.28GM20x.29) for HEVC/H.265 hardware encoding
+- [AMD Polaris card](http://www.amd.com/en-gb/innovations/software-technologies/radeon-polaris) for HEVC/H.265 hardware encoding
+- [Java](https://java.com/en/download) for ProjectX in case MPEG-2 files are opened
+- AviSynth+ x64, the installer is bundled with StaxRip x64
+- [VapourSynth x64](https://github.com/vapoursynth/vapoursynth/releases) as optional AviSynth+ alternative
+- [Python x64](https://www.python.org/downloads/windows) in case VapourSynth x64 is used
 
 ## Documentation
 

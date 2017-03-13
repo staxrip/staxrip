@@ -117,10 +117,10 @@ Public Class AviSynthListView
             Menu.Items.Add(New ActionMenuItem("Remove", AddressOf RemoveClick, "Removes the selected filter."))
         End If
 
-        Menu.Items.Add(New ActionMenuItem("Edit...", AddressOf ShowEditor, "Dialog to edit filters."))
+        Menu.Items.Add(New ActionMenuItem("Edit Code...", AddressOf ShowEditor, "Dialog to edit filters."))
+        Menu.Items.Add(New ActionMenuItem("Preview Code...", AddressOf CodePreview, "Script code preview."))
         Menu.Items.Add(New ActionMenuItem("Play", Sub() g.PlayScript(p.Script), "Plays the script with the AVI player.", p.SourceFile <> ""))
         Menu.Items.Add(New ActionMenuItem("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles."))
-        Menu.Items.Add(New ActionMenuItem("Code Preview...", AddressOf CodePreview, "Script code preview."))
 
         Dim setup As New MenuItemEx("Filter Setup")
         Menu.Items.Add(setup)

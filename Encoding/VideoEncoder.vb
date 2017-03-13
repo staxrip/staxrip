@@ -250,11 +250,9 @@ Public MustInherit Class VideoEncoder
         ret.Add(intel265)
 
         Dim nvidia264 As New NVIDIAEncoder()
-        nvidia264.Params.Mode.Value = 3
         ret.Add(nvidia264)
 
         Dim nvidia265 As New NVIDIAEncoder()
-        nvidia265.Params.Mode.Value = 3
         nvidia265.Params.Codec.Value = 1
         ret.Add(nvidia265)
 
@@ -504,7 +502,7 @@ Class BatchEncoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
+        Dim batchPath = p.TempDir + p.TargetFile.Base + "_encode.bat"
         Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Solve(CommandLines).Trim)
 
         Using proc As New Proc
@@ -557,7 +555,7 @@ Class BatchEncoder
         script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
         script.Synchronize()
 
-        Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_CompCheck.bat"
+        Dim batchPath = p.TempDir + p.TargetFile.Base + "_CompCheck.bat"
         Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Solve(CompCheckCommandLines))
         Log.WriteLine(batchCode + BR2)
 
@@ -629,7 +627,7 @@ Class NullEncoder
                         If streams.Count = 0 Then Return source
                         Dim stream = streams(0)
                         If stream.Extension = "" Then Throw New Exception("demuxing of video stream format is not implemented")
-                        Return p.TempDir + Filepath.GetBase(source) + "_out" + stream.Extension
+                        Return p.TempDir + source.Base + "_out" + stream.Extension
                 End Select
             End If
 

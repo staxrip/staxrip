@@ -47,7 +47,7 @@ Public Class x264Encoder
         p.Script.Synchronize()
 
         If p.Script.Engine = ScriptEngine.VapourSynth Then
-            Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_encode.bat"
+            Dim batchPath = p.TempDir + p.TargetFile.Base + "_encode.bat"
             Dim batchCode = Proc.WriteBatchFile(batchPath, Package.vspipe.Path.Quotes + " " + script.Path.Quotes + " - --y4m | " + Package.x264.Path.Quotes + " " + args)
 
             Using proc As New Proc

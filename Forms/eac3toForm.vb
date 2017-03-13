@@ -965,7 +965,7 @@ Class eac3toForm
             End If
 
             If i.IsChapters AndAlso cbChapters.Checked Then
-                r += " " & i.ID & ": """ + OutputFolder + baseName + "_Chapters.txt"""
+                r += " " & i.ID & ": """ + OutputFolder + baseName + "_chapters.txt"""
             End If
         Next
 

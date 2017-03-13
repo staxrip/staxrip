@@ -393,7 +393,7 @@ Class SubtitleControl
             Dim fp = st.Path
 
             If Filepath.GetExtFull(fp) = ".idx" Then
-                fp = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Temp.idx"
+                fp = p.TempDir + p.TargetFile.Base + "_temp.idx"
 
                 Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
                     st.IndexIDX.ToString).WriteANSIFile(fp)
@@ -415,7 +415,7 @@ Class SubtitleControl
 
                 Dim avs As New VideoScript
                 avs.Engine = p.Script.Engine
-                avs.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play." + avs.FileType
+                avs.Path = p.TempDir + p.TargetFile.Base + "_play." + avs.FileType
                 avs.Filters = p.Script.GetFiltersCopy
 
                 If avs.Engine = ScriptEngine.AviSynth Then
@@ -423,7 +423,7 @@ Class SubtitleControl
                         Dim insertCat = If(avs.IsFilterActive("Crop"), "Crop", "Source")
 
                         If Filepath.GetExtFull(st.Path) = ".idx" Then
-                            fp = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play.idx"
+                            fp = p.TempDir + p.TargetFile.Base + "_play.idx"
 
                             Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
                                 st.IndexIDX.ToString).WriteANSIFile(fp)

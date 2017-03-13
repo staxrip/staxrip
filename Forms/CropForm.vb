@@ -252,7 +252,7 @@ Class CropForm
 
         Dim doc As New VideoScript
         doc.Engine = p.Script.Engine
-        doc.Path = p.TempDir + p.Name + "_Crop." + doc.FileType
+        doc.Path = p.TempDir + p.Name + "_crop." + doc.FileType
         doc.Filters.Add(p.Script.GetFilter("Source").GetCopy)
         doc.Synchronize(True)
 

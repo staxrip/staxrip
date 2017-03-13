@@ -122,7 +122,7 @@ Public Class GlobalClass
     Sub PlayScript(doc As VideoScript, ap As AudioProfile)
         Dim script As New VideoScript
         script.Engine = doc.Engine
-        script.Path = p.TempDir + Filepath.GetBase(p.TargetFile) + "_Play." + script.FileType
+        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
         script.Filters = doc.GetFiltersCopy
 
         If script.Engine = ScriptEngine.AviSynth Then
@@ -621,7 +621,7 @@ Public Class GlobalClass
         End If
 
         Dim fp = If(File.Exists(p.SourceFile) AndAlso Directory.Exists(p.TempDir),
-                    p.TempDir + p.Name + "_StaxRip.log", Folder.Settings + "Log.txt")
+                    p.TempDir + p.Name + "_staxrip.log", Folder.Settings + "Log.txt")
 
         SyncLock p.Log
             p.Log.ToString.WriteUTF8File(fp)
@@ -1019,7 +1019,7 @@ Class Log
         If p.SourceFile <> "" Then
             SyncLock p.Log
                 If Directory.Exists(p.TempDir) Then
-                    p.Log.ToString.WriteUTF8File(p.TempDir + p.Name + "_StaxRip.log")
+                    p.Log.ToString.WriteUTF8File(p.TempDir + p.Name + "_staxrip.log")
                 End If
             End SyncLock
         End If
@@ -2005,7 +2005,7 @@ Class Macro
         If value.Contains("%working_dir%") Then value = value.Replace("%working_dir%", p.TempDir)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%temp_file%") Then value = value.Replace("%temp_file%", p.TempDir + Filepath.GetBase(p.SourceFile))
+        If value.Contains("%temp_file%") Then value = value.Replace("%temp_file%", p.TempDir + p.SourceFile.Base)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_name%") Then value = value.Replace("%source_name%", Filepath.GetBase(p.SourceFile))
@@ -2617,7 +2617,7 @@ Class Video
         If streams.Count = 0 Then Exit Sub
         Dim stream = streams(0)
         If stream.Extension = "" Then Throw New Exception("demuxing of video stream format is not implemented")
-        Dim outPath = p.TempDir + Filepath.GetBase(sourcefile) + "_out" + stream.Extension
+        Dim outPath = p.TempDir + sourcefile.Base + "_out" + stream.Extension
 
         Using proc As New Proc
             proc.Init("Demux video using mkvextract " + Package.mkvextract.Version, "Progress: ")

@@ -820,7 +820,6 @@ Class PreviewForm
         s.PreviewToggleInfos = Not s.PreviewToggleInfos
         Drawer.ShowInfos = s.PreviewToggleInfos
         Drawer.Draw()
-        GenericMenu.Check("ToggleInfos", s.PreviewToggleInfos)
     End Sub
 
     <Command("Shows the AviSynth script using the player currently associated with AVI files.")>

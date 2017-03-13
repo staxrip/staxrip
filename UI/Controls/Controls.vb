@@ -490,7 +490,6 @@ Namespace UI
                                     End Sub
 
             ContextMenuStrip = cms
-            AddHandler Disposed, Sub() ContextMenuStrip.Dispose()
         End Sub
 
         Protected Overrides Sub OnKeyDown(e As KeyEventArgs)

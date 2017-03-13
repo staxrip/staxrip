@@ -147,8 +147,8 @@ Class CommandLineDemuxer
             proc.Start()
 
             If Command?.Contains("DGIndex") Then
-                FileHelp.Move(Filepath.GetDirAndBase(p.SourceFile) + ".log", p.TempDir + Filepath.GetBase(p.SourceFile) + "_DG.log")
-                FileHelp.Move(p.TempDir + Filepath.GetBase(p.SourceFile) + ".demuxed.m2v", p.TempDir + Filepath.GetBase(p.SourceFile) + ".m2v")
+                FileHelp.Move(Filepath.GetDirAndBase(p.SourceFile) + ".log", p.TempDir + p.SourceFile.Base + "_dg.log")
+                FileHelp.Move(p.TempDir + p.SourceFile.Base + ".demuxed.m2v", p.TempDir + p.SourceFile.Base + ".m2v")
             End If
         End Using
     End Sub
@@ -210,10 +210,10 @@ Class MP4BoxDemuxer
             For Each i In subtitles
                 If Not i.Enabled Then Continue For
 
-                Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " " + i.Filename + i.Extension
+                Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.Extension
 
                 If outpath.Length > 259 Then
-                    outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(10) + " " + i.Filename.Shorten(20) + i.Extension
+                    outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(20) + i.Extension
                 End If
 
                 FileHelp.Delete(outpath)
@@ -306,10 +306,10 @@ Class mkvDemuxer
         For Each i In subtitles
             If Not i.Enabled Then Continue For
 
-            Dim outpath = p.TempDir + Filepath.GetBase(p.SourceFile) + " " + i.Filename + i.Extension
+            Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.Extension
 
             If outpath.Length > 259 Then
-                outpath = p.TempDir + Filepath.GetBase(p.SourceFile).Shorten(10) + " " + i.Filename.Shorten(10) + i.Extension
+                outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(10) + i.Extension
             End If
 
             arguments += " " & i.StreamOrder & ":""" + outpath + """"
@@ -371,7 +371,7 @@ Class mkvDemuxer
                 proc.Encoding = Encoding.UTF8
                 proc.File = Package.mkvextract.Path
                 proc.Arguments = "chapters " + p.SourceFile.Quotes + " --redirect-output " +
-                        (p.TempDir + p.SourceFile.Base + "_Chapters.xml").Quotes
+                        (p.TempDir + p.SourceFile.Base + "_chapters.xml").Quotes
                 proc.Start()
             End Using
         End If

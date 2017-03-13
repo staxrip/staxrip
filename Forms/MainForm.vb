@@ -2124,7 +2124,7 @@ Public Class MainForm
     Sub ExtractForcedVobSubSubtitles()
         For Each i In g.GetFilesInTempDirAndParent
             If Filepath.GetExtFull(i) = ".idx" AndAlso g.IsSourceSameOrSimilar(i) AndAlso
-                Not File.Exists(Filepath.GetDirAndBase(i) + "_Forced.idx") Then
+                Not File.Exists(Filepath.GetDirAndBase(i) + "_forced.idx") Then
 
                 Dim idxContent = File.ReadAllText(i, Encoding.Default)
 
@@ -2138,7 +2138,7 @@ Public Class MainForm
                     proc.Init("Extract forced subtitles if existing", "# ")
                     proc.WriteLine(Filepath.GetName(i) + BR2)
                     proc.File = Package.BDSup2SubPP.Path
-                    proc.Arguments = "--forced-only -o """ + Filepath.GetDirAndBase(i) + "_Forced.idx"" """ + i + """"
+                    proc.Arguments = "--forced-only -o """ + i.DirAndBase + "_forced.idx"" """ + i + """"
                     proc.AllowedExitCodes = {}
                     proc.Start()
                 End Using
@@ -2150,7 +2150,7 @@ Public Class MainForm
         If Not {"vob", "m2v"}.Contains(Filepath.GetExt(p.LastOriginalSourceFile)) Then Exit Sub
         Dim ifoPath = GetIfoFile()
         If ifoPath = "" Then Exit Sub
-        If File.Exists(p.TempDir + Filepath.GetBase(p.SourceFile) + ".idx") Then Exit Sub
+        If File.Exists(p.TempDir + p.SourceFile.Base + ".idx") Then Exit Sub
         Dim subtitleCount = MediaInfo.GetSubtitleCount(ifoPath)
 
         If subtitleCount > 0 Then
@@ -2173,13 +2173,13 @@ Public Class MainForm
                     If Math.Abs(p.SourceSeconds - ((hour * 60 ^ 2) + (min * 60) + sec)) < 30 Then
                         Dim args =
                             ifoPath + BR +
-                            p.TempDir + Filepath.GetBase(p.SourceFile) + BR &
+                            p.TempDir + p.SourceFile.Base + BR &
                             (i + 1) & BR +
                             "1" + BR +
                             "ALL" + BR +
                             "CLOSE"
 
-                        Dim fileContent = p.TempDir + Filepath.GetBase(p.TargetFile) + "_vsrip.txt"
+                        Dim fileContent = p.TempDir + p.TargetFile.Base + "_vsrip.txt"
                         args.WriteANSIFile(fileContent)
 
                         Using proc As New Proc
@@ -2207,7 +2207,7 @@ Public Class MainForm
 
             If p.BatchMode Then
                 If g.ProjectPath Is Nothing Then
-                    g.ProjectPath = p.TempDir + Filepath.GetBase(p.SourceFiles(0)) + ".srip"
+                    g.ProjectPath = p.TempDir + p.SourceFiles(0).Base + ".srip"
                 End If
 
                 SaveProjectPath(g.ProjectPath)
@@ -2941,7 +2941,7 @@ Public Class MainForm
             End If
 
             If codeLower.Contains("cachefile") Then
-                g.ffmsindex(p.SourceFile, p.TempDir + Filepath.GetBase(p.SourceFile) + ".ffindex")
+                g.ffmsindex(p.SourceFile, p.TempDir + p.SourceFile.Base + ".ffindex")
             Else
                 g.ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")
             End If
@@ -3429,7 +3429,7 @@ Public Class MainForm
             Dim doc As New VideoScript
             doc.Engine = p.Script.Engine
             doc.Filters = p.Script.GetFiltersCopy
-            doc.Path = p.TempDir + p.Name + "_Preview." + doc.FileType
+            doc.Path = p.TempDir + p.Name + "_preview." + doc.FileType
             doc.Synchronize(True)
 
             Dim f As New PreviewForm(doc)
@@ -3509,7 +3509,7 @@ Public Class MainForm
 
             If p.DeleteTempFilesDir AndAlso p.TempDir.EndsWith("_temp\") Then
                 Try
-                    FileHelp.Delete(p.TempDir + p.Name + "_StaxRip.log", VB6.FileIO.RecycleOption.SendToRecycleBin)
+                    FileHelp.Delete(p.TempDir + p.Name + "_staxrip.log", VB6.FileIO.RecycleOption.SendToRecycleBin)
                     Dim moreJobsToProcessInTempDir = JobsForm.GetJobs.Where(Function(a) a.Value AndAlso a.Key.Contains(p.TempDir))
 
                     If moreJobsToProcessInTempDir.Count = 0 Then
@@ -3536,7 +3536,7 @@ Public Class MainForm
             OpenProject(g.ProjectPath, False)
             ProcessForm.CloseProcessForm()
             g.ShowException(ex, Nothing, 100)
-            g.ShellExecute(g.GetTextEditor(), """" + p.TempDir + p.Name + "_StaxRip.log" + """")
+            g.ShellExecute(g.GetTextEditor(), """" + p.TempDir + p.Name + "_staxrip.log" + """")
         Catch ex As Exception
             Log.Save()
             g.OnException(ex)
@@ -4295,7 +4295,7 @@ Public Class MainForm
         ret.Add("Options", NameOf(ShowOptionsDialog), Keys.F8)
 
         ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F6, Symbol.MultiSelectLegacy)
-        ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Page, {"""%text_editor%"" ""%working_dir%%target_name%_StaxRip.log"""})
+        ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Page, {"""%text_editor%"" ""%working_dir%%target_name%_staxrip.log"""})
         ret.Add("Tools|Directories", Symbol.Folder)
         ret.Add("Tools|Directories|Source", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%source_dir%"""})
         ret.Add("Tools|Directories|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%working_dir%"""})

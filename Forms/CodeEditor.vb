@@ -2,7 +2,7 @@
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 
-Class ScriptingEditor
+Class CodeEditor
     Property ActiveTable As FilterTable
     Property Engine As ScriptEngine
 
@@ -84,7 +84,7 @@ Class ScriptingEditor
         If p.SourceFile = "" Then Exit Sub
         Dim doc As New VideoScript
         doc.Engine = Engine
-        doc.Path = p.TempDir + p.Name + "_Editor." + doc.FileType
+        doc.Path = p.TempDir + p.Name + "_editor." + doc.FileType
         doc.Filters = GetFilters()
 
         Dim errMsg = doc.GetErrorMessage
@@ -124,7 +124,7 @@ Class ScriptingEditor
         Property cbActive As New CheckBox
         Property Menu As New ContextMenuStripEx
         Property LastTextSize As Size
-        Property Editor As ScriptingEditor
+        Property Editor As CodeEditor
 
         Sub New()
             AutoSize = True
@@ -200,7 +200,7 @@ Class ScriptingEditor
 
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
             Menu.Form = FindForm()
-            Editor = DirectCast(Menu.Form, ScriptingEditor)
+            Editor = DirectCast(Menu.Form, CodeEditor)
             MyBase.OnHandleCreated(e)
         End Sub
 
@@ -504,7 +504,7 @@ Class ScriptingEditor
         Sub InsertClick(f As VideoFilter)
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim index = flow.Controls.IndexOf(Me)
-            Dim filterTable = ScriptingEditor.CreateFilterTable(f)
+            Dim filterTable = CodeEditor.CreateFilterTable(f)
             flow.SuspendLayout()
             flow.Controls.Add(filterTable)
             flow.Controls.SetChildIndex(filterTable, index)
@@ -513,7 +513,7 @@ Class ScriptingEditor
 
         Sub AddClick(f As VideoFilter)
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
-            Dim filterTable = ScriptingEditor.CreateFilterTable(f)
+            Dim filterTable = CodeEditor.CreateFilterTable(f)
             flow.Controls.Add(filterTable)
         End Sub
     End Class

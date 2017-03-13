@@ -1,7 +1,7 @@
 ﻿Imports StaxRip.UI
 
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class ScriptingEditor
+Partial Class CodeEditor
     Inherits DialogBase
 
     'Form overrides dispose to clean up the component list.
@@ -92,15 +92,15 @@ Partial Class ScriptingEditor
         Me.MainFlowLayoutPanel.Size = New System.Drawing.Size(814, 616)
         Me.MainFlowLayoutPanel.TabIndex = 1
         '
-        'ScriptingEditor
+        'CodeEditor
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.ClientSize = New System.Drawing.Size(826, 669)
         Me.Controls.Add(Me.MainTableLayoutPanel)
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(6)
-        Me.Name = "ScriptingEditor"
-        Me.Text = "Scripting Editor"
+        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.Name = "CodeEditor"
+        Me.Text = "Code Editor"
         Me.MainTableLayoutPanel.ResumeLayout(False)
         Me.MainTableLayoutPanel.PerformLayout()
         Me.FlowLayoutPanel1.ResumeLayout(False)

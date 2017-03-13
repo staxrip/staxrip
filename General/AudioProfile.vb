@@ -281,7 +281,7 @@ Public Class BatchAudioProfile
                 "cd /D """ + p.TempDir + """" + BR2 +
                 SolveMacros(CommandLines).Trim
 
-            Dim batchPath = p.TempDir + Filepath.GetBase(File) + "_audio.bat"
+            Dim batchPath = p.TempDir + File.Base + "_audio.bat"
             batchCode = Proc.WriteBatchFile(batchPath, batchCode)
 
             Using proc As New Proc

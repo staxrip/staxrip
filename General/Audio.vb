@@ -246,8 +246,8 @@ Class Audio
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
-        Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_na.wav"
-        d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_na.avs"
+        Dim wavPath = p.TempDir + ap.File.Base + "_cut_na.wav"
+        d.Path = p.TempDir + ap.File.Base + "_cut_na.avs"
         d.Filters.Insert(1, New VideoFilter(GetNicAudioCode(ap)))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
@@ -279,8 +279,8 @@ Class Audio
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
         d.RemoveFilter("Cutting")
-        Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeNicAudio.wav"
-        d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeNicAudio.avs"
+        Dim wavPath = p.TempDir + ap.File.Base + "_DecodeNicAudio.wav"
+        d.Path = p.TempDir + ap.File.Base + "_DecodeNicAudio.avs"
         d.Filters.Insert(1, New VideoFilter(GetNicAudioCode(ap)))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
@@ -351,7 +351,7 @@ Class Audio
         If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
         If Not FileTypes.eac3toInput.Contains(ap.File.Ext) Then Exit Sub
 
-        Dim outPath = p.TempDir + Filepath.GetBase(ap.File) + If(useFlac, ".flac", ".wav")
+        Dim outPath = p.TempDir + ap.File.Base + If(useFlac, ".flac", ".wav")
         Dim args = """" + ap.File + """ """ + outPath + """"
 
         If ap.Channels = 6 Then
@@ -383,7 +383,7 @@ Class Audio
 
     Shared Sub DecodeFfmpeg(ap As AudioProfile, Optional useFlac As Boolean = False)
         If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
-        Dim outPath = p.TempDir + Filepath.GetBase(ap.File) + If(useFlac, ".flac", ".wav")
+        Dim outPath = p.TempDir + ap.File.Base + If(useFlac, ".flac", ".wav")
         Dim args = "-i """ + ap.File + """"
 
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
@@ -416,8 +416,8 @@ Class Audio
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
         d.RemoveFilter("Cutting")
-        Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecDSS.wav"
-        d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecDSS.avs"
+        Dim wavPath = p.TempDir + ap.File.Base + "_DecDSS.wav"
+        d.Path = p.TempDir + ap.File.Base + "_DecDSS.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
@@ -445,13 +445,13 @@ Class Audio
         If Filepath.GetExtFull(ap.File) = ".wav" Then Exit Sub
         If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
-        Dim cachefile = p.TempDir + Filepath.GetBase(ap.File) + ".ffindex"
+        Dim cachefile = p.TempDir + ap.File.Base + ".ffindex"
         g.ffmsindex(ap.File, cachefile)
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
         d.RemoveFilter("Cutting")
-        Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeFFAudioSource.wav"
-        d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_DecodeFFAudioSource.avs"
+        Dim wavPath = p.TempDir + ap.File.Base + "_DecodeFFAudioSource.wav"
+        d.Path = p.TempDir + ap.File.Base + "_DecodeFFAudioSource.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
@@ -481,8 +481,8 @@ Class Audio
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
-        Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ds.wav"
-        d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ds.avs"
+        Dim wavPath = p.TempDir + ap.File.Base + "_cut_ds.wav"
+        d.Path = p.TempDir + ap.File.Base + "_cut_ds.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
@@ -510,12 +510,12 @@ Class Audio
         If ap.File.Contains("_cut_") Then Exit Sub
         If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
-        Dim cachefile = p.TempDir + Filepath.GetBase(ap.File) + ".ffindex"
+        Dim cachefile = p.TempDir + ap.File.Base + ".ffindex"
         g.ffmsindex(ap.File, cachefile)
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
-        Dim wavPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ff.wav"
-        d.Path = p.TempDir + Filepath.GetBase(ap.File) + "_cut_ff.avs"
+        Dim wavPath = p.TempDir + ap.File.Base + "_cut_ff.wav"
+        d.Path = p.TempDir + ap.File.Base + "_cut_ff.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
@@ -543,7 +543,7 @@ Class Audio
         If ap.File.Contains("_cut_") Then Exit Sub
         If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
 
-        Dim aviPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_mm.avi"
+        Dim aviPath = p.TempDir + ap.File.Base + "_cut_mm.avi"
         Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0}:r={1} -y -hide_banner -c:v copy """ + aviPath + """", (p.CutFrameCount / p.CutFrameRate).ToString("f6", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f6", CultureInfo.InvariantCulture))
 
         Using proc As New Proc
@@ -561,7 +561,7 @@ Class Audio
             Log.WriteLine(MediaInfo.GetSummary(aviPath))
         End If
 
-        Dim mkvPath = p.TempDir + Filepath.GetBase(ap.File) + "_cut_.mkv"
+        Dim mkvPath = p.TempDir + ap.File.Base + "_cut_.mkv"
 
         Dim args2 = "-o """ + mkvPath + """ """ + aviPath + """ """ + ap.File + """"
         args2 += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")

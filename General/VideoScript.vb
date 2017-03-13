@@ -350,7 +350,7 @@ Public Class VideoScript
     End Function
 
     Overrides Function Edit() As DialogResult
-        Using f As New ScriptingEditor(Me)
+        Using f As New CodeEditor(Me)
             f.StartPosition = FormStartPosition.CenterParent
 
             If f.ShowDialog() = DialogResult.OK Then
@@ -400,7 +400,7 @@ Public Class SourceVideoScript
     Overrides Property Path() As String
         Get
             If p.SourceFile = "" Then Return ""
-            Return p.TempDir + p.Name + "_Source." + p.Script.FileType
+            Return p.TempDir + p.Name + "_source." + p.Script.FileType
         End Get
         Set(value As String)
         End Set

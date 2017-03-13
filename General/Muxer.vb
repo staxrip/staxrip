@@ -353,7 +353,7 @@ Class BatchMuxer
     Overrides Sub Mux()
         Log.WriteHeader("Batch Muxing")
 
-        Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_mux.bat"
+        Dim batchPath = p.TempDir + p.TargetFile.Base + "_mux.bat"
         Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Solve(CommandLines))
 
         Using proc As New Proc
@@ -446,7 +446,7 @@ Class MkvMuxer
             proc.Init("Muxing using mkvmerge " + Package.mkvmerge.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
             proc.File = Package.mkvmerge.Path
-            proc.Arguments = GetArgs()
+            proc.Arguments = GetArgs(True)
             proc.AllowedExitCodes = {0, 1}
             proc.Start()
         End Using
@@ -462,7 +462,7 @@ Class MkvMuxer
         Return """" + Package.mkvmerge.Path + """ " + GetArgs()
     End Function
 
-    Private Function GetArgs() As String
+    Private Function GetArgs(Optional writeTag As Boolean = False) As String
         Dim args As New StringBuilder("-o " + p.TargetFile.Quotes)
 
         Dim vID = -1 '-1 means all
@@ -517,6 +517,21 @@ Class MkvMuxer
 
         If TypeOf p.VideoEncoder Is NullEncoder AndAlso p.Ranges.Count > 0 Then
             args.Append(" --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+"))
+        End If
+
+        If writeTag Then
+            Dim xml = <Tags>
+                          <Tag>
+                              <Simple>
+                                  <Name>Writing frontend</Name>
+                                  <String>StaxRip <%= Application.ProductVersion %></String>
+                              </Simple>
+                          </Tag>
+                      </Tags>
+
+            Dim tagsPath = p.TempDir + p.TargetFile.Base + "_tags.xml"
+            xml.Save(tagsPath)
+            args.Append(" --global-tags " + tagsPath.Quotes)
         End If
 
         args.Append(" --ui-language en")

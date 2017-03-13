@@ -798,6 +798,7 @@ Public Class x265Params
                     New StringParam With {.Switch = "--analysis-file", .Text = "Analysis File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                     New OptionParam With {.Switch = "--analysis-mode", .Text = "Analysis Mode:", .Options = {"off", "save", "load"}},
                     MinCuSize, MaxCuSize, MaxTuSize, LimitRefs,
+                    New NumParam With {.Switch = "--refine-level", .Text = "Refine Level:", .MinMaxStep = {1, 10, 1}, .InitValue = 5},
                     New NumParam With {.Switch = "--limit-tu", .Text = "Limit TU:", .MinMaxStep = {0, 4, 1}},
                     TUintra, TUinter, rdoqLevel,
                     New NumParam() With {.Switch = "--dynamic-rd", .Text = "Dynamic RD:", .MinMaxStepDec = {0, 4, 1, 1}})
@@ -879,9 +880,9 @@ Public Class x265Params
                 Add("Custom", Custom)
 
                 For Each i In ItemsValue
-                    If i.Switch <> "" Then
-                        i.URL = "http://x265.readthedocs.org/en/latest/cli.html#cmdoption" + i.Switch
-                    End If
+                    If i.Switch <> "" Then i.URL =
+                        "http://x265.readthedocs.io/en/latest/cli.html#cmdoption" +
+                        i.Switch?.Substring(1)
                 Next
             End If
 

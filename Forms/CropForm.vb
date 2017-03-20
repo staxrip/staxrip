@@ -192,10 +192,6 @@ Class CropForm
     Sub New()
         MyBase.New()
         InitializeComponent()
-
-        SetStyle(ControlStyles.OptimizedDoubleBuffer Or
-                 ControlStyles.AllPaintingInWmPaint, True)
-
         UpdateStyles()
 
         CommandManager.AddCommandsFromObject(Me)

@@ -725,12 +725,31 @@ Public Class x265Params
         .Text = "Intra Refresh"}
 
     Property Custom As New StringParam With {
-        .Text = "Custom:",
+        .Text = "Custom" + BR + "Switches",
         .InitAction = Sub(tb)
-                          tb.Label.Visible = False
                           tb.Edit.Expandet = True
                           tb.Edit.TextBox.Multiline = True
-                          tb.Edit.MultilineHeightFactor = 20
+                          tb.Edit.MultilineHeightFactor = 6
+                          tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+                      End Sub}
+
+    Property CustomFirstPass As New StringParam With {
+        .Text = "Custom" + BR + "First Pass" + BR + "Switches",
+        .ArgsFunc = Function() Nothing,
+        .InitAction = Sub(tb)
+                          tb.Edit.Expandet = True
+                          tb.Edit.TextBox.Multiline = True
+                          tb.Edit.MultilineHeightFactor = 6
+                          tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+                      End Sub}
+
+    Property CustomSecondPass As New StringParam With {
+        .Text = "Custom" + BR + "Second Pass" + BR + "Switches",
+        .ArgsFunc = Function() Nothing,
+        .InitAction = Sub(tb)
+                          tb.Edit.Expandet = True
+                          tb.Edit.TextBox.Multiline = True
+                          tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
 
@@ -877,7 +896,7 @@ Public Class x265Params
                     SAOnonDeblock, SlowFirstpass, SignHide,
                     New BoolParam With {.Switch = "--allow-non-conformance", .Text = "Allow non conformance"},
                     New BoolParam With {.Switch = "--uhd-bd", .Text = "Ultra HD Blu-ray"})
-                Add("Custom", Custom)
+                Add("Custom", Custom, CustomFirstPass, CustomSecondPass)
 
                 For Each i In ItemsValue
                     If i.Switch <> "" Then i.URL =
@@ -959,6 +978,12 @@ Public Class x265Params
 
         If Mode.Value = x265RateMode.TwoPass OrElse Mode.Value = x265RateMode.ThreePass Then
             sb.Append(" --pass " & pass)
+
+            If pass = 1 Then
+                If CustomFirstPass.Value <> "" Then sb.Append(" " + CustomFirstPass.Value)
+            Else
+                If CustomSecondPass.Value <> "" Then sb.Append(" " + CustomSecondPass.Value)
+            End If
 
             If includePaths AndAlso (multi_pass_opt_distortion.Value OrElse multi_pass_opt_analysis.Value) Then
                 sb.Append(" --analysis-file " + targetPath.ChangeExt("analysis").Quotes)

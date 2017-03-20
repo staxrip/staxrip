@@ -1910,6 +1910,7 @@ Class Macro
         ret.Add(New Macro("source_height", "Source Image Height", GetType(Integer), "Image height of the source video."))
         ret.Add(New Macro("source_name", "Source Filename Without Extension", GetType(String), "The name of the source file without file extension."))
         ret.Add(New Macro("source_seconds", "Source Seconds", GetType(Integer), "Length in seconds of the source video."))
+        ret.Add(New Macro("source_temp_file", "Source Temp File", GetType(String), "File located in the temp directory using the same name as the source file."))
         ret.Add(New Macro("source_width", "Source Image Width", GetType(Integer), "Image width of the source video."))
         ret.Add(New Macro("startup_dir", "Startup Directory", GetType(String), "Directory of the application."))
         ret.Add(New Macro("system_dir", "System Directory", GetType(String), "System directory."))
@@ -1922,6 +1923,7 @@ Class Macro
         ret.Add(New Macro("target_sar", "Target Sample Aspect Ratio", GetType(String), "Target sample aspect ratio (also known as PAR (pixel aspect ratio))."))
         ret.Add(New Macro("target_seconds", "Target Seconds", GetType(Integer), "Length in seconds of the target video."))
         ret.Add(New Macro("target_size", "Target Size", GetType(Integer), "Size of the target video in kilo bytes."))
+        ret.Add(New Macro("target_temp_file", "Target Temp File", GetType(String), "File located in the temp directory using the same name as the target file."))
         ret.Add(New Macro("target_width", "Target Image Width", GetType(Integer), "Image width of the target video."))
         ret.Add(New Macro("temp_file", "Temp File", GetType(String), "File located in the temp directory using the same name as the source file."))
         ret.Add(New Macro("template_name", "Template Name", GetType(String), "Name of the template the active project is based on."))
@@ -2008,7 +2010,13 @@ Class Macro
         If value.Contains("%temp_file%") Then value = value.Replace("%temp_file%", p.TempDir + p.SourceFile.Base)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_name%") Then value = value.Replace("%source_name%", Filepath.GetBase(p.SourceFile))
+        If value.Contains("%source_temp_file%") Then value = value.Replace("%source_temp_file%", p.TempDir + p.SourceFile.Base)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%target_temp_file%") Then value = value.Replace("%target_temp_file%", p.TempDir + p.TargetFile.Base)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%source_name%") Then value = value.Replace("%source_name%", p.SourceFile.Base)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%version%") Then value = value.Replace("%version%", Application.ProductVersion)
@@ -2891,17 +2899,15 @@ Class BitmapUtil
     Property BitmapData As BitmapData
 
     Shared Function Create(bmp As Bitmap) As BitmapUtil
-        Dim ret As New BitmapUtil
+        Dim util As New BitmapUtil
         Dim rect As New Rectangle(0, 0, bmp.Width, bmp.Height)
-        ret.BitmapData = bmp.LockBits(rect, Imaging.ImageLockMode.ReadWrite, bmp.PixelFormat)
-        ' address of first line so different value for backward and forward layout
-        Dim ptr = ret.BitmapData.Scan0
-        Dim bytesCount = Math.Abs(ret.BitmapData.Stride) * bmp.Height
-        ret.Data = New Byte(bytesCount - 1) {}
-        ' works only with forward layout, easy way to get forward layout is Bitmap.Clone
-        Marshal.Copy(ptr, ret.Data, 0, bytesCount)
-        bmp.UnlockBits(ret.BitmapData)
-        Return ret
+        util.BitmapData = bmp.LockBits(rect, Imaging.ImageLockMode.ReadWrite, bmp.PixelFormat)
+        Dim ptr = util.BitmapData.Scan0
+        Dim bytesCount = Math.Abs(util.BitmapData.Stride) * bmp.Height
+        util.Data = New Byte(bytesCount - 1) {}
+        Marshal.Copy(ptr, util.Data, 0, bytesCount)
+        bmp.UnlockBits(util.BitmapData)
+        Return util
     End Function
 
     Function GetPixel(x As Integer, y As Integer) As Color
@@ -2910,9 +2916,9 @@ Class BitmapUtil
     End Function
 
     Function GetMax(x As Integer, y As Integer) As Integer
-        Dim c = GetPixel(x, y)
-        Dim ret = Math.Max(c.R, c.G)
-        Return Math.Max(ret, c.B)
+        Dim col = GetPixel(x, y)
+        Dim max = Math.Max(col.R, col.G)
+        Return Math.Max(max, col.B)
     End Function
 End Class
 
@@ -2967,10 +2973,6 @@ Class AutoCrop
 
         For yValue = 0 To yValues.Length - 1
             For x = 0 To u.BitmapData.Width \ 4
-                If x = 0 Then
-                    Debug.WriteLine("x: " & x & " y: " & yValues(yValue) & " max: " & u.GetMax(x, yValues(yValue)))
-                End If
-
                 If u.GetMax(x, yValues(yValue)) < max Then
                     ret.Left(yValue) = x + 1
                 Else

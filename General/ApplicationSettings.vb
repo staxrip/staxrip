@@ -201,7 +201,7 @@ Public Class ApplicationSettings
                               "SAR | NTSC | 4:3 = --sar 10:11" + BR +
                               "SAR | NTSC | 16:9 = --sar 40:33" + BR +
                               "Enter SAR = --sar $enter_text:Please enter the SAR.$" + BR +
-                              "Stats = --stats ""%temp_file%.stats"""
+                              "Stats = --stats ""%target_temp_file%.stats"""
         End If
 
         If Check(SourceAspectRatioMenu, "Source aspect ratio menu", 24) Then

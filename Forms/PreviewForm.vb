@@ -322,7 +322,6 @@ Class PreviewForm
         RefreshScript()
 
         ShowButtons(Not s.HidePreviewButtons)
-        SetStyle(ControlStyles.OptimizedDoubleBuffer Or ControlStyles.AllPaintingInWmPaint, True)
     End Sub
 
     Sub RefreshScript()

@@ -1489,7 +1489,7 @@ Public Class MainForm
             Case "DGSourceIM"
                 ret = New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
             Case "FFVideoSource"
-                ret = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"", colorspace = ""YV12"")")
+                ret = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%source_temp_file%.ffindex"", colorspace = ""YV12"")")
             Case "LWLibavVideoSource"
                 ret = New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")")
             Case "LSMASHVideoSource"
@@ -1499,7 +1499,7 @@ Public Class MainForm
             Case "AVISource"
                 ret = New VideoFilter("Source", "AVISource", "AviSource(""%source_file%"", audio = false)")
             Case "vsffms2"
-                ret = New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%temp_file%.ffindex"")")
+                ret = New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")")
             Case "vsLibavSMASHSource"
                 ret = New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")")
             Case "vsLWLibavSource"
@@ -5015,6 +5015,9 @@ Public Class MainForm
 
                         Try
                             proc.Start()
+                        Catch ex As AbortException
+                            ProcessForm.CloseProcessForm()
+                            Exit Sub
                         Catch ex As Exception
                             ProcessForm.CloseProcessForm()
                             g.ShowException(ex)
@@ -5616,17 +5619,15 @@ Public Class MainForm
 
     <Command("Shows a command prompt with the temp directory of the current project.")>
     Sub ShowCommandPrompt()
-        Dim batchCode As String
+        Dim batchCode = ""
 
         For Each pack In Package.Items.Values
+            If TypeOf pack Is PluginPackage Then Continue For
             Dim dir = pack.GetDir
+            If Not Directory.Exists(dir) Then Continue For
+            If Not dir.Contains(Folder.Startup) Then Continue For
 
-            If Directory.Exists(dir) AndAlso
-                Not dir.ToLower.Contains("system32") AndAlso
-                Not batchCode?.Contains(dir) Then
-
-                batchCode += "@set PATH=" + dir + ";%PATH%" + BR
-            End If
+            batchCode += "@set PATH=" + dir + ";%PATH%" + BR
         Next
 
         Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"

@@ -64,7 +64,7 @@ Public MustInherit Class Demuxer
         dgnvNoDemux.OutputExtensions = {"dgi"}
         dgnvNoDemux.InputFormats = {"avc", "vc1", "mpeg2"}
         dgnvNoDemux.Command = "%app:DGIndexNV%"
-        dgnvNoDemux.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgi"" -h"
+        dgnvNoDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgi"" -h"
         dgnvNoDemux.SourceFilter = "DGSource"
         dgnvNoDemux.Active = False
         ret.Add(dgnvNoDemux)
@@ -75,7 +75,7 @@ Public MustInherit Class Demuxer
         dgnvDemux.OutputExtensions = {"dgi"}
         dgnvDemux.InputFormats = {"avc", "vc1", "mpeg2"}
         dgnvDemux.Command = "%app:DGIndexNV%"
-        dgnvDemux.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgi"" -a -h"
+        dgnvDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgi"" -a -h"
         dgnvDemux.SourceFilter = "DGSource"
         dgnvDemux.Active = False
         ret.Add(dgnvDemux)
@@ -86,7 +86,7 @@ Public MustInherit Class Demuxer
         dgimNoDemux.OutputExtensions = {"dgim"}
         dgimNoDemux.InputFormats = {"avc", "vc1", "mpeg2"}
         dgimNoDemux.Command = "%app:DGIndexIM%"
-        dgimNoDemux.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgim"" -h"
+        dgimNoDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgim"" -h"
         dgimNoDemux.SourceFilter = "DGSourceIM"
         dgimNoDemux.Active = False
         ret.Add(dgimNoDemux)
@@ -97,7 +97,7 @@ Public MustInherit Class Demuxer
         dgimDemux.OutputExtensions = {"dgim"}
         dgimDemux.InputFormats = {"avc", "vc1", "mpeg2"}
         dgimDemux.Command = "%app:DGIndexIM%"
-        dgimDemux.Arguments = "-i %source_files_comma% -o ""%temp_file%.dgim"" -a -h"
+        dgimDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgim"" -a -h"
         dgimDemux.SourceFilter = "DGSourceIM"
         dgimDemux.Active = False
         ret.Add(dgimDemux)

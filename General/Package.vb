@@ -154,9 +154,9 @@ Public Class Package
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .HelpFileFunc = Function(engine) If(engine = ScriptEngine.AviSynth, "ffms2-avisynth.md", "ffms2-vapoursynth.md"),
         .AviSynthFilterNames = {"FFVideoSource", "FFAudioSource"},
-        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"", colorspace = ""YV12"")")},
+        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%source_temp_file%.ffindex"", colorspace = ""YV12"")")},
         .VapourSynthFilterNames = {"ffms2"},
-        .VapourSynthFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%temp_file%.ffindex"")")}}
+        .VapourSynthFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")")}}
 
     Shared Function Add(pack As Package) As Package
         Items(pack.ID) = pack
@@ -225,10 +225,10 @@ Public Class Package
             .TreePath = "Runtimes"})
 
         Add(New Package With {
-            .Name = "Visual C++ 2015",
+            .Name = "Visual C++ 2017",
             .Filename = "msvcp140.dll",
-            .Description = "Visual C++ 2015 Redistributable is required by some tools used by StaxRip.",
-            .DownloadURL = "http://download.microsoft.com/download/6/A/A/6AA4EDFF-645B-48C5-81CC-ED5963AEAD48/vc_redist.x64.exe",
+            .Description = "Visual C++ 2017 Redistributable is required by some tools used by StaxRip.",
+            .DownloadURL = "http://download.microsoft.com/download/8/9/d/89d195e1-1901-4036-9a75-fbe46443fc5a/vc_redist.x64.exe",
             .FixedDir = Folder.System,
             .TreePath = "Runtimes"})
 
@@ -870,7 +870,7 @@ Public Class AviSynthPlusPackage
         WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         FixedDir = Folder.System
-        SetupFilename = "AviSynth+r2294.exe"
+        SetupFilename = "AviSynth+r2455.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -944,7 +944,7 @@ Public Class VapourSynthPackage
         Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         WebURL = "http://www.vapoursynth.com"
         HelpURL = "http://www.vapoursynth.com/doc"
-        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R36/VapourSynth-R36.exe"
+        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R37/VapourSynth-R37.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean

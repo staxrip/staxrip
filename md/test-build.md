@@ -35,7 +35,6 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 #### Updated Tools
 
-- RgTools (avs) 0.94
 - QSVEncC 2.62
 - mkvtoolnix 9.9.0
 - masktools2 2.2.2
@@ -49,5 +48,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - L-SMASH-Works (avs) 929
 - vslsmashsource (vs) 929
 - KNLMeansCL 1.0.2
-- x265 2.3+17
 - NVEncC 3.07
+- RgTools (avs) 0.95
+- x265 2.3+23
+- AviSynth+ 2455
+- VapourSynth 37

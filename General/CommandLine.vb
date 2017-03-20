@@ -21,8 +21,11 @@ Namespace CommandLine
         End Sub
 
         Function GetOptionParam(switch As String) As OptionParam
-            Dim params = Items.OfType(Of OptionParam).Where(Function(item) item.Switch = switch)
-            If params.Count > 0 Then Return params(0)
+            Return Items.OfType(Of OptionParam).Where(Function(item) item.Switch = switch).FirstOrDefault
+        End Function
+
+        Function GetNumParamByName(name As String) As NumParam
+            Return Items.OfType(Of NumParam).Where(Function(item) item.Name = name).FirstOrDefault
         End Function
 
         Sub RaiseValueChanged(item As CommandLineParam)

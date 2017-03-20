@@ -288,9 +288,9 @@ Public MustInherit Class VideoEncoder
         xvid2pass.OutputFileTypeValue = "avi"
         xvid2pass.Name = "2 pass | XviD"
         xvid2pass.Muxer = New ffmpegMuxer("AVI")
-        xvid2pass.CommandLines = """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -turbo -pass1 ""%temp_file%.stats"" -i ""%script_file%"" || exit" + BR +
-                                 """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -pass2 ""%temp_file%.stats"" -i ""%script_file%"" -avi ""%encoder_out_file%"""
-        xvid2pass.CompCheckCommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -par %target_sar% -i ""%temp_file%_CompCheck.%script_ext%"" -avi ""%temp_file%_CompCheck.avi"""
+        xvid2pass.CommandLines = """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -turbo -pass1 ""%target_temp_file%.stats"" -i ""%script_file%"" || exit" + BR +
+                                 """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -pass2 ""%target_temp_file%.stats"" -i ""%script_file%"" -avi ""%encoder_out_file%"""
+        xvid2pass.CompCheckCommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -par %target_sar% -i ""%target_temp_file%_CompCheck.%script_ext%"" -avi ""%target_temp_file%_CompCheck.avi"""
         ret.Add(xvid2pass)
 
         Dim ffmpeg = New ffmpegEncoder()
@@ -306,8 +306,8 @@ Public MustInherit Class VideoEncoder
         x264cli.Name = "Command Line | x264"
         x264cli.Muxer = New MkvMuxer()
         x264cli.AutoCompCheckValue = 50
-        x264cli.CommandLines = """%app:x264%"" --pass 1 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output NUL ""%script_file%"" || exit" + BR + """%app:x264%"" --pass 2 --bitrate %video_bitrate% --stats ""%temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
-        x264cli.CompCheckCommandLines = """%app:x264%"" --crf 18 --output ""%temp_file%_CompCheck.%encoder_ext%"" ""%temp_file%_CompCheck.%script_ext%"""
+        x264cli.CommandLines = """%app:x264%"" --pass 1 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output NUL ""%script_file%"" || exit" + BR + """%app:x264%"" --pass 2 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
+        x264cli.CompCheckCommandLines = """%app:x264%"" --crf 18 --output ""%target_temp_file%_CompCheck.%encoder_ext%"" ""%target_temp_file%_CompCheck.%script_ext%"""
         ret.Add(x264cli)
 
         Dim divx As New BatchEncoder()

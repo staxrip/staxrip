@@ -205,7 +205,7 @@ Class Native
     'Friend Const WM_STYLECHANGING As Integer = &H7C
     'Friend Const WM_SYSCHAR As Integer = &H106
     'Friend Const WM_SYSCOLORCHANGE As Integer = &H15
-    Friend Const WM_SYSCOMMAND As Integer = &H112
+    'Friend Const WM_SYSCOMMAND As Integer = &H112
     'Friend Const WM_SYSDEADCHAR As Integer = &H107
     'Friend Const WM_SYSKEYDOWN As Integer = 260
     'Friend Const WM_SYSKEYUP As Integer = &H105

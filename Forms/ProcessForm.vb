@@ -169,7 +169,7 @@ Class ProcessForm
 
     Friend Shared ShutdownVisible As Boolean
 
-    Private Shared RefreshTime As Integer = 100
+    Private Shared RefreshTime As Integer = 200
     Private Shared Instance As ProcessForm
     Private Shared Message As String
     Private Shared IsProcess As Boolean
@@ -212,66 +212,60 @@ Class ProcessForm
         CommandLineLog.Length = 0
     End Sub
 
-    Shared Sub CommandLineDataHandler(sendingProcess As Object,
-                               d As DataReceivedEventArgs)
-
+    Shared Sub CommandLineDataHandler(sendingProcess As Object, d As DataReceivedEventArgs)
         If Not Instance Is Nothing AndAlso d.Data <> "" Then
             Dim value = d.Data
 
-            Try
-                Dim tc = Environment.TickCount
+            Dim tc = Environment.TickCount
 
-                If Not ProcInstance.RemoveChars Is Nothing Then
-                    For Each i In ProcInstance.RemoveChars
-                        If value.Contains(i) Then value = value.Replace(i, "")
+            If Not ProcInstance.RemoveChars Is Nothing Then
+                For Each i In ProcInstance.RemoveChars
+                    If value.Contains(i) Then value = value.Replace(i, "")
+                Next
+            End If
+
+            If Not ProcInstance.TrimChars Is Nothing Then
+                value = value.Trim(ProcInstance.TrimChars)
+            End If
+
+            If value <> "" Then
+                Dim skip As Boolean
+
+                If Not ProcInstance.SkipStrings Is Nothing Then
+                    For Each i In ProcInstance.SkipStrings
+                        If value.Contains(i) Then skip = True
                     Next
                 End If
 
-                If Not ProcInstance.TrimChars Is Nothing Then
-                    value = value.Trim(ProcInstance.TrimChars)
+                If Not ProcInstance.SkipPatterns Is Nothing Then
+                    For Each i In ProcInstance.SkipPatterns
+                        If Regex.IsMatch(value, i) Then skip = True
+                    Next
                 End If
 
-                If value <> "" Then
-                    Dim skip As Boolean
-
-                    If Not ProcInstance.SkipStrings Is Nothing Then
-                        For Each i In ProcInstance.SkipStrings
-                            If value.Contains(i) Then skip = True
-                        Next
+                If value.Trim <> "" Then
+                    If LastRefresh = 0 OrElse tc - LastRefresh > RefreshTime Then
+                        UpdateStatusThreadsafe(value)
+                        LastRefresh = tc
                     End If
 
-                    If Not ProcInstance.SkipPatterns Is Nothing Then
-                        For Each i In ProcInstance.SkipPatterns
-                            If Regex.IsMatch(value, i) Then skip = True
-                        Next
-                    End If
+                    If Not skip OrElse (ProcInstance.SkipStrings Is Nothing AndAlso
+                                        ProcInstance.SkipPatterns Is Nothing) Then
 
-                    If value.Trim <> "" Then
-                        If LastRefresh = 0 OrElse tc - LastRefresh > RefreshTime Then
-                            UpdateStatusThreadsafe(value)
-                            LastRefresh = tc
-                        End If
-
-                        If Not skip OrElse (ProcInstance.SkipStrings Is Nothing AndAlso
-                                            ProcInstance.SkipPatterns Is Nothing) Then
-
-                            If CommandLineLog.Length < 10000 Then
-                                Log.WriteLine(value.Trim)
-                                CommandLineLog.AppendLine(value.Trim)
-                            End If
+                        If CommandLineLog.Length < 10000 Then
+                            Log.WriteLine(value.Trim)
+                            CommandLineLog.AppendLine(value.Trim)
                         End If
                     End If
                 End If
-            Catch ex As Exception
-                Dim text = "Exception reading console: " + d.Data + BR2 + ex.Message
-                Log.WriteLine(text)
-                CommandLineLog.AppendLine(text)
-            End Try
+            End If
         End If
     End Sub
 
+    Private Shared UpdateAction As Action(Of String) = New Action(Of String)(AddressOf UpdateStatus)
+
     Shared Sub UpdateStatusThreadsafe(value As String)
-        Instance.BeginInvoke(New Action(Of String)(AddressOf UpdateStatus), value)
+        Instance.BeginInvoke(UpdateAction, {value})
     End Sub
 
     Private Shared Sub UpdateStatus(value As String)
@@ -433,13 +427,13 @@ Class ProcessForm
 
     Protected Overrides Sub WndProc(ByRef m As Message)
         Select Case m.Msg
-            Case Native.WM_SYSCOMMAND
+            Case &H112 'WM_SYSCOMMAND
                 Select Case m.WParam.ToInt32
                     Case Native.SC_MINIMIZE
                         If Not ProcessForm.ProcInstance Is Nothing Then
                             Try
                                 NativeWindow.Hide(ProcessForm.ProcInstance.Process.MainWindowHandle)
-                            Catch ex As Exception
+                            Catch
                             End Try
 
                             RefreshTime = 5000

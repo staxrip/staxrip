@@ -725,7 +725,7 @@ Public Class x265Params
         .Text = "Intra Refresh"}
 
     Property Custom As New StringParam With {
-        .Text = "Custom" + BR + "Switches",
+        .Text = "Custom:",
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
                           tb.Edit.TextBox.Multiline = True
@@ -734,7 +734,7 @@ Public Class x265Params
                       End Sub}
 
     Property CustomFirstPass As New StringParam With {
-        .Text = "Custom" + BR + "First Pass" + BR + "Switches",
+        .Text = "Custom" + BR + "First Pass:",
         .ArgsFunc = Function() Nothing,
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
@@ -744,7 +744,7 @@ Public Class x265Params
                       End Sub}
 
     Property CustomSecondPass As New StringParam With {
-        .Text = "Custom" + BR + "Second Pass" + BR + "Switches",
+        .Text = "Custom" + BR + "Second Pass:",
         .ArgsFunc = Function() Nothing,
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
@@ -991,16 +991,16 @@ Public Class x265Params
         End If
 
         If Mode.Value = x265RateMode.SingleQuant Then
-            If Not IsCustom("--qp") Then sb.Append(" --qp " + CInt(Quant.Value).ToString)
+            If Not IsCustom(pass, "--qp") Then sb.Append(" --qp " + CInt(Quant.Value).ToString)
         ElseIf Mode.Value = x265RateMode.SingleCRF Then
-            If Quant.Value <> 28 AndAlso Not IsCustom("--crf") Then
+            If Quant.Value <> 28 AndAlso Not IsCustom(pass, "--crf") Then
                 sb.Append(" --crf " + Quant.Value.ToString(CultureInfo.InvariantCulture))
             End If
         Else
-            If Not IsCustom("--bitrate") Then sb.Append(" --bitrate " & p.VideoBitrate)
+            If Not IsCustom(pass, "--bitrate") Then sb.Append(" --bitrate " & p.VideoBitrate)
         End If
 
-        Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.Switch)
+        Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.Switch)
 
         If q.Count > 0 Then
             sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
@@ -1010,7 +1010,7 @@ Public Class x265Params
             sb.Append(" --frames " & script.GetFrames)
             sb.Append(" --y4m")
 
-            If Calc.IsARSignalingRequired AndAlso Not IsCustom("--sar") Then
+            If Calc.IsARSignalingRequired AndAlso Not IsCustom(pass, "--sar") Then
                 Dim par = Calc.GetTargetPAR
                 sb.Append(" --sar " & par.X & ":" & par.Y)
             End If
@@ -1031,10 +1031,20 @@ Public Class x265Params
         Return Macro.Solve(sb.ToString.Trim.FixBreak.Replace(BR, " "))
     End Function
 
-    Function IsCustom(switch As String) As Boolean
-        If switch = "" OrElse Custom.Value = "" Then Return False
-        If Custom.Value.Contains(switch + " ") Then Return True
-        If Custom.Value.EndsWith(switch) Then Return True
+    Function IsCustom(pass As Integer, switch As String) As Boolean
+        If switch = "" Then Return False
+
+        If Mode.Value = x265RateMode.TwoPass OrElse Mode.Value = x265RateMode.ThreePass Then
+            If pass = 1 Then
+                If CustomFirstPass.Value?.Contains(switch + " ") OrElse
+                    CustomFirstPass.Value?.EndsWith(switch) Then Return True
+            Else
+                If CustomSecondPass.Value?.Contains(switch + " ") OrElse
+                    CustomSecondPass.Value?.EndsWith(switch) Then Return True
+            End If
+        End If
+
+        If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then Return True
     End Function
 
     Function GetDeblockArgs() As String

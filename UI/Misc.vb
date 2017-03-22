@@ -82,14 +82,12 @@ Namespace UI
         Private IsResizing As Boolean
 
         Sub Snap(ByRef m As Message)
-            Const WM_SIZING = &H214, WM_EXITSIZEMOVE = &H232, WM_WINDOWPOSCHANGING = &H46
-
             Select Case m.Msg
-                Case WM_SIZING
+                Case &H214 'WM_SIZING
                     IsResizing = True
-                Case WM_EXITSIZEMOVE
+                Case &H232 'WM_EXITSIZEMOVE
                     IsResizing = False
-                Case WM_WINDOWPOSCHANGING
+                Case &H46 'WM_WINDOWPOSCHANGING
                     If Not IsResizing Then Snap(m.LParam)
             End Select
         End Sub

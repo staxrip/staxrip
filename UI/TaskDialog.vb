@@ -73,21 +73,21 @@ Class TaskDialog(Of T)
     Const TDN_HELP As Integer = 9
     Const TDN_EXPANDO_BUTTON_CLICKED As Integer = 10
 
-    Const TDM_NAVIGATE_PAGE As Integer = Native.WM_USER + 101
-    Const TDM_CLICK_BUTTON As Integer = Native.WM_USER + 102 'wParam = Button ID
-    Const TDM_SET_MARQUEE_PROGRESS_BAR As Integer = Native.WM_USER + 103 'wParam = 0 (nonMarque) wParam != 0 (Marquee)
-    Const TDM_SET_PROGRESS_BAR_STATE As Integer = Native.WM_USER + 104 'wParam = new progress state
-    Const TDM_SET_PROGRESS_BAR_RANGE As Integer = Native.WM_USER + 105 'lParam = MAKELPARAM(nMinRange, nMaxRange)
-    Const TDM_SET_PROGRESS_BAR_POS As Integer = Native.WM_USER + 106 'wParam = new position
-    Const TDM_SET_PROGRESS_BAR_MARQUEE As Integer = Native.WM_USER + 107 'wParam = 0 (stop marquee), wParam != 0 (start marquee), lparam = speed (milliseconds between repaints)
-    Const TDM_SET_ELEMENT_TEXT As Integer = Native.WM_USER + 108 'wParam = element (TASKDIALOG_ELEMENTS), lParam = new element text (LPCWSTR)
-    Const TDM_CLICK_RADIO_BUTTON As Integer = Native.WM_USER + 110 'wParam = Radio Button ID
-    Const TDM_ENABLE_BUTTON As Integer = Native.WM_USER + 111 'lParam = 0 (disable), lParam != 0 (enable), wParam = Button ID
-    Const TDM_ENABLE_RADIO_BUTTON As Integer = Native.WM_USER + 112 'lParam = 0 (disable), lParam != 0 (enable), wParam = Radio Button ID
-    Const TDM_CLICK_VERIFICATION As Integer = Native.WM_USER + 113 'wParam = 0 (unchecked), 1 (checked), lParam = 1 (set key focus)
-    Const TDM_UPDATE_ELEMENT_TEXT As Integer = Native.WM_USER + 114 'wParam = element (TASKDIALOG_ELEMENTS), lParam = new element text (LPCWSTR)
-    Const TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE As Integer = Native.WM_USER + 115 'wParam = Button ID, lParam = 0 (elevation not required), lParam != 0 (elevation required)
-    Const TDM_UPDATE_ICON As Integer = Native.WM_USER + 116 'wParam = icon element (TASKDIALOG_ICON_ELEMENTS), lParam = new icon (hIcon if TDF_USE_HICON_* was set, PCWSTR otherwise)
+    Const TDM_NAVIGATE_PAGE As Integer = &H400 + 101
+    Const TDM_CLICK_BUTTON As Integer = &H400 + 102 'wParam = Button ID
+    Const TDM_SET_MARQUEE_PROGRESS_BAR As Integer = &H400 + 103 'wParam = 0 (nonMarque) wParam != 0 (Marquee)
+    Const TDM_SET_PROGRESS_BAR_STATE As Integer = &H400 + 104 'wParam = new progress state
+    Const TDM_SET_PROGRESS_BAR_RANGE As Integer = &H400 + 105 'lParam = MAKELPARAM(nMinRange, nMaxRange)
+    Const TDM_SET_PROGRESS_BAR_POS As Integer = &H400 + 106 'wParam = new position
+    Const TDM_SET_PROGRESS_BAR_MARQUEE As Integer = &H400 + 107 'wParam = 0 (stop marquee), wParam != 0 (start marquee), lparam = speed (milliseconds between repaints)
+    Const TDM_SET_ELEMENT_TEXT As Integer = &H400 + 108 'wParam = element (TASKDIALOG_ELEMENTS), lParam = new element text (LPCWSTR)
+    Const TDM_CLICK_RADIO_BUTTON As Integer = &H400 + 110 'wParam = Radio Button ID
+    Const TDM_ENABLE_BUTTON As Integer = &H400 + 111 'lParam = 0 (disable), lParam != 0 (enable), wParam = Button ID
+    Const TDM_ENABLE_RADIO_BUTTON As Integer = &H400 + 112 'lParam = 0 (disable), lParam != 0 (enable), wParam = Radio Button ID
+    Const TDM_CLICK_VERIFICATION As Integer = &H400 + 113 'wParam = 0 (unchecked), 1 (checked), lParam = 1 (set key focus)
+    Const TDM_UPDATE_ELEMENT_TEXT As Integer = &H400 + 114 'wParam = element (TASKDIALOG_ELEMENTS), lParam = new element text (LPCWSTR)
+    Const TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE As Integer = &H400 + 115 'wParam = Button ID, lParam = 0 (elevation not required), lParam != 0 (elevation required)
+    Const TDM_UPDATE_ICON As Integer = &H400 + 116 'wParam = icon element (TASKDIALOG_ICON_ELEMENTS), lParam = new icon (hIcon if TDF_USE_HICON_* was set, PCWSTR otherwise)
 #End Region
 
 #Region "Properties"

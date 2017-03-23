@@ -15,6 +15,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - QSVEncC added --profile main10
 - colour_primaries added to MediaInfo Folder View
 - NVEncC added --lookahead --cbrhq --vbrhq --aq-temporal --no-b-adapt --i-adapt --output-depth --strict-gop --vbr-quality --vpp-gauss --vpp-knn --vpp-pmd --device --preset --direct --adapt-transform --enable-ltr
+- added the possibility to use different x265 options in first and second pass
 
 #### Fixed Bugs
 
@@ -26,12 +27,15 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - fixed incompatible format like wmv being passed to mkvmerge and mp4box
 - KNLMeansCL wasn't loaded for HAvsFunc/SMDegrain 
 - fixed x265 context help using right-click due to changed x265 URL
+- fixed wrong stream used for audio encoding using eac3to when audio source file is mkv 
 
 #### Tweaks
 
 - menu item height increased
 - added colorspace = "YV12" default everywhere FFVideoSource is used to open 10Bit sources, profiles have not been reset
 - antialiased font rendering added in some places
+- ensuring form show within the bounds of the working area (screen)
+- reduce CPU time while encoding
 
 #### Updated Tools
 

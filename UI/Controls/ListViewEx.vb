@@ -201,12 +201,12 @@ Namespace UI
 
         Protected Overrides Sub WndProc(ByRef m As Message)
             Select Case m.Msg
-                Case Native.WM_LBUTTONDBLCLK
+                Case &H203 'WM_LBUTTONDBLCLK
                     If CheckBoxes AndAlso AutoCheckMode <> AutoCheckMode.DoubleClick Then
                         OnDoubleClick(Nothing)
                         Exit Sub
                     End If
-                Case Native.WM_LBUTTONDOWN
+                Case &H201 'WM_LBUTTONDOWN
                     If CheckBoxes AndAlso AutoCheckMode = AutoCheckMode.SingleClick Then
                         Dim pos = ClientMousePos
                         Dim item = GetItemAt(pos.X, pos.Y)

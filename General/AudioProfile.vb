@@ -702,7 +702,7 @@ Class GUIAudioProfile
     Function GetEac3toCommandLine(includePaths As Boolean) As String
         Dim ret, id As String
 
-        If File.Ext.EqualsAny("ts", "m2ts") AndAlso Not Stream Is Nothing Then
+        If File.Ext.EqualsAny("ts", "m2ts", "mkv") AndAlso Not Stream Is Nothing Then
             id = (Stream.StreamOrder + 1) & ": "
         End If
 

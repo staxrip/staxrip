@@ -167,15 +167,13 @@ Class ProcessForm
     End Sub
 #End Region
 
-    Friend Shared ShutdownVisible As Boolean
+    Public Shared ShutdownVisible As Boolean
 
-    Private Shared RefreshTime As Integer = 200
-    Private Shared Instance As ProcessForm
-    Private Shared Message As String
-    Private Shared IsProcess As Boolean
-    Private Shared DataReceivedCounter As Integer
-    Private Shared LastStatus As String
-    Private Shared LastRefresh As Integer
+    Shared Instance As ProcessForm
+    Shared Message As String
+    Shared IsProcess As Boolean
+    Shared DataReceivedCounter As Integer
+    Shared LastRefresh As Integer
 
     Shared Property CommandLineLog As New StringBuilder
     Shared Property ProcInstance As Proc
@@ -201,9 +199,9 @@ Class ProcessForm
         tbLog.Font = New Font("Consolas", 9 * s.UIScaleFactor)
 
         AddHandler Log.Update, AddressOf LogUpdate
+        Icon = My.Resources.RipIcon
         NotifyIcon.Icon = My.Resources.RipIcon
         NotifyIcon.Text = "StaxRip"
-        Icon = My.Resources.RipIcon
 
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
     End Sub
@@ -216,48 +214,32 @@ Class ProcessForm
         If Not Instance Is Nothing AndAlso d.Data <> "" Then
             Dim value = d.Data
 
-            Dim tc = Environment.TickCount
-
             If Not ProcInstance.RemoveChars Is Nothing Then
                 For Each i In ProcInstance.RemoveChars
                     If value.Contains(i) Then value = value.Replace(i, "")
                 Next
             End If
 
-            If Not ProcInstance.TrimChars Is Nothing Then
-                value = value.Trim(ProcInstance.TrimChars)
+            If Not ProcInstance.TrimChars Is Nothing Then value = value.Trim(ProcInstance.TrimChars)
+            Dim skip As Boolean
+
+            If Not ProcInstance.SkipStrings Is Nothing Then
+                For Each i In ProcInstance.SkipStrings
+                    If value.Contains(i) Then skip = True
+                Next
             End If
 
-            If value <> "" Then
-                Dim skip As Boolean
+            If Not ProcInstance.SkipPatterns Is Nothing Then
+                For Each i In ProcInstance.SkipPatterns
+                    If Regex.IsMatch(value, i) Then skip = True
+                Next
+            End If
 
-                If Not ProcInstance.SkipStrings Is Nothing Then
-                    For Each i In ProcInstance.SkipStrings
-                        If value.Contains(i) Then skip = True
-                    Next
-                End If
+            UpdateStatusThreadsafe(value)
 
-                If Not ProcInstance.SkipPatterns Is Nothing Then
-                    For Each i In ProcInstance.SkipPatterns
-                        If Regex.IsMatch(value, i) Then skip = True
-                    Next
-                End If
-
-                If value.Trim <> "" Then
-                    If LastRefresh = 0 OrElse tc - LastRefresh > RefreshTime Then
-                        UpdateStatusThreadsafe(value)
-                        LastRefresh = tc
-                    End If
-
-                    If Not skip OrElse (ProcInstance.SkipStrings Is Nothing AndAlso
-                                        ProcInstance.SkipPatterns Is Nothing) Then
-
-                        If CommandLineLog.Length < 10000 Then
-                            Log.WriteLine(value.Trim)
-                            CommandLineLog.AppendLine(value.Trim)
-                        End If
-                    End If
-                End If
+            If Not skip AndAlso CommandLineLog.Length < 10000 AndAlso value.Trim <> "" Then
+                Log.WriteLine(value.Trim)
+                CommandLineLog.AppendLine(value.Trim)
             End If
         End If
     End Sub
@@ -269,24 +251,10 @@ Class ProcessForm
     End Sub
 
     Private Shared Sub UpdateStatus(value As String)
-        If value = "" Then Exit Sub
+        If IsVisible AndAlso value <> "" Then
+            Instance.lStatus.Text = value
 
-        If Not Instance Is Nothing Then
-            If Instance.Visible Then
-                Instance.lStatus.Text = value
-            Else
-                LastStatus = value
-
-                If value.Length < 55 Then
-                    value = "StaxRip" + BR + value
-                ElseIf value.Length > 63 Then 'throws exception if length is > 63
-                    value = value.Substring(0, 63)
-                End If
-
-                Instance.NotifyIcon.Text = value
-            End If
-
-            If value?.Contains("%") Then
+            If value.Contains("%") Then
                 value = value.Left("%")
 
                 If value.Contains("[") Then value = value.Right("[")
@@ -317,10 +285,7 @@ Class ProcessForm
 
     Sub LogUpdate(text As String)
         Message = text
-
-        If Not Instance Is Nothing Then
-            Instance.BeginInvoke(New Action(AddressOf LogUpdate))
-        End If
+        Instance?.BeginInvoke(New Action(AddressOf LogUpdate))
     End Sub
 
     Private Sub LogUpdate()
@@ -396,10 +361,7 @@ Class ProcessForm
                 g.MainForm.Show()
                 ActivateForm()
                 g.MainForm.Refresh()
-
-                If Not Instance.IsDisposed Then
-                    Instance.Invoke(New Action(AddressOf CloseFormMethod))
-                End If
+                If Not Instance.IsDisposed Then Instance.Invoke(New Action(AddressOf CloseFormMethod))
             End If
         Catch
         End Try
@@ -413,7 +375,6 @@ Class ProcessForm
     End Sub
 
     Private Sub ProcessForm_Activated(sender As Object, e As EventArgs) Handles Me.Activated
-        RefreshTime = 500
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
     End Sub
 
@@ -432,11 +393,10 @@ Class ProcessForm
                     Case Native.SC_MINIMIZE
                         If Not ProcessForm.ProcInstance Is Nothing Then
                             Try
-                                NativeWindow.Hide(ProcessForm.ProcInstance.Process.MainWindowHandle)
+                                Native.ShowWindow(ProcessForm.ProcInstance.Process.MainWindowHandle, 0) 'SW_HIDE  = 0
                             Catch
                             End Try
 
-                            RefreshTime = 5000
                             Hide()
                             NotifyIcon.Visible = True
                             Exit Sub
@@ -482,7 +442,7 @@ Class ProcessForm
     End Enum
 
     Private Sub ShowMe()
-        lStatus.Text = LastStatus
+        lStatus.Text = ""
         Show()
         Activate()
 

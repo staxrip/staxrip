@@ -844,9 +844,8 @@ Class PreviewForm
 
     Private Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pVideo.MouseMove
         If Not WindowState = FormWindowState.Maximized AndAlso e.Button = MouseButtons.Left Then
-            Dim HTCAPTION = New IntPtr(2)
             Native.ReleaseCapture()
-            Native.PostMessage(Handle, Native.WM_NCLBUTTONDOWN, HTCAPTION, IntPtr.Zero)
+            Native.PostMessage(Handle, &HA1, New IntPtr(2), IntPtr.Zero) 'WM_NCLBUTTONDOWN, HTCAPTION
         End If
     End Sub
 

@@ -12,7 +12,6 @@ Class Proc
     Property Process As New Process
     Property Wait As Boolean
     Property Priority As ProcessPriorityClass = ProcessPriorityClass.Normal
-    Property HideAfterStart As Boolean
     Property AllowedExitCodes As Integer() = {0}
     Property BeginOutputReadLine As Boolean
     Property SkipStrings As String()
@@ -152,24 +151,6 @@ Class Proc
 
             If ReadError Then Process.BeginErrorReadLine()
             If ReadOutput Then Process.BeginOutputReadLine()
-
-            'WindowStyle.Hidden yield to window handle zero
-            If HideAfterStart Then
-                Dim counter As Integer
-
-                While counter < 99 AndAlso Not Process.HasExited
-                    Process.Refresh()
-                    Dim handle = Process.MainWindowHandle
-
-                    If handle <> IntPtr.Zero Then
-                        NativeWindow.Hide(handle)
-                        Exit While
-                    End If
-
-                    Thread.Sleep(50)
-                    counter += 1
-                End While
-            End If
 
             Native.SetForegroundWindow(h)
         Catch ex As Exception

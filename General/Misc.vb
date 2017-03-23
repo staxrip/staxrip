@@ -274,14 +274,13 @@ Public Class GlobalClass
     Function GetAssociatedApplication(ext As String) As String
         Dim c = 0UI
 
-        If 1 = Native.AssocQueryString(Native.ASSOCF_VERIFY,
-            Native.ASSOCSTR_EXECUTABLE, ext, Nothing, Nothing, c) Then
-
+        'ASSOCF_VERIFY, ASSOCSTR_EXECUTABLE
+        If 1 = Native.AssocQueryString(&H40, 2, ext, Nothing, Nothing, c) Then
             If c > 0 Then
                 Dim sb As New StringBuilder(CInt(c))
 
-                If 0 = Native.AssocQueryString(Native.ASSOCF_VERIFY,
-                    Native.ASSOCSTR_EXECUTABLE, ext, Nothing, sb, c) Then
+                'ASSOCF_VERIFY, ASSOCSTR_EXECUTABLE
+                If 0 = Native.AssocQueryString(&H40, 2, ext, Nothing, sb, c) Then
 
                     Dim ret = sb.ToString
                     If File.Exists(ret) Then Return ret

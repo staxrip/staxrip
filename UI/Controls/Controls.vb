@@ -45,7 +45,7 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub WndProc(ByRef m As Message)
-            If SelectOnMouseDown AndAlso m.Msg = Native.WM_LBUTTONDOWN Then
+            If SelectOnMouseDown AndAlso m.Msg = &H201 Then 'WM_LBUTTONDOWN
                 Dim n = GetNodeAt(ClientMousePos)
 
                 If Not n Is Nothing AndAlso n.Nodes.Count = 0 Then
@@ -270,7 +270,7 @@ Namespace UI
                 Dim ret = MyBase.CreateParams
 
                 If ShowControlBorder AndAlso Not VisualStyleInformation.IsEnabledByUser Then
-                    ret.ExStyle = ret.ExStyle Or Native.WS_EX_CLIENTEDGE
+                    ret.ExStyle = ret.ExStyle Or &H200 'WS_EX_CLIENTEDGE
                 End If
 
                 Return ret
@@ -507,7 +507,7 @@ Namespace UI
             Const WM_THEMECHANGED = &H31A
 
             Select Case m.Msg
-                Case Native.WM_PAINT, Native.WM_ERASEBKGND
+                Case 15, 20 'WM_PAINT, WM_ERASEBKGND
                     If BlockPaint Then Exit Sub
                 Case Else
             End Select

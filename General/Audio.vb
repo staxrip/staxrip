@@ -127,8 +127,13 @@ Class Audio
         End Using
 
         If File.Exists(outPath) Then
-            If Not ap Is Nothing Then ap.File = outPath
-            Log.WriteLine(MediaInfo.GetSummary(outPath))
+            If MediaInfo.GetAudio(outPath, "Format") = "" Then
+                Log.Write("Error", "No format detected by MediaInfo.")
+                Demuxffmpeg(sourcefile, stream, ap)
+            Else
+                If Not ap Is Nothing Then ap.File = outPath
+                Log.WriteLine(MediaInfo.GetSummary(outPath))
+            End If
         Else
             Log.Write("Error", "no output found")
             Demuxffmpeg(sourcefile, stream, ap)

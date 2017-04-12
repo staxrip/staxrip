@@ -10,7 +10,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 - MPEG2DecPlus filter added to open d2v files with AviSynth+
 - VCEncC added --check-features --codec --enforce-hrd --filler --fullrange --ltr --pre-analysis --ref --tier --vbaq
-- x265 added --me sea --dynamic-rd --scenecut-bias --lookahead-threads --opt-cu-delta-qp --multi-pass-opt-analysis --multi-pass-opt-distortion --multi-pass-opt-rps --aq-motion --ssim-rd --hdr --hdr-opt --refine-level
+- x265 added --me sea --dynamic-rd --scenecut-bias --lookahead-threads --opt-cu-delta-qp --multi-pass-opt-analysis --multi-pass-opt-distortion --multi-pass-opt-rps --aq-motion --ssim-rd --hdr --hdr-opt --refine-level --limit-sao
+- added 'Loop Fiter' tab to the x265 options dialog
 - icons added to menus and menu editor
 - QSVEncC added --profile main10
 - colour_primaries added to MediaInfo Folder View
@@ -28,6 +29,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - KNLMeansCL wasn't loaded for HAvsFunc/SMDegrain 
 - fixed x265 context help using right-click due to changed x265 URL
 - fixed wrong stream used for audio encoding using eac3to when audio source file is mkv 
+- PCM wasn't demuxed from MP4/MOV files
 
 #### Tweaks
 
@@ -40,7 +42,6 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 #### Updated Tools
 
 - QSVEncC 2.62
-- mkvtoolnix 9.9.0
 - masktools2 2.2.2
 - ffms2 2.23.1
 - VCEEncC 3.06
@@ -54,6 +55,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - KNLMeansCL 1.0.2
 - NVEncC 3.07
 - RgTools (avs) 0.95
-- x265 2.3+23
 - AviSynth+ 2455
 - VapourSynth 37
+- x265 2.3+30
+- mkvtoolnix 10.0.0

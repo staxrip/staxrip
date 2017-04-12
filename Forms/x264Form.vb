@@ -1342,6 +1342,7 @@ Class x264Form
         '
         'lWeightP
         '
+        Me.lWeightP.Anchor = AnchorStyles.Left Or AnchorStyles.Top
         Me.lWeightP.AutoSize = True
         Me.lWeightP.Location = New System.Drawing.Point(10, 101)
         Me.lWeightP.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
@@ -1363,7 +1364,6 @@ Class x264Form
         '
         'lNoiseReduction
         '
-        Me.lNoiseReduction.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lNoiseReduction.AutoSize = True
         Me.lNoiseReduction.Location = New System.Drawing.Point(263, 101)
         Me.lNoiseReduction.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)

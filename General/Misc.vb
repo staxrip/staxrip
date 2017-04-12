@@ -2401,7 +2401,9 @@ Class Startup
     <STAThread()>
     Shared Sub Main()
         AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf g.OnUnhandledException
-        SetProcessDPIAware()
+        'TODO: remove dead code
+        'SetProcDpiAware()
+        'SetProcessDPIAware()
         Application.EnableVisualStyles()
         'use new GDI/TextRenderer by default instead of old GDI+/Graphics.DrawString
         Application.SetCompatibleTextRenderingDefault(False)
@@ -2415,9 +2417,29 @@ Class Startup
         End If
     End Sub
 
-    <DllImport("user32.dll")>
-    Shared Function SetProcessDPIAware() As Boolean
-    End Function
+    'TODO: remove dead code
+
+    'Shared Sub SetProcDpiAware()
+    '    If OSVersion.Current >= OSVersion.Windows10 Then
+    '        SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_Per_Monitor_DPI_Aware)
+    '    Else
+    '        SetProcessDPIAware()
+    '    End If
+    'End Sub
+
+    '<DllImport("user32.dll")>
+    'Shared Function SetProcessDPIAware() As Boolean
+    'End Function
+
+    '<DllImport("SHCore.dll")>
+    'Shared Function SetProcessDpiAwareness(awareness As PROCESS_DPI_AWARENESS) As Boolean
+    'End Function
+
+    'Enum PROCESS_DPI_AWARENESS
+    '    Process_DPI_Unaware
+    '    Process_System_DPI_Aware
+    '    Process_Per_Monitor_DPI_Aware
+    'End Enum
 End Class
 
 <Serializable()>

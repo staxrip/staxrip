@@ -313,7 +313,7 @@ Public Class x265Params
     Property SAO As New BoolParam With {
         .Switch = "--sao",
         .NoSwitch = "--no-sao",
-        .Text = "Sample Adaptive Offset loop filter"}
+        .Text = "Sample Adaptive Offset"}
 
     Property SignHide As New BoolParam With {
         .Switch = "--signhide",
@@ -883,17 +883,18 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--fps", .Text = "FPS:", .Options = {"Automatic", "24", "24000/1001", "25", "30000/1001", "50", "60000/1001"}},
                     New NumParam With {.Switch = "--seek", .Text = "Seek:"},
                     New BoolParam With {.Switch = "--dither", .Text = "Dither (High Quality Downscaling)"})
-                Add("Other 1", Deblock, DeblockA, DeblockB, PsyRD, PsyRDOQ,
-                    New NumParam With {.Switch = "--recon-depth", .Text = "Recon Depth:"},
-                    CompCheck)
-                Add("Other 2",
+                Add("Loop Filter", Deblock, DeblockA, DeblockB, SAO,
+                    New BoolParam With {.Switch = "--limit-sao", .Text = "Limit Sample Adaptive Offset"},
+                    SAOnonDeblock)
+                Add("Other",
                     New StringParam With {.Switch = "--lambda-file", .Text = "Lambda File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                     New StringParam With {.Switch = "--qpfile", .Text = "QP File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                     New StringParam With {.Switch = "--recon", .Text = "Recon File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                     New StringParam With {.Switch = "--scaling-list", .Text = "Scaling List:", .Quotes = True},
-                    Decoder, SAO,
+                    Decoder, PsyRD, PsyRDOQ, CompCheck,
+                    New NumParam With {.Switch = "--recon-depth", .Text = "Recon Depth:"},
                     New BoolParam With {.Switch = "--high-tier", .Text = "High Tier", .Name = "HighTierV2", .InitValue = True},
-                    SAOnonDeblock, SlowFirstpass, SignHide,
+                    SlowFirstpass, SignHide,
                     New BoolParam With {.Switch = "--allow-non-conformance", .Text = "Allow non conformance"},
                     New BoolParam With {.Switch = "--uhd-bd", .Text = "Ultra HD Blu-ray"})
                 Add("Custom", Custom, CustomFirstPass, CustomSecondPass)

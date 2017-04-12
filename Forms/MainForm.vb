@@ -692,7 +692,6 @@ Public Class MainForm
         '
         'llMuxer
         '
-        Me.llMuxer.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.llMuxer.AutoSize = True
         Me.llMuxer.Location = New System.Drawing.Point(259, 0)
         Me.llMuxer.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
@@ -4665,6 +4664,7 @@ Public Class MainForm
     End Sub
 
     Private Sub MainForm_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+        Refresh()
         UpdateTemplatesMenu()
         UpdateScriptsMenu()
         UpdateRecentProjectsMenu()

@@ -85,13 +85,12 @@ Class Audio
     Shared Sub Demuxffmpeg(sourcefile As String, stream As AudioStream, ap As AudioProfile)
         Dim outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream) + stream.Extension
         If outPath.Length > 259 Then outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
-
         Dim streamIndex = stream.StreamOrder
         Dim args = "-i """ + sourcefile + """"
-
         If MediaInfo.GetAudioCount(sourcefile) > 1 Then args += " -map 0:" & stream.StreamOrder
-
-        args += " -c:a copy -vn -sn -y -hide_banner """ + outPath + """"
+        args += " -c:a copy -vn -sn -y -hide_banner"
+        If outPath.Ext = "wav" Then args += " -acodec pcm_s16le"
+        args += " " + outPath.Quotes
 
         Using proc As New Proc
             proc.Init("Demux audio using ffmpeg " + Package.ffmpeg.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
@@ -110,6 +109,11 @@ Class Audio
     End Sub
 
     Shared Sub DemuxMP4(sourcefile As String, stream As AudioStream, ap As AudioProfile)
+        If MediaInfo.GetAudio(sourcefile, "Format") = "PCM" Then
+            Demuxffmpeg(sourcefile, stream, ap)
+            Exit Sub
+        End If
+
         Dim outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream) + stream.Extension
         If outPath.Length > 259 Then outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
         FileHelp.Delete(outPath)

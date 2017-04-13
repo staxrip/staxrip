@@ -6,13 +6,9 @@ Imports StaxRip.UI
 Public Class ApplicationSettings
     Implements ISafeSerialization
 
-    Public AviSynthFilterPreferences As StringPairList
-    Public VapourSynthFilterPreferences As StringPairList
-    Public eac3toProfiles As List(Of eac3toProfile)
     Public AudioProfiles As List(Of AudioProfile)
+    Public AviSynthFilterPreferences As StringPairList
     Public AviSynthProfiles As List(Of FilterCategory)
-    Public VapourSynthProfiles As List(Of FilterCategory)
-    Public FilterSetupProfiles As List(Of TargetVideoScript)
     Public CmdlPresetsEac3to As String
     Public CmdlPresetsMKV As String
     Public CmdlPresetsMP4 As String
@@ -21,21 +17,30 @@ Public Class ApplicationSettings
     Public CustomMenuMainForm As CustomMenuItem
     Public CustomMenuPreview As CustomMenuItem
     Public CustomMenuSize As CustomMenuItem
+    Public DeleteTempFilesToRecycleBin As Boolean = True
     Public Demuxers As List(Of Demuxer)
+    Public eac3toProfiles As List(Of eac3toProfile)
     Public EnableTooltips As Boolean = True
     Public EventCommands As List(Of EventCommand)
+    Public FilterSetupProfiles As List(Of TargetVideoScript)
     Public HidePreviewButtons As Boolean
     Public LastPosition As Integer
     Public LastSourceDirValue As String
+    Public MinimumDiskSpace As Integer = 20
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
+    Public PreventActivation As String
+    Public PreventStandby As Boolean = True
+    Public PreviewFormBorderStyle As FormBorderStyle
     Public PreviewToggleInfos As Boolean
     Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.Idle
     Public RecentFramePositions As List(Of String)
     Public RecentOptionsPage As String
     Public RecentProjects As List(Of String)
-    Public PreventStandby As Boolean = True
+    Public ReverseVideoScrollDirection As Boolean
     Public ShowPathsInCommandLine As Boolean
+    Public ShowTemplateSelection As Boolean
+    Public SnapToDesktopEdges As Boolean
     Public SourceAspectRatioMenu As String
     Public StartupTemplate As String
     Public Storage As ObjectStorage
@@ -43,18 +48,14 @@ Public Class ApplicationSettings
     Public StringList As List(Of String)
     Public TargetImageSizeMenu As String
     Public ToolStripRenderModeEx As ToolStripRenderModeEx
+    Public UIScaleFactor As Single = 1
+    Public VapourSynthFilterPreferences As StringPairList
+    Public VapourSynthProfiles As List(Of FilterCategory)
     Public Versions As Dictionary(Of String, Integer)
     Public VideoEncoderProfiles As List(Of VideoEncoder)
     Public WindowPositions As WindowPositions
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
-    Public PreviewFormBorderStyle As FormBorderStyle
-    Public DeleteTempFilesToRecycleBin As Boolean = True
-    Public ShowTemplateSelection As Boolean
-    Public UIScaleFactor As Single = 1
-    Public PreventActivation As String
-    Public MinimumDiskSpace As Integer = 20
-    Public ReverseVideoScrollDirection As Boolean
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

@@ -3058,6 +3058,11 @@ Public Class MainForm
             cb.SaveAction = Sub(value) s.EnableTooltips = value
 
             cb = ui.AddCheckBox(generalPage)
+            cb.Text = "Snap to desktop edges"
+            cb.Checked = s.SnapToDesktopEdges
+            cb.SaveAction = Sub(value) s.SnapToDesktopEdges = value
+
+            cb = ui.AddCheckBox(generalPage)
             cb.Text = "Show template selection when loading new files"
             cb.Checked = s.ShowTemplateSelection
             cb.SaveAction = Sub(value) s.ShowTemplateSelection = value

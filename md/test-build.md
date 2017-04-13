@@ -17,6 +17,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - colour_primaries added to MediaInfo Folder View
 - NVEncC added --lookahead --cbrhq --vbrhq --aq-temporal --no-b-adapt --i-adapt --output-depth --strict-gop --vbr-quality --vpp-gauss --vpp-knn --vpp-pmd --device --preset --direct --adapt-transform --enable-ltr
 - added the possibility to use different x265 options in first and second pass
+- added setting 'Snap to desktop edges'
 
 #### Fixed Bugs
 
@@ -43,7 +44,6 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 - QSVEncC 2.62
 - masktools2 2.2.2
-- ffms2 2.23.1
 - VCEEncC 3.06
 - HAvsFunc 2017-03-06
 - x264 2762
@@ -59,3 +59,4 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - VapourSynth 37
 - x265 2.3+30
 - mkvtoolnix 10.0.0
+- ffms2 2.2000 test3

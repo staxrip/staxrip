@@ -313,10 +313,13 @@ Namespace UI
             End Select
         End Sub
 
+        'TODO: doesn't work properly
         Sub Snap(handle As IntPtr)
+            If Not s?.SnapToDesktopEdges Then Exit Sub
+
             Dim workingArea = Screen.FromControl(Me).WorkingArea
             Dim newPos = DirectCast(Marshal.PtrToStructure(handle, GetType(WindowPos)), WindowPos)
-            Dim snapMargin = CInt(Control.DefaultFont.Height * 1.5)
+            Dim snapMargin = Control.DefaultFont.Height
             Dim border As Integer
 
             If OSVersion.Current >= OSVersion.Windows8 Then

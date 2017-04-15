@@ -27,22 +27,22 @@ Class SelectionBox(Of T)
     End Sub
 
     Function Show() As DialogResult
-        Using Form As New SelectionBoxForm
+        Using sb As New SelectionBoxForm
             If Items.Count > 0 Then
-                Form.mb.Add(Items)
-                Form.mb.Value = SelectedBag
+                sb.mb.Add(Items)
+                sb.mb.Value = SelectedBag
             End If
 
             For Each i In Items
-                Dim textWidth = TextRenderer.MeasureText(i.ToString, Form.mb.Font).Width
-                If Form.mb.Width < textWidth Then Form.Width += textWidth - Form.mb.Width
+                Dim textWidth = TextRenderer.MeasureText(i.ToString, sb.mb.Font).Width
+                If sb.mb.Width < textWidth Then sb.Width += textWidth - sb.mb.Width
             Next
 
-            Form.Text = Title
-            If Form.Text = "" Then Form.Text = Application.ProductName
-            Form.lText.Text = Text
-            Dim ret = Form.ShowDialog
-            SelectedBag = DirectCast(Form.mb.Value, ListBag(Of T))
+            sb.Text = Title
+            If sb.Text = "" Then sb.Text = Application.ProductName
+            sb.lText.Text = Text
+            Dim ret = sb.ShowDialog
+            SelectedBag = DirectCast(sb.mb.Value, ListBag(Of T))
 
             Return ret
         End Using

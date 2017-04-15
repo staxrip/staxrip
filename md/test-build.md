@@ -18,6 +18,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - NVEncC added --lookahead --cbrhq --vbrhq --aq-temporal --no-b-adapt --i-adapt --output-depth --strict-gop --vbr-quality --vpp-gauss --vpp-knn --vpp-pmd --device --preset --direct --adapt-transform --enable-ltr
 - added the possibility to use different x265 options in first and second pass
 - added setting 'Snap to desktop edges'
+- added possibility to add hardcoded subtitles using VapourSynth
 
 #### Fixed Bugs
 

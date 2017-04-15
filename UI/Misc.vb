@@ -34,9 +34,7 @@ Namespace UI
                     End If
                 End If
 
-                If Not s.WindowPositions Is Nothing Then
-                    s.WindowPositions.RestorePosition(Me)
-                End If
+                If Not s.WindowPositions Is Nothing Then s.WindowPositions.RestorePosition(Me)
             End If
         End Sub
 

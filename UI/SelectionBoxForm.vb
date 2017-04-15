@@ -77,6 +77,7 @@ Class SelectionBoxForm
         'SelectionBoxForm
         '
         Me.AcceptButton = Me.bnOK
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnCancel
         Me.ClientSize = New System.Drawing.Size(433, 136)
         Me.Controls.Add(Me.mb)
@@ -86,7 +87,7 @@ Class SelectionBoxForm
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
+        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "SelectionBoxForm"

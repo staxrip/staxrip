@@ -5,6 +5,7 @@ Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports System.Threading
 Imports System.Threading.Tasks
 Imports Microsoft.Win32
 Imports StaxRip.UI
@@ -4391,7 +4392,7 @@ Public Class MainForm
                                   sb.SelectedItem.IndexIDX.ToString).WriteANSIFile(d.FileName)
                 End If
 
-                p.AddHardcodedSubtitleFilter(d.FileName)
+                p.AddHardcodedSubtitleFilter(d.FileName, True)
             End If
         End Using
     End Sub
@@ -4678,7 +4679,13 @@ Public Class MainForm
     End Sub
 
     Private Sub MainForm_Activated(sender As Object, e As EventArgs) Handles Me.Activated
-        Refresh()
+        Task.Run(Sub()
+                     Thread.Sleep(1000)
+                     Invoke(Sub() UpdateMenu())
+                 End Sub)
+    End Sub
+
+    Sub UpdateMenu()
         UpdateTemplatesMenu()
         UpdateScriptsMenu()
         UpdateRecentProjectsMenu()
@@ -4689,7 +4696,7 @@ Public Class MainForm
         Activate() 'needed for custom settings dir option
         Refresh()
 
-        Task.Run(Sub() Scripting.RunCSharp("1+1"))
+        Task.Run(Sub() Scripting.RunCSharp("1+1", True))
 
         If Not File.Exists(Package.x265.Path) Then
             MsgError("Files included with StaxRip are missing, maybe the 7-Zip archive wasn't properly unpacked. You can find a packer at [http://www.7-zip.org www.7-zip.org].")

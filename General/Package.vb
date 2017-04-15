@@ -362,10 +362,11 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "VSFilterMod",
-            .Filename = "VSFilterMod64.dll",
+            .Filename = "VSFilterMod.dll",
             .Description = "AviSynth subtitle plugin with support for vobsub srt and ass.",
             .WebURL = "http://avisynth.org.ru/docs/english/externalfilters/vsfilter.htm",
-            .AviSynthFilterNames = {"VobSub", "TextSubMod"}})
+            .AviSynthFilterNames = {"VobSub", "TextSubMod"},
+            .VapourSynthFilterNames = {"vsfm.VobSub", "vsfm.TextSubMod"}})
 
         Add(New PluginPackage With {
             .Name = "TComb",

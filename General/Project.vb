@@ -245,13 +245,59 @@ Public Class Project
         End Get
     End Property
 
-    Sub AddHardcodedSubtitleFilter(path As String)
-        Dim filter As New VideoFilter
-        filter.Category = "Subtitle"
-        filter.Path = Filepath.GetName(path)
-        filter.Active = True
-        filter.Script = If(path.Ext = "idx", "VobSub", "TextSubMod") + "(""" + path + """)"
-        Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")
-        Script.InsertAfter(insertCat, filter)
+    Sub AddHardcodedSubtitleFilter(path As String, showErrorMsg As Boolean)
+        If p.Script.Engine = ScriptEngine.AviSynth Then
+            Dim filterName As String
+
+            Select Case path.Ext
+                Case "idx"
+                    filterName = "VobSub"
+                Case "srt", "ass"
+                    filterName = "TextSubMod"
+                Case Else
+                    If showErrorMsg Then MsgError("Only idx, srt and ass file types are supported.")
+                    Exit Sub
+            End Select
+
+            Dim filter As New VideoFilter
+            filter.Category = "Subtitle"
+            filter.Path = Filepath.GetName(path)
+            filter.Active = True
+            filter.Script = filterName + "(""" + path + """)"
+            Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")
+            Script.InsertAfter(insertCat, filter)
+        Else
+            Dim filterName As String
+
+            Select Case path.Ext
+                Case "idx"
+                    filterName = "core.vsfm.VobSub"
+                Case "srt"
+                    filterName = "core.vsfm.TextSubMod"
+                Case "ass"
+                    Dim sb As New SelectionBox(Of String)
+                    sb.Title = "ASS Subtitle Renderer"
+                    sb.Text = "Please select a renderer."
+                    sb.AddItem("core.vsfm.TextSubMod")
+                    sb.AddItem("core.sub.TextFile")
+
+                    If sb.Show = DialogResult.OK Then
+                        filterName = sb.SelectedItem
+                    Else
+                        Exit Sub
+                    End If
+                Case Else
+                    If showErrorMsg Then MsgError("Only idx, srt and ass file types are supported.")
+                    Exit Sub
+            End Select
+
+            Dim filter As New VideoFilter
+            filter.Category = "Subtitle"
+            filter.Path = Filepath.GetName(path)
+            filter.Active = True
+            filter.Script = "clip = " + filterName + "(clip, file = r""" + path + """)"
+            Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")
+            Script.InsertAfter(insertCat, filter)
+        End If
     End Sub
 End Class

@@ -711,7 +711,7 @@ Public Class GlobalClass
         For Each subtitle In p.VideoEncoder.Muxer.Subtitles
             If subtitle.Path.Ext.EqualsAny("srt", "ass", "idx") Then
                 subtitle.Enabled = False
-                p.AddHardcodedSubtitleFilter(subtitle.Path)
+                p.AddHardcodedSubtitleFilter(subtitle.Path, False)
             End If
         Next
     End Sub

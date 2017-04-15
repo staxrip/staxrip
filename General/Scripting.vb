@@ -7,23 +7,20 @@ Imports Microsoft.CodeAnalysis.Scripting
 Public Class Scripting
     Shared Property App As New ScriptingApp
 
-    Shared Sub RunCSharp(code As String)
-        Dim t = RunCSharpAsync(code)
-        t.Wait()
+    Shared Sub RunCSharp(code As String, Optional hideErrors As Boolean = False)
+        RunCSharpAsync(code, hideErrors).Wait()
     End Sub
 
-    Private Shared Async Function RunCSharpAsync(code As String) As Task(Of Object)
-        Dim options = ScriptOptions.Default.WithImports(
+    Private Shared Async Function RunCSharpAsync(code As String, Optional hideErrors As Boolean = False) As Task(Of Object)
+        Try
+            Dim options = ScriptOptions.Default.WithImports(
             "StaxRip", "System.Linq", "System.IO", "System.Text.RegularExpressions").
             WithReferences(GetType(Scripting).Assembly,
                            GetType(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo).Assembly)
 
-        Dim script = CSharpScript.Create(code, options)
-
-        Try
-            Await script.RunAsync()
+            Await CSharpScript.Create(code, options).RunAsync()
         Catch ex As Exception
-            MsgError(ex.Message)
+            If Not hideErrors Then MsgError(ex.Message)
         End Try
     End Function
 

@@ -14,17 +14,17 @@ Class x265Control
     End Sub
 
     Friend WithEvents lv As StaxRip.UI.ListViewEx
-    Friend WithEvents llConfigCodec As System.Windows.Forms.LinkLabel
-    Friend WithEvents llConfigContainer As System.Windows.Forms.LinkLabel
-    Friend WithEvents llCompCheck As System.Windows.Forms.LinkLabel
+    Friend WithEvents llConfigCodec As SimpleLinkLabel
+    Friend WithEvents llConfigContainer As SimpleLinkLabel
+    Friend WithEvents llCompCheck As SimpleLinkLabel
 
     Private components As System.ComponentModel.IContainer
 
     <DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.llConfigCodec = New System.Windows.Forms.LinkLabel()
-        Me.llConfigContainer = New System.Windows.Forms.LinkLabel()
-        Me.llCompCheck = New System.Windows.Forms.LinkLabel()
+        Me.llConfigCodec = New SimpleLinkLabel()
+        Me.llConfigContainer = New SimpleLinkLabel()
+        Me.llCompCheck = New SimpleLinkLabel()
         Me.lv = New StaxRip.UI.ListViewEx()
         Me.SuspendLayout()
         '
@@ -242,15 +242,15 @@ Class x265Control
         llCompCheck.Visible = Params.Mode.Value = x265RateMode.TwoPass Or Params.Mode.Value = x265RateMode.ThreePass
     End Sub
 
-    Private Sub llConfigCodec_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llConfigCodec.LinkClicked
+    Private Sub llConfigCodec_Click(sender As Object, e As EventArgs) Handles llConfigCodec.Click
         Encoder.ShowConfigDialog()
     End Sub
 
-    Private Sub llConfigContainer_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llConfigContainer.LinkClicked
+    Private Sub llConfigContainer_Click(sender As Object, e As EventArgs) Handles llConfigContainer.Click
         Encoder.OpenMuxerConfigDialog()
     End Sub
 
-    Private Sub llCompCheck_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llCompCheck.LinkClicked
+    Private Sub llCompCheck_Click(sender As Object, e As EventArgs) Handles llCompCheck.Click
         Encoder.RunCompCheck()
     End Sub
 

@@ -40,6 +40,7 @@ Public Class ApplicationSettings
     Public ReverseVideoScrollDirection As Boolean
     Public ShowPathsInCommandLine As Boolean
     Public ShowTemplateSelection As Boolean
+    Public ShutdownTimeout As Integer
     Public SnapToDesktopEdges As Boolean
     Public SourceAspectRatioMenu As String
     Public StartupTemplate As String

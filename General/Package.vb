@@ -4,23 +4,24 @@ Imports StaxRip
 Public Class Package
     Implements IComparable(Of Package)
 
-    Property IgnoreVersion As Boolean
     Property Description As String
     Property DownloadURL As String
     Property Filenames As String()
     Property FileNotFoundMessage As String
     Property HelpFile As String
-    Property HelpURL As String
     Property HelpFileFunc As Func(Of ScriptEngine, String)
+    Property HelpURL As String
+    Property HintDirFunc As Func(Of String)
+    Property IgnoreVersion As Boolean
     Property IsRequiredFunc As Func(Of Boolean)
     Property LaunchName As String
     Property Name As String
     Property SetupFilename As String
     Property StatusFunc As Func(Of String)
+    Property TreePath As String
     Property Version As String
     Property VersionDate As DateTime
     Property WebURL As String
-    Property TreePath As String
 
     Shared Property Items As New SortedDictionary(Of String, Package)
 
@@ -57,8 +58,26 @@ Public Class Package
     Shared Property flash3kyuu_deband As New flash3kyuu_debandPackage
     Shared Property Decomb As New DecombPackage
     Shared Property vinverse As New vinversePackage
-    Shared Property vspipe As New vspipePackage
-    Shared Property VapourSynth As New VapourSynthPackage
+
+    Shared Property vspipe As New Package With {
+        .Name = "vspipe",
+        .Filename = "vspipe.exe",
+        .Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
+        .WebURL = "http://www.vapoursynth.com/doc/vspipe.html",
+        .DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases",
+        .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
+        .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"}
+
+    Shared Property VapourSynth As New Package With {
+        .Name = "VapourSynth",
+        .Filename = "vapoursynth.dll",
+        .Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.",
+        .WebURL = "http://www.vapoursynth.com",
+        .HelpURL = "http://www.vapoursynth.com/doc",
+        .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R37/VapourSynth-R37.exe",
+        .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
+        .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"}
+
     Shared Property Python As New PythonPackage
     Shared Property scenechange As New scenechangePackage
     Shared Property temporalsoften As New temporalsoftenPackage
@@ -164,11 +183,12 @@ Public Class Package
     End Function
 
     Shared Sub New()
-        Add(temporalsoften)
-        Add(scenechange)
         Add(Python)
         Add(VapourSynth)
         Add(vspipe)
+
+        Add(temporalsoften)
+        Add(scenechange)
         Add(vinverse)
         Add(Decomb)
         Add(flash3kyuu_deband)
@@ -806,6 +826,10 @@ Public Class Package
                 Return Nothing
             End If
 
+            If Not HintDirFunc Is Nothing Then
+                If File.Exists(HintDirFunc.Invoke + Filename) Then Return HintDirFunc.Invoke + Filename
+            End If
+
             Dim plugin = TryCast(Me, PluginPackage)
 
             If Not plugin Is Nothing Then
@@ -897,7 +921,7 @@ Public Class PythonPackage
         TreePath = "Runtimes"
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        DownloadURL = "https://dl.dropboxusercontent.com/u/73468194/VapourSynth-R36-test3.exe"
+        DownloadURL = "https://www.python.org/ftp/python/3.6.1/python-3.6.1-amd64-webinstall.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -932,59 +956,6 @@ Public Class PythonPackage
                 End If
             Next
         End Get
-    End Property
-End Class
-
-Public Class VapourSynthPackage
-    Inherits Package
-
-    Sub New()
-        Name = "VapourSynth"
-        Filename = "vapoursynth.dll"
-        Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        WebURL = "http://www.vapoursynth.com"
-        HelpURL = "http://www.vapoursynth.com/doc"
-        DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R37/VapourSynth-R37.exe"
-    End Sub
-
-    Public Overrides ReadOnly Property IsRequired As Boolean
-        Get
-            Return p.Script.Engine = ScriptEngine.VapourSynth
-        End Get
-    End Property
-
-    Public Overrides Property FixedDir As String
-        Get
-            Return Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"
-        End Get
-        Set(value As String)
-        End Set
-    End Property
-End Class
-
-Public Class vspipePackage
-    Inherits Package
-
-    Sub New()
-        Name = "vspipe"
-        Filename = "vspipe.exe"
-        Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps."
-        WebURL = "http://www.vapoursynth.com/doc/vspipe.html"
-        DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases"
-    End Sub
-
-    Public Overrides ReadOnly Property IsRequired As Boolean
-        Get
-            Return p.Script.Engine = ScriptEngine.VapourSynth
-        End Get
-    End Property
-
-    Public Overrides Property FixedDir As String
-        Get
-            Return Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"
-        End Get
-        Set(value As String)
-        End Set
     End Property
 End Class
 

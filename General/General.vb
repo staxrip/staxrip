@@ -1535,15 +1535,10 @@ Class Shutdown
             Case ShutdownMode.Hibernate
                 SetSuspendState(True, False, False)
             Case ShutdownMode.Shutdown
-                'Const Shutdown = 1
-                Const ForcedShutdown = 5
-                'Const PowerOff = 8
-                'Const ForcedPowerOff = 12
-                Dim mc As New ManagementClass("Win32_OperatingSystem")
-                mc.Scope.Options.EnablePrivileges = True
-                Dim params = mc.GetMethodParameters("Win32Shutdown")
-                params("Flags") = ForcedShutdown.ToString
-                DirectCast(mc.GetInstances()(0), ManagementObject).InvokeMethod("Win32Shutdown", params, Nothing)
+                Dim psi = New ProcessStartInfo("shutdown", "/f /s /t " & s.ShutdownTimeout)
+                psi.CreateNoWindow = True
+                psi.UseShellExecute = False
+                Process.Start(psi)
         End Select
     End Sub
 

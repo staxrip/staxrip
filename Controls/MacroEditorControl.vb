@@ -22,9 +22,9 @@ Class MacroEditorControl
     Friend WithEvents rtbPreview As System.Windows.Forms.RichTextBox
     Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents FlowLayoutPanel1 As System.Windows.Forms.FlowLayoutPanel
-    Friend WithEvents llMacros As System.Windows.Forms.LinkLabel
-    Friend WithEvents llExecute As System.Windows.Forms.LinkLabel
-    Friend WithEvents llHelp As System.Windows.Forms.LinkLabel
+    Friend WithEvents llMacros As SimpleLinkLabel
+    Friend WithEvents llExecute As SimpleLinkLabel
+    Friend WithEvents llHelp As SimpleLinkLabel
 
     Private components As System.ComponentModel.IContainer
 
@@ -39,9 +39,9 @@ Class MacroEditorControl
         Me.gb = New System.Windows.Forms.GroupBox()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
-        Me.llMacros = New System.Windows.Forms.LinkLabel()
-        Me.llExecute = New System.Windows.Forms.LinkLabel()
-        Me.llHelp = New System.Windows.Forms.LinkLabel()
+        Me.llMacros = New SimpleLinkLabel()
+        Me.llExecute = New SimpleLinkLabel()
+        Me.llHelp = New SimpleLinkLabel()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
         Me.TabControl.SuspendLayout()
         Me.tpEdit.SuspendLayout()
@@ -309,11 +309,11 @@ Class MacroEditorControl
         MyBase.OnHandleCreated(e)
     End Sub
 
-    Private Sub llMacros_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llMacros.LinkClicked
+    Private Sub llMacros_Click(sender As Object, e As EventArgs) Handles llMacros.Click
         MacrosForm.ShowDialogForm()
     End Sub
 
-    Private Sub llExecute_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llExecute.LinkClicked
+    Private Sub llExecute_Click(sender As Object, e As EventArgs) Handles llExecute.Click
         UpdatePreview()
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_execute.bat"
         Proc.WriteBatchFile(batchPath, rtbPreview.Text)
@@ -322,7 +322,7 @@ Class MacroEditorControl
 
     Private HelpPaths As New List(Of String)
 
-    Private Sub llHelp_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llHelp.LinkClicked
+    Private Sub llHelp_Click(sender As Object, e As EventArgs) Handles llHelp.Click
         For Each i In HelpPaths
             g.ShellExecute(i)
         Next

@@ -31,6 +31,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - fixed x265 context help using right-click due to changed x265 URL
 - fixed wrong stream used for audio encoding using eac3to when audio source file is mkv 
 - PCM wasn't demuxed from MP4/MOV files
+- shutdown was broken on creators update
+- changed x264 qpmin default value from 10 to 0
 
 #### Tweaks
 
@@ -39,6 +41,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - antialiased font rendering added in some places
 - ensuring form show within the bounds of the working area (screen)
 - reduce CPU time while encoding
+- the message for low disk space is shown only once before jobs are created
 
 #### Updated Tools
 
@@ -60,3 +63,4 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - x265 2.3+30
 - mkvtoolnix 10.0.0
 - ffms2 2.2000 test3
+- mvtools (vs) 18

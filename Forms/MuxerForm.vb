@@ -377,57 +377,6 @@ Class MuxerForm
         If dgvAudio.RowCount > 0 Then dgvAudio.Rows(0).Selected = True
 
         UpdateAudioControls()
-
-        Dim UI = SimpleUI
-        UI.BackColor = Color.Transparent
-
-        Dim page = UI.CreateFlowPage("main page")
-        page.SuspendLayout()
-
-        If Not TypeOf muxer Is WebMMuxer Then
-            Dim tbb = UI.AddTextButtonBlock(page)
-            tbb.Label.Text = "Chapters:"
-            tbb.Edit.Expandet = True
-            tbb.Edit.Text = muxer.ChapterFile
-            tbb.Edit.SaveAction = Sub(value) muxer.ChapterFile = If(value <> "", value, Nothing)
-            tbb.BrowseFile("txt, xml|*.txt;*.xml")
-        End If
-
-        If TypeOf muxer Is MkvMuxer Then
-            CmdlControl.Presets = s.CmdlPresetsMKV
-
-            Dim tb = UI.AddTextBlock(page)
-            tb.Label.Text = "Title:"
-            tb.Label.Tooltip = "Optional title of the output file that may contain macros."
-            tb.Edit.Expandet = True
-            tb.Edit.Text = DirectCast(muxer, MkvMuxer).Title
-            tb.Edit.SaveAction = Sub(value) DirectCast(muxer, MkvMuxer).Title = value
-
-            tb = UI.AddTextBlock(page)
-            tb.Label.Text = "Video Track Name:"
-            tb.Label.Tooltip = "Optional name of the video stream that may contain macro."
-            tb.Edit.Expandet = True
-            tb.Edit.Text = DirectCast(muxer, MkvMuxer).VideoTrackName
-            tb.Edit.SaveAction = Sub(value) DirectCast(muxer, MkvMuxer).VideoTrackName = value
-
-            Dim mb = UI.AddMenuButtonBlock(Of Language)(page)
-            mb.Label.Text = "Video Track Language:"
-            mb.Label.Tooltip = "Optional language of the video stream."
-            mb.MenuButton.Value = DirectCast(muxer, MkvMuxer).VideoTrackLanguage
-            mb.MenuButton.SaveAction = Sub(value) DirectCast(muxer, MkvMuxer).VideoTrackLanguage = value
-
-            For Each i In Language.Languages
-                If i.IsCommon Then
-                    mb.MenuButton.Add(i.ToString, i)
-                Else
-                    mb.MenuButton.Add("More | " + i.ToString.Substring(0, 1) + " | " + i.ToString, i)
-                End If
-            Next
-        ElseIf TypeOf muxer Is MP4Muxer Then
-            CmdlControl.Presets = s.CmdlPresetsMP4
-        End If
-
-        page.ResumeLayout()
         TipProvider.SetTip("Additional command line switches that may contain macros.", tpCommandLine)
     End Sub
 
@@ -556,5 +505,60 @@ Class MuxerForm
 
     Private Sub dgvAudio_MouseUp(sender As Object, e As MouseEventArgs) Handles dgvAudio.MouseUp
         UpdateAudioControls()
+    End Sub
+
+    Private Sub MuxerForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        Refresh()
+
+        Dim UI = SimpleUI
+        UI.BackColor = Color.Transparent
+
+        Dim page = UI.CreateFlowPage("main page")
+        page.SuspendLayout()
+
+        If Not TypeOf Muxer Is WebMMuxer Then
+            Dim tbb = UI.AddTextButtonBlock(page)
+            tbb.Label.Text = "Chapters:"
+            tbb.Edit.Expandet = True
+            tbb.Edit.Text = Muxer.ChapterFile
+            tbb.Edit.SaveAction = Sub(value) Muxer.ChapterFile = If(value <> "", value, Nothing)
+            tbb.BrowseFile("txt, xml|*.txt;*.xml")
+        End If
+
+        If TypeOf Muxer Is MkvMuxer Then
+            CmdlControl.Presets = s.CmdlPresetsMKV
+
+            Dim tb = UI.AddTextBlock(page)
+            tb.Label.Text = "Title:"
+            tb.Label.Tooltip = "Optional title of the output file that may contain macros."
+            tb.Edit.Expandet = True
+            tb.Edit.Text = DirectCast(Muxer, MkvMuxer).Title
+            tb.Edit.SaveAction = Sub(value) DirectCast(Muxer, MkvMuxer).Title = value
+
+            tb = UI.AddTextBlock(page)
+            tb.Label.Text = "Video Track Name:"
+            tb.Label.Tooltip = "Optional name of the video stream that may contain macro."
+            tb.Edit.Expandet = True
+            tb.Edit.Text = DirectCast(Muxer, MkvMuxer).VideoTrackName
+            tb.Edit.SaveAction = Sub(value) DirectCast(Muxer, MkvMuxer).VideoTrackName = value
+
+            Dim mb = UI.AddMenuButtonBlock(Of Language)(page)
+            mb.Label.Text = "Video Track Language:"
+            mb.Label.Tooltip = "Optional language of the video stream."
+            mb.MenuButton.Value = DirectCast(Muxer, MkvMuxer).VideoTrackLanguage
+            mb.MenuButton.SaveAction = Sub(value) DirectCast(Muxer, MkvMuxer).VideoTrackLanguage = value
+
+            For Each i In Language.Languages
+                If i.IsCommon Then
+                    mb.MenuButton.Add(i.ToString, i)
+                Else
+                    mb.MenuButton.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString, i)
+                End If
+            Next
+        ElseIf TypeOf Muxer Is MP4Muxer Then
+            CmdlControl.Presets = s.CmdlPresetsMP4
+        End If
+
+        page.ResumeLayout()
     End Sub
 End Class

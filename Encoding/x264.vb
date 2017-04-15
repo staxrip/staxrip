@@ -580,7 +580,7 @@ Public Class x264Params
     Public PsyRD As New SettingBag(Of Single)(1.0)
     Public PsyTrellis As New SettingBag(Of Single)(0.0)
     Public QComp As New SettingBag(Of Single)(0.6)
-    Public QPMin As New SettingBag(Of Integer)(10)
+    Public QPMin As New SettingBag(Of Integer)(0)
     Public Quant As New SettingBag(Of Single)(22)
     Public QuantCompCheck As New SettingBag(Of Integer)(18)
     Public RcLookahead As New SettingBag(Of Integer)(40)

@@ -195,7 +195,10 @@ Public Class VideoScript
                         End If
                     End If
 
-                    If Not Package.AviSynth.VerifyOK OrElse Not Package.VapourSynth.VerifyOK Then
+                    If Not Package.AviSynth.VerifyOK OrElse
+                        Not Package.VapourSynth.VerifyOK OrElse
+                        Not Package.vspipe.VerifyOK Then
+
                         Throw New AbortException
                     End If
 

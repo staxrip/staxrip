@@ -39,7 +39,9 @@ Public Class SimpleUI
 
         If Not DesignMode Then
             AddHandler FindForm.Load, Sub()
-                                          Tree.ItemHeight = CInt(Tree.Height / (Tree.Nodes.Count)) - 2
+                                          If Tree.Nodes.Count > 0 Then
+                                              Tree.ItemHeight = CInt(Tree.Height / (Tree.Nodes.Count)) - 2
+                                          End If
 
                                           If Tree.ItemHeight > Tree.Font.Height * 2 Then
                                               Tree.ItemHeight = Tree.Font.Height * 2

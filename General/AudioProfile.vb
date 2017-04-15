@@ -469,7 +469,7 @@ Class MuxAudioProfile
                 If i.IsCommon Then
                     mbi.MenuButton.Add(i.ToString, i)
                 Else
-                    mbi.MenuButton.Add("More | " + i.ToString.Substring(0, 1) + " | " + i.ToString, i)
+                    mbi.MenuButton.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString, i)
                 End If
             Next
 

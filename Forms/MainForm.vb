@@ -27,8 +27,8 @@ Public Class MainForm
 
     Public WithEvents tbAudioFile0 As StaxRip.UI.TextBoxEx
     Public WithEvents tbAudioFile1 As StaxRip.UI.TextBoxEx
-    Public WithEvents llEditAudio1 As System.Windows.Forms.LinkLabel
-    Public WithEvents llEditAudio0 As System.Windows.Forms.LinkLabel
+    Public WithEvents llEditAudio1 As SimpleLinkLabel
+    Public WithEvents llEditAudio0 As SimpleLinkLabel
     Public WithEvents bNext As System.Windows.Forms.Button
     Public WithEvents tbSourceFile As StaxRip.UI.TextBoxEx
     Public WithEvents tbTargetFile As StaxRip.UI.TextBoxEx
@@ -61,18 +61,18 @@ Public Class MainForm
     Public WithEvents lgbEncoder As LinkGroupBox
     Public WithEvents lTarget2 As System.Windows.Forms.Label
     Public WithEvents MenuStrip As System.Windows.Forms.MenuStrip
-    Public WithEvents llAudioProfile0 As LinkLabel
-    Public WithEvents llAudioProfile1 As LinkLabel
+    Public WithEvents llAudioProfile0 As SimpleLinkLabel
+    Public WithEvents llAudioProfile1 As SimpleLinkLabel
     Public WithEvents pEncoder As System.Windows.Forms.Panel
     Public WithEvents AviSynthListView As StaxRip.AviSynthListView
-    Public WithEvents llFilesize As System.Windows.Forms.LinkLabel
-    Public WithEvents llMuxer As System.Windows.Forms.LinkLabel
+    Public WithEvents llFilesize As SimpleLinkLabel
+    Public WithEvents llMuxer As SimpleLinkLabel
     Public WithEvents lPAR As StaxRip.UI.LabelEx
     Public WithEvents lParText As StaxRip.UI.LabelEx
     Public WithEvents lAspectRatioError As StaxRip.UI.LabelEx
     Public WithEvents lAspectRatioErrorText As StaxRip.UI.LabelEx
     Public WithEvents gbAudio As System.Windows.Forms.GroupBox
-    Public WithEvents llSourceParText As System.Windows.Forms.LinkLabel
+    Public WithEvents llSourceParText As SimpleLinkLabel
     Public WithEvents lSourcePAR As System.Windows.Forms.Label
     Public WithEvents lSourceDar As System.Windows.Forms.Label
     Public WithEvents lSourceDarText As System.Windows.Forms.Label
@@ -85,18 +85,18 @@ Public Class MainForm
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.bNext = New System.Windows.Forms.Button()
-        Me.llEditAudio0 = New System.Windows.Forms.LinkLabel()
+        Me.llEditAudio0 = New SimpleLinkLabel()
         Me.gbAssistant = New System.Windows.Forms.GroupBox()
         Me.lTip = New System.Windows.Forms.Label()
-        Me.llEditAudio1 = New System.Windows.Forms.LinkLabel()
+        Me.llEditAudio1 = New SimpleLinkLabel()
         Me.gbAudio = New System.Windows.Forms.GroupBox()
-        Me.llAudioProfile1 = New System.Windows.Forms.LinkLabel()
-        Me.llAudioProfile0 = New System.Windows.Forms.LinkLabel()
+        Me.llAudioProfile1 = New SimpleLinkLabel()
+        Me.llAudioProfile0 = New SimpleLinkLabel()
         Me.tbAudioFile0 = New StaxRip.UI.TextBoxEx()
         Me.tbAudioFile1 = New StaxRip.UI.TextBoxEx()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
         Me.lgbTarget = New StaxRip.UI.LinkGroupBox()
-        Me.llFilesize = New System.Windows.Forms.LinkLabel()
+        Me.llFilesize = New SimpleLinkLabel()
         Me.tbTargetSize = New System.Windows.Forms.TextBox()
         Me.lTarget2 = New System.Windows.Forms.Label()
         Me.lBitrate = New System.Windows.Forms.Label()
@@ -108,7 +108,7 @@ Public Class MainForm
         Me.lSourceDar = New System.Windows.Forms.Label()
         Me.lSourceDarText = New System.Windows.Forms.Label()
         Me.lSourcePAR = New System.Windows.Forms.Label()
-        Me.llSourceParText = New System.Windows.Forms.LinkLabel()
+        Me.llSourceParText = New SimpleLinkLabel()
         Me.lCropText = New System.Windows.Forms.Label()
         Me.lSource2 = New System.Windows.Forms.Label()
         Me.lSource1 = New System.Windows.Forms.Label()
@@ -134,7 +134,7 @@ Public Class MainForm
         Me.lgbFilters = New StaxRip.UI.LinkGroupBox()
         Me.AviSynthListView = New StaxRip.AviSynthListView()
         Me.lgbEncoder = New StaxRip.UI.LinkGroupBox()
-        Me.llMuxer = New System.Windows.Forms.LinkLabel()
+        Me.llMuxer = New SimpleLinkLabel()
         Me.pEncoder = New System.Windows.Forms.Panel()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
         Me.gbAssistant.SuspendLayout()
@@ -188,7 +188,6 @@ Public Class MainForm
         Me.lTip.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lTip.Cursor = System.Windows.Forms.Cursors.Hand
         Me.lTip.ForeColor = System.Drawing.Color.Blue
         Me.lTip.Location = New System.Drawing.Point(3, 26)
         Me.lTip.Name = "lTip"
@@ -897,11 +896,11 @@ Public Class MainForm
             llMuxer.LinkColor = c
             llSourceParText.LinkColor = c
 
-            lgbEncoder.ll.LinkColor = c
-            lgbFilters.ll.LinkColor = c
-            lgbResize.ll.LinkColor = c
-            lgbSource.ll.LinkColor = c
-            lgbTarget.ll.LinkColor = c
+            lgbEncoder.Label.LinkColor = c
+            lgbFilters.Label.LinkColor = c
+            lgbResize.Label.LinkColor = c
+            lgbSource.Label.LinkColor = c
+            lgbTarget.Label.LinkColor = c
         Else
             llAudioProfile0.LinkColor = Color.Blue
             llAudioProfile1.LinkColor = Color.Blue
@@ -911,11 +910,11 @@ Public Class MainForm
             llMuxer.LinkColor = Color.Blue
             llSourceParText.LinkColor = Color.Blue
 
-            lgbEncoder.ll.LinkColor = Color.Blue
-            lgbFilters.ll.LinkColor = Color.Blue
-            lgbResize.ll.LinkColor = Color.Blue
-            lgbSource.ll.LinkColor = Color.Blue
-            lgbTarget.ll.LinkColor = Color.Blue
+            lgbEncoder.Label.LinkColor = Color.Blue
+            lgbFilters.Label.LinkColor = Color.Blue
+            lgbResize.Label.LinkColor = Color.Blue
+            lgbSource.Label.LinkColor = Color.Blue
+            lgbTarget.Label.LinkColor = Color.Blue
         End If
     End Sub
 
@@ -1599,7 +1598,10 @@ Public Class MainForm
                     preferredSourceFilter.Script = "#vs"
 
                 If isVapourSynth Then
-                    If Not Package.Python.VerifyOK(True) OrElse Not Package.VapourSynth.VerifyOK(True) Then
+                    If Not Package.Python.VerifyOK(True) OrElse
+                        Not Package.VapourSynth.VerifyOK(True) OrElse
+                        Not Package.vspipe.VerifyOK(True) Then
+
                         Throw New AbortException
                     End If
 
@@ -2281,12 +2283,6 @@ Public Class MainForm
         End Get
         Set(Value As Action)
             AssistantMethodValue = Value
-
-            If Value Is Nothing Then
-                lTip.Cursor = Cursors.Default
-            Else
-                lTip.Cursor = Cursors.Hand
-            End If
         End Set
     End Property
 
@@ -2313,7 +2309,7 @@ Public Class MainForm
         g.Highlight(False, tbTargetFile)
         g.Highlight(False, tbTargetWidth)
         g.Highlight(False, llMuxer)
-        g.Highlight(False, lgbEncoder.ll)
+        g.Highlight(False, lgbEncoder.Label)
         g.Highlight(False, lTarget2)
 
         Dim cropw = p.SourceWidth
@@ -2520,7 +2516,7 @@ Public Class MainForm
                 If ProcessTip("The encoder outputs '" + p.VideoEncoder.OutputExt + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ".") Then
                     gbAssistant.Text = "Encoder conflicts with container"
                     g.Highlight(True, llMuxer)
-                    g.Highlight(True, lgbEncoder.ll)
+                    g.Highlight(True, lgbEncoder.Label)
                     CanIgnoreTip = False
                     Return False
                 End If
@@ -2831,12 +2827,34 @@ Public Class MainForm
         End If
 
         If AssistantPassed Then
+            If AbortDueToLowDiskSpace() Then Exit Sub
             AddJob(False, Nothing)
             ShowJobsDialog()
         Else
             Assistant()
         End If
     End Sub
+
+    Function AbortDueToLowDiskSpace() As Boolean
+        Try 'with file batch target file is empty, also crashes with network shares 
+            Dim di As New DriveInfo(p.TargetFile.Dir)
+
+            If di.AvailableFreeSpace / 1024 ^ 3 < s.MinimumDiskSpace Then
+                ProcessForm.CloseProcessForm()
+
+                Using td As New TaskDialog(Of String)
+                    td.MainInstruction = "Low Disk Space"
+                    td.Content = $"The target drive {Path.GetPathRoot(p.TargetFile)} has only {(di.AvailableFreeSpace / 1024 ^ 3).ToString("f2")} GB free disk space." + BR2 +
+                        "This message can be configured at:" + BR2 + "Tools > Settings > System > Minimum Disk Space"
+                    td.MainIcon = TaskDialogIcon.Warning
+                    td.AddButton("Continue", "Continue")
+                    td.AddButton("Abort", "Abort")
+                    If td.Show <> "Continue" Then Return True
+                End Using
+            End If
+        Catch
+        End Try
+    End Function
 
     <Command("Creates a job and runs the job list.")>
     Sub StartEncoding()
@@ -3134,6 +3152,12 @@ Public Class MainForm
             num.NumEdit.Init(0, 10000, 1)
             num.NumEdit.Value = s.MinimumDiskSpace
             num.NumEdit.SaveAction = Sub(value) s.MinimumDiskSpace = CInt(value)
+
+            num = ui.AddNumericBlock(systemPage)
+            num.Label.Text = "Shutdown Timeout:"
+            num.Label.Tooltip = "Timeout in seconds before the shutdown is executed."
+            num.NumEdit.Value = s.ShutdownTimeout
+            num.NumEdit.SaveAction = Sub(value) s.ShutdownTimeout = CInt(value)
 
             cb = ui.AddCheckBox(systemPage)
             cb.Text = "Prevent system entering standby mode while encoding"
@@ -3487,23 +3511,6 @@ Public Class MainForm
         JobsForm.ActivateJob(jobPath, False)
         g.MainForm.OpenProject(jobPath, False)
 
-        Try 'with file batch target file is empty, also crashes with network shares 
-            Dim di As New DriveInfo(p.TargetFile.Dir)
-
-            If di.AvailableFreeSpace / 1024 ^ 3 < s.MinimumDiskSpace Then
-                ProcessForm.CloseProcessForm()
-
-                Using td As New TaskDialog(Of String)
-                    td.MainInstruction = $"The target drive {Path.GetPathRoot(p.TargetFile)} has only {(di.AvailableFreeSpace / 1024 ^ 3).ToString("f2")} GB free disk space."
-                    td.MainIcon = TaskDialogIcon.Warning
-                    td.AddButton("Continue", "Continue")
-                    td.AddButton("Abort", "Abort")
-                    If td.Show <> "Continue" Then Exit Sub
-                End Using
-            End If
-        Catch
-        End Try
-
         Try
             If s.PreventStandby Then PowerRequest.SuppressStandby()
             StaxRip.ProcessForm.ShutdownVisible = True
@@ -3605,9 +3612,9 @@ Public Class MainForm
             Exit Sub
         End If
 
-        Dim path = GetJobPath()
-        g.MainForm.SaveProjectPath(path)
-        JobsForm.AddJob(path)
+        Dim jobPath = GetJobPath()
+        g.MainForm.SaveProjectPath(jobPath)
+        JobsForm.AddJob(jobPath)
 
         If showConfirmation Then MsgInfo("Job added")
         If templateName <> "" Then LoadProject(Folder.Template + templateName + ".srip")
@@ -4660,7 +4667,9 @@ Public Class MainForm
         Dim profile = DirectCast(ObjectHelp.GetCopy(profileInterface), TargetVideoScript)
 
         If profile.Engine = ScriptEngine.AviSynth OrElse
-                (Package.Python.VerifyOK(True) AndAlso Package.VapourSynth.VerifyOK(True)) Then
+                (Package.Python.VerifyOK(True) AndAlso
+                Package.VapourSynth.VerifyOK(True) AndAlso
+                Package.vspipe.VerifyOK(True)) Then
 
             p.Script = profile
             AviSynthListView.OnChanged()
@@ -4840,6 +4849,8 @@ Public Class MainForm
                     End If
                 End Using
             Case "File Batch"
+                If AbortDueToLowDiskSpace() Then Exit Sub
+
                 Using f As New SourceFilesForm()
                     If p.DefaultTargetName = "%source_dir_name%" Then p.DefaultTargetName = "%source_name%"
 
@@ -4872,6 +4883,8 @@ Public Class MainForm
                     End If
                 End Using
             Case "Directory Batch"
+                If AbortDueToLowDiskSpace() Then Exit Sub
+
                 Using f As New SourceFilesForm()
                     f.Mode = SourceInputMode.DirectoryBatch
                     f.UpdateControls()
@@ -5302,27 +5315,27 @@ Public Class MainForm
         EncoderMenu.Show(lgbEncoder, 0, 16)
     End Sub
 
-    Private Sub llSize_LinkClicked() Handles llFilesize.LinkClicked
+    Private Sub llSize_Click() Handles llFilesize.Click
         UpdateSizeMenu()
         SizeContextMenuStrip.Show(llFilesize, 0, 16)
     End Sub
 
-    Private Sub lAudioProfile0_LinkClicked() Handles llAudioProfile0.LinkClicked
+    Private Sub lAudioProfile0_Click() Handles llAudioProfile0.Click
         AudioMenu0.Show(llAudioProfile0, 0, 16)
     End Sub
 
-    Private Sub lAudioProfile1_LinkClicked() Handles llAudioProfile1.LinkClicked
+    Private Sub lAudioProfile1_Click() Handles llAudioProfile1.Click
         AudioMenu1.Show(llAudioProfile1, 0, 16)
     End Sub
 
-    Private Sub llContainer_LinkClicked() Handles llMuxer.LinkClicked
+    Private Sub llContainer_Click() Handles llMuxer.Click
         ContainerMenu.Items.Clear()
         g.PopulateProfileMenu(ContainerMenu.Items, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf LoadMuxer)
         ContainerMenu.Show(llMuxer, 0, 16)
     End Sub
 
     Private Sub gbResize_LinkClick() Handles lgbResize.LinkClick
-        Dim cms = TextCustomMenu.GetMenu(s.TargetImageSizeMenu, lgbResize.ll, components, AddressOf TargetImageMenuClick)
+        Dim cms = TextCustomMenu.GetMenu(s.TargetImageSizeMenu, lgbResize.Label, components, AddressOf TargetImageMenuClick)
 
         Dim helpUrl = If(g.IsCulture("de"),
                  "http://encodingwissen.de/videobild/zielaufloesung",
@@ -5336,7 +5349,7 @@ Public Class MainForm
         cms.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.TargetImageSizeMenu = TextCustomMenu.EditMenu(s.TargetImageSizeMenu, "Target Image Help...", ApplicationSettings.GetDefaultTargetImageSizeMenu, Me)))
         cms.Items.Add(New ActionMenuItem("Help...", helpAction))
 
-        cms.Show(lgbResize, 0, lgbResize.ll.Height)
+        cms.Show(lgbResize, 0, lgbResize.Label.Height)
     End Sub
 
     Private Sub llSourceParText_Click(sender As Object, e As EventArgs) Handles llSourceParText.Click
@@ -5445,8 +5458,8 @@ Public Class MainForm
             .SetTip("Shows audio profiles", llAudioProfile0)
             .SetTip("Shows audio profiles", llAudioProfile1)
             .SetTip("Shows a menu with Container/Muxer profiles", llMuxer)
-            .SetTip("Shows a menu with video encoder profiles", lgbEncoder.ll)
-            .SetTip("Shows a menu with AviSynth filter options", lgbFilters.ll)
+            .SetTip("Shows a menu with video encoder profiles", lgbEncoder.Label)
+            .SetTip("Shows a menu with AviSynth filter options", lgbFilters.Label)
         End With
     End Sub
 
@@ -5473,14 +5486,14 @@ Public Class MainForm
 
     Private Sub gbTarget_LinkClick() Handles lgbTarget.LinkClick
         UpdateTargetFileMenu()
-        TargetFileMenu.Show(lgbTarget, 0, lgbTarget.ll.Height)
+        TargetFileMenu.Show(lgbTarget, 0, lgbTarget.Label.Height)
     End Sub
 
     Private Sub gbSource_MenuClick() Handles lgbSource.LinkClick
         UpdateSourceFileMenu()
 
         If File.Exists(p.SourceFile) Then
-            SourceFileMenu.Show(lgbSource, 0, lgbSource.ll.Height)
+            SourceFileMenu.Show(lgbSource, 0, lgbSource.Label.Height)
         Else
             ShowOpenSourceDialog()
         End If

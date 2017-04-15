@@ -803,35 +803,65 @@ Namespace UI
         End Sub
     End Class
 
+    Public Class SimpleLinkLabel
+        Inherits Label
+
+        Private LinkColorNormal As Color
+        Private LinkColorHover As Color
+
+        Property LinkColor As Color
+            Get
+                Return LinkColorNormal
+            End Get
+            Set(value As Color)
+                LinkColorNormal = value
+                LinkColorHover = ControlPaint.Dark(LinkColorNormal)
+                ForeColor = value
+            End Set
+        End Property
+
+        Protected Overrides Sub OnMouseEnter(e As EventArgs)
+            ForeColor = LinkColorHover
+            MyBase.OnMouseEnter(e)
+        End Sub
+
+        Protected Overrides Sub OnMouseLeave(e As EventArgs)
+            ForeColor = LinkColorNormal
+            MyBase.OnMouseLeave(e)
+        End Sub
+    End Class
+
     <DefaultEvent("LinkClick")>
     Public Class LinkGroupBox
         Inherits GroupBox
 
-        Public WithEvents ll As New LinkLabel
+        Public WithEvents Label As New SimpleLinkLabel
         Event LinkClick()
 
         Sub New()
-            ll.Left = 7
-            ll.AutoSize = True
-            Controls.Add(ll)
+            Label.Left = 7
+            Label.AutoSize = True
+            Controls.Add(Label)
         End Sub
+
+        Property Color As Color
 
         Overrides Property Text() As String
             Get
-                Return ll.Text
+                Return Label.Text
             End Get
             Set(value As String)
-                ll.Text = value
+                Label.Text = value
             End Set
         End Property
 
-        Private Sub Label_Click() Handles ll.Click
+        Private Sub Label_Click() Handles Label.Click
             ShowContext()
             RaiseEvent LinkClick()
         End Sub
 
         Private Sub ShowContext()
-            If Not ll.ContextMenuStrip Is Nothing Then ll.ContextMenuStrip.Show(ll, 0, 16)
+            If Not Label.ContextMenuStrip Is Nothing Then Label.ContextMenuStrip.Show(Label, 0, 16)
         End Sub
     End Class
 
@@ -1017,87 +1047,6 @@ Namespace UI
 
         Private Sub CommandLineRichTextBox_HandleCreated(sender As Object, e As EventArgs) Handles Me.HandleCreated
             If Not DesignMode Then Font = New Font("Consolas", 10 * s.UIScaleFactor)
-        End Sub
-    End Class
-
-    Class StockIconLinkLabel
-        Inherits LinkLabel
-
-        Private Img As Image
-
-        Public Sub New()
-            Padding = New Padding(18, 0, 0, 0)
-            MinimumSize = New Size(18, 18)
-        End Sub
-
-        <DefaultValue(GetType(StockIconIdentifier), "Info")>
-        Property Icon As StockIconIdentifier = StockIconIdentifier.Info
-
-        Protected Overrides Sub OnPaint(e As PaintEventArgs)
-            MyBase.OnPaint(e)
-
-            If Img Is Nothing Then
-                Img = StockIcon.GetSmallImage(Icon)
-            End If
-
-            If Not Img Is Nothing Then
-                e.Graphics.DrawImage(Img, 0, 0)
-            End If
-        End Sub
-    End Class
-
-    Class WikiLinkLabel
-        Inherits LinkLabel
-
-        Private MarkupValue As String
-
-        <Editor(GetType(StringEditor), GetType(UITypeEditor))>
-        Property Markup As String
-            Get
-                Return MarkupValue
-            End Get
-            Set(value As String)
-                MarkupValue = value
-                Links.Clear()
-
-                If value.Contains("[") Then
-                    Dim re As New Regex("\[(.+?) (.+?)\]")
-
-                    While True
-                        Dim m = re.Match(value)
-
-                        If m.Success Then
-                            Links.Add(m.Index, m.Groups(2).Value.Length, m.Groups(1).Value)
-                            value = value.Replace(m.Value, m.Groups(2).Value)
-                        Else
-                            Exit While
-                        End If
-                    End While
-                End If
-
-                Text = value
-            End Set
-        End Property
-
-        <Browsable(False),
-        DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Public Overrides Property Text As String
-            Get
-                Return MyBase.Text
-            End Get
-            Set(value As String)
-                MyBase.Text = value
-            End Set
-        End Property
-
-        Protected Overrides Sub OnLinkClicked(e As LinkLabelLinkClickedEventArgs)
-            Dim t = e.Link.LinkData.ToString
-
-            If t.StartsWith("mailto:") OrElse t.StartsWith("http://") Then
-                Process.Start(t)
-            End If
-
-            MyBase.OnLinkClicked(e)
         End Sub
     End Class
 

@@ -792,7 +792,7 @@ Class AudioForm
             If i.IsCommon Then
                 mbLanguage.Add(i.ToString, i)
             Else
-                mbLanguage.Add("More | " + i.ToString.Substring(0, 1) + " | " + i.ToString, i)
+                mbLanguage.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString, i)
             End If
         Next
 

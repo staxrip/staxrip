@@ -43,6 +43,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - ensuring form show within the bounds of the working area (screen)
 - reduce CPU time while encoding
 - the message for low disk space is shown only once before jobs are created
+- idx/srt/ass renderer for avs/vs is now HomeOfVapourSynthEvolution/VSFilterMod
 
 #### Updated Tools
 
@@ -65,3 +66,4 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - mkvtoolnix 10.0.0
 - ffms2 2.2000 test3
 - mvtools (vs) 18
+- VSFilterMod (avs, vs) 4

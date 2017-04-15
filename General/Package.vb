@@ -23,6 +23,16 @@ Public Class Package
     Property VersionDate As DateTime
     Property WebURL As String
 
+    Property URL As String
+        Get
+            Return WebURL
+        End Get
+        Set(value As String)
+            WebURL = value
+            HelpURL = value
+        End Set
+    End Property
+
     Shared Property Items As New SortedDictionary(Of String, Package)
 
     Shared Property AviSynth As New AviSynthPlusPackage
@@ -272,8 +282,7 @@ Public Class Package
             .Description = "Demuxing standalone tool.",
             .FixedDir = Folder.Startup + "Apps\Toolbox\",
             .LaunchName = "Demux.exe",
-            .HelpURL = "http://forum.doom9.org/showthread.php?t=173427",
-            .WebURL = "http://forum.doom9.org/showthread.php?t=173427"})
+            .URL = "http://forum.doom9.org/showthread.php?t=173427"})
 
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",
@@ -364,7 +373,7 @@ Public Class Package
             .Name = "VSFilterMod",
             .Filename = "VSFilterMod.dll",
             .Description = "AviSynth subtitle plugin with support for vobsub srt and ass.",
-            .WebURL = "http://avisynth.org.ru/docs/english/externalfilters/vsfilter.htm",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VSFilterMod",
             .AviSynthFilterNames = {"VobSub", "TextSubMod"},
             .VapourSynthFilterNames = {"vsfm.VobSub", "vsfm.TextSubMod"}})
 
@@ -381,8 +390,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "QTGMC",
             .Filename = "QTGMC.avsi",
-            .WebURL = "http://avisynth.nl/index.php/QTGMC",
-            .HelpURL = "http://avisynth.nl/index.php/QTGMC",
+            .URL = "http://avisynth.nl/index.php/QTGMC",
             .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée.",
             .AviSynthFilterNames = {"QTGMC"},
             .AviSynthFiltersFunc = Function() {
@@ -394,8 +402,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "SMDegrain",
             .Filename = "SMDegrain.avsi",
-            .WebURL = "http://avisynth.nl/index.php/SMDegrain",
-            .HelpURL = "http://avisynth.nl/index.php/SMDegrain",
+            .URL = "http://avisynth.nl/index.php/SMDegrain",
             .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
             .AviSynthFilterNames = {"SMDegrain"},
             .AviSynthFiltersFunc = Function() {
@@ -405,8 +412,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "LSFmod",
             .Filename = "LSFmod.avsi",
-            .WebURL = "http://avisynth.nl/index.php/LSFmod",
-            .HelpURL = "http://avisynth.nl/index.php/LSFmod",
+            .URL = "http://avisynth.nl/index.php/LSFmod",
             .Description = "A LimitedSharpenFaster mod with a lot of new features and optimizations.",
             .AviSynthFilterNames = {"LSFmod"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Misc", "LSFmod", "LSFmod(strength = 100)")},
@@ -415,8 +421,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "RgTools",
             .Filename = "RgTools.dll",
-            .WebURL = "https://github.com/pinterf/RgTools",
-            .HelpURL = "https://github.com/pinterf/RgTools",
+            .URL = "https://github.com/pinterf/RgTools",
             .Description = "RgTools is a modern rewrite of RemoveGrain, Repair, BackwardClense, Clense, ForwardClense and VerticalCleaner all in a single plugin.",
             .AviSynthFilterNames = {"RemoveGrain", "Clense", "ForwardClense", "BackwardClense", "Repair", "VerticalCleaner"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Noise", "RemoveGrain", "RemoveGrain()")}})
@@ -441,8 +446,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "masktools2",
             .Filename = "masktools2.dll",
-            .WebURL = "https://github.com/pinterf/masktools",
-            .HelpURL = "https://github.com/pinterf/masktools",
+            .URL = "https://github.com/pinterf/masktools",
             .Description = "MaskTools2 contain a set of filters designed to create, manipulate and use masks. Masks, in video processing, are a way to give a relative importance to each pixel. You can, for example, create a mask that selects only the green parts of the video, and then replace those parts with another video.",
             .AviSynthFilterNames = {"Mt_edge", "Mt_motion"}})
 
@@ -511,8 +515,7 @@ Public Class Package
             .Filename = "adjust.py",
             .VapourSynthFilterNames = {"adjust.Tweak"},
             .Description = "very basic port of the built-in Avisynth filter Tweak.",
-            .WebURL = "https://github.com/dubhater/vapoursynth-adjust",
-            .HelpURL = "https://github.com/dubhater/vapoursynth-adjust"})
+            .URL = "https://github.com/dubhater/vapoursynth-adjust"})
 
         Add(New PluginPackage With {
             .Name = "mvsfunc",
@@ -554,8 +557,7 @@ Public Class Package
             .Name = "d2vsource",
             .Filename = "d2vsource.dll",
             .Description = "D2V parser and decoder for VapourSynth.",
-            .WebURL = "https://github.com/dwbuiten/d2vsource",
-            .HelpURL = "https://github.com/dwbuiten/d2vsource",
+            .URL = "https://github.com/dwbuiten/d2vsource",
             .VapourSynthFilterNames = {"d2v.Source"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})

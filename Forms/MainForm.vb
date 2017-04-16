@@ -15,12 +15,9 @@ Public Class MainForm
     Inherits FormBase
 
 #Region " Designer "
+
     Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
-        End If
+        If disposing Then If Not components Is Nothing Then components.Dispose()
         MyBase.Dispose(disposing)
     End Sub
 
@@ -4677,7 +4674,7 @@ Public Class MainForm
     Private Sub MainForm_Activated(sender As Object, e As EventArgs) Handles Me.Activated
         Task.Run(Sub()
                      Thread.Sleep(1000)
-                     Invoke(Sub() UpdateMenu())
+                     If Not IsDisposed Then Invoke(Sub() UpdateMenu())
                  End Sub)
     End Sub
 

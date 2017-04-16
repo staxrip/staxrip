@@ -35,6 +35,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - shutdown was broken on creators update
 - changed x264 qpmin default value from 10 to 0
 - fixed more then one hardcoded subtitle is added to the script automatically
+- snap to desktop edges not working properly
 
 #### Tweaks
 
@@ -47,6 +48,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - idx/srt/ass renderer for avs/vs is now HomeOfVapourSynthEvolution/VSFilterMod
 - in case there are more then ten audio files or streams a sub menu is used
 - audio file detection prefers now dtsma and thd files 
+- filter context menus open a lot quicker
 
 #### Updated Tools
 

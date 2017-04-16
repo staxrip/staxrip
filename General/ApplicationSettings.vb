@@ -41,7 +41,7 @@ Public Class ApplicationSettings
     Public ShowPathsInCommandLine As Boolean
     Public ShowTemplateSelection As Boolean
     Public ShutdownTimeout As Integer
-    Public SnapToDesktopEdges As Boolean
+    Public SnapToDesktopEdges As Boolean = True
     Public SourceAspectRatioMenu As String
     Public StartupTemplate As String
     Public Storage As ObjectStorage

@@ -157,10 +157,10 @@ Class CodeEditor
                                                   Dim textSizeVar = TrimmedTextSize
 
                                                   If textSizeVar.Width > maxTextWidth OrElse
-                                                      (textSizeVar.Width = maxTextWidth AndAlso
-                                                      textSizeVar.Width <> LastTextSize.Width) OrElse
-                                                      LastTextSize.Height <> textSizeVar.Height AndAlso
-                                                      textSizeVar.Height > FontHeight Then
+                                                                                      (textSizeVar.Width = maxTextWidth AndAlso
+                                                                                      textSizeVar.Width <> LastTextSize.Width) OrElse
+                                                                                      LastTextSize.Height <> textSizeVar.Height AndAlso
+                                                                                      textSizeVar.Height > FontHeight Then
 
                                                       Parent.PerformLayout()
                                                       LastTextSize = TrimmedTextSize
@@ -262,6 +262,7 @@ Class CodeEditor
 
         Sub HandleMouseUp(sender As Object, e As MouseEventArgs)
             If e.Button <> MouseButtons.Right Then Exit Sub
+            Menu.Items.Clear()
             Dim filterProfiles As List(Of FilterCategory)
 
             If p.Script.Engine = ScriptEngine.AviSynth Then
@@ -270,7 +271,6 @@ Class CodeEditor
                 filterProfiles = s.VapourSynthProfiles
             End If
 
-            Menu.Items.Clear()
             Dim code = rtbScript.Text.FixBreak
 
             For Each i In FilterParameters.Definitions
@@ -299,41 +299,54 @@ Class CodeEditor
 
             Menu.Items.Add(New ToolStripSeparator)
 
-            Dim replace As New MenuItemEx("Replace")
-            Dim insert As New MenuItemEx("Insert")
-
-            Menu.Items.Add(replace)
-            Menu.Items.Add(insert)
-
-            For Each i In filterProfiles
-                For Each i2 In i.Filters
-                    Dim tip = i2.Script
-
-                    If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
-
-                    ActionMenuItem.Add(replace.DropDownItems,
-                        i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
-
-                    ActionMenuItem.Add(insert.DropDownItems,
-                        i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
-                Next
-            Next
+            Dim replace = Menu.Add("Replace")
+            Dim insert = Menu.Add("Insert")
 
             ActionMenuItem.Add(replace.DropDownItems, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""))
             ActionMenuItem.Add(insert.DropDownItems, "Blank", AddressOf InsertClick, New VideoFilter("Misc", "", ""))
 
+            AddHandler replace.DropDownOpened, Sub()
+                                                   If replace.DropDownItems.Count > 1 Then Exit Sub
+
+                                                   For Each i In filterProfiles
+                                                       For Each i2 In i.Filters
+                                                           Dim tip = i2.Script
+                                                           If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
+                                                           ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
+                                                           Application.DoEvents()
+                                                       Next
+                                                   Next
+                                               End Sub
+
+            AddHandler insert.DropDownOpened, Sub()
+                                                  If insert.DropDownItems.Count > 1 Then Exit Sub
+
+                                                  For Each i In filterProfiles
+                                                      For Each i2 In i.Filters
+                                                          Dim tip = i2.Script
+                                                          If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
+                                                          ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
+                                                          Application.DoEvents()
+                                                      Next
+                                                  Next
+                                              End Sub
+
             Dim add As New MenuItemEx("Add")
             Menu.Items.Add(add)
-
-            For Each i In filterProfiles
-                For Each i2 In i.Filters
-                    Dim tip = i2.Script
-                    If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
-                    ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
-                Next
-            Next
-
             ActionMenuItem.Add(add.DropDownItems, "Blank", AddressOf AddClick, New VideoFilter("Misc", "", ""))
+
+            AddHandler add.DropDownOpened, Sub()
+                                               If add.DropDownItems.Count > 1 Then Exit Sub
+
+                                               For Each i In filterProfiles
+                                                   For Each i2 In i.Filters
+                                                       Dim tip = i2.Script
+                                                       If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
+                                                       ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
+                                                       Application.DoEvents()
+                                                   Next
+                                               Next
+                                           End Sub
 
             Menu.Items.Add(New ToolStripSeparator)
 
@@ -373,66 +386,74 @@ Class CodeEditor
             Menu.Add("Paste", pasteAction).Enabled = Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly
 
             Menu.Items.Add(New ToolStripSeparator)
+            Dim helpMenuItem = Menu.Add("Help")
+            Dim helpTempMenuItem = Menu.Add("Help | temp")
 
-            For Each i In Package.Items.Values.OfType(Of PluginPackage)()
-                If Not i.AviSynthFilterNames Is Nothing Then
-                    For Each i2 In i.AviSynthFilterNames
-                        If rtbScript.Text.Contains(i2) Then
-                            Dim path = i.GetHelpPath()
+            Dim helpAction = Sub()
+                                 For Each i In Package.Items.Values.OfType(Of PluginPackage)()
+                                     If Not i.AviSynthFilterNames Is Nothing Then
+                                         For Each i2 In i.AviSynthFilterNames
+                                             If rtbScript.Text.Contains(i2) Then
+                                                 Dim path = i.GetHelpPath()
+                                                 If path <> "" Then Menu.Add("Help | " + i.Name, Sub() g.ShellExecute(path), path)
+                                             End If
+                                         Next
+                                     End If
+                                 Next
 
-                            If path <> "" Then
-                                Menu.Add("Help | " + i.Name, Sub() g.ShellExecute(path), path)
-                            End If
-                        End If
-                    Next
-                End If
-            Next
+                                 If p.Script.Engine = ScriptEngine.AviSynth Then
+                                     Dim installDir = Registry.LocalMachine.GetString("SOFTWARE\AviSynth", Nothing)
+                                     Dim helpText = rtbScript.Text.Left("(")
 
-            If p.Script.Engine = ScriptEngine.AviSynth Then
-                Dim installDir = Registry.LocalMachine.GetString("SOFTWARE\AviSynth", Nothing)
-                Dim helpText = rtbScript.Text.Left("(")
+                                     If helpText.EndsWith("Resize") Then helpText = "Resize"
+                                     If helpText.StartsWith("ConvertTo") Then helpText = "Convert"
 
-                If helpText.EndsWith("Resize") Then helpText = "Resize"
-                If helpText.StartsWith("ConvertTo") Then helpText = "Convert"
+                                     Dim filterPath = installDir + "\Docs\English\corefilters\" + helpText + ".htm"
 
-                Dim filterPath = installDir + "\Docs\English\corefilters\" + helpText + ".htm"
+                                     If File.Exists(filterPath) Then
+                                         Menu.Add("Help | " + helpText, Sub() g.ShellExecute(filterPath), filterPath)
+                                     End If
 
-                If File.Exists(filterPath) Then
-                    Menu.Add("Help | " + helpText, Sub() g.ShellExecute(filterPath), filterPath)
-                End If
+                                     Dim helpIndex = installDir + "\Docs\English\overview.htm"
 
-                Dim helpIndex = installDir + "\Docs\English\overview.htm"
+                                     If File.Exists(helpIndex) Then
+                                         Menu.Add("Help | AviSynth local", Sub() g.ShellExecute(helpIndex), helpIndex)
+                                     End If
 
-                If File.Exists(helpIndex) Then
-                    Menu.Add("Help | AviSynth local", Sub() g.ShellExecute(helpIndex), helpIndex)
-                End If
+                                     Menu.Add("Help | AviSynth.nl", Sub() g.ShellExecute("http://avisynth.nl"), "http://avisynth.nl")
+                                     Menu.Add("Help | AviSynth+", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B"), "http://avisynth.nl/index.php/AviSynth%2B")
+                                     Menu.Add("Help | AviSynth+ plugins", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins"), "http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins")
+                                     Menu.Add("Help | -")
 
-                Menu.Add("Help | AviSynth.nl", Sub() g.ShellExecute("http://avisynth.nl"), "http://avisynth.nl")
-                Menu.Add("Help | AviSynth+", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B"), "http://avisynth.nl/index.php/AviSynth%2B")
-                Menu.Add("Help | AviSynth+ plugins", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins"), "http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins")
-                Menu.Add("Help | -")
+                                     For Each i In Package.Items.Values.OfType(Of PluginPackage)
+                                         Dim helpPath = i.GetHelpPath
 
-                For Each i In Package.Items.Values.OfType(Of PluginPackage)
-                    Dim helpPath = i.GetHelpPath
+                                         If helpPath <> "" AndAlso Not i.AviSynthFilterNames Is Nothing Then
+                                             Menu.Add("Help | " + i.Name.Substring(0, 1).ToUpper + " | " + i.Name, Sub() g.ShellExecute(helpPath), i.Description)
+                                             Application.DoEvents()
+                                         End If
+                                     Next
+                                 Else
+                                     Menu.Add("Help | vapoursynth.com", Sub() g.ShellExecute("http://www.vapoursynth.com"), "http://www.vapoursynth.com")
+                                     Menu.Add("Help | VapourSynth plugins", Sub() g.ShellExecute("http://www.vapoursynth.com/doc/pluginlist.html"), "http://www.vapoursynth.com/doc/pluginlist.html")
+                                     Menu.Add("Help | -")
 
-                    If helpPath <> "" AndAlso Not i.AviSynthFilterNames Is Nothing Then
-                        Menu.Add("Help | " + i.Name, Sub() g.ShellExecute(helpPath), i.Description)
-                    End If
-                Next
-            Else
-                Menu.Add("Help | vapoursynth.com", Sub() g.ShellExecute("http://www.vapoursynth.com"), "http://www.vapoursynth.com")
-                Menu.Add("Help | VapourSynth plugins", Sub() g.ShellExecute("http://www.vapoursynth.com/doc/pluginlist.html"), "http://www.vapoursynth.com/doc/pluginlist.html")
-                Menu.Add("Help | -")
+                                     For Each i In Package.Items.Values.OfType(Of PluginPackage)
+                                         Dim helpPath = i.GetHelpPath
 
-                For Each i In Package.Items.Values.OfType(Of PluginPackage)
-                    Dim helpPath = i.GetHelpPath
+                                         If helpPath <> "" AndAlso Not i.VapourSynthFilterNames Is Nothing Then
+                                             Menu.Add("Help | " + i.Name.Substring(0, 1).ToUpper + " | " + i.Name, Sub() g.ShellExecute(helpPath), i.Description)
+                                             Application.DoEvents()
+                                         End If
+                                     Next
+                                 End If
+                             End Sub
 
-                    If helpPath <> "" AndAlso Not i.VapourSynthFilterNames Is Nothing Then
-                        Menu.Add("Help | " + i.Name, Sub() g.ShellExecute(helpPath), i.Description)
-                    End If
-                Next
-            End If
-
+            AddHandler helpMenuItem.DropDownOpened, Sub()
+                                                        If helpMenuItem.DropDownItems.Count > 1 Then Exit Sub
+                                                        helpTempMenuItem.Visible = False
+                                                        helpAction()
+                                                    End Sub
             Menu.Show(rtbScript, e.Location)
         End Sub
 

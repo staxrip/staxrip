@@ -311,7 +311,6 @@ Namespace UI
             End Select
         End Sub
 
-        'TODO: doesn't work properly
         Sub Snap(handle As IntPtr)
             If Not s?.SnapToDesktopEdges Then Exit Sub
 
@@ -324,16 +323,20 @@ Namespace UI
                 border = (Width - ClientSize.Width) \ 2 - 1
             End If
 
-            If Math.Abs(newPos.Y - workingArea.Y) < snapMargin Then
-                newPos.Y = workingArea.Y
-            ElseIf Math.Abs(newPos.Y + Height - (workingArea.Bottom + border)) < snapMargin Then
-                newPos.Y = (workingArea.Bottom + border) - Height
+            If newPos.Y <> 0 Then
+                If Math.Abs(newPos.Y - workingArea.Y) < snapMargin AndAlso Top > newPos.Y Then
+                    newPos.Y = workingArea.Y
+                ElseIf Math.Abs(newPos.Y + Height - (workingArea.Bottom + border)) < snapMargin AndAlso Top < newPos.Y Then
+                    newPos.Y = (workingArea.Bottom + border) - Height
+                End If
             End If
 
-            If Math.Abs(newPos.X - (workingArea.X - border)) < snapMargin Then
-                newPos.X = workingArea.X - border
-            ElseIf Math.Abs(newPos.X + Width - (workingArea.Right + border)) < snapMargin Then
-                newPos.X = (workingArea.Right + border) - Width
+            If newPos.X <> 0 Then
+                If Math.Abs(newPos.X - (workingArea.X - border)) < snapMargin AndAlso Left > newPos.X Then
+                    newPos.X = workingArea.X - border
+                ElseIf Math.Abs(newPos.X + Width - (workingArea.Right + border)) < snapMargin AndAlso Left < newPos.X Then
+                    newPos.X = (workingArea.Right + border) - Width
+                End If
             End If
 
             Marshal.StructureToPtr(newPos, handle, True)

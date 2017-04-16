@@ -85,32 +85,56 @@ Public Class AviSynthListView
 
             If Menu.Items.Count > 0 Then Menu.Items.Add(New ToolStripSeparator)
 
-            Dim replace As New MenuItemEx("Replace")
-            Dim insert As New MenuItemEx("Insert")
+            Dim replace = Menu.Add("Replace")
+            Dim replaceFirst = Menu.Add("Replace | a")
 
-            Menu.Items.Add(replace)
-            Menu.Items.Add(insert)
+            AddHandler replace.DropDownOpened, Sub()
+                                                   If replace.DropDownItems.Count > 1 Then Exit Sub
+                                                   replace.DropDownItems.RemoveAt(0)
 
-            For Each i In filterProfiles
-                For Each i2 In i.Filters
-                    Dim tip = i2.Script
-                    If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
-                    ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
-                    ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
-                Next
-            Next
+                                                   For Each i In filterProfiles
+                                                       For Each i2 In i.Filters
+                                                           Dim tip = i2.Script
+                                                           If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
+                                                           ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
+                                                           Application.DoEvents()
+                                                       Next
+                                                   Next
+                                               End Sub
+            Dim insert = Menu.Add("Insert")
+            Dim insertFirst = Menu.Add("Insert | a")
+
+            AddHandler insert.DropDownOpened, Sub()
+                                                  If insert.DropDownItems.Count > 1 Then Exit Sub
+                                                  insert.DropDownItems.RemoveAt(0)
+
+                                                  For Each i In filterProfiles
+                                                      For Each i2 In i.Filters
+                                                          Dim tip = i2.Script
+                                                          If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
+                                                          ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
+                                                          Application.DoEvents()
+                                                      Next
+                                                  Next
+                                              End Sub
         End If
 
-        Dim add As New MenuItemEx("Add")
-        Menu.Items.Add(add)
+        Dim add = Menu.Add("Add")
+        Dim addFirst = Menu.Add("Add | a")
 
-        For Each i In filterProfiles
-            For Each i2 In i.Filters
-                Dim tip = i2.Script
-                If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
-                ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
-            Next
-        Next
+        AddHandler add.DropDownOpened, Sub()
+                                           If add.DropDownItems.Count > 1 Then Exit Sub
+                                           add.DropDownItems.RemoveAt(0)
+
+                                           For Each i In filterProfiles
+                                               For Each i2 In i.Filters
+                                                   Dim tip = i2.Script
+                                                   If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
+                                                   ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
+                                                   Application.DoEvents()
+                                               Next
+                                           Next
+                                       End Sub
 
         If SelectedItems.Count > 0 Then
             Menu.Items.Add(New ToolStripSeparator)
@@ -122,8 +146,7 @@ Public Class AviSynthListView
         Menu.Items.Add(New ActionMenuItem("Play", Sub() g.PlayScript(p.Script), "Plays the script with the AVI player.", p.SourceFile <> ""))
         Menu.Items.Add(New ActionMenuItem("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles."))
 
-        Dim setup As New MenuItemEx("Filter Setup")
-        Menu.Items.Add(setup)
+        Dim setup = Menu.Add("Filter Setup")
         g.PopulateProfileMenu(setup.DropDownItems, s.FilterSetupProfiles, AddressOf g.MainForm.ShowFilterSetupProfilesDialog, AddressOf g.MainForm.LoadScriptProfile)
     End Sub
 

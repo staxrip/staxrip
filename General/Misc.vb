@@ -2142,9 +2142,6 @@ Class Macro
         If value.Contains("%compressibility%") Then value = value.Replace("%compressibility%", Math.Round(p.Compressibility, 3).ToString.Replace(",", "."))
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("\\") Then value = value.Replace("\\", "\")
-        If Not value.Contains("%") Then Return value
-
         If value.Contains("%encoder_out_file%") Then value = value.Replace("%encoder_out_file%", p.VideoEncoder.OutputPath)
         If Not value.Contains("%") Then Return value
 

@@ -1050,12 +1050,9 @@ Public Class MainForm
         End If
     End Function
 
-    Sub UpdateRecentProjectsMenu()
-        UpdateRecentProjectsMenuAsync(Nothing)
-    End Sub
-
     Async Sub UpdateRecentProjectsMenuAsync(path As String)
         Await Task.Run(Sub()
+                           Thread.Sleep(500)
                            Dim list As New List(Of String)
 
                            If path <> "" AndAlso Not path.Contains(Folder.Template) AndAlso
@@ -1078,6 +1075,8 @@ Public Class MainForm
                                s.RecentProjects = list
                            End SyncLock
                        End Sub)
+
+        If IsDisposed OrElse Native.GetForegroundWindow() <> Handle Then Exit Sub
 
         For Each i In CustomMainMenu.MenuItems
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
@@ -1102,6 +1101,16 @@ Public Class MainForm
                 Exit For
             End If
         Next
+
+        Application.DoEvents()
+    End Sub
+
+    Sub UpdateDynamicMenuAsync()
+        Task.Run(Sub()
+                     Thread.Sleep(500)
+                     If IsDisposed Then Exit Sub
+                     Invoke(Sub() If Native.GetForegroundWindow() = Handle Then UpdateDynamicMenu())
+                 End Sub)
     End Sub
 
     Sub UpdateDynamicMenu()
@@ -1116,21 +1125,21 @@ Public Class MainForm
                 If i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.HelpApplications) Then
                     i.DropDownItems.Clear()
 
-                    For Each i2 In Package.Items.Values
-                        Dim helpPath = i2.GetHelpPath
+                    For Each iPackage In Package.Items.Values
+                        Dim helpPath = iPackage.GetHelpPath
 
                         If helpPath <> "" Then
-                            Dim plugin = TryCast(i2, PluginPackage)
+                            Dim plugin = TryCast(iPackage, PluginPackage)
 
                             If plugin Is Nothing Then
-                                ActionMenuItem.Add(i.DropDownItems, "Apps | " + i2.Name, Sub() g.ShellExecute(helpPath))
+                                ActionMenuItem.Add(i.DropDownItems, "Apps | " + iPackage.Name, Sub() g.ShellExecute(helpPath))
                             Else
                                 If plugin.AviSynthFilterNames?.Length > 0 Then
-                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | AviSynth | " + i2.Name, Sub() g.ShellExecute(i2.GetHelpPath(ScriptEngine.AviSynth)))
+                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | AviSynth | " + iPackage.Name, Sub() g.ShellExecute(iPackage.GetHelpPath(ScriptEngine.AviSynth)))
                                 End If
 
                                 If plugin.VapourSynthFilterNames?.Length > 0 Then
-                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | VapourSynth | " + i2.Name, Sub() g.ShellExecute(i2.GetHelpPath(ScriptEngine.VapourSynth)))
+                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | VapourSynth | " + iPackage.Name, Sub() g.ShellExecute(iPackage.GetHelpPath(ScriptEngine.VapourSynth)))
                                 End If
                             End If
                         End If
@@ -1138,28 +1147,39 @@ Public Class MainForm
                 End If
             End If
         Next
+
+        Application.DoEvents()
     End Sub
 
-    Sub UpdateScriptsMenu()
+    Async Sub UpdateScriptsMenuAsync()
+        Dim files As String()
+
+        Await Task.Run(Sub()
+                           Thread.Sleep(500)
+
+                           If Directory.Exists(Folder.Startup + "Apps\Scripts") Then
+                               For Each script In Directory.GetFiles(Folder.Startup + "Apps\Scripts")
+                                   If Not s.Storage.GetBool(script.FileName) AndAlso
+                                       Not File.Exists(Folder.Script + script.FileName) Then
+
+                                       FileHelp.Copy(script, Folder.Script + script.FileName)
+                                       s.Storage.SetBool(script.FileName, True)
+                                   End If
+                               Next
+                           End If
+
+                           files = Directory.GetFiles(Folder.Script)
+                       End Sub)
+
+        If IsDisposed OrElse Native.GetForegroundWindow() <> Handle Then Exit Sub
+
         For Each menuItem In CustomMainMenu.MenuItems
             If menuItem.CustomMenuItem.MethodName = "DynamicMenuItem" Then
                 If menuItem.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.Scripts) Then
-                    If Directory.Exists(Folder.Startup + "Apps\Scripts") Then
-                        For Each script In Directory.GetFiles(Folder.Startup + "Apps\Scripts")
-                            If Not s.Storage.GetBool(script.FileName) AndAlso
-                                Not File.Exists(Folder.Script + script.FileName) Then
-
-                                FileHelp.Copy(script, Folder.Script + script.FileName)
-                                s.Storage.SetBool(script.FileName, True)
-                                UpdateScriptsMenu()
-                            End If
-                        Next
-                    End If
-
                     menuItem.DropDownItems.Clear()
                     Dim img = ImageHelp.GetSymbolImage(Symbol.Code)
 
-                    For Each path In Directory.GetFiles(Folder.Script)
+                    For Each path In files
                         Dim mi = ActionMenuItem.Add(menuItem.DropDownItems,
                                                     path.FileName.Base,
                                                     Sub() g.DefaultCommands.ExecuteScriptFile(path))
@@ -1172,21 +1192,34 @@ Public Class MainForm
                 End If
             End If
         Next
+
+        Application.DoEvents()
     End Sub
 
-    Sub UpdateTemplatesMenu()
+    Async Sub UpdateTemplatesMenuAsync()
+        Dim files As String()
+
+        Await Task.Run(Sub()
+                           Thread.Sleep(500)
+
+                           For Each iFile In Directory.GetFiles(Folder.Template, "*.srip.backup")
+                               FileHelp.Move(iFile, iFile.Dir + "Backup\" + iFile.Base)
+                           Next
+
+                           files = Directory.GetFiles(Folder.Template, "*.srip", SearchOption.AllDirectories)
+                       End Sub)
+
+        If IsDisposed OrElse Native.GetForegroundWindow() <> Handle Then Exit Sub
+
         For Each i In CustomMainMenu.MenuItems
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
                 i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.TemplateProjects) Then
 
                 i.DropDownItems.Clear()
+                Dim items As New List(Of ActionMenuItem)
 
-                For Each i2 In Directory.GetFiles(Folder.Template, "*.srip.backup")
-                    FileHelp.Move(i2, Filepath.GetDir(i2) + "Backup\" + Filepath.GetBase(i2))
-                Next
-
-                For Each i2 In Directory.GetFiles(Folder.Template, "*.srip", SearchOption.AllDirectories)
-                    Dim base = Filepath.GetBase(i2)
+                For Each i2 In files
+                    Dim base = i2.Base
                     If i2 = g.StartupTemplatePath Then base += " (Startup)"
                     If i2.Contains("Backup\") Then base = "Backup | " + base
                     ActionMenuItem.Add(i.DropDownItems, base, AddressOf LoadProject, i2, Nothing)
@@ -1199,6 +1232,8 @@ Public Class MainForm
                 Exit For
             End If
         Next
+
+        Application.DoEvents()
     End Sub
 
     Sub ResetTemplates()
@@ -1206,7 +1241,7 @@ Public Class MainForm
             Try
                 DirectoryHelp.Delete(Folder.Template)
                 Folder.Template.ToString()
-                UpdateTemplatesMenu()
+                UpdateTemplatesMenuAsync()
             Catch ex As Exception
                 g.ShowException(ex)
             End Try
@@ -1223,7 +1258,7 @@ Public Class MainForm
 
         If Not File.Exists(path) Then
             MsgWarn("Project file not found.")
-            UpdateRecentProjectsMenu()
+            UpdateRecentProjectsMenuAsync(Nothing)
         Else
             OpenProject(path)
         End If
@@ -3283,7 +3318,7 @@ Public Class MainForm
             If b.Show = DialogResult.OK Then
                 p.TemplateName = b.Value.RemoveChars(Path.GetInvalidFileNameChars)
                 SaveProjectPath(Folder.Template + p.TemplateName + ".srip")
-                UpdateTemplatesMenu()
+                UpdateTemplatesMenuAsync()
 
                 If b.Checked Then
                     s.StartupTemplate = b.Value
@@ -3457,9 +3492,9 @@ Public Class MainForm
     <Command("Dialog to configure the main menu.")>
     Sub ShowMainMenuEditor()
         s.CustomMenuMainForm = CustomMainMenu.Edit()
-        UpdateTemplatesMenu()
-        UpdateScriptsMenu()
-        UpdateRecentProjectsMenu()
+        UpdateTemplatesMenuAsync()
+        UpdateScriptsMenuAsync()
+        UpdateRecentProjectsMenuAsync(Nothing)
         UpdateDynamicMenu()
         g.SetRenderer(MenuStrip)
         Refresh()
@@ -4663,17 +4698,10 @@ Public Class MainForm
     End Sub
 
     Private Sub MainForm_Activated(sender As Object, e As EventArgs) Handles Me.Activated
-        Task.Run(Sub()
-                     Thread.Sleep(1000)
-                     If Not IsDisposed Then Invoke(Sub() UpdateMenu())
-                 End Sub)
-    End Sub
-
-    Sub UpdateMenu()
-        UpdateTemplatesMenu()
-        UpdateScriptsMenu()
-        UpdateRecentProjectsMenu()
-        UpdateDynamicMenu()
+        UpdateTemplatesMenuAsync()
+        UpdateScriptsMenuAsync()
+        UpdateRecentProjectsMenuAsync(Nothing)
+        UpdateDynamicMenuAsync()
     End Sub
 
     Private Sub MainForm_Shown() Handles Me.Shown
@@ -4911,11 +4939,8 @@ Public Class MainForm
 
                         OpenProject(tempPath, False)
                         FileHelp.Delete(tempPath)
-                        UpdateRecentProjectsMenu()
-
-                        If f.cbDemuxAndIndex.Checked Then
-                            ShowJobsDialog()
-                        End If
+                        UpdateRecentProjectsMenuAsync(Nothing)
+                        If f.cbDemuxAndIndex.Checked Then ShowJobsDialog()
                     End If
                 End Using
             Case "Blu-ray Folder"

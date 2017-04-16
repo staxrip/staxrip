@@ -801,7 +801,7 @@ Public Class Package
     End Function
 
     Function GetDir() As String
-        Return Filepath.GetDir(Path)
+        Return Path.Dir
     End Function
 
     Sub SetPath(pathParam As String)

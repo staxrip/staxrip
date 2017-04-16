@@ -141,7 +141,7 @@ Class ffmpegEncoder
             .Text = "Codec:",
             .AlwaysOn = True,
             .Options = {"x264", "x265", "VP9", "Xvid", "ASP", "Theora", "ProRes", "H.264 Intel", "H.265 Intel", "H.264 NVIDIA", "H.265 NVIDIA"},
-            .Values = {"libx264", "libx265", "libvpx-vp9", "libxvid", "mpeg4", "libtheora", "prores", "h264_qsv", "hevc_qsv", "h264_nvenc", "h265_nvenc"}}
+            .Values = {"libx264", "libx265", "libvpx-vp9", "libxvid", "mpeg4", "libtheora", "prores", "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
 
         Property Mode As New OptionParam With {
             .Name = "Mode",

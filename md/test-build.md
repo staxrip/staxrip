@@ -34,6 +34,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - PCM wasn't demuxed from MP4/MOV files
 - shutdown was broken on creators update
 - changed x264 qpmin default value from 10 to 0
+- fixed more then one hardcoded subtitle is added to the script automatically
 
 #### Tweaks
 
@@ -44,6 +45,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - reduce CPU time while encoding
 - the message for low disk space is shown only once before jobs are created
 - idx/srt/ass renderer for avs/vs is now HomeOfVapourSynthEvolution/VSFilterMod
+- in case there are more then ten audio files or streams a sub menu is used
+- audio file detection prefers now dtsma and thd files 
 
 #### Updated Tools
 

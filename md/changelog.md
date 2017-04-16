@@ -93,7 +93,7 @@
 - added all missing x265 switches
 - added hardware decoding methods to x265 'Other' tab, this will bypass AviSynth though
 - added new standalone mkvextract GUI (Apps > Demux)
-- added new QSVEncC switches for hard coded subtitles
+- added new QSVEncC switches for hardcoded subtitles
 - added MP4 support to standalone demux app
 - added -avsinfo starting AVSMeter without a source opened
 - added support for unicode filenames using VapourSynth, AviSynth don't support it
@@ -105,7 +105,7 @@
 - added option to define preferred audio languages
 - added audio and subtitle demuxing modes 'Show Dialog', 'Preferred', 'All', 'None'
 - added x265 changes for v1.9 183
-- added new option to automatically add hard coded subtitle
+- added new option to automatically add hardcoded subtitle
 - added option to define JPEG compression quality in 'Preview > Save JPG' and thumbnail generator
 
 ### Fixed Bugs

@@ -966,7 +966,8 @@ Public Class MainForm
 
     Private Sub DetectAudioFiles(track As Integer,
                                  lang As Boolean,
-                                 same As Boolean)
+                                 same As Boolean,
+                                 hq As Boolean)
 
         Dim tb, tbOther As TextBox
         Dim profile As AudioProfile
@@ -989,28 +990,16 @@ Public Class MainForm
         files.Sort(New StringLogicalComparer)
 
         For Each iExt In FileTypes.Audio
-            If iExt = "avs" Then
-                Continue For
-            End If
+            If iExt = "avs" Then Continue For
 
             For Each iPath In files
-                If tbOther.Text = iPath Then
-                    Continue For
-                End If
+                If tbOther.Text = iPath Then Continue For
+                If Not Filepath.GetExt(iPath) = iExt Then Continue For
+                If iPath.Contains("_cut_") Then Continue For
+                If Not g.IsSourceSame(iPath) Then Continue For
+                If hq AndAlso Not iPath.Ext.EqualsAny("dtsma", "thd") Then Continue For
 
-                If Not Filepath.GetExt(iPath) = iExt Then
-                    Continue For
-                End If
-
-                If iPath.Contains("_cut_") Then
-                    Continue For
-                End If
-
-                If Not g.IsSourceSame(iPath) Then
-                    Continue For
-                End If
-
-                If same AndAlso tbOther.Text <> "" AndAlso Filepath.GetExtFull(tbOther.Text) <> Filepath.GetExtFull(iPath) Then
+                If same AndAlso tbOther.Text <> "" AndAlso tbOther.Text.ExtFull <> iPath.ExtFull Then
                     Continue For
                 End If
 
@@ -1988,14 +1977,21 @@ Public Class MainForm
             UpdateSourceParameters()
             SetSlider()
 
-            DetectAudioFiles(0, True, True)
-            DetectAudioFiles(1, True, True)
+            DetectAudioFiles(0, True, True, True)
+            DetectAudioFiles(1, True, True, True)
+            DetectAudioFiles(0, True, False, True)
+            DetectAudioFiles(1, True, False, True)
 
-            DetectAudioFiles(0, False, True)
-            DetectAudioFiles(1, False, True)
+            DetectAudioFiles(0, True, True, False)
+            DetectAudioFiles(1, True, True, False)
+            DetectAudioFiles(0, True, False, False)
+            DetectAudioFiles(1, True, False, False)
 
-            DetectAudioFiles(0, False, False)
-            DetectAudioFiles(1, False, False)
+            DetectAudioFiles(0, False, True, False)
+            DetectAudioFiles(1, False, True, False)
+
+            DetectAudioFiles(0, False, False, False)
+            DetectAudioFiles(1, False, False, False)
 
             If p.UseScriptAsAudioSource Then
                 tbAudioFile0.Text = p.Script.Path
@@ -3839,13 +3835,13 @@ Public Class MainForm
             subDemux.MenuButton.SaveAction = Sub(value) p.DemuxSubtitles = value
 
             cb = ui.AddCheckBox(subPage)
-            cb.Text = "Convert Sup (PGS/Blu-ray) to Sub (IDX/DVD)"
+            cb.Text = "Convert Sup (PGS/Blu-ray) to IDX (Sub/VobSub/DVD)"
             cb.Tooltip = "Works only with demuxed subtitles."
             cb.Checked = p.ConvertSup2Sub
             cb.SaveAction = Sub(value) p.ConvertSup2Sub = value
 
             cb = ui.AddCheckBox(subPage)
-            cb.Text = "Add hard coded subtitle"
+            cb.Text = "Add hardcoded subtitle"
             cb.Tooltip = "Automatically hardcodes a subtitle." + BR2 + "Supported formats are SRT, ASS and VobSub."
             cb.Checked = p.HarcodedSubtitle
             cb.SaveAction = Sub(value) p.HarcodedSubtitle = value
@@ -4324,7 +4320,7 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
         ret.Add("Tools|Advanced|Command Prompt...", NameOf(ShowCommandPrompt), Symbol.fa_terminal)
         ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
-        ret.Add("Tools|Advanced|Hard Coded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H, Symbol.Subtitles)
+        ret.Add("Tools|Advanced|Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H, Symbol.Subtitles)
         ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
         ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog), Symbol.fa_info)
         ret.Add("Tools|Advanced|Reset Setting...", NameOf(ResetSettings))
@@ -5559,7 +5555,11 @@ Public Class MainForm
                                      UpdateSizeOrBitrate()
                                  End Sub
 
-                m.Items.Add(New ActionMenuItem(i.Name, menuAction, Nothing))
+                If ap.Streams.Count > 10 Then
+                    m.Add("Streams | " + i.Name, menuAction)
+                Else
+                    m.Add(i.Name, menuAction)
+                End If
             Next
 
             m.Items.Add("-")
@@ -5575,7 +5575,12 @@ Public Class MainForm
                 For Each i In audioFiles
                     Dim temp = i
                     Dim menuAction = Sub() tb.Text = temp
-                    m.Items.Add(New ActionMenuItem(Filepath.GetName(i), menuAction))
+
+                    If audioFiles.Count > 10 Then
+                        m.Add("Files | " + Filepath.GetName(i), menuAction)
+                    Else
+                        m.Add(Filepath.GetName(i), menuAction)
+                    End If
                 Next
 
                 m.Items.Add("-")

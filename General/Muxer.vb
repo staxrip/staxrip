@@ -79,7 +79,6 @@ Public MustInherit Class Muxer
 
     Overridable Sub Init()
         If Not File.Exists(p.SourceFile) Then Exit Sub
-
         Dim files = g.GetFilesInTempDirAndParent
         files.Sort(New StringLogicalComparer)
 

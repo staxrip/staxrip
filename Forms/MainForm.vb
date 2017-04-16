@@ -1678,7 +1678,7 @@ Public Class MainForm
             Dim targetDir As String = Nothing
 
             If p.DefaultTargetFolder <> "" Then
-                targetDir = Macro.Solve(p.DefaultTargetFolder).AppendSeparator.Replace("\\", "\")
+                targetDir = Macro.Solve(p.DefaultTargetFolder).AppendSeparator
 
                 If Not Directory.Exists(targetDir) Then
                     Try
@@ -1688,16 +1688,10 @@ Public Class MainForm
                 End If
             End If
 
-            If Not Directory.Exists(targetDir) Then
-                targetDir = Filepath.GetDir(p.SourceFile)
-            End If
-
+            If Not Directory.Exists(targetDir) Then targetDir = p.SourceFile.Dir
             Dim targetName = Macro.Solve(p.DefaultTargetName)
 
-            If Not Filepath.IsValidFileSystemName(targetName) Then
-                targetName = Filepath.GetBase(p.SourceFile)
-            End If
-
+            If Not Filepath.IsValidFileSystemName(targetName) Then targetName = p.SourceFile.Base
             tbTargetFile.Text = targetDir + targetName + p.VideoEncoder.Muxer.OutputExtFull
 
             If p.SourceFile = p.TargetFile OrElse
@@ -3995,11 +3989,8 @@ Public Class MainForm
                     MsgInfo("Temp dir will only be deleted when it ends with _temp")
                 End If
 
-                If p.DefaultTargetFolder <> "" Then p.DefaultTargetFolder = p.DefaultTargetFolder.AppendSeparator
-
                 UpdateSizeOrBitrate()
                 tbBitrate_TextChanged()
-
                 SetSlider()
                 Assistant()
             End If

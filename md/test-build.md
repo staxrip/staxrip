@@ -36,6 +36,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - changed x264 qpmin default value from 10 to 0
 - fixed more then one hardcoded subtitle is added to the script automatically
 - snap to desktop edges not working properly
+- fixed bug using UNC paths
 
 #### Tweaks
 

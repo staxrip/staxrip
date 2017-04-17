@@ -21,6 +21,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - added possibility to add hardcoded subtitles using VapourSynth
 - added option to extract timecodes file from MKV (Options > Misc, disabled by default)
 - added timecodes file option to muxer dialog, can be TXT or MKV
+- added SUP/PGS support using hardcoded subtiltles and VapourSynth
 
 #### Fixed Bugs
 

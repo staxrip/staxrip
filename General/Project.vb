@@ -288,8 +288,10 @@ Public Class Project
                     Else
                         Exit Sub
                     End If
+                Case "sup"
+                    filterName = "core.sub.ImageFile"
                 Case Else
-                    If showErrorMsg Then MsgError("Only idx, srt and ass file types are supported.")
+                    If showErrorMsg Then MsgError("Only idx, srt, ass and sup file types are supported.")
                     Exit Sub
             End Select
 

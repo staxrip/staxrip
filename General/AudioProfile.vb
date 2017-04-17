@@ -834,7 +834,7 @@ Class GUIAudioProfile
 
         Select Case Params.Codec
             Case AudioCodec.MP3
-                ret += " -c:a libmp3lame"
+                If Not Params.CustomSwitches.Contains("-c:a ") Then ret += " -c:a libmp3lame"
 
                 Select Case Params.RateMode
                     Case AudioRateMode.ABR
@@ -854,7 +854,7 @@ Class GUIAudioProfile
                 ret += " -strict -2 -b:a " & CInt(Bitrate) & "k"
             Case AudioCodec.Flac, AudioCodec.WAV
             Case AudioCodec.Vorbis
-                ret += " -c:a libvorbis"
+                If Not Params.CustomSwitches.Contains("-c:a ") Then ret += " -c:a libvorbis"
 
                 If Params.RateMode = AudioRateMode.VBR Then
                     ret += " -q:a " & CInt(Params.Quality)
@@ -862,7 +862,7 @@ Class GUIAudioProfile
                     ret += " -b:a " & CInt(Bitrate) & "k"
                 End If
             Case AudioCodec.Opus
-                ret += " -c:a libopus"
+                If Not Params.CustomSwitches.Contains("-c:a ") Then ret += " -c:a libopus"
 
                 If Params.RateMode = AudioRateMode.VBR Then
                     ret += " -vbr on"
@@ -879,25 +879,12 @@ Class GUIAudioProfile
                 End If
         End Select
 
-        If Params.CustomSwitches <> "" Then
-            ret += " " + Params.CustomSwitches
-        End If
-
-        If Gain <> 0 Then
-            ret += " -af volume=" + Gain.ToString(CultureInfo.InvariantCulture) + "dB"
-        End If
-
+        If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
+        If Gain <> 0 Then ret += " -af volume=" + Gain.ToString(CultureInfo.InvariantCulture) + "dB"
         ret += " -ac " & Channels
-
-        If Params.SamplingRate <> 0 Then
-            ret += " -ar " & Params.SamplingRate
-        End If
-
+        If Params.SamplingRate <> 0 Then ret += " -ar " & Params.SamplingRate
         ret += " -y -hide_banner"
-
-        If includePaths AndAlso File <> "" Then
-            ret += " """ + GetOutputFile() + """"
-        End If
+        If includePaths AndAlso File <> "" Then ret += " " + GetOutputFile.Quotes
 
         Return ret
     End Function

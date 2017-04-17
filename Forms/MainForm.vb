@@ -854,9 +854,7 @@ Public Class MainForm
 
         CustomSizeMenu.AddKeyDownHandler(Me)
         CustomSizeMenu.BuildMenu()
-
         SizeContextMenuStrip.ResumeLayout()
-
         g.SetRenderer(MenuStrip)
         SetMenuStyle()
     End Sub
@@ -4394,7 +4392,7 @@ Public Class MainForm
     <Command("Shows a dialog to add a hardcoded subtitle.")>
     Sub ShowHardcodedSubtitleDialog()
         Using d As New OpenFileDialog
-            d.SetFilter(FileTypes.SubtitleIncludingContainers)
+            d.SetFilter(FileTypes.SubtitleExludingContainers)
             d.SetInitDir(s.LastSourceDir)
 
             If d.ShowDialog = DialogResult.OK Then

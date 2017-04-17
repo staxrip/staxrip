@@ -1943,25 +1943,19 @@ Class Macro
         Return Solve(value, False)
     End Function
 
-    Shared Function Solve(value As String, silent As Boolean) As String
-        If value = "" Then Return ""
-
-        If Not silent AndAlso value.Contains("$") Then
+    Shared Function SolveInteractive(value As String) As String
+        If value.Contains("$") Then
             If value.Contains("$browse_file$") Then
                 Using d As New OpenFileDialog
-                    If d.ShowDialog = DialogResult.OK Then
-                        value = value.Replace("$browse_file$", d.FileName)
-                    End If
+                    If d.ShowDialog = DialogResult.OK Then value = value.Replace("$browse_file$", d.FileName)
                 End Using
 
                 Return value
             End If
 
             If value.Contains("$enter_text$") Then
-                Dim v = InputBox.Show("Please enter some text.")
-
-                If v <> "" Then value = value.Replace("$enter_text$", v)
-
+                Dim text = InputBox.Show("Please enter some text.")
+                If text <> "" Then value = value.Replace("$enter_text$", text)
                 Return value
             End If
 
@@ -1980,20 +1974,28 @@ Class Macro
                 Dim mc = Regex.Matches(value, "\$select:(.+?)\$")
 
                 For Each i As Match In mc
-                    Dim items = i.Groups(1).Value.SplitNoEmpty(";")
+                    Dim items = i.Groups(1).Value.SplitNoEmpty(";").ToList
 
-                    If items.Length > 0 Then
+                    If items.Count > 0 Then
                         Dim f As New SelectionBox(Of String)
-                        f.Text = "Please select a item."
                         f.Title = "Select"
 
-                        For Each i2 As String In items
-                            f.AddItem(i2)
+                        If items?(0)?.StartsWith("msg:") Then
+                            f.Text = items(0).Substring(4)
+                            items.RemoveAt(0)
+                        Else
+                            f.Text = "Please select a item."
+                        End If
+
+                        For Each iItem As String In items
+                            If iItem.Contains("|") Then
+                                f.AddItem(iItem.Left("|"), iItem.Right("|"))
+                            Else
+                                f.AddItem(iItem)
+                            End If
                         Next
 
-                        If f.Show = DialogResult.OK Then
-                            value = value.Replace(i.Value, f.SelectedItem)
-                        End If
+                        If f.Show = DialogResult.OK Then value = value.Replace(i.Value, f.SelectedItem)
                     End If
                 Next
 
@@ -2001,6 +2003,12 @@ Class Macro
             End If
         End If
 
+        Return value
+    End Function
+
+    Shared Function Solve(value As String, silent As Boolean) As String
+        If value = "" Then Return ""
+        If Not silent AndAlso value.Contains("$") Then value = SolveInteractive(value)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_file%") Then value = value.Replace("%source_file%", p.SourceFile)

@@ -50,7 +50,7 @@ Class CodeEditor
         ret.cbActive.Checked = filter.Active
         ret.cbActive.Text = filter.Category
         ret.tbName.Text = filter.Name
-        ret.rtbScript.Text = If(filter.Script = "", "", filter.Script + BR)
+        ret.rtbScript.Text = Macro.SolveInteractive(If(filter.Script = "", "", filter.Script + BR))
         ret.SetColor()
 
         Return ret
@@ -276,10 +276,7 @@ Class CodeEditor
             For Each i In FilterParameters.Definitions
                 If code.Contains(i.FunctionName + "(") Then
                     Dim match = Regex.Match(code, i.FunctionName + "\((.+)\)")
-
-                    If match.Success Then
-                        ActionMenuItem.Add(Menu.Items, i.Text, AddressOf SetParameters, i)
-                    End If
+                    If match.Success Then ActionMenuItem.Add(Menu.Items, i.Text, AddressOf SetParameters, i)
                 End If
             Next
 
@@ -297,7 +294,6 @@ Class CodeEditor
 
                                                                For Each iFilter In cat.Filters
                                                                    Dim tip = iFilter.Script
-                                                                   If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
                                                                    ActionMenuItem.Add(Menu.Items, iFilter.Category + " | " + iFilter.Path, AddressOf ReplaceClick, iFilter.GetCopy, tip)
                                                                    Application.DoEvents()
                                                                Next
@@ -321,7 +317,6 @@ Class CodeEditor
                                                    For Each i In filterProfiles
                                                        For Each i2 In i.Filters
                                                            Dim tip = i2.Script
-                                                           If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
                                                            ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
                                                            Application.DoEvents()
                                                        Next
@@ -334,7 +329,6 @@ Class CodeEditor
                                                   For Each i In filterProfiles
                                                       For Each i2 In i.Filters
                                                           Dim tip = i2.Script
-                                                          If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
                                                           ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
                                                           Application.DoEvents()
                                                       Next
@@ -351,7 +345,6 @@ Class CodeEditor
                                                For Each i In filterProfiles
                                                    For Each i2 In i.Filters
                                                        Dim tip = i2.Script
-                                                       If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
                                                        ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
                                                        Application.DoEvents()
                                                    Next
@@ -525,17 +518,17 @@ Class CodeEditor
             End If
         End Sub
 
-        Sub ReplaceClick(f As VideoFilter)
-            cbActive.Checked = f.Active
-            cbActive.Text = f.Category
-            tbName.Text = f.Name
-            rtbScript.Text = f.Script
+        Sub ReplaceClick(filter As VideoFilter)
+            cbActive.Checked = filter.Active
+            cbActive.Text = filter.Category
+            tbName.Text = filter.Name
+            rtbScript.Text = Macro.SolveInteractive(filter.Script)
         End Sub
 
-        Sub InsertClick(f As VideoFilter)
+        Sub InsertClick(filter As VideoFilter)
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim index = flow.Controls.IndexOf(Me)
-            Dim filterTable = CodeEditor.CreateFilterTable(f)
+            Dim filterTable = CodeEditor.CreateFilterTable(filter)
             flow.SuspendLayout()
             flow.Controls.Add(filterTable)
             flow.Controls.SetChildIndex(filterTable, index)

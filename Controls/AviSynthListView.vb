@@ -77,7 +77,6 @@ Public Class AviSynthListView
                 If i.Name = selectedFilter.Category Then
                     For Each i2 In i.Filters
                         Dim tip = i2.Script
-                        If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
                         ActionMenuItem.Add(Menu.Items, i2.Category + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
                     Next
                 End If
@@ -95,7 +94,6 @@ Public Class AviSynthListView
                                                    For Each i In filterProfiles
                                                        For Each i2 In i.Filters
                                                            Dim tip = i2.Script
-                                                           If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
                                                            ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
                                                            Application.DoEvents()
                                                        Next
@@ -111,7 +109,6 @@ Public Class AviSynthListView
                                                   For Each i In filterProfiles
                                                       For Each i2 In i.Filters
                                                           Dim tip = i2.Script
-                                                          If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
                                                           ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
                                                           Application.DoEvents()
                                                       Next
@@ -129,7 +126,6 @@ Public Class AviSynthListView
                                            For Each i In filterProfiles
                                                For Each i2 In i.Filters
                                                    Dim tip = i2.Script
-                                                   If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
                                                    ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
                                                    Application.DoEvents()
                                                Next
@@ -154,20 +150,23 @@ Public Class AviSynthListView
         If ProfileFunc().Invoke.Edit = DialogResult.OK Then OnChanged()
     End Sub
 
-    Sub ReplaceClick(f As VideoFilter)
+    Sub ReplaceClick(filter As VideoFilter)
+        filter.Script = Macro.SolveInteractive(filter.Script)
         Dim index = SelectedItems(0).Index
-        ProfileFunc.Invoke.SetFilter(index, f)
+        ProfileFunc.Invoke.SetFilter(index, filter)
         Items(index).Selected = True
     End Sub
 
-    Private Sub InsertClick(f As VideoFilter)
+    Private Sub InsertClick(filter As VideoFilter)
+        filter.Script = Macro.SolveInteractive(filter.Script)
         Dim index = SelectedItems(0).Index
-        ProfileFunc.Invoke.InsertFilter(index, f)
+        ProfileFunc.Invoke.InsertFilter(index, filter)
         Items(index).Selected = True
     End Sub
 
-    Private Sub AddClick(f As VideoFilter)
-        ProfileFunc.Invoke.AddFilter(f)
+    Private Sub AddClick(filter As VideoFilter)
+        filter.Script = Macro.SolveInteractive(filter.Script)
+        ProfileFunc.Invoke.AddFilter(filter)
         Items(Items.Count - 1).Selected = True
     End Sub
 

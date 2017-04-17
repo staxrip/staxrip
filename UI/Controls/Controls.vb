@@ -468,7 +468,7 @@ Namespace UI
             Dim cms As New ContextMenuStripEx()
 
             Dim cutItem = cms.Add("Cut")
-            Dim copyItem = cms.Add("Copy", Sub() Copy())
+            Dim copyItem = cms.Add("Copy", Sub() Clipboard.SetText(SelectedText))
             Dim pasteItem = cms.Add("Paste")
 
             cms.Add("Copy Everything", Sub() Clipboard.SetText(Text))

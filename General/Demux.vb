@@ -301,7 +301,7 @@ Class mkvDemuxer
 
     Sub DemuxMKVSubtitles(subtitles As List(Of Subtitle))
         If subtitles.Where(Function(subtitle) subtitle.Enabled).Count = 0 Then Exit Sub
-        Dim arguments = "tracks """ + p.SourceFile + """"
+        Dim arguments = "tracks " + p.SourceFile.Quotes
 
         For Each i In subtitles
             If Not i.Enabled Then Continue For
@@ -376,7 +376,7 @@ Class mkvDemuxer
             End Using
         End If
 
-        Dim params As String
+        Dim attachmentParams As String
 
         For Each i In output.SplitLinesNoEmpty
             If i.StartsWith("Attachment ID ") Then
@@ -388,20 +388,32 @@ Class mkvDemuxer
                                                                "_attachment_" + match.Groups(2).Value.Base,
                                                                match.Groups(2).Value.Ext)
 
-                    params += " " + match.Groups(1).Value + ":""" + attachmentPath + """"
+                    attachmentParams += " " + match.Groups(1).Value + ":""" + attachmentPath + """"
                 End If
             End If
         Next
 
-        If params <> "" Then
-            params += " --ui-language en"
+        If attachmentParams <> "" Then
+            attachmentParams += " --ui-language en"
 
             Using proc As New Proc
                 proc.Init("Demux attachments using mkvextract " + Package.mkvmerge.Version, "Progress: ")
                 proc.WriteLine(output + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.File = Package.mkvextract.Path
-                proc.Arguments = "attachments " + p.SourceFile.Quotes + params
+                proc.Arguments = "attachments " + p.SourceFile.Quotes + attachmentParams
+                proc.Start()
+            End Using
+        End If
+
+        If MediaInfo.GetVideo(p.SourceFile, "FrameRate_Mode") = "VFR" Then
+            Dim streamOrder = MediaInfo.GetVideo(p.SourceFile, "StreamOrder").ToInt
+
+            Using proc As New Proc
+                proc.Init("Demux timecodes using mkvextract " + Package.mkvextract.Version, "Progress: ")
+                proc.Encoding = Encoding.UTF8
+                proc.File = Package.mkvextract.Path
+                proc.Arguments = "timecodes_v2 " + p.SourceFile.Quotes + " " & streamOrder & ":" + (p.TempDir + p.SourceFile.Base + "_timecodes.txt").Quotes
                 proc.Start()
             End Using
         End If

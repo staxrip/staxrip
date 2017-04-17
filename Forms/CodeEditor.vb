@@ -287,11 +287,21 @@ Class CodeEditor
 
             For Each i In filterProfiles
                 If i.Name = cbActive.Text Then
-                    For Each i2 In i.Filters
-                        Dim tip = i2.Script
-                        If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
-                        ActionMenuItem.Add(Menu.Items, i2.Category + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
-                    Next
+                    Dim cat = i
+                    Dim catMenuItem = Menu.Add(i.Name)
+                    Dim catMenuItemTemp = Menu.Add(i.Name + " | a")
+
+                    AddHandler catMenuItem.DropDownOpened, Sub()
+                                                               If catMenuItem.DropDownItems.Count > 1 Then Exit Sub
+                                                               catMenuItem.DropDownItems.RemoveAt(0)
+
+                                                               For Each iFilter In cat.Filters
+                                                                   Dim tip = iFilter.Script
+                                                                   If Not tip.Contains("%app:") Then tip = Macro.Solve(tip)
+                                                                   ActionMenuItem.Add(Menu.Items, iFilter.Category + " | " + iFilter.Path, AddressOf ReplaceClick, iFilter.GetCopy, tip)
+                                                                   Application.DoEvents()
+                                                               Next
+                                                           End Sub
                 End If
             Next
 

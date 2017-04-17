@@ -19,6 +19,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - added the possibility to use different x265 options in first and second pass
 - added setting 'Snap to desktop edges'
 - added possibility to add hardcoded subtitles using VapourSynth
+- added option to extract timecodes file from MKV (Options > Misc, disabled by default)
+- added timecodes file option to muxer dialog, can be TXT or MKV
 
 #### Fixed Bugs
 
@@ -37,6 +39,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - fixed more then one hardcoded subtitle is added to the script automatically
 - snap to desktop edges not working properly
 - fixed bug using UNC paths
+- copy to clipboard in MediaInfo dialog did not work
 
 #### Tweaks
 

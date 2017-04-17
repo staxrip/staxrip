@@ -1105,11 +1105,15 @@ Public Class MainForm
         Application.DoEvents()
     End Sub
 
+    <DebuggerHidden>
     Sub UpdateDynamicMenuAsync()
         Task.Run(Sub()
                      Thread.Sleep(500)
-                     If IsDisposed Then Exit Sub
-                     Invoke(Sub() If Native.GetForegroundWindow() = Handle Then UpdateDynamicMenu())
+
+                     Try
+                         Invoke(Sub() If Native.GetForegroundWindow() = Handle Then UpdateDynamicMenu())
+                     Catch
+                     End Try
                  End Sub)
     End Sub
 
@@ -3986,6 +3990,11 @@ Public Class MainForm
             cb.Text = "Use fixed bitrate"
             cb.Checked = p.BitrateIsFixed
             cb.SaveAction = Sub(value) p.BitrateIsFixed = value
+
+            cb = ui.AddCheckBox(miscPage)
+            cb.Text = "Extract timecodes from VFR MKV files"
+            cb.Checked = p.ExtractTimecodes
+            cb.SaveAction = Sub(value) p.ExtractTimecodes = value
 
             ui.AddLine(miscPage, "Compressibility Check")
 

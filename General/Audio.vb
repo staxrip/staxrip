@@ -88,8 +88,8 @@ Class Audio
         Dim streamIndex = stream.StreamOrder
         Dim args = "-i """ + sourcefile + """"
         If MediaInfo.GetAudioCount(sourcefile) > 1 Then args += " -map 0:" & stream.StreamOrder
-        args += " -c:a copy -vn -sn -y -hide_banner"
-        If outPath.Ext = "wav" Then args += " -c:a pcm_s16le"
+        args += " -vn -sn -y -hide_banner"
+        If outPath.Ext = "wav" Then args += " -c:a pcm_s16le" Else args += " -c:a copy"
         args += " " + outPath.Quotes
 
         Using proc As New Proc

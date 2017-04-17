@@ -24,6 +24,7 @@ Public Class Project
     Public AutoSmartOvercrop As Double
     Public BatchMode As Boolean
     Public BitDepth As Integer
+    Public BitrateIsFixed As Boolean
     Public ChromaSubsampling As String
     Public CodeAtTop As String = ""
     Public Codec As String
@@ -44,8 +45,10 @@ Public Class Project
     Public DeleteTempFilesDir As Boolean
     Public DemuxAudio As DemuxMode
     Public DemuxSubtitles As DemuxMode
+    Public ExtractTimecodes As Boolean
     Public FirstOriginalSourceFile As String
     Public ForcedOutputMod As Integer = 16
+    Public HarcodedSubtitle As Boolean
     Public ITU As Boolean = True
     Public LastOriginalSourceFile As String
     Public Log As StringBuilder
@@ -90,10 +93,9 @@ Public Class Project
     Public Versions As Dictionary(Of String, Integer)
     Public VideoBitrate As Integer = 1000
     Public VideoEncoder As VideoEncoder
-    Public HarcodedSubtitle As Boolean
-    Public BitrateIsFixed As Boolean
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
+
 
     ReadOnly Property VersionsProperty() As Dictionary(Of String, Integer) Implements ISafeSerialization.Versions
         Get

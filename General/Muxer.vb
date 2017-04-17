@@ -9,6 +9,7 @@ Public MustInherit Class Muxer
     Inherits Profile
 
     Property ChapterFile As String
+    Property TimecodesFile As String
 
     MustOverride Sub Mux()
 
@@ -67,6 +68,7 @@ Public MustInherit Class Muxer
     Overrides Sub Clean()
         Subtitles = Nothing
         ChapterFile = Nothing
+        TimecodesFile = Nothing
     End Sub
 
     Overridable Function GetError() As String
@@ -139,15 +141,13 @@ Public MustInherit Class Muxer
         For Each i In files
             If g.IsSourceSameOrSimilar(i) Then
                 If Not TypeOf Me Is WebMMuxer Then
-                    If i.ToLower Like "*chapter*txt" Then
-                        ChapterFile = i
+                    If i.Ext = "txt" Then
+                        Dim lower = i.ToLower
+                        If lower.Contains("chapter") Then ChapterFile = i
+                        If lower.Contains("timecodes") Then TimecodesFile = i
                     End If
 
-                    If i.ToLower.EndsWith(".xml") AndAlso
-                        File.ReadAllText(i).Contains("<Chapters>") Then
-
-                        ChapterFile = i
-                    End If
+                    If i.Ext = "xml" AndAlso File.ReadAllText(i).Contains("<Chapters>") Then ChapterFile = i
                 End If
 
                 If TypeOf Me Is MkvMuxer AndAlso i.Contains("_attachment_") Then
@@ -478,6 +478,14 @@ Class MkvMuxer
 
         If MediaInfo.GetFrameRate(p.VideoEncoder.OutputPath, 0) = 0 Then
             args.Append(" --default-duration 0:" + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps")
+        End If
+
+        If TimecodesFile <> "" Then
+            If TimecodesFile.Ext = "txt" Then
+                args.Append(" --timecodes 0:" + TimecodesFile.Quotes)
+            ElseIf TimecodesFile.Ext = "mkv" Then
+                args.Append(" --timecodes " + MediaInfo.GetVideo(TimecodesFile, "StreamOrder") + ":" + TimecodesFile.Quotes)
+            End If
         End If
 
         args.Append(" " + p.VideoEncoder.OutputPath.Quotes)

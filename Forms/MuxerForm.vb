@@ -528,6 +528,14 @@ Class MuxerForm
         If TypeOf Muxer Is MkvMuxer Then
             CmdlControl.Presets = s.CmdlPresetsMKV
 
+            Dim timecodes = UI.AddTextButtonBlock(page)
+            timecodes.Label.Text = "Timecodes:"
+            timecodes.Label.Tooltip = "txt or mkv file"
+            timecodes.Edit.Expandet = True
+            timecodes.Edit.Text = Muxer.TimecodesFile
+            timecodes.Edit.SaveAction = Sub(value) Muxer.TimecodesFile = If(value <> "", value, Nothing)
+            timecodes.BrowseFile("txt, mkv|*.txt;*.mkv")
+
             Dim tb = UI.AddTextBlock(page)
             tb.Label.Text = "Title:"
             tb.Label.Tooltip = "Optional title of the output file that may contain macros."

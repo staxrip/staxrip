@@ -23,10 +23,10 @@ Class ImageHelp
         Dim family As FontFamily
 
         If CInt(symbol) > 61400 Then
-            family = Coll.Families?(0)
+            If Coll.Families.Count > 0 Then family = Coll.Families(0)
         Else
             If legacy Then
-                family = Coll.Families?(1)
+                If Coll.Families.Count > 1 Then family = Coll.Families(1)
             Else
                 family = New FontFamily("Segoe MDL2 Assets")
             End If

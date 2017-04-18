@@ -50,7 +50,7 @@ Class CodeEditor
         ret.cbActive.Checked = filter.Active
         ret.cbActive.Text = filter.Category
         ret.tbName.Text = filter.Name
-        ret.rtbScript.Text = Macro.SolveInteractive(If(filter.Script = "", "", filter.Script + BR))
+        ret.rtbScript.Text = If(filter.Script = "", "", filter.Script + BR)
         ret.SetColor()
 
         Return ret
@@ -134,7 +134,7 @@ Class CodeEditor
             cbActive.Margin = New Padding(0)
 
             tbName.Dock = DockStyle.Top
-            tbName.Margin = New Padding(0, 0, 12, 0)
+            tbName.Margin = New Padding(0, 0, 0, 0)
 
             rtbScript = New RichTextBoxEx(False)
             rtbScript.EnableAutoDragDrop = True
@@ -280,7 +280,7 @@ Class CodeEditor
                 End If
             Next
 
-            If Menu.Items.Count > 0 Then Menu.Items.Add(New ToolStripSeparator)
+            If Menu.Items.Count > 0 Then Menu.Add("-")
 
             For Each i In filterProfiles
                 If i.Name = cbActive.Text Then
@@ -303,7 +303,7 @@ Class CodeEditor
 
             ActionMenuItem.Add(Menu.Items, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""))
 
-            Menu.Items.Add(New ToolStripSeparator)
+            Menu.Add("-")
 
             Dim replace = Menu.Add("Replace")
             Dim insert = Menu.Add("Insert")
@@ -334,9 +334,9 @@ Class CodeEditor
                                                       Next
                                                   Next
                                               End Sub
+            Dim add = Menu.Add("Add")
+            add.SetImage(Symbol.Add)
 
-            Dim add As New MenuItemEx("Add")
-            Menu.Items.Add(add)
             ActionMenuItem.Add(add.DropDownItems, "Blank", AddressOf AddClick, New VideoFilter("Misc", "", ""))
 
             AddHandler add.DropDownOpened, Sub()
@@ -350,27 +350,33 @@ Class CodeEditor
                                                    Next
                                                Next
                                            End Sub
+            Menu.Add("-")
 
-            Menu.Items.Add(New ToolStripSeparator)
+            Dim removeMenuItem = Menu.Add("Remove", AddressOf RemoveClick)
+            removeMenuItem.ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Delete)
+            removeMenuItem.SetImage(Symbol.Remove)
 
-            Menu.Add("Remove", AddressOf RemoveClick).ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Delete)
             Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
-            Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to edit profiles.")
-            Menu.Add("Preview Code...", AddressOf CodePreview, "Previews the script with solved macros.")
+            Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to edit profiles.").SetImage(Symbol.CalculatorPercentage)
+            Menu.Add("Preview Code...", AddressOf CodePreview, "Previews the script with solved macros.").SetImage(Symbol.Code)
             Menu.Add("Join Filters", AddressOf JoinFilters, "Joins all filters into one filter.").Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
 
-            Dim mi = Menu.Add("Video Preview...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
-            mi.Enabled = p.SourceFile <> ""
-            mi.ShortcutKeyDisplayString = "F5"
+            Dim previewMenuItem = Menu.Add("Video Preview...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
+            previewMenuItem.Enabled = p.SourceFile <> ""
+            previewMenuItem.ShortcutKeyDisplayString = "F5"
 
-            Menu.Add("Play...", AddressOf Editor.Play, "Plays the current script with MPC.")
+            Menu.Add("Play...", AddressOf Editor.Play, "Plays the current script with MPC.", p.SourceFile <> "").SetImage(Symbol.Play)
+            Menu.Add("-")
 
-            Menu.Items.Add(New ToolStripSeparator)
+            Dim moveUpMenuItem = Menu.Add("Move Up", AddressOf MoveUp)
+            moveUpMenuItem.ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Up)
+            moveUpMenuItem.SetImage(Symbol.Up)
 
-            Menu.Add("Move Up", AddressOf MoveUp).ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Up)
-            Menu.Add("Move Down", AddressOf MoveDown).ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Down)
+            Dim moveDownMenuItem = Menu.Add("Move Down", AddressOf MoveDown)
+            moveDownMenuItem.ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Down)
+            moveDownMenuItem.SetImage(Symbol.Down)
 
-            Menu.Items.Add(New ToolStripSeparator)
+            Menu.Add("-")
 
             Dim cutAction = Sub()
                                 Clipboard.SetText(rtbScript.SelectedText)
@@ -384,12 +390,13 @@ Class CodeEditor
                                   rtbScript.ScrollToCaret()
                               End Sub
 
-            Menu.Add("Cut", cutAction).Enabled = rtbScript.SelectionLength > 0 AndAlso Not rtbScript.ReadOnly
-            Menu.Add("Copy", copyAction).Enabled = rtbScript.SelectionLength > 0
-            Menu.Add("Paste", pasteAction).Enabled = Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly
+            Menu.Add("Cut", cutAction, Nothing, rtbScript.SelectionLength > 0 AndAlso Not rtbScript.ReadOnly).SetImage(Symbol.Cut)
+            Menu.Add("Copy", copyAction, Nothing, rtbScript.SelectionLength > 0).SetImage(Symbol.Copy)
+            Menu.Add("Paste", pasteAction, Nothing, Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly).SetImage(Symbol.Paste)
 
-            Menu.Items.Add(New ToolStripSeparator)
+            Menu.Add("-")
             Dim helpMenuItem = Menu.Add("Help")
+            helpMenuItem.SetImage(Symbol.Help)
             Dim helpTempMenuItem = Menu.Add("Help | temp")
 
             Dim helpAction = Sub()
@@ -498,8 +505,7 @@ Class CodeEditor
                 f.cbWrap.Visible = False
                 f.tb.Text = script.GetFullScript
                 f.tb.SelectionStart = f.tb.Text.Length
-                f.tb.SelectionLength = 0
-                f.Text = "Script Preview"
+                f.Text = "Code Preview"
                 f.Width = 800
                 f.Height = 500
                 f.bOK.Visible = False
@@ -519,13 +525,20 @@ Class CodeEditor
         End Sub
 
         Sub ReplaceClick(filter As VideoFilter)
+            Dim tup = Macro.SolveInteractive(filter.Script)
+            If tup.cancel Then Exit Sub
             cbActive.Checked = filter.Active
             cbActive.Text = filter.Category
-            tbName.Text = filter.Name
-            rtbScript.Text = Macro.SolveInteractive(filter.Script)
+            If tup.value <> filter.Script Then tbName.Text = tup.value.Trim Else tbName.Text = filter.Name
+            rtbScript.Text = tup.value.TrimEnd + BR
+            rtbScript.SelectionStart = rtbScript.Text.Length
         End Sub
 
         Sub InsertClick(filter As VideoFilter)
+            Dim tup = Macro.SolveInteractive(filter.Script)
+            If tup.cancel Then Exit Sub
+            If tup.value <> filter.Script Then filter.Path = tup.value.Trim
+            filter.Script = tup.value
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim index = flow.Controls.IndexOf(Me)
             Dim filterTable = CodeEditor.CreateFilterTable(filter)
@@ -533,12 +546,20 @@ Class CodeEditor
             flow.Controls.Add(filterTable)
             flow.Controls.SetChildIndex(filterTable, index)
             flow.ResumeLayout()
+            filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
+            filterTable.rtbScript.Focus()
         End Sub
 
-        Sub AddClick(f As VideoFilter)
+        Sub AddClick(filter As VideoFilter)
+            Dim tup = Macro.SolveInteractive(filter.Script)
+            If tup.cancel Then Exit Sub
+            If tup.value <> filter.Script Then filter.Path = tup.value.Trim
+            filter.Script = tup.value
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
-            Dim filterTable = CodeEditor.CreateFilterTable(f)
+            Dim filterTable = CodeEditor.CreateFilterTable(filter)
             flow.Controls.Add(filterTable)
+            filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
+            filterTable.rtbScript.Focus()
         End Sub
     End Class
 End Class

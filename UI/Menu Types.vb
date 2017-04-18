@@ -337,18 +337,6 @@ Namespace UI
             SetImage(symbol, Me)
         End Sub
 
-        Private _Symbol As Symbol
-
-        Property Symbol As Symbol
-            Get
-                Return _Symbol
-            End Get
-            Set(value As Symbol)
-                _Symbol = value
-                SetImage(value, Me)
-            End Set
-        End Property
-
         Shared Async Sub SetImage(symbol As Symbol, mi As ToolStripMenuItem)
             If symbol = Symbol.None Then
                 mi.Image = Nothing
@@ -700,20 +688,37 @@ Namespace UI
         End Function
 
         Function Add(path As String,
+                     action As Action) As ActionMenuItem
+
+            Return Add(path, action, Nothing)
+        End Function
+
+        Function Add(path As String,
                      action As Action,
-                     Optional help As String = Nothing) As ActionMenuItem
+                     help As String) As ActionMenuItem
+
+            Return Add(path, action, help, True)
+        End Function
+
+        Function Add(path As String,
+                     action As Action,
+                     help As String,
+                     enabled As Boolean) As ActionMenuItem
 
             Dim ret = ActionMenuItem.Add(Items, path, action)
 
             ret.Form = Form
             ret.Help = help
+            ret.Enabled = enabled
 
             AddHandler Opening, AddressOf ret.Opening
 
             Return ret
         End Function
 
-        Function Add(path As String, action As Action, shortcut As Keys,
+        Function Add(path As String,
+                     action As Action,
+                     shortcut As Keys,
                      enabledFunc As Func(Of Boolean),
                      Optional help As String = Nothing) As ActionMenuItem
 

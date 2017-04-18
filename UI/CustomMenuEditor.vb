@@ -590,26 +590,23 @@ Namespace UI
             Dim enumNames = System.Enum.GetNames(GetType(Symbol)).ToList
             enumNames.Sort()
 
-            For Each i In enumNames
+            For Each iName In enumNames
+                If iName.StartsWith("fa_") Then Continue For
                 If IsClosing Then Exit For
-                Dim symbol = DirectCast(System.Enum.Parse(GetType(Symbol), i), Symbol)
-                Dim path As String
-
-                If CInt(symbol) > 60000 Then
-                    path = "FontAwesome | " + i.Substring(3, 1).ToUpper + " | " + i.Substring(3).ToTitleCase.Replace("_", " ")
-                Else
-                    path = "Segoe MDL2 Assets | " + i.Substring(0, 1) + " | " + i
-                End If
-
-                Dim mi = ActionMenuItem.Add(Of Symbol)(cmsSymbol.Items, path, AddressOf HandleSymbol, symbol)
-                mi.Symbol = symbol
+                Dim symbol = DirectCast(System.Enum.Parse(GetType(Symbol), iName), Symbol)
+                Dim path = "Segoe MDL2 Assets | " + iName.Substring(0, 1).ToUpper + " | " + iName
+                ActionMenuItem.Add(Of Symbol)(cmsSymbol.Items, path, AddressOf HandleSymbol, symbol).SetImage(symbol)
                 Application.DoEvents()
             Next
-        End Sub
 
-        Async Sub SetImage(symbol As Symbol, mi As ToolStripMenuItem)
-            Dim img = Await ImageHelp.GetSymbolImageAsync(symbol)
-            If Not IsClosing AndAlso Not mi.IsDisposed Then mi.Image = img
+            For Each iName In enumNames
+                If Not iName.StartsWith("fa_") Then Continue For
+                If IsClosing Then Exit For
+                Dim symbol = DirectCast(System.Enum.Parse(GetType(Symbol), iName), Symbol)
+                Dim path = "FontAwesome | " + iName.Substring(3, 1).ToUpper + " | " + iName.Substring(3).ToTitleCase.Replace("_", " ")
+                ActionMenuItem.Add(Of Symbol)(cmsSymbol.Items, path, AddressOf HandleSymbol, symbol).SetImage(symbol)
+                Application.DoEvents()
+            Next
         End Sub
 
         Sub HandleSymbol(symbol As Symbol)

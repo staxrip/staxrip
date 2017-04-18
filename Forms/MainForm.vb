@@ -1103,13 +1103,13 @@ Public Class MainForm
         Application.DoEvents()
     End Sub
 
-    <DebuggerHidden>
+    <DebuggerNonUserCode>
     Sub UpdateDynamicMenuAsync()
         Task.Run(Sub()
                      Thread.Sleep(500)
 
                      Try
-                         Invoke(Sub() If Native.GetForegroundWindow() = Handle Then UpdateDynamicMenu())
+                         If Not IsDisposed Then Invoke(Sub() If Native.GetForegroundWindow() = Handle Then UpdateDynamicMenu())
                      Catch
                      End Try
                  End Sub)
@@ -4352,7 +4352,7 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
         ret.Add("Tools|Advanced|Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H, Symbol.Subtitles)
         ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
-        ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog), Symbol.fa_info)
+        ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog), Symbol.Info)
         ret.Add("Tools|Advanced|Reset Setting...", NameOf(ResetSettings))
         ret.Add("Tools|Advanced|Thumbnails Generator...", NameOf(ShowBatchGenerateThumbnailsDialog))
 
@@ -5359,41 +5359,24 @@ Public Class MainForm
 
     Private Sub gbResize_LinkClick() Handles lgbResize.LinkClick
         Dim cms = TextCustomMenu.GetMenu(s.TargetImageSizeMenu, lgbResize.Label, components, AddressOf TargetImageMenuClick)
-
-        Dim helpUrl = If(g.IsCulture("de"),
-                 "http://encodingwissen.de/videobild/zielaufloesung",
-                 "http://www.doom9.org/index.html?/aspectratios.htm")
-
-        Dim helpAction = Sub() g.ShellExecute(helpUrl)
-
-        cms.Items.Add(New ToolStripSeparator)
-
-        cms.Items.Add(New ActionMenuItem("Image Options...", Sub() OpenOptionsDialog("Image")))
+        Dim helpUrl = If(g.IsCulture("de"), "http://encodingwissen.de/videobild/zielaufloesung", "http://www.doom9.org/index.html?/aspectratios.htm")
+        cms.Add("-")
+        cms.Add("Image Options...", Sub() OpenOptionsDialog("Image")).SetImage(Symbol.fa_photo)
         cms.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.TargetImageSizeMenu = TextCustomMenu.EditMenu(s.TargetImageSizeMenu, "Target Image Help...", ApplicationSettings.GetDefaultTargetImageSizeMenu, Me)))
-        cms.Items.Add(New ActionMenuItem("Help...", helpAction))
-
+        cms.Add("Help...", Sub() g.ShellExecute(helpUrl)).SetImage(Symbol.Help)
         cms.Show(lgbResize, 0, lgbResize.Label.Height)
     End Sub
 
     Private Sub llSourceParText_Click(sender As Object, e As EventArgs) Handles llSourceParText.Click
         Dim cms = TextCustomMenu.GetMenu(s.SourceAspectRatioMenu, llSourceParText, components, AddressOf SourceAspectRatioMenuClick)
-
-        Dim helpUrl = If(g.IsCulture("de"),
-                         "http://encodingwissen.de/video/anamorph-quelle.html",
-                         "http://www.doom9.org/index.html?/capture/par.html")
-
-        Dim helpAction = Sub() g.ShellExecute(helpUrl)
-
+        Dim helpUrl = If(g.IsCulture("de"), "http://encodingwissen.de/video/anamorph-quelle.html", "http://www.doom9.org/index.html?/capture/par.html")
         cms.Items.Insert(0, New ToolStripSeparator)
         cms.Items.Insert(0, New ActionMenuItem("Automatic 4:3", Sub() SetAutoAspectRatio(False)))
         cms.Items.Insert(0, New ActionMenuItem("Automatic 16:9", Sub() SetAutoAspectRatio(True)))
-
-        cms.Items.Add(New ToolStripSeparator)
-
-        cms.Items.Add(New ActionMenuItem("Image Options...", Sub() OpenOptionsDialog("Image")))
+        cms.Add("-")
+        cms.Add("Image Options...", Sub() OpenOptionsDialog("Image")).SetImage(Symbol.fa_photo)
         cms.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.SourceAspectRatioMenu = TextCustomMenu.EditMenu(s.SourceAspectRatioMenu, "Source Image Help...", ApplicationSettings.GetDefaultSourceAspectRatioMenu, Me)))
-        cms.Items.Add(New ActionMenuItem("Help...", helpAction))
-
+        cms.Add("Help...", Sub() g.ShellExecute(helpUrl)).SetImage(Symbol.Help)
         cms.Show(llSourceParText, 0, llSourceParText.Height)
     End Sub
 
@@ -5607,18 +5590,18 @@ Public Class MainForm
             End If
         End If
 
-        m.Items.Add(New ActionMenuItem("Open", a, "Change the audio source file."))
-        m.Items.Add(New ActionMenuItem("Play audio", Sub() PlayAudio(ap), "Plays the audio source file with MPC.", exist))
-        m.Items.Add(New ActionMenuItem("Play audio and video", Sub() g.PlayScript(p.Script, ap), "Plays the audio source file together with the AviSynth script.", exist))
-        m.Items.Add(New ActionMenuItem("MediaInfo", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), "Show MediaInfo for the audio source file.", exist))
-        m.Items.Add(New ActionMenuItem("Explore", Sub() g.OpenDirAndSelectFile(ap.File, Handle), "Open the audio source file directory with File Explorer.", exist))
-        m.Items.Add(New ActionMenuItem("Execute", Sub() ExecuteAudio(ap), "Processes the audio profile.", exist))
-        m.Items.Add("-")
-        m.Items.Add(New ActionMenuItem("Copy Path", Sub() Clipboard.SetText(ap.File), Nothing, tb.Text <> ""))
-        m.Items.Add(New ActionMenuItem("Copy Selection", Sub() tb.Copy(), Nothing, tb.Text <> ""))
-        m.Items.Add(New ActionMenuItem("Paste", Sub() tb.Paste(), Nothing, Clipboard.GetText.Trim <> ""))
-        m.Items.Add("-")
-        m.Items.Add(New ActionMenuItem("Clear", Sub() tb.Text = "", "Remove audio file", tb.Text <> ""))
+        m.Add("Open", a, "Change the audio source file.").SetImage(Symbol.OpenFile)
+        m.Add("Play Audio", Sub() PlayAudio(ap), "Plays the audio source file with MPC.", exist).SetImage(Symbol.Play)
+        m.Add("Play audio and video", Sub() g.PlayScript(p.Script, ap), "Plays the audio source file together with the AviSynth script.", exist AndAlso p.Script.Engine = ScriptEngine.AviSynth)
+        m.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), "Show MediaInfo for the audio source file.", exist).SetImage(Symbol.Info)
+        m.Add("Explore", Sub() g.OpenDirAndSelectFile(ap.File, Handle), "Open the audio source file directory with File Explorer.", exist).SetImage(Symbol.FileExplorer)
+        m.Add("Execute", Sub() ExecuteAudio(ap), "Processes the audio profile.", exist).SetImage(Symbol.fa_terminal)
+        m.Add("-")
+        m.Add("Copy Path", Sub() Clipboard.SetText(ap.File), Nothing, tb.Text <> "")
+        m.Add("Copy Selection", Sub() Clipboard.SetText(tb.SelectedText), Nothing, tb.Text <> "").SetImage(Symbol.Copy)
+        m.Add("Paste", Sub() tb.Paste(), Nothing, Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
+        m.Add("-")
+        m.Add("Remove", Sub() tb.Text = "", "Remove audio file", tb.Text <> "").SetImage(Symbol.Remove)
     End Sub
 
     Sub ExecuteAudio(ap As AudioProfile)
@@ -5638,26 +5621,26 @@ Public Class MainForm
 
     Sub UpdateTargetFileMenu()
         TargetFileMenu.Items.Clear()
-        TargetFileMenu.Items.Add(New ActionMenuItem("Edit...", AddressOf tbTargetFile_DoubleClick, "Change the path of the target file."))
-        TargetFileMenu.Items.Add(New ActionMenuItem("Play...", Sub() g.Play(p.TargetFile), "Play the target file.", File.Exists(p.TargetFile)))
-        TargetFileMenu.Items.Add(New ActionMenuItem("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), "Show MediaInfo for the target file.", File.Exists(p.TargetFile)))
-        TargetFileMenu.Items.Add(New ActionMenuItem("Explore...", Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle), "Open the target file directory with File Explorer.", Directory.Exists(Filepath.GetDir(p.TargetFile))))
-        TargetFileMenu.Items.Add("-")
-        TargetFileMenu.Items.Add(New ActionMenuItem("Copy", Sub() tbTargetFile.Copy(), "", tbTargetFile.Text <> ""))
-        TargetFileMenu.Items.Add(New ActionMenuItem("Paste", Sub() tbTargetFile.Paste(), "", Clipboard.GetText.Trim <> ""))
+        TargetFileMenu.Add("Edit...", AddressOf tbTargetFile_DoubleClick, "Change the path of the target file.")
+        TargetFileMenu.Add("Play...", Sub() g.Play(p.TargetFile), "Play the target file.", File.Exists(p.TargetFile)).SetImage(Symbol.Play)
+        TargetFileMenu.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), "Show MediaInfo for the target file.", File.Exists(p.TargetFile)).SetImage(Symbol.Info)
+        TargetFileMenu.Add("Explore...", Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle), "Open the target file directory with File Explorer.", Directory.Exists(p.TargetFile.Dir)).SetImage(Symbol.FileExplorer)
+        TargetFileMenu.Add("-")
+        TargetFileMenu.Add("Copy", Sub() tbTargetFile.Copy(), "", tbTargetFile.Text <> "").SetImage(Symbol.Copy)
+        TargetFileMenu.Add("Paste", Sub() tbTargetFile.Paste(), "", Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
     End Sub
 
     Sub UpdateSourceFileMenu()
         SourceFileMenu.Items.Clear()
         Dim isIndex = FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile))
 
-        SourceFileMenu.Items.Add(New ActionMenuItem("Open...", AddressOf ShowOpenSourceDialog, "Open source files"))
-        SourceFileMenu.Items.Add(New ActionMenuItem("Play...", Sub() g.Play(p.SourceFile), "Play the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex))
-        SourceFileMenu.Items.Add(New ActionMenuItem("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.SourceFile), "Show MediaInfo for the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex))
-        SourceFileMenu.Items.Add(New ActionMenuItem("Explore...", Sub() g.OpenDirAndSelectFile(p.SourceFile, Handle), "Open the source file directory with File Explorer.", File.Exists(p.SourceFile)))
+        SourceFileMenu.Add("Open...", AddressOf ShowOpenSourceDialog, "Open source files").SetImage(Symbol.OpenFile)
+        SourceFileMenu.Add("Play...", Sub() g.Play(p.SourceFile), "Play the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex).SetImage(Symbol.Play)
+        SourceFileMenu.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.SourceFile), "Show MediaInfo for the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex).SetImage(Symbol.Info)
+        SourceFileMenu.Add("Explore...", Sub() g.OpenDirAndSelectFile(p.SourceFile, Handle), "Open the source file directory with File Explorer.", File.Exists(p.SourceFile)).SetImage(Symbol.FileExplorer)
         SourceFileMenu.Items.Add("-")
-        SourceFileMenu.Items.Add(New ActionMenuItem("Copy", Sub() tbSourceFile.Copy(), "Copies the selected text to the clipboard.", tbSourceFile.Text <> ""))
-        SourceFileMenu.Items.Add(New ActionMenuItem("Paste", Sub() tbSourceFile.Paste(), "Copies the full source file path to the clipboard.", Clipboard.GetText.Trim <> ""))
+        SourceFileMenu.Add("Copy", Sub() tbSourceFile.Copy(), "Copies the selected text to the clipboard.", tbSourceFile.Text <> "").SetImage(Symbol.Copy)
+        SourceFileMenu.Add("Paste", Sub() tbSourceFile.Paste(), "Copies the full source file path to the clipboard.", Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
     End Sub
 
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles Me.Load

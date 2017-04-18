@@ -39,7 +39,6 @@ Public Class AviSynthListView
     Sub Load()
         BlockItemCheck = True
         Items.Clear()
-
         BeginUpdate()
 
         For Each i In ProfileFunc.Invoke.Filters
@@ -47,15 +46,13 @@ Public Class AviSynthListView
             item.Tag = i
             item.Checked = i.Active
             item.SubItems.Add(i.Category)
-            item.SubItems.Add(i.Name)
+            If i.Name = "" Then item.SubItems.Add(i.Script) Else item.SubItems.Add(i.Name)
             item.SubItems.Add(i.Script)
             Items.Add(item)
         Next
 
         AutoResizeColumns(True)
-
         EndUpdate()
-
         BlockItemCheck = False
     End Sub
 
@@ -117,6 +114,7 @@ Public Class AviSynthListView
         End If
 
         Dim add = Menu.Add("Add")
+        add.SetImage(Symbol.Add)
         Dim addFirst = Menu.Add("Add | a")
 
         AddHandler add.DropDownOpened, Sub()
@@ -133,16 +131,17 @@ Public Class AviSynthListView
                                        End Sub
 
         If SelectedItems.Count > 0 Then
-            Menu.Items.Add(New ToolStripSeparator)
-            Menu.Items.Add(New ActionMenuItem("Remove", AddressOf RemoveClick, "Removes the selected filter."))
+            Menu.Add("-")
+            Menu.Add("Remove", AddressOf RemoveClick, "Removes the selected filter.").SetImage(Symbol.Remove)
         End If
 
-        Menu.Items.Add(New ActionMenuItem("Edit Code...", AddressOf ShowEditor, "Dialog to edit filters."))
-        Menu.Items.Add(New ActionMenuItem("Preview Code...", AddressOf CodePreview, "Script code preview."))
-        Menu.Items.Add(New ActionMenuItem("Play", Sub() g.PlayScript(p.Script), "Plays the script with the AVI player.", p.SourceFile <> ""))
-        Menu.Items.Add(New ActionMenuItem("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles."))
+        Menu.Add("Edit Code...", AddressOf ShowEditor, "Dialog to edit filters.").SetImage(Symbol.Code)
+        Menu.Add("Preview Code...", AddressOf CodePreview, "Script code preview.")
+        Menu.Add("Play", Sub() g.PlayScript(p.Script), "Plays the script with the AVI player.").SetImage(Symbol.Play)
+        Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
 
         Dim setup = Menu.Add("Filter Setup")
+        setup.SetImage(Symbol.MultiSelect)
         g.PopulateProfileMenu(setup.DropDownItems, s.FilterSetupProfiles, AddressOf g.MainForm.ShowFilterSetupProfilesDialog, AddressOf g.MainForm.LoadScriptProfile)
     End Sub
 
@@ -151,21 +150,30 @@ Public Class AviSynthListView
     End Sub
 
     Sub ReplaceClick(filter As VideoFilter)
-        filter.Script = Macro.SolveInteractive(filter.Script)
+        Dim tup = Macro.SolveInteractive(filter.Script)
+        If tup.cancel Then Exit Sub
+        If tup.value <> filter.Script Then filter.Path = tup.value.Trim
+        filter.Script = tup.value
         Dim index = SelectedItems(0).Index
         ProfileFunc.Invoke.SetFilter(index, filter)
         Items(index).Selected = True
     End Sub
 
     Private Sub InsertClick(filter As VideoFilter)
-        filter.Script = Macro.SolveInteractive(filter.Script)
+        Dim tup = Macro.SolveInteractive(filter.Script)
+        If tup.cancel Then Exit Sub
+        If tup.value <> filter.Script Then filter.Path = tup.value.Trim
+        filter.Script = tup.value
         Dim index = SelectedItems(0).Index
         ProfileFunc.Invoke.InsertFilter(index, filter)
         Items(index).Selected = True
     End Sub
 
     Private Sub AddClick(filter As VideoFilter)
-        filter.Script = Macro.SolveInteractive(filter.Script)
+        Dim tup = Macro.SolveInteractive(filter.Script)
+        If tup.cancel Then Exit Sub
+        If tup.value <> filter.Script Then filter.Path = tup.value.Trim
+        filter.Script = tup.value
         ProfileFunc.Invoke.AddFilter(filter)
         Items(Items.Count - 1).Selected = True
     End Sub
@@ -265,8 +273,7 @@ Public Class AviSynthListView
             f.cbWrap.Visible = False
             f.tb.Text = p.Script.GetFullScript
             f.tb.SelectionStart = f.tb.Text.Length
-            f.tb.SelectionLength = 0
-            f.Text = "Script Preview"
+            f.Text = "Code Preview"
             f.Width = 800
             f.Height = 500
             f.bOK.Visible = False

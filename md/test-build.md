@@ -21,6 +21,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - added option to extract timecodes file from MKV (Options > Misc, disabled by default)
 - added timecodes file option to muxer dialog, can be TXT or MKV
 - added support for hardcoded subtitles using VapourSynth for srt, ass, idx/vobsub, sup/pgs
+- added the possiblity to use special GUI macros like $select:val1;val2$ in filter profiles, this is now used in the defaults for AssumeFPS for instance
+- added new menu item icons 
 
 #### Fixed Bugs
 
@@ -53,6 +55,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - in case there are more then ten audio files or streams a sub menu is used
 - audio file detection prefers now dtsma and thd files 
 - filter context menus open a lot quicker
+- if the name text box in the code editor is empty the main dialog will show the code
 
 #### Updated Tools
 

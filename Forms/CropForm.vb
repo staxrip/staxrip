@@ -506,7 +506,7 @@ Class CropForm
         ret.Add("-")
         ret.Add("Crop Options...", NameOf(ShowOptions), Keys.O, Symbol.Settings)
         ret.Add("Edit Menu...", NameOf(ShowMenuEditor), Keys.M)
-        ret.Add("Help...", NameOf(ShowHelpDialog), Keys.F1, Symbol.Lightbulb)
+        ret.Add("Help...", NameOf(ShowHelpDialog), Keys.F1, Symbol.Help)
         ret.Add("Exit", NameOf(CloseDialog), Keys.Escape)
 
         Return ret

@@ -992,7 +992,7 @@ Class PreviewForm
         ret.Add("Tools|Add Selection Zone", NameOf(g.DefaultCommands.AddX264Zone), {"%sel_start%", "%sel_end%", "q=40"})
 
         ret.Add("Edit Menu...", NameOf(OpenMenuEditor), Keys.M)
-        ret.Add("Help...", NameOf(OpenHelp), Keys.F1, Symbol.Lightbulb)
+        ret.Add("Help...", NameOf(OpenHelp), Keys.F1, Symbol.Help)
         ret.Add("Exit", NameOf(CloseDialog), Keys.Escape)
 
         Return ret

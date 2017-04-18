@@ -50,13 +50,10 @@ Class CommandLineForm
         cbGoTo.SendMessageCue("Search")
         cbGoTo.Select()
 
-        Dim miExe = ActionMenuItem.Add(cms.Items, "Execute Command Line", Sub() params.Execute())
-        miExe.Enabled = p.SourceFile <> ""
-        miExe.Symbol = Symbol.fa_terminal
-
+        cms.Add("Execute Command Line", Sub() params.Execute(), Nothing, p.SourceFile <> "").SetImage(Symbol.fa_terminal)
         cms.Items.Add(New ActionMenuItem("Copy Command Line", Sub() Clipboard.SetText(params.GetCommandLine(True, True))))
         cms.Items.Add(New ActionMenuItem("Show Command Line", Sub() g.ShowCommandLinePreview(params.GetCommandLine(True, True))))
-        ActionMenuItem.Add(cms.Items, "Help", Sub() ShowHelp()).Symbol = Symbol.Lightbulb
+        ActionMenuItem.Add(cms.Items, "Help", Sub() ShowHelp()).SetImage(Symbol.Help)
         cms.Items.Add(New ActionMenuItem(params.GetPackage.Name + " Help", Sub() g.ShellExecute(params.GetPackage.GetHelpPath)))
     End Sub
 

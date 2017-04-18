@@ -156,7 +156,7 @@ Public Class x265Encoder
                                         SaveProfile(enc)
                                     End Sub
 
-            ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction).Symbol = Symbol.Save
+            ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = newParams

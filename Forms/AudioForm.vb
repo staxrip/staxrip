@@ -41,13 +41,9 @@ Class AudioForm
     Friend WithEvents FlowLayoutPanel1 As System.Windows.Forms.FlowLayoutPanel
     Friend WithEvents cbNormalize As StaxRip.UI.CheckBoxEx
     Friend WithEvents MenuStrip As System.Windows.Forms.MenuStrip
-    Friend WithEvents CommandLineToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents miCopyComandLine As StaxRip.UI.MenuItemEx
-    Friend WithEvents miShowPaths As StaxRip.UI.MenuItemEx
-    Friend WithEvents miExecute As StaxRip.UI.MenuItemEx
+    Friend WithEvents miCommandLine As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents miProfiles As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents miHelp As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents miDialogHelp As StaxRip.UI.MenuItemEx
     Friend WithEvents SimpleUI As StaxRip.SimpleUI
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents numGain As StaxRip.UI.NumEdit
@@ -90,13 +86,9 @@ Class AudioForm
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
-        Me.CommandLineToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.miCopyComandLine = New StaxRip.UI.MenuItemEx()
-        Me.miExecute = New StaxRip.UI.MenuItemEx()
-        Me.miShowPaths = New StaxRip.UI.MenuItemEx()
+        Me.miCommandLine = New System.Windows.Forms.ToolStripMenuItem()
         Me.miProfiles = New System.Windows.Forms.ToolStripMenuItem()
         Me.miHelp = New System.Windows.Forms.ToolStripMenuItem()
-        Me.miDialogHelp = New StaxRip.UI.MenuItemEx()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.FlowLayoutPanel2 = New System.Windows.Forms.FlowLayoutPanel()
         Me.gbBasic.SuspendLayout()
@@ -434,7 +426,7 @@ Class AudioForm
         '
         Me.MenuStrip.AutoSize = False
         Me.MenuStrip.ImageScalingSize = New System.Drawing.Size(24, 24)
-        Me.MenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CommandLineToolStripMenuItem, Me.miProfiles, Me.miHelp})
+        Me.MenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miCommandLine, Me.miProfiles, Me.miHelp})
         Me.MenuStrip.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip.Name = "MenuStrip"
         Me.MenuStrip.Size = New System.Drawing.Size(972, 42)
@@ -443,34 +435,9 @@ Class AudioForm
         '
         'CommandLineToolStripMenuItem
         '
-        Me.CommandLineToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miCopyComandLine, Me.miExecute, Me.miShowPaths})
-        Me.CommandLineToolStripMenuItem.Name = "CommandLineToolStripMenuItem"
-        Me.CommandLineToolStripMenuItem.Size = New System.Drawing.Size(291, 38)
-        Me.CommandLineToolStripMenuItem.Text = " Command Line "
-        '
-        'miCopyComandLine
-        '
-        Me.miCopyComandLine.Help = Nothing
-        Me.miCopyComandLine.Name = "miCopyComandLine"
-        Me.miCopyComandLine.Padding = New System.Windows.Forms.Padding(12, 8, 12, 8)
-        Me.miCopyComandLine.Size = New System.Drawing.Size(458, 68)
-        Me.miCopyComandLine.Text = "Copy to clipboard"
-        '
-        'miExecute
-        '
-        Me.miExecute.Help = Nothing
-        Me.miExecute.Name = "miExecute"
-        Me.miExecute.Padding = New System.Windows.Forms.Padding(12, 8, 12, 8)
-        Me.miExecute.Size = New System.Drawing.Size(458, 68)
-        Me.miExecute.Text = "Execute"
-        '
-        'miShowPaths
-        '
-        Me.miShowPaths.Help = Nothing
-        Me.miShowPaths.Name = "miShowPaths"
-        Me.miShowPaths.Padding = New System.Windows.Forms.Padding(12, 8, 12, 8)
-        Me.miShowPaths.Size = New System.Drawing.Size(458, 68)
-        Me.miShowPaths.Text = "Show paths"
+        Me.miCommandLine.Name = "CommandLineToolStripMenuItem"
+        Me.miCommandLine.Size = New System.Drawing.Size(291, 38)
+        Me.miCommandLine.Text = " Command Line "
         '
         'miProfiles
         '
@@ -480,18 +447,9 @@ Class AudioForm
         '
         'miHelp
         '
-        Me.miHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miDialogHelp})
         Me.miHelp.Name = "miHelp"
         Me.miHelp.Size = New System.Drawing.Size(127, 38)
         Me.miHelp.Text = " Help "
-        '
-        'miDialogHelp
-        '
-        Me.miDialogHelp.Help = Nothing
-        Me.miDialogHelp.Name = "miDialogHelp"
-        Me.miDialogHelp.Padding = New System.Windows.Forms.Padding(12, 8, 12, 8)
-        Me.miDialogHelp.Size = New System.Drawing.Size(410, 68)
-        Me.miDialogHelp.Text = "Help"
         '
         'TableLayoutPanel1
         '
@@ -583,25 +541,21 @@ Class AudioForm
 
         numBitrate.Minimum = 16
         numBitrate.Maximum = 16000
-
         numGain.DecimalPlaces = 1
 
         If components Is Nothing Then components = New System.ComponentModel.Container
-     
+
         rtbCmdlPreview.ScrollBars = RichTextBoxScrollBars.None
-        miShowPaths.Checked = s.ShowPathsInCommandLine
 
         UpdateProfilesMenu()
 
-        If g.IsCulture("de") Then
-            ActionMenuItem.Add(miHelp.DropDownItems, "BeSweet | Kommandozeilenreferenz", Sub() g.ShellExecute("http://brother-john.net/besweet-referenz.html"))
-        Else
-            ActionMenuItem.Add(miHelp.DropDownItems, "BeSweet | Commandline Reference", Sub() g.ShellExecute("http://brother-john.net/besweet-reference.html"))
-        End If
+        ActionMenuItem.Add(miCommandLine.DropDownItems, "Copy", Sub() Clipboard.SetText(TempProfile.GetCommandLine(True))).SetImage(Symbol.Copy)
+        ActionMenuItem.Add(miCommandLine.DropDownItems, "Execute", AddressOf Execute).SetImage(Symbol.fa_terminal)
+        ActionMenuItem.Add(miCommandLine.DropDownItems, "Show", Sub() g.ShowCommandLinePreview(TempProfile.GetCommandLine(True)))
 
-        ActionMenuItem.Add(miHelp.DropDownItems, "eac3to wiki", Sub() g.ShellExecute("http://en.wikibooks.org/wiki/Eac3to"))
-        ActionMenuItem.Add(miHelp.DropDownItems, "ffmpeg help file", Sub() g.ShellExecute(Package.ffmpeg.GetHelpPath))
-        ActionMenuItem.Add(miHelp.DropDownItems, "KpeX Audio FAQ", Sub() g.ShellExecute("http://forum.doom9.org/showthread.php?t=68300"))
+        ActionMenuItem.Add(miHelp.DropDownItems, "Help", AddressOf ShowHelp).SetImage(Symbol.Help)
+        ActionMenuItem.Add(miHelp.DropDownItems, "eac3to", Sub() g.ShellExecute("http://en.wikibooks.org/wiki/Eac3to"))
+        ActionMenuItem.Add(miHelp.DropDownItems, "ffmpeg", Sub() g.ShellExecute(Package.ffmpeg.GetHelpPath))
 
         g.SetRenderer(MenuStrip)
         MenuStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
@@ -677,7 +631,7 @@ Class AudioForm
 
         numBitrate.Increment = If(TempProfile.Params.Codec = AudioCodec.AC3, 32D, 1D)
         tbName.SendMessageCue(TempProfile.Name, False)
-        rtbCmdlPreview.SetText(TempProfile.GetCommandLine(s.ShowPathsInCommandLine))
+        rtbCmdlPreview.SetText(TempProfile.GetCommandLine(False))
         UpdateHeight(rtbCmdlPreview)
     End Sub
 
@@ -777,16 +731,10 @@ Class AudioForm
         UpdateControls()
     End Sub
 
-    Sub ToogleShowPaths()
-        s.ShowPathsInCommandLine = Not s.ShowPathsInCommandLine
-        miShowPaths.Checked = s.ShowPathsInCommandLine
-        Application.DoEvents()
-        UpdateControls()
-    End Sub
-
     Private Sub AudioForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         UpdateControls()
         Refresh()
+        ActiveControl = mbCodec
 
         For Each i In Language.Languages
             If i.IsCommon Then
@@ -795,8 +743,6 @@ Class AudioForm
                 mbLanguage.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString, i)
             End If
         Next
-
-        ActiveControl = mbCodec
     End Sub
 
     Private Sub tbName_TextChanged(sender As Object, e As EventArgs) Handles tbName.TextChanged
@@ -813,7 +759,10 @@ Class AudioForm
 
         miProfiles.DropDownItems.Add("-")
 
-        miProfiles.DropDownItems.Add(New ActionMenuItem("Save", Sub() SaveProfile(), "Saves the current settings as profile"))
+        Dim save = New ActionMenuItem("Save", Sub() SaveProfile(), "Saves the current settings as profile")
+        save.SetImage(Symbol.Save)
+        miProfiles.DropDownItems.Add(save)
+
         miProfiles.DropDownItems.Add(New ActionMenuItem("Edit...", Sub() EditProfiles(), "Shows the profiles dialog to edit the audio profiles"))
     End Sub
 
@@ -1075,15 +1024,7 @@ Class AudioForm
         UpdateControls()
     End Sub
 
-    Private Sub miCopyComandLine_Click(sender As Object, e As EventArgs) Handles miCopyComandLine.Click
-        Clipboard.SetText(TempProfile.GetCommandLine(True))
-    End Sub
-
-    Private Sub miShowPaths_Click(sender As Object, e As EventArgs) Handles miShowPaths.Click
-        ToogleShowPaths()
-    End Sub
-
-    Private Sub miExecute_Click(sender As Object, e As EventArgs) Handles miExecute.Click
+    Private Sub Execute()
         If TempProfile.File <> "" Then
             If Not TempProfile.SupportedInput.Contains(Filepath.GetExt(TempProfile.File)) Then
                 MsgWarn("The input format isn't supported," + BR + "please decode first using:" + BR2 + "Codec: WAV" + BR + "Encoder: ffmpeg")
@@ -1096,10 +1037,10 @@ Class AudioForm
     End Sub
 
     Private Sub CommandLineAudioSettingsForm_HelpRequested() Handles Me.HelpRequested
-        miDialogHelp.PerformClick()
+        ShowHelp()
     End Sub
 
-    Private Sub miDialogHelp_Click(sender As Object, e As EventArgs) Handles miDialogHelp.Click
+    Private Sub ShowHelp()
         Dim f As New HelpForm()
         f.Doc.WriteStart(Text)
         f.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)

@@ -575,9 +575,7 @@ Public Class FilterCategory
         resize.Filters.Add(New VideoFilter(resize.Name, "SincResize", "SincResize(%target_width%, %target_height%)"))
         resize.Filters.Add(New VideoFilter(resize.Name, "PointResize", "PointResize(%target_width%, %target_height%)"))
         resize.Filters.Add(New VideoFilter(resize.Name, "Hardware Encoder", "# hardware encoder resizes"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Spline | Spline16Resize", "Spline16Resize(%target_width%, %target_height%)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Spline | Spline36Resize", "Spline36Resize(%target_width%, %target_height%)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Spline | Spline64Resize", "Spline64Resize(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Spline", "Spline$select:16;36;64$Resize(%target_width%, %target_height%)"))
         ret.Add(resize)
 
         Dim crop As New FilterCategory("Crop")

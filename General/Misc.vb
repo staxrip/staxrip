@@ -226,12 +226,10 @@ Public Class GlobalClass
 
         If profiles.Count > 0 Then
             If TypeOf profiles(0) Is VideoEncoder Then
-
-                Dim helpURL = If(g.IsCulture("de"),
-                    "http://encodingwissen.de/codecs",
-                    "http://en.wikipedia.org/wiki/Video_codec")
-
-                ic.Add(New ActionMenuItem("Help...", Sub() g.ShellExecute(helpURL)))
+                Dim helpURL = If(g.IsCulture("de"), "http://encodingwissen.de/codecs", "http://en.wikipedia.org/wiki/Video_codec")
+                Dim helpMenuItem = New ActionMenuItem("Help...", Sub() g.ShellExecute(helpURL))
+                helpMenuItem.SetImage(Symbol.Help)
+                ic.Add(helpMenuItem)
             End If
         End If
     End Sub
@@ -1868,7 +1866,7 @@ Class Macro
             ret.Add(New Macro("media_info_audio:<property>", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
             ret.Add(New Macro("app:<name>", "Application File Path", GetType(String), "Returns the path of a aplication. Possible names are: " + Package.Items.Values.Select(Function(arg) arg.Name).Join(", ")))
             ret.Add(New Macro("app_dir:<name>", "Application Directory", GetType(String), "Returns the directory of a aplication. Possible names are: " + Package.Items.Values.Select(Function(arg) arg.Name).Join(", ")))
-            ret.Add(New Macro("$select:<param1;param2;...>$", "Select", GetType(String), "String selected from dropdown."))
+            ret.Add(New Macro("$select:<param1;param2;...>$", "Select", GetType(String), "String selected from dropdown, to show a optional message the first parameter has to start with msg: and to give the items optional captions use caption|value." + BR2 + "Example: $select:msg:hello;cap1|val1;cap2|val2$"))
             ret.Add(New Macro("$enter_text:<prompt>$", "Enter Text (Params)", GetType(String), "Text entered in a input box."))
             ret.Add(New Macro("$browse_file$", "Browse For File", GetType(String), "Filepath returned from a file browser."))
             ret.Add(New Macro("$enter_text$", "Enter Text", GetType(String), "Text entered in a input box."))
@@ -1943,72 +1941,91 @@ Class Macro
         Return Solve(value, False)
     End Function
 
-    Shared Function SolveInteractive(value As String) As String
-        If value.Contains("$") Then
-            If value.Contains("$browse_file$") Then
-                Using d As New OpenFileDialog
-                    If d.ShowDialog = DialogResult.OK Then value = value.Replace("$browse_file$", d.FileName)
-                End Using
+    Shared Function SolveInteractive(value As String) As (value As String, cancel As Boolean)
+        Dim ret As (value As String, cancel As Boolean) = (value, False)
+        If ret.value = "" Then Return ret
 
-                Return value
-            End If
+        If ret.value.Contains("$browse_file$") Then
+            Using d As New OpenFileDialog
+                ret.cancel = d.ShowDialog <> DialogResult.OK
+                If ret.cancel Then Return ret Else ret.value = ret.value.Replace("$browse_file$", d.FileName)
+            End Using
+        End If
 
-            If value.Contains("$enter_text$") Then
-                Dim text = InputBox.Show("Please enter some text.")
-                If text <> "" Then value = value.Replace("$enter_text$", text)
-                Return value
-            End If
+        If Not ret.value.Contains("$") Then Return ret
 
-            If value.Contains("$enter_text:") Then
-                Dim mc = Regex.Matches(value, "\$enter_text:(.+?)\$")
+        If ret.value.Contains("$enter_text$") Then
+            Dim inputText = InputBox.Show("Please enter some text.")
 
-                For Each i As Match In mc
-                    Dim v = InputBox.Show(i.Groups(1).Value)
-                    If v <> "" Then value = value.Replace(i.Value, v)
-                Next
-
-                Return value
-            End If
-
-            If value.Contains("$select:") Then
-                Dim mc = Regex.Matches(value, "\$select:(.+?)\$")
-
-                For Each i As Match In mc
-                    Dim items = i.Groups(1).Value.SplitNoEmpty(";").ToList
-
-                    If items.Count > 0 Then
-                        Dim f As New SelectionBox(Of String)
-                        f.Title = "Select"
-
-                        If items?(0)?.StartsWith("msg:") Then
-                            f.Text = items(0).Substring(4)
-                            items.RemoveAt(0)
-                        Else
-                            f.Text = "Please select a item."
-                        End If
-
-                        For Each iItem As String In items
-                            If iItem.Contains("|") Then
-                                f.AddItem(iItem.Left("|"), iItem.Right("|"))
-                            Else
-                                f.AddItem(iItem)
-                            End If
-                        Next
-
-                        If f.Show = DialogResult.OK Then value = value.Replace(i.Value, f.SelectedItem)
-                    End If
-                Next
-
-                Return value
+            If inputText = "" Then
+                ret.cancel = True
+                Return ret
+            Else
+                ret.value = ret.value.Replace("$enter_text$", inputText)
             End If
         End If
 
-        Return value
+        If Not ret.value.Contains("$") Then Return ret
+
+        If ret.value.Contains("$enter_text:") Then
+            Dim matches = Regex.Matches(ret.value, "\$enter_text:(.+?)\$")
+
+            For Each iMatch As Match In matches
+                Dim inputText = InputBox.Show(iMatch.Groups(1).Value)
+
+                If inputText = "" Then
+                    ret.cancel = True
+                    Return ret
+                Else
+                    ret.value = ret.value.Replace(iMatch.Value, inputText)
+                End If
+            Next
+        End If
+
+        If Not ret.value.Contains("$") Then Return ret
+
+        If ret.value.Contains("$select:") Then
+            Dim matches = Regex.Matches(ret.value, "\$select:(.+?)\$")
+
+            For Each iMatch As Match In matches
+                Dim items = iMatch.Groups(1).Value.SplitNoEmpty(";").ToList
+
+                If items.Count > 0 Then
+                    Dim sb As New SelectionBox(Of String)
+                    sb.Title = "Select"
+
+                    If items?(0)?.StartsWith("msg:") Then
+                        sb.Text = items(0).Substring(4)
+                        items.RemoveAt(0)
+                    Else
+                        sb.Text = "Please select a item."
+                    End If
+
+                    For Each iItem As String In items
+                        If iItem.Contains("|") Then
+                            sb.AddItem(iItem.Left("|"), iItem.Right("|"))
+                        Else
+                            sb.AddItem(iItem)
+                        End If
+                    Next
+
+                    ret.cancel = sb.Show <> DialogResult.OK
+                    If ret.cancel Then Return ret Else ret.value = ret.value.Replace(iMatch.Value, sb.SelectedItem)
+                End If
+            Next
+        End If
+
+        Return ret
     End Function
 
     Shared Function Solve(value As String, silent As Boolean) As String
         If value = "" Then Return ""
-        If Not silent AndAlso value.Contains("$") Then value = SolveInteractive(value)
+
+        If Not silent AndAlso value.Contains("$") Then
+            Dim tup = SolveInteractive(value)
+            If Not tup.cancel Then value = tup.value
+        End If
+
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_file%") Then value = value.Replace("%source_file%", p.SourceFile)

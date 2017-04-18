@@ -384,8 +384,7 @@ Public Class Package
             .AviSynthFilterNames = {"TComb"},
             .Description = "TComb is a temporal comb filter.",
             .WebURL = "http://avisynth.nl/index.php/TComb",
-            .AviSynthFiltersFunc = Function() {
-                New VideoFilter("Misc", "TComb", "TComb(mode = 0, fthreshL = 255, othreshL = 255)")}})
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Misc", "TComb", "TComb(mode = 0, fthreshL = 255, othreshL = 255)")}})
 
         Add(New PluginPackage With {
             .Name = "QTGMC",
@@ -393,10 +392,7 @@ Public Class Package
             .URL = "http://avisynth.nl/index.php/QTGMC",
             .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée.",
             .AviSynthFilterNames = {"QTGMC"},
-            .AviSynthFiltersFunc = Function() {
-                New VideoFilter("Field", "QTGMC | QTGMC Fast", "QTGMC(Preset = ""Fast"")"),
-                New VideoFilter("Field", "QTGMC | QTGMC Medium", "QTGMC(Preset = ""Medium"")"),
-                New VideoFilter("Field", "QTGMC | QTGMC Slow", "QTGMC(Preset = ""Slow"")")},
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "QTGMC", "QTGMC(Preset = ""$select:msg:Select a preset.;Fast;Medium;Slow$"")")},
             .Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}})
 
         Add(New PluginPackage With {
@@ -405,8 +401,7 @@ Public Class Package
             .URL = "http://avisynth.nl/index.php/SMDegrain",
             .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
             .AviSynthFilterNames = {"SMDegrain"},
-            .AviSynthFiltersFunc = Function() {
-                New VideoFilter("Noise", "SMDegrain", "SMDegrain(tr = 2, thSAD = 250, contrasharp = false, refinemotion = true, lsb = false)")},
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Noise", "SMDegrain", "SMDegrain(tr = 2, thSAD = 250, contrasharp = false, refinemotion = true, lsb = false)")},
             .Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}})
 
         Add(New PluginPackage With {

@@ -49,7 +49,7 @@ Public Class IntelEncoder
                                         SaveProfile(enc)
                                     End Sub
 
-            ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction).Symbol = Symbol.Save
+            ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
             f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetStdOut(Package.QSVEncC.Path, "--check-environment"))))
             f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.QSVEncC.Path, "--check-hw"))))
             f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.QSVEncC.Path, "--check-features"))))

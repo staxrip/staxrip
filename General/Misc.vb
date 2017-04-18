@@ -2020,12 +2020,6 @@ Class Macro
 
     Shared Function Solve(value As String, silent As Boolean) As String
         If value = "" Then Return ""
-
-        If Not silent AndAlso value.Contains("$") Then
-            Dim tup = SolveInteractive(value)
-            If Not tup.cancel Then value = tup.value
-        End If
-
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_file%") Then value = value.Replace("%source_file%", p.SourceFile)
@@ -2103,9 +2097,8 @@ Class Macro
         If value.Contains("%target_sar%") Then
             Dim par = Calc.GetTargetPAR
             value = value.Replace("%target_sar%", par.X & ":" & par.Y)
+            If Not value.Contains("%") Then Return value
         End If
-
-        If Not value.Contains("%") Then Return value
 
         If value.Contains("%crop_width%") Then value = value.Replace("%crop_width%", (p.SourceWidth - p.CropLeft - p.CropRight).ToString)
         If Not value.Contains("%") Then Return value
@@ -2200,6 +2193,7 @@ Class Macro
         If value.Contains("%script_file%") Then
             p.Script.Synchronize()
             value = value.Replace("%script_file%", p.Script.Path)
+            If Not value.Contains("%") Then Return value
         End If
 
         If p.Ranges.Count > 0 Then
@@ -2217,7 +2211,6 @@ Class Macro
         End If
 
         If value.Contains("%pos_ms%") Then value = value.Replace("%pos_ms%", g.GetPreviewPosMS.ToString)
-
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%app:") Then
@@ -2240,16 +2233,16 @@ Class Macro
         If value.Contains("%media_info_video:") Then
             For Each i As Match In Regex.Matches(value, "%media_info_video:(.+?)%")
                 value = value.Replace(i.Value, MediaInfo.GetVideo(p.LastOriginalSourceFile, i.Groups(1).Value))
+                If Not value.Contains("%") Then Return value
             Next
         End If
 
         If value.Contains("%media_info_audio:") Then
             For Each i As Match In Regex.Matches(value, "%media_info_audio:(.+?)%")
                 value = value.Replace(i.Value, MediaInfo.GetAudio(p.LastOriginalSourceFile, i.Groups(1).Value))
+                If Not value.Contains("%") Then Return value
             Next
         End If
-
-        If Not value.Contains("%") Then Return value
 
         If value.Contains("%app_dir:") Then
             For Each i As Match In Regex.Matches(value, "%app_dir:(.+?)%")
@@ -2266,8 +2259,6 @@ Class Macro
             Next
         End If
 
-        If Not value.Contains("%") Then Return value
-
         If value.Contains("%filter:") Then
             Dim mc = Regex.Matches(value, "%filter:(.+?)%")
 
@@ -2281,10 +2272,9 @@ Class Macro
                 Next
 
                 value = value.Replace(i.Value, "")
+                If Not value.Contains("%") Then Return value
             Next
         End If
-
-        If Not value.Contains("%") Then Return value
 
         If value.Contains("%eval:") Then
             If Not value.Contains("%eval:<expression>%") Then
@@ -2293,15 +2283,17 @@ Class Macro
                 For Each i As Match In mc
                     Try
                         value = value.Replace(i.Value, Misc.Eval(i.Groups(1).Value).ToString)
-
-                        If Not value.Contains("%") Then
-                            Return value
-                        End If
+                        If Not value.Contains("%") Then Return value
                     Catch ex As Exception
                         MsgWarn("Failed to solve macro '" + i.Value + "': " + ex.Message)
                     End Try
                 Next
             End If
+        End If
+
+        If Not silent AndAlso value.Contains("$") Then
+            Dim tup = SolveInteractive(value)
+            If Not tup.cancel Then value = tup.value
         End If
 
         Return value

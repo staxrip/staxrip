@@ -5,30 +5,35 @@ Imports System.Globalization
 Imports System.Threading.Tasks
 
 Class ImageHelp
-    Private Shared PrivateFontCollection As New PrivateFontCollection()
+    Private Shared Coll As PrivateFontCollection
 
     Shared Async Function GetSymbolImageAsync(symbol As Symbol) As Task(Of Image)
         Return Await Task.Run(Of Image)(Function() GetSymbolImage(symbol))
     End Function
 
     Shared Function GetSymbolImage(symbol As Symbol) As Image
-        Dim font As Font
+        Dim legacy = OSVersion.Current < OSVersion.Windows10
 
-        If PrivateFontCollection.Families.Count = 0 Then
-            PrivateFontCollection.AddFontFile(Folder.Startup + "FontAwesome.ttf")
-            PrivateFontCollection.AddFontFile(Folder.Startup + "Segoe-MDL2-Assets.ttf")
+        If Coll Is Nothing Then
+            Coll = New PrivateFontCollection
+            Coll.AddFontFile(Folder.Startup + "FontAwesome.ttf")
+            If legacy Then Coll.AddFontFile(Folder.Startup + "Segoe-MDL2-Assets.ttf")
         End If
 
+        Dim family As FontFamily
+
         If CInt(symbol) > 61400 Then
-            font = New Font(PrivateFontCollection.Families(0), 11)
+            family = Coll.Families?(0)
         Else
-            If OSVersion.Current < OSVersion.Windows10 Then
-                font = New Font(PrivateFontCollection.Families(1), 11)
+            If legacy Then
+                family = Coll.Families?(1)
             Else
-                font = New Font("Segoe MDL2 Assets", 11, FontStyle.Regular)
+                family = New FontFamily("Segoe MDL2 Assets")
             End If
         End If
 
+        If family Is Nothing Then Return Nothing
+        Dim font As New Font(family, 11)
         Dim bitmap As New Bitmap(font.Height + 7, font.Height + 7)
         Dim graphics = Drawing.Graphics.FromImage(bitmap)
         graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias

@@ -454,7 +454,7 @@ Namespace UI
             Me.Label1.Name = "Label1"
             Me.Label1.Size = New System.Drawing.Size(145, 48)
             Me.Label1.TabIndex = 13
-            Me.Label1.Text = "Symbol:"
+            Me.Label1.Text = "Icon:"
             '
             'tlpSymbol
             '
@@ -587,6 +587,8 @@ Namespace UI
         End Sub
 
         Sub PopulateSymbolMenu()
+            ActionMenuItem.Add(Of Symbol)(cmsSymbol.Items, "No Icon", AddressOf HandleSymbol, Symbol.None)
+
             Dim enumNames = System.Enum.GetNames(GetType(Symbol)).ToList
             enumNames.Sort()
 

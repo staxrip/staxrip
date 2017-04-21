@@ -64,6 +64,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - if the name text box in the code editor is empty the main dialog will show the code
 - migrated C# HDR script to PowerShell
 - updated VapourSynth's built in filters
+- up/down menu items for the avs/vs filter list in main dialog
 
 #### Updated Tools
 

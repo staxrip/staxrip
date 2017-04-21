@@ -152,6 +152,6 @@ Class CommandLineControl
     End Sub
 
     Private Sub CommandLineControl_Load(sender As Object, e As EventArgs) Handles Me.Load
-        If Not DesignMode Then Font = New Font("Consolas", 10 * s.UIScaleFactor)
+        If Not DesignHelp.IsDesignMode Then Font = New Font("Consolas", 10 * s.UIScaleFactor)
     End Sub
 End Class

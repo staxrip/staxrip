@@ -15,7 +15,7 @@ Namespace UI
 
         Private components As System.ComponentModel.IContainer
 
-        Public WithEvents rtb As RichTextBox
+        Public WithEvents rtb As RichTextBoxEx
         Public WithEvents bnOK As System.Windows.Forms.Button
         Public WithEvents cbWrap As System.Windows.Forms.CheckBox
         Friend WithEvents Panel1 As Panel
@@ -23,7 +23,7 @@ Namespace UI
         <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
             Me.bnOK = New System.Windows.Forms.Button()
             Me.bnCancel = New System.Windows.Forms.Button()
-            Me.rtb = New System.Windows.Forms.RichTextBox()
+            Me.rtb = New RichTextBoxEx
             Me.cbWrap = New System.Windows.Forms.CheckBox()
             Me.Panel1 = New System.Windows.Forms.Panel()
             Me.Panel1.SuspendLayout()
@@ -117,6 +117,7 @@ Namespace UI
             MyBase.New()
             InitializeComponent()
             cbWrap.Checked = True
+            rtb.Font = New Font("Consolas", 10 * s.UIScaleFactor)
         End Sub
 
         Private Sub tb_KeyDown(sender As Object, e As KeyEventArgs) Handles rtb.KeyDown

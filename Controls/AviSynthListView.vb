@@ -1,4 +1,3 @@
-Imports System.ComponentModel
 Imports StaxRip.UI
 
 Public Class AviSynthListView
@@ -26,22 +25,18 @@ Public Class AviSynthListView
         ContextMenuStrip = Menu
         SendMessageHideFocus()
         AddHandler VideoScript.Changed, Sub(script As VideoScript)
-                                            If Not ProfileFunc Is Nothing AndAlso script Is ProfileFunc.Invoke Then
+                                            If Not p.Script Is Nothing AndAlso script Is p.Script Then
                                                 OnChanged()
                                             End If
                                         End Sub
     End Sub
-
-    <Browsable(False),
-    DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-    Property ProfileFunc As Func(Of VideoScript)
 
     Sub Load()
         BlockItemCheck = True
         Items.Clear()
         BeginUpdate()
 
-        For Each i In ProfileFunc.Invoke.Filters
+        For Each i In p.Script.Filters
             Dim item As New ListViewItem
             item.Tag = i
             item.Checked = i.Active
@@ -74,7 +69,7 @@ Public Class AviSynthListView
                 If i.Name = selectedFilter.Category Then
                     For Each i2 In i.Filters
                         Dim tip = i2.Script
-                        ActionMenuItem.Add(Menu.Items, i2.Category + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
+                        ActionMenuItem.Add(Menu.Items, If(i.Filters.Count > 1, i2.Category + " | ", "") + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
                     Next
                 End If
             Next
@@ -139,42 +134,91 @@ Public Class AviSynthListView
         Menu.Add("Preview Code...", Sub() g.CodePreview(p.Script.GetFullScript), "Script code preview.")
         Menu.Add("Play", Sub() g.PlayScript(p.Script), "Plays the script with the AVI player.", p.SourceFile <> "").SetImage(Symbol.Play)
         Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
-
+        Menu.Add("-")
+        Menu.Add("Move Up", AddressOf MoveUp, "Moves the selected item up.", SelectedItems.Count > 0 AndAlso SelectedItems(0).Index > 0).SetImage(Symbol.Up)
+        Menu.Add("Move Down", AddressOf MoveDown, "Moves the selected item down.", SelectedItems.Count > 0 AndAlso SelectedItems(0).Index < p.Script.Filters.Count - 1).SetImage(Symbol.Down)
+        Menu.Add("-")
         Dim setup = Menu.Add("Filter Setup")
         setup.SetImage(Symbol.MultiSelect)
         g.PopulateProfileMenu(setup.DropDownItems, s.FilterSetupProfiles, AddressOf g.MainForm.ShowFilterSetupProfilesDialog, AddressOf g.MainForm.LoadScriptProfile)
     End Sub
 
+    Sub MoveUp()
+        If SelectedItems.Count = 0 Then Exit Sub
+        Dim index = SelectedItems(0).Index
+        If index = 0 Then Exit Sub
+        Dim sel = p.Script.Filters(index)
+        p.Script.Filters.Remove(sel)
+        p.Script.Filters.Insert(index - 1, sel)
+        Load()
+        g.MainForm.Assistant()
+    End Sub
+
+    Sub MoveDown()
+        If SelectedItems.Count = 0 Then Exit Sub
+        Dim index = SelectedItems(0).Index
+        If index = p.Script.Filters.Count - 1 Then Exit Sub
+        Dim sel = p.Script.Filters(index)
+        p.Script.Filters.Remove(sel)
+        p.Script.Filters.Insert(index + 1, sel)
+        Load()
+        g.MainForm.Assistant()
+    End Sub
+
     Sub ShowEditor()
-        If ProfileFunc().Invoke.Edit = DialogResult.OK Then OnChanged()
+        If p.Script.Edit = DialogResult.OK Then OnChanged()
     End Sub
 
     Sub ReplaceClick(filter As VideoFilter)
         Dim tup = Macro.ExpandGUI(filter.Script)
-        If tup.cancel Then Exit Sub
-        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then filter.Path += " " + tup.Caption
+        If tup.Cancel Then Exit Sub
+
+        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
+            If filter.Script.StartsWith("$") Then
+                filter.Path = tup.Caption
+            Else
+                filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+            End If
+        End If
+
         filter.Script = tup.value
         Dim index = SelectedItems(0).Index
-        ProfileFunc.Invoke.SetFilter(index, filter)
+        p.Script.SetFilter(index, filter)
         Items(index).Selected = True
     End Sub
 
     Private Sub InsertClick(filter As VideoFilter)
         Dim tup = Macro.ExpandGUI(filter.Script)
-        If tup.cancel Then Exit Sub
-        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then filter.Path += " " + tup.Caption
+        If tup.Cancel Then Exit Sub
+
+        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
+            If filter.Script.StartsWith("$") Then
+                filter.Path = tup.Caption
+            Else
+                filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+            End If
+        End If
+
         filter.Script = tup.value
         Dim index = SelectedItems(0).Index
-        ProfileFunc.Invoke.InsertFilter(index, filter)
+        p.Script.InsertFilter(index, filter)
         Items(index).Selected = True
     End Sub
 
     Private Sub AddClick(filter As VideoFilter)
         Dim tup = Macro.ExpandGUI(filter.Script)
-        If tup.cancel Then Exit Sub
-        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then filter.Path += " " + tup.Caption
-        filter.Script = tup.value
-        ProfileFunc.Invoke.AddFilter(filter)
+        If tup.Cancel Then Exit Sub
+
+        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
+            If filter.Script.StartsWith("$") Then
+                filter.Path = tup.Caption
+            Else
+                filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+            End If
+        End If
+
+        filter.Script = tup.Value
+        p.Script.AddFilter(filter)
         Items(Items.Count - 1).Selected = True
     End Sub
 
@@ -194,14 +238,14 @@ Public Class AviSynthListView
     End Sub
 
     Private Sub RemoveClick()
-        If Items.Count > 1 Then ProfileFunc.Invoke.RemoveFilterAt(SelectedItems(0).Index)
+        If Items.Count > 1 Then p.Script.RemoveFilterAt(SelectedItems(0).Index)
     End Sub
 
     Sub UpdateDocument()
-        ProfileFunc.Invoke.Filters.Clear()
+        p.Script.Filters.Clear()
 
         For Each i As ListViewItem In Items
-            ProfileFunc.Invoke.Filters.Add(DirectCast(i.Tag, VideoFilter))
+            p.Script.Filters.Add(DirectCast(i.Tag, VideoFilter))
         Next
 
         OnChanged()

@@ -546,7 +546,7 @@ Public Class FilterCategory
 
         Dim misc As New FilterCategory("Misc")
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS Source File", "AssumeFPS(%media_info_video:FrameRate%)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS", "AssumeFPS($select:24000, 1001;30000, 1001;60000, 1001;24;25;50$)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS...", "AssumeFPS($select:msg:Select a frame rate;24000/1001|24000, 1001;30000/1001|30000, 1001;60000/1001|60000, 1001;24;25;50$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Prefetch(4)", "Prefetch(4)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "checkmate", "checkmate()"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Clense", "Clense()"))
@@ -565,16 +565,9 @@ Public Class FilterCategory
         ret.Add(field)
 
         Dim resize As New FilterCategory("Resize")
-        resize.Filters.Add(New VideoFilter(resize.Name, "BilinearResize", "BilinearResize(%target_width%, %target_height%)"))
         resize.Filters.Add(New VideoFilter(resize.Name, "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "LanczosResize", "LanczosResize(%target_width%, %target_height%)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Lanczos4Resize", "Lanczos4Resize(%target_width%, %target_height%)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "BlackmanResize", "BlackmanResize(%target_width%, %target_height%)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "GaussResize", "GaussResize(%target_width%, %target_height%)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "SincResize", "SincResize(%target_width%, %target_height%)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "PointResize", "PointResize(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Resize...", "$select:BilinearResize;BlackmanResize;GaussResize;Lanczos4Resize;LanczosResize;PointResize;SincResize;Spline16;Spline36;Spline64$(%target_width%, %target_height%)"))
         resize.Filters.Add(New VideoFilter(resize.Name, "Hardware Encoder", "# hardware encoder resizes"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Spline", "Spline$select:16;36;64$Resize(%target_width%, %target_height%)"))
         ret.Add(resize)
 
         Dim crop As New FilterCategory("Crop")
@@ -607,13 +600,7 @@ Public Class FilterCategory
         ret.Add(crop)
 
         Dim resize As New FilterCategory("Resize")
-        resize.Filters.AddRange(
-            {New VideoFilter("Resize", "Bilinear", "clip = core.resize.Bilinear(clip, %target_width%, %target_height%)"),
-             New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)"),
-             New VideoFilter("Resize", "Point", "clip = core.resize.Point(clip, %target_width%, %target_height%)"),
-             New VideoFilter("Resize", "Lanczos", "clip = core.resize.Lanczos(clip, %target_width%, %target_height%)"),
-             New VideoFilter("Resize", "Spline16", "clip = core.resize.Spline16(clip, %target_width%, %target_height%)"),
-             New VideoFilter("Resize", "Spline36", "clip = core.resize.Spline36(clip, %target_width%, %target_height%)")})
+        resize.Filters.Add(New VideoFilter("Resize", "Resize...", "clip = core.resize.$select:Bilinear;Bicubic;Point;Lanczos;Spline16;Spline36$(clip, %target_width%, %target_height%)"))
         ret.Add(resize)
 
         Dim field As New FilterCategory("Field")
@@ -624,7 +611,6 @@ Public Class FilterCategory
         field.Filters.Add(New VideoFilter(field.Name, "Set Frame Based", "clip = core.std.SetFieldBased(clip, 0) # 1 = BFF, 2 = TFF"))
         field.Filters.Add(New VideoFilter(field.Name, "Set Bottom Field First", "clip = core.std.SetFieldBased(clip, 1) # 1 = BFF, 2 = TFF"))
         field.Filters.Add(New VideoFilter(field.Name, "Set Top Field First", "clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF"))
-
         ret.Add(field)
 
         Dim noise As New FilterCategory("Noise")
@@ -634,12 +620,7 @@ Public Class FilterCategory
 
         Dim misc As New FilterCategory("Misc")
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "clip = core.std.AssumeFPS(clip, fpsnum = int(%media_info_video:FrameRate% * 1000), fpsden = 1000)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 24000/1001", "clip = core.std.AssumeFPS(clip, fpsnum = 24000, fpsden = 1001)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 30000/1001", "clip = core.std.AssumeFPS(clip, fpsnum = 30000, fpsden = 1001)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 60000/1001", "clip = core.std.AssumeFPS(clip, fpsnum = 60000, fpsden = 1001)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 24", "clip = core.std.AssumeFPS(clip, fpsnum = 24, fpsden = 1)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 25", "clip = core.std.AssumeFPS(clip, fpsnum = 25, fpsden = 1)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS 50", "clip = core.std.AssumeFPS(clip, fpsnum = 50, fpsden = 1)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS...", "clip = core.std.AssumeFPS(clip, None, $select:msg:Select a frame rate.;30000/1001|30000, 1001;60000/1001|60000, 1001;24|24, 1;25|25, 1;50|50, 1$)"))
         ret.Add(misc)
 
         FilterCategory.AddDefaults(ScriptEngine.VapourSynth, ret)
@@ -708,13 +689,13 @@ Class FilterParameters
                 item.Parameters.Add(New FilterParameter("crop_r", "%crop_right%"))
                 item.Parameters.Add(New FilterParameter("crop_b", "%crop_bottom%"))
 
-                add2("DGSource", "deinterlace", "0", "deinterlace | deinterlace = 0 (no deinterlacing)")
-                add2("DGSource", "deinterlace", "1", "deinterlace | deinterlace = 1 (single rate deinterlacing)")
-                add2("DGSource", "deinterlace", "2", "deinterlace | deinterlace = 2 (double rate deinterlacing)")
+                add2("DGSource", "deinterlace", "0", "deinterlace | 0 (no deinterlacing)")
+                add2("DGSource", "deinterlace", "1", "deinterlace | 1 (single rate deinterlacing)")
+                add2("DGSource", "deinterlace", "2", "deinterlace | 2 (double rate deinterlacing)")
 
-                add2("FFVideoSource", "rffmode", "0", "rffmode | rffmode = 0 (ignore all flags (default))")
-                add2("FFVideoSource", "rffmode", "1", "rffmode | rffmode = 1 (honor all pulldown flags)")
-                add2("FFVideoSource", "rffmode", "2", "rffmode | rffmode = 2 (force film)")
+                add2("FFVideoSource", "rffmode", "0", "rffmode | 0 (ignore all flags (default))")
+                add2("FFVideoSource", "rffmode", "1", "rffmode | 1 (honor all pulldown flags)")
+                add2("FFVideoSource", "rffmode", "2", "rffmode | 2 (force film)")
 
                 add2("LSMASHVideoSource", "decoder", """h264_qsv""", "decoder = ""h264_qsv""")
                 add2("LWLibavVideoSource", "decoder", """h264_qsv""", "decoder = ""h264_qsv""")
@@ -722,24 +703,24 @@ Class FilterParameters
                 add2("lsmas.LibavSMASHSource", "decoder", """h264_qsv""", "decoder = ""h264_qsv""")
                 add2("lsmas.LWLibavSource", "decoder", """h264_qsv""", "decoder = ""h264_qsv""")
 
-                add2("ffms2.Source", "rffmode", "0", "rffmode | rffmode = 0 (ignore all flags (default))")
-                add2("ffms2.Source", "rffmode", "1", "rffmode | rffmode = 1 (honor all pulldown flags)")
-                add2("ffms2.Source", "rffmode", "2", "rffmode | rffmode = 2 (force film)")
+                add2("ffms2.Source", "rffmode", "0", "rffmode | 0 (ignore all flags (default))")
+                add2("ffms2.Source", "rffmode", "1", "rffmode | 1 (honor all pulldown flags)")
+                add2("ffms2.Source", "rffmode", "2", "rffmode | 2 (force film)")
 
-                add2("havsfunc.QTGMC", "TFF", "True", "TFF | TFF = True (top field first)")
-                add2("havsfunc.QTGMC", "TFF", "False", "TFF | TFF = False (bottom field first)")
+                add2("havsfunc.QTGMC", "TFF", "True", "TFF | True (top field first)")
+                add2("havsfunc.QTGMC", "TFF", "False", "TFF | False (bottom field first)")
 
-                add2("QTGMC", "Preset", """Draft""", "Preset | Preset = ""Draft""")
-                add2("QTGMC", "Preset", """Ultra Fast""", "Preset | Preset = ""Ultra Fast""")
-                add2("QTGMC", "Preset", """Super Fast""", "Preset | Preset = ""Super Fast""")
-                add2("QTGMC", "Preset", """Very Fast""", "Preset | Preset = ""Very Fast""")
-                add2("QTGMC", "Preset", """Faster""", "Preset | Preset = ""Faster""")
-                add2("QTGMC", "Preset", """Fast""", "Preset | Preset = ""Fast""")
-                add2("QTGMC", "Preset", """Medium""", "Preset | Preset = ""Medium""")
-                add2("QTGMC", "Preset", """Slow""", "Preset | Preset = ""Slow""")
-                add2("QTGMC", "Preset", """Slower""", "Preset | Preset = ""Slower""")
-                add2("QTGMC", "Preset", """Very Slow""", "Preset | Preset = ""Very Slow""")
-                add2("QTGMC", "Preset", """Placebo""", "Preset | Preset = ""Placebo""")
+                add2("QTGMC", "Preset", """Draft""", "Preset | Draft")
+                add2("QTGMC", "Preset", """Ultra Fast""", "Preset | Ultra Fast")
+                add2("QTGMC", "Preset", """Super Fast""", "Preset | Super Fast")
+                add2("QTGMC", "Preset", """Very Fast""", "Preset | Very Fast")
+                add2("QTGMC", "Preset", """Faster""", "Preset | Faster")
+                add2("QTGMC", "Preset", """Fast""", "Preset | Fast")
+                add2("QTGMC", "Preset", """Medium""", "Preset | Medium")
+                add2("QTGMC", "Preset", """Slow""", "Preset | Slow")
+                add2("QTGMC", "Preset", """Slower""", "Preset | Slower")
+                add2("QTGMC", "Preset", """Very Slow""", "Preset | Very Slow")
+                add2("QTGMC", "Preset", """Placebo""", "Preset | Placebo")
             End If
 
             Return DefinitionsValue

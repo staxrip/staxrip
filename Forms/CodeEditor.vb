@@ -301,7 +301,7 @@ Class CodeEditor
 
                                                                For Each iFilter In cat.Filters
                                                                    Dim tip = iFilter.Script
-                                                                   ActionMenuItem.Add(Menu.Items, iFilter.Category + " | " + iFilter.Path, AddressOf ReplaceClick, iFilter.GetCopy, tip)
+                                                                   ActionMenuItem.Add(Menu.Items, If(cat.Filters.Count > 1, iFilter.Category + " | ", "") + iFilter.Path, AddressOf ReplaceClick, iFilter.GetCopy, tip)
                                                                    Application.DoEvents()
                                                                Next
                                                            End Sub
@@ -523,7 +523,17 @@ Class CodeEditor
             If tup.Cancel Then Exit Sub
             cbActive.Checked = filter.Active
             cbActive.Text = filter.Category
-            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then tbName.Text = filter.Name + " " + tup.Caption Else tbName.Text = filter.Name
+
+            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
+                If filter.Script.StartsWith("$") Then
+                    tbName.Text = tup.Caption
+                Else
+                    tbName.Text = filter.Name.Replace("...", "") + " " + tup.Caption
+                End If
+            Else
+                tbName.Text = filter.Name
+            End If
+
             rtbScript.Text = tup.Value.TrimEnd + BR
             rtbScript.SelectionStart = rtbScript.Text.Length
         End Sub
@@ -531,7 +541,15 @@ Class CodeEditor
         Sub InsertClick(filter As VideoFilter)
             Dim tup = Macro.ExpandGUI(filter.Script)
             If tup.Cancel Then Exit Sub
-            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then filter.Path += " " + tup.Caption
+
+            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
+                If filter.Script.StartsWith("$") Then
+                    filter.Path = tup.Caption
+                Else
+                    filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+                End If
+            End If
+
             filter.Script = tup.Value
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim index = flow.Controls.IndexOf(Me)
@@ -547,7 +565,15 @@ Class CodeEditor
         Sub AddClick(filter As VideoFilter)
             Dim tup = Macro.ExpandGUI(filter.Script)
             If tup.Cancel Then Exit Sub
-            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then filter.Path += " " + tup.Caption
+
+            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
+                If filter.Script.StartsWith("$") Then
+                    filter.Path = tup.Caption
+                Else
+                    filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+                End If
+            End If
+
             filter.Script = tup.Value
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim filterTable = CodeEditor.CreateFilterTable(filter)

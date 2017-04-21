@@ -391,7 +391,7 @@ Public Class Package
             .URL = "http://avisynth.nl/index.php/QTGMC",
             .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée.",
             .AviSynthFilterNames = {"QTGMC"},
-            .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "QTGMC", "QTGMC(Preset = ""$select:msg:Select a preset.;Fast;Medium;Slow$"")")},
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "QTGMC...", "QTGMC(Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"")")},
             .Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}})
 
         Add(New PluginPackage With {
@@ -532,9 +532,7 @@ Public Class Package
             .Filename = "havsfunc.py",
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Misc", "LSFmod", "clip = havsfunc.LSFmod(clip, strength = 100)"),
-                New VideoFilter("Field", "QTGMC | QTGMC Fast", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Fast"")"),
-                New VideoFilter("Field", "QTGMC | QTGMC Medium", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Medium"")"),
-                New VideoFilter("Field", "QTGMC | QTGMC Slow", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""Slow"")")},
+                New VideoFilter("Field", "QTGMC...", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"")")},
             .VapourSynthFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa", "havsfunc.maa",
                                        "havsfunc.SharpAAMCmod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
                                        "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.ivtc_txt60mc",

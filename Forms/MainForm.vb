@@ -830,8 +830,6 @@ Public Class MainForm
 
         Icon = My.Resources.RipIcon
 
-        AviSynthListView.ProfileFunc = AddressOf GetTargetAviSynthDocument
-
         MenuStrip.SuspendLayout()
         MenuStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
@@ -4677,10 +4675,6 @@ Public Class MainForm
         Next
 
         If sb.Show = DialogResult.OK Then Return sb.SelectedValue
-    End Function
-
-    Function GetTargetAviSynthDocument() As VideoScript
-        Return p.Script
     End Function
 
     Sub LoadScriptProfile(profileInterface As Profile)

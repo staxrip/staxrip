@@ -215,6 +215,7 @@ Public Class MediaInfo
     Shared Function GetCompleteSummary(path As String) As String
         Dim mi = GetMediaInfo(path)
         MediaInfo_Option(mi.Handle, "Complete", "1")
+        MediaInfo_Option(mi.Handle, "Language", "raw")
         Return Marshal.PtrToStringUni(MediaInfo_Inform(mi.Handle, 0))
     End Function
 

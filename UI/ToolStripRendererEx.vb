@@ -5,9 +5,6 @@ Imports Microsoft.Win32
 Class ToolStripRendererEx
     Inherits ToolStripSystemRenderer
 
-    Private ColorSeperatorLight As Color = Color.White
-    Private ColorSeperatorDark As Color = Color.FromArgb(&HE0, &HE0, &HE0)
-
     Shared RenderMode As ToolStripRenderModeEx
 
     Shared Property ColorBorder As Color
@@ -246,17 +243,13 @@ Class ToolStripRendererEx
     Protected Overloads Overrides Sub OnRenderSeparator(e As ToolStripSeparatorRenderEventArgs)
         If e.Item.IsOnDropDown Then
             e.Graphics.Clear(ColorBackground)
-            Dim right = e.Item.Width - 3
+            Dim right = e.Item.Width - CInt(TextOffset / 5)
             Dim top = e.Item.Height \ 2
             top -= 1
             Dim b = e.Item.Bounds
 
-            Using p As New Pen(ColorSeperatorDark)
-                e.Graphics.DrawLine(p, New Point(2, top), New Point(right, top))
-            End Using
-
-            Using p As New Pen(ColorSeperatorLight)
-                e.Graphics.DrawLine(p, New Point(2, top + 1), New Point(right, top + 1))
+            Using p As New Pen(Color.Gray)
+                e.Graphics.DrawLine(p, New Point(TextOffset, top), New Point(right, top))
             End Using
         ElseIf e.Vertical Then
             Dim b = e.Item.Bounds

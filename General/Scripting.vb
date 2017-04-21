@@ -5,17 +5,15 @@ Imports Microsoft.CodeAnalysis.CSharp.Scripting
 Imports Microsoft.CodeAnalysis.Scripting
 
 Public Class Scripting
-    Shared Property Commands As New CommandsClass
-
     Shared Sub RunCSharp(code As String, Optional hideErrors As Boolean = False)
         RunCSharpAsync(code, hideErrors).Wait()
     End Sub
 
     Private Shared Async Function RunCSharpAsync(code As String, Optional hideErrors As Boolean = False) As Task(Of Object)
         Try
-            If Not s.Storage.GetBool("c# scripting removal2") Then
+            If Not s.Storage.GetBool("c# scripting removal") Then
                 MsgWarn("C# scripting support will be removed, use PowerShell scripting instead.")
-                s.Storage.SetBool("c# scripting removal2", True)
+                s.Storage.SetBool("c# scripting removal", True)
             End If
 
             Dim options = ScriptOptions.Default.WithImports(
@@ -34,7 +32,6 @@ Public Class Scripting
             runspace.ApartmentState = Threading.ApartmentState.STA
             runspace.ThreadOptions = PSThreadOptions.UseCurrentThread
             runspace.Open()
-            runspace.SessionStateProxy.SetVariable("commands", Commands)
 
             Using pipeline = runspace.CreatePipeline()
                 pipeline.Commands.AddScript(
@@ -53,22 +50,4 @@ Using namespace StaxRip.UI;
             End Using
         End Using
     End Function
-
-    Public Class CommandsClass
-        Inherits DynamicObject
-
-        Public Overrides Function TryInvokeMember(
-            binder As InvokeMemberBinder,
-            args() As Object, ByRef result As Object) As Boolean
-
-            Try
-                g.MainForm.CommandManager.Process(binder.Name, args)
-                Return True
-            Catch ex As Exception
-                g.ShowException(ex)
-                result = Nothing
-                Return False
-            End Try
-        End Function
-    End Class
 End Class

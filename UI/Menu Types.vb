@@ -351,6 +351,11 @@ Namespace UI
             End If
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            MyBase.Dispose(disposing)
+            CustomMenuItem = Nothing
+        End Sub
+
         Function GetHelp() As StringPair
             If Not CustomMenuItem Is Nothing AndAlso Not CustomMenuItem.CustomMenu Is Nothing AndAlso
                 CustomMenuItem.CustomMenu.CommandManager.HasCommand(CustomMenuItem.MethodName) Then
@@ -512,6 +517,13 @@ Namespace UI
             Application.DoEvents()
             If Not Action Is Nothing Then Action()
             MyBase.OnClick(e)
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            MyBase.Dispose(disposing)
+            Action = Nothing
+            EnabledFunc = Nothing
+            Form = Nothing
         End Sub
 
         Shared Function Add(Of T)(items As ToolStripItemCollection,

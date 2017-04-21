@@ -502,10 +502,10 @@ Public Class GlobalCommands
             Using f As New StringEditorForm
                 f.Text = "x264 custom command line switches"
                 f.cbWrap.Checked = Not value.Contains(BR)
-                f.tb.Text = value
+                f.rtb.Text = value
 
                 If f.ShowDialog() = DialogResult.OK Then
-                    DirectCast(p.VideoEncoder, x264Encoder).Params.AddAll.Value = f.tb.Text
+                    DirectCast(p.VideoEncoder, x264Encoder).Params.AddAll.Value = f.rtb.Text
                 End If
             End Using
         Else

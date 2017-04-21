@@ -15,15 +15,18 @@ Namespace UI
 
         Private components As System.ComponentModel.IContainer
 
-        Public WithEvents tb As System.Windows.Forms.TextBox
+        Public WithEvents rtb As RichTextBox
         Public WithEvents bnOK As System.Windows.Forms.Button
         Public WithEvents cbWrap As System.Windows.Forms.CheckBox
+        Friend WithEvents Panel1 As Panel
         Public WithEvents bnCancel As System.Windows.Forms.Button
         <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
             Me.bnOK = New System.Windows.Forms.Button()
             Me.bnCancel = New System.Windows.Forms.Button()
-            Me.tb = New System.Windows.Forms.TextBox()
+            Me.rtb = New System.Windows.Forms.RichTextBox()
             Me.cbWrap = New System.Windows.Forms.CheckBox()
+            Me.Panel1 = New System.Windows.Forms.Panel()
+            Me.Panel1.SuspendLayout()
             Me.SuspendLayout()
             '
             'bnOK
@@ -48,21 +51,17 @@ Namespace UI
             Me.bnCancel.TabIndex = 1
             Me.bnCancel.Text = "Cancel"
             '
-            'tb
+            'rtb
             '
-            Me.tb.AcceptsReturn = True
-            Me.tb.AcceptsTab = True
-            Me.tb.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.tb.Location = New System.Drawing.Point(14, 14)
-            Me.tb.Margin = New System.Windows.Forms.Padding(5)
-            Me.tb.Multiline = True
-            Me.tb.Name = "tb"
-            Me.tb.ScrollBars = System.Windows.Forms.ScrollBars.Both
-            Me.tb.Size = New System.Drawing.Size(1836, 784)
-            Me.tb.TabIndex = 2
-            Me.tb.WordWrap = False
+            Me.rtb.AcceptsTab = True
+            Me.rtb.Dock = System.Windows.Forms.DockStyle.Fill
+            Me.rtb.Location = New System.Drawing.Point(0, 0)
+            Me.rtb.Margin = New System.Windows.Forms.Padding(5)
+            Me.rtb.Name = "rtb"
+            Me.rtb.Size = New System.Drawing.Size(1840, 786)
+            Me.rtb.TabIndex = 2
+            Me.rtb.Text = ""
+            Me.rtb.WordWrap = False
             '
             'cbWrap
             '
@@ -75,6 +74,17 @@ Namespace UI
             Me.cbWrap.TabIndex = 3
             Me.cbWrap.Text = "Wrap"
             '
+            'Panel1
+            '
+            Me.Panel1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.Panel1.Controls.Add(Me.rtb)
+            Me.Panel1.Location = New System.Drawing.Point(12, 12)
+            Me.Panel1.Name = "Panel1"
+            Me.Panel1.Size = New System.Drawing.Size(1840, 786)
+            Me.Panel1.TabIndex = 4
+            '
             'StringEditorForm
             '
             Me.AcceptButton = Me.bnOK
@@ -82,8 +92,8 @@ Namespace UI
             Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
             Me.CancelButton = Me.bnCancel
             Me.ClientSize = New System.Drawing.Size(1864, 897)
+            Me.Controls.Add(Me.Panel1)
             Me.Controls.Add(Me.cbWrap)
-            Me.Controls.Add(Me.tb)
             Me.Controls.Add(Me.bnCancel)
             Me.Controls.Add(Me.bnOK)
             Me.KeyPreview = True
@@ -95,6 +105,7 @@ Namespace UI
             Me.ShowInTaskbar = False
             Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
             Me.Text = "String Editor"
+            Me.Panel1.ResumeLayout(False)
             Me.ResumeLayout(False)
             Me.PerformLayout()
 
@@ -108,7 +119,7 @@ Namespace UI
             cbWrap.Checked = True
         End Sub
 
-        Private Sub tb_KeyDown(sender As Object, e As KeyEventArgs) Handles tb.KeyDown
+        Private Sub tb_KeyDown(sender As Object, e As KeyEventArgs) Handles rtb.KeyDown
             If e.KeyData = (Keys.Enter Or Keys.Control) Then
                 e.Handled = True
                 bnOK.PerformClick()
@@ -116,7 +127,7 @@ Namespace UI
         End Sub
 
         Private Sub cbWrap_CheckedChanged() Handles cbWrap.CheckedChanged
-            tb.WordWrap = cbWrap.Checked
+            rtb.WordWrap = cbWrap.Checked
         End Sub
     End Class
 End Namespace

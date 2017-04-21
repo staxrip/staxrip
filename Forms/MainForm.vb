@@ -844,7 +844,6 @@ Public Class MainForm
         OpenProject(g.StartupTemplatePath)
         CustomMainMenu.AddKeyDownHandler(Me)
         CustomMainMenu.BuildMenu()
-        UpdateDynamicMenu()
         UpdateAudioMenu()
         MenuStrip.ResumeLayout()
         SizeContextMenuStrip.SuspendLayout()
@@ -1060,12 +1059,10 @@ Public Class MainForm
                            End If
 
                            For Each i In s.RecentProjects
-                               If i <> path AndAlso File.Exists(i) Then
-                                   list.Add(i)
-                               End If
+                               If i <> path AndAlso File.Exists(i) Then list.Add(i)
                            Next
 
-                           While list.Count > 9
+                           While list.Count > 5
                                list.RemoveAt(list.Count - 1)
                            End While
 
@@ -3493,7 +3490,7 @@ Public Class MainForm
         UpdateTemplatesMenuAsync()
         UpdateScriptsMenuAsync()
         UpdateRecentProjectsMenuAsync(Nothing)
-        UpdateDynamicMenu()
+        UpdateDynamicMenuAsync()
         g.SetRenderer(MenuStrip)
         Refresh()
         g.SaveSettings()
@@ -4704,12 +4701,12 @@ Public Class MainForm
         UpdateTemplatesMenuAsync()
         UpdateScriptsMenuAsync()
         UpdateRecentProjectsMenuAsync(Nothing)
-        UpdateDynamicMenuAsync()
     End Sub
 
     Private Sub MainForm_Shown() Handles Me.Shown
         Activate() 'needed for custom settings dir option
         Refresh()
+        UpdateDynamicMenuAsync()
 
         If Not File.Exists(Package.x265.Path) Then
             MsgError("Files included with StaxRip are missing, maybe the 7-Zip archive wasn't properly unpacked. You can find a packer at [http://www.7-zip.org www.7-zip.org].")
@@ -5281,7 +5278,6 @@ Public Class MainForm
         f.Dispose()
 
         UpdateAudioMenu()
-
         PopulateProfileMenu(DynamicMenuItemID.Audio1Profiles)
         PopulateProfileMenu(DynamicMenuItemID.Audio2Profiles)
     End Sub

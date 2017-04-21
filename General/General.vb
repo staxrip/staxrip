@@ -218,52 +218,14 @@ Class Folder
                 x264.Init()
                 SafeSerialization.Serialize(x264, ret + "x264.srip")
 
-                'Dim x265 As New Project
-                'x265.Init()
-                'Dim x265enc = New x265.x265Encoder
-                'x265enc.Params.ApplyPresetDefaultValues()
-                'x265enc.Params.ApplyPresetValues()
-                'x265.VideoEncoder = x265enc
+                Dim x265 As New Project
+                x265.Init()
+                Dim x265enc = New x265Encoder
+                x265enc.Params.ApplyPresetDefaultValues()
+                x265enc.Params.ApplyPresetValues()
+                x265.VideoEncoder = x265enc
 
-                'SafeSerialization.Serialize(x265, ret + "x265.srip")
-
-                Dim aaclc = New GUIAudioProfile(AudioCodec.AAC, 0.4)
-
-                Dim apple = Function(name As String, device As x264DeviceMode) As Project
-                                Dim proj As New Project
-                                proj.Init()
-
-                                proj.MaxAspectRatioError = 4
-                                proj.AutoResizeImage = 0
-                                proj.AutoSmartOvercrop = 2
-                                proj.Script.GetFilter("Resize").Active = True
-                                proj.VideoEncoder = VideoEncoder.Getx264Encoder("x264 | " + name, device)
-                                proj.VideoEncoder.Muxer = New MP4Muxer("MP4")
-                                proj.Audio0 = aaclc
-
-                                Return proj
-                            End Function
-
-                Dim iPad = apple("iPad", x264DeviceMode.iPad)
-                iPad.TargetWidth = 1280
-                iPad.TargetHeight = 720
-                SafeSerialization.Serialize(iPad, ret + "iPad.srip")
-
-                Dim iPhone = apple("iPhone", x264DeviceMode.iPhone)
-                iPhone.TargetWidth = 960
-                iPhone.TargetHeight = 540
-                SafeSerialization.Serialize(iPhone, ret + "iPhone.srip")
-
-                Dim console = Sub(name As String, device As x264DeviceMode)
-                                  Dim proj As New Project
-                                  proj.Init()
-                                  proj.VideoEncoder = VideoEncoder.Getx264Encoder("x264 | " + name, device)
-                                  proj.Audio0 = aaclc
-                                  SafeSerialization.Serialize(proj, ret + name + ".srip")
-                              End Sub
-
-                console("PlayStation", x264DeviceMode.PlayStation)
-                console("Xbox", x264DeviceMode.Xbox)
+                SafeSerialization.Serialize(x265, ret + "x265.srip")
             End If
 
             Return ret

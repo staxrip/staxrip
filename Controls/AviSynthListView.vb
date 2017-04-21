@@ -137,7 +137,7 @@ Public Class AviSynthListView
 
         Menu.Add("Edit Code...", AddressOf ShowEditor, "Dialog to edit filters.").SetImage(Symbol.Code)
         Menu.Add("Preview Code...", Sub() g.CodePreview(p.Script.GetFullScript), "Script code preview.")
-        Menu.Add("Play", Sub() g.PlayScript(p.Script), "Plays the script with the AVI player.").SetImage(Symbol.Play)
+        Menu.Add("Play", Sub() g.PlayScript(p.Script), "Plays the script with the AVI player.", p.SourceFile <> "").SetImage(Symbol.Play)
         Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
 
         Dim setup = Menu.Add("Filter Setup")

@@ -531,10 +531,10 @@ Namespace UI
 
         Overloads Overrides Function EditValue(context As ITypeDescriptorContext, provider As IServiceProvider, value As Object) As Object
             Dim f As New StringEditorForm
-            f.tb.Text = DirectCast(value, String)
+            f.rtb.Text = DirectCast(value, String)
 
             If f.ShowDialog() = DialogResult.OK Then
-                Return f.tb.Text
+                Return f.rtb.Text
             Else
                 Return value
             End If

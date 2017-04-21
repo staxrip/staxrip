@@ -13,9 +13,7 @@ Class CommandLineForm
 
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
-
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
-
         Dim singleList As New List(Of String)
 
         For Each i In params.Items
@@ -326,5 +324,9 @@ Class CommandLineForm
 
     Private Sub CommandLineForm_Load(sender As Object, e As EventArgs) Handles Me.Load
         UpdateHeight(rtbCommandLine)
+    End Sub
+
+    Private Sub CommandLineForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        g.MainForm.PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
     End Sub
 End Class

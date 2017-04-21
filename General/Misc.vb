@@ -378,10 +378,10 @@ Public Class GlobalClass
     Sub ShowCommandLinePreview(title As String, value As String)
         Using f As New StringEditorForm
             f.Text = title
-            f.tb.ReadOnly = True
+            f.rtb.ReadOnly = True
             f.cbWrap.Checked = Not value.Contains(BR)
-            f.tb.Text = value
-            f.tb.SelectionStart = value.Length
+            f.rtb.Text = value
+            f.rtb.SelectionStart = value.Length
             f.bnOK.Visible = False
             f.bnCancel.Text = "Close"
             f.ShowDialog()
@@ -685,19 +685,17 @@ Public Class GlobalClass
                 d.FileName = Filepath.GetName(defaultFilepath)
             End If
 
-            If d.ShowDialog = DialogResult.OK Then
-                Return d.FileName
-            End If
+            If d.ShowDialog = DialogResult.OK Then Return d.FileName
         End Using
     End Function
 
     Sub CodePreview(code As String)
         Using f As New StringEditorForm
-            f.tb.ReadOnly = True
+            f.rtb.ReadOnly = True
             f.cbWrap.Checked = False
             f.cbWrap.Visible = False
-            f.tb.Text = code
-            f.tb.SelectionStart = f.tb.Text.Length
+            f.rtb.Text = code
+            f.rtb.SelectionStart = f.rtb.Text.Length
             f.Text = "Code Preview"
             f.bnOK.Visible = False
             f.bnCancel.Text = "Close"

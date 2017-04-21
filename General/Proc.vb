@@ -128,7 +128,7 @@ Class Proc
 
         If Process.ProcessName = "cmd" Then
             For Each i In ProcessHelp.GetChilds(Process)
-                If {"conhost", "vspipe"}.Contains(i.ProcessName) Then Continue For
+                If {"conhost", "vspipe", "avs2pipemod64"}.Contains(i.ProcessName) Then Continue For
 
                 If MsgOK("Confirm to kill " + i.ProcessName + ".exe") Then
                     If Not i.HasExited Then i.Kill()

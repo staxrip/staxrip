@@ -219,11 +219,11 @@ Public Class ApplicationSettings
         If RecentFramePositions Is Nothing Then RecentFramePositions = New List(Of String)
 
         If Check(CustomMenuCrop, "Menu in crop dialog", 17) Then
-            CustomMenuCrop = CropForm.GetDefaultMenu
+            CustomMenuCrop = CropForm.GetDefaultMenuCrop
         End If
 
         If Check(CustomMenuMainForm, "Main menu in main window", 161) Then
-            CustomMenuMainForm = MainForm.GetDefaultMenu
+            CustomMenuMainForm = MainForm.GetDefaultMenuMain
         End If
 
         If Check(CustomMenuPreview, "Menu in preview dialog", 52) Then

@@ -170,7 +170,7 @@ Class AppsForm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.CancelButton = Me.bnClose
-        Me.ClientSize = New System.Drawing.Size(906, 619)
+        Me.ClientSize = New System.Drawing.Size(980, 650)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.KeyPreview = True
         Me.Name = "AppsForm"
@@ -235,6 +235,7 @@ Class AppsForm
         AddSection("AviSynth Filters")
         AddSection("VapourSynth Filters")
         AddSection("Filters")
+        AddSection("Dependencies")
         AddSection("Description")
     End Sub
 
@@ -278,6 +279,9 @@ Class AppsForm
         Headers("Filters").Visible = False
         Contents("Filters").Visible = False
 
+        Headers("Dependencies").Visible = False
+        Contents("Dependencies").Visible = False
+
         If TypeOf CurrentPackage Is PluginPackage Then
             Dim plugin = DirectCast(CurrentPackage, PluginPackage)
 
@@ -299,6 +303,12 @@ Class AppsForm
                 Headers("Filters").Visible = True
                 Contents("Filters").Text = plugin.VapourSynthFilterNames.Join(", ")
                 Contents("Filters").Visible = True
+            End If
+
+            If Not plugin.Dependencies.NothingOrEmpty Then
+                Headers("Dependencies").Visible = True
+                Contents("Dependencies").Text = plugin.Dependencies.Join(", ")
+                Contents("Dependencies").Visible = True
             End If
         End If
 

@@ -51,10 +51,10 @@ Class CommandLineForm
         cbGoTo.Select()
 
         cms.Add("Execute Command Line", Sub() params.Execute(), Nothing, p.SourceFile <> "").SetImage(Symbol.fa_terminal)
-        cms.Items.Add(New ActionMenuItem("Copy Command Line", Sub() Clipboard.SetText(params.GetCommandLine(True, True))))
-        cms.Items.Add(New ActionMenuItem("Show Command Line", Sub() g.ShowCommandLinePreview(params.GetCommandLine(True, True))))
-        ActionMenuItem.Add(cms.Items, "Help", Sub() ShowHelp()).SetImage(Symbol.Help)
-        cms.Items.Add(New ActionMenuItem(params.GetPackage.Name + " Help", Sub() g.ShellExecute(params.GetPackage.GetHelpPath)))
+        cms.Add("Copy Command Line", Sub() Clipboard.SetText(params.GetCommandLine(True, True)))
+        cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", params.GetCommandLine(True, True)))
+        cms.Add("Help", AddressOf ShowHelp).SetImage(Symbol.Help)
+        cms.Add(params.GetPackage.Name + " Help", Sub() g.ShellExecute(params.GetPackage.GetHelpPath))
     End Sub
 
     Sub SelectLastPage()

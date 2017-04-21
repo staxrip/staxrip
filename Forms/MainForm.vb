@@ -222,27 +222,27 @@ Public Class MainForm
         Me.gbAudio.TabStop = False
         Me.gbAudio.Text = "Audio"
         '
-        'llAudioProfile1
-        '
-        Me.llAudioProfile1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.llAudioProfile1.Location = New System.Drawing.Point(658, 62)
-        Me.llAudioProfile1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.llAudioProfile1.Name = "llAudioProfile1"
-        Me.llAudioProfile1.Size = New System.Drawing.Size(270, 31)
-        Me.llAudioProfile1.TabIndex = 26
-        Me.llAudioProfile1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
         'llAudioProfile0
         '
         Me.llAudioProfile0.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.llAudioProfile0.Location = New System.Drawing.Point(658, 24)
+        Me.llAudioProfile0.Location = New System.Drawing.Point(658, 23)
         Me.llAudioProfile0.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.llAudioProfile0.Name = "llAudioProfile0"
-        Me.llAudioProfile0.Size = New System.Drawing.Size(270, 31)
+        Me.llAudioProfile0.Size = New System.Drawing.Size(270, 30)
         Me.llAudioProfile0.TabIndex = 25
         Me.llAudioProfile0.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'llAudioProfile1
+        '
+        Me.llAudioProfile1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.llAudioProfile1.Location = New System.Drawing.Point(658, 60)
+        Me.llAudioProfile1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.llAudioProfile1.Name = "llAudioProfile1"
+        Me.llAudioProfile1.Size = New System.Drawing.Size(270, 30)
+        Me.llAudioProfile1.TabIndex = 26
+        Me.llAudioProfile1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'tbAudioFile0
         '
@@ -838,7 +838,7 @@ Public Class MainForm
         CommandManager.AddCommandsFromObject(Me)
         CommandManager.AddCommandsFromObject(g.DefaultCommands)
 
-        CustomMainMenu = New CustomMenu(AddressOf GetDefaultMenu,
+        CustomMainMenu = New CustomMenu(AddressOf GetDefaultMenuMain,
                 s.CustomMenuMainForm, CommandManager, MenuStrip)
 
         OpenProject(g.StartupTemplatePath)
@@ -1109,7 +1109,7 @@ Public Class MainForm
                      Thread.Sleep(500)
 
                      Try
-                         If Not IsDisposed Then Invoke(Sub() If Native.GetForegroundWindow() = Handle Then UpdateDynamicMenu())
+                         If Not IsDisposed Then Invoke(Sub() If Not IsDisposed AndAlso Handle = Native.GetForegroundWindow() Then UpdateDynamicMenu())
                      Catch
                      End Try
                  End Sub)
@@ -1179,14 +1179,10 @@ Public Class MainForm
             If menuItem.CustomMenuItem.MethodName = "DynamicMenuItem" Then
                 If menuItem.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.Scripts) Then
                     menuItem.DropDownItems.Clear()
-                    Dim img = ImageHelp.GetSymbolImage(Symbol.Code)
-
                     For Each path In files
-                        Dim mi = ActionMenuItem.Add(menuItem.DropDownItems,
-                                                    path.FileName.Base,
-                                                    Sub() g.DefaultCommands.ExecuteScriptFile(path))
-                        mi.ImageScaling = ToolStripItemImageScaling.None
-                        mi.Image = img
+                        ActionMenuItem.Add(menuItem.DropDownItems,
+                                           path.FileName.Base,
+                                           Sub() g.DefaultCommands.ExecuteScriptFile(path))
                     Next
 
                     menuItem.DropDownItems.Add(New ToolStripSeparator)
@@ -1715,7 +1711,7 @@ Public Class MainForm
             Dim targetDir As String = Nothing
 
             If p.DefaultTargetFolder <> "" Then
-                targetDir = Macro.Solve(p.DefaultTargetFolder).AppendSeparator
+                targetDir = Macro.Expand(p.DefaultTargetFolder).AppendSeparator
 
                 If Not Directory.Exists(targetDir) Then
                     Try
@@ -1726,7 +1722,7 @@ Public Class MainForm
             End If
 
             If Not Directory.Exists(targetDir) Then targetDir = p.SourceFile.Dir
-            Dim targetName = Macro.Solve(p.DefaultTargetName)
+            Dim targetName = Macro.Expand(p.DefaultTargetName)
 
             If Not Filepath.IsValidFileSystemName(targetName) Then targetName = p.SourceFile.Base
             tbTargetFile.Text = targetDir + targetName + p.VideoEncoder.Muxer.OutputExtFull
@@ -3282,7 +3278,7 @@ Public Class MainForm
     Sub SaveProjectPath(<Description("The path may contain macros."),
         Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> path As String)
 
-        path = Macro.Solve(path)
+        path = Macro.Expand(path)
 
         If path.StartsWith(Folder.Template) Then
             If p.SourceFile <> "" Then
@@ -3398,7 +3394,7 @@ Public Class MainForm
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then Return sb.SelectedItem
+        If sb.Show = DialogResult.OK Then Return sb.SelectedValue
     End Function
 
     <Command("Placeholder for dynamically updated menu items.")>
@@ -3587,7 +3583,7 @@ Public Class MainForm
 
     Function GetJobPath() As String
         Dim name = Filepath.GetBase(p.TargetFile)
-        If name = "" Then name = Macro.Solve(p.DefaultTargetName)
+        If name = "" Then name = Macro.Expand(p.DefaultTargetName)
         If name = "" Then name = Filepath.GetBase(p.SourceFile)
         Return p.TempDir + name + ".srip"
     End Function
@@ -4256,10 +4252,9 @@ Public Class MainForm
 
     Private Sub ShowScriptingHelpInternal()
         Dim f As New HelpForm()
-        f.Owner = Me
 
         f.Doc.WriteStart("Scripting")
-        f.Doc.WriteP("Below is a list with methods available for C# and PowerShell scripting. For more info visit the support forum and read the automation topic in the [https://stax76.gitbooks.io/staxrip-handbook/content/automation.html handbook].")
+        f.Doc.WriteP("Below is a list with methods available for PowerShell scripting. For more info visit the support forum and read the automation topic in the [https://stax76.gitbooks.io/staxrip-handbook/content/automation.html handbook].")
 
         Dim commands As New List(Of Command)(CommandManager.Commands.Values)
         commands.Sort()
@@ -4312,11 +4307,11 @@ Public Class MainForm
         Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
         url As String)
 
-        Dim f As New HelpForm(Macro.Solve(url))
+        Dim f As New HelpForm(Macro.Expand(url))
         f.Show()
     End Sub
 
-    Shared Function GetDefaultMenu() As CustomMenuItem
+    Shared Function GetDefaultMenuMain() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
         ret.Add("Project|Open...", NameOf(ShowFileBrowserToOpenProject), Keys.O Or Keys.Control, Symbol.OpenFile)
@@ -4382,6 +4377,7 @@ Public Class MainForm
         ret.Add("Help|Donate", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Heart, {Strings.DonationsURL})
         ret.Add("Help|Scripting", NameOf(ShowScriptingHelp), Symbol.Code)
         ret.Add("Help|Command Line", NameOf(ShowCommandLineHelp), Symbol.fa_terminal)
+        ret.Add("Help|Macros", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.CalculatorPercentage, {"macros"})
         ret.Add("Help|Apps", NameOf(DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
         ret.Add("Help|-")
         ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.Info, {"info"})
@@ -4415,7 +4411,7 @@ Public Class MainForm
                     If sb.Show = DialogResult.Cancel Then Exit Sub
 
                     Regex.Replace(File.ReadAllText(d.FileName), "langidx: \d+", "langidx: " +
-                                  sb.SelectedItem.IndexIDX.ToString).WriteANSIFile(d.FileName)
+                                  sb.SelectedValue.IndexIDX.ToString).WriteANSIFile(d.FileName)
                 End If
 
                 p.AddHardcodedSubtitleFilter(d.FileName, True)
@@ -4683,7 +4679,7 @@ Public Class MainForm
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then Return sb.SelectedItem
+        If sb.Show = DialogResult.OK Then Return sb.SelectedValue
     End Function
 
     Function GetTargetAviSynthDocument() As VideoScript
@@ -4714,8 +4710,6 @@ Public Class MainForm
     Private Sub MainForm_Shown() Handles Me.Shown
         Activate() 'needed for custom settings dir option
         Refresh()
-
-        Task.Run(Sub() Scripting.RunCSharp("1+1", True))
 
         If Not File.Exists(Package.x265.Path) Then
             MsgError("Files included with StaxRip are missing, maybe the 7-Zip archive wasn't properly unpacked. You can find a packer at [http://www.7-zip.org www.7-zip.org].")
@@ -5178,7 +5172,7 @@ Public Class MainForm
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then Return sb.SelectedItem
+        If sb.Show = DialogResult.OK Then Return sb.SelectedValue
     End Function
 
     Sub tbAudioFile0_DoubleClick() Handles tbAudioFile0.DoubleClick
@@ -5268,7 +5262,7 @@ Public Class MainForm
         sb.Items.Sort()
 
         If sb.Show = DialogResult.OK Then
-            s.Versions(sb.SelectedItem) = 0
+            s.Versions(sb.SelectedValue) = 0
             MsgInfo("Will be reseted on next startup.")
         End If
     End Sub
@@ -5381,7 +5375,7 @@ Public Class MainForm
     End Sub
 
     Sub SourceAspectRatioMenuClick(value As String)
-        value = Macro.Solve(value)
+        value = Macro.Expand(value)
 
         If value.IsSingle Then
             Dim dar = CSng(value)
@@ -5410,7 +5404,7 @@ Public Class MainForm
     Sub TargetImageMenuClick(value As String)
         g.EnableFilter("Resize")
 
-        value = Macro.Solve(value)
+        value = Macro.Expand(value)
 
         If value.IsInt Then
             SetTargetImageSizeByPixel(CInt(value))

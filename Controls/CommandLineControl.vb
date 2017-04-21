@@ -99,9 +99,9 @@ Class CommandLineControl
     Property Presets As String
 
     Sub MenuItenClick(value As String)
-        If value.Contains("$") Then
-            value = Macro.Solve(value, False)
-        End If
+        Dim tup = Macro.ExpandGUI(value)
+        If tup.Cancel Then Exit Sub
+        value = tup.Value
 
         If Not value Like "*$*$*" Then
             If tb.Text = "" Then

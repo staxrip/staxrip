@@ -453,18 +453,25 @@ Namespace UI
         End Property
     End Class
 
-    Class RichTextBoxEx
+    Public Class RichTextBoxEx
         Inherits RichTextBox
 
         Property BlockPaint As Boolean
+
         Private BorderRect As Native.RECT
 
-        Sub New(Optional useMenu As Boolean = True)
-            If useMenu Then InitMenu()
+        Sub New()
+            MyClass.New(True)
+        End Sub
+
+        Sub New(createMenu As Boolean)
+            If createMenu Then InitMenu()
             If VisualStyleInformation.IsEnabledByUser Then BorderStyle = BorderStyle.None
         End Sub
 
         Sub InitMenu()
+            If DesignHelp.IsDesignMode Then Exit Sub
+
             Dim cms As New ContextMenuStripEx()
             Dim cutItem = cms.Add("Cut")
             cutItem.SetImage(Symbol.Cut)
@@ -472,7 +479,6 @@ Namespace UI
             copyItem.SetImage(Symbol.Copy)
             Dim pasteItem = cms.Add("Paste")
             pasteItem.SetImage(Symbol.Paste)
-
             cms.Add("Copy Everything", Sub() Clipboard.SetText(Text))
 
             AddHandler cutItem.Click, Sub()

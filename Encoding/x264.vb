@@ -471,7 +471,7 @@ Public Class x264Encoder
             End If
         End If
 
-        Return Macro.Solve(ret.Trim)
+        Return Macro.Expand(ret.Trim)
     End Function
 
     Public Overrides Sub ImportCommandLine(commandLine As String)

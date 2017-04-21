@@ -182,7 +182,7 @@ Class AudioForm
         Me.lName.Name = "lName"
         Me.lName.Size = New System.Drawing.Size(235, 48)
         Me.lName.TabIndex = 15
-        Me.lName.Text = "Profile Name:"
+        Me.lName.Text = "Name:"
         '
         'numDelay
         '
@@ -551,7 +551,7 @@ Class AudioForm
 
         ActionMenuItem.Add(miCommandLine.DropDownItems, "Copy", Sub() Clipboard.SetText(TempProfile.GetCommandLine(True))).SetImage(Symbol.Copy)
         ActionMenuItem.Add(miCommandLine.DropDownItems, "Execute", AddressOf Execute).SetImage(Symbol.fa_terminal)
-        ActionMenuItem.Add(miCommandLine.DropDownItems, "Show", Sub() g.ShowCommandLinePreview(TempProfile.GetCommandLine(True)))
+        ActionMenuItem.Add(miCommandLine.DropDownItems, "Show", Sub() g.ShowCommandLinePreview("Command Line", TempProfile.GetCommandLine(True)))
 
         ActionMenuItem.Add(miHelp.DropDownItems, "Help", AddressOf ShowHelp).SetImage(Symbol.Help)
         ActionMenuItem.Add(miHelp.DropDownItems, "eac3to", Sub() g.ShellExecute("http://en.wikibooks.org/wiki/Eac3to"))
@@ -759,7 +759,7 @@ Class AudioForm
 
         miProfiles.DropDownItems.Add("-")
 
-        Dim save = New ActionMenuItem("Save", Sub() SaveProfile(), "Saves the current settings as profile")
+        Dim save = New ActionMenuItem("Save", AddressOf SaveProfile, "Saves the current settings as profile")
         save.SetImage(Symbol.Save)
         miProfiles.DropDownItems.Add(save)
 
@@ -768,9 +768,14 @@ Class AudioForm
 
     Sub SaveProfile()
         Dim gap = ObjectHelp.GetCopy(Of GUIAudioProfile)(TempProfile)
-        s.AudioProfiles.Insert(0, gap)
-        MsgInfo("The profile was saved.")
-        UpdateProfilesMenu()
+        Dim name = InputBox.Show("Enter the profile name.", "Save Profile", gap.Name)
+
+        If name <> "" Then
+            gap.Name = name
+            s.AudioProfiles.Add(gap)
+            MsgInfo("The profile was saved.")
+            UpdateProfilesMenu()
+        End If
     End Sub
 
     Sub EditProfiles()
@@ -806,10 +811,7 @@ Class AudioForm
     End Sub
 
     Sub LoadProfile()
-        If TempProfile.Name <> TempProfile.DefaultName Then
-            tbName.Text = TempProfile.Name
-        End If
-
+        If TempProfile.Name <> TempProfile.DefaultName Then tbName.Text = TempProfile.Name
         tbName.SendMessageCue(TempProfile.Name, False)
 
         mbCodec.Value = TempProfile.Params.Codec

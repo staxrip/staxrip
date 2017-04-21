@@ -284,7 +284,7 @@ Public Class Project
                     sb.AddItem("core.sub.TextFile")
 
                     If sb.Show = DialogResult.OK Then
-                        filterName = sb.SelectedItem
+                        filterName = sb.SelectedValue
                     Else
                         Exit Sub
                     End If

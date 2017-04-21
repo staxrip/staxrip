@@ -14,12 +14,19 @@ Namespace UI
             KeyPreview = True
             SetTabIndexes(Me)
 
-            Dim designDimension = New SizeF(144, 144)
-            If s.UIScaleFactor <> 1 Then Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+            If AutoScaleMode = AutoScaleMode.Dpi Then
+                If s.UIScaleFactor <> 1 Then
+                    Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+                    Scale(New SizeF(1 * s.UIScaleFactor, 1 * s.UIScaleFactor))
+                End If
+            Else
+                Dim designDimension = New SizeF(144, 144)
+                If s.UIScaleFactor <> 1 Then Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
-            If designDimension <> CurrentDPIDimension OrElse s.UIScaleFactor <> 1 Then
-                Scale(New SizeF(CurrentDPIDimension.Width / designDimension.Width * s.UIScaleFactor,
-                                CurrentDPIDimension.Height / designDimension.Height * s.UIScaleFactor))
+                If designDimension <> CurrentDPIDimension OrElse s.UIScaleFactor <> 1 Then
+                    Scale(New SizeF(CurrentDPIDimension.Width / designDimension.Width * s.UIScaleFactor,
+                                    CurrentDPIDimension.Height / designDimension.Height * s.UIScaleFactor))
+                End If
             End If
 
             MyBase.OnLoad(e)
@@ -73,6 +80,7 @@ Namespace UI
         End Property
 
         Protected Overrides Sub WndProc(ByRef m As Message)
+#Region "WM"
             'If m.Msg = 6 Then Debug.WriteLine("WM_ACTIVATE")
             'If m.Msg = &H1C Then Debug.WriteLine("WM_ACTIVATEAPP")
             'If m.Msg = &H360 Then Debug.WriteLine("WM_AFXFIRST")
@@ -293,7 +301,7 @@ Namespace UI
             'If m.Msg = &H20D Then Debug.WriteLine("WM_XBUTTONDBLCLK")
             'If m.Msg = &H20B Then Debug.WriteLine("WM_XBUTTONDOWN")
             'If m.Msg = &H20C Then Debug.WriteLine("WM_XBUTTONUP")
-
+#End Region
             Snap(m)
             MyBase.WndProc(m)
         End Sub
@@ -535,5 +543,19 @@ Namespace UI
         Overloads Overrides Function GetEditStyle(context As ITypeDescriptorContext) As UITypeEditorEditStyle
             Return UITypeEditorEditStyle.Modal
         End Function
+    End Class
+
+    Class DesignHelp
+        Private Shared IsDesignModeValue As Boolean?
+
+        Shared ReadOnly Property IsDesignMode As Boolean
+            Get
+                If Not IsDesignModeValue.HasValue Then
+                    IsDesignModeValue = Process.GetCurrentProcess.ProcessName = "devenv"
+                End If
+
+                Return IsDesignModeValue.Value
+            End Get
+        End Property
     End Class
 End Namespace

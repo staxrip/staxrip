@@ -4,12 +4,13 @@ Imports System.Text.RegularExpressions
 
 Public Delegate Function PFTASKDIALOGCALLBACK(hwnd As IntPtr, msg As UInteger, wParam As IntPtr, lParam As IntPtr, lpRefData As IntPtr) As Integer
 
-Class TaskDialog(Of T)
+Public Class TaskDialog(Of T)
     Inherits TaskDialog
     Implements IDisposable
 
     Private DialogHandle As IntPtr
     Private IdValueDic As New Dictionary(Of Integer, T)
+    Private IdTextDic As New Dictionary(Of Integer, String)
     Private CommandLinkShieldList As New List(Of Integer)
     Private ButtonArray As IntPtr, RadioButtonArray As IntPtr
     Private Buttons As New List(Of TASKDIALOG_BUTTON)
@@ -195,6 +196,18 @@ Class TaskDialog(Of T)
         End Set
     End Property
 
+    Private SelectedTextValue As String
+
+    Property SelectedText() As String
+        Get
+            If IdTextDic.ContainsKey(SelectedID) Then Return IdTextDic(SelectedID)
+            Return SelectedTextValue
+        End Get
+        Set(value As String)
+            SelectedTextValue = value
+        End Set
+    End Property
+
     Property CheckBoxChecked() As Boolean
         Get
             Return (Config.dwFlags And Flags.TDF_VERIFICATION_FLAG_CHECKED) = Flags.TDF_VERIFICATION_FLAG_CHECKED
@@ -259,6 +272,7 @@ Class TaskDialog(Of T)
     Sub AddCommandLink(text As String, value As T)
         Dim id = 1000 + IdValueDic.Count + 1
         IdValueDic(id) = value
+        IdTextDic(id) = text
         Buttons.Add(New TASKDIALOG_BUTTON(id, text))
         Config.dwFlags = Config.dwFlags Or Flags.TDF_USE_COMMAND_LINKS
     End Sub
@@ -405,7 +419,7 @@ Class TaskDialog(Of T)
 
 End Class
 
-Class TaskDialog
+Public Class TaskDialog
     <DllImport("comctl32", CharSet:=CharSet.Unicode, SetLastError:=True)>
     Shared Function TaskDialogIndirect(<[In]()> pTaskConfig As TASKDIALOGCONFIG, <Out()> ByRef pnButton As Integer, <Out()> ByRef pnRadioButton As Integer, <MarshalAs(UnmanagedType.Bool)> <Out()> ByRef pVerificationFlagChecked As Boolean) As Integer
     End Function

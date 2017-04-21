@@ -6,31 +6,6 @@ Imports System.Text.RegularExpressions
 Imports StaxRip.UI
 
 Public Class GlobalCommands
-    <Command("Loads the x265 encoder with default values.")>
-    Sub Loadx265Defaults()
-        Dim ret = New x265Encoder
-        ret.Params.ApplyPresetDefaultValues()
-        ret.Params.ApplyPresetValues()
-        g.LoadVideoEncoder(ret)
-    End Sub
-
-    <Command("Loads the x265 encoder if it's not already loaded.")>
-    Sub Ensurex265()
-        If Not TypeOf p.VideoEncoder Is x265Encoder Then Loadx265Defaults()
-    End Sub
-
-    <Command("Loads VapourSynth with default filters.")>
-    Sub LoadVapourSynthDefaults()
-        g.MainForm.LoadScriptProfile(VideoScript.GetDefaults()(1))
-    End Sub
-
-    <Command("Loads VapourSynth if it's not already loaded.")>
-    Sub EnsureVapourSynth()
-        If Not p.Script.Engine = ScriptEngine.VapourSynth Then
-            LoadVapourSynthDefaults()
-        End If
-    End Sub
-
     <Command("Executes command lines separated by a line break line by line. Macros are solved as well as passed in as environment variables.")>
     Sub ExecuteCommandLine(
         <DispName("Command Line"),
@@ -58,7 +33,7 @@ Public Class GlobalCommands
 
         If asBatch Then
             Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
-            Dim batchCode = Macro.Solve(commandLines)
+            Dim batchCode = Macro.Expand(commandLines)
             File.WriteAllText(batchPath, batchCode, Encoding.Default)
             AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 
@@ -71,7 +46,7 @@ Public Class GlobalCommands
                 proc.Process.StartInfo.UseShellExecute = False
 
                 For Each i In Macro.GetMacros
-                    proc.Process.StartInfo.EnvironmentVariables(i.Name.Trim("%"c)) = Macro.Solve(i.Name)
+                    proc.Process.StartInfo.EnvironmentVariables(i.Name.Trim("%"c)) = Macro.Expand(i.Name)
                 Next
 
                 Try
@@ -82,7 +57,7 @@ Public Class GlobalCommands
                 End Try
             End Using
         Else
-            For Each i In Macro.Solve(commandLines).SplitLinesNoEmpty
+            For Each i In Macro.Expand(commandLines).SplitLinesNoEmpty
                 Using proc As New Proc
                     If showProcessWindow Then proc.Init("Execute Command Line")
                     proc.CommandLine = i
@@ -92,7 +67,7 @@ Public Class GlobalCommands
                         proc.Process.StartInfo.UseShellExecute = False
 
                         For Each i2 In Macro.GetMacros
-                            proc.Process.StartInfo.EnvironmentVariables(i2.Name.Trim("%"c)) = Macro.Solve(i2.Name)
+                            proc.Process.StartInfo.EnvironmentVariables(i2.Name.Trim("%"c)) = Macro.Expand(i2.Name)
                         Next
                     End If
 
@@ -125,7 +100,7 @@ Public Class GlobalCommands
         If Not ProcessForm.IsActive Then closeNeeded = True
 
         Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
-        Dim batchCode = Macro.Solve(batchScript)
+        Dim batchCode = Macro.Expand(batchScript)
         File.WriteAllText(batchPath, batchCode, Encoding.Default)
         AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 
@@ -138,7 +113,7 @@ Public Class GlobalCommands
             proc.Process.StartInfo.UseShellExecute = False
 
             For Each i In Macro.GetMacros
-                proc.Process.StartInfo.EnvironmentVariables(i.Name.Trim("%"c)) = Macro.Solve(i.Name)
+                proc.Process.StartInfo.EnvironmentVariables(i.Name.Trim("%"c)) = Macro.Expand(i.Name)
             Next
 
             Try
@@ -161,7 +136,7 @@ Public Class GlobalCommands
     <Command("Executes a csx (C#) or ps1 (PowerShell) script.")>
     Sub ExecuteScriptFile(<DispName("File Path")>
                           <Description("Filepath to a csx (C#) or ps1 (PowerShell) file, the path may contain macros.")>
-                          <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
+                          <Editor(GetType(OpenFileDialogEditor), GetType(UITypeEditor))>
                           filepath As String)
 
         If File.Exists(filepath) Then
@@ -380,6 +355,9 @@ Public Class GlobalCommands
         Dim f As New HelpForm()
 
         Select Case topic
+            Case "macros"
+                f.Doc.WriteStart("Macros")
+                f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
             Case "info"
                 f.Doc.WriteStart("StaxRip x64 " + Application.ProductVersion + " " + GetReleaseType())
                 Dim licensePath = Folder.Startup + "License.txt"
@@ -416,7 +394,7 @@ Public Class GlobalCommands
         <DefaultValue(GetType(MsgIcon), "Info")>
         Optional icon As MsgIcon = MsgIcon.Info)
 
-        Msg(Macro.Solve(mainInstruction), Macro.Solve(content), icon, MessageBoxButtons.OK)
+        Msg(Macro.Expand(mainInstruction), Macro.Expand(content), icon, MessageBoxButtons.OK)
     End Sub
 
     <Command("Shows media info on a given file.")>
@@ -426,7 +404,7 @@ Public Class GlobalCommands
         <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
         filepath As String)
 
-        filepath = Macro.Solve(filepath)
+        filepath = Macro.Expand(filepath)
 
         If File.Exists(filepath) Then
             Using f As New MediaInfoForm(filepath)
@@ -444,7 +422,7 @@ Public Class GlobalCommands
         <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
         value As String)
 
-        Macro.Solve(value).ToClipboard()
+        Macro.Expand(value).ToClipboard()
     End Sub
 
     <Command("Writes a log message to the process window.")>
@@ -456,7 +434,7 @@ Public Class GlobalCommands
         message As String)
 
         Log.WriteHeader(header)
-        Log.WriteLine(Macro.Solve(message))
+        Log.WriteLine(Macro.Expand(message))
     End Sub
 
     <Command("Deletes files in a given directory.")>
@@ -476,7 +454,7 @@ Public Class GlobalCommands
         Next
 
         Try
-            For Each i In Directory.GetFiles(Macro.Solve(dir))
+            For Each i In Directory.GetFiles(Macro.Expand(dir))
                 For Each i2 In filter.SplitNoEmpty(" ")
                     If i.ToUpper.EndsWith(i2.ToUpper) Then
                         FileHelp.Delete(i)
@@ -502,14 +480,14 @@ Public Class GlobalCommands
                     <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> [option] As String)
 
         If TypeOf p.VideoEncoder Is x264Encoder Then
-            start = Macro.Solve(start)
-            [end] = Macro.Solve([end])
+            start = Macro.Expand(start)
+            [end] = Macro.Expand([end])
 
             [option] = InputBox.Show("Please enter the option arguments.", "Zone option arguments", [option])
 
             If [option] = "" Then Exit Sub
 
-            [option] = Macro.Solve([option])
+            [option] = Macro.Expand([option])
 
             Dim value = DirectCast(p.VideoEncoder, x264Encoder).Params.AddAll.Value
 
@@ -525,9 +503,6 @@ Public Class GlobalCommands
                 f.Text = "x264 custom command line switches"
                 f.cbWrap.Checked = Not value.Contains(BR)
                 f.tb.Text = value
-                f.tb.Text = value
-                f.Width = 800
-                f.Height = 200
 
                 If f.ShowDialog() = DialogResult.OK Then
                     DirectCast(p.VideoEncoder, x264Encoder).Params.AddAll.Value = f.tb.Text
@@ -567,7 +542,7 @@ Public Class GlobalCommands
                       <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
                       path As String)
 
-        p.TargetFile = Macro.Solve(path)
+        p.TargetFile = Macro.Expand(path)
     End Sub
 
     <Command("Loads the source file.")>

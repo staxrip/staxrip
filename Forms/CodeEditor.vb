@@ -116,6 +116,13 @@ Class CodeEditor
         Next
     End Sub
 
+    Private Sub CodeEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+        Dim f As New HelpForm()
+        f.Doc.WriteStart(Text)
+        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        f.Show()
+    End Sub
+
     Class FilterTable
         Inherits TableLayoutPanel
 
@@ -498,20 +505,7 @@ Class CodeEditor
             Dim script As New VideoScript
             script.Engine = Editor.Engine
             script.Filters = Editor.GetFilters()
-
-            Using f As New StringEditorForm
-                f.tb.ReadOnly = True
-                f.cbWrap.Checked = False
-                f.cbWrap.Visible = False
-                f.tb.Text = script.GetFullScript
-                f.tb.SelectionStart = f.tb.Text.Length
-                f.Text = "Code Preview"
-                f.Width = 800
-                f.Height = 500
-                f.bOK.Visible = False
-                f.bCancel.Text = "Close"
-                f.ShowDialog()
-            End Using
+            g.CodePreview(script.GetFullScript)
         End Sub
 
         Sub RemoveClick()
@@ -525,20 +519,20 @@ Class CodeEditor
         End Sub
 
         Sub ReplaceClick(filter As VideoFilter)
-            Dim tup = Macro.SolveInteractive(filter.Script)
-            If tup.cancel Then Exit Sub
+            Dim tup = Macro.ExpandGUI(filter.Script)
+            If tup.Cancel Then Exit Sub
             cbActive.Checked = filter.Active
             cbActive.Text = filter.Category
-            If tup.value <> filter.Script Then tbName.Text = tup.value.Trim Else tbName.Text = filter.Name
-            rtbScript.Text = tup.value.TrimEnd + BR
+            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then tbName.Text = filter.Name + " " + tup.Caption Else tbName.Text = filter.Name
+            rtbScript.Text = tup.Value.TrimEnd + BR
             rtbScript.SelectionStart = rtbScript.Text.Length
         End Sub
 
         Sub InsertClick(filter As VideoFilter)
-            Dim tup = Macro.SolveInteractive(filter.Script)
-            If tup.cancel Then Exit Sub
-            If tup.value <> filter.Script Then filter.Path = tup.value.Trim
-            filter.Script = tup.value
+            Dim tup = Macro.ExpandGUI(filter.Script)
+            If tup.Cancel Then Exit Sub
+            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then filter.Path += " " + tup.Caption
+            filter.Script = tup.Value
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim index = flow.Controls.IndexOf(Me)
             Dim filterTable = CodeEditor.CreateFilterTable(filter)
@@ -551,10 +545,10 @@ Class CodeEditor
         End Sub
 
         Sub AddClick(filter As VideoFilter)
-            Dim tup = Macro.SolveInteractive(filter.Script)
-            If tup.cancel Then Exit Sub
-            If tup.value <> filter.Script Then filter.Path = tup.value.Trim
-            filter.Script = tup.value
+            Dim tup = Macro.ExpandGUI(filter.Script)
+            If tup.Cancel Then Exit Sub
+            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then filter.Path += " " + tup.Caption
+            filter.Script = tup.Value
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim filterTable = CodeEditor.CreateFilterTable(filter)
             flow.Controls.Add(filterTable)

@@ -412,7 +412,7 @@ Class MuxerForm
 
     Private Sub buCmdlPreview_Click() Handles bnCommandLinePreview.Click
         SetValues()
-        g.ShowCommandLinePreview(Muxer.GetCommandLine)
+        g.ShowCommandLinePreview("Command Line", Muxer.GetCommandLine)
     End Sub
 
     Private Sub bnAddAudio_Click(sender As Object, e As EventArgs) Handles bnAddAudio.Click
@@ -432,7 +432,7 @@ Class MuxerForm
 
                 If sb.Show = DialogResult.OK Then
                     For Each path In d.FileNames
-                        Dim ap = ObjectHelp.GetCopy(sb.SelectedItem)
+                        Dim ap = ObjectHelp.GetCopy(sb.SelectedValue)
                         ap.File = path
 
                         If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
@@ -455,7 +455,7 @@ Class MuxerForm
                             Next
 
                             If sb2.Show = DialogResult.Cancel Then Return
-                            ap.Stream = sb2.SelectedItem
+                            ap.Stream = sb2.SelectedValue
                         End If
 
                         g.MainForm.UpdateSizeOrBitrate()

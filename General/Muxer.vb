@@ -231,16 +231,16 @@ Class MP4Muxer
             If i.Enabled AndAlso File.Exists(i.Path) Then
                 If i.Path.Ext = "idx" Then
                     If i.Title = "" Then i.Title = " "
-                    args.Append(" -add """ + i.Path + "#" & i.IndexIDX + 1 & ":name=" + Macro.Solve(i.Title, True) & """")
+                    args.Append(" -add """ + i.Path + "#" & i.IndexIDX + 1 & ":name=" + Macro.Expand(i.Title) & """")
                 Else
                     If i.Title = "" Then i.Title = " "
-                    args.Append(" -add """ + i.Path + ":lang=" + i.Language.ThreeLetterCode + ":name=" + Macro.Solve(i.Title, True) + """")
+                    args.Append(" -add """ + i.Path + ":lang=" + i.Language.ThreeLetterCode + ":name=" + Macro.Expand(i.Title) + """")
                 End If
             End If
         Next
 
         If File.Exists(ChapterFile) Then args.Append(" -chap """ + ChapterFile + """")
-        If AdditionalSwitches <> "" Then args.Append(" " + Macro.Solve(AdditionalSwitches))
+        If AdditionalSwitches <> "" Then args.Append(" " + Macro.Expand(AdditionalSwitches))
 
         args.Append(" -new """ + p.TargetFile + """")
 
@@ -353,7 +353,7 @@ Class BatchMuxer
         Log.WriteHeader("Batch Muxing")
 
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_mux.bat"
-        Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Solve(CommandLines))
+        Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Expand(CommandLines))
 
         Using proc As New Proc
             proc.Init("Encoding video command line encoder: " + Name)
@@ -473,7 +473,7 @@ Class MkvMuxer
         End If
 
         If VideoTrackName <> "" Then
-            args.Append(" --track-name """ & vID & ":" + Macro.Solve(VideoTrackName).Replace("""", "'") + """")
+            args.Append(" --track-name """ & vID & ":" + Macro.Expand(VideoTrackName).Replace("""", "'") + """")
         End If
 
         If MediaInfo.GetFrameRate(p.VideoEncoder.OutputPath, 0) = 0 Then
@@ -520,7 +520,7 @@ Class MkvMuxer
             args.Append(" --chapters " + ChapterFile.Quotes)
         End If
 
-        If Title <> "" Then args.Append(" --title """ + Macro.Solve(Title).Replace("""", "'") + """")
+        If Title <> "" Then args.Append(" --title """ + Macro.Expand(Title).Replace("""", "'") + """")
 
         If TypeOf p.VideoEncoder Is NullEncoder AndAlso p.Ranges.Count > 0 Then
             args.Append(" --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+"))
@@ -542,7 +542,7 @@ Class MkvMuxer
         End If
 
         args.Append(" --ui-language en")
-        If AdditionalSwitches <> "" Then args.Append(" " + Macro.Solve(AdditionalSwitches))
+        If AdditionalSwitches <> "" Then args.Append(" " + Macro.Expand(AdditionalSwitches))
 
         Return args.ToString
     End Function

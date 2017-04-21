@@ -6,13 +6,24 @@ Class SelectionBox(Of T)
     Property Items As New List(Of ListBag(Of T))
     Property SelectedBag As ListBag(Of T)
 
-    Property SelectedItem As T
+    Property SelectedValue As T
         Get
             Return SelectedBag.Value
         End Get
         Set(value As T)
             For Each i In Items
                 If i.Value.Equals(value) Then SelectedBag = i
+            Next
+        End Set
+    End Property
+
+    Property SelectedText As String
+        Get
+            Return SelectedBag.Text
+        End Get
+        Set(value As String)
+            For Each i In Items
+                If i.Text = value Then SelectedBag = i
             Next
         End Set
     End Property

@@ -136,7 +136,7 @@ Public Class AviSynthListView
         End If
 
         Menu.Add("Edit Code...", AddressOf ShowEditor, "Dialog to edit filters.").SetImage(Symbol.Code)
-        Menu.Add("Preview Code...", AddressOf CodePreview, "Script code preview.")
+        Menu.Add("Preview Code...", Sub() g.CodePreview(p.Script.GetFullScript), "Script code preview.")
         Menu.Add("Play", Sub() g.PlayScript(p.Script), "Plays the script with the AVI player.").SetImage(Symbol.Play)
         Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
 
@@ -150,9 +150,9 @@ Public Class AviSynthListView
     End Sub
 
     Sub ReplaceClick(filter As VideoFilter)
-        Dim tup = Macro.SolveInteractive(filter.Script)
+        Dim tup = Macro.ExpandGUI(filter.Script)
         If tup.cancel Then Exit Sub
-        If tup.value <> filter.Script Then filter.Path = tup.value.Trim
+        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then filter.Path += " " + tup.Caption
         filter.Script = tup.value
         Dim index = SelectedItems(0).Index
         ProfileFunc.Invoke.SetFilter(index, filter)
@@ -160,9 +160,9 @@ Public Class AviSynthListView
     End Sub
 
     Private Sub InsertClick(filter As VideoFilter)
-        Dim tup = Macro.SolveInteractive(filter.Script)
+        Dim tup = Macro.ExpandGUI(filter.Script)
         If tup.cancel Then Exit Sub
-        If tup.value <> filter.Script Then filter.Path = tup.value.Trim
+        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then filter.Path += " " + tup.Caption
         filter.Script = tup.value
         Dim index = SelectedItems(0).Index
         ProfileFunc.Invoke.InsertFilter(index, filter)
@@ -170,9 +170,9 @@ Public Class AviSynthListView
     End Sub
 
     Private Sub AddClick(filter As VideoFilter)
-        Dim tup = Macro.SolveInteractive(filter.Script)
+        Dim tup = Macro.ExpandGUI(filter.Script)
         If tup.cancel Then Exit Sub
-        If tup.value <> filter.Script Then filter.Path = tup.value.Trim
+        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then filter.Path += " " + tup.Caption
         filter.Script = tup.value
         ProfileFunc.Invoke.AddFilter(filter)
         Items(Items.Count - 1).Selected = True
@@ -246,39 +246,5 @@ Public Class AviSynthListView
     Protected Overrides Sub OnMouseUp(e As MouseEventArgs)
         If e.Button = MouseButtons.Right Then UpdateMenu()
         MyBase.OnMouseUp(e)
-    End Sub
-
-    Shared Sub ShowHelp()
-        Dim f As New HelpForm()
-        f.Doc.WriteStart("Filters")
-        f.Doc.WriteP("The filters dialog allows to edit filters. Help about filters in general can be found at [http://www.avisynth.org www.avisynth.org].")
-        f.Doc.WriteH2("Editing Features")
-
-        f.Doc.WriteList(
-            "Left-click a selected filter to edit the category, name or script",
-            "Left-click while pressing Ctrl opens a script editor enabling multi line editing",
-            "Right-click on a filter shows a context menu with profile related features",
-            "The filter order can be changed using Drag & Drop",
-            "The check boxes are used to apply or disable filters")
-
-        f.Doc.WriteP("The mini filter editor in the main dialog has a similar but limited feature set. It supports the context menu, Drag & Drop to reorder, the script editor shows with a simple double-click.")
-        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
-        f.Show()
-    End Sub
-
-    Sub CodePreview()
-        Using f As New StringEditorForm
-            f.tb.ReadOnly = True
-            f.cbWrap.Checked = False
-            f.cbWrap.Visible = False
-            f.tb.Text = p.Script.GetFullScript
-            f.tb.SelectionStart = f.tb.Text.Length
-            f.Text = "Code Preview"
-            f.Width = 800
-            f.Height = 500
-            f.bOK.Visible = False
-            f.bCancel.Text = "Close"
-            f.ShowDialog()
-        End Using
     End Sub
 End Class

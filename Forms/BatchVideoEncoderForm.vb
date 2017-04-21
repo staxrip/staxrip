@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Class BatchEncoderForm
+Class BatchVideoEncoderForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -178,11 +178,9 @@ Class BatchEncoderForm
 
         EncodingCliControl.SetCommandLineDefaults()
         EncodingCliControl.Value = encoder.CommandLines
-        EncodingCliControl.llExecute.Visible = p.SourceFile <> ""
 
         CompCheckCliControl.SetCommandLineDefaults()
         CompCheckCliControl.Value = encoder.CompCheckCommandLines
-        CompCheckCliControl.llExecute.Visible = p.SourceFile <> ""
 
         numPercent.Value = encoder.AutoCompCheckValue
 
@@ -204,6 +202,7 @@ Class BatchEncoderForm
         f.Doc.WriteStart(Text)
         f.Doc.WriteP("The batch encoder allows executing a command line. If there is a piping symbol or line break then it's executed as batch file.")
         f.Doc.WriteTips(TipProvider.GetTips, EncodingCliControl.TipProvider.GetTips)
+        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
         f.Show()
     End Sub
 

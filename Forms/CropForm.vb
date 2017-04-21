@@ -199,7 +199,7 @@ Class CropForm
 
         ContextMenuStrip = New ContextMenuStripEx
 
-        CustomMenu = New CustomMenu(AddressOf GetDefaultMenu,
+        CustomMenu = New CustomMenu(AddressOf GetDefaultMenuCrop,
             s.CustomMenuCrop, CommandManager, ContextMenuStrip)
 
         CustomMenu.AddKeyDownHandler(Me)
@@ -480,7 +480,7 @@ Class CropForm
         End Select
     End Function
 
-    Shared Function GetDefaultMenu() As CustomMenuItem
+    Shared Function GetDefaultMenuCrop() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
         ret.Add("No Crop", NameOf(SetCropValues), Keys.N, {0, 0, 0, 0})

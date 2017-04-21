@@ -1,5 +1,5 @@
 Namespace UI
-    Class InputBox
+    Public Class InputBox
         Property Text As String
         Property Title As String = Application.ProductName
         Property Value As String

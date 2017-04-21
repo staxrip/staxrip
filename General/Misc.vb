@@ -317,7 +317,7 @@ Public Class GlobalClass
                 Dim matches = 0
 
                 For Each i2 In i.CriteriaList
-                    i2.PropertyString = Macro.Solve(i2.Macro)
+                    i2.PropertyString = Macro.Expand(i2.Macro)
                     If i2.Eval Then matches += 1
                 Next
 
@@ -338,7 +338,7 @@ Public Class GlobalClass
 
     Sub SetTempDir()
         If p.SourceFile <> "" Then
-            p.TempDir = Macro.Solve(p.TempDir)
+            p.TempDir = Macro.Expand(p.TempDir)
 
             If p.TempDir = "" Then
                 If FileTypes.VideoOnly.Contains(p.SourceFile.Ext) OrElse
@@ -375,18 +375,15 @@ Public Class GlobalClass
         Return ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p)
     End Function
 
-    Sub ShowCommandLinePreview(value As String)
+    Sub ShowCommandLinePreview(title As String, value As String)
         Using f As New StringEditorForm
+            f.Text = title
             f.tb.ReadOnly = True
             f.cbWrap.Checked = Not value.Contains(BR)
             f.tb.Text = value
-            f.tb.SelectionStart = 0
-            f.tb.SelectionLength = 0
-            f.Text = "Command Line"
-            f.Width = 1000
-            f.Height = 500
-            f.bOK.Visible = False
-            f.bCancel.Text = "Close"
+            f.tb.SelectionStart = value.Length
+            f.bnOK.Visible = False
+            f.bnCancel.Text = "Close"
             f.ShowDialog()
         End Using
     End Sub
@@ -694,6 +691,20 @@ Public Class GlobalClass
         End Using
     End Function
 
+    Sub CodePreview(code As String)
+        Using f As New StringEditorForm
+            f.tb.ReadOnly = True
+            f.cbWrap.Checked = False
+            f.cbWrap.Visible = False
+            f.tb.Text = code
+            f.tb.SelectionStart = f.tb.Text.Length
+            f.Text = "Code Preview"
+            f.bnOK.Visible = False
+            f.bnCancel.Text = "Close"
+            f.ShowDialog()
+        End Using
+    End Sub
+
     Sub ShowDirectShowWarning()
         If Not p.BatchMode Then
             If Not g.IsCOMObjectRegistered(GUIDS.LAVSplitter) OrElse
@@ -814,27 +825,12 @@ Public Class GlobalClass
     End Sub
 
     Function ConvertPath(value As String) As String
-        If value.Contains("Constant Quality") Then
-            value = value.Replace("Constant Quality", "CQ")
-        End If
-
-        If value.Contains("Misc | ") Then
-            value = value.Replace("Misc | ", "")
-        End If
-
-        If value.Contains("Advanced | ") Then
-            value = value.Replace("Advanced | ", "")
-        End If
-
-        If value.Contains(" | ") Then
-            value = value.Replace(" | ", " - ")
-        End If
-
-        If value.Contains("  ") Then
-            value = value.Replace("  ", " ")
-        End If
-
-        Return value
+        If value = "" Then Return ""
+        If value.Length > 30 AndAlso value.Contains("|") Then value = value.RightLast("|")
+        If value.Contains("Constant Quality") Then value = value.Replace("Constant Quality", "CQ")
+        If value.Contains(" | ") Then value = value.Replace(" | ", " - ")
+        If value.Contains("  ") Then value = value.Replace("  ", " ")
+        Return value.Trim
     End Function
 
     Sub CorrectCropMod()
@@ -1861,6 +1857,7 @@ Class Macro
 
         If includeSpecial Then
             ret.Add(New Macro("eval:<expression>", "Eval Math Expression", GetType(String), "Evaluates a math expression which may contain default macros."))
+            ret.Add(New Macro("eval_ps:<expression>", "Eval PowerShell Expression", GetType(String), "Evaluates a PowerShell expression which may contain default macros."))
             ret.Add(New Macro("filter:<name>", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
             ret.Add(New Macro("media_info_video:<property>", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
             ret.Add(New Macro("media_info_audio:<property>", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
@@ -1937,80 +1934,81 @@ Class Macro
         Return ret
     End Function
 
-    Shared Function Solve(value As String) As String
-        Return Solve(value, False)
-    End Function
+    Shared Function ExpandGUI(value As String) As (Value As String, Caption As String, Cancel As Boolean)
+        Dim ret As (Value As String, Caption As String, Cancel As Boolean) = (value, "", False)
+        If ret.Value = "" Then Return ret
 
-    Shared Function SolveInteractive(value As String) As (value As String, cancel As Boolean)
-        Dim ret As (value As String, cancel As Boolean) = (value, False)
-        If ret.value = "" Then Return ret
-
-        If ret.value.Contains("$browse_file$") Then
+        If ret.Value.Contains("$browse_file$") Then
             Using d As New OpenFileDialog
-                ret.cancel = d.ShowDialog <> DialogResult.OK
-                If ret.cancel Then Return ret Else ret.value = ret.value.Replace("$browse_file$", d.FileName)
+                ret.Cancel = d.ShowDialog <> DialogResult.OK
+                If ret.Cancel Then Return ret Else ret.Value = ret.Value.Replace("$browse_file$", d.FileName)
             End Using
         End If
 
-        If Not ret.value.Contains("$") Then Return ret
+        If Not ret.Value.Contains("$") Then Return ret
 
-        If ret.value.Contains("$enter_text$") Then
+        If ret.Value.Contains("$enter_text$") Then
             Dim inputText = InputBox.Show("Please enter some text.")
 
             If inputText = "" Then
-                ret.cancel = True
+                ret.Cancel = True
                 Return ret
             Else
-                ret.value = ret.value.Replace("$enter_text$", inputText)
+                ret.Value = ret.Value.Replace("$enter_text$", inputText)
             End If
         End If
 
-        If Not ret.value.Contains("$") Then Return ret
+        If Not ret.Value.Contains("$") Then Return ret
 
-        If ret.value.Contains("$enter_text:") Then
-            Dim matches = Regex.Matches(ret.value, "\$enter_text:(.+?)\$")
+        If ret.Value.Contains("$enter_text:") Then
+            Dim matches = Regex.Matches(ret.Value, "\$enter_text:(.+?)\$")
 
             For Each iMatch As Match In matches
                 Dim inputText = InputBox.Show(iMatch.Groups(1).Value)
 
                 If inputText = "" Then
-                    ret.cancel = True
+                    ret.Cancel = True
                     Return ret
                 Else
-                    ret.value = ret.value.Replace(iMatch.Value, inputText)
+                    ret.Value = ret.Value.Replace(iMatch.Value, inputText)
                 End If
             Next
         End If
 
-        If Not ret.value.Contains("$") Then Return ret
+        If Not ret.Value.Contains("$") Then Return ret
 
-        If ret.value.Contains("$select:") Then
-            Dim matches = Regex.Matches(ret.value, "\$select:(.+?)\$")
+        If ret.Value.Contains("$select:") Then
+            Dim matches = Regex.Matches(ret.Value, "\$select:(.+?)\$")
 
             For Each iMatch As Match In matches
                 Dim items = iMatch.Groups(1).Value.SplitNoEmpty(";").ToList
 
                 If items.Count > 0 Then
-                    Dim sb As New SelectionBox(Of String)
-                    sb.Title = "Select"
-
-                    If items?(0)?.StartsWith("msg:") Then
-                        sb.Text = items(0).Substring(4)
-                        items.RemoveAt(0)
-                    Else
-                        sb.Text = "Please select a item."
-                    End If
-
-                    For Each iItem As String In items
-                        If iItem.Contains("|") Then
-                            sb.AddItem(iItem.Left("|"), iItem.Right("|"))
+                    Using td As New TaskDialog(Of String)
+                        If items?(0)?.StartsWith("msg:") Then
+                            td.MainInstruction = items(0).Substring(4)
+                            items.RemoveAt(0)
                         Else
-                            sb.AddItem(iItem)
+                            td.MainInstruction = "Please choose one of the options."
                         End If
-                    Next
 
-                    ret.cancel = sb.Show <> DialogResult.OK
-                    If ret.cancel Then Return ret Else ret.value = ret.value.Replace(iMatch.Value, sb.SelectedItem)
+                        For Each iItem As String In items
+                            If iItem.Contains("|") Then
+                                td.AddCommandLink(iItem.Left("|"), iItem.Right("|"))
+                            Else
+                                td.AddCommandLink(iItem, iItem)
+                            End If
+                        Next
+
+                        ret.Cancel = td.Show = ""
+
+                        If ret.Cancel Then
+                            Return ret
+                        Else
+                            ret.Caption = td.SelectedText
+                            ret.Value = ret.Value.Replace(iMatch.Value, td.SelectedValue)
+                        End If
+                    End Using
                 End If
             Next
         End If
@@ -2018,7 +2016,7 @@ Class Macro
         Return ret
     End Function
 
-    Shared Function Solve(value As String, silent As Boolean) As String
+    Shared Function Expand(value As String) As String
         If value = "" Then Return ""
         If Not value.Contains("%") Then Return value
 
@@ -2230,20 +2228,6 @@ Class Macro
             Next
         End If
 
-        If value.Contains("%media_info_video:") Then
-            For Each i As Match In Regex.Matches(value, "%media_info_video:(.+?)%")
-                value = value.Replace(i.Value, MediaInfo.GetVideo(p.LastOriginalSourceFile, i.Groups(1).Value))
-                If Not value.Contains("%") Then Return value
-            Next
-        End If
-
-        If value.Contains("%media_info_audio:") Then
-            For Each i As Match In Regex.Matches(value, "%media_info_audio:(.+?)%")
-                value = value.Replace(i.Value, MediaInfo.GetAudio(p.LastOriginalSourceFile, i.Groups(1).Value))
-                If Not value.Contains("%") Then Return value
-            Next
-        End If
-
         If value.Contains("%app_dir:") Then
             For Each i As Match In Regex.Matches(value, "%app_dir:(.+?)%")
                 Dim package = StaxRip.Package.Items.Values.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
@@ -2256,6 +2240,20 @@ Class Macro
                         If Not value.Contains("%") Then Return value
                     End If
                 End If
+            Next
+        End If
+
+        If value.Contains("%media_info_video:") Then
+            For Each i As Match In Regex.Matches(value, "%media_info_video:(.+?)%")
+                value = value.Replace(i.Value, MediaInfo.GetVideo(p.LastOriginalSourceFile, i.Groups(1).Value))
+                If Not value.Contains("%") Then Return value
+            Next
+        End If
+
+        If value.Contains("%media_info_audio:") Then
+            For Each i As Match In Regex.Matches(value, "%media_info_audio:(.+?)%")
+                value = value.Replace(i.Value, MediaInfo.GetAudio(p.LastOriginalSourceFile, i.Groups(1).Value))
+                If Not value.Contains("%") Then Return value
             Next
         End If
 
@@ -2285,15 +2283,25 @@ Class Macro
                         value = value.Replace(i.Value, Misc.Eval(i.Groups(1).Value).ToString)
                         If Not value.Contains("%") Then Return value
                     Catch ex As Exception
-                        MsgWarn("Failed to solve macro '" + i.Value + "': " + ex.Message)
+                        MsgError("Failed to solve macro '" + i.Value + "': " + BR2 + ex.Message)
                     End Try
                 Next
             End If
         End If
 
-        If Not silent AndAlso value.Contains("$") Then
-            Dim tup = SolveInteractive(value)
-            If Not tup.cancel Then value = tup.value
+        If value.Contains("%eval_ps:") Then
+            If Not value.Contains("%eval_ps:<expression>%") Then
+                Dim mc = Regex.Matches(value, "%eval_ps:(.+?)%")
+
+                For Each i As Match In mc
+                    Try
+                        value = value.Replace(i.Value, Scripting.RunPowershell(i.Groups(1).Value)?.ToString)
+                        If Not value.Contains("%") Then Return value
+                    Catch ex As Exception
+                        MsgError("Failed to solve macro '" + i.Value + "': " + BR2 + ex.Message)
+                    End Try
+                Next
+            End If
         End If
 
         Return value

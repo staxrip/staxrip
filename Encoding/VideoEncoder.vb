@@ -200,7 +200,7 @@ Public MustInherit Class VideoEncoder
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then Return sb.SelectedItem
+        If sb.Show = DialogResult.OK Then Return sb.SelectedValue
 
         Return Nothing
     End Function
@@ -465,7 +465,7 @@ Class BatchEncoder
     End Property
 
     Overrides Sub ShowConfigDialog()
-        Using f As New BatchEncoderForm(Me)
+        Using f As New BatchVideoEncoderForm(Me)
             If f.ShowDialog() = DialogResult.OK Then
                 OnStateChange()
             End If
@@ -503,7 +503,7 @@ Class BatchEncoder
     Overrides Sub Encode()
         p.Script.Synchronize()
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_encode.bat"
-        Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Solve(CommandLines).Trim)
+        Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Expand(CommandLines).Trim)
 
         Using proc As New Proc
             proc.Init("Encoding video command line encoder: " + Name)
@@ -556,7 +556,7 @@ Class BatchEncoder
         script.Synchronize()
 
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_CompCheck.bat"
-        Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Solve(CompCheckCommandLines))
+        Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Expand(CompCheckCommandLines))
         Log.WriteLine(batchCode + BR2)
 
         Using proc As New Proc

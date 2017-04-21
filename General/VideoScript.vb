@@ -49,7 +49,7 @@ Public Class VideoScript
     End Function
 
     Function GetFullScript() As String
-        Return Macro.Solve(ModifyScript(GetScript, Engine)).Trim
+        Return Macro.Expand(ModifyScript(GetScript, Engine)).Trim
     End Function
 
     Sub RemoveFilter(category As String, Optional name As String = Nothing)
@@ -152,7 +152,7 @@ Public Class VideoScript
                     Optional comparePath As Boolean = True)
 
         If Path <> "" Then
-            Dim code = Macro.Solve(GetScript())
+            Dim code = Macro.Expand(GetScript())
 
             If convertToRGB Then
                 If Engine = ScriptEngine.AviSynth Then
@@ -550,7 +550,6 @@ Public Class FilterCategory
         misc.Filters.Add(New VideoFilter(misc.Name, "Prefetch(4)", "Prefetch(4)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "checkmate", "checkmate()"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Clense", "Clense()"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "f3kdb", "f3kdb()"))
         misc.Filters.Add(New VideoFilter(misc.Name, "UnDot", "UnDot()"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Tweak", "Tweak(hue = 0, sat = 1, bright = 0, cont = 1, coring = true)"))
         ret.Add(misc)
@@ -612,10 +611,9 @@ Public Class FilterCategory
             {New VideoFilter("Resize", "Bilinear", "clip = core.resize.Bilinear(clip, %target_width%, %target_height%)"),
              New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)"),
              New VideoFilter("Resize", "Point", "clip = core.resize.Point(clip, %target_width%, %target_height%)"),
-             New VideoFilter("Resize", "Gauss", "clip = core.resize.Gauss(clip, %target_width%, %target_height%)"),
-             New VideoFilter("Resize", "Sinc", "clip = core.resize.Sinc(clip, %target_width%, %target_height%)"),
              New VideoFilter("Resize", "Lanczos", "clip = core.resize.Lanczos(clip, %target_width%, %target_height%)"),
-             New VideoFilter("Resize", "Spline", "clip = core.resize.Spline(clip, %target_width%, %target_height%)")})
+             New VideoFilter("Resize", "Spline16", "clip = core.resize.Spline16(clip, %target_width%, %target_height%)"),
+             New VideoFilter("Resize", "Spline36", "clip = core.resize.Spline36(clip, %target_width%, %target_height%)")})
         ret.Add(resize)
 
         Dim field As New FilterCategory("Field")

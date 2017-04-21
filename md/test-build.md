@@ -23,6 +23,10 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - added support for hardcoded subtitles using VapourSynth for srt, ass, idx/vobsub, sup/pgs
 - added the possiblity to use special GUI macros like $select:val1;val2$ in filter profiles, this is now used in the defaults for AssumeFPS for instance
 - added new menu item icons 
+- apps dialog will show dependencies for scripts like QTGMC
+- flash3kyuu_deband VapourSynth support added
+- new macro %eval_ps:<expression>% added to evaluate PowerShell expressions
+- various improvements in the batch/cli audio encoder GUI 
 
 #### Fixed Bugs
 
@@ -42,6 +46,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - snap to desktop edges not working properly
 - fixed bug using UNC paths
 - copy to clipboard in MediaInfo dialog did not work
+- fixed PowerShell scripts not being executed on the GUI thread
+- fixed rare crash Win 7 failing to load included Segoe font file
 
 #### Tweaks
 
@@ -56,6 +62,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - audio file detection prefers now dtsma and thd files 
 - filter context menus open a lot quicker
 - if the name text box in the code editor is empty the main dialog will show the code
+- migrated C# HDR script to PowerShell
+- updated VapourSynth's built in filters
 
 #### Updated Tools
 
@@ -79,3 +87,4 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - ffms2 2.2000 test3
 - mvtools (vs) 18
 - VSFilterMod (avs, vs) 4
+- flash3kyuu_deband (avs, vs) 2.0.20140721

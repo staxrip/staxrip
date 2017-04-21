@@ -142,8 +142,8 @@ Class CommandLineDemuxer
             End If
 
             proc.Init(Name)
-            proc.File = Macro.Solve(Command)
-            proc.Arguments = Macro.Solve(Arguments)
+            proc.File = Macro.Expand(Command)
+            proc.Arguments = Macro.Expand(Arguments)
             proc.Start()
 
             If Command?.Contains("DGIndex") Then

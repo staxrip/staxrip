@@ -35,7 +35,6 @@ Public Class SimpleUI
 
     Protected Overrides Sub OnHandleCreated(e As EventArgs)
         MyBase.OnHandleCreated(e)
-        Dim f = FindForm()
 
         If Not DesignMode Then
             AddHandler FindForm.Load, Sub()

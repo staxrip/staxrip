@@ -214,29 +214,29 @@ Public MustInherit Class AudioProfile
 
     Function SolveMacros(value As String, silent As Boolean) As String
         If value = "" Then Return ""
-        value = value.Replace("%input%", File)
-        value = value.Replace("%output%", GetOutputFile)
-        value = value.Replace("%bitrate%", Bitrate.ToString)
-        value = value.Replace("%channels%", Channels.ToString)
-        value = value.Replace("%language_native%", Language.CultureInfo.NativeName)
-        value = value.Replace("%language_english%", Language.Name)
-        value = value.Replace("%delay%", Delay.ToString)
-        Return Macro.Solve(value, silent)
+        If value.Contains("""%input%""") Then value = value.Replace("""%input%""", File.Quotes)
+        If value.Contains("%input%") Then value = value.Replace("%input%", File.Quotes)
+        If value.Contains("""%output%""") Then value = value.Replace("""%output%""", GetOutputFile.Quotes)
+        If value.Contains("%output%") Then value = value.Replace("%output%", GetOutputFile.Quotes)
+        If value.Contains("%bitrate%") Then value = value.Replace("%bitrate%", Bitrate.ToString)
+        If value.Contains("%channels%") Then value = value.Replace("%channels%", Channels.ToString)
+        If value.Contains("%language_native%") Then value = value.Replace("%language_native%", Language.CultureInfo.NativeName)
+        If value.Contains("%language_english%") Then value = value.Replace("%language_english%", Language.Name)
+        If value.Contains("%delay%") Then value = value.Replace("%delay%", Delay.ToString)
+        Return Macro.Expand(value)
     End Function
 
     Shared Function GetDefaults() As List(Of AudioProfile)
         Dim ret As New List(Of AudioProfile)
-
         ret.Add(New GUIAudioProfile(AudioCodec.AAC, 0.35))
         ret.Add(New GUIAudioProfile(AudioCodec.Opus, 1) With {.Bitrate = 80})
         ret.Add(New GUIAudioProfile(AudioCodec.Flac, 0.3))
         ret.Add(New GUIAudioProfile(AudioCodec.Vorbis, 1))
         ret.Add(New GUIAudioProfile(AudioCodec.MP3, 4))
         ret.Add(New GUIAudioProfile(AudioCodec.AC3, 1.0) With {.Channels = 6, .Bitrate = 448})
-        ret.Add(New BatchAudioProfile("Command Line", 100, {}, "mp3", 2, "ffmpeg -i ""%input%"" -hide_banner -y ""%output%"""))
+        ret.Add(New BatchAudioProfile(320, {}, "mp3", 2, "ffmpeg -i %input% -b:a %bitrate%k -hide_banner -y %output%"))
         ret.Add(New MuxAudioProfile())
         ret.Add(New NullAudioProfile())
-
         Return ret
     End Function
 End Class
@@ -245,20 +245,19 @@ End Class
 Public Class BatchAudioProfile
     Inherits AudioProfile
 
-    Sub New(name As String,
-            bitrate As Integer,
+    Sub New(bitrate As Integer,
             input As String(),
             fileType As String,
             channels As Integer,
             batchCode As String)
 
-        MyBase.New(name, bitrate, input, fileType, channels)
+        MyBase.New(Nothing, bitrate, input, fileType, channels)
         Me.CommandLines = batchCode
         CanEditValue = True
     End Sub
 
     Overrides Function Edit() As DialogResult
-        Using f As New CommandLineAudioForm(Me)
+        Using f As New BatchAudioEncoderForm(Me)
             f.mbLanguage.Enabled = False
             f.lLanguage.Enabled = False
             f.tbDelay.Enabled = False
@@ -267,20 +266,48 @@ Public Class BatchAudioProfile
         End Using
     End Function
 
+    Public Overrides ReadOnly Property DefaultName As String
+        Get
+            Dim ch As String
+
+            Select Case Channels
+                Case 8
+                    ch += "7.1"
+                Case 7
+                    ch += "6.1"
+                Case 6
+                    ch += "5.1"
+                Case 2
+                    ch += "2.0"
+                Case 1
+                    ch += "Mono"
+                Case Else
+                    ch += Channels & ".0"
+            End Select
+
+            Return "Custom Batch Code | " + OutputFileType.Upper + " " & ch & " " & Bitrate & " Kbps"
+        End Get
+    End Property
+
+    Function GetCode() As String
+        Dim cl = SolveMacros(CommandLines).Trim
+
+        Return {
+            Package.ffmpeg,
+            Package.eac3to,
+            Package.BeSweet,
+            Package.qaac}.
+            Where(Function(pack) cl.ToLower.Contains(pack.Name.ToLower)).
+            Select(Function(pack) "set PATH=%PATH%;" + pack.GetDir).
+            Join(BR) + BR2 + "cd /D " + p.TempDir.Quotes + BR2 + cl
+    End Function
+
     Public Overrides Sub Encode()
         If File <> "" Then
             Dim bitrateBefore = p.VideoBitrate
             Dim targetPath = GetOutputFile()
 
-            Dim batchCode = {
-                Package.ffmpeg.GetDir,
-                Package.eac3to.GetDir,
-                Package.BeSweet.GetDir}.
-                Select(Function(arg) "set PATH=%PATH%;" + arg).
-                Join(BR) + BR2 +
-                "cd /D """ + p.TempDir + """" + BR2 +
-                SolveMacros(CommandLines).Trim
-
+            Dim batchCode = GetCode()
             Dim batchPath = p.TempDir + File.Base + "_audio.bat"
             batchCode = Proc.WriteBatchFile(batchPath, batchCode)
 
@@ -327,7 +354,7 @@ Public Class BatchAudioProfile
     End Sub
 
     Overrides Sub EditProject()
-        Using f As New CommandLineAudioForm(Me)
+        Using f As New BatchAudioEncoderForm(Me)
             f.ShowDialog()
         End Using
     End Sub

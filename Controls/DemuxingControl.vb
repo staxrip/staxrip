@@ -240,8 +240,8 @@ Class DemuxingControl
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK AndAlso sb.SelectedItem.ShowConfigDialog = DialogResult.OK Then
-            AddItem(sb.SelectedItem).Selected = True
+        If sb.Show = DialogResult.OK AndAlso sb.SelectedValue.ShowConfigDialog = DialogResult.OK Then
+            AddItem(sb.SelectedValue).Selected = True
         End If
     End Sub
 

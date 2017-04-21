@@ -65,7 +65,18 @@ Public Class Package
     Shared Property UnDot As New UnDotPackage
     Shared Property VSRip As New VSRipPackage
     Shared Property xvid_encraw As New xvid_encrawPackage
-    Shared Property flash3kyuu_deband As New flash3kyuu_debandPackage
+
+    Shared Property flash3kyuu_deband As Package = Add(New PluginPackage With {
+        .Name = "flash3kyuu_deband",
+        .Filename = "flash3kyuu_deband.dll",
+        .WebURL = "http://forum.doom9.org/showthread.php?t=161411",
+        .HelpURL = "https://f3kdb.readthedocs.io/en/latest/#",
+        .Description = "Simple debanding filter that can be quite effective for some anime sources.",
+        .AviSynthFilterNames = {"f3kdb"},
+        .AviSynthFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb", "f3kdb()")},
+        .VapourSynthFilterNames = {"f3kdb.Deband"},
+        .VapourSynthFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb", "clip = core.f3kdb.Deband(clip, preset = ""$select:msg:Choose a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")}})
+
     Shared Property Decomb As New DecombPackage
     Shared Property vinverse As New vinversePackage
 
@@ -292,22 +303,10 @@ Public Class Package
             .VapourSynthFilterNames = {"knlm.KNLMeansCL"},
             .AviSynthFilterNames = {"KNLMeansCL"},
             .AviSynthFiltersFunc = Function() {
-                New VideoFilter("Noise", "KNLMeansCL | Spatial Light", "KNLMeansCL(D = 0, A = 2, h = 2)"),
-                New VideoFilter("Noise", "KNLMeansCL | Spatial Medium", "KNLMeansCL(D = 0, A = 4, h = 4)"),
-                New VideoFilter("Noise", "KNLMeansCL | Spatial Strong", "KNLMeansCL(D = 0, A = 6, h = 6)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Light", "KNLMeansCL(D = 1, A = 1, h = 3)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Medium", "KNLMeansCL(D = 1, A = 1, h = 6)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Strong", "KNLMeansCL(D = 1, A = 1, h = 9)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "KNLMeansCL(D = 1, A = 1, h = 2)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "KNLMeansCL(D = 1, A = 1, h = 4)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "KNLMeansCL(D = 1, A = 1, h = 8)")},
             .VapourSynthFiltersFunc = Function() {
-                New VideoFilter("Noise", "KNLMeansCL | Spatial Light", "clip = core.knlm.KNLMeansCL(clip, d = 0, a = 2, h = 2)"),
-                New VideoFilter("Noise", "KNLMeansCL | Spatial Medium", "clip = core.knlm.KNLMeansCL(clip, d = 0, a = 4, h = 4)"),
-                New VideoFilter("Noise", "KNLMeansCL | Spatial Strong", "clip = core.knlm.KNLMeansCL(clip, d = 0, a = 6, h = 6)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Light", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 3)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Medium", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 6)"),
-                New VideoFilter("Noise", "KNLMeansCL | Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 9)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 2)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 4)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 8)")}})
@@ -1438,18 +1437,5 @@ Public Class DecombPackage
         HelpFile = "DecombReferenceManual.html"
         Description = "This package of plugin functions for Avisynth provides the means for removing combing artifacts from telecined progressive streams, interlaced streams, and mixtures thereof. Functions can be combined to implement inverse telecine (IVTC) for both NTSC and PAL streams."
         AviSynthFilterNames = {"Telecide", "FieldDeinterlace", "Decimate", "IsCombed"}
-    End Sub
-End Class
-
-Public Class flash3kyuu_debandPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "flash3kyuu_deband"
-        Filename = "flash3kyuu_deband.dll"
-        WebURL = "http://forum.doom9.org/showthread.php?t=161411"
-        HelpFile = "flash3kyuu_deband.txt"
-        Description = "Simple debanding filter that can be quite effective for some anime sources."
-        AviSynthFilterNames = {"f3kdb"}
     End Sub
 End Class

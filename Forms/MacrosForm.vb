@@ -23,7 +23,7 @@ Class MacrosForm
     Friend WithEvents lDescription As System.Windows.Forms.Label
     Friend WithEvents lNameTitle As System.Windows.Forms.Label
     Friend WithEvents lValueTitle As System.Windows.Forms.Label
-    Friend WithEvents bCopy As System.Windows.Forms.Button
+    Friend WithEvents bnCopy As System.Windows.Forms.Button
 
     Private components As System.ComponentModel.IContainer
 
@@ -37,7 +37,7 @@ Class MacrosForm
         Me.lDescription = New System.Windows.Forms.Label()
         Me.lNameTitle = New System.Windows.Forms.Label()
         Me.lValueTitle = New System.Windows.Forms.Label()
-        Me.bCopy = New System.Windows.Forms.Button()
+        Me.bnCopy = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'lv
@@ -113,20 +113,20 @@ Class MacrosForm
         '
         'bCopy
         '
-        Me.bCopy.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bCopy.AutoSize = True
-        Me.bCopy.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.bCopy.Location = New System.Drawing.Point(623, 49)
-        Me.bCopy.Name = "bCopy"
-        Me.bCopy.Size = New System.Drawing.Size(111, 58)
-        Me.bCopy.TabIndex = 11
-        Me.bCopy.Text = "Copy"
-        Me.bCopy.UseVisualStyleBackColor = True
+        Me.bnCopy.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnCopy.AutoSize = True
+        Me.bnCopy.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.bnCopy.Location = New System.Drawing.Point(623, 49)
+        Me.bnCopy.Name = "bCopy"
+        Me.bnCopy.Size = New System.Drawing.Size(111, 58)
+        Me.bnCopy.TabIndex = 11
+        Me.bnCopy.Text = "Copy"
+        Me.bnCopy.UseVisualStyleBackColor = True
         '
         'MacrosForm
         '
         Me.ClientSize = New System.Drawing.Size(744, 674)
-        Me.Controls.Add(Me.bCopy)
+        Me.Controls.Add(Me.bnCopy)
         Me.Controls.Add(Me.lValueTitle)
         Me.Controls.Add(Me.lNameTitle)
         Me.Controls.Add(Me.lDescription)
@@ -153,9 +153,7 @@ Class MacrosForm
         lv.FullRowSelect = True
         lv.MultiSelect = False
         lv.Columns.Add(New ColumnHeader())
-
         Native.SetWindowTheme(lv.Handle, "explorer", Nothing)
-
         ActiveControl = stb
     End Sub
 
@@ -223,13 +221,16 @@ Class MacrosForm
     End Sub
 
     Private Sub MacrosForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        MsgInfo("Use the keys Up, Down, Enter or double click a list item.")
+        Dim f As New HelpForm()
+        f.Doc.WriteStart(Text)
+        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        f.Show()
     End Sub
 
     Private Sub TaskForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         Select Case e.KeyData
             Case Keys.Enter
-                bCopy.PerformClick()
+                bnCopy.PerformClick()
                 Close()
         End Select
 
@@ -260,18 +261,17 @@ Class MacrosForm
     End Sub
 
     Private Sub lv_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles lv.MouseDoubleClick
-        bCopy.PerformClick()
+        bnCopy.PerformClick()
         Close()
     End Sub
 
     Private Sub lv_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lv.SelectedIndexChanged
-        bCopy.Text = "Copy"
+        bnCopy.Text = "Copy"
 
         If lv.SelectedItems.Count > 0 Then
             Dim item = lv.SelectedItems(0)
-
             lName.Text = item.Text
-            lValue.Text = Macro.Solve(item.Text, True)
+            lValue.Text = Macro.Expand(item.Text)
             lDescription.Text = CStr(item.Tag)
         Else
             lName.Text = ""
@@ -280,12 +280,12 @@ Class MacrosForm
         End If
     End Sub
 
-    Private Sub bCopy_Click(sender As Object, e As EventArgs) Handles bCopy.Click
+    Private Sub bCopy_Click(sender As Object, e As EventArgs) Handles bnCopy.Click
         Clipboard.SetText(lName.Text)
-        bCopy.Font = New Font(bCopy.Font, FontStyle.Bold)
+        bnCopy.Font = New Font(bnCopy.Font, FontStyle.Bold)
         Application.DoEvents()
         Thread.Sleep(300)
-        bCopy.Font = New Font(bCopy.Font, FontStyle.Regular)
+        bnCopy.Font = New Font(bnCopy.Font, FontStyle.Regular)
     End Sub
 
     Private Sub MacrosForm_Load(sender As Object, e As EventArgs) Handles Me.Load

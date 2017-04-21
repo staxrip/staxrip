@@ -705,17 +705,18 @@ table {
         WriteElement("p", rawText)
     End Sub
 
+    Sub WriteP(title As String, rawText As String, Optional convert As Boolean = False)
+        If convert Then rawText = ConvertChars(rawText)
+        WriteElement("h2", title)
+        WriteElement("p", rawText)
+    End Sub
+
     Sub WriteH2(rawText As String)
         WriteElement("h2", rawText)
     End Sub
 
     Sub WriteH3(rawText As String)
         WriteElement("h3", rawText)
-    End Sub
-
-    Sub WriteP(title As String, rawText As String)
-        WriteElement("h2", title)
-        WriteElement("p", rawText)
     End Sub
 
     Sub WriteElement(elementName As String, rawText As String)
@@ -734,11 +735,9 @@ table {
 
     Shared Function ConvertChars(value As String) As String
         value = value.FixBreak
-
         If value.Contains("<") Then value = value.Replace("<", "&lt;")
         If value.Contains(">") Then value = value.Replace(">", "&gt;")
         If value.Contains(BR) Then value = value.Replace(BR, "<br>")
-
         Return value
     End Function
 
@@ -841,7 +840,7 @@ table {
         If text Is Nothing Then
             Writer.WriteElementString("p", "")
         Else
-            WriteP(text)
+            WriteP(text, True)
         End If
 
         Writer.WriteStartElement("table")
@@ -1134,7 +1133,9 @@ Public Class Command
 
         For i = 0 To checkedParams.Count - 1
             If copiedParams.Count > 0 Then
-                If checkedParams(i).GetType Is copiedParams(0).GetType Then
+                If Not copiedParams(0) Is Nothing AndAlso
+                    checkedParams(i).GetType Is copiedParams(0).GetType Then
+
                     checkedParams(i) = copiedParams(0)
                     copiedParams.RemoveAt(0)
                 End If

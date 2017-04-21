@@ -56,6 +56,18 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function Upper(instance As String) As String
+        If instance = "" Then Return ""
+        Return instance.ToUpper
+    End Function
+
+    <Extension()>
+    Function Lower(instance As String) As String
+        If instance = "" Then Return ""
+        Return instance.ToLower
+    End Function
+
+    <Extension()>
     Function ChangeExt(instance As String, value As String) As String
         If instance = "" Then Return ""
         If value = "" Then Return instance

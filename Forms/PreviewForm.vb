@@ -916,7 +916,7 @@ Class PreviewForm
                       <Description("File path which can contain macros.")>
                       path As String)
 
-        path = Macro.Solve(path)
+        path = Macro.Expand(path)
         Dim q = InputBox.Show("Enter the compression quality.", "Compression Quality", s.Storage.GetInt("preview compression quality", 95).ToString)
 
         If q.IsInt Then

@@ -210,7 +210,7 @@ Public Class MediaInfo
         MediaInfo_Option(mi.Handle, "Complete", "0")
         MediaInfo_Option(mi.Handle, "Language", "raw")
         Dim ret = Marshal.PtrToStringUni(MediaInfo_Inform(mi.Handle, 0))
-        Return Regex.Replace(ret, "Unique ID +: .+\n", "").FormatColumn(":").Trim
+        Return Regex.Replace(ret, "UniqueID/String +: .+\n", "").FormatColumn(":").Trim
     End Function
 
     Shared Function GetCompleteSummary(path As String) As String

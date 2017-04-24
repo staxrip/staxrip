@@ -28,6 +28,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - new macro %eval_ps:<expression>% added to evaluate PowerShell expressions
 - various improvements in the batch/cli audio encoder GUI 
 - deafults tab added to video filter profile editor and several menu editors
+- added option to encode audio with the channels count of the audio source file
 
 #### Fixed Bugs
 

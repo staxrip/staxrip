@@ -356,7 +356,6 @@ Class AudioForm
         Me.rtbCmdlPreview.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.rtbCmdlPreview.BlockPaint = False
         Me.rtbCmdlPreview.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TableLayoutPanel1.SetColumnSpan(Me.rtbCmdlPreview, 2)
         Me.rtbCmdlPreview.LastCommandLine = Nothing
@@ -525,12 +524,6 @@ Class AudioForm
         InitializeComponent()
         rtbCmdlPreview.ReadOnly = True
 
-        mbChannels.Add("1 (Mono)", 1)
-        mbChannels.Add("2 (Stereo)", 2)
-        mbChannels.Add("6 (5.1)", 6)
-        mbChannels.Add("7 (6.1)", 7)
-        mbChannels.Add("8 (7.1)", 8)
-
         mbSamplingRate.Add("Original", 0)
         mbSamplingRate.Add("11025 Hz", 11025)
         mbSamplingRate.Add("22050 Hz", 22050)
@@ -572,7 +565,6 @@ Class AudioForm
     Sub SetValues(gap As GUIAudioProfile)
         gap.Bitrate = TempProfile.Bitrate
         gap.Language = TempProfile.Language
-        gap.Channels = TempProfile.Channels
         gap.Delay = TempProfile.Delay
         gap.Name = TempProfile.Name
         gap.StreamName = TempProfile.StreamName
@@ -715,7 +707,7 @@ Class AudioForm
     End Sub
 
     Private Sub mbChannels_ValueChanged() Handles mbChannels.ValueChangedUser
-        TempProfile.Channels = mbChannels.GetValue(Of Integer)()
+        TempProfile.Params.ChannelsMode = mbChannels.GetValue(Of ChannelsMode)()
         UpdateBitrate()
         UpdateControls()
     End Sub
@@ -815,7 +807,7 @@ Class AudioForm
         tbName.SendMessageCue(TempProfile.Name, False)
 
         mbCodec.Value = TempProfile.Params.Codec
-        mbChannels.Value = TempProfile.Channels
+        mbChannels.Value = TempProfile.Params.ChannelsMode
         mbLanguage.Value = TempProfile.Language
         mbSamplingRate.Value = TempProfile.Params.SamplingRate
         mbEncoder.Value = TempProfile.Params.Encoder

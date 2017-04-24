@@ -373,9 +373,6 @@
     <Compile Include="Forms\EventCommandsEditor.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Misc Forms.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\MacroEditor.vb">
       <SubType>Form</SubType>
     </Compile>

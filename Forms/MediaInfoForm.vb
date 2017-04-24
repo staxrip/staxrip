@@ -45,7 +45,6 @@ Class MediaInfoForm
         Me.rtb.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.rtb.BlockPaint = False
         Me.rtb.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.rtb.Location = New System.Drawing.Point(116, 6)
         Me.rtb.Margin = New System.Windows.Forms.Padding(6)

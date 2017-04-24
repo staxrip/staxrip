@@ -1,12 +1,7 @@
 Imports System.Reflection
 Imports System.ComponentModel
-Imports System.IO
 Imports System.Runtime.InteropServices
-Imports System.Drawing.Drawing2D
 Imports System.Windows.Forms.VisualStyles
-Imports System.Text
-Imports System.Text.RegularExpressions
-Imports System.Drawing.Design
 Imports System.Threading
 Imports System.Threading.Tasks
 
@@ -456,6 +451,8 @@ Namespace UI
     Public Class RichTextBoxEx
         Inherits RichTextBox
 
+        <Browsable(False)>
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property BlockPaint As Boolean
 
         Private BorderRect As Native.RECT

@@ -14,11 +14,11 @@ Public MustInherit Class AudioProfile
     Property Language As New Language
     Property Delay As Integer
     Property StreamName As String = ""
-    Property Channels As Integer = 2
     Property Gain As Single
     Property Streams As List(Of AudioStream) = New List(Of AudioStream)
     Property [Default] As Boolean
 
+    Overridable Property Channels As Integer = 2
     Overridable Property OutputFileType As String = "unknown"
     Overridable Property Bitrate As Double
     Overridable Property SupportedInput As String()
@@ -509,10 +509,7 @@ Class MuxAudioProfile
             page.ResumeLayout()
 
             Dim ret = f.ShowDialog()
-
-            If ret = DialogResult.OK Then
-                ui.Save()
-            End If
+            If ret = DialogResult.OK Then ui.Save()
 
             Return ret
         End Using
@@ -528,7 +525,6 @@ Class GUIAudioProfile
     Sub New(codec As AudioCodec, quality As Single)
         MyBase.New(Nothing)
 
-        Me.Channels = Channels
         Params.Codec = codec
         Params.Quality = quality
 
@@ -541,6 +537,31 @@ Class GUIAudioProfile
 
         Bitrate = GetBitrate()
     End Sub
+
+    Public Overrides Property Channels As Integer
+        Get
+            Select Case Params.ChannelsMode
+                Case ChannelsMode.Original
+                    If Not Stream Is Nothing Then
+                        Return Stream.Channels
+                    ElseIf File <> "" AndAlso IO.File.Exists(File) Then
+                        Return MediaInfo.GetChannels(File)
+                    End If
+                Case ChannelsMode._1
+                    Return 1
+                Case ChannelsMode._6
+                    Return 6
+                Case ChannelsMode._7
+                    Return 7
+                Case ChannelsMode._8
+                    Return 8
+            End Select
+
+            Return 2
+        End Get
+        Set(value As Integer)
+        End Set
+    End Property
 
     Private SourceBitDepthValue As Integer
 
@@ -1007,19 +1028,17 @@ Class GUIAudioProfile
             If Params Is Nothing Then Exit Property
             Dim ch As String
 
-            Select Case Channels
-                Case 8
+            Select Case Params.ChannelsMode
+                Case ChannelsMode._8
                     ch += " 7.1"
-                Case 7
+                Case ChannelsMode._7
                     ch += " 6.1"
-                Case 6
+                Case ChannelsMode._6
                     ch += " 5.1"
-                Case 2
+                Case ChannelsMode._2
                     ch += " 2.0"
-                Case 1
+                Case ChannelsMode._1
                     ch += " Mono"
-                Case Else
-                    ch += " " & Channels & "ch"
             End Select
 
             Dim circa = If(Params.RateMode = AudioRateMode.VBR OrElse Params.Codec = AudioCodec.Flac, "~", "")
@@ -1135,6 +1154,7 @@ Class GUIAudioProfile
         Property Quality As Single = 0.3
         Property RateMode As AudioRateMode
         Property SamplingRate As Integer
+        Property ChannelsMode As ChannelsMode
     End Class
 End Class
 
@@ -1180,4 +1200,13 @@ Public Enum AudioDownMixMode
     <DispName("Simple")> Stereo
     <DispName("Dolby Surround")> Surround
     <DispName("Dolby Surround 2")> Surround2
+End Enum
+
+Public Enum ChannelsMode
+    Original
+    <DispName("1 (Mono)")> _1
+    <DispName("2 (Stereo)")> _2
+    <DispName("5.1")> _6
+    <DispName("6.1")> _7
+    <DispName("7.1")> _8
 End Enum

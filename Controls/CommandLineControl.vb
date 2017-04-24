@@ -121,17 +121,9 @@ Class CommandLineControl
             If Not RestoreFunc Is Nothing Then
                 f.bnContext.Text = " Restore Defaults... "
                 f.bnContext.Visible = True
+                f.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then f.MacroEditorControl.Value = RestoreFunc.Invoke)
+                f.MacroEditorControl.rtbDefaults.Text = RestoreFunc.Invoke
             End If
-
-            Dim t = f
-
-            Dim resetAction = Sub()
-                                  If MsgOK("Restore defaults?") Then
-                                      t.MacroEditorControl.Value = RestoreFunc.Invoke
-                                  End If
-                              End Sub
-
-            f.bnContext.AddClickAction(resetAction)
 
             If f.ShowDialog(FindForm) = DialogResult.OK Then
                 Presets = f.MacroEditorControl.Value.ReplaceUnicode
@@ -142,6 +134,7 @@ Class CommandLineControl
 
     Private Sub bCmdlAddition_Click() Handles bu.Click
         Dim cms = TextCustomMenu.GetMenu(Presets, bu, components, AddressOf MenuItenClick)
+        Me.components.Add(cms)
         cms.Items.Add(New ToolStripSeparator)
         cms.Items.Add(New ActionMenuItem("Edit Menu...", AddressOf EditPresets))
         cms.Show(bu, 0, bu.Height)

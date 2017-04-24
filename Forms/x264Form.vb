@@ -878,7 +878,6 @@ Class x264Form
         Me.rtbCommandLine.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.rtbCommandLine.BlockPaint = False
         Me.rtbCommandLine.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.rtbCommandLine.LastCommandLine = Nothing
         Me.rtbCommandLine.Location = New System.Drawing.Point(8, 453)

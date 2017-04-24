@@ -67,6 +67,11 @@ Public Class NVIDIAEncoder
     End Property
 
     Overrides Sub Encode()
+        If OutputExt = "h265" Then
+            Dim codecs = ProcessHelp.GetStdOut(Package.NVEncC.Path, "--check-hw").Right("Codec(s)")
+            If Not codecs?.ToLower.Contains("hevc") Then Throw New ErrorAbortException("NVEncC Error", "H.265/HEVC isn't supported by the graphics card.")
+        End If
+
         p.Script.Synchronize()
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_NVEncC.bat"
         Dim batchCode = Proc.WriteBatchFile(batchPath, Params.GetCommandLine(True, True))

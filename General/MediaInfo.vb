@@ -208,6 +208,7 @@ Public Class MediaInfo
     Shared Function GetSummary(path As String) As String
         Dim mi = GetMediaInfo(path)
         MediaInfo_Option(mi.Handle, "Complete", "0")
+        MediaInfo_Option(mi.Handle, "Language", "raw")
         Dim ret = Marshal.PtrToStringUni(MediaInfo_Inform(mi.Handle, 0))
         Return Regex.Replace(ret, "Unique ID +: .+\n", "").FormatColumn(":").Trim
     End Function
@@ -273,6 +274,25 @@ Public Class MediaInfo
     Shared Function GetFrameRate(path As String,
                                  Optional defaultValue As Double = 25) As Double
         Return GetMediaInfo(path).GetFrameRate(defaultValue)
+    End Function
+
+    Function GetChannels() As Integer
+        Dim channelString = GetInfo(MediaInfoStreamKind.Audio, "Channel(s)")
+        Dim ret = channelString.ToInt
+        If ret = 0 Then ret = GetInfo(MediaInfoStreamKind.Audio, "Channel(s)_Original").ToInt
+
+        If ret = 0 Then
+            Dim match = Regex.Match(channelString, "(\d+) */ *(\d+)")
+            If match.Success Then ret = match.Groups(1).Value.ToInt
+        End If
+
+        If ret = 0 Then ret = 2
+        Return ret
+    End Function
+
+    Shared Function GetChannels(path As String) As Integer
+        Dim mi = GetMediaInfo(path)
+        Return mi.GetChannels
     End Function
 
     Shared Function GetAudioCodecs(path As String) As String

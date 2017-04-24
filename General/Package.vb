@@ -59,6 +59,14 @@ Public Class Package
         .Description = "nvidia GPU accelerated H.264/H.265 encoder.",
         .HelpFile = "help.txt"})
 
+    Shared Property mvtools2 As Package = Add(New PluginPackage With {
+            .Name = "mvtools2",
+            .Filename = "mvtools2.dll",
+            .WebURL = "https://github.com/pinterf/mvtools",
+            .HelpURL = "http://avisynth.org.ru/mvtools/mvtools2.html",
+            .Description = "MVTools is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
+            .AviSynthFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDeGrain1", "MDeGrain2", "MDegrain3"}})
+
     Shared Property ProjectX As New ProjectXPackage
     Shared Property qaac As New qaacPackage
     Shared Property TDeint As New TDeintPackage
@@ -176,7 +184,7 @@ Public Class Package
         .IsRequiredFunc = Function() TypeOf p.VideoEncoder Is AMDEncoder,
         .WebURL = "https://onedrive.live.com/?id=6BDD4375AC8933C6!516&cid=6BDD4375AC8933C6"})
 
-    Public Shared DGDecodeNV As New PluginPackage With {
+    Shared Property DGDecodeNV As Package = Add(New PluginPackage With {
         .Name = "DGDecodeNV",
         .Filename = "DGDecodeNV.dll",
         .WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html",
@@ -185,9 +193,9 @@ Public Class Package
         .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource("),
         .AviSynthFilterNames = {"DGSource"},
         .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")"),
-                                           New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")}}
+                                           New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")}})
 
-    Public Shared ffms2 As New PluginPackage With {
+    Shared Property ffms2 As Package = Add(New PluginPackage With {
         .Name = "ffms2",
         .Filename = "ffms2.dll",
         .WebURL = "https://github.com/FFMS/ffms2",
@@ -196,7 +204,7 @@ Public Class Package
         .AviSynthFilterNames = {"FFVideoSource", "FFAudioSource"},
         .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%source_temp_file%.ffindex"", colorspace = ""YV12"")")},
         .VapourSynthFilterNames = {"ffms2"},
-        .VapourSynthFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")")}}
+        .VapourSynthFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")")}})
 
     Shared Function Add(pack As Package) As Package
         Items(pack.ID) = pack
@@ -218,7 +226,6 @@ Public Class Package
         Add(BeSweet)
         Add(checkmate)
         Add(DGDecodeIM)
-        Add(DGDecodeNV)
         Add(DGIndexIM)
         Add(DGIndexNV)
         Add(DivX265)
@@ -243,7 +250,6 @@ Public Class Package
         Add(x264_10)
         Add(x265)
         Add(xvid_encraw)
-        Add(ffms2)
         Add(avs2pipemod)
 
 #Region "misc"
@@ -430,12 +436,12 @@ Public Class Package
             .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "nnedi3", "nnedi3(field = 1)")}})
 
         Add(New PluginPackage With {
-            .Name = "mvtools2",
-            .Filename = "mvtools2.dll",
-            .WebURL = "https://github.com/pinterf/mvtools",
-            .HelpURL = "http://avisynth.org.ru/mvtools/mvtools2.html",
-            .Description = "MVTools is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
-            .AviSynthFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDeGrain1", "MDeGrain2", "MDegrain3"}})
+            .Name = "TIVTC",
+            .Filename = "TIVTC.dll",
+            .WebURL = "https://github.com/pinterf/TIVTC",
+            .HelpURL = "http://avisynth.nl/index.php/TIVTC",
+            .Description = "TIVTC is a plugin package containing 7 different filters and 3 conditional functions.",
+            .AviSynthFilterNames = {"TFM", "TDecimate", "MergeHints", "FrameDiff", "FieldDiff", "ShowCombedTIVTC", "RequestLinear"}})
 
         Add(New PluginPackage With {
             .Name = "masktools2",

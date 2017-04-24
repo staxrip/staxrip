@@ -345,10 +345,13 @@ Namespace UI
 
             Dim img = Await ImageHelp.GetSymbolImageAsync(symbol)
 
-            If Not mi.IsDisposed Then
-                mi.ImageScaling = ToolStripItemImageScaling.None
-                mi.Image = img
-            End If
+            Try
+                If Not mi.IsDisposed Then
+                    mi.ImageScaling = ToolStripItemImageScaling.None
+                    mi.Image = img
+                End If
+            Catch
+            End Try
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
@@ -612,19 +615,13 @@ Namespace UI
             Using f As New MacroEditor
                 f.SetMacroDefaults()
                 f.MacroEditorControl.Value = value
+                f.MacroEditorControl.rtbDefaults.Text = defaults
                 f.Text = "Menu Editor"
-                Dim t = f
-
-                Dim resetAction = Sub()
-                                      If MsgOK("Restore defaults?") Then
-                                          t.MacroEditorControl.Value = defaults
-                                      End If
-                                  End Sub
 
                 If helpName <> "" Then
                     f.bnContext.Text = " Restore Defaults... "
                     f.bnContext.Visible = True
-                    f.bnContext.AddClickAction(resetAction)
+                    f.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then f.MacroEditorControl.Value = defaults)
                 End If
 
                 If f.ShowDialog(owner) = DialogResult.OK Then

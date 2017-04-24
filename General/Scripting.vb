@@ -1,29 +1,23 @@
-﻿Imports System.Dynamic
-Imports System.Management.Automation.Runspaces
+﻿Imports System.Management.Automation.Runspaces
 Imports System.Threading.Tasks
 Imports Microsoft.CodeAnalysis.CSharp.Scripting
 Imports Microsoft.CodeAnalysis.Scripting
 
 Public Class Scripting
-    Shared Sub RunCSharp(code As String, Optional hideErrors As Boolean = False)
-        RunCSharpAsync(code, hideErrors).Wait()
+    Shared Sub RunCSharp(code As String)
+        RunCSharpAsync(code).Wait()
     End Sub
 
-    Private Shared Async Function RunCSharpAsync(code As String, Optional hideErrors As Boolean = False) As Task(Of Object)
+    Private Shared Async Function RunCSharpAsync(code As String) As Task(Of Object)
         Try
-            If Not s.Storage.GetBool("c# scripting removal") Then
-                MsgWarn("C# scripting support will be removed, use PowerShell scripting instead.")
-                s.Storage.SetBool("c# scripting removal", True)
-            End If
-
+            MsgWarn("C# scripting support will be removed, use PowerShell scripting instead.")
             Dim options = ScriptOptions.Default.WithImports(
             "StaxRip", "System.Linq", "System.IO", "System.Text.RegularExpressions").
             WithReferences(GetType(Scripting).Assembly,
                            GetType(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo).Assembly)
-
             Await CSharpScript.Create(code, options).RunAsync()
         Catch ex As Exception
-            If Not hideErrors Then MsgError(ex.Message)
+            g.ShowException(ex)
         End Try
     End Function
 

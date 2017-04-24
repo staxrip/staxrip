@@ -59,7 +59,6 @@ Partial Class CommandLineForm
         Me.rtbCommandLine.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.rtbCommandLine.BlockPaint = False
         Me.rtbCommandLine.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TableLayoutPanel1.SetColumnSpan(Me.rtbCommandLine, 4)
         Me.rtbCommandLine.LastCommandLine = Nothing

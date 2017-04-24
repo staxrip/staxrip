@@ -455,10 +455,7 @@ Public Class SimpleUI
             Using f As New MacroEditor
                 f.SetBatchDefaults()
                 f.MacroEditorControl.Value = Text
-
-                If f.ShowDialog() = DialogResult.OK Then
-                    Text = f.MacroEditorControl.Value
-                End If
+                If f.ShowDialog() = DialogResult.OK Then Text = f.MacroEditorControl.Value
             End Using
         End Sub
 
@@ -466,10 +463,7 @@ Public Class SimpleUI
             Using f As New MacroEditor
                 f.SetMacroDefaults()
                 f.MacroEditorControl.Value = Text
-
-                If f.ShowDialog() = DialogResult.OK Then
-                    Text = f.MacroEditorControl.Value
-                End If
+                If f.ShowDialog() = DialogResult.OK Then Text = f.MacroEditorControl.Value
             End Using
         End Sub
     End Class

@@ -803,6 +803,10 @@ Public Class x265Params
         .Switch = "--multi-pass-opt-distortion",
         .Text = "Multipass refinement of qp based on distortion data"}
 
+    Property LimitTU As New NumParam With {
+        .Switch = "--limit-tu",
+        .Text = "Limit TU:", .MinMaxStep = {0, 4, 1}}
+
     Private ItemsValue As List(Of CommandLineParam)
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -818,7 +822,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--analysis-mode", .Text = "Analysis Mode:", .Options = {"off", "save", "load"}},
                     MinCuSize, MaxCuSize, MaxTuSize, LimitRefs,
                     New NumParam With {.Switch = "--refine-level", .Text = "Refine Level:", .MinMaxStep = {1, 10, 1}, .InitValue = 5},
-                    New NumParam With {.Switch = "--limit-tu", .Text = "Limit TU:", .MinMaxStep = {0, 4, 1}},
+                    LimitTU,
                     TUintra, TUinter, rdoqLevel,
                     New NumParam() With {.Switch = "--dynamic-rd", .Text = "Dynamic RD:", .MinMaxStepDec = {0, 4, 1, 1}})
                 Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra,
@@ -1070,16 +1074,17 @@ Public Class x265Params
         DeblockB.Value = 0
         FrameThreads.Value = 0
         IPRatio.Value = 1.4
+        LimitModes.Value = False
+        LimitRefs.Value = 3
+        LimitTU.Value = 0
+        LookaheadSlices.Value = 8
         MaxCuSize.Value = 0
         MinCuSize.Value = 3
         PBRatio.Value = 1.3
         PsyRD.Value = 2.0
         PsyRDOQ.Value = 1
         QComp.Value = 0.6
-        LookaheadSlices.Value = 8
         RecursionSkip.Value = True
-        LimitRefs.Value = 3
-        LimitModes.Value = False
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -1281,6 +1286,7 @@ Public Class x265Params
                 FastIntra.Value = False
                 LimitModes.Value = True
                 LimitRefs.Value = 2
+                LimitTU.Value = 4
                 LookaheadSlices.Value = 4
                 MaxMerge.Value = 3
                 MErange.Value = 57
@@ -1308,6 +1314,7 @@ Public Class x265Params
                 EarlySkip.Value = False
                 FastIntra.Value = False
                 LimitModes.Value = True
+                LimitTU.Value = 4
                 LookaheadSlices.Value = 4
                 MaxMerge.Value = 4
                 MErange.Value = 57
@@ -1363,16 +1370,17 @@ Public Class x265Params
         DeblockB.DefaultValue = 0
         FrameThreads.DefaultValue = 0
         IPRatio.DefaultValue = 1.4
+        LimitModes.DefaultValue = False
+        LimitRefs.DefaultValue = 3
+        LimitTU.DefaultValue = 0
+        LookaheadSlices.DefaultValue = 8
         MaxCuSize.DefaultValue = 0
         MinCuSize.DefaultValue = 3
         PBRatio.DefaultValue = 1.3
         PsyRD.DefaultValue = 2.0
         PsyRDOQ.DefaultValue = 1
         QComp.DefaultValue = 0.6
-        LookaheadSlices.DefaultValue = 8
         RecursionSkip.DefaultValue = True
-        LimitRefs.DefaultValue = 3
-        LimitModes.DefaultValue = False
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -1574,6 +1582,7 @@ Public Class x265Params
                 FastIntra.DefaultValue = False
                 LimitModes.DefaultValue = True
                 LimitRefs.DefaultValue = 2
+                LimitTU.DefaultValue = 4
                 LookaheadSlices.DefaultValue = 4
                 MaxMerge.DefaultValue = 3
                 MErange.DefaultValue = 57
@@ -1601,6 +1610,7 @@ Public Class x265Params
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = False
                 LimitModes.DefaultValue = True
+                LimitTU.DefaultValue = 4
                 LookaheadSlices.DefaultValue = 4
                 MaxMerge.DefaultValue = 4
                 MErange.DefaultValue = 57

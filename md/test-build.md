@@ -27,6 +27,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - flash3kyuu_deband VapourSynth support added
 - new macro %eval_ps:<expression>% added to evaluate PowerShell expressions
 - various improvements in the batch/cli audio encoder GUI 
+- deafults tab added to video filter profile editor and several menu editors
 
 #### Fixed Bugs
 
@@ -65,17 +66,18 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - migrated C# HDR script to PowerShell
 - updated VapourSynth's built in filters
 - up/down menu items for the avs/vs filter list in main dialog
+- x265 --limit-tu defaults for slower and veryslow presets updated
 
 #### Updated Tools
 
 - QSVEncC 2.62
-- masktools2 2.2.2
 - VCEEncC 3.06
 - HAvsFunc 2017-03-06
 - x264 2762
 - MediaInfo 0.7.93
 - ffmpeg 3.2.2
 - qaac 2.62
+- mvtools (vs) 18
 - L-SMASH-Works (avs) 929
 - vslsmashsource (vs) 929
 - KNLMeansCL 1.0.2
@@ -83,10 +85,11 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - RgTools (avs) 0.95
 - AviSynth+ 2455
 - VapourSynth 37
-- x265 2.3+30
-- mkvtoolnix 10.0.0
 - ffms2 2.2000 test3
-- mvtools (vs) 18
 - VSFilterMod (avs, vs) 4
 - flash3kyuu_deband (avs, vs) 2.0.20140721
-- mp4box 0.7.0
+- TIVTC (avs) 1.0.6
+- mkvtoolnix 11.0.0
+- x265 2.4+2
+- mvtools2 (avs) 2.7.16.22
+- masktools2 2.2.7

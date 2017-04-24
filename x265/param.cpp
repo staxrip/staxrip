@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2013 x265 project
+ * Copyright (C) 2013-2017 MulticoreWare, Inc
  *
  * Authors: Deepthi Nandakumar <deepthi@multicorewareinc.com>
  *          Min Chen <min.chen@multicorewareinc.com>
@@ -187,7 +187,7 @@ void x265_param_default(x265_param* param)
     /* SAO Loop Filter */
     param->bEnableSAO = 1;
     param->bSaoNonDeblocked = 0;
-
+    param->bLimitSAO = 0;
     /* Coding Quality */
     param->cbQpOffset = 0;
     param->crQpOffset = 0;
@@ -271,7 +271,10 @@ void x265_param_default(x265_param* param)
     param->bOptCUDeltaQP        = 0;
     param->bAQMotion = 0;
     param->bHDROpt = 0;
+    param->analysisRefineLevel = 5;
 
+    param->toneMapFile = NULL;
+    param->bDhdr10opt = 0;
 }
 
 int x265_param_default_preset(x265_param* param, const char* preset, const char* tune)
@@ -395,6 +398,7 @@ int x265_param_default_preset(x265_param* param, const char* preset, const char*
             param->limitModes = 1;
             param->bIntraInBFrames = 1;
             param->lookaheadSlices = 4; // limit parallelism as already enough work exists
+            param->limitTU = 4;
         }
         else if (!strcmp(preset, "veryslow"))
         {
@@ -416,6 +420,7 @@ int x265_param_default_preset(x265_param* param, const char* preset, const char*
             param->limitModes = 1;
             param->bIntraInBFrames = 1;
             param->lookaheadSlices = 0; // disabled for best quality
+            param->limitTU = 4;
         }
         else if (!strcmp(preset, "placebo"))
         {
@@ -933,6 +938,7 @@ int x265_param_parse(x265_param* p, const char* name, const char* value)
         OPT("multi-pass-opt-distortion") p->analysisMultiPassDistortion = atobool(value);
         OPT("aq-motion") p->bAQMotion = atobool(value);
         OPT("dynamic-rd") p->dynamicRd = atof(value);
+        OPT("refine-level") p->analysisRefineLevel = atoi(value);
         OPT("ssim-rd")
         {
             int bval = atobool(value);
@@ -945,6 +951,9 @@ int x265_param_parse(x265_param* p, const char* name, const char* value)
         }
         OPT("hdr") p->bEmitHDRSEI = atobool(value);
         OPT("hdr-opt") p->bHDROpt = atobool(value);
+        OPT("limit-sao") p->bLimitSAO = atobool(value);
+        OPT("dhdr10-info") p->toneMapFile = strdup(value);
+        OPT("dhdr10-opt") p->bDhdr10opt = atobool(value);
         else
             return X265_PARAM_BAD_NAME;
     }
@@ -1277,6 +1286,8 @@ int x265_check_params(x265_param* param)
           "Strict-cbr cannot be applied without specifying target bitrate or vbv bufsize");
     CHECK(param->analysisMode && (param->analysisMode < X265_ANALYSIS_OFF || param->analysisMode > X265_ANALYSIS_LOAD),
         "Invalid analysis mode. Analysis mode 0: OFF 1: SAVE : 2 LOAD");
+    CHECK(param->analysisMode && (param->analysisRefineLevel < 1 || param->analysisRefineLevel > 10),
+        "Invalid analysis refine level. Value must be between 1 and 10 (inclusive)");
     CHECK(param->rc.qpMax < QP_MIN || param->rc.qpMax > QP_MAX_MAX,
         "qpmax exceeds supported range (0 to 69)");
     CHECK(param->rc.qpMin < QP_MIN || param->rc.qpMin > QP_MAX_MAX,
@@ -1425,6 +1436,7 @@ void x265_print_params(x265_param* param)
     TOOLOPT(param->limitModes, "limit-modes");
     TOOLVAL(param->rdLevel, "rd=%d");
     TOOLVAL(param->dynamicRd, "dynamic-rd=%.2f");
+    TOOLOPT(param->bSsimRd, "ssim-rd");
     TOOLVAL(param->psyRd, "psy-rd=%.2lf");
     TOOLVAL(param->rdoqLevel, "rdoq=%d");
     TOOLVAL(param->psyRdoq, "psy-rdoq=%.2lf");
@@ -1461,6 +1473,9 @@ void x265_print_params(x265_param* param)
     TOOLOPT(!param->bSaoNonDeblocked && param->bEnableSAO, "sao");
     TOOLOPT(param->rc.bStatWrite, "stats-write");
     TOOLOPT(param->rc.bStatRead,  "stats-read");
+#if ENABLE_DYNAMIC_HDR10
+    TOOLVAL(param->toneMapFile != NULL, "dhdr10-info");
+#endif
     x265_log(param, X265_LOG_INFO, "tools:%s\n", buf);
     fflush(stderr);
 }
@@ -1525,6 +1540,7 @@ char *x265_param2string(x265_param* p, int padx, int pady)
     s += sprintf(s, " limit-tu=%d", p->limitTU);
     s += sprintf(s, " rdoq-level=%d", p->rdoqLevel);
     s += sprintf(s, " dynamic-rd=%.2f", p->dynamicRd);
+    BOOL(p->bSsimRd, "ssim-rd");
     BOOL(p->bEnableSignHiding, "signhide");
     BOOL(p->bEnableTransformSkip, "tskip");
     s += sprintf(s, " nr-intra=%d", p->noiseReductionIntra);
@@ -1651,6 +1667,9 @@ char *x265_param2string(x265_param* p, int padx, int pady)
     BOOL(p->bAQMotion, "aq-motion");
     BOOL(p->bEmitHDRSEI, "hdr");
     BOOL(p->bHDROpt, "hdr-opt");
+    BOOL(p->bDhdr10opt, "dhdr10-opt");
+    s += sprintf(s, " refine-level=%d", p->analysisRefineLevel);
+    BOOL(p->bLimitSAO, "limit-sao");
 #undef BOOL
     return buf;
 }

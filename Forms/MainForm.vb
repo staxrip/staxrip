@@ -4113,20 +4113,14 @@ Public Class MainForm
             getDefaults = Function() FilterCategory.GetVapourSynthDefaults
         End If
 
-        Using f As New ScriptEditor(GetFilterProfilesText(filterProfiles))
+        Using f As New MacroEditor
             f.Text = "Filter Profiles"
+            f.SetScriptDefaults()
+            f.MacroEditorControl.Value = GetFilterProfilesText(filterProfiles)
             f.bnContext.Text = " Restore Defaults... "
             f.bnContext.Visible = True
-
-            Dim t = f
-
-            Dim resetAction = Sub()
-                                  If MsgOK("Restore defaults?") Then
-                                      t.MacroEditorControl.Value = GetFilterProfilesText(getDefaults())
-                                  End If
-                              End Sub
-
-            f.bnContext.AddClickAction(resetAction)
+            f.MacroEditorControl.rtbDefaults.Text = GetFilterProfilesText(getDefaults())
+            f.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then f.MacroEditorControl.Value = GetFilterProfilesText(getDefaults()))
 
             If f.ShowDialog(Me) = DialogResult.OK Then
                 filterProfiles.Clear()
@@ -4350,12 +4344,12 @@ Public Class MainForm
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
         ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
 
-        ret.Add("Apps|AVSMeter...", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
-        ret.Add("Apps|BDSup2Sub++...", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
-        ret.Add("Apps|Demux...", NameOf(g.DefaultCommands.StartTool), {"Demux"})
-        ret.Add("Apps|DGIndexNV...", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
-        ret.Add("Apps|ProjectX...", NameOf(g.DefaultCommands.StartTool), {"ProjectX"})
-        ret.Add("Apps|VSRip...", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
+        ret.Add("Apps|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
+        ret.Add("Apps|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
+        ret.Add("Apps|Demux", NameOf(g.DefaultCommands.StartTool), {"Demux"})
+        ret.Add("Apps|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
+        ret.Add("Apps|ProjectX", NameOf(g.DefaultCommands.StartTool), {"ProjectX"})
+        ret.Add("Apps|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
 
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2013 x265 project
+ * Copyright (C) 2013-2017 MulticoreWare, Inc
  *
  * Authors: Steve Borho <steve@borho.org>
  *          Min Chen <chenm003@163.com>
@@ -249,6 +249,7 @@ static const struct option long_options[] =
     { "no-multi-pass-opt-rps", no_argument, NULL, 0 },
     { "analysis-mode",  required_argument, NULL, 0 },
     { "analysis-file",  required_argument, NULL, 0 },
+    { "refine-level",   required_argument, NULL, 0 },
     { "strict-cbr",           no_argument, NULL, 0 },
     { "temporal-layers",      no_argument, NULL, 0 },
     { "no-temporal-layers",   no_argument, NULL, 0 },
@@ -265,6 +266,11 @@ static const struct option long_options[] =
     { "no-hdr",               no_argument, NULL, 0 },
     { "hdr-opt",              no_argument, NULL, 0 },
     { "no-hdr-opt",           no_argument, NULL, 0 },
+    { "limit-sao",            no_argument, NULL, 0 },
+    { "no-limit-sao",         no_argument, NULL, 0 },
+    { "dhdr10-info",    required_argument, NULL, 0 },
+    { "dhdr10-opt",           no_argument, NULL, 0},
+    { "no-dhdr10-opt",        no_argument, NULL, 0},
     { 0, 0, 0, 0 },
     { 0, 0, 0, 0 },
     { 0, 0, 0, 0 },
@@ -310,6 +316,10 @@ static void showHelp(x265_param *param)
     H1("                                 1 - i420 (4:2:0 default)\n");
     H1("                                 2 - i422 (4:2:2)\n");
     H1("                                 3 - i444 (4:4:4)\n");
+#if ENABLE_DYNAMIC_HDR10
+    H0("   --dhdr10-info <filename>      JSON file containing the Creative Intent Metadata to be encoded as Dynamic Tone Mapping \n");
+    H0("   --[no-]dhdr10-opt             Insert tone mapping SEI only for IDR frames and when the tone mapping information changes. Default disabled");
+#endif
     H0("-f/--frames <integer>            Maximum number of frames to encode. Default all\n");
     H0("   --seek <integer>              First frame to encode\n");
     H1("   --[no-]interlace <bff|tff>    Indicate input pictures are interlace fields in temporal order. Default progressive\n");
@@ -423,6 +433,7 @@ static void showHelp(x265_param *param)
     H0("   --[no-]strict-cbr             Enable stricter conditions and tolerance for bitrate deviations in CBR mode. Default %s\n", OPT(param->rc.bStrictCbr));
     H0("   --analysis-mode <string|int>  save - Dump analysis info into file, load - Load analysis buffers from the file. Default %d\n", param->analysisMode);
     H0("   --analysis-file <filename>    Specify file name used for either dumping or reading analysis data.\n");
+    H0("   --refine-level <1..10>        Level of analysis refinement indicates amount of info stored/reused in save/load mode, 1:least....10:most. Default %d\n", param->analysisRefineLevel);
     H0("   --aq-mode <integer>           Mode for Adaptive Quantization - 0:none 1:uniform AQ 2:auto variance 3:auto variance with bias to dark scenes. Default %d\n", param->rc.aqMode);
     H0("   --aq-strength <float>         Reduces blocking and blurring in flat and textured areas (0 to 3.0). Default %.2f\n", param->rc.aqStrength);
     H0("   --[no-]aq-motion              Adaptive Quantization based on the relative motion of each CU w.r.t., frame. Default %s\n", OPT(param->bOptCUDeltaQP));
@@ -452,6 +463,7 @@ static void showHelp(x265_param *param)
     H0("   --[no-]deblock                Enable Deblocking Loop Filter, optionally specify tC:Beta offsets Default %s\n", OPT(param->bEnableLoopFilter));
     H0("   --[no-]sao                    Enable Sample Adaptive Offset. Default %s\n", OPT(param->bEnableSAO));
     H1("   --[no-]sao-non-deblock        Use non-deblocked pixels, else right/bottom boundary areas skipped. Default %s\n", OPT(param->bSaoNonDeblocked));
+    H0("   --[no-]limit-sao              Limit Sample Adaptive Offset types. Default %s\n", OPT(param->bLimitSAO));
     H0("\nVUI options:\n");
     H0("   --sar <width:height|int>      Sample Aspect Ratio, the ratio of width to height of an individual pixel.\n");
     H0("                                 Choose from 0=undef, 1=1:1(\"square\"), 2=12:11, 3=10:11, 4=16:11,\n");

@@ -1,5 +1,4 @@
-﻿Imports System.Text
-Imports StaxRip.CommandLine
+﻿Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 <Serializable()>
@@ -131,7 +130,7 @@ Public Class IntelEncoder
         End Sub
 
         Property Decoder As New OptionParam With {.Text = "Decoder:", .Options = {"AviSynth/VapourSynth", "QSVEncC Intel", "QSVEncC Software", "ffmpeg Intel", "ffmpeg DXVA2"}, .Values = {"avs", "qs", "qsw", "ffqsv", "ffdxva"}}
-        Property Codec As New OptionParam With {.Switch = "--codec", .Text = "Codec:", .Options = {"H.264", "H.265", "MPEG-2"}, .Values = {"h264", "h265", "mpeg2"}}
+        Property Codec As New OptionParam With {.Switch = "--codec", .Text = "Codec:", .Options = {"H.264", "H.265", "MPEG-2"}, .Values = {"h264", "hevc", "mpeg2"}}
         Property Mode As New OptionParam With {.Switches = {"--avbr", "--cbr", "--vbr", "--qvbr-q", "--cqp", "--vqp", "--icq", "--la-icq", "--vcm", "--la", "--la-hrd", "--qvbr"}, .Name = "Mode", .Text = "Mode:", .Expand = True, .Options = Modes.Select(Function(a) a.Value).ToArray, .Values = Modes.Select(Function(a) a.Name).ToArray, .InitValue = 2}
         Property Deinterlace As New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace:", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}}
         Property Quality As New NumParam With {.Text = "Quality:", .Value = 23, .DefaultValue = 23, .VisibleFunc = Function() {"icq", "la-icq", "qvbr-q"}.Contains(Mode.ValueText), .MinMaxStep = {0, 51, 1}}

@@ -15,6 +15,7 @@ Public Class MediaInfo
 
         Handle = MediaInfo_New()
         MediaInfo_Open(Handle, path)
+        'MediaInfo_Option(Handle, "Language", "raw")
     End Sub
 
     Private VideoStreamsValue As List(Of VideoStream)
@@ -208,7 +209,6 @@ Public Class MediaInfo
     Shared Function GetSummary(path As String) As String
         Dim mi = GetMediaInfo(path)
         MediaInfo_Option(mi.Handle, "Complete", "0")
-        MediaInfo_Option(mi.Handle, "Language", "raw")
         Dim ret = Marshal.PtrToStringUni(MediaInfo_Inform(mi.Handle, 0))
         Return Regex.Replace(ret, "UniqueID/String +: .+\n", "").FormatColumn(":").Trim
     End Function
@@ -216,7 +216,6 @@ Public Class MediaInfo
     Shared Function GetCompleteSummary(path As String) As String
         Dim mi = GetMediaInfo(path)
         MediaInfo_Option(mi.Handle, "Complete", "1")
-        MediaInfo_Option(mi.Handle, "Language", "raw")
         Return Marshal.PtrToStringUni(MediaInfo_Inform(mi.Handle, 0))
     End Function
 

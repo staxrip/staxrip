@@ -4114,8 +4114,8 @@ Public Class MainForm
         End If
 
         Using f As New MacroEditor
-            f.Text = "Filter Profiles"
             f.SetScriptDefaults()
+            f.Text = "Filter Profiles"
             f.MacroEditorControl.Value = GetFilterProfilesText(filterProfiles)
             f.bnContext.Text = " Restore Defaults... "
             f.bnContext.Visible = True

@@ -144,7 +144,7 @@ Public Class GlobalClass
                     script.Filters.Add(New VideoFilter("AudioDub(last, DirectShowSource(""" + ap.File + """, video = false))"))
                 End If
 
-                script.Filters.Add(New VideoFilter("DelayAudio(" & (ap.Delay / 1000).ToString(CultureInfo.InvariantCulture) & ")"))
+                script.Filters.Add(New VideoFilter("DelayAudio(" & (ap.Delay / 1000).ToInvariantString & ")"))
 
                 Dim cutFilter = script.GetFilter("Cutting")
 
@@ -2302,6 +2302,14 @@ Class Macro
             End If
         End If
 
+        For Each i In OS.EnvVars
+            If value.Contains("%" + i + "%") Then
+                value = Environment.ExpandEnvironmentVariables(value)
+                If Not value.Contains("%") Then Return value
+                Exit For
+            End If
+        Next
+
         Return value
     End Function
 End Class
@@ -2917,6 +2925,10 @@ Class OSVersion
                 Environment.OSVersion.Version.Minor / 10)
         End Get
     End Property
+End Class
+
+Public Class OS
+    Public Shared EnvVars As String() = {"ALLUSERSPROFILE", "APPDATA", "CD", "CMDCMDLINE", "CMDEXTVERSION", "CommonProgramFiles", "CommonProgramFiles(x86)", "CommonProgramW6432", "COMPUTERNAME", "COMSPEC", "DATE", "ERRORLEVEL", "HOMEDRIVE", "HOMEPATH", "LOCALAPPDATA", "LOGONSERVER", "NUMBER_OF_PROCESSORS", "OS", "PATH", "PATHEXT", "PROCESSOR_ARCHITECTURE", "PROCESSOR_IDENTIFIER", "PROCESSOR_LEVEL", "PROCESSOR_REVISION", "ProgramData", "ProgramFiles", "ProgramFiles(x86)", "ProgramW6432", "PROMPT", "PSModulePath", "PUBLIC", "RANDOM", "SessionName", "SystemDrive", "SystemRoot", "TEMP", "TIME", "TMP", "USERDOMAIN", "USERDOMAIN_ROAMINGPROFILE", "USERNAME", "USERPROFILE", "WINDIR"}
 End Class
 
 <Serializable>

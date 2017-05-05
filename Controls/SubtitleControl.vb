@@ -457,7 +457,7 @@ Class SubtitleControl
                             avs.Filters.Add(New VideoFilter("AudioDub(last, DirectShowSource(""" + ap.File + """, video = false))"))
                         End If
 
-                        avs.Filters.Add(New VideoFilter("DelayAudio(" & (ap.Delay / 1000).ToString(CultureInfo.InvariantCulture) & ")"))
+                        avs.Filters.Add(New VideoFilter("DelayAudio(" & (ap.Delay / 1000).ToInvariantString & ")"))
                     End If
                 End If
 

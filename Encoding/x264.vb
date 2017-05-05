@@ -192,7 +192,7 @@ Public Class x264Encoder
             sb.Append(" --qp " + CInt(Params.Quant.Value).ToString)
         ElseIf Params.Mode.Value = x264Mode.SingleCRF Then
             If Params.Quant.Value <> 23 Then
-                sb.Append(" --crf " + Params.Quant.Value.ToString(CultureInfo.InvariantCulture))
+                sb.Append(" --crf " + Params.Quant.Value.ToInvariantString)
             End If
         Else
             sb.Append(" --bitrate " + p.VideoBitrate.ToString)
@@ -288,7 +288,7 @@ Public Class x264Encoder
             sb.Append(" --no-psy")
         Else
             If Params.SubME.Value > 5 AndAlso (Params.PsyRD.Value <> defaults.PsyRD.Value OrElse Params.PsyTrellis.Value <> defaults.PsyTrellis.Value) Then
-                sb.Append(" --psy-rd " + Params.PsyRD.Value.ToString(CultureInfo.InvariantCulture) + ":" + Params.PsyTrellis.Value.ToString(CultureInfo.InvariantCulture))
+                sb.Append(" --psy-rd " + Params.PsyRD.Value.ToInvariantString + ":" + Params.PsyTrellis.Value.ToInvariantString)
             End If
         End If
 
@@ -303,11 +303,11 @@ Public Class x264Encoder
         End If
 
         If Params.IPRatio.Value <> defaults.IPRatio.Value Then
-            sb.Append(" --ipratio " + Params.IPRatio.Value.ToString(CultureInfo.InvariantCulture))
+            sb.Append(" --ipratio " + Params.IPRatio.Value.ToInvariantString)
         End If
 
         If Params.PBRatio.Value <> defaults.PBRatio.Value Then
-            sb.Append(" --pbratio " + Params.PBRatio.Value.ToString(CultureInfo.InvariantCulture))
+            sb.Append(" --pbratio " + Params.PBRatio.Value.ToInvariantString)
         End If
 
         If Params.QPMin.Value <> defaults.QPMin.Value Then
@@ -323,11 +323,11 @@ Public Class x264Encoder
         End If
 
         If Params.VBVInit.Value <> defaults.VBVInit.Value Then
-            sb.Append(" --vbv-init " + Params.VBVInit.Value.ToString(CultureInfo.InvariantCulture))
+            sb.Append(" --vbv-init " + Params.VBVInit.Value.ToInvariantString)
         End If
 
         If Params.QComp.Value <> defaults.QComp.Value Then
-            sb.Append(" --qcomp " + Params.QComp.Value.ToString(CultureInfo.InvariantCulture))
+            sb.Append(" --qcomp " + Params.QComp.Value.ToInvariantString)
         End If
 
         If Not Params.ChromaMe.Value Then

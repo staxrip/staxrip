@@ -73,7 +73,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 - QSVEncC 2.62
 - VCEEncC 3.06
-- HAvsFunc 2017-03-06
+- HAvsFunc (vs) 2017-03-06
 - x264 2762
 - MediaInfo 0.7.93
 - ffmpeg 3.2.2
@@ -90,7 +90,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - VSFilterMod (avs, vs) 4
 - flash3kyuu_deband (avs, vs) 2.0.20140721
 - TIVTC (avs) 1.0.6
-- mkvtoolnix 11.0.0
 - x265 2.4+2
 - mvtools2 (avs) 2.7.16.22
 - masktools2 2.2.7
+- yadifmod (vs) 10
+- mkvtoolnix 11.0.0

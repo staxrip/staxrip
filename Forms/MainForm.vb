@@ -1832,7 +1832,7 @@ Public Class MainForm
 
                 If (CInt(miFPS) * 2) = CInt(avsFPS) Then
                     Dim src = p.Script.GetFilter("Source")
-                    src.Script = src.Script + BR + "SelectEven().AssumeFPS(" & miFPS.ToString(CultureInfo.InvariantCulture) + ")"
+                    src.Script = src.Script + BR + "SelectEven().AssumeFPS(" & miFPS.ToInvariantString + ")"
                     p.SourceScript.Synchronize()
                 End If
             End If

@@ -999,7 +999,7 @@ Public Class x265Params
             If Not IsCustom(pass, "--qp") Then sb.Append(" --qp " + CInt(Quant.Value).ToString)
         ElseIf Mode.Value = x265RateMode.SingleCRF Then
             If Quant.Value <> 28 AndAlso Not IsCustom(pass, "--crf") Then
-                sb.Append(" --crf " + Quant.Value.ToString(CultureInfo.InvariantCulture))
+                sb.Append(" --crf " + Quant.Value.ToInvariantString)
             End If
         Else
             If Not IsCustom(pass, "--bitrate") Then sb.Append(" --bitrate " & p.VideoBitrate)

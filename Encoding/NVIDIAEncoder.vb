@@ -347,15 +347,15 @@ Public Class NVIDIAEncoder
                 End If
 
                 If KnnStrength.Value <> KnnStrength.DefaultValue Then
-                    ret += ",strength=" & KnnStrength.Value.ToString(CultureInfo.InvariantCulture)
+                    ret += ",strength=" & KnnStrength.Value.ToInvariantString
                 End If
 
                 If KnnLerp.Value <> KnnLerp.DefaultValue Then
-                    ret += ",lerp=" & KnnLerp.Value.ToString(CultureInfo.InvariantCulture)
+                    ret += ",lerp=" & KnnLerp.Value.ToInvariantString
                 End If
 
                 If KnnThLerp.Value <> KnnThLerp.DefaultValue Then
-                    ret += ",th_lerp=" & KnnThLerp.Value.ToString(CultureInfo.InvariantCulture)
+                    ret += ",th_lerp=" & KnnThLerp.Value.ToInvariantString
                 End If
 
                 If ret <> "" Then

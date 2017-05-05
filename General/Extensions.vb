@@ -419,6 +419,11 @@ End Module
 
 Module MiscExtensions
     <Extension()>
+    Function ToInvariantString(instance As IConvertible) As String
+        If Not instance Is Nothing Then Return instance.ToString(CultureInfo.InvariantCulture)
+    End Function
+
+    <Extension()>
     Function ContainsAny(Of T)(instance As IEnumerable(Of T), ParamArray values As T()) As Boolean
         Return instance.Where(Function(arg) values.Contains(arg)).Count > 0
     End Function

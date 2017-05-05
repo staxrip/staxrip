@@ -276,7 +276,7 @@ Namespace CommandLine
 
             If ArgsFunc Is Nothing Then
                 If Value <> DefaultValue OrElse AlwaysOn Then
-                    Return Switch + " " + Value.ToString(CultureInfo.InvariantCulture)
+                    Return Switch + " " + Value.ToInvariantString
                 End If
             Else
                 Return ArgsFunc.Invoke()

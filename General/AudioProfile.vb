@@ -755,7 +755,7 @@ Class GUIAudioProfile
         End If
 
         If includePaths Then
-            ret = """" + Package.eac3to.Path + """ " + id + """" + File + """ """ + GetOutputFile() + """"
+            ret = Package.eac3to.Path.Quotes + " " + id + File.Quotes + " " + GetOutputFile.Quotes
         Else
             ret = "eac3to"
         End If
@@ -763,7 +763,7 @@ Class GUIAudioProfile
         If Not (Params.Codec = AudioCodec.DTS AndAlso Params.eac3toExtractDtsCore) Then
             Select Case Params.Codec
                 Case AudioCodec.AAC
-                    ret += " -quality=" & Params.Quality.ToString(CultureInfo.InvariantCulture)
+                    ret += " -quality=" & Params.Quality.ToInvariantString
                 Case AudioCodec.AC3
                     ret += " -" & Bitrate
 
@@ -785,10 +785,10 @@ Class GUIAudioProfile
 
             Select Case Channels
                 Case 6
-                    ret += " -down6"
+                    If Params.ChannelsMode <> ChannelsMode.Original Then ret += " -down6"
                 Case 2
                     If Params.eac3toStereoDownmixMode = 0 Then
-                        ret += " -downStereo"
+                        If Params.ChannelsMode <> ChannelsMode.Original Then ret += " -downStereo"
                     Else
                         ret += " -downDpl"
                     End If
@@ -805,75 +805,45 @@ Class GUIAudioProfile
     End Function
 
     Function GetqaacCommandLine(includePaths As Boolean) As String
-        Dim r As String
-
+        Dim ret As String
         includePaths = includePaths And File <> ""
 
         If includePaths Then
-            r = """" + Package.qaac.Path + """ -o """ + GetOutputFile() + """"
+            ret = Package.qaac.Path.Quotes + " -o " + GetOutputFile.Quotes
         Else
-            r = "qaac"
+            ret = "qaac"
         End If
 
         Select Case Params.qaacRateMode
             Case 0
-                r += " --tvbr " & CInt(Params.Quality)
+                ret += " --tvbr " & CInt(Params.Quality)
             Case 1
-                r += " --cvbr " & CInt(Bitrate)
+                ret += " --cvbr " & CInt(Bitrate)
             Case 2
-                r += " --abr " & CInt(Bitrate)
+                ret += " --abr " & CInt(Bitrate)
             Case 3
-                r += " --cbr " & CInt(Bitrate)
+                ret += " --cbr " & CInt(Bitrate)
         End Select
 
-        If Params.qaacHE Then
-            r += " --he"
-        End If
+        If Params.qaacHE Then ret += " --he"
+        If Delay <> 0 Then ret += " --delay " + (Delay / 1000).ToInvariantString
+        If Params.Normalize Then ret += " --normalize"
+        If Params.qaacQuality <> 2 Then ret += " --quality " & Params.qaacQuality
+        If Params.SamplingRate <> 0 Then ret += " --rate " & Params.SamplingRate
+        If Params.qaacLowpass <> 0 Then ret += " --lowpass " & Params.qaacLowpass
+        If Params.qaacNoDither Then ret += " --no-dither"
+        If Gain <> 0 Then ret += " --gain " & Gain.ToInvariantString
+        If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
+        If includePaths Then ret += " " + File.Quotes
 
-        If Params.CustomSwitches <> "" Then
-            r += " " + Params.CustomSwitches
-        End If
-
-        If Delay <> 0 Then
-            r += " --delay " + (Delay / 1000).ToString(CultureInfo.InvariantCulture)
-        End If
-
-        If Params.Normalize Then
-            r += " --normalize"
-        End If
-
-        If Params.qaacQuality <> 2 Then
-            r += " --quality " & Params.qaacQuality
-        End If
-
-        If Params.SamplingRate <> 0 Then
-            r += " --rate " & Params.SamplingRate
-        End If
-
-        If Params.qaacLowpass <> 0 Then
-            r += " --lowpass " & Params.qaacLowpass
-        End If
-
-        If Params.qaacNoDither Then
-            r += " --no-dither"
-        End If
-
-        If Gain <> 0 Then
-            r += " --gain " & Gain.ToString(CultureInfo.InvariantCulture)
-        End If
-
-        If includePaths Then
-            r += " """ + File + """"
-        End If
-
-        Return r
+        Return ret
     End Function
 
     Function GetFfmpegCommandLine(includePaths As Boolean) As String
         Dim ret As String
 
         If includePaths AndAlso File <> "" Then
-            ret = """" + Package.ffmpeg.Path + """ -i """ + File + """"
+            ret = Package.ffmpeg.Path.Quotes + " -i " + File.Quotes
         Else
             ret = "ffmpeg"
         End If
@@ -927,11 +897,11 @@ Class GUIAudioProfile
                 End If
         End Select
 
-        If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
-        If Gain <> 0 Then ret += " -af volume=" + Gain.ToString(CultureInfo.InvariantCulture) + "dB"
-        ret += " -ac " & Channels
+        If Gain <> 0 Then ret += " -af volume=" + Gain.ToInvariantString + "dB"
+        If Params.ChannelsMode <> ChannelsMode.Original Then ret += " -ac " & Channels
         If Params.SamplingRate <> 0 Then ret += " -ar " & Params.SamplingRate
         ret += " -y -hide_banner"
+        If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
         If includePaths AndAlso File <> "" Then ret += " " + GetOutputFile.Quotes
 
         Return ret
@@ -941,13 +911,13 @@ Class GUIAudioProfile
         Dim ret As String
 
         If includePaths Then
-            ret = """" + Package.BeSweet.Path + """"
+            ret = Package.BeSweet.Path.Quotes
         Else
             ret = "BeSweet"
         End If
 
         If includePaths AndAlso File <> "" Then
-            ret += " -core( -input """ + File + """ -output """ + GetOutputFile() & """ )"
+            ret += " -core( -input " + File.Quotes + " -output " + GetOutputFile.Quotes & " )"
         End If
 
         Dim t = ""
@@ -1001,7 +971,7 @@ Class GUIAudioProfile
 
                 Select Case Params.RateMode
                     Case AudioRateMode.VBR
-                        ret += " -bsn( -vbr " & Params.Quality.ToString(CultureInfo.InvariantCulture) & profile & ch & " )"
+                        ret += " -bsn( -vbr " & Params.Quality.ToInvariantString & profile & ch & " )"
                     Case AudioRateMode.ABR
                         ret += " -bsn( -abr " & CInt(Bitrate) & profile & ch & " )"
                     Case AudioRateMode.CBR

@@ -1045,32 +1045,7 @@ Public Class MainForm
         End If
     End Function
 
-    Async Sub UpdateRecentProjectsMenuAsync(path As String)
-        Await Task.Run(Sub()
-                           Thread.Sleep(500)
-                           Dim list As New List(Of String)
-
-                           If path <> "" AndAlso Not path.Contains(Folder.Template) AndAlso
-                               Not path.Contains("crash.srip") Then
-
-                               list.Add(path)
-                           End If
-
-                           For Each i In s.RecentProjects
-                               If i <> path AndAlso File.Exists(i) Then list.Add(i)
-                           Next
-
-                           While list.Count > 5
-                               list.RemoveAt(list.Count - 1)
-                           End While
-
-                           SyncLock s.RecentProjects
-                               s.RecentProjects = list
-                           End SyncLock
-                       End Sub)
-
-        If IsDisposed OrElse Native.GetForegroundWindow() <> Handle Then Exit Sub
-
+    Sub UpdateRecentProjectsMenu()
         For Each i In CustomMainMenu.MenuItems
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
                 i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.RecentProjects) Then
@@ -1079,13 +1054,9 @@ Public Class MainForm
 
                 SyncLock s.RecentProjects
                     For Each i2 In s.RecentProjects
-                        If File.Exists(i2) AndAlso Not Filepath.GetBase(i2) = "recover" Then
+                        If File.Exists(i2) AndAlso Not i2.Base = "recover" Then
                             Dim name = i2
-
-                            If i2.Length > 70 Then
-                                name = "..." + name.Remove(0, name.Length - 70)
-                            End If
-
+                            If i2.Length > 70 Then name = "..." + name.Remove(0, name.Length - 70)
                             i.DropDownItems.Add(New ActionMenuItem(name, Sub() LoadProject(i2)))
                         End If
                     Next
@@ -1094,8 +1065,6 @@ Public Class MainForm
                 Exit For
             End If
         Next
-
-        Application.DoEvents()
     End Sub
 
     <DebuggerNonUserCode>
@@ -1251,7 +1220,9 @@ Public Class MainForm
 
         If Not File.Exists(path) Then
             MsgWarn("Project file not found.")
-            UpdateRecentProjectsMenuAsync(Nothing)
+            s.UpdateRecentProjects(path)
+            UpdateRecentProjectsMenu()
+            UpdateTemplatesMenuAsync()
         Else
             OpenProject(path)
         End If
@@ -1387,7 +1358,8 @@ Public Class MainForm
         SkipAssistant = False
 
         Assistant()
-        UpdateRecentProjectsMenuAsync(path)
+        s.UpdateRecentProjects(path)
+        UpdateRecentProjectsMenu()
         g.RaiseAppEvent(ApplicationEvent.ProjectLoaded)
         g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
 
@@ -1429,7 +1401,7 @@ Public Class MainForm
         Next
     End Function
 
-    Function OpenSourceFilterSelection(inputFile As String) As VideoFilter
+    Function ShowSourceFilterSelectionDialog(inputFile As String) As VideoFilter
         Select Case inputFile.Ext
             Case "dgi"
                 Return New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
@@ -1466,7 +1438,7 @@ Public Class MainForm
             End If
         End If
 
-        If inputFile.Ext = "avi" Then
+        If {"avi", "vdr"}.Contains(inputFile.Ext) Then
             td.AddCommandLink("AviSynth+ AVISource", "AVISource")
         End If
 
@@ -1475,7 +1447,7 @@ Public Class MainForm
             td.AddCommandLink("VapourSynth d2vsource", "d2vsource")
         End If
 
-        If inputFile.Ext.EqualsAny("avi", "avs") Then
+        If inputFile.Ext.EqualsAny("avi", "avs", "vdr") Then
             td.AddCommandLink("VapourSynth AVISource", "vsAVISource")
         End If
 
@@ -1605,7 +1577,7 @@ Public Class MainForm
                 Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
                 Not p.SourceFile.Ext = "vpy" Then
 
-                preferredSourceFilter = OpenSourceFilterSelection(files(0))
+                preferredSourceFilter = ShowSourceFilterSelectionDialog(files(0))
             End If
 
             If Not preferredSourceFilter Is Nothing Then
@@ -1840,13 +1812,16 @@ Public Class MainForm
             'chroma
             If editVS Then
                 If p.ChromaSubsampling <> "4:2:0" Then
-                    Dim height = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
+                    Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
+                    Dim matrix As String
 
-                    If height > 576 Then
-                        p.Script.GetFilter("Source").Script += BR + "clip = clip.resize.Bicubic(matrix_in_s = '709', format = vs.YUV420P10)"
+                    If sourceHeight = 0 OrElse sourceHeight > 576 Then
+                        matrix = "709"
                     Else
-                        p.Script.GetFilter("Source").Script += BR + "clip = clip.resize.Bicubic(matrix_in_s = '470bg', format = vs.YUV420P10)"
+                        matrix = "470bg"
                     End If
+
+                    p.Script.GetFilter("Source").Script += BR + "clip = clip.resize.Bicubic(matrix_s = '" + matrix + "', format = vs.YUV420P8)"
                 End If
             ElseIf editAVS Then
                 If Not sourceFilter.Script.Contains("ConvertToYV12") Then
@@ -1854,7 +1829,7 @@ Public Class MainForm
                         Dim format = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format")
                         Dim matrix As String
 
-                        If format = "RGB" Then
+                        If format = "RGB" OrElse p.SourceFile.Ext = "vdr" Then
                             Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
 
                             If sourceHeight > 576 Then
@@ -1956,7 +1931,7 @@ Public Class MainForm
                         td.CommonButtons = TaskDialogButtons.OkCancel
 
                         If td.Show = DialogResult.OK Then
-                            Dim f = OpenSourceFilterSelection(p.SourceFile)
+                            Dim f = ShowSourceFilterSelectionDialog(p.SourceFile)
                             Dim isVapourSynth = f.Script?.Contains("clip = core.")
 
                             If isVapourSynth Then
@@ -3243,7 +3218,8 @@ Public Class MainForm
 
         Dim filterNames = profiles.Where(
             Function(v) v.Name = "Source").First.Filters.Where(
-            Function(v) v.Name <> "Automatic" AndAlso v.Name <> "Manual").Select(
+            Function(v) v.Name <> "Automatic" AndAlso
+            v.Name <> "Manual" AndAlso Not v.Name.EndsWith("...")).Select(
             Function(v) v.Name).Sort.ToArray
 
         c2.Items.AddRange(filterNames)
@@ -3287,8 +3263,9 @@ Public Class MainForm
         Try
             SafeSerialization.Serialize(p, path)
             SetSavedProject()
-            Text = Application.ProductName + " x64 - " + Filepath.GetBase(path)
-            UpdateRecentProjectsMenuAsync(path)
+            Text = Application.ProductName + " x64 - " + path.Base
+            s.UpdateRecentProjects(path)
+            UpdateRecentProjectsMenu()
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -3487,7 +3464,7 @@ Public Class MainForm
         s.CustomMenuMainForm = CustomMainMenu.Edit()
         UpdateTemplatesMenuAsync()
         UpdateScriptsMenuAsync()
-        UpdateRecentProjectsMenuAsync(Nothing)
+        UpdateRecentProjectsMenu()
         UpdateDynamicMenuAsync()
         g.SetRenderer(MenuStrip)
         Refresh()
@@ -4686,15 +4663,15 @@ Public Class MainForm
     End Sub
 
     Private Sub MainForm_Activated(sender As Object, e As EventArgs) Handles Me.Activated
-        UpdateTemplatesMenuAsync()
         UpdateScriptsMenuAsync()
-        UpdateRecentProjectsMenuAsync(Nothing)
     End Sub
 
     Private Sub MainForm_Shown() Handles Me.Shown
         Activate() 'needed for custom settings dir option
         Refresh()
         UpdateDynamicMenuAsync()
+        UpdateRecentProjectsMenu()
+        UpdateTemplatesMenuAsync()
 
         If Not File.Exists(Package.x265.Path) Then
             MsgError("Files included with StaxRip are missing, maybe the 7-Zip archive wasn't properly unpacked. You can find a packer at [http://www.7-zip.org www.7-zip.org].")
@@ -4883,7 +4860,7 @@ Public Class MainForm
 
                         OpenProject(tempPath, False)
                         FileHelp.Delete(tempPath)
-                        UpdateRecentProjectsMenuAsync(Nothing)
+                        UpdateRecentProjectsMenu()
                         ShowJobsDialog()
                     End If
                 End Using
@@ -4925,7 +4902,7 @@ Public Class MainForm
 
                         OpenProject(tempPath, False)
                         FileHelp.Delete(tempPath)
-                        UpdateRecentProjectsMenuAsync(Nothing)
+                        UpdateRecentProjectsMenu()
                         If f.cbDemuxAndIndex.Checked Then ShowJobsDialog()
                     End If
                 End Using
@@ -5527,10 +5504,7 @@ Public Class MainForm
                 Dim temp = i
 
                 Dim menuAction = Sub()
-                                     If ap.File <> p.LastOriginalSourceFile Then
-                                         tb.Text = p.LastOriginalSourceFile
-                                     End If
-
+                                     If ap.File <> p.LastOriginalSourceFile Then tb.Text = p.LastOriginalSourceFile
                                      tb.Text = temp.Name + " (" + ap.File.Ext + ")"
                                      ap.Stream = temp
                                      UpdateSizeOrBitrate()
@@ -5546,6 +5520,10 @@ Public Class MainForm
             m.Items.Add("-")
         End If
 
+        If p.Script.GetScript.ToLower.Contains("audiodub(") Then
+            m.Add(p.Script.Path.FileName, Sub() tb.Text = p.Script.Path)
+        End If
+
         If p.TempDir <> "" AndAlso Directory.Exists(p.TempDir) Then
             Dim audioFiles = Directory.GetFiles(p.TempDir).Where(
                 Function(audioPath) FileTypes.Audio.Contains(audioPath.Ext)).ToList
@@ -5555,12 +5533,11 @@ Public Class MainForm
             If audioFiles.Count > 0 Then
                 For Each i In audioFiles
                     Dim temp = i
-                    Dim menuAction = Sub() tb.Text = temp
 
                     If audioFiles.Count > 10 Then
-                        m.Add("Files | " + Filepath.GetName(i), menuAction)
+                        m.Add("Files | " + Filepath.GetName(i), Sub() tb.Text = temp)
                     Else
-                        m.Add(Filepath.GetName(i), menuAction)
+                        m.Add(Filepath.GetName(i), Sub() tb.Text = temp)
                     End If
                 Next
 

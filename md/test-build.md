@@ -29,6 +29,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - various improvements in the batch/cli audio encoder GUI 
 - deafults tab added to video filter profile editor and several menu editors
 - added option to encode audio with the channels count of the audio source file
+- added support for VirtualDub frame server files with vdr extension
+- ffmpeg demuxing GUI added, only audio is supported so far, input types can be configured in the settings, default is avi, ts, flv
 
 #### Fixed Bugs
 
@@ -50,6 +52,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - copy to clipboard in MediaInfo dialog did not work
 - fixed PowerShell scripts not being executed on the GUI thread
 - fixed rare crash Win 7 failing to load included Segoe font file
+- fixed issues staxrip using wrong stream IDs for ffmpeg and mkvmerge
 
 #### Tweaks
 
@@ -68,6 +71,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - updated VapourSynth's built in filters
 - up/down menu items for the avs/vs filter list in main dialog
 - x265 --limit-tu defaults for slower and veryslow presets updated
+- in case the AviSynth script contains AudioDub the avs file can be selected as audio source file in the audio context menu 
 
 #### Updated Tools
 

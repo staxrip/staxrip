@@ -20,7 +20,6 @@ Public MustInherit Class Demuxer
     End Property
 
     Overridable Function ShowConfigDialog() As DialogResult
-        Return DialogResult.OK
     End Function
 
     Overrides Function ToString() As String
@@ -56,6 +55,7 @@ Public MustInherit Class Demuxer
 
         ret.Add(New mkvDemuxer)
         ret.Add(New MP4BoxDemuxer)
+        ret.Add(New ffmpegDemuxer)
         ret.Add(New eac3toDemuxer)
 
         Dim dgnvNoDemux As New CommandLineDemuxer
@@ -418,4 +418,99 @@ Class mkvDemuxer
             End Using
         End If
     End Sub
+End Class
+
+<Serializable>
+Public Class ffmpegDemuxer
+    Inherits Demuxer
+
+    Sub New()
+        Name = "ffmpeg"
+        InputExtensions = {"avi", "ts", "flv"}
+    End Sub
+
+    Public Overrides Sub Run()
+        Dim audioStreams As List(Of AudioStream)
+        Dim subtitles As List(Of Subtitle)
+
+        Dim demuxAudio = Not (TypeOf p.Audio0 Is NullAudioProfile AndAlso
+            TypeOf p.Audio1 Is NullAudioProfile) AndAlso
+            MediaInfo.GetAudioCount(p.SourceFile) > 0
+
+        Dim demuxSubtitles = MediaInfo.GetSubtitleCount(p.SourceFile) > 0
+
+        If Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
+            ((demuxAudio AndAlso p.DemuxAudio = DemuxMode.Dialog) OrElse
+            (demuxSubtitles AndAlso p.DemuxSubtitles = DemuxMode.Dialog)) Then
+            ProcessForm.CloseProcessForm()
+
+            Using f As New StreamDemuxForm(p.SourceFile)
+                If f.ShowDialog() = DialogResult.OK Then
+                    audioStreams = f.AudioStreams
+                    subtitles = f.Subtitles
+                Else
+                    Throw New AbortException
+                End If
+            End Using
+        End If
+
+        If demuxAudio AndAlso p.DemuxAudio <> DemuxMode.None Then
+            If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(p.SourceFile)
+
+            For Each i In audioStreams
+                If i.Enabled Then Audio.Demuxffmpeg(p.SourceFile, i, Nothing)
+            Next
+        End If
+    End Sub
+
+    Sub DemuxSubtitles(subtitles As List(Of Subtitle))
+        If subtitles.Where(Function(subtitle) subtitle.Enabled).Count = 0 Then Exit Sub
+        Dim arguments = "- i " + p.SourceFile.Quotes
+
+        For Each i In subtitles
+            If Not i.Enabled Then Continue For
+            Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.Extension
+
+            If outpath.Length > 259 Then
+                outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(10) + i.Extension
+            End If
+
+            arguments += " " & i.StreamOrder & ":""" + outpath + """"
+        Next
+
+        arguments += " --ui-language en"
+
+        Using proc As New Proc
+            proc.Init("Demux subtitles using mkvextract " + Package.mkvextract.Version, "Progress: ")
+            proc.Encoding = Encoding.UTF8
+            proc.File = Package.mkvextract.Path
+            proc.Arguments = arguments
+            proc.AllowedExitCodes = {0, 1}
+            proc.Start()
+        End Using
+    End Sub
+
+    Public Overrides Function ShowConfigDialog() As DialogResult
+        Using f As New SimpleSettingsForm(Name)
+            f.Height = CInt(f.Height * 0.5)
+            Dim ui = f.SimpleUI
+            Dim page = ui.CreateFlowPage("main page")
+
+            Dim tb = ui.AddTextBlock(page)
+            tb.Label.Text = "Supported Input File Types:"
+            tb.Edit.Text = InputExtensions.Join(" ")
+            tb.Edit.SaveAction = Sub(value) InputExtensions = value.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+
+            Dim ret = f.ShowDialog()
+            If ret = DialogResult.OK Then ui.Save()
+
+            Return ret
+        End Using
+    End Function
+
+    Public Overrides ReadOnly Property HasConfigDialog As Boolean
+        Get
+            Return True
+        End Get
+    End Property
 End Class

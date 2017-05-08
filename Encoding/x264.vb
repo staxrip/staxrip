@@ -422,7 +422,7 @@ Public Class x264Encoder
             sb.Append(" --thread-input")
         End If
 
-        If Calc.IsARSignalingRequired Then
+        If Calc.IsARSignalingRequired AndAlso Not Params.AddAll.Value?.Contains("--sar ") Then
             Dim par = Calc.GetTargetPAR
             sb.Append(" --sar " & par.X & ":" & par.Y)
         End If
@@ -449,9 +449,7 @@ Public Class x264Encoder
                 End If
             Next
 
-            If Params.TurboAdd.Value <> "" Then
-                ret += " " + Params.TurboAdd.Value
-            End If
+            If Params.TurboAdd.Value <> "" Then ret += " " + Params.TurboAdd.Value
         End If
 
         If sourcePath = "-" Then ret += " --demuxer y4m --frames " & script.GetFrames

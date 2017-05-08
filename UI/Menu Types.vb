@@ -1,12 +1,5 @@
-Imports System.Threading
-Imports System.Runtime.InteropServices
 Imports System.ComponentModel
 Imports System.Drawing.Design
-Imports System.Reflection
-Imports System.Text
-Imports System.Drawing.Drawing2D
-
-Imports StaxRip.UI
 
 Namespace UI
     <Serializable()>

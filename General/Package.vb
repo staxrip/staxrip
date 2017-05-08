@@ -355,6 +355,9 @@ Public Class Package
                 New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"")"),
                 New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")")}})
 
+        'New VideoFilter("Source", "LSMASHVideoSource HW...", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"", decoder = ""$select:msg:Choose a hardware decoder.;h264_qsv;hevc_qsv;h264_nvenc;hevc_nvenc$"")")
+        'New VideoFilter("Source", "LWLibavVideoSource HW...", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"", decoder = ""$select:msg:Choose a hardware decoder.;h264_qsv;hevc_qsv;h264_nvenc;hevc_nvenc$"")")
+
         Add(New PluginPackage With {
             .Name = "MSharpen",
             .Filename = "msharpen.dll",
@@ -492,6 +495,9 @@ Public Class Package
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")"),
                 New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")}})
+
+        'New VideoFilter("Source", "LibavSMASHSource HW...", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"", decoder = ""$select:msg:Choose a hardware decoder.;h264_qsv;hevc_qsv;h264_nvenc;hevc_nvenc$"")"),
+        'New VideoFilter("Source", "LWLibavSource HW...", "clip = core.lsmas.LWLibavSource(r""%source_file%"", decoder = ""$select:msg:Choose a hardware decoder.;h264_qsv;hevc_qsv;h264_nvenc;hevc_nvenc$"")")
 
         Add(New PluginPackage With {
             .Name = "nnedi3",

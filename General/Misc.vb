@@ -341,13 +341,10 @@ Public Class GlobalClass
             p.TempDir = Macro.Expand(p.TempDir)
 
             If p.TempDir = "" Then
-                If FileTypes.VideoOnly.Contains(p.SourceFile.Ext) OrElse
-                    FileTypes.VideoText.Contains(p.SourceFile.Ext) OrElse
-                    p.SourceFile.Dir.EndsWith("_temp\") Then
-
+                If p.SourceFile.Dir.EndsWith("_temp\") Then
                     p.TempDir = p.SourceFile.Dir
                 Else
-                    Dim base = Filepath.GetBase(p.SourceFile)
+                    Dim base = p.SourceFile.Base
                     If base.Length > 60 Then base = base.Shorten(30) + "..."
                     p.TempDir = p.SourceFile.Dir + base + "_temp\"
                 End If
@@ -601,9 +598,7 @@ Public Class GlobalClass
     End Sub
 
     Sub MakeBugReport(e As Exception)
-        If e Is Nothing AndAlso Not g.IsValidSource(False) Then
-            Exit Sub
-        End If
+        If e Is Nothing AndAlso Not g.IsValidSource(False) Then Exit Sub
 
         If Not e Is Nothing Then
             SyncLock p.Log
@@ -996,15 +991,12 @@ Class Log
         WriteLine(staxrip)
         WriteHeader("Environment")
 
-        Dim mc As New ManagementClass("Win32_VideoController")
-        Dim videoControllerCaptions = From i2 In mc.GetInstances().OfType(Of ManagementBaseObject)() Select CStr(i2("Caption"))
-
         Dim temp =
             "StaxRip x64: " + Application.ProductVersion + BR +
-            "OS: " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + BR +
+            "OS: " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + " " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") + BR +
             "Language: " + CultureInfo.CurrentCulture.EnglishName + BR +
             "CPU: " + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + BR +
-            "GPU: " + String.Join(", ", videoControllerCaptions)
+            "GPU: " + String.Join(", ", SystemHelp.VideoControllers)
 
         WriteLine(temp.FormatColumn(":"))
     End Sub
@@ -2542,9 +2534,10 @@ Public Class AudioStream
     Property Format As String
     Property FormatProfile As String 'was only field to show DTS MA
     Property ID As Integer
+    Property StreamOrder As Integer
+    Property Index As Integer
     Property Language As Language
     Property SamplingRate As Integer
-    Property StreamOrder As Integer
     Property Title As String
     Property Enabled As Boolean = True
 
@@ -2875,8 +2868,8 @@ Class FileTypes
     Shared Property SubtitleExludingContainers As String() = {"srt", "ass", "idx", "sup", "ttxt", "ssa", "smi"}
     Shared Property SubtitleIncludingContainers As String() = {"m2ts", "mkv", "mp4", "ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
-    Shared Property Video As String() = {"264", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "m2t", "mts", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m"}
-    Shared Property VideoNoText As String() = {"264", "avc", "avi", "divx", "flv", "h264", "m2t", "mts", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m"}
+    Shared Property Video As String() = {"264", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "m2t", "mts", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m", "vdr"}
+    Shared Property VideoNoText As String() = {"264", "avc", "avi", "divx", "flv", "h264", "m2t", "mts", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m", "vdr"}
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
     Shared Property VideoOnly As String() = {"m4v", "m2v", "y4m", "mpv", "avc", "hevc", "264", "h264", "265", "h265"}
     Shared Property VideoRaw As String() = {"h264", "h265", "264", "265", "avc", "hevc"}
@@ -2929,6 +2922,21 @@ End Class
 
 Public Class OS
     Public Shared EnvVars As String() = {"ALLUSERSPROFILE", "APPDATA", "CD", "CMDCMDLINE", "CMDEXTVERSION", "CommonProgramFiles", "CommonProgramFiles(x86)", "CommonProgramW6432", "COMPUTERNAME", "COMSPEC", "DATE", "ERRORLEVEL", "HOMEDRIVE", "HOMEPATH", "LOCALAPPDATA", "LOGONSERVER", "NUMBER_OF_PROCESSORS", "OS", "PATH", "PATHEXT", "PROCESSOR_ARCHITECTURE", "PROCESSOR_IDENTIFIER", "PROCESSOR_LEVEL", "PROCESSOR_REVISION", "ProgramData", "ProgramFiles", "ProgramFiles(x86)", "ProgramW6432", "PROMPT", "PSModulePath", "PUBLIC", "RANDOM", "SessionName", "SystemDrive", "SystemRoot", "TEMP", "TIME", "TMP", "USERDOMAIN", "USERDOMAIN_ROAMINGPROFILE", "USERNAME", "USERPROFILE", "WINDIR"}
+End Class
+
+Public Class SystemHelp
+    Private Shared VideoControllersValue As IEnumerable(Of String)
+
+    Public Shared ReadOnly Property VideoControllers As IEnumerable(Of String)
+        Get
+            If VideoControllersValue Is Nothing Then
+                Dim mc As New ManagementClass("Win32_VideoController")
+                VideoControllersValue = From i2 In mc.GetInstances().OfType(Of ManagementBaseObject)() Select CStr(i2("Caption"))
+            End If
+
+            Return VideoControllersValue
+        End Get
+    End Property
 End Class
 
 <Serializable>

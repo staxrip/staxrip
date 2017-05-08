@@ -242,7 +242,7 @@ Class ProcessHelp
         Return ret
     End Function
 
-    Shared Function GetErrorOut(file As String, arguments As String) As String
+    Shared Function GetErrOut(file As String, arguments As String) As String
         Dim ret = ""
         Dim proc As New Process
         proc.StartInfo.UseShellExecute = False

@@ -55,6 +55,8 @@ Public Class MediaInfo
                 For i = 0 To count - 1
                     Dim at As New AudioStream
 
+                    at.Index = i
+
                     Dim streamOrder = GetAudio(i, "StreamOrder")
                     If Not streamOrder.IsInt Then streamOrder = (i + 1).ToString
                     at.StreamOrder = streamOrder.ToInt + offset
@@ -110,6 +112,8 @@ Public Class MediaInfo
                             End If
                         End If
                     End If
+
+                    If at.Bitrate = 0 Then at.Bitrate = GetAudio(i, "FromStats_BitRate").ToInt
 
                     at.Delay = GetAudio(i, "Video_Delay").ToInt
                     If at.Delay = 0 Then at.Delay = GetAudio(i, "Source_Delay").ToInt
@@ -261,12 +265,12 @@ Public Class MediaInfo
     End Function
 
     Function GetFrameRate(Optional defaultValue As Double = 25) As Double
-        Dim num = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Num").ToInt
-        Dim den = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Den").ToInt
+        Dim num = GetVideo("FrameRate_Num").ToInt
+        Dim den = GetVideo("FrameRate_Den").ToInt
         If num > 0 AndAlso den > 0 Then Return num / den
-        Dim ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate")
-        If ret = "" Then ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Original")
-        If ret = "" Then ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Nominal")
+        Dim ret = GetVideo("FrameRate")
+        If ret = "" Then ret = GetVideo("FrameRate_Original")
+        If ret = "" Then ret = GetVideo("FrameRate_Nominal")
         If ret.IsDouble Then Return ret.ToDouble Else Return defaultValue
     End Function
 

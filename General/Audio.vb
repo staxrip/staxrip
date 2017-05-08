@@ -87,7 +87,7 @@ Class Audio
         If outPath.Length > 259 Then outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
         Dim streamIndex = stream.StreamOrder
         Dim args = "-i """ + sourcefile + """"
-        If MediaInfo.GetAudioCount(sourcefile) > 1 Then args += " -map 0:" & stream.StreamOrder
+        If MediaInfo.GetAudioCount(sourcefile) > 1 Then args += " -map 0:a:" & stream.Index
         args += " -vn -sn -y -hide_banner"
         If outPath.Ext = "wav" Then args += " -c:a pcm_s16le" Else args += " -c:a copy"
         args += " " + outPath.Quotes

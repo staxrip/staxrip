@@ -1,9 +1,6 @@
 Imports StaxRip.UI
 
-Imports System.Globalization
-
 Imports VB6 = Microsoft.VisualBasic
-Imports System.Runtime.Serialization
 Imports System.Text.RegularExpressions
 Imports System.Text
 
@@ -848,7 +845,7 @@ Class GUIAudioProfile
             ret = "ffmpeg"
         End If
 
-        If Not Stream Is Nothing Then ret += " -map 0:" & Stream.StreamOrder
+        If Not Stream Is Nothing AndAlso Streams.Count > 1 Then ret += " -map 0:a:" & Stream.Index
 
         Select Case Params.Codec
             Case AudioCodec.MP3

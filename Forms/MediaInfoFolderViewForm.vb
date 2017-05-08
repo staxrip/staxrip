@@ -134,6 +134,17 @@ Class MediaInfoFolderViewForm
                 Dim width = mi.GetInfo(MediaInfoStreamKind.Video, "Width")
                 Dim height = mi.GetInfo(MediaInfoStreamKind.Video, "Height")
 
+                'If mi.GetAudioCount = 1 Then
+                '    item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Audio, "StreamOrder") + " "))
+                '    item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Audio, "ID") + " "))
+                'ElseIf mi.GetAudioCount > 1 Then
+                '    item.SubItems.Add(GetSubItem(" " + mi.GetAudio(0, "StreamOrder") + " " + mi.GetAudio(1, "StreamOrder") + " "))
+                '    item.SubItems.Add(GetSubItem(" " + mi.GetAudio(0, "ID") + " " + mi.GetAudio(1, "ID") + " "))
+                'Else
+                '    item.SubItems.Add(GetSubItem(" "))
+                '    item.SubItems.Add(GetSubItem(" "))
+                'End If
+
                 item.SubItems.Add(GetSubItem(" " + fp.Ext + " "))
                 item.SubItems.Add(GetSubItem(" " + codec + " "))
                 item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "DisplayAspectRatio") + " "))

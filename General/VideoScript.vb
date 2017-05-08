@@ -162,19 +162,18 @@ Public Class VideoScript
                         code += BR + "ConvertToRGB(matrix=""Rec601"")"
                     End If
                 Else
-                    If p.SourceHeight > 576 Then
-                        If code.Contains(".set_output()") Then
-                            code = code.Replace(".set_output()", ".resize.Bicubic(matrix_in_s = '709', format = vs.COMPATBGR32).set_output()")
-                        Else
-                            code += BR + "clip = clip.resize.Bicubic(matrix_in_s = '709', format = vs.COMPATBGR32)"
-                        End If
-                    Else
-                        If code.Contains(".set_output()") Then
-                            code = code.Replace(".set_output()", ".resize.Bicubic(matrix_in_s = '470bg', format = vs.COMPATBGR32).set_output()")
-                        Else
-                            code += BR + "clip = clip.resize.Bicubic(matrix_in_s = '470bg', format = vs.COMPATBGR32)"
-                        End If
-                    End If
+                    Dim vsCode = "
+if clip.format.id == vs.RGB24:
+    _matrix_in_s = 'rgb'
+else:
+    if clip.height > 576:
+        _matrix_in_s = '709'
+    else:
+        _matrix_in_s = '470bg'
+clip = clip.resize.Bicubic(matrix_in_s = _matrix_in_s, format = vs.COMPATBGR32)
+clip.set_output()
+"
+                    code += BR + vsCode
                 End If
             End If
 
@@ -566,7 +565,7 @@ Public Class FilterCategory
 
         Dim resize As New FilterCategory("Resize")
         resize.Filters.Add(New VideoFilter(resize.Name, "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Resize...", "$select:BilinearResize;BlackmanResize;GaussResize;Lanczos4Resize;LanczosResize;PointResize;SincResize;Spline16;Spline36;Spline64$(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Resize...", "$select:BilinearResize;BlackmanResize;GaussResize;Lanczos4Resize;LanczosResize;PointResize;SincResize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)"))
         resize.Filters.Add(New VideoFilter(resize.Name, "Hardware Encoder", "# hardware encoder resizes"))
         ret.Add(resize)
 
@@ -697,11 +696,25 @@ Class FilterParameters
                 add2("FFVideoSource", "rffmode", "1", "rffmode | 1 (honor all pulldown flags)")
                 add2("FFVideoSource", "rffmode", "2", "rffmode | 2 (force film)")
 
-                add2("LSMASHVideoSource", "decoder", """h264_qsv""", "decoder = ""h264_qsv""")
-                add2("LWLibavVideoSource", "decoder", """h264_qsv""", "decoder = ""h264_qsv""")
+                'add2("LSMASHVideoSource", "decoder", """h264_qsv""", "decoder | h264_qsv")
+                'add2("LWLibavVideoSource", "decoder", """h264_qsv""", "decoder | h264_qsv")
+                'add2("lsmas.LibavSMASHSource", "decoder", """h264_qsv""", "decoder | h264_qsv")
+                'add2("lsmas.LWLibavSource", "decoder", """h264_qsv""", "decoder | h264_qsv")
 
-                add2("lsmas.LibavSMASHSource", "decoder", """h264_qsv""", "decoder = ""h264_qsv""")
-                add2("lsmas.LWLibavSource", "decoder", """h264_qsv""", "decoder = ""h264_qsv""")
+                'add2("LSMASHVideoSource", "decoder", """hevc_qsv""", "decoder | hevc_qsv")
+                'add2("LWLibavVideoSource", "decoder", """hevc_qsv""", "decoder | hevc_qsv")
+                'add2("lsmas.LibavSMASHSource", "decoder", """hevc_qsv""", "decoder | hevc_qsv")
+                'add2("lsmas.LWLibavSource", "decoder", """hevc_qsv""", "decoder | hevc_qsv")
+
+                'add2("LSMASHVideoSource", "decoder", """h264_nvenc""", "decoder | h264_nvenc")
+                'add2("LWLibavVideoSource", "decoder", """h264_nvenc""", "decoder | h264_nvenc")
+                'add2("lsmas.LibavSMASHSource", "decoder", """h264_nvenc""", "decoder | h264_nvenc")
+                'add2("lsmas.LWLibavSource", "decoder", """h264_nvenc""", "decoder | h264_nvenc")
+
+                'add2("LSMASHVideoSource", "decoder", """hevc_nvenc""", "decoder | hevc_nvenc")
+                'add2("LWLibavVideoSource", "decoder", """hevc_nvenc""", "decoder | hevc_nvenc")
+                'add2("lsmas.LibavSMASHSource", "decoder", """hevc_nvenc""", "decoder | hevc_nvenc")
+                'add2("lsmas.LWLibavSource", "decoder", """hevc_nvenc""", "decoder | hevc_nvenc")
 
                 add2("ffms2.Source", "rffmode", "0", "rffmode | 0 (ignore all flags (default))")
                 add2("ffms2.Source", "rffmode", "1", "rffmode | 1 (honor all pulldown flags)")

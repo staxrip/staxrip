@@ -112,7 +112,7 @@ Public Class ApplicationSettings
 
         If Check(Demuxers, "Demuxers", 103) Then Demuxers = Demuxer.GetDefaults()
 
-        If Check(AviSynthFilterPreferences, "AviSynth Filter Preferences", 2) Then
+        If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 1) Then
             AviSynthFilterPreferences = New StringPairList
             AviSynthFilterPreferences.Add("default", "FFVideoSource")
             AviSynthFilterPreferences.Add("264, h264, avc", "LWLibavVideoSource")
@@ -123,14 +123,15 @@ Public Class ApplicationSettings
             AviSynthFilterPreferences.Add("mp4, m4v, mov", "LSMASHVideoSource")
             AviSynthFilterPreferences.Add("ts, m2ts, mts, m2t", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("wmv", "DSS2")
+            AviSynthFilterPreferences.Add("vdr", "AviSource")
         End If
 
-        If Check(VapourSynthFilterPreferences, "VapourSynth Filter Preference", 3) Then
+        If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 1) Then
             VapourSynthFilterPreferences = New StringPairList
             VapourSynthFilterPreferences.Add("default", "ffms2")
             VapourSynthFilterPreferences.Add("264, h264, avc", "LWLibavSource")
             VapourSynthFilterPreferences.Add("265, h265, hevc", "LWLibavSource")
-            VapourSynthFilterPreferences.Add("avi, avs", "AVISource")
+            VapourSynthFilterPreferences.Add("avi, avs, vdr", "AVISource")
             VapourSynthFilterPreferences.Add("mp4, m4v, mov", "LibavSMASHSource")
             VapourSynthFilterPreferences.Add("ts, m2ts, mts, m2t", "LWLibavSource")
             VapourSynthFilterPreferences.Add("d2v", "d2vsource")
@@ -166,9 +167,7 @@ Public Class ApplicationSettings
             PackagePaths = New Dictionary(Of String, String)
         End If
 
-        If RecentProjects Is Nothing Then
-            RecentProjects = New List(Of String)
-        End If
+        If RecentProjects Is Nothing Then RecentProjects = New List(Of String)
 
         If Check(MuxerProfiles, "Container Profiles", 37) Then
             MuxerProfiles = New List(Of Muxer)
@@ -365,4 +364,20 @@ Public Class ApplicationSettings
 "Resample | 88200 = -resampleTo88200" + BR +
 "Resample | 96000 = -resampleTo96000"
     End Function
+
+    Sub UpdateRecentProjects(path As String)
+        If path = "" OrElse path.StartsWith(Folder.Template) OrElse path.EndsWith("crash.srip") Then Exit Sub
+        Dim list As New List(Of String)
+        If File.Exists(path) Then list.Add(path)
+
+        For Each i In s.RecentProjects
+            If i <> path AndAlso File.Exists(i) Then list.Add(i)
+        Next
+
+        While list.Count > 5
+            list.RemoveAt(list.Count - 1)
+        End While
+
+        s.RecentProjects = list
+    End Sub
 End Class

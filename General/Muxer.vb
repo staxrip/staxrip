@@ -555,6 +555,10 @@ Class MkvMuxer
             If Not ap.Stream Is Nothing Then
                 tid = ap.Stream.StreamOrder
                 isCombo = ap.Stream.Name.Contains("THD+AC3")
+
+                Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "-I " + ap.File.Quotes)
+                Dim values = Regex.Matches(stdout, "Track ID (\d+): audio").OfType(Of Match).Select(Function(match) match.Groups(1).Value.ToInt)
+                If values.Count = ap.Streams.Count Then tid = values(ap.Stream.Index)
             Else
                 tid = MediaInfo.GetAudio(ap.File, "StreamOrder").ToInt
                 isCombo = ap.File.Ext = "thd+ac3"

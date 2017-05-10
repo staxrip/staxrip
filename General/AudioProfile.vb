@@ -205,11 +205,11 @@ Public MustInherit Class AudioProfile
         Return targetDir + base + "_out" + track + "." + OutputFileType
     End Function
 
-    Function SolveMacros(value As String) As String
-        Return SolveMacros(value, True)
+    Function ExpandMacros(value As String) As String
+        Return ExpandMacros(value, True)
     End Function
 
-    Function SolveMacros(value As String, silent As Boolean) As String
+    Function ExpandMacros(value As String, silent As Boolean) As String
         If value = "" Then Return ""
         If value.Contains("""%input%""") Then value = value.Replace("""%input%""", File.Quotes)
         If value.Contains("%input%") Then value = value.Replace("%input%", File.Quotes)
@@ -287,7 +287,7 @@ Public Class BatchAudioProfile
     End Property
 
     Function GetCode() As String
-        Dim cl = SolveMacros(CommandLines).Trim
+        Dim cl = ExpandMacros(CommandLines).Trim
 
         Return {
             Package.ffmpeg,
@@ -403,7 +403,7 @@ Class NullAudioProfile
 End Class
 
 <Serializable()>
-Class MuxAudioProfile
+Public Class MuxAudioProfile
     Inherits AudioProfile
 
     Sub New()
@@ -665,7 +665,7 @@ Class GUIAudioProfile
             Dim bitrateBefore = p.VideoBitrate
             Dim targetPath = GetOutputFile()
 
-            For Each i In SolveMacros(CommandLines, False).SplitLinesNoEmpty
+            For Each i In ExpandMacros(CommandLines, False).SplitLinesNoEmpty
                 Dim start = DateTime.Now
 
                 Using proc As New Proc

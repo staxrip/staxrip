@@ -249,7 +249,8 @@ Public Class TaskDialog(Of T)
 #End Region
 
 #Region "Methods"
-    Sub AddButton(value As T, text As String)
+
+    Sub AddButton(text As String, value As T)
         Dim id = 1000 + IdValueDic.Count + 1
         IdValueDic(id) = value
         Buttons.Add(New TASKDIALOG_BUTTON(id, text))

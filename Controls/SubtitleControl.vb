@@ -324,6 +324,8 @@ Class SubtitleControl
 
     Sub AddSubtitles(subtitles As List(Of Subtitle))
         For Each i In subtitles
+            i.Default = False
+
             If File.Exists(i.Path) Then
                 Dim size As String
 
@@ -386,26 +388,6 @@ Class SubtitleControl
         Property Filename As String
         Property Subtitle As Subtitle
     End Class
-
-    Private Sub bnBDSup2SubPP_Click() Handles bnBDSup2SubPP.Click
-        Try
-            Dim st = Items(dgv.CurrentRow.Index).Subtitle
-            Dim fp = st.Path
-
-            If Filepath.GetExtFull(fp) = ".idx" Then
-                fp = p.TempDir + p.TargetFile.Base + "_temp.idx"
-
-                Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
-                    st.IndexIDX.ToString).WriteANSIFile(fp)
-
-                FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
-            End If
-
-            g.ShellExecute(Package.BDSup2SubPP.Path, """" + fp + """")
-        Catch ex As Exception
-            g.ShowException(ex)
-        End Try
-    End Sub
 
     Private Sub bnPlay_Click() Handles bnPlay.Click
         If Package.MPC.VerifyOK(True) Then
@@ -510,11 +492,23 @@ Class SubtitleControl
         UpdateControls()
     End Sub
 
-    Private Sub bnPlay_Click(sender As Object, e As EventArgs) Handles bnPlay.Click
-
-    End Sub
-
     Private Sub bnBDSup2SubPP_Click(sender As Object, e As EventArgs) Handles bnBDSup2SubPP.Click
+        Try
+            Dim st = Items(dgv.CurrentRow.Index).Subtitle
+            Dim fp = st.Path
 
+            If Filepath.GetExtFull(fp) = ".idx" Then
+                fp = p.TempDir + p.TargetFile.Base + "_temp.idx"
+
+                Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
+                    st.IndexIDX.ToString).WriteANSIFile(fp)
+
+                FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
+            End If
+
+            g.ShellExecute(Package.BDSup2SubPP.Path, """" + fp + """")
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
     End Sub
 End Class

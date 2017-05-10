@@ -554,7 +554,7 @@ Public Class FilterCategory
         ret.Add(misc)
 
         Dim field As New FilterCategory("Field")
-        field.Filters.Add(New VideoFilter(field.Name, "IVTC", "Telecide(guide = 1).Decimate()"))
+        field.Filters.Add(New VideoFilter(field.Name, "IVTC", "Telecide(guide = 1)" + BR + "Decimate()"))
         field.Filters.Add(New VideoFilter(field.Name, "TDeint", "TDeint()"))
         field.Filters.Add(New VideoFilter(field.Name, "FieldDeinterlace", "FieldDeinterlace()"))
         field.Filters.Add(New VideoFilter(field.Name, "SangNom2", "SangNom2()"))

@@ -366,7 +366,7 @@ Public Class ApplicationSettings
     End Function
 
     Sub UpdateRecentProjects(path As String)
-        If path = "" OrElse path.StartsWith(Folder.Template) OrElse path.EndsWith("crash.srip") Then Exit Sub
+        If path = "" OrElse path.StartsWith(Folder.Template) OrElse path.EndsWith("crash.srip") OrElse path.Ext = "bin" Then Exit Sub
         Dim list As New List(Of String)
         If File.Exists(path) Then list.Add(path)
 

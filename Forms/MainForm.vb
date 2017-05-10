@@ -1024,9 +1024,9 @@ Public Class MainForm
         If ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p) Then
             Using td As New TaskDialog(Of DialogResult)
                 td.MainInstruction = "Save changed project?"
-                td.AddButton(DialogResult.Yes, "Save")
-                td.AddButton(DialogResult.No, "Don't Save")
-                td.AddButton(DialogResult.Cancel, "Cancel")
+                td.AddButton("Save", DialogResult.Yes)
+                td.AddButton("Don't Save", DialogResult.No)
+                td.AddButton("Cancel", DialogResult.Cancel)
                 td.Show()
                 Refresh()
 
@@ -3384,7 +3384,7 @@ Public Class MainForm
                     Case DynamicMenuItemID.EncoderProfiles
                         g.PopulateProfileMenu(i.DropDownItems, s.VideoEncoderProfiles, AddressOf ShowEncoderProfilesDialog, AddressOf g.LoadVideoEncoder)
                     Case DynamicMenuItemID.MuxerProfiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf LoadMuxer)
+                        g.PopulateProfileMenu(i.DropDownItems, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf p.VideoEncoder.LoadMuxer)
                     Case DynamicMenuItemID.Audio1Profiles
                         g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() ShowAudioProfilesDialog(0), AddressOf LoadAudioProfile0)
                     Case DynamicMenuItemID.Audio2Profiles
@@ -3825,10 +3825,23 @@ Public Class MainForm
             tb.Edit.Text = p.PreferredSubtitles
             tb.Edit.SaveAction = Sub(value) p.PreferredSubtitles = value
 
+            Dim tbm = ui.AddTextMenuBlock(subPage)
+            tbm.Label.Text = "Stream Name:"
+            tbm.Label.Tooltip = "Stream name used for muxing, may contain macros."
+            tbm.Edit.Text = p.SubtitleName
+            tbm.Edit.SaveAction = Sub(value) p.SubtitleName = value
+            tbm.AddMenu("Language English", "%language_english%")
+            tbm.AddMenu("Language Native", "%language_native%")
+
             Dim subDemux = ui.AddMenuButtonBlock(Of DemuxMode)(subPage)
             subDemux.Label.Text = "Demux Subtitles:"
             subDemux.MenuButton.Value = p.DemuxSubtitles
             subDemux.MenuButton.SaveAction = Sub(value) p.DemuxSubtitles = value
+
+            Dim mb = ui.AddMenuButtonBlock(Of DefaultSubtitleMode)(subPage)
+            mb.Label.Text = "Default Subtitle:"
+            mb.MenuButton.Value = p.DefaultSubtitle
+            mb.MenuButton.SaveAction = Sub(value) p.DefaultSubtitle = value
 
             cb = ui.AddCheckBox(subPage)
             cb.Text = "Convert Sup (PGS/Blu-ray) to IDX (Sub/VobSub/DVD)"
@@ -5073,7 +5086,7 @@ Public Class MainForm
         End Using
     End Sub
 
-    Private Sub LoadAudioProfile0(profile As Profile)
+    Public Sub LoadAudioProfile0(profile As Profile)
         Dim file = p.Audio0.File
         Dim delay = p.Audio0.Delay
         Dim language = p.Audio0.Language
@@ -5093,7 +5106,7 @@ Public Class MainForm
         Assistant()
     End Sub
 
-    Private Sub LoadAudioProfile1(profile As Profile)
+    Public Sub LoadAudioProfile1(profile As Profile)
         Dim file = p.Audio1.File
         Dim delay = p.Audio1.Delay
         Dim language = p.Audio1.Language
@@ -5255,10 +5268,6 @@ Public Class MainForm
         g.PopulateProfileMenu(AudioMenu1.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf LoadAudioProfile1)
     End Sub
 
-    Sub LoadMuxer(profile As Profile)
-        p.VideoEncoder.LoadMuxer(profile)
-    End Sub
-
     Private Sub AviSynthListView_ScriptChanged() Handles AviSynthListView.Changed
         If Not IsLoading AndAlso Not AviSynthListView.IsLoading Then
             Package.DGDecodeNV.VerifyOK()
@@ -5308,7 +5317,7 @@ Public Class MainForm
 
     Private Sub llContainer_Click() Handles llMuxer.Click
         ContainerMenu.Items.Clear()
-        g.PopulateProfileMenu(ContainerMenu.Items, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf LoadMuxer)
+        g.PopulateProfileMenu(ContainerMenu.Items, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf p.VideoEncoder.LoadMuxer)
         ContainerMenu.Show(llMuxer, 0, 16)
     End Sub
 

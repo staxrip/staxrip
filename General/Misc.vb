@@ -295,7 +295,7 @@ Public Class GlobalClass
         End Try
     End Sub
 
-    Sub LoadVideoEncoder(profile As Profile)
+    Public Sub LoadVideoEncoder(profile As Profile)
         Dim currentMuxer = p.VideoEncoder.Muxer
         p.VideoEncoder = DirectCast(ObjectHelp.GetCopy(profile), VideoEncoder)
 
@@ -2836,6 +2836,35 @@ Public Class Subtitle
             ret.Add(st)
         End If
 
+        Dim enabledSubs = ret.Where(Function(val) val.Enabled)
+
+        Select Case p.DefaultSubtitle
+            Case DefaultSubtitleMode.Single
+                If enabledSubs.Count = 1 Then enabledSubs(0).Default = True
+            Case DefaultSubtitleMode.First
+                If enabledSubs.Count > 0 Then enabledSubs(0).Default = True
+            Case DefaultSubtitleMode.Second
+                If enabledSubs.Count > 1 Then enabledSubs(1).Default = True
+        End Select
+
+        For Each i In ret
+            If p.SubtitleName <> "" Then i.Title = p.SubtitleName
+        Next
+
+        For Each i In ret
+            If p.DefaultSubtitle = DefaultSubtitleMode.English Then
+                If i.Language.TwoLetterCode = "en" Then
+                    i.Default = True
+                    Exit For
+                End If
+            ElseIf p.DefaultSubtitle = DefaultSubtitleMode.Native Then
+                If i.Language.TwoLetterCode = Language.CurrentCulture.TwoLetterCode Then
+                    i.Default = True
+                    Exit For
+                End If
+            End If
+        Next
+
         Return ret
     End Function
 End Class
@@ -2858,7 +2887,7 @@ Public Enum ContainerStreamType
 End Enum
 
 Class FileTypes
-    Shared Property Audio As String() = {"aac", "ac3", "dts", "dtsma", "dtshr", "dtshd", "eac3", "flac", "m4a", "mka", "mp2", "mp3", "mpa", "ogg", "opus", "thd", "thd+ac3", "true-hd", "truehd", "wav"}
+    Shared Property Audio As String() = {"aac", "ac3", "dts", "dtsma", "dtshr", "dtshd", "eac3", "flac", "m4a", "mka", "mp2", "mp3", "mpa", "opus", "thd", "thd+ac3", "true-hd", "truehd", "wav"}
     Shared Property VideoAudio As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
     Shared Property BeSweetInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "ogg"}
     Shared Property DGDecNVInput As String() = {"264", "h264", "avc", "mkv", "mp4", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}
@@ -3067,7 +3096,7 @@ End Enum
 
 Public Enum DemuxMode
     <DispName("Show Dialog")> Dialog
-    Preferred
+    <DispName("Preferred Languages")> Preferred
     All
     None
 End Enum
@@ -5168,4 +5197,13 @@ Public Enum Symbol
     fa_youtube = &HF167
     fa_youtube_play = &HF16A
     fa_youtube_square = &HF166
+End Enum
+
+Public Enum DefaultSubtitleMode
+    None
+    [Single]
+    First
+    Second
+    English
+    Native
 End Enum

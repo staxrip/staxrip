@@ -32,6 +32,24 @@ Public MustInherit Class Demuxer
         Next
     End Function
 
+    Public Function ShowConfigDialogInputExtensions() As DialogResult
+        Using f As New SimpleSettingsForm(Name)
+            f.Height = CInt(f.Height * 0.5)
+            Dim ui = f.SimpleUI
+            Dim page = ui.CreateFlowPage("main page")
+
+            Dim tb = ui.AddTextBlock(page)
+            tb.Label.Text = "Supported Input File Types:"
+            tb.Edit.Text = InputExtensions.Join(" ")
+            tb.Edit.SaveAction = Sub(value) InputExtensions = value.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+
+            Dim ret = f.ShowDialog()
+            If ret = DialogResult.OK Then ui.Save()
+
+            Return ret
+        End Using
+    End Function
+
     Shared Function GetDefaults() As List(Of Demuxer)
         Dim ret As New List(Of Demuxer)
 
@@ -244,7 +262,7 @@ Class MP4BoxDemuxer
 End Class
 
 <Serializable()>
-Class eac3toDemuxer
+Public Class eac3toDemuxer
     Inherits Demuxer
 
     Sub New()
@@ -266,7 +284,7 @@ Class eac3toDemuxer
                     proc.RemoveChars = {CChar(VB6.vbBack)}
                     proc.Init("Demux M2TS using eac3to " + Package.eac3to.Version, "analyze: ", "process: ")
                     proc.File = Package.eac3to.Path
-                    proc.Arguments = f.GetArgs("""" + p.SourceFile + """", Filepath.GetBase(p.SourceFile))
+                    proc.Arguments = f.GetArgs(p.SourceFile.Quotes, p.SourceFile.Base)
 
                     Try
                         proc.Start()
@@ -288,6 +306,16 @@ Class eac3toDemuxer
             End If
         End Using
     End Sub
+
+    Public Overrides ReadOnly Property HasConfigDialog As Boolean
+        Get
+            Return True
+        End Get
+    End Property
+
+    Public Overrides Function ShowConfigDialog() As DialogResult
+        Return ShowConfigDialogInputExtensions()
+    End Function
 End Class
 
 <Serializable()>
@@ -491,21 +519,7 @@ Public Class ffmpegDemuxer
     End Sub
 
     Public Overrides Function ShowConfigDialog() As DialogResult
-        Using f As New SimpleSettingsForm(Name)
-            f.Height = CInt(f.Height * 0.5)
-            Dim ui = f.SimpleUI
-            Dim page = ui.CreateFlowPage("main page")
-
-            Dim tb = ui.AddTextBlock(page)
-            tb.Label.Text = "Supported Input File Types:"
-            tb.Edit.Text = InputExtensions.Join(" ")
-            tb.Edit.SaveAction = Sub(value) InputExtensions = value.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-
-            Dim ret = f.ShowDialog()
-            If ret = DialogResult.OK Then ui.Save()
-
-            Return ret
-        End Using
+        Return ShowConfigDialogInputExtensions()
     End Function
 
     Public Overrides ReadOnly Property HasConfigDialog As Boolean

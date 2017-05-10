@@ -40,6 +40,7 @@ Public Class Project
     Public CutFrameRate As Double
     Public CuttingMode As CuttingMode
     Public DecodingMode As DecodingMode
+    Public DefaultSubtitle As DefaultSubtitleMode
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
     Public DeleteTempFilesDir As Boolean
@@ -81,6 +82,7 @@ Public Class Project
     Public SourceSeconds As Integer
     Public SourceSize As Long
     Public SourceWidth As Integer = 720
+    Public SubtitleName As String = ""
     Public TargetFrameRate As Double
     Public TargetHeight As Integer = 576
     Public TargetSeconds As Integer = 5400

@@ -177,7 +177,7 @@ Public MustInherit Class VideoEncoder
         End Using
     End Function
 
-    Sub LoadMuxer(profile As Profile)
+    Public Sub LoadMuxer(profile As Profile)
         Muxer = DirectCast(ObjectHelp.GetCopy(profile), Muxer)
         Muxer.Init()
 
@@ -590,7 +590,7 @@ Class BatchEncoder
 End Class
 
 <Serializable()>
-Class NullEncoder
+Public Class NullEncoder
     Inherits VideoEncoder
 
     Sub New()

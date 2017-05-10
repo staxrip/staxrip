@@ -1,25 +1,11 @@
 ﻿Imports System.Management.Automation.Runspaces
 Imports System.Threading.Tasks
-Imports Microsoft.CodeAnalysis.CSharp.Scripting
-Imports Microsoft.CodeAnalysis.Scripting
-
 Public Class Scripting
     Shared Sub RunCSharp(code As String)
-        RunCSharpAsync(code).Wait()
+        MsgError("C# scripting support was removed because it was very heavy requiring 47 nuget packages." + BR2 +
+                 "You can port existing C# code to PowerShell or load and execute an C# Assembly with PowerShell." + BR2 +
+                 "Visit the support forum.")
     End Sub
-
-    Private Shared Async Function RunCSharpAsync(code As String) As Task(Of Object)
-        Try
-            MsgWarn("C# scripting support will be removed, use PowerShell scripting instead.")
-            Dim options = ScriptOptions.Default.WithImports(
-            "StaxRip", "System.Linq", "System.IO", "System.Text.RegularExpressions").
-            WithReferences(GetType(Scripting).Assembly,
-                           GetType(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo).Assembly)
-            Await CSharpScript.Create(code, options).RunAsync()
-        Catch ex As Exception
-            g.ShowException(ex)
-        End Try
-    End Function
 
     Shared Function RunPowershell(code As String) As Object
         Using runspace = RunspaceFactory.CreateRunspace()

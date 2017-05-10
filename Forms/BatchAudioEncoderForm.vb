@@ -306,7 +306,7 @@ Class BatchAudioEncoderForm
 
         EditControl.SetCommandLineDefaults()
         EditControl.Value = TempProfile.CommandLines
-        EditControl.SpecialMacrosFunction = AddressOf TempProfile.SolveMacros
+        EditControl.SpecialMacrosFunction = AddressOf TempProfile.ExpandMacros
 
         AddHandler EditControl.rtbEdit.TextChanged, AddressOf tbEditTextChanged
 

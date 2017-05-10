@@ -6,6 +6,16 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### Removed Features
+
+- C# scripting support was removed because it was very heavy requiring 47 nuget packages. You can port existing C# code to PowerShell or load and execute an C# Assembly with PowerShell. Visit the support forum.
+
+#### Requirements
+
+- .NET 4.7 is required. Win 7 is fully supported!
+
+https://blogs.msdn.microsoft.com/dotnet/2017/05/02/announcing-the-net-framework-4-7-general-availability/
+
 #### New Features
 
 - MPEG2DecPlus filter added to open d2v files with AviSynth+
@@ -31,6 +41,9 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - added option to encode audio with the channels count of the audio source file
 - added support for VirtualDub frame server files with vdr extension
 - ffmpeg demuxing GUI added, only audio is supported so far, input types can be configured in the settings, default is avi, ts, flv
+- added new powershell script for re-muxing
+- added option to define a default subtitle name
+- added option to enable a default subtitle
 
 #### Fixed Bugs
 
@@ -72,6 +85,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - up/down menu items for the avs/vs filter list in main dialog
 - x265 --limit-tu defaults for slower and veryslow presets updated
 - in case the AviSynth script contains AudioDub the avs file can be selected as audio source file in the audio context menu 
+- simplified mkvmerge command line
 
 #### Updated Tools
 
@@ -94,8 +108,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - VSFilterMod (avs, vs) 4
 - flash3kyuu_deband (avs, vs) 2.0.20140721
 - TIVTC (avs) 1.0.6
-- x265 2.4+2
 - mvtools2 (avs) 2.7.16.22
 - masktools2 2.2.7
 - yadifmod (vs) 10
 - mkvtoolnix 11.0.0
+- x265 2.4+14

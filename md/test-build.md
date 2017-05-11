@@ -37,13 +37,14 @@ https://blogs.msdn.microsoft.com/dotnet/2017/05/02/announcing-the-net-framework-
 - flash3kyuu_deband VapourSynth support added
 - new macro %eval_ps:<expression>% added to evaluate PowerShell expressions
 - various improvements in the batch/cli audio encoder GUI 
-- deafults tab added to video filter profile editor and several menu editors
+- defaults tab added to video filter profile editor and several menu editors
 - added option to encode audio with the channels count of the audio source file
 - added support for VirtualDub frame server files with vdr extension
 - ffmpeg demuxing GUI added, only audio is supported so far, input types can be configured in the settings, default is avi, ts, flv
 - added new powershell script for re-muxing
 - added option to define a default subtitle name
 - added option to enable a default subtitle
+- added possibility to define tags for MKV muxer
 
 #### Fixed Bugs
 
@@ -97,8 +98,6 @@ https://blogs.msdn.microsoft.com/dotnet/2017/05/02/announcing-the-net-framework-
 - ffmpeg 3.2.2
 - qaac 2.62
 - mvtools (vs) 18
-- L-SMASH-Works (avs) 929
-- vslsmashsource (vs) 929
 - KNLMeansCL 1.0.2
 - NVEncC 3.07
 - RgTools (avs) 0.95
@@ -113,3 +112,5 @@ https://blogs.msdn.microsoft.com/dotnet/2017/05/02/announcing-the-net-framework-
 - yadifmod (vs) 10
 - mkvtoolnix 11.0.0
 - x265 2.4+14
+- L-SMASH-Works (avs) 929
+- vslsmashsource (vs) 929

@@ -14,7 +14,6 @@
 
 #### Fixed Bugs
 
-- fixed C# scripting not working on Windows 7
 - fixed bug in audio detection when using a network drive as temp folder
 - fixed crash in processing dialog
 - fixed bug with automatic generation of audio profile names

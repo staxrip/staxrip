@@ -324,7 +324,9 @@ Class SubtitleControl
 
     Sub AddSubtitles(subtitles As List(Of Subtitle))
         For Each i In subtitles
-            i.Default = False
+            If Items.Where(Function(item) item.Default).Count > 0 Then
+                i.Default = False
+            End If
 
             If File.Exists(i.Path) Then
                 Dim size As String

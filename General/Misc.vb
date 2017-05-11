@@ -311,6 +311,40 @@ Public Class GlobalClass
         MainForm.Assistant()
     End Sub
 
+    Public Sub LoadAudioProfile0(profile As Profile)
+        Dim file = p.Audio0.File
+        Dim delay = p.Audio0.Delay
+        Dim language = p.Audio0.Language
+        Dim stream = p.Audio0.Stream
+        Dim streams = p.Audio0.Streams
+        p.Audio0 = DirectCast(ObjectHelp.GetCopy(profile), AudioProfile)
+        p.Audio0.File = file
+        p.Audio0.Language = language
+        p.Audio0.Stream = stream
+        p.Audio0.Streams = streams
+        p.Audio0.Delay = delay
+        g.MainForm.llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
+        g.MainForm.UpdateSizeOrBitrate()
+        g.MainForm.Assistant()
+    End Sub
+
+    Public Sub LoadAudioProfile1(profile As Profile)
+        Dim file = p.Audio1.File
+        Dim delay = p.Audio1.Delay
+        Dim language = p.Audio1.Language
+        Dim stream = p.Audio1.Stream
+        Dim streams = p.Audio1.Streams
+        p.Audio1 = DirectCast(ObjectHelp.GetCopy(profile), AudioProfile)
+        p.Audio1.File = file
+        p.Audio1.Language = language
+        p.Audio1.Stream = stream
+        p.Audio1.Streams = streams
+        p.Audio1.Delay = delay
+        g.MainForm.llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
+        g.MainForm.UpdateSizeOrBitrate()
+        g.MainForm.Assistant()
+    End Sub
+
     Sub RaiseAppEvent(appEvent As ApplicationEvent)
         For Each i In s.EventCommands
             If i.Enabled AndAlso i.Event = appEvent Then
@@ -1552,15 +1586,20 @@ Public Class Language
                 l.Add(New Language(CultureInfo.InvariantCulture, True))
 
                 Dim current = l.Where(Function(a) a.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName).FirstOrDefault
-
                 If current Is Nothing Then l.Add(CurrentCulture)
 
                 l.Sort()
 
                 Dim l2 As New List(Of Language)
+                Dim twoList As New List(Of String)
 
                 For Each i In CultureInfo.GetCultures(CultureTypes.NeutralCultures)
-                    l2.Add(New Language(i))
+                    If i.TwoLetterISOLanguageName.Length = 2 AndAlso
+                        Not twoList.Contains(i.TwoLetterISOLanguageName) Then
+
+                        l2.Add(New Language(i))
+                        twoList.Add(i.TwoLetterISOLanguageName)
+                    End If
                 Next
 
                 l2.Sort()
@@ -1880,7 +1919,7 @@ Class Macro
         ret.Add(New Macro("pos_ms", "Position In Millisecons", GetType(Integer), "Current preview position in milliseconds."))
         ret.Add(New Macro("processing", "Processing", GetType(String), "Returns 'True' if a job is currently processing otherwise 'False'."))
         ret.Add(New Macro("programs_dir", "Programs Directory", GetType(String), "Programs system directory."))
-        ret.Add(New Macro("script_dir", "Script Directory", GetType(String), "Users C# and PowerShell scripts directory."))
+        ret.Add(New Macro("script_dir", "Script Directory", GetType(String), "Users PowerShell scripts directory."))
         ret.Add(New Macro("script_ext", "Script File Extension", GetType(String), "File extension of the AviSynth/VapourSynth script so either avs or vpy."))
         ret.Add(New Macro("script_file", "Script Path", GetType(String), "Path of the AviSynth/VapourSynth script."))
         ret.Add(New Macro("sel_end", "Selection End", GetType(Integer), "End position of the first selecion in the preview."))
@@ -2887,7 +2926,7 @@ Public Enum ContainerStreamType
 End Enum
 
 Class FileTypes
-    Shared Property Audio As String() = {"aac", "ac3", "dts", "dtsma", "dtshr", "dtshd", "eac3", "flac", "m4a", "mka", "mp2", "mp3", "mpa", "opus", "thd", "thd+ac3", "true-hd", "truehd", "wav"}
+    Shared Property Audio As String() = {"flac", "dtshd", "dtsma", "dtshr", "thd", "thd+ac3", "true-hd", "truehd", "aac", "ac3", "dts", "eac3", "m4a", "mka", "mp2", "mp3", "mpa", "opus", "wav"}
     Shared Property VideoAudio As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
     Shared Property BeSweetInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "ogg"}
     Shared Property DGDecNVInput As String() = {"264", "h264", "avc", "mkv", "mp4", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}

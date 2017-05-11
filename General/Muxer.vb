@@ -10,6 +10,7 @@ Public MustInherit Class Muxer
 
     Property ChapterFile As String
     Property TimecodesFile As String
+    Property Tags As String = "Writing frontend: StaxRip %version%"
 
     MustOverride Sub Mux()
 
@@ -66,6 +67,7 @@ Public MustInherit Class Muxer
         Subtitles = Nothing
         ChapterFile = Nothing
         TimecodesFile = Nothing
+        Tags = Nothing
     End Sub
 
     Protected Sub ExpandMacros()
@@ -192,11 +194,12 @@ Public Class MP4Muxer
     Inherits Muxer
 
     Sub New()
-        MyBase.New("MP4")
+        MyClass.New("MP4")
     End Sub
 
     Sub New(name As String)
         MyBase.New(name)
+        AdditionalSwitches = "-itags encoder=""StaxRip %version%"""
     End Sub
 
     Overrides ReadOnly Property OutputExt As String
@@ -212,7 +215,7 @@ Public Class MP4Muxer
     End Function
 
     Overrides Function GetCommandLine() As String
-        Return """" + Package.MP4Box.Path + """ " + GetArgs()
+        Return Package.MP4Box.Path.Quotes + " " + GetArgs()
     End Function
 
     Private Function GetArgs() As String
@@ -545,20 +548,28 @@ Public Class MkvMuxer
             args.Append(" --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+"))
         End If
 
-        If writeTag Then
-            Dim xml = <Tags>
-                          <Tag>
-                              <Simple>
-                                  <Name>Writing frontend</Name>
-                                  <String>StaxRip <%= Application.ProductVersion %></String>
-                              </Simple>
-                          </Tag>
-                      </Tags>
+        Try
+            Dim tags = Me.Tags.SplitNoEmptyAndWhiteSpace(";")
 
-            Dim tagsPath = p.TempDir + p.TargetFile.Base + "_tags.xml"
-            xml.Save(tagsPath)
-            args.Append(" --global-tags " + tagsPath.Quotes)
-        End If
+            If writeTag Then
+                Dim xml = <Tags>
+                              <%= From tag In tags Select
+                                <Tag>
+                                    <Simple>
+                                        <Name><%= Macro.Expand(tag.Left(":").Trim) %></Name>
+                                        <String><%= Macro.Expand(tag.Right(":").Trim) %></String>
+                                    </Simple>
+                                </Tag>
+                              %>
+                          </Tags>
+
+                Dim tagsPath = p.TempDir + p.TargetFile.Base + "_tags.xml"
+                xml.Save(tagsPath)
+                args.Append(" --global-tags " + tagsPath.Quotes)
+            End If
+        Catch ex As Exception
+            Throw New ErrorAbortException("Error writing tags", ex.Message)
+        End Try
 
         args.Append(" --ui-language en")
         If AdditionalSwitches <> "" Then args.Append(" " + Macro.Expand(AdditionalSwitches))

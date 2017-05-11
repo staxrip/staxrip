@@ -20,11 +20,11 @@ Class MacrosForm
     Friend WithEvents lName As System.Windows.Forms.Label
     Friend WithEvents lValue As System.Windows.Forms.Label
     Friend WithEvents lDescriptionTitle As System.Windows.Forms.Label
-    Friend WithEvents lDescription As System.Windows.Forms.Label
     Friend WithEvents lNameTitle As System.Windows.Forms.Label
     Friend WithEvents lValueTitle As System.Windows.Forms.Label
     Friend WithEvents bnCopy As System.Windows.Forms.Button
-
+    Friend WithEvents tlp As TableLayoutPanel
+    Friend WithEvents lDescription As Label
     Private components As System.ComponentModel.IContainer
 
     <DebuggerStepThrough()>
@@ -34,113 +34,151 @@ Class MacrosForm
         Me.lName = New System.Windows.Forms.Label()
         Me.lValue = New System.Windows.Forms.Label()
         Me.lDescriptionTitle = New System.Windows.Forms.Label()
-        Me.lDescription = New System.Windows.Forms.Label()
         Me.lNameTitle = New System.Windows.Forms.Label()
         Me.lValueTitle = New System.Windows.Forms.Label()
         Me.bnCopy = New System.Windows.Forms.Button()
+        Me.tlp = New System.Windows.Forms.TableLayoutPanel()
+        Me.lDescription = New System.Windows.Forms.Label()
+        Me.tlp.SuspendLayout()
         Me.SuspendLayout()
         '
         'lv
         '
         Me.lv.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lv.Location = New System.Drawing.Point(12, 49)
+        Me.lv.Location = New System.Drawing.Point(14, 94)
+        Me.lv.Margin = New System.Windows.Forms.Padding(5)
         Me.lv.Name = "lv"
-        Me.lv.Size = New System.Drawing.Size(310, 613)
+        Me.lv.Size = New System.Drawing.Size(568, 1096)
         Me.lv.TabIndex = 2
         Me.lv.UseCompatibleStateImageBehavior = False
         '
         'stb
         '
         Me.stb.BackColor = System.Drawing.Color.Aqua
-        Me.stb.Location = New System.Drawing.Point(12, 12)
-        Me.stb.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.stb.Location = New System.Drawing.Point(14, 12)
+        Me.stb.Margin = New System.Windows.Forms.Padding(5, 7, 5, 7)
         Me.stb.Name = "stb"
-        Me.stb.Size = New System.Drawing.Size(310, 31)
+        Me.stb.Size = New System.Drawing.Size(568, 70)
         Me.stb.TabIndex = 4
         '
         'lName
         '
-        Me.lName.Location = New System.Drawing.Point(331, 41)
+        Me.lName.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lName.Location = New System.Drawing.Point(3, 60)
         Me.lName.Name = "lName"
-        Me.lName.Size = New System.Drawing.Size(315, 50)
+        Me.lName.Size = New System.Drawing.Size(745, 60)
         Me.lName.TabIndex = 5
         Me.lName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lValue
         '
-        Me.lValue.Location = New System.Drawing.Point(331, 118)
+        Me.lValue.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lValue.Location = New System.Drawing.Point(3, 256)
         Me.lValue.Name = "lValue"
-        Me.lValue.Size = New System.Drawing.Size(403, 50)
+        Me.lValue.Size = New System.Drawing.Size(745, 60)
         Me.lValue.TabIndex = 6
         Me.lValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lDescriptionTitle
         '
-        Me.lDescriptionTitle.AutoSize = True
-        Me.lDescriptionTitle.Location = New System.Drawing.Point(331, 169)
+        Me.lDescriptionTitle.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lDescriptionTitle.Location = New System.Drawing.Point(3, 316)
         Me.lDescriptionTitle.Name = "lDescriptionTitle"
-        Me.lDescriptionTitle.Size = New System.Drawing.Size(209, 48)
+        Me.lDescriptionTitle.Size = New System.Drawing.Size(745, 60)
         Me.lDescriptionTitle.TabIndex = 7
         Me.lDescriptionTitle.Text = "Description:"
         '
-        'lDescription
-        '
-        Me.lDescription.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lDescription.Location = New System.Drawing.Point(331, 195)
-        Me.lDescription.Name = "lDescription"
-        Me.lDescription.Size = New System.Drawing.Size(403, 467)
-        Me.lDescription.TabIndex = 8
-        '
         'lNameTitle
         '
-        Me.lNameTitle.AutoSize = True
-        Me.lNameTitle.Location = New System.Drawing.Point(331, 15)
+        Me.lNameTitle.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lNameTitle.Location = New System.Drawing.Point(3, 0)
         Me.lNameTitle.Name = "lNameTitle"
-        Me.lNameTitle.Size = New System.Drawing.Size(123, 48)
+        Me.lNameTitle.Size = New System.Drawing.Size(745, 60)
         Me.lNameTitle.TabIndex = 9
         Me.lNameTitle.Text = "Name:"
+        Me.lNameTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lValueTitle
         '
-        Me.lValueTitle.AutoSize = True
-        Me.lValueTitle.Location = New System.Drawing.Point(331, 92)
+        Me.lValueTitle.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lValueTitle.Location = New System.Drawing.Point(3, 196)
         Me.lValueTitle.Name = "lValueTitle"
-        Me.lValueTitle.Size = New System.Drawing.Size(113, 48)
+        Me.lValueTitle.Size = New System.Drawing.Size(745, 60)
         Me.lValueTitle.TabIndex = 10
         Me.lValueTitle.Text = "Value:"
+        Me.lValueTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'bCopy
+        'bnCopy
         '
-        Me.bnCopy.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnCopy.AutoSize = True
-        Me.bnCopy.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.bnCopy.Location = New System.Drawing.Point(623, 49)
-        Me.bnCopy.Name = "bCopy"
-        Me.bnCopy.Size = New System.Drawing.Size(111, 58)
+        Me.bnCopy.Location = New System.Drawing.Point(3, 123)
+        Me.bnCopy.Name = "bnCopy"
+        Me.bnCopy.Size = New System.Drawing.Size(300, 70)
         Me.bnCopy.TabIndex = 11
         Me.bnCopy.Text = "Copy"
         Me.bnCopy.UseVisualStyleBackColor = True
         '
+        'tlp
+        '
+        Me.tlp.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlp.ColumnCount = 1
+        Me.tlp.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlp.Controls.Add(Me.lNameTitle, 0, 0)
+        Me.tlp.Controls.Add(Me.lValue, 0, 4)
+        Me.tlp.Controls.Add(Me.lDescription, 0, 6)
+        Me.tlp.Controls.Add(Me.lDescriptionTitle, 0, 5)
+        Me.tlp.Controls.Add(Me.bnCopy, 0, 2)
+        Me.tlp.Controls.Add(Me.lName, 0, 1)
+        Me.tlp.Controls.Add(Me.lValueTitle, 0, 3)
+        Me.tlp.Location = New System.Drawing.Point(590, 12)
+        Me.tlp.Name = "tlp"
+        Me.tlp.RowCount = 7
+        Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50.0!))
+        Me.tlp.Size = New System.Drawing.Size(751, 1180)
+        Me.tlp.TabIndex = 12
+        '
+        'lDescription
+        '
+        Me.lDescription.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lDescription.Location = New System.Drawing.Point(3, 376)
+        Me.lDescription.Name = "lDescription"
+        Me.lDescription.Size = New System.Drawing.Size(745, 804)
+        Me.lDescription.TabIndex = 12
+        '
         'MacrosForm
         '
-        Me.ClientSize = New System.Drawing.Size(744, 674)
-        Me.Controls.Add(Me.bnCopy)
-        Me.Controls.Add(Me.lValueTitle)
-        Me.Controls.Add(Me.lNameTitle)
-        Me.Controls.Add(Me.lDescription)
-        Me.Controls.Add(Me.lDescriptionTitle)
-        Me.Controls.Add(Me.lValue)
-        Me.Controls.Add(Me.lName)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.ClientSize = New System.Drawing.Size(1353, 1204)
+        Me.Controls.Add(Me.tlp)
         Me.Controls.Add(Me.stb)
         Me.Controls.Add(Me.lv)
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "MacrosForm"
         Me.Text = "Macros"
+        Me.tlp.ResumeLayout(False)
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 

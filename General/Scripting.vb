@@ -1,5 +1,5 @@
 ﻿Imports System.Management.Automation.Runspaces
-Imports System.Threading.Tasks
+
 Public Class Scripting
     Shared Sub RunCSharp(code As String)
         MsgError("C# scripting support was removed because it was very heavy requiring 47 nuget packages." + BR2 +

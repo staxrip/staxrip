@@ -545,7 +545,7 @@ Public Class FilterCategory
 
         Dim misc As New FilterCategory("Misc")
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS Source File", "AssumeFPS(%media_info_video:FrameRate%)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS...", "AssumeFPS($select:msg:Select a frame rate;24000/1001|24000, 1001;30000/1001|30000, 1001;60000/1001|60000, 1001;24;25;50$)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS...", "AssumeFPS($select:msg:Select a frame rate;24000/1001|24000, 1001;30000/1001|30000, 1001;60000/1001|60000, 1001;24;25;30;50;60$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Prefetch(4)", "Prefetch(4)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "checkmate", "checkmate()"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Clense", "Clense()"))
@@ -619,7 +619,7 @@ Public Class FilterCategory
 
         Dim misc As New FilterCategory("Misc")
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "clip = core.std.AssumeFPS(clip, fpsnum = int(%media_info_video:FrameRate% * 1000), fpsden = 1000)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS...", "clip = core.std.AssumeFPS(clip, None, $select:msg:Select a frame rate.;30000/1001|30000, 1001;60000/1001|60000, 1001;24|24, 1;25|25, 1;50|50, 1$)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS...", "clip = core.std.AssumeFPS(clip, None, $select:msg:Select a frame rate.;30000/1001|30000, 1001;60000/1001|60000, 1001;24|24, 1;25|25, 1;30|30, 1;50|50, 1;60|60, 1$)"))
         ret.Add(misc)
 
         FilterCategory.AddDefaults(ScriptEngine.VapourSynth, ret)
@@ -655,85 +655,148 @@ Class FilterParameters
             If DefinitionsValue Is Nothing Then
                 DefinitionsValue = New List(Of FilterParameters)
 
-                Dim add = Function(func As String, text As String) As FilterParameters
-                              Dim ret As New FilterParameters
-                              ret.FunctionName = func
-                              ret.Text = text
-                              DefinitionsValue.Add(ret)
-                              Return ret
-                          End Function
+                Dim add = Sub(func As String(),
+                              path As String,
+                              params As FilterParameter())
 
-                Dim add2 = Function(func As String,
-                                    param As String,
-                                    value As String,
-                                    text As String) As FilterParameters
+                              For Each i In func
+                                  Dim ret As New FilterParameters
+                                  ret.FunctionName = i
+                                  ret.Text = path
+                                  DefinitionsValue.Add(ret)
+                                  ret.Parameters.AddRange(params)
+                              Next
+                          End Sub
 
-                               Dim ret As New FilterParameters
-                               ret.FunctionName = func
-                               ret.Text = text
-                               DefinitionsValue.Add(ret)
-                               ret.Parameters.Add(New FilterParameter(param, value))
-                               Return ret
-                           End Function
+                Dim add2 = Sub(func As String(),
+                               param As String,
+                               value As String,
+                               path As String)
 
-                Dim item As FilterParameters
+                               For Each i In func
+                                   Dim ret As New FilterParameters
+                                   ret.FunctionName = i
+                                   ret.Text = path
+                                   DefinitionsValue.Add(ret)
+                                   ret.Parameters.Add(New FilterParameter(param, value))
+                               Next
+                           End Sub
 
-                item = add("DGSource", "Hardware Resizing")
-                item.Parameters.Add(New FilterParameter("resize_w", "%target_width%"))
-                item.Parameters.Add(New FilterParameter("resize_h", "%target_height%"))
+                add({"DGSource"}, "Hardware Resizing", {
+                    New FilterParameter("resize_w", "%target_width%"),
+                    New FilterParameter("resize_h", "%target_height%")})
 
-                item = add("DGSource", "Hardware Cropping")
-                item.Parameters.Add(New FilterParameter("crop_l", "%crop_left%"))
-                item.Parameters.Add(New FilterParameter("crop_t", "%crop_top%"))
-                item.Parameters.Add(New FilterParameter("crop_r", "%crop_right%"))
-                item.Parameters.Add(New FilterParameter("crop_b", "%crop_bottom%"))
+                add({"DGSource"}, "Hardware Cropping", {
+                    New FilterParameter("crop_l", "%crop_left%"),
+                    New FilterParameter("crop_t", "%crop_top%"),
+                    New FilterParameter("crop_r", "%crop_right%"),
+                    New FilterParameter("crop_b", "%crop_bottom%")})
 
-                add2("DGSource", "deinterlace", "0", "deinterlace | 0 (no deinterlacing)")
-                add2("DGSource", "deinterlace", "1", "deinterlace | 1 (single rate deinterlacing)")
-                add2("DGSource", "deinterlace", "2", "deinterlace | 2 (double rate deinterlacing)")
+                add2({"DGSource"}, "deinterlace", "0", "deinterlace | 0 (no deinterlacing)")
+                add2({"DGSource"}, "deinterlace", "1", "deinterlace | 1 (single rate deinterlacing)")
+                add2({"DGSource"}, "deinterlace", "2", "deinterlace | 2 (double rate deinterlacing)")
 
-                add2("FFVideoSource", "rffmode", "0", "rffmode | 0 (ignore all flags (default))")
-                add2("FFVideoSource", "rffmode", "1", "rffmode | 1 (honor all pulldown flags)")
-                add2("FFVideoSource", "rffmode", "2", "rffmode | 2 (force film)")
+                add({"FFVideoSource",
+                     "LWLibavVideoSource",
+                     "LSMASHVideoSource",
+                     "ffms2.Source",
+                     "LibavSMASHSource",
+                     "LWLibavSource"}, "fpsnum, fpsden | 30000, 1001", {
+                    New FilterParameter("fpsnum", "30000"),
+                    New FilterParameter("fpsden", "1001")})
 
-                'add2("LSMASHVideoSource", "decoder", """h264_qsv""", "decoder | h264_qsv")
-                'add2("LWLibavVideoSource", "decoder", """h264_qsv""", "decoder | h264_qsv")
-                'add2("lsmas.LibavSMASHSource", "decoder", """h264_qsv""", "decoder | h264_qsv")
-                'add2("lsmas.LWLibavSource", "decoder", """h264_qsv""", "decoder | h264_qsv")
+                add({"FFVideoSource",
+                     "LWLibavVideoSource",
+                     "LSMASHVideoSource",
+                     "ffms2.Source",
+                     "LibavSMASHSource",
+                     "LWLibavSource"}, "fpsnum, fpsden | 60000, 1001", {
+                    New FilterParameter("fpsnum", "60000"),
+                    New FilterParameter("fpsden", "1001")})
 
-                'add2("LSMASHVideoSource", "decoder", """hevc_qsv""", "decoder | hevc_qsv")
-                'add2("LWLibavVideoSource", "decoder", """hevc_qsv""", "decoder | hevc_qsv")
-                'add2("lsmas.LibavSMASHSource", "decoder", """hevc_qsv""", "decoder | hevc_qsv")
-                'add2("lsmas.LWLibavSource", "decoder", """hevc_qsv""", "decoder | hevc_qsv")
+                add({"FFVideoSource",
+                     "LWLibavVideoSource",
+                     "LSMASHVideoSource",
+                     "ffms2.Source",
+                     "LibavSMASHSource",
+                     "LWLibavSource"}, "fpsnum, fpsden | 24, 1", {
+                    New FilterParameter("fpsnum", "24"),
+                    New FilterParameter("fpsden", "1")})
 
-                'add2("LSMASHVideoSource", "decoder", """h264_nvenc""", "decoder | h264_nvenc")
-                'add2("LWLibavVideoSource", "decoder", """h264_nvenc""", "decoder | h264_nvenc")
-                'add2("lsmas.LibavSMASHSource", "decoder", """h264_nvenc""", "decoder | h264_nvenc")
-                'add2("lsmas.LWLibavSource", "decoder", """h264_nvenc""", "decoder | h264_nvenc")
+                add({"FFVideoSource",
+                     "LWLibavVideoSource",
+                     "LSMASHVideoSource",
+                     "ffms2.Source",
+                     "LibavSMASHSource",
+                     "LWLibavSource"}, "fpsnum, fpsden | 25, 1", {
+                    New FilterParameter("fpsnum", "25"),
+                    New FilterParameter("fpsden", "1")})
 
-                'add2("LSMASHVideoSource", "decoder", """hevc_nvenc""", "decoder | hevc_nvenc")
-                'add2("LWLibavVideoSource", "decoder", """hevc_nvenc""", "decoder | hevc_nvenc")
-                'add2("lsmas.LibavSMASHSource", "decoder", """hevc_nvenc""", "decoder | hevc_nvenc")
-                'add2("lsmas.LWLibavSource", "decoder", """hevc_nvenc""", "decoder | hevc_nvenc")
+                add({"FFVideoSource",
+                     "LWLibavVideoSource",
+                     "LSMASHVideoSource",
+                     "ffms2.Source",
+                     "LibavSMASHSource",
+                     "LWLibavSource"}, "fpsnum, fpsden | 30, 1", {
+                    New FilterParameter("fpsnum", "30"),
+                    New FilterParameter("fpsden", "1")})
 
-                add2("ffms2.Source", "rffmode", "0", "rffmode | 0 (ignore all flags (default))")
-                add2("ffms2.Source", "rffmode", "1", "rffmode | 1 (honor all pulldown flags)")
-                add2("ffms2.Source", "rffmode", "2", "rffmode | 2 (force film)")
+                add({"FFVideoSource",
+                     "LWLibavVideoSource",
+                     "LSMASHVideoSource",
+                     "ffms2.Source",
+                     "LibavSMASHSource",
+                     "LWLibavSource"}, "fpsnum, fpsden | 50, 1", {
+                    New FilterParameter("fpsnum", "50"),
+                    New FilterParameter("fpsden", "1")})
 
-                add2("havsfunc.QTGMC", "TFF", "True", "TFF | True (top field first)")
-                add2("havsfunc.QTGMC", "TFF", "False", "TFF | False (bottom field first)")
+                add({"FFVideoSource",
+                     "LWLibavVideoSource",
+                     "LSMASHVideoSource",
+                     "ffms2.Source",
+                     "LibavSMASHSource",
+                     "LWLibavSource"}, "fpsnum, fpsden | 60, 1", {
+                    New FilterParameter("fpsnum", "60"),
+                    New FilterParameter("fpsden", "1")})
 
-                add2("QTGMC", "Preset", """Draft""", "Preset | Draft")
-                add2("QTGMC", "Preset", """Ultra Fast""", "Preset | Ultra Fast")
-                add2("QTGMC", "Preset", """Super Fast""", "Preset | Super Fast")
-                add2("QTGMC", "Preset", """Very Fast""", "Preset | Very Fast")
-                add2("QTGMC", "Preset", """Faster""", "Preset | Faster")
-                add2("QTGMC", "Preset", """Fast""", "Preset | Fast")
-                add2("QTGMC", "Preset", """Medium""", "Preset | Medium")
-                add2("QTGMC", "Preset", """Slow""", "Preset | Slow")
-                add2("QTGMC", "Preset", """Slower""", "Preset | Slower")
-                add2("QTGMC", "Preset", """Very Slow""", "Preset | Very Slow")
-                add2("QTGMC", "Preset", """Placebo""", "Preset | Placebo")
+                add2({"ffms2.Source", "FFVideoSource"}, "rffmode", "0", "rffmode | 0 (ignore all flags (default))")
+                add2({"ffms2.Source", "FFVideoSource"}, "rffmode", "1", "rffmode | 1 (honor all pulldown flags)")
+                add2({"ffms2.Source", "FFVideoSource"}, "rffmode", "2", "rffmode | 2 (force film)")
+
+                add2({"havsfunc.QTGMC"}, "TFF", "True", "TFF | True (top field first)")
+                add2({"havsfunc.QTGMC"}, "TFF", "False", "TFF | False (bottom field first)")
+
+                add2({"QTGMC"}, "Preset", """Draft""", "Preset | Draft")
+                add2({"QTGMC"}, "Preset", """Ultra Fast""", "Preset | Ultra Fast")
+                add2({"QTGMC"}, "Preset", """Super Fast""", "Preset | Super Fast")
+                add2({"QTGMC"}, "Preset", """Very Fast""", "Preset | Very Fast")
+                add2({"QTGMC"}, "Preset", """Faster""", "Preset | Faster")
+                add2({"QTGMC"}, "Preset", """Fast""", "Preset | Fast")
+                add2({"QTGMC"}, "Preset", """Medium""", "Preset | Medium")
+                add2({"QTGMC"}, "Preset", """Slow""", "Preset | Slow")
+                add2({"QTGMC"}, "Preset", """Slower""", "Preset | Slower")
+                add2({"QTGMC"}, "Preset", """Very Slow""", "Preset | Very Slow")
+                add2({"QTGMC"}, "Preset", """Placebo""", "Preset | Placebo")
+
+                add2({"LSMASHVideoSource",
+                      "LWLibavVideoSource",
+                      "LibavSMASHSource",
+                      "LWLibavSource"}, "decoder", """h264_qsv""", "decoder | h264_qsv")
+
+                add2({"LSMASHVideoSource",
+                      "LWLibavVideoSource",
+                      "LibavSMASHSource",
+                      "LWLibavSource"}, "decoder", """hevc_qsv""", "decoder | hevc_qsv")
+
+                add2({"LSMASHVideoSource",
+                      "LWLibavVideoSource",
+                      "LibavSMASHSource",
+                      "LWLibavSource"}, "decoder", """h264_nvenc""", "decoder | h264_nvenc")
+
+                add2({"LSMASHVideoSource",
+                      "LWLibavVideoSource",
+                      "LibavSMASHSource",
+                      "LWLibavSource"}, "decoder", """hevc_nvenc""", "decoder | hevc_nvenc")
             End If
 
             Return DefinitionsValue

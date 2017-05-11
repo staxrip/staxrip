@@ -137,7 +137,7 @@ Class MuxerForm
         Me.tpSubtitles.Padding = New System.Windows.Forms.Padding(3)
         Me.tpSubtitles.Size = New System.Drawing.Size(1033, 442)
         Me.tpSubtitles.TabIndex = 3
-        Me.tpSubtitles.Text = "Subtitles"
+        Me.tpSubtitles.Text = " Subtitles "
         Me.tpSubtitles.UseVisualStyleBackColor = True
         '
         'SubtitleControl
@@ -157,7 +157,7 @@ Class MuxerForm
         Me.tpAudio.Padding = New System.Windows.Forms.Padding(3)
         Me.tpAudio.Size = New System.Drawing.Size(1033, 442)
         Me.tpAudio.TabIndex = 4
-        Me.tpAudio.Text = "Audio"
+        Me.tpAudio.Text = "   Audio   "
         Me.tpAudio.UseVisualStyleBackColor = True
         '
         'TableLayoutPanel2
@@ -262,7 +262,7 @@ Class MuxerForm
         Me.tpOptions.Padding = New System.Windows.Forms.Padding(3)
         Me.tpOptions.Size = New System.Drawing.Size(1033, 442)
         Me.tpOptions.TabIndex = 2
-        Me.tpOptions.Text = "Options"
+        Me.tpOptions.Text = "  Options  "
         Me.tpOptions.UseVisualStyleBackColor = True
         '
         'SimpleUI
@@ -282,7 +282,7 @@ Class MuxerForm
         Me.tpCommandLine.Padding = New System.Windows.Forms.Padding(8)
         Me.tpCommandLine.Size = New System.Drawing.Size(1033, 442)
         Me.tpCommandLine.TabIndex = 1
-        Me.tpCommandLine.Text = "Command Line"
+        Me.tpCommandLine.Text = " Command Line "
         Me.tpCommandLine.UseVisualStyleBackColor = True
         '
         'TableLayoutPanel1
@@ -535,6 +535,14 @@ Class MuxerForm
             timecodes.Edit.Text = Muxer.TimecodesFile
             timecodes.Edit.SaveAction = Sub(value) Muxer.TimecodesFile = If(value <> "", value, Nothing)
             timecodes.BrowseFile("txt, mkv|*.txt;*.mkv")
+
+            Dim tags = UI.AddTextButtonBlock(page)
+            tags.Label.Text = "Tags:"
+            tags.Label.Tooltip = "Tags added to the MKV file." + BR2 + "Syntax: name1: value1; name2: value2"
+            tags.Edit.Expandet = True
+            tags.Edit.Text = Muxer.Tags
+            tags.Edit.SaveAction = Sub(value) Muxer.Tags = If(value <> "", value, Nothing)
+            tags.MacroDialog()
 
             Dim tb = UI.AddTextBlock(page)
             tb.Label.Text = "Title:"

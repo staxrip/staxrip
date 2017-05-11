@@ -688,6 +688,10 @@ Public Class SimpleUI
                                      End Using
                                  End Sub
         End Sub
+
+        Sub MacroDialog()
+            Button.ClickAction = Sub() MacrosForm.ShowDialogForm()
+        End Sub
     End Class
 
     Class MenuButtonBlock(Of T)

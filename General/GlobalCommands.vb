@@ -133,32 +133,26 @@ Public Class GlobalCommands
         If closeNeeded Then ProcessForm.CloseProcessForm()
     End Sub
 
-    <Command("Executes a csx (C#) or ps1 (PowerShell) script.")>
+    <Command("Executes a PowerShell (*.ps1) script.")>
     Sub ExecuteScriptFile(<DispName("File Path")>
-                          <Description("Filepath to a csx (C#) or ps1 (PowerShell) file, the path may contain macros.")>
+                          <Description("Filepath to a PowerShell (*.ps1) script, the path may contain macros.")>
                           <Editor(GetType(OpenFileDialogEditor), GetType(UITypeEditor))>
                           filepath As String)
 
         If File.Exists(filepath) Then
-            Select Case filepath.Ext
-                Case "csx"
-                    Scripting.RunCSharp(File.ReadAllText(filepath))
-                Case "ps1"
-                    ExecutePowerShellScript(File.ReadAllText(filepath))
-                Case Else
-                    MsgError("Only csx (C#) and ps1 (PowerShell) are supported at this time.")
-            End Select
+            If filepath.Ext = "ps1" Then
+                ExecutePowerShellScript(File.ReadAllText(filepath))
+            Else
+                MsgError("Only PowerShell (*.ps1) is supported.")
+            End If
         Else
             MsgError("File is missing:" + BR2 + filepath)
         End If
     End Sub
 
+    'TODO: legacy
     <Command("Executes C# script code.")>
-    Sub ExecuteCSharpScript(<DispName("Script Code")>
-                            <Description("C# script code to be executed.")>
-                            <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
-                            scriptCode As String)
-
+    Sub ExecuteCSharpScript(scriptCode As String)
         Scripting.RunCSharp(scriptCode)
     End Sub
 
@@ -295,13 +289,22 @@ Public Class GlobalCommands
         If x265Unknown.Count > 0 Then msg += BR2 + "# x265 Todo" + BR2 + x265Unknown.Join(" ")
 
         For Each pack In Package.Items.Values
+            If pack.HelpFile.Ext = "md" Then
+                msg += BR2 + "# local MD file for " + pack.Name
+            End If
+
             If pack.Path = "" Then msg += BR2 + "# path missing for " + pack.Name
-            If Not pack.IsCorrectVersion Then msg += BR2 + "# wrong version for " + pack.Name
 
-            If Not pack.Version.ContainsAny({"x86", "x64"}) AndAlso
-                Not pack.Filename.ContainsAny({".jar", ".py", ".avsi"}) Then
+            If pack.Version = "" Then
+                msg += BR2 + "# version missing for " + pack.Name
+            Else
+                If Not pack.IsCorrectVersion Then msg += BR2 + "# wrong version for " + pack.Name
 
-                msg += BR2 + "# x86/x64 missing for " + pack.Name
+                If Not pack.Version.ContainsAny({"x86", "x64"}) AndAlso
+                    Not pack.Filename.ContainsAny({".jar", ".py", ".avsi"}) Then
+
+                    msg += BR2 + "# x86/x64 missing for " + pack.Name
+                End If
             End If
 
             'does help file exist?

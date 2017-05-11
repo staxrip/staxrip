@@ -9,7 +9,7 @@ Public Class Package
     Property Filenames As String()
     Property FileNotFoundMessage As String
     Property HelpFile As String
-    Property HelpFileFunc As Func(Of ScriptEngine, String)
+    Property HelpURLFunc As Func(Of ScriptEngine, String)
     Property HelpURL As String
     Property HintDirFunc As Func(Of String)
     Property IgnoreVersion As Boolean
@@ -200,7 +200,7 @@ Public Class Package
         .Filename = "ffms2.dll",
         .WebURL = "https://github.com/FFMS/ffms2",
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
-        .HelpFileFunc = Function(engine) If(engine = ScriptEngine.AviSynth, "ffms2-avisynth.md", "ffms2-vapoursynth.md"),
+        .HelpURLFunc = Function(engine) If(engine = ScriptEngine.AviSynth, "https://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md", "https://github.com/FFMS/ffms2/blob/master/doc/ffms2-vapoursynth.md"),
         .AviSynthFilterNames = {"FFVideoSource", "FFAudioSource"},
         .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%source_temp_file%.ffindex"", colorspace = ""YV12"")")},
         .VapourSynthFilterNames = {"ffms2"},
@@ -251,8 +251,6 @@ Public Class Package
         Add(x265)
         Add(xvid_encraw)
         Add(avs2pipemod)
-
-#Region "misc"
 
         Add(New Package With {
             .Name = "Visual C++ 2012",
@@ -317,10 +315,6 @@ Public Class Package
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 4)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 8)")}})
 
-#End Region
-
-#Region "AviSynth"
-
         Add(New PluginPackage With {
             .Name = "SangNom2",
             .Filename = "SangNom2.dll",
@@ -347,16 +341,24 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "L-SMASH-Works",
             .Filename = "LSMASHSource.dll",
-            .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
             .Description = "AviSynth and VapourSynth source filter based on Libav supporting a wide range of input formats.",
-            .HelpFile = "README.txt",
+            .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
+            .HelpURL = "https://github.com/VFR-maniac/L-SMASH-Works/blob/master/AviSynth/README",
             .AviSynthFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"},
             .AviSynthFiltersFunc = Function() {
                 New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"")"),
                 New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")")}})
 
-        'New VideoFilter("Source", "LSMASHVideoSource HW...", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"", decoder = ""$select:msg:Choose a hardware decoder.;h264_qsv;hevc_qsv;h264_nvenc;hevc_nvenc$"")")
-        'New VideoFilter("Source", "LWLibavVideoSource HW...", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"", decoder = ""$select:msg:Choose a hardware decoder.;h264_qsv;hevc_qsv;h264_nvenc;hevc_nvenc$"")")
+        Add(New PluginPackage With {
+            .Name = "vslsmashsource",
+            .Filename = "vslsmashsource.dll",
+            .Description = "VapourSynth source filter based on Libav supporting a wide range of input formats.",
+            .HelpURL = "https://github.com/VFR-maniac/L-SMASH-Works/blob/master/VapourSynth/README",
+            .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
+            .VapourSynthFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"},
+            .VapourSynthFiltersFunc = Function() {
+                New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")"),
+                New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")}})
 
         Add(New PluginPackage With {
             .Name = "MSharpen",
@@ -466,15 +468,11 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "yadifmod2",
             .Filename = "yadifmod2.dll",
-            .AviSynthFilterNames = {"yadifmod2"},
             .Description = "Yet Another Deinterlacing Filter mod  for Avisynth2.6/Avisynth+",
-            .HelpFile = "readme.md",
+            .HelpURL = "https://github.com/chikuzen/yadifmod2/blob/master/avisynth/readme.md",
             .WebURL = "https://github.com/chikuzen/yadifmod2",
+            .AviSynthFilterNames = {"yadifmod2"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "yadifmod2", "yadifmod2()")}})
-
-#End Region
-
-#Region "VapourSynth"
 
         Add(New PluginPackage With {
             .Name = "Yadifmod",
@@ -484,20 +482,6 @@ Public Class Package
             .VapourSynthFilterNames = {"yadifmod.Yadifmod"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Field", "Yadifmod", "clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field = 0), order = 1, field = -1, mode = 0)")}})
-
-        Add(New PluginPackage With {
-            .Name = "vslsmashsource",
-            .Filename = "vslsmashsource.dll",
-            .Description = "VapourSynth source filter based on Libav supporting a wide range of input formats.",
-            .HelpFile = "README.txt",
-            .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
-            .VapourSynthFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"},
-            .VapourSynthFiltersFunc = Function() {
-                New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")"),
-                New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")}})
-
-        'New VideoFilter("Source", "LibavSMASHSource HW...", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"", decoder = ""$select:msg:Choose a hardware decoder.;h264_qsv;hevc_qsv;h264_nvenc;hevc_nvenc$"")"),
-        'New VideoFilter("Source", "LWLibavSource HW...", "clip = core.lsmas.LWLibavSource(r""%source_file%"", decoder = ""$select:msg:Choose a hardware decoder.;h264_qsv;hevc_qsv;h264_nvenc;hevc_nvenc$"")")
 
         Add(New PluginPackage With {
             .Name = "nnedi3",
@@ -603,8 +587,6 @@ Public Class Package
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Misc", "finesharp", "clip = finesharp.sharpen(clip)")}})
 
-#End Region
-
         Dim fp = Folder.Settings + "Versions.txt"
 
         Try
@@ -709,8 +691,8 @@ Public Class Package
             Return GetDir() + HelpFile
         ElseIf HelpURL <> "" Then
             Return HelpURL
-        ElseIf Not HelpFileFunc Is Nothing Then
-            Return GetDir() + HelpFileFunc.Invoke(engine)
+        ElseIf Not HelpURLFunc Is Nothing Then
+            Return HelpURLFunc.Invoke(engine)
         ElseIf WebURL <> "" Then
             Return WebURL
         End If

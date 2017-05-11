@@ -985,9 +985,13 @@ Public Class MainForm
             If iExt = "avs" Then Continue For
 
             For Each iPath In files
+                If track = 1 AndAlso iPath.Base = p.Audio0.File.Base Then Continue For
+                If track = 0 AndAlso iPath.Base = p.Audio1.File.Base Then Continue For
+
                 If tbOther.Text = iPath Then Continue For
                 If Not Filepath.GetExt(iPath) = iExt Then Continue For
                 If iPath.Contains("_cut_") Then Continue For
+                If iPath.Contains("_out") Then Continue For
                 If Not g.IsSourceSame(iPath) Then Continue For
                 If hq AndAlso Not iPath.Ext.EqualsAny("dtsma", "thd") Then Continue For
 
@@ -2250,6 +2254,9 @@ Public Class MainForm
     End Sub
 
     Function ProcessTip(message As String) As Boolean
+        If message.Contains(BR2) Then message = message.Replace(BR2, BR)
+        If message.Contains(VB6.vbLf + VB6.vbLf) Then message = message.FixBreak.Replace(BR2, BR)
+
         CurrentAssistantTipKey = message.SHA512Hash
 
         If Not p.SkippedAssistantTips.Contains(CurrentAssistantTipKey) Then
@@ -2322,14 +2329,8 @@ Public Class MainForm
             End If
         Else
             lAspectRatioError.Text = "n/a"
-
-            If p.TargetWidth <> cropw Then
-                tbTargetWidth.Text = cropw.ToString
-            End If
-
-            If p.TargetHeight <> croph Then
-                tbTargetHeight.Text = croph.ToString
-            End If
+            If p.TargetWidth <> cropw Then tbTargetWidth.Text = cropw.ToString
+            If p.TargetHeight <> croph Then tbTargetHeight.Text = croph.ToString
         End If
 
         If isCropped Then
@@ -2345,14 +2346,8 @@ Public Class MainForm
         lPixel.Text = CInt(p.TargetWidth * p.TargetHeight).ToString
 
         Dim trackBarValue = CInt((p.TargetWidth - 320) / p.ForcedOutputMod)
-
-        If trackBarValue < tbResize.Minimum Then
-            trackBarValue = tbResize.Minimum
-        End If
-
-        If trackBarValue > tbResize.Maximum Then
-            trackBarValue = tbResize.Maximum
-        End If
+        If trackBarValue < tbResize.Minimum Then trackBarValue = tbResize.Minimum
+        If trackBarValue > tbResize.Maximum Then trackBarValue = tbResize.Maximum
 
         tbResize.Value = trackBarValue
 
@@ -3386,9 +3381,9 @@ Public Class MainForm
                     Case DynamicMenuItemID.MuxerProfiles
                         g.PopulateProfileMenu(i.DropDownItems, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf p.VideoEncoder.LoadMuxer)
                     Case DynamicMenuItemID.Audio1Profiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() ShowAudioProfilesDialog(0), AddressOf LoadAudioProfile0)
+                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() ShowAudioProfilesDialog(0), AddressOf g.LoadAudioProfile0)
                     Case DynamicMenuItemID.Audio2Profiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf LoadAudioProfile1)
+                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf g.LoadAudioProfile1)
                     Case DynamicMenuItemID.FilterSetupProfiles
                         g.PopulateProfileMenu(i.DropDownItems, s.FilterSetupProfiles, AddressOf ShowFilterSetupProfilesDialog, AddressOf LoadScriptProfile)
                 End Select
@@ -3573,17 +3568,13 @@ Public Class MainForm
 
         If audioProfile1 <> "" Then
             For Each i In s.AudioProfiles
-                If i.Name = audioProfile1 Then
-                    LoadAudioProfile0(i)
-                End If
+                If i.Name = audioProfile1 Then g.LoadAudioProfile0(i)
             Next
         End If
 
         If audioProfile2 <> "" Then
             For Each i In s.AudioProfiles
-                If i.Name = audioProfile2 Then
-                    LoadAudioProfile1(i)
-                End If
+                If i.Name = audioProfile2 Then g.LoadAudioProfile1(i)
             Next
         End If
     End Sub
@@ -3623,13 +3614,6 @@ Public Class MainForm
     <Command("Dialog to edit filters.")>
     Sub ShowFiltersEditor()
         AviSynthListView.ShowEditor()
-    End Sub
-
-    <Command("Shows a dialog to perform a large collection of tasks.")>
-    Sub ShowTaskDialog()
-        Using f As New MacrosForm
-            f.ShowDialog()
-        End Using
     End Sub
 
     <Command("Dialog to configure project options.")>
@@ -5086,46 +5070,6 @@ Public Class MainForm
         End Using
     End Sub
 
-    Public Sub LoadAudioProfile0(profile As Profile)
-        Dim file = p.Audio0.File
-        Dim delay = p.Audio0.Delay
-        Dim language = p.Audio0.Language
-        Dim stream = p.Audio0.Stream
-        Dim streams = p.Audio0.Streams
-
-        p.Audio0 = DirectCast(ObjectHelp.GetCopy(profile), AudioProfile)
-
-        p.Audio0.File = file
-        p.Audio0.Language = language
-        p.Audio0.Stream = stream
-        p.Audio0.Streams = streams
-        p.Audio0.Delay = delay
-
-        llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
-        UpdateSizeOrBitrate()
-        Assistant()
-    End Sub
-
-    Public Sub LoadAudioProfile1(profile As Profile)
-        Dim file = p.Audio1.File
-        Dim delay = p.Audio1.Delay
-        Dim language = p.Audio1.Language
-        Dim stream = p.Audio1.Stream
-        Dim streams = p.Audio1.Streams
-
-        p.Audio1 = DirectCast(ObjectHelp.GetCopy(profile), AudioProfile)
-
-        p.Audio1.File = file
-        p.Audio1.Language = language
-        p.Audio1.Stream = stream
-        p.Audio1.Streams = streams
-        p.Audio1.Delay = delay
-
-        llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
-        UpdateSizeOrBitrate()
-        Assistant()
-    End Sub
-
     Function GetAudioProfile0() As Profile
         Return GetNewAudioProfile(p.Audio0)
     End Function
@@ -5247,9 +5191,9 @@ Public Class MainForm
         Dim f As ProfilesForm
 
         If number = 0 Then
-            f = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf LoadAudioProfile0, AddressOf GetAudioProfile0, AddressOf AudioProfile.GetDefaults)
+            f = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile0, AddressOf GetAudioProfile0, AddressOf AudioProfile.GetDefaults)
         Else
-            f = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf LoadAudioProfile1, AddressOf GetAudioProfile1, AddressOf AudioProfile.GetDefaults)
+            f = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile1, AddressOf GetAudioProfile1, AddressOf AudioProfile.GetDefaults)
         End If
 
         f.ShowDialog()
@@ -5263,9 +5207,8 @@ Public Class MainForm
     Sub UpdateAudioMenu()
         AudioMenu0.Items.Clear()
         AudioMenu1.Items.Clear()
-
-        g.PopulateProfileMenu(AudioMenu0.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(0), AddressOf LoadAudioProfile0)
-        g.PopulateProfileMenu(AudioMenu1.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf LoadAudioProfile1)
+        g.PopulateProfileMenu(AudioMenu0.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(0), AddressOf g.LoadAudioProfile0)
+        g.PopulateProfileMenu(AudioMenu1.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf g.LoadAudioProfile1)
     End Sub
 
     Private Sub AviSynthListView_ScriptChanged() Handles AviSynthListView.Changed

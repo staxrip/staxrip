@@ -1300,6 +1300,7 @@ Public Module MainModule
         Msg(text, content, MsgIcon.Info, MessageBoxButtons.OK)
     End Sub
 
+    'TODO: where should rather g.ShowException be used?
     Sub MsgError(text As String, Optional content As String = Nothing)
         If text = "" Then text = content
         If text = "" Then Exit Sub

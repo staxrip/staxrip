@@ -2323,12 +2323,8 @@ Class Macro
                 Dim mc = Regex.Matches(value, "%eval_ps:(.+?)%")
 
                 For Each i As Match In mc
-                    Try
-                        value = value.Replace(i.Value, Scripting.RunPowershell(i.Groups(1).Value)?.ToString)
-                        If Not value.Contains("%") Then Return value
-                    Catch ex As Exception
-                        MsgError("Failed to solve macro '" + i.Value + "': " + BR2 + ex.Message)
-                    End Try
+                    value = value.Replace(i.Value, Scripting.RunPowershell(i.Groups(1).Value)?.ToString)
+                    If Not value.Contains("%") Then Return value
                 Next
             End If
         End If

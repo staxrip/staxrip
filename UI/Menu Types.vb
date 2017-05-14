@@ -319,12 +319,11 @@ Namespace UI
             MyBase.New(text)
         End Sub
 
-        Protected Overrides Sub OnOwnerChanged(e As EventArgs)
-            MyBase.OnOwnerChanged(e)
-            Dim leftRight As Integer
-            If TypeOf Owner Is MenuStrip Then leftRight = Font.Height \ 4
-            Padding = New Padding(leftRight, CInt(Font.Height / 6), leftRight, CInt(Font.Height / 6))
-        End Sub
+        Public Overrides Function GetPreferredSize(constrainingSize As Size) As Size
+            Dim ret = MyBase.GetPreferredSize(constrainingSize)
+            ret.Height = CInt(Font.Height * 1.5)
+            Return ret
+        End Function
 
         Sub SetImage(symbol As Symbol)
             SetImage(symbol, Me)

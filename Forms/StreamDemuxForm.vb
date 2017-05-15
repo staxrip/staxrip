@@ -5,9 +5,10 @@ Class StreamDemuxForm
     Property AudioStreams As List(Of AudioStream)
     Property Subtitles As List(Of Subtitle)
 
-    Sub New(sourceFile As String)
+    Sub New(sourceFile As String, attachments As List(Of Attachment))
         InitializeComponent()
 
+        ClientSize = New Size(FontHeight * 42, FontHeight * 29)
         StartPosition = FormStartPosition.CenterParent
 
         lvAudio.View = View.Details
@@ -24,6 +25,11 @@ Class StreamDemuxForm
         lvSubtitles.CheckBoxes = True
         lvSubtitles.HeaderStyle = ColumnHeaderStyle.None
         lvSubtitles.AutoCheckMode = AutoCheckMode.SingleClick
+
+        lvAttachments.View = View.SmallIcon
+        lvAttachments.CheckBoxes = True
+        lvAttachments.HeaderStyle = ColumnHeaderStyle.None
+        lvAttachments.AutoCheckMode = AutoCheckMode.SingleClick
 
         AudioStreams = MediaInfo.GetAudioStreams(sourceFile)
         Subtitles = MediaInfo.GetSubtitles(sourceFile)
@@ -48,12 +54,19 @@ Class StreamDemuxForm
         Next
 
         For Each subtitle In Subtitles
-            Dim text = subtitle.Language.ToString
-            If Subtitles.Count <= 12 Then text += " (" + subtitle.TypeName + ")"
+            Dim text = subtitle.Language.ToString + " (" + subtitle.TypeName + ")" + If(subtitle.Title <> "", " - " + subtitle.Title, "")
             Dim item = lvSubtitles.Items.Add(text)
             item.Tag = subtitle
             item.Checked = subtitle.Enabled
         Next
+
+        If Not attachments Is Nothing Then
+            For Each attachment In attachments
+                Dim item = lvAttachments.Items.Add(attachment.Name)
+                item.Tag = attachment
+                item.Checked = attachment.Enabled
+            Next
+        End If
     End Sub
 
     Private Sub StreamDemuxForm_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -66,6 +79,10 @@ Class StreamDemuxForm
 
     Private Sub lvSubtitles_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvSubtitles.ItemChecked
         If Visible Then DirectCast(e.Item.Tag, Subtitle).Enabled = e.Item.Checked
+    End Sub
+
+    Private Sub lvAttachments_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvAttachments.ItemChecked
+        If Visible Then DirectCast(e.Item.Tag, Attachment).Enabled = e.Item.Checked
     End Sub
 
     Private Sub bnAudioAll_Click(sender As Object, e As EventArgs) Handles bnAudioAll.Click

@@ -45,6 +45,34 @@ Namespace UI
             End If
         End Sub
 
+        'Private ChangeService As IComponentChangeService
+
+        'Public Overrides Property Site() As ISite
+        '    Get
+        '        Return MyBase.Site
+        '    End Get
+        '    Set(ByVal Value As ISite)
+        '        MyBase.Site = Value
+
+        '        If ChangeService Is Nothing Then
+        '            ChangeService = DirectCast(GetService(GetType(IComponentChangeService)), IComponentChangeService)
+        '            AddHandler ChangeService.ComponentChanged, AddressOf OnComponentChanged
+        '        End If
+        '    End Set
+        'End Property
+
+        'Sub OnComponentChanged(sender As Object, e As ComponentChangedEventArgs)
+        '    If e.Component Is Me AndAlso (e.Member.Name = "Size" OrElse e.Member.Name = "Height") Then
+        '        DesignClientSize = ClientSize
+        '        DesignDPI = CurrentDPIDimension
+        '    End If
+        'End Sub
+
+        'Protected Overrides Sub Dispose(disposing As Boolean)
+        '    MyBase.Dispose(disposing)
+        '    If Not ChangeService Is Nothing Then RemoveHandler ChangeService.ComponentChanged, AddressOf OnComponentChanged
+        'End Sub
+
         Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
             If Not s.WindowPositions Is Nothing Then s.WindowPositions.Save(Me)
             MyBase.OnFormClosing(e)
@@ -63,15 +91,15 @@ Namespace UI
             Next
         End Sub
 
-        Private CurrentDPIDimensionValue As SizeF
+        Private CurrentDPIDimensionValue As Size
 
         <Browsable(False)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        ReadOnly Property CurrentDPIDimension As SizeF
+        ReadOnly Property CurrentDPIDimension As Size
             Get
-                If CurrentDPIDimensionValue = SizeF.Empty Then
+                If CurrentDPIDimensionValue = Size.Empty Then
                     Using g = CreateGraphics()
-                        CurrentDPIDimensionValue = New SizeF(g.DpiX, g.DpiY)
+                        CurrentDPIDimensionValue = New Size(CInt(g.DpiX), CInt(g.DpiY))
                     End Using
                 End If
 

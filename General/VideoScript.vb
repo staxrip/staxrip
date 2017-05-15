@@ -225,7 +225,7 @@ clip.set_output()
 
         Dim code = ""
 
-        If engine = ScriptEngine.VapourSynth AndAlso Not scriptLower.Contains("import vapoursynth") Then
+        If engine = ScriptEngine.VapourSynth AndAlso Not script.Contains("import vapoursynth") Then
             code = "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR
         End If
 
@@ -235,12 +235,16 @@ clip.set_output()
             Dim fp = plugin.Path
 
             If fp <> "" Then
-                If engine = ScriptEngine.VapourSynth AndAlso code.Contains("core = vs.") Then
+                If engine = ScriptEngine.VapourSynth Then
                     If Not plugin.VapourSynthFilterNames Is Nothing Then
                         For Each filterName In plugin.VapourSynthFilterNames
-                            If scriptLower.Contains(filterName.ToLower) Then
-                                PluginPackage.WriteVSCode(script, code, plugin)
-                            End If
+                            If script.Contains(filterName) Then PluginPackage.WriteVSCode(scriptLower, code, filterName, plugin)
+                        Next
+                    End If
+
+                    If Not plugin.AviSynthFilterNames Is Nothing Then
+                        For Each filterName In plugin.AviSynthFilterNames
+                            If script.Contains(".avs." + filterName) Then PluginPackage.WriteVSCode(scriptLower, code, filterName, plugin)
                         Next
                     End If
                 Else

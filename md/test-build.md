@@ -45,6 +45,7 @@ https://blogs.msdn.microsoft.com/dotnet/2017/05/02/announcing-the-net-framework-
 - added option to define a default subtitle name
 - added option to enable a default subtitle
 - added possibility to define tags for MKV muxer
+- support for using AviSynth filters in VapourSynth
 
 #### Fixed Bugs
 

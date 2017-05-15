@@ -5,12 +5,13 @@ Public Class Package
     Implements IComparable(Of Package)
 
     Property Description As String
+    Property DirName As String
     Property DownloadURL As String
     Property Filenames As String()
     Property FileNotFoundMessage As String
     Property HelpFile As String
-    Property HelpURLFunc As Func(Of ScriptEngine, String)
     Property HelpURL As String
+    Property HelpURLFunc As Func(Of ScriptEngine, String)
     Property HintDirFunc As Func(Of String)
     Property IgnoreVersion As Boolean
     Property IsRequiredFunc As Func(Of Boolean)
@@ -22,6 +23,8 @@ Public Class Package
     Property Version As String
     Property VersionDate As DateTime
     Property WebURL As String
+
+    Overridable Property FixedDir As String
 
     Property URL As String
         Get
@@ -38,7 +41,6 @@ Public Class Package
     Shared Property AviSynth As New AviSynthPlusPackage
     Shared Property BDSup2SubPP As New BDSup2SubPackage
     Shared Property checkmate As New checkmatePackage
-    Shared Property DGDecodeIM As New DGDecodeIMPackage
     Shared Property DGIndexIM As New DGIndexIMPackage
     Shared Property DGIndexNV As New DGIndexNVPackage
     Shared Property DivX265 As New DivX265Package
@@ -156,7 +158,7 @@ Public Class Package
     Shared Property mkvmerge As New Package With {
         .Name = "mkvmerge",
         .Filename = "mkvmerge.exe",
-        .FixedDir = Folder.Startup + "Apps\MKVToolNix\",
+        .DirName = "MKVToolNix",
         .WebURL = "http://www.bunkus.org/videotools/mkvtoolnix",
         .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
         .Description = "MKV muxing tool."}
@@ -164,7 +166,7 @@ Public Class Package
     Shared Property mkvextract As New Package With {
         .Name = "mkvextract",
         .Filename = "mkvextract.exe",
-        .FixedDir = Folder.Startup + "Apps\MKVToolNix\",
+        .DirName = "MKVToolNix",
         .WebURL = "http://www.bunkus.org/videotools/mkvtoolnix",
         .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
         .Description = "MKV demuxing tool."}
@@ -192,8 +194,17 @@ Public Class Package
         .HelpFile = "DGDecodeNVManual.html",
         .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource("),
         .AviSynthFilterNames = {"DGSource"},
-        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")"),
-                                           New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")}})
+        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")}})
+
+    Shared Property DGDecodeIM As Package = Add(New PluginPackage With {
+        .Name = "DGDecodeIM",
+        .Filename = "DGDecodeIM.dll",
+        .WebURL = "http://rationalqm.us/mine.html",
+        .Description = Strings.DGDecIM,
+        .HelpFile = "Notes.txt",
+        .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSourceIM("),
+        .AviSynthFilterNames = {"DGSourceIM"},
+        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")}})
 
     Shared Property ffms2 As Package = Add(New PluginPackage With {
         .Name = "ffms2",
@@ -633,8 +644,6 @@ Public Class Package
         End Get
     End Property
 
-    Overridable Property FixedDir As String
-
     Private FilenameValue As String
 
     Overridable Property Filename As String
@@ -813,6 +822,10 @@ Public Class Package
             If FixedDir <> "" Then
                 If File.Exists(FixedDir + Filename) Then Return FixedDir + Filename
                 Return Nothing
+            End If
+
+            If DirName <> "" AndAlso File.Exists(Folder.Startup + "Apps\" + DirName + "\" + Filename) Then
+                Return Folder.Startup + "Apps\" + DirName + "\" + Filename
             End If
 
             If Not HintDirFunc Is Nothing Then
@@ -1022,13 +1035,21 @@ Public Class PluginPackage
         Return ret
     End Function
 
-    Shared Sub WriteVSCode(ByRef script As String, ByRef code As String, plugin As PluginPackage)
-        For Each i In plugin.GetDependencies
-            WriteVSCode(script, code, i)
-        Next
+    Shared Sub WriteVSCode(ByRef scriptLower As String,
+                           ByRef code As String,
+                           ByRef filterName As String,
+                           plugin As PluginPackage)
+
+        If Not plugin.VapourSynthFilterNames.NothingOrEmpty Then
+            For Each i In plugin.GetDependencies
+                If Not i.VapourSynthFilterNames.NothingOrEmpty Then
+                    WriteVSCode(scriptLower, code, filterName, i)
+                End If
+            Next
+        End If
 
         If plugin.Filename.Ext = "py" Then
-            If Not script.Contains("import importlib.machinery") AndAlso
+            If Not scriptLower.Contains("import importlib.machinery") AndAlso
                 Not code.Contains("import importlib.machinery") Then
 
                 code += "import importlib.machinery" + BR
@@ -1037,14 +1058,22 @@ Public Class PluginPackage
             Dim line = plugin.Name + " = importlib.machinery.SourceFileLoader('" +
                 plugin.Name + "', r""" + plugin.Path + """).load_module()" + BR
 
-            If Not script.Contains(line) AndAlso Not code.Contains(line) Then code += line
-        ElseIf Not plugin.VapourSynthFilterNames Is Nothing Then
-            If Not File.Exists(Folder.Plugins + plugin.Filename) Then
-                Dim line = "core.std.LoadPlugin(r""" + plugin.Path + """)" + BR
+            If Not scriptLower.Contains(line.ToLower) AndAlso Not code.ToLower.Contains(line.ToLower) Then code += line
+        Else
+            If Not File.Exists(Folder.Plugins + plugin.Filename) AndAlso
+                Not scriptLower.Contains(plugin.Filename.ToLower) AndAlso Not code.ToLower.Contains(plugin.Filename.ToLower) Then
 
-                If Not script.Contains(line) AndAlso Not code.Contains(line) Then
-                    code += line
+                Dim line As String
+
+                If scriptLower.Contains(".avs." + filterName.ToLower) OrElse
+                    code.ToLower.Contains(".avs." + filterName.ToLower) Then
+
+                    line = "core.avs.LoadPlugin(r""" + plugin.Path + """)" + BR
+                Else
+                    line = "core.std.LoadPlugin(r""" + plugin.Path + """)" + BR
                 End If
+
+                code += line
             End If
         End If
     End Sub
@@ -1262,25 +1291,6 @@ Public Class DGIndexIMPackage
     Overrides ReadOnly Property IsRequired As Boolean
         Get
             Return CommandLineDemuxer.IsActive("DGIndexIM")
-        End Get
-    End Property
-End Class
-
-Public Class DGDecodeIMPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "DGDecodeIM"
-        Filename = "DGDecodeIM.dll"
-        WebURL = "http://rationalqm.us/mine.html"
-        Description = Strings.DGDecIM
-        HelpFile = "Notes.txt"
-        AviSynthFilterNames = {"DGSourceIM"}
-    End Sub
-
-    Overrides ReadOnly Property IsRequired As Boolean
-        Get
-            Return p.Script.Filters(0).Script.Contains("DGSourceIM(")
         End Get
     End Property
 End Class

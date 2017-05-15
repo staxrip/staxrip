@@ -1405,6 +1405,7 @@ Public Class MainForm
         Next
     End Function
 
+    'show vs on top in case active filter set is vs
     Function ShowSourceFilterSelectionDialog(inputFile As String) As VideoFilter
         Select Case inputFile.Ext
             Case "dgi"
@@ -1446,10 +1447,12 @@ Public Class MainForm
             td.AddCommandLink("AviSynth+ AVISource", "AVISource")
         End If
 
-        If inputFile.Ext = "d2v" Then
-            td.AddCommandLink("AviSynth+ MPEG2Source", "MPEG2Source")
-            td.AddCommandLink("VapourSynth d2vsource", "d2vsource")
+        If FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then
+            td.AddCommandLink("VapourSynth DGSource", "vsDGSource")
+            td.AddCommandLink("VapourSynth DGSourceIM", "vsDGSourceIM")
         End If
+
+        If inputFile.Ext = "d2v" Then td.AddCommandLink("VapourSynth d2vsource", "d2vsource")
 
         If inputFile.Ext.EqualsAny("avi", "avs", "vdr") Then
             td.AddCommandLink("VapourSynth AVISource", "vsAVISource")
@@ -1477,6 +1480,10 @@ Public Class MainForm
                 ret = New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
             Case "DGSourceIM"
                 ret = New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
+            Case "vsDGSource"
+                ret = New VideoFilter("Source", "DGSource", "clip = core.avs.DGSource(r""%source_file%"")")
+            Case "vsDGSourceIM"
+                ret = New VideoFilter("Source", "DGSourceIM", "clip = core.avs.DGSourceIM(r""%source_file%"")")
             Case "FFVideoSource"
                 ret = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%source_temp_file%.ffindex"", colorspace = ""YV12"")")
             Case "LWLibavVideoSource"
@@ -3160,7 +3167,7 @@ Public Class MainForm
             Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth",
                                              s.AviSynthFilterPreferences, s.AviSynthProfiles)
 
-            Dim vsAVS = AddFilterPreferences(ui, "Source Filters | VapourSynth",
+            Dim bsVS = AddFilterPreferences(ui, "Source Filters | VapourSynth",
                                              s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
 
             ui.SelectLast("last settings page")
@@ -3168,7 +3175,7 @@ Public Class MainForm
             If form.ShowDialog() = DialogResult.OK Then
                 s.AviSynthFilterPreferences = DirectCast(bsAVS.DataSource, StringPairList)
                 s.AviSynthFilterPreferences.Sort()
-                s.VapourSynthFilterPreferences = DirectCast(vsAVS.DataSource, StringPairList)
+                s.VapourSynthFilterPreferences = DirectCast(bsVS.DataSource, StringPairList)
                 s.VapourSynthFilterPreferences.Sort()
                 ui.Save()
                 g.SetRenderer(MenuStrip)

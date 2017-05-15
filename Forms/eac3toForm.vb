@@ -937,15 +937,15 @@ Class eac3toForm
         Dim videoStream = TryCast(cbVideoStream.SelectedItem, M2TSStream)
 
         If Not videoStream Is Nothing AndAlso Not cbVideoOutput.Text = "Nothing" Then
-            r += " " & videoStream.ID & ": """ + OutputFolder + baseName +
-                "." + cbVideoOutput.Text.ToLower + """"
+            r += " " & videoStream.ID & ": " + (OutputFolder + baseName +
+                "." + cbVideoOutput.Text.ToLower).Quotes
         End If
 
         For Each i In Streams
             If i.IsAudio AndAlso i.Checked Then
                 r += " " & i.ID & ": """ + OutputFolder + baseName + " ID" & i.ID
 
-                If Not i.Language.CultureInfo Is CultureInfo.InvariantCulture Then
+                If i.Language.CultureInfo.TwoLetterISOLanguageName <> "iv" Then
                     r += " " + i.Language.CultureInfo.EnglishName
                 End If
 
@@ -959,7 +959,7 @@ Class eac3toForm
             If i.IsSubtitle AndAlso i.Checked Then
                 r += " " & i.ID & ": """ + OutputFolder + baseName + " ID" & i.ID
 
-                If Not i.Language.CultureInfo Is CultureInfo.InvariantCulture Then
+                If i.Language.CultureInfo.TwoLetterISOLanguageName <> "iv" Then
                     r += " " + i.Language.CultureInfo.EnglishName
                 End If
 

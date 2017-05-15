@@ -1591,15 +1591,9 @@ Public Class Language
                 l.Sort()
 
                 Dim l2 As New List(Of Language)
-                Dim twoList As New List(Of String)
 
                 For Each i In CultureInfo.GetCultures(CultureTypes.NeutralCultures)
-                    If i.TwoLetterISOLanguageName.Length = 2 AndAlso
-                        Not twoList.Contains(i.TwoLetterISOLanguageName) Then
-
-                        l2.Add(New Language(i))
-                        twoList.Add(i.TwoLetterISOLanguageName)
-                    End If
+                    l2.Add(New Language(i))
                 Next
 
                 l2.Sort()
@@ -2462,6 +2456,12 @@ End Enum
 Class Startup
     <STAThread()>
     Shared Sub Main()
+        Try
+            System.ValueTuple.Create()
+        Catch
+            VB6.MsgBox("StaxRip requires minimum .NET 4.7", VB6.MsgBoxStyle.Critical)
+        End Try
+
         AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf g.OnUnhandledException
         'TODO: remove dead code
         'SetProcDpiAware()
@@ -2771,7 +2771,7 @@ Public Class Subtitle
         End Get
     End Property
 
-    ReadOnly Property Extension As String
+    ReadOnly Property ExtFull As String
         Get
             Select Case CodecString
                 Case "VobSub"
@@ -2794,7 +2794,7 @@ Public Class Subtitle
 
     ReadOnly Property TypeName As String
         Get
-            Dim ret = Extension
+            Dim ret = ExtFull
             If ret = "" Then ret = Path.ExtFull
             Return ret.TrimStart("."c).ToUpper.Replace("SUP", "PGS").Replace("IDX", "VobSub")
         End Get
@@ -2934,6 +2934,7 @@ Class FileTypes
     Shared Property NicAudioInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "dts"}
     Shared Property qaacInput As String() = {"wav", "flac"}
     Shared Property SubtitleExludingContainers As String() = {"srt", "ass", "idx", "sup", "ttxt", "ssa", "smi"}
+    Shared Property SubtitleSingle As String() = {"srt", "ass", "sup", "ttxt", "ssa", "smi"}
     Shared Property SubtitleIncludingContainers As String() = {"m2ts", "mkv", "mp4", "ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
     Shared Property Video As String() = {"264", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "m2t", "mts", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m", "vdr"}
@@ -5246,3 +5247,9 @@ Public Enum DefaultSubtitleMode
     English
     Native
 End Enum
+
+Public Class Attachment
+    Property ID As Integer
+    Property Name As String
+    Property Enabled As Boolean = True
+End Class

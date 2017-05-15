@@ -425,18 +425,6 @@ Class Filepath
     Shared Function GetDirNameOnly(path As String) As String
         Return Filepath.GetDirNoSep(path).RightLast("\")
     End Function
-
-    Shared Function GetShortPath(dir As String,
-                                 base1 As String,
-                                 base2 As String,
-                                 ext As String) As String
-
-        Dim ret = dir + base1 + base2 + "." + ext
-        If ret.Length > 260 Then ret = dir + base1.Shorten(10) + base2 + "." + ext
-        If ret.Length > 260 Then ret = dir + base1.Shorten(10) + base2.Shorten(10) + "." + ext
-
-        Return ret
-    End Function
 End Class
 
 Class SafeSerialization

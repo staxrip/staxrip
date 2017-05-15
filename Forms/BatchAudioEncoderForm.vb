@@ -25,6 +25,11 @@ Class BatchAudioEncoderForm
     Friend WithEvents laProfileName As LabelEx
     Friend WithEvents bnMenu As ButtonEx
     Friend WithEvents cms As ContextMenuStripEx
+    Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
+    Friend WithEvents tlpBitrateEtcValues As TableLayoutPanel
+    Friend WithEvents tlpBitrateEtcLabels As TableLayoutPanel
+    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
+    Friend WithEvents tlpMain As TableLayoutPanel
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()>
@@ -53,30 +58,44 @@ Class BatchAudioEncoderForm
         Me.laProfileName = New StaxRip.UI.LabelEx()
         Me.bnMenu = New StaxRip.UI.ButtonEx()
         Me.cms = New StaxRip.UI.ContextMenuStripEx(Me.components)
+        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpBitrateEtcValues = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpBitrateEtcLabels = New System.Windows.Forms.TableLayoutPanel()
+        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
+        Me.TableLayoutPanel1.SuspendLayout()
+        Me.tlpBitrateEtcValues.SuspendLayout()
+        Me.tlpBitrateEtcLabels.SuspendLayout()
+        Me.FlowLayoutPanel1.SuspendLayout()
+        Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
         '
         'tbInput
         '
-        Me.tbInput.Location = New System.Drawing.Point(20, 70)
+        Me.tbInput.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbInput.Location = New System.Drawing.Point(5, 75)
         Me.tbInput.Margin = New System.Windows.Forms.Padding(5)
         Me.tbInput.Name = "tbInput"
-        Me.tbInput.Size = New System.Drawing.Size(501, 55)
+        Me.tbInput.Size = New System.Drawing.Size(444, 55)
         Me.tbInput.TabIndex = 1
         '
         'lInput
         '
+        Me.lInput.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lInput.AutoSize = True
-        Me.lInput.Location = New System.Drawing.Point(20, 19)
+        Me.lInput.Location = New System.Drawing.Point(5, 0)
         Me.lInput.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.lInput.Name = "lInput"
-        Me.lInput.Size = New System.Drawing.Size(452, 48)
+        Me.lInput.Size = New System.Drawing.Size(355, 70)
         Me.lInput.TabIndex = 0
         Me.lInput.Text = "Supported Input File Types:"
         '
         'lType
         '
+        Me.lType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lType.AutoSize = True
-        Me.lType.Location = New System.Drawing.Point(555, 17)
+        Me.lType.Location = New System.Drawing.Point(459, 22)
         Me.lType.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.lType.Name = "lType"
         Me.lType.Size = New System.Drawing.Size(289, 48)
@@ -85,28 +104,33 @@ Class BatchAudioEncoderForm
         '
         'lBitrate
         '
+        Me.lBitrate.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lBitrate.AutoSize = True
-        Me.lBitrate.Location = New System.Drawing.Point(14, 135)
+        Me.lBitrate.Location = New System.Drawing.Point(5, 22)
         Me.lBitrate.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.lBitrate.Name = "lBitrate"
-        Me.lBitrate.Size = New System.Drawing.Size(132, 48)
+        Me.lBitrate.Size = New System.Drawing.Size(141, 48)
         Me.lBitrate.TabIndex = 2
         Me.lBitrate.Text = "Bitrate:"
         '
         'tbBitrate
         '
-        Me.tbBitrate.Location = New System.Drawing.Point(20, 192)
+        Me.tbBitrate.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbBitrate.Location = New System.Drawing.Point(5, 5)
         Me.tbBitrate.Margin = New System.Windows.Forms.Padding(5)
         Me.tbBitrate.Name = "tbBitrate"
         Me.ValidationProvider.SetPattern(Me.tbBitrate, "^[1-9]+\d*$")
-        Me.tbBitrate.Size = New System.Drawing.Size(140, 55)
+        Me.tbBitrate.Size = New System.Drawing.Size(141, 55)
         Me.tbBitrate.TabIndex = 3
         Me.tbBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'lLanguage
         '
+        Me.lLanguage.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lLanguage.AutoSize = True
-        Me.lLanguage.Location = New System.Drawing.Point(1194, 17)
+        Me.lLanguage.Location = New System.Drawing.Point(913, 22)
         Me.lLanguage.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.lLanguage.Name = "lLanguage"
         Me.lLanguage.Size = New System.Drawing.Size(182, 48)
@@ -115,39 +139,47 @@ Class BatchAudioEncoderForm
         '
         'lDelay
         '
+        Me.lDelay.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lDelay.AutoSize = True
-        Me.lDelay.Location = New System.Drawing.Point(375, 135)
+        Me.lDelay.Location = New System.Drawing.Point(307, 22)
         Me.lDelay.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.lDelay.Name = "lDelay"
-        Me.lDelay.Size = New System.Drawing.Size(116, 48)
+        Me.lDelay.Size = New System.Drawing.Size(142, 48)
         Me.lDelay.TabIndex = 7
         Me.lDelay.Text = "Delay:"
         '
         'tbDelay
         '
-        Me.tbDelay.Location = New System.Drawing.Point(381, 192)
+        Me.tbDelay.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbDelay.Location = New System.Drawing.Point(307, 5)
         Me.tbDelay.Margin = New System.Windows.Forms.Padding(5)
         Me.tbDelay.Name = "tbDelay"
         Me.ValidationProvider.SetPattern(Me.tbDelay, "^(-?[1-9]+\d*|-?0)$")
-        Me.tbDelay.Size = New System.Drawing.Size(140, 55)
+        Me.tbDelay.Size = New System.Drawing.Size(142, 55)
         Me.tbDelay.TabIndex = 8
         Me.tbDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'tbStreamName
         '
-        Me.tbStreamName.Location = New System.Drawing.Point(561, 192)
+        Me.tbStreamName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbStreamName.Location = New System.Drawing.Point(459, 215)
         Me.tbStreamName.Margin = New System.Windows.Forms.Padding(5)
         Me.tbStreamName.Name = "tbStreamName"
-        Me.tbStreamName.Size = New System.Drawing.Size(598, 55)
+        Me.tbStreamName.Size = New System.Drawing.Size(444, 55)
         Me.tbStreamName.TabIndex = 10
         '
         'tbChannels
         '
-        Me.tbChannels.Location = New System.Drawing.Point(201, 192)
+        Me.tbChannels.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbChannels.Location = New System.Drawing.Point(156, 5)
         Me.tbChannels.Margin = New System.Windows.Forms.Padding(5)
         Me.tbChannels.Name = "tbChannels"
         Me.ValidationProvider.SetPattern(Me.tbChannels, "^[1-9]{1}$")
-        Me.tbChannels.Size = New System.Drawing.Size(140, 55)
+        Me.tbChannels.Size = New System.Drawing.Size(141, 55)
         Me.tbChannels.TabIndex = 6
         Me.tbChannels.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -156,30 +188,34 @@ Class BatchAudioEncoderForm
         Me.EditControl.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.EditControl.Location = New System.Drawing.Point(14, 255)
+        Me.EditControl.Location = New System.Drawing.Point(5, 293)
         Me.EditControl.Margin = New System.Windows.Forms.Padding(5)
         Me.EditControl.Name = "EditControl"
-        Me.EditControl.Size = New System.Drawing.Size(1787, 414)
+        Me.EditControl.Size = New System.Drawing.Size(1360, 423)
         Me.EditControl.TabIndex = 5
         Me.EditControl.Text = "Batch Code"
         '
         'lStreamName
         '
+        Me.lStreamName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lStreamName.AutoSize = True
-        Me.lStreamName.Location = New System.Drawing.Point(555, 135)
+        Me.lStreamName.Location = New System.Drawing.Point(459, 162)
         Me.lStreamName.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.lStreamName.Name = "lStreamName"
-        Me.lStreamName.Size = New System.Drawing.Size(244, 48)
+        Me.lStreamName.Size = New System.Drawing.Size(444, 48)
         Me.lStreamName.TabIndex = 9
         Me.lStreamName.Text = "Stream Name:"
         '
         'lChannels
         '
+        Me.lChannels.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lChannels.AutoSize = True
-        Me.lChannels.Location = New System.Drawing.Point(195, 135)
+        Me.lChannels.Location = New System.Drawing.Point(156, 0)
         Me.lChannels.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.lChannels.Name = "lChannels"
-        Me.lChannels.Size = New System.Drawing.Size(171, 48)
+        Me.lChannels.Size = New System.Drawing.Size(141, 70)
         Me.lChannels.TabIndex = 4
         Me.lChannels.Text = "Channels:"
         '
@@ -187,7 +223,7 @@ Class BatchAudioEncoderForm
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(1601, 679)
+        Me.bnCancel.Location = New System.Drawing.Point(290, 5)
         Me.bnCancel.Margin = New System.Windows.Forms.Padding(5)
         Me.bnCancel.Size = New System.Drawing.Size(200, 65)
         Me.bnCancel.Text = "Cancel"
@@ -196,14 +232,14 @@ Class BatchAudioEncoderForm
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(1391, 679)
+        Me.bnOK.Location = New System.Drawing.Point(80, 5)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(5)
         Me.bnOK.Size = New System.Drawing.Size(200, 65)
         Me.bnOK.Text = "OK"
         '
         'tbType
         '
-        Me.tbType.Location = New System.Drawing.Point(561, 70)
+        Me.tbType.Location = New System.Drawing.Point(459, 75)
         Me.tbType.Margin = New System.Windows.Forms.Padding(5)
         Me.tbType.Name = "tbType"
         Me.tbType.Size = New System.Drawing.Size(180, 55)
@@ -211,21 +247,25 @@ Class BatchAudioEncoderForm
         '
         'mbLanguage
         '
-        Me.mbLanguage.Location = New System.Drawing.Point(1200, 65)
+        Me.mbLanguage.Location = New System.Drawing.Point(913, 75)
         Me.mbLanguage.Margin = New System.Windows.Forms.Padding(5)
         Me.mbLanguage.ShowMenuSymbol = True
-        Me.mbLanguage.Size = New System.Drawing.Size(335, 60)
+        Me.mbLanguage.Size = New System.Drawing.Size(335, 57)
         '
         'tbProfileName
         '
-        Me.tbProfileName.Location = New System.Drawing.Point(1200, 192)
-        Me.tbProfileName.Size = New System.Drawing.Size(598, 55)
+        Me.tbProfileName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbProfileName.Location = New System.Drawing.Point(911, 213)
+        Me.tbProfileName.Size = New System.Drawing.Size(450, 55)
         '
         'laProfileName
         '
+        Me.laProfileName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.laProfileName.AutoSize = True
-        Me.laProfileName.Location = New System.Drawing.Point(1194, 135)
-        Me.laProfileName.Size = New System.Drawing.Size(235, 48)
+        Me.laProfileName.Location = New System.Drawing.Point(911, 162)
+        Me.laProfileName.Size = New System.Drawing.Size(450, 48)
         Me.laProfileName.Text = "Name:"
         Me.laProfileName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -233,7 +273,7 @@ Class BatchAudioEncoderForm
         '
         Me.bnMenu.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnMenu.ContextMenuStrip = Me.cms
-        Me.bnMenu.Location = New System.Drawing.Point(1316, 679)
+        Me.bnMenu.Location = New System.Drawing.Point(5, 5)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(5)
         Me.bnMenu.ShowMenuSymbol = True
         Me.bnMenu.Size = New System.Drawing.Size(65, 65)
@@ -245,38 +285,128 @@ Class BatchAudioEncoderForm
         Me.cms.Name = "cms"
         Me.cms.Size = New System.Drawing.Size(61, 4)
         '
+        'TableLayoutPanel1
+        '
+        Me.TableLayoutPanel1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TableLayoutPanel1.ColumnCount = 3
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334!))
+        Me.TableLayoutPanel1.Controls.Add(Me.tlpBitrateEtcValues, 0, 3)
+        Me.TableLayoutPanel1.Controls.Add(Me.tlpBitrateEtcLabels, 0, 2)
+        Me.TableLayoutPanel1.Controls.Add(Me.lInput, 0, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbProfileName, 2, 3)
+        Me.TableLayoutPanel1.Controls.Add(Me.laProfileName, 2, 2)
+        Me.TableLayoutPanel1.Controls.Add(Me.lType, 1, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.lLanguage, 2, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbStreamName, 1, 3)
+        Me.TableLayoutPanel1.Controls.Add(Me.lStreamName, 1, 2)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbType, 1, 1)
+        Me.TableLayoutPanel1.Controls.Add(Me.mbLanguage, 2, 1)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbInput, 0, 1)
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(3, 3)
+        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
+        Me.TableLayoutPanel1.RowCount = 4
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1364, 282)
+        Me.TableLayoutPanel1.TabIndex = 18
+        '
+        'tlpBitrateEtcValues
+        '
+        Me.tlpBitrateEtcValues.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpBitrateEtcValues.ColumnCount = 3
+        Me.tlpBitrateEtcValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.tlpBitrateEtcValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.tlpBitrateEtcValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.tlpBitrateEtcValues.Controls.Add(Me.tbBitrate, 0, 0)
+        Me.tlpBitrateEtcValues.Controls.Add(Me.tbChannels, 1, 0)
+        Me.tlpBitrateEtcValues.Controls.Add(Me.tbDelay, 2, 0)
+        Me.tlpBitrateEtcValues.Location = New System.Drawing.Point(0, 210)
+        Me.tlpBitrateEtcValues.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpBitrateEtcValues.Name = "tlpBitrateEtcValues"
+        Me.tlpBitrateEtcValues.RowCount = 1
+        Me.tlpBitrateEtcValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpBitrateEtcValues.Size = New System.Drawing.Size(454, 72)
+        Me.tlpBitrateEtcValues.TabIndex = 20
+        '
+        'tlpBitrateEtcLabels
+        '
+        Me.tlpBitrateEtcLabels.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpBitrateEtcLabels.ColumnCount = 3
+        Me.tlpBitrateEtcLabels.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.tlpBitrateEtcLabels.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.tlpBitrateEtcLabels.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.tlpBitrateEtcLabels.Controls.Add(Me.lBitrate, 0, 0)
+        Me.tlpBitrateEtcLabels.Controls.Add(Me.lChannels, 1, 0)
+        Me.tlpBitrateEtcLabels.Controls.Add(Me.lDelay, 2, 0)
+        Me.tlpBitrateEtcLabels.Location = New System.Drawing.Point(0, 140)
+        Me.tlpBitrateEtcLabels.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpBitrateEtcLabels.Name = "tlpBitrateEtcLabels"
+        Me.tlpBitrateEtcLabels.RowCount = 1
+        Me.tlpBitrateEtcLabels.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpBitrateEtcLabels.Size = New System.Drawing.Size(454, 70)
+        Me.tlpBitrateEtcLabels.TabIndex = 19
+        '
+        'FlowLayoutPanel1
+        '
+        Me.FlowLayoutPanel1.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.FlowLayoutPanel1.AutoSize = True
+        Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnMenu)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnOK)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnCancel)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(872, 724)
+        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(495, 75)
+        Me.FlowLayoutPanel1.TabIndex = 19
+        '
+        'tlpMain
+        '
+        Me.tlpMain.ColumnCount = 1
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.Controls.Add(Me.FlowLayoutPanel1, 0, 2)
+        Me.tlpMain.Controls.Add(Me.TableLayoutPanel1, 0, 0)
+        Me.tlpMain.Controls.Add(Me.EditControl, 0, 1)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.RowCount = 3
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.Size = New System.Drawing.Size(1370, 803)
+        Me.tlpMain.TabIndex = 20
+        '
         'BatchAudioEncoderForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(1815, 758)
-        Me.Controls.Add(Me.bnMenu)
-        Me.Controls.Add(Me.laProfileName)
-        Me.Controls.Add(Me.tbProfileName)
-        Me.Controls.Add(Me.mbLanguage)
-        Me.Controls.Add(Me.tbType)
-        Me.Controls.Add(Me.bnCancel)
-        Me.Controls.Add(Me.bnOK)
-        Me.Controls.Add(Me.tbChannels)
-        Me.Controls.Add(Me.lChannels)
-        Me.Controls.Add(Me.lStreamName)
-        Me.Controls.Add(Me.tbStreamName)
-        Me.Controls.Add(Me.EditControl)
-        Me.Controls.Add(Me.lLanguage)
-        Me.Controls.Add(Me.tbDelay)
-        Me.Controls.Add(Me.lDelay)
-        Me.Controls.Add(Me.tbBitrate)
-        Me.Controls.Add(Me.lBitrate)
-        Me.Controls.Add(Me.lType)
-        Me.Controls.Add(Me.tbInput)
-        Me.Controls.Add(Me.lInput)
+        Me.ClientSize = New System.Drawing.Size(1370, 803)
+        Me.Controls.Add(Me.tlpMain)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "BatchAudioEncoderForm"
         Me.Text = "Batch Audio Settings"
+        Me.TableLayoutPanel1.ResumeLayout(False)
+        Me.TableLayoutPanel1.PerformLayout()
+        Me.tlpBitrateEtcValues.ResumeLayout(False)
+        Me.tlpBitrateEtcValues.PerformLayout()
+        Me.tlpBitrateEtcLabels.ResumeLayout(False)
+        Me.tlpBitrateEtcLabels.PerformLayout()
+        Me.FlowLayoutPanel1.ResumeLayout(False)
+        Me.tlpMain.ResumeLayout(False)
+        Me.tlpMain.PerformLayout()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 
@@ -296,6 +426,8 @@ Class BatchAudioEncoderForm
 
     Sub New(profile As BatchAudioProfile)
         InitializeComponent()
+
+        ClientSize = New Size(FontHeight * 40, FontHeight * 15)
 
         Me.Profile = profile
         TempProfile = ObjectHelp.GetCopy(Of BatchAudioProfile)(profile)

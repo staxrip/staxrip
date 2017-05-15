@@ -204,7 +204,7 @@ Class MP4BoxDemuxer
             (demuxSubtitles AndAlso p.DemuxSubtitles = DemuxMode.Dialog)) Then
             ProcessForm.CloseProcessForm()
 
-            Using f As New StreamDemuxForm(p.SourceFile)
+            Using f As New StreamDemuxForm(p.SourceFile, Nothing)
                 If f.ShowDialog() = DialogResult.OK Then
                     audioStreams = f.AudioStreams
                     subtitles = f.Subtitles
@@ -228,16 +228,16 @@ Class MP4BoxDemuxer
             For Each i In subtitles
                 If Not i.Enabled Then Continue For
 
-                Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.Extension
+                Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.ExtFull
 
                 If outpath.Length > 259 Then
-                    outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(20) + i.Extension
+                    outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(20) + i.ExtFull
                 End If
 
                 FileHelp.Delete(outpath)
                 Dim args As String
 
-                Select Case i.Extension
+                Select Case i.ExtFull
                     Case ""
                         Continue For
                     Case ".srt"
@@ -334,10 +334,10 @@ Class mkvDemuxer
         For Each i In subtitles
             If Not i.Enabled Then Continue For
 
-            Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.Extension
+            Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.ExtFull
 
             If outpath.Length > 259 Then
-                outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(10) + i.Extension
+                outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(10) + i.ExtFull
             End If
 
             arguments += " " & i.StreamOrder & ":""" + outpath + """"
@@ -358,6 +358,7 @@ Class mkvDemuxer
     Overrides Sub Run()
         Dim audioStreams As List(Of AudioStream)
         Dim subtitles As List(Of Subtitle)
+        Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify-verbose --ui-language en " + p.SourceFile.Quotes)
 
         Dim demuxAudio = Not (TypeOf p.Audio0 Is NullAudioProfile AndAlso
             TypeOf p.Audio1 Is NullAudioProfile) AndAlso
@@ -365,18 +366,17 @@ Class mkvDemuxer
 
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(p.SourceFile) > 0
 
+        Dim attachments = GetAttachments(stdout)
+
         If Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
             ((demuxAudio AndAlso p.DemuxAudio = DemuxMode.Dialog) OrElse
             (demuxSubtitles AndAlso p.DemuxSubtitles = DemuxMode.Dialog)) Then
             ProcessForm.CloseProcessForm()
 
-            Using f As New StreamDemuxForm(p.SourceFile)
-                If f.ShowDialog() = DialogResult.OK Then
-                    audioStreams = f.AudioStreams
-                    subtitles = f.Subtitles
-                Else
-                    Throw New AbortException
-                End If
+            Using f As New StreamDemuxForm(p.SourceFile, attachments)
+                If f.ShowDialog() <> DialogResult.OK Then Throw New AbortException
+                audioStreams = f.AudioStreams
+                subtitles = f.Subtitles
             End Using
         End If
 
@@ -390,12 +390,10 @@ Class mkvDemuxer
             DemuxMKVSubtitles(subtitles)
         End If
 
-        Dim output = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify-verbose --ui-language en " + p.SourceFile.Quotes)
-
-        If output.Contains("Chapters: ") Then
+        If stdout.Contains("Chapters: ") Then
             Using proc As New Proc
                 proc.Init("Demux chapters using mkvextract " + Package.mkvmerge.Version, "Progress: ")
-                proc.WriteLine(output + BR)
+                proc.WriteLine(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.File = Package.mkvextract.Path
                 proc.Arguments = "chapters " + p.SourceFile.Quotes + " --redirect-output " +
@@ -404,32 +402,17 @@ Class mkvDemuxer
             End Using
         End If
 
-        Dim attachmentParams As String
+        Dim enabledAttachments = attachments.Where(Function(val) val.Enabled)
 
-        For Each i In output.SplitLinesNoEmpty
-            If i.StartsWith("Attachment ID ") Then
-                Dim match = Regex.Match(i, "Attachment ID (\d+):.+, file name '(.+)'")
-
-                If match.Success Then
-                    Dim attachmentPath = Filepath.GetShortPath(p.TempDir,
-                                                               p.SourceFile.Base,
-                                                               "_attachment_" + match.Groups(2).Value.Base,
-                                                               match.Groups(2).Value.Ext)
-
-                    attachmentParams += " " + match.Groups(1).Value + ":""" + attachmentPath + """"
-                End If
-            End If
-        Next
-
-        If attachmentParams <> "" Then
-            attachmentParams += " --ui-language en"
-
+        If enabledAttachments.Count > 0 Then
             Using proc As New Proc
                 proc.Init("Demux attachments using mkvextract " + Package.mkvmerge.Version, "Progress: ")
-                proc.WriteLine(output + BR)
+                proc.WriteLine(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.File = Package.mkvextract.Path
-                proc.Arguments = "attachments " + p.SourceFile.Quotes + attachmentParams
+                proc.Arguments = "attachments " + p.SourceFile.Quotes + " " +
+                    enabledAttachments.Select(Function(val) val.ID & ":" + GetAttachmentPath(
+                    p.TempDir, val.Name).Quotes).Join(" ")
                 proc.Start()
             End Using
         End If
@@ -446,6 +429,27 @@ Class mkvDemuxer
             End Using
         End If
     End Sub
+
+    Shared Function GetAttachmentPath(dir As String, name As String) As String
+        Dim ret = dir + "_attachment_" + name.Base + name.ExtFull
+        If ret.Length > 260 Then ret = dir + "_attachment_" + name.Base.Shorten(10) + name.ExtFull
+        Return ret
+    End Function
+
+    Function GetAttachments(stdout As String) As List(Of Attachment)
+        Dim ret = New List(Of Attachment)
+
+        For Each i In stdout.SplitLinesNoEmpty
+            If i.StartsWith("Attachment ID ") Then
+                Dim match = Regex.Match(i, "Attachment ID (\d+):.+, file name '(.+)'")
+                If match.Success Then ret.Add(New Attachment With {
+                                              .ID = match.Groups(1).Value.ToInt,
+                                              .Name = match.Groups(2).Value})
+            End If
+        Next
+
+        Return ret
+    End Function
 End Class
 
 <Serializable>
@@ -472,7 +476,7 @@ Public Class ffmpegDemuxer
             (demuxSubtitles AndAlso p.DemuxSubtitles = DemuxMode.Dialog)) Then
             ProcessForm.CloseProcessForm()
 
-            Using f As New StreamDemuxForm(p.SourceFile)
+            Using f As New StreamDemuxForm(p.SourceFile, Nothing)
                 If f.ShowDialog() = DialogResult.OK Then
                     audioStreams = f.AudioStreams
                     subtitles = f.Subtitles
@@ -497,10 +501,10 @@ Public Class ffmpegDemuxer
 
         For Each i In subtitles
             If Not i.Enabled Then Continue For
-            Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.Extension
+            Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.ExtFull
 
             If outpath.Length > 259 Then
-                outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(10) + i.Extension
+                outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(10) + i.ExtFull
             End If
 
             arguments += " " & i.StreamOrder & ":""" + outpath + """"

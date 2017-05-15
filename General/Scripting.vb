@@ -8,26 +8,30 @@ Public Class Scripting
     End Sub
 
     Shared Function RunPowershell(code As String) As Object
-        Using runspace = RunspaceFactory.CreateRunspace()
-            runspace.ApartmentState = Threading.ApartmentState.STA
-            runspace.ThreadOptions = PSThreadOptions.UseCurrentThread
-            runspace.Open()
+        Try
+            Using runspace = RunspaceFactory.CreateRunspace()
+                runspace.ApartmentState = Threading.ApartmentState.STA
+                runspace.ThreadOptions = PSThreadOptions.UseCurrentThread
+                runspace.Open()
 
-            Using pipeline = runspace.CreatePipeline()
-                pipeline.Commands.AddScript(
-"Using namespace StaxRip;
+                Using pipeline = runspace.CreatePipeline()
+                    pipeline.Commands.AddScript(
+    "Using namespace StaxRip;
 Using namespace StaxRip.UI;
 [System.Reflection.Assembly]::LoadWithPartialName(""StaxRip"")")
 
-                pipeline.Commands.AddScript(code)
+                    pipeline.Commands.AddScript(code)
 
-                Try
-                    Dim ret = pipeline.Invoke()
-                    If ret.Count > 0 Then Return ret(0)
-                Catch ex As Exception
-                    g.ShowException(ex)
-                End Try
+                    Try
+                        Dim ret = pipeline.Invoke()
+                        If ret.Count > 0 Then Return ret(0)
+                    Catch ex As Exception
+                        g.ShowException(ex)
+                    End Try
+                End Using
             End Using
-        End Using
+        Catch ex As Exception
+            g.ShowException(ex, "Failed to execute PowerShell script." + BR2 + "Install PowerShell 5.1 or higher.")
+        End Try
     End Function
 End Class

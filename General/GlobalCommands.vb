@@ -174,11 +174,7 @@ Public Class GlobalCommands
                                 <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
                                 scriptCode As String)
 
-        Try
-            Scripting.RunPowershell(scriptCode)
-        Catch ex As Exception
-            MsgError("Failed to execute PowerShell script, on systems prior Windows 10 PowerShell 5 or higher must be installed.", ex.ToString)
-        End Try
+        Scripting.RunPowershell(scriptCode)
     End Sub
 
     <Command("Test")>

@@ -1405,109 +1405,54 @@ Public Class MainForm
         Next
     End Function
 
-    'show vs on top in case active filter set is vs
     Function ShowSourceFilterSelectionDialog(inputFile As String) As VideoFilter
-        Select Case inputFile.Ext
-            Case "dgi"
-                Return New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
-            Case "dgim"
-                Return New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
-        End Select
+        Dim filters As New List(Of VideoFilter)
 
-        Dim ret As VideoFilter
+        If inputFile.Ext = "dgi" OrElse FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then AddSourceFilters({"DGSource"}, filters)
+        If inputFile.Ext = "dgim" OrElse FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then AddSourceFilters({"DGSourceIM"}, filters)
+        If inputFile.Ext.EqualsAny("mp4", "m4v", "mov") Then AddSourceFilters({"LSMASHVideoSource", "LibavSMASHSource"}, filters)
+        If FileTypes.VideoNoText.Contains(inputFile.Ext) Then AddSourceFilters({"FFVideoSource", "LWLibavVideoSource", "ffms2", "LWLibavSource"}, filters)
+        If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then AddSourceFilters({"DSS2"}, filters)
+        If {"avi", "avs", "vdr"}.Contains(inputFile.Ext) Then AddSourceFilters({"AVISource"}, filters)
+        If inputFile.Ext = "d2v" Then AddSourceFilters({"d2vsource"}, filters)
 
-        Dim td As New TaskDialog(Of String)
-        td.MainInstruction = "Choose a preferred source filter"
-        td.Content = "A description of the available source filters can be found in the [https://stax76.gitbooks.io/staxrip-handbook/content/ online documentation]."
-
-        td.AddCommandLink("Automatic AviSynth+", "avs")
-        td.AddCommandLink("Automatic VapourSynth", "vs")
-
-        If FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then
-            td.AddCommandLink("AviSynth+ DGSource", "DGSource")
-            td.AddCommandLink("AviSynth+ DGSourceIM", "DGSourceIM")
+        If p.Script.Engine = ScriptEngine.AviSynth Then
+            filters = filters.Where(Function(filter) Not filter.Script.Replace(" ", "").Contains("clip=core.")).ToList
+            filters.Insert(0, New VideoFilter("Source", "Automatic", "#avs"))
+        Else
+            filters = filters.Where(Function(filter) filter.Script.Replace(" ", "").Contains("clip=core.")).ToList
+            filters.Insert(0, New VideoFilter("Source", "Automatic", "#vs"))
         End If
 
-        If inputFile.Ext.EqualsAny("mp4", "m4v", "mov") Then
-            td.AddCommandLink("AviSynth+ LSMASHVideoSource", "LSMASHVideoSource")
+        Dim td As New TaskDialog(Of VideoFilter)
+
+        If p.Script.Engine = ScriptEngine.AviSynth Then
+            td.MainInstruction = "Choose a AviSynth source filter"
+        Else
+            td.MainInstruction = "Choose a VapourSynth source filter"
         End If
 
-        If FileTypes.VideoNoText.Contains(inputFile.Ext) Then
-            td.AddCommandLink("AviSynth+ FFVideoSource", "FFVideoSource")
-            td.AddCommandLink("AviSynth+ LWLibavVideoSource", "LWLibavVideoSource")
+        For Each filter In filters
+            td.AddCommandLink(filter.Name, filter)
+        Next
 
-            If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso
-                    g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
-
-                td.AddCommandLink("AviSynth+ DSS2", "DSS2")
-            End If
-        End If
-
-        If {"avi", "vdr"}.Contains(inputFile.Ext) Then
-            td.AddCommandLink("AviSynth+ AVISource", "AVISource")
-        End If
-
-        If FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then
-            td.AddCommandLink("VapourSynth DGSource", "vsDGSource")
-            td.AddCommandLink("VapourSynth DGSourceIM", "vsDGSourceIM")
-        End If
-
-        If inputFile.Ext = "d2v" Then td.AddCommandLink("VapourSynth d2vsource", "d2vsource")
-
-        If inputFile.Ext.EqualsAny("avi", "avs", "vdr") Then
-            td.AddCommandLink("VapourSynth AVISource", "vsAVISource")
-        End If
-
-        If inputFile.Ext.EqualsAny("mp4", "m4v", "mov") Then
-            td.AddCommandLink("VapourSynth LibavSMASHSource", "vsLibavSMASHSource")
-        End If
-
-        If FileTypes.VideoNoText.Contains(inputFile.Ext) Then
-            td.AddCommandLink("VapourSynth ffms2", "vsffms2")
-            td.AddCommandLink("VapourSynth LWLibavSource", "vsLWLibavSource")
-        End If
-
-        Select Case td.Show
-            Case "avs"
-                ret = New VideoFilter("Source", "Automatic", "#avs")
-            Case "vs"
-                ret = New VideoFilter("Source", "Automatic", "#vs")
-            Case "MPEG2Source"
-                ret = New VideoFilter("Source", "MPEG2Source", "MPEG2Source(""%source_file%"")")
-            Case "d2vsource"
-                ret = New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")
-            Case "DGSource"
-                ret = New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
-            Case "DGSourceIM"
-                ret = New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
-            Case "vsDGSource"
-                ret = New VideoFilter("Source", "DGSource", "clip = core.avs.DGSource(r""%source_file%"")")
-            Case "vsDGSourceIM"
-                ret = New VideoFilter("Source", "DGSourceIM", "clip = core.avs.DGSourceIM(r""%source_file%"")")
-            Case "FFVideoSource"
-                ret = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%source_temp_file%.ffindex"", colorspace = ""YV12"")")
-            Case "LWLibavVideoSource"
-                ret = New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")")
-            Case "LSMASHVideoSource"
-                ret = New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"")")
-            Case "DSS2"
-                ret = New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")")
-            Case "AVISource"
-                ret = New VideoFilter("Source", "AVISource", "AviSource(""%source_file%"", audio = false)")
-            Case "vsffms2"
-                ret = New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")")
-            Case "vsLibavSMASHSource"
-                ret = New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")")
-            Case "vsLWLibavSource"
-                ret = New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")
-            Case "vsAVISource"
-                ret = New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r""%source_file%"")")
-            Case Else
-                Throw New AbortException
-        End Select
-
-        Return ret
+        Dim tdResult = td.Show
+        If tdResult Is Nothing Then Throw New AbortException
+        Return tdResult
     End Function
+
+    Sub AddSourceFilters(filterNames As String(), filters As List(Of VideoFilter))
+        Dim avsProfiles = s.AviSynthProfiles.Where(Function(cat) cat.Name = "Source").First.Filters
+        Dim vsProfiles = s.VapourSynthProfiles.Where(Function(cat) cat.Name = "Source").First.Filters
+        Dim allFilters = avsProfiles.Concat(vsProfiles)
+
+        For Each filterName In filterNames
+            For Each i In allFilters
+                If i.Script.ToLower.Contains(filterName.ToLower + "(") OrElse
+                    i.Script.ToLower.Contains(filterName.ToLower + ".") Then filters.Add(i.GetCopy)
+            Next
+        Next
+    End Sub
 
     Sub OpenAnyFile(files As IEnumerable(Of String))
         If Filepath.GetExtFull(files(0)) = ".srip" Then

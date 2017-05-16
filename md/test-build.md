@@ -89,6 +89,7 @@ https://blogs.msdn.microsoft.com/dotnet/2017/05/02/announcing-the-net-framework-
 - in case the AviSynth script contains AudioDub the avs file can be selected as audio source file in the audio context menu 
 - simplified mkvmerge command line
 - menu items had different height under certain circumstances
+- various changes in manual filter selection dialog
 
 #### Updated Tools
 

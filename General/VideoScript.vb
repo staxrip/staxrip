@@ -486,10 +486,7 @@ Public Class FilterCategory
 
     ReadOnly Property Filters() As List(Of VideoFilter)
         Get
-            If FitersValue Is Nothing Then
-                FitersValue = New List(Of VideoFilter)
-            End If
-
+            If FitersValue Is Nothing Then FitersValue = New List(Of VideoFilter)
             Return FitersValue
         End Get
     End Property

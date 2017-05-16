@@ -306,7 +306,7 @@ Public Class Package
             .Name = "Demux",
             .Filename = "Demux.exe",
             .Description = "Demuxing standalone tool.",
-            .FixedDir = Folder.Startup + "Apps\Toolbox\",
+            .DirName = "Toolbox",
             .LaunchName = "Demux.exe",
             .URL = "http://forum.doom9.org/showthread.php?t=173427"})
 

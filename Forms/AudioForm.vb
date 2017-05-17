@@ -730,9 +730,9 @@ Class AudioForm
 
         For Each i In Language.Languages
             If i.IsCommon Then
-                mbLanguage.Add(i.ToString, i)
+                mbLanguage.Add(i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
             Else
-                mbLanguage.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString, i)
+                mbLanguage.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
             End If
         Next
     End Sub

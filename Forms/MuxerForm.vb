@@ -509,6 +509,7 @@ Class MuxerForm
 
     Private Sub MuxerForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         Refresh()
+        Dim lastAction As Action
 
         Dim UI = SimpleUI
         UI.BackColor = Color.Transparent
@@ -525,7 +526,7 @@ Class MuxerForm
 
         Dim tags = UI.AddTextButtonBlock(page)
         tags.Label.Text = "Tags:"
-        tags.Label.Tooltip = "Tags added to the MKV file." + BR2 + "Syntax: name1: value1; name2: value2"
+        If TypeOf Muxer Is MkvMuxer Then tags.Label.Tooltip = "Tags added to the MKV file." + BR2 + "Syntax: name1: value1; name2: value2"
         tags.Edit.Expandet = True
         tags.Edit.Text = Muxer.Tags
         tags.Edit.SaveAction = Sub(value) Muxer.Tags = If(value <> "", value, Nothing)
@@ -571,17 +572,23 @@ Class MuxerForm
             mb.MenuButton.Value = DirectCast(Muxer, MkvMuxer).VideoTrackLanguage
             mb.MenuButton.SaveAction = Sub(value) DirectCast(Muxer, MkvMuxer).VideoTrackLanguage = value
 
-            For Each i In Language.Languages
-                If i.IsCommon Then
-                    mb.MenuButton.Add(i.ToString, i)
-                Else
-                    mb.MenuButton.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString, i)
-                End If
-            Next
+            lastAction = Sub()
+                             For Each i In Language.Languages
+                                 If i.IsCommon Then
+                                     mb.MenuButton.Add(i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
+                                 Else
+                                     mb.MenuButton.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
+                                 End If
+
+                                 Application.DoEvents()
+                             Next
+                         End Sub
+
         ElseIf TypeOf Muxer Is MP4Muxer Then
             CmdlControl.Presets = s.CmdlPresetsMP4
         End If
 
         page.ResumeLayout()
+        lastAction.Invoke
     End Sub
 End Class

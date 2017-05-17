@@ -1452,7 +1452,7 @@ Public Class MainForm
                 If filter.Script.ToLower.Contains(filterName.ToLower + "(") OrElse
                     filter.Script.ToLower.Contains(filterName.ToLower + ".") Then
                     filters.Add(filter.GetCopy)
-                    Continue For
+                    Exit For
                 End If
             Next
         Next

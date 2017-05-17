@@ -516,8 +516,23 @@ Class MuxerForm
         Dim page = UI.CreateFlowPage("main page")
         page.SuspendLayout()
 
+        Dim tbb = UI.AddTextButtonBlock(page)
+        tbb.Label.Text = "Cover:"
+        tbb.Edit.Expandet = True
+        tbb.Edit.Text = Muxer.CoverFile
+        tbb.Edit.SaveAction = Sub(value) Muxer.CoverFile = If(value <> "", value, Nothing)
+        tbb.BrowseFile("jpg, png|*.jpg;*.png")
+
+        Dim tags = UI.AddTextButtonBlock(page)
+        tags.Label.Text = "Tags:"
+        tags.Label.Tooltip = "Tags added to the MKV file." + BR2 + "Syntax: name1: value1; name2: value2"
+        tags.Edit.Expandet = True
+        tags.Edit.Text = Muxer.Tags
+        tags.Edit.SaveAction = Sub(value) Muxer.Tags = If(value <> "", value, Nothing)
+        tags.MacroDialog()
+
         If Not TypeOf Muxer Is WebMMuxer Then
-            Dim tbb = UI.AddTextButtonBlock(page)
+            tbb = UI.AddTextButtonBlock(page)
             tbb.Label.Text = "Chapters:"
             tbb.Edit.Expandet = True
             tbb.Edit.Text = Muxer.ChapterFile
@@ -535,14 +550,6 @@ Class MuxerForm
             timecodes.Edit.Text = Muxer.TimecodesFile
             timecodes.Edit.SaveAction = Sub(value) Muxer.TimecodesFile = If(value <> "", value, Nothing)
             timecodes.BrowseFile("txt, mkv|*.txt;*.mkv")
-
-            Dim tags = UI.AddTextButtonBlock(page)
-            tags.Label.Text = "Tags:"
-            tags.Label.Tooltip = "Tags added to the MKV file." + BR2 + "Syntax: name1: value1; name2: value2"
-            tags.Edit.Expandet = True
-            tags.Edit.Text = Muxer.Tags
-            tags.Edit.SaveAction = Sub(value) Muxer.Tags = If(value <> "", value, Nothing)
-            tags.MacroDialog()
 
             Dim tb = UI.AddTextBlock(page)
             tb.Label.Text = "Title:"

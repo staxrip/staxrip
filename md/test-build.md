@@ -46,6 +46,7 @@ https://blogs.msdn.microsoft.com/dotnet/2017/05/02/announcing-the-net-framework-
 - added option to enable a default subtitle
 - added possibility to define tags for MKV muxer
 - support for using AviSynth filters in VapourSynth
+- added cover support for MP4 and MKV muxer
 
 #### Fixed Bugs
 
@@ -89,7 +90,9 @@ https://blogs.msdn.microsoft.com/dotnet/2017/05/02/announcing-the-net-framework-
 - in case the AviSynth script contains AudioDub the avs file can be selected as audio source file in the audio context menu 
 - simplified mkvmerge command line
 - menu items had different height under certain circumstances
-- various changes in manual filter selection dialog
+- the manual filter selection dialog is now based on filter profiles and don't show avs and vs filters together but rather avs or vs depending on avs or vs is enabled
+- added DGSource to VapourSynth filter profiles
+- added mp4box cover art extraction
 
 #### Updated Tools
 
@@ -99,7 +102,6 @@ https://blogs.msdn.microsoft.com/dotnet/2017/05/02/announcing-the-net-framework-
 - x264 2762
 - MediaInfo 0.7.93
 - ffmpeg 3.2.2
-- qaac 2.62
 - mvtools (vs) 18
 - KNLMeansCL 1.0.2
 - NVEncC 3.07
@@ -114,6 +116,7 @@ https://blogs.msdn.microsoft.com/dotnet/2017/05/02/announcing-the-net-framework-
 - masktools2 2.2.7
 - yadifmod (vs) 10
 - mkvtoolnix 11.0.0
-- x265 2.4+14
 - L-SMASH-Works (avs) 929
 - vslsmashsource (vs) 929
+- qaac 2.63
+- x265 2.4+22

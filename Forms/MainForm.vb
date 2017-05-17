@@ -1411,7 +1411,7 @@ Public Class MainForm
         If inputFile.Ext = "dgi" OrElse FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then AddSourceFilters({"DGSource"}, filters)
         If inputFile.Ext = "dgim" OrElse FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then AddSourceFilters({"DGSourceIM"}, filters)
         If inputFile.Ext.EqualsAny("mp4", "m4v", "mov") Then AddSourceFilters({"LSMASHVideoSource", "LibavSMASHSource"}, filters)
-        If FileTypes.VideoNoText.Contains(inputFile.Ext) Then AddSourceFilters({"FFVideoSource", "LWLibavVideoSource", "ffms2", "LWLibavSource"}, filters)
+        If FileTypes.Video.Contains(inputFile.Ext) AndAlso Not FileTypes.VideoText.Contains(inputFile.Ext) Then AddSourceFilters({"FFVideoSource", "LWLibavVideoSource", "ffms2", "LWLibavSource"}, filters)
         If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then AddSourceFilters({"DSS2"}, filters)
         If {"avi", "avs", "vdr"}.Contains(inputFile.Ext) Then AddSourceFilters({"AVISource"}, filters)
         If inputFile.Ext = "d2v" Then AddSourceFilters({"d2vsource"}, filters)
@@ -1436,9 +1436,10 @@ Public Class MainForm
             td.AddCommandLink(filter.Name, filter)
         Next
 
-        Dim tdResult = td.Show
-        If tdResult Is Nothing Then Throw New AbortException
-        Return tdResult
+        Dim ret = td.Show
+        If ret Is Nothing Then Throw New AbortException
+        ret.Script = Macro.ExpandGUI(ret.Script, True).Value
+        Return ret
     End Function
 
     Sub AddSourceFilters(filterNames As String(), filters As List(Of VideoFilter))
@@ -1446,10 +1447,13 @@ Public Class MainForm
         Dim vsProfiles = s.VapourSynthProfiles.Where(Function(cat) cat.Name = "Source").First.Filters
         Dim allFilters = avsProfiles.Concat(vsProfiles)
 
-        For Each filterName In filterNames
-            For Each i In allFilters
-                If i.Script.ToLower.Contains(filterName.ToLower + "(") OrElse
-                    i.Script.ToLower.Contains(filterName.ToLower + ".") Then filters.Add(i.GetCopy)
+        For Each filter In allFilters
+            For Each filterName In filterNames
+                If filter.Script.ToLower.Contains(filterName.ToLower + "(") OrElse
+                    filter.Script.ToLower.Contains(filterName.ToLower + ".") Then
+                    filters.Add(filter.GetCopy)
+                    Continue For
+                End If
             Next
         Next
     End Sub
@@ -1753,6 +1757,10 @@ Public Class MainForm
                     Indexing()
                 End If
             End If
+
+            For Each iFilter In p.Script.Filters
+                If iFilter.Script.Contains("$") Then iFilter.Script = Macro.ExpandGUI(iFilter.Script, True).Value
+            Next
 
             If editAVS Then
                 Dim miFPS = MediaInfo.GetFrameRate(p.FirstOriginalSourceFile)
@@ -2352,6 +2360,16 @@ Public Class MainForm
         AssistantMethod = Nothing
         CanIgnoreTip = True
         AssistantPassed = False
+
+        If p.VideoEncoder.Muxer.CoverFile <> "" Then
+            If Not p.VideoEncoder.Muxer.CoverFile.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land") OrElse Not p.VideoEncoder.Muxer.CoverFile.Ext.EqualsAny("jpg", "png") Then
+                If ProcessTip("The cover file name bust be cover, small_cover, cover_land or small_cover_land, the file type must be jpg or png.") Then
+                    gbAssistant.Text = "Invalid cover file name"
+                    CanIgnoreTip = False
+                    Return False
+                End If
+            End If
+        End If
 
         If TypeOf p.VideoEncoder Is BasicVideoEncoder Then
             Dim enc = DirectCast(p.VideoEncoder, BasicVideoEncoder)

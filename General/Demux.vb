@@ -199,12 +199,14 @@ Class MP4BoxDemuxer
 
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(p.SourceFile) > 0
 
+        Dim attachments = GetAttachments()
+
         If Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
             ((demuxAudio AndAlso p.DemuxAudio = DemuxMode.Dialog) OrElse
             (demuxSubtitles AndAlso p.DemuxSubtitles = DemuxMode.Dialog)) Then
             ProcessForm.CloseProcessForm()
 
-            Using f As New StreamDemuxForm(p.SourceFile, Nothing)
+            Using f As New StreamDemuxForm(p.SourceFile, attachments)
                 If f.ShowDialog() = DialogResult.OK Then
                     audioStreams = f.AudioStreams
                     subtitles = f.Subtitles
@@ -229,10 +231,7 @@ Class MP4BoxDemuxer
                 If Not i.Enabled Then Continue For
 
                 Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.ExtFull
-
-                If outpath.Length > 259 Then
-                    outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(20) + i.ExtFull
-                End If
+                If outpath.Length > 259 Then outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(20) + i.ExtFull
 
                 FileHelp.Delete(outpath)
                 Dim args As String
@@ -246,7 +245,7 @@ Class MP4BoxDemuxer
                         args = "-raw "
                 End Select
 
-                args += i.ID & " -out """ + outpath + """ """ + p.SourceFile + """"
+                args += i.ID & " -out " + outpath.Quotes + " " + p.SourceFile.Quotes
 
                 Using proc As New Proc
                     proc.Init("Demux subtitle using MP4Box " + Package.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |", "VobSub Export: |", "SRT Extract: |"})
@@ -258,7 +257,23 @@ Class MP4BoxDemuxer
                 End Using
             Next
         End If
+
+        If Not attachments.NothingOrEmpty AndAlso attachments(0).Enabled Then
+            Using proc As New Proc
+                proc.Init("Extract cover using MP4Box " + Package.MP4Box.Version)
+                proc.File = Package.MP4Box.Path
+                proc.Arguments = "-dump-cover " + p.SourceFile.Quotes + " -out " + p.TempDir + "cover.jpg"
+                proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
+                proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
+                proc.Start()
+            End Using
+        End If
     End Sub
+
+    Function GetAttachments() As List(Of Attachment)
+        Dim cover = MediaInfo.GetGeneral(p.SourceFile, "Cover")
+        If cover <> "" Then Return New List(Of Attachment) From {New Attachment With {.Name = "Cover"}}
+    End Function
 End Class
 
 <Serializable()>
@@ -431,8 +446,9 @@ Class mkvDemuxer
     End Sub
 
     Shared Function GetAttachmentPath(dir As String, name As String) As String
-        Dim ret = dir + "_attachment_" + name.Base + name.ExtFull
-        If ret.Length > 260 Then ret = dir + "_attachment_" + name.Base.Shorten(10) + name.ExtFull
+        Dim prefix = If(name.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land"), "", "_attachment_")
+        Dim ret = dir + prefix + name.Base + name.ExtFull
+        If ret.Length > 260 Then ret = dir + prefix + name.Base.Shorten(10) + name.ExtFull
         Return ret
     End Function
 

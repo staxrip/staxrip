@@ -8,9 +8,10 @@ Imports vb6 = Microsoft.VisualBasic
 Public MustInherit Class Muxer
     Inherits Profile
 
+    Property CoverFile As String
     Property ChapterFile As String
     Property TimecodesFile As String
-    Property Tags As String = "Writing frontend: StaxRip %version%"
+    Property Tags As String
 
     MustOverride Sub Mux()
 
@@ -165,6 +166,13 @@ Public MustInherit Class Muxer
             End If
         Next
 
+        For Each iDir In {p.TempDir, p.TempDir.Parent}
+            For Each iExt In {"jpg", "png"}
+                Dim fp = iDir + "cover." + iExt
+                If File.Exists(fp) Then CoverFile = fp
+            Next
+        Next
+
         If AdditionalSwitches <> "" AndAlso AdditionalSwitches.StartsWith(" ") Then
             AdditionalSwitches = AdditionalSwitches.TrimStart
         End If
@@ -199,7 +207,7 @@ Public Class MP4Muxer
 
     Sub New(name As String)
         MyBase.New(name)
-        AdditionalSwitches = "-itags encoder=""StaxRip %version%"""
+        Tags = "encoder=""StaxRip %version%"""
     End Sub
 
     Overrides ReadOnly Property OutputExt As String
@@ -255,10 +263,15 @@ Public Class MP4Muxer
             End If
         Next
 
-        If File.Exists(ChapterFile) Then args.Append(" -chap """ + ChapterFile + """")
+        If File.Exists(ChapterFile) Then args.Append(" -chap " + ChapterFile.Quotes)
         If AdditionalSwitches <> "" Then args.Append(" " + Macro.Expand(AdditionalSwitches))
 
-        args.Append(" -new """ + p.TargetFile + """")
+        Dim tagList As New List(Of String)
+        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then tagList.Add("cover=" + CoverFile.Quotes)
+        If Tags <> "" Then tagList.Add(Macro.Expand(Tags))
+        If tagList.Count > 0 Then args.Append(" -itags " + String.Join(":", tagList))
+
+        args.Append(" -new " + p.TargetFile.Quotes)
 
         Return args.ToString.Trim
     End Function
@@ -438,6 +451,7 @@ Public Class MkvMuxer
 
     Sub New()
         Name = "MKV"
+        Tags = "Writing frontend: StaxRip %version%"
     End Sub
 
     Sub New(name As String)
@@ -455,6 +469,21 @@ Public Class MkvMuxer
             Return f.ShowDialog()
         End Using
     End Function
+
+    Public Overrides Sub Init()
+        MyBase.Init()
+
+        For Each iDir In {p.TempDir, p.TempDir.Parent}
+            For Each iBase In {"small_cover", "cover_land", "small_cover_land"}
+                For Each iExt In {".jpg", ".png"}
+                    Dim fp = iDir + iBase + iExt
+                    If File.Exists(fp) Then AdditionalSwitches += " --attach-file " + fp.Quotes
+                Next
+            Next
+        Next
+
+        AdditionalSwitches = AdditionalSwitches.Trim
+    End Sub
 
     Overrides Sub Mux()
         Using proc As New Proc
@@ -555,6 +584,7 @@ Public Class MkvMuxer
             args.Append(" --chapters " + ChapterFile.Quotes)
         End If
 
+        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then args.Append(" --attach-file " + CoverFile.Quotes)
         If Title <> "" Then args.Append(" --title """ + Macro.Expand(Title).Replace("""", "'") + """")
 
         If TypeOf p.VideoEncoder Is NullEncoder AndAlso p.Ranges.Count > 0 Then

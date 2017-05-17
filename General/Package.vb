@@ -194,7 +194,8 @@ Public Class Package
         .HelpFile = "DGDecodeNVManual.html",
         .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource("),
         .AviSynthFilterNames = {"DGSource"},
-        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")}})
+        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")},
+        .VapourSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.avs.DGSource(r""%source_file%"")")}})
 
     Shared Property DGDecodeIM As Package = Add(New PluginPackage With {
         .Name = "DGDecodeIM",

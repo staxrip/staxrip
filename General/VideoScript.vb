@@ -34,13 +34,12 @@ Public Class VideoScript
 
     Overridable Function GetScript(skipCategory As String) As String
         Dim sb As New StringBuilder()
-
         If p.CodeAtTop <> "" Then sb.AppendLine(p.CodeAtTop)
 
-        For Each i As VideoFilter In Filters
-            If i.Active Then
-                If skipCategory Is Nothing OrElse i.Category <> skipCategory Then
-                    sb.Append(i.Script + BR)
+        For Each filter As VideoFilter In Filters
+            If filter.Active Then
+                If skipCategory Is Nothing OrElse filter.Category <> skipCategory Then
+                    sb.Append(filter.Script + BR)
                 End If
             End If
         Next
@@ -391,7 +390,6 @@ Public Class TargetVideoScript
     Overrides Property Path() As String
         Get
             If p.SourceFile = "" OrElse p.Name = "" Then Return ""
-
             Return p.TempDir + p.Name + "." + FileType
         End Get
         Set(value As String)

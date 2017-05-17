@@ -1957,14 +1957,22 @@ Class Macro
         Return ret
     End Function
 
-    Shared Function ExpandGUI(value As String) As (Value As String, Caption As String, Cancel As Boolean)
+    Shared Function ExpandGUI(value As String,
+                              Optional throwIfCancel As Boolean = False) As (Value As String, Caption As String, Cancel As Boolean)
+
         Dim ret As (Value As String, Caption As String, Cancel As Boolean) = (value, "", False)
         If ret.Value = "" Then Return ret
 
         If ret.Value.Contains("$browse_file$") Then
             Using d As New OpenFileDialog
                 ret.Cancel = d.ShowDialog <> DialogResult.OK
-                If ret.Cancel Then Return ret Else ret.Value = ret.Value.Replace("$browse_file$", d.FileName)
+
+                If ret.Cancel Then
+                    If throwIfCancel Then Throw New AbortException
+                    Return ret
+                Else
+                    ret.Value = ret.Value.Replace("$browse_file$", d.FileName)
+                End If
             End Using
         End If
 
@@ -2925,7 +2933,7 @@ Class FileTypes
     Shared Property Audio As String() = {"flac", "dtshd", "dtsma", "dtshr", "thd", "thd+ac3", "true-hd", "truehd", "aac", "ac3", "dts", "eac3", "m4a", "mka", "mp2", "mp3", "mpa", "opus", "wav"}
     Shared Property VideoAudio As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
     Shared Property BeSweetInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "ogg"}
-    Shared Property DGDecNVInput As String() = {"264", "h264", "avc", "mkv", "mp4", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}
+    Shared Property DGDecNVInput As String() = {"264", "h264", "265", "h265", "avc", "hevc", "hvc", "mkv", "mp4", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}
     Shared Property eac3toInput As String() = {"dts", "dtshd", "dtshr", "dtsma", "evo", "mkv", "vob", "ts", "m2ts", "wav", "w64", "pcm", "raw", "flac", "ac3", "eac3", "thd", "thd+ac3", "mlp", "mp2", "mp3", "mpa"}
     Shared Property NicAudioInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "dts"}
     Shared Property qaacInput As String() = {"wav", "flac"}
@@ -2933,19 +2941,17 @@ Class FileTypes
     Shared Property SubtitleSingle As String() = {"srt", "ass", "sup", "ttxt", "ssa", "smi"}
     Shared Property SubtitleIncludingContainers As String() = {"m2ts", "mkv", "mp4", "ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
-    Shared Property Video As String() = {"264", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "m2t", "mts", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m", "vdr", "vpy"}
-    Shared Property VideoNoText As String() = {"264", "avc", "avi", "divx", "flv", "h264", "m2t", "mts", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "ogg", "ogm", "pva", "rmvb", "ts", "vob", "webm", "wmv", "y4m", "vdr"}
+    Shared Property Video As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m"}
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
-    Shared Property VideoOnly As String() = {"m4v", "m2v", "y4m", "mpv", "avc", "hevc", "264", "h264", "265", "h265"}
-    Shared Property VideoRaw As String() = {"h264", "h265", "264", "265", "avc", "hevc"}
+    Shared Property VideoOnly As String() = {"264", "265", "avc", "h264", "h265", "hevc", "hvc", "m2v", "m4v", "mpv", "y4m"}
+    Shared Property VideoRaw As String() = {"264", "265", "h264", "h265", "avc", "hevc", "hvc"}
     Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs", "vpy"}
-    Shared Property VirtualDubModInput As String() = {"ac3", "mp3", "mp2", "mpa", "wav"}
 
     Shared Property mkvmergeInput As String() = {"avi", "wav",
                                                  "mp4", "m4a", "aac",
                                                  "flv", "mov",
                                                  "264", "h264", "avc",
-                                                 "265", "h265", "hevc",
+                                                 "265", "h265", "hevc", "hvc",
                                                  "ac3", "eac3", "thd+ac3", "thd",
                                                  "mkv", "mka", "webm",
                                                  "mp2", "mpa", "mp3",

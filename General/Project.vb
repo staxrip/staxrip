@@ -122,7 +122,7 @@ Public Class Project
             If Language.CurrentCulture.TwoLetterCode = "en" Then
                 PreferredSubtitles = "eng und"
             Else
-                PreferredSubtitles = Language.CurrentCulture.ThreeLetterCode + ", eng, und"
+                PreferredSubtitles = Language.CurrentCulture.ThreeLetterCode + " eng und"
             End If
         End If
 
@@ -130,7 +130,7 @@ Public Class Project
             If Language.CurrentCulture.TwoLetterCode = "en" Then
                 PreferredAudio = "eng und"
             Else
-                PreferredAudio = Language.CurrentCulture.ThreeLetterCode + ", eng, und"
+                PreferredAudio = Language.CurrentCulture.ThreeLetterCode + " eng und"
             End If
         End If
 

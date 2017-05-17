@@ -214,7 +214,11 @@ Public Class MediaInfo
         Dim mi = GetMediaInfo(path)
         MediaInfo_Option(mi.Handle, "Complete", "0")
         Dim ret = Marshal.PtrToStringUni(MediaInfo_Inform(mi.Handle, 0))
-        Return Regex.Replace(ret, "UniqueID/String +: .+\n", "").FormatColumn(":").Trim
+        If ret.Contains("UniqueID/String") Then ret = Regex.Replace(ret, "UniqueID/String +: .+\n", "")
+        If ret.Contains("Unique ID") Then ret = Regex.Replace(ret, "Unique ID +: .+\n", "")
+        If ret.Contains("Encoded_Library_Settings") Then ret = Regex.Replace(ret, "Encoded_Library_Settings +: .+\n", "")
+        If ret.Contains("Encoding settings") Then ret = Regex.Replace(ret, "Encoding settings +: .+\n", "")
+        Return ret.FormatColumn(":").Trim
     End Function
 
     Shared Function GetCompleteSummary(path As String) As String

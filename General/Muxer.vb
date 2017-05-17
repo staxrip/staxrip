@@ -482,7 +482,7 @@ Public Class MkvMuxer
             Next
         Next
 
-        AdditionalSwitches = AdditionalSwitches.Trim
+        AdditionalSwitches = AdditionalSwitches?.Trim
     End Sub
 
     Overrides Sub Mux()

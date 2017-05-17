@@ -1451,8 +1451,10 @@ Public Class MainForm
             For Each filterName In filterNames
                 If filter.Script.ToLower.Contains(filterName.ToLower + "(") OrElse
                     filter.Script.ToLower.Contains(filterName.ToLower + ".") Then
-                    filters.Add(filter.GetCopy)
-                    Exit For
+
+                    If filters.Where(Function(val) val.Name = filter.Name).Count = 0 Then
+                        filters.Add(filter.GetCopy)
+                    End If
                 End If
             Next
         Next

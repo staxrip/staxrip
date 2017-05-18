@@ -1,5 +1,11 @@
 # Test Build
 
+#### Requirements
+
+.NET 4.7 is required on systems prior Windows 10 Version 1703 (Creators Update)
+
+https://www.microsoft.com/en-us/download/details.aspx?id=55170
+
 #### Download
 
 https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM

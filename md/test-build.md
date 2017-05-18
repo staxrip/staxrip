@@ -93,6 +93,7 @@ https://blogs.msdn.microsoft.com/dotnet/2017/05/02/announcing-the-net-framework-
 - the manual filter selection dialog is now based on filter profiles and don't show avs and vs filters together but rather avs or vs depending on avs or vs is enabled
 - added DGSource to VapourSynth filter profiles
 - added mp4box cover art extraction
+- filter setup now also support Automatic as source filter which is also the default now
 
 #### Updated Tools
 

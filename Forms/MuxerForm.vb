@@ -589,6 +589,6 @@ Class MuxerForm
         End If
 
         page.ResumeLayout()
-        lastAction.Invoke
+        lastAction?.Invoke
     End Sub
 End Class

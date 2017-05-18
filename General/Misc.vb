@@ -2460,12 +2460,6 @@ End Enum
 Class Startup
     <STAThread()>
     Shared Sub Main()
-        Try
-            System.ValueTuple.Create()
-        Catch
-            VB6.MsgBox("StaxRip requires minimum .NET 4.7", VB6.MsgBoxStyle.Critical)
-        End Try
-
         AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf g.OnUnhandledException
         'TODO: remove dead code
         'SetProcDpiAware()

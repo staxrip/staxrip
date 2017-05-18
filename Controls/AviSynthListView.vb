@@ -140,7 +140,7 @@ Public Class AviSynthListView
         Menu.Add("-")
         Dim setup = Menu.Add("Filter Setup")
         setup.SetImage(Symbol.MultiSelect)
-        g.PopulateProfileMenu(setup.DropDownItems, s.FilterSetupProfiles, AddressOf g.MainForm.ShowFilterSetupProfilesDialog, AddressOf g.MainForm.LoadScriptProfile)
+        g.PopulateProfileMenu(setup.DropDownItems, s.FilterSetupProfiles, AddressOf g.MainForm.ShowFilterSetupProfilesDialog, AddressOf g.MainForm.LoadFilterSetup)
     End Sub
 
     Sub MoveUp()

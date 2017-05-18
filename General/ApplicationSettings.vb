@@ -131,10 +131,11 @@ Public Class ApplicationSettings
             VapourSynthFilterPreferences.Add("default", "ffms2")
             VapourSynthFilterPreferences.Add("264 h264 avc", "LWLibavSource")
             VapourSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavSource")
-            VapourSynthFilterPreferences.Add("avi avs vdr", "AVISource")
+            VapourSynthFilterPreferences.Add("avs vdr", "AVISource")
             VapourSynthFilterPreferences.Add("mp4 m4v mov", "LibavSMASHSource")
             VapourSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavSource")
             VapourSynthFilterPreferences.Add("d2v", "d2vsource")
+            VapourSynthFilterPreferences.Add("dgi", "DGSource")
         End If
 
         If PreventActivation = "" Then PreventActivation = "mpc vlc media play kodi"

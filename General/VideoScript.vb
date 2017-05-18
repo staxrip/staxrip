@@ -335,7 +335,7 @@ clip.set_output()
 
         Dim script As New TargetVideoScript("AviSynth")
         script.Engine = ScriptEngine.AviSynth
-        script.Filters.Add(New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%source_file%.ffindex"", colorspace = ""YV12"")"))
+        script.Filters.Add(New VideoFilter("Source", "Automatic", ""))
         script.Filters.Add(New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", False))
         script.Filters.Add(New VideoFilter("Field", "TDeint", "TDeint()", False))
         script.Filters.Add(New VideoFilter("Noise", "RemoveGrain", "RemoveGrain()", False))
@@ -344,7 +344,7 @@ clip.set_output()
 
         script = New TargetVideoScript("VapourSynth")
         script.Engine = ScriptEngine.VapourSynth
-        script.Filters.Add(New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_file%.ffindex"")"))
+        script.Filters.Add(New VideoFilter("Source", "Automatic", ""))
         script.Filters.Add(New VideoFilter("Crop", "CropRel", "clip = core.std.CropRel(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)", False))
         script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = 'Medium')", False))
         script.Filters.Add(New VideoFilter("Noise", "SMDegrain", "clip = havsfunc.SMDegrain(clip, contrasharp = True)", False))

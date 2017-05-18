@@ -73,7 +73,6 @@ Public MustInherit Class Demuxer
 
         ret.Add(New mkvDemuxer)
         ret.Add(New MP4BoxDemuxer)
-        ret.Add(New ffmpegDemuxer)
         ret.Add(New eac3toDemuxer)
 
         Dim dgnvNoDemux As New CommandLineDemuxer
@@ -119,6 +118,8 @@ Public MustInherit Class Demuxer
         dgimDemux.SourceFilter = "DGSourceIM"
         dgimDemux.Active = False
         ret.Add(dgimDemux)
+
+        ret.Add(New ffmpegDemuxer)
 
         Return ret
     End Function
@@ -374,6 +375,8 @@ Class mkvDemuxer
         Dim audioStreams As List(Of AudioStream)
         Dim subtitles As List(Of Subtitle)
         Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify-verbose --ui-language en " + p.SourceFile.Quotes)
+
+        If stdout.Contains("codec_private_data:") Then stdout = Regex.Replace(stdout, "codec_private_data:\w+", "")
 
         Dim demuxAudio = Not (TypeOf p.Audio0 Is NullAudioProfile AndAlso
             TypeOf p.Audio1 Is NullAudioProfile) AndAlso

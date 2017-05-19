@@ -16,12 +16,6 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 - C# scripting support was removed because it was very heavy requiring 47 nuget packages. You can port existing C# code to PowerShell or load and execute an C# Assembly with PowerShell. Visit the support forum.
 
-#### Requirements
-
-- .NET 4.7 is required. Win 7 is fully supported!
-
-https://blogs.msdn.microsoft.com/dotnet/2017/05/02/announcing-the-net-framework-4-7-general-availability/
-
 #### New Features
 
 - MPEG2DecPlus filter added to open d2v files with AviSynth+

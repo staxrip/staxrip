@@ -20,7 +20,6 @@ Class AppsForm
     Friend WithEvents ToolStrip As System.Windows.Forms.ToolStrip
     Friend WithEvents tsbLaunch As System.Windows.Forms.ToolStripButton
     Friend WithEvents tsbHelp As System.Windows.Forms.ToolStripButton
-    Friend WithEvents bnClose As StaxRip.UI.ButtonEx
     Friend WithEvents flp As System.Windows.Forms.FlowLayoutPanel
     Friend WithEvents SearchTextBox As StaxRip.SearchTextBox
     Friend WithEvents tsbWebsite As System.Windows.Forms.ToolStripButton
@@ -33,7 +32,6 @@ Class AppsForm
         Me.tsbOpenDir = New System.Windows.Forms.ToolStripButton()
         Me.tsbWebsite = New System.Windows.Forms.ToolStripButton()
         Me.tsbHelp = New System.Windows.Forms.ToolStripButton()
-        Me.bnClose = New StaxRip.UI.ButtonEx()
         Me.flp = New System.Windows.Forms.FlowLayoutPanel()
         Me.SearchTextBox = New StaxRip.SearchTextBox()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
@@ -50,14 +48,14 @@ Class AppsForm
         Me.tv.ExpandMode = StaxRip.UI.TreeNodeExpandMode.InclusiveChilds
         Me.tv.FullRowSelect = True
         Me.tv.HideSelection = False
-        Me.tv.Location = New System.Drawing.Point(6, 52)
-        Me.tv.Margin = New System.Windows.Forms.Padding(6, 6, 6, 0)
+        Me.tv.Location = New System.Drawing.Point(10, 89)
+        Me.tv.Margin = New System.Windows.Forms.Padding(10)
         Me.tv.Name = "tv"
         Me.tv.Scrollable = False
         Me.tv.SelectOnMouseDown = True
         Me.tv.ShowLines = False
         Me.tv.ShowPlusMinus = False
-        Me.tv.Size = New System.Drawing.Size(188, 520)
+        Me.tv.Size = New System.Drawing.Size(218, 330)
         Me.tv.Sorted = True
         Me.tv.TabIndex = 0
         '
@@ -69,11 +67,11 @@ Class AppsForm
         Me.ToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsbLaunch, Me.tsbOpenDir, Me.tsbWebsite, Me.tsbHelp})
-        Me.ToolStrip.Location = New System.Drawing.Point(200, 6)
-        Me.ToolStrip.Margin = New System.Windows.Forms.Padding(0, 6, 6, 0)
+        Me.ToolStrip.Location = New System.Drawing.Point(238, 10)
+        Me.ToolStrip.Margin = New System.Windows.Forms.Padding(0, 10, 11, 0)
         Me.ToolStrip.Name = "ToolStrip"
-        Me.ToolStrip.Padding = New System.Windows.Forms.Padding(3, 1, 1, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(700, 40)
+        Me.ToolStrip.Padding = New System.Windows.Forms.Padding(5, 2, 2, 0)
+        Me.ToolStrip.Size = New System.Drawing.Size(787, 69)
         Me.ToolStrip.TabIndex = 1
         Me.ToolStrip.Text = "ToolStrip1"
         '
@@ -82,7 +80,7 @@ Class AppsForm
         Me.tsbLaunch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbLaunch.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbLaunch.Name = "tsbLaunch"
-        Me.tsbLaunch.Size = New System.Drawing.Size(81, 36)
+        Me.tsbLaunch.Size = New System.Drawing.Size(156, 64)
         Me.tsbLaunch.Text = " Launch "
         Me.tsbLaunch.ToolTipText = "Launches the application"
         '
@@ -91,7 +89,7 @@ Class AppsForm
         Me.tsbOpenDir.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbOpenDir.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbOpenDir.Name = "tsbOpenDir"
-        Me.tsbOpenDir.Size = New System.Drawing.Size(98, 36)
+        Me.tsbOpenDir.Size = New System.Drawing.Size(190, 64)
         Me.tsbOpenDir.Text = " Directory "
         Me.tsbOpenDir.ToolTipText = "Opens the directory containing the application"
         '
@@ -100,7 +98,7 @@ Class AppsForm
         Me.tsbWebsite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbWebsite.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbWebsite.Name = "tsbWebsite"
-        Me.tsbWebsite.Size = New System.Drawing.Size(89, 36)
+        Me.tsbWebsite.Size = New System.Drawing.Size(172, 64)
         Me.tsbWebsite.Text = " Website "
         Me.tsbWebsite.ToolTipText = "Opens the application's website"
         '
@@ -109,18 +107,9 @@ Class AppsForm
         Me.tsbHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbHelp.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbHelp.Name = "tsbHelp"
-        Me.tsbHelp.Size = New System.Drawing.Size(63, 36)
+        Me.tsbHelp.Size = New System.Drawing.Size(119, 64)
         Me.tsbHelp.Text = " Help "
         Me.tsbHelp.ToolTipText = "Opens the application's help"
-        '
-        'bnClose
-        '
-        Me.bnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnClose.Location = New System.Drawing.Point(800, 578)
-        Me.bnClose.Margin = New System.Windows.Forms.Padding(0, 6, 6, 6)
-        Me.bnClose.Size = New System.Drawing.Size(100, 35)
-        Me.bnClose.Text = "Close"
         '
         'flp
         '
@@ -130,49 +119,49 @@ Class AppsForm
         Me.flp.BackColor = System.Drawing.Color.White
         Me.flp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.flp.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.flp.Location = New System.Drawing.Point(200, 52)
-        Me.flp.Margin = New System.Windows.Forms.Padding(0, 6, 6, 0)
+        Me.flp.Location = New System.Drawing.Point(238, 89)
+        Me.flp.Margin = New System.Windows.Forms.Padding(0, 10, 10, 10)
         Me.flp.Name = "flp"
-        Me.flp.Size = New System.Drawing.Size(700, 520)
+        Me.flp.Size = New System.Drawing.Size(788, 330)
         Me.flp.TabIndex = 2
         '
         'SearchTextBox
         '
         Me.SearchTextBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.SearchTextBox.Location = New System.Drawing.Point(6, 8)
-        Me.SearchTextBox.Margin = New System.Windows.Forms.Padding(6, 6, 6, 0)
+        Me.SearchTextBox.Location = New System.Drawing.Point(11, 13)
+        Me.SearchTextBox.Margin = New System.Windows.Forms.Padding(11, 10, 11, 0)
         Me.SearchTextBox.Name = "SearchTextBox"
-        Me.SearchTextBox.Size = New System.Drawing.Size(188, 36)
+        Me.SearchTextBox.Size = New System.Drawing.Size(216, 62)
         Me.SearchTextBox.TabIndex = 4
         '
         'TableLayoutPanel1
         '
         Me.TableLayoutPanel1.ColumnCount = 2
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.Controls.Add(Me.bnClose, 1, 2)
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.0!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 77.0!))
         Me.TableLayoutPanel1.Controls.Add(Me.tv, 0, 1)
         Me.TableLayoutPanel1.Controls.Add(Me.flp, 1, 1)
         Me.TableLayoutPanel1.Controls.Add(Me.SearchTextBox, 0, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.ToolStrip, 1, 0)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
-        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(2)
+        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 3
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(906, 619)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1036, 429)
         Me.TableLayoutPanel1.TabIndex = 6
         '
         'AppsForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.CancelButton = Me.bnClose
-        Me.ClientSize = New System.Drawing.Size(980, 650)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.ClientSize = New System.Drawing.Size(1036, 429)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.KeyPreview = True
+        Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "AppsForm"
         Me.Text = "Apps"
         Me.ToolStrip.ResumeLayout(False)
@@ -196,6 +185,8 @@ Class AppsForm
     Sub New()
         MyBase.New()
         InitializeComponent()
+
+        ClientSize = New Size(FontHeight * 41, FontHeight * 27)
 
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)
         Dim x64 = Package.Items.Values.Where(Function(arg) Not arg.Version Is Nothing AndAlso Not arg.Version.Contains("x86")).Count

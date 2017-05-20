@@ -53,10 +53,10 @@ Class MacrosForm
         Me.lv.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lv.Location = New System.Drawing.Point(4, 71)
-        Me.lv.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.lv.Location = New System.Drawing.Point(10, 82)
+        Me.lv.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
         Me.lv.Name = "lv"
-        Me.lv.Size = New System.Drawing.Size(296, 479)
+        Me.lv.Size = New System.Drawing.Size(294, 461)
         Me.lv.TabIndex = 2
         Me.lv.UseCompatibleStateImageBehavior = False
         '
@@ -66,10 +66,10 @@ Class MacrosForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.stb.BackColor = System.Drawing.Color.Aqua
-        Me.stb.Location = New System.Drawing.Point(4, 3)
-        Me.stb.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.stb.Location = New System.Drawing.Point(10, 10)
+        Me.stb.Margin = New System.Windows.Forms.Padding(10, 10, 0, 10)
         Me.stb.Name = "stb"
-        Me.stb.Size = New System.Drawing.Size(296, 62)
+        Me.stb.Size = New System.Drawing.Size(294, 62)
         Me.stb.TabIndex = 4
         '
         'lName

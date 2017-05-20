@@ -2775,6 +2775,11 @@ Public Class MainForm
         AudioTextChanged(tbAudioFile1, p.Audio1)
     End Sub
 
+    Sub CloseWithoutSaving()
+        g.SavedProject = p
+        Close()
+    End Sub
+
     Sub bSkip_Click() Handles bNext.Click
         If Not CanIgnoreTip Then
             MsgWarn("The current assistant instruction or warning cannot be skipped.")
@@ -2785,9 +2790,7 @@ Public Class MainForm
             p.SkippedAssistantTips.Add(CurrentAssistantTipKey)
         End If
 
-        If Not g.VerifyRequirements() Then
-            Exit Sub
-        End If
+        If Not g.VerifyRequirements() Then Exit Sub
 
         If AssistantPassed Then
             If AbortDueToLowDiskSpace() Then Exit Sub
@@ -2823,7 +2826,7 @@ Public Class MainForm
     Sub StartEncoding()
         AssistantPassed = True
         AddJob(False, Nothing)
-        StartJobs()
+        g.DefaultCommands.StartJobs()
     End Sub
 
     Private Sub Demux()
@@ -3448,84 +3451,14 @@ Public Class MainForm
 
     <Command("Dialog to manage batch jobs.")>
     Sub ShowJobsDialog()
-        Using f As New JobsForm()
-            If f.ShowDialog() = DialogResult.OK Then
-                Refresh()
-                StartJobs()
-            End If
+        Using form As New JobsForm()
+            form.ShowDialog()
         End Using
     End Sub
 
     <Command("Clears the job list.")>
     Sub ClearJobs()
         FileHelp.Delete(Folder.Settings + "Jobs.dat")
-    End Sub
-
-    <Command("Runs all active jobs of the job list.")>
-    Sub StartJobs()
-        If Not g.VerifyRequirements() Then Exit Sub
-        g.SaveSettings()
-        RunJobRecursive()
-        OpenProject(g.ProjectPath, False)
-        ProcessForm.CloseProcessForm()
-        g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
-        g.ShutdownPC()
-    End Sub
-
-    Sub RunJobRecursive()
-        Dim jobs = From i In JobsForm.GetJobs() Where i.Value = True
-        If jobs.Count = 0 Then Exit Sub
-        Dim jobPath = jobs(0).Key
-        JobsForm.ActivateJob(jobPath, False)
-        g.MainForm.OpenProject(jobPath, False)
-
-        Try
-            If s.PreventStandby Then PowerRequest.SuppressStandby()
-            StaxRip.ProcessForm.ShutdownVisible = True
-            Encode()
-            Log.Save()
-            JobsForm.RemoveJob(jobPath)
-
-            If p.DeleteTempFilesDir AndAlso p.TempDir.EndsWith("_temp\") Then
-                Try
-                    FileHelp.Delete(p.TempDir + p.Name + "_staxrip.log", VB6.FileIO.RecycleOption.SendToRecycleBin)
-                    Dim moreJobsToProcessInTempDir = JobsForm.GetJobs.Where(Function(a) a.Value AndAlso a.Key.Contains(p.TempDir))
-
-                    If moreJobsToProcessInTempDir.Count = 0 Then
-                        Dim tempDir = p.TempDir
-                        OpenProject(g.StartupTemplatePath, False)
-                        MediaInfo.ClearCache()
-
-                        If s.DeleteTempFilesToRecycleBin Then
-                            DirectoryHelp.Delete(tempDir, VB6.FileIO.RecycleOption.SendToRecycleBin)
-                        Else
-                            DirectoryHelp.Delete(tempDir)
-                        End If
-                    End If
-                Catch
-                End Try
-            End If
-        Catch ex As AbortException
-            Log.Save()
-            OpenProject(g.ProjectPath, False)
-            ProcessForm.CloseProcessForm()
-            Exit Sub
-        Catch ex As ErrorAbortException
-            Log.Save()
-            OpenProject(g.ProjectPath, False)
-            ProcessForm.CloseProcessForm()
-            g.ShowException(ex, Nothing, 100)
-            g.ShellExecute(g.GetTextEditor(), """" + p.TempDir + p.Name + "_staxrip.log" + """")
-        Catch ex As Exception
-            Log.Save()
-            g.OnException(ex)
-            Exit Sub
-        Finally
-            If s.PreventStandby Then PowerRequest.EnableStandby()
-            StaxRip.ProcessForm.ShutdownVisible = False
-        End Try
-
-        RunJobRecursive()
     End Sub
 
     Function GetJobPath() As String
@@ -4645,7 +4578,6 @@ Public Class MainForm
     End Sub
 
     Private Sub MainForm_Shown() Handles Me.Shown
-        Activate() 'needed for custom settings dir option
         Refresh()
         UpdateDynamicMenuAsync()
         UpdateRecentProjectsMenu()
@@ -4658,6 +4590,7 @@ Public Class MainForm
         End If
 
         ProcessCommandLine(Environment.GetCommandLineArgs)
+        If Not g.PreventSaveSettings Then Activate()
         IsLoading = False
     End Sub
 

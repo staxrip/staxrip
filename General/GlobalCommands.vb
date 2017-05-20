@@ -6,6 +6,17 @@ Imports System.Text.RegularExpressions
 Imports StaxRip.UI
 
 Public Class GlobalCommands
+    <Command("Runs all active jobs of the job list.")>
+    Sub StartJobs()
+        If g.PreventSaveSettings Then
+            g.RunJobRecursive()
+        Else
+            If Not g.VerifyRequirements() Then Exit Sub
+            If Not ProcessForm.IsActive Then If g.MainForm.IsSaveCanceled Then Exit Sub
+            g.ShellExecute(Application.ExecutablePath, "-SetPreventSaveSettings:True -StartJobs -Exit")
+        End If
+    End Sub
+
     <Command("Executes command lines separated by a line break line by line. Macros are solved as well as passed in as environment variables.")>
     Sub ExecuteCommandLine(
         <DispName("Command Line"),

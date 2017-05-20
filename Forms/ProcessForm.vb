@@ -336,7 +336,7 @@ Class ProcessForm
         End Try
     End Sub
 
-    Shared Sub ActivateForm()
+    Shared Function IsPreventedAppInForeground() As Boolean
         Dim procid As Integer
         Dim nameLower As String
         Native.GetWindowThreadProcessId(Native.GetForegroundWindow(), procid)
@@ -348,11 +348,11 @@ Class ProcessForm
             End If
         Next
 
-        If nameLower.ContainsAny(s.PreventActivation.SplitNoEmptyAndWhiteSpace(",", ";", " ")) Then
-            Exit Sub
-        End If
+        Return nameLower.ContainsAny(s.PreventActivation.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " "))
+    End Function
 
-        g.MainForm.Activate()
+    Shared Sub ActivateForm()
+        If Not IsPreventedAppInForeground() Then g.MainForm.Activate()
     End Sub
 
     Shared Sub CloseProcessForm()
@@ -494,4 +494,10 @@ Class ProcessForm
             Return ProcInstance.Process
         End If
     End Function
+
+    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
+        Get
+            Return True
+        End Get
+    End Property
 End Class

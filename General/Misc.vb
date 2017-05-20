@@ -7,6 +7,7 @@ Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
+Imports System.Threading.Tasks
 Imports System.Windows.Forms.VisualStyles
 Imports Microsoft.Win32
 Imports StaxRip.UI
@@ -31,6 +32,97 @@ Public Class GlobalClass
     Property DefaultCommands As New GlobalCommands
     Property IsProcessing As Boolean
     Property PreventSaveSettings As Boolean
+
+    Sub RunJobRecursive()
+        Dim jobs = From i In JobsForm.GetJobs() Where i.Value = True
+
+        If jobs.Count = 0 Then
+            g.MainForm.CloseWithoutSaving()
+            Exit Sub
+        End If
+
+        Dim jobPath = jobs(0).Key
+        JobsForm.ActivateJob(jobPath, False)
+        g.MainForm.OpenProject(jobPath, False)
+
+        Try
+            If s.PreventStandby Then PowerRequest.SuppressStandby()
+            StaxRip.ProcessForm.ShutdownVisible = True
+            g.MainForm.Encode()
+            Log.Save()
+            JobsForm.RemoveJob(jobPath)
+            ProcessForm.CloseProcessForm()
+
+            If p.DeleteTempFilesDir AndAlso p.TempDir.EndsWith("_temp\") Then
+                Try
+                    FileHelp.Delete(p.TempDir + p.Name + "_staxrip.log", VB6.FileIO.RecycleOption.SendToRecycleBin)
+                    Dim moreJobsToProcessInTempDir = JobsForm.GetJobs.Where(Function(a) a.Value AndAlso a.Key.Contains(p.TempDir))
+
+                    If moreJobsToProcessInTempDir.Count = 0 Then
+                        Dim tempDir = p.TempDir
+                        g.MainForm.OpenProject(g.StartupTemplatePath, False)
+                        MediaInfo.ClearCache()
+
+                        If s.DeleteTempFilesToRecycleBin Then
+                            DirectoryHelp.Delete(tempDir, VB6.FileIO.RecycleOption.SendToRecycleBin)
+                        Else
+                            DirectoryHelp.Delete(tempDir)
+                        End If
+                    End If
+                Catch
+                End Try
+            End If
+
+            jobs = From i In JobsForm.GetJobs() Where i.Value = True
+
+            If jobs.Count = 0 AndAlso Process.GetProcessesByName("StaxRip").Count = 1 Then
+                g.MainForm.CloseWithoutSaving()
+                g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
+                g.ShowNotification("Job processing has completed.")
+                g.ShutdownPC()
+            End If
+        Catch ex As AbortException
+            Log.Save()
+            g.MainForm.OpenProject(g.ProjectPath, False)
+            ProcessForm.CloseProcessForm()
+            g.MainForm.CloseWithoutSaving()
+            Exit Sub
+        Catch ex As ErrorAbortException
+            Log.Save()
+            g.MainForm.OpenProject(g.ProjectPath, False)
+            ProcessForm.CloseProcessForm()
+            g.ShowException(ex, Nothing, 100)
+            g.ShellExecute(g.GetTextEditor(), """" + p.TempDir + p.Name + "_staxrip.log" + """")
+            g.MainForm.CloseWithoutSaving()
+        Catch ex As Exception
+            Log.Save()
+            g.OnException(ex)
+            g.MainForm.CloseWithoutSaving()
+            Exit Sub
+        Finally
+            If s.PreventStandby Then PowerRequest.EnableStandby()
+            StaxRip.ProcessForm.ShutdownVisible = False
+        End Try
+
+        g.DefaultCommands.StartJobs()
+        g.MainForm.CloseWithoutSaving()
+    End Sub
+
+    Sub ShowNotification(message As String)
+        If Not ProcessForm.IsPreventedAppInForeground Then
+            Dim ni As New NotifyIcon()
+            ni.Visible = True
+            ni.BalloonTipTitle = "StaxRip"
+            ni.BalloonTipText = message
+            ni.Icon = SystemIcons.Information
+            ni.ShowBalloonTip(5000)
+
+            Task.Run(Sub()
+                         Thread.Sleep(5000)
+                         ni.Dispose()
+                     End Sub)
+        End If
+    End Sub
 
     ReadOnly Property StartupTemplatePath() As String
         Get
@@ -279,7 +371,6 @@ Public Class GlobalClass
 
                 'ASSOCF_VERIFY, ASSOCSTR_EXECUTABLE
                 If 0 = Native.AssocQueryString(&H40, 2, ext, Nothing, sb, c) Then
-
                     Dim ret = sb.ToString
                     If File.Exists(ret) Then Return ret
                 End If
@@ -668,13 +759,10 @@ Public Class GlobalClass
 
     Sub ShutdownPC(mode As ShutdownMode)
         If mode <> ShutdownMode.Nothing Then
-            SavedProject = p
-            g.MainForm.Close()
-
-            If Process.GetProcessesByName("StaxRip").Length = 1 Then
-                Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", 0)
-                Shutdown.Commit(mode)
-            End If
+            ProcessForm.CloseProcessForm()
+            g.MainForm.CloseWithoutSaving()
+            Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", 0)
+            Shutdown.Commit(mode)
         End If
     End Sub
 

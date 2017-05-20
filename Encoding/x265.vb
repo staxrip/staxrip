@@ -1006,19 +1006,16 @@ Public Class x265Params
         End If
 
         Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.Switch)
+        If q.Count > 0 Then sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
 
-        If q.Count > 0 Then
-            sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
+        If Calc.IsARSignalingRequired AndAlso Not IsCustom(pass, "--sar") Then
+            Dim par = Calc.GetTargetPAR
+            sb.Append(" --sar " & par.X & ":" & par.Y)
         End If
 
         If includePaths Then
             sb.Append(" --frames " & script.GetFrames)
             sb.Append(" --y4m")
-
-            If Calc.IsARSignalingRequired AndAlso Not IsCustom(pass, "--sar") Then
-                Dim par = Calc.GetTargetPAR
-                sb.Append(" --sar " & par.X & ":" & par.Y)
-            End If
 
             If Mode.Value = x265RateMode.TwoPass OrElse Mode.Value = x265RateMode.ThreePass Then
                 sb.Append(" --stats """ + p.TempDir + p.Name + ".stats""")

@@ -70,7 +70,15 @@ Class ToolStripRendererEx
 
         If TypeOf e.Item Is ToolStripMenuItem AndAlso Not TypeOf e.Item.Owner Is MenuStrip Then
             Dim r = e.TextRectangle
-            TextOffset = CInt(e.Item.Height * 0.9)
+
+            Dim dropDown = TryCast(e.ToolStrip, ToolStripDropDownMenu)
+
+            If dropDown Is Nothing OrElse dropDown.ShowImageMargin OrElse dropDown.ShowCheckMargin Then
+                TextOffset = CInt(e.Item.Height * 0.9)
+            Else
+                TextOffset = CInt(e.Item.Height * 0.2)
+            End If
+
             e.TextRectangle = New Rectangle(TextOffset, CInt((e.Item.Height - r.Height) / 2), r.Width, r.Height)
         End If
 

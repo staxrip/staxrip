@@ -94,6 +94,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - added DGSource to VapourSynth filter profiles
 - added mp4box cover art extraction
 - filter setup now also support Automatic as source filter which is also the default now
+- every job is always processed in a new staxrip instance
 
 #### Updated Tools
 
@@ -119,5 +120,5 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - mkvtoolnix 11.0.0
 - L-SMASH-Works (avs) 929
 - vslsmashsource (vs) 929
-- qaac 2.63
 - x265 2.4+22
+- qaac 2.64

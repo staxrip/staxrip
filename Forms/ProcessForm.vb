@@ -168,8 +168,8 @@ Class ProcessForm
 #End Region
 
     Public Shared ShutdownVisible As Boolean
+    Public Shared Instance As ProcessForm
 
-    Shared Instance As ProcessForm
     Shared Message As String
     Shared IsProcess As Boolean
     Shared DataReceivedCounter As Integer
@@ -336,30 +336,10 @@ Class ProcessForm
         End Try
     End Sub
 
-    Shared Function IsPreventedAppInForeground() As Boolean
-        Dim procid As Integer
-        Dim nameLower As String
-        Native.GetWindowThreadProcessId(Native.GetForegroundWindow(), procid)
-
-        For Each i In Process.GetProcesses
-            If i.Id = procid Then
-                nameLower = i.ProcessName.ToLower
-                Exit For
-            End If
-        Next
-
-        Return nameLower.ContainsAny(s.PreventActivation.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " "))
-    End Function
-
-    Shared Sub ActivateForm()
-        If Not IsPreventedAppInForeground() Then g.MainForm.Activate()
-    End Sub
-
     Shared Sub CloseProcessForm()
         Try
             If Not Instance Is Nothing Then
                 g.MainForm.Show()
-                ActivateForm()
                 g.MainForm.Refresh()
                 If Not Instance.IsDisposed Then Instance.Invoke(New Action(AddressOf CloseFormMethod))
             End If
@@ -374,10 +354,6 @@ Class ProcessForm
         End If
     End Sub
 
-    Private Sub ProcessForm_Activated(sender As Object, e As EventArgs) Handles Me.Activated
-        mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
-    End Sub
-
     Private Sub TaskForm_FormClosing() Handles Me.FormClosing
         RemoveHandler Log.Update, AddressOf LogUpdate
     End Sub
@@ -386,21 +362,36 @@ Class ProcessForm
         Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", CInt(mbShutdown.Value))
     End Sub
 
+    Shared Property IsMinimized As Boolean
+        Get
+            Return Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "minimized") = 1
+        End Get
+        Set(value As Boolean)
+            Registry.CurrentUser.Write("Software\" + Application.ProductName, "minimized", If(value, 1, 0))
+        End Set
+    End Property
+
+    Sub Minimize()
+        If Not ProcessForm.ProcInstance Is Nothing Then
+            IsMinimized = True
+
+            Try
+                Native.ShowWindow(ProcessForm.ProcInstance.Process.MainWindowHandle, 0) 'SW_HIDE  = 0
+            Catch
+            End Try
+
+            Hide()
+            NotifyIcon.Visible = True
+        End If
+    End Sub
+
     Protected Overrides Sub WndProc(ByRef m As Message)
         Select Case m.Msg
             Case &H112 'WM_SYSCOMMAND
                 Select Case m.WParam.ToInt32
                     Case Native.SC_MINIMIZE
-                        If Not ProcessForm.ProcInstance Is Nothing Then
-                            Try
-                                Native.ShowWindow(ProcessForm.ProcInstance.Process.MainWindowHandle, 0) 'SW_HIDE  = 0
-                            Catch
-                            End Try
-
-                            Hide()
-                            NotifyIcon.Visible = True
-                            Exit Sub
-                        End If
+                        Minimize()
+                        Exit Sub
                     Case Native.SC_CLOSE
                         bnAbort.PerformClick()
                         Exit Sub
@@ -443,8 +434,8 @@ Class ProcessForm
 
     Private Sub ShowMe()
         lStatus.Text = ""
+        IsMinimized = False
         Show()
-        Activate()
 
         Try
             Dim proc = ProcessForm.ProcInstance.Process
@@ -495,9 +486,23 @@ Class ProcessForm
         End If
     End Function
 
+    Private Sub ProcessForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
+
+        If IsMinimized Then
+            Minimize()
+        Else
+            Activate()
+        End If
+    End Sub
+
+    Private Sub ProcessForm_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+        mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
+    End Sub
+
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
-            Return True
+            Return IsMinimized
         End Get
     End Property
 End Class

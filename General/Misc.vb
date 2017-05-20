@@ -34,13 +34,8 @@ Public Class GlobalClass
     Property PreventSaveSettings As Boolean
 
     Sub RunJobRecursive()
-        Dim jobs = From i In JobsForm.GetJobs() Where i.Value = True
-
-        If jobs.Count = 0 Then
-            g.MainForm.CloseWithoutSaving()
-            Exit Sub
-        End If
-
+        Dim jobs = JobsForm.ActiveJobs
+        If jobs.Count = 0 Then Exit Sub
         Dim jobPath = jobs(0).Key
         JobsForm.ActivateJob(jobPath, False)
         g.MainForm.OpenProject(jobPath, False)
@@ -73,12 +68,10 @@ Public Class GlobalClass
                 End Try
             End If
 
-            jobs = From i In JobsForm.GetJobs() Where i.Value = True
+            jobs = JobsForm.ActiveJobs
 
             If jobs.Count = 0 AndAlso Process.GetProcessesByName("StaxRip").Count = 1 Then
-                g.MainForm.CloseWithoutSaving()
                 g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
-                g.ShowNotification("Job processing has completed.")
                 g.ShutdownPC()
             End If
         Catch ex As AbortException
@@ -104,24 +97,8 @@ Public Class GlobalClass
             StaxRip.ProcessForm.ShutdownVisible = False
         End Try
 
-        g.DefaultCommands.StartJobs()
+        If JobsForm.ActiveJobs.Count > 0 Then g.DefaultCommands.StartJobs()
         g.MainForm.CloseWithoutSaving()
-    End Sub
-
-    Sub ShowNotification(message As String)
-        If Not ProcessForm.IsPreventedAppInForeground Then
-            Dim ni As New NotifyIcon()
-            ni.Visible = True
-            ni.BalloonTipTitle = "StaxRip"
-            ni.BalloonTipText = message
-            ni.Icon = SystemIcons.Information
-            ni.ShowBalloonTip(5000)
-
-            Task.Run(Sub()
-                         Thread.Sleep(5000)
-                         ni.Dispose()
-                     End Sub)
-        End If
     End Sub
 
     ReadOnly Property StartupTemplatePath() As String

@@ -2169,10 +2169,7 @@ Public Class MainForm
             Dim startTime = DateTime.Now
 
             If p.BatchMode Then
-                If g.ProjectPath Is Nothing Then
-                    g.ProjectPath = p.TempDir + p.SourceFiles(0).Base + ".srip"
-                End If
-
+                If g.ProjectPath Is Nothing Then g.ProjectPath = p.TempDir + p.SourceFiles(0).Base + ".srip"
                 SaveProjectPath(g.ProjectPath)
                 OpenVideoSourceFiles(p.SourceFiles, False)
                 p.BatchMode = False
@@ -3095,13 +3092,6 @@ Public Class MainForm
 
             Dim systemPage = ui.CreateFlowPage("System")
             systemPage.SuspendLayout()
-
-            tb = ui.AddTextBlock(systemPage)
-            tb.Label.Text = "Prevent Activation:"
-            tb.Label.Tooltip = "Prevents the StaxRip window to become the active foreground window if certain applications are currently in the foreground."
-            tb.Edit.Expandet = True
-            tb.Edit.Text = s.PreventActivation
-            tb.Edit.SaveAction = Sub(value) s.PreventActivation = value.ToLower
 
             Dim mb2 = ui.AddMenuButtonBlock(Of ProcessPriorityClass)(systemPage)
             mb2.Label.Text = "Process Priority:"
@@ -4590,7 +4580,6 @@ Public Class MainForm
         End If
 
         ProcessCommandLine(Environment.GetCommandLineArgs)
-        If Not g.PreventSaveSettings Then Activate()
         IsLoading = False
     End Sub
 
@@ -5589,7 +5578,7 @@ Public Class MainForm
 
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
-            Return True
+            Return ProcessForm.IsMinimized
         End Get
     End Property
 End Class

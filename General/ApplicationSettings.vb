@@ -29,7 +29,6 @@ Public Class ApplicationSettings
     Public MinimumDiskSpace As Integer = 20
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
-    Public PreventActivation As String
     Public PreventStandby As Boolean = True
     Public PreviewFormBorderStyle As FormBorderStyle
     Public PreviewToggleInfos As Boolean
@@ -137,8 +136,6 @@ Public Class ApplicationSettings
             VapourSynthFilterPreferences.Add("d2v", "d2vsource")
             VapourSynthFilterPreferences.Add("dgi", "DGSource")
         End If
-
-        If PreventActivation = "" Then PreventActivation = "mpc vlc media play kodi"
 
         If Check(eac3toProfiles, "eac3to Audio Stream Profiles", 4) Then
             eac3toProfiles = New List(Of eac3toProfile)

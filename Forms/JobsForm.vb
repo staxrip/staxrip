@@ -343,12 +343,19 @@ Friend Class JobsForm
     End Sub
 
     Private Sub bnStart_Click(sender As Object, e As EventArgs) Handles bnStart.Click
+        ProcessForm.IsMinimized = False
         g.DefaultCommands.StartJobs()
     End Sub
 
     Private Sub bnLoad_Click(sender As Object, e As EventArgs) Handles bnLoad.Click
         g.MainForm.LoadProject(lv.SelectedItem.ToString)
     End Sub
+
+    Shared ReadOnly Property ActiveJobs As IEnumerable(Of StringBooleanPair)
+        Get
+            Return From i In JobsForm.GetJobs() Where i.Value = True
+        End Get
+    End Property
 
     Protected Overrides Sub Dispose(disposing As Boolean)
         MyBase.Dispose(disposing)

@@ -8,13 +8,32 @@ Imports StaxRip.UI
 Public Class GlobalCommands
     <Command("Runs all active jobs of the job list.")>
     Sub StartJobs()
-        If g.PreventSaveSettings Then
-            g.RunJobRecursive()
-        Else
-            If Not g.VerifyRequirements() Then Exit Sub
-            If Not ProcessForm.IsActive Then If g.MainForm.IsSaveCanceled Then Exit Sub
-            g.ShellExecute(Application.ExecutablePath, "-SetPreventSaveSettings:True -StartJobs -Exit")
-        End If
+        g.ShellExecute(Application.ExecutablePath, "-RunJobsMaximized")
+    End Sub
+
+    <Command("Shows a command prompt with the temp directory of the current project.")>
+    Sub ShowCommandPrompt()
+        Dim batchCode = ""
+
+        For Each pack In Package.Items.Values
+            If TypeOf pack Is PluginPackage Then Continue For
+            Dim dir = pack.GetDir
+            If Not Directory.Exists(dir) Then Continue For
+            If Not dir.Contains(Folder.Startup) Then Continue For
+
+            batchCode += "@set PATH=" + dir + ";%PATH%" + BR
+        Next
+
+        Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
+        Proc.WriteBatchFile(batchPath, batchCode)
+
+        AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
+
+        Dim batchProcess As New Process
+        batchProcess.StartInfo.FileName = "cmd.exe"
+        batchProcess.StartInfo.Arguments = "/k """ + batchPath + """"
+        batchProcess.StartInfo.WorkingDirectory = p.TempDir
+        batchProcess.Start()
     End Sub
 
     <Command("Executes command lines separated by a line break line by line. Macros are solved as well as passed in as environment variables.")>
@@ -391,7 +410,7 @@ Public Class GlobalCommands
     End Sub
 
     <Command("Shows a message box.")>
-    Sub ShowMsg(
+    Sub ShowMessageBox(
         <DispName("Main Instruction")>
         <Description("Main instruction may contain macros.")>
         <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
@@ -540,11 +559,6 @@ Public Class GlobalCommands
                   <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> script As String)
 
         p.Script.SetFilter(category, name, script)
-    End Sub
-
-    <Command("Command used internally.")>
-    Sub SetPreventSaveSettings(preventSaveSettings As Boolean)
-        g.PreventSaveSettings = preventSaveSettings
     End Sub
 
     <Command("Sets the file path of the target file.")>

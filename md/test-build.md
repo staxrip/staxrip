@@ -117,8 +117,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - mvtools2 (avs) 2.7.16.22
 - masktools2 2.2.7
 - yadifmod (vs) 10
-- mkvtoolnix 11.0.0
 - L-SMASH-Works (avs) 929
 - vslsmashsource (vs) 929
 - x265 2.4+22
 - qaac 2.64
+- mkvtoolnix 12.0.0

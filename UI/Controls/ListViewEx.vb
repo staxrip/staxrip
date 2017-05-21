@@ -475,6 +475,7 @@ Namespace UI
         End Class
 
         Shadows Sub AutoResizeColumns(lastAtListViewWidth As Boolean)
+            If Columns.Count = 0 Then Exit Sub
             BeginUpdate()
 
             For Each i As ColumnHeader In Columns

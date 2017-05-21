@@ -343,7 +343,6 @@ Friend Class JobsForm
     End Sub
 
     Private Sub bnStart_Click(sender As Object, e As EventArgs) Handles bnStart.Click
-        ProcessForm.IsMinimized = False
         g.DefaultCommands.StartJobs()
     End Sub
 

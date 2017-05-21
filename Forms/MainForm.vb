@@ -854,6 +854,7 @@ Public Class MainForm
         SizeContextMenuStrip.ResumeLayout()
         g.SetRenderer(MenuStrip)
         SetMenuStyle()
+        ShowInTaskbar = Not g.IsEncodingInstance
     End Sub
 
     <Command("Shows different donation options.")>
@@ -1377,20 +1378,6 @@ Public Class MainForm
 
     Sub SetSavedProject()
         g.SavedProject = StaxRip.ObjectHelp.GetCopy(Of Project)(p)
-    End Sub
-
-    Sub FormMain_DragEnter(sender As Object, e As DragEventArgs) Handles MyBase.DragEnter
-        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
-        If Not files.NothingOrEmpty Then e.Effect = DragDropEffects.Copy
-    End Sub
-
-    Sub FormMain_DragDrop(sender As Object, e As DragEventArgs) Handles MyBase.DragDrop
-        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
-
-        If Not files.NothingOrEmpty Then
-            Activate()
-            BeginInvoke(Sub() OpenAnyFile(files.ToList))
-        End If
     End Sub
 
     Function GetPathFromIndexFile(sourcePath As String) As String
@@ -2824,6 +2811,7 @@ Public Class MainForm
         AssistantPassed = True
         AddJob(False, Nothing)
         g.DefaultCommands.StartJobs()
+        Close()
     End Sub
 
     Private Sub Demux()
@@ -4071,7 +4059,7 @@ Public Class MainForm
         f.Doc.WriteP("StaxRip ""C:\Movie\project.srip""")
         f.Doc.WriteP("StaxRip ""C:\Movie\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB""")
         f.Doc.WriteP("StaxRip -LoadTemplate:DVB ""C:\Movie\capture.mpg"" -StartEncoding -Standby")
-        f.Doc.WriteP("StaxRip -ShowMsg:""main text..."",""text..."",info")
+        f.Doc.WriteP("StaxRip -ShowMessageBox:""main text..."",""text..."",info")
 
         Dim commands As New List(Of Command)(CommandManager.Commands.Values)
         commands.Sort()
@@ -4209,7 +4197,7 @@ Public Class MainForm
         ret.Add("Tools|Advanced", Symbol.More)
         If Application.StartupPath = "D:\Projekte\VS\VB\StaxRip\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
-        ret.Add("Tools|Advanced|Command Prompt...", NameOf(ShowCommandPrompt), Symbol.fa_terminal)
+        ret.Add("Tools|Advanced|Command Prompt...", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
         ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
         ret.Add("Tools|Advanced|Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H, Symbol.Subtitles)
         ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
@@ -4561,26 +4549,6 @@ Public Class MainForm
             AviSynthListView.OnChanged()
             Assistant()
         End If
-    End Sub
-
-    Private Sub MainForm_Activated(sender As Object, e As EventArgs) Handles Me.Activated
-        UpdateScriptsMenuAsync()
-    End Sub
-
-    Private Sub MainForm_Shown() Handles Me.Shown
-        Refresh()
-        UpdateDynamicMenuAsync()
-        UpdateRecentProjectsMenu()
-        UpdateTemplatesMenuAsync()
-
-        If Not File.Exists(Package.x265.Path) Then
-            MsgError("Files included with StaxRip are missing, maybe the 7-Zip archive wasn't properly unpacked. You can find a packer at [http://www.7-zip.org www.7-zip.org].")
-            Close()
-            Exit Sub
-        End If
-
-        ProcessCommandLine(Environment.GetCommandLineArgs)
-        IsLoading = False
     End Sub
 
     <Command("Shows LAV Filters video decoder configuration")>
@@ -5030,17 +4998,6 @@ Public Class MainForm
         UpdateSizeOrBitrate()
     End Sub
 
-    Private Sub MainForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If IsSaveCanceled() Then
-            e.Cancel = True
-            Exit Sub
-        End If
-
-        Hide()
-        g.SaveSettings()
-        g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
-    End Sub
-
     Private Sub pEncoder_MouseLeave() Handles pEncoder.MouseLeave
         Assistant()
     End Sub
@@ -5453,38 +5410,6 @@ Public Class MainForm
         SourceFileMenu.Add("Paste", Sub() tbSourceFile.Paste(), "Copies the full source file path to the clipboard.", Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
     End Sub
 
-    Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'on small screensizes like netbooks dialogs get cut at screensize
-        If lgbEncoder.Right > ClientSize.Width Then
-            ClientSize = New Size(lgbEncoder.Right + lgbFilters.Left, gbAssistant.Bottom + lgbFilters.Left)
-        End If
-    End Sub
-
-    <Command("Shows a command prompt with the temp directory of the current project.")>
-    Sub ShowCommandPrompt()
-        Dim batchCode = ""
-
-        For Each pack In Package.Items.Values
-            If TypeOf pack Is PluginPackage Then Continue For
-            Dim dir = pack.GetDir
-            If Not Directory.Exists(dir) Then Continue For
-            If Not dir.Contains(Folder.Startup) Then Continue For
-
-            batchCode += "@set PATH=" + dir + ";%PATH%" + BR
-        Next
-
-        Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
-        Proc.WriteBatchFile(batchPath, batchCode)
-
-        AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
-
-        Dim batchProcess As New Process
-        batchProcess.StartInfo.FileName = "cmd.exe"
-        batchProcess.StartInfo.Arguments = "/k """ + batchPath + """"
-        batchProcess.StartInfo.WorkingDirectory = p.TempDir
-        batchProcess.Start()
-    End Sub
-
     <Command("Shows a dialog to generate thumbnails.")>
     Sub ShowBatchGenerateThumbnailsDialog()
         Using fd As New OpenFileDialog
@@ -5576,9 +5501,64 @@ Public Class MainForm
         End Using
     End Sub
 
+    Protected Overrides Sub OnDragEnter(e As DragEventArgs)
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+        If Not files.NothingOrEmpty Then e.Effect = DragDropEffects.Copy
+        MyBase.OnDragEnter(e)
+    End Sub
+
+    Protected Overrides Sub OnDragDrop(e As DragEventArgs)
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+        If Not files.NothingOrEmpty Then BeginInvoke(Sub() OpenAnyFile(files.ToList))
+        MyBase.OnDragDrop(e)
+    End Sub
+
+    Protected Overrides Sub OnActivated(e As EventArgs)
+        UpdateScriptsMenuAsync()
+        MyBase.OnActivated(e)
+    End Sub
+
+    Protected Overrides Sub OnShown(e As EventArgs)
+        UpdateDynamicMenuAsync()
+        UpdateRecentProjectsMenu()
+        UpdateTemplatesMenuAsync()
+
+        If Not File.Exists(Package.x265.Path) Then
+            MsgError("Files included with StaxRip are missing, maybe the 7-Zip archive wasn't properly unpacked. You can find a packer at [http://www.7-zip.org www.7-zip.org].")
+            Close()
+            Exit Sub
+        End If
+
+        IsLoading = False
+
+        If g.IsEncodingInstance Then
+            g.RunJobRecursive()
+        Else
+            ProcessCommandLine(Environment.GetCommandLineArgs)
+        End If
+
+        MyBase.OnShown(e)
+    End Sub
+
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
-            Return ProcessForm.IsMinimized
+            Return g.IsEncodingInstance
         End Get
     End Property
+
+    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        If IsSaveCanceled() Then e.Cancel = True
+        MyBase.OnFormClosing(e)
+    End Sub
+
+    Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
+        g.SaveSettings()
+        g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
+        MyBase.OnFormClosed(e)
+    End Sub
+
+    Protected Overrides Sub OnLoad(e As EventArgs)
+        MyBase.OnLoad(e)
+        If g.IsEncodingInstance Then Left = -5000
+    End Sub
 End Class

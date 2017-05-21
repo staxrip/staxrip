@@ -181,6 +181,7 @@ Class ProcessForm
     Private TaskbarButtonCreatedMessage As Integer
 
     Property Taskbar As Taskbar
+    Property OriginalLeft As Integer
 
     Sub New()
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
@@ -204,6 +205,11 @@ Class ProcessForm
         NotifyIcon.Text = "StaxRip"
 
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
+
+        If g.IsMinimizedEncodingInstance Then
+            ShowInTaskbar = False
+            NotifyIcon.Visible = True
+        End If
     End Sub
 
     Shared Sub ClearCommandLineOutput()
@@ -362,35 +368,14 @@ Class ProcessForm
         Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", CInt(mbShutdown.Value))
     End Sub
 
-    Shared Property IsMinimized As Boolean
-        Get
-            Return Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "minimized") = 1
-        End Get
-        Set(value As Boolean)
-            Registry.CurrentUser.Write("Software\" + Application.ProductName, "minimized", If(value, 1, 0))
-        End Set
-    End Property
-
-    Sub Minimize()
-        If Not ProcessForm.ProcInstance Is Nothing Then
-            IsMinimized = True
-
-            Try
-                Native.ShowWindow(ProcessForm.ProcInstance.Process.MainWindowHandle, 0) 'SW_HIDE  = 0
-            Catch
-            End Try
-
-            Hide()
-            NotifyIcon.Visible = True
-        End If
-    End Sub
-
     Protected Overrides Sub WndProc(ByRef m As Message)
         Select Case m.Msg
             Case &H112 'WM_SYSCOMMAND
                 Select Case m.WParam.ToInt32
                     Case Native.SC_MINIMIZE
-                        Minimize()
+                        g.IsMinimizedEncodingInstance = True
+                        Hide()
+                        NotifyIcon.Visible = True
                         Exit Sub
                     Case Native.SC_CLOSE
                         bnAbort.PerformClick()
@@ -432,21 +417,6 @@ Class ProcessForm
         DIRECT_IMPERSONATION = &H200
     End Enum
 
-    Private Sub ShowMe()
-        lStatus.Text = ""
-        IsMinimized = False
-        Show()
-
-        Try
-            Dim proc = ProcessForm.ProcInstance.Process
-            Native.ShowWindow(proc.MainWindowHandle, Native.SW_RESTORE)
-            Native.SetForegroundWindow(proc.MainWindowHandle)
-        Catch
-        End Try
-
-        NotifyIcon.Visible = False
-    End Sub
-
     Private Sub NotifyIcon_MouseClick() Handles NotifyIcon.MouseClick
         ShowMe()
     End Sub
@@ -486,23 +456,47 @@ Class ProcessForm
         End If
     End Function
 
-    Private Sub ProcessForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
-        mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
+    Private Sub ShowMe()
+        lStatus.Text = ""
+        g.IsMinimizedEncodingInstance = False
+        ShowInTaskbar = True
+        If Left < 0 Then Left = OriginalLeft
+        Show()
+        Activate()
 
-        If IsMinimized Then
-            Minimize()
-        Else
-            Activate()
-        End If
+        Try
+            Dim proc = ProcessForm.ProcInstance.Process
+            Native.ShowWindow(proc.MainWindowHandle, Native.SW_RESTORE)
+            Native.SetForegroundWindow(proc.MainWindowHandle)
+        Catch
+        End Try
+
+        NotifyIcon.Visible = False
     End Sub
 
-    Private Sub ProcessForm_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+    Protected Overrides Sub OnActivated(e As EventArgs)
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
+        MyBase.OnActivated(e)
+    End Sub
+
+    Protected Overrides Sub OnShown(e As EventArgs)
+        MyBase.OnShown(e)
+        mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
+        If g.IsMinimizedEncodingInstance Then Hide()
+    End Sub
+
+    Protected Overrides Sub OnLoad(e As EventArgs)
+        MyBase.OnLoad(e)
+
+        If g.IsMinimizedEncodingInstance Then
+            OriginalLeft = Left
+            Left = -5000
+        End If
     End Sub
 
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
-            Return IsMinimized
+            Return g.IsMinimizedEncodingInstance
         End Get
     End Property
 End Class

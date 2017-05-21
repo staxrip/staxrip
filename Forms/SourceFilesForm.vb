@@ -239,7 +239,7 @@ Class SourceFilesForm
 
                         If d.ShowDialog = DialogResult.OK Then
                             Dim opt = If(td.SelectedValue = "sub-folders", SearchOption.AllDirectories, SearchOption.TopDirectoryOnly)
-                            lb.Items.AddRange(Directory.GetFiles(d.SelectedPath, "*.*", opt))
+                            lb.Items.AddRange(Directory.GetFiles(d.SelectedPath, "*.*", opt).Where(Function(val) FileTypes.Video.Contains(val.Ext)).ToArray)
                             UpdateControls()
                         End If
                     End Using
@@ -329,25 +329,19 @@ Class SourceFilesForm
     End Sub
 
     Private Sub SourceFilesForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
-        If e.KeyData = (Keys.Alt Or Keys.M) Then
-            cbDemuxAndIndex.Focus()
-        End If
+        If e.KeyData = (Keys.Alt Or Keys.M) Then cbDemuxAndIndex.Focus()
     End Sub
 
     Private Sub lb_DragDrop(sender As Object, e As DragEventArgs) Handles lb.DragDrop
-        Drop(e, Nothing)
+        Drop(e)
     End Sub
 
-    Private Sub Drop(e As DragEventArgs, mode As SourceInputMode?)
+    Private Sub Drop(e As DragEventArgs)
         Dim a = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
-        If Not a Is Nothing AndAlso a.Length > 0 Then
-            If mode.HasValue Then
-                Me.Mode = mode.Value
-            End If
-
+        If Not a.NothingOrEmpty Then
             Array.Sort(a)
-            lb.Items.AddRange(a)
+            lb.Items.AddRange(a.Where(Function(val) File.Exists(val)).ToArray)
             UpdateControls()
         End If
     End Sub

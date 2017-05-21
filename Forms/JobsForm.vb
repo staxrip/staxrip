@@ -169,6 +169,7 @@ Friend Class JobsForm
 #End Region
 
     Private FileWatcher As New FileSystemWatcher
+    Private IsLoading As Boolean
 
     Sub New()
         MyBase.New()
@@ -202,25 +203,25 @@ Friend Class JobsForm
         FileWatcher.Filter = "Jobs.dat"
         AddHandler FileWatcher.Changed, AddressOf Reload
         AddHandler FileWatcher.Created, AddressOf Reload
+        AddHandler lv.ItemsChanged, AddressOf HandleItemsChanged
         FileWatcher.EnableRaisingEvents = True
-
-        AddHandler lv.ItemsChanged, Sub()
-                                        SaveJobs()
-                                        UpdateControls()
-                                    End Sub
     End Sub
 
-    Private IsLoading As Boolean
+    Sub HandleItemsChanged()
+        SaveJobs()
+        UpdateControls()
+    End Sub
 
     Sub Reload(sender As Object, e As FileSystemEventArgs)
-        If IsHandleCreated Then Invoke(Sub()
-                                           IsLoading = True
-                                           lv.Items.Clear()
-                                           lv.AddItems(GetJobs())
-                                           lv.SelectFirst()
-                                           UpdateControls()
-                                           IsLoading = False
-                                       End Sub)
+        If IsHandleCreated AndAlso Not IsDisposed Then Invoke(Sub()
+                                                                  If IsDisposed Then Exit Sub
+                                                                  IsLoading = True
+                                                                  lv.Items.Clear()
+                                                                  lv.AddItems(GetJobs())
+                                                                  lv.SelectFirst()
+                                                                  UpdateControls()
+                                                                  IsLoading = False
+                                                              End Sub)
     End Sub
 
     Private Sub UpdateControls()
@@ -370,5 +371,11 @@ Friend Class JobsForm
             Case Keys.Delete
                 lv.RemoveSelection()
         End Select
+    End Sub
+
+    Private Sub JobsForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        RemoveHandler FileWatcher.Changed, AddressOf Reload
+        RemoveHandler FileWatcher.Created, AddressOf Reload
+        RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged
     End Sub
 End Class

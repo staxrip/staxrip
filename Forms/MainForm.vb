@@ -2074,7 +2074,7 @@ Public Class MainForm
     Sub ExtractForcedVobSubSubtitles()
         For Each i In g.GetFilesInTempDirAndParent
             If Filepath.GetExtFull(i) = ".idx" AndAlso g.IsSourceSameOrSimilar(i) AndAlso
-                Not File.Exists(Filepath.GetDirAndBase(i) + "_forced.idx") Then
+                Not File.Exists(i.DirAndBase + "_forced.idx") Then
 
                 Dim idxContent = File.ReadAllText(i, Encoding.Default)
 
@@ -2088,7 +2088,7 @@ Public Class MainForm
                     proc.Init("Extract forced subtitles if existing", "# ")
                     proc.WriteLine(Filepath.GetName(i) + BR2)
                     proc.File = Package.BDSup2SubPP.Path
-                    proc.Arguments = "--forced-only -o """ + i.DirAndBase + "_forced.idx"" """ + i + """"
+                    proc.Arguments = "--forced-only -o " + (i.DirAndBase + "_forced.idx").Quotes + " " + i.Quotes
                     proc.AllowedExitCodes = {}
                     proc.Start()
                 End Using

@@ -69,6 +69,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - fixed PowerShell scripts not being executed on the GUI thread
 - fixed rare crash Win 7 failing to load included Segoe font file
 - fixed issues staxrip using wrong stream IDs for ffmpeg and mkvmerge
+- the option to demux all subtitles did only demux preferred subtitles
+- not all forced subtitles were picked up
 
 #### Tweaks
 
@@ -95,6 +97,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - added mp4box cover art extraction
 - filter setup now also support Automatic as source filter which is also the default now
 - every job is always processed in a new staxrip instance
+- if the subtitle source is a container like MP4/MKV StaxRip checks the forced and default option
+- when staxrip demuxues subtitles it writes _forced to the filename and set the forced flag when it picks up the demuxed subtitles 
 
 #### Updated Tools
 

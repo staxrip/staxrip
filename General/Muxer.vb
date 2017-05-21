@@ -105,7 +105,7 @@ Public MustInherit Class Muxer
                 End If
             End If
 
-            If FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExt(file1)) AndAlso
+            If FileTypes.SubtitleExludingContainers.Contains(file1.Ext) AndAlso
                 g.IsSourceSameOrSimilar(file1) AndAlso Not file1.Contains("_Preview.") AndAlso
                 Not file1.Contains("_Temp.") Then
 
@@ -113,27 +113,13 @@ Public MustInherit Class Muxer
                     Continue For
                 End If
 
-                If TypeOf Me Is MP4Muxer AndAlso Not {"idx", "srt"}.Contains(Filepath.GetExt(file1)) Then
-                    Continue For
-                End If
-
-                If file1.Contains("_Forced.") AndAlso Not Filepath.GetBase(file1).Contains(Language.CurrentCulture.Name) Then
+                If TypeOf Me Is MP4Muxer AndAlso Not {"idx", "srt"}.Contains(file1.Ext) Then
                     Continue For
                 End If
 
                 For Each iSubtitle In Subtitle.Create(file1)
                     If p.PreferredSubtitles <> "" Then
-                        If file1.Contains("_Forced.") Then
-                            Static forcedAdded As Boolean
-
-                            If forcedAdded Then
-                                Continue For
-                            Else
-                                iSubtitle.Forced = True
-                                forcedAdded = True
-                            End If
-                        End If
-
+                        If file1.Contains("_forced") Then iSubtitle.Forced = True
                         Subtitles.Add(iSubtitle)
                     End If
                 Next

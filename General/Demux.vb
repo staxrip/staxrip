@@ -349,14 +349,14 @@ Class mkvDemuxer
 
         For Each i In subtitles
             If Not i.Enabled Then Continue For
-
-            Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.ExtFull
+            Dim forced = If(i.Forced, "_forced", "")
+            Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + forced + i.ExtFull
 
             If outpath.Length > 259 Then
-                outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(10) + i.ExtFull
+                outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(10) + forced + i.ExtFull
             End If
 
-            arguments += " " & i.StreamOrder & ":""" + outpath + """"
+            arguments += " " & i.StreamOrder & ":" + outpath.Quotes
         Next
 
         arguments += " --ui-language en"

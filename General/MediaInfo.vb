@@ -163,8 +163,8 @@ Public Class MediaInfo
                 Next
 
                 For index = 0 To count - 1
-                    Dim subtitle As New Subtitle(New Language(GetInfo(MediaInfoStreamKind.Text, index, "Language")))
-                    Dim streamOrder = GetInfo(MediaInfoStreamKind.Text, index, "StreamOrder")
+                    Dim subtitle As New Subtitle(New Language(GetText(index, "Language")))
+                    Dim streamOrder = GetText(index, "StreamOrder")
 
                     If streamOrder <> "" Then
                         If streamOrder.Contains("-") Then
@@ -174,14 +174,16 @@ Public Class MediaInfo
                         End If
                     End If
 
-                    subtitle.ID = GetInfo(MediaInfoStreamKind.Text, index, "ID").ToInt
-                    subtitle.Title = GetInfo(MediaInfoStreamKind.Text, index, "Title").Trim
-                    subtitle.CodecString = GetInfo(MediaInfoStreamKind.Text, index, "Codec/String")
-                    subtitle.Format = GetInfo(MediaInfoStreamKind.Text, index, "Format")
-                    subtitle.Size = GetInfo(MediaInfoStreamKind.Text, index, "StreamSize").ToInt
+                    subtitle.Forced = GetText(index, "Forced") = "Yes"
+                    subtitle.Default = GetText(index, "Default") = "Yes"
+                    subtitle.ID = GetText(index, "ID").ToInt
+                    subtitle.Title = GetText(index, "Title").Trim
+                    subtitle.CodecString = GetText(index, "Codec/String")
+                    subtitle.Format = GetText(index, "Format")
+                    subtitle.Size = GetText(index, "StreamSize").ToInt
 
                     Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-                    subtitle.Enabled = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode)
+                    subtitle.Enabled = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode) OrElse p.DemuxSubtitles = DemuxMode.All
 
                     ret.Add(subtitle)
                 Next
@@ -226,6 +228,10 @@ Public Class MediaInfo
 
     Function GetAudio(streamNumber As Integer, parameter As String) As String
         Return Marshal.PtrToStringUni(MediaInfo_Get(Handle, MediaInfoStreamKind.Audio, streamNumber, parameter, MediaInfoInfoKind.Text, MediaInfoInfoKind.Name))
+    End Function
+
+    Function GetText(streamNumber As Integer, parameter As String) As String
+        Return Marshal.PtrToStringUni(MediaInfo_Get(Handle, MediaInfoStreamKind.Text, streamNumber, parameter, MediaInfoInfoKind.Text, MediaInfoInfoKind.Name))
     End Function
 
     Function GetInfo(streamKind As MediaInfoStreamKind, streamNumber As Integer, parameter As String) As String

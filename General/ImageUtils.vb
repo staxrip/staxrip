@@ -6,18 +6,22 @@ Imports System.Threading.Tasks
 
 Class ImageHelp
     Private Shared Coll As PrivateFontCollection
+    Private Shared AwesomePath As String = Folder.Startup + "FontAwesome.ttf"
+    Private Shared SegoePath As String = Folder.Startup + "Segoe-MDL2-Assets.ttf"
+    Private Shared FontFilesExist As Boolean = File.Exists(AwesomePath) AndAlso File.Exists(SegoePath)
 
     Shared Async Function GetSymbolImageAsync(symbol As Symbol) As Task(Of Image)
         Return Await Task.Run(Of Image)(Function() GetSymbolImage(symbol))
     End Function
 
     Shared Function GetSymbolImage(symbol As Symbol) As Image
+        If Not FontFilesExist Then Return Nothing
         Dim legacy = OSVersion.Current < OSVersion.Windows10
 
         If Coll Is Nothing Then
             Coll = New PrivateFontCollection
-            Coll.AddFontFile(Folder.Startup + "FontAwesome.ttf")
-            If legacy Then Coll.AddFontFile(Folder.Startup + "Segoe-MDL2-Assets.ttf")
+            Coll.AddFontFile(AwesomePath)
+            If legacy Then Coll.AddFontFile(SegoePath)
         End If
 
         Dim family As FontFamily

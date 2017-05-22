@@ -85,7 +85,7 @@ Public Class Package
         .AviSynthFilterNames = {"f3kdb"},
         .AviSynthFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb", "f3kdb()")},
         .VapourSynthFilterNames = {"f3kdb.Deband"},
-        .VapourSynthFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb", "clip = core.f3kdb.Deband(clip, preset = ""$select:msg:Choose a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")}})
+        .VapourSynthFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb", "clip = core.f3kdb.Deband(clip, preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")}})
 
     Shared Property Decomb As New DecombPackage
     Shared Property vinverse As New vinversePackage

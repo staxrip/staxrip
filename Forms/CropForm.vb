@@ -576,7 +576,7 @@ Class CropForm
 
     <Command("Shows a dialog with crop options.")>
     Private Sub ShowOptions()
-        g.MainForm.OpenOptionsDialog("Image|Crop")
+        g.MainForm.ShowOptionsDialog("Image|Crop")
         UpdateAll()
     End Sub
 

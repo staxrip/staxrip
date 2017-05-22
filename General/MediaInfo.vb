@@ -52,28 +52,29 @@ Public Class MediaInfo
             Dim offset As Integer
 
             If count > 0 Then
-                For i = 0 To count - 1
+                For index = 0 To count - 1
                     Dim at As New AudioStream
+                    at.Index = index
 
-                    at.Index = i
-
-                    Dim streamOrder = GetAudio(i, "StreamOrder")
-                    If Not streamOrder.IsInt Then streamOrder = (i + 1).ToString
+                    Dim streamOrder = GetAudio(index, "StreamOrder")
+                    If Not streamOrder.IsInt Then streamOrder = (index + 1).ToString
                     at.StreamOrder = streamOrder.ToInt + offset
 
-                    Dim id = GetAudio(i, "ID")
-                    If Not id.IsInt Then id = (i + 2).ToString
+                    Dim id = GetAudio(index, "ID")
+                    If Not id.IsInt Then id = (index + 2).ToString
                     at.ID = id.ToInt + offset
 
-                    at.Codec = GetAudio(i, "Codec")
+                    at.Codec = GetAudio(index, "Codec")
                     If at.Codec = "TrueHD / AC3" Then offset += 1
 
-                    at.SamplingRate = GetAudio(i, "SamplingRate").ToInt
-                    at.BitDepth = GetAudio(i, "BitDepth").ToInt
-                    at.CodecString = GetAudio(i, "Codec/String")
-                    at.Format = GetAudio(i, "Format")
-                    at.FormatProfile = GetAudio(i, "Format_Profile")
-                    at.Title = GetAudio(i, "Title").Trim
+                    at.SamplingRate = GetAudio(index, "SamplingRate").ToInt
+                    at.BitDepth = GetAudio(index, "BitDepth").ToInt
+                    at.CodecString = GetAudio(index, "Codec/String")
+                    at.Format = GetAudio(index, "Format")
+                    at.FormatProfile = GetAudio(index, "Format_Profile")
+                    at.Title = GetAudio(index, "Title").Trim
+                    at.Forced = GetAudio(index, "Forced") = "Yes"
+                    at.Default = GetAudio(index, "Default") = "Yes"
 
                     If at.Title.Contains("IsoMedia") OrElse at.Title.Contains("GPAC") OrElse at.Title.Contains("PID ") OrElse
                             at.Title.EqualsAny("Surround 7.1", "Surround 5.1", "Stereo", "3/2+1", "2/0") Then
@@ -85,7 +86,7 @@ Public Class MediaInfo
                         at.Title = Filepath.RemoveIllegalCharsFromName(at.Title)
                     End If
 
-                    Dim lm = GetAudio(i, "Language_More")
+                    Dim lm = GetAudio(index, "Language_More")
 
                     If lm <> "" Then
                         If at.Title = "" Then
@@ -95,7 +96,7 @@ Public Class MediaInfo
                         End If
                     End If
 
-                    Dim bitrate = GetAudio(i, "BitRate")
+                    Dim bitrate = GetAudio(index, "BitRate")
 
                     If bitrate.IsInt Then
                         at.Bitrate = CInt(bitrate.ToInt / 1000)
@@ -113,14 +114,14 @@ Public Class MediaInfo
                         End If
                     End If
 
-                    If at.Bitrate = 0 Then at.Bitrate = GetAudio(i, "FromStats_BitRate").ToInt
+                    If at.Bitrate = 0 Then at.Bitrate = GetAudio(index, "FromStats_BitRate").ToInt
 
-                    at.Delay = GetAudio(i, "Video_Delay").ToInt
-                    If at.Delay = 0 Then at.Delay = GetAudio(i, "Source_Delay").ToInt
+                    at.Delay = GetAudio(index, "Video_Delay").ToInt
+                    If at.Delay = 0 Then at.Delay = GetAudio(index, "Source_Delay").ToInt
 
-                    Dim channels = GetAudio(i, "Channel(s)")
+                    Dim channels = GetAudio(index, "Channel(s)")
                     at.Channels = channels.ToInt
-                    If at.Channels = 0 Then at.Channels = GetAudio(i, "Channel(s)_Original").ToInt
+                    If at.Channels = 0 Then at.Channels = GetAudio(index, "Channel(s)_Original").ToInt
 
                     If at.Channels = 0 Then
                         Dim match = Regex.Match(channels, "(\d+) */ *(\d+)")
@@ -131,7 +132,7 @@ Public Class MediaInfo
                         End If
                     End If
 
-                    at.Language = New Language(GetAudio(i, "Language/String2"))
+                    at.Language = New Language(GetAudio(index, "Language/String2"))
 
                     Select Case p.DemuxAudio
                         Case DemuxMode.All

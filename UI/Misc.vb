@@ -390,7 +390,7 @@ Namespace UI
         End Structure
     End Class
 
-    Class DialogBase
+    Public Class DialogBase
         Inherits FormBase
 
         Sub New()
@@ -558,11 +558,11 @@ Namespace UI
         End Sub
 
         Overloads Overrides Function EditValue(context As ITypeDescriptorContext, provider As IServiceProvider, value As Object) As Object
-            Dim f As New StringEditorForm
-            f.rtb.Text = DirectCast(value, String)
+            Dim form As New StringEditorForm
+            form.rtb.Text = DirectCast(value, String)
 
-            If f.ShowDialog() = DialogResult.OK Then
-                Return f.rtb.Text
+            If form.ShowDialog() = DialogResult.OK Then
+                Return form.rtb.Text
             Else
                 Return value
             End If

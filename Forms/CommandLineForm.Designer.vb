@@ -40,18 +40,18 @@ Partial Class CommandLineForm
         '
         Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(2190, 1166)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(8)
-        Me.bnCancel.Size = New System.Drawing.Size(100, 37)
+        Me.bnCancel.Location = New System.Drawing.Point(765, 479)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(10)
+        Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
         Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(2082, 1166)
-        Me.bnOK.Margin = New System.Windows.Forms.Padding(8, 8, 0, 8)
-        Me.bnOK.Size = New System.Drawing.Size(100, 37)
+        Me.bnOK.Location = New System.Drawing.Point(505, 479)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(10, 10, 0, 10)
+        Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
         '
         'rtbCommandLine
@@ -62,11 +62,10 @@ Partial Class CommandLineForm
         Me.rtbCommandLine.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TableLayoutPanel1.SetColumnSpan(Me.rtbCommandLine, 4)
         Me.rtbCommandLine.LastCommandLine = Nothing
-        Me.rtbCommandLine.Location = New System.Drawing.Point(8, 1120)
-        Me.rtbCommandLine.Margin = New System.Windows.Forms.Padding(8, 0, 8, 0)
+        Me.rtbCommandLine.Location = New System.Drawing.Point(3, 406)
         Me.rtbCommandLine.Name = "rtbCommandLine"
         Me.rtbCommandLine.ReadOnly = True
-        Me.rtbCommandLine.Size = New System.Drawing.Size(2282, 31)
+        Me.rtbCommandLine.Size = New System.Drawing.Size(1019, 60)
         Me.rtbCommandLine.TabIndex = 4
         Me.rtbCommandLine.Text = ""
         '
@@ -76,7 +75,7 @@ Partial Class CommandLineForm
         Me.SimpleUI.Location = New System.Drawing.Point(8, 8)
         Me.SimpleUI.Margin = New System.Windows.Forms.Padding(8)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(949, 608)
+        Me.SimpleUI.Size = New System.Drawing.Size(256, 215)
         Me.SimpleUI.TabIndex = 5
         Me.SimpleUI.Text = "SimpleUI"
         '
@@ -84,27 +83,27 @@ Partial Class CommandLineForm
         '
         Me.cbGoTo.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.cbGoTo.FormattingEnabled = True
-        Me.cbGoTo.Location = New System.Drawing.Point(8, 1155)
+        Me.cbGoTo.Location = New System.Drawing.Point(8, 484)
         Me.cbGoTo.Margin = New System.Windows.Forms.Padding(8, 4, 4, 8)
         Me.cbGoTo.Name = "cbGoTo"
-        Me.cbGoTo.Size = New System.Drawing.Size(240, 56)
+        Me.cbGoTo.Size = New System.Drawing.Size(413, 56)
         Me.cbGoTo.TabIndex = 8
         '
         'bnMenu
         '
         Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnMenu.ContextMenuStrip = Me.cms
-        Me.bnMenu.Location = New System.Drawing.Point(2038, 1166)
+        Me.bnMenu.Location = New System.Drawing.Point(425, 479)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(0, 8, 0, 8)
         Me.bnMenu.ShowMenuSymbol = True
-        Me.bnMenu.Size = New System.Drawing.Size(36, 37)
+        Me.bnMenu.Size = New System.Drawing.Size(70, 70)
         '
         'cms
         '
         Me.cms.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.cms.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.cms.Name = "cms"
-        Me.cms.Size = New System.Drawing.Size(111, 4)
+        Me.cms.Size = New System.Drawing.Size(61, 4)
         '
         'TableLayoutPanel1
         '
@@ -130,21 +129,21 @@ Partial Class CommandLineForm
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(2298, 1219)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1025, 559)
         Me.TableLayoutPanel1.TabIndex = 11
         '
         'CommandLineForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(2298, 1219)
+        Me.ClientSize = New System.Drawing.Size(1025, 559)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "CommandLineForm"
-        Me.Text = "x265"
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()

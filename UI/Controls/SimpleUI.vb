@@ -452,15 +452,15 @@ Public Class SimpleUI
         End Property
 
         Sub EditCommandline()
-            Using f As New MacroEditor
-                f.SetBatchDefaults()
-                f.MacroEditorControl.Value = Text
-                If f.ShowDialog() = DialogResult.OK Then Text = f.MacroEditorControl.Value
+            Using form As New MacroEditorDialog
+                form.SetBatchDefaults()
+                form.MacroEditorControl.Value = Text
+                If form.ShowDialog() = DialogResult.OK Then Text = form.MacroEditorControl.Value
             End Using
         End Sub
 
         Sub EditMacro()
-            Using f As New MacroEditor
+            Using f As New MacroEditorDialog
                 f.SetMacroDefaults()
                 f.MacroEditorControl.Value = Text
                 If f.ShowDialog() = DialogResult.OK Then Text = f.MacroEditorControl.Value
@@ -566,11 +566,12 @@ Public Class SimpleUI
             Font = New Font("Segoe UI", 9.0! * s.UIScaleFactor)
         End Sub
 
-        Protected Overrides Sub OnControlAdded(e As ControlEventArgs)
-            Height = Aggregate i In Controls.OfType(Of Control)()
-                     Into Max(i.Height + i.Margin.Top + i.Margin.Bottom)
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            For Each i As Control In Controls
+                i.Margin = New Padding(FontHeight \ 15)
+            Next
 
-            MyBase.OnControlAdded(e)
+            MyBase.OnLayout(levent)
         End Sub
     End Class
 

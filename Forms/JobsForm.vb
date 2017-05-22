@@ -46,16 +46,16 @@ Friend Class JobsForm
         'bnRemove
         '
         Me.bnRemove.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnRemove.Location = New System.Drawing.Point(358, 0)
+        Me.bnRemove.Location = New System.Drawing.Point(359, 0)
         Me.bnRemove.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
-        Me.bnRemove.Size = New System.Drawing.Size(200, 70)
+        Me.bnRemove.Size = New System.Drawing.Size(250, 70)
         Me.bnRemove.Text = "Remove"
         '
         'bnUp
         '
         Me.bnUp.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.bnUp.Enabled = False
-        Me.bnUp.Location = New System.Drawing.Point(482, 0)
+        Me.bnUp.Location = New System.Drawing.Point(534, 0)
         Me.bnUp.Margin = New System.Windows.Forms.Padding(0, 0, 5, 0)
         Me.bnUp.Size = New System.Drawing.Size(70, 70)
         '
@@ -64,15 +64,15 @@ Friend Class JobsForm
         Me.bnStart.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.bnStart.Location = New System.Drawing.Point(0, 0)
         Me.bnStart.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnStart.Size = New System.Drawing.Size(200, 70)
+        Me.bnStart.Size = New System.Drawing.Size(250, 70)
         Me.bnStart.Text = "Start"
         '
         'bnLoad
         '
         Me.bnLoad.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnLoad.Location = New System.Drawing.Point(148, 0)
+        Me.bnLoad.Location = New System.Drawing.Point(99, 0)
         Me.bnLoad.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnLoad.Size = New System.Drawing.Size(200, 70)
+        Me.bnLoad.Size = New System.Drawing.Size(250, 70)
         Me.bnLoad.Text = "Load"
         '
         'lv
@@ -84,7 +84,7 @@ Friend Class JobsForm
         Me.lv.Location = New System.Drawing.Point(0, 0)
         Me.lv.Margin = New System.Windows.Forms.Padding(0, 0, 0, 14)
         Me.lv.Name = "lv"
-        Me.lv.Size = New System.Drawing.Size(1115, 264)
+        Me.lv.Size = New System.Drawing.Size(1218, 264)
         Me.lv.TabIndex = 7
         Me.lv.UseCompatibleStateImageBehavior = False
         '
@@ -105,7 +105,7 @@ Friend Class JobsForm
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1115, 348)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1218, 348)
         Me.TableLayoutPanel1.TabIndex = 15
         '
         'TableLayoutPanel3
@@ -121,12 +121,12 @@ Friend Class JobsForm
         Me.TableLayoutPanel3.Controls.Add(Me.bnLoad, 1, 0)
         Me.TableLayoutPanel3.Controls.Add(Me.bnRemove, 2, 0)
         Me.TableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel3.Location = New System.Drawing.Point(557, 278)
+        Me.TableLayoutPanel3.Location = New System.Drawing.Point(609, 278)
         Me.TableLayoutPanel3.Margin = New System.Windows.Forms.Padding(0)
         Me.TableLayoutPanel3.Name = "TableLayoutPanel3"
         Me.TableLayoutPanel3.RowCount = 1
         Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel3.Size = New System.Drawing.Size(558, 70)
+        Me.TableLayoutPanel3.Size = New System.Drawing.Size(609, 70)
         Me.TableLayoutPanel3.TabIndex = 9
         '
         'TableLayoutPanel2
@@ -144,14 +144,14 @@ Friend Class JobsForm
         Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
         Me.TableLayoutPanel2.RowCount = 1
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(557, 70)
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(609, 70)
         Me.TableLayoutPanel2.TabIndex = 8
         '
         'JobsForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(1155, 386)
+        Me.ClientSize = New System.Drawing.Size(1258, 386)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(0, 2, 0, 2)
@@ -177,13 +177,8 @@ Friend Class JobsForm
 
         ClientSize = New Size(FontHeight * 35, FontHeight * 20)
 
-        Dim pad = New Padding(CInt(bnUp.Width / 8))
-
-        bnUp.Padding = pad
-        bnUp.ZoomImage = ImageHelp.GetSymbolImage(Symbol.Up)
-
-        bnDown.Padding = pad
-        bnDown.ZoomImage = ImageHelp.GetSymbolImage(Symbol.Down)
+        bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
+        bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
 
         KeyPreview = True
 
@@ -231,11 +226,14 @@ Friend Class JobsForm
         bnStart.Enabled = activeJobs.Count > 0
     End Sub
 
-    Private Sub JobsForm_HelpRequested() Handles Me.HelpRequested
-        Dim f As New HelpForm
+    Protected Overrides Sub OnHelpRequested(hevent As HelpEventArgs)
+        Dim f As New HelpForm()
         f.Doc.WriteStart(Text)
-        f.Doc.WriteP("The Jobs dialog allows to encode a batch of projects.")
+        f.Doc.WriteP("Jobs are processed in dedicated StaxRip instances.")
+        f.Doc.WriteP("It's possible to start multiple instances concurrently.")
         f.Show()
+
+        MyBase.OnHelpRequested(hevent)
     End Sub
 
     Sub SaveJobs(sender As Object, e As EventArgs)
@@ -344,6 +342,7 @@ Friend Class JobsForm
     End Sub
 
     Private Sub bnStart_Click(sender As Object, e As EventArgs) Handles bnStart.Click
+        If ActiveJobs.Count = 1 Then Close()
         g.DefaultCommands.StartJobs()
     End Sub
 

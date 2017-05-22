@@ -489,7 +489,7 @@ Public Class MkvMuxer
     End Sub
 
     Overrides Function GetCommandLine() As String
-        Return """" + Package.mkvmerge.Path + """ " + GetArgs()
+        Return Package.mkvmerge.Path.Quotes + " " + GetArgs()
     End Function
 
     Private Function GetArgs(Optional writeTag As Boolean = False) As String
@@ -649,6 +649,7 @@ Public Class MkvMuxer
             End If
 
             args.Append(" --default-track " & tid & ":" & If(ap.Default, 1, 0))
+            args.Append(" --forced-track " & tid & ":" & If(ap.Forced, 1, 0))
             args.Append(" " + ap.File.Quotes)
         End If
     End Sub

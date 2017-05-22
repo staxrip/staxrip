@@ -235,7 +235,7 @@ Class SourceFilesForm
                     End Using
                 Case "folder", "sub-folders"
                     Using d As New FolderBrowserDialog
-                        d.Description = "Please choose a directory."
+                        d.Description = "Please select a directory."
 
                         If d.ShowDialog = DialogResult.OK Then
                             Dim opt = If(td.SelectedValue = "sub-folders", SearchOption.AllDirectories, SearchOption.TopDirectoryOnly)

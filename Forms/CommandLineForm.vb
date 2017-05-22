@@ -13,6 +13,7 @@ Class CommandLineForm
 
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
+        SimpleUI.ClientSize = New Size(FontHeight * 37, FontHeight * 22)
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
         Dim singleList As New List(Of String)
 
@@ -328,5 +329,10 @@ Class CommandLineForm
 
     Private Sub CommandLineForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         g.MainForm.PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
+    End Sub
+
+    Protected Overrides Sub OnLoad(e As EventArgs)
+        MyBase.OnLoad(e)
+        rtbCommandLine.Margin = New Padding(bnCancel.Margin.Right, 0, bnCancel.Margin.Right, 0)
     End Sub
 End Class

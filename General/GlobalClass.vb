@@ -472,7 +472,6 @@ Public Class GlobalClass
             f.rtb.ReadOnly = True
             f.cbWrap.Checked = Not value.Contains(BR)
             f.rtb.Text = value
-            f.rtb.SelectionStart = value.Length
             f.bnOK.Visible = False
             f.bnCancel.Text = "Close"
             f.ShowDialog()
@@ -491,7 +490,7 @@ Public Class GlobalClass
                 proc.NoLog = noLog
                 proc.Init("Index with ffmsindex", "Indexing, please wait...")
                 proc.File = Package.ffms2.GetDir + "ffmsindex.exe"
-                proc.Arguments = If(indexAudio, "-t -1 ", "") + """" + sourcePath + """ """ + cachePath + """"
+                proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.Quotes + " " + cachePath.Quotes
                 proc.Start()
             End Using
         End If
@@ -781,7 +780,6 @@ Public Class GlobalClass
             f.cbWrap.Checked = False
             f.cbWrap.Visible = False
             f.rtb.Text = code
-            f.rtb.SelectionStart = f.rtb.Text.Length
             f.Text = "Code Preview"
             f.bnOK.Visible = False
             f.bnCancel.Text = "Close"

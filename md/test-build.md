@@ -47,6 +47,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - added possibility to define tags for MKV muxer
 - support for using AviSynth filters in VapourSynth
 - added cover support for MP4 and MKV muxer
+- added forced option for audio streams
+- icons added to various buttons
 
 #### Fixed Bugs
 
@@ -99,6 +101,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - every job is always processed in a new staxrip instance
 - if the subtitle source is a container like MP4/MKV StaxRip checks the forced and default option
 - when staxrip demuxues subtitles it writes _forced to the filename and set the forced flag when it picks up the demuxed subtitles 
+- when the source is a container like MP4/MKV the forced and default audio flags are applied
 
 #### Updated Tools
 

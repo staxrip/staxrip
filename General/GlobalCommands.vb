@@ -40,7 +40,7 @@ Public Class GlobalCommands
     Sub ExecuteCommandLine(
         <DispName("Command Line"),
         Description("One or more command lines to be executed or if batch mode is used content of the batch file. Macros are solved as well as passed in as environment variables."),
-        Editor(GetType(CmdlTypeEditor), GetType(UITypeEditor))>
+        Editor(GetType(CommandLineTypeEditor), GetType(UITypeEditor))>
         commandLines As String,
         <DispName("Wait For Exit"),
         Description("This will halt the main thread until the command line returns."),
@@ -118,7 +118,7 @@ Public Class GlobalCommands
     Sub ExecuteBatchScript(
         <DispName("Batch Script Code"),
         Description("Batch script code to be executed. Macros are solved as well as passed in as environment variables."),
-        Editor(GetType(CmdlTypeEditor), GetType(UITypeEditor))>
+        Editor(GetType(CommandLineTypeEditor), GetType(UITypeEditor))>
         batchScript As String,
         <DispName("Interpret Output"),
         Description("Interprets each output line as StaxRip command."),
@@ -528,13 +528,13 @@ Public Class GlobalCommands
 
             value = value.Trim
 
-            Using f As New StringEditorForm
-                f.Text = "x264 custom command line switches"
-                f.cbWrap.Checked = Not value.Contains(BR)
-                f.rtb.Text = value
+            Using form As New StringEditorForm
+                form.Text = "x264 custom command line switches"
+                form.cbWrap.Checked = Not value.Contains(BR)
+                form.rtb.Text = value
 
-                If f.ShowDialog() = DialogResult.OK Then
-                    DirectCast(p.VideoEncoder, x264Encoder).Params.AddAll.Value = f.rtb.Text
+                If form.ShowDialog() = DialogResult.OK Then
+                    DirectCast(p.VideoEncoder, x264Encoder).Params.AddAll.Value = form.rtb.Text
                 End If
             End Using
         Else

@@ -6,7 +6,7 @@ Class CommandLineControl
 
 #Region "Designer"
     Friend WithEvents tb As TextBoxEx
-    Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents tlpMain As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents bu As StaxRip.UI.ButtonEx
 
     <System.Diagnostics.DebuggerNonUserCode()>
@@ -26,8 +26,8 @@ Class CommandLineControl
     Private Sub InitializeComponent()
         Me.tb = New StaxRip.UI.TextBoxEx()
         Me.bu = New StaxRip.UI.ButtonEx()
-        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
-        Me.TableLayoutPanel1.SuspendLayout()
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
         '
         'tb
@@ -38,41 +38,41 @@ Class CommandLineControl
         Me.tb.Location = New System.Drawing.Point(0, 0)
         Me.tb.Margin = New System.Windows.Forms.Padding(0)
         Me.tb.Multiline = True
-        Me.tb.Size = New System.Drawing.Size(202, 192)
+        Me.tb.Size = New System.Drawing.Size(235, 205)
         '
         'bu
         '
         Me.bu.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.bu.Location = New System.Drawing.Point(208, 0)
-        Me.bu.Margin = New System.Windows.Forms.Padding(6, 0, 0, 0)
+        Me.bu.Location = New System.Drawing.Point(245, 0)
+        Me.bu.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
         Me.bu.ShowMenuSymbol = True
-        Me.bu.Size = New System.Drawing.Size(35, 35)
+        Me.bu.Size = New System.Drawing.Size(70, 70)
         '
-        'TableLayoutPanel1
+        'tlpMain
         '
-        Me.TableLayoutPanel1.ColumnCount = 2
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TableLayoutPanel1.Controls.Add(Me.bu, 1, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.tb, 0, 0)
-        Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
-        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(12)
-        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
-        Me.TableLayoutPanel1.RowCount = 1
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(243, 192)
-        Me.TableLayoutPanel1.TabIndex = 2
+        Me.tlpMain.ColumnCount = 2
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpMain.Controls.Add(Me.bu, 1, 0)
+        Me.tlpMain.Controls.Add(Me.tb, 0, 0)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.RowCount = 1
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.Size = New System.Drawing.Size(315, 205)
+        Me.tlpMain.TabIndex = 2
         '
         'CommandLineControl
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.Controls.Add(Me.TableLayoutPanel1)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
+        Me.Controls.Add(Me.tlpMain)
         Me.Margin = New System.Windows.Forms.Padding(0)
         Me.Name = "CommandLineControl"
-        Me.Size = New System.Drawing.Size(243, 192)
-        Me.TableLayoutPanel1.ResumeLayout(False)
-        Me.TableLayoutPanel1.PerformLayout()
+        Me.Size = New System.Drawing.Size(315, 205)
+        Me.tlpMain.ResumeLayout(False)
+        Me.tlpMain.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -113,20 +113,20 @@ Class CommandLineControl
     End Sub
 
     Sub EditPresets()
-        Using f As New MacroEditor
-            f.SetMacroDefaults()
-            f.MacroEditorControl.Value = Presets.FormatColumn("=")
-            f.Text = "Menu Editor"
+        Using dia As New MacroEditorDialog
+            dia.SetMacroDefaults()
+            dia.MacroEditorControl.Value = Presets.FormatColumn("=")
+            dia.Text = "Menu Editor"
 
             If Not RestoreFunc Is Nothing Then
-                f.bnContext.Text = " Restore Defaults... "
-                f.bnContext.Visible = True
-                f.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then f.MacroEditorControl.Value = RestoreFunc.Invoke)
-                f.MacroEditorControl.rtbDefaults.Text = RestoreFunc.Invoke
+                dia.bnContext.Text = " Restore Defaults... "
+                dia.bnContext.Visible = True
+                dia.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then dia.MacroEditorControl.Value = RestoreFunc.Invoke)
+                dia.MacroEditorControl.rtbDefaults.Text = RestoreFunc.Invoke
             End If
 
-            If f.ShowDialog(FindForm) = DialogResult.OK Then
-                Presets = f.MacroEditorControl.Value.ReplaceUnicode
+            If dia.ShowDialog(FindForm) = DialogResult.OK Then
+                Presets = dia.MacroEditorControl.Value.ReplaceUnicode
                 RaiseEvent PresetsChanged(Presets)
             End If
         End Using

@@ -737,13 +737,13 @@ Public Class Language
     End Function
 End Class
 
-Class CmdlTypeEditor
+Class CommandLineTypeEditor
     Inherits UITypeEditor
 
     Overloads Overrides Function EditValue(context As ITypeDescriptorContext,
                                            provider As IServiceProvider,
                                            value As Object) As Object
-        Using f As New MacroEditor
+        Using f As New MacroEditorDialog
             f.SetBatchDefaults()
             f.MacroEditorControl.Value = CStr(value)
 
@@ -764,7 +764,7 @@ Class ScriptTypeEditor
     Inherits UITypeEditor
 
     Overloads Overrides Function EditValue(context As ITypeDescriptorContext, provider As IServiceProvider, value As Object) As Object
-        Using f As New MacroEditor
+        Using f As New MacroEditorDialog
             f.SetScriptDefaults()
             f.MacroEditorControl.Value = CStr(value)
 
@@ -787,7 +787,7 @@ Class MacroStringTypeEditor
     Overloads Overrides Function EditValue(context As ITypeDescriptorContext,
                                            provider As IServiceProvider,
                                            value As Object) As Object
-        Using f As New MacroEditor
+        Using f As New MacroEditorDialog
             f.SetMacroDefaults()
             f.MacroEditorControl.Value = CStr(value)
 
@@ -1130,7 +1130,7 @@ Class Macro
                             td.MainInstruction = items(0).Substring(4)
                             items.RemoveAt(0)
                         Else
-                            td.MainInstruction = "Please choose one of the options."
+                            td.MainInstruction = "Please select one of the options."
                         End If
 
                         For Each iItem As String In items
@@ -1670,6 +1670,8 @@ Public Class AudioStream
     Property SamplingRate As Integer
     Property Title As String
     Property Enabled As Boolean = True
+    Property [Default] As Boolean
+    Property Forced As Boolean
 
     ReadOnly Property Name As String
         Get

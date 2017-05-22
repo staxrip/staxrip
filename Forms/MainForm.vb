@@ -1414,9 +1414,9 @@ Public Class MainForm
         Dim td As New TaskDialog(Of VideoFilter)
 
         If p.Script.Engine = ScriptEngine.AviSynth Then
-            td.MainInstruction = "Choose a AviSynth source filter"
+            td.MainInstruction = "Select a AviSynth source filter"
         Else
-            td.MainInstruction = "Choose a VapourSynth source filter"
+            td.MainInstruction = "Select a VapourSynth source filter"
         End If
 
         For Each filter In filters
@@ -2352,7 +2352,7 @@ Public Class MainForm
         CanIgnoreTip = True
         AssistantPassed = False
 
-        If p.VideoEncoder.Muxer.CoverFile <> "" Then
+        If p.VideoEncoder.Muxer.CoverFile <> "" AndAlso TypeOf p.VideoEncoder.Muxer Is MkvMuxer Then
             If Not p.VideoEncoder.Muxer.CoverFile.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land") OrElse Not p.VideoEncoder.Muxer.CoverFile.Ext.EqualsAny("jpg", "png") Then
                 If ProcessTip("The cover file name bust be cover, small_cover, cover_land or small_cover_land, the file type must be jpg or png.") Then
                     gbAssistant.Text = "Invalid cover file name"
@@ -2369,7 +2369,7 @@ Public Class MainForm
             If Not param Is Nothing AndAlso param.Value > 0 AndAlso
                 Not p.Script.IsFilterActive("Resize", "Hardware Encoder") Then
 
-                If ProcessTip("In order to use an resize filter of the hardware encoder choose 'Hardware Encoder' as resize filter from the filters menu.") Then
+                If ProcessTip("In order to use an resize filter of the hardware encoder select 'Hardware Encoder' as resize filter from the filters menu.") Then
                     gbAssistant.Text = "Invalid filter setting"
                     CanIgnoreTip = False
                     Return False
@@ -2481,7 +2481,7 @@ Public Class MainForm
 
             For Each i In audioTracks
                 If i.File <> "" AndAlso Not p.VideoEncoder.Muxer.IsSupported(i.OutputFileType) AndAlso Not i.OutputFileType = "ignore" Then
-                    If ProcessTip("The audio format is '" + i.OutputFileType + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ". Choose another audio profile or another container.") Then
+                    If ProcessTip("The audio format is '" + i.OutputFileType + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ". Select another audio profile or another container.") Then
                         g.Highlight(True, llAudioProfile0)
                         g.Highlight(True, llMuxer)
                         gbAssistant.Text = "Audio format conflicts with container"
@@ -2591,7 +2591,7 @@ Public Class MainForm
                 If FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) AndAlso
                     File.ReadAllText(p.SourceFile).Contains(p.TargetFile) Then
 
-                    If ProcessTip("Source and target name are identical, please choose another target name.") Then
+                    If ProcessTip("Source and target name are identical, please select another target name.") Then
                         CanIgnoreTip = False
                         tbTargetFile.BackColor = Color.Yellow
                         gbAssistant.Text = "Target File"
@@ -3018,6 +3018,8 @@ Public Class MainForm
     <Command("Shows the settings dialog.")>
     Sub ShowSettingsDialog()
         Using form As New SimpleSettingsForm("Settings")
+            form.ClientSize = New Size(FontHeight * 30, FontHeight * 21)
+
             Dim ui = form.SimpleUI
 
             Dim generalPage = ui.CreateFlowPage("General")
@@ -3315,7 +3317,7 @@ Public Class MainForm
     Function GetNewVideoEncoderProfile() As Profile
         Dim sb As New SelectionBox(Of VideoEncoder)
         sb.Title = "Add New Profile"
-        sb.Text = "Please choose a profile from the defaults."
+        sb.Text = "Please select a profile from the defaults."
         sb.AddItem("Current Project", p.VideoEncoder)
 
         For Each i In VideoEncoder.GetDefaults()
@@ -3509,16 +3511,18 @@ Public Class MainForm
 
     <Command("Dialog to configure project options.")>
     Sub ShowOptionsDialog()
-        OpenOptionsDialog(Nothing)
+        ShowOptionsDialog(Nothing)
     End Sub
 
-    Sub OpenOptionsDialog(pagePath As String)
+    Sub ShowOptionsDialog(pagePath As String)
         Using form As New SimpleSettingsForm(
             "Project Options",
             "In order to save project options go to:",
             "Project > Save As Template",
-            "In order to choose a template to be loaded on program startup go to:",
+            "In order to select a template to be loaded on program startup go to:",
             "Tools > Settings > General > Templates > Default Template")
+
+            form.ClientSize = New Size(FontHeight * 30, FontHeight * 21)
 
             Dim ui = form.SimpleUI
 
@@ -3978,7 +3982,7 @@ Public Class MainForm
             getDefaults = Function() FilterCategory.GetVapourSynthDefaults
         End If
 
-        Using f As New MacroEditor
+        Using f As New MacroEditorDialog
             f.SetScriptDefaults()
             f.Text = "Filter Profiles"
             f.MacroEditorControl.Value = GetFilterProfilesText(filterProfiles)
@@ -4525,7 +4529,7 @@ Public Class MainForm
         Dim sb As New SelectionBox(Of TargetVideoScript)
 
         sb.Title = "New Profile"
-        sb.Text = "Please choose a profile."
+        sb.Text = "Please select a profile."
 
         sb.AddItem("Current Project", p.Script)
 
@@ -4638,7 +4642,7 @@ Public Class MainForm
     <Command("Dialog to open source files.")>
     Private Sub ShowOpenSourceDialog()
         Dim td As New TaskDialog(Of String)
-        td.MainInstruction = "Choose a method for opening a source."
+        td.MainInstruction = "Select a method for opening a source."
         td.AddCommandLink("Single File", "DVD and Blu-ray discs can be ripped very easily using MakeMKV.", "Single File")
         td.AddCommandLink("Blu-ray Folder", "Blu-ray folder directly on the Blu-ray drive or on the hard drive.", "Blu-ray Folder")
         td.AddCommandLink("Merge Files", "Merge multiple source files.", "Merge Files")
@@ -4776,7 +4780,7 @@ Public Class MainForm
                 End Using
             Case "Blu-ray Folder"
                 Using d As New FolderBrowserDialog
-                    d.Description = "Please choose a Blu-ray source folder."
+                    d.Description = "Please select a Blu-ray source folder."
                     d.SetSelectedPath(s.Storage.GetString("last blu-ray source folder"))
                     d.ShowNewFolderButton = False
 
@@ -4805,7 +4809,7 @@ Public Class MainForm
                         If a(0) = "" Then a.RemoveAt(0)
 
                         Dim td2 As New TaskDialog(Of Integer)
-                        td2.MainInstruction = "Please choose a playlist."
+                        td2.MainInstruction = "Please select a playlist."
 
                         For Each i In a
                             If i.Contains(BR) Then
@@ -4843,7 +4847,7 @@ Public Class MainForm
 
             If Not DirPath.IsFixedDrive(workDir) OrElse Not Directory.Exists(workDir) Then
                 Using d As New FolderBrowserDialog
-                    d.Description = "Please choose a directory for temporary files on a fixed local drive."
+                    d.Description = "Please select a directory for temporary files on a fixed local drive."
                     d.SetSelectedPath(s.Storage.GetString("last blu-ray target folder").Parent)
 
                     If d.ShowDialog = DialogResult.OK Then
@@ -4952,7 +4956,7 @@ Public Class MainForm
     Function GetNewAudioProfile(currentProfile As AudioProfile) As AudioProfile
         Dim sb As New SelectionBox(Of AudioProfile)
         sb.Title = "New Profile"
-        sb.Text = "Please choose a profile."
+        sb.Text = "Please select a profile."
 
         If Not currentProfile Is Nothing Then
             sb.AddItem("Current Project", currentProfile)
@@ -5029,7 +5033,7 @@ Public Class MainForm
         Dim sb As New SelectionBox(Of String)
 
         sb.Title = "Reset Settings"
-        sb.Text = "Please choose a setting to reset."
+        sb.Text = "Please select a setting to reset."
 
         Dim appSettings As New ApplicationSettings
         appSettings.Init()
@@ -5128,7 +5132,7 @@ Public Class MainForm
         Dim cms = TextCustomMenu.GetMenu(s.TargetImageSizeMenu, lgbResize.Label, components, AddressOf TargetImageMenuClick)
         Dim helpUrl = If(g.IsCulture("de"), "http://encodingwissen.de/videobild/zielaufloesung", "http://www.doom9.org/index.html?/aspectratios.htm")
         cms.Add("-")
-        cms.Add("Image Options...", Sub() OpenOptionsDialog("Image")).SetImage(Symbol.fa_photo)
+        cms.Add("Image Options...", Sub() ShowOptionsDialog("Image")).SetImage(Symbol.fa_photo)
         cms.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.TargetImageSizeMenu = TextCustomMenu.EditMenu(s.TargetImageSizeMenu, "Target Image Help...", ApplicationSettings.GetDefaultTargetImageSizeMenu, Me)))
         cms.Add("Help...", Sub() g.ShellExecute(helpUrl)).SetImage(Symbol.Help)
         cms.Show(lgbResize, 0, lgbResize.Label.Height)
@@ -5141,7 +5145,7 @@ Public Class MainForm
         cms.Items.Insert(0, New ActionMenuItem("Automatic 4:3", Sub() SetAutoAspectRatio(False)))
         cms.Items.Insert(0, New ActionMenuItem("Automatic 16:9", Sub() SetAutoAspectRatio(True)))
         cms.Add("-")
-        cms.Add("Image Options...", Sub() OpenOptionsDialog("Image")).SetImage(Symbol.fa_photo)
+        cms.Add("Image Options...", Sub() ShowOptionsDialog("Image")).SetImage(Symbol.fa_photo)
         cms.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.SourceAspectRatioMenu = TextCustomMenu.EditMenu(s.SourceAspectRatioMenu, "Source Image Help...", ApplicationSettings.GetDefaultSourceAspectRatioMenu, Me)))
         cms.Add("Help...", Sub() g.ShellExecute(helpUrl)).SetImage(Symbol.Help)
         cms.Show(llSourceParText, 0, llSourceParText.Height)
@@ -5489,7 +5493,7 @@ Public Class MainForm
     <Command("Presents MediaInfo of all files in a folder in a list view.")>
     Sub ShowMediaInfoFolderViewDialog()
         Using d As New FolderBrowserDialog
-            d.Description = "Please choose a folder to be viewed."
+            d.Description = "Please select a folder to be viewed."
             d.ShowNewFolderButton = False
             d.SetSelectedPath(s.Storage.GetString("MediaInfo Folder View folder"))
 
@@ -5514,6 +5518,7 @@ Public Class MainForm
     End Sub
 
     Protected Overrides Sub OnActivated(e As EventArgs)
+        Assistant()
         UpdateScriptsMenuAsync()
         MyBase.OnActivated(e)
     End Sub

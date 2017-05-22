@@ -33,10 +33,9 @@ Namespace UI
             '
             Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-            Me.bnOK.Location = New System.Drawing.Point(235, 183)
-            Me.bnOK.Margin = New System.Windows.Forms.Padding(5)
+            Me.bnOK.Location = New System.Drawing.Point(341, 270)
             Me.bnOK.Name = "bnOK"
-            Me.bnOK.Size = New System.Drawing.Size(200, 70)
+            Me.bnOK.Size = New System.Drawing.Size(250, 70)
             Me.bnOK.TabIndex = 0
             Me.bnOK.Text = "OK"
             '
@@ -44,10 +43,9 @@ Namespace UI
             '
             Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-            Me.bnCancel.Location = New System.Drawing.Point(445, 183)
-            Me.bnCancel.Margin = New System.Windows.Forms.Padding(5)
+            Me.bnCancel.Location = New System.Drawing.Point(602, 270)
             Me.bnCancel.Name = "bnCancel"
-            Me.bnCancel.Size = New System.Drawing.Size(200, 70)
+            Me.bnCancel.Size = New System.Drawing.Size(250, 70)
             Me.bnCancel.TabIndex = 1
             Me.bnCancel.Text = "Cancel"
             '
@@ -59,7 +57,7 @@ Namespace UI
             Me.rtb.Location = New System.Drawing.Point(0, 0)
             Me.rtb.Margin = New System.Windows.Forms.Padding(5)
             Me.rtb.Name = "rtb"
-            Me.rtb.Size = New System.Drawing.Size(635, 156)
+            Me.rtb.Size = New System.Drawing.Size(840, 241)
             Me.rtb.TabIndex = 2
             Me.rtb.Text = ""
             Me.rtb.WordWrap = False
@@ -68,7 +66,7 @@ Namespace UI
             '
             Me.cbWrap.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
             Me.cbWrap.AutoSize = True
-            Me.cbWrap.Location = New System.Drawing.Point(14, 193)
+            Me.cbWrap.Location = New System.Drawing.Point(14, 278)
             Me.cbWrap.Margin = New System.Windows.Forms.Padding(5)
             Me.cbWrap.Name = "cbWrap"
             Me.cbWrap.Size = New System.Drawing.Size(152, 52)
@@ -83,7 +81,7 @@ Namespace UI
             Me.Panel1.Controls.Add(Me.rtb)
             Me.Panel1.Location = New System.Drawing.Point(12, 12)
             Me.Panel1.Name = "Panel1"
-            Me.Panel1.Size = New System.Drawing.Size(635, 156)
+            Me.Panel1.Size = New System.Drawing.Size(840, 241)
             Me.Panel1.TabIndex = 4
             '
             'StringEditorForm
@@ -92,7 +90,7 @@ Namespace UI
             Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
             Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
             Me.CancelButton = Me.bnCancel
-            Me.ClientSize = New System.Drawing.Size(659, 267)
+            Me.ClientSize = New System.Drawing.Size(864, 352)
             Me.Controls.Add(Me.Panel1)
             Me.Controls.Add(Me.cbWrap)
             Me.Controls.Add(Me.bnCancel)

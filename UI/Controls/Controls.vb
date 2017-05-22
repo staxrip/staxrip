@@ -777,26 +777,35 @@ Namespace UI
     Class PropertyGridEx
         Inherits PropertyGrid
 
+        Private Description As String
+
         Sub New()
             ToolbarVisible = False 'GridView is not ready when PropertySortChanged happens so Init fails
         End Sub
 
         Protected Overrides Sub OnSelectedGridItemChanged(e As SelectedGridItemChangedEventArgs)
             MyBase.OnSelectedGridItemChanged(e)
+            Description = e.NewSelection.PropertyDescriptor.Description
+            SetHelpHeight()
+        End Sub
 
-            Dim help = e.NewSelection.PropertyDescriptor.Description
+        Protected Overrides Sub OnLayout(e As LayoutEventArgs)
+            SetHelpHeight()
+            MyBase.OnLayout(e)
+        End Sub
 
-            If help <> "" Then
+        Sub SetHelpHeight()
+            If Description <> "" Then
                 HelpVisible = True
 
                 Dim lines = CInt(Math.Ceiling(CreateGraphics.MeasureString(
-                    help, Font, Width).Height / Font.Height))
+                    Description, Font, Width).Height / Font.Height))
 
-                Dim r As New Reflector(Me, GetType(PropertyGrid))
-                Dim doc = r.Invoke("doccomment")
+                Dim grid As New Reflector(Me, GetType(PropertyGrid))
+                Dim doc = grid.Invoke("doccomment")
                 doc.Invoke("Lines", lines + 1)
                 doc.Invoke("userSized", True)
-                r.Invoke("OnLayoutInternal", False)
+                grid.Invoke("OnLayoutInternal", False)
             Else
                 HelpVisible = False
             End If

@@ -23,7 +23,7 @@ Class AppsForm
     Friend WithEvents flp As System.Windows.Forms.FlowLayoutPanel
     Friend WithEvents SearchTextBox As StaxRip.SearchTextBox
     Friend WithEvents tsbWebsite As System.Windows.Forms.ToolStripButton
-    Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
+    Friend WithEvents tlpMain As TableLayoutPanel
     Friend WithEvents tsbOpenDir As System.Windows.Forms.ToolStripButton
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.tv = New StaxRip.UI.TreeViewEx()
@@ -34,9 +34,9 @@ Class AppsForm
         Me.tsbHelp = New System.Windows.Forms.ToolStripButton()
         Me.flp = New System.Windows.Forms.FlowLayoutPanel()
         Me.SearchTextBox = New StaxRip.SearchTextBox()
-        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         Me.ToolStrip.SuspendLayout()
-        Me.TableLayoutPanel1.SuspendLayout()
+        Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
         '
         'tv
@@ -55,7 +55,7 @@ Class AppsForm
         Me.tv.SelectOnMouseDown = True
         Me.tv.ShowLines = False
         Me.tv.ShowPlusMinus = False
-        Me.tv.Size = New System.Drawing.Size(218, 330)
+        Me.tv.Size = New System.Drawing.Size(239, 330)
         Me.tv.Sorted = True
         Me.tv.TabIndex = 0
         '
@@ -67,11 +67,11 @@ Class AppsForm
         Me.ToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsbLaunch, Me.tsbOpenDir, Me.tsbWebsite, Me.tsbHelp})
-        Me.ToolStrip.Location = New System.Drawing.Point(238, 10)
+        Me.ToolStrip.Location = New System.Drawing.Point(259, 10)
         Me.ToolStrip.Margin = New System.Windows.Forms.Padding(0, 10, 11, 0)
         Me.ToolStrip.Name = "ToolStrip"
         Me.ToolStrip.Padding = New System.Windows.Forms.Padding(5, 2, 2, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(787, 69)
+        Me.ToolStrip.Size = New System.Drawing.Size(766, 69)
         Me.ToolStrip.TabIndex = 1
         Me.ToolStrip.Text = "ToolStrip1"
         '
@@ -119,10 +119,10 @@ Class AppsForm
         Me.flp.BackColor = System.Drawing.Color.White
         Me.flp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.flp.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.flp.Location = New System.Drawing.Point(238, 89)
+        Me.flp.Location = New System.Drawing.Point(259, 89)
         Me.flp.Margin = New System.Windows.Forms.Padding(0, 10, 10, 10)
         Me.flp.Name = "flp"
-        Me.flp.Size = New System.Drawing.Size(788, 330)
+        Me.flp.Size = New System.Drawing.Size(767, 330)
         Me.flp.TabIndex = 2
         '
         'SearchTextBox
@@ -131,42 +131,42 @@ Class AppsForm
         Me.SearchTextBox.Location = New System.Drawing.Point(11, 13)
         Me.SearchTextBox.Margin = New System.Windows.Forms.Padding(11, 10, 11, 0)
         Me.SearchTextBox.Name = "SearchTextBox"
-        Me.SearchTextBox.Size = New System.Drawing.Size(216, 62)
+        Me.SearchTextBox.Size = New System.Drawing.Size(237, 62)
         Me.SearchTextBox.TabIndex = 4
         '
-        'TableLayoutPanel1
+        'tlpMain
         '
-        Me.TableLayoutPanel1.ColumnCount = 2
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 77.0!))
-        Me.TableLayoutPanel1.Controls.Add(Me.tv, 0, 1)
-        Me.TableLayoutPanel1.Controls.Add(Me.flp, 1, 1)
-        Me.TableLayoutPanel1.Controls.Add(Me.SearchTextBox, 0, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.ToolStrip, 1, 0)
-        Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
-        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
-        Me.TableLayoutPanel1.RowCount = 3
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1036, 429)
-        Me.TableLayoutPanel1.TabIndex = 6
+        Me.tlpMain.ColumnCount = 2
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75.0!))
+        Me.tlpMain.Controls.Add(Me.tv, 0, 1)
+        Me.tlpMain.Controls.Add(Me.flp, 1, 1)
+        Me.tlpMain.Controls.Add(Me.SearchTextBox, 0, 0)
+        Me.tlpMain.Controls.Add(Me.ToolStrip, 1, 0)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.RowCount = 3
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.Size = New System.Drawing.Size(1036, 429)
+        Me.tlpMain.TabIndex = 6
         '
         'AppsForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(1036, 429)
-        Me.Controls.Add(Me.TableLayoutPanel1)
+        Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "AppsForm"
         Me.Text = "Apps"
         Me.ToolStrip.ResumeLayout(False)
         Me.ToolStrip.PerformLayout()
-        Me.TableLayoutPanel1.ResumeLayout(False)
+        Me.tlpMain.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub

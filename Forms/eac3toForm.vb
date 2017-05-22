@@ -49,12 +49,13 @@ Class eac3toForm
     Friend WithEvents bnSubtitleNone As ButtonEx
     Friend WithEvents bnSubtitleEnglish As ButtonEx
     Friend WithEvents bnSubtitleNative As ButtonEx
-    Friend WithEvents TableLayoutPanelVideo As TableLayoutPanel
+    Friend WithEvents tlpVideo As TableLayoutPanel
     Friend WithEvents tlpBottom As TableLayoutPanel
     Friend WithEvents tlpAudioOptions As TableLayoutPanel
     Friend WithEvents tlpAudio As TableLayoutPanel
     Friend WithEvents tlpSubtitles As TableLayoutPanel
     Friend WithEvents teTempDir As TextEdit
+    Friend WithEvents tlpMain As TableLayoutPanel
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -85,7 +86,7 @@ Class eac3toForm
         Me.teTempDir = New StaxRip.UI.TextEdit()
         Me.tlpBottom = New System.Windows.Forms.TableLayoutPanel()
         Me.bnMenu = New StaxRip.UI.ButtonEx()
-        Me.cms = New ContextMenuStripEx(Me.components)
+        Me.cms = New StaxRip.UI.ContextMenuStripEx(Me.components)
         Me.cbChapters = New System.Windows.Forms.CheckBox()
         Me.gbAudio = New System.Windows.Forms.GroupBox()
         Me.tlpAudio = New System.Windows.Forms.TableLayoutPanel()
@@ -95,7 +96,8 @@ Class eac3toForm
         Me.cbAudioOutput = New System.Windows.Forms.ComboBox()
         Me.gbSubtitles = New System.Windows.Forms.GroupBox()
         Me.tlpSubtitles = New System.Windows.Forms.TableLayoutPanel()
-        Me.TableLayoutPanelVideo = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpVideo = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         Me.flpSubtitleLinks.SuspendLayout()
         Me.flpAudioLinks.SuspendLayout()
         Me.tlpTarget.SuspendLayout()
@@ -105,16 +107,17 @@ Class eac3toForm
         Me.tlpAudioOptions.SuspendLayout()
         Me.gbSubtitles.SuspendLayout()
         Me.tlpSubtitles.SuspendLayout()
-        Me.TableLayoutPanelVideo.SuspendLayout()
+        Me.tlpVideo.SuspendLayout()
+        Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
         '
         'cmdlOptions
         '
         Me.cmdlOptions.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdlOptions.Location = New System.Drawing.Point(268, 2)
-        Me.cmdlOptions.Margin = New System.Windows.Forms.Padding(0)
+        Me.cmdlOptions.Location = New System.Drawing.Point(520, 5)
+        Me.cmdlOptions.Margin = New System.Windows.Forms.Padding(3, 0, 0, 0)
         Me.cmdlOptions.Name = "cmdlOptions"
-        Me.cmdlOptions.Size = New System.Drawing.Size(710, 35)
+        Me.cmdlOptions.Size = New System.Drawing.Size(491, 70)
         Me.cmdlOptions.TabIndex = 5
         '
         'cbVideoOutput
@@ -122,56 +125,55 @@ Class eac3toForm
         Me.cbVideoOutput.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cbVideoOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbVideoOutput.FormattingEnabled = True
-        Me.cbVideoOutput.Location = New System.Drawing.Point(68, 6)
+        Me.cbVideoOutput.Location = New System.Drawing.Point(126, 12)
         Me.cbVideoOutput.Margin = New System.Windows.Forms.Padding(0)
         Me.cbVideoOutput.Name = "cbVideoOutput"
-        Me.cbVideoOutput.Size = New System.Drawing.Size(115, 33)
+        Me.cbVideoOutput.Size = New System.Drawing.Size(206, 56)
         Me.cbVideoOutput.TabIndex = 2
         '
         'Label5
         '
         Me.Label5.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(6, 7)
-        Me.Label5.Margin = New System.Windows.Forms.Padding(6, 6, 0, 6)
+        Me.Label5.Location = New System.Drawing.Point(3, 10)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(62, 25)
+        Me.Label5.Size = New System.Drawing.Size(120, 48)
         Me.Label5.TabIndex = 1
         Me.Label5.Text = "Video:"
         '
         'bnBrowse
         '
         Me.bnBrowse.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnBrowse.Location = New System.Drawing.Point(953, 5)
+        Me.bnBrowse.Location = New System.Drawing.Point(957, 4)
         Me.bnBrowse.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnBrowse.Size = New System.Drawing.Size(35, 35)
+        Me.bnBrowse.Size = New System.Drawing.Size(70, 70)
         Me.bnBrowse.Text = "..."
         '
         'bnCancel
         '
         Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(888, 4)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(6, 0, 0, 0)
-        Me.bnCancel.Size = New System.Drawing.Size(100, 35)
+        Me.bnCancel.Location = New System.Drawing.Point(847, 2)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(11, 0, 0, 0)
+        Me.bnCancel.Size = New System.Drawing.Size(180, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
         Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(782, 4)
-        Me.bnOK.Margin = New System.Windows.Forms.Padding(6, 0, 0, 0)
-        Me.bnOK.Size = New System.Drawing.Size(100, 35)
+        Me.bnOK.Location = New System.Drawing.Point(656, 2)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(11, 0, 0, 0)
+        Me.bnOK.Size = New System.Drawing.Size(180, 70)
         Me.bnOK.Text = "OK"
         '
         'lvAudio
         '
         Me.lvAudio.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lvAudio.Location = New System.Drawing.Point(6, 6)
-        Me.lvAudio.Margin = New System.Windows.Forms.Padding(6)
+        Me.lvAudio.Location = New System.Drawing.Point(10, 0)
+        Me.lvAudio.Margin = New System.Windows.Forms.Padding(10, 0, 10, 10)
         Me.lvAudio.Name = "lvAudio"
-        Me.lvAudio.Size = New System.Drawing.Size(970, 215)
+        Me.lvAudio.Size = New System.Drawing.Size(997, 85)
         Me.lvAudio.TabIndex = 8
         Me.lvAudio.UseCompatibleStateImageBehavior = False
         '
@@ -180,10 +182,10 @@ Class eac3toForm
         Me.lvSubtitles.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvSubtitles.Location = New System.Drawing.Point(6, 6)
-        Me.lvSubtitles.Margin = New System.Windows.Forms.Padding(6)
+        Me.lvSubtitles.Location = New System.Drawing.Point(10, 0)
+        Me.lvSubtitles.Margin = New System.Windows.Forms.Padding(10, 0, 10, 10)
         Me.lvSubtitles.Name = "lvSubtitles"
-        Me.lvSubtitles.Size = New System.Drawing.Size(970, 134)
+        Me.lvSubtitles.Size = New System.Drawing.Size(997, 54)
         Me.lvSubtitles.TabIndex = 9
         Me.lvSubtitles.UseCompatibleStateImageBehavior = False
         '
@@ -196,38 +198,38 @@ Class eac3toForm
         Me.flpSubtitleLinks.Controls.Add(Me.bnSubtitleNone)
         Me.flpSubtitleLinks.Controls.Add(Me.bnSubtitleEnglish)
         Me.flpSubtitleLinks.Controls.Add(Me.bnSubtitleNative)
-        Me.flpSubtitleLinks.Location = New System.Drawing.Point(6, 146)
-        Me.flpSubtitleLinks.Margin = New System.Windows.Forms.Padding(6, 0, 0, 6)
+        Me.flpSubtitleLinks.Location = New System.Drawing.Point(11, 64)
+        Me.flpSubtitleLinks.Margin = New System.Windows.Forms.Padding(11, 0, 0, 10)
         Me.flpSubtitleLinks.Name = "flpSubtitleLinks"
-        Me.flpSubtitleLinks.Size = New System.Drawing.Size(418, 37)
+        Me.flpSubtitleLinks.Size = New System.Drawing.Size(750, 70)
         Me.flpSubtitleLinks.TabIndex = 19
         '
         'bnSubtitleAll
         '
         Me.bnSubtitleAll.Location = New System.Drawing.Point(0, 0)
-        Me.bnSubtitleAll.Margin = New System.Windows.Forms.Padding(0, 0, 6, 0)
-        Me.bnSubtitleAll.Size = New System.Drawing.Size(100, 37)
+        Me.bnSubtitleAll.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnSubtitleAll.Size = New System.Drawing.Size(180, 70)
         Me.bnSubtitleAll.Text = "All"
         '
         'bnSubtitleNone
         '
-        Me.bnSubtitleNone.Location = New System.Drawing.Point(106, 0)
-        Me.bnSubtitleNone.Margin = New System.Windows.Forms.Padding(0, 0, 6, 0)
-        Me.bnSubtitleNone.Size = New System.Drawing.Size(100, 37)
+        Me.bnSubtitleNone.Location = New System.Drawing.Point(190, 0)
+        Me.bnSubtitleNone.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnSubtitleNone.Size = New System.Drawing.Size(180, 70)
         Me.bnSubtitleNone.Text = "None"
         '
         'bnSubtitleEnglish
         '
-        Me.bnSubtitleEnglish.Location = New System.Drawing.Point(212, 0)
-        Me.bnSubtitleEnglish.Margin = New System.Windows.Forms.Padding(0, 0, 6, 0)
-        Me.bnSubtitleEnglish.Size = New System.Drawing.Size(100, 37)
+        Me.bnSubtitleEnglish.Location = New System.Drawing.Point(380, 0)
+        Me.bnSubtitleEnglish.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnSubtitleEnglish.Size = New System.Drawing.Size(180, 70)
         Me.bnSubtitleEnglish.Text = "English"
         '
         'bnSubtitleNative
         '
-        Me.bnSubtitleNative.Location = New System.Drawing.Point(318, 0)
+        Me.bnSubtitleNative.Location = New System.Drawing.Point(570, 0)
         Me.bnSubtitleNative.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnSubtitleNative.Size = New System.Drawing.Size(100, 37)
+        Me.bnSubtitleNative.Size = New System.Drawing.Size(180, 70)
         Me.bnSubtitleNative.Text = "Native"
         '
         'flpAudioLinks
@@ -240,10 +242,10 @@ Class eac3toForm
         Me.flpAudioLinks.Controls.Add(Me.bnAudioNone)
         Me.flpAudioLinks.Controls.Add(Me.bnAudioEnglish)
         Me.flpAudioLinks.Controls.Add(Me.bnAudioNative)
-        Me.flpAudioLinks.Location = New System.Drawing.Point(0, 227)
+        Me.flpAudioLinks.Location = New System.Drawing.Point(0, 95)
         Me.flpAudioLinks.Margin = New System.Windows.Forms.Padding(0)
         Me.flpAudioLinks.Name = "flpAudioLinks"
-        Me.flpAudioLinks.Size = New System.Drawing.Size(424, 37)
+        Me.flpAudioLinks.Size = New System.Drawing.Size(760, 70)
         Me.flpAudioLinks.TabIndex = 18
         '
         'FlowLayoutPanel1
@@ -251,38 +253,38 @@ Class eac3toForm
         Me.FlowLayoutPanel1.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.FlowLayoutPanel1.AutoSize = True
         Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(3, 16)
-        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(3, 3, 3, 8)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(5, 30)
+        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(5, 5, 5, 14)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
         Me.FlowLayoutPanel1.Size = New System.Drawing.Size(0, 0)
         Me.FlowLayoutPanel1.TabIndex = 0
         '
         'bnAudioAll
         '
-        Me.bnAudioAll.Location = New System.Drawing.Point(6, 0)
-        Me.bnAudioAll.Margin = New System.Windows.Forms.Padding(0, 0, 6, 0)
-        Me.bnAudioAll.Size = New System.Drawing.Size(100, 37)
+        Me.bnAudioAll.Location = New System.Drawing.Point(10, 0)
+        Me.bnAudioAll.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnAudioAll.Size = New System.Drawing.Size(180, 70)
         Me.bnAudioAll.Text = "All"
         '
         'bnAudioNone
         '
-        Me.bnAudioNone.Location = New System.Drawing.Point(112, 0)
-        Me.bnAudioNone.Margin = New System.Windows.Forms.Padding(0, 0, 6, 0)
-        Me.bnAudioNone.Size = New System.Drawing.Size(100, 37)
+        Me.bnAudioNone.Location = New System.Drawing.Point(200, 0)
+        Me.bnAudioNone.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnAudioNone.Size = New System.Drawing.Size(180, 70)
         Me.bnAudioNone.Text = "None"
         '
         'bnAudioEnglish
         '
-        Me.bnAudioEnglish.Location = New System.Drawing.Point(218, 0)
-        Me.bnAudioEnglish.Margin = New System.Windows.Forms.Padding(0, 0, 6, 0)
-        Me.bnAudioEnglish.Size = New System.Drawing.Size(100, 37)
+        Me.bnAudioEnglish.Location = New System.Drawing.Point(390, 0)
+        Me.bnAudioEnglish.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnAudioEnglish.Size = New System.Drawing.Size(180, 70)
         Me.bnAudioEnglish.Text = "English"
         '
         'bnAudioNative
         '
-        Me.bnAudioNative.Location = New System.Drawing.Point(324, 0)
+        Me.bnAudioNative.Location = New System.Drawing.Point(580, 0)
         Me.bnAudioNative.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnAudioNative.Size = New System.Drawing.Size(100, 37)
+        Me.bnAudioNative.Size = New System.Drawing.Size(180, 70)
         Me.bnAudioNative.Text = "Native"
         '
         'cbVideoStream
@@ -290,20 +292,19 @@ Class eac3toForm
         Me.cbVideoStream.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cbVideoStream.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbVideoStream.FormattingEnabled = True
-        Me.cbVideoStream.Location = New System.Drawing.Point(254, 6)
+        Me.cbVideoStream.Location = New System.Drawing.Point(477, 12)
         Me.cbVideoStream.Margin = New System.Windows.Forms.Padding(0)
         Me.cbVideoStream.Name = "cbVideoStream"
-        Me.cbVideoStream.Size = New System.Drawing.Size(734, 33)
+        Me.cbVideoStream.Size = New System.Drawing.Size(550, 56)
         Me.cbVideoStream.TabIndex = 16
         '
         'Label8
         '
         Me.Label8.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(183, 7)
-        Me.Label8.Margin = New System.Windows.Forms.Padding(0)
+        Me.Label8.Location = New System.Drawing.Point(335, 10)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(71, 25)
+        Me.Label8.Size = New System.Drawing.Size(139, 48)
         Me.Label8.TabIndex = 15
         Me.Label8.Text = "Stream:"
         '
@@ -318,22 +319,22 @@ Class eac3toForm
         Me.tlpTarget.Controls.Add(Me.bnBrowse, 2, 0)
         Me.tlpTarget.Controls.Add(Me.Label2, 0, 0)
         Me.tlpTarget.Controls.Add(Me.teTempDir, 1, 0)
-        Me.tlpTarget.Location = New System.Drawing.Point(15, 633)
-        Me.tlpTarget.Margin = New System.Windows.Forms.Padding(6, 6, 6, 0)
+        Me.tlpTarget.Location = New System.Drawing.Point(11, 630)
+        Me.tlpTarget.Margin = New System.Windows.Forms.Padding(11, 10, 11, 0)
         Me.tlpTarget.Name = "tlpTarget"
         Me.tlpTarget.RowCount = 1
         Me.tlpTarget.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpTarget.Size = New System.Drawing.Size(988, 46)
+        Me.tlpTarget.Size = New System.Drawing.Size(1027, 79)
         Me.tlpTarget.TabIndex = 4
         '
         'Label2
         '
         Me.Label2.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(0, 10)
+        Me.Label2.Location = New System.Drawing.Point(0, 15)
         Me.Label2.Margin = New System.Windows.Forms.Padding(0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(141, 25)
+        Me.Label2.Size = New System.Drawing.Size(282, 48)
         Me.Label2.TabIndex = 2
         Me.Label2.Text = "Target Directory:"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -341,10 +342,10 @@ Class eac3toForm
         'teTempDir
         '
         Me.teTempDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.teTempDir.Location = New System.Drawing.Point(141, 5)
-        Me.teTempDir.Margin = New System.Windows.Forms.Padding(0, 0, 6, 0)
+        Me.teTempDir.Location = New System.Drawing.Point(282, 4)
+        Me.teTempDir.Margin = New System.Windows.Forms.Padding(0, 0, 11, 0)
         Me.teTempDir.Name = "teTempDir"
-        Me.teTempDir.Size = New System.Drawing.Size(806, 35)
+        Me.teTempDir.Size = New System.Drawing.Size(664, 70)
         Me.teTempDir.TabIndex = 3
         '
         'tlpBottom
@@ -360,36 +361,37 @@ Class eac3toForm
         Me.tlpBottom.Controls.Add(Me.bnOK, 2, 0)
         Me.tlpBottom.Controls.Add(Me.bnMenu, 1, 0)
         Me.tlpBottom.Controls.Add(Me.cbChapters, 0, 0)
-        Me.tlpBottom.Location = New System.Drawing.Point(15, 685)
-        Me.tlpBottom.Margin = New System.Windows.Forms.Padding(6)
+        Me.tlpBottom.Location = New System.Drawing.Point(11, 719)
+        Me.tlpBottom.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.tlpBottom.Name = "tlpBottom"
         Me.tlpBottom.RowCount = 1
         Me.tlpBottom.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpBottom.Size = New System.Drawing.Size(988, 43)
+        Me.tlpBottom.Size = New System.Drawing.Size(1027, 74)
         Me.tlpBottom.TabIndex = 20
         '
         'bnMenu
         '
         Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnMenu.ContextMenuStrip = Me.cms
-        Me.bnMenu.Location = New System.Drawing.Point(740, 3)
+        Me.bnMenu.Location = New System.Drawing.Point(575, 2)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(0)
         Me.bnMenu.ShowMenuSymbol = True
-        Me.bnMenu.Size = New System.Drawing.Size(36, 37)
+        Me.bnMenu.Size = New System.Drawing.Size(70, 70)
         '
         'cms
         '
         Me.cms.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.cms.Name = "cms"
-        Me.cms.Size = New System.Drawing.Size(74, 4)
+        Me.cms.Size = New System.Drawing.Size(61, 4)
         '
         'cbChapters
         '
         Me.cbChapters.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.cbChapters.AutoSize = True
-        Me.cbChapters.Location = New System.Drawing.Point(3, 7)
+        Me.cbChapters.Location = New System.Drawing.Point(5, 11)
+        Me.cbChapters.Margin = New System.Windows.Forms.Padding(5)
         Me.cbChapters.Name = "cbChapters"
-        Me.cbChapters.Size = New System.Drawing.Size(165, 29)
+        Me.cbChapters.Size = New System.Drawing.Size(323, 52)
         Me.cbChapters.TabIndex = 2
         Me.cbChapters.Text = "Extract Chapters"
         Me.cbChapters.UseVisualStyleBackColor = True
@@ -397,13 +399,15 @@ Class eac3toForm
         '
         'gbAudio
         '
-        Me.gbAudio.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.gbAudio.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.gbAudio.Controls.Add(Me.tlpAudio)
-        Me.gbAudio.Location = New System.Drawing.Point(15, 61)
-        Me.gbAudio.Margin = New System.Windows.Forms.Padding(6, 0, 6, 6)
+        Me.gbAudio.Location = New System.Drawing.Point(11, 89)
+        Me.gbAudio.Margin = New System.Windows.Forms.Padding(11, 0, 11, 10)
         Me.gbAudio.Name = "gbAudio"
-        Me.gbAudio.Size = New System.Drawing.Size(988, 338)
+        Me.gbAudio.Padding = New System.Windows.Forms.Padding(5)
+        Me.gbAudio.Size = New System.Drawing.Size(1027, 309)
         Me.gbAudio.TabIndex = 23
         Me.gbAudio.TabStop = False
         Me.gbAudio.Text = "Audio"
@@ -416,14 +420,14 @@ Class eac3toForm
         Me.tlpAudio.Controls.Add(Me.lvAudio, 0, 0)
         Me.tlpAudio.Controls.Add(Me.tlpAudioOptions, 0, 2)
         Me.tlpAudio.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tlpAudio.Location = New System.Drawing.Point(3, 27)
-        Me.tlpAudio.Margin = New System.Windows.Forms.Padding(2)
+        Me.tlpAudio.Location = New System.Drawing.Point(5, 53)
+        Me.tlpAudio.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.tlpAudio.Name = "tlpAudio"
         Me.tlpAudio.RowCount = 3
         Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpAudio.Size = New System.Drawing.Size(982, 308)
+        Me.tlpAudio.Size = New System.Drawing.Size(1017, 251)
         Me.tlpAudio.TabIndex = 23
         '
         'tlpAudioOptions
@@ -438,22 +442,20 @@ Class eac3toForm
         Me.tlpAudioOptions.Controls.Add(Me.Label3, 2, 0)
         Me.tlpAudioOptions.Controls.Add(Me.cbAudioOutput, 1, 0)
         Me.tlpAudioOptions.Controls.Add(Me.cmdlOptions, 3, 0)
-        Me.tlpAudioOptions.Location = New System.Drawing.Point(2, 266)
-        Me.tlpAudioOptions.Margin = New System.Windows.Forms.Padding(2)
+        Me.tlpAudioOptions.Location = New System.Drawing.Point(3, 168)
         Me.tlpAudioOptions.Name = "tlpAudioOptions"
         Me.tlpAudioOptions.RowCount = 1
         Me.tlpAudioOptions.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpAudioOptions.Size = New System.Drawing.Size(978, 40)
+        Me.tlpAudioOptions.Size = New System.Drawing.Size(1011, 80)
         Me.tlpAudioOptions.TabIndex = 22
         '
         'Label1
         '
         Me.Label1.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(0, 7)
-        Me.Label1.Margin = New System.Windows.Forms.Padding(0)
+        Me.Label1.Location = New System.Drawing.Point(3, 16)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(73, 25)
+        Me.Label1.Size = New System.Drawing.Size(140, 48)
         Me.Label1.TabIndex = 19
         Me.Label1.Text = "Output:"
         '
@@ -461,10 +463,9 @@ Class eac3toForm
         '
         Me.Label3.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(188, 7)
-        Me.Label3.Margin = New System.Windows.Forms.Padding(0)
+        Me.Label3.Location = New System.Drawing.Point(361, 16)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(80, 25)
+        Me.Label3.Size = New System.Drawing.Size(153, 48)
         Me.Label3.TabIndex = 20
         Me.Label3.Text = "Options:"
         '
@@ -473,21 +474,23 @@ Class eac3toForm
         Me.cbAudioOutput.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cbAudioOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbAudioOutput.FormattingEnabled = True
-        Me.cbAudioOutput.Location = New System.Drawing.Point(73, 6)
-        Me.cbAudioOutput.Margin = New System.Windows.Forms.Padding(0)
+        Me.cbAudioOutput.Location = New System.Drawing.Point(149, 17)
+        Me.cbAudioOutput.Margin = New System.Windows.Forms.Padding(3, 0, 3, 0)
         Me.cbAudioOutput.Name = "cbAudioOutput"
-        Me.cbAudioOutput.Size = New System.Drawing.Size(115, 33)
+        Me.cbAudioOutput.Size = New System.Drawing.Size(206, 56)
         Me.cbAudioOutput.TabIndex = 21
         '
         'gbSubtitles
         '
-        Me.gbSubtitles.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.gbSubtitles.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.gbSubtitles.Controls.Add(Me.tlpSubtitles)
-        Me.gbSubtitles.Location = New System.Drawing.Point(15, 405)
-        Me.gbSubtitles.Margin = New System.Windows.Forms.Padding(6, 0, 6, 6)
+        Me.gbSubtitles.Location = New System.Drawing.Point(11, 408)
+        Me.gbSubtitles.Margin = New System.Windows.Forms.Padding(11, 0, 11, 10)
         Me.gbSubtitles.Name = "gbSubtitles"
-        Me.gbSubtitles.Size = New System.Drawing.Size(988, 219)
+        Me.gbSubtitles.Padding = New System.Windows.Forms.Padding(5)
+        Me.gbSubtitles.Size = New System.Drawing.Size(1027, 202)
         Me.gbSubtitles.TabIndex = 24
         Me.gbSubtitles.TabStop = False
         Me.gbSubtitles.Text = "Subtitles"
@@ -499,51 +502,68 @@ Class eac3toForm
         Me.tlpSubtitles.Controls.Add(Me.flpSubtitleLinks, 0, 1)
         Me.tlpSubtitles.Controls.Add(Me.lvSubtitles, 0, 0)
         Me.tlpSubtitles.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tlpSubtitles.Location = New System.Drawing.Point(3, 27)
-        Me.tlpSubtitles.Margin = New System.Windows.Forms.Padding(6)
+        Me.tlpSubtitles.Location = New System.Drawing.Point(5, 53)
+        Me.tlpSubtitles.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.tlpSubtitles.Name = "tlpSubtitles"
         Me.tlpSubtitles.RowCount = 2
         Me.tlpSubtitles.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.tlpSubtitles.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpSubtitles.Size = New System.Drawing.Size(982, 189)
+        Me.tlpSubtitles.Size = New System.Drawing.Size(1017, 144)
         Me.tlpSubtitles.TabIndex = 20
         '
-        'TableLayoutPanelVideo
+        'tlpVideo
         '
-        Me.TableLayoutPanelVideo.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TableLayoutPanelVideo.ColumnCount = 4
-        Me.TableLayoutPanelVideo.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TableLayoutPanelVideo.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TableLayoutPanelVideo.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TableLayoutPanelVideo.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanelVideo.Controls.Add(Me.cbVideoStream, 3, 0)
-        Me.TableLayoutPanelVideo.Controls.Add(Me.cbVideoOutput, 1, 0)
-        Me.TableLayoutPanelVideo.Controls.Add(Me.Label8, 2, 0)
-        Me.TableLayoutPanelVideo.Controls.Add(Me.Label5, 0, 0)
-        Me.TableLayoutPanelVideo.Location = New System.Drawing.Point(15, 15)
-        Me.TableLayoutPanelVideo.Margin = New System.Windows.Forms.Padding(6)
-        Me.TableLayoutPanelVideo.Name = "TableLayoutPanelVideo"
-        Me.TableLayoutPanelVideo.RowCount = 1
-        Me.TableLayoutPanelVideo.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanelVideo.Size = New System.Drawing.Size(988, 40)
-        Me.TableLayoutPanelVideo.TabIndex = 25
+        Me.tlpVideo.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpVideo.ColumnCount = 4
+        Me.tlpVideo.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpVideo.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpVideo.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpVideo.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpVideo.Controls.Add(Me.cbVideoStream, 3, 0)
+        Me.tlpVideo.Controls.Add(Me.cbVideoOutput, 1, 0)
+        Me.tlpVideo.Controls.Add(Me.Label8, 2, 0)
+        Me.tlpVideo.Controls.Add(Me.Label5, 0, 0)
+        Me.tlpVideo.Location = New System.Drawing.Point(11, 10)
+        Me.tlpVideo.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
+        Me.tlpVideo.Name = "tlpVideo"
+        Me.tlpVideo.RowCount = 1
+        Me.tlpVideo.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpVideo.Size = New System.Drawing.Size(1027, 69)
+        Me.tlpVideo.TabIndex = 25
+        '
+        'tlpMain
+        '
+        Me.tlpMain.ColumnCount = 1
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.Controls.Add(Me.tlpVideo, 0, 0)
+        Me.tlpMain.Controls.Add(Me.gbAudio, 0, 1)
+        Me.tlpMain.Controls.Add(Me.tlpBottom, 0, 4)
+        Me.tlpMain.Controls.Add(Me.gbSubtitles, 0, 2)
+        Me.tlpMain.Controls.Add(Me.tlpTarget, 0, 3)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.RowCount = 5
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.Size = New System.Drawing.Size(1049, 804)
+        Me.tlpMain.TabIndex = 26
         '
         'eac3toForm
         '
         Me.AcceptButton = Me.bnOK
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1018, 738)
-        Me.Controls.Add(Me.tlpBottom)
-        Me.Controls.Add(Me.tlpTarget)
-        Me.Controls.Add(Me.gbSubtitles)
-        Me.Controls.Add(Me.gbAudio)
-        Me.Controls.Add(Me.TableLayoutPanelVideo)
+        Me.ClientSize = New System.Drawing.Size(1049, 804)
+        Me.Controls.Add(Me.tlpMain)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.HelpButton = False
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(6)
+        Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "eac3toForm"
         Me.Text = "eac3to"
         Me.flpSubtitleLinks.ResumeLayout(False)
@@ -561,8 +581,9 @@ Class eac3toForm
         Me.gbSubtitles.ResumeLayout(False)
         Me.tlpSubtitles.ResumeLayout(False)
         Me.tlpSubtitles.PerformLayout()
-        Me.TableLayoutPanelVideo.ResumeLayout(False)
-        Me.TableLayoutPanelVideo.PerformLayout()
+        Me.tlpVideo.ResumeLayout(False)
+        Me.tlpVideo.PerformLayout()
+        Me.tlpMain.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -581,6 +602,8 @@ Class eac3toForm
     Sub New()
         MyBase.New()
         InitializeComponent()
+
+        ClientSize = New Size(FontHeight * 40, FontHeight * 30)
 
         cbAudioOutput.Sorted = True
         cbAudioOutput.Items.AddRange(AudioOutputFormats)
@@ -976,7 +999,7 @@ Class eac3toForm
 
     Private Sub bnBrowse_Click() Handles bnBrowse.Click
         Using d As New FolderBrowserDialog
-            d.Description = "Please choose a directory."
+            d.Description = "Please select a directory."
             d.SetSelectedPath(teTempDir.Text)
 
             If d.ShowDialog = DialogResult.OK Then

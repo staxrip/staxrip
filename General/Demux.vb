@@ -263,7 +263,7 @@ Class MP4BoxDemuxer
             Using proc As New Proc
                 proc.Init("Extract cover using MP4Box " + Package.MP4Box.Version)
                 proc.File = Package.MP4Box.Path
-                proc.Arguments = "-dump-cover " + p.SourceFile.Quotes + " -out " + p.TempDir + "cover.jpg"
+                proc.Arguments = "-dump-cover " + p.SourceFile.Quotes + " -out " + (p.TempDir + "cover.jpg").Quotes
                 proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
                 proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
                 proc.Start()

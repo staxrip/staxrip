@@ -13,6 +13,7 @@ Class EventCommandsEditor
     Friend WithEvents bnDown As ButtonEx
     Friend WithEvents bnUp As ButtonEx
     Friend WithEvents lv As ListViewEx
+    Friend WithEvents flpButtons As FlowLayoutPanel
     Friend WithEvents bnEdit As ButtonEx
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -26,74 +27,84 @@ Class EventCommandsEditor
         Me.bnDown = New StaxRip.UI.ButtonEx()
         Me.bnUp = New StaxRip.UI.ButtonEx()
         Me.lv = New StaxRip.UI.ListViewEx()
+        Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
+        Me.flpButtons.SuspendLayout()
         Me.SuspendLayout()
         '
         'bnEdit
         '
         Me.bnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnEdit.Location = New System.Drawing.Point(471, 178)
-        Me.bnEdit.Size = New System.Drawing.Size(100, 34)
+        Me.bnEdit.Location = New System.Drawing.Point(0, 320)
+        Me.bnEdit.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
+        Me.bnEdit.Size = New System.Drawing.Size(250, 70)
         Me.bnEdit.Text = "Edit..."
         '
         'bnClone
         '
         Me.bnClone.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnClone.Location = New System.Drawing.Point(471, 218)
-        Me.bnClone.Size = New System.Drawing.Size(100, 34)
+        Me.bnClone.Location = New System.Drawing.Point(0, 400)
+        Me.bnClone.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnClone.Size = New System.Drawing.Size(250, 70)
         Me.bnClone.Text = "Clone"
         '
         'bnRemove
         '
         Me.bnRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRemove.Location = New System.Drawing.Point(471, 52)
-        Me.bnRemove.Size = New System.Drawing.Size(100, 34)
-        Me.bnRemove.Text = "Remove"
+        Me.bnRemove.Location = New System.Drawing.Point(0, 80)
+        Me.bnRemove.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
+        Me.bnRemove.Size = New System.Drawing.Size(250, 70)
+        Me.bnRemove.Text = "  Remove"
         '
         'bnAdd
         '
         Me.bnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnAdd.Location = New System.Drawing.Point(471, 12)
-        Me.bnAdd.Size = New System.Drawing.Size(100, 34)
+        Me.bnAdd.Location = New System.Drawing.Point(0, 0)
+        Me.bnAdd.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
+        Me.bnAdd.Size = New System.Drawing.Size(250, 70)
         Me.bnAdd.Text = "Add..."
         '
         'bnCancel
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(471, 476)
-        Me.bnCancel.Size = New System.Drawing.Size(100, 34)
+        Me.bnCancel.Location = New System.Drawing.Point(934, 813)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(5)
+        Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(365, 476)
-        Me.bnOK.Size = New System.Drawing.Size(100, 34)
+        Me.bnOK.Location = New System.Drawing.Point(674, 813)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(5)
+        Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
         '
         'LineControl1
         '
         Me.LineControl1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LineControl1.Location = New System.Drawing.Point(12, 452)
-        Me.LineControl1.Margin = New System.Windows.Forms.Padding(4, 2, 5, 2)
+        Me.LineControl1.Location = New System.Drawing.Point(22, 777)
+        Me.LineControl1.Margin = New System.Windows.Forms.Padding(7, 3, 9, 3)
         Me.LineControl1.Name = "LineControl1"
-        Me.LineControl1.Size = New System.Drawing.Size(559, 17)
+        Me.LineControl1.Size = New System.Drawing.Size(1154, 29)
         Me.LineControl1.TabIndex = 7
         '
         'bnDown
         '
         Me.bnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnDown.Location = New System.Drawing.Point(471, 132)
-        Me.bnDown.Size = New System.Drawing.Size(100, 34)
+        Me.bnDown.Location = New System.Drawing.Point(0, 240)
+        Me.bnDown.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
+        Me.bnDown.Size = New System.Drawing.Size(250, 70)
         Me.bnDown.Text = "Down"
         '
         'bnUp
         '
         Me.bnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnUp.Location = New System.Drawing.Point(471, 92)
-        Me.bnUp.Size = New System.Drawing.Size(100, 34)
+        Me.bnUp.Location = New System.Drawing.Point(0, 160)
+        Me.bnUp.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
+        Me.bnUp.Size = New System.Drawing.Size(250, 70)
         Me.bnUp.Text = "Up"
         '
         'lv
@@ -101,36 +112,52 @@ Class EventCommandsEditor
         Me.lv.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lv.Location = New System.Drawing.Point(12, 12)
+        Me.lv.Location = New System.Drawing.Point(19, 19)
+        Me.lv.Margin = New System.Windows.Forms.Padding(10)
         Me.lv.Name = "lv"
-        Me.lv.Size = New System.Drawing.Size(453, 435)
+        Me.lv.Size = New System.Drawing.Size(890, 750)
         Me.lv.TabIndex = 21
+        Me.lv.UseCompatibleStateImageBehavior = False
+        '
+        'flpButtons
+        '
+        Me.flpButtons.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.flpButtons.AutoSize = True
+        Me.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpButtons.Controls.Add(Me.bnAdd)
+        Me.flpButtons.Controls.Add(Me.bnRemove)
+        Me.flpButtons.Controls.Add(Me.bnUp)
+        Me.flpButtons.Controls.Add(Me.bnDown)
+        Me.flpButtons.Controls.Add(Me.bnEdit)
+        Me.flpButtons.Controls.Add(Me.bnClone)
+        Me.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        Me.flpButtons.Location = New System.Drawing.Point(929, 19)
+        Me.flpButtons.Margin = New System.Windows.Forms.Padding(10)
+        Me.flpButtons.Name = "flpButtons"
+        Me.flpButtons.Size = New System.Drawing.Size(250, 470)
+        Me.flpButtons.TabIndex = 30
         '
         'EventCommandsEditor
         '
         Me.AcceptButton = Me.bnOK
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(583, 522)
+        Me.ClientSize = New System.Drawing.Size(1198, 897)
+        Me.Controls.Add(Me.flpButtons)
         Me.Controls.Add(Me.lv)
-        Me.Controls.Add(Me.bnUp)
-        Me.Controls.Add(Me.bnDown)
         Me.Controls.Add(Me.LineControl1)
         Me.Controls.Add(Me.bnCancel)
         Me.Controls.Add(Me.bnOK)
-        Me.Controls.Add(Me.bnEdit)
-        Me.Controls.Add(Me.bnClone)
-        Me.Controls.Add(Me.bnRemove)
-        Me.Controls.Add(Me.bnAdd)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
-        Me.Margin = New System.Windows.Forms.Padding(4)
-        Me.MinimumSize = New System.Drawing.Size(239, 219)
+        Me.Margin = New System.Windows.Forms.Padding(7)
+        Me.MinimumSize = New System.Drawing.Size(405, 302)
         Me.Name = "EventCommandsEditor"
         Me.Text = "Event Commands"
+        Me.flpButtons.ResumeLayout(False)
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
@@ -152,6 +179,22 @@ Class EventCommandsEditor
         lv.ItemCheckProperty = NameOf(EventCommand.Enabled)
         lv.AddItems(ObjectHelp.GetCopy(eventCommands))
         lv.SelectFirst()
+
+        bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
+        bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
+        bnAdd.Image = ImageHelp.GetSymbolImage(Symbol.Add)
+        bnRemove.Image = ImageHelp.GetSymbolImage(Symbol.Remove)
+        bnClone.Image = ImageHelp.GetSymbolImage(Symbol.TwoPage)
+        bnEdit.Image = ImageHelp.GetSymbolImage(Symbol.Repair)
+
+        For Each bn In {bnAdd, bnRemove, bnClone, bnEdit, bnUp, bnDown}
+            bn.TextImageRelation = TextImageRelation.Overlay
+            bn.ImageAlign = ContentAlignment.MiddleLeft
+            Dim pad = bn.Padding
+            pad.Left = Control.DefaultFont.Height \ 10
+            pad.Right = pad.Left
+            bn.Padding = pad
+        Next
     End Sub
 
     Private Sub bnAdd_Click() Handles bnAdd.Click

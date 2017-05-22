@@ -191,7 +191,7 @@ Public MustInherit Class VideoEncoder
         Dim sb As New SelectionBox(Of Muxer)
 
         sb.Title = "New Profile"
-        sb.Text = "Please choose a profile."
+        sb.Text = "Please select a profile."
 
         sb.AddItem("Current Project", Muxer)
 

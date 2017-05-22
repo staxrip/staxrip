@@ -544,7 +544,7 @@ Public Class FilterCategory
 
         Dim misc As New FilterCategory("Misc")
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS Source File", "AssumeFPS(%media_info_video:FrameRate%)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS...", "AssumeFPS($select:msg:Select a frame rate;24000/1001|24000, 1001;30000/1001|30000, 1001;60000/1001|60000, 1001;24;25;30;50;60$)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS...", "AssumeFPS($select:msg:Select a frame rate;24000/1001|24000, 1001;24;25;30000/1001|30000, 1001;30;50;60000/1001|60000, 1001;60$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Prefetch(4)", "Prefetch(4)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "checkmate", "checkmate()"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Clense", "Clense()"))
@@ -618,7 +618,7 @@ Public Class FilterCategory
 
         Dim misc As New FilterCategory("Misc")
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "clip = core.std.AssumeFPS(clip, fpsnum = int(%media_info_video:FrameRate% * 1000), fpsden = 1000)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS...", "clip = core.std.AssumeFPS(clip, None, $select:msg:Select a frame rate.;30000/1001|30000, 1001;60000/1001|60000, 1001;24|24, 1;25|25, 1;30|30, 1;50|50, 1;60|60, 1$)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS...", "clip = core.std.AssumeFPS(clip, None, $select:msg:Select a frame rate.;24000/1001|24000, 1001;24|24, 1;25|25, 1;30000/1001|30000, 1001;30|30, 1;50|50, 1;60000/1001|60000, 1001;60|60, 1$)"))
         ret.Add(misc)
 
         FilterCategory.AddDefaults(ScriptEngine.VapourSynth, ret)

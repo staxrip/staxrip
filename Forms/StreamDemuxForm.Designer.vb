@@ -61,11 +61,11 @@ Partial Class StreamDemuxForm
         '
         Me.gbAudio.Controls.Add(Me.AudioTableLayoutPanel)
         Me.gbAudio.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbAudio.Location = New System.Drawing.Point(16, 0)
-        Me.gbAudio.Margin = New System.Windows.Forms.Padding(5, 0, 5, 5)
+        Me.gbAudio.Location = New System.Drawing.Point(10, 0)
+        Me.gbAudio.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
         Me.gbAudio.Name = "gbAudio"
         Me.gbAudio.Padding = New System.Windows.Forms.Padding(5)
-        Me.gbAudio.Size = New System.Drawing.Size(789, 288)
+        Me.gbAudio.Size = New System.Drawing.Size(1002, 307)
         Me.gbAudio.TabIndex = 24
         Me.gbAudio.TabStop = False
         Me.gbAudio.Text = "Audio"
@@ -84,7 +84,7 @@ Partial Class StreamDemuxForm
         Me.AudioTableLayoutPanel.RowCount = 2
         Me.AudioTableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.AudioTableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.AudioTableLayoutPanel.Size = New System.Drawing.Size(779, 230)
+        Me.AudioTableLayoutPanel.Size = New System.Drawing.Size(992, 249)
         Me.AudioTableLayoutPanel.TabIndex = 19
         '
         'lvAudio
@@ -95,7 +95,7 @@ Partial Class StreamDemuxForm
         Me.lvAudio.Location = New System.Drawing.Point(0, 0)
         Me.lvAudio.Margin = New System.Windows.Forms.Padding(0)
         Me.lvAudio.Name = "lvAudio"
-        Me.lvAudio.Size = New System.Drawing.Size(779, 158)
+        Me.lvAudio.Size = New System.Drawing.Size(992, 169)
         Me.lvAudio.TabIndex = 8
         Me.lvAudio.UseCompatibleStateImageBehavior = False
         '
@@ -108,38 +108,38 @@ Partial Class StreamDemuxForm
         Me.flpAudioButtons.Controls.Add(Me.bnAudioNone)
         Me.flpAudioButtons.Controls.Add(Me.bnAudioEnglish)
         Me.flpAudioButtons.Controls.Add(Me.bnAudioNative)
-        Me.flpAudioButtons.Location = New System.Drawing.Point(0, 158)
+        Me.flpAudioButtons.Location = New System.Drawing.Point(0, 169)
         Me.flpAudioButtons.Margin = New System.Windows.Forms.Padding(0)
         Me.flpAudioButtons.Name = "flpAudioButtons"
-        Me.flpAudioButtons.Size = New System.Drawing.Size(763, 72)
+        Me.flpAudioButtons.Size = New System.Drawing.Size(915, 80)
         Me.flpAudioButtons.TabIndex = 18
         '
         'bnAudioAll
         '
         Me.bnAudioAll.Location = New System.Drawing.Point(0, 5)
         Me.bnAudioAll.Margin = New System.Windows.Forms.Padding(0, 5, 5, 5)
-        Me.bnAudioAll.Size = New System.Drawing.Size(182, 62)
+        Me.bnAudioAll.Size = New System.Drawing.Size(220, 70)
         Me.bnAudioAll.Text = "All"
         '
         'bnAudioNone
         '
-        Me.bnAudioNone.Location = New System.Drawing.Point(192, 5)
+        Me.bnAudioNone.Location = New System.Drawing.Point(230, 5)
         Me.bnAudioNone.Margin = New System.Windows.Forms.Padding(5)
-        Me.bnAudioNone.Size = New System.Drawing.Size(182, 62)
+        Me.bnAudioNone.Size = New System.Drawing.Size(220, 70)
         Me.bnAudioNone.Text = "None"
         '
         'bnAudioEnglish
         '
-        Me.bnAudioEnglish.Location = New System.Drawing.Point(384, 5)
+        Me.bnAudioEnglish.Location = New System.Drawing.Point(460, 5)
         Me.bnAudioEnglish.Margin = New System.Windows.Forms.Padding(5)
-        Me.bnAudioEnglish.Size = New System.Drawing.Size(182, 62)
+        Me.bnAudioEnglish.Size = New System.Drawing.Size(220, 70)
         Me.bnAudioEnglish.Text = "English"
         '
         'bnAudioNative
         '
-        Me.bnAudioNative.Location = New System.Drawing.Point(576, 5)
+        Me.bnAudioNative.Location = New System.Drawing.Point(690, 5)
         Me.bnAudioNative.Margin = New System.Windows.Forms.Padding(5)
-        Me.bnAudioNative.Size = New System.Drawing.Size(182, 62)
+        Me.bnAudioNative.Size = New System.Drawing.Size(220, 70)
         Me.bnAudioNative.Text = "Native"
         '
         'tlpMain
@@ -152,26 +152,25 @@ Partial Class StreamDemuxForm
         Me.tlpMain.Controls.Add(Me.gbAttachments, 0, 2)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
-        Me.tlpMain.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.tlpMain.Margin = New System.Windows.Forms.Padding(0)
         Me.tlpMain.Name = "tlpMain"
-        Me.tlpMain.Padding = New System.Windows.Forms.Padding(11, 0, 11, 0)
         Me.tlpMain.RowCount = 4
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(821, 677)
+        Me.tlpMain.Size = New System.Drawing.Size(1022, 705)
         Me.tlpMain.TabIndex = 25
         '
         'gbSubtitles
         '
         Me.gbSubtitles.Controls.Add(Me.SubtitleTableLayoutPanel)
         Me.gbSubtitles.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbSubtitles.Location = New System.Drawing.Point(16, 298)
-        Me.gbSubtitles.Margin = New System.Windows.Forms.Padding(5)
+        Me.gbSubtitles.Location = New System.Drawing.Point(10, 307)
+        Me.gbSubtitles.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
         Me.gbSubtitles.Name = "gbSubtitles"
         Me.gbSubtitles.Padding = New System.Windows.Forms.Padding(5)
-        Me.gbSubtitles.Size = New System.Drawing.Size(789, 165)
+        Me.gbSubtitles.Size = New System.Drawing.Size(1002, 184)
         Me.gbSubtitles.TabIndex = 25
         Me.gbSubtitles.TabStop = False
         Me.gbSubtitles.Text = "Subtitles"
@@ -190,7 +189,7 @@ Partial Class StreamDemuxForm
         Me.SubtitleTableLayoutPanel.RowCount = 2
         Me.SubtitleTableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.SubtitleTableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.SubtitleTableLayoutPanel.Size = New System.Drawing.Size(779, 107)
+        Me.SubtitleTableLayoutPanel.Size = New System.Drawing.Size(992, 126)
         Me.SubtitleTableLayoutPanel.TabIndex = 20
         '
         'lvSubtitles
@@ -201,7 +200,7 @@ Partial Class StreamDemuxForm
         Me.lvSubtitles.Location = New System.Drawing.Point(0, 0)
         Me.lvSubtitles.Margin = New System.Windows.Forms.Padding(0)
         Me.lvSubtitles.Name = "lvSubtitles"
-        Me.lvSubtitles.Size = New System.Drawing.Size(779, 35)
+        Me.lvSubtitles.Size = New System.Drawing.Size(992, 46)
         Me.lvSubtitles.TabIndex = 9
         Me.lvSubtitles.UseCompatibleStateImageBehavior = False
         '
@@ -214,38 +213,38 @@ Partial Class StreamDemuxForm
         Me.flpSubtitleButtons.Controls.Add(Me.bnSubtitleNone)
         Me.flpSubtitleButtons.Controls.Add(Me.bnSubtitleEnglish)
         Me.flpSubtitleButtons.Controls.Add(Me.bnSubtitleNative)
-        Me.flpSubtitleButtons.Location = New System.Drawing.Point(0, 35)
+        Me.flpSubtitleButtons.Location = New System.Drawing.Point(0, 46)
         Me.flpSubtitleButtons.Margin = New System.Windows.Forms.Padding(0)
         Me.flpSubtitleButtons.Name = "flpSubtitleButtons"
-        Me.flpSubtitleButtons.Size = New System.Drawing.Size(763, 72)
+        Me.flpSubtitleButtons.Size = New System.Drawing.Size(915, 80)
         Me.flpSubtitleButtons.TabIndex = 19
         '
         'bnSubtitleAll
         '
         Me.bnSubtitleAll.Location = New System.Drawing.Point(0, 5)
         Me.bnSubtitleAll.Margin = New System.Windows.Forms.Padding(0, 5, 5, 5)
-        Me.bnSubtitleAll.Size = New System.Drawing.Size(182, 62)
+        Me.bnSubtitleAll.Size = New System.Drawing.Size(220, 70)
         Me.bnSubtitleAll.Text = "All"
         '
         'bnSubtitleNone
         '
-        Me.bnSubtitleNone.Location = New System.Drawing.Point(192, 5)
+        Me.bnSubtitleNone.Location = New System.Drawing.Point(230, 5)
         Me.bnSubtitleNone.Margin = New System.Windows.Forms.Padding(5)
-        Me.bnSubtitleNone.Size = New System.Drawing.Size(182, 62)
+        Me.bnSubtitleNone.Size = New System.Drawing.Size(220, 70)
         Me.bnSubtitleNone.Text = "None"
         '
         'bnSubtitleEnglish
         '
-        Me.bnSubtitleEnglish.Location = New System.Drawing.Point(384, 5)
+        Me.bnSubtitleEnglish.Location = New System.Drawing.Point(460, 5)
         Me.bnSubtitleEnglish.Margin = New System.Windows.Forms.Padding(5)
-        Me.bnSubtitleEnglish.Size = New System.Drawing.Size(182, 62)
+        Me.bnSubtitleEnglish.Size = New System.Drawing.Size(220, 70)
         Me.bnSubtitleEnglish.Text = "English"
         '
         'bnSubtitleNative
         '
-        Me.bnSubtitleNative.Location = New System.Drawing.Point(576, 5)
+        Me.bnSubtitleNative.Location = New System.Drawing.Point(690, 5)
         Me.bnSubtitleNative.Margin = New System.Windows.Forms.Padding(5)
-        Me.bnSubtitleNative.Size = New System.Drawing.Size(182, 62)
+        Me.bnSubtitleNative.Size = New System.Drawing.Size(220, 70)
         Me.bnSubtitleNative.Text = "Native"
         '
         'FlowLayoutPanel2
@@ -255,28 +254,28 @@ Partial Class StreamDemuxForm
         Me.FlowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.FlowLayoutPanel2.Controls.Add(Me.bnOK)
         Me.FlowLayoutPanel2.Controls.Add(Me.bnCancel)
-        Me.FlowLayoutPanel2.Location = New System.Drawing.Point(426, 590)
-        Me.FlowLayoutPanel2.Margin = New System.Windows.Forms.Padding(5, 5, 5, 14)
+        Me.FlowLayoutPanel2.Location = New System.Drawing.Point(502, 624)
+        Me.FlowLayoutPanel2.Margin = New System.Windows.Forms.Padding(10)
         Me.FlowLayoutPanel2.Name = "FlowLayoutPanel2"
-        Me.FlowLayoutPanel2.Size = New System.Drawing.Size(379, 72)
+        Me.FlowLayoutPanel2.Size = New System.Drawing.Size(510, 70)
         Me.FlowLayoutPanel2.TabIndex = 26
         '
         'bnOK
         '
         Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(5, 5)
-        Me.bnOK.Margin = New System.Windows.Forms.Padding(5)
-        Me.bnOK.Size = New System.Drawing.Size(182, 62)
+        Me.bnOK.Location = New System.Drawing.Point(0, 0)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
         '
         'bnCancel
         '
         Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(197, 5)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(5, 5, 0, 5)
-        Me.bnCancel.Size = New System.Drawing.Size(182, 62)
+        Me.bnCancel.Location = New System.Drawing.Point(260, 0)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'gbAttachments
@@ -285,11 +284,11 @@ Partial Class StreamDemuxForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.gbAttachments.Controls.Add(Me.lvAttachments)
-        Me.gbAttachments.Location = New System.Drawing.Point(15, 471)
-        Me.gbAttachments.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.gbAttachments.Location = New System.Drawing.Point(10, 491)
+        Me.gbAttachments.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
         Me.gbAttachments.Name = "gbAttachments"
         Me.gbAttachments.Padding = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.gbAttachments.Size = New System.Drawing.Size(791, 111)
+        Me.gbAttachments.Size = New System.Drawing.Size(1002, 123)
         Me.gbAttachments.TabIndex = 27
         Me.gbAttachments.TabStop = False
         Me.gbAttachments.Text = "Attachments"
@@ -298,9 +297,8 @@ Partial Class StreamDemuxForm
         '
         Me.lvAttachments.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lvAttachments.Location = New System.Drawing.Point(4, 51)
-        Me.lvAttachments.Margin = New System.Windows.Forms.Padding(0)
         Me.lvAttachments.Name = "lvAttachments"
-        Me.lvAttachments.Size = New System.Drawing.Size(783, 57)
+        Me.lvAttachments.Size = New System.Drawing.Size(994, 69)
         Me.lvAttachments.TabIndex = 0
         Me.lvAttachments.UseCompatibleStateImageBehavior = False
         '
@@ -308,12 +306,12 @@ Partial Class StreamDemuxForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(821, 677)
+        Me.ClientSize = New System.Drawing.Size(1022, 705)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "StreamDemuxForm"
-        Me.Text = "Size"
+        Me.Text = "Demux"
         Me.gbAudio.ResumeLayout(False)
         Me.AudioTableLayoutPanel.ResumeLayout(False)
         Me.AudioTableLayoutPanel.PerformLayout()

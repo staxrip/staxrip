@@ -102,7 +102,7 @@ Class x264Form
     Friend WithEvents gbAddToToPrecedingPasses As System.Windows.Forms.GroupBox
     Friend WithEvents gbRemoveFromPrecedingPasses As System.Windows.Forms.GroupBox
     Friend WithEvents gbAddToAll As System.Windows.Forms.GroupBox
-    Friend WithEvents tpStaxrip As System.Windows.Forms.TabPage
+    Friend WithEvents tpOther As System.Windows.Forms.TabPage
     Friend WithEvents cbProfile As System.Windows.Forms.ComboBox
     Friend WithEvents lProfile As System.Windows.Forms.Label
     Friend WithEvents lPreset As System.Windows.Forms.Label
@@ -364,7 +364,7 @@ Class x264Form
         Me.RemoveTurboCmdlControl = New StaxRip.CommandLineControl()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.buImport = New StaxRip.UI.ButtonEx()
-        Me.tpStaxrip = New System.Windows.Forms.TabPage()
+        Me.tpOther = New System.Windows.Forms.TabPage()
         Me.gbCompressibilityCheck = New System.Windows.Forms.GroupBox()
         Me.lAimedQualityHint = New System.Windows.Forms.Label()
         Me.cbGoTo = New System.Windows.Forms.ComboBox()
@@ -401,7 +401,7 @@ Class x264Form
         Me.gbAddToToPrecedingPasses.SuspendLayout()
         Me.gbRemoveFromPrecedingPasses.SuspendLayout()
         Me.FlowLayoutPanel1.SuspendLayout()
-        Me.tpStaxrip.SuspendLayout()
+        Me.tpOther.SuspendLayout()
         Me.gbCompressibilityCheck.SuspendLayout()
         Me.TableLayoutPanel8.SuspendLayout()
         Me.SuspendLayout()
@@ -410,19 +410,19 @@ Class x264Form
         '
         Me.nudPBRatio.DecimalPlaces = 1
         Me.nudPBRatio.Increment = New Decimal(New Integer() {1, 0, 0, 65536})
-        Me.nudPBRatio.Location = New System.Drawing.Point(168, 172)
-        Me.nudPBRatio.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudPBRatio.Location = New System.Drawing.Point(322, 295)
+        Me.nudPBRatio.Margin = New System.Windows.Forms.Padding(7)
         Me.nudPBRatio.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         Me.nudPBRatio.Name = "nudPBRatio"
-        Me.nudPBRatio.Size = New System.Drawing.Size(90, 37)
+        Me.nudPBRatio.Size = New System.Drawing.Size(164, 63)
         Me.nudPBRatio.TabIndex = 8
         '
         'lPBRatio
         '
         Me.lPBRatio.AutoSize = True
-        Me.lPBRatio.Location = New System.Drawing.Point(13, 177)
-        Me.lPBRatio.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lPBRatio.Size = New System.Drawing.Size(82, 25)
+        Me.lPBRatio.Location = New System.Drawing.Point(24, 303)
+        Me.lPBRatio.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
+        Me.lPBRatio.Size = New System.Drawing.Size(161, 48)
         Me.lPBRatio.Text = "PB Ratio:"
         Me.lPBRatio.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -430,37 +430,37 @@ Class x264Form
         '
         Me.nudQPComp.DecimalPlaces = 2
         Me.nudQPComp.Increment = New Decimal(New Integer() {1, 0, 0, 131072})
-        Me.nudQPComp.Location = New System.Drawing.Point(168, 89)
-        Me.nudQPComp.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudQPComp.Location = New System.Drawing.Point(322, 153)
+        Me.nudQPComp.Margin = New System.Windows.Forms.Padding(7)
         Me.nudQPComp.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         Me.nudQPComp.Name = "nudQPComp"
-        Me.nudQPComp.Size = New System.Drawing.Size(90, 37)
+        Me.nudQPComp.Size = New System.Drawing.Size(164, 63)
         Me.nudQPComp.TabIndex = 5
         '
         'lQPComp
         '
         Me.lQPComp.AutoSize = True
-        Me.lQPComp.Location = New System.Drawing.Point(13, 95)
-        Me.lQPComp.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lQPComp.Size = New System.Drawing.Size(150, 25)
+        Me.lQPComp.Location = New System.Drawing.Point(24, 163)
+        Me.lQPComp.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
+        Me.lQPComp.Size = New System.Drawing.Size(292, 48)
         Me.lQPComp.Text = "QP Compression:"
         Me.lQPComp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'nudQPMin
         '
-        Me.nudQPMin.Location = New System.Drawing.Point(168, 47)
-        Me.nudQPMin.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudQPMin.Location = New System.Drawing.Point(322, 81)
+        Me.nudQPMin.Margin = New System.Windows.Forms.Padding(7)
         Me.nudQPMin.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         Me.nudQPMin.Name = "nudQPMin"
-        Me.nudQPMin.Size = New System.Drawing.Size(90, 37)
+        Me.nudQPMin.Size = New System.Drawing.Size(164, 63)
         Me.nudQPMin.TabIndex = 4
         '
         'lQPMinimum
         '
         Me.lQPMinimum.AutoSize = True
-        Me.lQPMinimum.Location = New System.Drawing.Point(13, 50)
-        Me.lQPMinimum.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lQPMinimum.Size = New System.Drawing.Size(121, 25)
+        Me.lQPMinimum.Location = New System.Drawing.Point(24, 86)
+        Me.lQPMinimum.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
+        Me.lQPMinimum.Size = New System.Drawing.Size(237, 48)
         Me.lQPMinimum.Text = "QP Minimum:"
         Me.lQPMinimum.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -468,19 +468,19 @@ Class x264Form
         '
         Me.nudIPRatio.DecimalPlaces = 1
         Me.nudIPRatio.Increment = New Decimal(New Integer() {1, 0, 0, 65536})
-        Me.nudIPRatio.Location = New System.Drawing.Point(168, 130)
-        Me.nudIPRatio.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudIPRatio.Location = New System.Drawing.Point(322, 223)
+        Me.nudIPRatio.Margin = New System.Windows.Forms.Padding(7)
         Me.nudIPRatio.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         Me.nudIPRatio.Name = "nudIPRatio"
-        Me.nudIPRatio.Size = New System.Drawing.Size(90, 37)
+        Me.nudIPRatio.Size = New System.Drawing.Size(164, 63)
         Me.nudIPRatio.TabIndex = 7
         '
         'lIPRatio
         '
         Me.lIPRatio.AutoSize = True
-        Me.lIPRatio.Location = New System.Drawing.Point(13, 136)
-        Me.lIPRatio.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lIPRatio.Size = New System.Drawing.Size(77, 25)
+        Me.lIPRatio.Location = New System.Drawing.Point(24, 233)
+        Me.lIPRatio.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
+        Me.lIPRatio.Size = New System.Drawing.Size(150, 48)
         Me.lIPRatio.Text = "IP Ratio:"
         Me.lIPRatio.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -488,55 +488,55 @@ Class x264Form
         '
         Me.nudVBVInit.DecimalPlaces = 1
         Me.nudVBVInit.Increment = New Decimal(New Integer() {1, 0, 0, 65536})
-        Me.nudVBVInit.Location = New System.Drawing.Point(127, 300)
-        Me.nudVBVInit.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudVBVInit.Location = New System.Drawing.Point(246, 514)
+        Me.nudVBVInit.Margin = New System.Windows.Forms.Padding(7)
         Me.nudVBVInit.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         Me.nudVBVInit.Name = "nudVBVInit"
-        Me.nudVBVInit.Size = New System.Drawing.Size(90, 37)
+        Me.nudVBVInit.Size = New System.Drawing.Size(164, 63)
         Me.nudVBVInit.TabIndex = 11
         '
         'lInitialBuffer
         '
         Me.lInitialBuffer.AutoSize = True
-        Me.lInitialBuffer.Location = New System.Drawing.Point(8, 306)
-        Me.lInitialBuffer.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lInitialBuffer.Size = New System.Drawing.Size(110, 25)
+        Me.lInitialBuffer.Location = New System.Drawing.Point(15, 525)
+        Me.lInitialBuffer.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
+        Me.lInitialBuffer.Size = New System.Drawing.Size(220, 48)
         Me.lInitialBuffer.Text = "Initial Buffer:"
         Me.lInitialBuffer.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'nudVBVMaxRate
         '
-        Me.nudVBVMaxRate.Location = New System.Drawing.Point(127, 257)
-        Me.nudVBVMaxRate.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudVBVMaxRate.Location = New System.Drawing.Point(246, 441)
+        Me.nudVBVMaxRate.Margin = New System.Windows.Forms.Padding(7)
         Me.nudVBVMaxRate.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         Me.nudVBVMaxRate.Name = "nudVBVMaxRate"
-        Me.nudVBVMaxRate.Size = New System.Drawing.Size(90, 37)
+        Me.nudVBVMaxRate.Size = New System.Drawing.Size(164, 63)
         Me.nudVBVMaxRate.TabIndex = 9
         '
         'lMaxBitrate
         '
         Me.lMaxBitrate.AutoSize = True
-        Me.lMaxBitrate.Location = New System.Drawing.Point(8, 263)
-        Me.lMaxBitrate.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lMaxBitrate.Size = New System.Drawing.Size(104, 25)
+        Me.lMaxBitrate.Location = New System.Drawing.Point(15, 451)
+        Me.lMaxBitrate.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
+        Me.lMaxBitrate.Size = New System.Drawing.Size(209, 48)
         Me.lMaxBitrate.Text = "Max Bitrate:"
         Me.lMaxBitrate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'nudVBVBufSize
         '
-        Me.nudVBVBufSize.Location = New System.Drawing.Point(127, 215)
-        Me.nudVBVBufSize.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudVBVBufSize.Location = New System.Drawing.Point(246, 369)
+        Me.nudVBVBufSize.Margin = New System.Windows.Forms.Padding(7)
         Me.nudVBVBufSize.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         Me.nudVBVBufSize.Name = "nudVBVBufSize"
-        Me.nudVBVBufSize.Size = New System.Drawing.Size(90, 37)
+        Me.nudVBVBufSize.Size = New System.Drawing.Size(164, 63)
         Me.nudVBVBufSize.TabIndex = 6
         '
         'lBufferSize
         '
         Me.lBufferSize.AutoSize = True
-        Me.lBufferSize.Location = New System.Drawing.Point(8, 221)
-        Me.lBufferSize.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lBufferSize.Size = New System.Drawing.Size(99, 25)
+        Me.lBufferSize.Location = New System.Drawing.Point(15, 379)
+        Me.lBufferSize.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
+        Me.lBufferSize.Size = New System.Drawing.Size(196, 48)
         Me.lBufferSize.Text = "Buffer Size:"
         Me.lBufferSize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -546,79 +546,79 @@ Class x264Form
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cbAQMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbAQMode.FormattingEnabled = True
-        Me.cbAQMode.Location = New System.Drawing.Point(8, 66)
-        Me.cbAQMode.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbAQMode.Location = New System.Drawing.Point(15, 113)
+        Me.cbAQMode.Margin = New System.Windows.Forms.Padding(7)
         Me.cbAQMode.Name = "cbAQMode"
-        Me.cbAQMode.Size = New System.Drawing.Size(423, 33)
+        Me.cbAQMode.Size = New System.Drawing.Size(762, 56)
         Me.cbAQMode.TabIndex = 2
         '
         'lAQStrengthHint
         '
         Me.lAQStrengthHint.AutoSize = True
-        Me.lAQStrengthHint.Location = New System.Drawing.Point(231, 121)
-        Me.lAQStrengthHint.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lAQStrengthHint.Location = New System.Drawing.Point(435, 207)
+        Me.lAQStrengthHint.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lAQStrengthHint.Name = "lAQStrengthHint"
-        Me.lAQStrengthHint.Size = New System.Drawing.Size(42, 25)
+        Me.lAQStrengthHint.Size = New System.Drawing.Size(81, 48)
         Me.lAQStrengthHint.TabIndex = 8
         Me.lAQStrengthHint.Text = "hint"
         '
         'lMode
         '
         Me.lMode.AutoSize = True
-        Me.lMode.Location = New System.Drawing.Point(8, 29)
-        Me.lMode.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lMode.Location = New System.Drawing.Point(15, 50)
+        Me.lMode.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lMode.Name = "lMode"
-        Me.lMode.Size = New System.Drawing.Size(94, 25)
+        Me.lMode.Size = New System.Drawing.Size(181, 48)
         Me.lMode.TabIndex = 0
         Me.lMode.Text = "AQ Mode:"
         '
         'lMax
         '
         Me.lMax.AutoSize = True
-        Me.lMax.Location = New System.Drawing.Point(266, 151)
-        Me.lMax.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lMax.Location = New System.Drawing.Point(504, 259)
+        Me.lMax.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lMax.Name = "lMax"
-        Me.lMax.Size = New System.Drawing.Size(49, 25)
+        Me.lMax.Size = New System.Drawing.Size(95, 48)
         Me.lMax.TabIndex = 12
         Me.lMax.Text = "Max:"
         '
         'lMin
         '
         Me.lMin.AutoSize = True
-        Me.lMin.Location = New System.Drawing.Point(122, 149)
-        Me.lMin.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lMin.Location = New System.Drawing.Point(222, 255)
+        Me.lMin.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lMin.Name = "lMin"
-        Me.lMin.Size = New System.Drawing.Size(46, 25)
+        Me.lMin.Size = New System.Drawing.Size(89, 48)
         Me.lMin.TabIndex = 7
         Me.lMin.Text = "Min:"
         '
         'nudGOPSizeMax
         '
         Me.nudGOPSizeMax.Increment = New Decimal(New Integer() {50, 0, 0, 0})
-        Me.nudGOPSizeMax.Location = New System.Drawing.Point(319, 146)
-        Me.nudGOPSizeMax.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudGOPSizeMax.Location = New System.Drawing.Point(600, 250)
+        Me.nudGOPSizeMax.Margin = New System.Windows.Forms.Padding(7)
         Me.nudGOPSizeMax.Maximum = New Decimal(New Integer() {1000, 0, 0, 0})
         Me.nudGOPSizeMax.Name = "nudGOPSizeMax"
-        Me.nudGOPSizeMax.Size = New System.Drawing.Size(90, 37)
+        Me.nudGOPSizeMax.Size = New System.Drawing.Size(164, 63)
         Me.nudGOPSizeMax.TabIndex = 14
         '
         'nudGOPSizeMin
         '
         Me.nudGOPSizeMin.Increment = New Decimal(New Integer() {10, 0, 0, 0})
-        Me.nudGOPSizeMin.Location = New System.Drawing.Point(174, 146)
-        Me.nudGOPSizeMin.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudGOPSizeMin.Location = New System.Drawing.Point(336, 250)
+        Me.nudGOPSizeMin.Margin = New System.Windows.Forms.Padding(7)
         Me.nudGOPSizeMin.Maximum = New Decimal(New Integer() {500, 0, 0, 0})
         Me.nudGOPSizeMin.Name = "nudGOPSizeMin"
-        Me.nudGOPSizeMin.Size = New System.Drawing.Size(90, 37)
+        Me.nudGOPSizeMin.Size = New System.Drawing.Size(164, 63)
         Me.nudGOPSizeMin.TabIndex = 9
         '
         'cbCABAC
         '
         Me.cbCABAC.AutoSize = True
-        Me.cbCABAC.Location = New System.Drawing.Point(301, 26)
-        Me.cbCABAC.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbCABAC.Location = New System.Drawing.Point(567, 45)
+        Me.cbCABAC.Margin = New System.Windows.Forms.Padding(7)
         Me.cbCABAC.Name = "cbCABAC"
-        Me.cbCABAC.Size = New System.Drawing.Size(94, 29)
+        Me.cbCABAC.Size = New System.Drawing.Size(176, 52)
         Me.cbCABAC.TabIndex = 13
         Me.cbCABAC.Text = "CABAC"
         '
@@ -626,10 +626,10 @@ Class x264Form
         '
         Me.lMode2.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lMode2.AutoSize = True
-        Me.lMode2.Location = New System.Drawing.Point(4, 255)
-        Me.lMode2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lMode2.Location = New System.Drawing.Point(7, 433)
+        Me.lMode2.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lMode2.Name = "lMode2"
-        Me.lMode2.Size = New System.Drawing.Size(63, 25)
+        Me.lMode2.Size = New System.Drawing.Size(121, 48)
         Me.lMode2.TabIndex = 7
         Me.lMode2.Text = "Mode:"
         '
@@ -637,21 +637,21 @@ Class x264Form
         '
         Me.nudQP.DecimalPlaces = 1
         Me.nudQP.Enabled = False
-        Me.nudQP.Location = New System.Drawing.Point(89, 4)
-        Me.nudQP.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudQP.Location = New System.Drawing.Point(171, 7)
+        Me.nudQP.Margin = New System.Windows.Forms.Padding(7)
         Me.nudQP.Maximum = New Decimal(New Integer() {51, 0, 0, 0})
         Me.nudQP.Name = "nudQP"
-        Me.nudQP.Size = New System.Drawing.Size(117, 34)
+        Me.nudQP.Size = New System.Drawing.Size(213, 58)
         Me.nudQP.TabIndex = 5
         '
         'lQP
         '
         Me.lQP.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lQP.AutoSize = True
-        Me.lQP.Location = New System.Drawing.Point(4, 8)
-        Me.lQP.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lQP.Location = New System.Drawing.Point(7, 12)
+        Me.lQP.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lQP.Name = "lQP"
-        Me.lQP.Size = New System.Drawing.Size(77, 25)
+        Me.lQP.Size = New System.Drawing.Size(150, 48)
         Me.lQP.TabIndex = 0
         Me.lQP.Text = "Quality: "
         Me.lQP.TextAlign = System.Drawing.ContentAlignment.TopRight
@@ -659,38 +659,38 @@ Class x264Form
         'cbDCTDecimate
         '
         Me.cbDCTDecimate.AutoSize = True
-        Me.cbDCTDecimate.Location = New System.Drawing.Point(10, 62)
-        Me.cbDCTDecimate.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.cbDCTDecimate.Size = New System.Drawing.Size(150, 29)
+        Me.cbDCTDecimate.Location = New System.Drawing.Point(18, 106)
+        Me.cbDCTDecimate.Margin = New System.Windows.Forms.Padding(7)
+        Me.cbDCTDecimate.Size = New System.Drawing.Size(292, 52)
         Me.cbDCTDecimate.Text = "DCT Decimate"
         '
         'nudMeRange
         '
         Me.nudMeRange.Increment = New Decimal(New Integer() {8, 0, 0, 0})
-        Me.nudMeRange.Location = New System.Drawing.Point(147, 133)
-        Me.nudMeRange.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudMeRange.Location = New System.Drawing.Point(277, 228)
+        Me.nudMeRange.Margin = New System.Windows.Forms.Padding(7)
         Me.nudMeRange.Maximum = New Decimal(New Integer() {64, 0, 0, 0})
         Me.nudMeRange.Name = "nudMeRange"
-        Me.nudMeRange.Size = New System.Drawing.Size(90, 37)
+        Me.nudMeRange.Size = New System.Drawing.Size(164, 63)
         Me.nudMeRange.TabIndex = 5
         '
         'lMERange
         '
         Me.lMERange.AutoSize = True
-        Me.lMERange.Location = New System.Drawing.Point(8, 139)
-        Me.lMERange.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lMERange.Location = New System.Drawing.Point(15, 238)
+        Me.lMERange.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lMERange.Name = "lMERange"
-        Me.lMERange.Size = New System.Drawing.Size(104, 25)
+        Me.lMERange.Size = New System.Drawing.Size(204, 48)
         Me.lMERange.TabIndex = 3
         Me.lMERange.Text = "M.E. Range:"
         '
         'cbChromaInME
         '
         Me.cbChromaInME.AutoSize = True
-        Me.cbChromaInME.Location = New System.Drawing.Point(248, 137)
-        Me.cbChromaInME.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbChromaInME.Location = New System.Drawing.Point(461, 235)
+        Me.cbChromaInME.Margin = New System.Windows.Forms.Padding(7)
         Me.cbChromaInME.Name = "cbChromaInME"
-        Me.cbChromaInME.Size = New System.Drawing.Size(158, 29)
+        Me.cbChromaInME.Size = New System.Drawing.Size(306, 52)
         Me.cbChromaInME.TabIndex = 6
         Me.cbChromaInME.Text = "Chroma in M.E."
         Me.cbChromaInME.UseVisualStyleBackColor = True
@@ -698,10 +698,10 @@ Class x264Form
         'cbFastPSkip
         '
         Me.cbFastPSkip.AutoSize = True
-        Me.cbFastPSkip.Location = New System.Drawing.Point(10, 95)
-        Me.cbFastPSkip.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbFastPSkip.Location = New System.Drawing.Point(18, 163)
+        Me.cbFastPSkip.Margin = New System.Windows.Forms.Padding(7)
         Me.cbFastPSkip.Name = "cbFastPSkip"
-        Me.cbFastPSkip.Size = New System.Drawing.Size(123, 29)
+        Me.cbFastPSkip.Size = New System.Drawing.Size(235, 52)
         Me.cbFastPSkip.TabIndex = 2
         Me.cbFastPSkip.Text = "Fast P Skip"
         Me.cbFastPSkip.UseVisualStyleBackColor = True
@@ -709,10 +709,10 @@ Class x264Form
         'lMEAlgorithm
         '
         Me.lMEAlgorithm.AutoSize = True
-        Me.lMEAlgorithm.Location = New System.Drawing.Point(8, 99)
-        Me.lMEAlgorithm.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lMEAlgorithm.Location = New System.Drawing.Point(15, 170)
+        Me.lMEAlgorithm.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lMEAlgorithm.Name = "lMEAlgorithm"
-        Me.lMEAlgorithm.Size = New System.Drawing.Size(134, 25)
+        Me.lMEAlgorithm.Size = New System.Drawing.Size(263, 48)
         Me.lMEAlgorithm.TabIndex = 2
         Me.lMEAlgorithm.Text = "M.E. Algorithm:"
         '
@@ -720,39 +720,39 @@ Class x264Form
         '
         Me.cbMEMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbMEMethod.FormattingEnabled = True
-        Me.cbMEMethod.Location = New System.Drawing.Point(147, 95)
-        Me.cbMEMethod.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbMEMethod.Location = New System.Drawing.Point(277, 163)
+        Me.cbMEMethod.Margin = New System.Windows.Forms.Padding(7)
         Me.cbMEMethod.Name = "cbMEMethod"
-        Me.cbMEMethod.Size = New System.Drawing.Size(169, 33)
+        Me.cbMEMethod.Size = New System.Drawing.Size(304, 56)
         Me.cbMEMethod.TabIndex = 4
         '
         'cbTrellis
         '
         Me.cbTrellis.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbTrellis.FormattingEnabled = True
-        Me.cbTrellis.Location = New System.Drawing.Point(281, 31)
-        Me.cbTrellis.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbTrellis.Location = New System.Drawing.Point(511, 53)
+        Me.cbTrellis.Margin = New System.Windows.Forms.Padding(7)
         Me.cbTrellis.Name = "cbTrellis"
-        Me.cbTrellis.Size = New System.Drawing.Size(116, 33)
+        Me.cbTrellis.Size = New System.Drawing.Size(208, 56)
         Me.cbTrellis.TabIndex = 8
         '
         'lTrellis
         '
         Me.lTrellis.AutoSize = True
-        Me.lTrellis.Location = New System.Drawing.Point(215, 33)
-        Me.lTrellis.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lTrellis.Location = New System.Drawing.Point(391, 57)
+        Me.lTrellis.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lTrellis.Name = "lTrellis"
-        Me.lTrellis.Size = New System.Drawing.Size(58, 25)
+        Me.lTrellis.Size = New System.Drawing.Size(118, 48)
         Me.lTrellis.TabIndex = 6
         Me.lTrellis.Text = "Trellis:"
         '
         'cbMixedReferences
         '
         Me.cbMixedReferences.AutoSize = True
-        Me.cbMixedReferences.Location = New System.Drawing.Point(10, 31)
-        Me.cbMixedReferences.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbMixedReferences.Location = New System.Drawing.Point(18, 53)
+        Me.cbMixedReferences.Margin = New System.Windows.Forms.Padding(7)
         Me.cbMixedReferences.Name = "cbMixedReferences"
-        Me.cbMixedReferences.Size = New System.Drawing.Size(175, 29)
+        Me.cbMixedReferences.Size = New System.Drawing.Size(347, 52)
         Me.cbMixedReferences.TabIndex = 0
         Me.cbMixedReferences.Text = "Mixed References"
         Me.cbMixedReferences.UseVisualStyleBackColor = True
@@ -760,10 +760,10 @@ Class x264Form
         'lSubpixelRefinement
         '
         Me.lSubpixelRefinement.AutoSize = True
-        Me.lSubpixelRefinement.Location = New System.Drawing.Point(8, 26)
-        Me.lSubpixelRefinement.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lSubpixelRefinement.Location = New System.Drawing.Point(15, 45)
+        Me.lSubpixelRefinement.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lSubpixelRefinement.Name = "lSubpixelRefinement"
-        Me.lSubpixelRefinement.Size = New System.Drawing.Size(177, 25)
+        Me.lSubpixelRefinement.Size = New System.Drawing.Size(354, 48)
         Me.lSubpixelRefinement.TabIndex = 0
         Me.lSubpixelRefinement.Text = "Subpixel Refinement:"
         '
@@ -773,20 +773,20 @@ Class x264Form
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cbSubME.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbSubME.FormattingEnabled = True
-        Me.cbSubME.Location = New System.Drawing.Point(12, 56)
-        Me.cbSubME.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbSubME.Location = New System.Drawing.Point(22, 96)
+        Me.cbSubME.Margin = New System.Windows.Forms.Padding(7)
         Me.cbSubME.MaxDropDownItems = 30
         Me.cbSubME.Name = "cbSubME"
-        Me.cbSubME.Size = New System.Drawing.Size(419, 33)
+        Me.cbSubME.Size = New System.Drawing.Size(755, 56)
         Me.cbSubME.TabIndex = 1
         '
         'lDirectMode
         '
         Me.lDirectMode.AutoSize = True
-        Me.lDirectMode.Location = New System.Drawing.Point(10, 26)
-        Me.lDirectMode.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lDirectMode.Location = New System.Drawing.Point(18, 45)
+        Me.lDirectMode.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lDirectMode.Name = "lDirectMode"
-        Me.lDirectMode.Size = New System.Drawing.Size(114, 25)
+        Me.lDirectMode.Size = New System.Drawing.Size(226, 48)
         Me.lDirectMode.TabIndex = 0
         Me.lDirectMode.Text = "Direct Mode:"
         '
@@ -794,60 +794,60 @@ Class x264Form
         '
         Me.cbDirectMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbDirectMode.FormattingEnabled = True
-        Me.cbDirectMode.Location = New System.Drawing.Point(10, 58)
-        Me.cbDirectMode.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbDirectMode.Location = New System.Drawing.Point(18, 99)
+        Me.cbDirectMode.Margin = New System.Windows.Forms.Padding(7)
         Me.cbDirectMode.Name = "cbDirectMode"
-        Me.cbDirectMode.Size = New System.Drawing.Size(114, 33)
+        Me.cbDirectMode.Size = New System.Drawing.Size(204, 56)
         Me.cbDirectMode.TabIndex = 1
         '
         'cbWeightB
         '
         Me.cbWeightB.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cbWeightB.AutoSize = True
-        Me.cbWeightB.Location = New System.Drawing.Point(199, 59)
-        Me.cbWeightB.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbWeightB.Location = New System.Drawing.Point(322, 101)
+        Me.cbWeightB.Margin = New System.Windows.Forms.Padding(7)
         Me.cbWeightB.Name = "cbWeightB"
-        Me.cbWeightB.Size = New System.Drawing.Size(227, 29)
+        Me.cbWeightB.Size = New System.Drawing.Size(448, 52)
         Me.cbWeightB.TabIndex = 4
         Me.cbWeightB.Text = "Weighted Pred. B-frame"
         '
         'nudBFramesBias
         '
-        Me.nudBFramesBias.Location = New System.Drawing.Point(112, 171)
-        Me.nudBFramesBias.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudBFramesBias.Location = New System.Drawing.Point(215, 293)
+        Me.nudBFramesBias.Margin = New System.Windows.Forms.Padding(7)
         Me.nudBFramesBias.Minimum = New Decimal(New Integer() {100, 0, 0, -2147483648})
         Me.nudBFramesBias.Name = "nudBFramesBias"
-        Me.nudBFramesBias.Size = New System.Drawing.Size(90, 37)
+        Me.nudBFramesBias.Size = New System.Drawing.Size(164, 63)
         Me.nudBFramesBias.TabIndex = 7
         '
         'lBias
         '
         Me.lBias.AutoSize = True
-        Me.lBias.Location = New System.Drawing.Point(14, 176)
-        Me.lBias.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lBias.Location = New System.Drawing.Point(25, 302)
+        Me.lBias.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lBias.Name = "lBias"
-        Me.lBias.Size = New System.Drawing.Size(47, 25)
+        Me.lBias.Size = New System.Drawing.Size(91, 48)
         Me.lBias.TabIndex = 6
         Me.lBias.Text = "Bias:"
         '
         'nudQPCompCheck
         '
         Me.nudQPCompCheck.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.nudQPCompCheck.Location = New System.Drawing.Point(447, 197)
-        Me.nudQPCompCheck.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudQPCompCheck.Location = New System.Drawing.Point(840, 329)
+        Me.nudQPCompCheck.Margin = New System.Windows.Forms.Padding(7)
         Me.nudQPCompCheck.Maximum = New Decimal(New Integer() {51, 0, 0, 0})
         Me.nudQPCompCheck.Name = "nudQPCompCheck"
-        Me.nudQPCompCheck.Size = New System.Drawing.Size(90, 37)
+        Me.nudQPCompCheck.Size = New System.Drawing.Size(164, 63)
         Me.nudQPCompCheck.TabIndex = 3
         '
         'lCRFValueDefining100Quality
         '
         Me.lCRFValueDefining100Quality.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lCRFValueDefining100Quality.AutoSize = True
-        Me.lCRFValueDefining100Quality.Location = New System.Drawing.Point(212, 203)
-        Me.lCRFValueDefining100Quality.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lCRFValueDefining100Quality.Location = New System.Drawing.Point(385, 339)
+        Me.lCRFValueDefining100Quality.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lCRFValueDefining100Quality.Name = "lCRFValueDefining100Quality"
-        Me.lCRFValueDefining100Quality.Size = New System.Drawing.Size(229, 25)
+        Me.lCRFValueDefining100Quality.Size = New System.Drawing.Size(450, 48)
         Me.lCRFValueDefining100Quality.TabIndex = 0
         Me.lCRFValueDefining100Quality.Text = "CRF value for 100% quality:"
         '
@@ -855,10 +855,10 @@ Class x264Form
         '
         Me.lAimedQuality.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lAimedQuality.AutoSize = True
-        Me.lAimedQuality.Location = New System.Drawing.Point(212, 158)
-        Me.lAimedQuality.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lAimedQuality.Location = New System.Drawing.Point(385, 262)
+        Me.lAimedQuality.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lAimedQuality.Name = "lAimedQuality"
-        Me.lAimedQuality.Size = New System.Drawing.Size(159, 25)
+        Me.lAimedQuality.Size = New System.Drawing.Size(314, 48)
         Me.lAimedQuality.TabIndex = 1
         Me.lAimedQuality.Text = "Aimed Quality (%):"
         '
@@ -866,11 +866,11 @@ Class x264Form
         '
         Me.nudPercent.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.nudPercent.Increment = New Decimal(New Integer() {5, 0, 0, 0})
-        Me.nudPercent.Location = New System.Drawing.Point(447, 151)
-        Me.nudPercent.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudPercent.Location = New System.Drawing.Point(840, 250)
+        Me.nudPercent.Margin = New System.Windows.Forms.Padding(7)
         Me.nudPercent.Maximum = New Decimal(New Integer() {200, 0, 0, 0})
         Me.nudPercent.Name = "nudPercent"
-        Me.nudPercent.Size = New System.Drawing.Size(90, 37)
+        Me.nudPercent.Size = New System.Drawing.Size(164, 63)
         Me.nudPercent.TabIndex = 2
         '
         'rtbCommandLine
@@ -880,11 +880,11 @@ Class x264Form
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.rtbCommandLine.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.rtbCommandLine.LastCommandLine = Nothing
-        Me.rtbCommandLine.Location = New System.Drawing.Point(8, 453)
-        Me.rtbCommandLine.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.rtbCommandLine.Location = New System.Drawing.Point(15, 777)
+        Me.rtbCommandLine.Margin = New System.Windows.Forms.Padding(7)
         Me.rtbCommandLine.Name = "rtbCommandLine"
         Me.rtbCommandLine.ReadOnly = True
-        Me.rtbCommandLine.Size = New System.Drawing.Size(911, 38)
+        Me.rtbCommandLine.Size = New System.Drawing.Size(1656, 65)
         Me.rtbCommandLine.TabIndex = 1
         Me.rtbCommandLine.Text = ""
         '
@@ -903,24 +903,24 @@ Class x264Form
         Me.tcMain.Controls.Add(Me.tpRateControl)
         Me.tcMain.Controls.Add(Me.tpMisc)
         Me.tcMain.Controls.Add(Me.tpCommandLine)
-        Me.tcMain.Controls.Add(Me.tpStaxrip)
-        Me.tcMain.Location = New System.Drawing.Point(8, 9)
-        Me.tcMain.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tcMain.Controls.Add(Me.tpOther)
+        Me.tcMain.Location = New System.Drawing.Point(15, 15)
+        Me.tcMain.Margin = New System.Windows.Forms.Padding(7)
         Me.tcMain.Name = "tcMain"
         Me.tcMain.SelectedIndex = 0
-        Me.tcMain.Size = New System.Drawing.Size(911, 436)
+        Me.tcMain.Size = New System.Drawing.Size(1656, 747)
         Me.tcMain.TabIndex = 0
         '
         'tpBasic
         '
         Me.tpBasic.Controls.Add(Me.TableLayoutPanel7)
-        Me.tpBasic.Location = New System.Drawing.Point(4, 34)
-        Me.tpBasic.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tpBasic.Location = New System.Drawing.Point(12, 69)
+        Me.tpBasic.Margin = New System.Windows.Forms.Padding(7)
         Me.tpBasic.Name = "tpBasic"
-        Me.tpBasic.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.tpBasic.Size = New System.Drawing.Size(903, 398)
+        Me.tpBasic.Padding = New System.Windows.Forms.Padding(7)
+        Me.tpBasic.Size = New System.Drawing.Size(1632, 666)
         Me.tpBasic.TabIndex = 0
-        Me.tpBasic.Text = "Basic"
+        Me.tpBasic.Text = "   Basic   "
         Me.tpBasic.UseVisualStyleBackColor = True
         '
         'TableLayoutPanel7
@@ -929,12 +929,12 @@ Class x264Form
         Me.TableLayoutPanel7.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel7.Controls.Add(Me.TableLayoutPanel6, 0, 0)
         Me.TableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel7.Location = New System.Drawing.Point(4, 4)
-        Me.TableLayoutPanel7.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.TableLayoutPanel7.Location = New System.Drawing.Point(7, 7)
+        Me.TableLayoutPanel7.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.TableLayoutPanel7.Name = "TableLayoutPanel7"
         Me.TableLayoutPanel7.RowCount = 1
         Me.TableLayoutPanel7.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel7.Size = New System.Drawing.Size(895, 390)
+        Me.TableLayoutPanel7.Size = New System.Drawing.Size(1618, 652)
         Me.TableLayoutPanel7.TabIndex = 23
         '
         'TableLayoutPanel6
@@ -945,7 +945,7 @@ Class x264Form
         Me.TableLayoutPanel6.ColumnCount = 3
         Me.TableLayoutPanel6.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.TableLayoutPanel6.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TableLayoutPanel6.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90.0!))
+        Me.TableLayoutPanel6.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 164.0!))
         Me.TableLayoutPanel6.Controls.Add(Me.lQP, 0, 0)
         Me.TableLayoutPanel6.Controls.Add(Me.cbSlowFirstpass, 0, 7)
         Me.TableLayoutPanel6.Controls.Add(Me.cbMode, 1, 6)
@@ -961,8 +961,8 @@ Class x264Form
         Me.TableLayoutPanel6.Controls.Add(Me.lTune, 0, 2)
         Me.TableLayoutPanel6.Controls.Add(Me.lDevice, 0, 3)
         Me.TableLayoutPanel6.Controls.Add(Me.cbTune, 1, 2)
-        Me.TableLayoutPanel6.Location = New System.Drawing.Point(296, 32)
-        Me.TableLayoutPanel6.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.TableLayoutPanel6.Location = New System.Drawing.Point(531, 47)
+        Me.TableLayoutPanel6.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.TableLayoutPanel6.Name = "TableLayoutPanel6"
         Me.TableLayoutPanel6.RowCount = 8
         Me.TableLayoutPanel6.RowStyles.Add(New System.Windows.Forms.RowStyle())
@@ -973,17 +973,17 @@ Class x264Form
         Me.TableLayoutPanel6.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel6.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel6.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel6.Size = New System.Drawing.Size(302, 325)
+        Me.TableLayoutPanel6.Size = New System.Drawing.Size(555, 558)
         Me.TableLayoutPanel6.TabIndex = 22
         '
         'cbSlowFirstpass
         '
         Me.cbSlowFirstpass.AutoSize = True
         Me.TableLayoutPanel6.SetColumnSpan(Me.cbSlowFirstpass, 2)
-        Me.cbSlowFirstpass.Location = New System.Drawing.Point(4, 292)
-        Me.cbSlowFirstpass.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbSlowFirstpass.Location = New System.Drawing.Point(7, 499)
+        Me.cbSlowFirstpass.Margin = New System.Windows.Forms.Padding(7)
         Me.cbSlowFirstpass.Name = "cbSlowFirstpass"
-        Me.cbSlowFirstpass.Size = New System.Drawing.Size(150, 29)
+        Me.cbSlowFirstpass.Size = New System.Drawing.Size(287, 52)
         Me.cbSlowFirstpass.TabIndex = 12
         Me.cbSlowFirstpass.Text = "Slow Firstpass"
         Me.cbSlowFirstpass.UseVisualStyleBackColor = True
@@ -992,32 +992,32 @@ Class x264Form
         '
         Me.cbMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbMode.FormattingEnabled = True
-        Me.cbMode.Location = New System.Drawing.Point(89, 251)
-        Me.cbMode.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbMode.Location = New System.Drawing.Point(171, 429)
+        Me.cbMode.Margin = New System.Windows.Forms.Padding(7)
         Me.cbMode.MaxDropDownItems = 20
         Me.cbMode.Name = "cbMode"
-        Me.cbMode.Size = New System.Drawing.Size(119, 33)
+        Me.cbMode.Size = New System.Drawing.Size(213, 56)
         Me.cbMode.TabIndex = 11
         '
         'cbDepth
         '
         Me.cbDepth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbDepth.FormattingEnabled = True
-        Me.cbDepth.Location = New System.Drawing.Point(89, 210)
-        Me.cbDepth.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbDepth.Location = New System.Drawing.Point(171, 359)
+        Me.cbDepth.Margin = New System.Windows.Forms.Padding(7)
         Me.cbDepth.MaxDropDownItems = 20
         Me.cbDepth.Name = "cbDepth"
-        Me.cbDepth.Size = New System.Drawing.Size(119, 33)
+        Me.cbDepth.Size = New System.Drawing.Size(213, 56)
         Me.cbDepth.TabIndex = 21
         '
         'Label4
         '
         Me.Label4.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(4, 214)
-        Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label4.Location = New System.Drawing.Point(7, 363)
+        Me.Label4.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(65, 25)
+        Me.Label4.Size = New System.Drawing.Size(125, 48)
         Me.Label4.TabIndex = 20
         Me.Label4.Text = "Depth:"
         '
@@ -1025,10 +1025,10 @@ Class x264Form
         '
         Me.lPreset.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lPreset.AutoSize = True
-        Me.lPreset.Location = New System.Drawing.Point(4, 50)
-        Me.lPreset.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lPreset.Location = New System.Drawing.Point(7, 83)
+        Me.lPreset.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lPreset.Name = "lPreset"
-        Me.lPreset.Size = New System.Drawing.Size(64, 25)
+        Me.lPreset.Size = New System.Drawing.Size(126, 48)
         Me.lPreset.TabIndex = 1
         Me.lPreset.Text = "Preset:"
         '
@@ -1036,43 +1036,43 @@ Class x264Form
         '
         Me.cbPreset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbPreset.FormattingEnabled = True
-        Me.cbPreset.Location = New System.Drawing.Point(89, 46)
-        Me.cbPreset.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbPreset.Location = New System.Drawing.Point(171, 79)
+        Me.cbPreset.Margin = New System.Windows.Forms.Padding(7)
         Me.cbPreset.MaxDropDownItems = 20
         Me.cbPreset.Name = "cbPreset"
-        Me.cbPreset.Size = New System.Drawing.Size(119, 33)
+        Me.cbPreset.Size = New System.Drawing.Size(213, 56)
         Me.cbPreset.TabIndex = 6
         '
         'cbDevice
         '
         Me.cbDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbDevice.FormattingEnabled = True
-        Me.cbDevice.Location = New System.Drawing.Point(89, 128)
-        Me.cbDevice.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbDevice.Location = New System.Drawing.Point(171, 219)
+        Me.cbDevice.Margin = New System.Windows.Forms.Padding(7)
         Me.cbDevice.MaxDropDownItems = 20
         Me.cbDevice.Name = "cbDevice"
-        Me.cbDevice.Size = New System.Drawing.Size(119, 33)
+        Me.cbDevice.Size = New System.Drawing.Size(213, 56)
         Me.cbDevice.TabIndex = 9
         '
         'cbProfile
         '
         Me.cbProfile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbProfile.FormattingEnabled = True
-        Me.cbProfile.Location = New System.Drawing.Point(89, 169)
-        Me.cbProfile.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbProfile.Location = New System.Drawing.Point(171, 289)
+        Me.cbProfile.Margin = New System.Windows.Forms.Padding(7)
         Me.cbProfile.MaxDropDownItems = 20
         Me.cbProfile.Name = "cbProfile"
-        Me.cbProfile.Size = New System.Drawing.Size(119, 33)
+        Me.cbProfile.Size = New System.Drawing.Size(213, 56)
         Me.cbProfile.TabIndex = 10
         '
         'lProfile
         '
         Me.lProfile.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lProfile.AutoSize = True
-        Me.lProfile.Location = New System.Drawing.Point(4, 173)
-        Me.lProfile.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lProfile.Location = New System.Drawing.Point(7, 293)
+        Me.lProfile.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lProfile.Name = "lProfile"
-        Me.lProfile.Size = New System.Drawing.Size(66, 25)
+        Me.lProfile.Size = New System.Drawing.Size(130, 48)
         Me.lProfile.TabIndex = 4
         Me.lProfile.Text = "Profile:"
         '
@@ -1080,10 +1080,10 @@ Class x264Form
         '
         Me.lTune.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lTune.AutoSize = True
-        Me.lTune.Location = New System.Drawing.Point(4, 91)
-        Me.lTune.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lTune.Location = New System.Drawing.Point(7, 153)
+        Me.lTune.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lTune.Name = "lTune"
-        Me.lTune.Size = New System.Drawing.Size(54, 25)
+        Me.lTune.Size = New System.Drawing.Size(106, 48)
         Me.lTune.TabIndex = 2
         Me.lTune.Text = "Tune:"
         '
@@ -1091,10 +1091,10 @@ Class x264Form
         '
         Me.lDevice.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lDevice.AutoSize = True
-        Me.lDevice.Location = New System.Drawing.Point(4, 132)
-        Me.lDevice.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lDevice.Location = New System.Drawing.Point(7, 223)
+        Me.lDevice.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lDevice.Name = "lDevice"
-        Me.lDevice.Size = New System.Drawing.Size(73, 25)
+        Me.lDevice.Size = New System.Drawing.Size(144, 48)
         Me.lDevice.TabIndex = 3
         Me.lDevice.Text = "Device: "
         '
@@ -1102,23 +1102,23 @@ Class x264Form
         '
         Me.cbTune.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbTune.FormattingEnabled = True
-        Me.cbTune.Location = New System.Drawing.Point(89, 87)
-        Me.cbTune.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbTune.Location = New System.Drawing.Point(171, 149)
+        Me.cbTune.Margin = New System.Windows.Forms.Padding(7)
         Me.cbTune.MaxDropDownItems = 20
         Me.cbTune.Name = "cbTune"
-        Me.cbTune.Size = New System.Drawing.Size(119, 33)
+        Me.cbTune.Size = New System.Drawing.Size(213, 56)
         Me.cbTune.TabIndex = 8
         '
         'tpAnalysis
         '
         Me.tpAnalysis.Controls.Add(Me.TableLayoutPanel1)
-        Me.tpAnalysis.Location = New System.Drawing.Point(4, 34)
-        Me.tpAnalysis.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tpAnalysis.Location = New System.Drawing.Point(12, 69)
+        Me.tpAnalysis.Margin = New System.Windows.Forms.Padding(7)
         Me.tpAnalysis.Name = "tpAnalysis"
-        Me.tpAnalysis.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.tpAnalysis.Size = New System.Drawing.Size(903, 398)
+        Me.tpAnalysis.Padding = New System.Windows.Forms.Padding(7)
+        Me.tpAnalysis.Size = New System.Drawing.Size(1632, 666)
         Me.tpAnalysis.TabIndex = 1
-        Me.tpAnalysis.Text = "Analysis"
+        Me.tpAnalysis.Text = "  Analysis  "
         Me.tpAnalysis.UseVisualStyleBackColor = True
         '
         'TableLayoutPanel1
@@ -1131,12 +1131,13 @@ Class x264Form
         Me.TableLayoutPanel1.Controls.Add(Me.gbMotionEstimation, 0, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.gbAnalysisMisc, 1, 1)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel1.Location = New System.Drawing.Point(4, 4)
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(7, 7)
+        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(5)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(895, 390)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1618, 652)
         Me.TableLayoutPanel1.TabIndex = 0
         '
         'gbQuantOptions
@@ -1152,11 +1153,11 @@ Class x264Form
         Me.gbQuantOptions.Controls.Add(Me.cbDCTDecimate)
         Me.gbQuantOptions.Controls.Add(Me.cbFastPSkip)
         Me.gbQuantOptions.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbQuantOptions.Location = New System.Drawing.Point(451, 4)
-        Me.gbQuantOptions.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.gbQuantOptions.Location = New System.Drawing.Point(816, 7)
+        Me.gbQuantOptions.Margin = New System.Windows.Forms.Padding(7)
         Me.gbQuantOptions.Name = "gbQuantOptions"
-        Me.gbQuantOptions.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.gbQuantOptions.Size = New System.Drawing.Size(440, 187)
+        Me.gbQuantOptions.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbQuantOptions.Size = New System.Drawing.Size(795, 312)
         Me.gbQuantOptions.TabIndex = 2
         Me.gbQuantOptions.TabStop = False
         Me.gbQuantOptions.Text = "Quant Options"
@@ -1164,10 +1165,10 @@ Class x264Form
         'lPsyRD
         '
         Me.lPsyRD.AutoSize = True
-        Me.lPsyRD.Location = New System.Drawing.Point(100, 130)
-        Me.lPsyRD.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lPsyRD.Location = New System.Drawing.Point(182, 223)
+        Me.lPsyRD.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lPsyRD.Name = "lPsyRD"
-        Me.lPsyRD.Size = New System.Drawing.Size(40, 25)
+        Me.lPsyRD.Size = New System.Drawing.Size(75, 48)
         Me.lPsyRD.TabIndex = 4
         Me.lPsyRD.Text = "RD:"
         '
@@ -1175,40 +1176,40 @@ Class x264Form
         '
         Me.nudPsyTrellis.DecimalPlaces = 2
         Me.nudPsyTrellis.Increment = New Decimal(New Integer() {1, 0, 0, 65536})
-        Me.nudPsyTrellis.Location = New System.Drawing.Point(307, 124)
-        Me.nudPsyTrellis.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudPsyTrellis.Location = New System.Drawing.Point(558, 213)
+        Me.nudPsyTrellis.Margin = New System.Windows.Forms.Padding(7)
         Me.nudPsyTrellis.Name = "nudPsyTrellis"
-        Me.nudPsyTrellis.Size = New System.Drawing.Size(90, 37)
+        Me.nudPsyTrellis.Size = New System.Drawing.Size(164, 63)
         Me.nudPsyTrellis.TabIndex = 9
         '
         'nudPsyRD
         '
         Me.nudPsyRD.DecimalPlaces = 2
         Me.nudPsyRD.Increment = New Decimal(New Integer() {1, 0, 0, 65536})
-        Me.nudPsyRD.Location = New System.Drawing.Point(144, 124)
-        Me.nudPsyRD.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudPsyRD.Location = New System.Drawing.Point(262, 213)
+        Me.nudPsyRD.Margin = New System.Windows.Forms.Padding(7)
         Me.nudPsyRD.Maximum = New Decimal(New Integer() {2, 0, 0, 0})
         Me.nudPsyRD.Name = "nudPsyRD"
-        Me.nudPsyRD.Size = New System.Drawing.Size(90, 37)
+        Me.nudPsyRD.Size = New System.Drawing.Size(164, 63)
         Me.nudPsyRD.TabIndex = 5
         '
         'lPsyTrellis
         '
         Me.lPsyTrellis.AutoSize = True
-        Me.lPsyTrellis.Location = New System.Drawing.Point(243, 130)
-        Me.lPsyTrellis.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lPsyTrellis.Location = New System.Drawing.Point(442, 223)
+        Me.lPsyTrellis.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lPsyTrellis.Name = "lPsyTrellis"
-        Me.lPsyTrellis.Size = New System.Drawing.Size(58, 25)
+        Me.lPsyTrellis.Size = New System.Drawing.Size(118, 48)
         Me.lPsyTrellis.TabIndex = 7
         Me.lPsyTrellis.Text = "Trellis:"
         '
         'cbPsy
         '
         Me.cbPsy.AutoSize = True
-        Me.cbPsy.Location = New System.Drawing.Point(10, 128)
-        Me.cbPsy.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbPsy.Location = New System.Drawing.Point(18, 219)
+        Me.cbPsy.Margin = New System.Windows.Forms.Padding(7)
         Me.cbPsy.Name = "cbPsy"
-        Me.cbPsy.Size = New System.Drawing.Size(65, 29)
+        Me.cbPsy.Size = New System.Drawing.Size(118, 52)
         Me.cbPsy.TabIndex = 3
         Me.cbPsy.Text = "Psy"
         Me.cbPsy.UseVisualStyleBackColor = True
@@ -1222,11 +1223,11 @@ Class x264Form
         Me.gbPartitions.Controls.Add(Me.cbI8x8)
         Me.gbPartitions.Controls.Add(Me.cbb8x8)
         Me.gbPartitions.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbPartitions.Location = New System.Drawing.Point(4, 199)
-        Me.gbPartitions.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.gbPartitions.Location = New System.Drawing.Point(7, 333)
+        Me.gbPartitions.Margin = New System.Windows.Forms.Padding(7)
         Me.gbPartitions.Name = "gbPartitions"
-        Me.gbPartitions.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.gbPartitions.Size = New System.Drawing.Size(439, 187)
+        Me.gbPartitions.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbPartitions.Size = New System.Drawing.Size(795, 312)
         Me.gbPartitions.TabIndex = 1
         Me.gbPartitions.TabStop = False
         Me.gbPartitions.Text = "Partitions"
@@ -1234,60 +1235,60 @@ Class x264Form
         'cbP4x4
         '
         Me.cbP4x4.AutoSize = True
-        Me.cbP4x4.Location = New System.Drawing.Point(14, 64)
-        Me.cbP4x4.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbP4x4.Location = New System.Drawing.Point(25, 110)
+        Me.cbP4x4.Margin = New System.Windows.Forms.Padding(7)
         Me.cbP4x4.Name = "cbP4x4"
-        Me.cbP4x4.Size = New System.Drawing.Size(76, 29)
+        Me.cbP4x4.Size = New System.Drawing.Size(141, 52)
         Me.cbP4x4.TabIndex = 0
         Me.cbP4x4.Text = "P4x4"
         '
         'cbi4x4
         '
         Me.cbi4x4.AutoSize = True
-        Me.cbi4x4.Location = New System.Drawing.Point(14, 97)
-        Me.cbi4x4.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbi4x4.Location = New System.Drawing.Point(25, 166)
+        Me.cbi4x4.Margin = New System.Windows.Forms.Padding(7)
         Me.cbi4x4.Name = "cbi4x4"
-        Me.cbi4x4.Size = New System.Drawing.Size(71, 29)
+        Me.cbi4x4.Size = New System.Drawing.Size(131, 52)
         Me.cbi4x4.TabIndex = 1
         Me.cbi4x4.Text = "I4x4"
         '
         'cb8x8DCT
         '
         Me.cb8x8DCT.AutoSize = True
-        Me.cb8x8DCT.Location = New System.Drawing.Point(196, 97)
-        Me.cb8x8DCT.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cb8x8DCT.Location = New System.Drawing.Point(356, 166)
+        Me.cb8x8DCT.Margin = New System.Windows.Forms.Padding(7)
         Me.cb8x8DCT.Name = "cb8x8DCT"
-        Me.cb8x8DCT.Size = New System.Drawing.Size(104, 29)
+        Me.cb8x8DCT.Size = New System.Drawing.Size(197, 52)
         Me.cb8x8DCT.TabIndex = 5
         Me.cb8x8DCT.Text = "8x8 DCT"
         '
         'cbP8x8
         '
         Me.cbP8x8.AutoSize = True
-        Me.cbP8x8.Location = New System.Drawing.Point(103, 64)
-        Me.cbP8x8.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbP8x8.Location = New System.Drawing.Point(187, 110)
+        Me.cbP8x8.Margin = New System.Windows.Forms.Padding(7)
         Me.cbP8x8.Name = "cbP8x8"
-        Me.cbP8x8.Size = New System.Drawing.Size(76, 29)
+        Me.cbP8x8.Size = New System.Drawing.Size(141, 52)
         Me.cbP8x8.TabIndex = 2
         Me.cbP8x8.Text = "P8x8"
         '
         'cbI8x8
         '
         Me.cbI8x8.AutoSize = True
-        Me.cbI8x8.Location = New System.Drawing.Point(196, 64)
-        Me.cbI8x8.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbI8x8.Location = New System.Drawing.Point(356, 110)
+        Me.cbI8x8.Margin = New System.Windows.Forms.Padding(7)
         Me.cbI8x8.Name = "cbI8x8"
-        Me.cbI8x8.Size = New System.Drawing.Size(71, 29)
+        Me.cbI8x8.Size = New System.Drawing.Size(131, 52)
         Me.cbI8x8.TabIndex = 4
         Me.cbI8x8.Text = "I8x8"
         '
         'cbb8x8
         '
         Me.cbb8x8.AutoSize = True
-        Me.cbb8x8.Location = New System.Drawing.Point(103, 97)
-        Me.cbb8x8.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbb8x8.Location = New System.Drawing.Point(187, 166)
+        Me.cbb8x8.Margin = New System.Windows.Forms.Padding(7)
         Me.cbb8x8.Name = "cbb8x8"
-        Me.cbb8x8.Size = New System.Drawing.Size(76, 29)
+        Me.cbb8x8.Size = New System.Drawing.Size(142, 52)
         Me.cbb8x8.TabIndex = 3
         Me.cbb8x8.Text = "B8x8"
         '
@@ -1301,11 +1302,11 @@ Class x264Form
         Me.gbMotionEstimation.Controls.Add(Me.cbChromaInME)
         Me.gbMotionEstimation.Controls.Add(Me.lMEAlgorithm)
         Me.gbMotionEstimation.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbMotionEstimation.Location = New System.Drawing.Point(4, 4)
-        Me.gbMotionEstimation.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.gbMotionEstimation.Location = New System.Drawing.Point(7, 7)
+        Me.gbMotionEstimation.Margin = New System.Windows.Forms.Padding(7)
         Me.gbMotionEstimation.Name = "gbMotionEstimation"
-        Me.gbMotionEstimation.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.gbMotionEstimation.Size = New System.Drawing.Size(439, 187)
+        Me.gbMotionEstimation.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbMotionEstimation.Size = New System.Drawing.Size(795, 312)
         Me.gbMotionEstimation.TabIndex = 0
         Me.gbMotionEstimation.TabStop = False
         Me.gbMotionEstimation.Text = "Motion Estimation"
@@ -1320,11 +1321,11 @@ Class x264Form
         Me.gbAnalysisMisc.Controls.Add(Me.cbWeightB)
         Me.gbAnalysisMisc.Controls.Add(Me.lDirectMode)
         Me.gbAnalysisMisc.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbAnalysisMisc.Location = New System.Drawing.Point(451, 199)
-        Me.gbAnalysisMisc.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.gbAnalysisMisc.Location = New System.Drawing.Point(816, 333)
+        Me.gbAnalysisMisc.Margin = New System.Windows.Forms.Padding(7)
         Me.gbAnalysisMisc.Name = "gbAnalysisMisc"
-        Me.gbAnalysisMisc.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.gbAnalysisMisc.Size = New System.Drawing.Size(440, 187)
+        Me.gbAnalysisMisc.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbAnalysisMisc.Size = New System.Drawing.Size(795, 312)
         Me.gbAnalysisMisc.TabIndex = 3
         Me.gbAnalysisMisc.TabStop = False
         Me.gbAnalysisMisc.Text = "Misc"
@@ -1333,20 +1334,19 @@ Class x264Form
         '
         Me.cbWeightP.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbWeightP.FormattingEnabled = True
-        Me.cbWeightP.Location = New System.Drawing.Point(10, 133)
-        Me.cbWeightP.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbWeightP.Location = New System.Drawing.Point(18, 228)
+        Me.cbWeightP.Margin = New System.Windows.Forms.Padding(7)
         Me.cbWeightP.Name = "cbWeightP"
-        Me.cbWeightP.Size = New System.Drawing.Size(114, 33)
+        Me.cbWeightP.Size = New System.Drawing.Size(204, 56)
         Me.cbWeightP.TabIndex = 3
         '
         'lWeightP
         '
-        Me.lWeightP.Anchor = AnchorStyles.Left Or AnchorStyles.Top
         Me.lWeightP.AutoSize = True
-        Me.lWeightP.Location = New System.Drawing.Point(10, 101)
-        Me.lWeightP.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lWeightP.Location = New System.Drawing.Point(18, 173)
+        Me.lWeightP.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lWeightP.Name = "lWeightP"
-        Me.lWeightP.Size = New System.Drawing.Size(201, 25)
+        Me.lWeightP.Size = New System.Drawing.Size(401, 48)
         Me.lWeightP.TabIndex = 2
         Me.lWeightP.Text = "Weighted Pred. P-frame"
         '
@@ -1354,33 +1354,33 @@ Class x264Form
         '
         Me.nudNoiseReduction.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.nudNoiseReduction.Increment = New Decimal(New Integer() {100, 0, 0, 0})
-        Me.nudNoiseReduction.Location = New System.Drawing.Point(267, 132)
-        Me.nudNoiseReduction.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudNoiseReduction.Location = New System.Drawing.Point(481, 226)
+        Me.nudNoiseReduction.Margin = New System.Windows.Forms.Padding(7)
         Me.nudNoiseReduction.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         Me.nudNoiseReduction.Name = "nudNoiseReduction"
-        Me.nudNoiseReduction.Size = New System.Drawing.Size(90, 37)
+        Me.nudNoiseReduction.Size = New System.Drawing.Size(164, 63)
         Me.nudNoiseReduction.TabIndex = 6
         '
         'lNoiseReduction
         '
         Me.lNoiseReduction.AutoSize = True
-        Me.lNoiseReduction.Location = New System.Drawing.Point(263, 101)
-        Me.lNoiseReduction.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lNoiseReduction.Location = New System.Drawing.Point(478, 173)
+        Me.lNoiseReduction.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lNoiseReduction.Name = "lNoiseReduction"
-        Me.lNoiseReduction.Size = New System.Drawing.Size(145, 25)
+        Me.lNoiseReduction.Size = New System.Drawing.Size(289, 48)
         Me.lNoiseReduction.TabIndex = 5
         Me.lNoiseReduction.Text = "Noise Reduction:"
         '
         'tpFrameOptions
         '
         Me.tpFrameOptions.Controls.Add(Me.TableLayoutPanel2)
-        Me.tpFrameOptions.Location = New System.Drawing.Point(4, 34)
-        Me.tpFrameOptions.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tpFrameOptions.Location = New System.Drawing.Point(12, 69)
+        Me.tpFrameOptions.Margin = New System.Windows.Forms.Padding(7)
         Me.tpFrameOptions.Name = "tpFrameOptions"
-        Me.tpFrameOptions.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.tpFrameOptions.Size = New System.Drawing.Size(903, 398)
+        Me.tpFrameOptions.Padding = New System.Windows.Forms.Padding(7)
+        Me.tpFrameOptions.Size = New System.Drawing.Size(1632, 666)
         Me.tpFrameOptions.TabIndex = 2
-        Me.tpFrameOptions.Text = "Frame Options"
+        Me.tpFrameOptions.Text = " Frame Options "
         Me.tpFrameOptions.UseVisualStyleBackColor = True
         '
         'TableLayoutPanel2
@@ -1391,11 +1391,12 @@ Class x264Form
         Me.TableLayoutPanel2.Controls.Add(Me.gbBFrames, 0, 0)
         Me.TableLayoutPanel2.Controls.Add(Me.gbFrameOptions, 1, 0)
         Me.TableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel2.Location = New System.Drawing.Point(4, 4)
+        Me.TableLayoutPanel2.Location = New System.Drawing.Point(7, 7)
+        Me.TableLayoutPanel2.Margin = New System.Windows.Forms.Padding(5)
         Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
         Me.TableLayoutPanel2.RowCount = 1
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(895, 390)
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(1618, 652)
         Me.TableLayoutPanel2.TabIndex = 0
         '
         'gbBFrames
@@ -1409,11 +1410,11 @@ Class x264Form
         Me.gbBFrames.Controls.Add(Me.lBias)
         Me.gbBFrames.Controls.Add(Me.nudBFramesBias)
         Me.gbBFrames.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbBFrames.Location = New System.Drawing.Point(4, 4)
-        Me.gbBFrames.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.gbBFrames.Location = New System.Drawing.Point(7, 7)
+        Me.gbBFrames.Margin = New System.Windows.Forms.Padding(7)
         Me.gbBFrames.Name = "gbBFrames"
-        Me.gbBFrames.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.gbBFrames.Size = New System.Drawing.Size(439, 382)
+        Me.gbBFrames.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbBFrames.Size = New System.Drawing.Size(795, 638)
         Me.gbBFrames.TabIndex = 0
         Me.gbBFrames.TabStop = False
         Me.gbBFrames.Text = "B-frames"
@@ -1421,10 +1422,10 @@ Class x264Form
         'lBPyramidMode
         '
         Me.lBPyramidMode.AutoSize = True
-        Me.lBPyramidMode.Location = New System.Drawing.Point(14, 87)
-        Me.lBPyramidMode.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lBPyramidMode.Location = New System.Drawing.Point(25, 149)
+        Me.lBPyramidMode.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lBPyramidMode.Name = "lBPyramidMode"
-        Me.lBPyramidMode.Size = New System.Drawing.Size(81, 25)
+        Me.lBPyramidMode.Size = New System.Drawing.Size(157, 48)
         Me.lBPyramidMode.TabIndex = 1
         Me.lBPyramidMode.Text = "Pyramid:"
         '
@@ -1432,49 +1433,49 @@ Class x264Form
         '
         Me.cbBPyramidMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbBPyramidMode.FormattingEnabled = True
-        Me.cbBPyramidMode.Location = New System.Drawing.Point(112, 83)
-        Me.cbBPyramidMode.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbBPyramidMode.Location = New System.Drawing.Point(215, 142)
+        Me.cbBPyramidMode.Margin = New System.Windows.Forms.Padding(7)
         Me.cbBPyramidMode.Name = "cbBPyramidMode"
-        Me.cbBPyramidMode.Size = New System.Drawing.Size(105, 33)
+        Me.cbBPyramidMode.Size = New System.Drawing.Size(188, 56)
         Me.cbBPyramidMode.TabIndex = 4
         '
         'lBAdapt
         '
         Me.lBAdapt.AutoSize = True
-        Me.lBAdapt.Location = New System.Drawing.Point(14, 44)
-        Me.lBAdapt.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lBAdapt.Location = New System.Drawing.Point(25, 75)
+        Me.lBAdapt.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lBAdapt.Name = "lBAdapt"
-        Me.lBAdapt.Size = New System.Drawing.Size(87, 25)
+        Me.lBAdapt.Size = New System.Drawing.Size(168, 48)
         Me.lBAdapt.TabIndex = 0
         Me.lBAdapt.Text = "Adaptive:"
         '
         'lBFrames
         '
         Me.lBFrames.AutoSize = True
-        Me.lBFrames.Location = New System.Drawing.Point(14, 130)
-        Me.lBFrames.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lBFrames.Location = New System.Drawing.Point(25, 223)
+        Me.lBFrames.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lBFrames.Name = "lBFrames"
-        Me.lBFrames.Size = New System.Drawing.Size(90, 25)
+        Me.lBFrames.Size = New System.Drawing.Size(177, 48)
         Me.lBFrames.TabIndex = 3
         Me.lBFrames.Text = "B-Frames:"
         '
         'nudBFrames
         '
-        Me.nudBFrames.Location = New System.Drawing.Point(112, 125)
-        Me.nudBFrames.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudBFrames.Location = New System.Drawing.Point(215, 214)
+        Me.nudBFrames.Margin = New System.Windows.Forms.Padding(7)
         Me.nudBFrames.Maximum = New Decimal(New Integer() {16, 0, 0, 0})
         Me.nudBFrames.Name = "nudBFrames"
-        Me.nudBFrames.Size = New System.Drawing.Size(90, 37)
+        Me.nudBFrames.Size = New System.Drawing.Size(164, 63)
         Me.nudBFrames.TabIndex = 5
         '
         'cbBAdapt
         '
         Me.cbBAdapt.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbBAdapt.FormattingEnabled = True
-        Me.cbBAdapt.Location = New System.Drawing.Point(112, 40)
-        Me.cbBAdapt.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbBAdapt.Location = New System.Drawing.Point(215, 69)
+        Me.cbBAdapt.Margin = New System.Windows.Forms.Padding(7)
         Me.cbBAdapt.Name = "cbBAdapt"
-        Me.cbBAdapt.Size = New System.Drawing.Size(105, 33)
+        Me.cbBAdapt.Size = New System.Drawing.Size(188, 56)
         Me.cbBAdapt.TabIndex = 2
         '
         'gbFrameOptions
@@ -1496,51 +1497,52 @@ Class x264Form
         Me.gbFrameOptions.Controls.Add(Me.cbCABAC)
         Me.gbFrameOptions.Controls.Add(Me.lSceneCut)
         Me.gbFrameOptions.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbFrameOptions.Location = New System.Drawing.Point(451, 4)
-        Me.gbFrameOptions.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.gbFrameOptions.Location = New System.Drawing.Point(816, 7)
+        Me.gbFrameOptions.Margin = New System.Windows.Forms.Padding(7)
         Me.gbFrameOptions.Name = "gbFrameOptions"
-        Me.gbFrameOptions.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.gbFrameOptions.Size = New System.Drawing.Size(440, 382)
+        Me.gbFrameOptions.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbFrameOptions.Size = New System.Drawing.Size(795, 638)
         Me.gbFrameOptions.TabIndex = 1
         Me.gbFrameOptions.TabStop = False
         '
         'cbOpenGOP
         '
         Me.cbOpenGOP.AutoSize = True
-        Me.cbOpenGOP.Location = New System.Drawing.Point(20, 190)
+        Me.cbOpenGOP.Location = New System.Drawing.Point(26, 319)
+        Me.cbOpenGOP.Margin = New System.Windows.Forms.Padding(5)
         Me.cbOpenGOP.Name = "cbOpenGOP"
-        Me.cbOpenGOP.Size = New System.Drawing.Size(123, 29)
+        Me.cbOpenGOP.Size = New System.Drawing.Size(235, 52)
         Me.cbOpenGOP.TabIndex = 16
         Me.cbOpenGOP.Text = "Open GOP"
         Me.cbOpenGOP.UseVisualStyleBackColor = True
         '
         'nudReferenceFrames
         '
-        Me.nudReferenceFrames.Location = New System.Drawing.Point(174, 23)
-        Me.nudReferenceFrames.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudReferenceFrames.Location = New System.Drawing.Point(336, 39)
+        Me.nudReferenceFrames.Margin = New System.Windows.Forms.Padding(7)
         Me.nudReferenceFrames.Maximum = New Decimal(New Integer() {16, 0, 0, 0})
         Me.nudReferenceFrames.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.nudReferenceFrames.Name = "nudReferenceFrames"
-        Me.nudReferenceFrames.Size = New System.Drawing.Size(90, 37)
+        Me.nudReferenceFrames.Size = New System.Drawing.Size(164, 63)
         Me.nudReferenceFrames.TabIndex = 4
         Me.nudReferenceFrames.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
         'nudSlices
         '
-        Me.nudSlices.Location = New System.Drawing.Point(174, 104)
-        Me.nudSlices.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudSlices.Location = New System.Drawing.Point(336, 178)
+        Me.nudSlices.Margin = New System.Windows.Forms.Padding(7)
         Me.nudSlices.Name = "nudSlices"
-        Me.nudSlices.Size = New System.Drawing.Size(90, 37)
+        Me.nudSlices.Size = New System.Drawing.Size(164, 63)
         Me.nudSlices.TabIndex = 8
         '
         'nudSceneCut
         '
         Me.nudSceneCut.Increment = New Decimal(New Integer() {10, 0, 0, 0})
-        Me.nudSceneCut.Location = New System.Drawing.Point(174, 64)
-        Me.nudSceneCut.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudSceneCut.Location = New System.Drawing.Point(336, 110)
+        Me.nudSceneCut.Margin = New System.Windows.Forms.Padding(7)
         Me.nudSceneCut.Minimum = New Decimal(New Integer() {1, 0, 0, -2147483648})
         Me.nudSceneCut.Name = "nudSceneCut"
-        Me.nudSceneCut.Size = New System.Drawing.Size(90, 37)
+        Me.nudSceneCut.Size = New System.Drawing.Size(164, 63)
         Me.nudSceneCut.TabIndex = 5
         '
         'paDeblocking
@@ -1552,68 +1554,69 @@ Class x264Form
         Me.paDeblocking.Controls.Add(Me.lDeblockThresholdHint)
         Me.paDeblocking.Controls.Add(Me.lThreshold)
         Me.paDeblocking.Controls.Add(Me.lDeblockStrengthHint)
-        Me.paDeblocking.Location = New System.Drawing.Point(79, 274)
+        Me.paDeblocking.Location = New System.Drawing.Point(141, 461)
+        Me.paDeblocking.Margin = New System.Windows.Forms.Padding(5)
         Me.paDeblocking.Name = "paDeblocking"
-        Me.paDeblocking.Size = New System.Drawing.Size(324, 95)
+        Me.paDeblocking.Size = New System.Drawing.Size(589, 163)
         Me.paDeblocking.TabIndex = 10
         '
         'nudDeblockBeta
         '
-        Me.nudDeblockBeta.Location = New System.Drawing.Point(107, 49)
-        Me.nudDeblockBeta.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudDeblockBeta.Location = New System.Drawing.Point(195, 84)
+        Me.nudDeblockBeta.Margin = New System.Windows.Forms.Padding(7)
         Me.nudDeblockBeta.Maximum = New Decimal(New Integer() {6, 0, 0, 0})
         Me.nudDeblockBeta.Minimum = New Decimal(New Integer() {6, 0, 0, -2147483648})
         Me.nudDeblockBeta.Name = "nudDeblockBeta"
-        Me.nudDeblockBeta.Size = New System.Drawing.Size(90, 37)
+        Me.nudDeblockBeta.Size = New System.Drawing.Size(164, 63)
         Me.nudDeblockBeta.TabIndex = 3
         '
         'nudDeblockAlpha
         '
-        Me.nudDeblockAlpha.Location = New System.Drawing.Point(107, 7)
-        Me.nudDeblockAlpha.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudDeblockAlpha.Location = New System.Drawing.Point(195, 12)
+        Me.nudDeblockAlpha.Margin = New System.Windows.Forms.Padding(7)
         Me.nudDeblockAlpha.Maximum = New Decimal(New Integer() {6, 0, 0, 0})
         Me.nudDeblockAlpha.Minimum = New Decimal(New Integer() {6, 0, 0, -2147483648})
         Me.nudDeblockAlpha.Name = "nudDeblockAlpha"
-        Me.nudDeblockAlpha.Size = New System.Drawing.Size(90, 37)
+        Me.nudDeblockAlpha.Size = New System.Drawing.Size(164, 63)
         Me.nudDeblockAlpha.TabIndex = 2
         '
         'lStrength
         '
         Me.lStrength.AutoSize = True
-        Me.lStrength.Location = New System.Drawing.Point(11, 10)
-        Me.lStrength.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lStrength.Location = New System.Drawing.Point(20, 17)
+        Me.lStrength.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lStrength.Name = "lStrength"
-        Me.lStrength.Size = New System.Drawing.Size(83, 25)
+        Me.lStrength.Size = New System.Drawing.Size(163, 48)
         Me.lStrength.TabIndex = 0
         Me.lStrength.Text = "Strength:"
         '
         'lDeblockThresholdHint
         '
         Me.lDeblockThresholdHint.AutoSize = True
-        Me.lDeblockThresholdHint.Location = New System.Drawing.Point(213, 52)
-        Me.lDeblockThresholdHint.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lDeblockThresholdHint.Location = New System.Drawing.Point(387, 89)
+        Me.lDeblockThresholdHint.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lDeblockThresholdHint.Name = "lDeblockThresholdHint"
-        Me.lDeblockThresholdHint.Size = New System.Drawing.Size(52, 25)
+        Me.lDeblockThresholdHint.Size = New System.Drawing.Size(103, 48)
         Me.lDeblockThresholdHint.TabIndex = 5
         Me.lDeblockThresholdHint.Text = "(hint)"
         '
         'lThreshold
         '
         Me.lThreshold.AutoSize = True
-        Me.lThreshold.Location = New System.Drawing.Point(9, 52)
-        Me.lThreshold.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lThreshold.Location = New System.Drawing.Point(16, 89)
+        Me.lThreshold.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lThreshold.Name = "lThreshold"
-        Me.lThreshold.Size = New System.Drawing.Size(94, 25)
+        Me.lThreshold.Size = New System.Drawing.Size(185, 48)
         Me.lThreshold.TabIndex = 1
         Me.lThreshold.Text = "Threshold:"
         '
         'lDeblockStrengthHint
         '
         Me.lDeblockStrengthHint.AutoSize = True
-        Me.lDeblockStrengthHint.Location = New System.Drawing.Point(213, 10)
-        Me.lDeblockStrengthHint.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lDeblockStrengthHint.Location = New System.Drawing.Point(387, 17)
+        Me.lDeblockStrengthHint.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lDeblockStrengthHint.Name = "lDeblockStrengthHint"
-        Me.lDeblockStrengthHint.Size = New System.Drawing.Size(52, 25)
+        Me.lDeblockStrengthHint.Size = New System.Drawing.Size(103, 48)
         Me.lDeblockStrengthHint.TabIndex = 4
         Me.lDeblockStrengthHint.Text = "(hint)"
         '
@@ -1621,72 +1624,72 @@ Class x264Form
         '
         Me.LineControl1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LineControl1.Location = New System.Drawing.Point(147, 244)
-        Me.LineControl1.Margin = New System.Windows.Forms.Padding(4, 2, 5, 2)
+        Me.LineControl1.Location = New System.Drawing.Point(267, 402)
+        Me.LineControl1.Margin = New System.Windows.Forms.Padding(7, 3, 9, 3)
         Me.LineControl1.Name = "LineControl1"
-        Me.LineControl1.Size = New System.Drawing.Size(274, 14)
+        Me.LineControl1.Size = New System.Drawing.Size(494, 24)
         Me.LineControl1.TabIndex = 11
         '
         'cbDeblock
         '
         Me.cbDeblock.AutoSize = True
-        Me.cbDeblock.Location = New System.Drawing.Point(20, 235)
-        Me.cbDeblock.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbDeblock.Location = New System.Drawing.Point(26, 383)
+        Me.cbDeblock.Margin = New System.Windows.Forms.Padding(7)
         Me.cbDeblock.Name = "cbDeblock"
-        Me.cbDeblock.Size = New System.Drawing.Size(128, 29)
+        Me.cbDeblock.Size = New System.Drawing.Size(246, 52)
         Me.cbDeblock.TabIndex = 6
         Me.cbDeblock.Text = "Deblocking"
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(15, 149)
-        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label1.Location = New System.Drawing.Point(17, 255)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(88, 25)
+        Me.Label1.Size = New System.Drawing.Size(173, 48)
         Me.Label1.TabIndex = 3
         Me.Label1.Text = "GOP Size:"
         '
         'lReferenceFrames
         '
         Me.lReferenceFrames.AutoSize = True
-        Me.lReferenceFrames.Location = New System.Drawing.Point(15, 26)
-        Me.lReferenceFrames.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lReferenceFrames.Location = New System.Drawing.Point(17, 45)
+        Me.lReferenceFrames.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lReferenceFrames.Name = "lReferenceFrames"
-        Me.lReferenceFrames.Size = New System.Drawing.Size(154, 25)
+        Me.lReferenceFrames.Size = New System.Drawing.Size(310, 48)
         Me.lReferenceFrames.TabIndex = 0
         Me.lReferenceFrames.Text = "Reference Frames:"
         '
         'lSlices
         '
         Me.lSlices.AutoSize = True
-        Me.lSlices.Location = New System.Drawing.Point(15, 106)
-        Me.lSlices.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lSlices.Location = New System.Drawing.Point(17, 182)
+        Me.lSlices.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lSlices.Name = "lSlices"
-        Me.lSlices.Size = New System.Drawing.Size(59, 25)
+        Me.lSlices.Size = New System.Drawing.Size(116, 48)
         Me.lSlices.TabIndex = 2
         Me.lSlices.Text = "Slices:"
         '
         'lSceneCut
         '
         Me.lSceneCut.AutoSize = True
-        Me.lSceneCut.Location = New System.Drawing.Point(15, 68)
-        Me.lSceneCut.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lSceneCut.Location = New System.Drawing.Point(17, 117)
+        Me.lSceneCut.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lSceneCut.Name = "lSceneCut"
-        Me.lSceneCut.Size = New System.Drawing.Size(94, 25)
+        Me.lSceneCut.Size = New System.Drawing.Size(186, 48)
         Me.lSceneCut.TabIndex = 1
         Me.lSceneCut.Text = "Scene Cut:"
         '
         'tpRateControl
         '
         Me.tpRateControl.Controls.Add(Me.TableLayoutPanel3)
-        Me.tpRateControl.Location = New System.Drawing.Point(4, 34)
-        Me.tpRateControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tpRateControl.Location = New System.Drawing.Point(12, 69)
+        Me.tpRateControl.Margin = New System.Windows.Forms.Padding(7)
         Me.tpRateControl.Name = "tpRateControl"
-        Me.tpRateControl.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.tpRateControl.Size = New System.Drawing.Size(903, 398)
+        Me.tpRateControl.Padding = New System.Windows.Forms.Padding(7)
+        Me.tpRateControl.Size = New System.Drawing.Size(1632, 666)
         Me.tpRateControl.TabIndex = 3
-        Me.tpRateControl.Text = "Rate Control"
+        Me.tpRateControl.Text = " Rate Control "
         Me.tpRateControl.UseVisualStyleBackColor = True
         '
         'TableLayoutPanel3
@@ -1697,11 +1700,12 @@ Class x264Form
         Me.TableLayoutPanel3.Controls.Add(Me.gbRC2, 1, 0)
         Me.TableLayoutPanel3.Controls.Add(Me.gbRC1, 0, 0)
         Me.TableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel3.Location = New System.Drawing.Point(4, 4)
+        Me.TableLayoutPanel3.Location = New System.Drawing.Point(7, 7)
+        Me.TableLayoutPanel3.Margin = New System.Windows.Forms.Padding(5)
         Me.TableLayoutPanel3.Name = "TableLayoutPanel3"
         Me.TableLayoutPanel3.RowCount = 1
         Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel3.Size = New System.Drawing.Size(895, 390)
+        Me.TableLayoutPanel3.Size = New System.Drawing.Size(1618, 652)
         Me.TableLayoutPanel3.TabIndex = 0
         '
         'gbRC2
@@ -1718,40 +1722,40 @@ Class x264Form
         Me.gbRC2.Controls.Add(Me.lQPComp)
         Me.gbRC2.Controls.Add(Me.lPBRatio)
         Me.gbRC2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbRC2.Location = New System.Drawing.Point(451, 4)
-        Me.gbRC2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.gbRC2.Location = New System.Drawing.Point(816, 7)
+        Me.gbRC2.Margin = New System.Windows.Forms.Padding(7)
         Me.gbRC2.Name = "gbRC2"
-        Me.gbRC2.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.gbRC2.Size = New System.Drawing.Size(440, 382)
+        Me.gbRC2.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbRC2.Size = New System.Drawing.Size(795, 638)
         Me.gbRC2.TabIndex = 1
         Me.gbRC2.TabStop = False
         '
         'lRcLookahead
         '
         Me.lRcLookahead.AutoSize = True
-        Me.lRcLookahead.Location = New System.Drawing.Point(13, 220)
-        Me.lRcLookahead.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lRcLookahead.Size = New System.Drawing.Size(130, 25)
+        Me.lRcLookahead.Location = New System.Drawing.Point(24, 377)
+        Me.lRcLookahead.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
+        Me.lRcLookahead.Size = New System.Drawing.Size(254, 48)
         Me.lRcLookahead.Text = "RC Lookahead:"
         Me.lRcLookahead.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'nudRcLookahead
         '
         Me.nudRcLookahead.Increment = New Decimal(New Integer() {10, 0, 0, 0})
-        Me.nudRcLookahead.Location = New System.Drawing.Point(168, 214)
-        Me.nudRcLookahead.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudRcLookahead.Location = New System.Drawing.Point(322, 367)
+        Me.nudRcLookahead.Margin = New System.Windows.Forms.Padding(7)
         Me.nudRcLookahead.Maximum = New Decimal(New Integer() {250, 0, 0, 0})
         Me.nudRcLookahead.Name = "nudRcLookahead"
-        Me.nudRcLookahead.Size = New System.Drawing.Size(90, 37)
+        Me.nudRcLookahead.Size = New System.Drawing.Size(164, 63)
         Me.nudRcLookahead.TabIndex = 9
         '
         'cbMBTree
         '
         Me.cbMBTree.AutoSize = True
-        Me.cbMBTree.Location = New System.Drawing.Point(18, 285)
-        Me.cbMBTree.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbMBTree.Location = New System.Drawing.Point(33, 489)
+        Me.cbMBTree.Margin = New System.Windows.Forms.Padding(7)
         Me.cbMBTree.Name = "cbMBTree"
-        Me.cbMBTree.Size = New System.Drawing.Size(100, 29)
+        Me.cbMBTree.Size = New System.Drawing.Size(196, 52)
         Me.cbMBTree.TabIndex = 10
         Me.cbMBTree.Text = "MB Tree"
         Me.cbMBTree.UseVisualStyleBackColor = True
@@ -1771,11 +1775,11 @@ Class x264Form
         Me.gbRC1.Controls.Add(Me.lMaxBitrate)
         Me.gbRC1.Controls.Add(Me.nudVBVBufSize)
         Me.gbRC1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbRC1.Location = New System.Drawing.Point(4, 4)
-        Me.gbRC1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.gbRC1.Location = New System.Drawing.Point(7, 7)
+        Me.gbRC1.Margin = New System.Windows.Forms.Padding(7)
         Me.gbRC1.Name = "gbRC1"
-        Me.gbRC1.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.gbRC1.Size = New System.Drawing.Size(439, 382)
+        Me.gbRC1.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbRC1.Size = New System.Drawing.Size(795, 638)
         Me.gbRC1.TabIndex = 0
         Me.gbRC1.TabStop = False
         '
@@ -1783,20 +1787,20 @@ Class x264Form
         '
         Me.LineControl2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LineControl2.Location = New System.Drawing.Point(13, 172)
-        Me.LineControl2.Margin = New System.Windows.Forms.Padding(4, 2, 5, 2)
+        Me.LineControl2.Location = New System.Drawing.Point(24, 295)
+        Me.LineControl2.Margin = New System.Windows.Forms.Padding(7, 3, 9, 3)
         Me.LineControl2.Name = "LineControl2"
-        Me.LineControl2.Size = New System.Drawing.Size(417, 24)
+        Me.LineControl2.Size = New System.Drawing.Size(755, 41)
         Me.LineControl2.TabIndex = 3
         Me.LineControl2.Text = "VBV"
         '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(8, 121)
-        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label2.Location = New System.Drawing.Point(15, 207)
+        Me.Label2.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(114, 25)
+        Me.Label2.Size = New System.Drawing.Size(223, 48)
         Me.Label2.TabIndex = 1
         Me.Label2.Text = "AQ Strength:"
         '
@@ -1804,22 +1808,23 @@ Class x264Form
         '
         Me.nudAQStrength.DecimalPlaces = 1
         Me.nudAQStrength.Increment = New Decimal(New Integer() {1, 0, 0, 65536})
-        Me.nudAQStrength.Location = New System.Drawing.Point(128, 117)
-        Me.nudAQStrength.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudAQStrength.Location = New System.Drawing.Point(248, 201)
+        Me.nudAQStrength.Margin = New System.Windows.Forms.Padding(7)
         Me.nudAQStrength.Maximum = New Decimal(New Integer() {2, 0, 0, 0})
         Me.nudAQStrength.Name = "nudAQStrength"
-        Me.nudAQStrength.Size = New System.Drawing.Size(90, 37)
+        Me.nudAQStrength.Size = New System.Drawing.Size(164, 63)
         Me.nudAQStrength.TabIndex = 4
         '
         'tpMisc
         '
         Me.tpMisc.Controls.Add(Me.TableLayoutPanel5)
-        Me.tpMisc.Location = New System.Drawing.Point(4, 34)
+        Me.tpMisc.Location = New System.Drawing.Point(12, 69)
+        Me.tpMisc.Margin = New System.Windows.Forms.Padding(5)
         Me.tpMisc.Name = "tpMisc"
-        Me.tpMisc.Padding = New System.Windows.Forms.Padding(3, 3, 3, 3)
-        Me.tpMisc.Size = New System.Drawing.Size(903, 398)
+        Me.tpMisc.Padding = New System.Windows.Forms.Padding(5)
+        Me.tpMisc.Size = New System.Drawing.Size(1632, 666)
         Me.tpMisc.TabIndex = 7
-        Me.tpMisc.Text = "Misc"
+        Me.tpMisc.Text = "   Misc   "
         Me.tpMisc.UseVisualStyleBackColor = True
         '
         'TableLayoutPanel5
@@ -1830,11 +1835,12 @@ Class x264Form
         Me.TableLayoutPanel5.Controls.Add(Me.GroupBox5, 0, 0)
         Me.TableLayoutPanel5.Controls.Add(Me.GroupBox6, 1, 0)
         Me.TableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel5.Location = New System.Drawing.Point(3, 3)
+        Me.TableLayoutPanel5.Location = New System.Drawing.Point(5, 5)
+        Me.TableLayoutPanel5.Margin = New System.Windows.Forms.Padding(5)
         Me.TableLayoutPanel5.Name = "TableLayoutPanel5"
         Me.TableLayoutPanel5.RowCount = 1
         Me.TableLayoutPanel5.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel5.Size = New System.Drawing.Size(897, 392)
+        Me.TableLayoutPanel5.Size = New System.Drawing.Size(1622, 656)
         Me.TableLayoutPanel5.TabIndex = 0
         '
         'GroupBox5
@@ -1851,9 +1857,11 @@ Class x264Form
         Me.GroupBox5.Controls.Add(Me.nudThreads)
         Me.GroupBox5.Controls.Add(Me.cbThreadInput)
         Me.GroupBox5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupBox5.Location = New System.Drawing.Point(3, 3)
+        Me.GroupBox5.Location = New System.Drawing.Point(5, 5)
+        Me.GroupBox5.Margin = New System.Windows.Forms.Padding(5)
         Me.GroupBox5.Name = "GroupBox5"
-        Me.GroupBox5.Size = New System.Drawing.Size(442, 386)
+        Me.GroupBox5.Padding = New System.Windows.Forms.Padding(5)
+        Me.GroupBox5.Size = New System.Drawing.Size(801, 646)
         Me.GroupBox5.TabIndex = 0
         Me.GroupBox5.TabStop = False
         Me.GroupBox5.Text = "Input/Output"
@@ -1861,9 +1869,10 @@ Class x264Form
         'cbBlurayCompat
         '
         Me.cbBlurayCompat.AutoSize = True
-        Me.cbBlurayCompat.Location = New System.Drawing.Point(16, 230)
+        Me.cbBlurayCompat.Location = New System.Drawing.Point(29, 394)
+        Me.cbBlurayCompat.Margin = New System.Windows.Forms.Padding(5)
         Me.cbBlurayCompat.Name = "cbBlurayCompat"
-        Me.cbBlurayCompat.Size = New System.Drawing.Size(204, 29)
+        Me.cbBlurayCompat.Size = New System.Drawing.Size(399, 52)
         Me.cbBlurayCompat.TabIndex = 22
         Me.cbBlurayCompat.Text = "Blu-ray Compatibility"
         Me.cbBlurayCompat.UseVisualStyleBackColor = True
@@ -1871,98 +1880,98 @@ Class x264Form
         'cbAud
         '
         Me.cbAud.AutoSize = True
-        Me.cbAud.Location = New System.Drawing.Point(16, 193)
-        Me.cbAud.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbAud.Location = New System.Drawing.Point(29, 331)
+        Me.cbAud.Margin = New System.Windows.Forms.Padding(7)
         Me.cbAud.Name = "cbAud"
-        Me.cbAud.Size = New System.Drawing.Size(239, 29)
+        Me.cbAud.Size = New System.Drawing.Size(474, 52)
         Me.cbAud.TabIndex = 16
         Me.cbAud.Text = "Use access unit delimiters"
         '
         'l0Auto
         '
         Me.l0Auto.AutoSize = True
-        Me.l0Auto.Location = New System.Drawing.Point(217, 279)
-        Me.l0Auto.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.l0Auto.Size = New System.Drawing.Size(85, 25)
+        Me.l0Auto.Location = New System.Drawing.Point(395, 478)
+        Me.l0Auto.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
+        Me.l0Auto.Size = New System.Drawing.Size(167, 48)
         Me.l0Auto.Text = " (0=auto)"
         Me.l0Auto.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'cbProgress
         '
         Me.cbProgress.AutoSize = True
-        Me.cbProgress.Location = New System.Drawing.Point(16, 39)
-        Me.cbProgress.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbProgress.Location = New System.Drawing.Point(29, 67)
+        Me.cbProgress.Margin = New System.Windows.Forms.Padding(7)
         Me.cbProgress.Name = "cbProgress"
-        Me.cbProgress.Size = New System.Drawing.Size(156, 29)
+        Me.cbProgress.Size = New System.Drawing.Size(299, 52)
         Me.cbProgress.TabIndex = 12
         Me.cbProgress.Text = "Show Progress"
         '
         'lLevel
         '
         Me.lLevel.AutoSize = True
-        Me.lLevel.Location = New System.Drawing.Point(12, 322)
-        Me.lLevel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lLevel.Location = New System.Drawing.Point(22, 552)
+        Me.lLevel.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lLevel.Name = "lLevel"
-        Me.lLevel.Size = New System.Drawing.Size(55, 25)
+        Me.lLevel.Size = New System.Drawing.Size(109, 48)
         Me.lLevel.TabIndex = 18
         Me.lLevel.Text = "Level:"
         '
         'cbPSNR
         '
         Me.cbPSNR.AutoSize = True
-        Me.cbPSNR.Location = New System.Drawing.Point(16, 154)
-        Me.cbPSNR.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbPSNR.Location = New System.Drawing.Point(29, 264)
+        Me.cbPSNR.Margin = New System.Windows.Forms.Padding(7)
         Me.cbPSNR.Name = "cbPSNR"
-        Me.cbPSNR.Size = New System.Drawing.Size(192, 29)
+        Me.cbPSNR.Size = New System.Drawing.Size(371, 52)
         Me.cbPSNR.TabIndex = 15
         Me.cbPSNR.Text = "PSNR Computation"
         '
         'cbLevel
         '
         Me.cbLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbLevel.Location = New System.Drawing.Point(110, 319)
-        Me.cbLevel.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbLevel.Location = New System.Drawing.Point(200, 547)
+        Me.cbLevel.Margin = New System.Windows.Forms.Padding(7)
         Me.cbLevel.MaxDropDownItems = 50
         Me.cbLevel.Name = "cbLevel"
-        Me.cbLevel.Size = New System.Drawing.Size(128, 33)
+        Me.cbLevel.Size = New System.Drawing.Size(229, 56)
         Me.cbLevel.TabIndex = 21
         '
         'lThreads
         '
         Me.lThreads.AutoSize = True
-        Me.lThreads.Location = New System.Drawing.Point(11, 277)
-        Me.lThreads.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lThreads.Location = New System.Drawing.Point(20, 475)
+        Me.lThreads.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lThreads.Name = "lThreads"
-        Me.lThreads.Size = New System.Drawing.Size(78, 25)
+        Me.lThreads.Size = New System.Drawing.Size(153, 48)
         Me.lThreads.TabIndex = 17
         Me.lThreads.Text = "Threads:"
         '
         'cbSSIM
         '
         Me.cbSSIM.AutoSize = True
-        Me.cbSSIM.Location = New System.Drawing.Point(16, 116)
-        Me.cbSSIM.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbSSIM.Location = New System.Drawing.Point(29, 199)
+        Me.cbSSIM.Margin = New System.Windows.Forms.Padding(7)
         Me.cbSSIM.Name = "cbSSIM"
-        Me.cbSSIM.Size = New System.Drawing.Size(189, 29)
+        Me.cbSSIM.Size = New System.Drawing.Size(363, 52)
         Me.cbSSIM.TabIndex = 14
         Me.cbSSIM.Text = "SSIM Computation"
         '
         'nudThreads
         '
-        Me.nudThreads.Location = New System.Drawing.Point(110, 273)
-        Me.nudThreads.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudThreads.Location = New System.Drawing.Point(200, 468)
+        Me.nudThreads.Margin = New System.Windows.Forms.Padding(7)
         Me.nudThreads.Maximum = New Decimal(New Integer() {64, 0, 0, 0})
         Me.nudThreads.Name = "nudThreads"
-        Me.nudThreads.Size = New System.Drawing.Size(90, 37)
+        Me.nudThreads.Size = New System.Drawing.Size(164, 63)
         Me.nudThreads.TabIndex = 20
         '
         'cbThreadInput
         '
         Me.cbThreadInput.AutoSize = True
-        Me.cbThreadInput.Location = New System.Drawing.Point(16, 77)
-        Me.cbThreadInput.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbThreadInput.Location = New System.Drawing.Point(29, 132)
+        Me.cbThreadInput.Margin = New System.Windows.Forms.Padding(7)
         Me.cbThreadInput.Name = "cbThreadInput"
-        Me.cbThreadInput.Size = New System.Drawing.Size(139, 29)
+        Me.cbThreadInput.Size = New System.Drawing.Size(269, 52)
         Me.cbThreadInput.TabIndex = 13
         Me.cbThreadInput.Text = "Thread Input"
         '
@@ -1986,9 +1995,11 @@ Class x264Form
         Me.GroupBox6.Controls.Add(Me.cbNalHrd)
         Me.GroupBox6.Controls.Add(Me.cbOverscan)
         Me.GroupBox6.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupBox6.Location = New System.Drawing.Point(451, 3)
+        Me.GroupBox6.Location = New System.Drawing.Point(816, 5)
+        Me.GroupBox6.Margin = New System.Windows.Forms.Padding(5)
         Me.GroupBox6.Name = "GroupBox6"
-        Me.GroupBox6.Size = New System.Drawing.Size(443, 386)
+        Me.GroupBox6.Padding = New System.Windows.Forms.Padding(5)
+        Me.GroupBox6.Size = New System.Drawing.Size(801, 646)
         Me.GroupBox6.TabIndex = 1
         Me.GroupBox6.TabStop = False
         Me.GroupBox6.Text = "Video Usability Info"
@@ -1996,180 +2007,181 @@ Class x264Form
         'lChromaloc
         '
         Me.lChromaloc.AutoSize = True
-        Me.lChromaloc.Location = New System.Drawing.Point(288, 95)
-        Me.lChromaloc.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lChromaloc.Location = New System.Drawing.Point(524, 163)
+        Me.lChromaloc.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lChromaloc.Name = "lChromaloc"
-        Me.lChromaloc.Size = New System.Drawing.Size(102, 25)
+        Me.lChromaloc.Size = New System.Drawing.Size(200, 48)
         Me.lChromaloc.TabIndex = 35
         Me.lChromaloc.Text = "Chromaloc:"
         '
         'nudChromaloc
         '
-        Me.nudChromaloc.Location = New System.Drawing.Point(294, 125)
-        Me.nudChromaloc.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.nudChromaloc.Location = New System.Drawing.Point(535, 214)
+        Me.nudChromaloc.Margin = New System.Windows.Forms.Padding(7)
         Me.nudChromaloc.Maximum = New Decimal(New Integer() {5, 0, 0, 0})
         Me.nudChromaloc.Name = "nudChromaloc"
-        Me.nudChromaloc.Size = New System.Drawing.Size(90, 37)
+        Me.nudChromaloc.Size = New System.Drawing.Size(164, 63)
         Me.nudChromaloc.TabIndex = 36
         '
         'cbPicStruct
         '
         Me.cbPicStruct.AutoSize = True
-        Me.cbPicStruct.Location = New System.Drawing.Point(292, 51)
-        Me.cbPicStruct.Size = New System.Drawing.Size(110, 29)
+        Me.cbPicStruct.Location = New System.Drawing.Point(531, 87)
+        Me.cbPicStruct.Margin = New System.Windows.Forms.Padding(5)
+        Me.cbPicStruct.Size = New System.Drawing.Size(214, 52)
         Me.cbPicStruct.Text = "Pic Struct"
         Me.cbPicStruct.UseVisualStyleBackColor = True
         '
         'lColormatrix
         '
         Me.lColormatrix.AutoSize = True
-        Me.lColormatrix.Location = New System.Drawing.Point(13, 137)
-        Me.lColormatrix.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lColormatrix.Location = New System.Drawing.Point(24, 235)
+        Me.lColormatrix.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lColormatrix.Name = "lColormatrix"
-        Me.lColormatrix.Size = New System.Drawing.Size(108, 25)
+        Me.lColormatrix.Size = New System.Drawing.Size(214, 48)
         Me.lColormatrix.TabIndex = 32
         Me.lColormatrix.Text = "Colormatrix:"
         '
         'cbColormatrix
         '
         Me.cbColormatrix.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbColormatrix.Location = New System.Drawing.Point(137, 134)
-        Me.cbColormatrix.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbColormatrix.Location = New System.Drawing.Point(259, 230)
+        Me.cbColormatrix.Margin = New System.Windows.Forms.Padding(7)
         Me.cbColormatrix.MaxDropDownItems = 50
         Me.cbColormatrix.Name = "cbColormatrix"
-        Me.cbColormatrix.Size = New System.Drawing.Size(128, 33)
+        Me.cbColormatrix.Size = New System.Drawing.Size(229, 56)
         Me.cbColormatrix.TabIndex = 33
         '
         'lTransfer
         '
         Me.lTransfer.AutoSize = True
-        Me.lTransfer.Location = New System.Drawing.Point(13, 180)
-        Me.lTransfer.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lTransfer.Location = New System.Drawing.Point(24, 309)
+        Me.lTransfer.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lTransfer.Name = "lTransfer"
-        Me.lTransfer.Size = New System.Drawing.Size(77, 25)
+        Me.lTransfer.Size = New System.Drawing.Size(153, 48)
         Me.lTransfer.TabIndex = 30
         Me.lTransfer.Text = "Transfer:"
         '
         'cbTransfer
         '
         Me.cbTransfer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbTransfer.Location = New System.Drawing.Point(137, 177)
-        Me.cbTransfer.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbTransfer.Location = New System.Drawing.Point(259, 303)
+        Me.cbTransfer.Margin = New System.Windows.Forms.Padding(7)
         Me.cbTransfer.MaxDropDownItems = 50
         Me.cbTransfer.Name = "cbTransfer"
-        Me.cbTransfer.Size = New System.Drawing.Size(128, 33)
+        Me.cbTransfer.Size = New System.Drawing.Size(229, 56)
         Me.cbTransfer.TabIndex = 31
         '
         'lColorprim
         '
         Me.lColorprim.AutoSize = True
-        Me.lColorprim.Location = New System.Drawing.Point(13, 95)
-        Me.lColorprim.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lColorprim.Location = New System.Drawing.Point(24, 163)
+        Me.lColorprim.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lColorprim.Name = "lColorprim"
-        Me.lColorprim.Size = New System.Drawing.Size(96, 25)
+        Me.lColorprim.Size = New System.Drawing.Size(188, 48)
         Me.lColorprim.TabIndex = 28
         Me.lColorprim.Text = "Colorprim:"
         '
         'cbColorprim
         '
         Me.cbColorprim.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbColorprim.Location = New System.Drawing.Point(137, 92)
-        Me.cbColorprim.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbColorprim.Location = New System.Drawing.Point(259, 158)
+        Me.cbColorprim.Margin = New System.Windows.Forms.Padding(7)
         Me.cbColorprim.MaxDropDownItems = 50
         Me.cbColorprim.Name = "cbColorprim"
-        Me.cbColorprim.Size = New System.Drawing.Size(128, 33)
+        Me.cbColorprim.Size = New System.Drawing.Size(229, 56)
         Me.cbColorprim.TabIndex = 29
         '
         'lFullrange
         '
         Me.lFullrange.AutoSize = True
-        Me.lFullrange.Location = New System.Drawing.Point(13, 308)
-        Me.lFullrange.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lFullrange.Location = New System.Drawing.Point(24, 528)
+        Me.lFullrange.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lFullrange.Name = "lFullrange"
-        Me.lFullrange.Size = New System.Drawing.Size(88, 25)
+        Me.lFullrange.Size = New System.Drawing.Size(175, 48)
         Me.lFullrange.TabIndex = 26
         Me.lFullrange.Text = "Fullrange:"
         '
         'cbFullrange
         '
         Me.cbFullrange.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbFullrange.Location = New System.Drawing.Point(137, 305)
-        Me.cbFullrange.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbFullrange.Location = New System.Drawing.Point(259, 523)
+        Me.cbFullrange.Margin = New System.Windows.Forms.Padding(7)
         Me.cbFullrange.MaxDropDownItems = 50
         Me.cbFullrange.Name = "cbFullrange"
-        Me.cbFullrange.Size = New System.Drawing.Size(128, 33)
+        Me.cbFullrange.Size = New System.Drawing.Size(229, 56)
         Me.cbFullrange.TabIndex = 27
         '
         'lVideoformat
         '
         Me.lVideoformat.AutoSize = True
-        Me.lVideoformat.Location = New System.Drawing.Point(13, 223)
-        Me.lVideoformat.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lVideoformat.Location = New System.Drawing.Point(24, 382)
+        Me.lVideoformat.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lVideoformat.Name = "lVideoformat"
-        Me.lVideoformat.Size = New System.Drawing.Size(116, 25)
+        Me.lVideoformat.Size = New System.Drawing.Size(226, 48)
         Me.lVideoformat.TabIndex = 24
         Me.lVideoformat.Text = "Videoformat:"
         '
         'cbVideoformat
         '
         Me.cbVideoformat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbVideoformat.Location = New System.Drawing.Point(137, 220)
-        Me.cbVideoformat.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbVideoformat.Location = New System.Drawing.Point(259, 377)
+        Me.cbVideoformat.Margin = New System.Windows.Forms.Padding(7)
         Me.cbVideoformat.MaxDropDownItems = 50
         Me.cbVideoformat.Name = "cbVideoformat"
-        Me.cbVideoformat.Size = New System.Drawing.Size(128, 33)
+        Me.cbVideoformat.Size = New System.Drawing.Size(229, 56)
         Me.cbVideoformat.TabIndex = 25
         '
         'lNalHrd
         '
         Me.lNalHrd.AutoSize = True
-        Me.lNalHrd.Location = New System.Drawing.Point(13, 53)
-        Me.lNalHrd.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lNalHrd.Location = New System.Drawing.Point(24, 91)
+        Me.lNalHrd.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lNalHrd.Name = "lNalHrd"
-        Me.lNalHrd.Size = New System.Drawing.Size(90, 25)
+        Me.lNalHrd.Size = New System.Drawing.Size(173, 48)
         Me.lNalHrd.TabIndex = 19
         Me.lNalHrd.Text = "HRD Info:"
         '
         'lOverscan
         '
         Me.lOverscan.AutoSize = True
-        Me.lOverscan.Location = New System.Drawing.Point(13, 266)
-        Me.lOverscan.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lOverscan.Location = New System.Drawing.Point(24, 456)
+        Me.lOverscan.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lOverscan.Name = "lOverscan"
-        Me.lOverscan.Size = New System.Drawing.Size(89, 25)
+        Me.lOverscan.Size = New System.Drawing.Size(174, 48)
         Me.lOverscan.TabIndex = 22
         Me.lOverscan.Text = "Overscan:"
         '
         'cbNalHrd
         '
         Me.cbNalHrd.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbNalHrd.Location = New System.Drawing.Point(137, 49)
-        Me.cbNalHrd.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbNalHrd.Location = New System.Drawing.Point(259, 84)
+        Me.cbNalHrd.Margin = New System.Windows.Forms.Padding(7)
         Me.cbNalHrd.MaxDropDownItems = 50
         Me.cbNalHrd.Name = "cbNalHrd"
-        Me.cbNalHrd.Size = New System.Drawing.Size(128, 33)
+        Me.cbNalHrd.Size = New System.Drawing.Size(229, 56)
         Me.cbNalHrd.TabIndex = 22
         '
         'cbOverscan
         '
         Me.cbOverscan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbOverscan.Location = New System.Drawing.Point(137, 262)
-        Me.cbOverscan.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbOverscan.Location = New System.Drawing.Point(259, 449)
+        Me.cbOverscan.Margin = New System.Windows.Forms.Padding(7)
         Me.cbOverscan.MaxDropDownItems = 50
         Me.cbOverscan.Name = "cbOverscan"
-        Me.cbOverscan.Size = New System.Drawing.Size(128, 33)
+        Me.cbOverscan.Size = New System.Drawing.Size(229, 56)
         Me.cbOverscan.TabIndex = 23
         '
         'tpCommandLine
         '
         Me.tpCommandLine.Controls.Add(Me.TableLayoutPanel4)
-        Me.tpCommandLine.Location = New System.Drawing.Point(4, 34)
-        Me.tpCommandLine.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tpCommandLine.Location = New System.Drawing.Point(12, 69)
+        Me.tpCommandLine.Margin = New System.Windows.Forms.Padding(7)
         Me.tpCommandLine.Name = "tpCommandLine"
-        Me.tpCommandLine.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.tpCommandLine.Size = New System.Drawing.Size(903, 398)
+        Me.tpCommandLine.Padding = New System.Windows.Forms.Padding(7)
+        Me.tpCommandLine.Size = New System.Drawing.Size(1632, 666)
         Me.tpCommandLine.TabIndex = 5
-        Me.tpCommandLine.Text = "Command Line"
+        Me.tpCommandLine.Text = " Command Line "
         Me.tpCommandLine.UseVisualStyleBackColor = True
         '
         'TableLayoutPanel4
@@ -2181,25 +2193,26 @@ Class x264Form
         Me.TableLayoutPanel4.Controls.Add(Me.gbRemoveFromPrecedingPasses, 0, 1)
         Me.TableLayoutPanel4.Controls.Add(Me.FlowLayoutPanel1, 0, 3)
         Me.TableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel4.Location = New System.Drawing.Point(4, 4)
+        Me.TableLayoutPanel4.Location = New System.Drawing.Point(7, 7)
+        Me.TableLayoutPanel4.Margin = New System.Windows.Forms.Padding(5)
         Me.TableLayoutPanel4.Name = "TableLayoutPanel4"
         Me.TableLayoutPanel4.RowCount = 4
         Me.TableLayoutPanel4.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
         Me.TableLayoutPanel4.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
         Me.TableLayoutPanel4.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
         Me.TableLayoutPanel4.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel4.Size = New System.Drawing.Size(895, 390)
+        Me.TableLayoutPanel4.Size = New System.Drawing.Size(1618, 652)
         Me.TableLayoutPanel4.TabIndex = 0
         '
         'gbAddToAll
         '
         Me.gbAddToAll.Controls.Add(Me.AddCmdlControl)
         Me.gbAddToAll.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbAddToAll.Location = New System.Drawing.Point(4, 4)
-        Me.gbAddToAll.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.gbAddToAll.Location = New System.Drawing.Point(7, 7)
+        Me.gbAddToAll.Margin = New System.Windows.Forms.Padding(7)
         Me.gbAddToAll.Name = "gbAddToAll"
-        Me.gbAddToAll.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.gbAddToAll.Size = New System.Drawing.Size(887, 106)
+        Me.gbAddToAll.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbAddToAll.Size = New System.Drawing.Size(1604, 177)
         Me.gbAddToAll.TabIndex = 0
         Me.gbAddToAll.TabStop = False
         Me.gbAddToAll.Text = "Custom Switches (used in all modes and passes)"
@@ -2207,21 +2220,21 @@ Class x264Form
         'AddCmdlControl
         '
         Me.AddCmdlControl.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.AddCmdlControl.Location = New System.Drawing.Point(4, 28)
-        Me.AddCmdlControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.AddCmdlControl.Location = New System.Drawing.Point(7, 55)
+        Me.AddCmdlControl.Margin = New System.Windows.Forms.Padding(7)
         Me.AddCmdlControl.Name = "AddCmdlControl"
-        Me.AddCmdlControl.Size = New System.Drawing.Size(879, 74)
+        Me.AddCmdlControl.Size = New System.Drawing.Size(1590, 115)
         Me.AddCmdlControl.TabIndex = 0
         '
         'gbAddToToPrecedingPasses
         '
         Me.gbAddToToPrecedingPasses.Controls.Add(Me.AddTurboCmdlControl)
         Me.gbAddToToPrecedingPasses.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbAddToToPrecedingPasses.Location = New System.Drawing.Point(4, 232)
-        Me.gbAddToToPrecedingPasses.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.gbAddToToPrecedingPasses.Location = New System.Drawing.Point(7, 389)
+        Me.gbAddToToPrecedingPasses.Margin = New System.Windows.Forms.Padding(7)
         Me.gbAddToToPrecedingPasses.Name = "gbAddToToPrecedingPasses"
-        Me.gbAddToToPrecedingPasses.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.gbAddToToPrecedingPasses.Size = New System.Drawing.Size(887, 106)
+        Me.gbAddToToPrecedingPasses.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbAddToToPrecedingPasses.Size = New System.Drawing.Size(1604, 177)
         Me.gbAddToToPrecedingPasses.TabIndex = 2
         Me.gbAddToToPrecedingPasses.TabStop = False
         Me.gbAddToToPrecedingPasses.Text = "Add to to preceding passes:"
@@ -2229,21 +2242,21 @@ Class x264Form
         'AddTurboCmdlControl
         '
         Me.AddTurboCmdlControl.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.AddTurboCmdlControl.Location = New System.Drawing.Point(4, 28)
-        Me.AddTurboCmdlControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.AddTurboCmdlControl.Location = New System.Drawing.Point(7, 55)
+        Me.AddTurboCmdlControl.Margin = New System.Windows.Forms.Padding(7)
         Me.AddTurboCmdlControl.Name = "AddTurboCmdlControl"
-        Me.AddTurboCmdlControl.Size = New System.Drawing.Size(879, 74)
+        Me.AddTurboCmdlControl.Size = New System.Drawing.Size(1590, 115)
         Me.AddTurboCmdlControl.TabIndex = 0
         '
         'gbRemoveFromPrecedingPasses
         '
         Me.gbRemoveFromPrecedingPasses.Controls.Add(Me.RemoveTurboCmdlControl)
         Me.gbRemoveFromPrecedingPasses.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbRemoveFromPrecedingPasses.Location = New System.Drawing.Point(4, 118)
-        Me.gbRemoveFromPrecedingPasses.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.gbRemoveFromPrecedingPasses.Location = New System.Drawing.Point(7, 198)
+        Me.gbRemoveFromPrecedingPasses.Margin = New System.Windows.Forms.Padding(7)
         Me.gbRemoveFromPrecedingPasses.Name = "gbRemoveFromPrecedingPasses"
-        Me.gbRemoveFromPrecedingPasses.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.gbRemoveFromPrecedingPasses.Size = New System.Drawing.Size(887, 106)
+        Me.gbRemoveFromPrecedingPasses.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbRemoveFromPrecedingPasses.Size = New System.Drawing.Size(1604, 177)
         Me.gbRemoveFromPrecedingPasses.TabIndex = 1
         Me.gbRemoveFromPrecedingPasses.TabStop = False
         Me.gbRemoveFromPrecedingPasses.Text = "Remove from preceding passes:"
@@ -2251,10 +2264,10 @@ Class x264Form
         'RemoveTurboCmdlControl
         '
         Me.RemoveTurboCmdlControl.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.RemoveTurboCmdlControl.Location = New System.Drawing.Point(4, 28)
-        Me.RemoveTurboCmdlControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.RemoveTurboCmdlControl.Location = New System.Drawing.Point(7, 55)
+        Me.RemoveTurboCmdlControl.Margin = New System.Windows.Forms.Padding(7)
         Me.RemoveTurboCmdlControl.Name = "RemoveTurboCmdlControl"
-        Me.RemoveTurboCmdlControl.Size = New System.Drawing.Size(879, 74)
+        Me.RemoveTurboCmdlControl.Size = New System.Drawing.Size(1590, 115)
         Me.RemoveTurboCmdlControl.TabIndex = 0
         '
         'FlowLayoutPanel1
@@ -2262,9 +2275,10 @@ Class x264Form
         Me.FlowLayoutPanel1.AutoSize = True
         Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.FlowLayoutPanel1.Controls.Add(Me.buImport)
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(3, 345)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(5, 578)
+        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(5)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(411, 41)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(802, 68)
         Me.FlowLayoutPanel1.TabIndex = 3
         '
         'buImport
@@ -2272,21 +2286,22 @@ Class x264Form
         Me.buImport.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.buImport.AutoSize = True
         Me.buImport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.buImport.Location = New System.Drawing.Point(3, 3)
-        Me.buImport.Size = New System.Drawing.Size(405, 35)
+        Me.buImport.Location = New System.Drawing.Point(5, 5)
+        Me.buImport.Margin = New System.Windows.Forms.Padding(5)
+        Me.buImport.Size = New System.Drawing.Size(792, 58)
         Me.buImport.Text = "Import settings from command line in clipboard"
         '
-        'tpStaxrip
+        'tpOther
         '
-        Me.tpStaxrip.Controls.Add(Me.gbCompressibilityCheck)
-        Me.tpStaxrip.Location = New System.Drawing.Point(4, 34)
-        Me.tpStaxrip.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.tpStaxrip.Name = "tpStaxrip"
-        Me.tpStaxrip.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.tpStaxrip.Size = New System.Drawing.Size(903, 398)
-        Me.tpStaxrip.TabIndex = 6
-        Me.tpStaxrip.Text = "Other"
-        Me.tpStaxrip.UseVisualStyleBackColor = True
+        Me.tpOther.Controls.Add(Me.gbCompressibilityCheck)
+        Me.tpOther.Location = New System.Drawing.Point(12, 69)
+        Me.tpOther.Margin = New System.Windows.Forms.Padding(7)
+        Me.tpOther.Name = "tpOther"
+        Me.tpOther.Padding = New System.Windows.Forms.Padding(7)
+        Me.tpOther.Size = New System.Drawing.Size(1632, 666)
+        Me.tpOther.TabIndex = 6
+        Me.tpOther.Text = "  Other  "
+        Me.tpOther.UseVisualStyleBackColor = True
         '
         'gbCompressibilityCheck
         '
@@ -2296,11 +2311,11 @@ Class x264Form
         Me.gbCompressibilityCheck.Controls.Add(Me.nudPercent)
         Me.gbCompressibilityCheck.Controls.Add(Me.lAimedQuality)
         Me.gbCompressibilityCheck.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gbCompressibilityCheck.Location = New System.Drawing.Point(4, 4)
-        Me.gbCompressibilityCheck.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.gbCompressibilityCheck.Location = New System.Drawing.Point(7, 7)
+        Me.gbCompressibilityCheck.Margin = New System.Windows.Forms.Padding(7)
         Me.gbCompressibilityCheck.Name = "gbCompressibilityCheck"
-        Me.gbCompressibilityCheck.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.gbCompressibilityCheck.Size = New System.Drawing.Size(895, 390)
+        Me.gbCompressibilityCheck.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbCompressibilityCheck.Size = New System.Drawing.Size(1618, 652)
         Me.gbCompressibilityCheck.TabIndex = 0
         Me.gbCompressibilityCheck.TabStop = False
         Me.gbCompressibilityCheck.Text = "Compressibility Check"
@@ -2309,10 +2324,10 @@ Class x264Form
         '
         Me.lAimedQualityHint.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lAimedQualityHint.AutoSize = True
-        Me.lAimedQualityHint.Location = New System.Drawing.Point(553, 158)
-        Me.lAimedQualityHint.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lAimedQualityHint.Location = New System.Drawing.Point(1032, 262)
+        Me.lAimedQualityHint.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lAimedQualityHint.Name = "lAimedQualityHint"
-        Me.lAimedQualityHint.Size = New System.Drawing.Size(52, 25)
+        Me.lAimedQualityHint.Size = New System.Drawing.Size(103, 48)
         Me.lAimedQualityHint.TabIndex = 4
         Me.lAimedQualityHint.Text = "(hint)"
         '
@@ -2320,37 +2335,37 @@ Class x264Form
         '
         Me.cbGoTo.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.cbGoTo.FormattingEnabled = True
-        Me.cbGoTo.Location = New System.Drawing.Point(0, 4)
+        Me.cbGoTo.Location = New System.Drawing.Point(0, 8)
         Me.cbGoTo.Margin = New System.Windows.Forms.Padding(0)
         Me.cbGoTo.Name = "cbGoTo"
-        Me.cbGoTo.Size = New System.Drawing.Size(172, 33)
+        Me.cbGoTo.Size = New System.Drawing.Size(309, 56)
         Me.cbGoTo.TabIndex = 3
         '
         'bnProfiles
         '
         Me.bnProfiles.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.bnProfiles.Location = New System.Drawing.Point(180, 2)
-        Me.bnProfiles.Margin = New System.Windows.Forms.Padding(8, 0, 8, 0)
+        Me.bnProfiles.Location = New System.Drawing.Point(324, 1)
+        Me.bnProfiles.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.bnProfiles.ShowMenuSymbol = True
-        Me.bnProfiles.Size = New System.Drawing.Size(120, 37)
+        Me.bnProfiles.Size = New System.Drawing.Size(200, 70)
         Me.bnProfiles.Text = "Profiles"
         '
         'bnCancel
         '
         Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(811, 2)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(8, 0, 0, 0)
-        Me.bnCancel.Size = New System.Drawing.Size(100, 37)
+        Me.bnCancel.Location = New System.Drawing.Point(1456, 1)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
+        Me.bnCancel.Size = New System.Drawing.Size(200, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
         Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(703, 2)
+        Me.bnOK.Location = New System.Drawing.Point(1241, 1)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnOK.Size = New System.Drawing.Size(100, 37)
+        Me.bnOK.Size = New System.Drawing.Size(200, 70)
         Me.bnOK.Text = "OK"
         '
         'TableLayoutPanel8
@@ -2366,25 +2381,26 @@ Class x264Form
         Me.TableLayoutPanel8.Controls.Add(Me.bnCancel, 3, 0)
         Me.TableLayoutPanel8.Controls.Add(Me.bnProfiles, 1, 0)
         Me.TableLayoutPanel8.Controls.Add(Me.bnOK, 2, 0)
-        Me.TableLayoutPanel8.Location = New System.Drawing.Point(8, 497)
-        Me.TableLayoutPanel8.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.TableLayoutPanel8.Location = New System.Drawing.Point(15, 852)
+        Me.TableLayoutPanel8.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.TableLayoutPanel8.Name = "TableLayoutPanel8"
         Me.TableLayoutPanel8.RowCount = 1
         Me.TableLayoutPanel8.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel8.Size = New System.Drawing.Size(911, 42)
+        Me.TableLayoutPanel8.Size = New System.Drawing.Size(1656, 72)
         Me.TableLayoutPanel8.TabIndex = 4
         '
         'x264Form
         '
         Me.AcceptButton = Me.bnOK
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(928, 547)
+        Me.ClientSize = New System.Drawing.Size(1687, 938)
         Me.Controls.Add(Me.TableLayoutPanel8)
         Me.Controls.Add(Me.tcMain)
         Me.Controls.Add(Me.rtbCommandLine)
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(1, 1, 1, 1)
+        Me.Margin = New System.Windows.Forms.Padding(2)
         Me.Name = "x264Form"
         Me.Text = "x264"
         Me.tcMain.ResumeLayout(False)
@@ -2431,7 +2447,7 @@ Class x264Form
         Me.gbRemoveFromPrecedingPasses.ResumeLayout(False)
         Me.FlowLayoutPanel1.ResumeLayout(False)
         Me.FlowLayoutPanel1.PerformLayout()
-        Me.tpStaxrip.ResumeLayout(False)
+        Me.tpOther.ResumeLayout(False)
         Me.gbCompressibilityCheck.ResumeLayout(False)
         Me.gbCompressibilityCheck.PerformLayout()
         Me.TableLayoutPanel8.ResumeLayout(False)
@@ -2702,7 +2718,7 @@ Class x264Form
         End If
 
         If x.Profile.Value = x264ProfileMode.Baseline AndAlso x.CABAC.Value Then
-            l.Add("cabac requires a higher profile than baseline, either choose a higher profile or disable cabac")
+            l.Add("cabac requires a higher profile than baseline, either select a higher profile or disable cabac")
         End If
 
         Return l.Join(", ")

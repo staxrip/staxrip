@@ -114,7 +114,7 @@ Class VideoComparisonForm
     Sub Help()
         Dim f As New HelpForm()
         f.Doc.WriteStart(Text)
-        f.Doc.WriteP("In the statistic tab of the x265 dialog choose Log Level Frame and enable CSV log file creation, the video comparison tool can displays containing frame info.")
+        f.Doc.WriteP("In the statistic tab of the x265 dialog select Log Level Frame and enable CSV log file creation, the video comparison tool can displays containing frame info.")
         f.Doc.WriteTips(Menu.GetTips)
         f.Doc.WriteTable("Shortcut Keys", Menu.GetKeys, False)
         f.Show()

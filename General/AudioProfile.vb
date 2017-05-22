@@ -14,6 +14,7 @@ Public MustInherit Class AudioProfile
     Property Gain As Single
     Property Streams As List(Of AudioStream) = New List(Of AudioStream)
     Property [Default] As Boolean
+    Property Forced As Boolean
 
     Overridable Property Channels As Integer = 2
     Overridable Property OutputFileType As String = "unknown"
@@ -72,6 +73,8 @@ Public MustInherit Class AudioProfile
 
                     Language = Stream.Language
                     StreamName = Stream.Title
+                    Forced = Stream.Forced
+                    [Default] = Stream.Default
                 End If
 
                 OnStreamChanged()
@@ -473,7 +476,7 @@ Public Class MuxAudioProfile
             tbb.Edit.Expandet = True
             tbb.Edit.Text = StreamName
             tbb.Edit.SaveAction = Sub(value) StreamName = value
-            tbb.Button.Text = "Macro String Editor..."
+            tbb.Button.Text = "Macro Editor..."
             tbb.Button.ClickAction = AddressOf tbb.Edit.EditMacro
 
             Dim nb = ui.AddNumericBlock(page)
@@ -498,10 +501,16 @@ Public Class MuxAudioProfile
             Next
 
             Dim cb = ui.AddCheckBox(page)
-            cb.Text = "Default Stream"
-            cb.Tooltip = "Make this stream default in MKV container."
+            cb.Text = "Default"
+            cb.Tooltip = "Flaged as default in MKV."
             cb.Checked = [Default]
             cb.SaveAction = Sub(value) [Default] = value
+
+            cb = ui.AddCheckBox(page)
+            cb.Text = "Forced"
+            cb.Tooltip = "Flaged as forced in MKV."
+            cb.Checked = Forced
+            cb.SaveAction = Sub(value) Forced = value
 
             page.ResumeLayout()
 
@@ -765,7 +774,7 @@ Class GUIAudioProfile
                     ret += " -" & Bitrate
 
                     If Not {192, 224, 384, 448, 640}.Contains(CInt(Bitrate)) Then
-                        Return "Invalid bitrate, choose 192, 224, 384, 448 or 640"
+                        Return "Invalid bitrate, select 192, 224, 384, 448 or 640"
                     End If
                 Case AudioCodec.DTS
                     ret += " -" & Bitrate
@@ -861,7 +870,7 @@ Class GUIAudioProfile
                 End Select
             Case AudioCodec.AC3
                 If Not {192, 224, 384, 448, 640}.Contains(CInt(Bitrate)) Then
-                    Return "Invalid bitrate, choose 192, 224, 384, 448 or 640"
+                    Return "Invalid bitrate, select 192, 224, 384, 448 or 640"
                 End If
 
                 ret += " -b:a " & CInt(Bitrate) & "k"

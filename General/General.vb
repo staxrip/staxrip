@@ -130,7 +130,7 @@ Class Folder
                     Dim td As New TaskDialog(Of String)
 
                     td.MainInstruction = "Settings Directory"
-                    td.Content = "Choose the location of the settings directory."
+                    td.Content = "Select the location of the settings directory."
 
                     Dim folders As New HashSet(Of String)
 

@@ -604,20 +604,20 @@ Namespace UI
                                  defaults As String,
                                  owner As Form) As String
 
-            Using f As New MacroEditor
-                f.SetMacroDefaults()
-                f.MacroEditorControl.Value = value
-                f.MacroEditorControl.rtbDefaults.Text = defaults
-                f.Text = "Menu Editor"
+            Using dia As New MacroEditorDialog
+                dia.SetMacroDefaults()
+                dia.MacroEditorControl.Value = value
+                dia.MacroEditorControl.rtbDefaults.Text = defaults
+                dia.Text = "Menu Editor"
 
                 If helpName <> "" Then
-                    f.bnContext.Text = " Restore Defaults... "
-                    f.bnContext.Visible = True
-                    f.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then f.MacroEditorControl.Value = defaults)
+                    dia.bnContext.Text = " Restore Defaults... "
+                    dia.bnContext.Visible = True
+                    dia.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then dia.MacroEditorControl.Value = defaults)
                 End If
 
-                If f.ShowDialog(owner) = DialogResult.OK Then
-                    value = f.MacroEditorControl.Value
+                If dia.ShowDialog(owner) = DialogResult.OK Then
+                    value = dia.MacroEditorControl.Value
                 End If
             End Using
 

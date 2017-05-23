@@ -420,8 +420,6 @@ Class BatchAudioEncoderForm
     Sub New(profile As BatchAudioProfile)
         InitializeComponent()
 
-        'ClientSize = New Size(FontHeight * 40, FontHeight * 16)
-
         Me.Profile = profile
         TempProfile = ObjectHelp.GetCopy(Of BatchAudioProfile)(profile)
         tbType.Text = TempProfile.OutputFileType

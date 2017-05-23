@@ -84,14 +84,14 @@ Class MuxerForm
         Me.CmdlControl.Location = New System.Drawing.Point(0, 48)
         Me.CmdlControl.Margin = New System.Windows.Forms.Padding(0)
         Me.CmdlControl.Name = "CmdlControl"
-        Me.CmdlControl.Size = New System.Drawing.Size(1782, 523)
+        Me.CmdlControl.Size = New System.Drawing.Size(1782, 466)
         Me.CmdlControl.TabIndex = 0
         '
         'bnCommandLinePreview
         '
         Me.bnCommandLinePreview.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCommandLinePreview.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.bnCommandLinePreview.Location = New System.Drawing.Point(1010, 713)
+        Me.bnCommandLinePreview.Location = New System.Drawing.Point(1010, 656)
         Me.bnCommandLinePreview.Margin = New System.Windows.Forms.Padding(5)
         Me.bnCommandLinePreview.Name = "bnCommandLinePreview"
         Me.bnCommandLinePreview.Size = New System.Drawing.Size(320, 70)
@@ -103,7 +103,7 @@ Class MuxerForm
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(1600, 713)
+        Me.bnCancel.Location = New System.Drawing.Point(1600, 656)
         Me.bnCancel.Margin = New System.Windows.Forms.Padding(5)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
@@ -112,7 +112,7 @@ Class MuxerForm
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(1340, 713)
+        Me.bnOK.Location = New System.Drawing.Point(1340, 656)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(5)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
@@ -130,7 +130,7 @@ Class MuxerForm
         Me.tc.Margin = New System.Windows.Forms.Padding(5)
         Me.tc.Name = "tc"
         Me.tc.SelectedIndex = 0
-        Me.tc.Size = New System.Drawing.Size(1836, 680)
+        Me.tc.Size = New System.Drawing.Size(1836, 623)
         Me.tc.TabIndex = 5
         '
         'tpSubtitles
@@ -140,7 +140,7 @@ Class MuxerForm
         Me.tpSubtitles.Margin = New System.Windows.Forms.Padding(5)
         Me.tpSubtitles.Name = "tpSubtitles"
         Me.tpSubtitles.Padding = New System.Windows.Forms.Padding(5)
-        Me.tpSubtitles.Size = New System.Drawing.Size(1812, 599)
+        Me.tpSubtitles.Size = New System.Drawing.Size(1812, 542)
         Me.tpSubtitles.TabIndex = 3
         Me.tpSubtitles.Text = " Subtitles "
         Me.tpSubtitles.UseVisualStyleBackColor = True
@@ -151,7 +151,7 @@ Class MuxerForm
         Me.SubtitleControl.Location = New System.Drawing.Point(5, 5)
         Me.SubtitleControl.Margin = New System.Windows.Forms.Padding(2, 3, 2, 3)
         Me.SubtitleControl.Name = "SubtitleControl"
-        Me.SubtitleControl.Size = New System.Drawing.Size(1802, 589)
+        Me.SubtitleControl.Size = New System.Drawing.Size(1802, 532)
         Me.SubtitleControl.TabIndex = 0
         '
         'tpAudio
@@ -161,7 +161,7 @@ Class MuxerForm
         Me.tpAudio.Margin = New System.Windows.Forms.Padding(5)
         Me.tpAudio.Name = "tpAudio"
         Me.tpAudio.Padding = New System.Windows.Forms.Padding(5)
-        Me.tpAudio.Size = New System.Drawing.Size(1812, 599)
+        Me.tpAudio.Size = New System.Drawing.Size(1812, 542)
         Me.tpAudio.TabIndex = 4
         Me.tpAudio.Text = "   Audio   "
         Me.tpAudio.UseVisualStyleBackColor = True
@@ -179,7 +179,7 @@ Class MuxerForm
         Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
         Me.TableLayoutPanel2.RowCount = 1
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(1802, 589)
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(1802, 532)
         Me.TableLayoutPanel2.TabIndex = 7
         '
         'FlowLayoutPanel1
@@ -193,58 +193,58 @@ Class MuxerForm
         Me.FlowLayoutPanel1.Controls.Add(Me.bnPlay)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnEdit)
         Me.FlowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(1521, 0)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(1511, 0)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(281, 480)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(291, 516)
         Me.FlowLayoutPanel1.TabIndex = 6
         '
         'bnAdd
         '
         Me.bnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnAdd.Location = New System.Drawing.Point(11, 0)
-        Me.bnAdd.Margin = New System.Windows.Forms.Padding(11, 0, 0, 10)
-        Me.bnAdd.Size = New System.Drawing.Size(270, 70)
+        Me.bnAdd.Margin = New System.Windows.Forms.Padding(11, 0, 0, 6)
+        Me.bnAdd.Size = New System.Drawing.Size(280, 80)
         Me.bnAdd.Text = "Add..."
         '
         'bnRemove
         '
         Me.bnRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRemove.Location = New System.Drawing.Point(11, 80)
-        Me.bnRemove.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
-        Me.bnRemove.Size = New System.Drawing.Size(270, 70)
+        Me.bnRemove.Location = New System.Drawing.Point(11, 86)
+        Me.bnRemove.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnRemove.Size = New System.Drawing.Size(280, 80)
         Me.bnRemove.Text = " Remove"
         '
         'bnUp
         '
         Me.bnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnUp.Location = New System.Drawing.Point(11, 160)
-        Me.bnUp.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
-        Me.bnUp.Size = New System.Drawing.Size(270, 70)
+        Me.bnUp.Location = New System.Drawing.Point(11, 172)
+        Me.bnUp.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnUp.Size = New System.Drawing.Size(280, 80)
         Me.bnUp.Text = "Up"
         '
         'bnDown
         '
         Me.bnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnDown.Location = New System.Drawing.Point(11, 240)
-        Me.bnDown.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
-        Me.bnDown.Size = New System.Drawing.Size(270, 70)
+        Me.bnDown.Location = New System.Drawing.Point(11, 258)
+        Me.bnDown.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnDown.Size = New System.Drawing.Size(280, 80)
         Me.bnDown.Text = "Down"
         '
         'bnPlay
         '
         Me.bnPlay.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnPlay.Location = New System.Drawing.Point(11, 320)
-        Me.bnPlay.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
-        Me.bnPlay.Size = New System.Drawing.Size(270, 70)
+        Me.bnPlay.Location = New System.Drawing.Point(11, 344)
+        Me.bnPlay.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnPlay.Size = New System.Drawing.Size(280, 80)
         Me.bnPlay.Text = "Play"
         '
         'bnEdit
         '
         Me.bnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnEdit.Location = New System.Drawing.Point(11, 400)
-        Me.bnEdit.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
-        Me.bnEdit.Size = New System.Drawing.Size(270, 70)
+        Me.bnEdit.Location = New System.Drawing.Point(11, 430)
+        Me.bnEdit.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnEdit.Size = New System.Drawing.Size(280, 80)
         Me.bnEdit.Text = "Edit..."
         '
         'dgvAudio
@@ -257,7 +257,7 @@ Class MuxerForm
         Me.dgvAudio.Margin = New System.Windows.Forms.Padding(0)
         Me.dgvAudio.Name = "dgvAudio"
         Me.dgvAudio.RowTemplate.Height = 28
-        Me.dgvAudio.Size = New System.Drawing.Size(1521, 589)
+        Me.dgvAudio.Size = New System.Drawing.Size(1511, 532)
         Me.dgvAudio.TabIndex = 0
         '
         'tpOptions
@@ -267,7 +267,7 @@ Class MuxerForm
         Me.tpOptions.Margin = New System.Windows.Forms.Padding(5)
         Me.tpOptions.Name = "tpOptions"
         Me.tpOptions.Padding = New System.Windows.Forms.Padding(5)
-        Me.tpOptions.Size = New System.Drawing.Size(1812, 599)
+        Me.tpOptions.Size = New System.Drawing.Size(1812, 542)
         Me.tpOptions.TabIndex = 2
         Me.tpOptions.Text = "  Options  "
         Me.tpOptions.UseVisualStyleBackColor = True
@@ -278,7 +278,7 @@ Class MuxerForm
         Me.SimpleUI.Location = New System.Drawing.Point(5, 5)
         Me.SimpleUI.Margin = New System.Windows.Forms.Padding(5)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(1802, 589)
+        Me.SimpleUI.Size = New System.Drawing.Size(1802, 532)
         Me.SimpleUI.TabIndex = 0
         Me.SimpleUI.Text = "SimpleUI1"
         '
@@ -289,7 +289,7 @@ Class MuxerForm
         Me.tpCommandLine.Margin = New System.Windows.Forms.Padding(5)
         Me.tpCommandLine.Name = "tpCommandLine"
         Me.tpCommandLine.Padding = New System.Windows.Forms.Padding(15, 14, 15, 14)
-        Me.tpCommandLine.Size = New System.Drawing.Size(1812, 599)
+        Me.tpCommandLine.Size = New System.Drawing.Size(1812, 542)
         Me.tpCommandLine.TabIndex = 1
         Me.tpCommandLine.Text = " Command Line "
         Me.tpCommandLine.UseVisualStyleBackColor = True
@@ -308,7 +308,7 @@ Class MuxerForm
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1782, 571)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1782, 514)
         Me.TableLayoutPanel1.TabIndex = 2
         '
         'Label1
@@ -327,7 +327,7 @@ Class MuxerForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1864, 797)
+        Me.ClientSize = New System.Drawing.Size(1864, 740)
         Me.Controls.Add(Me.tc)
         Me.Controls.Add(Me.bnCancel)
         Me.Controls.Add(Me.bnOK)
@@ -359,7 +359,7 @@ Class MuxerForm
     Sub New(muxer As Muxer)
         MyBase.New()
         InitializeComponent()
-        ClientSize = New Size(FontHeight * 40, FontHeight * 20)
+        ScaleClientSize(40, 20)
         Text += " - " + muxer.Name
         Me.Muxer = muxer
         SubtitleControl.AddSubtitles(muxer.Subtitles)

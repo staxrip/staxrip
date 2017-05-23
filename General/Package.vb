@@ -214,7 +214,7 @@ Public Class Package
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .HelpURLFunc = Function(engine) If(engine = ScriptEngine.AviSynth, "https://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md", "https://github.com/FFMS/ffms2/blob/master/doc/ffms2-vapoursynth.md"),
         .AviSynthFilterNames = {"FFVideoSource", "FFAudioSource"},
-        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%source_temp_file%.ffindex"", colorspace = ""YV12"")")},
+        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", colorspace = ""YV12"", \" + BR + "              cachefile = ""%source_temp_file%.ffindex"")")},
         .VapourSynthFilterNames = {"ffms2"},
         .VapourSynthFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")")}})
 

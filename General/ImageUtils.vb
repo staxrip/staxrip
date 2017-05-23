@@ -37,15 +37,13 @@ Class ImageHelp
         End If
 
         If family Is Nothing Then Return Nothing
-        Dim font As New Font(family, 11)
-        Dim bitmap As New Bitmap(font.Height + 7, font.Height + 7)
+        Dim font As New Font(family, 12)
+        Dim fontHeight = font.Height
+        Dim bitmap As New Bitmap(CInt(fontHeight * 1.1F), CInt(fontHeight * 1.1F))
         Dim graphics = Drawing.Graphics.FromImage(bitmap)
+        'graphics.Clear(Color.Orange)
         graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
-        Dim format As New StringFormat
-        format.LineAlignment = StringAlignment.Center
-        format.Alignment = StringAlignment.Center
-        Dim rec As New RectangleF(0, CInt(font.Height / 14), bitmap.Width, bitmap.Height)
-        graphics.DrawString(Convert.ToChar(CInt(symbol)), font, Brushes.Black, rec, format)
+        graphics.DrawString(Convert.ToChar(CInt(symbol)), font, Brushes.Black, -fontHeight * 0.1F, fontHeight * 0.07F)
         graphics.Dispose()
         font.Dispose()
 

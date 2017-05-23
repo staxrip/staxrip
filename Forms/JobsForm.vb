@@ -175,8 +175,7 @@ Friend Class JobsForm
         MyBase.New()
         InitializeComponent()
 
-        ClientSize = New Size(FontHeight * 35, FontHeight * 20)
-
+        ScaleClientSize(35, 20)
         bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
         bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
 

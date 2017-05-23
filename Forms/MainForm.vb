@@ -1176,7 +1176,7 @@ Public Class MainForm
                            files = Directory.GetFiles(Folder.Template, "*.srip", SearchOption.AllDirectories)
                        End Sub)
 
-        If IsDisposed OrElse Native.GetForegroundWindow() <> Handle Then Exit Sub
+        If IsDisposed Then Exit Sub
 
         For Each i In CustomMainMenu.MenuItems
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
@@ -3018,7 +3018,7 @@ Public Class MainForm
     <Command("Shows the settings dialog.")>
     Sub ShowSettingsDialog()
         Using form As New SimpleSettingsForm("Settings")
-            form.ClientSize = New Size(FontHeight * 30, FontHeight * 21)
+            form.ScaleClientSize(30, 21)
 
             Dim ui = form.SimpleUI
 
@@ -3522,7 +3522,7 @@ Public Class MainForm
             "In order to select a template to be loaded on program startup go to:",
             "Tools > Settings > General > Templates > Default Template")
 
-            form.ClientSize = New Size(FontHeight * 30, FontHeight * 21)
+            form.ScaleClientSize(30, 21)
 
             Dim ui = form.SimpleUI
 
@@ -3863,7 +3863,7 @@ Public Class MainForm
             cb.SaveAction = Sub(value) p.AutoCompCheck = value
 
             nb = ui.AddNumericBlock(miscPage)
-            nb.Label.Text = "Percentage to use for compressibility check:"
+            nb.Label.Text = "Percentage to use for comp. check:"
             nb.Label.Offset = 15
             nb.NumEdit.Init(2, 20, 1)
             nb.NumEdit.Value = p.CompCheckRange

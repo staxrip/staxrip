@@ -464,9 +464,10 @@ Public Class MuxAudioProfile
     End Sub
 
     Private Overloads Function Edit(showProjectSettings As Boolean) As DialogResult
-        Using f As New SimpleSettingsForm("Audio Mux Options", "The Audio Mux options allow to add a audio file without reencoding.")
-            f.Height = CInt(f.Height * 0.6)
-            Dim ui = f.SimpleUI
+        Using form As New SimpleSettingsForm("Audio Mux Options", "The Audio Mux options allow to add a audio file without reencoding.")
+            form.ScaleClientSize(30, 15)
+
+            Dim ui = form.SimpleUI
             Dim page = ui.CreateFlowPage("main page")
             page.SuspendLayout()
 
@@ -514,7 +515,7 @@ Public Class MuxAudioProfile
 
             page.ResumeLayout()
 
-            Dim ret = f.ShowDialog()
+            Dim ret = form.ShowDialog()
             If ret = DialogResult.OK Then ui.Save()
 
             Return ret

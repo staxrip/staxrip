@@ -321,7 +321,7 @@ Namespace UI
 
         Public Overrides Function GetPreferredSize(constrainingSize As Size) As Size
             Dim ret = MyBase.GetPreferredSize(constrainingSize)
-            ret.Height = CInt(Font.Height * 1.5)
+            ret.Height = CInt(Font.Height * 1.4)
             Return ret
         End Function
 

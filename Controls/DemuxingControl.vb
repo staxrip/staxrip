@@ -56,7 +56,7 @@ Class DemuxingControl
         Me.flpButtons.Location = New System.Drawing.Point(227, 0)
         Me.flpButtons.Margin = New System.Windows.Forms.Padding(0)
         Me.flpButtons.Name = "flpButtons"
-        Me.flpButtons.Size = New System.Drawing.Size(260, 480)
+        Me.flpButtons.Size = New System.Drawing.Size(260, 540)
         Me.flpButtons.TabIndex = 6
         '
         'bnAdd
@@ -64,47 +64,47 @@ Class DemuxingControl
         Me.bnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnAdd.Location = New System.Drawing.Point(0, 0)
         Me.bnAdd.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
-        Me.bnAdd.Size = New System.Drawing.Size(260, 70)
-        Me.bnAdd.Text = "Add..."
+        Me.bnAdd.Size = New System.Drawing.Size(260, 80)
+        Me.bnAdd.Text = " Add..."
         '
         'bnRemove
         '
         Me.bnRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRemove.Location = New System.Drawing.Point(0, 80)
+        Me.bnRemove.Location = New System.Drawing.Point(0, 90)
         Me.bnRemove.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
-        Me.bnRemove.Size = New System.Drawing.Size(260, 70)
-        Me.bnRemove.Text = " Remove"
+        Me.bnRemove.Size = New System.Drawing.Size(260, 80)
+        Me.bnRemove.Text = "   Remove"
         '
         'bnEdit
         '
         Me.bnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnEdit.Location = New System.Drawing.Point(0, 160)
+        Me.bnEdit.Location = New System.Drawing.Point(0, 180)
         Me.bnEdit.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
-        Me.bnEdit.Size = New System.Drawing.Size(260, 70)
-        Me.bnEdit.Text = "Edit..."
+        Me.bnEdit.Size = New System.Drawing.Size(260, 80)
+        Me.bnEdit.Text = " Edit..."
         '
         'bnUp
         '
         Me.bnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnUp.Location = New System.Drawing.Point(0, 240)
+        Me.bnUp.Location = New System.Drawing.Point(0, 270)
         Me.bnUp.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
-        Me.bnUp.Size = New System.Drawing.Size(260, 70)
+        Me.bnUp.Size = New System.Drawing.Size(260, 80)
         Me.bnUp.Text = "Up"
         '
         'bnDown
         '
         Me.bnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnDown.Location = New System.Drawing.Point(0, 320)
+        Me.bnDown.Location = New System.Drawing.Point(0, 360)
         Me.bnDown.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
-        Me.bnDown.Size = New System.Drawing.Size(260, 70)
+        Me.bnDown.Size = New System.Drawing.Size(260, 80)
         Me.bnDown.Text = "Down"
         '
         'bnRestore
         '
         Me.bnRestore.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRestore.Location = New System.Drawing.Point(0, 400)
+        Me.bnRestore.Location = New System.Drawing.Point(0, 450)
         Me.bnRestore.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
-        Me.bnRestore.Size = New System.Drawing.Size(260, 70)
+        Me.bnRestore.Size = New System.Drawing.Size(260, 80)
         Me.bnRestore.Text = "Restore..."
         '
         'tlpMain

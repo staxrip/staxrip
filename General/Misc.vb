@@ -1068,7 +1068,9 @@ Class Macro
     End Function
 
     Shared Function ExpandGUI(value As String,
-                              Optional throwIfCancel As Boolean = False) As (Value As String, Caption As String, Cancel As Boolean)
+                              Optional throwIfCancel As Boolean = False) As (Value As String,
+                                                                             Caption As String,
+                                                                             Cancel As Boolean)
 
         Dim ret As (Value As String, Caption As String, Cancel As Boolean) = (value, "", False)
         If ret.Value = "" Then Return ret

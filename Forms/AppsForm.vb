@@ -48,14 +48,14 @@ Class AppsForm
         Me.tv.ExpandMode = StaxRip.UI.TreeNodeExpandMode.InclusiveChilds
         Me.tv.FullRowSelect = True
         Me.tv.HideSelection = False
-        Me.tv.Location = New System.Drawing.Point(10, 89)
+        Me.tv.Location = New System.Drawing.Point(10, 100)
         Me.tv.Margin = New System.Windows.Forms.Padding(10)
         Me.tv.Name = "tv"
         Me.tv.Scrollable = False
         Me.tv.SelectOnMouseDown = True
         Me.tv.ShowLines = False
         Me.tv.ShowPlusMinus = False
-        Me.tv.Size = New System.Drawing.Size(239, 330)
+        Me.tv.Size = New System.Drawing.Size(239, 319)
         Me.tv.Sorted = True
         Me.tv.TabIndex = 0
         '
@@ -68,19 +68,19 @@ Class AppsForm
         Me.ToolStrip.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsbLaunch, Me.tsbOpenDir, Me.tsbWebsite, Me.tsbHelp})
         Me.ToolStrip.Location = New System.Drawing.Point(259, 10)
-        Me.ToolStrip.Margin = New System.Windows.Forms.Padding(0, 10, 11, 0)
+        Me.ToolStrip.Margin = New System.Windows.Forms.Padding(0, 10, 10, 0)
         Me.ToolStrip.Name = "ToolStrip"
         Me.ToolStrip.Padding = New System.Windows.Forms.Padding(5, 2, 2, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(766, 69)
+        Me.ToolStrip.Size = New System.Drawing.Size(767, 80)
         Me.ToolStrip.TabIndex = 1
-        Me.ToolStrip.Text = "ToolStrip1"
+        Me.ToolStrip.Text = "tsMain"
         '
         'tsbLaunch
         '
         Me.tsbLaunch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbLaunch.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbLaunch.Name = "tsbLaunch"
-        Me.tsbLaunch.Size = New System.Drawing.Size(156, 64)
+        Me.tsbLaunch.Size = New System.Drawing.Size(156, 65)
         Me.tsbLaunch.Text = " Launch "
         Me.tsbLaunch.ToolTipText = "Launches the application"
         '
@@ -89,7 +89,7 @@ Class AppsForm
         Me.tsbOpenDir.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbOpenDir.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbOpenDir.Name = "tsbOpenDir"
-        Me.tsbOpenDir.Size = New System.Drawing.Size(190, 64)
+        Me.tsbOpenDir.Size = New System.Drawing.Size(190, 65)
         Me.tsbOpenDir.Text = " Directory "
         Me.tsbOpenDir.ToolTipText = "Opens the directory containing the application"
         '
@@ -98,7 +98,7 @@ Class AppsForm
         Me.tsbWebsite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbWebsite.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbWebsite.Name = "tsbWebsite"
-        Me.tsbWebsite.Size = New System.Drawing.Size(172, 64)
+        Me.tsbWebsite.Size = New System.Drawing.Size(172, 65)
         Me.tsbWebsite.Text = " Website "
         Me.tsbWebsite.ToolTipText = "Opens the application's website"
         '
@@ -107,7 +107,7 @@ Class AppsForm
         Me.tsbHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbHelp.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbHelp.Name = "tsbHelp"
-        Me.tsbHelp.Size = New System.Drawing.Size(119, 64)
+        Me.tsbHelp.Size = New System.Drawing.Size(119, 65)
         Me.tsbHelp.Text = " Help "
         Me.tsbHelp.ToolTipText = "Opens the application's help"
         '
@@ -119,19 +119,19 @@ Class AppsForm
         Me.flp.BackColor = System.Drawing.Color.White
         Me.flp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.flp.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.flp.Location = New System.Drawing.Point(259, 89)
+        Me.flp.Location = New System.Drawing.Point(259, 100)
         Me.flp.Margin = New System.Windows.Forms.Padding(0, 10, 10, 10)
         Me.flp.Name = "flp"
-        Me.flp.Size = New System.Drawing.Size(767, 330)
+        Me.flp.Size = New System.Drawing.Size(767, 319)
         Me.flp.TabIndex = 2
         '
         'SearchTextBox
         '
         Me.SearchTextBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.SearchTextBox.Location = New System.Drawing.Point(11, 13)
+        Me.SearchTextBox.Location = New System.Drawing.Point(11, 15)
         Me.SearchTextBox.Margin = New System.Windows.Forms.Padding(11, 10, 11, 0)
         Me.SearchTextBox.Name = "SearchTextBox"
-        Me.SearchTextBox.Size = New System.Drawing.Size(237, 62)
+        Me.SearchTextBox.Size = New System.Drawing.Size(237, 70)
         Me.SearchTextBox.TabIndex = 4
         '
         'tlpMain
@@ -186,8 +186,7 @@ Class AppsForm
         MyBase.New()
         InitializeComponent()
 
-        ClientSize = New Size(FontHeight * 41, FontHeight * 27)
-
+        ScaleClientSize(41, 27)
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)
         Dim x64 = Package.Items.Values.Where(Function(arg) Not arg.Version Is Nothing AndAlso Not arg.Version.Contains("x86")).Count
         Dim avs = plugins.Where(Function(arg) Not arg.AviSynthFilterNames.NothingOrEmpty).Count

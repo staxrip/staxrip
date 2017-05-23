@@ -33,9 +33,9 @@ Public MustInherit Class Demuxer
     End Function
 
     Public Function ShowConfigDialogInputExtensions() As DialogResult
-        Using f As New SimpleSettingsForm(Name)
-            f.Height = CInt(f.Height * 0.5)
-            Dim ui = f.SimpleUI
+        Using form As New SimpleSettingsForm(Name)
+            form.ScaleClientSize(23, 10)
+            Dim ui = form.SimpleUI
             Dim page = ui.CreateFlowPage("main page")
 
             Dim tb = ui.AddTextBlock(page)
@@ -43,7 +43,7 @@ Public MustInherit Class Demuxer
             tb.Edit.Text = InputExtensions.Join(" ")
             tb.Edit.SaveAction = Sub(value) InputExtensions = value.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
 
-            Dim ret = f.ShowDialog()
+            Dim ret = form.ShowDialog()
             If ret = DialogResult.OK Then ui.Save()
 
             Return ret

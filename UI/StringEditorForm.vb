@@ -117,7 +117,7 @@ Namespace UI
             InitializeComponent()
             cbWrap.Checked = True
             rtb.Font = New Font("Consolas", 10 * s.UIScaleFactor)
-            ClientSize = New Size(FontHeight * 35, FontHeight * 20)
+            ScaleClientSize(41, 24)
         End Sub
 
         Private Sub tb_KeyDown(sender As Object, e As KeyEventArgs) Handles rtb.KeyDown

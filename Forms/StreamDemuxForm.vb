@@ -8,7 +8,7 @@ Class StreamDemuxForm
     Sub New(sourceFile As String, attachments As List(Of Attachment))
         InitializeComponent()
 
-        ClientSize = New Size(FontHeight * 42, FontHeight * 29)
+        ScaleClientSize(42, 29)
         StartPosition = FormStartPosition.CenterParent
 
         lvAudio.View = View.Details

@@ -117,7 +117,7 @@ Class SimpleSettingsForm
 
     Sub New(title As String, ParamArray helpParagraphs As String())
         InitializeComponent()
-        ClientSize = New Size(FontHeight * 40, FontHeight * 27)
+        ScaleClientSize(40, 27)
         Text = title
         Me.HelpParagraphs = helpParagraphs
         SimpleUI.Tree.Select()

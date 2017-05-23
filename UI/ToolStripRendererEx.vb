@@ -74,7 +74,7 @@ Class ToolStripRendererEx
             Dim dropDown = TryCast(e.ToolStrip, ToolStripDropDownMenu)
 
             If dropDown Is Nothing OrElse dropDown.ShowImageMargin OrElse dropDown.ShowCheckMargin Then
-                TextOffset = CInt(e.Item.Height * 0.9)
+                TextOffset = CInt(e.Item.Height * 1.1)
             Else
                 TextOffset = CInt(e.Item.Height * 0.2)
             End If
@@ -125,11 +125,11 @@ Class ToolStripRendererEx
             Else
                 g.SmoothingMode = SmoothingMode.AntiAlias
 
-                Dim r2 = New Rectangle(r.X + 3, r.Y + 1, r.Width - 6, r.Height - 3)
+                Dim r2 = New Rectangle(r.X + 2, r.Y, r.Width - 4, r.Height - 1)
 
                 If IsFlat() Then
-                    Using p As New Pen(ColorBorder)
-                        g.DrawRectangle(p, r2)
+                    Using pen As New Pen(ColorBorder)
+                        g.DrawRectangle(pen, r2)
                     End Using
 
                     r2.Inflate(-1, -1)
@@ -159,7 +159,6 @@ Class ToolStripRendererEx
                         End Using
                     End Using
                 End If
-
             End If
         End If
     End Sub
@@ -167,11 +166,11 @@ Class ToolStripRendererEx
     Sub DrawHotToolStripButton(e As ToolStripItemRenderEventArgs)
         Dim g = e.Graphics
         Dim r = New Rectangle(Point.Empty, e.Item.Size)
-        Dim r2 = New Rectangle(r.X + 1, r.Y + 1, r.Width - 3, r.Height - 3)
+        Dim r2 = New Rectangle(r.X, r.Y, r.Width - 1, r.Height - 1)
 
         If IsFlat() Then
-            Using p As New Pen(ColorBorder)
-                g.DrawRectangle(p, r2)
+            Using pen As New Pen(ColorBorder)
+                g.DrawRectangle(pen, r2)
             End Using
 
             r2.Inflate(-1, -1)
@@ -221,7 +220,6 @@ Class ToolStripRendererEx
                 End Using
             End Using
         End If
-
     End Sub
 
     Protected Overrides Sub OnRenderDropDownButtonBackground(e As ToolStripItemRenderEventArgs)

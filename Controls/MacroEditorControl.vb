@@ -75,7 +75,7 @@ Class MacroEditorControl
         Me.tpEdit.Name = "tpEdit"
         Me.tpEdit.Size = New System.Drawing.Size(584, 394)
         Me.tpEdit.TabIndex = 0
-        Me.tpEdit.Text = "Edit"
+        Me.tpEdit.Text = "   Edit   "
         '
         'rtbEdit
         '
@@ -95,7 +95,7 @@ Class MacroEditorControl
         Me.tpPreview.Name = "tpPreview"
         Me.tpPreview.Size = New System.Drawing.Size(584, 394)
         Me.tpPreview.TabIndex = 1
-        Me.tpPreview.Text = "Preview"
+        Me.tpPreview.Text = " Preview "
         '
         'rtbPreview
         '
@@ -115,7 +115,7 @@ Class MacroEditorControl
         Me.tpDefaults.Name = "tpDefaults"
         Me.tpDefaults.Size = New System.Drawing.Size(584, 394)
         Me.tpDefaults.TabIndex = 2
-        Me.tpDefaults.Text = "Defaults"
+        Me.tpDefaults.Text = " Defaults "
         '
         'rtbDefaults
         '

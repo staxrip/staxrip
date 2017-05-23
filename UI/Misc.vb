@@ -30,19 +30,6 @@ Namespace UI
             End If
 
             MyBase.OnLoad(e)
-
-            If Not DesignMode Then
-                If StartPosition = FormStartPosition.CenterParent Then
-                    Dim af = Form.ActiveForm
-
-                    If Not af Is Nothing Then
-                        Dim middleY = af.Top + CInt(af.Height / 2)
-                        Top = middleY - CInt(Height / 2)
-                    End If
-                End If
-
-                If Not s.WindowPositions Is Nothing Then s.WindowPositions.RestorePosition(Me)
-            End If
         End Sub
 
         'Private ChangeService As IComponentChangeService

@@ -54,39 +54,39 @@ Class SubtitleControl
         '
         Me.bnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnAdd.Location = New System.Drawing.Point(10, 0)
-        Me.bnAdd.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
+        Me.bnAdd.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
         Me.bnAdd.Name = "bnAdd"
-        Me.bnAdd.Size = New System.Drawing.Size(270, 70)
+        Me.bnAdd.Size = New System.Drawing.Size(280, 80)
         Me.bnAdd.TabIndex = 12
         Me.bnAdd.Text = "Add..."
         '
         'bnDown
         '
         Me.bnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnDown.Location = New System.Drawing.Point(10, 240)
-        Me.bnDown.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
+        Me.bnDown.Location = New System.Drawing.Point(10, 258)
+        Me.bnDown.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
         Me.bnDown.Name = "bnDown"
-        Me.bnDown.Size = New System.Drawing.Size(270, 70)
+        Me.bnDown.Size = New System.Drawing.Size(280, 80)
         Me.bnDown.TabIndex = 10
         Me.bnDown.Text = "Down"
         '
         'bnRemove
         '
         Me.bnRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRemove.Location = New System.Drawing.Point(10, 80)
-        Me.bnRemove.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
+        Me.bnRemove.Location = New System.Drawing.Point(10, 86)
+        Me.bnRemove.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
         Me.bnRemove.Name = "bnRemove"
-        Me.bnRemove.Size = New System.Drawing.Size(270, 70)
+        Me.bnRemove.Size = New System.Drawing.Size(280, 80)
         Me.bnRemove.TabIndex = 13
         Me.bnRemove.Text = " Remove"
         '
         'bnUp
         '
         Me.bnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnUp.Location = New System.Drawing.Point(10, 160)
-        Me.bnUp.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
+        Me.bnUp.Location = New System.Drawing.Point(10, 172)
+        Me.bnUp.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
         Me.bnUp.Name = "bnUp"
-        Me.bnUp.Size = New System.Drawing.Size(270, 70)
+        Me.bnUp.Size = New System.Drawing.Size(280, 80)
         Me.bnUp.TabIndex = 11
         Me.bnUp.Text = "Up"
         '
@@ -100,7 +100,7 @@ Class SubtitleControl
         Me.dgv.Margin = New System.Windows.Forms.Padding(0)
         Me.dgv.Name = "dgv"
         Me.dgv.RowTemplate.Height = 28
-        Me.dgv.Size = New System.Drawing.Size(259, 615)
+        Me.dgv.Size = New System.Drawing.Size(249, 661)
         Me.dgv.TabIndex = 17
         '
         'flpButtons
@@ -116,34 +116,34 @@ Class SubtitleControl
         Me.flpButtons.Controls.Add(Me.bnBDSup2SubPP)
         Me.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
         Me.flpButtons.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.flpButtons.Location = New System.Drawing.Point(259, 0)
+        Me.flpButtons.Location = New System.Drawing.Point(249, 0)
         Me.flpButtons.Margin = New System.Windows.Forms.Padding(0)
         Me.flpButtons.Name = "flpButtons"
-        Me.flpButtons.Size = New System.Drawing.Size(280, 560)
+        Me.flpButtons.Size = New System.Drawing.Size(290, 602)
         Me.flpButtons.TabIndex = 20
         '
         'bnSetNames
         '
         Me.bnSetNames.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnSetNames.Location = New System.Drawing.Point(10, 320)
-        Me.bnSetNames.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
-        Me.bnSetNames.Size = New System.Drawing.Size(270, 70)
+        Me.bnSetNames.Location = New System.Drawing.Point(10, 344)
+        Me.bnSetNames.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnSetNames.Size = New System.Drawing.Size(280, 80)
         Me.bnSetNames.Text = "Set Names"
         '
         'bnPlay
         '
         Me.bnPlay.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnPlay.Location = New System.Drawing.Point(10, 400)
-        Me.bnPlay.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
-        Me.bnPlay.Size = New System.Drawing.Size(270, 70)
+        Me.bnPlay.Location = New System.Drawing.Point(10, 430)
+        Me.bnPlay.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnPlay.Size = New System.Drawing.Size(280, 80)
         Me.bnPlay.Text = "Play"
         '
         'bnBDSup2SubPP
         '
         Me.bnBDSup2SubPP.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnBDSup2SubPP.Location = New System.Drawing.Point(10, 480)
-        Me.bnBDSup2SubPP.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
-        Me.bnBDSup2SubPP.Size = New System.Drawing.Size(270, 70)
+        Me.bnBDSup2SubPP.Location = New System.Drawing.Point(10, 516)
+        Me.bnBDSup2SubPP.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnBDSup2SubPP.Size = New System.Drawing.Size(280, 80)
         Me.bnBDSup2SubPP.Text = "BDSup2Sub++"
         '
         'tlpMain
@@ -159,7 +159,7 @@ Class SubtitleControl
         Me.tlpMain.Name = "tlpMain"
         Me.tlpMain.RowCount = 1
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpMain.Size = New System.Drawing.Size(539, 615)
+        Me.tlpMain.Size = New System.Drawing.Size(539, 661)
         Me.tlpMain.TabIndex = 21
         '
         'SubtitleControl
@@ -168,7 +168,7 @@ Class SubtitleControl
         Me.Controls.Add(Me.tlpMain)
         Me.Margin = New System.Windows.Forms.Padding(1, 2, 1, 2)
         Me.Name = "SubtitleControl"
-        Me.Size = New System.Drawing.Size(539, 615)
+        Me.Size = New System.Drawing.Size(539, 661)
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).EndInit()
         Me.flpButtons.ResumeLayout(False)
         Me.tlpMain.ResumeLayout(False)

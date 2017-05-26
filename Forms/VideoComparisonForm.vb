@@ -45,7 +45,7 @@ Class VideoComparisonForm
         If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
 
         Using f As New OpenFileDialog
-            f.SetFilter({"mkv", "mp4", "png", "webm", "m4v"})
+            f.SetFilter(FileTypes.Video)
             f.Multiselect = True
             f.SetInitDir(s.Storage.GetString("video comparison folder"))
 

@@ -723,19 +723,19 @@ Class GUIAudioProfile
     End Sub
 
     Overrides Function Edit() As DialogResult
-        Using f As New AudioForm()
-            f.LoadProfile(Me)
-            f.mbLanguage.Enabled = False
-            f.numDelay.Enabled = False
-            f.numGain.Enabled = False
-            Return f.ShowDialog()
+        Using form As New AudioForm()
+            form.LoadProfile(Me)
+            form.mbLanguage.Enabled = False
+            form.numDelay.Enabled = False
+            form.numGain.Enabled = False
+            Return form.ShowDialog()
         End Using
     End Function
 
     Overrides Sub EditProject()
-        Using f As New AudioForm()
-            f.LoadProfile(Me)
-            f.ShowDialog()
+        Using form As New AudioForm()
+            form.LoadProfile(Me)
+            form.ShowDialog()
         End Using
     End Sub
 

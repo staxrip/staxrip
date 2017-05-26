@@ -34,10 +34,10 @@ Class MediaInfoForm
         Me.tv.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tv.Location = New System.Drawing.Point(6, 43)
-        Me.tv.Margin = New System.Windows.Forms.Padding(6, 6, 0, 6)
+        Me.tv.Location = New System.Drawing.Point(15, 101)
+        Me.tv.Margin = New System.Windows.Forms.Padding(15, 15, 0, 15)
         Me.tv.Name = "tv"
-        Me.tv.Size = New System.Drawing.Size(104, 628)
+        Me.tv.Size = New System.Drawing.Size(285, 1379)
         Me.tv.TabIndex = 2
         '
         'rtb
@@ -46,51 +46,52 @@ Class MediaInfoForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.rtb.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.rtb.Location = New System.Drawing.Point(116, 6)
-        Me.rtb.Margin = New System.Windows.Forms.Padding(6)
+        Me.rtb.Location = New System.Drawing.Point(315, 15)
+        Me.rtb.Margin = New System.Windows.Forms.Padding(15)
         Me.rtb.Name = "rtb"
         Me.TableLayoutPanel1.SetRowSpan(Me.rtb, 2)
-        Me.rtb.Size = New System.Drawing.Size(803, 665)
+        Me.rtb.Size = New System.Drawing.Size(1679, 1465)
         Me.rtb.TabIndex = 4
         Me.rtb.Text = ""
         '
         'stb
         '
         Me.stb.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.stb.Location = New System.Drawing.Point(6, 6)
-        Me.stb.Margin = New System.Windows.Forms.Padding(6, 6, 0, 0)
+        Me.stb.Location = New System.Drawing.Point(15, 15)
+        Me.stb.Margin = New System.Windows.Forms.Padding(15, 15, 0, 0)
         Me.stb.Name = "stb"
-        Me.stb.Size = New System.Drawing.Size(104, 31)
+        Me.stb.Size = New System.Drawing.Size(285, 71)
         Me.stb.TabIndex = 5
         '
         'TableLayoutPanel1
         '
         Me.TableLayoutPanel1.ColumnCount = 2
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 110.0!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300.0!))
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel1.Controls.Add(Me.stb, 0, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.tv, 0, 1)
         Me.TableLayoutPanel1.Controls.Add(Me.rtb, 1, 0)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
-        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(2)
+        Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(925, 677)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(2009, 1495)
         Me.TableLayoutPanel1.TabIndex = 6
         '
         'MediaInfoForm
         '
         Me.AllowDrop = True
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.ClientSize = New System.Drawing.Size(925, 677)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.ClientSize = New System.Drawing.Size(2009, 1495)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.HelpButton = False
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(2)
+        Me.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Name = "MediaInfoForm"
         Me.Text = "MediaInfo"
         Me.TableLayoutPanel1.ResumeLayout(False)
@@ -203,8 +204,11 @@ Class MediaInfoForm
         rtb.Refresh()
     End Sub
 
-    Private Sub MediaInfoForm_DragDrop(sender As Object, e As DragEventArgs) Handles Me.DragDrop
-        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+
+    Protected Overrides Sub OnDragDrop(drgevent As DragEventArgs)
+        MyBase.OnDragDrop(drgevent)
+
+        Dim files = TryCast(drgevent.Data.GetData(DataFormats.FileDrop), String())
 
         If Not files.NothingOrEmpty Then
             SourcePath = files(0)
@@ -213,7 +217,9 @@ Class MediaInfoForm
         End If
     End Sub
 
-    Private Sub MediaInfoForm_DragEnter(sender As Object, e As DragEventArgs) Handles Me.DragEnter
+    Protected Overrides Sub OnDragEnter(e As DragEventArgs)
+        MyBase.OnDragEnter(e)
+
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
         If Not files.NothingOrEmpty Then e.Effect = DragDropEffects.Copy
     End Sub
@@ -297,7 +303,8 @@ Class MediaInfoForm
         End If
     End Sub
 
-    Private Sub MediaInfoForm_Load(sender As Object, e As EventArgs) Handles Me.Load
+    Protected Overrides Sub OnLoad(e As EventArgs)
+        MyBase.OnLoad(e)
         tv.ItemHeight = CInt(FontHeight * 1.5)
     End Sub
 End Class

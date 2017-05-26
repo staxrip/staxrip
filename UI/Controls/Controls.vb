@@ -283,6 +283,8 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
+            e.Graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+
             Dim textOffset As Integer
             Dim lineHeight = CInt(Height / 2)
 
@@ -1062,6 +1064,13 @@ Namespace UI
         Private Sub CommandLineRichTextBox_HandleCreated(sender As Object, e As EventArgs) Handles Me.HandleCreated
             If Not DesignMode Then Font = New Font("Consolas", 10 * s.UIScaleFactor)
         End Sub
+
+        Sub UpdateHeight()
+            Using graphics = CreateGraphics()
+                Dim stringSize = graphics.MeasureString(Text, Font, Size.Width)
+                Size = New Size(Size.Width, CInt(stringSize.Height) + 1)
+            End Using
+        End Sub
     End Class
 
     <ProvideProperty("Expand", GetType(Control))>
@@ -1156,6 +1165,7 @@ Namespace UI
         <DefaultValue(False)>
         Property ShowMenuSymbol As Boolean
 
+        <Browsable(False)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property ClickAction As Action
 
@@ -1196,7 +1206,7 @@ Namespace UI
 
         Protected Overrides ReadOnly Property DefaultSize As Size
             Get
-                Return New Size(100, 35)
+                Return New Size(250, 70)
             End Get
         End Property
 
@@ -1205,9 +1215,6 @@ Namespace UI
             If Not ContextMenuStrip Is Nothing Then ContextMenuStrip.Show(Me, 0, Height)
             MyBase.OnClick(e)
         End Sub
-
-        <DefaultValue(GetType(Image), Nothing)>
-        Property ZoomImage As Image
 
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
             MyBase.OnPaint(e)
@@ -1220,47 +1227,6 @@ Namespace UI
                 Dim y = Math.Ceiling((Height - textSize.Height) / 2)
                 Dim brush = If(Enabled, Brushes.Black, SystemBrushes.GrayText)
                 e.Graphics.DrawString(_text, _font, brush, CSng(x), CSng(y))
-            End If
-
-            If Not ZoomImage Is Nothing Then
-                Dim rect As New Rectangle(Padding.Left,
-                                          Padding.Top,
-                                          Width - Padding.Horizontal,
-                                          Height - Padding.Vertical)
-                Dim targetPoint As Point
-                Dim targetSize As Size
-                Dim sizeToFit = ZoomImage.Size
-
-                Dim ar1 = rect.Width / rect.Height
-                Dim ar2 = sizeToFit.Width / sizeToFit.Height
-
-                If ar2 < ar1 Then
-                    targetSize.Height = rect.Height
-                    targetSize.Width = CInt(sizeToFit.Width / (sizeToFit.Height / rect.Height))
-                    targetPoint.X = CInt((rect.Width - targetSize.Width) / 2) + Padding.Left
-                    targetPoint.Y = Padding.Top
-                Else
-                    targetSize.Width = rect.Width
-                    targetSize.Height = CInt(sizeToFit.Height / (sizeToFit.Width / rect.Width))
-                    targetPoint.Y = CInt((rect.Height - targetSize.Height) / 2) + Padding.Top
-                    targetPoint.X = Padding.Left
-                End If
-
-                If Enabled Then
-                    e.Graphics.DrawImage(ZoomImage, New Rectangle(targetPoint, targetSize))
-                Else
-                    GetType(ControlPaint).InvokeMember("DrawImageDisabled",
-                                                       BindingFlags.Static Or
-                                                       BindingFlags.NonPublic Or
-                                                       BindingFlags.InvokeMethod,
-                                                       Nothing,
-                                                       Nothing,
-                                                       {e.Graphics,
-                                                        ZoomImage,
-                                                        New Rectangle(targetPoint, targetSize),
-                                                        SystemColors.Control,
-                                                        False})
-                End If
             End If
         End Sub
 
@@ -1518,15 +1484,19 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            Dim h = (ClientSize.Height \ 2) - 3
+            h -= h Mod 2
+            If h > 20 Then h -= 1
+
             UpControl.Width = CInt(ClientSize.Height * 0.7)
-            UpControl.Height = (ClientSize.Height \ 2) - 2
-            UpControl.Top = 2
-            UpControl.Left = ClientSize.Width - UpControl.Width - 2
+            UpControl.Height = h
+            UpControl.Top = 3
+            UpControl.Left = ClientSize.Width - UpControl.Width - 3
 
             DownControl.Width = UpControl.Width
             DownControl.Left = UpControl.Left
-            DownControl.Top = UpControl.Height + 3
-            DownControl.Height = ClientSize.Height - UpControl.Height - 5
+            DownControl.Top = ClientSize.Height - h - 3
+            DownControl.Height = h
 
             TextBox.Top = (ClientSize.Height - TextBox.Height) \ 2
             TextBox.Left = 2
@@ -1540,13 +1510,7 @@ Namespace UI
             Dim r = ClientRectangle
             r.Inflate(-1, -1)
             e.Graphics.FillRectangle(If(Enabled, Brushes.White, SystemBrushes.Control), r)
-
-            If VisualStyleInformation.IsEnabledByUser Then
-                ControlPaint.DrawBorder(e.Graphics, ClientRectangle, BorderColor, ButtonBorderStyle.Solid)
-            Else
-                ControlPaint.DrawBorder3D(e.Graphics, ClientRectangle, Border3DStyle.Sunken)
-            End If
-
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, BorderColor, ButtonBorderStyle.Solid)
             MyBase.OnPaint(e)
         End Sub
 
@@ -1649,13 +1613,20 @@ Namespace UI
             End Sub
         End Class
 
+        Private Class UpDownButton2
+            Inherits ButtonEx
+
+            Sub New()
+                FlatStyle = FlatStyle.Flat
+            End Sub
+        End Class
+
         Private Class UpDownButton
             Inherits Control
 
             Private IsUp As Boolean
             Private IsHot As Boolean
             Private IsPressed As Boolean
-            Private Renderer As VisualStyleRenderer
             Private LastMouseDownTick As Integer
 
             Property ClickAction As Action
@@ -1663,7 +1634,9 @@ Namespace UI
             Sub New(isUp As Boolean)
                 Me.IsUp = isUp
                 TabStop = False
-                SetStyle(ControlStyles.Opaque Or ControlStyles.ResizeRedraw, True)
+                SetStyle(ControlStyles.Opaque Or
+                         ControlStyles.ResizeRedraw Or
+                         ControlStyles.OptimizedDoubleBuffer, True)
             End Sub
 
             Protected Overrides Sub OnMouseEnter(e As EventArgs)
@@ -1694,54 +1667,26 @@ Namespace UI
             End Sub
 
             Protected Overrides Sub OnPaint(e As PaintEventArgs)
-                If VisualStyleInformation.IsEnabledByUser Then
-                    Dim element As VisualStyleElement
-                    Dim disabled, hot, normal, pressed As VisualStyleElement
-
-                    If IsUp Then
-                        disabled = VisualStyleElement.Spin.Up.Disabled
-                        hot = VisualStyleElement.Spin.Up.Hot
-                        normal = VisualStyleElement.Spin.Up.Normal
-                        pressed = VisualStyleElement.Spin.Up.Pressed
-                    Else
-                        disabled = VisualStyleElement.Spin.Down.Disabled
-                        hot = VisualStyleElement.Spin.Down.Hot
-                        normal = VisualStyleElement.Spin.Down.Normal
-                        pressed = VisualStyleElement.Spin.Down.Pressed
-                    End If
-
-                    If Enabled Then
-                        If IsPressed Then
-                            element = pressed
-                        ElseIf IsHot Then
-                            element = hot
-                        Else
-                            element = normal
-                        End If
-                    Else
-                        element = disabled
-                    End If
-
-                    If Renderer Is Nothing Then
-                        Renderer = New VisualStyleRenderer(element)
-                    Else
-                        Renderer.SetParameters(element)
-                    End If
-
-                    Renderer.DrawBackground(e.Graphics, ClientRectangle)
+                If IsPressed Then
+                    e.Graphics.Clear(Color.LightBlue)
+                ElseIf IsHot Then
+                    e.Graphics.Clear(Color.AliceBlue)
                 Else
-                    ControlPaint.DrawButton(e.Graphics,
-                                            ClientRectangle,
-                                            If(IsPressed, ButtonState.Pushed, ButtonState.Normal))
-
-                    Dim text = If(IsUp, "5", "6")
-                    Dim font = New Font("Marlett", Me.Font.Size - 1)
-                    Dim textSize = e.Graphics.MeasureString(text, font)
-                    Dim x = Math.Ceiling((Width - textSize.Width) / 2)
-                    Dim y = Math.Ceiling((Height - textSize.Height) / 2)
-                    Dim brush = If(Enabled, Brushes.Black, SystemBrushes.GrayText)
-                    e.Graphics.DrawString(text, font, brush, CInt(x), CInt(y))
+                    e.Graphics.Clear(SystemColors.Control)
                 End If
+
+                ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.CadetBlue, ButtonBorderStyle.Solid)
+
+                Dim text = If(IsUp, "5", "6")
+                Dim font = New Font("Marlett", Me.Font.Size - 1)
+                Dim textSize = e.Graphics.MeasureString(text, font)
+                Dim offsetY = 0
+                If text = "5" Then offsetY += CInt(textSize.Height * 0.1)
+                Dim offsetX = textSize.Width * 0.01
+                Dim x = (Width - textSize.Width) / 2
+                Dim y = (Height - textSize.Height) / 2 + offsetY
+                Dim brush = If(Enabled, Brushes.Black, SystemBrushes.GrayText)
+                e.Graphics.DrawString(text, font, brush, CInt(x + offsetX), CInt(y))
 
                 MyBase.OnPaint(e)
             End Sub

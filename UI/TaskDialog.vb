@@ -2,13 +2,15 @@
 Imports System.Text
 Imports System.Text.RegularExpressions
 
-Public Delegate Function PFTASKDIALOGCALLBACK(hwnd As IntPtr, msg As UInteger, wParam As IntPtr, lParam As IntPtr, lpRefData As IntPtr) As Integer
-
+Public Delegate Function PFTASKDIALOGCALLBACK(hwnd As IntPtr,
+                                              msg As UInteger,
+                                              wParam As IntPtr,
+                                              lParam As IntPtr,
+                                              lpRefData As IntPtr) As Integer
 Public Class TaskDialog(Of T)
     Inherits TaskDialog
     Implements IDisposable
 
-    Private DialogHandle As IntPtr
     Private IdValueDic As New Dictionary(Of Integer, T)
     Private IdTextDic As New Dictionary(Of Integer, String)
     Private CommandLinkShieldList As New List(Of Integer)
@@ -159,12 +161,6 @@ Public Class TaskDialog(Of T)
         End Set
     End Property
 
-    WriteOnly Property Handle() As IntPtr
-        Set(value As IntPtr)
-            Config.hwndParent = value
-        End Set
-    End Property
-
     WriteOnly Property MainIcon() As TaskDialogIcon
         Set(Value As TaskDialogIcon)
             Config.MainIcon = New TASKDIALOGCONFIG_ICON_UNION(Value)
@@ -303,11 +299,7 @@ Public Class TaskDialog(Of T)
         Dim hr = TaskDialogIndirect(Config, Nothing, Nothing, isChecked)
         CheckBoxChecked = isChecked
         If hr < 0 Then Marshal.ThrowExceptionForHR(hr)
-
-        If TypeOf SelectedValue Is DialogResult Then
-            SelectedValue = DirectCast(CObj(SelectedID), T)
-        End If
-
+        If TypeOf SelectedValue Is DialogResult Then SelectedValue = DirectCast(CObj(SelectedID), T)
         Return SelectedValue
     End Function
 
@@ -318,8 +310,6 @@ Public Class TaskDialog(Of T)
                                 wParam As IntPtr,
                                 lParam As IntPtr,
                                 lpRefData As IntPtr) As Integer
-        DialogHandle = hwnd
-
         Select Case msg
             Case TDN_BUTTON_CLICKED, TDN_RADIO_BUTTON_CLICKED
                 If TypeOf SelectedValue Is DialogResult Then
@@ -341,8 +331,10 @@ Public Class TaskDialog(Of T)
                 If url.StartsWith("mailto:") OrElse url Like "http*://*" Then
                     g.ShellExecute(url)
                 ElseIf url = "copymsg:" Then
-                    Clipboard.SetText(MainInstruction + BR2 + Content + BR2 + ExpandedInformation)
-                    MsgInfo("Message was copied to clipboard.")
+                    g.MainForm.BeginInvoke(Sub()
+                                               Clipboard.SetText(MainInstruction + BR2 + Content + BR2 + ExpandedInformation)
+                                               MsgInfo("Message was copied to clipboard.")
+                                           End Sub)
                 End If
             Case TDN_CREATED
                 For Each i In CommandLinkShieldList
@@ -378,6 +370,7 @@ Public Class TaskDialog(Of T)
 
         Return initialPtr
     End Function
+
 #End Region
 
 #Region "IDispose Pattern"

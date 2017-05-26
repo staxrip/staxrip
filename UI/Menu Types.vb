@@ -377,7 +377,8 @@ Namespace UI
 
         Private CustomMenuItemValue As CustomMenuItem
 
-        <Browsable(False), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
+        <Browsable(False)>
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property CustomMenuItem() As CustomMenuItem
             Get
                 Return CustomMenuItemValue

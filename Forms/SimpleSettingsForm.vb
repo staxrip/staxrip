@@ -10,7 +10,7 @@ Class SimpleSettingsForm
     Friend WithEvents LineControl1 As StaxRip.UI.LineControl
     Private components As System.ComponentModel.IContainer
     Friend WithEvents tlpMain As TableLayoutPanel
-    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
+    Friend WithEvents flpButtons As FlowLayoutPanel
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -19,17 +19,17 @@ Class SimpleSettingsForm
         Me.SimpleUI = New StaxRip.SimpleUI()
         Me.LineControl1 = New StaxRip.UI.LineControl()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
         Me.tlpMain.SuspendLayout()
-        Me.FlowLayoutPanel1.SuspendLayout()
+        Me.flpButtons.SuspendLayout()
         Me.SuspendLayout()
         '
         'bnCancel
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(261, 0)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(11, 0, 11, 0)
+        Me.bnCancel.Location = New System.Drawing.Point(265, 0)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
@@ -47,20 +47,20 @@ Class SimpleSettingsForm
         Me.SimpleUI.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.SimpleUI.Location = New System.Drawing.Point(11, 10)
-        Me.SimpleUI.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
+        Me.SimpleUI.Location = New System.Drawing.Point(15, 15)
+        Me.SimpleUI.Margin = New System.Windows.Forms.Padding(15, 15, 15, 0)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(1442, 673)
+        Me.SimpleUI.Size = New System.Drawing.Size(1161, 667)
         Me.SimpleUI.TabIndex = 2
         '
         'LineControl1
         '
         Me.LineControl1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LineControl1.Location = New System.Drawing.Point(11, 693)
-        Me.LineControl1.Margin = New System.Windows.Forms.Padding(11, 0, 11, 0)
+        Me.LineControl1.Location = New System.Drawing.Point(15, 682)
+        Me.LineControl1.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.LineControl1.Name = "LineControl1"
-        Me.LineControl1.Size = New System.Drawing.Size(1442, 24)
+        Me.LineControl1.Size = New System.Drawing.Size(1161, 30)
         Me.LineControl1.TabIndex = 5
         '
         'tlpMain
@@ -69,7 +69,7 @@ Class SimpleSettingsForm
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.Controls.Add(Me.SimpleUI, 0, 0)
         Me.tlpMain.Controls.Add(Me.LineControl1, 0, 1)
-        Me.tlpMain.Controls.Add(Me.FlowLayoutPanel1, 0, 2)
+        Me.tlpMain.Controls.Add(Me.flpButtons, 0, 2)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
         Me.tlpMain.Margin = New System.Windows.Forms.Padding(5)
@@ -78,35 +78,35 @@ Class SimpleSettingsForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1464, 797)
+        Me.tlpMain.Size = New System.Drawing.Size(1191, 797)
         Me.tlpMain.TabIndex = 8
         '
-        'FlowLayoutPanel1
+        'flpButtons
         '
-        Me.FlowLayoutPanel1.Anchor = System.Windows.Forms.AnchorStyles.Right
-        Me.FlowLayoutPanel1.AutoSize = True
-        Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.FlowLayoutPanel1.Controls.Add(Me.bnOK)
-        Me.FlowLayoutPanel1.Controls.Add(Me.bnCancel)
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(942, 717)
-        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
-        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(522, 70)
-        Me.FlowLayoutPanel1.TabIndex = 6
+        Me.flpButtons.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.flpButtons.AutoSize = True
+        Me.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpButtons.Controls.Add(Me.bnOK)
+        Me.flpButtons.Controls.Add(Me.bnCancel)
+        Me.flpButtons.Location = New System.Drawing.Point(661, 712)
+        Me.flpButtons.Margin = New System.Windows.Forms.Padding(0, 0, 15, 15)
+        Me.flpButtons.Name = "flpButtons"
+        Me.flpButtons.Size = New System.Drawing.Size(515, 70)
+        Me.flpButtons.TabIndex = 6
         '
         'SimpleSettingsForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1464, 797)
+        Me.ClientSize = New System.Drawing.Size(1191, 797)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(0)
         Me.Name = "SimpleSettingsForm"
         Me.tlpMain.ResumeLayout(False)
         Me.tlpMain.PerformLayout()
-        Me.FlowLayoutPanel1.ResumeLayout(False)
+        Me.flpButtons.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub

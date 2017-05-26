@@ -584,10 +584,9 @@ Public Class GlobalClass
             End Try
 
             Try
-                ShowException(ex, "Exception")
+                ShowException(ex)
                 MakeBugReport(ex)
             Catch
-                g.ShowException(ex)
             End Try
 
             Process.GetCurrentProcess.Kill()

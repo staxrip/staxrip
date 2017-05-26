@@ -269,7 +269,7 @@ Class DemuxingControl
     End Sub
 
     Private Sub bnRestore_Click(sender As Object, e As EventArgs) Handles bnRestore.Click
-        If MsgQuestion("Restore defaults?", MessageBoxButtons.OKCancel) = DialogResult.OK Then
+        If MsgQuestion("Restore defaults?") = DialogResult.OK Then
             lv.Items.Clear()
 
             For Each i In Demuxer.GetDefaults()

@@ -20,12 +20,12 @@ Namespace UI
                     Scale(New SizeF(1 * s.UIScaleFactor, 1 * s.UIScaleFactor))
                 End If
             Else
-                Dim designDimension = New SizeF(144, 144)
+                Dim designDimension = 144
                 If s.UIScaleFactor <> 1 Then Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
-                If designDimension <> CurrentDPIDimension OrElse s.UIScaleFactor <> 1 Then
-                    Scale(New SizeF(CurrentDPIDimension.Width / designDimension.Width * s.UIScaleFactor,
-                                    CurrentDPIDimension.Height / designDimension.Height * s.UIScaleFactor))
+                If designDimension <> DeviceDpi OrElse s.UIScaleFactor <> 1 Then
+                    Scale(New SizeF(CSng(DeviceDpi / designDimension * s.UIScaleFactor),
+                                    CSng(DeviceDpi / designDimension * s.UIScaleFactor)))
                 End If
             End If
 
@@ -77,22 +77,6 @@ Namespace UI
                 SetTabIndexes(i)
             Next
         End Sub
-
-        Private CurrentDPIDimensionValue As Size
-
-        <Browsable(False)>
-        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        ReadOnly Property CurrentDPIDimension As Size
-            Get
-                If CurrentDPIDimensionValue = Size.Empty Then
-                    Using g = CreateGraphics()
-                        CurrentDPIDimensionValue = New Size(CInt(g.DpiX), CInt(g.DpiY))
-                    End Using
-                End If
-
-                Return CurrentDPIDimensionValue
-            End Get
-        End Property
 
         Protected Overrides Sub WndProc(ByRef m As Message)
 #Region "WM"

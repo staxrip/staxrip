@@ -707,7 +707,7 @@ Public Class SimpleUI
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
             If Not MenuButton Is Nothing Then
-                MenuButton.Height = CInt(FontHeight * 1.4)
+                MenuButton.Height = CInt(FontHeight * 1.5)
                 MenuButton.Width = FontHeight * 10
             End If
 

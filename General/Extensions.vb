@@ -129,12 +129,6 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function Append(instance As String, value As String) As String
-        If instance Is Nothing AndAlso value Is Nothing Then Return ""
-        Return instance + value
-    End Function
-
-    <Extension()>
     Function AppendSeparator(instance As String) As String
         If instance?.EndsWith(DirPath.Separator) Then Return instance
         Return instance + DirPath.Separator

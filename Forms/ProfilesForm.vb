@@ -16,7 +16,7 @@ Class ProfilesForm
 
     Private components As System.ComponentModel.IContainer
 
-    Friend WithEvents lb As ListBoxEx
+    Friend WithEvents lbMain As ListBoxEx
     Friend WithEvents bnLoad As ButtonEx
     Friend WithEvents bnDown As ButtonEx
     Friend WithEvents bnUp As ButtonEx
@@ -30,12 +30,10 @@ Class ProfilesForm
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
-    Friend WithEvents tlpNav As TableLayoutPanel
-    Friend WithEvents tlpButtons As TableLayoutPanel
-    Friend WithEvents tlpMain As TableLayoutPanel
-    Friend WithEvents flpOkCancel As FlowLayoutPanel
-    Friend WithEvents tlpTop As TableLayoutPanel
+    Friend WithEvents tlpArrows As TableLayoutPanel
     Friend WithEvents pnListBox As Panel
+    Friend WithEvents flpRight As FlowLayoutPanel
+    Friend WithEvents tlpMain As TableLayoutPanel
     Friend WithEvents bnRename As System.Windows.Forms.Button
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
@@ -45,7 +43,7 @@ Class ProfilesForm
         Me.bnRemove = New System.Windows.Forms.Button()
         Me.bnRight = New StaxRip.UI.ButtonEx()
         Me.bnLeft = New StaxRip.UI.ButtonEx()
-        Me.lb = New StaxRip.UI.ListBoxEx()
+        Me.lbMain = New StaxRip.UI.ListBoxEx()
         Me.bnLoad = New StaxRip.UI.ButtonEx()
         Me.bnAdd = New System.Windows.Forms.Button()
         Me.bnRename = New System.Windows.Forms.Button()
@@ -55,39 +53,39 @@ Class ProfilesForm
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
-        Me.tlpNav = New System.Windows.Forms.TableLayoutPanel()
-        Me.tlpButtons = New System.Windows.Forms.TableLayoutPanel()
-        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.tlpTop = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpArrows = New System.Windows.Forms.TableLayoutPanel()
         Me.pnListBox = New System.Windows.Forms.Panel()
-        Me.flpOkCancel = New System.Windows.Forms.FlowLayoutPanel()
-        Me.tlpNav.SuspendLayout()
-        Me.tlpButtons.SuspendLayout()
-        Me.tlpMain.SuspendLayout()
-        Me.tlpTop.SuspendLayout()
+        Me.flpRight = New System.Windows.Forms.FlowLayoutPanel()
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpArrows.SuspendLayout()
         Me.pnListBox.SuspendLayout()
-        Me.flpOkCancel.SuspendLayout()
+        Me.flpRight.SuspendLayout()
+        Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
         '
         'bnDown
         '
-        Me.bnDown.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnDown.Location = New System.Drawing.Point(80, 160)
+        Me.bnDown.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnDown.Location = New System.Drawing.Point(0, 85)
         Me.bnDown.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnDown.Size = New System.Drawing.Size(80, 80)
+        Me.bnDown.Size = New System.Drawing.Size(112, 70)
         '
         'bnUp
         '
-        Me.bnUp.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnUp.Location = New System.Drawing.Point(80, 0)
+        Me.bnUp.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnUp.Location = New System.Drawing.Point(0, 0)
         Me.bnUp.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnUp.Size = New System.Drawing.Size(80, 80)
+        Me.bnUp.Size = New System.Drawing.Size(112, 70)
         '
         'bnRemove
         '
         Me.bnRemove.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnRemove.Location = New System.Drawing.Point(0, 101)
-        Me.bnRemove.Margin = New System.Windows.Forms.Padding(0, 6, 0, 0)
+        Me.bnRemove.Location = New System.Drawing.Point(0, 95)
+        Me.bnRemove.Margin = New System.Windows.Forms.Padding(0, 0, 0, 15)
         Me.bnRemove.Name = "bnRemove"
         Me.bnRemove.Size = New System.Drawing.Size(240, 80)
         Me.bnRemove.TabIndex = 2
@@ -95,44 +93,48 @@ Class ProfilesForm
         '
         'bnRight
         '
-        Me.bnRight.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnRight.Location = New System.Drawing.Point(160, 80)
+        Me.bnRight.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnRight.Location = New System.Drawing.Point(127, 85)
         Me.bnRight.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnRight.Size = New System.Drawing.Size(80, 80)
+        Me.bnRight.Size = New System.Drawing.Size(113, 70)
         '
         'bnLeft
         '
-        Me.bnLeft.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnLeft.Location = New System.Drawing.Point(0, 80)
+        Me.bnLeft.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnLeft.Location = New System.Drawing.Point(127, 0)
         Me.bnLeft.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnLeft.Size = New System.Drawing.Size(80, 80)
+        Me.bnLeft.Size = New System.Drawing.Size(113, 70)
         '
-        'lb
+        'lbMain
         '
-        Me.lb.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lb.FormattingEnabled = True
-        Me.lb.IntegralHeight = False
-        Me.lb.ItemHeight = 48
-        Me.lb.Location = New System.Drawing.Point(0, 0)
-        Me.lb.Margin = New System.Windows.Forms.Padding(15, 15, 15, 0)
-        Me.lb.Name = "lb"
-        Me.lb.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lb.Size = New System.Drawing.Size(660, 995)
-        Me.lb.TabIndex = 0
+        Me.lbMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lbMain.FormattingEnabled = True
+        Me.lbMain.IntegralHeight = False
+        Me.lbMain.ItemHeight = 48
+        Me.lbMain.Location = New System.Drawing.Point(0, 0)
+        Me.lbMain.Margin = New System.Windows.Forms.Padding(15, 15, 15, 0)
+        Me.lbMain.Name = "lbMain"
+        Me.lbMain.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
+        Me.lbMain.Size = New System.Drawing.Size(825, 820)
+        Me.lbMain.TabIndex = 0
         '
         'bnLoad
         '
         Me.bnLoad.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnLoad.Location = New System.Drawing.Point(0, 691)
-        Me.bnLoad.Margin = New System.Windows.Forms.Padding(0, 6, 0, 0)
+        Me.bnLoad.Location = New System.Drawing.Point(0, 645)
+        Me.bnLoad.Margin = New System.Windows.Forms.Padding(0, 15, 0, 0)
         Me.bnLoad.Size = New System.Drawing.Size(240, 80)
         Me.bnLoad.Text = "Load"
         '
         'bnAdd
         '
         Me.bnAdd.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnAdd.Location = New System.Drawing.Point(0, 15)
-        Me.bnAdd.Margin = New System.Windows.Forms.Padding(0, 15, 0, 0)
+        Me.bnAdd.Location = New System.Drawing.Point(0, 0)
+        Me.bnAdd.Margin = New System.Windows.Forms.Padding(0, 0, 0, 15)
         Me.bnAdd.Name = "bnAdd"
         Me.bnAdd.Size = New System.Drawing.Size(240, 80)
         Me.bnAdd.TabIndex = 1
@@ -141,8 +143,8 @@ Class ProfilesForm
         'bnRename
         '
         Me.bnRename.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnRename.Location = New System.Drawing.Point(0, 273)
-        Me.bnRename.Margin = New System.Windows.Forms.Padding(0, 6, 0, 0)
+        Me.bnRename.Location = New System.Drawing.Point(0, 285)
+        Me.bnRename.Margin = New System.Windows.Forms.Padding(0, 0, 0, 15)
         Me.bnRename.Name = "bnRename"
         Me.bnRename.Size = New System.Drawing.Size(240, 80)
         Me.bnRename.TabIndex = 5
@@ -152,8 +154,8 @@ Class ProfilesForm
         'bnEdit
         '
         Me.bnEdit.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnEdit.Location = New System.Drawing.Point(0, 187)
-        Me.bnEdit.Margin = New System.Windows.Forms.Padding(0, 6, 0, 0)
+        Me.bnEdit.Location = New System.Drawing.Point(0, 190)
+        Me.bnEdit.Margin = New System.Windows.Forms.Padding(0, 0, 0, 15)
         Me.bnEdit.Name = "bnEdit"
         Me.bnEdit.Size = New System.Drawing.Size(240, 80)
         Me.bnEdit.TabIndex = 4
@@ -163,8 +165,8 @@ Class ProfilesForm
         'bnClone
         '
         Me.bnClone.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnClone.Location = New System.Drawing.Point(0, 605)
-        Me.bnClone.Margin = New System.Windows.Forms.Padding(0, 6, 0, 0)
+        Me.bnClone.Location = New System.Drawing.Point(0, 550)
+        Me.bnClone.Margin = New System.Windows.Forms.Padding(0, 15, 0, 0)
         Me.bnClone.Name = "bnClone"
         Me.bnClone.Size = New System.Drawing.Size(240, 80)
         Me.bnClone.TabIndex = 6
@@ -174,8 +176,8 @@ Class ProfilesForm
         'bnRestore
         '
         Me.bnRestore.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnRestore.Location = New System.Drawing.Point(0, 777)
-        Me.bnRestore.Margin = New System.Windows.Forms.Padding(0, 6, 0, 0)
+        Me.bnRestore.Location = New System.Drawing.Point(0, 740)
+        Me.bnRestore.Margin = New System.Windows.Forms.Padding(0, 15, 0, 0)
         Me.bnRestore.Name = "bnRestore"
         Me.bnRestore.Size = New System.Drawing.Size(240, 80)
         Me.bnRestore.TabIndex = 15
@@ -184,10 +186,9 @@ Class ProfilesForm
         '
         'bnCancel
         '
-        Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(255, 15)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15, 15, 0, 15)
+        Me.bnCancel.Location = New System.Drawing.Point(855, 850)
         Me.bnCancel.Size = New System.Drawing.Size(240, 80)
         Me.bnCancel.Text = "Cancel"
         '
@@ -195,147 +196,106 @@ Class ProfilesForm
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(0, 15)
-        Me.bnOK.Margin = New System.Windows.Forms.Padding(0, 15, 0, 15)
+        Me.bnOK.Location = New System.Drawing.Point(600, 850)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(600, 15, 0, 15)
         Me.bnOK.Size = New System.Drawing.Size(240, 80)
         Me.bnOK.Text = "OK"
         '
-        'tlpNav
+        'tlpArrows
         '
-        Me.tlpNav.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tlpNav.AutoSize = True
-        Me.tlpNav.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.tlpNav.ColumnCount = 3
-        Me.tlpNav.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpNav.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpNav.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpNav.Controls.Add(Me.bnLeft, 0, 1)
-        Me.tlpNav.Controls.Add(Me.bnRight, 2, 1)
-        Me.tlpNav.Controls.Add(Me.bnUp, 1, 0)
-        Me.tlpNav.Controls.Add(Me.bnDown, 1, 2)
-        Me.tlpNav.Location = New System.Drawing.Point(0, 359)
-        Me.tlpNav.Margin = New System.Windows.Forms.Padding(0, 6, 0, 0)
-        Me.tlpNav.Name = "tlpNav"
-        Me.tlpNav.RowCount = 3
-        Me.tlpNav.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpNav.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpNav.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpNav.Size = New System.Drawing.Size(240, 240)
-        Me.tlpNav.TabIndex = 21
-        '
-        'tlpButtons
-        '
-        Me.tlpButtons.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tlpButtons.AutoSize = True
-        Me.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.tlpButtons.ColumnCount = 1
-        Me.tlpButtons.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpButtons.Controls.Add(Me.tlpNav, 0, 4)
-        Me.tlpButtons.Controls.Add(Me.bnRemove, 0, 1)
-        Me.tlpButtons.Controls.Add(Me.bnRestore, 0, 7)
-        Me.tlpButtons.Controls.Add(Me.bnEdit, 0, 2)
-        Me.tlpButtons.Controls.Add(Me.bnClone, 0, 5)
-        Me.tlpButtons.Controls.Add(Me.bnLoad, 0, 6)
-        Me.tlpButtons.Controls.Add(Me.bnRename, 0, 3)
-        Me.tlpButtons.Controls.Add(Me.bnAdd, 0, 0)
-        Me.tlpButtons.Location = New System.Drawing.Point(690, 0)
-        Me.tlpButtons.Margin = New System.Windows.Forms.Padding(0, 0, 15, 0)
-        Me.tlpButtons.Name = "tlpButtons"
-        Me.tlpButtons.RowCount = 8
-        Me.tlpButtons.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpButtons.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpButtons.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpButtons.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpButtons.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpButtons.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpButtons.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpButtons.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpButtons.Size = New System.Drawing.Size(240, 857)
-        Me.tlpButtons.TabIndex = 22
-        '
-        'tlpMain
-        '
-        Me.tlpMain.ColumnCount = 1
-        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpMain.Controls.Add(Me.tlpTop, 0, 2)
-        Me.tlpMain.Controls.Add(Me.flpOkCancel, 0, 3)
-        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
-        Me.tlpMain.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.tlpMain.Name = "tlpMain"
-        Me.tlpMain.RowCount = 4
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-        Me.tlpMain.Size = New System.Drawing.Size(945, 1120)
-        Me.tlpMain.TabIndex = 23
-        '
-        'tlpTop
-        '
-        Me.tlpTop.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tlpTop.ColumnCount = 2
-        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpTop.Controls.Add(Me.pnListBox, 0, 0)
-        Me.tlpTop.Controls.Add(Me.tlpButtons, 1, 0)
-        Me.tlpTop.Location = New System.Drawing.Point(0, 0)
-        Me.tlpTop.Margin = New System.Windows.Forms.Padding(0)
-        Me.tlpTop.Name = "tlpTop"
-        Me.tlpTop.RowCount = 1
-        Me.tlpTop.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpTop.Size = New System.Drawing.Size(945, 1010)
-        Me.tlpTop.TabIndex = 24
+        Me.tlpArrows.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.tlpArrows.ColumnCount = 3
+        Me.tlpArrows.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpArrows.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 15.0!))
+        Me.tlpArrows.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpArrows.Controls.Add(Me.bnUp, 0, 0)
+        Me.tlpArrows.Controls.Add(Me.bnLeft, 2, 0)
+        Me.tlpArrows.Controls.Add(Me.bnRight, 2, 2)
+        Me.tlpArrows.Controls.Add(Me.bnDown, 0, 2)
+        Me.tlpArrows.Location = New System.Drawing.Point(0, 380)
+        Me.tlpArrows.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpArrows.Name = "tlpArrows"
+        Me.tlpArrows.RowCount = 3
+        Me.tlpArrows.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpArrows.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 15.0!))
+        Me.tlpArrows.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpArrows.Size = New System.Drawing.Size(240, 155)
+        Me.tlpArrows.TabIndex = 21
         '
         'pnListBox
         '
-        Me.pnListBox.Controls.Add(Me.lb)
+        Me.pnListBox.AutoSize = True
+        Me.pnListBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.pnListBox.Controls.Add(Me.lbMain)
         Me.pnListBox.Dock = System.Windows.Forms.DockStyle.Fill
         Me.pnListBox.Location = New System.Drawing.Point(15, 15)
-        Me.pnListBox.Margin = New System.Windows.Forms.Padding(15, 15, 15, 0)
+        Me.pnListBox.Margin = New System.Windows.Forms.Padding(15, 15, 0, 0)
         Me.pnListBox.Name = "pnListBox"
-        Me.pnListBox.Size = New System.Drawing.Size(660, 995)
+        Me.pnListBox.Size = New System.Drawing.Size(825, 820)
         Me.pnListBox.TabIndex = 24
         '
-        'flpOkCancel
+        'flpRight
         '
-        Me.flpOkCancel.Anchor = System.Windows.Forms.AnchorStyles.Right
-        Me.flpOkCancel.AutoSize = True
-        Me.flpOkCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.tlpMain.SetColumnSpan(Me.flpOkCancel, 2)
-        Me.flpOkCancel.Controls.Add(Me.bnOK)
-        Me.flpOkCancel.Controls.Add(Me.bnCancel)
-        Me.flpOkCancel.Location = New System.Drawing.Point(435, 1010)
-        Me.flpOkCancel.Margin = New System.Windows.Forms.Padding(0, 0, 15, 0)
-        Me.flpOkCancel.Name = "flpOkCancel"
-        Me.flpOkCancel.Size = New System.Drawing.Size(495, 110)
-        Me.flpOkCancel.TabIndex = 23
+        Me.flpRight.AutoSize = True
+        Me.flpRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpRight.Controls.Add(Me.bnAdd)
+        Me.flpRight.Controls.Add(Me.bnRemove)
+        Me.flpRight.Controls.Add(Me.bnEdit)
+        Me.flpRight.Controls.Add(Me.bnRename)
+        Me.flpRight.Controls.Add(Me.tlpArrows)
+        Me.flpRight.Controls.Add(Me.bnClone)
+        Me.flpRight.Controls.Add(Me.bnLoad)
+        Me.flpRight.Controls.Add(Me.bnRestore)
+        Me.flpRight.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        Me.flpRight.Location = New System.Drawing.Point(855, 15)
+        Me.flpRight.Margin = New System.Windows.Forms.Padding(15, 15, 15, 0)
+        Me.flpRight.Name = "flpRight"
+        Me.flpRight.Size = New System.Drawing.Size(240, 820)
+        Me.flpRight.TabIndex = 24
+        '
+        'tlpMain
+        '
+        Me.tlpMain.AutoSize = True
+        Me.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.tlpMain.ColumnCount = 3
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.Controls.Add(Me.pnListBox, 0, 0)
+        Me.tlpMain.Controls.Add(Me.flpRight, 1, 0)
+        Me.tlpMain.Controls.Add(Me.bnCancel, 1, 1)
+        Me.tlpMain.Controls.Add(Me.bnOK, 0, 1)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.RowCount = 3
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.Size = New System.Drawing.Size(1177, 1012)
+        Me.tlpMain.TabIndex = 25
         '
         'ProfilesForm
         '
         Me.AcceptButton = Me.bnOK
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.AutoSize = True
+        Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(945, 1120)
+        Me.ClientSize = New System.Drawing.Size(1177, 1012)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(9)
         Me.Name = "ProfilesForm"
         Me.Text = "Profiles"
-        Me.tlpNav.ResumeLayout(False)
-        Me.tlpButtons.ResumeLayout(False)
-        Me.tlpButtons.PerformLayout()
+        Me.tlpArrows.ResumeLayout(False)
+        Me.pnListBox.ResumeLayout(False)
+        Me.flpRight.ResumeLayout(False)
         Me.tlpMain.ResumeLayout(False)
         Me.tlpMain.PerformLayout()
-        Me.tlpTop.ResumeLayout(False)
-        Me.tlpTop.PerformLayout()
-        Me.pnListBox.ResumeLayout(False)
-        Me.flpOkCancel.ResumeLayout(False)
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
@@ -359,12 +319,12 @@ Class ProfilesForm
         Text = title
 
         Me.Profiles = profiles
-        Me.LoadProfileMethod = loadAction
-        Me.AddProfileMethod = addFunc
         Me.DefaultsFunc = defaultsFunc
+        LoadProfileMethod = loadAction
+        AddProfileMethod = addFunc
 
         For Each i As Profile In profiles
-            lb.Items.Add(i.GetCopy)
+            lbMain.Items.Add(i.GetCopy)
         Next
 
         UpdateControls()
@@ -397,21 +357,21 @@ Class ProfilesForm
     End Sub
 
     Private Sub UpdateControls()
-        Dim p = DirectCast(lb.SelectedItem, Profile)
-        Dim count = lb.SelectedItems.Count
+        Dim pro = DirectCast(lbMain.SelectedItem, Profile)
+        Dim count = lbMain.SelectedItems.Count
         bnClone.Enabled = count = 1
-        bnEdit.Enabled = count = 1 AndAlso p.CanEdit
+        bnEdit.Enabled = count = 1 AndAlso pro.CanEdit
         bnLoad.Enabled = count = 1 AndAlso Not LoadProfileMethod Is Nothing
         bnRemove.Enabled = count > 0
         bnRename.Enabled = count = 1
-        bnUp.Enabled = lb.CanMoveUp()
-        bnDown.Enabled = lb.CanMoveDown()
-        bnLeft.Enabled = count > 0 AndAlso lb.Text.Contains(" | ")
+        bnUp.Enabled = lbMain.CanMoveUp()
+        bnDown.Enabled = lbMain.CanMoveDown()
+        bnLeft.Enabled = count > 0 AndAlso lbMain.Text.Contains(" | ")
         bnRight.Enabled = count > 0
         bnRestore.Enabled = Not DefaultsFunc Is Nothing
     End Sub
 
-    Private Sub lb_KeyDown(sender As Object, e As KeyEventArgs) Handles lb.KeyDown
+    Private Sub lbMain_KeyDown(sender As Object, e As KeyEventArgs) Handles lbMain.KeyDown
         Select Case e.KeyData
             Case Keys.Delete
                 If bnRemove.Enabled Then bnRemove.PerformClick()
@@ -430,23 +390,23 @@ Class ProfilesForm
         End Select
     End Sub
 
-    Private Sub lb_SelectedIndexChanged() Handles lb.SelectedIndexChanged
+    Private Sub lbMain_SelectedIndexChanged() Handles lbMain.SelectedIndexChanged
         UpdateControls()
     End Sub
 
-    Private Sub bLoad_Click() Handles bnLoad.Click
-        LoadProfileMethod(DirectCast(lb.SelectedItem, Profile))
+    Private Sub bnLoad_Click() Handles bnLoad.Click
+        LoadProfileMethod(DirectCast(lbMain.SelectedItem, Profile))
         TextValues(bnLoad) = bnLoad.Text
         bnLoad.ShowBold()
     End Sub
 
-    Private Sub lb_DoubleClick() Handles lb.DoubleClick
-        If Not lb.SelectedItem Is Nothing AndAlso DirectCast(lb.SelectedItem, Profile).CanEdit Then
+    Private Sub lbMain_DoubleClick() Handles lbMain.DoubleClick
+        If Not lbMain.SelectedItem Is Nothing AndAlso DirectCast(lbMain.SelectedItem, Profile).CanEdit Then
             bnEdit.PerformClick()
         End If
     End Sub
 
-    Private Sub bNew_Click() Handles bnAdd.Click
+    Private Sub bnAdd_Click() Handles bnAdd.Click
         Dim p = AddProfileMethod()
 
         If Not p Is Nothing Then
@@ -456,7 +416,7 @@ Class ProfilesForm
             If Not p.Name Is Nothing Then
                 Dim remove As Profile = Nothing
 
-                For Each i As Profile In lb.Items
+                For Each i As Profile In lbMain.Items
                     If i.Name = p.Name Then
                         If MsgOK("There is already a profile with this name, overwrite?") Then
                             remove = i
@@ -467,123 +427,119 @@ Class ProfilesForm
                 Next
 
                 If Not remove Is Nothing Then
-                    lb.Items.Remove(remove)
+                    lbMain.Items.Remove(remove)
                 End If
 
                 p.Clean()
-                lb.Items.Insert(0, p)
-                lb.ClearSelected()
-                lb.SelectedItem = p
+                lbMain.Items.Insert(0, p)
+                lbMain.ClearSelected()
+                lbMain.SelectedItem = p
                 UpdateControls()
             End If
         End If
     End Sub
 
-    Private Sub bRemove_Click() Handles bnRemove.Click
-        lb.RemoveSelection()
+    Private Sub bnRemove_Click() Handles bnRemove.Click
+        lbMain.RemoveSelection()
         UpdateControls()
     End Sub
 
+    Private Sub bnRename_Click() Handles bnRename.Click
+        Dim p = DirectCast(lbMain.SelectedItem, Profile)
+        Dim ret = InputBox.Show("Please enter a name.", "Rename Profile", p.Name)
+
+        If Not ret Is Nothing Then
+            p.Name = ret
+            lbMain.UpdateSelection()
+            UpdateControls()
+        End If
+    End Sub
+
+    Private Sub bnEdit_Click() Handles bnEdit.Click
+        Dim profile = DirectCast(ObjectHelp.GetCopy(lbMain.SelectedItem), Profile)
+
+        If profile.Edit = DialogResult.OK Then
+            lbMain.Items(lbMain.SelectedIndex) = profile
+            UpdateControls()
+        End If
+    End Sub
+
+    Private Sub bnClone_Click() Handles bnClone.Click
+        lbMain.Items.Insert(lbMain.SelectedIndex, ObjectHelp.GetCopy(lbMain.SelectedItem))
+    End Sub
+
+    Private Sub bnUp_Click(sender As Object, e As EventArgs) Handles bnUp.Click
+        lbMain.MoveSelectionUp()
+        UpdateControls()
+    End Sub
+
+    Private Sub bnDown_Click(sender As Object, e As EventArgs) Handles bnDown.Click
+        lbMain.MoveSelectionDown()
+        UpdateControls()
+    End Sub
+
+    Private Sub bnLeft_Click(sender As Object, e As EventArgs) Handles bnLeft.Click
+        lbMain.SaveSelection()
+
+        For x = 0 To lbMain.Items.Count - 1
+            If lbMain.GetSelected(x) Then
+                Dim p = DirectCast(lbMain.Items(x), Profile)
+
+                If p.Name.Contains(" | ") Then
+                    p.Name = p.Name.Right(" | ")
+                    lbMain.Items(x) = lbMain.Items(x)
+                End If
+            End If
+        Next
+
+        lbMain.RestoreSelection()
+    End Sub
+
+    Private Sub bnRightRight_Click(sender As Object, e As EventArgs) Handles bnRight.Click
+        Dim inputName = InputBox.Show("Enter a name for a sub menu.")
+
+        If inputName <> "" Then
+            lbMain.SaveSelection()
+
+            For x = 0 To lbMain.Items.Count - 1
+                If lbMain.GetSelected(x) Then
+                    Dim p = DirectCast(lbMain.Items(x), Profile)
+                    p.Name = inputName + " | " + p.Name
+                    lbMain.Items(x) = lbMain.Items(x)
+                End If
+            Next
+
+            lbMain.RestoreSelection()
+        End If
+    End Sub
+
+    Private Sub bnRestore_Click(sender As Object, e As EventArgs) Handles bnRestore.Click
+        If MsgQuestion("Restore Profiles?") = DialogResult.OK Then
+            lbMain.Items.Clear()
+            lbMain.Items.AddRange(DefaultsFunc().OfType(Of Profile).ToArray)
+        End If
+    End Sub
+
+    Protected Overrides Sub OnHelpRequested(hevent As HelpEventArgs)
+        MyBase.OnHelpRequested(hevent)
+
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteTips(TipProvider.GetTips)
+        form.Show()
+    End Sub
+
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
+        MyBase.OnFormClosed(e)
+
         If DialogResult = DialogResult.OK Then
             Profiles.Clear()
 
-            For Each i As Profile In lb.Items
+            For Each i As Profile In lbMain.Items
                 Profiles.Add(i)
             Next
 
             g.SaveSettings()
         End If
-
-        MyBase.OnFormClosed(e)
-    End Sub
-
-    Private Sub bRename_Click() Handles bnRename.Click
-        Dim p = DirectCast(lb.SelectedItem, Profile)
-        Dim ret = InputBox.Show("Please enter a name.", "Rename Profile", p.Name)
-
-        If Not ret Is Nothing Then
-            p.Name = ret
-            lb.UpdateSelection()
-            UpdateControls()
-        End If
-    End Sub
-
-    Private Sub bEdit_Click() Handles bnEdit.Click
-        Dim profile = DirectCast(ObjectHelp.GetCopy(lb.SelectedItem), Profile)
-
-        If profile.Edit = DialogResult.OK Then
-            lb.Items(lb.SelectedIndex) = profile
-            UpdateControls()
-        End If
-    End Sub
-
-    Private Sub bClone_Click() Handles bnClone.Click
-        lb.Items.Insert(lb.SelectedIndex, ObjectHelp.GetCopy(lb.SelectedItem))
-    End Sub
-
-    Private Sub bUp_Click(sender As Object, e As EventArgs) Handles bnUp.Click
-        lb.MoveSelectionUp()
-        UpdateControls()
-    End Sub
-
-    Private Sub bDown_Click(sender As Object, e As EventArgs) Handles bnDown.Click
-        lb.MoveSelectionDown()
-        UpdateControls()
-    End Sub
-
-    Private Sub bLeft_Click(sender As Object, e As EventArgs) Handles bnLeft.Click
-        lb.SaveSelection()
-
-        For x = 0 To lb.Items.Count - 1
-            If lb.GetSelected(x) Then
-                Dim p = DirectCast(lb.Items(x), Profile)
-
-                If p.Name.Contains(" | ") Then
-                    p.Name = p.Name.Right(" | ")
-                    lb.Items(x) = lb.Items(x)
-                End If
-            End If
-        Next
-
-        lb.RestoreSelection()
-    End Sub
-
-    Private Sub bRight_Click(sender As Object, e As EventArgs) Handles bnRight.Click
-        Dim inputName = InputBox.Show("Enter a name for a sub menu.")
-
-        If inputName <> "" Then
-            lb.SaveSelection()
-
-            For x = 0 To lb.Items.Count - 1
-                If lb.GetSelected(x) Then
-                    Dim p = DirectCast(lb.Items(x), Profile)
-                    p.Name = inputName + " | " + p.Name
-                    lb.Items(x) = lb.Items(x)
-                End If
-            Next
-
-            lb.RestoreSelection()
-        End If
-    End Sub
-
-    Private Sub bRestore_Click(sender As Object, e As EventArgs) Handles bnRestore.Click
-        lb.Items.Clear()
-        lb.Items.AddRange(DefaultsFunc().OfType(Of Profile).ToArray)
-    End Sub
-
-    Protected Overrides Sub OnHelpRequested(hevent As HelpEventArgs)
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteTips(TipProvider.GetTips)
-        f.Show()
-
-        MyBase.OnHelpRequested(hevent)
-    End Sub
-
-    Protected Overrides Sub OnLoad(e As EventArgs)
-        MyBase.OnLoad(e)
-        Dim h = tlpButtons.Height + flpOkCancel.Height
-        ClientSize = New Size(tlpButtons.Height + tlpButtons.Width, h)
     End Sub
 End Class

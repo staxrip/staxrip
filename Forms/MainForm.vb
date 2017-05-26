@@ -1485,10 +1485,8 @@ Public Class MainForm
                 Dim name = Filepath.GetName(i)
 
                 If name.ToUpper Like "VTS_0#_0.VOB" Then
-                    If Msg("Are you sure you want to open the file " + name + "," + BR +
-                           "the first VOB file usually contains a menu!", Nothing,
-                           MsgIcon.Question, MessageBoxButtons.YesNo,
-                           DialogResult.No) <> DialogResult.Yes Then
+                    If MsgQuestion("Are you sure you want to open the file " + name + "," + BR +
+                           "the first VOB file usually contains a menu!") = DialogResult.Cancel Then
 
                         Throw New AbortException
                     End If
@@ -3527,6 +3525,7 @@ Public Class MainForm
             Dim ui = form.SimpleUI
 
             Dim imagePage = ui.CreateFlowPage("Image")
+            imagePage.SuspendLayout()
 
             Dim cb = ui.AddCheckBox(imagePage)
             cb.Text = "Save Thumbnails"
@@ -3537,7 +3536,7 @@ Public Class MainForm
             Dim nb = ui.AddNumericBlock(imagePage)
             nb.Label.Text = "Auto resize image size:"
             nb.Label.Tooltip = "Resizes to a given pixel size after loading a source file."
-            nb.Label.Offset = 9
+
             nb.NumEdit.Init(0, Integer.MaxValue, 10000)
             nb.NumEdit.Value = p.AutoResizeImage
             nb.NumEdit.SaveAction = Sub(value) p.AutoResizeImage = CInt(value)
@@ -3546,7 +3545,6 @@ Public Class MainForm
 
             nb = ui.AddNumericBlock(imagePage)
             nb.Label.Text = "Resize slider width:"
-            nb.Label.Offset = 9
             nb.NumEdit.Init(0, Integer.MaxValue, 64)
             nb.NumEdit.Value = p.ResizeSliderMaxWidth
             nb.NumEdit.SaveAction = Sub(value) p.ResizeSliderMaxWidth = CInt(value)
@@ -3555,12 +3553,14 @@ Public Class MainForm
 
             Dim mbi = ui.AddMenuButtonBlock(Of Integer)(imagePage)
             mbi.Label.Text = "Output Mod:"
-            mbi.Label.Offset = 9
             mbi.MenuButton.Add({2, 4, 8, 16})
             mbi.MenuButton.Value = p.ForcedOutputMod
             mbi.MenuButton.SaveAction = Sub(value) p.ForcedOutputMod = value
 
+            imagePage.ResumeLayout()
+
             Dim aspectRatioPage = ui.CreateFlowPage("Image|Aspect Ratio")
+            aspectRatioPage.SuspendLayout()
 
             cb = ui.AddCheckBox(aspectRatioPage)
             cb.Text = "Auto Aspect Ratio Signaling"
@@ -3581,7 +3581,7 @@ Public Class MainForm
             cb.SaveAction = Sub(value) p.AdjustHeight = value
 
             nb = ui.AddNumericBlock(aspectRatioPage)
-            nb.Label.Text = "Maximum Aspect Ratio Error:"
+            nb.Label.Text = "Max Aspect Ratio Error:"
             nb.NumEdit.Init(1, 10, 1)
             nb.NumEdit.Value = p.MaxAspectRatioError
             nb.NumEdit.SaveAction = Sub(value) p.MaxAspectRatioError = CInt(value)
@@ -3589,7 +3589,6 @@ Public Class MainForm
             Dim tb = ui.AddTextBlock(aspectRatioPage)
             tb.Label.Text = "Custom Source DAR:"
             tb.Label.Tooltip = "Custom source display aspect ratio which overrides the automatic detection and uses the format 4/3 or 4:3 or " & 1.333333 & "."
-            tb.Label.Offset = 8
             tb.Edit.Text = p.CustomDAR
             tb.Edit.TextBox.ValidationFunc = AddressOf IsCorrectAspectRatioFormat
             tb.Edit.SaveAction = Sub(value) p.CustomDAR = value
@@ -3597,10 +3596,11 @@ Public Class MainForm
             tb = ui.AddTextBlock(aspectRatioPage)
             tb.Label.Text = "Custom Source PAR: "
             tb.Label.Tooltip = "Custom source pixel aspect ratio which overrides the automatic detection and uses the format 4/3 or 4:3 or " & 1.333333 & "."
-            tb.Label.Offset = 8
             tb.Edit.Text = p.CustomPAR
             tb.Edit.TextBox.ValidationFunc = AddressOf IsCorrectAspectRatioFormat
             tb.Edit.SaveAction = Sub(value) p.CustomPAR = value
+
+            aspectRatioPage.ResumeLayout()
 
             Dim cropPage = ui.CreateFlowPage("Image|Crop")
 
@@ -3833,6 +3833,7 @@ Public Class MainForm
             tb.Edit.SaveAction = Sub(value) p.CodeAtTop = value
 
             Dim miscPage = ui.CreateFlowPage("Misc")
+            miscPage.SuspendLayout()
 
             cb = ui.AddCheckBox(miscPage)
             cb.Text = "Show all dialogs when invoked from CLI"
@@ -3863,17 +3864,17 @@ Public Class MainForm
             cb.SaveAction = Sub(value) p.AutoCompCheck = value
 
             nb = ui.AddNumericBlock(miscPage)
-            nb.Label.Text = "Percentage to use for comp. check:"
-            nb.Label.Offset = 15
+            nb.Label.Text = "Percentage for comp. check:"
             nb.NumEdit.Init(2, 20, 1)
             nb.NumEdit.Value = p.CompCheckRange
             nb.NumEdit.SaveAction = Sub(value) p.CompCheckRange = CInt(value)
 
             Dim compCheckButton = ui.AddMenuButtonBlock(Of CompCheckAction)(miscPage)
-            compCheckButton.Label.Text = "After the compressibility check adjust:"
-            compCheckButton.Label.Offset = 15
+            compCheckButton.Label.Text = "After comp. check adjust:"
             compCheckButton.MenuButton.Value = p.CompCheckAction
             compCheckButton.MenuButton.SaveAction = Sub(value) p.CompCheckAction = value
+
+            miscPage.ResumeLayout()
 
             If pagePath <> "" Then
                 ui.ShowPage(pagePath)
@@ -5541,6 +5542,10 @@ Public Class MainForm
         Else
             ProcessCommandLine(Environment.GetCommandLineArgs)
         End If
+
+        'Using f As New TestForm
+        '    f.ShowDialog()
+        'End Using
 
         MyBase.OnShown(e)
     End Sub

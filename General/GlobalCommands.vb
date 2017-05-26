@@ -423,7 +423,7 @@ Public Class GlobalCommands
         <DefaultValue(GetType(MsgIcon), "Info")>
         Optional icon As MsgIcon = MsgIcon.Info)
 
-        Msg(Macro.Expand(mainInstruction), Macro.Expand(content), icon, MessageBoxButtons.OK)
+        Msg(Macro.Expand(mainInstruction), Macro.Expand(content), icon, TaskDialogButtons.Ok)
     End Sub
 
     <Command("Shows media info on a given file.")>

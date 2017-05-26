@@ -28,7 +28,7 @@ Class Audio
             If (cutting OrElse Not ap.IsInputSupported) AndAlso Not directMux Then
                 Select Case Filepath.GetExtFull(ap.File)
                     Case ".mkv", ".webm"
-                        DemuxMKV(ap.File, {ap.Stream}, ap)
+                        mkvDemuxer.DemuxMKV(ap.File, {ap.Stream}, Nothing, ap)
                     Case ".mp4"
                         DemuxMP4(ap.File, ap.Stream, ap)
                     Case Else
@@ -142,67 +142,6 @@ Class Audio
             Log.Write("Error", "no output found")
             Demuxffmpeg(sourcefile, stream, ap)
         End If
-    End Sub
-
-    Shared Sub DemuxMKV(sourcefile As String,
-                        streams As IEnumerable(Of AudioStream),
-                        ap As AudioProfile,
-                        Optional onlyEnabled As Boolean = False)
-
-        If onlyEnabled Then streams = streams.Where(Function(arg) arg.Enabled)
-        If streams.Count = 0 Then Exit Sub
-
-        Dim args = "tracks " + sourcefile.Quotes
-        Dim outPaths As New Dictionary(Of String, AudioStream)
-
-        For Each stream In streams
-            Dim ext = stream.Extension
-            If ext = ".m4a" Then ext = ".aac"
-            Dim outPath = p.TempDir + If(sourcefile = p.SourceFile, GetBaseNameForStream(sourcefile, stream), Filepath.GetBase(sourcefile)) + ext
-            If outPath.Length > 259 Then outPath = p.TempDir + If(sourcefile = p.SourceFile, GetBaseNameForStream(sourcefile, stream, True), Filepath.GetBase(sourcefile).Shorten(10)) + ext
-            outPaths.Add(outPath, stream)
-            args += " " & stream.StreamOrder & ":" + outPath.Quotes
-        Next
-
-        Using proc As New Proc
-            proc.Init("Demux audio using mkvextract " + Package.mkvextract.Version, "Progress: ")
-            proc.Encoding = Encoding.UTF8
-            proc.File = Package.mkvextract.Path
-            proc.Arguments = args + " --ui-language en"
-            proc.AllowedExitCodes = {0, 1, 2}
-            proc.Start()
-        End Using
-
-        For Each outPath In outPaths.Keys
-            If File.Exists(outPath) Then
-                If Not ap Is Nothing Then ap.File = outPath
-                Log.WriteLine(MediaInfo.GetSummary(outPath) + BR)
-
-                If outPath.Ext = "aac" Then
-                    Using proc As New Proc
-                        proc.Init("Mux AAC to M4A using MP4Box " + Package.MP4Box.Version, "|")
-                        proc.File = Package.MP4Box.Path
-                        Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
-                        Dim m4aPath = outPath.ChangeExt("m4a")
-                        proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new """ + m4aPath + """"
-                        proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
-                        proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
-                        proc.Start()
-
-                        If File.Exists(m4aPath) Then
-                            If Not ap Is Nothing Then ap.File = m4aPath
-                            FileHelp.Delete(outPath)
-                            Log.WriteLine(BR + MediaInfo.GetSummary(m4aPath))
-                        Else
-                            Throw New ErrorAbortException("Error mux AAC to M4A", outPath)
-                        End If
-                    End Using
-                End If
-            Else
-                Log.Write("Error", "no output found")
-                Demuxffmpeg(sourcefile, outPaths(outPath), ap)
-            End If
-        Next
     End Sub
 
     Shared Sub Decode(ap As AudioProfile, Optional useFlac As Boolean = False)
@@ -592,7 +531,7 @@ Class Audio
             Dim streams = MediaInfo.GetAudioStreams(mkvPath)
 
             If streams.Count > 0 Then
-                DemuxMKV(mkvPath, {streams(0)}, ap)
+                mkvDemuxer.DemuxMKV(mkvPath, {streams(0)}, Nothing, ap)
             Else
                 fail = True
             End If

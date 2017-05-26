@@ -492,36 +492,41 @@ Public Class MkvMuxer
         Return Package.mkvmerge.Path.Quotes + " " + GetArgs()
     End Function
 
-    Private Function GetArgs(Optional writeTag As Boolean = False) As String
-        Dim args As New StringBuilder("-o " + p.TargetFile.Quotes)
+    Function Convert(val As String) As String
+        Return CommandLineHelp.ConvertText(val)
+    End Function
 
-        Dim vID = -1 '-1 means all
+    Private Function GetArgs(Optional writeTag As Boolean = False) As String
+        Dim args = "-o " + p.TargetFile.Quotes
+
+        Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "-I " + p.VideoEncoder.OutputPath.Quotes)
+        Dim id = Regex.Match(stdout, "Track ID (\d+): video").Groups(1).Value.ToInt
 
         If Not FileTypes.VideoOnly.Contains(p.VideoEncoder.OutputPath.Ext) Then
-            args.Append(" --noaudio --nosubs --no-chapters --no-attachments --no-track-tags --no-global-tags")
+            args += " --no-audio --no-subs --no-chapters --no-attachments --no-track-tags --no-global-tags"
         End If
 
         If VideoTrackLanguage.ThreeLetterCode <> "und" Then
-            args.Append(" --language " & vID & ":" + VideoTrackLanguage.ThreeLetterCode)
+            args += " --language " & id & ":" + VideoTrackLanguage.ThreeLetterCode
         End If
 
         If VideoTrackName <> "" Then
-            args.Append(" --track-name """ & vID & ":" + Macro.Expand(VideoTrackName).Replace("""", "'") + """")
+            args += " --track-name """ & id & ":" + Convert(VideoTrackName) + """"
         End If
 
         If MediaInfo.GetFrameRate(p.VideoEncoder.OutputPath, 0) = 0 Then
-            args.Append(" --default-duration 0:" + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps")
+            args += " --default-duration 0:" + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps"
         End If
 
         If TimecodesFile <> "" Then
             If TimecodesFile.Ext = "txt" Then
-                args.Append(" --timecodes 0:" + TimecodesFile.Quotes)
+                args += " --timecodes 0:" + TimecodesFile.Quotes
             ElseIf TimecodesFile.Ext = "mkv" Then
-                args.Append(" --timecodes " + MediaInfo.GetVideo(TimecodesFile, "StreamOrder") + ":" + TimecodesFile.Quotes)
+                args += " --timecodes " + MediaInfo.GetVideo(TimecodesFile, "StreamOrder") + ":" + TimecodesFile.Quotes
             End If
         End If
 
-        args.Append(" " + p.VideoEncoder.OutputPath.Quotes)
+        args += " " + p.VideoEncoder.OutputPath.Quotes
 
         AddAudioArgs(p.Audio0, args)
         AddAudioArgs(p.Audio1, args)
@@ -532,49 +537,34 @@ Public Class MkvMuxer
 
         ExpandMacros()
 
-        If Subtitles.Count > 1 AndAlso Subtitles.Where(Function(val) val.Path = Subtitles(0).Path).Count = Subtitles.Count Then
-            If FileTypes.VideoAudio.Contains(Subtitles(0).Path.Ext) Then
-                args.Append(" --no-audio --no-video --no-chapters --no-attachments --no-track-tags --no-global-tags")
-            End If
+        For Each subtitle In Subtitles
+            If subtitle.Enabled AndAlso File.Exists(subtitle.Path) Then
+                id = If(FileTypes.SubtitleSingle.Contains(subtitle.Path.Ext), 0, subtitle.StreamOrder)
 
-            Dim subs = Subtitles.Where(Function(val) val.Enabled AndAlso File.Exists(val.Path))
-            args.Append(" --subtitle-tracks " & String.Join(",", subs.Select(Function(val) val.StreamOrder)))
-            args.Append(" " + String.Join(" ", subs.Select(Function(val) "--forced-track " & val.StreamOrder & ":" & If(val.Forced, 1, 0))))
-            args.Append(" " + String.Join(" ", subs.Select(Function(val) "--default-track " & val.StreamOrder & ":" & If(val.Default, 1, 0))))
-            args.Append(" " + String.Join(" ", subs.Select(Function(val) "--language " & val.StreamOrder & ":" & val.Language.ThreeLetterCode)))
-            Dim titles = subs.Where(Function(val) val.Title <> "")
-            If titles.Count > 0 Then args.Append(" " + String.Join(" ", titles.Select(Function(val) "--track-name " & If(val.Title.Contains(" "), """", "") & val.StreamOrder & ":" & val.Title?.Trim.Replace("""", "'") & If(val.Title.Contains(" "), """", ""))))
-            args.Append(" " + Subtitles(0).Path.Quotes)
-        Else
-            For Each i In Subtitles
-                If i.Enabled AndAlso File.Exists(i.Path) Then
-                    Dim id = If(FileTypes.SubtitleSingle.Contains(i.Path.Ext), 0, i.StreamOrder)
-
-                    If Not FileTypes.SubtitleExludingContainers.Contains(i.Path.Ext) Then
-                        args.Append(" --no-audio --no-video --no-chapters --no-attachments --no-track-tags --no-global-tags")
-                    End If
-
-                    If Not FileTypes.SubtitleSingle.Contains(i.Path.Ext) Then args.Append(" --subtitle-tracks " & id)
-                    Dim isContainer = FileTypes.VideoAudio.Contains(i.Path.Ext)
-
-                    args.Append(" --forced-track " & id & ":" & If(i.Forced, 1, 0))
-                    args.Append(" --default-track " & id & ":" & If(i.Default, 1, 0))
-                    args.Append(" --language " & id & ":" + i.Language.ThreeLetterCode)
-                    If isContainer OrElse i.Title <> "" Then args.Append(" --track-name """ & id & ":" + i.Title?.Trim.Replace("""", "'") + """")
-                    args.Append(" " + i.Path.Quotes)
+                If Not FileTypes.SubtitleExludingContainers.Contains(subtitle.Path.Ext) Then
+                    args += " --no-audio --no-video --no-chapters --no-attachments --no-track-tags --no-global-tags"
                 End If
-            Next
-        End If
+
+                If Not FileTypes.SubtitleSingle.Contains(subtitle.Path.Ext) Then args += " --subtitle-tracks " & id
+                Dim isContainer = FileTypes.VideoAudio.Contains(subtitle.Path.Ext)
+
+                args += " --forced-track " & id & ":" & If(subtitle.Forced, 1, 0)
+                args += " --default-track " & id & ":" & If(subtitle.Default, 1, 0)
+                args += " --language " & id & ":" + subtitle.Language.ThreeLetterCode
+                If isContainer OrElse subtitle.Title <> "" Then args += " --track-name """ & id & ":" + Convert(subtitle.Title) + """"
+                args += " " + subtitle.Path.Quotes
+            End If
+        Next
 
         If Not TypeOf Me Is WebMMuxer AndAlso File.Exists(ChapterFile) Then
-            args.Append(" --chapters " + ChapterFile.Quotes)
+            args += " --chapters " + ChapterFile.Quotes
         End If
 
-        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then args.Append(" --attach-file " + CoverFile.Quotes)
-        If Title <> "" Then args.Append(" --title """ + Macro.Expand(Title).Replace("""", "'") + """")
+        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then args += " --attach-file " + CoverFile.Quotes
+        If Title <> "" Then args += " --title """ + Convert(Title) + """"
 
         If TypeOf p.VideoEncoder Is NullEncoder AndAlso p.Ranges.Count > 0 Then
-            args.Append(" --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+"))
+            args += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")
         End If
 
         Try
@@ -594,19 +584,19 @@ Public Class MkvMuxer
 
                 Dim tagsPath = p.TempDir + p.TargetFile.Base + "_tags.xml"
                 xml.Save(tagsPath)
-                args.Append(" --global-tags " + tagsPath.Quotes)
+                args += " --global-tags " + tagsPath.Quotes
             End If
         Catch ex As Exception
             Throw New ErrorAbortException("Error writing tags", ex.Message)
         End Try
 
-        args.Append(" --ui-language en")
-        If AdditionalSwitches <> "" Then args.Append(" " + Macro.Expand(AdditionalSwitches))
+        args += " --ui-language en"
+        If AdditionalSwitches <> "" Then args += " " + Macro.Expand(AdditionalSwitches)
 
-        Return args.ToString
+        Return args
     End Function
 
-    Sub AddAudioArgs(ap As AudioProfile, args As StringBuilder)
+    Sub AddAudioArgs(ap As AudioProfile, ByRef args As String)
         If File.Exists(ap.File) AndAlso IsSupported(ap.File.Ext) AndAlso IsSupported(ap.OutputFileType) Then
             Dim tid = 0
             Dim isCombo As Boolean
@@ -626,31 +616,30 @@ Public Class MkvMuxer
             Dim isAudioType = FileTypes.Audio.Contains(ap.File.Ext)
 
             If Not isAudioType Then
-                args.Append(" --novideo --nosubs --no-chapters --no-attachments --no-track-tags --no-global-tags")
+                args += " --no-video --no-subs --no-chapters --no-attachments --no-track-tags --no-global-tags"
             ElseIf ap.File.Ext = "m4a" Then
-                args.Append(" --no-chapters") 'eac3to writes chapters to m4a
+                args += " --no-chapters" 'eac3to writes chapters to m4a
             End If
 
-            args.Append(" --audio-tracks " + If(isCombo, tid & "," & tid + 1, tid.ToString))
-
-            args.Append(" --language " & tid & ":" + ap.Language.ThreeLetterCode)
-            If isCombo Then args.Append(" --language " & tid + 1 & ":" + ap.Language.ThreeLetterCode)
+            args += " --audio-tracks " + If(isCombo, tid & "," & tid + 1, tid.ToString)
+            args += " --language " & tid & ":" + ap.Language.ThreeLetterCode
+            If isCombo Then args += " --language " & tid + 1 & ":" + ap.Language.ThreeLetterCode
 
             If ap.OutputFileType = "aac" AndAlso ap.File.ToLower.Contains("sbr") Then
-                args.Append(" --aac-is-sbr " & tid)
+                args += " --aac-is-sbr " & tid
             End If
 
-            If Not (isAudioType AndAlso ap.StreamName = "") Then args.Append(" --track-name """ & tid & ":" + ap.ExpandMacros(ap.StreamName, False) + """")
-            If isCombo Then args.Append(" --track-name """ & tid + 1 & ":" + ap.ExpandMacros(ap.StreamName, False).Replace("""", "'") + """")
+            If Not (isAudioType AndAlso ap.StreamName = "") Then args += " --track-name """ & tid & ":" + Convert(ap.ExpandMacros(ap.StreamName, False)) + """"
+            If isCombo Then args += " --track-name """ & tid + 1 & ":" + Convert(ap.ExpandMacros(ap.StreamName, False)) + """"
 
             If ap.Delay <> 0 AndAlso Not ap.HandlesDelay AndAlso Not (ap.HasStream AndAlso ap.Stream.Delay <> 0) Then
-                args.Append(" --sync " & tid & ":" + ap.Delay.ToString)
-                If isCombo Then args.Append(" --sync " & tid + 1 & ":" + ap.Delay.ToString)
+                args += " --sync " & tid & ":" + ap.Delay.ToString
+                If isCombo Then args += " --sync " & tid + 1 & ":" + ap.Delay.ToString
             End If
 
-            args.Append(" --default-track " & tid & ":" & If(ap.Default, 1, 0))
-            args.Append(" --forced-track " & tid & ":" & If(ap.Forced, 1, 0))
-            args.Append(" " + ap.File.Quotes)
+            args += " --default-track " & tid & ":" & If(ap.Default, 1, 0)
+            args += " --forced-track " & tid & ":" & If(ap.Forced, 1, 0)
+            args += " " + ap.File.Quotes
         End If
     End Sub
 

@@ -278,8 +278,8 @@ Class SubtitleControl
             d.SetInitDir(s.LastSourceDir)
 
             If d.ShowDialog = DialogResult.OK Then
-                For Each i In d.FileNames
-                    AddSubtitles(Subtitle.Create(i))
+                For Each iFilename In d.FileNames
+                    AddSubtitles(Subtitle.Create(iFilename))
                 Next
 
                 UpdateControls()
@@ -317,16 +317,16 @@ Class SubtitleControl
     Sub SetValues(muxer As Muxer)
         muxer.Subtitles.Clear()
 
-        For Each i In Items
-            i.Subtitle.Language = i.Language
-            i.Subtitle.Enabled = i.Enabled
-            i.Subtitle.Title = i.Title
-            i.Subtitle.Forced = i.Forced
-            i.Subtitle.Default = i.Default
+        For Each subtitle In Items
+            subtitle.Subtitle.Language = subtitle.Language
+            subtitle.Subtitle.Enabled = subtitle.Enabled
+            subtitle.Subtitle.Title = subtitle.Title
+            subtitle.Subtitle.Forced = subtitle.Forced
+            subtitle.Subtitle.Default = subtitle.Default
 
-            If i.Subtitle.Title Is Nothing Then i.Subtitle.Title = ""
+            If subtitle.Subtitle.Title Is Nothing Then subtitle.Subtitle.Title = ""
 
-            muxer.Subtitles.Add(i.Subtitle)
+            muxer.Subtitles.Add(subtitle.Subtitle)
         Next
     End Sub
 
@@ -343,10 +343,8 @@ Class SubtitleControl
 
     Sub AddSubtitles(subtitles As List(Of Subtitle))
         For Each i In subtitles
-            If Items.Where(Function(item) item.Default).Count > 0 Then
-                i.Default = False
-            End If
-
+            If Items.Where(Function(item) item.Default).Count > 0 Then i.Default = False
+            
             If File.Exists(i.Path) Then
                 Dim size As String
 

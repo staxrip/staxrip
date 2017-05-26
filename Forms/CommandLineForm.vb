@@ -64,15 +64,8 @@ Class CommandLineForm
     Sub ValueChanged(item As CommandLineParam)
         rtbCommandLine.SetText(Params.GetCommandLine(False, False))
         rtbCommandLine.SelectionLength = 0
-        UpdateHeight(rtbCommandLine)
+        rtbCommandLine.UpdateHeight()
         UpdateSearchComboBox()
-    End Sub
-
-    Sub UpdateHeight(rtb As RichTextBox)
-        Using g = rtb.CreateGraphics
-            Dim s = g.MeasureString(rtb.Text, rtb.Font, rtb.ClientSize.Width)
-            rtb.ClientSize = New Size(rtb.ClientSize.Width, CInt(s.Height + rtb.Font.Height / 7))
-        End Using
     End Sub
 
     Sub InitUI()
@@ -324,16 +317,7 @@ Class CommandLineForm
         Next
     End Sub
 
-    Private Sub CommandLineForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        UpdateHeight(rtbCommandLine)
-    End Sub
-
     Private Sub CommandLineForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         g.MainForm.PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
-    End Sub
-
-    Protected Overrides Sub OnLoad(e As EventArgs)
-        MyBase.OnLoad(e)
-        rtbCommandLine.Margin = New Padding(bnCancel.Margin.Right, 0, bnCancel.Margin.Right, 0)
     End Sub
 End Class

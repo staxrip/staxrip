@@ -140,7 +140,6 @@ Class Thumbnails
         Using bitmap As New Bitmap(imageWidth, imageHeight)
             Using g = Graphics.FromImage(bitmap)
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic
-                g.SmoothingMode = SmoothingMode.AntiAlias
                 g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
                 g.Clear(backgroundColor)
                 Dim rect = New RectangleF(shadowDistance + gap, 0, imageWidth - (shadowDistance + gap) * 2, captionHeight)

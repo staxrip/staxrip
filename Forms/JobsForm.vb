@@ -207,15 +207,15 @@ Friend Class JobsForm
     End Sub
 
     Sub Reload(sender As Object, e As FileSystemEventArgs)
-        If IsHandleCreated AndAlso Not IsDisposed Then Invoke(Sub()
-                                                                  If IsDisposed Then Exit Sub
-                                                                  IsLoading = True
-                                                                  lv.Items.Clear()
-                                                                  lv.AddItems(GetJobs())
-                                                                  lv.SelectFirst()
-                                                                  UpdateControls()
-                                                                  IsLoading = False
-                                                              End Sub)
+        Invoke(Sub()
+                   If IsDisposed Then Exit Sub
+                   IsLoading = True
+                   lv.Items.Clear()
+                   lv.AddItems(GetJobs())
+                   lv.SelectFirst()
+                   UpdateControls()
+                   IsLoading = False
+               End Sub)
     End Sub
 
     Private Sub UpdateControls()
@@ -223,16 +223,6 @@ Friend Class JobsForm
                          Where DirectCast(item.Tag, StringBooleanPair).Value
 
         bnStart.Enabled = activeJobs.Count > 0
-    End Sub
-
-    Protected Overrides Sub OnHelpRequested(hevent As HelpEventArgs)
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteP("Jobs are processed in dedicated StaxRip instances.")
-        f.Doc.WriteP("It's possible to start multiple instances concurrently.")
-        f.Show()
-
-        MyBase.OnHelpRequested(hevent)
     End Sub
 
     Sub SaveJobs(sender As Object, e As EventArgs)
@@ -360,7 +350,7 @@ Friend Class JobsForm
         FileWatcher.Dispose()
     End Sub
 
-    Private Sub JobsForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
         Select Case e.KeyData
             Case Keys.Control Or Keys.A
                 For Each i As ListViewItem In lv.Items
@@ -369,11 +359,24 @@ Friend Class JobsForm
             Case Keys.Delete
                 lv.RemoveSelection()
         End Select
+
+        MyBase.OnKeyDown(e)
     End Sub
 
-    Private Sub JobsForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         RemoveHandler FileWatcher.Changed, AddressOf Reload
         RemoveHandler FileWatcher.Created, AddressOf Reload
         RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged
+        MyBase.OnFormClosing(e)
+    End Sub
+
+    Protected Overrides Sub OnHelpRequested(hevent As HelpEventArgs)
+        Dim f As New HelpForm()
+        f.Doc.WriteStart(Text)
+        f.Doc.WriteP("Jobs are processed in dedicated StaxRip instances.")
+        f.Doc.WriteP("It's possible to start multiple instances concurrently.")
+        f.Show()
+
+        MyBase.OnHelpRequested(hevent)
     End Sub
 End Class

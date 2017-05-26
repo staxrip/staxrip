@@ -102,6 +102,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - if the subtitle source is a container like MP4/MKV StaxRip checks the forced and default option
 - when staxrip demuxues subtitles it writes _forced to the filename and set the forced flag when it picks up the demuxed subtitles 
 - when the source is a container like MP4/MKV the forced and default audio flags are applied
+- Cancel in message boxes is now English instead of the system language
+- improved DPI scaling
 
 #### Updated Tools
 
@@ -117,15 +119,16 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - RgTools (avs) 0.95
 - AviSynth+ 2455
 - VapourSynth 37
-- ffms2 2.2000 test3
 - VSFilterMod (avs, vs) 4
 - flash3kyuu_deband (avs, vs) 2.0.20140721
 - TIVTC (avs) 1.0.6
-- mvtools2 (avs) 2.7.16.22
 - masktools2 2.2.7
 - yadifmod (vs) 10
 - L-SMASH-Works (avs) 929
 - vslsmashsource (vs) 929
-- x265 2.4+22
 - qaac 2.64
 - mkvtoolnix 12.0.0
+- ffms2 2.2000 test6
+- mvtools2 (avs) 2.7.20.22
+- x265 2.4+27
+- MP4Box 0.7.2-DEV-rev37

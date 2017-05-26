@@ -103,7 +103,8 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - when staxrip demuxues subtitles it writes _forced to the filename and set the forced flag when it picks up the demuxed subtitles 
 - when the source is a container like MP4/MKV the forced and default audio flags are applied
 - Cancel in message boxes is now English instead of the system language
-- improved DPI scaling
+- improved DPI scaling for 96 DPI
+- subtitle and audio mkv demuxing was merged to happen in one go
 
 #### Updated Tools
 

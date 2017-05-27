@@ -111,7 +111,6 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - QSVEncC 2.62
 - VCEEncC 3.06
 - HAvsFunc (vs) 2017-03-06
-- x264 2762
 - MediaInfo 0.7.93
 - ffmpeg 3.2.2
 - mvtools (vs) 18
@@ -133,3 +132,4 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - mvtools2 (avs) 2.7.20.22
 - x265 2.4+27
 - MP4Box 0.7.2-DEV-rev37
+- x264 0.150.2833

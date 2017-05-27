@@ -119,36 +119,38 @@ Public Class Package
         .WebURL = "https://github.com/chikuzen/avs2pipemod",
         .Description = "Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools."}
 
-    Shared Property x265 As New Package With {
-        .Name = "x265",
-        .Filename = "x265.exe",
-        .WebURL = "http://x265.org",
-        .HelpURL = "http://x265.readthedocs.org",
-        .Description = "H.265 video encoding command line app."}
-
     Shared ReadOnly Property x264 As Package
         Get
             If IsX264_10Required() Then Return x264_10 Else Return x264_8
         End Get
     End Property
 
-    Shared Property x264_8 As New Package With {
+    Shared Property x264_8 As Package = Add(New Package With {
         .Name = "x264",
         .Filename = "x264.exe",
         .WebURL = "http://www.videolan.org/developers/x264.html",
         .Description = "H.264 video encoding command line app.",
-        .HelpFile = "Help.txt"}
+        .HelpFile = "Help.txt"})
 
-    Shared Property x264_10 As New Package With {
+    Shared Property x264_10 As Package = Add(New Package With {
         .Name = "x264 10-Bit",
-        .Filename = "x264.exe",
+        .Filename = "x264-10bit.exe",
+        .HelpFile = "Help.txt",
+        .DirName = "x264",
         .WebURL = "http://www.videolan.org/developers/x264.html",
         .Description = "H.264 video encoding command line app.",
-        .IsRequiredFunc = AddressOf IsX264_10Required}
+        .IsRequiredFunc = AddressOf IsX264_10Required})
 
     Shared Function IsX264_10Required() As Boolean
         Return TypeOf p.VideoEncoder Is x264Encoder AndAlso DirectCast(p.VideoEncoder, x264Encoder).Params.Depth.Value = 1
     End Function
+
+    Shared Property x265 As New Package With {
+        .Name = "x265",
+        .Filename = "x265.exe",
+        .WebURL = "http://x265.org",
+        .HelpURL = "http://x265.readthedocs.org",
+        .Description = "H.265 video encoding command line app."}
 
     Shared Property BeSweet As New Package With {
         .Name = "BeSweet",
@@ -258,8 +260,6 @@ Public Class Package
         Add(TDeint)
         Add(UnDot)
         Add(VSRip)
-        Add(x264_8)
-        Add(x264_10)
         Add(x265)
         Add(xvid_encraw)
         Add(avs2pipemod)

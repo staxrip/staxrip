@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Public Class AviSynthListView
+Public Class FilterListView
     Inherits ListViewEx
 
     Private BlockItemCheck As Boolean
@@ -181,7 +181,7 @@ Public Class AviSynthListView
             End If
         End If
 
-        filter.Script = tup.value
+        filter.Script = tup.Value
         Dim index = SelectedItems(0).Index
         p.Script.SetFilter(index, filter)
         Items(index).Selected = True
@@ -199,7 +199,7 @@ Public Class AviSynthListView
             End If
         End If
 
-        filter.Script = tup.value
+        filter.Script = tup.Value
         Dim index = SelectedItems(0).Index
         p.Script.InsertFilter(index, filter)
         Items(index).Selected = True

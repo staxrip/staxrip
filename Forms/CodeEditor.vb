@@ -107,11 +107,10 @@ Class CodeEditor
         Dim maxTextWidth = Aggregate i In filterTables Into Max(i.TrimmedTextSize.Width)
 
         For Each table As FilterTable In MainFlowLayoutPanel.Controls
-            Dim rtbSize As Size
-            rtbSize.Width = maxTextWidth + FontHeight
-            If rtbSize.Width < 300 Then rtbSize.Width = 300
-            rtbSize.Height = table.TrimmedTextSize.Height + CInt(FontHeight * 0.3)
-            table.rtbScript.Size = rtbSize
+            Dim sizeRTB As Size
+            sizeRTB.Width = maxTextWidth + FontHeight
+            sizeRTB.Height = table.TrimmedTextSize.Height + CInt(FontHeight * 0.3)
+            table.rtbScript.Size = sizeRTB
             table.rtbScript.Refresh()
         Next
     End Sub
@@ -168,7 +167,6 @@ Class CodeEditor
                                                                                       textSizeVar.Width <> LastTextSize.Width) OrElse
                                                                                       LastTextSize.Height <> textSizeVar.Height AndAlso
                                                                                       textSizeVar.Height > FontHeight Then
-
                                                       Parent.PerformLayout()
                                                       LastTextSize = TrimmedTextSize
                                                   End If
@@ -225,18 +223,27 @@ Class CodeEditor
 
         ReadOnly Property TextSize As Size
             Get
-                Return TextRenderer.MeasureText(rtbScript.Text, rtbScript.Font, New Size(10000, 5000))
+                Return TextRenderer.MeasureText(rtbScript.Text, rtbScript.Font, New Size(100000, 100000))
+            End Get
+        End Property
+
+        ReadOnly Property MaxTextWidth As Integer
+            Get
+                Return Font.Height * 40
+            End Get
+        End Property
+
+        ReadOnly Property MaxTextHeight As Integer
+            Get
+                Return Font.Height * 10
             End Get
         End Property
 
         ReadOnly Property TrimmedTextSize As Size
             Get
                 Dim ret = TextSize
-
-                If ret.Width > Screen.GetWorkingArea(Me).Width * 0.7 Then
-                    ret.Width = CInt(Screen.GetWorkingArea(Me).Width * 0.7)
-                End If
-
+                If ret.Width > MaxTextWidth Then ret.Width = MaxTextWidth
+                If ret.Height > MaxTextHeight Then ret.Height = MaxTextHeight
                 Return ret
             End Get
         End Property

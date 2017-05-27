@@ -254,12 +254,6 @@ Class AppsForm
         Contents("Version").Text = CurrentPackage.Version
         Contents("Description").Text = CurrentPackage.Description
 
-        Contents("Location").Visible = path <> ""
-        Headers("Location").Visible = path <> ""
-
-        Contents("Version").Visible = CurrentPackage.Version <> ""
-        Headers("Version").Visible = CurrentPackage.Version <> ""
-
         Headers("AviSynth Filters").Visible = False
         Contents("AviSynth Filters").Visible = False
 

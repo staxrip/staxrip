@@ -231,7 +231,7 @@
     <Compile Include="Forms\HelpForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls\AviSynthListView.vb">
+    <Compile Include="Controls\FilterListView.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\CommandLineControl.vb">

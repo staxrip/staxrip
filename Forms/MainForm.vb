@@ -62,7 +62,7 @@ Public Class MainForm
     Public WithEvents llAudioProfile0 As SimpleLinkLabel
     Public WithEvents llAudioProfile1 As SimpleLinkLabel
     Public WithEvents pEncoder As System.Windows.Forms.Panel
-    Public WithEvents AviSynthListView As StaxRip.AviSynthListView
+    Public WithEvents AviSynthListView As StaxRip.FilterListView
     Public WithEvents llFilesize As SimpleLinkLabel
     Public WithEvents llMuxer As SimpleLinkLabel
     Public WithEvents lPAR As StaxRip.UI.LabelEx
@@ -130,7 +130,7 @@ Public Class MainForm
         Me.tbTargetHeight = New System.Windows.Forms.TextBox()
         Me.lTargetHeight = New System.Windows.Forms.Label()
         Me.lgbFilters = New StaxRip.UI.LinkGroupBox()
-        Me.AviSynthListView = New StaxRip.AviSynthListView()
+        Me.AviSynthListView = New StaxRip.FilterListView()
         Me.lgbEncoder = New StaxRip.UI.LinkGroupBox()
         Me.llMuxer = New SimpleLinkLabel()
         Me.pEncoder = New System.Windows.Forms.Panel()
@@ -1414,9 +1414,9 @@ Public Class MainForm
         Dim td As New TaskDialog(Of VideoFilter)
 
         If p.Script.Engine = ScriptEngine.AviSynth Then
-            td.MainInstruction = "Select a AviSynth source filter"
+            td.MainInstruction = "Select a AviSynth source filter."
         Else
-            td.MainInstruction = "Select a VapourSynth source filter"
+            td.MainInstruction = "Select a VapourSynth source filter."
         End If
 
         For Each filter In filters
@@ -4644,11 +4644,10 @@ Public Class MainForm
     Private Sub ShowOpenSourceDialog()
         Dim td As New TaskDialog(Of String)
         td.MainInstruction = "Select a method for opening a source."
-        td.AddCommandLink("Single File", "DVD and Blu-ray discs can be ripped very easily using MakeMKV.", "Single File")
-        td.AddCommandLink("Blu-ray Folder", "Blu-ray folder directly on the Blu-ray drive or on the hard drive.", "Blu-ray Folder")
-        td.AddCommandLink("Merge Files", "Merge multiple source files.", "Merge Files")
-        td.AddCommandLink("File Batch", "Fully automated batch processing where every file is a separate encoding.", "File Batch")
-        td.AddCommandLink("Directory Batch", "Directories are processed as separate encoding, containing files are merged.", "Directory Batch")
+        td.AddCommandLink("Single File", "Single File")
+        td.AddCommandLink("Blu-ray Folder", "Blu-ray Folder")
+        td.AddCommandLink("Merge Files", "Merge Files")
+        td.AddCommandLink("File Batch", "File Batch")
 
         Select Case td.Show
             Case "Single File"
@@ -4737,48 +4736,51 @@ Public Class MainForm
                         ShowJobsDialog()
                     End If
                 End Using
-            Case "Directory Batch"
-                If AbortDueToLowDiskSpace() Then Exit Sub
 
-                Using f As New SourceFilesForm()
-                    f.Mode = SourceInputMode.DirectoryBatch
-                    f.UpdateControls()
+                'TODO: remove this dead code
 
-                    If f.ShowDialog() = DialogResult.OK Then
-                        Refresh()
+            'Case "Directory Batch"
+            '    If AbortDueToLowDiskSpace() Then Exit Sub
 
-                        If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then
-                            Exit Sub
-                        End If
+            '    Using f As New SourceFilesForm()
+            '        f.Mode = SourceInputMode.DirectoryBatch
+            '        f.UpdateControls()
 
-                        Dim tempPath = Folder.Template + "temp.srip"
+            '        If f.ShowDialog() = DialogResult.OK Then
+            '            Refresh()
 
-                        If f.cbDemuxAndIndex.Checked Then p.BatchMode = True
+            '            If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then
+            '                Exit Sub
+            '            End If
 
-                        SaveProjectPath(tempPath)
+            '            Dim tempPath = Folder.Template + "temp.srip"
 
-                        For Each i In f.DirTree.Paths
-                            OpenProject(tempPath, False)
-                            OpenVideoSourceFiles(GetSourceFilesFromDir(i))
+            '            If f.cbDemuxAndIndex.Checked Then p.BatchMode = True
 
-                            If f.cbDemuxAndIndex.Checked Then
-                                Try
-                                    g.SetTempDir()
-                                Catch ex As Exception
-                                    FileHelp.Delete(tempPath)
-                                    Exit Sub
-                                End Try
+            '            SaveProjectPath(tempPath)
 
-                                AddJob(False, Nothing)
-                            End If
-                        Next
+            '            For Each i In f.DirTree.Paths
+            '                OpenProject(tempPath, False)
+            '                OpenVideoSourceFiles(GetSourceFilesFromDir(i))
 
-                        OpenProject(tempPath, False)
-                        FileHelp.Delete(tempPath)
-                        UpdateRecentProjectsMenu()
-                        If f.cbDemuxAndIndex.Checked Then ShowJobsDialog()
-                    End If
-                End Using
+            '                If f.cbDemuxAndIndex.Checked Then
+            '                    Try
+            '                        g.SetTempDir()
+            '                    Catch ex As Exception
+            '                        FileHelp.Delete(tempPath)
+            '                        Exit Sub
+            '                    End Try
+
+            '                    AddJob(False, Nothing)
+            '                End If
+            '            Next
+
+            '            OpenProject(tempPath, False)
+            '            FileHelp.Delete(tempPath)
+            '            UpdateRecentProjectsMenu()
+            '            If f.cbDemuxAndIndex.Checked Then ShowJobsDialog()
+            '        End If
+            '    End Using
             Case "Blu-ray Folder"
                 Using d As New FolderBrowserDialog
                     d.Description = "Please select a Blu-ray source folder."

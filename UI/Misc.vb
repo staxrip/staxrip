@@ -30,6 +30,8 @@ Namespace UI
             End If
 
             MyBase.OnLoad(e)
+
+            If Not DesignHelp.IsDesignMode Then s.WindowPositions?.RestorePosition(Me)
         End Sub
 
         'Private ChangeService As IComponentChangeService

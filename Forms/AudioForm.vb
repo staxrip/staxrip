@@ -540,7 +540,7 @@ Class AudioForm
 
         cms.Add("Copy Command Line", Sub() Clipboard.SetText(TempProfile.GetCommandLine(True))).SetImage(Symbol.Copy)
         cms.Add("Execute Command Line", AddressOf Execute).SetImage(Symbol.fa_terminal)
-        cms.Add("Show Command Line", Sub() g.ShowCommandLinePreview("Command Line", TempProfile.GetCommandLine(True)))
+        cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", TempProfile.GetCommandLine(True)))
         cms.Add("-")
         cms.Add("Save Profile...", AddressOf SaveProfile, "Saves the current settings as profile").SetImage(Symbol.Save)
         cms.Add("-")
@@ -975,7 +975,13 @@ Class AudioForm
             If Not TempProfile.SupportedInput.Contains(Filepath.GetExt(TempProfile.File)) Then
                 MsgWarn("The input format isn't supported," + BR + "please decode first using:" + BR2 + "Codec: WAV" + BR + "Encoder: ffmpeg")
             Else
-                Proc.StartComandLine(TempProfile.GetCommandLine(True))
+                Dim batchPath = p.TempDir + p.TargetFile.Base + "_aexe.bat"
+                Dim batchCode = Proc.WriteBatchFile(batchPath, TempProfile.GetCommandLine(True))
+                Dim batchProc As New Process
+                batchProc.StartInfo.FileName = "cmd.exe"
+                batchProc.StartInfo.Arguments = "/k " + batchPath.Quotes
+                batchProc.StartInfo.WorkingDirectory = p.TempDir
+                batchProc.Start()
             End If
         Else
             MsgWarn("Source file is missing!")

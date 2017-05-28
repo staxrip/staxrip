@@ -905,7 +905,12 @@ Class GUIAudioProfile
         End Select
 
         If Gain <> 0 Then ret += " -af volume=" + Gain.ToInvariantString + "dB"
-        If Params.ChannelsMode <> ChannelsMode.Original Then ret += " -ac " & Channels
+
+        'opus fails if -ac is missing
+        If Params.ChannelsMode <> ChannelsMode.Original OrElse Params.Codec = AudioCodec.Opus Then
+            ret += " -ac " & Channels
+        End If
+
         If Params.SamplingRate <> 0 Then ret += " -ar " & Params.SamplingRate
         ret += " -y -hide_banner"
         If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches

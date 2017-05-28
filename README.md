@@ -1,6 +1,6 @@
-## staxrip x64
+## StaxRip x64
 
-Multiformat video encoding application.
+StaxRip is a multiformat video encoding application.
 
 ## Features
 
@@ -25,6 +25,7 @@ Multiformat video encoding application.
 
 ## Requirements
 
+- Windows 7-10 x64
 - [.NET 4.6.1](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
 - [Intel Skylake CPU](https://en.wikipedia.org/wiki/Skylake_%28microarchitecture%29) for HEVC/H.265 hardware encoding
 - [NVIDIA Maxwell gen2 card](https://en.wikipedia.org/wiki/Maxwell_%28microarchitecture%29#Second_generation_Maxwell_.28GM20x.29) for HEVC/H.265 hardware encoding

@@ -2596,7 +2596,7 @@ Public Class MainForm
                         Return False
                     End If
                 Else
-                    If ProcessTip("The target file already exist, usually this means it was encoded successfully.") Then
+                    If ProcessTip("The target file already exist.") Then
                         tbTargetFile.BackColor = Color.Yellow
                         gbAssistant.Text = "Target File"
                         Return False

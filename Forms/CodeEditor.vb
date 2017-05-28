@@ -235,7 +235,7 @@ Class CodeEditor
 
         ReadOnly Property MaxTextHeight As Integer
             Get
-                Return Font.Height * 10
+                Return Font.Height * 15
             End Get
         End Property
 

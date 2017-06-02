@@ -26,6 +26,16 @@ Using namespace StaxRip.UI;
                         Dim ret = pipeline.Invoke()
                         If ret.Count > 0 Then Return ret(0)
                     Catch ex As Exception
+                        Try
+                            Using pipeline2 = runspace.CreatePipeline()
+                                pipeline2.Commands.AddScript("$PSVersionTable.PSVersion.Major * 10 + $PSVersionTable.PSVersion.Minor")
+                                If pipeline2.Invoke()(0).ToString.ToInt < 51 Then Throw New Exception()
+                            End Using
+                        Catch
+                            MsgError("PowerShell Setup Problem", "Ensure you have at least PowerShell 5.1 installed.")
+                            Exit Function
+                        End Try
+
                         g.ShowException(ex)
                     End Try
                 End Using

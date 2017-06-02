@@ -255,8 +255,11 @@ Class VideoComparisonForm
                 AddHandler Disposed, Sub() FileHelp.Delete(cachePath)
                 avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """, colorspace = ""YV12"")"))
 
+                Dim proj As New Project
+                proj.Init()
+
                 Try
-                    g.ffmsindex(sourePath, cachePath, False, True)
+                    g.ffmsindex(sourePath, cachePath, False, proj)
                 Catch ex As AbortException
                     Return False
                 Finally

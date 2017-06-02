@@ -4,7 +4,6 @@ Imports System.Reflection
 Imports System.Runtime.CompilerServices
 Imports System.Security.Cryptography
 Imports System.Text
-Imports System.Text.RegularExpressions
 Imports Microsoft.Win32
 Imports VB6 = Microsoft.VisualBasic
 
@@ -85,6 +84,17 @@ Module StringExtensions
     <Extension()>
     Function Parent(instance As String) As String
         Return DirPath.GetParent(instance)
+    End Function
+
+    <Extension()>
+    Function ExistingParent(instance As String) As String
+        Dim ret = instance.Parent
+        If Not Directory.Exists(ret) Then ret = ret.Parent Else Return ret
+        If Not Directory.Exists(ret) Then ret = ret.Parent Else Return ret
+        If Not Directory.Exists(ret) Then ret = ret.Parent Else Return ret
+        If Not Directory.Exists(ret) Then ret = ret.Parent Else Return ret
+        If Not Directory.Exists(ret) Then ret = ret.Parent Else Return ret
+        Return ret
     End Function
 
     <Extension()>
@@ -652,23 +662,14 @@ Module UIExtensions
 
     <Extension()>
     Sub SetSelectedPath(d As FolderBrowserDialog, path As String)
-        If Not Directory.Exists(path) Then path = DirPath.GetParent(path)
-        If Not Directory.Exists(path) Then path = DirPath.GetParent(path)
-        If Not Directory.Exists(path) Then path = DirPath.GetParent(path)
-        If Not Directory.Exists(path) Then path = DirPath.GetParent(path)
-        If Not Directory.Exists(path) Then path = DirPath.GetParent(path)
-
+        If Not Directory.Exists(path) Then path = path.ExistingParent
         If Directory.Exists(path) Then d.SelectedPath = path
     End Sub
 
     <Extension()>
     Sub SetInitDir(d As FileDialog, ParamArray paths As String())
         For Each i In paths
-            If Not Directory.Exists(i) Then i = DirPath.GetParent(i)
-            If Not Directory.Exists(i) Then i = DirPath.GetParent(i)
-            If Not Directory.Exists(i) Then i = DirPath.GetParent(i)
-            If Not Directory.Exists(i) Then i = DirPath.GetParent(i)
-            If Not Directory.Exists(i) Then i = DirPath.GetParent(i)
+            If Not Directory.Exists(i) Then i = i.ExistingParent
 
             If Directory.Exists(i) Then
                 d.InitialDirectory = i
@@ -679,7 +680,7 @@ Module UIExtensions
 
     <Extension()>
     Sub SetFilter(d As FileDialog, values As IEnumerable(Of String))
-        d.Filter = "*." + values.Join(";*.") + "|*." + values.Join(";*.") + "|All Files|*.*"
+        d.Filter = FileTypes.GetFilter(values)
     End Sub
 
     <Extension()>

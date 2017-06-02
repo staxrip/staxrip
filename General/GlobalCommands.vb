@@ -6,6 +6,52 @@ Imports System.Text.RegularExpressions
 Imports StaxRip.UI
 
 Public Class GlobalCommands
+    <Command("Allows to use StaxRip's demuxing GUIs independently.")>
+    Sub ShowDemuxTool()
+        Using form As New SimpleSettingsForm("Demux")
+            form.ScaleClientSize(27, 10)
+            Dim ui = form.SimpleUI
+            Dim page = ui.CreateFlowPage("main page")
+            page.SuspendLayout()
+
+            Dim sourceFile = ui.AddTextButtonBlock(page)
+            sourceFile.Label.Text = "Source File:"
+            sourceFile.Edit.Expandet = True
+            sourceFile.BrowseFile(FileTypes.VideoAudio)
+
+            Dim outputFolder = ui.AddTextButtonBlock(page)
+            outputFolder.Label.Text = "Output Folder:"
+            outputFolder.Edit.Expandet = True
+            outputFolder.BrowseFolder()
+
+            page.ResumeLayout()
+
+            If form.ShowDialog() = DialogResult.OK AndAlso
+                File.Exists(sourceFile.Edit.Text) AndAlso
+                Directory.Exists(outputFolder.Edit.Text) Then
+
+                Using td As New TaskDialog(Of Demuxer)
+                    td.MainInstruction = "Select a demuxer."
+                    If sourceFile.Edit.Text.Ext = "mkv" Then td.AddCommandLink("mkvextract", New mkvDemuxer)
+                    If sourceFile.Edit.Text.Ext = "mp4" Then td.AddCommandLink("MP4Box", New MP4BoxDemuxer)
+                    td.AddCommandLink("ffmpeg", New ffmpegDemuxer)
+                    td.AddCommandLink("eac3to", New eac3toDemuxer)
+
+                    Dim proj As New Project
+                    proj.Init()
+                    proj.SourceFile = sourceFile.Edit.Text
+                    proj.TempDir = outputFolder.Edit.Text.AppendSeparator
+
+                    If Not td.Show Is Nothing Then
+                        td.SelectedValue.Run(proj)
+                        ProcessForm.CloseProcessForm()
+                        s.LastSourceDir = proj.SourceFile.Dir
+                    End If
+                End Using
+            End If
+        End Using
+    End Sub
+
     <Command("Runs all active jobs of the job list.")>
     Sub StartJobs()
         g.ShellExecute(Application.ExecutablePath, "-RunJobsMaximized")

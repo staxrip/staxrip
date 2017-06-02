@@ -180,9 +180,10 @@ Public MustInherit Class VideoEncoder
     Public Sub LoadMuxer(profile As Profile)
         Muxer = DirectCast(ObjectHelp.GetCopy(profile), Muxer)
         Muxer.Init()
-
         g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpper
-        g.MainForm.tbTargetFile.Text = p.TargetFile.ChangeExt(Muxer.OutputExt)
+        Dim newPath = p.TargetFile.ChangeExt(Muxer.OutputExt)
+        If newPath.ToLower = p.SourceFile.ToLower Then newPath = newPath.Dir + newPath.Base + "_new" + newPath.ExtFull
+        g.MainForm.tbTargetFile.Text = newPath
         g.MainForm.RecalcBitrate()
         g.MainForm.Assistant()
     End Sub
@@ -272,6 +273,7 @@ Public MustInherit Class VideoEncoder
         xvid.CommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
         ret.Add(xvid)
 
+        ret.Add(New AV1Encoder)
         ret.Add(New NullEncoder())
 
         ret.Add(Getx264Encoder("2 pass | x264", x264Mode.TwoPass, x264PresetMode.Medium, x264TuneMode.Disabled, x264DeviceMode.Disabled))

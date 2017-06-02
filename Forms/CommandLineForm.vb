@@ -120,7 +120,7 @@ Class CommandLineForm
                 Dim tempItem = DirectCast(item, NumParam)
                 Dim param = DirectCast(item, NumParam)
                 Dim nb = SimpleUI.AddNumericBlock(parent)
-                nb.Label.Text = item.Text
+                nb.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
                 nb.Label.Tooltip = help
                 If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, nb.Label)
                 nb.NumEdit.Init(param.MinMaxStepDec)
@@ -131,7 +131,7 @@ Class CommandLineForm
                 Dim tempItem = DirectCast(item, OptionParam)
                 Dim os = DirectCast(item, OptionParam)
                 Dim mb = SimpleUI.AddMenuButtonBlock(Of Integer)(parent)
-                mb.Label.Text = item.Text
+                mb.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
                 mb.Tooltip = help
                 If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, mb.Label, mb.MenuButton)
                 helpControl = mb.Label

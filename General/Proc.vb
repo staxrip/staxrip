@@ -1,10 +1,9 @@
-Imports System.Threading
 Imports System.Text.RegularExpressions
 Imports System.Text
 Imports System.ComponentModel
 Imports System.Runtime.InteropServices
 
-Class Proc
+Public Class Proc
     Implements IDisposable
 
     Property TrowException As Boolean
@@ -19,7 +18,6 @@ Class Proc
     Property TrimChars As Char()
     Property RemoveChars As Char()
     Property ExitCode As Integer
-    Property NoLog As Boolean
 
     Private ReadOutput As Boolean
     Private ReadError As Boolean
@@ -38,10 +36,27 @@ Class Proc
         ReadError = True
         Wait = True
         Priority = s.ProcessPriority
-        If Not NoLog Then Log.WriteHeader(header)
+        If Project.Log.Length = 0 Then Log.WriteEnvironment(Project)
+        Log.WriteHeader(header, Project)
         If skipStrings.Length > 0 Then Me.SkipStrings = skipStrings
         ProcessForm.ShowForm()
     End Sub
+
+    Private ProjectValue As Project
+
+    Property Project As Project
+        Get
+            If ProjectValue Is Nothing Then ProjectValue = p
+            Return ProjectValue
+        End Get
+        Set(value As Project)
+            If value Is Nothing Then
+                ProjectValue = p
+            Else
+                ProjectValue = value
+            End If
+        End Set
+    End Property
 
     Property WorkingDirectory() As String
         Get
@@ -120,30 +135,36 @@ Class Proc
     End Property
 
     Sub WriteLine(value As String)
-        If Not NoLog Then Log.WriteLine(value)
+        Log.WriteLine(value, Project)
     End Sub
 
     Sub KillAndThrow()
         TrowException = True
 
-        If Process.ProcessName = "cmd" Then
-            For Each i In ProcessHelp.GetChilds(Process)
-                If {"conhost", "vspipe", "avs2pipemod64"}.Contains(i.ProcessName) Then Continue For
+        Try
+            If Not Process.HasExited Then
+                If Process.ProcessName = "cmd" Then
+                    For Each i In ProcessHelp.GetChilds(Process)
+                        If {"conhost", "vspipe", "avs2pipemod64"}.Contains(i.ProcessName) Then Continue For
 
-                If MsgOK("Confirm to kill " + i.ProcessName + ".exe") Then
-                    If Not i.HasExited Then i.Kill()
+                        If MsgOK("Confirm to kill " + i.ProcessName + ".exe") Then
+                            If Not i.HasExited Then i.Kill()
+                        End If
+                    Next
+                Else
+                    Process.Kill()
                 End If
-            Next
-        Else
-            If Not Process.HasExited Then Process.Kill()
-        End If
+            End If
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
     End Sub
 
     Sub Start()
         Try
-            If (ReadError OrElse ReadOutput) AndAlso Not NoLog Then
-                Log.WriteLine(CommandLine + BR2)
-                Log.Save()
+            If ReadError OrElse ReadOutput Then
+                Log.WriteLine(CommandLine + BR2, Project)
+                Log.Save(Project)
             End If
 
             Dim h = Native.GetForegroundWindow()
@@ -214,7 +235,7 @@ Class Proc
                     errorMessage += BR2 + ProcessForm.CommandLineLog.ToString() + BR
                     ProcessForm.ClearCommandLineOutput()
 
-                    Throw New ErrorAbortException("Error " + Header, errorMessage)
+                    Throw New ErrorAbortException("Error " + Header, errorMessage, Project)
                 End If
             End If
         Catch e As ErrorAbortException
@@ -260,9 +281,9 @@ Class Proc
             ProcessForm.ClearCommandLineOutput()
         End If
 
-        If writeLog AndAlso Not NoLog Then
-            Log.WriteStats()
-            Log.Save()
+        If writeLog Then
+            Log.WriteStats(Project)
+            Log.Save(Project)
         End If
 
         If Not Process Is Nothing Then Process.Dispose()

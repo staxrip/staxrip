@@ -1,5 +1,4 @@
-﻿Imports System.Globalization
-Imports System.Text
+﻿Imports System.Text
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 

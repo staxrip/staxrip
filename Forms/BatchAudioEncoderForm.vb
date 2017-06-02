@@ -181,10 +181,10 @@ Class BatchAudioEncoderForm
         Me.EditControl.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.EditControl.Location = New System.Drawing.Point(10, 320)
-        Me.EditControl.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
+        Me.EditControl.Location = New System.Drawing.Point(15, 320)
+        Me.EditControl.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.EditControl.Name = "EditControl"
-        Me.EditControl.Size = New System.Drawing.Size(1744, 387)
+        Me.EditControl.Size = New System.Drawing.Size(1734, 377)
         Me.EditControl.TabIndex = 5
         Me.EditControl.Text = "Batch Code"
         '
@@ -214,8 +214,8 @@ Class BatchAudioEncoderForm
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(350, 10)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(10)
+        Me.bnCancel.Location = New System.Drawing.Point(365, 15)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
@@ -223,8 +223,8 @@ Class BatchAudioEncoderForm
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(90, 10)
-        Me.bnOK.Margin = New System.Windows.Forms.Padding(0, 10, 0, 10)
+        Me.bnOK.Location = New System.Drawing.Point(100, 15)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(0, 15, 0, 15)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
         '
@@ -265,8 +265,8 @@ Class BatchAudioEncoderForm
         '
         Me.bnMenu.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnMenu.ContextMenuStrip = Me.cms
-        Me.bnMenu.Location = New System.Drawing.Point(10, 10)
-        Me.bnMenu.Margin = New System.Windows.Forms.Padding(10)
+        Me.bnMenu.Location = New System.Drawing.Point(15, 15)
+        Me.bnMenu.Margin = New System.Windows.Forms.Padding(15)
         Me.bnMenu.ShowMenuSymbol = True
         Me.bnMenu.Size = New System.Drawing.Size(70, 70)
         '
@@ -356,10 +356,10 @@ Class BatchAudioEncoderForm
         Me.FlowLayoutPanel1.Controls.Add(Me.bnMenu)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnOK)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnCancel)
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(1154, 707)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(1134, 697)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(610, 90)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(630, 100)
         Me.FlowLayoutPanel1.TabIndex = 19
         '
         'tlpMain

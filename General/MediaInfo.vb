@@ -165,6 +165,7 @@ Public Class MediaInfo
 
                 For index = 0 To count - 1
                     Dim subtitle As New Subtitle(New Language(GetText(index, "Language")))
+                    subtitle.Index = index
                     Dim streamOrder = GetText(index, "StreamOrder")
 
                     If streamOrder <> "" Then

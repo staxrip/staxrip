@@ -28,16 +28,16 @@ Class Audio
             If (cutting OrElse Not ap.IsInputSupported) AndAlso Not directMux Then
                 Select Case Filepath.GetExtFull(ap.File)
                     Case ".mkv", ".webm"
-                        mkvDemuxer.DemuxMKV(ap.File, {ap.Stream}, Nothing, ap)
+                        mkvDemuxer.Demux(ap.File, {ap.Stream}, Nothing, ap, p)
                     Case ".mp4"
-                        DemuxMP4(ap.File, ap.Stream, ap)
+                        MP4BoxDemuxer.Demux(ap.File, ap.Stream, ap, p)
                     Case Else
                         If p.Script.GetFilter("Source").Script.ToLower.Contains("directshowsource") AndAlso
                             Not TypeOf ap Is MuxAudioProfile Then
 
                             DecodeDirectShowSource(ap)
                         ElseIf Not Filepath.GetExtFull(ap.File) = ".m2ts" Then
-                            Demuxffmpeg(ap.File, ap.Stream, ap)
+                            ffmpegDemuxer.DemuxAudio(ap.File, ap.Stream, ap, p)
                         End If
                 End Select
             End If
@@ -66,7 +66,7 @@ Class Audio
     End Sub
 
     Shared Function GetBaseNameForStream(path As String, stream As AudioStream, Optional shorten As Boolean = False) As String
-        Dim ret = If(shorten, Filepath.GetBase(path).Shorten(10), Filepath.GetBase(path)) + " ID" & (stream.StreamOrder + 1)
+        Dim ret = If(shorten, path.Base.Shorten(10), path.Base) + " ID" & (stream.StreamOrder + 1)
 
         If stream.Delay <> 0 Then ret += " " & stream.Delay & "ms"
         If stream.Language.TwoLetterCode <> "iv" Then ret += " " + stream.Language.ToString
@@ -81,68 +81,6 @@ Class Audio
 
         Return ret
     End Function
-
-    Shared Sub Demuxffmpeg(sourcefile As String, stream As AudioStream, ap As AudioProfile)
-        Dim outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream) + stream.Extension
-        If outPath.Length > 259 Then outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
-        Dim streamIndex = stream.StreamOrder
-        Dim args = "-i """ + sourcefile + """"
-        If MediaInfo.GetAudioCount(sourcefile) > 1 Then args += " -map 0:a:" & stream.Index
-        args += " -vn -sn -y -hide_banner"
-        If outPath.Ext = "wav" Then args += " -c:a pcm_s16le" Else args += " -c:a copy"
-        args += " " + outPath.Quotes
-
-        Using proc As New Proc
-            proc.Init("Demux audio using ffmpeg " + Package.ffmpeg.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
-            proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.Path
-            proc.Arguments = args
-            proc.Start()
-        End Using
-
-        If File.Exists(outPath) Then
-            If Not ap Is Nothing Then ap.File = outPath
-            Log.WriteLine(MediaInfo.GetSummary(outPath))
-        Else
-            Log.Write("Error", "no output found")
-        End If
-    End Sub
-
-    Shared Sub DemuxMP4(sourcefile As String, stream As AudioStream, ap As AudioProfile)
-        If MediaInfo.GetAudio(sourcefile, "Format") = "PCM" Then
-            Demuxffmpeg(sourcefile, stream, ap)
-            Exit Sub
-        End If
-
-        Dim outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream) + stream.Extension
-        If outPath.Length > 259 Then outPath = p.TempDir + GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
-        FileHelp.Delete(outPath)
-        Dim args As String
-        If stream.Format = "AAC" Then args += "-single" Else args += "-raw"
-        args += " " & stream.ID & " -out """ + outPath + """ """ + sourcefile + """"
-
-        Using proc As New Proc
-            proc.Init("Demux audio using MP4Box " + Package.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
-            proc.File = Package.MP4Box.Path
-            proc.Arguments = args
-            proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
-            proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
-            proc.Start()
-        End Using
-
-        If File.Exists(outPath) Then
-            If MediaInfo.GetAudio(outPath, "Format") = "" Then
-                Log.Write("Error", "No format detected by MediaInfo.")
-                Demuxffmpeg(sourcefile, stream, ap)
-            Else
-                If Not ap Is Nothing Then ap.File = outPath
-                Log.WriteLine(MediaInfo.GetSummary(outPath))
-            End If
-        Else
-            Log.Write("Error", "no output found")
-            Demuxffmpeg(sourcefile, stream, ap)
-        End If
-    End Sub
 
     Shared Sub Decode(ap As AudioProfile, Optional useFlac As Boolean = False)
         Dim ext = If(useFlac, ".flac", ".wav")
@@ -531,7 +469,7 @@ Class Audio
             Dim streams = MediaInfo.GetAudioStreams(mkvPath)
 
             If streams.Count > 0 Then
-                mkvDemuxer.DemuxMKV(mkvPath, {streams(0)}, Nothing, ap)
+                mkvDemuxer.Demux(mkvPath, {streams(0)}, Nothing, ap, p)
             Else
                 fail = True
             End If

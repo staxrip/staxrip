@@ -25,7 +25,6 @@ Public Class ApplicationSettings
     Public FilterSetupProfiles As List(Of TargetVideoScript)
     Public HidePreviewButtons As Boolean
     Public LastPosition As Integer
-    Public LastSourceDirValue As String
     Public MinimumDiskSpace As Integer = 20
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
@@ -56,6 +55,8 @@ Public Class ApplicationSettings
     Public WindowPositions As WindowPositions
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
+
+    Public LastSourceDir As String
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -272,25 +273,8 @@ Public Class ApplicationSettings
             FilterSetupProfiles = VideoScript.GetDefaults
         End If
 
-        If LastSourceDirValue Is Nothing Then LastSourceDirValue = ""
+        If LastSourceDir Is Nothing Then LastSourceDir = ""
     End Sub
-
-    Property LastSourceDir() As String
-        Get
-            If LastSourceDirValue = "" Then
-                Return ""
-            End If
-
-            If Not Directory.Exists(LastSourceDirValue) Then
-                LastSourceDirValue = DirPath.GetParent(LastSourceDirValue)
-            End If
-
-            Return LastSourceDirValue
-        End Get
-        Set(Value As String)
-            If Directory.Exists(Value) Then LastSourceDirValue = Value
-        End Set
-    End Property
 
     Shared Function GetDefaultSourceAspectRatioMenu() As String
         Dim r =

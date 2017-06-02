@@ -244,7 +244,7 @@ Class ProcessForm
             UpdateStatusThreadsafe(value)
 
             If Not skip AndAlso CommandLineLog.Length < 10000 AndAlso value.Trim <> "" Then
-                Log.WriteLine(value.Trim)
+                Log.WriteLine(value.Trim, ProcInstance.Project)
                 CommandLineLog.AppendLine(value.Trim)
             End If
         End If

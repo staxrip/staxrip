@@ -36,6 +36,7 @@ Class StreamDemuxForm
 
         gbAudio.Enabled = AudioStreams.Count > 0
         gbSubtitles.Enabled = Subtitles.Count > 0
+        gbAttachments.Enabled = Not attachments.NothingOrEmpty
 
         bnAudioEnglish.Enabled = AudioStreams.Where(Function(stream) stream.Language.TwoLetterCode = "en").Count > 0
         bnAudioNative.Visible = CultureInfo.CurrentCulture.TwoLetterISOLanguageName <> "en"

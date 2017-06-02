@@ -157,7 +157,6 @@ Class Folder
 
                     If dir = "custom" Then
                         Using d As New FolderBrowserDialog
-                            d.Description = "Please select a directory."
                             d.SelectedPath = Folder.Startup
 
                             If d.ShowDialog = DialogResult.OK Then
@@ -986,11 +985,12 @@ Class ErrorAbortException
 
     Property Title As String
 
-    Sub New(title As String, message As String)
+    Sub New(title As String, message As String, Optional proj As Project = Nothing)
         MyBase.New(message)
+        If proj Is Nothing Then proj = p
         Me.Title = title
-        Log.WriteHeader(title)
-        Log.WriteLine(message)
+        Log.WriteHeader(title, proj)
+        Log.WriteLine(message, proj)
     End Sub
 End Class
 
@@ -1231,6 +1231,9 @@ Public Class CommandManager
             command.MethodInfo.Invoke(command.Object, command.FixParameters(params).ToArray)
         Catch ex As TargetParameterCountException
             MsgError("Parameter mismatch, for the command :" + command.MethodInfo.Name)
+        Catch ex As Exception
+            If Not TypeOf ex.InnerException Is AbortException Then g.ShowException(ex)
+            ProcessForm.CloseProcessForm()
         End Try
     End Sub
 

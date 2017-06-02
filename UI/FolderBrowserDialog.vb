@@ -1,50 +1,24 @@
+'TODO: shrink down huge waste of bytes
+
 Imports System.Text
 Imports System.ComponentModel
 Imports System.Runtime.InteropServices
 Imports System.Runtime.CompilerServices
 
-''' <summary>
-''' Prompts the user to select a folder.
-''' </summary>
-''' <remarks>
-''' This class will use the Vista style Select Folder dialog if possible, or the regular FolderBrowserDialog
-''' if it is not. Note that the Vista style dialog is very different, so using this class without testing
-''' in both Vista and older Windows versions is not recommended.
-''' </remarks>
 <System.Drawing.ToolboxBitmap(GetType(System.Windows.Forms.FolderBrowserDialog), "FolderBrowserDialog.bmp"), DefaultEvent("HelpRequest"), Designer("System.Windows.Forms.Design.FolderBrowserDialogDesigner, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"), DefaultProperty("SelectedPath"), Description("Prompts the user to select a folder.")>
 Class FolderBrowserDialog
     Inherits CommonDialog
+
     Private _downlevelDialog As System.Windows.Forms.FolderBrowserDialog
     Private _description As String
     Private _useDescriptionForTitle As Boolean
     Private _selectedPath As String
     Private _rootFolder As System.Environment.SpecialFolder
 
-    ''' <summary>
-    ''' Occurs when the user clicks the Help button on the dialog box.
-    ''' </summary>
-    '<Browsable(False), EditorBrowsable(EditorBrowsableState.Never)> _
-    'Public Shadows Custom Event HelpRequest As EventHandler
-    '	AddHandler(value As EventHandler)
-    '		MyBase.HelpRequest += value
-    '	End AddHandler
-    '	RemoveHandler(value As EventHandler)
-    '		MyBase.HelpRequest -= value
-    '	End RemoveHandler
-    'End Event
-
-    ''' <summary>
-    ''' Creates a new instance of the <see cref="FolderBrowserDialog" /> class.
-    ''' </summary>
     Public Sub New()
         Me.New(False)
     End Sub
 
-    ''' <summary>
-    ''' Creates a new instance of the <see cref="FolderBrowserDialog" /> class.
-    ''' </summary>
-    ''' <param name="forceDownlevel">true to force the use of the old style folder browser dialog, even when the Vista
-    ''' style dialog is supported; otherwise, false.</param>
     Public Sub New(forceDownlevel As Boolean)
         If forceDownlevel Then
             _downlevelDialog = New Windows.Forms.FolderBrowserDialog()
@@ -55,19 +29,14 @@ Class FolderBrowserDialog
 
 #Region "Public Properties"
 
-    ''' <summary>
-    ''' Gets or sets the descriptive text displayed above the tree view control in the dialog box, or below the list view control
-    ''' in the Vista style dialog.
-    ''' </summary>
-    ''' <value>
-    ''' The description to display. The default is an empty string ("").
-    ''' </value>
-    <Category("Folder Browsing"), DefaultValue(""), Localizable(True), Browsable(True), Description("The descriptive text displayed above the tree view control in the dialog box, or below the list view control in the Vista style dialog.")>
+    <Category("Folder Browsing")>
+    <DefaultValue("")>
+    <Localizable(True)>
+    <Browsable(True)>
+    <Description("The descriptive text displayed above the tree view control in the dialog box, or below the list view control in the Vista style dialog.")>
     Property Description() As String
         Get
-            If _downlevelDialog IsNot Nothing Then
-                Return _downlevelDialog.Description
-            End If
+            If _downlevelDialog IsNot Nothing Then Return _downlevelDialog.Description
             Return _description
         End Get
         Set(value As String)
@@ -79,15 +48,8 @@ Class FolderBrowserDialog
         End Set
     End Property
 
-    ''' <summary>
-    ''' Gets or sets the root folder where the browsing starts from. This property has no effect if the Vista style
-    ''' dialog is used.
-    ''' </summary>
-    ''' <value>
-    ''' One of the <see cref="System.Environment.SpecialFolder" /> values. The default is Desktop.
-    ''' </value>
-    ''' <exception cref="System.ComponentModel.InvalidEnumArgumentException">The value assigned is not one of the <see cref="System.Environment.SpecialFolder" /> values.</exception>
-    <Localizable(False), Description("The root folder where the browsing starts from. This property has no effect if the Vista style dialog is used."), Category("Folder Browsing"), Browsable(True), DefaultValue(GetType(System.Environment.SpecialFolder), "Desktop")>
+    <Localizable(False),
+        Description("The root folder where the browsing starts from. This property has no effect if the Vista style dialog is used."), Category("Folder Browsing"), Browsable(True), DefaultValue(GetType(System.Environment.SpecialFolder), "Desktop")>
     Property RootFolder() As System.Environment.SpecialFolder
         Get
             If _downlevelDialog IsNot Nothing Then
@@ -104,13 +66,8 @@ Class FolderBrowserDialog
         End Set
     End Property
 
-    ''' <summary>
-    ''' Gets or sets the path selected by the user.
-    ''' </summary>
-    ''' <value>
-    ''' The path of the folder first selected in the dialog box or the last folder selected by the user. The default is an empty string ("").
-    ''' </value>
-    <Browsable(True), Editor("System.Windows.Forms.Design.SelectedPathEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", GetType(System.Drawing.Design.UITypeEditor)), Description("The path selected by the user."), DefaultValue(""), Localizable(True), Category("Folder Browsing")>
+    <Browsable(True),
+        Editor("System.Windows.Forms.Design.SelectedPathEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", GetType(System.Drawing.Design.UITypeEditor)), Description("The path selected by the user."), DefaultValue(""), Localizable(True), Category("Folder Browsing")>
     Property SelectedPath() As String
         Get
             If _downlevelDialog IsNot Nothing Then
@@ -122,21 +79,16 @@ Class FolderBrowserDialog
             If _downlevelDialog IsNot Nothing Then
                 _downlevelDialog.SelectedPath = value
             Else
-                _selectedPath = If(value, String.Empty)
+                _selectedPath = If(value, "")
             End If
         End Set
     End Property
 
     Private _showNewFolderButton As Boolean
 
-    ''' <summary>
-    ''' Gets or sets a value indicating whether the New Folder button appears in the folder browser dialog box. This
-    ''' property has no effect if the Vista style dialog is used; in that case, the New Folder button is always shown.
-    ''' </summary>
-    ''' <value>
-    ''' true if the New Folder button is shown in the dialog box; otherwise, false. The default is true.
-    ''' </value>
-    <Browsable(True), Localizable(False), Description("A value indicating whether the New Folder button appears in the folder browser dialog box. This property has no effect if the Vista style dialog is used; in that case, the New Folder button is always shown."), DefaultValue(True), Category("Folder Browsing")>
+    <Browsable(True),
+        Localizable(False),
+        Description("A value indicating whether the New Folder button appears in the folder browser dialog box. This property has no effect if the Vista style dialog is used; in that case, the New Folder button is always shown."), DefaultValue(True), Category("Folder Browsing")>
     Property ShowNewFolderButton() As Boolean
         Get
             If _downlevelDialog IsNot Nothing Then
@@ -153,14 +105,9 @@ Class FolderBrowserDialog
         End Set
     End Property
 
-
-    ''' <summary>
-    ''' Gets or sets a value that indicates whether to use the value of the <see cref="Description" /> property
-    ''' as the dialog title for Vista style dialogs. This property has no effect on old style dialogs.
-    ''' </summary>
-    ''' <value>true to indicate that the value of the <see cref="Description" /> property is used as dialog title; false
-    ''' to indicate the value is added as additional text to the dialog. The default is false.</value>
-    <Category("Folder Browsing"), DefaultValue(False), Description("A value that indicates whether to use the value of the Description property as the dialog title for Vista style dialogs. This property has no effect on old style dialogs.")>
+    <Category("Folder Browsing")>
+    <DefaultValue(False)>
+    <Description("A value that indicates whether to use the value of the Description property as the dialog title for Vista style dialogs. This property has no effect on old style dialogs.")>
     Property UseDescriptionForTitle() As Boolean
         Get
             Return _useDescriptionForTitle
@@ -174,13 +121,10 @@ Class FolderBrowserDialog
 
 #Region "Public Methods"
 
-    ''' <summary>
-    ''' Resets all properties to their default values.
-    ''' </summary>
     Public Overrides Sub Reset()
-        _description = String.Empty
+        _description = ""
         _useDescriptionForTitle = False
-        _selectedPath = String.Empty
+        _selectedPath = ""
         _rootFolder = Environment.SpecialFolder.Desktop
         _showNewFolderButton = True
     End Sub

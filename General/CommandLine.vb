@@ -1,9 +1,9 @@
 ﻿Imports StaxRip.UI
-Imports System.Globalization
 
 Namespace CommandLine
     Public MustInherit Class CommandLineParams
         Property Title As String
+        Property Separator As String = " "
 
         Event ValueChanged(item As CommandLineParam)
         MustOverride ReadOnly Property Items As List(Of CommandLineParam)
@@ -276,7 +276,7 @@ Namespace CommandLine
 
             If ArgsFunc Is Nothing Then
                 If Value <> DefaultValue OrElse AlwaysOn Then
-                    Return Switch + " " + Value.ToInvariantString
+                    Return Switch + Params.Separator + Value.ToInvariantString
                 End If
             Else
                 Return ArgsFunc.Invoke()
@@ -373,13 +373,13 @@ Namespace CommandLine
                         If Values(Value).StartsWith("--") Then
                             Return Values(Value)
                         ElseIf Switch <> "" Then
-                            Return Switch + " " & Values(Value)
+                            Return Switch + Params.Separator & Values(Value)
                         End If
                     ElseIf Switch <> "" Then
                         If IntegerValue Then
-                            Return Switch + " " & Value
+                            Return Switch + Params.Separator & Value
                         Else
-                            Return Switch + " " & Options(Value)
+                            Return Switch + Params.Separator & Options(Value)
                         End If
                     End If
                 End If
@@ -446,9 +446,9 @@ Namespace CommandLine
                         End If
                     Else
                         If Quotes Then
-                            Return Switch + " """ + Value + """"
+                            Return Switch + Params.Separator + """" + Value + """"
                         Else
-                            Return Switch + " " + Value
+                            Return Switch + Params.Separator + Value
                         End If
                     End If
                 End If

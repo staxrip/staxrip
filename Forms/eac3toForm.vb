@@ -591,11 +591,12 @@ Class eac3toForm
     Private Output As String
     Private Streams As New BindingList(Of M2TSStream)
     Private AudioOutputFormats As String() = {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd"}
+    Private Project As Project
 
-    Sub New()
+    Sub New(proj As Project)
         MyBase.New()
         InitializeComponent()
-
+        Project = proj
         ScaleClientSize(40, 30)
 
         cbAudioOutput.Sorted = True
@@ -702,10 +703,10 @@ Class eac3toForm
 
         If File.Exists(M2TSFile) Then
             args = """" + M2TSFile + """ -progressnumbers"
-            Log.Write("Process M2TS file using eac3to", """" + Package.eac3to.Path + """ " + args + BR2)
+            Log.Write("Process M2TS file using eac3to", """" + Package.eac3to.Path + """ " + args + BR2, Project)
         ElseIf Directory.Exists(PlaylistFolder) Then
             args = """" + PlaylistFolder + """ " & PlaylistID & ") -progressnumbers"
-            Log.Write("Process playlist file using eac3to", """" + Package.eac3to.Path + """ " + args + BR2)
+            Log.Write("Process playlist file using eac3to", """" + Package.eac3to.Path + """ " + args + BR2, Project)
         End If
 
         Using o As New Process
@@ -764,7 +765,7 @@ Class eac3toForm
             MsgError("3D demuxing isn't supported.")
             Cancel()
         ElseIf Output <> "" Then
-            Log.WriteLine(Output)
+            Log.WriteLine(Output, Project)
 
             If Output.Contains(BR + "   (embedded: ") Then
                 Output = Output.Replace(BR + "   (embedded: ", "(embedded: ")
@@ -822,9 +823,10 @@ Class eac3toForm
                                 ms.OutputType = "ac3"
                             Case "DTS-ES", "DTS Express"
                                 ms.OutputType = "dts"
-                            Case "DTS Master Audio", "DTS Hi-Res"
-                                ms.OutputType = "dts"
-                                If ms.Text.Contains("(DTS,") Then ms.Options = "-core"
+                            Case "DTS Master Audio"
+                                ms.OutputType = "dtsma"
+                            Case "DTS Hi-Res"
+                                ms.OutputType = "dtshr"
                             Case "RAW/PCM"
                                 ms.OutputType = "flac"
                             Case Else
@@ -878,7 +880,7 @@ Class eac3toForm
                     Dim item = lvSubtitles.Items.Add(stream.Language.ToString)
                     item.Tag = stream
 
-                    Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    Dim autoCode = Project.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
                     item.Checked = autoCode.ContainsAny("all", stream.Language.TwoLetterCode, stream.Language.ThreeLetterCode)
                 ElseIf stream.IsChapters Then
                     cbChapters.Visible = True
@@ -992,16 +994,12 @@ Class eac3toForm
 
     Private Sub bnBrowse_Click() Handles bnBrowse.Click
         Using d As New FolderBrowserDialog
-            d.Description = "Please select a directory."
             d.SetSelectedPath(teTempDir.Text)
-
-            If d.ShowDialog = DialogResult.OK Then
-                teTempDir.Text = d.SelectedPath
-            End If
+            If d.ShowDialog = DialogResult.OK Then teTempDir.Text = d.SelectedPath
         End Using
     End Sub
 
-    Private Sub lvSubtitles_ItemCheck(sender As Object, e As System.Windows.Forms.ItemCheckEventArgs) Handles lvSubtitles.ItemCheck
+    Private Sub lvSubtitles_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lvSubtitles.ItemCheck
         DirectCast(lvSubtitles.Items(e.Index).Tag, M2TSStream).Checked = e.NewValue = CheckState.Checked
     End Sub
 

@@ -27,7 +27,7 @@ Public Class MainForm
     Public WithEvents tbAudioFile1 As StaxRip.UI.TextBoxEx
     Public WithEvents llEditAudio1 As SimpleLinkLabel
     Public WithEvents llEditAudio0 As SimpleLinkLabel
-    Public WithEvents bNext As System.Windows.Forms.Button
+    Public WithEvents bnNext As System.Windows.Forms.Button
     Public WithEvents tbSourceFile As StaxRip.UI.TextBoxEx
     Public WithEvents tbTargetFile As StaxRip.UI.TextBoxEx
     Public WithEvents gbAssistant As System.Windows.Forms.GroupBox
@@ -82,7 +82,7 @@ Public Class MainForm
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
-        Me.bNext = New System.Windows.Forms.Button()
+        Me.bnNext = New System.Windows.Forms.Button()
         Me.llEditAudio0 = New SimpleLinkLabel()
         Me.gbAssistant = New System.Windows.Forms.GroupBox()
         Me.lTip = New System.Windows.Forms.Label()
@@ -147,14 +147,14 @@ Public Class MainForm
         '
         'bNext
         '
-        Me.bNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bNext.Cursor = System.Windows.Forms.Cursors.Default
-        Me.bNext.Location = New System.Drawing.Point(903, 37)
-        Me.bNext.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.bNext.Name = "bNext"
-        Me.bNext.Size = New System.Drawing.Size(70, 35)
-        Me.bNext.TabIndex = 39
-        Me.bNext.Text = "Next"
+        Me.bnNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnNext.Cursor = System.Windows.Forms.Cursors.Default
+        Me.bnNext.Location = New System.Drawing.Point(903, 37)
+        Me.bnNext.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.bnNext.Name = "bNext"
+        Me.bnNext.Size = New System.Drawing.Size(70, 35)
+        Me.bnNext.TabIndex = 39
+        Me.bnNext.Text = "Next"
         '
         'llEditAudio0
         '
@@ -171,7 +171,7 @@ Public Class MainForm
         'gbAssistant
         '
         Me.gbAssistant.Controls.Add(Me.lTip)
-        Me.gbAssistant.Controls.Add(Me.bNext)
+        Me.gbAssistant.Controls.Add(Me.bnNext)
         Me.gbAssistant.Location = New System.Drawing.Point(10, 570)
         Me.gbAssistant.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.gbAssistant.Name = "gbAssistant"
@@ -1023,8 +1023,8 @@ Public Class MainForm
     End Sub
 
     Function IsSaveCanceled() As Boolean
-        'ObjectHelp.GetCompareString(g.SavedProject).WriteFile(Environment.GetFolderPath(SpecialFolder.DesktopDirectory) + "\test1.txt", Encoding.ASCII)
-        'ObjectHelp.GetCompareString(p).WriteFile(Environment.GetFolderPath(SpecialFolder.DesktopDirectory) + "\test2.txt", Encoding.ASCII)
+        'ObjectHelp.GetCompareString(g.SavedProject).WriteFile(Folder.Desktop + "\test1.txt", Encoding.ASCII)
+        'ObjectHelp.GetCompareString(p).WriteFile(Folder.Desktop + "\test2.txt", Encoding.ASCII)
 
         If ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p) Then
             Using td As New TaskDialog(Of DialogResult)
@@ -2596,7 +2596,7 @@ Public Class MainForm
                         Return False
                     End If
                 Else
-                    If ProcessTip("The target file already exist.") Then
+                    If ProcessTip("The target file already exist." + BR + p.TargetFile) Then
                         tbTargetFile.BackColor = Color.Yellow
                         gbAssistant.Text = "Target File"
                         Return False
@@ -2762,7 +2762,7 @@ Public Class MainForm
         Close()
     End Sub
 
-    Sub bSkip_Click() Handles bNext.Click
+    Sub bnSkip_Click() Handles bnNext.Click
         If Not CanIgnoreTip Then
             MsgWarn("The current assistant instruction or warning cannot be skipped.")
             Exit Sub
@@ -2784,7 +2784,8 @@ Public Class MainForm
     End Sub
 
     Function AbortDueToLowDiskSpace() As Boolean
-        Try 'with file batch target file is empty, also crashes with network shares 
+        Try 'crashes with network shares
+            If p.TargetFile = "" Then Exit Function
             Dim di As New DriveInfo(p.TargetFile.Dir)
 
             If di.AvailableFreeSpace / 1024 ^ 3 < s.MinimumDiskSpace Then
@@ -2858,7 +2859,7 @@ Public Class MainForm
                         i.InputFormats.Contains(getFormat())
 
                     If inputFormats Then
-                        i.Run()
+                        i.Run(p)
                         Refresh()
 
                         For Each iExt In i.OutputExtensions
@@ -2952,7 +2953,7 @@ Public Class MainForm
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
             Dim dgIndexNV = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexNV")
             Dim outFile = p.TempDir + p.SourceFile.Base + ".dgi"
-            If Not File.Exists(outFile) Then dgIndexNV.Run()
+            If Not File.Exists(outFile) Then dgIndexNV.Run(p)
 
             If File.Exists(outFile) Then
                 p.SourceFile = outFile
@@ -2964,7 +2965,7 @@ Public Class MainForm
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
             Dim dgIndexIM = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexIM")
             Dim outFile = p.TempDir + p.SourceFile.Base + ".dgim"
-            If Not File.Exists(outFile) Then dgIndexIM.Run()
+            If Not File.Exists(outFile) Then dgIndexIM.Run(p)
 
             If File.Exists(outFile) Then
                 p.SourceFile = outFile
@@ -4205,6 +4206,7 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Command Prompt...", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
         ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
         ret.Add("Tools|Advanced|Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H, Symbol.Subtitles)
+        ret.Add("Tools|Advanced|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
         ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
         ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog), Symbol.Info)
         ret.Add("Tools|Advanced|Reset Setting...", NameOf(ResetSettings))
@@ -4216,7 +4218,6 @@ Public Class MainForm
 
         ret.Add("Apps|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
         ret.Add("Apps|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
-        ret.Add("Apps|Demux", NameOf(g.DefaultCommands.StartTool), {"Demux"})
         ret.Add("Apps|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
         ret.Add("Apps|ProjectX", NameOf(g.DefaultCommands.StartTool), {"ProjectX"})
         ret.Add("Apps|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
@@ -4660,28 +4661,29 @@ Public Class MainForm
                     End If
                 End Using
             Case "Merge Files"
-                Using f As New SourceFilesForm()
-                    f.Mode = SourceInputMode.Combine
-                    f.UpdateControls()
+                Using form As New SourceFilesForm()
+                    form.Text = "Merge"
+                    form.IsMerge = True
+                    form.cbDemuxAndIndex.Visible = False
 
-                    If f.ShowDialog() = DialogResult.OK Then
-                        Refresh()
+                    If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
+                        Dim files = form.GetFiles
 
-                        Select Case Filepath.GetExt(f.Files(0))
+                        Select Case Filepath.GetExt(files(0))
                             Case "mpg", "vob"
-                                OpenVideoSourceFiles(f.Files)
+                                OpenVideoSourceFiles(files)
                             Case Else
                                 Using proc As New Proc
                                     proc.Init("Merge source files using Mkvmerge " + Package.mkvmerge.Version)
 
-                                    For Each i In f.Files
+                                    For Each i In files
                                         Log.WriteLine(MediaInfo.GetSummary(i) + "---------------------------------------------------------" + BR2)
                                     Next
 
                                     proc.Encoding = Encoding.UTF8
                                     proc.File = Package.mkvmerge.Path
-                                    Dim outFile = Filepath.GetDirAndBase(f.Files(0)) + "_merged.mkv"
-                                    proc.Arguments = "-o """ + outFile + """ """ + f.Files.Join(""" + """) + """"
+                                    Dim outFile = files(0).DirAndBase + "_merged.mkv"
+                                    proc.Arguments = "-o " + outFile.Quotes + " """ + files.Join(""" + """) + """"
 
                                     Try
                                         proc.Start()
@@ -4705,25 +4707,18 @@ Public Class MainForm
             Case "File Batch"
                 If AbortDueToLowDiskSpace() Then Exit Sub
 
-                Using f As New SourceFilesForm()
+                Using form As New SourceFilesForm()
+                    form.Text = "File Batch"
                     If p.DefaultTargetName = "%source_dir_name%" Then p.DefaultTargetName = "%source_name%"
 
-                    f.Mode = SourceInputMode.FileBatch
-                    f.UpdateControls()
-
-                    If f.ShowDialog() = DialogResult.OK Then
-                        Refresh()
-
-                        If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then
-                            Exit Sub
-                        End If
-
+                    If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
+                        If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then Exit Sub
                         Dim tempPath = Folder.Template + "temp.srip"
-                        p.BatchMode = Not f.cbDemuxAndIndex.Checked
-                        p.NoDialogs = f.cbDemuxAndIndex.Checked
+                        p.BatchMode = Not form.cbDemuxAndIndex.Checked
+                        p.NoDialogs = form.cbDemuxAndIndex.Checked
                         SaveProjectPath(tempPath)
 
-                        For Each i In f.Files
+                        For Each i In form.GetFiles
                             OpenProject(tempPath, False)
                             OpenVideoSourceFile(i)
                             g.SetTempDir()
@@ -4736,51 +4731,6 @@ Public Class MainForm
                         ShowJobsDialog()
                     End If
                 End Using
-
-                'TODO: remove this dead code
-
-            'Case "Directory Batch"
-            '    If AbortDueToLowDiskSpace() Then Exit Sub
-
-            '    Using f As New SourceFilesForm()
-            '        f.Mode = SourceInputMode.DirectoryBatch
-            '        f.UpdateControls()
-
-            '        If f.ShowDialog() = DialogResult.OK Then
-            '            Refresh()
-
-            '            If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then
-            '                Exit Sub
-            '            End If
-
-            '            Dim tempPath = Folder.Template + "temp.srip"
-
-            '            If f.cbDemuxAndIndex.Checked Then p.BatchMode = True
-
-            '            SaveProjectPath(tempPath)
-
-            '            For Each i In f.DirTree.Paths
-            '                OpenProject(tempPath, False)
-            '                OpenVideoSourceFiles(GetSourceFilesFromDir(i))
-
-            '                If f.cbDemuxAndIndex.Checked Then
-            '                    Try
-            '                        g.SetTempDir()
-            '                    Catch ex As Exception
-            '                        FileHelp.Delete(tempPath)
-            '                        Exit Sub
-            '                    End Try
-
-            '                    AddJob(False, Nothing)
-            '                End If
-            '            Next
-
-            '            OpenProject(tempPath, False)
-            '            FileHelp.Delete(tempPath)
-            '            UpdateRecentProjectsMenu()
-            '            If f.cbDemuxAndIndex.Checked Then ShowJobsDialog()
-            '        End If
-            '    End Using
             Case "Blu-ray Folder"
                 Using d As New FolderBrowserDialog
                     d.Description = "Please select a Blu-ray source folder."
@@ -4828,9 +4778,9 @@ Public Class MainForm
     End Sub
 
     Sub OpenEac3toDemuxForm(playlistFolder As String, playlistID As Integer)
-        Using f As New eac3toForm
-            f.PlaylistFolder = playlistFolder
-            f.PlaylistID = playlistID
+        Using form As New eac3toForm(p)
+            form.PlaylistFolder = playlistFolder
+            form.PlaylistID = playlistID
 
             Dim workDir = playlistFolder.Parent.Parent
             Dim folderName = DirPath.GetName(playlistFolder.Parent.Parent)
@@ -4850,7 +4800,7 @@ Public Class MainForm
 
             If Not DirPath.IsFixedDrive(workDir) OrElse Not Directory.Exists(workDir) Then
                 Using d As New FolderBrowserDialog
-                    d.Description = "Please select a directory for temporary files on a fixed local drive."
+                    d.Description = "Please select a folder for temporary files on a fixed local drive."
                     d.SetSelectedPath(s.Storage.GetString("last blu-ray target folder").Parent)
 
                     If d.ShowDialog = DialogResult.OK Then
@@ -4866,11 +4816,11 @@ Public Class MainForm
                 End If
             End If
 
-            f.teTempDir.Text = workDir
+            form.teTempDir.Text = workDir
 
-            If f.ShowDialog() = DialogResult.OK Then
+            If form.ShowDialog() = DialogResult.OK Then
                 Try
-                    Dim di As New DriveInfo(f.OutputFolder)
+                    Dim di As New DriveInfo(form.OutputFolder)
 
                     If di.AvailableFreeSpace / 1024 ^ 3 < 50 Then
                         MsgError("The target drive has not enough free disk space.")
@@ -4882,7 +4832,7 @@ Public Class MainForm
                         proc.RemoveChars = {CChar(VB6.vbBack)}
                         proc.Init("Demux M2TS using eac3to " + Package.eac3to.Version, "analyze: ", "process: ")
                         proc.File = Package.eac3to.Path
-                        proc.Process.StartInfo.Arguments = f.GetArgs(
+                        proc.Process.StartInfo.Arguments = form.GetArgs(
                             """" + playlistFolder + """ " & playlistID & ")", DirPath.GetName(workDir))
 
                         Try
@@ -4898,10 +4848,10 @@ Public Class MainForm
                     End Using
 
                     s.Storage.SetString("last blu-ray target folder", workDir)
-                    Dim fs = f.OutputFolder + DirPath.GetName(workDir) + "." + f.cbVideoOutput.Text.ToLower
+                    Dim fs = form.OutputFolder + DirPath.GetName(workDir) + "." + form.cbVideoOutput.Text.ToLower
 
                     If File.Exists(fs) Then
-                        p.TempDir = f.OutputFolder
+                        p.TempDir = form.OutputFolder
                         OpenVideoSourceFile(fs)
                     End If
                 Finally
@@ -5496,7 +5446,6 @@ Public Class MainForm
     <Command("Presents MediaInfo of all files in a folder in a list view.")>
     Sub ShowMediaInfoFolderViewDialog()
         Using d As New FolderBrowserDialog
-            d.Description = "Please select a folder to be viewed."
             d.ShowNewFolderButton = False
             d.SetSelectedPath(s.Storage.GetString("MediaInfo Folder View folder"))
 

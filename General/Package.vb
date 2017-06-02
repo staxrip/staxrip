@@ -54,6 +54,12 @@ Public Class Package
     Shared Property MPC As New MPCPackage
     Shared Property NicAudio As New NicAudioPackage
 
+    Shared Property aomenc As Package = Add(New Package With {
+        .Name = "aomenc",
+        .Filename = "aomenc.exe",
+        .WebURL = "http://aomedia.org",
+        .Description = "AOMedia Video 1 (AV1) is an open, royalty-free video coding format designed for video transmissions over the Internet."})
+
     Shared Property NVEncC As Package = Add(New Package With {
         .Name = "NVEncC",
         .Filename = "NVEncC64.exe",
@@ -302,14 +308,6 @@ Public Class Package
                                 End Sub,
             .HelpFile = "doc\AVSMeter.html",
             .WebURL = "http://forum.doom9.org/showthread.php?t=165528"})
-
-        Add(New Package With {
-            .Name = "Demux",
-            .Filename = "Demux.exe",
-            .Description = "Demuxing standalone tool.",
-            .DirName = "Toolbox",
-            .LaunchName = "Demux.exe",
-            .URL = "http://forum.doom9.org/showthread.php?t=173427"})
 
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",

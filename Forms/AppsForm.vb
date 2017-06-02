@@ -187,6 +187,8 @@ Class AppsForm
         InitializeComponent()
 
         ScaleClientSize(41, 27)
+        tv.ItemHeight = CInt(FontHeight * 1.5)
+
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)
         Dim x64 = Package.Items.Values.Where(Function(arg) Not arg.Version Is Nothing AndAlso Not arg.Version.Contains("x86")).Count
         Dim avs = plugins.Where(Function(arg) Not arg.AviSynthFilterNames.NothingOrEmpty).Count
@@ -341,24 +343,15 @@ Class AppsForm
         End If
     End Sub
 
-    Private Sub PathsForm_Activated() Handles MyBase.Activated
+    Protected Overrides Sub OnActivated(e As EventArgs)
         ShowActivePackage()
+        MyBase.OnActivated(e)
     End Sub
 
-    Private Sub tv_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles tv.AfterSelect
-        If e.Node.Tag Is Nothing AndAlso e.Node.Nodes.Count > 0 Then
-            tv.SelectedNode = e.Node.Nodes(0)
-        End If
-
-        If Not e.Node.Tag Is Nothing Then ShowPackage(e.Node)
-    End Sub
-
-    Private Sub ApplicationsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        MsgInfo("Shorcuts", "F11: Edit location" + BR + "F12: Edit version")
-    End Sub
-
-    Private Sub ApplicationsForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
         Select Case e.KeyData
+            Case Keys.F10
+                g.ShellExecute("D:\Projekte\VS\VB\StaxRip\md\test-build.md")
             Case Keys.F11
                 Using d As New OpenFileDialog
                     d.SetInitDir(s.Storage.GetString(CurrentPackage.Name + "custom path"))
@@ -406,6 +399,16 @@ Class AppsForm
         End Select
 
         ShowActivePackage()
+
+        MyBase.OnKeyDown(e)
+    End Sub
+
+    Private Sub tv_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles tv.AfterSelect
+        If e.Node.Tag Is Nothing AndAlso e.Node.Nodes.Count > 0 Then
+            tv.SelectedNode = e.Node.Nodes(0)
+        End If
+
+        If Not e.Node.Tag Is Nothing Then ShowPackage(e.Node)
     End Sub
 
     Private Sub SearchTextBox_TextChanged() Handles SearchTextBox.TextChanged
@@ -466,9 +469,5 @@ Class AppsForm
 
     Private Sub tsbWebsite_Click(sender As Object, e As EventArgs) Handles tsbWebsite.Click
         g.ShellExecute(CurrentPackage.WebURL)
-    End Sub
-
-    Private Sub AppsForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        tv.ItemHeight = CInt(FontHeight * 1.5)
     End Sub
 End Class

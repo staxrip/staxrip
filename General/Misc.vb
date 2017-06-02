@@ -52,136 +52,6 @@ Public Class Range
     End Function
 End Class
 
-Class Log
-    Shared StartTime As DateTime
-
-    Shared Event Update(text As String)
-
-    Shared Sub Write(title As String, content As String)
-        StartTime = DateTime.Now
-
-        SyncLock p.Log
-            If Not p.Log.ToString.EndsWith(BR2) Then p.Log.AppendLine()
-            p.Log.Append(FormatHeader(title))
-        End SyncLock
-
-        If content <> "" Then
-            If content.EndsWith(BR) Then
-                SyncLock p.Log
-                    p.Log.Append(content)
-                End SyncLock
-            Else
-                SyncLock p.Log
-                    p.Log.AppendLine(content)
-                End SyncLock
-            End If
-        End If
-
-        RaiseUpdate()
-    End Sub
-
-    Shared Sub WriteHeader(value As String)
-        StartTime = DateTime.Now
-
-        If value <> "" Then
-            SyncLock p.Log
-                If Not p.Log.ToString.EndsWith(BR2) Then p.Log.AppendLine()
-                p.Log.Append(FormatHeader(value))
-            End SyncLock
-
-            RaiseUpdate()
-        End If
-    End Sub
-
-    'TODO: hide when bug is found
-    Shared Sub Debug(title As String, value As String, Optional requiredContent As String = Nothing)
-        If requiredContent <> "" AndAlso Not p.Log.ToString.Contains(requiredContent) Then Exit Sub
-        Write(title, value)
-    End Sub
-
-    Shared Sub WriteLine(value As String)
-        If value <> "" Then
-            If value.EndsWith(BR) Then
-                SyncLock p.Log
-                    p.Log.Append(value)
-                End SyncLock
-            Else
-                SyncLock p.Log
-                    p.Log.AppendLine(value)
-                End SyncLock
-            End If
-
-            RaiseUpdate()
-        End If
-    End Sub
-
-    Shared Function FormatHeader(value As String) As String
-        Return "-=".Multiply(30) + "-" + BR +
-            value.PadLeft(30 + value.Length \ 2) +
-            BR + "-=".Multiply(30) + "-" + BR2
-    End Function
-
-    Shared Sub WriteEnvironment()
-        If p.Log.ToString.Contains("Environment" + BR + "-=") Then Exit Sub
-
-        Dim staxrip = "-=".Multiply(30) + "-" + BR +
-"      _________ __                __________.__        
-     /   _____//  |______  ___  __\______   \__|_____  
-     \_____  \\   __\__  \ \  \/  /|       _/  \____ \ 
-     /        \|  |  / __ \_>    < |    |   \  |  |_> >
-    /_______  /|__| (____  /__/\_ \|____|_  /__|   __/ 
-            \/           \/      \/       \/   |__|   "
-
-        WriteLine(staxrip)
-        WriteHeader("Environment")
-
-        Dim temp =
-            "StaxRip:" + Application.ProductVersion + BR +
-            "Windows:" + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + " " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") + BR +
-            "Language:" + CultureInfo.CurrentCulture.EnglishName + BR +
-            "CPU:" + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + BR +
-            "GPU:" + String.Join(", ", SystemHelp.VideoControllers) + BR +
-            "Resolution:" & Screen.PrimaryScreen.Bounds.Width & " x " & Screen.PrimaryScreen.Bounds.Height & BR +
-            "DPI:" & g.MainForm.DeviceDpi
-
-        WriteLine(temp.FormatColumn(":"))
-    End Sub
-
-    Shared Sub Save()
-        If p.SourceFile <> "" Then
-            SyncLock p.Log
-                If Directory.Exists(p.TempDir) Then
-                    p.Log.ToString.WriteUTF8File(p.TempDir + p.Name + "_staxrip.log")
-                End If
-            End SyncLock
-        End If
-    End Sub
-
-    Shared Sub WriteStats()
-        WriteStats(StartTime)
-    End Sub
-
-    Shared Sub WriteStats(start As DateTime)
-        Dim n = DateTime.Now.Subtract(start)
-
-        SyncLock p.Log
-            If Not p.Log.ToString.EndsWith(BR2) Then p.Log.AppendLine()
-            p.Log.Append("Start: ".PadRight(10) + start.ToLongTimeString + BR)
-            p.Log.Append("End: ".PadRight(10) + DateTime.Now.ToLongTimeString + BR)
-            p.Log.Append("Duration: " + CInt(Math.Floor(n.TotalHours)).ToString("d2") + ":" + n.Minutes.ToString("d2") + ":" + n.Seconds.ToString("d2") + BR)
-            p.Log.AppendLine()
-        End SyncLock
-
-        RaiseUpdate()
-    End Sub
-
-    Private Shared Sub RaiseUpdate()
-        SyncLock p.Log
-            RaiseEvent Update(p.Log.ToString)
-        End SyncLock
-    End Sub
-End Class
-
 Class Calc
     Shared Function GetYFromTwoPointForm(x1 As Single, y1 As Single, x2 As Single, y2 As Single, x As Single) As Integer
         'Zweipunkteform nach y aufgelöst
@@ -1565,12 +1435,6 @@ Public Enum DynamicMenuItemID
     Scripts
 End Enum
 
-Public Enum SourceInputMode
-    Combine
-    FileBatch
-    DirectoryBatch
-End Enum
-
 Class Startup
     <STAThread()>
     Shared Sub Main()
@@ -1759,7 +1623,7 @@ Public Class AudioStream
                     Return ".mp3"
                 Case "TrueHD / AC3"
                     Return ".thd"
-                Case "Flac"
+                Case "FLAC"
                     Return ".flac"
                 Case "Vorbis"
                     Return ".ogg"
@@ -1834,6 +1698,7 @@ Public Class Subtitle
     Property Format As String
     Property ID As Integer
     Property StreamOrder As Integer
+    Property Index As Integer
     Property IndexIDX As Integer
     Property Language As Language
     Property [Default] As Boolean
@@ -2022,7 +1887,7 @@ Public Enum ContainerStreamType
     Chapters
 End Enum
 
-Class FileTypes
+Public Class FileTypes
     Shared Property Audio As String() = {"flac", "dtshd", "dtsma", "dtshr", "thd", "thd+ac3", "true-hd", "truehd", "aac", "ac3", "dts", "eac3", "m4a", "mka", "mp2", "mp3", "mpa", "opus", "wav"}
     Shared Property VideoAudio As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
     Shared Property BeSweetInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "ogg"}
@@ -2054,6 +1919,9 @@ Class FileTypes
                                                  "ts", "m2ts",
                                                  "opus", "flac"}
 
+    Shared Function GetFilter(values As IEnumerable(Of String)) As String
+        Return "*." + values.Join(";*.") + "|*." + values.Join(";*.") + "|All Files|*.*"
+    End Function
 End Class
 
 <Serializable>

@@ -265,12 +265,14 @@ Class MacroEditorControl
         AutoWrap = False
         rtbEdit.WordWrap = False
         rtbPreview.WordWrap = False
+        rtbDefaults.WordWrap = False
     End Sub
 
     Sub SetMacroDefaults()
         AutoWrap = False
         rtbEdit.WordWrap = False
         rtbPreview.WordWrap = False
+        rtbDefaults.WordWrap = False
     End Sub
 
     Private Sub UpdateWrapMode(rtb As RichTextBox)
@@ -306,16 +308,20 @@ Class MacroEditorControl
         UpdateWrapMode(rtbEdit)
     End Sub
 
-    Protected Overrides Sub OnHandleCreated(e As EventArgs)
+    Private Sub rtbDefaults_TextChanged(sender As Object, e As EventArgs) Handles rtbDefaults.TextChanged
+        UpdateWrapMode(rtbDefaults)
+    End Sub
+
+    Protected Overrides Sub OnLoad(e As EventArgs)
         UpdateWrapMode(rtbEdit)
         UpdateWrapMode(rtbPreview)
 
-        MyBase.OnHandleCreated(e)
-
         If rtbDefaults.Text = "" Then
-            TabControl.Controls.Remove(tpDefaults)
+            Controls.Remove(tpDefaults)
             tpDefaults.Dispose()
         End If
+
+        MyBase.OnLoad(e)
     End Sub
 
     Private Sub llMacros_Click(sender As Object, e As EventArgs) Handles llMacros.Click

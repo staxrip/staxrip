@@ -647,135 +647,6 @@ Namespace UI
         End Property
     End Class
 
-    Class MultiFolderTree
-        Inherits TreeViewEx
-
-        Property Paths As List(Of String) = New List(Of String)
-
-        Sub New()
-            AutoCollaps = True
-            ExpandMode = TreeNodeExpandMode.Normal
-        End Sub
-
-        Sub Init()
-            CheckBoxes = True
-            Dim drives As New List(Of String)
-            Dim volumes As New List(Of String)
-
-            If Not DesignMode Then
-                For Each i As DriveInfo In DriveInfo.GetDrives
-                    If i.DriveType = DriveType.Fixed Then
-                        drives.Add(i.RootDirectory.Name)
-
-                        Try 'user reported crash
-                            volumes.Add(i.VolumeLabel)
-                        Catch ex As Exception
-                            volumes.Add(i.Name)
-                        End Try
-                    End If
-                Next
-
-                Init(Nodes, drives.ToArray, volumes)
-
-                For Each i As FolderTreeNode In Nodes
-                    Init(i.Nodes, GetDirs(i.Path))
-                Next
-            End If
-        End Sub
-
-        Sub Init(nodes As TreeNodeCollection,
-                 directories As String(),
-                 Optional volumes As List(Of String) = Nothing)
-
-            For i = 0 To directories.Length - 1
-                Dim directory = directories(i)
-
-                Try
-                    Dim di As New DirectoryInfo(directory)
-
-                    If directory.Length = 3 OrElse (di.Attributes And FileAttributes.Hidden) = 0 Then
-                        Dim n As New FolderTreeNode
-                        n.Path = directory
-
-                        If volumes Is Nothing Then
-                            n.Text = DirPath.GetName(directory)
-                        Else
-                            n.Text = volumes(i) + " (" + directory.Substring(0, 2) + ")"
-                        End If
-
-                        If n.Text = "" Then
-                            n.Text = directory
-                        End If
-
-                        nodes.Add(n)
-                    End If
-                Catch
-                End Try
-            Next
-        End Sub
-
-        <DebuggerNonUserCode()>
-        Private Function GetDirs(path As String) As String()
-            Try
-                Return Directory.GetDirectories(path)
-            Catch ex As Exception
-                Return New String() {}
-            End Try
-        End Function
-
-        Protected Overrides Sub OnBeforeExpand(e As TreeViewCancelEventArgs)
-            MyBase.OnBeforeExpand(e)
-
-            Dim n = DirectCast(e.Node, FolderTreeNode)
-
-            For Each i As FolderTreeNode In n.Nodes
-                If Not i.WasInitialized Then
-                    Init(i.Nodes, GetDirs(i.Path))
-                    i.WasInitialized = True
-                End If
-            Next
-        End Sub
-
-        Protected Overrides Sub OnAfterCheck(e As TreeViewEventArgs)
-            Dim n = DirectCast(e.Node, FolderTreeNode)
-
-            If e.Node.Checked Then
-                Paths.Add(n.Path)
-            Else
-                Paths.Remove(n.Path)
-            End If
-
-            MyBase.OnAfterCheck(e)
-        End Sub
-
-        Protected Overrides Sub OnClick(e As EventArgs)
-            MyBase.OnClick(e)
-
-            Dim n = GetNodeAt(ClientMousePos)
-
-            If Not n Is Nothing AndAlso (n.Nodes.Count = 0 OrElse
-                n.IsExpanded) AndAlso n.Bounds.Contains(ClientMousePos) Then
-
-                n.Checked = Not n.Checked
-            End If
-        End Sub
-    End Class
-
-    Class FolderTreeNode
-        Inherits TreeNode
-
-        Public Path As String
-        Public WasInitialized As Boolean
-    End Class
-
-    Class BeforeShowControlEventArgs
-        Inherits EventArgs
-
-        Public Control As Control
-        Public Position As Point
-        Public Cancel As Boolean
-    End Class
-
     Class PropertyGridEx
         Inherits PropertyGrid
 
@@ -1285,9 +1156,7 @@ Namespace UI
         End Sub
 
         Sub DeleteItem(text As String)
-            If FindStringExact(text) > -1 Then
-                Items.RemoveAt(FindStringExact(text))
-            End If
+            If FindStringExact(text) > -1 Then Items.RemoveAt(FindStringExact(text))
         End Sub
 
         Sub RemoveSelection()
@@ -1302,6 +1171,7 @@ Namespace UI
                     End If
 
                     Items.RemoveAt(index)
+                    UpdateButtons()
                 Else
                     Dim iFirst = SelectedIndex
 
@@ -1310,7 +1180,7 @@ Namespace UI
 
                     SelectedIndex = -1
 
-                    For i As Integer = indices.Length - 1 To 0 Step -1
+                    For i = indices.Length - 1 To 0 Step -1
                         Items.RemoveAt(indices(i))
                     Next
 
@@ -1370,7 +1240,7 @@ Namespace UI
                 KeyText += Convert.ToChar(e.KeyValue).ToString()
             End If
 
-            For i As Integer = 0 To Items.Count - 1
+            For i = 0 To Items.Count - 1
                 If Items(i).ToString().ToLower().StartsWith(KeyText.ToLower) Then
                     Application.DoEvents()
 
@@ -1414,20 +1284,23 @@ Namespace UI
                 If Not UpButton Is Nothing Then UpButton.AddClickAction(AddressOf MoveSelectionUp)
                 If Not DownButton Is Nothing Then DownButton.AddClickAction(AddressOf MoveSelectionDown)
                 If Not RemoveButton Is Nothing Then RemoveButton.AddClickAction(AddressOf RemoveSelection)
+                UpdateButtons()
             End If
         End Sub
 
         Protected Overrides Sub OnSelectedIndexChanged(e As EventArgs)
             If Not BlockOnSelectedIndexChanged Then
                 MyBase.OnSelectedIndexChanged(e)
-                UpdateControls()
+                UpdateButtons()
             End If
         End Sub
 
-        Sub UpdateControls()
+        Sub UpdateButtons()
+            Debug.WriteLine(SelectedIndex)
+
             If Not RemoveButton Is Nothing Then RemoveButton.Enabled = Not SelectedItem Is Nothing
             If Not UpButton Is Nothing Then UpButton.Enabled = SelectedIndex > 0
-            If Not DownButton Is Nothing Then DownButton.Enabled = SelectedIndex < Items.Count - 1
+            If Not DownButton Is Nothing Then DownButton.Enabled = SelectedIndex > -1 AndAlso SelectedIndex < Items.Count - 1
             If Not Button1 Is Nothing Then Button1.Enabled = Not SelectedItem Is Nothing
             If Not Button2 Is Nothing Then Button2.Enabled = Not SelectedItem Is Nothing
         End Sub

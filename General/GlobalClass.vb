@@ -39,7 +39,13 @@ Public Class GlobalClass
             ProcessForm.CloseProcessForm()
             DeleteTempFiles()
 
-            If JobsForm.ActiveJobs.Count = 0 Then
+            jobs = JobsForm.GetJobs
+            Dim activeJobs = JobsForm.ActiveJobs
+
+            If jobs.Count = 0 Then
+                g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
+                g.ShutdownPC()
+            ElseIf JobsForm.ActiveJobs.Count = 0 Then
                 If Process.GetProcessesByName("StaxRip").Count = 1 Then
                     g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
                     g.ShutdownPC()
@@ -114,7 +120,6 @@ Public Class GlobalClass
 
     Function BrowseFolder(defaultFolder As String) As String
         Using d As New FolderBrowserDialog
-            d.Description = "Please select a directory."
             d.SetSelectedPath(defaultFolder)
             If d.ShowDialog = DialogResult.OK Then Return d.SelectedPath
         End Using
@@ -481,13 +486,13 @@ Public Class GlobalClass
     Sub ffmsindex(sourcePath As String,
                   cachePath As String,
                   Optional indexAudio As Boolean = False,
-                  Optional noLog As Boolean = False)
+                  Optional proj As Project = Nothing)
 
         If File.Exists(sourcePath) AndAlso Not File.Exists(cachePath) AndAlso
             Not FileTypes.VideoText.Contains(Filepath.GetExt(sourcePath)) Then
 
             Using proc As New Proc
-                proc.NoLog = noLog
+                proc.Project = proj
                 proc.Init("Index with ffmsindex", "Indexing, please wait...")
                 proc.File = Package.ffms2.GetDir + "ffmsindex.exe"
                 proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.Quotes + " " + cachePath.Quotes

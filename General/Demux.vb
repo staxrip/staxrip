@@ -4,7 +4,7 @@ Imports System.Text
 
 <Serializable()>
 Public MustInherit Class Demuxer
-    MustOverride Sub Run()
+    MustOverride Sub Run(proj As Project)
 
     Overridable Property Active As Boolean = True
     Overridable Property InputExtensions As String() = {}
@@ -144,7 +144,7 @@ Class CommandLineDemuxer
         End Using
     End Function
 
-    Overrides Sub Run()
+    Overrides Sub Run(proj As Project)
         Using proc As New Proc
             If Command?.Contains("DGIndexNV") Then
                 If Not Package.DGIndexNV.VerifyOK(True) Then Throw New AbortException
@@ -182,102 +182,6 @@ Class CommandLineDemuxer
 End Class
 
 <Serializable()>
-Class MP4BoxDemuxer
-    Inherits Demuxer
-
-    Sub New()
-        Name = "MP4Box"
-        InputExtensions = {"mp4", "mov"}
-    End Sub
-
-    Overrides Sub Run()
-        Dim audioStreams As List(Of AudioStream)
-        Dim subtitles As List(Of Subtitle)
-
-        Dim demuxAudio = Not (TypeOf p.Audio0 Is NullAudioProfile AndAlso
-            TypeOf p.Audio1 Is NullAudioProfile) AndAlso
-            MediaInfo.GetAudioCount(p.SourceFile) > 0
-
-        Dim demuxSubtitles = MediaInfo.GetSubtitleCount(p.SourceFile) > 0
-
-        Dim attachments = GetAttachments()
-
-        If Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
-            ((demuxAudio AndAlso p.DemuxAudio = DemuxMode.Dialog) OrElse
-            (demuxSubtitles AndAlso p.DemuxSubtitles = DemuxMode.Dialog)) Then
-            ProcessForm.CloseProcessForm()
-
-            Using f As New StreamDemuxForm(p.SourceFile, attachments)
-                If f.ShowDialog() = DialogResult.OK Then
-                    audioStreams = f.AudioStreams
-                    subtitles = f.Subtitles
-                Else
-                    Throw New AbortException
-                End If
-            End Using
-        End If
-
-        If demuxAudio AndAlso p.DemuxAudio <> DemuxMode.None Then
-            If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(p.SourceFile)
-
-            For Each i In audioStreams
-                If i.Enabled Then Audio.DemuxMP4(p.SourceFile, i, Nothing)
-            Next
-        End If
-
-        If demuxSubtitles AndAlso p.DemuxSubtitles <> DemuxMode.None Then
-            If subtitles Is Nothing Then subtitles = MediaInfo.GetSubtitles(p.SourceFile)
-
-            For Each i In subtitles
-                If Not i.Enabled Then Continue For
-
-                Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.ExtFull
-                If outpath.Length > 259 Then outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(20) + i.ExtFull
-
-                FileHelp.Delete(outpath)
-                Dim args As String
-
-                Select Case i.ExtFull
-                    Case ""
-                        Continue For
-                    Case ".srt"
-                        args = "-srt "
-                    Case Else
-                        args = "-raw "
-                End Select
-
-                args += i.ID & " -out " + outpath.Quotes + " " + p.SourceFile.Quotes
-
-                Using proc As New Proc
-                    proc.Init("Demux subtitle using MP4Box " + Package.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |", "VobSub Export: |", "SRT Extract: |"})
-                    proc.File = Package.MP4Box.Path
-                    proc.Arguments = args
-                    proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
-                    proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
-                    proc.Start()
-                End Using
-            Next
-        End If
-
-        If Not attachments.NothingOrEmpty AndAlso attachments(0).Enabled Then
-            Using proc As New Proc
-                proc.Init("Extract cover using MP4Box " + Package.MP4Box.Version)
-                proc.File = Package.MP4Box.Path
-                proc.Arguments = "-dump-cover " + p.SourceFile.Quotes + " -out " + (p.TempDir + "cover.jpg").Quotes
-                proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
-                proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
-                proc.Start()
-            End Using
-        End If
-    End Sub
-
-    Function GetAttachments() As List(Of Attachment)
-        Dim cover = MediaInfo.GetGeneral(p.SourceFile, "Cover")
-        If cover <> "" Then Return New List(Of Attachment) From {New Attachment With {.Name = "Cover"}}
-    End Function
-End Class
-
-<Serializable()>
 Public Class eac3toDemuxer
     Inherits Demuxer
 
@@ -287,20 +191,21 @@ Public Class eac3toDemuxer
         OutputExtensions = {"h264", "mkv", "m2v"}
     End Sub
 
-    Overrides Sub Run()
-        If p.NoDialogs OrElse p.BatchMode Then Exit Sub
+    Overrides Sub Run(proj As Project)
+        If proj.NoDialogs OrElse proj.BatchMode Then Exit Sub
 
-        Using f As New eac3toForm
-            f.M2TSFile = p.SourceFile
-            f.teTempDir.Text = p.TempDir
+        Using form As New eac3toForm(proj)
+            form.M2TSFile = proj.SourceFile
+            form.teTempDir.Text = proj.TempDir
 
-            If f.ShowDialog() = DialogResult.OK Then
+            If form.ShowDialog() = DialogResult.OK Then
                 Using proc As New Proc
+                    proc.Project = proj
                     proc.TrimChars = {"-"c, " "c}
                     proc.RemoveChars = {CChar(VB6.vbBack)}
                     proc.Init("Demux M2TS using eac3to " + Package.eac3to.Version, "analyze: ", "process: ")
                     proc.File = Package.eac3to.Path
-                    proc.Arguments = f.GetArgs(p.SourceFile.Quotes, p.SourceFile.Base)
+                    proc.Arguments = form.GetArgs(proj.SourceFile.Quotes, proj.SourceFile.Base)
 
                     Try
                         proc.Start()
@@ -310,11 +215,11 @@ Public Class eac3toDemuxer
                         Throw New AbortException
                     End Try
 
-                    If Not f.cbVideoOutput.Text = "Nothing" Then
-                        p.SourceFile = f.OutputFolder + Filepath.GetBase(p.SourceFile) + "." + f.cbVideoOutput.Text.ToLower
-                        p.SourceFiles.Clear()
-                        p.SourceFiles.Add(p.SourceFile)
-                        p.TempDir = f.OutputFolder
+                    If Not form.cbVideoOutput.Text = "Nothing" Then
+                        proj.SourceFile = form.OutputFolder + proj.SourceFile.Base + "." + form.cbVideoOutput.Text.ToLower
+                        proj.SourceFiles.Clear()
+                        proj.SourceFiles.Add(proj.SourceFile)
+                        proj.TempDir = form.OutputFolder
                     End If
                 End Using
             Else
@@ -334,6 +239,257 @@ Public Class eac3toDemuxer
     End Function
 End Class
 
+<Serializable>
+Public Class ffmpegDemuxer
+    Inherits Demuxer
+
+    Sub New()
+        Name = "ffmpeg"
+        InputExtensions = {"avi", "ts", "flv"}
+    End Sub
+
+    Public Overrides Sub Run(proj As Project)
+        Dim audioStreams As List(Of AudioStream)
+        Dim subtitles As List(Of Subtitle)
+
+        Dim demuxAudio = Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
+            TypeOf proj.Audio1 Is NullAudioProfile) AndAlso
+            MediaInfo.GetAudioCount(proj.SourceFile) > 0
+
+        Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
+
+        If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
+            ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
+            (demuxSubtitles AndAlso proj.DemuxSubtitles = DemuxMode.Dialog)) Then
+            ProcessForm.CloseProcessForm()
+
+            Using form As New StreamDemuxForm(proj.SourceFile, Nothing)
+                If form.ShowDialog() = DialogResult.OK Then
+                    audioStreams = form.AudioStreams
+                    subtitles = form.Subtitles
+                Else
+                    Throw New AbortException
+                End If
+            End Using
+        End If
+
+        If demuxAudio AndAlso proj.DemuxAudio <> DemuxMode.None Then
+            If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
+
+            For Each i In audioStreams
+                If i.Enabled Then ffmpegDemuxer.DemuxAudio(proj.SourceFile, i, Nothing, proj)
+            Next
+        End If
+
+        'If demuxSubtitles AndAlso proj.DemuxSubtitles <> DemuxMode.None Then
+        '    If subtitles Is Nothing Then subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
+        '    Me.DemuxSubtitles(subtitles, proj)
+        'End If
+
+        Log.Save(proj)
+    End Sub
+
+    Public Overrides Function ShowConfigDialog() As DialogResult
+        Return ShowConfigDialogInputExtensions()
+    End Function
+
+    Public Overrides ReadOnly Property HasConfigDialog As Boolean
+        Get
+            Return True
+        End Get
+    End Property
+
+    Shared Sub DemuxAudio(sourcefile As String, stream As AudioStream, ap As AudioProfile, proj As Project)
+        Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.Extension
+        If outPath.Length > 259 Then outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
+        Dim streamIndex = stream.StreamOrder
+        Dim args = "-i """ + sourcefile + """"
+        If MediaInfo.GetAudioCount(sourcefile) > 1 Then args += " -map 0:a:" & stream.Index
+        args += " -vn -sn -y -hide_banner"
+        If outPath.Ext = "wav" Then args += " -c:a pcm_s16le" Else args += " -c:a copy"
+        args += " " + outPath.Quotes
+
+        Using proc As New Proc
+            proc.Project = proj
+            proc.Init("Demux audio using ffmpeg " + Package.ffmpeg.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
+            proc.Encoding = Encoding.UTF8
+            proc.File = Package.ffmpeg.Path
+            proc.Arguments = args
+            proc.Start()
+        End Using
+
+        If File.Exists(outPath) Then
+            If Not ap Is Nothing Then ap.File = outPath
+            Log.WriteLine(MediaInfo.GetSummary(outPath), proj)
+        Else
+            Log.Write("Error", "no output found", proj)
+        End If
+    End Sub
+
+    Sub DemuxSubtitles(subtitles As List(Of Subtitle), proj As Project)
+        If subtitles.Where(Function(subtitle) subtitle.Enabled).Count = 0 Then Exit Sub
+
+        For Each subtitle In subtitles
+            If Not subtitle.Enabled Then Continue For
+
+            Dim args = "-i " + proj.SourceFile.Quotes
+            Dim outpath = proj.TempDir + proj.SourceFile.Base + " " + subtitle.Filename + subtitle.ExtFull
+
+            If outpath.Length > 259 Then
+                outpath = proj.TempDir + proj.SourceFile.Base.Shorten(10) + " " + subtitle.Filename.Shorten(10) + subtitle.ExtFull
+            End If
+
+            If MediaInfo.GetSubtitleCount(proj.SourceFile) > 1 Then args += " -map 0:s:" & subtitle.Index
+            args += " -c:s copy -vn -an -y -hide_banner " + outpath.Quotes
+
+            Using proc As New Proc
+                proc.Project = proj
+                proc.Init("Demux subtitles using ffmpeg " + Package.ffmpeg.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
+                proc.Encoding = Encoding.UTF8
+                proc.File = Package.ffmpeg.Path
+                proc.Arguments = args
+                proc.Start()
+            End Using
+        Next
+    End Sub
+End Class
+
+<Serializable()>
+Class MP4BoxDemuxer
+    Inherits Demuxer
+
+    Sub New()
+        Name = "MP4Box"
+        InputExtensions = {"mp4", "mov"}
+    End Sub
+
+    Overrides Sub Run(proj As Project)
+        Dim audioStreams As List(Of AudioStream)
+        Dim subtitles As List(Of Subtitle)
+
+        Dim demuxAudio = Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
+            TypeOf proj.Audio1 Is NullAudioProfile) AndAlso
+            MediaInfo.GetAudioCount(proj.SourceFile) > 0
+
+        Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
+        Dim attachments = GetAttachments(proj.SourceFile)
+
+        If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
+            ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
+            (demuxSubtitles AndAlso proj.DemuxSubtitles = DemuxMode.Dialog)) Then
+            ProcessForm.CloseProcessForm()
+
+            Using f As New StreamDemuxForm(proj.SourceFile, attachments)
+                If f.ShowDialog() = DialogResult.OK Then
+                    audioStreams = f.AudioStreams
+                    subtitles = f.Subtitles
+                Else
+                    Throw New AbortException
+                End If
+            End Using
+        End If
+
+        If demuxAudio AndAlso proj.DemuxAudio <> DemuxMode.None Then
+            If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
+
+            For Each i In audioStreams
+                If i.Enabled Then MP4BoxDemuxer.Demux(proj.SourceFile, i, Nothing, proj)
+            Next
+        End If
+
+        If demuxSubtitles AndAlso proj.DemuxSubtitles <> DemuxMode.None Then
+            If subtitles Is Nothing Then subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
+
+            For Each i In subtitles
+                If Not i.Enabled Then Continue For
+
+                Dim outpath = proj.TempDir + proj.SourceFile.Base + " " + i.Filename + i.ExtFull
+                If outpath.Length > 259 Then outpath = proj.TempDir + proj.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(20) + i.ExtFull
+
+                FileHelp.Delete(outpath)
+                Dim args As String
+
+                Select Case i.ExtFull
+                    Case ""
+                        Continue For
+                    Case ".srt"
+                        args = "-srt "
+                    Case Else
+                        args = "-raw "
+                End Select
+
+                args += i.ID & " -out " + outpath.Quotes + " " + proj.SourceFile.Quotes
+
+                Using proc As New Proc
+                    proc.Project = proj
+                    proc.Init("Demux subtitle using MP4Box " + Package.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |", "VobSub Export: |", "SRT Extract: |"})
+                    proc.File = Package.MP4Box.Path
+                    proc.Arguments = args
+                    proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
+                    proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+                    proc.Start()
+                End Using
+            Next
+        End If
+
+        If Not attachments.NothingOrEmpty AndAlso attachments(0).Enabled Then
+            Using proc As New Proc
+                proc.Project = proj
+                proc.Init("Extract cover using MP4Box " + Package.MP4Box.Version)
+                proc.File = Package.MP4Box.Path
+                proc.Arguments = "-dump-cover " + proj.SourceFile.Quotes + " -out " + (proj.TempDir + "cover.jpg").Quotes
+                proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
+                proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+                proc.Start()
+            End Using
+        End If
+
+        Log.Save(proj)
+    End Sub
+
+    Function GetAttachments(sourceFilePath As String) As List(Of Attachment)
+        Dim cover = MediaInfo.GetGeneral(sourceFilePath, "Cover")
+        If cover <> "" Then Return New List(Of Attachment) From {New Attachment With {.Name = "Cover"}}
+    End Function
+
+    Shared Sub Demux(sourcefile As String, stream As AudioStream, ap As AudioProfile, proj As Project)
+        If MediaInfo.GetAudio(sourcefile, "Format") = "PCM" Then
+            ffmpegDemuxer.DemuxAudio(sourcefile, stream, ap, proj)
+            Exit Sub
+        End If
+
+        Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.Extension
+        If outPath.Length > 259 Then outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
+        FileHelp.Delete(outPath)
+        Dim args As String
+        If stream.Format = "AAC" Then args += "-single" Else args += "-raw"
+        args += " " & stream.ID & " -out " + outPath.Quotes + " " + sourcefile.Quotes
+
+        Using proc As New Proc
+            proc.Project = proj
+            proc.Init("Demux audio using MP4Box " + Package.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
+            proc.File = Package.MP4Box.Path
+            proc.Arguments = args
+            proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
+            proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+            proc.Start()
+        End Using
+
+        If File.Exists(outPath) Then
+            If MediaInfo.GetAudio(outPath, "Format") = "" Then
+                Log.Write("Error", "No format detected by MediaInfo.", proj)
+                ffmpegDemuxer.DemuxAudio(sourcefile, stream, ap, proj)
+            Else
+                If Not ap Is Nothing Then ap.File = outPath
+                Log.WriteLine(MediaInfo.GetSummary(outPath), proj)
+            End If
+        Else
+            Log.Write("Error", "no output found", proj)
+            ffmpegDemuxer.DemuxAudio(sourcefile, stream, ap, proj)
+        End If
+    End Sub
+End Class
+
 <Serializable()>
 Class mkvDemuxer
     Inherits Demuxer
@@ -343,11 +499,93 @@ Class mkvDemuxer
         InputExtensions = {"mkv", "webm"}
     End Sub
 
-    Shared Sub DemuxMKV(sourcefile As String,
-                        audioStreams As IEnumerable(Of AudioStream),
-                        subtitles As IEnumerable(Of Subtitle),
-                        ap As AudioProfile,
-                        Optional onlyEnabled As Boolean = False)
+    Overrides Sub Run(proj As Project)
+        Dim audioStreams As List(Of AudioStream)
+        Dim subtitles As List(Of Subtitle)
+        Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify-verbose --ui-language en " + proj.SourceFile.Quotes)
+
+        If stdout.Contains("codec_private_data:") Then stdout = Regex.Replace(stdout, "codec_private_data:\w+", "")
+
+        Dim demuxAudio = (Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
+            TypeOf proj.Audio1 Is NullAudioProfile)) AndAlso
+            MediaInfo.GetAudioCount(proj.SourceFile) > 0
+
+        Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
+        Dim attachments = GetAttachments(stdout)
+
+        If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
+            ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
+            (demuxSubtitles AndAlso proj.DemuxSubtitles = DemuxMode.Dialog)) Then
+            ProcessForm.CloseProcessForm()
+
+            Using form As New StreamDemuxForm(proj.SourceFile, attachments)
+                If form.ShowDialog() <> DialogResult.OK Then Throw New AbortException
+                audioStreams = form.AudioStreams
+                subtitles = form.Subtitles
+            End Using
+        End If
+
+        If demuxAudio AndAlso proj.DemuxAudio <> DemuxMode.None Then
+            If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
+        End If
+
+        If demuxSubtitles AndAlso proj.DemuxSubtitles <> DemuxMode.None Then
+            If subtitles Is Nothing Then subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
+        End If
+
+        Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True)
+
+        If stdout.Contains("Chapters: ") Then
+            Using proc As New Proc
+                proc.Project = proj
+                proc.Init("Demux chapters using mkvextract " + Package.mkvmerge.Version, "Progress: ")
+                proc.WriteLine(stdout + BR)
+                proc.Encoding = Encoding.UTF8
+                proc.File = Package.mkvextract.Path
+                proc.Arguments = "chapters " + proj.SourceFile.Quotes + " --redirect-output " +
+                        (proj.TempDir + proj.SourceFile.Base + "_chapters.xml").Quotes
+                proc.Start()
+            End Using
+        End If
+
+        Dim enabledAttachments = attachments.Where(Function(val) val.Enabled)
+
+        If enabledAttachments.Count > 0 Then
+            Using proc As New Proc
+                proc.Project = proj
+                proc.Init("Demux attachments using mkvextract " + Package.mkvmerge.Version, "Progress: ")
+                proc.WriteLine(stdout + BR)
+                proc.Encoding = Encoding.UTF8
+                proc.File = Package.mkvextract.Path
+                proc.Arguments = "attachments " + proj.SourceFile.Quotes + " " +
+                    enabledAttachments.Select(Function(val) val.ID & ":" + GetAttachmentPath(
+                    proj.TempDir, val.Name).Quotes).Join(" ")
+                proc.Start()
+            End Using
+        End If
+
+        If MediaInfo.GetVideo(proj.SourceFile, "FrameRate_Mode") = "VFR" Then
+            Dim streamOrder = MediaInfo.GetVideo(proj.SourceFile, "StreamOrder").ToInt
+
+            Using proc As New Proc
+                proc.Project = proj
+                proc.Init("Demux timecodes using mkvextract " + Package.mkvextract.Version, "Progress: ")
+                proc.Encoding = Encoding.UTF8
+                proc.File = Package.mkvextract.Path
+                proc.Arguments = "timecodes_v2 " + proj.SourceFile.Quotes + " " & streamOrder & ":" + (proj.TempDir + proj.SourceFile.Base + "_timecodes.txt").Quotes
+                proc.Start()
+            End Using
+        End If
+
+        Log.Save(proj)
+    End Sub
+
+    Shared Sub Demux(sourcefile As String,
+                     audioStreams As IEnumerable(Of AudioStream),
+                     subtitles As IEnumerable(Of Subtitle),
+                     ap As AudioProfile,
+                     proj As Project,
+                     Optional onlyEnabled As Boolean = False)
 
         If audioStreams Is Nothing Then audioStreams = New List(Of AudioStream)
         If subtitles Is Nothing Then subtitles = New List(Of Subtitle)
@@ -362,8 +600,8 @@ Class mkvDemuxer
         For Each subtitle In subtitles
             If Not subtitle.Enabled Then Continue For
             Dim forced = If(subtitle.Forced, "_forced", "")
-            Dim outpath = p.TempDir + p.SourceFile.Base + " " + subtitle.Filename + forced + subtitle.ExtFull
-            If outpath.Length > 259 Then outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + subtitle.Filename.Shorten(10) + forced + subtitle.ExtFull
+            Dim outpath = proj.TempDir + sourcefile.Base + " " + subtitle.Filename + forced + subtitle.ExtFull
+            If outpath.Length > 259 Then outpath = proj.TempDir + sourcefile.Base.Shorten(10) + " " + subtitle.Filename.Shorten(10) + forced + subtitle.ExtFull
             args += " " & subtitle.StreamOrder & ":" + outpath.Quotes
         Next
 
@@ -372,13 +610,14 @@ Class mkvDemuxer
         For Each stream In audioStreams
             Dim ext = stream.Extension
             If ext = ".m4a" Then ext = ".aac"
-            Dim outPath = p.TempDir + If(sourcefile = p.SourceFile, Audio.GetBaseNameForStream(sourcefile, stream), Filepath.GetBase(sourcefile)) + ext
-            If outPath.Length > 259 Then outPath = p.TempDir + If(sourcefile = p.SourceFile, Audio.GetBaseNameForStream(sourcefile, stream, True), Filepath.GetBase(sourcefile).Shorten(10)) + ext
+            Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + ext
+            If outPath.Length > 259 Then outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream, True) + ext
             outPaths.Add(outPath, stream)
             args += " " & stream.StreamOrder & ":" + outPath.Quotes
         Next
 
         Using proc As New Proc
+            proc.Project = proj
             proc.Init("Demux mkv using mkvextract " + Package.mkvextract.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
             proc.File = Package.mkvextract.Path
@@ -390,110 +629,34 @@ Class mkvDemuxer
         For Each outPath In outPaths.Keys
             If File.Exists(outPath) Then
                 If Not ap Is Nothing Then ap.File = outPath
-                Log.WriteLine(MediaInfo.GetSummary(outPath) + BR)
+                Log.WriteLine(MediaInfo.GetSummary(outPath) + BR, proj)
 
                 If outPath.Ext = "aac" Then
                     Using proc As New Proc
+                        proc.Project = proj
                         proc.Init("Mux AAC to M4A using MP4Box " + Package.MP4Box.Version, "|")
                         proc.File = Package.MP4Box.Path
                         Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
                         Dim m4aPath = outPath.ChangeExt("m4a")
-                        proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new """ + m4aPath + """"
-                        proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
-                        proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
+                        proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new " + m4aPath.Quotes
+                        proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
+                        proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
                         proc.Start()
 
                         If File.Exists(m4aPath) Then
                             If Not ap Is Nothing Then ap.File = m4aPath
                             FileHelp.Delete(outPath)
-                            Log.WriteLine(BR + MediaInfo.GetSummary(m4aPath))
+                            Log.WriteLine(BR + MediaInfo.GetSummary(m4aPath), proj)
                         Else
                             Throw New ErrorAbortException("Error mux AAC to M4A", outPath)
                         End If
                     End Using
                 End If
             Else
-                Log.Write("Error", "no output found")
-                Audio.Demuxffmpeg(sourcefile, outPaths(outPath), ap)
+                Log.Write("Error", "no output found", proj)
+                ffmpegDemuxer.DemuxAudio(sourcefile, outPaths(outPath), ap, proj)
             End If
         Next
-    End Sub
-
-    Overrides Sub Run()
-        Dim audioStreams As List(Of AudioStream)
-        Dim subtitles As List(Of Subtitle)
-        Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify-verbose --ui-language en " + p.SourceFile.Quotes)
-
-        If stdout.Contains("codec_private_data:") Then stdout = Regex.Replace(stdout, "codec_private_data:\w+", "")
-
-        Dim demuxAudio = Not (TypeOf p.Audio0 Is NullAudioProfile AndAlso
-            TypeOf p.Audio1 Is NullAudioProfile) AndAlso
-            MediaInfo.GetAudioCount(p.SourceFile) > 0
-
-        Dim demuxSubtitles = MediaInfo.GetSubtitleCount(p.SourceFile) > 0
-
-        Dim attachments = GetAttachments(stdout)
-
-        If Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
-            ((demuxAudio AndAlso p.DemuxAudio = DemuxMode.Dialog) OrElse
-            (demuxSubtitles AndAlso p.DemuxSubtitles = DemuxMode.Dialog)) Then
-            ProcessForm.CloseProcessForm()
-
-            Using f As New StreamDemuxForm(p.SourceFile, attachments)
-                If f.ShowDialog() <> DialogResult.OK Then Throw New AbortException
-                audioStreams = f.AudioStreams
-                subtitles = f.Subtitles
-            End Using
-        End If
-
-        If demuxAudio AndAlso p.DemuxAudio <> DemuxMode.None Then
-            If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(p.SourceFile)
-        End If
-
-        If demuxSubtitles AndAlso p.DemuxSubtitles <> DemuxMode.None Then
-            If subtitles Is Nothing Then subtitles = MediaInfo.GetSubtitles(p.SourceFile)
-        End If
-
-        mkvDemuxer.DemuxMKV(p.SourceFile, audioStreams, subtitles, Nothing, True)
-
-        If stdout.Contains("Chapters: ") Then
-            Using proc As New Proc
-                proc.Init("Demux chapters using mkvextract " + Package.mkvmerge.Version, "Progress: ")
-                proc.WriteLine(stdout + BR)
-                proc.Encoding = Encoding.UTF8
-                proc.File = Package.mkvextract.Path
-                proc.Arguments = "chapters " + p.SourceFile.Quotes + " --redirect-output " +
-                        (p.TempDir + p.SourceFile.Base + "_chapters.xml").Quotes
-                proc.Start()
-            End Using
-        End If
-
-        Dim enabledAttachments = attachments.Where(Function(val) val.Enabled)
-
-        If enabledAttachments.Count > 0 Then
-            Using proc As New Proc
-                proc.Init("Demux attachments using mkvextract " + Package.mkvmerge.Version, "Progress: ")
-                proc.WriteLine(stdout + BR)
-                proc.Encoding = Encoding.UTF8
-                proc.File = Package.mkvextract.Path
-                proc.Arguments = "attachments " + p.SourceFile.Quotes + " " +
-                    enabledAttachments.Select(Function(val) val.ID & ":" + GetAttachmentPath(
-                    p.TempDir, val.Name).Quotes).Join(" ")
-                proc.Start()
-            End Using
-        End If
-
-        If MediaInfo.GetVideo(p.SourceFile, "FrameRate_Mode") = "VFR" Then
-            Dim streamOrder = MediaInfo.GetVideo(p.SourceFile, "StreamOrder").ToInt
-
-            Using proc As New Proc
-                proc.Init("Demux timecodes using mkvextract " + Package.mkvextract.Version, "Progress: ")
-                proc.Encoding = Encoding.UTF8
-                proc.File = Package.mkvextract.Path
-                proc.Arguments = "timecodes_v2 " + p.SourceFile.Quotes + " " & streamOrder & ":" + (p.TempDir + p.SourceFile.Base + "_timecodes.txt").Quotes
-                proc.Start()
-            End Using
-        End If
     End Sub
 
     Shared Function GetAttachmentPath(dir As String, name As String) As String
@@ -517,85 +680,4 @@ Class mkvDemuxer
 
         Return ret
     End Function
-End Class
-
-<Serializable>
-Public Class ffmpegDemuxer
-    Inherits Demuxer
-
-    Sub New()
-        Name = "ffmpeg"
-        InputExtensions = {"avi", "ts", "flv"}
-    End Sub
-
-    Public Overrides Sub Run()
-        Dim audioStreams As List(Of AudioStream)
-        Dim subtitles As List(Of Subtitle)
-
-        Dim demuxAudio = Not (TypeOf p.Audio0 Is NullAudioProfile AndAlso
-            TypeOf p.Audio1 Is NullAudioProfile) AndAlso
-            MediaInfo.GetAudioCount(p.SourceFile) > 0
-
-        Dim demuxSubtitles = MediaInfo.GetSubtitleCount(p.SourceFile) > 0
-
-        If Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
-            ((demuxAudio AndAlso p.DemuxAudio = DemuxMode.Dialog) OrElse
-            (demuxSubtitles AndAlso p.DemuxSubtitles = DemuxMode.Dialog)) Then
-            ProcessForm.CloseProcessForm()
-
-            Using f As New StreamDemuxForm(p.SourceFile, Nothing)
-                If f.ShowDialog() = DialogResult.OK Then
-                    audioStreams = f.AudioStreams
-                    subtitles = f.Subtitles
-                Else
-                    Throw New AbortException
-                End If
-            End Using
-        End If
-
-        If demuxAudio AndAlso p.DemuxAudio <> DemuxMode.None Then
-            If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(p.SourceFile)
-
-            For Each i In audioStreams
-                If i.Enabled Then Audio.Demuxffmpeg(p.SourceFile, i, Nothing)
-            Next
-        End If
-    End Sub
-
-    Sub DemuxSubtitles(subtitles As List(Of Subtitle))
-        If subtitles.Where(Function(subtitle) subtitle.Enabled).Count = 0 Then Exit Sub
-        Dim arguments = "- i " + p.SourceFile.Quotes
-
-        For Each i In subtitles
-            If Not i.Enabled Then Continue For
-            Dim outpath = p.TempDir + p.SourceFile.Base + " " + i.Filename + i.ExtFull
-
-            If outpath.Length > 259 Then
-                outpath = p.TempDir + p.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(10) + i.ExtFull
-            End If
-
-            arguments += " " & i.StreamOrder & ":""" + outpath + """"
-        Next
-
-        arguments += " --ui-language en"
-
-        Using proc As New Proc
-            proc.Init("Demux subtitles using mkvextract " + Package.mkvextract.Version, "Progress: ")
-            proc.Encoding = Encoding.UTF8
-            proc.File = Package.mkvextract.Path
-            proc.Arguments = arguments
-            proc.AllowedExitCodes = {0, 1}
-            proc.Start()
-        End Using
-    End Sub
-
-    Public Overrides Function ShowConfigDialog() As DialogResult
-        Return ShowConfigDialogInputExtensions()
-    End Function
-
-    Public Overrides ReadOnly Property HasConfigDialog As Boolean
-        Get
-            Return True
-        End Get
-    End Property
 End Class

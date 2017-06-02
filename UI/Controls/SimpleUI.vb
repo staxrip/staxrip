@@ -677,15 +677,29 @@ Public Class SimpleUI
             MyBase.OnLayout(levent)
         End Sub
 
+        Sub BrowseFile(filterTypes As String())
+            BrowseFile(FileTypes.GetFilter(filterTypes))
+        End Sub
+
         Sub BrowseFile(filter As String)
             Button.ClickAction = Sub()
-                                     Using d As New OpenFileDialog
-                                         d.Filter = filter
-                                         d.InitialDirectory = p.TempDir
+                                     Using dia As New OpenFileDialog
+                                         dia.Filter = filter
+                                         dia.SetInitDir(s.LastSourceDir)
+                                         dia.InitialDirectory = p.TempDir
 
-                                         If d.ShowDialog = DialogResult.OK Then
-                                             Edit.Text = d.FileName
+                                         If dia.ShowDialog = DialogResult.OK Then
+                                             Edit.Text = dia.FileName
                                          End If
+                                     End Using
+                                 End Sub
+        End Sub
+
+        Sub BrowseFolder()
+            Button.ClickAction = Sub()
+                                     Using dia As New FolderBrowserDialog
+                                         dia.SetSelectedPath(s.LastSourceDir)
+                                         If dia.ShowDialog = DialogResult.OK Then Edit.Text = dia.SelectedPath
                                      End Using
                                  End Sub
         End Sub

@@ -26,14 +26,24 @@ Public Class GlobalCommands
 
             page.ResumeLayout()
 
+            AddHandler sourceFile.Edit.TextChanged, Sub()
+                                                        If outputFolder.Edit.Text = "" AndAlso
+                                                            File.Exists(sourceFile.Edit.Text) Then
+
+                                                            outputFolder.Edit.Text = sourceFile.Edit.Text.Dir
+                                                        End If
+                                                    End Sub
+            form.FileDrop = True
+            AddHandler form.FilesDropped, Sub(files) sourceFile.Edit.Text = files(0)
+
             If form.ShowDialog() = DialogResult.OK AndAlso
-                File.Exists(sourceFile.Edit.Text) AndAlso
-                Directory.Exists(outputFolder.Edit.Text) Then
+                    File.Exists(sourceFile.Edit.Text) AndAlso
+                    Directory.Exists(outputFolder.Edit.Text) Then
 
                 Using td As New TaskDialog(Of Demuxer)
                     td.MainInstruction = "Select a demuxer."
                     If sourceFile.Edit.Text.Ext = "mkv" Then td.AddCommandLink("mkvextract", New mkvDemuxer)
-                    If sourceFile.Edit.Text.Ext = "mp4" Then td.AddCommandLink("MP4Box", New MP4BoxDemuxer)
+                    If sourceFile.Edit.Text.Ext.EqualsAny("mp4", "flv") Then td.AddCommandLink("MP4Box", New MP4BoxDemuxer)
                     td.AddCommandLink("ffmpeg", New ffmpegDemuxer)
                     td.AddCommandLink("eac3to", New eac3toDemuxer)
 

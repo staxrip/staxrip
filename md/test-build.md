@@ -12,6 +12,12 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.0.2 unstable test build
+
+- update: AviSynth r2502
+- fix: Opening a Blu-ray folder while having already a source file opened mixed various things up
+- fix: DPI scaling broken under rare conditions 
+
 #### 1.5.0.1 unstable test build
 
 - new: experimental AV1 codec support

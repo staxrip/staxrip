@@ -283,10 +283,10 @@ Public Class IntelEncoder
                     sourcePath = p.LastOriginalSourceFile
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.LastOriginalSourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.QSVEncC.Path.Quotes, "QSVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.LastOriginalSourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error -hide_banner - | " + If(includePaths, Package.QSVEncC.Path.Quotes, "QSVEncC")
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.QSVEncC.Path.Quotes, "QSVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error -hide_banner - | " + If(includePaths, Package.QSVEncC.Path.Quotes, "QSVEncC")
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""

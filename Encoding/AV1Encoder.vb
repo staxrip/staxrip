@@ -82,7 +82,9 @@ Public Class AV1Encoder
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
         newParams.Init(store)
 
-        Using f As New CommandLineForm(newParams)
+        Using form As New CommandLineForm(newParams)
+            form.Text = "Under construction, AV1 isn't finished yet"
+
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of AV1Encoder)(Me)
                                         Dim params2 As New AV1Params
@@ -93,9 +95,9 @@ Public Class AV1Encoder
                                         SaveProfile(enc)
                                     End Sub
 
-            ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
+            ActionMenuItem.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
 
-            If f.ShowDialog() = DialogResult.OK Then
+            If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
@@ -268,7 +270,7 @@ Public Class AV1Params
             If p.Script.Engine = ScriptEngine.VapourSynth Then
                 sb.Append(Package.vspipe.Path.Quotes + " " + script.Path.Quotes + " - --y4m | " + Package.aomenc.Path.Quotes + " -")
             Else
-                sb.Append(Package.ffmpeg.Path.Quotes + " -i " + script.Path.Quotes + " -f yuv4mpegpipe - | " + Package.aomenc.Path.Quotes + " -")
+                sb.Append(Package.ffmpeg.Path.Quotes + " -i " + script.Path.Quotes + " -f yuv4mpegpipe -loglevel error -hide_banner - | " + Package.aomenc.Path.Quotes + " -")
             End If
         End If
 
@@ -276,6 +278,7 @@ Public Class AV1Params
             Case AV1RateMode.TwoPass
                 sb.Append(" --passes=2 --pass=" & pass)
             Case AV1RateMode.OnePass
+                sb.Append(" --passes=1")
         End Select
 
         sb.Append(" --target-bitrate=" & p.VideoBitrate)
@@ -283,7 +286,7 @@ Public Class AV1Params
         If q.Count > 0 Then sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
 
         If includePaths Then
-            sb.Append(" --fpf=" + (p.TempDir + p.Name + ".txt").Quotes)
+            If Mode.Value = AV1RateMode.TwoPass Then sb.Append(" --fpf=" + (p.TempDir + p.Name + ".txt").Quotes)
             sb.Append(" -o " + targetPath.Quotes)
         End If
 

@@ -6,8 +6,41 @@ Namespace UI
     Public Class FormBase
         Inherits Form
 
+        Event FilesDropped(files As String())
+
+        Private FileDropValue As Boolean
+
+        <DefaultValue(False)>
+        Property FileDrop As Boolean
+            Get
+                Return FileDropValue
+            End Get
+            Set(value As Boolean)
+                FileDropValue = value
+                AllowDrop = value
+            End Set
+        End Property
+
         Public Sub New()
             Font = New Font("Segoe UI", 9)
+        End Sub
+
+        Protected Overrides Sub OnDragEnter(e As DragEventArgs)
+            If FileDrop Then
+                Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+                If Not files.NothingOrEmpty Then e.Effect = DragDropEffects.Copy
+            End If
+
+            MyBase.OnDragEnter(e)
+        End Sub
+
+        Protected Overrides Sub OnDragDrop(e As DragEventArgs)
+            If FileDrop Then
+                Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+                If Not files.NothingOrEmpty Then RaiseEvent FilesDropped(files)
+            End If
+
+            MyBase.OnDragDrop(e)
         End Sub
 
         Protected Overrides Sub OnLoad(e As EventArgs)

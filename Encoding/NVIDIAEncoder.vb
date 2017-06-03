@@ -394,10 +394,10 @@ Public Class NVIDIAEncoder
                     If includePaths Then ret = If(includePaths, Package.QSVEncC.Path.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Package.NVEncC.Path.Quotes, "NVEncC")
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.NVEncC.Path.Quotes, "NVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error -hide_banner - | " + If(includePaths, Package.NVEncC.Path.Quotes, "NVEncC")
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.NVEncC.Path.Quotes, "NVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error -hide_banner - | " + If(includePaths, Package.NVEncC.Path.Quotes, "NVEncC")
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""

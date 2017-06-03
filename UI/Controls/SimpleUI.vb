@@ -687,12 +687,11 @@ Public Class SimpleUI
                                          dia.Filter = filter
                                          dia.SetInitDir(s.LastSourceDir)
                                          dia.InitialDirectory = p.TempDir
-
-                                         If dia.ShowDialog = DialogResult.OK Then
-                                             Edit.Text = dia.FileName
-                                         End If
+                                         If dia.ShowDialog = DialogResult.OK Then Edit.Text = dia.FileName
                                      End Using
                                  End Sub
+
+            AddHandler Edit.TextChanged, Sub() If File.Exists(Edit.Text) Then s.LastSourceDir = Edit.Text.Dir
         End Sub
 
         Sub BrowseFolder()

@@ -379,10 +379,10 @@ Class MP4BoxDemuxer
             (demuxSubtitles AndAlso proj.DemuxSubtitles = DemuxMode.Dialog)) Then
             ProcessForm.CloseProcessForm()
 
-            Using f As New StreamDemuxForm(proj.SourceFile, attachments)
-                If f.ShowDialog() = DialogResult.OK Then
-                    audioStreams = f.AudioStreams
-                    subtitles = f.Subtitles
+            Using form As New StreamDemuxForm(proj.SourceFile, attachments)
+                If form.ShowDialog() = DialogResult.OK Then
+                    audioStreams = form.AudioStreams
+                    subtitles = form.Subtitles
                 Else
                     Throw New AbortException
                 End If

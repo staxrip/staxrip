@@ -1256,10 +1256,6 @@ Public Class MainForm
         End Using
     End Function
 
-    Function OpenProject(path As String) As Boolean
-        Return OpenProject(path, True)
-    End Function
-
     Sub SetBindings(proj As Project, add As Boolean)
         SetTextBoxBinding(tbTargetFile, proj, NameOf(Project.TargetFile), add)
 
@@ -1282,14 +1278,14 @@ Public Class MainForm
         End If
     End Sub
 
+    Function OpenProject(Optional path As String = Nothing) As Boolean
+        Return OpenProject(path, True)
+    End Function
+
     Function OpenProject(path As String, saveCurrent As Boolean) As Boolean
-        If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then
-            Return False
-        End If
-
+        If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then Return False
         SetBindings(p, False)
-
-        If Not File.Exists(path) Then path = g.StartupTemplatePath
+        If path = "" OrElse Not File.Exists(path) Then path = g.StartupTemplatePath
 
         Try
             p = SafeSerialization.Deserialize(New Project, path)
@@ -1507,7 +1503,7 @@ Public Class MainForm
                     If s.ShowTemplateSelection Then
                         If Not LoadTemplateWithSelectionDialog() Then Throw New AbortException
                     Else
-                        If Not OpenProject(g.StartupTemplatePath, True) Then Throw New AbortException
+                        If Not OpenProject() Then Throw New AbortException
                     End If
                 End If
             End If
@@ -3441,9 +3437,9 @@ Public Class MainForm
     End Sub
 
     Function GetJobPath() As String
-        Dim name = Filepath.GetBase(p.TargetFile)
+        Dim name = p.TargetFile.Base
         If name = "" Then name = Macro.Expand(p.DefaultTargetName)
-        If name = "" Then name = Filepath.GetBase(p.SourceFile)
+        If name = "" Then name = p.SourceFile.Base
         Return p.TempDir + name + ".srip"
     End Function
 
@@ -4732,6 +4728,8 @@ Public Class MainForm
                     End If
                 End Using
             Case "Blu-ray Folder"
+                If p.SourceFile <> "" Then If Not OpenProject() Then Exit Sub
+
                 Using d As New FolderBrowserDialog
                     d.Description = "Please select a Blu-ray source folder."
                     d.SetSelectedPath(s.Storage.GetString("last blu-ray source folder"))
@@ -5330,7 +5328,7 @@ Public Class MainForm
 
     Sub ExecuteAudio(ap As AudioProfile)
         Try
-            If p.TempDir = "" Then p.TempDir = Filepath.GetDir(ap.File)
+            If p.TempDir = "" Then p.TempDir = ap.File.Dir
             ap = ObjectHelp.GetCopy(Of AudioProfile)(ap)
             Audio.Process(ap)
             ap.Encode()

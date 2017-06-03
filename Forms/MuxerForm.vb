@@ -19,7 +19,7 @@ Class MuxerForm
     Friend WithEvents CmdlControl As StaxRip.CommandLineControl
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
-    Friend WithEvents tc As System.Windows.Forms.TabControl
+    Friend WithEvents tcMain As System.Windows.Forms.TabControl
     Friend WithEvents tpCommandLine As System.Windows.Forms.TabPage
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents tpOptions As System.Windows.Forms.TabPage
@@ -37,6 +37,8 @@ Class MuxerForm
     Friend WithEvents bnEdit As ButtonEx
     Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
     Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
+    Friend WithEvents tlpMain As TableLayoutPanel
+    Friend WithEvents pnTab As Panel
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -46,7 +48,7 @@ Class MuxerForm
         Me.bnCommandLinePreview = New System.Windows.Forms.Button()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
-        Me.tc = New System.Windows.Forms.TabControl()
+        Me.tcMain = New System.Windows.Forms.TabControl()
         Me.tpSubtitles = New System.Windows.Forms.TabPage()
         Me.SubtitleControl = New StaxRip.SubtitleControl()
         Me.tpAudio = New System.Windows.Forms.TabPage()
@@ -64,7 +66,9 @@ Class MuxerForm
         Me.tpCommandLine = New System.Windows.Forms.TabPage()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.tc.SuspendLayout()
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
+        Me.pnTab = New System.Windows.Forms.Panel()
+        Me.tcMain.SuspendLayout()
         Me.tpSubtitles.SuspendLayout()
         Me.tpAudio.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
@@ -73,6 +77,8 @@ Class MuxerForm
         Me.tpOptions.SuspendLayout()
         Me.tpCommandLine.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
+        Me.tlpMain.SuspendLayout()
+        Me.pnTab.SuspendLayout()
         Me.SuspendLayout()
         '
         'CmdlControl
@@ -84,15 +90,15 @@ Class MuxerForm
         Me.CmdlControl.Location = New System.Drawing.Point(0, 48)
         Me.CmdlControl.Margin = New System.Windows.Forms.Padding(0)
         Me.CmdlControl.Name = "CmdlControl"
-        Me.CmdlControl.Size = New System.Drawing.Size(1782, 466)
+        Me.CmdlControl.Size = New System.Drawing.Size(1870, 934)
         Me.CmdlControl.TabIndex = 0
         '
         'bnCommandLinePreview
         '
-        Me.bnCommandLinePreview.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnCommandLinePreview.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.bnCommandLinePreview.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.bnCommandLinePreview.Location = New System.Drawing.Point(1010, 656)
-        Me.bnCommandLinePreview.Margin = New System.Windows.Forms.Padding(5)
+        Me.bnCommandLinePreview.Location = New System.Drawing.Point(365, 766)
+        Me.bnCommandLinePreview.Margin = New System.Windows.Forms.Padding(8)
         Me.bnCommandLinePreview.Name = "bnCommandLinePreview"
         Me.bnCommandLinePreview.Size = New System.Drawing.Size(320, 70)
         Me.bnCommandLinePreview.TabIndex = 4
@@ -101,37 +107,35 @@ Class MuxerForm
         '
         'bnCancel
         '
-        Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(1600, 656)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(5)
+        Me.bnCancel.Location = New System.Drawing.Point(967, 766)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(8)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
-        Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(1340, 656)
-        Me.bnOK.Margin = New System.Windows.Forms.Padding(5)
+        Me.bnOK.Location = New System.Drawing.Point(701, 766)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(8)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
         '
-        'tc
+        'tcMain
         '
-        Me.tc.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tc.Controls.Add(Me.tpSubtitles)
-        Me.tc.Controls.Add(Me.tpAudio)
-        Me.tc.Controls.Add(Me.tpOptions)
-        Me.tc.Controls.Add(Me.tpCommandLine)
-        Me.tc.Location = New System.Drawing.Point(14, 14)
-        Me.tc.Margin = New System.Windows.Forms.Padding(5)
-        Me.tc.Name = "tc"
-        Me.tc.SelectedIndex = 0
-        Me.tc.Size = New System.Drawing.Size(1836, 623)
-        Me.tc.TabIndex = 5
+        Me.tcMain.Controls.Add(Me.tpSubtitles)
+        Me.tcMain.Controls.Add(Me.tpAudio)
+        Me.tcMain.Controls.Add(Me.tpOptions)
+        Me.tcMain.Controls.Add(Me.tpCommandLine)
+        Me.tcMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tcMain.Location = New System.Drawing.Point(0, 0)
+        Me.tcMain.Margin = New System.Windows.Forms.Padding(0)
+        Me.tcMain.Name = "tcMain"
+        Me.tcMain.SelectedIndex = 0
+        Me.tcMain.Size = New System.Drawing.Size(1201, 734)
+        Me.tcMain.TabIndex = 5
         '
         'tpSubtitles
         '
@@ -140,7 +144,7 @@ Class MuxerForm
         Me.tpSubtitles.Margin = New System.Windows.Forms.Padding(5)
         Me.tpSubtitles.Name = "tpSubtitles"
         Me.tpSubtitles.Padding = New System.Windows.Forms.Padding(5)
-        Me.tpSubtitles.Size = New System.Drawing.Size(1812, 542)
+        Me.tpSubtitles.Size = New System.Drawing.Size(1177, 653)
         Me.tpSubtitles.TabIndex = 3
         Me.tpSubtitles.Text = " Subtitles "
         Me.tpSubtitles.UseVisualStyleBackColor = True
@@ -151,7 +155,7 @@ Class MuxerForm
         Me.SubtitleControl.Location = New System.Drawing.Point(5, 5)
         Me.SubtitleControl.Margin = New System.Windows.Forms.Padding(2, 3, 2, 3)
         Me.SubtitleControl.Name = "SubtitleControl"
-        Me.SubtitleControl.Size = New System.Drawing.Size(1802, 532)
+        Me.SubtitleControl.Size = New System.Drawing.Size(1167, 643)
         Me.SubtitleControl.TabIndex = 0
         '
         'tpAudio
@@ -161,7 +165,7 @@ Class MuxerForm
         Me.tpAudio.Margin = New System.Windows.Forms.Padding(5)
         Me.tpAudio.Name = "tpAudio"
         Me.tpAudio.Padding = New System.Windows.Forms.Padding(5)
-        Me.tpAudio.Size = New System.Drawing.Size(1812, 542)
+        Me.tpAudio.Size = New System.Drawing.Size(1900, 1010)
         Me.tpAudio.TabIndex = 4
         Me.tpAudio.Text = "   Audio   "
         Me.tpAudio.UseVisualStyleBackColor = True
@@ -179,7 +183,7 @@ Class MuxerForm
         Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
         Me.TableLayoutPanel2.RowCount = 1
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(1802, 532)
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(1890, 1000)
         Me.TableLayoutPanel2.TabIndex = 7
         '
         'FlowLayoutPanel1
@@ -193,7 +197,7 @@ Class MuxerForm
         Me.FlowLayoutPanel1.Controls.Add(Me.bnPlay)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnEdit)
         Me.FlowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(1511, 0)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(1599, 0)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
         Me.FlowLayoutPanel1.Size = New System.Drawing.Size(291, 516)
@@ -257,7 +261,7 @@ Class MuxerForm
         Me.dgvAudio.Margin = New System.Windows.Forms.Padding(0)
         Me.dgvAudio.Name = "dgvAudio"
         Me.dgvAudio.RowTemplate.Height = 28
-        Me.dgvAudio.Size = New System.Drawing.Size(1511, 532)
+        Me.dgvAudio.Size = New System.Drawing.Size(1599, 1000)
         Me.dgvAudio.TabIndex = 0
         '
         'tpOptions
@@ -267,7 +271,7 @@ Class MuxerForm
         Me.tpOptions.Margin = New System.Windows.Forms.Padding(5)
         Me.tpOptions.Name = "tpOptions"
         Me.tpOptions.Padding = New System.Windows.Forms.Padding(5)
-        Me.tpOptions.Size = New System.Drawing.Size(1812, 542)
+        Me.tpOptions.Size = New System.Drawing.Size(1900, 1010)
         Me.tpOptions.TabIndex = 2
         Me.tpOptions.Text = "  Options  "
         Me.tpOptions.UseVisualStyleBackColor = True
@@ -278,7 +282,7 @@ Class MuxerForm
         Me.SimpleUI.Location = New System.Drawing.Point(5, 5)
         Me.SimpleUI.Margin = New System.Windows.Forms.Padding(5)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(1802, 532)
+        Me.SimpleUI.Size = New System.Drawing.Size(1890, 1000)
         Me.SimpleUI.TabIndex = 0
         Me.SimpleUI.Text = "SimpleUI1"
         '
@@ -289,7 +293,7 @@ Class MuxerForm
         Me.tpCommandLine.Margin = New System.Windows.Forms.Padding(5)
         Me.tpCommandLine.Name = "tpCommandLine"
         Me.tpCommandLine.Padding = New System.Windows.Forms.Padding(15, 14, 15, 14)
-        Me.tpCommandLine.Size = New System.Drawing.Size(1812, 542)
+        Me.tpCommandLine.Size = New System.Drawing.Size(1900, 1010)
         Me.tpCommandLine.TabIndex = 1
         Me.tpCommandLine.Text = " Command Line "
         Me.tpCommandLine.UseVisualStyleBackColor = True
@@ -308,7 +312,7 @@ Class MuxerForm
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1782, 514)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1870, 982)
         Me.TableLayoutPanel1.TabIndex = 2
         '
         'Label1
@@ -321,22 +325,50 @@ Class MuxerForm
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "Additional custom switches:"
         '
+        'tlpMain
+        '
+        Me.tlpMain.ColumnCount = 3
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpMain.Controls.Add(Me.bnCancel, 2, 1)
+        Me.tlpMain.Controls.Add(Me.bnOK, 1, 1)
+        Me.tlpMain.Controls.Add(Me.bnCommandLinePreview, 0, 1)
+        Me.tlpMain.Controls.Add(Me.pnTab, 0, 0)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.Padding = New System.Windows.Forms.Padding(8)
+        Me.tlpMain.RowCount = 2
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.Size = New System.Drawing.Size(1233, 852)
+        Me.tlpMain.TabIndex = 8
+        '
+        'pnTab
+        '
+        Me.tlpMain.SetColumnSpan(Me.pnTab, 3)
+        Me.pnTab.Controls.Add(Me.tcMain)
+        Me.pnTab.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnTab.Location = New System.Drawing.Point(16, 16)
+        Me.pnTab.Margin = New System.Windows.Forms.Padding(8)
+        Me.pnTab.Name = "pnTab"
+        Me.pnTab.Size = New System.Drawing.Size(1201, 734)
+        Me.pnTab.TabIndex = 8
+        '
         'MuxerForm
         '
         Me.AcceptButton = Me.bnOK
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1864, 740)
-        Me.Controls.Add(Me.tc)
-        Me.Controls.Add(Me.bnCancel)
-        Me.Controls.Add(Me.bnOK)
-        Me.Controls.Add(Me.bnCommandLinePreview)
+        Me.ClientSize = New System.Drawing.Size(1233, 852)
+        Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "MuxerForm"
         Me.Text = "Container"
-        Me.tc.ResumeLayout(False)
+        Me.tcMain.ResumeLayout(False)
         Me.tpSubtitles.ResumeLayout(False)
         Me.tpAudio.ResumeLayout(False)
         Me.TableLayoutPanel2.ResumeLayout(False)
@@ -347,6 +379,8 @@ Class MuxerForm
         Me.tpCommandLine.ResumeLayout(False)
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.TableLayoutPanel1.PerformLayout()
+        Me.tlpMain.ResumeLayout(False)
+        Me.pnTab.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -364,7 +398,7 @@ Class MuxerForm
         Me.Muxer = muxer
         SubtitleControl.AddSubtitles(muxer.Subtitles)
         CmdlControl.tb.Text = muxer.AdditionalSwitches
-        tc.SelectedIndex = s.Storage.GetInt("last selected muxer tab")
+        tcMain.SelectedIndex = s.Storage.GetInt("last selected muxer tab")
 
         dgvAudio.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
         dgvAudio.MultiSelect = False
@@ -408,19 +442,21 @@ Class MuxerForm
         TipProvider.SetTip("Additional command line switches that may contain macros.", tpCommandLine)
     End Sub
 
-    Private Sub MuxerForm_FormClosed() Handles Me.FormClosed
+    Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
         If TypeOf Muxer Is MkvMuxer Then
             s.CmdlPresetsMKV = CmdlControl.Presets.ReplaceUnicode
         ElseIf TypeOf Muxer Is MP4Muxer Then
             s.CmdlPresetsMP4 = CmdlControl.Presets.ReplaceUnicode
         End If
 
-        s.Storage.SetInt("last selected muxer tab", tc.SelectedIndex)
+        s.Storage.SetInt("last selected muxer tab", tcMain.SelectedIndex)
         SetValues()
 
         If DialogResult = DialogResult.OK Then
             p.AudioTracks = DirectCast(AudioBindingSource.DataSource, List(Of AudioProfile))
         End If
+
+        MyBase.OnFormClosed(e)
     End Sub
 
     Private Sub SetValues()
@@ -429,13 +465,15 @@ Class MuxerForm
         Muxer.AdditionalSwitches = CmdlControl.tb.Text.ReplaceUnicode
     End Sub
 
-    Private Sub MuxerForm_HelpRequested() Handles Me.HelpRequested
+    Protected Overrides Sub OnHelpRequested(hevent As HelpEventArgs)
         Dim f As New HelpForm()
         f.Doc.WriteStart(Text)
         f.Doc.WriteP(Strings.Muxer)
         f.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
         f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
         f.Show()
+
+        MyBase.OnHelpRequested(hevent)
     End Sub
 
     Private Sub buCmdlPreview_Click() Handles bnCommandLinePreview.Click
@@ -535,8 +573,7 @@ Class MuxerForm
         UpdateAudioControls()
     End Sub
 
-    Private Sub MuxerForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
-        Refresh()
+    Protected Overrides Sub OnShown(e As EventArgs)
         Dim lastAction As Action
 
         Dim UI = SimpleUI
@@ -618,5 +655,7 @@ Class MuxerForm
 
         page.ResumeLayout()
         lastAction?.Invoke
+
+        MyBase.OnShown(e)
     End Sub
 End Class

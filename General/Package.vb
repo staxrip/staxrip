@@ -895,7 +895,7 @@ Public Class AviSynthPlusPackage
         WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         FixedDir = Folder.System
-        SetupFilename = "AviSynth+r2455.exe"
+        SetupFilename = "AviSynth+r2502.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean

@@ -973,10 +973,10 @@ Public Class x265Params
                     sb.Append(Package.QSVEncC.Path.Quotes + " -o - -c raw" + crop + " -i " + p.SourceFile.Quotes + " | " + Package.x265.Path.Quotes)
                 Case "ffqsv"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.Path.Quotes + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Quotes + " -f yuv4mpegpipe" + crop + " -loglevel error - | " + Package.x265.Path.Quotes)
+                    sb.Append(Package.ffmpeg.Path.Quotes + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Quotes + " -f yuv4mpegpipe" + crop + " -loglevel error -hide_banner - | " + Package.x265.Path.Quotes)
                 Case "ffdxva"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.Path.Quotes + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Quotes + " -f yuv4mpegpipe" + crop + " -loglevel error - | " + Package.x265.Path.Quotes)
+                    sb.Append(Package.ffmpeg.Path.Quotes + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Quotes + " -f yuv4mpegpipe" + crop + " -loglevel error -hide_banner - | " + Package.x265.Path.Quotes)
             End Select
         End If
 

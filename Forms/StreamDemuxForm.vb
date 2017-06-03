@@ -8,6 +8,9 @@ Class StreamDemuxForm
     Sub New(sourceFile As String, attachments As List(Of Attachment))
         InitializeComponent()
 
+        Me.cbDemuxChapters.Visible = False
+        Me.cbDemuxVideo.Visible = False
+
         ScaleClientSize(42, 29)
         StartPosition = FormStartPosition.CenterParent
 
@@ -30,6 +33,8 @@ Class StreamDemuxForm
         lvAttachments.CheckBoxes = True
         lvAttachments.HeaderStyle = ColumnHeaderStyle.None
         lvAttachments.AutoCheckMode = AutoCheckMode.SingleClick
+
+        AddHandler Load, Sub() lvAudio.Columns(0).Width = lvAudio.ClientSize.Width
 
         AudioStreams = MediaInfo.GetAudioStreams(sourceFile)
         Subtitles = MediaInfo.GetSubtitles(sourceFile)
@@ -68,10 +73,6 @@ Class StreamDemuxForm
                 item.Checked = attachment.Enabled
             Next
         End If
-    End Sub
-
-    Private Sub StreamDemuxForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        lvAudio.Columns(0).Width = lvAudio.ClientSize.Width
     End Sub
 
     Private Sub lvAudio_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvAudio.ItemChecked

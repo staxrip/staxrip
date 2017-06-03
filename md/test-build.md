@@ -17,6 +17,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 - update: AviSynth r2502
 - fix: Opening a Blu-ray folder while having already a source file opened mixed various things up
 - fix: DPI scaling broken under rare conditions 
+- fix: incorrect command line generation for AV1 two pass
 
 #### 1.5.0.1 unstable test build
 

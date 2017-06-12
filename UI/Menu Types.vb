@@ -595,13 +595,8 @@ Namespace UI
         End Function
     End Class
 
-    Class TextCustomMenu
-        Shared Function EditMenu(value As String, owner As Form) As String
-            Return EditMenu(value, Nothing, Nothing, owner)
-        End Function
-
+    Public Class TextCustomMenu
         Shared Function EditMenu(value As String,
-                                 helpName As String,
                                  defaults As String,
                                  owner As Form) As String
 
@@ -611,7 +606,7 @@ Namespace UI
                 dia.MacroEditorControl.rtbDefaults.Text = defaults
                 dia.Text = "Menu Editor"
 
-                If helpName <> "" Then
+                If defaults <> "" Then
                     dia.bnContext.Text = " Restore Defaults... "
                     dia.bnContext.Visible = True
                     dia.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then dia.MacroEditorControl.Value = defaults)
@@ -630,18 +625,15 @@ Namespace UI
                                 components As IContainer,
                                 action As Action(Of String)) As ContextMenuStripEx
 
-            If owner.ContextMenuStrip Is Nothing Then
-                owner.ContextMenuStrip = New ContextMenuStripEx(components)
-            End If
-
-            Dim ret = CType(owner.ContextMenuStrip, ContextMenuStripEx)
+            If owner.ContextMenuStrip Is Nothing Then owner.ContextMenuStrip = New ContextMenuStripEx(components)
+            Dim ret = DirectCast(owner.ContextMenuStrip, ContextMenuStripEx)
             ret.Items.Clear()
 
             For Each i In definition.SplitKeepEmpty(BR)
                 If i.Contains("=") Then
                     Dim arg = i.Right("=").Trim
                     ActionMenuItem.Add(ret.Items, i.Left("="), action, arg, Nothing)
-                ElseIf i.EndsWith(" | -") Then
+                ElseIf i.EndsWith("-") Then
                     ActionMenuItem.Add(ret.Items, i)
                 ElseIf i = "" Then
                     ret.Items.Add(New ToolStripSeparator)

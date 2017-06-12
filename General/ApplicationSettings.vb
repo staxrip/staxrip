@@ -40,7 +40,8 @@ Public Class ApplicationSettings
     Public ShowTemplateSelection As Boolean
     Public ShutdownTimeout As Integer
     Public SnapToDesktopEdges As Boolean = True
-    Public SourceAspectRatioMenu As String
+    Public SourceDarMenu As String
+    Public SourceParMenu As String
     Public StartupTemplate As String
     Public Storage As ObjectStorage
     Public StringDictionary As Dictionary(Of String, String)
@@ -204,9 +205,8 @@ Public Class ApplicationSettings
                               "Stats = --stats ""%target_temp_file%.stats"""
         End If
 
-        If Check(SourceAspectRatioMenu, "Source aspect ratio menu", 24) Then
-            SourceAspectRatioMenu = GetDefaultSourceAspectRatioMenu()
-        End If
+        If Check(SourceParMenu, "Source PAR menu", 4) Then SourceParMenu = GetSourceParMenu()
+        If Check(SourceDarMenu, "Source DAR menu", 4) Then SourceDarMenu = GetSourceDarMenu()
 
         If Check(TargetImageSizeMenu, "Target image size menu", 13) Then
             TargetImageSizeMenu = GetDefaultTargetImageSizeMenu()
@@ -273,26 +273,36 @@ Public Class ApplicationSettings
             FilterSetupProfiles = VideoScript.GetDefaults
         End If
 
-        If LastSourceDir Is Nothing Then LastSourceDir = ""
+        If LastSourceDir = "" Then LastSourceDir = ""
     End Sub
 
-    Shared Function GetDefaultSourceAspectRatioMenu() As String
-        Dim r =
-                "DAR |  4:3 = 1.333333" + BR +
-                "DAR | 16:9 = 1.777777" + BR +
-                "DAR | -" + BR +
-                "DAR | 16:9 PAL ITU 1.823361 = 1.823361" + BR +
-                "DAR |  4:3 PAL ITU 1.367521 = 1.367521" + BR +
-                "DAR | 16:9 NTSC ITU 1.822784 = 1.822784" + BR +
-                "DAR |  4:3 NTSC ITU 1.367088 = 1.367088" + BR +
-                "PAR |  1:1 = 1:1" + BR +
-                "PAR | -" + BR +
-                "PAR | 16:9 PAL DVD MPEG-4 16:11 = 16:11" + BR +
-                "PAR |  4:3 PAL DVD MPEG-4 12:11 = 12:11" + BR +
-                "PAR | 16:9 NTSC DVD MPEG-4 40:33 = 40:33" + BR +
-                "PAR |  4:3 NTSC DVD MPEG-4 10:11 = 10:11"
+    Shared Function GetSourceDarMenu() As String
+        Dim ret =
+"Custom... = $enter_text:Enter a custom Display Aspect Ratio.$
 
-        Return r.Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
+4:3 = 4:3
+16:9 = 16:9
+
+PAL ITU 16:9 1.823361 = 1.823361
+PAL ITU 4:3 1.367521 = 1.367521
+NTSC ITU 16:9 1.822784 = 1.822784
+NTSC ITU 4:3 1.367088 = 1.367088"
+
+        Return ret
+    End Function
+
+    Shared Function GetSourceParMenu() As String
+        Dim ret =
+"Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$
+ 1:1 = 1:1
+
+PAL DVD MPEG-4 16:11 (16:9)= 16:11
+PAL DVD MPEG-4 12:11 (4:3)= 12:11
+
+NTSC DVD MPEG-4 40:33 (16:9)= 40:33
+NTSC DVD MPEG-4 10:11 (4:3)= 10:11"
+
+        Return ret
     End Function
 
     Shared Function GetDefaultTargetImageSizeMenu() As String

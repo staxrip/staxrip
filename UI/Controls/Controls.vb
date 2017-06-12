@@ -353,9 +353,6 @@ Namespace UI
         Inherits TextBox
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Property ValidationFunc As Func(Of String, Boolean)
-
-        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Shadows Property Name() As String
             Get
                 Return MyBase.Name
@@ -374,14 +371,6 @@ Namespace UI
                 MyBase.TabIndex = value
             End Set
         End Property
-
-        Protected Overrides Sub OnValidating(e As CancelEventArgs)
-            If Not ValidationFunc Is Nothing Then
-                e.Cancel = Not ValidationFunc.Invoke(Text)
-            End If
-
-            MyBase.OnValidating(e)
-        End Sub
 
         Sub SetTextWithoutTextChangedEvent(text As String)
             BlockOnTextChanged = True
@@ -690,7 +679,7 @@ Namespace UI
         End Sub
     End Class
 
-    Public Class SimpleLinkLabel
+    Public Class ButtonLabel
         Inherits Label
 
         Private LinkColorNormal As Color
@@ -722,7 +711,7 @@ Namespace UI
     Public Class LinkGroupBox
         Inherits GroupBox
 
-        Public WithEvents Label As New SimpleLinkLabel
+        Public WithEvents Label As New ButtonLabel
         Event LinkClick()
 
         Sub New()

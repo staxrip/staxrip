@@ -248,7 +248,7 @@ Public Class GlobalCommands
                   name As String)
 
         Try
-            Package.Items(name).StartAction.Invoke
+            If Package.Items(name).VerifyOK Then Package.Items(name).StartAction?.Invoke
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -274,12 +274,13 @@ Public Class GlobalCommands
         --check-encoders --check-decoders --check-formats --check-protocols
         --check-filters --input --output --raw --avs --vpy --vpy-mt
         --avcuvid-analyze --audio-source --audio-file --seek --format --audio-copy
-        --audio-copy --audio-codec --vpp-perf-monitor
+        --audio-copy --audio-codec --vpp-perf-monitor --avi
         --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
         --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
         --avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
         --log --log-framelist".Split((" " + BR).ToCharArray())
-        Dim nvHelp = File.ReadAllText(".\Apps\NVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
+        File.WriteAllText(Package.NVEncC.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.NVEncC.Path, "-h"))
+        Dim nvHelp = File.ReadAllText(Package.NVEncC.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim nvHelpSwitches = Regex.Matches(nvHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim nvCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\NVIDIAEncoder.vb").Replace("--no-", "--")
         Dim nvPresent = Regex.Matches(nvCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
@@ -340,22 +341,13 @@ Public Class GlobalCommands
 
         Dim x265Except = "--crop-rect --display-window --fast-cbf --frame-skip --help
         --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version
-        --opt-qp-pps --opt-ref-list-length-pps".Split((" " + BR).ToCharArray())
-        Dim x265RemoveExcept = "--crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
+        --opt-qp-pps --opt-ref-list-length-pps --dhdr10-info --no-scenecut
+        --no-progress --pbration".Split((" " + BR).ToCharArray())
+        Dim x265RemoveExcept = "--numa-pools --rdoq --cip --qblur --cplxblur --cu-stats --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
 
-        Dim x265HelpSwitches = Regex.Matches(
-            File.ReadAllText(Folder.Startup.Parent + "x265\param.cpp"),
-            "OPT2?\(""(.+?)""").
-            OfType(Of Match)().
-            Select(Function(x) "--" + x.Groups(1).Value).
-            Union(Regex.Matches(
-            File.ReadAllText(Folder.Startup.Parent + "x265\x265cli.h"),
-            "{ *""(.+?)"" *, *\w+argument *,").
-            OfType(Of Match)().
-            Select(Function(x) "--" + x.Groups(1).Value)).
-            Where(Function(arg) Not arg.StartsWith("--no-"))
-
-        Dim x265Code = File.ReadAllText(Folder.Startup.Parent + "Encoding\x265.vb").Replace("--no-", "--")
+        Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --help").Replace("--[no-]", "--")
+        Dim x265HelpSwitches = Regex.Matches(x265Help, "--[\w-]+").OfType(Of Match).Select(Function(val) val.Value)
+        Dim x265Code = File.ReadAllText(Folder.Startup.Parent + "Encoding\x265Encoder.vb").Replace("--no-", "--")
         Dim x265Present As New HashSet(Of String)
 
         For Each switch In Regex.Matches(x265Code, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)

@@ -210,7 +210,7 @@ Class SourceFilesForm
             d.SetInitDir(s.LastSourceDir)
 
             If d.ShowDialog() = DialogResult.OK Then
-                s.LastSourceDir = Filepath.GetDir(d.FileName)
+                s.LastSourceDir = d.FileName.Dir
                 lb.Items.AddRange(d.FileNames.Sort.ToArray)
                 lb.SelectedIndex = lb.Items.Count - 1
             End If

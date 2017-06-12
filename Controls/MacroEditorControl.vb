@@ -23,8 +23,8 @@ Class MacroEditorControl
     Public WithEvents rtbPreview As RichTextBoxEx
     Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents FlowLayoutPanel1 As System.Windows.Forms.FlowLayoutPanel
-    Friend WithEvents llMacros As SimpleLinkLabel
-    Friend WithEvents llHelp As SimpleLinkLabel
+    Friend WithEvents llMacros As ButtonLabel
+    Friend WithEvents llHelp As ButtonLabel
     Public WithEvents tpDefaults As TabPage
     Public WithEvents rtbDefaults As RichTextBoxEx
     Private components As System.ComponentModel.IContainer
@@ -42,8 +42,8 @@ Class MacroEditorControl
         Me.gb = New System.Windows.Forms.GroupBox()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
-        Me.llMacros = New StaxRip.UI.SimpleLinkLabel()
-        Me.llHelp = New StaxRip.UI.SimpleLinkLabel()
+        Me.llMacros = New StaxRip.UI.ButtonLabel()
+        Me.llHelp = New StaxRip.UI.ButtonLabel()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
         Me.TabControl.SuspendLayout()
         Me.tpEdit.SuspendLayout()

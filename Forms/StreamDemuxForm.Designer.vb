@@ -67,7 +67,7 @@ Partial Class StreamDemuxForm
         Me.gbAudio.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.gbAudio.Name = "gbAudio"
         Me.gbAudio.Padding = New System.Windows.Forms.Padding(10, 0, 10, 10)
-        Me.gbAudio.Size = New System.Drawing.Size(1185, 370)
+        Me.gbAudio.Size = New System.Drawing.Size(1292, 370)
         Me.gbAudio.TabIndex = 24
         Me.gbAudio.TabStop = False
         Me.gbAudio.Text = "Audio"
@@ -86,7 +86,7 @@ Partial Class StreamDemuxForm
         Me.AudioTableLayoutPanel.RowCount = 2
         Me.AudioTableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.AudioTableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.AudioTableLayoutPanel.Size = New System.Drawing.Size(1165, 312)
+        Me.AudioTableLayoutPanel.Size = New System.Drawing.Size(1272, 312)
         Me.AudioTableLayoutPanel.TabIndex = 19
         '
         'lvAudio
@@ -97,7 +97,7 @@ Partial Class StreamDemuxForm
         Me.lvAudio.Location = New System.Drawing.Point(0, 0)
         Me.lvAudio.Margin = New System.Windows.Forms.Padding(0)
         Me.lvAudio.Name = "lvAudio"
-        Me.lvAudio.Size = New System.Drawing.Size(1165, 232)
+        Me.lvAudio.Size = New System.Drawing.Size(1272, 232)
         Me.lvAudio.TabIndex = 8
         Me.lvAudio.UseCompatibleStateImageBehavior = False
         '
@@ -161,7 +161,7 @@ Partial Class StreamDemuxForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 108.0!))
-        Me.tlpMain.Size = New System.Drawing.Size(1215, 849)
+        Me.tlpMain.Size = New System.Drawing.Size(1322, 849)
         Me.tlpMain.TabIndex = 25
         '
         'gbSubtitles
@@ -172,7 +172,7 @@ Partial Class StreamDemuxForm
         Me.gbSubtitles.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.gbSubtitles.Name = "gbSubtitles"
         Me.gbSubtitles.Padding = New System.Windows.Forms.Padding(10)
-        Me.gbSubtitles.Size = New System.Drawing.Size(1185, 222)
+        Me.gbSubtitles.Size = New System.Drawing.Size(1292, 222)
         Me.gbSubtitles.TabIndex = 25
         Me.gbSubtitles.TabStop = False
         Me.gbSubtitles.Text = "Subtitles"
@@ -191,7 +191,7 @@ Partial Class StreamDemuxForm
         Me.SubtitleTableLayoutPanel.RowCount = 2
         Me.SubtitleTableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.SubtitleTableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.SubtitleTableLayoutPanel.Size = New System.Drawing.Size(1165, 154)
+        Me.SubtitleTableLayoutPanel.Size = New System.Drawing.Size(1272, 154)
         Me.SubtitleTableLayoutPanel.TabIndex = 20
         '
         'lvSubtitles
@@ -202,7 +202,7 @@ Partial Class StreamDemuxForm
         Me.lvSubtitles.Location = New System.Drawing.Point(0, 0)
         Me.lvSubtitles.Margin = New System.Windows.Forms.Padding(0)
         Me.lvSubtitles.Name = "lvSubtitles"
-        Me.lvSubtitles.Size = New System.Drawing.Size(1165, 74)
+        Me.lvSubtitles.Size = New System.Drawing.Size(1272, 74)
         Me.lvSubtitles.TabIndex = 9
         Me.lvSubtitles.UseCompatibleStateImageBehavior = False
         '
@@ -259,7 +259,7 @@ Partial Class StreamDemuxForm
         Me.gbAttachments.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.gbAttachments.Name = "gbAttachments"
         Me.gbAttachments.Padding = New System.Windows.Forms.Padding(10, 0, 10, 10)
-        Me.gbAttachments.Size = New System.Drawing.Size(1185, 148)
+        Me.gbAttachments.Size = New System.Drawing.Size(1292, 148)
         Me.gbAttachments.TabIndex = 27
         Me.gbAttachments.TabStop = False
         Me.gbAttachments.Text = "Attachments"
@@ -270,7 +270,7 @@ Partial Class StreamDemuxForm
         Me.lvAttachments.Location = New System.Drawing.Point(10, 48)
         Me.lvAttachments.Margin = New System.Windows.Forms.Padding(10)
         Me.lvAttachments.Name = "lvAttachments"
-        Me.lvAttachments.Size = New System.Drawing.Size(1165, 90)
+        Me.lvAttachments.Size = New System.Drawing.Size(1272, 90)
         Me.lvAttachments.TabIndex = 0
         Me.lvAttachments.UseCompatibleStateImageBehavior = False
         '
@@ -278,28 +278,29 @@ Partial Class StreamDemuxForm
         '
         Me.TableLayoutPanel1.AutoSize = True
         Me.TableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.TableLayoutPanel1.ColumnCount = 4
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.ColumnCount = 5
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TableLayoutPanel1.Controls.Add(Me.bnOK, 2, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.bnCancel, 3, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.cbDemuxVideo, 0, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.cbDemuxChapters, 1, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.bnCancel, 4, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.bnOK, 3, 0)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(3, 743)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 1
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1209, 103)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1316, 103)
         Me.TableLayoutPanel1.TabIndex = 28
         '
         'bnOK
         '
         Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(678, 16)
+        Me.bnOK.Location = New System.Drawing.Point(786, 16)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
@@ -308,7 +309,7 @@ Partial Class StreamDemuxForm
         '
         Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(943, 16)
+        Me.bnCancel.Location = New System.Drawing.Point(1051, 16)
         Me.bnCancel.Margin = New System.Windows.Forms.Padding(15)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
@@ -317,7 +318,8 @@ Partial Class StreamDemuxForm
         '
         Me.cbDemuxVideo.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cbDemuxVideo.AutoSize = True
-        Me.cbDemuxVideo.Location = New System.Drawing.Point(29, 25)
+        Me.cbDemuxVideo.Location = New System.Drawing.Point(15, 25)
+        Me.cbDemuxVideo.Margin = New System.Windows.Forms.Padding(15, 0, 50, 0)
         Me.cbDemuxVideo.Name = "cbDemuxVideo"
         Me.cbDemuxVideo.Size = New System.Drawing.Size(280, 52)
         Me.cbDemuxVideo.TabIndex = 2
@@ -328,7 +330,7 @@ Partial Class StreamDemuxForm
         '
         Me.cbDemuxChapters.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cbDemuxChapters.AutoSize = True
-        Me.cbDemuxChapters.Location = New System.Drawing.Point(344, 25)
+        Me.cbDemuxChapters.Location = New System.Drawing.Point(348, 25)
         Me.cbDemuxChapters.Name = "cbDemuxChapters"
         Me.cbDemuxChapters.Size = New System.Drawing.Size(328, 52)
         Me.cbDemuxChapters.TabIndex = 3
@@ -338,7 +340,7 @@ Partial Class StreamDemuxForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(1215, 849)
+        Me.ClientSize = New System.Drawing.Size(1322, 849)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)

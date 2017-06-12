@@ -137,13 +137,15 @@ Public MustInherit Class Muxer
         For Each i In files
             If g.IsSourceSameOrSimilar(i) Then
                 If Not TypeOf Me Is WebMMuxer Then
-                    If i.Ext = "txt" Then
-                        Dim lower = i.ToLower
-                        If lower.Contains("chapter") Then ChapterFile = i
-                        If lower.Contains("timecodes") Then TimecodesFile = i
-                    End If
+                    Dim lower = i.ToLower
 
-                    If i.Ext = "xml" AndAlso File.ReadAllText(i).Contains("<Chapters>") Then ChapterFile = i
+                    If lower.Contains("chapters") Then
+                        If TypeOf Me Is MP4Muxer Then
+                            If lower.Ext = "txt" Then ChapterFile = i
+                        Else
+                            If ChapterFile.Ext <> "xml" Then ChapterFile = i
+                        End If
+                    End If
                 End If
             End If
 
@@ -219,14 +221,11 @@ Public Class MP4Muxer
             args.Append(" -fps " + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
         End If
 
-        Dim temp As String = Nothing
+        Dim temp = ""
         Dim par = Calc.GetTargetPAR
 
-        If TypeOf p.VideoEncoder Is NullEncoder Then
-            temp = ":par=" & par.X & ":" & par.Y
-        End If
-
-        args.Append(" -add """ + p.VideoEncoder.OutputPath + "#video" + temp + """")
+        If TypeOf p.VideoEncoder Is NullEncoder Then temp = ":par=" & par.X & ":" & par.Y
+        args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + temp).Quotes)
 
         AddAudio(p.Audio0, args)
         AddAudio(p.Audio1, args)
@@ -256,7 +255,6 @@ Public Class MP4Muxer
         If CoverFile <> "" AndAlso File.Exists(CoverFile) Then tagList.Add("cover=" + CoverFile.Quotes)
         If Tags <> "" Then tagList.Add(Macro.Expand(Tags))
         If tagList.Count > 0 Then args.Append(" -itags " + String.Join(":", tagList))
-
         args.Append(" -new " + p.TargetFile.Quotes)
 
         Return args.ToString.Trim
@@ -512,6 +510,10 @@ Public Class MkvMuxer
 
         If VideoTrackName <> "" Then
             args += " --track-name """ & id & ":" + Convert(VideoTrackName) + """"
+        End If
+
+        If TypeOf p.VideoEncoder Is NullEncoder Then
+            args += " --aspect-ratio " & id & ":" + Calc.GetTargetDAR.ToInvariantString("f6")
         End If
 
         If MediaInfo.GetFrameRate(p.VideoEncoder.OutputPath, 0) = 0 Then

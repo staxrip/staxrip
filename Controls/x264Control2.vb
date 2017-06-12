@@ -1,6 +1,6 @@
-Imports StaxRip.UI
+﻿Imports StaxRip.UI
 
-Class x265Control
+Class x264Control2
     Inherits UserControl
 
 #Region " Designer "
@@ -14,7 +14,7 @@ Class x265Control
     End Sub
 
     Friend WithEvents lv As StaxRip.UI.ListViewEx
-    Friend WithEvents llConfigCodec As ButtonLabel
+    Friend WithEvents blConfigCodec As ButtonLabel
     Friend WithEvents llConfigContainer As ButtonLabel
     Friend WithEvents llCompCheck As ButtonLabel
 
@@ -22,7 +22,7 @@ Class x265Control
 
     <DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.llConfigCodec = New ButtonLabel()
+        Me.blConfigCodec = New ButtonLabel()
         Me.llConfigContainer = New ButtonLabel()
         Me.llCompCheck = New ButtonLabel()
         Me.lv = New StaxRip.UI.ListViewEx()
@@ -30,17 +30,17 @@ Class x265Control
         '
         'llConfigCodec
         '
-        Me.llConfigCodec.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.llConfigCodec.AutoSize = True
-        Me.llConfigCodec.BackColor = System.Drawing.SystemColors.Window
-        Me.llConfigCodec.LinkColor = System.Drawing.Color.DimGray
-        Me.llConfigCodec.Location = New System.Drawing.Point(3, 185)
-        Me.llConfigCodec.Margin = New System.Windows.Forms.Padding(3)
-        Me.llConfigCodec.Name = "llConfigCodec"
-        Me.llConfigCodec.Size = New System.Drawing.Size(120, 25)
-        Me.llConfigCodec.TabIndex = 1
-        Me.llConfigCodec.TabStop = True
-        Me.llConfigCodec.Text = "Options"
+        Me.blConfigCodec.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.blConfigCodec.AutoSize = True
+        Me.blConfigCodec.BackColor = System.Drawing.SystemColors.Window
+        Me.blConfigCodec.LinkColor = System.Drawing.Color.DimGray
+        Me.blConfigCodec.Location = New System.Drawing.Point(3, 185)
+        Me.blConfigCodec.Margin = New System.Windows.Forms.Padding(3)
+        Me.blConfigCodec.Name = "llConfigCodec"
+        Me.blConfigCodec.Size = New System.Drawing.Size(120, 25)
+        Me.blConfigCodec.TabIndex = 1
+        Me.blConfigCodec.TabStop = True
+        Me.blConfigCodec.Text = "Options"
         '
         'llConfigContainer
         '
@@ -78,14 +78,14 @@ Class x265Control
         Me.lv.Size = New System.Drawing.Size(367, 213)
         Me.lv.TabIndex = 0
         '
-        'x265Control
+        'x264Control2
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.Controls.Add(Me.llConfigContainer)
-        Me.Controls.Add(Me.llConfigCodec)
+        Me.Controls.Add(Me.blConfigCodec)
         Me.Controls.Add(Me.llCompCheck)
         Me.Controls.Add(Me.lv)
-        Me.Name = "x265Control"
+        Me.Name = "x264Control2"
         Me.Size = New System.Drawing.Size(367, 213)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -94,13 +94,13 @@ Class x265Control
 
 #End Region
 
-    Private Encoder As x265Encoder
-    Private Params As x265Params
+    Private Encoder As x264Encoder2
+    Private Params As x264Params2
 
     Private cms As ContextMenuStripEx
     Private QualityDefinitions As List(Of QualityItem)
 
-    Sub New(enc As x265Encoder)
+    Sub New(enc As x264Encoder2)
         MyBase.New()
         InitializeComponent()
 
@@ -143,11 +143,11 @@ Class x265Control
         lv.Columns(1).Width = CInt(Width * (66 / 100))
 
         'couldn't get scaling to work trying everything
-        llConfigCodec.Left = 5
-        llConfigCodec.Top = Height - llConfigCodec.Height - 5
+        blConfigCodec.Left = 5
+        blConfigCodec.Top = Height - blConfigCodec.Height - 5
 
         llCompCheck.Left = 5
-        llCompCheck.Top = Height - llConfigCodec.Height - llCompCheck.Height - 10
+        llCompCheck.Top = Height - blConfigCodec.Height - llCompCheck.Height - 10
 
         llConfigContainer.Left = Width - llConfigContainer.Width - 5
         llConfigContainer.Top = Height - llConfigContainer.Height - 5
@@ -156,7 +156,7 @@ Class x265Control
     Sub UpdateMenu()
         cms.Items.Clear()
 
-        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
+        Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
 
         If lv.SelectedItems.Count > 0 Then
             Select Case lv.SelectedIndices(0)
@@ -189,7 +189,7 @@ Class x265Control
     End Sub
 
     Sub SetPreset(value As Integer)
-        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
+        Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
 
         Params.Preset.Value = value
 
@@ -203,7 +203,7 @@ Class x265Control
     End Sub
 
     Sub SetTune(value As Integer)
-        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
+        Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
 
         Params.Tune.Value = value
 
@@ -227,7 +227,7 @@ Class x265Control
     End Function
 
     Sub UpdateControls()
-        If Params.Mode.Value = x265RateMode.SingleCRF AndAlso lv.Items.Count < 4 Then
+        If Params.Mode.Value = x264RateMode.Quality AndAlso lv.Items.Count < 4 Then
             lv.Items.Clear()
             lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.Quant.Value)}))
             lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
@@ -238,11 +238,11 @@ Class x265Control
             lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
         End If
 
-        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
-        llCompCheck.Visible = Params.Mode.Value = x265RateMode.TwoPass Or Params.Mode.Value = x265RateMode.ThreePass
+        Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
+        llCompCheck.Visible = Params.Mode.Value = x264RateMode.TwoPass Or Params.Mode.Value = x264RateMode.ThreePass
     End Sub
 
-    Private Sub llConfigCodec_Click(sender As Object, e As EventArgs) Handles llConfigCodec.Click
+    Private Sub llConfigCodec_Click(sender As Object, e As EventArgs) Handles blConfigCodec.Click
         Encoder.ShowConfigDialog()
     End Sub
 

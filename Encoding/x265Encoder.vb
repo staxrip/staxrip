@@ -843,13 +843,16 @@ Public Class x265Params
                     New BoolParam() With {.Switch = "--aq-motion", .Text = "AQ Motion"})
                 Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP,
                     New BoolParam With {.Switch = "--analyze-src-pics", .NoSwitch = "--no-analyze-src-pics", .Text = "Analyze SRC Pics"})
-                Add("Slice Decision", BAdapt, BFrames, BFrameBias,
+                Add("Slice Decision 1", BAdapt,
+                    New OptionParam With {.Switch = "--ctu-info", .Text = "CTU Info", .Options = {"0", "1", "2", "4", "6"}},
+                    BFrames, BFrameBias,
                     RCLookahead,
                     LookaheadSlices,
                     New NumParam() With {.Switch = "--lookahead-threads", .Text = "Lookahead Threads:"},
                     Scenecut,
                     New NumParam() With {.Switch = "--scenecut-bias", .Text = "Scenecut Bias:", .InitValue = 5, .MinMaxStepDec = {0, 100, 1, 1}},
-                    Ref, MinKeyint, Keyint, Bpyramid, OpenGop, IntraRefresh)
+                    Ref, MinKeyint, Keyint)
+                Add("Slice Decision 2", Bpyramid, OpenGop, IntraRefresh)
                 Add("Spatial/Intra", StrongIntraSmoothing,
                     New BoolParam With {.Switch = "--constrained-intra", .NoSwitch = "--no-constrained-intra", .Switches = {"--cip"}, .Text = "Constrained Intra Prediction", .InitValue = True},
                     RDpenalty)
@@ -868,12 +871,12 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"undefined", "full", "limited"}},
                     minLuma, maxLuma, MaxCLL, MaxFALL,
                     New BoolParam With {.Switch = "--hdr", .Text = "Force signalling of HDR parameters in SEI packets"},
-                    New BoolParam With {.Switch = "--hdr-opt", .Text = "Add luma and chroma offsets for HDR/WCG content"})
+                    New BoolParam With {.Switch = "--hdr-opt", .Text = "Add luma and chroma offsets for HDR/WCG content"},
+                    New BoolParam With {.Switch = "--dhdr10-opt", .Text = "Limit frames for which tone mapping information is inserted as SEI message"})
                 Add("Bitstream",
                     Hash,
                     New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "log2-max-poc-lsb:", .InitValue = 8},
                     RepeatHeaders, Info, HRD, AUD,
-                    New BoolParam With {.Switch = "--annexb", .Text = "Annex B"},
                     New BoolParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers"},
                     New BoolParam With {.Switch = "--vui-timing-info", .Text = "VUI Timing Info"},
                     New BoolParam With {.Switch = "--vui-hrd-info", .Text = "VUI HRD Info"},

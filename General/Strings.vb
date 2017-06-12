@@ -2,9 +2,7 @@ Friend Class Strings
     Public Const EventCommands As String = "A Event Command allows to define a command to be executed on a defined event. Furthermore criteria can be defined to execute the command only if certain criteria is matched."
     Public Shared BatchMode As String = "Normally StaxRip performs various tasks directly after a source file is opened like demuxing, auto crop, auto resize etc. In Batch Mode all this tasks are performed when the encoding is started."
     Public Shared MacrosHelp As String = "Macros are placeholders that can be used in command lines, scripts and other places, on execution StaxRip expands/replaces the macros with the actual values." + BR2 + "GUI Macros like $browse_file$ are typically used In custom menus like the video filter profiles menu."
-
     Public Shared TaskDialogFooter As String = "[copymsg: Copy Message]"
-    Public Shared ParRegexPattern As String = "^([1-9]+\d*)(/|:)([1-9]+\d*)$"
     Public Shared VisitForum As String = "Please copy the message and post it to the support forum or mail it."
     Public Shared NoUnicode As String = $"Unicode filenames are not supported by AviSynth.{BR2}VapourSynth supports unicode, it can be enabled at:{BR2}Filters > Filter Setup > VapourSynth"
     Public Shared ProjectX As String = "ProjectX demuxes MPEG-2 DVD and DVB sources, H.264/AVC and H.265/HEVC are not supported. ProjectX can be enabled or disabled in the settings on the Demuxing tab."

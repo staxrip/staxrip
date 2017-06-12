@@ -5,11 +5,12 @@ Class StreamDemuxForm
     Property AudioStreams As List(Of AudioStream)
     Property Subtitles As List(Of Subtitle)
 
-    Sub New(sourceFile As String, attachments As List(Of Attachment))
+    Sub New(demuxer As Demuxer, sourceFile As String, attachments As List(Of Attachment))
         InitializeComponent()
 
-        Me.cbDemuxChapters.Visible = False
-        Me.cbDemuxVideo.Visible = False
+        cbDemuxChapters.Checked = demuxer.ChaptersDemuxing
+        cbDemuxChapters.Visible = MediaInfo.GetMenu(sourceFile, "StreamCount").ToInt > 0
+        cbDemuxVideo.Checked = demuxer.VideoDemuxing
 
         ScaleClientSize(42, 29)
         StartPosition = FormStartPosition.CenterParent

@@ -12,7 +12,7 @@ Class SubtitleControl
     Friend WithEvents bnSetNames As ButtonEx
     Friend WithEvents flpButtons As FlowLayoutPanel
     Friend WithEvents tlpMain As TableLayoutPanel
-
+    Friend WithEvents bnSubtitleEdit As ButtonEx
     Private Items As New BindingList(Of SubtitleItem)
 
 #Region " Designer "
@@ -44,6 +44,7 @@ Class SubtitleControl
         Me.bnSetNames = New StaxRip.UI.ButtonEx()
         Me.bnPlay = New StaxRip.UI.ButtonEx()
         Me.bnBDSup2SubPP = New StaxRip.UI.ButtonEx()
+        Me.bnSubtitleEdit = New StaxRip.UI.ButtonEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.flpButtons.SuspendLayout()
@@ -100,7 +101,7 @@ Class SubtitleControl
         Me.dgv.Margin = New System.Windows.Forms.Padding(0)
         Me.dgv.Name = "dgv"
         Me.dgv.RowTemplate.Height = 28
-        Me.dgv.Size = New System.Drawing.Size(249, 661)
+        Me.dgv.Size = New System.Drawing.Size(249, 731)
         Me.dgv.TabIndex = 17
         '
         'flpButtons
@@ -114,12 +115,13 @@ Class SubtitleControl
         Me.flpButtons.Controls.Add(Me.bnSetNames)
         Me.flpButtons.Controls.Add(Me.bnPlay)
         Me.flpButtons.Controls.Add(Me.bnBDSup2SubPP)
+        Me.flpButtons.Controls.Add(Me.bnSubtitleEdit)
         Me.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
         Me.flpButtons.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.flpButtons.Location = New System.Drawing.Point(249, 0)
         Me.flpButtons.Margin = New System.Windows.Forms.Padding(0)
         Me.flpButtons.Name = "flpButtons"
-        Me.flpButtons.Size = New System.Drawing.Size(290, 602)
+        Me.flpButtons.Size = New System.Drawing.Size(290, 688)
         Me.flpButtons.TabIndex = 20
         '
         'bnSetNames
@@ -146,6 +148,14 @@ Class SubtitleControl
         Me.bnBDSup2SubPP.Size = New System.Drawing.Size(280, 80)
         Me.bnBDSup2SubPP.Text = "BDSup2Sub++"
         '
+        'bnSubtitleEdit
+        '
+        Me.bnSubtitleEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnSubtitleEdit.Location = New System.Drawing.Point(10, 602)
+        Me.bnSubtitleEdit.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnSubtitleEdit.Size = New System.Drawing.Size(280, 80)
+        Me.bnSubtitleEdit.Text = "Subtitle Edit"
+        '
         'tlpMain
         '
         Me.tlpMain.ColumnCount = 2
@@ -159,7 +169,7 @@ Class SubtitleControl
         Me.tlpMain.Name = "tlpMain"
         Me.tlpMain.RowCount = 1
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpMain.Size = New System.Drawing.Size(539, 661)
+        Me.tlpMain.Size = New System.Drawing.Size(539, 731)
         Me.tlpMain.TabIndex = 21
         '
         'SubtitleControl
@@ -168,7 +178,7 @@ Class SubtitleControl
         Me.Controls.Add(Me.tlpMain)
         Me.Margin = New System.Windows.Forms.Padding(1, 2, 1, 2)
         Me.Name = "SubtitleControl"
-        Me.Size = New System.Drawing.Size(539, 661)
+        Me.Size = New System.Drawing.Size(539, 731)
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).EndInit()
         Me.flpButtons.ResumeLayout(False)
         Me.tlpMain.ResumeLayout(False)
@@ -334,6 +344,7 @@ Class SubtitleControl
         Dim selected = dgv.SelectedRows.Count > 0
         Dim path = If(selected AndAlso dgv.CurrentRow.Index < Items.Count, Items(dgv.CurrentRow.Index).Subtitle.Path, "")
         bnBDSup2SubPP.Enabled = selected AndAlso {"idx", "sup"}.Contains(path.Ext)
+        bnSubtitleEdit.Enabled = bnBDSup2SubPP.Enabled
         bnPlay.Enabled = FileTypes.SubtitleExludingContainers.Contains(path.Ext) AndAlso p.SourceFile <> ""
         bnUp.Enabled = dgv.CanMoveUp
         bnDown.Enabled = dgv.CanMoveDown
@@ -344,7 +355,7 @@ Class SubtitleControl
     Sub AddSubtitles(subtitles As List(Of Subtitle))
         For Each i In subtitles
             If Items.Where(Function(item) item.Default).Count > 0 Then i.Default = False
-            
+
             If File.Exists(i.Path) Then
                 Dim size As String
 
@@ -526,6 +537,26 @@ Class SubtitleControl
             End If
 
             g.ShellExecute(Package.BDSup2SubPP.Path, """" + fp + """")
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
+    End Sub
+
+    Private Sub bnSubtitleEdit_Click(sender As Object, e As EventArgs) Handles bnSubtitleEdit.Click
+        Try
+            Dim st = Items(dgv.CurrentRow.Index).Subtitle
+            Dim fp = st.Path
+
+            If fp.ExtFull = ".idx" Then
+                fp = p.TempDir + p.TargetFile.Base + "_temp.idx"
+
+                Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
+                    st.IndexIDX.ToString).WriteANSIFile(fp)
+
+                FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
+            End If
+
+            g.ShellExecute(Package.SubtitleEdit.Path, """" + fp + """")
         Catch ex As Exception
             g.ShowException(ex)
         End Try

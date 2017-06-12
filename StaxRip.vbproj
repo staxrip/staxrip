@@ -172,6 +172,9 @@
     <Compile Include="Controls\SubtitleControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\x264Control2.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\x265Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
@@ -183,6 +186,7 @@
     <Compile Include="Encoding\ffmpegEncoder.vb" />
     <Compile Include="Encoding\IntelEncoder.vb" />
     <Compile Include="Encoding\NVIDIAEncoder.vb" />
+    <Compile Include="Encoding\x264Encoder2.vb" />
     <Compile Include="General\Log.vb" />
     <Compile Include="General\GlobalClass.vb" />
     <Compile Include="General\GlobalCommands.vb" />
@@ -261,7 +265,7 @@
     <Compile Include="General\Automation.vb" />
     <Compile Include="General\CommandLine.vb" />
     <Compile Include="General\ImageUtils.vb" />
-    <Compile Include="Encoding\x265.vb" />
+    <Compile Include="Encoding\x265Encoder.vb" />
     <Compile Include="UI\Controls\ListViewEx.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -269,7 +273,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="General\VideoDrawer.vb" />
-    <Compile Include="Encoding\x264.vb" />
+    <Compile Include="Encoding\x264Encoder.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

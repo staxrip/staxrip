@@ -10,6 +10,8 @@ Class Audio
             Exit Sub
         End If
 
+        If Not Directory.Exists(p.TempDir) Then p.TempDir = ap.File.Dir
+
         If ap.File <> p.SourceFile Then
             Log.WriteHeader("Audio Source File MediaInfo")
             Log.WriteLine(MediaInfo.GetSummary(ap.File))
@@ -28,7 +30,7 @@ Class Audio
             If (cutting OrElse Not ap.IsInputSupported) AndAlso Not directMux Then
                 Select Case Filepath.GetExtFull(ap.File)
                     Case ".mkv", ".webm"
-                        mkvDemuxer.Demux(ap.File, {ap.Stream}, Nothing, ap, p)
+                        mkvDemuxer.Demux(ap.File, {ap.Stream}, Nothing, ap, p, False, False)
                     Case ".mp4"
                         MP4BoxDemuxer.Demux(ap.File, ap.Stream, ap, p)
                     Case Else
@@ -469,7 +471,7 @@ Class Audio
             Dim streams = MediaInfo.GetAudioStreams(mkvPath)
 
             If streams.Count > 0 Then
-                mkvDemuxer.Demux(mkvPath, {streams(0)}, Nothing, ap, p)
+                mkvDemuxer.Demux(mkvPath, {streams(0)}, Nothing, ap, p, False, False)
             Else
                 fail = True
             End If

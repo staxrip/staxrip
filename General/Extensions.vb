@@ -423,6 +423,17 @@ End Module
 
 Module MiscExtensions
     <Extension()>
+    Function ToInvariantString(instance As Double, format As String) As String
+        Dim ret = instance.ToString(format, CultureInfo.InvariantCulture)
+
+        If (ret.Contains(".") OrElse ret.Contains(",")) AndAlso ret.EndsWith("0") Then
+            ret = ret.TrimEnd("0"c)
+        End If
+
+        Return ret
+    End Function
+
+    <Extension()>
     Function ToInvariantString(instance As IConvertible) As String
         If Not instance Is Nothing Then Return instance.ToString(CultureInfo.InvariantCulture)
     End Function

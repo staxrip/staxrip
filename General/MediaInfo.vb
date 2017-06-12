@@ -27,14 +27,16 @@ Public Class MediaInfo
                 Dim count = MediaInfo_Count_Get(Handle, MediaInfoStreamKind.Video, -1)
 
                 If count > 0 Then
-                    For i = 0 To count - 1
+                    For index = 0 To count - 1
                         Dim at As New VideoStream
+                        at.Index = index
 
-                        Dim streamOrder = GetVideo(i, "StreamOrder")
-                        If Not streamOrder.IsInt Then streamOrder = (i + 1).ToString
+                        Dim streamOrder = GetVideo(index, "StreamOrder")
+                        If Not streamOrder.IsInt Then streamOrder = (index + 1).ToString
                         at.StreamOrder = streamOrder.ToInt
 
-                        at.Format = GetVideo(i, "Format")
+                        at.Format = GetVideo(index, "Format")
+                        at.ID = GetVideo(index, "ID").ToInt
 
                         VideoStreamsValue.Add(at)
                     Next
@@ -245,6 +247,10 @@ Public Class MediaInfo
         Return GetMediaInfo(path).GetInfo(streamKind, parameter)
     End Function
 
+    Shared Function GetMenu(path As String, parameter As String) As String
+        Return GetInfo(path, MediaInfoStreamKind.Menu, parameter)
+    End Function
+
     Shared Function GetAudio(path As String, parameter As String) As String
         Return GetInfo(path, MediaInfoStreamKind.Audio, parameter)
     End Function
@@ -453,8 +459,10 @@ Public Enum MediaInfoStreamKind
     Video
     Audio
     Text
-    Chapters
+    Other
     Image
+    Menu
+    Max
 End Enum
 
 Public Enum MediaInfoInfoKind

@@ -188,8 +188,8 @@ Class Calc
             If a.Length = 2 AndAlso a(0).IsInt AndAlso a(1).IsInt Then
                 Return New Point(a(0).ToInt, a(1).ToInt)
             End If
-        ElseIf Double.TryParse(value, Nothing) Then
-            Return New Point(CInt(CDbl(value) * 100000), 100000)
+        ElseIf value.IsDouble Then
+            Return New Point(CInt(value.ToDouble * 100000), 100000)
         End If
     End Function
 
@@ -861,17 +861,17 @@ Class Macro
         Dim ret As New List(Of Macro)
 
         If includeSpecial Then
+            ret.Add(New Macro("$browse_file$", "Browse For File", GetType(String), "Filepath returned from a file browser."))
+            ret.Add(New Macro("$enter_text$", "Enter Text", GetType(String), "Text entered in a input box."))
+            ret.Add(New Macro("$enter_text:<prompt>$", "Enter Text (Params)", GetType(String), "Text entered in a input box."))
+            ret.Add(New Macro("$select:<param1;param2;...>$", "Select", GetType(String), "String selected from dropdown, to show a optional message the first parameter has to start with msg: and to give the items optional captions use caption|value." + BR2 + "Example: $select:msg:hello;cap1|val1;cap2|val2$"))
+            ret.Add(New Macro("app:<name>", "Application File Path", GetType(String), "Returns the path of a aplication. Possible names are: " + Package.Items.Values.Select(Function(arg) arg.Name).Join(", ")))
+            ret.Add(New Macro("app_dir:<name>", "Application Directory", GetType(String), "Returns the directory of a aplication. Possible names are: " + Package.Items.Values.Select(Function(arg) arg.Name).Join(", ")))
             ret.Add(New Macro("eval:<expression>", "Eval Math Expression", GetType(String), "Evaluates a math expression which may contain default macros."))
             ret.Add(New Macro("eval_ps:<expression>", "Eval PowerShell Expression", GetType(String), "Evaluates a PowerShell expression which may contain default macros."))
             ret.Add(New Macro("filter:<name>", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
-            ret.Add(New Macro("media_info_video:<property>", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
             ret.Add(New Macro("media_info_audio:<property>", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
-            ret.Add(New Macro("app:<name>", "Application File Path", GetType(String), "Returns the path of a aplication. Possible names are: " + Package.Items.Values.Select(Function(arg) arg.Name).Join(", ")))
-            ret.Add(New Macro("app_dir:<name>", "Application Directory", GetType(String), "Returns the directory of a aplication. Possible names are: " + Package.Items.Values.Select(Function(arg) arg.Name).Join(", ")))
-            ret.Add(New Macro("$select:<param1;param2;...>$", "Select", GetType(String), "String selected from dropdown, to show a optional message the first parameter has to start with msg: and to give the items optional captions use caption|value." + BR2 + "Example: $select:msg:hello;cap1|val1;cap2|val2$"))
-            ret.Add(New Macro("$enter_text:<prompt>$", "Enter Text (Params)", GetType(String), "Text entered in a input box."))
-            ret.Add(New Macro("$browse_file$", "Browse For File", GetType(String), "Filepath returned from a file browser."))
-            ret.Add(New Macro("$enter_text$", "Enter Text", GetType(String), "Text entered in a input box."))
+            ret.Add(New Macro("media_info_video:<property>", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
         End If
 
         ret.Add(New Macro("audio_bitrate", "Audio Bitrate", GetType(Integer), "Overall audio bitrate."))
@@ -963,7 +963,7 @@ Class Macro
         If Not ret.Value.Contains("$") Then Return ret
 
         If ret.Value.Contains("$enter_text$") Then
-            Dim inputText = InputBox.Show("Please enter some text.")
+            Dim inputText = InputBox.Show("Please enter text/value.")
 
             If inputText = "" Then
                 ret.Cancel = True
@@ -1647,47 +1647,31 @@ End Class
 Public Class VideoStream
     Property Format As String
     Property StreamOrder As Integer
+    Property ID As Integer
+    Property Index As Integer
 
-    ReadOnly Property Extension() As String
+    ReadOnly Property Ext() As String
         Get
             Select Case Format
                 Case "MPEG Video"
-                    Return ".mpg"
+                    Return "mpg"
                 Case "AVC"
-                    Return ".h264"
+                    Return "h264"
                 Case "MPEG-4 Visual", "JPEG"
-                    Return ".avi"
+                    Return "avi"
                 Case "HEVC"
                     Return "h265"
+                Case Else
+                    Throw New NotImplementedException("Video format " + Format + " is not supported.")
             End Select
         End Get
     End Property
-End Class
 
-Class Video
-    Shared Sub DemuxMKV(sourcefile As String)
-        Dim streams = MediaInfo.GetVideoStreams(sourcefile)
-        If streams.Count = 0 Then Exit Sub
-        Dim stream = streams(0)
-        If stream.Extension = "" Then Throw New Exception("demuxing of video stream format is not implemented")
-        Dim outPath = p.TempDir + sourcefile.Base + "_out" + stream.Extension
-
-        Using proc As New Proc
-            proc.Init("Demux video using mkvextract " + Package.mkvextract.Version, "Progress: ")
-            proc.Encoding = Encoding.UTF8
-            proc.File = Package.mkvextract.Path
-            proc.Arguments = "tracks """ + sourcefile + """ " & stream.StreamOrder &
-                ":""" + outPath + """ --ui-language en"
-            proc.AllowedExitCodes = {0, 1, 2}
-            proc.Start()
-        End Using
-
-        If File.Exists(outPath) Then
-            Log.WriteLine(MediaInfo.GetSummary(outPath))
-        Else
-            Log.Write("Error", "no output found")
-        End If
-    End Sub
+    ReadOnly Property ExtFull() As String
+        Get
+            Return "." + Ext
+        End Get
+    End Property
 End Class
 
 <Serializable()>
@@ -1904,6 +1888,7 @@ Public Class FileTypes
     Shared Property VideoOnly As String() = {"264", "265", "avc", "h264", "h265", "hevc", "hvc", "m2v", "m4v", "mpv", "y4m"}
     Shared Property VideoRaw As String() = {"264", "265", "h264", "h265", "avc", "hevc", "hvc"}
     Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs", "vpy"}
+    Shared Property VideoDemuxOutput As String() = {"mpg", "h264", "avi", "h265"}
 
     Shared Property mkvmergeInput As String() = {"avi", "wav",
                                                  "mp4", "m4a", "aac",

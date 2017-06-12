@@ -186,7 +186,7 @@ Public MustInherit Class AudioProfile
     End Function
 
     Function GetOutputFile() As String
-        Dim base = Filepath.GetBase(File)
+        Dim base = File.Base
 
         If Delay <> 0 Then
             If HandlesDelay() Then
@@ -199,13 +199,12 @@ Public MustInherit Class AudioProfile
             End If
         End If
 
-        Dim targetDir = If(p.TempDir <> "", p.TempDir, Filepath.GetDir(File))
         Dim track As String
 
         If Me Is p.Audio0 Then track = "1"
         If Me Is p.Audio1 Then track = "2"
 
-        Return targetDir + base + "_out" + track + "." + OutputFileType
+        Return p.TempDir + base + "_out" + track + "." + OutputFileType
     End Function
 
     Function ExpandMacros(value As String) As String

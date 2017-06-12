@@ -230,6 +230,8 @@ Public Class NVIDIAEncoder
             .InitValue = 100.0,
             .MinMaxStepDec = {0, 255, 1, 1}}
 
+        Property Custom As New StringParam With {.Text = "Custom:"}
+
         Private ItemsValue As List(Of CommandLineParam)
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -243,7 +245,8 @@ Public Class NVIDIAEncoder
                     Add("Analysis",
                         New OptionParam With {.Switch = "--adapt-transform", .Text = "Adaptive Transform:", .Options = {"Automatic", "Enabled", "Disabled"}, .Values = {"", "--adapt-transform", "--no-adapt-transform"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New NumParam With {.Switch = "--cu-min", .Text = "Min CU Size:", .MinMaxStep = {0, 32, 16}},
-                        New NumParam With {.Switch = "--cu-max", .Text = "Max CU Size:", .MinMaxStep = {0, 64, 16}})
+                        New NumParam With {.Switch = "--cu-max", .Text = "Max CU Size:", .MinMaxStep = {0, 64, 16}},
+                        New BoolParam With {.Switch = "--weightp", .Text = "Enable weighted prediction in P slices"})
                     Add("Slice Decision",
                         New OptionParam With {.Switch = "--direct", .Text = "B-Direct Mode:", .Options = {"automatic", "none", "spatial", "temporal"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New NumParam With {.Switch = "--bframes", .Text = "B-Frames:", .InitValue = 3, .MinMaxStep = {0, 16, 1}},
@@ -252,8 +255,7 @@ Public Class NVIDIAEncoder
                         New NumParam With {.Switch = "--lookahead", .Text = "Lookahead:", .MinMaxStep = {0, 32, 1}, .InitValue = 16},
                         New BoolParam With {.Switch = "--strict-gop", .Text = "Strict GOP"},
                         New BoolParam With {.NoSwitch = "--no-b-adapt", .Text = "B-Adapt", .InitValue = True},
-                        New BoolParam With {.NoSwitch = "--no-i-adapt", .Text = "I-Adapt", .InitValue = True},
-                        New BoolParam With {.Switch = "--enable-ltr", .Text = "LTR (Long Term Reference pictures)", .VisibleFunc = Function() Codec.ValueText = "h265"})
+                        New BoolParam With {.NoSwitch = "--no-i-adapt", .Text = "I-Adapt", .InitValue = True})
                     Add("Rate Control",
                         New NumParam With {.Switch = "--qp-init", .Text = "Initial QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-max", .Text = "Max QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
@@ -293,7 +295,7 @@ Public Class NVIDIAEncoder
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level:", .Options = {"info", "debug", "warn", "error"}},
                         New NumParam With {.Switch = "--device", .Text = "Device:", .MinMaxStep = {0, 4, 1}},
                         New BoolParam With {.Switch = "--deblock", .NoSwitch = "--no-deblock", .Text = "Deblock", .InitValue = True},
-                        New StringParam With {.Text = "Custom:"})
+                        Custom)
                 End If
 
                 Return ItemsValue
@@ -414,9 +416,16 @@ Public Class NVIDIAEncoder
                 (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Resize")) Then
 
                 ret += " --output-res " & p.TargetWidth & "x" & p.TargetHeight
-            ElseIf p.AutoARSignaling AndAlso p.SourceFile <> "" Then
+            ElseIf p.AutoARSignaling AndAlso p.SourceFile <> "" AndAlso
+                Not Custom.Value.ContainsAny({"--dar ", "--sar "}) Then
+
                 Dim par = Calc.GetTargetPAR
-                If par <> New Point(1, 1) Then ret += " --sar " & par.X & ":" & par.Y
+
+                If par <> New Point(1, 1) Then
+                    Dim val As New Point(CInt(Calc.GetTargetDAR() * 1000000), 1000000)
+                    val = Calc.Reduce(val)
+                    ret += " --dar " & val.X & ":" & val.Y
+                End If
             End If
 
             If Decoder.ValueText <> "avs" Then

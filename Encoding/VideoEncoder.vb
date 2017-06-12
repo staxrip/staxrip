@@ -238,6 +238,13 @@ Public MustInherit Class VideoEncoder
 
         ret.Add(Getx264Encoder("x264", x264Mode.SingleCRF, x264PresetMode.Medium, x264TuneMode.Disabled, x264DeviceMode.Disabled))
 
+        If Application.StartupPath = "D:\Projekte\VS\VB\StaxRip\bin" Then
+            Dim x264Encoder2 As New x264Encoder2
+            x264Encoder2.Params.ApplyPresetDefaultValues()
+            x264Encoder2.Params.ApplyPresetValues()
+            ret.Add(x264Encoder2)
+        End If
+
         Dim x265crf = New x265Encoder
         x265crf.Params.ApplyPresetDefaultValues()
         x265crf.Params.ApplyPresetValues()
@@ -601,7 +608,7 @@ Public Class NullEncoder
         QualityMode = True
     End Sub
 
-    Function GetSource() As String
+    Function GetSourceFile() As String
         For Each i In {".h264", ".avc", ".h265", ".hevc", ".mpg", ".avi"}
             If File.Exists(Filepath.GetDirAndBase(p.SourceFile) + "_out" + i) Then
                 Return Filepath.GetDirAndBase(p.SourceFile) + "_out" + i
@@ -619,20 +626,18 @@ Public Class NullEncoder
 
     Overrides ReadOnly Property OutputPath As String
         Get
-            Dim source = GetSource()
+            Dim sourceFile = GetSourceFile()
 
-            If Not p.VideoEncoder.Muxer.IsSupported(source.Ext) Then
-                Select Case source.Ext
+            If Not p.VideoEncoder.Muxer.IsSupported(sourceFile.Ext) Then
+                Select Case sourceFile.Ext
                     Case "mkv"
-                        Dim streams = MediaInfo.GetVideoStreams(source)
-                        If streams.Count = 0 Then Return source
-                        Dim stream = streams(0)
-                        If stream.Extension = "" Then Throw New Exception("demuxing of video stream format is not implemented")
-                        Return p.TempDir + source.Base + "_out" + stream.Extension
+                        Dim streams = MediaInfo.GetVideoStreams(sourceFile)
+                        If streams.Count = 0 Then Return sourceFile
+                        Return p.TempDir + sourceFile.Base + streams(0).ExtFull
                 End Select
             End If
 
-            Return source
+            Return sourceFile
         End Get
     End Property
 
@@ -643,12 +648,12 @@ Public Class NullEncoder
     End Property
 
     Overrides Sub Encode()
-        Dim source = GetSource()
+        Dim sourceFile = GetSourceFile()
 
-        If Not p.VideoEncoder.Muxer.IsSupported(Filepath.GetExt(source)) Then
-            Select Case Filepath.GetExt(source)
+        If Not p.VideoEncoder.Muxer.IsSupported(sourceFile.Ext) Then
+            Select Case Filepath.GetExt(sourceFile)
                 Case "mkv"
-                    Video.DemuxMKV(source)
+                    mkvDemuxer.Demux(sourceFile, Nothing, Nothing, Nothing, p, False, True)
             End Select
         End If
     End Sub

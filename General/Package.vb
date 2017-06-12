@@ -39,7 +39,25 @@ Public Class Package
     Shared Property Items As New SortedDictionary(Of String, Package)
 
     Shared Property AviSynth As New AviSynthPlusPackage
-    Shared Property BDSup2SubPP As New BDSup2SubPackage
+
+    Shared Property BDSup2SubPP As Package = Add(New Package With {
+        .Name = "BDSup2Sub++",
+        .Filename = "bdsup2sub++.exe",
+        .LaunchName = "bdsup2sub++.exe",
+        .WebURL = "http://forum.doom9.org/showthread.php?p=1613303",
+        .Description = "Converts Blu-ray subtitles to other formats like VobSub."})
+
+    Shared Property SubtitleEdit As Package = Add(New Package With {
+        .Name = "SubtitleEdit",
+        .Filename = "SubtitleEdit.exe",
+        .LaunchName = "SubtitleEdit.exe",
+        .HintDirFunc = Function() "C:\Program Files\Subtitle Edit\",
+        .WebURL = "http://www.nikse.dk/SubtitleEdit",
+        .HelpURL = "http://www.nikse.dk/SubtitleEdit/Help",
+        .IsRequiredValue = False,
+        .IgnoreVersion = True,
+        .Description = "Subtitle Edit is a open source subtitle editor."})
+
     Shared Property checkmate As New checkmatePackage
     Shared Property DGIndexIM As New DGIndexIMPackage
     Shared Property DGIndexNV As New DGIndexNVPackage
@@ -51,7 +69,16 @@ Public Class Package
     Shared Property Java As New JavaPackage
     Shared Property MediaInfo As New MediaInfoPackage
     Shared Property MP4Box As New MP4BoxPackage
-    Shared Property MPC As New MPCPackage
+
+    Shared Property MPC As Package = Add(New Package With {
+        .Name = "MPC Player",
+        .Filenames = {"mpc-be64.exe", "mpc-hc64.exe"},
+        .Description = "MPC is a open source media player with built in playback support for all common media formats. MPC-HC or MPC-BE can be used, x64 is absolutely required because StaxRip supports only AviSynth+ x64. StaxRip uses MPC's /dub and /sub CLI switches.",
+        .WebURL = "http://mpc-hc.org",
+        .HelpURL = "http://forum.doom9.org/showthread.php?p=1719479&goto=newpost",
+        .IsRequiredValue = False,
+        .IgnoreVersion = True})
+
     Shared Property NicAudio As New NicAudioPackage
 
     Shared Property aomenc As Package = Add(New Package With {
@@ -64,7 +91,7 @@ Public Class Package
         .Name = "NVEncC",
         .Filename = "NVEncC64.exe",
         .WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!2293",
-        .Description = "nvidia GPU accelerated H.264/H.265 encoder.",
+        .Description = "NVIDIA GPU accelerated H.264/H.265 encoder.",
         .HelpFile = "help.txt"})
 
     Shared Property mvtools2 As Package = Add(New PluginPackage With {
@@ -79,7 +106,14 @@ Public Class Package
     Shared Property qaac As New qaacPackage
     Shared Property TDeint As New TDeintPackage
     Shared Property UnDot As New UnDotPackage
-    Shared Property VSRip As New VSRipPackage
+
+    Shared Property VSRip As Package = Add(New Package With {
+        .Name = "VSRip",
+        .Filename = "VSRip.exe",
+        .Description = "VSRip rips VobSub subtitles.",
+        .WebURL = "http://sourceforge.net/projects/guliverkli",
+        .LaunchName = "VSRip.exe"})
+
     Shared Property xvid_encraw As New xvid_encrawPackage
 
     Shared Property flash3kyuu_deband As Package = Add(New PluginPackage With {
@@ -94,7 +128,13 @@ Public Class Package
         .VapourSynthFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb", "clip = core.f3kdb.Deband(clip, preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")}})
 
     Shared Property Decomb As New DecombPackage
-    Shared Property vinverse As New vinversePackage
+
+    Shared Property vinverse As Package = Add(New PluginPackage With {
+        .Name = "vinverse",
+        .Filename = "vinverse.dll",
+        .WebURL = "http://avisynth.nl/index.php/Vinverse",
+        .Description = "A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Didée and then written as a plugin by tritical.",
+        .AviSynthFilterNames = {"vinverse", "vinverse2"}})
 
     Shared Property vspipe As New Package With {
         .Name = "vspipe",
@@ -111,7 +151,7 @@ Public Class Package
         .Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.",
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
-        .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R37/VapourSynth-R37.exe",
+        .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R38/VapourSynth-R38.exe",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"}
 
@@ -711,7 +751,6 @@ Public Class Package
             Using f As New AppsForm
                 f.ShowPackage(Me)
                 f.ShowDialog()
-                g.MainForm.Refresh()
             End Using
 
             If IsStatusCritical() Then Return False
@@ -895,7 +934,7 @@ Public Class AviSynthPlusPackage
         WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         FixedDir = Folder.System
-        SetupFilename = "AviSynth+r2502.exe"
+        SetupFilename = "AviSynth+r2504.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean
@@ -1078,18 +1117,6 @@ Public Class PluginPackage
     End Sub
 End Class
 
-Public Class VSRipPackage
-    Inherits Package
-
-    Sub New()
-        Name = "VSRip"
-        Filename = "VSRip.exe"
-        Description = "VSRip rips VobSub subtitles."
-        WebURL = "http://sourceforge.net/projects/guliverkli"
-        LaunchName = Filename
-    End Sub
-End Class
-
 Public Class JavaPackage
     Inherits Package
 
@@ -1231,18 +1258,6 @@ Public Class checkmatePackage
     End Sub
 End Class
 
-Public Class vinversePackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "vinverse"
-        Filename = "vinverse.dll"
-        WebURL = "http://avisynth.nl/index.php/Vinverse"
-        Description = "A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Didée and then written as a plugin by tritical."
-        AviSynthFilterNames = {"vinverse", "vinverse2"}
-    End Sub
-End Class
-
 Public Class DGIndexNVPackage
     Inherits Package
 
@@ -1292,18 +1307,6 @@ Public Class DGIndexIMPackage
             Return CommandLineDemuxer.IsActive("DGIndexIM")
         End Get
     End Property
-End Class
-
-Public Class BDSup2SubPackage
-    Inherits Package
-
-    Sub New()
-        Name = "BDSup2Sub++"
-        Filename = "bdsup2sub++.exe"
-        LaunchName = Filename
-        WebURL = "http://forum.doom9.org/showthread.php?p=1613303"
-        Description = "Converts Blu-ray subtitles to other formats like VobSub."
-    End Sub
 End Class
 
 Public Class DivX265Package
@@ -1372,26 +1375,6 @@ Public Class HaaliSplitter
         Get
             Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing)
             If File.Exists(ret) Then Return ret
-        End Get
-    End Property
-End Class
-
-Public Class MPCPackage
-    Inherits Package
-
-    Sub New()
-        Name = "MPC Player"
-        Filenames = {"mpc-be64.exe", "mpc-hc64.exe"}
-        Description = "MPC is a open source media player with built in playback support for all common media formats. MPC-HC or MPC-BE can be used, x64 is absolutely required because StaxRip supports only AviSynth+ x64. StaxRip uses MPC's /dub and /sub CLI switches."
-        WebURL = "http://mpc-hc.org"
-        HelpURL = "http://forum.doom9.org/showthread.php?p=1719479&goto=newpost"
-        IsRequiredValue = False
-        IgnoreVersion = True
-    End Sub
-
-    Public Overrides ReadOnly Property StartAction As Action
-        Get
-            Return Sub() g.ShellExecute(Path, If(p.SourceFile <> "" AndAlso Not p.SourceFile.EqualsAny(FileTypes.VideoIndex), """" + p.SourceFile, """"))
         End Get
     End Property
 End Class

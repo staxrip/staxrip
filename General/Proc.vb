@@ -156,6 +156,7 @@ Public Class Proc
                 End If
             End If
         Catch ex As Exception
+            ProcessForm.CloseProcessForm()
             g.ShowException(ex)
         End Try
     End Sub

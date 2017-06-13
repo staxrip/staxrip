@@ -181,9 +181,13 @@ Class AMDEncoder
                         New NumParam With {.Switch = "--b-deltaqp", .Text = "Non-ref bframe QP offset:"},
                         New NumParam With {.Switch = "--bref-deltaqp", .Text = "Ref bframe QP offset:"},
                         New BoolParam With {.Switch = "--vbaq", .Text = "VBAQ"})
+                    Add("VUI",
+                        New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .ArgsFunc = AddressOf GetSAR},
+                        New BoolParam With {.Switch = "--enforce-hrd", .Text = "Enforce HRD compatibility"})
                     Add("Other",
                         New StringParam With {.Switch = "--chapter", .Text = "Chapters:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
                         New StringParam With {.Switch = "--log", .Text = "Log File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
+                        Custom,
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level:", .Options = {"info", "debug", "warn", "error"}},
                         New OptionParam With {.Switch = "--motion-est", .Text = "Motion Estimation:", .Options = {"q-pel", "full-pel", "half-pel"}},
                         New OptionParam With {.Switch = "--pre-analysis", .Name = "pre-analysis-h264", .Text = "Pre Analysis:", .Options = {"none", "full", "half", "quarter"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
@@ -191,9 +195,7 @@ Class AMDEncoder
                         New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced:", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                         New BoolParam With {.Switch = "--chapter-copy", .Text = "Copy Chapters"},
                         New BoolParam With {.Switch = "--filler", .Text = "Use filler data"},
-                        New BoolParam With {.Switch = "--fullrange", .Text = "Set yuv to fullrange", .VisibleFunc = Function() Codec.ValueText = "h264"},
-                        New BoolParam With {.Switch = "--enforce-hrd", .Text = "Enforce HRD compatibility"},
-                        Custom)
+                        New BoolParam With {.Switch = "--fullrange", .Text = "Set yuv to fullrange", .VisibleFunc = Function() Codec.ValueText = "h264"})
                 End If
 
                 Return ItemsValue
@@ -261,9 +263,6 @@ Class AMDEncoder
                 (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Resize")) Then
 
                 ret += " --output-res " & p.TargetWidth & "x" & p.TargetHeight
-            ElseIf p.AutoARSignaling AndAlso p.SourceFile <> "" Then
-                Dim par = Calc.GetTargetPAR
-                If par <> New Point(1, 1) Then ret += " --sar " & par.X & ":" & par.Y
             End If
 
             If sourcePath = "-" Then ret += " --y4m"

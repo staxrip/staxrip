@@ -453,10 +453,6 @@ Public Class x265Params
         .Switch = "--cu-lossless",
         .Text = "CU Lossless"}
 
-    Property Tskip As New BoolParam With {
-        .Switch = "--tskip",
-        .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"}
-
     Property TskipFast As New BoolParam With {
         .Switch = "--tskip-fast",
         .Text = "Only evaluate transform skip for NxN intra predictions (4x4 blocks)"}
@@ -821,11 +817,18 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--analysis-mode", .Text = "Analysis Mode:", .Options = {"off", "save", "load"}},
                     MinCuSize, MaxCuSize, MaxTuSize, LimitRefs,
                     New NumParam With {.Switch = "--refine-level", .Text = "Refine Level:", .MinMaxStep = {1, 10, 1}, .InitValue = 5},
+                    New NumParam With {.Switch = "--scale-factor", .Text = "Scale Factor:"},
                     LimitTU,
                     TUintra, TUinter, rdoqLevel,
                     New NumParam() With {.Switch = "--dynamic-rd", .Text = "Dynamic RD:", .MinMaxStepDec = {0, 4, 1, 1}})
-                Add("Analysis 2", Rect, AMP, EarlySkip, FastIntra, BIntra,
-                    CUlossless, Tskip, TskipFast, LimitModes, RdRefine,
+                Add("Analysis 2", Rect, AMP,
+                    New BoolParam With {.Switch = "--tskip", .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"},
+                    New BoolParam With {.Switch = "--refine-inter", .Text = "Enable refinement of inter blocks"},
+                    New BoolParam With {.Switch = "--refine-intra", .Text = "Enable refinement of intra blocks "},
+                    New BoolParam With {.Switch = "--refine-mv", .Text = "Enable refinement of motion vector for scaled video"},
+                    EarlySkip, FastIntra, BIntra,
+                    CUlossless,
+                    TskipFast, LimitModes, RdRefine,
                     New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
                     RecursionSkip,
                     New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"})
@@ -864,11 +867,13 @@ Public Class x265Params
                 Add("Statistic",
                     New OptionParam With {.Switch = "--log-level", .Switches = {"--log"}, .Text = "Log Level:", .Options = {"none", "error", "warning", "info", "debug", "full"}, .Value = 3, .DefaultValue = 3},
                     csvloglevel, CSV, SSIM, PSNR)
-                Add("VUI",
+                Add("VUI 1",
                     New StringParam With {.Switch = "--master-display", .Text = "Master Display:", .Quotes = True},
+                    New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .ArgsFunc = AddressOf GetSAR},
                     Videoformat, Colorprim, Colormatrix, Transfer,
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"undefined", "show", "crop"}},
-                    New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"undefined", "full", "limited"}},
+                    New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"undefined", "full", "limited"}})
+                Add("VUI 2",
                     minLuma, maxLuma, MaxCLL, MaxFALL,
                     New BoolParam With {.Switch = "--hdr", .Text = "Force signalling of HDR parameters in SEI packets"},
                     New BoolParam With {.Switch = "--hdr-opt", .Text = "Add luma and chroma offsets for HDR/WCG content"},
@@ -1009,11 +1014,6 @@ Public Class x265Params
 
         Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.Switch)
         If q.Count > 0 Then sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
-
-        If Calc.IsARSignalingRequired AndAlso Not IsCustom(pass, "--sar") Then
-            Dim par = Calc.GetTargetPAR
-            sb.Append(" --sar " & par.X & ":" & par.Y)
-        End If
 
         If includePaths Then
             sb.Append(" --frames " & script.GetFrames)

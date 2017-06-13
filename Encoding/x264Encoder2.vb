@@ -9,7 +9,7 @@ Public Class x264Encoder2
     Property ParamsStore As New PrimitiveStore
 
     Sub New()
-        Name = "x264"
+        Name = "x264 new"
         AutoCompCheckValue = 50
     End Sub
 
@@ -286,6 +286,8 @@ Public Class x264Params2
                 'Add("Basic", Quant, Preset, Tune, Profile, OutputDepth,
                 'Add("Custom", Custom, CustomFirstPass, CustomSecondPass)
 
+                'New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .ArgsFunc = AddressOf GetSAR},
+
                 '                New OptionParam With {.Path = "Basic", .Switch = "--profile", .Text = "Profile", .Help = "Force the limits of an H.264 profile", .InitValue = 2, Options = {"baseline", "main", "high", "high10", "high422", "high444"}},
                 'New OptionParam With {.Path = "Basic", .Switch = "--preset", .Text = "Preset", .Help = "Use a preset to select encoding settings", .InitValue = 5, Options = {"ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"}},
                 'New OptionParam With {.Path = "Basic", .Switch = "--tune", .Text = "Tune", .Help = "Tune the settings for a particular type of source or situation.", Options = {"disabled", film", "animation", "grain", "stillimage", "psnr", "ssim", "fastdecode", "zerolatency"}},
@@ -454,7 +456,6 @@ Public Class x264Params2
 
                 'New <intxint>Param With {.Path = "", .Switch = "--input-res", .Text = "Specify input resolution (width x height)"
                 'New StringParam With {.Path = "", .Switch = "--index", .Text = "index", .Help = "Filename for input index file"},
-                'New BoolParam   With {.Path = "", .Switch = "--sar", .Text = "sar", .Help = "width:height      Specify Sample Aspect Ratio"},
                 'New <float|rational>Param With {.Path = "", .Switch = "--fps", .Text = "Specify framerate"
                 'New NumParam    With {.Path = "", .Switch = "--seek", .Text = "seek", Help = "First frame to encode"},
                 'New NumParam    With {.Path = "", .Switch = "--frames", .Text = "frames", Help = "Maximum number of frames to encode"},
@@ -599,11 +600,6 @@ Public Class x264Params2
 
         Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.Switch)
         If q.Count > 0 Then sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
-
-        If Calc.IsARSignalingRequired AndAlso Not IsCustom(pass, "--sar") Then
-            Dim par = Calc.GetTargetPAR
-            sb.Append(" --sar " & par.X & ":" & par.Y)
-        End If
 
         If includePaths Then
             sb.Append(" --frames " & script.GetFrames)

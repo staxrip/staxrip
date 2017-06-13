@@ -448,9 +448,7 @@ Class SubtitleControl
                         End If
                     End If
 
-                    Dim par = Calc.GetTargetPAR
-
-                    If Not par = New Point(1, 1) Then
+                    If Calc.IsARSignalingRequired Then
                         Dim w = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
                         avs.Filters.Add(New VideoFilter("LanczosResize(" & w & "," & p.TargetHeight & ")"))
                     End If

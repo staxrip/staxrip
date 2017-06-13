@@ -12,13 +12,19 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.0.6 unstable test build
+
+--new: various new x265 options
+- new: various new aspect ratio features
+- update: x265 2.4+61
+- update: QSVEncC 2.66
+
 #### 1.5.0.4 unstable test build
 
-- new: the aspect ratio menu in the main dialog is splitted into two menus, PAR and DAR
 - new: Subtitle Edit added to Apps in main menu and to container options dialog
 - new: nvenc --weightp
 - tweak: in case the source image width/height isn't mod 4 staxrip writes crop to the crop section instead of the source section and adds a comment 'ensure mod 4'
-- tweak: main form layout changed 
+- tweak: main form layout and scaling improved and increased precession of several values
 - update: TIVTC 1.0.9
 - update: VapourSynth R38
 - update: x265 2.4+36

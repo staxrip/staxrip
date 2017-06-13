@@ -189,6 +189,8 @@ End Class
 Public Class MP4Muxer
     Inherits Muxer
 
+    Property PAR As String = ""
+
     Sub New()
         MyClass.New("MP4")
     End Sub
@@ -222,9 +224,18 @@ Public Class MP4Muxer
         End If
 
         Dim temp = ""
-        Dim par = Calc.GetTargetPAR
 
-        If TypeOf p.VideoEncoder Is NullEncoder Then temp = ":par=" & par.X & ":" & par.Y
+        If PAR <> "" Then
+            Dim val = Calc.ParseCustomAR(PAR, 0, 0)
+            If val.X <> 0 Then temp = ":par=" & val.X & ":" & val.Y
+        ElseIf Calc.IsARSignalingRequired Then
+            Dim par = Calc.GetTargetPAR
+
+            If TypeOf p.VideoEncoder Is NullEncoder OrElse TypeOf p.VideoEncoder Is NVIDIAEncoder Then
+                temp = ":par=" & par.X & ":" & par.Y
+            End If
+        End If
+
         args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + temp).Quotes)
 
         AddAudio(p.Audio0, args)
@@ -432,10 +443,11 @@ Public Class MkvMuxer
     Property VideoTrackName As String = ""
     Property VideoTrackLanguage As New Language(CultureInfo.InvariantCulture)
     Property Title As String = ""
+    Property DAR As String = ""
 
     Sub New()
         Name = "MKV"
-        Tags = "Writing frontend: StaxRip %version%"
+        Tags = "Writing frontend: StaxRip v%version%"
     End Sub
 
     Sub New(name As String)
@@ -512,8 +524,10 @@ Public Class MkvMuxer
             args += " --track-name """ & id & ":" + Convert(VideoTrackName) + """"
         End If
 
-        If TypeOf p.VideoEncoder Is NullEncoder Then
-            args += " --aspect-ratio " & id & ":" + Calc.GetTargetDAR.ToInvariantString("f6")
+        If DAR <> "" Then
+            args += " --aspect-ratio " & id & ":" + DAR.Replace(",", ".").Replace(":", "/")
+        ElseIf Calc.IsARSignalingRequired AndAlso TypeOf p.VideoEncoder Is NullEncoder OrElse TypeOf p.VideoEncoder Is NVIDIAEncoder Then
+            args += " --aspect-ratio " & id & ":" + Calc.GetTargetDAR.ToInvariantString.Shorten(11)
         End If
 
         If MediaInfo.GetFrameRate(p.VideoEncoder.OutputPath, 0) = 0 Then

@@ -188,6 +188,7 @@ Public Class IntelEncoder
                         New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer:", .Options = {"8", "16", "32", "64", "128"}},
                         New NumParam With {.Switch = "--input-buf", .Text = "Input Buffer:", .MinMaxStep = {0, 16, 1}},
                         New NumParam With {.Switch = "--input-thread", .Text = "Input Thread:", .MinMaxStep = {0, 64, 1}},
+                        New NumParam With {.Switch = "--mfx-thread", .Text = "Input Threads MFX:"},
                         New NumParam With {.Switch = "--output-thread", .Text = "Output Thread:", .MinMaxStep = {0, 64, 1}},
                         New NumParam With {.Switch = "--async-depth", .Text = "Async Depth:", .MinMaxStep = {0, 64, 1}},
                         New BoolParam With {.Switch = "--min-memory", .Text = "Minimize memory usage"},
@@ -206,6 +207,7 @@ Public Class IntelEncoder
                         New NumParam With {.Switch = "--vpp-denoise", .Text = "Denoise:", .MinMaxStep = {0, 100, 1}},
                         New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhancement:", .MinMaxStep = {0, 100, 1}})
                     Add("VUI",
+                        New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat:", .Options = {"undef", "ntsc", "component", "pal", "secam", "mac"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "film"}},
@@ -314,9 +316,6 @@ Public Class IntelEncoder
                 (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Resize")) Then
 
                 ret += " --output-res " & p.TargetWidth & "x" & p.TargetHeight
-            ElseIf p.AutoARSignaling AndAlso p.SourceFile <> "" Then
-                Dim par = Calc.GetTargetPAR
-                If par <> New Point(1, 1) Then ret += " --sar " & par.X & ":" & par.Y
             End If
 
             If Decoder.ValueText <> "avs" Then

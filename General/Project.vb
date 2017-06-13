@@ -16,7 +16,6 @@ Public Class Project
     Public Audio0 As AudioProfile
     Public Audio1 As AudioProfile
     Public AudioTracks As List(Of AudioProfile)
-    Public AutoARSignaling As Boolean = True
     Public AutoCompCheck As Boolean
     Public AutoCorrectCropValues As Boolean = True
     Public AutoResizeImage As Integer
@@ -34,8 +33,10 @@ Public Class Project
     Public CompCheckRange As Integer = 5
     Public Compressibility As Double
     Public ConvertSup2Sub As Boolean
-    Public CustomDAR As String = ""
-    Public CustomPAR As String = ""
+    Public CustomSourceDAR As String = ""
+    Public CustomSourcePAR As String = ""
+    Public CustomTargetDAR As String = ""
+    Public CustomTargetPAR As String = ""
     Public CutFrameCount As Integer
     Public CutFrameRate As Double
     Public CuttingMode As CuttingMode
@@ -76,18 +77,18 @@ Public Class Project
     Public SourceFiles As List(Of String)
     Public SourceFrameRate As Double
     Public SourceFrames As Integer
-    Public SourceHeight As Integer = 576
+    Public SourceHeight As Integer = 1080
     Public SourcePAR As Point = New Point(1, 1)
     Public SourceScript As SourceVideoScript
     Public SourceSeconds As Integer
     Public SourceSize As Long
-    Public SourceWidth As Integer = 720
+    Public SourceWidth As Integer = 1920
     Public SubtitleName As String = ""
     Public TargetFrameRate As Double
-    Public TargetHeight As Integer = 576
+    Public TargetHeight As Integer = 1080
     Public TargetSeconds As Integer = 5400
     Public TargetSize As Integer = 700
-    Public TargetWidth As Integer = 720
+    Public TargetWidth As Integer = 1920
     Public TempDir As String
     Public TemplateName As String = ""
     Public TrimCode As String = ""

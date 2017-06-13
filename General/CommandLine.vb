@@ -20,6 +20,10 @@ Namespace CommandLine
             Next
         End Sub
 
+        Function GetStringParam(switch As String) As StringParam
+            Return Items.OfType(Of StringParam).Where(Function(item) item.Switch = switch).FirstOrDefault
+        End Function
+
         Function GetOptionParam(switch As String) As OptionParam
             Return Items.OfType(Of OptionParam).Where(Function(item) item.Switch = switch).FirstOrDefault
         End Function
@@ -41,6 +45,20 @@ Namespace CommandLine
 
             RaiseEvent ValueChanged(item)
         End Sub
+
+        Function GetSAR() As String
+            Dim param = GetStringParam("--sar")
+
+            If Not param Is Nothing AndAlso param.Value <> "" Then
+                Dim targetPAR = Calc.GetTargetPAR
+                Dim val = Calc.ParseCustomAR(param.Value, targetPAR.X, targetPAR.Y)
+                Dim isInTolerance = val = targetPAR AndAlso Not Calc.IsARSignalingRequired
+
+                If val.X <> 0 AndAlso val <> New Point(1, 1) AndAlso Not isInTolerance Then
+                    Return "--sar " & val.X & ":" & val.Y
+                End If
+            End If
+        End Function
 
         Sub Execute()
             Dim batchPath = p.TempDir + p.TargetFile.Base + "_vexe.bat"
@@ -471,6 +489,13 @@ Namespace CommandLine
                 If Not TextEdit Is Nothing Then
                     TextEdit.Text = value
                 End If
+            End Set
+        End Property
+
+        WriteOnly Property InitValue As String
+            Set(value As String)
+                Me.Value = value
+                DefaultValue = value
             End Set
         End Property
 

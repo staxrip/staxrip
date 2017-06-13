@@ -208,9 +208,7 @@ Class ffmpegEncoder
             Dim items = From i In Me.Items Where i.GetArgs <> ""
             If items.Count > 0 Then ret += " " + items.Select(Function(item) item.GetArgs).Join(" ")
 
-            If Calc.IsARSignalingRequired Then
-                ret += " -aspect " + Calc.GetTargetDAR.ToInvariantString.Shorten(8)
-            End If
+            If Calc.IsARSignalingRequired Then ret += " -aspect " + Calc.GetTargetDAR.ToInvariantString.Shorten(8)
 
             Select Case Mode.Value
                 Case EncodingMode.TwoPass

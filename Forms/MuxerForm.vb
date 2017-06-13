@@ -608,6 +608,7 @@ Class MuxerForm
 
         If TypeOf Muxer Is MkvMuxer Then
             CmdlControl.Presets = s.CmdlPresetsMKV
+            Dim mkvMuxer = DirectCast(Muxer, MkvMuxer)
 
             Dim timecodes = UI.AddTextButtonBlock(page)
             timecodes.Label.Text = "Timecodes:"
@@ -621,21 +622,26 @@ Class MuxerForm
             tb.Label.Text = "Title:"
             tb.Label.Tooltip = "Optional title of the output file that may contain macros."
             tb.Edit.Expandet = True
-            tb.Edit.Text = DirectCast(Muxer, MkvMuxer).Title
-            tb.Edit.SaveAction = Sub(value) DirectCast(Muxer, MkvMuxer).Title = value
+            tb.Edit.Text = mkvMuxer.Title
+            tb.Edit.SaveAction = Sub(value) mkvMuxer.Title = value
 
             tb = UI.AddTextBlock(page)
             tb.Label.Text = "Video Track Name:"
             tb.Label.Tooltip = "Optional name of the video stream that may contain macro."
             tb.Edit.Expandet = True
-            tb.Edit.Text = DirectCast(Muxer, MkvMuxer).VideoTrackName
-            tb.Edit.SaveAction = Sub(value) DirectCast(Muxer, MkvMuxer).VideoTrackName = value
+            tb.Edit.Text = mkvMuxer.VideoTrackName
+            tb.Edit.SaveAction = Sub(value) mkvMuxer.VideoTrackName = value
+
+            tb = UI.AddTextBlock(page)
+            tb.Label.Text = "Display Aspect Ratio:"
+            tb.Edit.Text = mkvMuxer.DAR
+            tb.Edit.SaveAction = Sub(value) mkvMuxer.DAR = value
 
             Dim mb = UI.AddMenuButtonBlock(Of Language)(page)
             mb.Label.Text = "Video Track Language:"
             mb.Label.Tooltip = "Optional language of the video stream."
-            mb.MenuButton.Value = DirectCast(Muxer, MkvMuxer).VideoTrackLanguage
-            mb.MenuButton.SaveAction = Sub(value) DirectCast(Muxer, MkvMuxer).VideoTrackLanguage = value
+            mb.MenuButton.Value = mkvMuxer.VideoTrackLanguage
+            mb.MenuButton.SaveAction = Sub(value) mkvMuxer.VideoTrackLanguage = value
 
             lastAction = Sub()
                              For Each i In Language.Languages
@@ -651,6 +657,12 @@ Class MuxerForm
 
         ElseIf TypeOf Muxer Is MP4Muxer Then
             CmdlControl.Presets = s.CmdlPresetsMP4
+            Dim mp4Muxer = DirectCast(Muxer, MP4Muxer)
+
+            Dim tb = UI.AddTextBlock(page)
+            tb.Label.Text = "Pixel Aspect Ratio:"
+            tb.Edit.Text = mp4Muxer.PAR
+            tb.Edit.SaveAction = Sub(value) mp4Muxer.PAR = value
         End If
 
         page.ResumeLayout()

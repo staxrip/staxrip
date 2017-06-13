@@ -192,9 +192,7 @@ Public Class GlobalClass
         script.Filters = doc.GetFiltersCopy
 
         If script.Engine = ScriptEngine.AviSynth Then
-            Dim par = Calc.GetTargetPAR
-
-            If Not par = New Point(1, 1) Then
+            If Calc.IsARSignalingRequired Then
                 Dim targetWidth = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
                 script.Filters.Add(New VideoFilter("LanczosResize(" & targetWidth & "," & p.TargetHeight & ")"))
             End If
@@ -220,9 +218,7 @@ Public Class GlobalClass
                 End If
             End If
         Else
-            Dim par = Calc.GetTargetPAR
-
-            If Not par = New Point(1, 1) Then
+            If Calc.IsARSignalingRequired Then
                 Dim targetWidth = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
                 script.Filters.Add(New VideoFilter("clip = core.resize.Bicubic(clip, " & targetWidth & "," & p.TargetHeight & ")"))
             End If

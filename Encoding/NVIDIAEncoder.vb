@@ -252,7 +252,7 @@ Public Class NVIDIAEncoder
                         New NumParam With {.Switch = "--bframes", .Text = "B-Frames:", .InitValue = 3, .MinMaxStep = {0, 16, 1}},
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames:", .InitValue = 3, .MinMaxStep = {0, 16, 1}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--lookahead", .Text = "Lookahead:", .MinMaxStep = {0, 32, 1}, .InitValue = 16},
+                        New NumParam With {.Switch = "--lookahead", .Text = "Lookahead:", .MinMaxStep = {0, 32, 1}},
                         New BoolParam With {.Switch = "--strict-gop", .Text = "Strict GOP"},
                         New BoolParam With {.NoSwitch = "--no-b-adapt", .Text = "B-Adapt", .InitValue = True},
                         New BoolParam With {.NoSwitch = "--no-i-adapt", .Text = "I-Adapt", .InitValue = True})
@@ -262,8 +262,8 @@ Public Class NVIDIAEncoder
                         New NumParam With {.Switch = "--qp-min", .Text = "Min QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate:", .InitValue = 17500, .MinMaxStep = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength:", .MinMaxStep = {0, 15, 1}, .VisibleFunc = Function() Codec.ValueText = "h264"},
-                        New NumParam With {.Switch = "--vbr-quality", .Text = "VBR Quality:", .MinMaxStep = {0, 51, 1}},
+                        New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength:", .MinMaxStep = {0, 15, 1}, .VisibleFunc = Function() Codec.ValueText = "h264", .Help = "AQ strength (weak 1 - 15 strong) FOR H.264 ONLY, Default: auto(= 0)"},
+                        New NumParam With {.Switch = "--vbr-quality", .Text = "VBR Quality:", .MinMaxStepDec = {0, 51, 1, 1}, .Help = "Target quality for VBR mode (0.0-51.0, 0 = auto)."},
                         New BoolParam With {.Switch = "--aq", .Text = "Adaptive Quantization"},
                         New BoolParam With {.Switch = "--aq-temporal", .Text = "AQ Temporal"},
                         Lossless)
@@ -277,6 +277,7 @@ Public Class NVIDIAEncoder
                         New OptionParam With {.Switch = "--output-thread", .Text = "Output Thread:", .Options = {"Automatic", "Disabled", "One Thread"}, .Values = {"-1", "0", "1"}},
                         New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
                     Add("VUI",
+                        New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat:", .Options = {"undef", "ntsc", "component", "pal", "secam", "mac"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR", "bt2020nc", "bt2020c"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "film", "bt2020"}},
@@ -416,16 +417,6 @@ Public Class NVIDIAEncoder
                 (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Resize")) Then
 
                 ret += " --output-res " & p.TargetWidth & "x" & p.TargetHeight
-            ElseIf p.AutoARSignaling AndAlso p.SourceFile <> "" AndAlso
-                Not Custom.Value.ContainsAny({"--dar ", "--sar "}) Then
-
-                Dim par = Calc.GetTargetPAR
-
-                If par <> New Point(1, 1) Then
-                    Dim val As New Point(CInt(Calc.GetTargetDAR() * 1000000), 1000000)
-                    val = Calc.Reduce(val)
-                    ret += " --dar " & val.X & ":" & val.Y
-                End If
             End If
 
             If Decoder.ValueText <> "avs" Then

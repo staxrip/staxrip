@@ -138,7 +138,7 @@ Class Calc
     End Function
 
     Shared Function IsARSignalingRequired() As Boolean
-        If Not p.Script Is Nothing AndAlso p.AutoARSignaling Then
+        If Not p.Script Is Nothing Then
             Dim par = GetTargetPAR()
 
             If par.X <> par.Y Then
@@ -154,9 +154,7 @@ Class Calc
     Private Shared Function GetSimplePar(par As Point) As Point
         If par.Y > 0 Then
             For Each i In New Point() {New Point(12, 11), New Point(10, 11), New Point(16, 11), New Point(40, 33)}
-                If Math.Abs((par.X / par.Y) / (i.X / i.Y) * 100 - 100) < 1 Then
-                    Return i
-                End If
+                If Math.Abs((par.X / par.Y) / (i.X / i.Y) * 100 - 100) < 1 Then Return i
             Next
         End If
 
@@ -181,16 +179,19 @@ Class Calc
         Return par
     End Function
 
-    Shared Function ParseCustomAR(value As String) As Point
-        If value.Contains(":") OrElse value.Contains("/") Then
+    Shared Function ParseCustomAR(value As String, defaultX As Integer, defaultY As Integer) As Point
+        If value <> "" AndAlso (value.Contains(":") OrElse value.Contains("/")) Then
             Dim a = value.Split(":/".ToCharArray)
 
             If a.Length = 2 AndAlso a(0).IsInt AndAlso a(1).IsInt Then
-                Return New Point(a(0).ToInt, a(1).ToInt)
+                Return Reduce(New Point(a(0).ToInt, a(1).ToInt))
             End If
         ElseIf value.IsDouble Then
-            Return New Point(CInt(value.ToDouble * 100000), 100000)
+            Dim val = value.ToDouble
+            If val > 0 Then Return Reduce(New Point(CInt(val * 1000000), 1000000))
         End If
+
+        Return New Point(defaultX, defaultY)
     End Function
 
     Shared Function GetSourceDAR() As Double
@@ -207,11 +208,14 @@ Class Calc
     End Function
 
     Shared Function GetSourcePAR() As Point
-        If p.CustomPAR <> "" Then Return Reduce(ParseCustomAR(p.CustomPAR))
+        If p.CustomSourcePAR <> "" Then
+            Dim val = ParseCustomAR(p.CustomSourcePAR, 0, 0)
+            If val.X <> 0 Then Return Reduce(val)
+        End If
 
-        If p.CustomDAR <> "" Then
-            Dim r = ParseCustomAR(p.CustomDAR)
-            Return Reduce(New Point(p.SourceHeight * r.X, p.SourceWidth * r.Y))
+        If p.CustomSourceDAR <> "" Then
+            Dim val = ParseCustomAR(p.CustomSourceDAR, 0, 0)
+            If val.X <> 0 Then Return Reduce(New Point(p.SourceHeight * val.X, p.SourceWidth * val.Y))
         End If
 
         Dim par As New Point(1, 1)
@@ -229,27 +233,16 @@ Class Calc
 
             If f.Width > 0 Then
                 Dim samplingWidth = 52.0
-
-                If Not p.ITU Then
-                    samplingWidth = f.Width / f.SamplingRate
-                End If
-
+                If Not p.ITU Then samplingWidth = f.Width / f.SamplingRate
                 Dim dar = (p.SourcePAR.X * p.SourceWidth) / (p.SourcePAR.Y * p.SourceHeight)
-
                 par.X = CInt(If(p.SourceAnamorphic OrElse dar > 1.7, 16 / 9, 4 / 3) * f.Height)
                 par.Y = CInt(f.SamplingRate * samplingWidth)
-
                 Return Reduce(par)
             Else
                 Dim dar = If(p.SourceAnamorphic, 16 / 9, 4 / 3)
-
-                If p.ITU Then
-                    dar *= 1.0255
-                End If
-
+                If p.ITU Then dar *= 1.0255
                 par.X = CInt(dar * h)
                 par.Y = CInt(w)
-
                 Return Reduce(par)
             End If
         End If
@@ -266,18 +259,27 @@ Class Calc
 
     Shared Function GetTargetPAR() As Point
         Try
-            Dim par = GetSourcePAR()
-
-            Dim cw = p.SourceWidth
-            Dim ch = p.SourceHeight
-
-            If p.Script.IsFilterActive("Crop") Then
-                cw -= p.CropLeft + p.CropRight
-                ch -= p.CropTop + p.CropBottom
+            If p.CustomTargetPAR <> "" Then
+                Dim val = ParseCustomAR(p.CustomTargetPAR, 0, 0)
+                If val.X <> 0 Then Return Reduce(val)
             End If
 
-            If p.TargetWidth <> cw OrElse p.TargetHeight <> ch Then
-                Dim par2 = Reduce(New Point(cw * p.TargetHeight, ch * p.TargetWidth))
+            Dim par = GetSourcePAR()
+            Dim croppedWidth = p.SourceWidth
+            Dim croppedHeight = p.SourceHeight
+
+            If p.Script.IsFilterActive("Crop") Then
+                croppedWidth -= p.CropLeft + p.CropRight
+                croppedHeight -= p.CropTop + p.CropBottom
+            End If
+
+            If p.CustomTargetDAR <> "" Then
+                Dim val = ParseCustomAR(p.CustomTargetDAR, 0, 0)
+                If val.X <> 0 Then Return Reduce(New Point(CInt(val.X * croppedHeight), CInt(val.Y * croppedWidth)))
+            End If
+
+            If p.TargetWidth <> croppedWidth OrElse p.TargetHeight <> croppedHeight Then
+                Dim par2 = Reduce(New Point(croppedWidth * p.TargetHeight, croppedHeight * p.TargetWidth))
                 par.X = par.X * par2.X
                 par.Y = par.Y * par2.Y
                 par = Reduce(par)
@@ -290,12 +292,22 @@ Class Calc
     End Function
 
     Shared Function GetTargetDAR() As Double
+        If p.CustomTargetDAR <> "" Then
+            Dim val = ParseCustomAR(p.CustomTargetDAR, 0, 0)
+            If val.X <> 0 AndAlso val.Y <> 0 Then Return val.X / val.Y
+        End If
+
         Dim w = p.SourceWidth, h = p.SourceHeight
         Dim cropw = w, croph = h
 
         If p.Script.IsFilterActive("Crop") Then
             cropw = w - p.CropLeft - p.CropRight
             croph = h - p.CropTop - p.CropBottom
+        End If
+
+        If p.CustomTargetPAR <> "" Then
+            Dim val = ParseCustomAR(p.CustomTargetPAR, 0, 0)
+            If val.X <> 0 Then Return (val.X * cropw) / (val.Y * croph)
         End If
 
         Return ((cropw / w) / (croph / h)) * GetSourceDAR()

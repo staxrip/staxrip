@@ -42,6 +42,8 @@ Public Class ApplicationSettings
     Public SnapToDesktopEdges As Boolean = True
     Public SourceDarMenu As String
     Public SourceParMenu As String
+    Public TargetDarMenu As String
+    Public TargetParMenu As String
     Public StartupTemplate As String
     Public Storage As ObjectStorage
     Public StringDictionary As Dictionary(Of String, String)
@@ -205,8 +207,10 @@ Public Class ApplicationSettings
                               "Stats = --stats ""%target_temp_file%.stats"""
         End If
 
-        If Check(SourceParMenu, "Source PAR menu", 4) Then SourceParMenu = GetSourceParMenu()
-        If Check(SourceDarMenu, "Source DAR menu", 4) Then SourceDarMenu = GetSourceDarMenu()
+        If Check(SourceParMenu, "Source PAR menu", 10) Then SourceParMenu = GetSourceParMenu()
+        If Check(SourceDarMenu, "Source DAR menu", 10) Then SourceDarMenu = GetSourceDarMenu()
+        If Check(TargetParMenu, "Target PAR menu", 10) Then TargetParMenu = GetSourceParMenu()
+        If Check(TargetDarMenu, "Target DAR menu", 10) Then TargetDarMenu = GetSourceDarMenu()
 
         If Check(TargetImageSizeMenu, "Target image size menu", 13) Then
             TargetImageSizeMenu = GetDefaultTargetImageSizeMenu()
@@ -278,29 +282,43 @@ Public Class ApplicationSettings
 
     Shared Function GetSourceDarMenu() As String
         Dim ret =
-"Custom... = $enter_text:Enter a custom Display Aspect Ratio.$
+"Automatic = 0
 
-4:3 = 4:3
-16:9 = 16:9
+1.333333 = 4:3
+1.777777 = 16:9
 
-PAL ITU 16:9 1.823361 = 1.823361
-PAL ITU 4:3 1.367521 = 1.367521
-NTSC ITU 16:9 1.822784 = 1.822784
-NTSC ITU 4:3 1.367088 = 1.367088"
+1.823361 PAL ITU = 1.823361
+1.367521 PAL ITU = 1.367521
+
+1.822784 NTSC ITU = 1.822784
+1.367088 NTSC ITU = 1.367088
+
+1.85 = 1.85
+2.00 = 2.00
+2.35 = 2.35
+2.40 = 2.40
+
+Custom... = $enter_text:Enter a custom Display Aspect Ratio.$"
 
         Return ret
     End Function
 
     Shared Function GetSourceParMenu() As String
         Dim ret =
-"Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$
- 1:1 = 1:1
+"Automatic = 0
+1:1 = 1:1
 
-PAL DVD MPEG-4 16:11 (16:9)= 16:11
-PAL DVD MPEG-4 12:11 (4:3)= 12:11
+PAL 1.33 16:15 = 16:15
+PAL 1.36 12:11 = 12:11
+PAL 1.77 64:45 = 64:45
+PAL 1.82 16:11 = 16:11
 
-NTSC DVD MPEG-4 40:33 (16:9)= 40:33
-NTSC DVD MPEG-4 10:11 (4:3)= 10:11"
+NTSC 1.33 8:9   = 8:9
+NTSC 1.36 10:11 = 10:11
+NTSC 1.77 32:27 = 32:27
+NTSC 1.82 40:33 = 40:33
+
+Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$"
 
         Return ret
     End Function

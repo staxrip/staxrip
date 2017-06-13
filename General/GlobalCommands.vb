@@ -327,7 +327,9 @@ Public Class GlobalCommands
         --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb --vpp-delogo-cr
         --vpp-delogo-add --vpp-half-turn --input-analyze --input-format --output-format
         ".Split((" " + BR).ToCharArray())
-        Dim qsHelp = File.ReadAllText(".\Apps\QSVEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
+
+        File.WriteAllText(Package.QSVEncC.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.QSVEncC.Path, "-h"))
+        Dim qsHelp = File.ReadAllText(Package.QSVEncC.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim qsHelpSwitches = Regex.Matches(qsHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim qsCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\IntelEncoder.vb").Replace("--no-", "--")
         Dim qsPresent = Regex.Matches(qsCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
@@ -343,9 +345,11 @@ Public Class GlobalCommands
         --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version
         --opt-qp-pps --opt-ref-list-length-pps --dhdr10-info --no-scenecut
         --no-progress --pbration".Split((" " + BR).ToCharArray())
-        Dim x265RemoveExcept = "--numa-pools --rdoq --cip --qblur --cplxblur --cu-stats --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
+        Dim x265RemoveExcept = "--numa-pools --rdoq --cip --qblur --cplxblur --cu-stats
+--dhdr10-opt --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
 
         Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --help").Replace("--[no-]", "--")
+        File.WriteAllText(Folder.Desktop + "x265.txt", x265Help)
         Dim x265HelpSwitches = Regex.Matches(x265Help, "--[\w-]+").OfType(Of Match).Select(Function(val) val.Value)
         Dim x265Code = File.ReadAllText(Folder.Startup.Parent + "Encoding\x265Encoder.vb").Replace("--no-", "--")
         Dim x265Present As New HashSet(Of String)

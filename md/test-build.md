@@ -14,7 +14,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 #### 1.5.0.6 unstable test build
 
---new: various new x265 options
+- new: various new x265 options
 - new: various new aspect ratio features
 - update: x265 2.4+61
 - update: QSVEncC 2.66

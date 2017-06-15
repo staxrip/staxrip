@@ -21,7 +21,7 @@ staxrip is a multiformat video encoding application for Windows. It's a GUI fron
 - [Intel Skylake](https://en.wikipedia.org/wiki/Skylake_%28microarchitecture%29) or newer for HEVC/H.265 hardware encoding
 - [NVIDIA Maxwell gen2 card](https://en.wikipedia.org/wiki/Maxwell_%28microarchitecture%29#Second_generation_Maxwell_.28GM20x.29) or newer for HEVC/H.265 hardware encoding
 - [AMD Polaris card](http://www.amd.com/en-gb/innovations/software-technologies/radeon-polaris) or newer for HEVC/H.265 hardware encoding
-- AviSynth+ x64, the installer is bundled with StaxRip x64 or alternativly VapourSynth x64 which requires [Python x64](https://www.python.org/downloads/windows)
+- AviSynth+ x64, the installer is bundled with StaxRip x64 or alternativly VapourSynth x64 which requires Python x64
 
 ## Documentation
 

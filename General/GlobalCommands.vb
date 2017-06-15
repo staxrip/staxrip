@@ -64,6 +64,7 @@ Public Class GlobalCommands
 
     <Command("Runs all active jobs of the job list.")>
     Sub StartJobs()
+        'g.RunJobRecursive()
         g.ShellExecute(Application.ExecutablePath, "-RunJobsMaximized")
     End Sub
 

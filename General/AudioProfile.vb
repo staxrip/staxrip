@@ -699,10 +699,13 @@ Class GUIAudioProfile
                 If g.WasFileJustWritten(targetPath) Then
                     File = targetPath
                     Bitrate = Calc.GetBitrateFromFile(File, p.TargetSeconds)
-                    p.VideoBitrate = CInt(Calc.GetVideoBitrate)
 
-                    If Not p.VideoEncoder.QualityMode Then
-                        Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR)
+                    If Not p.BitrateIsFixed Then
+                        p.VideoBitrate = CInt(Calc.GetVideoBitrate)
+
+                        If Not p.VideoEncoder.QualityMode Then
+                            Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR)
+                        End If
                     End If
 
                     Log.WriteLine(MediaInfo.GetSummary(File))

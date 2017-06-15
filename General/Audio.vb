@@ -90,7 +90,7 @@ Class Audio
 
         If Filepath.GetExtFull(ap.File) = ".avs" Then
             Dim outPath = Filepath.GetDirAndBase(ap.File) + ext
-            Dim args = "-i """ + ap.File + """ -y -hide_banner """ + outPath + """"
+            Dim args = "-i " + ap.File.Quotes + " -y -hide_banner " + outPath.Quotes
 
             Using proc As New Proc
                 proc.Init("AVS to FLAC/WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -140,7 +140,7 @@ Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
+        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + wavPath.Quotes
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -173,7 +173,7 @@ Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
+        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + wavPath.Quotes
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -272,12 +272,12 @@ Class Audio
     Shared Sub DecodeFfmpeg(ap As AudioProfile, Optional useFlac As Boolean = False)
         If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
         Dim outPath = p.TempDir + ap.File.Base + If(useFlac, ".flac", ".wav")
-        Dim args = "-i """ + ap.File + """"
+        Dim args = "-i " + ap.File.Quotes
 
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
 
         args += " -y -hide_banner -ac " & ap.Channels
-        args += " """ + outPath + """"
+        args += " " + outPath.Quotes
 
         Using proc As New Proc
             proc.Init("Convert from " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " using ffmpeg " + Package.ffmpeg.Version,
@@ -310,7 +310,7 @@ Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
+        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + wavPath.Quotes
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -344,7 +344,7 @@ Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
+        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + wavPath.Quotes
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -375,7 +375,7 @@ Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
+        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + wavPath.Quotes
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -408,7 +408,7 @@ Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i """ + d.Path + """ -y -hide_banner """ + wavPath + """"
+        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + wavPath.Quotes
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -432,11 +432,11 @@ Class Audio
         If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
 
         Dim aviPath = p.TempDir + ap.File.Base + "_cut_mm.avi"
-        Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0}:r={1} -y -hide_banner -c:v copy """ + aviPath + """", (p.CutFrameCount / p.CutFrameRate).ToString("f6", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f6", CultureInfo.InvariantCulture))
+        Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0}:r={1} -y -hide_banner -c:v copy " + aviPath.Quotes, (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture))
 
         Using proc As New Proc
-            proc.Init("Create dummy avi file with ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
-            proc.WriteLine("mkvmerge cannot cut audio without video so a dummy avi file has to be created" + BR2)
+            proc.Init("Create avi file for audio cutting with ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
+            proc.WriteLine("mkvmerge cannot cut audio without video so a avi file has to be created" + BR2)
             proc.Encoding = Encoding.UTF8
             proc.File = Package.ffmpeg.Path
             proc.Arguments = args
@@ -451,12 +451,12 @@ Class Audio
 
         Dim mkvPath = p.TempDir + ap.File.Base + "_cut_.mkv"
 
-        Dim args2 = "-o """ + mkvPath + """ """ + aviPath + """ """ + ap.File + """"
+        Dim args2 = "-o " + mkvPath.Quotes + " " + aviPath.Quotes + " " + ap.File.Quotes
         args2 += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")
         args2 += " --ui-language en"
 
         Using proc As New Proc
-            proc.Init("Cut using mkvmerge " + Package.mkvmerge.Version, "Progress: ")
+            proc.Init("Cut audio using mkvmerge " + Package.mkvmerge.Version, "Progress: ")
             proc.Encoding = Encoding.UTF8
             proc.File = Package.mkvmerge.Path
             proc.Arguments = args2
@@ -483,9 +483,7 @@ Class Audio
             Log.Write("Error", "no output found")
             Decode(ap)
 
-            If Filepath.GetExtFull(ap.File) = ".wav" Then
-                Cut(ap)
-            End If
+            If Filepath.GetExtFull(ap.File) = ".wav" Then Cut(ap)
         End If
     End Sub
 
@@ -519,9 +517,9 @@ function Down2(clip a)
     End Function
 
     Shared Sub SetGain(ap As AudioProfile)
-        Dim args = "-i """ + ap.File + """"
+        Dim args = "-i " + ap.File.Quotes
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
-        args += " -af volumedetect -f null NUL"
+        args += " -hide_banner -loglevel error -af volumedetect -f null NUL"
 
         Using proc As New Proc
             proc.Init("Find Gain using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple", "decoding is not implemented", "unsupported frame type", "upload a sample")

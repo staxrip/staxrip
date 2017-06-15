@@ -205,51 +205,12 @@ Public MustInherit Class VideoEncoder
         Return Nothing
     End Function
 
-    Shared Function Getx264Encoder(
-        name As String,
-        device As x264DeviceMode,
-        Optional mode As x264Mode = x264Mode.SingleCRF) As x264Encoder
-
-        Return Getx264Encoder(name, mode, x264PresetMode.Medium, x264TuneMode.Disabled, device)
-    End Function
-
-    Shared Function Getx264Encoder(name As String,
-                                   mode As x264Mode,
-                                   preset As x264PresetMode,
-                                   tuning As x264TuneMode,
-                                   device As x264DeviceMode) As x264Encoder
-
-        Dim r As New x264Encoder()
-        r.Name = name
-        r.Params.Mode.Value = mode
-        r.Params.Preset.Value = preset
-        r.Params.Tune.Value = tuning
-        r.Params.Device.Value = device
-        r.Params.ApplyDeviceSettings()
-        r.Params.ApplyDefaults(r.Params)
-        r.Params.ApplyDeviceSettings()
-        r.SetMuxer()
-
-        Return r
-    End Function
-
     Shared Function GetDefaults() As List(Of VideoEncoder)
         Dim ret As New List(Of VideoEncoder)
 
-        ret.Add(Getx264Encoder("x264", x264Mode.SingleCRF, x264PresetMode.Medium, x264TuneMode.Disabled, x264DeviceMode.Disabled))
-
-        If Application.StartupPath = "D:\Projekte\VS\VB\StaxRip\bin" Then
-            Dim x264Encoder2 As New x264Encoder2
-            x264Encoder2.Params.ApplyPresetDefaultValues()
-            x264Encoder2.Params.ApplyPresetValues()
-            ret.Add(x264Encoder2)
-        End If
-
-        Dim x265crf = New x265Encoder
-        x265crf.Params.ApplyPresetDefaultValues()
-        x265crf.Params.ApplyPresetValues()
-        ret.Add(x265crf)
-
+        ret.Add(New x264Encoder)
+        ret.Add(New x264Encoder2)
+        ret.Add(New x265Encoder)
         ret.Add(New IntelEncoder())
 
         Dim intel265 As New IntelEncoder()
@@ -281,25 +242,6 @@ Public MustInherit Class VideoEncoder
         ret.Add(xvid)
 
         ret.Add(New AV1Encoder)
-        ret.Add(New NullEncoder())
-
-        ret.Add(Getx264Encoder("2 pass | x264", x264Mode.TwoPass, x264PresetMode.Medium, x264TuneMode.Disabled, x264DeviceMode.Disabled))
-
-        Dim x265_2pass = New x265Encoder
-        x265_2pass.Name = "2 pass | x265"
-        x265_2pass.Params.Mode.Value = x265RateMode.TwoPass
-        x265_2pass.Params.ApplyPresetDefaultValues()
-        x265_2pass.Params.ApplyPresetValues()
-        ret.Add(x265_2pass)
-
-        Dim xvid2pass As New BatchEncoder()
-        xvid2pass.OutputFileTypeValue = "avi"
-        xvid2pass.Name = "2 pass | XviD"
-        xvid2pass.Muxer = New ffmpegMuxer("AVI")
-        xvid2pass.CommandLines = """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -turbo -pass1 ""%target_temp_file%.stats"" -i ""%script_file%"" || exit" + BR +
-                                 """%app:xvid_encraw%"" -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -bitrate %video_bitrate% -par %target_sar% -pass2 ""%target_temp_file%.stats"" -i ""%script_file%"" -avi ""%encoder_out_file%"""
-        xvid2pass.CompCheckCommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -par %target_sar% -i ""%target_temp_file%_CompCheck.%script_ext%"" -avi ""%target_temp_file%_CompCheck.avi"""
-        ret.Add(xvid2pass)
 
         Dim ffmpeg = New ffmpegEncoder()
 
@@ -333,11 +275,7 @@ Public MustInherit Class VideoEncoder
         nvencH265.CommandLines = """%app:NVEncC%"" --sar %target_sar% --codec h265 --cqp 20 -i ""%script_file%"" -o ""%encoder_out_file%"""
         ret.Add(nvencH265)
 
-        ret.Add(Getx264Encoder("Devices | DivX Plus", x264DeviceMode.DivXPlus))
-        ret.Add(Getx264Encoder("Devices | Blu-ray", x264DeviceMode.BluRay))
-        ret.Add(Getx264Encoder("Devices | iPhone", x264DeviceMode.iPhone))
-        ret.Add(Getx264Encoder("Devices | PlayStation", x264DeviceMode.PlayStation))
-        ret.Add(Getx264Encoder("Devices | Xbox", x264DeviceMode.Xbox))
+        ret.Add(New NullEncoder())
 
         Return ret
     End Function

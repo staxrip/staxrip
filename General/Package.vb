@@ -38,6 +38,27 @@ Public Class Package
 
     Shared Property Items As New SortedDictionary(Of String, Package)
 
+    Shared Property vspipe As Package = Add(New Package With {
+        .Name = "vspipe",
+        .Filename = "vspipe.exe",
+        .Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
+        .WebURL = "http://www.vapoursynth.com/doc/vspipe.html",
+        .DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases",
+        .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
+        .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"})
+
+    Shared Property VapourSynth As Package = Add(New Package With {
+        .Name = "VapourSynth",
+        .Filename = "vapoursynth.dll",
+        .Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.",
+        .WebURL = "http://www.vapoursynth.com",
+        .HelpURL = "http://www.vapoursynth.com/doc",
+        .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R38/VapourSynth-R38.exe",
+        .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
+        .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"})
+
+    Shared Property Python As New PythonPackage
+
     Shared Property AviSynth As New AviSynthPlusPackage
 
     Shared Property BDSup2SubPP As Package = Add(New Package With {
@@ -104,7 +125,14 @@ Public Class Package
 
     Shared Property ProjectX As New ProjectXPackage
     Shared Property qaac As New qaacPackage
-    Shared Property TDeint As New TDeintPackage
+
+    Shared Property TDeint As Package = Add(New PluginPackage With {
+        .Name = "TDeint",
+        .Filename = "TDeint.dll",
+        .WebURL = "http://avisynth.nl/index.php/TDeint",
+        .Description = "TDeint is a bi-directionally, motion adaptive, sharp deinterlacer. It can adaptively choose between using per-field and per-pixel motion adaptivity, and can use cubic interpolation, kernel interpolation (with temporal direction switching), or one of two forms of modified ELA interpolation which help to reduce ""jaggy"" edges in moving areas where interpolation must be used.",
+        .AviSynthFilterNames = {"TDeint"}})
+
     Shared Property UnDot As New UnDotPackage
 
     Shared Property VSRip As Package = Add(New Package With {
@@ -136,34 +164,18 @@ Public Class Package
         .Description = "A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Didée and then written as a plugin by tritical.",
         .AviSynthFilterNames = {"vinverse", "vinverse2"}})
 
-    Shared Property vspipe As New Package With {
-        .Name = "vspipe",
-        .Filename = "vspipe.exe",
-        .Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
-        .WebURL = "http://www.vapoursynth.com/doc/vspipe.html",
-        .DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases",
-        .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"}
+    Shared Property scenechange As Package = Add(New PluginPackage With {
+        .Name = "scenechange",
+        .Filename = "scenechange.dll",
+        .VapourSynthFilterNames = {"scenechange"}})
 
-    Shared Property VapourSynth As New Package With {
-        .Name = "VapourSynth",
-        .Filename = "vapoursynth.dll",
-        .Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.",
-        .WebURL = "http://www.vapoursynth.com",
-        .HelpURL = "http://www.vapoursynth.com/doc",
-        .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R38/VapourSynth-R38.exe",
-        .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"}
-
-    Shared Property Python As New PythonPackage
-    Shared Property scenechange As New scenechangePackage
     Shared Property temporalsoften As New temporalsoftenPackage
 
-    Shared Property avs2pipemod As New Package With {
+    Shared Property avs2pipemod As Package = Add(New Package With {
         .Name = "avs2pipemod",
         .Filename = "avs2pipemod64.exe",
         .WebURL = "https://github.com/chikuzen/avs2pipemod",
-        .Description = "Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools."}
+        .Description = "Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools."})
 
     Shared ReadOnly Property x264 As Package
         Get
@@ -191,40 +203,40 @@ Public Class Package
         Return TypeOf p.VideoEncoder Is x264Encoder AndAlso DirectCast(p.VideoEncoder, x264Encoder).Params.Depth.Value = 1
     End Function
 
-    Shared Property x265 As New Package With {
+    Shared Property x265 As Package = Add(New Package With {
         .Name = "x265",
         .Filename = "x265.exe",
         .WebURL = "http://x265.org",
         .HelpURL = "http://x265.readthedocs.org",
-        .Description = "H.265 video encoding command line app."}
+        .Description = "H.265 video encoding command line app."})
 
-    Shared Property BeSweet As New Package With {
+    Shared Property BeSweet As Package = Add(New Package With {
         .Name = "BeSweet",
         .Filename = "BeSweet.exe",
-        .Description = "Alternative audio converter, for most formats StaxRip uses now eac3to by default."}
+        .Description = "Alternative audio converter, for most formats StaxRip uses now eac3to by default."})
 
-    Shared Property mkvmerge As New Package With {
+    Shared Property mkvmerge As Package = Add(New Package With {
         .Name = "mkvmerge",
         .Filename = "mkvmerge.exe",
         .DirName = "MKVToolNix",
         .WebURL = "http://www.bunkus.org/videotools/mkvtoolnix",
         .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
-        .Description = "MKV muxing tool."}
+        .Description = "MKV muxing tool."})
 
-    Shared Property mkvextract As New Package With {
+    Shared Property mkvextract As Package = Add(New Package With {
         .Name = "mkvextract",
         .Filename = "mkvextract.exe",
         .DirName = "MKVToolNix",
         .WebURL = "http://www.bunkus.org/videotools/mkvtoolnix",
         .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
-        .Description = "MKV demuxing tool."}
+        .Description = "MKV demuxing tool."})
 
-    Shared Property QSVEncC As New Package With {
+    Shared Property QSVEncC As Package = Add(New Package With {
         .Name = "QSVEncC",
         .Filename = "QSVEncC64.exe",
         .Description = "Intel hardware accelerated H.264, H.265 and MPEG2 encoder.",
         .HelpFile = "help.txt",
-        .WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!482"}
+        .WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!482"})
 
     Shared Property VCEEncC As Package = Add(New Package With {
         .Name = "VCEEncC",
@@ -273,8 +285,6 @@ Public Class Package
 
     Shared Sub New()
         Add(Python)
-        Add(VapourSynth)
-        Add(vspipe)
 
         Add(temporalsoften)
         Add(scenechange)
@@ -283,7 +293,6 @@ Public Class Package
         Add(flash3kyuu_deband)
         Add(AviSynth)
         Add(BDSup2SubPP)
-        Add(BeSweet)
         Add(checkmate)
         Add(DGDecodeIM)
         Add(DGIndexIM)
@@ -295,20 +304,15 @@ Public Class Package
         Add(Haali)
         Add(Java)
         Add(MediaInfo)
-        Add(mkvmerge)
-        Add(mkvextract)
         Add(MP4Box)
         Add(MPC)
         Add(NicAudio)
         Add(ProjectX)
         Add(qaac)
-        Add(QSVEncC)
         Add(TDeint)
         Add(UnDot)
         Add(VSRip)
-        Add(x265)
         Add(xvid_encraw)
-        Add(avs2pipemod)
 
         Add(New Package With {
             .Name = "Visual C++ 2012",
@@ -409,6 +413,15 @@ Public Class Package
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")"),
                 New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")}})
+
+        Add(New PluginPackage With {
+            .Name = "Deblock",
+            .Filename = "Deblock.dll",
+            .Description = "Deblocking plugin using the deblocking filter of h264.",
+            .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock/",
+            .VapourSynthFilterNames = {"deblock.Deblock"},
+            .VapourSynthFiltersFunc = Function() {
+                New VideoFilter("Misc", "Deblock", "clip = core.deblock.Deblock(clip, quant = 25, aoffset = 0, boffset = 0)")}})
 
         Add(New PluginPackage With {
             .Name = "MSharpen",
@@ -1377,28 +1390,6 @@ Public Class HaaliSplitter
             If File.Exists(ret) Then Return ret
         End Get
     End Property
-End Class
-
-Public Class TDeintPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "TDeint"
-        Filename = "TDeint.dll"
-        WebURL = "http://avisynth.nl/index.php/TDeint"
-        Description = "TDeint is a bi-directionally, motion adaptive, sharp deinterlacer. It can adaptively choose between using per-field and per-pixel motion adaptivity, and can use cubic interpolation, kernel interpolation (with temporal direction switching), or one of two forms of modified ELA interpolation which help to reduce ""jaggy"" edges in moving areas where interpolation must be used."
-        AviSynthFilterNames = {"TDeint"}
-    End Sub
-End Class
-
-Public Class scenechangePackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "scenechange"
-        Filename = "scenechange.dll"
-        VapourSynthFilterNames = {"scenechange"}
-    End Sub
 End Class
 
 Public Class temporalsoftenPackage

@@ -130,7 +130,7 @@ Public Class MacroEditorDialog
         Text = "Macro Editor"
         HelpText = "Editor for strings that may contain macros."
         MacroEditorControl.SetMacroDefaults()
-        ScaleClientSize(35, 22)
+        ScaleClientSize(35, 25)
     End Sub
 
     Sub SetScriptDefaults()

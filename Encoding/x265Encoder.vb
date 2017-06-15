@@ -11,6 +11,8 @@ Public Class x265Encoder
     Sub New()
         Name = "x265"
         AutoCompCheckValue = 50
+        Params.ApplyPresetDefaultValues()
+        Params.ApplyPresetValues()
     End Sub
 
     <NonSerialized>
@@ -20,7 +22,6 @@ Public Class x265Encoder
         Get
             If ParamsValue Is Nothing Then
                 ParamsValue = New x265Params
-
                 ParamsValue.Init(ParamsStore)
             End If
 
@@ -41,14 +42,11 @@ Public Class x265Encoder
         p.Script.Synchronize()
         Encode("Encoding video using x265 " + Package.x265.Version, GetArgs(1, p.Script), s.ProcessPriority)
 
-        If Params.Mode.Value = x265RateMode.TwoPass OrElse
-            Params.Mode.Value = x265RateMode.ThreePass Then
-
+        If Params.Mode.Value = x265RateMode.TwoPass Then
             Encode("Encoding video second pass using x265 " + Package.x265.Version, GetArgs(2, p.Script), s.ProcessPriority)
-        End If
-
-        If Params.Mode.Value = x265RateMode.ThreePass Then
-            Encode("Encoding video third pass using x265 " + Package.x265.Version, GetArgs(3, p.Script), s.ProcessPriority)
+        ElseIf Params.Mode.Value = x265RateMode.ThreePass Then
+            Encode("Encoding video second pass using x265 " + Package.x265.Version, GetArgs(3, p.Script), s.ProcessPriority)
+            Encode("Encoding video third pass using x265 " + Package.x265.Version, GetArgs(2, p.Script), s.ProcessPriority)
         End If
 
         AfterEncoding()
@@ -203,6 +201,7 @@ Public Class x265Params
 
     Property Quant As New NumParam With {
         .Switch = "--crf",
+        .Switches = {"--qp"},
         .Name = "Quant",
         .Text = "Quality:",
         .ArgsFunc = Function() Nothing,
@@ -214,19 +213,19 @@ Public Class x265Params
         .Switch = "--preset",
         .Text = "Preset:",
         .Options = {"Ultra Fast", "Super Fast", "Very Fast", "Faster", "Fast", "Medium", "Slow", "Slower", "Very Slow", "Placebo"},
-        .Values = {"ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"},
-        .Value = 5,
-        .DefaultValue = 5}
+        .Convert = True,
+        .InitValue = 5}
 
     Property Tune As New OptionParam With {
         .Switch = "--tune",
         .Text = "Tune:",
         .Options = {"None", "PSNR", "SSIM", "Grain", "Fast Decode", "Zero Latency"},
-        .Values = {"none", "psnr", "ssim", "grain", "fastdecode", "zerolatency"}}
+        .Convert = True}
 
     Property Mode As New OptionParam With {
         .Name = "Mode",
         .Text = "Mode:",
+        .Switches = {"--bitrate", "--qp", "--crf", "--pass"},
         .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
         .Value = 2}
 
@@ -344,8 +343,8 @@ Public Class x265Params
     Property Videoformat As New OptionParam With {
         .Switch = "--videoformat",
         .Text = "Videoformat:",
-        .Options = {"undefined", "component", "pal", "ntsc", "secam", "mac"},
-        .Values = {"", "component", "pal", "ntsc", "secam", "mac"}}
+        .Options = {"Undefined", "Component", "PAL", "NTSC", "SECAM", "MAC"},
+        .Convert = True}
 
     Property AQStrength As New NumParam With {
         .Switch = "--aq-strength",
@@ -374,14 +373,12 @@ Public Class x265Params
     Property MinCuSize As New OptionParam With {
         .Switch = "--min-cu-size",
         .Text = "Min CU size:",
-        .Options = {"64", "32", "16", "8"},
-        .Values = {"64", "32", "16", "8"}}
+        .Options = {"32", "16", "8"}}
 
     Property MaxCuSize As New OptionParam With {
         .Switch = "--ctu",
         .Text = "Max CU size:",
-        .Options = {"64", "32", "16"},
-        .Values = {"64", "32", "16"}}
+        .Options = {"64", "32", "16"}}
 
     Property qgSize As New OptionParam With {
         .Switch = "--qg-size",
@@ -764,8 +761,7 @@ Public Class x265Params
     Property MaxTuSize As New OptionParam With {
         .Switch = "--max-tu-size",
         .Text = "Max TU Size:",
-        .Options = {"32", "16", "8", "4"},
-        .Values = {"32", "16", "8", "4"}}
+        .Options = {"32", "16", "8", "4"}}
 
     Property LimitRefs As New OptionParam With {
         .Switch = "--limit-refs",
@@ -869,7 +865,7 @@ Public Class x265Params
                     csvloglevel, CSV, SSIM, PSNR)
                 Add("VUI 1",
                     New StringParam With {.Switch = "--master-display", .Text = "Master Display:", .Quotes = True},
-                    New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .ArgsFunc = AddressOf GetSAR},
+                    New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                     Videoformat, Colorprim, Colormatrix, Transfer,
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"undefined", "show", "crop"}},
                     New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"undefined", "full", "limited"}})
@@ -1020,7 +1016,7 @@ Public Class x265Params
             sb.Append(" --y4m")
 
             If Mode.Value = x265RateMode.TwoPass OrElse Mode.Value = x265RateMode.ThreePass Then
-                sb.Append(" --stats """ + p.TempDir + p.Name + ".stats""")
+                sb.Append(" --stats " + (p.TempDir + p.Name + ".stats").Quotes)
             End If
 
             If (Mode.Value = x265RateMode.ThreePass AndAlso pass < 3) OrElse

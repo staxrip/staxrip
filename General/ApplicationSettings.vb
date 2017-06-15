@@ -17,6 +17,7 @@ Public Class ApplicationSettings
     Public CustomMenuMainForm As CustomMenuItem
     Public CustomMenuPreview As CustomMenuItem
     Public CustomMenuSize As CustomMenuItem
+    Public DarMenu As String
     Public DeleteTempFilesToRecycleBin As Boolean = True
     Public Demuxers As List(Of Demuxer)
     Public eac3toProfiles As List(Of eac3toProfile)
@@ -25,9 +26,12 @@ Public Class ApplicationSettings
     Public FilterSetupProfiles As List(Of TargetVideoScript)
     Public HidePreviewButtons As Boolean
     Public LastPosition As Integer
+    Public LastSourceDir As String
+    Public MinimizeToTaskbar As Boolean
     Public MinimumDiskSpace As Integer = 20
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
+    Public ParMenu As String
     Public PreventStandby As Boolean = True
     Public PreviewFormBorderStyle As FormBorderStyle
     Public PreviewToggleInfos As Boolean
@@ -40,10 +44,6 @@ Public Class ApplicationSettings
     Public ShowTemplateSelection As Boolean
     Public ShutdownTimeout As Integer
     Public SnapToDesktopEdges As Boolean = True
-    Public SourceDarMenu As String
-    Public SourceParMenu As String
-    Public TargetDarMenu As String
-    Public TargetParMenu As String
     Public StartupTemplate As String
     Public Storage As ObjectStorage
     Public StringDictionary As Dictionary(Of String, String)
@@ -58,8 +58,6 @@ Public Class ApplicationSettings
     Public WindowPositions As WindowPositions
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
-
-    Public LastSourceDir As String
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -207,10 +205,8 @@ Public Class ApplicationSettings
                               "Stats = --stats ""%target_temp_file%.stats"""
         End If
 
-        If Check(SourceParMenu, "Source PAR menu", 10) Then SourceParMenu = GetSourceParMenu()
-        If Check(SourceDarMenu, "Source DAR menu", 10) Then SourceDarMenu = GetSourceDarMenu()
-        If Check(TargetParMenu, "Target PAR menu", 10) Then TargetParMenu = GetSourceParMenu()
-        If Check(TargetDarMenu, "Target DAR menu", 10) Then TargetDarMenu = GetSourceDarMenu()
+        If Check(ParMenu, "Source PAR menu", 10) Then ParMenu = GetParMenu()
+        If Check(DarMenu, "Source DAR menu", 10) Then DarMenu = GetDarMenu()
 
         If Check(TargetImageSizeMenu, "Target image size menu", 13) Then
             TargetImageSizeMenu = GetDefaultTargetImageSizeMenu()
@@ -280,7 +276,7 @@ Public Class ApplicationSettings
         If LastSourceDir = "" Then LastSourceDir = ""
     End Sub
 
-    Shared Function GetSourceDarMenu() As String
+    Shared Function GetDarMenu() As String
         Dim ret =
 "Automatic = 0
 
@@ -303,7 +299,7 @@ Custom... = $enter_text:Enter a custom Display Aspect Ratio.$"
         Return ret
     End Function
 
-    Shared Function GetSourceParMenu() As String
+    Shared Function GetParMenu() As String
         Dim ret =
 "Automatic = 0
 1:1 = 1:1

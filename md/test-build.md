@@ -12,6 +12,17 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.0.7 unstable test build
+
+- new: Deblock VapourSynth plugin added: https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock/
+- new: basic new x264 GUI based on the same framework then all other codec GUIs, this will soon replace the old GUI 
+- new: support for subtitle cutting
+- new: added setting to minimze processing window to task bar instead of the tray area
+- new: the options for --sar in the encoder options have now the same dropdown menu then the PAR menus in the main dialog
+- tweak: the option Fixed Bitrate was removed, if the bitrate or filesize is fixed depends now on what was edited last
+- update: masktools2 (AviSynth+) 2.2.10
+- update: mvtools (VapourSynth) 19
+
 #### 1.5.0.6 unstable test build
 
 - new: various new x265 options

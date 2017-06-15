@@ -702,11 +702,11 @@ Class eac3toForm
         Dim args = ""
 
         If File.Exists(M2TSFile) Then
-            args = """" + M2TSFile + """ -progressnumbers"
-            Log.Write("Process M2TS file using eac3to", """" + Package.eac3to.Path + """ " + args + BR2, Project)
+            args = M2TSFile.Quotes + " -progressnumbers"
+            Log.Write("Process M2TS file using eac3to", Package.eac3to.Path.Quotes + " " + args + BR2, Project)
         ElseIf Directory.Exists(PlaylistFolder) Then
-            args = """" + PlaylistFolder + """ " & PlaylistID & ") -progressnumbers"
-            Log.Write("Process playlist file using eac3to", """" + Package.eac3to.Path + """ " + args + BR2, Project)
+            args = PlaylistFolder.Quotes + " " & PlaylistID & ") -progressnumbers"
+            Log.Write("Process playlist file using eac3to", Package.eac3to.Path.Quotes + " " + args + BR2, Project)
         End If
 
         Using o As New Process
@@ -744,10 +744,7 @@ Class eac3toForm
     Sub OutputDataReceived(sender As Object, e As DataReceivedEventArgs)
         If Not e.Data Is Nothing Then
             BeginInvoke(Sub() Text = e.Data)
-
-            If Not e.Data.StartsWith("analyze: ") Then
-                Output += e.Data + BR
-            End If
+            If Not e.Data.StartsWith("analyze: ") Then Output += e.Data + BR
         End If
     End Sub
 
@@ -817,10 +814,8 @@ Class eac3toForm
                                 ms.OutputType = "ac3"
                             Case "E-AC3", "E-AC3 EX"
                                 ms.OutputType = "eac3"
-                            Case "TrueHD/AC3"
-                                ms.OutputType = "thd"
-                            Case "TrueHD/AC3 (Atmos)"
-                                ms.OutputType = "ac3"
+                            Case "TrueHD/AC3 (Atmos)", "TrueHD/AC3"
+                                ms.OutputType = "thd+ac3"
                             Case "DTS-ES", "DTS Express"
                                 ms.OutputType = "dts"
                             Case "DTS Master Audio"

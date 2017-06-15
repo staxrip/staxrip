@@ -148,7 +148,7 @@ Public Class IntelEncoder
                     ItemsValue = New List(Of CommandLineParam)
 
                     Add("Basic", Decoder, Codec,
-                        New OptionParam With {.Switch = "--quality", .Text = "Quality/Speed:", .Options = {"best", "higher", "high", "balanced", "fast", "faster", "fastest"}, .Values = {"best", "higher", "high", "balanced", "fast", "faster", "fastest"}, .Value = 3, .DefaultValue = 3},
+                        New OptionParam With {.Switch = "--quality", .Text = "Quality/Speed:", .Options = {"best", "higher", "high", "balanced", "fast", "faster", "fastest"}, .InitValue = 3},
                         Mode, Quality, QPI, QPP, QPB)
                     Add("Slice Decision",
                         New OptionParam With {.Switch = "--la-quality", .Text = "LA Quality:", .Options = {"auto", "fast", "medium", "slow"}},
@@ -207,7 +207,7 @@ Public Class IntelEncoder
                         New NumParam With {.Switch = "--vpp-denoise", .Text = "Denoise:", .MinMaxStep = {0, 100, 1}},
                         New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhancement:", .MinMaxStep = {0, 100, 1}})
                     Add("VUI",
-                        New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .ArgsFunc = AddressOf GetSAR},
+                        New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat:", .Options = {"undef", "ntsc", "component", "pal", "secam", "mac"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "film"}},

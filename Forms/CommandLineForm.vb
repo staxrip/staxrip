@@ -92,11 +92,9 @@ Class CommandLineForm
             End If
 
             If item.Switch <> "" Then
-                If item.NoSwitch <> "" Then
-                    help = item.Switch + BR2 + item.NoSwitch
-                Else
-                    help = item.Switch
-                End If
+                help = item.Switch
+                If item.NoSwitch <> "" Then help += BR + item.NoSwitch
+                If Not item.Switches.NothingOrEmpty Then help += BR + item.Switches.Join(BR)
 
                 If TypeOf item Is NumParam Then
                     Dim param = DirectCast(item, NumParam)
@@ -151,6 +149,10 @@ Class CommandLineForm
                     Dim textButtonBlock = SimpleUI.AddTextButtonBlock(parent)
                     textButtonBlock.BrowseFile(tempItem.BrowseFileFilter)
                     textBlock = textButtonBlock
+                ElseIf tempItem.Menu <> "" Then
+                    Dim textMenuBlock = SimpleUI.AddTextMenuBlock(parent)
+                    textMenuBlock.AddMenu(tempItem.Menu)
+                    textBlock = textMenuBlock
                 Else
                     textBlock = SimpleUI.AddTextBlock(parent)
                 End If

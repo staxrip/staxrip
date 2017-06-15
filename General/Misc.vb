@@ -1721,9 +1721,7 @@ Public Class Subtitle
                 ret += " " + Title.Shorten(30)
             End If
 
-            If Not Filepath.IsValidFileSystemName(ret) Then
-                ret = Filepath.RemoveIllegalCharsFromName(ret)
-            End If
+            If Not Filepath.IsValidFileSystemName(ret) Then ret = Filepath.RemoveIllegalCharsFromName(ret)
 
             Return ret
         End Get
@@ -1746,6 +1744,8 @@ Public Class Subtitle
                     Return ".usf"
                 Case "Timed"
                     Return ".srt"
+                Case Else
+                    Return Path.ExtFull
             End Select
         End Get
     End Property
@@ -1864,6 +1864,88 @@ Public Class Subtitle
 
         Return ret
     End Function
+
+    Shared Sub Cut(subtitles As List(Of Subtitle))
+        If p.Ranges.Count = 0 OrElse TypeOf p.VideoEncoder Is NullEncoder Then Exit Sub
+        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+
+        For x = 0 To subtitles.Count - 1
+            Dim inSub = subtitles(x)
+
+            If Not inSub.Enabled OrElse Not File.Exists(inSub.Path) OrElse inSub.Path.Contains("_cut_") Then Continue For
+            Dim aviPath = p.TempDir + inSub.Path.Base + "_cut_mm.avi"
+            Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0}:r={1} -y -hide_banner -c:v copy " + aviPath.Quotes, (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture))
+
+            Using proc As New Proc
+                proc.Init("Create avi file for subtitle cutting with ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
+                proc.WriteLine("mkvmerge cannot cut subtitles without video so a avi file has to be created" + BR2)
+                proc.Encoding = Encoding.UTF8
+                proc.File = Package.ffmpeg.Path
+                proc.Arguments = args
+                proc.Start()
+            End Using
+
+            If Not File.Exists(aviPath) Then
+                Throw New ErrorAbortException("Error", "Output file missing")
+            Else
+                Log.WriteLine(MediaInfo.GetSummary(aviPath))
+            End If
+
+            Dim mkvPath = p.TempDir + inSub.Path.Base + " ID" & inSub.ID & "_cut_sub.mkv"
+            args = "-o " + mkvPath.Quotes + " " + aviPath.Quotes
+
+            If Not FileTypes.SubtitleExludingContainers.Contains(inSub.Path.Ext) Then
+                args += " --no-audio --no-video --no-chapters --no-attachments --no-track-tags --no-global-tags"
+            End If
+
+            Dim id = If(FileTypes.SubtitleSingle.Contains(inSub.Path.Ext), 0, inSub.StreamOrder)
+            If Not FileTypes.SubtitleSingle.Contains(inSub.Path.Ext) Then args += " --subtitle-tracks " & id
+            args += " " + inSub.Path.Quotes
+            args += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")
+            args += " --ui-language en"
+
+            Using proc As New Proc
+                proc.Init("Cut subtitle using mkvmerge " + Package.mkvmerge.Version, "Progress: ")
+                proc.Encoding = Encoding.UTF8
+                proc.File = Package.mkvmerge.Path
+                proc.Arguments = args
+                proc.AllowedExitCodes = {0, 1, 2}
+                proc.Start()
+            End Using
+
+            If Not File.Exists(mkvPath) Then
+                Throw New ErrorAbortException("Error", "Output file missing")
+            Else
+                Log.WriteLine(MediaInfo.GetSummary(mkvPath))
+            End If
+
+            Dim subPath = p.TempDir + inSub.Path.Base + " ID" & inSub.ID & "_cut_" + inSub.ExtFull
+            args = "tracks " + mkvPath.Quotes + " 1:" + subPath.Quotes
+
+            Using proc As New Proc
+                proc.Init("Demux subtitle using mkvextract " + Package.mkvextract.Version, "Progress: ")
+                proc.Encoding = Encoding.UTF8
+                proc.File = Package.mkvextract.Path
+                proc.Arguments = args + " --ui-language en"
+                proc.AllowedExitCodes = {0, 1, 2}
+                proc.Start()
+            End Using
+
+            If Not File.Exists(subPath) Then
+                Throw New ErrorAbortException("Error", "Output file missing")
+            Else
+                Log.WriteLine(MediaInfo.GetSummary(subPath))
+            End If
+
+            Dim outSub = Subtitle.Create(subPath)(0)
+            outSub.Language = inSub.Language
+            outSub.Forced = inSub.Forced
+            outSub.Default = inSub.Default
+            outSub.Title = inSub.Title
+            outSub.Enabled = True
+            subtitles(x) = outSub
+        Next
+    End Sub
 End Class
 
 <Serializable>

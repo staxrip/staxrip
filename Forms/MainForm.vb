@@ -63,7 +63,7 @@ Public Class MainForm
     Public WithEvents llAudioProfile1 As ButtonLabel
     Public WithEvents pnEncoder As System.Windows.Forms.Panel
     Public WithEvents AviSynthListView As StaxRip.FilterListView
-    Public WithEvents llFilesize As ButtonLabel
+    Public WithEvents blFilesize As ButtonLabel
     Public WithEvents llMuxer As ButtonLabel
     Public WithEvents lPAR As StaxRip.UI.LabelEx
     Public WithEvents blTargetParText As ButtonLabel
@@ -111,7 +111,7 @@ Public Class MainForm
         Me.lTarget1 = New System.Windows.Forms.Label()
         Me.tbBitrate = New System.Windows.Forms.TextBox()
         Me.lBitrate = New System.Windows.Forms.Label()
-        Me.llFilesize = New StaxRip.UI.ButtonLabel()
+        Me.blFilesize = New StaxRip.UI.ButtonLabel()
         Me.lgbSource = New StaxRip.UI.LinkGroupBox()
         Me.tlpSource = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpSourceValues = New System.Windows.Forms.TableLayoutPanel()
@@ -379,7 +379,7 @@ Public Class MainForm
         Me.tlpTarget.Controls.Add(Me.lTarget1, 0, 2)
         Me.tlpTarget.Controls.Add(Me.tbBitrate, 3, 1)
         Me.tlpTarget.Controls.Add(Me.lBitrate, 2, 1)
-        Me.tlpTarget.Controls.Add(Me.llFilesize, 0, 1)
+        Me.tlpTarget.Controls.Add(Me.blFilesize, 0, 1)
         Me.tlpTarget.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpTarget.Location = New System.Drawing.Point(3, 48)
         Me.tlpTarget.Margin = New System.Windows.Forms.Padding(0)
@@ -456,20 +456,20 @@ Public Class MainForm
         Me.lBitrate.Text = "Video Bitrate:"
         Me.lBitrate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'llFilesize
+        'blFilesize
         '
-        Me.llFilesize.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.blFilesize.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.llFilesize.LinkColor = System.Drawing.Color.Empty
-        Me.llFilesize.Location = New System.Drawing.Point(6, 67)
-        Me.llFilesize.Margin = New System.Windows.Forms.Padding(6, 0, 0, 0)
-        Me.llFilesize.Name = "llFilesize"
-        Me.llFilesize.Size = New System.Drawing.Size(245, 67)
-        Me.llFilesize.TabIndex = 59
-        Me.llFilesize.TabStop = True
-        Me.llFilesize.Text = "Size:"
-        Me.llFilesize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.blFilesize.LinkColor = System.Drawing.Color.Empty
+        Me.blFilesize.Location = New System.Drawing.Point(6, 67)
+        Me.blFilesize.Margin = New System.Windows.Forms.Padding(6, 0, 0, 0)
+        Me.blFilesize.Name = "blFilesize"
+        Me.blFilesize.Size = New System.Drawing.Size(245, 67)
+        Me.blFilesize.TabIndex = 59
+        Me.blFilesize.TabStop = True
+        Me.blFilesize.Text = "Size:"
+        Me.blFilesize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lgbSource
         '
@@ -1182,7 +1182,7 @@ Public Class MainForm
             llAudioProfile1.LinkColor = col
             llEditAudio0.LinkColor = col
             llEditAudio1.LinkColor = col
-            llFilesize.LinkColor = col
+            blFilesize.LinkColor = col
             llMuxer.LinkColor = col
             blSourceParText.LinkColor = col
             blSourceDarText.LinkColor = col
@@ -1199,7 +1199,7 @@ Public Class MainForm
             llAudioProfile1.LinkColor = Color.Blue
             llEditAudio0.LinkColor = Color.Blue
             llEditAudio1.LinkColor = Color.Blue
-            llFilesize.LinkColor = Color.Blue
+            blFilesize.LinkColor = Color.Blue
             llMuxer.LinkColor = Color.Blue
             blSourceParText.LinkColor = Color.Blue
             blSourceDarText.LinkColor = Color.Blue
@@ -2480,6 +2480,8 @@ Public Class MainForm
                 i.Encode()
             Next
 
+            Subtitle.Cut(p.VideoEncoder.Muxer.Subtitles)
+
             p.VideoEncoder.Encode()
             Log.Save()
             p.VideoEncoder.Muxer.Mux()
@@ -2607,7 +2609,7 @@ Public Class MainForm
                 p.SourceSeconds \ 60 & "m " + (p.SourceSeconds Mod 60).ToString("00") + "s",
                 If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB", (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB"),
                 If(p.SourceBitrate > 0, (p.SourceBitrate / 1000).ToString("f1") + "Mbps", ""),
-                p.SourceFrameRate.ToString("f6").TrimEnd("0"c).TrimEnd(","c) + "fps",
+                p.SourceFrameRate.ToString.Shorten(9).TrimEnd("0"c).TrimEnd(","c) + "fps",
                 p.Codec, p.CodecProfile)
 
             lSource2.Text = lSource1.GetMaxTextSpace(
@@ -2617,7 +2619,7 @@ Public Class MainForm
 
             lTarget1.Text = lSource1.GetMaxTextSpace(
                 p.TargetSeconds \ 60 & "m " + (p.TargetSeconds Mod 60).ToString("00") + "s",
-                p.TargetFrameRate.ToString("f6").TrimEnd("0"c).TrimEnd(","c) + "fps",
+                p.TargetFrameRate.ToString.Shorten(9).TrimEnd("0"c).TrimEnd(","c) + "fps",
                 "Audio Bitrate: " & CInt(Calc.GetAudioBitrate))
 
             If p.VideoEncoder.IsCompCheckEnabled Then
@@ -2850,14 +2852,6 @@ Public Class MainForm
                 If Not p.Script.IsFilterActive("Cutting") AndAlso Form.ActiveForm Is Me Then
                     If ProcessTip("The cutting filter settings don't match with the cutting settings used in the preview.") Then
                         gbAssistant.Text = "Invalid Cutting Settings"
-                        CanIgnoreTip = False
-                        Return False
-                    End If
-                End If
-
-                If p.VideoEncoder.Muxer.Subtitles.Where(Function(subtitle) subtitle.Enabled).Count > 0 AndAlso Not TypeOf p.VideoEncoder Is NullEncoder Then
-                    If ProcessTip("Subtitle cutting is not supported, please remove the subtitles from the container options.") Then
-                        gbAssistant.Text = "Subtitle cutting unsupported"
                         CanIgnoreTip = False
                         Return False
                     End If
@@ -3404,6 +3398,11 @@ Public Class MainForm
             cb.Text = "Use recycle bin when temp files are deleted"
             cb.Checked = s.DeleteTempFilesToRecycleBin
             cb.SaveAction = Sub(value) s.DeleteTempFilesToRecycleBin = value
+
+            cb = ui.AddCheckBox(systemPage)
+            cb.Text = "Minimize processing dialog to taskbar instead of tray"
+            cb.Checked = s.MinimizeToTaskbar
+            cb.SaveAction = Sub(value) s.MinimizeToTaskbar = value
 
             systemPage.ResumeLayout()
 
@@ -4139,11 +4138,6 @@ Public Class MainForm
             cb.SaveAction = Sub(value) p.DeleteTempFilesDir = value
 
             cb = ui.AddCheckBox(miscPage)
-            cb.Text = "Use fixed bitrate"
-            cb.Checked = p.BitrateIsFixed
-            cb.SaveAction = Sub(value) p.BitrateIsFixed = value
-
-            cb = ui.AddCheckBox(miscPage)
             cb.Text = "Extract timecodes from VFR MKV files"
             cb.Checked = p.ExtractTimecodes
             cb.SaveAction = Sub(value) p.ExtractTimecodes = value
@@ -4647,6 +4641,8 @@ Public Class MainForm
 
     Sub tbSize_TextChanged() Handles tbTargetSize.TextChanged
         Try
+            If tbTargetSize.Focused Then p.BitrateIsFixed = False
+
             If Integer.TryParse(tbTargetSize.Text, Nothing) Then
                 p.TargetSize = Math.Max(1, CInt(tbTargetSize.Text))
                 BlockSize = True
@@ -4660,6 +4656,8 @@ Public Class MainForm
 
     Sub tbBitrate_TextChanged() Handles tbBitrate.TextChanged
         Try
+            If tbBitrate.Focused Then p.BitrateIsFixed = True
+
             If Integer.TryParse(tbBitrate.Text, Nothing) Then
                 p.VideoBitrate = Math.Max(1, CInt(tbBitrate.Text))
                 BlockBitrate = True
@@ -4767,6 +4765,13 @@ Public Class MainForm
     <Command("Sets the target file size in MB.")>
     Sub SetSize(<DispName("Target File Size")> targetSize As Integer)
         tbTargetSize.Text = targetSize.ToString
+        p.BitrateIsFixed = False
+    End Sub
+
+    <Command("Sets the bitrate according to the compressibility.")>
+    Sub SetPercent(<DispName("Percent Value")> value As Integer)
+        tbTargetSize.Text = g.GetAutoSize(value).ToString
+        p.BitrateIsFixed = False
     End Sub
 
     <Command("Sets the target video bitrate in Kbps.")>
@@ -4784,11 +4789,6 @@ Public Class MainForm
     Sub StartSmartCrop()
         g.SmartCrop()
         Assistant()
-    End Sub
-
-    <Command("Sets the bitrate according to the compressibility.")>
-    Sub SetPercent(<DispName("Percent Value")> value As Integer)
-        tbTargetSize.Text = g.GetAutoSize(value).ToString
     End Sub
 
     <Command("Menu editor for the size menu.")>
@@ -4911,7 +4911,7 @@ Public Class MainForm
     End Sub
 
     Sub UpdateEncoderStateRelatedControls()
-        llFilesize.Visible = Not p.VideoEncoder.QualityMode
+        blFilesize.Visible = Not p.VideoEncoder.QualityMode
         tbTargetSize.Visible = Not p.VideoEncoder.QualityMode
         lBitrate.Visible = Not p.VideoEncoder.QualityMode
         tbBitrate.Visible = Not p.VideoEncoder.QualityMode
@@ -5338,9 +5338,9 @@ Public Class MainForm
         EncoderMenu.Show(lgbEncoder, 0, 16)
     End Sub
 
-    Private Sub llSize_Click() Handles llFilesize.Click
+    Private Sub llSize_Click() Handles blFilesize.Click
         UpdateSizeMenu()
-        SizeContextMenuStrip.Show(llFilesize, 0, 16)
+        SizeContextMenuStrip.Show(blFilesize, 0, 16)
     End Sub
 
     Private Sub lAudioProfile0_Click() Handles llAudioProfile0.Click
@@ -5368,30 +5368,30 @@ Public Class MainForm
     End Sub
 
     Private Sub blSourceParText_Click(sender As Object, e As EventArgs) Handles blSourceParText.Click
-        Dim menu = TextCustomMenu.GetMenu(s.SourceParMenu, blSourceParText, components, AddressOf SourceParMenuClick)
+        Dim menu = TextCustomMenu.GetMenu(s.ParMenu, blSourceParText, components, AddressOf SourceParMenuClick)
         menu.Add("-")
-        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.SourceParMenu = TextCustomMenu.EditMenu(s.SourceParMenu, ApplicationSettings.GetSourceParMenu, Me)))
+        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.ParMenu = TextCustomMenu.EditMenu(s.ParMenu, ApplicationSettings.GetParMenu, Me)))
         menu.Show(blSourceParText, 0, blSourceParText.Height)
     End Sub
 
     Private Sub blSourceDarText_Click(sender As Object, e As EventArgs) Handles blSourceDarText.Click
-        Dim menu = TextCustomMenu.GetMenu(s.SourceDarMenu, blSourceDarText, components, AddressOf SourceDarMenuClick)
+        Dim menu = TextCustomMenu.GetMenu(s.DarMenu, blSourceDarText, components, AddressOf SourceDarMenuClick)
         menu.Add("-")
-        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.SourceDarMenu = TextCustomMenu.EditMenu(s.SourceDarMenu, ApplicationSettings.GetSourceDarMenu, Me)))
+        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.DarMenu = TextCustomMenu.EditMenu(s.DarMenu, ApplicationSettings.GetDarMenu, Me)))
         menu.Show(blSourceDarText, 0, blSourceDarText.Height)
     End Sub
 
     Private Sub blTargetDarText_Click(sender As Object, e As EventArgs) Handles blTargetDarText.Click
-        Dim menu = TextCustomMenu.GetMenu(s.TargetDarMenu, blTargetDarText, components, AddressOf TargetDarMenuClick)
+        Dim menu = TextCustomMenu.GetMenu(s.DarMenu, blTargetDarText, components, AddressOf TargetDarMenuClick)
         menu.Add("-")
-        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.TargetDarMenu = TextCustomMenu.EditMenu(s.TargetDarMenu, ApplicationSettings.GetSourceDarMenu, Me)))
+        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.DarMenu = TextCustomMenu.EditMenu(s.DarMenu, ApplicationSettings.GetDarMenu, Me)))
         menu.Show(blTargetDarText, 0, blTargetDarText.Height)
     End Sub
 
     Private Sub blTargetParText_Click(sender As Object, e As EventArgs) Handles blTargetParText.Click
-        Dim menu = TextCustomMenu.GetMenu(s.TargetParMenu, blTargetParText, components, AddressOf TargetParMenuClick)
+        Dim menu = TextCustomMenu.GetMenu(s.ParMenu, blTargetParText, components, AddressOf TargetParMenuClick)
         menu.Add("-")
-        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.TargetParMenu = TextCustomMenu.EditMenu(s.TargetParMenu, ApplicationSettings.GetSourceParMenu, Me)))
+        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.ParMenu = TextCustomMenu.EditMenu(s.ParMenu, ApplicationSettings.GetParMenu, Me)))
         menu.Show(blTargetParText, 0, blTargetParText.Height)
     End Sub
 

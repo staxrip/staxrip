@@ -207,8 +207,12 @@ Class ProcessForm
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
 
         If g.IsMinimizedEncodingInstance Then
-            ShowInTaskbar = False
-            NotifyIcon.Visible = True
+            If s.MinimizeToTaskbar Then
+                WindowState = FormWindowState.Minimized
+            Else
+                ShowInTaskbar = False
+                NotifyIcon.Visible = True
+            End If
         End If
     End Sub
 
@@ -374,9 +378,12 @@ Class ProcessForm
                 Select Case m.WParam.ToInt32
                     Case Native.SC_MINIMIZE
                         g.IsMinimizedEncodingInstance = True
-                        Hide()
-                        NotifyIcon.Visible = True
-                        Exit Sub
+
+                        If Not s.MinimizeToTaskbar Then
+                            Hide()
+                            NotifyIcon.Visible = True
+                            Exit Sub
+                        End If
                     Case Native.SC_CLOSE
                         bnAbort.PerformClick()
                         Exit Sub
@@ -482,13 +489,13 @@ Class ProcessForm
     Protected Overrides Sub OnShown(e As EventArgs)
         MyBase.OnShown(e)
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
-        If g.IsMinimizedEncodingInstance Then Hide()
+        If g.IsMinimizedEncodingInstance AndAlso Not s.MinimizeToTaskbar Then Hide()
     End Sub
 
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
 
-        If g.IsMinimizedEncodingInstance Then
+        If g.IsMinimizedEncodingInstance AndAlso Not s.MinimizeToTaskbar Then
             OriginalLeft = Left
             Left = -5000
         End If

@@ -182,7 +182,7 @@ Class AMDEncoder
                         New NumParam With {.Switch = "--bref-deltaqp", .Text = "Ref bframe QP offset:"},
                         New BoolParam With {.Switch = "--vbaq", .Text = "VBAQ"})
                     Add("VUI",
-                        New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .ArgsFunc = AddressOf GetSAR},
+                        New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New BoolParam With {.Switch = "--enforce-hrd", .Text = "Enforce HRD compatibility"})
                     Add("Other",
                         New StringParam With {.Switch = "--chapter", .Text = "Chapters:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},

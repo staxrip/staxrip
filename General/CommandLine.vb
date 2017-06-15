@@ -312,6 +312,7 @@ Namespace CommandLine
         Property Options As String()
         Property Values As String()
         Property Expand As Boolean
+        Property Convert As Boolean
         Property MenuButton As MenuButton
         Property DefaultValue As Integer
         Property IntegerValue As Boolean
@@ -397,7 +398,11 @@ Namespace CommandLine
                         If IntegerValue Then
                             Return Switch + Params.Separator & Value
                         Else
-                            Return Switch + Params.Separator & Options(Value)
+                            If Convert Then
+                                Return Switch + Params.Separator & Options(Value).ToLower.Replace(" ", "")
+                            Else
+                                Return Switch + Params.Separator & Options(Value)
+                            End If
                         End If
                     End If
                 End If
@@ -420,6 +425,7 @@ Namespace CommandLine
         Property InitAction As Action(Of SimpleUI.TextBlock)
         Property BrowseFileFilter As String
         Property BrowseFolderText As String
+        Property Menu As String
 
         Public Overloads Overrides Sub Init(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store

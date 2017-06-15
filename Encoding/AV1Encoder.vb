@@ -9,7 +9,7 @@ Public Class AV1Encoder
     Property ParamsStore As New PrimitiveStore
 
     Sub New()
-        Name = "AV1"
+        Name = "AV1 (under construction)"
         AutoCompCheckValue = 50
     End Sub
 

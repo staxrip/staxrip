@@ -1,43 +1,35 @@
-## StaxRip x64
+## About
 
-StaxRip is a multiformat video encoding application.
+staxrip is a multiformat video encoding application for Windows. It's a GUI frontend to processing tools such as mp4box, mkvtoolnix, avisynth, vapoursynth, x264, x265, nvenc, eac3to and many more.
 
 ## Features
 
-- Handles common input formats and allows to config how files are loaded and processed
-- x264, x265, VP9 and XVID encoding 
-- AMD VCE H.264, H.265 encoding
-- Intel Quick Sync H.264/H.265/MPEG-2 encoding
-- NVIDIA H.264/H.265 encoding
-- Output Formats: AVI, MP4, MKV, WEBM
-- Output Codecs: XVID, H.264, H.265, VP9, MP3, AC3, AAC, VORBIS, DTS, FLAC, OPUS
-- Batch Processing including support for processing sub-directories recursively
-- Flexible AviSynth and VapourSynth editor
-- Video comparison tool to compare codec and filter options
-- Minimal user interaction required due to ´flexible configuration and automation features
+- Supports all popular formats and tools
+- Hardware encoding for AMD, Intel and NVIDIA
+- Batch Processing
+- AviSynth and VapourSynth code editor
+- Extendable via PowerShell, .NET and COM+
+- Minimal user interaction required due to rich configuration and automation features
 - copy modes for audio and video for plain remuxing
-- Cut/Trim/Edit feature
-- Macros can be used in scrips and command lines allowing to change settings at any time
-- Scripable with C# and PowerShell scripts
-- External AviSynth filters and command line tools can be integrated
-- Project, project template and profiles support
-- Job processing
+- Cut/Trim/Edit feature, for MKV output no re-encoding required
+- Aiming for perfect High DPI scaling 
 
 ## Requirements
 
-- Windows 7-10 x64
-- [.NET 4.6.1](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
-- [Intel Skylake CPU](https://en.wikipedia.org/wiki/Skylake_%28microarchitecture%29) for HEVC/H.265 hardware encoding
-- [NVIDIA Maxwell gen2 card](https://en.wikipedia.org/wiki/Maxwell_%28microarchitecture%29#Second_generation_Maxwell_.28GM20x.29) for HEVC/H.265 hardware encoding
-- [AMD Polaris card](http://www.amd.com/en-gb/innovations/software-technologies/radeon-polaris) for HEVC/H.265 hardware encoding
-- [Java](https://java.com/en/download) for ProjectX in case MPEG-2 files are opened
-- AviSynth+ x64, the installer is bundled with StaxRip x64
-- [VapourSynth x64](https://github.com/vapoursynth/vapoursynth/releases) as optional AviSynth+ alternative
-- [Python x64](https://www.python.org/downloads/windows) in case VapourSynth x64 is used
+- Windows 7 x64 or Windows 10 x64
+- [.NET 4.7 or higher](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
+- [Intel Skylake](https://en.wikipedia.org/wiki/Skylake_%28microarchitecture%29) or newer for HEVC/H.265 hardware encoding
+- [NVIDIA Maxwell gen2 card](https://en.wikipedia.org/wiki/Maxwell_%28microarchitecture%29#Second_generation_Maxwell_.28GM20x.29) or newer for HEVC/H.265 hardware encoding
+- [AMD Polaris card](http://www.amd.com/en-gb/innovations/software-technologies/radeon-polaris) or newer for HEVC/H.265 hardware encoding
+- AviSynth+ x64, the installer is bundled with StaxRip x64 or alternativly VapourSynth x64 which requires [Python x64](https://www.python.org/downloads/windows)
 
 ## Documentation
 
 https://stax76.gitbooks.io/staxrip-handbook/content/
+
+## License
+
+Licensed under the [MIT license](LICENSE.TXT).
 
 ## Download
 

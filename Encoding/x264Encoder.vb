@@ -12,8 +12,12 @@ Public Class x264Encoder
     Property Params As New x264Params
 
     Sub New()
-        Name = "x264"
+        Name = "x264 (obsolete)"
         AutoCompCheckValue = 50
+        Muxer = New MkvMuxer()
+        Params.ApplyDeviceSettings()
+        Params.ApplyDefaults(Params)
+        Params.ApplyDeviceSettings()
     End Sub
 
     Overrides ReadOnly Property OutputExt As String
@@ -176,14 +180,11 @@ Public Class x264Encoder
 
         If Params.Mode.Value = x264Mode.TwoPass Then
             sb.Append(" --pass " & pass)
-
-            If pass = 1 AndAlso Params.SlowFirstpass.Value Then
-                sb.Append(" --slow-firstpass")
-            End If
+            If pass = 1 AndAlso Params.SlowFirstpass.Value Then sb.Append(" --slow-firstpass")
         ElseIf Params.Mode.Value = x264Mode.ThreePass Then
             sb.Append(" --pass " & pass)
 
-            If (pass = 1 OrElse pass = 2) AndAlso Params.SlowFirstpass.Value Then
+            If (pass = 1 OrElse pass = 3) AndAlso Params.SlowFirstpass.Value Then
                 sb.Append(" --slow-firstpass")
             End If
         End If
@@ -191,9 +192,7 @@ Public Class x264Encoder
         If Params.Mode.Value = x264Mode.SingleQuant Then
             sb.Append(" --qp " + CInt(Params.Quant.Value).ToString)
         ElseIf Params.Mode.Value = x264Mode.SingleCRF Then
-            If Params.Quant.Value <> 23 Then
-                sb.Append(" --crf " + Params.Quant.Value.ToInvariantString)
-            End If
+            sb.Append(" --crf " + Params.Quant.Value.ToInvariantString)
         Else
             sb.Append(" --bitrate " + p.VideoBitrate.ToString)
         End If
@@ -294,9 +293,7 @@ Public Class x264Encoder
 
         Dim part = GetPartition(Params)
 
-        If part <> "" AndAlso part <> GetPartition(defaults) Then
-            sb.Append(part)
-        End If
+        If part <> "" AndAlso part <> GetPartition(defaults) Then sb.Append(part)
 
         If Not Params.AdaptiveDCT.Value AndAlso Params.AdaptiveDCT.Value <> defaults.AdaptiveDCT.Value Then
             sb.Append(" --no-8x8dct")
@@ -427,13 +424,8 @@ Public Class x264Encoder
             sb.Append(" --sar " & par.X & ":" & par.Y)
         End If
 
-        If Params.PSNR.Value Then
-            sb.Append(" --psnr")
-        End If
-
-        If Params.SSIM.Value Then
-            sb.Append(" --ssim")
-        End If
+        If Params.PSNR.Value Then sb.Append(" --psnr")
+        If Params.SSIM.Value Then sb.Append(" --ssim")
 
         If Params.AddAll.Value <> "" Then sb.Append(" " + Params.AddAll.Value)
         Dim ret = sb.ToString
@@ -443,18 +435,15 @@ Public Class x264Encoder
 
             For Each i In switches
                 Dim re As New Regex(" *" + i + ".*?(?= --)| *" + i + ".*")
-
-                If re.IsMatch(ret) Then
-                    ret = re.Replace(ret, "", RegexOptions.IgnoreCase)
-                End If
+                If re.IsMatch(ret) Then ret = re.Replace(ret, "", RegexOptions.IgnoreCase)
             Next
 
             If Params.TurboAdd.Value <> "" Then ret += " " + Params.TurboAdd.Value
         End If
 
-        If sourcePath = "-" Then ret += " --demuxer y4m --frames " & script.GetFrames
-
         If includePaths Then
+            If sourcePath = "-" Then ret += " --demuxer y4m --frames " & script.GetFrames
+
             If Params.Mode.Value = x264Mode.TwoPass OrElse Params.Mode.Value = x264Mode.ThreePass Then
                 ret += " --stats """ + p.TempDir + p.Name + ".stats"""
             End If
@@ -501,23 +490,6 @@ Public Class x264Encoder
         Set(Value As Boolean)
         End Set
     End Property
-
-    Sub SetMuxer()
-        Select Case CType(Params.Device.Value, x264DeviceMode)
-            Case x264DeviceMode.DivXPlus
-                Muxer = New DivXPluxMuxer()
-            Case x264DeviceMode.iPhone
-                Muxer = New MP4Muxer("MP4 for iPod/iPhone") With {.AdditionalSwitches = "-ipod"}
-            Case x264DeviceMode.PlayStation,
-                 x264DeviceMode.Xbox,
-                 x264DeviceMode.iPad,
-                 x264DeviceMode.iPhone
-
-                Muxer = New MP4Muxer("MP4")
-            Case Else
-                Muxer = New MkvMuxer()
-        End Select
-    End Sub
 
     Overrides Function CreateEditControl() As Control
         Return New x264Control(Me) With {.Dock = DockStyle.Fill}

@@ -219,10 +219,7 @@ Class Folder
 
                 Dim x265 As New Project
                 x265.Init()
-                Dim x265enc = New x265Encoder
-                x265enc.Params.ApplyPresetDefaultValues()
-                x265enc.Params.ApplyPresetValues()
-                x265.VideoEncoder = x265enc
+                x265.VideoEncoder = New x265Encoder
 
                 SafeSerialization.Serialize(x265, ret + "x265.srip")
             End If

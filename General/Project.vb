@@ -140,9 +140,7 @@ Public Class Project
         If SourceFiles Is Nothing Then SourceFiles = New List(Of String)
         If AudioTracks Is Nothing Then AudioTracks = New List(Of AudioProfile)
 
-        If Check(VideoEncoder, "Video Encoder", 69) Then
-            VideoEncoder = VideoEncoder.Getx264Encoder("x264", x264DeviceMode.Disabled)
-        End If
+        If Check(VideoEncoder, "Video Encoder", 69) Then VideoEncoder = New x264Encoder
 
         If Check(Audio0, "Audio Track 1", 35) Then
             Audio0 = New GUIAudioProfile(AudioCodec.AAC, 0.35)

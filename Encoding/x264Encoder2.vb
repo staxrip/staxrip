@@ -1,5 +1,4 @@
-﻿Imports System.Text
-Imports StaxRip.CommandLine
+﻿Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 <Serializable()>
@@ -9,8 +8,10 @@ Public Class x264Encoder2
     Property ParamsStore As New PrimitiveStore
 
     Sub New()
-        Name = "x264 new"
+        Name = "x264 (under construction)"
         AutoCompCheckValue = 50
+        Params.ApplyPresetDefaultValues()
+        Params.ApplyPresetValues()
     End Sub
 
     <NonSerialized>
@@ -32,7 +33,7 @@ Public Class x264Encoder2
 
     Overrides ReadOnly Property OutputExt As String
         Get
-            Return "avc"
+            Return "h264"
         End Get
     End Property
 
@@ -40,14 +41,11 @@ Public Class x264Encoder2
         p.Script.Synchronize()
         Encode("Encoding video using x264 " + Package.x264.Version, GetArgs(1, p.Script), s.ProcessPriority)
 
-        If Params.Mode.Value = x264RateMode.TwoPass OrElse
-            Params.Mode.Value = x264RateMode.ThreePass Then
-
+        If Params.Mode.Value = x264RateMode.TwoPass Then
             Encode("Encoding video second pass using x264 " + Package.x264.Version, GetArgs(2, p.Script), s.ProcessPriority)
-        End If
-
-        If Params.Mode.Value = x264RateMode.ThreePass Then
-            Encode("Encoding video third pass using x264 " + Package.x264.Version, GetArgs(3, p.Script), s.ProcessPriority)
+        ElseIf Params.Mode.Value = x264RateMode.ThreePass Then
+            Encode("Encoding video second pass using x264 " + Package.x264.Version, GetArgs(3, p.Script), s.ProcessPriority)
+            Encode("Encoding video third pass using x264 " + Package.x264.Version, GetArgs(2, p.Script), s.ProcessPriority)
         End If
 
         AfterEncoding()
@@ -63,12 +61,11 @@ Public Class x264Encoder2
 
         Using proc As New Proc
             proc.Init(passName)
-            proc.Encoding = Encoding.UTF8
             proc.Priority = priority
             proc.SkipStrings = {"kb/s, eta", "%]"}
             proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
-            proc.Arguments = "/C call """ + batchPath + """"
+            proc.Arguments = "/C call " + batchPath.Quotes
             proc.Start()
         End Using
     End Sub
@@ -194,48 +191,51 @@ Public Class x264Params2
         Title = "x264 Options"
     End Sub
 
-    Property Decoder As New OptionParam With {
-        .Text = "Decoder:",
-        .Options = {"AviSynth/VapourSynth", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
-        .Values = {"avs", "qs", "ffqsv", "ffdxva"}}
-
     Property Quant As New NumParam With {
         .Switch = "--crf",
+        .Switches = {"--qp"},
         .Name = "Quant",
         .Text = "Quality:",
+        .Path = "Basic",
+        .Help = "--crf <float> Quality-based VBR (0-51) [23.0]" + BR + "--qp <integer> Force constant QP (0-69, 0=lossless)",
         .ArgsFunc = Function() Nothing,
-        .Value = 22,
-        .DefaultValue = 28,
-        .MinMaxStepDec = {0D, 51D, 1D, 1D}}
+        .Value = 20,
+        .DefaultValue = -1,
+        .MinMaxStepDec = {0D, 69D, 1D, 1D}}
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",
         .Text = "Preset:",
+        .Path = "Basic",
         .Options = {"Ultra Fast", "Super Fast", "Very Fast", "Faster", "Fast", "Medium", "Slow", "Slower", "Very Slow", "Placebo"},
-        .Values = {"ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"},
-        .Value = 5,
-        .DefaultValue = 5}
+        .Convert = True,
+        .InitValue = 5}
 
     Property Tune As New OptionParam With {
         .Switch = "--tune",
         .Text = "Tune:",
-        .Options = {"None", "PSNR", "SSIM", "Grain", "Fast Decode", "Zero Latency"},
-        .Values = {"none", "psnr", "ssim", "grain", "fastdecode", "zerolatency"}}
+        .Path = "Basic",
+        .Options = {"None", "Film", "Animation", "Grain", "Still Image", "PSNR", "SSIM", "Fast Decode", "Zero Latency"},
+        .Convert = True}
 
     Property Mode As New OptionParam With {
         .Name = "Mode",
         .Text = "Mode:",
+        .Path = "Basic",
+        .Switches = {"--bitrate", "--qp", "--crf", "--pass"},
         .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
         .Value = 2}
 
     Property CompCheck As New NumParam With {
         .Name = "CompCheckQuant",
         .Text = "Comp. Check:",
+        .Path = "Other",
         .Value = 18,
         .MinMaxStep = {1, 50, 1}}
 
     Property Custom As New StringParam With {
         .Text = "Custom:",
+        .Path = "Custom",
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
                           tb.Edit.TextBox.Multiline = True
@@ -245,6 +245,7 @@ Public Class x264Params2
 
     Property CustomFirstPass As New StringParam With {
         .Text = "Custom" + BR + "First Pass:",
+        .Path = "Custom",
         .ArgsFunc = Function() Nothing,
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
@@ -255,6 +256,7 @@ Public Class x264Params2
 
     Property CustomSecondPass As New StringParam With {
         .Text = "Custom" + BR + "Second Pass:",
+        .Path = "Custom",
         .ArgsFunc = Function() Nothing,
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
@@ -266,14 +268,18 @@ Public Class x264Params2
     Property Deblock As New BoolParam With {
         .Switch = "--deblock",
         .Text = "Deblocking",
+        .Path = "Other",
+        .Help = "Loop filter parameters [0:0].",
         .ArgsFunc = AddressOf GetDeblockArgs}
 
     Property DeblockA As New NumParam With {
         .Text = "      Strength:",
+        .Path = "Other",
         .MinMaxStep = {-6, 6, 1}}
 
     Property DeblockB As New NumParam With {
         .Text = "      Threshold:",
+        .Path = "Other",
         .MinMaxStep = {-6, 6, 1}}
 
     Private ItemsValue As List(Of CommandLineParam)
@@ -281,14 +287,24 @@ Public Class x264Params2
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
             If ItemsValue Is Nothing Then
-                ItemsValue = New List(Of CommandLineParam)
+                ItemsValue = New List(Of CommandLineParam) From {
+                    Quant,
+                    Preset,
+                    Tune,
+                    New OptionParam With {.Path = "Basic", .Switch = "--profile", .Text = "Profile:", .Help = "Force the limits of an H.264 profile.", .Convert = True, .Options = {"Unrestricted", "Baseline", "Main", "High", "High10", "High422", "High444"}},
+                    Mode,
+                    New StringParam With {.Path = "VUI", .Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
+                    Deblock,
+                    DeblockA,
+                    DeblockB,
+                    CompCheck,
+                    Custom,
+                    CustomFirstPass,
+                    CustomSecondPass}
 
                 'Add("Basic", Quant, Preset, Tune, Profile, OutputDepth,
                 'Add("Custom", Custom, CustomFirstPass, CustomSecondPass)
 
-                'New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .ArgsFunc = AddressOf GetSAR},
-
-                '                New OptionParam With {.Path = "Basic", .Switch = "--profile", .Text = "Profile", .Help = "Force the limits of an H.264 profile", .InitValue = 2, Options = {"baseline", "main", "high", "high10", "high422", "high444"}},
                 'New OptionParam With {.Path = "Basic", .Switch = "--preset", .Text = "Preset", .Help = "Use a preset to select encoding settings", .InitValue = 5, Options = {"ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"}},
                 'New OptionParam With {.Path = "Basic", .Switch = "--tune", .Text = "Tune", .Help = "Tune the settings for a particular type of source or situation.", Options = {"disabled", film", "animation", "grain", "stillimage", "psnr", "ssim", "fastdecode", "zerolatency"}},
                 'New BoolParam   With {.Path = "Basic", .Switch = "--slow-firstpass", .Text = "Slow Firstpass"},
@@ -511,13 +527,6 @@ Public Class x264Params2
         End Get
     End Property
 
-    Private Sub Add(path As String, ParamArray items As CommandLineParam())
-        For Each i In items
-            i.Path = path
-            ItemsValue.Add(i)
-        Next
-    End Sub
-
     Private BlockValueChanged As Boolean
 
     Protected Overrides Sub OnValueChanged(item As CommandLineParam)
@@ -553,72 +562,58 @@ Public Class x264Params2
         ApplyPresetDefaultValues()
         ApplyTuneDefaultValues()
 
-        Dim sb As New StringBuilder
+        Dim args As String
+        Dim sourcePath As String
 
         If includePaths AndAlso includeExecutable Then
-            Dim isCropped = CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
-                Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop")
-
-            Select Case Decoder.ValueText
-                Case "avs"
-                    If p.Script.Engine = ScriptEngine.VapourSynth Then
-                        sb.Append(Package.vspipe.Path.Quotes + " " + script.Path.Quotes + " - --y4m | " + Package.x264.Path.Quotes)
-                    Else
-                        sb.Append(Package.avs2pipemod.Path.Quotes + " -y4mp " + script.Path.Quotes + " | " + Package.x264.Path.Quotes)
-                    End If
-                Case "qs"
-                    Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")
-                    sb.Append(Package.QSVEncC.Path.Quotes + " -o - -c raw" + crop + " -i " + p.SourceFile.Quotes + " | " + Package.x264.Path.Quotes)
-                Case "ffqsv"
-                    Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.Path.Quotes + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Quotes + " -f yuv4mpegpipe" + crop + " -loglevel error -hide_banner - | " + Package.x264.Path.Quotes)
-                Case "ffdxva"
-                    Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.Path.Quotes + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Quotes + " -f yuv4mpegpipe" + crop + " -loglevel error -hide_banner - | " + Package.x264.Path.Quotes)
-            End Select
+            If p.Script.Engine = ScriptEngine.VapourSynth Then
+                args += Package.vspipe.Path.Quotes + " " + script.Path.Quotes + " - --y4m | " + Package.x264.Path.Quotes
+                sourcePath = "-"
+            Else
+                args += Package.x264.Path.Quotes
+                sourcePath = script.Path
+            End If
         End If
 
         If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
-            sb.Append(" --pass " & pass)
+            args += " --pass " & pass
 
             If pass = 1 Then
-                If CustomFirstPass.Value <> "" Then sb.Append(" " + CustomFirstPass.Value)
+                If CustomFirstPass.Value <> "" Then args += " " + CustomFirstPass.Value
             Else
-                If CustomSecondPass.Value <> "" Then sb.Append(" " + CustomSecondPass.Value)
+                If CustomSecondPass.Value <> "" Then args += " " + CustomSecondPass.Value
             End If
         End If
 
         If Mode.Value = x264RateMode.Quantizer Then
-            If Not IsCustom(pass, "--qp") Then sb.Append(" --qp " + CInt(Quant.Value).ToString)
+            If Not IsCustom(pass, "--qp") Then args += " --qp " + CInt(Quant.Value).ToString
         ElseIf Mode.Value = x264RateMode.Quality Then
-            If Quant.Value <> 28 AndAlso Not IsCustom(pass, "--crf") Then
-                sb.Append(" --crf " + Quant.Value.ToInvariantString)
-            End If
+            If Not IsCustom(pass, "--crf") Then args += " --crf " + Quant.Value.ToInvariantString
         Else
-            If Not IsCustom(pass, "--bitrate") Then sb.Append(" --bitrate " & p.VideoBitrate)
+            If Not IsCustom(pass, "--bitrate") Then args += " --bitrate " & p.VideoBitrate
         End If
 
         Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.Switch)
-        If q.Count > 0 Then sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
+        If q.Count > 0 Then args += " " + q.Select(Function(item) item.GetArgs).Join(" ")
 
         If includePaths Then
-            sb.Append(" --frames " & script.GetFrames)
-            sb.Append(" --y4m")
+            If sourcePath = "-" Then args += " --demuxer y4m --frames " & script.GetFrames
 
             If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
-                sb.Append(" --stats """ + p.TempDir + p.Name + ".stats""")
+                args += " --stats " + (p.TempDir + p.Name + ".stats").Quotes
             End If
 
-            If (Mode.Value = x264RateMode.ThreePass AndAlso pass < 3) OrElse
+            If (Mode.Value = x264RateMode.ThreePass AndAlso
+                (pass = 1 OrElse pass = 3)) OrElse
                 Mode.Value = x264RateMode.TwoPass AndAlso pass = 1 Then
 
-                sb.Append(" --output NUL -")
+                args += " --output NUL " + sourcePath.Quotes
             Else
-                sb.Append(" --output " + targetPath.Quotes + " - ")
+                args += " --output " + targetPath.Quotes + " " + sourcePath.Quotes
             End If
         End If
 
-        Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))
+        Return Macro.Expand(args.Trim.FixBreak.Replace(BR, " "))
     End Function
 
     Function IsCustom(pass As Integer, switch As String) As Boolean
@@ -638,30 +633,131 @@ Public Class x264Params2
     End Function
 
     Function GetDeblockArgs() As String
-        'If Deblock.Value Then
-        '    If DeblockA.Value = DeblockA.DefaultValue AndAlso
-        '        DeblockB.Value = DeblockB.DefaultValue AndAlso
-        '        Deblock.DefaultValue Then
+        If Deblock.Value Then
+            If DeblockA.Value = DeblockA.DefaultValue AndAlso
+                DeblockB.Value = DeblockB.DefaultValue AndAlso
+                Deblock.DefaultValue Then
 
-        '        Return ""
-        '    Else
-        '        Return "--deblock " & DeblockA.Value & ":" & DeblockB.Value
-        '    End If
-        'ElseIf Deblock.DefaultValue Then
-        '    Return "--no-deblock"
-        'End If
+                Return ""
+            Else
+                Return "--deblock " & DeblockA.Value & ":" & DeblockB.Value
+            End If
+        ElseIf Deblock.DefaultValue Then
+            Return "--no-deblock"
+        End If
     End Function
 
     Sub ApplyPresetValues()
+        Deblock.Value = True
+
+        Select Case Preset.Value
+            Case 0 'ultrafast
+                Deblock.Value = False
+            Case 1 'superfast
+
+            Case 2 'veryfast
+
+            Case 3 'faster
+
+            Case 4 'fast
+
+            Case 5 'medium
+
+            Case 6 'slow
+
+            Case 7 'slower
+
+            Case 8 'veryslow
+
+            Case 9 'placebo
+
+        End Select
     End Sub
 
     Sub ApplyPresetDefaultValues()
+        Deblock.DefaultValue = True
+
+        Select Case Preset.Value
+            Case 0 'ultrafast
+                Deblock.DefaultValue = False
+            Case 1 'superfast
+
+            Case 2 'veryfast
+
+            Case 3 'faster
+
+            Case 4 'fast
+
+            Case 5 'medium
+
+            Case 6 'slow
+
+            Case 7 'slower
+
+            Case 8 'veryslow
+
+            Case 9 'placebo
+
+        End Select
     End Sub
 
     Sub ApplyTuneValues()
+        Deblock.Value = True
+        DeblockA.Value = 0
+        DeblockB.Value = 0
+
+        Select Case Tune.Value
+            Case 1 'film
+                DeblockA.Value = -1
+                DeblockB.Value = -1
+            Case 2 'animation
+                DeblockA.Value = 1
+                DeblockB.Value = 1
+            Case 3 'grain
+                DeblockA.Value = -2
+                DeblockB.Value = -2
+            Case 4 'stillimage
+                DeblockA.Value = -3
+                DeblockB.Value = -3
+            Case 5 'psnr
+
+            Case 6 'ssim
+
+            Case 7 'fastdecode
+                Deblock.Value = False
+
+            Case 8 'zerolatency
+
+        End Select
     End Sub
 
     Sub ApplyTuneDefaultValues()
+        Deblock.DefaultValue = True
+        DeblockA.DefaultValue = 0
+        DeblockB.DefaultValue = 0
+
+        Select Case Tune.Value
+            Case 1 'film
+                DeblockA.DefaultValue = -1
+                DeblockB.DefaultValue = -1
+            Case 2 'animation
+                DeblockA.DefaultValue = 1
+                DeblockB.DefaultValue = 1
+            Case 3 'grain
+                DeblockA.DefaultValue = -2
+                DeblockB.DefaultValue = -2
+            Case 4 'stillimage
+                DeblockA.DefaultValue = -3
+                DeblockB.DefaultValue = -3
+            Case 5 'psnr
+
+            Case 6 'ssim
+
+            Case 7 'fastdecode
+                Deblock.DefaultValue = False
+            Case 8 'zerolatency
+
+        End Select
     End Sub
 
     Public Overrides Function GetPackage() As Package

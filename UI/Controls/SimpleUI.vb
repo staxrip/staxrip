@@ -637,6 +637,22 @@ Public Class SimpleUI
             MyBase.OnLayout(levent)
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            Button.ContextMenuStrip.Dispose()
+            MyBase.Dispose(disposing)
+        End Sub
+
+        Sub MenuClick(value As String)
+            value = Macro.Expand(value)
+            Dim tup = Macro.ExpandGUI(value)
+            If tup.Cancel Then Exit Sub
+            Edit.Text = tup.Value
+        End Sub
+
+        Sub AddMenu(menu As String)
+            TextCustomMenu.GetMenu(menu, Button, Nothing, AddressOf MenuClick)
+        End Sub
+
         Sub AddMenu(menuText As String, menuValue As String)
             AddMenu(menuText, Function() menuValue)
         End Sub

@@ -37,6 +37,8 @@ https://github.com/stax76/staxrip/releases
 
 https://github.com/stax76/staxrip/blob/master/md/test-build.md
 
+## Screenshots
+
 ### Main Window
 
 [![Main Window](Screenshots/1.png)](https://github.com/stax76/staxrip/blob/master/Screenshots/1.png)

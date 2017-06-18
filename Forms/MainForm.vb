@@ -1426,6 +1426,7 @@ Public Class MainForm
 
     Async Sub UpdateScriptsMenuAsync()
         Dim files As String()
+        Dim events As String()
 
         Await Task.Run(Sub()
                            Thread.Sleep(500)
@@ -1441,6 +1442,7 @@ Public Class MainForm
                                Next
                            End If
 
+                           events = System.Enum.GetNames(GetType(ApplicationEvent))
                            files = Directory.GetFiles(Folder.Script)
                        End Sub)
 
@@ -1451,9 +1453,11 @@ Public Class MainForm
                 If menuItem.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.Scripts) Then
                     menuItem.DropDownItems.Clear()
                     For Each path In files
-                        ActionMenuItem.Add(menuItem.DropDownItems,
-                                           path.FileName.Base,
-                                           Sub() g.DefaultCommands.ExecuteScriptFile(path))
+                        If Not events.Contains(path.FileName.Left(".")) Then
+                            ActionMenuItem.Add(menuItem.DropDownItems,
+                                               path.FileName.Base,
+                                               Sub() g.DefaultCommands.ExecuteScriptFile(path))
+                        End If
                     Next
 
                     menuItem.DropDownItems.Add(New ToolStripSeparator)
@@ -2482,7 +2486,10 @@ Public Class MainForm
 
             Subtitle.Cut(p.VideoEncoder.Muxer.Subtitles)
 
-            p.VideoEncoder.Encode()
+            If Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath)) Then
+                p.VideoEncoder.Encode()
+            End If
+
             Log.Save()
             p.VideoEncoder.Muxer.Mux()
 
@@ -3064,6 +3071,57 @@ Public Class MainForm
 
         If AssistantPassed Then
             If AbortDueToLowDiskSpace() Then Exit Sub
+
+            If Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath) Then
+                Select Case p.FileExistVideo
+                    Case FileExistMode.Ask
+                        Using td As New TaskDialog(Of String)
+                            td.MainInstruction = "The output file of the video encoder already exists, would you like to reuse or re-encode it?"
+                            td.Content = "Alternatively the 'Just Mux' video encoder profile can be used to reuse an existing output file, if no such file exists it muxes the source video. This question can be configured in the options."
+                            td.AddCommandLink("Reuse/Skip", "skip")
+                            td.AddCommandLink("Re-encode/Overwrite", "overwrite")
+
+                            Select Case td.Show
+                                Case "skip"
+                                    p.SkipVideoEncoding = True
+                                Case "overwrite"
+                                    p.SkipVideoEncoding = False
+                                Case Else
+                                    Exit Sub
+                            End Select
+                        End Using
+                    Case FileExistMode.Overwrite
+                        p.SkipVideoEncoding = False
+                    Case FileExistMode.Skip
+                        p.SkipVideoEncoding = True
+                End Select
+            End If
+
+            If (p.Audio0.File <> "" AndAlso (TypeOf p.Audio0 Is GUIAudioProfile OrElse TypeOf p.Audio0 Is BatchAudioProfile) AndAlso File.Exists(p.Audio0.GetOutputFile)) OrElse
+            (p.Audio1.File <> "" AndAlso (TypeOf p.Audio1 Is GUIAudioProfile OrElse TypeOf p.Audio1 Is BatchAudioProfile) AndAlso File.Exists(p.Audio1.GetOutputFile)) Then
+                Select Case p.FileExistAudio
+                    Case FileExistMode.Ask
+                        Using td As New TaskDialog(Of String)
+                            td.MainInstruction = "An audio encoding output file already exists, would you like to reuse or re-encode it?"
+                            td.AddCommandLink("Reuse/Skip", "skip")
+                            td.AddCommandLink("Re-encode/Overwrite", "overwrite")
+
+                            Select Case td.Show
+                                Case "skip"
+                                    p.SkipAudioEncoding = True
+                                Case "overwrite"
+                                    p.SkipAudioEncoding = False
+                                Case Else
+                                    Exit Sub
+                            End Select
+                        End Using
+                    Case FileExistMode.Overwrite
+                        p.SkipAudioEncoding = False
+                    Case FileExistMode.Skip
+                        p.SkipAudioEncoding = True
+                End Select
+            End If
+
             AddJob(False, Nothing)
             ShowJobsDialog()
         Else
@@ -3991,6 +4049,12 @@ Public Class MainForm
             audioDemux.MenuButton.Value = p.DemuxAudio
             audioDemux.MenuButton.SaveAction = Sub(value) p.DemuxAudio = value
 
+            Dim audioExist = ui.AddMenuButtonBlock(Of FileExistMode)(audioPage)
+            audioExist.Label.Text = "Existing Output:"
+            audioExist.Tooltip = "What to do in case a audio encoding output file already exists from a previous job run."
+            audioExist.MenuButton.Value = p.FileExistAudio
+            audioExist.MenuButton.SaveAction = Sub(value) p.FileExistAudio = value
+
             cb = ui.AddCheckBox(audioPage)
             cb.Text = "Force conversion"
             cb.Checked = p.ForceAudioConvert
@@ -4143,6 +4207,12 @@ Public Class MainForm
 
             Dim miscPage = ui.CreateFlowPage("Misc")
             miscPage.SuspendLayout()
+
+            Dim videoExist = ui.AddMenuButtonBlock(Of FileExistMode)(miscPage)
+            videoExist.Label.Text = "Existing Video Output:"
+            videoExist.Tooltip = "What to do in case the video encoding output file already exists from a previous job run."
+            videoExist.MenuButton.Value = p.FileExistVideo
+            videoExist.MenuButton.SaveAction = Sub(value) p.FileExistVideo = value
 
             cb = ui.AddCheckBox(miscPage)
             cb.Text = "Hide dialogs asking to demux, source filter etc."
@@ -4348,6 +4418,7 @@ Public Class MainForm
         f.Doc.WriteStart("Command Line Reference")
         f.Doc.WriteP("Switches are processed in the order they appear in the command line.")
         f.Doc.WriteP("The command line interface, main menu and Event Commands feature are built on top of a common command engine which exposes a rich set of commands.")
+        f.Doc.WriteP("There is a special mode where only the MediaInfo window is shown using -mediainfo <file>, this is useful for Windows File Explorer integration with an app like Open++.")
         f.Doc.WriteElement("h2", "Examples")
         f.Doc.WriteP("StaxRip ""C:\Movie\project.srip""")
         f.Doc.WriteP("StaxRip ""C:\Movie\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB""")
@@ -4401,47 +4472,12 @@ Public Class MainForm
         Dim f As New HelpForm()
 
         f.Doc.WriteStart("Scripting")
-        f.Doc.WriteP("Below is a list with methods available for PowerShell scripting. For more info visit the support forum and read the automation topic in the [https://stax76.gitbooks.io/staxrip-handbook/content/automation.html handbook].")
+        f.Doc.WriteP("StaxRip can be automated via PowerShell scripting.")
 
-        Dim commands As New List(Of Command)(CommandManager.Commands.Values)
-        commands.Sort()
+        f.Doc.WriteP("In order to run a powershell script on certain events the following paths can be used:")
 
-        Dim commandList As New StringPairList
-
-        For Each command In commands
-            Dim params = command.MethodInfo.GetParameters
-            Dim cs = command.MethodInfo.Name + "("
-
-            For Each param In params
-                cs += param.ParameterType.Name.Replace("Boolean", "bool").
-                    Replace("String", "string").Replace("Int32", "int") + " " + param.Name + ", "
-            Next
-
-            cs = cs.TrimEnd(", ".ToCharArray) + ")"
-            f.Doc.WriteH2(cs)
-
-            For Each param In params
-                Dim d = param.GetCustomAttribute(Of DescriptionAttribute)
-
-                If Not d Is Nothing Then
-                    f.Doc.WriteP(param.Name + ": " + param.GetCustomAttribute(Of DescriptionAttribute).Description)
-                End If
-            Next
-
-            Dim enumList As New List(Of String)
-
-            For Each param In params
-                If param.ParameterType.IsEnum Then
-                    enumList.Add(param.ParameterType.Name + ": " +
-                                 System.Enum.GetNames(param.ParameterType).Join(", "))
-                End If
-            Next
-
-            For Each en In enumList
-                f.Doc.WriteP(en)
-            Next
-
-            f.Doc.WriteP(command.Attribute.Description)
+        For Each i In System.Enum.GetNames(GetType(ApplicationEvent))
+            f.Doc.WriteP(Folder.Settings + "Scripts\" + i.ToString + ".ps1")
         Next
 
         f.Show()

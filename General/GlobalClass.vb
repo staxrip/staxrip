@@ -412,6 +412,9 @@ Public Class GlobalClass
     End Sub
 
     Sub RaiseAppEvent(appEvent As ApplicationEvent)
+        Dim scriptPath = Folder.Settings + "Scripts\" + appEvent.ToString + ".ps1"
+        If File.Exists(scriptPath) Then g.DefaultCommands.ExecuteScriptFile(scriptPath)
+
         For Each i In s.EventCommands
             If i.Enabled AndAlso i.Event = appEvent Then
                 Dim matches = 0
@@ -672,7 +675,7 @@ Public Class GlobalClass
                     Application.DoEvents()
 
                     If handle <> Native.GetForegroundWindow Then
-                        Explorer.SelectFile(Native.GetForegroundWindow, filepath)
+                        ExplorerHelp.SelectFile(Native.GetForegroundWindow, filepath)
                         Exit For
                     End If
                 Next

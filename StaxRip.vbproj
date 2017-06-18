@@ -190,7 +190,7 @@
     <Compile Include="General\Log.vb" />
     <Compile Include="General\GlobalClass.vb" />
     <Compile Include="General\GlobalCommands.vb" />
-    <Compile Include="General\Scripting.vb" />
+    <Compile Include="General\Automation.vb" />
     <Compile Include="UI\DataForm.Designer.vb">
       <DependentUpon>DataForm.vb</DependentUpon>
     </Compile>
@@ -262,7 +262,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="General\Audio.vb" />
-    <Compile Include="General\Automation.vb" />
+    <Compile Include="General\Late Binding.vb" />
     <Compile Include="General\CommandLine.vb" />
     <Compile Include="General\ImageUtils.vb" />
     <Compile Include="Encoding\x265Encoder.vb" />

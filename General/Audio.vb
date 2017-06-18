@@ -274,6 +274,7 @@ Class Audio
         Dim args = "-i " + ap.File.Quotes
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
         args += " -y -hide_banner"
+        If ConvertExt = "w64" Then args += " -c:a pcm_s24le"
         args += " " + outPath.Quotes
 
         Using proc As New Proc

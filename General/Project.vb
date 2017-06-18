@@ -96,6 +96,10 @@ Public Class Project
     Public Versions As Dictionary(Of String, Integer)
     Public VideoBitrate As Integer = 1000
     Public VideoEncoder As VideoEncoder
+    Public FileExistAudio As FileExistMode
+    Public FileExistVideo As FileExistMode
+    Public SkipAudioEncoding As Boolean
+    Public SkipVideoEncoding As Boolean
 
     Public AudioConvertFormat As AudioConvertType
 

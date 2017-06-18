@@ -1,5 +1,6 @@
 Imports StaxRip.UI
 Imports System.Text
+Imports Microsoft.Win32
 
 Class MediaInfoForm
     Inherits DialogBase
@@ -119,6 +120,9 @@ Class MediaInfoForm
         rtb.BackColor = Color.White
         rtb.Font = New Font("Consolas", 10 * s.UIScaleFactor)
 
+        Dim devModeCaption = If(Registry.CurrentUser.GetBoolean("Software\" + Application.ProductName, "DevMode"), "User Mode", "Developer Mode")
+        ActionMenuItem.Add(rtb.ContextMenuStrip.Items, devModeCaption, AddressOf ToggleDevMode)
+
         tv.SelectOnMouseDown = True
         tv.ShowLines = False
         tv.HideSelection = False
@@ -133,6 +137,12 @@ Class MediaInfoForm
         ActiveControl = stb
 
         AddHandler stb.TextChanged, Sub() If tv.SelectedNode Is tv.Nodes(1) Then UpdateItems() Else tv.SelectedNode = tv.Nodes(1)
+    End Sub
+
+    Sub ToggleDevMode()
+        Registry.CurrentUser.Write("Software\" + Application.ProductName, "DevMode", Not Registry.CurrentUser.GetBoolean("Software\" + Application.ProductName, "DevMode"))
+        Close()
+        g.DefaultCommands.ShowMediaInfo(SourcePath)
     End Sub
 
     Sub UpdateItems()

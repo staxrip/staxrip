@@ -54,3 +54,15 @@ https://github.com/stax76/staxrip/blob/master/md/test-build.md
 ### Audio Encoding Options
 
 [![Main Window](Screenshots/4.png)](https://github.com/stax76/staxrip/blob/master/Screenshots/4.png)
+
+## Scripting
+
+StaxRip can be automated via PowerShell scripting. There are two example scripts included, they can be found at:
+
+Main Menu > Tools > Scripts > Open Scripts Folder
+
+### Scripting Events
+
+In order to run scripts on certain events read the help at:
+
+Main Menu > Help > Scripting

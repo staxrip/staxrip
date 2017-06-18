@@ -317,6 +317,8 @@ Public Class BatchAudioProfile
     End Function
 
     Public Overrides Sub Encode()
+        If p.SkipAudioEncoding AndAlso IO.File.Exists(GetOutputFile) Then Exit Sub
+
         If File <> "" Then
             Dim bitrateBefore = p.VideoBitrate
             Dim targetPath = GetOutputFile()
@@ -630,6 +632,8 @@ Class GUIAudioProfile
     End Function
 
     Public Overrides Sub Encode()
+        If p.SkipAudioEncoding AndAlso IO.File.Exists(GetOutputFile) Then Exit Sub
+
         If File <> "" Then
             Dim bitrateBefore = p.VideoBitrate
             Dim targetPath = GetOutputFile()

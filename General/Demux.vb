@@ -11,7 +11,7 @@ Public MustInherit Class Demuxer
     Overridable Property InputFormats As String() = {}
     Overridable Property Name As String = ""
     Overridable Property OutputExtensions As String() = {}
-    Overridable Property SourceFilter As String = ""
+    Overridable Property SourceFilters As String() = {}
 
     Property VideoDemuxing As Boolean
     Property ChaptersDemuxing As Boolean = True
@@ -70,6 +70,7 @@ Public MustInherit Class Demuxer
         prx.InputFormats = {"mpeg2"}
         prx.Command = "%app:Java%"
         prx.Arguments = "-jar ""%app:ProjectX%"" %source_files% -out ""%working_dir%"""
+        prx.Active = False
         ret.Add(prx)
 
         Dim dsmux As New CommandLineDemuxer
@@ -85,14 +86,24 @@ Public MustInherit Class Demuxer
         ret.Add(New MP4BoxDemuxer)
         ret.Add(New eac3toDemuxer)
 
+        Dim dgIndex As New CommandLineDemuxer
+        dgIndex.Name = "DGIndex"
+        dgIndex.InputExtensions = {"mpg", "vob", "m2ts", "mts", "m2t"}
+        dgIndex.OutputExtensions = {"d2v"}
+        dgIndex.InputFormats = {"mpeg2"}
+        dgIndex.Command = "%app:DGIndex%"
+        dgIndex.Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -o ""%temp_file%"" -hide -exit"
+        dgIndex.SourceFilters = {"MPEG2Source", "d2v.Source"}
+        ret.Add(dgIndex)
+
         Dim dgnvNoDemux As New CommandLineDemuxer
         dgnvNoDemux.Name = "DGIndexNV"
-        dgnvNoDemux.InputExtensions = {"264", "h264", "avc", "mkv", "mp4"}
+        dgnvNoDemux.InputExtensions = {"264", "h264", "avc", "265", "h265", "hevc", "mkv", "mp4"}
         dgnvNoDemux.OutputExtensions = {"dgi"}
-        dgnvNoDemux.InputFormats = {"avc", "vc1", "mpeg2"}
+        dgnvNoDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
         dgnvNoDemux.Command = "%app:DGIndexNV%"
         dgnvNoDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgi"" -h"
-        dgnvNoDemux.SourceFilter = "DGSource"
+        dgnvNoDemux.SourceFilters = {"DGSource"}
         dgnvNoDemux.Active = False
         ret.Add(dgnvNoDemux)
 
@@ -100,10 +111,10 @@ Public MustInherit Class Demuxer
         dgnvDemux.Name = "DGIndexNV"
         dgnvDemux.InputExtensions = {"mpg", "vob", "ts", "m2ts", "mts", "m2t"}
         dgnvDemux.OutputExtensions = {"dgi"}
-        dgnvDemux.InputFormats = {"avc", "vc1", "mpeg2"}
+        dgnvDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
         dgnvDemux.Command = "%app:DGIndexNV%"
         dgnvDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgi"" -a -h"
-        dgnvDemux.SourceFilter = "DGSource"
+        dgnvDemux.SourceFilters = {"DGSource"}
         dgnvDemux.Active = False
         ret.Add(dgnvDemux)
 
@@ -114,7 +125,7 @@ Public MustInherit Class Demuxer
         dgimNoDemux.InputFormats = {"avc", "vc1", "mpeg2"}
         dgimNoDemux.Command = "%app:DGIndexIM%"
         dgimNoDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgim"" -h"
-        dgimNoDemux.SourceFilter = "DGSourceIM"
+        dgimNoDemux.SourceFilters = {"DGSourceIM"}
         dgimNoDemux.Active = False
         ret.Add(dgimNoDemux)
 
@@ -125,7 +136,7 @@ Public MustInherit Class Demuxer
         dgimDemux.InputFormats = {"avc", "vc1", "mpeg2"}
         dgimDemux.Command = "%app:DGIndexIM%"
         dgimDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgim"" -a -h"
-        dgimDemux.SourceFilter = "DGSourceIM"
+        dgimDemux.SourceFilters = {"DGSourceIM"}
         dgimDemux.Active = False
         ret.Add(dgimDemux)
 
@@ -156,11 +167,8 @@ Class CommandLineDemuxer
 
     Overrides Sub Run(proj As Project)
         Using proc As New Proc
-            If Command?.Contains("DGIndexNV") Then
+            If Command?.Contains("DGIndex") Then
                 If Not Package.DGIndexNV.VerifyOK(True) Then Throw New AbortException
-                proc.SkipPatterns = {"^\d+$"}
-            ElseIf Command?.Contains("DGIndexIM") Then
-                If Not Package.DGIndexIM.VerifyOK(True) Then Throw New AbortException
                 proc.SkipPatterns = {"^\d+$"}
             ElseIf Command?.Contains("dsmux") Then
                 If Not Package.Haali.VerifyOK(True) Then Throw New AbortException
@@ -335,7 +343,7 @@ Public Class ffmpegDemuxer
 
         Using proc As New Proc
             proc.Project = proj
-            proc.Init("Demux audio using ffmpeg " + Package.ffmpeg.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
+            proc.Init("Demux audio using ffmpeg " + Package.ffmpeg.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |", "[h264 @ "})
             proc.Encoding = Encoding.UTF8
             proc.File = Package.ffmpeg.Path
             proc.Arguments = args
@@ -491,7 +499,9 @@ Class MP4BoxDemuxer
             End Using
         End If
 
-        If chaptersDemuxing AndAlso MediaInfo.GetMenu(proj.SourceFile, "StreamCount").ToInt > 0 Then
+        If chaptersDemuxing AndAlso MediaInfo.GetMenu(proj.SourceFile, "Chapters_Pos_End").ToInt -
+            MediaInfo.GetMenu(proj.SourceFile, "Chapters_Pos_Begin").ToInt > 0 Then
+
             Using proc As New Proc
                 proc.Project = proj
                 proc.Init("Extract chapters using MP4Box " + Package.MP4Box.Version)
@@ -575,6 +585,12 @@ Class MP4BoxDemuxer
         Dim cover = MediaInfo.GetGeneral(sourceFilePath, "Cover")
         If cover <> "" Then Return New List(Of Attachment) From {New Attachment With {.Name = "Cover"}}
     End Function
+
+    Public Overrides ReadOnly Property HasConfigDialog As Boolean
+        Get
+            Return True
+        End Get
+    End Property
 End Class
 
 <Serializable()>
@@ -795,4 +811,10 @@ Class mkvDemuxer
 
         Return ret
     End Function
+
+    Public Overrides ReadOnly Property HasConfigDialog As Boolean
+        Get
+            Return True
+        End Get
+    End Property
 End Class

@@ -9,7 +9,7 @@ Class StreamDemuxForm
         InitializeComponent()
 
         cbDemuxChapters.Checked = demuxer.ChaptersDemuxing
-        cbDemuxChapters.Visible = MediaInfo.GetMenu(sourceFile, "StreamCount").ToInt > 0
+        cbDemuxChapters.Visible = MediaInfo.GetMenu(sourceFile, "Chapters_Pos_End").ToInt - MediaInfo.GetMenu(sourceFile, "Chapters_Pos_Begin").ToInt > 0
         cbDemuxVideo.Checked = demuxer.VideoDemuxing
 
         ScaleClientSize(42, 29)

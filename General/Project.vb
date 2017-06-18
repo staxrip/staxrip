@@ -40,7 +40,8 @@ Public Class Project
     Public CutFrameCount As Integer
     Public CutFrameRate As Double
     Public CuttingMode As CuttingMode
-    Public DecodingMode As DecodingMode
+    Public AudioConvertMode As AudioConvertMode
+    Public ForceAudioConvert As Boolean
     Public DefaultSubtitle As DefaultSubtitleMode
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
@@ -69,7 +70,6 @@ Public Class Project
     Public ScanOrder As String
     Public ScanType As String
     Public Script As TargetVideoScript
-    Public ShowDialogsCLI As Boolean
     Public SkippedAssistantTips As List(Of String)
     Public SourceAnamorphic As Boolean
     Public SourceBitrate As Integer
@@ -96,6 +96,8 @@ Public Class Project
     Public Versions As Dictionary(Of String, Integer)
     Public VideoBitrate As Integer = 1000
     Public VideoEncoder As VideoEncoder
+
+    Public AudioConvertFormat As AudioConvertType
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -142,12 +144,12 @@ Public Class Project
 
         If Check(VideoEncoder, "Video Encoder", 69) Then VideoEncoder = New x264Encoder
 
-        If Check(Audio0, "Audio Track 1", 35) Then
+        If Check(Audio0, "Audio Track 1", 36) Then
             Audio0 = New GUIAudioProfile(AudioCodec.AAC, 0.35)
             Audio0.Language = New Language(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, True)
         End If
 
-        If Check(Audio1, "Audio Track 2", 35) Then
+        If Check(Audio1, "Audio Track 2", 36) Then
             Audio1 = New GUIAudioProfile(AudioCodec.AAC, 0.35)
             Audio1.Language = New Language("en", True)
         End If

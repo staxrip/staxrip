@@ -489,9 +489,7 @@ Public Class GlobalCommands
         filepath = Macro.Expand(filepath)
 
         If File.Exists(filepath) Then
-            Using f As New MediaInfoForm(filepath)
-                f.ShowDialog()
-            End Using
+            g.ShellExecute(Application.ExecutablePath, "-mediainfo " + filepath.Quotes)
         Else
             MsgWarn("No file found.")
         End If

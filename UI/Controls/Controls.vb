@@ -1285,8 +1285,6 @@ Namespace UI
         End Sub
 
         Sub UpdateButtons()
-            Debug.WriteLine(SelectedIndex)
-
             If Not RemoveButton Is Nothing Then RemoveButton.Enabled = Not SelectedItem Is Nothing
             If Not UpButton Is Nothing Then UpButton.Enabled = SelectedIndex > 0
             If Not DownButton Is Nothing Then DownButton.Enabled = SelectedIndex > -1 AndAlso SelectedIndex < Items.Count - 1

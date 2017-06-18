@@ -160,21 +160,21 @@ Public Class NVIDIAEncoder
 
         Property QPI As New NumParam With {
             .Switches = {"--cqp"},
-            .Text = "Constant QP I:",
+            .Text = "QP I:",
             .InitValue = 20,
             .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}
 
         Property QPP As New NumParam With {
             .Switches = {"--cqp"},
-            .Text = "Constant QP P:",
+            .Text = "QP P:",
             .InitValue = 23,
             .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}
 
         Property QPB As New NumParam With {
             .Switches = {"--cqp"},
-            .Text = "Constant QP B:",
+            .Text = "QP B:",
             .InitValue = 25,
             .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}

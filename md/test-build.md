@@ -12,6 +12,20 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.0.8 unstable test build
+
+- new: download button added to apps dialog's toolbar, only certain apps have a download URL defined
+- new: DGIndex added, this was removed before because there wasn't a x64 d2v source filter, now staxrip has x64 d2v filters for both avisynth and vapoursynth included
+- new: various improvements on the new x264 GUI introduced in 1.5.0.7
+- fix: opening a project from CLI had asked to save the current project even if no changes were made since it was loaded
+- fix: wrong channel count used with dolby atmos
+- fix: the automatically generated audio profile caption in the main dialog of the current profile gets updated when the source changes
+- tweak: improved scaling on 96 DPI (relates to layout changes from 1.5.0.4)
+- tweak: improved audio specs parameter display in the main dialog
+- tweak: the MediaInfo window is startet as separate process, the window can be minimized and maximized, the layout improved
+- update: RgTools 0.96
+- update: NVEnc 3.11
+
 #### 1.5.0.7 unstable test build
 
 - new: Deblock VapourSynth plugin added: https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock/

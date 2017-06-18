@@ -48,7 +48,7 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Sub AfterEncoding()
-        If Not g.WasFileJustWritten(OutputPath) Then
+        If Not g.FileExists(OutputPath) Then
             Throw New ErrorAbortException("Encoder output file is missing", OutputPath)
         Else
             Log.WriteLine(MediaInfo.GetSummary(OutputPath))
@@ -64,7 +64,7 @@ Public MustInherit Class VideoEncoder
         ret.Dock = DockStyle.Fill
         ret.BackColor = System.Drawing.SystemColors.Window
         ret.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow
-        ret.Padding = New Padding(1, 1, 0, 0)
+        ret.ShowControlBorder = True
         ret.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
         For Each i In GetMenu()
@@ -182,7 +182,7 @@ Public MustInherit Class VideoEncoder
         Muxer.Init()
         g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpper
         Dim newPath = p.TargetFile.ChangeExt(Muxer.OutputExt)
-        If newPath.ToLower = p.SourceFile.ToLower Then newPath = newPath.Dir + newPath.Base + "_new" + newPath.ExtFull
+        If p.SourceFile <> "" AndAlso newPath.ToLower = p.SourceFile.ToLower Then newPath = newPath.Dir + newPath.Base + "_new" + newPath.ExtFull
         g.MainForm.tbTargetFile.Text = newPath
         g.MainForm.RecalcBitrate()
         g.MainForm.Assistant()
@@ -259,13 +259,6 @@ Public MustInherit Class VideoEncoder
         x264cli.CommandLines = """%app:x264%"" --pass 1 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output NUL ""%script_file%"" || exit" + BR + """%app:x264%"" --pass 2 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
         x264cli.CompCheckCommandLines = """%app:x264%"" --crf 18 --output ""%target_temp_file%_CompCheck.%encoder_ext%"" ""%target_temp_file%_CompCheck.%script_ext%"""
         ret.Add(x264cli)
-
-        Dim divx As New BatchEncoder()
-        divx.OutputFileTypeValue = "h265"
-        divx.Name = "Command Line | DivX H.265"
-        divx.Muxer = New MkvMuxer()
-        divx.CommandLines = """%app:DivX265%"" -i ""%script_file%"" -o ""%encoder_out_file%"" -br %video_bitrate% -10"
-        ret.Add(divx)
 
         Dim nvencH265 As New BatchEncoder()
         nvencH265.OutputFileTypeValue = "h265"
@@ -433,9 +426,7 @@ Class BatchEncoder
     End Function
 
     Function GetSkipStrings(commands As String) As String()
-        If commands.Contains("DivX265") Then
-            Return {"encoded @"}
-        ElseIf commands.Contains("xvid_encraw") Then
+        If commands.Contains("xvid_encraw") Then
             Return {"key="}
         ElseIf commands.Contains("x264") Then
             Return {"frames,"}

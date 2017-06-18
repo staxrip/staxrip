@@ -6,7 +6,6 @@ Imports System.Management
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
-Imports Microsoft.Win32
 Imports StaxRip.UI
 
 Public Module ShortcutModule
@@ -14,22 +13,6 @@ Public Module ShortcutModule
     Public p As New Project
     Public s As New ApplicationSettings
 End Module
-
-Public Enum MediaInformation
-    VideoFormat
-    DAR
-End Enum
-
-Public Enum AudioMode
-    DirectStreamCopy
-    FullProcessingMode
-End Enum
-
-Public Enum RegistryRoot
-    CurrentUser
-    LocalMachine
-    ClassesRoot
-End Enum
 
 <Serializable()>
 Public Class Range
@@ -323,6 +306,11 @@ Class Calc
             p.X \= gcd
             p.Y \= gcd
         End If
+
+        While p.X > 1000000
+            p.X = CInt(p.X / 10)
+            p.Y = CInt(p.Y / 10)
+        End While
 
         Return p
     End Function
@@ -1535,9 +1523,9 @@ End Class
 Public Class AudioStream
     Property BitDepth As Integer
     Property Bitrate As Integer
-    Property BitrateCore As Integer
+    Property Bitrate2 As Integer
     Property Channels As Integer
-    Property ChannelsCore As Integer
+    Property Channels2 As Integer
     Property Codec As String
     Property CodecString As String
     Property Delay As Integer
@@ -1552,61 +1540,64 @@ Public Class AudioStream
     Property Enabled As Boolean = True
     Property [Default] As Boolean
     Property Forced As Boolean
+    Property Lossy As Boolean
 
     ReadOnly Property Name As String
         Get
-            Dim sb As New StringBuilder()
-            sb.Append("ID" & (StreamOrder + 1))
+            Dim ret = "ID" & (StreamOrder + 1)
 
-            If CodecString <> "" Then
-                Select Case CodecString
-                    Case "MPEG-1 Audio layer 2"
-                        sb.Append(" MP2")
-                    Case "MPEG-1 Audio layer 3"
-                        sb.Append(" MP3")
-                    Case "TrueHD / AC3"
-                        sb.Append(" THD+AC3")
-                    Case "AC3+"
-                        sb.Append(" E-AC3")
-                    Case Else
-                        Select Case Codec
-                            Case "Atmos / TrueHD"
-                                sb.Append(" THD Atmos")
-                            Case "TrueHD / AC3"
-                                sb.Append(" THD+AC3")
-                            Case Else
-                                Select Case FormatProfile
-                                    Case "MA / Core"
-                                        sb.Append(" DTS MA/Core")
-                                    Case "HRA / Core"
-                                        sb.Append(" DTS HRA/Core")
-                                    Case Else
-                                        sb.Append(" " + CodecString)
-                                End Select
-                        End Select
-                End Select
+            If Codec = "Atmos / TrueHD" OrElse
+                FormatProfile.EqualsAny("TrueHD+Atmos / TrueHD",
+                                        "E-AC-3+Atmos / E-AC-3",
+                                        "TrueHD+Atmos / TrueHD / AC-3") Then
+                ret += " Atmos"
+            ElseIf CodecString = "TrueHD / AC3" OrElse Codec = "TrueHD / AC3" Then
+                ret += " TrueHD"
+            ElseIf CodecString = "MPEG-1 Audio layer 2" Then
+                ret += " MP2"
+            ElseIf CodecString = "MPEG-1 Audio layer 3" Then
+                ret += " MP3"
+            ElseIf CodecString = "AC3+" Then
+                ret += " E-AC3"
+            ElseIf FormatProfile = "MA / Core" Then
+                ret += " DTS-MA"
+            ElseIf FormatProfile = "HRA / Core" Then
+                ret += " DTS-HRA"
+            Else
+                ret += " " + CodecString
             End If
 
-            If ChannelsCore > 0 Then
-                sb.Append(" " & Channels & "/" & ChannelsCore & "ch")
-            ElseIf Channels > 0 Then
-                sb.Append(" " & Channels & "ch")
+            If Not ret.Contains("Atmos") Then
+                If Channels <> Channels2 AndAlso Channels > 0 AndAlso Channels2 > 0 Then
+                    ret += " " & Channels & "/" & Channels2 & "ch"
+                ElseIf Channels > 0 Then
+                    ret += " " & Channels & "ch"
+                ElseIf Channels2 > 0 Then
+                    ret += " " & Channels2 & "ch"
+                End If
             End If
 
-            If BitDepth > 0 Then sb.Append(" " & BitDepth & "Bit")
-            If SamplingRate > 0 Then sb.Append(" " & SamplingRate & "Hz")
+            If BitDepth > 0 AndAlso Not Lossy Then ret += " " & BitDepth & "Bit"
 
-            If BitrateCore > 0 Then
-                sb.Append(" " & If(Bitrate = 0, "?", Bitrate.ToString) & "/" & BitrateCore & "Kbps")
+            If SamplingRate > 0 Then
+                If SamplingRate Mod 1000 = 0 Then
+                    ret += " " & SamplingRate / 1000 & "kHz"
+                Else
+                    ret += " " & SamplingRate & "Hz"
+                End If
+            End If
+
+            If Bitrate2 > 0 Then
+                ret += " " & If(Bitrate = 0, "?", Bitrate.ToString) & "/" & Bitrate2 & "Kbps"
             ElseIf Bitrate > 0 Then
-                sb.Append(" " & Bitrate & "Kbps")
+                ret += " " & Bitrate & "Kbps"
             End If
 
-            If Delay <> 0 Then sb.Append(" " & Delay & "ms")
-            If Language.TwoLetterCode <> "iv" Then sb.Append(" " + Language.Name)
-            If Title <> "" AndAlso Title <> " " Then sb.Append(" " + Title)
+            If Delay <> 0 Then ret += " " & Delay & "ms"
+            If Language.TwoLetterCode <> "iv" Then ret += " " + Language.Name
+            If Title <> "" AndAlso Title <> " " Then ret += " " + Title
 
-            Return sb.ToString
+            Return ret
         End Get
     End Property
 

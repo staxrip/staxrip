@@ -53,7 +53,7 @@ Public Class Package
         .Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.",
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
-        .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases/download/R38/VapourSynth-R38.exe",
+        .DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"})
 
@@ -82,7 +82,6 @@ Public Class Package
     Shared Property checkmate As New checkmatePackage
     Shared Property DGIndexIM As New DGIndexIMPackage
     Shared Property DGIndexNV As New DGIndexNVPackage
-    Shared Property DivX265 As New DivX265Package
     Shared Property dsmux As New dsmuxPackage
     Shared Property eac3to As New eac3toPackage
     Shared Property ffmpeg As New ffmpegPackage
@@ -94,9 +93,7 @@ Public Class Package
     Shared Property MPC As Package = Add(New Package With {
         .Name = "MPC Player",
         .Filenames = {"mpc-be64.exe", "mpc-hc64.exe"},
-        .Description = "MPC is a open source media player with built in playback support for all common media formats. MPC-HC or MPC-BE can be used, x64 is absolutely required because StaxRip supports only AviSynth+ x64. StaxRip uses MPC's /dub and /sub CLI switches.",
-        .WebURL = "http://mpc-hc.org",
-        .HelpURL = "http://forum.doom9.org/showthread.php?p=1719479&goto=newpost",
+        .Description = "MPC-HC/MPC-BE is a DirectShow based open source media player. x64 is required because StaxRip used AviSynth+ x64 and VapourSynth x64. StaxRip uses MPC's /dub and /sub command line switches.",
         .IsRequiredValue = False,
         .IgnoreVersion = True})
 
@@ -107,13 +104,6 @@ Public Class Package
         .Filename = "aomenc.exe",
         .WebURL = "http://aomedia.org",
         .Description = "AOMedia Video 1 (AV1) is an open, royalty-free video coding format designed for video transmissions over the Internet."})
-
-    Shared Property NVEncC As Package = Add(New Package With {
-        .Name = "NVEncC",
-        .Filename = "NVEncC64.exe",
-        .WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!2293",
-        .Description = "NVIDIA GPU accelerated H.264/H.265 encoder.",
-        .HelpFile = "help.txt"})
 
     Shared Property mvtools2 As Package = Add(New PluginPackage With {
             .Name = "mvtools2",
@@ -231,20 +221,29 @@ Public Class Package
         .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
         .Description = "MKV demuxing tool."})
 
+    Shared Property NVEncC As Package = Add(New Package With {
+        .Name = "NVEncC",
+        .Filename = "NVEncC64.exe",
+        .WebURL = "https://github.com/rigaya/NVEnc",
+        .DownloadURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!2293",
+        .Description = "NVIDIA hardware video encoder.",
+        .HelpFile = "help.txt"})
+
     Shared Property QSVEncC As Package = Add(New Package With {
         .Name = "QSVEncC",
         .Filename = "QSVEncC64.exe",
-        .Description = "Intel hardware accelerated H.264, H.265 and MPEG2 encoder.",
+        .Description = "Intel hardware video encoder.",
         .HelpFile = "help.txt",
-        .WebURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!482"})
+        .DownloadURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!482",
+        .WebURL = "https://github.com/rigaya/QSVEnc"})
 
     Shared Property VCEEncC As Package = Add(New Package With {
         .Name = "VCEEncC",
         .Filename = "VCEEncC64.exe",
-        .Description = "AMD GPU accelerated H.264 encoder.",
+        .Description = "AMD hardware video encoder.",
         .HelpFile = "help.txt",
-        .IsRequiredFunc = Function() TypeOf p.VideoEncoder Is AMDEncoder,
-        .WebURL = "https://onedrive.live.com/?id=6BDD4375AC8933C6!516&cid=6BDD4375AC8933C6"})
+        .DownloadURL = "https://onedrive.live.com/?id=6BDD4375AC8933C6!516&cid=6BDD4375AC8933C6",
+        .WebURL = "https://github.com/rigaya/VCEEnc"})
 
     Shared Property DGDecodeNV As Package = Add(New PluginPackage With {
         .Name = "DGDecodeNV",
@@ -297,7 +296,6 @@ Public Class Package
         Add(DGDecodeIM)
         Add(DGIndexIM)
         Add(DGIndexNV)
-        Add(DivX265)
         Add(dsmux)
         Add(eac3to)
         Add(ffmpeg)
@@ -340,6 +338,14 @@ Public Class Package
             .TreePath = "Runtimes"})
 
         Add(New Package With {
+            .Name = "DGIndex",
+            .Filename = "DGIndex.exe",
+            .LaunchName = "DGIndex.exe",
+            .HelpFile = "DGIndexManual.html",
+            .Description = "MPEG-2 demuxing and indexing app.",
+            .WebURL = "http://rationalqm.us/dgmpgdec/dgmpgdec.html"})
+
+        Add(New Package With {
             .Name = "AVSMeter",
             .Filename = "AVSMeter64.exe",
             .Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.",
@@ -380,7 +386,7 @@ Public Class Package
             .Name = "MPEG2DecPlus",
             .Filename = "MPEG2DecPlus64.dll",
             .WebURL = "https://github.com/chikuzen/MPEG2DecPlus",
-            .Description = "Decoder for d2v index files.",
+            .Description = "Source filter to open D2V index files created with DGIndex or D2VWitch.",
             .AviSynthFilterNames = {"MPEG2Source"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "MPEG2Source", "MPEG2Source(""%source_file%"")")}})
 
@@ -607,11 +613,11 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "d2vsource",
             .Filename = "d2vsource.dll",
-            .Description = "D2V parser and decoder for VapourSynth.",
+            .Description = "Source filter to open D2V index files created with DGIndex or D2VWitch.",
             .URL = "https://github.com/dwbuiten/d2vsource",
             .VapourSynthFilterNames = {"d2v.Source"},
             .VapourSynthFiltersFunc = Function() {
-                New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})
+                New VideoFilter("Source", "d2v.Source", "clip = core.d2v.Source(r""%source_file%"")")}})
 
         Add(New PluginPackage With {
             .Name = "FluxSmooth",
@@ -1320,18 +1326,6 @@ Public Class DGIndexIMPackage
             Return CommandLineDemuxer.IsActive("DGIndexIM")
         End Get
     End Property
-End Class
-
-Public Class DivX265Package
-    Inherits Package
-
-    Sub New()
-        Name = "DivX265"
-        Filename = "DivX265.exe"
-        Description = "DivX H265 command line encoder"
-        HelpFile = "help.txt"
-        WebURL = "http://labs.divx.com/term/HEVC"
-    End Sub
 End Class
 
 Public Class xvid_encrawPackage

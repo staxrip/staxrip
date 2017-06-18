@@ -230,10 +230,7 @@ Public Class MP4Muxer
             If val.X <> 0 Then temp = ":par=" & val.X & ":" & val.Y
         ElseIf Calc.IsARSignalingRequired Then
             Dim par = Calc.GetTargetPAR
-
-            If TypeOf p.VideoEncoder Is NullEncoder OrElse TypeOf p.VideoEncoder Is NVIDIAEncoder Then
-                temp = ":par=" & par.X & ":" & par.Y
-            End If
+            If TypeOf p.VideoEncoder Is NullEncoder Then temp = ":par=" & par.X & ":" & par.Y
         End If
 
         args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + temp).Quotes)
@@ -302,10 +299,7 @@ Public Class MP4Muxer
             proc.Start()
         End Using
 
-        If Not g.WasFileJustWritten(p.TargetFile) Then
-            Throw New ErrorAbortException("Error MP4 output file is missing.", GetArgs())
-        End If
-
+        If Not g.FileExists(p.TargetFile) Then Throw New ErrorAbortException("MP4 output file is missing.", GetArgs())
         Log.WriteLine(MediaInfo.GetSummary(p.TargetFile))
     End Sub
 
@@ -483,7 +477,7 @@ Public Class MkvMuxer
 
     Overrides Sub Mux()
         Using proc As New Proc
-            proc.Init("Muxing using mkvmerge " + Package.mkvmerge.Version, "Progress: ")
+            proc.Init("Muxing using mkvmerge " + Package.mkvmerge.Version, "Progress: ", "+-> Pre-parsing")
             proc.Encoding = Encoding.UTF8
             proc.File = Package.mkvmerge.Path
             proc.Arguments = GetArgs(True)
@@ -491,10 +485,7 @@ Public Class MkvMuxer
             proc.Start()
         End Using
 
-        If Not g.WasFileJustWritten(p.TargetFile) Then
-            Log.Write("Error MKV output file is missing", p.TargetFile)
-        End If
-
+        If Not g.FileExists(p.TargetFile) Then Log.Write("Error MKV output file is missing", p.TargetFile)
         Log.WriteLine(MediaInfo.GetSummary(p.TargetFile))
     End Sub
 
@@ -526,7 +517,7 @@ Public Class MkvMuxer
 
         If DAR <> "" Then
             args += " --aspect-ratio " & id & ":" + DAR.Replace(",", ".").Replace(":", "/")
-        ElseIf Calc.IsARSignalingRequired AndAlso TypeOf p.VideoEncoder Is NullEncoder OrElse TypeOf p.VideoEncoder Is NVIDIAEncoder Then
+        ElseIf Calc.IsARSignalingRequired AndAlso TypeOf p.VideoEncoder Is NullEncoder Then
             args += " --aspect-ratio " & id & ":" + Calc.GetTargetDAR.ToInvariantString.Shorten(11)
         End If
 

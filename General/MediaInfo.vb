@@ -15,7 +15,7 @@ Public Class MediaInfo
 
         Handle = MediaInfo_New()
         MediaInfo_Open(Handle, path)
-        'MediaInfo_Option(Handle, "Language", "raw")
+        MediaInfo_Option(Handle, "Language", "raw")
     End Sub
 
     Private VideoStreamsValue As List(Of VideoStream)
@@ -69,6 +69,7 @@ Public Class MediaInfo
                     at.Codec = GetAudio(index, "Codec")
                     If at.Codec = "TrueHD / AC3" Then offset += 1
 
+                    at.Lossy = GetAudio(index, "Compression_Mode") = "Lossy"
                     at.SamplingRate = GetAudio(index, "SamplingRate").ToInt
                     at.BitDepth = GetAudio(index, "BitDepth").ToInt
                     at.CodecString = GetAudio(index, "Codec/String")
@@ -78,9 +79,7 @@ Public Class MediaInfo
                     at.Forced = GetAudio(index, "Forced") = "Yes"
                     at.Default = GetAudio(index, "Default") = "Yes"
 
-                    If at.Title.Contains("IsoMedia") OrElse at.Title.Contains("GPAC") OrElse at.Title.Contains("PID ") OrElse
-                            at.Title.EqualsAny("Surround 7.1", "Surround 5.1", "Stereo", "3/2+1", "2/0") Then
-
+                    If at.Title.ContainsAny({"IsoMedia", "GPAC", "PID ", "Surround ", "Stereo", "3/2+1", "2/0"}) Then
                         at.Title = ""
                     End If
 
@@ -102,18 +101,10 @@ Public Class MediaInfo
 
                     If bitrate.IsInt Then
                         at.Bitrate = CInt(bitrate.ToInt / 1000)
-                    Else
-                        Dim match = Regex.Match(bitrate, "(.+)/(.+)")
-
-                        If match.Success Then
-                            If match.Groups(1).Value.IsInt Then
-                                at.Bitrate = CInt(match.Groups(1).Value.ToInt / 1000)
-                            End If
-
-                            If match.Groups(2).Value.IsInt Then
-                                at.BitrateCore = CInt(match.Groups(2).Value.ToInt / 1000)
-                            End If
-                        End If
+                    ElseIf bitrate.Contains("/") Then
+                        Dim values = bitrate.Split("/"c)
+                        at.Bitrate = CInt(values(0).ToInt / 1000)
+                        at.Bitrate2 = CInt(values(1).ToInt / 1000)
                     End If
 
                     If at.Bitrate = 0 Then at.Bitrate = GetAudio(index, "FromStats_BitRate").ToInt
@@ -126,11 +117,10 @@ Public Class MediaInfo
                     If at.Channels = 0 Then at.Channels = GetAudio(index, "Channel(s)_Original").ToInt
 
                     If at.Channels = 0 Then
-                        Dim match = Regex.Match(channels, "(\d+) */ *(\d+)")
-
-                        If match.Success Then
-                            at.Channels = match.Groups(1).Value.ToInt
-                            at.ChannelsCore = match.Groups(2).Value.ToInt
+                        If channels.Contains("/") Then
+                            Dim values = channels.Split("/"c)
+                            at.Channels = values(0).ToInt
+                            at.Channels2 = values(1).ToInt
                         End If
                     End If
 
@@ -291,13 +281,18 @@ Public Class MediaInfo
     End Function
 
     Function GetChannels() As Integer
-        Dim channelString = GetInfo(MediaInfoStreamKind.Audio, "Channel(s)")
-        Dim ret = channelString.ToInt
+        Dim channelsString = GetInfo(MediaInfoStreamKind.Audio, "Channel(s)")
+        Dim ret = channelsString.ToInt
         If ret = 0 Then ret = GetInfo(MediaInfoStreamKind.Audio, "Channel(s)_Original").ToInt
 
         If ret = 0 Then
-            Dim match = Regex.Match(channelString, "(\d+) */ *(\d+)")
-            If match.Success Then ret = match.Groups(1).Value.ToInt
+            If channelsString.Contains("/") Then
+                Dim values = channelsString.Split("/"c)
+                Dim value0 = values(0).ToInt
+                Dim value1 = values(1).ToInt
+                If value0 > value1 Then Return value0
+                If value1 > value0 Then Return value1
+            End If
         End If
 
         If ret = 0 Then ret = 2

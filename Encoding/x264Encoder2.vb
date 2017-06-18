@@ -10,8 +10,8 @@ Public Class x264Encoder2
     Sub New()
         Name = "x264 (under construction)"
         AutoCompCheckValue = 50
-        Params.ApplyPresetDefaultValues()
-        Params.ApplyPresetValues()
+        Params.ApplyDefaultValues()
+        Params.ApplyValues()
     End Sub
 
     <NonSerialized>
@@ -137,8 +137,7 @@ Public Class x264Encoder2
         Dim newParams As New x264Params2
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
         newParams.Init(store)
-        newParams.ApplyPresetDefaultValues()
-        newParams.ApplyTuneDefaultValues()
+        newParams.ApplyDefaultValues()
 
         Using f As New CommandLineForm(newParams)
             Dim saveProfileAction = Sub()
@@ -282,6 +281,48 @@ Public Class x264Params2
         .Path = "Other",
         .MinMaxStep = {-6, 6, 1}}
 
+    Property _8x8dct As New BoolParam With {
+        .Switch = "--8x8dct",
+        .NoSwitch = "--no-8x8dct",
+        .Text = "8x8dct",
+        .Path = "Analysis"}
+
+    Property BFrames As New NumParam With {
+        .Switch = "--bframes",
+        .Text = "B-Frames:",
+        .Path = "Slice Decision",
+        .MinMaxStep = {0, 16, 1},
+        .Help = "Number of B-frames between I And P [3]."}
+
+    Property AqMode As New OptionParam With {
+        .Switch = "--aq-mode",
+        .Text = "AQ Mode:",
+        .Path = "Rate Control",
+        .IntegerValue = True,
+        .Expand = True,
+        .Options = {"Disabled", "Variance AQ", "Auto-variance AQ", "Auto-variance AQ with bias to dark scenes"}}
+
+    Property BAdapt As New OptionParam With {
+        .Switch = "--b-adapt",
+        .Text = "B-Adapt:",
+        .Path = "Slice Decision",
+        .IntegerValue = True,
+        .Options = {"Disabled", "Fast", "Optimal"},
+        .Help = "Adaptive B-frame decision method [1]"}
+
+    Property Cabac As New BoolParam With {
+        .Path = "Other",
+        .NoSwitch = "--no-cabac",
+        .Text = "Cabac"}
+
+    Property Profile As New OptionParam With {
+        .Path = "Basic",
+        .Switch = "--profile",
+        .Text = "Profile:",
+        .Help = "Force the limits of an H.264 profile.",
+        .Convert = True,
+        .Options = {"Unrestricted", "Baseline", "Main", "High", "High10", "High422", "High444"}}
+
     Private ItemsValue As List(Of CommandLineParam)
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -291,13 +332,18 @@ Public Class x264Params2
                     Quant,
                     Preset,
                     Tune,
-                    New OptionParam With {.Path = "Basic", .Switch = "--profile", .Text = "Profile:", .Help = "Force the limits of an H.264 profile.", .Convert = True, .Options = {"Unrestricted", "Baseline", "Main", "High", "High10", "High422", "High444"}},
+                    Profile,
                     Mode,
+                    _8x8dct,
+                    AqMode,
+                    BAdapt,
+                    BFrames,
                     New StringParam With {.Path = "VUI", .Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                     Deblock,
                     DeblockA,
                     DeblockB,
                     CompCheck,
+                    Cabac,
                     Custom,
                     CustomFirstPass,
                     CustomSecondPass}
@@ -312,12 +358,9 @@ Public Class x264Params2
                 'New NumParam    With {.Path = "Frame-type", .Switch = "--min-keyint", .Text = "min-keyint", Help = "Minimum GOP size [auto]"},
                 'New NumParam    With {.Path = "Frame-type", .Switch = "--scenecut", .Text = "scenecut", Help = "How aggressively to insert extra I-frames [40]"},
                 'New BoolParam   With {.Path = "Frame-type", .Switch = "--intra-refresh", .Text = "Intra Refresh", .Help = "Use Periodic Intra Refresh instead of IDR frames"},
-                'New NumParam    With {.Path = "", .Switch = "--bframes", .Text = "bframes", Help = "Number of B-frames between I And P [3]"},
-                'New NumParam    With {.Path = "", .Switch = "--b-adapt", .Text = "b-adapt", Help = "B-Adapt", .IntegerValue = True, .Options = {"Disabled", "Fast", "Optimal"}, .Help = "Adaptive B-frame decision method [1]"},
                 'New NumParam    With {.Path = "", .Switch = "--b-bias", .Text = "b-bias", Help = "Influences how often B-frames are used [0]"},
                 'New StringParam With {.Path = "", .Switch = "--b-pyramid", .Text = "b-pyramid", .Options = {"none", "strict", "normal"}, .Help = "Keep some B-frames as references [normal]"},
                 'New BoolParam   With {.Path = "", .Switch = "--open-gop", .Text = "open-gop", .Help = "Use recovery points to close GOPs"},
-                'New BoolParam   With {.Path = "", .Switch = "--no-cabac", .Text = "no-cabac", .Help = "Disable CABAC"},
                 'New NumParam    With {.Path = "", .Switch = "--ref", .Text = "ref", Help = "Number of reference frames [3]"},
                 'New BoolParam   With {.Path = "", .Switch = "--no-deblock", .Text = "no-deblock", .Help = "Disable loop filter"},
                 'New NumParam    With {.Path = "", .Switch = "--slices", .Text = "slices", Help = "Number of slices per frame"},
@@ -354,10 +397,6 @@ Public Class x264Params2
                 'New NumParam    With {.Path = "", .Switch = "--ipratio", .Text = "ipratio", Help = "QP factor between I And P [1.40]"},
                 'New NumParam    With {.Path = "", .Switch = "--pbratio", .Text = "pbratio", Help = "QP factor between P And B [1.30]"},
                 'New NumParam    With {.Path = "", .Switch = "--chroma-qp-offset", .Text = "chroma-qp-offset", Help = "QP difference between chroma And luma [0]"},
-                'New NumParam    With {.Path = "", .Switch = "--aq-mode", .Text = "aq-mode", .IntegerValue = True, Help = "AQ method [1]"},
-
-                '{"Disabled", "Variance AQ", "Auto-variance AQ", "Auto-variance AQ with bias to dark scenes"}
-
                 'New NumParam    With {.Path = "", .Switch = "--aq-strength", .Text = "aq-strength", Help = "Reduces blocking And blurring in flat And textured areas. [1.0]"},
                 'New StringParam With {.Path = "", .Switch = "--stats", .Text = "stats", .Help = "Filename for 2 pass stats ["x264_2pass.log"]"},
                 'New BoolParam   With {.Path = "", .Switch = "--no-mbtree", .Text = "no-mbtree", .Help = "Disable mb-tree ratecontrol."},
@@ -532,10 +571,9 @@ Public Class x264Params2
     Protected Overrides Sub OnValueChanged(item As CommandLineParam)
         If BlockValueChanged Then Exit Sub
 
-        If item Is Preset OrElse item Is Tune Then
+        If item Is Preset OrElse item Is Tune OrElse item Is Profile Then
             BlockValueChanged = True
-            ApplyPresetValues()
-            ApplyTuneValues()
+            ApplyValues()
             BlockValueChanged = False
         End If
 
@@ -559,8 +597,7 @@ Public Class x264Params2
                                includePaths As Boolean,
                                includeExecutable As Boolean) As String
 
-        ApplyPresetDefaultValues()
-        ApplyTuneDefaultValues()
+        ApplyDefaultValues()
 
         Dim args As String
         Dim sourcePath As String
@@ -647,12 +684,24 @@ Public Class x264Params2
         End If
     End Function
 
-    Sub ApplyPresetValues()
+    Sub ApplyValues()
         Deblock.Value = True
+        DeblockA.Value = 0
+        DeblockB.Value = 0
+        _8x8dct.Value = True
+        BFrames.Value = 3
+        AqMode.Value = 1
+        BAdapt.Value = 1
+        Cabac.Value = True
 
         Select Case Preset.Value
             Case 0 'ultrafast
                 Deblock.Value = False
+                _8x8dct.Value = False
+                BFrames.Value = 0
+                AqMode.Value = 0
+                BAdapt.Value = 0
+                Cabac.Value = False
             Case 1 'superfast
 
             Case 2 'veryfast
@@ -666,45 +715,14 @@ Public Class x264Params2
             Case 6 'slow
 
             Case 7 'slower
-
+                BAdapt.Value = 2
             Case 8 'veryslow
-
+                BFrames.Value = 8
+                BAdapt.Value = 2
             Case 9 'placebo
-
+                BFrames.Value = 16
+                BAdapt.Value = 2
         End Select
-    End Sub
-
-    Sub ApplyPresetDefaultValues()
-        Deblock.DefaultValue = True
-
-        Select Case Preset.Value
-            Case 0 'ultrafast
-                Deblock.DefaultValue = False
-            Case 1 'superfast
-
-            Case 2 'veryfast
-
-            Case 3 'faster
-
-            Case 4 'fast
-
-            Case 5 'medium
-
-            Case 6 'slow
-
-            Case 7 'slower
-
-            Case 8 'veryslow
-
-            Case 9 'placebo
-
-        End Select
-    End Sub
-
-    Sub ApplyTuneValues()
-        Deblock.Value = True
-        DeblockA.Value = 0
-        DeblockB.Value = 0
 
         Select Case Tune.Value
             Case 1 'film
@@ -713,6 +731,9 @@ Public Class x264Params2
             Case 2 'animation
                 DeblockA.Value = 1
                 DeblockB.Value = 1
+                Dim val = BFrames.Value
+                val += 2
+                BFrames.Value = If(val > 16, 16, val)
             Case 3 'grain
                 DeblockA.Value = -2
                 DeblockB.Value = -2
@@ -720,21 +741,61 @@ Public Class x264Params2
                 DeblockA.Value = -3
                 DeblockB.Value = -3
             Case 5 'psnr
-
+                AqMode.Value = 0
             Case 6 'ssim
-
+                AqMode.Value = 2
             Case 7 'fastdecode
                 Deblock.Value = False
-
+                Cabac.Value = False
             Case 8 'zerolatency
+                BFrames.Value = 0
+        End Select
 
+        Select Case Profile.Value
+            Case 1 'baseline
+                Cabac.Value = False
         End Select
     End Sub
 
-    Sub ApplyTuneDefaultValues()
+    Sub ApplyDefaultValues()
         Deblock.DefaultValue = True
         DeblockA.DefaultValue = 0
         DeblockB.DefaultValue = 0
+        _8x8dct.DefaultValue = True
+        BFrames.DefaultValue = 3
+        AqMode.DefaultValue = 1
+        BAdapt.DefaultValue = 1
+        Cabac.DefaultValue = True
+
+        Select Case Preset.Value
+            Case 0 'ultrafast
+                Deblock.DefaultValue = False
+                _8x8dct.DefaultValue = False
+                BFrames.DefaultValue = 0
+                AqMode.DefaultValue = 0
+                BAdapt.DefaultValue = 0
+                Cabac.DefaultValue = False
+            Case 1 'superfast
+
+            Case 2 'veryfast
+
+            Case 3 'faster
+
+            Case 4 'fast
+
+            Case 5 'medium
+
+            Case 6 'slow
+
+            Case 7 'slower
+                BAdapt.DefaultValue = 2
+            Case 8 'veryslow
+                BFrames.DefaultValue = 8
+                BAdapt.DefaultValue = 2
+            Case 9 'placebo
+                BFrames.DefaultValue = 16
+                BAdapt.DefaultValue = 2
+        End Select
 
         Select Case Tune.Value
             Case 1 'film
@@ -743,6 +804,9 @@ Public Class x264Params2
             Case 2 'animation
                 DeblockA.DefaultValue = 1
                 DeblockB.DefaultValue = 1
+                Dim val = BFrames.DefaultValue
+                val += 2
+                BFrames.DefaultValue = If(val > 16, 16, val)
             Case 3 'grain
                 DeblockA.DefaultValue = -2
                 DeblockB.DefaultValue = -2
@@ -750,13 +814,19 @@ Public Class x264Params2
                 DeblockA.DefaultValue = -3
                 DeblockB.DefaultValue = -3
             Case 5 'psnr
-
+                AqMode.DefaultValue = 0
             Case 6 'ssim
-
+                AqMode.DefaultValue = 2
             Case 7 'fastdecode
                 Deblock.DefaultValue = False
+                Cabac.DefaultValue = False
             Case 8 'zerolatency
+                BFrames.DefaultValue = 0
+        End Select
 
+        Select Case Profile.Value
+            Case 1 'baseline
+                Cabac.DefaultValue = False
         End Select
     End Sub
 

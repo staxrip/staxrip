@@ -175,7 +175,7 @@ Public Class MainForm
         Me.bnNext.AutoSize = True
         Me.bnNext.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.bnNext.Cursor = System.Windows.Forms.Cursors.Default
-        Me.bnNext.Location = New System.Drawing.Point(1892, 40)
+        Me.bnNext.Location = New System.Drawing.Point(1886, 29)
         Me.bnNext.Margin = New System.Windows.Forms.Padding(0, 0, 6, 0)
         Me.bnNext.Name = "bnNext"
         Me.bnNext.Size = New System.Drawing.Size(125, 58)
@@ -187,7 +187,7 @@ Public Class MainForm
         Me.llEditAudio0.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.llEditAudio0.AutoSize = True
         Me.llEditAudio0.LinkColor = System.Drawing.Color.Empty
-        Me.llEditAudio0.Location = New System.Drawing.Point(1937, 13)
+        Me.llEditAudio0.Location = New System.Drawing.Point(1931, 11)
         Me.llEditAudio0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.llEditAudio0.Name = "llEditAudio0"
         Me.llEditAudio0.Size = New System.Drawing.Size(80, 48)
@@ -203,11 +203,11 @@ Public Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.gbAssistant, 4)
         Me.gbAssistant.Controls.Add(Me.tlpAssistant)
-        Me.gbAssistant.Location = New System.Drawing.Point(10, 1010)
+        Me.gbAssistant.Location = New System.Drawing.Point(10, 1030)
         Me.gbAssistant.Margin = New System.Windows.Forms.Padding(10, 0, 10, 10)
         Me.gbAssistant.Name = "gbAssistant"
-        Me.gbAssistant.Padding = New System.Windows.Forms.Padding(3, 0, 3, 3)
-        Me.gbAssistant.Size = New System.Drawing.Size(2029, 190)
+        Me.gbAssistant.Padding = New System.Windows.Forms.Padding(6, 0, 6, 6)
+        Me.gbAssistant.Size = New System.Drawing.Size(2029, 170)
         Me.gbAssistant.TabIndex = 44
         Me.gbAssistant.TabStop = False
         Me.gbAssistant.Text = "Assistant"
@@ -220,12 +220,12 @@ Public Class MainForm
         Me.tlpAssistant.Controls.Add(Me.lTip, 0, 0)
         Me.tlpAssistant.Controls.Add(Me.bnNext, 1, 0)
         Me.tlpAssistant.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tlpAssistant.Location = New System.Drawing.Point(3, 48)
+        Me.tlpAssistant.Location = New System.Drawing.Point(6, 48)
         Me.tlpAssistant.Margin = New System.Windows.Forms.Padding(0)
         Me.tlpAssistant.Name = "tlpAssistant"
         Me.tlpAssistant.RowCount = 1
         Me.tlpAssistant.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpAssistant.Size = New System.Drawing.Size(2023, 139)
+        Me.tlpAssistant.Size = New System.Drawing.Size(2017, 116)
         Me.tlpAssistant.TabIndex = 62
         '
         'lTip
@@ -237,7 +237,7 @@ Public Class MainForm
         Me.lTip.Location = New System.Drawing.Point(0, 0)
         Me.lTip.Margin = New System.Windows.Forms.Padding(0)
         Me.lTip.Name = "lTip"
-        Me.lTip.Size = New System.Drawing.Size(1892, 139)
+        Me.lTip.Size = New System.Drawing.Size(1886, 116)
         Me.lTip.TabIndex = 40
         Me.lTip.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -246,7 +246,7 @@ Public Class MainForm
         Me.llEditAudio1.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.llEditAudio1.AutoSize = True
         Me.llEditAudio1.LinkColor = System.Drawing.Color.Empty
-        Me.llEditAudio1.Location = New System.Drawing.Point(1937, 87)
+        Me.llEditAudio1.Location = New System.Drawing.Point(1931, 89)
         Me.llEditAudio1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.llEditAudio1.Name = "llEditAudio1"
         Me.llEditAudio1.Size = New System.Drawing.Size(80, 48)
@@ -262,11 +262,11 @@ Public Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.gbAudio, 4)
         Me.gbAudio.Controls.Add(Me.tlpAudio)
-        Me.gbAudio.Location = New System.Drawing.Point(10, 810)
+        Me.gbAudio.Location = New System.Drawing.Point(10, 820)
         Me.gbAudio.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
         Me.gbAudio.Name = "gbAudio"
-        Me.gbAudio.Padding = New System.Windows.Forms.Padding(3, 0, 3, 3)
-        Me.gbAudio.Size = New System.Drawing.Size(2029, 200)
+        Me.gbAudio.Padding = New System.Windows.Forms.Padding(6, 0, 6, 6)
+        Me.gbAudio.Size = New System.Drawing.Size(2029, 210)
         Me.gbAudio.TabIndex = 59
         Me.gbAudio.TabStop = False
         Me.gbAudio.Text = "Audio"
@@ -284,35 +284,35 @@ Public Class MainForm
         Me.tlpAudio.Controls.Add(Me.llAudioProfile1, 1, 1)
         Me.tlpAudio.Controls.Add(Me.llAudioProfile0, 1, 0)
         Me.tlpAudio.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tlpAudio.Location = New System.Drawing.Point(3, 48)
+        Me.tlpAudio.Location = New System.Drawing.Point(6, 48)
         Me.tlpAudio.Margin = New System.Windows.Forms.Padding(0)
         Me.tlpAudio.Name = "tlpAudio"
         Me.tlpAudio.RowCount = 2
-        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpAudio.Size = New System.Drawing.Size(2023, 149)
+        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45.0!))
+        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55.0!))
+        Me.tlpAudio.Size = New System.Drawing.Size(2017, 156)
         Me.tlpAudio.TabIndex = 62
         '
         'tbAudioFile0
         '
         Me.tbAudioFile0.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbAudioFile0.Location = New System.Drawing.Point(6, 9)
+        Me.tbAudioFile0.Location = New System.Drawing.Point(6, 7)
         Me.tbAudioFile0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.tbAudioFile0.Size = New System.Drawing.Size(1873, 55)
+        Me.tbAudioFile0.Size = New System.Drawing.Size(1867, 55)
         '
         'tbAudioFile1
         '
         Me.tbAudioFile1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbAudioFile1.Location = New System.Drawing.Point(6, 84)
+        Me.tbAudioFile1.Location = New System.Drawing.Point(6, 85)
         Me.tbAudioFile1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.tbAudioFile1.Size = New System.Drawing.Size(1873, 55)
+        Me.tbAudioFile1.Size = New System.Drawing.Size(1867, 55)
         '
         'llAudioProfile1
         '
         Me.llAudioProfile1.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.llAudioProfile1.AutoSize = True
         Me.llAudioProfile1.LinkColor = System.Drawing.Color.Empty
-        Me.llAudioProfile1.Location = New System.Drawing.Point(1891, 87)
+        Me.llAudioProfile1.Location = New System.Drawing.Point(1885, 89)
         Me.llAudioProfile1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.llAudioProfile1.Name = "llAudioProfile1"
         Me.llAudioProfile1.Size = New System.Drawing.Size(34, 48)
@@ -325,7 +325,7 @@ Public Class MainForm
         Me.llAudioProfile0.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.llAudioProfile0.AutoSize = True
         Me.llAudioProfile0.LinkColor = System.Drawing.Color.Empty
-        Me.llAudioProfile0.Location = New System.Drawing.Point(1891, 13)
+        Me.llAudioProfile0.Location = New System.Drawing.Point(1885, 11)
         Me.llAudioProfile0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.llAudioProfile0.Name = "llAudioProfile0"
         Me.llAudioProfile0.Size = New System.Drawing.Size(34, 48)
@@ -360,8 +360,8 @@ Public Class MainForm
         Me.lgbTarget.Location = New System.Drawing.Point(1029, 80)
         Me.lgbTarget.Margin = New System.Windows.Forms.Padding(6, 0, 10, 0)
         Me.lgbTarget.Name = "lgbTarget"
-        Me.lgbTarget.Padding = New System.Windows.Forms.Padding(3, 0, 3, 3)
-        Me.lgbTarget.Size = New System.Drawing.Size(1010, 320)
+        Me.lgbTarget.Padding = New System.Windows.Forms.Padding(6, 0, 6, 6)
+        Me.lgbTarget.Size = New System.Drawing.Size(1010, 356)
         Me.lgbTarget.TabIndex = 58
         Me.lgbTarget.TabStop = False
         Me.lgbTarget.Text = "Target"
@@ -381,7 +381,7 @@ Public Class MainForm
         Me.tlpTarget.Controls.Add(Me.lBitrate, 2, 1)
         Me.tlpTarget.Controls.Add(Me.blFilesize, 0, 1)
         Me.tlpTarget.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tlpTarget.Location = New System.Drawing.Point(3, 48)
+        Me.tlpTarget.Location = New System.Drawing.Point(6, 48)
         Me.tlpTarget.Margin = New System.Windows.Forms.Padding(0)
         Me.tlpTarget.Name = "tlpTarget"
         Me.tlpTarget.RowCount = 4
@@ -389,33 +389,33 @@ Public Class MainForm
         Me.tlpTarget.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
         Me.tlpTarget.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
         Me.tlpTarget.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
-        Me.tlpTarget.Size = New System.Drawing.Size(1004, 269)
+        Me.tlpTarget.Size = New System.Drawing.Size(998, 302)
         Me.tlpTarget.TabIndex = 62
         '
         'tbTargetFile
         '
         Me.tbTargetFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpTarget.SetColumnSpan(Me.tbTargetFile, 4)
-        Me.tbTargetFile.Location = New System.Drawing.Point(6, 6)
+        Me.tbTargetFile.Location = New System.Drawing.Point(6, 10)
         Me.tbTargetFile.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.tbTargetFile.Size = New System.Drawing.Size(992, 55)
+        Me.tbTargetFile.Size = New System.Drawing.Size(986, 55)
         '
         'lTarget2
         '
         Me.lTarget2.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpTarget.SetColumnSpan(Me.lTarget2, 4)
         Me.lTarget2.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lTarget2.Location = New System.Drawing.Point(6, 205)
+        Me.lTarget2.Location = New System.Drawing.Point(6, 233)
         Me.lTarget2.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lTarget2.Name = "lTarget2"
-        Me.lTarget2.Size = New System.Drawing.Size(992, 60)
+        Me.lTarget2.Size = New System.Drawing.Size(986, 60)
         Me.lTarget2.TabIndex = 47
         Me.lTarget2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'tbTargetSize
         '
         Me.tbTargetSize.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.tbTargetSize.Location = New System.Drawing.Point(251, 73)
+        Me.tbTargetSize.Location = New System.Drawing.Point(249, 85)
         Me.tbTargetSize.Margin = New System.Windows.Forms.Padding(0)
         Me.tbTargetSize.Name = "tbTargetSize"
         Me.tbTargetSize.Size = New System.Drawing.Size(136, 55)
@@ -426,17 +426,17 @@ Public Class MainForm
         '
         Me.lTarget1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpTarget.SetColumnSpan(Me.lTarget1, 4)
-        Me.lTarget1.Location = New System.Drawing.Point(6, 137)
+        Me.lTarget1.Location = New System.Drawing.Point(6, 157)
         Me.lTarget1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lTarget1.Name = "lTarget1"
-        Me.lTarget1.Size = New System.Drawing.Size(992, 60)
+        Me.lTarget1.Size = New System.Drawing.Size(986, 60)
         Me.lTarget1.TabIndex = 39
         Me.lTarget1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'tbBitrate
         '
         Me.tbBitrate.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.tbBitrate.Location = New System.Drawing.Point(753, 73)
+        Me.tbBitrate.Location = New System.Drawing.Point(747, 85)
         Me.tbBitrate.Margin = New System.Windows.Forms.Padding(0)
         Me.tbBitrate.Name = "tbBitrate"
         Me.tbBitrate.Size = New System.Drawing.Size(139, 55)
@@ -448,10 +448,10 @@ Public Class MainForm
         Me.lBitrate.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lBitrate.Location = New System.Drawing.Point(502, 67)
+        Me.lBitrate.Location = New System.Drawing.Point(498, 75)
         Me.lBitrate.Margin = New System.Windows.Forms.Padding(0)
         Me.lBitrate.Name = "lBitrate"
-        Me.lBitrate.Size = New System.Drawing.Size(251, 67)
+        Me.lBitrate.Size = New System.Drawing.Size(249, 75)
         Me.lBitrate.TabIndex = 42
         Me.lBitrate.Text = "Video Bitrate:"
         Me.lBitrate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -462,10 +462,10 @@ Public Class MainForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.blFilesize.LinkColor = System.Drawing.Color.Empty
-        Me.blFilesize.Location = New System.Drawing.Point(6, 67)
+        Me.blFilesize.Location = New System.Drawing.Point(6, 75)
         Me.blFilesize.Margin = New System.Windows.Forms.Padding(6, 0, 0, 0)
         Me.blFilesize.Name = "blFilesize"
-        Me.blFilesize.Size = New System.Drawing.Size(245, 67)
+        Me.blFilesize.Size = New System.Drawing.Size(243, 75)
         Me.blFilesize.TabIndex = 59
         Me.blFilesize.TabStop = True
         Me.blFilesize.Text = "Size:"
@@ -482,8 +482,8 @@ Public Class MainForm
         Me.lgbSource.Location = New System.Drawing.Point(10, 80)
         Me.lgbSource.Margin = New System.Windows.Forms.Padding(10, 0, 6, 0)
         Me.lgbSource.Name = "lgbSource"
-        Me.lgbSource.Padding = New System.Windows.Forms.Padding(3, 0, 3, 3)
-        Me.lgbSource.Size = New System.Drawing.Size(1007, 320)
+        Me.lgbSource.Padding = New System.Windows.Forms.Padding(6, 0, 6, 6)
+        Me.lgbSource.Size = New System.Drawing.Size(1007, 356)
         Me.lgbSource.TabIndex = 57
         Me.lgbSource.TabStop = False
         Me.lgbSource.Text = "Source"
@@ -497,7 +497,7 @@ Public Class MainForm
         Me.tlpSource.Controls.Add(Me.lSource1, 0, 1)
         Me.tlpSource.Controls.Add(Me.lSource2, 0, 2)
         Me.tlpSource.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tlpSource.Location = New System.Drawing.Point(3, 48)
+        Me.tlpSource.Location = New System.Drawing.Point(6, 48)
         Me.tlpSource.Margin = New System.Windows.Forms.Padding(0)
         Me.tlpSource.Name = "tlpSource"
         Me.tlpSource.RowCount = 4
@@ -505,7 +505,7 @@ Public Class MainForm
         Me.tlpSource.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
         Me.tlpSource.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
         Me.tlpSource.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
-        Me.tlpSource.Size = New System.Drawing.Size(1001, 269)
+        Me.tlpSource.Size = New System.Drawing.Size(995, 302)
         Me.tlpSource.TabIndex = 62
         '
         'tlpSourceValues
@@ -527,12 +527,12 @@ Public Class MainForm
         Me.tlpSourceValues.Controls.Add(Me.lCrop, 1, 0)
         Me.tlpSourceValues.Controls.Add(Me.lCropText, 0, 0)
         Me.tlpSourceValues.Controls.Add(Me.lSourceDar, 5, 0)
-        Me.tlpSourceValues.Location = New System.Drawing.Point(0, 201)
+        Me.tlpSourceValues.Location = New System.Drawing.Point(0, 225)
         Me.tlpSourceValues.Margin = New System.Windows.Forms.Padding(0)
         Me.tlpSourceValues.Name = "tlpSourceValues"
         Me.tlpSourceValues.RowCount = 1
         Me.tlpSourceValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpSourceValues.Size = New System.Drawing.Size(1001, 68)
+        Me.tlpSourceValues.Size = New System.Drawing.Size(995, 77)
         Me.tlpSourceValues.TabIndex = 1
         '
         'blSourceDarText
@@ -540,7 +540,7 @@ Public Class MainForm
         Me.blSourceDarText.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.blSourceDarText.AutoSize = True
         Me.blSourceDarText.LinkColor = System.Drawing.Color.Empty
-        Me.blSourceDarText.Location = New System.Drawing.Point(446, 10)
+        Me.blSourceDarText.Location = New System.Drawing.Point(446, 14)
         Me.blSourceDarText.Name = "blSourceDarText"
         Me.blSourceDarText.Size = New System.Drawing.Size(97, 48)
         Me.blSourceDarText.TabIndex = 51
@@ -551,7 +551,7 @@ Public Class MainForm
         '
         Me.lSourcePAR.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lSourcePAR.AutoSize = True
-        Me.lSourcePAR.Location = New System.Drawing.Point(400, 10)
+        Me.lSourcePAR.Location = New System.Drawing.Point(400, 14)
         Me.lSourcePAR.Margin = New System.Windows.Forms.Padding(9, 0, 9, 0)
         Me.lSourcePAR.Name = "lSourcePAR"
         Me.lSourcePAR.Size = New System.Drawing.Size(34, 48)
@@ -564,7 +564,7 @@ Public Class MainForm
         Me.blSourceParText.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.blSourceParText.AutoSize = True
         Me.blSourceParText.LinkColor = System.Drawing.Color.Empty
-        Me.blSourceParText.Location = New System.Drawing.Point(291, 10)
+        Me.blSourceParText.Location = New System.Drawing.Point(291, 14)
         Me.blSourceParText.Margin = New System.Windows.Forms.Padding(9, 0, 9, 0)
         Me.blSourceParText.Name = "blSourceParText"
         Me.blSourceParText.Size = New System.Drawing.Size(91, 48)
@@ -577,7 +577,7 @@ Public Class MainForm
         '
         Me.lCrop.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lCrop.AutoSize = True
-        Me.lCrop.Location = New System.Drawing.Point(120, 10)
+        Me.lCrop.Location = New System.Drawing.Point(120, 14)
         Me.lCrop.Margin = New System.Windows.Forms.Padding(9, 0, 9, 0)
         Me.lCrop.Name = "lCrop"
         Me.lCrop.Size = New System.Drawing.Size(153, 48)
@@ -589,7 +589,7 @@ Public Class MainForm
         '
         Me.lCropText.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lCropText.AutoSize = True
-        Me.lCropText.Location = New System.Drawing.Point(3, 10)
+        Me.lCropText.Location = New System.Drawing.Point(3, 14)
         Me.lCropText.Name = "lCropText"
         Me.lCropText.Size = New System.Drawing.Size(105, 48)
         Me.lCropText.TabIndex = 14
@@ -601,7 +601,7 @@ Public Class MainForm
         '
         Me.lSourceDar.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lSourceDar.AutoSize = True
-        Me.lSourceDar.Location = New System.Drawing.Point(549, 10)
+        Me.lSourceDar.Location = New System.Drawing.Point(549, 14)
         Me.lSourceDar.Name = "lSourceDar"
         Me.lSourceDar.Size = New System.Drawing.Size(34, 48)
         Me.lSourceDar.TabIndex = 50
@@ -611,27 +611,27 @@ Public Class MainForm
         'tbSourceFile
         '
         Me.tbSourceFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbSourceFile.Location = New System.Drawing.Point(6, 6)
+        Me.tbSourceFile.Location = New System.Drawing.Point(6, 10)
         Me.tbSourceFile.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.tbSourceFile.Size = New System.Drawing.Size(989, 55)
+        Me.tbSourceFile.Size = New System.Drawing.Size(983, 55)
         '
         'lSource1
         '
         Me.lSource1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lSource1.Location = New System.Drawing.Point(6, 72)
+        Me.lSource1.Location = New System.Drawing.Point(6, 84)
         Me.lSource1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lSource1.Name = "lSource1"
-        Me.lSource1.Size = New System.Drawing.Size(989, 57)
+        Me.lSource1.Size = New System.Drawing.Size(983, 57)
         Me.lSource1.TabIndex = 41
         Me.lSource1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lSource2
         '
         Me.lSource2.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lSource2.Location = New System.Drawing.Point(6, 139)
+        Me.lSource2.Location = New System.Drawing.Point(6, 159)
         Me.lSource2.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lSource2.Name = "lSource2"
-        Me.lSource2.Size = New System.Drawing.Size(989, 57)
+        Me.lSource2.Size = New System.Drawing.Size(983, 57)
         Me.lSource2.TabIndex = 33
         Me.lSource2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -643,10 +643,11 @@ Public Class MainForm
         Me.lgbResize.Color = System.Drawing.Color.Empty
         Me.tlpMain.SetColumnSpan(Me.lgbResize, 2)
         Me.lgbResize.Controls.Add(Me.tlpResize)
-        Me.lgbResize.Location = New System.Drawing.Point(688, 400)
+        Me.lgbResize.Location = New System.Drawing.Point(688, 436)
         Me.lgbResize.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lgbResize.Name = "lgbResize"
-        Me.lgbResize.Size = New System.Drawing.Size(670, 410)
+        Me.lgbResize.Padding = New System.Windows.Forms.Padding(6, 0, 6, 6)
+        Me.lgbResize.Size = New System.Drawing.Size(670, 384)
         Me.lgbResize.TabIndex = 55
         Me.lgbResize.TabStop = False
         Me.lgbResize.Text = "Resize"
@@ -665,13 +666,13 @@ Public Class MainForm
         Me.tlpResize.Controls.Add(Me.tbTargetHeight, 3, 0)
         Me.tlpResize.Controls.Add(Me.lTargetHeight, 2, 0)
         Me.tlpResize.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tlpResize.Location = New System.Drawing.Point(3, 51)
+        Me.tlpResize.Location = New System.Drawing.Point(6, 48)
         Me.tlpResize.Name = "tlpResize"
         Me.tlpResize.RowCount = 3
         Me.tlpResize.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80.0!))
         Me.tlpResize.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80.0!))
         Me.tlpResize.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpResize.Size = New System.Drawing.Size(664, 356)
+        Me.tlpResize.Size = New System.Drawing.Size(658, 330)
         Me.tlpResize.TabIndex = 63
         '
         'lTargetWidth
@@ -714,7 +715,7 @@ Public Class MainForm
         Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
         Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
         Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
-        Me.tlpResizeValues.Size = New System.Drawing.Size(664, 196)
+        Me.tlpResizeValues.Size = New System.Drawing.Size(658, 170)
         Me.tlpResizeValues.TabIndex = 62
         '
         'blTargetDarText
@@ -723,7 +724,7 @@ Public Class MainForm
         Me.blTargetDarText.AutoSize = True
         Me.blTargetDarText.ImeMode = System.Windows.Forms.ImeMode.NoControl
         Me.blTargetDarText.LinkColor = System.Drawing.Color.Empty
-        Me.blTargetDarText.Location = New System.Drawing.Point(0, 8)
+        Me.blTargetDarText.Location = New System.Drawing.Point(0, 4)
         Me.blTargetDarText.Margin = New System.Windows.Forms.Padding(0)
         Me.blTargetDarText.Name = "blTargetDarText"
         Me.blTargetDarText.Size = New System.Drawing.Size(97, 48)
@@ -735,7 +736,7 @@ Public Class MainForm
         '
         Me.lAspectRatioError.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lAspectRatioError.AutoSize = True
-        Me.lAspectRatioError.Location = New System.Drawing.Point(253, 139)
+        Me.lAspectRatioError.Location = New System.Drawing.Point(253, 117)
         Me.lAspectRatioError.Margin = New System.Windows.Forms.Padding(0)
         Me.lAspectRatioError.Size = New System.Drawing.Size(34, 48)
         Me.lAspectRatioError.Text = "-"
@@ -745,7 +746,7 @@ Public Class MainForm
         '
         Me.lPAR.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lPAR.AutoSize = True
-        Me.lPAR.Location = New System.Drawing.Point(97, 139)
+        Me.lPAR.Location = New System.Drawing.Point(97, 117)
         Me.lPAR.Margin = New System.Windows.Forms.Padding(0)
         Me.lPAR.Size = New System.Drawing.Size(34, 48)
         Me.lPAR.Text = "-"
@@ -755,7 +756,7 @@ Public Class MainForm
         '
         Me.lZoom.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lZoom.AutoSize = True
-        Me.lZoom.Location = New System.Drawing.Point(253, 73)
+        Me.lZoom.Location = New System.Drawing.Point(253, 60)
         Me.lZoom.Margin = New System.Windows.Forms.Padding(0)
         Me.lZoom.Name = "lZoom"
         Me.lZoom.Size = New System.Drawing.Size(34, 48)
@@ -767,7 +768,7 @@ Public Class MainForm
         '
         Me.lSarText.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lSarText.AutoSize = True
-        Me.lSarText.Location = New System.Drawing.Point(0, 73)
+        Me.lSarText.Location = New System.Drawing.Point(0, 60)
         Me.lSarText.Margin = New System.Windows.Forms.Padding(0)
         Me.lSarText.Size = New System.Drawing.Size(92, 48)
         Me.lSarText.Text = "SAR:"
@@ -777,7 +778,7 @@ Public Class MainForm
         '
         Me.lPixel.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lPixel.AutoSize = True
-        Me.lPixel.Location = New System.Drawing.Point(253, 8)
+        Me.lPixel.Location = New System.Drawing.Point(253, 4)
         Me.lPixel.Margin = New System.Windows.Forms.Padding(0)
         Me.lPixel.Name = "lPixel"
         Me.lPixel.Size = New System.Drawing.Size(34, 48)
@@ -790,7 +791,7 @@ Public Class MainForm
         Me.blTargetParText.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.blTargetParText.AutoSize = True
         Me.blTargetParText.LinkColor = System.Drawing.Color.Empty
-        Me.blTargetParText.Location = New System.Drawing.Point(0, 139)
+        Me.blTargetParText.Location = New System.Drawing.Point(0, 117)
         Me.blTargetParText.Margin = New System.Windows.Forms.Padding(0)
         Me.blTargetParText.Name = "blTargetParText"
         Me.blTargetParText.Size = New System.Drawing.Size(91, 48)
@@ -802,7 +803,7 @@ Public Class MainForm
         '
         Me.lAspectRatioErrorText.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lAspectRatioErrorText.AutoSize = True
-        Me.lAspectRatioErrorText.Location = New System.Drawing.Point(131, 139)
+        Me.lAspectRatioErrorText.Location = New System.Drawing.Point(131, 117)
         Me.lAspectRatioErrorText.Margin = New System.Windows.Forms.Padding(0)
         Me.lAspectRatioErrorText.Size = New System.Drawing.Size(106, 48)
         Me.lAspectRatioErrorText.Text = "Error:"
@@ -813,7 +814,7 @@ Public Class MainForm
         Me.lDAR.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lDAR.AutoSize = True
         Me.lDAR.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lDAR.Location = New System.Drawing.Point(97, 8)
+        Me.lDAR.Location = New System.Drawing.Point(97, 4)
         Me.lDAR.Margin = New System.Windows.Forms.Padding(0)
         Me.lDAR.Name = "lDAR"
         Me.lDAR.Size = New System.Drawing.Size(34, 48)
@@ -825,7 +826,7 @@ Public Class MainForm
         '
         Me.lZoomText.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lZoomText.AutoSize = True
-        Me.lZoomText.Location = New System.Drawing.Point(131, 73)
+        Me.lZoomText.Location = New System.Drawing.Point(131, 60)
         Me.lZoomText.Margin = New System.Windows.Forms.Padding(0)
         Me.lZoomText.Name = "lZoomText"
         Me.lZoomText.Size = New System.Drawing.Size(122, 48)
@@ -837,7 +838,7 @@ Public Class MainForm
         '
         Me.lPixelText.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lPixelText.AutoSize = True
-        Me.lPixelText.Location = New System.Drawing.Point(131, 8)
+        Me.lPixelText.Location = New System.Drawing.Point(131, 4)
         Me.lPixelText.Margin = New System.Windows.Forms.Padding(0)
         Me.lPixelText.Name = "lPixelText"
         Me.lPixelText.Size = New System.Drawing.Size(102, 48)
@@ -849,7 +850,7 @@ Public Class MainForm
         '
         Me.lSAR.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lSAR.AutoSize = True
-        Me.lSAR.Location = New System.Drawing.Point(97, 73)
+        Me.lSAR.Location = New System.Drawing.Point(97, 60)
         Me.lSAR.Margin = New System.Windows.Forms.Padding(0)
         Me.lSAR.Size = New System.Drawing.Size(34, 48)
         Me.lSAR.Text = "-"
@@ -866,13 +867,13 @@ Public Class MainForm
         Me.tbResize.Location = New System.Drawing.Point(0, 80)
         Me.tbResize.Margin = New System.Windows.Forms.Padding(0)
         Me.tbResize.Name = "tbResize"
-        Me.tbResize.Size = New System.Drawing.Size(664, 80)
+        Me.tbResize.Size = New System.Drawing.Size(658, 80)
         Me.tbResize.TabIndex = 46
         '
         'tbTargetWidth
         '
         Me.tbTargetWidth.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.tbTargetWidth.Location = New System.Drawing.Point(169, 12)
+        Me.tbTargetWidth.Location = New System.Drawing.Point(167, 12)
         Me.tbTargetWidth.Name = "tbTargetWidth"
         Me.tbTargetWidth.Size = New System.Drawing.Size(144, 55)
         Me.tbTargetWidth.TabIndex = 39
@@ -881,7 +882,7 @@ Public Class MainForm
         'tbTargetHeight
         '
         Me.tbTargetHeight.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.tbTargetHeight.Location = New System.Drawing.Point(501, 12)
+        Me.tbTargetHeight.Location = New System.Drawing.Point(495, 12)
         Me.tbTargetHeight.Name = "tbTargetHeight"
         Me.tbTargetHeight.Size = New System.Drawing.Size(146, 55)
         Me.tbTargetHeight.TabIndex = 40
@@ -891,7 +892,7 @@ Public Class MainForm
         '
         Me.lTargetHeight.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lTargetHeight.AutoSize = True
-        Me.lTargetHeight.Location = New System.Drawing.Point(335, 16)
+        Me.lTargetHeight.Location = New System.Drawing.Point(331, 16)
         Me.lTargetHeight.Name = "lTargetHeight"
         Me.lTargetHeight.Size = New System.Drawing.Size(135, 48)
         Me.lTargetHeight.TabIndex = 38
@@ -904,11 +905,11 @@ Public Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lgbFilters.Color = System.Drawing.Color.Empty
         Me.lgbFilters.Controls.Add(Me.AviSynthListView)
-        Me.lgbFilters.Location = New System.Drawing.Point(10, 400)
+        Me.lgbFilters.Location = New System.Drawing.Point(10, 436)
         Me.lgbFilters.Margin = New System.Windows.Forms.Padding(10, 0, 6, 0)
         Me.lgbFilters.Name = "lgbFilters"
-        Me.lgbFilters.Padding = New System.Windows.Forms.Padding(9, 11, 9, 11)
-        Me.lgbFilters.Size = New System.Drawing.Size(666, 410)
+        Me.lgbFilters.Padding = New System.Windows.Forms.Padding(9, 0, 9, 9)
+        Me.lgbFilters.Size = New System.Drawing.Size(666, 384)
         Me.lgbFilters.TabIndex = 53
         Me.lgbFilters.TabStop = False
         Me.lgbFilters.Text = "Filters"
@@ -923,10 +924,10 @@ Public Class MainForm
         Me.AviSynthListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.AviSynthListView.HideSelection = False
         Me.AviSynthListView.IsLoading = False
-        Me.AviSynthListView.Location = New System.Drawing.Point(9, 59)
+        Me.AviSynthListView.Location = New System.Drawing.Point(9, 48)
         Me.AviSynthListView.MultiSelect = False
         Me.AviSynthListView.Name = "AviSynthListView"
-        Me.AviSynthListView.Size = New System.Drawing.Size(648, 340)
+        Me.AviSynthListView.Size = New System.Drawing.Size(648, 327)
         Me.AviSynthListView.TabIndex = 0
         Me.AviSynthListView.UseCompatibleStateImageBehavior = False
         Me.AviSynthListView.View = System.Windows.Forms.View.Details
@@ -939,11 +940,11 @@ Public Class MainForm
         Me.lgbEncoder.Color = System.Drawing.Color.Empty
         Me.lgbEncoder.Controls.Add(Me.llMuxer)
         Me.lgbEncoder.Controls.Add(Me.pnEncoder)
-        Me.lgbEncoder.Location = New System.Drawing.Point(1370, 400)
+        Me.lgbEncoder.Location = New System.Drawing.Point(1370, 436)
         Me.lgbEncoder.Margin = New System.Windows.Forms.Padding(6, 0, 10, 0)
         Me.lgbEncoder.Name = "lgbEncoder"
-        Me.lgbEncoder.Padding = New System.Windows.Forms.Padding(9, 11, 9, 11)
-        Me.lgbEncoder.Size = New System.Drawing.Size(669, 410)
+        Me.lgbEncoder.Padding = New System.Windows.Forms.Padding(9, 0, 9, 9)
+        Me.lgbEncoder.Size = New System.Drawing.Size(669, 384)
         Me.lgbEncoder.TabIndex = 51
         Me.lgbEncoder.TabStop = False
         Me.lgbEncoder.Text = "Encoder"
@@ -953,7 +954,6 @@ Public Class MainForm
         Me.llMuxer.AutoSize = True
         Me.llMuxer.LinkColor = System.Drawing.Color.Empty
         Me.llMuxer.Location = New System.Drawing.Point(517, 0)
-        Me.llMuxer.Margin = New System.Windows.Forms.Padding(9, 0, 9, 0)
         Me.llMuxer.Name = "llMuxer"
         Me.llMuxer.Size = New System.Drawing.Size(89, 48)
         Me.llMuxer.TabIndex = 1
@@ -963,9 +963,9 @@ Public Class MainForm
         'pnEncoder
         '
         Me.pnEncoder.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnEncoder.Location = New System.Drawing.Point(9, 59)
+        Me.pnEncoder.Location = New System.Drawing.Point(9, 48)
         Me.pnEncoder.Name = "pnEncoder"
-        Me.pnEncoder.Size = New System.Drawing.Size(651, 340)
+        Me.pnEncoder.Size = New System.Drawing.Size(651, 327)
         Me.pnEncoder.TabIndex = 0
         '
         'tlpMain
@@ -989,10 +989,10 @@ Public Class MainForm
         Me.tlpMain.Name = "tlpMain"
         Me.tlpMain.RowCount = 5
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 320.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 356.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 210.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 180.0!))
         Me.tlpMain.Size = New System.Drawing.Size(2049, 1210)
         Me.tlpMain.TabIndex = 61
         '
@@ -1092,7 +1092,7 @@ Public Class MainForm
 
         InitializeComponent()
 
-        ScaleClientSize(41, 26)
+        ScaleClientSize(41, 26.5)
 
         If components Is Nothing Then components = New System.ComponentModel.Container
 
@@ -3029,6 +3029,12 @@ Public Class MainForm
             ap.File = ""
             UpdateSizeOrBitrate()
         End If
+
+        If tb Is tbAudioFile0 Then
+            llAudioProfile0.Text = g.ConvertPath(ap.Name)
+        Else
+            llAudioProfile1.Text = g.ConvertPath(ap.Name)
+        End If
     End Sub
 
     Sub tbAudioFile0_TextChanged() Handles tbAudioFile0.TextChanged
@@ -3130,12 +3136,12 @@ Public Class MainForm
                 End If
             End If
 
-            If Not i.Active AndAlso (i.SourceFilter = "" OrElse
-                Not srcScript.Contains(i.SourceFilter.ToLower + "(")) Then Continue For
+            If Not i.Active AndAlso (i.SourceFilters.NothingOrEmpty OrElse
+                Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "("))) Then Continue For
 
             If i.InputExtensions?.Length = 0 OrElse i.InputExtensions.Contains(p.SourceFile.Ext) Then
-                If Not srcScript?.Contains("(") OrElse i.SourceFilter = "" OrElse
-                    srcScript.Contains(i.SourceFilter.ToLower + "(") Then
+                If Not srcScript?.Contains("(") OrElse i.SourceFilters.NothingOrEmpty OrElse
+                    srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "(")) Then
 
                     Dim inputFormats = i.InputFormats.NothingOrEmpty OrElse
                         i.InputFormats.Contains(getFormat())
@@ -3962,14 +3968,20 @@ Public Class MainForm
             tb.Edit.Text = p.PreferredAudio
             tb.Edit.SaveAction = Sub(value) p.PreferredAudio = value
 
-            Dim dec = ui.AddMenuButtonBlock(Of DecodingMode)(audioPage)
-            dec.Label.Text = "Force decoding using:"
-            dec.Tooltip = "Defines if audio should be processed without decoding if possible or if decoding should be forced with a certain decoder."
-            dec.MenuButton.Value = p.DecodingMode
-            dec.MenuButton.SaveAction = Sub(value) p.DecodingMode = value
+            Dim dec = ui.AddMenuButtonBlock(Of AudioConvertMode)(audioPage)
+            dec.Label.Text = "Convert Method:"
+            dec.Tooltip = "Method to use to create a intermediate audio file."
+            dec.MenuButton.Value = p.AudioConvertMode
+            dec.MenuButton.SaveAction = Sub(value) p.AudioConvertMode = value
+
+            Dim iaf = ui.AddMenuButtonBlock(Of AudioConvertType)(audioPage)
+            iaf.Label.Text = "Convert Format:"
+            iaf.Tooltip = "In case the audio encoder don't support the input format a intermediate file has to be created."
+            iaf.MenuButton.Value = p.AudioConvertFormat
+            iaf.MenuButton.SaveAction = Sub(value) p.AudioConvertFormat = value
 
             Dim cut = ui.AddMenuButtonBlock(Of CuttingMode)(audioPage)
-            cut.Label.Text = "Preferred cutting method:"
+            cut.Label.Text = "Cutting Method:"
             cut.Tooltip = "Defines which method to use for cutting."
             cut.MenuButton.Value = p.CuttingMode
             cut.MenuButton.SaveAction = Sub(value) p.CuttingMode = value
@@ -3980,7 +3992,12 @@ Public Class MainForm
             audioDemux.MenuButton.SaveAction = Sub(value) p.DemuxAudio = value
 
             cb = ui.AddCheckBox(audioPage)
-            cb.Text = "Use AviSynth script as audio source"
+            cb.Text = "Force conversion"
+            cb.Checked = p.ForceAudioConvert
+            cb.SaveAction = Sub(value) p.ForceAudioConvert = value
+
+            cb = ui.AddCheckBox(audioPage)
+            cb.Text = "On load use AviSynth script as audio source"
             cb.Tooltip = "Sets the AviSynth script (*.avs) as audio source file when loading a source file."
             cb.Checked = p.UseScriptAsAudioSource
             cb.SaveAction = Sub(value) p.UseScriptAsAudioSource = value
@@ -4128,9 +4145,9 @@ Public Class MainForm
             miscPage.SuspendLayout()
 
             cb = ui.AddCheckBox(miscPage)
-            cb.Text = "Show all dialogs when invoked from CLI"
-            cb.Checked = p.ShowDialogsCLI
-            cb.SaveAction = Sub(value) p.ShowDialogsCLI = value
+            cb.Text = "Hide dialogs asking to demux, source filter etc."
+            cb.Checked = p.NoDialogs
+            cb.SaveAction = Sub(value) p.NoDialogs = value
 
             cb = ui.AddCheckBox(miscPage)
             cb.Text = "Delete temp files directory"
@@ -4488,6 +4505,7 @@ Public Class MainForm
 
         ret.Add("Apps|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
         ret.Add("Apps|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
+        ret.Add("Apps|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
         ret.Add("Apps|ProjectX", NameOf(g.DefaultCommands.StartTool), {"ProjectX"})
         ret.Add("Apps|SubtitleEdit", NameOf(g.DefaultCommands.StartTool), {"SubtitleEdit"})
@@ -4863,7 +4881,7 @@ Public Class MainForm
             Try
                 If Not i.IsFile AndAlso files.Count > 0 Then
                     Dim l As New List(Of String)(files)
-                    If Not p.ShowDialogsCLI Then p.NoDialogs = True
+                    Refresh()
                     OpenAnyFile(l)
                     files.Clear()
                 End If
@@ -4880,14 +4898,14 @@ Public Class MainForm
         Next
 
         If files.Count > 0 Then
-            If Not p.ShowDialogsCLI Then p.NoDialogs = True
+            Refresh()
             OpenAnyFile(files)
         End If
     End Sub
 
-    <Command("Sets the project option 'Show all dialogs when invoked from CLI'")>
-    Private Sub SetShowDialogsCLIOption(showDialogs As Boolean)
-        p.ShowDialogsCLI = showDialogs
+    <Command("Sets the project option 'Hide dialogs asking to demux, source filter etc.'")>
+    Private Sub SetHideDialogsOption(hide As Boolean)
+        p.NoDialogs = hide
     End Sub
 
     <Command("Puts PC in standby mode.")>
@@ -4968,7 +4986,7 @@ Public Class MainForm
                                         Throw New AbortException
                                     End Try
 
-                                    If Not g.WasFileJustWritten(outFile) Then
+                                    If Not g.FileExists(outFile) Then
                                         Log.Write("Error merged output file is missing", outFile)
                                         Exit Sub
                                     Else

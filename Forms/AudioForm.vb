@@ -611,7 +611,7 @@ Class AudioForm
                 nudQuality.Enabled = TempProfile.Params.RateMode = AudioRateMode.VBR
         End Select
 
-        If TempProfile.Params.Codec = AudioCodec.Flac OrElse TempProfile.Params.Codec = AudioCodec.WAV Then
+        If TempProfile.Params.Codec = AudioCodec.Flac Then
             numBitrate.Enabled = False
         Else
             numBitrate.Enabled = Not nudQuality.Enabled
@@ -629,7 +629,6 @@ Class AudioForm
         Select Case TempProfile.Params.Codec
             Case AudioCodec.AAC
                 SetQuality(If(TempProfile.Params.Encoder = GuiAudioEncoder.qaac, 50.0F, 0.35F))
-                TempProfile.Params.AacProfile = AudioAacProfile.Automatic
                 TempProfile.Params.RateMode = AudioRateMode.VBR
             Case AudioCodec.AC3
                 If TempProfile.Channels = 6 Then
@@ -639,7 +638,7 @@ Class AudioForm
                 End If
 
                 TempProfile.Params.RateMode = AudioRateMode.CBR
-            Case AudioCodec.Flac, AudioCodec.WAV
+            Case AudioCodec.Flac
                 numBitrate.Value = TempProfile.GetBitrate
                 TempProfile.Params.RateMode = AudioRateMode.CBR
             Case AudioCodec.DTS
@@ -807,42 +806,34 @@ Class AudioForm
         Dim cb As SimpleUI.SimpleUICheckBox
 
         Select Case TempProfile.GetEncoder
-            Case GuiAudioEncoder.BeSweet
-                Dim mb = ui.AddMenuButtonBlock(Of String)(page)
-                mb.Label.Text = "Dynamic Compr.:"
-                mb.Label.Tooltip = "Sets the overall dynamic compression in the decoder (applied to every output speaker)."
-                mb.MenuButton.Expandet = True
-                mb.MenuButton.Value = TempProfile.Params.BeSweetDynamicCompression
-                mb.MenuButton.SaveAction = Sub(value) TempProfile.Params.BeSweetDynamicCompression = value
-                mb.MenuButton.Add({"None", "Normal", "Light", "Heavy", "Inverse"})
+            'Case GuiAudioEncoder.BeSweet
+            '    Dim mb = ui.AddMenuButtonBlock(Of String)(page)
+            '    mb.Label.Text = "Dynamic Compr.:"
+            '    mb.Label.Tooltip = "Sets the overall dynamic compression in the decoder (applied to every output speaker)."
+            '    mb.MenuButton.Expandet = True
+            '    mb.MenuButton.Value = TempProfile.Params.BeSweetDynamicCompression
+            '    mb.MenuButton.SaveAction = Sub(value) TempProfile.Params.BeSweetDynamicCompression = value
+            '    mb.MenuButton.Add({"None", "Normal", "Light", "Heavy", "Inverse"})
 
-                If TempProfile.Params.Codec = AudioCodec.AAC Then
-                    Dim mbaac = ui.AddMenuButtonBlock(Of AudioAacProfile)(page)
-                    mbaac.Label.Text = "AAC Profile:"
-                    mbaac.MenuButton.Expandet = True
-                    mbaac.MenuButton.Value = TempProfile.Params.AacProfile
-                    mbaac.MenuButton.SaveAction = Sub(value) TempProfile.Params.AacProfile = value
-                End If
+            '    Dim mbRateMode = ui.AddMenuButtonBlock(Of AudioRateMode)(page)
+            '    mbRateMode.Label.Text = "Rate Mode:"
+            '    mbRateMode.MenuButton.Expandet = True
+            '    mbRateMode.MenuButton.Value = TempProfile.Params.RateMode
+            '    mbRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.RateMode = value
 
-                Dim mbRateMode = ui.AddMenuButtonBlock(Of AudioRateMode)(page)
-                mbRateMode.Label.Text = "Rate Mode:"
-                mbRateMode.MenuButton.Expandet = True
-                mbRateMode.MenuButton.Value = TempProfile.Params.RateMode
-                mbRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.RateMode = value
+            '    tb = ui.AddTextBlock(page)
+            '    tb.Label.Text = "Gain/Normalize:"
+            '    tb.Label.Tooltip = "Parameters added to ota section when the Normalize checkbox is enabled."
+            '    tb.Edit.Expandet = True
+            '    tb.Edit.Text = TempProfile.Params.BeSweetGainAndNormalization
+            '    tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetGainAndNormalization = value
 
-                tb = ui.AddTextBlock(page)
-                tb.Label.Text = "Gain/Normalize:"
-                tb.Label.Tooltip = "Parameters added to ota section when the Normalize checkbox is enabled."
-                tb.Edit.Expandet = True
-                tb.Edit.Text = TempProfile.Params.BeSweetGainAndNormalization
-                tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetGainAndNormalization = value
-
-                tb = ui.AddTextBlock(page)
-                tb.Label.Text = "Azid parameters:"
-                tb.Label.Tooltip = "Custom parameters used in the Azid section."
-                tb.Edit.Expandet = True
-                tb.Edit.Text = TempProfile.Params.BeSweetAzid
-                tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetAzid = value
+            '    tb = ui.AddTextBlock(page)
+            '    tb.Label.Text = "Azid parameters:"
+            '    tb.Label.Tooltip = "Custom parameters used in the Azid section."
+            '    tb.Edit.Expandet = True
+            '    tb.Edit.Text = TempProfile.Params.BeSweetAzid
+            '    tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetAzid = value
             Case GuiAudioEncoder.Eac3to
                 Dim mbFrameRateMode = ui.AddMenuButtonBlock(Of AudioFrameRateMode)(page)
                 mbFrameRateMode.Label.Text = "Frame rate:"
@@ -878,11 +869,15 @@ Class AudioForm
                     cb.SaveAction = Sub(value) TempProfile.Params.eac3toExtractDtsCore = value
                 End If
             Case GuiAudioEncoder.ffmpeg
-                Dim mbRateMode = ui.AddMenuButtonBlock(Of AudioRateMode)(page)
-                mbRateMode.Label.Text = "Rate Mode:"
-                mbRateMode.MenuButton.Expandet = True
-                mbRateMode.MenuButton.Value = TempProfile.Params.RateMode
-                mbRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.RateMode = value
+                Select Case TempProfile.Params.Codec
+                    Case AudioCodec.AC3, AudioCodec.DTS, AudioCodec.Flac
+                    Case Else
+                        Dim mbRateMode = ui.AddMenuButtonBlock(Of AudioRateMode)(page)
+                        mbRateMode.Label.Text = "Rate Mode:"
+                        mbRateMode.MenuButton.Expandet = True
+                        mbRateMode.MenuButton.Value = TempProfile.Params.RateMode
+                        mbRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.RateMode = value
+                End Select
             Case GuiAudioEncoder.qaac
                 Dim mbMode = ui.AddMenuButtonBlock(Of Integer)(page)
                 mbMode.Label.Text = "Mode:"

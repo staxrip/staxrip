@@ -73,7 +73,12 @@ Public Class GlobalClass
             g.OnException(ex)
         Finally
             If s.PreventStandby Then PowerRequest.EnableStandby()
-            g.MainForm.CloseWithoutSaving()
+
+            If g.IsEncodingInstance Then
+                g.MainForm.CloseWithoutSaving()
+            Else
+                g.MainForm.OpenProject(jobPath, False)
+            End If
         End Try
     End Sub
 
@@ -463,10 +468,6 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Function IsProjectDirty() As Boolean
-        Return ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p)
-    End Function
-
     Sub ShowCommandLinePreview(title As String, value As String)
         Using f As New StringEditorForm
             f.Text = title
@@ -714,7 +715,7 @@ Public Class GlobalClass
         g.ShellExecute("https://github.com/stax76/staxrip/issues")
     End Sub
 
-    Function WasFileJustWritten(path As String) As Boolean
+    Function FileExists(path As String) As Boolean
         For x = 0 To 50
             If File.Exists(path) Then Return True
             Thread.Sleep(1000)

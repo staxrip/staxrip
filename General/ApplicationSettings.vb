@@ -93,7 +93,7 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(AudioProfiles, "Audio Profiles", 115) Then
+        If Check(AudioProfiles, "Audio Profiles", 116) Then
             If AudioProfiles Is Nothing Then
                 AudioProfiles = AudioProfile.GetDefaults()
             Else
@@ -111,7 +111,7 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(Demuxers, "Demuxers", 103) Then Demuxers = Demuxer.GetDefaults()
+        If Check(Demuxers, "Demuxers", 106) Then Demuxers = Demuxer.GetDefaults()
 
         If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 1) Then
             AviSynthFilterPreferences = New StringPairList

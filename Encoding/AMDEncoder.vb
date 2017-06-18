@@ -131,19 +131,19 @@ Class AMDEncoder
             .Values = {"avs", "vce", "qs", "ffqsv", "ffdxva"}}
 
         Property QPI As New NumParam With {
-            .Text = "Constant QP I:",
+            .Text = "QP I:",
             .Value = 22,
             .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}
 
         Property QPP As New NumParam With {
-            .Text = "Constant QP P:",
+            .Text = "QP P:",
             .Value = 24,
             .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}
 
         Property QPB As New NumParam With {
-            .Text = "Constant QP B:",
+            .Text = "QP B:",
             .Value = 27,
             .VisibleFunc = Function() "CQP" = Mode.OptionText,
             .MinMaxStep = {0, 51, 1}}

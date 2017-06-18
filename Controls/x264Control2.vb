@@ -192,9 +192,7 @@ Class x264Control2
         Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
 
         Params.Preset.Value = value
-
-        Params.ApplyPresetValues()
-        Params.ApplyTuneValues()
+        Params.ApplyValues()
 
         lv.Items(1 - offset).SubItems(1).Text = value.ToString
         lv.Items(1 - offset).Selected = False
@@ -206,9 +204,7 @@ Class x264Control2
         Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
 
         Params.Tune.Value = value
-
-        Params.ApplyPresetValues()
-        Params.ApplyTuneValues()
+        Params.ApplyValues()
 
         lv.Items(2 - offset).SubItems(1).Text = value.ToString
         lv.Items(2 - offset).Selected = False

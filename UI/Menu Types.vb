@@ -491,7 +491,7 @@ Namespace UI
             End Get
             Set(value As Keys)
                 ShortcutValue = value
-                ShortcutKeyDisplayString = KeysHelp.GetKeyString(value)
+                ShortcutKeyDisplayString = KeysHelp.GetKeyString(value) + "  "
                 AddHandler Form.KeyDown, AddressOf KeyDown
             End Set
         End Property

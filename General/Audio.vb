@@ -17,7 +17,7 @@ Class Audio
             Log.WriteLine(MediaInfo.GetSummary(ap.File))
         End If
 
-        If p.DecodingMode <> DecodingMode.Disabled Then Decode(ap)
+        If p.ForceAudioConvert Then Convert(ap)
 
         If ap.HasStream Then
             Dim cutting = p.Ranges.Count > 0
@@ -37,7 +37,7 @@ Class Audio
                         If p.Script.GetFilter("Source").Script.ToLower.Contains("directshowsource") AndAlso
                             Not TypeOf ap Is MuxAudioProfile Then
 
-                            DecodeDirectShowSource(ap)
+                            ConvertDirectShowSource(ap)
                         ElseIf Not Filepath.GetExtFull(ap.File) = ".m2ts" Then
                             ffmpegDemuxer.DemuxAudio(ap.File, ap.Stream, ap, p)
                         End If
@@ -51,7 +51,7 @@ Class Audio
             Not ap.SupportedInput.NothingOrEmpty AndAlso
             Not ap.SupportedInput.Contains(ap.File.Ext) Then
 
-            Decode(ap, ap.SupportedInput.Contains("flac"))
+            Convert(ap)
         End If
 
         If TypeOf ap Is GUIAudioProfile Then
@@ -59,10 +59,7 @@ Class Audio
 
             If gap.Params.Normalize Then
                 Dim cmdl = ap.CommandLines
-
-                If cmdl <> "" AndAlso cmdl.Contains("ffmpeg.exe") Then
-                    SetGain(ap)
-                End If
+                If cmdl <> "" AndAlso cmdl.Contains("ffmpeg.exe") Then SetGain(ap)
             End If
         End If
     End Sub
@@ -84,47 +81,60 @@ Class Audio
         Return ret
     End Function
 
-    Shared Sub Decode(ap As AudioProfile, Optional useFlac As Boolean = False)
-        Dim ext = If(useFlac, ".flac", ".wav")
-        If Filepath.GetExtFull(ap.File) = If(useFlac, ".flac", ".wav") Then Exit Sub
+    Shared ReadOnly Property ConvertExt As String
+        Get
+            Select Case p.AudioConvertFormat
+                Case AudioConvertType.FLAC
+                    Return "flac"
+                Case AudioConvertType.W64
+                    Return "w64"
+                Case Else
+                    Throw New NotImplementedException
+            End Select
+        End Get
+    End Property
 
-        If Filepath.GetExtFull(ap.File) = ".avs" Then
-            Dim outPath = Filepath.GetDirAndBase(ap.File) + ext
+    Shared Sub Convert(ap As AudioProfile)
+        If ap.File.Ext = ConvertExt Then Exit Sub
+
+        If ap.File.Ext = "avs" Then
+            Dim outPath = ap.File.DirAndBase + "." + ConvertExt
             Dim args = "-i " + ap.File.Quotes + " -y -hide_banner " + outPath.Quotes
 
             Using proc As New Proc
-                proc.Init("AVS to FLAC/WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
+                proc.Init("AVS to " + outPath.Ext.ToUpper + " using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
                 proc.Encoding = Encoding.UTF8
                 proc.File = Package.ffmpeg.Path
                 proc.Arguments = args
                 proc.Start()
             End Using
 
-            If g.WasFileJustWritten(outPath) Then
+            If g.FileExists(outPath) Then
                 ap.File = outPath
                 Exit Sub
             End If
         End If
 
-        If p.DecodingMode = DecodingMode.ffmpeg Then
-            DecodeFfmpeg(ap)
-        ElseIf p.DecodingMode = DecodingMode.FFAudioSource Then
-            DecodeFFAudioSource(ap)
-        ElseIf p.DecodingMode = DecodingMode.eac3to Then
-            DecodeEac3to(ap)
-        ElseIf p.DecodingMode = DecodingMode.NicAudio Then
-            DecodeNicAudio(ap)
-        ElseIf p.DecodingMode = DecodingMode.DirectShow Then
-            DecodeDirectShowSource(ap)
-        End If
+        Select Case p.AudioConvertMode
+            Case AudioConvertMode.ffmpeg
+                ConvertFfmpeg(ap)
+            Case AudioConvertMode.FFAudioSource
+                ConvertFFAudioSource(ap)
+            Case AudioConvertMode.eac3to
+                ConvertEac3to(ap)
+            Case AudioConvertMode.NicAudio
+                ConvertNicAudio(ap)
+            Case AudioConvertMode.DirectShow
+                ConvertDirectShowSource(ap)
+        End Select
 
         If p.Script.GetFilter("Source").Script.ToLower.Contains("directshowsource") Then
-            DecodeDirectShowSource(ap)
+            ConvertDirectShowSource(ap)
         End If
 
-        DecodeFfmpeg(ap, useFlac)
-        DecodeEac3to(ap, useFlac)
-        DecodeDirectShowSource(ap, useFlac)
+        ConvertEac3to(ap)
+        ConvertFfmpeg(ap)
+        ConvertDirectShowSource(ap)
     End Sub
 
     Shared Sub CutNicAudio(ap As AudioProfile)
@@ -151,7 +161,7 @@ Class Audio
             proc.Start()
         End Using
 
-        If g.WasFileJustWritten(wavPath) Then
+        If g.FileExists(wavPath) Then
             ap.File = wavPath
             Log.WriteLine(MediaInfo.GetSummary(wavPath))
         Else
@@ -159,21 +169,21 @@ Class Audio
         End If
     End Sub
 
-    Shared Sub DecodeNicAudio(ap As AudioProfile)
-        If Filepath.GetExtFull(ap.File) = ".wav" Then Exit Sub
-        If Not FileTypes.NicAudioInput.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
+    Shared Sub ConvertNicAudio(ap As AudioProfile)
+        If ap.File.Ext = ConvertExt Then Exit Sub
+        If Not FileTypes.NicAudioInput.Contains(ap.File.ext) Then Exit Sub
         If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
         d.RemoveFilter("Cutting")
-        Dim wavPath = p.TempDir + ap.File.Base + "_DecodeNicAudio.wav"
+        Dim outPath = p.TempDir + ap.File.Base + "_DecodeNicAudio." + ConvertExt
         d.Path = p.TempDir + ap.File.Base + "_DecodeNicAudio.avs"
         d.Filters.Insert(1, New VideoFilter(GetNicAudioCode(ap)))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + wavPath.Quotes
+        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + outPath.Quotes
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -184,9 +194,9 @@ Class Audio
             proc.Start()
         End Using
 
-        If g.WasFileJustWritten(wavPath) Then
-            ap.File = wavPath
-            Log.WriteLine(MediaInfo.GetSummary(wavPath))
+        If g.FileExists(outPath) Then
+            ap.File = outPath
+            Log.WriteLine(MediaInfo.GetSummary(outPath))
         Else
             Log.Write("Error", "no output found")
         End If
@@ -225,9 +235,6 @@ Class Audio
         Select Case Filepath.GetExtFull(ap.File)
             Case ".ac3"
                 Return "AudioDub(last, NicAC3Source(""" + ap.File + """, Channels = " & ap.Channels & "))"
-            'Avatar mkv sample don't work
-            ' Case ".dts"
-            '    Return "AudioDub(last, NicDTSSource(""" + ap.File + """, Channels = " & ap.Channels & "))"
             Case ".mpa", ".mp2", ".mp3"
                 Return "AudioDub(last, NicMPASource(""" + ap.File + """))"
             Case ".wav"
@@ -235,23 +242,15 @@ Class Audio
         End Select
     End Function
 
-    Shared Sub DecodeEac3to(ap As AudioProfile, Optional useFlac As Boolean = False)
-        If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
+    Shared Sub ConvertEac3to(ap As AudioProfile)
+        If ap.File.Ext = ConvertExt Then Exit Sub
         If Not FileTypes.eac3toInput.Contains(ap.File.Ext) Then Exit Sub
-
-        Dim outPath = p.TempDir + ap.File.Base + If(useFlac, ".flac", ".wav")
-        Dim args = """" + ap.File + """ """ + outPath + """"
-
-        If ap.Channels = 6 Then
-            args += " -down6"
-        ElseIf ap.Channels = 2 Then
-            args += " -down2"
-        End If
-
+        Dim outPath = p.TempDir + ap.File.Base + "." + ConvertExt
+        Dim args = ap.File.Quotes + " " + outPath.Quotes
         args += " -simple -progressnumbers"
 
         Using proc As New Proc
-            proc.Init("Convert to WAV/FLAC using eac3to " + Package.eac3to.Version)
+            proc.Init("Convert from " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " using eac3to " + Package.eac3to.Version)
             proc.File = Package.eac3to.Path
             proc.Arguments = args
             proc.TrimChars = {"-"c, " "c}
@@ -261,7 +260,7 @@ Class Audio
             proc.Start()
         End Using
 
-        If g.WasFileJustWritten(outPath) Then
+        If g.FileExists(outPath) Then
             ap.File = outPath
             Log.WriteLine(MediaInfo.GetSummary(outPath))
         Else
@@ -269,14 +268,12 @@ Class Audio
         End If
     End Sub
 
-    Shared Sub DecodeFfmpeg(ap As AudioProfile, Optional useFlac As Boolean = False)
-        If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
-        Dim outPath = p.TempDir + ap.File.Base + If(useFlac, ".flac", ".wav")
+    Shared Sub ConvertFfmpeg(ap As AudioProfile)
+        If ap.File.Ext = ConvertExt Then Exit Sub
+        Dim outPath = p.TempDir + ap.File.Base + "." + ConvertExt
         Dim args = "-i " + ap.File.Quotes
-
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
-
-        args += " -y -hide_banner -ac " & ap.Channels
+        args += " -y -hide_banner"
         args += " " + outPath.Quotes
 
         Using proc As New Proc
@@ -289,7 +286,7 @@ Class Audio
             proc.Start()
         End Using
 
-        If g.WasFileJustWritten(outPath) Then
+        If g.FileExists(outPath) Then
             ap.File = outPath
             Log.WriteLine(MediaInfo.GetSummary(outPath))
         Else
@@ -297,20 +294,20 @@ Class Audio
         End If
     End Sub
 
-    Shared Sub DecodeDirectShowSource(ap As AudioProfile, Optional useFlac As Boolean = False)
-        If {"wav", "flac"}.Contains(Filepath.GetExt(ap.File)) Then Exit Sub
+    Shared Sub ConvertDirectShowSource(ap As AudioProfile, Optional useFlac As Boolean = False)
+        If ap.File.Ext = ConvertExt Then Exit Sub
         If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
         d.RemoveFilter("Cutting")
-        Dim wavPath = p.TempDir + ap.File.Base + "_DecDSS.wav"
+        Dim outPath = p.TempDir + ap.File.Base + "_convDSS." + ConvertExt
         d.Path = p.TempDir + ap.File.Base + "_DecDSS.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + wavPath.Quotes
+        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + outPath.Quotes
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -321,16 +318,16 @@ Class Audio
             proc.Start()
         End Using
 
-        If g.WasFileJustWritten(wavPath) Then
-            ap.File = wavPath
-            Log.WriteLine(MediaInfo.GetSummary(wavPath))
+        If g.FileExists(outPath) Then
+            ap.File = outPath
+            Log.WriteLine(MediaInfo.GetSummary(outPath))
         Else
             Log.Write("Error", "no output found")
         End If
     End Sub
 
-    Shared Sub DecodeFFAudioSource(ap As AudioProfile)
-        If Filepath.GetExtFull(ap.File) = ".wav" Then Exit Sub
+    Shared Sub ConvertFFAudioSource(ap As AudioProfile)
+        If ap.File.Ext = ConvertExt Then Exit Sub
         If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim cachefile = p.TempDir + ap.File.Base + ".ffindex"
@@ -338,13 +335,13 @@ Class Audio
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
         d.RemoveFilter("Cutting")
-        Dim wavPath = p.TempDir + ap.File.Base + "_DecodeFFAudioSource.wav"
+        Dim outPath = p.TempDir + ap.File.Base + "_convFFAudioSource." + ConvertExt
         d.Path = p.TempDir + ap.File.Base + "_DecodeFFAudioSource.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + wavPath.Quotes
+        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + outPath.Quotes
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -355,9 +352,9 @@ Class Audio
             proc.Start()
         End Using
 
-        If g.WasFileJustWritten(wavPath) Then
-            ap.File = wavPath
-            Log.WriteLine(MediaInfo.GetSummary(wavPath))
+        If g.FileExists(outPath) Then
+            ap.File = outPath
+            Log.WriteLine(MediaInfo.GetSummary(outPath))
         Else
             Log.Write("Error", "no output found")
         End If
@@ -386,7 +383,7 @@ Class Audio
             proc.Start()
         End Using
 
-        If g.WasFileJustWritten(wavPath) Then
+        If g.FileExists(wavPath) Then
             ap.File = wavPath
             Log.WriteLine(MediaInfo.GetSummary(wavPath))
         Else
@@ -419,7 +416,7 @@ Class Audio
             proc.Start()
         End Using
 
-        If g.WasFileJustWritten(wavPath) Then
+        If g.FileExists(wavPath) Then
             ap.File = wavPath
             Log.WriteLine(MediaInfo.GetSummary(wavPath))
         Else
@@ -479,9 +476,9 @@ Class Audio
             fail = True
         End If
 
-        If fail AndAlso TypeOf ap Is GUIAudioProfile AndAlso Not ap.File.ext = "wav" Then
+        If fail AndAlso TypeOf ap Is GUIAudioProfile AndAlso Not ap.File.Ext = "wav" Then
             Log.Write("Error", "no output found")
-            Decode(ap)
+            Convert(ap)
 
             If Filepath.GetExtFull(ap.File) = ".wav" Then Cut(ap)
         End If
@@ -534,13 +531,17 @@ function Down2(clip a)
     End Sub
 End Class
 
-Public Enum DecodingMode
-    Disabled
+Public Enum AudioConvertMode
     ffmpeg
+    eac3to
     NicAudio
     DirectShow
-    eac3to
     FFAudioSource
+End Enum
+
+Public Enum AudioConvertType
+    FLAC
+    W64
 End Enum
 
 Public Enum CuttingMode

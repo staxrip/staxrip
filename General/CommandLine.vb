@@ -222,10 +222,7 @@ Namespace CommandLine
 
         Property MinMaxStepDec As Decimal()
             Get
-                If MinMaxStepDecValue Is Nothing Then
-                    Return {Decimal.MinValue, Decimal.MaxValue, 1, 0}
-                End If
-
+                If MinMaxStepDecValue Is Nothing Then Return {Decimal.MinValue, Decimal.MaxValue, 1, 0}
                 Return MinMaxStepDecValue
             End Get
             Set(value As Decimal())
@@ -252,10 +249,7 @@ Namespace CommandLine
         Public Overloads Overrides Sub Init(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
-
-            If Not store.Sng.ContainsKey(GetKey) Then
-                store.Sng(GetKey) = ValueValue
-            End If
+            If Not store.Sng.ContainsKey(GetKey) Then store.Sng(GetKey) = ValueValue
         End Sub
 
         Sub ValueChanged(ne As NumEdit)

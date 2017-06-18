@@ -24,13 +24,15 @@ Class AppsForm
     Friend WithEvents SearchTextBox As StaxRip.SearchTextBox
     Friend WithEvents tsbWebsite As System.Windows.Forms.ToolStripButton
     Friend WithEvents tlpMain As TableLayoutPanel
-    Friend WithEvents tsbOpenDir As System.Windows.Forms.ToolStripButton
+    Friend WithEvents tsbDownload As ToolStripButton
+    Friend WithEvents tsbExplore As System.Windows.Forms.ToolStripButton
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.tv = New StaxRip.UI.TreeViewEx()
         Me.ToolStrip = New System.Windows.Forms.ToolStrip()
         Me.tsbLaunch = New System.Windows.Forms.ToolStripButton()
-        Me.tsbOpenDir = New System.Windows.Forms.ToolStripButton()
+        Me.tsbExplore = New System.Windows.Forms.ToolStripButton()
         Me.tsbWebsite = New System.Windows.Forms.ToolStripButton()
+        Me.tsbDownload = New System.Windows.Forms.ToolStripButton()
         Me.tsbHelp = New System.Windows.Forms.ToolStripButton()
         Me.flp = New System.Windows.Forms.FlowLayoutPanel()
         Me.SearchTextBox = New StaxRip.SearchTextBox()
@@ -55,7 +57,7 @@ Class AppsForm
         Me.tv.SelectOnMouseDown = True
         Me.tv.ShowLines = False
         Me.tv.ShowPlusMinus = False
-        Me.tv.Size = New System.Drawing.Size(239, 319)
+        Me.tv.Size = New System.Drawing.Size(244, 319)
         Me.tv.Sorted = True
         Me.tv.TabIndex = 0
         '
@@ -66,12 +68,12 @@ Class AppsForm
         Me.ToolStrip.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip.ImageScalingSize = New System.Drawing.Size(24, 24)
-        Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsbLaunch, Me.tsbOpenDir, Me.tsbWebsite, Me.tsbHelp})
-        Me.ToolStrip.Location = New System.Drawing.Point(259, 10)
+        Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsbLaunch, Me.tsbExplore, Me.tsbWebsite, Me.tsbDownload, Me.tsbHelp})
+        Me.ToolStrip.Location = New System.Drawing.Point(264, 10)
         Me.ToolStrip.Margin = New System.Windows.Forms.Padding(0, 10, 10, 0)
         Me.ToolStrip.Name = "ToolStrip"
         Me.ToolStrip.Padding = New System.Windows.Forms.Padding(5, 2, 2, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(767, 80)
+        Me.ToolStrip.Size = New System.Drawing.Size(785, 80)
         Me.ToolStrip.TabIndex = 1
         Me.ToolStrip.Text = "tsMain"
         '
@@ -80,36 +82,45 @@ Class AppsForm
         Me.tsbLaunch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbLaunch.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbLaunch.Name = "tsbLaunch"
-        Me.tsbLaunch.Size = New System.Drawing.Size(156, 65)
+        Me.tsbLaunch.Size = New System.Drawing.Size(156, 75)
         Me.tsbLaunch.Text = " Launch "
-        Me.tsbLaunch.ToolTipText = "Launches the application"
+        Me.tsbLaunch.ToolTipText = "Launches the app"
         '
-        'tsbOpenDir
+        'tsbExplore
         '
-        Me.tsbOpenDir.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.tsbOpenDir.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.tsbOpenDir.Name = "tsbOpenDir"
-        Me.tsbOpenDir.Size = New System.Drawing.Size(190, 65)
-        Me.tsbOpenDir.Text = " Directory "
-        Me.tsbOpenDir.ToolTipText = "Opens the directory containing the application"
+        Me.tsbExplore.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.tsbExplore.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsbExplore.Name = "tsbExplore"
+        Me.tsbExplore.Size = New System.Drawing.Size(162, 75)
+        Me.tsbExplore.Text = " Explore "
+        Me.tsbExplore.ToolTipText = "Opens the folder in explorer"
         '
         'tsbWebsite
         '
         Me.tsbWebsite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbWebsite.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbWebsite.Name = "tsbWebsite"
-        Me.tsbWebsite.Size = New System.Drawing.Size(172, 65)
-        Me.tsbWebsite.Text = " Website "
-        Me.tsbWebsite.ToolTipText = "Opens the application's website"
+        Me.tsbWebsite.Size = New System.Drawing.Size(117, 75)
+        Me.tsbWebsite.Text = " Web "
+        Me.tsbWebsite.ToolTipText = "Opens the apps website"
+        '
+        'tsbDownload
+        '
+        Me.tsbDownload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.tsbDownload.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsbDownload.Name = "tsbDownload"
+        Me.tsbDownload.Size = New System.Drawing.Size(205, 75)
+        Me.tsbDownload.Text = " Download "
+        Me.tsbDownload.ToolTipText = "Opens the apps download web page"
         '
         'tsbHelp
         '
         Me.tsbHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbHelp.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbHelp.Name = "tsbHelp"
-        Me.tsbHelp.Size = New System.Drawing.Size(119, 65)
+        Me.tsbHelp.Size = New System.Drawing.Size(119, 75)
         Me.tsbHelp.Text = " Help "
-        Me.tsbHelp.ToolTipText = "Opens the application's help"
+        Me.tsbHelp.ToolTipText = "Opens the apps help"
         '
         'flp
         '
@@ -119,10 +130,10 @@ Class AppsForm
         Me.flp.BackColor = System.Drawing.Color.White
         Me.flp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.flp.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.flp.Location = New System.Drawing.Point(259, 100)
+        Me.flp.Location = New System.Drawing.Point(264, 100)
         Me.flp.Margin = New System.Windows.Forms.Padding(0, 10, 10, 10)
         Me.flp.Name = "flp"
-        Me.flp.Size = New System.Drawing.Size(767, 319)
+        Me.flp.Size = New System.Drawing.Size(785, 319)
         Me.flp.TabIndex = 2
         '
         'SearchTextBox
@@ -131,7 +142,7 @@ Class AppsForm
         Me.SearchTextBox.Location = New System.Drawing.Point(11, 15)
         Me.SearchTextBox.Margin = New System.Windows.Forms.Padding(11, 10, 11, 0)
         Me.SearchTextBox.Name = "SearchTextBox"
-        Me.SearchTextBox.Size = New System.Drawing.Size(237, 70)
+        Me.SearchTextBox.Size = New System.Drawing.Size(242, 70)
         Me.SearchTextBox.TabIndex = 4
         '
         'tlpMain
@@ -151,14 +162,14 @@ Class AppsForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1036, 429)
+        Me.tlpMain.Size = New System.Drawing.Size(1059, 429)
         Me.tlpMain.TabIndex = 6
         '
         'AppsForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(1036, 429)
+        Me.ClientSize = New System.Drawing.Size(1059, 429)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
@@ -242,9 +253,11 @@ Class AppsForm
         DownloadButton.Text = "Download " + CurrentPackage.Name
         DownloadButton.Visible = CurrentPackage.DownloadURL <> "" AndAlso (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> ""))
 
-        tsbOpenDir.Enabled = path <> ""
+        tsbExplore.Enabled = path <> ""
         tsbLaunch.Enabled = Not CurrentPackage.StartAction Is Nothing AndAlso Not CurrentPackage.IsStatusCritical
         tsbWebsite.Enabled = CurrentPackage.WebURL <> ""
+        tsbWebsite.Enabled = CurrentPackage.WebURL <> ""
+        tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
         tsbHelp.Enabled = CurrentPackage.GetHelpPath <> ""
 
         s.StringDictionary("RecentExternalApplicationControl") = CurrentPackage.Name
@@ -459,7 +472,7 @@ Class AppsForm
     End Sub
 
     <DebuggerNonUserCode()>
-    Private Sub tsbOpenDir_Click(sender As Object, e As EventArgs) Handles tsbOpenDir.Click
+    Private Sub tsbOpenDir_Click(sender As Object, e As EventArgs) Handles tsbExplore.Click
         g.OpenDirAndSelectFile(CurrentPackage.Path, Handle)
     End Sub
 
@@ -469,5 +482,9 @@ Class AppsForm
 
     Private Sub tsbWebsite_Click(sender As Object, e As EventArgs) Handles tsbWebsite.Click
         g.ShellExecute(CurrentPackage.WebURL)
+    End Sub
+
+    Private Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click
+        g.ShellExecute(CurrentPackage.DownloadURL)
     End Sub
 End Class

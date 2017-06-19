@@ -73,7 +73,7 @@ If you have questions feel free to ask here: https://github.com/stax76/staxrip/i
 
 ### Scripting Examples
 
-The following script checks if the MediaInfo property 'ScanType' returns 'Interlaced' and if so sets an deinterlace filter.
+Sets a deinterlace filter if the MediaInfo property 'ScanType' returns 'Interlaced':
 
 ```
 # active project

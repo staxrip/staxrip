@@ -1,4 +1,4 @@
-## About
+# About
 
 staxrip is a multiformat video encoding application for Windows. It's a GUI frontend to processing tools such as mp4box, mkvtoolnix, avisynth, vapoursynth, x264, x265, nvenc, eac3to and many more.
 
@@ -22,10 +22,6 @@ staxrip is a multiformat video encoding application for Windows. It's a GUI fron
 - [NVIDIA Maxwell gen2 card](https://en.wikipedia.org/wiki/Maxwell_%28microarchitecture%29#Second_generation_Maxwell_.28GM20x.29) or newer for HEVC/H.265 hardware encoding
 - [AMD Polaris card](http://www.amd.com/en-gb/innovations/software-technologies/radeon-polaris) or newer for HEVC/H.265 hardware encoding
 - AviSynth+ x64, the installer is bundled with StaxRip x64 or alternativly VapourSynth x64 which requires Python x64
-
-## Documentation
-
-https://stax76.gitbooks.io/staxrip-handbook/content/
 
 ## License
 
@@ -54,6 +50,8 @@ https://github.com/stax76/staxrip/blob/master/md/test-build.md
 ### Audio Encoding Options
 
 [![Main Window](Screenshots/4.png)](https://github.com/stax76/staxrip/blob/master/Screenshots/4.png)
+
+# Documentation
 
 ## Scripting
 

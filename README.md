@@ -66,3 +66,7 @@ Main Menu > Tools > Scripts > Open Scripts Folder
 In order to run scripts on certain events read the help at:
 
 Main Menu > Help > Scripting
+
+### Scripting Support
+
+If you have questions feel free to ask here: https://github.com/stax76/staxrip/issues/200

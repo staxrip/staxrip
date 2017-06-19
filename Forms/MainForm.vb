@@ -4472,9 +4472,16 @@ Public Class MainForm
         Dim f As New HelpForm()
 
         f.Doc.WriteStart("Scripting")
-        f.Doc.WriteP("StaxRip can be automated via PowerShell scripting.")
+        f.Doc.WriteP("StaxRip can be automated via PowerShell scripting, the documentation is on github:")
+        f.Doc.WriteP("[https://github.com/stax76/staxrip#scripting https://github.com/stax76/staxrip#scripting]")
 
-        f.Doc.WriteP("In order to run a powershell script on certain events the following paths can be used:")
+        f.Doc.WriteH2("In order to run scripts on certain events the following events are available:")
+
+        For Each i As ApplicationEvent In System.Enum.GetValues(GetType(ApplicationEvent))
+            f.Doc.WriteP(i.ToString + ": " + DispNameAttribute.GetValueForEnum(i))
+        Next
+
+        f.Doc.WriteH2("The following paths are recognized:")
 
         For Each i In System.Enum.GetNames(GetType(ApplicationEvent))
             f.Doc.WriteP(Folder.Settings + "Scripts\" + i.ToString + ".ps1")

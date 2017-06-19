@@ -415,6 +415,7 @@
     <None Include="md\changelog.md" />
     <None Include="md\test-build.md" />
     <None Include="packages.config" />
+    <None Include="README.md" />
     <None Include="Resources\FontAwesome.ttf" />
     <None Include="Resources\play.png" />
     <None Include="Resources\arrow.png" />

@@ -35,7 +35,7 @@ https://github.com/stax76/staxrip/blob/master/md/test-build.md
 
 ## Support
 
-For bug reports and feature request please use the issue tracker:
+For bug reports and feature requests please use the issue tracker:
 
 https://github.com/stax76/staxrip/issues
 

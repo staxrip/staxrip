@@ -31,6 +31,8 @@ Licensed under the [MIT license](LICENSE.TXT).
 
 https://github.com/stax76/staxrip/releases
 
+Before making a bug report please try the newest test build:
+
 https://github.com/stax76/staxrip/blob/master/md/test-build.md
 
 ## Support
@@ -46,6 +48,10 @@ Main Menu > Help > Support Forum
 Most of the time I need a full log file which you can publish at www.pastebin.com, enable auto expire after 30 days.
 
 Screenshots are also often useful, there are many free and easy to use hosting services like https://postimage.io/
+
+Before making a bug report please try the newest test build:
+
+https://github.com/stax76/staxrip/blob/master/md/test-build.md
 
 ## Screenshots
 

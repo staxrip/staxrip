@@ -4557,7 +4557,7 @@ Public Class MainForm
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
 
-        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Lightbulb, {"https://stax76.gitbooks.io/staxrip-handbook/content/"})
+        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Lightbulb, {"https://github.com/stax76/staxrip#documentation"})
         ret.Add("Help|Support Forum", Symbol.People)
         ret.Add("Help|Support Forum|forum.doom9.org", NameOf(g.DefaultCommands.ExecuteCommandLine), {"http://forum.doom9.org/showthread.php?t=172068&page=999999"})
         If g.IsCulture("de") Then ret.Add("Help|Support Forum|forum.gleitz.info", NameOf(g.DefaultCommands.ExecuteCommandLine), {"http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-%28Diskussion%29/page999999"})

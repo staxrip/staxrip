@@ -61,17 +61,17 @@ StaxRip can be automated via PowerShell scripting. There are two example scripts
 
 Main Menu > Tools > Scripts > Open Scripts Folder
 
-#### Scripting Events
+### Scripting Events
 
 In order to run scripts on certain events read the help at:
 
 Main Menu > Help > Scripting
 
-#### Scripting Support
+### Scripting Support
 
 If you have questions feel free to ask here: https://github.com/stax76/staxrip/issues/200
 
-#### Scripting Examples
+### Scripting Examples
 
 Sets a deinterlace filter if the MediaInfo property 'ScanType' returns 'Interlaced':
 

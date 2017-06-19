@@ -4279,6 +4279,6 @@ End Class
 
 Public Enum FileExistMode
     Ask
-    <DispName("Re-encode/Overwrite")> Overwrite
-    <DispName("Reuse/Skip")> Skip
+    Overwrite
+    Skip
 End Enum

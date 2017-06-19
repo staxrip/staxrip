@@ -247,6 +247,13 @@ Class Audio
         If Not FileTypes.eac3toInput.Contains(ap.File.Ext) Then Exit Sub
         Dim outPath = p.TempDir + ap.File.Base + "." + ConvertExt
         Dim args = ap.File.Quotes + " " + outPath.Quotes
+
+        If ap.Channels = 6 Then
+            args += " -down6"
+        ElseIf ap.Channels = 2 Then
+            args += " -down2"
+        End If
+
         args += " -simple -progressnumbers"
 
         Using proc As New Proc
@@ -273,7 +280,7 @@ Class Audio
         Dim outPath = p.TempDir + ap.File.Base + "." + ConvertExt
         Dim args = "-i " + ap.File.Quotes
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
-        args += " -y -hide_banner"
+        args += " -y -hide_banner -ac " & ap.Channels
         If ConvertExt = "w64" Then args += " -c:a pcm_s24le"
         args += " " + outPath.Quotes
 

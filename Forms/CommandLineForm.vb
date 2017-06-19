@@ -170,10 +170,7 @@ Class CommandLineForm
                 Dim item2 As New Item
                 item2.Control = helpControl
                 item2.Page = currentFlow
-                item2.Help = item.Help
-                item2.Switch = item.Switch
                 item2.Param = item
-                item2.Text = item.Text
                 Items.Add(item2)
             End If
         Next
@@ -186,9 +183,6 @@ Class CommandLineForm
     Class Item
         Property Page As SimpleUI.FlowPage
         Property Control As Control
-        Property Switch As String = ""
-        Property Help As String = ""
-        Property Text As String = ""
         Property Param As CommandLineParam
     End Class
 
@@ -226,9 +220,10 @@ Class CommandLineForm
 
         If find.Length > 1 Then
             For Each item In Items
-                If item.Switch?.ToLower?.Contains(find) Then matchedItems.Add(item)
-                If item.Help?.ToLower?.Contains(find) Then matchedItems.Add(item)
-                If item.Text?.ToLower?.Contains(find) Then matchedItems.Add(item)
+                If item.Param.NoSwitch?.ToLower?.Contains(find) Then matchedItems.Add(item)
+                If item.Param.Switch?.ToLower?.Contains(find) Then matchedItems.Add(item)
+                If item.Param.Help?.ToLower?.Contains(find) Then matchedItems.Add(item)
+                If item.Param.Text?.ToLower?.Contains(find) Then matchedItems.Add(item)
 
                 If Not item.Param.Switches Is Nothing Then
                     For Each switch In item.Param.Switches
@@ -312,8 +307,12 @@ Class CommandLineForm
                     Next
                 End If
 
-                If i.Switch <> "" AndAlso Not cbGoTo.Items.Contains(i.Switch) Then
-                    cbGoTo.Items.Add(i.Switch)
+                If i.Param.Switch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.Switch) Then
+                    cbGoTo.Items.Add(i.Param.Switch)
+                End If
+
+                If i.Param.NoSwitch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.NoSwitch) Then
+                    cbGoTo.Items.Add(i.Param.NoSwitch)
                 End If
             End If
         Next

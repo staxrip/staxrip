@@ -100,6 +100,7 @@ Public Class Project
     Public FileExistVideo As FileExistMode
     Public SkipAudioEncoding As Boolean
     Public SkipVideoEncoding As Boolean
+    Public PreRenderIntoLossless As Boolean
 
     Public AudioConvertFormat As AudioConvertType
 

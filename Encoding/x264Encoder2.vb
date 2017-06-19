@@ -10,8 +10,8 @@ Public Class x264Encoder2
     Sub New()
         Name = "x264 (under construction)"
         AutoCompCheckValue = 50
-        Params.ApplyDefaultValues()
-        Params.ApplyValues()
+        Params.ApplyValues(True)
+        Params.ApplyValues(False)
     End Sub
 
     <NonSerialized>
@@ -137,7 +137,7 @@ Public Class x264Encoder2
         Dim newParams As New x264Params2
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
         newParams.Init(store)
-        newParams.ApplyDefaultValues()
+        newParams.ApplyValues(True)
 
         Using f As New CommandLineForm(newParams)
             Dim saveProfileAction = Sub()
@@ -315,13 +315,128 @@ Public Class x264Params2
         .NoSwitch = "--no-cabac",
         .Text = "Cabac"}
 
-    Property Profile As New OptionParam With {
+    Property weightp As New OptionParam With {
+        .Path = "Analysis",
+        .Switch = "--weightp",
+        .Text = "Weight P Prediction",
+        .Expand = True,
+        .Options = {"Disabled", "Weighted refs", "Weighted refs + Duplicates"},
+        .IntegerValue = True}
+
+    Property profile As New OptionParam With {
         .Path = "Basic",
         .Switch = "--profile",
         .Text = "Profile:",
         .Help = "Force the limits of an H.264 profile.",
         .Convert = True,
         .Options = {"Unrestricted", "Baseline", "Main", "High", "High10", "High422", "High444"}}
+
+    Property CQM As New OptionParam With {
+        .Path = "Analysis",
+        .Switch = "--cqm",
+        .Options = {"flat", "jvt"},
+        .Text = "Quant Matrice Preset"}
+
+    Sub ApplyValues(isDefault As Boolean)
+        Dim setVal = Sub(param As CommandLineParam, value As Object)
+                         If TypeOf param Is BoolParam Then
+                             If isDefault Then
+                                 DirectCast(param, BoolParam).DefaultValue = CBool(value)
+                             Else
+                                 DirectCast(param, BoolParam).Value = CBool(value)
+                             End If
+                         ElseIf TypeOf param Is NumParam Then
+                             If isDefault Then
+                                 DirectCast(param, NumParam).DefaultValue = CSng(value)
+                             Else
+                                 DirectCast(param, NumParam).Value = CSng(value)
+                             End If
+                         ElseIf TypeOf param Is OptionParam Then
+                             If isDefault Then
+                                 DirectCast(param, OptionParam).DefaultValue = CInt(value)
+                             Else
+                                 DirectCast(param, OptionParam).Value = CInt(value)
+                             End If
+                         End If
+                     End Sub
+
+        setVal(Deblock, True)
+        setVal(DeblockA, 0)
+        setVal(DeblockB, 0)
+        setVal(_8x8dct, True)
+        setVal(BFrames, 3)
+        setVal(AqMode, 1)
+        setVal(BAdapt, 1)
+        setVal(Cabac, True)
+        setVal(weightp, 2)
+
+        Select Case Preset.Value
+            Case 0 'ultrafast
+                setVal(Deblock, False)
+                setVal(_8x8dct, False)
+                setVal(BFrames, 0)
+                setVal(AqMode, 0)
+                setVal(BAdapt, 0)
+                setVal(Cabac, False)
+                setVal(weightp, 0)
+            Case 1 'superfast
+                setVal(weightp, 1)
+            Case 2 'veryfast
+                setVal(weightp, 1)
+            Case 3 'faster
+                setVal(weightp, 1)
+            Case 4 'fast
+                setVal(weightp, 1)
+            Case 5 'medium
+
+            Case 6 'slow
+
+            Case 7 'slower
+                setVal(BAdapt, 2)
+            Case 8 'veryslow
+                setVal(BFrames, 8)
+                setVal(BAdapt, 2)
+            Case 9 'placebo
+                setVal(BFrames, 16)
+                setVal(BAdapt, 2)
+        End Select
+
+        Select Case Tune.Value
+            Case 1 'film
+                setVal(DeblockA, -1)
+                setVal(DeblockB, -1)
+            Case 2 'animation
+                setVal(DeblockA, 1)
+                setVal(DeblockB, 1)
+                Dim val = BFrames.Value
+                val += 2
+                setVal(BFrames, If(val > 16, 16, val))
+            Case 3 'grain
+                setVal(DeblockA, -2)
+                setVal(DeblockB, -2)
+            Case 4 'stillimage
+                setVal(DeblockA, -3)
+                setVal(DeblockB, -3)
+            Case 5 'psnr
+                setVal(AqMode, 0)
+            Case 6 'ssim
+                setVal(AqMode, 2)
+            Case 7 'fastdecode
+                setVal(Deblock, False)
+                setVal(Cabac, False)
+                setVal(weightp, 0)
+            Case 8 'zerolatency
+                setVal(BFrames, 0)
+        End Select
+
+        Select Case profile.Value
+            Case 1 'baseline
+                setVal(Cabac, False)
+                setVal(_8x8dct, False)
+                setVal(BFrames, 0)
+                setVal(weightp, 0)
+        End Select
+    End Sub
 
     Private ItemsValue As List(Of CommandLineParam)
 
@@ -332,8 +447,10 @@ Public Class x264Params2
                     Quant,
                     Preset,
                     Tune,
-                    Profile,
+                    profile,
                     Mode,
+                    weightp,
+                    CQM,
                     _8x8dct,
                     AqMode,
                     BAdapt,
@@ -347,6 +464,8 @@ Public Class x264Params2
                     Custom,
                     CustomFirstPass,
                     CustomSecondPass}
+
+
 
                 'Add("Basic", Quant, Preset, Tune, Profile, OutputDepth,
                 'Add("Custom", Custom, CustomFirstPass, CustomSecondPass)
@@ -412,7 +531,6 @@ Public Class x264Params2
                 '{"none", "spatial", "temporal", "auto"}
 
                 'New BoolParam   With {.Path = "", .Switch = "--no-weightb", .Text = "no-weightb", .Help = "Disable weighted prediction for B-frames"},
-                'New NumParam    With {.Path = "", .Switch = "--weightp", .Text = "weightp", .IntegerValue = True, Help = "Weighted prediction for P-frames [2]"},
 
                 '{"Disabled", "Weighted refs", "Weighted refs + Duplicates"}
 
@@ -445,7 +563,6 @@ Public Class x264Params2
                 'New NumParam    With {.Path = "", .Switch = "--nr", .Text = "nr", Help = "Noise reduction [0]"},
                 'New NumParam    With {.Path = "", .Switch = "--deadzone-inter", .Text = "deadzone-inter", .MinMaxStep = {0, 32 , 1}, Help = "Set the size of the inter luma quantization deadzone [21]"},
                 'New NumParam    With {.Path = "", .Switch = "--deadzone-intra", .Text = "deadzone-intra", .MinMaxStep = {0, 32 , 1}, Help = "Set the size of the intra luma quantization deadzone [11]"},
-                'New StringParam With {.Path = "", .Switch = "--cqm", .Text = "cqm", .Help = "Preset quant matrices ["flat"]"},
 
                 '{"jvt", "flat"}
 
@@ -573,7 +690,7 @@ Public Class x264Params2
 
         If item Is Preset OrElse item Is Tune OrElse item Is Profile Then
             BlockValueChanged = True
-            ApplyValues()
+            ApplyValues(False)
             BlockValueChanged = False
         End If
 
@@ -596,8 +713,7 @@ Public Class x264Params2
                                targetPath As String,
                                includePaths As Boolean,
                                includeExecutable As Boolean) As String
-
-        ApplyDefaultValues()
+        ApplyValues(True)
 
         Dim args As String
         Dim sourcePath As String
@@ -683,152 +799,6 @@ Public Class x264Params2
             Return "--no-deblock"
         End If
     End Function
-
-    Sub ApplyValues()
-        Deblock.Value = True
-        DeblockA.Value = 0
-        DeblockB.Value = 0
-        _8x8dct.Value = True
-        BFrames.Value = 3
-        AqMode.Value = 1
-        BAdapt.Value = 1
-        Cabac.Value = True
-
-        Select Case Preset.Value
-            Case 0 'ultrafast
-                Deblock.Value = False
-                _8x8dct.Value = False
-                BFrames.Value = 0
-                AqMode.Value = 0
-                BAdapt.Value = 0
-                Cabac.Value = False
-            Case 1 'superfast
-
-            Case 2 'veryfast
-
-            Case 3 'faster
-
-            Case 4 'fast
-
-            Case 5 'medium
-
-            Case 6 'slow
-
-            Case 7 'slower
-                BAdapt.Value = 2
-            Case 8 'veryslow
-                BFrames.Value = 8
-                BAdapt.Value = 2
-            Case 9 'placebo
-                BFrames.Value = 16
-                BAdapt.Value = 2
-        End Select
-
-        Select Case Tune.Value
-            Case 1 'film
-                DeblockA.Value = -1
-                DeblockB.Value = -1
-            Case 2 'animation
-                DeblockA.Value = 1
-                DeblockB.Value = 1
-                Dim val = BFrames.Value
-                val += 2
-                BFrames.Value = If(val > 16, 16, val)
-            Case 3 'grain
-                DeblockA.Value = -2
-                DeblockB.Value = -2
-            Case 4 'stillimage
-                DeblockA.Value = -3
-                DeblockB.Value = -3
-            Case 5 'psnr
-                AqMode.Value = 0
-            Case 6 'ssim
-                AqMode.Value = 2
-            Case 7 'fastdecode
-                Deblock.Value = False
-                Cabac.Value = False
-            Case 8 'zerolatency
-                BFrames.Value = 0
-        End Select
-
-        Select Case Profile.Value
-            Case 1 'baseline
-                Cabac.Value = False
-        End Select
-    End Sub
-
-    Sub ApplyDefaultValues()
-        Deblock.DefaultValue = True
-        DeblockA.DefaultValue = 0
-        DeblockB.DefaultValue = 0
-        _8x8dct.DefaultValue = True
-        BFrames.DefaultValue = 3
-        AqMode.DefaultValue = 1
-        BAdapt.DefaultValue = 1
-        Cabac.DefaultValue = True
-
-        Select Case Preset.Value
-            Case 0 'ultrafast
-                Deblock.DefaultValue = False
-                _8x8dct.DefaultValue = False
-                BFrames.DefaultValue = 0
-                AqMode.DefaultValue = 0
-                BAdapt.DefaultValue = 0
-                Cabac.DefaultValue = False
-            Case 1 'superfast
-
-            Case 2 'veryfast
-
-            Case 3 'faster
-
-            Case 4 'fast
-
-            Case 5 'medium
-
-            Case 6 'slow
-
-            Case 7 'slower
-                BAdapt.DefaultValue = 2
-            Case 8 'veryslow
-                BFrames.DefaultValue = 8
-                BAdapt.DefaultValue = 2
-            Case 9 'placebo
-                BFrames.DefaultValue = 16
-                BAdapt.DefaultValue = 2
-        End Select
-
-        Select Case Tune.Value
-            Case 1 'film
-                DeblockA.DefaultValue = -1
-                DeblockB.DefaultValue = -1
-            Case 2 'animation
-                DeblockA.DefaultValue = 1
-                DeblockB.DefaultValue = 1
-                Dim val = BFrames.DefaultValue
-                val += 2
-                BFrames.DefaultValue = If(val > 16, 16, val)
-            Case 3 'grain
-                DeblockA.DefaultValue = -2
-                DeblockB.DefaultValue = -2
-            Case 4 'stillimage
-                DeblockA.DefaultValue = -3
-                DeblockB.DefaultValue = -3
-            Case 5 'psnr
-                AqMode.DefaultValue = 0
-            Case 6 'ssim
-                AqMode.DefaultValue = 2
-            Case 7 'fastdecode
-                Deblock.DefaultValue = False
-                Cabac.DefaultValue = False
-            Case 8 'zerolatency
-                BFrames.DefaultValue = 0
-        End Select
-
-        Select Case Profile.Value
-            Case 1 'baseline
-                Cabac.DefaultValue = False
-        End Select
-    End Sub
 
     Public Overrides Function GetPackage() As Package
         Return Package.x264

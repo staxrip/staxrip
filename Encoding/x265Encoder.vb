@@ -67,7 +67,7 @@ Public Class x265Encoder
             proc.SkipStrings = {"%] "}
             proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
-            proc.Arguments = "/C call """ + batchPath + """"
+            proc.Arguments = "/C call " + batchPath.Quotes
             proc.Start()
         End Using
     End Sub

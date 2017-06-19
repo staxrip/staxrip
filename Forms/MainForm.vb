@@ -2487,6 +2487,56 @@ Public Class MainForm
             Subtitle.Cut(p.VideoEncoder.Muxer.Subtitles)
 
             If Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath)) Then
+                If p.PreRenderIntoLossless AndAlso Not TypeOf p.VideoEncoder Is NullEncoder Then
+                    Dim outPath = p.TempDir + p.Name + "_lossless.avi"
+
+                    If p.Script.Engine = ScriptEngine.AviSynth Then
+                        Using proc As New Proc
+                            proc.Init("Pre-render into lossless AVI using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
+                            proc.Encoding = Encoding.UTF8
+                            proc.File = Package.ffmpeg.Path
+                            proc.Arguments = "-i " + p.Script.Path.Quotes + " -c:v ffvhuff -threads 0 -sn -an -context 1 -vstrict -2 -pred 2 -hide_banner -y " + outPath.Quotes
+                            proc.Start()
+                        End Using
+                    Else
+                        Dim batchPath = p.TempDir + p.Name + "_lossless.bat"
+                        Dim batchCode = Package.vspipe.Path.Quotes + " " + p.Script.Path.Quotes + " - --y4m | " + Package.ffmpeg.Path.Quotes + " -i - -c:v ffvhuff -threads 0 -sn -an -context 1 -vstrict -2 -pred 2 -hide_banner -y " + outPath.Quotes
+                        Proc.WriteBatchFile(batchPath, batchCode)
+
+                        Using proc As New Proc
+                            proc.Init("Pre-render into lossless AVI using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
+                            proc.Encoding = Encoding.UTF8
+                            proc.WriteLine(batchCode + BR2)
+                            proc.File = "cmd.exe"
+                            proc.Arguments = "/C call " + batchPath.Quotes
+                            proc.Start()
+                        End Using
+                    End If
+
+                    If File.Exists(outPath) Then
+                        Log.WriteHeader("Lossless AVI MediaInfo")
+                        Log.WriteLine(MediaInfo.GetSummary(outPath))
+                    Else
+                        Throw New ErrorAbortException("Pre-render failed", "Output file is missing")
+                    End If
+
+                    p.SourceFile = p.TempDir + p.Name + "_lossless.avi"
+
+                    For Each i In p.Script.Filters
+                        If i.Category = "Source" Then
+                            If p.Script.Engine = ScriptEngine.AviSynth Then
+                                i.Script = "FFVideoSource(""" + outPath + """)"
+                            Else
+                                i.Script = "clip = core.ffms2.Source(r""" + outPath + """)"
+                            End If
+                        Else
+                            i.Active = False
+                        End If
+                    Next
+
+                    p.Script.Synchronize()
+                End If
+
                 p.VideoEncoder.Encode()
             End If
 
@@ -3076,15 +3126,15 @@ Public Class MainForm
                 Select Case p.FileExistVideo
                     Case FileExistMode.Ask
                         Using td As New TaskDialog(Of String)
-                            td.MainInstruction = "The output file of the video encoder already exists, would you like to reuse or re-encode it?"
-                            td.Content = "Alternatively the 'Just Mux' video encoder profile can be used to reuse an existing output file, if no such file exists it muxes the source video. This question can be configured in the options."
-                            td.AddCommandLink("Reuse/Skip", "skip")
-                            td.AddCommandLink("Re-encode/Overwrite", "overwrite")
+                            td.MainInstruction = "The output file of the video encoder already exists"
+                            td.Content = "Would you like to skip video encoding and reuse the existing video encoder output file or would you like to re-encode and overwrite it?"
+                            td.AddCommandLink("Reuse", "skip")
+                            td.AddCommandLink("Re-encode", "encode")
 
                             Select Case td.Show
                                 Case "skip"
                                     p.SkipVideoEncoding = True
-                                Case "overwrite"
+                                Case "encode"
                                     p.SkipVideoEncoding = False
                                 Case Else
                                     Exit Sub
@@ -3102,14 +3152,15 @@ Public Class MainForm
                 Select Case p.FileExistAudio
                     Case FileExistMode.Ask
                         Using td As New TaskDialog(Of String)
-                            td.MainInstruction = "An audio encoding output file already exists, would you like to reuse or re-encode it?"
-                            td.AddCommandLink("Reuse/Skip", "skip")
-                            td.AddCommandLink("Re-encode/Overwrite", "overwrite")
+                            td.MainInstruction = "An audio encoding output file already exists"
+                            td.Content = "Would you like to skip audio encoding and reuse existing audio encoding output files or would you like to re-encode and overwrite?"
+                            td.AddCommandLink("Reuse", "skip")
+                            td.AddCommandLink("Re-encode", "encode")
 
                             Select Case td.Show
                                 Case "skip"
                                     p.SkipAudioEncoding = True
-                                Case "overwrite"
+                                Case "encode"
                                     p.SkipAudioEncoding = False
                                 Case Else
                                     Exit Sub
@@ -4051,7 +4102,7 @@ Public Class MainForm
 
             Dim audioExist = ui.AddMenuButtonBlock(Of FileExistMode)(audioPage)
             audioExist.Label.Text = "Existing Output:"
-            audioExist.Tooltip = "What to do in case a audio encoding output file already exists from a previous job run."
+            audioExist.Tooltip = "What to do in case a audio encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite."
             audioExist.MenuButton.Value = p.FileExistAudio
             audioExist.MenuButton.SaveAction = Sub(value) p.FileExistAudio = value
 
@@ -4067,6 +4118,23 @@ Public Class MainForm
             cb.SaveAction = Sub(value) p.UseScriptAsAudioSource = value
 
             audioPage.ResumeLayout()
+
+            Dim videoPage = ui.CreateFlowPage("Video")
+            videoPage.SuspendLayout()
+
+            Dim videoExist = ui.AddMenuButtonBlock(Of FileExistMode)(videoPage)
+            videoExist.Label.Text = "Existing Video Output:"
+            videoExist.Tooltip = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Just Mux video encoder profile is also capable of reusing existing video encoder output.'"
+            videoExist.MenuButton.Value = p.FileExistVideo
+            videoExist.MenuButton.SaveAction = Sub(value) p.FileExistVideo = value
+
+            cb = ui.AddCheckBox(videoPage)
+            cb.Text = "Pre-render script into lossless AVI file"
+            cb.Tooltip = "Note that depending on the resolution this can result in very large files."
+            cb.Checked = p.PreRenderIntoLossless
+            cb.SaveAction = Sub(value) p.PreRenderIntoLossless = value
+
+            videoPage.ResumeLayout()
 
             Dim subPage = ui.CreateFlowPage("Subtitles")
             subPage.SuspendLayout()
@@ -4207,12 +4275,6 @@ Public Class MainForm
 
             Dim miscPage = ui.CreateFlowPage("Misc")
             miscPage.SuspendLayout()
-
-            Dim videoExist = ui.AddMenuButtonBlock(Of FileExistMode)(miscPage)
-            videoExist.Label.Text = "Existing Video Output:"
-            videoExist.Tooltip = "What to do in case the video encoding output file already exists from a previous job run."
-            videoExist.MenuButton.Value = p.FileExistVideo
-            videoExist.MenuButton.SaveAction = Sub(value) p.FileExistVideo = value
 
             cb = ui.AddCheckBox(miscPage)
             cb.Text = "Hide dialogs asking to demux, source filter etc."
@@ -4776,14 +4838,16 @@ Public Class MainForm
 
     Shared Function GetDefaultMenuSize() As CustomMenuItem
         Dim ret = New CustomMenuItem("Root")
-
-        ret.Add("1 DVD", NameOf(SetSize), {4480})
+        ret.Add("DVD/BD-5 (4480 MB)", NameOf(SetSize), {4480})
+        ret.Add("DVD-DL/BD-9 (8145 MB)", NameOf(SetSize), {8145})
+        ret.Add("-")
+        ret.Add("BD (23450 MB)", NameOf(SetSize), {23450})
+        ret.Add("BD-DL (46900 MB)", NameOf(SetSize), {46900})
         ret.Add("-")
         ret.Add("50%", NameOf(SetPercent), {50})
         ret.Add("60%", NameOf(SetPercent), {60})
         ret.Add("-")
         ret.Add("Edit Menu...", NameOf(ShowSizeMenuEditor))
-
         Return ret
     End Function
 

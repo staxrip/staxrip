@@ -228,7 +228,7 @@ Public Class ApplicationSettings
             CustomMenuPreview = PreviewForm.GetDefaultMenuPreview
         End If
 
-        If Check(CustomMenuSize, "Target size menu in main dialog", 29) Then
+        If Check(CustomMenuSize, "Target size menu in main dialog", 31) Then
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 

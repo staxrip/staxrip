@@ -20,12 +20,12 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 #### 1.5.0.9 unstable test build
 
-- new: to run PowerShell scripts on certain events the Event Command feature is no longer needed, it's documented here: https://github.com/stax76/staxrip#scripting
+- new: to run PowerShell scripts on certain events the Event Command feature is no longer needed, it's documented here: https://github.com/stax76/staxrip#powershell-scripting
 - new: there are 2 new options what to do in case the video and audio encoder output files alread exists from a previous job run (reuse, overwrite or ask (default)), the 'Just Mux' video encoder profile does alse reuse the output file from previous job runs, in case it don't exist it uses the source video
 - new: there is a new option to define which intermediate format should be used in case the audio encoder don't support the input format, supported is FLAC (default) and W64 (WAV > 4 GB)
 - new: there is a new option to define which app should be used to create the intermediate audio file (default is ffmpeg)
 - new: the MediaInfo window has 'Developer Mode' in the context menu to show the property names for programmers
-- tweak: help improved for: Main Menu > Help > Command Line: There is a special mode where only the MediaInfo window is shown using -mediainfo <file>, this is useful for Windows File Explorer integration with an app like Open++.
+- tweak: help improved for: Main Menu > Help > Command Line: There is a special mode where only the MediaInfo window is shown using -mediainfo "inputfile", this is useful for Windows File Explorer integration with an app like Open++.
 
 #### 1.5.0.8 unstable test build
 

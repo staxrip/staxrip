@@ -99,7 +99,7 @@ The 'Execute Batch Script' command has a option 'Interpret Output' that can be t
 
 Used executables can be powershell.exe, cscript.exe (VBScript/JScript), python.exe, any other scripting engine or any console app programed in any programming language.
 
-## Scripting
+## PowerShell Scripting
 
 StaxRip can be automated via PowerShell scripting. There are two example scripts included, they can be found at:
 

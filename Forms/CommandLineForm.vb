@@ -157,7 +157,7 @@ Class CommandLineForm
                     textBlock = SimpleUI.AddTextBlock(parent)
                 End If
 
-                textBlock.Label.Text = item.Text
+                textBlock.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
                 textBlock.Label.Tooltip = help
                 helpControl = textBlock.Label
                 AddHandler textBlock.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue

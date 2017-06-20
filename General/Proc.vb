@@ -68,6 +68,16 @@ Public Class Proc
     End Property
 
     Shared Function WriteBatchFile(path As String, content As String) As String
+        If OSVersion.Current = OSVersion.Windows7 Then
+            For Each i In content
+                If Convert.ToInt32(i) > 137 Then
+                    Throw New ErrorAbortException("Unsupported Windows Version",
+                                                  "Executing batch files with character '" & i &
+                                                  "' requires minimum Windows 8.")
+                End If
+            Next
+        End If
+
         If content.IsDosCompatible Then
             content = "@echo off" + BR + content
             IO.File.WriteAllText(path, content, Encoding.GetEncoding(ConsoleHelp.DosCodePage))

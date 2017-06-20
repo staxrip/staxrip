@@ -201,27 +201,6 @@ Public Class GlobalClass
                 Dim targetWidth = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
                 script.Filters.Add(New VideoFilter("LanczosResize(" & targetWidth & "," & p.TargetHeight & ")"))
             End If
-
-            If File.Exists(ap.File) Then
-                script.Filters.Add(New VideoFilter("KillAudio()"))
-
-                Dim nic = Audio.GetNicAudioCode(ap)
-
-                If nic <> "" Then
-                    script.Filters.Add(New VideoFilter(nic))
-                Else
-                    script.Filters.Add(New VideoFilter("AudioDub(last, DirectShowSource(""" + ap.File + """, video = false))"))
-                End If
-
-                script.Filters.Add(New VideoFilter("DelayAudio(" & (ap.Delay / 1000).ToInvariantString & ")"))
-
-                Dim cutFilter = script.GetFilter("Cutting")
-
-                If Not cutFilter Is Nothing Then
-                    script.RemoveFilter("Cutting")
-                    script.Filters.Add(cutFilter)
-                End If
-            End If
         Else
             If Calc.IsARSignalingRequired Then
                 Dim targetWidth = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
@@ -229,8 +208,10 @@ Public Class GlobalClass
             End If
         End If
 
-        script.Synchronize(True)
-        g.Play(script.Path)
+        script.Synchronize(False)
+        If ap.File.Contains("ms") Then MsgWarn("Please note that MPC don't support taking the delay into account.")
+        If ap.File = p.FirstOriginalSourceFile Then MsgWarn("Please note that MPC don't support stream selection via command line, you have to select it manually.")
+        g.Play(script.Path, "/dub """ + ap.File + """")
     End Sub
 
     Function ExtractDelay(value As String) As Integer

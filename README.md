@@ -17,7 +17,7 @@ staxrip is a multiformat video encoding application for Windows. It's a GUI fron
 ## Requirements
 
 - Windows 7 x64 or Windows 10 x64
-- [.NET 4.7 or higher](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
+- [.NET 4.7 or higher](https://www.microsoft.com/en-us/download/details.aspx?id=55170)
 - [Intel Skylake](https://en.wikipedia.org/wiki/Skylake_%28microarchitecture%29) or newer for HEVC/H.265 hardware encoding
 - [NVIDIA Maxwell gen2 card](https://en.wikipedia.org/wiki/Maxwell_%28microarchitecture%29#Second_generation_Maxwell_.28GM20x.29) or newer for HEVC/H.265 hardware encoding
 - [AMD Polaris card](http://www.amd.com/en-gb/innovations/software-technologies/radeon-polaris) or newer for HEVC/H.265 hardware encoding

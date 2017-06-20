@@ -2006,8 +2006,7 @@ Class OSVersion
 
     Shared ReadOnly Property Current As Single
         Get
-            Return CSng(Environment.OSVersion.Version.Major +
-                Environment.OSVersion.Version.Minor / 10)
+            Return CSng(Environment.OSVersion.Version.Major + Environment.OSVersion.Version.Minor / 10)
         End Get
     End Property
 End Class

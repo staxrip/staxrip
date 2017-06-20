@@ -194,7 +194,7 @@ Public Class x264Params2
         .Switch = "--crf",
         .Switches = {"--qp"},
         .Name = "Quant",
-        .Text = "Quality:",
+        .Text = "Quality",
         .Path = "Basic",
         .Help = "--crf <float> Quality-based VBR (0-51) [23.0]" + BR + "--qp <integer> Force constant QP (0-69, 0=lossless)",
         .ArgsFunc = Function() Nothing,
@@ -204,7 +204,7 @@ Public Class x264Params2
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",
-        .Text = "Preset:",
+        .Text = "Preset",
         .Path = "Basic",
         .Options = {"Ultra Fast", "Super Fast", "Very Fast", "Faster", "Fast", "Medium", "Slow", "Slower", "Very Slow", "Placebo"},
         .Convert = True,
@@ -212,14 +212,14 @@ Public Class x264Params2
 
     Property Tune As New OptionParam With {
         .Switch = "--tune",
-        .Text = "Tune:",
+        .Text = "Tune",
         .Path = "Basic",
         .Options = {"None", "Film", "Animation", "Grain", "Still Image", "PSNR", "SSIM", "Fast Decode", "Zero Latency"},
         .Convert = True}
 
     Property Mode As New OptionParam With {
         .Name = "Mode",
-        .Text = "Mode:",
+        .Text = "Mode",
         .Path = "Basic",
         .Switches = {"--bitrate", "--qp", "--crf", "--pass"},
         .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
@@ -227,13 +227,13 @@ Public Class x264Params2
 
     Property CompCheck As New NumParam With {
         .Name = "CompCheckQuant",
-        .Text = "Comp. Check:",
+        .Text = "Comp. Check",
         .Path = "Other",
         .Value = 18,
         .MinMaxStep = {1, 50, 1}}
 
     Property Custom As New StringParam With {
-        .Text = "Custom:",
+        .Text = "Custom",
         .Path = "Custom",
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
@@ -266,18 +266,19 @@ Public Class x264Params2
 
     Property Deblock As New BoolParam With {
         .Switch = "--deblock",
+        .NoSwitch = "--no-deblock",
         .Text = "Deblocking",
         .Path = "Other",
         .Help = "Loop filter parameters [0:0].",
         .ArgsFunc = AddressOf GetDeblockArgs}
 
     Property DeblockA As New NumParam With {
-        .Text = "      Strength:",
+        .Text = "      Strength",
         .Path = "Other",
         .MinMaxStep = {-6, 6, 1}}
 
     Property DeblockB As New NumParam With {
-        .Text = "      Threshold:",
+        .Text = "      Threshold",
         .Path = "Other",
         .MinMaxStep = {-6, 6, 1}}
 
@@ -289,14 +290,14 @@ Public Class x264Params2
 
     Property BFrames As New NumParam With {
         .Switch = "--bframes",
-        .Text = "B-Frames:",
+        .Text = "B-Frames",
         .Path = "Slice Decision",
         .MinMaxStep = {0, 16, 1},
         .Help = "Number of B-frames between I And P [3]."}
 
     Property AqMode As New OptionParam With {
         .Switch = "--aq-mode",
-        .Text = "AQ Mode:",
+        .Text = "AQ Mode",
         .Path = "Rate Control",
         .IntegerValue = True,
         .Expand = True,
@@ -304,7 +305,7 @@ Public Class x264Params2
 
     Property BAdapt As New OptionParam With {
         .Switch = "--b-adapt",
-        .Text = "B-Adapt:",
+        .Text = "B-Adapt",
         .Path = "Slice Decision",
         .IntegerValue = True,
         .Options = {"Disabled", "Fast", "Optimal"},
@@ -326,16 +327,37 @@ Public Class x264Params2
     Property profile As New OptionParam With {
         .Path = "Basic",
         .Switch = "--profile",
-        .Text = "Profile:",
+        .Text = "Profile",
         .Help = "Force the limits of an H.264 profile.",
         .Convert = True,
         .Options = {"Unrestricted", "Baseline", "Main", "High", "High10", "High422", "High444"}}
 
-    Property CQM As New OptionParam With {
+    Property cqm As New OptionParam With {
         .Path = "Analysis",
         .Switch = "--cqm",
-        .Options = {"flat", "jvt"},
+        .Options = {"Flat", "JVT"},
+        .Convert = True,
         .Text = "Quant Matrice Preset"}
+
+    Property [me] As New OptionParam With {
+        .Path = "Analysis",
+        .Switch = "--me",
+        .Text = "Motion Search Method",
+        .Expand = True,
+        .Values = {"dia", "hex", "umh", "esa", "tesa"},
+        .Options = {"Diamond Search, Radius 1 (fast)", "Hexagonal Search, Radius 2", "Uneven Multi-Hexagon Search", "Exhaustive Search", "Hadamard Exhaustive Search (slow)"},
+        .Help = "Integer pixel motion estimation method [hex]"}
+
+    Property mbtree As New BoolParam With {
+        .Path = "Rate Control",
+        .NoSwitch = "--no-mbtree",
+        .Text = "MB Tree"}
+
+    Property mixedRefs As New BoolParam With {
+        .Path = "Analysis",
+        .NoSwitch = "--no-mixed-refs",
+        .Text = "Mixed References",
+        .Help = "Decide references on a per partition basis"}
 
     Sub ApplyValues(isDefault As Boolean)
         Dim setVal = Sub(param As CommandLineParam, value As Object)
@@ -369,6 +391,9 @@ Public Class x264Params2
         setVal(BAdapt, 1)
         setVal(Cabac, True)
         setVal(weightp, 2)
+        setVal(mbtree, True)
+        setVal([me], 1)
+        setVal(mixedRefs, True)
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -379,12 +404,20 @@ Public Class x264Params2
                 setVal(BAdapt, 0)
                 setVal(Cabac, False)
                 setVal(weightp, 0)
+                setVal(mbtree, False)
+                setVal([me], 0)
+                setVal(mixedRefs, False)
             Case 1 'superfast
                 setVal(weightp, 1)
+                setVal(mbtree, False)
+                setVal([me], 0)
+                setVal(mixedRefs, False)
             Case 2 'veryfast
                 setVal(weightp, 1)
+                setVal(mixedRefs, False)
             Case 3 'faster
                 setVal(weightp, 1)
+                setVal(mixedRefs, False)
             Case 4 'fast
                 setVal(weightp, 1)
             Case 5 'medium
@@ -393,12 +426,15 @@ Public Class x264Params2
 
             Case 7 'slower
                 setVal(BAdapt, 2)
+                setVal([me], 2)
             Case 8 'veryslow
                 setVal(BFrames, 8)
                 setVal(BAdapt, 2)
+                setVal([me], 2)
             Case 9 'placebo
                 setVal(BFrames, 16)
                 setVal(BAdapt, 2)
+                setVal([me], 4)
         End Select
 
         Select Case Tune.Value
@@ -427,6 +463,7 @@ Public Class x264Params2
                 setVal(weightp, 0)
             Case 8 'zerolatency
                 setVal(BFrames, 0)
+                setVal(mbtree, False)
         End Select
 
         Select Case profile.Value
@@ -450,9 +487,12 @@ Public Class x264Params2
                     profile,
                     Mode,
                     weightp,
-                    CQM,
+                    [me],
+                    cqm,
                     _8x8dct,
+                    mixedRefs,
                     AqMode,
+                    mbtree,
                     BAdapt,
                     BFrames,
                     New StringParam With {.Path = "VUI", .Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
@@ -518,7 +558,6 @@ Public Class x264Params2
                 'New NumParam    With {.Path = "", .Switch = "--chroma-qp-offset", .Text = "chroma-qp-offset", Help = "QP difference between chroma And luma [0]"},
                 'New NumParam    With {.Path = "", .Switch = "--aq-strength", .Text = "aq-strength", Help = "Reduces blocking And blurring in flat And textured areas. [1.0]"},
                 'New StringParam With {.Path = "", .Switch = "--stats", .Text = "stats", .Help = "Filename for 2 pass stats ["x264_2pass.log"]"},
-                'New BoolParam   With {.Path = "", .Switch = "--no-mbtree", .Text = "no-mbtree", .Help = "Disable mb-tree ratecontrol."},
                 'New NumParam    With {.Path = "", .Switch = "--qcomp", .Text = "qcomp", Help = "QP curve compression [0.60]"},
                 'New NumParam    With {.Path = "", .Switch = "--cplxblur", .Text = "cplxblur", Help = "Reduce fluctuations in QP (before curve compression) [20.0]"},
                 'New NumParam    With {.Path = "", .Switch = "--qblur", .Text = "qblur", Help = "Reduce fluctuations in QP (after curve compression) [0.5]"},
@@ -534,10 +573,6 @@ Public Class x264Params2
 
                 '{"Disabled", "Weighted refs", "Weighted refs + Duplicates"}
 
-                'New StringParam With {.Path = "", .Switch = "--me", .Text = "me", .Help = "Integer pixel motion estimation method ["hex"]"},
-
-                '{"dia", "hex", "umh", "esa", "tesa"}
-
                 'New NumParam    With {.Path = "", .Switch = "--merange", .Text = "merange", Help = "Maximum motion vector search range [16]"},
                 'New NumParam    With {.Path = "", .Switch = "--mvrange", .Text = "mvrange", Help = "Maximum motion vector length [-1 (auto)]"},
                 'New NumParam    With {.Path = "", .Switch = "--mvrange-thread", .Text = "mvrange-thread", Help = "Minimum buffer between threads [-1 (auto)]"},
@@ -551,7 +586,6 @@ Public Class x264Params2
 
                 'New BoolParam   With {.Path = "", .Switch = "--no-psy", .Text = "no-psy", .Help = "Disable all visual optimizations that worsen"},
                 '                              both PSNR and SSIM.
-                'New BoolParam   With {.Path = "", .Switch = "--no-mixed-refs", .Text = "no-mixed-refs", .Help = "Don't decide references on a per partition basis"},
                 'New BoolParam   With {.Path = "", .Switch = "--no-chroma-me", .Text = "no-chroma-me", .Help = "Ignore chroma in motion estimation"},
                 'New BoolParam   With {.Path = "", .Switch = "--no-8x8dct", .Text = "no-8x8dct", .Help = "Disable adaptive spatial transform size"},
                 'New NumParam    With {.Path = "", .Switch = "--trellis", .Text = "trellis", .IntegerValue = True, Help = "Trellis RD quantization. [1]"},

@@ -2487,6 +2487,9 @@ Public Class MainForm
             Subtitle.Cut(p.VideoEncoder.Muxer.Subtitles)
 
             If Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath)) Then
+                Dim originalFilters As List(Of VideoFilter)
+                Dim originalSource As String
+
                 If p.PreRenderIntoLossless AndAlso Not TypeOf p.VideoEncoder Is NullEncoder Then
                     Dim outPath = p.TempDir + p.Name + "_lossless.avi"
 
@@ -2495,12 +2498,12 @@ Public Class MainForm
                             proc.Init("Pre-render into lossless AVI using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
                             proc.Encoding = Encoding.UTF8
                             proc.File = Package.ffmpeg.Path
-                            proc.Arguments = "-i " + p.Script.Path.Quotes + " -c:v ffvhuff -threads 0 -sn -an -context 1 -vstrict -2 -pred 2 -hide_banner -y " + outPath.Quotes
+                            proc.Arguments = "-i " + p.Script.Path.Quotes + " -c:v utvideo -pred median -sn -an -hide_banner -y " + outPath.Quotes
                             proc.Start()
                         End Using
                     Else
                         Dim batchPath = p.TempDir + p.Name + "_lossless.bat"
-                        Dim batchCode = Package.vspipe.Path.Quotes + " " + p.Script.Path.Quotes + " - --y4m | " + Package.ffmpeg.Path.Quotes + " -i - -c:v ffvhuff -threads 0 -sn -an -context 1 -vstrict -2 -pred 2 -hide_banner -y " + outPath.Quotes
+                        Dim batchCode = Package.vspipe.Path.Quotes + " " + p.Script.Path.Quotes + " - --y4m | " + Package.ffmpeg.Path.Quotes + " -i - -c:v utvideo -pred median -sn -an -hide_banner -y " + outPath.Quotes
                         Proc.WriteBatchFile(batchPath, batchCode)
 
                         Using proc As New Proc
@@ -2520,7 +2523,9 @@ Public Class MainForm
                         Throw New ErrorAbortException("Pre-render failed", "Output file is missing")
                     End If
 
+                    originalSource = p.SourceFile
                     p.SourceFile = p.TempDir + p.Name + "_lossless.avi"
+                    originalFilters = p.Script.GetFiltersCopy()
 
                     For Each i In p.Script.Filters
                         If i.Category = "Source" Then
@@ -2534,6 +2539,12 @@ Public Class MainForm
                         End If
                     Next
 
+                    p.Script.Synchronize()
+                End If
+
+                If Not originalFilters Is Nothing Then
+                    p.SourceFile = originalSource
+                    p.Script.Filters = originalFilters
                     p.Script.Synchronize()
                 End If
 
@@ -5742,7 +5753,7 @@ Public Class MainForm
         End If
 
         m.Add("Open", a, "Change the audio source file.").SetImage(Symbol.OpenFile)
-        m.Add("Play Audio", Sub() PlayAudio(ap), "Plays the audio source file with MPC.", exist).SetImage(Symbol.Play)
+        m.Add("Play Audio", Sub() PlayAudio(ap), "Plays the audio source file with MPC.", exist AndAlso ap.File <> p.FirstOriginalSourceFile).SetImage(Symbol.Play)
         m.Add("Play audio and video", Sub() g.PlayScript(p.Script, ap), "Plays the audio source file together with the AviSynth script.", exist AndAlso p.Script.Engine = ScriptEngine.AviSynth)
         m.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), "Show MediaInfo for the audio source file.", exist).SetImage(Symbol.Info)
         m.Add("Explore", Sub() g.OpenDirAndSelectFile(ap.File, Handle), "Open the audio source file directory with File Explorer.", exist).SetImage(Symbol.FileExplorer)

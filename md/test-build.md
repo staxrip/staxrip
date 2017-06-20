@@ -12,7 +12,12 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
-#### 1.5.1.1 unstable test build
+#### (upcoming) 1.5.1.2 unstable test build
+
+- update: NVEnc 3.12
+- tweak: the 'Play audio and video' feature in the menu of the audio source files was changed, it still has limitations but shows a message box to tell the user about
+
+#### (online) 1.5.1.1 unstable test build
 
 - new: added option to pre-render slow scripts into a lossless AVI file
 - new: improvements on the new x264 GUI introduced in 1.5.0.7

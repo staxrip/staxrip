@@ -152,8 +152,6 @@ Class AMDEncoder
             .Text = "Custom Switches:",
             .ArgsFunc = Function() Custom.Value}
 
-        Private ItemsValue As List(Of CommandLineParam)
-
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
@@ -201,13 +199,6 @@ Class AMDEncoder
                 Return ItemsValue
             End Get
         End Property
-
-        Private Sub Add(path As String, ParamArray items As CommandLineParam())
-            For Each i In items
-                i.Path = path
-                ItemsValue.Add(i)
-            Next
-        End Sub
 
         Overrides Function GetCommandLine(includePaths As Boolean,
                                           includeExecutable As Boolean,

@@ -10,6 +10,9 @@ Namespace UI
 
         Private FileDropValue As Boolean
 
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
+        Shadows Property FontHeight As Integer
+
         <DefaultValue(False)>
         Property FileDrop As Boolean
             Get
@@ -23,6 +26,7 @@ Namespace UI
 
         Public Sub New()
             Font = New Font("Segoe UI", 9)
+            FontHeight = Font.Height
         End Sub
 
         Protected Overrides Sub OnDragEnter(e As DragEventArgs)

@@ -232,8 +232,6 @@ Public Class NVIDIAEncoder
 
         Property Custom As New StringParam With {.Text = "Custom:"}
 
-        Private ItemsValue As List(Of CommandLineParam)
-
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
@@ -367,13 +365,6 @@ Public Class NVIDIAEncoder
                 End If
             End If
         End Function
-
-        Private Sub Add(path As String, ParamArray items As CommandLineParam())
-            For Each i In items
-                i.Path = path
-                ItemsValue.Add(i)
-            Next
-        End Sub
 
         Overrides Function GetCommandLine(includePaths As Boolean,
                                           includeExe As Boolean,

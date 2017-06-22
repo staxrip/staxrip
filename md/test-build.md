@@ -12,12 +12,21 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
-#### (upcoming) 1.5.1.2 unstable test build
+#### 1.5.1.3 unstable test build
 
-- update: NVEnc 3.12
+- fix: audio settings/profile display was wrong generated if the audio source file has multiple audio streams
+
+#### 1.5.1.2 unstable test build
+
+- new: many improvements on the new x264 GUI introduced in 1.5.0.7, video profile settings were reset because at the same time I improve the x265 GUI, the video profile settings will be reset again until the GUI is finished in 1-2 weeks, the old GUI will then be removed
+- fix: the feature to reuse existing audio output files from previous job runs had a bug that would result in the wrong file muxed
+- fix: the automatic name generation for the audio settings wasn't always working correctly
 - tweak: the 'Play audio and video' feature in the menu of the audio source files was changed, it still has limitations but shows a message box to tell the user about
+- tweak: in case the option to delete the temp files is used the log file is copied to the target folder
+- update: NVEnc 3.12
+- update: 2.4+75
 
-#### (online) 1.5.1.1 unstable test build
+#### 1.5.1.1 unstable test build
 
 - new: added option to pre-render slow scripts into a lossless AVI file
 - new: improvements on the new x264 GUI introduced in 1.5.0.7

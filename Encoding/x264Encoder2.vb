@@ -195,7 +195,6 @@ Public Class x264Params2
         .Switches = {"--qp"},
         .Name = "Quant",
         .Text = "Quality",
-        .Path = "Basic",
         .Help = "--crf <float> Quality-based VBR (0-51) [23.0]" + BR + "--qp <integer> Force constant QP (0-69, 0=lossless)",
         .ArgsFunc = Function() Nothing,
         .Value = 20,
@@ -205,7 +204,6 @@ Public Class x264Params2
     Property Preset As New OptionParam With {
         .Switch = "--preset",
         .Text = "Preset",
-        .Path = "Basic",
         .Options = {"Ultra Fast", "Super Fast", "Very Fast", "Faster", "Fast", "Medium", "Slow", "Slower", "Very Slow", "Placebo"},
         .Convert = True,
         .InitValue = 5}
@@ -213,28 +211,29 @@ Public Class x264Params2
     Property Tune As New OptionParam With {
         .Switch = "--tune",
         .Text = "Tune",
-        .Path = "Basic",
         .Options = {"None", "Film", "Animation", "Grain", "Still Image", "PSNR", "SSIM", "Fast Decode", "Zero Latency"},
         .Convert = True}
 
     Property Mode As New OptionParam With {
         .Name = "Mode",
         .Text = "Mode",
-        .Path = "Basic",
         .Switches = {"--bitrate", "--qp", "--crf", "--pass"},
         .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
         .Value = 2}
 
+    Property Depth As New OptionParam With {
+        .Text = "Depth",
+        .Options = {"8-Bit", "10-Bit"},
+        .Help = "Bit Depth"}
+
     Property CompCheck As New NumParam With {
         .Name = "CompCheckQuant",
         .Text = "Comp. Check",
-        .Path = "Other",
         .Value = 18,
         .MinMaxStep = {1, 50, 1}}
 
     Property Custom As New StringParam With {
         .Text = "Custom",
-        .Path = "Custom",
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
                           tb.Edit.TextBox.Multiline = True
@@ -244,7 +243,6 @@ Public Class x264Params2
 
     Property CustomFirstPass As New StringParam With {
         .Text = "Custom" + BR + "First Pass:",
-        .Path = "Custom",
         .ArgsFunc = Function() Nothing,
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
@@ -255,7 +253,6 @@ Public Class x264Params2
 
     Property CustomSecondPass As New StringParam With {
         .Text = "Custom" + BR + "Second Pass:",
-        .Path = "Custom",
         .ArgsFunc = Function() Nothing,
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
@@ -268,37 +265,39 @@ Public Class x264Params2
         .Switch = "--deblock",
         .NoSwitch = "--no-deblock",
         .Text = "Deblocking",
-        .Path = "Other",
         .Help = "Loop filter parameters [0:0].",
-        .ArgsFunc = AddressOf GetDeblockArgs}
+        .ArgsFunc = Function() As String
+                        If Deblock.Value Then
+                            If DeblockA.Value = DeblockA.DefaultValue AndAlso
+                                DeblockB.Value = DeblockB.DefaultValue AndAlso
+                                Deblock.DefaultValue Then
+
+                                Return Nothing
+                            Else
+                                Return "--deblock " & DeblockA.Value & ":" & DeblockB.Value
+                            End If
+                        ElseIf Deblock.DefaultValue Then
+                            Return "--no-deblock"
+                        End If
+                    End Function}
 
     Property DeblockA As New NumParam With {
         .Text = "      Strength",
-        .Path = "Other",
         .MinMaxStep = {-6, 6, 1}}
 
     Property DeblockB As New NumParam With {
         .Text = "      Threshold",
-        .Path = "Other",
         .MinMaxStep = {-6, 6, 1}}
-
-    Property _8x8dct As New BoolParam With {
-        .Switch = "--8x8dct",
-        .NoSwitch = "--no-8x8dct",
-        .Text = "8x8dct",
-        .Path = "Analysis"}
 
     Property BFrames As New NumParam With {
         .Switch = "--bframes",
         .Text = "B-Frames",
-        .Path = "Slice Decision",
         .MinMaxStep = {0, 16, 1},
         .Help = "Number of B-frames between I And P [3]."}
 
     Property AqMode As New OptionParam With {
         .Switch = "--aq-mode",
         .Text = "AQ Mode",
-        .Path = "Rate Control",
         .IntegerValue = True,
         .Expand = True,
         .Options = {"Disabled", "Variance AQ", "Auto-variance AQ", "Auto-variance AQ with bias to dark scenes"}}
@@ -306,41 +305,95 @@ Public Class x264Params2
     Property BAdapt As New OptionParam With {
         .Switch = "--b-adapt",
         .Text = "B-Adapt",
-        .Path = "Slice Decision",
         .IntegerValue = True,
         .Options = {"Disabled", "Fast", "Optimal"},
         .Help = "Adaptive B-frame decision method [1]"}
 
     Property Cabac As New BoolParam With {
-        .Path = "Other",
         .NoSwitch = "--no-cabac",
         .Text = "Cabac"}
 
-    Property weightp As New OptionParam With {
-        .Path = "Analysis",
+    Property Weightp As New OptionParam With {
         .Switch = "--weightp",
         .Text = "Weight P Prediction",
         .Expand = True,
         .Options = {"Disabled", "Weighted refs", "Weighted refs + Duplicates"},
         .IntegerValue = True}
 
-    Property profile As New OptionParam With {
-        .Path = "Basic",
+    Property Profile As New OptionParam With {
         .Switch = "--profile",
         .Text = "Profile",
         .Help = "Force the limits of an H.264 profile.",
         .Convert = True,
         .Options = {"Unrestricted", "Baseline", "Main", "High", "High10", "High422", "High444"}}
 
-    Property cqm As New OptionParam With {
-        .Path = "Analysis",
+    Property CQM As New OptionParam With {
         .Switch = "--cqm",
         .Options = {"Flat", "JVT"},
         .Convert = True,
         .Text = "Quant Matrice Preset"}
 
-    Property [me] As New OptionParam With {
-        .Path = "Analysis",
+    Property Mbtree As New BoolParam With {
+        .NoSwitch = "--no-mbtree",
+        .Text = "MB Tree"}
+
+    Property I4x4 As New BoolParam With {
+        .Switches = {"--partitions"},
+        .Label = "Partitions",
+        .ArgsFunc = AddressOf GetPartitionsArg,
+        .LeftMargin = g.MainForm.FontHeight * 1.5,
+        .Text = "i4x4"}
+
+    Property P4x4 As New BoolParam With {
+        .Switches = {"--partitions"},
+        .LeftMargin = g.MainForm.FontHeight * 1.5,
+        .Text = "p4x4"}
+
+    Property B8x8 As New BoolParam With {
+        .Switches = {"--partitions"},
+        .LeftMargin = g.MainForm.FontHeight * 1.5,
+        .Text = "b8x8"}
+
+    Property I8x8 As New BoolParam With {
+        .Switches = {"--partitions"},
+        .LeftMargin = g.MainForm.FontHeight * 1.5,
+        .Text = "i8x8"}
+
+    Property P8x8 As New BoolParam With {
+        .Switches = {"--partitions"},
+        .LeftMargin = g.MainForm.FontHeight * 1.5,
+        .Text = "p8x8"}
+
+    Property _8x8dct As New BoolParam With {
+        .Switch = "--8x8dct",
+        .NoSwitch = "--no-8x8dct",
+        .Text = "8x8dct",
+        .LeftMargin = g.MainForm.FontHeight * 1.5}
+
+    Property RcLookahead As New NumParam With {
+        .Switch = "--rc-lookahead",
+        .Text = "Lookahead",
+        .Help = "Number of frames for frametype lookahead [40]"}
+
+    Property Ref As New NumParam With {
+        .Switch = "--ref",
+        .Text = "Ref Frames",
+        .Help = "Number of reference frames [3]"}
+
+    Property Scenecut As New NumParam With {
+        .Switch = "--scenecut",
+        .Text = "Scenecut",
+        .Help = "How aggressively to insert extra I-frames [40]."}
+
+    Property Subme As New OptionParam With {
+        .Switch = "--subme",
+        .Text = "Subpel Refinement",
+        .IntegerValue = True,
+        .Expand = True,
+        .Options = {"Fullpel only (not recommended)", "SAD mode decision, one qpel iteration", "SATD mode decision", "Progressively more qpel", "Progressively more qpel", "Progressively more qpel", "RD mode decision for I/P-frames", "RD mode decision for all frames", "RD refinement for I/P-frames", "RD refinement for all frames", "QP-RD - requires trellis=2, aq-mode>0", "Full RD disable all early terminations"},
+        .Help = "Subpixel motion estimation And mode decision [7]"}
+
+    Property Me_ As New OptionParam With {
         .Switch = "--me",
         .Text = "Motion Search Method",
         .Expand = True,
@@ -348,16 +401,103 @@ Public Class x264Params2
         .Options = {"Diamond Search, Radius 1 (fast)", "Hexagonal Search, Radius 2", "Uneven Multi-Hexagon Search", "Exhaustive Search", "Hadamard Exhaustive Search (slow)"},
         .Help = "Integer pixel motion estimation method [hex]"}
 
-    Property mbtree As New BoolParam With {
-        .Path = "Rate Control",
-        .NoSwitch = "--no-mbtree",
-        .Text = "MB Tree"}
+    Property Weightb As New BoolParam With {
+        .NoSwitch = "--no-weightb",
+        .Text = "Weighted prediction for B-frames",
+        .Help = "Disable weighted prediction for B-frames"}
 
-    Property mixedRefs As New BoolParam With {
-        .Path = "Analysis",
+    Property Trellis As New OptionParam With {
+        .Switch = "--trellis",
+        .Text = "Trellis",
+        .Expand = True,
+        .IntegerValue = True,
+        .Options = {"Disabled", "Enabled only on the final encode of a MB", "Enabled on all mode decisions"},
+        .Help = "Trellis RD quantization. [1]"}
+
+    Property Direct As New OptionParam With {
+        .Switch = "--direct",
+        .Text = "Direct MV Prediction",
+        .Options = {"None", "Spatial", "Temporal", "Auto"},
+        .Convert = True,
+        .Help = "Direct MV prediction mode [spatial]"}
+
+    Property Merange As New NumParam With {
+        .Switch = "--merange",
+        .Text = "ME Range",
+        .Help = "Maximum motion vector search range [16]"}
+
+    Property Fastpskip As New BoolParam With {
+        .NoSwitch = "--no-fast-pskip",
+        .Text = "Fast Pskip",
+        .Help = "Disables early SKIP detection on P-frames"}
+
+    Property Psy As New BoolParam With {
+        .Switch = "--psy-rd",
+        .NoSwitch = "--no-psy",
+        .Text = "Psy RD",
+        .ArgsFunc = Function() As String
+                        If Not Psy.Value Then Return "--no-psy"
+                        If PsyRD.Value <> PsyRD.DefaultValue OrElse PsyTrellis.Value <> PsyTrellis.DefaultValue Then Return "--psy-rd " & PsyRD.Value.ToInvariantString & ":" & PsyTrellis.Value.ToInvariantString
+                    End Function,
+        .Help = "Strength of psychovisual optimization [1.0: 0.0]"}
+
+    Property PsyRD As New NumParam With {
+        .MinMaxStepDec = {0, 0, 0.05D, 2},
+        .Text = "     RD"}
+
+    Property PsyTrellis As New NumParam With {
+        .MinMaxStepDec = {0, 0, 0.05D, 2},
+        .Text = "     Trellis"}
+
+    Property AqStrength As New NumParam With {
+        .Switch = "--aq-strength",
+        .Text = "AQ Strength",
+        .MinMaxStepDec = {0, 0, 0.1D, 1},
+        .Help = "Reduces blocking And blurring in flat And textured areas. [1.0]"}
+
+    Property DctDecimate As New BoolParam With {
+        .NoSwitch = "--no-dct-decimate",
+        .Text = "DCT Decimate",
+        .Help = "Disables coefficient thresholding on P-frames"}
+
+    Property DeadzoneInter As New NumParam With {
+        .Switch = "--deadzone-inter",
+        .Text = "Deadzone Inter",
+        .MinMaxStep = {0, 32, 1},
+        .Help = "Set the size of the inter luma quantization deadzone [21]"}
+
+    Property MixedRefs As New BoolParam With {
         .NoSwitch = "--no-mixed-refs",
         .Text = "Mixed References",
         .Help = "Decide references on a per partition basis"}
+
+    Property ForceCFR As New BoolParam With {
+        .Switch = "--force-cfr",
+        .Text = "Force constant framerate timestamp generation"}
+
+    Property DeadzoneIntra As New NumParam With {
+        .Switch = "--deadzone-intra",
+        .Text = "Deadzone Intra",
+        .MinMaxStep = {0, 32, 1},
+        .Help = "Set the size of the intra luma quantization deadzone [11]"}
+
+    Property Ipratio As New NumParam With {
+        .Switch = "--ipratio",
+        .Text = "IP Ratio",
+        .MinMaxStepDec = {0, 0, 0.1D, 1},
+        .Help = "QP factor between I And P [1.40]"}
+
+    Property Pbratio As New NumParam With {
+        .Switch = "--pbratio",
+        .Text = "PB Ratio",
+        .MinMaxStepDec = {0, 0, 0.1D, 1},
+        .Help = "QP factor between P And B [1.30]"}
+
+    Property Qcomp As New NumParam With {
+        .Text = "QComp",
+        .Switch = "--qcomp",
+        .MinMaxStepDec = {0, 0, 0.1D, 1},
+        .Help = "QP Curve Compression [0.60]"}
 
     Sub ApplyValues(isDefault As Boolean)
         Dim setVal = Sub(param As CommandLineParam, value As Object)
@@ -385,15 +525,40 @@ Public Class x264Params2
         setVal(Deblock, True)
         setVal(DeblockA, 0)
         setVal(DeblockB, 0)
-        setVal(_8x8dct, True)
         setVal(BFrames, 3)
         setVal(AqMode, 1)
         setVal(BAdapt, 1)
         setVal(Cabac, True)
-        setVal(weightp, 2)
-        setVal(mbtree, True)
-        setVal([me], 1)
-        setVal(mixedRefs, True)
+        setVal(Weightp, 2)
+        setVal(Mbtree, True)
+        setVal(Me_, 1)
+        setVal(MixedRefs, True)
+        setVal(I4x4, True)
+        setVal(P4x4, False)
+        setVal(B8x8, True)
+        setVal(I8x8, True)
+        setVal(P8x8, True)
+        setVal(_8x8dct, True)
+        setVal(RcLookahead, 40)
+        setVal(Ref, 3)
+        setVal(Scenecut, 40)
+        setVal(Subme, 7)
+        setVal(Trellis, 1)
+        setVal(Weightb, True)
+        setVal(Direct, 1)
+        setVal(Merange, 16)
+        setVal(Fastpskip, True)
+        setVal(Psy, True)
+        setVal(PsyRD, 1)
+        setVal(PsyTrellis, 0)
+        setVal(AqStrength, 1)
+        setVal(DctDecimate, True)
+        setVal(DeadzoneInter, 21)
+        setVal(DeadzoneIntra, 11)
+        setVal(Ipratio, 1.4)
+        setVal(Pbratio, 1.3)
+        setVal(Qcomp, 0.6)
+        setVal(ForceCFR, False)
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -403,314 +568,328 @@ Public Class x264Params2
                 setVal(AqMode, 0)
                 setVal(BAdapt, 0)
                 setVal(Cabac, False)
-                setVal(weightp, 0)
-                setVal(mbtree, False)
-                setVal([me], 0)
-                setVal(mixedRefs, False)
+                setVal(Weightp, 0)
+                setVal(Mbtree, False)
+                setVal(Me_, 0)
+                setVal(MixedRefs, False)
+                setVal(RcLookahead, 0)
+                setVal(Ref, 1)
+                setVal(Scenecut, 0)
+                setVal(Subme, 0)
+                setVal(Trellis, 0)
+                setVal(Weightb, False)
             Case 1 'superfast
-                setVal(weightp, 1)
-                setVal(mbtree, False)
-                setVal([me], 0)
-                setVal(mixedRefs, False)
+                setVal(Weightp, 1)
+                setVal(Mbtree, False)
+                setVal(Me_, 0)
+                setVal(MixedRefs, False)
+                setVal(P4x4, False)
+                setVal(B8x8, False)
+                setVal(P8x8, False)
+                setVal(RcLookahead, 0)
+                setVal(Ref, 1)
+                setVal(Subme, 1)
+                setVal(Trellis, 0)
             Case 2 'veryfast
-                setVal(weightp, 1)
-                setVal(mixedRefs, False)
+                setVal(Weightp, 1)
+                setVal(MixedRefs, False)
+                setVal(RcLookahead, 10)
+                setVal(Ref, 1)
+                setVal(Subme, 2)
+                setVal(Trellis, 0)
             Case 3 'faster
-                setVal(weightp, 1)
-                setVal(mixedRefs, False)
+                setVal(Weightp, 1)
+                setVal(MixedRefs, False)
+                setVal(RcLookahead, 20)
+                setVal(Ref, 2)
+                setVal(Subme, 4)
             Case 4 'fast
-                setVal(weightp, 1)
+                setVal(Weightp, 1)
+                setVal(RcLookahead, 30)
+                setVal(Ref, 2)
+                setVal(Subme, 6)
             Case 5 'medium
-
             Case 6 'slow
-
+                setVal(RcLookahead, 50)
+                setVal(Ref, 5)
+                setVal(Subme, 8)
+                setVal(Trellis, 2)
+                setVal(Direct, 3)
             Case 7 'slower
                 setVal(BAdapt, 2)
-                setVal([me], 2)
+                setVal(Me_, 2)
+                setVal(RcLookahead, 60)
+                setVal(Ref, 8)
+                setVal(Subme, 9)
+                setVal(Trellis, 2)
+                setVal(Direct, 3)
             Case 8 'veryslow
                 setVal(BFrames, 8)
                 setVal(BAdapt, 2)
-                setVal([me], 2)
+                setVal(Me_, 2)
+                setVal(RcLookahead, 60)
+                setVal(RcLookahead, 60)
+                setVal(Ref, 16)
+                setVal(Subme, 10)
+                setVal(Trellis, 2)
+                setVal(Direct, 3)
+                setVal(Merange, 24)
             Case 9 'placebo
                 setVal(BFrames, 16)
                 setVal(BAdapt, 2)
-                setVal([me], 4)
+                setVal(Me_, 4)
+                setVal(RcLookahead, 60)
+                setVal(Ref, 16)
+                setVal(Subme, 11)
+                setVal(Trellis, 2)
+                setVal(Direct, 3)
+                setVal(Merange, 24)
+                setVal(Fastpskip, False)
         End Select
 
         Select Case Tune.Value
             Case 1 'film
                 setVal(DeblockA, -1)
                 setVal(DeblockB, -1)
+                setVal(PsyTrellis, 0.15)
             Case 2 'animation
                 setVal(DeblockA, 1)
                 setVal(DeblockB, 1)
                 Dim val = BFrames.Value
                 val += 2
                 setVal(BFrames, If(val > 16, 16, val))
+                setVal(PsyRD, 0.4)
+                setVal(AqStrength, 0.6)
             Case 3 'grain
                 setVal(DeblockA, -2)
                 setVal(DeblockB, -2)
+                setVal(PsyTrellis, 0.25)
+                setVal(AqStrength, 0.5)
+                setVal(DctDecimate, False)
+                setVal(DeadzoneInter, 6)
+                setVal(DeadzoneIntra, 6)
+                setVal(Ipratio, 1.1)
+                setVal(Pbratio, 1.1)
+                setVal(Qcomp, 0.8)
             Case 4 'stillimage
                 setVal(DeblockA, -3)
                 setVal(DeblockB, -3)
+                setVal(PsyRD, 2)
+                setVal(PsyTrellis, 0.7)
+                setVal(AqStrength, 1.2)
             Case 5 'psnr
                 setVal(AqMode, 0)
+                setVal(Psy, False)
             Case 6 'ssim
                 setVal(AqMode, 2)
+                setVal(Psy, False)
             Case 7 'fastdecode
                 setVal(Deblock, False)
                 setVal(Cabac, False)
-                setVal(weightp, 0)
+                setVal(Weightp, 0)
+                setVal(Weightb, False)
             Case 8 'zerolatency
                 setVal(BFrames, 0)
-                setVal(mbtree, False)
+                setVal(Mbtree, False)
+                setVal(RcLookahead, 0)
+                setVal(ForceCFR, True)
         End Select
 
-        Select Case profile.Value
+        Select Case Profile.Value
             Case 1 'baseline
                 setVal(Cabac, False)
                 setVal(_8x8dct, False)
                 setVal(BFrames, 0)
-                setVal(weightp, 0)
+                setVal(Weightp, 0)
+            Case 2 'main
+                setVal(_8x8dct, False)
         End Select
     End Sub
-
-    Private ItemsValue As List(Of CommandLineParam)
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
             If ItemsValue Is Nothing Then
-                ItemsValue = New List(Of CommandLineParam) From {
+                ItemsValue = New List(Of CommandLineParam)
+
+                Add("Basic",
                     Quant,
                     Preset,
                     Tune,
-                    profile,
+                    Profile,
                     Mode,
-                    weightp,
-                    [me],
-                    cqm,
+                    Depth)
+                Add("Analysis",
+                    Trellis,
+                    CQM,
+                    I4x4,
+                    P4x4,
+                    B8x8,
+                    I8x8,
+                    P8x8,
                     _8x8dct,
-                    mixedRefs,
+                    Psy,
+                    PsyRD,
+                    PsyTrellis,
+                    Fastpskip)
+                Add("Analysis 2",
+                    DeadzoneInter,
+                    DeadzoneIntra,
+                    MixedRefs)
+                Add("Rate Control",
                     AqMode,
-                    mbtree,
+                    AqStrength,
+                    Ipratio,
+                    Pbratio,
+                    Qcomp,
+                    Mbtree)
+                Add("Motion Search",
+                    Subme,
+                    Me_,
+                    Weightp,
+                    Direct,
+                    Merange,
+                    Weightb)
+                Add("Slice Decision",
                     BAdapt,
+                    New OptionParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid", .InitValue = 2, .Convert = True, .Options = {"None", "Strict", "Normal"}, .Help = "Keep some B-frames as references [normal]"},
                     BFrames,
-                    New StringParam With {.Path = "VUI", .Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
+                    New NumParam With {.Switch = "--b-bias", .Text = "B-Bias", .Help = "Influences how often B-frames are used [0]"},
+                    RcLookahead,
+                    Ref,
+                    Scenecut,
+                    New NumParam With {.Switch = "--keyint", .Text = "Max GOP Size", .InitValue = 250, .Help = "Maximum GOP size [250]"},
+                    New NumParam With {.Switch = "--min-keyint", .Text = "Min GOP Size", .Help = "Minimum GOP size [auto]"},
+                    New NumParam With {.Switch = "--slices", .Text = "Slices", .Help = "Number of slices per frame"},
+                    New NumParam With {.Switch = "--slices-max", .Text = "Slices Max", .Help = "Absolute maximum slices per frame"},
+                    New NumParam With {.Switch = "--slice-max-size", .Text = "Slice Max Size", .Help = "Limit the size of each slice in bytes"},
+                    New NumParam With {.Switch = "--slice-max-mbs", .Text = "Slice Max MBS", .Help = "Limit the size of each slice in macroblocks (max)"},
+                    New NumParam With {.Switch = "--slice-min-mbs", .Text = "Slice Min MBS", .Help = "Limit the size of each slice in macroblocks (min)"})
+                Add("Slice Decision 2",
+                    DctDecimate,
+                    New BoolParam With {.Switch = "--intra-refresh", .Text = "Periodic Intra Refresh instead of IDR frames"},
+                    New BoolParam With {.Switch = "--open-gop", .Text = "Open GOP", .Help = "Use recovery points to close GOPs."})
+                Add("Performance",
+                    New BoolParam With {.Switch = "--slow-firstpass", .Text = "Slow Firstpass"})
+                Add("VUI",
+                    New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR})
+                Add("Input/Output",
+                    ForceCFR)
+                Add("Other",
+                    New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced:", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                     Deblock,
                     DeblockA,
                     DeblockB,
                     CompCheck,
-                    Cabac,
+                    New BoolParam With {.Switch = "--constrained-intra", .Text = "Constrained Intra Prediction"},
+                    Cabac)
+                Add("Custom",
                     Custom,
                     CustomFirstPass,
-                    CustomSecondPass}
+                    CustomSecondPass)
 
-
-
-                'Add("Basic", Quant, Preset, Tune, Profile, OutputDepth,
-                'Add("Custom", Custom, CustomFirstPass, CustomSecondPass)
-
-                'New OptionParam With {.Path = "Basic", .Switch = "--preset", .Text = "Preset", .Help = "Use a preset to select encoding settings", .InitValue = 5, Options = {"ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"}},
-                'New OptionParam With {.Path = "Basic", .Switch = "--tune", .Text = "Tune", .Help = "Tune the settings for a particular type of source or situation.", Options = {"disabled", film", "animation", "grain", "stillimage", "psnr", "ssim", "fastdecode", "zerolatency"}},
-                'New BoolParam   With {.Path = "Basic", .Switch = "--slow-firstpass", .Text = "Slow Firstpass"},
-                'New NumParam    With {.Path = "Frame-type", .Switch = "--keyint", .Text = "keyint", Help = "keyint", Help = "Maximum GOP size [250]"},
-                'New NumParam    With {.Path = "Frame-type", .Switch = "--min-keyint", .Text = "min-keyint", Help = "Minimum GOP size [auto]"},
-                'New NumParam    With {.Path = "Frame-type", .Switch = "--scenecut", .Text = "scenecut", Help = "How aggressively to insert extra I-frames [40]"},
-                'New BoolParam   With {.Path = "Frame-type", .Switch = "--intra-refresh", .Text = "Intra Refresh", .Help = "Use Periodic Intra Refresh instead of IDR frames"},
-                'New NumParam    With {.Path = "", .Switch = "--b-bias", .Text = "b-bias", Help = "Influences how often B-frames are used [0]"},
-                'New StringParam With {.Path = "", .Switch = "--b-pyramid", .Text = "b-pyramid", .Options = {"none", "strict", "normal"}, .Help = "Keep some B-frames as references [normal]"},
-                'New BoolParam   With {.Path = "", .Switch = "--open-gop", .Text = "open-gop", .Help = "Use recovery points to close GOPs"},
-                'New NumParam    With {.Path = "", .Switch = "--ref", .Text = "ref", Help = "Number of reference frames [3]"},
-                'New BoolParam   With {.Path = "", .Switch = "--no-deblock", .Text = "no-deblock", .Help = "Disable loop filter"},
-                'New NumParam    With {.Path = "", .Switch = "--slices", .Text = "slices", Help = "Number of slices per frame"},
-                'New NumParam    With {.Path = "", .Switch = "--slices-max", .Text = "slices-max", Help = "Absolute maximum slices per frame"},
-                'New NumParam    With {.Path = "", .Switch = "--slice-max-size", .Text = "slice-max-size", Help = "Limit the size of each slice in bytes"},
-                'New NumParam    With {.Path = "", .Switch = "--slice-max-mbs", .Text = "slice-max-mbs", Help = "Limit the size of each slice in macroblocks (max)"},
-                'New NumParam    With {.Path = "", .Switch = "--slice-min-mbs", .Text = "slice-min-mbs", Help = "Limit the size of each slice in macroblocks (min)"},
-                'New BoolParam   With {.Path = "", .Switch = "--tff", .Text = "tff", .Help = "Enable interlaced mode (top field first)"},
-                'New BoolParam   With {.Path = "", .Switch = "--bff", .Text = "bff", .Help = "Enable interlaced mode (bottom field first)"},
-                'New BoolParam   With {.Path = "", .Switch = "--constrained-intra", .Text = "constrained-intra", .Help = "Enable constrained intra prediction."},
-                'New StringParam With {.Path = "", .Switch = "--pulldown", .Text = "pulldown", .Help = "Use soft pulldown to change frame rate"},
-
-                '{"none", "22", "32", "64", "double", "triple", "euro"}
-
+                'New StringParam With {.Switch = "--pulldown", .Text = "pulldown", .Options = {"none", "22", "32", "64", "double", "triple", "euro"}, .Help = "Use soft pulldown to change frame rate"},
                 'New BoolParam   With {.Path = "", .Switch = "--fake-interlaced", .Text = "fake-interlaced", .Help = "Flag stream as interlaced but encode progressive."},
-                'New NumParam    With {.Path = "", .Switch = "--frame-packing", .Text = "frame-packing", .IntegerValue = True, Help = "For stereoscopic videos define frame arrangement"},
-
-                '{"checkerboard", "column alternation", "row alternation", "side by side", "top bottom", "frame alternation", "mono", "tile format"}
-
-                'Ratecontrol:
-
-                'New NumParam    With {.Path = "", .Switch = "--qp", .Text = "qp", Help = "Force constant QP (0-69, 0=lossless)"},
-                'New NumParam    With {.Path = "", .Switch = "--bitrate", .Text = "bitrate", Help = "Set bitrate (kbit/s)"},
-                'New NumParam    With {.Path = "", .Switch = "--crf", .Text = "crf", Help = "Quality-based VBR (0-51) [23.0]"},
-                'New NumParam    With {.Path = "", .Switch = "--rc-lookahead", .Text = "rc-lookahead", Help = "Number of frames for frametype lookahead [40]"},
-                'New NumParam    With {.Path = "", .Switch = "--vbv-maxrate", .Text = "vbv-maxrate", Help = "Max local bitrate (kbit/s) [0]"},
-                'New NumParam    With {.Path = "", .Switch = "--vbv-bufsize", .Text = "vbv-bufsize", Help = "Set size of the VBV buffer (kbit) [0]"},
-                'New NumParam    With {.Path = "", .Switch = "--vbv-init", .Text = "vbv-init", Help = "Initial VBV buffer occupancy [0.9]"},
-                'New NumParam    With {.Path = "", .Switch = "--crf-max", .Text = "crf-max", Help = "With CRF+VBV, limit RF to this value"},
-                'New NumParam    With {.Path = "", .Switch = "--qpmin", .Text = "qpmin", Help = "Set min QP [0]"},
-                'New NumParam    With {.Path = "", .Switch = "--qpmax", .Text = "qpmax", Help = "Set max QP [69]"},
-                'New NumParam    With {.Path = "", .Switch = "--qpstep", .Text = "qpstep", Help = "Set max QP step [4]"},
-                'New NumParam    With {.Path = "", .Switch = "--ratetol", .Text = "ratetol", Help = "Tolerance of ABR ratecontrol And VBV [1.0]"},
-                'New NumParam    With {.Path = "", .Switch = "--ipratio", .Text = "ipratio", Help = "QP factor between I And P [1.40]"},
-                'New NumParam    With {.Path = "", .Switch = "--pbratio", .Text = "pbratio", Help = "QP factor between P And B [1.30]"},
-                'New NumParam    With {.Path = "", .Switch = "--chroma-qp-offset", .Text = "chroma-qp-offset", Help = "QP difference between chroma And luma [0]"},
-                'New NumParam    With {.Path = "", .Switch = "--aq-strength", .Text = "aq-strength", Help = "Reduces blocking And blurring in flat And textured areas. [1.0]"},
+                'New NumParam    With {.Path = "", .Switch = "--frame-packing", .Text = "frame-packing", .IntegerValue = True, .Options = {"checkerboard", "column alternation", "row alternation", "side by side", "top bottom", "frame alternation", "mono", "tile format"}, .Help = "For stereoscopic videos define frame arrangement"},
+                'New NumParam    With {.Path = "", .Switch = "--vbv-maxrate", .Text = "vbv-maxrate", .Help = "Max local bitrate (kbit/s) [0]"},
+                'New NumParam    With {.Path = "", .Switch = "--vbv-bufsize", .Text = "vbv-bufsize", .Help = "Set size of the VBV buffer (kbit) [0]"},
+                'New NumParam    With {.Path = "", .Switch = "--vbv-init", .Text = "vbv-init", .Help = "Initial VBV buffer occupancy [0.9]"},
+                'New NumParam    With {.Path = "", .Switch = "--crf-max", .Text = "crf-max", .Help = "With CRF+VBV, limit RF to this value"},
+                'New NumParam    With {.Path = "", .Switch = "--qpmin", .Text = "qpmin", .Help = "Set min QP [0]"},
+                'New NumParam    With {.Path = "", .Switch = "--qpmax", .Text = "qpmax", .Help = "Set max QP [69]"},
+                'New NumParam    With {.Path = "", .Switch = "--qpstep", .Text = "qpstep", .Help = "Set max QP step [4]"},
+                'New NumParam    With {.Path = "", .Switch = "--ratetol", .Text = "ratetol", .Help = "Tolerance of ABR ratecontrol And VBV [1.0]"},
+                'New NumParam    With {.Path = "", .Switch = "--chroma-qp-offset", .Text = "chroma-qp-offset", .Help = "QP difference between chroma And luma [0]"},
                 'New StringParam With {.Path = "", .Switch = "--stats", .Text = "stats", .Help = "Filename for 2 pass stats ["x264_2pass.log"]"},
-                'New NumParam    With {.Path = "", .Switch = "--qcomp", .Text = "qcomp", Help = "QP curve compression [0.60]"},
-                'New NumParam    With {.Path = "", .Switch = "--cplxblur", .Text = "cplxblur", Help = "Reduce fluctuations in QP (before curve compression) [20.0]"},
-                'New NumParam    With {.Path = "", .Switch = "--qblur", .Text = "qblur", Help = "Reduce fluctuations in QP (after curve compression) [0.5]"},
+                'New NumParam    With {.Path = "", .Switch = "--cplxblur", .Text = "cplxblur", .Help = "Reduce fluctuations in QP (before curve compression) [20.0]"},
+                'New NumParam    With {.Path = "", .Switch = "--qblur", .Text = "qblur", .Help = "Reduce fluctuations in QP (after curve compression) [0.5]"},
                 'New StringParam With {.Path = "", .Switch = "--qpfile", .Text = "qpfile", .Help = "Force frametypes And QPs for some Or all frames"},
-
-                'Analysis:
-
-                'New StringParam With {.Path = "", .Switch = "--direct", .Text = "direct", .Help = "Direct MV prediction mode ["spatial"]"},
-
                 '{"none", "spatial", "temporal", "auto"}
-
-                'New BoolParam   With {.Path = "", .Switch = "--no-weightb", .Text = "no-weightb", .Help = "Disable weighted prediction for B-frames"},
-
                 '{"Disabled", "Weighted refs", "Weighted refs + Duplicates"}
-
-                'New NumParam    With {.Path = "", .Switch = "--merange", .Text = "merange", Help = "Maximum motion vector search range [16]"},
-                'New NumParam    With {.Path = "", .Switch = "--mvrange", .Text = "mvrange", Help = "Maximum motion vector length [-1 (auto)]"},
-                'New NumParam    With {.Path = "", .Switch = "--mvrange-thread", .Text = "mvrange-thread", Help = "Minimum buffer between threads [-1 (auto)]"},
-                'New NumParam    With {.Path = "", .Switch = "--subme", .Text = "subme", .IntegerValue = True, Help = "Subpixel motion estimation And mode decision [7]"},
-
-                '{"fullpel only (Not recommended)", "SAD mode decision, one qpel iteration", "SATD mode decision", "Progressively more qpel", "Progressively more qpel", "Progressively more qpel", "RD mode decision for I/P-frames", "RD mode decision for all frames", "RD refinement for I/P-frames", "RD refinement for all frames", "QP-RD - requires trellis=2, aq-mode>0", "Full RD disable all early terminations"}
-
-                'New <float:float>Param With {.Path = "", .Switch = "--psy-rd", .Text = "Psy RD", .Help = "Strength of psychovisual optimization ["1.0:0.0"]"
-
-                '{"RD (requires subme>=6)", "Trellis (requires trellis)"}
-
-                'New BoolParam   With {.Path = "", .Switch = "--no-psy", .Text = "no-psy", .Help = "Disable all visual optimizations that worsen"},
+                'New NumParam    With {.Path = "", .Switch = "--mvrange", .Text = "mvrange", .Help = "Maximum motion vector length [-1 (auto)]"},
+                'New NumParam    With {.Path = "", .Switch = "--mvrange-thread", .Text = "mvrange-thread", .Help = "Minimum buffer between threads [-1 (auto)]"},
                 '                              both PSNR and SSIM.
                 'New BoolParam   With {.Path = "", .Switch = "--no-chroma-me", .Text = "no-chroma-me", .Help = "Ignore chroma in motion estimation"},
                 'New BoolParam   With {.Path = "", .Switch = "--no-8x8dct", .Text = "no-8x8dct", .Help = "Disable adaptive spatial transform size"},
-                'New NumParam    With {.Path = "", .Switch = "--trellis", .Text = "trellis", .IntegerValue = True, Help = "Trellis RD quantization. [1]"},
-
                 '{"Disabled", "Final MB", "Always"}
-
-                'New BoolParam   With {.Path = "", .Switch = "--no-fast-pskip", .Text = "no-fast-pskip", .Help = "Disables early SKIP detection on P-frames"},
-                'New BoolParam   With {.Path = "", .Switch = "--no-dct-decimate", .Text = "no-dct-decimate", .Help = "Disables coefficient thresholding on P-frames"},
-                'New NumParam    With {.Path = "", .Switch = "--nr", .Text = "nr", Help = "Noise reduction [0]"},
-                'New NumParam    With {.Path = "", .Switch = "--deadzone-inter", .Text = "deadzone-inter", .MinMaxStep = {0, 32 , 1}, Help = "Set the size of the inter luma quantization deadzone [21]"},
-                'New NumParam    With {.Path = "", .Switch = "--deadzone-intra", .Text = "deadzone-intra", .MinMaxStep = {0, 32 , 1}, Help = "Set the size of the intra luma quantization deadzone [11]"},
-
-                '{"jvt", "flat"}
-
+                'New NumParam    With {.Path = "", .Switch = "--nr", .Text = "nr", .Help = "Noise reduction [0]"},
                 'New StringParam With {.Path = "", .Switch = "--cqmfile", .Text = "cqmfile", .Help = "Read custom quant matrices from a JM-compatible file"},
                 'New <list>Param With {.Path = "", .Switch = "--cqm4", .Text = "Set all 4x4 quant matrices"
                 'New <list>Param With {.Path = "", .Switch = "--cqm8", .Text = "Set all 8x8 quant matrices"
                 'New <list>Param With {.Path = "", .Switch = "--cqm4i, --cqm4p, --cqm8i, --cqm8p", .Text = "Set both luma and chroma quant matrices"
                 'New <list>Param With {.Path = "", .Switch = "--cqm4iy, --cqm4ic, --cqm4py, --cqm4pc", .Text = "Set individual quant matrices"
-
-                'Video Usability Info (Annex E)
                 'The VUI settings are Not used by the encoder but are merely suggestions to
                 'the playback equipment. See doc/vui.txt for details. Use at your own risk.
-
                 'New StringParam With {.Path = "", .Switch = "--overscan", .Text = "overscan", .Help = "Specify crop overscan setting ["undef"]"},
-
                 '{"undef", "show", "crop"}
-
                 'New StringParam With {.Path = "", .Switch = "--videoformat", .Text = "videoformat", .Help = "Specify video format ["undef"]"},
-
                 '{"undef", "component", "pal", "ntsc", "secam", "mac"}
-
                 'New StringParam With {.Path = "", .Switch = "--range", .Text = "range", .Help = "Specify color range ["auto"]"},
-
                 '{"auto", "tv", "pc"}
-
                 'New StringParam With {.Path = "", .Switch = "--colorprim", .Text = "colorprim", .Help = "Specify color primaries ["undef"]"},
-
                 '{"undef", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "film", "bt2020", "smpte428", "smpte431", "smpte432"}
-
                 'New StringParam With {.Path = "", .Switch = "--transfer", .Text = "transfer", .Help = "Specify transfer characteristics ["undef"]"},
-
                 '{"undef", "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "smpte428"}
-
                 'New StringParam With {.Path = "", .Switch = "--colormatrix", .Text = "colormatrix", .Help = "Specify color matrix setting ["???"]"},
-
                 '{"undef", "bt709", "fcc", "bt470bg", "smpte170m", "smpte240m", "GBR", "YCgCo", "bt2020nc", "bt2020c", "smpte2085"}
-
-                'New NumParam    With {.Path = """, ".Switch = "--chromaloc", .Text = "chromaloc", Help = "Specify chroma sample location (0 to 5) [0]"},"
+                'New NumParam    With {.Path = """, ".Switch = "--chromaloc", .Text = "chromaloc", .Help = "Specify chroma sample location (0 to 5) [0]"},"
                 'New StringParam With {.Path = "", .Switch = "--nal-hrd", .Text = "nal-hrd", .Help = "Signal HRD information (requires vbv-bufsize)"},
-
                 '{"none", "vbr", "cbr"}
-
                 'New BoolParam   With {.Path = "", .Switch = "--filler", .Text = "filler", .Help = "Force hard-CBR And generate filler (implied by"},
                 'New BoolParam   With {.Path = "", .Switch = "--pic-struct", .Text = "pic-struct", .Help = "Force pic_struct in Picture Timing SEI"},
                 'New StringParam With {.Path = "", .Switch = "--crop-rect", .Text = "crop-rect", .Help = "Add 'left,top,right,bottom' to the bitstream-level cropping rectangle"},
-
                 '[Input/Output]
-
                 'New StringParam With {.Path = "", .Switch = "--output", .Text = "output", .Help = "Specify output file"},
                 'New StringParam With {.Path = "", .Switch = "--input-fmt", .Text = "input-fmt", .Help = "Specify input file format (requires lavf support)"},
                 'New StringParam With {.Path = "", .Switch = "--input-csp", .Text = "input-csp", .Help = "Specify input colorspace format for raw input"},
-
                 '{"i420", "yv12", "nv12", "nv21", "i422", "yv16", "nv16", "yuyv", "uyvy", "i444", "yv24", "bgr", "bgra", "rgb"}
-
                 'New StringParam With {.Path = "", .Switch = "--output-csp", .Text = "output-csp", .Help = "Specify output colorspace ["i420"]"},
-
                 '{"i420", "i422", "i444", "rgb"}
-
-                'New NumParam    With {.Path = "", .Switch = "--input-depth", .Text = "input-depth", Help = "Specify input bit depth for raw input"},
+                'New NumParam    With {.Path = "", .Switch = "--input-depth", .Text = "input-depth", .Help = "Specify input bit depth for raw input"},
                 'New StringParam With {.Path = "", .Switch = "--input-range", .Text = "input-range", .Help = "Specify input color range ["auto"]"},
-
                 '{"auto", "tv", "pc"}
-
                 'New <intxint>Param With {.Path = "", .Switch = "--input-res", .Text = "Specify input resolution (width x height)"
                 'New StringParam With {.Path = "", .Switch = "--index", .Text = "index", .Help = "Filename for input index file"},
                 'New <float|rational>Param With {.Path = "", .Switch = "--fps", .Text = "Specify framerate"
-                'New NumParam    With {.Path = "", .Switch = "--seek", .Text = "seek", Help = "First frame to encode"},
-                'New NumParam    With {.Path = "", .Switch = "--frames", .Text = "frames", Help = "Maximum number of frames to encode"},
+                'New NumParam    With {.Path = "", .Switch = "--seek", .Text = "seek", .Help = "First frame to encode"},
+                'New NumParam    With {.Path = "", .Switch = "--frames", .Text = "frames", .Help = "Maximum number of frames to encode"},
                 'New StringParam With {.Path = "", .Switch = "--level", .Text = "level", .Help = "Specify level (as defined by Annex A)"},
                 'New BoolParam   With {.Path = "", .Switch = "--bluray-compat", .Text = "bluray-compat", .Help = "Enable compatibility hacks for Blu-ray support"},
-                'New NumParam    With {.Path = "", .Switch = "--avcintra-class", .Text = "avcintra-class", Help = "Use compatibility hacks for AVC-Intra class"},
-
+                'New NumParam    With {.Path = "", .Switch = "--avcintra-class", .Text = "avcintra-class", .Help = "Use compatibility hacks for AVC-Intra class"},
                 '{"50", "100", "200"}
-
                 'New BoolParam   With {.Path = "", .Switch = "--stitchable", .Text = "stitchable", .Help = "Don't optimize headers based on video content"},
                 'New BoolParam   With {.Path = "", .Switch = "--verbose", .Text = "verbose", .Help = "Print stats for each frame"},
                 'New BoolParam   With {.Path = "", .Switch = "--no-progress", .Text = "no-progress", .Help = "Don't show the progress indicator while encoding"},
                 'New BoolParam   With {.Path = "", .Switch = "--quiet", .Text = "quiet", .Help = "Quiet Mode"},
                 'New StringParam With {.Path = "", .Switch = "--log-level", .Text = "log-level", .Help = "Specify the maximum level of logging ["info"]"},
-
                 '{"none", "error", "warning", "info", "debug"}
-
                 'New BoolParam   With {.Path = "", .Switch = "--psnr", .Text = "psnr", .Help = "Enable PSNR computation"},
                 'New BoolParam   With {.Path = "", .Switch = "--ssim", .Text = "ssim", .Help = "Enable SSIM computation"},
-                'New NumParam    With {.Path = "", .Switch = "--threads", .Text = "threads", Help = "Force a specific number of threads"},
-                'New NumParam    With {.Path = "", .Switch = "--lookahead-threads", .Text = "lookahead-threads", Help = "Force a specific number of lookahead threads"},
+                'New NumParam    With {.Path = "", .Switch = "--threads", .Text = "threads", .Help = "Force a specific number of threads"},
+                'New NumParam    With {.Path = "", .Switch = "--lookahead-threads", .Text = "lookahead-threads", .Help = "Force a specific number of lookahead threads"},
                 'New BoolParam   With {.Path = "", .Switch = "--sliced-threads", .Text = "sliced-threads", .Help = "Low-latency but lower-efficiency threading"},
                 'New BoolParam   With {.Path = "", .Switch = "--thread-input", .Text = "thread-input", .Help = "Run Avisynth in its own thread"},
-                'New NumParam    With {.Path = "", .Switch = "--sync-lookahead", .Text = "sync-lookahead", Help = "Number of buffer frames for threaded lookahead"},
+                'New NumParam    With {.Path = "", .Switch = "--sync-lookahead", .Text = "sync-lookahead", .Help = "Number of buffer frames for threaded lookahead"},
                 'New BoolParam   With {.Path = "", .Switch = "--non-deterministic", .Text = "non-deterministic", .Help = "Slightly improve quality of SMP, at the cost of repeatability"},
                 'New BoolParam   With {.Path = "", .Switch = "--cpu-independent", .Text = "cpu-independent", .Help = "Ensure exact reproducibility across different cpus, as opposed to letting them select different algorithms"},
-                'New NumParam    With {.Path = "", .Switch = "--asm", .Text = "asm", Help = "Override CPU detection"},
+                'New NumParam    With {.Path = "", .Switch = "--asm", .Text = "asm", .Help = "Override CPU detection"},
                 'New BoolParam   With {.Path = "", .Switch = "--no-asm", .Text = "no-asm", .Help = "Disable all CPU optimizations"},
                 'New BoolParam   With {.Path = "", .Switch = "--opencl", .Text = "opencl", .Help = "Enable use of OpenCL"},
                 'New StringParam With {.Path = "", .Switch = "--opencl-clbin", .Text = "opencl-clbin", .Help = "Specify path of compiled OpenCL kernel cache"},
-                'New NumParam    With {.Path = "", .Switch = "--opencl-device", .Text = "opencl-device", Help = "Specify OpenCL device ordinal"},
+                'New NumParam    With {.Path = "", .Switch = "--opencl-device", .Text = "opencl-device", .Help = "Specify OpenCL device ordinal"},
                 'New StringParam With {.Path = "", .Switch = "--dump-yuv", .Text = "dump-yuv", .Help = "Save reconstructed frames"},
-                'New NumParam    With {.Path = "", .Switch = "--sps-id", .Text = "sps-id", Help = "Set SPS and PPS id numbers [0]"},
+                'New NumParam    With {.Path = "", .Switch = "--sps-id", .Text = "sps-id", .Help = "Set SPS and PPS id numbers [0]"},
                 'New BoolParam   With {.Path = "", .Switch = "--aud", .Text = "aud", .Help = "Use access unit delimiters"},
-                'New BoolParam   With {.Path = "", .Switch = "--force-cfr", .Text = "force-cfr", .Help = "Force constant framerate timestamp generation"},
                 'New StringParam With {.Path = "", .Switch = "--tcfile-in", .Text = "tcfile-in", .Help = "Force timestamp generation with timecode file"},
                 'New StringParam With {.Path = "", .Switch = "--tcfile-out", .Text = "tcfile-out", .Help = "Output timecode v2 file from input timestamps"},
                 'New <int/int>Param With {.Path = "", .Switch = "--timebase", .Text = "Specify timebase numerator and denominator"
                 '                 <integer>    Specify timebase numerator For input timecode file
                 '                              Or specify timebase denominator for other input
                 'New BoolParam   With {.Path = "", .Switch = "--dts-compress", .Text = "dts-compress", .Help = "Eliminate initial delay with container DTS hack"},
-
                 'New <alphabeta> Param With {.Path = "", .Switch = "--deblock", .Text = "Loop filter parameters [0:0]"
-
                 'New StringParam With {.Path = "", .Switch = "--partitions", .Text = "partitions", .Help = "Partitions to consider ["p8x8,b8x8,i8x8,i4x4"]"},
                 '                                  - p8x8, p4x4, b8x8, i8x8, i4x4
                 '                                  - none, all
                 '                                  (p4x4 requires p8x8. i8x8 requires --8x8dct.)
-
             End If
 
             Return ItemsValue
@@ -730,6 +909,9 @@ Public Class x264Params2
 
         DeblockA.NumEdit.Enabled = Deblock.Value
         DeblockB.NumEdit.Enabled = Deblock.Value
+
+        PsyRD.NumEdit.Enabled = Psy.Value
+        PsyTrellis.NumEdit.Enabled = Psy.Value
 
         MyBase.OnValueChanged(item)
     End Sub
@@ -803,6 +985,31 @@ Public Class x264Params2
         Return Macro.Expand(args.Trim.FixBreak.Replace(BR, " "))
     End Function
 
+    Function GetPartitionsArg() As String
+        If I4x4.Value = I4x4.DefaultValue AndAlso I8x8.Value = I8x8.DefaultValue AndAlso
+                P4x4.Value = P4x4.DefaultValue AndAlso P8x8.Value = P8x8.DefaultValue AndAlso
+                B8x8.Value = B8x8.DefaultValue Then
+
+            Return Nothing
+        End If
+
+        If I4x4.Value AndAlso I8x8.Value AndAlso P4x4.Value AndAlso P8x8.Value AndAlso B8x8.Value Then
+            Return "--partitions all"
+        ElseIf Not I4x4.Value AndAlso Not I8x8.Value AndAlso Not P4x4.Value AndAlso Not P8x8.Value AndAlso Not B8x8.Value Then
+            Return "--partitions none"
+        End If
+
+        Dim partitions As String
+
+        If I4x4.Value Then partitions += "i4x4,"
+        If I8x8.Value Then partitions += "i8x8,"
+        If P4x4.Value Then partitions += "p4x4,"
+        If P8x8.Value Then partitions += "p8x8,"
+        If B8x8.Value Then partitions += "b8x8"
+
+        If partitions <> "" Then Return "--partitions " + partitions.TrimEnd(","c)
+    End Function
+
     Function IsCustom(pass As Integer, switch As String) As Boolean
         If switch = "" Then Return False
 
@@ -817,21 +1024,6 @@ Public Class x264Params2
         End If
 
         If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then Return True
-    End Function
-
-    Function GetDeblockArgs() As String
-        If Deblock.Value Then
-            If DeblockA.Value = DeblockA.DefaultValue AndAlso
-                DeblockB.Value = DeblockB.DefaultValue AndAlso
-                Deblock.DefaultValue Then
-
-                Return ""
-            Else
-                Return "--deblock " & DeblockA.Value & ":" & DeblockB.Value
-            End If
-        ElseIf Deblock.DefaultValue Then
-            Return "--no-deblock"
-        End If
     End Function
 
     Public Overrides Function GetPackage() As Package

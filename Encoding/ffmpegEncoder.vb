@@ -154,8 +154,6 @@ Class ffmpegEncoder
             .Options = {"AviSynth/VapourSynth", "Intel", "DXVA2"},
             .Values = {"avs", "qsv", "dxva2"}}
 
-        Private ItemsValue As List(Of CommandLineParam)
-
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then

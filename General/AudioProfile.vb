@@ -317,7 +317,10 @@ Public Class BatchAudioProfile
     End Function
 
     Public Overrides Sub Encode()
-        If p.SkipAudioEncoding AndAlso IO.File.Exists(GetOutputFile) Then Exit Sub
+        If p.SkipAudioEncoding AndAlso IO.File.Exists(GetOutputFile) Then
+            File = GetOutputFile()
+            Exit Sub
+        End If
 
         If File <> "" Then
             Dim bitrateBefore = p.VideoBitrate
@@ -347,11 +350,14 @@ Public Class BatchAudioProfile
 
             If g.FileExists(targetPath) Then
                 File = targetPath
-                Bitrate = Calc.GetBitrateFromFile(File, p.TargetSeconds)
-                p.VideoBitrate = CInt(Calc.GetVideoBitrate)
 
-                If Not p.VideoEncoder.QualityMode Then
-                    Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR)
+                If Not p.BitrateIsFixed Then
+                    Bitrate = Calc.GetBitrateFromFile(File, p.TargetSeconds)
+                    p.VideoBitrate = CInt(Calc.GetVideoBitrate)
+
+                    If Not p.VideoEncoder.QualityMode Then
+                        Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR)
+                    End If
                 End If
 
                 Log.WriteLine(MediaInfo.GetSummary(File))
@@ -566,7 +572,11 @@ Class GUIAudioProfile
             Select Case Params.ChannelsMode
                 Case ChannelsMode.Original
                     If Not Stream Is Nothing Then
-                        Return Stream.Channels
+                        If Stream.Channels > Stream.Channels2 Then
+                            Return Stream.Channels
+                        Else
+                            Return Stream.Channels2
+                        End If
                     ElseIf File <> "" AndAlso IO.File.Exists(File) Then
                         Return MediaInfo.GetChannels(File)
                     Else
@@ -632,7 +642,10 @@ Class GUIAudioProfile
     End Function
 
     Public Overrides Sub Encode()
-        If p.SkipAudioEncoding AndAlso IO.File.Exists(GetOutputFile) Then Exit Sub
+        If p.SkipAudioEncoding AndAlso IO.File.Exists(GetOutputFile) Then
+            File = GetOutputFile()
+            Exit Sub
+        End If
 
         If File <> "" Then
             Dim bitrateBefore = p.VideoBitrate
@@ -662,9 +675,10 @@ Class GUIAudioProfile
 
                 If g.FileExists(targetPath) Then
                     File = targetPath
-                    Bitrate = Calc.GetBitrateFromFile(File, p.TargetSeconds)
 
                     If Not p.BitrateIsFixed Then
+                        Bitrate = Calc.GetBitrateFromFile(File, p.TargetSeconds)
+
                         p.VideoBitrate = CInt(Calc.GetVideoBitrate)
 
                         If Not p.VideoEncoder.QualityMode Then

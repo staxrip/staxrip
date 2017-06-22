@@ -134,8 +134,6 @@ Public Class AV1Params
         .Path = "Basic",
         .Options = {"One Pass", "Two Pass"}}
 
-    Private ItemsValue As List(Of CommandLineParam)
-
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
             If ItemsValue Is Nothing Then
@@ -233,7 +231,7 @@ Public Class AV1Params
     Private TabCount As Integer = 1
     Private ControlCount As Integer
 
-    Private Sub Add(ParamArray items As CommandLineParam())
+    Shadows Sub Add(ParamArray items As CommandLineParam())
         For Each i In items
             If i.Path = "" Then
                 ControlCount += 1

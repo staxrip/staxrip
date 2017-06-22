@@ -140,8 +140,6 @@ Public Class IntelEncoder
         Property TFF As New BoolParam With {.Switch = "--tff", .Text = "Top Field First"}
         Property BFF As New BoolParam With {.Switch = "--bff", .Text = "Bottom Field First"}
 
-        Private ItemsValue As List(Of CommandLineParam)
-
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
@@ -229,13 +227,6 @@ Public Class IntelEncoder
                 Return ItemsValue
             End Get
         End Property
-
-        Private Sub Add(path As String, ParamArray items As CommandLineParam())
-            For Each i In items
-                i.Path = path
-                ItemsValue.Add(i)
-            Next
-        End Sub
 
         Function GetMode(name As String) As Integer
             For x = 0 To Modes.Count - 1

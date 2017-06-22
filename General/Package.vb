@@ -190,7 +190,8 @@ Public Class Package
         .IsRequiredFunc = AddressOf IsX264_10Required})
 
     Shared Function IsX264_10Required() As Boolean
-        Return TypeOf p.VideoEncoder Is x264Encoder AndAlso DirectCast(p.VideoEncoder, x264Encoder).Params.Depth.Value = 1
+        Return (TypeOf p.VideoEncoder Is x264Encoder AndAlso DirectCast(p.VideoEncoder, x264Encoder).Params.Depth.Value = 1) OrElse
+            (TypeOf p.VideoEncoder Is x264Encoder2 AndAlso DirectCast(p.VideoEncoder, x264Encoder2).Params.Depth.Value = 1)
     End Function
 
     Shared Property x265 As Package = Add(New Package With {

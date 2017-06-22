@@ -99,6 +99,16 @@ Public Class Log
         WriteLine(temp.FormatColumn(":"), proj)
     End Sub
 
+    Shared Function GetPath(Optional proj As Project = Nothing) As String
+        If proj Is Nothing Then proj = p
+
+        If p.SourceFile = "" Then
+            Return Folder.Temp + "staxrip.log"
+        Else
+            Return proj.TempDir + proj.Name + "_staxrip.log"
+        End If
+    End Function
+
     Shared Sub Save(Optional proj As Project = Nothing)
         'If proj Is Nothing Then Stop
         If proj Is Nothing Then proj = p
@@ -106,7 +116,7 @@ Public Class Log
         If proj.SourceFile <> "" Then
             SyncLock proj.Log
                 If Directory.Exists(proj.TempDir) Then
-                    proj.Log.ToString.WriteUTF8File(proj.TempDir + proj.Name + "_staxrip.log")
+                    proj.Log.ToString.WriteUTF8File(GetPath(proj))
                 End If
             End SyncLock
         End If

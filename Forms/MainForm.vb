@@ -3092,16 +3092,17 @@ Public Class MainForm
             UpdateSizeOrBitrate()
             BlockAudioTextChanged = True
             tb.Text = ap.DisplayName
+
+            If tb Is tbAudioFile0 Then
+                llAudioProfile0.Text = g.ConvertPath(ap.Name)
+            Else
+                llAudioProfile1.Text = g.ConvertPath(ap.Name)
+            End If
+
             BlockAudioTextChanged = False
         ElseIf tb.Text = "" Then
             ap.File = ""
             UpdateSizeOrBitrate()
-        End If
-
-        If tb Is tbAudioFile0 Then
-            llAudioProfile0.Text = g.ConvertPath(ap.Name)
-        Else
-            llAudioProfile1.Text = g.ConvertPath(ap.Name)
         End If
     End Sub
 
@@ -4335,7 +4336,7 @@ Public Class MainForm
                 If p.CompCheckRange < 2 OrElse p.CompCheckRange > 20 Then p.CompCheckRange = 5
                 If p.TempDir <> "" Then p.TempDir = p.TempDir.AppendSeparator
 
-                If Not p.TempDir?.EndsWith("_temp\") AndAlso p.DeleteTempFilesDir Then
+                If p.TempDir <> "" AndAlso Not p.TempDir?.EndsWith("_temp\") AndAlso p.DeleteTempFilesDir Then
                     MsgInfo("Temp dir will only be deleted when it ends with _temp")
                 End If
 
@@ -5714,6 +5715,13 @@ Public Class MainForm
                                      If ap.File <> p.LastOriginalSourceFile Then tb.Text = p.LastOriginalSourceFile
                                      tb.Text = temp.Name + " (" + ap.File.Ext + ")"
                                      ap.Stream = temp
+
+                                     If tb Is tbAudioFile0 Then
+                                         llAudioProfile0.Text = g.ConvertPath(ap.Name)
+                                     Else
+                                         llAudioProfile1.Text = g.ConvertPath(ap.Name)
+                                     End If
+
                                      UpdateSizeOrBitrate()
                                  End Sub
 

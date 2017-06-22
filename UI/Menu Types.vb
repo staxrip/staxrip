@@ -25,10 +25,7 @@ Namespace UI
 
         Property Parameters() As List(Of Object)
             Get
-                If ParametersValue Is Nothing Then
-                    ParametersValue = New List(Of Object)
-                End If
-
+                If ParametersValue Is Nothing Then ParametersValue = New List(Of Object)
                 Return ParametersValue
             End Get
             Set(Value As List(Of Object))

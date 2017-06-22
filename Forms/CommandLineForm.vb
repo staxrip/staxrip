@@ -14,7 +14,7 @@ Class CommandLineForm
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
 
-        SimpleUI.ScaleClientSize(37, 23)
+        SimpleUI.ScaleClientSize(37, 24)
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
         Dim singleList As New List(Of String)
 
@@ -107,10 +107,13 @@ Class CommandLineForm
                 If item.URL <> "" Then help += BR2 + "[" + item.URL + " " + item.URL + "]"
             End If
 
+            If item.Label <> "" Then SimpleUI.AddLabel(parent, item.Label).MarginTop = FontHeight \ 2
+
             If TypeOf item Is BoolParam Then
                 Dim cb = SimpleUI.AddCheckBox(parent)
                 cb.Text = item.Text
                 cb.Tooltip = help
+                cb.MarginLeft = item.LeftMargin
                 If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, cb)
                 DirectCast(item, BoolParam).Init(cb)
                 helpControl = cb

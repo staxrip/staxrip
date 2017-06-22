@@ -20,6 +20,15 @@ Namespace CommandLine
             Next
         End Sub
 
+        Protected ItemsValue As List(Of CommandLineParam)
+
+        Protected Sub Add(path As String, ParamArray items As CommandLineParam())
+            For Each i In items
+                i.Path = path
+                ItemsValue.Add(i)
+            Next
+        End Sub
+
         Function GetStringParam(switch As String) As StringParam
             Return Items.OfType(Of StringParam).Where(Function(item) item.Switch = switch).FirstOrDefault
         End Function
@@ -75,11 +84,12 @@ Namespace CommandLine
         Property AlwaysOn As Boolean
         Property ArgsFunc As Func(Of String)
         Property Help As String
-        Property LabelMargin As Padding
+        Property LeftMargin As Double
         Property Name As String
         Property NoSwitch As String
         Property Path As String
         Property Switch As String
+        Property Label As String
         Property Switches As IEnumerable(Of String)
         Property Text As String
         Property URL As String
@@ -171,9 +181,7 @@ Namespace CommandLine
         End Sub
 
         Overrides Function GetArgs() As String
-            If Switch = "" AndAlso NoSwitch = "" AndAlso
-                ArgsFunc Is Nothing Then Return Nothing
-
+            If Switch = "" AndAlso NoSwitch = "" AndAlso ArgsFunc Is Nothing Then Return Nothing
             If Not Visible Then Return Nothing
 
             If ArgsFunc Is Nothing Then
@@ -226,13 +234,18 @@ Namespace CommandLine
                 Return MinMaxStepDecValue
             End Get
             Set(value As Decimal())
+                If value(0) = 0 AndAlso value(1) = 0 Then
+                    value(0) = Integer.MinValue
+                    value(1) = Integer.MaxValue
+                End If
+
                 MinMaxStepDecValue = value
             End Set
         End Property
 
         WriteOnly Property MinMaxStep As Integer()
             Set(value As Integer())
-                MinMaxStepDecValue = {value(0), value(1), value(2), 0}
+                MinMaxStepDec = {value(0), value(1), value(2), 0}
             End Set
         End Property
 

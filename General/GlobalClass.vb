@@ -85,7 +85,7 @@ Public Class GlobalClass
     Sub DeleteTempFiles()
         If p.DeleteTempFilesDir AndAlso p.TempDir.EndsWith("_temp\") Then
             Try
-                FileHelp.Delete(p.TempDir + p.Name + "_staxrip.log", VB6.FileIO.RecycleOption.SendToRecycleBin)
+                FileHelp.Copy(p.TempDir + p.Name + "_staxrip.log", p.TargetFile.Dir + p.Name + "_staxrip.log")
                 Dim moreJobsToProcessInTempDir = JobsForm.GetJobs.Where(Function(a) a.Value AndAlso a.Key.Contains(p.TempDir))
 
                 If moreJobsToProcessInTempDir.Count = 0 Then

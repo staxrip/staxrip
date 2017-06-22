@@ -691,7 +691,15 @@ Public MustInherit Class Profile
 
     Overridable Property Name() As String
         Get
-            If NameValue = "" Then Return DefaultName
+            If NameValue = "" Then
+                Return DefaultName
+            Else
+                If NameValue = DefaultName Then
+                    NameValue = Nothing
+                    Return DefaultName
+                End If
+            End If
+
             Return NameValue
         End Get
         Set(Value As String)

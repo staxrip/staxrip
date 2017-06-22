@@ -312,6 +312,7 @@ Public Class SimpleUI
         Inherits CheckBoxEx
 
         Property SaveAction As Action(Of Boolean)
+        Property MarginLeft As Double
 
         Private SimpleUI As SimpleUI
 
@@ -321,7 +322,7 @@ Public Class SimpleUI
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            Margin = New Padding(CInt(FontHeight / 8)) With {.Left = CInt(FontHeight / 4)}
+            Margin = New Padding(CInt(FontHeight / 8)) With {.Left = If(MarginLeft <> 0, CInt(MarginLeft), CInt(FontHeight / 4))}
             MyBase.OnLayout(levent)
         End Sub
 
@@ -505,6 +506,8 @@ Public Class SimpleUI
 
         Private OffsetValue As Integer
 
+        Property MarginTop As Integer
+
         Property Offset As Integer
             Get
                 Return OffsetValue
@@ -532,21 +535,15 @@ Public Class SimpleUI
             End Set
         End Property
 
-        WriteOnly Property MarginTop As Integer
-            Set(value As Integer)
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            If Margin.Top <> MarginTop Then
                 Dim m = Margin
-                m.Top = value
+                m.Top = MarginTop
                 Margin = m
-            End Set
-        End Property
+            End If
 
-        WriteOnly Property MarginLeft As Integer
-            Set(value As Integer)
-                Dim m = Margin
-                m.Left = value
-                Margin = m
-            End Set
-        End Property
+            MyBase.OnLayout(levent)
+        End Sub
 
         Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
             If Offset > 0 Then

@@ -75,9 +75,15 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function Quotes(instance As String) As String
+    Function Escape(instance As String) As String
         If instance = "" Then Return ""
-        If instance.Contains(" ") Then Return """" + instance + """"
+
+        Dim chars = " ()".ToCharArray
+
+        For Each i In chars
+            If instance.Contains(i) Then Return """" + instance + """"
+        Next
+
         Return instance
     End Function
 

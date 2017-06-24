@@ -99,7 +99,7 @@ Public Class Package
 
     Shared Property NicAudio As New NicAudioPackage
 
-    Shared Property aomenc As Package = Add(New Package With {
+    Shared Property AOMEnc As Package = Add(New Package With {
         .Name = "aomenc",
         .Filename = "aomenc.exe",
         .WebURL = "http://aomedia.org",
@@ -190,8 +190,7 @@ Public Class Package
         .IsRequiredFunc = AddressOf IsX264_10Required})
 
     Shared Function IsX264_10Required() As Boolean
-        Return (TypeOf p.VideoEncoder Is x264Encoder AndAlso DirectCast(p.VideoEncoder, x264Encoder).Params.Depth.Value = 1) OrElse
-            (TypeOf p.VideoEncoder Is x264Encoder2 AndAlso DirectCast(p.VideoEncoder, x264Encoder2).Params.Depth.Value = 1)
+        Return TypeOf p.VideoEncoder Is x264Enc AndAlso DirectCast(p.VideoEncoder, x264Enc).Params.Depth.Value = 1
     End Function
 
     Shared Property x265 As Package = Add(New Package With {
@@ -222,24 +221,24 @@ Public Class Package
         .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
         .Description = "MKV demuxing tool."})
 
-    Shared Property NVEncC As Package = Add(New Package With {
-        .Name = "NVEncC",
+    Shared Property NVEnc As Package = Add(New Package With {
+        .Name = "NVEnc",
         .Filename = "NVEncC64.exe",
         .WebURL = "https://github.com/rigaya/NVEnc",
         .DownloadURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!2293",
         .Description = "NVIDIA hardware video encoder.",
         .HelpFile = "help.txt"})
 
-    Shared Property QSVEncC As Package = Add(New Package With {
-        .Name = "QSVEncC",
+    Shared Property QSVEnc As Package = Add(New Package With {
+        .Name = "QSVEnc",
         .Filename = "QSVEncC64.exe",
         .Description = "Intel hardware video encoder.",
         .HelpFile = "help.txt",
         .DownloadURL = "https://onedrive.live.com/?cid=6bdd4375ac8933c6&id=6BDD4375AC8933C6!482",
         .WebURL = "https://github.com/rigaya/QSVEnc"})
 
-    Shared Property VCEEncC As Package = Add(New Package With {
-        .Name = "VCEEncC",
+    Shared Property VCEEnc As Package = Add(New Package With {
+        .Name = "VCEEnc",
         .Filename = "VCEEncC64.exe",
         .Description = "AMD hardware video encoder.",
         .HelpFile = "help.txt",
@@ -352,9 +351,9 @@ Public Class Package
             .Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.",
             .StartActionValue = Sub()
                                     If p.SourceFile = "" Then
-                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").Path.Quotes + " -avsinfo" + BR + "pause", False, False, True)
+                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").Path.Escape + " -avsinfo" + BR + "pause", False, False, True)
                                     Else
-                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").Path.Quotes + " " + p.Script.Path.Quotes + BR + "pause", False, False, True)
+                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").Path.Escape + " " + p.Script.Path.Escape + BR + "pause", False, False, True)
                                     End If
                                 End Sub,
             .HelpFile = "doc\AVSMeter.html",

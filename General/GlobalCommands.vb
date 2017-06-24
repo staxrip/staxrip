@@ -280,10 +280,10 @@ Public Class GlobalCommands
         --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
         --avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
         --log --log-framelist".Split((" " + BR).ToCharArray())
-        File.WriteAllText(Package.NVEncC.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.NVEncC.Path, "-h"))
-        Dim nvHelp = File.ReadAllText(Package.NVEncC.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
+        File.WriteAllText(Package.NVEnc.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.NVEnc.Path, "-h"))
+        Dim nvHelp = File.ReadAllText(Package.NVEnc.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim nvHelpSwitches = Regex.Matches(nvHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim nvCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\NVIDIAEncoder.vb").Replace("--no-", "--")
+        Dim nvCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\nvenc.vb").Replace("--no-", "--")
         Dim nvPresent = Regex.Matches(nvCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim nvMissing = nvPresent.Where(Function(arg) Not nvHelpSwitches.Contains(arg))
         Dim nvUnknown = nvHelpSwitches.Where(Function(x) Not nvPresent.Contains(x) AndAlso Not nvExcept.Contains(x)).ToList()
@@ -301,9 +301,9 @@ Public Class GlobalCommands
         --check-formats --check-protocols --dar --format --fps --help --input-file
         --input-res --log-framelist --mux-option --output-file --raw --seek --skip-frame
         --sub-copy --version --video-streamid --video-track --vpy --vpy-mt".Split((" " + BR).ToCharArray())
-        Dim amdHelp = File.ReadAllText(".\Apps\VCEEncC\help.txt").Replace("(no-)", "").Replace("--no-", "--")
+        Dim amdHelp = File.ReadAllText(".\Apps\VCEEnc\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim amdHelpSwitches = Regex.Matches(amdHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim amdCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\AMDEncoder.vb").Replace("--no-", "--")
+        Dim amdCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\vceenc.vb").Replace("--no-", "--")
         Dim amdPresent = Regex.Matches(amdCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim amdMissing = amdPresent.Where(Function(arg) Not amdHelpSwitches.Contains(arg))
         Dim amdUnknown = amdHelpSwitches.Where(Function(x) Not amdPresent.Contains(x) AndAlso Not amdExcept.Contains(x)).ToList()
@@ -329,10 +329,10 @@ Public Class GlobalCommands
         --vpp-delogo-add --vpp-half-turn --input-analyze --input-format --output-format
         ".Split((" " + BR).ToCharArray())
 
-        File.WriteAllText(Package.QSVEncC.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.QSVEncC.Path, "-h"))
-        Dim qsHelp = File.ReadAllText(Package.QSVEncC.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
+        File.WriteAllText(Package.QSVEnc.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.QSVEnc.Path, "-h"))
+        Dim qsHelp = File.ReadAllText(Package.QSVEnc.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim qsHelpSwitches = Regex.Matches(qsHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim qsCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\IntelEncoder.vb").Replace("--no-", "--")
+        Dim qsCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\qsvenc.vb").Replace("--no-", "--")
         Dim qsPresent = Regex.Matches(qsCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim qsMissing = qsPresent.Where(Function(arg) Not qsHelpSwitches.Contains(arg))
         Dim qsUnknown = qsHelpSwitches.Where(Function(x) Not qsPresent.Contains(x) AndAlso Not qsExcept.Contains(x)).ToList()
@@ -352,7 +352,7 @@ Public Class GlobalCommands
         Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --help").Replace("--[no-]", "--")
         File.WriteAllText(Folder.Desktop + "x265.txt", x265Help)
         Dim x265HelpSwitches = Regex.Matches(x265Help, "--[\w-]+").OfType(Of Match).Select(Function(val) val.Value)
-        Dim x265Code = File.ReadAllText(Folder.Startup.Parent + "Encoding\x265Encoder.vb").Replace("--no-", "--")
+        Dim x265Code = File.ReadAllText(Folder.Startup.Parent + "Encoding\x265Enc.vb").Replace("--no-", "--")
         Dim x265Present As New HashSet(Of String)
 
         For Each switch In Regex.Matches(x265Code, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
@@ -489,7 +489,7 @@ Public Class GlobalCommands
         filepath = Macro.Expand(filepath)
 
         If File.Exists(filepath) Then
-            g.ShellExecute(Application.ExecutablePath, "-mediainfo " + filepath.Quotes)
+            g.ShellExecute(Application.ExecutablePath, "-mediainfo " + filepath.Escape)
         Else
             MsgWarn("No file found.")
         End If
@@ -552,45 +552,6 @@ Public Class GlobalCommands
         commandLine As String)
 
         p.VideoEncoder.ImportCommandLine(commandLine)
-    End Sub
-
-    <Command("Adds x264 custom command line switches.")>
-    Sub AddX264Zone(<Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> start As String,
-                    <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> [end] As String,
-                    <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> [option] As String)
-
-        If TypeOf p.VideoEncoder Is x264Encoder Then
-            start = Macro.Expand(start)
-            [end] = Macro.Expand([end])
-
-            [option] = InputBox.Show("Please enter the option arguments.", "Zone option arguments", [option])
-
-            If [option] = "" Then Exit Sub
-
-            [option] = Macro.Expand([option])
-
-            Dim value = DirectCast(p.VideoEncoder, x264Encoder).Params.AddAll.Value
-
-            If value.Contains("--zones ") Then
-                value = value.Replace("--zones ", "--zones " + start + "," + [end] + "," + [option] + "/")
-            Else
-                value += " --zones " + start + "," + [end] + "," + [option]
-            End If
-
-            value = value.Trim
-
-            Using form As New StringEditorForm
-                form.Text = "x264 custom command line switches"
-                form.cbWrap.Checked = Not value.Contains(BR)
-                form.rtb.Text = value
-
-                If form.ShowDialog() = DialogResult.OK Then
-                    DirectCast(p.VideoEncoder, x264Encoder).Params.AddAll.Value = form.rtb.Text
-                End If
-            End Using
-        Else
-            MsgWarn("This feature is only available for x264.")
-        End If
     End Sub
 
     <Command("Adds a filter at the end of the script.")>

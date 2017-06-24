@@ -219,7 +219,7 @@ Class Folder
 
                 Dim x265 As New Project
                 x265.Init()
-                x265.VideoEncoder = New x265Encoder
+                x265.VideoEncoder = New x265Enc
 
                 SafeSerialization.Serialize(x265, ret + "x265.srip")
             End If
@@ -260,7 +260,7 @@ Class PathBase
 
     Shared Function IsValidFileSystemName(name As String) As Boolean
         If name = "" Then Return False
-        Dim chars = """*/:<>?\|".ToCharArray
+        Dim chars = """*/:<>?\|^".ToCharArray
 
         For Each i In name.ToCharArray
             If chars.Contains(i) Then Return False
@@ -273,7 +273,7 @@ Class PathBase
     Shared Function RemoveIllegalCharsFromName(name As String) As String
         If name = "" Then Return ""
 
-        Dim chars = """*/:<>?\|".ToCharArray
+        Dim chars = """*/:<>?\|^".ToCharArray
 
         For Each i In name.ToCharArray
             If chars.Contains(i) Then
@@ -822,7 +822,7 @@ table {
             IsClosed = True
 
             Writer.WriteRaw("<p>&nbsp;</p>" + BR)
-            Writer.WriteRaw("<h5 align=""center"">Copyright &copy; " & DateTime.Now.Year & " by staxrip authors. All rights reserved.</h5><br>")
+            Writer.WriteRaw("<h5 align=""center"">Copyright &copy; 2002-" & DateTime.Now.Year & " Frank Skare. All rights reserved.</h5><br>")
             Writer.WriteEndElement() 'body
             Writer.WriteEndElement() 'html
             Writer.Close()

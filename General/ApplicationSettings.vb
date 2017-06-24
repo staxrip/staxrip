@@ -75,7 +75,7 @@ Public Class ApplicationSettings
         If Versions Is Nothing Then Versions = New Dictionary(Of String, Integer)
         If Check(Storage, "Misc", 2) Then Storage = New ObjectStorage
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 192) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 194) Then
             If VideoEncoderProfiles Is Nothing Then
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
             Else
@@ -224,7 +224,7 @@ Public Class ApplicationSettings
             CustomMenuMainForm = MainForm.GetDefaultMenuMain
         End If
 
-        If Check(CustomMenuPreview, "Menu in preview dialog", 52) Then
+        If Check(CustomMenuPreview, "Menu in preview dialog", 53) Then
             CustomMenuPreview = PreviewForm.GetDefaultMenuPreview
         End If
 

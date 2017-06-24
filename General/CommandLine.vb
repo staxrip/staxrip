@@ -92,7 +92,7 @@ Namespace CommandLine
         Property Label As String
         Property Switches As IEnumerable(Of String)
         Property Text As String
-        Property URL As String
+        Property URLs As List(Of String)
         Property VisibleFunc As Func(Of Boolean)
         Property ImportAction As Action(Of String)
 
@@ -109,10 +109,11 @@ Namespace CommandLine
             Dim ret As New HashSet(Of String)
 
             If Switch <> "" Then ret.Add(Switch)
+            If NoSwitch <> "" Then ret.Add(NoSwitch)
 
             If Not Switches.NothingOrEmpty Then
                 For Each i In Switches
-                    ret.Add(i)
+                    If i <> "" Then ret.Add(i)
                 Next
             End If
 
@@ -433,6 +434,12 @@ Namespace CommandLine
         Property BrowseFileFilter As String
         Property BrowseFolderText As String
         Property Menu As String
+
+        WriteOnly Property BrowseFile As Boolean
+            Set(value As Boolean)
+                BrowseFileFilter = "*.*|*.*"
+            End Set
+        End Property
 
         Public Overloads Overrides Sub Init(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store

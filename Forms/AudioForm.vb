@@ -974,7 +974,7 @@ Class AudioForm
                 Dim batchCode = Proc.WriteBatchFile(batchPath, TempProfile.GetCommandLine(True))
                 Dim batchProc As New Process
                 batchProc.StartInfo.FileName = "cmd.exe"
-                batchProc.StartInfo.Arguments = "/k " + batchPath.Quotes
+                batchProc.StartInfo.Arguments = "/k """ + batchPath + """"
                 batchProc.StartInfo.WorkingDirectory = p.TempDir
                 batchProc.Start()
             End If

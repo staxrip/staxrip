@@ -632,10 +632,11 @@ Class MuxerForm
             tb.Edit.Text = mkvMuxer.VideoTrackName
             tb.Edit.SaveAction = Sub(value) mkvMuxer.VideoTrackName = value
 
-            tb = UI.AddTextBlock(page)
-            tb.Label.Text = "Display Aspect Ratio:"
-            tb.Edit.Text = mkvMuxer.DAR
-            tb.Edit.SaveAction = Sub(value) mkvMuxer.DAR = value
+            Dim tmb = UI.AddTextMenuBlock(page)
+            tmb.Label.Text = "Display Aspect Ratio:"
+            tmb.Edit.Text = mkvMuxer.DAR
+            tmb.AddMenu(s.DarMenu)
+            tmb.Edit.SaveAction = Sub(value) mkvMuxer.DAR = value
 
             Dim mb = UI.AddMenuButtonBlock(Of Language)(page)
             mb.Label.Text = "Video Track Language:"
@@ -659,10 +660,11 @@ Class MuxerForm
             CmdlControl.Presets = s.CmdlPresetsMP4
             Dim mp4Muxer = DirectCast(Muxer, MP4Muxer)
 
-            Dim tb = UI.AddTextBlock(page)
-            tb.Label.Text = "Pixel Aspect Ratio:"
-            tb.Edit.Text = mp4Muxer.PAR
-            tb.Edit.SaveAction = Sub(value) mp4Muxer.PAR = value
+            Dim tmb = UI.AddTextMenuBlock(page)
+            tmb.Label.Text = "Pixel Aspect Ratio:"
+            tmb.Edit.Text = mp4Muxer.PAR
+            tmb.AddMenu(s.ParMenu)
+            tmb.Edit.SaveAction = Sub(value) mp4Muxer.PAR = value
         End If
 
         page.ResumeLayout()

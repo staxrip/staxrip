@@ -76,15 +76,6 @@ Public Class Log
         If proj Is Nothing Then proj = p
         If proj.Log.ToString.Contains("Environment" + BR + "-=") Then Exit Sub
 
-        Dim staxrip = "-=".Multiply(30) + "-" + BR +
-"      _________ __                __________.__        
-     /   _____//  |______  ___  __\______   \__|_____  
-     \_____  \\   __\__  \ \  \/  /|       _/  \____ \ 
-     /        \|  |  / __ \_>    < |    |   \  |  |_> >
-    /_______  /|__| (____  /__/\_ \|____|_  /__|   __/ 
-            \/           \/      \/       \/   |__|   "
-
-        WriteLine(staxrip, proj)
         WriteHeader("Environment", proj)
 
         Dim temp =

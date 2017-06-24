@@ -251,10 +251,10 @@ Public MustInherit Class AudioProfile
 
     Function ExpandMacros(value As String, silent As Boolean) As String
         If value = "" Then Return ""
-        If value.Contains("""%input%""") Then value = value.Replace("""%input%""", File.Quotes)
-        If value.Contains("%input%") Then value = value.Replace("%input%", File.Quotes)
-        If value.Contains("""%output%""") Then value = value.Replace("""%output%""", GetOutputFile.Quotes)
-        If value.Contains("%output%") Then value = value.Replace("%output%", GetOutputFile.Quotes)
+        If value.Contains("""%input%""") Then value = value.Replace("""%input%""", File.Escape)
+        If value.Contains("%input%") Then value = value.Replace("%input%", File.Escape)
+        If value.Contains("""%output%""") Then value = value.Replace("""%output%""", GetOutputFile.Escape)
+        If value.Contains("%output%") Then value = value.Replace("%output%", GetOutputFile.Escape)
         If value.Contains("%bitrate%") Then value = value.Replace("%bitrate%", Bitrate.ToString)
         If value.Contains("%channels%") Then value = value.Replace("%channels%", Channels.ToString)
         If value.Contains("%language_native%") Then value = value.Replace("%language_native%", Language.CultureInfo.NativeName)
@@ -313,15 +313,10 @@ Public Class BatchAudioProfile
             Package.qaac}.
             Where(Function(pack) cl.ToLower.Contains(pack.Name.ToLower)).
             Select(Function(pack) "set PATH=%PATH%;" + pack.GetDir).
-            Join(BR) + BR2 + "cd /D " + p.TempDir.Quotes + BR2 + cl
+            Join(BR) + BR2 + "cd /D " + p.TempDir.Escape + BR2 + cl
     End Function
 
     Public Overrides Sub Encode()
-        If p.SkipAudioEncoding AndAlso IO.File.Exists(GetOutputFile) Then
-            File = GetOutputFile()
-            Exit Sub
-        End If
-
         If File <> "" Then
             Dim bitrateBefore = p.VideoBitrate
             Dim targetPath = GetOutputFile()
@@ -642,11 +637,6 @@ Class GUIAudioProfile
     End Function
 
     Public Overrides Sub Encode()
-        If p.SkipAudioEncoding AndAlso IO.File.Exists(GetOutputFile) Then
-            File = GetOutputFile()
-            Exit Sub
-        End If
-
         If File <> "" Then
             Dim bitrateBefore = p.VideoBitrate
             Dim targetPath = GetOutputFile()
@@ -742,7 +732,7 @@ Class GUIAudioProfile
         End If
 
         If includePaths Then
-            ret = Package.eac3to.Path.Quotes + " " + id + File.Quotes + " " + GetOutputFile.Quotes
+            ret = Package.eac3to.Path.Escape + " " + id + File.Escape + " " + GetOutputFile.Escape
         Else
             ret = "eac3to"
         End If
@@ -796,7 +786,7 @@ Class GUIAudioProfile
         includePaths = includePaths And File <> ""
 
         If includePaths Then
-            ret = Package.qaac.Path.Quotes + " -o " + GetOutputFile.Quotes
+            ret = Package.qaac.Path.Escape + " -o " + GetOutputFile.Escape
         Else
             ret = "qaac"
         End If
@@ -821,7 +811,7 @@ Class GUIAudioProfile
         If Params.qaacNoDither Then ret += " --no-dither"
         If Gain <> 0 Then ret += " --gain " & Gain.ToInvariantString
         If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
-        If includePaths Then ret += " " + File.Quotes
+        If includePaths Then ret += " " + File.Escape
 
         Return ret
     End Function
@@ -830,7 +820,7 @@ Class GUIAudioProfile
         Dim ret As String
 
         If includePaths AndAlso File <> "" Then
-            ret = Package.ffmpeg.Path.Quotes + " -i " + File.Quotes
+            ret = Package.ffmpeg.Path.Escape + " -i " + File.Escape
         Else
             ret = "ffmpeg"
         End If
@@ -895,7 +885,7 @@ Class GUIAudioProfile
 
         If includePaths AndAlso File <> "" Then
             ret += " -y -hide_banner"
-            ret += " " + GetOutputFile.Quotes
+            ret += " " + GetOutputFile.Escape
         End If
 
         Return ret
@@ -905,13 +895,13 @@ Class GUIAudioProfile
         Dim ret As String
 
         If includePaths Then
-            ret = Package.BeSweet.Path.Quotes
+            ret = Package.BeSweet.Path.Escape
         Else
             ret = "BeSweet"
         End If
 
         If includePaths AndAlso File <> "" Then
-            ret += " -core( -input " + File.Quotes + " -output " + GetOutputFile.Quotes & " )"
+            ret += " -core( -input " + File.Escape + " -output " + GetOutputFile.Escape & " )"
         End If
 
         Dim t = ""

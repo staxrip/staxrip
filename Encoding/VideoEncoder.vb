@@ -208,30 +208,27 @@ Public MustInherit Class VideoEncoder
     Shared Function GetDefaults() As List(Of VideoEncoder)
         Dim ret As New List(Of VideoEncoder)
 
-        ret.Add(New x264Encoder)
-        ret.Add(New x264Encoder2)
-        ret.Add(New x265Encoder)
-        ret.Add(New IntelEncoder())
+        ret.Add(New x264Enc)
+        ret.Add(New x265Enc)
 
-        Dim intel265 As New IntelEncoder()
+        ret.Add(New VCEEnc())
+
+        Dim amd265 As New VCEEnc()
+        amd265.Params.Codec.Value = 1
+        ret.Add(amd265)
+
+        ret.Add(New QSVEnc())
+
+        Dim intel265 As New QSVEnc()
         intel265.Params.Codec.Value = 1
         ret.Add(intel265)
 
-        Dim nvidia264 As New NVIDIAEncoder()
+        Dim nvidia264 As New NVEnc()
         ret.Add(nvidia264)
 
-        Dim nvidia265 As New NVIDIAEncoder()
+        Dim nvidia265 As New NVEnc()
         nvidia265.Params.Codec.Value = 1
         ret.Add(nvidia265)
-
-        Dim amd264 As New AMDEncoder()
-        amd264.Params.Mode.Value = 2
-        ret.Add(amd264)
-
-        Dim amd265 As New AMDEncoder()
-        amd265.Params.Mode.Value = 2
-        amd265.Params.Codec.Value = 1
-        ret.Add(amd265)
 
         Dim xvid As New BatchEncoder()
         xvid.OutputFileTypeValue = "avi"
@@ -241,12 +238,12 @@ Public MustInherit Class VideoEncoder
         xvid.CommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
         ret.Add(xvid)
 
-        ret.Add(New AV1Encoder)
+        ret.Add(New AOMEnc)
 
-        Dim ffmpeg = New ffmpegEncoder()
+        Dim ffmpeg = New ffmpegEnc()
 
         For x = 0 To ffmpeg.Params.Codec.Options.Length - 1
-            Dim ffmpeg2 = New ffmpegEncoder()
+            Dim ffmpeg2 = New ffmpegEnc()
             ffmpeg2.Params.Codec.Value = x
             ret.Add(ffmpeg2)
         Next

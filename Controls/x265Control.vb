@@ -94,28 +94,28 @@ Class x265Control
 
 #End Region
 
-    Private Encoder As x265Encoder
+    Private Encoder As x265Enc
     Private Params As x265Params
 
     Private cms As ContextMenuStripEx
     Private QualityDefinitions As List(Of QualityItem)
 
-    Sub New(enc As x265Encoder)
+    Sub New(enc As x265Enc)
         MyBase.New()
         InitializeComponent()
 
         components = New System.ComponentModel.Container()
 
         QualityDefinitions = New List(Of QualityItem) From {
-            New QualityItem(18, "Super High", "Super high quality and file size (-crf 18)"),
-            New QualityItem(19, "Very High", "Very high quality and file size (-crf 19)"),
-            New QualityItem(20, "Higher", "Higher quality and file size (-crf 20)"),
-            New QualityItem(21, "High", "High quality and file size (-crf 21)"),
-            New QualityItem(22, "Medium", "Medium quality and file size (-crf 22)"),
-            New QualityItem(23, "Low", "Low quality and file size (-crf 23)"),
-            New QualityItem(24, "Lower", "Lower quality and file size (-crf 24)"),
-            New QualityItem(25, "Very Low", "Very low quality and file size (-crf 25)"),
-            New QualityItem(26, "Super Low", "Super low quality and file size (-rf 26)")}
+            New QualityItem(16, "Super High", "Super high quality and file size (-crf 16)"),
+            New QualityItem(17, "Very High", "Very high quality and file size (-crf 17)"),
+            New QualityItem(18, "Higher", "Higher quality and file size (-crf 18)"),
+            New QualityItem(19, "High", "High quality and file size (-crf 19)"),
+            New QualityItem(20, "Medium", "Medium quality and file size (-crf 20)"),
+            New QualityItem(21, "Low", "Low quality and file size (-crf 21)"),
+            New QualityItem(22, "Lower", "Lower quality and file size (-crf 22)"),
+            New QualityItem(23, "Very Low", "Very low quality and file size (-crf 23)"),
+            New QualityItem(24, "Super Low", "Super low quality and file size (-rf 24)")}
 
         Encoder = enc
         Params = Encoder.Params

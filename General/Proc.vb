@@ -107,7 +107,7 @@ Public Class Proc
 
     Property CommandLine() As String
         Get
-            Return File.Quotes + " " + Arguments
+            Return File.Escape + " " + Arguments
         End Get
         Set(Value As String)
             Try

@@ -4,7 +4,7 @@ Imports StaxRip.UI
 Imports StaxRip.CommandLine
 
 <Serializable()>
-Class ffmpegEncoder
+Class ffmpegEnc
     Inherits BasicVideoEncoder
 
     Property ParamsStore As New PrimitiveStore
@@ -44,7 +44,7 @@ Class ffmpegEncoder
 
         Using f As New CommandLineForm(newParams)
             Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of ffmpegEncoder)(Me)
+                                        Dim enc = ObjectHelp.GetCopy(Of ffmpegEnc)(Me)
                                         Dim params2 As New EncoderParams
                                         Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
                                         params2.Init(store2)
@@ -140,7 +140,7 @@ Class ffmpegEncoder
             .Switch = "-c:v",
             .Text = "Codec:",
             .AlwaysOn = True,
-            .Options = {"x264", "x265", "VP9", "Xvid", "ASP", "Theora", "ProRes", "H.264 Intel", "H.265 Intel", "H.264 NVIDIA", "H.265 NVIDIA"},
+            .Options = {"x264", "x265", "VP9", "Xvid", "ASP", "Theora", "ProRes", "Intel AVC", "Intel HEVC", "NVIDIA AVC", "NVIDIA HEVC"},
             .Values = {"libx264", "libx265", "libvpx-vp9", "libxvid", "mpeg4", "libtheora", "prores", "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
 
         Property Mode As New OptionParam With {
@@ -191,7 +191,7 @@ Class ffmpegEncoder
             Dim sourcePath = p.Script.Path
             Dim ret As String
 
-            If includePaths AndAlso includeExecutable Then ret = Package.ffmpeg.Path.Quotes
+            If includePaths AndAlso includeExecutable Then ret = Package.ffmpeg.Path.Escape
 
             Select Case Decoder.ValueText
                 Case "qsv"
@@ -202,7 +202,7 @@ Class ffmpegEncoder
                     ret += " -hwaccel dxva2"
             End Select
 
-            If includePaths Then ret += " -i " + sourcePath.Quotes
+            If includePaths Then ret += " -i " + sourcePath.Escape
             Dim items = From i In Me.Items Where i.GetArgs <> ""
             If items.Count > 0 Then ret += " " + items.Select(Function(item) item.GetArgs).Join(" ")
 
@@ -224,7 +224,7 @@ Class ffmpegEncoder
             If Mode.OptionText = "Two Pass" AndAlso pass = 1 Then
                 targetPath = "NUL"
             Else
-                targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt).Quotes
+                targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt).Escape
             End If
 
             ret += " -an -y -hide_banner"

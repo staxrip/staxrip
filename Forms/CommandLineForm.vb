@@ -83,28 +83,29 @@ Class CommandLineForm
                 parent.SuspendLayout()
             End If
 
-            Dim help As String
+            Dim help As String = Nothing
+            Dim switches = item.Switches
 
-            If item.Help <> "" Then
-                help = item.Help
-            Else
-                help = Nothing 'compiler bug?
+            If item.Switch <> "" Then help += item.Switch + BR
+            If item.NoSwitch <> "" Then help += item.NoSwitch + BR
+            If Not switches.NothingOrEmpty Then help += switches.Join(BR) + BR
+
+            help += BR
+
+            If TypeOf item Is NumParam Then
+                Dim param = DirectCast(item, NumParam)
+                If param.MinMaxStepDec(0) > Integer.MinValue Then help += "Minimum: " & param.MinMaxStepDec(0) & BR
+                If param.MinMaxStepDec(1) < Integer.MaxValue Then help += "Maximum: " & param.MinMaxStepDec(1) & BR
             End If
 
-            If item.Switch <> "" Then
-                help = item.Switch
-                If item.NoSwitch <> "" Then help += BR + item.NoSwitch
-                If Not item.Switches.NothingOrEmpty Then help += BR + item.Switches.Join(BR)
+            help += BR
 
-                If TypeOf item Is NumParam Then
-                    Dim param = DirectCast(item, NumParam)
-                    help += BR
-                    If param.MinMaxStepDec(0) > Integer.MinValue Then help += BR + "Minimum: " & param.MinMaxStepDec(0)
-                    If param.MinMaxStepDec(1) < Integer.MaxValue Then help += BR + "Maximum: " & param.MinMaxStepDec(1)
-                End If
+            If Not item.URLs.NothingOrEmpty Then help += String.Join(BR, item.URLs.Select(Function(val) "[" + val + " " + val + "]"))
+            If item.Help <> "" Then help += item.Help
 
-                If item.Help <> "" Then help += BR2 + item.Help
-                If item.URL <> "" Then help += BR2 + "[" + item.URL + " " + item.URL + "]"
+            If help <> "" Then
+                If help.Contains(BR2 + BR) Then help = help.Replace(BR2 + BR, BR2)
+                If help.EndsWith(BR) Then help = help.Trim
             End If
 
             If item.Label <> "" Then SimpleUI.AddLabel(parent, item.Label).MarginTop = FontHeight \ 2
@@ -114,7 +115,6 @@ Class CommandLineForm
                 cb.Text = item.Text
                 cb.Tooltip = help
                 cb.MarginLeft = item.LeftMargin
-                If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, cb)
                 DirectCast(item, BoolParam).Init(cb)
                 helpControl = cb
             ElseIf TypeOf item Is NumParam Then
@@ -123,7 +123,6 @@ Class CommandLineForm
                 Dim nb = SimpleUI.AddNumericBlock(parent)
                 nb.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
                 nb.Label.Tooltip = help
-                If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, nb.Label)
                 nb.NumEdit.Init(param.MinMaxStepDec)
                 AddHandler nb.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
                 DirectCast(item, NumParam).Init(nb.NumEdit)
@@ -134,7 +133,6 @@ Class CommandLineForm
                 Dim mb = SimpleUI.AddMenuButtonBlock(Of Integer)(parent)
                 mb.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
                 mb.Tooltip = help
-                If item.URL <> "" Then currentFlow.TipProvider.SetURL(item.URL, mb.Label, mb.MenuButton)
                 helpControl = mb.Label
                 AddHandler mb.Label.MouseDoubleClick, Sub() tempItem.ValueChangedUser(tempItem.DefaultValue)
                 If os.Expand Then mb.MenuButton.Expandet = True

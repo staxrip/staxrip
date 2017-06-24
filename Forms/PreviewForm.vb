@@ -985,11 +985,6 @@ Class PreviewForm
         ret.Add("Tools|-")
         ret.Add("Tools|Save Bitmap", NameOf(SaveBitmap), Keys.Control Or Keys.S)
         ret.Add("Tools|Save JPG", NameOf(SaveJPG), Symbol.Save)
-        ret.Add("Tools|-")
-        ret.Add("Tools|Set Start Zone", NameOf(g.DefaultCommands.AddX264Zone), {"0", "%pos_frame%", "q=30"})
-        ret.Add("Tools|Set End Zone", NameOf(g.DefaultCommands.AddX264Zone), {"%pos_frame%", "%eval:%source_frames%-1%", "q=35"})
-        ret.Add("Tools|-")
-        ret.Add("Tools|Add Selection Zone", NameOf(g.DefaultCommands.AddX264Zone), {"%sel_start%", "%sel_end%", "q=40"})
 
         ret.Add("Edit Menu...", NameOf(OpenMenuEditor), Keys.M)
         ret.Add("Help...", NameOf(OpenHelp), Keys.F1, Symbol.Help)

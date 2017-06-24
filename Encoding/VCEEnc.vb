@@ -1,13 +1,12 @@
-﻿Imports System.Text
-Imports StaxRip.CommandLine
+﻿Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 <Serializable()>
-Class AMDEncoder
+Class VCEEnc
     Inherits BasicVideoEncoder
 
     Sub New()
-        Name = "AMD H.264"
+        Name = "AMD AVC"
     End Sub
 
     Property ParamsStore As New PrimitiveStore
@@ -42,7 +41,7 @@ Class AMDEncoder
 
         Using f As New CommandLineForm(params1)
             Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of AMDEncoder)(Me)
+                                        Dim enc = ObjectHelp.GetCopy(Of VCEEnc)(Me)
                                         Dim params2 As New EncoderParams
                                         Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
                                         params2.Init(store2)
@@ -51,8 +50,8 @@ Class AMDEncoder
                                         SaveProfile(enc)
                                     End Sub
 
-            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.VCEEncC.Path, "--check-features"))))
-            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.VCEEncC.Path, "--check-vce"))))
+            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.VCEEnc.Path, "--check-features"))))
+            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.VCEEnc.Path, "--check-vce"))))
             ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction, Symbol.Save)
 
             If f.ShowDialog() = DialogResult.OK Then
@@ -75,7 +74,7 @@ Class AMDEncoder
         Dim batchCode = Proc.WriteBatchFile(batchPath, Params.GetCommandLine(True, True))
 
         Using proc As New Proc
-            proc.Init("Encoding using VCEEncC " + Package.VCEEncC.Version)
+            proc.Init("Encoding using VCEEncC " + Package.VCEEnc.Version)
             proc.SkipStrings = {"%]", " frames: "}
             proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
@@ -95,7 +94,7 @@ Class AMDEncoder
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.Mode.OptionText = "CQP"
+            Return Params.Mode.Value = 0
         End Get
         Set(Value As Boolean)
         End Set
@@ -117,7 +116,7 @@ Class AMDEncoder
         Property Mode As New OptionParam With {
             .Name = "Mode",
             .Text = "Mode:",
-            .Options = {"CBR", "VBR", "CQP"}}
+            .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "VBR - Variable Bitrate"}}
 
         Property Codec As New OptionParam With {
             .Switch = "--codec",
@@ -133,19 +132,19 @@ Class AMDEncoder
         Property QPI As New NumParam With {
             .Text = "QP I:",
             .Value = 22,
-            .VisibleFunc = Function() "CQP" = Mode.OptionText,
+            .VisibleFunc = Function() Mode.Value = 0,
             .MinMaxStep = {0, 51, 1}}
 
         Property QPP As New NumParam With {
             .Text = "QP P:",
             .Value = 24,
-            .VisibleFunc = Function() "CQP" = Mode.OptionText,
+            .VisibleFunc = Function() Mode.Value = 0,
             .MinMaxStep = {0, 51, 1}}
 
         Property QPB As New NumParam With {
             .Text = "QP B:",
             .Value = 27,
-            .VisibleFunc = Function() "CQP" = Mode.OptionText,
+            .VisibleFunc = Function() Mode.Value = 0,
             .MinMaxStep = {0, 51, 1}}
 
         Property Custom As New StringParam With {
@@ -157,10 +156,9 @@ Class AMDEncoder
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
                     Add("Basic", Decoder, Mode, Codec,
-                        New OptionParam With {.Switch = "--quality", .Text = "Quality:", .Options = {"fast", "balanced", "slow"}, .InitValue = 1},
-                        New OptionParam With {.Switch = "--profile", .Name = "profile264", .VisibleFunc = Function() Codec.ValueText = "h264", .Text = "Profile:", .Options = {"Automatic", "Baseline", "Main", "High"}},
-                        New OptionParam With {.Switch = "--profile", .Name = "profile265", .VisibleFunc = Function() Codec.ValueText = "hevc", .Text = "Profile:", .Options = {"Main"}},
-                        New OptionParam With {.Switch = "--tier", .Text = "Tier:", .Options = {"main", "high"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
+                        New OptionParam With {.Switch = "--quality", .Text = "Preset:", .Convert = True, .Options = {"Fast", "Balanced", "Slow"}, .InitValue = 1},
+                        New OptionParam With {.Switch = "--profile", .Name = "profile264", .Convert = True, .VisibleFunc = Function() Codec.ValueText = "h264", .Text = "Profile:", .Options = {"Automatic", "Baseline", "Main", "High"}},
+                        New OptionParam With {.Switch = "--profile", .Name = "profile265", .Convert = True, .VisibleFunc = Function() Codec.ValueText = "hevc", .Text = "Profile:", .Options = {"Main"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelH264", .Text = "Level:", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelH265", .Text = "Level:", .VisibleFunc = Function() Codec.ValueText = "hevc", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         QPI, QPP, QPB)
@@ -183,9 +181,10 @@ Class AMDEncoder
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New BoolParam With {.Switch = "--enforce-hrd", .Text = "Enforce HRD compatibility"})
                     Add("Other",
-                        New StringParam With {.Switch = "--chapter", .Text = "Chapters:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
-                        New StringParam With {.Switch = "--log", .Text = "Log File:", .Quotes = True, .BrowseFileFilter = "*.*|*.*"},
+                        New StringParam With {.Switch = "--chapter", .Text = "Chapters:", .Quotes = True, .BrowseFile = True},
+                        New StringParam With {.Switch = "--log", .Text = "Log File:", .Quotes = True, .BrowseFile = True},
                         Custom,
+                        New OptionParam With {.Switch = "--tier", .Text = "Tier:", .Options = {"main", "high"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level:", .Options = {"info", "debug", "warn", "error"}},
                         New OptionParam With {.Switch = "--motion-est", .Text = "Motion Estimation:", .Options = {"q-pel", "full-pel", "half-pel"}},
                         New OptionParam With {.Switch = "--pre-analysis", .Name = "pre-analysis-h264", .Text = "Pre Analysis:", .Options = {"none", "full", "half", "quarter"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
@@ -208,7 +207,7 @@ Class AMDEncoder
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
             If includePaths AndAlso includeExecutable Then
-                ret = Package.VCEEncC.Path.Quotes
+                ret = Package.VCEEnc.Path.Escape
             End If
 
             Select Case Decoder.ValueText
@@ -216,13 +215,13 @@ Class AMDEncoder
                     sourcePath = p.Script.Path
                 Case "qs"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.QSVEncC.Path.Quotes, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Quotes, "path") + " | " + If(includePaths, Package.VCEEncC.Path.Quotes, "VCEEncC")
+                    If includePaths Then ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC")
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.VCEEncC.Path.Quotes, "VCEEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC")
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Quotes, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Quotes, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.VCEEncC.Path.Quotes, "VCEEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel error - | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC")
                 Case "vce"
                     sourcePath = p.LastOriginalSourceFile
                     ret += " --avvce"
@@ -230,17 +229,15 @@ Class AMDEncoder
 
             Dim q = From i In Items Where i.GetArgs <> ""
 
-            If q.Count > 0 Then
-                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
-            End If
+            If q.Count > 0 Then ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
 
-            Select Case Mode.OptionText
-                Case "CBR"
-                    ret += " --cbr " & p.VideoBitrate
-                Case "VBR"
-                    ret += " --vbr " & p.VideoBitrate
-                Case "CQP"
+            Select Case Mode.Value
+                Case 0
                     ret += " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
+                Case 1
+                    ret += " --cbr " & p.VideoBitrate
+                Case 2
+                    ret += " --vbr " & p.VideoBitrate
             End Select
 
             If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
@@ -258,13 +255,13 @@ Class AMDEncoder
 
             If sourcePath = "-" Then ret += " --y4m"
 
-            If includePaths Then ret += " -i " + sourcePath.Quotes + " -o " + targetPath.Quotes
+            If includePaths Then ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
 
             Return ret.Trim
         End Function
 
         Public Overrides Function GetPackage() As Package
-            Return Package.VCEEncC
+            Return Package.VCEEnc
         End Function
     End Class
 End Class

@@ -62,7 +62,7 @@ Public Class MainForm
     Public WithEvents llAudioProfile0 As ButtonLabel
     Public WithEvents llAudioProfile1 As ButtonLabel
     Public WithEvents pnEncoder As System.Windows.Forms.Panel
-    Public WithEvents AviSynthListView As StaxRip.FilterListView
+    Public WithEvents FiltersListView As StaxRip.FiltersListView
     Public WithEvents blFilesize As ButtonLabel
     Public WithEvents llMuxer As ButtonLabel
     Public WithEvents lPAR As StaxRip.UI.LabelEx
@@ -145,7 +145,7 @@ Public Class MainForm
         Me.tbTargetHeight = New System.Windows.Forms.TextBox()
         Me.lTargetHeight = New System.Windows.Forms.Label()
         Me.lgbFilters = New StaxRip.UI.LinkGroupBox()
-        Me.AviSynthListView = New StaxRip.FilterListView()
+        Me.FiltersListView = New StaxRip.FiltersListView()
         Me.lgbEncoder = New StaxRip.UI.LinkGroupBox()
         Me.llMuxer = New StaxRip.UI.ButtonLabel()
         Me.pnEncoder = New System.Windows.Forms.Panel()
@@ -904,7 +904,7 @@ Public Class MainForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lgbFilters.Color = System.Drawing.Color.Empty
-        Me.lgbFilters.Controls.Add(Me.AviSynthListView)
+        Me.lgbFilters.Controls.Add(Me.FiltersListView)
         Me.lgbFilters.Location = New System.Drawing.Point(10, 436)
         Me.lgbFilters.Margin = New System.Windows.Forms.Padding(10, 0, 6, 0)
         Me.lgbFilters.Name = "lgbFilters"
@@ -916,21 +916,21 @@ Public Class MainForm
         '
         'AviSynthListView
         '
-        Me.AviSynthListView.AllowDrop = True
-        Me.AviSynthListView.AutoCheckMode = StaxRip.UI.AutoCheckMode.None
-        Me.AviSynthListView.CheckBoxes = True
-        Me.AviSynthListView.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.AviSynthListView.FullRowSelect = True
-        Me.AviSynthListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
-        Me.AviSynthListView.HideSelection = False
-        Me.AviSynthListView.IsLoading = False
-        Me.AviSynthListView.Location = New System.Drawing.Point(9, 48)
-        Me.AviSynthListView.MultiSelect = False
-        Me.AviSynthListView.Name = "AviSynthListView"
-        Me.AviSynthListView.Size = New System.Drawing.Size(648, 327)
-        Me.AviSynthListView.TabIndex = 0
-        Me.AviSynthListView.UseCompatibleStateImageBehavior = False
-        Me.AviSynthListView.View = System.Windows.Forms.View.Details
+        Me.FiltersListView.AllowDrop = True
+        Me.FiltersListView.AutoCheckMode = StaxRip.UI.AutoCheckMode.None
+        Me.FiltersListView.CheckBoxes = True
+        Me.FiltersListView.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.FiltersListView.FullRowSelect = True
+        Me.FiltersListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
+        Me.FiltersListView.HideSelection = False
+        Me.FiltersListView.IsLoading = False
+        Me.FiltersListView.Location = New System.Drawing.Point(9, 48)
+        Me.FiltersListView.MultiSelect = False
+        Me.FiltersListView.Name = "AviSynthListView"
+        Me.FiltersListView.Size = New System.Drawing.Size(648, 327)
+        Me.FiltersListView.TabIndex = 0
+        Me.FiltersListView.UseCompatibleStateImageBehavior = False
+        Me.FiltersListView.View = System.Windows.Forms.View.Details
         '
         'lgbEncoder
         '
@@ -1620,8 +1620,8 @@ Public Class MainForm
         Dim size = p.TargetSize
         Dim bitrate = p.VideoBitrate
 
-        AviSynthListView.Load()
-        AviSynthListView.Items(0).Selected = True
+        FiltersListView.Load()
+        FiltersListView.Items(0).Selected = True
         p.VideoEncoder.OnStateChange()
 
         Dim targetPath = p.TargetFile
@@ -1817,7 +1817,7 @@ Public Class MainForm
             p.SourceFiles = files.ToList
             p.SourceFile = files(0)
 
-            AviSynthListView.IsLoading = True
+            FiltersListView.IsLoading = True
 
             Dim preferredSourceFilter As VideoFilter
 
@@ -1987,8 +1987,8 @@ Public Class MainForm
             End If
 
             ModifyFilters()
-            AviSynthListView.IsLoading = False
-            AviSynthListView.Load()
+            FiltersListView.IsLoading = False
+            FiltersListView.Load()
 
             If Not Package.DGDecodeNV.VerifyOK() OrElse Not Package.DGDecodeIM.VerifyOK() Then
                 Throw New AbortException
@@ -2383,7 +2383,7 @@ Public Class MainForm
                     proc.Init("Extract forced subtitles if existing", "# ")
                     proc.WriteLine(Filepath.GetName(i) + BR2)
                     proc.File = Package.BDSup2SubPP.Path
-                    proc.Arguments = "--forced-only -o " + (i.DirAndBase + "_forced.idx").Quotes + " " + i.Quotes
+                    proc.Arguments = "--forced-only -o " + (i.DirAndBase + "_forced.idx").Escape + " " + i.Escape
                     proc.AllowedExitCodes = {}
                     proc.Start()
                 End Using
@@ -2473,15 +2473,27 @@ Public Class MainForm
 
             Log.WriteLine(props.FormatColumn(":"))
 
-            Audio.Process(p.Audio0)
-            p.Audio0.Encode()
+            If p.SkipAudioEncoding AndAlso File.Exists(p.Audio0.GetOutputFile) Then
+                p.Audio0.File = p.Audio0.GetOutputFile()
+            Else
+                Audio.Process(p.Audio0)
+                p.Audio0.Encode()
+            End If
 
-            Audio.Process(p.Audio1)
-            p.Audio1.Encode()
+            If p.SkipAudioEncoding AndAlso File.Exists(p.Audio1.GetOutputFile) Then
+                p.Audio1.File = p.Audio1.GetOutputFile()
+            Else
+                Audio.Process(p.Audio1)
+                p.Audio1.Encode()
+            End If
 
             For Each i In p.AudioTracks
-                Audio.Process(i)
-                i.Encode()
+                If p.SkipAudioEncoding AndAlso File.Exists(i.GetOutputFile) Then
+                    i.File = i.GetOutputFile()
+                Else
+                    Audio.Process(i)
+                    i.Encode()
+                End If
             Next
 
             Subtitle.Cut(p.VideoEncoder.Muxer.Subtitles)
@@ -2498,12 +2510,12 @@ Public Class MainForm
                             proc.Init("Pre-render into lossless AVI using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
                             proc.Encoding = Encoding.UTF8
                             proc.File = Package.ffmpeg.Path
-                            proc.Arguments = "-i " + p.Script.Path.Quotes + " -c:v utvideo -pred median -sn -an -hide_banner -y " + outPath.Quotes
+                            proc.Arguments = "-i " + p.Script.Path.Escape + " -c:v utvideo -pred median -sn -an -hide_banner -y " + outPath.Escape
                             proc.Start()
                         End Using
                     Else
                         Dim batchPath = p.TempDir + p.Name + "_lossless.bat"
-                        Dim batchCode = Package.vspipe.Path.Quotes + " " + p.Script.Path.Quotes + " - --y4m | " + Package.ffmpeg.Path.Quotes + " -i - -c:v utvideo -pred median -sn -an -hide_banner -y " + outPath.Quotes
+                        Dim batchCode = Package.vspipe.Path.Escape + " " + p.Script.Path.Escape + " - --y4m | " + Package.ffmpeg.Path.Escape + " -i - -c:v utvideo -pred median -sn -an -hide_banner -y " + outPath.Escape
                         Proc.WriteBatchFile(batchPath, batchCode)
 
                         Using proc As New Proc
@@ -2511,7 +2523,7 @@ Public Class MainForm
                             proc.Encoding = Encoding.UTF8
                             proc.WriteLine(batchCode + BR2)
                             proc.File = "cmd.exe"
-                            proc.Arguments = "/C call " + batchPath.Quotes
+                            proc.Arguments = "/C call """ + batchPath + """"
                             proc.Start()
                         End Using
                     End If
@@ -2708,6 +2720,16 @@ Public Class MainForm
         CanIgnoreTip = True
         AssistantPassed = False
 
+        For Each i In "^%"
+            If p.TargetFile?.Contains(i) Then
+                If ProcessTip("A target file path with the character " & i & " is not supported by StaxRip." + BR + p.TargetFile) Then
+                    gbAssistant.Text = "Invalid target file path"
+                    CanIgnoreTip = False
+                    Return False
+                End If
+            End If
+        Next
+
         If p.VideoEncoder.Muxer.CoverFile <> "" AndAlso TypeOf p.VideoEncoder.Muxer Is MkvMuxer Then
             If Not p.VideoEncoder.Muxer.CoverFile.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land") OrElse Not p.VideoEncoder.Muxer.CoverFile.Ext.EqualsAny("jpg", "png") Then
                 If ProcessTip("The cover file name bust be cover, small_cover, cover_land or small_cover_land, the file type must be jpg or png.") Then
@@ -2734,7 +2756,7 @@ Public Class MainForm
         End If
 
         If Not p.BatchMode Then
-            If Filepath.GetExtFull(p.TargetFile) = ".mp4" AndAlso p.TargetFile.Contains("#") Then
+            If p.TargetFile.Ext = "mp4" AndAlso p.TargetFile.Contains("#") Then
                 If ProcessTip("Character # can't be processed by MP4Box, please rename target file.") Then
                     gbAssistant.Text = "Invalid target filename"
                     CanIgnoreTip = False
@@ -3337,10 +3359,10 @@ Public Class MainForm
 
                     If p.Script.Engine = ScriptEngine.AviSynth Then
                         proc.File = Package.ffmpeg.Path
-                        proc.Arguments = "-i " + p.Script.Path.Quotes + " -hide_banner"
+                        proc.Arguments = "-i " + p.Script.Path.Escape + " -hide_banner"
                     Else
                         proc.File = Package.vspipe.Path
-                        proc.Arguments = p.Script.Path.Quotes + " NUL -i"
+                        proc.Arguments = p.Script.Path.Escape + " NUL -i"
                     End If
 
                     proc.AllowedExitCodes = {0, 1}
@@ -3814,7 +3836,7 @@ Public Class MainForm
 
             If Not cutting Is Nothing Then
                 p.Script.Filters.Remove(cutting)
-                g.MainForm.AviSynthListView.Load()
+                g.MainForm.FiltersListView.Load()
                 g.MainForm.UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
             End If
 
@@ -3919,7 +3941,7 @@ Public Class MainForm
 
     <Command("Dialog to edit filters.")>
     Sub ShowFiltersEditor()
-        AviSynthListView.ShowEditor()
+        FiltersListView.ShowEditor()
     End Sub
 
     <Command("Dialog to configure project options.")>
@@ -4355,7 +4377,7 @@ Public Class MainForm
 
         If Not f Is Nothing AndAlso CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
             f.Active = False
-            AviSynthListView.Load()
+            FiltersListView.Load()
         End If
     End Sub
 
@@ -4966,7 +4988,7 @@ Public Class MainForm
 
             p.Script = profile
             ModifyFilters()
-            AviSynthListView.OnChanged()
+            FiltersListView.OnChanged()
             Assistant()
         End If
     End Sub
@@ -5094,7 +5116,7 @@ Public Class MainForm
                                     proc.Encoding = Encoding.UTF8
                                     proc.File = Package.mkvmerge.Path
                                     Dim outFile = files(0).DirAndBase + "_merged.mkv"
-                                    proc.Arguments = "-o " + outFile.Quotes + " """ + files.Join(""" + """) + """"
+                                    proc.Arguments = "-o " + outFile.Escape + " """ + files.Join(""" + """) + """"
 
                                     Try
                                         proc.Start()
@@ -5166,7 +5188,7 @@ Public Class MainForm
                         Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + BR2)
                         Log.WriteLine("Source Drive Type: " + New DriveInfo(d.SelectedPath).DriveType.ToString + BR)
 
-                        Dim output = ProcessHelp.GetStdOut(Package.eac3to.Path, """" + srcPath + """").Replace(VB6.vbBack, "")
+                        Dim output = ProcessHelp.GetStdOut(Package.eac3to.Path, srcPath.Escape).Replace(VB6.vbBack, "")
 
                         Log.WriteLine(output)
 
@@ -5441,8 +5463,8 @@ Public Class MainForm
         g.PopulateProfileMenu(AudioMenu1.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf g.LoadAudioProfile1)
     End Sub
 
-    Private Sub AviSynthListView_ScriptChanged() Handles AviSynthListView.Changed
-        If Not IsLoading AndAlso Not AviSynthListView.IsLoading Then
+    Private Sub AviSynthListView_ScriptChanged() Handles FiltersListView.Changed
+        If Not IsLoading AndAlso Not FiltersListView.IsLoading Then
             Package.DGDecodeNV.VerifyOK()
             Package.DGDecodeIM.VerifyOK()
 
@@ -5456,17 +5478,17 @@ Public Class MainForm
     End Sub
 
     Sub UpdateFilters()
-        AviSynthListView.Load()
+        FiltersListView.Load()
         If g.IsValidSource(False) Then UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
     End Sub
 
-    Private Sub AviSynthListView_DoubleClick() Handles AviSynthListView.DoubleClick
-        AviSynthListView.ShowEditor()
+    Private Sub AviSynthListView_DoubleClick() Handles FiltersListView.DoubleClick
+        FiltersListView.ShowEditor()
     End Sub
 
     Private Sub gbFilters_MenuClick() Handles lgbFilters.LinkClick
-        AviSynthListView.UpdateMenu()
-        AviSynthListView.ContextMenuStrip.Show(lgbFilters, 0, 16)
+        FiltersListView.UpdateMenu()
+        FiltersListView.ContextMenuStrip.Show(lgbFilters, 0, 16)
     End Sub
 
     Private Sub gbEncoder_LinkClick() Handles lgbEncoder.LinkClick

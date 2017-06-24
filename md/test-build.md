@@ -14,7 +14,17 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 #### 1.5.1.3 unstable test build
 
+- new: the new x264 GUI is complete, the old is gone
+- new: nvenc option --vpp-deband added
+- new: x265 option --[no-]refine-vbv added
+- new: added new menu to the PAR/DAR option in the container dialog
+- fix: in some circumstances file paths with parenthesis failed to process (regression in 1.5.1.1)
+- fix: right-click help didn't navigate to help URL on string options in the x265 and the new x264 dialog
 - fix: audio settings/profile display was wrong generated if the audio source file has multiple audio streams
+- fix: audio was converted to FLAC/W64 even if the output already existed and processing should be skipped (refers to a new feature added with 1.5.0.9)
+- change: medium crf value was changed from 22 to 20 for x264 and x265
+- update: x265 2.4+87
+- update: nvenc 3.13
 
 #### 1.5.1.2 unstable test build
 

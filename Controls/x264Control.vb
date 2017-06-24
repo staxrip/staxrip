@@ -1,4 +1,4 @@
-Imports StaxRip.UI
+﻿Imports StaxRip.UI
 
 Class x264Control
     Inherits UserControl
@@ -15,16 +15,16 @@ Class x264Control
 
     Friend WithEvents lv As StaxRip.UI.ListViewEx
     Friend WithEvents blConfigCodec As ButtonLabel
-    Friend WithEvents blConfigContainer As ButtonLabel
-    Friend WithEvents blCompCheck As ButtonLabel
+    Friend WithEvents llConfigContainer As ButtonLabel
+    Friend WithEvents llCompCheck As ButtonLabel
 
     Private components As System.ComponentModel.IContainer
 
     <DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.blConfigCodec = New ButtonLabel()
-        Me.blConfigContainer = New ButtonLabel()
-        Me.blCompCheck = New ButtonLabel()
+        Me.llConfigContainer = New ButtonLabel()
+        Me.llCompCheck = New ButtonLabel()
         Me.lv = New StaxRip.UI.ListViewEx()
         Me.SuspendLayout()
         '
@@ -37,38 +37,38 @@ Class x264Control
         Me.blConfigCodec.Location = New System.Drawing.Point(3, 185)
         Me.blConfigCodec.Margin = New System.Windows.Forms.Padding(3)
         Me.blConfigCodec.Name = "llConfigCodec"
-        Me.blConfigCodec.Size = New System.Drawing.Size(64, 20)
+        Me.blConfigCodec.Size = New System.Drawing.Size(120, 25)
         Me.blConfigCodec.TabIndex = 1
         Me.blConfigCodec.TabStop = True
         Me.blConfigCodec.Text = "Options"
         '
         'llConfigContainer
         '
-        Me.blConfigContainer.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.blConfigContainer.AutoSize = True
-        Me.blConfigContainer.BackColor = System.Drawing.SystemColors.Window
-        Me.blConfigContainer.LinkColor = System.Drawing.Color.DimGray
-        Me.blConfigContainer.Location = New System.Drawing.Point(218, 185)
-        Me.blConfigContainer.Margin = New System.Windows.Forms.Padding(3)
-        Me.blConfigContainer.Name = "llConfigContainer"
-        Me.blConfigContainer.Size = New System.Drawing.Size(137, 20)
-        Me.blConfigContainer.TabIndex = 2
-        Me.blConfigContainer.TabStop = True
-        Me.blConfigContainer.Text = "Container Options"
+        Me.llConfigContainer.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.llConfigContainer.AutoSize = True
+        Me.llConfigContainer.BackColor = System.Drawing.SystemColors.Window
+        Me.llConfigContainer.LinkColor = System.Drawing.Color.DimGray
+        Me.llConfigContainer.Location = New System.Drawing.Point(218, 185)
+        Me.llConfigContainer.Margin = New System.Windows.Forms.Padding(3)
+        Me.llConfigContainer.Name = "llConfigContainer"
+        Me.llConfigContainer.Size = New System.Drawing.Size(146, 25)
+        Me.llConfigContainer.TabIndex = 2
+        Me.llConfigContainer.TabStop = True
+        Me.llConfigContainer.Text = "Container Options"
         '
         'llCompCheck
         '
-        Me.blCompCheck.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.blCompCheck.AutoSize = True
-        Me.blCompCheck.BackColor = System.Drawing.SystemColors.Window
-        Me.blCompCheck.LinkColor = System.Drawing.Color.DimGray
-        Me.blCompCheck.Location = New System.Drawing.Point(3, 154)
-        Me.blCompCheck.Margin = New System.Windows.Forms.Padding(3)
-        Me.blCompCheck.Name = "llCompCheck"
-        Me.blCompCheck.Size = New System.Drawing.Size(197, 20)
-        Me.blCompCheck.TabIndex = 3
-        Me.blCompCheck.TabStop = True
-        Me.blCompCheck.Text = "Run Compressibility Check"
+        Me.llCompCheck.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.llCompCheck.AutoSize = True
+        Me.llCompCheck.BackColor = System.Drawing.SystemColors.Window
+        Me.llCompCheck.LinkColor = System.Drawing.Color.DimGray
+        Me.llCompCheck.Location = New System.Drawing.Point(3, 154)
+        Me.llCompCheck.Margin = New System.Windows.Forms.Padding(3)
+        Me.llCompCheck.Name = "llCompCheck"
+        Me.llCompCheck.Size = New System.Drawing.Size(222, 25)
+        Me.llCompCheck.TabIndex = 3
+        Me.llCompCheck.TabStop = True
+        Me.llCompCheck.Text = "Run Compressibility Check"
         '
         'lv
         '
@@ -78,14 +78,14 @@ Class x264Control
         Me.lv.Size = New System.Drawing.Size(367, 213)
         Me.lv.TabIndex = 0
         '
-        'x264Control
+        'x264Control2
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.Controls.Add(Me.blConfigContainer)
+        Me.Controls.Add(Me.llConfigContainer)
         Me.Controls.Add(Me.blConfigCodec)
-        Me.Controls.Add(Me.blCompCheck)
+        Me.Controls.Add(Me.llCompCheck)
         Me.Controls.Add(Me.lv)
-        Me.Name = "x264Control"
+        Me.Name = "x264Control2"
         Me.Size = New System.Drawing.Size(367, 213)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -94,24 +94,39 @@ Class x264Control
 
 #End Region
 
-    Private Encoder As x264Encoder
-    Private cms As ContextMenuStripEx
+    Private Encoder As x264Enc
+    Private Params As x264Params2
 
-    Sub New(enc As x264Encoder)
+    Private cms As ContextMenuStripEx
+    Private QualityDefinitions As List(Of QualityItem)
+
+    Sub New(enc As x264Enc)
         MyBase.New()
         InitializeComponent()
 
         components = New System.ComponentModel.Container()
 
+        QualityDefinitions = New List(Of QualityItem) From {
+            New QualityItem(16, "Super High", "Super high quality and file size (-crf 16)"),
+            New QualityItem(17, "Very High", "Very high quality and file size (-crf 17)"),
+            New QualityItem(18, "Higher", "Higher quality and file size (-crf 18)"),
+            New QualityItem(19, "High", "High quality and file size (-crf 19)"),
+            New QualityItem(20, "Medium", "Medium quality and file size (-crf 20)"),
+            New QualityItem(21, "Low", "Low quality and file size (-crf 21)"),
+            New QualityItem(22, "Lower", "Lower quality and file size (-crf 22)"),
+            New QualityItem(23, "Very Low", "Very low quality and file size (-crf 23)"),
+            New QualityItem(24, "Super Low", "Super low quality and file size (-rf 24)")}
+
         Encoder = enc
-        lv.View = View.Details
-        lv.HeaderStyle = ColumnHeaderStyle.None
-        lv.FullRowSelect = True
-        lv.MultiSelect = False
+        Params = Encoder.Params
 
         cms = New ContextMenuStripEx(components)
         cms.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
+        lv.View = View.Details
+        lv.HeaderStyle = ColumnHeaderStyle.None
+        lv.FullRowSelect = True
+        lv.MultiSelect = False
         lv.ContextMenuStrip = cms
         lv.ShowContextMenuOnLeftClick = True
 
@@ -122,166 +137,128 @@ Class x264Control
     Protected Overrides Sub OnLayout(e As LayoutEventArgs)
         MyBase.OnLayout(e)
 
-        If lv.Columns.Count = 0 Then
-            lv.Columns.AddRange({New ColumnHeader, New ColumnHeader})
-        End If
+        If lv.Columns.Count = 0 Then lv.Columns.AddRange({New ColumnHeader, New ColumnHeader})
 
         lv.Columns(0).Width = CInt(Width * (32 / 100))
-        lv.Columns(1).Width = lv.Width - lv.Columns(0).Width - 4
+        lv.Columns(1).Width = CInt(Width * (66 / 100))
 
         'couldn't get scaling to work trying everything
         blConfigCodec.Left = 5
         blConfigCodec.Top = Height - blConfigCodec.Height - 5
 
-        blCompCheck.Left = 5
-        blCompCheck.Top = Height - blConfigCodec.Height - blCompCheck.Height - 10
+        llCompCheck.Left = 5
+        llCompCheck.Top = Height - blConfigCodec.Height - llCompCheck.Height - 10
 
-        blConfigContainer.Left = Width - blConfigContainer.Width - 5
-        blConfigContainer.Top = Height - blConfigContainer.Height - 5
+        llConfigContainer.Left = Width - llConfigContainer.Width - 5
+        llConfigContainer.Top = Height - llConfigContainer.Height - 5
     End Sub
 
     Sub UpdateMenu()
         cms.Items.Clear()
 
-        Dim offset = If(Encoder.Params.Mode.Value = x264Mode.SingleCRF, 0, 1)
+        Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
 
         If lv.SelectedItems.Count > 0 Then
             Select Case lv.SelectedIndices(0)
                 Case 0 - offset
-                    Dim fn = Function(value As Integer, text As String, tooltip As String) New ActionMenuItem(value & " - " + text, Sub() SetQuality(value), tooltip) With {.Font = If(Encoder.Params.Quant.Value = value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))}
-                    cms.Items.Add(fn(18, "Super High", "Super high quality and file size (-crf 18)"))
-                    cms.Items.Add(fn(19, "Very High", "Very high quality and file size (-crf 19)"))
-                    cms.Items.Add(fn(20, "Higher", "Higher quality and file size (-crf 20)"))
-                    cms.Items.Add(fn(21, "High", "High quality and file size (-crf 21)"))
-                    cms.Items.Add(fn(22, "Medium", "Medium quality and file size (-crf 22)"))
-                    cms.Items.Add(fn(23, "Low", "Low quality and file size (-crf 23)"))
-                    cms.Items.Add(fn(24, "Lower", "Lower quality and file size (-crf 24)"))
-                    cms.Items.Add(fn(25, "Very Low", "Very low quality and file size (-crf 25)"))
-                    cms.Items.Add(fn(26, "Super Low", "Super low quality and file size (-rf 26)"))
+                    For Each i In QualityDefinitions
+                        cms.Items.Add(New ActionMenuItem(i.Value & " - " + i.Text, Sub() SetQuality(i.Value), i.Tooltip) With {.Font = If(Params.Quant.Value = i.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
+                    Next
                 Case 1 - offset
-                    For Each i In System.Enum.GetValues(GetType(x264PresetMode))
-                        Dim a = CType(i, x264PresetMode)
-
+                    For x = 0 To Params.Preset.Options.Length - 1
+                        Dim temp = x
                         cms.Items.Add(New ActionMenuItem(
-                                      DispNameAttribute.GetValueForEnum(a), Sub() SetPreset(a),
-                                      "Use values between Fast and Slower otherwise the quality and compression will either be poor or the encoding will be painful slow. Slower is three times slower than Medium, Veryslow is 6 times slower than Medium with little gains compared to Slower.") With {.Font = If(Encoder.Params.Preset.Value = a, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
+                                      Params.Preset.Options(x), Sub() SetPreset(temp),
+                                      "Use values between Fast and Slower otherwise the quality and compression will either be poor or the encoding will be painful slow. Slower is three times slower than Medium, Veryslow is 6 times slower than Medium with little gains compared to Slower.") With {.Font = If(Params.Preset.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
                 Case 2 - offset
-                    For Each i In System.Enum.GetValues(GetType(x264TuneMode))
-                        Dim a = CType(i, x264TuneMode)
+                    For x = 0 To Params.Tune.Options.Length - 1
+                        Dim temp = x
                         cms.Items.Add(New ActionMenuItem(
-                                      DispNameAttribute.GetValueForEnum(a), Sub() SetTune(a)) With {.Font = If(Encoder.Params.Tune.Value = a, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
-                    Next
-                Case 3 - offset
-                    For Each i In System.Enum.GetValues(GetType(x264DeviceMode))
-                        Dim a = CType(i, x264DeviceMode)
-                        cms.Items.Add(New ActionMenuItem(DispNameAttribute.GetValueForEnum(a), Sub() SetDevice(a)) With {.Font = If(Encoder.Params.Device.Value = a, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
+                                      Params.Tune.Options(x), Sub() SetTune(temp)) With {.Font = If(Params.Tune.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
             End Select
         End If
     End Sub
 
-    Sub SetQuality(v As Integer)
-        Encoder.Params.Quant.Value = v
+    Sub SetQuality(v As Single)
+        Params.Quant.Value = v
         lv.Items(0).SubItems(1).Text = GetQualityCaption(v)
         lv.Items(0).Selected = False
         UpdateControls()
     End Sub
 
-    Sub SetPreset(v As x264PresetMode)
-        Dim offset = If(Encoder.Params.Mode.Value = x264Mode.SingleCRF, 0, 1)
+    Sub SetPreset(value As Integer)
+        Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
 
-        Encoder.Params.Preset.Value = v
-        Encoder.Params.ApplyDeviceSettings()
-        Encoder.Params.ApplyDefaults(Encoder.Params)
-        Encoder.Params.ApplyDeviceSettings()
+        Params.Preset.Value = value
+        Params.ApplyValues(False)
 
-        lv.Items(1 - offset).SubItems(1).Text = v.ToString
+        lv.Items(1 - offset).SubItems(1).Text = value.ToString
         lv.Items(1 - offset).Selected = False
 
         UpdateControls()
     End Sub
 
-    Sub SetTune(v As x264TuneMode)
-        Dim offset = If(Encoder.Params.Mode.Value = x264Mode.SingleCRF, 0, 1)
+    Sub SetTune(value As Integer)
+        Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
 
-        Encoder.Params.Tune.Value = v
-        Encoder.Params.ApplyDeviceSettings()
-        Encoder.Params.ApplyDefaults(Encoder.Params)
-        Encoder.Params.ApplyDeviceSettings()
+        Params.Tune.Value = value
+        Params.ApplyValues(True)
 
-        lv.Items(2 - offset).SubItems(1).Text = v.ToString
+        lv.Items(2 - offset).SubItems(1).Text = value.ToString
         lv.Items(2 - offset).Selected = False
 
         UpdateControls()
     End Sub
 
-    Sub SetDevice(v As x264DeviceMode)
-        Dim offset = If(Encoder.Params.Mode.Value = x264Mode.SingleCRF, 0, 1)
-
-        Encoder.Params.Device.Value = v
-        Encoder.Params.ApplyDeviceSettings()
-        Encoder.Params.ApplyDefaults(Encoder.Params)
-        Encoder.Params.ApplyDeviceSettings()
-
-        lv.Items(3 - offset).SubItems(1).Text = DispNameAttribute.GetValueForEnum(v)
-        lv.Items(3 - offset).Selected = False
-
-        UpdateControls()
-    End Sub
-
     Function GetQualityCaption(value As Single) As String
-        Select Case value
-            Case 18.0!
-                Return "18 - Super High"
-            Case 19.0!
-                Return "19 - Very High"
-            Case 20.0!
-                Return "20 - Higher"
-            Case 21.0!
-                Return "21 - High"
-            Case 22.0!
-                Return "22 - Medium"
-            Case 23.0!
-                Return "23 - Low"
-            Case 24.0!
-                Return "24 - Lower"
-            Case 25.0!
-                Return "25 - Very Low"
-            Case 26.0!
-                Return "26 - Super Low"
-        End Select
+        For Each i In QualityDefinitions
+            If i.Value = value Then
+                Return value & " - " + i.Text
+            End If
+        Next
 
         Return value.ToString
     End Function
 
     Sub UpdateControls()
-        If Encoder.Params.Mode.Value = x264Mode.SingleCRF AndAlso lv.Items.Count < 4 Then
+        If Params.Mode.Value = x264RateMode.Quality AndAlso lv.Items.Count < 4 Then
             lv.Items.Clear()
-            lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Encoder.Params.Quant.Value)}))
-            lv.Items.Add(New ListViewItem({"Preset", CType(Encoder.Params.Preset.Value, x264PresetMode).ToString}))
-            lv.Items.Add(New ListViewItem({"Tune", CType(Encoder.Params.Tune.Value, x264TuneMode).ToString}))
-            lv.Items.Add(New ListViewItem({"Device", DispNameAttribute.GetValueForEnum(CType(Encoder.Params.Device.Value, x264DeviceMode))}))
-        ElseIf Encoder.Params.Mode.Value <> x264Mode.SingleCRF AndAlso lv.Items.Count <> 3 Then
+            lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.Quant.Value)}))
+            lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
+            lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
+        ElseIf Params.Mode.Value <> 2 AndAlso lv.Items.Count <> 3 Then
             lv.Items.Clear()
-            lv.Items.Add(New ListViewItem({"Preset", CType(Encoder.Params.Preset.Value, x264PresetMode).ToString}))
-            lv.Items.Add(New ListViewItem({"Tune", CType(Encoder.Params.Tune.Value, x264TuneMode).ToString}))
-            lv.Items.Add(New ListViewItem({"Device", DispNameAttribute.GetValueForEnum(CType(Encoder.Params.Device.Value, x264DeviceMode))}))
+            lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
+            lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
         End If
 
-        Dim offset = If(Encoder.Params.Mode.Value = x264Mode.SingleCRF, 0, 1)
-        blCompCheck.Visible = Encoder.Params.Mode.Value = x264Mode.TwoPass Or Encoder.Params.Mode.Value = x264Mode.ThreePass
+        Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
+        llCompCheck.Visible = Params.Mode.Value = x264RateMode.TwoPass Or Params.Mode.Value = x264RateMode.ThreePass
     End Sub
 
-    Private Sub llAdvanced_Click(sender As Object, e As EventArgs) Handles blConfigCodec.Click
+    Private Sub llConfigCodec_Click(sender As Object, e As EventArgs) Handles blConfigCodec.Click
         Encoder.ShowConfigDialog()
     End Sub
 
-    Private Sub llConfigContainer_Click(sender As Object, e As EventArgs) Handles blConfigContainer.Click
+    Private Sub llConfigContainer_Click(sender As Object, e As EventArgs) Handles llConfigContainer.Click
         Encoder.OpenMuxerConfigDialog()
     End Sub
 
-    Private Sub llCompCheck_Click(sender As Object, e As EventArgs) Handles blCompCheck.Click
+    Private Sub llCompCheck_Click(sender As Object, e As EventArgs) Handles llCompCheck.Click
         Encoder.RunCompCheck()
     End Sub
+
+    Class QualityItem
+        Property Value As Single
+        Property Text As String
+        Property Tooltip As String
+
+        Sub New(value As Single, text As String, tooltip As String)
+            Me.Value = value
+            Me.Text = text
+            Me.Tooltip = tooltip
+        End Sub
+    End Class
 End Class

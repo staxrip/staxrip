@@ -3,13 +3,13 @@ Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 <Serializable()>
-Public Class AV1Encoder
+Public Class AOMEnc
     Inherits BasicVideoEncoder
 
     Property ParamsStore As New PrimitiveStore
 
     Sub New()
-        Name = "AV1 (under construction)"
+        Name = "AV1"
         AutoCompCheckValue = 50
     End Sub
 
@@ -38,10 +38,10 @@ Public Class AV1Encoder
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode("Encoding video using aomenc " + Package.aomenc.Version, GetArgs(1, p.Script), s.ProcessPriority)
+        Encode("Encoding video using aomenc " + Package.AOMEnc.Version, GetArgs(1, p.Script), s.ProcessPriority)
 
         If Params.Mode.Value = AV1RateMode.TwoPass Then
-            Encode("Encoding video second pass using aomenc " + Package.aomenc.Version, GetArgs(2, p.Script), s.ProcessPriority)
+            Encode("Encoding video second pass using aomenc " + Package.AOMEnc.Version, GetArgs(2, p.Script), s.ProcessPriority)
         End If
 
         AfterEncoding()
@@ -61,7 +61,7 @@ Public Class AV1Encoder
             proc.SkipStrings = {"[ETA"}
             proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
-            proc.Arguments = "/C call " + batchPath.Quotes
+            proc.Arguments = "/C call """ + batchPath.Escape + """"
             proc.Start()
         End Using
     End Sub
@@ -86,7 +86,7 @@ Public Class AV1Encoder
             form.Text = "Under construction, AV1 isn't finished yet"
 
             Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of AV1Encoder)(Me)
+                                        Dim enc = ObjectHelp.GetCopy(Of AOMEnc)(Me)
                                         Dim params2 As New AV1Params
                                         Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
                                         params2.Init(store2)
@@ -266,9 +266,9 @@ Public Class AV1Params
 
         If includePaths AndAlso includeExecutable Then
             If p.Script.Engine = ScriptEngine.VapourSynth Then
-                sb.Append(Package.vspipe.Path.Quotes + " " + script.Path.Quotes + " - --y4m | " + Package.aomenc.Path.Quotes + " -")
+                sb.Append(Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | " + Package.AOMEnc.Path.Escape + " -")
             Else
-                sb.Append(Package.ffmpeg.Path.Quotes + " -i " + script.Path.Quotes + " -f yuv4mpegpipe -loglevel error -hide_banner - | " + Package.aomenc.Path.Quotes + " -")
+                sb.Append(Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -loglevel error -hide_banner - | " + Package.AOMEnc.Path.Escape + " -")
             End If
         End If
 
@@ -284,15 +284,15 @@ Public Class AV1Params
         If q.Count > 0 Then sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
 
         If includePaths Then
-            If Mode.Value = AV1RateMode.TwoPass Then sb.Append(" --fpf=" + (p.TempDir + p.Name + ".txt").Quotes)
-            sb.Append(" -o " + targetPath.Quotes)
+            If Mode.Value = AV1RateMode.TwoPass Then sb.Append(" --fpf=" + (p.TempDir + p.Name + ".txt").Escape)
+            sb.Append(" -o " + targetPath.Escape)
         End If
 
         Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))
     End Function
 
     Public Overrides Function GetPackage() As Package
-        Return Package.aomenc
+        Return Package.AOMEnc
     End Function
 End Class
 

@@ -150,8 +150,15 @@ Public Class GlobalClass
                 Return True
             End If
 
+            For Each i2 In "^%"
+                If i.Contains(i2) Then
+                    MsgError("Source file names with the character " & i2 & " are not supported by StaxRip." + BR2 + i)
+                    Return True
+                End If
+            Next
+
             If i.Contains("#") Then
-                If Filepath.GetExtFull(i) = ".mp4" OrElse MediaInfo.GetGeneral(i, "Audio_Codec_List").Contains("AAC") Then
+                If i.Ext = "mp4" OrElse MediaInfo.GetGeneral(i, "Audio_Codec_List").Contains("AAC") Then
                     MsgError("Character # can't be processed by MP4Box, please rename." + BR2 + i)
                     Return True
                 End If
@@ -476,7 +483,7 @@ Public Class GlobalClass
                 proc.Project = proj
                 proc.Init("Index with ffmsindex", "Indexing, please wait...")
                 proc.File = Package.ffms2.GetDir + "ffmsindex.exe"
-                proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.Quotes + " " + cachePath.Quotes
+                proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.Escape + " " + cachePath.Escape
                 proc.Start()
             End Using
         End If
@@ -738,7 +745,7 @@ Public Class GlobalClass
             If i.Category = cat Then
                 If Not i.Active Then
                     i.Active = True
-                    g.MainForm.AviSynthListView.Load()
+                    g.MainForm.FiltersListView.Load()
                 End If
 
                 Return True
@@ -945,7 +952,7 @@ Public Class GlobalClass
                 p.CropTop += hhalf + hhalf Mod 2
             End If
 
-            g.MainForm.AviSynthListView.Load()
+            g.MainForm.FiltersListView.Load()
         End If
     End Sub
 End Class

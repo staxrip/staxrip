@@ -590,7 +590,7 @@ Class eac3toForm
 
     Private Output As String
     Private Streams As New BindingList(Of M2TSStream)
-    Private AudioOutputFormats As String() = {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd"}
+    Private AudioOutputFormats As String() = {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd", "thd+ac3"}
     Private Project As Project
 
     Sub New(proj As Project)
@@ -702,11 +702,11 @@ Class eac3toForm
         Dim args = ""
 
         If File.Exists(M2TSFile) Then
-            args = M2TSFile.Quotes + " -progressnumbers"
-            Log.Write("Process M2TS file using eac3to", Package.eac3to.Path.Quotes + " " + args + BR2, Project)
+            args = M2TSFile.Escape + " -progressnumbers"
+            Log.Write("Process M2TS file using eac3to", Package.eac3to.Path.Escape + " " + args + BR2, Project)
         ElseIf Directory.Exists(PlaylistFolder) Then
-            args = PlaylistFolder.Quotes + " " & PlaylistID & ") -progressnumbers"
-            Log.Write("Process playlist file using eac3to", Package.eac3to.Path.Quotes + " " + args + BR2, Project)
+            args = PlaylistFolder.Escape + " " & PlaylistID & ") -progressnumbers"
+            Log.Write("Process playlist file using eac3to", Package.eac3to.Path.Escape + " " + args + BR2, Project)
         End If
 
         Using o As New Process
@@ -905,43 +905,8 @@ Class eac3toForm
         End If
     End Sub
 
-    Private Sub eac3toForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        Dim hdCounter As Integer
-
-        For Each i In Streams
-            If i.Checked AndAlso i.IsAudio Then
-                If {"dtsma", "dtshr"}.Contains(i.OutputType) Then
-                    hdCounter += 1
-                ElseIf i.OutputType = "dts" AndAlso {"DTS Master Audio", "DTS Hi-Res"}.Contains(i.Codec) Then
-                    hdCounter -= 1
-                End If
-            End If
-        Next
-
-        s.CmdlPresetsEac3to = cmdlOptions.Presets
-
-        If Not bnOK.Enabled Then e.Cancel = True
-
-        If DialogResult = DialogResult.OK Then
-            If cbVideoOutput.Text = "MKV" AndAlso Not Package.Haali.VerifyOK(True) Then
-                e.Cancel = True
-            End If
-
-            s.Storage.SetBool("demux Blu-ray chapters", cbChapters.Checked)
-        End If
-
-        If Not DirPath.IsFixedDrive(OutputFolder) OrElse Not Directory.Exists(OutputFolder) Then
-            MsgWarn("The output folder must be located on a fixed local drive.")
-            e.Cancel = True
-        End If
-    End Sub
-
     Private Sub AddCmdlControl_PresetsChanged(presets As String) Handles cmdlOptions.PresetsChanged
         cmdlOptions.Presets = presets
-    End Sub
-
-    Private Sub eac3toForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
-        Task.Run(AddressOf StartAnalyze)
     End Sub
 
     Function GetArgs(src As String, baseName As String) As String
@@ -951,7 +916,7 @@ Class eac3toForm
 
         If Not videoStream Is Nothing AndAlso Not cbVideoOutput.Text = "Nothing" Then
             r += " " & videoStream.ID & ": " + (OutputFolder + baseName +
-                "." + cbVideoOutput.Text.ToLower).Quotes
+                "." + cbVideoOutput.Text.ToLower).Escape
         End If
 
         For Each i In Streams
@@ -1079,30 +1044,9 @@ Class eac3toForm
 
         If Not ms Is Nothing Then
             cmdlOptions.tb.Text = ms.Options
-            cbAudioOutput.Items.Clear()
-            cbAudioOutput.Items.AddRange(GetAudioOutputFormatList(ms.Codec))
             cbAudioOutput.SelectedItem = ms.OutputType
         End If
     End Sub
-
-    Function GetAudioOutputFormatList(codec As String) As String()
-        Select Case codec
-            Case "TrueHD/AC3", "TrueHD/AC3 (Atmos)"
-                Return {"thd", "ac3", "thd+ac3", "wav", "flac", "m4a"}
-            Case "DTS", "DTS-ES", "DTS Express"
-                Return {"dts", "ac3", "wav", "flac", "m4a"}
-            Case "DTS Master Audio"
-                Return {"dtsma", "dts", "ac3", "wav", "flac", "m4a"}
-            Case "DTS Hi-Res"
-                Return {"dtshr", "dts", "ac3", "wav", "flac", "m4a"}
-            Case "RAW/PCM"
-                Return {"ac3", "wav", "flac", "m4a"}
-            Case "E-AC3"
-                Return {"eac3", "ac3", "wav", "flac", "m4a"}
-            Case Else
-                Return {"ac3", "wav", "flac", "m4a"}
-        End Select
-    End Function
 
     Private Sub bnAudioAll_Click(sender As Object, e As EventArgs) Handles bnAudioAll.Click
         For Each i As ListViewItem In lvAudio.Items
@@ -1170,5 +1114,43 @@ Class eac3toForm
 
     Private Sub teTempDir_TextChanged() Handles teTempDir.TextChanged
         OutputFolder = teTempDir.Text.AppendSeparator
+    End Sub
+
+    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        Dim hdCounter As Integer
+
+        For Each i In Streams
+            If i.Checked AndAlso i.IsAudio Then
+                If {"dtsma", "dtshr"}.Contains(i.OutputType) Then
+                    hdCounter += 1
+                ElseIf i.OutputType = "dts" AndAlso {"DTS Master Audio", "DTS Hi-Res"}.Contains(i.Codec) Then
+                    hdCounter -= 1
+                End If
+            End If
+        Next
+
+        s.CmdlPresetsEac3to = cmdlOptions.Presets
+
+        If Not bnOK.Enabled Then e.Cancel = True
+
+        If DialogResult = DialogResult.OK Then
+            If cbVideoOutput.Text = "MKV" AndAlso Not Package.Haali.VerifyOK(True) Then
+                e.Cancel = True
+            End If
+
+            s.Storage.SetBool("demux Blu-ray chapters", cbChapters.Checked)
+        End If
+
+        If Not DirPath.IsFixedDrive(OutputFolder) OrElse Not Directory.Exists(OutputFolder) Then
+            MsgWarn("The output folder must be located on a fixed local drive.")
+            e.Cancel = True
+        End If
+
+        MyBase.OnFormClosing(e)
+    End Sub
+
+    Protected Overrides Sub OnShown(e As EventArgs)
+        Task.Run(AddressOf StartAnalyze)
+        MyBase.OnShown(e)
     End Sub
 End Class

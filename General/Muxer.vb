@@ -150,7 +150,7 @@ Public MustInherit Class Muxer
             End If
 
             If TypeOf Me Is MkvMuxer AndAlso i.Contains("_attachment_") Then
-                AdditionalSwitches += " --attachment-name " + i.Right("_attachment_").Quotes + " --attach-file " + i.Quotes
+                AdditionalSwitches += " --attachment-name " + i.Right("_attachment_").Escape + " --attach-file " + i.Escape
             End If
         Next
 
@@ -213,7 +213,7 @@ Public Class MP4Muxer
     End Function
 
     Overrides Function GetCommandLine() As String
-        Return Package.MP4Box.Path.Quotes + " " + GetArgs()
+        Return Package.MP4Box.Path.Escape + " " + GetArgs()
     End Function
 
     Private Function GetArgs() As String
@@ -233,7 +233,7 @@ Public Class MP4Muxer
             If TypeOf p.VideoEncoder Is NullEncoder Then temp = ":par=" & par.X & ":" & par.Y
         End If
 
-        args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + temp).Quotes)
+        args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + temp).Escape)
 
         AddAudio(p.Audio0, args)
         AddAudio(p.Audio1, args)
@@ -256,14 +256,14 @@ Public Class MP4Muxer
             End If
         Next
 
-        If File.Exists(ChapterFile) Then args.Append(" -chap " + ChapterFile.Quotes)
+        If File.Exists(ChapterFile) Then args.Append(" -chap " + ChapterFile.Escape)
         If AdditionalSwitches <> "" Then args.Append(" " + Macro.Expand(AdditionalSwitches))
 
         Dim tagList As New List(Of String)
-        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then tagList.Add("cover=" + CoverFile.Quotes)
+        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then tagList.Add("cover=" + CoverFile.Escape)
         If Tags <> "" Then tagList.Add(Macro.Expand(Tags))
         If tagList.Count > 0 Then args.Append(" -itags " + String.Join(":", tagList))
-        args.Append(" -new " + p.TargetFile.Quotes)
+        args.Append(" -new " + p.TargetFile.Escape)
 
         Return args.ToString.Trim
     End Function
@@ -467,7 +467,7 @@ Public Class MkvMuxer
             For Each iBase In {"small_cover", "cover_land", "small_cover_land"}
                 For Each iExt In {".jpg", ".png"}
                     Dim fp = iDir + iBase + iExt
-                    If File.Exists(fp) Then AdditionalSwitches += " --attach-file " + fp.Quotes
+                    If File.Exists(fp) Then AdditionalSwitches += " --attach-file " + fp.Escape
                 Next
             Next
         Next
@@ -490,7 +490,7 @@ Public Class MkvMuxer
     End Sub
 
     Overrides Function GetCommandLine() As String
-        Return Package.mkvmerge.Path.Quotes + " " + GetArgs()
+        Return Package.mkvmerge.Path.Escape + " " + GetArgs()
     End Function
 
     Function Convert(val As String) As String
@@ -498,9 +498,9 @@ Public Class MkvMuxer
     End Function
 
     Private Function GetArgs(Optional writeTag As Boolean = False) As String
-        Dim args = "-o " + p.TargetFile.Quotes
+        Dim args = "-o " + p.TargetFile.Escape
 
-        Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "-I " + p.VideoEncoder.OutputPath.Quotes)
+        Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "-I " + p.VideoEncoder.OutputPath.Escape)
         Dim id = Regex.Match(stdout, "Track ID (\d+): video").Groups(1).Value.ToInt
 
         If Not FileTypes.VideoOnly.Contains(p.VideoEncoder.OutputPath.Ext) Then
@@ -527,13 +527,13 @@ Public Class MkvMuxer
 
         If TimecodesFile <> "" Then
             If TimecodesFile.Ext = "txt" Then
-                args += " --timecodes 0:" + TimecodesFile.Quotes
+                args += " --timecodes 0:" + TimecodesFile.Escape
             ElseIf TimecodesFile.Ext = "mkv" Then
-                args += " --timecodes " + MediaInfo.GetVideo(TimecodesFile, "StreamOrder") + ":" + TimecodesFile.Quotes
+                args += " --timecodes " + MediaInfo.GetVideo(TimecodesFile, "StreamOrder") + ":" + TimecodesFile.Escape
             End If
         End If
 
-        args += " " + p.VideoEncoder.OutputPath.Quotes
+        args += " " + p.VideoEncoder.OutputPath.Escape
 
         AddAudioArgs(p.Audio0, args)
         AddAudioArgs(p.Audio1, args)
@@ -559,15 +559,15 @@ Public Class MkvMuxer
                 args += " --default-track " & id & ":" & If(subtitle.Default, 1, 0)
                 args += " --language " & id & ":" + subtitle.Language.ThreeLetterCode
                 If isContainer OrElse subtitle.Title <> "" Then args += " --track-name """ & id & ":" + Convert(subtitle.Title) + """"
-                args += " " + subtitle.Path.Quotes
+                args += " " + subtitle.Path.Escape
             End If
         Next
 
         If Not TypeOf Me Is WebMMuxer AndAlso File.Exists(ChapterFile) Then
-            args += " --chapters " + ChapterFile.Quotes
+            args += " --chapters " + ChapterFile.Escape
         End If
 
-        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then args += " --attach-file " + CoverFile.Quotes
+        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then args += " --attach-file " + CoverFile.Escape
         If Title <> "" Then args += " --title """ + Convert(Title) + """"
 
         If TypeOf p.VideoEncoder Is NullEncoder AndAlso p.Ranges.Count > 0 Then
@@ -591,7 +591,7 @@ Public Class MkvMuxer
 
                 Dim tagsPath = p.TempDir + p.TargetFile.Base + "_tags.xml"
                 xml.Save(tagsPath)
-                args += " --global-tags " + tagsPath.Quotes
+                args += " --global-tags " + tagsPath.Escape
             End If
         Catch ex As Exception
             Throw New ErrorAbortException("Error writing tags", ex.Message)
@@ -612,7 +612,7 @@ Public Class MkvMuxer
                 tid = ap.Stream.StreamOrder
                 isCombo = ap.Stream.Name.Contains("THD+AC3")
 
-                Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "-I " + ap.File.Quotes)
+                Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "-I " + ap.File.Escape)
                 Dim values = Regex.Matches(stdout, "Track ID (\d+): audio").OfType(Of Match).Select(Function(match) match.Groups(1).Value.ToInt)
                 If values.Count = ap.Streams.Count Then tid = values(ap.Stream.Index)
             Else
@@ -646,7 +646,7 @@ Public Class MkvMuxer
 
             args += " --default-track " & tid & ":" & If(ap.Default, 1, 0)
             args += " --forced-track " & tid & ":" & If(ap.Forced, 1, 0)
-            args += " " + ap.File.Quotes
+            args += " " + ap.File.Escape
         End If
     End Sub
 

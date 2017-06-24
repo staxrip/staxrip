@@ -1863,7 +1863,7 @@ Public Class Subtitle
 
             If Not inSub.Enabled OrElse Not File.Exists(inSub.Path) OrElse inSub.Path.Contains("_cut_") Then Continue For
             Dim aviPath = p.TempDir + inSub.Path.Base + "_cut_mm.avi"
-            Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0}:r={1} -y -hide_banner -c:v copy " + aviPath.Quotes, (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture))
+            Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0}:r={1} -y -hide_banner -c:v copy " + aviPath.Escape, (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture))
 
             Using proc As New Proc
                 proc.Init("Create avi file for subtitle cutting with ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -1881,7 +1881,7 @@ Public Class Subtitle
             End If
 
             Dim mkvPath = p.TempDir + inSub.Path.Base + " ID" & inSub.ID & "_cut_sub.mkv"
-            args = "-o " + mkvPath.Quotes + " " + aviPath.Quotes
+            args = "-o " + mkvPath.Escape + " " + aviPath.Escape
 
             If Not FileTypes.SubtitleExludingContainers.Contains(inSub.Path.Ext) Then
                 args += " --no-audio --no-video --no-chapters --no-attachments --no-track-tags --no-global-tags"
@@ -1889,7 +1889,7 @@ Public Class Subtitle
 
             Dim id = If(FileTypes.SubtitleSingle.Contains(inSub.Path.Ext), 0, inSub.StreamOrder)
             If Not FileTypes.SubtitleSingle.Contains(inSub.Path.Ext) Then args += " --subtitle-tracks " & id
-            args += " " + inSub.Path.Quotes
+            args += " " + inSub.Path.Escape
             args += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")
             args += " --ui-language en"
 
@@ -1909,7 +1909,7 @@ Public Class Subtitle
             End If
 
             Dim subPath = p.TempDir + inSub.Path.Base + " ID" & inSub.ID & "_cut_" + inSub.ExtFull
-            args = "tracks " + mkvPath.Quotes + " 1:" + subPath.Quotes
+            args = "tracks " + mkvPath.Escape + " 1:" + subPath.Escape
 
             Using proc As New Proc
                 proc.Init("Demux subtitle using mkvextract " + Package.mkvextract.Version, "Progress: ")

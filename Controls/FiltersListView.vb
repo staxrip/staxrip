@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Public Class FilterListView
+Public Class FiltersListView
     Inherits ListViewEx
 
     Private BlockItemCheck As Boolean

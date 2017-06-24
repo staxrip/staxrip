@@ -99,7 +99,7 @@ Class Audio
 
         If ap.File.Ext = "avs" Then
             Dim outPath = ap.File.DirAndBase + "." + ConvertExt
-            Dim args = "-i " + ap.File.Quotes + " -y -hide_banner " + outPath.Quotes
+            Dim args = "-i " + ap.File.Escape + " -y -hide_banner " + outPath.Escape
 
             Using proc As New Proc
                 proc.Init("AVS to " + outPath.Ext.ToUpper + " using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -150,7 +150,7 @@ Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + wavPath.Quotes
+        Dim args = "-i " + d.Path.Escape + " -y -hide_banner " + wavPath.Escape
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -171,7 +171,7 @@ Class Audio
 
     Shared Sub ConvertNicAudio(ap As AudioProfile)
         If ap.File.Ext = ConvertExt Then Exit Sub
-        If Not FileTypes.NicAudioInput.Contains(ap.File.ext) Then Exit Sub
+        If Not FileTypes.NicAudioInput.Contains(ap.File.Ext) Then Exit Sub
         If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim d As New VideoScript
@@ -183,7 +183,7 @@ Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + outPath.Quotes
+        Dim args = "-i " + d.Path.Escape + " -y -hide_banner " + outPath.Escape
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -246,7 +246,7 @@ Class Audio
         If ap.File.Ext = ConvertExt Then Exit Sub
         If Not FileTypes.eac3toInput.Contains(ap.File.Ext) Then Exit Sub
         Dim outPath = p.TempDir + ap.File.Base + "." + ConvertExt
-        Dim args = ap.File.Quotes + " " + outPath.Quotes
+        Dim args = ap.File.Escape + " " + outPath.Escape
 
         If ap.Channels = 6 Then
             args += " -down6"
@@ -278,11 +278,11 @@ Class Audio
     Shared Sub ConvertFfmpeg(ap As AudioProfile)
         If ap.File.Ext = ConvertExt Then Exit Sub
         Dim outPath = p.TempDir + ap.File.Base + "." + ConvertExt
-        Dim args = "-i " + ap.File.Quotes
+        Dim args = "-i " + ap.File.Escape
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
         args += " -y -hide_banner -ac " & ap.Channels
         If ConvertExt = "w64" Then args += " -c:a pcm_s24le"
-        args += " " + outPath.Quotes
+        args += " " + outPath.Escape
 
         Using proc As New Proc
             proc.Init("Convert from " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " using ffmpeg " + Package.ffmpeg.Version,
@@ -315,7 +315,7 @@ Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + outPath.Quotes
+        Dim args = "-i " + d.Path.Escape + " -y -hide_banner " + outPath.Escape
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -349,7 +349,7 @@ Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + outPath.Quotes
+        Dim args = "-i " + d.Path.Escape + " -y -hide_banner " + outPath.Escape
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -380,7 +380,7 @@ Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + wavPath.Quotes
+        Dim args = "-i " + d.Path.Escape + " -y -hide_banner " + wavPath.Escape
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -413,7 +413,7 @@ Class Audio
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
-        Dim args = "-i " + d.Path.Quotes + " -y -hide_banner " + wavPath.Quotes
+        Dim args = "-i " + d.Path.Escape + " -y -hide_banner " + wavPath.Escape
 
         Using proc As New Proc
             proc.Init("AVS to WAV using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -437,7 +437,7 @@ Class Audio
         If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
 
         Dim aviPath = p.TempDir + ap.File.Base + "_cut_mm.avi"
-        Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0}:r={1} -y -hide_banner -c:v copy " + aviPath.Quotes, (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture))
+        Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0}:r={1} -y -hide_banner -c:v copy " + aviPath.Escape, (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture))
 
         Using proc As New Proc
             proc.Init("Create avi file for audio cutting with ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
@@ -456,7 +456,7 @@ Class Audio
 
         Dim mkvPath = p.TempDir + ap.File.Base + "_cut_.mkv"
 
-        Dim args2 = "-o " + mkvPath.Quotes + " " + aviPath.Quotes + " " + ap.File.Quotes
+        Dim args2 = "-o " + mkvPath.Escape + " " + aviPath.Escape + " " + ap.File.Escape
         args2 += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")
         args2 += " --ui-language en"
 
@@ -522,7 +522,7 @@ function Down2(clip a)
     End Function
 
     Shared Sub SetGain(ap As AudioProfile)
-        Dim args = "-i " + ap.File.Quotes
+        Dim args = "-i " + ap.File.Escape
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
         args += " -hide_banner -loglevel error -af volumedetect -f null NUL"
 

@@ -172,21 +172,18 @@
     <Compile Include="Controls\SubtitleControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\x264Control2.vb">
+    <Compile Include="Controls\x264Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\x265Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\x264Control.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Encoding\AMDEncoder.vb" />
-    <Compile Include="Encoding\AV1Encoder.vb" />
-    <Compile Include="Encoding\ffmpegEncoder.vb" />
-    <Compile Include="Encoding\IntelEncoder.vb" />
-    <Compile Include="Encoding\NVIDIAEncoder.vb" />
-    <Compile Include="Encoding\x264Encoder2.vb" />
+    <Compile Include="Encoding\VCEEnc.vb" />
+    <Compile Include="Encoding\AOMEnc.vb" />
+    <Compile Include="Encoding\ffmpegEnc.vb" />
+    <Compile Include="Encoding\QSVEnc.vb" />
+    <Compile Include="Encoding\NVEnc.vb" />
+    <Compile Include="Encoding\x264Enc.vb" />
     <Compile Include="General\Log.vb" />
     <Compile Include="General\GlobalClass.vb" />
     <Compile Include="General\GlobalCommands.vb" />
@@ -237,7 +234,7 @@
     <Compile Include="Forms\HelpForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls\FilterListView.vb">
+    <Compile Include="Controls\FiltersListView.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\CommandLineControl.vb">
@@ -265,7 +262,7 @@
     <Compile Include="General\Late Binding.vb" />
     <Compile Include="General\CommandLine.vb" />
     <Compile Include="General\ImageUtils.vb" />
-    <Compile Include="Encoding\x265Encoder.vb" />
+    <Compile Include="Encoding\x265Enc.vb" />
     <Compile Include="UI\Controls\ListViewEx.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -273,7 +270,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="General\VideoDrawer.vb" />
-    <Compile Include="Encoding\x264Encoder.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -293,9 +289,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MacroEditor.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\x264Form.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ControlHostForm.vb">
@@ -446,9 +439,6 @@
     <EmbeddedResource Include="Controls\x265Control.resx">
       <DependentUpon>x265Control.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\x264Control.resx">
-      <DependentUpon>x264Control.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AppsForm.resx">
       <DependentUpon>AppsForm.vb</DependentUpon>
     </EmbeddedResource>
@@ -508,6 +498,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MediaInfoFolderViewForm.resx">
       <DependentUpon>MediaInfoFolderViewForm.vb</DependentUpon>
@@ -534,9 +525,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TestForm.resx">
       <DependentUpon>TestForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\x264Form.resx">
-      <DependentUpon>x264Form.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CommandLineForm.resx">
       <DependentUpon>CommandLineForm.vb</DependentUpon>

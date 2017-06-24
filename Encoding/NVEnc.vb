@@ -237,12 +237,12 @@ Public Class NVEnc
         Property Deband_range As New NumParam With {.Text = "range", .InitValue = 15, .MinMaxStep = {0, 127, 1}, .Help = "Set range (default=15, 0-127)"}
         Property Deband_sample As New NumParam With {.Text = "sample", .InitValue = 1, .MinMaxStep = {0, 2, 1}, .Help = "Set sample (default=1, 0-2)"}
         Property Deband_thre As New NumParam With {.Text = "thre", .InitValue = 15, .MinMaxStep = {0, 31, 1}, .Help = "Set threshold for y, cb & cr"}
-        Property Deband_thre_y As New NumParam With {.Text = "thre_y", .InitValue = 15, .MinMaxStep = {0, 31, 1}, .Help = "Set threshold for y (default=15, 0-31)"}
-        Property Deband_thre_cb As New NumParam With {.Text = "thre_cb", .InitValue = 15, .MinMaxStep = {0, 31, 1}, .Help = "Set threshold for cb (default=15, 0-31)"}
-        Property Deband_thre_cr As New NumParam With {.Text = "thre_cr", .InitValue = 15, .MinMaxStep = {0, 31, 1}, .Help = "Set threshold for cr (default=15, 0-31)"}
+        Property Deband_thre_y As New NumParam With {.Text = "     thre_y", .InitValue = 15, .MinMaxStep = {0, 31, 1}, .Help = "Set threshold for y (default=15, 0-31)"}
+        Property Deband_thre_cb As New NumParam With {.Text = "     thre_cb", .InitValue = 15, .MinMaxStep = {0, 31, 1}, .Help = "Set threshold for cb (default=15, 0-31)"}
+        Property Deband_thre_cr As New NumParam With {.Text = "     thre_cr", .InitValue = 15, .MinMaxStep = {0, 31, 1}, .Help = "Set threshold for cr (default=15, 0-31)"}
         Property Deband_dither As New NumParam With {.Text = "dither", .InitValue = 15, .MinMaxStep = {0, 31, 1}, .Help = "Set strength of dither for y, cb & cr"}
-        Property Deband_dither_y As New NumParam With {.Text = "dither_y", .InitValue = 15, .MinMaxStep = {0, 31, 1}, .Help = "Set strength of dither for y (default=15, 0-31)"}
-        Property Deband_dither_c As New NumParam With {.Text = "dither_c", .InitValue = 15, .MinMaxStep = {0, 31, 1}, .Help = "Set strength of dither for cb/cr (default=15, 0-31)"}
+        Property Deband_dither_y As New NumParam With {.Text = "     dither_y", .InitValue = 15, .MinMaxStep = {0, 31, 1}, .Help = "Set strength of dither for y (default=15, 0-31)"}
+        Property Deband_dither_c As New NumParam With {.Text = "     dither_c", .InitValue = 15, .MinMaxStep = {0, 31, 1}, .Help = "Set strength of dither for cb/cr (default=15, 0-31)"}
         Property Deband_seed As New NumParam With {.Text = "seed", .InitValue = 1234, .Help = "Set rand seed (default=1234)"}
 
         Property Deband_blurfirst As New BoolParam With {.Text = "blurfirst"}
@@ -258,13 +258,13 @@ Public Class NVEnc
             For Each i In {Deband_range, Deband_sample, Deband_thre, Deband_thre_y, Deband_thre_cb,
                 Deband_thre_cr, Deband_dither, Deband_dither_y, Deband_dither_c, Deband_seed}
 
-                If i.Value <> i.DefaultValue Then pairs.Add(i.Text + "=" & i.Value)
+                If i.Value <> i.DefaultValue Then pairs.Add(i.Text.Trim + "=" & i.Value)
             Next
 
             If Deband_blurfirst.Value Then pairs.Add("blurfirst")
             If Deband_rand_each_frame.Value Then pairs.Add("rand_each_frame")
 
-            If pairs.Count > 0 Then ret += " " + String.Join(",", pairs)
+            If pairs.Count > 0 AndAlso Deband.Value Then ret += " " + String.Join(",", pairs)
             Return ret
         End Function
 
@@ -316,7 +316,6 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--transfer", .Text = "Transfer:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte-st-2084", "smpte-st-428", "arib-srd-b67"}},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Full Range", .VisibleFunc = Function() Codec.ValueText = "h264"})
                     Add("VPP",
-                        New StringParam With {.Switch = "--vpp-deband", .Text = "Deband Filter", .Help = "[<param1>=<value>][,<param2>=<value>][...]"},
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize:", .Options = {"Disabled", "default", "bilinear", "cubic", "cubic_b05c03", "cubic_bspline", "cubic_catmull", "lanczos", "nn", "npp_linear", "spline36", "super"}},
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace:", .VisibleFunc = Function() Decoder.ValueText = "nvnative" OrElse Decoder.ValueText = "nvcuda", .Options = {"none", "adaptive", "bob"}},
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss:", .Options = {"Disabled", "3", "5", "7"}},
@@ -360,6 +359,15 @@ Public Class NVEnc
             PmdApplyCount.NumEdit.Enabled = PMD.Value
             PmdStrength.NumEdit.Enabled = PMD.Value
             PmdThreshold.NumEdit.Enabled = PMD.Value
+
+            For Each i In {Deband_range, Deband_sample, Deband_thre, Deband_thre_y, Deband_thre_cb,
+                Deband_thre_cr, Deband_dither, Deband_dither_y, Deband_dither_c, Deband_seed}
+
+                i.NumEdit.Enabled = Deband.Value
+            Next
+
+            Deband_rand_each_frame.CheckBox.Enabled = Deband.Value
+            Deband_blurfirst.CheckBox.Enabled = Deband.Value
 
             MyBase.OnValueChanged(item)
         End Sub

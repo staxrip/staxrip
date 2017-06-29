@@ -305,18 +305,18 @@ Public Class ProcForm
     End Sub
 
     Sub Abort()
-        Invoke(Sub()
-                   Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", 0)
+        BeginInvoke(Sub()
+                        Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", 0)
 
-                   For Each i In Procs
-                       Try
-                           If Not i.IsClosing Then i.Proc.KillAndThrow()
-                       Catch ex As Exception
-                       End Try
-                   Next
+                        For Each i In Procs.ToArray
+                            Try
+                                If Not i.IsClosing Then i.Proc.KillAndThrow()
+                            Catch ex As Exception
+                            End Try
+                        Next
 
-                   HideForm()
-               End Sub)
+                        HideForm()
+                    End Sub)
     End Sub
 
     Function GetProcesses() As List(Of Process)
@@ -394,20 +394,20 @@ Public Class ProcForm
     End Property
 
     Sub HideForm()
-        Invoke(Sub()
-                   Hide()
-                   ShowMainForm()
-               End Sub)
+        BeginInvoke(Sub()
+                        Hide()
+                        ShowMainForm()
+                    End Sub)
     End Sub
 
     Sub ShowMainForm()
-        g.MainForm.Invoke(Sub()
-                              If Not g.IsEncodingInstance Then
-                                  g.MainForm.Show()
-                                  g.MainForm.Refresh()
-                                  g.MainForm.Activate()
-                              End If
-                          End Sub)
+        g.MainForm.BeginInvoke(Sub()
+                                   If Not g.IsEncodingInstance Then
+                                       g.MainForm.Show()
+                                       g.MainForm.Refresh()
+                                       g.MainForm.Activate()
+                                   End If
+                               End Sub)
     End Sub
 
     Sub AddProc(proc As Proc)
@@ -422,16 +422,18 @@ Public Class ProcForm
     End Sub
 
     Shared Sub Start(proc As Proc)
-        If g.ProcForm Is Nothing Then
-            g.ProcForm = New ProcForm
-            Task.Run(Sub() Application.Run(g.ProcForm))
-        End If
+        SyncLock g
+            If g.ProcForm Is Nothing Then
+                g.ProcForm = New ProcForm
+                Task.Run(Sub() Application.Run(g.ProcForm))
+            End If
 
-        If g.MainForm.Visible Then g.MainForm.BeginInvoke(Sub() g.MainForm.Hide())
+            While Not WasHandleCreated
+                Thread.Sleep(50)
+            End While
+        End SyncLock
 
-        While Not WasHandleCreated
-            Thread.Sleep(50)
-        End While
+        If g.MainForm.Visible Then g.MainForm.Invoke(Sub() g.MainForm.Hide())
 
         g.ProcForm.Invoke(Sub()
                               g.ProcForm.Show()

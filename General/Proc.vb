@@ -175,8 +175,7 @@ Public Class Proc
                     Process.Kill()
                 End If
             End If
-        Catch ex As Exception
-            g.ShowException(ex)
+        Catch
         End Try
     End Sub
 

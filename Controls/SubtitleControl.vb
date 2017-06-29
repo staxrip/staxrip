@@ -440,8 +440,7 @@ Class SubtitleControl
                             Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
                                 st.IndexIDX.ToString).WriteANSIFile(fp)
 
-                            FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
-
+                            FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
                             avs.InsertAfter(insertCat, New VideoFilter("VobSub(""" + fp + """)"))
                         Else
                             avs.InsertAfter(insertCat, New VideoFilter("TextSubMod(""" + fp + """)"))
@@ -547,14 +546,11 @@ Class SubtitleControl
 
             If fp.ExtFull = ".idx" Then
                 fp = p.TempDir + p.TargetFile.Base + "_temp.idx"
-
-                Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
-                    st.IndexIDX.ToString).WriteANSIFile(fp)
-
-                FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
+                Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " + st.IndexIDX.ToString).WriteANSIFile(fp)
+                FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
             End If
 
-            g.ShellExecute(Package.SubtitleEdit.Path, """" + fp + """")
+            g.ShellExecute(Package.SubtitleEdit.Path, fp.Escape)
         Catch ex As Exception
             g.ShowException(ex)
         End Try

@@ -138,19 +138,19 @@ Class ffmpegEnc
 
         Property Codec As New OptionParam With {
             .Switch = "-c:v",
-            .Text = "Codec:",
+            .Text = "Codec",
             .AlwaysOn = True,
             .Options = {"x264", "x265", "VP9", "Xvid", "ASP", "Theora", "ProRes", "Intel AVC", "Intel HEVC", "NVIDIA AVC", "NVIDIA HEVC"},
             .Values = {"libx264", "libx265", "libvpx-vp9", "libxvid", "mpeg4", "libtheora", "prores", "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
 
         Property Mode As New OptionParam With {
             .Name = "Mode",
-            .Text = "Mode:",
+            .Text = "Mode",
             .VisibleFunc = Function() Not Codec.OptionText.EqualsAny("ProRes"),
             .Options = {"Quality", "One Pass", "Two Pass"}}
 
         Property Decoder As New OptionParam With {
-            .Text = "Decoder:",
+            .Text = "Decoder",
             .Options = {"AviSynth/VapourSynth", "Intel", "DXVA2"},
             .Values = {"avs", "qsv", "dxva2"}}
 
@@ -160,25 +160,25 @@ Class ffmpegEnc
                     ItemsValue = New List(Of CommandLineParam)
 
                     ItemsValue.AddRange({Decoder, Codec, Mode,
-                                        New OptionParam With {.Name = "x264/x265 preset", .Text = "Preset:", .Switch = "-preset", .InitValue = 5, .Options = {"ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
-                                        New OptionParam With {.Name = "x264/x265 tune", .Text = "Tune:", .Switch = "-tune", .Options = {"none", "film", "animation", "grain", "stillimage", "psnr", "ssim", "fastdecode", "zerolatency"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
-                                        New OptionParam With {.Switch = "-profile:v", .Text = "Profile:", .VisibleFunc = Function() Codec.OptionText = "ProRes", .InitValue = 3, .IntegerValue = True, .Options = {"Proxy", "LT", "Normal", "HQ"}},
-                                        New OptionParam With {.Switch = "-speed", .Text = "Speed:", .AlwaysOn = True, .VisibleFunc = Function() Codec.OptionText = "VP9", .Options = {"6 - Fastest", "5 - Faster", "4 - Fast", "3 - Medium", "2 - Slow", "1 - Slower", "0 - Slowest"}, .Values = {"6", "5", "4", "3", "2", "1", "0"}, .Value = 5},
-                                        New OptionParam With {.Switch = "-aq-mode", .Text = "AQ Mode:", .VisibleFunc = Function() Codec.OptionText = "VP9", .Options = {"Disabled", "0", "1", "2", "3"}, .Values = {"Disabled", "0", "1", "2", "3"}},
-                                        New OptionParam With {.Name = "h264_nvenc profile", .Switch = "-profile", .Text = "Profile:", .Options = {"baseline", "main", "high", "high444p"}, .InitValue = 1, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
-                                        New OptionParam With {.Name = "h264_nvenc preset", .Switch = "-preset", .Text = "Preset:", .Options = {"default", "slow", "medium", "fast", "hp", "hq", "bd", "ll", "llhq", "llhp", "lossless", "losslesshp"}, .InitValue = 2, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
-                                        New OptionParam With {.Name = "h264_nvenc level", .Switch = "-level", .Text = "Level:", .Options = {"auto", "1", "1.0", "1b", "1.0b", "1.1", "1.2", "1.3", "2", "2.0", "2.1", "2.2", "3", "3.0", "3.1", "3.2", "4", "4.0", "4.1", "4.2", "5", "5.0", "5.1"}, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
-                                        New OptionParam With {.Name = "h264_nvenc rc", .Switch = "-rc", .Text = "Rate Control:", .Options = {"preset", "constqp", "vbr", "cbr", "vbr_minqp", "ll_2pass_quality", "ll_2pass_size", "vbr_2pass"}, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
-                                        New NumParam With {.Name = "Quality", .Text = "Quality:", .VisibleFunc = Function() Mode.Value = EncodingMode.Quality AndAlso Not Codec.OptionText.EqualsAny("ProRes"), .ArgsFunc = AddressOf GetQualityArgs, .MinMaxStep = {0, 63, 1}},
-                                        New NumParam With {.Switch = "-threads", .Text = "Decoding Threads:", .MinMaxStep = {0, 64, 1}},
-                                        New NumParam With {.Name = "VP9 enc threads", .Switch = "-threads", .Text = "Encoding Threads:", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 8, .DefaultValue = -1},
-                                        New NumParam With {.Switch = "-tile-columns", .Text = "Tile Columns:", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 6, .DefaultValue = -1},
-                                        New NumParam With {.Switch = "-frame-parallel", .Text = "Frame Parallel:", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 1, .DefaultValue = -1},
-                                        New NumParam With {.Switch = "-auto-alt-ref", .Text = "Auto Alt Ref:", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 1, .DefaultValue = -1},
-                                        New NumParam With {.Switch = "-lag-in-frames", .Text = "Lag In Frames:", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 25, .DefaultValue = -1},
+                                        New OptionParam With {.Name = "x264/x265 preset", .Text = "Preset", .Switch = "-preset", .InitValue = 5, .Options = {"Ultrafast", "Superfast", "Veryfast", "Faster", "Fast", "Medium", "Slow", "Slower", "Veryslow", "Placebo"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
+                                        New OptionParam With {.Name = "x264/x265 tune", .Text = "Tune", .Switch = "-tune", .Options = {"None", "Film", "Animation", "Grain", "Stillimage", "Psnr", "Ssim", "Fastdecode", "Zerolatency"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
+                                        New OptionParam With {.Switch = "-profile:v", .Text = "Profile", .VisibleFunc = Function() Codec.OptionText = "ProRes", .InitValue = 3, .IntegerValue = True, .Options = {"Proxy", "LT", "Normal", "HQ"}},
+                                        New OptionParam With {.Switch = "-speed", .Text = "Speed", .AlwaysOn = True, .VisibleFunc = Function() Codec.OptionText = "VP9", .Options = {"6 - Fastest", "5 - Faster", "4 - Fast", "3 - Medium", "2 - Slow", "1 - Slower", "0 - Slowest"}, .Values = {"6", "5", "4", "3", "2", "1", "0"}, .Value = 5},
+                                        New OptionParam With {.Switch = "-aq-mode", .Text = "AQ Mode", .VisibleFunc = Function() Codec.OptionText = "VP9", .Options = {"Disabled", "0", "1", "2", "3"}, .Values = {"Disabled", "0", "1", "2", "3"}},
+                                        New OptionParam With {.Name = "h264_nvenc profile", .Switch = "-profile", .Text = "Profile", .Options = {"Baseline", "Main", "High", "High444p"}, .InitValue = 1, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
+                                        New OptionParam With {.Name = "h264_nvenc preset", .Switch = "-preset", .Text = "Preset", .Options = {"Default", "Slow", "Medium", "Fast", "HP", "HQ", "BD", "LL", "LLHQ", "LLHP", "Lossless", "Losslesshp"}, .InitValue = 2, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
+                                        New OptionParam With {.Name = "h264_nvenc level", .Switch = "-level", .Text = "Level", .Options = {"Auto", "1", "1.0", "1b", "1.0b", "1.1", "1.2", "1.3", "2", "2.0", "2.1", "2.2", "3", "3.0", "3.1", "3.2", "4", "4.0", "4.1", "4.2", "5", "5.0", "5.1"}, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
+                                        New OptionParam With {.Name = "h264_nvenc rc", .Switch = "-rc", .Text = "Rate Control", .Options = {"Preset", "Constqp", "VBR", "CBR", "VBR_MinQP", "LL_2Pass_Quality", "LL_2Pass_Size", "VBR_2Pass"}, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
+                                        New NumParam With {.Name = "Quality", .Text = "Quality", .VisibleFunc = Function() Mode.Value = EncodingMode.Quality AndAlso Not Codec.OptionText.EqualsAny("ProRes"), .ArgsFunc = AddressOf GetQualityArgs, .Config = {0, 63}},
+                                        New NumParam With {.Switch = "-threads", .Text = "Decoding Threads", .Config = {0, 64}},
+                                        New NumParam With {.Name = "VP9 enc threads", .Switch = "-threads", .Text = "Encoding Threads", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 8, .DefaultValue = -1},
+                                        New NumParam With {.Switch = "-tile-columns", .Text = "Tile Columns", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 6, .DefaultValue = -1},
+                                        New NumParam With {.Switch = "-frame-parallel", .Text = "Frame Parallel", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 1, .DefaultValue = -1},
+                                        New NumParam With {.Switch = "-auto-alt-ref", .Text = "Auto Alt Ref", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 1, .DefaultValue = -1},
+                                        New NumParam With {.Switch = "-lag-in-frames", .Text = "Lag In Frames", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 25, .DefaultValue = -1},
                                         New BoolParam With {.Name = "h264_qsv Lookahead", .Text = "Lookahead", .Switch = "-look_ahead 1", .NoSwitch = "-look_ahead 0", .Value = False, .DefaultValue = True, .VisibleFunc = Function() Codec.ValueText = "h264_qsv"},
                                         New BoolParam With {.Name = "h264_qsv VCM", .Text = "VCM", .Switch = "-vcm 1", .NoSwitch = "-vcm 0", .Value = False, .DefaultValue = True, .VisibleFunc = Function() Codec.ValueText = "h264_qsv"},
-                                        New StringParam With {.Text = "Custom Switches:"}})
+                                        New StringParam With {.Text = "Custom", .AlwaysOn = True}})
                 End If
 
                 Return ItemsValue

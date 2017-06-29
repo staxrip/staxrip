@@ -27,6 +27,10 @@ Namespace UI
                     mbProperties.Add("Directories | " + c.Name, c, c.Description)
                 End If
 
+                If c.Name?.EndsWith(" Folder") Then
+                    mbProperties.Add("Folders | " + c.Name, c, c.Description)
+                End If
+
                 If c.Name?.EndsWith(" File") Then
                     mbProperties.Add("Files | " + c.Name, c, c.Description)
                 End If

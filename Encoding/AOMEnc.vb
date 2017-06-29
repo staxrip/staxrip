@@ -130,7 +130,7 @@ Public Class AV1Params
 
     Property Mode As New OptionParam With {
         .Name = "Mode",
-        .Text = "Mode:",
+        .Text = "Mode",
         .Path = "Basic",
         .Options = {"One Pass", "Two Pass"}}
 
@@ -145,7 +145,7 @@ Public Class AV1Params
                     New OptionParam With {.Path = "Rate Control", .Switch = "--lossless", .Text = "Lossless", .IntegerValue = True, .Options = {"false", "true"}, .Help = "Lossless mode"},
                     New OptionParam With {.Path = "Rate Control", .Switch = "--aq-mode", .Text = "AQ Mode", .IntegerValue = True, .Options = {"off", "variance", "complexity", "cyclic", "refresh"}, .Help = "Adaptive quantization mode"},
                     New OptionParam With {.Path = "Rate Control", .Switch = "--deltaq-mode", .Text = "Delta QIndex Mode", .IntegerValue = True, .Options = {"off", "deltaq", "deltaq", "+", "deltalf"}},
-                    New NumParam With {.Path = "Rate Control", .Switch = "--bias-pct", .Text = "Bias PCT", .MinMaxStep = {0, 100, 1}, .Help = "CBR/VBR bias (0=CBR, 100=VBR)"},
+                    New NumParam With {.Path = "Rate Control", .Switch = "--bias-pct", .Text = "Bias PCT", .Config = {0, 100}, .Help = "CBR/VBR bias (0=CBR, 100=VBR)"},
                     New NumParam With {.Path = "Rate Control", .Switch = "--max-intra-rate", .Text = "Max Intra Rate", .Help = "Max I-frame bitrate (pct)"},
                     New NumParam With {.Path = "Rate Control", .Switch = "--max-inter-rate", .Text = "Max Inter Rate", .Help = "Max P-frame bitrate (pct)"},
                     New NumParam With {.Path = "Rate Control", .Switch = "--undershoot-pct", .Text = "Undershoot PCT", .Help = "Datarate undershoot (min) target (%)"},
@@ -163,7 +163,7 @@ Public Class AV1Params
                     New OptionParam With {.Path = "VUI", .Switch = "--color-space", .Text = "color-space", .Options = {"unknown", "bt601", "bt709", "smpte170", "smpte240", "bt2020", "reserved", "sRGB"}, .Help = "The color space of input content"},
                     New OptionParam With {.Path = "Performance", .Switch = "--tune", .Text = "tune", .Options = {"psnr", "ssim"}, .Help = "Material to favor"},
                     New NumParam With {.Path = "Performance", .Switch = "-t", .Text = "Threads", .Help = "Max number of threads to use"},
-                    New NumParam With {.Path = "Performance", .Switch = "--cpu-used", .Text = "cpu-used", .MinMaxStep = {0, 8, 1}, .Help = "CPU Used (0..8)"},
+                    New NumParam With {.Path = "Performance", .Switch = "--cpu-used", .Text = "CPUs Used", .Config = {0, 8}, .Help = "CPU Used (0..8)"},
                     New BoolParam With {.Path = "Statistic", .Switch = "--psnr", .Text = "psnr", .Help = "Show PSNR in status line"},
                     New BoolParam With {.Path = "Statistic", .Switch = "--debug", .Text = "Debug", .Help = "Debug mode (makes output deterministic)"},
                     New OptionParam With {.Path = "Image Size", .Switch = "--resize-allowed", .Text = "resize-allowed", .Options = {"true", "false"}, .Help = "Spatial resampling enabled (bool)"},
@@ -204,13 +204,13 @@ Public Class AV1Params
                     New NumParam With {.Path = "", .Switch = "--kf-max-dist", .Text = "kf-max-dist", .Help = "Maximum keyframe interval (frames)"},
                     New BoolParam With {.Path = "", .Switch = "--disable-kf", .Text = "disable-kf", .Help = "Disable keyframe placement"},
                     New NumParam With {.Path = "", .Switch = "--auto-alt-ref", .Text = "auto-alt-ref", .Help = "Enable automatic alt reference frames"},
-                    New NumParam With {.Path = "", .Switch = "--sharpness", .Text = "sharpness", .MinMaxStep = {0, 7, 1}, .Help = "Loop filter sharpness (0..7)"},
+                    New NumParam With {.Path = "", .Switch = "--sharpness", .Text = "sharpness", .Config = {0, 7}, .Help = "Loop filter sharpness (0..7)"},
                     New NumParam With {.Path = "", .Switch = "--static-thresh", .Text = "static-thresh", .Help = "Motion detection threshold"},
                     New NumParam With {.Path = "", .Switch = "--tile-columns", .Text = "tile-columns", .Help = "Number of tile columns to use, log2"},
                     New NumParam With {.Path = "", .Switch = "--tile-rows", .Text = "tile-rows", .Help = "Number of tile rows to use, log2 (set to 0 while threads > 1)"},
                     New StringParam With {.Path = "", .Switch = "--tile-loopfilter", .Text = "tile-loopfilter", .Help = "Enable loop filter across tile boundary"},
-                    New NumParam With {.Path = "", .Switch = "--arnr-maxframes", .Text = "arnr-maxframes", .MinMaxStep = {0, 15, 1}, .Help = "AltRef max frames (0..15)"},
-                    New NumParam With {.Path = "", .Switch = "--arnr-strength", .Text = "arnr-strength", .MinMaxStep = {0, 6, 1}, .Help = "AltRef filter strength (0..6)"},
+                    New NumParam With {.Path = "", .Switch = "--arnr-maxframes", .Text = "arnr-maxframes", .Config = {0, 15}, .Help = "AltRef max frames (0..15)"},
+                    New NumParam With {.Path = "", .Switch = "--arnr-strength", .Text = "arnr-strength", .Config = {0, 6}, .Help = "AltRef filter strength (0..6)"},
                     New NumParam With {.Path = "", .Switch = "--cq-level", .Text = "cq-level", .Help = "Constant/Constrained Quality level"},
                     New OptionParam With {.Path = "", .Switch = "--frame-parallel", .Text = "frame-parallel", .IntegerValue = True, .Options = {"false", "true"}, .Help = "Enable frame parallel decodability features"},
                     New OptionParam With {.Path = "", .Switch = "--frame-boost", .Text = "frame-boost", .IntegerValue = True, .Options = {"off", "on"}, .Help = "Enable frame periodic boost"},
@@ -284,7 +284,7 @@ Public Class AV1Params
         If q.Count > 0 Then sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
 
         If includePaths Then
-            If Mode.Value = AV1RateMode.TwoPass Then sb.Append(" --fpf=" + (p.TempDir + p.Name + ".txt").Escape)
+            If Mode.Value = AV1RateMode.TwoPass Then sb.Append(" --fpf=" + (p.TempDir + p.TargetFile.Base + ".txt").Escape)
             sb.Append(" -o " + targetPath.Escape)
         End If
 

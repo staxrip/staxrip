@@ -13,6 +13,7 @@ Public Class SimpleUI
     Public Pages As New List(Of IPage)
 
     Public ActivePage As IPage
+    Public Store As Object
 
     Sub New()
         InitControls()
@@ -126,10 +127,13 @@ Public Class SimpleUI
     End Sub
 
     Sub SaveLast(id As String)
-        If Not ActivePage Is Nothing Then
-            s.Storage.SetString(id, ActivePage.Path)
-        End If
+        If Not ActivePage Is Nothing Then s.Storage.SetString(id, ActivePage.Path)
     End Sub
+
+    Function GetActiveFlowPage() As FlowPage
+        If ActivePage Is Nothing Then ActivePage = CreateFlowPage("main page")
+        Return DirectCast(ActivePage, FlowPage)
+    End Function
 
     Function GetFlowPage(path As String) As FlowPage
         If path = "" Then path = "unknown"
@@ -142,7 +146,8 @@ Public Class SimpleUI
         End If
     End Function
 
-    Function AddCheckBox(parent As FlowLayoutPanelEx) As SimpleUICheckBox
+    Function AddBool(Optional parent As FlowLayoutPanelEx = Nothing) As SimpleUICheckBox
+        If parent Is Nothing Then parent = GetActiveFlowPage()
         Dim ret As New SimpleUICheckBox(Me)
         AddHandler SaveValues, AddressOf ret.Save
         parent.Controls.Add(ret)
@@ -173,7 +178,8 @@ Public Class SimpleUI
         Return ret
     End Function
 
-    Function AddNumericBlock(parent As FlowLayoutPanelEx) As NumericBlock
+    Function AddNum(Optional parent As FlowLayoutPanelEx = Nothing) As NumericBlock
+        If parent Is Nothing Then parent = GetActiveFlowPage()
         Dim ret As New NumericBlock(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
@@ -182,7 +188,8 @@ Public Class SimpleUI
         Return ret
     End Function
 
-    Function AddTextBlock(parent As FlowLayoutPanelEx) As TextBlock
+    Function AddText(Optional parent As FlowLayoutPanelEx = Nothing) As TextBlock
+        If parent Is Nothing Then parent = GetActiveFlowPage()
         Dim ret As New TextBlock(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
@@ -191,7 +198,8 @@ Public Class SimpleUI
         Return ret
     End Function
 
-    Function AddTextMenuBlock(parent As FlowLayoutPanelEx) As TextMenuBlock
+    Function AddTextMenu(Optional parent As FlowLayoutPanelEx = Nothing) As TextMenuBlock
+        If parent Is Nothing Then parent = GetActiveFlowPage()
         Dim ret As New TextMenuBlock(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
@@ -200,7 +208,8 @@ Public Class SimpleUI
         Return ret
     End Function
 
-    Function AddTextButtonBlock(parent As FlowLayoutPanelEx) As TextButtonBlock
+    Function AddTextButton(Optional parent As FlowLayoutPanelEx = Nothing) As TextButtonBlock
+        If parent Is Nothing Then parent = GetActiveFlowPage()
         Dim ret As New TextButtonBlock(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
@@ -209,11 +218,12 @@ Public Class SimpleUI
         Return ret
     End Function
 
-    Function AddMenuButtonBlock(Of T)(parent As FlowLayoutPanelEx) As MenuButtonBlock(Of T)
+    Function AddMenu(Of T)(Optional parent As FlowLayoutPanelEx = Nothing) As MenuButtonBlock(Of T)
+        If parent Is Nothing Then parent = GetActiveFlowPage()
         Dim ret As New MenuButtonBlock(Of T)(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
-        AddHandler SaveValues, AddressOf ret.MenuButton.Save
+        AddHandler SaveValues, AddressOf ret.Button.Save
         parent.Controls.Add(ret)
         Return ret
     End Function
@@ -233,8 +243,10 @@ Public Class SimpleUI
         parent.Controls.Add(line)
     End Sub
 
-    Function CreateFlowPage(path As String) As FlowPage
+    Function CreateFlowPage(path As String, Optional autoSuspend As Boolean = False) As FlowPage
         Dim ret = New FlowPage
+        ret.AutoSuspend = autoSuspend
+        If autoSuspend Then ret.SuspendLayout()
         Pages.Add(ret)
         ret.Path = path
         ret.Dock = DockStyle.Fill
@@ -288,11 +300,21 @@ Public Class SimpleUI
         Property Node As TreeNode Implements IPage.Node
         Property Path As String Implements IPage.Path
         Property TipProvider As TipProvider Implements IPage.TipProvider
+        Property AutoSuspend As Boolean
 
         Sub New()
             TipProvider = New TipProvider(Nothing)
             AddHandler Disposed, Sub() TipProvider.Dispose()
             FlowDirection = FlowDirection.TopDown
+        End Sub
+
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            MyBase.OnLayout(levent)
+        End Sub
+
+        Protected Overrides Sub OnCreateControl()
+            If AutoSuspend Then ResumeLayout()
+            MyBase.OnCreateControl()
         End Sub
     End Class
 
@@ -308,11 +330,11 @@ Public Class SimpleUI
         End Sub
     End Class
 
-    Class SimpleUICheckBox
+    Public Class SimpleUICheckBox
         Inherits CheckBoxEx
 
-        Property SaveAction As Action(Of Boolean)
         Property MarginLeft As Double
+        Property SaveAction As Action(Of Boolean)
 
         Private SimpleUI As SimpleUI
 
@@ -331,7 +353,41 @@ Public Class SimpleUI
             SimpleUI.RaiseChangeEvent()
         End Sub
 
-        WriteOnly Property Tooltip As String
+        Sub Save()
+            SaveAction?.Invoke(Checked)
+
+            If Field <> "" Then
+                SimpleUI.Store.GetType.GetField(Field).SetValue(SimpleUI.Store, Checked)
+            ElseIf [Property] <> "" Then
+                SimpleUI.Store.GetType.GetProperty([Property]).SetValue(SimpleUI.Store, Checked)
+            End If
+        End Sub
+
+        Private FieldValue As String
+
+        Property Field As String
+            Get
+                Return FieldValue
+            End Get
+            Set(value As String)
+                Checked = CBool(SimpleUI.Store.GetType.GetField(value).GetValue(SimpleUI.Store))
+                FieldValue = value
+            End Set
+        End Property
+
+        Private PropertyValue As String
+
+        Property [Property] As String
+            Get
+                Return PropertyValue
+            End Get
+            Set(value As String)
+                Checked = CBool(SimpleUI.Store.GetType.GetProperty(value).GetValue(SimpleUI.Store))
+                PropertyValue = value
+            End Set
+        End Property
+
+        WriteOnly Property Help As String
             Set(value As String)
                 Dim parent = Me.Parent
 
@@ -364,10 +420,6 @@ Public Class SimpleUI
                 Return MyBase.GetPreferredSize(proposedSize)
             End If
         End Function
-
-        Sub Save()
-            SaveAction.Invoke(Checked)
-        End Sub
     End Class
 
     Class SimpleUINumEdit
@@ -375,7 +427,7 @@ Public Class SimpleUI
 
         Private SimpleUI As SimpleUI
 
-        Property SaveAction As Action(Of Decimal)
+        Property SaveAction As Action(Of Double)
 
         Sub New(ui As SimpleUI)
             SimpleUI = ui
@@ -388,17 +440,54 @@ Public Class SimpleUI
         End Sub
 
         Sub Save()
-            SaveAction.Invoke(Value)
-        End Sub
+            SaveAction?.Invoke(Value)
 
-        Sub Init(ParamArray params As Decimal())
-            If Not params Is Nothing Then
-                If params.Length > 0 Then Minimum = params(0)
-                If params.Length > 1 Then Maximum = params(1)
-                If params.Length > 2 Then Increment = params(2)
-                If params.Length > 3 Then DecimalPlaces = CInt(params(3))
+            If Field <> "" Then
+                Dim field = SimpleUI.Store.GetType.GetField(Me.Field)
+                field.SetValue(SimpleUI.Store, Convert.ChangeType(Value, field.FieldType))
+            ElseIf [Property] <> "" Then
+                Dim prop = SimpleUI.Store.GetType.GetProperty([Property])
+                prop.SetValue(SimpleUI.Store, Convert.ChangeType(Value, prop.PropertyType))
             End If
         End Sub
+
+        Private PropertyValue As String
+
+        Property [Property] As String
+            Get
+                Return PropertyValue
+            End Get
+            Set(value As String)
+                Me.Value = CDbl(SimpleUI.Store.GetType.GetProperty(value).GetValue(SimpleUI.Store))
+                PropertyValue = value
+            End Set
+        End Property
+
+        Private FieldValue As String
+
+        Property Field As String
+            Get
+                Return FieldValue
+            End Get
+            Set(value As String)
+                Me.Value = CDbl(SimpleUI.Store.GetType.GetField(value).GetValue(SimpleUI.Store))
+                FieldValue = value
+            End Set
+        End Property
+
+        Property Config As Double()
+            Get
+                Return {Minimum, Maximum, Increment, DecimalPlaces}
+            End Get
+            Set(value As Double())
+                If Not value Is Nothing Then
+                    If value.Length > 0 Then Minimum = value(0)
+                    If value.Length > 1 Then Maximum = value(1)
+                    If value.Length > 2 Then Increment = value(2)
+                    If value.Length > 3 Then DecimalPlaces = CInt(value(3))
+                End If
+            End Set
+        End Property
 
         Protected Overrides Sub OnValueChanged(numEdit As NumEdit)
             MyBase.OnValueChanged(numEdit)
@@ -435,8 +524,38 @@ Public Class SimpleUI
         End Sub
 
         Sub Save()
-            SaveAction.Invoke(Text)
+            SaveAction?.Invoke(Text)
+
+            If Field <> "" Then
+                SimpleUI.Store.GetType.GetField(Field).SetValue(SimpleUI.Store, Text)
+            ElseIf [Property] <> "" Then
+                SimpleUI.Store.GetType.GetProperty([Property]).SetValue(SimpleUI.Store, Text)
+            End If
         End Sub
+
+        Private FieldValue As String
+
+        Property Field As String
+            Get
+                Return FieldValue
+            End Get
+            Set(value As String)
+                Text = CStr(SimpleUI.Store.GetType.GetField(value).GetValue(SimpleUI.Store))
+                FieldValue = value
+            End Set
+        End Property
+
+        Private PropertyValue As String
+
+        Property [Property] As String
+            Get
+                Return PropertyValue
+            End Get
+            Set(value As String)
+                Text = CStr(SimpleUI.Store.GetType.GetProperty(value).GetValue(SimpleUI.Store))
+                PropertyValue = value
+            End Set
+        End Property
 
         WriteOnly Property UseCommandlineEditor As Boolean
             Set(value As Boolean)
@@ -497,22 +616,54 @@ Public Class SimpleUI
         End Property
 
         Sub Save()
-            SaveAction.Invoke(Value)
+            SaveAction?.Invoke(Value)
+
+            If Field <> "" Then
+                Dim field = SimpleUI.Store.GetType.GetField(Me.Field)
+                field.SetValue(SimpleUI.Store, Convert.ChangeType(Value, field.FieldType))
+            ElseIf [Property] <> "" Then
+                Dim prop = SimpleUI.Store.GetType.GetProperty([Property])
+                prop.SetValue(SimpleUI.Store, Convert.ChangeType(Value, prop.PropertyType))
+            End If
         End Sub
+
+        Private PropertyValue As String
+
+        Property [Property] As String
+            Get
+                Return PropertyValue
+            End Get
+            Set(value As String)
+                Me.Value = DirectCast(SimpleUI.Store.GetType.GetProperty(value).GetValue(SimpleUI.Store), T)
+                PropertyValue = value
+            End Set
+        End Property
+
+        Private FieldValue As String
+
+        Property Field As String
+            Get
+                Return FieldValue
+            End Get
+            Set(value As String)
+                Me.Value = DirectCast(SimpleUI.Store.GetType.GetField(value).GetValue(SimpleUI.Store), T)
+                FieldValue = value
+            End Set
+        End Property
     End Class
 
     Public Class SimpleUILabel
         Inherits LabelEx
 
-        Private OffsetValue As Integer
-
         Property MarginTop As Integer
 
-        Property Offset As Integer
+        Private OffsetValue As Double
+
+        Property Offset As Double
             Get
                 Return OffsetValue
             End Get
-            Set(value As Integer)
+            Set(value As Double)
                 OffsetValue = value
                 PerformLayout()
             End Set
@@ -523,7 +674,7 @@ Public Class SimpleUI
             AutoSize = True
         End Sub
 
-        WriteOnly Property Tooltip As String
+        WriteOnly Property Help As String
             Set(value As String)
                 Dim parent = Me.Parent
 
@@ -548,7 +699,7 @@ Public Class SimpleUI
         Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
             If Offset > 0 Then
                 Dim ret = MyBase.GetPreferredSize(proposedSize)
-                If ret.Width < Offset * FontHeight Then ret.Width = Offset * FontHeight
+                If ret.Width < Offset * FontHeight Then ret.Width = CInt(Offset * FontHeight)
                 Return ret
             Else
                 Return MyBase.GetPreferredSize(proposedSize)
@@ -580,9 +731,28 @@ Public Class SimpleUI
         Sub New()
             Controls.Add(Label)
         End Sub
+
+        Shadows Property Text As String
+            Get
+                Return Label.Text
+            End Get
+            Set(value As String)
+                If value.EndsWith(":") Then
+                    Label.Text = value
+                Else
+                    Label.Text = value + ":"
+                End If
+            End Set
+        End Property
+
+        WriteOnly Property Help As String
+            Set(value As String)
+                Label.Help = value
+            End Set
+        End Property
     End Class
 
-    Class NumericBlock
+    Public Class NumericBlock
         Inherits LabelBlock
 
         Property NumEdit As SimpleUINumEdit
@@ -591,6 +761,33 @@ Public Class SimpleUI
             NumEdit = New SimpleUINumEdit(ui)
             Controls.Add(NumEdit)
         End Sub
+
+        Property Field As String
+            Get
+                Return NumEdit.Field
+            End Get
+            Set(value As String)
+                NumEdit.Field = value
+            End Set
+        End Property
+
+        Property [Property] As String
+            Get
+                Return NumEdit.Property
+            End Get
+            Set(value As String)
+                NumEdit.Property = value
+            End Set
+        End Property
+
+        Property Config As Double()
+            Get
+                Return NumEdit.Config
+            End Get
+            Set(value As Double())
+                NumEdit.Config = value
+            End Set
+        End Property
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
             If Not NumEdit Is Nothing Then
@@ -611,9 +808,36 @@ Public Class SimpleUI
             Edit = New SimpleUITextEdit(ui)
             Controls.Add(Edit)
         End Sub
+
+        Property Field As String
+            Get
+                Return Edit.Field
+            End Get
+            Set(value As String)
+                Edit.Field = value
+            End Set
+        End Property
+
+        Property [Property] As String
+            Get
+                Return Edit.Property
+            End Get
+            Set(value As String)
+                Edit.Property = value
+            End Set
+        End Property
+
+        Property Expandet As Boolean
+            Get
+                Return Edit.Expandet
+            End Get
+            Set(value As Boolean)
+                Edit.Expandet = value
+            End Set
+        End Property
     End Class
 
-    Class TextMenuBlock
+    Public Class TextMenuBlock
         Inherits TextBlock
 
         Property Button As New ButtonEx
@@ -668,7 +892,7 @@ Public Class SimpleUI
         End Sub
     End Class
 
-    Class TextButtonBlock
+    Public Class TextButtonBlock
         Inherits TextBlock
 
         Property Button As New ButtonEx
@@ -717,30 +941,39 @@ Public Class SimpleUI
         End Sub
 
         Sub MacroDialog()
+            Button.Text = "%"
             Button.ClickAction = Sub() MacrosForm.ShowDialogForm()
         End Sub
     End Class
 
-    Class MenuButtonBlock(Of T)
+    Public Class MenuButtonBlock(Of T)
         Inherits LabelBlock
 
-        Property MenuButton As SimpleUIMenuButton(Of T)
+        Property Button As SimpleUIMenuButton(Of T)
 
         Sub New(ui As SimpleUI)
-            MenuButton = New SimpleUIMenuButton(Of T)(ui)
-            Controls.Add(MenuButton)
+            Button = New SimpleUIMenuButton(Of T)(ui)
+            Controls.Add(Button)
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            If Not MenuButton Is Nothing Then
-                MenuButton.Height = CInt(FontHeight * 1.5)
-                MenuButton.Width = FontHeight * 10
+            If Not Button Is Nothing Then
+                Button.Height = CInt(FontHeight * 1.5)
+                Button.Width = FontHeight * 10
             End If
 
             MyBase.OnLayout(levent)
         End Sub
 
-        Public WriteOnly Property Tooltip As String
+        Sub Add(items As IEnumerable(Of Object))
+            Button.Add(items)
+        End Sub
+
+        Sub Add(ParamArray items As Object())
+            Button.Add(items)
+        End Sub
+
+        Public Shadows WriteOnly Property Help As String
             Set(value As String)
                 Dim parent = Me.Parent
 
@@ -748,7 +981,25 @@ Public Class SimpleUI
                     parent = parent.Parent
                 End While
 
-                DirectCast(parent, IPage).TipProvider.SetTip(value, Label, MenuButton)
+                DirectCast(parent, IPage).TipProvider.SetTip(value, Label, Button)
+            End Set
+        End Property
+
+        Property Field As String
+            Get
+                Return Button.Field
+            End Get
+            Set(value As String)
+                Button.Field = value
+            End Set
+        End Property
+
+        Property [Property] As String
+            Get
+                Return Button.Property
+            End Get
+            Set(value As String)
+                Button.Property = value
             End Set
         End Property
     End Class

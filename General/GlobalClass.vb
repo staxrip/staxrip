@@ -11,6 +11,7 @@ Imports VB6 = Microsoft.VisualBasic
 Public Class GlobalClass
     Property ProjectPath As String
     Property MainForm As MainForm
+    Property ProcForm As ProcForm
     Property MinimizedWindows As Boolean
     Property SavedProject As New Project
     Property DefaultCommands As New GlobalCommands
@@ -18,7 +19,7 @@ Public Class GlobalClass
     Property IsEncodingInstance As Boolean
     Property IsMinimizedEncodingInstance As Boolean
 
-    Sub RunJobRecursive()
+    Sub RunJobs()
         Dim jobs = JobsForm.ActiveJobs
 
         If jobs.Count = 0 Then
@@ -32,13 +33,9 @@ Public Class GlobalClass
 
         Try
             If s.PreventStandby Then PowerRequest.SuppressStandby()
-            StaxRip.ProcessForm.ShutdownVisible = True
-            g.MainForm.Encode()
-            Log.Save()
+            StaxRip.ProcForm.ShutdownVisible = True
+            g.MainForm.ProcessJob()
             JobsForm.RemoveJob(jobPath)
-            ProcessForm.CloseProcessForm()
-            DeleteTempFiles()
-
             jobs = JobsForm.GetJobs
             Dim activeJobs = JobsForm.ActiveJobs
 
@@ -60,16 +57,13 @@ Public Class GlobalClass
         Catch ex As AbortException
             Log.Save()
             g.MainForm.OpenProject(g.ProjectPath, False)
-            ProcessForm.CloseProcessForm()
         Catch ex As ErrorAbortException
             Log.Save()
             g.MainForm.OpenProject(g.ProjectPath, False)
-            ProcessForm.CloseProcessForm()
             g.ShowException(ex, Nothing, 100)
-            g.ShellExecute(g.GetTextEditor(), """" + p.TempDir + p.Name + "_staxrip.log" + """")
+            g.ShellExecute(g.GetTextEditor(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
         Catch ex As Exception
             Log.Save()
-            ProcessForm.CloseProcessForm()
             g.OnException(ex)
         Finally
             If s.PreventStandby Then PowerRequest.EnableStandby()
@@ -83,20 +77,16 @@ Public Class GlobalClass
     End Sub
 
     Sub DeleteTempFiles()
-        If p.DeleteTempFilesDir AndAlso p.TempDir.EndsWith("_temp\") Then
+        If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.TempDir.EndsWith("_temp\") Then
             Try
-                FileHelp.Copy(p.TempDir + p.Name + "_staxrip.log", p.TargetFile.Dir + p.Name + "_staxrip.log")
+                FileHelp.Copy(p.TempDir + p.TargetFile.Base + "_staxrip.log", p.TargetFile.DirAndBase + "_staxrip.log")
                 Dim moreJobsToProcessInTempDir = JobsForm.GetJobs.Where(Function(a) a.Value AndAlso a.Key.Contains(p.TempDir))
 
                 If moreJobsToProcessInTempDir.Count = 0 Then
-                    Dim tempDir = p.TempDir
-                    g.MainForm.OpenProject(g.StartupTemplatePath, False)
-                    MediaInfo.ClearCache()
-
-                    If s.DeleteTempFilesToRecycleBin Then
-                        DirectoryHelp.Delete(tempDir, VB6.FileIO.RecycleOption.SendToRecycleBin)
+                    If s.DeleteTempFilesMode = DeleteMode.RecycleBin Then
+                        DirectoryHelp.Delete(p.TempDir, VB6.FileIO.RecycleOption.SendToRecycleBin)
                     Else
-                        DirectoryHelp.Delete(tempDir)
+                        DirectoryHelp.Delete(p.TempDir)
                     End If
                 End If
             Catch
@@ -557,9 +547,7 @@ Public Class GlobalClass
             ExceptionHandled = True
         End If
 
-        If TypeOf ex Is AbortException Then
-            ProcessForm.CloseProcessForm()
-        Else
+        If Not TypeOf ex Is AbortException Then
             Try
                 If File.Exists(p.SourceFile) Then
                     Dim name = Filepath.GetBase(p.TargetFile)
@@ -618,6 +606,21 @@ Public Class GlobalClass
             End If
 
             VB6.MsgBox(title + BR2 + e.Message + BR2 + e.ToString, VB6.MsgBoxStyle.Critical)
+        End Try
+    End Sub
+
+    Sub ArchiveLogFile(path As String)
+        Try
+            Dim logFolder = Folder.Settings + "Log Files\"
+            If Not Directory.Exists(logFolder) Then Directory.CreateDirectory(logFolder)
+            FileHelp.Copy(path, logFolder + Date.Now.ToString("yyyy-MM-dd_HH.mm.ss") + " - " + path.FileName)
+            Dim di As New DirectoryInfo(logFolder)
+
+            While di.GetFiles("*.log").Length > s.LogFileNum
+                FileHelp.Delete(di.GetFiles("*.log").OrderBy(Function(val) val.LastWriteTime).First.FullName)
+            End While
+        Catch ex As Exception
+            ShowException(ex, "Failed to archive log file")
         End Try
     End Sub
 
@@ -686,21 +689,13 @@ Public Class GlobalClass
         If e Is Nothing AndAlso Not g.IsValidSource(False) Then Exit Sub
 
         If Not e Is Nothing Then
-            SyncLock p.Log
-                If p.Log.Length = 0 Then Log.WriteEnvironment()
-            End SyncLock
-
+            If Log.IsEmpty Then Log.WriteEnvironment()
             Log.WriteHeader("Exception")
             Log.WriteLine(e.ToString)
         End If
 
-        Dim fp = If(File.Exists(p.SourceFile) AndAlso Directory.Exists(p.TempDir),
-                    p.TempDir + p.Name + "_staxrip.log", Folder.Settings + "Log.txt")
-
-        SyncLock p.Log
-            p.Log.ToString.WriteUTF8File(fp)
-        End SyncLock
-
+        Log.Save(p)
+        Dim fp = Log.GetPath
         g.OpenDirAndSelectFile(fp, g.MainForm.Handle)
         g.ShellExecute(g.GetTextEditor(), """" + fp + """")
         g.ShellExecute("https://github.com/stax76/staxrip/issues")
@@ -719,7 +714,6 @@ Public Class GlobalClass
 
     Sub ShutdownPC(mode As ShutdownMode)
         If mode <> ShutdownMode.Nothing Then
-            ProcessForm.CloseProcessForm()
             g.MainForm.CloseWithoutSaving()
             Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", 0)
             Shutdown.Commit(mode)

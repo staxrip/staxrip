@@ -2,11 +2,12 @@ Imports System.Drawing.Drawing2D
 Imports System.Drawing.Text
 Imports Microsoft.Win32
 
-Class ToolStripRendererEx
+Public Class ToolStripRendererEx
     Inherits ToolStripSystemRenderer
 
     Shared RenderMode As ToolStripRenderModeEx
 
+    Shared Property ColorChecked As Color
     Shared Property ColorBorder As Color
     Shared Property ColorTop As Color
     Shared Property ColorBottom As Color
@@ -28,7 +29,7 @@ Class ToolStripRendererEx
         Return _
             RenderMode = ToolStripRenderModeEx.SystemAuto OrElse
             RenderMode = ToolStripRenderModeEx.Win7Auto OrElse
-            RenderMode = ToolStripRenderModeEx.Win8Auto
+            RenderMode = ToolStripRenderModeEx.Win10Auto
     End Function
 
     Shared Sub InitColors(renderMode As ToolStripRenderModeEx)
@@ -51,9 +52,10 @@ Class ToolStripRendererEx
 
     Shared Sub InitColors(c As Color)
         ColorBorder = HSLColor.Convert(c).ToColorSetLuminosity(100)
-        ColorTop = HSLColor.Convert(c).ToColorSetLuminosity(240)
+        ColorChecked = HSLColor.Convert(c).ToColorSetLuminosity(200)
         ColorBottom = HSLColor.Convert(c).ToColorSetLuminosity(220)
         ColorBackground = HSLColor.Convert(c).ToColorSetLuminosity(230)
+        ColorTop = HSLColor.Convert(c).ToColorSetLuminosity(240)
 
         ColorToolStrip1 = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(ColorBorder, 1)))
         ColorToolStrip2 = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(ColorBorder, 0.7)))
@@ -121,7 +123,7 @@ Class ToolStripRendererEx
 
         If e.Item.Selected AndAlso e.Item.Enabled Then
             If TypeOf e.Item.Owner Is MenuStrip Then
-                DrawHotToolStripButton(e)
+                DrawButton(e)
             Else
                 g.SmoothingMode = SmoothingMode.AntiAlias
 
@@ -163,7 +165,7 @@ Class ToolStripRendererEx
         End If
     End Sub
 
-    Sub DrawHotToolStripButton(e As ToolStripItemRenderEventArgs)
+    Sub DrawButton(e As ToolStripItemRenderEventArgs)
         Dim g = e.Graphics
         Dim r = New Rectangle(Point.Empty, e.Item.Size)
         Dim r2 = New Rectangle(r.X, r.Y, r.Width - 1, r.Height - 1)
@@ -175,9 +177,17 @@ Class ToolStripRendererEx
 
             r2.Inflate(-1, -1)
 
-            Using b As New SolidBrush(ColorBottom)
-                g.FillRectangle(b, r2)
-            End Using
+            Dim tsb = TryCast(e.Item, ToolStripButton)
+
+            If Not tsb Is Nothing AndAlso tsb.Checked Then
+                Using brush As New SolidBrush(ColorChecked)
+                    g.FillRectangle(brush, r2)
+                End Using
+            Else
+                Using brush As New SolidBrush(ColorBottom)
+                    g.FillRectangle(brush, r2)
+                End Using
+            End If
         Else
             g.SmoothingMode = SmoothingMode.AntiAlias
 
@@ -223,12 +233,12 @@ Class ToolStripRendererEx
     End Sub
 
     Protected Overrides Sub OnRenderDropDownButtonBackground(e As ToolStripItemRenderEventArgs)
-        If e.Item.Selected Then DrawHotToolStripButton(e)
+        If e.Item.Selected Then DrawButton(e)
     End Sub
 
     Protected Overrides Sub OnRenderButtonBackground(e As ToolStripItemRenderEventArgs)
         Dim button = DirectCast(e.Item, ToolStripButton)
-        If e.Item.Selected OrElse button.Checked Then DrawHotToolStripButton(e)
+        If e.Item.Selected OrElse button.Checked Then DrawButton(e)
     End Sub
 
     Protected Overloads Overrides Sub OnRenderArrow(e As ToolStripArrowRenderEventArgs)
@@ -289,8 +299,8 @@ Class ToolStripRendererEx
     End Function
 
     Shared Function IsFlat() As Boolean
-        If RenderMode = ToolStripRenderModeEx.Win8Default Then Return True
-        If RenderMode = ToolStripRenderModeEx.Win8Auto Then Return True
+        If RenderMode = ToolStripRenderModeEx.Win10Default Then Return True
+        If RenderMode = ToolStripRenderModeEx.Win10Auto Then Return True
 
         If (RenderMode = ToolStripRenderModeEx.SystemDefault OrElse
             RenderMode = ToolStripRenderModeEx.SystemAuto) AndAlso

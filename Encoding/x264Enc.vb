@@ -15,18 +15,18 @@ Public Class x264Enc
     End Sub
 
     <NonSerialized>
-    Private ParamsValue As x264Params2
+    Private ParamsValue As x264Params
 
-    Property Params As x264Params2
+    Property Params As x264Params
         Get
             If ParamsValue Is Nothing Then
-                ParamsValue = New x264Params2
+                ParamsValue = New x264Params
                 ParamsValue.Init(ParamsStore)
             End If
 
             Return ParamsValue
         End Get
-        Set(value As x264Params2)
+        Set(value As x264Params)
             ParamsValue = value
         End Set
     End Property
@@ -74,7 +74,7 @@ Public Class x264Enc
         If Not g.VerifyRequirements Then Exit Sub
         If Not g.IsValidSource Then Exit Sub
 
-        Dim newParams As New x264Params2
+        Dim newParams As New x264Params
         Dim newStore = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
         newParams.Init(newStore)
 
@@ -98,25 +98,23 @@ Public Class x264Enc
         End If
 
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
-        script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
+        script.Path = p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType
         script.Synchronize()
 
         Log.WriteLine(BR + script.GetFullScript + BR)
 
-        Dim commandLine = enc.Params.GetArgs(0, script, p.TempDir + p.Name + "_CompCheck." + OutputExt, True, True)
+        Dim commandLine = enc.Params.GetArgs(0, script, p.TempDir + p.TargetFile.Base + "_CompCheck." + OutputExt, True, True)
 
         Try
             Encode("Compressibility Check", commandLine, ProcessPriorityClass.Normal)
         Catch ex As AbortException
-            ProcessForm.CloseProcessForm()
             Exit Sub
         Catch ex As Exception
-            ProcessForm.CloseProcessForm()
             g.ShowException(ex)
             Exit Sub
         End Try
 
-        Dim bits = (New FileInfo(p.TempDir + p.Name + "_CompCheck." + OutputExt).Length) * 8
+        Dim bits = (New FileInfo(p.TempDir + p.TargetFile.Base + "_CompCheck." + OutputExt).Length) * 8
         p.Compressibility = (bits / script.GetFrames) / (p.TargetWidth * p.TargetHeight)
 
         OnAfterCompCheck()
@@ -125,8 +123,6 @@ Public Class x264Enc
         Log.WriteLine("Quality: " & CInt(Calc.GetPercent).ToString() + " %")
         Log.WriteLine("Compressibility: " + p.Compressibility.ToString("f3"))
         Log.Save()
-
-        ProcessForm.CloseProcessForm()
     End Sub
 
     Overloads Function GetArgs(pass As Integer, script As VideoScript, Optional includePaths As Boolean = True) As String
@@ -134,7 +130,7 @@ Public Class x264Enc
     End Function
 
     Overrides Sub ShowConfigDialog()
-        Dim newParams As New x264Params2
+        Dim newParams As New x264Params
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
         newParams.Init(store)
         newParams.ApplyValues(True)
@@ -142,7 +138,7 @@ Public Class x264Enc
         Using f As New CommandLineForm(newParams)
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of x264Enc)(Me)
-                                        Dim params2 As New x264Params2
+                                        Dim params2 As New x264Params
                                         Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
                                         params2.Init(store2)
                                         enc.Params = params2
@@ -183,7 +179,7 @@ Public Class x264Enc
     End Function
 End Class
 
-Public Class x264Params2
+Public Class x264Params
     Inherits CommandLineParams
 
     Sub New()
@@ -191,27 +187,22 @@ Public Class x264Params2
     End Sub
 
     Property Quant As New NumParam With {
-        .Switch = "--crf",
-        .Switches = {"--qp"},
+        .Switches = {"--crf", "--qp"},
         .Name = "Quant",
         .Text = "Quality",
-        .ArgsFunc = Function() Nothing,
         .Value = 20,
-        .DefaultValue = -1,
-        .MinMaxStepDec = {0D, 69D, 1D, 1D}}
+        .Config = {0, 69, 1, 1}}
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",
         .Text = "Preset",
         .Options = {"Ultra Fast", "Super Fast", "Very Fast", "Faster", "Fast", "Medium", "Slow", "Slower", "Very Slow", "Placebo"},
-        .Convert = True,
         .InitValue = 5}
 
     Property Tune As New OptionParam With {
         .Switch = "--tune",
         .Text = "Tune",
-        .Options = {"None", "Film", "Animation", "Grain", "Still Image", "PSNR", "SSIM", "Fast Decode", "Zero Latency"},
-        .Convert = True}
+        .Options = {"None", "Film", "Animation", "Grain", "Still Image", "PSNR", "SSIM", "Fast Decode", "Zero Latency"}}
 
     Property Mode As New OptionParam With {
         .Name = "Mode",
@@ -228,10 +219,11 @@ Public Class x264Params2
         .Name = "CompCheckQuant",
         .Text = "Comp. Check",
         .Value = 18,
-        .MinMaxStep = {1, 50, 1}}
+        .Config = {1, 50}}
 
     Property Custom As New StringParam With {
         .Text = "Custom",
+        .AlwaysOn = True,
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
                           tb.Edit.TextBox.Multiline = True
@@ -240,8 +232,7 @@ Public Class x264Params2
                       End Sub}
 
     Property CustomFirstPass As New StringParam With {
-        .Text = "Custom" + BR + "First Pass:",
-        .ArgsFunc = Function() Nothing,
+        .Text = "Custom" + BR + "First Pass",
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
                           tb.Edit.TextBox.Multiline = True
@@ -250,8 +241,7 @@ Public Class x264Params2
                       End Sub}
 
     Property CustomSecondPass As New StringParam With {
-        .Text = "Custom" + BR + "Second Pass:",
-        .ArgsFunc = Function() Nothing,
+        .Text = "Custom" + BR + "Second Pass",
         .InitAction = Sub(tb)
                           tb.Edit.Expandet = True
                           tb.Edit.TextBox.Multiline = True
@@ -280,16 +270,16 @@ Public Class x264Params2
 
     Property DeblockA As New NumParam With {
         .Text = "      Strength",
-        .MinMaxStep = {-6, 6, 1}}
+        .Config = {-6, 6}}
 
     Property DeblockB As New NumParam With {
         .Text = "      Threshold",
-        .MinMaxStep = {-6, 6, 1}}
+        .Config = {-6, 6}}
 
     Property BFrames As New NumParam With {
         .Switch = "--bframes",
         .Text = "B-Frames",
-        .MinMaxStep = {0, 16, 1}}
+        .Config = {0, 16}}
 
     Property AqMode As New OptionParam With {
         .Switch = "--aq-mode",
@@ -318,13 +308,11 @@ Public Class x264Params2
     Property Profile As New OptionParam With {
         .Switch = "--profile",
         .Text = "Profile",
-        .Convert = True,
         .Options = {"Unrestricted", "Baseline", "Main", "High", "High 10", "High 422", "High 444"}}
 
     Property CQM As New OptionParam With {
         .Switch = "--cqm",
         .Options = {"Flat", "JVT"},
-        .Convert = True,
         .Text = "Quant Matrice Preset"}
 
     Property Mbtree As New BoolParam With {
@@ -404,8 +392,7 @@ Public Class x264Params2
     Property Direct As New OptionParam With {
         .Switch = "--direct",
         .Text = "Direct MV Prediction",
-        .Options = {"None", "Spatial", "Temporal", "Auto"},
-        .Convert = True}
+        .Options = {"None", "Spatial", "Temporal", "Auto"}}
 
     Property Merange As New NumParam With {
         .Switch = "--merange",
@@ -420,22 +407,25 @@ Public Class x264Params2
         .NoSwitch = "--no-psy",
         .Text = "Psy RD",
         .ArgsFunc = Function() As String
-                        If Not Psy.Value Then Return "--no-psy"
-                        If PsyRD.Value <> PsyRD.DefaultValue OrElse PsyTrellis.Value <> PsyTrellis.DefaultValue Then Return "--psy-rd " & PsyRD.Value.ToInvariantString & ":" & PsyTrellis.Value.ToInvariantString
+                        If Psy.Value Then
+                            If PsyRD.Value <> PsyRD.DefaultValue OrElse PsyTrellis.Value <> PsyTrellis.DefaultValue OrElse Not Psy.DefaultValue Then Return "--psy-rd " & PsyRD.Value.ToInvariantString & ":" & PsyTrellis.Value.ToInvariantString
+                        Else
+                            If Psy.DefaultValue Then Return "--no-psy"
+                        End If
                     End Function}
 
     Property PsyRD As New NumParam With {
-        .MinMaxStepDec = {0, 0, 0.05D, 2},
+        .Config = {0, 0, 0.05, 2},
         .Text = "     RD"}
 
     Property PsyTrellis As New NumParam With {
-        .MinMaxStepDec = {0, 0, 0.05D, 2},
+        .Config = {0, 0, 0.05, 2},
         .Text = "     Trellis"}
 
     Property AqStrength As New NumParam With {
         .Switch = "--aq-strength",
         .Text = "AQ Strength",
-        .MinMaxStepDec = {0, 0, 0.1D, 1}}
+        .Config = {0, 0, 0.1, 1}}
 
     Property DctDecimate As New BoolParam With {
         .NoSwitch = "--no-dct-decimate",
@@ -444,7 +434,12 @@ Public Class x264Params2
     Property DeadzoneInter As New NumParam With {
         .Switch = "--deadzone-inter",
         .Text = "Deadzone Inter",
-        .MinMaxStep = {0, 32, 1}}
+        .Config = {0, 32}}
+
+    Property DeadzoneIntra As New NumParam With {
+        .Switch = "--deadzone-intra",
+        .Text = "Deadzone Intra",
+        .Config = {0, 32}}
 
     Property MixedRefs As New BoolParam With {
         .NoSwitch = "--no-mixed-refs",
@@ -454,25 +449,20 @@ Public Class x264Params2
         .Switch = "--force-cfr",
         .Text = "Force constant framerate timestamp generation"}
 
-    Property DeadzoneIntra As New NumParam With {
-        .Switch = "--deadzone-intra",
-        .Text = "Deadzone Intra",
-        .MinMaxStep = {0, 32, 1}}
-
     Property Ipratio As New NumParam With {
         .Switch = "--ipratio",
         .Text = "IP Ratio",
-        .MinMaxStepDec = {0, 0, 0.1D, 1}}
+        .Config = {0, 0, 0.1, 1}}
 
     Property Pbratio As New NumParam With {
         .Switch = "--pbratio",
         .Text = "PB Ratio",
-        .MinMaxStepDec = {0, 0, 0.1D, 1}}
+        .Config = {0, 0, 0.1, 1}}
 
     Property Qcomp As New NumParam With {
         .Text = "QComp",
         .Switch = "--qcomp",
-        .MinMaxStepDec = {0, 0, 0.1D, 1}}
+        .Config = {0, 0, 0.1, 1}}
 
     Property SlowFirstpass As New BoolParam With {
         .Switch = "--slow-firstpass",
@@ -488,9 +478,9 @@ Public Class x264Params2
                              End If
                          ElseIf TypeOf param Is NumParam Then
                              If isDefault Then
-                                 DirectCast(param, NumParam).DefaultValue = CSng(value)
+                                 DirectCast(param, NumParam).DefaultValue = CDbl(value)
                              Else
-                                 DirectCast(param, NumParam).Value = CSng(value)
+                                 DirectCast(param, NumParam).Value = CDbl(value)
                              End If
                          ElseIf TypeOf param Is OptionParam Then
                              If isDefault Then
@@ -636,8 +626,7 @@ Public Class x264Params2
             Case 2 'animation
                 setVal(DeblockA, 1)
                 setVal(DeblockB, 1)
-                Dim val = BFrames.Value
-                val += 2
+                Dim val = If(isDefault, BFrames.DefaultValue, BFrames.Value) + 2
                 setVal(BFrames, If(val > 16, 16, val))
                 setVal(PsyRD, 0.4)
                 setVal(AqStrength, 0.6)
@@ -698,7 +687,7 @@ Public Class x264Params2
                     Preset,
                     Tune,
                     Profile,
-                    New OptionParam With {.Switch = "--level", .Text = "Level:", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
+                    New OptionParam With {.Switch = "--level", .Text = "Level", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                     Depth)
                 Add("Analysis",
                     Trellis,
@@ -712,13 +701,13 @@ Public Class x264Params2
                     Psy,
                     PsyRD,
                     PsyTrellis,
-                    Fastpskip)
+                    Fastpskip,
+                    MixedRefs)
                 Add("Analysis 2",
                     DeadzoneInter,
                     DeadzoneIntra,
-                    New NumParam With {.Switch = "--mvrange", .Text = "MV Range", .InitValue = -1},
-                    New NumParam With {.Switch = "--mvrange-thread", .Text = "MV Range Thread", .InitValue = -1},
-                    MixedRefs,
+                    New NumParam With {.Switch = "--mvrange", .Text = "MV Range", .Init = -1},
+                    New NumParam With {.Switch = "--mvrange-thread", .Text = "MV Range Thread", .Init = -1},
                     New NumParam With {.Switch = "--nr", .Text = "Noise Reduction"})
                 Add("Rate Control",
                     AqMode,
@@ -728,16 +717,16 @@ Public Class x264Params2
                     Qcomp,
                     New NumParam With {.Switch = "--vbv-maxrate", .Text = "VBV Maxrate"},
                     New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize"},
-                    New NumParam With {.Switch = "--vbv-init", .Text = "VBV Init", .MinMaxStepDec = {0, 0, 0.1D, 1}, .InitValue = 0.9},
+                    New NumParam With {.Switch = "--vbv-init", .Text = "VBV Init", .Config = {0, 0, 0.1, 1}, .Init = 0.9},
                     New NumParam With {.Switch = "--crf-max", .Text = "Maximum CRF"},
                     New NumParam With {.Switch = "--qpmin", .Text = "Minimum QP"},
-                    New NumParam With {.Switch = "--qpmax", .Text = "Maximum QP", .InitValue = 69})
+                    New NumParam With {.Switch = "--qpmax", .Text = "Maximum QP", .Init = 69})
                 Add("Rate Control 2",
-                    New NumParam With {.Switch = "--qpstep", .Text = "QP Step", .InitValue = 4},
-                    New NumParam With {.Switch = "--ratetol", .Text = "Rate Tolerance", .MinMaxStepDec = {0, 0, 0.1D, 1}, .InitValue = 1},
+                    New NumParam With {.Switch = "--qpstep", .Text = "QP Step", .Init = 4},
+                    New NumParam With {.Switch = "--ratetol", .Text = "Rate Tolerance", .Config = {0, 0, 0.1, 1}, .Init = 1},
                     New NumParam With {.Switch = "--chroma-qp-offset", .Text = "Chroma QP Offset"},
-                    New NumParam With {.Switch = "--cplxblur", .Text = "T. Blur Complexity.", .MinMaxStepDec = {0, 0, 0.1D, 1}, .InitValue = 20},
-                    New NumParam With {.Switch = "--qblur", .Text = "Temp. Blur Quants", .MinMaxStepDec = {0, 0, 0.1D, 1}, .InitValue = 0.5},
+                    New NumParam With {.Switch = "--cplxblur", .Text = "T. Blur Complexity.", .Config = {0, 0, 0.1, 1}, .Init = 20},
+                    New NumParam With {.Switch = "--qblur", .Text = "Temp. Blur Quants", .Config = {0, 0, 0.1, 1}, .Init = 0.5},
                     Mbtree,
                     New BoolParam With {.Switch = "--cqm4", .Text = "Set all 4x4 quant matrices"},
                     New BoolParam With {.Switch = "--cqm8", .Text = "Set all 8x8 quant matrices"})
@@ -759,16 +748,16 @@ Public Class x264Params2
                     Direct,
                     Merange,
                     Weightb,
-                    New BoolParam With {.NoSwitch = "--no-chroma-me", .InitValue = True, .Text = "Use chroma in motion estimation"})
+                    New BoolParam With {.NoSwitch = "--no-chroma-me", .Init = True, .Text = "Use chroma in motion estimation"})
                 Add("Slice Decision",
                     BAdapt,
-                    New OptionParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid", .InitValue = 2, .Convert = True, .Options = {"None", "Strict", "Normal"}},
+                    New OptionParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid", .InitValue = 2, .Options = {"None", "Strict", "Normal"}},
                     BFrames,
                     New NumParam With {.Switch = "--b-bias", .Text = "B-Bias"},
                     RcLookahead,
                     Ref,
                     Scenecut,
-                    New NumParam With {.Switch = "--keyint", .Text = "Max GOP Size", .InitValue = 250},
+                    New NumParam With {.Switch = "--keyint", .Text = "Max GOP Size", .Init = 250},
                     New NumParam With {.Switch = "--min-keyint", .Text = "Min GOP Size"},
                     New NumParam With {.Switch = "--slices", .Text = "Slices"},
                     New NumParam With {.Switch = "--slices-max", .Text = "Slices Max"},
@@ -779,19 +768,17 @@ Public Class x264Params2
                     DctDecimate,
                     New BoolParam With {.Switch = "--intra-refresh", .Text = "Periodic Intra Refresh instead of IDR frames"},
                     New BoolParam With {.Switch = "--open-gop", .Text = "Open GOP"})
-                Add("Performance",
-                    SlowFirstpass)
                 Add("VUI",
                     New StringParam With {.Switch = "--sar", .Text = "Sample AR", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                     New StringParam With {.Switch = "--crop-rect", .Text = "Crop Rectangle"},
-                    New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Convert = True, .Options = {"Undefined", "Component", "PAL", "NTSC", "SECAM", "MAC"}},
-                    New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Convert = True, .Options = {"Undefined", "BT 709", "BT 470 M", "BT 470 BG", "SMPTE 170 M", "SMPTE 240 M", "Film", "BT 2020", "SMPTE 428", "SMPTE 431", "SMPTE 432"}},
-                    New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Convert = True, .Options = {"Undefined", "BT 709", "FCC", "BT 470 BG", "SMPTE 170 M", "SMPTE 240 M", "GBR", "YCgCo", "BT 2020 NC", "BT 2020 C", "SMPTE 2085"}},
-                    New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Convert = True, .Options = {"Undefined", "BT 709", "BT 470 M", "BT 470 BG", "SMPTE 170 M", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428"}},
-                    New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Convert = True, .Options = {"Undefined", "Show", "Crop"}},
-                    New OptionParam With {.Switch = "--range", .Text = "Range", .Convert = True, .Options = {"Auto", "TV", "PC"}},
-                    New OptionParam With {.Switch = "--nal-hrd", .Text = "Signal HDR Info", .Convert = True, .Options = {"None", "VBR", "CBR"}},
-                    New NumParam With {.Switch = "--chromaloc", .Text = "Chromaloc", .MinMaxStep = {0, 5, 1}},
+                    New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "Component", "PAL", "NTSC", "SECAM", "MAC"}},
+                    New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 709", "BT 470 M", "BT 470 BG", "SMPTE 170 M", "SMPTE 240 M", "Film", "BT 2020", "SMPTE 428", "SMPTE 431", "SMPTE 432"}},
+                    New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 709", "FCC", "BT 470 BG", "SMPTE 170 M", "SMPTE 240 M", "GBR", "YCgCo", "BT 2020 NC", "BT 2020 C", "SMPTE 2085"}},
+                    New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "BT 709", "BT 470 M", "BT 470 BG", "SMPTE 170 M", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428"}},
+                    New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"Undefined", "Show", "Crop"}},
+                    New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"Auto", "TV", "PC"}},
+                    New OptionParam With {.Switch = "--nal-hrd", .Text = "Signal HDR Info", .Options = {"None", "VBR", "CBR"}},
+                    New NumParam With {.Switch = "--chromaloc", .Text = "Chromaloc", .Config = {0, 5}},
                     New BoolParam With {.Switch = "--filler", .Text = "Force hard-CBR and generate filler"},
                     New BoolParam With {.Switch = "--pic-struct", .Text = "Force pic_struct in Picture Timing SEI"})
                 Add("Input/Output",
@@ -800,18 +787,18 @@ Public Class x264Params2
                     New StringParam With {.Switch = "--tcfile-in", .Text = "TC File In", .BrowseFile = True},
                     New StringParam With {.Switch = "--tcfile-out", .Text = "TC File Out", .BrowseFile = True},
                     New StringParam With {.Switch = "--timebase", .Text = "Timebase"},
-                    New OptionParam With {.Switch = "--input-depth", .Text = "Input Depth:", .Options = {"Automatic", "8", "10", "12", "14", "16"}},
-                    New OptionParam With {.Switch = "--input-csp", .Text = "Input Csp", .Convert = True, .Options = {"Automatic", "I420", "YV12", "NV12", "NV21", "I422", "YV16", "NV16", "YUYV", "UYVY", "I444", "YV24", "BGR", "BGRA", "RGB"}},
-                    New OptionParam With {.Switch = "--input-range", .Text = "Input Range", .Convert = True, .Options = {"Automatic", "TV", "PC"}},
-                    New OptionParam With {.Switch = "--output-csp", .Text = "Output Csp", .Convert = True, .Options = {"Automatic", "I420", "I422", "I444", "RGB"}},
-                    New OptionParam With {.Switch = "--fps", .Text = "Frame Rate:", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}},
-                    New OptionParam With {.Switch = "--pulldown", .Text = "Pulldown", .Convert = True, .Options = {"None", "22", "32", "64", "Double", "Triple", "Euro"}},
+                    New OptionParam With {.Switch = "--input-depth", .Text = "Input Depth", .Options = {"Automatic", "8", "10", "12", "14", "16"}},
+                    New OptionParam With {.Switch = "--input-csp", .Text = "Input Csp", .Options = {"Automatic", "I420", "YV12", "NV12", "NV21", "I422", "YV16", "NV16", "YUYV", "UYVY", "I444", "YV24", "BGR", "BGRA", "RGB"}},
+                    New OptionParam With {.Switch = "--input-range", .Text = "Input Range", .Options = {"Automatic", "TV", "PC"}},
+                    New OptionParam With {.Switch = "--output-csp", .Text = "Output Csp", .Options = {"Automatic", "I420", "I422", "I444", "RGB"}},
+                    New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}},
+                    New OptionParam With {.Switch = "--pulldown", .Text = "Pulldown", .Options = {"None", "22", "32", "64", "Double", "Triple", "Euro"}},
                     New OptionParam With {.Switch = "--avcintra-class", .Text = "Intra Class", .Options = {"None", "50", "100", "200"}},
-                    New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Convert = True, .Options = {"None", "Error", "Warning", "Info", "Debug"}})
+                    New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug"}})
                 Add("Input/Output 2",
                     New NumParam With {.Switch = "--threads", .Text = "Threads"},
                     New NumParam With {.Switch = "--lookahead-threads", .Text = "Lookahead Threads"},
-                    New NumParam With {.Switch = "--seek", .Text = "Seek:"},
+                    New NumParam With {.Switch = "--seek", .Text = "Seek"},
                     New NumParam With {.Switch = "--sync-lookahead", .Text = "Sync Lookahead"},
                     New NumParam With {.Switch = "--asm", .Text = "ASM"},
                     New NumParam With {.Switch = "--opencl-device", .Text = "OpenCl Device"},
@@ -832,12 +819,13 @@ Public Class x264Params2
                     New BoolParam With {.Switch = "--aud", .Text = "Use access unit delimiters"},
                     New BoolParam With {.Switch = "--dts-compress", .Text = "Eliminate initial delay with container DTS hack"})
                 Add("Other",
-                    New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced:", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
+                    New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                     New OptionParam With {.Switch = "--frame-packing", .Text = "Frame Packing", .IntegerValue = True, .Options = {"Checkerboard", "Column Alternation", "Row Alternation", "Side By Side", "Top Bottom", "Frame Alternation", "Mono", "Tile Format"}},
                     Deblock,
                     DeblockA,
                     DeblockB,
                     CompCheck,
+                    SlowFirstpass,
                     New BoolParam With {.Switch = "--constrained-intra", .Text = "Constrained Intra Prediction"},
                     Cabac)
                 Add("Custom",
@@ -934,7 +922,7 @@ Public Class x264Params2
             If sourcePath = "-" Then args += " --demuxer y4m --frames " & script.GetFrames
 
             If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
-                args += " --stats " + (p.TempDir + p.Name + ".stats").Escape
+                args += " --stats " + (p.TempDir + p.TargetFile.Base + ".stats").Escape
             End If
 
             If (Mode.Value = x264RateMode.ThreePass AndAlso

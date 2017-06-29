@@ -1112,7 +1112,7 @@ Class Macro
         If value.Contains("%target_dir%") Then value = value.Replace("%target_dir%", Filepath.GetDir(p.TargetFile))
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_name%") Then value = value.Replace("%target_name%", p.Name)
+        If value.Contains("%target_name%") Then value = value.Replace("%target_name%", p.TargetFile.Base)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_sar%") Then
@@ -1941,7 +1941,7 @@ End Class
 Public Class PrimitiveStore
     Property Bool As New Dictionary(Of String, Boolean)
     Property Int As New Dictionary(Of String, Integer)
-    Property Sng As New Dictionary(Of String, Single)
+    Property [Double] As New Dictionary(Of String, Double)
     Property [String] As New Dictionary(Of String, String)
 End Class
 
@@ -4288,4 +4288,10 @@ Public Enum FileExistMode
     Ask
     Overwrite
     Skip
+End Enum
+
+Public Enum DeleteMode
+    Disabled
+    <DispName("Recycle Bin")> RecycleBin
+    Permanent
 End Enum

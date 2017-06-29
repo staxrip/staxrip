@@ -187,7 +187,6 @@ clip.set_output()
                     If p.SourceFile <> "" Then
                         If g.MainForm.Visible Then
                             g.MainForm.Indexing()
-                            ProcessForm.CloseProcessForm()
                         Else
                             g.MainForm.Indexing()
                         End If
@@ -389,8 +388,8 @@ Public Class TargetVideoScript
 
     Overrides Property Path() As String
         Get
-            If p.SourceFile = "" OrElse p.Name = "" Then Return ""
-            Return p.TempDir + p.Name + "." + FileType
+            If p.SourceFile = "" OrElse p.TargetFile.Base = "" Then Return ""
+            Return p.TempDir + p.TargetFile.Base + "." + FileType
         End Get
         Set(value As String)
         End Set
@@ -404,7 +403,7 @@ Public Class SourceVideoScript
     Overrides Property Path() As String
         Get
             If p.SourceFile = "" Then Return ""
-            Return p.TempDir + p.Name + "_source." + p.Script.FileType
+            Return p.TempDir + p.TargetFile.Base + "_source." + p.Script.FileType
         End Get
         Set(value As String)
         End Set

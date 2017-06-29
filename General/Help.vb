@@ -193,37 +193,18 @@ Class FileHelp
     Shared Sub Move(src As String, dest As String)
         If File.Exists(src) Then
             If File.Exists(dest) Then Delete(dest)
-
-            Try
-                FileSystem.MoveFile(src, dest, True)
-            Catch
-                FileSystem.MoveFile(src, dest, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
-            End Try
+            FileSystem.MoveFile(src, dest, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
         End If
     End Sub
 
     Shared Sub Copy(src As String, dest As String)
-        If Not File.Exists(src) Then
-            Exit Sub
-        End If
-
-        If File.Exists(dest) Then
-            Delete(dest)
-        End If
-
-        Try
-            FileSystem.CopyFile(src, dest, True)
-        Catch
-            FileSystem.CopyFile(src, dest, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
-        End Try
+        If Not File.Exists(src) Then Exit Sub
+        If File.Exists(dest) Then Delete(dest)
+        FileSystem.CopyFile(src, dest, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
     End Sub
 
-    Shared Sub Delete(path As String,
-                      Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
-
-        If File.Exists(path) Then
-            FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, recycleOption, UICancelOption.DoNothing)
-        End If
+    Shared Sub Delete(path As String, Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
+        If File.Exists(path) Then FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, recycleOption, UICancelOption.DoNothing)
     End Sub
 End Class
 

@@ -822,7 +822,7 @@ table {
             IsClosed = True
 
             Writer.WriteRaw("<p>&nbsp;</p>" + BR)
-            Writer.WriteRaw("<h5 align=""center"">Copyright &copy; 2002-" & DateTime.Now.Year & " Frank Skare. All rights reserved.</h5><br>")
+            Writer.WriteRaw("<h5 align=""center"">Copyright &copy; 2002-" & DateTime.Now.Year & " stax76. All rights reserved.</h5><br>")
             Writer.WriteEndElement() 'body
             Writer.WriteEndElement() 'html
             Writer.Close()
@@ -986,8 +986,8 @@ Class ErrorAbortException
         MyBase.New(message)
         If proj Is Nothing Then proj = p
         Me.Title = title
-        Log.WriteHeader(title, proj)
-        Log.WriteLine(message, proj)
+        proj.Log.WriteHeader(title)
+        proj.Log.WriteLine(message)
     End Sub
 End Class
 
@@ -1230,7 +1230,6 @@ Public Class CommandManager
             MsgError("Parameter mismatch, for the command :" + command.MethodInfo.Name)
         Catch ex As Exception
             If Not TypeOf ex.InnerException Is AbortException Then g.ShowException(ex)
-            ProcessForm.CloseProcessForm()
         End Try
     End Sub
 
@@ -1283,6 +1282,7 @@ End Class
 Public Module MainModule
     Public Const BR As String = VB6.vbCrLf
     Public Const BR2 As String = VB6.vbCrLf + VB6.vbCrLf
+    Public Log As LogBuilder
 
     Sub MsgInfo(text As String, Optional content As String = Nothing)
         Msg(text, content, MsgIcon.Info, TaskDialogButtons.Ok)
@@ -1493,67 +1493,48 @@ Public Enum ToolStripRenderModeEx
     <DispName("System Default Color")> SystemDefault
     <DispName("Win 7 Window Color")> Win7Auto
     <DispName("Win 7 Default Color")> Win7Default
-    <DispName("Win 8 Window Color")> Win8Auto
-    <DispName("Win 8 Default Color")> Win8Default
+    <DispName("Win 10 Window Color")> Win10Auto
+    <DispName("Win 10 Default Color")> Win10Default
 End Enum
 
 Class PowerRequest
     Private Shared CurrentPowerRequest As IntPtr
 
     Shared Sub SuppressStandby()
-        If OSVersion.Current < OSVersion.Windows7 Then Exit Sub
-
-        'Clear current power request if there is any.
         If CurrentPowerRequest <> IntPtr.Zero Then
             PowerClearRequest(CurrentPowerRequest, PowerRequestType.PowerRequestSystemRequired)
             CurrentPowerRequest = IntPtr.Zero
         End If
 
-        'Create new power request.
         Dim pContext As POWER_REQUEST_CONTEXT
         pContext.Flags = &H1 'POWER_REQUEST_CONTEXT_SIMPLE_STRING
         pContext.Version = 0 'POWER_REQUEST_CONTEXT_VERSION
-        'This is the reason for standby suppression. It is shown when the command "powercfg -requests" is executed.
-        pContext.SimpleReasonString = "Standby suppressed by StaxRip.exe"
+        pContext.SimpleReasonString = "Standby suppressed by StaxRip"  'shown when the command "powercfg -requests" is executed
 
         CurrentPowerRequest = PowerCreateRequest(pContext)
 
         If CurrentPowerRequest = IntPtr.Zero Then
             Dim err = Marshal.GetLastWin32Error()
-
-            If err <> 0 Then
-                Throw New Win32Exception(err)
-            End If
+            If err <> 0 Then Throw New Win32Exception(err)
         End If
 
         Dim success = PowerSetRequest(CurrentPowerRequest, PowerRequestType.PowerRequestSystemRequired)
 
         If Not success Then
-            'Failed to set power request.
             CurrentPowerRequest = IntPtr.Zero
             Dim err = Marshal.GetLastWin32Error()
-
-            If err <> 0 Then
-                Throw New Win32Exception(err)
-            End If
+            If err <> 0 Then Throw New Win32Exception(err)
         End If
     End Sub
 
     Shared Sub EnableStandby()
-        If OSVersion.Current < OSVersion.Windows7 Then Exit Sub
-
-        'only try to clear power request if any power request is set.
         If CurrentPowerRequest <> IntPtr.Zero Then
             Dim success = PowerClearRequest(CurrentPowerRequest, PowerRequestType.PowerRequestSystemRequired)
 
             If Not success Then
-                'Failed to clear power request.
                 CurrentPowerRequest = IntPtr.Zero
                 Dim err = Marshal.GetLastWin32Error()
-
-                If err <> 0 Then
-                    Throw New Win32Exception(err)
-                End If
+                If err <> 0 Then Throw New Win32Exception(err)
             Else
                 CurrentPowerRequest = IntPtr.Zero
             End If
@@ -1561,7 +1542,7 @@ Class PowerRequest
     End Sub
 
     Enum PowerRequestType
-        PowerRequestDisplayRequired = 0
+        PowerRequestDisplayRequired
         PowerRequestSystemRequired
         PowerRequestAwayModeRequired
         PowerRequestExecutionRequired

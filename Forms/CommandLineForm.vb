@@ -94,8 +94,8 @@ Class CommandLineForm
 
             If TypeOf item Is NumParam Then
                 Dim param = DirectCast(item, NumParam)
-                If param.MinMaxStepDec(0) > Integer.MinValue Then help += "Minimum: " & param.MinMaxStepDec(0) & BR
-                If param.MinMaxStepDec(1) < Integer.MaxValue Then help += "Maximum: " & param.MinMaxStepDec(1) & BR
+                If param.Config(0) > Double.MinValue Then help += "Minimum: " & param.Config(0) & BR
+                If param.Config(1) < Double.MaxValue Then help += "Maximum: " & param.Config(1) & BR
             End If
 
             help += BR
@@ -111,55 +111,55 @@ Class CommandLineForm
             If item.Label <> "" Then SimpleUI.AddLabel(parent, item.Label).MarginTop = FontHeight \ 2
 
             If TypeOf item Is BoolParam Then
-                Dim cb = SimpleUI.AddCheckBox(parent)
+                Dim cb = SimpleUI.AddBool(parent)
                 cb.Text = item.Text
-                cb.Tooltip = help
+                cb.Help = help
                 cb.MarginLeft = item.LeftMargin
-                DirectCast(item, BoolParam).Init(cb)
+                DirectCast(item, BoolParam).InitParam(cb)
                 helpControl = cb
             ElseIf TypeOf item Is NumParam Then
                 Dim tempItem = DirectCast(item, NumParam)
                 Dim param = DirectCast(item, NumParam)
-                Dim nb = SimpleUI.AddNumericBlock(parent)
+                Dim nb = SimpleUI.AddNum(parent)
                 nb.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
-                nb.Label.Tooltip = help
-                nb.NumEdit.Init(param.MinMaxStepDec)
+                nb.Label.Help = help
+                nb.NumEdit.Config = param.Config
                 AddHandler nb.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
-                DirectCast(item, NumParam).Init(nb.NumEdit)
+                DirectCast(item, NumParam).InitParam(nb.NumEdit)
                 helpControl = nb.Label
             ElseIf TypeOf item Is OptionParam Then
                 Dim tempItem = DirectCast(item, OptionParam)
                 Dim os = DirectCast(item, OptionParam)
-                Dim mb = SimpleUI.AddMenuButtonBlock(Of Integer)(parent)
+                Dim mb = SimpleUI.AddMenu(Of Integer)(parent)
                 mb.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
-                mb.Tooltip = help
+                mb.Help = help
                 helpControl = mb.Label
                 AddHandler mb.Label.MouseDoubleClick, Sub() tempItem.ValueChangedUser(tempItem.DefaultValue)
-                If os.Expand Then mb.MenuButton.Expandet = True
+                If os.Expand Then mb.Button.Expandet = True
 
                 For x2 = 0 To os.Options.Length - 1
-                    mb.MenuButton.Add(os.Options(x2), x2)
+                    mb.Button.Add(os.Options(x2), x2)
                 Next
 
-                os.Init(mb.MenuButton)
+                os.Init2(mb.Button)
             ElseIf TypeOf item Is StringParam Then
                 Dim tempItem = DirectCast(item, StringParam)
                 Dim textBlock As SimpleUI.TextBlock
 
                 If tempItem.BrowseFileFilter <> "" Then
-                    Dim textButtonBlock = SimpleUI.AddTextButtonBlock(parent)
+                    Dim textButtonBlock = SimpleUI.AddTextButton(parent)
                     textButtonBlock.BrowseFile(tempItem.BrowseFileFilter)
                     textBlock = textButtonBlock
                 ElseIf tempItem.Menu <> "" Then
-                    Dim textMenuBlock = SimpleUI.AddTextMenuBlock(parent)
+                    Dim textMenuBlock = SimpleUI.AddTextMenu(parent)
                     textMenuBlock.AddMenu(tempItem.Menu)
                     textBlock = textMenuBlock
                 Else
-                    textBlock = SimpleUI.AddTextBlock(parent)
+                    textBlock = SimpleUI.AddText(parent)
                 End If
 
                 textBlock.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
-                textBlock.Label.Tooltip = help
+                textBlock.Label.Help = help
                 helpControl = textBlock.Label
                 AddHandler textBlock.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
                 textBlock.Edit.Expandet = True

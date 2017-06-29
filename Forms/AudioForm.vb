@@ -594,7 +594,7 @@ Class AudioForm
     End Sub
 
     Private Sub numGain_ValueChanged(numEdit As NumEdit) Handles numGain.ValueChanged
-        TempProfile.Gain = numGain.Value
+        TempProfile.Gain = CSng(numGain.Value)
         UpdateControls()
     End Sub
 
@@ -789,16 +789,16 @@ Class AudioForm
         Dim page = ui.CreateFlowPage("main page")
         page.SuspendLayout()
 
-        Dim tb = ui.AddTextBlock(page)
-        tb.Label.Text = "Stream Name:"
-        tb.Label.Tooltip = "Stream name used by the muxer."
+        Dim tb = ui.AddText(page)
+        tb.Text = "Stream Name:"
+        tb.Help = "Stream name used by the muxer."
         tb.Edit.Expandet = True
         tb.Edit.Text = TempProfile.StreamName
         tb.Edit.SaveAction = Sub(value) TempProfile.StreamName = value
 
-        tb = ui.AddTextBlock(page)
-        tb.Label.Text = "Custom Switches:"
-        tb.Label.Tooltip = "Custom command line arguments"
+        tb = ui.AddText(page)
+        tb.Text = "Custom Switches:"
+        tb.Help = "Custom command line arguments"
         tb.Edit.Expandet = True
         tb.Edit.Text = TempProfile.Params.CustomSwitches
         tb.Edit.SaveAction = Sub(value) TempProfile.Params.CustomSwitches = value
@@ -835,21 +835,21 @@ Class AudioForm
             '    tb.Edit.Text = TempProfile.Params.BeSweetAzid
             '    tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetAzid = value
             Case GuiAudioEncoder.Eac3to
-                Dim mbFrameRateMode = ui.AddMenuButtonBlock(Of AudioFrameRateMode)(page)
+                Dim mbFrameRateMode = ui.AddMenu(Of AudioFrameRateMode)(page)
                 mbFrameRateMode.Label.Text = "Frame rate:"
-                mbFrameRateMode.MenuButton.Expandet = True
-                mbFrameRateMode.MenuButton.Value = TempProfile.Params.FrameRateMode
-                mbFrameRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.FrameRateMode = value
+                mbFrameRateMode.Button.Expandet = True
+                mbFrameRateMode.Button.Value = TempProfile.Params.FrameRateMode
+                mbFrameRateMode.Button.SaveAction = Sub(value) TempProfile.Params.FrameRateMode = value
 
-                Dim mbStereoDownmix = ui.AddMenuButtonBlock(Of Integer)(page)
+                Dim mbStereoDownmix = ui.AddMenu(Of Integer)(page)
                 mbStereoDownmix.Label.Text = "Stereo Downmix:"
-                mbStereoDownmix.MenuButton.Expandet = True
-                mbStereoDownmix.MenuButton.Add("Simple", 0)
-                mbStereoDownmix.MenuButton.Add("DPL II", 1)
-                mbStereoDownmix.MenuButton.Value = TempProfile.Params.eac3toStereoDownmixMode
-                mbStereoDownmix.MenuButton.SaveAction = Sub(value) TempProfile.Params.eac3toStereoDownmixMode = value
+                mbStereoDownmix.Button.Expandet = True
+                mbStereoDownmix.Button.Add("Simple", 0)
+                mbStereoDownmix.Button.Add("DPL II", 1)
+                mbStereoDownmix.Button.Value = TempProfile.Params.eac3toStereoDownmixMode
+                mbStereoDownmix.Button.SaveAction = Sub(value) TempProfile.Params.eac3toStereoDownmixMode = value
 
-                cb = ui.AddCheckBox(page)
+                cb = ui.AddBool(page)
                 cb.Text = "Downconvert to 16 bit"
                 cb.Checked = TempProfile.Params.Down16
                 cb.SaveAction = Sub(value)
@@ -863,7 +863,7 @@ Class AudioForm
                      TempProfile.Stream.Name.Contains("DTS"))) AndAlso
                     TempProfile.Params.Codec = AudioCodec.DTS Then
 
-                    cb = ui.AddCheckBox(page)
+                    cb = ui.AddBool(page)
                     cb.Text = "Extract DTS core"
                     cb.Checked = TempProfile.Params.eac3toExtractDtsCore
                     cb.SaveAction = Sub(value) TempProfile.Params.eac3toExtractDtsCore = value
@@ -872,65 +872,65 @@ Class AudioForm
                 Select Case TempProfile.Params.Codec
                     Case AudioCodec.AC3, AudioCodec.DTS, AudioCodec.Flac
                     Case Else
-                        Dim mbRateMode = ui.AddMenuButtonBlock(Of AudioRateMode)(page)
+                        Dim mbRateMode = ui.AddMenu(Of AudioRateMode)(page)
                         mbRateMode.Label.Text = "Rate Mode:"
-                        mbRateMode.MenuButton.Expandet = True
-                        mbRateMode.MenuButton.Value = TempProfile.Params.RateMode
-                        mbRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.RateMode = value
+                        mbRateMode.Button.Expandet = True
+                        mbRateMode.Button.Value = TempProfile.Params.RateMode
+                        mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.RateMode = value
                 End Select
             Case GuiAudioEncoder.qaac
-                Dim mbMode = ui.AddMenuButtonBlock(Of Integer)(page)
+                Dim mbMode = ui.AddMenu(Of Integer)(page)
                 mbMode.Label.Text = "Mode:"
-                mbMode.MenuButton.Expandet = True
-                mbMode.MenuButton.Add("True VBR", 0)
-                mbMode.MenuButton.Add("Constrained VBR", 1)
-                mbMode.MenuButton.Add("ABR", 2)
-                mbMode.MenuButton.Add("CBR", 3)
-                mbMode.MenuButton.Value = TempProfile.Params.qaacRateMode
-                mbMode.MenuButton.SaveAction = Sub(value)
-                                                   TempProfile.Params.qaacRateMode = value
-                                                   TempProfile.Params.RateMode = If(TempProfile.Params.qaacRateMode = 0,
+                mbMode.Button.Expandet = True
+                mbMode.Button.Add("True VBR", 0)
+                mbMode.Button.Add("Constrained VBR", 1)
+                mbMode.Button.Add("ABR", 2)
+                mbMode.Button.Add("CBR", 3)
+                mbMode.Button.Value = TempProfile.Params.qaacRateMode
+                mbMode.Button.SaveAction = Sub(value)
+                                               TempProfile.Params.qaacRateMode = value
+                                               TempProfile.Params.RateMode = If(TempProfile.Params.qaacRateMode = 0,
                                                                                     AudioRateMode.VBR,
                                                                                     AudioRateMode.CBR)
-                                               End Sub
+                                           End Sub
 
-                Dim mbQuality = ui.AddMenuButtonBlock(Of Integer)(page)
+                Dim mbQuality = ui.AddMenu(Of Integer)(page)
                 mbQuality.Label.Text = "Quality:"
-                mbQuality.MenuButton.Expandet = True
-                mbQuality.MenuButton.Add("Low", 0)
-                mbQuality.MenuButton.Add("Medium", 1)
-                mbQuality.MenuButton.Add("High", 2)
-                mbQuality.MenuButton.Value = TempProfile.Params.qaacQuality
-                mbQuality.MenuButton.SaveAction = Sub(value) TempProfile.Params.qaacQuality = value
+                mbQuality.Button.Expandet = True
+                mbQuality.Button.Add("Low", 0)
+                mbQuality.Button.Add("Medium", 1)
+                mbQuality.Button.Add("High", 2)
+                mbQuality.Button.Value = TempProfile.Params.qaacQuality
+                mbQuality.Button.SaveAction = Sub(value) TempProfile.Params.qaacQuality = value
 
-                Dim num = ui.AddNumericBlock(page)
+                Dim num = ui.AddNum(page)
                 num.Label.Text = "Lowpass:"
-                num.NumEdit.Init(0, Integer.MaxValue, 1, 0)
+                num.NumEdit.Config = {0, Integer.MaxValue, 1}
                 num.NumEdit.Value = TempProfile.Params.qaacLowpass
                 num.NumEdit.SaveAction = Sub(value) TempProfile.Params.qaacLowpass = CInt(value)
 
-                cb = ui.AddCheckBox(page)
+                cb = ui.AddBool(page)
                 cb.Text = "High Efficiency"
                 cb.Checked = TempProfile.Params.qaacHE
                 cb.SaveAction = Sub(value) TempProfile.Params.qaacHE = value
-                AddHandler cb.CheckedChanged, Sub() If cb.Checked Then mbMode.MenuButton.Value = 1
-                AddHandler mbMode.MenuButton.ValueChangedUser, Sub() If mbMode.MenuButton.Value = 0 Then cb.Checked = False
+                AddHandler cb.CheckedChanged, Sub() If cb.Checked Then mbMode.Button.Value = 1
+                AddHandler mbMode.Button.ValueChangedUser, Sub() If mbMode.Button.Value = 0 Then cb.Checked = False
 
-                cb = ui.AddCheckBox(page)
+                cb = ui.AddBool(page)
                 cb.Text = "No dither when quantizing to lower bit depth"
                 cb.Checked = TempProfile.Params.qaacNoDither
                 cb.SaveAction = Sub(value) TempProfile.Params.qaacNoDither = value
         End Select
 
-        cb = ui.AddCheckBox(page)
+        cb = ui.AddBool(page)
         cb.Text = "Default"
-        cb.Tooltip = "Marked as default in MKV."
+        cb.Help = "Marked as default in MKV."
         cb.Checked = TempProfile.Default
         cb.SaveAction = Sub(value) TempProfile.Default = value
 
-        cb = ui.AddCheckBox(page)
+        cb = ui.AddBool(page)
         cb.Text = "Forced"
-        cb.Tooltip = "Marked as forced in MKV."
+        cb.Help = "Marked as forced in MKV."
         cb.Checked = TempProfile.Forced
         cb.SaveAction = Sub(value) TempProfile.Forced = value
 

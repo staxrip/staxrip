@@ -51,31 +51,43 @@ Class ImageHelp
     End Function
 End Class
 
-Class Thumbnails
-    Shared Sub SaveThumbnails(inputFile As String)
+Public Class Thumbnails
+    Shared Sub SaveThumbnails(inputFile As String, proj As Project)
         If Not File.Exists(inputFile) Then Exit Sub
         If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
 
-        Log.WriteHeader("Saving Thumnails")
-        Log.WriteLine(inputFile)
-        Log.Save()
+        If proj Is Nothing Then
+            proj = New Project
+            proj.Init()
+            proj.SourceFile = inputFile
+        End If
 
-        Dim width = s.Storage.GetInt("Thumbnail Width", 260)
+        proj.Log.WriteHeader("Saving Thumbnails")
+        proj.Log.WriteLine(inputFile)
+        proj.Log.Save(proj)
+
+        Dim fontSize = s.Storage.GetInt("Thumbnail Font Size", 9)
+        Dim fontName = s.Storage.GetString("Thumbnail Font Name", "Tahoma")
+        Dim title = s.Storage.GetString("Thumbnail Title", "StaxRip")
+        Dim width = s.Storage.GetInt("Thumbnail Width", 500)
         Dim columns = s.Storage.GetInt("Thumbnail Columns", 3)
         Dim rows = s.Storage.GetInt("Thumbnail Rows", 12)
         Dim dar = MediaInfo.GetVideo(inputFile, "DisplayAspectRatio")
         Dim height = CInt(width / Convert.ToSingle(dar, CultureInfo.InvariantCulture))
         Dim shadowDistance = 5
         Dim backgroundColor = Color.Gainsboro
-        Dim gap = 5
+        Dim gap = fontSize \ 2
 
         width = width - width Mod 4
         height = height - height Mod 4
 
+        Dim cachePath = Folder.Settings + "Thumbnails.ffindex"
         Dim avsdoc As New VideoScript
         avsdoc.Path = Folder.Settings + "Thumbnails.avs"
-        avsdoc.Filters.Add(New VideoFilter("DirectShowSource(""" + inputFile + """, audio=false, convertfps=true).LanczosResize(" & width & "," & height & ")"))
+        avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + """, cachefile = """ + cachePath + """, colorspace = ""YV12"").LanczosResize(" & width & "," & height & ")"))
         avsdoc.Filters.Add(New VideoFilter("ConvertToRGB()"))
+
+        g.ffmsindex(inputFile, cachePath, False, proj)
 
         Dim errorMsg = ""
 
@@ -102,13 +114,14 @@ Class Thumbnails
                 Dim bitmap = New Bitmap(avi.GetBitmap())
                 DropShadow(bitmap, Color.Black, backgroundColor, shadowDistance)
                 bitmaps.Add(bitmap)
-                ProcessForm.UpdateStatusThreadsafe("Extracting thumbnails: " & CInt(100 / count * x) & "%")
+                'ProcForm.UpdateStatusThreadsafe("Extracting thumbnails: " & CInt(100 / count * x) & "%")
             Next
 
             width = width + shadowDistance + gap
             height = height + shadowDistance + gap
         End Using
 
+        FileHelp.Delete(cachePath)
         FileHelp.Delete(avsdoc.Path)
 
         Dim infoSize As String
@@ -130,9 +143,11 @@ Class Thumbnails
         Dim caption = Filepath.GetName(inputFile) + BR & "Size: " & infoSize & ", Duration: " +
             infoDate.ToString("HH:mm:ss") + ", Bitrate: " & CInt((infoLength * 8) / 1000 / (infoDuration / 1000)) & " Kbps" + BR +
             "Audio: " + MediaInfo.GetAudioCodecs(inputFile) + BR +
-            "Video: " + MediaInfo.GetVideoCodec(inputFile) + ", " & infoWidth & " x " & infoHeight & ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToString("f3", CultureInfo.InvariantCulture).TrimEnd({"0"c, "."c}) + "fps"
+            "Video: " + MediaInfo.GetVideoCodec(inputFile) + ", " & infoWidth & " x " & infoHeight & ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps"
 
-        Dim captionHeight = 110
+        Dim font = New Font(fontName, fontSize)
+        Dim captionSize = TextRenderer.MeasureText(caption, font)
+        Dim captionHeight = captionSize.Height + font.Height
 
         Dim imageWidth = width * columns + shadowDistance + gap
         Dim imageHeight = height * rows + captionHeight
@@ -145,10 +160,10 @@ Class Thumbnails
                 Dim rect = New RectangleF(shadowDistance + gap, 0, imageWidth - (shadowDistance + gap) * 2, captionHeight)
                 Dim format As New StringFormat
                 format.LineAlignment = StringAlignment.Center
-                g.DrawString(caption, New Font("Tahoma", 9), Brushes.Black, rect, format)
+                g.DrawString(caption, font, Brushes.Black, rect, format)
                 format.Alignment = StringAlignment.Far
                 format.LineAlignment = StringAlignment.Far
-                g.DrawString("StaxRip", New Font("Tahoma", 18), Brushes.White, rect, format)
+                g.DrawString(title, New Font(fontName, fontSize * 2), Brushes.White, rect, format)
 
                 For x = 0 To bitmaps.Count - 1
                     Dim rowPos = x \ columns

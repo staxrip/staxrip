@@ -67,7 +67,6 @@ Class AppsForm
         Me.ToolStrip.AutoSize = False
         Me.ToolStrip.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsbLaunch, Me.tsbExplore, Me.tsbWebsite, Me.tsbDownload, Me.tsbHelp})
         Me.ToolStrip.Location = New System.Drawing.Point(264, 10)
         Me.ToolStrip.Margin = New System.Windows.Forms.Padding(0, 10, 10, 0)
@@ -118,7 +117,7 @@ Class AppsForm
         Me.tsbHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbHelp.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbHelp.Name = "tsbHelp"
-        Me.tsbHelp.Size = New System.Drawing.Size(119, 75)
+        Me.tsbHelp.Size = New System.Drawing.Size(119, 52)
         Me.tsbHelp.Text = " Help "
         Me.tsbHelp.ToolTipText = "Opens the apps help"
         '
@@ -185,7 +184,7 @@ Class AppsForm
 #End Region
 
     Private CurrentPackage As Package
-    Private Directories As New Hashtable
+    Private Folders As New Hashtable
     Private Nodes As New List(Of TreeNode)
     Private ControlDic As New Dictionary(Of String, Control)
     Private Headers As New Dictionary(Of String, Label)

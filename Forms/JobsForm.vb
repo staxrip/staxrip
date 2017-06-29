@@ -364,10 +364,10 @@ Friend Class JobsForm
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        MyBase.OnFormClosing(e)
         RemoveHandler FileWatcher.Changed, AddressOf Reload
         RemoveHandler FileWatcher.Created, AddressOf Reload
         RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged
-        MyBase.OnFormClosing(e)
     End Sub
 
     Protected Overrides Sub OnHelpRequested(hevent As HelpEventArgs)

@@ -14,12 +14,12 @@ Public Class GlobalCommands
             Dim page = ui.CreateFlowPage("main page")
             page.SuspendLayout()
 
-            Dim sourceFile = ui.AddTextButtonBlock(page)
+            Dim sourceFile = ui.AddTextButton(page)
             sourceFile.Label.Text = "Source File:"
             sourceFile.Edit.Expandet = True
             sourceFile.BrowseFile(FileTypes.VideoAudio)
 
-            Dim outputFolder = ui.AddTextButtonBlock(page)
+            Dim outputFolder = ui.AddTextButton(page)
             outputFolder.Label.Text = "Output Folder:"
             outputFolder.Edit.Expandet = True
             outputFolder.BrowseFolder()
@@ -50,12 +50,13 @@ Public Class GlobalCommands
                     Dim proj As New Project
                     proj.Init()
                     proj.SourceFile = sourceFile.Edit.Text
+                    proj.TargetFile = sourceFile.Edit.Text
                     proj.TempDir = outputFolder.Edit.Text.AppendSeparator
 
                     If Not td.Show Is Nothing Then
                         td.SelectedValue.Run(proj)
-                        ProcessForm.CloseProcessForm()
                         s.LastSourceDir = proj.SourceFile.Dir
+                        proj.Log.Save(proj)
                     End If
                 End Using
             End If
@@ -64,7 +65,7 @@ Public Class GlobalCommands
 
     <Command("Runs all active jobs of the job list.")>
     Sub StartJobs()
-        'g.RunJobRecursive()
+        'g.RunJobs()
         g.ShellExecute(Application.ExecutablePath, "-RunJobsMaximized")
     End Sub
 
@@ -111,12 +112,6 @@ Public Class GlobalCommands
         Description("Alternative mode that creats a BAT file to execute."),
         DefaultValue(False)>
         asBatch As Boolean)
-
-        Dim closeNeeded As Boolean
-
-        If showProcessWindow AndAlso Not ProcessForm.IsActive Then
-            closeNeeded = True
-        End If
 
         If asBatch Then
             Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
@@ -167,8 +162,6 @@ Public Class GlobalCommands
                 End Using
             Next
         End If
-
-        If closeNeeded Then ProcessForm.CloseProcessForm()
     End Sub
 
     <Command("Saves a batch script as bat file and executes it. Macros are solved as well as passed in as environment variables.")>
@@ -181,10 +174,6 @@ Public Class GlobalCommands
         Description("Interprets each output line as StaxRip command."),
         DefaultValue(False)>
         Optional interpretOutput As Boolean = False)
-
-        Dim closeNeeded As Boolean
-
-        If Not ProcessForm.IsActive Then closeNeeded = True
 
         Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
         Dim batchCode = Macro.Expand(batchScript)
@@ -206,7 +195,7 @@ Public Class GlobalCommands
             Try
                 proc.Start()
 
-                For Each i In ProcessForm.CommandLineLog.ToString.SplitLinesNoEmpty
+                For Each i In proc.Log.ToString.SplitLinesNoEmpty
                     If Not g.MainForm.CommandManager.ProcessCommandLineArgument(i) Then
                         Log.WriteLine("Failed to interpret output:" + BR2 + i)
                     End If
@@ -216,8 +205,6 @@ Public Class GlobalCommands
                 Log.WriteLine(ex.Message)
             End Try
         End Using
-
-        If closeNeeded Then ProcessForm.CloseProcessForm()
     End Sub
 
     <Command("Executes a PowerShell (*.ps1) script.")>

@@ -75,7 +75,7 @@ Class CodeEditor
         If p.SourceFile = "" Then Exit Sub
         Dim doc As New VideoScript
         doc.Engine = Engine
-        doc.Path = p.TempDir + p.Name + "_scriptEditor." + doc.FileType
+        doc.Path = p.TempDir + p.TargetFile.Base + "_scriptEditor." + doc.FileType
         doc.Filters = GetFilters()
         g.PlayScript(doc)
     End Sub
@@ -84,7 +84,7 @@ Class CodeEditor
         If p.SourceFile = "" Then Exit Sub
         Dim doc As New VideoScript
         doc.Engine = Engine
-        doc.Path = p.TempDir + p.Name + "_editor." + doc.FileType
+        doc.Path = p.TempDir + p.TargetFile.Base + "_editor." + doc.FileType
         doc.Filters = GetFilters()
 
         Dim errMsg = doc.GetErrorMessage

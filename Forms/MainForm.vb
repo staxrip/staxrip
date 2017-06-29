@@ -1153,27 +1153,6 @@ Public Class MainForm
         ShowInTaskbar = Not g.IsEncodingInstance
     End Sub
 
-    <Command("Shows different donation options.")>
-    Sub ShowDonateDialog()
-        Dim td As New TaskDialog(Of String)
-        td.MainInstruction = "If you are a satisfied user of StaxRip, please think about contributing to this project."
-
-        td.AddCommandLink("PayPal", "Donate via PayPal", "PayPal")
-        td.AddCommandLink("Bitcoin", "Copy Bitcoin address to clipboard", "Bitcoin")
-        If g.IsCulture("de") Then td.AddCommandLink("Amazon", "Email Adresse in Zwischenablage kopieren und Gutschein Seite öffnen", "Amazon")
-
-        Select Case td.Show
-            Case "PayPal"
-                g.ShellExecute(Strings.DonationsURL)
-            Case "Bitcoin"
-                Clipboard.SetText("19FjjVNYBUEowkqL3CwrJp6Ks191wYHtph")
-                MsgInfo("Address was copied to the clipboard.")
-            Case "Amazon"
-                Clipboard.SetText("frank.skare.de@gmail.com")
-                g.ShellExecute("https://www.amazon.de/Amazon-Gutschein-E-Mail-Verschiedene-Motive/dp/BT00DHI7WY")
-        End Select
-    End Sub
-
     Sub SetMenuStyle()
         If ToolStripRendererEx.IsAutoRenderMode Then
             Dim col = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)
@@ -1544,7 +1523,7 @@ Public Class MainForm
             d.SetInitDir(p.TempDir)
 
             If p.SourceFile <> "" Then
-                d.FileName = p.Name
+                d.FileName = p.TargetFile.Base
             Else
                 d.FileName = "Untitled"
             End If
@@ -1601,9 +1580,11 @@ Public Class MainForm
             p.Init()
         End Try
 
+        Log = p.Log
+
         SetBindings(p, True)
 
-        Text = Application.ProductName + " x64 - " + Filepath.GetBase(path)
+        Text = Application.ProductName + " x64 - " + path.Base
         SkipAssistant = True
 
         If path.StartsWith(Folder.Template) Then
@@ -1911,10 +1892,10 @@ Public Class MainForm
             p.ScanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
             p.ScanOrder = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanOrder")
 
-            Dim movieName = MediaInfo.GetGeneral(p.LastOriginalSourceFile, "Movie")
+            Dim mkvMuxer = TryCast(p.VideoEncoder.Muxer, MkvMuxer)
 
-            If movieName <> "" AndAlso TypeOf p.VideoEncoder.Muxer Is MkvMuxer Then
-                DirectCast(p.VideoEncoder.Muxer, MkvMuxer).Title = movieName
+            If Not mkvMuxer Is Nothing AndAlso mkvMuxer.Title = "" Then
+                mkvMuxer.Title = MediaInfo.GetGeneral(p.LastOriginalSourceFile, "Movie")
             End If
 
             If isNotEncoding AndAlso p.BatchMode Then
@@ -2047,8 +2028,6 @@ Public Class MainForm
                     Log.WriteLine(errorMsg + BR2)
                     Log.WriteLine(p.SourceScript.GetFullScript)
                     Log.Save()
-
-                    ProcessForm.CloseProcessForm()
 
                     g.ShowDirectShowWarning()
 
@@ -2184,14 +2163,11 @@ Public Class MainForm
 
             Assistant()
 
-            If Not p.BatchMode Then ProcessForm.CloseProcessForm()
-
             g.RaiseAppEvent(ApplicationEvent.AfterSourceLoaded)
             g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
             Log.Save()
         Catch ex As AbortException
             Log.Save()
-            ProcessForm.CloseProcessForm()
             SetSavedProject()
             OpenProject(recoverProjectPath)
             Text = recoverText
@@ -2444,7 +2420,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Sub Encode()
+    Sub ProcessJob()
         Try
             g.IsProcessing = True
             g.RaiseAppEvent(ApplicationEvent.BeforeEncoding)
@@ -2457,8 +2433,6 @@ Public Class MainForm
                 p.BatchMode = False
                 SaveProjectPath(g.ProjectPath)
             End If
-
-            ProcessForm.ShowForm()
 
             Log.WriteHeader("Script")
             Log.WriteLine(p.Script.GetFullScript)
@@ -2473,19 +2447,23 @@ Public Class MainForm
 
             Log.WriteLine(props.FormatColumn(":"))
 
-            If p.SkipAudioEncoding AndAlso File.Exists(p.Audio0.GetOutputFile) Then
-                p.Audio0.File = p.Audio0.GetOutputFile()
-            Else
-                Audio.Process(p.Audio0)
-                p.Audio0.Encode()
-            End If
+            Dim audioTask0 = Task.Run(Sub()
+                                          If p.SkipAudioEncoding AndAlso File.Exists(p.Audio0.GetOutputFile) Then
+                                              p.Audio0.File = p.Audio0.GetOutputFile()
+                                          Else
+                                              Audio.Process(p.Audio0)
+                                              p.Audio0.Encode()
+                                          End If
+                                      End Sub)
 
-            If p.SkipAudioEncoding AndAlso File.Exists(p.Audio1.GetOutputFile) Then
-                p.Audio1.File = p.Audio1.GetOutputFile()
-            Else
-                Audio.Process(p.Audio1)
-                p.Audio1.Encode()
-            End If
+            Dim audioTask1 = Task.Run(Sub()
+                                          If p.SkipAudioEncoding AndAlso File.Exists(p.Audio1.GetOutputFile) Then
+                                              p.Audio1.File = p.Audio1.GetOutputFile()
+                                          Else
+                                              Audio.Process(p.Audio1)
+                                              p.Audio1.Encode()
+                                          End If
+                                      End Sub)
 
             For Each i In p.AudioTracks
                 If p.SkipAudioEncoding AndAlso File.Exists(i.GetOutputFile) Then
@@ -2503,7 +2481,7 @@ Public Class MainForm
                 Dim originalSource As String
 
                 If p.PreRenderIntoLossless AndAlso Not TypeOf p.VideoEncoder Is NullEncoder Then
-                    Dim outPath = p.TempDir + p.Name + "_lossless.avi"
+                    Dim outPath = p.TempDir + p.TargetFile.Base + "_lossless.avi"
 
                     If p.Script.Engine = ScriptEngine.AviSynth Then
                         Using proc As New Proc
@@ -2514,7 +2492,7 @@ Public Class MainForm
                             proc.Start()
                         End Using
                     Else
-                        Dim batchPath = p.TempDir + p.Name + "_lossless.bat"
+                        Dim batchPath = p.TempDir + p.TargetFile.Base + "_lossless.bat"
                         Dim batchCode = Package.vspipe.Path.Escape + " " + p.Script.Path.Escape + " - --y4m | " + Package.ffmpeg.Path.Escape + " -i - -c:v utvideo -pred median -sn -an -hide_banner -y " + outPath.Escape
                         Proc.WriteBatchFile(batchPath, batchCode)
 
@@ -2536,7 +2514,7 @@ Public Class MainForm
                     End If
 
                     originalSource = p.SourceFile
-                    p.SourceFile = p.TempDir + p.Name + "_lossless.avi"
+                    p.SourceFile = p.TempDir + p.TargetFile.Base + "_lossless.avi"
                     originalFilters = p.Script.GetFiltersCopy()
 
                     For Each i In p.Script.Filters
@@ -2563,14 +2541,20 @@ Public Class MainForm
                 p.VideoEncoder.Encode()
             End If
 
+            audioTask0.Wait()
+            audioTask1.Wait()
+
             Log.Save()
             p.VideoEncoder.Muxer.Mux()
 
-            If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile)
+            If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile, p)
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
+            Log.Save()
 
+            g.ArchiveLogFile(Log.GetPath)
+            g.DeleteTempFiles()
             g.RaiseAppEvent(ApplicationEvent.JobEncoded)
         Finally
             g.IsProcessing = False
@@ -2689,7 +2673,7 @@ Public Class MainForm
                 p.SourceSeconds \ 60 & "m " + (p.SourceSeconds Mod 60).ToString("00") + "s",
                 If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB", (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB"),
                 If(p.SourceBitrate > 0, (p.SourceBitrate / 1000).ToString("f1") + "Mbps", ""),
-                p.SourceFrameRate.ToString.Shorten(9).TrimEnd("0"c).TrimEnd(","c) + "fps",
+                p.SourceFrameRate.ToString.Shorten(9) + "fps",
                 p.Codec, p.CodecProfile)
 
             lSource2.Text = lSource1.GetMaxTextSpace(
@@ -2699,7 +2683,7 @@ Public Class MainForm
 
             lTarget1.Text = lSource1.GetMaxTextSpace(
                 p.TargetSeconds \ 60 & "m " + (p.TargetSeconds Mod 60).ToString("00") + "s",
-                p.TargetFrameRate.ToString.Shorten(9).TrimEnd("0"c).TrimEnd(","c) + "fps",
+                p.TargetFrameRate.ToString.Shorten(9) + "fps",
                 "Audio Bitrate: " & CInt(Calc.GetAudioBitrate))
 
             If p.VideoEncoder.IsCompCheckEnabled Then
@@ -3220,8 +3204,6 @@ Public Class MainForm
             Dim di As New DriveInfo(p.TargetFile.Dir)
 
             If di.AvailableFreeSpace / 1024 ^ 3 < s.MinimumDiskSpace Then
-                ProcessForm.CloseProcessForm()
-
                 Using td As New TaskDialog(Of String)
                     td.MainInstruction = "Low Disk Space"
                     td.Content = $"The target drive {Path.GetPathRoot(p.TargetFile)} has only {(di.AvailableFreeSpace / 1024 ^ 3).ToString("f2")} GB free disk space." + BR2 +
@@ -3451,115 +3433,111 @@ Public Class MainForm
             form.ScaleClientSize(30, 21)
 
             Dim ui = form.SimpleUI
+            ui.Store = s
 
             Dim generalPage = ui.CreateFlowPage("General")
-            generalPage.SuspendLayout()
 
-            Dim cb = ui.AddCheckBox(generalPage)
-            cb.Text = "Enable tooltips in menus (restart required)"
-            cb.Tooltip = "If you disable this you can still right-click menu items to show the tooltip."
-            cb.Checked = s.EnableTooltips
-            cb.SaveAction = Sub(value) s.EnableTooltips = value
+            Dim b = ui.AddBool()
+            b.Text = "Show template selection when loading new files"
+            b.Field = NameOf(s.ShowTemplateSelection)
 
-            cb = ui.AddCheckBox(generalPage)
-            cb.Text = "Snap to desktop edges"
-            cb.Checked = s.SnapToDesktopEdges
-            cb.SaveAction = Sub(value) s.SnapToDesktopEdges = value
+            b = ui.AddBool()
+            b.Text = "Reverse mouse wheel video seek direction"
+            b.Field = NameOf(s.ReverseVideoScrollDirection)
 
-            cb = ui.AddCheckBox(generalPage)
-            cb.Text = "Show template selection when loading new files"
-            cb.Checked = s.ShowTemplateSelection
-            cb.SaveAction = Sub(value) s.ShowTemplateSelection = value
+            Dim mb = ui.AddMenu(Of String)()
+            mb.Text = "Startup Template"
+            mb.Help = "Template loaded when StaxRip starts."
+            mb.Field = NameOf(s.StartupTemplate)
+            mb.Add(From i In Directory.GetFiles(Folder.Template) Select i.Base)
 
-            cb = ui.AddCheckBox(generalPage)
-            cb.Text = "Reverse mouse wheel video seek direction"
-            cb.Checked = s.ReverseVideoScrollDirection
-            cb.SaveAction = Sub(value) s.ReverseVideoScrollDirection = value
+            Dim n = ui.AddNum()
+            n.Text = "Number of log files to keep"
+            n.Help = "Log files can be found at: Tools > Folders > Log Files"
+            n.Config = {0, Integer.MaxValue}
+            n.Field = NameOf(s.LogFileNum)
 
-            Dim mb = ui.AddMenuButtonBlock(Of String)(generalPage)
-            mb.Label.Text = "Startup Template:"
-            mb.Label.Tooltip = "Template loaded when StaxRip starts."
-            mb.MenuButton.Value = s.StartupTemplate
-            mb.MenuButton.SaveAction = Sub(value) s.StartupTemplate = value
-            mb.MenuButton.Add(From i In Directory.GetFiles(Folder.Template) Select Filepath.GetBase(i))
+            n = ui.AddNum()
+            n.Text = "Number of most recently used projects to keep"
+            n.Help = "MRU list shown in the main menu under: Project > Recent"
+            n.Config = {0, 15}
+            n.Field = NameOf(s.ProjectsMruNum)
 
-            Dim num = ui.AddNumericBlock(generalPage)
-            num.Label.Text = "UI Scale Factor:"
-            num.Label.Tooltip = "Requires to restart StaxRip."
-            num.NumEdit.Init(0.3D, 3, 0.05D, 2)
-            num.NumEdit.Value = CDec(s.UIScaleFactor)
-            num.NumEdit.SaveAction = Sub(value) s.UIScaleFactor = value
+            Dim uiPage = ui.CreateFlowPage("User Interface", True)
 
-            Dim tb = ui.AddTextBlock(generalPage)
-            tb.Label.Text = "Remember Window Positions:"
-            tb.Label.Tooltip = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
-            tb.Label.Offset = 12
-            tb.Edit.Expandet = True
-            tb.Edit.Text = s.WindowPositionsRemembered.Join(", ")
-            tb.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
+            Dim t = ui.AddText()
+            t.Text = "Remember Window Positions:"
+            t.Help = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
+            t.Label.Offset = 12
+            t.Edit.Expandet = True
+            t.Edit.Text = s.WindowPositionsRemembered.Join(", ")
+            t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
 
-            tb = ui.AddTextBlock(generalPage)
-            tb.Label.Text = "Center Screen Window Positions:"
-            tb.Label.Tooltip = "Title or beginning of the title of windows to be centered on the screen. For all windows enter '''all'''."
-            tb.Label.Offset = 12
-            tb.Edit.Expandet = True
-            tb.Edit.Text = s.WindowPositionsCenterScreen.Join(", ")
-            tb.Edit.SaveAction = Sub(value) s.WindowPositionsCenterScreen = value.SplitNoEmptyAndWhiteSpace(",")
+            t = ui.AddText()
+            t.Text = "Center Screen Window Positions:"
+            t.Help = "Title or beginning of the title of windows to be centered on the screen. For all windows enter '''all'''."
+            t.Label.Offset = 12
+            t.Edit.Expandet = True
+            t.Edit.Text = s.WindowPositionsCenterScreen.Join(", ")
+            t.Edit.SaveAction = Sub(value) s.WindowPositionsCenterScreen = value.SplitNoEmptyAndWhiteSpace(",")
 
-            generalPage.ResumeLayout()
+            n = ui.AddNum()
+            n.Text = "UI Scale Factor"
+            n.Help = "Requires to restart StaxRip."
+            n.Config = {0.3, 3, 0.05, 2}
+            n.Field = NameOf(s.UIScaleFactor)
+
+            b = ui.AddBool()
+            b.Text = "Enable tooltips in menus (restart required)"
+            b.Help = "If you disable this you can still right-click menu items to show the tooltip."
+            b.Field = NameOf(s.EnableTooltips)
+
+            b = ui.AddBool()
+            b.Text = "Snap to desktop edges"
+            b.Field = NameOf(s.SnapToDesktopEdges)
 
             ui.CreateControlPage(New DemuxingControl, "Demuxing")
 
-            Dim systemPage = ui.CreateFlowPage("System")
-            systemPage.SuspendLayout()
+            Dim systemPage = ui.CreateFlowPage("System", True)
 
-            Dim mb2 = ui.AddMenuButtonBlock(Of ProcessPriorityClass)(systemPage)
-            mb2.Label.Text = "Process Priority:"
-            mb2.Label.Tooltip = "Process priority of the applications StaxRip launches."
-            mb2.MenuButton.Value = s.ProcessPriority
-            mb2.MenuButton.SaveAction = Sub(value) s.ProcessPriority = value
+            Dim procPriority = ui.AddMenu(Of ProcessPriorityClass)
+            procPriority.Text = "Process Priority"
+            procPriority.Help = "Process priority of the applications StaxRip launches."
+            procPriority.Field = NameOf(s.ProcessPriority)
 
-            Dim mb3 = ui.AddMenuButtonBlock(Of ToolStripRenderModeEx)(systemPage)
-            mb3.Label.Text = "Menu Style:"
-            mb3.Label.Tooltip = "Defines the style used to render main menus, context menus and toolbars."
-            mb3.MenuButton.Value = s.ToolStripRenderModeEx
-            mb3.MenuButton.SaveAction = Sub(value) s.ToolStripRenderModeEx = value
+            Dim renderMode = ui.AddMenu(Of ToolStripRenderModeEx)
+            renderMode.Text = "Menu Style"
+            renderMode.Help = "Defines the style used to render main menus, context menus and toolbars."
+            renderMode.Field = NameOf(s.ToolStripRenderModeEx)
 
-            num = ui.AddNumericBlock(systemPage)
-            num.Label.Text = "Minimum Disk Space:"
-            num.Label.Tooltip = "Minimum allowed disk space in GB."
-            num.NumEdit.Init(0, 10000, 1)
-            num.NumEdit.Value = s.MinimumDiskSpace
-            num.NumEdit.SaveAction = Sub(value) s.MinimumDiskSpace = CInt(value)
+            Dim tempDelete = ui.AddMenu(Of DeleteMode)
+            tempDelete.Text = "Delete temp files"
+            tempDelete.Field = NameOf(s.DeleteTempFilesMode)
 
-            num = ui.AddNumericBlock(systemPage)
-            num.Label.Text = "Shutdown Timeout:"
-            num.Label.Tooltip = "Timeout in seconds before the shutdown is executed."
-            num.NumEdit.Value = s.ShutdownTimeout
-            num.NumEdit.SaveAction = Sub(value) s.ShutdownTimeout = CInt(value)
+            n = ui.AddNum
+            n.Text = "Minimum Disk Space"
+            n.Help = "Minimum allowed disk space in GB before StaxRip shows an error message."
+            n.Config = {0, 10000}
+            n.Field = NameOf(s.MinimumDiskSpace)
 
-            cb = ui.AddCheckBox(systemPage)
-            cb.Text = "Prevent system entering standby mode while encoding"
-            cb.Checked = s.PreventStandby
-            cb.SaveAction = Sub(value) s.PreventStandby = value
+            n = ui.AddNum
+            n.Text = "Shutdown Timeout"
+            n.Help = "Timeout in seconds before the shutdown is executed."
+            n.Field = NameOf(s.ShutdownTimeout)
 
-            cb = ui.AddCheckBox(systemPage)
-            cb.Text = "Use recycle bin when temp files are deleted"
-            cb.Checked = s.DeleteTempFilesToRecycleBin
-            cb.SaveAction = Sub(value) s.DeleteTempFilesToRecycleBin = value
+            b = ui.AddBool
+            b.Text = "Prevent system entering standby mode while encoding"
+            b.Field = NameOf(s.PreventStandby)
 
-            cb = ui.AddCheckBox(systemPage)
-            cb.Text = "Minimize processing dialog to taskbar instead of tray"
-            cb.Checked = s.MinimizeToTaskbar
-            cb.SaveAction = Sub(value) s.MinimizeToTaskbar = value
-
-            systemPage.ResumeLayout()
+            b = ui.AddBool
+            b.Text = "Minimize processing dialog to tray"
+            b.Field = NameOf(s.MinimizeToTray)
 
             Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth",
                                              s.AviSynthFilterPreferences, s.AviSynthProfiles)
 
             Dim bsVS = AddFilterPreferences(ui, "Source Filters | VapourSynth",
-                                             s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
+                                            s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
 
             ui.SelectLast("last settings page")
 
@@ -3571,6 +3549,8 @@ Public Class MainForm
                 ui.Save()
                 g.SetRenderer(MenuStrip)
                 SetMenuStyle()
+                s.UpdateRecentProjects(Nothing)
+                UpdateRecentProjectsMenu()
                 g.SaveSettings()
             End If
 
@@ -3843,7 +3823,7 @@ Public Class MainForm
             Dim doc As New VideoScript
             doc.Engine = p.Script.Engine
             doc.Filters = p.Script.GetFiltersCopy
-            doc.Path = p.TempDir + p.Name + "_preview." + doc.FileType
+            doc.Path = p.TempDir + p.TargetFile.Base + "_preview." + doc.FileType
             doc.Synchronize(True)
 
             Dim f As New PreviewForm(doc)
@@ -3960,109 +3940,90 @@ Public Class MainForm
             form.ScaleClientSize(30, 21)
 
             Dim ui = form.SimpleUI
+            ui.Store = p
 
-            Dim imagePage = ui.CreateFlowPage("Image")
-            imagePage.SuspendLayout()
+            ui.CreateFlowPage("Image", True)
 
-            Dim cb = ui.AddCheckBox(imagePage)
-            cb.Text = "Save Thumbnails"
-            cb.Tooltip = "Saves thumbnails in the target folder. Customizations can be made in the settings under:" + BR2 + "General > Advanced > Thumbnails"
-            cb.Checked = p.SaveThumbnails
-            cb.SaveAction = Sub(value) p.SaveThumbnails = value
+            Dim b = ui.AddBool()
+            b.Text = "Save Thumbnails"
+            b.Help = "Saves thumbnails in the target folder. Customizations can be made in the settings under:" + BR2 + "General > Advanced > Thumbnails"
+            b.Field = NameOf(p.SaveThumbnails)
 
-            Dim nb = ui.AddNumericBlock(imagePage)
-            nb.Label.Text = "Auto resize image size:"
-            nb.Label.Tooltip = "Resizes to a given pixel size after loading a source file."
+            Dim n = ui.AddNum()
+            n.Text = "Auto resize image size:"
+            n.Help = "Resizes to a given pixel size after loading a source file."
+            n.Config = {0, Integer.MaxValue, 10000}
+            n.Field = NameOf(p.AutoResizeImage)
 
-            nb.NumEdit.Init(0, Integer.MaxValue, 10000)
-            nb.NumEdit.Value = p.AutoResizeImage
-            nb.NumEdit.SaveAction = Sub(value) p.AutoResizeImage = CInt(value)
+            ui.AddLabel(n, "(0 = disabled)")
 
-            ui.AddLabel(nb, "(0 = disabled)")
+            n = ui.AddNum()
+            n.Text = "Resize slider width:"
+            n.Config = {0, Integer.MaxValue, 64}
+            n.Field = NameOf(p.ResizeSliderMaxWidth)
 
-            nb = ui.AddNumericBlock(imagePage)
-            nb.Label.Text = "Resize slider width:"
-            nb.NumEdit.Init(0, Integer.MaxValue, 64)
-            nb.NumEdit.Value = p.ResizeSliderMaxWidth
-            nb.NumEdit.SaveAction = Sub(value) p.ResizeSliderMaxWidth = CInt(value)
+            ui.AddLabel(n, "(0 = auto)")
 
-            ui.AddLabel(nb, "(0 = auto)")
+            Dim m = ui.AddMenu(Of Integer)()
+            m.Text = "Output Mod:"
+            m.Add(2, 4, 8, 16)
+            m.Field = NameOf(p.ForcedOutputMod)
 
-            Dim mbi = ui.AddMenuButtonBlock(Of Integer)(imagePage)
-            mbi.Label.Text = "Output Mod:"
-            mbi.MenuButton.Add({2, 4, 8, 16})
-            mbi.MenuButton.Value = p.ForcedOutputMod
-            mbi.MenuButton.SaveAction = Sub(value) p.ForcedOutputMod = value
+            ui.CreateFlowPage("Image|Aspect Ratio", True)
 
-            imagePage.ResumeLayout()
+            b = ui.AddBool()
+            b.Text = "Use ITU-R BT.601 compliant aspect ratio"
+            b.Help = "Calculates the aspect ratio according to ITU-R BT.601 standard. "
+            b.Field = NameOf(p.ITU)
 
-            Dim aspectRatioPage = ui.CreateFlowPage("Image|Aspect Ratio")
-            aspectRatioPage.SuspendLayout()
+            b = ui.AddBool()
+            b.Text = "Adjust height according to target display aspect ratio"
+            b.Help = "Adjusts the height to match the target display aspect ratio in case the auto resize option is disabled."
+            b.Field = NameOf(p.AdjustHeight)
 
-            cb = ui.AddCheckBox(aspectRatioPage)
-            cb.Text = "Use ITU-R BT.601 compliant aspect ratio"
-            cb.Tooltip = "Calculates the aspect ratio according to ITU-R BT.601 standard. "
-            cb.Checked = p.ITU
-            cb.SaveAction = Sub(value) p.ITU = value
+            n = ui.AddNum()
+            n.Text = "Max AR Error:"
+            n.Help = "Maximum aspect ratio error. In case of a higher value the AR signaled to the encoder or muxer."
+            n.Config = {1, 10, 0.1, 1}
+            n.Field = NameOf(p.MaxAspectRatioError)
 
-            cb = ui.AddCheckBox(aspectRatioPage)
-            cb.Text = "Adjust height according to target display aspect ratio"
-            cb.Tooltip = "Adjusts the height to match the target display aspect ratio in case the auto resize option is disabled."
-            cb.Checked = p.AdjustHeight
-            cb.SaveAction = Sub(value) p.AdjustHeight = value
+            Dim t = ui.AddText()
+            t.Text = "Source DAR:"
+            t.Help = "Custom source display aspect ratio."
+            t.Field = NameOf(p.CustomSourceDAR)
 
-            nb = ui.AddNumericBlock(aspectRatioPage)
-            nb.Label.Text = "Max Aspect Ratio Error:"
-            nb.NumEdit.Init(1, 10, 1)
-            nb.NumEdit.Value = p.MaxAspectRatioError
-            nb.NumEdit.SaveAction = Sub(value) p.MaxAspectRatioError = CInt(value)
+            t = ui.AddText()
+            t.Text = "Source PAR: "
+            t.Help = "Custom source pixel aspect ratio."
+            t.Field = NameOf(p.CustomSourcePAR)
 
-            Dim tb = ui.AddTextBlock(aspectRatioPage)
-            tb.Label.Text = "Custom Source DAR:"
-            tb.Label.Tooltip = "Custom source display aspect ratio."
-            tb.Edit.Text = p.CustomSourceDAR
-            tb.Edit.SaveAction = Sub(value) p.CustomSourceDAR = value
+            t = ui.AddText()
+            t.Text = "Target DAR: "
+            t.Help = "Custom target display aspect ratio."
+            t.Field = NameOf(p.CustomTargetDAR)
 
-            tb = ui.AddTextBlock(aspectRatioPage)
-            tb.Label.Text = "Custom Source PAR: "
-            tb.Label.Tooltip = "Custom source pixel aspect ratio."
-            tb.Edit.Text = p.CustomSourcePAR
-            tb.Edit.SaveAction = Sub(value) p.CustomSourcePAR = value
-
-            tb = ui.AddTextBlock(aspectRatioPage)
-            tb.Label.Text = "Custom Target DAR: "
-            tb.Label.Tooltip = "Custom target display aspect ratio."
-            tb.Edit.Text = p.CustomTargetDAR
-            tb.Edit.SaveAction = Sub(value) p.CustomTargetDAR = value
-
-            tb = ui.AddTextBlock(aspectRatioPage)
-            tb.Label.Text = "Custom Target PAR: "
-            tb.Label.Tooltip = "Custom target pixel aspect ratio."
-            tb.Edit.Text = p.CustomTargetPAR
-            tb.Edit.SaveAction = Sub(value) p.CustomTargetPAR = value
-
-            aspectRatioPage.ResumeLayout()
+            t = ui.AddText()
+            t.Text = "Target PAR: "
+            t.Help = "Custom target pixel aspect ratio."
+            t.Field = NameOf(p.CustomTargetPAR)
 
             Dim cropPage = ui.CreateFlowPage("Image|Crop")
 
-            cb = ui.AddCheckBox(cropPage)
-            cb.Text = "Auto correct crop values"
-            cb.Tooltip = "Force crop values compatible with YUV/YV12 colorspace and with the forced output mod value. "
-            cb.Checked = p.AutoCorrectCropValues
-            cb.SaveAction = Sub(value) p.AutoCorrectCropValues = value
+            b = ui.AddBool()
+            b.Text = "Auto correct crop values"
+            b.Help = "Force crop values compatible with YUV/YV12 colorspace and with the forced output mod value. "
+            b.Field = NameOf(p.AutoCorrectCropValues)
 
-            cb = ui.AddCheckBox(cropPage)
-            cb.Text = "Auto crop borders until proper aspect ratio is found"
-            cb.Tooltip = "Automatically crops borders until the proper aspect ratio is found."
-            cb.Checked = p.AutoSmartCrop
-            cb.SaveAction = Sub(value) p.AutoSmartCrop = value
+            b = ui.AddBool()
+            b.Text = "Auto crop borders until proper aspect ratio is found"
+            b.Help = "Automatically crops borders until the proper aspect ratio is found."
+            b.Field = NameOf(p.AutoSmartCrop)
 
-            nb = ui.AddNumericBlock(cropPage)
-            nb.Label.Text = "Auto overcrop width to limit aspect ratio to:"
-            nb.Label.Tooltip = "On small devices it can help to restrict the aspect ratio and overcrop the width instead."
-            nb.NumEdit.Init(0, 2, 0.1D, 3)
-            nb.NumEdit.Value = CDec(p.AutoSmartOvercrop)
-            nb.NumEdit.SaveAction = Sub(value) p.AutoSmartOvercrop = value
+            n = ui.AddNum()
+            n.Text = "Auto overcrop width to limit aspect ratio to:"
+            n.Help = "On small devices it can help to restrict the aspect ratio and overcrop the width instead."
+            n.Config = {0, 2, 0.1, 3}
+            n.Field = NameOf(p.AutoSmartOvercrop)
 
             ui.AddLine(cropPage, "Crop Values")
 
@@ -4102,121 +4063,96 @@ Public Class MainForm
             te.TextBox.TextAlign = HorizontalAlignment.Center
             te.SaveAction = Sub(value) If value.IsInt Then p.CropBottom = CInt(value)
 
-            Dim audioPage = ui.CreateFlowPage("Audio")
-            audioPage.SuspendLayout()
+            Dim audioPage = ui.CreateFlowPage("Audio", True)
 
-            tb = ui.AddTextBlock(audioPage)
-            tb.Label.Text = "Preferred Languages:"
-            tb.Label.Tooltip = "Preferred audio languages using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all languages just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
-            tb.Edit.Text = p.PreferredAudio
-            tb.Edit.SaveAction = Sub(value) p.PreferredAudio = value
+            t = ui.AddText
+            t.Text = "Preferred Languages:"
+            t.Help = "Preferred audio languages using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all languages just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+            t.Field = NameOf(p.PreferredAudio)
 
-            Dim dec = ui.AddMenuButtonBlock(Of AudioConvertMode)(audioPage)
-            dec.Label.Text = "Convert Method:"
-            dec.Tooltip = "Method to use to create a intermediate audio file."
-            dec.MenuButton.Value = p.AudioConvertMode
-            dec.MenuButton.SaveAction = Sub(value) p.AudioConvertMode = value
+            Dim convMethod = ui.AddMenu(Of AudioConvertMode)
+            convMethod.Text = "Convert Method:"
+            convMethod.Help = "Method to use to create a intermediate audio file."
+            convMethod.Field = NameOf(p.AudioConvertMode)
 
-            Dim iaf = ui.AddMenuButtonBlock(Of AudioConvertType)(audioPage)
-            iaf.Label.Text = "Convert Format:"
-            iaf.Tooltip = "In case the audio encoder don't support the input format a intermediate file has to be created."
-            iaf.MenuButton.Value = p.AudioConvertFormat
-            iaf.MenuButton.SaveAction = Sub(value) p.AudioConvertFormat = value
+            Dim convFormat = ui.AddMenu(Of AudioConvertType)
+            convFormat.Text = "Convert Format:"
+            convFormat.Help = "In case the audio encoder don't support the input format a intermediate file has to be created."
+            convFormat.Field = NameOf(p.AudioConvertFormat)
 
-            Dim cut = ui.AddMenuButtonBlock(Of CuttingMode)(audioPage)
-            cut.Label.Text = "Cutting Method:"
-            cut.Tooltip = "Defines which method to use for cutting."
-            cut.MenuButton.Value = p.CuttingMode
-            cut.MenuButton.SaveAction = Sub(value) p.CuttingMode = value
+            Dim cut = ui.AddMenu(Of CuttingMode)
+            cut.Text = "Cutting Method:"
+            cut.Help = "Defines which method to use for cutting."
+            cut.Field = NameOf(p.CuttingMode)
 
-            Dim audioDemux = ui.AddMenuButtonBlock(Of DemuxMode)(audioPage)
-            audioDemux.Label.Text = "Demux Audio:"
-            audioDemux.MenuButton.Value = p.DemuxAudio
-            audioDemux.MenuButton.SaveAction = Sub(value) p.DemuxAudio = value
+            Dim audioDemux = ui.AddMenu(Of DemuxMode)
+            audioDemux.Text = "Demux Audio:"
+            audioDemux.Field = NameOf(p.DemuxAudio)
 
-            Dim audioExist = ui.AddMenuButtonBlock(Of FileExistMode)(audioPage)
-            audioExist.Label.Text = "Existing Output:"
-            audioExist.Tooltip = "What to do in case a audio encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite."
-            audioExist.MenuButton.Value = p.FileExistAudio
-            audioExist.MenuButton.SaveAction = Sub(value) p.FileExistAudio = value
+            Dim audioExist = ui.AddMenu(Of FileExistMode)
+            audioExist.Text = "Existing Output:"
+            audioExist.Help = "What to do in case a audio encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite."
+            audioExist.Field = NameOf(p.FileExistAudio)
 
-            cb = ui.AddCheckBox(audioPage)
-            cb.Text = "Force conversion"
-            cb.Checked = p.ForceAudioConvert
-            cb.SaveAction = Sub(value) p.ForceAudioConvert = value
+            b = ui.AddBool
+            b.Text = "Force conversion"
+            b.Field = NameOf(p.ForceAudioConvert)
 
-            cb = ui.AddCheckBox(audioPage)
-            cb.Text = "On load use AviSynth script as audio source"
-            cb.Tooltip = "Sets the AviSynth script (*.avs) as audio source file when loading a source file."
-            cb.Checked = p.UseScriptAsAudioSource
-            cb.SaveAction = Sub(value) p.UseScriptAsAudioSource = value
+            b = ui.AddBool
+            b.Text = "On load use AviSynth script as audio source"
+            b.Help = "Sets the AviSynth script (*.avs) as audio source file when loading a source file."
+            b.Field = NameOf(p.UseScriptAsAudioSource)
 
-            audioPage.ResumeLayout()
+            Dim videoPage = ui.CreateFlowPage("Video", True)
 
-            Dim videoPage = ui.CreateFlowPage("Video")
-            videoPage.SuspendLayout()
+            Dim videoExist = ui.AddMenu(Of FileExistMode)
+            videoExist.Text = "Existing Video Output:"
+            videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Just Mux video encoder profile is also capable of reusing existing video encoder output.'"
+            videoExist.Field = NameOf(p.FileExistVideo)
 
-            Dim videoExist = ui.AddMenuButtonBlock(Of FileExistMode)(videoPage)
-            videoExist.Label.Text = "Existing Video Output:"
-            videoExist.Tooltip = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Just Mux video encoder profile is also capable of reusing existing video encoder output.'"
-            videoExist.MenuButton.Value = p.FileExistVideo
-            videoExist.MenuButton.SaveAction = Sub(value) p.FileExistVideo = value
+            b = ui.AddBool
+            b.Text = "Pre-render script into lossless AVI file"
+            b.Help = "Note that depending on the resolution this can result in very large files."
+            b.Field = NameOf(p.PreRenderIntoLossless)
 
-            cb = ui.AddCheckBox(videoPage)
-            cb.Text = "Pre-render script into lossless AVI file"
-            cb.Tooltip = "Note that depending on the resolution this can result in very large files."
-            cb.Checked = p.PreRenderIntoLossless
-            cb.SaveAction = Sub(value) p.PreRenderIntoLossless = value
+            Dim subPage = ui.CreateFlowPage("Subtitles", True)
 
-            videoPage.ResumeLayout()
+            t = ui.AddText(subPage)
+            t.Text = "Preferred Languages:"
+            t.Help = "Subtitles demuxed and loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+            t.Field = NameOf(p.PreferredSubtitles)
 
-            Dim subPage = ui.CreateFlowPage("Subtitles")
-            subPage.SuspendLayout()
-
-            tb = ui.AddTextBlock(subPage)
-            tb.Label.Text = "Preferred Languages:"
-            tb.Label.Tooltip = "Subtitles demuxed and loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
-            tb.Edit.Text = p.PreferredSubtitles
-            tb.Edit.SaveAction = Sub(value) p.PreferredSubtitles = value
-
-            Dim tbm = ui.AddTextMenuBlock(subPage)
-            tbm.Label.Text = "Stream Name:"
-            tbm.Label.Tooltip = "Stream name used for muxing, may contain macros."
-            tbm.Edit.Text = p.SubtitleName
-            tbm.Edit.SaveAction = Sub(value) p.SubtitleName = value
+            Dim tbm = ui.AddTextMenu(subPage)
+            tbm.Text = "Stream Name:"
+            tbm.Help = "Stream name used for muxing, may contain macros."
+            tbm.Field = NameOf(p.SubtitleName)
             tbm.AddMenu("Language English", "%language_english%")
             tbm.AddMenu("Language Native", "%language_native%")
 
-            Dim subDemux = ui.AddMenuButtonBlock(Of DemuxMode)(subPage)
-            subDemux.Label.Text = "Demux Subtitles:"
-            subDemux.MenuButton.Value = p.DemuxSubtitles
-            subDemux.MenuButton.SaveAction = Sub(value) p.DemuxSubtitles = value
+            Dim subDemux = ui.AddMenu(Of DemuxMode)
+            subDemux.Text = "Demux Subtitles:"
+            subDemux.Field = NameOf(p.DemuxSubtitles)
 
-            Dim mb = ui.AddMenuButtonBlock(Of DefaultSubtitleMode)(subPage)
-            mb.Label.Text = "Default Subtitle:"
-            mb.MenuButton.Value = p.DefaultSubtitle
-            mb.MenuButton.SaveAction = Sub(value) p.DefaultSubtitle = value
+            Dim mb = ui.AddMenu(Of DefaultSubtitleMode)(subPage)
+            mb.Text = "Default Subtitle:"
+            mb.Field = NameOf(p.DefaultSubtitle)
 
-            cb = ui.AddCheckBox(subPage)
-            cb.Text = "Convert Sup (PGS/Blu-ray) to IDX (Sub/VobSub/DVD)"
-            cb.Tooltip = "Works only with demuxed subtitles."
-            cb.Checked = p.ConvertSup2Sub
-            cb.SaveAction = Sub(value) p.ConvertSup2Sub = value
+            b = ui.AddBool(subPage)
+            b.Text = "Convert Sup (PGS/Blu-ray) to IDX (Sub/VobSub/DVD)"
+            b.Help = "Works only with demuxed subtitles."
+            b.Field = NameOf(p.ConvertSup2Sub)
 
-            cb = ui.AddCheckBox(subPage)
-            cb.Text = "Add hardcoded subtitle"
-            cb.Tooltip = "Automatically hardcodes a subtitle." + BR2 + "Supported formats are SRT, ASS and VobSub."
-            cb.Checked = p.HarcodedSubtitle
-            cb.SaveAction = Sub(value) p.HarcodedSubtitle = value
-
-            subPage.ResumeLayout()
+            b = ui.AddBool(subPage)
+            b.Text = "Add hardcoded subtitle"
+            b.Help = "Automatically hardcodes a subtitle." + BR2 + "Supported formats are SRT, ASS and VobSub."
+            b.Field = NameOf(p.HarcodedSubtitle)
 
             Dim pathPage = ui.CreateFlowPage("Paths")
 
             l = ui.AddLabel(pathPage, "Default Target Directory:")
-            l.Tooltip = "Leave empty to use the source file directory"
+            l.Help = "Leave empty to use the source file directory"
 
-            Dim tm = ui.AddTextMenuBlock(pathPage)
+            Dim tm = ui.AddTextMenu(pathPage)
             tm.Label.Visible = False
             tm.Edit.Expandet = True
             tm.Edit.Text = p.DefaultTargetFolder
@@ -4226,10 +4162,10 @@ Public Class MainForm
             tm.AddMenu("Parent directory of source file directory", "%source_dir_parent%")
 
             l = ui.AddLabel(pathPage, "Default Target Name:")
-            l.Tooltip = "Leave empty to use the source filename"
+            l.Help = "Leave empty to use the source filename"
             l.MarginTop = Font.Height
 
-            tm = ui.AddTextMenuBlock(pathPage)
+            tm = ui.AddTextMenu(pathPage)
             tm.Label.Visible = False
             tm.Edit.Expandet = True
             tm.Edit.Text = p.DefaultTargetName
@@ -4238,7 +4174,7 @@ Public Class MainForm
             tm.AddMenu("Name of source file directory", "%source_dir_name%")
 
             l = ui.AddLabel(pathPage, "Temp Files Directory:")
-            l.Tooltip = "Leave empty to use the source file directory"
+            l.Help = "Leave empty to use the source file directory"
             l.MarginTop = Font.Height
 
             Dim tempDirFunc = Function()
@@ -4246,7 +4182,7 @@ Public Class MainForm
                                   If tempDir <> "" Then Return tempDir.AppendSeparator + "%source_name%_temp"
                               End Function
 
-            tm = ui.AddTextMenuBlock(pathPage)
+            tm = ui.AddTextMenu(pathPage)
             tm.Label.Visible = False
             tm.Edit.Expandet = True
             tm.Edit.Text = p.TempDir
@@ -4256,93 +4192,88 @@ Public Class MainForm
 
             Dim assistantPage = ui.CreateFlowPage("Assistant")
 
-            cb = ui.AddCheckBox(assistantPage)
-            cb.Text = "Remind To Crop"
-            cb.Checked = p.RemindToCrop
-            cb.SaveAction = Sub(value) p.RemindToCrop = value
+            b = ui.AddBool(assistantPage)
+            b.Text = "Remind To Crop"
+            b.Checked = p.RemindToCrop
+            b.SaveAction = Sub(value) p.RemindToCrop = value
 
-            cb = ui.AddCheckBox(assistantPage)
-            cb.Text = "Remind To Cut"
-            cb.Checked = p.RemindToCut
-            cb.SaveAction = Sub(value) p.RemindToCut = value
+            b = ui.AddBool(assistantPage)
+            b.Text = "Remind To Cut"
+            b.Checked = p.RemindToCut
+            b.SaveAction = Sub(value) p.RemindToCut = value
 
-            cb = ui.AddCheckBox(assistantPage)
-            cb.Text = "Remind To Do Compressibility Check"
-            cb.Checked = p.RemindToDoCompCheck
-            cb.SaveAction = Sub(value) p.RemindToDoCompCheck = value
+            b = ui.AddBool(assistantPage)
+            b.Text = "Remind To Do Compressibility Check"
+            b.Checked = p.RemindToDoCompCheck
+            b.SaveAction = Sub(value) p.RemindToDoCompCheck = value
 
-            cb = ui.AddCheckBox(assistantPage)
-            cb.Text = "Remind To Set Filters"
-            cb.Checked = p.RemindToSetFilters
-            cb.SaveAction = Sub(value) p.RemindToSetFilters = value
+            b = ui.AddBool(assistantPage)
+            b.Text = "Remind To Set Filters"
+            b.Checked = p.RemindToSetFilters
+            b.SaveAction = Sub(value) p.RemindToSetFilters = value
 
-            cb = ui.AddCheckBox(assistantPage)
-            cb.Text = "Remind Not To Oversize"
-            cb.Checked = p.RemindOversize
-            cb.SaveAction = Sub(value) p.RemindOversize = value
+            b = ui.AddBool(assistantPage)
+            b.Text = "Remind Not To Oversize"
+            b.Checked = p.RemindOversize
+            b.SaveAction = Sub(value) p.RemindOversize = value
 
             Dim filtersPage = ui.CreateFlowPage("Filters")
 
             l = ui.AddLabel(filtersPage, "Code appended to trim functions:")
-            l.Tooltip = "Code appended to trim functions StaxRip generates using the cut feature."
+            l.Help = "Code appended to trim functions StaxRip generates using the cut feature."
             l.MarginTop = Font.Height \ 2
 
-            tb = ui.AddTextBlock(filtersPage)
-            tb.Label.Visible = False
-            tb.Edit.Expandet = True
-            tb.Edit.TextBox.Multiline = True
-            tb.Edit.UseMacroEditor = True
-            tb.Edit.Text = p.TrimCode
-            tb.Edit.SaveAction = Sub(value) p.TrimCode = value
+            t = ui.AddText(filtersPage)
+            t.Label.Visible = False
+            t.Edit.Expandet = True
+            t.Edit.TextBox.Multiline = True
+            t.Edit.UseMacroEditor = True
+            t.Edit.Text = p.TrimCode
+            t.Edit.SaveAction = Sub(value) p.TrimCode = value
 
             l = ui.AddLabel(filtersPage, "Code inserted at top of scripts:")
-            l.Tooltip = "Code inserted at the top of every script StaxRip generates."
+            l.Help = "Code inserted at the top of every script StaxRip generates."
             l.MarginTop = Font.Height \ 2
 
-            tb = ui.AddTextBlock(filtersPage)
-            tb.Label.Visible = False
-            tb.Edit.Expandet = True
-            tb.Edit.TextBox.Multiline = True
-            tb.Edit.UseMacroEditor = True
-            tb.Edit.Text = p.CodeAtTop
-            tb.Edit.SaveAction = Sub(value) p.CodeAtTop = value
+            t = ui.AddText(filtersPage)
+            t.Label.Visible = False
+            t.Edit.Expandet = True
+            t.Edit.TextBox.Multiline = True
+            t.Edit.UseMacroEditor = True
+            t.Edit.Text = p.CodeAtTop
+            t.Edit.SaveAction = Sub(value) p.CodeAtTop = value
 
             Dim miscPage = ui.CreateFlowPage("Misc")
             miscPage.SuspendLayout()
 
-            cb = ui.AddCheckBox(miscPage)
-            cb.Text = "Hide dialogs asking to demux, source filter etc."
-            cb.Checked = p.NoDialogs
-            cb.SaveAction = Sub(value) p.NoDialogs = value
+            b = ui.AddBool(miscPage)
+            b.Text = "Hide dialogs asking to demux, source filter etc."
+            b.Checked = p.NoDialogs
+            b.SaveAction = Sub(value) p.NoDialogs = value
 
-            cb = ui.AddCheckBox(miscPage)
-            cb.Text = "Delete temp files directory"
-            cb.Checked = p.DeleteTempFilesDir
-            cb.SaveAction = Sub(value) p.DeleteTempFilesDir = value
-
-            cb = ui.AddCheckBox(miscPage)
-            cb.Text = "Extract timecodes from VFR MKV files"
-            cb.Checked = p.ExtractTimecodes
-            cb.SaveAction = Sub(value) p.ExtractTimecodes = value
+            b = ui.AddBool(miscPage)
+            b.Text = "Extract timecodes from VFR MKV files"
+            b.Checked = p.ExtractTimecodes
+            b.SaveAction = Sub(value) p.ExtractTimecodes = value
 
             ui.AddLine(miscPage, "Compressibility Check")
 
-            cb = ui.AddCheckBox(miscPage)
-            cb.Text = "Auto run compressibility check"
-            cb.Tooltip = "Performs a compressibility check after loading a source file."
-            cb.Checked = p.AutoCompCheck
-            cb.SaveAction = Sub(value) p.AutoCompCheck = value
+            b = ui.AddBool(miscPage)
+            b.Text = "Auto run compressibility check"
+            b.Help = "Performs a compressibility check after loading a source file."
+            b.Checked = p.AutoCompCheck
+            b.SaveAction = Sub(value) p.AutoCompCheck = value
 
-            nb = ui.AddNumericBlock(miscPage)
-            nb.Label.Text = "Percentage for comp. check:"
-            nb.NumEdit.Init(2, 20, 1)
-            nb.NumEdit.Value = p.CompCheckRange
-            nb.NumEdit.SaveAction = Sub(value) p.CompCheckRange = CInt(value)
+            n = ui.AddNum(miscPage)
+            n.Label.Text = "Percentage for comp. check:"
+            n.NumEdit.Config = {2, 20}
+            n.NumEdit.Value = p.CompCheckRange
+            n.NumEdit.SaveAction = Sub(value) p.CompCheckRange = CInt(value)
 
-            Dim compCheckButton = ui.AddMenuButtonBlock(Of CompCheckAction)(miscPage)
+            Dim compCheckButton = ui.AddMenu(Of CompCheckAction)(miscPage)
             compCheckButton.Label.Text = "After comp. check adjust:"
-            compCheckButton.MenuButton.Value = p.CompCheckAction
-            compCheckButton.MenuButton.SaveAction = Sub(value) p.CompCheckAction = value
+            compCheckButton.Button.Value = p.CompCheckAction
+            compCheckButton.Button.SaveAction = Sub(value) p.CompCheckAction = value
 
             miscPage.ResumeLayout()
 
@@ -4357,10 +4288,6 @@ Public Class MainForm
 
                 If p.CompCheckRange < 2 OrElse p.CompCheckRange > 20 Then p.CompCheckRange = 5
                 If p.TempDir <> "" Then p.TempDir = p.TempDir.AppendSeparator
-
-                If p.TempDir <> "" AndAlso Not p.TempDir?.EndsWith("_temp\") AndAlso p.DeleteTempFilesDir Then
-                    MsgInfo("Temp dir will only be deleted when it ends with _temp")
-                End If
 
                 UpdateSizeOrBitrate()
                 tbBitrate_TextChanged()
@@ -4615,17 +4542,20 @@ Public Class MainForm
 
         ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F6, Symbol.MultiSelectLegacy)
         ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Page, {"""%text_editor%"" ""%working_dir%%target_name%_staxrip.log"""})
-        ret.Add("Tools|Directories", Symbol.Folder)
-        ret.Add("Tools|Directories|Source", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%source_dir%"""})
-        ret.Add("Tools|Directories|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%working_dir%"""})
-        ret.Add("Tools|Directories|Target", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%target_dir%"""})
-        ret.Add("Tools|Directories|Settings", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%"""})
-        ret.Add("Tools|Directories|Templates", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%TemplatesV2"""})
-        ret.Add("Tools|Directories|Plugins", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%plugin_dir%"""})
-        ret.Add("Tools|Directories|Startup", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%startup_dir%"""})
-        ret.Add("Tools|Directories|Programs", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%programs_dir%"""})
-        ret.Add("Tools|Directories|System", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%system_dir%"""})
-        ret.Add("Tools|Directories|Scripts", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%script_dir%"""})
+
+        ret.Add("Tools|Folders", Symbol.Folder)
+        ret.Add("Tools|Folders|Log Files", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%Log Files"""})
+        ret.Add("Tools|Folders|Plugins", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%plugin_dir%"""})
+        ret.Add("Tools|Folders|Programs", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%programs_dir%"""})
+        ret.Add("Tools|Folders|Scripts", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%script_dir%"""})
+        ret.Add("Tools|Folders|Settings", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%"""})
+        ret.Add("Tools|Folders|Source", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%source_dir%"""})
+        ret.Add("Tools|Folders|Startup", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%startup_dir%"""})
+        ret.Add("Tools|Folders|System", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%system_dir%"""})
+        ret.Add("Tools|Folders|Target", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%target_dir%"""})
+        ret.Add("Tools|Folders|Templates", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%TemplatesV2"""})
+        ret.Add("Tools|Folders|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%working_dir%"""})
+
         ret.Add("Tools|Advanced", Symbol.More)
         If Application.StartupPath = "D:\Projekte\VS\VB\StaxRip\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
@@ -5121,7 +5051,6 @@ Public Class MainForm
                                     Try
                                         proc.Start()
                                     Catch ex As Exception
-                                        ProcessForm.CloseProcessForm()
                                         g.ShowException(ex)
                                         MsgInfo("Manual Merging", "Please merge the files manually with a appropriate tool or visit the support forum].")
                                         Throw New AbortException
@@ -5273,10 +5202,8 @@ Public Class MainForm
                         Try
                             proc.Start()
                         Catch ex As AbortException
-                            ProcessForm.CloseProcessForm()
                             Exit Sub
                         Catch ex As Exception
-                            ProcessForm.CloseProcessForm()
                             g.ShowException(ex)
                             Exit Sub
                         End Try
@@ -5289,8 +5216,7 @@ Public Class MainForm
                         p.TempDir = form.OutputFolder
                         OpenVideoSourceFile(fs)
                     End If
-                Finally
-                    ProcessForm.CloseProcessForm()
+                Catch
                 End Try
             End If
         End Using
@@ -5802,8 +5728,7 @@ Public Class MainForm
             ap = ObjectHelp.GetCopy(Of AudioProfile)(ap)
             Audio.Process(ap)
             ap.Encode()
-        Finally
-            ProcessForm.CloseProcessForm()
+        Catch
         End Try
     End Sub
 
@@ -5844,36 +5769,49 @@ Public Class MainForm
 
             If fd.ShowDialog = DialogResult.OK Then
                 Using f As New SimpleSettingsForm("Thumbnails Options")
-                    f.Height = f.Height \ 2
-                    f.Width = f.Width \ 2
+                    f.ScaleClientSize(25, 14)
 
                     Dim ui = f.SimpleUI
-
                     Dim page = ui.CreateFlowPage("main page")
 
                     page.SuspendLayout()
 
-                    Dim nb = ui.AddNumericBlock(page)
+                    Dim tb = ui.AddText(page)
+                    tb.Label.Text = "Title"
+                    tb.Edit.Text = s.Storage.GetString("Thumbnail Title", "StaxRip")
+                    tb.Edit.SaveAction = Sub(value) s.Storage.SetString("Thumbnail Title", value)
+
+                    tb = ui.AddText(page)
+                    tb.Label.Text = "Font Name"
+                    tb.Edit.Text = s.Storage.GetString("Thumbnail Font Name", "Tahoma")
+                    tb.Edit.SaveAction = Sub(value) s.Storage.SetString("Thumbnail Font Name", value)
+
+                    Dim nb = ui.AddNum(page)
+                    nb.Label.Text = "Font Size:"
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Font Size", 9)
+                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Font Size", CInt(value))
+
+                    nb = ui.AddNum(page)
                     nb.Label.Text = "Thumbnail Width:"
-                    nb.NumEdit.Init(200, 4000, 10)
-                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Width", 260)
+                    nb.NumEdit.Config = {200, 4000, 10}
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Width", 500)
                     nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Width", CInt(value))
 
-                    nb = ui.AddNumericBlock(page)
+                    nb = ui.AddNum(page)
                     nb.Label.Text = "Rows:"
-                    nb.NumEdit.Init(1, 1000, 1)
+                    nb.NumEdit.Config = {1, 1000}
                     nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Rows", 12)
                     nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Rows", CInt(value))
 
-                    nb = ui.AddNumericBlock(page)
+                    nb = ui.AddNum(page)
                     nb.Label.Text = "Columns:"
-                    nb.NumEdit.Init(1, 1000, 1)
+                    nb.NumEdit.Config = {1, 1000}
                     nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Columns", 3)
                     nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Columns", CInt(value))
 
-                    nb = ui.AddNumericBlock(page)
+                    nb = ui.AddNum(page)
                     nb.Label.Text = "Compression Quality:"
-                    nb.NumEdit.Init(1, 100, 1)
+                    nb.NumEdit.Config = {1, 100}
                     nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Compression Quality", 95)
                     nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Compression Quality", CInt(value))
 
@@ -5882,29 +5820,15 @@ Public Class MainForm
                     If f.ShowDialog() = DialogResult.OK Then
                         ui.Save()
 
-                        Dim tmp = ""
-
-                        SyncLock p.Log
-                            tmp = p.Log.ToString
-                        End SyncLock
-
-                        ProcessForm.ShowForm(False)
-
                         For Each i In fd.FileNames
                             Try
-                                Thumbnails.SaveThumbnails(i)
+                                Thumbnails.SaveThumbnails(i, Nothing)
                             Catch ex As Exception
                                 g.ShowException(ex)
                             End Try
                         Next
 
-                        SyncLock p.Log
-                            p.Log.Length = 0
-                            p.Log.Append(tmp)
-                        End SyncLock
-
-                        ProcessForm.CloseProcessForm()
-                        g.ShellExecute(Filepath.GetDir(fd.FileName))
+                        g.ShellExecute(fd.FileName.Dir)
                     End If
                 End Using
             End If
@@ -5957,7 +5881,7 @@ Public Class MainForm
         IsLoading = False
 
         If g.IsEncodingInstance Then
-            g.RunJobRecursive()
+            g.RunJobs()
         Else
             ProcessCommandLine(Environment.GetCommandLineArgs)
         End If

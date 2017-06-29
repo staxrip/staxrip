@@ -216,7 +216,7 @@ Class x265Control
         UpdateControls()
     End Sub
 
-    Function GetQualityCaption(value As Single) As String
+    Function GetQualityCaption(value As Double) As String
         For Each i In QualityDefinitions
             If i.Value = value Then
                 Return value & " - " + i.Text

@@ -35,7 +35,7 @@ Public MustInherit Class VideoEncoder
             If TypeOf Muxer Is NullMuxer Then
                 Return p.TargetFile
             Else
-                Return p.TempDir + p.Name + "_out." + OutputExt
+                Return p.TempDir + p.TargetFile.Base + "_out." + OutputExt
             End If
         End Get
     End Property
@@ -451,7 +451,6 @@ Class BatchEncoder
             Catch ex As AbortException
                 Throw ex
             Catch ex As Exception
-                ProcessForm.CloseProcessForm()
                 g.ShowException(ex)
                 Throw New AbortException
             End Try
@@ -467,7 +466,6 @@ Class BatchEncoder
         If Not g.VerifyRequirements Then Exit Sub
         If Not g.IsValidSource Then Exit Sub
 
-        ProcessForm.ShowForm()
         Log.WriteHeader("Compressibility Check")
 
         Dim script As New VideoScript
@@ -486,7 +484,7 @@ Class BatchEncoder
 
         Log.WriteLine(code + BR2)
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
-        script.Path = p.TempDir + p.Name + "_CompCheck." + script.FileType
+        script.Path = p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType
         script.Synchronize()
 
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_CompCheck.bat"
@@ -502,16 +500,14 @@ Class BatchEncoder
             Try
                 proc.Start()
             Catch ex As AbortException
-                ProcessForm.CloseProcessForm()
                 Exit Sub
             Catch ex As Exception
-                ProcessForm.CloseProcessForm()
                 g.ShowException(ex)
                 Exit Sub
             End Try
         End Using
 
-        Dim bits = (New FileInfo(p.TempDir + p.Name + "_CompCheck." + OutputExt).Length) * 8
+        Dim bits = (New FileInfo(p.TempDir + p.TargetFile.Base + "_CompCheck." + OutputExt).Length) * 8
         p.Compressibility = (bits / script.GetFrames) / (p.TargetWidth * p.TargetHeight)
 
         OnAfterCompCheck()
@@ -519,8 +515,6 @@ Class BatchEncoder
         g.MainForm.Assistant()
 
         Log.WriteLine(CInt(Calc.GetPercent).ToString() + " %")
-
-        ProcessForm.CloseProcessForm()
     End Sub
 End Class
 
@@ -538,8 +532,8 @@ Public Class NullEncoder
         For Each i In {".h264", ".avc", ".h265", ".hevc", ".mpg", ".avi"}
             If File.Exists(Filepath.GetDirAndBase(p.SourceFile) + "_out" + i) Then
                 Return Filepath.GetDirAndBase(p.SourceFile) + "_out" + i
-            ElseIf File.Exists(p.TempDir + p.Name + "_out" + i) Then
-                Return p.TempDir + p.Name + "_out" + i
+            ElseIf File.Exists(p.TempDir + p.TargetFile.Base + "_out" + i) Then
+                Return p.TempDir + p.TargetFile.Base + "_out" + i
             End If
         Next
 

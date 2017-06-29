@@ -1,5 +1,3 @@
-Imports System.Globalization
-
 Imports StaxRip.UI
 
 <Serializable()>
@@ -18,7 +16,7 @@ Public Class ApplicationSettings
     Public CustomMenuPreview As CustomMenuItem
     Public CustomMenuSize As CustomMenuItem
     Public DarMenu As String
-    Public DeleteTempFilesToRecycleBin As Boolean = True
+    Public DeleteTempFilesMode As DeleteMode
     Public Demuxers As List(Of Demuxer)
     Public eac3toProfiles As List(Of eac3toProfile)
     Public EnableTooltips As Boolean = True
@@ -27,7 +25,7 @@ Public Class ApplicationSettings
     Public HidePreviewButtons As Boolean
     Public LastPosition As Integer
     Public LastSourceDir As String
-    Public MinimizeToTaskbar As Boolean
+    Public MinimizeToTray As Boolean
     Public MinimumDiskSpace As Integer = 20
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
@@ -58,6 +56,8 @@ Public Class ApplicationSettings
     Public WindowPositions As WindowPositions
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
+    Public LogFileNum As Integer = 50
+    Public ProjectsMruNum As Integer = 5
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -75,18 +75,21 @@ Public Class ApplicationSettings
         If Versions Is Nothing Then Versions = New Dictionary(Of String, Integer)
         If Check(Storage, "Misc", 2) Then Storage = New ObjectStorage
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 194) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 196) Then
             If VideoEncoderProfiles Is Nothing Then
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
             Else
                 Dim profiles As New List(Of VideoEncoder)
 
-                For Each i In VideoEncoderProfiles
-                    If Not i.Name.Contains("Backup") Then
-                        i.Name = "Backup | " + i.Name
-                        profiles.Add(i)
-                    End If
-                Next
+                Try
+                    For Each i In VideoEncoderProfiles
+                        If Not i.Name.Contains("Backup") Then
+                            i.Name = "Backup | " + i.Name
+                            profiles.Add(i)
+                        End If
+                    Next
+                Catch
+                End Try
 
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
                 VideoEncoderProfiles.AddRange(profiles)
@@ -274,6 +277,22 @@ Public Class ApplicationSettings
         End If
 
         If LastSourceDir = "" Then LastSourceDir = ""
+
+        Update()
+    End Sub
+
+    Sub Update()
+        If Not Storage.GetBool("main menu update 1") Then
+            If 0 = CustomMenuMainForm.GetAllItems().Where(
+                Function(val) Not val.Parameters.NothingOrEmpty AndAlso
+                TypeOf val.Parameters(0) Is String AndAlso
+                val.Parameters(0).ToString.Contains("Log Files")).Count Then
+
+                CustomMenuMainForm.Add("Tools|Directories|Log Files", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%Log Files"""})
+            End If
+
+            Storage.SetBool("main menu update 1", True)
+        End If
     End Sub
 
     Shared Function GetDarMenu() As String
@@ -372,15 +391,19 @@ Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$"
     End Function
 
     Sub UpdateRecentProjects(path As String)
-        If path = "" OrElse path.StartsWith(Folder.Template) OrElse path.EndsWith("crash.srip") OrElse path.Ext = "bin" Then Exit Sub
+        Dim skip = Not File.Exists(path) OrElse
+            path.StartsWith(Folder.Template) OrElse
+            path.EndsWith("crash.srip") OrElse
+            path.Ext = "bin"
+
         Dim list As New List(Of String)
-        If File.Exists(path) Then list.Add(path)
+        If Not skip Then list.Add(path)
 
         For Each i In s.RecentProjects
             If i <> path AndAlso File.Exists(i) Then list.Add(i)
         Next
 
-        While list.Count > 5
+        While list.Count > s.ProjectsMruNum
             list.RemoveAt(list.Count - 1)
         End While
 

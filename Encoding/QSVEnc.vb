@@ -130,20 +130,20 @@ Public Class QSVEnc
         End Sub
 
         Property Decoder As New OptionParam With {
-            .Text = "Decoder:",
+            .Text = "Decoder",
             .Options = {"AviSynth/VapourSynth", "QSVEncC Intel", "QSVEncC Software", "ffmpeg Intel", "ffmpeg DXVA2"},
             .Values = {"avs", "qs", "qsw", "ffqsv", "ffdxva"}}
 
         Property Codec As New OptionParam With {
             .Switch = "--codec",
-            .Text = "Codec:",
+            .Text = "Codec",
             .Options = {"H.264", "H.265", "MPEG-2"},
             .Values = {"h264", "hevc", "mpeg2"}}
 
         Property Mode As New OptionParam With {
             .Switches = {"--avbr", "--cbr", "--vbr", "--qvbr-q", "--cqp", "--vqp", "--icq", "--la-icq", "--vcm", "--la", "--la-hrd", "--qvbr"},
             .Name = "Mode",
-            .Text = "Mode:",
+            .Text = "Mode",
             .Expand = True,
             .Options = Modes.Select(Function(a) a.Value).ToArray,
             .Values = Modes.Select(Function(a) a.Name).ToArray,
@@ -151,36 +151,36 @@ Public Class QSVEnc
 
         Property Deinterlace As New OptionParam With {
             .Switch = "--vpp-deinterlace",
-            .Text = "Deinterlace:",
+            .Text = "Deinterlace",
             .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"},
             .Values = {"none", "normal", "it", "bob"}}
 
         Property Quality As New NumParam With {
-            .Text = "Quality:",
-            .InitValue = 23,
+            .Text = "Quality",
+            .Init = 23,
             .VisibleFunc = Function() {"icq", "la-icq", "qvbr-q"}.Contains(Mode.ValueText),
-            .MinMaxStep = {0, 51, 1}}
+            .Config = {0, 51}}
 
         Property QPI As New NumParam With {
             .Switches = {"--cqp", "--vqp"},
-            .Text = "QP I:",
-            .InitValue = 24,
+            .Text = "QP I",
+            .Init = 24,
             .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText),
-            .MinMaxStep = {0, 51, 1}}
+            .Config = {0, 51}}
 
         Property QPP As New NumParam With {
             .Switches = {"--cqp", "--vqp"},
-            .Text = "QP P:",
-            .InitValue = 26,
+            .Text = "QP P",
+            .Init = 26,
             .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText),
-            .MinMaxStep = {0, 51, 1}}
+            .Config = {0, 51}}
 
         Property QPB As New NumParam With {
             .Switches = {"--cqp", "--vqp"},
-            .Text = "QP B:",
-            .InitValue = 27,
+            .Text = "QP B",
+            .Init = 27,
             .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText),
-            .MinMaxStep = {0, 51, 1}}
+            .Config = {0, 51}}
 
         Property TFF As New BoolParam With {
             .Switch = "--tff",
@@ -196,81 +196,84 @@ Public Class QSVEnc
                     ItemsValue = New List(Of CommandLineParam)
 
                     Add("Basic", Mode, Decoder, Codec,
-                        New OptionParam With {.Switch = "--quality", .Text = "Preset:", .Convert = True, .Options = {"Best", "Higher", "High", "Balanced", "Fast", "Faster", "Fastest"}, .InitValue = 3},
-                        New OptionParam With {.Switch = "--profile", .Text = "Profile:", .Name = "ProfileH264", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "baseline", "main", "high"}},
-                        New OptionParam With {.Switch = "--profile", .Text = "Profile:", .Name = "ProfileH265", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "main", "main10"}},
-                        New OptionParam With {.Switch = "--profile", .Text = "Profile:", .Name = "ProfileMPEG2", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "simple", "main", "high"}},
-                        New OptionParam With {.Switch = "--level", .Name = "LevelHEVC", .Text = "Level:", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
-                        New OptionParam With {.Switch = "--level", .Text = "Level:", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
-                        New OptionParam With {.Switch = "--level", .Name = "LevelMPEG2", .Text = "Level:", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "low", "main", "high", "High1440"}},
+                        New OptionParam With {.Switch = "--quality", .Text = "Preset", .Options = {"Best", "Higher", "High", "Balanced", "Fast", "Faster", "Fastest"}, .InitValue = 3},
+                        New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileH264", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "baseline", "main", "high"}},
+                        New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileH265", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "main", "main10"}},
+                        New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileMPEG2", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "simple", "main", "high"}},
+                        New OptionParam With {.Switch = "--level", .Name = "LevelHEVC", .Text = "Level", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
+                        New OptionParam With {.Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
+                        New OptionParam With {.Switch = "--level", .Name = "LevelMPEG2", .Text = "Level", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "low", "main", "high", "High1440"}},
                         Quality, QPI, QPP, QPB)
+                    Add("Analysis",
+                        New OptionParam With {.Switch = "--trellis", .Text = "Trellis", .Options = {"Automatic", "Off", "I", "IP", "All"}},
+                        New BoolParam With {.Switch = "--repartition-check", .Text = "Repartition Check"})
                     Add("Slice Decision",
-                        New OptionParam With {.Switch = "--la-quality", .Text = "LA Quality:", .Options = {"auto", "fast", "medium", "slow"}},
-                        New NumParam With {.Switch = "--slices", .Text = "Slices:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--la-depth", .VisibleFunc = Function() Mode.ValueText.EqualsAny("la", "la-hrd", "la-icq"), .Text = "Lookahead Depth:", .Value = 30, .MinMaxStep = {0, 100, 1}},
-                        New NumParam With {.Switch = "--la-window-size", .Text = "LA Window Size:"},
-                        New NumParam With {.Switch = "--bframes", .Text = "B-Frames:", .InitValue = 3, .MinMaxStep = {0, 16, 1}},
-                        New NumParam With {.Switch = "--ref", .Text = "Ref Frames:", .MinMaxStep = {0, 16, 1}},
-                        New NumParam With {.Switch = "--gop-len", .Text = "GOP Length:", .MinMaxStep = {0, Integer.MaxValue, 1}},
+                        New OptionParam With {.Switch = "--la-quality", .Text = "LA Quality", .Options = {"Automatic", "Fast", "Medium", "Slow"}},
+                        New NumParam With {.Switch = "--slices", .Text = "Slices", .Config = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--la-depth", .VisibleFunc = Function() Mode.ValueText.EqualsAny("la", "la-hrd", "la-icq"), .Text = "Lookahead Depth", .Value = 30, .Config = {0, 100}},
+                        New NumParam With {.Switch = "--la-window-size", .Text = "LA Window Size"},
+                        New NumParam With {.Switch = "--bframes", .Text = "B-Frames", .Init = 3, .Config = {0, 16}},
+                        New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Config = {0, 16}},
+                        New NumParam With {.Switch = "--gop-len", .Text = "GOP Length", .Config = {0, Integer.MaxValue, 1}},
                         New BoolParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid"},
-                        New BoolParam With {.Switch = "--b-adapt", .Text = "Adaptive B Frame Insert"},
+                        New BoolParam With {.Switch = "--b-adapt", .Text = "Adaptive B-Frame Insert"},
                         New BoolParam With {.Switch = "--direct-bias-adjust", .Text = "Direct Bias Adjust"},
                         New BoolParam With {.Switch = "--scenechange", .Text = "Scenechange"},
                         New BoolParam With {.Switch = "--strict-gop", .Text = "Strict Gop"},
                         New BoolParam With {.Switch = "--open-gop", .Text = "Open Gop"})
                     Add("Rate Control",
-                        New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--qp-offset", .Text = "QP Offset:", .MinMaxStep = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--avbr-unitsize", .Text = "AVBR Unitsize:", .InitValue = 90},
+                        New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Config = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Config = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Config = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--qp-offset", .Text = "QP Offset", .Config = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--avbr-unitsize", .Text = "AVBR Unitsize", .Init = 90},
                         New BoolParam With {.Switch = "--mbbrc", .Text = "Per macro block rate control"},
                         New BoolParam With {.Switch = "--extbrc", .Text = "Extended Rate Control"})
                     Add("Motion Search",
-                        New OptionParam With {.Switch = "--mv-scaling", .Text = "MV Scaling:", .IntegerValue = True, .Options = {"Default", "MV cost to be 0", "MV cost 1/2 of default", "MV cost 1/4 of default", "MV cost 1/8 of default"}},
+                        New OptionParam With {.Switch = "--mv-scaling", .Text = "MV Scaling", .IntegerValue = True, .Options = {"Default", "MV cost to be 0", "MV cost 1/2 of default", "MV cost 1/4 of default", "MV cost 1/8 of default"}},
                         New BoolParam With {.Switch = "--weightb", .Text = "B-Frame Weight Prediction"},
                         New BoolParam With {.Switch = "--weightp", .Text = "P-Frame Weight Prediction"})
                     Add("Performance",
-                        New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer:", .Options = {"8", "16", "32", "64", "128"}},
-                        New NumParam With {.Switch = "--input-buf", .Text = "Input Buffer:", .MinMaxStep = {0, 16, 1}},
-                        New NumParam With {.Switch = "--input-thread", .Text = "Input Thread:", .MinMaxStep = {0, 64, 1}},
-                        New NumParam With {.Switch = "--mfx-thread", .Text = "Input Threads MFX:"},
-                        New NumParam With {.Switch = "--output-thread", .Text = "Output Thread:", .MinMaxStep = {0, 64, 1}},
-                        New NumParam With {.Switch = "--async-depth", .Text = "Async Depth:", .MinMaxStep = {0, 64, 1}},
+                        New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer", .Options = {"8", "16", "32", "64", "128"}},
+                        New NumParam With {.Switch = "--input-buf", .Text = "Input Buffer", .Config = {0, 16}},
+                        New NumParam With {.Switch = "--input-thread", .Text = "Input Thread", .Config = {0, 64}},
+                        New NumParam With {.Switch = "--mfx-thread", .Text = "Input Threads MFX"},
+                        New NumParam With {.Switch = "--output-thread", .Text = "Output Thread", .Config = {0, 64}},
+                        New NumParam With {.Switch = "--async-depth", .Text = "Async Depth", .Config = {0, 64}},
                         New BoolParam With {.Switch = "--min-memory", .Text = "Minimize memory usage"},
                         New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
                     Add("Bitstream",
                         New BoolParam With {.Switch = "--aud", .Text = "Insert aud nal unit"},
                         New BoolParam With {.Switch = "--pic-struct", .Text = "Insert pic-timing SEI with pic_struct"})
                     Add("VPP",
-                        New StringParam With {.Switch = "--vpp-sub", .Text = "Sub File:", .Quotes = True, .BrowseFile = True},
-                        New StringParam With {.Switch = "--vpp-sub-charset", .Text = "Sub Charset:", .Quotes = True},
-                        New OptionParam With {.Switch = "--vpp-sub-shaping", .Text = "Sub Shaping:", .Options = {"simple", "complex"}},
-                        New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate:", .Options = {"0", "90", "180", "270"}},
-                        New OptionParam With {.Switch = "--vpp-image-stab", .Text = "Image Stabilizer:", .Options = {"disabled", "upscale", "box"}},
-                        New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image:", .Options = {"disabled", "h", "v"}},
-                        New OptionParam With {.Switch = "--vpp-scaling", .Text = "Scaling Quality:", .Options = {"auto", "simple", "fine"}},
-                        New NumParam With {.Switch = "--vpp-denoise", .Text = "Denoise:", .MinMaxStep = {0, 100, 1}},
-                        New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhancement:", .MinMaxStep = {0, 100, 1}})
+                        New StringParam With {.Switch = "--vpp-sub", .Text = "Subtitle File", .Quotes = True, .BrowseFile = True},
+                        New StringParam With {.Switch = "--vpp-sub-charset", .Text = "Subtitle Charset", .Quotes = True},
+                        New OptionParam With {.Switch = "--vpp-sub-shaping", .Text = "Subtitle Shaping", .Options = {"Simple", "Complex"}},
+                        New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"0", "90", "180", "270"}},
+                        New OptionParam With {.Switch = "--vpp-image-stab", .Text = "Image Stabilizer", .Options = {"Disabled", "Upscale", "Box"}},
+                        New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image", .Options = {"Disabled", "H", "V"}},
+                        New OptionParam With {.Switch = "--vpp-scaling", .Text = "Scaling Quality", .Options = {"Automatic", "Simple", "Fine"}},
+                        New NumParam With {.Switch = "--vpp-denoise", .Text = "Denoise", .Config = {0, 100}},
+                        New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhance", .Config = {0, 100}})
                     Add("VUI",
-                        New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio:", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
-                        New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat:", .Options = {"undef", "ntsc", "component", "pal", "secam", "mac"}},
-                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR"}},
-                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "film"}},
-                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer:", .Options = {"undef", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "linear", "log100", "log316"}},
+                        New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
+                        New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
+                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 BG", "SMPTE 240 M", "YCgCo", "FCC", "GBR"}},
+                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film"}},
+                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316"}},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Fullrange"})
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                     Add("Other",
-                        New StringParam With {.Text = "Custom:"},
-                        New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D:", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .InitValue = 3},
-                        New OptionParam With {.Switch = "--log-level", .Text = "Log Level:", .Options = {"info", "debug", "warn", "error"}},
-                        New OptionParam With {.Switch = "--trellis", .Text = "Trellis:", .Options = {"auto", "off", "i", "ip", "all"}},
+                        New StringParam With {.Text = "Custom", .AlwaysOn = True},
+                        New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .InitValue = 3},
+                        New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New BoolParam With {.Switch = "--no-deblock", .Text = "No Deblock"},
                         New BoolParam With {.Switch = "--fallback-rc", .Text = "Enable fallback for unsupported modes", .Value = True},
-                        New BoolParam With {.Switch = "--timer-period-tuning", .NoSwitch = "--no-timer-period-tuning", .Text = "Timer Period Tuning", .InitValue = True},
-                        New BoolParam With {.Switch = "--i-adapt", .Text = "Adaptive I Frame Insert"},
+                        New BoolParam With {.Switch = "--timer-period-tuning", .NoSwitch = "--no-timer-period-tuning", .Text = "Timer Period Tuning", .Init = True},
+                        New BoolParam With {.Switch = "--i-adapt", .Text = "Adaptive I-Frame Insert"},
                         New BoolParam With {.Switch = "--fixed-func", .Text = "Use fixed func instead of GPU EU"},
-                        New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"})
+                        New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"},
+                        New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"})
                 End If
 
                 Return ItemsValue

@@ -703,10 +703,10 @@ Class eac3toForm
 
         If File.Exists(M2TSFile) Then
             args = M2TSFile.Escape + " -progressnumbers"
-            Log.Write("Process M2TS file using eac3to", Package.eac3to.Path.Escape + " " + args + BR2, Project)
+            Project.Log.Write("Process M2TS file using eac3to", Package.eac3to.Path.Escape + " " + args + BR2)
         ElseIf Directory.Exists(PlaylistFolder) Then
             args = PlaylistFolder.Escape + " " & PlaylistID & ") -progressnumbers"
-            Log.Write("Process playlist file using eac3to", Package.eac3to.Path.Escape + " " + args + BR2, Project)
+            Project.Log.Write("Process playlist file using eac3to", Package.eac3to.Path.Escape + " " + args + BR2)
         End If
 
         Using o As New Process
@@ -762,7 +762,7 @@ Class eac3toForm
             MsgError("3D demuxing isn't supported.")
             Cancel()
         ElseIf Output <> "" Then
-            Log.WriteLine(Output, Project)
+            Project.Log.WriteLine(Output)
 
             If Output.Contains(BR + "   (embedded: ") Then
                 Output = Output.Replace(BR + "   (embedded: ", "(embedded: ")

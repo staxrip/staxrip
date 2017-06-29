@@ -28,17 +28,17 @@ Public MustInherit Class Demuxer
             Dim ui = form.SimpleUI
             Dim page = ui.CreateFlowPage("main page")
 
-            Dim tb = ui.AddTextBlock(page)
+            Dim tb = ui.AddText(page)
             tb.Label.Text = "Supported Input File Types:"
             tb.Edit.Text = InputExtensions.Join(" ")
             tb.Edit.SaveAction = Sub(value) InputExtensions = value.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
 
-            Dim cb = ui.AddCheckBox(page)
+            Dim cb = ui.AddBool(page)
             cb.Text = "Video Demuxing"
             cb.Checked = VideoDemuxing
             cb.SaveAction = Sub(val) VideoDemuxing = val
 
-            cb = ui.AddCheckBox(page)
+            cb = ui.AddBool(page)
             cb.Text = "Chapters Demuxing"
             cb.Checked = ChaptersDemuxing
             cb.SaveAction = Sub(val) ChaptersDemuxing = val
@@ -228,7 +228,6 @@ Public Class eac3toDemuxer
                     Try
                         proc.Start()
                     Catch ex As Exception
-                        ProcessForm.CloseProcessForm()
                         g.ShowException(ex)
                         Throw New AbortException
                     End Try
@@ -278,8 +277,6 @@ Public Class ffmpegDemuxer
             (subtitlesDemuxing AndAlso proj.DemuxSubtitles = DemuxMode.Dialog)) OrElse
             Not proj Is p Then
 
-            ProcessForm.CloseProcessForm()
-
             Using form As New StreamDemuxForm(Me, proj.SourceFile, Nothing)
                 form.cbDemuxChapters.Visible = False
 
@@ -325,9 +322,9 @@ Public Class ffmpegDemuxer
         End Using
 
         If File.Exists(outPath) Then
-            Log.WriteLine(MediaInfo.GetSummary(outPath), proj)
+            proj.Log.WriteLine(MediaInfo.GetSummary(outPath))
         Else
-            Log.Write("Error", "no video output found", proj)
+            proj.Log.Write("Error", "no video output found")
         End If
     End Sub
 
@@ -352,9 +349,9 @@ Public Class ffmpegDemuxer
 
         If File.Exists(outPath) Then
             If Not ap Is Nothing Then ap.File = outPath
-            Log.WriteLine(MediaInfo.GetSummary(outPath), proj)
+            proj.Log.WriteLine(MediaInfo.GetSummary(outPath))
         Else
-            Log.Write("Error", "no audio output found", proj)
+            proj.Log.Write("Error", "no audio output found")
         End If
     End Sub
 
@@ -427,8 +424,6 @@ Class MP4BoxDemuxer
             ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
             (demuxSubtitles AndAlso proj.DemuxSubtitles = DemuxMode.Dialog)) OrElse
             Not proj Is p Then
-
-            ProcessForm.CloseProcessForm()
 
             Using form As New StreamDemuxForm(Me, proj.SourceFile, attachments)
                 If form.ShowDialog() = DialogResult.OK Then
@@ -537,9 +532,9 @@ Class MP4BoxDemuxer
         End Using
 
         If File.Exists(outpath) Then
-            Log.WriteLine(MediaInfo.GetSummary(outpath), proj)
+            proj.Log.WriteLine(MediaInfo.GetSummary(outpath))
         Else
-            Log.Write("Error", "no video output found", proj)
+            proj.Log.Write("Error", "no video output found")
             ffmpegDemuxer.DemuxVideo(proj)
         End If
     End Sub
@@ -569,14 +564,14 @@ Class MP4BoxDemuxer
 
         If File.Exists(outPath) Then
             If MediaInfo.GetAudio(outPath, "Format") = "" Then
-                Log.Write("Error", "No format detected by MediaInfo.", proj)
+                proj.Log.Write("Error", "No format detected by MediaInfo.")
                 ffmpegDemuxer.DemuxAudio(sourcefile, stream, ap, proj)
             Else
                 If Not ap Is Nothing Then ap.File = outPath
-                Log.WriteLine(MediaInfo.GetSummary(outPath), proj)
+                proj.Log.WriteLine(MediaInfo.GetSummary(outPath))
             End If
         Else
-            Log.Write("Error", "no output found", proj)
+            proj.Log.Write("Error", "no output found")
             ffmpegDemuxer.DemuxAudio(sourcefile, stream, ap, proj)
         End If
     End Sub
@@ -623,8 +618,6 @@ Class mkvDemuxer
             ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
             (demuxSubtitles AndAlso proj.DemuxSubtitles = DemuxMode.Dialog)) OrElse
             Not proj Is p Then
-
-            ProcessForm.CloseProcessForm()
 
             Using form As New StreamDemuxForm(Me, proj.SourceFile, attachments)
                 If form.ShowDialog() <> DialogResult.OK Then Throw New AbortException
@@ -760,7 +753,7 @@ Class mkvDemuxer
         For Each outPath In outPaths.Keys
             If File.Exists(outPath) Then
                 If Not ap Is Nothing Then ap.File = outPath
-                Log.WriteLine(MediaInfo.GetSummary(outPath) + BR, proj)
+                proj.Log.WriteLine(MediaInfo.GetSummary(outPath) + BR)
 
                 If outPath.Ext = "aac" Then
                     Using proc As New Proc
@@ -777,14 +770,14 @@ Class mkvDemuxer
                         If File.Exists(m4aPath) Then
                             If Not ap Is Nothing Then ap.File = m4aPath
                             FileHelp.Delete(outPath)
-                            Log.WriteLine(BR + MediaInfo.GetSummary(m4aPath), proj)
+                            proj.Log.WriteLine(BR + MediaInfo.GetSummary(m4aPath))
                         Else
                             Throw New ErrorAbortException("Error mux AAC to M4A", outPath)
                         End If
                     End Using
                 End If
             Else
-                Log.Write("Error", "no output found", proj)
+                proj.Log.Write("Error", "no output found")
                 ffmpegDemuxer.DemuxAudio(sourcefile, outPaths(outPath), ap, proj)
             End If
         Next

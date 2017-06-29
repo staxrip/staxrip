@@ -820,6 +820,12 @@ Namespace UI
             Next
         End Sub
 
+        Sub Add(ParamArray items As Object())
+            For Each i In items
+                Add(i.ToString, i, Nothing)
+            Next
+        End Sub
+
         Function Add(path As String, obj As Object, Optional tip As String = Nothing) As ActionMenuItem
             Items.Add(obj)
             Dim name = path
@@ -1001,7 +1007,7 @@ Namespace UI
                 Dim hMax = Aggregate i In labelBlocks Into Max(TextRenderer.MeasureText(i.Label.Text, i.Label.Font).Width)
 
                 For Each i In labelBlocks
-                    i.Label.Offset = CInt(Math.Ceiling(hMax / i.Label.Font.Height))
+                    i.Label.Offset = hMax / i.Label.Font.Height
                 Next
             End If
         End Sub
@@ -1381,26 +1387,26 @@ Namespace UI
         End Property
 
         <Category("Data")>
-        <DefaultValue(GetType(Decimal), "-2147483648")>
-        Property Minimum As Decimal = -2147483648
+        <DefaultValue(GetType(Double), "-9000000000")>
+        Property Minimum As Double = -9000000000
 
         <Category("Data")>
-        <DefaultValue(GetType(Decimal), "2147483647")>
-        Property Maximum As Decimal = 2147483647
+        <DefaultValue(GetType(Double), "9000000000")>
+        Property Maximum As Double = 9000000000
 
         <Category("Data")>
-        <DefaultValue(GetType(Decimal), "1")>
-        Property Increment As Decimal = 1
+        <DefaultValue(GetType(Double), "1")>
+        Property Increment As Double = 1
 
-        Private ValueValue As Decimal
+        Private ValueValue As Double
 
         <Category("Data")>
-        <DefaultValue(GetType(Decimal), "0")>
-        Property Value As Decimal
+        <DefaultValue(GetType(Double), "0")>
+        Property Value As Double
             Get
                 Return ValueValue
             End Get
-            Set(value As Decimal)
+            Set(value As Double)
                 SetValue(value, True)
             End Set
         End Property
@@ -1419,7 +1425,7 @@ Namespace UI
             End Set
         End Property
 
-        Private Sub SetValue(value As Decimal, updateText As Boolean)
+        Private Sub SetValue(value As Double, updateText As Boolean)
             If value <> ValueValue Then
                 If value > Maximum Then
                     value = Maximum
@@ -1428,11 +1434,7 @@ Namespace UI
                 End If
 
                 ValueValue = value
-
-                If updateText Then
-                    Me.UpdateText()
-                End If
-
+                If updateText Then Me.UpdateText()
                 OnValueChanged(Me)
             End If
         End Sub

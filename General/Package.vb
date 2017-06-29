@@ -318,6 +318,7 @@ Public Class Package
             .Description = "Visual C++ 2012 Redistributable is required by some tools used by StaxRip.",
             .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=30679",
             .FixedDir = Folder.System,
+            .IgnoreVersion = True,
             .IsRequiredFunc = Function() Items("SangNom2 avs").IsRequired,
             .TreePath = "Runtimes"})
 
@@ -326,6 +327,7 @@ Public Class Package
             .Filename = "msvcp120.dll",
             .Description = "Visual C++ 2013 Redistributable is required by some tools used by StaxRip.",
             .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=40784",
+            .IgnoreVersion = True,
             .FixedDir = Folder.System,
             .TreePath = "Runtimes"})
 
@@ -335,6 +337,7 @@ Public Class Package
             .Description = "Visual C++ 2017 Redistributable is required by some tools used by StaxRip.",
             .DownloadURL = "http://download.microsoft.com/download/8/9/d/89d195e1-1901-4036-9a75-fbe46443fc5a/vc_redist.x64.exe",
             .FixedDir = Folder.System,
+            .IgnoreVersion = True,
             .TreePath = "Runtimes"})
 
         Add(New Package With {
@@ -953,7 +956,7 @@ Public Class AviSynthPlusPackage
         WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         FixedDir = Folder.System
-        SetupFilename = "AviSynth+r2504.exe"
+        SetupFilename = "AviSynth+r2508.exe"
     End Sub
 
     Public Overrides ReadOnly Property IsRequired As Boolean

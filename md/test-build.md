@@ -12,6 +12,30 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.1.5 unstable test build
+
+- new: parallel audio processing 
+- new: added setting to define how many projects to keep under: 'Main Menu > Project > Recent', the setting is located at: Main Menu > Tools > Settings > General 
+- new: added new thumbnail generation options
+- new: added new feature to archive log files in the settings directory, by default the last 50 log files are keept, this number can be customized at: 'Main Menu > Tools > Settings > General', the folder can be opened with the windows file explorer at: Main Menu > Tools > Folders > Log Files
+- new: qsvenc options --fade-detect and --repartition-check
+
+- fix: wrong fps display in main form for 50/60 fps
+- fix: version detection disabled for all VC++ runtimes because of issues with file projection via hardlinks and WINSXS
+- fix: two issues in x264 command line generation
+
+- change: renamed and reseted setting to minimize to tray
+- change: nvenc vpp deband support improved
+- change: Option to delete temp files moved to: Tools > Settings > System
+- change: scaling and layout improved for numeric up down control and custom menu editor
+- change: code refactoring of dynamically generated dialogs (settings/options/codecs), this has let to changed data types and a reset of video encoder profiles
+- change: the mkv title tag in the container options isn't overwritten by a title tag of the source file when the source is loaded
+
+- update: mkvtoolnix 13.0.0.0
+- update: qsvenc 2.70
+- update: AviSynth+ 2508
+- update: x265 2.4+89
+
 #### 1.5.1.4 unstable test build
 
 - new: the new x264 GUI is complete, the old is gone

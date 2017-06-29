@@ -155,35 +155,35 @@ Class VideoComparisonForm
             Dim page = ui.CreateFlowPage("main page")
             page.SuspendLayout()
 
-            Dim nb = ui.AddNumericBlock(page)
+            Dim nb = ui.AddNum(page)
             nb.Label.Text = "Crop Left:"
-            nb.NumEdit.Init(0, 10000, 10)
+            nb.NumEdit.Config = {0, 10000, 10}
             nb.NumEdit.Value = CropLeft
             nb.NumEdit.SaveAction = Sub(value) CropLeft = CInt(value)
 
-            nb = ui.AddNumericBlock(page)
+            nb = ui.AddNum(page)
             nb.Label.Text = "Crop Top:"
-            nb.NumEdit.Init(0, 10000, 10)
+            nb.NumEdit.Config = {0, 10000, 10}
             nb.NumEdit.Value = CropTop
             nb.NumEdit.SaveAction = Sub(value) CropTop = CInt(value)
 
-            nb = ui.AddNumericBlock(page)
+            nb = ui.AddNum(page)
             nb.Label.Text = "Crop Right:"
-            nb.NumEdit.Init(0, 10000, 10)
+            nb.NumEdit.Config = {0, 10000, 10}
             nb.NumEdit.Value = CropRight
             nb.NumEdit.SaveAction = Sub(value) CropRight = CInt(value)
 
-            nb = ui.AddNumericBlock(page)
+            nb = ui.AddNum(page)
             nb.Label.Text = "Crop Bottom:"
-            nb.NumEdit.Init(0, 10000, 10)
+            nb.NumEdit.Config = {0, 10000, 10}
             nb.NumEdit.Value = CropBottom
             nb.NumEdit.SaveAction = Sub(value) CropBottom = CInt(value)
 
             ui.AddLine(page)
 
-            nb = ui.AddNumericBlock(page)
+            nb = ui.AddNum(page)
             nb.Label.Text = "Zoom:"
-            nb.NumEdit.Init(0, 1000, 10)
+            nb.NumEdit.Config = {0, 1000, 10}
             nb.NumEdit.Value = Zoom
             nb.NumEdit.SaveAction = Sub(value) Zoom = CInt(value)
 
@@ -263,7 +263,6 @@ Class VideoComparisonForm
                 Catch ex As AbortException
                     Return False
                 Finally
-                    ProcessForm.CloseProcessForm()
                     Form.Activate()
                 End Try
             End If

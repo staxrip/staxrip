@@ -45,7 +45,6 @@ Public Class Project
     Public DefaultSubtitle As DefaultSubtitleMode
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
-    Public DeleteTempFilesDir As Boolean
     Public DemuxAudio As DemuxMode
     Public DemuxSubtitles As DemuxMode
     Public ExtractTimecodes As Boolean
@@ -54,8 +53,8 @@ Public Class Project
     Public HarcodedSubtitle As Boolean
     Public ITU As Boolean = True
     Public LastOriginalSourceFile As String
-    Public Log As StringBuilder
-    Public MaxAspectRatioError As Integer = 2
+    Public Log As New LogBuilder
+    Public MaxAspectRatioError As Double = 2
     Public NoDialogs As Boolean
     Public PreferredAudio As String
     Public PreferredSubtitles As String
@@ -120,7 +119,7 @@ Public Class Project
     Sub Init() Implements ISafeSerialization.Init
         If Versions Is Nothing Then Versions = New Dictionary(Of String, Integer)
         If TempDir Is Nothing Then TempDir = ""
-        If Log Is Nothing Then Log = New StringBuilder
+        If Log Is Nothing Then Log = New LogBuilder
         If Storage Is Nothing Then Storage = New ObjectStorage
         If Ranges Is Nothing Then Ranges = New List(Of Range)
         If SourceFile Is Nothing Then SourceFile = ""
@@ -147,7 +146,7 @@ Public Class Project
         If SourceFiles Is Nothing Then SourceFiles = New List(Of String)
         If AudioTracks Is Nothing Then AudioTracks = New List(Of AudioProfile)
 
-        If Check(VideoEncoder, "Video Encoder", 73) Then VideoEncoder = New x264Enc
+        If Check(VideoEncoder, "Video Encoder", 75) Then VideoEncoder = New x264Enc
 
         If Check(Audio0, "Audio Track 1", 36) Then
             Audio0 = New GUIAudioProfile(AudioCodec.AAC, 0.35)
@@ -247,12 +246,6 @@ Public Class Project
                 NotifyPropertyChanged()
             End If
         End Set
-    End Property
-
-    ReadOnly Property Name As String
-        Get
-            Return TargetFile.Base
-        End Get
     End Property
 
     Sub AddHardcodedSubtitleFilter(path As String, showErrorMsg As Boolean)

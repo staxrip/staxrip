@@ -24,11 +24,11 @@ Class Audio
 
             Dim directMux = TypeOf ap Is MuxAudioProfile AndAlso
                 p.VideoEncoder.Muxer.IsSupported(ap.Stream.Extension.TrimStart("."c)) AndAlso
-                p.VideoEncoder.Muxer.IsSupported(Filepath.GetExt(ap.File)) AndAlso
+                p.VideoEncoder.Muxer.IsSupported(ap.File.Ext) AndAlso
                 Not cutting
 
             If (cutting OrElse Not ap.IsInputSupported) AndAlso Not directMux Then
-                Select Case Filepath.GetExtFull(ap.File)
+                Select Case ap.File.ExtFull
                     Case ".mkv", ".webm"
                         mkvDemuxer.Demux(ap.File, {ap.Stream}, Nothing, ap, p, False, False)
                     Case ".mp4"
@@ -524,7 +524,7 @@ function Down2(clip a)
     Shared Sub SetGain(ap As AudioProfile)
         Dim args = "-i " + ap.File.Escape
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
-        args += " -hide_banner -loglevel error -af volumedetect -f null NUL"
+        args += " -hide_banner -af volumedetect -f null NUL"
 
         Using proc As New Proc
             proc.Init("Find Gain using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple", "decoding is not implemented", "unsupported frame type", "upload a sample")
@@ -533,7 +533,7 @@ function Down2(clip a)
             proc.Arguments = args
             proc.Start()
 
-            Dim match = Regex.Match(ProcessForm.CommandLineLog.ToString, "max_volume: -(\d+\.\d+) dB")
+            Dim match = Regex.Match(proc.Log.ToString, "max_volume: -(\d+\.\d+) dB")
             If match.Success Then ap.Gain = match.Groups(1).Value.ToSingle()
         End Using
     End Sub

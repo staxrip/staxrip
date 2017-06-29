@@ -337,7 +337,6 @@ Public Class BatchAudioProfile
                 Catch ex As AbortException
                     Throw ex
                 Catch ex As Exception
-                    ProcessForm.CloseProcessForm()
                     g.ShowException(ex)
                     Throw New AbortException
                 End Try
@@ -393,20 +392,17 @@ Class NullAudioProfile
     End Function
 
     Overrides Sub EditProject()
-        Using f As New SimpleSettingsForm("Null Audio Profile Options")
-            f.Width = CInt(f.Width * 0.6)
-            f.Height = CInt(f.Height * 0.4)
+        Using form As New SimpleSettingsForm("Null Audio Profile Options")
+            form.ScaleClientSize(20, 10)
+            Dim ui = form.SimpleUI
+            ui.Store = Me
 
-            Dim ui = f.SimpleUI
-            Dim page = ui.CreateFlowPage("main page")
+            Dim n = ui.AddNum()
+            n.Text = "Reserved Bitrate:"
+            n.Config = {0, Integer.MaxValue, 8}
+            n.Property = NameOf(Bitrate)
 
-            Dim nb = ui.AddNumericBlock(page)
-            nb.Label.Text = "Reserved Bitrate:"
-            nb.NumEdit.Init(0, 1000000, 8)
-            nb.NumEdit.Value = CDec(Bitrate)
-            nb.NumEdit.SaveAction = Sub(value) Bitrate = CDec(value)
-
-            If f.ShowDialog() = DialogResult.OK Then ui.Save()
+            If form.ShowDialog() = DialogResult.OK Then ui.Save()
         End Using
     End Sub
 
@@ -488,45 +484,45 @@ Public Class MuxAudioProfile
             Dim page = ui.CreateFlowPage("main page")
             page.SuspendLayout()
 
-            Dim tbb = ui.AddTextButtonBlock(page)
+            Dim tbb = ui.AddTextButton(page)
             tbb.Label.Text = "Stream Name:"
-            tbb.Label.Tooltip = "Stream name used by the muxer. The stream name may contain macros."
+            tbb.Label.Help = "Stream name used by the muxer. The stream name may contain macros."
             tbb.Edit.Expandet = True
             tbb.Edit.Text = StreamName
             tbb.Edit.SaveAction = Sub(value) StreamName = value
             tbb.Button.Text = "Macro Editor..."
             tbb.Button.ClickAction = AddressOf tbb.Edit.EditMacro
 
-            Dim nb = ui.AddNumericBlock(page)
+            Dim nb = ui.AddNum(page)
             nb.Label.Text = "Delay:"
-            nb.Label.Tooltip = "Delay used by the muxer."
-            nb.NumEdit.Init(Integer.MinValue, Integer.MaxValue, 1)
+            nb.Label.Help = "Delay used by the muxer."
+            nb.NumEdit.Config = {Integer.MinValue, Integer.MaxValue, 1}
             nb.NumEdit.Value = Delay
             nb.NumEdit.SaveAction = Sub(value) Delay = CInt(value)
 
-            Dim mbi = ui.AddMenuButtonBlock(Of Language)(page)
+            Dim mbi = ui.AddMenu(Of Language)(page)
             mbi.Label.Text = "Language:"
-            mbi.Label.Tooltip = "Language of the audio track."
-            mbi.MenuButton.Value = Language
-            mbi.MenuButton.SaveAction = Sub(value) Language = value
+            mbi.Label.Help = "Language of the audio track."
+            mbi.Button.Value = Language
+            mbi.Button.SaveAction = Sub(value) Language = value
 
             For Each i In Language.Languages
                 If i.IsCommon Then
-                    mbi.MenuButton.Add(i.ToString, i)
+                    mbi.Button.Add(i.ToString, i)
                 Else
-                    mbi.MenuButton.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString, i)
+                    mbi.Button.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString, i)
                 End If
             Next
 
-            Dim cb = ui.AddCheckBox(page)
+            Dim cb = ui.AddBool(page)
             cb.Text = "Default"
-            cb.Tooltip = "Flaged as default in MKV."
+            cb.Help = "Flaged as default in MKV."
             cb.Checked = [Default]
             cb.SaveAction = Sub(value) [Default] = value
 
-            cb = ui.AddCheckBox(page)
+            cb = ui.AddBool(page)
             cb.Text = "Forced"
-            cb.Tooltip = "Flaged as forced in MKV."
+            cb.Help = "Flaged as forced in MKV."
             cb.Checked = Forced
             cb.SaveAction = Sub(value) Forced = value
 

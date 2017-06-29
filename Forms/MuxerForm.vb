@@ -577,79 +577,74 @@ Class MuxerForm
         Dim lastAction As Action
 
         Dim UI = SimpleUI
+        UI.Store = Muxer
         UI.BackColor = Color.Transparent
 
         Dim page = UI.CreateFlowPage("main page")
         page.SuspendLayout()
 
-        Dim tbb = UI.AddTextButtonBlock(page)
-        tbb.Label.Text = "Cover:"
-        tbb.Edit.Expandet = True
-        tbb.Edit.Text = Muxer.CoverFile
-        tbb.Edit.SaveAction = Sub(value) Muxer.CoverFile = If(value <> "", value, Nothing)
-        tbb.BrowseFile("jpg, png|*.jpg;*.png")
-
-        Dim tags = UI.AddTextButtonBlock(page)
-        tags.Label.Text = "Tags:"
-        If TypeOf Muxer Is MkvMuxer Then tags.Label.Tooltip = "Tags added to the MKV file." + BR2 + "Syntax: name1: value1; name2: value2"
-        tags.Edit.Expandet = True
-        tags.Edit.Text = Muxer.Tags
-        tags.Edit.SaveAction = Sub(value) Muxer.Tags = If(value <> "", value, Nothing)
-        tags.MacroDialog()
+        Dim tb = UI.AddTextButton()
+        tb.Text = "Cover:"
+        tb.Expandet = True
+        tb.Property = NameOf(Muxer.CoverFile)
+        tb.BrowseFile("jpg, png|*.jpg;*.png")
 
         If Not TypeOf Muxer Is WebMMuxer Then
-            tbb = UI.AddTextButtonBlock(page)
-            tbb.Label.Text = "Chapters:"
-            tbb.Edit.Expandet = True
-            tbb.Edit.Text = Muxer.ChapterFile
-            tbb.Edit.SaveAction = Sub(value) Muxer.ChapterFile = If(value <> "", value, Nothing)
-            tbb.BrowseFile("txt, xml|*.txt;*.xml")
+            tb = UI.AddTextButton()
+            tb.Text = "Chapters:"
+            tb.Expandet = True
+            tb.Property = NameOf(Muxer.ChapterFile)
+            tb.BrowseFile("txt, xml|*.txt;*.xml")
         End If
+
+        If TypeOf Muxer Is MkvMuxer Then
+            tb = UI.AddTextButton()
+            tb.Text = "Timecodes:"
+            tb.Help = "txt or mkv file"
+            tb.Expandet = True
+            tb.Property = NameOf(Muxer.TimecodesFile)
+            tb.BrowseFile("txt, mkv|*.txt;*.mkv")
+        End If
+
+        Dim tags = UI.AddTextButton()
+        tags.Text = "Tags:"
+        If TypeOf Muxer Is MkvMuxer Then tags.Label.Help = "Tags added to the MKV file." + BR2 + "Syntax: name1: value1; name2: value2"
+        tags.Expandet = True
+        tags.Property = NameOf(Muxer.Tags)
+        tags.MacroDialog()
 
         If TypeOf Muxer Is MkvMuxer Then
             CmdlControl.Presets = s.CmdlPresetsMKV
             Dim mkvMuxer = DirectCast(Muxer, MkvMuxer)
 
-            Dim timecodes = UI.AddTextButtonBlock(page)
-            timecodes.Label.Text = "Timecodes:"
-            timecodes.Label.Tooltip = "txt or mkv file"
-            timecodes.Edit.Expandet = True
-            timecodes.Edit.Text = Muxer.TimecodesFile
-            timecodes.Edit.SaveAction = Sub(value) Muxer.TimecodesFile = If(value <> "", value, Nothing)
-            timecodes.BrowseFile("txt, mkv|*.txt;*.mkv")
+            tb = UI.AddTextButton()
+            tb.Text = "Title:"
+            tb.Expandet = True
+            tb.Property = NameOf(mkvMuxer.Title)
+            tb.MacroDialog()
 
-            Dim tb = UI.AddTextBlock(page)
-            tb.Label.Text = "Title:"
-            tb.Label.Tooltip = "Optional title of the output file that may contain macros."
-            tb.Edit.Expandet = True
-            tb.Edit.Text = mkvMuxer.Title
-            tb.Edit.SaveAction = Sub(value) mkvMuxer.Title = value
+            Dim t = UI.AddText()
+            t.Text = "Video Track Name:"
+            t.Help = "Optional name of the video stream that may contain macro."
+            t.Expandet = True
+            t.Property = NameOf(mkvMuxer.VideoTrackName)
 
-            tb = UI.AddTextBlock(page)
-            tb.Label.Text = "Video Track Name:"
-            tb.Label.Tooltip = "Optional name of the video stream that may contain macro."
-            tb.Edit.Expandet = True
-            tb.Edit.Text = mkvMuxer.VideoTrackName
-            tb.Edit.SaveAction = Sub(value) mkvMuxer.VideoTrackName = value
+            Dim tm = UI.AddTextMenu()
+            tm.Text = "Display Aspect Ratio:"
+            tm.Property = NameOf(mkvMuxer.DAR)
+            tm.AddMenu(s.DarMenu)
 
-            Dim tmb = UI.AddTextMenuBlock(page)
-            tmb.Label.Text = "Display Aspect Ratio:"
-            tmb.Edit.Text = mkvMuxer.DAR
-            tmb.AddMenu(s.DarMenu)
-            tmb.Edit.SaveAction = Sub(value) mkvMuxer.DAR = value
-
-            Dim mb = UI.AddMenuButtonBlock(Of Language)(page)
-            mb.Label.Text = "Video Track Language:"
-            mb.Label.Tooltip = "Optional language of the video stream."
-            mb.MenuButton.Value = mkvMuxer.VideoTrackLanguage
-            mb.MenuButton.SaveAction = Sub(value) mkvMuxer.VideoTrackLanguage = value
+            Dim ml = UI.AddMenu(Of Language)()
+            ml.Text = "Video Track Language:"
+            ml.Help = "Optional language of the video stream."
+            ml.Property = NameOf(mkvMuxer.VideoTrackLanguage)
 
             lastAction = Sub()
                              For Each i In Language.Languages
                                  If i.IsCommon Then
-                                     mb.MenuButton.Add(i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
+                                     ml.Button.Add(i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
                                  Else
-                                     mb.MenuButton.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
+                                     ml.Button.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
                                  End If
 
                                  Application.DoEvents()
@@ -660,11 +655,10 @@ Class MuxerForm
             CmdlControl.Presets = s.CmdlPresetsMP4
             Dim mp4Muxer = DirectCast(Muxer, MP4Muxer)
 
-            Dim tmb = UI.AddTextMenuBlock(page)
-            tmb.Label.Text = "Pixel Aspect Ratio:"
-            tmb.Edit.Text = mp4Muxer.PAR
-            tmb.AddMenu(s.ParMenu)
-            tmb.Edit.SaveAction = Sub(value) mp4Muxer.PAR = value
+            Dim tm = UI.AddTextMenu()
+            tm.Text = "Pixel Aspect Ratio:"
+            tm.Property = NameOf(mp4Muxer.PAR)
+            tm.AddMenu(s.ParMenu)
         End If
 
         page.ResumeLayout()

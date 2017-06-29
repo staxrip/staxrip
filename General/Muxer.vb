@@ -8,10 +8,10 @@ Imports vb6 = Microsoft.VisualBasic
 Public MustInherit Class Muxer
     Inherits Profile
 
-    Property CoverFile As String
-    Property ChapterFile As String
-    Property TimecodesFile As String
-    Property Tags As String
+    Property CoverFile As String = ""
+    Property ChapterFile As String = ""
+    Property TimecodesFile As String = ""
+    Property Tags As String = ""
 
     MustOverride Sub Mux()
 
@@ -384,7 +384,6 @@ Class BatchMuxer
             Catch ex As AbortException
                 Throw ex
             Catch ex As Exception
-                ProcessForm.CloseProcessForm()
                 g.ShowException(ex)
                 Throw New AbortException
             End Try
@@ -398,16 +397,16 @@ Class BatchMuxer
             Dim ui = f.SimpleUI
             Dim page = ui.CreateFlowPage("main page")
 
-            Dim tb = ui.AddTextBlock(page)
+            Dim tb = ui.AddText(page)
             tb.Label.Text = "Output File Type:"
             tb.Edit.Text = OutputTypeValue
             tb.Edit.SaveAction = Sub(value) OutputTypeValue = value
 
             Dim l = ui.AddLabel(page, "Batch Script:")
             l.MarginTop = f.Font.Height
-            l.Tooltip = "Batch script which may contain macros."
+            l.Help = "Batch script which may contain macros."
 
-            tb = ui.AddTextBlock(page)
+            tb = ui.AddText(page)
             tb.Label.Visible = False
             tb.Edit.Expandet = True
             tb.Edit.MultilineHeightFactor = 6
@@ -761,7 +760,7 @@ Class ffmpegMuxer
             Dim ui = f.SimpleUI
             Dim page = ui.CreateFlowPage("main page")
 
-            Dim tb = ui.AddTextBlock(page)
+            Dim tb = ui.AddText(page)
             tb.Label.Text = "Output File Type:"
             tb.Edit.Text = OutputTypeValue
             tb.Edit.SaveAction = Sub(value) OutputTypeValue = value

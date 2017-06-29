@@ -95,7 +95,7 @@ Class x264Control
 #End Region
 
     Private Encoder As x264Enc
-    Private Params As x264Params2
+    Private Params As x264Params
 
     Private cms As ContextMenuStripEx
     Private QualityDefinitions As List(Of QualityItem)
@@ -202,21 +202,16 @@ Class x264Control
 
     Sub SetTune(value As Integer)
         Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
-
         Params.Tune.Value = value
         Params.ApplyValues(True)
-
         lv.Items(2 - offset).SubItems(1).Text = value.ToString
         lv.Items(2 - offset).Selected = False
-
         UpdateControls()
     End Sub
 
-    Function GetQualityCaption(value As Single) As String
+    Function GetQualityCaption(value As Double) As String
         For Each i In QualityDefinitions
-            If i.Value = value Then
-                Return value & " - " + i.Text
-            End If
+            If i.Value = value Then Return value & " - " + i.Text
         Next
 
         Return value.ToString

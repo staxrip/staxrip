@@ -16,7 +16,7 @@ Namespace CommandLine
 
         Sub Init(store As PrimitiveStore)
             For Each i In Items
-                i.Init(store, Me)
+                i.InitParam(store, Me)
             Next
         End Sub
 
@@ -99,7 +99,7 @@ Namespace CommandLine
         Friend Store As PrimitiveStore
         Friend Params As CommandLineParams
 
-        MustOverride Sub Init(store As PrimitiveStore, params As CommandLineParams)
+        MustOverride Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
         MustOverride Function GetControl() As Control
 
         Overridable Function GetArgs() As String
@@ -157,7 +157,7 @@ Namespace CommandLine
         Property DefaultValue As Boolean
         Property CheckBox As CheckBox
 
-        Public Overloads Overrides Sub Init(store As PrimitiveStore, params As CommandLineParams)
+        Public Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
 
@@ -166,7 +166,7 @@ Namespace CommandLine
             End If
         End Sub
 
-        Overloads Sub Init(cb As CheckBox)
+        Overloads Sub InitParam(cb As CheckBox)
             CheckBox = cb
             CheckBox.Checked = Value
             AddHandler CheckBox.CheckedChanged, AddressOf CheckedChanged
@@ -209,7 +209,7 @@ Namespace CommandLine
             End Set
         End Property
 
-        WriteOnly Property InitValue As Boolean
+        WriteOnly Property Init As Boolean
             Set(value As Boolean)
                 Me.Value = value
                 DefaultValue = value
@@ -225,34 +225,30 @@ Namespace CommandLine
         Inherits CommandLineParam
 
         Property NumEdit As NumEdit
-        Property DefaultValue As Single
+        Property DefaultValue As Double
 
-        Private MinMaxStepDecValue As Decimal()
+        Private ConfigValue As Double()
 
-        Property MinMaxStepDec As Decimal()
+        Property Config As Double()
             Get
-                If MinMaxStepDecValue Is Nothing Then Return {Decimal.MinValue, Decimal.MaxValue, 1, 0}
-                Return MinMaxStepDecValue
+                If ConfigValue Is Nothing Then Return {Double.MinValue, Double.MaxValue, 1, 0}
+                Return ConfigValue
             End Get
-            Set(value As Decimal())
-                If value(0) = 0 AndAlso value(1) = 0 Then
-                    value(0) = Integer.MinValue
-                    value(1) = Integer.MaxValue
+            Set(value As Double())
+                ConfigValue = {value(0), value(1), 1, 0}
+                If value.Length > 2 Then ConfigValue(2) = value(2)
+                If value.Length > 3 Then ConfigValue(3) = value(3)
+
+                If ConfigValue(0) = 0 AndAlso ConfigValue(1) = 0 Then
+                    ConfigValue(0) = Double.MinValue
+                    ConfigValue(1) = Double.MaxValue
                 End If
-
-                MinMaxStepDecValue = value
             End Set
         End Property
 
-        WriteOnly Property MinMaxStep As Integer()
-            Set(value As Integer())
-                MinMaxStepDec = {value(0), value(1), value(2), 0}
-            End Set
-        End Property
-
-        Overloads Sub Init(ne As NumEdit)
+        Overloads Sub InitParam(ne As NumEdit)
             NumEdit = ne
-            NumEdit.Value = CDec(Value)
+            NumEdit.Value = Value
             AddHandler NumEdit.ValueChanged, AddressOf ValueChanged
             AddHandler NumEdit.Disposed, Sub()
                                              RemoveHandler NumEdit.ValueChanged, AddressOf ValueChanged
@@ -260,14 +256,14 @@ Namespace CommandLine
                                          End Sub
         End Sub
 
-        Public Overloads Overrides Sub Init(store As PrimitiveStore, params As CommandLineParams)
+        Public Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
-            If Not store.Sng.ContainsKey(GetKey) Then store.Sng(GetKey) = ValueValue
+            If Not store.Double.ContainsKey(GetKey) Then store.Double(GetKey) = ValueValue
         End Sub
 
         Sub ValueChanged(ne As NumEdit)
-            If MinMaxStepDec(3) = 0 Then
+            If Config(3) = 0 Then
                 Value = CInt(ne.Value)
             Else
                 Value = ne.Value
@@ -276,21 +272,21 @@ Namespace CommandLine
             Params.RaiseValueChanged(Me)
         End Sub
 
-        Private ValueValue As Single
+        Private ValueValue As Double
 
-        Property Value As Single
+        Property Value As Double
             Get
-                Return Store.Sng(GetKey)
+                Return Store.Double(GetKey)
             End Get
-            Set(value As Single)
+            Set(value As Double)
                 ValueValue = value
-                If Not Store Is Nothing Then Store.Sng(GetKey) = value
-                If Not NumEdit Is Nothing Then NumEdit.Value = CDec(value)
+                If Not Store Is Nothing Then Store.Double(GetKey) = value
+                If Not NumEdit Is Nothing Then NumEdit.Value = value
             End Set
         End Property
 
-        WriteOnly Property InitValue As Single
-            Set(value As Single)
+        WriteOnly Property Init As Double
+            Set(value As Double)
                 Me.Value = value
                 DefaultValue = value
             End Set
@@ -320,12 +316,11 @@ Namespace CommandLine
         Property Options As String()
         Property Values As String()
         Property Expand As Boolean
-        Property Convert As Boolean
         Property MenuButton As MenuButton
         Property DefaultValue As Integer
         Property IntegerValue As Boolean
 
-        Overloads Sub Init(mb As MenuButton)
+        Overloads Sub Init2(mb As MenuButton)
             MenuButton = mb
             MenuButton.Value = Value
             AddHandler MenuButton.ValueChangedUser, AddressOf ValueChangedUser
@@ -345,7 +340,7 @@ Namespace CommandLine
             End If
         End Sub
 
-        Public Overloads Overrides Sub Init(store As PrimitiveStore, params As CommandLineParams)
+        Public Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
 
@@ -406,11 +401,7 @@ Namespace CommandLine
                         If IntegerValue Then
                             Return Switch + Params.Separator & Value
                         Else
-                            If Convert Then
-                                Return Switch + Params.Separator & Options(Value).ToLower.Replace(" ", "")
-                            Else
-                                Return Switch + Params.Separator & Options(Value)
-                            End If
+                            Return Switch + Params.Separator & Options(Value).ToLower.Replace(" ", "")
                         End If
                     End If
                 End If
@@ -441,7 +432,7 @@ Namespace CommandLine
             End Set
         End Property
 
-        Public Overloads Overrides Sub Init(store As PrimitiveStore, params As CommandLineParams)
+        Public Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
 
@@ -477,10 +468,12 @@ Namespace CommandLine
             Else
                 If Value <> DefaultValue Then
                     If Switch = "" Then
-                        If Quotes Then
-                            Return """" + Value + """"
-                        Else
-                            Return Value
+                        If AlwaysOn Then
+                            If Quotes Then
+                                Return """" + Value + """"
+                            Else
+                                Return Value
+                            End If
                         End If
                     Else
                         If Quotes Then

@@ -6,7 +6,8 @@ Imports System.Runtime.InteropServices
 Public Class Proc
     Implements IDisposable
 
-    Property TrowException As Boolean
+    Property IsSilent As Boolean
+    Property TrowAbortException As Boolean
     Property ReTrowException As Boolean
     Property Process As New Process
     Property Wait As Boolean
@@ -18,28 +19,28 @@ Public Class Proc
     Property TrimChars As Char()
     Property RemoveChars As Char()
     Property ExitCode As Integer
+    Property Log As New LogBuilder
+    Property Succeeded As Boolean
 
     Private ReadOutput As Boolean
-    Private ReadError As Boolean
     Private Header As String
 
+    Event DataReceived(value As String, log As String)
+    Event Finished()
+
     Sub Init(header As String, ParamArray skipStrings As String())
-        ProcessForm.ProcInstance = Me
         Me.Header = header
-        AddHandler Process.ErrorDataReceived, AddressOf ProcessForm.CommandLineDataHandler
-        AddHandler Process.OutputDataReceived, AddressOf ProcessForm.CommandLineDataHandler
+        AddHandler Process.ErrorDataReceived, AddressOf OnDataReceived
+        AddHandler Process.OutputDataReceived, AddressOf OnDataReceived
         Process.StartInfo.CreateNoWindow = True
         Process.StartInfo.UseShellExecute = False
         Process.StartInfo.RedirectStandardError = True
         Process.StartInfo.RedirectStandardOutput = True
         ReadOutput = True
-        ReadError = True
         Wait = True
         Priority = s.ProcessPriority
-        If Project.Log.Length = 0 Then Log.WriteEnvironment(Project)
-        Log.WriteHeader(header, Project)
+        Log.WriteHeader(header)
         If skipStrings.Length > 0 Then Me.SkipStrings = skipStrings
-        ProcessForm.ShowForm()
     End Sub
 
     Private ProjectValue As Project
@@ -65,6 +66,18 @@ Public Class Proc
         Set(Value As String)
             If Directory.Exists(Value) Then Process.StartInfo.WorkingDirectory = Value
         End Set
+    End Property
+
+    ReadOnly Property Title As String
+        Get
+            Dim header = Me.Header.ToLower
+
+            For Each i In Package.Items.Values
+                If header.Contains(i.Name.ToLower) Then Return i.Name
+            Next
+
+            Return File.Base
+        End Get
     End Property
 
     Shared Function WriteBatchFile(path As String, content As String) As String
@@ -145,46 +158,41 @@ Public Class Proc
     End Property
 
     Sub WriteLine(value As String)
-        Log.WriteLine(value, Project)
+        Log.WriteLine(value)
     End Sub
 
     Sub KillAndThrow()
-        TrowException = True
+        TrowAbortException = True
 
         Try
             If Not Process.HasExited Then
                 If Process.ProcessName = "cmd" Then
                     For Each i In ProcessHelp.GetChilds(Process)
                         If {"conhost", "vspipe", "avs2pipemod64"}.Contains(i.ProcessName) Then Continue For
-
-                        If MsgOK("Confirm to kill " + i.ProcessName + ".exe") Then
-                            If Not i.HasExited Then i.Kill()
-                        End If
+                        If Not i.HasExited Then i.Kill()
                     Next
                 Else
                     Process.Kill()
                 End If
             End If
         Catch ex As Exception
-            ProcessForm.CloseProcessForm()
             g.ShowException(ex)
         End Try
     End Sub
 
     Sub Start()
         Try
-            If ReadError OrElse ReadOutput Then
-                Log.WriteLine(CommandLine + BR2, Project)
-                Log.Save(Project)
+            If ReadOutput Then
+                ProcForm.Start(Me)
+                Log.WriteLine(CommandLine + BR2)
             End If
 
-            Dim h = Native.GetForegroundWindow()
             Process.Start()
 
-            If ReadError Then Process.BeginErrorReadLine()
-            If ReadOutput Then Process.BeginOutputReadLine()
-
-            Native.SetForegroundWindow(h)
+            If ReadOutput Then
+                Process.BeginOutputReadLine()
+                Process.BeginErrorReadLine()
+            End If
         Catch ex As Exception
             Dim msg = ex.Message
             If File <> "" Then msg += BR2 + "File: " + File
@@ -203,7 +211,7 @@ Public Class Proc
                 ExitCode = Process.ExitCode
                 Process.Close()
 
-                If TrowException Then Throw New AbortException
+                If TrowAbortException Then Throw New AbortException
 
                 If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCode) Then
                     Dim ntdllHandle = Native.LoadLibrary("NTDLL.DLL")
@@ -243,17 +251,18 @@ Public Class Proc
                         errorMessage += BR2 + "The exit code might be a system error code: " + systemErrorMessage.Trim
                     End If
 
-                    errorMessage += BR2 + ProcessForm.CommandLineLog.ToString() + BR
-                    ProcessForm.ClearCommandLineOutput()
+                    errorMessage += BR2 + Log.ToString() + BR
 
                     Throw New ErrorAbortException("Error " + Header, errorMessage, Project)
                 End If
+
+                Succeeded = True
             End If
         Catch e As ErrorAbortException
             Throw e
         End Try
 
-        If TrowException Then Throw New AbortException
+        If TrowAbortException Then Throw New AbortException
     End Sub
 
     Shared Sub StartComandLine(cmdl As String)
@@ -266,7 +275,22 @@ Public Class Proc
     Private DisposedValue As Boolean = False
 
     Protected Overridable Sub Dispose(disposing As Boolean)
-        If Not DisposedValue Then If disposing Then Cleanup()
+        If Not DisposedValue Then
+            If disposing Then
+                If ReadOutput Then
+                    RemoveHandler Process.OutputDataReceived, AddressOf OnDataReceived
+                    RemoveHandler Process.ErrorDataReceived, AddressOf OnDataReceived
+
+                    Log.WriteStats()
+                    Project.Log.Append(Log.ToString)
+                    Project.Log.Save(Project)
+                    RaiseEvent Finished()
+                End If
+
+                If Not Process Is Nothing Then Process.Dispose()
+            End If
+        End If
+
         DisposedValue = True
     End Sub
 
@@ -275,28 +299,44 @@ Public Class Proc
         GC.SuppressFinalize(Me)
     End Sub
 
-    Sub Cleanup()
-        Dim writeLog As Boolean
+    Sub OnDataReceived(sendingProcess As Object, d As DataReceivedEventArgs)
+        Dim value = d.Data
+        If value = "" Then Exit Sub
 
-        If ReadError Then
-            ReadError = False
-            writeLog = True
-            RemoveHandler Process.ErrorDataReceived, AddressOf ProcessForm.CommandLineDataHandler
-            ProcessForm.ClearCommandLineOutput()
+        If Not RemoveChars Is Nothing Then
+            For Each i In RemoveChars
+                If value.Contains(i) Then value = value.Replace(i, "")
+            Next
         End If
 
-        If ReadOutput Then
-            ReadOutput = False
-            writeLog = True
-            RemoveHandler Process.OutputDataReceived, AddressOf ProcessForm.CommandLineDataHandler
-            ProcessForm.ClearCommandLineOutput()
+        If Not TrimChars Is Nothing Then value = value.Trim(TrimChars)
+        Dim skip As Boolean
+
+        If Not SkipStrings Is Nothing Then
+            For Each i In SkipStrings
+                If value.Contains(i) Then
+                    skip = True
+                    Exit For
+                End If
+            Next
         End If
 
-        If writeLog Then
-            Log.WriteStats(Project)
-            Log.Save(Project)
+        If Not SkipPatterns Is Nothing Then
+            For Each i In SkipPatterns
+                If Regex.IsMatch(value, i) Then
+                    skip = True
+                    Exit For
+                End If
+            Next
         End If
 
-        If Not Process Is Nothing Then Process.Dispose()
+        If value <> "" Then
+            If Not skip Then Log.WriteLine(value.Trim)
+            If Not IsSilent Then RaiseEvent DataReceived(value, If(skip, Nothing, Log.ToString))
+        End If
+    End Sub
+
+    Sub Refresh()
+        RaiseEvent DataReceived(Nothing, Log.ToString)
     End Sub
 End Class

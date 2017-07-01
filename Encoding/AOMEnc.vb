@@ -56,9 +56,9 @@ Public Class AOMEnc
         batchCode = Proc.WriteBatchFile(batchPath, batchCode)
 
         Using proc As New Proc
-            proc.Init(passName)
+            proc.Header = passName
             proc.Priority = priority
-            proc.SkipStrings = {"[ETA"}
+            proc.SkipString = "[ETA"
             proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath.Escape + """"
@@ -268,7 +268,7 @@ Public Class AV1Params
             If p.Script.Engine = ScriptEngine.VapourSynth Then
                 sb.Append(Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | " + Package.AOMEnc.Path.Escape + " -")
             Else
-                sb.Append(Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -loglevel error -hide_banner - | " + Package.AOMEnc.Path.Escape + " -")
+                sb.Append(Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -loglevel fatal -hide_banner - | " + Package.AOMEnc.Path.Escape + " -")
             End If
         End If
 

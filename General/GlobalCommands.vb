@@ -119,8 +119,8 @@ Public Class GlobalCommands
             File.WriteAllText(batchPath, batchCode, Encoding.Default)
             AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 
-            Using proc As New Proc
-                If showProcessWindow Then proc.Init("Execute Command Line")
+            Using proc As New Proc(showProcessWindow)
+                proc.Header = "Execute Command Line"
                 proc.WriteLine(batchCode + BR2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
@@ -140,8 +140,8 @@ Public Class GlobalCommands
             End Using
         Else
             For Each i In Macro.Expand(commandLines).SplitLinesNoEmpty
-                Using proc As New Proc
-                    If showProcessWindow Then proc.Init("Execute Command Line")
+                Using proc As New Proc(showProcessWindow)
+                    proc.Header = "Execute Command Line"
                     proc.CommandLine = i
                     proc.Wait = waitForExit
 
@@ -181,7 +181,7 @@ Public Class GlobalCommands
         AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 
         Using proc As New Proc
-            proc.Init("Execute Batch Script")
+            proc.Header = "Execute Batch Script"
             proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"

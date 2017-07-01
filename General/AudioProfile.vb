@@ -271,7 +271,7 @@ Public MustInherit Class AudioProfile
         ret.Add(New GUIAudioProfile(AudioCodec.Vorbis, 1))
         ret.Add(New GUIAudioProfile(AudioCodec.MP3, 4))
         ret.Add(New GUIAudioProfile(AudioCodec.AC3, 1.0) With {.Channels = 6, .Bitrate = 640})
-        ret.Add(New BatchAudioProfile(640, {}, "ac3", 6, "ffmpeg -i %input% -b:a %bitrate%k -hide_banner -y %output%"))
+        ret.Add(New BatchAudioProfile(640, {}, "ac3", 6, "ffmpeg -i %input% -b:a %bitrate%k -y -hide_banner %output%"))
         ret.Add(New MuxAudioProfile())
         ret.Add(New NullAudioProfile())
         Return ret
@@ -326,7 +326,7 @@ Public Class BatchAudioProfile
             batchCode = Proc.WriteBatchFile(batchPath, batchCode)
 
             Using proc As New Proc
-                proc.Init("Audio encoding: " + Name)
+                proc.Header = "Audio encoding: " + Name
                 proc.SkipStrings = {"Maximum Gain Found", "transcoding ...", "size=", "process: ", "analyze: "}
                 proc.WriteLine(batchCode + BR2)
                 proc.File = "cmd.exe"
@@ -642,16 +642,24 @@ Class GUIAudioProfile
 
                 Using proc As New Proc
                     If i.Contains("BeSweet.exe") Then
-                        proc.Init("Audio encoding using BeSweet " + Package.BeSweet.Version, "Processed", "transcoding", "Maximum Gain Found : ", "Asserting gain")
+                        proc.Header = "Audio encoding"
+                        proc.Package = Package.BeSweet
+                        proc.SkipStrings = {"Processed", "transcoding", "Maximum Gain Found : ", "Asserting gain"}
                     ElseIf i.Contains("eac3to.exe") Then
-                        proc.Init("Audio encoding using eac3to " + Package.eac3to.Version, "process: ", "analyze: ")
+                        proc.Header = "Audio encoding"
+                        proc.Package = Package.eac3to
+                        proc.SkipStrings = {"process: ", "analyze: "}
                         proc.TrimChars = {"-"c, " "c}
                         proc.RemoveChars = {VB6.ChrW(8)} 'backspace
                     ElseIf i.Contains("ffmpeg.exe") Then
-                        proc.Init("Audio encoding using ffmpeg " + Package.ffmpeg.Version, "size=", "decoding is not implemented", "unsupported frame type", "upload a sample")
+                        proc.Header = "Audio encoding"
+                        proc.Package = Package.ffmpeg
+                        proc.SkipStrings = {"frame=", "size="}
                         proc.Encoding = Encoding.UTF8
                     ElseIf i.Contains("qaac64.exe") Then
-                        proc.Init("Audio encoding using qaac " + Package.qaac.Version, ", ETA ")
+                        proc.Header = "Audio encoding"
+                        proc.Package = Package.qaac
+                        proc.SkipString = ", ETA "
                     End If
 
                     proc.CommandLine = i

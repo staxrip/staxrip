@@ -2331,7 +2331,8 @@ Public Class MainForm
                 Not File.Exists(Filepath.GetDirAndBase(i) + ".idx") Then
 
                 Using proc As New Proc
-                    proc.Init("Convert sup to sub: " + Filepath.GetName(i), "#>", "#<", "Decoding frame")
+                    proc.Header = "Convert sup to sub: " + Filepath.GetName(i)
+                    proc.SkipStrings = {"#>", "#<", "Decoding frame"}
                     proc.File = Package.BDSup2SubPP.Path
                     proc.Arguments = "-o """ + Filepath.GetDirAndBase(i) + ".idx"" """ + i + """"
                     proc.AllowedExitCodes = {}
@@ -2356,7 +2357,8 @@ Public Class MainForm
                 End If
 
                 Using proc As New Proc
-                    proc.Init("Extract forced subtitles if existing", "# ")
+                    proc.Header = "Extract forced subtitles if existing"
+                    proc.SkipString = "# "
                     proc.WriteLine(Filepath.GetName(i) + BR2)
                     proc.File = Package.BDSup2SubPP.Path
                     proc.Arguments = "--forced-only -o " + (i.DirAndBase + "_forced.idx").Escape + " " + i.Escape
@@ -2404,7 +2406,7 @@ Public Class MainForm
                         args.WriteANSIFile(fileContent)
 
                         Using proc As New Proc
-                            proc.Init("Demux subtitles using VSRip")
+                            proc.Header = "Demux subtitles using VSRip"
                             proc.WriteLine(args + BR2)
                             proc.File = Package.VSRip.Path
                             proc.Arguments = """" + fileContent + """"
@@ -2447,102 +2449,49 @@ Public Class MainForm
 
             Log.WriteLine(props.FormatColumn(":"))
 
-            Dim audioTask0 = Task.Run(Sub()
-                                          If p.SkipAudioEncoding AndAlso File.Exists(p.Audio0.GetOutputFile) Then
-                                              p.Audio0.File = p.Audio0.GetOutputFile()
-                                          Else
-                                              Audio.Process(p.Audio0)
-                                              p.Audio0.Encode()
-                                          End If
-                                      End Sub)
+            Hide()
 
-            Dim audioTask1 = Task.Run(Sub()
-                                          If p.SkipAudioEncoding AndAlso File.Exists(p.Audio1.GetOutputFile) Then
-                                              p.Audio1.File = p.Audio1.GetOutputFile()
-                                          Else
-                                              Audio.Process(p.Audio1)
-                                              p.Audio1.Encode()
-                                          End If
-                                      End Sub)
+            Dim actions As New List(Of Action)
+
+            If p.SkipAudioEncoding AndAlso File.Exists(p.Audio0.GetOutputFile) Then
+                p.Audio0.File = p.Audio0.GetOutputFile()
+            Else
+                actions.Add(Sub()
+                                Audio.Process(p.Audio0)
+                                p.Audio0.Encode()
+                            End Sub)
+            End If
+
+            If p.SkipAudioEncoding AndAlso File.Exists(p.Audio1.GetOutputFile) Then
+                p.Audio1.File = p.Audio1.GetOutputFile()
+            Else
+                actions.Add(Sub()
+                                Audio.Process(p.Audio1)
+                                p.Audio1.Encode()
+                            End Sub)
+            End If
 
             For Each i In p.AudioTracks
+                Dim temp = i
+
                 If p.SkipAudioEncoding AndAlso File.Exists(i.GetOutputFile) Then
                     i.File = i.GetOutputFile()
                 Else
-                    Audio.Process(i)
-                    i.Encode()
+                    actions.Add(Sub()
+                                    Audio.Process(temp)
+                                    temp.Encode()
+                                End Sub)
                 End If
             Next
 
-            Subtitle.Cut(p.VideoEncoder.Muxer.Subtitles)
+            actions.Add(Sub() Subtitle.Cut(p.VideoEncoder.Muxer.Subtitles))
+            actions.Add(AddressOf ProcessVideo)
 
-            If Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath)) Then
-                Dim originalFilters As List(Of VideoFilter)
-                Dim originalSource As String
-
-                If p.PreRenderIntoLossless AndAlso Not TypeOf p.VideoEncoder Is NullEncoder Then
-                    Dim outPath = p.TempDir + p.TargetFile.Base + "_lossless.avi"
-
-                    If p.Script.Engine = ScriptEngine.AviSynth Then
-                        Using proc As New Proc
-                            proc.Init("Pre-render into lossless AVI using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
-                            proc.Encoding = Encoding.UTF8
-                            proc.File = Package.ffmpeg.Path
-                            proc.Arguments = "-i " + p.Script.Path.Escape + " -c:v utvideo -pred median -sn -an -hide_banner -y " + outPath.Escape
-                            proc.Start()
-                        End Using
-                    Else
-                        Dim batchPath = p.TempDir + p.TargetFile.Base + "_lossless.bat"
-                        Dim batchCode = Package.vspipe.Path.Escape + " " + p.Script.Path.Escape + " - --y4m | " + Package.ffmpeg.Path.Escape + " -i - -c:v utvideo -pred median -sn -an -hide_banner -y " + outPath.Escape
-                        Proc.WriteBatchFile(batchPath, batchCode)
-
-                        Using proc As New Proc
-                            proc.Init("Pre-render into lossless AVI using ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
-                            proc.Encoding = Encoding.UTF8
-                            proc.WriteLine(batchCode + BR2)
-                            proc.File = "cmd.exe"
-                            proc.Arguments = "/C call """ + batchPath + """"
-                            proc.Start()
-                        End Using
-                    End If
-
-                    If File.Exists(outPath) Then
-                        Log.WriteHeader("Lossless AVI MediaInfo")
-                        Log.WriteLine(MediaInfo.GetSummary(outPath))
-                    Else
-                        Throw New ErrorAbortException("Pre-render failed", "Output file is missing")
-                    End If
-
-                    originalSource = p.SourceFile
-                    p.SourceFile = p.TempDir + p.TargetFile.Base + "_lossless.avi"
-                    originalFilters = p.Script.GetFiltersCopy()
-
-                    For Each i In p.Script.Filters
-                        If i.Category = "Source" Then
-                            If p.Script.Engine = ScriptEngine.AviSynth Then
-                                i.Script = "FFVideoSource(""" + outPath + """)"
-                            Else
-                                i.Script = "clip = core.ffms2.Source(r""" + outPath + """)"
-                            End If
-                        Else
-                            i.Active = False
-                        End If
-                    Next
-
-                    p.Script.Synchronize()
-                End If
-
-                If Not originalFilters Is Nothing Then
-                    p.SourceFile = originalSource
-                    p.Script.Filters = originalFilters
-                    p.Script.Synchronize()
-                End If
-
-                p.VideoEncoder.Encode()
-            End If
-
-            audioTask0.Wait()
-            audioTask1.Wait()
+            Try
+                Parallel.Invoke(New ParallelOptions With {.MaxDegreeOfParallelism = s.ParallelProcsNum}, actions.ToArray)
+            Catch ex As AggregateException
+                Throw ex.InnerExceptions(0)
+            End Try
 
             Log.Save()
             p.VideoEncoder.Muxer.Mux()
@@ -2559,6 +2508,76 @@ Public Class MainForm
         Finally
             g.IsProcessing = False
         End Try
+    End Sub
+
+    Sub ProcessVideo()
+        If Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath)) Then
+            Dim originalFilters As List(Of VideoFilter)
+            Dim originalSource As String
+
+            If p.PreRenderIntoLossless AndAlso Not TypeOf p.VideoEncoder Is NullEncoder Then
+                Dim outPath = p.TempDir + p.TargetFile.Base + "_lossless.avi"
+
+                If p.Script.Engine = ScriptEngine.AviSynth Then
+                    Using proc As New Proc
+                        proc.Header = "Pre-render into lossless AVI"
+                        proc.SkipStrings = {"frame=", "size="}
+                        proc.Encoding = Encoding.UTF8
+                        proc.Package = Package.ffmpeg
+                        proc.Arguments = "-i " + p.Script.Path.Escape + " -c:v utvideo -pred median -sn -an -y -hide_banner " + outPath.Escape
+                        proc.Start()
+                    End Using
+                Else
+                    Dim batchPath = p.TempDir + p.TargetFile.Base + "_lossless.bat"
+                    Dim batchCode = Package.vspipe.Path.Escape + " " + p.Script.Path.Escape + " - --y4m | " + Package.ffmpeg.Path.Escape + " -i - -c:v utvideo -pred median -sn -an -y -hide_banner " + outPath.Escape
+                    Proc.WriteBatchFile(batchPath, batchCode)
+
+                    Using proc As New Proc
+                        proc.Header = "Pre-render into lossless AVI"
+                        proc.SkipStrings = {"frame=", "size=", "Multiple"}
+                        proc.Encoding = Encoding.UTF8
+                        proc.WriteLine(batchCode + BR2)
+                        proc.Package = Package.ffmpeg
+                        proc.File = "cmd.exe"
+                        proc.Arguments = "/C call """ + batchPath + """"
+                        proc.Start()
+                    End Using
+                End If
+
+                If File.Exists(outPath) Then
+                    Log.WriteHeader("Lossless AVI MediaInfo")
+                    Log.WriteLine(MediaInfo.GetSummary(outPath))
+                Else
+                    Throw New ErrorAbortException("Pre-render failed", "Output file is missing")
+                End If
+
+                originalSource = p.SourceFile
+                p.SourceFile = p.TempDir + p.TargetFile.Base + "_lossless.avi"
+                originalFilters = p.Script.GetFiltersCopy()
+
+                For Each i In p.Script.Filters
+                    If i.Category = "Source" Then
+                        If p.Script.Engine = ScriptEngine.AviSynth Then
+                            i.Script = "FFVideoSource(""" + outPath + """)"
+                        Else
+                            i.Script = "clip = core.ffms2.Source(r""" + outPath + """)"
+                        End If
+                    Else
+                        i.Active = False
+                    End If
+                Next
+
+                p.Script.Synchronize()
+            End If
+
+            If Not originalFilters Is Nothing Then
+                p.SourceFile = originalSource
+                p.Script.Filters = originalFilters
+                p.Script.Synchronize()
+            End If
+
+            p.VideoEncoder.Encode()
+        End If
     End Sub
 
     Function ProcessTip(message As String) As Boolean
@@ -3336,7 +3355,7 @@ Public Class MainForm
                 Not FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) Then
 
                 Using proc As New Proc
-                    proc.Init("Index LWLibav")
+                    proc.Header = "Index LWLibav"
                     proc.Encoding = Encoding.UTF8
 
                     If p.Script.Engine = ScriptEngine.AviSynth Then
@@ -3435,7 +3454,7 @@ Public Class MainForm
             Dim ui = form.SimpleUI
             ui.Store = s
 
-            Dim generalPage = ui.CreateFlowPage("General")
+            ui.CreateFlowPage("General")
 
             Dim b = ui.AddBool()
             b.Text = "Show template selection when loading new files"
@@ -3463,7 +3482,12 @@ Public Class MainForm
             n.Config = {0, 15}
             n.Field = NameOf(s.ProjectsMruNum)
 
-            Dim uiPage = ui.CreateFlowPage("User Interface", True)
+            n = ui.AddNum()
+            n.Text = "Number of parallel processes"
+            n.Config = {0, 4}
+            n.Field = NameOf(s.ParallelProcsNum)
+
+            ui.CreateFlowPage("User Interface", True)
 
             Dim t = ui.AddText()
             t.Text = "Remember Window Positions:"
@@ -5037,14 +5061,14 @@ Public Class MainForm
                                 OpenVideoSourceFiles(files)
                             Case Else
                                 Using proc As New Proc
-                                    proc.Init("Merge source files using Mkvmerge " + Package.mkvmerge.Version)
+                                    proc.Header = "Merge source files"
 
                                     For Each i In files
                                         Log.WriteLine(MediaInfo.GetSummary(i) + "---------------------------------------------------------" + BR2)
                                     Next
 
                                     proc.Encoding = Encoding.UTF8
-                                    proc.File = Package.mkvmerge.Path
+                                    proc.Package = Package.mkvmerge
                                     Dim outFile = files(0).DirAndBase + "_merged.mkv"
                                     proc.Arguments = "-o " + outFile.Escape + " """ + files.Join(""" + """) + """"
 
@@ -5192,10 +5216,11 @@ Public Class MainForm
                     End If
 
                     Using proc As New Proc
+                        proc.Header = "Demux M2TS"
                         proc.TrimChars = {"-"c, " "c}
                         proc.RemoveChars = {CChar(VB6.vbBack)}
-                        proc.Init("Demux M2TS using eac3to " + Package.eac3to.Version, "analyze: ", "process: ")
-                        proc.File = Package.eac3to.Path
+                        proc.SkipStrings = {"analyze: ", "process: "}
+                        proc.Package = Package.eac3to
                         proc.Process.StartInfo.Arguments = form.GetArgs(
                             """" + playlistFolder + """ " & playlistID & ")", DirPath.GetName(workDir))
 
@@ -5889,6 +5914,16 @@ Public Class MainForm
         'Using f As New TestForm
         '    f.ShowDialog()
         'End Using
+
+        'Dim lines = File.ReadAllLines("D:\Video\Samples\M2TS\TrueHD_temp\TrueHD_staxrip.log")
+
+        'Dim proc As New Proc
+        'proc.SkipStrings = {"frame=", "size="}
+
+        'For Each i In lines
+        '    Dim t = proc.ProcessData(i)
+        '    If Not t.Item2 Then Debug.WriteLine(i)
+        'Next
 
         MyBase.OnShown(e)
     End Sub

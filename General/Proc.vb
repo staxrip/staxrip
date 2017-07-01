@@ -14,6 +14,7 @@ Public Class Proc
     Property Priority As ProcessPriorityClass = ProcessPriorityClass.Normal
     Property AllowedExitCodes As Integer() = {0}
     Property BeginOutputReadLine As Boolean
+    Property SkipString As String
     Property SkipStrings As String()
     Property SkipPatterns As String()
     Property TrimChars As Char()
@@ -21,27 +22,34 @@ Public Class Proc
     Property ExitCode As Integer
     Property Log As New LogBuilder
     Property Succeeded As Boolean
+    Property Header As String
+    Property Package As Package
 
-    Private ReadOutput As Boolean
-    Private Header As String
+    Event ProcDisposed()
 
-    Event DataReceived(value As String, log As String)
-    Event Finished()
-
-    Sub Init(header As String, ParamArray skipStrings As String())
-        Me.Header = header
-        AddHandler Process.ErrorDataReceived, AddressOf OnDataReceived
-        AddHandler Process.OutputDataReceived, AddressOf OnDataReceived
-        Process.StartInfo.CreateNoWindow = True
-        Process.StartInfo.UseShellExecute = False
-        Process.StartInfo.RedirectStandardError = True
-        Process.StartInfo.RedirectStandardOutput = True
-        ReadOutput = True
-        Wait = True
-        Priority = s.ProcessPriority
-        Log.WriteHeader(header)
-        If skipStrings.Length > 0 Then Me.SkipStrings = skipStrings
+    Sub New(Optional readOutput As Boolean = True)
+        Me.ReadOutput = readOutput
     End Sub
+
+    Private ReadOutputValue As Boolean
+
+    Property ReadOutput As Boolean
+        Get
+            Return ReadOutputValue
+        End Get
+        Set(value As Boolean)
+            ReadOutputValue = value
+
+            If value Then
+                Process.StartInfo.CreateNoWindow = True
+                Process.StartInfo.UseShellExecute = False
+                Process.StartInfo.RedirectStandardError = True
+                Process.StartInfo.RedirectStandardOutput = True
+                Priority = s.ProcessPriority
+                Wait = True
+            End If
+        End Set
+    End Property
 
     Private ProjectValue As Project
 
@@ -70,6 +78,8 @@ Public Class Proc
 
     ReadOnly Property Title As String
         Get
+            If Not Package Is Nothing Then Return Package.Name
+
             Dim header = Me.Header.ToLower
 
             For Each i In Package.Items.Values
@@ -180,9 +190,18 @@ Public Class Proc
     End Sub
 
     Sub Start()
+        If ProcController.Aborted Then Throw New AbortException
+
         Try
+            If Header <> "" Then
+                If Not Package Is Nothing Then Header += " using " + Package.Name + " " + Package.Version
+                Log.WriteHeader(Header)
+            End If
+
+            If Process.StartInfo.FileName = "" Then Process.StartInfo.FileName = Package.Path
+
             If ReadOutput Then
-                ProcForm.Start(Me)
+                ProcController.Start(Me)
                 Log.WriteLine(CommandLine + BR2)
             End If
 
@@ -264,29 +283,19 @@ Public Class Proc
         If TrowAbortException Then Throw New AbortException
     End Sub
 
-    Shared Sub StartComandLine(cmdl As String)
-        Using pw As New Proc
-            pw.CommandLine = cmdl
-            pw.Start()
-        End Using
-    End Sub
-
     Private DisposedValue As Boolean = False
 
     Protected Overridable Sub Dispose(disposing As Boolean)
         If Not DisposedValue Then
             If disposing Then
                 If ReadOutput Then
-                    RemoveHandler Process.OutputDataReceived, AddressOf OnDataReceived
-                    RemoveHandler Process.ErrorDataReceived, AddressOf OnDataReceived
-
                     Log.WriteStats()
                     Project.Log.Append(Log.ToString)
                     Project.Log.Save(Project)
-                    RaiseEvent Finished()
                 End If
 
                 If Not Process Is Nothing Then Process.Dispose()
+                RaiseEvent ProcDisposed()
             End If
         End If
 
@@ -298,9 +307,8 @@ Public Class Proc
         GC.SuppressFinalize(Me)
     End Sub
 
-    Sub OnDataReceived(sendingProcess As Object, d As DataReceivedEventArgs)
-        Dim value = d.Data
-        If value = "" Then Exit Sub
+    Function ProcessData(value As String) As (String, Boolean)
+        If value = "" Then Return ("", False)
 
         If Not RemoveChars Is Nothing Then
             For Each i In RemoveChars
@@ -309,33 +317,21 @@ Public Class Proc
         End If
 
         If Not TrimChars Is Nothing Then value = value.Trim(TrimChars)
-        Dim skip As Boolean
 
-        If Not SkipStrings Is Nothing Then
+        If SkipString <> "" Then
+            If value.Contains(SkipString) Then Return (value, True)
+        ElseIf Not SkipStrings Is Nothing Then
             For Each i In SkipStrings
-                If value.Contains(i) Then
-                    skip = True
-                    Exit For
-                End If
+                If value.Contains(i) Then Return (value, True)
             Next
         End If
 
         If Not SkipPatterns Is Nothing Then
             For Each i In SkipPatterns
-                If Regex.IsMatch(value, i) Then
-                    skip = True
-                    Exit For
-                End If
+                If Regex.IsMatch(value, i) Then Return (value, True)
             Next
         End If
 
-        If value <> "" Then
-            If Not skip Then Log.WriteLine(value.Trim)
-            If Not IsSilent Then RaiseEvent DataReceived(value, If(skip, Nothing, Log.ToString))
-        End If
-    End Sub
-
-    Sub Refresh()
-        RaiseEvent DataReceived(Nothing, Log.ToString)
-    End Sub
+        Return (value, False)
+    End Function
 End Class

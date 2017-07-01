@@ -88,7 +88,8 @@ Public Class Package
     Shared Property Haali As New HaaliSplitter
     Shared Property Java As New JavaPackage
     Shared Property MediaInfo As New MediaInfoPackage
-    Shared Property MP4Box As New MP4BoxPackage
+
+    Shared Property MP4Box As Package = Add(New MP4BoxPackage)
 
     Shared Property MPC As Package = Add(New Package With {
         .Name = "MPC Player",
@@ -302,7 +303,6 @@ Public Class Package
         Add(Haali)
         Add(Java)
         Add(MediaInfo)
-        Add(MP4Box)
         Add(MPC)
         Add(NicAudio)
         Add(ProjectX)

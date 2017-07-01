@@ -99,10 +99,11 @@ Class ffmpegEnc
 
     Overloads Sub Encode(args As String)
         Using proc As New Proc
-            proc.Init("Encoding " + Params.Codec.OptionText + " using ffmpeg " + Package.ffmpeg.Version, "frame=")
+            proc.Header = "Video encoding " + Params.Codec.OptionText
+            proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
             proc.WorkingDirectory = p.TempDir
-            proc.File = Package.ffmpeg.Path
+            proc.Package = Package.ffmpeg
             proc.Arguments = args
             proc.Start()
         End Using

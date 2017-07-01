@@ -73,6 +73,8 @@ Public Class GlobalClass
             Else
                 g.MainForm.OpenProject(jobPath, False)
             End If
+
+            ProcController.Aborted = False
         End Try
     End Sub
 
@@ -470,8 +472,9 @@ Public Class GlobalClass
             Not FileTypes.VideoText.Contains(Filepath.GetExt(sourcePath)) Then
 
             Using proc As New Proc
+                proc.Header = "Index with ffmsindex"
+                proc.SkipString = "Indexing, please wait..."
                 proc.Project = proj
-                proc.Init("Index with ffmsindex", "Indexing, please wait...")
                 proc.File = Package.ffms2.GetDir + "ffmsindex.exe"
                 proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.Escape + " " + cachePath.Escape
                 proc.Start()

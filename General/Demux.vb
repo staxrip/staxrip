@@ -172,13 +172,13 @@ Class CommandLineDemuxer
                 proc.SkipPatterns = {"^\d+$"}
             ElseIf Command?.Contains("dsmux") Then
                 If Not Package.Haali.VerifyOK(True) Then Throw New AbortException
-                proc.SkipStrings = {"Muxing..."}
+                proc.SkipString = "Muxing..."
             ElseIf Command?.Contains("Java") Then
                 If Not Package.Java.VerifyOK(True) Then Throw New AbortException
                 proc.SkipPatterns = {"^\d+ %$"}
             End If
 
-            proc.Init(Name)
+            proc.Header = Name
             proc.File = Macro.Expand(Command)
             proc.Arguments = Macro.Expand(Arguments)
             proc.Start()
@@ -219,10 +219,11 @@ Public Class eac3toDemuxer
             If form.ShowDialog() = DialogResult.OK Then
                 Using proc As New Proc
                     proc.Project = proj
+                    proc.SkipStrings = {"analyze: ", "process: "}
                     proc.TrimChars = {"-"c, " "c}
                     proc.RemoveChars = {CChar(VB6.vbBack)}
-                    proc.Init("Demux M2TS using eac3to " + Package.eac3to.Version, "analyze: ", "process: ")
-                    proc.File = Package.eac3to.Path
+                    proc.Header = "Demux M2TS"
+                    proc.Package = Package.eac3to
                     proc.Arguments = form.GetArgs(proj.SourceFile.Escape, proj.SourceFile.Base)
 
                     Try
@@ -309,14 +310,15 @@ Public Class ffmpegDemuxer
         Dim outPath = proj.TempDir + proj.SourceFile.Base + streams(0).ExtFull
         If outPath = proj.SourceFile Then Exit Sub
         Dim args = "-i " + proj.SourceFile.Escape
-        args += " -c:v copy -an -sn -y -hide_banner -loglevel error"
+        args += " -c:v copy -an -sn -y -hide_banner"
         args += " " + outPath.Escape
 
         Using proc As New Proc
             proc.Project = proj
-            proc.Init("Demux video using ffmpeg " + Package.ffmpeg.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
+            proc.Header = "Demux video"
+            proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.Path
+            proc.Package = Package.ffmpeg
             proc.Arguments = args
             proc.Start()
         End Using
@@ -334,15 +336,16 @@ Public Class ffmpegDemuxer
         Dim streamIndex = stream.StreamOrder
         Dim args = "-i " + sourcefile.Escape
         If MediaInfo.GetAudioCount(sourcefile) > 1 Then args += " -map 0:a:" & stream.Index
-        args += " -vn -sn -y -hide_banner -loglevel error"
+        args += " -vn -sn -y -hide_banner"
         If outPath.Ext = "wav" Then args += " -c:a pcm_s16le" Else args += " -c:a copy"
         args += " " + outPath.Escape
 
         Using proc As New Proc
             proc.Project = proj
-            proc.Init("Demux audio using ffmpeg " + Package.ffmpeg.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |", "[h264 @ "})
+            proc.Header = "Demux audio"
+            proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.Path
+            proc.Package = Package.ffmpeg
             proc.Arguments = args
             proc.Start()
         End Using
@@ -373,9 +376,10 @@ Public Class ffmpegDemuxer
 
             Using proc As New Proc
                 proc.Project = proj
-                proc.Init("Demux subtitles using ffmpeg " + Package.ffmpeg.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
+                proc.Header = "Demux subtitles"
+                proc.SkipStrings = {"frame=", "size="}
                 proc.Encoding = Encoding.UTF8
-                proc.File = Package.ffmpeg.Path
+                proc.Package = Package.ffmpeg
                 proc.Arguments = args
                 proc.Start()
             End Using
@@ -472,8 +476,9 @@ Class MP4BoxDemuxer
 
                 Using proc As New Proc
                     proc.Project = proj
-                    proc.Init("Demux subtitle using MP4Box " + Package.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |", "VobSub Export: |", "SRT Extract: |"})
-                    proc.File = Package.MP4Box.Path
+                    proc.Header = "Demux subtitle"
+                    proc.SkipString = "|"
+                    proc.Package = Package.MP4Box
                     proc.Arguments = args
                     proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
                     proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
@@ -485,8 +490,9 @@ Class MP4BoxDemuxer
         If Not attachments.NothingOrEmpty AndAlso attachments(0).Enabled Then
             Using proc As New Proc
                 proc.Project = proj
-                proc.Init("Extract cover using MP4Box " + Package.MP4Box.Version)
-                proc.File = Package.MP4Box.Path
+                proc.SkipString = "|"
+                proc.Header = "Extract cover"
+                proc.Package = Package.MP4Box
                 proc.Arguments = "-dump-cover " + proj.SourceFile.Escape + " -out " + (proj.TempDir + "cover.jpg").Escape
                 proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
                 proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
@@ -499,8 +505,9 @@ Class MP4BoxDemuxer
 
             Using proc As New Proc
                 proc.Project = proj
-                proc.Init("Extract chapters using MP4Box " + Package.MP4Box.Version)
-                proc.File = Package.MP4Box.Path
+                proc.Header = "Extract chapters"
+                proc.SkipString = "|"
+                proc.Package = Package.MP4Box
                 proc.Arguments = "-dump-chap-ogg " + proj.SourceFile.Escape + " -out " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").Escape
                 proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
                 proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
@@ -523,8 +530,9 @@ Class MP4BoxDemuxer
 
         Using proc As New Proc
             proc.Project = proj
-            proc.Init("Demux video using MP4Box " + Package.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |", "VobSub Export: |", "SRT Extract: |"})
-            proc.File = Package.MP4Box.Path
+            proc.Header = "Demux video"
+            proc.SkipString = "|"
+            proc.Package = Package.MP4Box
             proc.Arguments = args
             proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
             proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
@@ -554,8 +562,9 @@ Class MP4BoxDemuxer
 
         Using proc As New Proc
             proc.Project = proj
-            proc.Init("Demux audio using MP4Box " + Package.MP4Box.Version, {"Media Export: |", "File Export: |", "ISO File Writing: |"})
-            proc.File = Package.MP4Box.Path
+            proc.Header = "Demux audio"
+            proc.SkipString = "|"
+            proc.Package = Package.MP4Box
             proc.Arguments = args
             proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
             proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
@@ -641,10 +650,11 @@ Class mkvDemuxer
         If chaptersDemuxing AndAlso stdout.Contains("Chapters: ") Then
             Using proc As New Proc
                 proc.Project = proj
-                proc.Init("Demux xml chapters using mkvextract " + Package.mkvmerge.Version, "Progress: ")
+                proc.Header = "Demux xml chapters"
+                proc.SkipString = "Progress: "
                 proc.WriteLine(stdout + BR)
                 proc.Encoding = Encoding.UTF8
-                proc.File = Package.mkvextract.Path
+                proc.Package = Package.mkvextract
                 proc.Arguments = "chapters " + proj.SourceFile.Escape + " --redirect-output " + (proj.TempDir + proj.SourceFile.Base + "_chapters.xml").Escape
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
@@ -652,10 +662,11 @@ Class mkvDemuxer
 
             Using proc As New Proc
                 proc.Project = proj
-                proc.Init("Demux ogg chapters using mkvextract " + Package.mkvmerge.Version, "Progress: ")
+                proc.Header = "Demux ogg chapters"
+                proc.SkipString = "Progress: "
                 proc.WriteLine(stdout + BR)
                 proc.Encoding = Encoding.UTF8
-                proc.File = Package.mkvextract.Path
+                proc.Package = Package.mkvextract
                 proc.Arguments = "chapters " + proj.SourceFile.Escape + " --redirect-output " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").Escape + " --simple"
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
@@ -667,10 +678,11 @@ Class mkvDemuxer
         If enabledAttachments.Count > 0 Then
             Using proc As New Proc
                 proc.Project = proj
-                proc.Init("Demux attachments using mkvextract " + Package.mkvmerge.Version, "Progress: ")
+                proc.Header = "Demux attachments"
+                proc.SkipString = "Progress: "
                 proc.WriteLine(stdout + BR)
                 proc.Encoding = Encoding.UTF8
-                proc.File = Package.mkvextract.Path
+                proc.Package = Package.mkvextract
                 proc.Arguments = "attachments " + proj.SourceFile.Escape + " " +
                     enabledAttachments.Select(Function(val) val.ID & ":" + GetAttachmentPath(
                     proj.TempDir, val.Name).Escape).Join(" ")
@@ -684,9 +696,10 @@ Class mkvDemuxer
 
             Using proc As New Proc
                 proc.Project = proj
-                proc.Init("Demux timecodes using mkvextract " + Package.mkvextract.Version, "Progress: ")
+                proc.Header = "Demux timecodes"
+                proc.SkipString = "Progress: "
                 proc.Encoding = Encoding.UTF8
-                proc.File = Package.mkvextract.Path
+                proc.Package = Package.mkvextract
                 proc.Arguments = "timecodes_v2 " + proj.SourceFile.Escape + " " & streamOrder & ":" + (proj.TempDir + proj.SourceFile.Base + "_timecodes.txt").Escape
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
@@ -742,9 +755,10 @@ Class mkvDemuxer
 
         Using proc As New Proc
             proc.Project = proj
-            proc.Init("Demux mkv using mkvextract " + Package.mkvextract.Version, "Progress: ")
+            proc.Header = "Demux mkv"
+            proc.SkipString = "Progress: "
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.mkvextract.Path
+            proc.Package = Package.mkvextract
             proc.Arguments = args + " --ui-language en"
             proc.AllowedExitCodes = {0, 1, 2}
             proc.Start()
@@ -758,8 +772,9 @@ Class mkvDemuxer
                 If outPath.Ext = "aac" Then
                     Using proc As New Proc
                         proc.Project = proj
-                        proc.Init("Mux AAC to M4A using MP4Box " + Package.MP4Box.Version, "|")
-                        proc.File = Package.MP4Box.Path
+                        proc.Header = "Mux AAC to M4A"
+                        proc.SkipString = "|"
+                        proc.Package = Package.MP4Box
                         Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
                         Dim m4aPath = outPath.ChangeExt("m4a")
                         proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new " + m4aPath.Escape

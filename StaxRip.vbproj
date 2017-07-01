@@ -188,6 +188,7 @@
     <Compile Include="General\GlobalClass.vb" />
     <Compile Include="General\GlobalCommands.vb" />
     <Compile Include="General\Automation.vb" />
+    <Compile Include="General\ProcController.vb" />
     <Compile Include="UI\DataForm.Designer.vb">
       <DependentUpon>DataForm.vb</DependentUpon>
     </Compile>

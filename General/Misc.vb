@@ -1866,10 +1866,11 @@ Public Class Subtitle
             Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0}:r={1} -y -hide_banner -c:v copy " + aviPath.Escape, (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture))
 
             Using proc As New Proc
-                proc.Init("Create avi file for subtitle cutting with ffmpeg " + Package.ffmpeg.Version, "frame=", "size=", "Multiple")
+                proc.Header = "Create avi file for subtitle cutting"
+                proc.SkipStrings = {"frame=", "size="}
                 proc.WriteLine("mkvmerge cannot cut subtitles without video so a avi file has to be created" + BR2)
                 proc.Encoding = Encoding.UTF8
-                proc.File = Package.ffmpeg.Path
+                proc.Package = Package.ffmpeg
                 proc.Arguments = args
                 proc.Start()
             End Using
@@ -1894,9 +1895,10 @@ Public Class Subtitle
             args += " --ui-language en"
 
             Using proc As New Proc
-                proc.Init("Cut subtitle using mkvmerge " + Package.mkvmerge.Version, "Progress: ")
+                proc.Header = "Cut subtitle"
+                proc.SkipString = "Progress: "
                 proc.Encoding = Encoding.UTF8
-                proc.File = Package.mkvmerge.Path
+                proc.Package = Package.mkvmerge
                 proc.Arguments = args
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
@@ -1912,9 +1914,10 @@ Public Class Subtitle
             args = "tracks " + mkvPath.Escape + " 1:" + subPath.Escape
 
             Using proc As New Proc
-                proc.Init("Demux subtitle using mkvextract " + Package.mkvextract.Version, "Progress: ")
+                proc.Header = "Demux subtitle"
+                proc.SkipString = "Progress: "
                 proc.Encoding = Encoding.UTF8
-                proc.File = Package.mkvextract.Path
+                proc.Package = Package.mkvextract
                 proc.Arguments = args + " --ui-language en"
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()

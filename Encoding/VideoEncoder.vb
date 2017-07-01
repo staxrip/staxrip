@@ -440,7 +440,7 @@ Class BatchEncoder
         Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Expand(CommandLines).Trim)
 
         Using proc As New Proc
-            proc.Init("Encoding video command line encoder: " + Name)
+            proc.Header = "Encoding video command line encoder: " + Name
             proc.SkipStrings = GetSkipStrings(batchCode)
             proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
@@ -492,7 +492,6 @@ Class BatchEncoder
         Log.WriteLine(batchCode + BR2)
 
         Using proc As New Proc
-            proc.Init(Nothing)
             proc.SkipStrings = GetSkipStrings(batchCode)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"

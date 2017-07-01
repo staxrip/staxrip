@@ -60,7 +60,7 @@ Public Class x264Enc
         batchCode = Proc.WriteBatchFile(batchPath, batchCode)
 
         Using proc As New Proc
-            proc.Init(passName)
+            proc.Header = passName
             proc.Priority = priority
             proc.SkipStrings = {"kb/s, eta", "%]"}
             proc.WriteLine(batchCode + BR2)

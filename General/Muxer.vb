@@ -291,8 +291,9 @@ Public Class MP4Muxer
 
     Overrides Sub Mux()
         Using proc As New Proc
-            proc.Init("Muxing using MP4Box " + Package.MP4Box.Version, {"|"})
-            proc.File = Package.MP4Box.Path
+            proc.Header = "Muxing"
+            proc.SkipString = "|"
+            proc.Package = Package.MP4Box
             proc.Arguments = GetArgs()
             proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
             proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
@@ -374,7 +375,7 @@ Class BatchMuxer
         Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Expand(CommandLines))
 
         Using proc As New Proc
-            proc.Init("Encoding video command line encoder: " + Name)
+            proc.Header = "Encoding video command line encoder: " + Name
             proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
@@ -476,9 +477,10 @@ Public Class MkvMuxer
 
     Overrides Sub Mux()
         Using proc As New Proc
-            proc.Init("Muxing using mkvmerge " + Package.mkvmerge.Version, "Progress: ", "+-> Pre-parsing")
+            proc.Header = "Muxing"
+            proc.SkipStrings = {"Progress: ", "+-> Pre-parsing"}
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.mkvmerge.Path
+            proc.Package = Package.mkvmerge
             proc.Arguments = GetArgs(True)
             proc.AllowedExitCodes = {0, 1}
             proc.Start()
@@ -727,7 +729,7 @@ Class ffmpegMuxer
     End Function
 
     Overrides Sub Mux()
-        Dim args = "-i """ + p.VideoEncoder.OutputPath + """"
+        Dim args = "-i " + p.VideoEncoder.OutputPath.Escape
 
         Dim id As Integer
         Dim mapping = " -map 0:v"
@@ -735,20 +737,21 @@ Class ffmpegMuxer
         For Each i In {p.Audio0, p.Audio1}
             If File.Exists(i.File) AndAlso IsSupported(i.OutputFileType) Then
                 id += 1
-                args += " -i """ + i.File + """"
+                args += " -i " + i.File.Escape
                 mapping += " -map " & id
                 If Not i.Stream Is Nothing Then mapping += ":" & i.Stream.StreamOrder
             End If
         Next
 
         args += mapping
-        args += " -c:v copy -c:a copy -y"
-        args += " """ + p.TargetFile + """"
+        args += " -c:v copy -c:a copy -y -hide_banner"
+        args += " " + p.TargetFile.Escape
 
         Using proc As New Proc
-            proc.Init("Muxing to " + OutputTypeValue + " using ffmpeg " + Package.ffmpeg.Version, "frame=")
+            proc.Header = "Muxing to " + OutputTypeValue
+            proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
-            proc.File = Package.ffmpeg.Path
+            proc.Package = Package.ffmpeg
             proc.Arguments = args
             proc.Start()
         End Using

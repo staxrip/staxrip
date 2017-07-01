@@ -61,10 +61,10 @@ Public Class x265Enc
         batchCode = Proc.WriteBatchFile(batchPath, batchCode)
 
         Using proc As New Proc
-            proc.Init(passName)
+            proc.Header = passName
             proc.Encoding = Encoding.UTF8
             proc.Priority = priority
-            proc.SkipStrings = {"%] "}
+            proc.SkipString = "%] "
             proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
@@ -936,10 +936,10 @@ Public Class x265Params
                     sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.x265.Path.Escape)
                 Case "ffqsv"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Escape + " -f yuv4mpegpipe" + crop + " -loglevel error -hide_banner - | " + Package.x265.Path.Escape)
+                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Escape + " -f yuv4mpegpipe" + crop + " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
                 Case "ffdxva"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Escape + " -f yuv4mpegpipe" + crop + " -loglevel error -hide_banner - | " + Package.x265.Path.Escape)
+                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Escape + " -f yuv4mpegpipe" + crop + " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
             End Select
         End If
 

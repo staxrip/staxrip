@@ -58,6 +58,7 @@ Public Class ApplicationSettings
     Public WindowPositionsRemembered As String()
     Public LogFileNum As Integer = 50
     Public ProjectsMruNum As Integer = 5
+    Public ParallelProcsNum As Integer = 3
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

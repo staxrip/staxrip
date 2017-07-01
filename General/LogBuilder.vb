@@ -27,6 +27,14 @@ Public Class LogBuilder
         End If
     End Sub
 
+    ReadOnly Property Length As Integer
+        Get
+            SyncLock Log
+                Return Log.Length
+            End SyncLock
+        End Get
+    End Property
+
     Sub WriteHeader(value As String)
         StartTime = DateTime.Now
 

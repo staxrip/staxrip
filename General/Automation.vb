@@ -17,7 +17,7 @@ Public Class Scripting
 
                 Using pipeline = runspace.CreatePipeline()
                     pipeline.Commands.AddScript(
-    "Using namespace StaxRip;
+"Using namespace StaxRip;
 Using namespace StaxRip.UI;
 [System.Reflection.Assembly]::LoadWithPartialName(""StaxRip"")")
 

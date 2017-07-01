@@ -1,4 +1,3 @@
-Imports System.Runtime.InteropServices
 Imports Microsoft.Win32
 Imports StaxRip.UI
 
@@ -206,7 +205,7 @@ Public Class ProcForm
     Private TaskbarButtonCreatedMessage As Integer
 
     Property Taskbar As Taskbar
-    Property OriginalLeft As Integer
+    'Property OriginalLeft As Integer
 
     Sub New()
         InitializeComponent()
@@ -238,7 +237,7 @@ Public Class ProcForm
     End Sub
 
     Private Sub NotifyIcon_MouseClick() Handles NotifyIcon.MouseClick
-        ShowForm()
+        BeginInvoke(Sub() ShowForm())
     End Sub
 
     Private Sub bnJobs_Click() Handles bnJobs.Click
@@ -287,9 +286,9 @@ Public Class ProcForm
     End Sub
 
     Private Sub ShowForm()
+        WindowState = FormWindowState.Normal
         g.IsMinimizedEncodingInstance = False
         ShowInTaskbar = True
-        If Left < 0 Then Left = OriginalLeft
         Show()
         Activate()
         NotifyIcon.Visible = False
@@ -303,15 +302,6 @@ Public Class ProcForm
     Protected Overrides Sub OnShown(e As EventArgs)
         MyBase.OnShown(e)
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
-    End Sub
-
-    Protected Overrides Sub OnLoad(e As EventArgs)
-        MyBase.OnLoad(e)
-
-        If g.IsMinimizedEncodingInstance AndAlso s.MinimizeToTray Then
-            OriginalLeft = Left
-            Left = -5000
-        End If
     End Sub
 
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean

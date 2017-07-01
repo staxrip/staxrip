@@ -3484,7 +3484,7 @@ Public Class MainForm
 
             n = ui.AddNum()
             n.Text = "Number of parallel processes"
-            n.Config = {0, 4}
+            n.Config = {1, 4}
             n.Field = NameOf(s.ParallelProcsNum)
 
             ui.CreateFlowPage("User Interface", True)
@@ -5906,7 +5906,7 @@ Public Class MainForm
         IsLoading = False
 
         If g.IsEncodingInstance Then
-            g.RunJobs()
+            g.ProcessJobs()
         Else
             ProcessCommandLine(Environment.GetCommandLineArgs)
         End If

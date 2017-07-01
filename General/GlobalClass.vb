@@ -19,7 +19,7 @@ Public Class GlobalClass
     Property IsEncodingInstance As Boolean
     Property IsMinimizedEncodingInstance As Boolean
 
-    Sub RunJobs()
+    Sub ProcessJobs()
         Dim jobs = JobsForm.ActiveJobs
 
         If jobs.Count = 0 Then
@@ -48,11 +48,7 @@ Public Class GlobalClass
                     g.ShutdownPC()
                 End If
             Else
-                If g.IsMinimizedEncodingInstance Then
-                    g.ShellExecute(Application.ExecutablePath, "-RunJobsMinimized")
-                Else
-                    g.DefaultCommands.StartJobs()
-                End If
+                g.DefaultCommands.StartJobs()
             End If
         Catch ex As AbortException
             Log.Save()

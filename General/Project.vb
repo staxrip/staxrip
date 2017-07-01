@@ -1,7 +1,6 @@
 Imports System.ComponentModel
 Imports System.Globalization
 Imports System.Runtime.CompilerServices
-Imports System.Text
 
 <Serializable()>
 Public Class Project

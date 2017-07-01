@@ -12,6 +12,12 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.1.8 unstable test build
+
+- fix: unable to show processing window from tray
+
+- update: qsvenc 2.71
+
 #### 1.5.1.7 unstable test build
 
 - new: setting added to define the maximum number of parallel processes (Tools > Settings > General)

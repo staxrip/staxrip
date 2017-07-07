@@ -58,7 +58,7 @@ Public Class ApplicationSettings
     Public WindowPositionsRemembered As String()
     Public LogFileNum As Integer = 50
     Public ProjectsMruNum As Integer = 5
-    Public ParallelProcsNum As Integer = 3
+    Public ParallelProcsNum As Integer = 2
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -173,7 +173,7 @@ Public Class ApplicationSettings
 
         If RecentProjects Is Nothing Then RecentProjects = New List(Of String)
 
-        If Check(MuxerProfiles, "Container Profiles", 37) Then
+        If Check(MuxerProfiles, "Container Profiles", 40) Then
             MuxerProfiles = New List(Of Muxer)
             MuxerProfiles.AddRange(Muxer.GetDefaults())
         End If
@@ -279,10 +279,10 @@ Public Class ApplicationSettings
 
         If LastSourceDir = "" Then LastSourceDir = ""
 
-        Update()
+        Migrate()
     End Sub
 
-    Sub Update()
+    Sub Migrate()
         If Not Storage.GetBool("main menu update 1") Then
             If 0 = CustomMenuMainForm.GetAllItems().Where(
                 Function(val) Not val.Parameters.NothingOrEmpty AndAlso
@@ -294,6 +294,10 @@ Public Class ApplicationSettings
 
             Storage.SetBool("main menu update 1", True)
         End If
+
+        For Each i In AudioProfiles
+            i.Migrate()
+        Next
     End Sub
 
     Shared Function GetDarMenu() As String

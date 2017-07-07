@@ -72,16 +72,13 @@ Public Class QSVEnc
     Overrides Sub Encode()
         p.Script.Synchronize()
         Params.RaiseValueChanged(Nothing)
-        Dim batchPath = p.TempDir + p.TargetFile.Base + "_QSVEncC.bat"
-        Dim batchCode = Proc.WriteBatchFile(batchPath, Params.GetCommandLine(True, True))
 
         Using proc As New Proc
             proc.Header = "Video encoding"
             proc.Package = Package.QSVEnc
             proc.SkipString = " frames: "
-            proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
-            proc.Arguments = "/C call """ + batchPath + """"
+            proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
             proc.Start()
         End Using
 
@@ -109,7 +106,7 @@ Public Class QSVEnc
         End Get
     End Property
 
-    Class EncoderParams
+    Public Class EncoderParams
         Inherits CommandLineParams
 
         Shared Modes As New List(Of StringPair) From {
@@ -275,11 +272,21 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--fixed-func", .Text = "Use fixed func instead of GPU EU"},
                         New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"},
                         New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"})
+
+                    For Each item In ItemsValue
+                        Dim switches = item.GetSwitches
+                        If switches.NothingOrEmpty Then Continue For
+                        item.HelpID = switches(0).TrimStart("-"c)
+                    Next
                 End If
 
                 Return ItemsValue
             End Get
         End Property
+
+        Public Overrides Sub ShowHelp(id As String)
+            g.ShowRigayaHelp(Package.QSVEnc, id)
+        End Sub
 
         Function GetMode(name As String) As Integer
             For x = 0 To Modes.Count - 1

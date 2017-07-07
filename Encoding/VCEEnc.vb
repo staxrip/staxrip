@@ -2,7 +2,7 @@
 Imports StaxRip.UI
 
 <Serializable()>
-Class VCEEnc
+Public Class VCEEnc
     Inherits BasicVideoEncoder
 
     Sub New()
@@ -70,16 +70,13 @@ Class VCEEnc
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Dim batchPath = p.TempDir + p.TargetFile.Base + "_VCEEncC.bat"
-        Dim batchCode = Proc.WriteBatchFile(batchPath, Params.GetCommandLine(True, True))
 
         Using proc As New Proc
             proc.Header = "Video encoding"
             proc.Package = Package.VCEEnc
             proc.SkipStrings = {"%]", " frames: "}
-            proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
-            proc.Arguments = "/C call """ + batchPath + """"
+            proc.Arguments = "/S /C call """ + Params.GetCommandLine(True, True) + """"
             proc.Start()
         End Using
 
@@ -107,7 +104,7 @@ Class VCEEnc
         End Get
     End Property
 
-    Class EncoderParams
+    Public Class EncoderParams
         Inherits CommandLineParams
 
         Sub New()
@@ -194,11 +191,21 @@ Class VCEEnc
                         New BoolParam With {.Switch = "--chapter-copy", .Text = "Copy Chapters"},
                         New BoolParam With {.Switch = "--filler", .Text = "Use filler data"},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Set yuv to fullrange", .VisibleFunc = Function() Codec.ValueText = "h264"})
+
+                    For Each item In ItemsValue
+                        Dim switches = item.GetSwitches
+                        If switches.NothingOrEmpty Then Continue For
+                        item.HelpID = switches(0).TrimStart("-"c)
+                    Next
                 End If
 
                 Return ItemsValue
             End Get
         End Property
+
+        Public Overrides Sub ShowHelp(id As String)
+            g.ShowRigayaHelp(Package.VCEEnc, id)
+        End Sub
 
         Overrides Function GetCommandLine(includePaths As Boolean,
                                           includeExecutable As Boolean,

@@ -17,7 +17,14 @@ Public Class GlobalClass
     Property DefaultCommands As New GlobalCommands
     Property IsProcessing As Boolean
     Property IsEncodingInstance As Boolean
-    Property IsMinimizedEncodingInstance As Boolean
+
+    Private DebugLockObject As New Object
+
+    Sub Debug(title As String, Optional value As Object = Nothing)
+        SyncLock DebugLockObject
+            File.AppendAllText(Folder.Desktop + "debug.txt", title + ": " + CStr(value) + BR)
+        End SyncLock
+    End Sub
 
     Sub ProcessJobs()
         Dim jobs = JobsForm.ActiveJobs
@@ -48,7 +55,7 @@ Public Class GlobalClass
                     g.ShutdownPC()
                 End If
             Else
-                g.DefaultCommands.StartJobs()
+                g.DefaultCommands.StartJobs(True)
             End If
         Catch ex As AbortException
             Log.Save()
@@ -137,13 +144,6 @@ Public Class GlobalClass
                 MsgError(Strings.NoUnicode)
                 Return True
             End If
-
-            For Each i2 In "^%"
-                If i.Contains(i2) Then
-                    MsgError("Source file names with the character " & i2 & " are not supported by StaxRip." + BR2 + i)
-                    Return True
-                End If
-            Next
 
             If i.Contains("#") Then
                 If i.Ext = "mp4" OrElse MediaInfo.GetGeneral(i, "Audio_Codec_List").Contains("AAC") Then
@@ -637,6 +637,26 @@ Public Class GlobalClass
             If cliOptions <> "" Then args += " " + cliOptions
             g.ShellExecute(Package.MPC.Path, args)
         End If
+    End Sub
+
+    Sub ShowRigayaHelp(package As Package, id As String)
+        Dim helpPath = package.GetHelpPath
+        If Not File.Exists(helpPath) Then Exit Sub
+        Dim helpContent = File.ReadAllText(helpPath)
+        Dim find As String
+        If helpContent.Contains("--" + id) Then find = "--" + id
+
+        If helpContent.Contains("--" + id) Then
+            find = "--" + id
+        ElseIf helpContent.Contains("--(no-)" + id) Then
+            find = "--(no-)" + id
+        End If
+
+        If find = "" Then Exit Sub
+
+        Dim form As New TextHelpForm(helpContent, find)
+        form.Text = package.Name + " Help"
+        form.Show()
     End Sub
 
     Sub ShellExecute(cmd As String, Optional args As String = Nothing)

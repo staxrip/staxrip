@@ -2,7 +2,7 @@ Imports StaxRip.UI
 Imports System.Text
 Imports Microsoft.Win32
 
-Class MediaInfoForm
+Public Class MediaInfoForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -113,7 +113,7 @@ Class MediaInfoForm
         InitializeComponent()
 
         tv.ItemHeight = FontHeight * 2
-        ScaleClientSize(40, 30)
+        ScaleClientSize(39, 31)
 
         rtb.WordWrap = False
         rtb.ReadOnly = True
@@ -239,7 +239,7 @@ Class MediaInfoForm
         If Not files.NothingOrEmpty Then e.Effect = DragDropEffects.Copy
     End Sub
 
-    Class Item
+    Public Class Item
         Property Name As String
         Property Value As String
         Property Group As String

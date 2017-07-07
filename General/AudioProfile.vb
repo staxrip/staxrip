@@ -10,6 +10,7 @@ Public MustInherit Class AudioProfile
 
     Property Language As New Language
     Property Delay As Integer
+    Property Depth As Integer = 24
     Property StreamName As String = ""
     Property Gain As Single
     Property Streams As List(Of AudioStream) = New List(Of AudioStream)
@@ -129,24 +130,9 @@ Public MustInherit Class AudioProfile
         End Get
     End Property
 
-    Private SourceBitDepthValue As Integer
-
-    ReadOnly Property SourceBitDepth As Integer
-        Get
-            If SourceBitDepthValue = 0 Then
-                If Stream Is Nothing Then
-                    If File <> "" AndAlso IO.File.Exists(File) Then
-                        SourceBitDepthValue = MediaInfo.GetAudio(File, "BitDepth").ToInt
-                    End If
-                Else
-                    SourceBitDepthValue = Stream.BitDepth
-                End If
-            End If
-
-            If SourceBitDepthValue = 0 Then Return 16
-            Return SourceBitDepthValue
-        End Get
-    End Property
+    Sub Migrate()
+        If Depth = 0 Then Depth = 24
+    End Sub
 
     Overridable Sub OnFileChanged()
     End Sub
@@ -223,6 +209,15 @@ Public MustInherit Class AudioProfile
     Overridable Function HandlesDelay() As Boolean
     End Function
 
+    Function GetSuffix() As String
+        If Me Is p.Audio0 Then Return "_a1"
+        If Me Is p.Audio1 Then Return "_a2"
+
+        For x = 0 To p.AudioTracks.Count - 1
+            If Me Is p.AudioTracks(x) Then Return "_a" & x + 3
+        Next
+    End Function
+
     Function GetOutputFile() As String
         Dim base = File.Base
 
@@ -237,12 +232,7 @@ Public MustInherit Class AudioProfile
             End If
         End If
 
-        Dim track As String
-
-        If Me Is p.Audio0 Then track = "1"
-        If Me Is p.Audio1 Then track = "2"
-
-        Return p.TempDir + base + "_out" + track + "." + OutputFileType
+        Return p.TempDir + base + GetSuffix() + "." + OutputFileType
     End Function
 
     Function ExpandMacros(value As String) As String
@@ -321,26 +311,11 @@ Public Class BatchAudioProfile
             Dim bitrateBefore = p.VideoBitrate
             Dim targetPath = GetOutputFile()
 
-            Dim batchCode = GetCode()
-            Dim batchPath = p.TempDir + File.Base + "_audio.bat"
-            batchCode = Proc.WriteBatchFile(batchPath, batchCode)
-
-            Using proc As New Proc
-                proc.Header = "Audio encoding: " + Name
-                proc.SkipStrings = {"Maximum Gain Found", "transcoding ...", "size=", "process: ", "analyze: "}
-                proc.WriteLine(batchCode + BR2)
-                proc.File = "cmd.exe"
-                proc.Arguments = "/C call """ + batchPath + """"
-
-                Try
-                    proc.Start()
-                Catch ex As AbortException
-                    Throw ex
-                Catch ex As Exception
-                    g.ShowException(ex)
-                    Throw New AbortException
-                End Try
-            End Using
+            Proc.ExecuteBatch(
+                GetCode(),
+                "Audio encoding: " + Name,
+                GetSuffix,
+                {"Maximum Gain Found", "transcoding ...", "size=", "process: ", "analyze: "})
 
             If g.FileExists(targetPath) Then
                 File = targetPath
@@ -381,7 +356,7 @@ Public Class BatchAudioProfile
 End Class
 
 <Serializable()>
-Class NullAudioProfile
+Public Class NullAudioProfile
     Inherits AudioProfile
 
     Sub New()
@@ -537,7 +512,7 @@ Public Class MuxAudioProfile
 End Class
 
 <Serializable()>
-Class GUIAudioProfile
+Public Class GUIAudioProfile
     Inherits AudioProfile
 
     Property Params As New Parameters
@@ -625,8 +600,10 @@ Class GUIAudioProfile
         End If
 
         Select Case Params.Codec
-            Case AudioCodec.Flac
-                Return CInt(((TargetSamplingRate * SourceBitDepth * Channels) / 1000) * 0.55)
+            Case AudioCodec.FLAC
+                Return CInt(((TargetSamplingRate * Depth * Channels) / 1000) * 0.55)
+            Case AudioCodec.W64
+                Return CInt((TargetSamplingRate * Depth * Channels) / 1000)
         End Select
 
         Return CInt(Bitrate)
@@ -756,7 +733,7 @@ Class GUIAudioProfile
             End Select
 
             If Params.Normalize Then ret += " -normalize"
-            If Params.Down16 Then ret += " -down16"
+            If Depth = 16 Then ret += " -down16"
             If Params.SamplingRate <> 0 Then ret += " -resampleTo" & Params.SamplingRate
             If Params.FrameRateMode = AudioFrameRateMode.Speedup Then ret += " -speedup"
             If Params.FrameRateMode = AudioFrameRateMode.Slowdown Then ret += " -slowdown"
@@ -875,6 +852,12 @@ Class GUIAudioProfile
                 Else
                     ret += " -b:a " & CInt(Bitrate) & "k"
                 End If
+            Case AudioCodec.W64
+                If Depth = 24 Then
+                    ret += " -c:a pcm_s24le"
+                Else
+                    ret += " -c:a pcm_s16le"
+                End If
         End Select
 
         If Gain <> 0 Then ret += " -af volume=" + Gain.ToInvariantString + "dB"
@@ -990,7 +973,7 @@ Class GUIAudioProfile
                     ch += " Mono"
             End Select
 
-            Dim circa = If(Params.RateMode = AudioRateMode.VBR OrElse Params.Codec = AudioCodec.Flac, "~", "")
+            Dim circa = If(Params.RateMode = AudioRateMode.VBR OrElse Params.Codec = AudioCodec.FLAC, "~", "")
             Dim bitrate = If(Params.RateMode = AudioRateMode.VBR, GetBitrate(), Me.Bitrate)
 
             Return Params.Codec.ToString + ch & " " & circa & bitrate & " Kbps"
@@ -1024,7 +1007,7 @@ Class GUIAudioProfile
             '    End Select
             Case GuiAudioEncoder.Eac3to
                 Select Case Params.Codec
-                    Case AudioCodec.AAC, AudioCodec.AC3, AudioCodec.Flac, AudioCodec.DTS
+                    Case AudioCodec.AAC, AudioCodec.AC3, AudioCodec.FLAC, AudioCodec.DTS
                         Return GuiAudioEncoder.Eac3to
                 End Select
             Case GuiAudioEncoder.ffmpeg
@@ -1071,13 +1054,12 @@ Class GUIAudioProfile
     End Property
 
     <Serializable()>
-    Class Parameters
+    Public Class Parameters
         Property BeSweetAzid As String = ""
         Property BeSweetDynamicCompression As String = "Normal"
         Property BeSweetGainAndNormalization As String = "-norm 0.97"
         Property Codec As AudioCodec
         Property CustomSwitches As String = ""
-        Property Down16 As Boolean
         Property eac3toExtractDtsCore As Boolean
         Property eac3toStereoDownmixMode As Integer
         Property Encoder As GuiAudioEncoder
@@ -1099,10 +1081,11 @@ Public Enum AudioCodec
     AAC
     AC3
     DTS
-    Flac
+    FLAC
     MP3
     Opus
     Vorbis
+    W64
 End Enum
 
 Public Enum AudioRateMode

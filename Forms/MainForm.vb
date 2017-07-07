@@ -2,6 +2,7 @@ Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Globalization
 Imports System.Reflection
+Imports System.Runtime.ExceptionServices
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -958,7 +959,7 @@ Public Class MainForm
         Me.llMuxer.Size = New System.Drawing.Size(89, 48)
         Me.llMuxer.TabIndex = 1
         Me.llMuxer.TabStop = True
-        Me.llMuxer.Text = "Mux"
+        Me.llMuxer.Text = "Container/Muxer Profiles"
         '
         'pnEncoder
         '
@@ -1359,7 +1360,7 @@ Public Class MainForm
                      Thread.Sleep(500)
 
                      Try
-                         If Not IsDisposed Then Invoke(Sub() If Not IsDisposed AndAlso Handle = Native.GetForegroundWindow() Then UpdateDynamicMenu())
+                         Invoke(Sub() UpdateDynamicMenu())
                      Catch
                      End Try
                  End Sub)
@@ -2490,7 +2491,7 @@ Public Class MainForm
             Try
                 Parallel.Invoke(New ParallelOptions With {.MaxDegreeOfParallelism = s.ParallelProcsNum}, actions.ToArray)
             Catch ex As AggregateException
-                Throw ex.InnerExceptions(0)
+                ExceptionDispatchInfo.Capture(ex.InnerExceptions(0)).Throw()
             End Try
 
             Log.Save()
@@ -2528,18 +2529,15 @@ Public Class MainForm
                         proc.Start()
                     End Using
                 Else
-                    Dim batchPath = p.TempDir + p.TargetFile.Base + "_lossless.bat"
-                    Dim batchCode = Package.vspipe.Path.Escape + " " + p.Script.Path.Escape + " - --y4m | " + Package.ffmpeg.Path.Escape + " -i - -c:v utvideo -pred median -sn -an -y -hide_banner " + outPath.Escape
-                    Proc.WriteBatchFile(batchPath, batchCode)
+                    Dim commandLine = Package.vspipe.Path.Escape + " " + p.Script.Path.Escape + " - --y4m | " + Package.ffmpeg.Path.Escape + " -i - -c:v utvideo -pred median -sn -an -y -hide_banner " + outPath.Escape
 
                     Using proc As New Proc
                         proc.Header = "Pre-render into lossless AVI"
                         proc.SkipStrings = {"frame=", "size=", "Multiple"}
                         proc.Encoding = Encoding.UTF8
-                        proc.WriteLine(batchCode + BR2)
                         proc.Package = Package.ffmpeg
                         proc.File = "cmd.exe"
-                        proc.Arguments = "/C call """ + batchPath + """"
+                        proc.Arguments = "/S /C call """ + commandLine + """"
                         proc.Start()
                     End Using
                 End If
@@ -2722,16 +2720,6 @@ Public Class MainForm
         AssistantMethod = Nothing
         CanIgnoreTip = True
         AssistantPassed = False
-
-        For Each i In "^%"
-            If p.TargetFile?.Contains(i) Then
-                If ProcessTip("A target file path with the character " & i & " is not supported by StaxRip." + BR + p.TargetFile) Then
-                    gbAssistant.Text = "Invalid target file path"
-                    CanIgnoreTip = False
-                    Return False
-                End If
-            End If
-        Next
 
         If p.VideoEncoder.Muxer.CoverFile <> "" AndAlso TypeOf p.VideoEncoder.Muxer Is MkvMuxer Then
             If Not p.VideoEncoder.Muxer.CoverFile.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land") OrElse Not p.VideoEncoder.Muxer.CoverFile.Ext.EqualsAny("jpg", "png") Then
@@ -3140,6 +3128,7 @@ Public Class MainForm
     End Sub
 
     Sub CloseWithoutSaving()
+        If Not g.ProcForm Is Nothing Then g.ProcForm.NotifyIcon.Visible = False
         g.SavedProject = p
         Close()
     End Sub
@@ -3219,7 +3208,7 @@ Public Class MainForm
 
     Function AbortDueToLowDiskSpace() As Boolean
         Try 'crashes with network shares
-            If p.TargetFile = "" Then Exit Function
+            If p.TargetFile = "" OrElse p.TargetFile.StartsWith("\\") Then Exit Function
             Dim di As New DriveInfo(p.TargetFile.Dir)
 
             If di.AvailableFreeSpace / 1024 ^ 3 < s.MinimumDiskSpace Then

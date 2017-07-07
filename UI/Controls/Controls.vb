@@ -209,7 +209,7 @@ Namespace UI
         InclusiveChilds
     End Enum
 
-    Class ToolStripEx
+    Public Class ToolStripEx
         Inherits ToolStrip
 
         Sub New()
@@ -308,7 +308,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class CommandLink
+    Public Class CommandLink
         Inherits Button
 
         Const BS_COMMANDLINK As Integer = &HE
@@ -385,7 +385,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class PanelEx
+    Public Class PanelEx
         Inherits Panel
 
         Private ShowNiceBorderValue As Boolean
@@ -590,7 +590,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class TrackBarEx
+    Public Class TrackBarEx
         Inherits TrackBar
 
         <DefaultValue(False)>
@@ -636,7 +636,7 @@ Namespace UI
         End Property
     End Class
 
-    Class PropertyGridEx
+    Public Class PropertyGridEx
         Inherits PropertyGrid
 
         Private Description As String
@@ -860,7 +860,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class CommandLineRichTextBox
+    Public Class CommandLineRichTextBox
         Inherits RichTextBoxEx
 
         Property LastCommandLine As String
@@ -1108,7 +1108,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class ListBoxEx
+    Public Class ListBoxEx
         Inherits ListBox
 
         <DefaultValue(GetType(Button), Nothing)> Property UpButton As Button
@@ -1645,7 +1645,7 @@ Namespace UI
         End Function
     End Class
 
-    Class TabControlEx
+    Public Class TabControlEx
         Inherits TabControl
 
         Private DragStartPosition As Point = Point.Empty

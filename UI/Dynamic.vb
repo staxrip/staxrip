@@ -4,7 +4,7 @@ Imports System.Drawing.Design
 
 Namespace UI
     <Serializable()>
-    Class PropertyGridOption
+    Public Class PropertyGridOption
         Public Name As String
         Public Value As Object
 
@@ -18,7 +18,7 @@ Namespace UI
         End Function
     End Class
 
-    Class DefaultValuesConverter
+    Public Class DefaultValuesConverter
         Inherits TypeConverter
 
         Overloads Overrides Function GetStandardValuesSupported(context As ITypeDescriptorContext) As Boolean
@@ -84,7 +84,7 @@ Namespace UI
         End Function
     End Class
 
-    Class GridProperty
+    Public Class GridProperty
         Public Name As String
         Public Category As String
         Public Description As String
@@ -121,7 +121,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class GridTypeDescriptor
+    Public Class GridTypeDescriptor
         Implements ICustomTypeDescriptor
 
         Private YesNoConverter As Type
@@ -252,7 +252,7 @@ Namespace UI
         End Function
     End Class
 
-    Class GridPropertyDescriptor
+    Public Class GridPropertyDescriptor
         Inherits PropertyDescriptor
 
         Public GridProperty As GridProperty
@@ -299,7 +299,7 @@ Namespace UI
         End Function
     End Class
 
-    Class YesNoConverter
+    Public Class YesNoConverter
         Inherits TypeConverter
 
         Protected Yes As String = "Yes"
@@ -354,7 +354,7 @@ Namespace UI
         End Function
     End Class
 
-    Class NonDisplayConverter
+    Public Class NonDisplayConverter
         Inherits TypeConverter
 
         Overloads Overrides Function ConvertTo(context As ITypeDescriptorContext, culture As CultureInfo, value As Object, destinationType As Type) As Object
@@ -368,7 +368,7 @@ Namespace UI
 
     'base cannot be applied on enums
     <AttributeUsage(AttributeTargets.All)>
-    Class DispNameAttribute
+    Public Class DispNameAttribute
         Inherits DisplayNameAttribute
 
         Sub New(name As String)
@@ -412,7 +412,7 @@ Namespace UI
         End Function
     End Class
 
-    Class DescriptionAttributeHelp
+    Public Class DescriptionAttributeHelp
         Shared Function GetDescription(attributes As Object()) As String
             For Each i In attributes
                 If TypeOf i Is DescriptionAttribute Then
@@ -424,7 +424,7 @@ Namespace UI
         End Function
     End Class
 
-    Class EditorAttributeHelp
+    Public Class EditorAttributeHelp
         Shared Function GetEditor(attributes As Object()) As Type
             For Each i In attributes
                 If TypeOf i Is EditorAttribute Then

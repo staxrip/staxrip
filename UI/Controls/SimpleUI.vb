@@ -218,9 +218,9 @@ Public Class SimpleUI
         Return ret
     End Function
 
-    Function AddMenu(Of T)(Optional parent As FlowLayoutPanelEx = Nothing) As MenuButtonBlock(Of T)
+    Function AddMenu(Of T)(Optional parent As FlowLayoutPanelEx = Nothing) As MenuBlock(Of T)
         If parent Is Nothing Then parent = GetActiveFlowPage()
-        Dim ret As New MenuButtonBlock(Of T)(Me)
+        Dim ret As New MenuBlock(Of T)(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
         AddHandler SaveValues, AddressOf ret.Button.Save
@@ -243,7 +243,8 @@ Public Class SimpleUI
         parent.Controls.Add(line)
     End Sub
 
-    Function CreateFlowPage(path As String, Optional autoSuspend As Boolean = False) As FlowPage
+    Function CreateFlowPage(Optional path As String = "-",
+                            Optional autoSuspend As Boolean = False) As FlowPage
         Dim ret = New FlowPage
         ret.AutoSuspend = autoSuspend
         If autoSuspend Then ret.SuspendLayout()
@@ -318,7 +319,7 @@ Public Class SimpleUI
         End Sub
     End Class
 
-    Class SimpleUILineControl
+    Public Class SimpleUILineControl
         Inherits LineControl
         Implements SimpleUIControl
 
@@ -335,12 +336,18 @@ Public Class SimpleUI
 
         Property MarginLeft As Double
         Property SaveAction As Action(Of Boolean)
+        Property HelpAction As Action
 
         Private SimpleUI As SimpleUI
 
         Sub New(ui As SimpleUI)
             AutoSize = True
             SimpleUI = ui
+        End Sub
+
+        Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
+            MyBase.OnMouseDown(e)
+            If e.Button = MouseButtons.Right AndAlso Not HelpAction Is Nothing Then HelpAction.Invoke
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
@@ -422,7 +429,7 @@ Public Class SimpleUI
         End Function
     End Class
 
-    Class SimpleUINumEdit
+    Public Class SimpleUINumEdit
         Inherits NumEdit
 
         Private SimpleUI As SimpleUI
@@ -588,17 +595,23 @@ Public Class SimpleUI
         End Sub
     End Class
 
-    Class SimpleUIMenuButton(Of T)
+    Public Class SimpleUIMenuButton(Of T)
         Inherits MenuButton
         Implements SimpleUIControl
 
         Property Expandet As Boolean Implements SimpleUIControl.Expandet
         Property SaveAction As Action(Of T)
+        Property HelpAction As Action
 
         Private SimpleUI As SimpleUI
 
         Sub New(ui As SimpleUI)
             SimpleUI = ui
+        End Sub
+
+        Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
+            MyBase.OnMouseDown(e)
+            If e.Button = MouseButtons.Right AndAlso Not HelpAction Is Nothing Then HelpAction.Invoke
         End Sub
 
         Protected Overrides Sub OnValueChanged(value As Object)
@@ -656,6 +669,7 @@ Public Class SimpleUI
         Inherits LabelEx
 
         Property MarginTop As Integer
+        Property HelpAction As Action
 
         Private OffsetValue As Double
 
@@ -686,6 +700,11 @@ Public Class SimpleUI
             End Set
         End Property
 
+        Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
+            MyBase.OnMouseDown(e)
+            If e.Button = MouseButtons.Right AndAlso Not HelpAction Is Nothing Then HelpAction.Invoke
+        End Sub
+
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
             If Margin.Top <> MarginTop Then
                 Dim m = Margin
@@ -707,7 +726,7 @@ Public Class SimpleUI
         End Function
     End Class
 
-    Class EmptyBlock
+    Public Class EmptyBlock
         Inherits FlowLayoutPanelEx
 
         Sub New()
@@ -946,7 +965,7 @@ Public Class SimpleUI
         End Sub
     End Class
 
-    Public Class MenuButtonBlock(Of T)
+    Public Class MenuBlock(Of T)
         Inherits LabelBlock
 
         Property Button As SimpleUIMenuButton(Of T)
@@ -982,6 +1001,15 @@ Public Class SimpleUI
                 End While
 
                 DirectCast(parent, IPage).TipProvider.SetTip(value, Label, Button)
+            End Set
+        End Property
+
+        Property Expandet As Boolean
+            Get
+                Return Button.Expandet
+            End Get
+            Set(value As Boolean)
+                Button.Expandet = value
             End Set
         End Property
 

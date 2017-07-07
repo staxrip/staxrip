@@ -45,6 +45,9 @@ Namespace CommandLine
             OnValueChanged(item)
         End Sub
 
+        Overridable Sub ShowHelp(id As String)
+        End Sub
+
         Protected Overridable Sub OnValueChanged(item As CommandLineParam)
             For Each i In Items
                 If Not i.VisibleFunc Is Nothing Then
@@ -81,6 +84,7 @@ Namespace CommandLine
     End Class
 
     Public MustInherit Class CommandLineParam
+        Property HelpID As String
         Property AlwaysOn As Boolean
         Property ArgsFunc As Func(Of String)
         Property Help As String
@@ -89,6 +93,7 @@ Namespace CommandLine
         Property NoSwitch As String
         Property Path As String
         Property Switch As String
+        Property HelpSwitch As String
         Property Label As String
         Property Switches As IEnumerable(Of String)
         Property Text As String
@@ -110,6 +115,7 @@ Namespace CommandLine
 
             If Switch <> "" Then ret.Add(Switch)
             If NoSwitch <> "" Then ret.Add(NoSwitch)
+            If HelpSwitch <> "" Then ret.Add(HelpSwitch)
 
             If Not Switches.NothingOrEmpty Then
                 For Each i In Switches

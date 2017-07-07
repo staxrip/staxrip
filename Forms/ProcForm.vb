@@ -204,8 +204,9 @@ Public Class ProcForm
 
     Private TaskbarButtonCreatedMessage As Integer
 
+    Shared Property IsMinimized As Boolean
+
     Property Taskbar As Taskbar
-    'Property OriginalLeft As Integer
 
     Sub New()
         InitializeComponent()
@@ -222,7 +223,7 @@ Public Class ProcForm
 
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
 
-        If g.IsMinimizedEncodingInstance Then
+        If ProcForm.IsMinimized Then
             WindowState = FormWindowState.Minimized
 
             If s.MinimizeToTray Then
@@ -267,7 +268,7 @@ Public Class ProcForm
             Case &H112 'WM_SYSCOMMAND
                 Select Case m.WParam.ToInt32
                     Case Native.SC_MINIMIZE
-                        g.IsMinimizedEncodingInstance = True
+                        ProcForm.IsMinimized = True
 
                         If s.MinimizeToTray Then
                             Hide()
@@ -287,7 +288,7 @@ Public Class ProcForm
 
     Private Sub ShowForm()
         WindowState = FormWindowState.Normal
-        g.IsMinimizedEncodingInstance = False
+        ProcForm.IsMinimized = False
         ShowInTaskbar = True
         Show()
         Activate()
@@ -306,7 +307,7 @@ Public Class ProcForm
 
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
-            Return g.IsMinimizedEncodingInstance
+            Return ProcForm.IsMinimized
         End Get
     End Property
 

@@ -35,7 +35,7 @@ Public Class Range
     End Function
 End Class
 
-Class Calc
+Public Class Calc
     Shared Function GetYFromTwoPointForm(x1 As Single, y1 As Single, x2 As Single, y2 As Single, x As Single) As Integer
         'Zweipunkteform nach y aufgelöst
         Return CInt((((y2 - y1) / (x2 - x1)) * (x - x1)) + y1)
@@ -609,7 +609,7 @@ Public Class Language
     End Function
 End Class
 
-Class CommandLineTypeEditor
+Public Class CommandLineTypeEditor
     Inherits UITypeEditor
 
     Overloads Overrides Function EditValue(context As ITypeDescriptorContext,
@@ -632,7 +632,7 @@ Class CommandLineTypeEditor
     End Function
 End Class
 
-Class ScriptTypeEditor
+Public Class ScriptTypeEditor
     Inherits UITypeEditor
 
     Overloads Overrides Function EditValue(context As ITypeDescriptorContext, provider As IServiceProvider, value As Object) As Object
@@ -653,7 +653,7 @@ Class ScriptTypeEditor
     End Function
 End Class
 
-Class MacroStringTypeEditor
+Public Class MacroStringTypeEditor
     Inherits UITypeEditor
 
     Overloads Overrides Function EditValue(context As ITypeDescriptorContext,
@@ -749,7 +749,7 @@ Public MustInherit Class Profile
 End Class
 
 <Serializable()>
-Class Macro
+Public Class Macro
     Implements IComparable(Of Macro)
 
     Sub New()
@@ -1433,7 +1433,7 @@ Public Enum DynamicMenuItemID
     Scripts
 End Enum
 
-Class Startup
+Public Class Startup
     <STAThread()>
     Shared Sub Main()
         AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf g.OnUnhandledException
@@ -1445,10 +1445,10 @@ Class Startup
         For Each i In args
             If i = "-RunJobsMaximized" Then
                 g.IsEncodingInstance = True
-                g.IsMinimizedEncodingInstance = False
+                ProcForm.IsMinimized = False
             ElseIf i = "-RunJobsMinimized" Then
                 g.IsEncodingInstance = True
-                g.IsMinimizedEncodingInstance = True
+                ProcForm.IsMinimized = True
             End If
         Next
 
@@ -1462,10 +1462,10 @@ Class Startup
 End Class
 
 <Serializable()>
-Class Dummy
+Public Class Dummy
 End Class
 
-Class KeyValueList(Of T1, T2)
+Public Class KeyValueList(Of T1, T2)
     Inherits List(Of KeyValuePair(Of T1, T2))
 
     Overloads Sub Add(key As T1, value As T2)
@@ -1473,13 +1473,13 @@ Class KeyValueList(Of T1, T2)
     End Sub
 End Class
 
-Class GUIDS
+Public Class GUIDS
     Shared Property LAVSplitter As String = "{171252A0-8820-4AFE-9DF8-5C92B2D66B04}"
     Shared Property LAVVideoDecoder As String = "{EE30215D-164F-4A92-A4EB-9D4C13390F9F}"
     Shared Property HaaliMuxer As String = "{A28F324B-DDC5-4999-AA25-D3A7E25EF7A8}"
 End Class
 
-Class M2TSStream
+Public Class M2TSStream
     Property Text As String = "Nothing"
     Property Codec As String = ""
     Property OutputType As String = ""
@@ -1857,6 +1857,7 @@ Public Class Subtitle
     Shared Sub Cut(subtitles As List(Of Subtitle))
         If p.Ranges.Count = 0 OrElse TypeOf p.VideoEncoder Is NullEncoder Then Exit Sub
         If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        Dim emptySubs As New List(Of Subtitle)
 
         For x = 0 To subtitles.Count - 1
             Dim inSub = subtitles(x)
@@ -1929,13 +1930,23 @@ Public Class Subtitle
                 Log.WriteLine(MediaInfo.GetSummary(subPath))
             End If
 
-            Dim outSub = Subtitle.Create(subPath)(0)
-            outSub.Language = inSub.Language
-            outSub.Forced = inSub.Forced
-            outSub.Default = inSub.Default
-            outSub.Title = inSub.Title
-            outSub.Enabled = True
-            subtitles(x) = outSub
+            Dim subs = Subtitle.Create(subPath)
+
+            If Not subs.NothingOrEmpty Then
+                Dim outSub = Subtitle.Create(subPath)(0)
+                outSub.Language = inSub.Language
+                outSub.Forced = inSub.Forced
+                outSub.Default = inSub.Default
+                outSub.Title = inSub.Title
+                outSub.Enabled = True
+                subtitles(x) = outSub
+            Else
+                emptySubs.Add(subtitles(x))
+            End If
+        Next
+
+        For Each i In emptySubs
+            subtitles.Remove(i)
         Next
     End Sub
 End Class
@@ -1958,7 +1969,7 @@ Public Enum ContainerStreamType
 End Enum
 
 Public Class FileTypes
-    Shared Property Audio As String() = {"flac", "dtshd", "dtsma", "dtshr", "thd", "thd+ac3", "true-hd", "truehd", "aac", "ac3", "dts", "eac3", "m4a", "mka", "mp2", "mp3", "mpa", "opus", "wav"}
+    Shared Property Audio As String() = {"flac", "dtshd", "dtsma", "dtshr", "thd", "thd+ac3", "true-hd", "truehd", "aac", "ac3", "dts", "eac3", "m4a", "mka", "mp2", "mp3", "mpa", "opus", "wav", "w64"}
     Shared Property VideoAudio As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
     Shared Property BeSweetInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "ogg"}
     Shared Property DGDecNVInput As String() = {"264", "h264", "265", "h265", "avc", "hevc", "hvc", "mkv", "mp4", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}
@@ -1996,7 +2007,7 @@ Public Class FileTypes
 End Class
 
 <Serializable>
-Class StringBooleanPair
+Public Class StringBooleanPair
     Property Key As String
     Property Value As Boolean
 
@@ -2010,7 +2021,7 @@ Class StringBooleanPair
     End Function
 End Class
 
-Class OSVersion
+Public Class OSVersion
     Shared Property Windows7 As Single = 6.1
     Shared Property Windows8 As Single = 6.2
     Shared Property Windows10 As Single = 10.0
@@ -2060,7 +2071,7 @@ Public Class eac3toProfile
     End Sub
 End Class
 
-Class BitmapUtil
+Public Class BitmapUtil
     Property Data As Byte()
     Property BitmapData As BitmapData
 
@@ -2088,7 +2099,7 @@ Class BitmapUtil
     End Function
 End Class
 
-Class AutoCrop
+Public Class AutoCrop
     Public Top As Integer()
     Public Bottom As Integer()
     Public Left As Integer()
@@ -2190,7 +2201,7 @@ Public Class StringLogicalComparer
     End Function
 End Class
 
-Class Comparer(Of T)
+Public Class Comparer(Of T)
     Implements IComparer(Of T)
 
     Property PropName As String

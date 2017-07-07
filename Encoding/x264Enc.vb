@@ -51,21 +51,15 @@ Public Class x264Enc
         AfterEncoding()
     End Sub
 
-    Overloads Sub Encode(passName As String,
-                         batchCode As String,
-                         priority As ProcessPriorityClass)
-
+    Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
         p.Script.Synchronize()
-        Dim batchPath = p.TempDir + p.TargetFile.Base + "_encode.bat"
-        batchCode = Proc.WriteBatchFile(batchPath, batchCode)
 
         Using proc As New Proc
             proc.Header = passName
             proc.Priority = priority
             proc.SkipStrings = {"kb/s, eta", "%]"}
-            proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
-            proc.Arguments = "/C call """ + batchPath + """"
+            proc.Arguments = "/S /C """ + commandLine + """"
             proc.Start()
         End Using
     End Sub

@@ -2,7 +2,7 @@
 Imports System.Windows.Forms.VisualStyles
 Imports StaxRip.UI
 
-Class SearchTextBox
+Public Class SearchTextBox
     Inherits UserControl
 
 #Region "Designer"

@@ -2,7 +2,7 @@ Imports System.ComponentModel
 
 Imports StaxRip.UI
 
-Class CropForm
+Public Class CropForm
     Inherits DialogBase
 
 #Region " Designer "

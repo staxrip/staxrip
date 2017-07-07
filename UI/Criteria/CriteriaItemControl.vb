@@ -2,7 +2,7 @@ Imports System.ComponentModel
 
 Namespace UI
     <ToolboxItem(False)>
-    Class CriteriaItemControl
+    Public Class CriteriaItemControl
         Sub New(allCriteria As List(Of Criteria))
             InitializeComponent()
 

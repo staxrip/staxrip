@@ -6,7 +6,7 @@ Imports System.Runtime.InteropServices
 Imports System.Runtime.CompilerServices
 
 <System.Drawing.ToolboxBitmap(GetType(System.Windows.Forms.FolderBrowserDialog), "FolderBrowserDialog.bmp"), DefaultEvent("HelpRequest"), Designer("System.Windows.Forms.Design.FolderBrowserDialogDesigner, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"), DefaultProperty("SelectedPath"), Description("Prompts the user to select a folder.")>
-Class FolderBrowserDialog
+Public Class FolderBrowserDialog
     Inherits CommonDialog
 
     Private _downlevelDialog As System.Windows.Forms.FolderBrowserDialog

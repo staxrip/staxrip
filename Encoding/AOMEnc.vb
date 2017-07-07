@@ -38,30 +38,24 @@ Public Class AOMEnc
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode("Encoding video using aomenc " + Package.AOMEnc.Version, GetArgs(1, p.Script), s.ProcessPriority)
+        Encode("Encoding video using aomenc " + Package.AOMEnc.Version, GetArgs(1, p.Script))
 
         If Params.Mode.Value = AV1RateMode.TwoPass Then
-            Encode("Encoding video second pass using aomenc " + Package.AOMEnc.Version, GetArgs(2, p.Script), s.ProcessPriority)
+            Encode("Encoding video second pass using aomenc " + Package.AOMEnc.Version, GetArgs(2, p.Script))
         End If
 
         AfterEncoding()
     End Sub
 
-    Overloads Sub Encode(passName As String,
-                         batchCode As String,
-                         priority As ProcessPriorityClass)
-
+    Overloads Sub Encode(passName As String, commandLine As String)
         p.Script.Synchronize()
-        Dim batchPath = p.TempDir + p.TargetFile.Base + "_encode.bat"
-        batchCode = Proc.WriteBatchFile(batchPath, batchCode)
 
         Using proc As New Proc
             proc.Header = passName
-            proc.Priority = priority
+            proc.Package = Package.AOMEnc
             proc.SkipString = "[ETA"
-            proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
-            proc.Arguments = "/C call """ + batchPath.Escape + """"
+            proc.Arguments = "/S /C """ + commandLine + """"
             proc.Start()
         End Using
     End Sub

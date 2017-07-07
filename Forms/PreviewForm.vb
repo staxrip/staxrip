@@ -2,7 +2,7 @@ Imports System.ComponentModel
 Imports System.Drawing.Imaging
 Imports StaxRip.UI
 
-Class PreviewForm
+Public Class PreviewForm
     Inherits DialogBase
 
 #Region " Designer "

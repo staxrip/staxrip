@@ -173,13 +173,9 @@ Public MustInherit Class Muxer
     Shared Function GetDefaults() As List(Of Muxer)
         Dim ret As New List(Of Muxer)
 
-        ret.Add(New MkvMuxer())
-        ret.Add(New MP4Muxer())
-        ret.Add(New ffmpegMuxer("AVI"))
-        ret.Add(New WebMMuxer())
-        ret.Add(New DivXPluxMuxer())
-        ret.Add(New BatchMuxer("Command Line"))
-        ret.Add(New NullMuxer("No Muxing"))
+        ret.AddRange({New MkvMuxer(), New MP4Muxer(), New WebMMuxer()})
+        ret.AddRange(ffmpegMuxer.SupportedFormats.Select(Function(val) New ffmpegMuxer("ffmpeg | " + val) With {.OutputFormat = val}))
+        ret.AddRange({New BatchMuxer("Command Line"), New NullMuxer("No Muxing")})
 
         Return ret
     End Function
@@ -192,7 +188,7 @@ Public Class MP4Muxer
     Property PAR As String = ""
 
     Sub New()
-        MyClass.New("MP4")
+        MyClass.New("MP4 (mp4box)")
     End Sub
 
     Sub New(name As String)
@@ -247,10 +243,8 @@ Public Class MP4Muxer
         For Each i In Subtitles
             If i.Enabled AndAlso File.Exists(i.Path) Then
                 If i.Path.Ext = "idx" Then
-                    If i.Title = "" Then i.Title = " "
                     args.Append(" -add """ + i.Path + "#" & i.IndexIDX + 1 & ":name=" + Macro.Expand(i.Title) & """")
                 Else
-                    If i.Title = "" Then i.Title = " "
                     args.Append(" -add """ + i.Path + ":lang=" + i.Language.ThreeLetterCode + ":name=" + Macro.Expand(i.Title) + """")
                 End If
             End If
@@ -322,7 +316,7 @@ Public Class MP4Muxer
 End Class
 
 <Serializable()>
-Class NullMuxer
+Public Class NullMuxer
     Inherits Muxer
 
     Sub New(name As String)
@@ -348,7 +342,7 @@ Class NullMuxer
 End Class
 
 <Serializable()>
-Class BatchMuxer
+Public Class BatchMuxer
     Inherits Muxer
 
     Property OutputTypeValue As String = "mp4"
@@ -440,7 +434,7 @@ Public Class MkvMuxer
     Property DAR As String = ""
 
     Sub New()
-        Name = "MKV"
+        Name = "MKV (mkvmerge)"
         Tags = "Writing frontend: StaxRip v%version%"
     End Sub
 
@@ -659,26 +653,11 @@ Public Class MkvMuxer
 End Class
 
 <Serializable()>
-Class DivXPluxMuxer
+Public Class WebMMuxer
     Inherits MkvMuxer
 
     Sub New()
-        MyBase.New("MKV for DivX Plus")
-    End Sub
-
-    Overrides ReadOnly Property SupportedInputTypes() As String()
-        Get
-            Return {"h264", "mkv", "m4a", "mp4", "aac", "ac3"}
-        End Get
-    End Property
-End Class
-
-<Serializable()>
-Class WebMMuxer
-    Inherits MkvMuxer
-
-    Sub New()
-        MyBase.New("WebM")
+        MyBase.New("WebM (mkvmerge)")
     End Sub
 
     Overrides ReadOnly Property SupportedInputTypes() As String()
@@ -695,10 +674,10 @@ Class WebMMuxer
 End Class
 
 <Serializable()>
-Class ffmpegMuxer
+Public Class ffmpegMuxer
     Inherits Muxer
 
-    Property OutputTypeValue As String = "avi"
+    Property OutputFormat As String = "AVI"
 
     Sub New(name As String)
         MyBase.New(name)
@@ -710,9 +689,15 @@ Class ffmpegMuxer
         End Get
     End Property
 
+    Shared ReadOnly Property SupportedFormats As String()
+        Get
+            Return {"ASF", "AVI", "FLV", "ISMV", "MKV", "MOV", "MP4", "MPG", "MXF", "NUT", "OGG", "TS", "WEBM", "WMV"}
+        End Get
+    End Property
+
     Public Overrides ReadOnly Property OutputExt As String
         Get
-            Return OutputTypeValue
+            Return OutputFormat.ToLower
         End Get
     End Property
 
@@ -729,7 +714,13 @@ Class ffmpegMuxer
     End Function
 
     Overrides Sub Mux()
-        Dim args = "-i " + p.VideoEncoder.OutputPath.Escape
+        Dim args = "-i "
+
+        If File.Exists(p.VideoEncoder.OutputPath) Then
+            args += p.VideoEncoder.OutputPath.Escape
+        Else
+            args += p.LastOriginalSourceFile.Escape
+        End If
 
         Dim id As Integer
         Dim mapping = " -map 0:v"
@@ -743,12 +734,10 @@ Class ffmpegMuxer
             End If
         Next
 
-        args += mapping
-        args += " -c:v copy -c:a copy -y -hide_banner"
-        args += " " + p.TargetFile.Escape
+        args += mapping + " -c:v copy -c:a copy -y -hide_banner " + p.TargetFile.Escape
 
         Using proc As New Proc
-            proc.Header = "Muxing to " + OutputTypeValue
+            proc.Header = "Muxing to " + OutputFormat
             proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
@@ -758,21 +747,22 @@ Class ffmpegMuxer
     End Sub
 
     Overrides Function Edit() As DialogResult
-        Using f As New SimpleSettingsForm(Name)
-            f.Height = CInt(f.Height * 0.5)
-            Dim ui = f.SimpleUI
-            Dim page = ui.CreateFlowPage("main page")
+        Using form As New SimpleSettingsForm("ffmpeg Container Options")
+            form.ScaleClientSize(25, 10)
+            Dim ui = form.SimpleUI
+            ui.Store = Me
+            ui.CreateFlowPage()
 
-            Dim tb = ui.AddText(page)
-            tb.Label.Text = "Output File Type:"
-            tb.Edit.Text = OutputTypeValue
-            tb.Edit.SaveAction = Sub(value) OutputTypeValue = value
+            Dim m = ui.AddMenu(Of String)
+            m.Text = "Output Format:"
+            m.Property = NameOf(OutputFormat)
+            m.Add(SupportedFormats)
 
-            Dim ret = f.ShowDialog()
+            Dim ret = form.ShowDialog()
 
             If ret = DialogResult.OK Then
                 ui.Save()
-                p.TargetFile = p.TargetFile.DirAndBase + "." + OutputTypeValue
+                If p.SourceFile <> "" Then p.TargetFile = p.TargetFile.DirAndBase + "." + OutputFormat
             End If
 
             Return ret

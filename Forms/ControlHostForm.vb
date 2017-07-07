@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Class ControlHostForm
+Public Class ControlHostForm
     Inherits DialogBase
 
 #Region " Designer "

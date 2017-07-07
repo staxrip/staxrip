@@ -147,7 +147,7 @@ Public MustInherit Class Demuxer
 End Class
 
 <Serializable()>
-Class CommandLineDemuxer
+Public Class CommandLineDemuxer
     Inherits Demuxer
 
     Property Command As String = ""
@@ -402,7 +402,7 @@ Public Class ffmpegDemuxer
 End Class
 
 <Serializable()>
-Class MP4BoxDemuxer
+Public Class MP4BoxDemuxer
     Inherits Demuxer
 
     Sub New()
@@ -598,7 +598,7 @@ Class MP4BoxDemuxer
 End Class
 
 <Serializable()>
-Class mkvDemuxer
+Public Class mkvDemuxer
     Inherits Demuxer
 
     Sub New()

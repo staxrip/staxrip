@@ -2,7 +2,7 @@
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 
-Class CodeEditor
+Public Class CodeEditor
     Property ActiveTable As FilterTable
     Property Engine As ScriptEngine
 
@@ -122,7 +122,7 @@ Class CodeEditor
         f.Show()
     End Sub
 
-    Class FilterTable
+    Public Class FilterTable
         Inherits TableLayoutPanel
 
         Property tbName As New TextEdit

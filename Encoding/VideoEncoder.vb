@@ -305,7 +305,7 @@ Public MustInherit Class VideoEncoder
         Return DialogResult.OK
     End Function
 
-    Class MenuList
+    Public Class MenuList
         Inherits List(Of KeyValuePair(Of String, Action))
 
         Overloads Sub Add(text As String, action As Action)
@@ -380,7 +380,7 @@ Public MustInherit Class BasicVideoEncoder
 End Class
 
 <Serializable()>
-Class BatchEncoder
+Public Class BatchEncoder
     Inherits VideoEncoder
 
     Sub New()

@@ -4,7 +4,7 @@ Imports System.Globalization
 Imports StaxRip.UI
 Imports System.ComponentModel
 
-Class SubtitleControl
+Public Class SubtitleControl
     Inherits UserControl
 
     Private BindingSource As New BindingSource
@@ -406,7 +406,7 @@ Class SubtitleControl
         Next
     End Sub
 
-    Class SubtitleItem
+    Public Class SubtitleItem
         Property Enabled As Boolean
         Property Language As Language
         Property Title As String

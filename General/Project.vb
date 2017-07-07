@@ -161,6 +161,17 @@ Public Class Project
             Script = StaxRip.VideoScript.GetDefaults()(0)
             Script.SetFilter("Source", "Manual", "# shows filter selection dialog")
         End If
+
+        Migrate()
+    End Sub
+
+    Sub Migrate()
+        Audio0.Migrate()
+        Audio1.Migrate()
+
+        For Each i In AudioTracks
+            i.Migrate()
+        Next
     End Sub
 
     Private CropRightValue As Integer

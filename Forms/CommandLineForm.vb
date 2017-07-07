@@ -3,7 +3,7 @@ Imports System.Threading.Tasks
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
-Class CommandLineForm
+Public Class CommandLineForm
     Private Params As CommandLineParams
 
     Public HTMLHelp As String
@@ -113,7 +113,14 @@ Class CommandLineForm
             If TypeOf item Is BoolParam Then
                 Dim cb = SimpleUI.AddBool(parent)
                 cb.Text = item.Text
-                cb.Help = help
+
+                If item.HelpID <> "" Then
+                    Dim helpID = item.HelpID
+                    cb.HelpAction = Sub() Params.ShowHelp(helpID)
+                Else
+                    cb.Help = help
+                End If
+
                 cb.MarginLeft = item.LeftMargin
                 DirectCast(item, BoolParam).InitParam(cb)
                 helpControl = cb
@@ -122,7 +129,14 @@ Class CommandLineForm
                 Dim param = DirectCast(item, NumParam)
                 Dim nb = SimpleUI.AddNum(parent)
                 nb.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
-                nb.Label.Help = help
+
+                If item.HelpID <> "" Then
+                    Dim helpID = item.HelpID
+                    nb.Label.HelpAction = Sub() Params.ShowHelp(helpID)
+                Else
+                    nb.Label.Help = help
+                End If
+
                 nb.NumEdit.Config = param.Config
                 AddHandler nb.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
                 DirectCast(item, NumParam).InitParam(nb.NumEdit)
@@ -132,7 +146,15 @@ Class CommandLineForm
                 Dim os = DirectCast(item, OptionParam)
                 Dim mb = SimpleUI.AddMenu(Of Integer)(parent)
                 mb.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
-                mb.Help = help
+
+                If item.HelpID <> "" Then
+                    Dim helpID = item.HelpID
+                    mb.Label.HelpAction = Sub() Params.ShowHelp(helpID)
+                    mb.Button.HelpAction = Sub() Params.ShowHelp(helpID)
+                Else
+                    mb.Help = help
+                End If
+
                 helpControl = mb.Label
                 AddHandler mb.Label.MouseDoubleClick, Sub() tempItem.ValueChangedUser(tempItem.DefaultValue)
                 If os.Expand Then mb.Button.Expandet = True
@@ -159,7 +181,14 @@ Class CommandLineForm
                 End If
 
                 textBlock.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
-                textBlock.Label.Help = help
+
+                If item.HelpID <> "" Then
+                    Dim helpID = item.HelpID
+                    textBlock.Label.HelpAction = Sub() Params.ShowHelp(helpID)
+                Else
+                    textBlock.Label.Help = help
+                End If
+
                 helpControl = textBlock.Label
                 AddHandler textBlock.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
                 textBlock.Edit.Expandet = True
@@ -181,7 +210,7 @@ Class CommandLineForm
         Next
     End Sub
 
-    Class Item
+    Public Class Item
         Property Page As SimpleUI.FlowPage
         Property Control As Control
         Property Param As CommandLineParam
@@ -199,8 +228,9 @@ Class CommandLineForm
     Sub ShowHelp()
         Dim f As New HelpForm()
         f.Doc.WriteStart(Text)
-        If cbGoTo.Visible Then f.Doc.WriteP("The Search input field can be used to search for options, it searches in the switch, the label and the help. Multiple matches can be cycled by pressing enter.")
-        f.Doc.WriteP("Numeric values and options can easily be reset to their default value by double clicking on the label. The default value for boolean and any other value can be found in the tooltip which can be shown by right-clicking the label.")
+        If cbGoTo.Visible Then f.Doc.WriteP("The Search input field can be used to search for options, it searches the switch and the label. Multiple matches can be cycled by pressing enter.")
+        f.Doc.WriteP("Numeric values and options can be reset to their default value by double clicking on the label.")
+        f.Doc.WriteP("The context help is shown with a right-click on a label, menu or checkbox.")
         If HTMLHelp <> "" Then f.Doc.Writer.WriteRaw(HTMLHelp)
         f.Doc.WriteTips(SimpleUI.ActivePage.TipProvider.GetTips)
         f.Show()

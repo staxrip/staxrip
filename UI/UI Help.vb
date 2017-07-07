@@ -1,7 +1,7 @@
 Imports System.ComponentModel
 
 Namespace UI
-    Class KeysHelp
+    Public Class KeysHelp
         Private Shared Converter As TypeConverter = TypeDescriptor.GetConverter(GetType(Keys))
         Private Shared KeysTexts As Dictionary(Of Keys, String)
 
@@ -89,7 +89,7 @@ Namespace UI
         End Function
     End Class
 
-    Class WebBrowserHelp
+    Public Class WebBrowserHelp
         Shared Sub ResetTextSize(b As WebBrowser)
             Dim r As New Reflector(b.ActiveXInstance)
             Dim IDM_FONTSIZE = 19, OLECMDEXECOPT_DODEFAULT = 0

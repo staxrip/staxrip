@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Class BatchAudioEncoderForm
+Public Class BatchAudioEncoderForm
     Inherits DialogBase
 
 #Region " Designer "

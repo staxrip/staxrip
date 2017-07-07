@@ -1,5 +1,5 @@
 Namespace UI
-    Class MenuTemplateForm
+    Public Class MenuTemplateForm
         Inherits DialogBase
 
 #Region " Designer "

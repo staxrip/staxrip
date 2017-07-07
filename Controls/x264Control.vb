@@ -1,6 +1,6 @@
 ﻿Imports StaxRip.UI
 
-Class x264Control
+Public Class x264Control
     Inherits UserControl
 
 #Region " Designer "
@@ -245,7 +245,7 @@ Class x264Control
         Encoder.RunCompCheck()
     End Sub
 
-    Class QualityItem
+    Public Class QualityItem
         Property Value As Single
         Property Text As String
         Property Tooltip As String

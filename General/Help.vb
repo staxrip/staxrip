@@ -8,7 +8,7 @@ Imports Microsoft.VisualBasic.FileIO
 Imports System.Management
 Imports System.Text.RegularExpressions
 
-Class ObjectHelp
+Public Class ObjectHelp
     'parse recursive serializable fields and lists 
     Shared Function GetCompareString(obj As Object) As String
         Dim sb As New StringBuilder
@@ -100,7 +100,7 @@ Class ObjectHelp
     End Function
 End Class
 
-Class DirectoryHelp
+Public Class DirectoryHelp
     Shared Sub Delete(filepath As String,
                       Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
 
@@ -178,7 +178,7 @@ Class DirectoryHelp
     End Sub
 End Class
 
-Class ConsoleHelp
+Public Class ConsoleHelp
     Private Shared DosCodePageValue As Integer
 
     Shared ReadOnly Property DosCodePage As Integer
@@ -189,7 +189,7 @@ Class ConsoleHelp
     End Property
 End Class
 
-Class FileHelp
+Public Class FileHelp
     Shared Sub Move(src As String, dest As String)
         If File.Exists(src) Then
             If File.Exists(dest) Then Delete(dest)
@@ -208,7 +208,7 @@ Class FileHelp
     End Sub
 End Class
 
-Class ProcessHelp
+Public Class ProcessHelp
     Shared Function GetStdOut(file As String, arguments As String) As String
         Dim ret = ""
         Dim proc As New Process

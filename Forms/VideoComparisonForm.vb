@@ -3,7 +3,7 @@ Imports System.Drawing.Imaging
 
 Imports StaxRip.UI
 
-Class VideoComparisonForm
+Public Class VideoComparisonForm
     Shared Property Pos As Integer
 
     Public CropLeft, CropTop, CropRight, CropBottom As Integer
@@ -219,7 +219,7 @@ Class VideoComparisonForm
         WindowState = FormWindowState.Maximized
     End Sub
 
-    Class VideoTab
+    Public Class VideoTab
         Inherits TabPage
 
         Property AVI As AVIFile

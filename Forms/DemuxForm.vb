@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Class DemuxForm
+Public Class DemuxForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -405,15 +405,6 @@ Class DemuxForm
         MyBase.OnFormClosed(e)
     End Sub
 
-    Protected Overrides Sub OnHelpRequested(hevent As HelpEventArgs)
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteTips(TipProvider.GetTips)
-        f.Show()
-
-        MyBase.OnHelpRequested(hevent)
-    End Sub
-
     Private Sub tbCommand_DoubleClick(sender As Object, e As EventArgs) Handles tbCommand.DoubleClick
         Using d As New OpenFileDialog
             If d.ShowDialog() = DialogResult.OK Then tbCommand.Text = d.FileName
@@ -447,5 +438,12 @@ Class DemuxForm
 
         MsgWarn("The demuxer name '" + tbName.Text + "' does not match with the name of one of StaxRip's apps. StaxRip includes the following apps:" + BR2 +
                 Package.Items.Values.Where(Function(package) Not TypeOf package Is PluginPackage).Select(Function(package) package.Name).ToArray.Sort.Join(", "))
+    End Sub
+
+    Private Sub DemuxForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+        Dim f As New HelpForm()
+        f.Doc.WriteStart(Text)
+        f.Doc.WriteTips(TipProvider.GetTips)
+        f.Show()
     End Sub
 End Class

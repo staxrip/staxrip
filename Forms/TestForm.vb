@@ -1,4 +1,4 @@
-﻿Class TestForm
+﻿Public Class TestForm
     Sub New()
         InitializeComponent()
     End Sub

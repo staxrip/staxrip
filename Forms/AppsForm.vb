@@ -1,7 +1,7 @@
 Imports System.Globalization
 Imports StaxRip.UI
 
-Class AppsForm
+Public Class AppsForm
     Inherits DialogBase
 
 #Region " Designer "

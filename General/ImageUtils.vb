@@ -4,7 +4,7 @@ Imports System.Drawing.Text
 Imports System.Globalization
 Imports System.Threading.Tasks
 
-Class ImageHelp
+Public Class ImageHelp
     Private Shared Coll As PrivateFontCollection
     Private Shared AwesomePath As String = Folder.Startup + "FontAwesome.ttf"
     Private Shared SegoePath As String = Folder.Startup + "Segoe-MDL2-Assets.ttf"

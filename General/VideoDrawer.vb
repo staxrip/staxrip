@@ -1,4 +1,4 @@
-﻿Class VideoDrawer
+﻿Public Class VideoDrawer
     Property CropLeft As Integer
     Property CropTop As Integer
     Property CropRight As Integer
@@ -138,7 +138,7 @@
                         Dim text = "Frame: " & AVI.Position & " (" & AVI.FrameCount & ")" + BR &
                                    "Time: " & currentDate.ToString(format) + " (" + lengthtDate.ToString(format) + ")" + BR +
                                    "Size: " & frameSize.Width & " x " & frameSize.Height & BR +
-                                   "Rate: " & AVI.FrameRate.ToString("f6")
+                                   "Rate: " & AVI.FrameRate.ToString.Shorten(9)
 
                         Dim font = New Font("Segoe UI", 10, FontStyle.Bold)
                         Dim textSize = TextRenderer.MeasureText(text, font)

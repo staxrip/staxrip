@@ -35,7 +35,7 @@ Public Class NVEnc
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
         newParams.Init(store)
 
-        Using f As New CommandLineForm(newParams)
+        Using form As New CommandLineForm(newParams)
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of NVEnc)(Me)
                                         Dim params2 As New EncoderParams
@@ -46,12 +46,12 @@ Public Class NVEnc
                                         SaveProfile(enc)
                                     End Sub
 
-            f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.NVEnc.Path, "--check-hw"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.NVEnc.Path, "--check-features"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetErrOut(Package.NVEnc.Path, "--check-environment"))))
-            ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
+            form.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.NVEnc.Path, "--check-hw"))))
+            form.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.NVEnc.Path, "--check-features"))))
+            form.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetErrOut(Package.NVEnc.Path, "--check-environment"))))
+            ActionMenuItem.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
 
-            If f.ShowDialog() = DialogResult.OK Then
+            If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
@@ -72,16 +72,13 @@ Public Class NVEnc
         End If
 
         p.Script.Synchronize()
-        Dim batchPath = p.TempDir + p.TargetFile.Base + "_NVEncC.bat"
-        Dim batchCode = Proc.WriteBatchFile(batchPath, Params.GetCommandLine(True, True))
 
         Using proc As New Proc
             proc.Header = "Video encoding"
             proc.Package = Package.NVEnc
             proc.SkipStrings = {"%]", " frames: "}
-            proc.WriteLine(batchCode + BR2)
             proc.File = "cmd.exe"
-            proc.Arguments = "/C call """ + batchPath + """"
+            proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
             proc.Start()
         End Using
 
@@ -109,7 +106,7 @@ Public Class NVEnc
         End Get
     End Property
 
-    Class EncoderParams
+    Public Class EncoderParams
         Inherits CommandLineParams
 
         Sub New()
@@ -232,19 +229,19 @@ Public Class NVEnc
 
         Property Deband As New BoolParam With {.Text = "Deband", .ArgsFunc = AddressOf GetDebandArgs}
 
-        Property Deband_range As New NumParam With {.Text = "range", .Init = 15, .Config = {0, 127}, .Help = "Set range (default=15, 0-127)"}
-        Property Deband_sample As New NumParam With {.Text = "sample", .Init = 1, .Config = {0, 2}, .Help = "Set sample (default=1, 0-2)"}
-        Property Deband_thre As New NumParam With {.Text = "thre", .Init = 15, .Config = {0, 31}, .Help = "Set threshold for y, cb & cr"}
-        Property Deband_thre_y As New NumParam With {.Text = "     thre_y", .Init = 15, .Config = {0, 31}, .Help = "Set threshold for y (default=15, 0-31)"}
-        Property Deband_thre_cb As New NumParam With {.Text = "     thre_cb", .Init = 15, .Config = {0, 31}, .Help = "Set threshold for cb (default=15, 0-31)"}
-        Property Deband_thre_cr As New NumParam With {.Text = "     thre_cr", .Init = 15, .Config = {0, 31}, .Help = "Set threshold for cr (default=15, 0-31)"}
-        Property Deband_dither As New NumParam With {.Text = "dither", .Init = 15, .Config = {0, 31}, .Help = "Set strength of dither for y, cb & cr"}
-        Property Deband_dither_y As New NumParam With {.Text = "     dither_y", .Init = 15, .Config = {0, 31}, .Help = "Set strength of dither for y (default=15, 0-31)"}
-        Property Deband_dither_c As New NumParam With {.Text = "     dither_c", .Init = 15, .Config = {0, 31}, .Help = "Set strength of dither for cb/cr (default=15, 0-31)"}
-        Property Deband_seed As New NumParam With {.Text = "seed", .Init = 1234, .Help = "Set rand seed (default=1234)"}
+        Property Deband_range As New NumParam With {.Text = "range", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 127}}
+        Property Deband_sample As New NumParam With {.Text = "sample", .HelpSwitch = "--vpp-deband", .Init = 1, .Config = {0, 2}}
+        Property Deband_thre As New NumParam With {.Text = "thre", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property Deband_thre_y As New NumParam With {.Text = "     thre_y", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property Deband_thre_cb As New NumParam With {.Text = "     thre_cb", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property Deband_thre_cr As New NumParam With {.Text = "     thre_cr", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property Deband_dither As New NumParam With {.Text = "dither", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property Deband_dither_y As New NumParam With {.Text = "     dither_y", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property Deband_dither_c As New NumParam With {.Text = "     dither_c", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property Deband_seed As New NumParam With {.Text = "seed", .HelpSwitch = "--vpp-deband", .Init = 1234}
 
-        Property Deband_blurfirst As New BoolParam With {.Text = "blurfirst"}
-        Property Deband_rand_each_frame As New BoolParam With {.Text = "rand_each_frame"}
+        Property Deband_blurfirst As New BoolParam With {.Text = "blurfirst", .HelpSwitch = "--vpp-deband"}
+        Property Deband_rand_each_frame As New BoolParam With {.Text = "rand_each_frame", .HelpSwitch = "--vpp-deband"}
 
         Property Custom As New StringParam With {.Text = "Custom", .AlwaysOn = True}
 
@@ -279,14 +276,17 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Init = 17500, .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize", .Config = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() Codec.ValueText = "h264", .Help = "AQ strength (weak 1 - 15 strong) FOR H.264 ONLY, Default: auto(= 0)"},
-                        New NumParam With {.Switch = "--vbr-quality", .Text = "VBR Quality", .Config = {0, 51, 1, 1}, .Help = "Target quality for VBR mode (0.0-51.0, 0 = auto)."},
+                        New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() Codec.ValueText = "h264"},
+                        New NumParam With {.Switch = "--vbr-quality", .Text = "VBR Quality", .Config = {0, 51, 1, 1}},
                         New BoolParam With {.Switch = "--aq", .Text = "Adaptive Quantization"},
                         New BoolParam With {.Switch = "--aq-temporal", .Text = "AQ Temporal"},
                         Lossless)
                     Add("Performance",
+                        New StringParam With {.Switch = "--perf-monitor", .Text = "Perf. Monitor"},
+                        New OptionParam With {.Switch = "--cuda-schedule", .Text = "Cuda Schedule", .Expand = True, .InitValue = 3, .Options = {"Let cuda driver to decide", "CPU will spin when waiting GPU tasks", "CPU will yield when waiting GPU tasks", "CPU will sleep when waiting GPU tasks"}, .Values = {"auto", "spin", "yield", "sync"}},
                         New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer", .Options = {"8", "16", "32", "64", "128"}},
                         New OptionParam With {.Switch = "--output-thread", .Text = "Output Thread", .Options = {"Automatic", "Disabled", "One Thread"}, .Values = {"-1", "0", "1"}},
+                        New NumParam With {.Switch = "--perf-monitor-interval", .Init = 500, .Config = {50, Integer.MaxValue}, .Text = "Perf. Mon. Interval"},
                         New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
                     Add("VUI",
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
@@ -324,11 +324,21 @@ Public Class NVEnc
                         New BoolParam With {.Switch = "--deblock", .NoSwitch = "--no-deblock", .Text = "Deblock", .Init = True},
                         New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"},
                         Custom)
+
+                    For Each item In ItemsValue
+                        Dim switches = item.GetSwitches
+                        If switches.NothingOrEmpty Then Continue For
+                        item.HelpID = switches(0).TrimStart("-"c)
+                    Next
                 End If
 
                 Return ItemsValue
             End Get
         End Property
+
+        Public Overrides Sub ShowHelp(id As String)
+            g.ShowRigayaHelp(Package.NVEnc, id)
+        End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
             KnnRadius.NumEdit.Enabled = KNN.Value

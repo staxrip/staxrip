@@ -2,7 +2,7 @@ Imports System.Runtime.InteropServices
 Imports System.Reflection
 Imports System.Text
 
-Class AVIFile
+Public Class AVIFile
     Implements IDisposable
 
     Private AviFile As IntPtr

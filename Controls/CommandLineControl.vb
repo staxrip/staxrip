@@ -1,7 +1,7 @@
 ﻿Imports StaxRip.UI
 Imports System.ComponentModel
 
-Class CommandLineControl
+Public Class CommandLineControl
     Inherits UserControl
 
 #Region "Designer"

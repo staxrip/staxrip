@@ -29,7 +29,7 @@ Namespace UI
     End Class
 
     <Serializable()>
-    MustInherit Class GenericCriteria(Of TCondition, TType)
+    Public MustInherit Class GenericCriteria(Of TCondition, TType)
         Inherits Criteria
 
         Property Value As TType
@@ -57,7 +57,7 @@ Namespace UI
     End Class
 
     <Serializable()>
-    Class IntCriteria
+    Public Class IntCriteria
         Inherits GenericCriteria(Of IntegerCondition, Integer)
 
         Overrides Function Eval() As Boolean
@@ -93,7 +93,7 @@ Namespace UI
     End Class
 
     <Serializable()>
-    Class StringCriteria
+    Public Class StringCriteria
         Inherits GenericCriteria(Of StringCondition, String)
 
         Overrides Function Eval() As Boolean
@@ -131,7 +131,7 @@ Namespace UI
     End Class
 
     <Serializable()>
-    Class BooleanCriteria
+    Public Class BooleanCriteria
         Inherits GenericCriteria(Of BooleanCondition, Boolean)
 
         Overrides Function Eval() As Boolean

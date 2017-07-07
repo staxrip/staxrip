@@ -1,7 +1,7 @@
 Imports System.ComponentModel
 
 Namespace UI
-    Class CriteriaControl
+    Public Class CriteriaControl
         Inherits FlowLayoutPanel
 
         <Browsable(False),

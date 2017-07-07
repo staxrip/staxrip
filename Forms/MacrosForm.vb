@@ -1,7 +1,7 @@
 ﻿Imports StaxRip.UI
 Imports System.Threading
 
-Class MacrosForm
+Public Class MacrosForm
     Inherits DialogBase
 
 #Region " Designer "

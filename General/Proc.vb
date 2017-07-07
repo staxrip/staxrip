@@ -90,6 +90,50 @@ Public Class Proc
         End Get
     End Property
 
+    Shared Sub ExecuteBatch(batchCode As String,
+                            header As String,
+                            suffix As String,
+                            skipStrings As String())
+
+        If batchCode.Contains(BR) Then
+            Dim batchPath = p.TempDir + p.TargetFile.Base + suffix + ".bat"
+            batchCode = WriteBatchFile(batchPath, batchCode)
+
+            Using proc As New Proc
+                proc.Header = header
+                proc.SkipStrings = skipStrings
+                proc.WriteLine(batchCode + BR2)
+                proc.File = "cmd.exe"
+                proc.Arguments = "/C call """ + batchPath + """"
+
+                Try
+                    proc.Start()
+                Catch ex As AbortException
+                    Throw ex
+                Catch ex As Exception
+                    g.ShowException(ex)
+                    Throw New AbortException
+                End Try
+            End Using
+        Else
+            Using proc As New Proc
+                proc.Header = header
+                proc.SkipStrings = skipStrings
+                proc.File = "cmd.exe"
+                proc.Arguments = "/S /C """ + batchCode + """"
+
+                Try
+                    proc.Start()
+                Catch ex As AbortException
+                    Throw ex
+                Catch ex As Exception
+                    g.ShowException(ex)
+                    Throw New AbortException
+                End Try
+            End Using
+        End If
+    End Sub
+
     Shared Function WriteBatchFile(path As String, content As String) As String
         If OSVersion.Current = OSVersion.Windows7 Then
             For Each i In content
@@ -172,9 +216,9 @@ Public Class Proc
     End Sub
 
     Sub KillAndThrow()
-        TrowAbortException = True
-
         Try
+            TrowAbortException = True
+
             If Not Process.HasExited Then
                 If Process.ProcessName = "cmd" Then
                     For Each i In ProcessHelp.GetChilds(Process)

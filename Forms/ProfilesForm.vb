@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Class ProfilesForm
+Public Class ProfilesForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -520,15 +520,6 @@ Class ProfilesForm
         End If
     End Sub
 
-    Protected Overrides Sub OnHelpRequested(hevent As HelpEventArgs)
-        MyBase.OnHelpRequested(hevent)
-
-        Dim form As New HelpForm()
-        form.Doc.WriteStart(Text)
-        form.Doc.WriteTips(TipProvider.GetTips)
-        form.Show()
-    End Sub
-
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
         MyBase.OnFormClosed(e)
 
@@ -541,5 +532,12 @@ Class ProfilesForm
 
             g.SaveSettings()
         End If
+    End Sub
+
+    Private Sub ProfilesForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteTips(TipProvider.GetTips)
+        form.Show()
     End Sub
 End Class

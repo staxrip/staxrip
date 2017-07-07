@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Class SourceFilesForm
+Public Class SourceFilesForm
     Inherits DialogBase
 
 #Region " Designer "

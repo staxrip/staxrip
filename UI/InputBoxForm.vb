@@ -1,5 +1,5 @@
 Namespace UI
-    Class InputBoxForm
+    Public Class InputBoxForm
         Inherits FormBase
 
 #Region " Designer "

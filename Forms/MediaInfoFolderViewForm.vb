@@ -2,7 +2,7 @@ Imports StaxRip.UI
 Imports System.Threading.Tasks
 Imports System.Text
 
-Class MediaInfoFolderViewForm
+Public Class MediaInfoFolderViewForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -228,7 +228,7 @@ Class MediaInfoFolderViewForm
         If Not Completed Then e.Cancel = True
     End Sub
 
-    Class ListViewItemEx
+    Public Class ListViewItemEx
         Inherits ListViewItem
 
         Property Path As String

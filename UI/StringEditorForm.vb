@@ -1,5 +1,5 @@
 Namespace UI
-    Class StringEditorForm
+    Public Class StringEditorForm
         Inherits FormBase
 
 #Region " Designer "

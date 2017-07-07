@@ -419,7 +419,7 @@ Public Class TaskDialog
     End Function
 
     <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)>
-    Class TASKDIALOGCONFIG
+    Public Class TASKDIALOGCONFIG
         Public cbSize As UInteger
         Public hwndParent As IntPtr
         Public hInstance As IntPtr

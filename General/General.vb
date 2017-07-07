@@ -15,7 +15,7 @@ Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
 Imports Microsoft.Win32
 
-Class Folder
+Public Class Folder
 
 #Region "System"
 
@@ -243,7 +243,7 @@ Class Folder
     End Function
 End Class
 
-Class PathBase
+Public Class PathBase
     Shared ReadOnly Property Separator() As Char
         Get
             Return Path.DirectorySeparatorChar
@@ -291,7 +291,7 @@ Class PathBase
     End Function
 End Class
 
-Class DirPath
+Public Class DirPath
     Inherits PathBase
 
     Shared Function TrimTrailingSeparator(path As String) As String
@@ -343,7 +343,7 @@ Class DirPath
     End Function
 End Class
 
-Class Filepath
+Public Class Filepath
     Inherits PathBase
 
     Private Value As String
@@ -423,7 +423,7 @@ Class Filepath
     End Function
 End Class
 
-Class SafeSerialization
+Public Class SafeSerialization
     Shared Sub Serialize(o As Object, path As String)
         Dim list As New List(Of Object)
 
@@ -532,7 +532,7 @@ Class SafeSerialization
     End Function
 
     <Serializable()>
-    Class FieldContainer
+    Public Class FieldContainer
         Public Value As Object
         Public Name As String
     End Class
@@ -572,7 +572,7 @@ Public Interface ISafeSerialization
     Sub Init()
 End Interface
 
-Class HelpDocument
+Public Class HelpDocument
     Private Path As String
     Private Title As String
     Private IsClosed As Boolean
@@ -847,7 +847,7 @@ Public Class SettingBag(Of T)
     Overridable Property Value As T
 End Class
 
-Class FieldSettingBag(Of T)
+Public Class FieldSettingBag(Of T)
     Inherits SettingBag(Of T)
 
     Private Obj As Object
@@ -868,7 +868,7 @@ Class FieldSettingBag(Of T)
     End Property
 End Class
 
-Class ReflectionSettingBag(Of T)
+Public Class ReflectionSettingBag(Of T)
     Inherits SettingBag(Of T)
 
     Private Obj As Object
@@ -921,7 +921,7 @@ Public Class StringPair
     End Function
 End Class
 
-Class Misc
+Public Class Misc
     Public Shared IsAdmin As Boolean = New WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator)
 
     Shared Sub PlayAudioFile(path As String, volume As Integer)
@@ -977,7 +977,7 @@ Class Misc
     End Function
 End Class
 
-Class ErrorAbortException
+Public Class ErrorAbortException
     Inherits ApplicationException
 
     Property Title As String
@@ -991,11 +991,11 @@ Class ErrorAbortException
     End Sub
 End Class
 
-Class AbortException
+Public Class AbortException
     Inherits ApplicationException
 End Class
 
-Class CLIArg
+Public Class CLIArg
     Sub New(value As String)
         Me.Value = value
     End Sub
@@ -1375,7 +1375,7 @@ Public Module MainModule
     End Function
 End Module
 
-Class Reflector
+Public Class Reflector
     Public Type As Type
     Private BasicFlags As BindingFlags = BindingFlags.Static Or BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.NonPublic
 
@@ -1462,7 +1462,7 @@ Class Reflector
     End Function
 End Class
 
-Class Shutdown
+Public Class Shutdown
     Shared Sub Commit(mode As ShutdownMode)
         Select Case mode
             Case ShutdownMode.Standby
@@ -1497,7 +1497,7 @@ Public Enum ToolStripRenderModeEx
     <DispName("Win 10 Default Color")> Win10Default
 End Enum
 
-Class PowerRequest
+Public Class PowerRequest
     Private Shared CurrentPowerRequest As IntPtr
 
     Shared Sub SuppressStandby()

@@ -1,7 +1,7 @@
 Imports System.Runtime.InteropServices
 Imports System.Text
 
-Class Native
+Public Class Native
     Public Delegate Function CallbackHandler(handle As IntPtr, parameter As Integer) As Boolean
 
     <DllImport("gdi32.dll")>

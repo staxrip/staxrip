@@ -4,7 +4,7 @@ Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
 Imports StaxRip.UI
 
-Class eac3toForm
+Public Class eac3toForm
     Inherits DialogBase
 
 #Region " Designer "

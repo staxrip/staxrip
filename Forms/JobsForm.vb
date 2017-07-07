@@ -370,13 +370,11 @@ Friend Class JobsForm
         RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged
     End Sub
 
-    Protected Overrides Sub OnHelpRequested(hevent As HelpEventArgs)
+    Private Sub JobsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         Dim f As New HelpForm()
         f.Doc.WriteStart(Text)
         f.Doc.WriteP("Jobs are processed in dedicated StaxRip instances.")
         f.Doc.WriteP("It's possible to start multiple instances concurrently.")
         f.Show()
-
-        MyBase.OnHelpRequested(hevent)
     End Sub
 End Class

@@ -9,7 +9,6 @@ Public Class ProcController
     Property LogTextBox As New TextBox
     Property StatusLabel As New Label
     Property ProcForm As ProcForm
-    Property IsClosing As Boolean
     Property CheckBox As New CheckBoxEx
 
     Private LogAction As Action = New Action(AddressOf LogHandler)
@@ -96,13 +95,15 @@ Public Class ProcController
     End Sub
 
     Private Sub Click(sender As Object, e As EventArgs)
-        For Each i In Procs.ToArray
-            If Not i.CheckBox Is sender Then i.Deactivate()
-        Next
+        SyncLock Procs
+            For Each i In Procs
+                If Not i.CheckBox Is sender Then i.Deactivate()
+            Next
 
-        For Each i In Procs.ToArray
-            If i.CheckBox Is sender Then i.Activate()
-        Next
+            For Each i In Procs
+                If i.CheckBox Is sender Then i.Activate()
+            Next
+        End SyncLock
     End Sub
 
     Sub ProcDisposed()
@@ -114,10 +115,7 @@ Public Class ProcController
         Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", 0)
 
         For Each i In Procs.ToArray
-            Try
-                If Not i.IsClosing Then i.Proc.KillAndThrow()
-            Catch ex As Exception
-            End Try
+            i.Proc.KillAndThrow()
         Next
 
         ShowMainForm()
@@ -125,11 +123,9 @@ Public Class ProcController
 
     Shared Sub ShowMainForm()
         g.MainForm.BeginInvoke(Sub()
-                                   If Not g.IsEncodingInstance Then
-                                       g.MainForm.Show()
-                                       g.MainForm.Refresh()
-                                       g.MainForm.Activate()
-                                   End If
+                                   g.MainForm.Show()
+                                   g.MainForm.Refresh()
+                                   g.MainForm.Activate()
                                End Sub)
     End Sub
 
@@ -170,37 +166,18 @@ Public Class ProcController
         Return ret
     End Function
 
-    Sub AutoClose()
-        Task.Run(Sub()
-                     Thread.Sleep(900)
-                     ProcForm.Invoke(Sub()
-                                         If Procs.Count = 0 AndAlso
-                                             Not ProcForm.IsDisposed Then
-
-                                             ProcForm.Hide()
-                                             ShowMainForm()
-                                         End If
-                                     End Sub)
-                 End Sub)
-    End Sub
-
     Sub Cleanup()
-        IsClosing = True
         ProcForm.flpNav.Controls.Remove(CheckBox)
 
         SyncLock Procs
             Procs.Remove(Me)
-        End SyncLock
 
-        If Procs.Count > 0 Then
-            For Each i In Procs.ToArray
+            For Each i In Procs
                 i.Deactivate()
             Next
 
             If Procs.Count > 0 Then Procs(0).Activate()
-        Else
-            AutoClose()
-        End If
+        End SyncLock
 
         RemoveHandler Proc.ProcDisposed, AddressOf ProcDisposed
         RemoveHandler Proc.Process.OutputDataReceived, AddressOf DataReceived
@@ -210,18 +187,29 @@ Public Class ProcController
         ProcForm.pnStatusHost.Controls.Remove(StatusLabel)
         LogTextBox.Dispose()
         StatusLabel.Dispose()
-
         If Not Proc.Succeeded Then ProcForm.Abort()
+
+        Task.Run(Sub()
+                     Thread.Sleep(500)
+
+                     SyncLock Procs
+                         If Procs.Count = 0 Then
+                             If ProcForm.Visible Then ProcForm.BeginInvoke(Sub()
+                                                                               ProcForm.NotifyIcon.Visible = False
+                                                                               ProcForm.Hide()
+                                                                           End Sub)
+                             If Not g.MainForm.Visible Then ShowMainForm()
+                         End If
+                     End SyncLock
+                 End Sub)
     End Sub
 
     Sub Activate()
         CheckBox.Checked = True
         Proc.IsSilent = False
-
         LogTextBox.Visible = True
         LogTextBox.BringToFront()
         LogTextBox.Text = Proc.Log.ToString
-
         StatusLabel.Visible = True
         StatusLabel.BringToFront()
     End Sub
@@ -229,7 +217,6 @@ Public Class ProcController
     Sub Deactivate()
         CheckBox.Checked = False
         Proc.IsSilent = True
-
         LogTextBox.Visible = False
         StatusLabel.Visible = False
     End Sub
@@ -239,13 +226,13 @@ Public Class ProcController
 
         SyncLock Procs
             Procs.Add(pc)
-        End SyncLock
 
-        If Procs.Count = 1 Then
-            pc.Activate()
-        Else
-            pc.Deactivate()
-        End If
+            If Procs.Count = 1 Then
+                pc.Activate()
+            Else
+                pc.Deactivate()
+            End If
+        End SyncLock
     End Sub
 
     Shared CreateProcForm As New Object
@@ -265,7 +252,7 @@ Public Class ProcController
         End SyncLock
 
         g.ProcForm.Invoke(Sub()
-                              g.ProcForm.Show()
+                              If Not ProcForm.IsMinimized Then g.ProcForm.Show()
                               AddProc(proc)
                           End Sub)
     End Sub

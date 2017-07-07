@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Class EventCommandsEditor
+Public Class EventCommandsEditor
     Inherits DialogBase
 
 #Region " Designer "

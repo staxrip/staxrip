@@ -630,7 +630,7 @@ Public Class FilterCategory
     End Function
 End Class
 
-Class FilterParameter
+Public Class FilterParameter
     Property Name As String
     Property Value As String
 
@@ -640,7 +640,7 @@ Class FilterParameter
     End Sub
 End Class
 
-Class FilterParameters
+Public Class FilterParameters
     Property FunctionName As String
     Property Text As String
 

@@ -1,6 +1,7 @@
+Imports System.Threading.Tasks
 Imports StaxRip.UI
 
-Class MuxerForm
+Public Class MuxerForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -465,17 +466,6 @@ Class MuxerForm
         Muxer.AdditionalSwitches = CmdlControl.tb.Text.ReplaceUnicode
     End Sub
 
-    Protected Overrides Sub OnHelpRequested(hevent As HelpEventArgs)
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteP(Strings.Muxer)
-        f.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
-        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
-        f.Show()
-
-        MyBase.OnHelpRequested(hevent)
-    End Sub
-
     Private Sub buCmdlPreview_Click() Handles bnCommandLinePreview.Click
         SetValues()
         g.ShowCommandLinePreview("Command Line", Muxer.GetCommandLine)
@@ -606,38 +596,37 @@ Class MuxerForm
             tb.BrowseFile("txt, mkv|*.txt;*.mkv")
         End If
 
-        Dim tags = UI.AddTextButton()
-        tags.Text = "Tags:"
-        If TypeOf Muxer Is MkvMuxer Then tags.Label.Help = "Tags added to the MKV file." + BR2 + "Syntax: name1: value1; name2: value2"
-        tags.Expandet = True
-        tags.Property = NameOf(Muxer.Tags)
-        tags.MacroDialog()
-
         If TypeOf Muxer Is MkvMuxer Then
             CmdlControl.Presets = s.CmdlPresetsMKV
-            Dim mkvMuxer = DirectCast(Muxer, MkvMuxer)
+
+            Dim tags = UI.AddTextButton()
+            tags.Text = "Tags"
+            tags.Help = "Tags added to the MKV file." + BR2 + "Syntax: name1: value1; name2: value2"
+            tags.Expandet = True
+            tags.Property = NameOf(Muxer.Tags)
+            tags.MacroDialog()
 
             tb = UI.AddTextButton()
             tb.Text = "Title:"
             tb.Expandet = True
-            tb.Property = NameOf(mkvMuxer.Title)
+            tb.Property = NameOf(MkvMuxer.Title)
             tb.MacroDialog()
 
             Dim t = UI.AddText()
             t.Text = "Video Track Name:"
             t.Help = "Optional name of the video stream that may contain macro."
             t.Expandet = True
-            t.Property = NameOf(mkvMuxer.VideoTrackName)
+            t.Property = NameOf(MkvMuxer.VideoTrackName)
 
             Dim tm = UI.AddTextMenu()
             tm.Text = "Display Aspect Ratio:"
-            tm.Property = NameOf(mkvMuxer.DAR)
+            tm.Property = NameOf(MkvMuxer.DAR)
             tm.AddMenu(s.DarMenu)
 
             Dim ml = UI.AddMenu(Of Language)()
             ml.Text = "Video Track Language:"
             ml.Help = "Optional language of the video stream."
-            ml.Property = NameOf(mkvMuxer.VideoTrackLanguage)
+            ml.Property = NameOf(MkvMuxer.VideoTrackLanguage)
 
             lastAction = Sub()
                              For Each i In Language.Languages
@@ -652,12 +641,21 @@ Class MuxerForm
                          End Sub
 
         ElseIf TypeOf Muxer Is MP4Muxer Then
+            Dim tags = UI.AddTextButton()
+            tags.Text = "Tags"
+            Task.Run(Sub()
+                         Dim stdOut = ProcessHelp.GetErrOut(Package.MP4Box.Path, "-tag-list")
+                         BeginInvoke(Sub() tags.Help = "Tags added to the MP4 file." + BR2 + "Syntax: prop1=val1:prop2=val2" + BR2 + stdOut)
+                     End Sub)
+            tags.Expandet = True
+            tags.Property = NameOf(Muxer.Tags)
+            tags.MacroDialog()
+
             CmdlControl.Presets = s.CmdlPresetsMP4
-            Dim mp4Muxer = DirectCast(Muxer, MP4Muxer)
 
             Dim tm = UI.AddTextMenu()
             tm.Text = "Pixel Aspect Ratio:"
-            tm.Property = NameOf(mp4Muxer.PAR)
+            tm.Property = NameOf(MP4Muxer.PAR)
             tm.AddMenu(s.ParMenu)
         End If
 
@@ -665,5 +663,14 @@ Class MuxerForm
         lastAction?.Invoke
 
         MyBase.OnShown(e)
+    End Sub
+
+    Private Sub MuxerForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+        Dim f As New HelpForm()
+        f.Doc.WriteStart(Text)
+        f.Doc.WriteP(Strings.Muxer)
+        f.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
+        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        f.Show()
     End Sub
 End Class

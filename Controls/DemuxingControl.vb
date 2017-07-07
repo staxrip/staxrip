@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Class DemuxingControl
+Public Class DemuxingControl
     Inherits UserControl
     Implements IPage
 

@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Class HelpForm
+Public Class HelpForm
     Inherits FormBase
 
 #Region " Designer "

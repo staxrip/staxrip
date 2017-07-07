@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Class AudioForm
+Public Class AudioForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -605,13 +605,13 @@ Class AudioForm
 
     Sub UpdateControls()
         Select Case TempProfile.Params.Codec
-            Case AudioCodec.Opus, AudioCodec.Flac
+            Case AudioCodec.Opus, AudioCodec.FLAC, AudioCodec.W64
                 nudQuality.Enabled = False
             Case Else
                 nudQuality.Enabled = TempProfile.Params.RateMode = AudioRateMode.VBR
         End Select
 
-        If TempProfile.Params.Codec = AudioCodec.Flac Then
+        If TempProfile.Params.Codec = AudioCodec.FLAC Then
             numBitrate.Enabled = False
         Else
             numBitrate.Enabled = Not nudQuality.Enabled
@@ -638,7 +638,7 @@ Class AudioForm
                 End If
 
                 TempProfile.Params.RateMode = AudioRateMode.CBR
-            Case AudioCodec.Flac
+            Case AudioCodec.FLAC
                 numBitrate.Value = TempProfile.GetBitrate
                 TempProfile.Params.RateMode = AudioRateMode.CBR
             Case AudioCodec.DTS
@@ -782,17 +782,18 @@ Class AudioForm
         RemoveHandler SimpleUI.ValueChanged, AddressOf SimpleUIValueChanged
 
         Dim ui = SimpleUI
+        ui.Store = TempProfile
         ui.Host.Controls.Clear()
 
         If Not ui.ActivePage Is Nothing Then DirectCast(ui.ActivePage, Control).Dispose()
 
-        Dim page = ui.CreateFlowPage("main page")
+        Dim page = ui.CreateFlowPage()
         page.SuspendLayout()
 
-        Dim tb = ui.AddText(page)
+        Dim tb = ui.AddText
         tb.Text = "Stream Name:"
         tb.Help = "Stream name used by the muxer."
-        tb.Edit.Expandet = True
+        tb.Expandet = True
         tb.Edit.Text = TempProfile.StreamName
         tb.Edit.SaveAction = Sub(value) TempProfile.StreamName = value
 
@@ -802,6 +803,19 @@ Class AudioForm
         tb.Edit.Expandet = True
         tb.Edit.Text = TempProfile.Params.CustomSwitches
         tb.Edit.SaveAction = Sub(value) TempProfile.Params.CustomSwitches = value
+
+        If TempProfile.Params.Codec = AudioCodec.W64 Then
+            Dim mDepth = ui.AddMenu(Of Integer)
+            mDepth.Text = "Depth:"
+            mDepth.Expandet = True
+            mDepth.Button.Value = TempProfile.Depth
+            mDepth.Button.SaveAction = Sub(val)
+                                           TempProfile.Depth = val
+                                           UpdateBitrate()
+                                           UpdateControls()
+                                       End Sub
+            mDepth.Add({16, 24})
+        End If
 
         Dim cb As SimpleUI.SimpleUICheckBox
 
@@ -849,15 +863,6 @@ Class AudioForm
                 mbStereoDownmix.Button.Value = TempProfile.Params.eac3toStereoDownmixMode
                 mbStereoDownmix.Button.SaveAction = Sub(value) TempProfile.Params.eac3toStereoDownmixMode = value
 
-                cb = ui.AddBool(page)
-                cb.Text = "Downconvert to 16 bit"
-                cb.Checked = TempProfile.Params.Down16
-                cb.SaveAction = Sub(value)
-                                    TempProfile.Params.Down16 = value
-                                    UpdateBitrate()
-                                    UpdateControls()
-                                End Sub
-
                 If (TempProfile.File = "" OrElse TempProfile.File.ToLower.Contains("dts") OrElse
                     (Not TempProfile.Stream Is Nothing AndAlso
                      TempProfile.Stream.Name.Contains("DTS"))) AndAlso
@@ -870,22 +875,24 @@ Class AudioForm
                 End If
             Case GuiAudioEncoder.ffmpeg
                 Select Case TempProfile.Params.Codec
-                    Case AudioCodec.AC3, AudioCodec.DTS, AudioCodec.Flac
+                    Case AudioCodec.AC3, AudioCodec.DTS
                     Case Else
-                        Dim mbRateMode = ui.AddMenu(Of AudioRateMode)(page)
-                        mbRateMode.Label.Text = "Rate Mode:"
-                        mbRateMode.Button.Expandet = True
-                        mbRateMode.Button.Value = TempProfile.Params.RateMode
-                        mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.RateMode = value
+                        If Not {AudioCodec.W64, AudioCodec.FLAC}.Contains(TempProfile.Params.Codec) Then
+                            Dim mbRateMode = ui.AddMenu(Of AudioRateMode)
+                            mbRateMode.Text = "Rate Mode:"
+                            mbRateMode.Expandet = True
+                            mbRateMode.Button.Value = TempProfile.Params.RateMode
+                            mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.RateMode = value
+                        End If
                 End Select
             Case GuiAudioEncoder.qaac
-                Dim mbMode = ui.AddMenu(Of Integer)(page)
-                mbMode.Label.Text = "Mode:"
-                mbMode.Button.Expandet = True
-                mbMode.Button.Add("True VBR", 0)
-                mbMode.Button.Add("Constrained VBR", 1)
-                mbMode.Button.Add("ABR", 2)
-                mbMode.Button.Add("CBR", 3)
+                Dim mbMode = ui.AddMenu(Of Integer)
+                mbMode.Text = "Mode:"
+                mbMode.Expandet = True
+                mbMode.Add("True VBR", 0)
+                mbMode.Add("Constrained VBR", 1)
+                mbMode.Add("ABR", 2)
+                mbMode.Add("CBR", 3)
                 mbMode.Button.Value = TempProfile.Params.qaacRateMode
                 mbMode.Button.SaveAction = Sub(value)
                                                TempProfile.Params.qaacRateMode = value

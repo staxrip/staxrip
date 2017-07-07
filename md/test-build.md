@@ -12,6 +12,27 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.1.9 unstable test build
+
+- new: context help is now implemented for all video encoders, a right-click on any label, menu or checkbox will show the help for the option, for nvenc, qsvenc and vceenc a new help browser was developed with powershell look and feel
+- new: UT Video added for ffmpeg video encoder GUI with options for: -pred (None Left Gradient Median) -pix_fmt (YUV420P YUV422P YUV444P RGB24 RGBA)
+- new: help improved for Tags in mp4box container options dialog, the help is runtime generated using the output from mp4box -tag-list
+- new: ffmpeg muxing formats menu and profiles added for: asf avi flv ismv mkv mov mp4 mpg mxf nut ogg ts webm wmv
+- new: audio target format W64 added with 16/24 bit depth option
+- new: nvenc options --cuda-schedule, --perf-monitor, --perf-monitor-interval
+
+- fix: cmd.exe is now used directly without batch files, this improves foreign/special character support in particular on Windows 7
+- fix: Jobs Processing window popping up while job processing even when staxrip was previously minimized
+- fix: tray icons not cleaned up
+- fix: in a few dialogs the help dialog was shown four times instead once
+- fix: broken scaling on DPI change using a multi-monitor setup, virtual scaling is used in that case now
+- fix: crash when cutting empty subtitles
+
+- change: all classes made public for powershell usage
+
+- update: x264 0.150.2851
+- update: nvenc 3.14
+
 #### 1.5.1.8 unstable test build
 
 - fix: unable to show processing window from tray

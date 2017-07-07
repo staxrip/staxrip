@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Class DialogTemplate
+Public Class DialogTemplate
     Inherits DialogBase
 
 #Region " Designer "

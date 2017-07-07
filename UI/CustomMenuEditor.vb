@@ -1,7 +1,7 @@
 Imports System.Reflection
 
 Namespace UI
-    Class CustomMenuEditor
+    Public Class CustomMenuEditor
         Inherits DialogBase
 
 #Region " Designer "
@@ -1052,18 +1052,6 @@ Namespace UI
             MyBase.OnFormClosing(e)
         End Sub
 
-        Protected Overrides Sub OnHelpRequested(hevent As HelpEventArgs)
-            Dim f As New HelpForm()
-            f.Doc.WriteStart(Text)
-            f.Doc.WriteP("The menu editor allows to customize the text, location, shortcut key and command of a menu item. Menu items can be rearranged with '''Drag & Drop'''. Pressing Ctrl while dragging moves as sub-item.")
-            f.Doc.WriteP("[http://fontawesome.io/cheatsheet FontAwesome icons]")
-            f.Doc.WriteP("[https://docs.microsoft.com/en-us/windows/uwp/style/segoe-ui-symbol-font Segoe MDL2 icons]")
-            f.Doc.WriteTable("Commands", GenericMenu.CommandManager.GetTips)
-            f.Show()
-
-            MyBase.OnHelpRequested(hevent)
-        End Sub
-
         Private Sub bnOK_Click(sender As Object, e As EventArgs) Handles bnOK.Click
             IsClosing = True
         End Sub
@@ -1072,44 +1060,14 @@ Namespace UI
             IsClosing = True
         End Sub
 
-        Private Sub tsbCut_Click(sender As Object, e As EventArgs) Handles tsbCut.Click
-
-        End Sub
-
-        Private Sub tsbCopy_Click(sender As Object, e As EventArgs) Handles tsbCopy.Click
-
-        End Sub
-
-        Private Sub tsbPaste_Click(sender As Object, e As EventArgs) Handles tsbPaste.Click
-
-        End Sub
-
-        Private Sub tsbMoveLeft_Click(sender As Object, e As EventArgs) Handles tsbMoveLeft.Click
-
-        End Sub
-
-        Private Sub tsbMoveRight_Click(sender As Object, e As EventArgs) Handles tsbMoveRight.Click
-
-        End Sub
-
-        Private Sub tsbMoveUp_Click(sender As Object, e As EventArgs) Handles tsbMoveUp.Click
-
-        End Sub
-
-        Private Sub tsbMoveDown_Click(sender As Object, e As EventArgs) Handles tsbMoveDown.Click
-
-        End Sub
-
-        Private Sub tsbRemove_Click(sender As Object, e As EventArgs) Handles tsbRemove.Click
-
-        End Sub
-
-        Private Sub NewFromDefaultsToolStripMenuItem_Click(sender As Object, e As EventArgs)
-
-        End Sub
-
-        Private Sub ResetToolStripMenuItem_Click(sender As Object, e As EventArgs)
-
+        Private Sub CustomMenuEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+            Dim f As New HelpForm()
+            f.Doc.WriteStart(Text)
+            f.Doc.WriteP("The menu editor allows to customize the text, location, shortcut key and command of a menu item. Menu items can be rearranged with '''Drag & Drop'''. Pressing Ctrl while dragging moves as sub-item.")
+            f.Doc.WriteP("[http://fontawesome.io/cheatsheet FontAwesome icons]")
+            f.Doc.WriteP("[https://docs.microsoft.com/en-us/windows/uwp/style/segoe-ui-symbol-font Segoe MDL2 icons]")
+            f.Doc.WriteTable("Commands", GenericMenu.CommandManager.GetTips)
+            f.Show()
         End Sub
     End Class
 End Namespace

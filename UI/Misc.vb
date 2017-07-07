@@ -420,7 +420,7 @@ Namespace UI
         End Sub
     End Class
 
-    Class ListBag(Of T)
+    Public Class ListBag(Of T)
         Implements IComparable(Of ListBag(Of T))
 
         Property Text As String
@@ -543,7 +543,7 @@ Namespace UI
         End Function
     End Class
 
-    Class OpenFileDialogEditor
+    Public Class OpenFileDialogEditor
         Inherits UITypeEditor
 
         Overloads Overrides Function EditValue(context As ITypeDescriptorContext, provider As IServiceProvider, value As Object) As Object
@@ -561,7 +561,7 @@ Namespace UI
         End Function
     End Class
 
-    Class StringEditor
+    Public Class StringEditor
         Inherits UITypeEditor
 
         Sub New()
@@ -583,7 +583,7 @@ Namespace UI
         End Function
     End Class
 
-    Class DesignHelp
+    Public Class DesignHelp
         Private Shared IsDesignModeValue As Boolean?
 
         Shared ReadOnly Property IsDesignMode As Boolean

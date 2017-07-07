@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Class SelectionBox(Of T)
+Public Class SelectionBox(Of T)
     Property Text As String
     Property Title As String
     Property Items As New List(Of ListBag(Of T))

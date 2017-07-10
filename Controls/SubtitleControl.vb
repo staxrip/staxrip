@@ -345,7 +345,7 @@ Public Class SubtitleControl
         Dim path = If(selected AndAlso dgv.CurrentRow.Index < Items.Count, Items(dgv.CurrentRow.Index).Subtitle.Path, "")
         bnBDSup2SubPP.Enabled = selected AndAlso {"idx", "sup"}.Contains(path.Ext)
         bnSubtitleEdit.Enabled = bnBDSup2SubPP.Enabled
-        bnPlay.Enabled = FileTypes.SubtitleExludingContainers.Contains(path.Ext) AndAlso p.SourceFile <> ""
+        bnPlay.Enabled = p.SourceFile <> ""
         bnUp.Enabled = dgv.CanMoveUp
         bnDown.Enabled = dgv.CanMoveDown
         bnSetNames.Enabled = selected
@@ -420,70 +420,24 @@ Public Class SubtitleControl
     End Class
 
     Private Sub bnPlay_Click() Handles bnPlay.Click
-        If Package.MPC.VerifyOK(True) Then
-            Try
-                Dim st = Items(dgv.CurrentRow.Index).Subtitle
-                Dim fp = st.Path
+        If Not Package.mpv.VerifyOK(True) Then Exit Sub
 
-                Dim avs As New VideoScript
-                avs.Engine = p.Script.Engine
-                avs.Path = p.TempDir + p.TargetFile.Base + "_play." + avs.FileType
-                avs.Filters = p.Script.GetFiltersCopy
+        Dim st = Items(dgv.CurrentRow.Index).Subtitle
+        Dim fp = st.Path
 
-                If avs.Engine = ScriptEngine.AviSynth Then
-                    If FileTypes.TextSub.Contains(Filepath.GetExt(fp)) Then
-                        Dim insertCat = If(avs.IsFilterActive("Crop"), "Crop", "Source")
+        If st.Path.Ext = "idx" Then
+            fp = p.TempDir + p.TargetFile.Base + "_play.idx"
 
-                        If Filepath.GetExtFull(st.Path) = ".idx" Then
-                            fp = p.TempDir + p.TargetFile.Base + "_play.idx"
+            Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
+                            st.IndexIDX.ToString).WriteANSIFile(fp)
 
-                            Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
-                                st.IndexIDX.ToString).WriteANSIFile(fp)
+            FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
+        End If
 
-                            FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
-                            avs.InsertAfter(insertCat, New VideoFilter("VobSub(""" + fp + """)"))
-                        Else
-                            avs.InsertAfter(insertCat, New VideoFilter("TextSubMod(""" + fp + """)"))
-                        End If
-                    End If
-
-                    If Calc.IsARSignalingRequired Then
-                        Dim w = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
-                        avs.Filters.Add(New VideoFilter("LanczosResize(" & w & "," & p.TargetHeight & ")"))
-                    End If
-
-                    Dim ap = p.Audio0
-
-                    If Not File.Exists(ap.File) Then ap = p.Audio1
-
-                    If File.Exists(ap.File) Then
-                        avs.Filters.Add(New VideoFilter("KillAudio()"))
-                        Dim nic = Audio.GetNicAudioCode(ap)
-
-                        If nic <> "" Then
-                            avs.Filters.Add(New VideoFilter(nic))
-                        Else
-                            avs.Filters.Add(New VideoFilter("AudioDub(last, DirectShowSource(""" + ap.File + """, video = false))"))
-                        End If
-
-                        avs.Filters.Add(New VideoFilter("DelayAudio(" & (ap.Delay / 1000).ToInvariantString & ")"))
-                    End If
-                End If
-
-                avs.Synchronize(True)
-
-                Dim subSwitch As String
-
-                If Not FileTypes.TextSub.Contains(Filepath.GetExt(fp)) AndAlso
-                    FileTypes.SubtitleExludingContainers.Contains(Filepath.GetExt(fp)) Then
-
-                    subSwitch = "/sub """ + fp + """"
-                End If
-
-                g.Play(avs.Path, subSwitch)
-            Catch ex As Exception
-                g.ShowException(ex)
-            End Try
+        If FileTypes.SubtitleExludingContainers.Contains(fp.Ext) Then
+            g.StartProcess(Package.mpv.Path, "--sub-file " + fp.Escape + " " + p.FirstOriginalSourceFile.Escape)
+        ElseIf p.FirstOriginalSourceFile = fp Then
+            g.StartProcess(Package.mpv.Path, "--sub " & (st.Index + 1) & " " + fp.Escape)
         End If
     End Sub
 
@@ -533,7 +487,7 @@ Public Class SubtitleControl
                 FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
             End If
 
-            g.ShellExecute(Package.BDSup2SubPP.Path, """" + fp + """")
+            g.StartProcess(Package.BDSup2SubPP.Path, """" + fp + """")
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -550,7 +504,7 @@ Public Class SubtitleControl
                 FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
             End If
 
-            g.ShellExecute(Package.SubtitleEdit.Path, fp.Escape)
+            g.StartProcess(Package.SubtitleEdit.Path, fp.Escape)
         Catch ex As Exception
             g.ShowException(ex)
         End Try

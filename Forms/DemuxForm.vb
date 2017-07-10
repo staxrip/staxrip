@@ -427,7 +427,7 @@ Public Class DemuxForm
         For Each i In Package.Items.Values
             If tbName.Text = i.Name Then
                 If i.GetHelpPath <> "" Then
-                    g.ShellExecute(i.GetHelpPath)
+                    g.StartProcess(i.GetHelpPath)
                 Else
                     MsgWarn("There is no help available for this app.")
                 End If

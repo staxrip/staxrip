@@ -794,9 +794,7 @@ Namespace UI
                     Next
                 End If
 
-                If Text = "" AndAlso Not value Is Nothing Then
-                    Text = value.ToString
-                End If
+                If Text = "" AndAlso Not value Is Nothing Then Text = value.ToString
 
                 ValueValue = value
             End Set

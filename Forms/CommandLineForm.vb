@@ -54,7 +54,7 @@ Public Class CommandLineForm
         cms.Add("Copy Command Line", Sub() Clipboard.SetText(params.GetCommandLine(True, True)))
         cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", params.GetCommandLine(True, True)))
         cms.Add("Help", AddressOf ShowHelp).SetImage(Symbol.Help)
-        cms.Add(params.GetPackage.Name + " Help", Sub() g.ShellExecute(params.GetPackage.GetHelpPath))
+        cms.Add(params.GetPackage.Name + " Help", Sub() g.StartProcess(params.GetPackage.GetHelpPath))
     End Sub
 
     Sub SelectLastPage()

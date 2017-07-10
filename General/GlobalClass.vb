@@ -64,7 +64,7 @@ Public Class GlobalClass
             Log.Save()
             g.MainForm.OpenProject(g.ProjectPath, False)
             g.ShowException(ex, Nothing, 100)
-            g.ShellExecute(g.GetTextEditor(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
+            g.StartProcess(g.GetTextEditor(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
         Catch ex As Exception
             Log.Save()
             g.OnException(ex)
@@ -177,15 +177,27 @@ Public Class GlobalClass
         End If
     End Function
 
-    Sub PlayScript(doc As VideoScript)
-        If File.Exists(p.Audio0.File) Then
-            PlayScript(doc, p.Audio0)
+    Sub PlayAudio(ap As AudioProfile)
+        If ap.File = p.FirstOriginalSourceFile AndAlso ap.Streams.Count > 0 Then
+            g.StartProcess(Package.mpv.Path, "--audio " & (ap.Stream.Index + 1) & " " + p.FirstOriginalSourceFile.Escape)
+        ElseIf FileTypes.Audio.Contains(ap.File.Ext) Then
+            g.StartProcess(Package.mpv.Path, "--audio-delay " + (g.ExtractDelay(ap.File) / 1000).ToInvariantString.Shorten(9) + " --audio-file " + ap.File.Escape + " " + p.FirstOriginalSourceFile.Escape)
         Else
+            MsgError("Unable to play audio.")
+        End If
+    End Sub
+
+    Sub PlayScript(doc As VideoScript)
+        If File.Exists(p.Audio0.File) AndAlso FileTypes.Audio.Contains(p.Audio0.File.Ext) Then
+            PlayScript(doc, p.Audio0)
+        ElseIf File.Exists(p.Audio1.File) AndAlso FileTypes.Audio.Contains(p.Audio1.File.Ext) Then
             PlayScript(doc, p.Audio1)
         End If
     End Sub
 
     Sub PlayScript(doc As VideoScript, ap As AudioProfile)
+        If Not Package.mpv.VerifyOK(True) Then Exit Sub
+
         Dim script As New VideoScript
         script.Engine = doc.Engine
         script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
@@ -204,9 +216,9 @@ Public Class GlobalClass
         End If
 
         script.Synchronize(False)
-        If ap.File.Contains("ms") Then MsgWarn("Please note that MPC don't support taking the delay into account.")
-        If ap.File = p.FirstOriginalSourceFile Then MsgWarn("Please note that MPC don't support stream selection via command line, you have to select it manually.")
-        g.Play(script.Path, "/dub """ + ap.File + """")
+        Dim args = script.Path.Escape
+        If FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-file " + ap.File.Escape + " " + args
+        g.StartProcess(Package.mpv.Path, args)
     End Sub
 
     Function ExtractDelay(value As String) As Integer
@@ -270,7 +282,7 @@ Public Class GlobalClass
         If profiles.Count > 0 Then
             If TypeOf profiles(0) Is VideoEncoder Then
                 Dim helpURL = If(g.IsCulture("de"), "http://encodingwissen.de/codecs", "http://en.wikipedia.org/wiki/Video_codec")
-                Dim helpMenuItem = New ActionMenuItem("Help...", Sub() g.ShellExecute(helpURL))
+                Dim helpMenuItem = New ActionMenuItem("Help...", Sub() g.StartProcess(helpURL))
                 helpMenuItem.SetImage(Symbol.Help)
                 ic.Add(helpMenuItem)
             End If
@@ -631,12 +643,12 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub Play(file As String, Optional cliOptions As String = Nothing)
-        If Package.MPC.VerifyOK(True) Then
-            Dim args = """" + file + """"
-            If cliOptions <> "" Then args += " " + cliOptions
-            g.ShellExecute(Package.MPC.Path, args)
-        End If
+    Sub Play(file As String)
+        g.StartProcess(Package.mpv.Path, file.Escape)
+    End Sub
+
+    Sub Play2(arguments As String)
+        If Package.mpv.VerifyOK(True) Then g.StartProcess(Package.mpv.Path, arguments)
     End Sub
 
     Sub ShowRigayaHelp(package As Package, id As String)
@@ -659,7 +671,7 @@ Public Class GlobalClass
         form.Show()
     End Sub
 
-    Sub ShellExecute(cmd As String, Optional args As String = Nothing)
+    Sub StartProcess(cmd As String, Optional args As String = Nothing)
         Try
             Process.Start(cmd, args)
         Catch ex As Exception
@@ -677,7 +689,7 @@ Public Class GlobalClass
 
     Sub OpenDirAndSelectFile(filepath As String, handle As IntPtr)
         If File.Exists(filepath) Then
-            g.ShellExecute(StaxRip.Filepath.GetDir(filepath))
+            g.StartProcess(StaxRip.Filepath.GetDir(filepath))
 
             Try
                 For x = 0 To 9
@@ -692,7 +704,7 @@ Public Class GlobalClass
             Catch
             End Try
         ElseIf Directory.Exists(StaxRip.Filepath.GetDir(filepath)) Then
-            g.ShellExecute(StaxRip.Filepath.GetDir(filepath))
+            g.StartProcess(StaxRip.Filepath.GetDir(filepath))
         End If
     End Sub
 
@@ -716,14 +728,14 @@ Public Class GlobalClass
         Log.Save(p)
         Dim fp = Log.GetPath
         g.OpenDirAndSelectFile(fp, g.MainForm.Handle)
-        g.ShellExecute(g.GetTextEditor(), """" + fp + """")
-        g.ShellExecute("https://github.com/stax76/staxrip/issues")
+        g.StartProcess(g.GetTextEditor(), """" + fp + """")
+        g.StartProcess("https://github.com/stax76/staxrip/issues")
     End Sub
 
     Function FileExists(path As String) As Boolean
-        For x = 0 To 50
+        For x = 1 To 6
             If File.Exists(path) Then Return True
-            Thread.Sleep(1000)
+            Thread.Sleep(500)
         Next
     End Function
 

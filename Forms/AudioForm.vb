@@ -545,12 +545,12 @@ Public Class AudioForm
         cms.Add("Save Profile...", AddressOf SaveProfile, "Saves the current settings as profile").SetImage(Symbol.Save)
         cms.Add("-")
         cms.Add("Help", AddressOf ShowHelp).SetImage(Symbol.Help)
-        cms.Add("eac3to Help", Sub() g.ShellExecute("http://en.wikibooks.org/wiki/Eac3to"))
-        cms.Add("ffmpeg Help", Sub() g.ShellExecute(Package.ffmpeg.GetHelpPath))
+        cms.Add("eac3to Help", Sub() g.StartProcess("http://en.wikibooks.org/wiki/Eac3to"))
+        cms.Add("ffmpeg Help", Sub() g.StartProcess(Package.ffmpeg.GetHelpPath))
 
         TipProvider.SetTip("Profile name that is auto generated when undefined.", lName)
         TipProvider.SetTip("Language used by the muxer. Saved in projects/templates but not in profiles.", mbLanguage, lLanguage)
-        TipProvider.SetTip("Delay in milliseconds. eac3to and BeSweet handle delay, ffmpeg don't but it is handled by the muxer. Saved in projects/templates but not in profiles.", numDelay, lDelay)
+        TipProvider.SetTip("Delay in milliseconds. eac3to handles delay, ffmpeg don't but it is handled by the muxer. Saved in projects/templates but not in profiles.", numDelay, lDelay)
     End Sub
 
     Private Sub AudioForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
@@ -605,7 +605,7 @@ Public Class AudioForm
 
     Sub UpdateControls()
         Select Case TempProfile.Params.Codec
-            Case AudioCodec.Opus, AudioCodec.FLAC, AudioCodec.W64
+            Case AudioCodec.Opus, AudioCodec.FLAC, AudioCodec.W64, AudioCodec.WAV
                 nudQuality.Enabled = False
             Case Else
                 nudQuality.Enabled = TempProfile.Params.RateMode = AudioRateMode.VBR
@@ -782,7 +782,7 @@ Public Class AudioForm
         RemoveHandler SimpleUI.ValueChanged, AddressOf SimpleUIValueChanged
 
         Dim ui = SimpleUI
-        ui.Store = TempProfile
+        ui.Store = TempProfile.Params
         ui.Host.Controls.Clear()
 
         If Not ui.ActivePage Is Nothing Then DirectCast(ui.ActivePage, Control).Dispose()
@@ -804,7 +804,7 @@ Public Class AudioForm
         tb.Edit.Text = TempProfile.Params.CustomSwitches
         tb.Edit.SaveAction = Sub(value) TempProfile.Params.CustomSwitches = value
 
-        If TempProfile.Params.Codec = AudioCodec.W64 Then
+        If {AudioCodec.W64, AudioCodec.WAV}.Contains(TempProfile.Params.Codec) Then
             Dim mDepth = ui.AddMenu(Of Integer)
             mDepth.Text = "Depth:"
             mDepth.Expandet = True
@@ -820,34 +820,6 @@ Public Class AudioForm
         Dim cb As SimpleUI.SimpleUICheckBox
 
         Select Case TempProfile.GetEncoder
-            'Case GuiAudioEncoder.BeSweet
-            '    Dim mb = ui.AddMenuButtonBlock(Of String)(page)
-            '    mb.Label.Text = "Dynamic Compr.:"
-            '    mb.Label.Tooltip = "Sets the overall dynamic compression in the decoder (applied to every output speaker)."
-            '    mb.MenuButton.Expandet = True
-            '    mb.MenuButton.Value = TempProfile.Params.BeSweetDynamicCompression
-            '    mb.MenuButton.SaveAction = Sub(value) TempProfile.Params.BeSweetDynamicCompression = value
-            '    mb.MenuButton.Add({"None", "Normal", "Light", "Heavy", "Inverse"})
-
-            '    Dim mbRateMode = ui.AddMenuButtonBlock(Of AudioRateMode)(page)
-            '    mbRateMode.Label.Text = "Rate Mode:"
-            '    mbRateMode.MenuButton.Expandet = True
-            '    mbRateMode.MenuButton.Value = TempProfile.Params.RateMode
-            '    mbRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.RateMode = value
-
-            '    tb = ui.AddTextBlock(page)
-            '    tb.Label.Text = "Gain/Normalize:"
-            '    tb.Label.Tooltip = "Parameters added to ota section when the Normalize checkbox is enabled."
-            '    tb.Edit.Expandet = True
-            '    tb.Edit.Text = TempProfile.Params.BeSweetGainAndNormalization
-            '    tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetGainAndNormalization = value
-
-            '    tb = ui.AddTextBlock(page)
-            '    tb.Label.Text = "Azid parameters:"
-            '    tb.Label.Tooltip = "Custom parameters used in the Azid section."
-            '    tb.Edit.Expandet = True
-            '    tb.Edit.Text = TempProfile.Params.BeSweetAzid
-            '    tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetAzid = value
             Case GuiAudioEncoder.Eac3to
                 Dim mbFrameRateMode = ui.AddMenu(Of AudioFrameRateMode)(page)
                 mbFrameRateMode.Label.Text = "Frame rate:"
@@ -877,7 +849,7 @@ Public Class AudioForm
                 Select Case TempProfile.Params.Codec
                     Case AudioCodec.AC3, AudioCodec.DTS
                     Case Else
-                        If Not {AudioCodec.W64, AudioCodec.FLAC}.Contains(TempProfile.Params.Codec) Then
+                        If Not {AudioCodec.WAV, AudioCodec.W64, AudioCodec.FLAC}.Contains(TempProfile.Params.Codec) Then
                             Dim mbRateMode = ui.AddMenu(Of AudioRateMode)
                             mbRateMode.Text = "Rate Mode:"
                             mbRateMode.Expandet = True
@@ -911,8 +883,8 @@ Public Class AudioForm
                 mbQuality.Button.SaveAction = Sub(value) TempProfile.Params.qaacQuality = value
 
                 Dim num = ui.AddNum(page)
-                num.Label.Text = "Lowpass:"
-                num.NumEdit.Config = {0, Integer.MaxValue, 1}
+                num.Text = "Lowpass:"
+                num.Config = {0, Integer.MaxValue}
                 num.NumEdit.Value = TempProfile.Params.qaacLowpass
                 num.NumEdit.SaveAction = Sub(value) TempProfile.Params.qaacLowpass = CInt(value)
 

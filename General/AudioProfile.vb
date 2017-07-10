@@ -130,7 +130,7 @@ Public MustInherit Class AudioProfile
         End Get
     End Property
 
-    Sub Migrate()
+    Overridable Sub Migrate()
         If Depth = 0 Then Depth = 24
     End Sub
 
@@ -299,7 +299,6 @@ Public Class BatchAudioProfile
         Return {
             Package.ffmpeg,
             Package.eac3to,
-            Package.BeSweet,
             Package.qaac}.
             Where(Function(pack) cl.ToLower.Contains(pack.Name.ToLower)).
             Select(Function(pack) "set PATH=%PATH%;" + pack.GetDir).
@@ -576,6 +575,11 @@ Public Class GUIAudioProfile
         End Get
     End Property
 
+    Public Overrides Sub Migrate()
+        MyBase.Migrate()
+        Params.Migrate()
+    End Sub
+
     Function GetBitrate() As Integer
         If Params.RateMode = AudioRateMode.VBR Then
             Select Case Params.Codec
@@ -602,7 +606,7 @@ Public Class GUIAudioProfile
         Select Case Params.Codec
             Case AudioCodec.FLAC
                 Return CInt(((TargetSamplingRate * Depth * Channels) / 1000) * 0.55)
-            Case AudioCodec.W64
+            Case AudioCodec.W64, AudioCodec.WAV
                 Return CInt((TargetSamplingRate * Depth * Channels) / 1000)
         End Select
 
@@ -615,32 +619,23 @@ Public Class GUIAudioProfile
             Dim targetPath = GetOutputFile()
 
             For Each i In ExpandMacros(CommandLines, False).SplitLinesNoEmpty
-                Dim start = DateTime.Now
-
                 Using proc As New Proc
-                    If i.Contains("BeSweet.exe") Then
-                        proc.Header = "Audio encoding"
-                        proc.Package = Package.BeSweet
-                        proc.SkipStrings = {"Processed", "transcoding", "Maximum Gain Found : ", "Asserting gain"}
-                    ElseIf i.Contains("eac3to.exe") Then
-                        proc.Header = "Audio encoding"
+                    If i.Contains("eac3to.exe") Then
                         proc.Package = Package.eac3to
                         proc.SkipStrings = {"process: ", "analyze: "}
                         proc.TrimChars = {"-"c, " "c}
                         proc.RemoveChars = {VB6.ChrW(8)} 'backspace
                     ElseIf i.Contains("ffmpeg.exe") Then
-                        proc.Header = "Audio encoding"
                         proc.Package = Package.ffmpeg
                         proc.SkipStrings = {"frame=", "size="}
                         proc.Encoding = Encoding.UTF8
                     ElseIf i.Contains("qaac64.exe") Then
-                        proc.Header = "Audio encoding"
                         proc.Package = Package.qaac
                         proc.SkipString = ", ETA "
                     End If
 
+                    proc.Header = "Audio encoding"
                     proc.CommandLine = i
-                    proc.AllowedExitCodes = {0, 1}
                     proc.Start()
                 End Using
 
@@ -659,15 +654,7 @@ Public Class GUIAudioProfile
 
                     Log.WriteLine(MediaInfo.GetSummary(File))
                 Else
-                    Log.Write("Error", "no output found")
-
-                    If Not Filepath.GetExtFull(File) = ".wav" Then
-                        Audio.Convert(Me)
-
-                        If Filepath.GetExtFull(File) = ".wav" Then
-                            Encode()
-                        End If
-                    End If
+                    Throw New ErrorAbortException("Error audio encoding", "The output file is missing")
                 End If
             Next
         End If
@@ -852,7 +839,7 @@ Public Class GUIAudioProfile
                 Else
                     ret += " -b:a " & CInt(Bitrate) & "k"
                 End If
-            Case AudioCodec.W64
+            Case AudioCodec.W64, AudioCodec.WAV
                 If Depth = 24 Then
                     ret += " -c:a pcm_s24le"
                 Else
@@ -874,83 +861,6 @@ Public Class GUIAudioProfile
             ret += " -y -hide_banner"
             ret += " " + GetOutputFile.Escape
         End If
-
-        Return ret
-    End Function
-
-    Function GetBeSweetCommandLine(includePaths As Boolean) As String
-        Dim ret As String
-
-        If includePaths Then
-            ret = Package.BeSweet.Path.Escape
-        Else
-            ret = "BeSweet"
-        End If
-
-        If includePaths AndAlso File <> "" Then
-            ret += " -core( -input " + File.Escape + " -output " + GetOutputFile.Escape & " )"
-        End If
-
-        Dim t = ""
-
-        If Not Params.BeSweetAzid.Contains("-c") AndAlso Params.BeSweetDynamicCompression <> "None" Then
-            t += " -c " + Params.BeSweetDynamicCompression.ToLower
-        End If
-
-        If Not Params.BeSweetAzid.Contains("-L") AndAlso Channels = 2 Then
-            t += " -L -3db"
-        End If
-
-        If Params.BeSweetAzid <> "" Then t += " " + Params.BeSweetAzid
-        If t <> "" Then ret += " -azid(" + t + " )"
-
-        Dim ota = If(Delay <> 0, " -d " & Delay, "")
-
-        If Params.Normalize AndAlso Params.BeSweetGainAndNormalization <> "" Then
-            ota += " " + Params.BeSweetGainAndNormalization
-        End If
-
-        If Params.FrameRateMode = AudioFrameRateMode.Speedup Then
-            ota += " -r 23976 25000"
-        End If
-
-        If Params.FrameRateMode = AudioFrameRateMode.Slowdown Then
-            ota += " -r 25000 23976"
-        End If
-
-        If ota <> "" Then ret += " -ota(" & ota & " )"
-
-        If Params.SamplingRate <> 0 Then
-            ret += " -ssrc( --rate " & Params.SamplingRate & " )"
-        End If
-
-        If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
-
-        Select Case Params.Codec
-            Case AudioCodec.AAC
-                Dim ch = If(Channels = 6, " -6chnew", "")
-                Dim profile = " -aacprofile_lc"
-
-                Select Case Params.RateMode
-                    Case AudioRateMode.VBR
-                        ret += " -bsn( -vbr " & Params.Quality.ToInvariantString & profile & ch & " )"
-                    Case AudioRateMode.ABR
-                        ret += " -bsn( -abr " & CInt(Bitrate) & profile & ch & " )"
-                    Case AudioRateMode.CBR
-                        ret += " -bsn( -cbr " & CInt(Bitrate) & profile & ch & " )"
-                End Select
-            Case AudioCodec.MP3
-                Select Case Params.RateMode
-                    Case AudioRateMode.VBR
-                        ret += " -lame( -v --vbr-new -V " & CInt(Params.Quality) & " -b 32 -h )"
-                    Case AudioRateMode.ABR
-                        ret += " -lame( --abr " & CInt(Bitrate) & " -h )"
-                    Case AudioRateMode.CBR
-                        ret += " -lame( -b " & CInt(Bitrate) & " -h )"
-                End Select
-            Case AudioCodec.AC3
-                ret += " -bsn( -exe aften.exe -b " & CInt(Bitrate) & If(Channels = 6, " -6chnew", "") + " )"
-        End Select
 
         Return ret
     End Function
@@ -995,27 +905,17 @@ Public Class GUIAudioProfile
     End Property
 
     Overrides Function HandlesDelay() As Boolean
-        Return GetEncoder() <> GuiAudioEncoder.ffmpeg
+        If {GuiAudioEncoder.Eac3to, GuiAudioEncoder.qaac}.Contains(GetEncoder()) Then Return True
     End Function
 
     Function GetEncoder() As GuiAudioEncoder
         Select Case Params.Encoder
-            'Case GuiAudioEncoder.BeSweet
-            '    Select Case Params.Codec
-            '        Case AudioCodec.AAC, AudioCodec.MP3, AudioCodec.AC3
-            '            Return GuiAudioEncoder.BeSweet
-            '    End Select
             Case GuiAudioEncoder.Eac3to
-                Select Case Params.Codec
-                    Case AudioCodec.AAC, AudioCodec.AC3, AudioCodec.FLAC, AudioCodec.DTS
-                        Return GuiAudioEncoder.Eac3to
-                End Select
+                If {AudioCodec.AAC, AudioCodec.AC3, AudioCodec.FLAC, AudioCodec.DTS}.Contains(Params.Codec) Then Return GuiAudioEncoder.Eac3to
             Case GuiAudioEncoder.ffmpeg
                 Return GuiAudioEncoder.ffmpeg
             Case GuiAudioEncoder.qaac
-                If Params.Codec = AudioCodec.AAC Then
-                    Return GuiAudioEncoder.qaac
-                End If
+                If Params.Codec = AudioCodec.AAC Then Return GuiAudioEncoder.qaac
         End Select
 
         If Params.Codec = AudioCodec.AAC Then Return GuiAudioEncoder.Eac3to
@@ -1025,8 +925,6 @@ Public Class GUIAudioProfile
 
     Function GetCommandLine(includePaths As Boolean) As String
         Select Case GetEncoder()
-            'Case GuiAudioEncoder.BeSweet
-            '    Return GetBeSweetCommandLine(includePaths)
             Case GuiAudioEncoder.Eac3to
                 Return GetEac3toCommandLine(includePaths)
             Case GuiAudioEncoder.qaac
@@ -1039,8 +937,6 @@ Public Class GUIAudioProfile
     Overrides Property SupportedInput As String()
         Get
             Select Case GetEncoder()
-                'Case GuiAudioEncoder.BeSweet
-                '    Return FileTypes.BeSweetInput
                 Case GuiAudioEncoder.Eac3to
                     Return FileTypes.eac3toInput
                 Case GuiAudioEncoder.qaac
@@ -1074,6 +970,20 @@ Public Class GUIAudioProfile
         Property RateMode As AudioRateMode
         Property SamplingRate As Integer
         Property ChannelsMode As ChannelsMode
+
+        Property opusencMode As Integer = 2
+        Property opusencComplexity As Integer = 10
+        Property opusencFramesize As Double = 20
+        Property opusencMigrateVersion As Integer = 1
+
+        Sub Migrate()
+            If opusencMigrateVersion <> 1 Then
+                opusencFramesize = 20
+                opusencComplexity = 10
+                opusencMode = 2
+                opusencMigrateVersion = 1
+            End If
+        End Sub
     End Class
 End Class
 
@@ -1086,6 +996,7 @@ Public Enum AudioCodec
     Opus
     Vorbis
     W64
+    WAV
 End Enum
 
 Public Enum AudioRateMode
@@ -1103,7 +1014,6 @@ End Enum
 
 Public Enum GuiAudioEncoder
     Automatic
-    'BeSweet
     Eac3to
     ffmpeg
     qaac

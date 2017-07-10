@@ -28,6 +28,7 @@ Public Class ProcController
 
         StatusLabel.Dock = DockStyle.Fill
         StatusLabel.TextAlign = ContentAlignment.MiddleLeft
+        StatusLabel.Font = New Font("Consolas", 9 * s.UIScaleFactor)
 
         LogTextBox.ScrollBars = ScrollBars.Both
         LogTextBox.Multiline = True
@@ -194,10 +195,7 @@ Public Class ProcController
 
                      SyncLock Procs
                          If Procs.Count = 0 Then
-                             If ProcForm.Visible Then ProcForm.BeginInvoke(Sub()
-                                                                               ProcForm.NotifyIcon.Visible = False
-                                                                               ProcForm.Hide()
-                                                                           End Sub)
+                             If ProcForm.Visible Then ProcForm.BeginInvoke(Sub() ProcForm.Hide())
                              If Not g.MainForm.Visible Then ShowMainForm()
                          End If
                      End SyncLock

@@ -131,7 +131,7 @@ Public Class ApplicationSettings
             AviSynthFilterPreferences.Add("vdr", "AviSource")
         End If
 
-        If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 1) Then
+        If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 3) Then
             VapourSynthFilterPreferences = New StringPairList
             VapourSynthFilterPreferences.Add("default", "ffms2")
             VapourSynthFilterPreferences.Add("264 h264 avc", "LWLibavSource")

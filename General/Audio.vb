@@ -88,6 +88,8 @@ Public Class Audio
                     Return "flac"
                 Case AudioConvertType.W64
                     Return "w64"
+                Case AudioConvertType.WAVE
+                    Return "wav"
                 Case Else
                     Throw New NotImplementedException
             End Select
@@ -281,10 +283,11 @@ Public Class Audio
     Shared Sub ConvertFfmpeg(ap As AudioProfile)
         If ap.File.Ext = ConvertExt Then Exit Sub
         Dim outPath = p.TempDir + ap.File.Base + "." + ConvertExt
+        If ap.File = outPath Then outPath += "." + ConvertExt
         Dim args = "-i " + ap.File.Escape
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
         args += " -y -hide_banner -ac " & ap.Channels
-        If ConvertExt = "w64" Then args += " -c:a pcm_s24le"
+        If ConvertExt.EqualsAny("wav", "w64") Then args += " -c:a pcm_s24le"
         args += " " + outPath.Escape
 
         Using proc As New Proc
@@ -298,6 +301,7 @@ Public Class Audio
         End Using
 
         If g.FileExists(outPath) Then
+            ap.Gain = 0
             ap.File = outPath
             Log.WriteLine(MediaInfo.GetSummary(outPath))
         Else
@@ -560,6 +564,7 @@ End Enum
 Public Enum AudioConvertType
     FLAC
     W64
+    WAVE
 End Enum
 
 Public Enum CuttingMode

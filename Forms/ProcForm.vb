@@ -222,14 +222,11 @@ Public Class ProcForm
         NotifyIcon.Text = "StaxRip"
 
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
+        NotifyIcon.Visible = s.MinimizeToTray
 
         If ProcForm.IsMinimized Then
             WindowState = FormWindowState.Minimized
-
-            If s.MinimizeToTray Then
-                ShowInTaskbar = False
-                NotifyIcon.Visible = True
-            End If
+            If s.MinimizeToTray Then ShowInTaskbar = False
         End If
     End Sub
 
@@ -272,7 +269,6 @@ Public Class ProcForm
 
                         If s.MinimizeToTray Then
                             Hide()
-                            NotifyIcon.Visible = True
                             Exit Sub
                         End If
                     Case Native.SC_CLOSE
@@ -292,7 +288,6 @@ Public Class ProcForm
         ShowInTaskbar = True
         Show()
         Activate()
-        NotifyIcon.Visible = False
     End Sub
 
     Protected Overrides Sub OnActivated(e As EventArgs)

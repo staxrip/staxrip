@@ -25,6 +25,8 @@ Public Class AppsForm
     Friend WithEvents tsbWebsite As System.Windows.Forms.ToolStripButton
     Friend WithEvents tlpMain As TableLayoutPanel
     Friend WithEvents tsbDownload As ToolStripButton
+    Friend WithEvents tsbPath As ToolStripButton
+    Friend WithEvents tsbVersion As ToolStripButton
     Friend WithEvents tsbExplore As System.Windows.Forms.ToolStripButton
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.tv = New StaxRip.UI.TreeViewEx()
@@ -33,6 +35,8 @@ Public Class AppsForm
         Me.tsbExplore = New System.Windows.Forms.ToolStripButton()
         Me.tsbWebsite = New System.Windows.Forms.ToolStripButton()
         Me.tsbDownload = New System.Windows.Forms.ToolStripButton()
+        Me.tsbPath = New System.Windows.Forms.ToolStripButton()
+        Me.tsbVersion = New System.Windows.Forms.ToolStripButton()
         Me.tsbHelp = New System.Windows.Forms.ToolStripButton()
         Me.flp = New System.Windows.Forms.FlowLayoutPanel()
         Me.SearchTextBox = New StaxRip.SearchTextBox()
@@ -57,7 +61,7 @@ Public Class AppsForm
         Me.tv.SelectOnMouseDown = True
         Me.tv.ShowLines = False
         Me.tv.ShowPlusMinus = False
-        Me.tv.Size = New System.Drawing.Size(244, 319)
+        Me.tv.Size = New System.Drawing.Size(352, 832)
         Me.tv.Sorted = True
         Me.tv.TabIndex = 0
         '
@@ -67,12 +71,13 @@ Public Class AppsForm
         Me.ToolStrip.AutoSize = False
         Me.ToolStrip.Dock = System.Windows.Forms.DockStyle.None
         Me.ToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsbLaunch, Me.tsbExplore, Me.tsbWebsite, Me.tsbDownload, Me.tsbHelp})
-        Me.ToolStrip.Location = New System.Drawing.Point(264, 10)
+        Me.ToolStrip.ImageScalingSize = New System.Drawing.Size(48, 48)
+        Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsbLaunch, Me.tsbExplore, Me.tsbWebsite, Me.tsbDownload, Me.tsbPath, Me.tsbVersion, Me.tsbHelp})
+        Me.ToolStrip.Location = New System.Drawing.Point(372, 10)
         Me.ToolStrip.Margin = New System.Windows.Forms.Padding(0, 10, 10, 0)
         Me.ToolStrip.Name = "ToolStrip"
         Me.ToolStrip.Padding = New System.Windows.Forms.Padding(5, 2, 2, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(785, 80)
+        Me.ToolStrip.Size = New System.Drawing.Size(1108, 80)
         Me.ToolStrip.TabIndex = 1
         Me.ToolStrip.Text = "tsMain"
         '
@@ -81,8 +86,8 @@ Public Class AppsForm
         Me.tsbLaunch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbLaunch.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbLaunch.Name = "tsbLaunch"
-        Me.tsbLaunch.Size = New System.Drawing.Size(156, 75)
-        Me.tsbLaunch.Text = " Launch "
+        Me.tsbLaunch.Size = New System.Drawing.Size(136, 75)
+        Me.tsbLaunch.Text = "Launch"
         Me.tsbLaunch.ToolTipText = "Launches the app"
         '
         'tsbExplore
@@ -90,9 +95,9 @@ Public Class AppsForm
         Me.tsbExplore.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbExplore.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbExplore.Name = "tsbExplore"
-        Me.tsbExplore.Size = New System.Drawing.Size(162, 75)
-        Me.tsbExplore.Text = " Explore "
-        Me.tsbExplore.ToolTipText = "Opens the folder in explorer"
+        Me.tsbExplore.Size = New System.Drawing.Size(142, 75)
+        Me.tsbExplore.Text = "Explore"
+        Me.tsbExplore.ToolTipText = "Opens the app's folder in windows file explorer"
         '
         'tsbWebsite
         '
@@ -101,25 +106,43 @@ Public Class AppsForm
         Me.tsbWebsite.Name = "tsbWebsite"
         Me.tsbWebsite.Size = New System.Drawing.Size(117, 75)
         Me.tsbWebsite.Text = " Web "
-        Me.tsbWebsite.ToolTipText = "Opens the apps website"
+        Me.tsbWebsite.ToolTipText = "Opens the app's website"
         '
         'tsbDownload
         '
         Me.tsbDownload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbDownload.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbDownload.Name = "tsbDownload"
-        Me.tsbDownload.Size = New System.Drawing.Size(205, 75)
-        Me.tsbDownload.Text = " Download "
-        Me.tsbDownload.ToolTipText = "Opens the apps download web page"
+        Me.tsbDownload.Size = New System.Drawing.Size(185, 75)
+        Me.tsbDownload.Text = "Download"
+        Me.tsbDownload.ToolTipText = "Opens the app's download web page"
+        '
+        'tsbPath
+        '
+        Me.tsbPath.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.tsbPath.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsbPath.Name = "tsbPath"
+        Me.tsbPath.Size = New System.Drawing.Size(113, 75)
+        Me.tsbPath.Text = " Path "
+        Me.tsbPath.ToolTipText = "Edits the app's path (F11)"
+        '
+        'tsbVersion
+        '
+        Me.tsbVersion.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.tsbVersion.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.tsbVersion.Name = "tsbVersion"
+        Me.tsbVersion.Size = New System.Drawing.Size(141, 75)
+        Me.tsbVersion.Text = "Version"
+        Me.tsbVersion.ToolTipText = "Edits the app's version (F12)"
         '
         'tsbHelp
         '
         Me.tsbHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbHelp.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbHelp.Name = "tsbHelp"
-        Me.tsbHelp.Size = New System.Drawing.Size(119, 52)
+        Me.tsbHelp.Size = New System.Drawing.Size(119, 75)
         Me.tsbHelp.Text = " Help "
-        Me.tsbHelp.ToolTipText = "Opens the apps help"
+        Me.tsbHelp.ToolTipText = "Opens the app's help (F1)"
         '
         'flp
         '
@@ -129,10 +152,10 @@ Public Class AppsForm
         Me.flp.BackColor = System.Drawing.Color.White
         Me.flp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.flp.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.flp.Location = New System.Drawing.Point(264, 100)
+        Me.flp.Location = New System.Drawing.Point(372, 100)
         Me.flp.Margin = New System.Windows.Forms.Padding(0, 10, 10, 10)
         Me.flp.Name = "flp"
-        Me.flp.Size = New System.Drawing.Size(785, 319)
+        Me.flp.Size = New System.Drawing.Size(1108, 832)
         Me.flp.TabIndex = 2
         '
         'SearchTextBox
@@ -141,7 +164,7 @@ Public Class AppsForm
         Me.SearchTextBox.Location = New System.Drawing.Point(11, 15)
         Me.SearchTextBox.Margin = New System.Windows.Forms.Padding(11, 10, 11, 0)
         Me.SearchTextBox.Name = "SearchTextBox"
-        Me.SearchTextBox.Size = New System.Drawing.Size(242, 70)
+        Me.SearchTextBox.Size = New System.Drawing.Size(350, 70)
         Me.SearchTextBox.TabIndex = 4
         '
         'tlpMain
@@ -161,15 +184,16 @@ Public Class AppsForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1059, 429)
+        Me.tlpMain.Size = New System.Drawing.Size(1490, 942)
         Me.tlpMain.TabIndex = 6
         '
         'AppsForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(1059, 429)
+        Me.ClientSize = New System.Drawing.Size(1490, 942)
         Me.Controls.Add(Me.tlpMain)
+        Me.HelpButton = False
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "AppsForm"
@@ -220,7 +244,7 @@ Public Class AppsForm
         SetupButton.TextImageRelation = TextImageRelation.ImageBeforeText
         SetupButton.Image = StockIcon.GetSmallImage(StockIconIdentifier.Shield)
 
-        AddHandler DownloadButton.Click, Sub() g.ShellExecute(CurrentPackage.DownloadURL)
+        AddHandler DownloadButton.Click, Sub() g.StartProcess(CurrentPackage.DownloadURL)
         DownloadButton.AutoSize = True
         DownloadButton.AutoSizeMode = Windows.Forms.AutoSizeMode.GrowAndShrink
 
@@ -259,6 +283,9 @@ Public Class AppsForm
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
         tsbHelp.Enabled = CurrentPackage.GetHelpPath <> ""
 
+        tsbVersion.Enabled = Not CurrentPackage.IgnoreVersion
+        tsbPath.Enabled = CurrentPackage.FixedDir = ""
+
         s.StringDictionary("RecentExternalApplicationControl") = CurrentPackage.Name
 
         flp.SuspendLayout()
@@ -273,6 +300,9 @@ Public Class AppsForm
 
         Headers("VapourSynth Filters").Visible = False
         Contents("VapourSynth Filters").Visible = False
+
+        Headers("Version").Visible = Not CurrentPackage.IgnoreVersion
+        Contents("Version").Visible = Not CurrentPackage.IgnoreVersion
 
         Headers("Filters").Visible = False
         Contents("Filters").Visible = False
@@ -330,7 +360,7 @@ Public Class AppsForm
     End Sub
 
     Sub RunSetup()
-        g.ShellExecute(Folder.Apps + CurrentPackage.SetupFilename)
+        g.StartProcess(Folder.Apps + CurrentPackage.SetupFilename)
         ShowActivePackage()
     End Sub
 
@@ -362,56 +392,18 @@ Public Class AppsForm
 
     Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
         Select Case e.KeyData
+            Case Keys.F1
+                tsbHelp.PerformClick()
             Case Keys.F10
-                g.ShellExecute("D:\Projekte\VS\VB\StaxRip\md\test-build.md")
+                Dim fp = "D:\Projekte\VS\VB\StaxRip\md\test-build.md"
+                If File.Exists(fp) Then g.StartProcess(fp)
             Case Keys.F11
-                Using d As New OpenFileDialog
-                    d.SetInitDir(s.Storage.GetString(CurrentPackage.Name + "custom path"))
-
-                    If Not CurrentPackage.Filenames.NothingOrEmpty Then
-                        d.Filter = "|" + CurrentPackage.Filenames.Join(";") + "|All Files|*.*"
-                    Else
-                        d.Filter = "|" + CurrentPackage.Filename + "|All Files|*.*"
-                    End If
-
-                    If d.ShowDialog = DialogResult.OK Then
-                        s.Storage.SetString(CurrentPackage.Name + "custom path", d.FileName)
-                    End If
-                End Using
+                tsbPath.PerformClick()
             Case Keys.F12
-                If Not File.Exists(CurrentPackage.Path) Then Exit Sub
-
-                Dim input = InputBox.Show("What's the name of this version?", "StaxRip", CurrentPackage.Version)
-
-                If input <> "" Then
-                    input = input.Replace(";", "_")
-                    CurrentPackage.Version = input
-                    CurrentPackage.VersionDate = File.GetLastWriteTimeUtc(CurrentPackage.Path)
-
-                    Dim txt = Application.ProductVersion + BR2
-
-                    For Each i In Package.Items.Values
-                        If i.Version <> "" Then
-                            txt += i.ID + " = " + i.VersionDate.ToString("yyyy-MM-dd",
-                                CultureInfo.InvariantCulture) + "; " + i.Version + BR 'persian calendar
-                        End If
-                    Next
-
-                    Try
-                        txt.FormatColumn("=").WriteUTF8File(Folder.Startup + "Apps\Versions.txt")
-                    Catch
-                    End Try
-
-                    Try
-                        txt.FormatColumn("=").WriteUTF8File(Folder.Settings + "Versions.txt")
-                    Catch ex As Exception
-                        g.ShowException(ex)
-                    End Try
-                End If
+                tsbVersion.PerformClick()
         End Select
 
         ShowActivePackage()
-
         MyBase.OnKeyDown(e)
     End Sub
 
@@ -476,14 +468,57 @@ Public Class AppsForm
     End Sub
 
     Private Sub tsbHelp_Click(sender As Object, e As EventArgs) Handles tsbHelp.Click
-        g.ShellExecute(CurrentPackage.GetHelpPath)
+        g.StartProcess(CurrentPackage.GetHelpPath)
     End Sub
 
     Private Sub tsbWebsite_Click(sender As Object, e As EventArgs) Handles tsbWebsite.Click
-        g.ShellExecute(CurrentPackage.WebURL)
+        g.StartProcess(CurrentPackage.WebURL)
     End Sub
 
     Private Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click
-        g.ShellExecute(CurrentPackage.DownloadURL)
+        g.StartProcess(CurrentPackage.DownloadURL)
+    End Sub
+
+    Private Sub tsbPath_Click(sender As Object, e As EventArgs) Handles tsbPath.Click
+        Using d As New OpenFileDialog
+            d.SetInitDir(s.Storage.GetString(CurrentPackage.Name + "custom path"))
+            d.Filter = "|" + CurrentPackage.Filename + "|All Files|*.*"
+
+            If d.ShowDialog = DialogResult.OK Then
+                s.Storage.SetString(CurrentPackage.Name + "custom path", d.FileName)
+            End If
+        End Using
+    End Sub
+
+    Private Sub tsbVersion_Click(sender As Object, e As EventArgs) Handles tsbVersion.Click
+        If Not File.Exists(CurrentPackage.Path) Then Exit Sub
+
+        Dim input = InputBox.Show("What's the name of this version?", "StaxRip", CurrentPackage.Version)
+
+        If input <> "" Then
+            input = input.Replace(";", "_")
+            CurrentPackage.Version = input
+            CurrentPackage.VersionDate = File.GetLastWriteTimeUtc(CurrentPackage.Path)
+
+            Dim txt = Application.ProductVersion + BR2
+
+            For Each i In Package.Items.Values
+                If i.Version <> "" Then
+                    txt += i.ID + " = " + i.VersionDate.ToString("yyyy-MM-dd",
+                        CultureInfo.InvariantCulture) + "; " + i.Version + BR 'persian calendar
+                End If
+            Next
+
+            Try
+                txt.FormatColumn("=").WriteUTF8File(Folder.Startup + "Apps\Versions.txt")
+            Catch
+            End Try
+
+            Try
+                txt.FormatColumn("=").WriteUTF8File(Folder.Settings + "Versions.txt")
+            Catch ex As Exception
+                g.ShowException(ex)
+            End Try
+        End If
     End Sub
 End Class

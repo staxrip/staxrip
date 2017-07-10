@@ -6,6 +6,7 @@
         rtb.Text = text
         rtb.BackColor = Color.FromArgb(255, 1, 36, 86)
         rtb.ForeColor = Color.FromArgb(255, 238, 237, 240)
+        rtb.ReadOnly = True
         Me.Find = find
         ScaleClientSize(40, 30)
     End Sub

@@ -329,7 +329,7 @@ Public Class TaskDialog(Of T)
                 Dim url = Marshal.PtrToStringUni(lParam)
 
                 If url.StartsWith("mailto:") OrElse url Like "http*://*" Then
-                    g.ShellExecute(url)
+                    g.StartProcess(url)
                 ElseIf url = "copymsg:" Then
                     g.MainForm.BeginInvoke(Sub()
                                                Clipboard.SetText(MainInstruction + BR2 + Content + BR2 + ExpandedInformation)

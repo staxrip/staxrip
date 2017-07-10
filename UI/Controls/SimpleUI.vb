@@ -992,6 +992,10 @@ Public Class SimpleUI
             Button.Add(items)
         End Sub
 
+        Sub Add(path As String, obj As Object)
+            Button.Add(path, obj)
+        End Sub
+
         Public Shadows WriteOnly Property Help As String
             Set(value As String)
                 Dim parent = Me.Parent

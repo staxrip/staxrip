@@ -376,6 +376,6 @@ Public Class Proc
             Next
         End If
 
-        Return (value, False)
+        Return (value.Trim, False)
     End Function
 End Class

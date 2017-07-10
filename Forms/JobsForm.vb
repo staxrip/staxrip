@@ -331,6 +331,11 @@ Friend Class JobsForm
     End Sub
 
     Private Sub bnStart_Click(sender As Object, e As EventArgs) Handles bnStart.Click
+        If Not s.Storage.GetBool("proc form help") Then
+            ShowHelp()
+            s.Storage.SetBool("proc form help", True)
+        End If
+
         If ActiveJobs.Count = 1 Then Close()
         g.DefaultCommands.StartJobs()
     End Sub
@@ -371,10 +376,12 @@ Friend Class JobsForm
     End Sub
 
     Private Sub JobsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteP("Jobs are processed in dedicated StaxRip instances.")
-        f.Doc.WriteP("It's possible to start multiple instances concurrently.")
-        f.Show()
+        ShowHelp()
+    End Sub
+
+    Sub ShowHelp()
+        MsgInfo("Please note that jobs are processed in separate StaxRip instances." + BR2 +
+                "By clicking Start twice or more times it's possible to start multiple instances concurrently." + BR2 +
+                "Multiple instances work most effeciantly when the files are located on diffeent HDDs.")
     End Sub
 End Class

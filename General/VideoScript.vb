@@ -184,13 +184,7 @@ clip.set_output()
                         ModifyScript(code, Engine).WriteANSIFile(Path)
                     End If
 
-                    If p.SourceFile <> "" Then
-                        If g.MainForm.Visible Then
-                            g.MainForm.Indexing()
-                        Else
-                            g.MainForm.Indexing()
-                        End If
-                    End If
+                    If p.SourceFile <> "" Then g.MainForm.Indexing()
 
                     If Not Package.AviSynth.VerifyOK OrElse
                         Not Package.VapourSynth.VerifyOK OrElse

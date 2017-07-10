@@ -897,7 +897,7 @@ Public Class Macro
         ret.Add(New Macro("encoder_ext", "Encoder File Extension", GetType(String), "File extension of the format the encoder of the active project outputs."))
         ret.Add(New Macro("encoder_out_file", "Encoder Output File", GetType(String), "Output file of the video encoder."))
         ret.Add(New Macro("muxer_ext", "Muxer Extension", GetType(String), "Output extension of the active muxer."))
-        ret.Add(New Macro("player", "Player", GetType(Integer), "Path of MPC Player."))
+        ret.Add(New Macro("player", "Player", GetType(Integer), "Path of the media player."))
         ret.Add(New Macro("plugin_dir", "Plugin Directory", GetType(String), "AviSynth/VapourSynth plugin directory."))
         ret.Add(New Macro("pos_frame", "Position In Frames", GetType(Integer), "Current preview position in frames."))
         ret.Add(New Macro("pos_ms", "Position In Millisecons", GetType(Integer), "Current preview position in milliseconds."))
@@ -1202,7 +1202,7 @@ Public Class Macro
         If value.Contains("%settings_dir%") Then value = value.Replace("%settings_dir%", Folder.Settings)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%player%") Then value = value.Replace("%player%", Package.MPC.Path)
+        If value.Contains("%player%") Then value = value.Replace("%player%", Package.mpv.Path)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%text_editor%") Then value = value.Replace("%text_editor%", g.GetTextEditor)

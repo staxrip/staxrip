@@ -12,6 +12,16 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.2.1 unstable test build
+
+- new: various new features and improvements in the apps management dialog
+- new: The jobs dialog will show it's help the first time jobs are started explaining staxrip's parallel processing features
+
+- change: tray icon stays visible even when the job processing window is visible
+- change: mpc replaced with mpv
+
+- fix: when automatic demuxing of the video stream is enabled or if demuxing of the video stream was enabled in the demuxing dialog the demuxed video stream wasn't opened afterwards but still the original video was opened
+
 #### 1.5.1.9 unstable test build
 
 - new: context help is now implemented for all video encoders, a right-click on any label, menu or checkbox will show the help for the option, for nvenc, qsvenc and vceenc a new help browser was developed with powershell look and feel

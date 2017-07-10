@@ -332,7 +332,7 @@ Public Class MacroEditorControl
 
     Private Sub llHelp_Click(sender As Object, e As EventArgs) Handles llHelp.Click
         For Each i In HelpPaths
-            g.ShellExecute(i)
+            g.StartProcess(i)
         Next
     End Sub
 

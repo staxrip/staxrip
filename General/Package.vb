@@ -7,7 +7,6 @@ Public Class Package
     Property Description As String
     Property DirName As String
     Property DownloadURL As String
-    Property Filenames As String()
     Property FileNotFoundMessage As String
     Property HelpFile As String
     Property HelpURL As String
@@ -23,6 +22,7 @@ Public Class Package
     Property Version As String
     Property VersionDate As DateTime
     Property WebURL As String
+    Property Filename As String
 
     Overridable Property FixedDir As String
 
@@ -37,6 +37,26 @@ Public Class Package
     End Property
 
     Shared Property Items As New SortedDictionary(Of String, Package)
+
+    Shared Property Python As Package = Add(New PythonPackage)
+    Shared Property checkmate As Package = Add(New checkmatePackage)
+    Shared Property DGIndexIM As Package = Add(New DGIndexIMPackage)
+    Shared Property DGIndexNV As Package = Add(New DGIndexNVPackage)
+    Shared Property dsmux As Package = Add(New dsmuxPackage)
+    Shared Property eac3to As Package = Add(New eac3toPackage)
+    Shared Property ffmpeg As Package = Add(New ffmpegPackage)
+    Shared Property Haali As Package = Add(New HaaliSplitter)
+    Shared Property Java As Package = Add(New JavaPackage)
+    Shared Property MediaInfo As Package = Add(New MediaInfoPackage)
+    Shared Property MP4Box As Package = Add(New MP4BoxPackage)
+    Shared Property AviSynth As Package = Add(New AviSynthPlusPackage)
+    Shared Property NicAudio As Package = Add(New NicAudioPackage)
+    Shared Property ProjectX As Package = Add(New ProjectXPackage)
+    Shared Property qaac As Package = Add(New qaacPackage)
+    Shared Property UnDot As Package = Add(New UnDotPackage)
+    Shared Property xvid_encraw As Package = Add(New xvid_encrawPackage)
+    Shared Property Decomb As Package = Add(New DecombPackage)
+    Shared Property temporalsoften As Package = Add(New temporalsoftenPackage)
 
     Shared Property vspipe As Package = Add(New Package With {
         .Name = "vspipe",
@@ -57,10 +77,6 @@ Public Class Package
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"})
 
-    Shared Property Python As New PythonPackage
-
-    Shared Property AviSynth As New AviSynthPlusPackage
-
     Shared Property BDSup2SubPP As Package = Add(New Package With {
         .Name = "BDSup2Sub++",
         .Filename = "bdsup2sub++.exe",
@@ -75,30 +91,16 @@ Public Class Package
         .HintDirFunc = Function() "C:\Program Files\Subtitle Edit\",
         .WebURL = "http://www.nikse.dk/SubtitleEdit",
         .HelpURL = "http://www.nikse.dk/SubtitleEdit/Help",
-        .IsRequiredValue = False,
+        .IsRequired = False,
         .IgnoreVersion = True,
         .Description = "Subtitle Edit is a open source subtitle editor."})
 
-    Shared Property checkmate As New checkmatePackage
-    Shared Property DGIndexIM As New DGIndexIMPackage
-    Shared Property DGIndexNV As New DGIndexNVPackage
-    Shared Property dsmux As New dsmuxPackage
-    Shared Property eac3to As New eac3toPackage
-    Shared Property ffmpeg As New ffmpegPackage
-    Shared Property Haali As New HaaliSplitter
-    Shared Property Java As New JavaPackage
-    Shared Property MediaInfo As New MediaInfoPackage
-
-    Shared Property MP4Box As Package = Add(New MP4BoxPackage)
-
-    Shared Property MPC As Package = Add(New Package With {
-        .Name = "MPC Player",
-        .Filenames = {"mpc-be64.exe", "mpc-hc64.exe"},
-        .Description = "MPC-HC/MPC-BE is a DirectShow based open source media player. x64 is required because StaxRip used AviSynth+ x64 and VapourSynth x64. StaxRip uses MPC's /dub and /sub command line switches.",
-        .IsRequiredValue = False,
-        .IgnoreVersion = True})
-
-    Shared Property NicAudio As New NicAudioPackage
+    Shared Property mpv As Package = Add(New Package With {
+        .Name = "mpv",
+        .Filename = "mpv.exe",
+        .WebURL = "https://mpv.io/",
+        .HelpURL = "https://mpv.io/manual/stable/",
+        .Description = "mpv is a open source media player."})
 
     Shared Property AOMEnc As Package = Add(New Package With {
         .Name = "aomenc",
@@ -114,9 +116,6 @@ Public Class Package
             .Description = "MVTools is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
             .AviSynthFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDeGrain1", "MDeGrain2", "MDegrain3"}})
 
-    Shared Property ProjectX As New ProjectXPackage
-    Shared Property qaac As New qaacPackage
-
     Shared Property TDeint As Package = Add(New PluginPackage With {
         .Name = "TDeint",
         .Filename = "TDeint.dll",
@@ -124,16 +123,12 @@ Public Class Package
         .Description = "TDeint is a bi-directionally, motion adaptive, sharp deinterlacer. It can adaptively choose between using per-field and per-pixel motion adaptivity, and can use cubic interpolation, kernel interpolation (with temporal direction switching), or one of two forms of modified ELA interpolation which help to reduce ""jaggy"" edges in moving areas where interpolation must be used.",
         .AviSynthFilterNames = {"TDeint"}})
 
-    Shared Property UnDot As New UnDotPackage
-
     Shared Property VSRip As Package = Add(New Package With {
         .Name = "VSRip",
         .Filename = "VSRip.exe",
         .Description = "VSRip rips VobSub subtitles.",
         .WebURL = "http://sourceforge.net/projects/guliverkli",
         .LaunchName = "VSRip.exe"})
-
-    Shared Property xvid_encraw As New xvid_encrawPackage
 
     Shared Property flash3kyuu_deband As Package = Add(New PluginPackage With {
         .Name = "flash3kyuu_deband",
@@ -146,8 +141,6 @@ Public Class Package
         .VapourSynthFilterNames = {"f3kdb.Deband"},
         .VapourSynthFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb", "clip = core.f3kdb.Deband(clip, preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")}})
 
-    Shared Property Decomb As New DecombPackage
-
     Shared Property vinverse As Package = Add(New PluginPackage With {
         .Name = "vinverse",
         .Filename = "vinverse.dll",
@@ -159,8 +152,6 @@ Public Class Package
         .Name = "scenechange",
         .Filename = "scenechange.dll",
         .VapourSynthFilterNames = {"scenechange"}})
-
-    Shared Property temporalsoften As New temporalsoftenPackage
 
     Shared Property avs2pipemod As Package = Add(New Package With {
         .Name = "avs2pipemod",
@@ -200,11 +191,6 @@ Public Class Package
         .WebURL = "http://x265.org",
         .HelpURL = "http://x265.readthedocs.org",
         .Description = "H.265 video encoding command line app."})
-
-    Shared Property BeSweet As Package = Add(New Package With {
-        .Name = "BeSweet",
-        .Filename = "BeSweet.exe",
-        .Description = "Alternative audio converter, for most formats StaxRip uses now eac3to by default."})
 
     Shared Property mkvmerge As Package = Add(New Package With {
         .Name = "mkvmerge",
@@ -284,34 +270,6 @@ Public Class Package
     End Function
 
     Shared Sub New()
-        Add(Python)
-
-        Add(temporalsoften)
-        Add(scenechange)
-        Add(vinverse)
-        Add(Decomb)
-        Add(flash3kyuu_deband)
-        Add(AviSynth)
-        Add(BDSup2SubPP)
-        Add(checkmate)
-        Add(DGDecodeIM)
-        Add(DGIndexIM)
-        Add(DGIndexNV)
-        Add(dsmux)
-        Add(eac3to)
-        Add(ffmpeg)
-        Add(Haali)
-        Add(Java)
-        Add(MediaInfo)
-        Add(MPC)
-        Add(NicAudio)
-        Add(ProjectX)
-        Add(qaac)
-        Add(TDeint)
-        Add(UnDot)
-        Add(VSRip)
-        Add(xvid_encraw)
-
         Add(New Package With {
             .Name = "Visual C++ 2012",
             .Filename = "msvcp110.dll",
@@ -620,7 +578,7 @@ Public Class Package
             .URL = "https://github.com/dwbuiten/d2vsource",
             .VapourSynthFilterNames = {"d2v.Source"},
             .VapourSynthFiltersFunc = Function() {
-                New VideoFilter("Source", "d2v.Source", "clip = core.d2v.Source(r""%source_file%"")")}})
+                New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})
 
         Add(New PluginPackage With {
             .Name = "FluxSmooth",
@@ -705,26 +663,11 @@ Public Class Package
         End Get
     End Property
 
-    Private FilenameValue As String
-
-    Overridable Property Filename As String
-        Get
-            If FilenameValue = "" AndAlso Not Filenames.NothingOrEmpty Then
-                FilenameValue = Filenames(0)
-            End If
-
-            Return FilenameValue
-        End Get
-        Set(value As String)
-            FilenameValue = value
-        End Set
-    End Property
-
     Private StartActionValue As Action
 
     Overridable ReadOnly Property StartAction As Action
         Get
-            If LaunchName <> "" Then Return Sub() g.ShellExecute(GetDir() + LaunchName)
+            If LaunchName <> "" Then Return Sub() g.StartProcess(GetDir() + LaunchName)
             If Not StartActionValue Is Nothing Then Return StartActionValue
         End Get
     End Property
@@ -735,13 +678,16 @@ Public Class Package
         End Get
     End Property
 
-    Protected IsRequiredValue As Boolean = True
+    Private IsRequiredValue As Boolean = True
 
-    Overridable ReadOnly Property IsRequired() As Boolean
+    Overridable Property IsRequired() As Boolean
         Get
             If Not IsRequiredFunc Is Nothing Then Return IsRequiredFunc.Invoke
             Return IsRequiredValue
         End Get
+        Set(value As Boolean)
+            IsRequiredValue = value
+        End Set
     End Property
 
     Sub StartWithJava()
@@ -802,7 +748,7 @@ Public Class Package
 
     Function GetStatusVersion() As String
         If Not IsCorrectVersion() Then
-            Dim text = "Unknown version, press F12 to edit the version."
+            Dim text = If(IgnoreVersion, "OK", "Unknown version, press F12 to edit the version.")
 
             If SetupFilename = "" Then
                 Return text
@@ -959,10 +905,12 @@ Public Class AviSynthPlusPackage
         SetupFilename = "AviSynth+r2508.exe"
     End Sub
 
-    Public Overrides ReadOnly Property IsRequired As Boolean
+    Public Overrides Property IsRequired As Boolean
         Get
             Return p.Script.Engine = ScriptEngine.AviSynth
         End Get
+        Set(value As Boolean)
+        End Set
     End Property
 
     Public Overrides Function GetStatus() As String
@@ -986,10 +934,12 @@ Public Class PythonPackage
         DownloadURL = "https://www.python.org/ftp/python/3.6.1/python-3.6.1-amd64-webinstall.exe"
     End Sub
 
-    Public Overrides ReadOnly Property IsRequired As Boolean
+    Public Overrides Property IsRequired As Boolean
         Get
             Return p.Script.Engine = ScriptEngine.VapourSynth
         End Get
+        Set(value As Boolean)
+        End Set
     End Property
 
     Public Overrides ReadOnly Property Path As String
@@ -1030,10 +980,12 @@ Public Class PluginPackage
     Property VapourSynthFiltersFunc As Func(Of VideoFilter())
     Property AviSynthFiltersFunc As Func(Of VideoFilter())
 
-    Public Overrides ReadOnly Property IsRequired As Boolean
+    Public Overrides Property IsRequired As Boolean
         Get
             Return IsPluginPackageRequired(Me)
         End Get
+        Set(value As Boolean)
+        End Set
     End Property
 
     Shared Function IsPluginPackageRequired(package As PluginPackage) As Boolean
@@ -1149,7 +1101,8 @@ Public Class JavaPackage
         TreePath = "Runtimes"
         Description = "Java is required by ProjectX. " + Strings.ProjectX
         DownloadURL = "http://java.com/en/download"
-        IsRequiredValue = False
+        IsRequired = False
+        IgnoreVersion = True
     End Sub
 
     Public Overrides ReadOnly Property Path As String
@@ -1177,7 +1130,7 @@ Public Class ProjectXPackage
         Filename = "ProjectX.jar"
         WebURL = "http://project-x.sourceforge.net"
         Description = Strings.ProjectX
-        IsRequiredValue = False
+        IsRequired = False
     End Sub
 
     Overrides ReadOnly Property StartAction As Action
@@ -1249,13 +1202,15 @@ Public Class qaacPackage
         Description = "qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the x64 iTunes installer using a decompression tool like 7-Zip. The makeportable script found on the qaac website can also be used."
     End Sub
 
-    Overrides ReadOnly Property IsRequired As Boolean
+    Overrides Property IsRequired As Boolean
         Get
             Return TypeOf p.Audio0 Is GUIAudioProfile AndAlso
                 DirectCast(p.Audio0, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.qaac OrElse
                 TypeOf p.Audio1 Is GUIAudioProfile AndAlso
                 DirectCast(p.Audio1, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.qaac
         End Get
+        Set(value As Boolean)
+        End Set
     End Property
 
     Overrides Function GetStatus() As String
@@ -1299,10 +1254,12 @@ Public Class DGIndexNVPackage
         End If
     End Function
 
-    Overrides ReadOnly Property IsRequired As Boolean
+    Overrides Property IsRequired As Boolean
         Get
             Return CommandLineDemuxer.IsActive("DGIndexNV")
         End Get
+        Set(value As Boolean)
+        End Set
     End Property
 End Class
 
@@ -1324,10 +1281,12 @@ Public Class DGIndexIMPackage
         End If
     End Function
 
-    Overrides ReadOnly Property IsRequired As Boolean
+    Overrides Property IsRequired As Boolean
         Get
             Return CommandLineDemuxer.IsActive("DGIndexIM")
         End Get
+        Set(value As Boolean)
+        End Set
     End Property
 End Class
 
@@ -1362,10 +1321,12 @@ Public Class dsmuxPackage
         End Get
     End Property
 
-    Overrides ReadOnly Property IsRequired As Boolean
+    Overrides Property IsRequired As Boolean
         Get
             Return CommandLineDemuxer.IsActive("dsmux")
         End Get
+        Set(value As Boolean)
+        End Set
     End Property
 End Class
 
@@ -1378,7 +1339,7 @@ Public Class HaaliSplitter
         WebURL = "http://haali.su/mkv"
         SetupFilename = "MatroskaSplitter.exe"
         Description = "Haali Splitter is used by eac3to and dsmux to write MKV files. Haali Splitter and LAV Filters overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
-        IsRequiredValue = False
+        IsRequired = False
     End Sub
 
     Public Overrides ReadOnly Property Path As String

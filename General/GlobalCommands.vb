@@ -71,9 +71,9 @@ Public Class GlobalCommands
             g.ProcessJobs()
         Else
             If minimized Then
-                g.ShellExecute(Application.ExecutablePath, "-RunJobsMinimized")
+                g.StartProcess(Application.ExecutablePath, "-RunJobsMinimized")
             Else
-                g.ShellExecute(Application.ExecutablePath, "-RunJobsMaximized")
+                g.StartProcess(Application.ExecutablePath, "-RunJobsMaximized")
             End If
         End If
     End Sub
@@ -398,7 +398,7 @@ Public Class GlobalCommands
         If msg <> "" Then
             Dim fs = Folder.Desktop + "staxrip todo.txt"
             File.WriteAllText(fs, msg)
-            g.ShellExecute(fs)
+            g.StartProcess(fs)
         End If
     End Sub
 
@@ -485,7 +485,7 @@ Public Class GlobalCommands
         filepath = Macro.Expand(filepath)
 
         If File.Exists(filepath) Then
-            g.ShellExecute(Application.ExecutablePath, "-mediainfo " + filepath.Escape)
+            g.StartProcess(Application.ExecutablePath, "-mediainfo " + filepath.Escape)
         Else
             MsgWarn("No file found.")
         End If

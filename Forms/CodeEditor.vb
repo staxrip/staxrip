@@ -379,7 +379,7 @@ Public Class CodeEditor
             previewMenuItem.Enabled = p.SourceFile <> ""
             previewMenuItem.ShortcutKeyDisplayString = "F5"
 
-            Menu.Add("Play...", AddressOf Editor.Play, "Plays the current script with MPC.", p.SourceFile <> "").SetImage(Symbol.Play)
+            Menu.Add("Play...", AddressOf Editor.Play, "Plays the current script with a media player.", p.SourceFile <> "").SetImage(Symbol.Play)
             Menu.Add("-")
 
             Dim moveUpMenuItem = Menu.Add("Move Up", AddressOf MoveUp)
@@ -419,7 +419,7 @@ Public Class CodeEditor
                                          For Each i2 In i.AviSynthFilterNames
                                              If rtbScript.Text.Contains(i2) Then
                                                  Dim path = i.GetHelpPath()
-                                                 If path <> "" Then Menu.Add("Help | " + i.Name, Sub() g.ShellExecute(path), path)
+                                                 If path <> "" Then Menu.Add("Help | " + i.Name, Sub() g.StartProcess(path), path)
                                              End If
                                          Next
                                      End If
@@ -435,38 +435,38 @@ Public Class CodeEditor
                                      Dim filterPath = installDir + "\Docs\English\corefilters\" + helpText + ".htm"
 
                                      If File.Exists(filterPath) Then
-                                         Menu.Add("Help | " + helpText, Sub() g.ShellExecute(filterPath), filterPath)
+                                         Menu.Add("Help | " + helpText, Sub() g.StartProcess(filterPath), filterPath)
                                      End If
 
                                      Dim helpIndex = installDir + "\Docs\English\overview.htm"
 
                                      If File.Exists(helpIndex) Then
-                                         Menu.Add("Help | AviSynth local", Sub() g.ShellExecute(helpIndex), helpIndex)
+                                         Menu.Add("Help | AviSynth local", Sub() g.StartProcess(helpIndex), helpIndex)
                                      End If
 
-                                     Menu.Add("Help | AviSynth.nl", Sub() g.ShellExecute("http://avisynth.nl"), "http://avisynth.nl")
-                                     Menu.Add("Help | AviSynth+", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B"), "http://avisynth.nl/index.php/AviSynth%2B")
-                                     Menu.Add("Help | AviSynth+ plugins", Sub() g.ShellExecute("http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins"), "http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins")
+                                     Menu.Add("Help | AviSynth.nl", Sub() g.StartProcess("http://avisynth.nl"), "http://avisynth.nl")
+                                     Menu.Add("Help | AviSynth+", Sub() g.StartProcess("http://avisynth.nl/index.php/AviSynth%2B"), "http://avisynth.nl/index.php/AviSynth%2B")
+                                     Menu.Add("Help | AviSynth+ plugins", Sub() g.StartProcess("http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins"), "http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins")
                                      Menu.Add("Help | -")
 
                                      For Each i In Package.Items.Values.OfType(Of PluginPackage)
                                          Dim helpPath = i.GetHelpPath
 
                                          If helpPath <> "" AndAlso Not i.AviSynthFilterNames Is Nothing Then
-                                             Menu.Add("Help | " + i.Name.Substring(0, 1).ToUpper + " | " + i.Name, Sub() g.ShellExecute(helpPath), i.Description)
+                                             Menu.Add("Help | " + i.Name.Substring(0, 1).ToUpper + " | " + i.Name, Sub() g.StartProcess(helpPath), i.Description)
                                              Application.DoEvents()
                                          End If
                                      Next
                                  Else
-                                     Menu.Add("Help | vapoursynth.com", Sub() g.ShellExecute("http://www.vapoursynth.com"), "http://www.vapoursynth.com")
-                                     Menu.Add("Help | VapourSynth plugins", Sub() g.ShellExecute("http://www.vapoursynth.com/doc/pluginlist.html"), "http://www.vapoursynth.com/doc/pluginlist.html")
+                                     Menu.Add("Help | vapoursynth.com", Sub() g.StartProcess("http://www.vapoursynth.com"), "http://www.vapoursynth.com")
+                                     Menu.Add("Help | VapourSynth plugins", Sub() g.StartProcess("http://www.vapoursynth.com/doc/pluginlist.html"), "http://www.vapoursynth.com/doc/pluginlist.html")
                                      Menu.Add("Help | -")
 
                                      For Each i In Package.Items.Values.OfType(Of PluginPackage)
                                          Dim helpPath = i.GetHelpPath
 
                                          If helpPath <> "" AndAlso Not i.VapourSynthFilterNames Is Nothing Then
-                                             Menu.Add("Help | " + i.Name.Substring(0, 1).ToUpper + " | " + i.Name, Sub() g.ShellExecute(helpPath), i.Description)
+                                             Menu.Add("Help | " + i.Name.Substring(0, 1).ToUpper + " | " + i.Name, Sub() g.StartProcess(helpPath), i.Description)
                                              Application.DoEvents()
                                          End If
                                      Next

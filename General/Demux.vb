@@ -14,6 +14,7 @@ Public MustInherit Class Demuxer
     Overridable Property SourceFilters As String() = {}
 
     Property VideoDemuxing As Boolean
+    Property VideoDemuxed As Boolean
     Property ChaptersDemuxing As Boolean = True
 
     Overridable ReadOnly Property HasConfigDialog() As Boolean
@@ -421,7 +422,6 @@ Public Class MP4BoxDemuxer
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim attachments = GetAttachments(proj.SourceFile)
 
-        Dim videoDemuxing As Boolean
         Dim chaptersDemuxing As Boolean = True
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
@@ -431,7 +431,7 @@ Public Class MP4BoxDemuxer
 
             Using form As New StreamDemuxForm(Me, proj.SourceFile, attachments)
                 If form.ShowDialog() = DialogResult.OK Then
-                    videoDemuxing = form.cbDemuxVideo.Checked
+                    VideoDemuxed = form.cbDemuxVideo.Checked
                     chaptersDemuxing = form.cbDemuxChapters.Checked
                     audioStreams = form.AudioStreams
                     subtitles = form.Subtitles
@@ -441,7 +441,7 @@ Public Class MP4BoxDemuxer
             End Using
         End If
 
-        If videoDemuxing Then DemuxVideo(proj)
+        If VideoDemuxed Then DemuxVideo(proj)
 
         If demuxAudio AndAlso proj.DemuxAudio <> DemuxMode.None Then
             If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
@@ -517,6 +517,15 @@ Public Class MP4BoxDemuxer
 
         Log.Save(proj)
     End Sub
+
+    Public Overrides Property OutputExtensions As String()
+        Get
+            If VideoDemuxing OrElse VideoDemuxed Then Return {"avi", "mpg", "h264", "h265"}
+            Return {}
+        End Get
+        Set(value As String())
+        End Set
+    End Property
 
     Shared Sub DemuxVideo(proj As Project)
         Dim streams = MediaInfo.GetVideoStreams(proj.SourceFile)
@@ -620,7 +629,6 @@ Public Class mkvDemuxer
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim attachments = GetAttachments(stdout)
 
-        Dim videoDemuxing As Boolean
         Dim chaptersDemuxing As Boolean = True
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
@@ -630,7 +638,7 @@ Public Class mkvDemuxer
 
             Using form As New StreamDemuxForm(Me, proj.SourceFile, attachments)
                 If form.ShowDialog() <> DialogResult.OK Then Throw New AbortException
-                videoDemuxing = form.cbDemuxVideo.Checked
+                VideoDemuxed = form.cbDemuxVideo.Checked
                 chaptersDemuxing = form.cbDemuxChapters.Checked
                 audioStreams = form.AudioStreams
                 subtitles = form.Subtitles
@@ -645,7 +653,7 @@ Public Class mkvDemuxer
             If subtitles Is Nothing Then subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
         End If
 
-        Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True, videoDemuxing)
+        Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True, VideoDemuxed)
 
         If chaptersDemuxing AndAlso stdout.Contains("Chapters: ") Then
             Using proc As New Proc
@@ -708,6 +716,15 @@ Public Class mkvDemuxer
 
         Log.Save(proj)
     End Sub
+
+    Public Overrides Property OutputExtensions As String()
+        Get
+            If VideoDemuxing OrElse VideoDemuxed Then Return {"avi", "mpg", "h264", "h265"}
+            Return {}
+        End Get
+        Set(value As String())
+        End Set
+    End Property
 
     Shared Sub Demux(sourcefile As String,
                      audioStreams As IEnumerable(Of AudioStream),

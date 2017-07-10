@@ -1385,14 +1385,14 @@ Public Class MainForm
                             Dim plugin = TryCast(iPackage, PluginPackage)
 
                             If plugin Is Nothing Then
-                                ActionMenuItem.Add(i.DropDownItems, "Apps | " + iPackage.Name, Sub() g.ShellExecute(helpPath))
+                                ActionMenuItem.Add(i.DropDownItems, "Apps | " + iPackage.Name, Sub() g.StartProcess(helpPath))
                             Else
                                 If plugin.AviSynthFilterNames?.Length > 0 Then
-                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | AviSynth | " + iPackage.Name, Sub() g.ShellExecute(iPackage.GetHelpPath(ScriptEngine.AviSynth)))
+                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | AviSynth | " + iPackage.Name, Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.AviSynth)))
                                 End If
 
                                 If plugin.VapourSynthFilterNames?.Length > 0 Then
-                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | VapourSynth | " + iPackage.Name, Sub() g.ShellExecute(iPackage.GetHelpPath(ScriptEngine.VapourSynth)))
+                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | VapourSynth | " + iPackage.Name, Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.VapourSynth)))
                                 End If
                             End If
                         End If
@@ -1441,7 +1441,7 @@ Public Class MainForm
                     Next
 
                     menuItem.DropDownItems.Add(New ToolStripSeparator)
-                    ActionMenuItem.Add(menuItem.DropDownItems, "Open Scripts Folder", Sub() g.ShellExecute(Folder.Script))
+                    ActionMenuItem.Add(menuItem.DropDownItems, "Open Scripts Folder", Sub() g.StartProcess(Folder.Script))
                 End If
             End If
         Next
@@ -1479,7 +1479,7 @@ Public Class MainForm
                 Next
 
                 i.DropDownItems.Add("-")
-                ActionMenuItem.Add(i.DropDownItems, "Explore", Sub() g.ShellExecute(Folder.Template), "Opens the directory containing the templates.")
+                ActionMenuItem.Add(i.DropDownItems, "Explore", Sub() g.StartProcess(Folder.Template), "Opens the directory containing the templates.")
                 ActionMenuItem.Add(i.DropDownItems, "Restore", AddressOf ResetTemplates, "Restores the default templates.")
 
                 Exit For
@@ -3077,7 +3077,7 @@ Public Class MainForm
     End Function
 
     Private Sub OpenTargetFolder()
-        g.ShellExecute(Filepath.GetDir(p.TargetFile))
+        g.StartProcess(Filepath.GetDir(p.TargetFile))
     End Sub
 
     Dim BlockAudioTextChanged As Boolean
@@ -5462,7 +5462,7 @@ Public Class MainForm
         cms.Add("-")
         cms.Add("Image Options...", Sub() ShowOptionsDialog("Image")).SetImage(Symbol.fa_photo)
         cms.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.TargetImageSizeMenu = TextCustomMenu.EditMenu(s.TargetImageSizeMenu, ApplicationSettings.GetDefaultTargetImageSizeMenu, Me)))
-        cms.Add("Help...", Sub() g.ShellExecute(helpUrl)).SetImage(Symbol.Help)
+        cms.Add("Help...", Sub() g.StartProcess(helpUrl)).SetImage(Symbol.Help)
         cms.Show(lgbResize, 0, lgbResize.Label.Height)
     End Sub
 
@@ -5723,8 +5723,7 @@ Public Class MainForm
         End If
 
         m.Add("Open", a, "Change the audio source file.").SetImage(Symbol.OpenFile)
-        m.Add("Play Audio", Sub() PlayAudio(ap), "Plays the audio source file with MPC.", exist AndAlso ap.File <> p.FirstOriginalSourceFile).SetImage(Symbol.Play)
-        m.Add("Play audio and video", Sub() g.PlayScript(p.Script, ap), "Plays the audio source file together with the AviSynth script.", exist AndAlso p.Script.Engine = ScriptEngine.AviSynth)
+        m.Add("Play", Sub() g.PlayAudio(ap), "Plays the audio source file with a media player.", exist).SetImage(Symbol.Play)
         m.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), "Show MediaInfo for the audio source file.", exist).SetImage(Symbol.Info)
         m.Add("Explore", Sub() g.OpenDirAndSelectFile(ap.File, Handle), "Open the audio source file directory with File Explorer.", exist).SetImage(Symbol.FileExplorer)
         m.Add("Execute", Sub() ExecuteAudio(ap), "Processes the audio profile.", exist).SetImage(Symbol.fa_terminal)
@@ -5744,10 +5743,6 @@ Public Class MainForm
             ap.Encode()
         Catch
         End Try
-    End Sub
-
-    Sub PlayAudio(ap As AudioProfile)
-        g.Play(ap.File)
     End Sub
 
     Sub UpdateTargetFileMenu()
@@ -5842,7 +5837,7 @@ Public Class MainForm
                             End Try
                         Next
 
-                        g.ShellExecute(fd.FileName.Dir)
+                        g.StartProcess(fd.FileName.Dir)
                     End If
                 End Using
             End If
@@ -5899,20 +5894,6 @@ Public Class MainForm
         Else
             ProcessCommandLine(Environment.GetCommandLineArgs)
         End If
-
-        'Using f As New TestForm
-        '    f.ShowDialog()
-        'End Using
-
-        'Dim lines = File.ReadAllLines("D:\Video\Samples\M2TS\TrueHD_temp\TrueHD_staxrip.log")
-
-        'Dim proc As New Proc
-        'proc.SkipStrings = {"frame=", "size="}
-
-        'For Each i In lines
-        '    Dim t = proc.ProcessData(i)
-        '    If Not t.Item2 Then Debug.WriteLine(i)
-        'Next
 
         MyBase.OnShown(e)
     End Sub

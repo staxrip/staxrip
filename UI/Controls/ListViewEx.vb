@@ -73,11 +73,7 @@ Namespace UI
         End Sub
 
         Sub RefreshItem(index As Integer)
-            If ItemCheckProperty <> "" Then
-                Items(index).Checked = CBool(Items(index).Tag.GetType.GetProperty(
-                    ItemCheckProperty).GetValue(Items(index).Tag))
-            End If
-
+            If ItemCheckProperty <> "" Then Items(index).Checked = CBool(Items(index).Tag.GetType.GetProperty(ItemCheckProperty).GetValue(Items(index).Tag))
             Items(index).Text = Items(index).Tag.ToString
         End Sub
 

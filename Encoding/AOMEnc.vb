@@ -10,7 +10,6 @@ Public Class AOMEnc
 
     Sub New()
         Name = "AV1"
-        AutoCompCheckValue = 50
     End Sub
 
     <NonSerialized>

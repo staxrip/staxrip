@@ -12,6 +12,22 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.2.3 unstable test build
+
+- new: aimed quality feature of the old x264 GUI added to the x264 and x265 GUI
+
+- fix: unable to recover processing form from tray
+- fix: unable to open new files (start new processes) after the process abortion feature was used 
+
+- update: x265 2.4+99
+
+#### 1.5.2.2 unstable test build
+
+- new: AviSynth+ x64 plugins added: modPlus, SmoothAdjust, AutoAdjust
+
+- update: NNEDI3 0.9.4.44
+- update: KNLMeansCL 1.1.0
+
 #### 1.5.2.1 unstable test build
 
 - new: various new features and improvements in the apps management dialog

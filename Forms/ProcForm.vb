@@ -222,12 +222,14 @@ Public Class ProcForm
         NotifyIcon.Text = "StaxRip"
 
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
-        NotifyIcon.Visible = s.MinimizeToTray
 
         If ProcForm.IsMinimized Then
             WindowState = FormWindowState.Minimized
-            If s.MinimizeToTray Then ShowInTaskbar = False
+            ShowInTaskbar = Not s.MinimizeToTray
         End If
+
+        Dim posX = Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ProcForm Pos X")
+        If posX <> 0 Then s.WindowPositions.Positions(s.WindowPositions.GetKey(Me)) = New Point(posX, Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ProcForm Pos Y"))
     End Sub
 
     Private Sub cbShutdown_SelectedIndexChanged() Handles mbShutdown.ValueChangedUser
@@ -235,7 +237,7 @@ Public Class ProcForm
     End Sub
 
     Private Sub NotifyIcon_MouseClick() Handles NotifyIcon.MouseClick
-        BeginInvoke(Sub() ShowForm())
+        ShowForm()
     End Sub
 
     Private Sub bnJobs_Click() Handles bnJobs.Click
@@ -268,6 +270,7 @@ Public Class ProcForm
                         ProcForm.IsMinimized = True
 
                         If s.MinimizeToTray Then
+                            NotifyIcon.Visible = True
                             Hide()
                             Exit Sub
                         End If
@@ -311,5 +314,14 @@ Public Class ProcForm
     Protected Overrides Sub OnHandleCreated(e As EventArgs)
         MyBase.OnHandleCreated(e)
         WasHandleCreated = True
+    End Sub
+
+    Protected Overrides Sub OnMove(e As EventArgs)
+        MyBase.OnMove(e)
+
+        If Left <> 0 Then
+            Registry.CurrentUser.Write("Software\" + Application.ProductName, "ProcForm Pos X", Left)
+            Registry.CurrentUser.Write("Software\" + Application.ProductName, "ProcForm Pos Y", Top)
+        End If
     End Sub
 End Class

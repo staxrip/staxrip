@@ -10,7 +10,6 @@ Public Class x265Enc
 
     Sub New()
         Name = "x265"
-        AutoCompCheckValue = 50
         Params.ApplyPresetDefaultValues()
         Params.ApplyPresetValues()
     End Sub
@@ -56,6 +55,7 @@ Public Class x265Enc
         p.Script.Synchronize()
 
         Using proc As New Proc
+            proc.Package = Package.x265
             proc.Header = passName
             proc.Encoding = Encoding.UTF8
             proc.Priority = priority
@@ -146,6 +146,7 @@ Public Class x265Enc
             ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
 
             If f.ShowDialog() = DialogResult.OK Then
+                AutoCompCheckValue = CInt(newParams.CompCheckAimedQuality.Value)
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
@@ -307,7 +308,15 @@ Public Class x265Params
         .Name = "CompCheckQuant",
         .Text = "Comp. Check",
         .Value = 18,
+        .Help = "CRF value used as 100%",
         .Config = {1, 50}}
+
+    Property CompCheckAimedQuality As New NumParam With {
+        .Name = "CompCheckAimedQuality",
+        .Text = "Aimed Quality",
+        .Value = 50,
+        .Help = "Percent value to adjusts the target file size or image size after the compressibility check accordingly.",
+        .Config = {1, 100}}
 
     Property Weightp As New BoolParam With {
         .Switch = "--weightp",
@@ -849,7 +858,7 @@ Public Class x265Params
                     New StringParam With {.Switch = "--qpfile", .Text = "QP File", .Quotes = True, .BrowseFile = True},
                     New StringParam With {.Switch = "--recon", .Text = "Recon File", .Quotes = True, .BrowseFile = True},
                     New StringParam With {.Switch = "--scaling-list", .Text = "Scaling List", .Quotes = True},
-                    Decoder, PsyRD, PsyRDOQ, CompCheck,
+                    Decoder, PsyRD, PsyRDOQ, CompCheck, CompCheckAimedQuality,
                     New NumParam With {.Switch = "--recon-depth", .Text = "Recon Depth"},
                     RDpenalty)
                 Add("Other 2",

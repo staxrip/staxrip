@@ -9,7 +9,6 @@ Public Class x264Enc
 
     Sub New()
         Name = "x264"
-        AutoCompCheckValue = 50
         Params.ApplyValues(True)
         Params.ApplyValues(False)
     End Sub
@@ -55,6 +54,7 @@ Public Class x264Enc
         p.Script.Synchronize()
 
         Using proc As New Proc
+            proc.Package = Package.x264
             proc.Header = passName
             proc.Priority = priority
             proc.SkipStrings = {"kb/s, eta", "%]"}
@@ -129,7 +129,7 @@ Public Class x264Enc
         newParams.Init(store)
         newParams.ApplyValues(True)
 
-        Using f As New CommandLineForm(newParams)
+        Using form As New CommandLineForm(newParams)
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of x264Enc)(Me)
                                         Dim params2 As New x264Params
@@ -140,9 +140,10 @@ Public Class x264Enc
                                         SaveProfile(enc)
                                     End Sub
 
-            ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
+            ActionMenuItem.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
 
-            If f.ShowDialog() = DialogResult.OK Then
+            If form.ShowDialog() = DialogResult.OK Then
+                AutoCompCheckValue = CInt(newParams.CompCheckAimedQuality.Value)
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
@@ -212,8 +213,16 @@ Public Class x264Params
     Property CompCheck As New NumParam With {
         .Name = "CompCheckQuant",
         .Text = "Comp. Check",
+        .Help = "CRF value used as 100%",
         .Value = 18,
         .Config = {1, 50}}
+
+    Property CompCheckAimedQuality As New NumParam With {
+        .Name = "CompCheckAimedQuality",
+        .Text = "Aimed Quality",
+        .Value = 50,
+        .Help = "Percent value to adjusts the target file size or image size after the compressibility check accordingly.",
+        .Config = {1, 100}}
 
     Property Custom As New StringParam With {
         .Text = "Custom",
@@ -819,6 +828,7 @@ Public Class x264Params
                     DeblockA,
                     DeblockB,
                     CompCheck,
+                    CompCheckAimedQuality,
                     SlowFirstpass,
                     New BoolParam With {.Switch = "--constrained-intra", .Text = "Constrained Intra Prediction"},
                     Cabac)

@@ -13,7 +13,7 @@ Public MustInherit Class VideoEncoder
     Overridable Property Passes As Integer
     Overridable Property QualityMode As Boolean
 
-    Property AutoCompCheckValue As Integer = 70
+    Property AutoCompCheckValue As Integer = 50
     Property Muxer As Muxer = New MkvMuxer
 
     Public MustOverride Sub ShowConfigDialog()
@@ -252,7 +252,6 @@ Public MustInherit Class VideoEncoder
         x264cli.OutputFileTypeValue = "h264"
         x264cli.Name = "Command Line | x264"
         x264cli.Muxer = New MkvMuxer()
-        x264cli.AutoCompCheckValue = 50
         x264cli.CommandLines = """%app:x264%"" --pass 1 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output NUL ""%script_file%"" || exit" + BR + """%app:x264%"" --pass 2 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
         x264cli.CompCheckCommandLines = """%app:x264%"" --crf 18 --output ""%target_temp_file%_CompCheck.%encoder_ext%"" ""%target_temp_file%_CompCheck.%script_ext%"""
         ret.Add(x264cli)

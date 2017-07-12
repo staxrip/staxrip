@@ -2163,7 +2163,6 @@ Public Class MainForm
             End If
 
             Assistant()
-
             g.RaiseAppEvent(ApplicationEvent.AfterSourceLoaded)
             g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
             Log.Save()
@@ -5894,6 +5893,10 @@ Public Class MainForm
         Else
             ProcessCommandLine(Environment.GetCommandLineArgs)
         End If
+
+        'Using form As New TestForm
+        '    form.ShowDialog()
+        'End Using
 
         MyBase.OnShown(e)
     End Sub

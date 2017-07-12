@@ -6,9 +6,8 @@ Imports System.Runtime.InteropServices
 Public Class Proc
     Implements IDisposable
 
+    Property Abort As Boolean
     Property IsSilent As Boolean
-    Property TrowAbortException As Boolean
-    Property ReTrowException As Boolean
     Property Process As New Process
     Property Wait As Boolean
     Property Priority As ProcessPriorityClass = ProcessPriorityClass.Normal
@@ -217,7 +216,7 @@ Public Class Proc
 
     Sub KillAndThrow()
         Try
-            TrowAbortException = True
+            Abort = True
 
             If Not Process.HasExited Then
                 If Process.ProcessName = "cmd" Then
@@ -255,12 +254,13 @@ Public Class Proc
                 Process.BeginOutputReadLine()
                 Process.BeginErrorReadLine()
             End If
+        Catch ex As AbortException
+            Throw ex
         Catch ex As Exception
             Dim msg = ex.Message
             If File <> "" Then msg += BR2 + "File: " + File
             If Arguments <> "" Then msg += BR2 + "Arguments: " + Arguments
             MsgError(msg)
-            If ReTrowException Then Throw New AbortException
         End Try
 
         Try
@@ -273,7 +273,7 @@ Public Class Proc
                 ExitCode = Process.ExitCode
                 Process.Close()
 
-                If TrowAbortException Then Throw New AbortException
+                If Abort Then Throw New AbortException
 
                 If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCode) Then
                     Dim ntdllHandle = Native.LoadLibrary("NTDLL.DLL")
@@ -324,7 +324,7 @@ Public Class Proc
             Throw e
         End Try
 
-        If TrowAbortException Then Throw New AbortException
+        If Abort Then Throw New AbortException
     End Sub
 
     Private DisposedValue As Boolean = False

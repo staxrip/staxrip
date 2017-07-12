@@ -40,9 +40,9 @@ Public Class ProcController
         ProcForm.pnLogHost.Controls.Add(LogTextBox)
         ProcForm.pnStatusHost.Controls.Add(StatusLabel)
         ProcForm.flpNav.Controls.Add(CheckBox)
+        ProcForm.NotifyIcon.Visible = s.MinimizeToTray
 
         AddHandler proc.ProcDisposed, AddressOf ProcDisposed
-
         AddHandler proc.Process.OutputDataReceived, AddressOf DataReceived
         AddHandler proc.Process.ErrorDataReceived, AddressOf DataReceived
     End Sub
@@ -118,16 +118,6 @@ Public Class ProcController
         For Each i In Procs.ToArray
             i.Proc.KillAndThrow()
         Next
-
-        ShowMainForm()
-    End Sub
-
-    Shared Sub ShowMainForm()
-        g.MainForm.BeginInvoke(Sub()
-                                   g.MainForm.Show()
-                                   g.MainForm.Refresh()
-                                   g.MainForm.Activate()
-                               End Sub)
     End Sub
 
     Shared Sub Suspend()
@@ -168,10 +158,18 @@ Public Class ProcController
     End Function
 
     Sub Cleanup()
-        ProcForm.flpNav.Controls.Remove(CheckBox)
-
         SyncLock Procs
             Procs.Remove(Me)
+            ProcForm.flpNav.Controls.Remove(CheckBox)
+
+            RemoveHandler Proc.ProcDisposed, AddressOf ProcDisposed
+            RemoveHandler Proc.Process.OutputDataReceived, AddressOf DataReceived
+            RemoveHandler Proc.Process.ErrorDataReceived, AddressOf DataReceived
+
+            ProcForm.pnLogHost.Controls.Remove(LogTextBox)
+            ProcForm.pnStatusHost.Controls.Remove(StatusLabel)
+            LogTextBox.Dispose()
+            StatusLabel.Dispose()
 
             For Each i In Procs
                 i.Deactivate()
@@ -180,23 +178,24 @@ Public Class ProcController
             If Procs.Count > 0 Then Procs(0).Activate()
         End SyncLock
 
-        RemoveHandler Proc.ProcDisposed, AddressOf ProcDisposed
-        RemoveHandler Proc.Process.OutputDataReceived, AddressOf DataReceived
-        RemoveHandler Proc.Process.ErrorDataReceived, AddressOf DataReceived
-
-        ProcForm.pnLogHost.Controls.Remove(LogTextBox)
-        ProcForm.pnStatusHost.Controls.Remove(StatusLabel)
-        LogTextBox.Dispose()
-        StatusLabel.Dispose()
-        If Not Proc.Succeeded Then ProcForm.Abort()
+        If Not Proc.Succeeded Then ProcController.Abort()
 
         Task.Run(Sub()
                      Thread.Sleep(500)
 
                      SyncLock Procs
                          If Procs.Count = 0 Then
-                             If ProcForm.Visible Then ProcForm.BeginInvoke(Sub() ProcForm.Hide())
-                             If Not g.MainForm.Visible Then ShowMainForm()
+                             ProcForm.BeginInvoke(Sub()
+                                                      ProcForm.NotifyIcon.Visible = False
+                                                      ProcForm.Hide()
+                                                  End Sub)
+
+                             g.MainForm.BeginInvoke(Sub()
+                                                        g.MainForm.Show()
+                                                        g.MainForm.Refresh()
+                                                        g.MainForm.Activate()
+                                                        ProcController.Aborted = False
+                                                    End Sub)
                          End If
                      End SyncLock
                  End Sub)
@@ -220,9 +219,8 @@ Public Class ProcController
     End Sub
 
     Shared Sub AddProc(proc As Proc)
-        Dim pc As New ProcController(proc)
-
         SyncLock Procs
+            Dim pc As New ProcController(proc)
             Procs.Add(pc)
 
             If Procs.Count = 1 Then
@@ -233,24 +231,29 @@ Public Class ProcController
         End SyncLock
     End Sub
 
-    Shared CreateProcForm As New Object
-
     Shared Sub Start(proc As Proc)
+        If Aborted Then Throw New AbortException
         If g.MainForm.Visible Then g.MainForm.Hide()
 
-        SyncLock CreateProcForm
+        SyncLock Procs
             If g.ProcForm Is Nothing Then
-                g.ProcForm = New ProcForm
-                Task.Run(Sub() Application.Run(g.ProcForm))
-            End If
+                Task.Run(Sub()
+                             g.ProcForm = New ProcForm
+                             Application.Run(g.ProcForm)
+                         End Sub)
 
-            While Not ProcForm.WasHandleCreated
-                Thread.Sleep(50)
-            End While
+                While Not ProcForm.WasHandleCreated
+                    Thread.Sleep(50)
+                End While
+            End If
         End SyncLock
 
         g.ProcForm.Invoke(Sub()
-                              If Not ProcForm.IsMinimized Then g.ProcForm.Show()
+                              If Not ProcForm.IsMinimized Then
+                                  g.ProcForm.Show()
+                                  g.ProcForm.Activate()
+                              End If
+
                               AddProc(proc)
                           End Sub)
     End Sub

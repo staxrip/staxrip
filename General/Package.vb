@@ -123,6 +123,27 @@ Public Class Package
         .Description = "TDeint is a bi-directionally, motion adaptive, sharp deinterlacer. It can adaptively choose between using per-field and per-pixel motion adaptivity, and can use cubic interpolation, kernel interpolation (with temporal direction switching), or one of two forms of modified ELA interpolation which help to reduce ""jaggy"" edges in moving areas where interpolation must be used.",
         .AviSynthFilterNames = {"TDeint"}})
 
+    Shared Property modPlus As Package = Add(New PluginPackage With {
+        .Name = "modPlus",
+        .Filename = "modPlus.dll",
+        .URL = "http://www.avisynth.nl/users/vcmohan/modPlus/modPlus.html",
+        .Description = "This plugin has 9 functions, which modify values of color components to attenuate noise, blur or equalize input.",
+        .AviSynthFilterNames = {"GBlur", "MBlur", "Median", "minvar", "Morph", "SaltPepper", "SegAmp", "TweakHist", "Veed"}})
+
+    Shared Property AutoAdjust As Package = Add(New PluginPackage With {
+        .Name = "AutoAdjust",
+        .Filename = "AutoAdjust.dll",
+        .URL = "https://forum.doom9.org/showthread.php?t=167573",
+        .Description = "AutoAdjust is an automatic adjustement filter. It calculates statistics of clip, stabilizes them temporally and uses them to adjust luminance gain & color balance.",
+        .AviSynthFilterNames = {"AutoAdjust"}})
+
+    Shared Property SmoothAdjust As Package = Add(New PluginPackage With {
+        .Name = "SmoothAdjust",
+        .Filename = "SmoothAdjust.dll",
+        .URL = "https://forum.doom9.org/showthread.php?t=154971",
+        .Description = "SmoothAdjust is a set of 5 plugins to make YUV adjustements.",
+        .AviSynthFilterNames = {"SmoothTweak", "SmoothCurve", "SmoothCustom", "SmoothTools"}})
+
     Shared Property VSRip As Package = Add(New Package With {
         .Name = "VSRip",
         .Filename = "VSRip.exe",

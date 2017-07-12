@@ -76,8 +76,6 @@ Public Class GlobalClass
             Else
                 g.MainForm.OpenProject(jobPath, False)
             End If
-
-            ProcController.Aborted = False
         End Try
     End Sub
 

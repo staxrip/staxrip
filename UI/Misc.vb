@@ -466,7 +466,7 @@ Namespace UI
 
     <Serializable()>
     Public Class WindowPositions
-        Private Positions As New Dictionary(Of String, Point)
+        Public Positions As New Dictionary(Of String, Point)
         Private WindowStates As New Dictionary(Of String, FormWindowState)
 
         Sub Save(f As Form)
@@ -475,9 +475,7 @@ Namespace UI
         End Sub
 
         Private Sub SavePosition(f As Form)
-            If f.WindowState = FormWindowState.Normal Then
-                Positions(GetKey(f)) = f.Location
-            End If
+            If f.WindowState = FormWindowState.Normal Then Positions(GetKey(f)) = f.Location
         End Sub
 
         Private Sub SaveWindowState(f As Form)
@@ -511,9 +509,7 @@ Namespace UI
         Sub RestorePosition(form As Form)
             Dim v = GetText(form)
 
-            If Not s.WindowPositionsCenterScreen.NothingOrEmpty AndAlso
-                Not TypeOf form Is InputBoxForm Then
-
+            If Not s.WindowPositionsCenterScreen.NothingOrEmpty AndAlso Not TypeOf form Is InputBoxForm Then
                 For Each i In s.WindowPositionsCenterScreen
                     If v.StartsWith(i) OrElse i = "all" Then
                         CenterScreen(form)
@@ -522,9 +518,7 @@ Namespace UI
                 Next
             End If
 
-            If Not s.WindowPositionsRemembered.NothingOrEmpty AndAlso
-                Not TypeOf form Is InputBoxForm Then
-
+            If Not s.WindowPositionsRemembered.NothingOrEmpty AndAlso Not TypeOf form Is InputBoxForm Then
                 For Each i In s.WindowPositionsRemembered
                     If v.StartsWith(i) OrElse i = "all" Then
                         RestorePositionInternal(form)
@@ -534,7 +528,7 @@ Namespace UI
             End If
         End Sub
 
-        Private Function GetKey(f As Form) As String
+        Function GetKey(f As Form) As String
             Return f.Name + f.GetType().FullName + GetText(f)
         End Function
 

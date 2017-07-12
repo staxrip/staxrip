@@ -148,12 +148,12 @@ Public Class Project
         If Check(VideoEncoder, "Video Encoder", 75) Then VideoEncoder = New x264Enc
 
         If Check(Audio0, "Audio Track 1", 36) Then
-            Audio0 = New GUIAudioProfile(AudioCodec.AAC, 0.35)
+            Audio0 = New GUIAudioProfile(AudioCodec.AAC, 0.4)
             Audio0.Language = New Language(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, True)
         End If
 
         If Check(Audio1, "Audio Track 2", 36) Then
-            Audio1 = New GUIAudioProfile(AudioCodec.AAC, 0.35)
+            Audio1 = New GUIAudioProfile(AudioCodec.AAC, 0.4)
             Audio1.Language = New Language("en", True)
         End If
 

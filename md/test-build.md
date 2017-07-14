@@ -12,7 +12,7 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
-#### 1.5.2.4 unstable test build
+#### 1.5.2.5 unstable test build
 
 - new: qaac has a new option to pipe from ffmpeg instead of converting to FLAC/W64/WAV
 

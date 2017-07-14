@@ -115,7 +115,7 @@ Public Class ProcForm
         Me.flpButtons.Controls.Add(Me.bnResume)
         Me.flpButtons.Controls.Add(Me.bnAbort)
         Me.flpButtons.Controls.Add(Me.bnJobs)
-        Me.flpButtons.Location = New System.Drawing.Point(274, 1162)
+        Me.flpButtons.Location = New System.Drawing.Point(231, 734)
         Me.flpButtons.Margin = New System.Windows.Forms.Padding(10, 0, 10, 10)
         Me.flpButtons.Name = "flpButtons"
         Me.flpButtons.Size = New System.Drawing.Size(1501, 70)
@@ -144,7 +144,7 @@ Public Class ProcForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1785, 1242)
+        Me.tlpMain.Size = New System.Drawing.Size(1742, 814)
         Me.tlpMain.TabIndex = 14
         '
         'pnLogHost
@@ -155,7 +155,7 @@ Public Class ProcForm
         Me.pnLogHost.Location = New System.Drawing.Point(0, 6)
         Me.pnLogHost.Margin = New System.Windows.Forms.Padding(0)
         Me.pnLogHost.Name = "pnLogHost"
-        Me.pnLogHost.Size = New System.Drawing.Size(1785, 1096)
+        Me.pnLogHost.Size = New System.Drawing.Size(1742, 668)
         Me.pnLogHost.TabIndex = 17
         '
         'pnStatusHost
@@ -163,10 +163,10 @@ Public Class ProcForm
         Me.pnStatusHost.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnStatusHost.Location = New System.Drawing.Point(0, 1102)
+        Me.pnStatusHost.Location = New System.Drawing.Point(0, 674)
         Me.pnStatusHost.Margin = New System.Windows.Forms.Padding(0)
         Me.pnStatusHost.Name = "pnStatusHost"
-        Me.pnStatusHost.Size = New System.Drawing.Size(1785, 60)
+        Me.pnStatusHost.Size = New System.Drawing.Size(1742, 60)
         Me.pnStatusHost.TabIndex = 18
         '
         'flpNav
@@ -177,14 +177,14 @@ Public Class ProcForm
         Me.flpNav.AutoSize = True
         Me.flpNav.Location = New System.Drawing.Point(3, 3)
         Me.flpNav.Name = "flpNav"
-        Me.flpNav.Size = New System.Drawing.Size(1779, 1)
+        Me.flpNav.Size = New System.Drawing.Size(1736, 1)
         Me.flpNav.TabIndex = 19
         '
         'ProcForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(1785, 1242)
+        Me.ClientSize = New System.Drawing.Size(1742, 814)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(9)
@@ -223,9 +223,12 @@ Public Class ProcForm
 
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
 
-        If ProcForm.IsMinimized Then WindowState = FormWindowState.Minimized
-        Dim posX = Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ProcForm Pos X")
-        If posX <> 0 Then s.WindowPositions.Positions(s.WindowPositions.GetKey(Me)) = New Point(posX, Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ProcForm Pos Y"))
+        If ProcForm.IsMinimized Then
+            WindowState = FormWindowState.Minimized
+            ShowInTaskbar = Not s.MinimizeToTray
+        End If
+
+        SetSizeAndPos()
     End Sub
 
     Private Sub cbShutdown_SelectedIndexChanged() Handles mbShutdown.ValueChangedUser
@@ -282,13 +285,21 @@ Public Class ProcForm
 
     Private Sub ShowForm()
         ProcForm.IsMinimized = False
+        WindowState = FormWindowState.Normal
+        SetSizeAndPos()
         Show()
         Activate()
     End Sub
 
+    Sub SetSizeAndPos()
+        ScaleClientSize(42, 28)
+        Left = Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ProcForm Pos X")
+        Top = Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ProcForm Pos Y")
+    End Sub
+
     Protected Overrides Sub OnActivated(e As EventArgs)
-        mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
         MyBase.OnActivated(e)
+        mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
     End Sub
 
     Protected Overrides Sub OnShown(e As EventArgs)
@@ -296,18 +307,17 @@ Public Class ProcForm
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
     End Sub
 
-    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
-        Get
-            Return ProcForm.IsMinimized
-        End Get
-    End Property
-
     Shared Property WasHandleCreated As Boolean
 
     Protected Overrides Sub OnHandleCreated(e As EventArgs)
         MyBase.OnHandleCreated(e)
         WasHandleCreated = True
     End Sub
+
+    'Protected Overrides Sub OnLoad(e As EventArgs)
+    '    MyBase.OnLoad(e)
+    '    SetSize()
+    'End Sub
 
     Protected Overrides Sub OnMove(e As EventArgs)
         MyBase.OnMove(e)

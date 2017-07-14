@@ -12,6 +12,13 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.2.4 unstable test build
+
+- new: qaac has a new option to pipe from ffmpeg instead of converting to FLAC/W64/WAV
+
+- update: ffmpeg 3.3.2
+- update: x265 2.5+2
+
 #### 1.5.2.3 unstable test build
 
 - new: aimed quality feature of the old x264 GUI added to the x264 and x265 GUI

@@ -3,13 +3,11 @@ Imports System.Text.RegularExpressions
 Imports System.Globalization
 
 Imports VB6 = Microsoft.VisualBasic
+Imports System.Threading
 
 Public Class Audio
     Shared Sub Process(ap As AudioProfile)
-        If Not File.Exists(ap.File) OrElse TypeOf ap Is NullAudioProfile Then
-            Exit Sub
-        End If
-
+        If Not File.Exists(ap.File) OrElse TypeOf ap Is NullAudioProfile Then Exit Sub
         If Not Directory.Exists(p.TempDir) Then p.TempDir = ap.File.Dir
 
         If ap.File <> p.SourceFile Then
@@ -47,12 +45,7 @@ Public Class Audio
 
         Cut(ap)
 
-        If Not TypeOf ap Is MuxAudioProfile AndAlso
-            Not ap.SupportedInput.NothingOrEmpty AndAlso
-            Not ap.SupportedInput.Contains(ap.File.Ext) Then
-
-            Convert(ap)
-        End If
+        If Not TypeOf ap Is MuxAudioProfile AndAlso Not ap.IsInputSupported Then Convert(ap)
 
         If TypeOf ap Is GUIAudioProfile Then
             Dim gap = DirectCast(ap, GUIAudioProfile)
@@ -536,8 +529,8 @@ function Down2(clip a)
 
     Shared Sub SetGain(ap As AudioProfile)
         Dim args = "-i " + ap.File.Escape
-        If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
-        args += " -hide_banner -af volumedetect -f null NUL"
+        If Not ap.Stream Is Nothing AndAlso ap.Streams.Count > 1 Then args += " -map 0:a:" & ap.Stream.Index
+        args += " -sn -vn -hide_banner -af volumedetect -f null NUL"
 
         Using proc As New Proc
             proc.Header = "Find Gain"

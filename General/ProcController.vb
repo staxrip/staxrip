@@ -50,6 +50,7 @@ Public Class ProcController
     Sub DataReceived(sender As Object, e As DataReceivedEventArgs)
         If e.Data = "" Then Exit Sub
         Dim t = Proc.ProcessData(e.Data)
+
         If t.Item1 = "" Then Exit Sub
         Dim value = t.Item1
         Dim skip = t.Item2
@@ -57,10 +58,8 @@ Public Class ProcController
         If skip Then
             ProcForm.BeginInvoke(StatusAction, {value})
         Else
-            If Proc.Log.Length < 20000 Then
-                Proc.Log.WriteLine(value)
-                ProcForm.BeginInvoke(LogAction, Nothing)
-            End If
+            Proc.Log.WriteLine(value)
+            ProcForm.BeginInvoke(LogAction, Nothing)
         End If
     End Sub
 

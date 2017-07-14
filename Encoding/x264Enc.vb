@@ -685,13 +685,13 @@ Public Class x264Params
                 ItemsValue = New List(Of CommandLineParam)
 
                 Add("Basic",
-                    Quant,
                     Mode,
                     Preset,
                     Tune,
                     Profile,
                     New OptionParam With {.Switch = "--level", .Text = "Level", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
-                    Depth)
+                    Depth,
+                    Quant)
                 Add("Analysis",
                     Trellis,
                     CQM,

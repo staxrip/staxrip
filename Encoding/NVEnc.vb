@@ -440,7 +440,7 @@ Public Class NVEnc
             Dim q = From i In Items Where i.GetArgs <> ""
             If q.Count > 0 Then ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
 
-            If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
+            If (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
                 (p.Script.IsFilterActive("Crop", "Hardware Encoder") OrElse
                 (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop"))) Then
 

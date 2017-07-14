@@ -14,6 +14,8 @@ Public Class Project
     Public AdjustHeight As Boolean = True
     Public Audio0 As AudioProfile
     Public Audio1 As AudioProfile
+    Public AudioConvertFormat As AudioConvertType
+    Public AudioConvertMode As AudioConvertMode
     Public AudioTracks As List(Of AudioProfile)
     Public AutoCompCheck As Boolean
     Public AutoCorrectCropValues As Boolean = True
@@ -39,15 +41,16 @@ Public Class Project
     Public CutFrameCount As Integer
     Public CutFrameRate As Double
     Public CuttingMode As CuttingMode
-    Public AudioConvertMode As AudioConvertMode
-    Public ForceAudioConvert As Boolean
     Public DefaultSubtitle As DefaultSubtitleMode
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
     Public DemuxAudio As DemuxMode
     Public DemuxSubtitles As DemuxMode
     Public ExtractTimecodes As Boolean
+    Public FileExistAudio As FileExistMode
+    Public FileExistVideo As FileExistMode
     Public FirstOriginalSourceFile As String
+    Public ForceAudioConvert As Boolean
     Public ForcedOutputMod As Integer = 16
     Public HarcodedSubtitle As Boolean
     Public ITU As Boolean = True
@@ -57,6 +60,7 @@ Public Class Project
     Public NoDialogs As Boolean
     Public PreferredAudio As String
     Public PreferredSubtitles As String
+    Public PreRenderIntoLossless As Boolean
     Public Ranges As List(Of Range)
     Public RemindOversize As Boolean = True
     Public RemindToCrop As Boolean = False
@@ -68,7 +72,9 @@ Public Class Project
     Public ScanOrder As String
     Public ScanType As String
     Public Script As TargetVideoScript
+    Public SkipAudioEncoding As Boolean
     Public SkippedAssistantTips As List(Of String)
+    Public SkipVideoEncoding As Boolean
     Public SourceAnamorphic As Boolean
     Public SourceBitrate As Integer
     Public SourceFile As String
@@ -94,16 +100,8 @@ Public Class Project
     Public Versions As Dictionary(Of String, Integer)
     Public VideoBitrate As Integer = 1000
     Public VideoEncoder As VideoEncoder
-    Public FileExistAudio As FileExistMode
-    Public FileExistVideo As FileExistMode
-    Public SkipAudioEncoding As Boolean
-    Public SkipVideoEncoding As Boolean
-    Public PreRenderIntoLossless As Boolean
-
-    Public AudioConvertFormat As AudioConvertType
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
-
 
     ReadOnly Property VersionsProperty() As Dictionary(Of String, Integer) Implements ISafeSerialization.Versions
         Get

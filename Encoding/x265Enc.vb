@@ -766,9 +766,9 @@ Public Class x265Params
             If ItemsValue Is Nothing Then
                 ItemsValue = New List(Of CommandLineParam)
 
-                Add("Basic", Quant, Preset, Tune, Profile,
+                Add("Basic", Preset, Tune, Profile,
                     New OptionParam With {.Switch = "--level-idc", .Switches = {"--level"}, .Text = "Level", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}},
-                    Mode, OutputDepth)
+                    Mode, OutputDepth, Quant)
                 Add("Analysis", RD,
                     New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis File", .Quotes = True, .BrowseFile = True},
                     New OptionParam With {.Switch = "--analysis-reuse-mode", .Text = "Analysis Mode", .Options = {"Off", "Save", "Load"}},

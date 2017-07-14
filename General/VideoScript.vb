@@ -118,6 +118,11 @@ Public Class VideoScript
         If filter?.Script?.ToLower.Contains(search.ToLower) AndAlso filter?.Active Then Return True
     End Function
 
+    Sub ActivateFilter(category As String)
+        Dim filter = GetFilter(category)
+        If Not filter Is Nothing Then filter.Active = True
+    End Sub
+
     Function IsFilterActive(category As String) As Boolean
         Dim filter = GetFilter(category)
         Return Not filter Is Nothing AndAlso filter.Active

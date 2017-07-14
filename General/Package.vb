@@ -189,18 +189,17 @@ Public Class Package
     Shared Property x264_8 As Package = Add(New Package With {
         .Name = "x264",
         .Filename = "x264.exe",
-        .WebURL = "http://www.videolan.org/developers/x264.html",
         .Description = "H.264 video encoding command line app.",
-        .HelpFile = "Help.txt"})
+        .WebURL = "http://www.videolan.org/developers/x264.html",
+        .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm"})
 
     Shared Property x264_10 As Package = Add(New Package With {
         .Name = "x264 10-Bit",
         .Filename = "x264-10bit.exe",
-        .HelpFile = "Help.txt",
         .DirName = "x264",
+        .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
         .WebURL = "http://www.videolan.org/developers/x264.html",
-        .Description = "H.264 video encoding command line app.",
-        .IsRequiredFunc = AddressOf IsX264_10Required})
+        .Description = "H.264 video encoding command line app."})
 
     Shared Function IsX264_10Required() As Boolean
         Return TypeOf p.VideoEncoder Is x264Enc AndAlso DirectCast(p.VideoEncoder, x264Enc).Params.Depth.Value = 1
@@ -454,7 +453,7 @@ Public Class Package
             .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée.",
             .AviSynthFilterNames = {"QTGMC"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "QTGMC...", "QTGMC(Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"")")},
-            .Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}})
+            .Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools", "TDeint"}})
 
         Add(New PluginPackage With {
             .Name = "SMDegrain",

@@ -2144,16 +2144,16 @@ Public Class MainForm
 
             If p.HarcodedSubtitle Then g.AddHardcodedSubtitle()
 
-            Dim crop = p.Script.IsFilterActive("Crop")
+            Dim isCropActive = p.Script.IsFilterActive("Crop")
 
-            If crop Then
+            If isCropActive AndAlso (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
                 g.RunAutoCrop()
                 DisableCropFilter()
             End If
 
             AutoResize()
 
-            If crop Then
+            If isCropActive Then
                 g.OvercropWidth()
                 If p.AutoSmartCrop Then g.SmartCrop()
             End If
@@ -2297,11 +2297,9 @@ Public Class MainForm
             Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
 
             If sourceWidth Mod 4 <> 0 OrElse sourceHeight Mod 4 <> 0 Then
-                If editAVS Then
-                    p.Script.SetFilter("Crop", "Crop", "Crop(0, 0, -" & sourceWidth Mod 4 & ", -" & sourceHeight Mod 4 & ") # ensure mod 4")
-                ElseIf editVS Then
-                    p.Script.SetFilter("Crop", "Crop", "clip = core.std.CropRel(clip, 0, " & sourceWidth Mod 4 & ", 0, " & sourceHeight Mod 4 & ") # ensure mod 4")
-                End If
+                p.CropRight = sourceWidth Mod 4
+                p.CropBottom = sourceHeight Mod 4
+                p.Script.ActivateFilter("Crop")
             End If
         End If
     End Sub
@@ -2436,7 +2434,12 @@ Public Class MainForm
                 SaveProjectPath(g.ProjectPath)
             End If
 
-            Log.WriteHeader("Script")
+            If p.Script.Engine = ScriptEngine.AviSynth Then
+                Log.WriteHeader("AviSynth Script")
+            Else
+                Log.WriteHeader("VapourSynth Script")
+            End If
+
             Log.WriteLine(p.Script.GetFullScript)
             Log.WriteHeader("Script Properties")
 
@@ -4084,7 +4087,7 @@ Public Class MainForm
 
             Dim convMethod = ui.AddMenu(Of AudioConvertMode)
             convMethod.Text = "Convert Method:"
-            convMethod.Help = "Method to use to create a intermediate audio file."
+            convMethod.Help = "Method to create a compatible audio file in case the audio encoding don't support the input format."
             convMethod.Field = NameOf(p.AudioConvertMode)
 
             Dim convFormat = ui.AddMenu(Of AudioConvertType)
@@ -4108,6 +4111,7 @@ Public Class MainForm
 
             b = ui.AddBool
             b.Text = "Force conversion"
+            b.Help = "Create a intermediate audio file even if the audio encoder supports the current format."
             b.Field = NameOf(p.ForceAudioConvert)
 
             b = ui.AddBool
@@ -5893,10 +5897,6 @@ Public Class MainForm
         Else
             ProcessCommandLine(Environment.GetCommandLineArgs)
         End If
-
-        'Using form As New TestForm
-        '    form.ShowDialog()
-        'End Using
 
         MyBase.OnShown(e)
     End Sub

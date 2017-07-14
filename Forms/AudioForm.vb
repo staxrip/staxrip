@@ -25,7 +25,6 @@ Public Class AudioForm
     Friend WithEvents lLanguage As System.Windows.Forms.Label
     Friend WithEvents numDelay As NumEdit
     Friend WithEvents lDelay As System.Windows.Forms.Label
-    Friend WithEvents rtbCommandLine As CommandLineRichTextBox
     Friend WithEvents mbChannels As StaxRip.UI.MenuButton
     Friend WithEvents lChannels As System.Windows.Forms.Label
     Friend WithEvents gbAdvanced As System.Windows.Forms.GroupBox
@@ -45,9 +44,11 @@ Public Class AudioForm
     Friend WithEvents numGain As StaxRip.UI.NumEdit
     Friend WithEvents Label4 As System.Windows.Forms.Label
     Friend WithEvents tlpMain As TableLayoutPanel
-    Friend WithEvents FlowLayoutPanel2 As FlowLayoutPanel
+    Friend WithEvents flpButtons As FlowLayoutPanel
     Friend WithEvents tlpBasic As TableLayoutPanel
     Friend WithEvents bnMenu As ButtonEx
+    Friend WithEvents tlpRTB As TableLayoutPanel
+    Friend WithEvents rtbCommandLine As CommandLineRichTextBox
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -75,7 +76,6 @@ Public Class AudioForm
         Me.lChannels = New System.Windows.Forms.Label()
         Me.mbChannels = New StaxRip.UI.MenuButton()
         Me.cbNormalize = New StaxRip.UI.CheckBoxEx()
-        Me.rtbCommandLine = New StaxRip.UI.CommandLineRichTextBox()
         Me.gbAdvanced = New System.Windows.Forms.GroupBox()
         Me.SimpleUI = New StaxRip.SimpleUI()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
@@ -83,13 +83,16 @@ Public Class AudioForm
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.FlowLayoutPanel2 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
         Me.bnMenu = New StaxRip.UI.ButtonEx()
+        Me.tlpRTB = New System.Windows.Forms.TableLayoutPanel()
+        Me.rtbCommandLine = New StaxRip.UI.CommandLineRichTextBox()
         Me.gbBasic.SuspendLayout()
         Me.tlpBasic.SuspendLayout()
         Me.gbAdvanced.SuspendLayout()
         Me.tlpMain.SuspendLayout()
-        Me.FlowLayoutPanel2.SuspendLayout()
+        Me.flpButtons.SuspendLayout()
+        Me.tlpRTB.SuspendLayout()
         Me.SuspendLayout()
         '
         'gbBasic
@@ -102,7 +105,7 @@ Public Class AudioForm
         Me.gbBasic.Margin = New System.Windows.Forms.Padding(15, 14, 7, 14)
         Me.gbBasic.Name = "gbBasic"
         Me.gbBasic.Padding = New System.Windows.Forms.Padding(5)
-        Me.gbBasic.Size = New System.Drawing.Size(850, 737)
+        Me.gbBasic.Size = New System.Drawing.Size(850, 819)
         Me.gbBasic.TabIndex = 1
         Me.gbBasic.TabStop = False
         Me.gbBasic.Text = "Basic"
@@ -148,7 +151,7 @@ Public Class AudioForm
         Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34.0!))
-        Me.tlpBasic.Size = New System.Drawing.Size(840, 679)
+        Me.tlpBasic.Size = New System.Drawing.Size(840, 761)
         Me.tlpBasic.TabIndex = 44
         '
         'lCodec
@@ -367,22 +370,6 @@ Public Class AudioForm
         Me.cbNormalize.Text = "Normalize"
         Me.cbNormalize.UseVisualStyleBackColor = True
         '
-        'rtbCommandLine
-        '
-        Me.rtbCommandLine.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.rtbCommandLine.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.tlpMain.SetColumnSpan(Me.rtbCommandLine, 2)
-        Me.rtbCommandLine.LastCommandLine = Nothing
-        Me.rtbCommandLine.Location = New System.Drawing.Point(15, 765)
-        Me.rtbCommandLine.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
-        Me.rtbCommandLine.Name = "rtbCommandLine"
-        Me.rtbCommandLine.ReadOnly = True
-        Me.rtbCommandLine.Size = New System.Drawing.Size(1715, 62)
-        Me.rtbCommandLine.TabIndex = 2
-        Me.rtbCommandLine.Text = ""
-        '
         'gbAdvanced
         '
         Me.gbAdvanced.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -393,7 +380,7 @@ Public Class AudioForm
         Me.gbAdvanced.Margin = New System.Windows.Forms.Padding(7, 14, 15, 14)
         Me.gbAdvanced.Name = "gbAdvanced"
         Me.gbAdvanced.Padding = New System.Windows.Forms.Padding(5)
-        Me.gbAdvanced.Size = New System.Drawing.Size(851, 737)
+        Me.gbAdvanced.Size = New System.Drawing.Size(851, 819)
         Me.gbAdvanced.TabIndex = 3
         Me.gbAdvanced.TabStop = False
         Me.gbAdvanced.Text = "Advanced"
@@ -406,7 +393,7 @@ Public Class AudioForm
         Me.SimpleUI.Location = New System.Drawing.Point(7, 41)
         Me.SimpleUI.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(834, 687)
+        Me.SimpleUI.Size = New System.Drawing.Size(834, 769)
         Me.SimpleUI.TabIndex = 0
         Me.SimpleUI.Text = "SimpleUI1"
         '
@@ -433,7 +420,7 @@ Public Class AudioForm
         Me.FlowLayoutPanel1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.FlowLayoutPanel1.AutoSize = True
         Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(22, 989)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(22, 1069)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(5)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
         Me.FlowLayoutPanel1.Size = New System.Drawing.Size(0, 0)
@@ -446,10 +433,10 @@ Public Class AudioForm
         Me.tlpMain.ColumnCount = 2
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpMain.Controls.Add(Me.rtbCommandLine, 0, 1)
         Me.tlpMain.Controls.Add(Me.gbBasic, 0, 0)
-        Me.tlpMain.Controls.Add(Me.FlowLayoutPanel2, 1, 2)
+        Me.tlpMain.Controls.Add(Me.flpButtons, 1, 2)
         Me.tlpMain.Controls.Add(Me.gbAdvanced, 1, 0)
+        Me.tlpMain.Controls.Add(Me.tlpRTB, 0, 1)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
         Me.tlpMain.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -458,21 +445,21 @@ Public Class AudioForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1745, 927)
+        Me.tlpMain.Size = New System.Drawing.Size(1745, 1007)
         Me.tlpMain.TabIndex = 11
         '
-        'FlowLayoutPanel2
+        'flpButtons
         '
-        Me.FlowLayoutPanel2.Anchor = System.Windows.Forms.AnchorStyles.Right
-        Me.FlowLayoutPanel2.AutoSize = True
-        Me.FlowLayoutPanel2.Controls.Add(Me.bnMenu)
-        Me.FlowLayoutPanel2.Controls.Add(Me.bnOK)
-        Me.FlowLayoutPanel2.Controls.Add(Me.bnCancel)
-        Me.FlowLayoutPanel2.Location = New System.Drawing.Point(1130, 827)
-        Me.FlowLayoutPanel2.Margin = New System.Windows.Forms.Padding(0)
-        Me.FlowLayoutPanel2.Name = "FlowLayoutPanel2"
-        Me.FlowLayoutPanel2.Size = New System.Drawing.Size(615, 100)
-        Me.FlowLayoutPanel2.TabIndex = 11
+        Me.flpButtons.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.flpButtons.AutoSize = True
+        Me.flpButtons.Controls.Add(Me.bnMenu)
+        Me.flpButtons.Controls.Add(Me.bnOK)
+        Me.flpButtons.Controls.Add(Me.bnCancel)
+        Me.flpButtons.Location = New System.Drawing.Point(1130, 907)
+        Me.flpButtons.Margin = New System.Windows.Forms.Padding(0)
+        Me.flpButtons.Name = "flpButtons"
+        Me.flpButtons.Size = New System.Drawing.Size(615, 100)
+        Me.flpButtons.TabIndex = 11
         '
         'bnMenu
         '
@@ -482,6 +469,38 @@ Public Class AudioForm
         Me.bnMenu.ShowMenuSymbol = True
         Me.bnMenu.Size = New System.Drawing.Size(70, 70)
         '
+        'tlpRTB
+        '
+        Me.tlpRTB.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpRTB.AutoSize = True
+        Me.tlpRTB.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.tlpRTB.ColumnCount = 1
+        Me.tlpMain.SetColumnSpan(Me.tlpRTB, 2)
+        Me.tlpRTB.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpRTB.Controls.Add(Me.rtbCommandLine, 0, 0)
+        Me.tlpRTB.Location = New System.Drawing.Point(15, 847)
+        Me.tlpRTB.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
+        Me.tlpRTB.Name = "tlpRTB"
+        Me.tlpRTB.RowCount = 1
+        Me.tlpRTB.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpRTB.Size = New System.Drawing.Size(1715, 60)
+        Me.tlpRTB.TabIndex = 12
+        '
+        'rtbCommandLine
+        '
+        Me.rtbCommandLine.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.rtbCommandLine.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.rtbCommandLine.LastCommandLine = Nothing
+        Me.rtbCommandLine.Location = New System.Drawing.Point(0, 0)
+        Me.rtbCommandLine.Margin = New System.Windows.Forms.Padding(0)
+        Me.rtbCommandLine.Name = "rtbCommandLine"
+        Me.rtbCommandLine.ReadOnly = True
+        Me.rtbCommandLine.Size = New System.Drawing.Size(1715, 60)
+        Me.rtbCommandLine.TabIndex = 45
+        Me.rtbCommandLine.Text = ""
+        '
         'AudioForm
         '
         Me.AcceptButton = Me.bnOK
@@ -490,7 +509,7 @@ Public Class AudioForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1745, 927)
+        Me.ClientSize = New System.Drawing.Size(1745, 1007)
         Me.Controls.Add(Me.tlpMain)
         Me.Controls.Add(Me.FlowLayoutPanel1)
         Me.KeyPreview = True
@@ -503,7 +522,8 @@ Public Class AudioForm
         Me.gbAdvanced.ResumeLayout(False)
         Me.tlpMain.ResumeLayout(False)
         Me.tlpMain.PerformLayout()
-        Me.FlowLayoutPanel2.ResumeLayout(False)
+        Me.flpButtons.ResumeLayout(False)
+        Me.tlpRTB.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -711,11 +731,6 @@ Public Class AudioForm
         UpdateControls()
     End Sub
 
-    Protected Overrides Sub OnLoad(e As EventArgs)
-        MyBase.OnLoad(e)
-        rtbCommandLine.Margin = New Padding(gbBasic.Margin.Left, 0, gbBasic.Margin.Left, 0)
-    End Sub
-
     Private Sub AudioForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         UpdateControls()
         Refresh()
@@ -899,6 +914,10 @@ Public Class AudioForm
                 cb.Text = "No dither when quantizing to lower bit depth"
                 cb.Checked = TempProfile.Params.qaacNoDither
                 cb.SaveAction = Sub(value) TempProfile.Params.qaacNoDither = value
+
+                cb = ui.AddBool
+                cb.Text = "Pipe input using ffmpeg"
+                cb.Property = NameOf(TempProfile.Params.qaacUsePipe)
         End Select
 
         cb = ui.AddBool(page)
@@ -946,16 +965,13 @@ Public Class AudioForm
 
     Private Sub Execute()
         If TempProfile.File <> "" Then
-            If Not TempProfile.SupportedInput.Contains(Filepath.GetExt(TempProfile.File)) Then
-                MsgWarn("The input format isn't supported," + BR + "please decode first using:" + BR2 + "Codec: WAV" + BR + "Encoder: ffmpeg")
+            If Not TempProfile.IsInputSupported AndAlso Not TempProfile.Params.qaacUsePipe Then
+                MsgWarn("The input format isn't supported by the current encoder," + BR + "convert to WAV or FLAC first or enable piping in the options.")
             Else
-                Dim batchPath = p.TempDir + p.TargetFile.Base + "_aexe.bat"
-                Dim batchCode = Proc.WriteBatchFile(batchPath, TempProfile.GetCommandLine(True))
-                Dim batchProc As New Process
-                batchProc.StartInfo.FileName = "cmd.exe"
-                batchProc.StartInfo.Arguments = "/k """ + batchPath + """"
-                batchProc.StartInfo.WorkingDirectory = p.TempDir
-                batchProc.Start()
+                Dim process As New Process
+                process.StartInfo.FileName = "cmd.exe"
+                process.StartInfo.Arguments = "/S /K """ + TempProfile.GetCommandLine(True) + """"
+                process.Start()
             End If
         Else
             MsgWarn("Source file is missing!")

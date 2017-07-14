@@ -617,46 +617,51 @@ Public Class GUIAudioProfile
         If File <> "" Then
             Dim bitrateBefore = p.VideoBitrate
             Dim targetPath = GetOutputFile()
+            Dim cl = GetCommandLine(True)
 
-            For Each i In ExpandMacros(CommandLines, False).SplitLinesNoEmpty
-                Using proc As New Proc
-                    If i.Contains("eac3to.exe") Then
-                        proc.Package = Package.eac3to
-                        proc.SkipStrings = {"process: ", "analyze: "}
-                        proc.TrimChars = {"-"c, " "c}
-                        proc.RemoveChars = {VB6.ChrW(8)} 'backspace
-                    ElseIf i.Contains("ffmpeg.exe") Then
-                        proc.Package = Package.ffmpeg
-                        proc.SkipStrings = {"frame=", "size="}
-                        proc.Encoding = Encoding.UTF8
-                    ElseIf i.Contains("qaac64.exe") Then
-                        proc.Package = Package.qaac
-                        proc.SkipString = ", ETA "
-                    End If
+            Using proc As New Proc
+                proc.Header = "Audio encoding"
 
-                    proc.Header = "Audio encoding"
-                    proc.CommandLine = i
-                    proc.Start()
-                End Using
-
-                If g.FileExists(targetPath) Then
-                    File = targetPath
-
-                    If Not p.BitrateIsFixed Then
-                        Bitrate = Calc.GetBitrateFromFile(File, p.TargetSeconds)
-
-                        p.VideoBitrate = CInt(Calc.GetVideoBitrate)
-
-                        If Not p.VideoEncoder.QualityMode Then
-                            Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR)
-                        End If
-                    End If
-
-                    Log.WriteLine(MediaInfo.GetSummary(File))
-                Else
-                    Throw New ErrorAbortException("Error audio encoding", "The output file is missing")
+                If cl.Contains("|") Then
+                    proc.SkipStrings = {", ETA ", "x)", "frame=", "size=", "process: ", "analyze: "}
+                    proc.File = "cmd.exe"
+                    proc.Arguments = "/S /C """ + cl + """"
+                ElseIf cl.Contains("eac3to.exe") Then
+                    proc.Package = Package.eac3to
+                    proc.SkipStrings = {"process: ", "analyze: "}
+                    proc.TrimChars = {"-"c, " "c}
+                    proc.RemoveChars = {VB6.ChrW(8)} 'backspace
+                    proc.CommandLine = cl
+                ElseIf cl.Contains("ffmpeg.exe") Then
+                    proc.Package = Package.ffmpeg
+                    proc.SkipStrings = {"frame=", "size="}
+                    proc.Encoding = Encoding.UTF8
+                    proc.CommandLine = cl
+                ElseIf cl.Contains("qaac64.exe") Then
+                    proc.Package = Package.qaac
+                    proc.SkipString = ", ETA "
+                    proc.CommandLine = cl
                 End If
-            Next
+
+                proc.Start()
+            End Using
+
+            If g.FileExists(targetPath) Then
+                File = targetPath
+
+                If Not p.BitrateIsFixed Then
+                    Bitrate = Calc.GetBitrateFromFile(File, p.TargetSeconds)
+                    p.VideoBitrate = CInt(Calc.GetVideoBitrate)
+
+                    If Not p.VideoEncoder.QualityMode Then
+                        Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR)
+                    End If
+                End If
+
+                Log.WriteLine(MediaInfo.GetSummary(File))
+            Else
+                Throw New ErrorAbortException("Error audio encoding", "The output file is missing")
+            End If
         End If
     End Sub
 
@@ -749,15 +754,11 @@ Public Class GUIAudioProfile
         Return ret
     End Function
 
-    Function GetqaacCommandLine(includePaths As Boolean) As String
+    Function GetQaacCommandLine(includePaths As Boolean) As String
         Dim ret As String
         includePaths = includePaths And File <> ""
-
-        If includePaths Then
-            ret = Package.qaac.Path.Escape + " -o " + GetOutputFile.Escape
-        Else
-            ret = "qaac"
-        End If
+        If Params.qaacUsePipe Then ret = GetPipeCommandLine(includePaths)
+        If includePaths Then ret += Package.qaac.Path.Escape Else ret = "qaac"
 
         Select Case Params.qaacRateMode
             Case 0
@@ -772,14 +773,31 @@ Public Class GUIAudioProfile
 
         If Params.qaacHE Then ret += " --he"
         If Delay <> 0 Then ret += " --delay " + (Delay / 1000).ToInvariantString
-        If Params.Normalize Then ret += " --normalize"
+        If Params.Normalize AndAlso Not Params.qaacUsePipe Then ret += " --normalize"
         If Params.qaacQuality <> 2 Then ret += " --quality " & Params.qaacQuality
         If Params.SamplingRate <> 0 Then ret += " --rate " & Params.SamplingRate
         If Params.qaacLowpass <> 0 Then ret += " --lowpass " & Params.qaacLowpass
         If Params.qaacNoDither Then ret += " --no-dither"
         If Gain <> 0 Then ret += " --gain " & Gain.ToInvariantString
         If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
-        If includePaths Then ret += " " + File.Escape
+        Dim input = If(Params.qaacUsePipe, "-", File.Escape)
+        If includePaths Then ret += " " + input + " -o " + GetOutputFile.Escape
+
+        Return ret
+    End Function
+
+    Function GetPipeCommandLine(includePaths As Boolean) As String
+        Dim ret As String
+
+        If includePaths AndAlso File <> "" Then
+            ret = Package.ffmpeg.Path.Escape + " -i " + File.Escape
+        Else
+            ret = "ffmpeg"
+        End If
+
+        If Not Stream Is Nothing AndAlso Streams.Count > 1 Then ret += " -map 0:a:" & Stream.Index
+        If Params.ChannelsMode <> ChannelsMode.Original Then ret += " -ac " & Channels
+        If includePaths AndAlso File <> "" Then ret += " -loglevel fatal -hide_banner -f wav - | "
 
         Return ret
     End Function
@@ -928,7 +946,7 @@ Public Class GUIAudioProfile
             Case GuiAudioEncoder.Eac3to
                 Return GetEac3toCommandLine(includePaths)
             Case GuiAudioEncoder.qaac
-                Return GetqaacCommandLine(includePaths)
+                Return GetQaacCommandLine(includePaths)
             Case Else
                 Return GetFfmpegCommandLine(includePaths)
         End Select
@@ -936,14 +954,9 @@ Public Class GUIAudioProfile
 
     Overrides Property SupportedInput As String()
         Get
-            Select Case GetEncoder()
-                Case GuiAudioEncoder.Eac3to
-                    Return FileTypes.eac3toInput
-                Case GuiAudioEncoder.qaac
-                    Return FileTypes.qaacInput
-                Case Else
-                    Return FileTypes.Audio.Concat(FileTypes.VideoAudio).ToArray
-            End Select
+            If GetEncoder() = GuiAudioEncoder.Eac3to Then Return FileTypes.eac3toInput
+            If GetEncoder() = GuiAudioEncoder.qaac AndAlso Not Params.qaacUsePipe Then Return FileTypes.qaacInput
+            Return {}
         End Get
         Set(value As String())
         End Set
@@ -961,15 +974,18 @@ Public Class GUIAudioProfile
         Property Encoder As GuiAudioEncoder
         Property FrameRateMode As AudioFrameRateMode
         Property Normalize As Boolean = True
+
+        Property Quality As Single = 0.3
+        Property RateMode As AudioRateMode
+        Property SamplingRate As Integer
+        Property ChannelsMode As ChannelsMode
+
         Property qaacHE As Boolean
         Property qaacLowpass As Integer
         Property qaacNoDither As Boolean
         Property qaacQuality As Integer = 2
         Property qaacRateMode As Integer
-        Property Quality As Single = 0.3
-        Property RateMode As AudioRateMode
-        Property SamplingRate As Integer
-        Property ChannelsMode As ChannelsMode
+        Property qaacUsePipe As Boolean
 
         Property opusencMode As Integer = 2
         Property opusencComplexity As Integer = 10

@@ -61,9 +61,9 @@ Public Class LogBuilder
     End Function
 
     Sub WriteEnvironment()
-        If ToString.Contains("Environment" + BR + "-=") Then Exit Sub
+        If ToString.Contains("System Environment" + BR + "-=") Then Exit Sub
 
-        WriteHeader("Environment")
+        WriteHeader("System Environment")
 
         Dim temp =
             "StaxRip:" + Application.ProductVersion + BR +

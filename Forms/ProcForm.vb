@@ -223,11 +223,7 @@ Public Class ProcForm
 
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
 
-        If ProcForm.IsMinimized Then
-            WindowState = FormWindowState.Minimized
-            ShowInTaskbar = Not s.MinimizeToTray
-        End If
-
+        If ProcForm.IsMinimized Then WindowState = FormWindowState.Minimized
         Dim posX = Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ProcForm Pos X")
         If posX <> 0 Then s.WindowPositions.Positions(s.WindowPositions.GetKey(Me)) = New Point(posX, Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ProcForm Pos Y"))
     End Sub
@@ -270,7 +266,6 @@ Public Class ProcForm
                         ProcForm.IsMinimized = True
 
                         If s.MinimizeToTray Then
-                            NotifyIcon.Visible = True
                             Hide()
                             Exit Sub
                         End If
@@ -286,9 +281,7 @@ Public Class ProcForm
     End Sub
 
     Private Sub ShowForm()
-        WindowState = FormWindowState.Normal
         ProcForm.IsMinimized = False
-        ShowInTaskbar = True
         Show()
         Activate()
     End Sub

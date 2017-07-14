@@ -78,14 +78,16 @@ Public Class Proc
     ReadOnly Property Title As String
         Get
             If Not Package Is Nothing Then Return Package.Name
-
-            Dim header = Me.Header.ToLower
+            Dim header = ""
+            If Me.Header <> "" Then header = Me.Header.ToLower
+            Dim ret = ""
 
             For Each i In Package.Items.Values
-                If header.Contains(i.Name.ToLower) Then Return i.Name
+                If header?.Contains(i.Name.ToLower) OrElse Arguments?.Contains(i.Filename) Then ret += " | " + i.Name
             Next
 
-            Return File.Base
+            If ret = "" Then ret = File.Base
+            Return ret.TrimStart(" |".ToCharArray)
         End Get
     End Property
 
@@ -271,7 +273,6 @@ Public Class Proc
             If Wait Then
                 Process.WaitForExit()
                 ExitCode = Process.ExitCode
-                Process.Close()
 
                 If Abort Then Throw New AbortException
 

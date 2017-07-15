@@ -24,6 +24,8 @@ Public Class Proc
     Property Header As String
     Property Package As Package
 
+    Private LogItems As List(Of String)
+
     Event ProcDisposed()
 
     Sub New(Optional readOutput As Boolean = True)
@@ -103,7 +105,7 @@ Public Class Proc
             Using proc As New Proc
                 proc.Header = header
                 proc.SkipStrings = skipStrings
-                proc.WriteLine(batchCode + BR2)
+                proc.WriteLog(batchCode + BR2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
 
@@ -212,8 +214,9 @@ Public Class Proc
         End Set
     End Property
 
-    Sub WriteLine(value As String)
-        Log.WriteLine(value)
+    Sub WriteLog(value As String)
+        If LogItems Is Nothing Then LogItems = New List(Of String)
+        LogItems.Add(value)
     End Sub
 
     Sub KillAndThrow()
@@ -248,6 +251,12 @@ Public Class Proc
             If ReadOutput Then
                 ProcController.Start(Me)
                 Log.WriteLine(CommandLine + BR2)
+            End If
+
+            If Not LogItems Is Nothing Then
+                For Each line In LogItems
+                    Log.WriteLine(line)
+                Next
             End If
 
             Process.Start()
@@ -335,7 +344,13 @@ Public Class Proc
             If disposing Then
                 If ReadOutput Then
                     Log.WriteStats()
-                    Project.Log.Append(Log.ToString)
+
+                    If Project.Log.EndsWith(BR2) Then
+                        Project.Log.Append(Log.ToString?.TrimStart)
+                    Else
+                        Project.Log.Append(Log.ToString)
+                    End If
+
                     Project.Log.Save(Project)
                 End If
 

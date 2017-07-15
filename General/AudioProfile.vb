@@ -153,16 +153,10 @@ Public MustInherit Class AudioProfile
 
         Dim matchID = Regex.Match(path, " ID(\d+)")
         Dim name As String
+        name = stream.Name.Substring(3)
 
-        If matchID.Success Then
-            stream.StreamOrder = matchID.Groups(1).Value.ToInt - 1
-            name = stream.Name
-        Else
-            name = stream.Name.Substring(4)
-        End If
-
-        If Filepath.GetBase(File) = Filepath.GetBase(p.SourceFile) Then
-            Return name + " (" + Filepath.GetExt(File) + ")"
+        If File.Base = p.SourceFile.Base Then
+            Return name + " (" + File.Ext + ")"
         Else
             Return name + " (" + Filepath.GetName(File) + ")"
         End If

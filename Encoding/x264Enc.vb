@@ -38,13 +38,13 @@ Public Class x264Enc
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode("Encoding video using x264 " + Package.x264.Version, GetArgs(1, p.Script), s.ProcessPriority)
+        Encode("Encoding video", GetArgs(1, p.Script), s.ProcessPriority)
 
         If Params.Mode.Value = x264RateMode.TwoPass Then
-            Encode("Encoding video second pass using x264 " + Package.x264.Version, GetArgs(2, p.Script), s.ProcessPriority)
+            Encode("Encoding video second pass", GetArgs(2, p.Script), s.ProcessPriority)
         ElseIf Params.Mode.Value = x264RateMode.ThreePass Then
-            Encode("Encoding video second pass using x264 " + Package.x264.Version, GetArgs(3, p.Script), s.ProcessPriority)
-            Encode("Encoding video third pass using x264 " + Package.x264.Version, GetArgs(2, p.Script), s.ProcessPriority)
+            Encode("Encoding video second pass", GetArgs(3, p.Script), s.ProcessPriority)
+            Encode("Encoding video third pass", GetArgs(2, p.Script), s.ProcessPriority)
         End If
 
         AfterEncoding()
@@ -58,8 +58,14 @@ Public Class x264Enc
             proc.Header = passName
             proc.Priority = priority
             proc.SkipStrings = {"kb/s, eta", "%]"}
-            proc.File = "cmd.exe"
-            proc.Arguments = "/S /C """ + commandLine + """"
+
+            If commandLine.Contains("|") Then
+                proc.File = "cmd.exe"
+                proc.Arguments = "/S /C """ + commandLine + """"
+            Else
+                proc.CommandLine = commandLine
+            End If
+
             proc.Start()
         End Using
     End Sub

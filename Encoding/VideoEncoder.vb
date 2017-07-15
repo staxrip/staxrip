@@ -235,7 +235,7 @@ Public MustInherit Class VideoEncoder
         xvid.Name = "XviD"
         xvid.Muxer = New ffmpegMuxer("AVI")
         xvid.QualityMode = True
-        xvid.CommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
+        xvid.CommandLines = "xvid_encraw -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
         ret.Add(xvid)
 
         ret.Add(New AOMEnc)
@@ -252,8 +252,8 @@ Public MustInherit Class VideoEncoder
         x264cli.OutputFileTypeValue = "h264"
         x264cli.Name = "Command Line | x264"
         x264cli.Muxer = New MkvMuxer()
-        x264cli.CommandLines = """%app:x264%"" --pass 1 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output NUL ""%script_file%"" || exit" + BR + """%app:x264%"" --pass 2 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
-        x264cli.CompCheckCommandLines = """%app:x264%"" --crf 18 --output ""%target_temp_file%_CompCheck.%encoder_ext%"" ""%target_temp_file%_CompCheck.%script_ext%"""
+        x264cli.CommandLines = "x264 --pass 1 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output NUL ""%script_file%"" || exit" + BR + "x264 --pass 2 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
+        x264cli.CompCheckCommandLines = "x264 --crf 18 --output ""%target_temp_file%_CompCheck.%encoder_ext%"" ""%target_temp_file%_CompCheck.%script_ext%"""
         ret.Add(x264cli)
 
         Dim nvencH265 As New BatchEncoder()
@@ -261,7 +261,7 @@ Public MustInherit Class VideoEncoder
         nvencH265.Name = "Command Line | NVIDIA H.265"
         nvencH265.Muxer = New MkvMuxer()
         nvencH265.QualityMode = True
-        nvencH265.CommandLines = """%app:NVEncC%"" --sar %target_sar% --codec h265 --cqp 20 -i ""%script_file%"" -o ""%encoder_out_file%"""
+        nvencH265.CommandLines = "NVEncC64 --sar %target_sar% --codec h265 --cqp 20 -i ""%script_file%"" -o ""%encoder_out_file%"""
         ret.Add(nvencH265)
 
         ret.Add(New NullEncoder())
@@ -425,23 +425,41 @@ Public Class BatchEncoder
         If commands.Contains("xvid_encraw") Then
             Return {"key="}
         ElseIf commands.Contains("x264") Then
-            Return {"frames,"}
-        ElseIf commands.Contains("NVEncC") Then
+            Return {"%]"}
+        ElseIf commands.Contains("NVEnc") Then
             Return {"frames: "}
         Else
             Return {" [ETA ", ", eta ", "frames: ", "frame= "}
         End If
     End Function
 
+    Function GetBatchCode(value As String) As String
+        Dim ret = ""
+
+        For Each pack In Package.Items.Values
+            If TypeOf pack Is PluginPackage Then Continue For
+            Dim dir = pack.GetDir
+            If Not Directory.Exists(dir) Then Continue For
+            If Not dir.Contains(Folder.Startup) Then Continue For
+
+            If value.ToLower.Contains(pack.Name.ToLower) Then
+                ret += "@set PATH=" + dir + ";%PATH%" + BR
+            End If
+        Next
+
+        Return ret + BR + value
+    End Function
+
     Overrides Sub Encode()
         p.Script.Synchronize()
+
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_encode.bat"
-        Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Expand(CommandLines).Trim)
+        Dim batchCode = Proc.WriteBatchFile(batchPath, GetBatchCode(Macro.Expand(CommandLines).Trim))
 
         Using proc As New Proc
             proc.Header = "Encoding video command line encoder: " + Name
-            proc.SkipStrings = GetSkipStrings(batchCode)
-            proc.WriteLine(batchCode + BR2)
+            proc.SkipStrings = GetSkipStrings(CommandLines)
+            proc.WriteLog(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
 
@@ -487,7 +505,7 @@ Public Class BatchEncoder
         script.Synchronize()
 
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_CompCheck.bat"
-        Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Expand(CompCheckCommandLines))
+        Dim batchCode = Proc.WriteBatchFile(batchPath, GetBatchCode(Macro.Expand(CompCheckCommandLines)))
         Log.WriteLine(batchCode + BR2)
 
         Using proc As New Proc

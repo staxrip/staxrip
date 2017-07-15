@@ -1276,7 +1276,7 @@ Public Class MainForm
                 If iPath.Contains("_cut_") Then Continue For
                 If iPath.Contains("_out") Then Continue For
                 If Not g.IsSourceSame(iPath) Then Continue For
-                If hq AndAlso Not iPath.Ext.EqualsAny("dtsma", "thd") Then Continue For
+                If hq AndAlso Not iPath.Ext.EqualsAny("dtsma", "thd", "eac3", "thd+ac3", "dtshr") Then Continue For
 
                 If same AndAlso tbOther.Text <> "" AndAlso tbOther.Text.ExtFull <> iPath.ExtFull Then
                     Continue For
@@ -2158,10 +2158,7 @@ Public Class MainForm
                 If p.AutoSmartCrop Then g.SmartCrop()
             End If
 
-            If p.AutoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled Then
-                p.VideoEncoder.RunCompCheck()
-            End If
-
+            If p.AutoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled Then p.VideoEncoder.RunCompCheck()
             Assistant()
             g.RaiseAppEvent(ApplicationEvent.AfterSourceLoaded)
             g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
@@ -2357,7 +2354,7 @@ Public Class MainForm
                 Using proc As New Proc
                     proc.Header = "Extract forced subtitles if existing"
                     proc.SkipString = "# "
-                    proc.WriteLine(Filepath.GetName(i) + BR2)
+                    proc.WriteLog(Filepath.GetName(i) + BR2)
                     proc.File = Package.BDSup2SubPP.Path
                     proc.Arguments = "--forced-only -o " + (i.DirAndBase + "_forced.idx").Escape + " " + i.Escape
                     proc.AllowedExitCodes = {}
@@ -2405,7 +2402,7 @@ Public Class MainForm
 
                         Using proc As New Proc
                             proc.Header = "Demux subtitles using VSRip"
-                            proc.WriteLine(args + BR2)
+                            proc.WriteLog(args + BR2)
                             proc.File = Package.VSRip.Path
                             proc.Arguments = """" + fileContent + """"
                             proc.WorkingDirectory = Package.VSRip.GetDir
@@ -4575,7 +4572,8 @@ Public Class MainForm
         ret.Add("Tools|Advanced", Symbol.More)
         If Application.StartupPath = "D:\Projekte\VS\VB\StaxRip\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
-        ret.Add("Tools|Advanced|Command Prompt...", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
+        ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
+        ret.Add("Tools|Advanced|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_terminal)
         ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
         ret.Add("Tools|Advanced|Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H, Symbol.Subtitles)
         ret.Add("Tools|Advanced|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))

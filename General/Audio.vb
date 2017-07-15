@@ -58,7 +58,7 @@ Public Class Audio
     End Sub
 
     Shared Function GetBaseNameForStream(path As String, stream As AudioStream, Optional shorten As Boolean = False) As String
-        Dim ret = If(shorten, path.Base.Shorten(10), path.Base) + " ID" & (stream.StreamOrder + 1)
+        Dim ret = If(shorten, path.Base.Shorten(10), path.Base) + " ID" & (stream.Index + 1)
 
         If stream.Delay <> 0 Then ret += " " & stream.Delay & "ms"
         If stream.Language.TwoLetterCode <> "iv" Then ret += " " + stream.Language.ToString
@@ -151,7 +151,7 @@ Public Class Audio
         Using proc As New Proc
             proc.Header = "AVS to WAV"
             proc.SkipStrings = {"frame=", "size="}
-            proc.WriteLine(Macro.Expand(d.GetScript) + BR)
+            proc.WriteLog(Macro.Expand(d.GetScript) + BR)
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
             proc.Arguments = args
@@ -185,7 +185,7 @@ Public Class Audio
         Using proc As New Proc
             proc.Header = "AVS to WAV"
             proc.SkipStrings = {"frame=", "size="}
-            proc.WriteLine(Macro.Expand(d.GetScript) + BR)
+            proc.WriteLog(Macro.Expand(d.GetScript) + BR)
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
             proc.Arguments = args
@@ -320,7 +320,7 @@ Public Class Audio
         Using proc As New Proc
             proc.Header = "AVS to WAV"
             proc.SkipStrings = {"frame=", "size="}
-            proc.WriteLine(Macro.Expand(d.GetScript) + BR)
+            proc.WriteLog(Macro.Expand(d.GetScript) + BR)
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
             proc.Arguments = args
@@ -355,7 +355,7 @@ Public Class Audio
         Using proc As New Proc
             proc.Header = "AVS to WAV"
             proc.SkipStrings = {"frame=", "size="}
-            proc.WriteLine(Macro.Expand(d.GetScript) + BR)
+            proc.WriteLog(Macro.Expand(d.GetScript) + BR)
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
             proc.Arguments = args
@@ -387,7 +387,7 @@ Public Class Audio
         Using proc As New Proc
             proc.Header = "AVS to WAV"
             proc.SkipStrings = {"frame=", "size="}
-            proc.WriteLine(Macro.Expand(d.GetScript) + BR)
+            proc.WriteLog(Macro.Expand(d.GetScript) + BR)
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
             proc.Arguments = args
@@ -421,7 +421,7 @@ Public Class Audio
         Using proc As New Proc
             proc.Header = "AVS to WAV"
             proc.SkipStrings = {"frame=", "size="}
-            proc.WriteLine(Macro.Expand(d.GetScript) + BR)
+            proc.WriteLog(Macro.Expand(d.GetScript) + BR)
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
             proc.Arguments = args
@@ -446,7 +446,7 @@ Public Class Audio
         Using proc As New Proc
             proc.Header = "Create avi file for audio cutting"
             proc.SkipStrings = {"frame=", "size="}
-            proc.WriteLine("mkvmerge cannot cut audio without video so a avi file has to be created" + BR2)
+            proc.WriteLog("mkvmerge cannot cut audio without video so a avi file has to be created" + BR2)
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
             proc.Arguments = args

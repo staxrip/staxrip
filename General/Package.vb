@@ -77,6 +77,14 @@ Public Class Package
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"})
 
+    Shared Property DGIndex As Package = Add(New Package With {
+        .Name = "DGIndex",
+        .Filename = "DGIndex.exe",
+        .LaunchName = "DGIndex.exe",
+        .HelpFile = "DGIndexManual.html",
+        .Description = "MPEG-2 demuxing and indexing app.",
+        .WebURL = "http://rationalqm.us/dgmpgdec/dgmpgdec.html"})
+
     Shared Property BDSup2SubPP As Package = Add(New Package With {
         .Name = "BDSup2Sub++",
         .Filename = "bdsup2sub++.exe",
@@ -317,14 +325,6 @@ Public Class Package
             .FixedDir = Folder.System,
             .IgnoreVersion = True,
             .TreePath = "Runtimes"})
-
-        Add(New Package With {
-            .Name = "DGIndex",
-            .Filename = "DGIndex.exe",
-            .LaunchName = "DGIndex.exe",
-            .HelpFile = "DGIndexManual.html",
-            .Description = "MPEG-2 demuxing and indexing app.",
-            .WebURL = "http://rationalqm.us/dgmpgdec/dgmpgdec.html"})
 
         Add(New Package With {
             .Name = "AVSMeter",

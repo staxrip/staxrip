@@ -168,8 +168,16 @@ Public Class CommandLineDemuxer
 
     Overrides Sub Run(proj As Project)
         Using proc As New Proc
-            If Command?.Contains("DGIndex") Then
+            If Command?.Contains("DGIndexNV") Then
                 If Not Package.DGIndexNV.VerifyOK(True) Then Throw New AbortException
+                proc.Package = Package.DGIndexNV
+                proc.SkipPatterns = {"^\d+$"}
+            ElseIf Command?.Contains("DGIndexIM") Then
+                If Not Package.DGIndexIM.VerifyOK(True) Then Throw New AbortException
+                proc.Package = Package.DGIndexIM
+            ElseIf Command?.Contains("DGIndex") Then
+                If Not Package.DGIndex.VerifyOK(True) Then Throw New AbortException
+                proc.Package = Package.DGIndex
                 proc.SkipPatterns = {"^\d+$"}
             ElseIf Command?.Contains("dsmux") Then
                 If Not Package.Haali.VerifyOK(True) Then Throw New AbortException
@@ -660,7 +668,7 @@ Public Class mkvDemuxer
                 proc.Project = proj
                 proc.Header = "Demux xml chapters"
                 proc.SkipString = "Progress: "
-                proc.WriteLine(stdout + BR)
+                proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
                 proc.Arguments = "chapters " + proj.SourceFile.Escape + " --redirect-output " + (proj.TempDir + proj.SourceFile.Base + "_chapters.xml").Escape
@@ -672,7 +680,7 @@ Public Class mkvDemuxer
                 proc.Project = proj
                 proc.Header = "Demux ogg chapters"
                 proc.SkipString = "Progress: "
-                proc.WriteLine(stdout + BR)
+                proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
                 proc.Arguments = "chapters " + proj.SourceFile.Escape + " --redirect-output " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").Escape + " --simple"
@@ -688,7 +696,7 @@ Public Class mkvDemuxer
                 proc.Project = proj
                 proc.Header = "Demux attachments"
                 proc.SkipString = "Progress: "
-                proc.WriteLine(stdout + BR)
+                proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
                 proc.Arguments = "attachments " + proj.SourceFile.Escape + " " +

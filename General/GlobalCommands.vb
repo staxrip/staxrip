@@ -103,6 +103,21 @@ Public Class GlobalCommands
         batchProcess.Start()
     End Sub
 
+    <Command("Shows the powershell with aliases for all tools staxrip includes.")>
+    Sub ShowPowerShell()
+        Dim val As String
+
+        For Each pack In Package.Items.Values
+            If pack.Filename.Ext = "exe" AndAlso Not pack.Name.Contains(" ") Then
+                val += "set-alias " + pack.Name + " \""" + pack.Path + "\"";"
+            End If
+        Next
+
+        If p.TempDir <> "" Then val += "cd \""" + p.TempDir + """"
+        Clipboard.SetText(val)
+        g.StartProcess("powershell.exe", "-noexit -command " + val)
+    End Sub
+
     <Command("Executes command lines separated by a line break line by line. Macros are solved as well as passed in as environment variables.")>
     Sub ExecuteCommandLine(
         <DispName("Command Line"),
@@ -130,7 +145,7 @@ Public Class GlobalCommands
 
             Using proc As New Proc(showProcessWindow)
                 proc.Header = "Execute Command Line"
-                proc.WriteLine(batchCode + BR2)
+                proc.WriteLog(batchCode + BR2)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/C call """ + batchPath + """"
                 proc.Wait = waitForExit
@@ -191,7 +206,7 @@ Public Class GlobalCommands
 
         Using proc As New Proc
             proc.Header = "Execute Batch Script"
-            proc.WriteLine(batchCode + BR2)
+            proc.WriteLog(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
             proc.Wait = True

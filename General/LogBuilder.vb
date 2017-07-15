@@ -6,16 +6,23 @@ Imports Microsoft.Win32
 Public Class LogBuilder
     Private StartTime As DateTime
     Private Log As New StringBuilder
+    Private Last As String
 
     Sub Append(content As String)
         SyncLock Log
             Log.Append(content)
+            If content <> "" Then Last = content
         End SyncLock
     End Sub
 
+    Function EndsWith(value As String) As Boolean
+        If Last = "" Then Return False
+        Return Last.EndsWith(value)
+    End Function
+
     Sub Write(title As String, content As String)
         StartTime = DateTime.Now
-        If Not ToString.EndsWith(BR2) Then Append(BR)
+        If Not EndsWith(BR2) Then Append(BR)
         Append(FormatHeader(title))
 
         If content <> "" Then
@@ -23,6 +30,16 @@ Public Class LogBuilder
                 Append(content)
             Else
                 Append(content + BR)
+            End If
+        End If
+    End Sub
+
+    Sub WriteLine(value As String)
+        If value <> "" Then
+            If value.EndsWith(BR) Then
+                Append(value)
+            Else
+                Append(value + BR)
             End If
         End If
     End Sub
@@ -39,30 +56,17 @@ Public Class LogBuilder
         StartTime = DateTime.Now
 
         If value <> "" Then
-            If Not ToString.EndsWith(BR2) Then Append(BR)
+            If Not EndsWith(BR2) Then Append(BR)
             Append(FormatHeader(value))
         End If
     End Sub
 
-    Sub WriteLine(value As String)
-        If value <> "" Then
-            If value.EndsWith(BR) Then
-                Append(value)
-            Else
-                Append(value + BR)
-            End If
-        End If
-    End Sub
-
     Function FormatHeader(value As String) As String
-        Return "-=".Multiply(30) + "-" + BR +
-            value.PadLeft(30 + value.Length \ 2) +
-            BR + "-=".Multiply(30) + "-" + BR2
+        Return "-=".Multiply(30) + "-" + BR + value.PadLeft(30 + value.Length \ 2) + BR + "-=".Multiply(30) + "-" + BR2
     End Function
 
     Sub WriteEnvironment()
         If ToString.Contains("System Environment" + BR + "-=") Then Exit Sub
-
         WriteHeader("System Environment")
 
         Dim temp =
@@ -83,11 +87,10 @@ Public Class LogBuilder
 
     Sub WriteStats(start As DateTime)
         Dim n = DateTime.Now.Subtract(start)
-        If Not ToString.EndsWith(BR2) Then Append(BR)
+        If Not EndsWith(BR2) Then Append(BR)
         Append("Start: ".PadRight(10) + start.ToLongTimeString + BR)
         Append("End: ".PadRight(10) + DateTime.Now.ToLongTimeString + BR)
-        Append("Duration: " + CInt(Math.Floor(n.TotalHours)).ToString("d2") + ":" + n.Minutes.ToString("d2") + ":" + n.Seconds.ToString("d2") + BR)
-        Append(BR)
+        Append("Duration: " + CInt(Math.Floor(n.TotalHours)).ToString("d2") + ":" + n.Minutes.ToString("d2") + ":" + n.Seconds.ToString("d2") + BR2)
     End Sub
 
     Function IsEmpty() As Boolean

@@ -12,6 +12,14 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.2.6 unstable test build
+
+- new: powershell added to main menu at: Tools > Advanced > PowerShell, it sets the temp dir as work dir and aliases for all tools so you can type something like: ffmpeg -h 
+
+- change: besided dtsma and thd now also eac3, thd+ac3 and dtshr are preferred when staxrip searches for audio files
+- change: displayed audio track ID numbers now always start with 1
+- change: raw audio formats (thd, eac3, aac) that potentionally don't support seeking are now played without video 
+
 #### 1.5.2.5 unstable test build
 
 - new: qaac has a new option to pipe from ffmpeg instead of converting to FLAC/W64/WAV

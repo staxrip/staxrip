@@ -370,7 +370,7 @@ Public Class BatchMuxer
 
         Using proc As New Proc
             proc.Header = "Encoding video command line encoder: " + Name
-            proc.WriteLine(batchCode + BR2)
+            proc.WriteLog(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
 

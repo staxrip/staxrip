@@ -16,6 +16,7 @@ Public Class ProcController
 
     Shared Property Procs As New List(Of ProcController)
     Shared Property Aborted As Boolean
+    Shared Property IsMinimized As Boolean
 
     Sub New(proc As Proc)
         Me.Proc = proc
@@ -66,8 +67,6 @@ Public Class ProcController
     Private Sub LogHandler()
         Dim log = Proc.Log.ToString
         LogTextBox.Text = log
-        LogTextBox.SelectionStart = log.Length
-        LogTextBox.ScrollToCaret()
     End Sub
 
     Private Sub StatusHandler(value As String)
@@ -187,14 +186,14 @@ Public Class ProcController
                              ProcForm.BeginInvoke(Sub()
                                                       ProcForm.NotifyIcon.Visible = False
                                                       ProcForm.Hide()
-                                                  End Sub)
 
-                             g.MainForm.BeginInvoke(Sub()
-                                                        g.MainForm.Show()
-                                                        g.MainForm.Refresh()
-                                                        g.MainForm.Activate()
-                                                        ProcController.Aborted = False
-                                                    End Sub)
+                                                      g.MainForm.BeginInvoke(Sub()
+                                                                                 g.MainForm.Show()
+                                                                                 g.MainForm.Refresh()
+                                                                                 ProcController.Aborted = False
+                                                                                 ProcController.IsMinimized = False
+                                                                             End Sub)
+                                                  End Sub)
                          End If
                      End SyncLock
                  End Sub)
@@ -248,11 +247,7 @@ Public Class ProcController
         End SyncLock
 
         g.ProcForm.Invoke(Sub()
-                              If Not ProcForm.IsMinimized Then
-                                  g.ProcForm.Show()
-                                  g.ProcForm.Activate()
-                              End If
-
+                              If Not ProcController.IsMinimized Then g.ProcForm.Show()
                               AddProc(proc)
                           End Sub)
     End Sub

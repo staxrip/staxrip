@@ -147,7 +147,6 @@ Public Class MediaInfoForm
 
     Sub UpdateItems()
         Dim newText As New StringBuilder
-
         Dim items As IEnumerable(Of Item)
 
         If ActiveGroup = "Advanced" Then
@@ -164,16 +163,11 @@ Public Class MediaInfoForm
 
         Dim search = stb.Text.ToLower
 
-        If search <> "" Then
-            items = items.Where(Function(i) i.Name.ToLower.Contains(search) OrElse i.Value.ToLower.Contains(search))
-        End If
-
+        If search <> "" Then items = items.Where(Function(i) i.Name.ToLower.Contains(search) OrElse i.Value.ToLower.Contains(search))
         Dim groups As New List(Of String)
 
         For Each i In items
-            If i.Group <> "" AndAlso Not groups.Contains(i.Group) Then
-                groups.Add(i.Group)
-            End If
+            If i.Group <> "" AndAlso Not groups.Contains(i.Group) Then groups.Add(i.Group)
         Next
 
         For Each i In groups
@@ -187,7 +181,7 @@ Public Class MediaInfoForm
 
             For Each i3 In itemsInGroup
                 If i3.Name <> "" Then
-                    newText.Append(i3.Name.PadRight(26))
+                    newText.Append(i3.Name.PadRight(25))
                     newText.Append(": ")
                 End If
 
@@ -196,27 +190,7 @@ Public Class MediaInfoForm
             Next
         Next
 
-        rtb.BlockPaint = True
-        rtb.Text = ""
-        rtb.SelectionFont = New Font("Consolas", 10 * s.UIScaleFactor)
-        rtb.SelectionColor = Color.Black
         rtb.Text = newText.ToString
-
-        Dim lines = rtb.Lines
-
-        For x = 0 To lines.Length - 1
-            If groups.Contains(lines(x)) Then
-                rtb.Select(rtb.GetFirstCharIndexFromLine(x), lines(x).Length)
-                rtb.SelectionFont = New Font("Consolas", 10 * s.UIScaleFactor, FontStyle.Bold)
-                rtb.SelectionColor = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)
-            End If
-        Next
-
-        rtb.SelectionLength = 0
-        rtb.SelectionStart = 0
-        rtb.ScrollToCaret()
-        rtb.BlockPaint = False
-        rtb.Refresh()
     End Sub
 
 
@@ -250,7 +224,7 @@ Public Class MediaInfoForm
         tv.Nodes.Clear()
         Items.Clear()
 
-        Dim output = MediaInfo.GetCompleteSummary(SourcePath)
+        Dim output = MediaInfo.GetCompleteSummary(SourcePath).FixBreak
         Dim group As String
 
         tv.Nodes.Add("Basic")

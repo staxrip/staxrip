@@ -176,7 +176,9 @@ Public Class GlobalClass
     End Function
 
     Sub PlayAudio(ap As AudioProfile)
-        If ap.File = p.FirstOriginalSourceFile AndAlso ap.Streams.Count > 0 Then
+        If FileTypes.AudioRaw.Contains(ap.File.Ext) Then
+            g.StartProcess(Package.mpv.Path, ap.File.Escape)
+        ElseIf ap.File = p.FirstOriginalSourceFile AndAlso ap.Streams.Count > 0 Then
             g.StartProcess(Package.mpv.Path, "--audio " & (ap.Stream.Index + 1) & " " + p.FirstOriginalSourceFile.Escape)
         ElseIf FileTypes.Audio.Contains(ap.File.Ext) Then
             g.StartProcess(Package.mpv.Path, "--audio-delay " + (g.ExtractDelay(ap.File) / 1000).ToInvariantString.Shorten(9) + " --audio-file " + ap.File.Escape + " " + p.FirstOriginalSourceFile.Escape)
@@ -643,10 +645,6 @@ Public Class GlobalClass
 
     Sub Play(file As String)
         g.StartProcess(Package.mpv.Path, file.Escape)
-    End Sub
-
-    Sub Play2(arguments As String)
-        If Package.mpv.VerifyOK(True) Then g.StartProcess(Package.mpv.Path, arguments)
     End Sub
 
     Sub ShowRigayaHelp(package As Package, id As String)

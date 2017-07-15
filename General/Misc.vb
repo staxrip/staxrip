@@ -1445,10 +1445,10 @@ Public Class Startup
         For Each i In args
             If i = "-RunJobsMaximized" Then
                 g.IsEncodingInstance = True
-                ProcForm.IsMinimized = False
+                ProcController.IsMinimized = False
             ElseIf i = "-RunJobsMinimized" Then
                 g.IsEncodingInstance = True
-                ProcForm.IsMinimized = True
+                ProcController.IsMinimized = True
             End If
         Next
 
@@ -1542,7 +1542,7 @@ Public Class AudioStream
 
     ReadOnly Property Name As String
         Get
-            Dim ret = "ID" & (StreamOrder + 1)
+            Dim ret = "#" & Index + 1
 
             If Codec = "Atmos / TrueHD" OrElse
                 FormatProfile.EqualsAny("TrueHD+Atmos / TrueHD",
@@ -1869,7 +1869,7 @@ Public Class Subtitle
             Using proc As New Proc
                 proc.Header = "Create avi file for subtitle cutting"
                 proc.SkipStrings = {"frame=", "size="}
-                proc.WriteLine("mkvmerge cannot cut subtitles without video so a avi file has to be created" + BR2)
+                proc.WriteLog("mkvmerge cannot cut subtitles without video so a avi file has to be created" + BR2)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.ffmpeg
                 proc.Arguments = args
@@ -1969,11 +1969,12 @@ Public Enum ContainerStreamType
 End Enum
 
 Public Class FileTypes
+    Shared Property AudioRaw As String() = {"thd", "aac", "eac3"}
     Shared Property Audio As String() = {"flac", "dtshd", "dtsma", "dtshr", "thd", "thd+ac3", "true-hd", "truehd", "aac", "ac3", "dts", "eac3", "m4a", "mka", "mp2", "mp3", "mpa", "opus", "wav", "w64"}
     Shared Property VideoAudio As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm"}
     Shared Property BeSweetInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "ogg"}
     Shared Property DGDecNVInput As String() = {"264", "h264", "265", "h265", "avc", "hevc", "hvc", "mkv", "mp4", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}
-    Shared Property eac3toInput As String() = {"dts", "dtshd", "dtshr", "dtsma", "evo", "mkv", "vob", "ts", "m2ts", "wav", "w64", "pcm", "raw", "flac", "ac3", "eac3", "thd", "thd+ac3", "mlp", "mp2", "mp3", "mpa"}
+    Shared Property eac3toInput As String() = {"dts", "dtshd", "dtshr", "dtsma", "evo", "vob", "ts", "m2ts", "wav", "w64", "pcm", "raw", "flac", "ac3", "eac3", "thd", "thd+ac3", "mlp", "mp2", "mp3", "mpa"}
     Shared Property NicAudioInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "dts"}
     Shared Property qaacInput As String() = {"wav", "flac", "w64"}
     Shared Property SubtitleExludingContainers As String() = {"srt", "ass", "idx", "sup", "ttxt", "ssa", "smi"}

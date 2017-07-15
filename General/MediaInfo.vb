@@ -208,6 +208,8 @@ Public Class MediaInfo
         If ret.Contains("Unique ID") Then ret = Regex.Replace(ret, "Unique ID +: .+\n", "")
         If ret.Contains("Encoded_Library_Settings") Then ret = Regex.Replace(ret, "Encoded_Library_Settings +: .+\n", "")
         If ret.Contains("Encoding settings") Then ret = Regex.Replace(ret, "Encoding settings +: .+\n", "")
+        If ret.Contains("Format settings, ") Then ret = ret.Replace("Format settings, ", "Format, ")
+
         Return ret.FormatColumn(":").Trim
     End Function
 

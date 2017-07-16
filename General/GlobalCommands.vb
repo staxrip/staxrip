@@ -104,7 +104,6 @@ Public Class GlobalCommands
         Next
 
         If p.TempDir <> "" Then val += "cd \""" + p.TempDir + """"
-        Clipboard.SetText(val)
         g.StartProcess("powershell.exe", "-noexit -command " + val)
     End Sub
 

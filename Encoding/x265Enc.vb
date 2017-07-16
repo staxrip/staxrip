@@ -705,7 +705,24 @@ Public Class x265Params
     Property Deblock As New BoolParam With {
         .Switch = "--deblock",
         .Text = "Deblocking",
-        .ArgsFunc = AddressOf GetDeblockArgs}
+        .ArgsFunc = Function() As String
+                        If Deblock.Value Then
+                            If DeblockA.Value = DeblockA.DefaultValue AndAlso
+                                DeblockB.Value = DeblockB.DefaultValue AndAlso
+                                Deblock.DefaultValue Then
+                                Return ""
+                            Else
+                                Return "--deblock " & DeblockA.Value & ":" & DeblockB.Value
+                            End If
+                        ElseIf Deblock.DefaultValue Then
+                            Return "--no-deblock"
+                        End If
+                    End Function,
+        .ImportAction = Sub(arg As String)
+                            Dim a = arg.Split(":"c)
+                            DeblockA.Value = a(0).ToInt
+                            DeblockB.Value = a(1).ToInt
+                        End Sub}
 
     Property DeblockA As New NumParam With {
         .Text = "      Strength",
@@ -1007,21 +1024,6 @@ Public Class x265Params
         End If
 
         If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then Return True
-    End Function
-
-    Function GetDeblockArgs() As String
-        If Deblock.Value Then
-            If DeblockA.Value = DeblockA.DefaultValue AndAlso
-                DeblockB.Value = DeblockB.DefaultValue AndAlso
-                Deblock.DefaultValue Then
-
-                Return ""
-            Else
-                Return "--deblock " & DeblockA.Value & ":" & DeblockB.Value
-            End If
-        ElseIf Deblock.DefaultValue Then
-            Return "--no-deblock"
-        End If
     End Function
 
     Sub ApplyPresetValues()

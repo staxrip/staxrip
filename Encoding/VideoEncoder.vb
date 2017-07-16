@@ -1,5 +1,6 @@
 Imports StaxRip.UI
 Imports StaxRip.CommandLine
+Imports System.Text.RegularExpressions
 
 <Serializable()>
 Public MustInherit Class VideoEncoder
@@ -320,61 +321,93 @@ Public MustInherit Class BasicVideoEncoder
     MustOverride ReadOnly Property CommandLineParams As CommandLineParams
 
     Public Overrides Sub ImportCommandLine(commandLine As String)
-        If commandLine = "" Then Exit Sub
+        ImportCommandLine(commandLine, CommandLineParams)
+    End Sub
 
-        Dim a = commandLine.SplitNoEmptyAndWhiteSpace(" ")
+    Overloads Shared Sub ImportCommandLine(commandLine As String, params As CommandLineParams)
+        Try
+            If commandLine = "" Then Exit Sub
 
-        For x = 0 To a.Length - 1
-            For Each param In CommandLineParams.Items
-                If Not param.ImportAction Is Nothing AndAlso
-                    param.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
+            For Each i In {"tune", "preset", "profile"}
+                Dim match = Regex.Match(commandLine, "(.*)(--" + i + "\s\w+)(.*)")
 
-                    param.ImportAction.Invoke(a(x + 1))
-                    Exit For
-                End If
-
-                If TypeOf param Is BoolParam Then
-                    Dim boolParam = DirectCast(param, BoolParam)
-
-                    If boolParam.GetSwitches.Contains(a(x)) Then
-                        boolParam.Value = True
-                        Exit For
-                    End If
-                ElseIf TypeOf param Is NumParam Then
-                    Dim numParam = DirectCast(param, NumParam)
-
-                    If numParam.GetSwitches.Contains(a(x)) AndAlso
-                        a.Length - 1 > x AndAlso a(x + 1).IsSingle Then
-
-                        numParam.Value = a(x + 1).ToSingle
-                        Exit For
-                    End If
-                ElseIf TypeOf param Is OptionParam Then
-                    Dim optionParam = DirectCast(param, OptionParam)
-
-                    If optionParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
-                        Dim exitFor As Boolean
-
-                        For xOpt = 0 To optionParam.Options.Length - 1
-                            If a(x + 1).Trim(""""c) = optionParam.Options(xOpt) Then
-                                optionParam.Value = xOpt
-                                exitFor = True
-                                Exit For
-                            End If
-                        Next
-
-                        If exitFor Then Exit For
-                    End If
-                ElseIf TypeOf param Is StringParam Then
-                    Dim stringParam = DirectCast(param, StringParam)
-
-                    If stringParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
-                        stringParam.Value = a(x + 1).Trim(""""c)
-                        Exit For
-                    End If
+                If match.Success Then
+                    commandLine = match.Groups(2).Value + " " + match.Groups(1).Value + " " + match.Groups(3).Value
                 End If
             Next
-        Next
+
+            Dim a = commandLine.SplitNoEmptyAndWhiteSpace(" ")
+
+            For x = 0 To a.Length - 1
+                For Each param In params.Items
+                    If Not param.ImportAction Is Nothing AndAlso
+                        param.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
+
+                        param.ImportAction.Invoke(a(x + 1))
+                        params.RaiseValueChanged(param)
+                        Exit For
+                    End If
+
+                    If TypeOf param Is BoolParam Then
+                        Dim boolParam = DirectCast(param, BoolParam)
+
+                        If boolParam.GetSwitches.Contains(a(x)) Then
+                            boolParam.Value = True
+                            params.RaiseValueChanged(param)
+                            Exit For
+                        End If
+                    ElseIf TypeOf param Is NumParam Then
+                        Dim numParam = DirectCast(param, NumParam)
+
+                        If numParam.GetSwitches.Contains(a(x)) AndAlso
+                            a.Length - 1 > x AndAlso a(x + 1).IsDouble Then
+
+                            numParam.Value = a(x + 1).ToDouble
+                            params.RaiseValueChanged(param)
+                            Exit For
+                        End If
+                    ElseIf TypeOf param Is OptionParam Then
+                        Dim optionParam = DirectCast(param, OptionParam)
+
+                        If optionParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
+                            Dim exitFor As Boolean
+
+                            If optionParam.IntegerValue Then
+                                For xOpt = 0 To optionParam.Options.Length - 1
+                                    If a(x + 1) = xOpt.ToString Then
+                                        optionParam.Value = xOpt
+                                        params.RaiseValueChanged(param)
+                                        exitFor = True
+                                        Exit For
+                                    End If
+                                Next
+                            Else
+                                For xOpt = 0 To optionParam.Options.Length - 1
+                                    If a(x + 1).Trim(""""c).ToLower = optionParam.Options(xOpt).ToLower.Replace(" ", "") Then
+                                        optionParam.Value = xOpt
+                                        params.RaiseValueChanged(param)
+                                        exitFor = True
+                                        Exit For
+                                    End If
+                                Next
+                            End If
+
+                            If exitFor Then Exit For
+                        End If
+                    ElseIf TypeOf param Is StringParam Then
+                        Dim stringParam = DirectCast(param, StringParam)
+
+                        If stringParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
+                            stringParam.Value = a(x + 1).Trim(""""c)
+                            params.RaiseValueChanged(param)
+                            Exit For
+                        End If
+                    End If
+                Next
+            Next
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
     End Sub
 End Class
 

@@ -5720,6 +5720,7 @@ Public Class MainForm
         Refresh()
         ProcessCommandLine(Environment.GetCommandLineArgs)
         MyBase.OnShown(e)
+        'TestForm.ShowForm()
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)

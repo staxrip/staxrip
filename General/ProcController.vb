@@ -254,6 +254,7 @@ Public Class ProcController
                               End If
 
                               AddProc(proc)
+                              g.ProcForm.UpdateControls()
                           End Sub)
     End Sub
 

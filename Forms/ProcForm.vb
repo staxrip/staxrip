@@ -200,25 +200,17 @@ Public Class ProcForm
     End Sub
 #End Region
 
-    Public Shared ShutdownVisible As Boolean
-
     Private TaskbarButtonCreatedMessage As Integer
 
     Property Taskbar As Taskbar
 
     Sub New()
         InitializeComponent()
-
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
-
         mbShutdown.Add(System.Enum.GetValues(GetType(ShutdownMode)).Cast(Of Object))
-        lWhenfinisheddo.Visible = ShutdownVisible
-        mbShutdown.Visible = ShutdownVisible
-
         Icon = My.Resources.RipIcon
         NotifyIcon.Icon = My.Resources.RipIcon
         NotifyIcon.Text = "StaxRip"
-
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
         ScaleClientSize(42, 28)
     End Sub
@@ -289,11 +281,12 @@ Public Class ProcForm
 
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
-        mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
+        UpdateControls()
     End Sub
 
-    Protected Overrides Sub OnShown(e As EventArgs)
-        MyBase.OnShown(e)
+    Sub UpdateControls()
+        lWhenfinisheddo.Visible = g.IsProcessing
+        mbShutdown.Visible = g.IsProcessing
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
     End Sub
 

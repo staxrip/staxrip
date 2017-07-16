@@ -29,7 +29,6 @@ Public Class GlobalClass
             Job.ActivateJob(jobPath, False)
             g.MainForm.OpenProject(jobPath, False)
             If s.PreventStandby Then PowerRequest.SuppressStandby()
-            StaxRip.ProcForm.ShutdownVisible = True
             ProcessJob()
             Job.RemoveJob(jobPath)
             jobs = Job.GetJobs

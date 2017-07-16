@@ -12,6 +12,14 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.2.8 unstable test build
+
+- new: everytime the settings are saved there is also a backup of the settings saved in the settings folder
+
+- fix: in case of high memory usage like a avisynth filter leaking memory, if staxrip detects more then 1500 MB memory are consumed while jobs are processed it restarts
+- fix: job list got wiped when a job was aborted
+- fix: if an error happened in a job processing was aborted instead of continuing with other jobs
+
 #### 1.5.2.7 unstable test build
 
 - fix: job processing is now done in the current instance like in the past

@@ -351,7 +351,6 @@ Public Class GlobalCommands
 --dhdr10-opt --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
 
         Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --help").Replace("--[no-]", "--")
-        File.WriteAllText(Folder.Desktop + "x265.txt", x265Help)
         Dim x265HelpSwitches = Regex.Matches(x265Help, "--[\w-]+").OfType(Of Match).Select(Function(val) val.Value)
         Dim x265Code = File.ReadAllText(Folder.Startup.Parent + "Encoding\x265Enc.vb").Replace("--no-", "--")
         Dim x265Present As New HashSet(Of String)
@@ -401,7 +400,7 @@ Public Class GlobalCommands
         Next
 
         If msg <> "" Then
-            Dim fs = Folder.Desktop + "staxrip todo.txt"
+            Dim fs = Folder.Temp + "staxrip todo.txt"
             File.WriteAllText(fs, msg)
             g.StartProcess(fs)
         End If

@@ -156,26 +156,6 @@ Public Class DirectoryHelp
 
         Return filePaths
     End Function
-
-    <DebuggerNonUserCode()>
-    Shared Sub FileCallback(startDir As String, callback As Action(Of String), cancelArgs As CancelEventArgs)
-        Try
-            Dim di As New DirectoryInfo(startDir)
-
-            For Each i As FileSystemInfo In di.GetFileSystemInfos()
-                If cancelArgs.Cancel Then
-                    Exit Sub
-                End If
-
-                If TypeOf i Is FileInfo Then
-                    callback(i.FullName)
-                Else
-                    FileCallback(i.FullName, callback, cancelArgs)
-                End If
-            Next
-        Catch
-        End Try
-    End Sub
 End Class
 
 Public Class ConsoleHelp

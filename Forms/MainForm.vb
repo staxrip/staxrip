@@ -3062,8 +3062,7 @@ Public Class MainForm
     Sub StartEncoding()
         AssistantPassed = True
         AddJob(False, Nothing)
-        g.DefaultCommands.StartJobs()
-        Close()
+        g.ProcessJobs()
     End Sub
 
     Private Sub Demux()

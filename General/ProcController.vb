@@ -16,7 +16,6 @@ Public Class ProcController
 
     Shared Property Procs As New List(Of ProcController)
     Shared Property Aborted As Boolean
-    Shared Property IsMinimized As Boolean
 
     Sub New(proc As Proc)
         Me.Proc = proc
@@ -41,7 +40,6 @@ Public Class ProcController
         ProcForm.pnLogHost.Controls.Add(LogTextBox)
         ProcForm.pnStatusHost.Controls.Add(StatusLabel)
         ProcForm.flpNav.Controls.Add(CheckBox)
-        ProcForm.NotifyIcon.Visible = s.MinimizeToTray
 
         AddHandler proc.ProcDisposed, AddressOf ProcDisposed
         AddHandler proc.Process.OutputDataReceived, AddressOf DataReceived
@@ -182,21 +180,23 @@ Public Class ProcController
                      Thread.Sleep(500)
 
                      SyncLock Procs
-                         If Procs.Count = 0 Then
-                             ProcForm.BeginInvoke(Sub()
-                                                      ProcForm.NotifyIcon.Visible = False
-                                                      ProcForm.Hide()
-
-                                                      g.MainForm.BeginInvoke(Sub()
-                                                                                 g.MainForm.Show()
-                                                                                 g.MainForm.Refresh()
-                                                                                 ProcController.Aborted = False
-                                                                                 ProcController.IsMinimized = False
-                                                                             End Sub)
-                                                  End Sub)
-                         End If
+                         If Procs.Count = 0 AndAlso Not g.IsProcessing Then Finished()
                      End SyncLock
                  End Sub)
+    End Sub
+
+    Shared Sub Finished()
+        g.ProcForm.BeginInvoke(Sub()
+                                   g.ProcForm.WindowState = FormWindowState.Normal
+                                   g.ProcForm.NotifyIcon.Visible = False
+                                   g.ProcForm.Hide()
+
+                                   g.MainForm.BeginInvoke(Sub()
+                                                              g.MainForm.Show()
+                                                              g.MainForm.Refresh()
+                                                              ProcController.Aborted = False
+                                                          End Sub)
+                               End Sub)
     End Sub
 
     Sub Activate()
@@ -247,7 +247,12 @@ Public Class ProcController
         End SyncLock
 
         g.ProcForm.Invoke(Sub()
-                              If Not ProcController.IsMinimized Then g.ProcForm.Show()
+                              If Not g.ProcForm.WindowState = FormWindowState.Minimized Then
+                                  g.ProcForm.Show()
+                                  g.ProcForm.WindowState = FormWindowState.Normal
+                                  g.ProcForm.Activate()
+                              End If
+
                               AddProc(proc)
                           End Sub)
     End Sub

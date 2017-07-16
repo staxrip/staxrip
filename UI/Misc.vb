@@ -340,64 +340,8 @@ Namespace UI
             'If m.Msg = &H20B Then Debug.WriteLine("WM_XBUTTONDOWN")
             'If m.Msg = &H20C Then Debug.WriteLine("WM_XBUTTONUP")
 #End Region
-            Snap(m)
             MyBase.WndProc(m)
         End Sub
-
-        Private IsResizing As Boolean
-
-        Sub Snap(ByRef m As Message)
-            Select Case m.Msg
-                Case &H214 'WM_SIZING
-                    IsResizing = True
-                Case &H232 'WM_EXITSIZEMOVE
-                    IsResizing = False
-                Case &H46 'WM_WINDOWPOSCHANGING
-                    If Not IsResizing Then Snap(m.LParam)
-            End Select
-        End Sub
-
-        Sub Snap(handle As IntPtr)
-            If Not s?.SnapToDesktopEdges Then Exit Sub
-
-            Dim workingArea = Screen.FromControl(Me).WorkingArea
-            Dim newPos = DirectCast(Marshal.PtrToStructure(handle, GetType(WindowPos)), WindowPos)
-            Dim snapMargin = Control.DefaultFont.Height
-            Dim border As Integer
-
-            If OSVersion.Current >= OSVersion.Windows8 Then
-                border = (Width - ClientSize.Width) \ 2 - 1
-            End If
-
-            If newPos.Y <> 0 Then
-                If Math.Abs(newPos.Y - workingArea.Y) < snapMargin AndAlso Top > newPos.Y Then
-                    newPos.Y = workingArea.Y
-                ElseIf Math.Abs(newPos.Y + Height - (workingArea.Bottom + border)) < snapMargin AndAlso Top < newPos.Y Then
-                    newPos.Y = (workingArea.Bottom + border) - Height
-                End If
-            End If
-
-            If newPos.X <> 0 Then
-                If Math.Abs(newPos.X - (workingArea.X - border)) < snapMargin AndAlso Left > newPos.X Then
-                    newPos.X = workingArea.X - border
-                ElseIf Math.Abs(newPos.X + Width - (workingArea.Right + border)) < snapMargin AndAlso Left < newPos.X Then
-                    newPos.X = (workingArea.Right + border) - Width
-                End If
-            End If
-
-            Marshal.StructureToPtr(newPos, handle, True)
-        End Sub
-
-        <StructLayout(LayoutKind.Sequential)>
-        Structure WindowPos
-            Public Hwnd As IntPtr
-            Public HwndInsertAfter As IntPtr
-            Public X As Integer
-            Public Y As Integer
-            Public Width As Integer
-            Public Height As Integer
-            Public Flags As Integer
-        End Structure
     End Class
 
     Public Class DialogBase
@@ -484,14 +428,17 @@ Namespace UI
 
         Private Sub RestorePositionInternal(form As Form)
             If Positions.ContainsKey(GetKey(form)) Then
-                form.StartPosition = FormStartPosition.Manual
                 Dim pos = Positions(GetKey(form))
                 Dim workingArea = Screen.FromControl(form).WorkingArea
-                If pos.X < workingArea.X Then pos.X = workingArea.X
-                If pos.Y < workingArea.Y Then pos.Y = workingArea.Y
-                If pos.X + form.Width > workingArea.Right Then pos.X = workingArea.Right - form.Width
-                If pos.Y + form.Height > workingArea.Bottom Then pos.Y = workingArea.Bottom - form.Height
-                form.Location = pos
+
+                If pos.X < workingArea.X OrElse pos.Y < workingArea.Y OrElse
+                    pos.X + form.Width > workingArea.Right OrElse pos.Y + form.Height > workingArea.Bottom Then
+
+                    form.StartPosition = FormStartPosition.WindowsDefaultLocation
+                Else
+                    form.StartPosition = FormStartPosition.Manual
+                    form.Location = pos
+                End If
             End If
         End Sub
 

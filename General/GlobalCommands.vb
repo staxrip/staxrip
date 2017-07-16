@@ -64,18 +64,8 @@ Public Class GlobalCommands
     End Sub
 
     <Command("Runs all active jobs of the job list.")>
-    Sub StartJobs(Optional minimized As Boolean = False)
-        Dim debug = 0
-
-        If debug = 1 Then
-            g.ProcessJobs()
-        Else
-            If minimized Then
-                g.StartProcess(Application.ExecutablePath, "-RunJobsMinimized")
-            Else
-                g.StartProcess(Application.ExecutablePath, "-RunJobsMaximized")
-            End If
-        End If
+    Sub StartJobs()
+        g.ProcessJobs()
     End Sub
 
     <Command("Shows a command prompt with the temp directory of the current project.")>

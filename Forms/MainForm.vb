@@ -1151,7 +1151,6 @@ Public Class MainForm
         SizeContextMenuStrip.ResumeLayout()
         g.SetRenderer(MenuStrip)
         SetMenuStyle()
-        ShowInTaskbar = Not g.IsEncodingInstance
     End Sub
 
     Sub SetMenuStyle()
@@ -2417,166 +2416,6 @@ Public Class MainForm
         End If
     End Sub
 
-    Sub ProcessJob()
-        Try
-            g.IsProcessing = True
-            g.RaiseAppEvent(ApplicationEvent.BeforeEncoding)
-            Dim startTime = DateTime.Now
-
-            If p.BatchMode Then
-                If g.ProjectPath Is Nothing Then g.ProjectPath = p.TempDir + p.SourceFiles(0).Base + ".srip"
-                SaveProjectPath(g.ProjectPath)
-                OpenVideoSourceFiles(p.SourceFiles, False)
-                p.BatchMode = False
-                SaveProjectPath(g.ProjectPath)
-            End If
-
-            If p.Script.Engine = ScriptEngine.AviSynth Then
-                Log.WriteHeader("AviSynth Script")
-            Else
-                Log.WriteHeader("VapourSynth Script")
-            End If
-
-            Log.WriteLine(p.Script.GetFullScript)
-            Log.WriteHeader("Script Properties")
-
-            Dim props = "source frame count: " & p.SourceScript.GetFrames & BR +
-                "source frame rate: " & p.SourceScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
-                "source duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.SourceScript.GetFrames / p.SourceScript.GetFramerate)).ToString + BR +
-                "target frame count: " & p.Script.GetFrames & BR +
-                "target frame rate: " & p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
-                "target duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.Script.GetFrames / p.Script.GetFramerate)).ToString
-
-            Log.WriteLine(props.FormatColumn(":"))
-
-            Hide()
-
-            Dim actions As New List(Of Action)
-
-            If p.SkipAudioEncoding AndAlso File.Exists(p.Audio0.GetOutputFile) Then
-                p.Audio0.File = p.Audio0.GetOutputFile()
-            Else
-                actions.Add(Sub()
-                                Audio.Process(p.Audio0)
-                                p.Audio0.Encode()
-                            End Sub)
-            End If
-
-            If p.SkipAudioEncoding AndAlso File.Exists(p.Audio1.GetOutputFile) Then
-                p.Audio1.File = p.Audio1.GetOutputFile()
-            Else
-                actions.Add(Sub()
-                                Audio.Process(p.Audio1)
-                                p.Audio1.Encode()
-                            End Sub)
-            End If
-
-            For Each i In p.AudioTracks
-                Dim temp = i
-
-                If p.SkipAudioEncoding AndAlso File.Exists(i.GetOutputFile) Then
-                    i.File = i.GetOutputFile()
-                Else
-                    actions.Add(Sub()
-                                    Audio.Process(temp)
-                                    temp.Encode()
-                                End Sub)
-                End If
-            Next
-
-            actions.Add(Sub() Subtitle.Cut(p.VideoEncoder.Muxer.Subtitles))
-            actions.Add(AddressOf ProcessVideo)
-
-            Try
-                Parallel.Invoke(New ParallelOptions With {.MaxDegreeOfParallelism = s.ParallelProcsNum}, actions.ToArray)
-            Catch ex As AggregateException
-                ExceptionDispatchInfo.Capture(ex.InnerExceptions(0)).Throw()
-            End Try
-
-            Log.Save()
-            p.VideoEncoder.Muxer.Mux()
-
-            If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile, p)
-
-            Log.WriteHeader("Job Complete")
-            Log.WriteStats(startTime)
-            Log.Save()
-
-            g.ArchiveLogFile(Log.GetPath)
-            g.DeleteTempFiles()
-            g.RaiseAppEvent(ApplicationEvent.JobEncoded)
-        Finally
-            g.IsProcessing = False
-        End Try
-    End Sub
-
-    Sub ProcessVideo()
-        If Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath)) Then
-            Dim originalFilters As List(Of VideoFilter)
-            Dim originalSource As String
-
-            If p.PreRenderIntoLossless AndAlso Not TypeOf p.VideoEncoder Is NullEncoder Then
-                Dim outPath = p.TempDir + p.TargetFile.Base + "_lossless.avi"
-
-                If p.Script.Engine = ScriptEngine.AviSynth Then
-                    Using proc As New Proc
-                        proc.Header = "Pre-render into lossless AVI"
-                        proc.SkipStrings = {"frame=", "size="}
-                        proc.Encoding = Encoding.UTF8
-                        proc.Package = Package.ffmpeg
-                        proc.Arguments = "-i " + p.Script.Path.Escape + " -c:v utvideo -pred median -sn -an -y -hide_banner " + outPath.Escape
-                        proc.Start()
-                    End Using
-                Else
-                    Dim commandLine = Package.vspipe.Path.Escape + " " + p.Script.Path.Escape + " - --y4m | " + Package.ffmpeg.Path.Escape + " -i - -c:v utvideo -pred median -sn -an -y -hide_banner " + outPath.Escape
-
-                    Using proc As New Proc
-                        proc.Header = "Pre-render into lossless AVI"
-                        proc.SkipStrings = {"frame=", "size=", "Multiple"}
-                        proc.Encoding = Encoding.UTF8
-                        proc.Package = Package.ffmpeg
-                        proc.File = "cmd.exe"
-                        proc.Arguments = "/S /C call """ + commandLine + """"
-                        proc.Start()
-                    End Using
-                End If
-
-                If File.Exists(outPath) Then
-                    Log.WriteHeader("Lossless AVI MediaInfo")
-                    Log.WriteLine(MediaInfo.GetSummary(outPath))
-                Else
-                    Throw New ErrorAbortException("Pre-render failed", "Output file is missing")
-                End If
-
-                originalSource = p.SourceFile
-                p.SourceFile = p.TempDir + p.TargetFile.Base + "_lossless.avi"
-                originalFilters = p.Script.GetFiltersCopy()
-
-                For Each i In p.Script.Filters
-                    If i.Category = "Source" Then
-                        If p.Script.Engine = ScriptEngine.AviSynth Then
-                            i.Script = "FFVideoSource(""" + outPath + """)"
-                        Else
-                            i.Script = "clip = core.ffms2.Source(r""" + outPath + """)"
-                        End If
-                    Else
-                        i.Active = False
-                    End If
-                Next
-
-                p.Script.Synchronize()
-            End If
-
-            If Not originalFilters Is Nothing Then
-                p.SourceFile = originalSource
-                p.Script.Filters = originalFilters
-                p.Script.Synchronize()
-            End If
-
-            p.VideoEncoder.Encode()
-        End If
-    End Sub
-
     Function ProcessTip(message As String) As Boolean
         If message.Contains(BR2) Then message = message.Replace(BR2, BR)
         If message.Contains(VB6.vbLf + VB6.vbLf) Then message = message.FixBreak.Replace(BR2, BR)
@@ -3126,12 +2965,6 @@ Public Class MainForm
         AudioTextChanged(tbAudioFile1, p.Audio1)
     End Sub
 
-    Sub CloseWithoutSaving()
-        If Not g.ProcForm Is Nothing Then g.ProcForm.NotifyIcon.Visible = False
-        g.SavedProject = p
-        Close()
-    End Sub
-
     Sub bnSkip_Click() Handles bnNext.Click
         If Not CanIgnoreTip Then
             MsgWarn("The current assistant instruction or warning cannot be skipped.")
@@ -3503,10 +3336,6 @@ Public Class MainForm
             b.Text = "Enable tooltips in menus (restart required)"
             b.Help = "If you disable this you can still right-click menu items to show the tooltip."
             b.Field = NameOf(s.EnableTooltips)
-
-            b = ui.AddBool()
-            b.Text = "Snap to desktop edges"
-            b.Field = NameOf(s.SnapToDesktopEdges)
 
             ui.CreateControlPage(New DemuxingControl, "Demuxing")
 
@@ -3918,7 +3747,7 @@ Public Class MainForm
 
         Dim jobPath = GetJobPath()
         g.MainForm.SaveProjectPath(jobPath)
-        JobsForm.AddJob(jobPath)
+        Job.AddJob(jobPath)
 
         If showConfirmation Then MsgInfo("Job added")
         If templateName <> "" Then LoadProject(Folder.Template + templateName + ".srip")
@@ -5889,21 +5718,10 @@ Public Class MainForm
         End If
 
         IsLoading = False
-
-        If g.IsEncodingInstance Then
-            g.ProcessJobs()
-        Else
-            ProcessCommandLine(Environment.GetCommandLineArgs)
-        End If
-
+        Refresh()
+        ProcessCommandLine(Environment.GetCommandLineArgs)
         MyBase.OnShown(e)
     End Sub
-
-    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
-        Get
-            Return g.IsEncodingInstance
-        End Get
-    End Property
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         If IsSaveCanceled() Then e.Cancel = True
@@ -5911,13 +5729,9 @@ Public Class MainForm
     End Sub
 
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
+        If Not g.ProcForm Is Nothing Then g.ProcForm.Invoke(Sub() g.ProcForm.Close())
         g.SaveSettings()
         g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
         MyBase.OnFormClosed(e)
-    End Sub
-
-    Protected Overrides Sub OnLoad(e As EventArgs)
-        MyBase.OnLoad(e)
-        If g.IsEncodingInstance Then Left = -5000
     End Sub
 End Class

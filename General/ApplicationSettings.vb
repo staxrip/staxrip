@@ -41,7 +41,6 @@ Public Class ApplicationSettings
     Public ShowPathsInCommandLine As Boolean
     Public ShowTemplateSelection As Boolean
     Public ShutdownTimeout As Integer
-    Public SnapToDesktopEdges As Boolean = True
     Public StartupTemplate As String
     Public Storage As ObjectStorage
     Public StringDictionary As Dictionary(Of String, String)

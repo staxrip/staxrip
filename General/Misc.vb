@@ -1442,16 +1442,6 @@ Public Class Startup
         Application.SetCompatibleTextRenderingDefault(False)
         Dim args = Environment.GetCommandLineArgs.Skip(1)
 
-        For Each i In args
-            If i = "-RunJobsMaximized" Then
-                g.IsEncodingInstance = True
-                ProcController.IsMinimized = False
-            ElseIf i = "-RunJobsMinimized" Then
-                g.IsEncodingInstance = True
-                ProcController.IsMinimized = True
-            End If
-        Next
-
         If args.Count = 2 AndAlso args(0) = "-mediainfo" Then
             ToolStripManager.Renderer = New ToolStripRendererEx(ToolStripRenderModeEx.SystemDefault)
             Application.Run(New MediaInfoForm(args(1)) With {.ShowInTaskbar = True})

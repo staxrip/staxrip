@@ -12,6 +12,11 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.2.7 unstable test build
+
+- fix: job processing is now done in the current instance like in the past
+- fix: turned out staxrip never had a memory issue but the experimental ffms2 build was leaking memory
+
 #### 1.5.2.6 unstable test build
 
 - new: powershell added to main menu at: Tools > Advanced > PowerShell, it sets the temp dir as work dir and aliases for all tools so you can type something like: ffmpeg -h 

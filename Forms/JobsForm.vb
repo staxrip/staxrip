@@ -1,7 +1,6 @@
-Imports StaxRip.UI
-
 Imports System.Threading
-Imports System.Runtime.Serialization.Formatters.Binary
+Imports System.Threading.Tasks
+Imports StaxRip.UI
 
 Friend Class JobsForm
     Inherits DialogBase
@@ -188,7 +187,7 @@ Friend Class JobsForm
         lv.CheckBoxes = True
         lv.EnableListBoxMode()
         lv.ItemCheckProperty = NameOf(StringBooleanPair.Value)
-        lv.AddItems(GetJobs())
+        lv.AddItems(Job.GetJobs())
         lv.SelectFirst()
         UpdateControls()
 
@@ -211,7 +210,7 @@ Friend Class JobsForm
                    If IsDisposed Then Exit Sub
                    IsLoading = True
                    lv.Items.Clear()
-                   lv.AddItems(GetJobs())
+                   lv.AddItems(Job.GetJobs())
                    lv.SelectFirst()
                    UpdateControls()
                    IsLoading = False
@@ -238,96 +237,8 @@ Friend Class JobsForm
         Next
 
         FileWatcher.EnableRaisingEvents = False
-        SaveJobs(jobs)
+        Job.SaveJobs(jobs)
         FileWatcher.EnableRaisingEvents = True
-    End Sub
-
-    Shared Sub SaveJobs(jobs As List(Of StringBooleanPair))
-        Dim formatter As New BinaryFormatter
-        Dim counter As Integer
-
-        While True
-            Try
-                Using stream As New FileStream(Folder.Settings + "Jobs.dat",
-                                               FileMode.Create,
-                                               FileAccess.ReadWrite,
-                                               FileShare.None)
-
-                    formatter.Serialize(stream, jobs)
-                End Using
-
-                Exit While
-            Catch ex As Exception
-                Thread.Sleep(500)
-                counter += 1
-                If counter > 9 Then Throw ex
-            End Try
-        End While
-    End Sub
-
-    Shared Function GetJobs() As List(Of StringBooleanPair)
-        Dim formatter As New BinaryFormatter
-        Dim jobsPath = Folder.Settings + "Jobs.dat"
-        Dim counter As Integer
-
-        If File.Exists(jobsPath) Then
-            While True
-                Try
-                    Using stream As New FileStream(jobsPath,
-                                                   FileMode.Open,
-                                                   FileAccess.ReadWrite,
-                                                   FileShare.None)
-
-                        Return DirectCast(formatter.Deserialize(stream), List(Of StringBooleanPair))
-                    End Using
-
-                    Exit While
-                Catch ex As Exception
-                    Thread.Sleep(500)
-                    counter += 1
-
-                    If counter > 9 Then
-                        g.ShowException(ex, "Failed to load job file:" + BR2 + jobsPath)
-                        FileHelp.Delete(jobsPath)
-                        Exit While
-                    End If
-                End Try
-            End While
-        End If
-
-        Return New List(Of StringBooleanPair)
-    End Function
-
-    Shared Sub RemoveJob(jobPath As String)
-        Dim jobs = GetJobs()
-
-        For Each i In jobs.ToArray
-            If i.Key = jobPath Then
-                jobs.Remove(i)
-                SaveJobs(jobs)
-            End If
-        Next
-    End Sub
-
-    Shared Sub ActivateJob(jobPath As String, Optional isActive As Boolean = True)
-        Dim jobs = GetJobs()
-
-        For Each i In jobs
-            If i.Key = jobPath Then i.Value = isActive
-        Next
-
-        SaveJobs(jobs)
-    End Sub
-
-    Shared Sub AddJob(jobPath As String, Optional isActive As Boolean = True)
-        Dim jobs = GetJobs()
-
-        For Each i In jobs.ToArray
-            If i.Key = jobPath Then jobs.Remove(i)
-        Next
-
-        jobs.Add(New StringBooleanPair(jobPath, isActive))
-        SaveJobs(jobs)
     End Sub
 
     Private Sub bnStart_Click(sender As Object, e As EventArgs) Handles bnStart.Click
@@ -336,19 +247,21 @@ Friend Class JobsForm
             s.Storage.SetBool("proc form help", True)
         End If
 
-        If ActiveJobs.Count = 1 Then Close()
-        g.DefaultCommands.StartJobs()
+        Close()
+
+        If g.IsProcessing Then
+            g.StartProcess(Application.ExecutablePath, "-StartJobs")
+        Else
+            Task.Run(Sub()
+                         Thread.Sleep(500)
+                         g.MainForm.Invoke(Sub() g.ProcessJobs())
+                     End Sub)
+        End If
     End Sub
 
     Private Sub bnLoad_Click(sender As Object, e As EventArgs) Handles bnLoad.Click
         g.MainForm.LoadProject(lv.SelectedItem.ToString)
     End Sub
-
-    Shared ReadOnly Property ActiveJobs As IEnumerable(Of StringBooleanPair)
-        Get
-            Return From i In JobsForm.GetJobs() Where i.Value = True
-        End Get
-    End Property
 
     Protected Overrides Sub Dispose(disposing As Boolean)
         MyBase.Dispose(disposing)
@@ -380,8 +293,7 @@ Friend Class JobsForm
     End Sub
 
     Sub ShowHelp()
-        MsgInfo("Please note that jobs are processed in separate StaxRip instances." + BR2 +
-                "By clicking Start twice or more times it's possible to start multiple instances concurrently." + BR2 +
-                "Multiple instances work most effeciantly when the files are located on diffeent HDDs.")
+        MsgInfo("Please note that the job list can be processed by multiple StaxRip instances in parallel." + BR2 +
+                "Multiple instances work most efficiently when the files are located on diffeent HDDs.")
     End Sub
 End Class

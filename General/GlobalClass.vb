@@ -7,6 +7,8 @@ Imports System.Windows.Forms.VisualStyles
 Imports Microsoft.Win32
 Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
+Imports System.Threading.Tasks
+Imports System.Runtime.ExceptionServices
 
 Public Class GlobalClass
     Property ProjectPath As String
@@ -16,46 +18,33 @@ Public Class GlobalClass
     Property SavedProject As New Project
     Property DefaultCommands As New GlobalCommands
     Property IsProcessing As Boolean
-    Property IsEncodingInstance As Boolean
-
-    Private DebugLockObject As New Object
-
-    Sub Debug(title As String, Optional value As Object = Nothing)
-        SyncLock DebugLockObject
-            File.AppendAllText(Folder.Desktop + "debug.txt", title + ": " + CStr(value) + BR)
-        End SyncLock
-    End Sub
 
     Sub ProcessJobs()
-        Dim jobs = JobsForm.ActiveJobs
-
-        If jobs.Count = 0 Then
-            Application.Exit()
-            Exit Sub
-        End If
-
+        Dim jobs = Job.ActiveJobs
+        If jobs.Count = 0 Then Exit Sub
+        g.IsProcessing = True
         Dim jobPath = jobs(0).Key
-        JobsForm.ActivateJob(jobPath, False)
-        g.MainForm.OpenProject(jobPath, False)
 
         Try
+            Job.ActivateJob(jobPath, False)
+            g.MainForm.OpenProject(jobPath, False)
             If s.PreventStandby Then PowerRequest.SuppressStandby()
             StaxRip.ProcForm.ShutdownVisible = True
-            g.MainForm.ProcessJob()
-            JobsForm.RemoveJob(jobPath)
-            jobs = JobsForm.GetJobs
-            Dim activeJobs = JobsForm.ActiveJobs
+            ProcessJob()
+            Job.RemoveJob(jobPath)
+            jobs = Job.GetJobs
+            Dim activeJobs = Job.ActiveJobs
 
             If jobs.Count = 0 Then
                 g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
                 g.ShutdownPC()
-            ElseIf JobsForm.ActiveJobs.Count = 0 Then
+            ElseIf Job.ActiveJobs.Count = 0 Then
                 If Process.GetProcessesByName("StaxRip").Count = 1 Then
                     g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
                     g.ShutdownPC()
                 End If
             Else
-                g.DefaultCommands.StartJobs(True)
+                ProcessJobs()
             End If
         Catch ex As AbortException
             Log.Save()
@@ -70,20 +59,175 @@ Public Class GlobalClass
             g.OnException(ex)
         Finally
             If s.PreventStandby Then PowerRequest.EnableStandby()
-
-            If g.IsEncodingInstance Then
-                g.MainForm.CloseWithoutSaving()
-            Else
-                g.MainForm.OpenProject(jobPath, False)
-            End If
+            g.IsProcessing = False
+            g.MainForm.OpenProject(jobPath, False)
+            ProcController.Finished()
         End Try
+    End Sub
+
+    Sub ProcessJob()
+        Try
+            g.RaiseAppEvent(ApplicationEvent.BeforeEncoding)
+            Dim startTime = DateTime.Now
+
+            If p.BatchMode Then
+                If g.ProjectPath Is Nothing Then g.ProjectPath = p.TempDir + p.SourceFiles(0).Base + ".srip"
+                g.MainForm.SaveProjectPath(g.ProjectPath)
+                g.MainForm.OpenVideoSourceFiles(p.SourceFiles, False)
+                p.BatchMode = False
+                g.MainForm.SaveProjectPath(g.ProjectPath)
+            End If
+
+            If p.Script.Engine = ScriptEngine.AviSynth Then
+                Log.WriteHeader("AviSynth Script")
+            Else
+                Log.WriteHeader("VapourSynth Script")
+            End If
+
+            Log.WriteLine(p.Script.GetFullScript)
+            Log.WriteHeader("Script Properties")
+
+            Dim props = "source frame count: " & p.SourceScript.GetFrames & BR +
+                "source frame rate: " & p.SourceScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
+                "source duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.SourceScript.GetFrames / p.SourceScript.GetFramerate)).ToString + BR +
+                "target frame count: " & p.Script.GetFrames & BR +
+                "target frame rate: " & p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
+                "target duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.Script.GetFrames / p.Script.GetFramerate)).ToString
+
+            Log.WriteLine(props.FormatColumn(":"))
+
+            g.MainForm.Hide()
+
+            Dim actions As New List(Of Action)
+
+            If p.SkipAudioEncoding AndAlso File.Exists(p.Audio0.GetOutputFile) Then
+                p.Audio0.File = p.Audio0.GetOutputFile()
+            Else
+                actions.Add(Sub()
+                                Audio.Process(p.Audio0)
+                                p.Audio0.Encode()
+                            End Sub)
+            End If
+
+            If p.SkipAudioEncoding AndAlso File.Exists(p.Audio1.GetOutputFile) Then
+                p.Audio1.File = p.Audio1.GetOutputFile()
+            Else
+                actions.Add(Sub()
+                                Audio.Process(p.Audio1)
+                                p.Audio1.Encode()
+                            End Sub)
+            End If
+
+            For Each i In p.AudioTracks
+                Dim temp = i
+
+                If p.SkipAudioEncoding AndAlso File.Exists(i.GetOutputFile) Then
+                    i.File = i.GetOutputFile()
+                Else
+                    actions.Add(Sub()
+                                    Audio.Process(temp)
+                                    temp.Encode()
+                                End Sub)
+                End If
+            Next
+
+            actions.Add(Sub() Subtitle.Cut(p.VideoEncoder.Muxer.Subtitles))
+            actions.Add(AddressOf ProcessVideo)
+
+            Try
+                Parallel.Invoke(New ParallelOptions With {.MaxDegreeOfParallelism = s.ParallelProcsNum}, actions.ToArray)
+            Catch ex As AggregateException
+                ExceptionDispatchInfo.Capture(ex.InnerExceptions(0)).Throw()
+            End Try
+
+            Log.Save()
+            p.VideoEncoder.Muxer.Mux()
+
+            If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile, p)
+
+            Log.WriteHeader("Job Complete")
+            Log.WriteStats(startTime)
+            Log.Save()
+
+            g.ArchiveLogFile(Log.GetPath)
+            g.DeleteTempFiles()
+            g.RaiseAppEvent(ApplicationEvent.JobEncoded)
+        Catch
+        End Try
+    End Sub
+
+    Sub ProcessVideo()
+        If Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath)) Then
+            Dim originalFilters As List(Of VideoFilter)
+            Dim originalSource As String
+
+            If p.PreRenderIntoLossless AndAlso Not TypeOf p.VideoEncoder Is NullEncoder Then
+                Dim outPath = p.TempDir + p.TargetFile.Base + "_lossless.avi"
+
+                If p.Script.Engine = ScriptEngine.AviSynth Then
+                    Using proc As New Proc
+                        proc.Header = "Pre-render into lossless AVI"
+                        proc.SkipStrings = {"frame=", "size="}
+                        proc.Encoding = Encoding.UTF8
+                        proc.Package = Package.ffmpeg
+                        proc.Arguments = "-i " + p.Script.Path.Escape + " -c:v utvideo -pred median -sn -an -y -hide_banner " + outPath.Escape
+                        proc.Start()
+                    End Using
+                Else
+                    Dim commandLine = Package.vspipe.Path.Escape + " " + p.Script.Path.Escape + " - --y4m | " + Package.ffmpeg.Path.Escape + " -i - -c:v utvideo -pred median -sn -an -y -hide_banner " + outPath.Escape
+
+                    Using proc As New Proc
+                        proc.Header = "Pre-render into lossless AVI"
+                        proc.SkipStrings = {"frame=", "size=", "Multiple"}
+                        proc.Encoding = Encoding.UTF8
+                        proc.Package = Package.ffmpeg
+                        proc.File = "cmd.exe"
+                        proc.Arguments = "/S /C call """ + commandLine + """"
+                        proc.Start()
+                    End Using
+                End If
+
+                If File.Exists(outPath) Then
+                    Log.WriteHeader("Lossless AVI MediaInfo")
+                    Log.WriteLine(MediaInfo.GetSummary(outPath))
+                Else
+                    Throw New ErrorAbortException("Pre-render failed", "Output file is missing")
+                End If
+
+                originalSource = p.SourceFile
+                p.SourceFile = p.TempDir + p.TargetFile.Base + "_lossless.avi"
+                originalFilters = p.Script.GetFiltersCopy()
+
+                For Each i In p.Script.Filters
+                    If i.Category = "Source" Then
+                        If p.Script.Engine = ScriptEngine.AviSynth Then
+                            i.Script = "FFVideoSource(""" + outPath + """)"
+                        Else
+                            i.Script = "clip = core.ffms2.Source(r""" + outPath + """)"
+                        End If
+                    Else
+                        i.Active = False
+                    End If
+                Next
+
+                p.Script.Synchronize()
+            End If
+
+            If Not originalFilters Is Nothing Then
+                p.SourceFile = originalSource
+                p.Script.Filters = originalFilters
+                p.Script.Synchronize()
+            End If
+
+            p.VideoEncoder.Encode()
+        End If
     End Sub
 
     Sub DeleteTempFiles()
         If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.TempDir.EndsWith("_temp\") Then
             Try
                 FileHelp.Copy(p.TempDir + p.TargetFile.Base + "_staxrip.log", p.TargetFile.DirAndBase + "_staxrip.log")
-                Dim moreJobsToProcessInTempDir = JobsForm.GetJobs.Where(Function(a) a.Value AndAlso a.Key.Contains(p.TempDir))
+                Dim moreJobsToProcessInTempDir = Job.GetJobs.Where(Function(a) a.Value AndAlso a.Key.Contains(p.TempDir))
 
                 If moreJobsToProcessInTempDir.Count = 0 Then
                     If s.DeleteTempFilesMode = DeleteMode.RecycleBin Then
@@ -343,7 +487,7 @@ Public Class GlobalClass
 
     Sub SaveSettings()
         Try
-            If Not g.IsEncodingInstance Then SafeSerialization.Serialize(s, g.SettingsFile)
+            SafeSerialization.Serialize(s, g.SettingsFile)
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -741,7 +885,8 @@ Public Class GlobalClass
 
     Sub ShutdownPC(mode As ShutdownMode)
         If mode <> ShutdownMode.Nothing Then
-            g.MainForm.CloseWithoutSaving()
+            g.SavedProject = p
+            g.MainForm.Close()
             Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", 0)
             Shutdown.Commit(mode)
         End If

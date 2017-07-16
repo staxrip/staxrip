@@ -220,13 +220,7 @@ Public Class ProcForm
         NotifyIcon.Text = "StaxRip"
 
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
-
-        If ProcController.IsMinimized Then
-            WindowState = FormWindowState.Minimized
-            ShowInTaskbar = Not s.MinimizeToTray
-        End If
-
-        SetSizeAndPos()
+        ScaleClientSize(42, 28)
     End Sub
 
     Private Sub cbShutdown_SelectedIndexChanged() Handles mbShutdown.ValueChangedUser
@@ -263,13 +257,6 @@ Public Class ProcForm
         Select Case m.Msg
             Case &H112 'WM_SYSCOMMAND
                 Select Case m.WParam.ToInt32
-                    Case Native.SC_MINIMIZE
-                        ProcController.IsMinimized = True
-
-                        If s.MinimizeToTray Then
-                            Hide()
-                            Exit Sub
-                        End If
                     Case Native.SC_CLOSE
                         bnAbort.PerformClick()
                         Exit Sub
@@ -281,17 +268,23 @@ Public Class ProcForm
         MyBase.WndProc(m)
     End Sub
 
-    Private Sub ShowForm()
-        ProcController.IsMinimized = False
-        WindowState = FormWindowState.Normal
-        SetSizeAndPos()
-        Show()
+    Protected Overrides Sub OnResize(e As EventArgs)
+        MyBase.OnResize(e)
+
+        If s.MinimizeToTray Then
+            If WindowState = FormWindowState.Minimized Then
+                NotifyIcon.Visible = True
+                Hide()
+            Else
+                NotifyIcon.Visible = False
+            End If
+        End If
     End Sub
 
-    Sub SetSizeAndPos()
-        ScaleClientSize(42, 28)
-        Left = Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ProcForm Pos X")
-        Top = Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ProcForm Pos Y")
+    Private Sub ShowForm()
+        Show()
+        WindowState = FormWindowState.Normal
+        Activate()
     End Sub
 
     Protected Overrides Sub OnActivated(e As EventArgs)
@@ -309,14 +302,5 @@ Public Class ProcForm
     Protected Overrides Sub OnHandleCreated(e As EventArgs)
         MyBase.OnHandleCreated(e)
         WasHandleCreated = True
-    End Sub
-
-    Protected Overrides Sub OnMove(e As EventArgs)
-        MyBase.OnMove(e)
-
-        If Left <> 0 Then
-            Registry.CurrentUser.Write("Software\" + Application.ProductName, "ProcForm Pos X", Left)
-            Registry.CurrentUser.Write("Software\" + Application.ProductName, "ProcForm Pos Y", Top)
-        End If
     End Sub
 End Class

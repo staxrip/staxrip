@@ -190,6 +190,7 @@
     <Compile Include="Forms\TextHelpForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="General\Job.vb" />
     <Compile Include="General\LogBuilder.vb" />
     <Compile Include="General\GlobalClass.vb" />
     <Compile Include="General\GlobalCommands.vb" />

@@ -413,6 +413,11 @@
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
     <Content Include="RIP.ico" />
+    <Content Include="Screenshots\audio.png" />
+    <Content Include="Screenshots\eac3to.png" />
+    <Content Include="Screenshots\main.png" />
+    <Content Include="Screenshots\nvenc.png" />
+    <Content Include="Screenshots\x265.png" />
     <None Include="md\changelog.md" />
     <None Include="md\test-build.md" />
     <None Include="packages.config" />

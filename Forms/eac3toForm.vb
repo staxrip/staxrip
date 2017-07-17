@@ -816,6 +816,8 @@ Public Class eac3toForm
                                 ms.OutputType = "eac3"
                             Case "TrueHD/AC3 (Atmos)", "TrueHD/AC3"
                                 ms.OutputType = "thd+ac3"
+                            Case "TrueHD (Atmos)"
+                                ms.OutputType = "thd"
                             Case "DTS-ES", "DTS Express"
                                 ms.OutputType = "dts"
                             Case "DTS Master Audio"

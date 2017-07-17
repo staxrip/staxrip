@@ -55,23 +55,7 @@ https://github.com/stax76/staxrip/blob/master/md/test-build.md
 
 ## Screenshots
 
-### Main Window
-
-[![Main Window](Screenshots/1.png)](https://github.com/stax76/staxrip/blob/master/Screenshots/1.png)
-
-### x265 Encoder Options
-
-[![Main Window](Screenshots/2.png)](https://github.com/stax76/staxrip/blob/master/Screenshots/2.png)
-
-### NVIDIA Encoder Options
-
-[![Main Window](Screenshots/3.png)](https://github.com/stax76/staxrip/blob/master/Screenshots/3.png)
-
-### Audio Encoding Options
-
-[![Main Window](Screenshots/4.png)](https://github.com/stax76/staxrip/blob/master/Screenshots/4.png)
-
-# Documentation
+https://github.com/stax76/staxrip/wiki/Screenshots
 
 ## Setup
 

@@ -915,8 +915,8 @@ Public Class x265Params
             BlockValueChanged = False
         End If
 
-        DeblockA.NumEdit.Enabled = Deblock.Value
-        DeblockB.NumEdit.Enabled = Deblock.Value
+        If Not DeblockA.NumEdit Is Nothing Then DeblockA.NumEdit.Enabled = Deblock.Value
+        If Not DeblockB.NumEdit Is Nothing Then DeblockB.NumEdit.Enabled = Deblock.Value
 
         MyBase.OnValueChanged(item)
     End Sub

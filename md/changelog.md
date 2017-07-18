@@ -10,6 +10,10 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.3.3 unstable test build
+
+- fix: one of the included powershell scripts was broken due to internal improvements
+
 #### 1.5.3.2 unstable test build
 
 - fix: log files are no longer saved in the target folder if the temp folder is deleted, they can be found at: Tools > Folders > Log Files

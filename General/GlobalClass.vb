@@ -30,9 +30,7 @@ Public Class GlobalClass
             g.MainForm.OpenProject(jobPath, False)
             If s.PreventStandby Then PowerRequest.SuppressStandby()
             ProcessJob()
-            Job.RemoveJob(jobPath)
             jobs = Job.GetJobs
-            Dim activeJobs = Job.ActiveJobs
 
             If jobs.Count = 0 Then
                 g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
@@ -152,6 +150,7 @@ Public Class GlobalClass
             g.ArchiveLogFile(Log.GetPath)
             g.DeleteTempFiles()
             g.RaiseAppEvent(ApplicationEvent.JobEncoded)
+            Job.RemoveJob(g.ProjectPath)
         Catch ex As ErrorAbortException
             Log.Save()
             g.ShowException(ex, Nothing, 50)
@@ -230,7 +229,6 @@ Public Class GlobalClass
     Sub DeleteTempFiles()
         If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.TempDir.EndsWith("_temp\") Then
             Try
-                FileHelp.Copy(p.TempDir + p.TargetFile.Base + "_staxrip.log", p.TargetFile.DirAndBase + "_staxrip.log")
                 Dim moreJobsToProcessInTempDir = Job.GetJobs.Where(Function(a) a.Value AndAlso a.Key.Contains(p.TempDir))
 
                 If moreJobsToProcessInTempDir.Count = 0 Then
@@ -712,12 +710,8 @@ Public Class GlobalClass
         If Not TypeOf ex Is AbortException Then
             Try
                 If File.Exists(p.SourceFile) Then
-                    Dim name = Filepath.GetBase(p.TargetFile)
-
-                    If name = "" Then
-                        name = Filepath.GetBase(p.SourceFile)
-                    End If
-
+                    Dim name = p.TargetFile.Base
+                    If name = "" Then name = p.SourceFile.Base
                     Dim path = Filepath.GetDir(p.SourceFile) + "crash.srip"
                     g.MainForm.SaveProjectPath(path)
                 End If

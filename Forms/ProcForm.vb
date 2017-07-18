@@ -296,4 +296,11 @@ Public Class ProcForm
         MyBase.OnHandleCreated(e)
         WasHandleCreated = True
     End Sub
+
+    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
+        Get
+            If ProcController.BlockActivation Then Return True
+            Return MyBase.ShowWithoutActivation
+        End Get
+    End Property
 End Class

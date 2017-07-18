@@ -419,7 +419,6 @@
     <Content Include="Screenshots\nvenc.png" />
     <Content Include="Screenshots\x265.png" />
     <None Include="md\changelog.md" />
-    <None Include="md\test-build.md" />
     <None Include="packages.config" />
     <None Include="README.md" />
     <None Include="Resources\FontAwesome.ttf" />

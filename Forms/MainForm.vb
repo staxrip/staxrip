@@ -1589,7 +1589,7 @@ Public Class MainForm
 
         If path.StartsWith(Folder.Template) Then
             g.ProjectPath = Nothing
-            p.TemplateName = Filepath.GetBase(path)
+            p.TemplateName = path.Base
         Else
             g.ProjectPath = path
         End If
@@ -5734,4 +5734,11 @@ Public Class MainForm
         g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
         MyBase.OnFormClosed(e)
     End Sub
+
+    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
+        Get
+            If ProcController.BlockActivation Then Return True
+            Return MyBase.ShowWithoutActivation
+        End Get
+    End Property
 End Class

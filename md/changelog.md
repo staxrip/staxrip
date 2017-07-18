@@ -1,3 +1,256 @@
+#### Requirements
+
+.NET 4.7 is required on systems prior Windows 10 Version 1703 (Creators Update)
+
+https://www.microsoft.com/en-us/download/details.aspx?id=55170
+
+#### Download
+
+https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
+
+https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
+
+#### 1.5.3.2 unstable test build
+
+- fix: log files are no longer saved in the target folder if the temp folder is deleted, they can be found at: Tools > Folders > Log Files
+- fix: when a job failed it's no longer removed from the joblist
+- fix: when job processing starts there is only one Window activation at the start and no subsequent window activations, this prevents to interupt other software like players
+
+#### 1.5.3.1 unstable test build
+
+- fix: shutdown/standby controls were not always visible when they should
+
+#### 1.5.2.9 unstable test build
+
+- new: at the bottom of the video encoder option dialogs there is a menu item to import a command line from the clipboard
+
+#### 1.5.2.8 unstable test build
+
+- new: everytime the settings are saved there is also a backup of the settings saved in the settings folder
+
+- fix: in case of high memory usage like a avisynth filter leaking memory, if staxrip detects more then 1500 MB memory are consumed while jobs are processed it restarts
+- fix: job list got wiped when a job was aborted
+- fix: if an error happened in a job processing was aborted instead of continuing with other jobs
+
+#### 1.5.2.7 unstable test build
+
+- fix: job processing is now done in the current instance like in the past
+- fix: turned out staxrip never had a memory issue but the experimental ffms2 build was leaking memory
+
+#### 1.5.2.6 unstable test build
+
+- new: powershell added to main menu at: Tools > Advanced > PowerShell, it sets the temp dir as work dir and aliases for all tools so you can type something like: ffmpeg -h 
+
+- change: besided dtsma and thd now also eac3, thd+ac3 and dtshr are preferred when staxrip searches for audio files
+- change: displayed audio track ID numbers now always start with 1
+- change: raw audio formats (thd, eac3, aac) that potentionally don't support seeking are now played without video 
+
+#### 1.5.2.5 unstable test build
+
+- new: qaac has a new option to pipe from ffmpeg instead of converting to FLAC/W64/WAV
+
+- update: ffmpeg 3.3.2
+- update: x265 2.5+2
+
+#### 1.5.2.3 unstable test build
+
+- new: aimed quality feature of the old x264 GUI added to the x264 and x265 GUI
+
+- fix: unable to recover processing form from tray
+- fix: unable to open new files (start new processes) after the process abortion feature was used 
+
+- update: x265 2.4+99
+
+#### 1.5.2.2 unstable test build
+
+- new: AviSynth+ x64 plugins added: modPlus, SmoothAdjust, AutoAdjust
+
+- update: NNEDI3 0.9.4.44
+- update: KNLMeansCL 1.1.0
+
+#### 1.5.2.1 unstable test build
+
+- new: various new features and improvements in the apps management dialog
+- new: The jobs dialog will show it's help the first time jobs are started explaining staxrip's parallel processing features
+
+- change: tray icon stays visible even when the job processing window is visible
+- change: mpc replaced with mpv
+
+- fix: when automatic demuxing of the video stream is enabled or if demuxing of the video stream was enabled in the demuxing dialog the demuxed video stream wasn't opened afterwards but still the original video was opened
+
+#### 1.5.1.9 unstable test build
+
+- new: context help is now implemented for all video encoders, a right-click on any label, menu or checkbox will show the help for the option, for nvenc, qsvenc and vceenc a new help browser was developed with powershell look and feel
+- new: UT Video added for ffmpeg video encoder GUI with options for: -pred (None Left Gradient Median) -pix_fmt (YUV420P YUV422P YUV444P RGB24 RGBA)
+- new: help improved for Tags in mp4box container options dialog, the help is runtime generated using the output from mp4box -tag-list
+- new: ffmpeg muxing formats menu and profiles added for: asf avi flv ismv mkv mov mp4 mpg mxf nut ogg ts webm wmv
+- new: audio target format W64 added with 16/24 bit depth option
+- new: nvenc options --cuda-schedule, --perf-monitor, --perf-monitor-interval
+
+- fix: cmd.exe is now used directly without batch files, this improves foreign/special character support in particular on Windows 7
+- fix: Jobs Processing window popping up while job processing even when staxrip was previously minimized
+- fix: tray icons not cleaned up
+- fix: in a few dialogs the help dialog was shown four times instead once
+- fix: broken scaling on DPI change using a multi-monitor setup, virtual scaling is used in that case now
+- fix: crash when cutting empty subtitles
+
+- change: all classes made public for powershell usage
+
+- update: x264 0.150.2851
+- update: nvenc 3.14
+
+#### 1.5.1.8 unstable test build
+
+- fix: unable to show processing window from tray
+
+- update: qsvenc 2.71
+
+#### 1.5.1.7 unstable test build
+
+- new: setting added to define the maximum number of parallel processes (Tools > Settings > General)
+
+- fix: parallel process management hopefully much more stable
+
+- update: mvtools2 2.7.21.22
+- update: x265 2.4+96
+
+#### 1.5.1.6 unstable test build
+
+- fix: process management didn't work properly yet
+
+#### 1.5.1.5 unstable test build
+
+- new: parallel audio processing 
+- new: added setting to define how many projects to keep under: 'Main Menu > Project > Recent', the setting is located at: Main Menu > Tools > Settings > General 
+- new: added new thumbnail generation options
+- new: added new feature to archive log files in the settings directory, by default the last 50 log files are keept, this number can be customized at: 'Main Menu > Tools > Settings > General', the folder can be opened with the windows file explorer at: Main Menu > Tools > Folders > Log Files
+- new: qsvenc options --fade-detect and --repartition-check
+
+- fix: wrong fps display in main form for 50/60 fps
+- fix: version detection disabled for all VC++ runtimes because of issues with file projection via hardlinks and WINSXS
+- fix: two issues in x264 command line generation
+
+- change: renamed and reseted setting to minimize to tray
+- change: nvenc vpp deband support improved
+- change: Option to delete temp files moved to: Tools > Settings > System
+- change: scaling and layout improved for numeric up down control and custom menu editor
+- change: code refactoring of dynamically generated dialogs (settings/options/codecs), this has let to changed data types and a reset of video encoder profiles
+- change: the mkv title tag in the container options isn't overwritten by a title tag of the source file when the source is loaded
+
+- update: mkvtoolnix 13.0.0.0
+- update: qsvenc 2.70
+- update: AviSynth+ 2508
+- update: x265 2.4+89
+
+#### 1.5.1.4 unstable test build
+
+- new: the new x264 GUI is complete, the old is gone
+- new: nvenc option --vpp-deband added
+- new: x265 option --[no-]refine-vbv added
+- new: added new menu to the PAR/DAR option in the container dialog
+- fix: in some circumstances file paths with parenthesis failed to process (regression in 1.5.1.1)
+- fix: right-click help didn't navigate to help URL on string options in the x265 and the new x264 dialog
+- fix: audio settings/profile display was wrong generated if the audio source file has multiple audio streams
+- fix: audio was converted to FLAC/W64 even if the output already existed and processing should be skipped (refers to a new feature added with 1.5.0.9)
+- change: medium crf value was changed from 22 to 20 for x264 and x265
+- update: x265 2.4+87
+- update: nvenc 3.13
+
+#### 1.5.1.2 unstable test build
+
+- new: many improvements on the new x264 GUI introduced in 1.5.0.7, video profile settings were reset because at the same time I improve the x265 GUI, the video profile settings will be reset again until the GUI is finished in 1-2 weeks, the old GUI will then be removed
+- fix: the feature to reuse existing audio output files from previous job runs had a bug that would result in the wrong file muxed
+- fix: the automatic name generation for the audio settings wasn't always working correctly
+- tweak: the 'Play audio and video' feature in the menu of the audio source files was changed, it still has limitations but shows a message box to tell the user about
+- tweak: in case the option to delete the temp files is used the log file is copied to the target folder
+- update: NVEnc 3.12
+- update: 2.4+75
+
+#### 1.5.1.1 unstable test build
+
+- new: added option to pre-render slow scripts into a lossless AVI file
+- new: improvements on the new x264 GUI introduced in 1.5.0.7
+- fix: downmix not used with qaac (regression in 1.5.0.9)
+
+#### 1.5.0.9 unstable test build
+
+- new: to run PowerShell scripts on certain events the Event Command feature is no longer needed, it's documented here: https://github.com/stax76/staxrip#powershell-scripting
+- new: there are 2 new options what to do in case the video and audio encoder output files alread exists from a previous job run (reuse, overwrite or ask (default)), the 'Just Mux' video encoder profile does alse reuse the output file from previous job runs, in case it don't exist it uses the source video
+- new: there is a new option to define which intermediate format should be used in case the audio encoder don't support the input format, supported is FLAC (default) and W64 (WAV > 4 GB)
+- new: there is a new option to define which app should be used to create the intermediate audio file (default is ffmpeg)
+- new: the MediaInfo window has 'Developer Mode' in the context menu to show the property names for programmers
+- tweak: help improved for: Main Menu > Help > Command Line: There is a special mode where only the MediaInfo window is shown using -mediainfo "inputfile", this is useful for Windows File Explorer integration with an app like Open++.
+
+#### 1.5.0.8 unstable test build
+
+- new: download button added to apps dialog's toolbar, only certain apps have a download URL defined
+- new: DGIndex added, this was removed before because there wasn't a x64 d2v source filter, now staxrip has x64 d2v filters for both avisynth and vapoursynth included
+- new: improvements on the new x264 GUI introduced in 1.5.0.7
+- fix: opening a project from CLI had asked to save the current project even if no changes were made since it was loaded
+- fix: wrong channel count used with dolby atmos
+- fix: the automatically generated audio profile caption in the main dialog of the current profile gets updated when the source changes
+- tweak: improved scaling on 96 DPI (relates to layout changes from 1.5.0.4)
+- tweak: improved audio specs parameter display in the main dialog
+- tweak: the MediaInfo window is startet as separate process, the window can be minimized and maximized, the layout improved
+- update: RgTools 0.96
+- update: NVEnc 3.11
+
+#### 1.5.0.7 unstable test build
+
+- new: Deblock VapourSynth plugin added: https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock/
+- new: basic new x264 GUI based on the same framework then all other codec GUIs, this will soon replace the old GUI 
+- new: support for subtitle cutting
+- new: added setting to minimze processing window to task bar instead of the tray area
+- new: the options for --sar in the encoder options have now the same dropdown menu then the PAR menus in the main dialog
+- tweak: the option Fixed Bitrate was removed, if the bitrate or filesize is fixed depends now on what was edited last
+- update: masktools2 (AviSynth+) 2.2.10
+- update: mvtools (VapourSynth) 19
+
+#### 1.5.0.6 unstable test build
+
+- new: various new x265 options
+- new: various new aspect ratio features
+- update: x265 2.4+61
+- update: QSVEncC 2.66
+
+#### 1.5.0.4 unstable test build
+
+- new: Subtitle Edit added to Apps in main menu and to container options dialog
+- new: nvenc --weightp
+- tweak: in case the source image width/height isn't mod 4 staxrip writes crop to the crop section instead of the source section and adds a comment 'ensure mod 4'
+- tweak: main form layout and scaling improved and increased precession of several values
+- update: TIVTC 1.0.9
+- update: VapourSynth R38
+- update: x265 2.4+36
+- update: nvenc 3.10
+
+#### 1.5.0.3 unstable test build
+
+- new: all demuxers have support to demux the video stream
+- new: chapters from mkv are extracted in both xml and ogg 
+- new: chapter extraction from MP4
+- new: added x265 switches --ctu-info and --dhdr10-opt
+- fix: mkv chapters were used for mp4box which don't support them
+- update: AviSynth r2504
+
+#### 1.5.0.2 unstable test build
+
+- update: AviSynth r2502
+- fix: Opening a Blu-ray folder while having already a source file opened mixed various things up
+- fix: DPI scaling broken under rare conditions 
+- fix: incorrect command line generation for AV1 two pass
+- new: video stream demuxing option added to ffmpeg demuxer
+
+#### 1.5.0.1 unstable test build
+
+- new: experimental AV1 codec support
+- new: the demux app was removed, the built-in demuxing GUIs for mkvextract, mp4box, eac3to and ffmpeg can be used as independent tool found at: Tools > Advanced > Demux
+- fix: FLAC was extracted to mka instead of flac
+- tweak: staxrip is a bit smarter to find out if all job processing is completed and shutdown/standby can be performed
+- update: MP4Box 0.7.2-DEV-rev79 which fixes issues with qsvenc output
+- update: MediaInfo 0.7.96
+- update: ffmpeg 3.3.1
+
 # 1.5.0.0 (2017-05-28)
 
 #### Requirements

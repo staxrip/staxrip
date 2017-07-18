@@ -33,7 +33,7 @@ https://github.com/stax76/staxrip/releases
 
 Before making a bug report please try the newest test build:
 
-https://github.com/stax76/staxrip/blob/master/md/test-build.md
+https://github.com/stax76/staxrip/blob/master/md/changelog.md
 
 ## Support
 
@@ -51,7 +51,7 @@ Screenshots are also often useful, there are many free and easy to use hosting s
 
 Before making a bug report please try the newest test build:
 
-https://github.com/stax76/staxrip/blob/master/md/test-build.md
+https://github.com/stax76/staxrip/blob/master/md/changelog.md
 
 ## Screenshots
 

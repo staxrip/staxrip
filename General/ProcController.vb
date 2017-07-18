@@ -17,6 +17,8 @@ Public Class ProcController
     Shared Property Procs As New List(Of ProcController)
     Shared Property Aborted As Boolean
 
+    Shared Property BlockActivation As Boolean
+
     Sub New(proc As Proc)
         Me.Proc = proc
         Me.ProcForm = g.ProcForm
@@ -109,6 +111,7 @@ Public Class ProcController
 
     Shared Sub Abort()
         Aborted = True
+        BlockActivation = False
         Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", 0)
 
         For Each i In Procs.ToArray
@@ -174,7 +177,7 @@ Public Class ProcController
             If Procs.Count > 0 Then Procs(0).Activate()
         End SyncLock
 
-        If Not Proc.Succeeded Then ProcController.Abort()
+        If Not Proc.Succeeded Then Abort()
 
         Task.Run(Sub()
                      Thread.Sleep(500)
@@ -194,7 +197,8 @@ Public Class ProcController
                                    g.MainForm.BeginInvoke(Sub()
                                                               g.MainForm.Show()
                                                               g.MainForm.Refresh()
-                                                              ProcController.Aborted = False
+                                                              Aborted = False
+                                                              BlockActivation = False
                                                           End Sub)
                                End Sub)
     End Sub
@@ -250,7 +254,11 @@ Public Class ProcController
                               If Not g.ProcForm.WindowState = FormWindowState.Minimized Then
                                   g.ProcForm.Show()
                                   g.ProcForm.WindowState = FormWindowState.Normal
-                                  g.ProcForm.Activate()
+
+                                  If Not BlockActivation Then
+                                      g.ProcForm.Activate()
+                                      BlockActivation = True
+                                  End If
                               End If
 
                               AddProc(proc)

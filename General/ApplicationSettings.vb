@@ -25,15 +25,18 @@ Public Class ApplicationSettings
     Public HidePreviewButtons As Boolean
     Public LastPosition As Integer
     Public LastSourceDir As String
+    Public LogFileNum As Integer = 50
     Public MinimizeToTray As Boolean
     Public MinimumDiskSpace As Integer = 20
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
+    Public ParallelProcsNum As Integer = 2
     Public ParMenu As String
     Public PreventStandby As Boolean = True
     Public PreviewFormBorderStyle As FormBorderStyle
     Public PreviewToggleInfos As Boolean
     Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.Idle
+    Public ProjectsMruNum As Integer = 10
     Public RecentFramePositions As List(Of String)
     Public RecentOptionsPage As String
     Public RecentProjects As List(Of String)
@@ -55,9 +58,6 @@ Public Class ApplicationSettings
     Public WindowPositions As WindowPositions
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
-    Public LogFileNum As Integer = 50
-    Public ProjectsMruNum As Integer = 5
-    Public ParallelProcsNum As Integer = 2
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

@@ -407,7 +407,7 @@ Namespace CommandLine
                         If IntegerValue Then
                             Return Switch + Params.Separator & Value
                         Else
-                            Return Switch + Params.Separator & Options(Value).ToLower.Replace(" ", "")
+                            Return Switch + Params.Separator & Options(Value).ToLowerInvariant.Replace(" ", "")
                         End If
                     End If
                 End If

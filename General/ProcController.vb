@@ -195,10 +195,10 @@ Public Class ProcController
                                    g.ProcForm.Hide()
 
                                    g.MainForm.BeginInvoke(Sub()
+                                                              BlockActivation = False
                                                               g.MainForm.Show()
                                                               g.MainForm.Refresh()
                                                               Aborted = False
-                                                              BlockActivation = False
                                                           End Sub)
                                End Sub)
     End Sub

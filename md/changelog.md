@@ -10,6 +10,11 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.5.3.4 unstable test build
+
+- fix: the main window stayed in the background instead of meaing activated to be top most
+- fix: on Turkish locale staxrip used "SSIM".ToLower() which won't result in ssim and thus --tune ssim did not work, it's required to use ToLowerInvariant instead of ToLower, there might be more bugs like this
+
 #### 1.5.3.3 unstable test build
 
 - fix: one of the included powershell scripts was broken due to internal improvements

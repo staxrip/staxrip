@@ -10,6 +10,15 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.6.0.0 stable build
+
+- new: x265 option --force-flush added
+
+- fix: job dialog DPI scaling issue on small screens
+
+- update: mpv 0.26.0
+- update: x265 2.5+6
+
 #### 1.5.3.4 unstable test build
 
 - fix: the main window stayed in the background instead of meaing activated to be top most

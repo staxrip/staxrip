@@ -820,7 +820,9 @@ Public Class x265Params
                     constvbv)
                 Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP,
                     New BoolParam With {.Switch = "--analyze-src-pics", .NoSwitch = "--no-analyze-src-pics", .Text = "Analyze SRC Pics"})
-                Add("Slice Decision", BAdapt,
+                Add("Slice Decision",
+                    New OptionParam() With {.Switch = "--force-flush", .Text = "Force Flush", .Expand = True, .IntegerValue = True, .Options = {"Flush the encoder only when all the input pictures are over", "Flush all the frames even when the input is not over", "Flush the slicetype decided frames only"}},
+                    BAdapt,
                     New OptionParam With {.Switch = "--ctu-info", .Text = "CTU Info", .Options = {"0", "1", "2", "4", "6"}},
                     BFrames, BFrameBias,
                     RCLookahead,
@@ -828,7 +830,8 @@ Public Class x265Params
                     New NumParam() With {.Switch = "--lookahead-threads", .Text = "Lookahead Threads"},
                     Scenecut,
                     New NumParam() With {.Switch = "--scenecut-bias", .Text = "Scenecut Bias", .Init = 5, .Config = {0, 100, 1, 1}},
-                    Ref, MinKeyint, Keyint, Bpyramid, OpenGop, IntraRefresh)
+                    Ref, MinKeyint, Keyint,
+                    Bpyramid, OpenGop, IntraRefresh)
                 Add("Performance",
                     New StringParam With {.Switch = "--pools", .Switches = {"--numa-pools"}, .Text = "Pools", .Quotes = True},
                     New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},

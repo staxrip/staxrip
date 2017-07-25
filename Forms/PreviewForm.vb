@@ -411,13 +411,8 @@ Public Class PreviewForm
         Dim workingArea = Screen.GetWorkingArea(Me)
         Dim screenRect = RectangleToScreen(ClientRectangle)
 
-        If screenRect.Bottom > workingArea.Height Then
-            Top -= screenRect.Bottom - workingArea.Height
-        End If
-
-        If screenRect.Right > workingArea.Width Then
-            Left -= screenRect.Right - workingArea.Width
-        End If
+        If screenRect.Bottom > workingArea.Height Then Top -= screenRect.Bottom - workingArea.Height
+        If screenRect.Right > workingArea.Width Then Left -= screenRect.Right - workingArea.Width
     End Sub
 
     Function GetNormalSize() As Size

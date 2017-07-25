@@ -923,7 +923,7 @@ Public Class GUIAudioProfile
     Function GetEncoder() As GuiAudioEncoder
         Select Case Params.Encoder
             Case GuiAudioEncoder.Eac3to
-                If {AudioCodec.AAC, AudioCodec.AC3, AudioCodec.FLAC, AudioCodec.DTS}.Contains(Params.Codec) Then Return GuiAudioEncoder.Eac3to
+                If {AudioCodec.AAC, AudioCodec.AC3, AudioCodec.FLAC, AudioCodec.DTS, AudioCodec.W64, AudioCodec.WAV}.Contains(Params.Codec) Then Return GuiAudioEncoder.Eac3to
             Case GuiAudioEncoder.ffmpeg
                 Return GuiAudioEncoder.ffmpeg
             Case GuiAudioEncoder.qaac

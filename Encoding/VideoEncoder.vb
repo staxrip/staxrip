@@ -330,10 +330,7 @@ Public MustInherit Class BasicVideoEncoder
 
             For Each i In {"tune", "preset", "profile"}
                 Dim match = Regex.Match(commandLine, "(.*)(--" + i + "\s\w+)(.*)")
-
-                If match.Success Then
-                    commandLine = match.Groups(2).Value + " " + match.Groups(1).Value + " " + match.Groups(3).Value
-                End If
+                If match.Success Then commandLine = match.Groups(2).Value + " " + match.Groups(1).Value + " " + match.Groups(3).Value
             Next
 
             Dim a = commandLine.SplitNoEmptyAndWhiteSpace(" ")

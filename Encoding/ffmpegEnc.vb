@@ -140,7 +140,7 @@ Public Class ffmpegEnc
             .Switch = "-c:v",
             .Text = "Codec",
             .AlwaysOn = True,
-            .Options = {"x264", "x265", "VP9", "Xvid", "ASP", "Theora", "ProRes", "UT Video", "Intel AVC", "Intel HEVC", "NVIDIA AVC", "NVIDIA HEVC"},
+            .Options = {"x264", "x265", "VP9", "Xvid", "ASP", "Theora", "ProRes", "UT Video", "Intel H.264", "Intel H.265", "NVIDIA H.264", "NVIDIA H.265"},
             .Values = {"libx264", "libx265", "libvpx-vp9", "libxvid", "mpeg4", "libtheora", "prores", "utvideo", "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
 
         Property Mode As New OptionParam With {

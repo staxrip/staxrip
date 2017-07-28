@@ -6,56 +6,49 @@ Friend Class JobsForm
     Inherits DialogBase
 
 #Region " Designer "
-
-    Friend WithEvents bnRemove As ButtonEx
     Friend WithEvents bnStart As StaxRip.UI.ButtonEx
     Friend WithEvents bnDown As StaxRip.UI.ButtonEx
     Friend WithEvents bnUp As StaxRip.UI.ButtonEx
     Friend WithEvents bnLoad As StaxRip.UI.ButtonEx
     Friend WithEvents lv As ListViewEx
     Friend WithEvents tlpMain As TableLayoutPanel
-    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
-    Friend WithEvents TableLayoutPanel3 As TableLayoutPanel
+    Friend WithEvents tlpButtonsLeft As TableLayoutPanel
+    Friend WithEvents tlpButtonsRight As TableLayoutPanel
+    Friend WithEvents bnMenu As ButtonEx
+    Friend WithEvents bnRemove As ButtonEx
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.bnDown = New StaxRip.UI.ButtonEx()
-        Me.bnRemove = New StaxRip.UI.ButtonEx()
         Me.bnUp = New StaxRip.UI.ButtonEx()
         Me.bnStart = New StaxRip.UI.ButtonEx()
         Me.bnLoad = New StaxRip.UI.ButtonEx()
         Me.lv = New StaxRip.UI.ListViewEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.TableLayoutPanel3 = New System.Windows.Forms.TableLayoutPanel()
-        Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpButtonsRight = New System.Windows.Forms.TableLayoutPanel()
+        Me.bnMenu = New StaxRip.UI.ButtonEx()
+        Me.bnRemove = New StaxRip.UI.ButtonEx()
+        Me.tlpButtonsLeft = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpMain.SuspendLayout()
-        Me.TableLayoutPanel3.SuspendLayout()
-        Me.TableLayoutPanel2.SuspendLayout()
+        Me.tlpButtonsRight.SuspendLayout()
+        Me.tlpButtonsLeft.SuspendLayout()
         Me.SuspendLayout()
         '
         'bnDown
         '
         Me.bnDown.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.bnDown.Enabled = False
-        Me.bnDown.Location = New System.Drawing.Point(5, 0)
-        Me.bnDown.Margin = New System.Windows.Forms.Padding(5, 0, 0, 0)
+        Me.bnDown.Location = New System.Drawing.Point(8, 0)
+        Me.bnDown.Margin = New System.Windows.Forms.Padding(8, 0, 0, 0)
         Me.bnDown.Size = New System.Drawing.Size(70, 70)
-        '
-        'bnRemove
-        '
-        Me.bnRemove.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnRemove.Location = New System.Drawing.Point(392, 0)
-        Me.bnRemove.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
-        Me.bnRemove.Size = New System.Drawing.Size(250, 70)
-        Me.bnRemove.Text = "Remove"
         '
         'bnUp
         '
         Me.bnUp.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.bnUp.Enabled = False
-        Me.bnUp.Location = New System.Drawing.Point(566, 0)
-        Me.bnUp.Margin = New System.Windows.Forms.Padding(0, 0, 5, 0)
+        Me.bnUp.Location = New System.Drawing.Point(756, 0)
+        Me.bnUp.Margin = New System.Windows.Forms.Padding(0, 0, 8, 0)
         Me.bnUp.Size = New System.Drawing.Size(70, 70)
         '
         'bnStart
@@ -69,7 +62,7 @@ Friend Class JobsForm
         'bnLoad
         '
         Me.bnLoad.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnLoad.Location = New System.Drawing.Point(132, 0)
+        Me.bnLoad.Location = New System.Drawing.Point(584, 0)
         Me.bnLoad.Margin = New System.Windows.Forms.Padding(0)
         Me.bnLoad.Size = New System.Drawing.Size(250, 70)
         Me.bnLoad.Text = "Load"
@@ -83,7 +76,7 @@ Friend Class JobsForm
         Me.lv.Location = New System.Drawing.Point(15, 15)
         Me.lv.Margin = New System.Windows.Forms.Padding(0, 0, 0, 14)
         Me.lv.Name = "lv"
-        Me.lv.Size = New System.Drawing.Size(1283, 543)
+        Me.lv.Size = New System.Drawing.Size(1668, 594)
         Me.lv.TabIndex = 7
         Me.lv.UseCompatibleStateImageBehavior = False
         '
@@ -92,8 +85,8 @@ Friend Class JobsForm
         Me.tlpMain.ColumnCount = 2
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpMain.Controls.Add(Me.TableLayoutPanel3, 1, 1)
-        Me.tlpMain.Controls.Add(Me.TableLayoutPanel2, 0, 1)
+        Me.tlpMain.Controls.Add(Me.tlpButtonsRight, 1, 1)
+        Me.tlpMain.Controls.Add(Me.tlpButtonsLeft, 0, 1)
         Me.tlpMain.Controls.Add(Me.lv, 0, 0)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
@@ -102,53 +95,72 @@ Friend Class JobsForm
         Me.tlpMain.RowCount = 2
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1313, 657)
+        Me.tlpMain.Size = New System.Drawing.Size(1698, 708)
         Me.tlpMain.TabIndex = 15
         '
-        'TableLayoutPanel3
+        'tlpButtonsRight
         '
-        Me.TableLayoutPanel3.AutoSize = True
-        Me.TableLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.TableLayoutPanel3.ColumnCount = 4
-        Me.TableLayoutPanel3.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel3.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TableLayoutPanel3.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TableLayoutPanel3.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TableLayoutPanel3.Controls.Add(Me.bnDown, 0, 0)
-        Me.TableLayoutPanel3.Controls.Add(Me.bnLoad, 1, 0)
-        Me.TableLayoutPanel3.Controls.Add(Me.bnRemove, 2, 0)
-        Me.TableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel3.Location = New System.Drawing.Point(656, 572)
-        Me.TableLayoutPanel3.Margin = New System.Windows.Forms.Padding(0)
-        Me.TableLayoutPanel3.Name = "TableLayoutPanel3"
-        Me.TableLayoutPanel3.RowCount = 1
-        Me.TableLayoutPanel3.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel3.Size = New System.Drawing.Size(642, 70)
-        Me.TableLayoutPanel3.TabIndex = 9
+        Me.tlpButtonsRight.AutoSize = True
+        Me.tlpButtonsRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.tlpButtonsRight.ColumnCount = 5
+        Me.tlpButtonsRight.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpButtonsRight.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpButtonsRight.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpButtonsRight.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpButtonsRight.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpButtonsRight.Controls.Add(Me.bnMenu, 2, 0)
+        Me.tlpButtonsRight.Controls.Add(Me.bnLoad, 4, 0)
+        Me.tlpButtonsRight.Controls.Add(Me.bnRemove, 3, 0)
+        Me.tlpButtonsRight.Controls.Add(Me.bnDown, 0, 0)
+        Me.tlpButtonsRight.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpButtonsRight.Location = New System.Drawing.Point(849, 623)
+        Me.tlpButtonsRight.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpButtonsRight.Name = "tlpButtonsRight"
+        Me.tlpButtonsRight.RowCount = 1
+        Me.tlpButtonsRight.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpButtonsRight.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70.0!))
+        Me.tlpButtonsRight.Size = New System.Drawing.Size(834, 70)
+        Me.tlpButtonsRight.TabIndex = 9
         '
-        'TableLayoutPanel2
+        'bnMenu
         '
-        Me.TableLayoutPanel2.AutoSize = True
-        Me.TableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.TableLayoutPanel2.ColumnCount = 2
-        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.Controls.Add(Me.bnStart, 0, 0)
-        Me.TableLayoutPanel2.Controls.Add(Me.bnUp, 1, 0)
-        Me.TableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel2.Location = New System.Drawing.Point(15, 572)
-        Me.TableLayoutPanel2.Margin = New System.Windows.Forms.Padding(0)
-        Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
-        Me.TableLayoutPanel2.RowCount = 1
-        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(641, 70)
-        Me.TableLayoutPanel2.TabIndex = 8
+        Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.bnMenu.Location = New System.Drawing.Point(234, 0)
+        Me.bnMenu.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnMenu.ShowMenuSymbol = True
+        Me.bnMenu.Size = New System.Drawing.Size(70, 70)
+        '
+        'bnRemove
+        '
+        Me.bnRemove.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnRemove.Location = New System.Drawing.Point(319, 0)
+        Me.bnRemove.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
+        Me.bnRemove.Size = New System.Drawing.Size(250, 70)
+        Me.bnRemove.Text = "Remove"
+        '
+        'tlpButtonsLeft
+        '
+        Me.tlpButtonsLeft.AutoSize = True
+        Me.tlpButtonsLeft.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.tlpButtonsLeft.ColumnCount = 2
+        Me.tlpButtonsLeft.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpButtonsLeft.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpButtonsLeft.Controls.Add(Me.bnStart, 0, 0)
+        Me.tlpButtonsLeft.Controls.Add(Me.bnUp, 1, 0)
+        Me.tlpButtonsLeft.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpButtonsLeft.Location = New System.Drawing.Point(15, 623)
+        Me.tlpButtonsLeft.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpButtonsLeft.Name = "tlpButtonsLeft"
+        Me.tlpButtonsLeft.RowCount = 1
+        Me.tlpButtonsLeft.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpButtonsLeft.Size = New System.Drawing.Size(834, 70)
+        Me.tlpButtonsLeft.TabIndex = 8
         '
         'JobsForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(1313, 657)
+        Me.ClientSize = New System.Drawing.Size(1698, 708)
         Me.Controls.Add(Me.tlpMain)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.KeyPreview = True
@@ -158,8 +170,8 @@ Friend Class JobsForm
         Me.Text = "Jobs"
         Me.tlpMain.ResumeLayout(False)
         Me.tlpMain.PerformLayout()
-        Me.TableLayoutPanel3.ResumeLayout(False)
-        Me.TableLayoutPanel2.ResumeLayout(False)
+        Me.tlpButtonsRight.ResumeLayout(False)
+        Me.tlpButtonsLeft.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -174,6 +186,7 @@ Friend Class JobsForm
         InitializeComponent()
 
         ScaleClientSize(38, 20)
+
         bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
         bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
 
@@ -189,6 +202,27 @@ Friend Class JobsForm
         lv.AddItems(Job.GetJobs())
         lv.SelectFirst()
 
+        Dim cms As New ContextMenuStripEx()
+        cms.Form = Me
+        bnMenu.ContextMenuStrip = cms
+
+        AddHandler Disposed, Sub()
+                                 FileWatcher.Dispose()
+                                 cms.Dispose()
+                             End Sub
+
+        cms.Add("Select All", Sub() SelectAll(), Keys.Control Or Keys.A, Function() lv.Items.Count > lv.SelectedItems.Count)
+        cms.Add("Select None", Sub() SelectNone(), Keys.Shift Or Keys.A, Function() lv.SelectedItems.Count > 0)
+        cms.Add("-")
+        cms.Add("Check All", Sub() CheckAll(), Keys.Control Or Keys.Space, Function() lv.Items.Count > lv.CheckedItems.Count)
+        cms.Add("Check None", Sub() CheckNone(), Keys.Shift Or Keys.Space, Function() lv.CheckedItems.Count > 0)
+        cms.Add("-")
+        cms.Add("Move Selection Up", Sub() bnUp.PerformClick(), Keys.Control Or Keys.Up, Function() lv.CanMoveUp)
+        cms.Add("Move Selection Down", Sub() bnDown.PerformClick(), Keys.Control Or Keys.Down, Function() lv.CanMoveDown)
+        cms.Add("-")
+        cms.Add("Delete Selection", Sub() bnRemove.PerformClick(), Keys.Control Or Keys.Delete, Function() lv.SelectedItems.Count > 0)
+        cms.Add("Load Selection", Sub() bnLoad.PerformClick(), Keys.Control Or Keys.L, Function() lv.SelectedItems.Count = 1)
+
         UpdateControls()
 
         FileWatcher.Path = Folder.Settings
@@ -198,6 +232,30 @@ Friend Class JobsForm
         AddHandler FileWatcher.Created, AddressOf Reload
         AddHandler lv.ItemsChanged, AddressOf HandleItemsChanged
         FileWatcher.EnableRaisingEvents = True
+    End Sub
+
+    Private Sub CheckNone()
+        For Each i As ListViewItem In lv.Items
+            i.Checked = False
+        Next
+    End Sub
+
+    Private Sub CheckAll()
+        For Each i As ListViewItem In lv.Items
+            i.Checked = True
+        Next
+    End Sub
+
+    Private Sub SelectNone()
+        For Each i As ListViewItem In lv.Items
+            i.Selected = False
+        Next
+    End Sub
+
+    Private Sub SelectAll()
+        For Each i As ListViewItem In lv.Items
+            i.Selected = True
+        Next
     End Sub
 
     Sub HandleItemsChanged()
@@ -261,24 +319,6 @@ Friend Class JobsForm
 
     Private Sub bnLoad_Click(sender As Object, e As EventArgs) Handles bnLoad.Click
         g.MainForm.LoadProject(lv.SelectedItem.ToString)
-    End Sub
-
-    Protected Overrides Sub Dispose(disposing As Boolean)
-        MyBase.Dispose(disposing)
-        FileWatcher.Dispose()
-    End Sub
-
-    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
-        Select Case e.KeyData
-            Case Keys.Control Or Keys.A
-                For Each i As ListViewItem In lv.Items
-                    i.Selected = True
-                Next
-            Case Keys.Delete
-                lv.RemoveSelection()
-        End Select
-
-        MyBase.OnKeyDown(e)
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)

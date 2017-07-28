@@ -416,7 +416,7 @@ Public Class MP4BoxDemuxer
 
     Sub New()
         Name = "MP4Box"
-        InputExtensions = {"mp4", "mov"}
+        InputExtensions = {"mp4", "m4v", "mov"}
     End Sub
 
     Overrides Sub Run(proj As Project)

@@ -6,7 +6,7 @@ Public Class VCEEnc
     Inherits BasicVideoEncoder
 
     Sub New()
-        Name = "AMD AVC"
+        Name = "AMD H.264"
     End Sub
 
     Property ParamsStore As New PrimitiveStore

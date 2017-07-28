@@ -10,7 +10,16 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
-## 1.6.0.0 stable build
+#### 1.6.0.1 unstable test build
+
+- new: menus and shortcuts added to the job dialogs for improved management of large jobs lists
+
+- fix: improved handling of m4v files 
+
+- update: NVEnc 3.16
+- update: mkvtoolnix 14.0.0
+
+#### 1.6.0.0 stable build
 
 - new: x265 option --force-flush added
 

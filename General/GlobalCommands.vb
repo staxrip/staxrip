@@ -208,11 +208,11 @@ Public Class GlobalCommands
             Try
                 proc.Start()
 
-                For Each i In proc.Log.ToString.SplitLinesNoEmpty
-                    If Not g.MainForm.CommandManager.ProcessCommandLineArgument(i) Then
-                        Log.WriteLine("Failed to interpret output:" + BR2 + i)
-                    End If
-                Next
+                If interpretOutput Then
+                    For Each i In proc.Log.ToString.SplitLinesNoEmpty
+                        If Not g.MainForm.CommandManager.ProcessCommandLineArgument(i) Then Log.WriteLine("Failed to interpret output:" + BR2 + i)
+                    Next
+                End If
             Catch ex As Exception
                 g.ShowException(ex)
                 Log.WriteLine(ex.Message)

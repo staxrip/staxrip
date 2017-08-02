@@ -76,7 +76,7 @@ Public Class VCEEnc
             proc.Package = Package.VCEEnc
             proc.SkipStrings = {"%]", " frames: "}
             proc.File = "cmd.exe"
-            proc.Arguments = "/S /C call """ + Params.GetCommandLine(True, True) + """"
+            proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
             proc.Start()
         End Using
 
@@ -213,10 +213,7 @@ Public Class VCEEnc
             Dim ret As String
             Dim sourcePath As String
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
-
-            If includePaths AndAlso includeExecutable Then
-                ret = Package.VCEEnc.Path.Escape
-            End If
+            If includePaths AndAlso includeExecutable Then ret = Package.VCEEnc.Path.Escape
 
             Select Case Decoder.ValueText
                 Case "avs"
@@ -236,7 +233,6 @@ Public Class VCEEnc
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
-
             If q.Count > 0 Then ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
 
             Select Case Mode.Value
@@ -262,7 +258,6 @@ Public Class VCEEnc
             End If
 
             If sourcePath = "-" Then ret += " --y4m"
-
             If includePaths Then ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
 
             Return ret.Trim

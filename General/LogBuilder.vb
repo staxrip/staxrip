@@ -65,11 +65,13 @@ Public Class LogBuilder
         Return "-=".Multiply(30) + "-" + BR + value.PadLeft(30 + value.Length \ 2) + BR + "-=".Multiply(30) + "-" + BR2
     End Function
 
+    Shared EnvironmentString As String 'cached due to bug report
+
     Sub WriteEnvironment()
         If ToString.Contains("System Environment" + BR + "-=") Then Exit Sub
         WriteHeader("System Environment")
 
-        Dim temp =
+        If EnvironmentString = "" Then EnvironmentString =
             "StaxRip:" + Application.ProductVersion + BR +
             "Windows:" + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + " " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") + BR +
             "Language:" + CultureInfo.CurrentCulture.EnglishName + BR +
@@ -78,7 +80,7 @@ Public Class LogBuilder
             "Resolution:" & Screen.PrimaryScreen.Bounds.Width & " x " & Screen.PrimaryScreen.Bounds.Height & BR +
             "DPI:" & g.MainForm.DeviceDpi
 
-        WriteLine(temp.FormatColumn(":"))
+        WriteLine(EnvironmentString.FormatColumn(":"))
     End Sub
 
     Sub WriteStats()

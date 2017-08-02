@@ -1805,7 +1805,7 @@ Public Class MainForm
             If p.SourceFiles.Count = 1 AndAlso
                 p.Script.Filters(0).Name = "Manual" AndAlso
                 Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
-                Not p.SourceFile.Ext = "vpy" Then
+                Not p.SourceFile.Ext.EqualsAny("avs", "vpy") Then
 
                 preferredSourceFilter = ShowSourceFilterSelectionDialog(files(0))
             End If

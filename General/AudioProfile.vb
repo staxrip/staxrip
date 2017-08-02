@@ -617,24 +617,24 @@ Public Class GUIAudioProfile
                 proc.Header = "Audio encoding"
 
                 If cl.Contains("|") Then
-                    proc.SkipStrings = {", ETA ", "x)", "frame=", "size=", "process: ", "analyze: "}
                     proc.File = "cmd.exe"
                     proc.Arguments = "/S /C """ + cl + """"
+                Else
+                    proc.CommandLine = cl
+                End If
+
+                If cl.Contains("qaac64.exe") Then
+                    proc.Package = Package.qaac
+                    proc.SkipStrings = {", ETA ", "x)"}
                 ElseIf cl.Contains("eac3to.exe") Then
                     proc.Package = Package.eac3to
                     proc.SkipStrings = {"process: ", "analyze: "}
                     proc.TrimChars = {"-"c, " "c}
                     proc.RemoveChars = {VB6.ChrW(8)} 'backspace
-                    proc.CommandLine = cl
                 ElseIf cl.Contains("ffmpeg.exe") Then
                     proc.Package = Package.ffmpeg
                     proc.SkipStrings = {"frame=", "size="}
                     proc.Encoding = Encoding.UTF8
-                    proc.CommandLine = cl
-                ElseIf cl.Contains("qaac64.exe") Then
-                    proc.Package = Package.qaac
-                    proc.SkipString = ", ETA "
-                    proc.CommandLine = cl
                 End If
 
                 proc.Start()

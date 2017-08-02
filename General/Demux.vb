@@ -795,26 +795,28 @@ Public Class mkvDemuxer
                 proj.Log.WriteLine(MediaInfo.GetSummary(outPath) + BR)
 
                 If outPath.Ext = "aac" Then
+                    Dim m4aPath As String
+
                     Using proc As New Proc
                         proc.Project = proj
                         proc.Header = "Mux AAC to M4A"
                         proc.SkipString = "|"
                         proc.Package = Package.MP4Box
                         Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
-                        Dim m4aPath = outPath.ChangeExt("m4a")
+                        m4aPath = outPath.ChangeExt("m4a")
                         proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new " + m4aPath.Escape
                         proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
                         proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
                         proc.Start()
-
-                        If File.Exists(m4aPath) Then
-                            If Not ap Is Nothing Then ap.File = m4aPath
-                            FileHelp.Delete(outPath)
-                            proj.Log.WriteLine(BR + MediaInfo.GetSummary(m4aPath))
-                        Else
-                            Throw New ErrorAbortException("Error mux AAC to M4A", outPath)
-                        End If
                     End Using
+
+                    If File.Exists(m4aPath) Then
+                        If Not ap Is Nothing Then ap.File = m4aPath
+                        FileHelp.Delete(outPath)
+                        proj.Log.WriteLine(BR + MediaInfo.GetSummary(m4aPath))
+                    Else
+                        Throw New ErrorAbortException("Error mux AAC to M4A", outPath)
+                    End If
                 End If
             Else
                 proj.Log.Write("Error", "no output found")

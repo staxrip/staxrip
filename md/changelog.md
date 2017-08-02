@@ -10,6 +10,14 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.6.0.2 unstable test build
+
+- fix: incorrect command line generated for VCEEnc
+- fix: opening avs as source staxrip shouldn't ask which source filter to use
+- fix: executing the command to run a command line showed an error: Failed to interpret output
+
+- change: environment values of the log file header are cached
+
 #### 1.6.0.1 unstable test build
 
 - new: menus and shortcuts added to the job dialogs for improved management of large jobs lists

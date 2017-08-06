@@ -10,6 +10,19 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.6.0.3 unstable test build
+
+- new: the tray icon shows the progress as tooltip, this was removed before because of implementation problems (email request)
+
+- fix: for avs and vpy source files the detection of the video source file referenced in the script is more reliable (https://github.com/stax76/staxrip/issues/248)
+- fix: if avs and vpy files use relative paths for the video source file the temp dir is set to the path of the avs file (https://github.com/stax76/staxrip/issues/248)
+- fix: dead link in main menu to the test build page (https://github.com/stax76/staxrip/issues/252)
+- fix: 2 bugs in the x265 GUI fixed (https://github.com/stax76/staxrip/issues/255)
+
+- change: the warning that files with the same beginning then other files can't be used for file batch was removed (https://forum.doom9.org/showthread.php?p=1813803#post1813803)
+
+- usability: cmd.exe /S /C "command line" is still used for execution but now only the command line is printed to the logfile
+
 #### 1.6.0.2 unstable test build
 
 - fix: incorrect command line generated for VCEEnc

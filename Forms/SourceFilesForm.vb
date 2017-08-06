@@ -247,23 +247,6 @@ Public Class SourceFilesForm
         If DialogResult = DialogResult.OK Then
             Dim files = GetFiles()
             If g.ShowVideoSourceWarnings(GetFiles) Then e.Cancel = True
-
-            If Not IsMerge Then
-                For Each i In files
-                    For Each i2 In files
-                        Dim a = Filepath.GetDirAndBase(i).ToUpper
-                        Dim b = Filepath.GetDirAndBase(i2).ToUpper
-
-                        If a <> b Then
-                            If a.StartsWith(b) Then
-                                MsgWarn("Files starting with the names of other files can't be used.", b + BR2 + a)
-                                e.Cancel = True
-                                Exit For
-                            End If
-                        End If
-                    Next
-                Next
-            End If
         End If
 
         MyBase.OnFormClosing(e)

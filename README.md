@@ -45,9 +45,11 @@ I also provide help in various forums that can be found at:
 
 Main Menu > Help > Support Forum
 
+If you don't want to register at github or in a forum you can also mail me at frank.skare.de at gmail com
+
 Most of the time I need a full log file which you can publish at www.pastebin.com, enable auto expire after 30 days.
 
-Screenshots are also often useful, there are many free and easy to use hosting services like https://postimage.io/
+Screenshots are also often useful, there are many free and easy to use hosting services like https://postimage.io/ or https://imgbox.com/
 
 Before making a bug report please try the newest test build:
 

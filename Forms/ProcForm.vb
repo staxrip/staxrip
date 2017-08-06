@@ -279,6 +279,12 @@ Public Class ProcForm
         Activate()
     End Sub
 
+    Sub HideForm()
+        WindowState = FormWindowState.Normal
+        NotifyIcon.Visible = False
+        Hide()
+    End Sub
+
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
         UpdateControls()

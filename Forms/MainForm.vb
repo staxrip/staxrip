@@ -1839,7 +1839,6 @@ Public Class MainForm
             End If
 
             If Not g.VerifyRequirements() Then Throw New AbortException
-            g.SetTempDir()
 
             p.LastOriginalSourceFile = p.SourceFile
             p.FirstOriginalSourceFile = p.SourceFile
@@ -1853,27 +1852,37 @@ Public Class MainForm
                 End If
             ElseIf p.SourceFile.Ext.EqualsAny({"avs", "vpy"}) Then
                 Dim code = File.ReadAllText(p.SourceFile)
-                Dim reg = If(p.SourceFile.Ext = "vpy", "source\(.*?('|"")(.+?)\1", "(source)\(""(.+?)""")
-                Dim match = Regex.Match(code, reg, RegexOptions.IgnoreCase)
+                Dim matches = Regex.Matches(code, "('|"")(.+?)\1", RegexOptions.IgnoreCase)
 
-                If match.Success Then
-                    Dim path = match.Groups(2).Value
+                For Each match As Match In matches
+                    If match.Success Then
+                        Dim path = match.Groups(2).Value
 
-                    If File.Exists(path) AndAlso FileTypes.Video.Contains(path.Ext) Then
-                        If FileTypes.VideoIndex.Contains(path.Ext) Then
-                            path = GetPathFromIndexFile(path)
+                        If Not path.Contains("\") AndAlso File.Exists(p.SourceFile.Dir + path) Then
+                            p.TempDir = p.SourceFile.Dir
+                            path = p.SourceFile.Dir + path
+                        End If
 
-                            If path <> "" Then
+                        If File.Exists(path) AndAlso FileTypes.Video.Contains(path.Ext) Then
+                            If FileTypes.VideoIndex.Contains(path.Ext) Then
+                                path = GetPathFromIndexFile(path)
+
+                                If path <> "" Then
+                                    p.LastOriginalSourceFile = path
+                                    p.FirstOriginalSourceFile = path
+                                    Exit For
+                                End If
+                            Else
                                 p.LastOriginalSourceFile = path
                                 p.FirstOriginalSourceFile = path
+                                Exit For
                             End If
-                        Else
-                            p.LastOriginalSourceFile = path
-                            p.FirstOriginalSourceFile = path
                         End If
                     End If
-                End If
+                Next
             End If
+
+            g.SetTempDir()
 
             Dim sourcePAR = MediaInfo.GetVideo(p.LastOriginalSourceFile, "PixelAspectRatio")
 
@@ -4433,7 +4442,7 @@ Public Class MainForm
         ret.Add("Help|Website", Symbol.Globe)
         ret.Add("Help|Website|Issue Tracker", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.fa_bug, {"https://github.com/stax76/staxrip/issues"})
         ret.Add("Help|Website|Release Build", NameOf(g.DefaultCommands.ExecuteCommandLine), {"https://github.com/stax76/staxrip/releases"})
-        ret.Add("Help|Website|Test Build", NameOf(g.DefaultCommands.ExecuteCommandLine), {"https://github.com/stax76/staxrip/blob/master/md/test-build.md"})
+        ret.Add("Help|Website|Test Build", NameOf(g.DefaultCommands.ExecuteCommandLine), {"https://github.com/stax76/staxrip/blob/master/md/changelog.md"})
         ret.Add("Help|Donate", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Heart, {Strings.DonationsURL})
         ret.Add("Help|Scripting", NameOf(ShowScriptingHelp), Symbol.Code)
         ret.Add("Help|Command Line", NameOf(ShowCommandLineHelp), Symbol.fa_terminal)

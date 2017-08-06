@@ -187,13 +187,13 @@ Public Class CommandLineDemuxer
                 proc.SkipPatterns = {"^\d+ %$"}
             End If
 
-            proc.Header = Name
+            proc.Header = "Process"
             proc.File = Macro.Expand(Command)
             proc.Arguments = Macro.Expand(Arguments)
             proc.Start()
 
             If Command?.Contains("DGIndex") Then
-                FileHelp.Move(Filepath.GetDirAndBase(p.SourceFile) + ".log", p.TempDir + p.SourceFile.Base + "_dg.log")
+                FileHelp.Move(p.SourceFile.DirAndBase + ".log", p.TempDir + p.SourceFile.Base + "_dg.log")
                 FileHelp.Move(p.TempDir + p.SourceFile.Base + ".demuxed.m2v", p.TempDir + p.SourceFile.Base + ".m2v")
             End If
         End Using

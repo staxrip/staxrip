@@ -797,7 +797,7 @@ Public Class eac3toForm
                     If ms.Codec.Contains(",") Then ms.Codec = ms.Codec.Left(",")
 
                     ms.IsVideo = ms.Codec.EqualsAny("h264/AVC", "VC-1", "MPEG2")
-                    ms.IsAudio = ms.Codec.EqualsAny("DTS Master Audio", "DTS", "DTS-ES", "DTS Hi-Res", "DTS Express", "AC3", "AC3 EX", "AC3 Surround", "EAC3", "E-AC3", "E-AC3 EX", "E-AC3 Surround", "TrueHD/AC3", "TrueHD/AC3 (Atmos)", "TrueHD (Atmos)", "RAW/PCM", "MP2")
+                    ms.IsAudio = ms.Codec.EqualsAny("DTS Master Audio", "DTS", "DTS-ES", "DTS Hi-Res", "DTS Express", "AC3", "AC3 EX", "AC3 Headphone", "AC3 Surround", "EAC3", "E-AC3", "E-AC3 EX", "E-AC3 Surround", "TrueHD/AC3", "TrueHD/AC3 (Atmos)", "TrueHD (Atmos)", "RAW/PCM", "MP2")
                     ms.IsSubtitle = ms.Codec.StartsWith("Subtitle")
                     ms.IsChapters = ms.Codec.StartsWith("Chapters")
 
@@ -810,7 +810,7 @@ Public Class eac3toForm
                         Next
 
                         Select Case ms.Codec
-                            Case "AC3 EX", "AC3 Surround"
+                            Case "AC3 EX", "AC3 Surround", "AC3 Headphone"
                                 ms.OutputType = "ac3"
                             Case "E-AC3", "E-AC3 EX"
                                 ms.OutputType = "eac3"

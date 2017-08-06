@@ -282,7 +282,9 @@ Public Class ApplicationSettings
     End Sub
 
     Sub Migrate()
-        If Not Storage.GetBool("main menu update 1") Then
+        Dim mainMenuVersion = 12
+
+        If Not Storage.GetBool("main menu update" & mainMenuVersion) Then
             If 0 = CustomMenuMainForm.GetAllItems().Where(
                 Function(val) Not val.Parameters.NothingOrEmpty AndAlso
                 TypeOf val.Parameters(0) Is String AndAlso
@@ -291,7 +293,17 @@ Public Class ApplicationSettings
                 CustomMenuMainForm.Add("Tools|Directories|Log Files", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%Log Files"""})
             End If
 
-            Storage.SetBool("main menu update 1", True)
+            For Each i In CustomMenuMainForm.GetAllItems()
+                If i.MethodName = NameOf(g.DefaultCommands.ExecuteCommandLine) AndAlso
+                    i.Parameters.Count > 0 AndAlso TypeOf i.Parameters(0) Is String AndAlso
+                    i.Parameters(0).ToString <> "" AndAlso i.Parameters(0).ToString.EndsWith("test-build.md") Then
+
+                    i.Parameters(0) = "https://github.com/stax76/staxrip/blob/master/md/changelog.md"
+                    Exit For
+                End If
+            Next
+
+            Storage.SetBool("main menu update" & mainMenuVersion, True)
         End If
 
         For Each i In AudioProfiles

@@ -376,7 +376,9 @@ Namespace CommandLine
 
         Property Value As Integer
             Get
-                Return Store.Int(GetKey)
+                Dim ret = Store.Int(GetKey)
+                If ret > Options.Length - 1 Then ret = Options.Length - 1
+                Return ret
             End Get
             Set(value As Integer)
                 ValueValue = value

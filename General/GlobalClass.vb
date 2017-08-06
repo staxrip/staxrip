@@ -597,7 +597,7 @@ Public Class GlobalClass
                     Directory.CreateDirectory(p.TempDir)
                 Catch
                     Try
-                        p.TempDir = Filepath.GetDirAndBase(p.SourceFile) + "_temp\"
+                        p.TempDir = p.SourceFile.DirAndBase + "_temp\"
                         If Not Directory.Exists(p.TempDir) Then Directory.CreateDirectory(p.TempDir)
                     Catch
                         MsgWarn("Failed to create a temp directory. By default it's created in the directory of the source file so it's not possible to open files directly from a optical drive unless a temp directory is defined in the options. Usually discs are copied to the hard drive first using a application like MakeMKV, DVDfab or AnyDVD.")

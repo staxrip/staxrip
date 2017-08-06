@@ -308,7 +308,7 @@ Public Class x265Params
         .Name = "CompCheckQuant",
         .Text = "Comp. Check",
         .Value = 18,
-        .Help = "CRF value used as 100%",
+        .Help = "CRF value used as 100% for the compressibility check.",
         .Config = {1, 50}}
 
     Property CompCheckAimedQuality As New NumParam With {
@@ -572,16 +572,6 @@ Public Class x265Params
         .Switch = "--strict-cbr",
         .Text = "Strict CBR"}
 
-    Property CBQPoffs As New NumParam With {
-        .Switch = "--cbqpoffs",
-        .Text = "Cb QP Offset",
-        .Config = {-12, 12}}
-
-    Property CRQPoffs As New NumParam With {
-        .Switch = "--crqpoffs",
-        .Text = "CR QP Offset",
-        .Config = {-12, 12}}
-
     Property NRintra As New NumParam With {
         .Switch = "--nr-intra",
         .Text = "Intra Noise Reduct.",
@@ -808,7 +798,9 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"})
                 Add("Rate Control",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
-                    AQmode, qgSize, AQStrength, QComp, CBQPoffs,
+                    AQmode, qgSize, AQStrength, QComp,
+                    New NumParam With {.Switch = "--cbqpoffs", .Text = "CB QP Offset", .Config = {-12, 12}},
+                    New NumParam With {.Switch = "--crqpoffs", .Text = "CR QP Offset", .Config = {-12, 12}},
                     NRintra, NRinter, qpmin, qpmax, qpstep, CRFmin, CRFmax)
                 Add("Rate Control 2",
                     VBVbufsize, VBVmaxrate, VBVinit,
@@ -1041,7 +1033,7 @@ Public Class x265Params
         LimitTU.Value = 0
         LookaheadSlices.Value = 8
         MaxCuSize.Value = 0
-        MinCuSize.Value = 3
+        MinCuSize.Value = 2
         PBRatio.Value = 1.3
         PsyRD.Value = 2.0
         PsyRDOQ.Value = 1
@@ -1065,7 +1057,7 @@ Public Class x265Params
                 MaxCuSize.Value = 1
                 MaxMerge.Value = 2
                 MErange.Value = 25
-                MinCuSize.Value = 2
+                MinCuSize.Value = 1
                 RCLookahead.Value = 5
                 RD.Value = 2
                 rdoqLevel.Value = 0
@@ -1337,7 +1329,7 @@ Public Class x265Params
         LimitTU.DefaultValue = 0
         LookaheadSlices.DefaultValue = 8
         MaxCuSize.DefaultValue = 0
-        MinCuSize.DefaultValue = 3
+        MinCuSize.DefaultValue = 2
         PBRatio.DefaultValue = 1.3
         PsyRD.DefaultValue = 2.0
         PsyRDOQ.DefaultValue = 1
@@ -1361,7 +1353,7 @@ Public Class x265Params
                 MaxCuSize.DefaultValue = 1
                 MaxMerge.DefaultValue = 2
                 MErange.DefaultValue = 25
-                MinCuSize.DefaultValue = 2
+                MinCuSize.DefaultValue = 1
                 RCLookahead.DefaultValue = 5
                 RD.DefaultValue = 2
                 rdoqLevel.DefaultValue = 0

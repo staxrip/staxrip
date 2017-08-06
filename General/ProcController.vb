@@ -74,6 +74,8 @@ Public Class ProcController
         SetTaskbarProgress(value)
     End Sub
 
+    Shared LastProgress As Single
+
     Sub SetTaskbarProgress(value As String)
         If Proc.IsSilent Then Exit Sub
 
@@ -84,13 +86,24 @@ Public Class ProcController
             If value.Contains(" ") Then value = value.RightLast(" ")
 
             If value.IsSingle Then
-                ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
-                ProcForm.Taskbar?.SetValue(value.ToSingle, 100)
+                Dim val = value.ToSingle
+
+                If LastProgress <> val Then
+                    ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                    ProcForm.Taskbar?.SetValue(val, 100)
+                    ProcForm.NotifyIcon.Text = val & "%"
+                    LastProgress = val
+                End If
+
                 Exit Sub
             End If
         End If
 
-        ProcForm.Taskbar?.SetState(TaskbarStates.NoProgress)
+        If LastProgress <> 0 Then
+            ProcForm.NotifyIcon.Text = "StaxRip"
+            ProcForm.Taskbar?.SetState(TaskbarStates.NoProgress)
+            LastProgress = 0
+        End If
     End Sub
 
     Private Sub Click(sender As Object, e As EventArgs)
@@ -189,17 +202,12 @@ Public Class ProcController
     End Sub
 
     Shared Sub Finished()
-        g.ProcForm.BeginInvoke(Sub()
-                                   g.ProcForm.WindowState = FormWindowState.Normal
-                                   g.ProcForm.NotifyIcon.Visible = False
-                                   g.ProcForm.Hide()
-
-                                   g.MainForm.BeginInvoke(Sub()
-                                                              BlockActivation = False
-                                                              g.MainForm.Show()
-                                                              g.MainForm.Refresh()
-                                                              Aborted = False
-                                                          End Sub)
+        g.ProcForm.BeginInvoke(Sub() g.ProcForm.HideForm())
+        g.MainForm.BeginInvoke(Sub()
+                                   BlockActivation = False
+                                   g.MainForm.Show()
+                                   g.MainForm.Refresh()
+                                   Aborted = False
                                End Sub)
     End Sub
 

@@ -10,6 +10,21 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.6.0.4 unstable test build
+
+- new: AviSynth+ filter EEDI2 added
+- new: added aliases for powershell to support both app filename and name so some can use avsmeter or avsmeter64
+
+- fix: powershell error using: Tools > Advanced > PowerShell
+- fix: when the path or version was edited in the apps dialog using the toolbar the display wasn't refreshed
+- fix: scroll/caret issue in avisynth/vapoursynth editor editing long lines (https://forum.doom9.org/showthread.php?p=1814553#post1814553)
+- fix: the play feature to play avisynth/vapoursynth scripts didn't work if no audio file is selected
+- fix: show warning if vapoursynth is used with ffmpeg and mpv, both don't support vapoursynth input
+
+- change: the filters menu in the main window is build only if needed instead of everytime it's shown, this eleminates some issues of the previous implementation, it took two hours but since small things matter it's worth the time
+
+- update: ffmpeg 3.3.3
+
 #### 1.6.0.3 unstable test build
 
 - new: the tray icon shows the progress as tooltip, this was removed before because of implementation problems (email request)

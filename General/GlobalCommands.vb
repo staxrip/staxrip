@@ -98,8 +98,11 @@ Public Class GlobalCommands
         Dim val As String
 
         For Each pack In Package.Items.Values
-            If pack.Filename.Ext = "exe" AndAlso Not pack.Name.Contains(" ") Then
-                val += "set-alias " + pack.Name + " \""" + pack.Path + "\"";"
+            If pack.Path <> "" AndAlso pack.Filename.Ext = "exe" AndAlso Not pack.Name.Contains(" ") Then
+                Dim name = pack.Name.Replace(" ", "")
+                Dim filename = pack.Filename.Replace(" ", "")
+                val += "set-alias " + name + " \""" + pack.Path + "\"";"
+                If name <> filename Then val += "set-alias " + filename + " \""" + pack.Path + "\"";"
             End If
         Next
 
@@ -377,12 +380,6 @@ Public Class GlobalCommands
                 msg += BR2 + "# version missing for " + pack.Name
             Else
                 If Not pack.IsCorrectVersion Then msg += BR2 + "# wrong version for " + pack.Name
-
-                If Not pack.Version.ContainsAny({"x86", "x64"}) AndAlso
-                    Not pack.Filename.ContainsAny({".jar", ".py", ".avsi"}) Then
-
-                    msg += BR2 + "# x86/x64 missing for " + pack.Name
-                End If
             End If
 
             'does help file exist?

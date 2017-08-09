@@ -396,7 +396,6 @@ Public Class AppsForm
                 tsbVersion.PerformClick()
         End Select
 
-        ShowActivePackage()
         MyBase.OnKeyDown(e)
     End Sub
 
@@ -479,6 +478,7 @@ Public Class AppsForm
 
             If d.ShowDialog = DialogResult.OK Then
                 s.Storage.SetString(CurrentPackage.Name + "custom path", d.FileName)
+                ShowActivePackage()
             End If
         End Using
     End Sub
@@ -512,6 +512,8 @@ Public Class AppsForm
             Catch ex As Exception
                 g.ShowException(ex)
             End Try
+
+            ShowActivePackage()
         End If
     End Sub
 End Class

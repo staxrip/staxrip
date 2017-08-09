@@ -460,6 +460,8 @@ Namespace UI
         Private Action As Action
 
         Property EnabledFunc As Func(Of Boolean)
+        Property VisibleFunc As Func(Of Boolean)
+
         Property Form As Form
 
         Sub New()
@@ -495,7 +497,8 @@ Namespace UI
 
         Sub KeyDown(sender As Object, e As KeyEventArgs)
             If Enabled AndAlso e.KeyData = Shortcut AndAlso
-                If(EnabledFunc Is Nothing, True, EnabledFunc.Invoke) Then
+                If(EnabledFunc Is Nothing, True, EnabledFunc.Invoke) AndAlso
+                If(VisibleFunc Is Nothing, True, VisibleFunc.Invoke) Then
 
                 PerformClick()
                 e.Handled = True
@@ -504,6 +507,7 @@ Namespace UI
 
         Sub Opening(sender As Object, e As CancelEventArgs)
             If Not EnabledFunc Is Nothing Then Enabled = EnabledFunc.Invoke
+            If Not VisibleFunc Is Nothing Then Visible = VisibleFunc.Invoke
         End Sub
 
         Protected Overrides Sub OnClick(e As EventArgs)
@@ -675,7 +679,7 @@ Namespace UI
         End Property
 
         Function Add(path As String) As ActionMenuItem
-            Return ActionMenuItem.Add(Items, path, Nothing)
+            Return Add(path, Nothing)
         End Function
 
         Function Add(path As String,
@@ -697,6 +701,7 @@ Namespace UI
                      enabled As Boolean) As ActionMenuItem
 
             Dim ret = ActionMenuItem.Add(Items, path, action)
+            If ret Is Nothing Then Exit Function
 
             ret.Form = Form
             ret.Help = help

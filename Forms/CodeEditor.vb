@@ -170,8 +170,6 @@ Public Class CodeEditor
                                                       Parent.PerformLayout()
                                                       LastTextSize = TrimmedTextSize
                                                   End If
-
-                                                  rtbScript.ScrollToCaret()
                                               End Sub
             ColumnCount = 2
             ColumnStyles.Add(New ColumnStyle(SizeType.AutoSize))
@@ -277,14 +275,7 @@ Public Class CodeEditor
         Sub HandleMouseUp(sender As Object, e As MouseEventArgs)
             If e.Button <> MouseButtons.Right Then Exit Sub
             Menu.Items.Clear()
-            Dim filterProfiles As List(Of FilterCategory)
-
-            If p.Script.Engine = ScriptEngine.AviSynth Then
-                filterProfiles = s.AviSynthProfiles
-            Else
-                filterProfiles = s.VapourSynthProfiles
-            End If
-
+            Dim filterProfiles = If(p.Script.Engine = ScriptEngine.AviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
             Dim code = rtbScript.Text.FixBreak
 
             For Each i In FilterParameters.Definitions
@@ -300,18 +291,11 @@ Public Class CodeEditor
                 If i.Name = cbActive.Text Then
                     Dim cat = i
                     Dim catMenuItem = Menu.Add(i.Name)
-                    Dim catMenuItemTemp = Menu.Add(i.Name + " | a")
 
-                    AddHandler catMenuItem.DropDownOpened, Sub()
-                                                               If catMenuItem.DropDownItems.Count > 1 Then Exit Sub
-                                                               catMenuItem.DropDownItems.RemoveAt(0)
-
-                                                               For Each iFilter In cat.Filters
-                                                                   Dim tip = iFilter.Script
-                                                                   ActionMenuItem.Add(Menu.Items, If(cat.Filters.Count > 1, iFilter.Category + " | ", "") + iFilter.Path, AddressOf ReplaceClick, iFilter.GetCopy, tip)
-                                                                   Application.DoEvents()
-                                                               Next
-                                                           End Sub
+                    For Each iFilter In cat.Filters
+                        Dim tip = iFilter.Script
+                        ActionMenuItem.Add(Menu.Items, If(cat.Filters.Count > 1, iFilter.Category + " | ", "") + iFilter.Path, AddressOf ReplaceClick, iFilter.GetCopy, tip)
+                    Next
                 End If
             Next
 
@@ -325,45 +309,32 @@ Public Class CodeEditor
             ActionMenuItem.Add(replace.DropDownItems, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""))
             ActionMenuItem.Add(insert.DropDownItems, "Blank", AddressOf InsertClick, New VideoFilter("Misc", "", ""))
 
-            AddHandler replace.DropDownOpened, Sub()
-                                                   If replace.DropDownItems.Count > 1 Then Exit Sub
+            For Each i In filterProfiles
+                For Each i2 In i.Filters
+                    Dim tip = i2.Script
+                    ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
+                Next
+            Next
 
-                                                   For Each i In filterProfiles
-                                                       For Each i2 In i.Filters
-                                                           Dim tip = i2.Script
-                                                           ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
-                                                           Application.DoEvents()
-                                                       Next
-                                                   Next
-                                               End Sub
+            For Each i In filterProfiles
+                For Each i2 In i.Filters
+                    Dim tip = i2.Script
+                    ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
+                Next
+            Next
 
-            AddHandler insert.DropDownOpened, Sub()
-                                                  If insert.DropDownItems.Count > 1 Then Exit Sub
-
-                                                  For Each i In filterProfiles
-                                                      For Each i2 In i.Filters
-                                                          Dim tip = i2.Script
-                                                          ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
-                                                          Application.DoEvents()
-                                                      Next
-                                                  Next
-                                              End Sub
             Dim add = Menu.Add("Add")
             add.SetImage(Symbol.Add)
 
             ActionMenuItem.Add(add.DropDownItems, "Blank", AddressOf AddClick, New VideoFilter("Misc", "", ""))
 
-            AddHandler add.DropDownOpened, Sub()
-                                               If add.DropDownItems.Count > 1 Then Exit Sub
+            For Each i In filterProfiles
+                For Each i2 In i.Filters
+                    Dim tip = i2.Script
+                    ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
+                Next
+            Next
 
-                                               For Each i In filterProfiles
-                                                   For Each i2 In i.Filters
-                                                       Dim tip = i2.Script
-                                                       ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
-                                                       Application.DoEvents()
-                                                   Next
-                                               Next
-                                           End Sub
             Menu.Add("-")
 
             Dim removeMenuItem = Menu.Add("Remove", AddressOf RemoveClick)
@@ -543,6 +514,8 @@ Public Class CodeEditor
 
             rtbScript.Text = tup.Value.TrimEnd + BR
             rtbScript.SelectionStart = rtbScript.Text.Length
+            Application.DoEvents()
+            Menu.Items.Clear()
         End Sub
 
         Sub InsertClick(filter As VideoFilter)
@@ -567,6 +540,8 @@ Public Class CodeEditor
             flow.ResumeLayout()
             filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
             filterTable.rtbScript.Focus()
+            Application.DoEvents()
+            Menu.Items.Clear()
         End Sub
 
         Sub AddClick(filter As VideoFilter)
@@ -587,6 +562,8 @@ Public Class CodeEditor
             flow.Controls.Add(filterTable)
             filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
             filterTable.rtbScript.Focus()
+            Application.DoEvents()
+            Menu.Items.Clear()
         End Sub
     End Class
 End Class

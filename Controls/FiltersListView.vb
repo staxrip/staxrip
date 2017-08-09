@@ -1,3 +1,4 @@
+Imports System.ComponentModel
 Imports StaxRip.UI
 
 Public Class FiltersListView
@@ -51,96 +52,82 @@ Public Class FiltersListView
         BlockItemCheck = False
     End Sub
 
-    Sub UpdateMenu()
-        Dim filterProfiles As List(Of FilterCategory)
-
-        If p.Script.Engine = ScriptEngine.AviSynth Then
-            filterProfiles = s.AviSynthProfiles
-        Else
-            filterProfiles = s.VapourSynthProfiles
-        End If
-
+    Sub BuildMenu()
         Menu.Items.Clear()
+        Dim filterProfiles = If(p.Script.Engine = ScriptEngine.AviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
+        Dim selectedFunc = Function() SelectedItems.Count > 0
+        Menu.Add("active").VisibleFunc = selectedFunc
+        Dim sep0 = New ToolStripSeparator
+        Menu.Items.Add(sep0)
 
-        If SelectedItems.Count > 0 Then
-            Dim selectedFilter = DirectCast(SelectedItems(0).Tag, VideoFilter)
+        Dim replace = Menu.Add("Replace")
+        replace.VisibleFunc = selectedFunc
 
-            For Each i In filterProfiles
-                If i.Name = selectedFilter.Category Then
-                    For Each i2 In i.Filters
-                        Dim tip = i2.Script
-                        ActionMenuItem.Add(Menu.Items, If(i.Filters.Count > 1, i2.Category + " | ", "") + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
-                    Next
-                End If
+        For Each i In filterProfiles
+            For Each i2 In i.Filters
+                ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2, i2.Script)
             Next
+        Next
 
-            If Menu.Items.Count > 0 Then Menu.Items.Add(New ToolStripSeparator)
+        Dim insert = Menu.Add("Insert")
+        insert.VisibleFunc = selectedFunc
 
-            Dim replace = Menu.Add("Replace")
-            Dim replaceFirst = Menu.Add("Replace | a")
-
-            AddHandler replace.DropDownOpened, Sub()
-                                                   If replace.DropDownItems.Count > 1 Then Exit Sub
-                                                   replace.DropDownItems.RemoveAt(0)
-
-                                                   For Each i In filterProfiles
-                                                       For Each i2 In i.Filters
-                                                           Dim tip = i2.Script
-                                                           ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
-                                                           Application.DoEvents()
-                                                       Next
-                                                   Next
-                                               End Sub
-            Dim insert = Menu.Add("Insert")
-            Dim insertFirst = Menu.Add("Insert | a")
-
-            AddHandler insert.DropDownOpened, Sub()
-                                                  If insert.DropDownItems.Count > 1 Then Exit Sub
-                                                  insert.DropDownItems.RemoveAt(0)
-
-                                                  For Each i In filterProfiles
-                                                      For Each i2 In i.Filters
-                                                          Dim tip = i2.Script
-                                                          ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
-                                                          Application.DoEvents()
-                                                      Next
-                                                  Next
-                                              End Sub
-        End If
+        For Each i In filterProfiles
+            For Each i2 In i.Filters
+                ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2, i2.Script)
+            Next
+        Next
 
         Dim add = Menu.Add("Add")
         add.SetImage(Symbol.Add)
-        Dim addFirst = Menu.Add("Add | a")
 
-        AddHandler add.DropDownOpened, Sub()
-                                           If add.DropDownItems.Count > 1 Then Exit Sub
-                                           add.DropDownItems.RemoveAt(0)
+        For Each i In filterProfiles
+            For Each i2 In i.Filters
+                ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2, i2.Script)
+            Next
+        Next
 
-                                           For Each i In filterProfiles
-                                               For Each i2 In i.Filters
-                                                   Dim tip = i2.Script
-                                                   ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
-                                                   Application.DoEvents()
-                                               Next
-                                           Next
-                                       End Sub
-
-        If SelectedItems.Count > 0 Then
-            Menu.Add("-")
-            Menu.Add("Remove", AddressOf RemoveClick, "Removes the selected filter.").SetImage(Symbol.Remove)
-        End If
+        Menu.Add("-")
+        Dim remove = Menu.Add("Remove", AddressOf RemoveClick, "Removes the selected filter.")
+        remove.SetImage(Symbol.Remove)
+        remove.EnabledFunc = selectedFunc
 
         Menu.Add("Edit Code...", AddressOf ShowEditor, "Dialog to edit filters.").SetImage(Symbol.Code)
         Menu.Add("Preview Code...", Sub() g.CodePreview(p.Script.GetFullScript), "Script code preview.")
         Menu.Add("Play", Sub() g.PlayScript(p.Script), "Plays the script with the AVI player.", p.SourceFile <> "").SetImage(Symbol.Play)
         Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
+
         Menu.Add("-")
-        Menu.Add("Move Up", AddressOf MoveUp, "Moves the selected item up.", SelectedItems.Count > 0 AndAlso SelectedItems(0).Index > 0).SetImage(Symbol.Up)
-        Menu.Add("Move Down", AddressOf MoveDown, "Moves the selected item down.", SelectedItems.Count > 0 AndAlso SelectedItems(0).Index < p.Script.Filters.Count - 1).SetImage(Symbol.Down)
+
+        Dim moveUpItem = Menu.Add("Move Up", AddressOf MoveUp, "Moves the selected item up.")
+        moveUpItem.SetImage(Symbol.Up)
+        moveUpItem.EnabledFunc = Function() SelectedItems.Count > 0 AndAlso SelectedItems(0).Index > 0
+
+        Dim moveDownItem = Menu.Add("Move Down", AddressOf MoveDown, "Moves the selected item down.")
+        moveDownItem.SetImage(Symbol.Down)
+        moveDownItem.EnabledFunc = Function() SelectedItems.Count > 0 AndAlso SelectedItems(0).Index < Items.Count - 1
+
         Menu.Add("-")
         Dim setup = Menu.Add("Filter Setup")
         setup.SetImage(Symbol.MultiSelect)
         g.PopulateProfileMenu(setup.DropDownItems, s.FilterSetupProfiles, AddressOf g.MainForm.ShowFilterSetupProfilesDialog, AddressOf g.MainForm.LoadFilterSetup)
+
+        AddHandler Menu.Opening, Sub()
+                                     Dim active = DirectCast(Menu.Items(0), ActionMenuItem)
+                                     active.DropDownItems.Clear()
+                                     sep0.Visible = SelectedItems.Count > 0
+                                     If SelectedItems.Count = 0 Then Exit Sub
+                                     Dim selectedFilter = DirectCast(SelectedItems(0).Tag, VideoFilter)
+                                     active.Text = selectedFilter.Category
+
+                                     For Each i In filterProfiles
+                                         If i.Name = selectedFilter.Category Then
+                                             For Each i2 In i.Filters
+                                                 ActionMenuItem.Add(active.DropDownItems, i2.Path, AddressOf ReplaceClick, i2.GetCopy, i2.Script)
+                                             Next
+                                         End If
+                                     Next
+                                 End Sub
     End Sub
 
     Sub MoveUp()
@@ -170,6 +157,7 @@ Public Class FiltersListView
     End Sub
 
     Sub ReplaceClick(filter As VideoFilter)
+        filter = filter.GetCopy
         Dim tup = Macro.ExpandGUI(filter.Script)
         If tup.Cancel Then Exit Sub
 
@@ -188,6 +176,7 @@ Public Class FiltersListView
     End Sub
 
     Private Sub InsertClick(filter As VideoFilter)
+        filter = filter.GetCopy
         Dim tup = Macro.ExpandGUI(filter.Script)
         If tup.Cancel Then Exit Sub
 
@@ -206,6 +195,7 @@ Public Class FiltersListView
     End Sub
 
     Private Sub AddClick(filter As VideoFilter)
+        filter = filter.GetCopy
         Dim tup = Macro.ExpandGUI(filter.Script)
         If tup.Cancel Then Exit Sub
 
@@ -285,10 +275,5 @@ Public Class FiltersListView
             filter.Active = e.NewValue = CheckState.Checked
             RaiseChangedAsync()
         End If
-    End Sub
-
-    Protected Overrides Sub OnMouseUp(e As MouseEventArgs)
-        If e.Button = MouseButtons.Right Then UpdateMenu()
-        MyBase.OnMouseUp(e)
     End Sub
 End Class

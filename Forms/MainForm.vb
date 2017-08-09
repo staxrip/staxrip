@@ -1650,6 +1650,7 @@ Public Class MainForm
         UpdateRecentProjectsMenu()
         g.RaiseAppEvent(ApplicationEvent.ProjectLoaded)
         g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
+        FiltersListView.BuildMenu()
 
         Return True
     End Function
@@ -2180,6 +2181,8 @@ Public Class MainForm
             If Not isNotEncoding Then Throw New AbortException
         Catch ex As Exception
             g.OnException(ex)
+        Finally
+            If isNotEncoding Then ProcController.Finished()
         End Try
     End Sub
 
@@ -2575,6 +2578,14 @@ Public Class MainForm
                     CanIgnoreTip = False
                     Return False
                 End If
+            End If
+        End If
+
+        If p.Script.Engine = ScriptEngine.VapourSynth AndAlso TypeOf p.VideoEncoder Is ffmpegEnc Then
+            If ProcessTip("ffmpeg video encoding with VapourSynth input isn't supported.") Then
+                gbAssistant.Text = "Incompatible settings"
+                CanIgnoreTip = False
+                Return False
             End If
         End If
 
@@ -4203,16 +4214,8 @@ Public Class MainForm
 
     <Command("Dialog to configure AviSynth filter profiles.")>
     Sub ShowFilterProfilesDialog()
-        Dim filterProfiles As List(Of FilterCategory)
-        Dim getDefaults As Func(Of List(Of FilterCategory))
-
-        If p.Script.Engine = ScriptEngine.AviSynth Then
-            filterProfiles = s.AviSynthProfiles
-            getDefaults = Function() FilterCategory.GetAviSynthDefaults
-        Else
-            filterProfiles = s.VapourSynthProfiles
-            getDefaults = Function() FilterCategory.GetVapourSynthDefaults
-        End If
+        Dim filterProfiles = If(p.Script.Engine = ScriptEngine.AviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
+        Dim getDefaults = If(p.Script.Engine = ScriptEngine.AviSynth, Function() FilterCategory.GetAviSynthDefaults, Function() FilterCategory.GetVapourSynthDefaults)
 
         Using f As New MacroEditorDialog
             f.SetScriptDefaults()
@@ -4270,6 +4273,7 @@ Public Class MainForm
                 Next
 
                 g.SaveSettings()
+                FiltersListView.BuildMenu()
             End If
         End Using
     End Sub
@@ -4772,6 +4776,8 @@ Public Class MainForm
             FiltersListView.OnChanged()
             Assistant()
         End If
+
+        FiltersListView.BuildMenu()
     End Sub
 
     <Command("Shows LAV Filters video decoder configuration")>
@@ -5265,7 +5271,6 @@ Public Class MainForm
     End Sub
 
     Private Sub gbFilters_MenuClick() Handles lgbFilters.LinkClick
-        FiltersListView.UpdateMenu()
         FiltersListView.ContextMenuStrip.Show(lgbFilters, 0, 16)
     End Sub
 

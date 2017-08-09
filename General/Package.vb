@@ -152,6 +152,14 @@ Public Class Package
         .Description = "SmoothAdjust is a set of 5 plugins to make YUV adjustements.",
         .AviSynthFilterNames = {"SmoothTweak", "SmoothCurve", "SmoothCustom", "SmoothTools"}})
 
+    Shared Property EEDI2 As Package = Add(New PluginPackage With {
+        .Name = "EEDI2",
+        .Filename = "EEDI2.dll",
+        .URL = "http://avisynth.nl/index.php/EEDI2",
+        .Description = "EEDI2 (Enhanced Edge Directed Interpolation) resizes an image by 2x in the vertical direction by copying the existing image to 2*y(n) and interpolating the missing field.",
+        .AviSynthFilterNames = {"EEDI2"},
+        .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "EEDI2", "EEDI2()")}})
+
     Shared Property VSRip As Package = Add(New Package With {
         .Name = "VSRip",
         .Filename = "VSRip.exe",
@@ -168,7 +176,7 @@ Public Class Package
         .AviSynthFilterNames = {"f3kdb"},
         .AviSynthFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb", "f3kdb()")},
         .VapourSynthFilterNames = {"f3kdb.Deband"},
-        .VapourSynthFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb", "clip = core.f3kdb.Deband(clip, preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")}})
+        .VapourSynthFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb...", "clip = core.f3kdb.Deband(clip, preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")}})
 
     Shared Property vinverse As Package = Add(New PluginPackage With {
         .Name = "vinverse",

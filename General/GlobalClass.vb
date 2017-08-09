@@ -338,11 +338,18 @@ Public Class GlobalClass
             PlayScript(doc, p.Audio0)
         ElseIf File.Exists(p.Audio1.File) AndAlso FileTypes.Audio.Contains(p.Audio1.File.Ext) Then
             PlayScript(doc, p.Audio1)
+        Else
+            PlayScript(doc, Nothing)
         End If
     End Sub
 
     Sub PlayScript(doc As VideoScript, ap As AudioProfile)
         If Not Package.mpv.VerifyOK(True) Then Exit Sub
+
+        If doc.Engine = ScriptEngine.VapourSynth Then
+            MsgError("VapourSynth scripts are not supported by the mpv player.")
+            Exit Sub
+        End If
 
         Dim script As New VideoScript
         script.Engine = doc.Engine
@@ -363,7 +370,7 @@ Public Class GlobalClass
 
         script.Synchronize(False)
         Dim args = script.Path.Escape
-        If FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-file " + ap.File.Escape + " " + args
+        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-file " + ap.File.Escape + " " + args
         g.StartProcess(Package.mpv.Path, args)
     End Sub
 

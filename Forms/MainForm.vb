@@ -5716,6 +5716,7 @@ Public Class MainForm
         Assistant()
         UpdateScriptsMenuAsync()
         MyBase.OnActivated(e)
+        Trace.WriteLine("MainForm.Activated")
     End Sub
 
     Protected Overrides Sub OnShown(e As EventArgs)

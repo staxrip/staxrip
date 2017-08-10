@@ -198,6 +198,8 @@ Public Class ProcController
                      SyncLock Procs
                          If Procs.Count = 0 AndAlso Not g.IsProcessing Then Finished()
                      End SyncLock
+
+                     Trace.WriteLine("ProcController.Cleanup " + Proc.Header + "; procs count: " & Procs.Count)
                  End Sub)
     End Sub
 
@@ -208,6 +210,7 @@ Public Class ProcController
                                    g.MainForm.Show()
                                    g.MainForm.Refresh()
                                    Aborted = False
+                                   Trace.WriteLine("ProcController.Finished")
                                End Sub)
     End Sub
 
@@ -272,6 +275,7 @@ Public Class ProcController
                               AddProc(proc)
                               g.ProcForm.UpdateControls()
                           End Sub)
+        Trace.WriteLine("ProcController Start " + proc.Header)
     End Sub
 
     <DllImport("kernel32.dll")>

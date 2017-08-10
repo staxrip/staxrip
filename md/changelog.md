@@ -10,6 +10,11 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.6.0.6 unstable test build
+
+- change: improved handling of very long paths in order to avoid hitting the max 260 character limitation of Windows 
+- change: due to reports that the main window disappears a debug.log file is created in the startup folder
+
 #### 1.6.0.5 unstable test build
 
 - fix: null reference crash when trying to add files for batch processing (https://github.com/stax76/staxrip/issues/262)

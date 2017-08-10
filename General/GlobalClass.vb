@@ -292,11 +292,6 @@ Public Class GlobalClass
                 End If
             End If
 
-            If i.Length > 170 Then
-                MsgError("Generated temp files might exceed 260 character file path limit, please use shorter file paths." + BR2 + i)
-                Return True
-            End If
-
             If i.Ext = "dga" Then
                 MsgError("There is no properly working x64 source filters available for DGA. There are several newer and faster x64 source filters available.")
                 Return True
@@ -588,7 +583,7 @@ Public Class GlobalClass
                     p.TempDir = p.SourceFile.Dir
                 Else
                     Dim base = p.SourceFile.Base
-                    If base.Length > 60 Then base = base.Shorten(30) + "..."
+                    If base.Length > 30 Then base = base.Shorten(15) + "..."
                     p.TempDir = p.SourceFile.Dir + base + "_temp\"
                 End If
             End If
@@ -629,7 +624,7 @@ Public Class GlobalClass
                   Optional proj As Project = Nothing)
 
         If File.Exists(sourcePath) AndAlso Not File.Exists(cachePath) AndAlso
-            Not FileTypes.VideoText.Contains(Filepath.GetExt(sourcePath)) Then
+            Not FileTypes.VideoText.Contains(sourcePath.Ext) Then
 
             Using proc As New Proc
                 proc.Header = "Index with ffmsindex"
@@ -973,6 +968,7 @@ Public Class GlobalClass
     End Sub
 
     Sub RunAutoCrop()
+        Trace.WriteLine("AutoCrop start")
         p.SourceScript.Synchronize(True)
 
         Using avi As New AVIFile(p.SourceScript.Path)
@@ -1003,6 +999,8 @@ Public Class GlobalClass
 
             CorrectCropMod()
         End Using
+
+        Trace.WriteLine("AutoCrop end")
     End Sub
 
     Sub SmartCrop()

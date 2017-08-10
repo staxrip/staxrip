@@ -121,9 +121,13 @@ Public Class LogBuilder
         If proj.SourceFile = "" Then
             Return Folder.Temp + "staxrip.log"
         ElseIf proj.TempDir = "" Then
-            Return proj.SourceFile.DirAndBase + "_staxrip.log"
+            Dim ret = proj.SourceFile.DirAndBase + "_staxrip.log"
+            If ret.Length > 259 Then ret = proj.SourceFile.Dir + proj.SourceFile.Base.Shorten(10) + "_staxrip.log"
+            Return ret
         Else
-            Return proj.TempDir + proj.TargetFile.Base + "_staxrip.log"
+            Dim ret = proj.TempDir + proj.TargetFile.Base + "_staxrip.log"
+            If ret.Length > 259 Then ret = proj.TempDir + proj.TargetFile.Base.Shorten(10) + "_staxrip.log"
+            Return ret
         End If
     End Function
 End Class

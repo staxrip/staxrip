@@ -940,6 +940,7 @@ Public Class Macro
         ret.Add(New Macro("text_editor", "Text Editor", GetType(String), "Path of the application currently associated with TXT files."))
         ret.Add(New Macro("version", "Version", GetType(String), "StaxRip version."))
         ret.Add(New Macro("video_bitrate", "Video Bitrate", GetType(Integer), "Video bitrate in Kbps"))
+        ret.Add(New Macro("video_encoder", "Video Encoder", GetType(String), "Depending on which video encoder is active returns x264, x265, nvenc, qsvenc, vceenc, aomenc, ffmpeg or xvid_encraw."))
         ret.Add(New Macro("working_dir", "Working Directory", GetType(String), "Directory of the source file or the temp directory if enabled."))
 
         ret.Sort()
@@ -1209,6 +1210,9 @@ Public Class Macro
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%processing%") Then value = value.Replace("%processing%", g.IsProcessing.ToString)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%video_encoder%") Then value = value.Replace("%video_encoder%", TryCast(p.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.GetPackage.Name)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%script_file%") Then

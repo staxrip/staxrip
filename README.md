@@ -41,17 +41,21 @@ For bug reports and feature requests please use the issue tracker:
 
 https://github.com/stax76/staxrip/issues
 
-I also provide help in various forums that can be found at:
+I also provide help in 3 forums:
 
-Main Menu > Help > Support Forum
+English http://forum.doom9.org/showthread.php?t=172068&page=55555
+
+English http://forum.videohelp.com/threads/369913-StaxRip-x64-for-AviSynth-VapourSynth-x264-x265-GPU-encoding/page55555
+
+German http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-%28Diskussion%29/page55555
 
 If you don't want to register at github or in a forum you can also mail me at frank.skare.de at gmail com
 
-Most of the time I need a full log file which you can publish at www.pastebin.com, enable auto expire after 30 days.
+Often I need a full log file which you can paste at www.pastebin.com, enable auto expire after 30 days.
 
-Screenshots are also often useful, there are many free and easy to use hosting services like https://postimage.io/ or https://imgbox.com/
+Screenshots are also often useful.
 
-Before making a bug report please try the newest test build:
+Before making a bug report please try the newest test build, download it here:
 
 https://github.com/stax76/staxrip/blob/master/md/changelog.md
 

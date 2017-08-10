@@ -57,13 +57,13 @@ Module StringExtensions
     <Extension()>
     Function Upper(instance As String) As String
         If instance = "" Then Return ""
-        Return instance.ToUpper
+        Return instance.ToUpperInvariant
     End Function
 
     <Extension()>
     Function Lower(instance As String) As String
         If instance = "" Then Return ""
-        Return instance.ToLower
+        Return instance.ToLowerInvariant
     End Function
 
     <Extension()>

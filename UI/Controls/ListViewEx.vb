@@ -118,32 +118,54 @@ Namespace UI
             Return SelectedIndices.Count > 0 AndAlso SelectedIndices(SelectedIndices.Count - 1) < Items.Count - 1
         End Function
 
+        Sub MoveSelectionTop()
+            If Not CanMoveUp() Then Exit Sub
+            Dim selected = SelectedItems.OfType(Of ListViewItem).ToList
+
+            For Each i In selected
+                Items.Remove(i)
+            Next
+
+            For x = 0 To selected.Count - 1
+                Items.Insert(x, selected(x))
+            Next
+        End Sub
+
+        Sub MoveSelectionBottom()
+            If Not CanMoveDown() Then Exit Sub
+            Dim selected = SelectedItems.OfType(Of ListViewItem).ToArray
+
+            For Each i In selected
+                Items.Remove(i)
+            Next
+
+            Items.AddRange(selected)
+        End Sub
+
         Sub MoveSelectionUp()
-            If CanMoveUp() Then
-                Dim indexAbove = SelectedIndices(0) - 1
-                If indexAbove = -1 Then Exit Sub
-                Dim itemAbove = Items(indexAbove)
-                Items.RemoveAt(indexAbove)
-                Dim iLastItem = SelectedIndices(SelectedIndices.Count - 1)
-                Items.Insert(iLastItem + 1, itemAbove)
-                UpdateControls()
-                OnItemsChanged()
-                EnsureVisible(indexAbove)
-            End If
+            If Not CanMoveUp() Then Exit Sub
+            Dim indexAbove = SelectedIndices(0) - 1
+            If indexAbove = -1 Then Exit Sub
+            Dim itemAbove = Items(indexAbove)
+            Items.RemoveAt(indexAbove)
+            Dim indexLastItem = SelectedIndices(SelectedIndices.Count - 1)
+            Items.Insert(indexLastItem + 1, itemAbove)
+            UpdateControls()
+            OnItemsChanged()
+            EnsureVisible(indexAbove)
         End Sub
 
         Sub MoveSelectionDown()
-            If CanMoveDown() Then
-                Dim indexBelow = SelectedIndices(SelectedIndices.Count - 1) + 1
-                If indexBelow >= Items.Count Then Exit Sub
-                Dim itemBelow = Items(indexBelow)
-                Items.RemoveAt(indexBelow)
-                Dim iAbove = SelectedIndices(0) - 1
-                Items.Insert(iAbove + 1, itemBelow)
-                UpdateControls()
-                OnItemsChanged()
-                EnsureVisible(indexBelow)
-            End If
+            If CanMoveDown() Then Exit Sub
+            Dim indexBelow = SelectedIndices(SelectedIndices.Count - 1) + 1
+            If indexBelow >= Items.Count Then Exit Sub
+            Dim itemBelow = Items(indexBelow)
+            Items.RemoveAt(indexBelow)
+            Dim iAbove = SelectedIndices(0) - 1
+            Items.Insert(iAbove + 1, itemBelow)
+            UpdateControls()
+            OnItemsChanged()
+            EnsureVisible(indexBelow)
         End Sub
 
         Sub RemoveSelection()

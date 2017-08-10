@@ -2,12 +2,6 @@
 Imports StaxRip.UI
 
 Public Class Scripting
-    Shared Sub RunCSharp(code As String)
-        MsgError("C# scripting support was removed because it was very heavy requiring 47 nuget packages." + BR2 +
-                 "You can port existing C# code to PowerShell or load and execute an C# Assembly with PowerShell." + BR2 +
-                 "Visit the support forum.")
-    End Sub
-
     Shared Function RunPowershell(code As String) As Object
         Try
             Using runspace = RunspaceFactory.CreateRunspace()
@@ -49,8 +43,9 @@ End Class
 
 Public Enum ApplicationEvent
     <DispName("After Project Loaded")> ProjectLoaded
-    <DispName("After Project Encoded")> JobEncoded
-    <DispName("Before Project Encoding")> BeforeEncoding
+    <DispName("After Project Processed")> JobProcessed
+    <DispName("After Video Encoded")> VideoEncoded
+    <DispName("Before Job Processed")> BeforeJobProcessed
     <DispName("After Source Loaded")> AfterSourceLoaded
     <DispName("Application Exit")> ApplicationExit
     <DispName("After Project Or Source Loaded")> ProjectOrSourceLoaded

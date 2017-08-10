@@ -48,9 +48,7 @@ Namespace UI
             End Get
             Set(value As String)
                 For Each i As TCondition In System.Enum.GetValues(GetType(TCondition))
-                    If DispNameAttribute.GetValueForEnum(i) = value Then
-                        Condition = i
-                    End If
+                    If DispNameAttribute.GetValueForEnum(i) = value Then Condition = i
                 Next
             End Set
         End Property
@@ -99,13 +97,13 @@ Namespace UI
         Overrides Function Eval() As Boolean
             Select Case Condition
                 Case StringCondition.Contains
-                    Return PropertyValue.Contains(Value)
+                    Return PropertyValue.Lower.Contains(Value.Lower)
                 Case StringCondition.DoesntContain
-                    Return Not PropertyValue.Contains(Value)
+                    Return Not PropertyValue.Lower.Contains(Value.Lower)
                 Case StringCondition.Is
-                    Return PropertyValue = Value
+                    Return PropertyValue.Lower = Value.Lower
                 Case StringCondition.IsNot
-                    Return PropertyValue <> Value
+                    Return PropertyValue.Lower <> Value.Lower
             End Select
         End Function
 

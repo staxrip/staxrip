@@ -2709,7 +2709,6 @@ Public Class MainForm
             For Each i In audioTracks
                 If i.File <> "" AndAlso Not p.VideoEncoder.Muxer.IsSupported(i.OutputFileType) AndAlso Not i.OutputFileType = "ignore" Then
                     If ProcessTip("The audio format is '" + i.OutputFileType + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ". Select another audio profile or another container.") Then
-                        g.Highlight(True, llAudioProfile0)
                         g.Highlight(True, llMuxer)
                         gbAssistant.Text = "Audio format conflicts with container"
                         CanIgnoreTip = False

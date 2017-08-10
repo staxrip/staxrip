@@ -65,7 +65,7 @@ Public Class GlobalClass
 
     Sub ProcessJob()
         Try
-            g.RaiseAppEvent(ApplicationEvent.BeforeEncoding)
+            g.RaiseAppEvent(ApplicationEvent.BeforeJobProcessed)
             Dim startTime = DateTime.Now
 
             If p.BatchMode Then
@@ -76,12 +76,7 @@ Public Class GlobalClass
                 g.MainForm.SaveProjectPath(g.ProjectPath)
             End If
 
-            If p.Script.Engine = ScriptEngine.AviSynth Then
-                Log.WriteHeader("AviSynth Script")
-            Else
-                Log.WriteHeader("VapourSynth Script")
-            End If
-
+            Log.WriteHeader(If(p.Script.Engine = ScriptEngine.AviSynth, "AviSynth Script", "VapourSynth Script"))
             Log.WriteLine(p.Script.GetFullScript)
             Log.WriteHeader("Script Properties")
 
@@ -149,7 +144,7 @@ Public Class GlobalClass
 
             g.ArchiveLogFile(Log.GetPath)
             g.DeleteTempFiles()
-            g.RaiseAppEvent(ApplicationEvent.JobEncoded)
+            g.RaiseAppEvent(ApplicationEvent.JobProcessed)
             Job.RemoveJob(g.ProjectPath)
         Catch ex As ErrorAbortException
             Log.Save()
@@ -223,6 +218,7 @@ Public Class GlobalClass
             End If
 
             p.VideoEncoder.Encode()
+            g.RaiseAppEvent(ApplicationEvent.VideoEncoded)
         End If
     End Sub
 

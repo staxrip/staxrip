@@ -10,6 +10,17 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.6.0.5 unstable test build
+
+- fix: null reference crash when trying to add files for batch processing (https://github.com/stax76/staxrip/issues/262)
+
+- new: VP8 codec added to ffmpeg encoder (https://github.com/stax76/staxrip/issues/259)
+- new: added feature to move jobs to the top or bottom in the jobs dialog (request per private message)
+- new: added new event after video encoding and macro to get the video encoder name (https://github.com/stax76/staxrip/issues/261)
+
+- update: NVEnc 3.17
+- update: nnedi3 0.9.4.45
+
 #### 1.6.0.4 unstable test build
 
 - new: AviSynth+ filter EEDI2 added

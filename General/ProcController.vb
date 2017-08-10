@@ -202,7 +202,7 @@ Public Class ProcController
     End Sub
 
     Shared Sub Finished()
-        g.ProcForm.BeginInvoke(Sub() g.ProcForm.HideForm())
+        g.ProcForm?.BeginInvoke(Sub() g.ProcForm.HideForm())
         g.MainForm.BeginInvoke(Sub()
                                    BlockActivation = False
                                    g.MainForm.Show()

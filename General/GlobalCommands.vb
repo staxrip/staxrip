@@ -240,12 +240,6 @@ Public Class GlobalCommands
         End If
     End Sub
 
-    'TODO: legacy
-    <Command("Executes C# script code.")>
-    Sub ExecuteCSharpScript(scriptCode As String)
-        Scripting.RunCSharp(scriptCode)
-    End Sub
-
     <Command("Starts a tool by name as shown in the app manage dialog.")>
     Sub StartTool(<DispName("Tool Name")>
                   <Description("Tool name as shown in the app manage dialog.")>

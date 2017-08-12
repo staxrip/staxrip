@@ -329,7 +329,6 @@ Public Class Proc
                     End If
 
                     errorMessage += BR2 + Log.ToString() + BR
-
                     Throw New ErrorAbortException("Error " + Header, errorMessage, Project)
                 End If
 

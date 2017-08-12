@@ -211,6 +211,11 @@ Friend Class JobsForm
                                  cms.Dispose()
                              End Sub
 
+        AddHandler lv.ItemRemoved, Sub(item)
+                                       Dim fp = DirectCast(item.Tag, StringBooleanPair).Key
+                                       If fp.StartsWith(Folder.Settings + "Batch Projects\") Then FileHelp.Delete(fp)
+                                   End Sub
+
         cms.Add("Select All", Sub() SelectAll(), Keys.Control Or Keys.A, Function() lv.Items.Count > lv.SelectedItems.Count)
         cms.Add("Select None", Sub() SelectNone(), Keys.Shift Or Keys.A, Function() lv.SelectedItems.Count > 0)
         cms.Add("-")

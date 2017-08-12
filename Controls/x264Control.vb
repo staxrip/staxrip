@@ -154,8 +154,7 @@ Public Class x264Control
     End Sub
 
     Sub UpdateMenu()
-        cms.Items.Clear()
-
+        cms.Items.ClearAndDisplose
         Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
 
         If lv.SelectedItems.Count > 0 Then

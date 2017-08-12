@@ -20,7 +20,6 @@ Public Class SourceFilesForm
     Friend WithEvents bnUp As ButtonEx
     Friend WithEvents bnRemove As ButtonEx
     Friend WithEvents bnAdd As ButtonEx
-    Friend WithEvents cbDemuxAndIndex As System.Windows.Forms.CheckBox
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents tlpMain As TableLayoutPanel
     Friend WithEvents pnLB As Panel
@@ -33,7 +32,6 @@ Public Class SourceFilesForm
         Me.bnRemove = New StaxRip.UI.ButtonEx()
         Me.bnUp = New StaxRip.UI.ButtonEx()
         Me.bnAdd = New StaxRip.UI.ButtonEx()
-        Me.cbDemuxAndIndex = New System.Windows.Forms.CheckBox()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
@@ -87,17 +85,6 @@ Public Class SourceFilesForm
         Me.bnAdd.Size = New System.Drawing.Size(250, 80)
         Me.bnAdd.Text = "&Add..."
         '
-        'cbDemuxAndIndex
-        '
-        Me.cbDemuxAndIndex.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.cbDemuxAndIndex.AutoSize = True
-        Me.cbDemuxAndIndex.Location = New System.Drawing.Point(16, 714)
-        Me.cbDemuxAndIndex.Margin = New System.Windows.Forms.Padding(8)
-        Me.cbDemuxAndIndex.Name = "cbDemuxAndIndex"
-        Me.cbDemuxAndIndex.Size = New System.Drawing.Size(672, 52)
-        Me.cbDemuxAndIndex.TabIndex = 3
-        Me.cbDemuxAndIndex.Text = "Demux and index before creating jobs"
-        '
         'bnCancel
         '
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
@@ -124,7 +111,6 @@ Public Class SourceFilesForm
         Me.tlpMain.Controls.Add(Me.bnAdd, 2, 0)
         Me.tlpMain.Controls.Add(Me.bnCancel, 2, 7)
         Me.tlpMain.Controls.Add(Me.bnOK, 1, 7)
-        Me.tlpMain.Controls.Add(Me.cbDemuxAndIndex, 0, 7)
         Me.tlpMain.Controls.Add(Me.bnUp, 2, 3)
         Me.tlpMain.Controls.Add(Me.bnDown, 2, 4)
         Me.tlpMain.Controls.Add(Me.pnLB, 0, 0)
@@ -172,7 +158,6 @@ Public Class SourceFilesForm
         Me.Name = "SourceFilesForm"
         Me.Text = "Source Files"
         Me.tlpMain.ResumeLayout(False)
-        Me.tlpMain.PerformLayout()
         Me.pnLB.ResumeLayout(False)
         Me.ResumeLayout(False)
 

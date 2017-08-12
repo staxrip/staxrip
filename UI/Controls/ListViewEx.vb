@@ -30,6 +30,7 @@ Namespace UI
         Property ItemCheckProperty As String
 
         Event ItemsChanged()
+        Event ItemRemoved(item As ListViewItem)
 
         Sub OnItemsChanged()
             RaiseEvent ItemsChanged()
@@ -88,7 +89,7 @@ Namespace UI
             FullRowSelect = True
             Columns.Add("")
             HeaderStyle = ColumnHeaderStyle.None
-            AddHandler Layout, Sub() Columns(0).Width = Width - 4
+            AddHandler Layout, Sub() Columns(0).Width = Width - 4 - SystemInformation.VerticalScrollBarWidth
             AddHandler HandleCreated, Sub() Columns(0).Width = Width - 4
         End Sub
 
@@ -176,19 +177,21 @@ Namespace UI
                     If Items.Count - 1 > index Then
                         Items(index + 1).Selected = True
                     Else
-                        If index > 0 Then
-                            Items(index - 1).Selected = True
-                        End If
+                        If index > 0 Then Items(index - 1).Selected = True
                     End If
 
+                    Dim removedItem = Items(index)
                     Items.RemoveAt(index)
+                    RaiseEvent ItemRemoved(removedItem)
                 Else
                     Dim iFirst = SelectedIndices(0)
                     Dim indices(SelectedIndices.Count - 1) As Integer
                     SelectedIndices.CopyTo(indices, 0)
 
                     For i = indices.Length - 1 To 0 Step -1
+                        Dim removedItem = Items(indices(i))
                         Items.RemoveAt(indices(i))
+                        RaiseEvent ItemRemoved(removedItem)
                     Next
 
                     If Items.Count > 0 Then

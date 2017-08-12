@@ -835,7 +835,7 @@ Namespace UI
 
         Sub Clear()
             Items.Clear()
-            Menu.Items.Clear()
+            Menu.Items.ClearAndDisplose
         End Sub
 
         Private Sub OnAction(text As String, value As Object)
@@ -1319,8 +1319,15 @@ Namespace UI
             Controls.Add(UpControl)
             Controls.Add(DownControl)
 
-            UpControl.ClickAction = Sub() Value += Increment
-            DownControl.ClickAction = Sub() Value -= Increment
+            UpControl.ClickAction = Sub()
+                                        Value += Increment
+                                        Value = Math.Round(Value, DecimalPlaces)
+                                    End Sub
+
+            DownControl.ClickAction = Sub()
+                                          Value -= Increment
+                                          Value = Math.Round(Value, DecimalPlaces)
+                                      End Sub
 
             AddHandler UpControl.MouseDown, Sub() Focus()
             AddHandler DownControl.MouseDown, Sub() Focus()
@@ -1380,7 +1387,7 @@ Namespace UI
 
         Protected Overrides ReadOnly Property DefaultSize() As Size
             Get
-                Return New Size(100, 36)
+                Return New Size(250, 70)
             End Get
         End Property
 
@@ -1450,11 +1457,7 @@ Namespace UI
         End Sub
 
         Private Sub TextBox_TextChanged(sender As Object, e As EventArgs) Handles TextBox.TextChanged
-            Dim ret As Decimal
-
-            If Decimal.TryParse(TextBox.Text, ret) Then
-                SetValue(ret, False)
-            End If
+            If TextBox.Text.IsDouble Then SetValue(TextBox.Text.ToDouble, False)
         End Sub
 
         Private Class Edit

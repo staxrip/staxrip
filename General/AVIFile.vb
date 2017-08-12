@@ -1,6 +1,5 @@
 Imports System.Runtime.InteropServices
 Imports System.Reflection
-Imports System.Text
 
 Public Class AVIFile
     Implements IDisposable

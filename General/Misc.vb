@@ -1457,6 +1457,7 @@ Public Class Startup
     End Sub
 End Class
 
+'not used since minimum 2017 
 <Serializable()>
 Public Class Dummy
 End Class

@@ -196,16 +196,21 @@ Public Class ProcController
                      Thread.Sleep(500)
 
                      SyncLock Procs
-                         If Procs.Count = 0 AndAlso Not g.IsProcessing Then Finished()
+                         If Procs.Count = 0 AndAlso Not g.IsProcessing Then
+                             Trace.WriteLine("ProcController.Cleanup about to call Finished")
+                             Finished()
+                         End If
                      End SyncLock
 
-                     Trace.WriteLine("ProcController.Cleanup " + Proc.Header + "; procs count: " & Procs.Count)
+                     Trace.WriteLine("ProcController.Cleanup " + Proc.Header + "; procs count: " & Procs.Count & ";isprocessing: " & g.IsProcessing)
                  End Sub)
     End Sub
 
     Shared Sub Finished()
+        Trace.WriteLine("ProcController.Finished aaa")
         g.ProcForm?.BeginInvoke(Sub() g.ProcForm.HideForm())
         g.MainForm.BeginInvoke(Sub()
+                                   Trace.WriteLine("ProcController.Finished bbb")
                                    BlockActivation = False
                                    g.MainForm.Show()
                                    g.MainForm.Refresh()

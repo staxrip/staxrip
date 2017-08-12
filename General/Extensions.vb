@@ -4,6 +4,7 @@ Imports System.Reflection
 Imports System.Runtime.CompilerServices
 Imports System.Security.Cryptography
 Imports System.Text
+Imports System.Windows.Forms.Layout
 Imports Microsoft.Win32
 Imports VB6 = Microsoft.VisualBasic
 
@@ -645,6 +646,15 @@ Module ControlExtension
 End Module
 
 Module UIExtensions
+    <Extension()>
+    Sub ClearAndDisplose(instance As ToolStripItemCollection)
+        For Each i In instance.OfType(Of IDisposable).ToArray
+            i.Dispose()
+        Next
+
+        instance.Clear()
+    End Sub
+
     <Extension()>
     Function ResizeToSmallIconSize(img As Image) As Image
         If Not img Is Nothing AndAlso img.Size <> SystemInformation.SmallIconSize Then

@@ -248,7 +248,7 @@ Namespace UI
         End Sub
 
         Sub BuildMenu()
-            ToolStrip.Items.Clear()
+            ToolStrip.Items.ClearAndDisplose
             Items.Clear()
             MenuItems.Clear()
             Application.DoEvents()
@@ -518,8 +518,10 @@ Namespace UI
 
         Protected Overrides Sub Dispose(disposing As Boolean)
             MyBase.Dispose(disposing)
+            If Not Form Is Nothing Then RemoveHandler Form.KeyDown, AddressOf KeyDown
             Action = Nothing
             EnabledFunc = Nothing
+            VisibleFunc = Nothing
             Form = Nothing
         End Sub
 
@@ -628,7 +630,7 @@ Namespace UI
 
             If owner.ContextMenuStrip Is Nothing Then owner.ContextMenuStrip = New ContextMenuStripEx(components)
             Dim ret = DirectCast(owner.ContextMenuStrip, ContextMenuStripEx)
-            ret.Items.Clear()
+            ret.Items.ClearAndDisplose
 
             For Each i In definition.SplitKeepEmpty(BR)
                 If i.Contains("=") Then

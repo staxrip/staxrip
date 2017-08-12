@@ -2,7 +2,6 @@ Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Globalization
 Imports System.Reflection
-Imports System.Runtime.ExceptionServices
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -1336,7 +1335,7 @@ Public Class MainForm
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
                 i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.RecentProjects) Then
 
-                i.DropDownItems.Clear()
+                i.DropDownItems.ClearAndDisplose
 
                 SyncLock s.RecentProjects
                     For Each i2 In s.RecentProjects
@@ -1375,7 +1374,7 @@ Public Class MainForm
         For Each i In CustomMainMenu.MenuItems
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" Then
                 If i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.HelpApplications) Then
-                    i.DropDownItems.Clear()
+                    i.DropDownItems.ClearAndDisplose
 
                     For Each iPackage In Package.Items.Values
                         Dim helpPath = iPackage.GetHelpPath
@@ -1430,7 +1429,7 @@ Public Class MainForm
         For Each menuItem In CustomMainMenu.MenuItems
             If menuItem.CustomMenuItem.MethodName = "DynamicMenuItem" Then
                 If menuItem.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.Scripts) Then
-                    menuItem.DropDownItems.Clear()
+                    menuItem.DropDownItems.ClearAndDisplose
                     For Each path In files
                         If Not events.Contains(path.FileName.Left(".")) Then
                             ActionMenuItem.Add(menuItem.DropDownItems,
@@ -1467,7 +1466,7 @@ Public Class MainForm
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
                 i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.TemplateProjects) Then
 
-                i.DropDownItems.Clear()
+                i.DropDownItems.ClearAndDisplose
                 Dim items As New List(Of ActionMenuItem)
 
                 For Each i2 In files
@@ -1650,7 +1649,7 @@ Public Class MainForm
         UpdateRecentProjectsMenu()
         g.RaiseAppEvent(ApplicationEvent.ProjectLoaded)
         g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
-        FiltersListView.BuildMenu()
+        FiltersListView.RebuildMenu()
 
         Return True
     End Function
@@ -1750,10 +1749,10 @@ Public Class MainForm
     End Sub
 
     Sub OpenVideoSourceFiles(files As IEnumerable(Of String))
-        OpenVideoSourceFiles(files, True)
+        OpenVideoSourceFiles(files, False)
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isNotEncoding As Boolean)
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isEncoding As Boolean)
         Dim recoverPath = g.ProjectPath
         Dim recoverProjectPath = Folder.Temp + Guid.NewGuid.ToString + ".bin"
         Dim recoverText = Text
@@ -1782,7 +1781,7 @@ Public Class MainForm
                 End If
             Next
 
-            If p.SourceFile <> "" AndAlso isNotEncoding Then
+            If p.SourceFile <> "" AndAlso Not isEncoding Then
                 Dim templates = Directory.GetFiles(Folder.Template, "*.srip")
 
                 If templates.Length = 1 Then
@@ -1908,7 +1907,7 @@ Public Class MainForm
                 mkvMuxer.Title = MediaInfo.GetGeneral(p.LastOriginalSourceFile, "Movie")
             End If
 
-            If isNotEncoding AndAlso p.BatchMode Then
+            If Not isEncoding AndAlso p.BatchMode Then
                 Assistant()
                 Exit Sub
             End If
@@ -2178,11 +2177,11 @@ Public Class MainForm
             OpenProject(recoverProjectPath)
             Text = recoverText
             g.ProjectPath = recoverPath
-            If Not isNotEncoding Then Throw New AbortException
+            If isEncoding Then Throw New AbortException
         Catch ex As Exception
             g.OnException(ex)
         Finally
-            If isNotEncoding Then ProcController.Finished()
+            If Not isEncoding Then ProcController.Finished()
         End Try
     End Sub
 
@@ -3610,7 +3609,7 @@ Public Class MainForm
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
                 i.CustomMenuItem.Parameters(0).Equals(id) Then
 
-                i.DropDownItems.Clear()
+                i.DropDownItems.ClearAndDisplose
 
                 Select Case id
                     Case DynamicMenuItemID.EncoderProfiles
@@ -3748,8 +3747,10 @@ Public Class MainForm
 
     <Command("Adds a job to the job list.")>
     Sub AddJob(
-        <DispName("Show Confirmation"), DefaultValue(True)> showConfirmation As Boolean,
-        <DispName("Template Name"), Description("Name of the template to be loaded after the job was added. Empty to load no template.")>
+        <DispName("Show Confirmation")>
+        showConfirmation As Boolean,
+        <DispName("Template Name"),
+        Description("Name of the template to be loaded after the job was added. Empty to load no template.")>
         templateName As String)
 
         AddJob(showConfirmation, templateName, True)
@@ -4272,7 +4273,7 @@ Public Class MainForm
                 Next
 
                 g.SaveSettings()
-                FiltersListView.BuildMenu()
+                FiltersListView.RebuildMenu()
             End If
         End Using
     End Sub
@@ -4776,7 +4777,7 @@ Public Class MainForm
             Assistant()
         End If
 
-        FiltersListView.BuildMenu()
+        FiltersListView.RebuildMenu()
     End Sub
 
     <Command("Shows LAV Filters video decoder configuration")>
@@ -4883,7 +4884,6 @@ Public Class MainForm
                 Using form As New SourceFilesForm()
                     form.Text = "Merge"
                     form.IsMerge = True
-                    form.cbDemuxAndIndex.Visible = False
 
                     If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
                         Dim files = form.GetFiles
@@ -4931,21 +4931,19 @@ Public Class MainForm
 
                     If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
                         If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then Exit Sub
-                        Dim tempPath = Folder.Template + "temp.srip"
-                        p.BatchMode = Not form.cbDemuxAndIndex.Checked
-                        p.NoDialogs = form.cbDemuxAndIndex.Checked
-                        SaveProjectPath(tempPath)
+
+                        Dim batchFolder = Folder.Settings + "Batch Projects\"
+                        If Not Directory.Exists(batchFolder) Then Directory.CreateDirectory(batchFolder)
 
                         For Each i In form.GetFiles
-                            OpenProject(tempPath, False)
-                            OpenVideoSourceFile(i)
-                            g.SetTempDir()
-                            AddJob(False, Nothing, False)
+                            Dim batchProject = ObjectHelp.GetCopy(Of Project)(p)
+                            batchProject.BatchMode = True
+                            batchProject.SourceFiles = {i}.ToList
+                            Dim jobPath = batchFolder + i.Replace("\", "-").Replace(":", "-")
+                            SafeSerialization.Serialize(batchProject, jobPath)
+                            Job.AddJob(jobPath)
                         Next
 
-                        OpenProject(tempPath, False)
-                        FileHelp.Delete(tempPath)
-                        UpdateRecentProjectsMenu()
                         ShowJobsDialog()
                     End If
                 End Using
@@ -5240,8 +5238,8 @@ Public Class MainForm
     End Sub
 
     Sub UpdateAudioMenu()
-        AudioMenu0.Items.Clear()
-        AudioMenu1.Items.Clear()
+        AudioMenu0.Items.ClearAndDisplose
+        AudioMenu1.Items.ClearAndDisplose
         g.PopulateProfileMenu(AudioMenu0.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(0), AddressOf g.LoadAudioProfile0)
         g.PopulateProfileMenu(AudioMenu1.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf g.LoadAudioProfile1)
     End Sub
@@ -5274,7 +5272,7 @@ Public Class MainForm
     End Sub
 
     Private Sub gbEncoder_LinkClick() Handles lgbEncoder.LinkClick
-        EncoderMenu.Items.Clear()
+        EncoderMenu.Items.ClearAndDisplose
         g.PopulateProfileMenu(EncoderMenu.Items, s.VideoEncoderProfiles, AddressOf ShowEncoderProfilesDialog, AddressOf g.LoadVideoEncoder)
         EncoderMenu.Show(lgbEncoder, 0, 16)
     End Sub
@@ -5293,7 +5291,7 @@ Public Class MainForm
     End Sub
 
     Private Sub llContainer_Click() Handles llMuxer.Click
-        ContainerMenu.Items.Clear()
+        ContainerMenu.Items.ClearAndDisplose
         g.PopulateProfileMenu(ContainerMenu.Items, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf p.VideoEncoder.LoadMuxer)
         ContainerMenu.Show(llMuxer, 0, 16)
     End Sub
@@ -5508,7 +5506,7 @@ Public Class MainForm
                             a As Action,
                             ap As AudioProfile,
                             tb As TextBox)
-        m.Items.Clear()
+        m.Items.ClearAndDisplose
         Dim exist = File.Exists(ap.File)
 
         If ap.Streams.Count > 0 Then
@@ -5588,7 +5586,7 @@ Public Class MainForm
     End Sub
 
     Sub UpdateTargetFileMenu()
-        TargetFileMenu.Items.Clear()
+        TargetFileMenu.Items.ClearAndDisplose
         TargetFileMenu.Add("Edit...", AddressOf tbTargetFile_DoubleClick, "Change the path of the target file.")
         TargetFileMenu.Add("Play...", Sub() g.Play(p.TargetFile), "Play the target file.", File.Exists(p.TargetFile)).SetImage(Symbol.Play)
         TargetFileMenu.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), "Show MediaInfo for the target file.", File.Exists(p.TargetFile)).SetImage(Symbol.Info)
@@ -5599,7 +5597,7 @@ Public Class MainForm
     End Sub
 
     Sub UpdateSourceFileMenu()
-        SourceFileMenu.Items.Clear()
+        SourceFileMenu.Items.ClearAndDisplose
         Dim isIndex = FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile))
 
         SourceFileMenu.Add("Open...", AddressOf ShowOpenSourceDialog, "Open source files").SetImage(Symbol.OpenFile)

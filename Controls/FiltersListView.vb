@@ -52,8 +52,8 @@ Public Class FiltersListView
         BlockItemCheck = False
     End Sub
 
-    Sub BuildMenu()
-        Menu.Items.Clear()
+    Sub RebuildMenu()
+        Menu.Items.ClearAndDisplose
         Dim filterProfiles = If(p.Script.Engine = ScriptEngine.AviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
         Dim selectedFunc = Function() SelectedItems.Count > 0
         Menu.Add("active").VisibleFunc = selectedFunc
@@ -114,7 +114,7 @@ Public Class FiltersListView
 
         AddHandler Menu.Opening, Sub()
                                      Dim active = DirectCast(Menu.Items(0), ActionMenuItem)
-                                     active.DropDownItems.Clear()
+                                     active.DropDownItems.ClearAndDisplose
                                      sep0.Visible = SelectedItems.Count > 0
                                      If SelectedItems.Count = 0 Then Exit Sub
                                      Dim selectedFilter = DirectCast(SelectedItems(0).Tag, VideoFilter)

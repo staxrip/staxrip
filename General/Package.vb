@@ -490,13 +490,14 @@ Public Class Package
             .AviSynthFiltersFunc = Function() {New VideoFilter("Noise", "RemoveGrain", "RemoveGrain()")}})
 
         Add(New PluginPackage With {
-            .Name = "nnedi3",
-            .Filename = "nnedi3.dll",
-            .WebURL = "http://forum.doom9.org/showthread.php?t=170083",
-            .HelpFile = "Readme.txt",
-            .Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field.",
-            .AviSynthFilterNames = {"nnedi3", "nnedi3_rpow2"},
-            .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "nnedi3", "nnedi3(field = 1)")}})
+            .Name = "JPSDR",
+            .Filename = "Plugins_JPSDR.dll",
+            .WebURL = "https://forum.doom9.org/showthread.php?t=174248",
+            .Description = "Merge of AutoYUY2, NNEDI3 and ResampleMT",
+            .AviSynthFilterNames = {"nnedi3", "nnedi3_rpow2", "AutoYUY2", "PointResizeMT", "BilinearResizeMT", "BicubicResizeMT", "LanczosResizeMT", "Lanczos4ResizeMT", "BlackmanResizeMT", "Spline16ResizeMT", "Spline36ResizeMT", "Spline64ResizeMT", "GaussResizeMT", "SincResizeMT"},
+            .AviSynthFiltersFunc = Function() {
+                New VideoFilter("Field", "nnedi3", "nnedi3(field = 1)"),
+                New VideoFilter("Resize", "Resize MT...", "$select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;Lanczos4ResizeMT;LanczosResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch = 4)")}})
 
         Add(New PluginPackage With {
             .Name = "TIVTC",

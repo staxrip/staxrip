@@ -776,19 +776,20 @@ Public Class x265Params
                 Add("Basic", Preset, Tune, Profile,
                     New OptionParam With {.Switch = "--level-idc", .Switches = {"--level"}, .Text = "Level", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}},
                     Mode, OutputDepth, Quant)
-                Add("Analysis", RD,
+                Add("Analysis 1", RD,
                     New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis File", .Quotes = True, .BrowseFile = True},
                     New OptionParam With {.Switch = "--analysis-reuse-mode", .Text = "Analysis Mode", .Options = {"Off", "Save", "Load"}},
-                    MinCuSize, MaxCuSize, MaxTuSize, LimitRefs,
+                    MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
+                Add("Analysis 2",
                     New NumParam With {.Switch = "--analysis-reuse-level", .Text = "Refine Level", .Config = {1, 10}, .Init = 5},
                     New NumParam With {.Switch = "--scale-factor", .Text = "Scale Factor"},
                     LimitTU,
                     TUintra, TUinter, rdoqLevel,
-                    New NumParam() With {.Switch = "--dynamic-rd", .Text = "Dynamic RD", .Config = {0, 4}})
-                Add("Analysis 2", Rect, AMP,
+                    New NumParam With {.Switch = "--dynamic-rd", .Text = "Dynamic RD", .Config = {0, 4}},
+                    New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 3}},
+                    New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}})
+                Add("Analysis 3", Rect, AMP,
                     New BoolParam With {.Switch = "--tskip", .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"},
-                    New BoolParam With {.Switch = "--refine-inter", .Text = "Enable refinement of inter blocks"},
-                    New BoolParam With {.Switch = "--refine-intra", .Text = "Enable refinement of intra blocks "},
                     New BoolParam With {.Switch = "--refine-mv", .Text = "Enable refinement of motion vector for scaled video"},
                     EarlySkip, FastIntra, BIntra,
                     CUlossless,
@@ -796,7 +797,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
                     RecursionSkip,
                     New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"})
-                Add("Rate Control",
+                Add("Rate Control 1",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     AQmode, qgSize, AQStrength, QComp,
                     New NumParam With {.Switch = "--cbqpoffs", .Text = "CB QP Offset", .Config = {-12, 12}},

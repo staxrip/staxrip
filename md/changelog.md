@@ -10,6 +10,19 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.6.0.7 unstable test build
+
+- fix: issue with numeric up/down controls causing rounding problem (bug report via email)
+- fix: memory leak causing high memory and crashes while batch processing, I was able to add and process 300 files with 250 MB memory used at the end (bug report via github issue tracker)
+
+- new: nnedi3 replaced by JPSDR plugin pack which is a merge of NNEDI3, Resize MT, and AutoYUY2, I'm getting freezes with the resize mt functions though (request via doom9 forum)
+
+- change: x265 options --refine-intra and --refine-inter changed from boolean to integer (doom9 forum anouncement)
+- change: more debug infos added to find the issue that the main window goes missing after eac3to demuxing (bug report via email)
+
+- update: AVSMeter 2.6.1 (doom9 forum anouncement)
+- update: MediaInfo 0.7.98 (request via doom9 forum)
+
 #### 1.6.0.6 unstable test build
 
 - change: improved handling of very long paths in order to avoid hitting the max 260 character limitation of Windows 

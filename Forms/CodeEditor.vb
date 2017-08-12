@@ -274,7 +274,7 @@ Public Class CodeEditor
 
         Sub HandleMouseUp(sender As Object, e As MouseEventArgs)
             If e.Button <> MouseButtons.Right Then Exit Sub
-            Menu.Items.Clear()
+            Menu.Items.ClearAndDisplose
             Dim filterProfiles = If(p.Script.Engine = ScriptEngine.AviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
             Dim code = rtbScript.Text.FixBreak
 
@@ -515,7 +515,7 @@ Public Class CodeEditor
             rtbScript.Text = tup.Value.TrimEnd + BR
             rtbScript.SelectionStart = rtbScript.Text.Length
             Application.DoEvents()
-            Menu.Items.Clear()
+            Menu.Items.ClearAndDisplose
         End Sub
 
         Sub InsertClick(filter As VideoFilter)
@@ -541,7 +541,7 @@ Public Class CodeEditor
             filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
             filterTable.rtbScript.Focus()
             Application.DoEvents()
-            Menu.Items.Clear()
+            Menu.Items.ClearAndDisplose
         End Sub
 
         Sub AddClick(filter As VideoFilter)
@@ -563,7 +563,7 @@ Public Class CodeEditor
             filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
             filterTable.rtbScript.Focus()
             Application.DoEvents()
-            Menu.Items.Clear()
+            Menu.Items.ClearAndDisplose
         End Sub
     End Class
 End Class

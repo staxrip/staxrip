@@ -561,8 +561,7 @@ Public Class FilterCategory
         ret.Add(field)
 
         Dim resize As New FilterCategory("Resize")
-        resize.Filters.Add(New VideoFilter(resize.Name, "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Resize...", "$select:BilinearResize;BlackmanResize;GaussResize;Lanczos4Resize;LanczosResize;PointResize;SincResize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Resize...", "$select:BicubicResize;BilinearResize;BlackmanResize;GaussResize;Lanczos4Resize;LanczosResize;PointResize;SincResize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)"))
         resize.Filters.Add(New VideoFilter(resize.Name, "Hardware Encoder", "# hardware encoder resizes"))
         ret.Add(resize)
 

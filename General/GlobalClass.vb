@@ -29,7 +29,7 @@ Public Class GlobalClass
             Job.ActivateJob(jobPath, False)
             g.MainForm.OpenProject(jobPath, False)
             If s.PreventStandby Then PowerRequest.SuppressStandby()
-            ProcessJob()
+            ProcessJob(jobPath)
             jobs = Job.GetJobs
 
             If jobs.Count = 0 Then
@@ -63,17 +63,16 @@ Public Class GlobalClass
         End Try
     End Sub
 
-    Sub ProcessJob()
+    Sub ProcessJob(jobPath As String)
         Try
             g.RaiseAppEvent(ApplicationEvent.BeforeJobProcessed)
             Dim startTime = DateTime.Now
 
             If p.BatchMode Then
-                If g.ProjectPath Is Nothing Then g.ProjectPath = p.TempDir + p.SourceFiles(0).Base + ".srip"
+                g.MainForm.OpenVideoSourceFiles(p.SourceFiles, True)
+                g.ProjectPath = p.TempDir + p.SourceFile.Base + ".srip"
                 g.MainForm.SaveProjectPath(g.ProjectPath)
-                g.MainForm.OpenVideoSourceFiles(p.SourceFiles, False)
                 p.BatchMode = False
-                g.MainForm.SaveProjectPath(g.ProjectPath)
             End If
 
             Log.WriteHeader(If(p.Script.Engine = ScriptEngine.AviSynth, "AviSynth Script", "VapourSynth Script"))
@@ -145,7 +144,8 @@ Public Class GlobalClass
             g.ArchiveLogFile(Log.GetPath)
             g.DeleteTempFiles()
             g.RaiseAppEvent(ApplicationEvent.JobProcessed)
-            Job.RemoveJob(g.ProjectPath)
+            Job.RemoveJob(jobPath)
+            If jobPath.StartsWith(Folder.Settings + "Batch Projects\") Then File.Delete(jobPath)
         Catch ex As ErrorAbortException
             Log.Save()
             g.ShowException(ex, Nothing, 50)
@@ -735,9 +735,9 @@ Public Class GlobalClass
             Using td As New TaskDialog(Of String)
                 If msg = "" Then
                     If TypeOf e Is ErrorAbortException Then
-                        td.MainInstruction = DirectCast(e, ErrorAbortException).Title
+                        td.MainInstruction = DirectCast(e, ErrorAbortException).Title + $" ({Application.ProductVersion})"
                     Else
-                        td.MainInstruction = e.GetType.Name
+                        td.MainInstruction = e.GetType.Name + $" ({Application.ProductVersion})"
                     End If
                 Else
                     td.MainInstruction = msg

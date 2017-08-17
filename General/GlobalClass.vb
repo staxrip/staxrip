@@ -79,12 +79,13 @@ Public Class GlobalClass
             Log.WriteLine(p.Script.GetFullScript)
             Log.WriteHeader("Script Properties")
 
-            Dim props = "source frame count: " & p.SourceScript.GetFrames & BR +
-                    "source frame rate: " & p.SourceScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
-                    "source duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.SourceScript.GetFrames / p.SourceScript.GetFramerate)).ToString + BR +
-                    "target frame count: " & p.Script.GetFrames & BR +
-                    "target frame rate: " & p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
-                    "target duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.Script.GetFrames / p.Script.GetFramerate)).ToString
+            Dim props =
+                "Source Frame Count: " & p.SourceScript.GetFrames & BR +
+                "Source Frame Rate: " & p.SourceScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
+                "Source Duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.SourceScript.GetFrames / p.SourceScript.GetFramerate)).ToString + BR +
+                "Target Frame Count: " & p.Script.GetFrames & BR +
+                "Target Frame Rate: " & p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
+                "Target Duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.Script.GetFrames / p.Script.GetFramerate)).ToString
 
             Log.WriteLine(props.FormatColumn(":"))
 
@@ -588,7 +589,7 @@ Public Class GlobalClass
                 End If
             End If
 
-            p.TempDir = p.TempDir.AppendSeparator
+            p.TempDir = p.TempDir.FixDir
 
             If Not Directory.Exists(p.TempDir) Then
                 Try
@@ -790,17 +791,16 @@ Public Class GlobalClass
         g.StartProcess(Package.mpv.Path, file.Escape)
     End Sub
 
-    Sub ShowRigayaHelp(package As Package, id As String)
+    Sub ShowCommandLineHelp(package As Package, switch As String)
         Dim helpPath = package.GetHelpPath
         If Not File.Exists(helpPath) Then Exit Sub
         Dim helpContent = File.ReadAllText(helpPath)
         Dim find As String
-        If helpContent.Contains("--" + id) Then find = "--" + id
 
-        If helpContent.Contains("--" + id) Then
-            find = "--" + id
-        ElseIf helpContent.Contains("--(no-)" + id) Then
-            find = "--(no-)" + id
+        If helpContent.Contains(switch) Then
+            find = switch
+        ElseIf helpContent.Contains(switch.Replace("--", "--(no-)")) Then
+            find = switch.Replace("--", "--(no-)")
         End If
 
         If find = "" Then Exit Sub

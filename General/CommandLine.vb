@@ -84,7 +84,6 @@ Namespace CommandLine
     End Class
 
     Public MustInherit Class CommandLineParam
-        Property HelpID As String
         Property AlwaysOn As Boolean
         Property ArgsFunc As Func(Of String)
         Property Help As String

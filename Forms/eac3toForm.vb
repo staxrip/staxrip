@@ -1115,7 +1115,7 @@ Public Class eac3toForm
     End Sub
 
     Private Sub teTempDir_TextChanged() Handles teTempDir.TextChanged
-        OutputFolder = teTempDir.Text.AppendSeparator
+        OutputFolder = teTempDir.Text.FixDir
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)

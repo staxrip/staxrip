@@ -765,6 +765,12 @@ Public Class SimpleUI
                 Label.Help = value
             End Set
         End Property
+
+        Public WriteOnly Property HelpAction As Action
+            Set(value As Action)
+                Label.HelpAction = value
+            End Set
+        End Property
     End Class
 
     Public Class NumericBlock
@@ -1001,6 +1007,13 @@ Public Class SimpleUI
                 End While
 
                 DirectCast(parent, IPage).TipProvider.SetTip(value, Label, Button)
+            End Set
+        End Property
+
+        Public Shadows WriteOnly Property HelpAction As Action
+            Set(value As Action)
+                Button.HelpAction = value
+                Label.HelpAction = value
             End Set
         End Property
 

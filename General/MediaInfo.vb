@@ -278,8 +278,7 @@ Public Class MediaInfo
         If ret.IsDouble Then Return ret.ToDouble Else Return defaultValue
     End Function
 
-    Shared Function GetFrameRate(path As String,
-                                 Optional defaultValue As Double = 25) As Double
+    Shared Function GetFrameRate(path As String, Optional defaultValue As Double = 25) As Double
         Return GetMediaInfo(path).GetFrameRate(defaultValue)
     End Function
 
@@ -293,8 +292,7 @@ Public Class MediaInfo
                 Dim values = channelsString.Split("/"c)
                 Dim value0 = values(0).ToInt
                 Dim value1 = values(1).ToInt
-                If value0 > value1 Then Return value0
-                If value1 > value0 Then Return value1
+                If value0 >= value1 Then ret = value0 Else ret = value1
             End If
         End If
 
@@ -303,8 +301,7 @@ Public Class MediaInfo
     End Function
 
     Shared Function GetChannels(path As String) As Integer
-        Dim mi = GetMediaInfo(path)
-        Return mi.GetChannels
+        Return GetMediaInfo(path).GetChannels
     End Function
 
     Shared Function GetAudioCodecs(path As String) As String

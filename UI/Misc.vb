@@ -12,6 +12,11 @@ Namespace UI
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Shadows Property FontHeight As Integer
 
+        Public Sub New()
+            Font = New Font("Segoe UI", 9)
+            FontHeight = Font.Height
+        End Sub
+
         <DefaultValue(False)>
         Property FileDrop As Boolean
             Get
@@ -22,11 +27,6 @@ Namespace UI
                 AllowDrop = value
             End Set
         End Property
-
-        Public Sub New()
-            Font = New Font("Segoe UI", 9)
-            FontHeight = Font.Height
-        End Sub
 
         Protected Overrides Sub OnDragEnter(e As DragEventArgs)
             If FileDrop Then
@@ -66,7 +66,6 @@ Namespace UI
             End If
 
             MyBase.OnLoad(e)
-
             If Not DesignHelp.IsDesignMode Then s.WindowPositions?.RestorePosition(Me)
         End Sub
 
@@ -528,10 +527,7 @@ Namespace UI
 
         Shared ReadOnly Property IsDesignMode As Boolean
             Get
-                If Not IsDesignModeValue.HasValue Then
-                    IsDesignModeValue = Process.GetCurrentProcess.ProcessName = "devenv"
-                End If
-
+                If Not IsDesignModeValue.HasValue Then IsDesignModeValue = Process.GetCurrentProcess.ProcessName = "devenv"
                 Return IsDesignModeValue.Value
             End Get
         End Property

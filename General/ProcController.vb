@@ -207,16 +207,32 @@ Public Class ProcController
     End Sub
 
     Shared Sub Finished()
-        Trace.WriteLine("ProcController.Finished aaa")
-        g.ProcForm?.BeginInvoke(Sub() g.ProcForm.HideForm())
-        g.MainForm.BeginInvoke(Sub()
-                                   Trace.WriteLine("ProcController.Finished bbb")
-                                   BlockActivation = False
-                                   g.MainForm.Show()
-                                   g.MainForm.Refresh()
-                                   Aborted = False
-                                   Trace.WriteLine("ProcController.Finished")
-                               End Sub)
+        If Not g.ProcForm Is Nothing Then
+            If g.ProcForm.tlpMain.InvokeRequired Then
+                Trace.WriteLine("ProcController.Finished ProcForm InvokeRequired")
+                g.ProcForm.BeginInvoke(Sub() g.ProcForm.HideForm())
+            Else
+                Trace.WriteLine("ProcController.Finished ProcForm no InvokeRequired")
+                g.ProcForm.HideForm()
+            End If
+        End If
+
+        Dim mainSub = Sub()
+                          Trace.WriteLine("ProcController.Finished MainForm start")
+                          BlockActivation = False
+                          g.MainForm.Show()
+                          g.MainForm.Refresh()
+                          Aborted = False
+                          Trace.WriteLine("ProcController.Finished MainForm end")
+                      End Sub
+
+        If g.MainForm.tlpMain.InvokeRequired Then
+            Trace.WriteLine("ProcController.Finished MainForm InvokeRequired")
+            g.MainForm.BeginInvoke(mainSub)
+        Else
+            Trace.WriteLine("ProcController.Finished MainForm no InvokeRequired")
+            mainSub.Invoke
+        End If
     End Sub
 
     Sub Activate()

@@ -51,7 +51,7 @@ Public Class GlobalCommands
                     proj.Init()
                     proj.SourceFile = sourceFile.Edit.Text
                     proj.TargetFile = sourceFile.Edit.Text
-                    proj.TempDir = outputFolder.Edit.Text.AppendSeparator
+                    proj.TempDir = outputFolder.Edit.Text.FixDir
 
                     If Not td.Show Is Nothing Then
                         td.SelectedValue.Run(proj)
@@ -362,6 +362,8 @@ Public Class GlobalCommands
         If x265NoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary x265 Exception:", x265NoNeedToExcept.Join(" "))
         If x265Missing.Count > 0 Then msg += BR2 + "# Removed from x265" + BR2 + x265Missing.Join(" ")
         If x265Unknown.Count > 0 Then msg += BR2 + "# x265 Todo" + BR2 + x265Unknown.Join(" ")
+
+        File.WriteAllText(Package.fdkaac.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.fdkaac.Path, "-h"))
 
         For Each pack In Package.Items.Values
             If pack.HelpFile.Ext = "md" Then

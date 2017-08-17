@@ -4,8 +4,8 @@
     Public Sub New(text As String, find As String)
         InitializeComponent()
         rtb.Text = text
-        rtb.BackColor = Color.FromArgb(255, 1, 36, 86)
-        rtb.ForeColor = Color.FromArgb(255, 238, 237, 240)
+        rtb.BackColor = Color.Black
+        rtb.ForeColor = Color.White
         rtb.ReadOnly = True
         Me.Find = find
         ScaleClientSize(40, 30)

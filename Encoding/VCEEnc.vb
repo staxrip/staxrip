@@ -193,9 +193,10 @@ Public Class VCEEnc
                         New BoolParam With {.Switch = "--fullrange", .Text = "Set yuv to fullrange", .VisibleFunc = Function() Codec.ValueText = "h264"})
 
                     For Each item In ItemsValue
+                        If item.HelpSwitch <> "" Then Continue For
                         Dim switches = item.GetSwitches
                         If switches.NothingOrEmpty Then Continue For
-                        item.HelpID = switches(0).TrimStart("-"c)
+                        item.HelpSwitch = switches(0)
                     Next
                 End If
 
@@ -204,7 +205,7 @@ Public Class VCEEnc
         End Property
 
         Public Overrides Sub ShowHelp(id As String)
-            g.ShowRigayaHelp(Package.VCEEnc, id)
+            g.ShowCommandLineHelp(Package.VCEEnc, id)
         End Sub
 
         Overrides Function GetCommandLine(includePaths As Boolean,

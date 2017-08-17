@@ -21,67 +21,67 @@ Public Class Folder
 
     Shared ReadOnly Property Desktop() As String
         Get
-            Return Environment.GetFolderPath(Environment.SpecialFolder.Desktop).AppendSeparator
+            Return Environment.GetFolderPath(Environment.SpecialFolder.Desktop).FixDir
         End Get
     End Property
 
     Shared ReadOnly Property Startup() As String
         Get
-            Return Application.StartupPath.AppendSeparator
+            Return Application.StartupPath.FixDir
         End Get
     End Property
 
     Shared ReadOnly Property Current() As String
         Get
-            Return Environment.CurrentDirectory.AppendSeparator
+            Return Environment.CurrentDirectory.FixDir
         End Get
     End Property
 
     Shared ReadOnly Property Temp() As String
         Get
-            Return Path.GetTempPath.AppendSeparator
+            Return Path.GetTempPath.FixDir
         End Get
     End Property
 
     Shared ReadOnly Property System() As String
         Get
-            Return Environment.SystemDirectory.AppendSeparator
+            Return Environment.SystemDirectory.FixDir
         End Get
     End Property
 
     Shared ReadOnly Property Programs() As String
         Get
-            Return GetFolderPath(Environment.SpecialFolder.ProgramFiles).AppendSeparator
+            Return GetFolderPath(Environment.SpecialFolder.ProgramFiles).FixDir
         End Get
     End Property
 
     Shared ReadOnly Property Home() As String
         Get
-            Return GetFolderPath(Environment.SpecialFolder.UserProfile).AppendSeparator
+            Return GetFolderPath(Environment.SpecialFolder.UserProfile).FixDir
         End Get
     End Property
 
     Shared ReadOnly Property AppDataCommon() As String
         Get
-            Return GetFolderPath(Environment.SpecialFolder.CommonApplicationData).AppendSeparator
+            Return GetFolderPath(Environment.SpecialFolder.CommonApplicationData).FixDir
         End Get
     End Property
 
     Shared ReadOnly Property AppDataLocal() As String
         Get
-            Return GetFolderPath(Environment.SpecialFolder.LocalApplicationData).AppendSeparator
+            Return GetFolderPath(Environment.SpecialFolder.LocalApplicationData).FixDir
         End Get
     End Property
 
     Shared ReadOnly Property AppDataRoaming() As String
         Get
-            Return GetFolderPath(Environment.SpecialFolder.ApplicationData).AppendSeparator
+            Return GetFolderPath(Environment.SpecialFolder.ApplicationData).FixDir
         End Get
     End Property
 
     Shared ReadOnly Property Windows() As String
         Get
-            Return GetFolderPath(Environment.SpecialFolder.Windows).AppendSeparator
+            Return GetFolderPath(Environment.SpecialFolder.Windows).FixDir
         End Get
     End Property
 
@@ -98,9 +98,9 @@ Public Class Folder
     Shared ReadOnly Property Plugins As String
         Get
             If p.Script.Engine = ScriptEngine.AviSynth Then
-                Return Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+").AppendSeparator
+                Return Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+").FixDir
             Else
-                Return Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64").AppendSeparator
+                Return Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64").FixDir
             End If
         End Get
     End Property
@@ -178,7 +178,7 @@ Public Class Folder
                         End Try
                     End If
 
-                    SettingsValue = dir.AppendSeparator
+                    SettingsValue = dir.FixDir
                     Registry.CurrentUser.Write("Software\StaxRip\SettingsLocation", Folder.Startup, SettingsValue)
                 End If
             End If
@@ -237,7 +237,7 @@ Public Class Folder
     Private Shared Function GetFolderPath(folder As Environment.SpecialFolder) As String
         Dim sb As New StringBuilder(260)
         SHGetFolderPath(IntPtr.Zero, CInt(folder), IntPtr.Zero, 0, sb)
-        Dim ret = sb.ToString.AppendSeparator '.NET fails on 'D:'
+        Dim ret = sb.ToString.FixDir '.NET fails on 'D:'
         Call New FileIOPermission(FileIOPermissionAccess.PathDiscovery, ret).Demand()
         Return ret
     End Function

@@ -326,9 +326,10 @@ Public Class NVEnc
                         Custom)
 
                     For Each item In ItemsValue
+                        If item.HelpSwitch <> "" Then Continue For
                         Dim switches = item.GetSwitches
                         If switches.NothingOrEmpty Then Continue For
-                        item.HelpID = switches(0).TrimStart("-"c)
+                        item.HelpSwitch = switches(0)
                     Next
                 End If
 
@@ -337,7 +338,7 @@ Public Class NVEnc
         End Property
 
         Public Overrides Sub ShowHelp(id As String)
-            g.ShowRigayaHelp(Package.NVEnc, id)
+            g.ShowCommandLineHelp(Package.NVEnc, id)
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)

@@ -43,12 +43,37 @@ Public Class Package
     Shared Property DGIndexIM As Package = Add(New DGIndexIMPackage)
     Shared Property DGIndexNV As Package = Add(New DGIndexNVPackage)
     Shared Property dsmux As Package = Add(New dsmuxPackage)
-    Shared Property eac3to As Package = Add(New eac3toPackage)
-    Shared Property ffmpeg As Package = Add(New ffmpegPackage)
+
+    Shared Property eac3to As Package = Add(New Package With {
+        .Name = "eac3to",
+        .Filename = "eac3to.exe",
+        .WebURL = "http://forum.doom9.org/showthread.php?t=125966",
+        .HelpURL = "http://en.wikibooks.org/wiki/Eac3to/How_to_Use",
+        .Description = "Audio conversion command line app."})
+
+    Shared Property ffmpeg As Package = Add(New Package With {
+        .Name = "ffmpeg",
+        .Filename = "ffmpeg.exe",
+        .WebURL = "http://ffmpeg.org",
+        .HelpURL = "https://www.ffmpeg.org/ffmpeg-all.html",
+        .Description = "Versatile audio video converter."})
+
     Shared Property Haali As Package = Add(New HaaliSplitter)
     Shared Property Java As Package = Add(New JavaPackage)
-    Shared Property MediaInfo As Package = Add(New MediaInfoPackage)
-    Shared Property MP4Box As Package = Add(New MP4BoxPackage)
+
+    Shared Property MediaInfo As Package = Add(New Package With {
+        .Name = "MediaInfo",
+        .Filename = "MediaInfo.dll",
+        .WebURL = "http://mediainfo.sourceforge.net",
+        .Description = "MediaInfo is used by StaxRip to read infos from media files."})
+
+    Shared Property MP4Box As Package = Add(New Package With {
+        .Name = "MP4Box",
+        .Filename = "MP4Box.exe",
+        .WebURL = "http://gpac.wp.mines-telecom.fr/",
+        .HelpURL = "http://gpac.wp.mines-telecom.fr/mp4box/mp4box-documentation",
+        .Description = "MP4Box is a MP4 muxing and demuxing command line app."})
+
     Shared Property AviSynth As Package = Add(New AviSynthPlusPackage)
     Shared Property NicAudio As Package = Add(New NicAudioPackage)
     Shared Property ProjectX As Package = Add(New ProjectXPackage)
@@ -57,6 +82,14 @@ Public Class Package
     Shared Property xvid_encraw As Package = Add(New xvid_encrawPackage)
     Shared Property Decomb As Package = Add(New DecombPackage)
     Shared Property temporalsoften As Package = Add(New temporalsoftenPackage)
+
+    Shared Property fdkaac As Package = Add(New Package With {
+        .Name = "fdkaac",
+        .Filename = "fdkaac.exe",
+        .HelpFile = "help.txt",
+        .Description = "Command line AAC encoder based on libfdk-aac.",
+        .URL = "https://github.com/nu774/fdkaac",
+        .IsRequiredFunc = Function() TypeOf p.Audio0 Is GUIAudioProfile AndAlso DirectCast(p.Audio0, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.fdkaac OrElse TypeOf p.Audio1 Is GUIAudioProfile AndAlso DirectCast(p.Audio1, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.fdkaac})
 
     Shared Property vspipe As Package = Add(New Package With {
         .Name = "vspipe",
@@ -461,7 +494,7 @@ Public Class Package
             .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée.",
             .AviSynthFilterNames = {"QTGMC"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "QTGMC...", "QTGMC(Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"")")},
-            .Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools", "TDeint"}})
+            .Dependencies = {"masktools2", "mvtools2", "JPSDR", "RgTools", "TDeint"}})
 
         Add(New PluginPackage With {
             .Name = "SMDegrain",
@@ -470,7 +503,7 @@ Public Class Package
             .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
             .AviSynthFilterNames = {"SMDegrain"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Noise", "SMDegrain", "SMDegrain(tr = 2, thSAD = 250, contrasharp = false, refinemotion = true, lsb = false)")},
-            .Dependencies = {"masktools2", "mvtools2", "nnedi3", "RgTools"}})
+            .Dependencies = {"masktools2", "mvtools2", "JPSDR", "RgTools"}})
 
         Add(New PluginPackage With {
             .Name = "LSFmod",
@@ -979,8 +1012,8 @@ Public Class PythonPackage
             For Each i In {
                 Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", "ExecutablePath"),
                 Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", "ExecutablePath"),
-                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", Nothing).AppendSeparator + "python.exe",
-                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", Nothing).AppendSeparator + "python.exe"}
+                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", Nothing).FixDir + "python.exe",
+                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", Nothing).FixDir + "python.exe"}
 
                 If File.Exists(i) Then Return i
             Next
@@ -989,7 +1022,7 @@ Public Class PythonPackage
             paths.AddRange(Environment.ExpandEnvironmentVariables("%PATH%").SplitNoEmptyAndWhiteSpace(";"))
 
             For Each i In paths
-                i = i.Trim(" "c, """"c).AppendSeparator
+                i = i.Trim(" "c, """"c).FixDir
 
                 If File.Exists(i + "python.exe") Then
                     SetPath(i + "python.exe")
@@ -1174,53 +1207,6 @@ Public Class ProjectXPackage
     End Function
 End Class
 
-Public Class MP4BoxPackage
-    Inherits Package
-
-    Sub New()
-        Name = "MP4Box"
-        Filename = "MP4Box.exe"
-        WebURL = "http://gpac.wp.mines-telecom.fr/"
-        HelpURL = "http://gpac.wp.mines-telecom.fr/mp4box/mp4box-documentation"
-        Description = "MP4Box is a MP4 muxing and demuxing command line app."
-    End Sub
-End Class
-
-Public Class MediaInfoPackage
-    Inherits Package
-
-    Sub New()
-        Name = "MediaInfo"
-        Filename = "MediaInfo.dll"
-        WebURL = "http://mediainfo.sourceforge.net"
-        Description = "MediaInfo is used by StaxRip to read infos from media files."
-    End Sub
-End Class
-
-Public Class ffmpegPackage
-    Inherits Package
-
-    Sub New()
-        Name = "ffmpeg"
-        Filename = "ffmpeg.exe"
-        WebURL = "http://ffmpeg.org"
-        HelpURL = "https://www.ffmpeg.org/ffmpeg-all.html"
-        Description = "Versatile audio video converter."
-    End Sub
-End Class
-
-Public Class eac3toPackage
-    Inherits Package
-
-    Sub New()
-        Name = "eac3to"
-        Filename = "eac3to.exe"
-        WebURL = "http://forum.doom9.org/showthread.php?t=125966"
-        HelpURL = "http://en.wikibooks.org/wiki/Eac3to/How_to_Use"
-        Description = "Audio conversion command line app."
-    End Sub
-End Class
-
 Public Class qaacPackage
     Inherits Package
 
@@ -1250,18 +1236,6 @@ Public Class qaacPackage
                 BR2 + pathVar + BR2 + GetDir() + "QTfiles64\CoreAudioToolbox.dll"
         End If
     End Function
-End Class
-
-Public Class checkmatePackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "checkmate"
-        Filename = "checkmate.dll"
-        WebURL = "http://github.com/tp7/checkmate"
-        Description = "Spatial and temporal dot crawl reducer. Checkmate is most effective in static or low motion scenes. When using in high motion scenes (or areas) be careful, it's known to cause artifacts with its default values."
-        AviSynthFilterNames = {"checkmate"}
-    End Sub
 End Class
 
 Public Class DGIndexNVPackage
@@ -1317,18 +1291,6 @@ Public Class DGIndexIMPackage
         Set(value As Boolean)
         End Set
     End Property
-End Class
-
-Public Class xvid_encrawPackage
-    Inherits Package
-
-    Sub New()
-        Name = "xvid_encraw"
-        Filename = "xvid_encraw.exe"
-        Description = "XviD command line encoder"
-        HelpFile = "help.txt"
-        WebURL = "https://www.xvid.com"
-    End Sub
 End Class
 
 Public Class dsmuxPackage
@@ -1399,5 +1361,29 @@ Public Class DecombPackage
         HelpFile = "DecombReferenceManual.html"
         Description = "This package of plugin functions for Avisynth provides the means for removing combing artifacts from telecined progressive streams, interlaced streams, and mixtures thereof. Functions can be combined to implement inverse telecine (IVTC) for both NTSC and PAL streams."
         AviSynthFilterNames = {"Telecide", "FieldDeinterlace", "Decimate", "IsCombed"}
+    End Sub
+End Class
+
+Public Class xvid_encrawPackage
+    Inherits Package
+
+    Sub New()
+        Name = "xvid_encraw"
+        Filename = "xvid_encraw.exe"
+        Description = "XviD command line encoder"
+        HelpFile = "help.txt"
+        WebURL = "https://www.xvid.com"
+    End Sub
+End Class
+
+Public Class checkmatePackage
+    Inherits PluginPackage
+
+    Sub New()
+        Name = "checkmate"
+        Filename = "checkmate.dll"
+        WebURL = "http://github.com/tp7/checkmate"
+        Description = "Spatial and temporal dot crawl reducer. Checkmate is most effective in static or low motion scenes. When using in high motion scenes (or areas) be careful, it's known to cause artifacts with its default values."
+        AviSynthFilterNames = {"checkmate"}
     End Sub
 End Class

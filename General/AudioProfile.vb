@@ -134,6 +134,26 @@ Public MustInherit Class AudioProfile
         If Depth = 0 Then Depth = 24
     End Sub
 
+    ReadOnly Property ConvertExt As String
+        Get
+            Dim ret As String
+
+            Select Case p.AudioConvertFormat
+                Case AudioConvertType.FLAC
+                    ret = "flac"
+                Case AudioConvertType.W64
+                    ret = "w64"
+                Case AudioConvertType.WAVE
+                    ret = "wav"
+                Case Else
+                    Throw New NotImplementedException
+            End Select
+
+            If Not SupportedInput.Contains(ret) Then ret = "wav"
+            Return ret
+        End Get
+    End Property
+
     Overridable Sub OnFileChanged()
     End Sub
 
@@ -250,7 +270,7 @@ Public MustInherit Class AudioProfile
     Shared Function GetDefaults() As List(Of AudioProfile)
         Dim ret As New List(Of AudioProfile)
         ret.Add(New GUIAudioProfile(AudioCodec.AAC, 0.4))
-        ret.Add(New GUIAudioProfile(AudioCodec.Opus, 1) With {.Bitrate = 160})
+        ret.Add(New GUIAudioProfile(AudioCodec.Opus, 1) With {.Bitrate = 250})
         ret.Add(New GUIAudioProfile(AudioCodec.Flac, 0.3))
         ret.Add(New GUIAudioProfile(AudioCodec.Vorbis, 1))
         ret.Add(New GUIAudioProfile(AudioCodec.MP3, 4))
@@ -581,6 +601,8 @@ Public Class GUIAudioProfile
                     Select Case Params.Encoder
                         Case GuiAudioEncoder.qaac
                             Return Calc.GetYFromTwoPointForm(0, CInt(50 / 8 * Channels), 127, CInt(1000 / 8 * Channels), Params.Quality)
+                        Case GuiAudioEncoder.fdkaac
+                            Return Calc.GetYFromTwoPointForm(1, CInt(200 / 8 * Channels), 5, CInt(1000 / 8 * Channels), Params.Quality)
                         Case Else
                             Return Calc.GetYFromTwoPointForm(0.01, CInt(50 / 8 * Channels), 1, CInt(1000 / 8 * Channels), Params.Quality)
                     End Select
@@ -626,6 +648,9 @@ Public Class GUIAudioProfile
                 If cl.Contains("qaac64.exe") Then
                     proc.Package = Package.qaac
                     proc.SkipStrings = {", ETA ", "x)"}
+                ElseIf cl.Contains("fdkaac.exe") Then
+                    proc.Package = Package.fdkaac
+                    proc.SkipString = "%]"
                 ElseIf cl.Contains("eac3to.exe") Then
                     proc.Package = Package.eac3to
                     proc.SkipStrings = {"process: ", "analyze: "}
@@ -745,6 +770,34 @@ Public Class GUIAudioProfile
 
         If includePaths Then ret += " -progressnumbers"
 
+        Return ret
+    End Function
+
+    Function GetfdkaacCommandLine(includePaths As Boolean) As String
+        Dim ret As String
+        includePaths = includePaths And File <> ""
+        If includePaths Then ret += Package.fdkaac.Path.Escape Else ret = "fdkaac"
+        If Params.fdkaacProfile <> 2 Then ret += " --profile " & Params.fdkaacProfile
+
+        If Params.fdkaacRateMode = SimpleAudioRateMode.CBR Then
+            ret += " --bitrate " & CInt(Bitrate)
+        Else
+            ret += " --bitrate-mode " & Params.Quality
+        End If
+
+        If Params.fdkaacGaplessMode <> 0 Then ret += " --gapless-mode " & Params.fdkaacGaplessMode
+        If Params.fdkaacBandwidth <> 0 Then ret += " --bandwidth " & Params.fdkaacBandwidth
+        If Not Params.fdkaacAfterburner Then ret += " --afterburner 0"
+        If Params.fdkaacAdtsCrcCheck Then ret += " --adts-crc-check"
+        If Params.fdkaacMoovBeforeMdat Then ret += " --moov-before-mdat"
+        If Params.fdkaacIncludeSbrDelay Then ret += " --include-sbr-delay"
+        If Params.fdkaacHeaderPeriod Then ret += " --header-period"
+        If Params.fdkaacLowDelaySBR <> 0 Then ret += " --lowdelay-sbr " & Params.fdkaacLowDelaySBR
+        If Params.fdkaacSbrRatio <> 0 Then ret += " --sbr-ratio " & Params.fdkaacSbrRatio
+        If Params.fdkaacTransportFormat <> 0 Then ret += " --transport-format " & Params.fdkaacTransportFormat
+
+        If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
+        If includePaths Then ret += " --ignorelength -o " + GetOutputFile.Escape + " " + File.Escape
         Return ret
     End Function
 
@@ -928,6 +981,8 @@ Public Class GUIAudioProfile
                 Return GuiAudioEncoder.ffmpeg
             Case GuiAudioEncoder.qaac
                 If Params.Codec = AudioCodec.AAC Then Return GuiAudioEncoder.qaac
+            Case GuiAudioEncoder.fdkaac
+                If Params.Codec = AudioCodec.AAC Then Return GuiAudioEncoder.fdkaac
         End Select
 
         If Params.Codec = AudioCodec.AAC Then Return GuiAudioEncoder.Eac3to
@@ -941,6 +996,8 @@ Public Class GUIAudioProfile
                 Return GetEac3toCommandLine(includePaths)
             Case GuiAudioEncoder.qaac
                 Return GetQaacCommandLine(includePaths)
+            Case GuiAudioEncoder.fdkaac
+                Return GetfdkaacCommandLine(includePaths)
             Case Else
                 Return GetFfmpegCommandLine(includePaths)
         End Select
@@ -948,8 +1005,15 @@ Public Class GUIAudioProfile
 
     Overrides Property SupportedInput As String()
         Get
-            If GetEncoder() = GuiAudioEncoder.Eac3to Then Return FileTypes.eac3toInput
-            If GetEncoder() = GuiAudioEncoder.qaac AndAlso Not Params.qaacUsePipe Then Return FileTypes.qaacInput
+            Select Case GetEncoder()
+                Case GuiAudioEncoder.Eac3to
+                    Return FileTypes.eac3toInput
+                Case GuiAudioEncoder.qaac
+                    If Not Params.qaacUsePipe Then Return FileTypes.qaacInput
+                Case GuiAudioEncoder.fdkaac
+                    Return {"wav"}
+            End Select
+
             Return {}
         End Get
         Set(value As String())
@@ -958,9 +1022,6 @@ Public Class GUIAudioProfile
 
     <Serializable()>
     Public Class Parameters
-        Property BeSweetAzid As String = ""
-        Property BeSweetDynamicCompression As String = "Normal"
-        Property BeSweetGainAndNormalization As String = "-norm 0.97"
         Property Codec As AudioCodec
         Property CustomSwitches As String = ""
         Property eac3toExtractDtsCore As Boolean
@@ -986,12 +1047,31 @@ Public Class GUIAudioProfile
         Property opusencFramesize As Double = 20
         Property opusencMigrateVersion As Integer = 1
 
+        Property fdkaacProfile As Integer = 2
+        Property fdkaacRateMode As SimpleAudioRateMode = SimpleAudioRateMode.VBR
+        Property fdkaacBandwidth As Integer
+        Property fdkaacAfterburner As Boolean = True
+        Property fdkaacLowDelaySBR As Integer
+        Property fdkaacSbrRatio As Integer
+        Property fdkaacTransportFormat As Integer
+        Property fdkaacGaplessMode As Integer
+        Property fdkaacAdtsCrcCheck As Boolean
+        Property fdkaacHeaderPeriod As Boolean
+        Property fdkaacIncludeSbrDelay As Boolean
+        Property fdkaacMoovBeforeMdat As Boolean
+
         Sub Migrate()
             If opusencMigrateVersion <> 1 Then
                 opusencFramesize = 20
                 opusencComplexity = 10
                 opusencMode = 2
                 opusencMigrateVersion = 1
+            End If
+
+            If fdkaacProfile = 0 Then
+                fdkaacProfile = 2
+                fdkaacRateMode = SimpleAudioRateMode.VBR
+                fdkaacAfterburner = True
             End If
         End Sub
     End Class
@@ -1015,6 +1095,11 @@ Public Enum AudioRateMode
     VBR
 End Enum
 
+Public Enum SimpleAudioRateMode
+    CBR
+    VBR
+End Enum
+
 Public Enum AudioAacProfile
     Automatic
     LC
@@ -1027,6 +1112,7 @@ Public Enum GuiAudioEncoder
     Eac3to
     ffmpeg
     qaac
+    fdkaac
 End Enum
 
 Public Enum AudioFrameRateMode

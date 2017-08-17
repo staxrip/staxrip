@@ -1443,8 +1443,6 @@ Public Class MainForm
                 End If
             End If
         Next
-
-        Application.DoEvents()
     End Sub
 
     Async Sub UpdateTemplatesMenuAsync()
@@ -1917,7 +1915,7 @@ Public Class MainForm
             Dim targetDir As String = Nothing
 
             If p.DefaultTargetFolder <> "" Then
-                targetDir = Macro.Expand(p.DefaultTargetFolder).AppendSeparator
+                targetDir = Macro.Expand(p.DefaultTargetFolder).FixDir
 
                 If Not Directory.Exists(targetDir) Then
                     Try
@@ -2181,7 +2179,12 @@ Public Class MainForm
         Catch ex As Exception
             g.OnException(ex)
         Finally
-            If Not isEncoding Then ProcController.Finished()
+            If Not isEncoding Then
+                Trace.WriteLine("ProcController.Finished OpenVideoSourceFiles")
+                ProcController.Finished()
+            Else
+                Trace.WriteLine("ProcController.Finished isEncoding")
+            End If
         End Try
     End Sub
 
@@ -4040,7 +4043,7 @@ Public Class MainForm
 
             Dim tempDirFunc = Function()
                                   Dim tempDir = g.BrowseFolder(p.TempDir)
-                                  If tempDir <> "" Then Return tempDir.AppendSeparator + "%source_name%_temp"
+                                  If tempDir <> "" Then Return tempDir.FixDir + "%source_name%_temp"
                               End Function
 
             tm = ui.AddTextMenu(pathPage)
@@ -4148,7 +4151,7 @@ Public Class MainForm
                 ui.Save()
 
                 If p.CompCheckRange < 2 OrElse p.CompCheckRange > 20 Then p.CompCheckRange = 5
-                If p.TempDir <> "" Then p.TempDir = p.TempDir.AppendSeparator
+                If p.TempDir <> "" Then p.TempDir = p.TempDir.FixDir
 
                 UpdateSizeOrBitrate()
                 tbBitrate_TextChanged()
@@ -4956,8 +4959,8 @@ Public Class MainForm
                     d.ShowNewFolderButton = False
 
                     If d.ShowDialog = DialogResult.OK Then
-                        s.Storage.SetString("last blu-ray source folder", d.SelectedPath.AppendSeparator)
-                        Dim srcPath = d.SelectedPath.AppendSeparator
+                        s.Storage.SetString("last blu-ray source folder", d.SelectedPath.FixDir)
+                        Dim srcPath = d.SelectedPath.FixDir
 
                         If Directory.Exists(srcPath + "BDMV") Then srcPath = srcPath + "BDMV\"
                         If Directory.Exists(srcPath + "PLAYLIST") Then srcPath = srcPath + "PLAYLIST\"
@@ -5022,7 +5025,7 @@ Public Class MainForm
                     d.SetSelectedPath(s.Storage.GetString("last blu-ray target folder").Parent)
 
                     If d.ShowDialog = DialogResult.OK Then
-                        workDir = d.SelectedPath.AppendSeparator
+                        workDir = d.SelectedPath.FixDir
                     Else
                         Exit Sub
                     End If
@@ -5692,7 +5695,7 @@ Public Class MainForm
 
             If d.ShowDialog = DialogResult.OK Then
                 s.Storage.SetString("MediaInfo Folder View folder", d.SelectedPath)
-                Dim f As New MediaInfoFolderViewForm(d.SelectedPath.AppendSeparator)
+                Dim f As New MediaInfoFolderViewForm(d.SelectedPath.FixDir)
                 f.Show()
             End If
         End Using

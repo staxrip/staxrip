@@ -274,9 +274,10 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"})
 
                     For Each item In ItemsValue
+                        If item.HelpSwitch <> "" Then Continue For
                         Dim switches = item.GetSwitches
                         If switches.NothingOrEmpty Then Continue For
-                        item.HelpID = switches(0).TrimStart("-"c)
+                        item.HelpSwitch = switches(0)
                     Next
                 End If
 
@@ -285,7 +286,7 @@ Public Class QSVEnc
         End Property
 
         Public Overrides Sub ShowHelp(id As String)
-            g.ShowRigayaHelp(Package.QSVEnc, id)
+            g.ShowCommandLineHelp(Package.QSVEnc, id)
         End Sub
 
         Function GetMode(name As String) As Integer

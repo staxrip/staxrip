@@ -116,8 +116,8 @@ Public Class CommandLineForm
                 Dim cb = SimpleUI.AddBool(parent)
                 cb.Text = item.Text
 
-                If item.HelpID <> "" Then
-                    Dim helpID = item.HelpID
+                If item.HelpSwitch <> "" Then
+                    Dim helpID = item.HelpSwitch
                     cb.HelpAction = Sub() Params.ShowHelp(helpID)
                 Else
                     cb.Help = help
@@ -132,8 +132,8 @@ Public Class CommandLineForm
                 Dim nb = SimpleUI.AddNum(parent)
                 nb.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
 
-                If item.HelpID <> "" Then
-                    Dim helpID = item.HelpID
+                If item.HelpSwitch <> "" Then
+                    Dim helpID = item.HelpSwitch
                     nb.Label.HelpAction = Sub() Params.ShowHelp(helpID)
                 Else
                     nb.Label.Help = help
@@ -149,8 +149,8 @@ Public Class CommandLineForm
                 Dim mb = SimpleUI.AddMenu(Of Integer)(parent)
                 mb.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
 
-                If item.HelpID <> "" Then
-                    Dim helpID = item.HelpID
+                If item.HelpSwitch <> "" Then
+                    Dim helpID = item.HelpSwitch
                     mb.Label.HelpAction = Sub() Params.ShowHelp(helpID)
                     mb.Button.HelpAction = Sub() Params.ShowHelp(helpID)
                 Else
@@ -184,8 +184,8 @@ Public Class CommandLineForm
 
                 textBlock.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
 
-                If item.HelpID <> "" Then
-                    Dim helpID = item.HelpID
+                If item.HelpSwitch <> "" Then
+                    Dim helpID = item.HelpSwitch
                     textBlock.Label.HelpAction = Sub() Params.ShowHelp(helpID)
                 Else
                     textBlock.Label.Help = help

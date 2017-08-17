@@ -10,6 +10,14 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.6.0.8 unstable test build
+
+- new: support for the fdkaac encoder, it's a high quality encoder, due to non free license it's not included, Opus via ffmpeg is included and because it's a great encoder it's now the default encoder!
+
+- fix: audio channel number not always detected correctly
+
+- change: better logging info and change that might or might not fix the issue with the missing window, unfortunately I'm not able to reproudce it.
+
 #### 1.6.0.7 unstable test build
 
 - fix: issue with numeric up/down controls causing rounding problem (bug report via email)
@@ -588,7 +596,7 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
 ### Tweaks
 
-- the batch audio profile uses now always batch execution, the PATH variable knows the location of ffmpeg, eac3to and BeSweet, the temp files directory is set as current directory, if input files is empty all files are excepted 
+- the batch audio profile uses now always batch execution, the PATH variable knows the location of ffmpeg and eac3to, the temp files directory is set as current directory, if input files is empty all files are excepted 
 - the search feature of the apps dialog searches now also the supported filters of plugins
 - enabled audio demuxing using MP4Box for mov files
 - removed mkvinfo.exe which is 18 MB large and not really needed. It's large due to QT toolkit being used

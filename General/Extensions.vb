@@ -146,8 +146,14 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function AppendSeparator(instance As String) As String
-        If instance?.EndsWith(DirPath.Separator) Then Return instance
+    Function FixDir(instance As String) As String
+        If instance = "" Then Return ""
+
+        While instance.EndsWith(DirPath.Separator + DirPath.Separator)
+            instance = instance.Substring(0, instance.Length - 1)
+        End While
+
+        If instance.EndsWith(DirPath.Separator) Then Return instance
         Return instance + DirPath.Separator
     End Function
 

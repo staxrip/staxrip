@@ -14,7 +14,7 @@ https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPm
 
 - new: support for the fdkaac encoder, it's a high quality encoder, due to non free license it's not included, Opus via ffmpeg is included and because it's a great encoder it's now the default encoder!
 
-- fix: audio channel number not always detected correctly
+- fix: audio channel count not always detected correctly
 
 - change: better logging info and change that might or might not fix the issue with the missing window, unfortunately I'm not able to reproudce it.
 

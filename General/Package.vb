@@ -39,6 +39,7 @@ Public Class Package
     Shared Property Items As New SortedDictionary(Of String, Package)
 
     Shared Property Python As Package = Add(New PythonPackage)
+
     Shared Property checkmate As Package = Add(New checkmatePackage)
     Shared Property DGIndexIM As Package = Add(New DGIndexIMPackage)
     Shared Property DGIndexNV As Package = Add(New DGIndexNVPackage)
@@ -993,7 +994,7 @@ Public Class PythonPackage
         TreePath = "Runtimes"
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        DownloadURL = "https://www.python.org/ftp/python/3.6.1/python-3.6.1-amd64-webinstall.exe"
+        DownloadURL = "https://www.python.org/downloads/windows/"
     End Sub
 
     Public Overrides Property IsRequired As Boolean

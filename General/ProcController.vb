@@ -197,40 +197,40 @@ Public Class ProcController
 
                      SyncLock Procs
                          If Procs.Count = 0 AndAlso Not g.IsProcessing Then
-                             Trace.WriteLine("ProcController.Cleanup about to call Finished")
+                             g.WriteDebugLog("ProcController.Cleanup about to call Finished")
                              Finished()
                          End If
                      End SyncLock
 
-                     Trace.WriteLine("ProcController.Cleanup " + Proc.Header + "; procs count: " & Procs.Count & ";isprocessing: " & g.IsProcessing)
+                     g.WriteDebugLog("ProcController.Cleanup " + Proc.Header + "; procs count: " & Procs.Count & ";isprocessing: " & g.IsProcessing)
                  End Sub)
     End Sub
 
     Shared Sub Finished()
         If Not g.ProcForm Is Nothing Then
             If g.ProcForm.tlpMain.InvokeRequired Then
-                Trace.WriteLine("ProcController.Finished ProcForm InvokeRequired")
+                g.WriteDebugLog("ProcController.Finished ProcForm InvokeRequired")
                 g.ProcForm.BeginInvoke(Sub() g.ProcForm.HideForm())
             Else
-                Trace.WriteLine("ProcController.Finished ProcForm no InvokeRequired")
+                g.WriteDebugLog("ProcController.Finished ProcForm no InvokeRequired")
                 g.ProcForm.HideForm()
             End If
         End If
 
         Dim mainSub = Sub()
-                          Trace.WriteLine("ProcController.Finished MainForm start")
+                          g.WriteDebugLog("ProcController.Finished MainForm start")
                           BlockActivation = False
                           g.MainForm.Show()
                           g.MainForm.Refresh()
                           Aborted = False
-                          Trace.WriteLine("ProcController.Finished MainForm end")
+                          g.WriteDebugLog("ProcController.Finished MainForm end")
                       End Sub
 
         If g.MainForm.tlpMain.InvokeRequired Then
-            Trace.WriteLine("ProcController.Finished MainForm InvokeRequired")
+            g.WriteDebugLog("ProcController.Finished MainForm InvokeRequired")
             g.MainForm.BeginInvoke(mainSub)
         Else
-            Trace.WriteLine("ProcController.Finished MainForm no InvokeRequired")
+            g.WriteDebugLog("ProcController.Finished MainForm no InvokeRequired")
             mainSub.Invoke
         End If
     End Sub
@@ -296,7 +296,8 @@ Public Class ProcController
                               AddProc(proc)
                               g.ProcForm.UpdateControls()
                           End Sub)
-        Trace.WriteLine("ProcController Start " + proc.Header)
+
+        g.WriteDebugLog("ProcController Start " + proc.Header)
     End Sub
 
     <DllImport("kernel32.dll")>

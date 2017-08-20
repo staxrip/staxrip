@@ -46,26 +46,27 @@ Public Class SourceFilesForm
         Me.lb.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lb.DownButton = Me.bnDown
         Me.lb.FormattingEnabled = True
+        Me.lb.HorizontalScrollbar = True
         Me.lb.IntegralHeight = False
         Me.lb.ItemHeight = 48
         Me.lb.Location = New System.Drawing.Point(0, 0)
         Me.lb.Name = "lb"
         Me.lb.RemoveButton = Me.bnRemove
-        Me.lb.Size = New System.Drawing.Size(1166, 668)
+        Me.lb.Size = New System.Drawing.Size(717, 600)
         Me.lb.TabIndex = 2
         Me.lb.UpButton = Me.bnUp
         '
         'bnDown
         '
         Me.bnDown.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.bnDown.Location = New System.Drawing.Point(1198, 404)
+        Me.bnDown.Location = New System.Drawing.Point(749, 370)
         Me.bnDown.Margin = New System.Windows.Forms.Padding(8)
         Me.bnDown.Size = New System.Drawing.Size(250, 80)
         Me.bnDown.Text = "    &Down"
         '
         'bnRemove
         '
-        Me.bnRemove.Location = New System.Drawing.Point(1198, 112)
+        Me.bnRemove.Location = New System.Drawing.Point(749, 112)
         Me.bnRemove.Margin = New System.Windows.Forms.Padding(8)
         Me.bnRemove.Size = New System.Drawing.Size(250, 80)
         Me.bnRemove.Text = "   &Remove"
@@ -73,14 +74,14 @@ Public Class SourceFilesForm
         'bnUp
         '
         Me.bnUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bnUp.Location = New System.Drawing.Point(1198, 308)
+        Me.bnUp.Location = New System.Drawing.Point(749, 274)
         Me.bnUp.Margin = New System.Windows.Forms.Padding(8)
         Me.bnUp.Size = New System.Drawing.Size(250, 80)
         Me.bnUp.Text = "&Up"
         '
         'bnAdd
         '
-        Me.bnAdd.Location = New System.Drawing.Point(1198, 16)
+        Me.bnAdd.Location = New System.Drawing.Point(749, 16)
         Me.bnAdd.Margin = New System.Windows.Forms.Padding(8)
         Me.bnAdd.Size = New System.Drawing.Size(250, 80)
         Me.bnAdd.Text = "&Add..."
@@ -88,7 +89,7 @@ Public Class SourceFilesForm
         'bnCancel
         '
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(1198, 700)
+        Me.bnCancel.Location = New System.Drawing.Point(749, 632)
         Me.bnCancel.Margin = New System.Windows.Forms.Padding(8)
         Me.bnCancel.Size = New System.Drawing.Size(250, 80)
         Me.bnCancel.Text = "Cancel"
@@ -96,7 +97,7 @@ Public Class SourceFilesForm
         'bnOK
         '
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(932, 700)
+        Me.bnOK.Location = New System.Drawing.Point(483, 632)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(8)
         Me.bnOK.Size = New System.Drawing.Size(250, 80)
         Me.bnOK.Text = "OK"
@@ -127,7 +128,7 @@ Public Class SourceFilesForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1464, 797)
+        Me.tlpMain.Size = New System.Drawing.Size(1015, 729)
         Me.tlpMain.TabIndex = 7
         '
         'pnLB
@@ -141,7 +142,7 @@ Public Class SourceFilesForm
         Me.pnLB.Margin = New System.Windows.Forms.Padding(8)
         Me.pnLB.Name = "pnLB"
         Me.tlpMain.SetRowSpan(Me.pnLB, 7)
-        Me.pnLB.Size = New System.Drawing.Size(1166, 668)
+        Me.pnLB.Size = New System.Drawing.Size(717, 600)
         Me.pnLB.TabIndex = 9
         '
         'SourceFilesForm
@@ -150,8 +151,9 @@ Public Class SourceFilesForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1464, 797)
+        Me.ClientSize = New System.Drawing.Size(1015, 729)
         Me.Controls.Add(Me.tlpMain)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.HelpButton = False
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(13, 14, 13, 14)
@@ -170,6 +172,9 @@ Public Class SourceFilesForm
     Sub New()
         MyBase.New()
         InitializeComponent()
+
+        ScaleClientSize(36, 22)
+        MinimumSize = New Size(Width \ 2, CInt(Height * 0.6))
 
         bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
         bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)

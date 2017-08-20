@@ -602,7 +602,7 @@ Public Class GUIAudioProfile
                         Case GuiAudioEncoder.qaac
                             Return Calc.GetYFromTwoPointForm(0, CInt(50 / 8 * Channels), 127, CInt(1000 / 8 * Channels), Params.Quality)
                         Case GuiAudioEncoder.fdkaac
-                            Return Calc.GetYFromTwoPointForm(1, CInt(200 / 8 * Channels), 5, CInt(1000 / 8 * Channels), Params.Quality)
+                            Return Calc.GetYFromTwoPointForm(1, CInt(50 / 8 * Channels), 5, CInt(900 / 8 * Channels), Params.Quality)
                         Case Else
                             Return Calc.GetYFromTwoPointForm(0.01, CInt(50 / 8 * Channels), 1, CInt(1000 / 8 * Channels), Params.Quality)
                     End Select

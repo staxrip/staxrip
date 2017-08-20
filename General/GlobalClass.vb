@@ -19,6 +19,10 @@ Public Class GlobalClass
     Property DefaultCommands As New GlobalCommands
     Property IsProcessing As Boolean
 
+    Sub WriteDebugLog(value As String)
+        If s?.WriteDebugLog Then Trace.WriteLine(value)
+    End Sub
+
     Sub ProcessJobs()
         Dim jobs = Job.ActiveJobs
         If jobs.Count = 0 Then Exit Sub
@@ -968,7 +972,7 @@ Public Class GlobalClass
     End Sub
 
     Sub RunAutoCrop()
-        Trace.WriteLine("AutoCrop start")
+        g.WriteDebugLog("AutoCrop start")
         p.SourceScript.Synchronize(True)
 
         Using avi As New AVIFile(p.SourceScript.Path)
@@ -1000,7 +1004,7 @@ Public Class GlobalClass
             CorrectCropMod()
         End Using
 
-        Trace.WriteLine("AutoCrop end")
+        g.WriteDebugLog("AutoCrop end")
     End Sub
 
     Sub SmartCrop()

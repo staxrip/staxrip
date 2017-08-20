@@ -2180,10 +2180,10 @@ Public Class MainForm
             g.OnException(ex)
         Finally
             If Not isEncoding Then
-                Trace.WriteLine("ProcController.Finished OpenVideoSourceFiles")
+                g.WriteDebugLog("ProcController.Finished OpenVideoSourceFiles")
                 ProcController.Finished()
             Else
-                Trace.WriteLine("ProcController.Finished isEncoding")
+                g.WriteDebugLog("ProcController.Finished isEncoding")
             End If
         End Try
     End Sub
@@ -3304,6 +3304,10 @@ Public Class MainForm
             b = ui.AddBool()
             b.Text = "Reverse mouse wheel video seek direction"
             b.Field = NameOf(s.ReverseVideoScrollDirection)
+
+            b = ui.AddBool()
+            b.Text = "Enable debug logging"
+            b.Field = NameOf(s.WriteDebugLog)
 
             Dim mb = ui.AddMenu(Of String)()
             mb.Text = "Startup Template"
@@ -5717,7 +5721,7 @@ Public Class MainForm
         Assistant()
         UpdateScriptsMenuAsync()
         MyBase.OnActivated(e)
-        Trace.WriteLine("MainForm.Activated")
+        g.WriteDebugLog("MainForm.Activated")
     End Sub
 
     Protected Overrides Sub OnShown(e As EventArgs)

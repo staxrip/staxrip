@@ -10,6 +10,19 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
 
+#### 1.6.0.9 unstable test build
+
+- new: x265 switch and flags added but the x265 binary is not updated because it isn't yet merged with the stable branch (https://forum.doom9.org/showthread.php?p=1815427#post1815427)
+- new: added setting to enable debug logging to settings dialog, the issue with the main dialog disappearing is probably fixed so at the moment the setting is probably useless (https://github.com/stax76/staxrip/issues/244)
+
+- fix: subtitle cutting did not work for multi stream idx files extracted with vsrip (https://github.com/stax76/staxrip/issues/268)
+
+- change: The dialog to add files for batch processing and for merging is now bigger, resizeable and has automatic scrollbars (https://github.com/stax76/staxrip/issues/271)
+
+- internal: replace mkvmerge --identify-verbose with --identify due to --identify-verbose being deprecated
+
+- update: mkvmerge 15.0.0 (https://forum.doom9.org/showthread.php?p=1815485#post1815485)
+
 #### 1.6.0.8 unstable test build
 
 - new: support for the fdkaac encoder, it's a high quality encoder, due to non free license it's not included, Opus via ffmpeg is included and because it's a great encoder it's now the default encoder!

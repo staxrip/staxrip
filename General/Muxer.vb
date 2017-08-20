@@ -495,7 +495,7 @@ Public Class MkvMuxer
     Private Function GetArgs(Optional writeTag As Boolean = False) As String
         Dim args = "-o " + p.TargetFile.Escape
 
-        Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "-I " + p.VideoEncoder.OutputPath.Escape)
+        Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify " + p.VideoEncoder.OutputPath.Escape)
         Dim id = Regex.Match(stdout, "Track ID (\d+): video").Groups(1).Value.ToInt
 
         If Not FileTypes.VideoOnly.Contains(p.VideoEncoder.OutputPath.Ext) Then
@@ -607,7 +607,7 @@ Public Class MkvMuxer
                 tid = ap.Stream.StreamOrder
                 isCombo = ap.Stream.Name.Contains("THD+AC3")
 
-                Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "-I " + ap.File.Escape)
+                Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify " + ap.File.Escape)
                 Dim values = Regex.Matches(stdout, "Track ID (\d+): audio").OfType(Of Match).Select(Function(match) match.Groups(1).Value.ToInt)
                 If values.Count = ap.Streams.Count Then tid = values(ap.Stream.Index)
             Else

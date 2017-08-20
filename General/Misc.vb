@@ -1879,14 +1879,14 @@ Public Class Subtitle
                 Log.WriteLine(MediaInfo.GetSummary(aviPath))
             End If
 
-            Dim mkvPath = p.TempDir + inSub.Path.Base + " ID" & inSub.ID & "_cut_sub.mkv"
+            Dim id = If(FileTypes.SubtitleSingle.Contains(inSub.Path.Ext), 0, inSub.StreamOrder)
+            Dim mkvPath = p.TempDir + inSub.Path.Base + " ID" & id & "_cut_sub.mkv"
             args = "-o " + mkvPath.Escape + " " + aviPath.Escape
 
             If Not FileTypes.SubtitleExludingContainers.Contains(inSub.Path.Ext) Then
                 args += " --no-audio --no-video --no-chapters --no-attachments --no-track-tags --no-global-tags"
             End If
 
-            Dim id = If(FileTypes.SubtitleSingle.Contains(inSub.Path.Ext), 0, inSub.StreamOrder)
             If Not FileTypes.SubtitleSingle.Contains(inSub.Path.Ext) Then args += " --subtitle-tracks " & id
             args += " " + inSub.Path.Escape
             args += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")
@@ -1908,7 +1908,7 @@ Public Class Subtitle
                 Log.WriteLine(MediaInfo.GetSummary(mkvPath))
             End If
 
-            Dim subPath = p.TempDir + inSub.Path.Base + " ID" & inSub.ID & "_cut_" + inSub.ExtFull
+            Dim subPath = p.TempDir + inSub.Path.Base + " ID" & id & "_cut_" + inSub.ExtFull
             args = "tracks " + mkvPath.Escape + " 1:" + subPath.Escape
 
             Using proc As New Proc

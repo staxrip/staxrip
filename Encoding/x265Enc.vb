@@ -796,7 +796,8 @@ Public Class x265Params
                     TskipFast, LimitModes, RdRefine,
                     New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
                     RecursionSkip,
-                    New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"})
+                    New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"},
+                    New BoolParam With {.Switch = "--splitrd-skip", .Text = "Enable skipping split RD analysis"})
                 Add("Rate Control 1",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     AQmode, qgSize, AQStrength, QComp,
@@ -838,8 +839,8 @@ Public Class x265Params
                     New StringParam With {.Switch = "--master-display", .Text = "Master Display", .Quotes = True},
                     New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                     New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "Component", "PAL", "NTSC", "SECAM", "MAC"}},
-                    New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 709", "BT 470 M", "BT 470 BG", "SMPTE 170 M", "SMPTE 240 M", "Film", "BT 2020"}},
-                    New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "GBR", "BT 709", "FCC", "BT 470 BG", "SMPTE 170 M", "SMPTE 240 M", "YCgCo", "BT 2020 NC", "BT 2020 C"}},
+                    New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M", "SMPTE-EG-432", "SMPTE-RP-431", "SMPTE-ST-428"}},
+                    New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "Chroma-C", "Chroma-NC", "FCC", "GBR", "ICTCP", "SMPTE 170 M", "SMPTE 240 M", "SMPTE-ST-2085", "YCgCo"}},
                     New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "BT 709", "BT 470 M", "BT 470 BG", "SMPTE 170 M", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE-ST-2084", "SMPTE-ST-428", "ARIB-STD-B67"}},
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"Undefined", "Show", "Crop"}},
                     New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"Undefined", "Full", "Limited"}},

@@ -95,7 +95,7 @@ Public MustInherit Class Muxer
         files.Sort(New StringLogicalComparer)
 
         For Each file1 In files
-            If Filepath.GetExtFull(file1) = ".idx" Then
+            If FilePath.GetExtFull(file1) = ".idx" Then
                 Dim v = File.ReadAllText(file1, Encoding.Default)
 
                 If v.Contains(vb6.ChrW(&HA) + vb6.ChrW(&H0) + vb6.ChrW(&HD) + vb6.ChrW(&HA)) Then
@@ -109,7 +109,7 @@ Public MustInherit Class Muxer
                 g.IsSourceSameOrSimilar(file1) AndAlso Not file1.Contains("_Preview.") AndAlso
                 Not file1.Contains("_Temp.") Then
 
-                If p.ConvertSup2Sub AndAlso Filepath.GetExtFull(file1) = ".sup" Then
+                If p.ConvertSup2Sub AndAlso FilePath.GetExtFull(file1) = ".sup" Then
                     Continue For
                 End If
 
@@ -266,7 +266,7 @@ Public Class MP4Muxer
         If File.Exists(ap.File) AndAlso IsSupported(ap.File.Ext) AndAlso IsSupported(ap.OutputFileType) Then
             args.Append(" -add """ + ap.File)
 
-            If ap.HasStream AndAlso Filepath.GetExtFull(ap.File) = ".mp4" Then
+            If ap.HasStream AndAlso FilePath.GetExtFull(ap.File) = ".mp4" Then
                 args.Append("#trackID=" & ap.Stream.ID)
             Else
                 args.Append("#audio")
@@ -762,7 +762,7 @@ Public Class ffmpegMuxer
 
             If ret = DialogResult.OK Then
                 ui.Save()
-                If p.SourceFile <> "" Then p.TargetFile = p.TargetFile.DirAndBase + "." + OutputFormat
+                If p.SourceFile <> "" Then p.TargetFile = p.TargetFile.DirAndBase + "." + OutputExt
             End If
 
             Return ret

@@ -144,34 +144,8 @@ Public Class Native
     Shared Function GetWindowThreadProcessId(hwnd As IntPtr, ByRef lpdwProcessId As Integer) As Integer
     End Function
 
-    <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
-    Shared Function SetWindowText(hWnd As IntPtr, lpString As String) As Boolean
-    End Function
-
-    <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
-    Shared Function GetWindowText(hWnd As IntPtr, lpString As StringBuilder, nMaxCount As Integer) As Integer
-    End Function
-
-    <DllImport("user32.dll")>
-    Shared Function ShowWindow(handle As IntPtr, nCmdShow As Integer) As Integer
-    End Function
-
-    <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
-    Shared Function FindWindow(lpClassName As String, lpWindowName As String) As IntPtr
-    End Function
-
     <DllImport("user32.dll")>
     Shared Function SetForegroundWindow(handle As IntPtr) As Boolean
-    End Function
-
-    <DllImport("user32.dll")>
-    Shared Function EnumWindows(ewp As CallbackHandler, ByVallParam As IntPtr) As Boolean
-    End Function
-
-    <DllImport("user32.dll")>
-    Shared Function EnumChildWindows(hwndParent As IntPtr,
-                                     ByVallpEnumProc As CallbackHandler,
-                                     parameter As IntPtr) As Boolean
     End Function
 
     <DllImport("user32.dll", CharSet:=CharSet.Unicode)>

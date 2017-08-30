@@ -319,11 +319,11 @@ Public Class GlobalClass
 
     Sub PlayAudio(ap As AudioProfile)
         If FileTypes.AudioRaw.Contains(ap.File.Ext) Then
-            g.StartProcess(Package.mpv.Path, ap.File.Escape)
+            g.StartProcess(Package.mpvnet.Path, ap.File.Escape)
         ElseIf ap.File = p.FirstOriginalSourceFile AndAlso ap.Streams.Count > 0 Then
-            g.StartProcess(Package.mpv.Path, "--audio " & (ap.Stream.Index + 1) & " " + p.FirstOriginalSourceFile.Escape)
+            g.StartProcess(Package.mpvnet.Path, "--audio=" & (ap.Stream.Index + 1) & " " + p.FirstOriginalSourceFile.Escape)
         ElseIf FileTypes.Audio.Contains(ap.File.Ext) Then
-            g.StartProcess(Package.mpv.Path, "--audio-delay " + (g.ExtractDelay(ap.File) / 1000).ToInvariantString.Shorten(9) + " --audio-file " + ap.File.Escape + " " + p.FirstOriginalSourceFile.Escape)
+            g.StartProcess(Package.mpvnet.Path, "--audio-delay=" + (g.ExtractDelay(ap.File) / 1000).ToInvariantString.Shorten(9) + " --audio-file=" + ap.File.Escape + " " + p.FirstOriginalSourceFile.Escape)
         Else
             MsgError("Unable to play audio.")
         End If
@@ -340,7 +340,7 @@ Public Class GlobalClass
     End Sub
 
     Sub PlayScript(doc As VideoScript, ap As AudioProfile)
-        If Not Package.mpv.VerifyOK(True) Then Exit Sub
+        If Not Package.mpvnet.VerifyOK(True) Then Exit Sub
 
         If doc.Engine = ScriptEngine.VapourSynth Then
             MsgError("VapourSynth scripts are not supported by the mpv player.")
@@ -366,8 +366,8 @@ Public Class GlobalClass
 
         script.Synchronize(False)
         Dim args = script.Path.Escape
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-file " + ap.File.Escape + " " + args
-        g.StartProcess(Package.mpv.Path, args)
+        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-file=" + ap.File.Escape + " " + args
+        g.StartProcess(Package.mpvnet.Path, args)
     End Sub
 
     Function ExtractDelay(value As String) As Integer
@@ -668,7 +668,7 @@ Public Class GlobalClass
     End Function
 
     Function IsSourceSame(path As String) As Boolean
-        Return Filepath.GetBase(path).StartsWith(Filepath.GetBase(p.SourceFile))
+        Return FilePath.GetBase(path).StartsWith(FilePath.GetBase(p.SourceFile))
     End Function
 
     Function GetFilesInTempDirAndParent() As List(Of String)
@@ -676,8 +676,8 @@ Public Class GlobalClass
 
         If p.TempDir <> "" Then ret.AddRange(Directory.GetFiles(p.TempDir))
 
-        If p.TempDir <> Filepath.GetDir(p.FirstOriginalSourceFile) Then
-            ret.AddRange(Directory.GetFiles(Filepath.GetDir(p.FirstOriginalSourceFile)))
+        If p.TempDir <> FilePath.GetDir(p.FirstOriginalSourceFile) Then
+            ret.AddRange(Directory.GetFiles(FilePath.GetDir(p.FirstOriginalSourceFile)))
         End If
 
         Return ret
@@ -685,13 +685,13 @@ Public Class GlobalClass
 
     Function IsSourceSimilar(path As String) As Boolean
         If p.SourceFile.Contains("_") Then
-            Dim src = Filepath.GetBase(p.SourceFile)
+            Dim src = FilePath.GetBase(p.SourceFile)
 
             While src.Length > 2 AndAlso src.ToCharArray.Last.IsDigit
                 src = src.DeleteRight(1)
             End While
 
-            If src.EndsWith("_") AndAlso Filepath.GetBase(path).StartsWith(src.TrimEnd("_"c)) Then
+            If src.EndsWith("_") AndAlso FilePath.GetBase(path).StartsWith(src.TrimEnd("_"c)) Then
                 Return True
             End If
         End If
@@ -715,7 +715,7 @@ Public Class GlobalClass
                 If File.Exists(p.SourceFile) Then
                     Dim name = p.TargetFile.Base
                     If name = "" Then name = p.SourceFile.Base
-                    Dim path = Filepath.GetDir(p.SourceFile) + "crash.srip"
+                    Dim path = FilePath.GetDir(p.SourceFile) + "crash.srip"
                     g.MainForm.SaveProjectPath(path)
                 End If
 
@@ -792,7 +792,7 @@ Public Class GlobalClass
     End Sub
 
     Sub Play(file As String)
-        g.StartProcess(Package.mpv.Path, file.Escape)
+        g.StartProcess(Package.mpvnet.Path, file.Escape)
     End Sub
 
     Sub ShowCommandLineHelp(package As Package, switch As String)
@@ -832,7 +832,7 @@ Public Class GlobalClass
 
     Sub OpenDirAndSelectFile(filepath As String, handle As IntPtr)
         If File.Exists(filepath) Then
-            g.StartProcess(StaxRip.Filepath.GetDir(filepath))
+            g.StartProcess(StaxRip.FilePath.GetDir(filepath))
 
             Try
                 For x = 0 To 9
@@ -846,8 +846,8 @@ Public Class GlobalClass
                 Next
             Catch
             End Try
-        ElseIf Directory.Exists(StaxRip.Filepath.GetDir(filepath)) Then
-            g.StartProcess(StaxRip.Filepath.GetDir(filepath))
+        ElseIf Directory.Exists(StaxRip.FilePath.GetDir(filepath)) Then
+            g.StartProcess(StaxRip.FilePath.GetDir(filepath))
         End If
     End Sub
 
@@ -927,8 +927,8 @@ Public Class GlobalClass
             d.Filter = filter
 
             If File.Exists(defaultFilepath) Then
-                d.InitialDirectory = Filepath.GetDir(defaultFilepath)
-                d.FileName = Filepath.GetName(defaultFilepath)
+                d.InitialDirectory = FilePath.GetDir(defaultFilepath)
+                d.FileName = FilePath.GetName(defaultFilepath)
             End If
 
             If d.ShowDialog = DialogResult.OK Then Return d.FileName

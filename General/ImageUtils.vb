@@ -140,7 +140,7 @@ Public Class Thumbnails
         Dim infoDate As Date
         infoDate = infoDate.AddMilliseconds(infoDuration)
 
-        Dim caption = Filepath.GetName(inputFile) + BR & "Size: " & infoSize & ", Duration: " +
+        Dim caption = FilePath.GetName(inputFile) + BR & "Size: " & infoSize & ", Duration: " +
             infoDate.ToString("HH:mm:ss") + ", Bitrate: " & CInt((infoLength * 8) / 1000 / (infoDuration / 1000)) & " Kbps" + BR +
             "Audio: " + MediaInfo.GetAudioCodecs(inputFile) + BR +
             "Video: " + MediaInfo.GetVideoCodec(inputFile) + ", " & infoWidth & " x " & infoHeight & ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps"

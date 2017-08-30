@@ -333,9 +333,7 @@ Public Class SubtitleControl
             subtitle.Subtitle.Title = subtitle.Title
             subtitle.Subtitle.Forced = subtitle.Forced
             subtitle.Subtitle.Default = subtitle.Default
-
             If subtitle.Subtitle.Title Is Nothing Then subtitle.Subtitle.Title = ""
-
             muxer.Subtitles.Add(subtitle.Subtitle)
         Next
     End Sub
@@ -345,7 +343,7 @@ Public Class SubtitleControl
         Dim path = If(selected AndAlso dgv.CurrentRow.Index < Items.Count, Items(dgv.CurrentRow.Index).Subtitle.Path, "")
         bnBDSup2SubPP.Enabled = selected AndAlso {"idx", "sup"}.Contains(path.Ext)
         bnSubtitleEdit.Enabled = bnBDSup2SubPP.Enabled
-        bnPlay.Enabled = p.SourceFile <> ""
+        bnPlay.Enabled = p.SourceFile <> "" AndAlso selected
         bnUp.Enabled = dgv.CanMoveUp
         bnDown.Enabled = dgv.CanMoveDown
         bnSetNames.Enabled = selected
@@ -398,7 +396,7 @@ Public Class SubtitleControl
                 item.ID = id
                 item.TypeName = i.TypeName
                 item.Size = size
-                item.Filename = Filepath.GetName(i.Path)
+                item.Filename = FilePath.GetName(i.Path)
                 item.Subtitle = i
 
                 Items.Add(item)
@@ -420,7 +418,7 @@ Public Class SubtitleControl
     End Class
 
     Private Sub bnPlay_Click() Handles bnPlay.Click
-        If Not Package.mpv.VerifyOK(True) Then Exit Sub
+        If Not Package.mpvnet.VerifyOK(True) Then Exit Sub
 
         Dim st = Items(dgv.CurrentRow.Index).Subtitle
         Dim fp = st.Path
@@ -435,9 +433,9 @@ Public Class SubtitleControl
         End If
 
         If FileTypes.SubtitleExludingContainers.Contains(fp.Ext) Then
-            g.StartProcess(Package.mpv.Path, "--sub-file " + fp.Escape + " " + p.FirstOriginalSourceFile.Escape)
+            g.StartProcess(Package.mpvnet.Path, "--sub-file=" + fp.Escape + " " + p.FirstOriginalSourceFile.Escape)
         ElseIf p.FirstOriginalSourceFile = fp Then
-            g.StartProcess(Package.mpv.Path, "--sub " & (st.Index + 1) & " " + fp.Escape)
+            g.StartProcess(Package.mpvnet.Path, "--sub=" & (st.Index + 1) & " " + fp.Escape)
         End If
     End Sub
 
@@ -478,13 +476,13 @@ Public Class SubtitleControl
             Dim st = Items(dgv.CurrentRow.Index).Subtitle
             Dim fp = st.Path
 
-            If Filepath.GetExtFull(fp) = ".idx" Then
+            If FilePath.GetExtFull(fp) = ".idx" Then
                 fp = p.TempDir + p.TargetFile.Base + "_temp.idx"
 
                 Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
                     st.IndexIDX.ToString).WriteANSIFile(fp)
 
-                FileHelp.Copy(Filepath.GetDirAndBase(st.Path) + ".sub", Filepath.GetDirAndBase(fp) + ".sub")
+                FileHelp.Copy(FilePath.GetDirAndBase(st.Path) + ".sub", FilePath.GetDirAndBase(fp) + ".sub")
             End If
 
             g.StartProcess(Package.BDSup2SubPP.Path, """" + fp + """")

@@ -182,7 +182,7 @@ clip.set_output()
             End If
 
             If Frames = 240 OrElse code <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
-                If Directory.Exists(Filepath.GetDir(Path)) Then
+                If Directory.Exists(FilePath.GetDir(Path)) Then
                     If Engine = ScriptEngine.VapourSynth Then
                         ModifyScript(code, Engine).WriteFile(Path, Encoding.UTF8)
                     Else

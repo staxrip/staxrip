@@ -8,7 +8,21 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
 https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
-https://onedrive.live.com/redir?resid=604D4754F64B0ABC!4140&authkey=!ANUm9V3vTPmEFNI&ithint=folder%2c7z
+https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
+
+#### 1.6.1.1 unstable test build
+
+- new: eac3to demuxing supports the temp files folder defined in the options (https://github.com/stax76/staxrip/issues/277)
+- new: mpv replaced with mpv.net (https://github.com/stax76/mpvnet)
+- new: added button to job processing dialog to show the log file (https://github.com/stax76/staxrip/issues/274)
+
+- fix: the OneDrive link had a permission issue (https://github.com/stax76/staxrip/issues/276)
+- fix: chapters were extracted even if the option was disabled (https://github.com/stax76/staxrip/issues/267#issuecomment-324134970)
+- fix: null ref exception due to subtitle play button being enabled even if no subtitle is selected (https://github.com/stax76/staxrip/issues/273)
+- fix: issue in x264 command line generation
+- fix: fdkaac cbr bitrate not being saved (https://forum.doom9.org/showthread.php?p=1816917#post1816917)
+
+- update mvtools2 2.7.22
 
 #### 1.6.0.9 unstable test build
 
@@ -609,7 +623,7 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
 ### Tweaks
 
-- the batch audio profile uses now always batch execution, the PATH variable knows the location of ffmpeg and eac3to, the temp files directory is set as current directory, if input files is empty all files are excepted 
+- the batch audio profile uses now always batch execution, the PATH variable knows the location of ffmpeg and eac3to, the temp files folder is set as current directory, if input files is empty all files are excepted 
 - the search feature of the apps dialog searches now also the supported filters of plugins
 - enabled audio demuxing using MP4Box for mov files
 - removed mkvinfo.exe which is 18 MB large and not really needed. It's large due to QT toolkit being used

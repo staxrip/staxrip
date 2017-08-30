@@ -16,7 +16,7 @@ Public Class AudioForm
 
     Friend WithEvents CommandLink1 As StaxRip.UI.CommandLink
     Friend WithEvents gbBasic As System.Windows.Forms.GroupBox
-    Friend WithEvents nudQuality As NumEdit
+    Friend WithEvents numQuality As NumEdit
     Friend WithEvents numBitrate As NumEdit
     Friend WithEvents lQualiy As System.Windows.Forms.Label
     Friend WithEvents lCodec As System.Windows.Forms.Label
@@ -75,7 +75,7 @@ Public Class AudioForm
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.numBitrate = New StaxRip.UI.NumEdit()
-        Me.nudQuality = New StaxRip.UI.NumEdit()
+        Me.numQuality = New StaxRip.UI.NumEdit()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.mbEncoder = New StaxRip.UI.MenuButton()
         Me.lQualiy = New System.Windows.Forms.Label()
@@ -143,7 +143,7 @@ Public Class AudioForm
         Me.tlpBasic.Controls.Add(Me.Label1, 0, 3)
         Me.tlpBasic.Controls.Add(Me.Label3, 2, 0)
         Me.tlpBasic.Controls.Add(Me.numBitrate, 3, 0)
-        Me.tlpBasic.Controls.Add(Me.nudQuality, 3, 1)
+        Me.tlpBasic.Controls.Add(Me.numQuality, 3, 1)
         Me.tlpBasic.Controls.Add(Me.Label2, 0, 1)
         Me.tlpBasic.Controls.Add(Me.mbEncoder, 1, 1)
         Me.tlpBasic.Controls.Add(Me.lQualiy, 2, 1)
@@ -322,12 +322,12 @@ Public Class AudioForm
         '
         'nudQuality
         '
-        Me.nudQuality.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.nudQuality.Location = New System.Drawing.Point(707, 85)
-        Me.nudQuality.Margin = New System.Windows.Forms.Padding(5)
-        Me.nudQuality.Name = "nudQuality"
-        Me.nudQuality.Size = New System.Drawing.Size(189, 70)
-        Me.nudQuality.TabIndex = 18
+        Me.numQuality.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.numQuality.Location = New System.Drawing.Point(707, 85)
+        Me.numQuality.Margin = New System.Windows.Forms.Padding(5)
+        Me.numQuality.Name = "nudQuality"
+        Me.numQuality.Size = New System.Drawing.Size(189, 70)
+        Me.numQuality.TabIndex = 18
         '
         'Label2
         '
@@ -631,7 +631,7 @@ Public Class AudioForm
         mbSamplingRate.Add("88200 Hz", 88200)
         mbSamplingRate.Add("96000 Hz", 96000)
 
-        numBitrate.Minimum = 16
+        numBitrate.Minimum = 1
         numBitrate.Maximum = 16000
         numGain.DecimalPlaces = 1
 
@@ -683,12 +683,12 @@ Public Class AudioForm
     End Sub
 
     Sub UpdateBitrate()
-        nudQuality_ValueChanged(nudQuality)
+        nudQuality_ValueChanged(numQuality)
     End Sub
 
-    Private Sub nudQuality_ValueChanged(numEdit As NumEdit) Handles nudQuality.ValueChanged
+    Private Sub nudQuality_ValueChanged(numEdit As NumEdit) Handles numQuality.ValueChanged
         If Not TempProfile Is Nothing Then
-            TempProfile.Params.Quality = CSng(nudQuality.Value)
+            TempProfile.Params.Quality = CSng(numQuality.Value)
             numBitrate.Value = TempProfile.GetBitrate
             UpdateControls()
         End If
@@ -719,21 +719,15 @@ Public Class AudioForm
     Sub UpdateControls()
         Select Case TempProfile.Params.Codec
             Case AudioCodec.Opus, AudioCodec.FLAC, AudioCodec.W64, AudioCodec.WAV
-                nudQuality.Enabled = False
+                numQuality.Enabled = False
             Case Else
-                If TempProfile.GetEncoder = GuiAudioEncoder.fdkaac AndAlso
-                        TempProfile.Params.fdkaacRateMode = SimpleAudioRateMode.CBR Then
-
-                    nudQuality.Enabled = TempProfile.Params.RateMode = AudioRateMode.CBR
-                Else
-                    nudQuality.Enabled = TempProfile.Params.RateMode = AudioRateMode.VBR
-                End If
+                numQuality.Enabled = TempProfile.Params.RateMode = AudioRateMode.VBR
         End Select
 
         If TempProfile.Params.Codec = AudioCodec.FLAC Then
             numBitrate.Enabled = False
         Else
-            numBitrate.Enabled = Not nudQuality.Enabled
+            numBitrate.Enabled = Not numQuality.Enabled
         End If
 
         numBitrate.Increment = If(TempProfile.Params.Codec = AudioCodec.AC3, 32D, 1D)
@@ -795,33 +789,33 @@ Public Class AudioForm
 
     Sub SetQuality(value As Single)
         If TempProfile.Params.Codec = AudioCodec.AAC AndAlso TempProfile.Params.Encoder = GuiAudioEncoder.qaac Then
-            nudQuality.Minimum = 0
-            nudQuality.Maximum = 127
-            nudQuality.Increment = 1
-            nudQuality.DecimalPlaces = 0
+            numQuality.Minimum = 0
+            numQuality.Maximum = 127
+            numQuality.Increment = 1
+            numQuality.DecimalPlaces = 0
         ElseIf TempProfile.Params.Codec = AudioCodec.AAC AndAlso TempProfile.Params.Encoder = GuiAudioEncoder.fdkaac Then
-            nudQuality.Minimum = 1
-            nudQuality.Maximum = 5
-            nudQuality.Increment = 1
-            nudQuality.DecimalPlaces = 0
+            numQuality.Minimum = 1
+            numQuality.Maximum = 5
+            numQuality.Increment = 1
+            numQuality.DecimalPlaces = 0
         ElseIf TempProfile.Params.Codec = AudioCodec.MP3 Then
-            nudQuality.Minimum = 0
-            nudQuality.Maximum = 9
-            nudQuality.Increment = 1
-            nudQuality.DecimalPlaces = 0
+            numQuality.Minimum = 0
+            numQuality.Maximum = 9
+            numQuality.Increment = 1
+            numQuality.DecimalPlaces = 0
         ElseIf TempProfile.Params.Codec = AudioCodec.Vorbis Then
-            nudQuality.Minimum = 0
-            nudQuality.Maximum = 10
-            nudQuality.Increment = 1
-            nudQuality.DecimalPlaces = 0
+            numQuality.Minimum = 0
+            numQuality.Maximum = 10
+            numQuality.Increment = 1
+            numQuality.DecimalPlaces = 0
         Else
-            nudQuality.Minimum = 0
-            nudQuality.Maximum = Integer.MaxValue
-            nudQuality.Increment = 0.01
-            nudQuality.DecimalPlaces = 2
+            numQuality.Minimum = 0
+            numQuality.Maximum = Integer.MaxValue
+            numQuality.Increment = 0.01
+            numQuality.DecimalPlaces = 2
         End If
 
-        nudQuality.Value = value
+        numQuality.Value = value
     End Sub
 
     Private Sub mbChannels_ValueChanged() Handles mbChannels.ValueChangedUser
@@ -895,9 +889,9 @@ Public Class AudioForm
 
         SetQuality(TempProfile.Params.Quality)
 
-        numBitrate.Value = CDec(TempProfile.Bitrate)
+        numBitrate.Value = TempProfile.Bitrate
         numDelay.Value = TempProfile.Delay
-        numGain.Value = CDec(TempProfile.Gain)
+        numGain.Value = TempProfile.Gain
 
         cbNormalize.Checked = TempProfile.Params.Normalize
 
@@ -981,9 +975,9 @@ Public Class AudioForm
                 modeMenu.Text = "Rate Mode"
                 modeMenu.Expandet = True
                 modeMenu.HelpAction = getHelpAction("--bitrate-mode")
-                modeMenu.Button.Value = TempProfile.Params.fdkaacRateMode
+                modeMenu.Button.Value = TempProfile.Params.SimpleRateMode
                 modeMenu.Button.SaveAction = Sub(value)
-                                                 TempProfile.Params.fdkaacRateMode = value
+                                                 TempProfile.Params.SimpleRateMode = value
                                                  UpdateBitrate()
                                              End Sub
 
@@ -1078,6 +1072,7 @@ Public Class AudioForm
                 mbMode.Button.SaveAction = Sub(value)
                                                TempProfile.Params.qaacRateMode = value
                                                TempProfile.Params.RateMode = If(TempProfile.Params.qaacRateMode = 0, AudioRateMode.VBR, AudioRateMode.CBR)
+                                               UpdateBitrate()
                                            End Sub
 
                 Dim mbQuality = ui.AddMenu(Of Integer)(page)
@@ -1124,10 +1119,10 @@ Public Class AudioForm
         End Try
     End Sub
 
-    Private Sub nudQuality_KeyUp(sender As Object, e As KeyEventArgs) Handles nudQuality.KeyUp
+    Private Sub nudQuality_KeyUp(sender As Object, e As KeyEventArgs) Handles numQuality.KeyUp
         Try
-            Dim v = CInt(nudQuality.Text)
-            nudQuality.Value = v
+            Dim v = CInt(numQuality.Text)
+            numQuality.Value = v
         Catch
         End Try
     End Sub

@@ -44,7 +44,7 @@ Public Class Audio
                             Not TypeOf ap Is MuxAudioProfile Then
 
                             ConvertDirectShowSource(ap)
-                        ElseIf Not Filepath.GetExtFull(ap.File) = ".m2ts" Then
+                        ElseIf Not FilePath.GetExtFull(ap.File) = ".m2ts" Then
                             ffmpegDemuxer.DemuxAudio(ap.File, ap.Stream, ap, p)
                         End If
                 End Select
@@ -68,7 +68,7 @@ Public Class Audio
             ret += " " + stream.Title.Shorten(30)
         End If
 
-        If Not Filepath.IsValidFileSystemName(ret) Then ret = Filepath.RemoveIllegalCharsFromName(ret)
+        If Not FilePath.IsValidFileSystemName(ret) Then ret = FilePath.RemoveIllegalCharsFromName(ret)
 
         Return ret
     End Function
@@ -214,7 +214,7 @@ Public Class Audio
     End Sub
 
     Shared Function GetNicAudioCode(ap As AudioProfile) As String
-        Select Case Filepath.GetExtFull(ap.File)
+        Select Case FilePath.GetExtFull(ap.File)
             Case ".ac3"
                 Return "AudioDub(last, NicAC3Source(""" + ap.File + """, Channels = " & ap.Channels & "))"
             Case ".mpa", ".mp2", ".mp3"
@@ -488,7 +488,7 @@ Public Class Audio
             Log.Write("Error", "no output found")
             Convert(ap)
 
-            If Filepath.GetExtFull(ap.File) = ".wav" Then Cut(ap)
+            If FilePath.GetExtFull(ap.File) = ".wav" Then Cut(ap)
         End If
     End Sub
 

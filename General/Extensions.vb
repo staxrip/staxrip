@@ -106,27 +106,32 @@ Module StringExtensions
 
     <Extension()>
     Function Ext(instance As String) As String
-        Return Filepath.GetExt(instance)
+        Return FilePath.GetExt(instance)
     End Function
 
     <Extension()>
     Function ExtFull(instance As String) As String
-        Return Filepath.GetExtFull(instance)
+        Return FilePath.GetExtFull(instance)
     End Function
 
     <Extension()>
     Function Base(instance As String) As String
-        Return Filepath.GetBase(instance)
+        Return FilePath.GetBase(instance)
     End Function
 
     <Extension()>
     Function Dir(instance As String) As String
-        Return Filepath.GetDir(instance)
+        Return FilePath.GetDir(instance)
+    End Function
+
+    <Extension()>
+    Function DirName(instance As String) As String
+        Return DirPath.GetName(instance)
     End Function
 
     <Extension()>
     Function DirAndBase(instance As String) As String
-        Return Filepath.GetDirAndBase(instance)
+        Return FilePath.GetDirAndBase(instance)
     End Function
 
     <Extension()>

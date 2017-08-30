@@ -8,7 +8,6 @@ Imports System.Xml
 Imports System.Xml.Linq
 Imports System.Text
 Imports System.Security.Permissions
-Imports System.Management
 Imports System.Security.Principal
 
 Imports StaxRip.UI
@@ -209,7 +208,7 @@ Public Class Folder
                     Directory.CreateDirectory(ret + "Backup")
 
                     For Each i In files
-                        FileHelp.Move(i, Filepath.GetDir(i) + "Backup\" + Filepath.GetName(i))
+                        FileHelp.Move(i, FilePath.GetDir(i) + "Backup\" + FilePath.GetName(i))
                     Next
                 End If
 
@@ -251,11 +250,11 @@ Public Class PathBase
     End Property
 
     Shared Function IsSameBase(a As String, b As String) As Boolean
-        Return Filepath.GetBase(a).EqualIgnoreCase(Filepath.GetBase(b))
+        Return FilePath.GetBase(a).EqualIgnoreCase(FilePath.GetBase(b))
     End Function
 
     Shared Function IsSameDir(a As String, b As String) As Boolean
-        Return Filepath.GetDir(a).EqualIgnoreCase(Filepath.GetDir(b))
+        Return FilePath.GetDir(a).EqualIgnoreCase(FilePath.GetDir(b))
     End Function
 
     Shared Function IsValidFileSystemName(name As String) As Boolean
@@ -343,7 +342,7 @@ Public Class DirPath
     End Function
 End Class
 
-Public Class Filepath
+Public Class FilePath
     Inherits PathBase
 
     Private Value As String
@@ -419,7 +418,7 @@ Public Class Filepath
     End Function
 
     Shared Function GetDirNameOnly(path As String) As String
-        Return Filepath.GetDirNoSep(path).RightLast("\")
+        Return FilePath.GetDirNoSep(path).RightLast("\")
     End Function
 End Class
 

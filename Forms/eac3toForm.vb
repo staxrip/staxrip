@@ -1143,11 +1143,6 @@ Public Class eac3toForm
             s.Storage.SetBool("demux Blu-ray chapters", cbChapters.Checked)
         End If
 
-        If Not DirPath.IsFixedDrive(OutputFolder) OrElse Not Directory.Exists(OutputFolder) Then
-            MsgWarn("The output folder must be located on a fixed local drive.")
-            e.Cancel = True
-        End If
-
         MyBase.OnFormClosing(e)
     End Sub
 

@@ -84,8 +84,8 @@ Public Class MediaInfo
                         at.Title = ""
                     End If
 
-                    If Not Filepath.IsValidFileSystemName(at.Title) Then
-                        at.Title = Filepath.RemoveIllegalCharsFromName(at.Title)
+                    If Not FilePath.IsValidFileSystemName(at.Title) Then
+                        at.Title = FilePath.RemoveIllegalCharsFromName(at.Title)
                     End If
 
                     Dim lm = GetAudio(index, "Language_More")

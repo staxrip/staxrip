@@ -429,8 +429,7 @@ Public Class MP4BoxDemuxer
 
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim attachments = GetAttachments(proj.SourceFile)
-
-        Dim chaptersDemuxing As Boolean = True
+        Dim demuxChapters = ChaptersDemuxing
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
             ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
@@ -440,7 +439,7 @@ Public Class MP4BoxDemuxer
             Using form As New StreamDemuxForm(Me, proj.SourceFile, attachments)
                 If form.ShowDialog() = DialogResult.OK Then
                     VideoDemuxed = form.cbDemuxVideo.Checked
-                    chaptersDemuxing = form.cbDemuxChapters.Checked
+                    demuxChapters = form.cbDemuxChapters.Checked
                     audioStreams = form.AudioStreams
                     subtitles = form.Subtitles
                 Else
@@ -508,7 +507,7 @@ Public Class MP4BoxDemuxer
             End Using
         End If
 
-        If chaptersDemuxing AndAlso MediaInfo.GetMenu(proj.SourceFile, "Chapters_Pos_End").ToInt -
+        If demuxChapters AndAlso MediaInfo.GetMenu(proj.SourceFile, "Chapters_Pos_End").ToInt -
             MediaInfo.GetMenu(proj.SourceFile, "Chapters_Pos_Begin").ToInt > 0 Then
 
             Using proc As New Proc
@@ -634,8 +633,7 @@ Public Class mkvDemuxer
 
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim attachments = GetAttachments(stdout)
-
-        Dim chaptersDemuxing As Boolean = True
+        Dim demuxChapters = ChaptersDemuxing
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
             ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
@@ -645,7 +643,7 @@ Public Class mkvDemuxer
             Using form As New StreamDemuxForm(Me, proj.SourceFile, attachments)
                 If form.ShowDialog() <> DialogResult.OK Then Throw New AbortException
                 VideoDemuxed = form.cbDemuxVideo.Checked
-                chaptersDemuxing = form.cbDemuxChapters.Checked
+                demuxChapters = form.cbDemuxChapters.Checked
                 audioStreams = form.AudioStreams
                 subtitles = form.Subtitles
             End Using
@@ -661,7 +659,7 @@ Public Class mkvDemuxer
 
         Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True, VideoDemuxed)
 
-        If chaptersDemuxing AndAlso stdout.Contains("Chapters: ") Then
+        If demuxChapters AndAlso stdout.Contains("Chapters: ") Then
             Using proc As New Proc
                 proc.Project = proj
                 proc.Header = "Demux xml chapters"

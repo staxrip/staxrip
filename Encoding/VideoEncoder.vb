@@ -576,8 +576,8 @@ Public Class NullEncoder
 
     Function GetSourceFile() As String
         For Each i In {".h264", ".avc", ".h265", ".hevc", ".mpg", ".avi"}
-            If File.Exists(Filepath.GetDirAndBase(p.SourceFile) + "_out" + i) Then
-                Return Filepath.GetDirAndBase(p.SourceFile) + "_out" + i
+            If File.Exists(FilePath.GetDirAndBase(p.SourceFile) + "_out" + i) Then
+                Return FilePath.GetDirAndBase(p.SourceFile) + "_out" + i
             ElseIf File.Exists(p.TempDir + p.TargetFile.Base + "_out" + i) Then
                 Return p.TempDir + p.TargetFile.Base + "_out" + i
             End If
@@ -617,7 +617,7 @@ Public Class NullEncoder
         Dim sourceFile = GetSourceFile()
 
         If Not p.VideoEncoder.Muxer.IsSupported(sourceFile.Ext) Then
-            Select Case Filepath.GetExt(sourceFile)
+            Select Case FilePath.GetExt(sourceFile)
                 Case "mkv"
                     mkvDemuxer.Demux(sourceFile, Nothing, Nothing, Nothing, p, False, True)
             End Select

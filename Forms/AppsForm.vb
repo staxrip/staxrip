@@ -264,7 +264,7 @@ Public Class AppsForm
         Headers("Title").Text = CurrentPackage.Name
 
         SetupButton.Text = "Install " + CurrentPackage.Name
-        SetupButton.Visible = CurrentPackage.SetupFilename <> "" AndAlso (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> ""))
+        SetupButton.Visible = CurrentPackage.SetupFilename <> "" AndAlso (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> "")) AndAlso File.Exists(Folder.Apps + CurrentPackage.SetupFilename)
 
         DownloadButton.Text = "Download " + CurrentPackage.Name
         DownloadButton.Visible = CurrentPackage.DownloadURL <> "" AndAlso (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> ""))
@@ -503,7 +503,8 @@ Public Class AppsForm
             Next
 
             Try
-                txt.FormatColumn("=").WriteUTF8File(Folder.Startup + "Apps\Versions.txt")
+                If Not Directory.Exists(Folder.Apps) Then Directory.CreateDirectory(Folder.Apps)
+                txt.FormatColumn("=").WriteUTF8File(Folder.Apps + "Versions.txt")
             Catch
             End Try
 

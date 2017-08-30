@@ -96,7 +96,7 @@ Public MustInherit Class AudioProfile
                     ret = File.FileName
                 End If
             Else
-                ret = Stream.Name + " (" + Filepath.GetExt(File) + ")"
+                ret = Stream.Name + " (" + FilePath.GetExt(File) + ")"
             End If
 
             Return ret
@@ -178,7 +178,7 @@ Public MustInherit Class AudioProfile
         If File.Base = p.SourceFile.Base Then
             Return name + " (" + File.Ext + ")"
         Else
-            Return name + " (" + Filepath.GetName(File) + ")"
+            Return name + " (" + FilePath.GetName(File) + ")"
         End If
     End Function
 
@@ -346,10 +346,10 @@ Public Class BatchAudioProfile
             Else
                 Log.Write("Error", "no output found")
 
-                If Not Filepath.GetExtFull(File) = ".wav" Then
+                If Not FilePath.GetExtFull(File) = ".wav" Then
                     Audio.Convert(Me)
 
-                    If Filepath.GetExtFull(File) = ".wav" Then
+                    If FilePath.GetExtFull(File) = ".wav" Then
                         Encode()
                     End If
                 End If
@@ -779,7 +779,7 @@ Public Class GUIAudioProfile
         If includePaths Then ret += Package.fdkaac.Path.Escape Else ret = "fdkaac"
         If Params.fdkaacProfile <> 2 Then ret += " --profile " & Params.fdkaacProfile
 
-        If Params.fdkaacRateMode = SimpleAudioRateMode.CBR Then
+        If Params.SimpleRateMode = SimpleAudioRateMode.CBR Then
             ret += " --bitrate " & CInt(Bitrate)
         Else
             ret += " --bitrate-mode " & Params.Quality
@@ -1048,7 +1048,6 @@ Public Class GUIAudioProfile
         Property opusencMigrateVersion As Integer = 1
 
         Property fdkaacProfile As Integer = 2
-        Property fdkaacRateMode As SimpleAudioRateMode = SimpleAudioRateMode.VBR
         Property fdkaacBandwidth As Integer
         Property fdkaacAfterburner As Boolean = True
         Property fdkaacLowDelaySBR As Integer
@@ -1060,6 +1059,23 @@ Public Class GUIAudioProfile
         Property fdkaacIncludeSbrDelay As Boolean
         Property fdkaacMoovBeforeMdat As Boolean
 
+        Property SimpleRateMode As SimpleAudioRateMode
+            Get
+                If RateMode = AudioRateMode.CBR Then
+                    Return SimpleAudioRateMode.CBR
+                Else
+                    Return SimpleAudioRateMode.VBR
+                End If
+            End Get
+            Set(value As SimpleAudioRateMode)
+                If value = SimpleAudioRateMode.CBR Then
+                    RateMode = AudioRateMode.CBR
+                Else
+                    RateMode = AudioRateMode.VBR
+                End If
+            End Set
+        End Property
+
         Sub Migrate()
             If opusencMigrateVersion <> 1 Then
                 opusencFramesize = 20
@@ -1070,7 +1086,7 @@ Public Class GUIAudioProfile
 
             If fdkaacProfile = 0 Then
                 fdkaacProfile = 2
-                fdkaacRateMode = SimpleAudioRateMode.VBR
+                SimpleRateMode = SimpleAudioRateMode.VBR
                 fdkaacAfterburner = True
             End If
         End Sub

@@ -137,17 +137,17 @@ Public Class Package
         .IgnoreVersion = True,
         .Description = "Subtitle Edit is a open source subtitle editor."})
 
-    Shared Property mpv As Package = Add(New Package With {
-        .Name = "mpv",
-        .Filename = "mpv.exe",
-        .WebURL = "https://mpv.io/",
-        .HelpURL = "https://mpv.io/manual/stable/",
-        .Description = "mpv is a open source media player."})
+    Shared Property mpvnet As Package = Add(New Package With {
+        .Name = "mpv.net",
+        .Filename = "mpvnet.exe",
+        .LaunchName = "mpvnet.exe",
+        .Description = "libmpv based open source media player."})
 
     Shared Property AOMEnc As Package = Add(New Package With {
         .Name = "aomenc",
         .Filename = "aomenc.exe",
         .WebURL = "http://aomedia.org",
+        .IsRequiredFunc = Function() TypeOf p.VideoEncoder Is AOMEnc,
         .Description = "AOMedia Video 1 (AV1) is an open, royalty-free video coding format designed for video transmissions over the Internet."})
 
     Shared Property mvtools2 As Package = Add(New PluginPackage With {
@@ -685,7 +685,7 @@ Public Class Package
         Try
             If Not File.Exists(fp) OrElse Not File.ReadAllText(fp).Contains(Application.ProductVersion + BR2) Then
                 FileHelp.Delete(fp)
-                fp = Folder.Startup + "Apps\Versions.txt"
+                fp = Folder.Apps + "Versions.txt"
             End If
 
             For Each line In File.ReadAllLines(fp)
@@ -893,8 +893,8 @@ Public Class Package
                 Return Nothing
             End If
 
-            If DirName <> "" AndAlso File.Exists(Folder.Startup + "Apps\" + DirName + "\" + Filename) Then
-                Return Folder.Startup + "Apps\" + DirName + "\" + Filename
+            If DirName <> "" AndAlso File.Exists(Folder.Apps + DirName + "\" + Filename) Then
+                Return Folder.Apps + DirName + "\" + Filename
             End If
 
             If Not HintDirFunc Is Nothing Then
@@ -905,14 +905,14 @@ Public Class Package
 
             If Not plugin Is Nothing Then
                 If Not plugin.VapourSynthFilterNames Is Nothing AndAlso Not plugin.AviSynthFilterNames Is Nothing Then
-                    ret = Folder.Startup + "Apps\Plugins\both\" + Name + "\" + Filename
+                    ret = Folder.Apps + "Plugins\both\" + Name + "\" + Filename
                     If File.Exists(ret) Then Return ret
                 Else
                     If plugin.VapourSynthFilterNames Is Nothing Then
-                        ret = Folder.Startup + "Apps\Plugins\avs\" + Name + "\" + Filename
+                        ret = Folder.Apps + "Plugins\avs\" + Name + "\" + Filename
                         If File.Exists(ret) Then Return ret
                     Else
-                        ret = Folder.Startup + "Apps\Plugins\vs\" + Name + "\" + Filename
+                        ret = Folder.Apps + "Plugins\vs\" + Name + "\" + Filename
                         If File.Exists(ret) Then Return ret
                     End If
                 End If
@@ -1308,7 +1308,7 @@ Public Class dsmuxPackage
     Public Overrides ReadOnly Property Path As String
         Get
             Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing)
-            ret = Filepath.GetDir(ret) + Filename
+            ret = FilePath.GetDir(ret) + Filename
             If File.Exists(ret) Then Return ret
         End Get
     End Property

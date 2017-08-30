@@ -50,7 +50,7 @@ Public Class VideoComparisonForm
             f.SetInitDir(s.Storage.GetString("video comparison folder"))
 
             If f.ShowDialog() = DialogResult.OK Then
-                s.Storage.SetString("video comparison folder", Filepath.GetDir(f.FileName))
+                s.Storage.SetString("video comparison folder", FilePath.GetDir(f.FileName))
 
                 For Each i In f.FileNames
                     Add(i)
@@ -238,7 +238,7 @@ Public Class VideoComparisonForm
         End Sub
 
         Function Open(sourePath As String) As Boolean
-            Text = Filepath.GetBase(sourePath)
+            Text = FilePath.GetBase(sourePath)
             SourceFile = sourePath
 
             Dim avs As New VideoScript
@@ -248,7 +248,7 @@ Public Class VideoComparisonForm
 
             avs.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
 
-            If Filepath.GetExtFull(sourePath) = ".png" Then
+            If FilePath.GetExtFull(sourePath) = ".png" Then
                 avs.Filters.Add(New VideoFilter("ImageSource(""" + sourePath + """, end = 0)"))
             Else
                 Dim cachePath = Folder.Temp + Guid.NewGuid.ToString + ".ffindex"
@@ -282,7 +282,7 @@ Public Class VideoComparisonForm
                 Form.TrackBar.Maximum = AVI.FrameCount - 1
             End If
 
-            Dim csvFile = Filepath.GetDirAndBase(sourePath) + ".csv"
+            Dim csvFile = FilePath.GetDirAndBase(sourePath) + ".csv"
 
             If File.Exists(csvFile) Then
                 Dim len = Form.TrackBar.Maximum
@@ -351,7 +351,7 @@ Public Class VideoComparisonForm
 
             Using g = Graphics.FromImage(ret)
                 g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
-                Dim text = Filepath.GetBase(SourceFile)
+                Dim text = FilePath.GetBase(SourceFile)
                 Dim fontSize = ret.Height \ 100
                 If fontSize < 10 Then fontSize = 10
                 Dim font = New Font("Arial", fontSize)

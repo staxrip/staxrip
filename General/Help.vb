@@ -145,7 +145,7 @@ Public Class DirectoryHelp
 
             For Each i As FileSystemInfo In di.GetFileSystemInfos()
                 If TypeOf i Is FileInfo Then
-                    If Filepath.GetName(i.FullName).EqualIgnoreCase(filename) Then
+                    If FilePath.GetName(i.FullName).EqualIgnoreCase(filename) Then
                         filePaths.Add(i.FullName)
                     End If
                 Else

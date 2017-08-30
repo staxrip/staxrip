@@ -1080,13 +1080,13 @@ Public Class Macro
         If value.Contains("%source_framerate%") Then value = value.Replace("%source_framerate%", p.SourceFrameRate.ToString("f6", CultureInfo.InvariantCulture))
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_dir%") Then value = value.Replace("%source_dir%", Filepath.GetDir(p.SourceFile))
+        If value.Contains("%source_dir%") Then value = value.Replace("%source_dir%", FilePath.GetDir(p.SourceFile))
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_dir_parent%") Then value = value.Replace("%source_dir_parent%", DirPath.GetParent(Filepath.GetDir(p.SourceFile)))
+        If value.Contains("%source_dir_parent%") Then value = value.Replace("%source_dir_parent%", DirPath.GetParent(FilePath.GetDir(p.SourceFile)))
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_dir_name%") Then value = value.Replace("%source_dir_name%", DirPath.GetName(Filepath.GetDir(p.SourceFile)))
+        If value.Contains("%source_dir_name%") Then value = value.Replace("%source_dir_name%", DirPath.GetName(FilePath.GetDir(p.SourceFile)))
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_width%") Then value = value.Replace("%target_width%", p.TargetWidth.ToString)
@@ -1110,7 +1110,7 @@ Public Class Macro
         If value.Contains("%target_file%") Then value = value.Replace("%target_file%", p.TargetFile)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_dir%") Then value = value.Replace("%target_dir%", Filepath.GetDir(p.TargetFile))
+        If value.Contains("%target_dir%") Then value = value.Replace("%target_dir%", FilePath.GetDir(p.TargetFile))
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_name%") Then value = value.Replace("%target_name%", p.TargetFile.Base)
@@ -1203,7 +1203,7 @@ Public Class Macro
         If value.Contains("%settings_dir%") Then value = value.Replace("%settings_dir%", Folder.Settings)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%player%") Then value = value.Replace("%player%", Package.mpv.Path)
+        If value.Contains("%player%") Then value = value.Replace("%player%", Package.mpvnet.Path)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%text_editor%") Then value = value.Replace("%text_editor%", g.GetTextEditor)
@@ -1263,7 +1263,7 @@ Public Class Macro
                     Dim path = package.Path
 
                     If path <> "" Then
-                        value = value.Replace(i.Value, Filepath.GetDir(path))
+                        value = value.Replace(i.Value, FilePath.GetDir(path))
                         If Not value.Contains("%") Then Return value
                     End If
                 End If
@@ -1707,7 +1707,7 @@ Public Class Subtitle
                 ret += " " + Title.Shorten(30)
             End If
 
-            If Not Filepath.IsValidFileSystemName(ret) Then ret = Filepath.RemoveIllegalCharsFromName(ret)
+            If Not FilePath.IsValidFileSystemName(ret) Then ret = FilePath.RemoveIllegalCharsFromName(ret)
 
             Return ret
         End Get

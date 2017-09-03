@@ -269,7 +269,10 @@ Namespace UI
                     emi.CustomMenuItem = i
 
                     Dim keys = KeysHelp.GetKeyString(i.KeyData)
-                    If keys <> "" Then emi.ShortcutKeyDisplayString = keys
+
+                    If keys <> "" Then
+                        emi.ShortcutKeyDisplayString = keys
+                    End If
 
                     If i.Symbol <> Symbol.None Then
                         emi.ImageScaling = ToolStripItemImageScaling.None

@@ -157,7 +157,7 @@ Namespace UI
         End Sub
 
         Sub MoveSelectionDown()
-            If CanMoveDown() Then Exit Sub
+            If Not CanMoveDown() Then Exit Sub
             Dim indexBelow = SelectedIndices(SelectedIndices.Count - 1) + 1
             If indexBelow >= Items.Count Then Exit Sub
             Dim itemBelow = Items(indexBelow)

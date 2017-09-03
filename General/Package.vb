@@ -141,7 +141,8 @@ Public Class Package
         .Name = "mpv.net",
         .Filename = "mpvnet.exe",
         .LaunchName = "mpvnet.exe",
-        .Description = "libmpv based open source media player."})
+        .URL = "https://github.com/stax76/mpvnet",
+        .Description = "libmpv based media player."})
 
     Shared Property AOMEnc As Package = Add(New Package With {
         .Name = "aomenc",
@@ -380,7 +381,7 @@ Public Class Package
                                     End If
                                 End Sub,
             .HelpFile = "doc\AVSMeter.html",
-            .WebURL = "http://forum.doom9.org/showthread.php?t=165528"})
+            .WebURL = "https://forum.doom9.org/showthread.php?t=174797"})
 
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",

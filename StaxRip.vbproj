@@ -288,7 +288,7 @@
     <Compile Include="General\Audio.vb" />
     <Compile Include="General\Late Binding.vb" />
     <Compile Include="General\CommandLine.vb" />
-    <Compile Include="General\ImageUtils.vb" />
+    <Compile Include="UI\ImageUtils.vb" />
     <Compile Include="Encoding\x265Enc.vb" />
     <Compile Include="UI\Controls\ListViewEx.vb">
       <SubType>Component</SubType>

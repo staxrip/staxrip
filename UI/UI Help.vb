@@ -76,7 +76,7 @@ Namespace UI
             If KeysTexts.ContainsKey(k) Then
                 s += KeysTexts(k)
             Else
-                Dim value = Native.MapVirtualKey(CInt(k), Native.MAPVK_VK_TO_CHAR)
+                Dim value = Native.MapVirtualKey(CInt(k), 2) 'MAPVK_VK_TO_CHAR
 
                 If value = 0 OrElse (value And 1 << 31) = 1 << 31 Then
                     s += k.ToString

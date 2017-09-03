@@ -10,6 +10,14 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
+#### 1.6.1.2 unstable test build
+
+- fix: move down item in job list was broke
+
+- update: mpv.net 0.2
+- update: Plugins_JPSDR 1.2.0
+- update: AVSMeter 2.6.2
+
 #### 1.6.1.1 unstable test build
 
 - new: eac3to demuxing supports the temp files folder defined in the options (https://github.com/stax76/staxrip/issues/277)

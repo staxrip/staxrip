@@ -4438,6 +4438,7 @@ Public Class MainForm
         ret.Add("Apps|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
         ret.Add("Apps|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
+        ret.Add("Apps|mpv.net", NameOf(g.DefaultCommands.StartTool), {"mpv.net"})
         ret.Add("Apps|ProjectX", NameOf(g.DefaultCommands.StartTool), {"ProjectX"})
         ret.Add("Apps|SubtitleEdit", NameOf(g.DefaultCommands.StartTool), {"SubtitleEdit"})
         ret.Add("Apps|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})

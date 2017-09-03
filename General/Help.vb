@@ -131,31 +131,6 @@ Public Class DirectoryHelp
     Shared Function Compare(dir1 As String, dir2 As String) As Boolean
         Return dir1.FixDir.ToUpper = dir2.FixDir.ToUpper
     End Function
-
-    Shared Function FindFiles(startDir As String,
-                              filename As String,
-                              Optional filePaths As List(Of String) = Nothing) As List(Of String)
-
-        If filePaths Is Nothing Then
-            filePaths = New List(Of String)
-        End If
-
-        If Directory.Exists(startDir) Then
-            Dim di As New DirectoryInfo(startDir)
-
-            For Each i As FileSystemInfo In di.GetFileSystemInfos()
-                If TypeOf i Is FileInfo Then
-                    If FilePath.GetName(i.FullName).EqualIgnoreCase(filename) Then
-                        filePaths.Add(i.FullName)
-                    End If
-                Else
-                    FindFiles(i.FullName, filename, filePaths)
-                End If
-            Next
-        End If
-
-        Return filePaths
-    End Function
 End Class
 
 Public Class ConsoleHelp

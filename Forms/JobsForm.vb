@@ -195,6 +195,7 @@ Friend Class JobsForm
         lv.UpButton = bnUp
         lv.DownButton = bnDown
         lv.RemoveButton = bnRemove
+
         lv.SingleSelectionButtons = {bnLoad}
         lv.CheckBoxes = True
         lv.EnableListBoxMode()

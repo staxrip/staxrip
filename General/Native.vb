@@ -58,12 +58,6 @@ Public Class Native
     Friend Const EM_SETCUEBANNER As Integer = &H1501
     Friend Const CB_SETCUEBANNER As Integer = &H1703
 
-    'Friend Const MAPVK_VK_TO_VSC As Integer = 0
-    'Friend Const MAPVK_VSC_TO_VK As Integer = 1
-    Friend Const MAPVK_VK_TO_CHAR As Integer = 2
-    'Friend Const MAPVK_VSC_TO_VK_EX As Integer = 3
-    'Friend Const MAPVK_VK_TO_VSC_EX As Integer = 4
-
     Friend Const SC_CLOSE As Integer = &HF060
     'Friend Const SC_KEYMENU As Integer = &HF100
     'Friend Const SC_MAXIMIZE As Integer = &HF030

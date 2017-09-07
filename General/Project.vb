@@ -155,10 +155,7 @@ Public Class Project
             Audio1.Language = New Language("en", True)
         End If
 
-        If Check(Script, "Filter Setup", 50) Then
-            Script = StaxRip.VideoScript.GetDefaults()(0)
-            Script.SetFilter("Source", "Manual", "# shows filter selection dialog")
-        End If
+        If Check(Script, "Filter Setup", 50) Then Script = StaxRip.VideoScript.GetDefaults()(0)
 
         Migrate()
     End Sub

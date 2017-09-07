@@ -131,25 +131,8 @@ Public Class Folder
                     td.MainInstruction = "Settings Directory"
                     td.Content = "Select the location of the settings directory."
 
-                    Dim folders As New HashSet(Of String)
-
-                    If Directory.Exists(Folder.Home + "Google Drive") Then
-                        folders.Add(Folder.Home + "Google Drive\Apps\Settings\StaxRip")
-                    End If
-
-                    If Directory.Exists(Folder.Home + "OneDrive") Then
-                        folders.Add(Folder.Home + "OneDrive\Apps\Settings\StaxRip")
-                    End If
-
-                    folders.Add(Folder.AppDataCommon + "StaxRip")
-                    folders.Add(Folder.AppDataLocal + "StaxRip")
-                    folders.Add(Folder.AppDataRoaming + "StaxRip")
-                    folders.Add(Folder.Startup + "Settings")
-
-                    For Each folder In folders.Sort
-                        td.AddCommandLink(folder, folder)
-                    Next
-
+                    td.AddCommandLink(Folder.AppDataRoaming + "StaxRip")
+                    td.AddCommandLink(Folder.Startup + "Settings")
                     td.AddCommandLink("Browse for custom directory", "custom")
 
                     Dim dir = td.Show

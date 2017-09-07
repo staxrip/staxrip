@@ -40,11 +40,11 @@ Public Class ProcForm
         Me.bnSuspend = New System.Windows.Forms.Button()
         Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
         Me.mbShutdown = New StaxRip.UI.MenuButton()
+        Me.bnLog = New System.Windows.Forms.Button()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         Me.pnLogHost = New System.Windows.Forms.Panel()
         Me.pnStatusHost = New System.Windows.Forms.Panel()
         Me.flpNav = New System.Windows.Forms.FlowLayoutPanel()
-        Me.bnLog = New System.Windows.Forms.Button()
         Me.flpButtons.SuspendLayout()
         Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
@@ -119,7 +119,7 @@ Public Class ProcForm
         Me.flpButtons.Controls.Add(Me.bnJobs)
         Me.flpButtons.Controls.Add(Me.bnLog)
         Me.flpButtons.Location = New System.Drawing.Point(101, 734)
-        Me.flpButtons.Margin = New System.Windows.Forms.Padding(10, 0, 10, 10)
+        Me.flpButtons.Margin = New System.Windows.Forms.Padding(10)
         Me.flpButtons.Name = "flpButtons"
         Me.flpButtons.Size = New System.Drawing.Size(1631, 70)
         Me.flpButtons.TabIndex = 13
@@ -130,6 +130,17 @@ Public Class ProcForm
         Me.mbShutdown.Margin = New System.Windows.Forms.Padding(0)
         Me.mbShutdown.ShowMenuSymbol = True
         Me.mbShutdown.Size = New System.Drawing.Size(260, 70)
+        '
+        'bnLog
+        '
+        Me.bnLog.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnLog.Location = New System.Drawing.Point(1431, 0)
+        Me.bnLog.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
+        Me.bnLog.Name = "bnLog"
+        Me.bnLog.Size = New System.Drawing.Size(200, 70)
+        Me.bnLog.TabIndex = 13
+        Me.bnLog.Text = "Log"
+        Me.bnLog.UseVisualStyleBackColor = True
         '
         'tlpMain
         '
@@ -158,7 +169,7 @@ Public Class ProcForm
         Me.pnLogHost.Location = New System.Drawing.Point(0, 6)
         Me.pnLogHost.Margin = New System.Windows.Forms.Padding(0)
         Me.pnLogHost.Name = "pnLogHost"
-        Me.pnLogHost.Size = New System.Drawing.Size(1742, 668)
+        Me.pnLogHost.Size = New System.Drawing.Size(1742, 658)
         Me.pnLogHost.TabIndex = 17
         '
         'pnStatusHost
@@ -166,7 +177,7 @@ Public Class ProcForm
         Me.pnStatusHost.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnStatusHost.Location = New System.Drawing.Point(0, 674)
+        Me.pnStatusHost.Location = New System.Drawing.Point(0, 664)
         Me.pnStatusHost.Margin = New System.Windows.Forms.Padding(0)
         Me.pnStatusHost.Name = "pnStatusHost"
         Me.pnStatusHost.Size = New System.Drawing.Size(1742, 60)
@@ -182,17 +193,6 @@ Public Class ProcForm
         Me.flpNav.Name = "flpNav"
         Me.flpNav.Size = New System.Drawing.Size(1736, 1)
         Me.flpNav.TabIndex = 19
-        '
-        'bnLog
-        '
-        Me.bnLog.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnLog.Location = New System.Drawing.Point(1431, 0)
-        Me.bnLog.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
-        Me.bnLog.Name = "bnLog"
-        Me.bnLog.Size = New System.Drawing.Size(200, 70)
-        Me.bnLog.TabIndex = 13
-        Me.bnLog.Text = "Log"
-        Me.bnLog.UseVisualStyleBackColor = True
         '
         'ProcForm
         '

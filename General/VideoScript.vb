@@ -1,4 +1,5 @@
 Imports System.Text
+Imports System.Text.RegularExpressions
 Imports StaxRip
 
 <Serializable()>
@@ -218,11 +219,18 @@ clip.set_output()
     End Sub
 
     Shared Function ModifyScript(script As String, engine As ScriptEngine) As String
-        Dim scriptLower = script.ToLower
+        If engine = ScriptEngine.VapourSynth Then
+            Return ModifyVSScript(script)
+        Else
+            Return ModifyAVSScript(script)
+        End If
+    End Function
 
+    Shared Function ModifyVSScript(script As String) As String
+        Dim scriptLower = script.ToLower
         Dim code = ""
 
-        If engine = ScriptEngine.VapourSynth AndAlso Not script.Contains("import vapoursynth") Then
+        If Not script.Contains("import vapoursynth") Then
             code = "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR
         End If
 
@@ -232,52 +240,16 @@ clip.set_output()
             Dim fp = plugin.Path
 
             If fp <> "" Then
-                If engine = ScriptEngine.VapourSynth Then
-                    If Not plugin.VapourSynthFilterNames Is Nothing Then
-                        For Each filterName In plugin.VapourSynthFilterNames
-                            If script.Contains(filterName) Then PluginPackage.WriteVSCode(scriptLower, code, filterName, plugin)
-                        Next
-                    End If
+                If Not plugin.VapourSynthFilterNames Is Nothing Then
+                    For Each filterName In plugin.VapourSynthFilterNames
+                        If script.Contains(filterName) Then PluginPackage.WriteVSCode(scriptLower, code, filterName, plugin)
+                    Next
+                End If
 
-                    If Not plugin.AviSynthFilterNames Is Nothing Then
-                        For Each filterName In plugin.AviSynthFilterNames
-                            If script.Contains(".avs." + filterName) Then PluginPackage.WriteVSCode(scriptLower, code, filterName, plugin)
-                        Next
-                    End If
-                Else
-                    If Not plugin.AviSynthFilterNames Is Nothing Then
-                        For Each i2 In plugin.AviSynthFilterNames
-                            If scriptLower.Contains(i2.ToLower + "(") Then
-                                If plugin.Filename.Ext = "avsi" Then
-                                    Dim load = "Import(""" + fp + """)" + BR
-
-                                    If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
-                                        code += load
-                                    End If
-
-                                    If Not plugin.Dependencies.NothingOrEmpty Then
-                                        For Each i3 In plugin.Dependencies
-                                            For Each i4 In plugins.Where(Function(arg) Not arg.AviSynthFilterNames.NothingOrEmpty)
-                                                If i3 = i4.Name Then
-                                                    load = "LoadPlugin(""" + i4.Path + """)" + BR
-
-                                                    If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
-                                                        code += load
-                                                    End If
-                                                End If
-                                            Next
-                                        Next
-                                    End If
-                                Else
-                                    Dim load = "LoadPlugin(""" + fp + """)" + BR
-
-                                    If Not scriptLower.Contains(load.ToLower) AndAlso Not code.Contains(load) Then
-                                        code += load
-                                    End If
-                                End If
-                            End If
-                        Next
-                    End If
+                If Not plugin.AviSynthFilterNames Is Nothing Then
+                    For Each filterName In plugin.AviSynthFilterNames
+                        If script.Contains(".avs." + filterName) Then PluginPackage.WriteVSCode(scriptLower, code, filterName, plugin)
+                    Next
                 End If
             End If
         Next
@@ -290,7 +262,7 @@ clip.set_output()
             clip = script
         End If
 
-        If engine = ScriptEngine.VapourSynth AndAlso Not clip.Contains(".set_output(") Then
+        If Not clip.Contains(".set_output(") Then
             If clip.EndsWith(BR) Then
                 clip += "clip.set_output()"
             Else
@@ -298,6 +270,70 @@ clip.set_output()
             End If
         End If
 
+        Return clip
+    End Function
+
+    Shared Function GetAVSLoadCode(script As String, scriptAlready As String) As String
+        Dim loadCode = ""
+        Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
+
+        For Each plugin In plugins
+            Dim fp = plugin.Path
+
+            If fp <> "" Then
+                If Not plugin.AviSynthFilterNames Is Nothing Then
+                    For Each filterName In plugin.AviSynthFilterNames
+                        If script.Contains(filterName.ToLower) Then
+                            If plugin.Filename.Ext = "dll" Then
+                                Dim load = "LoadPlugin(""" + fp + """)" + BR
+
+                                If Not script.Contains(load.ToLower) AndAlso
+                                    Not loadCode.Contains(load) AndAlso
+                                    Not scriptAlready.Contains(load.ToLower) Then
+
+                                    loadCode += load
+                                End If
+                            ElseIf plugin.Filename.Ext = "avsi" Then
+                                Dim avsiImport = "Import(""" + fp + """)" + BR
+
+                                If Not script.Contains(avsiImport.ToLower) AndAlso
+                                    Not loadCode.Contains(avsiImport) AndAlso
+                                    Not scriptAlready.Contains(avsiImport.ToLower) Then
+
+                                    loadCode += avsiImport
+                                End If
+                            End If
+                        End If
+                    Next
+                End If
+            End If
+        Next
+
+        Return loadCode
+    End Function
+
+    Shared Function GetAVSLoadCodeFromImports(code As String) As String
+        Dim ret = ""
+
+        For Each line In code.SplitLinesNoEmpty
+            If line.Contains("import") Then
+                Dim match = Regex.Match(line, "\bimport\s*\(\s*""\s*(.+\.avsi*)\s*""\s*\)", RegexOptions.IgnoreCase)
+
+                If match.Success AndAlso File.Exists(match.Groups(1).Value) Then
+                    ret += GetAVSLoadCode(File.ReadAllText(match.Groups(1).Value).ToLowerInvariant, code)
+                End If
+            End If
+        Next
+
+        Return ret
+    End Function
+
+    Shared Function ModifyAVSScript(script As String) As String
+        Dim clip As String
+        Dim lowerScript = script.ToLower
+        Dim loadCode = GetAVSLoadCode(lowerScript, "")
+        clip = loadCode + script
+        clip = GetAVSLoadCodeFromImports(clip.ToLowerInvariant) + clip
         Return clip
     End Function
 
@@ -333,7 +369,7 @@ clip.set_output()
 
         Dim script As New TargetVideoScript("AviSynth")
         script.Engine = ScriptEngine.AviSynth
-        script.Filters.Add(New VideoFilter("Source", "Automatic", ""))
+        script.Filters.Add(New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"))
         script.Filters.Add(New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", False))
         script.Filters.Add(New VideoFilter("Field", "TDeint", "TDeint()", False))
         script.Filters.Add(New VideoFilter("Noise", "RemoveGrain", "RemoveGrain()", False))
@@ -342,7 +378,7 @@ clip.set_output()
 
         script = New TargetVideoScript("VapourSynth")
         script.Engine = ScriptEngine.VapourSynth
-        script.Filters.Add(New VideoFilter("Source", "Automatic", ""))
+        script.Filters.Add(New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"))
         script.Filters.Add(New VideoFilter("Crop", "CropRel", "clip = core.std.CropRel(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)", False))
         script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = 'Medium')", False))
         script.Filters.Add(New VideoFilter("Noise", "SMDegrain", "clip = havsfunc.SMDegrain(clip, contrasharp = True)", False))

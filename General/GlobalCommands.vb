@@ -6,6 +6,17 @@ Imports System.Text.RegularExpressions
 Imports StaxRip.UI
 
 Public Class GlobalCommands
+    <Command("Shows the log file with the built in log file viewer.")>
+    Sub ShowLogFile()
+        If Not File.Exists(p.Log.GetPath()) Then Exit Sub
+
+        Using form As New LogForm
+            form.Path = p.Log.GetPath()
+            form.Init()
+            form.ShowDialog()
+        End Using
+    End Sub
+
     <Command("Allows to use StaxRip's demuxing GUIs independently.")>
     Sub ShowDemuxTool()
         Using form As New SimpleSettingsForm("Demux")
@@ -266,17 +277,18 @@ Public Class GlobalCommands
         Dim msg = ""
 
         Dim nvExcept = "--help --version --check-device --avsw --input-analyze
-        --input-format --output-format --video-streamid --video-track --vpp-delogo
-        --vpp-delogo-cb --vpp-delogo-cr --vpp-delogo-depth --vpp-delogo-pos
-        --vpp-delogo-select --vpp-delogo-y --check-avversion --check-codecs
-        --check-encoders --check-decoders --check-formats --check-protocols
-        --check-filters --input --output --raw --avs --vpy --vpy-mt
-        --avcuvid-analyze --audio-source --audio-file --seek --format --audio-copy
-        --audio-copy --audio-codec --vpp-perf-monitor --avi
-        --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
-        --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
-        --avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
-        --log --log-framelist".Split((" " + BR).ToCharArray())
+            --input-format --output-format --video-streamid --video-track --vpp-delogo
+            --vpp-delogo-cb --vpp-delogo-cr --vpp-delogo-depth --vpp-delogo-pos
+            --vpp-delogo-select --vpp-delogo-y --check-avversion --check-codecs
+            --check-encoders --check-decoders --check-formats --check-protocols
+            --check-filters --input --output --raw --avs --vpy --vpy-mt
+            --avcuvid-analyze --audio-source --audio-file --seek --format --audio-copy
+            --audio-copy --audio-codec --vpp-perf-monitor --avi
+            --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
+            --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
+            --avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
+            --log --log-framelist".Split((" " + BR).ToCharArray())
+
         File.WriteAllText(Package.NVEnc.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.NVEnc.Path, "-h"))
         Dim nvHelp = File.ReadAllText(Package.NVEnc.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim nvHelpSwitches = Regex.Matches(nvHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
@@ -291,13 +303,14 @@ Public Class GlobalCommands
         If nvUnknown.Count > 0 Then msg += BR2 + "# NVEncC Todo" + BR2 + nvUnknown.Join(" ")
 
         Dim amdExcept = "--audio-bitrate --audio-codec --audio-copy --audio-file
-        --audio-filter --avsw --device --input-analyze
-        --audio-ignore-decode-error --audio-ignore-notrack-error --audio-resampler
-        --audio-samplerate --audio-source --audio-stream --avs --avvce-analyze
-        --check-avversion --check-codecs --check-decoders --check-encoders --check-filters
-        --check-formats --check-protocols --dar --format --fps --help --input-file
-        --input-res --log-framelist --mux-option --output-file --raw --seek --skip-frame
-        --sub-copy --version --video-streamid --video-track --vpy --vpy-mt".Split((" " + BR).ToCharArray())
+            --audio-filter --avsw --device --input-analyze
+            --audio-ignore-decode-error --audio-ignore-notrack-error --audio-resampler
+            --audio-samplerate --audio-source --audio-stream --avs --avvce-analyze
+            --check-avversion --check-codecs --check-decoders --check-encoders --check-filters
+            --check-formats --check-protocols --dar --format --fps --help --input-file
+            --input-res --log-framelist --mux-option --output-file --raw --seek --skip-frame
+            --sub-copy --version --video-streamid --video-track --vpy --vpy-mt".Split((" " + BR).ToCharArray())
+
         Dim amdHelp = File.ReadAllText(".\Apps\VCEEnc\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim amdHelpSwitches = Regex.Matches(amdHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim amdCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\vceenc.vb").Replace("--no-", "--")
@@ -311,20 +324,20 @@ Public Class GlobalCommands
         If amdUnknown.Count > 0 Then msg += BR2 + "# VCEEncC Todo" + BR2 + amdUnknown.Join(" ")
 
         Dim qsExcept = "--help --version --check-device --video-streamid --video-track
-        --check-avversion --check-codecs --check-encoders --check-decoders --check-formats
-        --check-protocols --chapter-no-trim --check-filters --device --input --output
-        --raw --avs --vpy --vpy-mt --audio-source --audio-file --seek --format
-        --audio-copy --audio-copy --audio-codec --audio-bitrate --audio-ignore
-        --audio-ignore --audio-samplerate --audio-resampler --audio-stream --audio-stream
-        --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
-        --avsync --mux-option --input-res --fps --dar --avqsv-analyze --benchmark
-        --bench-quality --log --log-framelist --audio-thread --avi --avqsv --input-file
-        --audio-ignore-decode-error --audio-ignore-notrack-error --nv12 --output-file
-        --check-features-html --perf-monitor --perf-monitor-plot --perf-monitor-interval
-        --python --qvbr-quality --sharpness --vpp-delogo --vpp-delogo-select
-        --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb --vpp-delogo-cr
-        --vpp-delogo-add --vpp-half-turn --input-analyze --input-format --output-format
-        ".Split((" " + BR).ToCharArray())
+            --check-avversion --check-codecs --check-encoders --check-decoders --check-formats
+            --check-protocols --chapter-no-trim --check-filters --device --input --output
+            --raw --avs --vpy --vpy-mt --audio-source --audio-file --seek --format
+            --audio-copy --audio-copy --audio-codec --audio-bitrate --audio-ignore
+            --audio-ignore --audio-samplerate --audio-resampler --audio-stream --audio-stream
+            --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
+            --avsync --mux-option --input-res --fps --dar --avqsv-analyze --benchmark
+            --bench-quality --log --log-framelist --audio-thread --avi --avqsv --input-file
+            --audio-ignore-decode-error --audio-ignore-notrack-error --nv12 --output-file
+            --check-features-html --perf-monitor --perf-monitor-plot --perf-monitor-interval
+            --python --qvbr-quality --sharpness --vpp-delogo --vpp-delogo-select
+            --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb --vpp-delogo-cr
+            --vpp-delogo-add --vpp-half-turn --input-analyze --input-format --output-format
+            ".Split((" " + BR).ToCharArray())
 
         File.WriteAllText(Package.QSVEnc.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.QSVEnc.Path, "-h"))
         Dim qsHelp = File.ReadAllText(Package.QSVEnc.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
@@ -340,11 +353,12 @@ Public Class GlobalCommands
         If qsUnknown.Count > 0 Then msg += BR2 + "# QSVEncC Todo" + BR2 + qsUnknown.Join(" ")
 
         Dim x265Except = "--crop-rect --display-window --fast-cbf --frame-skip --help
-        --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version
-        --opt-qp-pps --opt-ref-list-length-pps --dhdr10-info --no-scenecut
-        --no-progress --pbration".Split((" " + BR).ToCharArray())
+            --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version
+            --opt-qp-pps --opt-ref-list-length-pps --dhdr10-info --no-scenecut
+            --no-progress --pbration".Split((" " + BR).ToCharArray())
+
         Dim x265RemoveExcept = "--numa-pools --rdoq --cip --qblur --cplxblur --cu-stats
---dhdr10-opt --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
+            --dhdr10-opt --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
 
         Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --help").Replace("--[no-]", "--")
         Dim x265HelpSwitches = Regex.Matches(x265Help, "--[\w-]+").OfType(Of Match).Select(Function(val) val.Value)
@@ -372,10 +386,12 @@ Public Class GlobalCommands
 
             If pack.Path = "" Then msg += BR2 + "# path missing for " + pack.Name
 
-            If pack.Version = "" Then
-                msg += BR2 + "# version missing for " + pack.Name
-            Else
-                If Not pack.IsCorrectVersion Then msg += BR2 + "# wrong version for " + pack.Name
+            If Not pack.IgnoreVersion Then
+                If pack.Version = "" Then
+                    msg += BR2 + "# version missing for " + pack.Name
+                ElseIf Not pack.IsCorrectVersion Then
+                    msg += BR2 + "# wrong version for " + pack.Name
+                End If
             End If
 
             'does help file exist?
@@ -395,6 +411,8 @@ Public Class GlobalCommands
             Dim fs = Folder.Temp + "staxrip todo.txt"
             File.WriteAllText(fs, msg)
             g.StartProcess(fs)
+        Else
+            MsgInfo("No issues found.")
         End If
     End Sub
 

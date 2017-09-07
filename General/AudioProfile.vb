@@ -223,12 +223,12 @@ Public MustInherit Class AudioProfile
     Overridable Function HandlesDelay() As Boolean
     End Function
 
-    Function GetSuffix() As String
-        If Me Is p.Audio0 Then Return "_a1"
-        If Me Is p.Audio1 Then Return "_a2"
+    Function GetTrackID() As Integer
+        If Me Is p.Audio0 Then Return 1
+        If Me Is p.Audio1 Then Return 2
 
         For x = 0 To p.AudioTracks.Count - 1
-            If Me Is p.AudioTracks(x) Then Return "_a" & x + 3
+            If Me Is p.AudioTracks(x) Then Return x + 3
         Next
     End Function
 
@@ -246,7 +246,7 @@ Public MustInherit Class AudioProfile
             End If
         End If
 
-        Return p.TempDir + base + GetSuffix() + "." + OutputFileType
+        Return p.TempDir + base + "_a" & GetTrackID() & "." + OutputFileType
     End Function
 
     Function ExpandMacros(value As String) As String
@@ -271,7 +271,7 @@ Public MustInherit Class AudioProfile
         Dim ret As New List(Of AudioProfile)
         ret.Add(New GUIAudioProfile(AudioCodec.AAC, 0.4))
         ret.Add(New GUIAudioProfile(AudioCodec.Opus, 1) With {.Bitrate = 250})
-        ret.Add(New GUIAudioProfile(AudioCodec.Flac, 0.3))
+        ret.Add(New GUIAudioProfile(AudioCodec.FLAC, 0.3))
         ret.Add(New GUIAudioProfile(AudioCodec.Vorbis, 1))
         ret.Add(New GUIAudioProfile(AudioCodec.MP3, 4))
         ret.Add(New GUIAudioProfile(AudioCodec.AC3, 1.0) With {.Channels = 6, .Bitrate = 640})
@@ -327,7 +327,7 @@ Public Class BatchAudioProfile
             Proc.ExecuteBatch(
                 GetCode(),
                 "Audio encoding: " + Name,
-                GetSuffix,
+                "_a" & GetTrackID(),
                 {"Maximum Gain Found", "transcoding ...", "size=", "process: ", "analyze: "})
 
             If g.FileExists(targetPath) Then
@@ -636,7 +636,7 @@ Public Class GUIAudioProfile
             Dim cl = GetCommandLine(True)
 
             Using proc As New Proc
-                proc.Header = "Audio encoding"
+                proc.Header = "Audio encoding " & GetTrackID()
 
                 If cl.Contains("|") Then
                     proc.File = "cmd.exe"

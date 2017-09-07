@@ -1554,9 +1554,9 @@ Public Class AudioStream
                 ret += " MP3"
             ElseIf CodecString = "AC3+" Then
                 ret += " E-AC3"
-            ElseIf FormatProfile = "MA / Core" Then
+            ElseIf FormatProfile.StartsWith("MA /") Then
                 ret += " DTS-MA"
-            ElseIf FormatProfile = "HRA / Core" Then
+            ElseIf FormatProfile.StartsWith("HRA /") Then
                 ret += " DTS-HRA"
             Else
                 ret += " " + CodecString
@@ -1606,9 +1606,9 @@ Public Class AudioStream
                 Case "DTS"
                     Return ".dts"
                 Case "DTS-HD"
-                    If FormatProfile = "MA / Core" Then
+                    If FormatProfile.StartsWith("MA /") Then
                         Return ".dtsma"
-                    ElseIf FormatProfile = "HRA / Core" Then
+                    ElseIf FormatProfile.StartsWith("HRA /") Then
                         Return ".dtshr"
                     Else
                         Return ".dtshd"

@@ -369,7 +369,7 @@ Public Class BatchMuxer
         Dim batchCode = Proc.WriteBatchFile(batchPath, Macro.Expand(CommandLines))
 
         Using proc As New Proc
-            proc.Header = "Encoding video command line encoder: " + Name
+            proc.Header = "Video encoding command line encoder: " + Name
             proc.WriteLog(batchCode + BR2)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"

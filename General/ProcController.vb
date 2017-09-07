@@ -7,7 +7,7 @@ Imports StaxRip.UI
 Public Class ProcController
     Property Proc As Proc
     Property LogTextBox As New TextBox
-    Property StatusLabel As New Label
+    Property ProgressBar As New LabelProgressBar
     Property ProcForm As ProcForm
     Property CheckBox As New CheckBoxEx
 
@@ -28,9 +28,9 @@ Public Class ProcController
         CheckBox.Text = " " + proc.Title + " "
         AddHandler CheckBox.Click, AddressOf Click
 
-        StatusLabel.Dock = DockStyle.Fill
-        StatusLabel.TextAlign = ContentAlignment.MiddleLeft
-        StatusLabel.Font = New Font("Consolas", 9 * s.UIScaleFactor)
+        ProgressBar.Dock = DockStyle.Fill
+        ProgressBar.Font = New Font("Consolas", 9 * s.UIScaleFactor)
+        ProgressBar.ForeColor = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(ToolStripRendererEx.ColorBorder, 0.4)))
 
         LogTextBox.ScrollBars = ScrollBars.Both
         LogTextBox.Multiline = True
@@ -40,7 +40,7 @@ Public Class ProcController
         LogTextBox.Font = New Font("Consolas", 9 * s.UIScaleFactor)
 
         ProcForm.pnLogHost.Controls.Add(LogTextBox)
-        ProcForm.pnStatusHost.Controls.Add(StatusLabel)
+        ProcForm.pnStatusHost.Controls.Add(ProgressBar)
         ProcForm.flpNav.Controls.Add(CheckBox)
 
         AddHandler proc.ProcDisposed, AddressOf ProcDisposed
@@ -70,13 +70,13 @@ Public Class ProcController
     End Sub
 
     Private Sub StatusHandler(value As String)
-        StatusLabel.Text = value
-        SetTaskbarProgress(value)
+        ProgressBar.Text = value
+        SetProgress(value)
     End Sub
 
     Shared LastProgress As Single
 
-    Sub SetTaskbarProgress(value As String)
+    Sub SetProgress(value As String)
         If Proc.IsSilent Then Exit Sub
 
         If value.Contains("%") Then
@@ -92,6 +92,7 @@ Public Class ProcController
                     ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
                     ProcForm.Taskbar?.SetValue(val, 100)
                     ProcForm.NotifyIcon.Text = val & "%"
+                    ProgressBar.Value = val
                     LastProgress = val
                 End If
 
@@ -172,16 +173,18 @@ Public Class ProcController
     Sub Cleanup()
         SyncLock Procs
             Procs.Remove(Me)
-            ProcForm.flpNav.Controls.Remove(CheckBox)
 
             RemoveHandler Proc.ProcDisposed, AddressOf ProcDisposed
             RemoveHandler Proc.Process.OutputDataReceived, AddressOf DataReceived
             RemoveHandler Proc.Process.ErrorDataReceived, AddressOf DataReceived
 
+            ProcForm.flpNav.Controls.Remove(CheckBox)
             ProcForm.pnLogHost.Controls.Remove(LogTextBox)
-            ProcForm.pnStatusHost.Controls.Remove(StatusLabel)
+            ProcForm.pnStatusHost.Controls.Remove(ProgressBar)
+
+            CheckBox.Dispose()
             LogTextBox.Dispose()
-            StatusLabel.Dispose()
+            ProgressBar.Dispose()
 
             For Each i In Procs
                 i.Deactivate()
@@ -241,15 +244,15 @@ Public Class ProcController
         LogTextBox.Visible = True
         LogTextBox.BringToFront()
         LogTextBox.Text = Proc.Log.ToString
-        StatusLabel.Visible = True
-        StatusLabel.BringToFront()
+        ProgressBar.Visible = True
+        ProgressBar.BringToFront()
     End Sub
 
     Sub Deactivate()
         CheckBox.Checked = False
         Proc.IsSilent = True
         LogTextBox.Visible = False
-        StatusLabel.Visible = False
+        ProgressBar.Visible = False
     End Sub
 
     Shared Sub AddProc(proc As Proc)

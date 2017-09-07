@@ -230,7 +230,11 @@ Public Class AppsForm
         ToolStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         g.SetRenderer(ToolStrip)
 
-        AddHandler SetupButton.Click, Sub() RunSetup()
+        AddHandler SetupButton.Click, Sub()
+                                          CurrentPackage.SetupAction.Invoke
+                                          ShowActivePackage()
+                                      End Sub
+
         SetupButton.ForeColor = Color.Red
         SetupButton.AutoSize = True
         SetupButton.AutoSizeMode = Windows.Forms.AutoSizeMode.GrowAndShrink
@@ -264,7 +268,9 @@ Public Class AppsForm
         Headers("Title").Text = CurrentPackage.Name
 
         SetupButton.Text = "Install " + CurrentPackage.Name
-        SetupButton.Visible = CurrentPackage.SetupFilename <> "" AndAlso (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> "")) AndAlso File.Exists(Folder.Apps + CurrentPackage.SetupFilename)
+        SetupButton.Visible = Not CurrentPackage.SetupAction Is Nothing AndAlso
+            (CurrentPackage.IsStatusCritical OrElse
+            (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> ""))
 
         DownloadButton.Text = "Download " + CurrentPackage.Name
         DownloadButton.Visible = CurrentPackage.DownloadURL <> "" AndAlso (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> ""))
@@ -352,11 +358,6 @@ Public Class AppsForm
         flp.Controls.Add(contentLabel)
     End Sub
 
-    Sub RunSetup()
-        g.StartProcess(Folder.Apps + CurrentPackage.SetupFilename)
-        ShowActivePackage()
-    End Sub
-
     Sub ShowPackage(package As Package)
         For Each i As TreeNode In tv.Nodes
             If i.IsExpanded Then i.Collapse()
@@ -414,8 +415,8 @@ Public Class AppsForm
             Dim plugin = TryCast(pack, PluginPackage)
 
             Dim searchString = pack.Name + pack.Description + pack.Version +
-                plugin?.VapourSynthFilterNames.Join(" ") +
-                plugin?.AviSynthFilterNames.Join(" ")
+                plugin?.VapourSynthFilterNames.Join(" ") +pack.Path+
+                plugin?.AviSynthFilterNames.Join(" ") 
 
             If searchString?.ToLower.Contains(SearchTextBox.Text?.ToLower) Then
                 If plugin Is Nothing Then

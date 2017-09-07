@@ -50,7 +50,7 @@ Namespace UI
             KeyPreview = True
             SetTabIndexes(Me)
 
-            If AutoScaleMode = AutoScaleMode.Dpi Then
+            If AutoScaleMode = AutoScaleMode.Dpi OrElse AutoScaleMode = AutoScaleMode.Font Then
                 If s.UIScaleFactor <> 1 Then
                     Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
                     Scale(New SizeF(1 * s.UIScaleFactor, 1 * s.UIScaleFactor))
@@ -427,12 +427,13 @@ Namespace UI
         Private Sub RestorePositionInternal(form As Form)
             If Positions.ContainsKey(GetKey(form)) Then
                 Dim pos = Positions(GetKey(form))
-                Dim workingArea = Screen.FromControl(form).WorkingArea
+                Dim wa = Screen.FromControl(form).WorkingArea
 
-                If pos.X < workingArea.X OrElse pos.Y < workingArea.Y OrElse
-                    pos.X + form.Width > workingArea.Right OrElse pos.Y + form.Height > workingArea.Bottom Then
+                If pos.X < 0 OrElse pos.Y < 0 OrElse
+                    pos.X + form.Width > wa.Width OrElse
+                    pos.Y + form.Height > wa.Height Then
 
-                    form.StartPosition = FormStartPosition.WindowsDefaultLocation
+                    CenterScreen(form)
                 Else
                     form.StartPosition = FormStartPosition.Manual
                     form.Location = pos

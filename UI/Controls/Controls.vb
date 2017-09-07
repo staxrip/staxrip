@@ -4,6 +4,8 @@ Imports System.Runtime.InteropServices
 Imports System.Windows.Forms.VisualStyles
 Imports System.Threading
 Imports System.Threading.Tasks
+Imports System.Drawing.Drawing2D
+Imports Microsoft.Win32
 
 Namespace UI
     Public Class TreeViewEx
@@ -697,11 +699,13 @@ Namespace UI
         End Property
 
         Protected Overrides Sub OnMouseEnter(e As EventArgs)
+            Font = New Font(Font, FontStyle.Bold)
             ForeColor = LinkColorHover
             MyBase.OnMouseEnter(e)
         End Sub
 
         Protected Overrides Sub OnMouseLeave(e As EventArgs)
+            Font = New Font(Font, FontStyle.Regular)
             ForeColor = LinkColorNormal
             MyBase.OnMouseLeave(e)
         End Sub
@@ -1119,6 +1123,113 @@ Namespace UI
         Private KeyText As String = ""
         Private BlockOnSelectedIndexChanged As Boolean
 
+        Private ColorBorder As Color
+        Private ColorTop As Color
+        Private ColorBottom As Color
+
+        Public Sub New()
+            DrawMode = DrawMode.OwnerDrawFixed
+            InitAero()
+        End Sub
+
+        Protected Overrides Sub OnFontChanged(e As EventArgs)
+            ItemHeight = CInt(Font.Height * 1.4)
+            MyBase.OnFontChanged(e)
+        End Sub
+
+        Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
+            If Items.Count = 0 OrElse e.Index < 0 Then Exit Sub
+
+            Dim g = e.Graphics
+            g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+
+            Dim r = e.Bounds
+
+            If (e.State And DrawItemState.Selected) = DrawItemState.Selected Then
+                r.Width -= 1
+                r.Height -= 1
+
+                Using p As New Pen(ColorBorder)
+                    g.DrawRectangle(p, r)
+                End Using
+
+                r.Inflate(-1, -1)
+
+                Using b As New SolidBrush(ColorBottom)
+                    g.FillRectangle(b, r)
+                End Using
+            Else
+                Using b As New SolidBrush(BackColor)
+                    g.FillRectangle(b, r)
+                End Using
+            End If
+
+            Dim sf As New StringFormat
+            sf.FormatFlags = StringFormatFlags.NoWrap
+            sf.LineAlignment = StringAlignment.Center
+
+            Dim r2 = e.Bounds
+            r2.X = 2
+            r2.Width = e.Bounds.Width
+
+            Dim caption As String = Nothing
+
+            If DisplayMember <> "" Then
+                Try
+                    caption = Items(e.Index).GetType.GetProperty(DisplayMember).GetValue(Items(e.Index), Nothing).ToString
+                Catch ex As Exception
+                    caption = Items(e.Index).ToString()
+                End Try
+            Else
+                caption = Items(e.Index).ToString()
+            End If
+
+            e.Graphics.DrawString(caption, Font, Brushes.Black, r2, sf)
+        End Sub
+
+        Sub InitAero()
+            Dim argb = CInt(Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", 0))
+            If argb = 0 Then argb = Color.Orange.ToArgb
+            InitColors(Color.FromArgb(argb))
+        End Sub
+
+        Sub InitColors(c As Color)
+            Dim border = HSLColor.Convert(c)
+            border.Luminosity = 50
+
+            Dim top = border
+            Dim bottom = border
+
+            top.Luminosity = 240
+            bottom.Luminosity = 220
+
+            ColorBorder = border.ToColor
+            ColorTop = top.ToColor
+            ColorBottom = bottom.ToColor
+        End Sub
+
+        Public Shared Function CreateRoundRectangle(r As Rectangle, radius As Integer) As GraphicsPath
+            Dim path As New GraphicsPath()
+
+            Dim l = r.Left
+            Dim t = r.Top
+            Dim w = r.Width
+            Dim h = r.Height
+            Dim d = radius << 1
+
+            path.AddArc(l, t, d, d, 180, 90)
+            path.AddLine(l + radius, t, l + w - radius, t)
+            path.AddArc(l + w - d, t, d, d, 270, 90)
+            path.AddLine(l + w, t + radius, l + w, t + h - radius)
+            path.AddArc(l + w - d, t + h - d, d, d, 0, 90)
+            path.AddLine(l + w - radius, t + h, l + radius, t + h)
+            path.AddArc(l, t + h - d, d, d, 90, 90)
+            path.AddLine(l, t + h - radius, l, t + radius)
+            path.CloseFigure()
+
+            Return path
+        End Function
+
         Sub UpdateSelection()
             If SelectedIndex > -1 Then
                 BlockOnSelectedIndexChanged = True
@@ -1223,50 +1334,6 @@ Namespace UI
                 Dim iAbove = SelectedIndices(0) - 1
                 Items.Insert(iAbove + 1, itemBelow)
                 SetSelected(SelectedIndex, True)
-            End If
-        End Sub
-
-        Sub KeyDownSequence(e As KeyEventArgs)
-            If Environment.TickCount - LastTick > 1000 Then
-                KeyText = Convert.ToChar(e.KeyValue).ToString()
-            Else
-                KeyText += Convert.ToChar(e.KeyValue).ToString()
-            End If
-
-            For i = 0 To Items.Count - 1
-                If Items(i).ToString().ToLower().StartsWith(KeyText.ToLower) Then
-                    Application.DoEvents()
-
-                    SelectedIndex = -1
-                    SelectedIndex = i
-
-                    Exit For
-                End If
-            Next
-
-            LastTick = Environment.TickCount
-        End Sub
-
-        Sub DrawNumbered(e As DrawItemEventArgs)
-            If e.Index > -1 Then
-                e.DrawBackground()
-                e.DrawFocusRectangle()
-
-                Dim sb As SolidBrush = New SolidBrush(ForeColor)
-                Dim pf As PointF
-
-                If e.Index > 998 Then
-                    pf = New PointF(e.Bounds.Left + 40, e.Bounds.Top)
-                Else
-                    If e.Index > 98 Then
-                        pf = New PointF(e.Bounds.Left + 30, e.Bounds.Top)
-                    Else
-                        pf = New PointF(e.Bounds.Left + 20, e.Bounds.Top)
-                    End If
-                End If
-
-                e.Graphics.DrawString(Items(e.Index).ToString, Font, sb, pf)
-                e.Graphics.DrawString((e.Index + 1).ToString, Font, sb, e.Bounds.Left, e.Bounds.Top)
             End If
         End Sub
 
@@ -1712,6 +1779,73 @@ Namespace UI
             Dim index2 = TabPages.IndexOf(tp2)
             TabPages(index1) = tp2
             TabPages(index2) = tp1
+        End Sub
+    End Class
+
+    Public Class LabelProgressBar
+        Inherits Control
+
+        Public Sub New()
+            SetStyle(ControlStyles.ResizeRedraw, True)
+            SetStyle(ControlStyles.Selectable, False)
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, True)
+
+            ForeColor = Color.Green
+            BackColor = SystemColors.Control
+        End Sub
+
+        Private _Minimum As Double
+
+        Public Property Minimum() As Double
+            Get
+                Return _Minimum
+            End Get
+            Set
+                If _Minimum <> Value Then
+                    _Minimum = Value
+                    Invalidate()
+                End If
+            End Set
+        End Property
+
+        Private _Maximum As Double = 100
+
+        Public Property Maximum() As Double
+            Get
+                Return _Maximum
+            End Get
+            Set
+                If _Maximum <> Value Then
+                    _Maximum = Value
+                    Invalidate()
+                End If
+            End Set
+        End Property
+
+        Private _Value As Double
+
+        Public Property Value() As Double
+            Get
+                Return _Value
+            End Get
+            Set
+                If _Value <> Value Then
+                    _Value = Value
+                    Invalidate()
+                End If
+            End Set
+        End Property
+
+        Protected Overrides Sub OnPaint(e As PaintEventArgs)
+            Dim g = e.Graphics
+            g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+
+            Using br = New SolidBrush(ForeColor)
+                g.FillRectangle(br, New RectangleF(0, 0, CSng(Width * (Value - Minimum) / Maximum), Height))
+                g.DrawString(Text, Font, Brushes.Black, g.ClipBounds, New StringFormat With {.LineAlignment = StringAlignment.Center})
+            End Using
+
+            MyBase.OnPaint(e)
         End Sub
     End Class
 End Namespace

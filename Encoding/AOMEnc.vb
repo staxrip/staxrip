@@ -37,10 +37,10 @@ Public Class AOMEnc
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode("Encoding video using aomenc " + Package.AOMEnc.Version, GetArgs(1, p.Script))
+        Encode("Video encoding using aomenc " + Package.AOMEnc.Version, GetArgs(1, p.Script))
 
         If Params.Mode.Value = AV1RateMode.TwoPass Then
-            Encode("Encoding video second pass using aomenc " + Package.AOMEnc.Version, GetArgs(2, p.Script))
+            Encode("Video encoding second pass using aomenc " + Package.AOMEnc.Version, GetArgs(2, p.Script))
         End If
 
         AfterEncoding()

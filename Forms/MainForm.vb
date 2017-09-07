@@ -1579,6 +1579,8 @@ Public Class MainForm
 
         Log = p.Log
 
+        If File.Exists(Folder.Temp + "staxrip.log") Then FileHelp.Delete(Folder.Temp + "staxrip.log")
+
         SetBindings(p, True)
 
         Text = Application.ProductName + " x64 - " + path.Base
@@ -1938,7 +1940,7 @@ Public Class MainForm
                 tbTargetFile.Text = FilePath.GetDirAndBase(p.TargetFile) + "_new" + FilePath.GetExtFull(p.TargetFile)
             End If
 
-            Log.WriteHeader("Source file MediaInfo")
+            Log.WriteHeader("MediaInfo Source File")
 
             For Each i In p.SourceFiles
                 Log.WriteLine(i)
@@ -4402,8 +4404,7 @@ Public Class MainForm
         ret.Add("Options", NameOf(ShowOptionsDialog), Keys.F8)
 
         ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F6, Symbol.MultiSelectLegacy)
-        ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Page, {"""%text_editor%"" ""%working_dir%%target_name%_staxrip.log"""})
-
+        ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ShowLogFile), Symbol.Page)
         ret.Add("Tools|Folders", Symbol.Folder)
         ret.Add("Tools|Folders|Log Files", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%Log Files"""})
         ret.Add("Tools|Folders|Plugins", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%plugin_dir%"""})

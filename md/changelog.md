@@ -10,6 +10,30 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
+#### 1.6.1.4 unstable test build
+
+- fix: StaxRip didn't ask to install FFTW in case it's required by the active script (https://forum.doom9.org/showthread.php?p=1817732#post1817732)
+
+- new: the job processing dialog additionally to showing the progress as text it shows progress now also with a progress bar (https://github.com/stax76/staxrip/wiki/Screenshots#job-processing)
+- new: DeLogo VapourSynth plugin (https://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-(Diskussion)&p=459186&viewfull=1#post459186)
+- new: Log File Viewer added, it features a nav/tab bar to eailiy navigate to the different sections of the log file (https://github.com/stax76/staxrip/wiki/Screenshots#log-file-viewer)
+- new: DCTFilter v0.5.0 AviSynth plugin added (https://github.com/chikuzen/DCTFilter)
+
+- usability: preview starts with zoom for small resolutions
+- cosmetic: DTS-HRA wasn't detected and extracted and displayed as DTS-HD
+
+- update: x265 2.5+14 (https://forum.doom9.org/showthread.php?p=1817514#post1817514)
+- update: QSVEnc 2.73 (https://forum.doom9.org/showthread.php?p=1817549#post1817549)
+- update: Plugins_JPSDR 1.2.1 (https://forum.doom9.org/showthread.php?p=1817738#post1817738)
+- update: mClean 1.5d (https://forum.doom9.org/showthread.php?t=174804)
+
+#### 1.6.1.3 unstable test build
+
+- new: GradCurve VapourSynth plugin
+- new: smarter discovery of required AviSynth LoadPlugin calls
+- new: FFT3DFilter AviSynth plugin
+- new: mClean AviSynth+ script
+
 #### 1.6.1.2 unstable test build
 
 - fix: move down item in job list was broke

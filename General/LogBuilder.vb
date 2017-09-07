@@ -20,18 +20,22 @@ Public Class LogBuilder
         Return Last.EndsWith(value)
     End Function
 
-    Sub Write(title As String, content As String)
-        StartTime = DateTime.Now
-        If Not EndsWith(BR2) Then Append(BR)
-        Append(FormatHeader(title))
+    Private Shared WriteLock As New Object
 
-        If content <> "" Then
-            If content.EndsWith(BR) Then
-                Append(content)
-            Else
-                Append(content + BR)
+    Sub Write(title As String, content As String)
+        SyncLock WriteLock
+            StartTime = DateTime.Now
+            If Not EndsWith(BR2) Then Append(BR)
+            Append(FormatHeader(title))
+
+            If content <> "" Then
+                If content.EndsWith(BR) Then
+                    Append(content)
+                Else
+                    Append(content + BR)
+                End If
             End If
-        End If
+        End SyncLock
     End Sub
 
     Sub WriteLine(value As String)
@@ -62,13 +66,14 @@ Public Class LogBuilder
     End Sub
 
     Function FormatHeader(value As String) As String
-        Return "-=".Multiply(30) + "-" + BR + value.PadLeft(30 + value.Length \ 2) + BR + "-=".Multiply(30) + "-" + BR2
+        Dim len = (70 - value.Length) \ 2
+        Return "-".Multiply(len) + " " + value + " " + "-".Multiply(len) + BR2
     End Function
 
     Shared EnvironmentString As String 'cached due to bug report
 
     Sub WriteEnvironment()
-        If ToString.Contains("System Environment" + BR + "-=") Then Exit Sub
+        If ToString.Contains("- System Environment -") Then Exit Sub
         WriteHeader("System Environment")
 
         If EnvironmentString = "" Then EnvironmentString =

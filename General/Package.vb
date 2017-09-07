@@ -1,3 +1,4 @@
+Imports System.Text.RegularExpressions
 Imports Microsoft.Win32
 Imports StaxRip
 
@@ -33,6 +34,21 @@ Public Class Package
         Set(value As String)
             WebURL = value
             HelpURL = value
+        End Set
+    End Property
+
+    Private SetupActionValue As Action
+
+    Property SetupAction As Action
+        Get
+            If SetupActionValue Is Nothing AndAlso File.Exists(Folder.Apps + SetupFilename) Then
+                SetupActionValue = Sub() g.StartProcess(Folder.Apps + SetupFilename)
+            End If
+
+            Return SetupActionValue
+        End Get
+        Set(value As Action)
+            SetupActionValue = value
         End Set
     End Property
 
@@ -150,14 +166,6 @@ Public Class Package
         .WebURL = "http://aomedia.org",
         .IsRequiredFunc = Function() TypeOf p.VideoEncoder Is AOMEnc,
         .Description = "AOMedia Video 1 (AV1) is an open, royalty-free video coding format designed for video transmissions over the Internet."})
-
-    Shared Property mvtools2 As Package = Add(New PluginPackage With {
-            .Name = "mvtools2",
-            .Filename = "mvtools2.dll",
-            .WebURL = "https://github.com/pinterf/mvtools",
-            .HelpURL = "http://avisynth.org.ru/mvtools/mvtools2.html",
-            .Description = "MVTools is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
-            .AviSynthFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDeGrain1", "MDeGrain2", "MDegrain3"}})
 
     Shared Property TDeint As Package = Add(New PluginPackage With {
         .Name = "TDeint",
@@ -314,6 +322,14 @@ Public Class Package
         .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")},
         .VapourSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.avs.DGSource(r""%source_file%"")")}})
 
+    Shared Property FFT3DFilter As Package = Add(New PluginPackage With {
+        .Name = "FFT3DFilter",
+        .Filename = "fft3dfilter.dll",
+        .URL = "https://github.com/pinterf/fft3dfilter",
+        .Description = "FFT3DFilter uses Fast Fourier Transform method for image processing in frequency domain.",
+        .AviSynthFilterNames = {"FFT3DFilter"},
+        .AviSynthFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter", "FFT3DFilter()")}})
+
     Shared Property DGDecodeIM As Package = Add(New PluginPackage With {
         .Name = "DGDecodeIM",
         .Filename = "DGDecodeIM.dll",
@@ -370,6 +386,24 @@ Public Class Package
             .TreePath = "Runtimes"})
 
         Add(New Package With {
+            .Name = "FFTW",
+            .Filename = "libfftw3-3.dll",
+            .Description = "Library required by the FFT3DFilter AviSynth plugin.",
+            .URL = "http://www.fftw.org/",
+            .FixedDir = Folder.System,
+            .IsRequiredFunc = Function() Package.FFT3DFilter.IsRequired,
+            .SetupAction = Sub()
+                               Using pr As New Process
+                                   pr.StartInfo.FileName = "xcopy.exe"
+                                   pr.StartInfo.Arguments = $"""{Folder.Apps + "FFTW\"}*ff*"" ""{Folder.System}"" /Y"
+                                   pr.StartInfo.Verb = "runas"
+                                   pr.Start()
+                                   pr.WaitForExit()
+                                   If pr.ExitCode <> 0 Then MsgError("FFTW returned an error.")
+                               End Using
+                           End Sub})
+
+        Add(New Package With {
             .Name = "AVSMeter",
             .Filename = "AVSMeter64.exe",
             .Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.",
@@ -405,6 +439,14 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/SangNom2",
             .Description = "SangNom2 is a reimplementation of MarcFD's old SangNom filter. Originally it's a single field deinterlacer using edge-directed interpolation but nowadays it's mainly used in anti-aliasing scripts. The output is not completely but mostly identical to the original SangNom.",
             .AviSynthFilterNames = {"SangNom2"}})
+
+        Add(New PluginPackage With {
+            .Name = "mvtools2",
+            .Filename = "mvtools2.dll",
+            .WebURL = "https://github.com/pinterf/mvtools",
+            .HelpURL = "http://avisynth.org.ru/mvtools/mvtools2.html",
+            .Description = "MVTools is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
+            .AviSynthFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDeGrain1", "MDeGrain2", "MDegrain3"}})
 
         Add(New PluginPackage With {
             .Name = "MPEG2DecPlus",
@@ -495,8 +537,7 @@ Public Class Package
             .URL = "http://avisynth.nl/index.php/QTGMC",
             .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée.",
             .AviSynthFilterNames = {"QTGMC"},
-            .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "QTGMC...", "QTGMC(Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"")")},
-            .Dependencies = {"masktools2", "mvtools2", "JPSDR", "RgTools", "TDeint"}})
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "QTGMC...", "QTGMC(Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"")")}})
 
         Add(New PluginPackage With {
             .Name = "SMDegrain",
@@ -504,8 +545,15 @@ Public Class Package
             .URL = "http://avisynth.nl/index.php/SMDegrain",
             .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
             .AviSynthFilterNames = {"SMDegrain"},
-            .AviSynthFiltersFunc = Function() {New VideoFilter("Noise", "SMDegrain", "SMDegrain(tr = 2, thSAD = 250, contrasharp = false, refinemotion = true, lsb = false)")},
-            .Dependencies = {"masktools2", "mvtools2", "JPSDR", "RgTools"}})
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Noise", "SMDegrain", "SMDegrain(tr = 2, thSAD = 250, contrasharp = false, refinemotion = true, lsb = false)")}})
+
+        Add(New PluginPackage With {
+            .Name = "mClean",
+            .Filename = "mClean.avsi",
+            .URL = "https://forum.doom9.org/showthread.php?t=174804",
+            .Description = "Removes noise whilst retaining as much detail as possible.",
+            .AviSynthFilterNames = {"mClean"},
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Noise", "mClean", "mClean()")}})
 
         Add(New PluginPackage With {
             .Name = "LSFmod",
@@ -547,7 +595,7 @@ Public Class Package
             .Filename = "masktools2.dll",
             .URL = "https://github.com/pinterf/masktools",
             .Description = "MaskTools2 contain a set of filters designed to create, manipulate and use masks. Masks, in video processing, are a way to give a relative importance to each pixel. You can, for example, create a mask that selects only the green parts of the video, and then replace those parts with another video.",
-            .AviSynthFilterNames = {"Mt_edge", "Mt_motion"}})
+            .AviSynthFilterNames = {"mt_adddiff", "mt_average", "mt_binarize", "mt_circle", "mt_clamp", "mt_convolution", "mt_diamond", "mt_edge", "mt_ellipse", "mt_expand", "mt_hysteresis", "mt_inflate", "mt_inpand", "mt_invert", "mt_logic", "mt_losange", "mt_lut", "mt_lutf", "mt_luts", "mt_lutxy", "mt_makediff", "mt_mappedblur", "mt_merge", "mt_motion", "mt_polish", "mt_rectangle", "mt_square"}})
 
         Add(New PluginPackage With {
             .Name = "FluxSmooth",
@@ -569,6 +617,13 @@ Public Class Package
             .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "yadifmod2", "yadifmod2()")}})
 
         Add(New PluginPackage With {
+            .Name = "DCTFilter",
+            .Filename = "DCTFilter.dll",
+            .Description = "A rewrite of DctFilter for Avisynth+.",
+            .URL = "https://github.com/chikuzen/DCTFilter",
+            .AviSynthFilterNames = {"DCTFilter", "DCTFilterD", "DCTFilter4", "DCTFilter4D", "DCTFilter8", "DCTFilter8D"}})
+
+        Add(New PluginPackage With {
             .Name = "Yadifmod",
             .Filename = "Yadifmod.dll",
             .Description = "Modified version of Fizick's avisynth filter port of yadif from mplayer. This version doesn't internally generate spatial predictions, but takes them from an external clip.",
@@ -576,6 +631,15 @@ Public Class Package
             .VapourSynthFilterNames = {"yadifmod.Yadifmod"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Field", "Yadifmod", "clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field = 0), order = 1, field = -1, mode = 0)")}})
+
+        Add(New PluginPackage With {
+            .Name = "GradCurve",
+            .Filename = "GradCurve.dll",
+            .URL = "https://github.com/xekon/GradCurve",
+            .Description = "VapourSynth port of Gradation Curves Virtual Dub Plugin.",
+            .VapourSynthFilterNames = {"grad.Curve"},
+            .VapourSynthFiltersFunc = Function() {
+                New VideoFilter("Misc", "GradCurve", "clip = core.grad.Curve(clip, fname = ""path"", ftype = 1, pmode = 1)")}})
 
         Add(New PluginPackage With {
             .Name = "nnedi3",
@@ -643,6 +707,16 @@ Public Class Package
             .VapourSynthFilterNames = {"d2v.Source"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})
+
+        Add(New PluginPackage With {
+            .Name = "DeLogo",
+            .Filename = "libdelogo.dll",
+            .Description = "DeLogo Plugin Ported for VapourSynth.",
+            .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DeLogo",
+            .VapourSynthFilterNames = {"delogo.AddLogo", "delogo.EraseLogo"},
+            .VapourSynthFiltersFunc = Function() {
+                New VideoFilter("Misc", "Delogo AddLogo", "clip = core.delogo.AddLogo(clip, logofile = r""$browse_file$"")"),
+                New VideoFilter("Misc", "Delogo EraseLogo", "clip = core.delogo.EraseLogo(clip, logofile = r""$browse_file$"")")}})
 
         Add(New PluginPackage With {
             .Name = "FluxSmooth",
@@ -1058,13 +1132,22 @@ Public Class PluginPackage
         If p.Script.Engine = ScriptEngine.AviSynth AndAlso
             Not package.AviSynthFilterNames.NothingOrEmpty Then
 
-            For Each filter In p.Script.Filters
-                If filter.Active Then
-                    For Each filterName In package.AviSynthFilterNames
-                        If filter.Script.ToLower.Contains(filterName.ToLower + "(") Then
+            Dim fullScriptLower = p.Script.GetFullScript().ToLowerInvariant
+
+            For Each filterName In package.AviSynthFilterNames
+                If fullScriptLower.Contains(filterName.ToLowerInvariant) Then Return True
+
+                If fullScriptLower.Contains("import") Then
+                    Dim match = Regex.Match(fullScriptLower, "\bimport\s*\(\s*""\s*(.+\.avsi*)\s*""\s*\)",
+                                            RegexOptions.IgnoreCase)
+
+                    If match.Success AndAlso File.Exists(match.Groups(1).Value) Then
+                        If File.ReadAllText(match.Groups(1).Value).ToLowerInvariant.Contains(
+                                filterName.ToLowerInvariant) Then
+
                             Return True
                         End If
-                    Next
+                    End If
                 End If
             Next
         ElseIf p.Script.Engine = ScriptEngine.VapourSynth AndAlso
@@ -1087,9 +1170,7 @@ Public Class PluginPackage
             If Not package2.Dependencies.NothingOrEmpty Then
                 For Each dependency In package2.Dependencies
                     If dependency = package.Name Then
-                        If IsPluginPackageRequired(package2) Then
-                            Return True
-                        End If
+                        If IsPluginPackageRequired(package2) Then Return True
                     End If
                 Next
             End If

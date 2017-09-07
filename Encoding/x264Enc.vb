@@ -38,13 +38,13 @@ Public Class x264Enc
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode("Encoding video", GetArgs(1, p.Script), s.ProcessPriority)
+        Encode("Video encoding", GetArgs(1, p.Script), s.ProcessPriority)
 
         If Params.Mode.Value = x264RateMode.TwoPass Then
-            Encode("Encoding video second pass", GetArgs(2, p.Script), s.ProcessPriority)
+            Encode("Video encoding second pass", GetArgs(2, p.Script), s.ProcessPriority)
         ElseIf Params.Mode.Value = x264RateMode.ThreePass Then
-            Encode("Encoding video second pass", GetArgs(3, p.Script), s.ProcessPriority)
-            Encode("Encoding video third pass", GetArgs(2, p.Script), s.ProcessPriority)
+            Encode("Video encoding second pass", GetArgs(3, p.Script), s.ProcessPriority)
+            Encode("Video encoding third pass", GetArgs(2, p.Script), s.ProcessPriority)
         End If
 
         AfterEncoding()

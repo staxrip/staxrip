@@ -776,7 +776,7 @@ Public Class mkvDemuxer
 
         Using proc As New Proc
             proc.Project = proj
-            proc.Header = "Demux mkv"
+            proc.Header = "Demux MKV"
             proc.SkipString = "Progress: "
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.mkvextract

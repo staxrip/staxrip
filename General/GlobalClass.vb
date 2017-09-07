@@ -632,7 +632,7 @@ Public Class GlobalClass
             Not FileTypes.VideoText.Contains(sourcePath.Ext) Then
 
             Using proc As New Proc
-                proc.Header = "Index with ffmsindex"
+                proc.Header = "Indexing using ffmsindex"
                 proc.SkipString = "Indexing, please wait..."
                 proc.Project = proj
                 proc.File = Package.ffms2.GetDir + "ffmsindex.exe"

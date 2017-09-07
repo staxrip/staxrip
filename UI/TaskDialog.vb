@@ -266,9 +266,10 @@ Public Class TaskDialog(Of T)
         Return value
     End Function
 
-    Sub AddCommandLink(text As String, value As T)
+    Sub AddCommandLink(text As String, Optional value As T = Nothing)
         Dim id = 1000 + IdValueDic.Count + 1
-        IdValueDic(id) = value
+        Dim temp As Object = text
+        IdValueDic(id) = If(value Is Nothing, CType(temp, T), value)
         IdTextDic(id) = text
         Buttons.Add(New TASKDIALOG_BUTTON(id, text))
         Config.dwFlags = Config.dwFlags Or Flags.TDF_USE_COMMAND_LINKS

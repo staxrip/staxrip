@@ -9,10 +9,7 @@ Public Class Audio
         If Not File.Exists(ap.File) OrElse TypeOf ap Is NullAudioProfile Then Exit Sub
         If Not Directory.Exists(p.TempDir) Then p.TempDir = ap.File.Dir
 
-        If ap.File <> p.SourceFile Then
-            Log.WriteHeader("Audio Source File MediaInfo")
-            Log.WriteLine(MediaInfo.GetSummary(ap.File))
-        End If
+        If ap.File <> p.SourceFile Then Log.Write("MediaInfo Audio Source " & ap.GetTrackID, MediaInfo.GetSummary(ap.File))
 
         If TypeOf ap Is GUIAudioProfile Then
             Dim gap = DirectCast(ap, GUIAudioProfile)
@@ -248,7 +245,7 @@ Public Class Audio
         args += " -simple -progressnumbers"
 
         Using proc As New Proc
-            proc.Header = "Convert from " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper
+            proc.Header = "Convert " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " " & ap.GetTrackID
             proc.Package = Package.eac3to
             proc.Arguments = args
             proc.TrimChars = {"-"c, " "c}
@@ -278,7 +275,7 @@ Public Class Audio
         args += " " + outPath.Escape
 
         Using proc As New Proc
-            proc.Header = "Convert from " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper
+            proc.Header = "Convert " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " " & ap.GetTrackID
             proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
@@ -527,7 +524,7 @@ function Down2(clip a)
         args += " -sn -vn -hide_banner -af volumedetect -f null NUL"
 
         Using proc As New Proc
-            proc.Header = "Find Gain"
+            proc.Header = "Find Gain " & ap.GetTrackID
             proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg

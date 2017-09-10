@@ -479,7 +479,9 @@ Namespace UI
         End Function
 
         Function GetText(f As Form) As String
-            Return If(TypeOf f Is HelpForm, "Help", f.Text)
+            If TypeOf f Is HelpForm Then Return "Help"
+            If TypeOf f Is PreviewForm Then Return "Preview"
+            Return f.Text
         End Function
     End Class
 

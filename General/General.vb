@@ -1446,15 +1446,20 @@ End Class
 
 Public Class Shutdown
     Shared Sub Commit(mode As ShutdownMode)
+        Dim psi = New ProcessStartInfo("shutdown")
+        psi.CreateNoWindow = True
+        psi.UseShellExecute = False
+
         Select Case mode
             Case ShutdownMode.Standby
                 SetSuspendState(False, False, False)
             Case ShutdownMode.Hibernate
                 SetSuspendState(True, False, False)
+            Case ShutdownMode.Hybrid
+                psi.Arguments = "/f /hybrid /t " & s.ShutdownTimeout
+                Process.Start(psi)
             Case ShutdownMode.Shutdown
-                Dim psi = New ProcessStartInfo("shutdown", "/f /s /t " & s.ShutdownTimeout)
-                psi.CreateNoWindow = True
-                psi.UseShellExecute = False
+                psi.Arguments = "/f /s /t " & s.ShutdownTimeout
                 Process.Start(psi)
         End Select
     End Sub
@@ -1467,6 +1472,7 @@ Public Enum ShutdownMode
     Close
     Standby
     Hibernate
+    Hybrid
     Shutdown
 End Enum
 

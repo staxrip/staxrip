@@ -3363,7 +3363,7 @@ Public Class MainForm
             b.Help = "If you disable this you can still right-click menu items to show the tooltip."
             b.Field = NameOf(s.EnableTooltips)
 
-            ui.CreateControlPage(New DemuxingControl, "Demuxing")
+            ui.CreateControlPage(New PreprocessingControl, "Preprocessing")
 
             Dim systemPage = ui.CreateFlowPage("System", True)
 

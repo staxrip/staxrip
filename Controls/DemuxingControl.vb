@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Public Class DemuxingControl
+Public Class PreprocessingControl
     Inherits UserControl
     Implements IPage
 
@@ -200,7 +200,7 @@ Public Class DemuxingControl
     Function GetTips() As StringPairList
         Dim ret As New StringPairList
 
-        ret.Add("Demuxing", "The demux menu defines a set of applications that are executed to demux and index source file(s). The applications are executed one by one starting from the top so the next application can use the output from the previous application as input. It's possible to add custom demuxers by defining command lines.")
+        ret.Add("Preprocessing", "The preprocessing menu defines a set of apps that are executed to demux, index or re-mux source files. The applications are executed one by one starting from the top so the next application can use the output from the previous application as input. It's possible to add custom apps by defining command lines.")
 
         For Each i As ListViewItem In lv.Items
             If TypeOf i.Tag Is CommandLineDemuxer Then

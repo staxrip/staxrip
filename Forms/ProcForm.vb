@@ -325,6 +325,6 @@ Public Class ProcForm
     End Sub
 
     Private Sub bnLog_Click(sender As Object, e As EventArgs) Handles bnLog.Click
-        g.StartProcess(g.GetTextEditor(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
+        g.DefaultCommands.ShowLogFile()
     End Sub
 End Class

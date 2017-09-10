@@ -6,7 +6,7 @@ Public Class Package
     Implements IComparable(Of Package)
 
     Property Description As String
-    Property DirName As String
+    Property DirPath As String
     Property DownloadURL As String
     Property FileNotFoundMessage As String
     Property HelpFile As String
@@ -255,7 +255,7 @@ Public Class Package
     Shared Property x264_10 As Package = Add(New Package With {
         .Name = "x264 10-Bit",
         .Filename = "x264-10bit.exe",
-        .DirName = "x264",
+        .DirPath = "x264",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
         .WebURL = "http://www.videolan.org/developers/x264.html",
         .Description = "H.264 video encoding command line app."})
@@ -274,7 +274,7 @@ Public Class Package
     Shared Property mkvmerge As Package = Add(New Package With {
         .Name = "mkvmerge",
         .Filename = "mkvmerge.exe",
-        .DirName = "MKVToolNix",
+        .DirPath = "MKVToolNix",
         .WebURL = "http://www.bunkus.org/videotools/mkvtoolnix",
         .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
         .Description = "MKV muxing tool."})
@@ -282,7 +282,7 @@ Public Class Package
     Shared Property mkvextract As Package = Add(New Package With {
         .Name = "mkvextract",
         .Filename = "mkvextract.exe",
-        .DirName = "MKVToolNix",
+        .DirPath = "MKVToolNix",
         .WebURL = "http://www.bunkus.org/videotools/mkvtoolnix",
         .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
         .Description = "MKV demuxing tool."})
@@ -615,6 +615,23 @@ Public Class Package
             .WebURL = "https://github.com/chikuzen/yadifmod2",
             .AviSynthFilterNames = {"yadifmod2"},
             .AviSynthFiltersFunc = Function() {New VideoFilter("Field", "yadifmod2", "yadifmod2()")}})
+
+        Add(New PluginPackage With {
+            .Name = "FrameRateConverter DLL",
+            .Filename = "FrameRateConverter-x64.dll",
+            .DirPath = "Plugins\AVS\FrameRateConverter",
+            .Description = "Increases the frame rate with interpolation and fine artifact removal.",
+            .URL = "https://github.com/mysteryx93/FrameRateConverter",
+            .AviSynthFilterNames = {"FrameRateConverter"}})
+
+        Add(New PluginPackage With {
+            .Name = "FrameRateConverter AVSI",
+            .Filename = "FrameRateConverter.avsi",
+            .DirPath = "Plugins\AVS\FrameRateConverter",
+            .Description = "Increases the frame rate with interpolation and fine artifact removal.",
+            .URL = "https://github.com/mysteryx93/FrameRateConverter",
+            .AviSynthFilterNames = {"FrameRateConverter"},
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Misc", "FrameRateConverter", "FrameRateConverter()")}})
 
         Add(New PluginPackage With {
             .Name = "DCTFilter",
@@ -968,8 +985,8 @@ Public Class Package
                 Return Nothing
             End If
 
-            If DirName <> "" AndAlso File.Exists(Folder.Apps + DirName + "\" + Filename) Then
-                Return Folder.Apps + DirName + "\" + Filename
+            If DirPath <> "" AndAlso File.Exists(Folder.Apps + DirPath + "\" + Filename) Then
+                Return Folder.Apps + DirPath + "\" + Filename
             End If
 
             If Not HintDirFunc Is Nothing Then

@@ -1836,13 +1836,23 @@ Namespace UI
             End Set
         End Property
 
+        Public Overrides Property Text As String
+            Get
+                Return MyBase.Text
+            End Get
+            Set
+                MyBase.Text = Value
+                Invalidate()
+            End Set
+        End Property
+
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
             Dim g = e.Graphics
             g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
 
             Using br = New SolidBrush(ForeColor)
                 g.FillRectangle(br, New RectangleF(0, 0, CSng(Width * (Value - Minimum) / Maximum), Height))
-                g.DrawString(Text, Font, Brushes.Black, g.ClipBounds, New StringFormat With {.LineAlignment = StringAlignment.Center})
+                g.DrawString(Text, Font, Brushes.Black, 0, CInt((Height - FontHeight) / 2))
             End Using
 
             MyBase.OnPaint(e)

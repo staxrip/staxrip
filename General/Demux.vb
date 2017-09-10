@@ -65,7 +65,7 @@ Public MustInherit Class Demuxer
         Dim ret As New List(Of Demuxer)
 
         Dim prx As New CommandLineDemuxer
-        prx.Name = "ProjectX"
+        prx.Name = "ProjectX demux"
         prx.InputExtensions = {"vob", "mpg", "ts"}
         prx.OutputExtensions = {"m2v"}
         prx.InputFormats = {"mpeg2"}
@@ -75,13 +75,24 @@ Public MustInherit Class Demuxer
         ret.Add(prx)
 
         Dim dsmux As New CommandLineDemuxer
-        dsmux.Name = "dsmux"
+        dsmux.Name = "dsmux re-mux to MKV"
         dsmux.InputExtensions = {"ts"}
         dsmux.OutputExtensions = {"mkv"}
         dsmux.Command = "%app:dsmux%"
         dsmux.Arguments = """%temp_file%.mkv"" ""%source_file%"""
         dsmux.Active = False
         ret.Add(dsmux)
+
+        ret.Add(New ffmpegDemuxer)
+
+        Dim tsToMkv As New CommandLineDemuxer
+        tsToMkv.Name = "ffmpeg re-mux TS to MKV"
+        tsToMkv.InputExtensions = {"ts"}
+        tsToMkv.OutputExtensions = {"mkv"}
+        tsToMkv.InputFormats = {"hevc", "avc"}
+        tsToMkv.Command = "%app:ffmpeg%"
+        tsToMkv.Arguments = "-i ""%source_file%"" -c:a copy -c:v copy -sn -y -hide_banner ""%temp_file%.mkv"""
+        ret.Add(tsToMkv)
 
         ret.Add(New mkvDemuxer)
         ret.Add(New MP4BoxDemuxer)
@@ -123,7 +134,7 @@ Public MustInherit Class Demuxer
         dgimNoDemux.Name = "DGIndexIM"
         dgimNoDemux.InputExtensions = {"264", "h264", "avc", "mkv", "mp4"}
         dgimNoDemux.OutputExtensions = {"dgim"}
-        dgimNoDemux.InputFormats = {"avc", "vc1", "mpeg2"}
+        dgimNoDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
         dgimNoDemux.Command = "%app:DGIndexIM%"
         dgimNoDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgim"" -h"
         dgimNoDemux.SourceFilters = {"DGSourceIM"}
@@ -134,14 +145,12 @@ Public MustInherit Class Demuxer
         dgimDemux.Name = "DGIndexIM"
         dgimDemux.InputExtensions = {"mpg", "vob", "ts", "m2ts", "mts", "m2t"}
         dgimDemux.OutputExtensions = {"dgim"}
-        dgimDemux.InputFormats = {"avc", "vc1", "mpeg2"}
+        dgimDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
         dgimDemux.Command = "%app:DGIndexIM%"
         dgimDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgim"" -a -h"
         dgimDemux.SourceFilters = {"DGSourceIM"}
         dgimDemux.Active = False
         ret.Add(dgimDemux)
-
-        ret.Add(New ffmpegDemuxer)
 
         Return ret
     End Function
@@ -161,7 +170,7 @@ Public Class CommandLineDemuxer
     End Property
 
     Overrides Function ShowConfigDialog() As DialogResult
-        Using f As New DemuxForm(Me)
+        Using f As New CommandLineDemuxForm(Me)
             Return f.ShowDialog
         End Using
     End Function
@@ -175,6 +184,8 @@ Public Class CommandLineDemuxer
             ElseIf Command?.Contains("DGIndexIM") Then
                 If Not Package.DGIndexIM.VerifyOK(True) Then Throw New AbortException
                 proc.Package = Package.DGIndexIM
+            ElseIf Command?.Contains("ffmpeg") Then
+                proc.Package = Package.ffmpeg
             ElseIf Command?.Contains("DGIndex") Then
                 If Not Package.DGIndex.VerifyOK(True) Then Throw New AbortException
                 proc.Package = Package.DGIndex
@@ -187,7 +198,7 @@ Public Class CommandLineDemuxer
                 proc.SkipPatterns = {"^\d+ %$"}
             End If
 
-            proc.Header = "Process"
+            proc.Header = Name
             proc.File = Macro.Expand(Command)
             proc.Arguments = Macro.Expand(Arguments)
             proc.Start()
@@ -213,7 +224,7 @@ Public Class eac3toDemuxer
     Inherits Demuxer
 
     Sub New()
-        Name = "eac3to"
+        Name = "eac3to demux"
         InputExtensions = {"m2ts"}
         OutputExtensions = {"h264", "mkv", "m2v"}
     End Sub
@@ -267,8 +278,8 @@ Public Class ffmpegDemuxer
     Inherits Demuxer
 
     Sub New()
-        Name = "ffmpeg"
-        InputExtensions = {"avi", "ts", "flv"}
+        Name = "ffmpeg demux"
+        InputExtensions = {"avi", "flv"}
     End Sub
 
     Public Overrides Sub Run(proj As Project)
@@ -415,7 +426,7 @@ Public Class MP4BoxDemuxer
     Inherits Demuxer
 
     Sub New()
-        Name = "MP4Box"
+        Name = "MP4Box demux"
         InputExtensions = {"mp4", "m4v", "mov"}
     End Sub
 
@@ -618,7 +629,7 @@ Public Class mkvDemuxer
     Inherits Demuxer
 
     Sub New()
-        Name = "mkvextract"
+        Name = "mkvextract demux"
         InputExtensions = {"mkv", "webm"}
     End Sub
 

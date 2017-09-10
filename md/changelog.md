@@ -10,6 +10,18 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
+#### 1.6.1.5 unstable test build
+
+- fix: issue in new progress bar implementation causes too few refresh cycles or no refreshes at all
+
+- new: FrameRateConverter AviSynth script/plugin added (https://github.com/mysteryx93/FrameRateConverter)
+- new: new shutdown mode /hybrid (https://www.lifewire.com/shutdown-command-2618100)
+
+- change: TS avc/hvc is by default now remuxed to mkv using ffmpeg
+- change: faster start of preview dialog and fix for the startup location not being remembered
+
+- update: AVSMeter 2.6.3
+
 #### 1.6.1.4 unstable test build
 
 - fix: StaxRip didn't ask to install FFTW in case it's required by the active script (https://forum.doom9.org/showthread.php?p=1817732#post1817732)

@@ -1,6 +1,6 @@
 Imports StaxRip.UI
 
-Public Class DemuxForm
+Public Class CommandLineDemuxForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -340,7 +340,7 @@ Public Class DemuxForm
         Me.Label7.TabIndex = 29
         Me.Label7.Text = "Arguments:"
         '
-        'DemuxForm
+        'CommandLineDemuxForm
         '
         Me.AcceptButton = Me.bnOK
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
@@ -350,7 +350,7 @@ Public Class DemuxForm
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
-        Me.Name = "DemuxForm"
+        Me.Name = "CommandLineDemuxForm"
         Me.Padding = New System.Windows.Forms.Padding(15)
         Me.Text = "Demux Configuration"
         Me.tlpMain.ResumeLayout(False)
@@ -368,7 +368,7 @@ Public Class DemuxForm
     Sub New(demuxer As CommandLineDemuxer)
         MyBase.New()
         InitializeComponent()
-        ScaleClientSize(40, 22)
+        ScaleClientSize(40, 21)
 
         Target = demuxer
         Temp = ObjectHelp.GetCopy(Of CommandLineDemuxer)(demuxer)

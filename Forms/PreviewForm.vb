@@ -19,7 +19,7 @@ Public Class PreviewForm
     Private components As System.ComponentModel.IContainer
 
     Friend WithEvents pVideo As System.Windows.Forms.Panel
-    Friend WithEvents pTrack As System.Windows.Forms.Panel
+    Friend WithEvents pnTrack As System.Windows.Forms.Panel
     Private WithEvents bnDeleteRange As System.Windows.Forms.Button
     Private WithEvents bnForward1 As System.Windows.Forms.Button
     Private WithEvents bnRangeStart As System.Windows.Forms.Button
@@ -49,7 +49,7 @@ Public Class PreviewForm
         Me.bnBackward100 = New System.Windows.Forms.Button()
         Me.pVideo = New System.Windows.Forms.Panel()
         Me.cmsMain = New StaxRip.UI.ContextMenuStripEx(Me.components)
-        Me.pTrack = New System.Windows.Forms.Panel()
+        Me.pnTrack = New System.Windows.Forms.Panel()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.pVideo.SuspendLayout()
         Me.SuspendLayout()
@@ -227,7 +227,7 @@ Public Class PreviewForm
         Me.pVideo.Controls.Add(Me.bnBackward1)
         Me.pVideo.Controls.Add(Me.bnBackward10)
         Me.pVideo.Controls.Add(Me.bnBackward100)
-        Me.pVideo.Controls.Add(Me.pTrack)
+        Me.pVideo.Controls.Add(Me.pnTrack)
         Me.pVideo.Location = New System.Drawing.Point(64, 25)
         Me.pVideo.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.pVideo.Name = "pVideo"
@@ -242,15 +242,15 @@ Public Class PreviewForm
         '
         'pTrack
         '
-        Me.pTrack.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.pnTrack.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pTrack.BackColor = System.Drawing.SystemColors.Control
-        Me.pTrack.Cursor = System.Windows.Forms.Cursors.SizeNS
-        Me.pTrack.Location = New System.Drawing.Point(5, 416)
-        Me.pTrack.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.pTrack.Name = "pTrack"
-        Me.pTrack.Size = New System.Drawing.Size(490, 12)
-        Me.pTrack.TabIndex = 51
+        Me.pnTrack.BackColor = System.Drawing.SystemColors.Control
+        Me.pnTrack.Cursor = System.Windows.Forms.Cursors.SizeNS
+        Me.pnTrack.Location = New System.Drawing.Point(5, 416)
+        Me.pnTrack.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.pnTrack.Name = "pTrack"
+        Me.pnTrack.Size = New System.Drawing.Size(490, 12)
+        Me.pnTrack.TabIndex = 51
         '
         'ToolTip
         '
@@ -319,10 +319,6 @@ Public Class PreviewForm
 
         NormalRectangle.Size = Size
         NormalRectangle.Location = Location
-
-        RefreshScript()
-
-        ShowButtons(Not s.HidePreviewButtons)
     End Sub
 
     Sub RefreshScript()
@@ -332,38 +328,43 @@ Public Class PreviewForm
         Drawer = New VideoDrawer(pVideo, AVI)
         Drawer.ShowInfos = s.PreviewToggleInfos
 
-        If FormBorderStyle = FormBorderStyle.None Then
+        Dim wa = Screen.FromControl(Me).WorkingArea
+
+        While GetNormalSize.Width < wa.Width * 0.6
+            SizeFactor += 0.1
+            SizeFactor = Math.Round(SizeFactor, 2)
+        End While
+
+        While GetNormalSize.Width > wa.Width * 0.9
+            SizeFactor -= 0.1
+            SizeFactor = Math.Round(SizeFactor, 2)
+        End While
+
+        While GetNormalSize.Height > wa.Height * 0.9
+            SizeFactor -= 0.1
+            SizeFactor = Math.Round(SizeFactor, 2)
+        End While
+
+        If s.PreviewFormBorderStyle = FormBorderStyle.None Then
             Fullscreen()
         Else
             NormalScreen()
         End If
 
         If s.LastPosition < AVI.FrameCount - 1 Then AVI.Position = s.LastPosition
-        Drawer.Draw()
         AfterPositionChanged()
+        ShowButtons(Not s.HidePreviewButtons)
+        Refresh()
     End Sub
 
     Public NormalRectangle As Rectangle
 
     Private Sub Fullscreen()
-        pTrack.Visible = False
-
-        'NormalRectangle.Size = Size
-        'NormalRectangle.Location = Location
-
+        Dim trackVisible = pnTrack.Visible
+        pnTrack.Visible = False
         FormBorderStyle = FormBorderStyle.None
+        s.PreviewFormBorderStyle = FormBorderStyle
         WindowState = FormWindowState.Maximized
-
-        'Const SWP_NOZORDER = &H4UI
-        'Const SWP_NOSENDCHANGING = &H400UI
-
-        'Dim screenBounds = Screen.FromControl(Me).Bounds
-
-        'Native.SetWindowPos(Handle, IntPtr.Zero,
-        '                    screenBounds.X, screenBounds.Y,
-        '                    screenBounds.Width, screenBounds.Height,
-        '                    SWP_NOZORDER Or SWP_NOSENDCHANGING)
-
         Dim ratio As Double
 
         If Calc.IsARSignalingRequired Then
@@ -390,15 +391,15 @@ Public Class PreviewForm
             pVideo.Height = b.Height
         End If
 
-        pTrack.Visible = True
+        pnTrack.Visible = trackVisible
     End Sub
 
     Private Sub NormalScreen()
         FormBorderStyle = FormBorderStyle.FixedDialog
+        s.PreviewFormBorderStyle = FormBorderStyle
         WindowState = FormWindowState.Normal
         pVideo.Dock = DockStyle.Fill
         ClientSize = GetNormalSize()
-        s.WindowPositions.RestorePosition(Me)
     End Sub
 
     Function GetNormalSize() As Size
@@ -509,14 +510,14 @@ Public Class PreviewForm
     End Sub
 
     Sub DrawTrack()
-        Dim g = pTrack.CreateGraphics()
-        g.FillRectangle(Brushes.White, pTrack.ClientRectangle)
+        Dim g = pnTrack.CreateGraphics()
+        g.FillRectangle(Brushes.White, pnTrack.ClientRectangle)
 
-        Dim trackHeight = pTrack.Height - TrackBarBorder * 2 - TrackBarGap * 2
+        Dim trackHeight = pnTrack.Height - TrackBarBorder * 2 - TrackBarGap * 2
 
         Using borderPen As New Pen(Color.Black, TrackBarBorder)
             borderPen.Alignment = Drawing2D.PenAlignment.Inset
-            g.DrawRectangle(borderPen, 0, 0, pTrack.Width - 1, pTrack.Height - 1)
+            g.DrawRectangle(borderPen, 0, 0, pnTrack.Width - 1, pnTrack.Height - 1)
         End Using
 
         If p.Ranges.Count > 0 Then
@@ -531,8 +532,8 @@ Public Class PreviewForm
 
                 Using rangePen As New Pen(c, trackHeight)
                     g.DrawLine(rangePen, GetDrawPos(p.Ranges(x).Start) - CInt(TrackBarPosition / 2),
-                        pTrack.Height \ 2, GetDrawPos(p.Ranges(x).End) + CInt(TrackBarPosition / 2),
-                               pTrack.Height \ 2)
+                        pnTrack.Height \ 2, GetDrawPos(p.Ranges(x).End) + CInt(TrackBarPosition / 2),
+                               pnTrack.Height \ 2)
                 End Using
             Next
         End If
@@ -540,8 +541,8 @@ Public Class PreviewForm
         Using rangeSetPen As New Pen(Color.DarkOrange, trackHeight)
             If RangeStart > -1 AndAlso RangeStart <= AVI.Position Then
                 g.DrawLine(rangeSetPen, GetDrawPos(RangeStart) - CInt(TrackBarPosition / 2),
-                    pTrack.Height \ 2, GetDrawPos(AVI.Position) +
-                    CInt(TrackBarPosition / 2), pTrack.Height \ 2)
+                    pnTrack.Height \ 2, GetDrawPos(AVI.Position) +
+                    CInt(TrackBarPosition / 2), pnTrack.Height \ 2)
             End If
         End Using
 
@@ -558,9 +559,9 @@ Public Class PreviewForm
         Dim pos = GetDrawPos(AVI.Position)
 
         g.DrawLine(posPen, pos - CInt(TrackBarPosition / 2),
-                   pTrack.Height \ 2,
+                   pnTrack.Height \ 2,
                    pos + CInt(TrackBarPosition / 2),
-                   pTrack.Height \ 2)
+                   pnTrack.Height \ 2)
 
         posPen.Dispose()
 
@@ -569,20 +570,20 @@ Public Class PreviewForm
 
     Private Function GetDrawPos(frame As Integer) As Integer
         Dim values = TrackBarBorder * 2 + TrackBarGap * 2 + TrackBarPosition
-        Dim width = CInt(((pTrack.Width - values) / CInt(TargetFrames - 1)) * frame)
+        Dim width = CInt(((pnTrack.Width - values) / CInt(TargetFrames - 1)) * frame)
         Return width + CInt(values / 2)
     End Function
 
-    Private Sub pTrack_MouseMove(sender As Object, e As MouseEventArgs) Handles pTrack.MouseMove
+    Private Sub pTrack_MouseMove(sender As Object, e As MouseEventArgs) Handles pnTrack.MouseMove
         If e.Button = MouseButtons.Left Then HandleMouseOntrackBar()
     End Sub
 
-    Private Sub pTrack_MouseDown(sender As Object, e As MouseEventArgs) Handles pTrack.MouseDown
+    Private Sub pTrack_MouseDown(sender As Object, e As MouseEventArgs) Handles pnTrack.MouseDown
         HandleMouseOntrackBar()
     End Sub
 
     Private Sub HandleMouseOntrackBar()
-        Dim pos = CInt((TargetFrames / pTrack.Width) * pTrack.PointToClient(Control.MousePosition).X)
+        Dim pos = CInt((TargetFrames / pnTrack.Width) * pnTrack.PointToClient(Control.MousePosition).X)
         Dim remainder = pos Mod 4
         If remainder <> 0 Then pos -= remainder
 
@@ -591,7 +592,7 @@ Public Class PreviewForm
         Next
     End Sub
 
-    Private Sub pTrack_Paint(sender As Object, e As PaintEventArgs) Handles pTrack.Paint
+    Private Sub pTrack_Paint(sender As Object, e As PaintEventArgs) Handles pnTrack.Paint
         DrawTrack()
     End Sub
 
@@ -766,7 +767,7 @@ Public Class PreviewForm
 
     <Command("Shows/hides the trackbar.")>
     Sub ShowHideTrackbar()
-        pTrack.Visible = Not pTrack.Visible
+        pnTrack.Visible = Not pnTrack.Visible
         AfterPositionChanged()
     End Sub
 
@@ -981,31 +982,7 @@ Public Class PreviewForm
 
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
-
-        Drawer.Draw()
-
-        Dim wa = Screen.FromControl(Me).WorkingArea
-
-        While GetNormalSize.Width < wa.Width * 0.6
-            SizeFactor += 0.1
-            SizeFactor = Math.Round(SizeFactor, 2)
-        End While
-
-        While GetNormalSize.Width > wa.Width * 0.9
-            SizeFactor -= 0.1
-            SizeFactor = Math.Round(SizeFactor, 2)
-        End While
-
-        While GetNormalSize.Height > wa.Height * 0.9
-            SizeFactor -= 0.1
-            SizeFactor = Math.Round(SizeFactor, 2)
-        End While
-
-        If s.PreviewFormBorderStyle = FormBorderStyle.None Then
-            Fullscreen()
-        Else
-            NormalScreen()
-        End If
+        RefreshScript()
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
@@ -1013,7 +990,6 @@ Public Class PreviewForm
 
         Instances.Remove(Me)
         s.LastPosition = AVI.Position
-        s.PreviewFormBorderStyle = FormBorderStyle
         AVI.Dispose()
         UpdateTrim()
         g.MainForm.UpdateFilters()

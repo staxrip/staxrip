@@ -10,6 +10,27 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
+#### 1.6.1.6 unstable test build
+
+- new: various new resolutions added to the resize menu
+- new: transfer_characteristics added to mediainfo folder view
+- new: MediaInfo properties colour_primaries, transfer_characteristics and matrix_coefficients are read from the source file and the encoder switches --colorprim, --transfer and --colormatrix are set
+- new: NVEnc --vpp-rff and --vpp-afs switches added
+
+- fix: preview did not work with > 8 bit depth avs scripts
+- fix: incorrect VUI flags corected and all flags alphabetically sorted
+
+- usability: the preprocessing settings have better names and the dialog width adjusts automatically (https://github.com/stax76/staxrip/wiki/Screenshots#preprocessing)
+
+- change: improved discovery of required VapourSynth LoadPlugin/SourceFileLoader functions
+
+- new: VapourSynth plugin vsfft3dfilter added (https://github.com/VFR-maniac/VapourSynth-FFT3DFilter)
+
+- update: MediaInfo 0.7.99
+- update: mClean 1.7b
+- update: AVSMeter 2.6.5
+- update: NVEnc 3.19
+
 #### 1.6.1.5 unstable test build
 
 - fix: issue in new progress bar implementation causes too few refresh cycles or no refreshes at all

@@ -15,6 +15,8 @@ Public Class SimpleUI
     Public ActivePage As IPage
     Public Store As Object
 
+    Property FormSizeScaleFactor As SizeF
+
     Sub New()
         InitControls()
         SetStyle(ControlStyles.SupportsTransparentBackColor, True)
@@ -76,17 +78,22 @@ Public Class SimpleUI
         Dim node = e.Node
 
         For Each i In Pages
-            If Not i.Node Is node Then
-                DirectCast(i, Control).Visible = False
-            End If
+            If Not i.Node Is node Then DirectCast(i, Control).Visible = False
         Next
 
         For Each i In Pages
             If i.Node Is node Then
+                If i.FormSizeScaleFactor <> Size.Empty Then
+                    FindForm.ScaleClientSize(i.FormSizeScaleFactor.Width, i.FormSizeScaleFactor.Height)
+                ElseIf FormSizeScaleFactor <> Size.Empty Then
+                    FindForm.ScaleClientSize(FormSizeScaleFactor.Width, FormSizeScaleFactor.Height)
+                End If
+
                 DirectCast(i, Control).Visible = True
                 DirectCast(i, Control).BringToFront()
                 ActivePage = i
                 PerformLayout()
+
                 Exit For
             End If
         Next
@@ -253,13 +260,14 @@ Public Class SimpleUI
         Return ret
     End Function
 
-    Sub CreateControlPage(ctrl As IPage, path As String)
+    Function AddControlPage(ctrl As IPage, path As String) As IPage
         Pages.Add(ctrl)
         ctrl.Path = path
         DirectCast(ctrl, Control).Dock = DockStyle.Fill
         ctrl.Node = Tree.AddNode(path)
         Host.Controls.Add(DirectCast(ctrl, Control))
-    End Sub
+        Return ctrl
+    End Function
 
     Function CreateDataPage(path As String) As DataPage
         Dim ret = New DataPage
@@ -284,6 +292,8 @@ Public Class SimpleUI
         Property Path As String Implements IPage.Path
         Property TipProvider As TipProvider Implements IPage.TipProvider
 
+        Public Property FormSizeScaleFactor As SizeF Implements IPage.FormSizeScaleFactor
+
         Sub New()
             TipProvider = New TipProvider(Nothing)
             AddHandler Disposed, Sub() TipProvider.Dispose()
@@ -298,6 +308,8 @@ Public Class SimpleUI
         Property Path As String Implements IPage.Path
         Property TipProvider As TipProvider Implements IPage.TipProvider
         Property AutoSuspend As Boolean
+
+        Public Property FormSizeScaleFactor As SizeF Implements IPage.FormSizeScaleFactor
 
         Sub New()
             TipProvider = New TipProvider(Nothing)
@@ -868,6 +880,7 @@ Public Class SimpleUI
             Button.ShowMenuSymbol = True
             Button.ContextMenuStrip = New ContextMenuStripEx
             Controls.Add(Button)
+            AddHandler Edit.EnabledChanged, Sub() Button.Enabled = Edit.Enabled
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
@@ -924,6 +937,7 @@ Public Class SimpleUI
             Button.AutoSize = True
             Button.Text = "..."
             Controls.Add(Button)
+            AddHandler Edit.EnabledChanged, Sub() Button.Enabled = Edit.Enabled
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)

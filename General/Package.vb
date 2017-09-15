@@ -98,7 +98,11 @@ Public Class Package
     Shared Property UnDot As Package = Add(New UnDotPackage)
     Shared Property xvid_encraw As Package = Add(New xvid_encrawPackage)
     Shared Property Decomb As Package = Add(New DecombPackage)
-    Shared Property temporalsoften As Package = Add(New temporalsoftenPackage)
+
+    Shared Property temporalsoften As Package = Add(New PluginPackage With {
+        .Name = "temporalsoften",
+        .Filename = "temporalsoften.dll",
+        .VSFilterNames = {"TemporalSoften"}})
 
     Shared Property fdkaac As Package = Add(New Package With {
         .Name = "fdkaac",
@@ -218,7 +222,7 @@ Public Class Package
         .Description = "Simple debanding filter that can be quite effective for some anime sources.",
         .AviSynthFilterNames = {"f3kdb"},
         .AviSynthFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb", "f3kdb()")},
-        .VapourSynthFilterNames = {"f3kdb.Deband"},
+        .VSFilterNames = {"f3kdb.Deband"},
         .VapourSynthFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb...", "clip = core.f3kdb.Deband(clip, preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")}})
 
     Shared Property vinverse As Package = Add(New PluginPackage With {
@@ -231,7 +235,7 @@ Public Class Package
     Shared Property scenechange As Package = Add(New PluginPackage With {
         .Name = "scenechange",
         .Filename = "scenechange.dll",
-        .VapourSynthFilterNames = {"scenechange"}})
+        .VSFilterNames = {"scenechange"}})
 
     Shared Property avs2pipemod As Package = Add(New Package With {
         .Name = "avs2pipemod",
@@ -318,9 +322,21 @@ Public Class Package
         .Description = Strings.DGDecNV,
         .HelpFile = "DGDecodeNVManual.html",
         .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource("),
+        .HintDirFunc = Function() DGIndexNV.GetStoredPath.Dir,
         .AviSynthFilterNames = {"DGSource"},
         .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")},
         .VapourSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.avs.DGSource(r""%source_file%"")")}})
+
+    Shared Property DGDecodeIM As Package = Add(New PluginPackage With {
+        .Name = "DGDecodeIM",
+        .Filename = "DGDecodeIM.dll",
+        .WebURL = "http://rationalqm.us/mine.html",
+        .Description = Strings.DGDecIM,
+        .HelpFile = "Notes.txt",
+        .HintDirFunc = Function() DGIndexIM.GetStoredPath.Dir,
+        .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSourceIM("),
+        .AviSynthFilterNames = {"DGSourceIM"},
+        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")}})
 
     Shared Property FFT3DFilter As Package = Add(New PluginPackage With {
         .Name = "FFT3DFilter",
@@ -330,16 +346,6 @@ Public Class Package
         .AviSynthFilterNames = {"FFT3DFilter"},
         .AviSynthFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter", "FFT3DFilter()")}})
 
-    Shared Property DGDecodeIM As Package = Add(New PluginPackage With {
-        .Name = "DGDecodeIM",
-        .Filename = "DGDecodeIM.dll",
-        .WebURL = "http://rationalqm.us/mine.html",
-        .Description = Strings.DGDecIM,
-        .HelpFile = "Notes.txt",
-        .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSourceIM("),
-        .AviSynthFilterNames = {"DGSourceIM"},
-        .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")}})
-
     Shared Property ffms2 As Package = Add(New PluginPackage With {
         .Name = "ffms2",
         .Filename = "ffms2.dll",
@@ -348,7 +354,7 @@ Public Class Package
         .HelpURLFunc = Function(engine) If(engine = ScriptEngine.AviSynth, "https://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md", "https://github.com/FFMS/ffms2/blob/master/doc/ffms2-vapoursynth.md"),
         .AviSynthFilterNames = {"FFVideoSource", "FFAudioSource"},
         .AviSynthFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", colorspace = ""YV12"", \" + BR + "              cachefile = ""%source_temp_file%.ffindex"")")},
-        .VapourSynthFilterNames = {"ffms2"},
+        .VSFilterNames = {"ffms2"},
         .VapourSynthFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")")}})
 
     Shared Function Add(pack As Package) As Package
@@ -422,7 +428,7 @@ Public Class Package
             .Filename = "KNLMeansCL.dll",
             .WebURL = "https://github.com/Khanattila/KNLMeansCL",
             .Description = "KNLMeansCL is an optimized pixelwise OpenCL implementation of the Non-local means denoising algorithm. Every pixel is restored by the weighted average of all pixels in its search window. The level of averaging is determined by the filtering parameter h.",
-            .VapourSynthFilterNames = {"knlm.KNLMeansCL"},
+            .VSFilterNames = {"knlm.KNLMeansCL"},
             .AviSynthFilterNames = {"KNLMeansCL"},
             .AviSynthFiltersFunc = Function() {
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "KNLMeansCL(D = 1, A = 1, h = 2)"),
@@ -481,7 +487,7 @@ Public Class Package
             .Description = "VapourSynth source filter based on Libav supporting a wide range of input formats.",
             .HelpURL = "https://github.com/VFR-maniac/L-SMASH-Works/blob/master/VapourSynth/README",
             .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
-            .VapourSynthFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"},
+            .VSFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")"),
                 New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")}})
@@ -491,7 +497,7 @@ Public Class Package
             .Filename = "Deblock.dll",
             .Description = "Deblocking plugin using the deblocking filter of h264.",
             .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock/",
-            .VapourSynthFilterNames = {"deblock.Deblock"},
+            .VSFilterNames = {"deblock.Deblock"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Misc", "Deblock", "clip = core.deblock.Deblock(clip, quant = 25, aoffset = 0, boffset = 0)")}})
 
@@ -520,7 +526,7 @@ Public Class Package
             .Description = "AviSynth subtitle plugin with support for vobsub srt and ass.",
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VSFilterMod",
             .AviSynthFilterNames = {"VobSub", "TextSubMod"},
-            .VapourSynthFilterNames = {"vsfm.VobSub", "vsfm.TextSubMod"}})
+            .VSFilterNames = {"vsfm.VobSub", "vsfm.TextSubMod"}})
 
         Add(New PluginPackage With {
             .Name = "TComb",
@@ -561,8 +567,7 @@ Public Class Package
             .URL = "http://avisynth.nl/index.php/LSFmod",
             .Description = "A LimitedSharpenFaster mod with a lot of new features and optimizations.",
             .AviSynthFilterNames = {"LSFmod"},
-            .AviSynthFiltersFunc = Function() {New VideoFilter("Misc", "LSFmod", "LSFmod(strength = 100)")},
-            .Dependencies = {"RgTools", "masktools2"}})
+            .AviSynthFiltersFunc = Function() {New VideoFilter("Misc", "LSFmod", "LSFmod(strength = 100)")}})
 
         Add(New PluginPackage With {
             .Name = "RgTools",
@@ -645,7 +650,7 @@ Public Class Package
             .Filename = "Yadifmod.dll",
             .Description = "Modified version of Fizick's avisynth filter port of yadif from mplayer. This version doesn't internally generate spatial predictions, but takes them from an external clip.",
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Yadifmod",
-            .VapourSynthFilterNames = {"yadifmod.Yadifmod"},
+            .VSFilterNames = {"yadifmod.Yadifmod"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Field", "Yadifmod", "clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field = 0), order = 1, field = -1, mode = 0)")}})
 
@@ -654,46 +659,56 @@ Public Class Package
             .Filename = "GradCurve.dll",
             .URL = "https://github.com/xekon/GradCurve",
             .Description = "VapourSynth port of Gradation Curves Virtual Dub Plugin.",
-            .VapourSynthFilterNames = {"grad.Curve"},
+            .VSFilterNames = {"grad.Curve"},
             .VapourSynthFiltersFunc = Function() {
-                New VideoFilter("Misc", "GradCurve", "clip = core.grad.Curve(clip, fname = ""path"", ftype = 1, pmode = 1)")}})
+                New VideoFilter("Misc", "GradCurve", "clip = core.grad.Curve(clip, fname = r""$browse_file$"", ftype = 1, pmode = 1)")}})
 
         Add(New PluginPackage With {
             .Name = "nnedi3",
             .Filename = "libnnedi3.dll",
             .WebURL = "http://github.com/dubhater/vapoursynth-nnedi3",
             .Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field.",
-            .VapourSynthFilterNames = {"nnedi3.nnedi3", "nnedi3.nnedi3_rpow2"},
+            .VSFilterNames = {"nnedi3.nnedi3", "nnedi3.nnedi3_rpow2"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Field", "nnedi3", "clip = core.nnedi3.nnedi3(clip, field = 1)")}})
+
+        Add(New PluginPackage With {
+            .Name = "FFT3DFilter",
+            .Filename = "fft3dfilter.dll",
+            .WebURL = "https://github.com/VFR-maniac/VapourSynth-FFT3DFilter",
+            .Description = "FFT3DFilter uses Fast Fourier Transform method for image processing in frequency domain.",
+            .VSFilterNames = {"fft3dfilter.FFT3DFilter"},
+            .VapourSynthFiltersFunc = Function() {
+                New VideoFilter("Noise", "FFT3DFilter", "clip = core.fft3dfilter.FFT3DFilter(clip)")}})
 
         Add(New PluginPackage With {
             .Name = "mvtools",
             .Filename = "libmvtools.dll",
             .WebURL = "http://github.com/dubhater/vapoursynth-mvtools",
             .Description = "MVTools is a set of filters for motion estimation and compensation.",
-            .VapourSynthFilterNames = {"mv.Super", "mv.Analyse", "mv.Recalculate", "mv.Compensate", "mv.Degrain1", "mv.Degrain2",
+            .VSFilterNames = {"mv.Super", "mv.Analyse", "mv.Recalculate", "mv.Compensate", "mv.Degrain1", "mv.Degrain2",
                 "mv.Degrain3", "mv.Mask", "mv.Finest", "mv.FlowBlur", "mv.FlowInter", "mv.FlowFPS", "mv.BlockFPS", "mv.SCDetection"}})
 
         Add(New PluginPackage With {
             .Name = "adjust",
             .Filename = "adjust.py",
-            .VapourSynthFilterNames = {"adjust.Tweak"},
+            .VSFilterNames = {"adjust.Tweak"},
             .Description = "very basic port of the built-in Avisynth filter Tweak.",
             .URL = "https://github.com/dubhater/vapoursynth-adjust"})
 
         Add(New PluginPackage With {
             .Name = "mvsfunc",
             .Filename = "mvsfunc.py",
-            .VapourSynthFilterNames = {"mvsfunc.Depth", "mvsfunc.ToRGB", "mvsfunc.ToYUV", "mvsfunc.BM3D",
-                                       "mvsfunc.PlaneStatistics", "mvsfunc.PlaneCompare", "mvsfunc.ShowAverage",
-                                       "mvsfunc.FilterIf", "mvsfunc.FilterCombed", "mvsfunc.Min", "mvsfunc.Max",
-                                       "mvsfunc.Avg", "mvsfunc.MinFilter", "mvsfunc.MaxFilter", "mvsfunc.LimitFilter",
-                                       "mvsfunc.PointPower", "mvsfunc.SetColorSpace", "mvsfunc.AssumeFrame",
-                                       "mvsfunc.AssumeTFF", "mvsfunc.AssumeBFF", "mvsfunc.AssumeField",
-                                       "mvsfunc.AssumeCombed", "mvsfunc.CheckVersion", "mvsfunc.GetMatrix",
-                                       "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage"},
-            .Dependencies = {"fmtconv", "adjust"},
+            .VSFilterNames = {
+                "mvsfunc.Depth", "mvsfunc.ToRGB", "mvsfunc.ToYUV", "mvsfunc.BM3D",
+                "mvsfunc.PlaneStatistics", "mvsfunc.PlaneCompare", "mvsfunc.ShowAverage",
+                "mvsfunc.FilterIf", "mvsfunc.FilterCombed", "mvsfunc.Min", "mvsfunc.Max",
+                "mvsfunc.Avg", "mvsfunc.MinFilter", "mvsfunc.MaxFilter", "mvsfunc.LimitFilter",
+                "mvsfunc.PointPower", "mvsfunc.SetColorSpace", "mvsfunc.AssumeFrame",
+                "mvsfunc.AssumeTFF", "mvsfunc.AssumeBFF", "mvsfunc.AssumeField",
+                "mvsfunc.AssumeCombed", "mvsfunc.CheckVersion", "mvsfunc.GetMatrix",
+                "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage"
+            },
             .Description = "mawen1250's VapourSynth functions.",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=172564",
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/mvsfunc"})
@@ -704,14 +719,13 @@ Public Class Package
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Misc", "LSFmod", "clip = havsfunc.LSFmod(clip, strength = 100)"),
                 New VideoFilter("Field", "QTGMC...", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"")")},
-            .VapourSynthFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa", "havsfunc.maa",
+            .VSFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa", "havsfunc.maa",
                                        "havsfunc.SharpAAMCmod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
                                        "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.ivtc_txt60mc",
                                        "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.logoNR",
                                        "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.GSMC",
                                        "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD",
                                        "havsfunc.LSFmod", "havsfunc.GrainFactory3"},
-            .Dependencies = {"fmtconv", "mvtools", "nnedi3", "scenechange", "temporalsoften", "mvsfunc", "KNLMeansCL"},
             .Description = "Various popular AviSynth scripts ported to VapourSynth.",
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/havsfunc",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=166582"})
@@ -721,7 +735,7 @@ Public Class Package
             .Filename = "d2vsource.dll",
             .Description = "Source filter to open D2V index files created with DGIndex or D2VWitch.",
             .URL = "https://github.com/dwbuiten/d2vsource",
-            .VapourSynthFilterNames = {"d2v.Source"},
+            .VSFilterNames = {"d2v.Source"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})
 
@@ -730,7 +744,7 @@ Public Class Package
             .Filename = "libdelogo.dll",
             .Description = "DeLogo Plugin Ported for VapourSynth.",
             .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DeLogo",
-            .VapourSynthFilterNames = {"delogo.AddLogo", "delogo.EraseLogo"},
+            .VSFilterNames = {"delogo.AddLogo", "delogo.EraseLogo"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Misc", "Delogo AddLogo", "clip = core.delogo.AddLogo(clip, logofile = r""$browse_file$"")"),
                 New VideoFilter("Misc", "Delogo EraseLogo", "clip = core.delogo.EraseLogo(clip, logofile = r""$browse_file$"")")}})
@@ -738,7 +752,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "FluxSmooth",
             .Filename = "libfluxsmooth.dll",
-            .VapourSynthFilterNames = {"SmoothT", "SmoothST"},
+            .VSFilterNames = {"SmoothT", "SmoothST"},
             .Description = "FluxSmooth is a filter for smoothing of fluctuations.",
             .WebURL = "https://github.com/dubhater/vapoursynth-fluxsmooth",
             .VapourSynthFiltersFunc = Function() {
@@ -748,7 +762,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "msmoosh",
             .Filename = "libmsmoosh.dll",
-            .VapourSynthFilterNames = {"msmoosh.MSmooth", "msmoosh.MSharpen"},
+            .VSFilterNames = {"msmoosh.MSmooth", "msmoosh.MSharpen"},
             .Description = "MSmooth is a spatial smoother that doesn't touch edges." + BR + "MSharpen is a sharpener that tries to sharpen only edges.",
             .WebURL = "https://github.com/dubhater/vapoursynth-msmoosh",
             .VapourSynthFiltersFunc = Function() {
@@ -761,14 +775,14 @@ Public Class Package
             .WebURL = "http://github.com/EleonoreMizo/fmtconv",
             .HelpFile = "fmtconv.html",
             .Description = "Fmtconv is a format-conversion plug-in for the Vapoursynth video processing engine. It does resizing, bitdepth conversion with dithering and colorspace conversion.",
-            .VapourSynthFilterNames = {"fmtc.bitdepth", "fmtc.convert", "fmtc.matrix", "fmtc.resample", "fmtc.transfer"}})
+            .VSFilterNames = {"fmtc.bitdepth", "fmtc.convert", "fmtc.matrix", "fmtc.resample", "fmtc.transfer"}})
 
         Add(New PluginPackage With {
             .Name = "finesharp",
             .Filename = "finesharp.py",
             .Description = "Port of Didée's FineSharp script to VapourSynth.",
             .WebURL = "http://forum.doom9.org/showthread.php?p=1777860#post1777860",
-            .VapourSynthFilterNames = {"finesharp.sharpen"},
+            .VSFilterNames = {"finesharp.sharpen"},
             .VapourSynthFiltersFunc = Function() {
                 New VideoFilter("Misc", "finesharp", "clip = finesharp.sharpen(clip)")}})
 
@@ -804,12 +818,12 @@ Public Class Package
                 Dim plugin = DirectCast(Me, PluginPackage)
 
                 If Not plugin.AviSynthFilterNames.NothingOrEmpty AndAlso
-                    Not plugin.VapourSynthFilterNames.NothingOrEmpty Then
+                    Not plugin.VSFilterNames.NothingOrEmpty Then
 
                     Return Name + " avs+vs"
                 ElseIf Not plugin.AviSynthFilterNames.NothingOrEmpty Then
                     Return Name + " avs"
-                ElseIf Not plugin.VapourSynthFilterNames.NothingOrEmpty Then
+                ElseIf Not plugin.VSFilterNames.NothingOrEmpty Then
                     Return Name + " vs"
                 End If
             End If
@@ -964,21 +978,28 @@ Public Class Package
         s?.Storage?.SetString(Name + "custom path", pathParam)
     End Sub
 
-    Overridable ReadOnly Property Path As String
-        Get
-            Dim ret As String
+    Function GetStoredPath() As String
+        Dim ret As String
 
-            If Not s Is Nothing AndAlso Not s.Storage Is Nothing Then
-                ret = s.Storage.GetString(Name + "custom path")
+        If Not s Is Nothing AndAlso Not s.Storage Is Nothing Then
+            ret = s.Storage.GetString(Name + "custom path")
 
-                If ret <> "" Then
-                    If File.Exists(ret) Then
-                        Return ret
-                    Else
-                        s.Storage.SetString(Name + "custom path", Nothing)
-                    End If
+            If ret <> "" Then
+                If File.Exists(ret) Then
+                    Return ret
+                Else
+                    s.Storage.SetString(Name + "custom path", Nothing)
                 End If
             End If
+        End If
+
+        Return ret
+    End Function
+
+    Overridable ReadOnly Property Path As String
+        Get
+            Dim ret = GetStoredPath()
+            If File.Exists(ret) Then Return ret
 
             If FixedDir <> "" Then
                 If File.Exists(FixedDir + Filename) Then Return FixedDir + Filename
@@ -996,11 +1017,11 @@ Public Class Package
             Dim plugin = TryCast(Me, PluginPackage)
 
             If Not plugin Is Nothing Then
-                If Not plugin.VapourSynthFilterNames Is Nothing AndAlso Not plugin.AviSynthFilterNames Is Nothing Then
+                If Not plugin.VSFilterNames Is Nothing AndAlso Not plugin.AviSynthFilterNames Is Nothing Then
                     ret = Folder.Apps + "Plugins\both\" + Name + "\" + Filename
                     If File.Exists(ret) Then Return ret
                 Else
-                    If plugin.VapourSynthFilterNames Is Nothing Then
+                    If plugin.VSFilterNames Is Nothing Then
                         ret = Folder.Apps + "Plugins\avs\" + Name + "\" + Filename
                         If File.Exists(ret) Then Return ret
                     Else
@@ -1130,8 +1151,7 @@ Public Class PluginPackage
     Inherits Package
 
     Property AviSynthFilterNames As String()
-    Property VapourSynthFilterNames As String()
-    Property Dependencies As String()
+    Property VSFilterNames As String()
     Property VapourSynthFiltersFunc As Func(Of VideoFilter())
     Property AviSynthFiltersFunc As Func(Of VideoFilter())
 
@@ -1168,89 +1188,17 @@ Public Class PluginPackage
                 End If
             Next
         ElseIf p.Script.Engine = ScriptEngine.VapourSynth AndAlso
-            Not package.VapourSynthFilterNames.NothingOrEmpty Then
+            Not package.VSFilterNames.NothingOrEmpty Then
 
             For Each filter In p.Script.Filters
                 If filter.Active Then
-                    For Each filterName In package.VapourSynthFilterNames
-                        If filter.Script.ToLower.Contains(filterName.ToLower + "(") Then
-                            Return True
-                        End If
+                    For Each filterName In package.VSFilterNames
+                        If filter.Script.Contains(filterName) Then Return True
                     Next
                 End If
             Next
         End If
-
-        For Each package2 In Items.Values.OfType(Of PluginPackage)
-            If package2 Is package Then Continue For
-
-            If Not package2.Dependencies.NothingOrEmpty Then
-                For Each dependency In package2.Dependencies
-                    If dependency = package.Name Then
-                        If IsPluginPackageRequired(package2) Then Return True
-                    End If
-                Next
-            End If
-        Next
     End Function
-
-    Function GetDependencies() As List(Of PluginPackage)
-        Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
-        Dim ret As New List(Of PluginPackage)
-
-        If Not Dependencies Is Nothing Then
-            For Each plugin In plugins
-                For Each i In Dependencies
-                    If plugin.Name = i Then ret.Add(plugin)
-                Next
-            Next
-        End If
-
-        Return ret
-    End Function
-
-    Shared Sub WriteVSCode(ByRef scriptLower As String,
-                           ByRef code As String,
-                           ByRef filterName As String,
-                           plugin As PluginPackage)
-
-        If Not plugin.VapourSynthFilterNames.NothingOrEmpty Then
-            For Each i In plugin.GetDependencies
-                If Not i.VapourSynthFilterNames.NothingOrEmpty Then
-                    WriteVSCode(scriptLower, code, filterName, i)
-                End If
-            Next
-        End If
-
-        If plugin.Filename.Ext = "py" Then
-            If Not scriptLower.Contains("import importlib.machinery") AndAlso
-                Not code.Contains("import importlib.machinery") Then
-
-                code += "import importlib.machinery" + BR
-            End If
-
-            Dim line = plugin.Name + " = importlib.machinery.SourceFileLoader('" +
-                plugin.Name + "', r""" + plugin.Path + """).load_module()" + BR
-
-            If Not scriptLower.Contains(line.ToLower) AndAlso Not code.ToLower.Contains(line.ToLower) Then code += line
-        Else
-            If Not File.Exists(Folder.Plugins + plugin.Filename) AndAlso
-                Not scriptLower.Contains(plugin.Filename.ToLower) AndAlso Not code.ToLower.Contains(plugin.Filename.ToLower) Then
-
-                Dim line As String
-
-                If scriptLower.Contains(".avs." + filterName.ToLower) OrElse
-                    code.ToLower.Contains(".avs." + filterName.ToLower) Then
-
-                    line = "core.avs.LoadPlugin(r""" + plugin.Path + """)" + BR
-                Else
-                    line = "core.std.LoadPlugin(r""" + plugin.Path + """)" + BR
-                End If
-
-                code += line
-            End If
-        End If
-    End Sub
 End Class
 
 Public Class JavaPackage
@@ -1349,6 +1297,7 @@ Public Class DGIndexNVPackage
         HelpFile = "DGIndexNVManual.html"
         LaunchName = Filename
         FileNotFoundMessage = "DGIndexNV can be disabled under Tools/Settings/Demux."
+        HintDirFunc = Function() DGDecodeNV.GetStoredPath.Dir
     End Sub
 
     Overrides Function GetStatus() As String
@@ -1376,6 +1325,7 @@ Public Class DGIndexIMPackage
         Description = Strings.DGDecIM
         HelpFile = "Notes.txt"
         FileNotFoundMessage = "DGIndexIM can be disabled under Tools/Settings/Demux."
+        HintDirFunc = Function() DGDecodeIM.GetStoredPath.Dir
     End Sub
 
     Overrides Function GetStatus() As String
@@ -1439,16 +1389,6 @@ Public Class HaaliSplitter
             If File.Exists(ret) Then Return ret
         End Get
     End Property
-End Class
-
-Public Class temporalsoftenPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "temporalsoften"
-        Filename = "temporalsoften.dll"
-        VapourSynthFilterNames = {"temporalsoften"}
-    End Sub
 End Class
 
 Public Class DecombPackage

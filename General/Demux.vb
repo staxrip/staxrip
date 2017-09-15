@@ -52,7 +52,9 @@ Public MustInherit Class Demuxer
     End Function
 
     Overrides Function ToString() As String
-        Return Name + " (" + InputExtensions.Join(", ") + " -> " + OutputExtensions.Join(", ") + ")"
+        Dim input = InputExtensions.Join(", ")
+        If input.Length > 25 Then input = input.Shorten(25) + "..."
+        Return Name + " (" + input + " -> " + OutputExtensions.Join(", ") + ")"
     End Function
 
     Overridable Function GetHelp() As String
@@ -65,7 +67,7 @@ Public MustInherit Class Demuxer
         Dim ret As New List(Of Demuxer)
 
         Dim prx As New CommandLineDemuxer
-        prx.Name = "ProjectX demux"
+        prx.Name = "ProjectX: Demux MPEG-2"
         prx.InputExtensions = {"vob", "mpg", "ts"}
         prx.OutputExtensions = {"m2v"}
         prx.InputFormats = {"mpeg2"}
@@ -75,7 +77,7 @@ Public MustInherit Class Demuxer
         ret.Add(prx)
 
         Dim dsmux As New CommandLineDemuxer
-        dsmux.Name = "dsmux re-mux to MKV"
+        dsmux.Name = "dsmux: Re-mux TS to MKV"
         dsmux.InputExtensions = {"ts"}
         dsmux.OutputExtensions = {"mkv"}
         dsmux.Command = "%app:dsmux%"
@@ -86,7 +88,7 @@ Public MustInherit Class Demuxer
         ret.Add(New ffmpegDemuxer)
 
         Dim tsToMkv As New CommandLineDemuxer
-        tsToMkv.Name = "ffmpeg re-mux TS to MKV"
+        tsToMkv.Name = "ffmpeg: Re-mux TS to MKV"
         tsToMkv.InputExtensions = {"ts"}
         tsToMkv.OutputExtensions = {"mkv"}
         tsToMkv.InputFormats = {"hevc", "avc"}
@@ -99,7 +101,7 @@ Public MustInherit Class Demuxer
         ret.Add(New eac3toDemuxer)
 
         Dim dgIndex As New CommandLineDemuxer
-        dgIndex.Name = "DGIndex"
+        dgIndex.Name = "DGIndex: Demux & Index MPEG-2"
         dgIndex.InputExtensions = {"mpg", "vob", "m2ts", "mts", "m2t"}
         dgIndex.OutputExtensions = {"d2v"}
         dgIndex.InputFormats = {"mpeg2"}
@@ -109,8 +111,8 @@ Public MustInherit Class Demuxer
         ret.Add(dgIndex)
 
         Dim dgnvNoDemux As New CommandLineDemuxer
-        dgnvNoDemux.Name = "DGIndexNV"
-        dgnvNoDemux.InputExtensions = {"264", "h264", "avc", "265", "h265", "hevc", "mkv", "mp4"}
+        dgnvNoDemux.Name = "DGIndexNV: Index, No Demux"
+        dgnvNoDemux.InputExtensions = {"mkv", "mp4", "h264", "h265", "avc", "hevc", "hvc", "264", "265"}
         dgnvNoDemux.OutputExtensions = {"dgi"}
         dgnvNoDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
         dgnvNoDemux.Command = "%app:DGIndexNV%"
@@ -120,7 +122,7 @@ Public MustInherit Class Demuxer
         ret.Add(dgnvNoDemux)
 
         Dim dgnvDemux As New CommandLineDemuxer
-        dgnvDemux.Name = "DGIndexNV"
+        dgnvDemux.Name = "DGIndexNV: Demux & Index"
         dgnvDemux.InputExtensions = {"mpg", "vob", "ts", "m2ts", "mts", "m2t"}
         dgnvDemux.OutputExtensions = {"dgi"}
         dgnvDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
@@ -131,7 +133,7 @@ Public MustInherit Class Demuxer
         ret.Add(dgnvDemux)
 
         Dim dgimNoDemux As New CommandLineDemuxer
-        dgimNoDemux.Name = "DGIndexIM"
+        dgimNoDemux.Name = "DGIndexIM: Index, No Demux"
         dgimNoDemux.InputExtensions = {"264", "h264", "avc", "mkv", "mp4"}
         dgimNoDemux.OutputExtensions = {"dgim"}
         dgimNoDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
@@ -142,7 +144,7 @@ Public MustInherit Class Demuxer
         ret.Add(dgimNoDemux)
 
         Dim dgimDemux As New CommandLineDemuxer
-        dgimDemux.Name = "DGIndexIM"
+        dgimDemux.Name = "DGIndexIM: Demux & Index"
         dgimDemux.InputExtensions = {"mpg", "vob", "ts", "m2ts", "mts", "m2t"}
         dgimDemux.OutputExtensions = {"dgim"}
         dgimDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
@@ -186,6 +188,7 @@ Public Class CommandLineDemuxer
                 proc.Package = Package.DGIndexIM
             ElseIf Command?.Contains("ffmpeg") Then
                 proc.Package = Package.ffmpeg
+                proc.SkipStrings = {"frame=", "size="}
             ElseIf Command?.Contains("DGIndex") Then
                 If Not Package.DGIndex.VerifyOK(True) Then Throw New AbortException
                 proc.Package = Package.DGIndex
@@ -224,7 +227,7 @@ Public Class eac3toDemuxer
     Inherits Demuxer
 
     Sub New()
-        Name = "eac3to demux"
+        Name = "eac3to: Demux"
         InputExtensions = {"m2ts"}
         OutputExtensions = {"h264", "mkv", "m2v"}
     End Sub
@@ -278,7 +281,7 @@ Public Class ffmpegDemuxer
     Inherits Demuxer
 
     Sub New()
-        Name = "ffmpeg demux"
+        Name = "ffmpeg: Demux"
         InputExtensions = {"avi", "flv"}
     End Sub
 
@@ -426,7 +429,7 @@ Public Class MP4BoxDemuxer
     Inherits Demuxer
 
     Sub New()
-        Name = "MP4Box demux"
+        Name = "MP4Box: Demux"
         InputExtensions = {"mp4", "m4v", "mov"}
     End Sub
 
@@ -629,7 +632,7 @@ Public Class mkvDemuxer
     Inherits Demuxer
 
     Sub New()
-        Name = "mkvextract demux"
+        Name = "mkvextract: Demux"
         InputExtensions = {"mkv", "webm"}
     End Sub
 

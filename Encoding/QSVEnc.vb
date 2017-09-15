@@ -256,9 +256,9 @@ Public Class QSVEnc
                     Add("VUI",
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
-                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 BG", "SMPTE 240 M", "YCgCo", "FCC", "GBR"}},
-                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film"}},
-                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316"}},
+                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
+                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},
+                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "BT 470 BG", "BT 470 M", "BT 709", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 240 M"}},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Fullrange"})
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                     Add("Other",
@@ -305,17 +305,19 @@ Public Class QSVEnc
                 End If
             End If
 
-            If item Is Codec OrElse item Is Nothing Then
-                For Each i In Modes
-                    Select Case Codec.ValueText
-                        Case "h264"
-                            Mode.ShowOption(GetMode(i.Name), True)
-                        Case "hevc"
-                            Mode.ShowOption(GetMode(i.Name), i.Name.EqualsAny("cbr", "vbr", "cqp", "vqp", "icq", "vcm"))
-                        Case "mpeg2"
-                            Mode.ShowOption(GetMode(i.Name), i.Name.EqualsAny("cbr", "vbr", "avbr", "cqp", "vqp"))
-                    End Select
-                Next
+            If Not Mode.MenuButton Is Nothing Then
+                If item Is Codec OrElse item Is Nothing Then
+                    For Each i In Modes
+                        Select Case Codec.ValueText
+                            Case "h264"
+                                Mode.ShowOption(GetMode(i.Name), True)
+                            Case "hevc"
+                                Mode.ShowOption(GetMode(i.Name), i.Name.EqualsAny("cbr", "vbr", "cqp", "vqp", "icq", "vcm"))
+                            Case "mpeg2"
+                                Mode.ShowOption(GetMode(i.Name), i.Name.EqualsAny("cbr", "vbr", "avbr", "cqp", "vqp"))
+                        End Select
+                    Next
+                End If
             End If
 
             MyBase.OnValueChanged(item)

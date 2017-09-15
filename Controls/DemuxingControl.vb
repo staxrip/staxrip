@@ -165,6 +165,8 @@ Public Class PreprocessingControl
     Property Path As String Implements IPage.Path
     Property TipProvider As TipProvider Implements IPage.TipProvider
 
+    Public Property FormSizeScaleFactor As SizeF Implements IPage.FormSizeScaleFactor
+
     Sub New()
         MyBase.New()
         InitializeComponent()

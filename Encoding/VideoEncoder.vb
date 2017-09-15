@@ -45,7 +45,41 @@ Public MustInherit Class VideoEncoder
     End Function
 
     Overridable Sub ImportCommandLine(commandLine As String)
-        Throw New NotImplementedException("import is not implemented for this encoder")
+    End Sub
+
+    Sub SetMetaData(sourceFile As String)
+        Dim cl As String
+        Dim colour_primaries = MediaInfo.GetVideo(sourceFile, "colour_primaries")
+        Dim height = MediaInfo.GetVideo(sourceFile, "Height").ToInt
+
+        Select Case colour_primaries
+            Case "BT.2020"
+                cl += " --colorprim bt2020"
+            Case "BT.709"
+                If height <= 576 Then cl += " --colorprim bt709"
+            Case "BT.601 NTSC"
+                If height > 480 Then cl += " --colorprim bt470m"
+            Case "BT.601 PAL"
+                If height > 576 Then cl += " --colorprim bt470bg"
+        End Select
+
+        Dim transfer_characteristics = MediaInfo.GetVideo(sourceFile, "transfer_characteristics")
+
+        Select Case transfer_characteristics
+            Case "PQ", "SMPTE ST 2084"
+                cl += " --transfer smpte2084"
+            Case "BT.709"
+                If height <= 576 Then cl += " --transfer bt709"
+        End Select
+
+        Dim matrix_coefficients = MediaInfo.GetVideo(sourceFile, "matrix_coefficients")
+
+        Select Case matrix_coefficients
+            Case "BT.2020 non-constant"
+                cl += " --colormatrix bt2020nc"
+        End Select
+
+        ImportCommandLine(cl)
     End Sub
 
     Sub AfterEncoding()

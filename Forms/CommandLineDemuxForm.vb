@@ -32,8 +32,6 @@ Public Class CommandLineDemuxForm
     Friend WithEvents Label7 As System.Windows.Forms.Label
     Friend WithEvents Label8 As System.Windows.Forms.Label
     Friend WithEvents Label9 As System.Windows.Forms.Label
-    Friend WithEvents Label10 As System.Windows.Forms.Label
-    Friend WithEvents tbDescription As System.Windows.Forms.TextBox
     Friend WithEvents bnBrowse As ButtonEx
     Friend WithEvents bnArguments As ButtonEx
     Friend WithEvents cmsArguments As ContextMenuStripEx
@@ -61,8 +59,6 @@ Public Class CommandLineDemuxForm
         Me.bnBrowse = New StaxRip.UI.ButtonEx()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label10 = New System.Windows.Forms.Label()
-        Me.tbDescription = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Label9 = New System.Windows.Forms.Label()
@@ -77,76 +73,76 @@ Public Class CommandLineDemuxForm
         '
         Me.tbName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.tbName, 3)
-        Me.tbName.Location = New System.Drawing.Point(295, 16)
+        Me.tbName.Location = New System.Drawing.Point(295, 14)
         Me.tbName.Margin = New System.Windows.Forms.Padding(0)
         Me.tbName.Name = "tbName"
-        Me.tbName.Size = New System.Drawing.Size(1439, 55)
+        Me.tbName.Size = New System.Drawing.Size(1339, 55)
         Me.tbName.TabIndex = 1
         '
         'tbInput
         '
         Me.tbInput.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.tbInput, 3)
-        Me.tbInput.Location = New System.Drawing.Point(295, 104)
+        Me.tbInput.Location = New System.Drawing.Point(295, 97)
         Me.tbInput.Margin = New System.Windows.Forms.Padding(0)
         Me.tbInput.Name = "tbInput"
-        Me.tbInput.Size = New System.Drawing.Size(1439, 55)
+        Me.tbInput.Size = New System.Drawing.Size(1339, 55)
         Me.tbInput.TabIndex = 13
         '
         'tbInputFormats
         '
         Me.tbInputFormats.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.tbInputFormats, 3)
-        Me.tbInputFormats.Location = New System.Drawing.Point(295, 280)
+        Me.tbInputFormats.Location = New System.Drawing.Point(295, 263)
         Me.tbInputFormats.Margin = New System.Windows.Forms.Padding(0)
         Me.tbInputFormats.Name = "tbInputFormats"
-        Me.tbInputFormats.Size = New System.Drawing.Size(1439, 55)
+        Me.tbInputFormats.Size = New System.Drawing.Size(1339, 55)
         Me.tbInputFormats.TabIndex = 15
         '
         'tbVideoOut
         '
         Me.tbVideoOut.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.tbVideoOut, 3)
-        Me.tbVideoOut.Location = New System.Drawing.Point(295, 192)
+        Me.tbVideoOut.Location = New System.Drawing.Point(295, 180)
         Me.tbVideoOut.Margin = New System.Windows.Forms.Padding(0)
         Me.tbVideoOut.Name = "tbVideoOut"
-        Me.tbVideoOut.Size = New System.Drawing.Size(1439, 55)
+        Me.tbVideoOut.Size = New System.Drawing.Size(1339, 55)
         Me.tbVideoOut.TabIndex = 3
         '
         'tbCommand
         '
         Me.tbCommand.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.tbCommand, 2)
-        Me.tbCommand.Location = New System.Drawing.Point(295, 456)
+        Me.tbCommand.Location = New System.Drawing.Point(295, 429)
         Me.tbCommand.Margin = New System.Windows.Forms.Padding(0)
         Me.tbCommand.Name = "tbCommand"
-        Me.tbCommand.Size = New System.Drawing.Size(1174, 55)
+        Me.tbCommand.Size = New System.Drawing.Size(1074, 55)
         Me.tbCommand.TabIndex = 7
         '
         'tbArguments
         '
         Me.tbArguments.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.tbArguments, 2)
-        Me.tbArguments.Location = New System.Drawing.Point(295, 544)
+        Me.tbArguments.Location = New System.Drawing.Point(295, 512)
         Me.tbArguments.Margin = New System.Windows.Forms.Padding(0)
         Me.tbArguments.Name = "tbArguments"
-        Me.tbArguments.Size = New System.Drawing.Size(1174, 55)
+        Me.tbArguments.Size = New System.Drawing.Size(1074, 55)
         Me.tbArguments.TabIndex = 9
         '
         'tbSourceFilters
         '
         Me.tbSourceFilters.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.tbSourceFilters, 3)
-        Me.tbSourceFilters.Location = New System.Drawing.Point(295, 368)
+        Me.tbSourceFilters.Location = New System.Drawing.Point(295, 346)
         Me.tbSourceFilters.Margin = New System.Windows.Forms.Padding(0)
         Me.tbSourceFilters.Name = "tbSourceFilters"
-        Me.tbSourceFilters.Size = New System.Drawing.Size(1439, 55)
+        Me.tbSourceFilters.Size = New System.Drawing.Size(1339, 55)
         Me.tbSourceFilters.TabIndex = 19
         '
         'bnCancel
         '
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(1484, 784)
+        Me.bnCancel.Location = New System.Drawing.Point(1384, 596)
         Me.bnCancel.Margin = New System.Windows.Forms.Padding(15, 15, 0, 0)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
@@ -154,7 +150,7 @@ Public Class CommandLineDemuxForm
         'bnOK
         '
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(1219, 784)
+        Me.bnOK.Location = New System.Drawing.Point(1119, 596)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(0, 15, 0, 0)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
@@ -172,11 +168,9 @@ Public Class CommandLineDemuxForm
         Me.tlpMain.Controls.Add(Me.tbCommand, 1, 5)
         Me.tlpMain.Controls.Add(Me.Label6, 0, 5)
         Me.tlpMain.Controls.Add(Me.tbInput, 1, 1)
-        Me.tlpMain.Controls.Add(Me.bnOK, 2, 9)
-        Me.tlpMain.Controls.Add(Me.bnCancel, 3, 9)
+        Me.tlpMain.Controls.Add(Me.bnOK, 2, 7)
+        Me.tlpMain.Controls.Add(Me.bnCancel, 3, 7)
         Me.tlpMain.Controls.Add(Me.Label2, 0, 0)
-        Me.tlpMain.Controls.Add(Me.Label10, 0, 7)
-        Me.tlpMain.Controls.Add(Me.tbDescription, 0, 8)
         Me.tlpMain.Controls.Add(Me.tbName, 1, 0)
         Me.tlpMain.Controls.Add(Me.Label3, 0, 1)
         Me.tlpMain.Controls.Add(Me.Label8, 0, 2)
@@ -190,25 +184,23 @@ Public Class CommandLineDemuxForm
         Me.tlpMain.Location = New System.Drawing.Point(15, 15)
         Me.tlpMain.Margin = New System.Windows.Forms.Padding(0)
         Me.tlpMain.Name = "tlpMain"
-        Me.tlpMain.RowCount = 10
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.RowCount = 8
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1734, 854)
+        Me.tlpMain.Size = New System.Drawing.Size(1634, 667)
         Me.tlpMain.TabIndex = 21
         '
         'bnArguments
         '
         Me.bnArguments.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnArguments.ContextMenuStrip = Me.cmsArguments
-        Me.bnArguments.Location = New System.Drawing.Point(1484, 537)
+        Me.bnArguments.Location = New System.Drawing.Point(1384, 504)
         Me.bnArguments.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
         Me.bnArguments.ShowMenuSymbol = True
         Me.bnArguments.Size = New System.Drawing.Size(250, 70)
@@ -236,7 +228,7 @@ Public Class CommandLineDemuxForm
         'bnBrowse
         '
         Me.bnBrowse.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnBrowse.Location = New System.Drawing.Point(1484, 449)
+        Me.bnBrowse.Location = New System.Drawing.Point(1384, 421)
         Me.bnBrowse.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
         Me.bnBrowse.Size = New System.Drawing.Size(250, 70)
         Me.bnBrowse.Text = "Browse..."
@@ -245,7 +237,7 @@ Public Class CommandLineDemuxForm
         '
         Me.Label6.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(3, 460)
+        Me.Label6.Location = New System.Drawing.Point(3, 432)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(192, 48)
         Me.Label6.TabIndex = 12
@@ -255,7 +247,7 @@ Public Class CommandLineDemuxForm
         '
         Me.Label2.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(3, 20)
+        Me.Label2.Location = New System.Drawing.Point(3, 17)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(277, 48)
         Me.Label2.TabIndex = 24
@@ -263,35 +255,11 @@ Public Class CommandLineDemuxForm
         Me.TipProvider.SetTipText(Me.Label2, "If the demuxer name matches the name of a bundled app then help and description i" &
         "s provided.")
         '
-        'Label10
-        '
-        Me.Label10.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(3, 636)
-        Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(209, 48)
-        Me.Label10.TabIndex = 32
-        Me.Label10.Text = "Description:"
-        '
-        'tbDescription
-        '
-        Me.tbDescription.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tlpMain.SetColumnSpan(Me.tbDescription, 4)
-        Me.tbDescription.Location = New System.Drawing.Point(0, 704)
-        Me.tbDescription.Margin = New System.Windows.Forms.Padding(0)
-        Me.tbDescription.Multiline = True
-        Me.tbDescription.Name = "tbDescription"
-        Me.tbDescription.ReadOnly = True
-        Me.tbDescription.Size = New System.Drawing.Size(1734, 65)
-        Me.tbDescription.TabIndex = 33
-        '
         'Label3
         '
         Me.Label3.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(3, 108)
+        Me.Label3.Location = New System.Drawing.Point(3, 100)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(275, 48)
         Me.Label3.TabIndex = 25
@@ -302,7 +270,7 @@ Public Class CommandLineDemuxForm
         '
         Me.Label8.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(3, 196)
+        Me.Label8.Location = New System.Drawing.Point(3, 183)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(289, 48)
         Me.Label8.TabIndex = 30
@@ -313,7 +281,7 @@ Public Class CommandLineDemuxForm
         '
         Me.Label9.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(3, 372)
+        Me.Label9.Location = New System.Drawing.Point(3, 349)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(242, 48)
         Me.Label9.TabIndex = 31
@@ -323,7 +291,7 @@ Public Class CommandLineDemuxForm
         '
         Me.Label1.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(3, 284)
+        Me.Label1.Location = New System.Drawing.Point(3, 266)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(249, 48)
         Me.Label1.TabIndex = 26
@@ -334,7 +302,7 @@ Public Class CommandLineDemuxForm
         '
         Me.Label7.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(3, 548)
+        Me.Label7.Location = New System.Drawing.Point(3, 515)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(202, 48)
         Me.Label7.TabIndex = 29
@@ -346,7 +314,7 @@ Public Class CommandLineDemuxForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1764, 884)
+        Me.ClientSize = New System.Drawing.Size(1664, 697)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
@@ -368,7 +336,6 @@ Public Class CommandLineDemuxForm
     Sub New(demuxer As CommandLineDemuxer)
         MyBase.New()
         InitializeComponent()
-        ScaleClientSize(40, 21)
 
         Target = demuxer
         Temp = ObjectHelp.GetCopy(Of CommandLineDemuxer)(demuxer)
@@ -380,7 +347,6 @@ Public Class CommandLineDemuxForm
         tbVideoOut.Text = Temp.OutputExtensions.ToArray.Join(" ")
         tbArguments.Text = Temp.Arguments
         tbCommand.Text = Temp.Command
-        tbDescription.Text = Temp.GetHelp
 
         ActiveControl = bnOK
     End Sub

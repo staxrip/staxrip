@@ -212,7 +212,7 @@ Public Class ApplicationSettings
         If Check(ParMenu, "Source PAR menu", 10) Then ParMenu = GetParMenu()
         If Check(DarMenu, "Source DAR menu", 10) Then DarMenu = GetDarMenu()
 
-        If Check(TargetImageSizeMenu, "Target image size menu", 13) Then
+        If Check(TargetImageSizeMenu, "Target image size menu", 15) Then
             TargetImageSizeMenu = GetDefaultTargetImageSizeMenu()
         End If
 
@@ -367,12 +367,16 @@ Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$"
     End Function
 
     Shared Function GetDefaultTargetImageSizeMenu() As String
-        Return "1920 x auto = 1920 x 0" + BR +
-               "1280 x auto = 1280 x 0" + BR2 +
-               "640 x auto = 640 x 0" + BR +
-               "480 x auto = 480 x 0" + BR2 +
-               "300 k Pixel = 300000" + BR +
-               "200 k Pixel = 200000"
+        Return "3840 x auto = 3840 x 0
+3200 x auto = 3200 x 0
+2560 x auto = 2560 x 0
+1920 x auto = 1920 x 0
+1280 x auto = 1280 x 0
+960 x auto = 960 x 0
+720 x auto = 720 x 0
+640 x auto = 640 x 0
+480 x auto = 480 x 0
+320 x auto = 320 x 0"
     End Function
 
     Shared Function GetDefaultEac3toMenu() As String

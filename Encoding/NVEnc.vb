@@ -116,8 +116,8 @@ Public Class NVEnc
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
             .Options = {"AviSynth/VapourSynth",
-                        "NVEncC (avcuvid native)",
-                        "NVEncC (avcuvid cuda)",
+                        "NVEncC Native",
+                        "NVEncC Cuda",
                         "QSVEncC (Intel)",
                         "ffmpeg (Intel)",
                         "ffmpeg (DXVA2)"},
@@ -160,21 +160,21 @@ Public Class NVEnc
         Property QPI As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP I",
-            .Init = 20,
+            .Init = 18,
             .VisibleFunc = Function() Mode.Value = 0,
             .Config = {0, 51}}
 
         Property QPP As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP P",
-            .Init = 23,
+            .Init = 20,
             .VisibleFunc = Function() Mode.Value = 0,
             .Config = {0, 51}}
 
         Property QPB As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP B",
-            .Init = 25,
+            .Init = 22,
             .VisibleFunc = Function() Mode.Value = 0,
             .Config = {0, 51}}
 
@@ -227,7 +227,15 @@ Public Class NVEnc
             .Init = 100.0,
             .Config = {0, 255, 1, 1}}
 
-        Property Deband As New BoolParam With {.Text = "Deband", .ArgsFunc = AddressOf GetDebandArgs}
+        Property Interlace As New OptionParam With {
+            .Switch = "--interlace",
+            .Switches = {"--tff", "--bff"},
+            .Text = "Interlace",
+            .VisibleFunc = Function() Codec.ValueText = "h264",
+            .Options = {"Progressive ", "Top Field First", "Bottom Field First"},
+            .Values = {"", "--tff", "--bff"}}
+
+        Property Deband As New BoolParam With {.Text = "Deband", .Switches = {"--vpp-deband"}, .ArgsFunc = AddressOf GetDebandArgs}
 
         Property Deband_range As New NumParam With {.Text = "range", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 127}}
         Property Deband_sample As New NumParam With {.Text = "sample", .HelpSwitch = "--vpp-deband", .Init = 1, .Config = {0, 2}}
@@ -242,6 +250,33 @@ Public Class NVEnc
 
         Property Deband_blurfirst As New BoolParam With {.Text = "blurfirst", .HelpSwitch = "--vpp-deband"}
         Property Deband_rand_each_frame As New BoolParam With {.Text = "rand_each_frame", .HelpSwitch = "--vpp-deband"}
+
+        Property AFS As New BoolParam With {.Text = "Auto field shift deinterlacer", .Switches = {"--vpp-afs"}, .ArgsFunc = AddressOf GetAFS}
+
+        Property AFSPreset As New OptionParam With {.Text = "preset", .HelpSwitch = "--vpp-afs", .Options = {"Default", "Triple", "Double", "Anime", "Cinema", "Min_afterimg", "24fps", "24fps_sd", "30fps"}}
+        Property AFSINI As New StringParam With {.Text = "ini", .HelpSwitch = "--vpp-afs", .BrowseFile = True}
+
+        Property AFSLeft As New NumParam With {.Text = "left", .HelpSwitch = "--vpp-afs", .Init = 32}
+        Property AFSRight As New NumParam With {.Text = "right", .HelpSwitch = "--vpp-afs", .Init = 32}
+        Property AFSTop As New NumParam With {.Text = "top", .HelpSwitch = "--vpp-afs", .Init = 16}
+        Property AFSBottom As New NumParam With {.Text = "bottom", .HelpSwitch = "--vpp-afs", .Init = 16}
+
+        Property AFSmethod_switch As New NumParam With {.Text = "method_switch", .HelpSwitch = "--vpp-afs", .Config = {0, 256}}
+        Property AFScoeff_shift As New NumParam With {.Text = "coeff_shift", .HelpSwitch = "--vpp-afs", .Init = 192, .Config = {0, 256}}
+        Property AFSthre_shift As New NumParam With {.Text = "thre_shift", .HelpSwitch = "--vpp-afs", .Init = 128, .Config = {0, 1024}}
+        Property AFSthre_deint As New NumParam With {.Text = "thre_deint", .HelpSwitch = "--vpp-afs", .Init = 48, .Config = {0, 1024}}
+        Property AFSthre_motion_y As New NumParam With {.Text = "thre_motion_y", .HelpSwitch = "--vpp-afs", .Init = 112, .Config = {0, 1024}}
+        Property AFSthre_motion_c As New NumParam With {.Text = "thre_motion_c", .HelpSwitch = "--vpp-afs", .Init = 224, .Config = {0, 1024}}
+        Property AFSlevel As New NumParam With {.Text = "level", .HelpSwitch = "--vpp-afs", .Init = 3, .Config = {0, 4}}
+
+        Property AFSshift As New BoolParam With {.Text = "shift", .Init = True, .HelpSwitch = "--vpp-afs"}
+        Property AFSdrop As New BoolParam With {.Text = "drop", .HelpSwitch = "--vpp-afs"}
+        Property AFSsmooth As New BoolParam With {.Text = "smooth", .HelpSwitch = "--vpp-afs"}
+        Property AFS24fps As New BoolParam With {.Text = "24fps", .HelpSwitch = "--vpp-afs"}
+        Property AFStune As New BoolParam With {.Text = "tune", .HelpSwitch = "--vpp-afs"}
+        Property AFSrff As New BoolParam With {.Text = "rff", .HelpSwitch = "--vpp-afs"}
+        Property AFStimecode As New BoolParam With {.Text = "timecode", .HelpSwitch = "--vpp-afs"}
+        Property AFSlog As New BoolParam With {.Text = "log", .HelpSwitch = "--vpp-afs"}
 
         Property Custom As New StringParam With {.Text = "Custom", .AlwaysOn = True}
 
@@ -291,16 +326,17 @@ Public Class NVEnc
                     Add("VUI",
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
-                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 BG", "SMPTE 240 M", "YCgCo", "FCC", "GBR", "BT 2020 NC", "BT 2020 C"}},
-                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}},
-                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE-ST-2084", "SMPTE-ST-428", "ARIB-SRD-B67"}},
+                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
+                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},
+                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-SRD-B67", "Auto", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 240 M", "SMPTE-ST-2084", "SMPTE-ST-428"}},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Full Range", .VisibleFunc = Function() Codec.ValueText = "h264"})
                     Add("VPP",
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
-                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .VisibleFunc = Function() Decoder.ValueText = "nvnative" OrElse Decoder.ValueText = "nvcuda", .Options = {"None", "Adaptive", "Bob"}},
+                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvnative", "nvcuda"), .Options = {"None", "Adaptive", "Bob"}},
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
                         KNN, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
-                        PMD, PmdApplyCount, PmdStrength, PmdThreshold)
+                        PMD, PmdApplyCount, PmdStrength, PmdThreshold,
+                        New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvnative", "nvcuda")})
                     Add("VPP | Deband",
                         Deband,
                         Deband_range,
@@ -315,10 +351,34 @@ Public Class NVEnc
                         Deband_seed,
                         Deband_blurfirst,
                         Deband_rand_each_frame)
+                    Add("VPP | AFS 1",
+                        AFS,
+                        AFSINI,
+                        AFSPreset,
+                        AFSLeft,
+                        AFSRight,
+                        AFSTop,
+                        AFSBottom,
+                        AFSmethod_switch,
+                        AFScoeff_shift,
+                        AFSthre_shift,
+                        AFSthre_deint,
+                        AFSthre_motion_y,
+                        AFSthre_motion_c,
+                        AFSlevel)
+                    Add("VPP | AFS 2",
+                        AFSshift,
+                        AFSdrop,
+                        AFSsmooth,
+                        AFS24fps,
+                        AFStune,
+                        AFSrff,
+                        AFStimecode,
+                        AFSlog)
                     Add("Other",
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},
-                        New OptionParam With {.Switch = "--interlaced", .Switches = {"--tff", "--bff"}, .Text = "Interlaced", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
+                        Interlace,
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New NumParam With {.Switch = "--device", .Text = "Device", .Config = {0, 4}},
                         New BoolParam With {.Switch = "--deblock", .NoSwitch = "--no-deblock", .Text = "Deblock", .Init = True},
@@ -342,23 +402,40 @@ Public Class NVEnc
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-            KnnRadius.NumEdit.Enabled = KNN.Value
-            KnnStrength.NumEdit.Enabled = KNN.Value
-            KnnLerp.NumEdit.Enabled = KNN.Value
-            KnnThLerp.NumEdit.Enabled = KNN.Value
+            If Not QPI.NumEdit Is Nothing Then
+                KnnRadius.NumEdit.Enabled = KNN.Value
+                KnnStrength.NumEdit.Enabled = KNN.Value
+                KnnLerp.NumEdit.Enabled = KNN.Value
+                KnnThLerp.NumEdit.Enabled = KNN.Value
 
-            PmdApplyCount.NumEdit.Enabled = PMD.Value
-            PmdStrength.NumEdit.Enabled = PMD.Value
-            PmdThreshold.NumEdit.Enabled = PMD.Value
+                PmdApplyCount.NumEdit.Enabled = PMD.Value
+                PmdStrength.NumEdit.Enabled = PMD.Value
+                PmdThreshold.NumEdit.Enabled = PMD.Value
 
-            For Each i In {Deband_range, Deband_sample, Deband_thre, Deband_thre_y, Deband_thre_cb,
-                Deband_thre_cr, Deband_dither, Deband_dither_y, Deband_dither_c, Deband_seed}
+                For Each i In {Deband_range, Deband_sample, Deband_thre, Deband_thre_y, Deband_thre_cb,
+                    Deband_thre_cr, Deband_dither, Deband_dither_y, Deband_dither_c, Deband_seed}
 
-                i.NumEdit.Enabled = Deband.Value
-            Next
+                    i.NumEdit.Enabled = Deband.Value
+                Next
 
-            Deband_rand_each_frame.CheckBox.Enabled = Deband.Value
-            Deband_blurfirst.CheckBox.Enabled = Deband.Value
+                Deband_rand_each_frame.CheckBox.Enabled = Deband.Value
+                Deband_blurfirst.CheckBox.Enabled = Deband.Value
+
+                AFS.CheckBox.Enabled = Interlace.Value > 0
+
+                AFSPreset.MenuButton.Enabled = AFS.Value
+                AFSINI.TextEdit.Enabled = AFS.Value
+
+                For Each i In {AFSLeft, AFSRight, AFSTop, AFSBottom, AFSmethod_switch, AFScoeff_shift,
+                               AFSthre_shift, AFSthre_deint, AFSthre_motion_y, AFSthre_motion_c, AFSlevel}
+
+                    i.NumEdit.Enabled = AFS.Value
+                Next
+
+                For Each i In {AFSshift, AFSdrop, AFSsmooth, AFS24fps, AFStune, AFSrff, AFStimecode, AFSlog}
+                    i.CheckBox.Enabled = AFS.Value
+                Next
+            End If
 
             MyBase.OnValueChanged(item)
         End Sub
@@ -410,6 +487,25 @@ Public Class NVEnc
             If Deband.Value Then Return ("--vpp-deband " + ret.TrimStart(","c)).TrimEnd
         End Function
 
+        Function GetAFS() As String
+            Dim ret = ""
+
+            If AFSPreset.Value <> AFSPreset.DefaultValue Then ret += "preset=" + AFSPreset.ValueText
+            If AFSINI.Value <> "" Then ret += ",ini=" + AFSINI.Value.Escape
+
+            For Each i In {AFSLeft, AFSRight, AFSTop, AFSBottom, AFSmethod_switch, AFScoeff_shift,
+                               AFSthre_shift, AFSthre_deint, AFSthre_motion_y, AFSthre_motion_c, AFSlevel}
+
+                If i.Value <> i.DefaultValue Then ret += "," + i.Text + "=" & i.Value
+            Next
+
+            For Each i In {AFSshift, AFSdrop, AFSsmooth, AFS24fps, AFStune, AFSrff, AFStimecode, AFSlog}
+                If i.Value <> i.DefaultValue Then ret += "," + i.Text + "=" + If(i.Value, "on", "off")
+            Next
+
+            If AFS.Value Then Return ("--vpp-afs " + ret.TrimStart(","c)).TrimEnd
+        End Function
+
         Overrides Function GetCommandLine(includePaths As Boolean,
                                           includeExe As Boolean,
                                           Optional pass As Integer = 1) As String
@@ -426,7 +522,7 @@ Public Class NVEnc
                     sourcePath = p.LastOriginalSourceFile
                 Case "nvcuda"
                     sourcePath = p.LastOriginalSourceFile
-                    ret += " --avcuvid cuda"
+                    ret += " --avhw cuda"
                 Case "qs"
                     sourcePath = "-"
                     If includePaths Then ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC")

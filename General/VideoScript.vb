@@ -162,9 +162,9 @@ Public Class VideoScript
             If convertToRGB Then
                 If Engine = ScriptEngine.AviSynth Then
                     If p.SourceHeight > 576 Then
-                        code += BR + "ConvertToRGB(matrix=""Rec709"")"
+                        code += BR + "ConvertBits(8)" + BR + "ConvertToRGB(matrix=""Rec709"")"
                     Else
-                        code += BR + "ConvertToRGB(matrix=""Rec601"")"
+                        code += BR + "ConvertBits(8)" + BR + "ConvertToRGB(matrix=""Rec601"")"
                     End If
                 Else
                     Dim vsCode = "
@@ -227,32 +227,17 @@ clip.set_output()
     End Function
 
     Shared Function ModifyVSScript(script As String) As String
-        Dim scriptLower = script.ToLower
         Dim code = ""
 
-        If Not script.Contains("import vapoursynth") Then
-            code = "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR
+        ModifyVSScript(script, code)
+
+        If Not script.Contains("import importlib.machinery") AndAlso code.Contains("SourceFileLoader") Then
+            code = "import importlib.machinery" + BR + code
         End If
 
-        Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
-
-        For Each plugin In plugins
-            Dim fp = plugin.Path
-
-            If fp <> "" Then
-                If Not plugin.VapourSynthFilterNames Is Nothing Then
-                    For Each filterName In plugin.VapourSynthFilterNames
-                        If script.Contains(filterName) Then PluginPackage.WriteVSCode(scriptLower, code, filterName, plugin)
-                    Next
-                End If
-
-                If Not plugin.AviSynthFilterNames Is Nothing Then
-                    For Each filterName In plugin.AviSynthFilterNames
-                        If script.Contains(".avs." + filterName) Then PluginPackage.WriteVSCode(scriptLower, code, filterName, plugin)
-                    Next
-                End If
-            End If
-        Next
+        If Not script.Contains("import vapoursynth") Then
+            code = "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR + code
+        End If
 
         Dim clip As String
 
@@ -272,6 +257,66 @@ clip.set_output()
 
         Return clip
     End Function
+
+    Shared Function ModifyVSScript(ByRef script As String, ByRef code As String) As String
+        For Each plugin In Package.Items.Values.OfType(Of PluginPackage)()
+            Dim fp = plugin.Path
+
+            If fp <> "" Then
+                If Not plugin.VSFilterNames Is Nothing Then
+                    For Each filterName In plugin.VSFilterNames
+                        If script.Contains(filterName) Then
+                            WriteVSCode(script, code, filterName, plugin)
+                        End If
+                    Next
+                End If
+
+                Dim scriptCode = script + code
+                If scriptCode.Contains("import " + plugin.Name) Then
+                    WriteVSCode(script, code, Nothing, plugin)
+                End If
+
+                If Not plugin.AviSynthFilterNames Is Nothing Then
+                    For Each filterName In plugin.AviSynthFilterNames
+                        If script.Contains(".avs." + filterName) Then WriteVSCode(script, code, filterName, plugin)
+                    Next
+                End If
+            End If
+        Next
+    End Function
+
+    Shared Sub WriteVSCode(ByRef script As String,
+                           ByRef code As String,
+                           ByRef filterName As String,
+                           plugin As PluginPackage)
+
+        If plugin.Filename.Ext = "py" Then
+            Dim line = plugin.Name + " = importlib.machinery.SourceFileLoader('" +
+                plugin.Name + "', r""" + plugin.Path + """).load_module()"
+
+            If Not script.Contains(line) AndAlso Not code.Contains(line) Then
+                code = line + BR + code
+                Dim scriptCode = File.ReadAllText(plugin.Path)
+                ModifyVSScript(scriptCode, code)
+            End If
+        Else
+            If Not File.Exists(Folder.Plugins + plugin.Filename) AndAlso
+                Not script.Contains(plugin.Filename) AndAlso Not code.Contains(plugin.Filename) Then
+
+                Dim line As String
+
+                If script.Contains(".avs." + filterName) OrElse
+                    code.Contains(".avs." + filterName) Then
+
+                    line = "core.avs.LoadPlugin(r""" + plugin.Path + """)" + BR
+                Else
+                    line = "core.std.LoadPlugin(r""" + plugin.Path + """)" + BR
+                End If
+
+                code += line
+            End If
+        End If
+    End Sub
 
     Shared Function GetAVSLoadCode(script As String, scriptAlready As String) As String
         Dim loadCode = ""
@@ -727,6 +772,7 @@ Public Class FilterParameters
                 add2({"DGSource"}, "deinterlace", "0", "deinterlace | 0 (no deinterlacing)")
                 add2({"DGSource"}, "deinterlace", "1", "deinterlace | 1 (single rate deinterlacing)")
                 add2({"DGSource"}, "deinterlace", "2", "deinterlace | 2 (double rate deinterlacing)")
+                add2({"DGSource"}, "fulldepth", "true", "fulldepth = true")
 
                 add({"FFVideoSource",
                      "LWLibavVideoSource",

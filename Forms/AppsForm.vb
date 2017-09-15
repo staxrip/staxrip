@@ -258,7 +258,6 @@ Public Class AppsForm
         AddSection("AviSynth Filters")
         AddSection("VapourSynth Filters")
         AddSection("Filters")
-        AddSection("Dependencies")
         AddSection("Description")
     End Sub
 
@@ -285,7 +284,7 @@ Public Class AppsForm
         tsbVersion.Enabled = Not CurrentPackage.IgnoreVersion
         tsbPath.Enabled = CurrentPackage.FixedDir = ""
 
-        s.StringDictionary("RecentExternalApplicationControl") = CurrentPackage.Name
+        s.StringDictionary("RecentExternalApplicationControl") = CurrentPackage.Name + CurrentPackage.Version
 
         flp.SuspendLayout()
 
@@ -306,36 +305,27 @@ Public Class AppsForm
         Headers("Filters").Visible = False
         Contents("Filters").Visible = False
 
-        Headers("Dependencies").Visible = False
-        Contents("Dependencies").Visible = False
-
         If TypeOf CurrentPackage Is PluginPackage Then
             Dim plugin = DirectCast(CurrentPackage, PluginPackage)
 
             If Not plugin.AviSynthFilterNames Is Nothing AndAlso
-                Not plugin.VapourSynthFilterNames Is Nothing Then
+                Not plugin.VSFilterNames Is Nothing Then
 
                 Headers("AviSynth Filters").Visible = True
                 Contents("AviSynth Filters").Text = plugin.AviSynthFilterNames.Join(", ")
                 Contents("AviSynth Filters").Visible = True
 
                 Headers("VapourSynth Filters").Visible = True
-                Contents("VapourSynth Filters").Text = plugin.VapourSynthFilterNames.Join(", ")
+                Contents("VapourSynth Filters").Text = plugin.VSFilterNames.Join(", ")
                 Contents("VapourSynth Filters").Visible = True
             ElseIf Not plugin.AviSynthFilterNames Is Nothing Then
                 Headers("Filters").Visible = True
                 Contents("Filters").Text = plugin.AviSynthFilterNames.Join(", ")
                 Contents("Filters").Visible = True
-            ElseIf Not plugin.VapourSynthFilterNames Is Nothing Then
+            ElseIf Not plugin.VSFilterNames Is Nothing Then
                 Headers("Filters").Visible = True
-                Contents("Filters").Text = plugin.VapourSynthFilterNames.Join(", ")
+                Contents("Filters").Text = plugin.VSFilterNames.Join(", ")
                 Contents("Filters").Visible = True
-            End If
-
-            If Not plugin.Dependencies.NothingOrEmpty Then
-                Headers("Dependencies").Visible = True
-                Contents("Dependencies").Text = plugin.Dependencies.Join(", ")
-                Contents("Dependencies").Visible = True
             End If
         End If
 
@@ -415,7 +405,7 @@ Public Class AppsForm
             Dim plugin = TryCast(pack, PluginPackage)
 
             Dim searchString = pack.Name + pack.Description + pack.Version +
-                plugin?.VapourSynthFilterNames.Join(" ") +pack.Path+
+                plugin?.VSFilterNames.Join(" ") +pack.Path+
                 plugin?.AviSynthFilterNames.Join(" ") 
 
             If searchString?.ToLower.Contains(SearchTextBox.Text?.ToLower) Then
@@ -436,7 +426,7 @@ Public Class AppsForm
                         n.Tag = pack
                     End If
 
-                    If plugin.VapourSynthFilterNames?.Length > 0 Then
+                    If plugin.VSFilterNames?.Length > 0 Then
                         Dim n = tv.AddNode("Plugins|VapourSynth|" + pack.Name)
                         Nodes.Add(n)
                         n.Tag = pack

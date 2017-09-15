@@ -50,9 +50,7 @@ Namespace CommandLine
 
         Protected Overridable Sub OnValueChanged(item As CommandLineParam)
             For Each i In Items
-                If Not i.VisibleFunc Is Nothing Then
-                    i.Visible = i.Visible
-                End If
+                If Not i.VisibleFunc Is Nothing Then i.Visible = i.Visible
             Next
 
             RaiseEvent ValueChanged(item)
@@ -139,10 +137,7 @@ Namespace CommandLine
                     Dim c = GetControl()
 
                     If Not c Is Nothing Then
-                        If TypeOf c.Parent Is SimpleUI.EmptyBlock Then
-                            c = c.Parent
-                        End If
-
+                        If TypeOf c.Parent Is SimpleUI.EmptyBlock Then c = c.Parent
                         c.Visible = value
                     End If
                 End If
@@ -362,7 +357,11 @@ Namespace CommandLine
 
         ReadOnly Property ValueText As String
             Get
-                Return Values(Value)
+                If Values Is Nothing Then
+                    Return Options(Value).ToLowerInvariant
+                Else
+                    Return Values(Value)
+                End If
             End Get
         End Property
 

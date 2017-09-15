@@ -13,7 +13,6 @@ Public Class CommandLineForm
 
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
-
         SimpleUI.ScaleClientSize(37, 24)
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
         Dim singleList As New List(Of String)

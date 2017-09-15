@@ -1389,7 +1389,7 @@ Public Class MainForm
                                     ActionMenuItem.Add(i.DropDownItems, "Plugins | AviSynth | " + iPackage.Name, Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.AviSynth)))
                                 End If
 
-                                If plugin.VapourSynthFilterNames?.Length > 0 Then
+                                If plugin.VSFilterNames?.Length > 0 Then
                                     ActionMenuItem.Add(i.DropDownItems, "Plugins | VapourSynth | " + iPackage.Name, Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.VapourSynth)))
                                 End If
                             End If
@@ -1900,6 +1900,8 @@ Public Class MainForm
             p.SourceBitrate = CInt(MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitRate").ToInt / 1000)
             p.ScanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
             p.ScanOrder = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanOrder")
+
+            p.VideoEncoder.SetMetaData(p.LastOriginalSourceFile)
 
             Dim mkvMuxer = TryCast(p.VideoEncoder.Muxer, MkvMuxer)
 
@@ -3105,24 +3107,6 @@ Public Class MainForm
         Dim srcScript = p.Script.GetFilter("Source").Script.ToLower
 
         For Each i In s.Demuxers
-            If i.Name = "dsmux" Then
-                If MediaInfo.GetAudioCount(p.SourceFile) = 0 Then
-                    Continue For
-                End If
-
-                If CommandLineDemuxer.IsActive("DGIndexNV") OrElse
-                    CommandLineDemuxer.IsActive("DGIndexIM") Then
-
-                    Continue For
-                End If
-
-                If p.Script.Contains("Source", "DGSource(") OrElse
-                    p.Script.Contains("Source", "DGSourceIM(") Then
-
-                    Continue For
-                End If
-            End If
-
             If Not i.Active AndAlso (i.SourceFilters.NothingOrEmpty OrElse
                 Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "("))) Then Continue For
 
@@ -3292,8 +3276,6 @@ Public Class MainForm
     <Command("Shows the settings dialog.")>
     Sub ShowSettingsDialog()
         Using form As New SimpleSettingsForm("Settings")
-            form.ScaleClientSize(30, 21)
-
             Dim ui = form.SimpleUI
             ui.Store = s
 
@@ -3363,7 +3345,8 @@ Public Class MainForm
             b.Help = "If you disable this you can still right-click menu items to show the tooltip."
             b.Field = NameOf(s.EnableTooltips)
 
-            ui.CreateControlPage(New PreprocessingControl, "Preprocessing")
+            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(37, 21)
+            ui.FormSizeScaleFactor = New Size(30, 21)
 
             Dim systemPage = ui.CreateFlowPage("System", True)
 
@@ -3556,7 +3539,7 @@ Public Class MainForm
 
             If s.StringDictionary.ContainsKey("RecentExternalApplicationControl") Then
                 For Each i In Package.Items.Values
-                    If i.Name = s.StringDictionary("RecentExternalApplicationControl") Then
+                    If i.Name + i.Version = s.StringDictionary("RecentExternalApplicationControl") Then
                         f.ShowPackage(i)
                         found = True
                         Exit For
@@ -5551,7 +5534,7 @@ Public Class MainForm
             m.Items.Add("-")
         End If
 
-        If p.Script.GetScript.ToLower.Contains("audiodub(") Then
+        If p.SourceFile.Ext = "avs" OrElse p.Script.GetScript.ToLowerInvariant.Contains("audiodub(") Then
             m.Add(p.Script.Path.FileName, Sub() tb.Text = p.Script.Path)
         End If
 

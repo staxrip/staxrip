@@ -1695,6 +1695,7 @@ Namespace UI
         Property Node As TreeNode
         Property Path As String
         Property TipProvider As TipProvider
+        Property FormSizeScaleFactor As SizeF
     End Interface
 
     Public Class DataGridViewEx

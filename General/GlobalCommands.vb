@@ -240,6 +240,8 @@ Public Class GlobalCommands
                           <Editor(GetType(OpenFileDialogEditor), GetType(UITypeEditor))>
                           filepath As String)
 
+        filepath = Macro.Expand(filepath)
+
         If File.Exists(filepath) Then
             If filepath.Ext = "ps1" Then
                 ExecutePowerShellScript(File.ReadAllText(filepath))

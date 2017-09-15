@@ -786,9 +786,9 @@ Public Class x264Params
                     New StringParam With {.Switch = "--sar", .Text = "Sample AR", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                     New StringParam With {.Switch = "--crop-rect", .Text = "Crop Rectangle"},
                     New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "Component", "PAL", "NTSC", "SECAM", "MAC"}},
-                    New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 709", "BT 470 M", "BT 470 BG", "SMPTE 170 M", "SMPTE 240 M", "Film", "BT 2020", "SMPTE 428", "SMPTE 431", "SMPTE 432"}},
-                    New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 709", "FCC", "BT 470 BG", "SMPTE 170 M", "SMPTE 240 M", "GBR", "YCgCo", "BT 2020 NC", "BT 2020 C", "SMPTE 2085"}},
-                    New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "BT 709", "BT 470 M", "BT 470 BG", "SMPTE 170 M", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428"}},
+                    New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 428", "SMPTE 431", "SMPTE 432"}},
+                    New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 2085", "SMPTE 240 M", "YCgCo"}},
+                    New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 2084", "SMPTE 240 M", "SMPTE 428"}},
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"Undefined", "Show", "Crop"}},
                     New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"Auto", "TV", "PC"}},
                     New OptionParam With {.Switch = "--nal-hrd", .Text = "Signal HDR Info", .Options = {"None", "VBR", "CBR"}},
@@ -875,11 +875,13 @@ Public Class x264Params
             BlockValueChanged = False
         End If
 
-        DeblockA.NumEdit.Enabled = Deblock.Value
-        DeblockB.NumEdit.Enabled = Deblock.Value
+        If Not DeblockA.NumEdit Is Nothing Then
+            DeblockA.NumEdit.Enabled = Deblock.Value
+            DeblockB.NumEdit.Enabled = Deblock.Value
 
-        PsyRD.NumEdit.Enabled = Psy.Value
-        PsyTrellis.NumEdit.Enabled = Psy.Value
+            PsyRD.NumEdit.Enabled = Psy.Value
+            PsyTrellis.NumEdit.Enabled = Psy.Value
+        End If
 
         MyBase.OnValueChanged(item)
     End Sub

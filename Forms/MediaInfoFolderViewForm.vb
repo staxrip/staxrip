@@ -75,8 +75,8 @@ Public Class MediaInfoFolderViewForm
             " Width ", " Height ", " Bitrate ",
             " Duration ", " Filesize ", " Framerate ",
             " Scan Type ", " Interlacement ", " Colorimetry ",
-            " Color Primaries ", " Profile ", " Audiocodec ",
-            " Subtitle Format "}
+            " Color Prim ", "Transfer", " Profile ",
+            " Audiocodec ", " Subtitle Format "}
 
             lv.Columns.Add(i)
         Next
@@ -158,6 +158,7 @@ Public Class MediaInfoFolderViewForm
                 item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "Interlacement") + " "))
                 item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "Colorimetry") + " "))
                 item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "colour_primaries") + " "))
+                item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "transfer_characteristics") + " "))
                 item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "Format_Profile") + " "))
                 item.SubItems.Add(GetSubItem(" " + audioCodecs + " "))
                 item.SubItems.Add(GetSubItem(" " + mi.GetGeneral("Text_Format_List") + " "))

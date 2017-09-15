@@ -436,7 +436,7 @@ Public Class CodeEditor
                                      For Each i In Package.Items.Values.OfType(Of PluginPackage)
                                          Dim helpPath = i.GetHelpPath
 
-                                         If helpPath <> "" AndAlso Not i.VapourSynthFilterNames Is Nothing Then
+                                         If helpPath <> "" AndAlso Not i.VSFilterNames Is Nothing Then
                                              Menu.Add("Help | " + i.Name.Substring(0, 1).ToUpper + " | " + i.Name, Sub() g.StartProcess(helpPath), i.Description)
                                              Application.DoEvents()
                                          End If

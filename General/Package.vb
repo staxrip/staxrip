@@ -167,7 +167,9 @@ Public Class Package
     Shared Property AOMEnc As Package = Add(New Package With {
         .Name = "aomenc",
         .Filename = "aomenc.exe",
+        .HelpFile = "aomenc.txt",
         .WebURL = "http://aomedia.org",
+        .DownloadURL = "http://tmod.nmm-hd.org/aom/",
         .IsRequiredFunc = Function() TypeOf p.VideoEncoder Is AOMEnc,
         .Description = "AOMedia Video 1 (AV1) is an open, royalty-free video coding format designed for video transmissions over the Internet."})
 

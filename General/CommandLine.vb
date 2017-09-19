@@ -156,6 +156,7 @@ Namespace CommandLine
 
         Property DefaultValue As Boolean
         Property CheckBox As CheckBox
+        Property IntegerValue As Boolean
 
         Public Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
@@ -187,9 +188,17 @@ Namespace CommandLine
 
             If ArgsFunc Is Nothing Then
                 If Value AndAlso DefaultValue = False Then
-                    Return Switch
+                    If IntegerValue Then
+                        Return Switch + Params.Separator + "1"
+                    Else
+                        Return Switch
+                    End If
                 ElseIf Not Value AndAlso DefaultValue Then
-                    Return NoSwitch
+                    If IntegerValue Then
+                        Return NoSwitch + Params.Separator + "1"
+                    Else
+                        Return NoSwitch
+                    End If
                 End If
             Else
                 Return ArgsFunc.Invoke()

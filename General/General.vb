@@ -570,20 +570,17 @@ Public Class HelpDocument
     End Sub
 
     Sub WriteStart(title As String, showTitle As Boolean)
-        Dim script As XElement =
-<script type="text/javascript">
-</script>
+        Dim script = "<script type=""text/javascript""></script>"
 
-        Dim style As XElement =
-<style type="text/css">
+        Dim style = "<style type=""text/css"">
+@import url(http://fonts.googleapis.com/css?family=Lato:700,900);
+
 body {
-    background-repeat: repeat-x;
-    font-family: Arial,Helvetica,sans-serif;
+    font-family: Tahoma, Geneva, sans-serif;
 }
 
 h1 {
     font-size: 150%;
-    color: #333333;
     margin-bottom: -4pt;
 }
 
@@ -611,12 +608,12 @@ td {
 table {
     table-layout: fixed;
 }
-
-</style>
+</style>"
 
         Me.Title = title
         Writer = New XmlTextWriter(Path, Encoding.UTF8)
         Writer.Formatting = Formatting.Indented
+        Writer.WriteRaw("<!doctype html>")
         Writer.WriteStartElement("html")
         Writer.WriteStartElement("head")
         Writer.WriteElementString("title", title)

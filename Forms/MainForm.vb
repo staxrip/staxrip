@@ -3210,7 +3210,7 @@ Public Class MainForm
             End If
         ElseIf codeLower.Contains("dgsource(") AndAlso Not p.SourceFile.Ext = "dgi" Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
-            Dim dgIndexNV = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexNV")
+            Dim dgIndexNV = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexNV: Index, No Demux")
             Dim outFile = p.TempDir + p.SourceFile.Base + ".dgi"
             If Not File.Exists(outFile) Then dgIndexNV.Run(p)
 
@@ -3222,7 +3222,7 @@ Public Class MainForm
             End If
         ElseIf codeLower.Contains("dgsourceim(") AndAlso Not p.SourceFile.Ext = "dgim" Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
-            Dim dgIndexIM = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexIM")
+            Dim dgIndexIM = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexIM: Index, No Demux")
             Dim outFile = p.TempDir + p.SourceFile.Base + ".dgim"
             If Not File.Exists(outFile) Then dgIndexIM.Run(p)
 
@@ -3960,7 +3960,7 @@ Public Class MainForm
 
             Dim videoExist = ui.AddMenu(Of FileExistMode)
             videoExist.Text = "Existing Video Output:"
-            videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Just Mux video encoder profile is also capable of reusing existing video encoder output.'"
+            videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
             videoExist.Field = NameOf(p.FileExistVideo)
 
             b = ui.AddBool

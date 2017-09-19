@@ -411,7 +411,7 @@ Public Class MuxAudioProfile
     Inherits AudioProfile
 
     Sub New()
-        MyBase.New("Just Mux", 0, Nothing, "ignore", 2)
+        MyBase.New("Copy/Mux", 0, Nothing, "ignore", 2)
         CanEditValue = True
     End Sub
 

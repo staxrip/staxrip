@@ -785,6 +785,7 @@ Public Class x265Params
                     New NumParam With {.Switch = "--scale-factor", .Text = "Scale Factor"},
                     LimitTU,
                     TUintra, TUinter, rdoqLevel,
+                    PsyRDOQ,
                     New NumParam With {.Switch = "--dynamic-rd", .Text = "Dynamic RD", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 3}},
                     New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}})
@@ -872,7 +873,7 @@ Public Class x265Params
                     New StringParam With {.Switch = "--qpfile", .Text = "QP File", .Quotes = True, .BrowseFile = True},
                     New StringParam With {.Switch = "--recon", .Text = "Recon File", .Quotes = True, .BrowseFile = True},
                     New StringParam With {.Switch = "--scaling-list", .Text = "Scaling List", .Quotes = True},
-                    Decoder, PsyRD, PsyRDOQ, CompCheck, CompCheckAimedQuality,
+                    Decoder, PsyRD, CompCheck, CompCheckAimedQuality,
                     New NumParam With {.Switch = "--recon-depth", .Text = "Recon Depth"},
                     RDpenalty)
                 Add("Other 2",

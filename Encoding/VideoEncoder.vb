@@ -79,6 +79,26 @@ Public MustInherit Class VideoEncoder
                 cl += " --colormatrix bt2020nc"
         End Select
 
+        Dim MasteringDisplay_ColorPrimaries = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_ColorPrimaries")
+        Dim MasteringDisplay_Luminance = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_Luminance")
+
+        If MasteringDisplay_ColorPrimaries <> "" AndAlso MasteringDisplay_Luminance <> "" Then
+            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "R: x=([0-9\.]+) y=([0-9\.]+), G: x=([0-9\.]+) y=([0-9\.]+), B: x=([0-9\.]+) y=([0-9\.]+), White point: x=([0-9\.]+) y=([0-9\.]+)")
+            Dim match2 = Regex.Match(MasteringDisplay_Luminance, "min: ([0-9\.]+) cd/m2, max: ([0-9\.]+)")
+
+            If match1.Success AndAlso match2.Success Then
+                Dim strings1 = match1.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 50000).ToString)
+                Dim strings2 = match2.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 10000).ToString)
+                cl += $" --master-display ""G({strings1(2)},{strings1(3)})B({strings1(4)},{strings1(5)})R({strings1(0)},{strings1(1)})WP({strings1(6)},{strings1(7)})L({strings2(1)},{strings2(0)})"""
+                cl += " --range limited"
+            End If
+        End If
+
+        Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
+        Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
+
+        If MaxCLL <> 0 AndAlso MaxFALL <> 0 Then cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""
+
         ImportCommandLine(cl)
     End Sub
 
@@ -245,18 +265,7 @@ Public MustInherit Class VideoEncoder
 
         ret.Add(New x264Enc)
         ret.Add(New x265Enc)
-
-        ret.Add(New VCEEnc())
-
-        Dim amd265 As New VCEEnc()
-        amd265.Params.Codec.Value = 1
-        ret.Add(amd265)
-
-        ret.Add(New QSVEnc())
-
-        Dim intel265 As New QSVEnc()
-        intel265.Params.Codec.Value = 1
-        ret.Add(intel265)
+        ret.Add(New AOMEnc)
 
         Dim nvidia264 As New NVEnc()
         ret.Add(nvidia264)
@@ -265,6 +274,20 @@ Public MustInherit Class VideoEncoder
         nvidia265.Params.Codec.Value = 1
         ret.Add(nvidia265)
 
+        ret.Add(New QSVEnc())
+
+        Dim intel265 As New QSVEnc()
+        intel265.Params.Codec.Value = 1
+        ret.Add(intel265)
+
+        ret.Add(New VCEEnc())
+
+        Dim amd265 As New VCEEnc()
+        amd265.Params.Codec.Value = 1
+        ret.Add(amd265)
+
+        Dim ffmpeg = New ffmpegEnc()
+
         Dim xvid As New BatchEncoder()
         xvid.OutputFileTypeValue = "avi"
         xvid.Name = "XviD"
@@ -272,10 +295,6 @@ Public MustInherit Class VideoEncoder
         xvid.QualityMode = True
         xvid.CommandLines = "xvid_encraw -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
         ret.Add(xvid)
-
-        ret.Add(New AOMEnc)
-
-        Dim ffmpeg = New ffmpegEnc()
 
         For x = 0 To ffmpeg.Params.Codec.Options.Length - 1
             Dim ffmpeg2 = New ffmpegEnc()
@@ -603,7 +622,7 @@ Public Class NullEncoder
     Inherits VideoEncoder
 
     Sub New()
-        Name = "Just Mux"
+        Name = "Copy/Mux"
         Muxer = New MkvMuxer()
         QualityMode = True
     End Sub

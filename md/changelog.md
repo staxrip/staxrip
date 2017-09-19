@@ -10,6 +10,13 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
+#### 1.6.1.7 unstable test build
+
+- new: AV1 support completed
+- new: MediaInfo properties MasteringDisplay_ColorPrimaries, MasteringDisplay_Luminance, MaxCLL and MaxFALL are read from the source file and the encoder switches --master-display, --range limited and --max-cll are set
+
+- update: aomenc 2017-08-30
+
 #### 1.6.1.6 unstable test build
 
 - new: various new resolutions added to the resize menu
@@ -367,7 +374,7 @@ https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 #### 1.5.0.9 unstable test build
 
 - new: to run PowerShell scripts on certain events the Event Command feature is no longer needed, it's documented here: https://github.com/stax76/staxrip#powershell-scripting
-- new: there are 2 new options what to do in case the video and audio encoder output files alread exists from a previous job run (reuse, overwrite or ask (default)), the 'Just Mux' video encoder profile does alse reuse the output file from previous job runs, in case it don't exist it uses the source video
+- new: there are 2 new options what to do in case the video and audio encoder output files alread exists from a previous job run (reuse, overwrite or ask (default)), the 'Copy/Mux' video encoder profile does alse reuse the output file from previous job runs, in case it don't exist it uses the source video
 - new: there is a new option to define which intermediate format should be used in case the audio encoder don't support the input format, supported is FLAC (default) and W64 (WAV > 4 GB)
 - new: there is a new option to define which app should be used to create the intermediate audio file (default is ffmpeg)
 - new: the MediaInfo window has 'Developer Mode' in the context menu to show the property names for programmers

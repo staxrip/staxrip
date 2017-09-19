@@ -91,14 +91,14 @@ Public Class Project
     Public TargetFrameRate As Double
     Public TargetHeight As Integer = 1080
     Public TargetSeconds As Integer = 5400
-    Public TargetSize As Integer = 700
+    Public TargetSize As Integer = 5000
     Public TargetWidth As Integer = 1920
     Public TempDir As String
     Public TemplateName As String = ""
     Public TrimCode As String = ""
     Public UseScriptAsAudioSource As Boolean
     Public Versions As Dictionary(Of String, Integer)
-    Public VideoBitrate As Integer = 1000
+    Public VideoBitrate As Integer = 5000
     Public VideoEncoder As VideoEncoder
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated

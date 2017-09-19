@@ -1,22 +1,4 @@
 Introduction
 ============
 
-StaxRip is a feature rich video encoding application. It utilizes command line applications and various other tools such as AviSynth and VapourSynth for video transformation.
-
-Some of the strengths are:
-
-StaxRip is very mature due to over 15 years of development, with it's first appearance in 2002 it's the oldest frontend still in development.
-
-The development was always strongly influenced by feedback provided by it's users, there is a relative high chance that feature requests get implemented.
-
-Modern user interface with mature High DPI support and colors of the Windows theme.
-
-Ease of use achieved with simple dialogs, the possibility for many customizations, search features and context-sensitiv help.
-
-Flexibility by allowing full control of the underlying tool, in most cases all features of the underlying tools are accessible.
-
-StaxRip favours an automatic workflow for increased productivity and repeating tasks, a manual workflow is partually available.
-
-Mayn different and alterntive tools such as encoders are supported, StaxRip is usually among the first apps to support new tools, for instance support for the upcomming AV1 codec is already under development, VapourSynth is equally well supported then AviSynth and there are many different video encoders supported (x264, x265, nvenc, vceenc, qsvenc, ffmpeg). StaxRip covers 100% of all options of all supported video encoders with all options being fully search-able and support of context-sensitiv help, about 100 options in avarage for each encoder. Overall over 90 tools are included.
-
-Exensibility is supported in the form of PowerShell scripting.
+StaxRip is the oldest (since 2002) and most feature rich video encoding frontend for video processig tools such as x264, AviSynth and mkvtoolnix.

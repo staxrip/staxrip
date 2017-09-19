@@ -8,7 +8,7 @@
         rtb.ForeColor = Color.White
         rtb.ReadOnly = True
         Me.Find = find
-        ScaleClientSize(40, 30)
+        ScaleClientSize(45, 30)
     End Sub
 
     Private Sub TextHelpForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown

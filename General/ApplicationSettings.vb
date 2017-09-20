@@ -59,6 +59,7 @@ Public Class ApplicationSettings
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
     Public WriteDebugLog As Boolean
+    Public ThumbnailBackgroundColor As Color = Color.AliceBlue
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

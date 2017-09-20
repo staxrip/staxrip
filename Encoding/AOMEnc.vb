@@ -74,7 +74,12 @@ Public Class AOMEnc
 
     Overrides Sub ShowConfigDialog()
         If Not WarningShown Then
-            MsgWarn("Please note that AV1 is unfinished!")
+            MsgWarn(
+"Please note that AV1 is experimental!",
+"The bitstream format is not yet frozen. It's very
+likely that files created with the current encoder
+become unplayable in the future.")
+
             WarningShown = True
         End If
 
@@ -122,7 +127,7 @@ Public Class AV1Params
     Inherits CommandLineParams
 
     Sub New()
-        Title = "AV1 Options"
+        Title = "aomenc Options"
         Separator = "="
     End Sub
 

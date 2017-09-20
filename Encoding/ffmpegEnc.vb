@@ -135,7 +135,7 @@ Public Class ffmpegEnc
         Inherits CommandLineParams
 
         Sub New()
-            Title = "ffmpeg Encoding Options"
+            Title = "ffmpeg Options"
         End Sub
 
         Property Codec As New OptionParam With {

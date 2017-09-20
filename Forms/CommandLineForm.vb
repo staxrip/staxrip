@@ -26,20 +26,8 @@ Public Class CommandLineForm
         Next
 
         Me.Params = params
+        Text = params.Title + " (" & params.Items.Count & " options)"
 
-        Dim allSwitches As New HashSet(Of String)
-
-        For Each param In params.Items
-            If param.Switch <> "" Then allSwitches.Add(param.Switch)
-
-            If Not param.Switches.NothingOrEmpty Then
-                For Each switch In param.Switches
-                    allSwitches.Add(switch)
-                Next
-            End If
-        Next
-
-        Text = params.Title + " (" & allSwitches.Count & " options)"
         InitUI()
         SelectLastPage()
         AddHandler params.ValueChanged, AddressOf ValueChanged

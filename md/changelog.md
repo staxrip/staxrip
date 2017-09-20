@@ -10,6 +10,14 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
+#### 1.6.1.8 unstable test build
+
+- new: nvenc options --vpp-edgelevel and --vpp-unsharp
+- new: added timestamps, automatic scaling and background color option to the thumbnail generator, the text for the movie specs is now much compacter
+
+- update: NVEnc 3.21
+- update: mpv.net 0.2.1
+
 #### 1.6.1.7 unstable test build
 
 - new: AV1 support completed
@@ -410,7 +418,7 @@ https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 - new: various new x265 options
 - new: various new aspect ratio features
 - update: x265 2.4+61
-- update: QSVEncC 2.66
+- update: QSVEnc 2.66
 
 #### 1.5.0.4 unstable test build
 
@@ -469,9 +477,9 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 - x265 added --me sea --dynamic-rd --scenecut-bias --lookahead-threads --opt-cu-delta-qp --multi-pass-opt-analysis --multi-pass-opt-distortion --multi-pass-opt-rps --aq-motion --ssim-rd --hdr --hdr-opt --refine-level --limit-sao
 - added 'Loop Fiter' tab to the x265 options dialog
 - icons added to menus, buttons and menu editor
-- QSVEncC added --profile main10
+- QSVEnc added --profile main10
 - colour_primaries added to MediaInfo Folder View
-- NVEncC added --lookahead --cbrhq --vbrhq --aq-temporal --no-b-adapt --i-adapt --output-depth --strict-gop --vbr-quality --vpp-gauss --vpp-knn --vpp-pmd --device --preset --direct --adapt-transform --enable-ltr
+- NVEnc added --lookahead --cbrhq --vbrhq --aq-temporal --no-b-adapt --i-adapt --output-depth --strict-gop --vbr-quality --vpp-gauss --vpp-knn --vpp-pmd --device --preset --direct --adapt-transform --enable-ltr
 - added the possibility to use different x265 options in first and second pass
 - added setting 'Snap to desktop edges'
 - added option to extract timecodes file from MKV (Options > Misc, disabled by default)
@@ -499,7 +507,7 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
 - format 'E-AC3 EX' was unknown to eac3to demuxer
 - fixed x265 command line generation for --limit-tu
-- added missing check if Visual C++ 2012 is installed when masktools2, SangNom2 or VCEEncC are used
+- added missing check if Visual C++ 2012 is installed when masktools2, SangNom2 or VCEEnc are used
 - nnedi3 plugin wasn't loaded via LoadPlugin using avs function nnedi3_rpow2
 - in the scripting/code editor it was often needed to right-click a second time until the context menu showed
 - fixed incompatible format like wmv being passed to mkvmerge and mp4box
@@ -553,14 +561,14 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
 #### Updated Tools
 
-- QSVEncC 2.62
-- VCEEncC 3.06
+- QSVEnc 2.62
+- VCEEnc 3.06
 - HAvsFunc (vs) 2017-03-06
 - MediaInfo 0.7.93
 - ffmpeg 3.2.2
 - mvtools (vs) 18
 - KNLMeansCL 1.0.2
-- NVEncC 3.07
+- NVEnc 3.07
 - RgTools (avs) 0.95
 - AviSynth+ 2455
 - VapourSynth 37
@@ -586,7 +594,7 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 - LSFmod added for both AviSynth and VapourSynth, to create the LSFmod default filter profile go to: 'Filters > Profiles > Restore Defaults > OK' or alternatively: 'Tools > Advanced > Reset Setting > AviSynth/VapourSynth Filter Profiles > OK'
 - added new commands SetTargetFile and LoadSourceFile
 - added setting to define the minimum required disk space and added Continue and Abort option to the message box
-- VCEEncC (AMD H.264 encoder) switches added
+- VCEEnc (AMD H.264 encoder) switches added
 - SMDegrain added, to create the SMDegrain default filter profile go to: 'Filters > Profiles > Restore Defaults > OK' or alternatively: 'Tools > Advanced > Reset Setting > AviSynth Filter Profiles > OK'
 - some x265 changes
 - nnedi3 added to VapourSynth, to create the nnedi3 default filter profile go to: 'Filters > Profiles > Restore Defaults > OK' or alternatively: 'Tools > Advanced > Reset Setting > VapourSynth Filter Profiles > OK'
@@ -613,7 +621,7 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 - LSFmod 1.9
 - havsfunc 23
 - aWarpSharp2 2016-06-24
-- VCEEncC 2.0
+- VCEEnc 2.0
 - nnedi3 (avs) 0.9.4.31
 - VC++ Runtime 2015
 - ffms2 2.23
@@ -635,14 +643,14 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 - VapourSynth 35
 - x265 2.1+69
 - MKVToolNix 9.6.0
-- NVEncC 3.02
-- QSVEncC 2.59
+- NVEnc 3.02
+- QSVEnc 2.59
 
 # v1.3.7-stable (2016-06-14)
 
 #### New Features
 
-- added new QSVEncC switches
+- added new QSVEnc switches
 - added support to use network drive as temp folder
 - added yadifmod for VapourSynth. Due to popular request I didn't reset the filter profiles, to make the default filter profile for yadifmod available the filter profiles must be manually reset in the filter profile editor.
 - added new command SaveJpgByPath to preview dialog which can be used to customize the menu to save a jpg file to a fixed path without the file browser showing, the path can contain macros.
@@ -658,7 +666,7 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
 #### Updated Tools
 
-- QSVEncC 2.51
+- QSVEnc 2.51
 - yadifmod (VapourSynth) r9
 
 
@@ -673,7 +681,7 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 - added all missing x265 switches
 - added hardware decoding methods to x265 'Other' tab, this will bypass AviSynth though
 - added new standalone mkvextract GUI (Apps > Demux)
-- added new QSVEncC switches for hardcoded subtitles
+- added new QSVEnc switches for hardcoded subtitles
 - added MP4 support to standalone demux app
 - added -avsinfo starting AVSMeter without a source opened
 - added support for unicode filenames using VapourSynth, AviSynth don't support it
@@ -690,7 +698,7 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
 ### Fixed Bugs
 
-- custom switches were missing in the Intel Quick Sync encoding GUI for QSVEncC
+- custom switches were missing in the Intel Quick Sync encoding GUI for QSVEnc
 - fixed crash with ass file by replacing VSFilter with VSFilterMod
 
 ### Tweaks
@@ -721,9 +729,9 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 - StaxRip Toolbox Demux 1.1
 - yadifmod2 0.0.4
 - AviSynth 1858
-- NVEncC 2.07
+- NVEnc 2.07
 - L-SMASH-Works 879
-- QSVEncC 2.50
+- QSVEnc 2.50
 - qaac 2.59
 - x265 1.9 200
 - AVSMeter 2.2.8

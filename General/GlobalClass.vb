@@ -1127,4 +1127,9 @@ Public Class GlobalClass
             g.MainForm.FiltersListView.Load()
         End If
     End Sub
+
+    Function GetTimeString(sec As Double) As String
+        Dim ts = TimeSpan.FromSeconds(sec)
+        Return CInt(Math.Floor(ts.TotalMinutes)).ToString("00") + ":" + CInt(Math.Floor(ts.Seconds)).ToString("00")
+    End Function
 End Class

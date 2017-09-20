@@ -41,7 +41,6 @@ Public Class ImageHelp
         Dim fontHeight = font.Height
         Dim bitmap As New Bitmap(CInt(fontHeight * 1.1F), CInt(fontHeight * 1.1F))
         Dim graphics = Drawing.Graphics.FromImage(bitmap)
-        'graphics.Clear(Color.Orange)
         graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
         graphics.DrawString(Convert.ToChar(CInt(symbol)), font, Brushes.Black, -fontHeight * 0.1F, fontHeight * 0.07F)
         graphics.Dispose()
@@ -66,17 +65,15 @@ Public Class Thumbnails
         proj.Log.WriteLine(inputFile)
         proj.Log.Save(proj)
 
-        Dim fontSize = s.Storage.GetInt("Thumbnail Font Size", 9)
-        Dim fontName = s.Storage.GetString("Thumbnail Font Name", "Tahoma")
-        Dim title = s.Storage.GetString("Thumbnail Title", "StaxRip")
+        Dim fontname = "Tahoma"
         Dim width = s.Storage.GetInt("Thumbnail Width", 500)
         Dim columns = s.Storage.GetInt("Thumbnail Columns", 3)
         Dim rows = s.Storage.GetInt("Thumbnail Rows", 12)
         Dim dar = MediaInfo.GetVideo(inputFile, "DisplayAspectRatio")
         Dim height = CInt(width / Convert.ToSingle(dar, CultureInfo.InvariantCulture))
-        Dim shadowDistance = 5
-        Dim backgroundColor = Color.Gainsboro
-        Dim gap = fontSize \ 2
+        Dim gap = CInt((width * columns) * 0.005)
+        Dim font = New Font(fontname, (width * columns) \ 80, FontStyle.Regular, GraphicsUnit.Pixel)
+        Dim foreColor = Color.Black
 
         width = width - width Mod 4
         height = height - height Mod 4
@@ -112,13 +109,34 @@ Public Class Thumbnails
             For x = 1 To count
                 avi.Position = CInt((frames / count) * x) - CInt((frames / count) / 2)
                 Dim bitmap = New Bitmap(avi.GetBitmap())
-                DropShadow(bitmap, Color.Black, backgroundColor, shadowDistance)
+
+                Using g = Graphics.FromImage(bitmap)
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic
+                    g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+                    g.SmoothingMode = SmoothingMode.AntiAlias
+                    g.PixelOffsetMode = PixelOffsetMode.HighQuality
+
+                    Dim dur = TimeSpan.FromSeconds(avi.FrameCount / avi.FrameRate)
+                    Dim timestamp = StaxRip.g.GetTimeString(avi.Position / avi.FrameRate)
+                    Dim ft As New Font("Segoe UI", font.Size, FontStyle.Bold, GraphicsUnit.Pixel)
+
+                    Dim gp As New GraphicsPath()
+                    Dim sz = g.MeasureString(timestamp, ft)
+                    Dim pt As New Point(CInt(bitmap.Width - sz.Width - ft.Height / 10), 0)
+                    gp.AddString(timestamp, ft.FontFamily, CInt(ft.Style), ft.Size, pt, New StringFormat())
+
+                    Using pen As New Pen(Brushes.Black, ft.Height \ 5)
+                        g.DrawPath(pen, gp)
+                    End Using
+
+                    g.FillPath(Brushes.Gainsboro, gp)
+                End Using
+
                 bitmaps.Add(bitmap)
-                'ProcForm.UpdateStatusThreadsafe("Extracting thumbnails: " & CInt(100 / count * x) & "%")
             Next
 
-            width = width + shadowDistance + gap
-            height = height + shadowDistance + gap
+            width = width + gap
+            height = height + gap
         End Using
 
         FileHelp.Delete(cachePath)
@@ -130,45 +148,50 @@ Public Class Thumbnails
         Dim infoHeight = MediaInfo.GetVideo(inputFile, "Height")
         Dim infoLength = New FileInfo(inputFile).Length
         Dim infoDuration = MediaInfo.GetGeneral(inputFile, "Duration").ToInt
+        Dim audioCodecs = MediaInfo.GetAudioCodecs(inputFile).Replace(" / ", "  ")
+
+        If audioCodecs.Length > 40 Then audioCodecs = audioCodecs.Shorten(40) + "..."
 
         If infoLength / 1024 ^ 3 > 1 Then
-            infoSize = (infoLength / 1024 ^ 3).ToString("f2") + " GB"
+            infoSize = (infoLength / 1024 ^ 3).ToInvariantString("f2") + "GB"
         Else
-            infoSize = CInt(infoLength / 1024 ^ 2).ToString + " MB"
+            infoSize = CInt(infoLength / 1024 ^ 2).ToString + "MB"
         End If
 
-        Dim infoDate As Date
-        infoDate = infoDate.AddMilliseconds(infoDuration)
+        Dim caption = FilePath.GetName(inputFile) + BR & infoSize & "  " +
+            g.GetTimeString(infoDuration / 1000) + "  " &
+            (((infoLength * 8) / 1000 / (infoDuration / 1000)) / 1000).ToInvariantString("f1") & "Mb/s" + BR +
+            audioCodecs + BR + MediaInfo.GetVideoCodec(inputFile) + "  " & infoWidth & "x" & infoHeight & "  " &
+            MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps"
 
-        Dim caption = FilePath.GetName(inputFile) + BR & "Size: " & infoSize & ", Duration: " +
-            infoDate.ToString("HH:mm:ss") + ", Bitrate: " & CInt((infoLength * 8) / 1000 / (infoDuration / 1000)) & " Kbps" + BR +
-            "Audio: " + MediaInfo.GetAudioCodecs(inputFile) + BR +
-            "Video: " + MediaInfo.GetVideoCodec(inputFile) + ", " & infoWidth & " x " & infoHeight & ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps"
+        Dim captionSize = TextRenderer.MeasureText(caption, Font)
+        Dim captionHeight = captionSize.Height + font.Height \ 3
 
-        Dim font = New Font(fontName, fontSize)
-        Dim captionSize = TextRenderer.MeasureText(caption, font)
-        Dim captionHeight = captionSize.Height + font.Height
-
-        Dim imageWidth = width * columns + shadowDistance + gap
+        Dim imageWidth = width * columns + gap
         Dim imageHeight = height * rows + captionHeight
 
         Using bitmap As New Bitmap(imageWidth, imageHeight)
             Using g = Graphics.FromImage(bitmap)
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic
                 g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
-                g.Clear(backgroundColor)
-                Dim rect = New RectangleF(shadowDistance + gap, 0, imageWidth - (shadowDistance + gap) * 2, captionHeight)
+                g.SmoothingMode = SmoothingMode.AntiAlias
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality
+                g.Clear(s.ThumbnailBackgroundColor)
+                Dim rect = New RectangleF(gap, 0, imageWidth - gap * 2, captionHeight)
                 Dim format As New StringFormat
                 format.LineAlignment = StringAlignment.Center
-                g.DrawString(caption, font, Brushes.Black, rect, format)
-                format.Alignment = StringAlignment.Far
-                format.LineAlignment = StringAlignment.Far
-                g.DrawString(title, New Font(fontName, fontSize * 2), Brushes.White, rect, format)
+
+                Using brush As New SolidBrush(foreColor)
+                    g.DrawString(caption, font, brush, rect, format)
+                    format.Alignment = StringAlignment.Far
+                    format.LineAlignment = StringAlignment.Center
+                    g.DrawString("StaxRip", New Font(fontname, font.Height * 2, FontStyle.Regular, GraphicsUnit.Pixel), brush, rect, format)
+                End Using
 
                 For x = 0 To bitmaps.Count - 1
                     Dim rowPos = x \ columns
                     Dim columnPos = x Mod columns
-                    g.DrawImage(bitmaps(x), columnPos * width + shadowDistance + gap, rowPos * height + captionHeight)
+                    g.DrawImage(bitmaps(x), columnPos * width + gap, rowPos * height + captionHeight)
                 Next
             End Using
 
@@ -177,57 +200,5 @@ Public Class Thumbnails
             Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Jpeg.Guid).First
             bitmap.Save(inputFile.ChangeExt("jpg"), info, params)
         End Using
-    End Sub
-
-    Private Shared Sub DropShadow(sourceImage As Bitmap,
-                                  shadowColor As Color,
-                                  backgroundColor As Color,
-                                  Optional shadowDistance As Integer = 5,
-                                  Optional shadowOpacity As Integer = 150,
-                                  Optional shadowSoftness As Integer = 4,
-                                  Optional shadowRoundedEdges As Boolean = True)
-
-        If sourceImage IsNot Nothing Then
-            shadowOpacity = shadowOpacity.EnsureRange(0, 255)
-            shadowSoftness = shadowSoftness.EnsureRange(1, 30)
-            shadowDistance = shadowDistance.EnsureRange(1, 50)
-
-            If shadowColor = Color.Transparent Then shadowColor = Color.Black
-            If backgroundColor = Color.Transparent Then backgroundColor = Color.White
-
-            'get shadow
-            Dim shWidth = CInt(sourceImage.Width / shadowSoftness)
-            Dim shHeight = CInt(sourceImage.Height / shadowSoftness)
-
-            Using imgShadow = New Bitmap(shWidth, shHeight)
-                Using g = Graphics.FromImage(imgShadow)
-                    g.Clear(Color.Transparent)
-                    g.InterpolationMode = InterpolationMode.HighQualityBicubic
-                    g.SmoothingMode = SmoothingMode.AntiAlias
-                    Dim sre As Integer
-                    If shadowRoundedEdges Then sre = 1
-
-                    Using b = New SolidBrush(Color.FromArgb(shadowOpacity, shadowColor))
-                        g.FillRectangle(b, sre, sre, shWidth, shHeight)
-                    End Using
-                End Using
-
-                'draw shadow
-                Dim dsWidth = sourceImage.Width + shadowDistance
-                Dim dsHeight = sourceImage.Height + shadowDistance
-
-                Using imgTarget = New Bitmap(dsWidth, dsHeight)
-                    Using g = Graphics.FromImage(imgTarget)
-                        g.Clear(backgroundColor)
-                        g.InterpolationMode = InterpolationMode.HighQualityBicubic
-                        g.SmoothingMode = SmoothingMode.AntiAlias
-                        g.DrawImage(imgShadow, New Rectangle(0, 0, dsWidth, dsHeight), 0, 0, imgShadow.Width, imgShadow.Height, GraphicsUnit.Pixel)
-                        g.DrawImage(sourceImage, New Rectangle(0, 0, sourceImage.Width, sourceImage.Height), 0, 0, sourceImage.Width, sourceImage.Height, GraphicsUnit.Pixel)
-                    End Using
-
-                    sourceImage = New Bitmap(imgTarget)
-                End Using
-            End Using
-        End If
     End Sub
 End Class

@@ -211,6 +211,16 @@ Public Class SimpleUI
         Return ret
     End Function
 
+    Function AddColorPicker(Optional parent As FlowLayoutPanelEx = Nothing) As ColorPickerBlock
+        If parent Is Nothing Then parent = GetActiveFlowPage()
+        Dim ret As New ColorPickerBlock(Me)
+        ret.AutoSize = True
+        ret.UseParenWidth = True
+        AddHandler SaveValues, AddressOf ret.Save
+        parent.Controls.Add(ret)
+        Return ret
+    End Function
+
     Function AddTextButton(Optional parent As FlowLayoutPanelEx = Nothing) As TextButtonBlock
         If parent Is Nothing Then parent = GetActiveFlowPage()
         Dim ret As New TextButtonBlock(Me)
@@ -518,8 +528,7 @@ Public Class SimpleUI
         Property SaveAction As Action(Of String)
         Property MultilineHeightFactor As Integer = 4
         Property WidthFactor As Integer = 10
-
-        Private SimpleUI As SimpleUI
+        Property SimpleUI As SimpleUI
 
         Sub New(ui As SimpleUI)
             SimpleUI = ui
@@ -842,7 +851,7 @@ Public Class SimpleUI
             Controls.Add(Edit)
         End Sub
 
-        Property Field As String
+        Overridable Property Field As String
             Get
                 Return Edit.Field
             End Get
@@ -851,7 +860,7 @@ Public Class SimpleUI
             End Set
         End Property
 
-        Property [Property] As String
+        Overridable Property [Property] As String
             Get
                 Return Edit.Property
             End Get
@@ -924,6 +933,69 @@ Public Class SimpleUI
         Sub AddMenu(menuText As String, menuAction As Action)
             ActionMenuItem.Add(Button.ContextMenuStrip.Items, menuText, menuAction)
         End Sub
+    End Class
+
+    Public Class ColorPickerBlock
+        Inherits TextButtonBlock
+
+        Private _Color As Color
+        Private SimpleUI As SimpleUI
+
+        Property Color As Color
+            Get
+                Return _Color
+            End Get
+            Set(value As Color)
+                _Color = value
+                Edit.BackColor = value
+                Edit.TextBox.BackColor = value
+            End Set
+        End Property
+
+        Sub New(ui As SimpleUI)
+            MyBase.New(ui)
+            SimpleUI = ui
+            Edit.TextBox.ReadOnly = True
+
+            Button.ClickAction = Sub()
+                                     Using cd As New ColorDialog
+                                         cd.Color = Color
+                                         If cd.ShowDialog() = DialogResult.OK Then Color = cd.Color
+                                     End Using
+                                 End Sub
+        End Sub
+
+        Sub Save()
+            If Field <> "" Then
+                SimpleUI.Store.GetType.GetField(Field).SetValue(SimpleUI.Store, Color)
+            ElseIf [Property] <> "" Then
+                SimpleUI.Store.GetType.GetProperty([Property]).SetValue(SimpleUI.Store, Color)
+            End If
+        End Sub
+
+        Private _Field As String
+
+        Overrides Property Field As String
+            Get
+                Return _Field
+            End Get
+            Set(value As String)
+                Color = DirectCast(SimpleUI.Store.GetType.GetField(value).GetValue(SimpleUI.Store), Color)
+                _Field = value
+            End Set
+        End Property
+
+        Private _Property As String
+
+        Overrides Property [Property] As String
+            Get
+                Return _Property
+            End Get
+            Set(value As String)
+                Color = DirectCast(SimpleUI.Store.GetType.GetProperty(value).GetValue(SimpleUI.Store), Color)
+                _Property = value
+            End Set
+        End Property
     End Class
 
     Public Class TextButtonBlock

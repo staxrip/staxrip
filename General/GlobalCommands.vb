@@ -300,9 +300,9 @@ Public Class GlobalCommands
         Dim nvUnknown = nvHelpSwitches.Where(Function(x) Not nvPresent.Contains(x) AndAlso Not nvExcept.Contains(x)).ToList()
         nvUnknown.Sort()
         Dim nvNoNeedToExcept = nvExcept.Where(Function(arg) nvPresent.Contains(arg))
-        If nvNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary NVEncC Exception:" + BR2 + nvNoNeedToExcept.Join(" ")
-        If nvMissing.Count > 0 Then msg += BR2 + "# Removed from NVEncC" + BR2 + nvMissing.Join(" ")
-        If nvUnknown.Count > 0 Then msg += BR2 + "# NVEncC Todo" + BR2 + nvUnknown.Join(" ")
+        If nvNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary NVEnc Exception:" + BR2 + nvNoNeedToExcept.Join(" ")
+        If nvMissing.Count > 0 Then msg += BR2 + "# Removed from NVEnc" + BR2 + nvMissing.Join(" ")
+        If nvUnknown.Count > 0 Then msg += BR2 + "# NVEnc Todo" + BR2 + nvUnknown.Join(" ")
 
         Dim amdExcept = "--audio-bitrate --audio-codec --audio-copy --audio-file
             --audio-filter --avsw --device --input-analyze
@@ -321,9 +321,9 @@ Public Class GlobalCommands
         Dim amdUnknown = amdHelpSwitches.Where(Function(x) Not amdPresent.Contains(x) AndAlso Not amdExcept.Contains(x)).ToList()
         amdUnknown.Sort()
         Dim amdNoNeedToExcept = amdExcept.Where(Function(arg) amdPresent.Contains(arg))
-        If amdNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary VCEEncC Exception" + BR2 + amdNoNeedToExcept.Join(" ")
-        If amdMissing.Count > 0 Then msg += BR2 + "# Removed from VCEEncC" + BR2 + amdMissing.Join(" ")
-        If amdUnknown.Count > 0 Then msg += BR2 + "# VCEEncC Todo" + BR2 + amdUnknown.Join(" ")
+        If amdNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary VCEEnc Exception" + BR2 + amdNoNeedToExcept.Join(" ")
+        If amdMissing.Count > 0 Then msg += BR2 + "# Removed from VCEEnc" + BR2 + amdMissing.Join(" ")
+        If amdUnknown.Count > 0 Then msg += BR2 + "# VCEEnc Todo" + BR2 + amdUnknown.Join(" ")
 
         Dim qsExcept = "--help --version --check-device --video-streamid --video-track
             --check-avversion --check-codecs --check-encoders --check-decoders --check-formats
@@ -350,9 +350,9 @@ Public Class GlobalCommands
         Dim qsUnknown = qsHelpSwitches.Where(Function(x) Not qsPresent.Contains(x) AndAlso Not qsExcept.Contains(x)).ToList()
         qsUnknown.Sort()
         Dim qsNoNeedToExcept = qsExcept.Where(Function(arg) qsPresent.Contains(arg))
-        If qsNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary QSVEncC Exception:" + BR2 + qsNoNeedToExcept.Join(" ")
-        If qsMissing.Count > 0 Then msg += BR2 + "# Removed from QSVEncC" + BR2 + qsMissing.Join(" ")
-        If qsUnknown.Count > 0 Then msg += BR2 + "# QSVEncC Todo" + BR2 + qsUnknown.Join(" ")
+        If qsNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary QSVEnc Exception:" + BR2 + qsNoNeedToExcept.Join(" ")
+        If qsMissing.Count > 0 Then msg += BR2 + "# Removed from QSVEnc" + BR2 + qsMissing.Join(" ")
+        If qsUnknown.Count > 0 Then msg += BR2 + "# QSVEnc Todo" + BR2 + qsUnknown.Join(" ")
 
         Dim x265Except = "--crop-rect --display-window --fast-cbf --frame-skip --help
             --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version

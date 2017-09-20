@@ -187,7 +187,7 @@ Public Class x265Params
 
     Property Decoder As New OptionParam With {
         .Text = "Decoder",
-        .Options = {"AviSynth/VapourSynth", "QSVEncC (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
+        .Options = {"AviSynth/VapourSynth", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
         .Values = {"avs", "qs", "ffqsv", "ffdxva"}}
 
     Property Quant As New NumParam With {

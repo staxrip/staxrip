@@ -1643,6 +1643,7 @@ Namespace UI
             SetStyle(ControlStyles.Opaque Or ControlStyles.ResizeRedraw, True)
             TextBox.BorderStyle = BorderStyle.None
             Controls.Add(TextBox)
+            BackColor = Color.White
             AddHandler TextBox.GotFocus, Sub() SetColor(Color.CornflowerBlue)
             AddHandler TextBox.LostFocus, Sub() SetColor(Color.CadetBlue)
             AddHandler TextBox.TextChanged, Sub() RaiseEvent TextChanged()
@@ -1685,7 +1686,11 @@ Namespace UI
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
             Dim r = ClientRectangle
             r.Inflate(-1, -1)
-            e.Graphics.FillRectangle(If(Enabled, Brushes.White, SystemBrushes.Control), r)
+
+            Using brush As New SolidBrush(BackColor)
+                e.Graphics.FillRectangle(If(Enabled, brush, SystemBrushes.Control), r)
+            End Using
+
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, BorderColor, ButtonBorderStyle.Solid)
             MyBase.OnPaint(e)
         End Sub

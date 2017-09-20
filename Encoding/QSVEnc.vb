@@ -124,12 +124,12 @@ Public Class QSVEnc
             New StringPair("vqp", "VQP - Variable QP")}
 
         Sub New()
-            Title = "Intel Encoding Options"
+            Title = "QSVEnc Options"
         End Sub
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
-            .Options = {"AviSynth/VapourSynth", "QSVEncC Intel", "QSVEncC Software", "ffmpeg Intel", "ffmpeg DXVA2"},
+            .Options = {"AviSynth/VapourSynth", "QSVEnc Intel", "QSVEnc Software", "ffmpeg Intel", "ffmpeg DXVA2"},
             .Values = {"avs", "qs", "qsw", "ffqsv", "ffdxva"}}
 
         Property Codec As New OptionParam With {
@@ -339,10 +339,10 @@ Public Class QSVEnc
                     sourcePath = p.LastOriginalSourceFile
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64")
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64")
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""

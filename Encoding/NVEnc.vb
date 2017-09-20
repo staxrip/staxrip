@@ -68,7 +68,7 @@ Public Class NVEnc
     Overrides Sub Encode()
         If OutputExt = "h265" Then
             Dim codecs = ProcessHelp.GetStdOut(Package.NVEnc.Path, "--check-hw").Right("Codec(s)")
-            If Not codecs?.ToLower.Contains("hevc") Then Throw New ErrorAbortException("NVEncC Error", "H.265/HEVC isn't supported by the graphics card.")
+            If Not codecs?.ToLower.Contains("hevc") Then Throw New ErrorAbortException("NVEnc Error", "H.265/HEVC isn't supported by the graphics card.")
         End If
 
         p.Script.Synchronize()
@@ -110,15 +110,15 @@ Public Class NVEnc
         Inherits CommandLineParams
 
         Sub New()
-            Title = "NVIDIA Encoding Options"
+            Title = "NVEnc Options"
         End Sub
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
             .Options = {"AviSynth/VapourSynth",
-                        "NVEncC Native",
-                        "NVEncC Cuda",
-                        "QSVEncC (Intel)",
+                        "NVEnc Native",
+                        "NVEnc Cuda",
+                        "QSVEnc (Intel)",
                         "ffmpeg (Intel)",
                         "ffmpeg (DXVA2)"},
             .Values = {"avs", "nvnative", "nvcuda", "qs", "ffqsv", "ffdxva"}}
@@ -278,6 +278,19 @@ Public Class NVEnc
         Property AFStimecode As New BoolParam With {.Text = "timecode", .HelpSwitch = "--vpp-afs"}
         Property AFSlog As New BoolParam With {.Text = "log", .HelpSwitch = "--vpp-afs"}
 
+        Property VppEdgelevel As New BoolParam With {.Text = "Edgelevel filter to enhance edge", .Switches = {"--vpp-edgelevel"}, .ArgsFunc = AddressOf GetEdge}
+
+        Property VppEdgelevelStrength As New NumParam With {.Text = "     strength", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
+        Property VppEdgelevelThreshold As New NumParam With {.Text = "     threshold", .HelpSwitch = "--vpp-edgelevel", .Init = 20, .Config = {0, 255, 1, 1}}
+        Property VppEdgelevelBlack As New NumParam With {.Text = "     black", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
+        Property VppEdgelevelWhite As New NumParam With {.Text = "     white", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
+
+        Property VppUnsharp As New BoolParam With {.Text = "Enable unsharp filter", .Switches = {"--vpp-unsharp"}, .ArgsFunc = AddressOf GetUnsharp}
+
+        Property VppUnsharpRadius As New NumParam With {.Text = "     radius", .HelpSwitch = "--vpp-unsharp", .Init = 3, .Config = {1, 9}}
+        Property VppUnsharpWeight As New NumParam With {.Text = "     weight", .HelpSwitch = "--vpp-unsharp", .Init = 0.5, .Config = {0, 10, 0.5, 1}}
+        Property VppUnsharpThreshold As New NumParam With {.Text = "     threshold", .HelpSwitch = "--vpp-unsharp", .Init = 10, .Config = {0, 255, 1, 1}}
+
         Property Custom As New StringParam With {.Text = "Custom", .AlwaysOn = True}
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -334,9 +347,19 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvnative", "nvcuda"), .Options = {"None", "Adaptive", "Bob"}},
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
+                        New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvnative", "nvcuda")},
+                        VppEdgelevel,
+                        VppEdgelevelStrength,
+                        VppEdgelevelThreshold,
+                        VppEdgelevelBlack,
+                        VppEdgelevelWhite,
+                        VppUnsharp,
+                        VppUnsharpRadius,
+                        VppUnsharpWeight,
+                        VppUnsharpThreshold)
+                    Add("VPP | Denoise",
                         KNN, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
-                        PMD, PmdApplyCount, PmdStrength, PmdThreshold,
-                        New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvnative", "nvcuda")})
+                        PMD, PmdApplyCount, PmdStrength, PmdThreshold)
                     Add("VPP | Deband",
                         Deband,
                         Deband_range,
@@ -403,6 +426,15 @@ Public Class NVEnc
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
             If Not QPI.NumEdit Is Nothing Then
+                VppEdgelevelStrength.NumEdit.Enabled = VppEdgelevel.Value
+                VppEdgelevelThreshold.NumEdit.Enabled = VppEdgelevel.Value
+                VppEdgelevelBlack.NumEdit.Enabled = VppEdgelevel.Value
+                VppEdgelevelWhite.NumEdit.Enabled = VppEdgelevel.Value
+
+                VppUnsharpRadius.NumEdit.Enabled = VppUnsharp.Value
+                VppUnsharpWeight.NumEdit.Enabled = VppUnsharp.Value
+                VppUnsharpThreshold.NumEdit.Enabled = VppUnsharp.Value
+
                 KnnRadius.NumEdit.Enabled = KNN.Value
                 KnnStrength.NumEdit.Enabled = KNN.Value
                 KnnLerp.NumEdit.Enabled = KNN.Value
@@ -487,6 +519,27 @@ Public Class NVEnc
             If Deband.Value Then Return ("--vpp-deband " + ret.TrimStart(","c)).TrimEnd
         End Function
 
+        Function GetUnsharp() As String
+            Dim ret = ""
+
+            If VppUnsharpRadius.Value <> VppUnsharpRadius.DefaultValue Then ret += "radius=" & VppUnsharpRadius.Value
+            If VppUnsharpWeight.Value <> VppUnsharpWeight.DefaultValue Then ret += ",weight=" & VppUnsharpWeight.Value
+            If VppUnsharpThreshold.Value <> VppUnsharpThreshold.DefaultValue Then ret += ",threshold=" & VppUnsharpThreshold.Value
+
+            If VppUnsharp.Value Then Return ("--vpp-unsharp " + ret.TrimStart(","c)).TrimEnd
+        End Function
+
+        Function GetEdge() As String
+            Dim ret = ""
+
+            If VppEdgelevelStrength.Value <> VppEdgelevelStrength.DefaultValue Then ret += "strength=" & VppEdgelevelStrength.Value
+            If VppEdgelevelThreshold.Value <> VppEdgelevelThreshold.DefaultValue Then ret += ",threshold=" & VppEdgelevelThreshold.Value
+            If VppEdgelevelBlack.Value <> VppEdgelevelBlack.DefaultValue Then ret += ",black=" & VppEdgelevelBlack.Value
+            If VppEdgelevelWhite.Value <> VppEdgelevelWhite.DefaultValue Then ret += ",white=" & VppEdgelevelWhite.Value
+
+            If VppEdgelevel.Value Then Return ("--vpp-edgelevel " + ret.TrimStart(","c)).TrimEnd
+        End Function
+
         Function GetAFS() As String
             Dim ret = ""
 
@@ -525,13 +578,13 @@ Public Class NVEnc
                     ret += " --avhw cuda"
                 Case "qs"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC")
+                    If includePaths Then ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC")
+                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""

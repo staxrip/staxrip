@@ -147,7 +147,14 @@ Namespace CommandLine
         Function GetKey() As String
             If Name <> "" Then Return Name
             If Switch <> "" Then Return Switch
-            If Text <> "" Then Return Text
+
+            If Text <> "" Then
+                If Text.StartsWith(" ") AndAlso HelpSwitch <> "" Then
+                    Return Text + HelpSwitch
+                Else
+                    Return Text
+                End If
+            End If
         End Function
     End Class
 

@@ -2543,9 +2543,10 @@ Public Class MainForm
 
         If p.SourceSeconds > 0 Then
             lSource1.Text = lSource1.GetMaxTextSpace(
-                p.SourceSeconds \ 60 & "m " + (p.SourceSeconds Mod 60).ToString("00") + "s",
-                If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB", (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB"),
-                If(p.SourceBitrate > 0, (p.SourceBitrate / 1000).ToString("f1") + "Mbps", ""),
+                g.GetTimeString(p.SourceSeconds),
+                If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB",
+                (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB"),
+                If(p.SourceBitrate > 0, (p.SourceBitrate / 1000).ToString("f1") + "Mb/s", ""),
                 p.SourceFrameRate.ToString.Shorten(9) + "fps",
                 p.Codec, p.CodecProfile)
 
@@ -5619,47 +5620,36 @@ Public Class MainForm
 
                     Dim ui = f.SimpleUI
                     Dim page = ui.CreateFlowPage("main page")
-
+                    ui.Store = s
                     page.SuspendLayout()
 
-                    Dim tb = ui.AddText(page)
-                    tb.Label.Text = "Title"
-                    tb.Edit.Text = s.Storage.GetString("Thumbnail Title", "StaxRip")
-                    tb.Edit.SaveAction = Sub(value) s.Storage.SetString("Thumbnail Title", value)
-
-                    tb = ui.AddText(page)
-                    tb.Label.Text = "Font Name"
-                    tb.Edit.Text = s.Storage.GetString("Thumbnail Font Name", "Tahoma")
-                    tb.Edit.SaveAction = Sub(value) s.Storage.SetString("Thumbnail Font Name", value)
-
-                    Dim nb = ui.AddNum(page)
-                    nb.Label.Text = "Font Size:"
-                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Font Size", 9)
-                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Font Size", CInt(value))
-
-                    nb = ui.AddNum(page)
+                    Dim nb = ui.AddNum()
                     nb.Label.Text = "Thumbnail Width:"
                     nb.NumEdit.Config = {200, 4000, 10}
                     nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Width", 500)
                     nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Width", CInt(value))
 
-                    nb = ui.AddNum(page)
+                    nb = ui.AddNum()
                     nb.Label.Text = "Rows:"
                     nb.NumEdit.Config = {1, 1000}
                     nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Rows", 12)
                     nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Rows", CInt(value))
 
-                    nb = ui.AddNum(page)
+                    nb = ui.AddNum()
                     nb.Label.Text = "Columns:"
                     nb.NumEdit.Config = {1, 1000}
                     nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Columns", 3)
                     nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Columns", CInt(value))
 
-                    nb = ui.AddNum(page)
+                    nb = ui.AddNum()
                     nb.Label.Text = "Compression Quality:"
                     nb.NumEdit.Config = {1, 100}
                     nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Compression Quality", 95)
                     nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Compression Quality", CInt(value))
+
+                    Dim cp = ui.AddColorPicker()
+                    cp.Text = "Background Color"
+                    cp.Field = NameOf(s.ThumbnailBackgroundColor)
 
                     page.ResumeLayout()
 

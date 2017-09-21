@@ -234,7 +234,7 @@ Public Class x264Params
         .Text = "Custom",
         .AlwaysOn = True,
         .InitAction = Sub(tb)
-                          tb.Edit.Expandet = True
+                          tb.Edit.Expand = True
                           tb.Edit.TextBox.Multiline = True
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
@@ -243,7 +243,7 @@ Public Class x264Params
     Property CustomFirstPass As New StringParam With {
         .Text = "Custom" + BR + "First Pass",
         .InitAction = Sub(tb)
-                          tb.Edit.Expandet = True
+                          tb.Edit.Expand = True
                           tb.Edit.TextBox.Multiline = True
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
@@ -252,7 +252,7 @@ Public Class x264Params
     Property CustomSecondPass As New StringParam With {
         .Text = "Custom" + BR + "Second Pass",
         .InitAction = Sub(tb)
-                          tb.Edit.Expandet = True
+                          tb.Edit.Expand = True
                           tb.Edit.TextBox.Multiline = True
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)

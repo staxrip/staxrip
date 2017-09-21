@@ -403,7 +403,7 @@ Public Class BatchMuxer
 
             tb = ui.AddText(page)
             tb.Label.Visible = False
-            tb.Edit.Expandet = True
+            tb.Edit.Expand = True
             tb.Edit.MultilineHeightFactor = 6
             tb.Edit.TextBox.Multiline = True
             tb.Edit.Text = CommandLines

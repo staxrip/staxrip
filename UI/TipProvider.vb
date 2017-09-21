@@ -18,11 +18,8 @@ Namespace UI
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property TipsFunc As Func(Of StringPairList)
 
-        Sub New(component As IContainer)
-            If Not component Is Nothing Then
-                component.Add(Me)
-            End If
-
+        Sub New(Optional component As IContainer = Nothing)
+            If Not component Is Nothing Then component.Add(Me)
             ToolTip.AutomaticDelay = 1000
             ToolTip.AutoPopDelay = 10000
             ToolTip.InitialDelay = 1000

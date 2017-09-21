@@ -968,7 +968,7 @@ Namespace UI
 
                         Dim expandetControl = TryCast(ctrl, SimpleUI.SimpleUIControl)
 
-                        If Not expandetControl Is Nothing AndAlso expandetControl.Expandet Then
+                        If Not expandetControl Is Nothing AndAlso expandetControl.Expand Then
                             Dim diff = Aggregate i2 In Controls.OfType(Of Control)() Into Sum(If(i2.Visible, i2.Width + i2.Margin.Left + i2.Margin.Right, 0))
 
                             Dim hostWidth = Width - 1
@@ -1402,6 +1402,20 @@ Namespace UI
             AddHandler TextBox.GotFocus, Sub() SetColor(Color.CornflowerBlue)
             AddHandler TextBox.LostFocus, Sub() SetColor(Color.CadetBlue)
             AddHandler TextBox.MouseWheel, AddressOf Wheel
+        End Sub
+
+        Private TipProvider As TipProvider
+
+        WriteOnly Property Help As String
+            Set(value As String)
+                If TipProvider Is Nothing Then TipProvider = New TipProvider()
+                TipProvider.SetTip(value, TextBox, UpControl, DownControl)
+            End Set
+        End Property
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            TipProvider?.Dispose()
+            MyBase.Dispose(disposing)
         End Sub
 
         Sub Wheel(sender As Object, e As MouseEventArgs)

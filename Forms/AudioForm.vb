@@ -934,13 +934,13 @@ Public Class AudioForm
             Case GuiAudioEncoder.Eac3to
                 Dim mbFrameRateMode = ui.AddMenu(Of AudioFrameRateMode)(page)
                 mbFrameRateMode.Label.Text = "Frame rate:"
-                mbFrameRateMode.Button.Expandet = True
+                mbFrameRateMode.Button.Expand = True
                 mbFrameRateMode.Button.Value = TempProfile.Params.FrameRateMode
                 mbFrameRateMode.Button.SaveAction = Sub(value) TempProfile.Params.FrameRateMode = value
 
                 Dim mbStereoDownmix = ui.AddMenu(Of Integer)(page)
                 mbStereoDownmix.Label.Text = "Stereo Downmix:"
-                mbStereoDownmix.Button.Expandet = True
+                mbStereoDownmix.Button.Expand = True
                 mbStereoDownmix.Button.Add("Simple", 0)
                 mbStereoDownmix.Button.Add("DPL II", 1)
                 mbStereoDownmix.Button.Value = TempProfile.Params.eac3toStereoDownmixMode
@@ -1077,7 +1077,7 @@ Public Class AudioForm
 
                 Dim mbQuality = ui.AddMenu(Of Integer)(page)
                 mbQuality.Label.Text = "Quality:"
-                mbQuality.Button.Expandet = True
+                mbQuality.Button.Expand = True
                 mbQuality.Button.Add("Low", 0)
                 mbQuality.Button.Add("Medium", 1)
                 mbQuality.Button.Add("High", 2)

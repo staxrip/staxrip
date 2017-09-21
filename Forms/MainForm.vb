@@ -2555,10 +2555,8 @@ Public Class MainForm
                 p.ChromaSubsampling, If(p.BitDepth <> 0, p.BitDepth & "Bits", ""),
                 p.ScanType, If(p.ScanType = "Interlaced", p.ScanOrder, ""))
 
-            lTarget1.Text = lSource1.GetMaxTextSpace(
-                p.TargetSeconds \ 60 & "m " + (p.TargetSeconds Mod 60).ToString("00") + "s",
-                p.TargetFrameRate.ToString.Shorten(9) + "fps",
-                "Audio Bitrate: " & CInt(Calc.GetAudioBitrate))
+            lTarget1.Text = lSource1.GetMaxTextSpace(g.GetTimeString(p.TargetSeconds),
+                p.TargetFrameRate.ToString.Shorten(9) + "fps", "Audio Bitrate: " & CInt(Calc.GetAudioBitrate))
 
             If p.VideoEncoder.IsCompCheckEnabled Then
                 lTarget2.Text = lSource1.GetMaxTextSpace(
@@ -3317,13 +3315,18 @@ Public Class MainForm
             n.Config = {1, 4}
             n.Field = NameOf(s.ParallelProcsNum)
 
+            n = ui.AddNum()
+            n.Text = "Minimum preview size compared to screen size (percent)"
+            n.Config = {10, 90, 10}
+            n.Field = NameOf(s.MinPreviewSize)
+
             ui.CreateFlowPage("User Interface", True)
 
             Dim t = ui.AddText()
             t.Text = "Remember Window Positions:"
             t.Help = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
             t.Label.Offset = 12
-            t.Edit.Expandet = True
+            t.Edit.Expand = True
             t.Edit.Text = s.WindowPositionsRemembered.Join(", ")
             t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
 
@@ -3331,7 +3334,7 @@ Public Class MainForm
             t.Text = "Center Screen Window Positions:"
             t.Help = "Title or beginning of the title of windows to be centered on the screen. For all windows enter '''all'''."
             t.Label.Offset = 12
-            t.Edit.Expandet = True
+            t.Edit.Expand = True
             t.Edit.Text = s.WindowPositionsCenterScreen.Join(", ")
             t.Edit.SaveAction = Sub(value) s.WindowPositionsCenterScreen = value.SplitNoEmptyAndWhiteSpace(",")
 
@@ -3347,7 +3350,7 @@ Public Class MainForm
             b.Field = NameOf(s.EnableTooltips)
 
             ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(37, 21)
-            ui.FormSizeScaleFactor = New Size(30, 21)
+            ui.FormSizeScaleFactor = New Size(31, 21)
 
             Dim systemPage = ui.CreateFlowPage("System", True)
 
@@ -4008,7 +4011,7 @@ Public Class MainForm
 
             Dim tm = ui.AddTextMenu(pathPage)
             tm.Label.Visible = False
-            tm.Edit.Expandet = True
+            tm.Edit.Expand = True
             tm.Edit.Text = p.DefaultTargetFolder
             tm.Edit.SaveAction = Sub(value) p.DefaultTargetFolder = value
             tm.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
@@ -4021,7 +4024,7 @@ Public Class MainForm
 
             tm = ui.AddTextMenu(pathPage)
             tm.Label.Visible = False
-            tm.Edit.Expandet = True
+            tm.Edit.Expand = True
             tm.Edit.Text = p.DefaultTargetName
             tm.Edit.SaveAction = Sub(value) p.DefaultTargetName = value
             tm.AddMenu("Name of source file without extension", "%source_name%")
@@ -4038,7 +4041,7 @@ Public Class MainForm
 
             tm = ui.AddTextMenu(pathPage)
             tm.Label.Visible = False
-            tm.Edit.Expandet = True
+            tm.Edit.Expand = True
             tm.Edit.Text = p.TempDir
             tm.Edit.SaveAction = Sub(value) p.TempDir = value
             tm.AddMenu("Edit...", tempDirFunc)
@@ -4079,7 +4082,7 @@ Public Class MainForm
 
             t = ui.AddText(filtersPage)
             t.Label.Visible = False
-            t.Edit.Expandet = True
+            t.Edit.Expand = True
             t.Edit.TextBox.Multiline = True
             t.Edit.UseMacroEditor = True
             t.Edit.Text = p.TrimCode
@@ -4091,7 +4094,7 @@ Public Class MainForm
 
             t = ui.AddText(filtersPage)
             t.Label.Visible = False
-            t.Edit.Expandet = True
+            t.Edit.Expand = True
             t.Edit.TextBox.Multiline = True
             t.Edit.UseMacroEditor = True
             t.Edit.Text = p.CodeAtTop
@@ -5295,11 +5298,9 @@ Public Class MainForm
 
     Private Sub gbResize_LinkClick() Handles lgbResize.LinkClick
         Dim cms = TextCustomMenu.GetMenu(s.TargetImageSizeMenu, lgbResize.Label, components, AddressOf TargetImageMenuClick)
-        Dim helpUrl = If(g.IsCulture("de"), "http://encodingwissen.de/videobild/zielaufloesung", "http://www.doom9.org/index.html?/aspectratios.htm")
         cms.Add("-")
         cms.Add("Image Options...", Sub() ShowOptionsDialog("Image")).SetImage(Symbol.fa_photo)
-        cms.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.TargetImageSizeMenu = TextCustomMenu.EditMenu(s.TargetImageSizeMenu, ApplicationSettings.GetDefaultTargetImageSizeMenu, Me)))
-        cms.Add("Help...", Sub() g.StartProcess(helpUrl)).SetImage(Symbol.Help)
+        cms.Add("Edit Menu...", Sub() s.TargetImageSizeMenu = TextCustomMenu.EditMenu(s.TargetImageSizeMenu, ApplicationSettings.GetDefaultTargetImageSizeMenu, Me))
         cms.Show(lgbResize, 0, lgbResize.Label.Height)
     End Sub
 
@@ -5615,41 +5616,72 @@ Public Class MainForm
             fd.Multiselect = True
 
             If fd.ShowDialog = DialogResult.OK Then
-                Using f As New SimpleSettingsForm("Thumbnails Options")
-                    f.ScaleClientSize(25, 14)
+                Using f As New SimpleSettingsForm("Thumbnail Options")
+                    f.ScaleClientSize(27, 15)
 
                     Dim ui = f.SimpleUI
                     Dim page = ui.CreateFlowPage("main page")
                     ui.Store = s
                     page.SuspendLayout()
 
-                    Dim nb = ui.AddNum()
-                    nb.Label.Text = "Thumbnail Width:"
-                    nb.NumEdit.Config = {200, 4000, 10}
-                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Width", 500)
-                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Width", CInt(value))
+                    Dim row As SimpleUI.NumBlock
+                    Dim interval As SimpleUI.NumBlock
 
-                    nb = ui.AddNum()
-                    nb.Label.Text = "Rows:"
-                    nb.NumEdit.Config = {1, 1000}
-                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Rows", 12)
-                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Rows", CInt(value))
-
-                    nb = ui.AddNum()
-                    nb.Label.Text = "Columns:"
-                    nb.NumEdit.Config = {1, 1000}
-                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Columns", 3)
-                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Columns", CInt(value))
-
-                    nb = ui.AddNum()
-                    nb.Label.Text = "Compression Quality:"
-                    nb.NumEdit.Config = {1, 100}
-                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Compression Quality", 95)
-                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Compression Quality", CInt(value))
+                    Dim mode = ui.AddMenu(Of Integer)
+                    mode.Text = "Row Count Mode"
+                    mode.Expandet = True
+                    mode.Add("Manual", 0)
+                    mode.Add("Row count is calculated based on time interval", 1)
+                    mode.Button.Value = s.Storage.GetInt("Thumbnail Mode")
+                    mode.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Mode", value)
+                    AddHandler mode.Button.ValueChangedUser, Sub()
+                                                                 row.Visible = mode.Button.Value = 0
+                                                                 interval.Visible = mode.Button.Value = 1
+                                                             End Sub
+                    Dim m = ui.AddMenu(Of Integer)
+                    m.Text = "Timestamp Position"
+                    m.Add("Left Top", 0)
+                    m.Add("Right Top", 1)
+                    m.Add("Left Bottom", 2)
+                    m.Add("Right Bottom", 3)
+                    m.Button.Value = s.Storage.GetInt("Thumbnail Position", 1)
+                    m.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Position", value)
 
                     Dim cp = ui.AddColorPicker()
                     cp.Text = "Background Color"
                     cp.Field = NameOf(s.ThumbnailBackgroundColor)
+
+                    Dim nb = ui.AddNum()
+                    nb.Text = "Thumbnail Width:"
+                    nb.Config = {200, 4000, 10}
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Width", 500)
+                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Width", CInt(value))
+
+                    nb = ui.AddNum()
+                    nb.Text = "Column Count:"
+                    nb.Config = {1, 1000}
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Columns", 3)
+                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Columns", CInt(value))
+
+                    row = ui.AddNum()
+                    row.Text = "Row Count:"
+                    row.Config = {1, 1000}
+                    row.NumEdit.Value = s.Storage.GetInt("Thumbnail Rows", 12)
+                    row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Rows", CInt(value))
+
+                    interval = ui.AddNum()
+                    interval.Text = "Interval (seconds):"
+                    interval.NumEdit.Value = s.Storage.GetInt("Thumbnail Interval")
+                    interval.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Interval", CInt(value))
+
+                    row.Visible = mode.Button.Value = 0
+                    interval.Visible = mode.Button.Value = 1
+
+                    nb = ui.AddNum()
+                    nb.Text = "Compression Quality:"
+                    nb.Config = {1, 100}
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Compression Quality", 95)
+                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Compression Quality", CInt(value))
 
                     page.ResumeLayout()
 

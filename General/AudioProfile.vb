@@ -475,7 +475,7 @@ Public Class MuxAudioProfile
             Dim tbb = ui.AddTextButton(page)
             tbb.Label.Text = "Stream Name:"
             tbb.Label.Help = "Stream name used by the muxer. The stream name may contain macros."
-            tbb.Edit.Expandet = True
+            tbb.Edit.Expand = True
             tbb.Edit.Text = StreamName
             tbb.Edit.SaveAction = Sub(value) StreamName = value
             tbb.Button.Text = "Macro Editor..."

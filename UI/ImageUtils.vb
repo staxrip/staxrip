@@ -66,13 +66,13 @@ Public Class Thumbnails
         proj.Log.Save(proj)
 
         Dim fontname = "Tahoma"
-        Dim width = s.Storage.GetInt("Thumbnail Width", 500)
-        Dim columns = s.Storage.GetInt("Thumbnail Columns", 3)
-        Dim rows = s.Storage.GetInt("Thumbnail Rows", 12)
+        Dim width = s.Storage.GetInt("Thumbnail Width", 600)
+        Dim columnCount = s.Storage.GetInt("Thumbnail Columns", 4)
+        Dim rowCount = s.Storage.GetInt("Thumbnail Rows", 4)
         Dim dar = MediaInfo.GetVideo(inputFile, "DisplayAspectRatio")
         Dim height = CInt(width / Convert.ToSingle(dar, CultureInfo.InvariantCulture))
-        Dim gap = CInt((width * columns) * 0.005)
-        Dim font = New Font(fontname, (width * columns) \ 80, FontStyle.Regular, GraphicsUnit.Pixel)
+        Dim gap = CInt((width * columnCount) * 0.005)
+        Dim font = New Font(fontname, (width * columnCount) \ 80, FontStyle.Regular, GraphicsUnit.Pixel)
         Dim foreColor = Color.Black
 
         width = width - width Mod 4
@@ -90,6 +90,9 @@ Public Class Thumbnails
 
         Try
             avsdoc.Synchronize()
+            Dim mode = s.Storage.GetInt("Thumbnail Mode")
+            Dim intervalSec = s.Storage.GetInt("Thumbnail Interval")
+            If intervalSec <> 0 AndAlso mode = 1 Then rowCount = CInt((avsdoc.GetSeconds / intervalSec) / columnCount)
             errorMsg = p.SourceScript.GetErrorMessage
         Catch ex As Exception
             errorMsg = ex.Message
@@ -101,7 +104,7 @@ Public Class Thumbnails
         End If
 
         Dim frames = avsdoc.GetFrames
-        Dim count = columns * rows
+        Dim count = columnCount * rowCount
 
         Dim bitmaps As New List(Of Bitmap)
 
@@ -122,7 +125,21 @@ Public Class Thumbnails
 
                     Dim gp As New GraphicsPath()
                     Dim sz = g.MeasureString(timestamp, ft)
-                    Dim pt As New Point(CInt(bitmap.Width - sz.Width - ft.Height / 10), 0)
+                    Dim pt As Point
+                    Dim pos = s.Storage.GetInt("Thumbnail Position", 1)
+
+                    If pos = 0 OrElse pos = 2 Then
+                        pt.X = ft.Height \ 10
+                    Else
+                        pt.X = CInt(bitmap.Width - sz.Width - ft.Height / 10)
+                    End If
+
+                    If pos = 2 OrElse pos = 3 Then
+                        pt.Y = CInt(bitmap.Height - sz.Height)
+                    Else
+                        pt.Y = 0
+                    End If
+
                     gp.AddString(timestamp, ft.FontFamily, CInt(ft.Style), ft.Size, pt, New StringFormat())
 
                     Using pen As New Pen(Brushes.Black, ft.Height \ 5)
@@ -164,11 +181,11 @@ Public Class Thumbnails
             audioCodecs + BR + MediaInfo.GetVideoCodec(inputFile) + "  " & infoWidth & "x" & infoHeight & "  " &
             MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps"
 
-        Dim captionSize = TextRenderer.MeasureText(caption, Font)
+        Dim captionSize = TextRenderer.MeasureText(caption, font)
         Dim captionHeight = captionSize.Height + font.Height \ 3
 
-        Dim imageWidth = width * columns + gap
-        Dim imageHeight = height * rows + captionHeight
+        Dim imageWidth = width * columnCount + gap
+        Dim imageHeight = height * rowCount + captionHeight
 
         Using bitmap As New Bitmap(imageWidth, imageHeight)
             Using g = Graphics.FromImage(bitmap)
@@ -189,8 +206,8 @@ Public Class Thumbnails
                 End Using
 
                 For x = 0 To bitmaps.Count - 1
-                    Dim rowPos = x \ columns
-                    Dim columnPos = x Mod columns
+                    Dim rowPos = x \ columnCount
+                    Dim columnPos = x Mod columnCount
                     g.DrawImage(bitmaps(x), columnPos * width + gap, rowPos * height + captionHeight)
                 Next
             End Using

@@ -427,15 +427,6 @@ Public Class GlobalClass
             ic.Add(New ToolStripSeparator)
             ic.Add(New ActionMenuItem("Edit Profiles...", dialogAction, "Opens the profiles editor"))
         End If
-
-        If profiles.Count > 0 Then
-            If TypeOf profiles(0) Is VideoEncoder Then
-                Dim helpURL = If(g.IsCulture("de"), "http://encodingwissen.de/codecs", "http://en.wikipedia.org/wiki/Video_codec")
-                Dim helpMenuItem = New ActionMenuItem("Help...", Sub() g.StartProcess(helpURL))
-                helpMenuItem.SetImage(Symbol.Help)
-                ic.Add(helpMenuItem)
-            End If
-        End If
     End Sub
 
     Function GetAutoSize(percentage As Integer) As Integer

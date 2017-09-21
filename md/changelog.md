@@ -10,6 +10,18 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
+#### 1.6.1.9 unstable test build
+
+- new: thumbnail generator has a new option to define the timestamp location (left, right, top, bottom) (https://github.com/stax76/staxrip/wiki/Screenshots#thumbnails)
+- new: thumbnail generator has a new option to calculate the row count based on a time interval (https://github.com/stax76/staxrip/wiki/Screenshots#thumbnails)
+- new: the preview dialog can be closed in fullscreen mode with a click in the top right corner, same is true for mpv.net
+- new: setting added to increase the start size of the preview and fixed caculation for ultra wide displays
+- new: the preview shows the time position in the title bar
+
+- fix: ensure the preview starts within the screen bounds
+
+- update: mClean 1.7c
+
 #### 1.6.1.8 unstable test build
 
 - new: nvenc options --vpp-edgelevel and --vpp-unsharp

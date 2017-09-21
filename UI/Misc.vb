@@ -445,7 +445,7 @@ Namespace UI
             If WindowStates.ContainsKey(GetKey(f)) Then f.WindowState = WindowStates(GetKey(f))
         End Sub
 
-        Sub CenterScreen(form As Form)
+        Shared Sub CenterScreen(form As Form)
             form.StartPosition = FormStartPosition.Manual
             Dim wa = Screen.FromControl(form).WorkingArea
             form.Left = (wa.Width - form.Width) \ 2

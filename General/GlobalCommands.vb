@@ -27,12 +27,12 @@ Public Class GlobalCommands
 
             Dim sourceFile = ui.AddTextButton(page)
             sourceFile.Label.Text = "Source File:"
-            sourceFile.Edit.Expandet = True
+            sourceFile.Edit.Expand = True
             sourceFile.BrowseFile(FileTypes.VideoAudio)
 
             Dim outputFolder = ui.AddTextButton(page)
             outputFolder.Label.Text = "Output Folder:"
-            outputFolder.Edit.Expandet = True
+            outputFolder.Edit.Expand = True
             outputFolder.BrowseFolder()
 
             page.ResumeLayout()
@@ -469,7 +469,7 @@ Public Class GlobalCommands
                 f.Doc.WriteStart("Macros")
                 f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
             Case "info"
-                f.Doc.WriteStart("StaxRip x64 " + Application.ProductVersion + " " + GetReleaseType())
+                f.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
                 Dim licensePath = Folder.Startup + "License.txt"
                 If File.Exists(licensePath) Then f.Doc.WriteP(File.ReadAllText(licensePath), True)
             Case "CRF Value"

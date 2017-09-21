@@ -181,9 +181,9 @@ Public Class SimpleUI
         Return ret
     End Function
 
-    Function AddNum(Optional parent As FlowLayoutPanelEx = Nothing) As NumericBlock
+    Function AddNum(Optional parent As FlowLayoutPanelEx = Nothing) As NumBlock
         If parent Is Nothing Then parent = GetActiveFlowPage()
-        Dim ret As New NumericBlock(Me)
+        Dim ret As New NumBlock(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
         AddHandler SaveValues, AddressOf ret.NumEdit.Save
@@ -252,7 +252,7 @@ Public Class SimpleUI
     Sub AddLine(parent As FlowLayoutPanelEx, Optional text As String = "")
         Dim line As New SimpleUILineControl
         line.Text = text
-        line.Expandet = True
+        line.Expand = True
         parent.Controls.Add(line)
     End Sub
 
@@ -341,7 +341,7 @@ Public Class SimpleUI
         Inherits LineControl
         Implements SimpleUIControl
 
-        Property Expandet As Boolean Implements SimpleUIControl.Expandet
+        Property Expand As Boolean Implements SimpleUIControl.Expand
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
             Height = FontHeight * 2
@@ -524,7 +524,7 @@ Public Class SimpleUI
         Inherits TextEdit
         Implements SimpleUIControl
 
-        Property Expandet As Boolean Implements SimpleUIControl.Expandet
+        Property Expand As Boolean Implements SimpleUIControl.Expand
         Property SaveAction As Action(Of String)
         Property MultilineHeightFactor As Integer = 4
         Property WidthFactor As Integer = 10
@@ -540,7 +540,7 @@ Public Class SimpleUI
             If TextBox.Multiline Then
                 Height = FontHeight * MultilineHeightFactor
             Else
-                If Not Expandet Then Width = FontHeight * WidthFactor
+                If Not Expand Then Width = FontHeight * WidthFactor
                 Height = CInt(FontHeight * 1.4)
             End If
 
@@ -616,7 +616,7 @@ Public Class SimpleUI
         Inherits MenuButton
         Implements SimpleUIControl
 
-        Property Expandet As Boolean Implements SimpleUIControl.Expandet
+        Property Expand As Boolean Implements SimpleUIControl.Expand
         Property SaveAction As Action(Of T)
         Property HelpAction As Action
 
@@ -781,7 +781,7 @@ Public Class SimpleUI
             End Set
         End Property
 
-        WriteOnly Property Help As String
+        Overridable WriteOnly Property Help As String
             Set(value As String)
                 Label.Help = value
             End Set
@@ -794,7 +794,7 @@ Public Class SimpleUI
         End Property
     End Class
 
-    Public Class NumericBlock
+    Public Class NumBlock
         Inherits LabelBlock
 
         Property NumEdit As SimpleUINumEdit
@@ -803,6 +803,13 @@ Public Class SimpleUI
             NumEdit = New SimpleUINumEdit(ui)
             Controls.Add(NumEdit)
         End Sub
+
+        Overrides WriteOnly Property Help As String
+            Set(value As String)
+                Label.Help = value
+                NumEdit.Help = value
+            End Set
+        End Property
 
         Property Field As String
             Get
@@ -871,10 +878,10 @@ Public Class SimpleUI
 
         Property Expandet As Boolean
             Get
-                Return Edit.Expandet
+                Return Edit.Expand
             End Get
             Set(value As Boolean)
-                Edit.Expandet = value
+                Edit.Expand = value
             End Set
         End Property
     End Class
@@ -1080,7 +1087,7 @@ Public Class SimpleUI
             Button.Add(items)
         End Sub
 
-        Sub Add(path As String, obj As Object)
+        Sub Add(path As String, obj As T)
             Button.Add(path, obj)
         End Sub
 
@@ -1105,10 +1112,10 @@ Public Class SimpleUI
 
         Property Expandet As Boolean
             Get
-                Return Button.Expandet
+                Return Button.Expand
             End Get
             Set(value As Boolean)
-                Button.Expandet = value
+                Button.Expand = value
             End Set
         End Property
 
@@ -1132,6 +1139,6 @@ Public Class SimpleUI
     End Class
 
     Interface SimpleUIControl
-        Property Expandet As Boolean
+        Property Expand As Boolean
     End Interface
 End Class

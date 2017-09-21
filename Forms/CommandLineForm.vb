@@ -146,7 +146,7 @@ Public Class CommandLineForm
 
                 helpControl = mb.Label
                 AddHandler mb.Label.MouseDoubleClick, Sub() tempItem.ValueChangedUser(tempItem.DefaultValue)
-                If os.Expand Then mb.Button.Expandet = True
+                If os.Expand Then mb.Button.Expand = True
 
                 For x2 = 0 To os.Options.Length - 1
                     mb.Button.Add(os.Options(x2), x2)
@@ -180,7 +180,7 @@ Public Class CommandLineForm
 
                 helpControl = textBlock.Label
                 AddHandler textBlock.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
-                textBlock.Edit.Expandet = True
+                textBlock.Edit.Expand = True
                 Dim sp = DirectCast(item, StringParam)
                 sp.Init(textBlock)
             End If

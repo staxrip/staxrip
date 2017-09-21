@@ -51,7 +51,7 @@ Public Class Project
     Public FileExistVideo As FileExistMode
     Public FirstOriginalSourceFile As String
     Public ForceAudioConvert As Boolean
-    Public ForcedOutputMod As Integer = 16
+    Public ForcedOutputMod As Integer = 8
     Public HarcodedSubtitle As Boolean
     Public ITU As Boolean = True
     Public LastOriginalSourceFile As String

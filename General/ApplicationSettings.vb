@@ -60,6 +60,7 @@ Public Class ApplicationSettings
     Public WindowPositionsRemembered As String()
     Public WriteDebugLog As Boolean
     Public ThumbnailBackgroundColor As Color = Color.AliceBlue
+    Public MinPreviewSize As Integer = 60
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -371,9 +372,11 @@ Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$"
         Return "3840 x auto = 3840 x 0
 3200 x auto = 3200 x 0
 2560 x auto = 2560 x 0
+-
 1920 x auto = 1920 x 0
 1280 x auto = 1280 x 0
 960 x auto = 960 x 0
+-
 720 x auto = 720 x 0
 640 x auto = 640 x 0
 480 x auto = 480 x 0

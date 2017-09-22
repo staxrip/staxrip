@@ -1,0 +1,2 @@
+call make html
+pause

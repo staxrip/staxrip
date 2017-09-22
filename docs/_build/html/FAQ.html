@@ -1,0 +1,155 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Frequently Asked Questions &#8212; StaxRip 1.6 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="frequently-asked-questions">
+<h1><a class="toc-backref" href="#id1">Frequently Asked Questions</a><a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#frequently-asked-questions" id="id1">Frequently Asked Questions</a><ul>
+<li><a class="reference internal" href="#how-can-i-encode-with-a-fixed-bitrate" id="id2">How can I encode with a fixed bitrate?</a></li>
+<li><a class="reference internal" href="#how-can-i-batch-encode-with-a-fixed-bitrate" id="id3">How can I batch encode with a fixed bitrate?</a></li>
+<li><a class="reference internal" href="#why-is-encoding-with-2-pass-using-a-fixed-bitrate-not-recommended" id="id4">Why is encoding with 2 pass using a fixed bitrate not recommended?</a></li>
+<li><a class="reference internal" href="#why-don-t-settings-persist" id="id5">Why don’t settings persist?</a></li>
+<li><a class="reference internal" href="#how-can-i-use-custom-avisynth-plugins" id="id6">How can I use custom AviSynth plugins?</a></li>
+<li><a class="reference internal" href="#how-can-i-use-custom-avisynth-scripts" id="id7">How can I use custom AviSynth scripts?</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="how-can-i-encode-with-a-fixed-bitrate">
+<h2><a class="toc-backref" href="#id2">How can I encode with a fixed bitrate?</a><a class="headerlink" href="#how-can-i-encode-with-a-fixed-bitrate" title="Permalink to this headline">¶</a></h2>
+<p>In the video encoder config dialog go to the Basic tab and choose a fixed bitrate mode like 2 pass.</p>
+<p>At the bottom of the video encoder config dialog there is a drop down menu where a profile can be saved.</p>
+</div>
+<div class="section" id="how-can-i-batch-encode-with-a-fixed-bitrate">
+<h2><a class="toc-backref" href="#id3">How can I batch encode with a fixed bitrate?</a><a class="headerlink" href="#how-can-i-batch-encode-with-a-fixed-bitrate" title="Permalink to this headline">¶</a></h2>
+<p>StaxRip remembers if the file size or bitrate was edited last so if you edit the bitrate last it will encode using a fixed bitrate.</p>
+</div>
+<div class="section" id="why-is-encoding-with-2-pass-using-a-fixed-bitrate-not-recommended">
+<h2><a class="toc-backref" href="#id4">Why is encoding with 2 pass using a fixed bitrate not recommended?</a><a class="headerlink" href="#why-is-encoding-with-2-pass-using-a-fixed-bitrate-not-recommended" title="Permalink to this headline">¶</a></h2>
+<p>Sources can vary greatly in complexity depending on the nature of the source, there still might be situations where fixed bitrates are useful.</p>
+</div>
+<div class="section" id="why-don-t-settings-persist">
+<h2><a class="toc-backref" href="#id5">Why don’t settings persist?</a><a class="headerlink" href="#why-don-t-settings-persist" title="Permalink to this headline">¶</a></h2>
+<p>StaxRip loads a default template on startup, templates can be saved with:</p>
+<p>Main Menu &gt; Project &gt; Save As Template</p>
+<p>Project options are per Template/Project/Job and settings are global.</p>
+</div>
+<div class="section" id="how-can-i-use-custom-avisynth-plugins">
+<h2><a class="toc-backref" href="#id6">How can I use custom AviSynth plugins?</a><a class="headerlink" href="#how-can-i-use-custom-avisynth-plugins" title="Permalink to this headline">¶</a></h2>
+<p>Custom plugins can either be loaded manually using LoadPlugin():</p>
+<p><a class="reference external" href="http://avisynth.nl/index.php/Plugins">http://avisynth.nl/index.php/Plugins</a></p>
+<p>Or they can be loaded automatically using the plugin auto load folder.</p>
+<p>This folder can be opened in StaxRip with:</p>
+<p>Main Menu &gt; Tools &gt; Folders &gt; Plugins</p>
+<p>StaxRip is only available for x64 and therefore only x64 plugins can be used.</p>
+<p>The AviSynth script can be edited manually using the code editor (Filters &gt; Edit Code) or the filters menu can be configured using the filter profile editor (Filters &gt; Profiles).</p>
+</div>
+<div class="section" id="how-can-i-use-custom-avisynth-scripts">
+<h2><a class="toc-backref" href="#id7">How can I use custom AviSynth scripts?</a><a class="headerlink" href="#how-can-i-use-custom-avisynth-scripts" title="Permalink to this headline">¶</a></h2>
+<p>Custom scripts can either be loaded manually using Import():</p>
+<p><a class="reference external" href="http://avisynth.nl/index.php/Import">http://avisynth.nl/index.php/Import</a></p>
+<p>Or they can be loaded automatically using the plugin auto load folder.</p>
+<p>This folder can be opened in StaxRip with:</p>
+<p>Main Menu &gt; Tools &gt; Folders &gt; Plugins</p>
+<p>The AviSynth script can be edited manually using the code editor (Filters &gt; Edit Code) or the filters menu can be configured using the filter profile editor (Filters &gt; Profiles).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">StaxRip</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, stax76.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/FAQ.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

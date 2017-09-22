@@ -11,7 +11,8 @@ Welcome to StaxRip's documentation!
    :caption: Contents:
 
    intro
-
+   features
+   FAQ
 
 
 Indices and tables

@@ -19,4 +19,4 @@ The script code of AviSynth+ and VapourSynth can be edited directly or easily be
 
 With the help of a macro system script parameters can be changed with convenient GUI features like a resize slider and menu or a cropping dialog, due to the macro system the parameters can change at any time allowing much greater flexibility compared to a one dimensional and limiting one step after another approach.
 
-Over 60 up to date AviSynt and VapourSynth plugin are included and ready to use.
+Over 60 up to date AviSynth and VapourSynth plugin are included and ready to use.

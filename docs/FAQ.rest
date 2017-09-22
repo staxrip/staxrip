@@ -8,7 +8,9 @@ In the video encoder config dialog go to the Basic tab and choose a fixed bitrat
 
 At the bottom of the video encoder config dialog there is a drop down menu where a profile can be saved.
 
-### How can I batch encode with a fixed bitrate
+
+How can I batch encode with a fixed bitrate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 StaxRip remembers if the file size or bitrate was edited last so if you edit the bitrate last it will encode using a fixed bitrate.
 

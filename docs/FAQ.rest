@@ -1,0 +1,25 @@
+﻿Frequently Asked Questions
+==========================
+
+How can I encode with a fixed bitrate?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In the video encoder config dialog go to the Basic tab and choose a fixed bitrate mode like 2 pass.
+
+At the bottom of the video encoder config dialog there is a drop down menu where a profile can be saved.
+
+### How can I batch encode with a fixed bitrate
+
+StaxRip remembers if the file size or bitrate was edited last so if you edit the bitrate last it will encode using a fixed bitrate.
+
+### Why is encoding with 2 pass using a fixed bitrate not recommended?
+
+Sources can vary greatly in complexity depending on the nature of the source, there still might be situations where fixed bitrates are useful.
+
+### Why don't settings persist
+
+StaxRip loads a default template on startup, templates can be saved with:
+
+Main Menu > Project > Save As Template
+
+Options are per Template/Project/Job and settings are global.

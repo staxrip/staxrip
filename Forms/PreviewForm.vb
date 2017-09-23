@@ -330,12 +330,12 @@ Public Class PreviewForm
         Dim wa = Screen.FromControl(Me).WorkingArea
 
         While GetNormalSize.Width < wa.Width * (s.MinPreviewSize / 100) AndAlso GetNormalSize.Height < wa.Height * (s.MinPreviewSize / 100)
-            SizeFactor += 0.1
+            SizeFactor += 0.05
             SizeFactor = Math.Round(SizeFactor, 2)
         End While
 
-        While GetNormalSize.Width > wa.Width * 0.9 OrElse GetNormalSize.Height > wa.Height * 0.9
-            SizeFactor -= 0.1
+        While GetNormalSize.Width > wa.Width * 0.95 OrElse GetNormalSize.Height > wa.Height * 0.95
+            SizeFactor -= 0.05
             SizeFactor = Math.Round(SizeFactor, 2)
         End While
 
@@ -344,10 +344,6 @@ Public Class PreviewForm
         Else
             NormalScreen()
         End If
-
-        If Left + Width > wa.Width OrElse Top + Height > wa.Height Then WindowPositions.CenterScreen(Me)
-        If Left < 0 Then Left = 0
-        If Top < 0 Then Top = 0
 
         If s.LastPosition < AVI.FrameCount - 1 Then AVI.Position = s.LastPosition
         AfterPositionChanged()
@@ -398,6 +394,10 @@ Public Class PreviewForm
         WindowState = FormWindowState.Normal
         pVideo.Dock = DockStyle.Fill
         ClientSize = GetNormalSize()
+        Dim wa = Screen.FromControl(Me).WorkingArea
+        If Left + Width > wa.Width OrElse Top + Height > wa.Height Then WindowPositions.CenterScreen(Me)
+        If Left < 0 Then Left = 0
+        If Top < 0 Then Top = 0
     End Sub
 
     Function GetNormalSize() As Size

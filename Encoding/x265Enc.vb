@@ -763,10 +763,14 @@ Public Class x265Params
         .Text = "Limit TU",
         .Config = {0, 4}}
 
-    Property constvbv As New BoolParam() With {
+    Property constvbv As New BoolParam With {
         .Switch = "--const-vbv",
         .NoSwitch = "--no-const-vbv",
         .Text = "Enable VBV algorithm to be consistent across runs"}
+
+    Property Frames As New NumParam With {
+        .Switch = "--frames",
+        .Text = "Frames"}
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
@@ -863,6 +867,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Options = {"Automatic", "I400", "I420", "I422", "I444", "NV12", "NV16"}},
                     New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Progressive", "Top Field First", "Bottom Field First"}, .Values = {"", "tff", "bff"}},
                     New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}},
+                    Frames,
                     New NumParam With {.Switch = "--seek", .Text = "Seek"},
                     New BoolParam With {.Switch = "--dither", .Text = "Dither (High Quality Downscaling)"})
                 Add("Loop Filter", Deblock, DeblockA, DeblockB, SAO,
@@ -991,7 +996,7 @@ Public Class x265Params
         If q.Count > 0 Then sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
 
         If includePaths Then
-            sb.Append(" --frames " & script.GetFrames)
+            If Frames.Value = 0 AndAlso Not IsCustom(pass, "--frames") Then sb.Append(" --frames " & script.GetFrames)
             sb.Append(" --y4m")
 
             If Mode.Value = x265RateMode.TwoPass OrElse Mode.Value = x265RateMode.ThreePass Then

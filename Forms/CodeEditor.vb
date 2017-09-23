@@ -386,8 +386,8 @@ Public Class CodeEditor
 
             Dim helpAction = Sub()
                                  For Each i In Package.Items.Values.OfType(Of PluginPackage)()
-                                     If Not i.AviSynthFilterNames Is Nothing Then
-                                         For Each i2 In i.AviSynthFilterNames
+                                     If Not i.AvsFilterNames Is Nothing Then
+                                         For Each i2 In i.AvsFilterNames
                                              If rtbScript.Text.Contains(i2) Then
                                                  Dim path = i.GetHelpPath()
                                                  If path <> "" Then Menu.Add("Help | " + i.Name, Sub() g.StartProcess(path), path)
@@ -423,7 +423,7 @@ Public Class CodeEditor
                                      For Each i In Package.Items.Values.OfType(Of PluginPackage)
                                          Dim helpPath = i.GetHelpPath
 
-                                         If helpPath <> "" AndAlso Not i.AviSynthFilterNames Is Nothing Then
+                                         If helpPath <> "" AndAlso Not i.AvsFilterNames Is Nothing Then
                                              Menu.Add("Help | " + i.Name.Substring(0, 1).ToUpper + " | " + i.Name, Sub() g.StartProcess(helpPath), i.Description)
                                              Application.DoEvents()
                                          End If

@@ -10,6 +10,20 @@ https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
+#### 1.7.0.0 stable release
+
+- new: changed templates to: 'Manual Workflow', 'Automatic Workflow', 'No indexing and demuxing' and 'Re-mux', default startup template is 'Automatic Workflow'
+- new: option added to disable the assistant reminder about the aspect ratio error
+- new: AviSynth script FineSharp added
+- new: x265 option --frames added
+
+- fix: x265 option --frames added twice to command line
+- fix: cosmetic DPI scaling issue in main form on 96 DPI
+
+- update: mvsfunc 8
+- update: mClean 1.8
+- update: NVEnc 3.22
+
 #### 1.6.1.9 unstable test build
 
 - new: thumbnail generator has a new option to define the timestamp location (left, right, top, bottom) (https://github.com/stax76/staxrip/wiki/Screenshots#thumbnails)

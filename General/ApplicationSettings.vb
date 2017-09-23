@@ -157,21 +157,13 @@ Public Class ApplicationSettings
             WindowPositionsRemembered = {"StaxRip", "Crop", "Preview", "Help"}
         End If
 
-        If Check(WindowPositions, "Remembered Window Positions 2", 1) Then
-            WindowPositions = New WindowPositions
-        End If
+        If Check(WindowPositions, "Remembered Window Positions 2", 1) Then WindowPositions = New WindowPositions
 
-        If WindowPositionsCenterScreen Is Nothing Then
-            WindowPositionsCenterScreen = {}
-        End If
+        If WindowPositionsCenterScreen Is Nothing Then WindowPositionsCenterScreen = {}
 
-        If Check(StartupTemplate, "Startup Template", 2) Then
-            StartupTemplate = "x264"
-        End If
+        If Check(StartupTemplate, "Startup Template", 2) Then StartupTemplate = "Automatic Workflow"
 
-        If PackagePaths Is Nothing Then
-            PackagePaths = New Dictionary(Of String, String)
-        End If
+        If PackagePaths Is Nothing Then PackagePaths = New Dictionary(Of String, String)
 
         If RecentProjects Is Nothing Then RecentProjects = New List(Of String)
 

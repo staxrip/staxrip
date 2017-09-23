@@ -65,6 +65,7 @@ Public Class Project
     Public RemindOversize As Boolean = True
     Public RemindToCrop As Boolean = False
     Public RemindToCut As Boolean = False
+    Public RemindArError As Boolean = True
     Public RemindToDoCompCheck As Boolean = False
     Public RemindToSetFilters As Boolean = False
     Public ResizeSliderMaxWidth As Integer

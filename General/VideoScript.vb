@@ -276,8 +276,8 @@ clip.set_output()
                     WriteVSCode(script, code, Nothing, plugin)
                 End If
 
-                If Not plugin.AviSynthFilterNames Is Nothing Then
-                    For Each filterName In plugin.AviSynthFilterNames
+                If Not plugin.AvsFilterNames Is Nothing Then
+                    For Each filterName In plugin.AvsFilterNames
                         If script.Contains(".avs." + filterName) Then WriteVSCode(script, code, filterName, plugin)
                     Next
                 End If
@@ -326,11 +326,18 @@ clip.set_output()
             Dim fp = plugin.Path
 
             If fp <> "" Then
-                If Not plugin.AviSynthFilterNames Is Nothing Then
-                    For Each filterName In plugin.AviSynthFilterNames
+                If Not plugin.AvsFilterNames Is Nothing Then
+                    For Each filterName In plugin.AvsFilterNames
                         If script.Contains(filterName.ToLower) Then
                             If plugin.Filename.Ext = "dll" Then
                                 Dim load = "LoadPlugin(""" + fp + """)" + BR
+
+                                If File.Exists(Folder.Plugins + fp.FileName) AndAlso
+                                    File.GetLastWriteTimeUtc(Folder.Plugins + fp.FileName) <
+                                    File.GetLastWriteTimeUtc(fp) Then
+
+                                    MsgWarn("Conflict with outdated plugin", $"An outdated version of {plugin.Name} is located in your auto load folder. StaxRip includes a newer version.{BR2 + Folder.Plugins + fp.FileName}", True)
+                                End If
 
                                 If Not script.Contains(load.ToLower) AndAlso
                                     Not loadCode.Contains(load) AndAlso
@@ -549,6 +556,10 @@ Public Class VideoFilter
     Function CompareTo(other As VideoFilter) As Integer Implements System.IComparable(Of VideoFilter).CompareTo
         Return Path.CompareTo(other.Path)
     End Function
+
+    Shared Function GetDefault(category As String, name As String) As VideoFilter
+        Return FilterCategory.GetAviSynthDefaults.First(Function(val) val.Name = category).Filters.First(Function(val) val.Name = name)
+    End Function
 End Class
 
 <Serializable()>
@@ -589,9 +600,9 @@ Public Class FilterCategory
             Dim filters As VideoFilter() = Nothing
 
             If engine = ScriptEngine.AviSynth Then
-                If Not i.AviSynthFiltersFunc Is Nothing Then filters = i.AviSynthFiltersFunc.Invoke
+                If Not i.AvsFiltersFunc Is Nothing Then filters = i.AvsFiltersFunc.Invoke
             Else
-                If Not i.VapourSynthFiltersFunc Is Nothing Then filters = i.VapourSynthFiltersFunc.Invoke
+                If Not i.VSFiltersFunc Is Nothing Then filters = i.VSFiltersFunc.Invoke
             End If
 
             If Not filters Is Nothing Then

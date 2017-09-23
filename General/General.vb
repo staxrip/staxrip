@@ -195,15 +195,37 @@ Public Class Folder
                     Next
                 End If
 
-                Dim x264 As New Project
-                x264.Init()
-                SafeSerialization.Serialize(x264, ret + "x264.srip")
+                Dim manual As New Project
+                manual.Init()
+                manual.Script = VideoScript.GetDefaults()(0)
+                manual.Script.Filters(0) = VideoFilter.GetDefault("Source", "Manual")
+                manual.DemuxAudio = DemuxMode.Dialog
+                manual.DemuxSubtitles = DemuxMode.Dialog
+                SafeSerialization.Serialize(manual, ret + "Manual Workflow.srip")
 
-                Dim x265 As New Project
-                x265.Init()
-                x265.VideoEncoder = New x265Enc
+                Dim auto As New Project
+                auto.Init()
+                auto.Script.Filters(0) = VideoFilter.GetDefault("Source", "Automatic")
+                auto.DemuxAudio = DemuxMode.All
+                auto.DemuxSubtitles = DemuxMode.All
+                SafeSerialization.Serialize(auto, ret + "Automatic Workflow.srip")
 
-                SafeSerialization.Serialize(x265, ret + "x265.srip")
+                Dim fastLoad As New Project
+                fastLoad.Init()
+                fastLoad.Script.Filters(0) = VideoFilter.GetDefault("Source", "DSS2")
+                fastLoad.DemuxAudio = DemuxMode.None
+                fastLoad.DemuxSubtitles = DemuxMode.None
+                SafeSerialization.Serialize(fastLoad, ret + "No indexing and demuxing.srip")
+
+                Dim remux As New Project
+                remux.Init()
+                remux.Script.Filters(0) = VideoFilter.GetDefault("Source", "DSS2")
+                remux.DemuxAudio = DemuxMode.None
+                remux.DemuxSubtitles = DemuxMode.None
+                remux.VideoEncoder = New NullEncoder
+                remux.Audio0 = New MuxAudioProfile
+                remux.Audio1 = New MuxAudioProfile
+                SafeSerialization.Serialize(remux, ret + "Re-mux.srip")
             End If
 
             Return ret
@@ -1291,8 +1313,12 @@ Public Module MainModule
         End Using
     End Sub
 
-    Sub MsgWarn(text As String, Optional content As String = Nothing)
+    Private ShownMessages As String
+
+    Sub MsgWarn(text As String, Optional content As String = Nothing, Optional onlyOnce As Boolean = False)
+        If onlyOnce AndAlso ShownMessages?.Contains(text + content) Then Exit Sub
         Msg(text, content, MsgIcon.Warning, TaskDialogButtons.Ok)
+        If onlyOnce Then ShownMessages += text + content
     End Sub
 
     Function MsgOK(text As String) As Boolean

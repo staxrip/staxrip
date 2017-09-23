@@ -908,13 +908,13 @@ Public Class MainForm
         Me.lgbFilters.Location = New System.Drawing.Point(10, 436)
         Me.lgbFilters.Margin = New System.Windows.Forms.Padding(10, 0, 6, 0)
         Me.lgbFilters.Name = "lgbFilters"
-        Me.lgbFilters.Padding = New System.Windows.Forms.Padding(9, 0, 9, 9)
+        Me.lgbFilters.Padding = New System.Windows.Forms.Padding(9, 2, 9, 9)
         Me.lgbFilters.Size = New System.Drawing.Size(666, 384)
         Me.lgbFilters.TabIndex = 53
         Me.lgbFilters.TabStop = False
         Me.lgbFilters.Text = "Filters"
         '
-        'AviSynthListView
+        'FiltersListView
         '
         Me.FiltersListView.AllowDrop = True
         Me.FiltersListView.AutoCheckMode = StaxRip.UI.AutoCheckMode.None
@@ -924,10 +924,10 @@ Public Class MainForm
         Me.FiltersListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.FiltersListView.HideSelection = False
         Me.FiltersListView.IsLoading = False
-        Me.FiltersListView.Location = New System.Drawing.Point(9, 48)
+        Me.FiltersListView.Location = New System.Drawing.Point(9, 50)
         Me.FiltersListView.MultiSelect = False
-        Me.FiltersListView.Name = "AviSynthListView"
-        Me.FiltersListView.Size = New System.Drawing.Size(648, 327)
+        Me.FiltersListView.Name = "FiltersListView"
+        Me.FiltersListView.Size = New System.Drawing.Size(648, 325)
         Me.FiltersListView.TabIndex = 0
         Me.FiltersListView.UseCompatibleStateImageBehavior = False
         Me.FiltersListView.View = System.Windows.Forms.View.Details
@@ -943,7 +943,7 @@ Public Class MainForm
         Me.lgbEncoder.Location = New System.Drawing.Point(1370, 436)
         Me.lgbEncoder.Margin = New System.Windows.Forms.Padding(6, 0, 10, 0)
         Me.lgbEncoder.Name = "lgbEncoder"
-        Me.lgbEncoder.Padding = New System.Windows.Forms.Padding(9, 0, 9, 9)
+        Me.lgbEncoder.Padding = New System.Windows.Forms.Padding(9, 2, 9, 9)
         Me.lgbEncoder.Size = New System.Drawing.Size(669, 384)
         Me.lgbEncoder.TabIndex = 51
         Me.lgbEncoder.TabStop = False
@@ -953,19 +953,19 @@ Public Class MainForm
         '
         Me.llMuxer.AutoSize = True
         Me.llMuxer.LinkColor = System.Drawing.Color.Empty
-        Me.llMuxer.Location = New System.Drawing.Point(517, 0)
+        Me.llMuxer.Location = New System.Drawing.Point(517, 1)
         Me.llMuxer.Name = "llMuxer"
-        Me.llMuxer.Size = New System.Drawing.Size(89, 48)
+        Me.llMuxer.Size = New System.Drawing.Size(121, 48)
         Me.llMuxer.TabIndex = 1
         Me.llMuxer.TabStop = True
-        Me.llMuxer.Text = "Container/Muxer Profiles"
+        Me.llMuxer.Text = "Muxer"
         '
         'pnEncoder
         '
         Me.pnEncoder.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnEncoder.Location = New System.Drawing.Point(9, 48)
+        Me.pnEncoder.Location = New System.Drawing.Point(9, 50)
         Me.pnEncoder.Name = "pnEncoder"
-        Me.pnEncoder.Size = New System.Drawing.Size(651, 327)
+        Me.pnEncoder.Size = New System.Drawing.Size(651, 325)
         Me.pnEncoder.TabIndex = 0
         '
         'tlpMain
@@ -1385,7 +1385,7 @@ Public Class MainForm
                             If plugin Is Nothing Then
                                 ActionMenuItem.Add(i.DropDownItems, "Apps | " + iPackage.Name, Sub() g.StartProcess(helpPath))
                             Else
-                                If plugin.AviSynthFilterNames?.Length > 0 Then
+                                If plugin.AvsFilterNames?.Length > 0 Then
                                     ActionMenuItem.Add(i.DropDownItems, "Plugins | AviSynth | " + iPackage.Name, Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.AviSynth)))
                                 End If
 
@@ -1583,7 +1583,7 @@ Public Class MainForm
 
         SetBindings(p, True)
 
-        Text = Application.ProductName + " x64 - " + path.Base
+        Text = Application.ProductName + " - " + path.Base
         SkipAssistant = True
 
         If path.StartsWith(Folder.Template) Then
@@ -2759,10 +2759,9 @@ Public Class MainForm
 
             Dim ae = Calc.GetAspectRatioError()
 
-            If Not isValidAnamorphicSize AndAlso
-                (ae > p.MaxAspectRatioError OrElse
-                ae < -p.MaxAspectRatioError) _
-                AndAlso p.Script.IsFilterActive("Resize") Then
+            If Not isValidAnamorphicSize AndAlso (ae > p.MaxAspectRatioError OrElse 
+                ae < -p.MaxAspectRatioError) AndAlso p.Script.IsFilterActive("Resize") AndAlso
+                p.RemindArError Then
 
                 If ProcessTip("Use the resize slider to correct the aspect ratio error.") Then
                     g.Highlight(True, lAspectRatioError)
@@ -3349,7 +3348,7 @@ Public Class MainForm
             b.Help = "If you disable this you can still right-click menu items to show the tooltip."
             b.Field = NameOf(s.EnableTooltips)
 
-            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(37, 21)
+            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(38, 21)
             ui.FormSizeScaleFactor = New Size(31, 21)
 
             Dim systemPage = ui.CreateFlowPage("System", True)
@@ -4047,32 +4046,31 @@ Public Class MainForm
             tm.AddMenu("Edit...", tempDirFunc)
             tm.AddMenu("Source File Directory", "%source_dir%%source_name%_temp")
 
-            Dim assistantPage = ui.CreateFlowPage("Assistant")
+            ui.CreateFlowPage("Assistant")
 
-            b = ui.AddBool(assistantPage)
-            b.Text = "Remind To Crop"
-            b.Checked = p.RemindToCrop
-            b.SaveAction = Sub(value) p.RemindToCrop = value
+            b = ui.AddBool()
+            b.Text = "Remind to crop"
+            b.Field = NameOf(p.RemindToCrop)
 
-            b = ui.AddBool(assistantPage)
-            b.Text = "Remind To Cut"
-            b.Checked = p.RemindToCut
-            b.SaveAction = Sub(value) p.RemindToCut = value
+            b = ui.AddBool()
+            b.Text = "Remind to cut"
+            b.Field = NameOf(p.RemindToCut)
 
-            b = ui.AddBool(assistantPage)
-            b.Text = "Remind To Do Compressibility Check"
-            b.Checked = p.RemindToDoCompCheck
-            b.SaveAction = Sub(value) p.RemindToDoCompCheck = value
+            b = ui.AddBool()
+            b.Text = "Remind to do compressibility check"
+            b.Field = NameOf(p.RemindToDoCompCheck)
 
-            b = ui.AddBool(assistantPage)
-            b.Text = "Remind To Set Filters"
-            b.Checked = p.RemindToSetFilters
-            b.SaveAction = Sub(value) p.RemindToSetFilters = value
+            b = ui.AddBool()
+            b.Text = "Remind to set filters"
+            b.Field = NameOf(p.RemindToSetFilters)
 
-            b = ui.AddBool(assistantPage)
-            b.Text = "Remind Not To Oversize"
-            b.Checked = p.RemindOversize
-            b.SaveAction = Sub(value) p.RemindOversize = value
+            b = ui.AddBool()
+            b.Text = "Remind not to oversize"
+            b.Field = NameOf(p.RemindOversize)
+
+            b = ui.AddBool()
+            b.Text = "Remind about aspect ratio error"
+            b.Field = NameOf(p.RemindArError)
 
             Dim filtersPage = ui.CreateFlowPage("Filters")
 

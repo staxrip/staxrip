@@ -398,12 +398,18 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
+    <Content Include="docs\conf.py" />
     <Content Include="RIP.ico" />
     <Content Include="Screenshots\audio.png" />
     <Content Include="Screenshots\eac3to.png" />
     <Content Include="Screenshots\main.png" />
     <Content Include="Screenshots\nvenc.png" />
     <Content Include="Screenshots\x265.png" />
+    <None Include="docs\FAQ.rst" />
+    <None Include="docs\features.rst" />
+    <None Include="docs\index.rst" />
+    <None Include="docs\intro.rst" />
+    <None Include="docs\make.bat" />
     <None Include="md\changelog.md" />
     <None Include="packages.config" />
     <None Include="README.md" />
@@ -607,6 +613,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
+    <Folder Include="docs\_static\" />
+    <Folder Include="docs\_templates\" />
     <Folder Include="My Project\DataSources\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />

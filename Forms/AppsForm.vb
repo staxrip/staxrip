@@ -308,19 +308,19 @@ Public Class AppsForm
         If TypeOf CurrentPackage Is PluginPackage Then
             Dim plugin = DirectCast(CurrentPackage, PluginPackage)
 
-            If Not plugin.AviSynthFilterNames Is Nothing AndAlso
+            If Not plugin.AvsFilterNames Is Nothing AndAlso
                 Not plugin.VSFilterNames Is Nothing Then
 
                 Headers("AviSynth Filters").Visible = True
-                Contents("AviSynth Filters").Text = plugin.AviSynthFilterNames.Join(", ")
+                Contents("AviSynth Filters").Text = plugin.AvsFilterNames.Join(", ")
                 Contents("AviSynth Filters").Visible = True
 
                 Headers("VapourSynth Filters").Visible = True
                 Contents("VapourSynth Filters").Text = plugin.VSFilterNames.Join(", ")
                 Contents("VapourSynth Filters").Visible = True
-            ElseIf Not plugin.AviSynthFilterNames Is Nothing Then
+            ElseIf Not plugin.AvsFilterNames Is Nothing Then
                 Headers("Filters").Visible = True
-                Contents("Filters").Text = plugin.AviSynthFilterNames.Join(", ")
+                Contents("Filters").Text = plugin.AvsFilterNames.Join(", ")
                 Contents("Filters").Visible = True
             ElseIf Not plugin.VSFilterNames Is Nothing Then
                 Headers("Filters").Visible = True
@@ -406,7 +406,7 @@ Public Class AppsForm
 
             Dim searchString = pack.Name + pack.Description + pack.Version +
                 plugin?.VSFilterNames.Join(" ") +pack.Path+
-                plugin?.AviSynthFilterNames.Join(" ") 
+                plugin?.AvsFilterNames.Join(" ") 
 
             If searchString?.ToLower.Contains(SearchTextBox.Text?.ToLower) Then
                 If plugin Is Nothing Then
@@ -420,7 +420,7 @@ Public Class AppsForm
                         n.Tag = pack
                     End If
                 Else
-                    If plugin.AviSynthFilterNames?.Length > 0 Then
+                    If plugin.AvsFilterNames?.Length > 0 Then
                         Dim n = tv.AddNode("Plugins|AviSynth|" + pack.Name)
                         Nodes.Add(n)
                         n.Tag = pack

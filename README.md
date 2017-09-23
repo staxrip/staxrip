@@ -73,6 +73,10 @@ It's not recommended to start StaxRip from a location without full write access 
 
 To add StaxRip to the windows start menu use the context menu of the windows file explorer.
 
+## Documentation
+
+http://staxrip.readthedocs.io/en/latest/
+
 ## AviSynth and VapourSynth scripting
 
 StaxRip uses AviSynth x64 and VapourSynth x64 for video processing and includes many x64 plugins, 32-bit/x86 plugins are not compatible.

@@ -476,13 +476,10 @@ Public Class SubtitleControl
             Dim st = Items(dgv.CurrentRow.Index).Subtitle
             Dim fp = st.Path
 
-            If FilePath.GetExtFull(fp) = ".idx" Then
+            If fp.Ext = "idx" Then
                 fp = p.TempDir + p.TargetFile.Base + "_temp.idx"
-
-                Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
-                    st.IndexIDX.ToString).WriteANSIFile(fp)
-
-                FileHelp.Copy(FilePath.GetDirAndBase(st.Path) + ".sub", FilePath.GetDirAndBase(fp) + ".sub")
+                Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " + st.IndexIDX.ToString).WriteANSIFile(fp)
+                FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
             End If
 
             g.StartProcess(Package.BDSup2SubPP.Path, """" + fp + """")

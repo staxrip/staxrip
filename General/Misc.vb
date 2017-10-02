@@ -1243,14 +1243,11 @@ Public Class Macro
 
             For Each i As Match In mc
                 Dim package = StaxRip.Package.Items.Values.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
+                Dim path = package?.Path
 
-                If package?.VerifyOK Then
-                    Dim path = package.Path
-
-                    If path <> "" Then
-                        value = value.Replace(i.Value, path)
-                        If Not value.Contains("%") Then Return value
-                    End If
+                If path <> "" Then
+                    value = value.Replace(i.Value, path)
+                    If Not value.Contains("%") Then Return value
                 End If
             Next
         End If
@@ -1258,14 +1255,11 @@ Public Class Macro
         If value.Contains("%app_dir:") Then
             For Each i As Match In Regex.Matches(value, "%app_dir:(.+?)%")
                 Dim package = StaxRip.Package.Items.Values.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
+                Dim path = package?.Path
 
-                If package?.VerifyOK Then
-                    Dim path = package.Path
-
-                    If path <> "" Then
-                        value = value.Replace(i.Value, FilePath.GetDir(path))
-                        If Not value.Contains("%") Then Return value
-                    End If
+                If path <> "" Then
+                    value = value.Replace(i.Value, FilePath.GetDir(path))
+                    If Not value.Contains("%") Then Return value
                 End If
             Next
         End If

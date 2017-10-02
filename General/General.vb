@@ -212,7 +212,7 @@ Public Class Folder
 
                 Dim fastLoad As New Project
                 fastLoad.Init()
-                fastLoad.Script.Filters(0) = VideoFilter.GetDefault("Source", "DSS2")
+                fastLoad.Script.Filters(0) = New VideoFilter("Source", "DSS2/L-Smash", $"srcFile = ""%source_file%""{BR}ext = LCase(RightStr(srcFile, 3)){BR}(ext == ""mp4"") ? LSMASHVideoSource(srcFile, format = ""YUV420P8"") : DSS2(srcFile)")
                 fastLoad.DemuxAudio = DemuxMode.None
                 fastLoad.DemuxSubtitles = DemuxMode.None
                 SafeSerialization.Serialize(fastLoad, ret + "No indexing and demuxing.srip")

@@ -248,12 +248,12 @@ Public Class VideoComparisonForm
 
             avs.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
 
-            If FilePath.GetExtFull(sourePath) = ".png" Then
+            If sourePath.Ext = "png" Then
                 avs.Filters.Add(New VideoFilter("ImageSource(""" + sourePath + """, end = 0)"))
             Else
                 Dim cachePath = Folder.Temp + Guid.NewGuid.ToString + ".ffindex"
                 AddHandler Disposed, Sub() FileHelp.Delete(cachePath)
-                avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """, colorspace = ""YV12"")"))
+                avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """)"))
 
                 Dim proj As New Project
                 proj.Init()
@@ -282,7 +282,7 @@ Public Class VideoComparisonForm
                 Form.TrackBar.Maximum = AVI.FrameCount - 1
             End If
 
-            Dim csvFile = FilePath.GetDirAndBase(sourePath) + ".csv"
+            Dim csvFile = sourePath.DirAndBase + ".csv"
 
             If File.Exists(csvFile) Then
                 Dim len = Form.TrackBar.Maximum

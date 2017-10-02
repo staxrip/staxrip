@@ -1,5 +1,8 @@
+Features
+========
+
 Preprocessing
-=============
+-------------
 
 Demuxing GUIs for MP4Box, mkvextrakt (mkvtoolnix), ffmpeg and eac3to.
 
@@ -11,7 +14,7 @@ Custom preprocessing tools for demuxing, re-muxing or indexing can be integrated
 
 
 Video Processing
-================
+----------------
 
 Video processing is supported via AviSynth+ and VapourSynth with AviSynth+ and VapourSynth being equally well supported.
 

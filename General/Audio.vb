@@ -41,7 +41,7 @@ Public Class Audio
                             Not TypeOf ap Is MuxAudioProfile Then
 
                             ConvertDirectShowSource(ap)
-                        ElseIf Not FilePath.GetExtFull(ap.File) = ".m2ts" Then
+                        ElseIf Not ap.File.Ext = "m2ts" Then
                             ffmpegDemuxer.DemuxAudio(ap.File, ap.Stream, ap, p)
                         End If
                 End Select
@@ -211,12 +211,12 @@ Public Class Audio
     End Sub
 
     Shared Function GetNicAudioCode(ap As AudioProfile) As String
-        Select Case FilePath.GetExtFull(ap.File)
-            Case ".ac3"
+        Select Case ap.File.ext
+            Case "ac3"
                 Return "AudioDub(last, NicAC3Source(""" + ap.File + """, Channels = " & ap.Channels & "))"
-            Case ".mpa", ".mp2", ".mp3"
+            Case "mpa", "mp2", "mp3"
                 Return "AudioDub(last, NicMPASource(""" + ap.File + """))"
-            Case ".wav"
+            Case "wav"
                 Return "AudioDub(last, RaWavSource(""" + ap.File + """, Channels = " & ap.Channels & "))"
         End Select
     End Function
@@ -484,8 +484,7 @@ Public Class Audio
         If fail AndAlso TypeOf ap Is GUIAudioProfile AndAlso Not ap.File.Ext = "wav" Then
             Log.Write("Error", "no output found")
             Convert(ap)
-
-            If FilePath.GetExtFull(ap.File) = ".wav" Then Cut(ap)
+            If ap.File.Ext = "wav" Then Cut(ap)
         End If
     End Sub
 

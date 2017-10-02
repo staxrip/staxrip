@@ -4,13 +4,13 @@ Imports System.Reflection
 Imports System.Runtime.CompilerServices
 Imports System.Security.Cryptography
 Imports System.Text
-Imports System.Windows.Forms.Layout
 Imports Microsoft.Win32
 Imports VB6 = Microsoft.VisualBasic
 
 Module StringExtensions
     <Extension>
     Public Function Multiply(instance As String, multiplier As Integer) As String
+        If multiplier < 1 Then multiplier = 1
         Dim sb As New StringBuilder(multiplier * instance.Length)
 
         For i = 0 To multiplier - 1

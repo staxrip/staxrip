@@ -629,8 +629,8 @@ Public Class NullEncoder
 
     Function GetSourceFile() As String
         For Each i In {".h264", ".avc", ".h265", ".hevc", ".mpg", ".avi"}
-            If File.Exists(FilePath.GetDirAndBase(p.SourceFile) + "_out" + i) Then
-                Return FilePath.GetDirAndBase(p.SourceFile) + "_out" + i
+            If File.Exists(p.SourceFile.DirAndBase + "_out" + i) Then
+                Return p.SourceFile.DirAndBase + "_out" + i
             ElseIf File.Exists(p.TempDir + p.TargetFile.Base + "_out" + i) Then
                 Return p.TempDir + p.TargetFile.Base + "_out" + i
             End If

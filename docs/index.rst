@@ -8,7 +8,6 @@ Welcome to StaxRip's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    intro
    features

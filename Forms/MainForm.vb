@@ -1223,12 +1223,9 @@ Public Class MainForm
                                 If base.Contains("3_2ch") Then base = base.Replace("3_2ch", "6ch")
                                 If base.Contains(" DELAY") Then base = base.Replace(" DELAY", "")
                                 If base.Contains(" 0ms") Then base = base.Replace(" 0ms", "")
-
-                                If stream.Language.TwoLetterCode <> "iv" Then
-                                    base += " " + stream.Language.Name
-                                End If
+                                If stream.Language.TwoLetterCode <> "iv" Then base += " " + stream.Language.Name
                                 If stream.Title <> "" Then base += " " + stream.Title
-                                FileHelp.Move(i, FilePath.GetDir(i) + base + FilePath.GetExtFull(i))
+                                FileHelp.Move(i, i.Dir + base + i.ExtFull)
                             End If
                         Next
                     End Using
@@ -1290,7 +1287,7 @@ Public Class MainForm
                     If Not iPath.Contains(lng.Name) Then Continue For
                 End If
 
-                If FilePath.GetExtFull(iPath) = ".mp4" AndAlso FilePath.IsSameBase(p.SourceFile, iPath) Then
+                If iPath.Ext = "mp4" AndAlso FilePath.IsSameBase(p.SourceFile, iPath) Then
                     Continue For
                 End If
 
@@ -1731,12 +1728,12 @@ Public Class MainForm
     End Sub
 
     Sub OpenAnyFile(files As IEnumerable(Of String))
-        If FilePath.GetExtFull(files(0)) = ".srip" Then
+        If files(0).Ext = "srip" Then
             OpenProject(files(0))
-        ElseIf FileTypes.Video.Contains(FilePath.GetExt(files(0)).ToLower) Then
+        ElseIf FileTypes.Video.Contains(files(0).Ext.Lower) Then
             files.Sort()
             OpenVideoSourceFiles(files)
-        ElseIf FileTypes.Audio.Contains(FilePath.GetExt(files(0)).ToLower) Then
+        ElseIf FileTypes.Audio.Contains(files(0).Ext.Lower) Then
             tbAudioFile0.Text = files(0)
         Else
             files.Sort()
@@ -1936,10 +1933,10 @@ Public Class MainForm
             tbTargetFile.Text = targetDir + targetName + p.VideoEncoder.Muxer.OutputExtFull
 
             If p.SourceFile = p.TargetFile OrElse
-                (FileTypes.VideoIndex.Contains(FilePath.GetExtFull(p.SourceFile)) AndAlso
+                (FileTypes.VideoIndex.Contains(p.SourceFile.Ext) AndAlso
                 File.ReadAllText(p.SourceFile).Contains(p.TargetFile)) Then
 
-                tbTargetFile.Text = FilePath.GetDirAndBase(p.TargetFile) + "_new" + FilePath.GetExtFull(p.TargetFile)
+                tbTargetFile.Text = p.TargetFile.DirAndBase + "_new" + p.TargetFile.ExtFull
             End If
 
             Log.WriteHeader("MediaInfo Source File")
@@ -2339,14 +2336,12 @@ Public Class MainForm
         If Not p.ConvertSup2Sub Then Exit Sub
 
         For Each i In g.GetFilesInTempDirAndParent
-            If FilePath.GetExtFull(i) = ".sup" AndAlso g.IsSourceSameOrSimilar(i) AndAlso
-                Not File.Exists(FilePath.GetDirAndBase(i) + ".idx") Then
-
+            If i.Ext = "sup" AndAlso g.IsSourceSameOrSimilar(i) AndAlso Not File.Exists(i.DirAndBase + ".idx") Then
                 Using proc As New Proc
-                    proc.Header = "Convert sup to sub: " + FilePath.GetName(i)
+                    proc.Header = "Convert sup to sub"
                     proc.SkipStrings = {"#>", "#<", "Decoding frame"}
                     proc.File = Package.BDSup2SubPP.Path
-                    proc.Arguments = "-o """ + FilePath.GetDirAndBase(i) + ".idx"" """ + i + """"
+                    proc.Arguments = "-o """ + i.DirAndBase + ".idx"" """ + i + """"
                     proc.AllowedExitCodes = {}
                     proc.Start()
                 End Using
@@ -2661,7 +2656,6 @@ Public Class MainForm
             Next
 
             If p.RemindToCrop AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
-                p.Script.IsFilterActive("Crop") AndAlso
                 ProcessTip("Click here to open the crop dialog. When done continue with Next.") Then
 
                 AssistantMethod = AddressOf ShowCropDialog
@@ -2722,7 +2716,7 @@ Public Class MainForm
                 End If
             Next
 
-            If p.VideoEncoder.Muxer.OutputExtFull <> FilePath.GetExtFull(p.TargetFile) Then
+            If p.VideoEncoder.Muxer.OutputExtFull <> p.TargetFile.ExtFull Then
                 If ProcessTip("The container requires " + p.VideoEncoder.Muxer.OutputExt.ToUpper + " as target file type.") Then
                     g.Highlight(True, tbTargetFile)
                     gbAssistant.Text = "Invalid File Type"
@@ -4063,10 +4057,6 @@ Public Class MainForm
             b = ui.AddBool()
             b.Text = "Remind to set filters"
             b.Field = NameOf(p.RemindToSetFilters)
-
-            b = ui.AddBool()
-            b.Text = "Remind not to oversize"
-            b.Field = NameOf(p.RemindOversize)
 
             b = ui.AddBool()
             b.Text = "Remind about aspect ratio error"

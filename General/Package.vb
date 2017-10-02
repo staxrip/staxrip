@@ -55,8 +55,6 @@ Public Class Package
     Shared Property Items As New SortedDictionary(Of String, Package)
 
     Shared Property Python As Package = Add(New PythonPackage)
-
-    Shared Property checkmate As Package = Add(New checkmatePackage)
     Shared Property DGIndexIM As Package = Add(New DGIndexIMPackage)
     Shared Property DGIndexNV As Package = Add(New DGIndexNVPackage)
     Shared Property dsmux As Package = Add(New dsmuxPackage)
@@ -186,6 +184,23 @@ Public Class Package
         .URL = "http://www.avisynth.nl/users/vcmohan/modPlus/modPlus.html",
         .Description = "This plugin has 9 functions, which modify values of color components to attenuate noise, blur or equalize input.",
         .AvsFilterNames = {"GBlur", "MBlur", "Median", "minvar", "Morph", "SaltPepper", "SegAmp", "TweakHist", "Veed"}})
+
+    Shared Property checkmate As Package = Add(New PluginPackage With {
+        .Name = "checkmate",
+        .Filename = "checkmate.dll",
+        .WebURL = "http://github.com/tp7/checkmate",
+        .Description = "Spatial and temporal dot crawl reducer. Checkmate is most effective in static or low motion scenes. When using in high motion scenes (or areas) be careful, it's known to cause artifacts with its default values.",
+        .AvsFilterNames = {"checkmate"}})
+
+    Shared Property MedianBlur2 As Package = Add(New PluginPackage With {
+        .Name = "MedianBlur2",
+        .Filename = "MedianBlur2.dll",
+        .URL = "http://avisynth.nl/index.php/MedianBlur2",
+        .Description = "Implementation of constant time median filter for AviSynth.",
+        .AvsFilterNames = {"MedianBlur", "MedianBlurTemporal"},
+        .AvsFiltersFunc = Function() {
+            New VideoFilter("Misc", "MedianBlur", "MedianBlur(radiusy = 2, radiusu = 2, radiusv = 2)"),
+            New VideoFilter("Misc", "MedianBlurTemporal", "MedianBlurTemporal(radiusy = 2, radiusu = 2, radiusv = 2, temporalradius = 1)")}})
 
     Shared Property AutoAdjust As Package = Add(New PluginPackage With {
         .Name = "AutoAdjust",
@@ -355,7 +370,7 @@ Public Class Package
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .HelpURLFunc = Function(engine) If(engine = ScriptEngine.AviSynth, "https://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md", "https://github.com/FFMS/ffms2/blob/master/doc/ffms2-vapoursynth.md"),
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", colorspace = ""YV12"", \" + BR + "              cachefile = ""%source_temp_file%.ffindex"")")},
+        .AvsFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", $"FFVideoSource(""%source_file%"", colorspace = ""YUV420P8"", \{BR}              cachefile = ""%source_temp_file%.ffindex"")")},
         .VSFilterNames = {"ffms2"},
         .VSFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")")}})
 
@@ -1431,17 +1446,5 @@ Public Class xvid_encrawPackage
         Description = "XviD command line encoder"
         HelpFile = "help.txt"
         WebURL = "https://www.xvid.com"
-    End Sub
-End Class
-
-Public Class checkmatePackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "checkmate"
-        Filename = "checkmate.dll"
-        WebURL = "http://github.com/tp7/checkmate"
-        Description = "Spatial and temporal dot crawl reducer. Checkmate is most effective in static or low motion scenes. When using in high motion scenes (or areas) be careful, it's known to cause artifacts with its default values."
-        AvsFilterNames = {"checkmate"}
     End Sub
 End Class

@@ -346,12 +346,9 @@ Public Class BatchAudioProfile
             Else
                 Log.Write("Error", "no output found")
 
-                If Not FilePath.GetExtFull(File) = ".wav" Then
+                If Not File.Ext = "wav" Then
                     Audio.Convert(Me)
-
-                    If FilePath.GetExtFull(File) = ".wav" Then
-                        Encode()
-                    End If
+                    If File.Ext = "wav" Then Encode()
                 End If
             End If
         End If

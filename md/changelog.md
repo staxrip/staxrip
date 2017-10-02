@@ -6,9 +6,19 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
 #### Download
 
-https://drive.google.com/open?id=0B-gPKiJYuKuITld4dzhuTC1WWWM
+https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
+
+#### 1.7.0.1 unstable test build
+
+- fix: crash without error message using the macros %app:<>% and %app_dir:<>% in AviSynth
+
+- fix: crash that happened converting PGS to VobSub but might also be triggered by other features
+
+- new: added avisynth filter MedianBlur2
+
+- update: NVEnc 3.23
 
 #### 1.7.0.0 stable release
 

@@ -736,7 +736,7 @@ Public Class x265Params
     Property CSV As New BoolParam With {
         .Switch = "--csv",
         .Text = "Write encoding results to a comma separated value log file",
-        .ArgsFunc = Function() If(CSV.Value, "--csv """ + FilePath.GetDirAndBase(p.TargetFile) + ".csv""", Nothing)}
+        .ArgsFunc = Function() If(CSV.Value, "--csv """ + p.TargetFile.DirAndBase + ".csv""", Nothing)}
 
     Property RecursionSkip As New BoolParam With {
         .Switch = "--rskip",

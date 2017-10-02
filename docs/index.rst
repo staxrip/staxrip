@@ -7,10 +7,11 @@ Welcome to StaxRip's documentation!
 ===================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    intro
    features
+   screenshots
    powershell
    faq
    tools

@@ -863,7 +863,7 @@ adjust
 
 very basic port of the built-in Avisynth filter Tweak.
 
-Filters: 
+Filters: adjust.Tweak
 
 Used Version: 2015-03-22
 
@@ -875,7 +875,7 @@ d2vsource
 
 Source filter to open D2V index files created with DGIndex or D2VWitch.
 
-Filters: 
+Filters: d2v.Source
 
 Used Version: 1.0
 
@@ -887,7 +887,7 @@ Deblock
 
 Deblocking plugin using the deblocking filter of h264.
 
-Filters: 
+Filters: deblock.Deblock
 
 Used Version: 6
 
@@ -899,7 +899,7 @@ DeLogo
 
 DeLogo Plugin Ported for VapourSynth.
 
-Filters: 
+Filters: delogo.AddLogo, delogo.EraseLogo
 
 Used Version: 0.4
 
@@ -911,7 +911,7 @@ ffms2
 
 AviSynth+ and VapourSynth source filter supporting various input formats.
 
-Filters: FFVideoSource, FFAudioSource
+Filters: ffms2
 
 Used Version: 2.23.1
 
@@ -923,7 +923,7 @@ FFT3DFilter
 
 FFT3DFilter uses Fast Fourier Transform method for image processing in frequency domain.
 
-Filters: 
+Filters: fft3dfilter.FFT3DFilter
 
 Used Version: 2015
 
@@ -935,7 +935,7 @@ finesharp
 
 Port of Didée's FineSharp script to VapourSynth.
 
-Filters: 
+Filters: finesharp.sharpen
 
 Used Version: 2016-08-21
 
@@ -947,7 +947,7 @@ flash3kyuu_deband
 
 Simple debanding filter that can be quite effective for some anime sources.
 
-Filters: f3kdb
+Filters: f3kdb.Deband
 
 Used Version: 2.0.20140721
 
@@ -959,7 +959,7 @@ FluxSmooth
 
 FluxSmooth is a filter for smoothing of fluctuations.
 
-Filters: 
+Filters: SmoothT, SmoothST
 
 Used Version: 1.0
 
@@ -971,7 +971,7 @@ fmtconv
 
 Fmtconv is a format-conversion plug-in for the Vapoursynth video processing engine. It does resizing, bitdepth conversion with dithering and colorspace conversion.
 
-Filters: 
+Filters: fmtc.bitdepth, fmtc.convert, fmtc.matrix, fmtc.resample, fmtc.transfer
 
 Used Version: 20
 
@@ -983,7 +983,7 @@ GradCurve
 
 VapourSynth port of Gradation Curves Virtual Dub Plugin.
 
-Filters: 
+Filters: grad.Curve
 
 Used Version: 2.0
 
@@ -995,7 +995,7 @@ havsfunc
 
 Various popular AviSynth scripts ported to VapourSynth.
 
-Filters: 
+Filters: havsfunc.QTGMC, havsfunc.ediaa, havsfunc.daa, havsfunc.maa, havsfunc.SharpAAMCmod, havsfunc.Deblock_QED, havsfunc.DeHalo_alpha, havsfunc.YAHR, havsfunc.HQDeringmod, havsfunc.ivtc_txt60mc, havsfunc.Vinverse, havsfunc.Vinverse2, havsfunc.logoNR, havsfunc.LUTDeCrawl, havsfunc.LUTDeRainbow, havsfunc.GSMC, havsfunc.SMDegrain, havsfunc.SmoothLevels, havsfunc.FastLineDarkenMOD, havsfunc.LSFmod, havsfunc.GrainFactory3
 
 Used Version: 2017-03-06
 
@@ -1007,7 +1007,7 @@ KNLMeansCL
 
 KNLMeansCL is an optimized pixelwise OpenCL implementation of the Non-local means denoising algorithm. Every pixel is restored by the weighted average of all pixels in its search window. The level of averaging is determined by the filtering parameter h.
 
-Filters: KNLMeansCL
+Filters: knlm.KNLMeansCL
 
 Used Version: 1.1.0
 
@@ -1020,7 +1020,7 @@ msmoosh
 MSmooth is a spatial smoother that doesn't touch edges.
 MSharpen is a sharpener that tries to sharpen only edges.
 
-Filters: 
+Filters: msmoosh.MSmooth, msmoosh.MSharpen
 
 Used Version: 1.1
 
@@ -1032,7 +1032,7 @@ mvsfunc
 
 mawen1250's VapourSynth functions.
 
-Filters: 
+Filters: mvsfunc.Depth, mvsfunc.ToRGB, mvsfunc.ToYUV, mvsfunc.BM3D, mvsfunc.PlaneStatistics, mvsfunc.PlaneCompare, mvsfunc.ShowAverage, mvsfunc.FilterIf, mvsfunc.FilterCombed, mvsfunc.Min, mvsfunc.Max, mvsfunc.Avg, mvsfunc.MinFilter, mvsfunc.MaxFilter, mvsfunc.LimitFilter, mvsfunc.PointPower, mvsfunc.SetColorSpace, mvsfunc.AssumeFrame, mvsfunc.AssumeTFF, mvsfunc.AssumeBFF, mvsfunc.AssumeField, mvsfunc.AssumeCombed, mvsfunc.CheckVersion, mvsfunc.GetMatrix, mvsfunc.zDepth, mvsfunc.GetPlane, mvsfunc.PlaneAverage
 
 Used Version: 8
 
@@ -1044,7 +1044,7 @@ mvtools
 
 MVTools is a set of filters for motion estimation and compensation.
 
-Filters: 
+Filters: mv.Super, mv.Analyse, mv.Recalculate, mv.Compensate, mv.Degrain1, mv.Degrain2, mv.Degrain3, mv.Mask, mv.Finest, mv.FlowBlur, mv.FlowInter, mv.FlowFPS, mv.BlockFPS, mv.SCDetection
 
 Used Version: 19
 
@@ -1056,7 +1056,7 @@ nnedi3
 
 nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field.
 
-Filters: 
+Filters: nnedi3.nnedi3, nnedi3.nnedi3_rpow2
 
 Used Version: 10
 
@@ -1068,7 +1068,7 @@ scenechange
 
 
 
-Filters: 
+Filters: scenechange
 
 Used Version: 2014-09-25
 
@@ -1080,7 +1080,7 @@ temporalsoften
 
 
 
-Filters: 
+Filters: TemporalSoften
 
 Used Version: 2014-09-25
 
@@ -1092,7 +1092,7 @@ VSFilterMod
 
 AviSynth subtitle plugin with support for vobsub srt and ass.
 
-Filters: VobSub, TextSubMod
+Filters: vsfm.VobSub, vsfm.TextSubMod
 
 Used Version: 4
 
@@ -1104,7 +1104,7 @@ vslsmashsource
 
 VapourSynth source filter based on Libav supporting a wide range of input formats.
 
-Filters: 
+Filters: lsmas.LibavSMASHSource, lsmas.LWLibavSource
 
 Used Version: 929
 
@@ -1116,7 +1116,7 @@ Yadifmod
 
 Modified version of Fizick's avisynth filter port of yadif from mplayer. This version doesn't internally generate spatial predictions, but takes them from an external clip.
 
-Filters: 
+Filters: yadifmod.Yadifmod
 
 Used Version: 10
 

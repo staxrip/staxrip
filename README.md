@@ -63,7 +63,7 @@ https://github.com/stax76/staxrip/blob/master/changelog.md
 
 ## Screenshots
 
-https://github.com/stax76/staxrip/wiki/Screenshots
+https://github.com/stax76/staxrip/blob/master/Screenshots/screenshots.md
 
 ## Setup
 

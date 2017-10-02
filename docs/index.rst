@@ -11,8 +11,8 @@ Welcome to StaxRip's documentation!
 
    intro
    features
-   PowerShell
-   FAQ
+   powershell
+   faq
 
 
 Indices and tables

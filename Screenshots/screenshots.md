@@ -2,15 +2,15 @@
 
 ![](https://github.com/stax76/staxrip/blob/master/Screenshots/main.png)
 
-### x265 Encoder Options
+### x265 Encoder
 
 ![](https://github.com/stax76/staxrip/blob/master/Screenshots/x265.png)
 
-### NVIDIA Encoder Options
+### NVIDIA Encoder
 
 ![](https://github.com/stax76/staxrip/blob/master/Screenshots/nvenc.png)
 
-### Audio Encoding Options
+### Audio Encoding
 
 ![](https://github.com/stax76/staxrip/blob/master/Screenshots/audio.png)
 
@@ -20,7 +20,7 @@
 
 ### MediaInfo
 
-![](https://github.com/stax76/staxrip/blob/master/Screenshots/MediaInfo.png)
+![](https://github.com/stax76/staxrip/blob/master/Screenshots/media_info.png)
 
 ### Job Processing
 

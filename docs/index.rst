@@ -13,6 +13,7 @@ Welcome to StaxRip's documentation!
    features
    powershell
    faq
+   tools
 
 
 Indices and tables

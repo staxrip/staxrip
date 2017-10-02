@@ -98,9 +98,3 @@ It executes a batch script with solved macros. Macros are also available as envi
 The 'Execute Batch Script' command has a option 'Interpret Output' that can be turned on to interpret each console output line from the batch script or executables started in the batch script as StaxRip command. The documentation of the StaxRip commands is located at: Main Menu > Help > Command Line.
 
 Used executables can be powershell.exe, cscript.exe (VBScript/JScript), python.exe, any other scripting engine or any console app programed in any programming language.
-
-## PowerShell Scripting
-
-StaxRip can be automated via PowerShell scripting. There are two example scripts included, they can be found at:
-
-Main Menu > Tools > Scripts > Open Scripts Folder

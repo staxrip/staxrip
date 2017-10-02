@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -9,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; StaxRip  documentation</title>
+  <title>PowerShell Scripting &mdash; StaxRip  documentation</title>
   
 
   
@@ -34,9 +33,11 @@
 
   
         <link rel="index" title="Index"
-              href="#"/>
+              href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="StaxRip  documentation" href="index.html"/> 
+    <link rel="top" title="StaxRip  documentation" href="index.html"/>
+        <link rel="next" title="Frequently Asked Questions" href="FAQ.html"/>
+        <link rel="prev" title="Features" href="features.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -85,10 +86,15 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="PowerShell.html">PowerShell Scripting</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PowerShell Scripting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#scripting-events">Scripting Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scripting-support">Scripting Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scripting-examples">Scripting Examples</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 
@@ -134,12 +140,14 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Index</li>
+      <li>PowerShell Scripting</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
+            <a href="_sources/PowerShell.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -151,11 +159,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
+  <div class="section" id="powershell-scripting">
+<h1>PowerShell Scripting<a class="headerlink" href="#powershell-scripting" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="scripting-events">
+<h2>Scripting Events<a class="headerlink" href="#scripting-events" title="Permalink to this headline">¶</a></h2>
+<p>In order to run scripts on certain events read the help at:</p>
+<p>Main Menu &gt; Help &gt; Scripting</p>
+</div>
+<div class="section" id="scripting-support">
+<h2>Scripting Support<a class="headerlink" href="#scripting-support" title="Permalink to this headline">¶</a></h2>
+<p>If you have questions feel free to ask here:</p>
+<p><a class="reference external" href="https://github.com/stax76/staxrip/issues/200">https://github.com/stax76/staxrip/issues/200</a></p>
+</div>
+<div class="section" id="scripting-examples">
+<h2>Scripting Examples<a class="headerlink" href="#scripting-examples" title="Permalink to this headline">¶</a></h2>
+<p>Sets a deinterlace filter if the MediaInfo property ‘ScanType’ returns ‘Interlaced’:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span># active project
+$p = [ShortcutModule]::p
 
-<h1 id="index">Index</h1>
+#global object with miscelenius stuff
+$g = [ShortcutModule]::g
 
-<div class="genindex-jumpbox">
- 
+if ([MediaInfo]::GetVideo($p.FirstOriginalSourceFile, &quot;ScanType&quot;) -eq &quot;Interlaced&quot;)
+{
+    $p.Script.SetFilter(&quot;yadifmod2&quot;, &quot;Field&quot;, &quot;yadifmod2()&quot;)
+}
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -165,6 +196,15 @@
            </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="FAQ.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="features.html" class="btn btn-neutral" title="Features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

@@ -4,11 +4,11 @@ Features
 Preprocessing
 -------------
 
-Demuxing GUIs for MP4Box, mkvextrakt (mkvtoolnix), ffmpeg and eac3to.
+StaxRip includes demuxing GUIs for MP4Box, mkvextrakt, ffmpeg and eac3to.
 
-StaxRip can automatically demux all streams, show a GUI to select which streams should be demuxed or demuxing can be disabled in which case the streams are demuxed while job processing or are processed without demuxing.
+The app can automatically demux all streams, show a GUI to select which streams should be demuxed or demuxing can be disabled in which case the streams are demuxed while job processing or are processed without demuxing.
 
-Automatic demuxing with DGMPGDec, DGDecNV and DGDecIM
+Automatic demuxing with DGMPGDec, DGDecNV and DGDecIM is supported as well.
 
 Custom preprocessing tools for demuxing, re-muxing or indexing can be integrated and configured via command line.
 

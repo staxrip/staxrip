@@ -11,6 +11,7 @@ Welcome to StaxRip's documentation!
 
    intro
    features
+   PowerShell
    FAQ
 
 

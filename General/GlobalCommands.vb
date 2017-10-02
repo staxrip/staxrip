@@ -425,6 +425,37 @@ Public Class GlobalCommands
             End If
         Next
 
+        Dim supportedTools = "Supported Tools" + BR + "===============" + BR2 + "Tools" + BR + "-----" + BR2
+
+        For Each i In Package.Items.Values
+            If Not TypeOf i Is PluginPackage Then
+                supportedTools += i.Name + BR + "~".Multiply(i.Name.Length) + BR2 + i.Description + BR2
+                supportedTools += "Used Version: " + i.Version + BR2 + i.WebURL + BR2 + BR
+            End If
+        Next
+
+        supportedTools += "AviSynth Plugins" + BR + "----------------" + BR
+
+        For Each i In Package.Items.Values.OfType(Of PluginPackage)
+            If Not i.AvsFilterNames.NothingOrEmpty Then
+                supportedTools += i.Name + BR + "~".Multiply(i.Name.Length) + BR2 + i.Description + BR2
+                supportedTools += "Filters: " + i.AvsFilterNames.Join(", ") + BR2
+                supportedTools += "Used Version: " + i.Version + BR2 + i.WebURL + BR2 + BR
+            End If
+        Next
+
+        supportedTools += "VapourSynth Plugins" + BR + "-------------------" + BR
+
+        For Each i In Package.Items.Values.OfType(Of PluginPackage)
+            If Not i.VSFilterNames.NothingOrEmpty Then
+                supportedTools += i.Name + BR + "~".Multiply(i.Name.Length) + BR2 + i.Description + BR2
+                supportedTools += "Filters: " + i.AvsFilterNames.Join(", ") + BR2
+                supportedTools += "Used Version: " + i.Version + BR2 + i.WebURL + BR2 + BR
+            End If
+        Next
+
+        supportedTools.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\tools.rst")
+
         If msg <> "" Then
             Dim fs = Folder.Temp + "staxrip todo.txt"
             File.WriteAllText(fs, msg)

@@ -2179,6 +2179,7 @@ Public Class MainForm
             If isEncoding Then Throw New AbortException
         Catch ex As Exception
             g.OnException(ex)
+            OpenProject("", False)
         Finally
             If Not isEncoding Then
                 g.WriteDebugLog("ProcController.Finished OpenVideoSourceFiles")
@@ -4430,7 +4431,7 @@ Public Class MainForm
         ret.Add("Help|Website", Symbol.Globe)
         ret.Add("Help|Website|Issue Tracker", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.fa_bug, {"https://github.com/stax76/staxrip/issues"})
         ret.Add("Help|Website|Release Build", NameOf(g.DefaultCommands.ExecuteCommandLine), {"https://github.com/stax76/staxrip/releases"})
-        ret.Add("Help|Website|Test Build", NameOf(g.DefaultCommands.ExecuteCommandLine), {"https://github.com/stax76/staxrip/blob/master/md/changelog.md"})
+        ret.Add("Help|Website|Test Build", NameOf(g.DefaultCommands.ExecuteCommandLine), {"https://github.com/stax76/staxrip/blob/master/changelog.md"})
         ret.Add("Help|Donate", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Heart, {Strings.DonationsURL})
         ret.Add("Help|Scripting", NameOf(ShowScriptingHelp), Symbol.Code)
         ret.Add("Help|Command Line", NameOf(ShowCommandLineHelp), Symbol.fa_terminal)

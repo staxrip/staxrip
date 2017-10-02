@@ -277,7 +277,7 @@ Public Class ApplicationSettings
     End Sub
 
     Sub Migrate()
-        Dim mainMenuVersion = 13
+        Dim mainMenuVersion = 14
 
         If Not Storage.GetBool("main menu update" & mainMenuVersion) Then
             If 0 = CustomMenuMainForm.GetAllItems().Where(
@@ -293,7 +293,17 @@ Public Class ApplicationSettings
                     i.Parameters.Count > 0 AndAlso TypeOf i.Parameters(0) Is String AndAlso
                     i.Parameters(0).ToString <> "" AndAlso i.Parameters(0).ToString.EndsWith("test-build.md") Then
 
-                    i.Parameters(0) = "https://github.com/stax76/staxrip/blob/master/md/changelog.md"
+                    i.Parameters(0) = "https://github.com/stax76/staxrip/blob/master/changelog.md"
+                    Exit For
+                End If
+            Next
+
+            For Each i In CustomMenuMainForm.GetAllItems()
+                If i.MethodName = NameOf(g.DefaultCommands.ExecuteCommandLine) AndAlso
+                    i.Parameters.Count > 0 AndAlso TypeOf i.Parameters(0) Is String AndAlso
+                    i.Parameters(0).ToString <> "" AndAlso i.Parameters(0).ToString.EndsWith("/md/changelog.md") Then
+
+                    i.Parameters(0) = "https://github.com/stax76/staxrip/blob/master/changelog.md"
                     Exit For
                 End If
             Next

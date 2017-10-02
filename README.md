@@ -75,7 +75,7 @@ To add StaxRip to the windows start menu use the context menu of the windows fil
 
 ## Documentation
 
-http://staxrip.readthedocs.io/en/latest/
+http://staxrip.readthedocs.io
 
 ## AviSynth and VapourSynth scripting
 

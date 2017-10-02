@@ -10,7 +10,7 @@ https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
-#### 1.7.0.2 unstable test build
+#### upcoming, not yet uploaded
 
 - new: ffmpeg re-mux TS to MKV includes all audio tracks (Preprocessing settings need to be reset manually)
 

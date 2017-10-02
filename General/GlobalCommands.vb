@@ -449,12 +449,24 @@ Public Class GlobalCommands
         For Each i In Package.Items.Values.OfType(Of PluginPackage)
             If Not i.VSFilterNames.NothingOrEmpty Then
                 supportedTools += i.Name + BR + "~".Multiply(i.Name.Length) + BR2 + i.Description + BR2
-                supportedTools += "Filters: " + i.AvsFilterNames.Join(", ") + BR2
+                supportedTools += "Filters: " + i.VSFilterNames.Join(", ") + BR2
                 supportedTools += "Used Version: " + i.Version + BR2 + i.WebURL + BR2 + BR
             End If
         Next
 
         supportedTools.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\tools.rst")
+
+        Dim screenshots = "Screenshots" + BR + "===========" + BR2
+
+        Dim screenshotFiles = Directory.GetFiles("D:\Projekte\VS\VB\StaxRip\docs\screenshots").ToList
+        screenshotFiles.Sort(New StringLogicalComparer)
+
+        For Each i In screenshotFiles
+            Dim name = i.Base.Replace("_", " ").Trim
+            screenshots += name + BR + "-".Multiply(name.Length) + BR2 + ".. image:: screenshots/" + i.FileName + BR2
+        Next
+
+        screenshots.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\screenshots.rst")
 
         If msg <> "" Then
             Dim fs = Folder.Temp + "staxrip todo.txt"

@@ -79,7 +79,7 @@ Public Class Package
     Shared Property MediaInfo As Package = Add(New Package With {
         .Name = "MediaInfo",
         .Filename = "MediaInfo.dll",
-        .WebURL = "http://mediainfo.sourceforge.net",
+        .WebURL = "https://mediaarea.net/en/MediaInfo",
         .Description = "MediaInfo is used by StaxRip to read infos from media files."})
 
     Shared Property MP4Box As Package = Add(New Package With {

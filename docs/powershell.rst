@@ -1,23 +1,10 @@
 PowerShell Scripting
 ====================
 
-Scripting Events
-----------------
-
-In order to run scripts on certain events read the help at:
-
-Main Menu > Help > Scripting
+StaxRip can be automated via PowerShell scripting.
 
 
-Scripting Support
------------------
-
-If you have questions feel free to ask here:
-
-https://github.com/stax76/staxrip/issues/200
-
-
-Scripting Examples
+Code Examples
 ------------------
 
 Sets a deinterlace filter if the MediaInfo property 'ScanType' returns 'Interlaced'::
@@ -32,3 +19,19 @@ Sets a deinterlace filter if the MediaInfo property 'ScanType' returns 'Interlac
 	{
 	    $p.Script.SetFilter("yadifmod2", "Field", "yadifmod2()")
 	}
+
+
+Events
+------
+
+In order to run scripts on certain events the following events are available:
+
+.. include:: events.rst
+
+
+Support
+-----------------
+
+If you have questions feel free to ask here:
+
+https://github.com/stax76/staxrip/issues/200

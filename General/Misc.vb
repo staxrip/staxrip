@@ -836,7 +836,7 @@ Public Class Macro
     Shared Function GetTips() As StringPairList
         Dim ret As New StringPairList
 
-        For Each i In GetMacros(True)
+        For Each i In GetMacros(True, True)
             ret.Add(i.Name, i.Description)
         Next
 
@@ -865,21 +865,23 @@ Public Class Macro
         Return Name.CompareTo(other.Name)
     End Function
 
-    Shared Function GetMacros(Optional includeSpecial As Boolean = False) As List(Of Macro)
+    Shared Function GetMacros(Optional includeSpecial As Boolean = False,
+                              Optional includeApps As Boolean = False) As List(Of Macro)
+
         Dim ret As New List(Of Macro)
 
         If includeSpecial Then
             ret.Add(New Macro("$browse_file$", "Browse For File", GetType(String), "Filepath returned from a file browser."))
             ret.Add(New Macro("$enter_text$", "Enter Text", GetType(String), "Text entered in a input box."))
-            ret.Add(New Macro("$enter_text:<prompt>$", "Enter Text (Params)", GetType(String), "Text entered in a input box."))
-            ret.Add(New Macro("$select:<param1;param2;...>$", "Select", GetType(String), "String selected from dropdown, to show a optional message the first parameter has to start with msg: and to give the items optional captions use caption|value." + BR2 + "Example: $select:msg:hello;cap1|val1;cap2|val2$"))
-            ret.Add(New Macro("app:<name>", "Application File Path", GetType(String), "Returns the path of a aplication. Possible names are: " + Package.Items.Values.Select(Function(arg) arg.Name).Join(", ")))
-            ret.Add(New Macro("app_dir:<name>", "Application Directory", GetType(String), "Returns the directory of a aplication. Possible names are: " + Package.Items.Values.Select(Function(arg) arg.Name).Join(", ")))
-            ret.Add(New Macro("eval:<expression>", "Eval Math Expression", GetType(String), "Evaluates a math expression which may contain default macros."))
-            ret.Add(New Macro("eval_ps:<expression>", "Eval PowerShell Expression", GetType(String), "Evaluates a PowerShell expression which may contain default macros."))
-            ret.Add(New Macro("filter:<name>", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
-            ret.Add(New Macro("media_info_audio:<property>", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
-            ret.Add(New Macro("media_info_video:<property>", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
+            ret.Add(New Macro("$enter_text:prompt$", "Enter Text (Params)", GetType(String), "Text entered in a input box."))
+            ret.Add(New Macro("$select:param1;param2;param...$", "Select", GetType(String), "String selected from dropdown, to show a optional message the first parameter has to start with msg: and to give the items optional captions use caption|value." + BR2 + "Example: $select:msg:hello;cap1|val1;cap2|val2$"))
+            ret.Add(New Macro("app:name", "Application File Path", GetType(String), "Returns the path of a aplication."))
+            ret.Add(New Macro("app_dir:name", "Application Directory", GetType(String), "Returns the directory of a aplication."))
+            ret.Add(New Macro("eval:expression", "Eval Math Expression", GetType(String), "Evaluates a math expression which may contain default macros."))
+            ret.Add(New Macro("eval_ps:expression", "Eval PowerShell Expression", GetType(String), "Evaluates a PowerShell expression which may contain default macros."))
+            ret.Add(New Macro("filter:name", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
+            ret.Add(New Macro("media_info_audio:property", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
+            ret.Add(New Macro("media_info_video:property", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
         End If
 
         ret.Add(New Macro("audio_bitrate", "Audio Bitrate", GetType(Integer), "Overall audio bitrate."))
@@ -944,6 +946,16 @@ Public Class Macro
         ret.Add(New Macro("working_dir", "Working Directory", GetType(String), "Directory of the source file or the temp directory if enabled."))
 
         ret.Sort()
+
+        If includeApps Then
+            For Each i In Package.Items.Values
+                ret.Add(New Macro("app:" + i.Name, "File path to " + i.Name, GetType(String), "File path to " + i.Name))
+            Next
+
+            For Each i In Package.Items.Values
+                ret.Add(New Macro("app_dir:" + i.Name, "Folder path to " + i.Name, GetType(String), "Folder path to " + i.Name))
+            Next
+        End If
 
         Return ret
     End Function

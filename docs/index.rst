@@ -12,6 +12,10 @@ Welcome to StaxRip's documentation!
    intro
    features
    screenshots
+   support
+   macros
+   cli
+   mediainfo
    powershell
    faq
    tools

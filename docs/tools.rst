@@ -161,7 +161,7 @@ MediaInfo is used by StaxRip to read infos from media files.
 
 Used Version: 0.7.99
 
-http://mediainfo.sourceforge.net
+https://mediaarea.net/en/MediaInfo
 
 
 mkvextract

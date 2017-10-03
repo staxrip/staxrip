@@ -234,9 +234,9 @@ Public Class GlobalCommands
         End Using
     End Sub
 
-    <Command("Executes a PowerShell (*.ps1) script.")>
+    <Command("Executes a PowerShell script.")>
     Sub ExecuteScriptFile(<DispName("File Path")>
-                          <Description("Filepath to a PowerShell (*.ps1) script, the path may contain macros.")>
+                          <Description("Filepath to a PowerShell script, the path may contain macros.")>
                           <Editor(GetType(OpenFileDialogEditor), GetType(UITypeEditor))>
                           filepath As String)
 
@@ -276,6 +276,11 @@ Public Class GlobalCommands
 
     <Command("Test")>
     Sub Test()
+        If Not File.Exists(Folder.Startup.Parent + "Encoding\nvenc.vb") Then
+            MsgError("This feature is development related.")
+            Exit Sub
+        End If
+
         Dim msg = ""
 
         Dim nvExcept = "--help --version --check-device --avsw --input-analyze
@@ -468,6 +473,97 @@ Public Class GlobalCommands
 
         screenshots.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\screenshots.rst")
 
+        Dim macros = "Macros" + BR + "======" + BR2
+
+        For Each i In Macro.GetTips
+            macros += "``" + i.Name + "``" + BR2 + i.Value + BR2
+        Next
+
+        macros.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\macros.rst")
+
+        Dim scriptingEvents = ""
+
+        For Each i As ApplicationEvent In System.Enum.GetValues(GetType(ApplicationEvent))
+            scriptingEvents += "- ``" + i.ToString + "`` " + DispNameAttribute.GetValueForEnum(i) + BR
+        Next
+
+        scriptingEvents += BR + "Assign to an event by saving a script file in the scripting folder using the event name as file name." + BR2 + "The scripting folder can be opened with:" + BR2 + "Main Menu > Tools > Scripts > Open script folder" + BR2 + "Use one of the following file names:" + BR2
+
+        For Each i In System.Enum.GetNames(GetType(ApplicationEvent))
+            scriptingEvents += "- " + i.ToString + ".ps1" + BR
+        Next
+
+        scriptingEvents.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\powershell_events.rst")
+
+        Dim switches = "Command Line Interface
+======================
+
+Switches are processed in the order they appear in the command line.
+
+The command line interface, the customizable main menu and Event Commands features are built with a shared command system.
+
+There is a special mode where only the MediaInfo window is shown using -mediainfo , this is useful for Windows File Explorer integration with an app like Open++.
+
+
+Examples
+--------
+
+StaxRip C:\\Movie\\project.srip
+
+StaxRip C:\\Movie\\VTS_01_1.VOB C:\\Movie 2\\VTS_01_2.VOB
+
+StaxRip -LoadTemplate:DVB C:\\Movie\\capture.mpg -StartEncoding -Standby
+
+StaxRip -ShowMessageBox:""main text..."",""text ..."",info
+
+
+Switches
+--------
+
+"
+
+        Dim commands As New List(Of Command)(g.MainForm.CommandManager.Commands.Values)
+        commands.Sort()
+
+        Dim commandList As New StringPairList
+
+        For Each command In commands
+            Dim params = command.MethodInfo.GetParameters
+            Dim switch = "-" + command.MethodInfo.Name + ":"
+
+            For Each param In params
+                switch += param.Name + ","
+            Next
+
+            switch = switch.TrimEnd(",:".ToCharArray)
+            switches += switch + BR + "~".Multiply(switch.Length) + BR2
+
+            For Each param In params
+                Dim d = param.GetCustomAttribute(Of DescriptionAttribute)
+
+                If Not d Is Nothing Then
+                    switches += param.Name + ": " + param.GetCustomAttribute(Of DescriptionAttribute).Description + BR2
+                End If
+            Next
+
+            Dim enumList As New List(Of String)
+
+            For Each param In params
+                If param.ParameterType.IsEnum Then
+                    enumList.Add(param.ParameterType.Name + ": " +
+                                 System.Enum.GetNames(param.ParameterType).Join(", "))
+                End If
+            Next
+
+            For Each en In enumList
+                switches += en + BR2
+            Next
+
+            switches += command.Attribute.Description + BR2 + BR
+        Next
+
+        switches.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\cli.rst")
+
         If msg <> "" Then
             Dim fs = Folder.Temp + "staxrip todo.txt"
             File.WriteAllText(fs, msg)
@@ -508,9 +604,6 @@ Public Class GlobalCommands
         Dim f As New HelpForm()
 
         Select Case topic
-            Case "macros"
-                f.Doc.WriteStart("Macros")
-                f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
             Case "info"
                 f.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
                 Dim licensePath = Folder.Startup + "License.txt"

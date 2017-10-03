@@ -1380,15 +1380,10 @@ Public Class MainForm
                             Dim plugin = TryCast(iPackage, PluginPackage)
 
                             If plugin Is Nothing Then
-                                ActionMenuItem.Add(i.DropDownItems, "Apps | " + iPackage.Name, Sub() g.StartProcess(helpPath))
+                                ActionMenuItem.Add(i.DropDownItems, iPackage.Name.Substring(0, 1).Upper + " | " + iPackage.Name, Sub() g.StartProcess(helpPath))
                             Else
-                                If plugin.AvsFilterNames?.Length > 0 Then
-                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | AviSynth | " + iPackage.Name, Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.AviSynth)))
-                                End If
-
-                                If plugin.VSFilterNames?.Length > 0 Then
-                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | VapourSynth | " + iPackage.Name, Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.VapourSynth)))
-                                End If
+                                If plugin.AvsFilterNames?.Length > 0 Then ActionMenuItem.Add(i.DropDownItems, iPackage.Name.Substring(0, 1).Upper + " | " + iPackage.Name + " (AviSynth)", Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.AviSynth)))
+                                If plugin.VSFilterNames?.Length > 0 Then ActionMenuItem.Add(i.DropDownItems, iPackage.Name.Substring(0, 1).Upper + " | " + iPackage.Name + " (VapourSynth)", Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.VapourSynth)))
                             End If
                         End If
                     Next
@@ -4263,95 +4258,6 @@ Public Class MainForm
         End Using
     End Sub
 
-    <Command("Shows help for command line automation.")>
-    Private Sub ShowCommandLineHelp()
-        BeginInvoke(Sub() ShowCommandLineHelpInternal())
-    End Sub
-
-    <Command("Shows help for script automation.")>
-    Private Sub ShowScriptingHelp()
-        BeginInvoke(Sub() ShowScriptingHelpInternal())
-    End Sub
-
-    Private Sub ShowCommandLineHelpInternal()
-        Dim f As New HelpForm()
-        f.Owner = Me
-
-        f.Doc.WriteStart("Command Line Reference")
-        f.Doc.WriteP("Switches are processed in the order they appear in the command line.")
-        f.Doc.WriteP("The command line interface, main menu and Event Commands feature are built on top of a common command engine which exposes a rich set of commands.")
-        f.Doc.WriteP("There is a special mode where only the MediaInfo window is shown using -mediainfo <file>, this is useful for Windows File Explorer integration with an app like Open++.")
-        f.Doc.WriteElement("h2", "Examples")
-        f.Doc.WriteP("StaxRip ""C:\Movie\project.srip""")
-        f.Doc.WriteP("StaxRip ""C:\Movie\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB""")
-        f.Doc.WriteP("StaxRip -LoadTemplate:DVB ""C:\Movie\capture.mpg"" -StartEncoding -Standby")
-        f.Doc.WriteP("StaxRip -ShowMessageBox:""main text..."",""text..."",info")
-
-        Dim commands As New List(Of Command)(CommandManager.Commands.Values)
-        commands.Sort()
-
-        Dim commandList As New StringPairList
-
-        For Each command In commands
-            Dim params = command.MethodInfo.GetParameters
-            Dim cl = "-" + command.MethodInfo.Name + ":"
-
-            For Each param In params
-                cl += param.Name + ","
-            Next
-
-            cl = cl.TrimEnd(",:".ToCharArray)
-            f.Doc.WriteH2(cl)
-
-            For Each param In params
-                Dim d = param.GetCustomAttribute(Of DescriptionAttribute)
-
-                If Not d Is Nothing Then
-                    f.Doc.WriteP(param.Name + ": " + param.GetCustomAttribute(Of DescriptionAttribute).Description)
-                End If
-            Next
-
-            Dim enumList As New List(Of String)
-
-            For Each param In params
-                If param.ParameterType.IsEnum Then
-                    enumList.Add(param.ParameterType.Name + ": " +
-                                 System.Enum.GetNames(param.ParameterType).Join(", "))
-                End If
-            Next
-
-            For Each en In enumList
-                f.Doc.WriteP(en)
-            Next
-
-            f.Doc.WriteP(command.Attribute.Description)
-        Next
-
-        f.Show()
-    End Sub
-
-    Private Sub ShowScriptingHelpInternal()
-        Dim f As New HelpForm()
-
-        f.Doc.WriteStart("Scripting")
-        f.Doc.WriteP("StaxRip can be automated via PowerShell scripting, the documentation is on github:")
-        f.Doc.WriteP("[https://github.com/stax76/staxrip#scripting https://github.com/stax76/staxrip#scripting]")
-
-        f.Doc.WriteH2("In order to run scripts on certain events the following events are available:")
-
-        For Each i As ApplicationEvent In System.Enum.GetValues(GetType(ApplicationEvent))
-            f.Doc.WriteP(i.ToString + ": " + DispNameAttribute.GetValueForEnum(i))
-        Next
-
-        f.Doc.WriteH2("The following paths are recognized:")
-
-        For Each i In System.Enum.GetNames(GetType(ApplicationEvent))
-            f.Doc.WriteP(Folder.Settings + "Scripts\" + i.ToString + ".ps1")
-        Next
-
-        f.Show()
-    End Sub
-
     <Command("Opens a given URL or local file in the help browser.")>
     Sub ShowHelpURL(
         <DispName("URL"),
@@ -4423,19 +4329,8 @@ Public Class MainForm
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
 
-        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Lightbulb, {"https://github.com/stax76/staxrip#documentation"})
-        ret.Add("Help|Support Forum", Symbol.People)
-        ret.Add("Help|Support Forum|forum.doom9.org", NameOf(g.DefaultCommands.ExecuteCommandLine), {"http://forum.doom9.org/showthread.php?t=172068&page=999999"})
-        If g.IsCulture("de") Then ret.Add("Help|Support Forum|forum.gleitz.info", NameOf(g.DefaultCommands.ExecuteCommandLine), {"http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-%28Diskussion%29/page999999"})
-        ret.Add("Help|Support Forum|forum.videohelp.com", NameOf(g.DefaultCommands.ExecuteCommandLine), {"http://forum.videohelp.com/threads/369913-StaxRip-x64-for-AviSynth-VapourSynth-x264-x265-GPU-encoding/page999999"})
-        ret.Add("Help|Website", Symbol.Globe)
-        ret.Add("Help|Website|Issue Tracker", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.fa_bug, {"https://github.com/stax76/staxrip/issues"})
-        ret.Add("Help|Website|Release Build", NameOf(g.DefaultCommands.ExecuteCommandLine), {"https://github.com/stax76/staxrip/releases"})
-        ret.Add("Help|Website|Test Build", NameOf(g.DefaultCommands.ExecuteCommandLine), {"https://github.com/stax76/staxrip/blob/master/changelog.md"})
+        ret.Add("Help|Docs", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Lightbulb, {"http://staxrip.readthedocs.io"})
         ret.Add("Help|Donate", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Heart, {Strings.DonationsURL})
-        ret.Add("Help|Scripting", NameOf(ShowScriptingHelp), Symbol.Code)
-        ret.Add("Help|Command Line", NameOf(ShowCommandLineHelp), Symbol.fa_terminal)
-        ret.Add("Help|Macros", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.CalculatorPercentage, {"macros"})
         ret.Add("Help|Apps", NameOf(DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
         ret.Add("Help|-")
         ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.Info, {"info"})
@@ -4806,7 +4701,6 @@ Public Class MainForm
                 End If
             Catch ex As Exception
                 MsgWarn("Error parsing argument:" + BR2 + i.Value + BR2 + ex.Message)
-                ShowScriptingHelp()
             End Try
         Next
 

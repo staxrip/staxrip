@@ -774,7 +774,7 @@ table {
     End Sub
 
     Sub WriteTable(title As String, text As String, list As StringPairList)
-        WriteTable(title, text, list, True)
+        WriteTable(title, text, list, False)
     End Sub
 
     Private Sub WriteTable(title As String, text As String, list As StringPairList, sort As Boolean)
@@ -796,6 +796,14 @@ table {
         Writer.WriteAttributeString("cellpadding", "3")
         Writer.WriteAttributeString("bordercolordark", "white")
         Writer.WriteAttributeString("bordercolorlight", "black")
+
+        Writer.WriteStartElement("col")
+        Writer.WriteAttributeString("style", "width: 40%")
+        Writer.WriteEndElement()
+
+        Writer.WriteStartElement("col")
+        Writer.WriteAttributeString("style", "width: 60%")
+        Writer.WriteEndElement()
 
         For Each i As StringPair In list
             Writer.WriteStartElement("tr")

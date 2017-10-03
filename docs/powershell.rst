@@ -1,24 +1,7 @@
-PowerShell Scripting
+﻿PowerShell Scripting
 ====================
 
 StaxRip can be automated via PowerShell scripting.
-
-
-Code Examples
-------------------
-
-Sets a deinterlace filter if the MediaInfo property 'ScanType' returns 'Interlaced'::
-
-	# active project
-	$p = [ShortcutModule]::p
-
-	#global object with miscelenius stuff
-	$g = [ShortcutModule]::g
-
-	if ([MediaInfo]::GetVideo($p.FirstOriginalSourceFile, "ScanType") -eq "Interlaced")
-	{
-	    $p.Script.SetFilter("yadifmod2", "Field", "yadifmod2()")
-	}
 
 
 Events
@@ -26,12 +9,58 @@ Events
 
 In order to run scripts on certain events the following events are available:
 
-.. include:: events.rst
+- ``ProjectLoaded`` After Project Loaded
+- ``JobProcessed`` After Project Processed
+- ``VideoEncoded`` After Video Encoded
+- ``BeforeJobProcessed`` Before Job Processed
+- ``AfterSourceLoaded`` After Source Loaded
+- ``ApplicationExit`` Application Exit
+- ``ProjectOrSourceLoaded`` After Project Or Source Loaded
+- ``JobsEncoded`` After Jobs Encoded
 
+Assign to an event by saving a script file in the scripting folder using the event name as file name.
+
+The scripting folder can be opened with:
+
+Main Menu > Tools > Scripts > Open script folder
+
+Use one of the following file names:
+
+- ProjectLoaded.ps1
+- JobProcessed.ps1
+- VideoEncoded.ps1
+- BeforeJobProcessed.ps1
+- AfterSourceLoaded.ps1
+- ApplicationExit.ps1
+- ProjectOrSourceLoaded.ps1
+- JobsEncoded.ps1
 
 Support
------------------
+-------
 
 If you have questions feel free to ask here:
 
 https://github.com/stax76/staxrip/issues/200
+
+
+Default Scripts
+---------------
+
+AfterSourceLoaded.ps1
+~~~~~~~~~~~~~~~~~~~~~
+
+.. literalinclude:: D:\Projekte\VS\VB\StaxRip\bin\Apps\Scripts\AfterSourceLoaded.ps1
+   :language: powershell
+
+Convert Bluray (BT709) to 10bit 400nits (MaxFALL) HDR v3.ps1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. literalinclude:: D:\Projekte\VS\VB\StaxRip\bin\Apps\Scripts\Convert Bluray (BT709) to 10bit 400nits (MaxFALL) HDR v3.ps1
+   :language: powershell
+
+Re-mux v4.ps1
+~~~~~~~~~~~~~
+
+.. literalinclude:: D:\Projekte\VS\VB\StaxRip\bin\Apps\Scripts\Re-mux v4.ps1
+   :language: powershell
+

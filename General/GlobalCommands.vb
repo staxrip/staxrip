@@ -461,8 +461,7 @@ Public Class GlobalCommands
 
         supportedTools.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\tools.rst")
 
-        Dim screenshots = "Screenshots" + BR + "===========" + BR2
-
+        Dim screenshots = "Screenshots" + BR + "===========" + BR2 + ".. contents::" + BR2
         Dim screenshotFiles = Directory.GetFiles("D:\Projekte\VS\VB\StaxRip\docs\screenshots").ToList
         screenshotFiles.Sort(New StringLogicalComparer)
 
@@ -481,19 +480,49 @@ Public Class GlobalCommands
 
         macros.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\macros.rst")
 
-        Dim scriptingEvents = ""
+        Dim powershell = "PowerShell Scripting
+====================
+
+StaxRip can be automated via PowerShell scripting.
+
+
+Events
+------
+
+In order to run scripts on certain events the following events are available:
+
+"
 
         For Each i As ApplicationEvent In System.Enum.GetValues(GetType(ApplicationEvent))
-            scriptingEvents += "- ``" + i.ToString + "`` " + DispNameAttribute.GetValueForEnum(i) + BR
+            powershell += "- ``" + i.ToString + "`` " + DispNameAttribute.GetValueForEnum(i) + BR
         Next
 
-        scriptingEvents += BR + "Assign to an event by saving a script file in the scripting folder using the event name as file name." + BR2 + "The scripting folder can be opened with:" + BR2 + "Main Menu > Tools > Scripts > Open script folder" + BR2 + "Use one of the following file names:" + BR2
+        powershell += BR + "Assign to an event by saving a script file in the scripting folder using the event name as file name." + BR2 + "The scripting folder can be opened with:" + BR2 + "Main Menu > Tools > Scripts > Open script folder" + BR2 + "Use one of the following file names:" + BR2
 
         For Each i In System.Enum.GetNames(GetType(ApplicationEvent))
-            scriptingEvents += "- " + i.ToString + ".ps1" + BR
+            powershell += "- " + i.ToString + ".ps1" + BR
         Next
 
-        scriptingEvents.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\powershell_events.rst")
+        powershell += BR + "Support
+-------
+
+If you have questions feel free to ask here:
+
+https://github.com/stax76/staxrip/issues/200
+
+
+Default Scripts
+---------------
+
+"
+
+        For Each i In Directory.GetFiles("D:\Projekte\VS\VB\StaxRip\bin\Apps\Scripts")
+            Dim filename = i.FileName
+            powershell += filename + BR + "~".Multiply(filename.Length) + BR2
+            powershell += ".. literalinclude:: " + i + BR + "   :language: powershell" + BR2
+        Next
+
+        powershell.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\powershell.rst")
 
         Dim switches = "Command Line Interface
 ======================

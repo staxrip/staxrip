@@ -1,6 +1,8 @@
 ﻿Screenshots
 ===========
 
+.. contents::
+
 Main
 ----
 

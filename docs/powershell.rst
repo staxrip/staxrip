@@ -49,18 +49,18 @@ Default Scripts
 AfterSourceLoaded.ps1
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: D:\Projekte\VS\VB\StaxRip\bin\Apps\Scripts\AfterSourceLoaded.ps1
+.. literalinclude:: powershell\AfterSourceLoaded.ps1
    :language: powershell
 
 Convert Bluray (BT709) to 10bit 400nits (MaxFALL) HDR v3.ps1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: D:\Projekte\VS\VB\StaxRip\bin\Apps\Scripts\Convert Bluray (BT709) to 10bit 400nits (MaxFALL) HDR v3.ps1
+.. literalinclude:: powershell\Convert Bluray (BT709) to 10bit 400nits (MaxFALL) HDR v3.ps1
    :language: powershell
 
 Re-mux v4.ps1
 ~~~~~~~~~~~~~
 
-.. literalinclude:: D:\Projekte\VS\VB\StaxRip\bin\Apps\Scripts\Re-mux v4.ps1
+.. literalinclude:: powershell\Re-mux v4.ps1
    :language: powershell
 

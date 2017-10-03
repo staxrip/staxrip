@@ -520,7 +520,7 @@ Default Scripts
             FileHelp.Copy(i, "D:\Projekte\VS\VB\StaxRip\docs\powershell\" + i.FileName)
             Dim filename = i.FileName
             powershell += filename + BR + "~".Multiply(filename.Length) + BR2
-            powershell += ".. literalinclude:: " + "powershell\" + i.FileName + BR + "   :language: powershell" + BR2
+            powershell += ".. literalinclude:: " + "powershell/" + i.FileName + BR + "   :language: powershell" + BR2
         Next
 
         powershell.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\powershell.rst")

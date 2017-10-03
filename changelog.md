@@ -13,6 +13,7 @@ https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 #### upcoming, not yet uploaded
 
 - new: ffmpeg re-mux TS to MKV includes all audio tracks (Preprocessing settings need to be reset manually)
+- new: much improved docs at http://staxrip.readthedocs.io
 
 #### 1.7.0.1 unstable test build
 

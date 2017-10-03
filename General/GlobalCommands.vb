@@ -517,7 +517,10 @@ Default Scripts
 "
 
         For Each i In Directory.GetFiles("D:\Projekte\VS\VB\StaxRip\bin\Apps\Scripts")
-            FileHelp.Copy(i, "D:\Projekte\VS\VB\StaxRip\docs\powershell\" + i.FileName)
+            Dim psdir = "D:\Projekte\VS\VB\StaxRip\docs\powershell\"
+            DirectoryHelp.Delete(psdir)
+            Directory.CreateDirectory(psdir)
+            FileHelp.Copy(i, psdir + i.FileName)
             Dim filename = i.FileName
             powershell += filename + BR + "~".Multiply(filename.Length) + BR2
             powershell += ".. literalinclude:: " + "powershell/" + i.FileName + BR + "   :language: powershell" + BR2

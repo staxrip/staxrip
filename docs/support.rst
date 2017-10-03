@@ -32,4 +32,4 @@ If you don't want to use the issue tracker or forum you can mail me in English o
 Donate
 ------
 
-You can support StaxRip with a `PayPal donation <https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L7R6AKUHJQLM6&lc=GB&no_note=1&cn=Message%3a&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted>`_.
+Please consider to support my work with a `PayPal donation <https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L7R6AKUHJQLM6&lc=GB&no_note=1&cn=Message%3a&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted>`_.

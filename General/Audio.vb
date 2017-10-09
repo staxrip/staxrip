@@ -1,5 +1,4 @@
 ﻿Imports System.Text
-Imports System.Text.RegularExpressions
 Imports System.Globalization
 
 Imports VB6 = Microsoft.VisualBasic
@@ -13,11 +12,7 @@ Public Class Audio
 
         If TypeOf ap Is GUIAudioProfile Then
             Dim gap = DirectCast(ap, GUIAudioProfile)
-
-            If gap.Params.NormalizeMode = NormalizeMode.Automatic Then
-                Dim cmdl = gap.CommandLines
-                If cmdl <> "" AndAlso cmdl.Contains("ffmpeg") OrElse cmdl.Contains("fdkaac") Then gap.Normalize()
-            End If
+            If gap.CommandLines.Contains("ffmpeg") Then gap.NormalizeFF()
         End If
 
         If ap.Decoder <> AudioDecoderMode.Automatic Then Convert(ap)
@@ -93,8 +88,8 @@ Public Class Audio
         End If
 
         Select Case ap.Decoder
-            Case AudioDecoderMode.ffmpeg
-                ConvertFfmpeg(ap)
+            Case AudioDecoderMode.ffmpeg, AudioDecoderMode.Automatic
+                ConvertFF(ap)
             Case AudioDecoderMode.FFAudioSource
                 ConvertFFAudioSource(ap)
             Case AudioDecoderMode.eac3to
@@ -109,8 +104,8 @@ Public Class Audio
             ConvertDirectShowSource(ap)
         End If
 
+        ConvertFF(ap)
         ConvertEac3to(ap)
-        ConvertFfmpeg(ap)
         ConvertDirectShowSource(ap)
     End Sub
 
@@ -236,10 +231,9 @@ Public Class Audio
         If TypeOf ap Is GUIAudioProfile Then
             Dim gap = DirectCast(ap, GUIAudioProfile)
 
-            If gap.Params.NormalizeMode = NormalizeMode.Automatic OrElse
-                gap.Params.NormalizeMode = NormalizeMode.Decoder Then
+            If gap.Params.Normalize Then
                 args += " -normalize"
-                gap.Params.NormalizeMode = NormalizeMode.Disabled
+                gap.Params.Normalize = True
             End If
         End If
 
@@ -264,25 +258,21 @@ Public Class Audio
         End If
     End Sub
 
-    Shared Sub ConvertFfmpeg(ap As AudioProfile)
+    Shared Sub ConvertFF(ap As AudioProfile)
         If ap.File.Ext = ap.ConvertExt Then Exit Sub
+        Dim gap = TryCast(ap, GUIAudioProfile)
+        gap?.NormalizeFF()
         Dim outPath = p.TempDir + ap.File.Base + "." + ap.ConvertExt
         If ap.File = outPath Then outPath += "." + ap.ConvertExt
         Dim args = "-i " + ap.File.Escape
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
         If ap.Gain <> 0 Then args += " -af volume=" + ap.Gain.ToInvariantString + "dB"
 
-        Dim gap = TryCast(ap, GUIAudioProfile)
-
-        If Not gap Is Nothing Then
-            If gap.Params.NormalizeMode <> NormalizeMode.Disabled Then
-                If gap.Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm Then
-                    args += " " + Audio.GetDynAudNormArgs(gap.Params)
-                    gap.Params.NormalizeMode = NormalizeMode.Disabled
-                ElseIf gap.Params.ffmpegNormalizeMode = ffmpegNormalizeMode.loudnorm Then
-                    args += " " + Audio.GetLoudNormArgs(gap.Params)
-                    gap.Params.NormalizeMode = NormalizeMode.Disabled
-                End If
+        If gap?.Params.Normalize Then
+            If gap.Params.ffNormalizeMode = ffNormalizeMode.dynaudnorm Then
+                args += " " + Audio.GetDynAudNormArgs(gap.Params)
+            ElseIf gap.Params.ffNormalizeMode = ffNormalizeMode.loudnorm Then
+                args += " " + Audio.GetLoudNormArgs(gap.Params)
             End If
         End If
 
@@ -584,15 +574,8 @@ Public Enum CuttingMode
     NicAudio
 End Enum
 
-Public Enum ffmpegNormalizeMode
+Public Enum ffNormalizeMode
     volumedetect
     loudnorm
     dynaudnorm
-End Enum
-
-Public Enum NormalizeMode
-    Automatic
-    Disabled
-    Decoder
-    Encoder
 End Enum

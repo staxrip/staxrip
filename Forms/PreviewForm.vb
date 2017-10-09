@@ -905,14 +905,41 @@ Public Class PreviewForm
         End Using
     End Sub
 
+    <Command("Shows a dialog to navigate to a chapter.")>
+    Sub GoToChapter()
+        Dim fp = p.TempDir + p.SourceFile.Base + "_chapters.txt"
+
+        If Not File.Exists(fp) Then
+            MsgError("No chapter file found.")
+            Exit Sub
+        End If
+
+        Using td As New TaskDialog(Of String)
+            td.MainInstruction = "Select a chapter"
+
+            For Each i In File.ReadAllLines(fp)
+                Dim left = i.Left("=")
+                If left.Length <> 9 Then Continue For
+                td.AddCommandLink(left.Substring(7) + "   " + i.Right("="), i.Right("="))
+            Next
+
+            If td.Show() <> "" Then
+                AVI.Position = CInt((TimeSpan.Parse(td.SelectedValue).TotalMilliseconds / 1000) * AVI.FrameRate)
+                Drawer.Draw()
+                AfterPositionChanged()
+            End If
+        End Using
+    End Sub
+
     Shared Function GetDefaultMenuPreview() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
         ret.Add("Navigation|Go To Start", NameOf(SetAbsolutePos), Keys.Control Or Keys.Left, {0})
         ret.Add("Navigation|Go To End", NameOf(SetAbsolutePos), Keys.Control Or Keys.Right, {1000000000})
         ret.Add("Navigation|-")
-        ret.Add("Navigation|Go To Frame...", NameOf(GoToFrame), Keys.Control Or Keys.G)
-        ret.Add("Navigation|Go To Time...", NameOf(GoToTime))
+        ret.Add("Navigation|Go To Frame...", NameOf(GoToFrame), Keys.G)
+        ret.Add("Navigation|Go To Time...", NameOf(GoToTime), Keys.T)
+        ret.Add("Navigation|Go To Chapter...", NameOf(GoToChapter), Keys.C)
         ret.Add("Navigation|-")
         ret.Add("Navigation|Go To Previous Cut Point", NameOf(JumpToThePreviousRangePos), Keys.Control Or Keys.Up)
         ret.Add("Navigation|Go To Next Cut Point", NameOf(JumpToTheNextRangePos), Keys.Control Or Keys.Down)
@@ -942,7 +969,7 @@ Public Class PreviewForm
         ret.Add("View|Zoom Out", NameOf(Zoom), Keys.Oemplus, Symbol.ZoomOut, {0.25F})
         ret.Add("View|-")
         ret.Add("View|Buttons", NameOf(ShowHideButtons), Keys.B)
-        ret.Add("View|Trackbar", NameOf(ShowHideTrackbar), Keys.T)
+        ret.Add("View|Trackbar", NameOf(ShowHideTrackbar), Keys.Control Or Keys.T)
 
         ret.Add("Tools|Reload", NameOf(Reload), Keys.R, Symbol.Refresh)
         ret.Add("Tools|External Player", NameOf(ShowExternalPlayer), Keys.E, Symbol.Play)

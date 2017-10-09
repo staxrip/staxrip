@@ -13,6 +13,7 @@ Public Class Scripting
                     pipeline.Commands.AddScript(
 "Using namespace StaxRip;
 Using namespace StaxRip.UI;
+Using namespace System.Windows.Forms;
 [System.Reflection.Assembly]::LoadWithPartialName(""StaxRip"")")
 
                     pipeline.Commands.AddScript(code)

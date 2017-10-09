@@ -10,19 +10,23 @@ https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
-#### upcoming, not yet uploaded
+#### 1.7.0.2 unstable test build
 
 - new: ffmpeg re-mux TS to MKV includes all audio tracks (Preprocessing settings need to be reset manually)
-- new: much improved docs at http://staxrip.readthedocs.io, since the main menu changed much unfortunately it had to be reset
-- new: audio option Decoder added, this option was previously located in the project options
-- new: audio normalization mode added: Automatic, Disabled, Encoder, Decoder
+- new: improved docs at http://staxrip.readthedocs.io, since the main menu changed much unfortunately it had to be reset
+- new: ffmpeg normalization modes loudnorm and dynaudnorm added
+- new: added Go To Chapter feature in preview dialog, it will only appear after a manual menu reset
+
+- change: audio option Convert/Decoder moved from project options to audio options
+- change: replaced CropRel with Crop so minimum required VapourSynth version is R39
 
 - fix: crash when using close after job processing
 - fix: missing VC++ runtime for VSFilterMod wasn't detected
 
 - update: QTGMC 3.357
 - update: mpv.net 0.2.2
-- update: 16.0.0
+- update: mkvtoolnix 16.0.0 pre 01582
+- update: AVSMeter 2.6.6
 
 #### 1.7.0.1 unstable test build
 
@@ -787,3 +791,5 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 - AVSMeter 2.2.8
 - MediaInfo 0.7.86
 - x264 2694
+
+#### upcoming, not yet uploaded

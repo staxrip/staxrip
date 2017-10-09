@@ -39,7 +39,7 @@ AVSMeter
 
 AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.
 
-Used Version: 2.6.5
+Used Version: 2.6.6
 
 https://forum.doom9.org/showthread.php?t=174797
 
@@ -169,7 +169,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 15.0.0
+Used Version: 16.0.0 pre 01582
 
 http://www.bunkus.org/videotools/mkvtoolnix
 
@@ -179,7 +179,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 15.0.0
+Used Version: 16.0.0 pre 01582
 
 http://www.bunkus.org/videotools/mkvtoolnix
 
@@ -269,7 +269,7 @@ VapourSynth
 
 StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
 
-Used Version: 38
+Used Version: R39
 
 http://www.vapoursynth.com
 
@@ -319,7 +319,7 @@ vspipe
 
 vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.
 
-Used Version: 38
+Used Version: R39
 
 http://www.vapoursynth.com/doc/vspipe.html
 

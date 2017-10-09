@@ -515,11 +515,11 @@ Default Scripts
 ---------------
 
 "
+        Dim psdir = "D:\Projekte\VS\VB\StaxRip\docs\powershell\"
+        DirectoryHelp.Delete(psdir)
+        Directory.CreateDirectory(psdir)
 
         For Each i In Directory.GetFiles("D:\Projekte\VS\VB\StaxRip\bin\Apps\Scripts")
-            Dim psdir = "D:\Projekte\VS\VB\StaxRip\docs\powershell\"
-            DirectoryHelp.Delete(psdir)
-            Directory.CreateDirectory(psdir)
             FileHelp.Copy(i, psdir + i.FileName)
             Dim filename = i.FileName
             powershell += filename + BR + "~".Multiply(filename.Length) + BR2

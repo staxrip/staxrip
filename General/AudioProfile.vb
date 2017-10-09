@@ -683,10 +683,8 @@ Public Class GUIAudioProfile
         End If
     End Sub
 
-    Sub Normalize()
-        If Not Params.ffmpegNormalizeMode = ffmpegNormalizeMode.loudnorm AndAlso
-            Not Params.ffmpegNormalizeMode = ffmpegNormalizeMode.volumedetect Then
-
+    Sub NormalizeFF()
+        If Not Params.Normalize OrElse Not {ffNormalizeMode.loudnorm, ffNormalizeMode.volumedetect}.Contains(Params.ffNormalizeMode) Then
             Exit Sub
         End If
 
@@ -694,9 +692,9 @@ Public Class GUIAudioProfile
         If Not Stream Is Nothing AndAlso Streams.Count > 1 Then args += " -map 0:a:" & Stream.Index
         args += " -sn -vn -hide_banner"
 
-        If Params.ffmpegNormalizeMode = ffmpegNormalizeMode.volumedetect Then
+        If Params.ffNormalizeMode = ffNormalizeMode.volumedetect Then
             args += " -af volumedetect"
-        ElseIf Params.ffmpegNormalizeMode = ffmpegNormalizeMode.loudnorm Then
+        ElseIf Params.ffNormalizeMode = ffNormalizeMode.loudnorm Then
             args += " -af loudnorm=I=" & Params.ffmpegLoudnormIntegrated.ToInvariantString +
                 ":TP=" & Params.ffmpegLoudnormTruePeak.ToInvariantString + ":LRA=" &
                 Params.ffmpegLoudnormLRA.ToInvariantString + ":print_format=summary"
@@ -788,9 +786,7 @@ Public Class GUIAudioProfile
                     ret += " -" & Bitrate
             End Select
 
-            If Params.NormalizeMode = NormalizeMode.Automatic OrElse
-                Params.NormalizeMode = NormalizeMode.Encoder Then ret += " -normalize"
-
+            If Params.Normalize Then ret += " -normalize"
             If Depth = 16 Then ret += " -down16"
             If Params.SamplingRate <> 0 Then ret += " -resampleTo" & Params.SamplingRate
             If Params.FrameRateMode = AudioFrameRateMode.Speedup Then ret += " -speedup"
@@ -867,11 +863,6 @@ Public Class GUIAudioProfile
 
         If Params.qaacHE Then ret += " --he"
         If Delay <> 0 Then ret += " --delay " + (Delay / 1000).ToInvariantString
-
-        If (Params.NormalizeMode = NormalizeMode.Automatic OrElse
-            Params.NormalizeMode = NormalizeMode.Encoder) AndAlso
-            DecodingMode <> AudioDecodingMode.Pipe Then ret += " --normalize"
-
         If Params.qaacQuality <> 2 Then ret += " --quality " & Params.qaacQuality
         If Params.SamplingRate <> 0 Then ret += " --rate " & Params.SamplingRate
         If Params.qaacLowpass <> 0 Then ret += " --lowpass " & Params.qaacLowpass
@@ -895,6 +886,15 @@ Public Class GUIAudioProfile
 
         If Not Stream Is Nothing AndAlso Streams.Count > 1 Then ret += " -map 0:a:" & Stream.Index
         If Params.ChannelsMode <> ChannelsMode.Original Then ret += " -ac " & Channels
+
+        If Params.Normalize Then
+            If Params.ffNormalizeMode = ffNormalizeMode.dynaudnorm Then
+                ret += " " + Audio.GetDynAudNormArgs(Params)
+            ElseIf Params.ffNormalizeMode = ffNormalizeMode.loudnorm Then
+                ret += " " + Audio.GetLoudNormArgs(Params)
+            End If
+        End If
+
         If includePaths AndAlso File <> "" Then ret += " -loglevel fatal -hide_banner -f wav - | "
 
         Return ret
@@ -965,10 +965,10 @@ Public Class GUIAudioProfile
 
         If Gain <> 0 Then ret += " -af volume=" + Gain.ToInvariantString + "dB"
 
-        If Params.NormalizeMode <> NormalizeMode.Disabled Then
-            If Params.ffmpegNormalizeMode = ffmpegNormalizeMode.loudnorm Then
+        If Params.Normalize Then
+            If Params.ffNormalizeMode = ffNormalizeMode.loudnorm Then
                 ret += " " + Audio.GetLoudNormArgs(Params)
-            ElseIf Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm Then
+            ElseIf Params.ffNormalizeMode = ffNormalizeMode.dynaudnorm Then
                 ret += " " + Audio.GetDynAudNormArgs(Params)
             End If
         End If
@@ -1091,12 +1091,13 @@ Public Class GUIAudioProfile
         Property eac3toStereoDownmixMode As Integer
         Property Encoder As GuiAudioEncoder
         Property FrameRateMode As AudioFrameRateMode
-        Property NormalizeMode As NormalizeMode
-
+        Property Normalize As Boolean = True
         Property Quality As Single = 0.3
         Property RateMode As AudioRateMode
         Property SamplingRate As Integer
         Property ChannelsMode As ChannelsMode
+
+        Property Migrate1 As Boolean = True
 
         Property qaacHE As Boolean
         Property qaacLowpass As Integer
@@ -1121,9 +1122,7 @@ Public Class GUIAudioProfile
         Property fdkaacIncludeSbrDelay As Boolean
         Property fdkaacMoovBeforeMdat As Boolean
 
-        Property ffmpegMigrateVersion As Integer = 2
-
-        Property ffmpegNormalizeMode As ffmpegNormalizeMode
+        Property ffNormalizeMode As ffNormalizeMode
         Property ffmpegLoudnormIntegrated As Double = -24
         Property ffmpegLoudnormLRA As Double = 7
         Property ffmpegLoudnormTruePeak As Double = -2
@@ -1174,7 +1173,9 @@ Public Class GUIAudioProfile
                 fdkaacAfterburner = True
             End If
 
-            If ffmpegMigrateVersion <> 2 Then
+            If Not Migrate1 Then
+                Normalize = True
+
                 ffmpegLoudnormIntegrated = -24
                 ffmpegLoudnormLRA = 7
                 ffmpegLoudnormTruePeak = -2
@@ -1185,7 +1186,7 @@ Public Class GUIAudioProfile
                 ffmpegDynaudnormM = 10
                 ffmpegDynaudnormN = True
 
-                ffmpegMigrateVersion = 2
+                Migrate1 = True
             End If
         End Sub
     End Class

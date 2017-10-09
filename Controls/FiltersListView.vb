@@ -32,6 +32,12 @@ Public Class FiltersListView
     End Sub
 
     Sub Load()
+        If p.Script.Engine = ScriptEngine.AviSynth Then
+            g.MainForm.lgbFilters.Text = "AVS Filters"
+        Else
+            g.MainForm.lgbFilters.Text = "VS Filters"
+        End If
+
         BlockItemCheck = True
         Items.Clear()
         BeginUpdate()

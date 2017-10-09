@@ -56,10 +56,9 @@ Public Class AudioForm
     Friend WithEvents cbDefaultTrack As CheckBoxEx
     Friend WithEvents Label5 As Label
     Friend WithEvents mbDecoder As MenuButton
-    Friend WithEvents Label6 As Label
-    Friend WithEvents mbNormalize As MenuButton
     Friend WithEvents tlpAdvanced As TableLayoutPanel
     Friend WithEvents bnAdvanced As ButtonEx
+    Friend WithEvents cbNormalize As CheckBoxEx
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -92,8 +91,6 @@ Public Class AudioForm
         Me.numQuality = New StaxRip.UI.NumEdit()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.numGain = New StaxRip.UI.NumEdit()
-        Me.Label6 = New System.Windows.Forms.Label()
-        Me.mbNormalize = New StaxRip.UI.MenuButton()
         Me.lDelay = New System.Windows.Forms.Label()
         Me.numDelay = New StaxRip.UI.NumEdit()
         Me.gbAdvanced = New System.Windows.Forms.GroupBox()
@@ -109,6 +106,7 @@ Public Class AudioForm
         Me.bnMenu = New StaxRip.UI.ButtonEx()
         Me.tlpRTB = New System.Windows.Forms.TableLayoutPanel()
         Me.rtbCommandLine = New StaxRip.UI.CommandLineRichTextBox()
+        Me.cbNormalize = New StaxRip.UI.CheckBoxEx()
         Me.gbBasic.SuspendLayout()
         Me.tlpBasic.SuspendLayout()
         Me.gbAdvanced.SuspendLayout()
@@ -141,23 +139,23 @@ Public Class AudioForm
         Me.tlpBasic.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.tlpBasic.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40.0!))
         Me.tlpBasic.Controls.Add(Me.lCodec, 0, 0)
-        Me.tlpBasic.Controls.Add(Me.tbProfileName, 1, 8)
-        Me.tlpBasic.Controls.Add(Me.laProfileName, 0, 8)
+        Me.tlpBasic.Controls.Add(Me.tbProfileName, 1, 7)
+        Me.tlpBasic.Controls.Add(Me.laProfileName, 0, 7)
         Me.tlpBasic.Controls.Add(Me.mbCodec, 1, 0)
-        Me.tlpBasic.Controls.Add(Me.mbLanguage, 1, 6)
-        Me.tlpBasic.Controls.Add(Me.mbSamplingRate, 1, 5)
-        Me.tlpBasic.Controls.Add(Me.lLanguage, 0, 6)
-        Me.tlpBasic.Controls.Add(Me.Label1, 0, 5)
+        Me.tlpBasic.Controls.Add(Me.mbLanguage, 1, 5)
+        Me.tlpBasic.Controls.Add(Me.mbSamplingRate, 1, 4)
+        Me.tlpBasic.Controls.Add(Me.lLanguage, 0, 5)
+        Me.tlpBasic.Controls.Add(Me.Label1, 0, 4)
         Me.tlpBasic.Controls.Add(Me.Label3, 2, 0)
         Me.tlpBasic.Controls.Add(Me.numBitrate, 3, 0)
         Me.tlpBasic.Controls.Add(Me.Label2, 0, 2)
         Me.tlpBasic.Controls.Add(Me.mbEncoder, 1, 2)
-        Me.tlpBasic.Controls.Add(Me.lChannels, 0, 4)
-        Me.tlpBasic.Controls.Add(Me.mbChannels, 1, 4)
-        Me.tlpBasic.Controls.Add(Me.laStreamName, 0, 9)
-        Me.tlpBasic.Controls.Add(Me.tbStreamName, 1, 9)
-        Me.tlpBasic.Controls.Add(Me.laCustom, 0, 10)
-        Me.tlpBasic.Controls.Add(Me.tbCustom, 1, 10)
+        Me.tlpBasic.Controls.Add(Me.lChannels, 0, 3)
+        Me.tlpBasic.Controls.Add(Me.mbChannels, 1, 3)
+        Me.tlpBasic.Controls.Add(Me.laStreamName, 0, 8)
+        Me.tlpBasic.Controls.Add(Me.tbStreamName, 1, 8)
+        Me.tlpBasic.Controls.Add(Me.laCustom, 0, 9)
+        Me.tlpBasic.Controls.Add(Me.tbCustom, 1, 9)
         Me.tlpBasic.Controls.Add(Me.cbDefaultTrack, 0, 11)
         Me.tlpBasic.Controls.Add(Me.cbForcedTrack, 0, 12)
         Me.tlpBasic.Controls.Add(Me.Label5, 0, 1)
@@ -166,10 +164,9 @@ Public Class AudioForm
         Me.tlpBasic.Controls.Add(Me.numQuality, 3, 1)
         Me.tlpBasic.Controls.Add(Me.Label4, 2, 2)
         Me.tlpBasic.Controls.Add(Me.numGain, 3, 2)
-        Me.tlpBasic.Controls.Add(Me.Label6, 0, 3)
-        Me.tlpBasic.Controls.Add(Me.mbNormalize, 1, 3)
-        Me.tlpBasic.Controls.Add(Me.lDelay, 2, 3)
+        Me.tlpBasic.Controls.Add(Me.cbNormalize, 0, 10)
         Me.tlpBasic.Controls.Add(Me.numDelay, 3, 3)
+        Me.tlpBasic.Controls.Add(Me.lDelay, 2, 3)
         Me.tlpBasic.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpBasic.Location = New System.Drawing.Point(5, 53)
         Me.tlpBasic.Margin = New System.Windows.Forms.Padding(5)
@@ -207,7 +204,7 @@ Public Class AudioForm
         '
         Me.tbProfileName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpBasic.SetColumnSpan(Me.tbProfileName, 3)
-        Me.tbProfileName.Location = New System.Drawing.Point(259, 565)
+        Me.tbProfileName.Location = New System.Drawing.Point(259, 485)
         Me.tbProfileName.Margin = New System.Windows.Forms.Padding(5)
         Me.tbProfileName.Name = "tbProfileName"
         Me.tbProfileName.Size = New System.Drawing.Size(637, 55)
@@ -217,7 +214,7 @@ Public Class AudioForm
         '
         Me.laProfileName.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.laProfileName.AutoSize = True
-        Me.laProfileName.Location = New System.Drawing.Point(5, 568)
+        Me.laProfileName.Location = New System.Drawing.Point(5, 488)
         Me.laProfileName.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.laProfileName.Name = "laProfileName"
         Me.laProfileName.Size = New System.Drawing.Size(235, 48)
@@ -236,7 +233,7 @@ Public Class AudioForm
         'mbLanguage
         '
         Me.mbLanguage.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.mbLanguage.Location = New System.Drawing.Point(259, 485)
+        Me.mbLanguage.Location = New System.Drawing.Point(259, 405)
         Me.mbLanguage.Margin = New System.Windows.Forms.Padding(5)
         Me.mbLanguage.ShowMenuSymbol = True
         Me.mbLanguage.Size = New System.Drawing.Size(288, 70)
@@ -245,7 +242,7 @@ Public Class AudioForm
         'mbSamplingRate
         '
         Me.mbSamplingRate.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.mbSamplingRate.Location = New System.Drawing.Point(259, 405)
+        Me.mbSamplingRate.Location = New System.Drawing.Point(259, 325)
         Me.mbSamplingRate.Margin = New System.Windows.Forms.Padding(5)
         Me.mbSamplingRate.ShowMenuSymbol = True
         Me.mbSamplingRate.Size = New System.Drawing.Size(288, 70)
@@ -255,7 +252,7 @@ Public Class AudioForm
         '
         Me.lLanguage.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lLanguage.AutoSize = True
-        Me.lLanguage.Location = New System.Drawing.Point(5, 496)
+        Me.lLanguage.Location = New System.Drawing.Point(5, 416)
         Me.lLanguage.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.lLanguage.Name = "lLanguage"
         Me.lLanguage.Size = New System.Drawing.Size(182, 48)
@@ -266,7 +263,7 @@ Public Class AudioForm
         '
         Me.Label1.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(5, 416)
+        Me.Label1.Location = New System.Drawing.Point(5, 336)
         Me.Label1.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(226, 48)
@@ -318,7 +315,7 @@ Public Class AudioForm
         '
         Me.lChannels.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lChannels.AutoSize = True
-        Me.lChannels.Location = New System.Drawing.Point(5, 336)
+        Me.lChannels.Location = New System.Drawing.Point(5, 256)
         Me.lChannels.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.lChannels.Name = "lChannels"
         Me.lChannels.Size = New System.Drawing.Size(171, 48)
@@ -328,7 +325,7 @@ Public Class AudioForm
         'mbChannels
         '
         Me.mbChannels.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.mbChannels.Location = New System.Drawing.Point(259, 325)
+        Me.mbChannels.Location = New System.Drawing.Point(259, 245)
         Me.mbChannels.Margin = New System.Windows.Forms.Padding(5)
         Me.mbChannels.ShowMenuSymbol = True
         Me.mbChannels.Size = New System.Drawing.Size(288, 70)
@@ -338,7 +335,7 @@ Public Class AudioForm
         '
         Me.laStreamName.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.laStreamName.AutoSize = True
-        Me.laStreamName.Location = New System.Drawing.Point(5, 633)
+        Me.laStreamName.Location = New System.Drawing.Point(5, 553)
         Me.laStreamName.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.laStreamName.Name = "laStreamName"
         Me.laStreamName.Size = New System.Drawing.Size(244, 48)
@@ -349,7 +346,7 @@ Public Class AudioForm
         '
         Me.tbStreamName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpBasic.SetColumnSpan(Me.tbStreamName, 3)
-        Me.tbStreamName.Location = New System.Drawing.Point(259, 630)
+        Me.tbStreamName.Location = New System.Drawing.Point(259, 550)
         Me.tbStreamName.Margin = New System.Windows.Forms.Padding(5)
         Me.tbStreamName.Name = "tbStreamName"
         Me.tbStreamName.Size = New System.Drawing.Size(637, 55)
@@ -359,7 +356,7 @@ Public Class AudioForm
         '
         Me.laCustom.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.laCustom.AutoSize = True
-        Me.laCustom.Location = New System.Drawing.Point(5, 698)
+        Me.laCustom.Location = New System.Drawing.Point(5, 618)
         Me.laCustom.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.laCustom.Name = "laCustom"
         Me.laCustom.Size = New System.Drawing.Size(141, 48)
@@ -370,7 +367,7 @@ Public Class AudioForm
         '
         Me.tbCustom.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpBasic.SetColumnSpan(Me.tbCustom, 3)
-        Me.tbCustom.Location = New System.Drawing.Point(259, 695)
+        Me.tbCustom.Location = New System.Drawing.Point(259, 615)
         Me.tbCustom.Margin = New System.Windows.Forms.Padding(5)
         Me.tbCustom.Name = "tbCustom"
         Me.tbCustom.Size = New System.Drawing.Size(637, 55)
@@ -380,7 +377,7 @@ Public Class AudioForm
         '
         Me.cbDefaultTrack.AutoSize = True
         Me.tlpBasic.SetColumnSpan(Me.cbDefaultTrack, 4)
-        Me.cbDefaultTrack.Location = New System.Drawing.Point(15, 758)
+        Me.cbDefaultTrack.Location = New System.Drawing.Point(15, 736)
         Me.cbDefaultTrack.Margin = New System.Windows.Forms.Padding(15, 3, 3, 3)
         Me.cbDefaultTrack.Size = New System.Drawing.Size(272, 52)
         Me.cbDefaultTrack.Text = "Default Track"
@@ -390,7 +387,7 @@ Public Class AudioForm
         '
         Me.cbForcedTrack.AutoSize = True
         Me.tlpBasic.SetColumnSpan(Me.cbForcedTrack, 4)
-        Me.cbForcedTrack.Location = New System.Drawing.Point(15, 816)
+        Me.cbForcedTrack.Location = New System.Drawing.Point(15, 794)
         Me.cbForcedTrack.Margin = New System.Windows.Forms.Padding(15, 3, 3, 3)
         Me.cbForcedTrack.Size = New System.Drawing.Size(267, 52)
         Me.cbForcedTrack.Text = "Forced Track"
@@ -457,26 +454,6 @@ Public Class AudioForm
         Me.numGain.Name = "numGain"
         Me.numGain.Size = New System.Drawing.Size(189, 70)
         Me.numGain.TabIndex = 37
-        '
-        'Label6
-        '
-        Me.Label6.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(5, 256)
-        Me.Label6.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(191, 48)
-        Me.Label6.TabIndex = 52
-        Me.Label6.Text = "Normalize:"
-        '
-        'mbNormalize
-        '
-        Me.mbNormalize.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.mbNormalize.Location = New System.Drawing.Point(259, 245)
-        Me.mbNormalize.Margin = New System.Windows.Forms.Padding(5)
-        Me.mbNormalize.ShowMenuSymbol = True
-        Me.mbNormalize.Size = New System.Drawing.Size(288, 70)
-        Me.mbNormalize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lDelay
         '
@@ -653,6 +630,16 @@ Public Class AudioForm
         Me.rtbCommandLine.TabIndex = 45
         Me.rtbCommandLine.Text = ""
         '
+        'cbNormalize
+        '
+        Me.cbNormalize.AutoSize = True
+        Me.tlpBasic.SetColumnSpan(Me.cbNormalize, 4)
+        Me.cbNormalize.Location = New System.Drawing.Point(15, 678)
+        Me.cbNormalize.Margin = New System.Windows.Forms.Padding(15, 3, 3, 3)
+        Me.cbNormalize.Size = New System.Drawing.Size(229, 52)
+        Me.cbNormalize.Text = "Normalize"
+        Me.cbNormalize.UseVisualStyleBackColor = True
+        '
         'AudioForm
         '
         Me.AcceptButton = Me.bnOK
@@ -750,6 +737,7 @@ Public Class AudioForm
         gap.Forced = TempProfile.Forced
         gap.Params = TempProfile.Params
         gap.Decoder = TempProfile.Decoder
+        gap.DecodingMode = TempProfile.DecodingMode
     End Sub
 
     Sub UpdateBitrate()
@@ -944,6 +932,7 @@ Public Class AudioForm
 
         cbDefaultTrack.Checked = TempProfile.Default
         cbForcedTrack.Checked = TempProfile.Forced
+        cbNormalize.Checked = TempProfile.Params.Normalize
 
         mbCodec.Value = TempProfile.Params.Codec
         mbChannels.Value = TempProfile.Params.ChannelsMode
@@ -951,7 +940,6 @@ Public Class AudioForm
         mbSamplingRate.Value = TempProfile.Params.SamplingRate
         mbEncoder.Value = TempProfile.Params.Encoder
         mbDecoder.Value = TempProfile.Decoder
-        mbNormalize.Value = TempProfile.Params.NormalizeMode
 
         SetQuality(TempProfile.Params.Quality)
 
@@ -1261,9 +1249,9 @@ Public Class AudioForm
 
             ui.CreateFlowPage("ffmpeg", True)
 
-            Dim ffmpegNormalize = ui.AddMenu(Of ffmpegNormalizeMode)
+            Dim ffmpegNormalize = ui.AddMenu(Of ffNormalizeMode)
             ffmpegNormalize.Text = "Normalize Method:"
-            ffmpegNormalize.Property = NameOf(TempProfile.Params.ffmpegNormalizeMode)
+            ffmpegNormalize.Property = NameOf(TempProfile.Params.ffNormalizeMode)
 
             ui.AddLabel("EBU R128 loudness normalization (loudnorm):")
 
@@ -1351,8 +1339,8 @@ Public Class AudioForm
         End Using
     End Sub
 
-    Private Sub mbNormalize_ValueChangedUser(value As Object) Handles mbNormalize.ValueChangedUser
-        TempProfile.Params.NormalizeMode = mbNormalize.GetValue(Of NormalizeMode)()
+    Private Sub cbNormalize_CheckedChanged(sender As Object, e As EventArgs) Handles cbNormalize.CheckedChanged
+        TempProfile.Params.Normalize = cbNormalize.Checked
         UpdateControls()
     End Sub
 End Class

@@ -559,11 +559,15 @@ Public Class GlobalClass
                     (Not i.OrOnly AndAlso matches = i.CriteriaList.Count)) AndAlso
                     Not i.CommandParameters Is Nothing Then
 
-                    Log.WriteHeader("Process Event Command '" + i.Name + "'")
-                    Log.WriteLine("Event: " + DispNameAttribute.GetValueForEnum(i.Event))
                     Dim command = g.MainForm.CustomMainMenu.CommandManager.GetCommand(i.CommandParameters.MethodName)
-                    Log.WriteLine("Command: " + command.MethodInfo.Name)
-                    Log.WriteLine(command.GetParameterHelp(i.CommandParameters.Parameters))
+
+                    If p.SourceFile <> "" Then
+                        Log.WriteHeader("Event Command " + i.Name)
+                        Log.WriteLine("Event: " + DispNameAttribute.GetValueForEnum(i.Event))
+                        Log.WriteLine("Command: " + command.MethodInfo.Name)
+                        Log.WriteLine(command.GetParameterHelp(i.CommandParameters.Parameters))
+                    End If
+
                     g.MainForm.CustomMainMenu.CommandManager.Process(i.CommandParameters)
                 End If
             End If

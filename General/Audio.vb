@@ -14,13 +14,13 @@ Public Class Audio
         If TypeOf ap Is GUIAudioProfile Then
             Dim gap = DirectCast(ap, GUIAudioProfile)
 
-            If gap.Params.Normalize Then
-                Dim cmdl = ap.CommandLines
-                If cmdl <> "" AndAlso cmdl.Contains("ffmpeg") OrElse cmdl.Contains("fdkaac") Then SetGain(ap)
+            If gap.Params.NormalizeMode = NormalizeMode.Automatic Then
+                Dim cmdl = gap.CommandLines
+                If cmdl <> "" AndAlso cmdl.Contains("ffmpeg") OrElse cmdl.Contains("fdkaac") Then gap.Normalize()
             End If
         End If
 
-        If p.ForceAudioConvert Then Convert(ap)
+        If ap.Decoder <> AudioDecoderMode.Automatic Then Convert(ap)
 
         If ap.HasStream Then
             Dim cutting = p.Ranges.Count > 0
@@ -92,16 +92,16 @@ Public Class Audio
             End If
         End If
 
-        Select Case p.AudioConvertMode
-            Case AudioConvertMode.ffmpeg
+        Select Case ap.Decoder
+            Case AudioDecoderMode.ffmpeg
                 ConvertFfmpeg(ap)
-            Case AudioConvertMode.FFAudioSource
+            Case AudioDecoderMode.FFAudioSource
                 ConvertFFAudioSource(ap)
-            Case AudioConvertMode.eac3to
+            Case AudioDecoderMode.eac3to
                 ConvertEac3to(ap)
-            Case AudioConvertMode.NicAudio
+            Case AudioDecoderMode.NicAudio
                 ConvertNicAudio(ap)
-            Case AudioConvertMode.DirectShow
+            Case AudioDecoderMode.DirectShow
                 ConvertDirectShowSource(ap)
         End Select
 
@@ -211,7 +211,7 @@ Public Class Audio
     End Sub
 
     Shared Function GetNicAudioCode(ap As AudioProfile) As String
-        Select Case ap.File.ext
+        Select Case ap.File.Ext
             Case "ac3"
                 Return "AudioDub(last, NicAC3Source(""" + ap.File + """, Channels = " & ap.Channels & "))"
             Case "mpa", "mp2", "mp3"
@@ -236,9 +236,10 @@ Public Class Audio
         If TypeOf ap Is GUIAudioProfile Then
             Dim gap = DirectCast(ap, GUIAudioProfile)
 
-            If gap.Params.Normalize Then
+            If gap.Params.NormalizeMode = NormalizeMode.Automatic OrElse
+                gap.Params.NormalizeMode = NormalizeMode.Decoder Then
                 args += " -normalize"
-                gap.Params.Normalize = False
+                gap.Params.NormalizeMode = NormalizeMode.Disabled
             End If
         End If
 
@@ -270,6 +271,21 @@ Public Class Audio
         Dim args = "-i " + ap.File.Escape
         If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
         If ap.Gain <> 0 Then args += " -af volume=" + ap.Gain.ToInvariantString + "dB"
+
+        Dim gap = TryCast(ap, GUIAudioProfile)
+
+        If Not gap Is Nothing Then
+            If gap.Params.NormalizeMode <> NormalizeMode.Disabled Then
+                If gap.Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm Then
+                    args += " " + Audio.GetDynAudNormArgs(gap.Params)
+                    gap.Params.NormalizeMode = NormalizeMode.Disabled
+                ElseIf gap.Params.ffmpegNormalizeMode = ffmpegNormalizeMode.loudnorm Then
+                    args += " " + Audio.GetLoudNormArgs(gap.Params)
+                    gap.Params.NormalizeMode = NormalizeMode.Disabled
+                End If
+            End If
+        End If
+
         args += " -y -hide_banner -ac " & ap.Channels
         If ap.ConvertExt.EqualsAny("wav", "w64") Then args += " -c:a pcm_s24le"
         args += " " + outPath.Escape
@@ -292,6 +308,34 @@ Public Class Audio
             Log.Write("Error", "no output found")
         End If
     End Sub
+
+    Shared Function GetLoudNormArgs(params As GUIAudioProfile.Parameters) As String
+        Return "-af loudnorm=" +
+            "I=" + params.ffmpegLoudnormIntegrated.ToInvariantString +
+            ":TP=" + params.ffmpegLoudnormTruePeak.ToInvariantString +
+            ":LRA=" + params.ffmpegLoudnormLRA.ToInvariantString +
+            ":measured_I=" + params.ffmpegLoudnormIntegratedMeasured.ToInvariantString +
+            ":measured_TP=" + params.ffmpegLoudnormTruePeakMeasured.ToInvariantString +
+            ":measured_LRA=" + params.ffmpegLoudnormLraMeasured.ToInvariantString +
+            ":measured_thresh=" + params.ffmpegLoudnormThresholdMeasured.ToInvariantString +
+            ":print_format=summary"
+    End Function
+
+    Shared Function GetDynAudNormArgs(params As GUIAudioProfile.Parameters) As String
+        Dim ret As String
+
+        If params.ffmpegDynaudnormF <> 500 Then ret += ":f=" + params.ffmpegDynaudnormF.ToInvariantString
+        If params.ffmpegDynaudnormG <> 31 Then ret += ":g=" + params.ffmpegDynaudnormG.ToInvariantString
+        If params.ffmpegDynaudnormP <> 0.95 Then ret += ":p=" + params.ffmpegDynaudnormP.ToInvariantString
+        If params.ffmpegDynaudnormM <> 10 Then ret += ":m=" + params.ffmpegDynaudnormM.ToInvariantString
+        If params.ffmpegDynaudnormR <> 0 Then ret += ":r=" + params.ffmpegDynaudnormR.ToInvariantString
+        If params.ffmpegDynaudnormS <> 0 Then ret += ":s=" + params.ffmpegDynaudnormS.ToInvariantString
+        If Not params.ffmpegDynaudnormN Then ret += ":n=false"
+        If params.ffmpegDynaudnormC Then ret += ":c=true"
+        If params.ffmpegDynaudnormB Then ret += ":b=true"
+
+        If ret <> "" Then Return "-af dynaudnorm " + ret.Trim(":"c) Else Return "-af dynaudnorm"
+    End Function
 
     Shared Sub ConvertDirectShowSource(ap As AudioProfile, Optional useFlac As Boolean = False)
         If ap.File.Ext = ap.ConvertExt Then Exit Sub
@@ -516,27 +560,10 @@ function Down2(clip a)
     Shared Function FileExist(fp As String) As Boolean
         Return File.Exists(fp) AndAlso New FileInfo(fp).Length > 500
     End Function
-
-    Shared Sub SetGain(ap As AudioProfile)
-        Dim args = "-i " + ap.File.Escape
-        If Not ap.Stream Is Nothing AndAlso ap.Streams.Count > 1 Then args += " -map 0:a:" & ap.Stream.Index
-        args += " -sn -vn -hide_banner -af volumedetect -f null NUL"
-
-        Using proc As New Proc
-            proc.Header = "Find Gain " & ap.GetTrackID
-            proc.SkipStrings = {"frame=", "size="}
-            proc.Encoding = Encoding.UTF8
-            proc.Package = Package.ffmpeg
-            proc.Arguments = args
-            proc.Start()
-
-            Dim match = Regex.Match(proc.Log.ToString, "max_volume: -(\d+\.\d+) dB")
-            If match.Success Then ap.Gain = match.Groups(1).Value.ToSingle()
-        End Using
-    End Sub
 End Class
 
-Public Enum AudioConvertMode
+Public Enum AudioDecoderMode
+    Automatic
     ffmpeg
     eac3to
     NicAudio
@@ -544,14 +571,28 @@ Public Enum AudioConvertMode
     FFAudioSource
 End Enum
 
-Public Enum AudioConvertType
+Public Enum AudioDecodingMode
     FLAC
     W64
     WAVE
+    Pipe
 End Enum
 
 Public Enum CuttingMode
     mkvmerge
     DirectShow
     NicAudio
+End Enum
+
+Public Enum ffmpegNormalizeMode
+    volumedetect
+    loudnorm
+    dynaudnorm
+End Enum
+
+Public Enum NormalizeMode
+    Automatic
+    Disabled
+    Decoder
+    Encoder
 End Enum

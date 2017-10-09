@@ -540,7 +540,6 @@ Public Class VideoFilter
     ReadOnly Property Name As String
         Get
             If Path.Contains("|") Then Return Path.RightLast("|").Trim
-
             Return Path
         End Get
     End Property

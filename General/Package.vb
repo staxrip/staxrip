@@ -374,6 +374,21 @@ Public Class Package
         .VSFilterNames = {"ffms2"},
         .VSFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")")}})
 
+    Shared Property VSFilterMod As Package = Add(New PluginPackage With {
+        .Name = "VSFilterMod",
+        .Filename = "VSFilterMod.dll",
+        .Description = "AviSynth subtitle plugin with support for vobsub srt and ass.",
+        .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VSFilterMod",
+        .AvsFilterNames = {"VobSub", "TextSubMod"},
+        .VSFilterNames = {"vsfm.VobSub", "vsfm.TextSubMod"}})
+
+    Shared Property SangNom2 As Package = Add(New PluginPackage With {
+        .Name = "SangNom2",
+        .Filename = "SangNom2.dll",
+        .WebURL = "http://avisynth.nl/index.php/SangNom2",
+        .Description = "SangNom2 is a reimplementation of MarcFD's old SangNom filter. Originally it's a single field deinterlacer using edge-directed interpolation but nowadays it's mainly used in anti-aliasing scripts. The output is not completely but mostly identical to the original SangNom.",
+        .AvsFilterNames = {"SangNom2"}})
+
     Shared Function Add(pack As Package) As Package
         Items(pack.ID) = pack
         Return pack
@@ -406,6 +421,7 @@ Public Class Package
             .DownloadURL = "http://download.microsoft.com/download/8/9/d/89d195e1-1901-4036-9a75-fbe46443fc5a/vc_redist.x64.exe",
             .FixedDir = Folder.System,
             .IgnoreVersion = True,
+            .IsRequiredFunc = Function() SangNom2.IsRequired OrElse VSFilterMod.IsRequired,
             .TreePath = "Runtimes"})
 
         Add(New Package With {
@@ -455,13 +471,6 @@ Public Class Package
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 2)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 4)"),
                 New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 8)")}})
-
-        Add(New PluginPackage With {
-            .Name = "SangNom2",
-            .Filename = "SangNom2.dll",
-            .WebURL = "http://avisynth.nl/index.php/SangNom2",
-            .Description = "SangNom2 is a reimplementation of MarcFD's old SangNom filter. Originally it's a single field deinterlacer using edge-directed interpolation but nowadays it's mainly used in anti-aliasing scripts. The output is not completely but mostly identical to the original SangNom.",
-            .AvsFilterNames = {"SangNom2"}})
 
         Add(New PluginPackage With {
             .Name = "mvtools2",
@@ -536,14 +545,6 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/AWarpSharp2",
             .AvsFiltersFunc = Function() {
                 New VideoFilter("Misc", "aWarpSharp2", "aWarpSharp2(thresh = 128, blur = 2, type = 0, depth = 16, chroma = 4)")}})
-
-        Add(New PluginPackage With {
-            .Name = "VSFilterMod",
-            .Filename = "VSFilterMod.dll",
-            .Description = "AviSynth subtitle plugin with support for vobsub srt and ass.",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VSFilterMod",
-            .AvsFilterNames = {"VobSub", "TextSubMod"},
-            .VSFilterNames = {"vsfm.VobSub", "vsfm.TextSubMod"}})
 
         Add(New PluginPackage With {
             .Name = "TComb",

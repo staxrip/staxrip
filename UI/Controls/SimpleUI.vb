@@ -169,10 +169,15 @@ Public Class SimpleUI
         Return ret
     End Function
 
+    Function AddLabel(text As String) As SimpleUILabel
+        Return AddLabel(Nothing, text)
+    End Function
+
     Function AddLabel(parent As FlowLayoutPanelEx,
                       text As String,
                       Optional widthInFontHeights As Integer = 0) As SimpleUILabel
 
+        If parent Is Nothing Then parent = GetActiveFlowPage()
         Dim ret As New SimpleUILabel
         ret.Offset = widthInFontHeights
         ret.Text = text
@@ -420,6 +425,7 @@ Public Class SimpleUI
                     parent = parent.Parent
                 End While
 
+                If value.StartsWith("http") Then value = $"[{value} {value}]"
                 DirectCast(parent, IPage).TipProvider.SetTip(value, Me)
             End Set
         End Property
@@ -506,6 +512,11 @@ Public Class SimpleUI
             End Get
             Set(value As Double())
                 If Not value Is Nothing Then
+                    If value(0) = 0 AndAlso value(1) = 0 Then
+                        value(0) = Double.MinValue
+                        value(1) = Double.MaxValue
+                    End If
+
                     If value.Length > 0 Then Minimum = value(0)
                     If value.Length > 1 Then Maximum = value(1)
                     If value.Length > 2 Then Increment = value(2)
@@ -707,6 +718,7 @@ Public Class SimpleUI
 
         WriteOnly Property Help As String
             Set(value As String)
+                If value.StartsWith("http") Then value = $"[{value} {value}]"
                 Dim parent = Me.Parent
 
                 While Not TypeOf parent Is IPage

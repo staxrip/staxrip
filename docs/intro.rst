@@ -53,6 +53,6 @@ StaxRip is for the most part portable, some features require certain apps to be 
 
 Whenever StaxRip starts the first time from a new location it will ask for a settings folder location to use for this particular start-up location. You can open the current settings folder from the main menu at Tools > Folders > Settings
 
-It's not recommended to start StaxRip from a location without full write access so 'C:\Program Files' shouldn't be used. StaxRip utilizes dozens of tools and some of this tools might require write access to their start-up directory.
+It's not recommended to start StaxRip from a location without full write access so 'C:\\Program Files' shouldn't be used. StaxRip utilizes dozens of tools and some of this tools might require write access to their start-up directory.
 
 To add StaxRip to the windows start menu right-click the StaxRip.exe and choose *Add to Start*.

@@ -1,7 +1,6 @@
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Globalization
-Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -1328,8 +1327,10 @@ Public Class MainForm
     End Function
 
     Sub UpdateRecentProjectsMenu()
+        If Disposing OrElse IsDisposed Then Exit Sub
+
         For Each i In CustomMainMenu.MenuItems
-            If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
+            If i.CustomMenuItem?.MethodName = "DynamicMenuItem" AndAlso
                 i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.RecentProjects) Then
 
                 i.DropDownItems.ClearAndDisplose
@@ -3915,16 +3916,6 @@ Public Class MainForm
             t.Help = "Preferred audio languages using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all languages just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
             t.Field = NameOf(p.PreferredAudio)
 
-            Dim convMethod = ui.AddMenu(Of AudioConvertMode)
-            convMethod.Text = "Convert Method:"
-            convMethod.Help = "Method to create a compatible audio file in case the audio encoding don't support the input format."
-            convMethod.Field = NameOf(p.AudioConvertMode)
-
-            Dim convFormat = ui.AddMenu(Of AudioConvertType)
-            convFormat.Text = "Convert Format:"
-            convFormat.Help = "In case the audio encoder don't support the input format a intermediate file has to be created."
-            convFormat.Field = NameOf(p.AudioConvertFormat)
-
             Dim cut = ui.AddMenu(Of CuttingMode)
             cut.Text = "Cutting Method:"
             cut.Help = "Defines which method to use for cutting."
@@ -3938,11 +3929,6 @@ Public Class MainForm
             audioExist.Text = "Existing Output:"
             audioExist.Help = "What to do in case a audio encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite."
             audioExist.Field = NameOf(p.FileExistAudio)
-
-            b = ui.AddBool
-            b.Text = "Force conversion"
-            b.Help = "Create a intermediate audio file even if the audio encoder supports the current format."
-            b.Field = NameOf(p.ForceAudioConvert)
 
             b = ui.AddBool
             b.Text = "On load use AviSynth script as audio source"

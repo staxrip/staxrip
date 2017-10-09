@@ -13,7 +13,16 @@ https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 #### upcoming, not yet uploaded
 
 - new: ffmpeg re-mux TS to MKV includes all audio tracks (Preprocessing settings need to be reset manually)
-- new: much improved docs at http://staxrip.readthedocs.io
+- new: much improved docs at http://staxrip.readthedocs.io, since the main menu changed much unfortunately it had to be reset
+- new: audio option Decoder added, this option was previously located in the project options
+- new: audio normalization mode added: Automatic, Disabled, Encoder, Decoder
+
+- fix: crash when using close after job processing
+- fix: missing VC++ runtime for VSFilterMod wasn't detected
+
+- update: QTGMC 3.357
+- update: mpv.net 0.2.2
+- update: 16.0.0
 
 #### 1.7.0.1 unstable test build
 

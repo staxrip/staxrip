@@ -199,7 +199,7 @@ mpv.net
 
 libmpv based media player.
 
-Used Version: 0.2.1
+Used Version: 0.2.2
 
 https://github.com/stax76/mpvnet
 
@@ -719,7 +719,7 @@ A very high quality deinterlacer with a range of features for both quality and c
 
 Filters: QTGMC
 
-Used Version: 3.33
+Used Version: 3.357
 
 http://avisynth.nl/index.php/QTGMC
 

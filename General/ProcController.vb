@@ -220,6 +220,8 @@ Public Class ProcController
             End If
         End If
 
+        If g.MainForm.Disposing OrElse g.MainForm.IsDisposed Then Exit Sub
+
         Dim mainSub = Sub()
                           g.WriteDebugLog("ProcController.Finished MainForm start")
                           BlockActivation = False

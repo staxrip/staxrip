@@ -14,8 +14,6 @@ Public Class Project
     Public AdjustHeight As Boolean = True
     Public Audio0 As AudioProfile
     Public Audio1 As AudioProfile
-    Public AudioConvertFormat As AudioConvertType
-    Public AudioConvertMode As AudioConvertMode
     Public AudioTracks As List(Of AudioProfile)
     Public AutoCompCheck As Boolean
     Public AutoCorrectCropValues As Boolean = True
@@ -50,7 +48,6 @@ Public Class Project
     Public FileExistAudio As FileExistMode
     Public FileExistVideo As FileExistMode
     Public FirstOriginalSourceFile As String
-    Public ForceAudioConvert As Boolean
     Public ForcedOutputMod As Integer = 8
     Public HarcodedSubtitle As Boolean
     Public ITU As Boolean = True

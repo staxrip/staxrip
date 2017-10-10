@@ -35,7 +35,7 @@ Namespace UI
         Friend WithEvents FlowLayoutPanel1 As System.Windows.Forms.FlowLayoutPanel
         Friend WithEvents Label1 As Label
         Friend WithEvents tlpSymbol As TableLayoutPanel
-        Friend WithEvents lSymbol As Label
+        Friend WithEvents laSymbol As Label
         Friend WithEvents pbSymbol As PictureBox
         Friend WithEvents bnSymbol As ButtonEx
         Friend WithEvents cmsSymbol As ContextMenuStrip
@@ -94,7 +94,7 @@ Namespace UI
             Me.ResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
             Me.Label1 = New System.Windows.Forms.Label()
             Me.tlpSymbol = New System.Windows.Forms.TableLayoutPanel()
-            Me.lSymbol = New System.Windows.Forms.Label()
+            Me.laSymbol = New System.Windows.Forms.Label()
             Me.pbSymbol = New System.Windows.Forms.PictureBox()
             Me.bnSymbol = New StaxRip.UI.ButtonEx()
             Me.cmsSymbol = New System.Windows.Forms.ContextMenuStrip(Me.components)
@@ -473,7 +473,7 @@ Namespace UI
             Me.tlpSymbol.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
             Me.tlpSymbol.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
             Me.tlpSymbol.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-            Me.tlpSymbol.Controls.Add(Me.lSymbol, 1, 0)
+            Me.tlpSymbol.Controls.Add(Me.laSymbol, 1, 0)
             Me.tlpSymbol.Controls.Add(Me.pbSymbol, 0, 0)
             Me.tlpSymbol.Controls.Add(Me.bnSymbol, 2, 0)
             Me.tlpSymbol.Location = New System.Drawing.Point(686, 395)
@@ -484,17 +484,17 @@ Namespace UI
             Me.tlpSymbol.Size = New System.Drawing.Size(676, 94)
             Me.tlpSymbol.TabIndex = 14
             '
-            'lSymbol
+            'laSymbol
             '
-            Me.lSymbol.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Me.laSymbol.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.lSymbol.Location = New System.Drawing.Point(98, 0)
-            Me.lSymbol.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
-            Me.lSymbol.Name = "lSymbol"
-            Me.lSymbol.Size = New System.Drawing.Size(501, 94)
-            Me.lSymbol.TabIndex = 1
-            Me.lSymbol.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+            Me.laSymbol.Location = New System.Drawing.Point(98, 0)
+            Me.laSymbol.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
+            Me.laSymbol.Name = "laSymbol"
+            Me.laSymbol.Size = New System.Drawing.Size(501, 94)
+            Me.laSymbol.TabIndex = 1
+            Me.laSymbol.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
             '
             'pbSymbol
             '
@@ -712,6 +712,7 @@ Namespace UI
                     pbSymbol.BackgroundImage = ImageHelp.GetSymbolImage(item.Symbol)
                 End If
 
+                laSymbol.Text = If(item.Symbol = Symbol.None, "", item.Symbol.ToString)
                 tbHotkey.Text = KeysHelp.GetKeyString(item.KeyData)
                 Dim found As Boolean
 

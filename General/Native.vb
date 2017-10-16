@@ -76,7 +76,7 @@ Public Class Native
     'Friend Const SW_NORMAL As Integer = 1
     'Friend Const SW_PARENTCLOSING As Integer = 1
     'Friend Const SW_PARENTOPENING As Integer = 3
-    Friend Const SW_RESTORE As Integer = 9
+    'Friend Const SW_RESTORE As Integer = 9
     'Friend Const SW_SCROLLCHILDREN As Integer = 1
     'Friend Const SW_SHOW As Integer = 5
     'Friend Const SW_SHOWMAXIMIZED As Integer = 3
@@ -85,8 +85,6 @@ Public Class Native
     'Friend Const SW_SHOWNA As Integer = 8
     'Friend Const SW_SHOWNOACTIVATE As Integer = 4
     'Friend Const SW_SMOOTHSCROLL As Integer = &H10
-
-    Friend Const GWL_STYLE As Integer = -16
 
     Friend Const FORMAT_MESSAGE_ALLOCATE_BUFFER = &H100
     Friend Const FORMAT_MESSAGE_IGNORE_INSERTS = &H200

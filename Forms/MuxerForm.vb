@@ -589,10 +589,10 @@ Public Class MuxerForm
 
         If TypeOf Muxer Is MkvMuxer Then
             tb = UI.AddTextButton()
-            tb.Text = "Timecodes:"
+            tb.Text = "timestamps:"
             tb.Help = "txt or mkv file"
             tb.Expandet = True
-            tb.Property = NameOf(Muxer.TimecodesFile)
+            tb.Property = NameOf(Muxer.TimestampsFile)
             tb.BrowseFile("txt, mkv|*.txt;*.mkv")
         End If
 

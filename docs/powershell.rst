@@ -46,12 +46,6 @@ https://github.com/stax76/staxrip/issues/200
 Default Scripts
 ---------------
 
-AfterSourceLoaded.ps1
-~~~~~~~~~~~~~~~~~~~~~
-
-.. literalinclude:: powershell/AfterSourceLoaded.ps1
-   :language: powershell
-
 Convert Bluray (BT709) to 10bit 400nits (MaxFALL) HDR v3.ps1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -62,5 +56,11 @@ Re-mux v4.ps1
 ~~~~~~~~~~~~~
 
 .. literalinclude:: powershell/Re-mux v4.ps1
+   :language: powershell
+
+_AfterSourceLoaded.ps1
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. literalinclude:: powershell/_AfterSourceLoaded.ps1
    :language: powershell
 

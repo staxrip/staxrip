@@ -10,6 +10,23 @@ https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
+#### 1.7.0.4 unstable test build
+
+- new: VapourSynth plugin vcmod added
+- new: H265/HEVC and AAC support to eac3to demuxer added
+- new: the main window don't get activated after processing in case the active window is borderless which is the case when a player is in fullscreen mode
+- new: option added to the options dialog on the video tab to import VUI metadata like HDR from the source file to the video encoder, this is applied when the source loads like before and since this build additionally everytime a video encoder profile is loaded
+
+- fix: for the rare case of the settings failing to load staxrip will offer the options Retry, Reset, Exit
+
+- change: implemented mkvtoolnix command line interface changes
+- change: the upscaling assistant message was removed and the aspect ratio error message was improved
+- change: update changed nvenc --transfer flags
+
+- update: eac3to 3.32
+- update: mkvtoolnix 17.0.0
+- update: ffmpeg 3.3.4
+
 #### 1.7.0.3 unstable test build
 
 - new: the custom menu editor shows the name of the icon

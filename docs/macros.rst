@@ -611,6 +611,10 @@ File path to VapourSynth
 
 File path to VCEEnc
 
+``%app:vcmod%``
+
+File path to vcmod
+
 ``%app:vinverse%``
 
 File path to vinverse
@@ -990,6 +994,10 @@ Folder path to VapourSynth
 ``%app_dir:VCEEnc%``
 
 Folder path to VCEEnc
+
+``%app_dir:vcmod%``
+
+Folder path to vcmod
 
 ``%app_dir:vinverse%``
 

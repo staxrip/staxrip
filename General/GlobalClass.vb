@@ -249,8 +249,8 @@ Public Class GlobalClass
             Dim ret = Folder.Template + s.StartupTemplate + ".srip"
 
             If Not File.Exists(ret) Then
-                ret = Folder.Template + "x264.srip"
-                s.StartupTemplate = "x264"
+                ret = Folder.Template + "Automatic Workflow.srip"
+                s.StartupTemplate = "Automatic Workflow"
             End If
 
             Return ret
@@ -504,6 +504,7 @@ Public Class GlobalClass
 
         MainForm.tbTargetFile.Text = p.TargetFile.ChangeExt(p.VideoEncoder.Muxer.OutputExt)
         p.VideoEncoder.OnStateChange()
+        p.VideoEncoder.SetMetaData(p.LastOriginalSourceFile)
         MainForm.RecalcBitrate()
         MainForm.Assistant()
     End Sub
@@ -668,12 +669,15 @@ Public Class GlobalClass
 
     Function GetFilesInTempDirAndParent() As List(Of String)
         Dim ret As New List(Of String)
+        Dim dirs As New HashSet(Of String)
 
-        If p.TempDir <> "" Then ret.AddRange(Directory.GetFiles(p.TempDir))
+        If p.TempDir <> "" Then dirs.Add(p.TempDir)
+        If p.TempDir?.EndsWith("_temp\") Then dirs.Add(DirPath.GetParent(p.TempDir))
+        dirs.Add(FilePath.GetDir(p.FirstOriginalSourceFile))
 
-        If p.TempDir <> FilePath.GetDir(p.FirstOriginalSourceFile) Then
-            ret.AddRange(Directory.GetFiles(FilePath.GetDir(p.FirstOriginalSourceFile)))
-        End If
+        For Each i In dirs
+            ret.AddRange(Directory.GetFiles(i))
+        Next
 
         Return ret
     End Function

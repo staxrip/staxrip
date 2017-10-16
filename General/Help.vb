@@ -83,21 +83,6 @@ Public Class ObjectHelp
             Return DirectCast(bf.Deserialize(ms), T)
         End Using
     End Function
-
-    Shared Sub Serialize(o As Object, path As String)
-        Dim fs As FileStream = New FileStream(path, FileMode.OpenOrCreate)
-        Dim bf As BinaryFormatter = New BinaryFormatter
-        bf.Serialize(fs, o)
-        fs.Close()
-    End Sub
-
-    Shared Function Deserialize(path As String) As Object
-        Dim fs As FileStream = New FileStream(path, FileMode.Open)
-        Dim bf As BinaryFormatter = New BinaryFormatter
-        Dim o As Object = bf.Deserialize(fs)
-        fs.Close()
-        Return o
-    End Function
 End Class
 
 Public Class DirectoryHelp

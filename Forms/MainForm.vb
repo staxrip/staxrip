@@ -1078,15 +1078,7 @@ Public Class MainForm
 
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
         g.MainForm = Me
-
-        Try
-            s = SafeSerialization.Deserialize(New ApplicationSettings, g.SettingsFile)
-        Catch ex As Exception
-            g.ShowException(ex, "The settings file failed to load, it will be reset to defaults." + BR2 + g.SettingsFile)
-            s = New ApplicationSettings
-            s.Init()
-        End Try
-
+        LoadSettings
         MenuItemEx.UseTooltips = s.EnableTooltips
 
         InitializeComponent()
@@ -1149,6 +1141,35 @@ Public Class MainForm
         SizeContextMenuStrip.ResumeLayout()
         g.SetRenderer(MenuStrip)
         SetMenuStyle()
+    End Sub
+
+    Private Sub LoadSettings()
+        Try
+            s = SafeSerialization.Deserialize(New ApplicationSettings, g.SettingsFile)
+        Catch ex As Exception
+            Using td As New TaskDialog(Of String)
+                td.MainInstruction = "The settings failed to load!"
+                td.Content = ex.Message
+                td.MainIcon = TaskDialogIcon.Error
+                td.AddButton("Retry", "Retry")
+                td.AddButton("Reset", "Reset")
+                td.AddButton("Exit", "Exit")
+
+                Select Case td.Show
+                    Case "Retry"
+                        LoadSettings()
+                    Case "Reset"
+                        If MsgQuestion("Are you sure you want to reset your settings? Your current settings will be lost!") = DialogResult.OK Then
+                            s = New ApplicationSettings
+                            s.Init()
+                        Else
+                            LoadSettings()
+                        End If
+                    Case Else
+                        Process.GetCurrentProcess.Kill()
+                End Select
+            End Using
+        End Try
     End Sub
 
     Sub SetMenuStyle()
@@ -1423,8 +1444,9 @@ Public Class MainForm
             If menuItem.CustomMenuItem.MethodName = "DynamicMenuItem" Then
                 If menuItem.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.Scripts) Then
                     menuItem.DropDownItems.ClearAndDisplose
+
                     For Each path In files
-                        If Not events.Contains(path.FileName.Left(".")) Then
+                        If Not events.Contains(path.FileName.Left(".")) AndAlso Not path.FileName.StartsWith("_") Then
                             ActionMenuItem.Add(menuItem.DropDownItems,
                                                path.FileName.Base,
                                                Sub() g.DefaultCommands.ExecuteScriptFile(path))
@@ -2730,31 +2752,13 @@ Public Class MainForm
                 End If
             End If
 
-            If p.TargetWidth > cropw Then
-                If ProcessTip("The target width is larger then the source width, usually it's better to disable the resize filter.") Then
-                    g.Highlight(True, lZoom)
-                    g.Highlight(True, tbTargetWidth)
-                    gbAssistant.Text = "Bad Image Size"
-                    Return False
-                End If
-            End If
-
-            If p.TargetHeight > croph Then
-                If ProcessTip("The target height is larger then the source height, usually it's better to disable the resize filter.") Then
-                    g.Highlight(True, lZoom)
-                    g.Highlight(True, tbTargetHeight)
-                    gbAssistant.Text = "Bad Image Size"
-                    Return False
-                End If
-            End If
-
             Dim ae = Calc.GetAspectRatioError()
 
             If Not isValidAnamorphicSize AndAlso (ae > p.MaxAspectRatioError OrElse 
                 ae < -p.MaxAspectRatioError) AndAlso p.Script.IsFilterActive("Resize") AndAlso
                 p.RemindArError Then
 
-                If ProcessTip("Use the resize slider to correct the aspect ratio error.") Then
+                If ProcessTip("Use the resize slider to correct the aspect ratio error or click next to encode anamorphic.") Then
                     g.Highlight(True, lAspectRatioError)
                     gbAssistant.Text = "Aspect Ratio Error"
                     Return False
@@ -3796,7 +3800,7 @@ Public Class MainForm
             b.Field = NameOf(p.SaveThumbnails)
 
             Dim n = ui.AddNum()
-            n.Text = "Auto resize image size:"
+            n.Text = "Auto resize image size"
             n.Help = "Resizes to a given pixel size after loading a source file."
             n.Config = {0, Integer.MaxValue, 10000}
             n.Field = NameOf(p.AutoResizeImage)
@@ -3804,18 +3808,18 @@ Public Class MainForm
             ui.AddLabel(n, "(0 = disabled)")
 
             n = ui.AddNum()
-            n.Text = "Resize slider width:"
+            n.Text = "Resize slider width"
             n.Config = {0, Integer.MaxValue, 64}
             n.Field = NameOf(p.ResizeSliderMaxWidth)
 
             ui.AddLabel(n, "(0 = auto)")
 
             Dim m = ui.AddMenu(Of Integer)()
-            m.Text = "Output Mod:"
+            m.Text = "Output Mod"
             m.Add(2, 4, 8, 16)
             m.Field = NameOf(p.ForcedOutputMod)
 
-            ui.CreateFlowPage("Image|Aspect Ratio", True)
+            ui.CreateFlowPage("Image | Aspect Ratio", True)
 
             b = ui.AddBool()
             b.Text = "Use ITU-R BT.601 compliant aspect ratio"
@@ -3828,32 +3832,32 @@ Public Class MainForm
             b.Field = NameOf(p.AdjustHeight)
 
             n = ui.AddNum()
-            n.Text = "Max AR Error:"
+            n.Text = "Max AR Error"
             n.Help = "Maximum aspect ratio error. In case of a higher value the AR signaled to the encoder or muxer."
             n.Config = {1, 10, 0.1, 1}
             n.Field = NameOf(p.MaxAspectRatioError)
 
             Dim t = ui.AddText()
-            t.Text = "Source DAR:"
+            t.Text = "Source DAR"
             t.Help = "Custom source display aspect ratio."
             t.Field = NameOf(p.CustomSourceDAR)
 
             t = ui.AddText()
-            t.Text = "Source PAR: "
+            t.Text = "Source PAR"
             t.Help = "Custom source pixel aspect ratio."
             t.Field = NameOf(p.CustomSourcePAR)
 
             t = ui.AddText()
-            t.Text = "Target DAR: "
+            t.Text = "Target DAR"
             t.Help = "Custom target display aspect ratio."
             t.Field = NameOf(p.CustomTargetDAR)
 
             t = ui.AddText()
-            t.Text = "Target PAR: "
+            t.Text = "Target PAR"
             t.Help = "Custom target pixel aspect ratio."
             t.Field = NameOf(p.CustomTargetPAR)
 
-            Dim cropPage = ui.CreateFlowPage("Image|Crop")
+            Dim cropPage = ui.CreateFlowPage("Image | Crop")
 
             b = ui.AddBool()
             b.Text = "Auto correct crop values"
@@ -3866,7 +3870,7 @@ Public Class MainForm
             b.Field = NameOf(p.AutoSmartCrop)
 
             n = ui.AddNum()
-            n.Text = "Auto overcrop width to limit aspect ratio to:"
+            n.Text = "Auto overcrop width to limit aspect ratio to"
             n.Help = "On small devices it can help to restrict the aspect ratio and overcrop the width instead."
             n.Config = {0, 2, 0.1, 3}
             n.Field = NameOf(p.AutoSmartOvercrop)
@@ -3912,21 +3916,21 @@ Public Class MainForm
             Dim audioPage = ui.CreateFlowPage("Audio", True)
 
             t = ui.AddText
-            t.Text = "Preferred Languages:"
+            t.Text = "Preferred Languages"
             t.Help = "Preferred audio languages using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all languages just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
             t.Field = NameOf(p.PreferredAudio)
 
             Dim cut = ui.AddMenu(Of CuttingMode)
-            cut.Text = "Cutting Method:"
+            cut.Text = "Cutting Method"
             cut.Help = "Defines which method to use for cutting."
             cut.Field = NameOf(p.CuttingMode)
 
             Dim audioDemux = ui.AddMenu(Of DemuxMode)
-            audioDemux.Text = "Demux Audio:"
+            audioDemux.Text = "Demux Audio"
             audioDemux.Field = NameOf(p.DemuxAudio)
 
             Dim audioExist = ui.AddMenu(Of FileExistMode)
-            audioExist.Text = "Existing Output:"
+            audioExist.Text = "Existing Output"
             audioExist.Help = "What to do in case a audio encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite."
             audioExist.Field = NameOf(p.FileExistAudio)
 
@@ -3938,7 +3942,7 @@ Public Class MainForm
             Dim videoPage = ui.CreateFlowPage("Video", True)
 
             Dim videoExist = ui.AddMenu(Of FileExistMode)
-            videoExist.Text = "Existing Video Output:"
+            videoExist.Text = "Existing Video Output"
             videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
             videoExist.Field = NameOf(p.FileExistVideo)
 
@@ -3947,26 +3951,31 @@ Public Class MainForm
             b.Help = "Note that depending on the resolution this can result in very large files."
             b.Field = NameOf(p.PreRenderIntoLossless)
 
+            b = ui.AddBool
+            b.Text = "Import VUI metadata"
+            b.Help = "Imports VUI metadata such as HDR from the source file to the video encoder."
+            b.Field = NameOf(p.ImportVUIMetadata)
+
             Dim subPage = ui.CreateFlowPage("Subtitles", True)
 
             t = ui.AddText(subPage)
-            t.Text = "Preferred Languages:"
+            t.Text = "Preferred Languages"
             t.Help = "Subtitles demuxed and loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
             t.Field = NameOf(p.PreferredSubtitles)
 
             Dim tbm = ui.AddTextMenu(subPage)
-            tbm.Text = "Stream Name:"
+            tbm.Text = "Stream Name"
             tbm.Help = "Stream name used for muxing, may contain macros."
             tbm.Field = NameOf(p.SubtitleName)
             tbm.AddMenu("Language English", "%language_english%")
             tbm.AddMenu("Language Native", "%language_native%")
 
             Dim subDemux = ui.AddMenu(Of DemuxMode)
-            subDemux.Text = "Demux Subtitles:"
+            subDemux.Text = "Demux Subtitles"
             subDemux.Field = NameOf(p.DemuxSubtitles)
 
             Dim mb = ui.AddMenu(Of DefaultSubtitleMode)(subPage)
-            mb.Text = "Default Subtitle:"
+            mb.Text = "Default Subtitle"
             mb.Field = NameOf(p.DefaultSubtitle)
 
             b = ui.AddBool(subPage)
@@ -4079,9 +4088,9 @@ Public Class MainForm
             b.SaveAction = Sub(value) p.NoDialogs = value
 
             b = ui.AddBool(miscPage)
-            b.Text = "Extract timecodes from VFR MKV files"
-            b.Checked = p.ExtractTimecodes
-            b.SaveAction = Sub(value) p.ExtractTimecodes = value
+            b.Text = "Extract timestamps from VFR MKV files"
+            b.Checked = p.ExtractTimestamps
+            b.SaveAction = Sub(value) p.ExtractTimestamps = value
 
             ui.AddLine(miscPage, "Compressibility Check")
 
@@ -4092,13 +4101,13 @@ Public Class MainForm
             b.SaveAction = Sub(value) p.AutoCompCheck = value
 
             n = ui.AddNum(miscPage)
-            n.Label.Text = "Percentage for comp. check:"
+            n.Label.Text = "Percentage for comp. check"
             n.NumEdit.Config = {2, 20}
             n.NumEdit.Value = p.CompCheckRange
             n.NumEdit.SaveAction = Sub(value) p.CompCheckRange = CInt(value)
 
             Dim compCheckButton = ui.AddMenu(Of CompCheckAction)(miscPage)
-            compCheckButton.Label.Text = "After comp. check adjust:"
+            compCheckButton.Label.Text = "After comp. check adjust"
             compCheckButton.Button.Value = p.CompCheckAction
             compCheckButton.Button.SaveAction = Sub(value) p.CompCheckAction = value
 
@@ -5630,6 +5639,9 @@ Public Class MainForm
 
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
+            Dim hwnd = Native.GetForegroundWindow()
+            Dim styles = Native.GetWindowLong(hwnd, -16) 'GWL_STYLE
+            If (&HC00000L And styles) <> &HC00000L Then Return True 'WS_CAPTION
             If ProcController.BlockActivation Then Return True
             Return MyBase.ShowWithoutActivation
         End Get

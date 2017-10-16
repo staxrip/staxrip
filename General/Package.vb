@@ -94,8 +94,21 @@ Public Class Package
     Shared Property ProjectX As Package = Add(New ProjectXPackage)
     Shared Property qaac As Package = Add(New qaacPackage)
     Shared Property UnDot As Package = Add(New UnDotPackage)
-    Shared Property xvid_encraw As Package = Add(New xvid_encrawPackage)
-    Shared Property Decomb As Package = Add(New DecombPackage)
+
+    Shared Property xvid_encraw As Package = Add(New PluginPackage With {
+        .Name = "xvid_encraw",
+        .Filename = "xvid_encraw.exe",
+        .Description = "XviD command line encoder",
+        .HelpFile = "help.txt",
+        .WebURL = "https://www.xvid.com"})
+
+    Shared Property Decomb As Package = Add(New PluginPackage With {
+        .Name = "Decomb",
+        .Filename = "Decomb.dll",
+        .WebURL = "http://rationalqm.us/decomb/decombnew.html",
+        .HelpFile = "DecombReferenceManual.html",
+        .Description = "This package of plugin functions for Avisynth provides the means for removing combing artifacts from telecined progressive streams, interlaced streams, and mixtures thereof. Functions can be combined to implement inverse telecine (IVTC) for both NTSC and PAL streams.",
+        .AvsFilterNames = {"Telecide", "FieldDeinterlace", "Decimate", "IsCombed"}})
 
     Shared Property temporalsoften As Package = Add(New PluginPackage With {
         .Name = "temporalsoften",
@@ -662,6 +675,13 @@ Public Class Package
             .Description = "A rewrite of DctFilter for Avisynth+.",
             .URL = "https://github.com/chikuzen/DCTFilter",
             .AvsFilterNames = {"DCTFilter", "DCTFilterD", "DCTFilter4", "DCTFilter4D", "DCTFilter8", "DCTFilter8D"}})
+
+        Add(New PluginPackage With {
+            .Name = "vcmod",
+            .Filename = "vcmod.dll",
+            .Description = "vcmod plugin for VapourSynth.",
+            .URL = "http://www.avisynth.nl/users/vcmohan/vcmod/vcmod.html",
+            .VSFilterNames = {"vcmod.Median", "vcmod.Variance", "vcmod.Amplitude", "vcmod.GBlur", "vcmod.MBlur", "vcmod.Histogram"}})
 
         Add(New PluginPackage With {
             .Name = "Yadifmod",
@@ -1423,29 +1443,4 @@ Public Class HaaliSplitter
             If File.Exists(ret) Then Return ret
         End Get
     End Property
-End Class
-
-Public Class DecombPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "Decomb"
-        Filename = "Decomb.dll"
-        WebURL = "http://rationalqm.us/decomb/decombnew.html"
-        HelpFile = "DecombReferenceManual.html"
-        Description = "This package of plugin functions for Avisynth provides the means for removing combing artifacts from telecined progressive streams, interlaced streams, and mixtures thereof. Functions can be combined to implement inverse telecine (IVTC) for both NTSC and PAL streams."
-        AvsFilterNames = {"Telecide", "FieldDeinterlace", "Decimate", "IsCombed"}
-    End Sub
-End Class
-
-Public Class xvid_encrawPackage
-    Inherits Package
-
-    Sub New()
-        Name = "xvid_encraw"
-        Filename = "xvid_encraw.exe"
-        Description = "XviD command line encoder"
-        HelpFile = "help.txt"
-        WebURL = "https://www.xvid.com"
-    End Sub
 End Class

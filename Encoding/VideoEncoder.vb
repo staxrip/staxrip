@@ -48,6 +48,8 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Sub SetMetaData(sourceFile As String)
+        If Not p.ImportVUIMetadata Then Exit Sub
+
         Dim cl As String
         Dim colour_primaries = MediaInfo.GetVideo(sourceFile, "colour_primaries")
         Dim height = MediaInfo.GetVideo(sourceFile, "Height").ToInt

@@ -99,7 +99,7 @@ eac3to
 
 Audio conversion command line app.
 
-Used Version: 3.31
+Used Version: 3.32
 
 http://forum.doom9.org/showthread.php?t=125966
 
@@ -119,7 +119,7 @@ ffmpeg
 
 Versatile audio video converter.
 
-Used Version: 3.3.3
+Used Version: 3.3.4
 
 http://ffmpeg.org
 
@@ -169,7 +169,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 16.0.0 pre 01582
+Used Version: 17.0.0
 
 http://www.bunkus.org/videotools/mkvtoolnix
 
@@ -179,7 +179,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 16.0.0 pre 01582
+Used Version: 17.0.0
 
 http://www.bunkus.org/videotools/mkvtoolnix
 
@@ -362,16 +362,6 @@ H.265 video encoding command line app.
 Used Version: 2.5+14
 
 http://x265.org
-
-
-xvid_encraw
-~~~~~~~~~~~
-
-XviD command line encoder
-
-Used Version: 1.3.3.0
-
-https://www.xvid.com
 
 
 AviSynth Plugins
@@ -1085,6 +1075,18 @@ Filters: TemporalSoften
 Used Version: 2014-09-25
 
 
+
+
+vcmod
+~~~~~
+
+vcmod plugin for VapourSynth.
+
+Filters: vcmod.Median, vcmod.Variance, vcmod.Amplitude, vcmod.GBlur, vcmod.MBlur, vcmod.Histogram
+
+Used Version: r24
+
+http://www.avisynth.nl/users/vcmohan/vcmod/vcmod.html
 
 
 VSFilterMod

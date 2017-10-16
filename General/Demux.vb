@@ -681,7 +681,7 @@ Public Class mkvDemuxer
                 proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
-                proc.Arguments = "chapters " + proj.SourceFile.Escape + " --redirect-output " + (proj.TempDir + proj.SourceFile.Base + "_chapters.xml").Escape
+                proc.Arguments = proj.SourceFile.Escape + " chapters " + (proj.TempDir + proj.SourceFile.Base + "_chapters.xml").Escape
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
             End Using
@@ -693,7 +693,7 @@ Public Class mkvDemuxer
                 proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
-                proc.Arguments = "chapters " + proj.SourceFile.Escape + " --redirect-output " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").Escape + " --simple"
+                proc.Arguments = proj.SourceFile.Escape + " chapters " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").Escape + " --simple"
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
             End Using
@@ -709,7 +709,7 @@ Public Class mkvDemuxer
                 proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
-                proc.Arguments = "attachments " + proj.SourceFile.Escape + " " +
+                proc.Arguments = proj.SourceFile.Escape + " attachments " +
                     enabledAttachments.Select(Function(val) val.ID & ":" + GetAttachmentPath(
                     proj.TempDir, val.Name).Escape).Join(" ")
                 proc.AllowedExitCodes = {0, 1, 2}
@@ -722,11 +722,11 @@ Public Class mkvDemuxer
 
             Using proc As New Proc
                 proc.Project = proj
-                proc.Header = "Demux timecodes"
+                proc.Header = "Demux timestamps"
                 proc.SkipString = "Progress: "
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
-                proc.Arguments = "timecodes_v2 " + proj.SourceFile.Escape + " " & streamOrder & ":" + (proj.TempDir + proj.SourceFile.Base + "_timecodes.txt").Escape
+                proc.Arguments = "timestamps_v2 " + proj.SourceFile.Escape + " " & streamOrder & ":" + (proj.TempDir + proj.SourceFile.Base + "_timestamps.txt").Escape
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
             End Using
@@ -760,7 +760,7 @@ Public Class mkvDemuxer
 
         If audioStreams.Count = 0 AndAlso subtitles.Count = 0 AndAlso Not videoDemuxing Then Exit Sub
 
-        Dim args = "tracks " + sourcefile.Escape
+        Dim args = sourcefile.Escape + " tracks"
 
         If videoDemuxing Then
             Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify " + sourcefile.Escape)

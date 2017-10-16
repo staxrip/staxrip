@@ -10,7 +10,7 @@ Public MustInherit Class Muxer
 
     Property CoverFile As String = ""
     Property ChapterFile As String = ""
-    Property TimecodesFile As String = ""
+    Property TimestampsFile As String = ""
     Property Tags As String = ""
 
     MustOverride Sub Mux()
@@ -67,7 +67,7 @@ Public MustInherit Class Muxer
     Overrides Sub Clean()
         Subtitles = Nothing
         ChapterFile = Nothing
-        TimecodesFile = Nothing
+        TimestampsFile = Nothing
         Tags = Nothing
     End Sub
 
@@ -520,11 +520,11 @@ Public Class MkvMuxer
             args += " --default-duration 0:" + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps"
         End If
 
-        If TimecodesFile <> "" Then
-            If TimecodesFile.Ext = "txt" Then
-                args += " --timecodes 0:" + TimecodesFile.Escape
-            ElseIf TimecodesFile.Ext = "mkv" Then
-                args += " --timecodes " + MediaInfo.GetVideo(TimecodesFile, "StreamOrder") + ":" + TimecodesFile.Escape
+        If TimestampsFile <> "" Then
+            If TimestampsFile.Ext = "txt" Then
+                args += " --timestamps 0:" + TimestampsFile.Escape
+            ElseIf TimestampsFile.Ext = "mkv" Then
+                args += " --timestamps " + MediaInfo.GetVideo(TimestampsFile, "StreamOrder") + ":" + TimestampsFile.Escape
             End If
         End If
 

@@ -265,16 +265,8 @@ Public Class MacrosForm
 
         Dim macros As New StringPairList
 
-        For Each i In Macro.GetMacros(True)
+        For Each i In Macro.GetMacros(True, True)
             macros.Add(i.Name, i.Description)
-        Next
-
-        For Each i In Package.Items.Values
-            macros.Add("%app:" + i.Name + "%", "")
-        Next
-
-        For Each i In Package.Items.Values
-            macros.Add("%app_dir:" + i.Name + "%", "")
         Next
 
         For Each i In macros

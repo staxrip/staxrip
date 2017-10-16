@@ -42,9 +42,9 @@ Public Class Project
     Public DefaultSubtitle As DefaultSubtitleMode
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
-    Public DemuxAudio As DemuxMode
-    Public DemuxSubtitles As DemuxMode
-    Public ExtractTimecodes As Boolean
+    Public DemuxAudio As DemuxMode = DemuxMode.All
+    Public DemuxSubtitles As DemuxMode = DemuxMode.All
+    Public ExtractTimestamps As Boolean
     Public FileExistAudio As FileExistMode
     Public FileExistVideo As FileExistMode
     Public FirstOriginalSourceFile As String
@@ -98,6 +98,7 @@ Public Class Project
     Public Versions As Dictionary(Of String, Integer)
     Public VideoBitrate As Integer = 5000
     Public VideoEncoder As VideoEncoder
+    Public ImportVUIMetadata As Boolean = True
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

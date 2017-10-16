@@ -44,9 +44,9 @@ Command Engine
 
 StaxRip uses a command engine for the following features:
 
-- StaxRip's command line interface (documented at: Main Menu > Help > Command Line)
+- StaxRip's command line interface
 - StaxRip's configurable main menu and various other menus
-- StaxRip's Event Command Feature (located at: Main Menu > Tools > Advanced > Event Commands)
+- StaxRip's Event Command Feature (Main Menu > Tools > Advanced > Event Commands)
 
 The Event Command feature allows to run commands on defined events under defined conditions.
 

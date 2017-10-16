@@ -502,9 +502,7 @@ Public Class PreviewForm
         If Control.ModifierKeys = Keys.Alt Then pos = 1000
         If e.Delta < 0 Then pos = pos * -1
         If s.ReverseVideoScrollDirection Then pos = pos * -1
-        AVI.Position += pos
-        Drawer.Draw()
-        DrawTrack()
+        SetRelativePos(pos)
     End Sub
 
     Sub DrawTrack()
@@ -620,7 +618,7 @@ Public Class PreviewForm
     Private Sub AfterPositionChanged()
         s.LastPosition = AVI.Position
         DrawTrack()
-        Dim time = TimeSpan.FromSeconds(AVI.Position / AVI.FrameRate).ToString.TrimEnd("0"c)
+        Dim time = TimeSpan.FromSeconds(AVI.Position / AVI.FrameRate).ToString.Shorten(12)
         If time.StartsWith("00") Then time = time.Substring(3)
         Text = "Preview  " & s.LastPosition & "  " + time
     End Sub

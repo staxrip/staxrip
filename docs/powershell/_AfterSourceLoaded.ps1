@@ -1,4 +1,6 @@
-# Sets a deinterlace filter if the MediaInfo property 'ScanType' returns 'Interlaced'
+# This script handles the AfterSourceLoaded event, remove the underscore from the
+# filename in order to enable it. The script sets a deinterlace filter if the
+# MediaInfo property 'ScanType' returns 'Interlaced'
 
 # active project
 $p = [ShortcutModule]::p

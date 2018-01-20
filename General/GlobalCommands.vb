@@ -362,7 +362,7 @@ Public Class GlobalCommands
         Dim x265Except = "--crop-rect --display-window --fast-cbf --frame-skip --help
             --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version
             --opt-qp-pps --opt-ref-list-length-pps --dhdr10-info --no-scenecut
-            --no-progress --pbration".Split((" " + BR).ToCharArray())
+            --no-progress --pbration --fullhelp".Split((" " + BR).ToCharArray())
 
         Dim x265RemoveExcept = "--numa-pools --rdoq --cip --qblur --cplxblur --cu-stats
             --dhdr10-opt --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())

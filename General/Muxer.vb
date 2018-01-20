@@ -309,7 +309,7 @@ Public Class MP4Muxer
                     "avi", "ac3",
                     "mp4", "m4a", "aac", "mov",
                     "264", "h264", "avc",
-                    "265", "h265", "hevc",
+                    "265", "h265", "hevc", "hvc",
                     "mp2", "mpa", "mp3"}
         End Get
     End Property
@@ -647,7 +647,19 @@ Public Class MkvMuxer
 
     Overrides ReadOnly Property SupportedInputTypes() As String()
         Get
-            Return FileTypes.mkvmergeInput
+            Return {"avi", "wav",
+                    "mp4", "m4v", "m4a", "aac",
+                    "flv", "mov",
+                    "264", "h264", "avc",
+                    "265", "h265", "hevc", "hvc",
+                    "ac3", "eac3", "thd+ac3", "thd",
+                    "mkv", "mka", "webm",
+                    "mp2", "mpa", "mp3",
+                    "ogg", "ogm",
+                    "dts", "dtsma", "dtshr", "dtshd",
+                    "mpg", "m2v", "mpv",
+                    "ts", "m2ts",
+                    "opus", "flac"}
         End Get
     End Property
 End Class

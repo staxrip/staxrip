@@ -1557,14 +1557,6 @@ Namespace UI
             End Sub
         End Class
 
-        Private Class UpDownButton2
-            Inherits ButtonEx
-
-            Sub New()
-                FlatStyle = FlatStyle.Flat
-            End Sub
-        End Class
-
         Private Class UpDownButton
             Inherits Control
 

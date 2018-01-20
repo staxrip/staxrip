@@ -1990,20 +1990,6 @@ Public Class FileTypes
     Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs", "vpy"}
     Shared Property VideoDemuxOutput As String() = {"mpg", "h264", "avi", "h265"}
 
-    Shared Property mkvmergeInput As String() = {"avi", "wav",
-                                                 "mp4", "m4v", "m4a", "aac",
-                                                 "flv", "mov",
-                                                 "264", "h264", "avc",
-                                                 "265", "h265", "hevc", "hvc",
-                                                 "ac3", "eac3", "thd+ac3", "thd",
-                                                 "mkv", "mka", "webm",
-                                                 "mp2", "mpa", "mp3",
-                                                 "ogg", "ogm",
-                                                 "dts", "dtsma", "dtshr", "dtshd",
-                                                 "mpg", "m2v", "mpv",
-                                                 "ts", "m2ts",
-                                                 "opus", "flac"}
-
     Shared Function GetFilter(values As IEnumerable(Of String)) As String
         Return "*." + values.Join(";*.") + "|*." + values.Join(";*.") + "|All Files|*.*"
     End Function

@@ -19,7 +19,7 @@ AviSynth+
 
 StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
 
-Used Version: 2508
+Used Version: 2580
 
 http://avisynth.nl/index.php/AviSynth%2B
 
@@ -99,7 +99,7 @@ eac3to
 
 Audio conversion command line app.
 
-Used Version: 3.32
+Used Version: 3.34
 
 http://forum.doom9.org/showthread.php?t=125966
 
@@ -169,7 +169,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 17.0.0
+Used Version: 20.0.0
 
 http://www.bunkus.org/videotools/mkvtoolnix
 
@@ -179,7 +179,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 17.0.0
+Used Version: 20.0.0
 
 http://www.bunkus.org/videotools/mkvtoolnix
 
@@ -209,7 +209,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 3.23
+Used Version: 3.27
 
 https://github.com/rigaya/NVEnc
 
@@ -229,7 +229,7 @@ Python
 
 Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
 
-Used Version: 3.6.2
+Used Version: 3.6.4
 
 http://www.python.org
 
@@ -269,7 +269,7 @@ VapourSynth
 
 StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
 
-Used Version: R39
+Used Version: R41.1
 
 http://www.vapoursynth.com
 
@@ -319,7 +319,7 @@ vspipe
 
 vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.
 
-Used Version: R39
+Used Version: R41.1
 
 http://www.vapoursynth.com/doc/vspipe.html
 
@@ -359,7 +359,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 2.5+14
+Used Version: 2.6+31
 
 http://x265.org
 
@@ -625,7 +625,7 @@ Removes noise whilst retaining as much detail as possible.
 
 Filters: mClean
 
-Used Version: 1.8
+Used Version: 2.0
 
 https://forum.doom9.org/showthread.php?t=174804
 
@@ -793,7 +793,7 @@ TIVTC is a plugin package containing 7 different filters and 3 conditional funct
 
 Filters: TFM, TDecimate, MergeHints, FrameDiff, FieldDiff, ShowCombedTIVTC, RequestLinear
 
-Used Version: 1.0.9
+Used Version: 1.0.10
 
 https://github.com/pinterf/TIVTC
 

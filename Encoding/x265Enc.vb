@@ -782,7 +782,6 @@ Public Class x265Params
                     Mode, OutputDepth, Quant)
                 Add("Analysis 1", RD,
                     New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis File", .Quotes = True, .BrowseFile = True},
-                    New OptionParam With {.Switch = "--analysis-reuse-mode", .Text = "Analysis Mode", .Options = {"Off", "Save", "Load"}},
                     MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
                 Add("Analysis 2",
                     New NumParam With {.Switch = "--analysis-reuse-level", .Text = "Refine Level", .Config = {1, 10}, .Init = 5},

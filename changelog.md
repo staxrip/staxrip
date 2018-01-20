@@ -10,6 +10,18 @@ https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
+#### 1.7.0.5 unstable test build
+
+- fix: flash3kyuu_deband not working with AviSynth
+
+- update: mkvtoolnix 20.0.0
+- update: AviSynth 2580
+- update: mClean 2.0
+- update: TIVTC 1.0.10
+- update: x265 2.6+31
+- update: eac3to 3.34
+- update: NVEnc 3.27
+
 #### 1.7.0.4 unstable test build
 
 - new: VapourSynth plugin vcmod added

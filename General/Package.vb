@@ -250,10 +250,10 @@ Public Class Package
         .WebURL = "http://forum.doom9.org/showthread.php?t=161411",
         .HelpURL = "https://f3kdb.readthedocs.io/en/latest/#",
         .Description = "Simple debanding filter that can be quite effective for some anime sources.",
-        .AvsFilterNames = {"f3kdb"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb", "f3kdb()")},
         .VSFilterNames = {"f3kdb.Deband"},
-        .VSFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb...", "clip = core.f3kdb.Deband(clip, preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")}})
+        .VSFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb...", "clip = core.f3kdb.Deband(clip, preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")},
+        .AvsFilterNames = {"f3kdb"},
+        .AvsFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb...", "f3kdb(preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")}})
 
     Shared Property vinverse As Package = Add(New PluginPackage With {
         .Name = "vinverse",
@@ -1132,7 +1132,7 @@ Public Class AviSynthPlusPackage
         WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         FixedDir = Folder.System
-        SetupFilename = "AviSynth+r2508.exe"
+        SetupFilename = "AviSynthPlus-MT-r2580.exe"
     End Sub
 
     Public Overrides Property IsRequired As Boolean

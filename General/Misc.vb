@@ -914,6 +914,7 @@ Public Class Macro
         ret.Add(New Macro("source_dir", "Source Directory", GetType(String), "Directory of the source file."))
         ret.Add(New Macro("source_dir_name", "Source Directory Name", GetType(String), "Name of the source file directory."))
         ret.Add(New Macro("source_dir_parent", "Source Directory Parent", GetType(String), "Parent directory of the source file directory."))
+        ret.Add(New Macro("source_ext", "Source File Extension", GetType(String), "File extension of the source file."))
         ret.Add(New Macro("source_file", "Source File Path", GetType(String), "File path of the source video."))
         ret.Add(New Macro("source_files", "Source Files Blank", GetType(String), "Source files in quotes separated by a blank."))
         ret.Add(New Macro("source_files_comma", "Source Files Comma", GetType(String), "Source files in quotes separated by comma."))
@@ -1072,6 +1073,9 @@ Public Class Macro
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_name%") Then value = value.Replace("%source_name%", p.SourceFile.Base)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%source_ext%") Then value = value.Replace("%source_ext%", p.FirstOriginalSourceFile.Ext)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%version%") Then value = value.Replace("%version%", Application.ProductVersion)

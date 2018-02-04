@@ -99,7 +99,7 @@ Public MustInherit Class VideoEncoder
         Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
         Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
 
-        If MaxCLL <> 0 AndAlso MaxFALL <> 0 Then cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""
+        If MaxCLL <> 0 OrElse MaxFALL <> 0 Then cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""
 
         ImportCommandLine(cl)
     End Sub

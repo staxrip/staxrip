@@ -269,7 +269,7 @@ VapourSynth
 
 StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
 
-Used Version: R41.1
+Used Version: R43
 
 http://www.vapoursynth.com
 
@@ -319,7 +319,7 @@ vspipe
 
 vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.
 
-Used Version: R41.1
+Used Version: R43
 
 http://www.vapoursynth.com/doc/vspipe.html
 
@@ -517,7 +517,7 @@ Simple debanding filter that can be quite effective for some anime sources.
 
 Filters: f3kdb
 
-Used Version: 2.0.20140721
+Used Version: 2015-05-02
 
 http://forum.doom9.org/showthread.php?t=161411
 
@@ -625,7 +625,7 @@ Removes noise whilst retaining as much detail as possible.
 
 Filters: mClean
 
-Used Version: 2.0
+Used Version: 2.3
 
 https://forum.doom9.org/showthread.php?t=174804
 
@@ -685,7 +685,7 @@ MVTools is collection of functions for estimation and compensation of objects mo
 
 Filters: MSuper, MAnalyse, MCompensate, MMask, MDeGrain1, MDeGrain2, MDegrain3
 
-Used Version: 2.7.22
+Used Version: 2.7.24
 
 https://github.com/pinterf/mvtools
 
@@ -939,7 +939,7 @@ Simple debanding filter that can be quite effective for some anime sources.
 
 Filters: f3kdb.Deband
 
-Used Version: 2.0.20140721
+Used Version: 2015-05-02
 
 http://forum.doom9.org/showthread.php?t=161411
 

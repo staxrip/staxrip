@@ -167,6 +167,10 @@ Name of the source file directory.
 
 Parent directory of the source file directory.
 
+``%source_ext%``
+
+File extension of the source file.
+
 ``%source_file%``
 
 File path of the source video.

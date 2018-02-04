@@ -10,6 +10,17 @@ https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 
 https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
 
+1.7.0.6 unstable test build
+
+- new: macro for the source file extension added (%source_ext%)
+
+- fix: target image size calculation was using mod 16 instead of the value defined in the options (https://forum.doom9.org/showthread.php?p=1832611#post1832611)
+- fix: x265 command line import and meta data import of --max-cll didn't work
+
+- update: mClean 2.3
+- update: mvtools2 2.7.24
+- update: VapourSynth 43
+
 #### 1.7.0.5 unstable test build
 
 - fix: flash3kyuu_deband not working with AviSynth

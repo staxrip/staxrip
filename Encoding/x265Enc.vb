@@ -649,7 +649,8 @@ Public Class x265Params
         .Switch = "--max-cll",
         .Config = {0, Integer.MaxValue, 50},
         .ImportAction = Sub(arg As String)
-                            Dim a = arg.Split(","c)
+                            If arg = "" Then Exit Sub
+                            Dim a = arg.Trim(""""c).Split(","c)
                             MaxCLL.Value = a(0).ToInt
                             MaxFALL.Value = a(1).ToInt
                         End Sub,

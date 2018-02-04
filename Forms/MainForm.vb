@@ -2340,7 +2340,7 @@ Public Class MainForm
                 SetTargetImageSizeByPixel(p.AutoResizeImage)
             Else
                 If p.AdjustHeight Then
-                    Dim h = Calc.FixMod16(CInt(p.TargetWidth / Calc.GetTargetDAR()))
+                    Dim h = Calc.FixMod(CInt(p.TargetWidth / Calc.GetTargetDAR()), p.ForcedOutputMod)
                     tbTargetHeight.Text = h.ToString()
                 End If
             End If

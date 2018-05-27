@@ -1,4 +1,4 @@
-﻿Imports StaxRip.CommandLine
+Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 <Serializable()>
@@ -183,6 +183,24 @@ Public Class NVEnc
             .Text = "Lossless",
             .VisibleFunc = Function() Codec.ValueText = "h264" AndAlso Profile.Visible}
 
+        Property MaxCLL As New NumParam With {
+        .Text = "Maximum CLL",
+        .Switch = "--max-cll",
+        .Config = {0, Integer.MaxValue, 50},
+        .VisibleFunc = Function() Codec.ValueText = "h265",
+        .ImportAction = Sub(arg As String)
+                            Dim a = arg.Split(","c)
+                            MaxCLL.Value = a(0).ToInt
+                            MaxFALL.Value = a(1).ToInt
+                        End Sub,
+        .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", "")}
+
+        Property MaxFALL As New NumParam With {
+        .Config = {0, Integer.MaxValue, 50},
+        .VisibleFunc = Function() Codec.ValueText = "h265",
+        .ArgsFunc = Function() "",
+        .Text = "Maximum FALL"}
+
         Property KNN As New BoolParam With {
             .Switch = "--vpp-knn",
             .Text = "Denoise using K-nearest neighbor",
@@ -337,11 +355,13 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--perf-monitor-interval", .Init = 500, .Config = {50, Integer.MaxValue}, .Text = "Perf. Mon. Interval"},
                         New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
                     Add("VUI",
+                        New StringParam With {.Switch = "--master-display", .Text = "Master Display", .Quotes = True, .VisibleFunc = Function() Codec.ValueText = "h265"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},
                         New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-SRD-B67", "Auto", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 2084", "SMPTE 428"}},
+                        MaxCLL, MaxFALL,
                         New BoolParam With {.Switch = "--fullrange", .Text = "Full Range", .VisibleFunc = Function() Codec.ValueText = "h264"})
                     Add("VPP",
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},

@@ -1,14 +1,201 @@
 #### Requirements
 
-.NET 4.7 is required on systems prior Windows 10 Version 1703 (Creators Update)
+.NET 4.7 is required on systems prior to Windows 10 Anniversary or users using Windows 8.1 or Windows 7 SP1.
 
 https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
 #### Download
 
+Earlier Test Builds For Version 1.7.x.x:
+
 https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 
-https://1drv.ms/f/s!ArwKS_ZUR01goCzIRemxotXY_zz-
+
+1.8.0.0
+
+- All Filter are 64Bit enabled.
+- Scripts and Code is designed for Avisynth+. Using older versions of Avisynth will unlikely work with everything.
+- Restored the Old Icon and removed the RIP Icon.
+- Added Support for Max CLL, MAX FALL and Master-Display for Nvidia H.265 Encoder.
+- Added Support for Max CLL, MAX FALL and Master-Display for QSVEnc(Intel) H.265 Encoder.
+- XviD has been Updated to 1.3.5
+- Updated x265 to version 2.8+12(8+10+12 Bit Support)
+- Add Support for AVX512 for x265 
+- Updated FFMPEG to 4.0+
+- Updated NVENCc to 4.07
+- QSVEnc(Intel) has been Updated to 3.05
+- MKVToolNix has been Updated to version 23.
+- Updated MP4Box to 0.7.2
+- eac3to has been Updated to 3.34
+- AVSMeter has been Updated to 2.7.8
+- fdkaac has been compiled for 64Bit
+- Mediainfo has been Updated to 18.05
+- FrameServer for VirtualDub2 and VirtualDub 64Bit works with Video. *Currently a small issue with Audio not decoding properly* (Files are Included)
+- MPVnet has been Replaced with MPV. It uses the extact same code as MPVnet. MPVnet was replaced due to playback issues it was creating.
+- Project X has been Removed
+- Java has been Removed
+- AV1 has been Removed for the Time Being (Encoder is unstable).
+- mClean has been Updated to 3.2.
+- awarpsharp2 has been Updated to 2.0.1
+- FrameRateConventer Has been Updated to 1.2.1
+- JPSDR has been Updated to 2.2.0.7
+- MaskTools2 Has been Updated to 2.2.14
+- MVTools2 has been Updated to 2.7.31
+- QTGMC has been Updated to 3.358s
+- TIVTC has been Updated to 1.0.11
+- Added Color, FrameRate, Line, and Restoration context Menu.
+The List of all Included Filters:
+- Source: 
+	- Automatic
+	- AviSource
+	- DirectShowSource
+	- FFVideoSource 
+	- Manual
+	- MPEG2Source
+	- DGSource
+	- DGSourceIM*
+	- DGSourceNV*
+	- DSS2
+	* = Not Freeware.
+- Resizers: 
+	- Dither_Resize16 
+	- ResizeMT
+	- Resize
+	- Hardware Resize
+	- JincResize
+	- SuperResXBR
+	- SuperRes
+	- SuperXBR
+	- Resize(Z) - Uses ZLib
+- Crop: 
+	- Dither_Crop16
+	- Crop
+	- Hardware Crop
+- Line:
+	- MCDAA3
+	- DAA3Mod
+	- MAA2Mod
+	- XAA
+	- HDRSharp
+	- pSharpen
+	- MSharpen
+	- aWarpSharp2
+	- FineSharp 
+	- LSFmod (With More Syntax added for better results then Default)
+- Misc:
+	- MTMode (Multithreading)
+	- SplitVertical (For MT) 
+- Restoration: 
+	- CNR2
+	- Deblock	(Includes Dll for Both old and New versions, New version is enabled by Default).
+	- Deblock_QED 
+	- DehaloAlpha
+	- FineDehalo
+	- HQDeringmod
+	- MipSmooth
+	- SmoothD2 
+- Color:
+	- AutoAdjust
+	- Histogram
+	- ColorYUV (AutoGain)
+	- Levels and the Correct color levels for each BitDepth.
+	- Tweak
+	- Convert(Format(ColorSpace), To(DataFormat), Bits(BitDepth)
+	- Dither Tools
+	- DFTTest (For Stack)
+	- HDRCore
+	- HDRColor*	
+	- HDRNoise (Function must be Entered Manually to Use)
+	- HDRMatrix
+	- HDR Tone Mapping
+	* = Not Freeware
+- Framerate:
+	- AssumeFPS
+	- AssumeFPS_Source
+	- InterFrame
+	- ConvertFPS
+	- ChangeFPS
+	- SVPFlow (Scales to 59.940 and uses GPU by Default)
+	- YFRC
+- Field:
+	- QTGMC (With additional Syntax for both Interlaced and Progressive Sources. Plus Repair option for bad interlaced sources (Includes Progressive)
+	- nnedi3
+	- IVTC
+	- Assume (AssumeTFF & AssumeBFF)
+	- EEDI3
+	- FieldDeinterlace
+	- yadifmod2
+	- Select (SelectEven & SelectOdd)
+- Noise:
+	- KNLMeansCL (Added Device_type to Syntax)
+	- DeNoiseMD + Histogram
+	- DenoiseMF + Histogram
+	- DFTTest
+	- mClean
+	- RemoveGrain16 
+	- Repair16
+	- Repair
+	- HDRNoise (Syntax must be entered Manually)
+	- RemoveGrain
+	- FFT3DGPU 
+	- HQDN3D
+	- SpatialSoften (YUY2 Only)
+	- TemporalSoften 
+	- MCTemporalDenoise (Script has been Updated to work properly with GradFun2DB & GradFun2DBMod).
+	- MCTemporalDenoisePP (Same as Above)
+	- SMDGrain
+	- DFTTest
+	- TNLMeans 
+	- VagueDenoiser 
+	- xNLMeans)
+Support Filters & Scripts:
+	- AddGrainC
+	- DeGrainMedian
+	- GradFun2DB
+	- GradFun2DBMod
+	- HDRCore Source
+	- AVSTP
+	- TEMmod
+	- MT Expand Multi
+	- SmoothD2c
+	- edi_rpow2
+	- Average
+	- nnedi3 rpow2
+	- LUtils
+	- TMM2
+	- SVPFlow 1
+	- SVPFlow 2
+	- TTempSmooth
+	- Depan
+	- DepanEstimate
+	- TemporalDegrain
+	- AnimeIVTC
+	- f3kdb
+	- TComb
+	- TDent
+Altered:
+	Tweak: Syntax has been alter for Adjusting saturation and includes both realcalc and dither_strength(Only Avisynth+ use these Functions).
+	- RemoveGrain: added a secondary option for for artifact removal.	
+	- KNLMeansCL: Added additional syntax for Device_type which is set to Auto. It will try to use GPU first before trying to use the CPU. 
+ 	- Levels with correct range for each bitdepth. Level function does not autoscale based on the bitdepth.
+	- added more modern Framerates to Assumefps, ConvertFPS and ChangeFPS. 144 & 240 rates have been added.
+- Removed from Filter context Menu but can still works with the auto loading feature(Syntax must be Entered Manually): 
+	- Clense (Part of JPSDR)
+	- Checkmate
+	- SangNom2
+	- TComb
+	- Undot
+	- MedianBlurTemporal
+	- FluxSmoothST
+	- FluxSmoothT
+	- MedianBlur
+	- SangNom2
+	- f3kdb
+	- Vinverse 2
+
+Filters and Software that Support AVX2: aWarpSharp2, DCTFilter, DFTTest, JPSDR, Masktools2, TMM2, TNLMeans, yadifmod2, x265
+	- By default AVX or below are activate for compaiblity. 
+- VapourSynth is untouched(No Changes).
 
 1.7.0.6 unstable test build
 

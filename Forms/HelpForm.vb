@@ -43,7 +43,7 @@ Public Class HelpForm
 
     Sub New()
         InitializeComponent()
-        Icon = My.Resources.RipIcon
+        Icon = My.Resources.MainIcon
     End Sub
 
     Sub New(path As String)
@@ -55,7 +55,7 @@ Public Class HelpForm
             MsgWarn("Failed to load: " + path)
         End Try
 
-        Icon = My.Resources.RipIcon
+        Icon = My.Resources.MainIcon
     End Sub
 
     Private DocumentValue As HelpDocument

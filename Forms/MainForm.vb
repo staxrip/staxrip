@@ -1115,7 +1115,7 @@ Public Class MainForm
         llEditAudio0.AddClickAction(AddressOf AudioEdit0ToolStripMenuItemClick)
         llEditAudio1.AddClickAction(AddressOf AudioEdit1ToolStripMenuItemClick)
 
-        Icon = My.Resources.RipIcon
+        Icon = My.Resources.MainIcon
 
         MenuStrip.SuspendLayout()
         MenuStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
@@ -2716,7 +2716,7 @@ Public Class MainForm
 
             For Each i In audioTracks
                 If Math.Abs(i.Delay) > 2000 Then
-                    If ProcessTip("The audio delay is unusual high indicating a sync problem, MakeMKV and ProjectX can prevent this problem.") Then
+                    If ProcessTip("The audio delay is unusual high indicating a sync problem, MakeMKV can prevent this problem.") Then
                         g.Highlight(True, tbAudioFile0)
                         gbAssistant.Text = "Unusual high audio delay"
                         Return False
@@ -4316,8 +4316,7 @@ Public Class MainForm
         ret.Add("Apps|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
         ret.Add("Apps|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
-        ret.Add("Apps|mpv.net", NameOf(g.DefaultCommands.StartTool), {"mpv.net"})
-        ret.Add("Apps|ProjectX", NameOf(g.DefaultCommands.StartTool), {"ProjectX"})
+        ret.Add("Apps|mpv", NameOf(g.DefaultCommands.StartTool), {"mpv"})
         ret.Add("Apps|SubtitleEdit", NameOf(g.DefaultCommands.StartTool), {"SubtitleEdit"})
         ret.Add("Apps|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
 
@@ -4325,11 +4324,9 @@ Public Class MainForm
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
 
         ret.Add("Help|Docs", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Lightbulb, {"http://staxrip.readthedocs.io"})
-        ret.Add("Help|Donate", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Heart, {Strings.DonationsURL})
         ret.Add("Help|Apps", NameOf(DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
         ret.Add("Help|-")
         ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.Info, {"info"})
-
         Return ret
     End Function
 

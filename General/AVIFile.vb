@@ -202,7 +202,7 @@ Public Class AVIFile
     Private Shared Sub AVIFileExit()
     End Sub
 
-    <DllImport("winmm.dll")>
+    <DllImport("winmm.dll")> 
     Private Shared Function mmioStringToFOURCC(sz As String, uFlags As Integer) As UInteger
     End Function
 

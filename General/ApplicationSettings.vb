@@ -293,7 +293,7 @@ Public Class ApplicationSettings
             '        i.Parameters.Count > 0 AndAlso TypeOf i.Parameters(0) Is String AndAlso
             '        i.Parameters(0).ToString <> "" AndAlso i.Parameters(0).ToString.EndsWith("test-build.md") Then
 
-            '        i.Parameters(0) = "https://github.com/stax76/staxrip/blob/master/changelog.md"
+            '        i.Parameters(0) = "https://github.com/Revan654/staxrip/blob/master/changelog.md"
             '        Exit For
             '    End If
             'Next
@@ -303,7 +303,7 @@ Public Class ApplicationSettings
             '        i.Parameters.Count > 0 AndAlso TypeOf i.Parameters(0) Is String AndAlso
             '        i.Parameters(0).ToString <> "" AndAlso i.Parameters(0).ToString.EndsWith("/md/changelog.md") Then
 
-            '        i.Parameters(0) = "https://github.com/stax76/staxrip/blob/master/changelog.md"
+            '        i.Parameters(0) = "https://github.com/Revan654/staxrip/blob/master/changelog.md"
             '        Exit For
             '    End If
             'Next

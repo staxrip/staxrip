@@ -66,16 +66,6 @@ Public MustInherit Class Demuxer
     Shared Function GetDefaults() As List(Of Demuxer)
         Dim ret As New List(Of Demuxer)
 
-        Dim prx As New CommandLineDemuxer
-        prx.Name = "ProjectX: Demux MPEG-2"
-        prx.InputExtensions = {"vob", "mpg", "ts"}
-        prx.OutputExtensions = {"m2v"}
-        prx.InputFormats = {"mpeg2"}
-        prx.Command = "%app:Java%"
-        prx.Arguments = "-jar ""%app:ProjectX%"" %source_files% -out ""%working_dir%"""
-        prx.Active = False
-        ret.Add(prx)
-
         Dim dsmux As New CommandLineDemuxer
         dsmux.Name = "dsmux: Re-mux TS to MKV"
         dsmux.InputExtensions = {"ts"}
@@ -196,9 +186,9 @@ Public Class CommandLineDemuxer
             ElseIf Command?.Contains("dsmux") Then
                 If Not Package.Haali.VerifyOK(True) Then Throw New AbortException
                 proc.SkipString = "Muxing..."
-            ElseIf Command?.Contains("Java") Then
-                If Not Package.Java.VerifyOK(True) Then Throw New AbortException
-                proc.SkipPatterns = {"^\d+ %$"}
+                ''  ElseIf Command?.Contains("Java") Then
+                '' If Not Package.Java.VerifyOK(True) Then Throw New AbortException
+                '' proc.SkipPatterns = {"^\d+ %$"}
             End If
 
             proc.Header = Name

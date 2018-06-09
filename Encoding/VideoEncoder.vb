@@ -72,6 +72,8 @@ Public MustInherit Class VideoEncoder
                 cl += " --transfer smpte2084"
             Case "BT.709"
                 If height <= 576 Then cl += " --transfer bt709"
+                ''  Case "HLG", "HLG / BT.2020"
+                ''     cl += " --Transfer arib-std-b67"
         End Select
 
         Dim matrix_coefficients = MediaInfo.GetVideo(sourceFile, "matrix_coefficients")
@@ -267,7 +269,7 @@ Public MustInherit Class VideoEncoder
 
         ret.Add(New x264Enc)
         ret.Add(New x265Enc)
-        ret.Add(New AOMEnc)
+        '' ret.Add(New AOMEnc)
 
         Dim nvidia264 As New NVEnc()
         ret.Add(nvidia264)

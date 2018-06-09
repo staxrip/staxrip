@@ -1,4 +1,4 @@
-Imports StaxRip.CommandLine
+﻿Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 <Serializable()>

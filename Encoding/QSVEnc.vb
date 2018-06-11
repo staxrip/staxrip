@@ -182,11 +182,12 @@ Public Class QSVEnc
 
         Property MaxCLL As New NumParam With {
         .Text = "Maximum CLL",
+        .VisibleFunc = Function() Codec.ValueText = "h265",
         .Switch = "--max-cll",
         .Config = {0, Integer.MaxValue, 50},
-        .VisibleFunc = Function() Codec.ValueText = "h265",
         .ImportAction = Sub(arg As String)
-                            Dim a = arg.Split(","c)
+                            If arg = "" Then Exit Sub
+                            Dim a = arg.Trim(""""c).Split(","c)
                             MaxCLL.Value = a(0).ToInt
                             MaxFALL.Value = a(1).ToInt
                         End Sub,
@@ -194,8 +195,8 @@ Public Class QSVEnc
 
         Property MaxFALL As New NumParam With {
         .Config = {0, Integer.MaxValue, 50},
-        .VisibleFunc = Function() Codec.ValueText = "h265",
         .ArgsFunc = Function() "",
+        .VisibleFunc = Function() Codec.ValueText = "h265",
         .Text = "Maximum FALL"}
 
         Property TFF As New BoolParam With {

@@ -256,7 +256,7 @@ Public Class Package
         .Name = "vinverse",
         .Filename = "vinverse.dll",
         .WebURL = "http://avisynth.nl/index.php/Vinverse",
-        .Description = "A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Didée and then written as a plugin by tritical.",
+        .Description = "A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by DidÃ©e and then written as a plugin by tritical.",
         .AvsFilterNames = {"vinverse", "vinverse2"}})
 
     Shared Property scenechange As Package = Add(New PluginPackage With {
@@ -509,16 +509,6 @@ Public Class Package
             .AvsFiltersFunc = Function() {New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")")}})
 
         ''Start of Custom Plugins
-
-        Add(New PluginPackage With {
-             .Name = "ffms2 AVSI",
-             .Filename = "FFMS2.avsi",
-             .IsRequired = False,
-             .DirPath = "Plugins\Both\FFMS2",
-            .WebURL = "http://github.com/FFMS/ffms2",
-            .Description = "FFMS2 helper function Script.",
-            .AvsFilterNames = {"FFVideoSource", "FFAudioSource", "FFColorSpace", "FFColorRange", "FFCropping", "FFSampAR", "FFPictType", "FFInfo"},
-            .VSFilterNames = {"FFVideoSource", "ffms2", "FFAudioSource", "FFColorSpace", "FFColorRange", "FFCropping", "FFSampAR", "FFPictType", "FFInfo"}})
 
         Add(New PluginPackage With {
             .Name = "Deblock",
@@ -1134,7 +1124,7 @@ Public Class Package
             .Name = "QTGMC",
             .Filename = "QTGMC.avsi",
             .URL = "http://avisynth.nl/index.php/QTGMC",
-            .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée.",
+            .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by DidÃ©e.",
             .AvsFilterNames = {"QTGMC"},
             .AvsFiltersFunc = Function() {
             New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive Type 1|1;Progressive Type 2|2;Progressive Type 3|3$, SourceMatch=3, Sharpness=0.2, TR2=2, EdiThreads=8)"),
@@ -1384,7 +1374,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "finesharp",
             .Filename = "finesharp.py",
-            .Description = "Port of Didée's FineSharp script to VapourSynth.",
+            .Description = "Port of DidÃ©e's FineSharp script to VapourSynth.",
             .WebURL = "http://forum.doom9.org/showthread.php?p=1777860#post1777860",
             .VSFilterNames = {"finesharp.sharpen"},
             .VSFiltersFunc = Function() {

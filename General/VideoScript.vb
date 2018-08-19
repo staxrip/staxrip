@@ -658,9 +658,10 @@ Public Class FilterCategory
         color.Filters.Add(New VideoFilter(color.Name, "Dither | Dither 8Bit to 16Bit", "Dither_convert_8_to_16()"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | Convert YUV To RGB", "Dither_convert_yuv_to_rgb()"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | Convert RGB To YUV", "Dither_convert_rgb_to_yuv()"))
-        color.Filters.Add(New VideoFilter(color.Name, "Dither | Dither With DFTTest(MSB-LSB)", "dfttest(lsb=True)"))
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | SmoothGrad", "SmoothGrad()"))
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | DFTTest", "dfttest(lsb=True)"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | DitherPost", "DitherPost()"))
-        color.Filters.Add(New VideoFilter(color.Name, "Dither | GradFun3", "GradFun3 ()"))
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | GradFun3", "GradFun3()"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | AutoGain", "ColorYUV(autogain=$select:msg:Enable AutoGain?;True;False$, autowhite=$select:msg:Enable AutoWhite?;True;False$)"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Histogram | BitDepth Version", "Histogram(""levels"", Bits=$select:msg:Select BitDepth;8;10;12$)"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Tweak", "Tweak(realcalc=true, dither_strength= 1.0, sat=0.75, startHue=105, endHue=138 )"))
@@ -680,9 +681,6 @@ Public Class FilterCategory
         ret.Add(field)
 
         Dim noise As New FilterCategory("Noise")
-        noise.Filters.Add(New VideoFilter(noise.Name, "Soften | TemporalSoften", "TemporalSoften(3, 4, 8, scenechange=15, mode=2)"))
-        noise.Filters.Add(New VideoFilter(noise.Name, "Soften | SpatialSoften", "SpatialSoften(3,4,8)"))
-        noise.Filters.Add(New VideoFilter(noise.Name, "RemoveGrain | RemoveGrain16 with Repair16", "Processed = Dither_removegrain16(Unprocessed, mode=2, modeU=2, modeV=2)" + BR + "Dither_repair16(Processed, Unprocessed, mode=2, modeU=2, modeV=2)" + BR + "#Unprocessed Is Clip Source, You must make this adjustment manually"))
         ret.Add(noise)
 
         Dim misc As New FilterCategory("Misc")
@@ -695,14 +693,13 @@ Public Class FilterCategory
 
         Dim resize As New FilterCategory("Resize")
         resize.Filters.Add(New VideoFilter(resize.Name, "Resize | Resize", "$select:BicubicResize;BilinearResize;BlackmanResize;GaussResize;Lanczos4Resize;LanczosResize;PointResize;SincResize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Resize | Resize(Z)", "$select:z_BicubicResize;z_BilinearResize;z_BlackmanResize;z_GaussResize;z_Lanczos4Resize;z_LanczosResize;z_PointResize;z_SincResize;z_Spline16Resize;z_Spline36Resize;z_Spline64Resize$(%target_width%, %target_height%)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Hardware Encoder", "# hardware encoder resizes"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Resize | Hardware Encoder", "# hardware encoder resizes"))
         resize.Filters.Add(New VideoFilter(resize.Name, "SuperRes | SuperResXBR", "SuperResXBR(Passes=$select:msg:How Many Passes Do you wish to Perform?;2;3;4;5$, Factor=$select:msg:Factor Increase by?;2;4$)"))
         resize.Filters.Add(New VideoFilter(resize.Name, "SuperRes | SuperRes", "SuperRes(Passes=$select:msg:How Many Passes Do you wish to Perform?;2;3;4;5$, Factor=$select:msg:Factor Increase by?;2;4$))"))
         resize.Filters.Add(New VideoFilter(resize.Name, "SuperRes | SuperXBR", "SuperXBR(Factor=$select:msg:Factor Increase by?;2;4$)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "JincResize", "$select:Jinc36Resize;Jinc64Resize;Jinc144Resize;Jinc256Resize$(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Resize | JincResize", "$select:Jinc36Resize;Jinc64Resize;Jinc144Resize;Jinc256Resize$(%target_width%, %target_height%)"))
         resize.Filters.Add(New VideoFilter(resize.Name, "Dither_Resize16 | Dither_Resize16", "Dither_resize16(%target_width%, %target_height%)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Dither_Resize16 | Dither_Resize16 In Linear Light", "Dither_convert_yuv_to_rgb (matrix=""2020"", output=""rgb48y"", lsb_in=true)" + BR + "Dither_y_gamma_to_linear(tv_range_in=false, tv_range_out=false, curve=""2020"", sigmoid=true)" + BR + "Dither_resize16nr(%target_width%, %target_height%, kernel=""spline36"")" + BR + "Dither_y_linear_to_gamma(tv_range_in=false, tv_range_out=false, curve=""2020"", sigmoid=true)" + BR + "r = SelectEvery (3, 0)" + BR + "g = SelectEvery (3, 1)" + BR + "b = SelectEvery (3, 2)" + BR + "Dither_convert_rgb_to_yuv(r, g, b, matrix=""2020"", lsb=true)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Dither_Resize16 | Dither_Resize16_Linear_Light", "Dither_convert_yuv_to_rgb (matrix=""709"", output=""rgb48y"", lsb_in=true)" + BR + "Dither_y_gamma_to_linear(tv_range_in=false, tv_range_out=false, curve=""2020"", sigmoid=true)" + BR + "Dither_resize16nr(%target_width%, %target_height%, kernel=""spline36"")" + BR + "Dither_y_linear_to_gamma(tv_range_in=false, tv_range_out=false, curve=""2020"", sigmoid=true)" + BR + "r = SelectEvery (3, 0)" + BR + "g = SelectEvery (3, 1)" + BR + "b = SelectEvery (3, 2)" + BR + "Dither_convert_rgb_to_yuv(r, g, b, matrix=""2020"", lsb=true)"))
         ret.Add(resize)
 
         Dim crop As New FilterCategory("Crop")
@@ -730,6 +727,43 @@ Public Class FilterCategory
              New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r""%source_file%"")")})
         ret.Add(src)
 
+        Dim framerate As New FilterCategory("FrameRate")
+        framerate.Filters.Add(New VideoFilter(framerate.Name, "InterFrame", "clip = havsfunc.InterFrame(clip, Preset=""Medium"", Tuning=""$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$"", NewNum=$enter_text:Enter the NewNum Value$, NewDen=$enter_text:Enter the NewDen Value$, OverrideAlgo=$select:msg:Which Algorithm Do you Wish to Use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)"))
+        framerate.Filters.Add(New VideoFilter(framerate.Name, "SVPFlow", "sup = core.mv.Super(clip, pel=2, hpad=0, vpad=0)" + BR + "bvec = core.mv.Analyse(sup, blksize=16, isb=True, chroma=True, search=3, searchparam=1)" + BR + "fvec = core.mv.Analyse(sup, blksize=16, isb=False, chroma=True, search=3, searchparam=1)" + BR + "clip = core.mv.FlowFPS(clip, sup, bvec, fvec, num=60000, den=1001, mask=2)"))
+        ret.Add(framerate)
+
+        Dim color As New FilterCategory("Color")
+        color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Tweak", "clip = core.adjust.Tweak(clip, sat=0.75, hue=105-138)"))
+        color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | AutoAdjust", "core.avs.AutoAdjust(clip, gamma_limit=1.0, scd_threshold=16, gain_mode=1, auto_gain=$select:msg:Enable Auto Gain?;True;False$, auto_balance=$select:msg:Enable Auto Balance?;True;False$, input_tv=$select:msg:Is the Input using TV Range?;True;False$, output_tv=$select:msg:Do you want to use TV Range for Output?;True;False$, use_dither=$select:msg:Use Dither?;True;False$, high_quality=$select:msg:Use High Quality Mode?;True;False$, high_bitdepth=$select:msg:Use High Bit Depth Mode?;True;False$, threads_count=$enter_text:How Many Threads do You Wish to use?$)"))
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | SmoothGrad", "clip = fvsfunc.GradFun3(src=clip, mode=6, smode=1)"))
+        color.Filters.Add(New VideoFilter(color.Name, "HDRColor | Cube", "clip = core.timecube.Cube(clip, cube = r""$browse_file$"")"))
+        color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Range", "clip = core.resize.Point(clip, range_in_s = ""$select:msg:Select Input;TV|limited;PC|full$"", range_s = ""$select:msg:Select Output;TV|limited;PC|full$"")"))
+        color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Levels | Levels (16-235 to 0-255)", "clip = core.std.Levels(clip, min_in=16, max_in=235, min_out=0, max_out=255, planes=0)" + BR + "clip = core.std.Levels(clip, min_in=16, max_in=240, min_out=0, max_out=255, planes=[1,2])"))
+        color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Levels | Levels (0-255 to 16-235)", "clip = core.std.Levels(clip, min_in=0, max_in=255, min_out=16, max_out=235, planes=0)" + BR + "clip = core.std.Levels(clip, min_in=0, max_in=255, min_out=16, max_out=240, planes=[1,2])"))
+        color.Filters.Add(New VideoFilter(color.Name, "Convert | Format", "clip = core.avs.z_ConvertFormat(clip, pixel_type=""$select:msg:Select Pixel Type.;RGBPS;RGBP10;RGBP12;RGBP16;YV12;YV16;YV24;YUV420P10;YUV420P12;YUV420P16;YUV444P10;YUV444P12;YUV444P16;YUV422P10;YUV422P12;YUV422P16$"",colorspace_op=""$select:msg:Select Color Matrix Input;RGB;FCC;YCGCO;240m;709;2020ncl$:$select:msg:Select Color Transfer Input;Linear;Log100;Log316;470m;470bg;240m;XVYCC;SRGB;709;2020;st2084$:$select:msg:Select Color Primaries Input;470m;470bg;FILM;709;2020$:l=>$select:msg:Select Color Matrix output;RGB;FCC;YCGCO;240m;709;2020ncl$:$select:msg:Select Color Transfer Output;Linear;Log100;Log316;470m;470bg;240m;XVYCC;SRGB;709;2020;st2084$:$select:msg:Select Color Primaries Output;470m;470bg;FILM;709;2020$:l"", dither_type=""$select:msg:Select Dither Type;None;ordered$"")"))
+        color.Filters.Add(New VideoFilter(color.Name, "Convert | Convert To", "clip = core.resize.Bicubic(clip, format=vs.$enter_text:Enter The Format You Wish To Convert To$)")) ''Ex: resize.Bicubic( format=vs.YUV444P8)
+        color.Filters.Add(New VideoFilter(color.Name, "Convert | ReSample", "clip = core.fmtc.resample(clip, w=%target_width%, h=%target_height%)"))
+        color.Filters.Add(New VideoFilter(color.Name, "Convert | BitDepth", "clip = core.fmtc.bitdepth (clip, bits=$select:msg:Select BitDepth;8;10;12;16;32$)"))
+        color.Filters.Add(New VideoFilter(color.Name, "Convert | YUV to RGB", "clip = core.fmtc.resample (clip, css=""444"")" + BR + "clip = core.fmtc.matrix (clip, mat=""709"", col_fam=vs.RGB)" + BR + "clip = core.fmtc.bitdepth (clip, bits=8)"))
+        color.Filters.Add(New VideoFilter(color.Name, "Convert | RGB to YUV", "clip = core.fmtc.matrix (clip, mat=""709"", col_fam=vs.YUV, bits=16)" + BR + "clip = core.fmtc.resample (clip, css=""420"")" + BR + "clip = core.fmtc.bitdepth (clip, bits=8)"))
+        color.Filters.Add(New VideoFilter(color.Name, "Convert | Anamorphic to Standard", "clip = core.fmtc.resample (clip, w=1280, h=720, css=""444"")" + BR + "clip = core.fmtc.matrix (clip, mat=""709"", col_fam=vs.RGB)" + BR + "clip = core.fmtc.transfer (clip, transs=""1886"", transd=""srgb"")" + BR + "clip = core.fmtc.bitdepth (clip, bits=8)"))
+        color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Matrix", "clip = core.fmtc.resample (clip, css=""444"")" + BR + "clip = core.fmtc.matrix (clip, mats=""601"", matd=""709"")" + BR + "clip = core.fmtc.resample (clip, css=""420"")" + BR + "clip = core.fmtc.bitdepth (clip, bits=8)"
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | Gamma to Linear", "clip =Dither.y_gamma_to_linear(clip, Curve=""$select:msg:Select the Color Curve;601;709;2020$"")"))
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | Linear to Gamma", "clip = Dither.y_linear_to_gamma(clip, Curve=""$select:msg:Select the Color Curve;601;709;2020$"")"))
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | Sigmoid Direct", "clip = Dither.sigmoid_direct(clip)"))
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | Sigmoid Inverse", "clip = Dither.sigmoid_inverse(clip)"))
+
+
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | Clamp16", "clip = Dither.clamp16(clip)"))
+        ''color.Filters.Add(New VideoFilter(color.Name, "Dither | GradFun3", "clip = core.Dither.GradFun3(clip)"))
+        ret.Add(color)
+
+        Dim line As New FilterCategory("Line")
+        line.Filters.Add(New VideoFilter(line.Name, "Anti-Aliasing | DAA", "clip = havsfunc.daa(c = clip, nns = 1)"))
+        line.Filters.Add(New VideoFilter(line.Name, "Anti-Aliasing | MAA", "clip = muvsfunc.maa(clip)"))
+        ret.Add(line)
+
+
         Dim crop As New FilterCategory("Crop")
         crop.Filters.AddRange(
             {New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)", False)})
@@ -737,6 +771,8 @@ Public Class FilterCategory
 
         Dim resize As New FilterCategory("Resize")
         resize.Filters.Add(New VideoFilter("Resize", "Resize...", "clip = core.resize.$select:Bilinear;Bicubic;Point;Lanczos;Spline16;Spline36$(clip, %target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Dither_Resize16 | Dither_Resize16", "clip = Dither.Resize16nr(clip, %target_width%, %target_height%)"))
+        ''resize.Filters.Add(New VideoFilter(resize.Name, "Dither_Resize16 | Dither_Resize16_Linear_Light", "Dither_convert_yuv_to_rgb (matrix=""709"", output=""rgb48y"", lsb_in=true)" + BR + "Dither_y_gamma_to_linear(tv_range_in=false, tv_range_out=false, curve=""2020"", sigmoid=true)" + BR + "Dither_resize16nr(%target_width%, %target_height%, kernel=""spline36"")" + BR + "Dither_y_linear_to_gamma(tv_range_in=false, tv_range_out=false, curve=""2020"", sigmoid=true)" + BR + "r = SelectEvery (3, 0)" + BR + "g = SelectEvery (3, 1)" + BR + "b = SelectEvery (3, 2)" + BR + "Dither_convert_rgb_to_yuv(r, g, b, matrix=""2020"", lsb=true)")
         ret.Add(resize)
 
         Dim field As New FilterCategory("Field")
@@ -752,12 +788,24 @@ Public Class FilterCategory
         Dim noise As New FilterCategory("Noise")
         noise.Filters.Add(New VideoFilter(noise.Name, "SMDegrain", "clip = havsfunc.SMDegrain(clip, contrasharp = True)"))
         noise.Filters.Add(New VideoFilter(noise.Name, "RemoveGrain", "clip = core.rgvs.RemoveGrain(clip, 1)"))
+        noise.Filters.Add(New VideoFilter(noise.Name, "MCTemporalDenoise", "clip = havsfunc.MCTemporalDenoise(i=clip, settings=""$select:msg:Select Strength;very low;low;medium;high;very high$"")"))
         ret.Add(noise)
 
         Dim misc As New FilterCategory("Misc")
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS MediaInfo", "clip = core.std.AssumeFPS(clip, fpsnum = int(%media_info_video:FrameRate% * 1000), fpsden = 1000)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "AssumeFPS...", "clip = core.std.AssumeFPS(clip, None, $select:msg:Select a frame rate.;24000/1001|24000, 1001;24|24, 1;25|25, 1;30000/1001|30000, 1001;30|30, 1;50|50, 1;60000/1001|60000, 1001;60|60, 1$)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "Import Plugin", "LoadPlugin(Path =""$browse_file$"")"))
         ret.Add(misc)
+
+        Dim restoration As New FilterCategory("Restoration")
+        restoration.Filters.Add(New VideoFilter(restoration.Name, "Deblock | Deblock_QED", "clip = havsfunc.Deblock_QED(clip)"))
+        restoration.Filters.Add(New VideoFilter(restoration.Name, "DeHalo | DeHaloAlpha", "clip = havsfunc.DeHalo_alpha(clip)"))
+        restoration.Filters.Add(New VideoFilter(restoration.Name, "DeHalo | DeHaloAlpha", "clip = muvsfunc.BlindDeHalo3(clip, interlaced=False)"))
+        restoration.Filters.Add(New VideoFilter(restoration.Name, "DeHalo | EdgeCleaner", "clip = havsfunc.EdgeCleaner(c=clip)"))
+        restoration.Filters.Add(New VideoFilter(restoration.Name, "DeHalo | YAHR", "clip = havsfunc.YAHR(clip)"))
+        restoration.Filters.Add(New VideoFilter(restoration.Name, "DeHalo | HQDering", "clip = havsfunc.HQDeringmod(clip, nrmode=2, darkthr=3.0)"))
+        restoration.Filters.Add(New VideoFilter(restoration.Name, "FixChromaBleeding", "clip = havsfunc.FixChromaBleedingMod(input=clip)"))
+        ret.Add(restoration)
 
         FilterCategory.AddDefaults(ScriptEngine.VapourSynth, ret)
 

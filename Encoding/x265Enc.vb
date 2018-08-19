@@ -520,7 +520,7 @@ Public Class x265Params
         .Switch = "--profile",
         .Text = "Profile",
         .Value = 2,
-        .Options = {"Unrestricted", "Main", "Main 10", "Main - Intra", "Main Still Picture", "Main 422 - 8", "Main 444 - Intra", "Main 444 - Still Picture", "Main 444 - 8", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra"}}
+        .Options = {"Unrestricted", "Main", "Main 10", "Main - Intra", "Main Still Picture", "Main 422 - 8", "Main 444 - Intra", "Main 444 - Still Picture", "Main 444 - 8", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra", "main12", "main12-intra", "main422-12", "main422-12-intra", "main444-12", "main444-12-intra"}}
 
     Property OutputDepth As New OptionParam With {
         .Switch = "--output-depth",

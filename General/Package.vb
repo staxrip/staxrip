@@ -169,7 +169,7 @@ Public Class Package
         .Name = "mpv",
         .Filename = "mpv.exe",
         .LaunchName = "mpv.exe",
-        .URL = "https://mpv.io/",
+        .URL = "https://portableapps.com/apps/music_video/potplayer-portable",
         .Description = "mpv is a fork of mplayer2 and MPlayer. It shares some features with the former projects while introducing many more."})
 
     '' Shared Property AOMEnc As Package = Add(New Package With {
@@ -245,9 +245,9 @@ Public Class Package
         .HelpURL = "http://f3kdb.readthedocs.io/en/latest/#",
         .Description = "Simple debanding filter that can be quite effective for some anime sources.",
         .VSFilterNames = {"f3kdb.Deband"},
-        .VSFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb...", "clip = core.f3kdb.Deband(clip, preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")},
+        .VSFiltersFunc = Function() {New VideoFilter("Misc", "F3KDB...", "clip = core.f3kdb.Deband(clip, preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")},
         .AvsFilterNames = {"f3kdb"}})
-    ''.AvsFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb...", "f3kdb(preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")}})
+    ''.AvsFiltersFunc = Function() {New VideoFilter("Misc", "F3KDB...", "f3kdb(preset = ""$select:msg:Select a preset.;depth;low;medium;high;veryhigh;nograin;luma;chroma$"")")}})
 
     Shared Property vinverse As Package = Add(New PluginPackage With {
         .Name = "vinverse",
@@ -295,8 +295,8 @@ Public Class Package
     Shared Property x265 As Package = Add(New Package With {
         .Name = "x265",
         .Filename = "x265.exe",
-        .WebURL = "https://bitbucket.org/multicoreware/x265/wiki/Home",
-        .HelpURL = "https://x265.readthedocs.io/en/default/",
+        .WebURL = "http://x265.org",
+        .HelpURL = "http://x265.readthedocs.org",
         .Description = "H.265 video encoding command line app."})
 
     Shared Property mkvmerge As Package = Add(New Package With {
@@ -477,9 +477,9 @@ Public Class Package
                 New VideoFilter("Noise", "NLMeans | KNLMeansCL | Spatio-Temporal Medium", "KNLMeansCL(D = 1, A = 1, h = 4, device_type=""auto"")"),
                 New VideoFilter("Noise", "NLMeans | KNLMeansCL | Spatio-Temporal Strong", "KNLMeansCL(D = 1, A = 1, h = 8, device_type=""auto"")")},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 2)"),
-                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 4)"),
-                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 8)")}})
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Light", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 2, device_type=""auto"")"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Medium", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 4, device_type=""auto"")"),
+                New VideoFilter("Noise", "KNLMeansCL | Spatio-Temporal Strong", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = 8, device_type=""auto"")")}})
 
         Add(New PluginPackage With {
             .Name = "mvtools2",
@@ -506,17 +506,6 @@ Public Class Package
             .AvsFiltersFunc = Function() {New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")")}})
 
         ''Start of Custom Plugins
-
-        Add(New PluginPackage With {
-            .Name = "vsCube",
-            .Filename = "vscube.dll",
-            .Description = "Deblocking plugin using the deblocking filter of h264.",
-            .HelpFile = "Readme.txt",
-            .WebURL = "http://avisynth.nl/index.php/DeBlock",
-            .DirPath = "Plugins\AVS\Deblock",
-            .AvsFilterNames = {"Deblock"},
-            .AvsFiltersFunc = Function() {
-                New VideoFilter("Color", "HDRColor | AvsCube", "Cube($browse_file$)")}})
 
         Add(New PluginPackage With {
             .Name = "Deblock",
@@ -631,7 +620,7 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/InterFrame",
             .AvsFilterNames = {"InterFrame", "InterFrameProcess"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("FrameRate", "InterFrame", "InterFrame(Preset=""Medium"", Tuning=""$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$"", NewNum=$enter_text:Enter the NewNum Value$, NewDen=$enter_text:Enter the NewDen Value$, Cores=$enter_text:Enter the Number of Cores to Use$, OverrideAlgo=$select:msg:Which Algorithm Do you Wish to Use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)")}})
+                New VideoFilter("FrameRate", "InterFrame", "InterFrame(Preset=""Medium"", Tuning=""$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$"", NewNum=$enter_text:Enter the NewNum Value.$, NewDen=$enter_text:Enter the NewDen Value$, Cores=$enter_text:Enter the Number of Cores You want to use$, OverrideAlgo=$select:msg:Which Algorithm Do you want to Use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)")}})
 
         Add(New PluginPackage With {
             .Name = "SVPFlow 1",
@@ -640,7 +629,7 @@ Public Class Package
             .Description = "Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin",
             .Filename = "svpflow1.dll",
             .WebURL = "http://avisynth.nl/index.php/SVPFlow",
-            .AvsFilterNames = {"analyse_params", "super_params", "smoothfps_params", "SVSuper", "SVAnalyse", "SVConvert", "SVSmoothFps", "InterFrame"}})
+            .AvsFilterNames = {"analyse_params", "super_params", "SVSuper", "SVAnalyse"}})
 
         Add(New PluginPackage With {
             .Name = "SVPFlow 2",
@@ -649,7 +638,7 @@ Public Class Package
             .Description = "Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin",
             .Filename = "svpflow2.dll",
             .WebURL = "http://avisynth.nl/index.php/SVPFlow",
-            .AvsFilterNames = {"analyse_params", "super_params", "smoothfps_params", "SVSuper", "SVAnalyse", "SVConvert", "SVSmoothFps", "InterFrame"}})
+            .AvsFilterNames = {"smoothfps_params", "SVConvert", "SVSmoothFps"}})
 
         Add(New PluginPackage With {
             .Name = "MipSmooth",
@@ -780,14 +769,6 @@ Public Class Package
                 New VideoFilter("Line", "Anti-Aliasing | XAA", "xaa()")}})
 
         Add(New PluginPackage With {
-            .Name = "ResizeX",
-            .Filename = "ResizeX.avsi",
-            .DirPath = "Plugins/AVS/XAA",
-            .WebURL = "http://avisynth.nl/index.php",
-            .Description = "ResizeX is a wrapper function for AviSynth's internal resizersthat corrects for the chroma shift caused by the internal resizers when they're used on horizontally subsampled chroma with MPEG2 placement.",
-            .AvsFilterNames = {"ResizeX"}})
-
-        Add(New PluginPackage With {
             .Name = "FFT3DGPU",
             .Filename = "FFT3dGPU.dll",
             .Description = "Similar algorithm to FFT3DFilter, but uses graphics hardware for increased speed.",
@@ -803,7 +784,7 @@ Public Class Package
             .HelpFile = "Readme.txt",
             .AvsFilterNames = {"DeHalo_alpha_mt", "m4"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Restoration | Dehalo", "DehaloAlpha", "DeHalo_alpha_mt(rx=2.0, ry=2.0, darkstr=1.0, brightstr=1.0, lowsens=50, highsens=50, ss=1.5)")}})
+                New VideoFilter("Restoration", "Dehalo | DehaloAlpha", "DeHalo_alpha_mt(rx=2.0, ry=2.0, darkstr=1.0, brightstr=1.0, lowsens=50, highsens=50, ss=1.5)")}})
 
         Add(New PluginPackage With {
             .Name = "MAA2Mod",
@@ -814,7 +795,8 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/MAA2",
             .AvsFilterNames = {"MAA2", "Sangnom2AA", "maa2ee"},
             .AvsFiltersFunc = Function() {
-            New VideoFilter("Line", "Anti-Aliasing | MMA2", "MAA2(mask=1, chroma=false, ss=2.0, aa=48, aac=40, threads=4, show=0)")}})
+            New VideoFilter("Line", "Anti-Aliasing | MAA2 | MMA2 with nnedi3", "MAA2(mask=1, chroma=false, ss=2.0, aa=48, aac=40, threads=4, show=0, ext_aa=nnedi3_resize16())"),
+            New VideoFilter("Line", "Anti-Aliasing | MAA2 | MMA2", "MAA2(mask=1, chroma=false, ss=2.0, aa=48, aac=40, threads=4, show=0)")}})
 
         Add(New PluginPackage With {
             .Name = "DAA3Mod",
@@ -823,7 +805,8 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/daa3",
             .AvsFilterNames = {"daa3mod", "mcdaa3"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Line", "Anti-Aliasing | DAA3", "daa3mod()")}})
+                New VideoFilter("Line", "Anti-Aliasing | DAA3 | MCDAA3", "mcdaa3()"),
+                New VideoFilter("Line", "Anti-Aliasing | DAA3 | DAA3", "daa3mod()")}})
 
         Add(New PluginPackage With {
             .Name = "eedi3_resize",
@@ -845,12 +828,13 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "DeNoiseMD",
             .Filename = "DeNoiseMD.avsi",
-            .Description = "A fast and accurate denoiser for High Bit Depth",
+            .Description = "A fast and accurate denoiser for a Full HD video from a H.264 camera. ",
             .WebURL = "http://avisynth.nl",
             .AvsFilterNames = {"DeNoiseMD1", "BlendClips", "Range8to16", "DenoiseMD2"},
             .AvsFiltersFunc = Function() {
-             New VideoFilter("Noise", "DeNoise | Denoise MD | DeNoiseMD", "$select:msg:Select BitDepth Version;DeNoiseMD 16Bit|DeNoiseMD1(sigma=4, overlap=2, thcomp=80, str=0.8);DeNoiseMD 8Bit|DeNoiseMD1(sigma=4, overlap=2, thcomp=80, str=0.8)$"),
-             New VideoFilter("Noise", "DeNoise | Denoise MD | DeNoiseMD Histogram", "a = last" + BR + "DenoiseMD1(sigma = 4, overlap = 2, thcomp = 80, str = 0.8)" + BR + "b = last.DitherPost(mode = -1)" + BR + "DiffCol(a, b, col = 1, colnum = 4, hista = False, histb = False)")}})
+             New VideoFilter("Noise", "DeNoise | Denoise MD | DeNoiseMD 16Bit", "DeNoiseMD1(sigma=4, overlap=2, thcomp=80, str=0.8)" + BR + "#Functions" + BR + "Dither_convey_yuv4xxp16_on_yvxx()"),
+             New VideoFilter("Noise", "DeNoise | Denoise MD | DeNoiseMD Histogram", "a = last" + BR + "DenoiseMD1(sigma = 4, overlap = 2, thcomp = 80, str = 0.8)" + BR + "b = last.DitherPost(mode = -1)" + BR + "DiffCol(a, b, col = 1, colnum = 4, hista = False, histb = False)"),
+             New VideoFilter("Noise", "DeNoise | Denoise MD | DeNoiseMD 8Bit", "DeNoiseMD1(sigma=4, overlap=2, thcomp=80, str=0.8)" + BR + "#Functions" + BR + "DitherPost(mode=7, ampo=1, ampn=0)")}})
 
         Add(New PluginPackage With {
             .Name = "DeNoiseMF",
@@ -859,8 +843,9 @@ Public Class Package
             .WebURL = "http://avisynth.nl",
             .AvsFilterNames = {"DeNoiseMF1", "DenoiseMF2"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Noise", "DeNoise | DenoiseMF | DeNoiseMF", "$select:msg:Select the BitDepth Version;DenoiseMF 16Bit|DenoiseMF2(s1=2.0, s2=2.5, s3=3.0, s4=2.0, overlap=4, thcomp=80, str=0.8, gpu=False);DeNoiseMF 8Bit|DenoiseMF2(s1=2.0, s2=2.5, s3=3.0, s4=2.0, overlap=4, thcomp=80, str=0.8, gpu=False)$"),
-                New VideoFilter("Noise", "DeNoise | DenoiseMF | DeNoiseMF Histogram", "a = last" + BR + "DenoiseMF1(s1=2.0, s2=2.5, s3=3.0, s4=2.0, overlap=4, thcomp=80, str=0.8)" + BR + "b = last.DitherPost(mode = -1)" + BR + "DiffCol(a, b, col = 1, colnum = 4, hista = False, histb = False)")}})
+                New VideoFilter("Noise", "DeNoise | Denoise MF | DeNoiseMF 16Bit", "DenoiseMF2(s1=2.0, s2=2.5, s3=3.0, s4=2.0, overlap=4, thcomp=80, str=0.8, gpu=$select:msg:Use GPU Enabled Feature?;True;False$)" + BR + "#Functions" + BR + "Dither_convey_yuv4xxp16_on_yvxx()"),
+                New VideoFilter("Noise", "DeNoise | Denoise MF | DeNoiseMF Histogram", "a = last" + BR + "DenoiseMF1(s1=2.0, s2=2.5, s3=3.0, s4=2.0, overlap=4, thcomp=80, str=0.8)" + BR + "b = last.DitherPost(mode = -1)" + BR + "DiffCol(a, b, col = 1, colnum = 4, hista = False, histb = False)"),
+                New VideoFilter("Noise", "DeNoise | Denoise MF | DeNoiseMF 8Bit", "DenoiseMF2(s1=2.0, s2=2.5, s3=3.0, s4=2.0, overlap=4, thcomp=80, str=0.8, gpu=$select:msg:Use GPU Enabled Feature?;True;False$)" + BR + "#Functions" + BR + "DitherPost(mode=7, ampo=1, ampn=0)")}})
 
         Add(New PluginPackage With {
             .Name = "DFTTest",
@@ -870,8 +855,13 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/DFTTest",
             .AvsFilterNames = {"dfttest"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Noise", "DFTTest | DFTTest 8Bit", "$select:msg:Select Strength;Moderate DeNoise|dfttest(sigma=16, tbsize=5);Light DeNoise|dfttest(sigma=6, tbsize=1);Strong DeNoise|dfttest(sigma=64, tbsize=1)$"),
-                New VideoFilter("Noise", "DFTTest | DFTTest 16Bit", "$select:msg:Select Strength;Moderate DeNoise|dfttest(sigma=16, tbsize=5, lsb_in=true, lsb=true);Light DeNoise|dfttest(sigma=6, tbsize=1, lsb_in=true, lsb=true);Strong DeNoise|dfttest(sigma=64, tbsize=1, lsb_in=true, lsb=true);Moderate DeNoise with Dither|dfttest(sigma=16, tbsize=1, lsb_in=true, lsb=true, dither=1)$")}})
+                New VideoFilter("Noise", "DFTTest | DFTTest 8Bit | Moderate DeNoise", "dfttest(sigma=16, tbsize=5)"),
+                New VideoFilter("Noise", "DFTTest | DFTTest 8Bit | Light DeNoise", "dfttest(sigma=6, tbsize=1)"),
+                New VideoFilter("Noise", "DFTTest | DFTTest 8Bit | Strong DeNoise", "dfttest(sigma=64, tbsize=1)"),
+                New VideoFilter("Noise", "DFTTest | DFTTest 16Bit | Moderate DeNoise", "dfttest(sigma=16, tbsize=5, lsb_in=true, lsb=true)"),
+                New VideoFilter("Noise", "DFTTest | DFTTest 16Bit | Light DeNoise", "dfttest(sigma=6, tbsize=1, lsb_in=true, lsb=true)"),
+                New VideoFilter("Noise", "DFTTest | DFTTest 16Bit | Strong DeNoise", "dfttest(sigma=64, tbsize=1, lsb_in=true, lsb=true)"),
+                New VideoFilter("Noise", "DFTTest | DFTTest 16Bit | Moderate DeNoise with Dither", "dfttest(sigma=16, tbsize=1, lsb_in=true, lsb=true, dither=1)")}})
 
         Add(New PluginPackage With {
             .Name = "MT Expand Multi",
@@ -916,20 +906,20 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/Dither",
             .AvsFilterNames = {"Dither_y_gamma_to_linear", "Dither_y_linear_to_gamma", "Dither_convert_8_to_16", "Dither1Pre", "Dither1Pre", "Dither_repair16", "Dither_convert_yuv_to_rgb", "Dither_convert_rgb_to_yuv", "Dither_resize16", "DitherPost", "Dither_crop16", "DitherBuildMask", "SmoothGrad", "GradFun3", "Dither_box_filter16", "Dither_bilateral16", "Dither_limit_dif16", "Dither_resize16nr", "Dither_srgb_display", "Dither_convey_yuv4xxp16_on_yvxx", "Dither_convey_rgb48_on_yv12", "Dither_removegrain16", "Dither_median16", "Dither_get_msb", "Dither_get_lsb", "Dither_gen_null_lsb", "Dither_addborders16", "Dither_lut8", "Dither_lutxy8", "Dither_lutxyz8", "Dither_lut16", "Dither_add16", "Dither_sub16", "Dither_max_dif16", "Dither_min_dif16", "Dither_merge16", "Dither_merge16_8", "Dither_sigmoid_direct", "Dither_sigmoid_inverse", "Dither_add_grain16", "Dither_Luma_Rebuild"}})
 
-        Add(New PluginPackage With {
-         .Name = "HDRColor",
-        .Filename = "HDRColor.dll",
-        .Description = "HDRColor is a high quality color correction filter for AviSynth.",
-        .WebURL = "http://www.videoartifact.com/hdr/",
-        .IsRequired = False,
-        .HelpFile = "HDRColor.txt",
-        .AvsFilterNames = {"cube", "Repair Y", "DynRangeY", "DynRange", "Color"},
-        .AvsFiltersFunc = Function() {
-            New VideoFilter("Color", "HDRColor | Cube", "Cube(file=""$browse_file$"", from=$select:msg:Select Input Color Space;601;709;2020$, to=$select:msg:Select Output Color Space;601;709;2020$, rg=1.0, gg=1.0, bg=1.0, $select:msg:Select the Range you Wish to Use;TV Range|a=16, b=235, ao=16, bo=235;PC Range|a=0, b=255, ao=0, bo=255$, sat=1.0, sato=1.0, bitdepth=$select:msg:Select BitDepth;8;16;32;88$)"),
-            New VideoFilter("Color", "HDRColor | Repair Y", "RepairY($select:msg:Select Input Range;TV Range|a=16,b=235;PC Range|a=0,b=255$, black=0.0, hl=0.5, hlg=1.0, gain=1.0, $select:msg:Select Output Range;TV Range|ao=16,bo=235;PC Range|ao=0,bo=255$, g=2.2, mode=1, bitdepth=$select:msg:Select BitDepth;8;16;32;88$)"),
-            New VideoFilter("Color", "HDRColor | DynRangeY", "DynRangeY($select:msg:Select Y-Channel Range for Start Frame;TV Range|a1=16,b1=235;PCRange|a1=0,b1=255$, $select:msg:Select Y-Channel Range for End Frame;TV Range|a2=16,b2=235;PCRange|a2=0,b2=255$, g1=1.0, g2=1.0, $select:msg:Select The Output Range;TV Range|ao=16,bo=235;PC Range|ao=0,bo=255$, mode=1, bitdepth=$select:msg:Select BitDepth;8;16;32;88$)"),
-            New VideoFilter("Color", "HDRColor | Color", "$msg:Select Color Option;Color|Color(sat=1.0, g=1.0, saty=1.0, satb=1.0, satg=1.0, satr=1.0, gy=1.0, gb=1.0, gg=1.0, gr=1.0, dyb=0.0, dgr=0.0, mode=1, bitdepth=$select:msg:Select BitDepth;8;16;32;88$);DynColor(sat1=1.0, sat2=1.0, g1=1.0, g2=1.0, saty1=1.0, saty2=1.0, satb1=1.0, satb2=1.0, satg1=1.0, satg2=1.0, satr1=1.0, satr2=1.0, gy1=1.0, gy2=1.0, gb1=1.0, gb2=1.0, gg1=1.0, gg2=1.0, gr1=1.0, gr2=1.0, dyb1=0.0, dyb2=0.0, dgr1=0.0, dgr2=0.0, mode=1, bitdepth=$select:msg:Select BitDepth;8;16;32;88$)"),
-            New VideoFilter("Color", "HDRColor | DynColor", "DynColor(sat1=1.0, sat2=1.0, g1=1.0, g2=1.0, saty1=1.0, saty2=1.0, satb1=1.0, satb2=1.0, satg1=1.0, satg2=1.0, satr1=1.0, satr2=1.0, gy1=1.0, gy2=1.0, gb1=1.0, gb2=1.0, gg1=1.0, gg2=1.0, gr1=1.0, gr2=1.0, dyb1=0.0, dyb2=0.0, dgr1=0.0, dgr2=0.0, mode=1, bitdepth=$select:msg:Select BitDepth;8;16;32;88$)")}})
+        ''   Add(New PluginPackage With {
+        '' .Name = "HDRColor",
+        ''.Filename = "HDRColor.dll",
+        ''.Description = "HDRColor is a high quality color correction filter for AviSynth.",
+        ''.WebURL = "http://www.videoartifact.com/hdr/",
+        ''.IsRequired = False,
+        ''.HelpFile = "HDRColor.txt",
+        ''.AvsFilterNames = {"cube", "Repair Y", "DynRangeY", "DynRange", "Color"},
+        ''.AvsFiltersFunc = Function() {
+        ''      New VideoFilter("Color", "HDRCore | HDRColor | Cube", "Cube(file=""$browse_file$"", from=$select:msg:Select Input Color Space;601;709;2020$, to=$select:msg:Select Output Color Space;601;709;2020$, rg=1.0, gg=1.0, bg=1.0, $select:msg:Select the Range you Wish to Use;TV Range|a=16, b=235, ao=16, bo=235;PC Range|a=0, b=255, ao=0, bo=255$, sat=1.0, sato=1.0, bitdepth=$select:msg:Select BitDepth;8;16;32;88$)"),
+        ''    New VideoFilter("Color", "HDRCore | HDRColor | Repair Y", "RepairY($select:msg:Select Input Range;TV Range|a=16,b=235;PC Range|a=0,b=255$, black=0.0, hl=0.5, hlg=1.0, gain=1.0, $select:msg:Select Output Range;TV Range|ao=16,bo=235;PC Range|ao=0,bo=255$, g=2.2, mode=1, bitdepth=$select:msg:Select BitDepth;8;16;32;88$)"),
+        ''  New VideoFilter("Color", "HDRCore | HDRColor | DynRangeY", "DynRangeY($select:msg:Select Y-Channel Range for Start Frame;TV Range|a1=16,b1=235;PCRange|a1=0,b1=255$, $select:msg:Select Y-Channel Range for End Frame;TV Range|a2=16,b2=235;PCRange|a2=0,b2=255$, g1=1.0, g2=1.0, $select:msg:Select The Output Range;TV Range|ao=16,bo=235;PC Range|ao=0,bo=255$, mode=1, bitdepth=$select:msg:Select BitDepth;8;16;32;88$)"),
+        ''New VideoFilter("Color", "HDRCore | HDRColor | Color", "Color(sat=1.0, g=1.0, saty=1.0, satb=1.0, satg=1.0, satr=1.0, gy=1.0, gb=1.0, gg=1.0, gr=1.0, dyb=0.0, dgr=0.0, mode=1, bitdepth=$select:msg:Select BitDepth;8;16;32;88$)"),
+        '' New VideoFilter("Color", "HDRCore | HDRColor | DynColor", "DynColor(sat1=1.0, sat2=1.0, g1=1.0, g2=1.0, saty1=1.0, saty2=1.0, satb1=1.0, satb2=1.0, satg1=1.0, satg2=1.0, satr1=1.0, satr2=1.0, gy1=1.0, gy2=1.0, gb1=1.0, gb2=1.0, gg1=1.0, gg2=1.0, gr1=1.0, gr2=1.0, dyb1=0.0, dyb2=0.0, dgr1=0.0, dgr2=0.0, mode=1, bitdepth=$select:msg:Select BitDepth;8;16;32;88$)")}})
 
         Add(New PluginPackage With {
             .Name = "HDRMatrix",
@@ -938,9 +928,9 @@ Public Class Package
             .WebURL = "http://www.videoartifact.com/hdr/",
             .IsRequired = False,
             .HelpFile = "HDRMatrix.txt",
-            .AvsFilterNames = {"matrix"},
+            .AvsFilterNames = {"Matrix"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Color", "HDRColor | Matrix", "Matrix(from=$select:msg:Select Input For Color Matrix;601;709;2020$, to=$select:msg:Select Output For Color Matrix;601;709;2020$, rg=1.0, gg=1.0, bg=1.0, a=16, b=235, ao=0, bo=255, bitdepth=$select:msg:Select BitDepth;8;16;32$)")}})
+                New VideoFilter("Color", "HDR Core | HDRColor | Matrix", "Matrix(from=$select:msg:Select Input For Color Matrix;601;709;2020$, to=$select:msg:Select Output For Color Matrix;601;709;2020$, rg=1.0, gg=1.0, bg=1.0, a=16, b=235, ao=0, bo=255, bitdepth=$select:msg:Select BitDepth;8;88;16;32$)")}})
 
         Add(New PluginPackage With {
             .Name = "BicubicSharp",
@@ -962,8 +952,10 @@ Public Class Package
             .HelpFile = "HDRSharp.txt",
             .AvsFilterNames = {"BicubicSharp", "UnsharpMask8Y", "UnsharpMask16Y", "BicubicSharp8"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Line", "HDRSharp | BicubicSharp", "BicubicSharp(bitdepth=$select:msg:Select BitDepth;8;88;16$)"),
-                New VideoFilter("Line", "HDRSharp | BicubicSharp8", "BicubicSharp8()")}})
+                New VideoFilter("Line", "Sharpen | HDRSharp | UnsharpMask8Y", "UnsharpMask8Y(mask, edges=1.0, g=2.2, wg=1.0, bl=0.0, str=1.0, mode=1, bitdepth=$select:msg:Select BitDepth;8;88;16$)" + BR + "#Mask=Yourmasking filter, Masking filter needs to be used with this Function"),
+                New VideoFilter("Line", "Sharpen | HDRSharp | UnsharpMask8Y", "UnsharpMask8Y(mask, edges=1.0, g=2.2, wg=1.0, bl=0.0, str=1.0, mode=1, bitdepth=$select:msg:Select BitDepth;8;88;16$)" + BR + "#Mask=Yourmasking filter, Masking filter needs to be used with this Function"),
+                New VideoFilter("Line", "Sharpen | HDRSharp | BicubicSharp", "BicubicSharp(bitdepth=$select:msg:Select BitDepth;8;88;16$)"),
+                New VideoFilter("Line", "Sharpen | HDRSharp | BicubicSharp8", "BicubicSharp8()")}})
 
         Add(New PluginPackage With {
             .Name = "HDRCore",
@@ -983,7 +975,7 @@ Public Class Package
             .HelpFile = "HDRNoise.txt",
             .Filename = "HDRNoise.dll",
             .WebURL = "http://www.videoartifact.com/hdr/",
-            .AvsFilterNames = {"NoiseY", "NoiseYM", "NoiseUV", "NoisedGrayY8", "NoiseMix1Y", "NoiseMix2Y", "FilmGrain1", "FilmGrain2"}})
+            .AvsFilterNames = {"NoiseY", "NoiseYM", "NoiseUV", "NoisedGrayY8", "NoiseMix1Y", "NoiseMix2Y"}})
 
         Add(New PluginPackage With {
             .Name = "FilmGrain",
@@ -993,7 +985,7 @@ Public Class Package
             .HelpFile = "HDRNoise.txt",
             .Filename = "FilmGrain.avsi",
             .WebURL = "http://www.videoartifact.com/hdr/",
-            .AvsFilterNames = {"NoiseY", "NoiseYM", "NoiseUV", "NoisedGrayY8", "NoiseMix1Y", "NoiseMix2Y", "FilmGrain1", "FilmGrain2"}})
+            .AvsFilterNames = {"FilmGrain1", "FilmGrain2"}})
 
         Add(New PluginPackage With {
             .Name = "HDR Sources",
@@ -1003,7 +995,7 @@ Public Class Package
             .Filename = "HDR-sources.avsi",
             .HelpFile = "HDRCore.txt",
             .WebURL = "http://www.videoartifact.com/hdr/",
-            .AvsFilterNames = {"BitdepthMsb", "BitdepthMsbLsb", "BitdepthLsb", "Bitdepth", "RangeY", "RangeUV", "ClampHDR"}})
+            .AvsFilterNames = {"VideoDS", "AudioDS", "VideoLS", "AudioLS", "VideoLA", "AudioLA", "AudioSilent"}})
 
         Add(New PluginPackage With {
             .Name = "DeGrainMedian",
@@ -1023,7 +1015,7 @@ Public Class Package
             .HelpFile = "Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/PSharpen",
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Line | Sharpen", "pSharpen", "pSharpen(strength=25, threshold=75, ss_x=1.0, ss_y=1.0)")}})
+                New VideoFilter("Line", "Sharpen | pSharpen", "pSharpen(strength=25, threshold=75, ss_x=1.0, ss_y=1.0)")}})
 
         Add(New PluginPackage With {
           .Name = "GradFun2DBmod",
@@ -1065,7 +1057,7 @@ Public Class Package
             .Name = "MCTemporalDenoise",
             .Filename = "MCTemporalDenoise.avsi",
             .HelpFile = "Readme.txt",
-            .WebURL = "http://avisynth.nl/index.php/Abcxyz",
+            .WebURL = "http://avisynth.nl/index.php/mctemporaldenoise",
             .Description = "A motion compensated noise removal script with an accompanying post-processing component.",
             .AvsFilterNames = {"MCTemporalDenoise", "MCTemporalDenoisePP"},
             .AvsFiltersFunc = Function() {
@@ -1113,7 +1105,7 @@ Public Class Package
             .HelpFile = "Readme.txt",
             .AvsFilterNames = {"MSharpen"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Line | Sharpen", "MSharpen", "MSharpen(threshold = 10, strength = 100, highq = true, mask = false)")}})
+                New VideoFilter("Line", "MSharpen", "MSharpen(threshold = 10, strength = 100, highq = true, mask = false)")}})
 
         Add(New PluginPackage With {
             .Name = "aWarpSharp2",
@@ -1123,7 +1115,7 @@ Public Class Package
             .Description = "This filter implements the same warp sharpening algorithm as aWarpSharp by Marc FD, but with several bugfixes and optimizations.",
             .WebURL = "http://avisynth.nl/index.php/AWarpSharp2",
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Line | Sharpen", "aWarpSharp2", "aWarpSharp2(thresh=128, blur=2, type=0, depth=16, chroma=3)")}})
+                New VideoFilter("Line", "aWarpSharp2", "aWarpSharp2(thresh=128, blur=2, type=0, depth=16, chroma=3)")}})
 
         Add(New PluginPackage With {
             .Name = "QTGMC",
@@ -1155,21 +1147,12 @@ Public Class Package
             .AvsFiltersFunc = Function() {New VideoFilter("Noise", "mClean", "mClean()")}})
 
         Add(New PluginPackage With {
-            .Name = "BlindDeHalo3",
-            .Filename = " BlindDeHalo3.avsi",
-            .URL = "http://avisynth.nl/index.php/BlindDeHalo3",
-            .Description = "This script removes the light & dark halos from too strong Edge Enhancement.",
-            .AvsFilterNames = {"BlindDeHalo3"},
-            .AvsFiltersFunc = Function() {
-            New VideoFilter("Restoration", "BlindDeHalo3", "BlindDeHalo3( rx=3.0, ry=3.0, strength=125,lodamp=0.0, hidamp=0.0, sharpness=0.0, tweaker=0.0,PPmode=0, PPlimit=0, interlaced=false)")}})
-
-        Add(New PluginPackage With {
             .Name = "LSFmod",
             .Filename = "LSFmod.avsi",
             .URL = "http://avisynth.nl/index.php/LSFmod",
             .Description = "A LimitedSharpenFaster mod with a lot of new features and optimizations.",
             .AvsFilterNames = {"LSFmod"},
-            .AvsFiltersFunc = Function() {New VideoFilter("Line | Sharpen", "LSFmod", "LSFmod(defaults=slow, strength = 100, Smode=5, Smethod=3, kernel=11, preblur=""OFF"", secure=true, Szrp= 16, Spwr= 4, SdmpLo= 4, SdmpHi= 48, Lmode=4, overshoot=1, undershoot=1, Overshoot2=1, Undershoot2=1, soft=-2, soothe=true, keep=20, edgemode=0, edgemaskHQ=true, ss_x= 1.50, ss_y=1.50 , dest_x=%target_width%, dest_y=%target_height%, show=false, screenW=1280, screenH=1024)")}})
+            .AvsFiltersFunc = Function() {New VideoFilter("Line", "LSFmod", "LSFmod(strength = 100, Smode=5, Smethod=3, kernel=11, preblur=""OFF"", secure=true, Szrp= 16, Spwr= 4, SdmpLo= 4, SdmpHi= 48, Lmode=4, overshoot=1, undershoot=1, Overshoot2=1, Undershoot2=1, soft=-2, soothe=true, keep=20, edgemode=0, edgemaskHQ=true, ss_x= 1.50, ss_y=1.50 , dest_x=%target_width%, dest_y=%target_height%, show=false, screenW=1280, screenH=1024)")}})
 
         Add(New PluginPackage With {
             .Name = "RgTools",
@@ -1246,109 +1229,6 @@ Public Class Package
             .URL = "http://github.com/chikuzen/DCTFilter",
             .AvsFilterNames = {"DCTFilter", "DCTFilterD", "DCTFilter4", "DCTFilter4D", "DCTFilter8", "DCTFilter8D"}})
 
-        ''Start of Custom VS Plugins
-
-        Add(New PluginPackage With {
-            .Name = "vsTAAmbk",
-            .Filename = "vsTAAmbk.py",
-            .Description = "Avisynth port of TAAmbk",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/vsTAAmbk",
-            .VSFilterNames = {"vsTAAmbk.TAAmbk"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Line", "Anti-Aliasing | TAAmbk", "clip = TAAmbk.TAAmbk(clip, preaa=-1, aatype='Eedi2', mtype='Sobel', mthr=32, sharp=-1, postaa=True, stabilize=1)")}})
-
-        Add(New PluginPackage With {
-            .Name = "ToneMap",
-            .Filename = "tonemap.dll",
-            .Description = "Tonemap plugin for VapourSynth",
-            .WebURL = "https://github.com/ifb/vapoursynth-tonemap",
-            .VSFilterNames = {"tonemap.Hable", "tonemap.mobius", "tonemap.Reinhard"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Color", "HDRColor | ToneMapping", "$select:msg:Select Tone Mapping;Hable|clip = core.tonemap.Hable(clip, exposure=2.000, a=0.150, b=0.500, d=0.200, c=0.100, e=0.020, f=0.300, w=11.200);Mobius|clip = core.tonemap.Mobius(clip, exposure=2.000, transition=0.300, peak=1.000);clip = core.tonemap.Reinhard(clip, exposure=2.000, contrast=0.500, peak=1.000)$")}})
-
-        Add(New PluginPackage With {
-            .Name = "DeblockPP7",
-            .Filename = "DeblockPP7.dll",
-            .Description = "VapourSynth port of pp7 from MPlayer.",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DeblockPP7",
-            .VSFilterNames = {"pp7.DeblockPP7"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Restoration", "Deblock | Deblock PP7", "$select:msg:Select Strength;Medium|clip = core.pp7.DeblockPP7(clip=clip, mode=2);Hard|clip = core.pp7.DeblockPP7(clip=clip);Soft|clip = core.pp7.DeblockPP7(clip=clip, mode=1)$")}})
-
-        Add(New PluginPackage With {
-            .Name = "HQDN3D",
-            .Filename = "libhqdn3d.dll",
-            .Description = "Avisynth port of hqdn3d from avisynth/mplayer.",
-            .WebURL = "https://github.com/Hinterwaeldlers/vapoursynth-hqdn3d",
-            .VSFilterNames = {"hqdn3d.Hqdn3d"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "HQDN3D", "clip = core.hqdn3d.Hqdn3d(clip=clip)")}})
-
-        Add(New PluginPackage With {
-            .Name = "DFTTest",
-            .Filename = "DFTTest.dll",
-            .Description = "VapourSynth port of dfttest.",
-            .WebURL = "https://github.com/Hinterwaeldlers/vapoursynth-hqdn3d",
-            .VSFilterNames = {"dfttest.DFTTest"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "DFTTest | DFTTest 8Bit", "$select:msg:Select Strength;Moderate DeNoise|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5);Light DeNoise|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=1);Strong DeNoise|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1)$"),
-                New VideoFilter("Noise", "DFTTest | DFTTest 16Bit", "$select:msg:Select Strength;Moderate DeNoise|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5, lsb_in=true, lsb=true);Light DeNoise|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=1, lsb_in=true, lsb=true);Strong DeNoise|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1, lsb_in=true, lsb=true);Moderate DeNoise with Dither|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=1, lsb_in=true, lsb=true, dither=1)$")}})
-
-        Add(New PluginPackage With {
-            .Name = "CTMF",
-            .Filename = "CTMF.dll",
-            .Description = "Constant Time Median Filtering.",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-CTMF",
-            .VSFilterNames = {"ctmf.CTMF"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "CTMF", "clip = core.ctmf.CTMF(clip=clip, memsize=1048576, planes=[0,1,2])")}})
-
-        Add(New PluginPackage With {
-            .Name = "VagueDenoiser",
-            .Filename = "VagueDenoiser.dll",
-            .Description = "VapourSynth port of VagueDenoiser.",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-VagueDenoiser",
-            .VSFilterNames = {"vd.VagueDenoiser"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "VagueDenoiser", "clip = core.vd.VagueDenoiser(clip=clip, method=$select:msg:Select Strength;Soft|1;Hard|0)$")}})
-
-        Add(New PluginPackage With {
-            .Name = "TTempSmooth",
-            .Filename = "TTempSmooth.dll",
-            .Description = "VapourSynth port of TTempSmooth.",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-TTempSmooth",
-            .VSFilterNames = {"ttmpsm.TTempSmooth"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "TTempSmooth", "clip =  core.ttmpsm.TTempSmooth(clip=clip)")}})
-
-        Add(New PluginPackage With {
-            .Name = "DegrainMedian",
-            .Filename = "libdegrainmedian.dll",
-            .Description = "VapourSynth port of DegrainMedian",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-TTempSmooth",
-            .VSFilterNames = {"dgm.DegrainMedian"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Restoration", "DeGrain | DegrainMedian", "clip = core.dgm.DegrainMedian(clip=clip, interlaced=False)")}})
-
-        Add(New PluginPackage With {
-            .Name = "psharpen",
-            .Filename = "psharpen.py",
-            .Description = "VapourSynth port of pSharpen",
-            .VSFilterNames = {"psharpen.psharpen"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Line", "Sharpen | pSharpen", "clip = psharpen.psharpen(clip)")}})
-
-        Add(New PluginPackage With {
-            .Name = "AWarpSharp2",
-            .Filename = "libawarpsharp2.dll",
-            .Description = "VapourSynth port of AWarpSharp2",
-            .WebURL = "https://github.com/dubhater/vapoursynth-awarpsharp2",
-            .VSFilterNames = {"warp.AWarpSharp2"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Line", "Sharpen | aWarpSharpen2", "clip = core.warp.AWarpSharp2(clip=clip, blur=2)")}})
-
-        ''End of Custom VS Plugins
-
         Add(New PluginPackage With {
             .Name = "vcmod",
             .Filename = "vcmod.dll",
@@ -1401,13 +1281,6 @@ Public Class Package
                 "mv.Degrain3", "mv.Mask", "mv.Finest", "mv.FlowBlur", "mv.FlowInter", "mv.FlowFPS", "mv.BlockFPS", "mv.SCDetection"}})
 
         Add(New PluginPackage With {
-            .Name = "Sangnommod",
-            .Filename = "libsangnom.dll",
-            .WebURL = "https://bitbucket.org/James1201/vapoursynth-sangnom/overview",
-            .Description = "SangNom is a single field deinterlacer using edge-directed interpolation but nowadays it's mainly used in anti-aliasing scripts.",
-            .VSFilterNames = {"sangnom.SangNom"}})
-
-        Add(New PluginPackage With {
             .Name = "adjust",
             .Filename = "adjust.py",
             .Description = "very basic port of the built-in Avisynth filter Tweak.",
@@ -1425,49 +1298,11 @@ Public Class Package
                 "mvsfunc.PointPower", "mvsfunc.SetColorSpace", "mvsfunc.AssumeFrame",
                 "mvsfunc.AssumeTFF", "mvsfunc.AssumeBFF", "mvsfunc.AssumeField",
                 "mvsfunc.AssumeCombed", "mvsfunc.CheckVersion", "mvsfunc.GetMatrix",
-                "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage"},
+                "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage"
+            },
             .Description = "mawen1250's VapourSynth functions.",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=172564",
             .WebURL = "http://github.com/HomeOfVapourSynthEvolution/mvsfunc"})
-
-        Add(New PluginPackage With {
-            .Name = "muvsfunc",
-            .Filename = "muvsfunc.py",
-            .VSFilterNames = {
-                "muvsfunc.GradFun3", "muvsfunc.BlindDeHalo3", "muvsfunc.FixTelecinedFades",
-                "muvsfunc.MergeChroma", "muvsfunc.SmoothGrad", "muvsfunc.DeFilter",
-                "muvsfunc.maa",
-                "muvsfunc.SeeSaw", "muvsfunc.abcxyz", "muvsfunc.dfttestMC",
-                 "muvsfunc.TurnLeft", "muvsfunc.TurnRight", "muvsfunc.BalanceBorders",
-                  "muvsfunc.MultiRemoveGrain", "muvsfunc.TemporalSoften", "muvsfunc.scale"},
-            .Description = "Muonium's VapourSynth functions.",
-            .WebURL = "https://github.com/WolframRhodium/muvsfunc"})
-
-        Add(New PluginPackage With {
-            .Name = "SVPFlow 1",
-            .DirPath = "Plugins\VS\SVPFlow",
-            .HelpFile = "Readme.txt",
-            .Description = "Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin",
-            .Filename = "svpflow1_vs64.dll",
-            .WebURL = "https://www.svp-team.com/wiki/Manual:SVPflow",
-            .VSFilterNames = {"core.svp1.Super", "core.svp1.Analyse"}})
-
-        Add(New PluginPackage With {
-            .Name = "Dither",
-            .DirPath = "Plugins\VS\Dither",
-            .Description = "VapourSynth port of DitherTools",
-            .Filename = "Dither.py",
-            .WebURL = "https://github.com/IFeelBloated/VaporSynth-Functions",
-            .VSFilterNames = {"Dither.sigmoid_direct", "Dither.sigmoid_inverse", "Dither.linear_and_gamma", "Dither.gamma_to_linear", "Dither.clamp16", "Dither.sbr16", "Dither.Resize16nr", "Dither.get_msb", "Dither.get_lsb"}})
-
-        Add(New PluginPackage With {
-            .Name = "SVPFlow 2",
-            .DirPath = "Plugins\VS\SVPFlow",
-            .HelpFile = "Readme.txt",
-            .Description = "Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin",
-            .Filename = "svpflow2_vs64.dll",
-            .WebURL = "https://www.svp-team.com/wiki/Manual:SVPflow",
-            .VSFilterNames = {"core.svp2.SmoothFps", "core.svp2.Convert"}})
 
         Add(New PluginPackage With {
             .Name = "havsfunc",
@@ -1475,14 +1310,13 @@ Public Class Package
             .VSFiltersFunc = Function() {
                 New VideoFilter("Misc", "LSFmod", "clip = havsfunc.LSFmod(clip, strength = 100)"),
                 New VideoFilter("Field", "QTGMC...", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"")")},
-            .VSFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa",
+            .VSFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa", "havsfunc.maa",
                                        "havsfunc.SharpAAMCmod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
-                                       "havsfunc.InterFrame", "havsfunc.FixChromaBleedingMod",
                                        "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.ivtc_txt60mc",
                                        "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.logoNR",
                                        "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.GSMC",
                                        "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD",
-                                       "havsfunc.LSFmod", "havsfunc.GrainFactory3", "havsfunc.MCTemporalDenoise"},
+                                       "havsfunc.LSFmod", "havsfunc.GrainFactory3"},
             .Description = "Various popular AviSynth scripts ported to VapourSynth.",
             .WebURL = "http://github.com/HomeOfVapourSynthEvolution/havsfunc",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=166582"})
@@ -1541,7 +1375,7 @@ Public Class Package
             .WebURL = "http://forum.doom9.org/showthread.php?p=1777860#post1777860",
             .VSFilterNames = {"finesharp.sharpen"},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Line", "Sharpen | finesharp", "clip = finesharp.sharpen(clip)")}})
+                New VideoFilter("Misc", "finesharp", "clip = finesharp.sharpen(clip)")}})
 
         Add(New PluginPackage With {
             .Name = "FineSharp",
@@ -1551,9 +1385,17 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/FineSharp",
             .AvsFilterNames = {"FineSharp"},
             .AvsFiltersFunc = Function() {
-            New VideoFilter("Line | Sharpen", "FineSharp | Light", "FineSharp(mode=1, sstr=2, cstr=0.8, xstr=0.19, lstr=1.49, pstr=1.272, ldmp=2.1)"),
-            New VideoFilter("Line | Sharpen", "FineSharp | Moderate", "FineSharp(mode=2, sstr=2.0,  cstr=1.3, xstr=0.0,  lstr=1.49, pstr=1.472, ldmp=4.2)"),
-            New VideoFilter("Line | Sharpen", "FineSharp | Strong", "FineSharp(mode=3, sstr=6.0,  cstr=1.3, xstr=0.0,  lstr=1.49, pstr=1.472, ldmp=9.2)")}})
+            New VideoFilter("Line", "FineSharp | Light", "FineSharp(mode=1, sstr=2, cstr=0.8, xstr=0.19, lstr=1.49, pstr=1.272, ldmp=2.1)"),
+            New VideoFilter("Line", "FineSharp | Moderate", "FineSharp(mode=2, sstr=2.0,  cstr=1.3, xstr=0.0,  lstr=1.49, pstr=1.472, ldmp=4.2)"),
+            New VideoFilter("Line", "FineSharp | Strong", "FineSharp(mode=3, sstr=6.0,  cstr=1.3, xstr=0.0,  lstr=1.49, pstr=1.472, ldmp=9.2)")}})
+
+        'Add(New PluginPackage With {
+        '    .Name = "Plum",
+        '    .Filename = "Plum.py",
+        '    .Description = "Plum is a sharpening/blind deconvolution suite with certain advanced features like Non-Local error, Block Matching, etc..",
+        '    .URL = "http://github.com/IFeelBloated/Plum",
+        '    .VSFilterNames = {"Plum.Basic", "Plum.Final", "Plum.Super"},
+        '    .VSFiltersFunc = Function() {New VideoFilter("Misc", "Plum", $"ref = Plum.Basic(clip){BR}clip = Plum.Final([clip, ref], [Plum.Super(clip), Plum.Super(ref)], cutoff = 8, freq_margin = 12)")}})
 
         Dim fp = Folder.Settings + "Versions.txt"
 
@@ -1627,6 +1469,19 @@ Public Class Package
             IsRequiredValue = value
         End Set
     End Property
+
+    ''Sub StartWithJava()
+    ''Try
+    ''Dim p As New Process
+    ''      p.StartInfo.FileName = Package.Java.GetDir + "javaw.exe"
+    ''    p.StartInfo.Arguments = "-jar """ + Path + """"
+    ''  p.StartInfo.WorkingDirectory = GetDir()
+    ''p.Start()
+    ''Catch ex As Exception
+    ''      g.ShowException(ex)
+    ''End Try
+    ''End Sub
+
     Function GetHelpPath(Optional engine As ScriptEngine = ScriptEngine.AviSynth) As String
         If HelpFile <> "" Then
             Return GetDir() + HelpFile
@@ -1861,7 +1716,6 @@ Public Class PythonPackage
         Name = "Python"
         Filename = "python.exe"
         TreePath = "Runtimes"
-        Version = "3.6"
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         DownloadURL = "http://www.python.org/downloads/windows/"
@@ -1958,6 +1812,59 @@ Public Class PluginPackage
     End Function
 End Class
 
+''Public Class JavaPackage
+''Inherits Package
+
+''Sub New()
+''Name = "Java"
+''Filename = "Java.exe"
+''WebURL = "http://java.com"
+''TreePath = "Runtimes"
+''Description = "Java is required by ProjectX. " + Strings.ProjectX
+''DownloadURL = "http://java.com/en/download"
+''IsRequired = False
+''IgnoreVersion = True
+''End Sub
+
+''Public Overrides ReadOnly Property Path As String
+''Get
+''Dim ret = MyBase.Path
+''If ret <> "" Then Return ret
+
+''ret = "C:\ProgramData\Oracle\Java\javapath\" + Filename
+''If File.Exists(ret) Then Return ret
+
+''ret = "C:\Windows\Sysnative\" + Filename
+''If File.Exists(ret) Then Return ret
+
+''ret = "C:\Windows\System32\" + Filename
+''If File.Exists(ret) Then Return ret
+''End Get
+''End Property
+''End Class
+
+''Public Class ProjectXPackage
+''Inherits Package
+
+''Sub New()
+''Name = "ProjectX"
+''Filename = "ProjectX.jar"
+''WebURL = "http://project-x.sourceforge.net"
+''Description = Strings.ProjectX
+''IsRequired = False
+''End Sub
+
+''Overrides ReadOnly Property StartAction As Action
+''Get
+''Return AddressOf StartWithJava
+''End Get
+''End Property
+
+''Public Overrides Function GetStatus() As String
+''If Package.Java.Path = "" Then Return "Failed to locate Java, ProjectX requires Java."
+''Return MyBase.GetStatus()
+''End Function
+''End Class
 
 Public Class qaacPackage
     Inherits Package

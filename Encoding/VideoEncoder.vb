@@ -72,8 +72,8 @@ Public MustInherit Class VideoEncoder
                 cl += " --transfer smpte2084"
             Case "BT.709"
                 If height <= 576 Then cl += " --transfer bt709"
-                '' Case "BT.2100" Will be enabled Once 2100 is Added.
-                ''  cl += " --Transfer arib-std-b67"
+                ''  Case "HLG", "HLG / BT.2020"
+                ''     cl += " --Transfer arib-std-b67"
         End Select
 
         Dim matrix_coefficients = MediaInfo.GetVideo(sourceFile, "matrix_coefficients")
@@ -87,15 +87,13 @@ Public MustInherit Class VideoEncoder
         Dim MasteringDisplay_Luminance = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_Luminance")
 
         If MasteringDisplay_ColorPrimaries <> "" AndAlso MasteringDisplay_Luminance <> "" Then
-            ''Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "R: x=([0-9\.]+) y=([0-9\.]+), G: x=([0-9\.]+) y=([0-9\.]+), B: x=([0-9\.]+) y=([0-9\.]+), White point: x=([0-9\.]+) y=([0-9\.]+)")
-            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "BT.2020") ''MediaInfo has Removed the string version of Master-Display and is only using the colorspace name. For HDR it must match BT.2020, P3 and such are not consider part of the HDR colorspace.
+            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "R: x=([0-9\.]+) y=([0-9\.]+), G: x=([0-9\.]+) y=([0-9\.]+), B: x=([0-9\.]+) y=([0-9\.]+), White point: x=([0-9\.]+) y=([0-9\.]+)")
             Dim match2 = Regex.Match(MasteringDisplay_Luminance, "min: ([0-9\.]+) cd/m2, max: ([0-9\.]+)")
 
             If match1.Success AndAlso match2.Success Then
                 Dim strings1 = match1.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 50000).ToString)
                 Dim strings2 = match2.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 10000).ToString)
-                ''cl += $" --master-display ""G({strings1(2)},{strings1(3)})B({strings1(4)},{strings1(5)})R({strings1(0)},{strings1(1)})WP({strings1(6)},{strings1(7)})L({strings2(1)},{strings2(0)})"""
-                cl += " --master-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L(10000000,1)"""
+                cl += $" --master-display ""G({strings1(2)},{strings1(3)})B({strings1(4)},{strings1(5)})R({strings1(0)},{strings1(1)})WP({strings1(6)},{strings1(7)})L({strings2(1)},{strings2(0)})"""
                 cl += " --range limited"
             End If
         End If
@@ -271,7 +269,6 @@ Public MustInherit Class VideoEncoder
 
         ret.Add(New x264Enc)
         ret.Add(New x265Enc)
-        '' ret.Add(New AOMEnc)
 
         Dim nvidia264 As New NVEnc()
         ret.Add(nvidia264)
@@ -308,6 +305,14 @@ Public MustInherit Class VideoEncoder
             ret.Add(ffmpeg2)
         Next
 
+        Dim Gif As New BatchEncoder()
+        Gif.OutputFileTypeValue = "gif"
+        Gif.Name = "Command Line | Gif Maker"
+        Gif.QualityMode = True
+        Gif.Muxer = New NullMuxer("No Muxing")
+        Gif.CommandLines = "x264 --pass 1 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output NUL ""%script_file%"" || exit" + BR + "x264 --pass 2 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
+        ret.Add(Gif)
+
         Dim x264cli As New BatchEncoder()
         x264cli.OutputFileTypeValue = "h264"
         x264cli.Name = "Command Line | x264"
@@ -318,7 +323,7 @@ Public MustInherit Class VideoEncoder
 
         Dim nvencH265 As New BatchEncoder()
         nvencH265.OutputFileTypeValue = "h265"
-        nvencH265.Name = "Command Line | NVIDIA H.265"
+        nvencH265.Name = "Command Line | Nvidia H.265"
         nvencH265.Muxer = New MkvMuxer()
         nvencH265.QualityMode = True
         nvencH265.CommandLines = "NVEncC64 --sar %target_sar% --codec h265 --cqp 20 -i ""%script_file%"" -o ""%encoder_out_file%"""

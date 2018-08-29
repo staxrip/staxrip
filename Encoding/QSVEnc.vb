@@ -9,7 +9,7 @@ Public Class QSVEnc
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "Intel " + Params.Codec.OptionText
+            Return "Intel | " + Params.Codec.OptionText
         End Get
     End Property
 
@@ -135,7 +135,7 @@ Public Class QSVEnc
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
-            .Options = {"H.264", "H.265", "MPEG-2"},
+            .Options = {"Intel H.264", "Intel H.265", "Intel MPEG-2"},
             .Values = {"h264", "hevc", "mpeg2"}}
 
         Property Mode As New OptionParam With {
@@ -277,8 +277,8 @@ Public Class QSVEnc
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
-                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},
-                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "BT 470 BG", "BT 470 M", "BT 709", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 240 M"}},
+                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}},
+                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-SRD-B67"}},
                         MaxCLL, MaxFALL,
                         New BoolParam With {.Switch = "--fullrange", .Text = "Fullrange"})
                     Add("Deinterlace", Deinterlace, TFF, BFF)

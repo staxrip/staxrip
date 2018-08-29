@@ -9,7 +9,7 @@ Public Class NVEnc
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "NVIDIA " + Params.Codec.OptionText
+            Return "NVIDIA | " + Params.Codec.OptionText
         End Get
     End Property
 
@@ -147,7 +147,7 @@ Public Class NVEnc
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
-            .Options = {"H.264", "H.265"},
+            .Options = {"Nvidia H.264", "Nvidia H.265"},
             .Values = {"h264", "h265"}}
 
         Property Profile As New OptionParam With {

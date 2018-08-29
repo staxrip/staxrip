@@ -5,15 +5,11 @@ Imports StaxRip.UI
 Public Class VCEEnc
     Inherits BasicVideoEncoder
 
-    Sub New()
-        Name = "AMD H.264"
-    End Sub
-
     Property ParamsStore As New PrimitiveStore
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "AMD " + Params.Codec.OptionText
+            Return "AMD | " + Params.Codec.OptionText
         End Get
     End Property
 
@@ -119,7 +115,7 @@ Public Class VCEEnc
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
-            .Options = {"H.264", "H.265"},
+            .Options = {"AMD H.264", "AMD H.265"},
             .Values = {"h264", "hevc"}}
 
         Property Decoder As New OptionParam With {

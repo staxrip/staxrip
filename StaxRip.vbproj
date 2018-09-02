@@ -415,14 +415,11 @@
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
-    <Content Include="Screenshots\audio.png" />
-    <Content Include="Screenshots\eac3to.png" />
-    <Content Include="Screenshots\main.png" />
-    <Content Include="Screenshots\nvenc.png" />
-    <Content Include="Screenshots\x265.png" />
     <None Include="packages.config" />
     <None Include="README.md" />
-    <None Include="Resources\FontAwesome.ttf" />
+    <None Include="FontAwesome.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\play.png" />
     <None Include="Resources\arrow.png" />
     <None Include="Resources\X.png" />
@@ -582,6 +579,9 @@
     <EmbeddedResource Include="UI\StringEditorForm.resx">
       <DependentUpon>StringEditorForm.vb</DependentUpon>
     </EmbeddedResource>
+    <None Include="Segoe-MDL2-Assets.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

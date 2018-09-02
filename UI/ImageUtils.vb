@@ -41,11 +41,10 @@ Public Class ImageHelp
         Dim fontHeight = font.Height
         Dim bitmap As New Bitmap(CInt(fontHeight * 1.1F), CInt(fontHeight * 1.1F))
         Dim graphics = Drawing.Graphics.FromImage(bitmap)
-        graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+        graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAliasGridFit
         graphics.DrawString(Convert.ToChar(CInt(symbol)), font, Brushes.Black, -fontHeight * 0.1F, fontHeight * 0.07F)
         graphics.Dispose()
         font.Dispose()
-
         Return bitmap
     End Function
 End Class
@@ -81,7 +80,7 @@ Public Class Thumbnails
         Dim cachePath = Folder.Settings + "Thumbnails.ffindex"
         Dim avsdoc As New VideoScript
         avsdoc.Path = Folder.Settings + "Thumbnails.avs"
-        avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + """, cachefile = """ + cachePath + """, colorspace = ""YV12"").LanczosResize(" & width & "," & height & ")"))
+        avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + """, cachefile = """ + cachePath + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
         avsdoc.Filters.Add(New VideoFilter("ConvertToRGB()"))
 
         g.ffmsindex(inputFile, cachePath, False, proj)
@@ -202,7 +201,7 @@ Public Class Thumbnails
                     g.DrawString(caption, font, brush, rect, format)
                     format.Alignment = StringAlignment.Far
                     format.LineAlignment = StringAlignment.Center
-                    g.DrawString("StaxRip", New Font(fontname, font.Height * 2, FontStyle.Regular, GraphicsUnit.Pixel), brush, rect, format)
+                    g.DrawString("StaxRip", New Font(fontname, font.Height * 2, FontStyle.Bold, GraphicsUnit.Pixel), brush, rect, format)
                 End Using
 
                 For x = 0 To bitmaps.Count - 1

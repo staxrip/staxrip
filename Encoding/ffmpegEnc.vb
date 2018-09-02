@@ -142,7 +142,7 @@ Public Class ffmpegEnc
             .Switch = "-c:v",
             .Text = "Codec",
             .AlwaysOn = True,
-            .Options = {"x264", "x265", "VP8", "VP9", "Xvid", "ASP", "Theora", "ProRes", "UT Video", "Intel | Intel H.264", "Intel | Intel H.265", "Nvidia | Nvidia H.264", "Nvidia | Nvidia H.265"},
+            .Options = {"x264", "x265", "VP8", "VP9", "XviD", "ASP", "Theora", "ProRes", "UT Video", "Intel | Intel H.264", "Intel | Intel H.265", "Nvidia | Nvidia H.264", "Nvidia | Nvidia H.265"},
             .Values = {"libx264", "libx265", "libvpx", "libvpx-vp9", "libxvid", "mpeg4", "libtheora", "prores", "utvideo", "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
 
         Property Mode As New OptionParam With {
@@ -224,7 +224,7 @@ Public Class ffmpegEnc
                     ret += $" -b:v {p.VideoBitrate}k"
             End Select
 
-            If Codec.OptionText = "Xvid" Then ret += " -tag:v xvid"
+            If Codec.OptionText = "XviD" Then ret += " -tag:v xvid"
             Dim targetPath As String
 
             If Mode.OptionText = "Two Pass" AndAlso pass = 1 Then

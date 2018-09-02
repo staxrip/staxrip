@@ -4296,8 +4296,9 @@ Public Class MainForm
         ret.Add("Tools|Folders|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%working_dir%"""})
 
         ret.Add("Tools|Advanced", Symbol.More)
-        If Application.StartupPath = "D:\Projekte\VS\VB\StaxRip\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
+        If Application.StartupPath = "C:\Users\Revan\Desktop\staxrip-1.8.2.0\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
+        ret.Add("Tools|Advanced|Bash Prompt", NameOf(g.DefaultCommands.BashCommandPrompt), Symbol.fa_terminal)
         ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
         ret.Add("Tools|Advanced|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_terminal)
         ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
@@ -4306,13 +4307,17 @@ Public Class MainForm
         ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
         ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog), Symbol.Info)
         ret.Add("Tools|Advanced|Reset Setting...", NameOf(ResetSettings))
-        ret.Add("Tools|Advanced|Thumbnails Generator...", NameOf(ShowBatchGenerateThumbnailsDialog))
+        ret.Add("Tools|Advanced|Thumbnails|StaxRip Thumbnail Generator", NameOf(ShowBatchGenerateThumbnailsDialog))
+        ret.Add("Tools|Advanced|Thumbnails|MTN Thumbnail Generator", NameOf(g.DefaultCommands.MTNCommand))
+        ret.Add("Tools|Advanced|Thumbnails|VCS Thumbnail Generator", NameOf(g.DefaultCommands.VCSPythonPrompt))
 
         ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
         ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
 
         ret.Add("Apps|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
+        ret.Add("Apps|MKVInfo", NameOf(g.DefaultCommands.StartTool), {"MKVInfo"})
+        ret.Add("Apps|MKVHDR", NameOf(g.DefaultCommands.StartTool), {"MKVHDR"})
         ret.Add("Apps|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
         ret.Add("Apps|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
@@ -5488,6 +5493,52 @@ Public Class MainForm
         Using fd As New OpenFileDialog
             fd.Title = "Select files"
             fd.SetFilter(FileTypes.Video)
+            fd.Multiselect = False
+
+            If fd.ShowDialog = DialogResult.OK Then
+                Using f As New SimpleSettingsForm("Thumbnail Options")
+                    f.ScaleClientSize(27, 15)
+
+                    Dim ui = f.SimpleUI
+                    Dim page = ui.CreateFlowPage("main page")
+                    ui.Store = s
+                    page.SuspendLayout()
+
+                    Dim row As SimpleUI.NumBlock
+                    Dim interval As SimpleUI.NumBlock
+
+                    Dim mode = ui.AddMenu(Of Integer)
+                    Dim m = ui.AddMenu(Of Integer)
+
+                    Dim nb = ui.AddNum()
+                    nb.Text = "Thumbnail Width:"
+                    nb.Config = {200, 4000, 10}
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Width", 500)
+                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Width", CInt(value))
+
+                    nb = ui.AddNum()
+                    nb.Text = "Column Count:"
+                    nb.Config = {1, 1000}
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Columns", 3)
+                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Columns", CInt(value))
+
+                    row = ui.AddNum()
+                    row.Text = "Row Count:"
+                    row.Config = {1, 1000}
+                    row.NumEdit.Value = s.Storage.GetInt("Thumbnail Rows", 12)
+                    row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Rows", CInt(value))
+
+                    interval = ui.AddNum()
+                    interval.Text = "Interval (seconds):"
+                    interval.NumEdit.Value = s.Storage.GetInt("Thumbnail Interval")
+                    interval.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Interval", CInt(value))
+
+
+    <Command("Shows a dialog to generate thumbnails.")>
+    Sub ShowBatchGenerateThumbnailsDialog()
+        Using fd As New OpenFileDialog
+            fd.Title = "Select files"
+            fd.SetFilter(FileTypes.Video)
             fd.Multiselect = True
 
             If fd.ShowDialog = DialogResult.OK Then
@@ -5577,7 +5628,6 @@ Public Class MainForm
             End If
         End Using
     End Sub
-
     <Command("Presents MediaInfo of all files in a folder in a list view.")>
     Sub ShowMediaInfoFolderViewDialog()
         Using d As New FolderBrowserDialog

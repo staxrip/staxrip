@@ -78,6 +78,73 @@ Public Class GlobalCommands
     Sub StartJobs()
         g.ProcessJobs()
     End Sub
+    <Command("Thumbnail Maker using PowerShell & FFMPEG")>
+    Sub MTNCommand()
+        Dim val As String
+        'g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").Path.Escape+ " -avsinfo" + BR + "pause", False, False, True)        
+
+        If p.TempDir <> "" Then val += "cd \""" + p.TempDir + """"
+        g.StartProcess("powershell.exe", "-command wsl python3 '/mnt/c/Users/Revan/Desktop/Thumbnailer.py'" + val)
+    End Sub
+    <Command("Shows a command prompt with the temp directory of the current project.")>
+    Sub VCSPythonPrompt()
+        Dim batchCode = ""
+
+        For Each pack In Package.Items.Values
+            If TypeOf pack Is PluginPackage Then Continue For
+            Dim dir = pack.GetDir
+            If Not Directory.Exists(dir) Then Continue For
+            If Not dir.Contains(Folder.Startup) Then Continue For
+
+            batchCode += "@set PATH=" + dir + ";%PATH%" + BR
+            batchCode += "wsl python3 '/mnt/c/Users/Revan/Desktop/Thumbnailer.py'"
+        Next
+
+        Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
+        Proc.WriteBatchFile(batchPath, batchCode)
+
+        AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
+
+        Dim batchProcess As New Process
+        batchProcess.StartInfo.FileName = "cmd.exe"
+        batchProcess.StartInfo.Arguments = "/C """ + batchPath + """"
+        batchProcess.StartInfo.WorkingDirectory = p.TempDir
+        batchProcess.Start()
+    End Sub
+
+
+
+    '<Command("Thumbnail Maker using Bash & Imageick")>
+    'Sub VCSCommand()
+
+    '    Using fd As New OpenFileDialog
+    '        fd.Title = "Select files"
+    '        fd.SetFilter(FileTypes.Video)
+    '        fd.Multiselect = False
+
+    '        g.
+
+    '        If fd.ShowDialog = DialogResult.OK Then
+
+    '            p.StartInfo.FileName = "C:\Python33\python.exe"
+
+    '            Dim Val As String
+    '            Dim Cmds As String
+    '            Cmds += "wsl python3 VCS.py "
+    '            If p.TempDir <> "" Then Val += "cd \""" + p.TempDir + """"
+    '            g.DefaultCommands.BashCommandPrompt()
+    '            g.StartProcess("python3 VCS.py  " + p.SourceFile + " /mnt/c/users/Revan/Desktop/vcs.bash")
+    '        End If
+    '    End Using
+    'End Sub
+
+    <Command("Shows the Bash Commandline with the temp directory of the current project.")>
+    Sub BashCommandPrompt()
+        Dim val As String
+
+        If p.TempDir <> "" Then val += "cd \""" + p.TempDir + """"
+        g.StartProcess("powershell.exe", "-noexit -command bash" + val)
+    End Sub
 
     <Command("Shows a command prompt with the temp directory of the current project.")>
     Sub ShowCommandPrompt()
@@ -103,7 +170,6 @@ Public Class GlobalCommands
         batchProcess.StartInfo.WorkingDirectory = p.TempDir
         batchProcess.Start()
     End Sub
-
     <Command("Shows the powershell with aliases for all tools staxrip includes.")>
     Sub ShowPowerShell()
         Dim val As String
@@ -384,22 +450,6 @@ Public Class GlobalCommands
         If x265Missing.Count > 0 Then msg += BR2 + "# Removed from x265" + BR2 + x265Missing.Join(" ")
         If x265Unknown.Count > 0 Then msg += BR2 + "# x265 Todo" + BR2 + x265Unknown.Join(" ")
 
-        ''  Dim aomExcept = "--output".Split((" " + BR).ToCharArray())
-        ''  Dim aomCodeExcept = "--y4m".Split((" " + BR).ToCharArray())
-        '' Dim aomHelp = ProcessHelp.GetErrOut(Package.AOMEnc.Path, Nothing)
-        ''  File.WriteAllText(Package.AOMEnc.GetDir + "aomenc.txt", aomHelp)
-        '' aomHelp = aomHelp.Replace("(no-)", "").Replace("--no-", "--")
-        '' Dim aomHelpSwitches = Regex.Matches(aomHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        '' Dim aomCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\aomenc.vb").Replace("--no-", "--")
-        '' Dim aomPresentInCode = Regex.Matches(aomCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        '' Dim aomMissing = aomPresentInCode.Where(Function(arg) Not aomHelpSwitches.Contains(arg) AndAlso Not aomCodeExcept.Contains(arg))
-        '' Dim aomUnknown = aomHelpSwitches.Where(Function(x) Not aomPresentInCode.Contains(x) AndAlso Not aomExcept.Contains(x)).ToList()
-        '' aomUnknown.Sort()
-        ''  Dim aomNoNeedToExcept = aomExcept.Where(Function(arg) aomPresentInCode.Contains(arg))
-        ''  If aomNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary aomenc Exception:" + BR2 + aomNoNeedToExcept.Join(" ")
-        '' If aomMissing.Count > 0 Then msg += BR2 + "# Removed from aomenc" + BR2 + aomMissing.Join(" ")
-        ''  If aomUnknown.Count > 0 Then msg += BR2 + "# aomenc Todo" + BR2 + aomUnknown.Join(" ")
-
         File.WriteAllText(Package.fdkaac.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.fdkaac.Path, "-h"))
 
         For Each pack In Package.Items.Values
@@ -459,10 +509,10 @@ Public Class GlobalCommands
             End If
         Next
 
-        supportedTools.WriteUTF8File("C:\Users\Revan\Desktop\StaxRip.Source\docs\tools.rst")
+        supportedTools.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\tools.rst")
 
         Dim screenshots = "Screenshots" + BR + "===========" + BR2 + ".. contents::" + BR2
-        Dim screenshotFiles = Directory.GetFiles("C:\Users\Revan\Desktop\StaxRip.Source\docs\screenshots").ToList
+        Dim screenshotFiles = Directory.GetFiles("D:\Projekte\VS\VB\StaxRip\docs\screenshots").ToList
         screenshotFiles.Sort(New StringLogicalComparer)
 
         For Each i In screenshotFiles
@@ -470,7 +520,7 @@ Public Class GlobalCommands
             screenshots += name + BR + "-".Multiply(name.Length) + BR2 + ".. image:: screenshots/" + i.FileName + BR2
         Next
 
-        screenshots.WriteUTF8File("C:\Users\Revan\Desktop\StaxRip.Source\docs\screenshots.rst")
+        screenshots.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\screenshots.rst")
 
         Dim macros = "Macros" + BR + "======" + BR2
 
@@ -478,7 +528,7 @@ Public Class GlobalCommands
             macros += "``" + i.Name + "``" + BR2 + i.Value + BR2
         Next
 
-        macros.WriteUTF8File("C:\Users\Revan\Desktop\StaxRip.Source\docs\macros.rst")
+        macros.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\macros.rst")
 
         Dim powershell = "PowerShell Scripting
 ====================
@@ -515,18 +565,18 @@ Default Scripts
 ---------------
 
 "
-        Dim psdir = "C:\Users\Revan\Desktop\StaxRip.Source\docs\powershell\"
+        Dim psdir = "D:\Projekte\VS\VB\StaxRip\docs\powershell\"
         DirectoryHelp.Delete(psdir)
         Directory.CreateDirectory(psdir)
 
-        For Each i In Directory.GetFiles("C:\Users\Revan\Desktop\StaxRip.Source\bin\Apps\Scripts")
+        For Each i In Directory.GetFiles("D:\Projekte\VS\VB\StaxRip\bin\Apps\Scripts")
             FileHelp.Copy(i, psdir + i.FileName)
             Dim filename = i.FileName
             powershell += filename + BR + "~".Multiply(filename.Length) + BR2
             powershell += ".. literalinclude:: " + "powershell/" + i.FileName + BR + "   :language: powershell" + BR2
         Next
 
-        powershell.WriteUTF8File("C:\Users\Revan\Desktop\StaxRip.Source\docs\powershell.rst")
+        powershell.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\powershell.rst")
 
         Dim switches = "Command Line Interface
 ======================
@@ -595,7 +645,7 @@ Switches
             switches += command.Attribute.Description + BR2 + BR
         Next
 
-        switches.WriteUTF8File("C:\Users\Revan\Desktop\StaxRip.Source\docs\cli.rst")
+        switches.WriteUTF8File("D:\Projekte\VS\VB\StaxRip\docs\cli.rst")
 
         If msg <> "" Then
             Dim fs = Folder.Temp + "staxrip todo.txt"

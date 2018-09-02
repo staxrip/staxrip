@@ -72,8 +72,6 @@ Public MustInherit Class VideoEncoder
                 cl += " --transfer smpte2084"
             Case "BT.709"
                 If height <= 576 Then cl += " --transfer bt709"
-                ''  Case "HLG", "HLG / BT.2020"
-                ''     cl += " --Transfer arib-std-b67"
         End Select
 
         Dim matrix_coefficients = MediaInfo.GetVideo(sourceFile, "matrix_coefficients")
@@ -87,13 +85,15 @@ Public MustInherit Class VideoEncoder
         Dim MasteringDisplay_Luminance = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_Luminance")
 
         If MasteringDisplay_ColorPrimaries <> "" AndAlso MasteringDisplay_Luminance <> "" Then
-            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "R: x=([0-9\.]+) y=([0-9\.]+), G: x=([0-9\.]+) y=([0-9\.]+), B: x=([0-9\.]+) y=([0-9\.]+), White point: x=([0-9\.]+) y=([0-9\.]+)")
+            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "BT.2020")
+            ''Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "R: x=([0-9\.]+) y=([0-9\.]+), G: x=([0-9\.]+) y=([0-9\.]+), B: x=([0-9\.]+) y=([0-9\.]+), White point: x=([0-9\.]+) y=([0-9\.]+)")
             Dim match2 = Regex.Match(MasteringDisplay_Luminance, "min: ([0-9\.]+) cd/m2, max: ([0-9\.]+)")
 
             If match1.Success AndAlso match2.Success Then
-                Dim strings1 = match1.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 50000).ToString)
+                ''Dim strings1 = match1.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 50000).ToString)
                 Dim strings2 = match2.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 10000).ToString)
-                cl += $" --master-display ""G({strings1(2)},{strings1(3)})B({strings1(4)},{strings1(5)})R({strings1(0)},{strings1(1)})WP({strings1(6)},{strings1(7)})L({strings2(1)},{strings2(0)})"""
+                cl += "--master-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L(10000000,1)"""
+                ''cl += $" --master-display ""G({strings1(2)},{strings1(3)})B({strings1(4)},{strings1(5)})R({strings1(0)},{strings1(1)})WP({strings1(6)},{strings1(7)})L({strings2(1)},{strings2(0)})"""
                 cl += " --range limited"
             End If
         End If
@@ -310,8 +310,16 @@ Public MustInherit Class VideoEncoder
         Gif.Name = "Command Line | Gif Maker"
         Gif.QualityMode = True
         Gif.Muxer = New NullMuxer("No Muxing")
-        Gif.CommandLines = "x264 --pass 1 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output NUL ""%script_file%"" || exit" + BR + "x264 --pass 2 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
+        Gif.CommandLines = "ffmpeg -i ""%script_file%"" -vf ""fps=15,scale=%target_width%:-1:flags=spline,palettegen=stats_mode=diff"" -loglevel quiet -y ""%target_temp_file%.png"" || exit" + BR + "ffmpeg -i ""%script_file%"" -i ""%target_temp_file%.png"" -lavfi ""fps=15,scale=%target_width%:-1:flags=spline [x]; [x][1:v] paletteuse=dither=floyd_steinberg"" -loglevel quiet -y ""%target_file%"""
         ret.Add(Gif)
+
+        Dim Thumbs As New BatchEncoder()
+        Thumbs.OutputFileTypeValue = "jpg"
+        Thumbs.Name = "Command Line | jpg Maker"
+        Thumbs.QualityMode = True
+        Thumbs.Muxer = New NullMuxer("No Muxing")
+        Thumbs.CommandLines = "wsl python Thumbnailer.py /mnt/c/Users/Revan/Desktop/mtn/mtn ""/mnt/c/Users/Revan/Desktop/Lara.avi"" -c 4 -r 6 -w 1280 -h 150 -j 95 -D 12 -O /mnt/c/Users/Revan/Desktop -f /mnt/c/Users/Revan/Desktop/mtn/LiberationMono-Bold.ttf"
+        ret.Add(Thumbs)
 
         Dim x264cli As New BatchEncoder()
         x264cli.OutputFileTypeValue = "h264"
@@ -526,7 +534,22 @@ Public Class BatchEncoder
             Return {" [ETA ", ", eta ", "frames: ", "frame= "}
         End If
     End Function
+    Function GetLinuxShell(value As String) As String
+        Dim ret = ""
 
+        For Each pack In Package.Items.Values
+            If TypeOf pack Is PluginPackage Then Continue For
+            Dim dir = pack.GetDir
+            If Not Directory.Exists(dir) Then Continue For
+            If Not dir.Contains(Folder.Startup) Then Continue For
+
+            If value.ToLower.Contains(pack.Name.ToLower) Then
+                ret += "PATH=""""" + dir + """" + BR
+            End If
+        Next
+
+        Return ret + BR + value
+    End Function
     Function GetBatchCode(value As String) As String
         Dim ret = ""
 

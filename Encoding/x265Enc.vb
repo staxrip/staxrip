@@ -520,7 +520,7 @@ Public Class x265Params
         .Switch = "--profile",
         .Text = "Profile",
         .Value = 2,
-        .Options = {"Unrestricted", "Main", "Main 10", "Main - Intra", "Main Still Picture", "Main 422 - 8", "Main 444 - Intra", "Main 444 - Still Picture", "Main 444 - 8", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra", "main12", "main12-intra", "main422-12", "main422-12-intra", "main444-12", "main444-12-intra"}}
+        .Options = {"Unrestricted", "Main", "Main 10", "Main - Intra", "Main Still Picture", "Main 422 - 8", "Main 444 - Intra", "Main 444 - Still Picture", "Main 444 - 8", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra", "Main12", "Main12-intra", "Main422-12", "Main422-12-intra", "Main444-12", "Main444-12-intra"}}
 
     Property OutputDepth As New OptionParam With {
         .Switch = "--output-depth",
@@ -850,7 +850,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-STD-B67", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 2084", "SMPTE 240 M", "SMPTE 428"}},
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"Undefined", "Show", "Crop"}},
                     New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"Undefined", "Limited", "Full"}},
-                    minLuma, maxLuma, MaxCLL, MaxFALL,
+                    Chromaloc, minLuma, maxLuma, MaxCLL, MaxFALL,
                     New BoolParam With {.Switch = "--hdr", .Text = "Force signalling of HDR parameters in SEI packets"},
                     New BoolParam With {.Switch = "--hdr-opt", .Text = "Add luma and chroma offsets for HDR/WCG content"},
                     New BoolParam With {.Switch = "--dhdr10-opt", .Text = "Limit frames for which tone mapping information is inserted as SEI message"})

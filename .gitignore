@@ -3,3 +3,7 @@
 ################################################################################
 
 /bin/Apps
+/bin
+/obj
+/packages/Microsoft.PowerShell.5.ReferenceAssemblies.1.0.0
+/.vs/StaxRip/v15

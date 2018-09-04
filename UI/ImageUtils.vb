@@ -41,7 +41,7 @@ Public Class ImageHelp
         Dim fontHeight = font.Height
         Dim bitmap As New Bitmap(CInt(fontHeight * 1.1F), CInt(fontHeight * 1.1F))
         Dim graphics = Drawing.Graphics.FromImage(bitmap)
-        graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAliasGridFit
+        graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
         graphics.DrawString(Convert.ToChar(CInt(symbol)), font, Brushes.Black, -fontHeight * 0.1F, fontHeight * 0.07F)
         graphics.Dispose()
         font.Dispose()

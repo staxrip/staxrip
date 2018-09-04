@@ -158,21 +158,55 @@ Public Class Package
     Shared Property VCS As Package = Add(New Package With {
         .Name = "VCS",
         .Filename = "vcs.bash",
-        .DirPath = "/Apps/Thumbnailer",
+        .DirPath = "VCS",
         .Description = "This is a bash script meant to create video contact sheets (previews) of videos.",
         .WebURL = "http://p.outlyer.net/vcs",
         .HelpURL = "http://p.outlyer.net/vcs/docs"})
 
-    Shared Property Thumbnailer As Package = Add(New Package With {
-        .Name = "Thumbnailer",
-        .Filename = "VCS.py",
-        .DirPath = "/Apps/Thumbnailer",
-        .Description = "Custom Launcher Script for VCS"})
+    Shared Property VCSPython As Package = Add(New Package With {
+      .Name = "VCSPython",
+      .Filename = "VCS.py",
+      .StartActionValue = Sub()
+                              Using fd As New OpenFileDialog
+                                  fd.Title = "Select files"
+                                  fd.Multiselect = True
+                                  If fd.ShowDialog = DialogResult.OK Then
+                                      g.DefaultCommands.ExecuteCommandLine("wsl python3" + Package.Items("VCSPython").Path.Escape + fd.FileName + "%app:VCS%", True, True, False)
+                                  End If
+                              End Using
+                          End Sub,
+                              .DirPath = "VCS",
+     .Description = "Custom Launcher Script for VCS"})
 
     Shared Property MTN As Package = Add(New Package With {
-        .Name = "MTN",
-        .Filename = "mtn",
-        .DirPath = "/Apps/Thumbnailer",
+        .Name = "MTNWindows",
+        .Filename = "mtn.exe",
+        .DirPath = "MTN",
+        .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
+        .StartActionValue = Sub()
+                                Using fd As New OpenFileDialog
+                                    fd.Title = "Select files"
+                                    fd.Multiselect = True
+                                    If fd.ShowDialog = DialogResult.OK Then
+                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("MTNWindows").Path.Escape + " " + fd.FileName, True, True, False)
+                                    End If
+                                End Using
+                            End Sub,
+        .WebURL = "http://moviethumbnail.sourceforge.net/",
+        .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
+
+    'Shared Property MTNLinux As Package = Add(New Package With {
+    '    .Name = "MTNLinux",
+    '    .Filename = "mtn",
+    '    .DirPath = "MTN",
+    '    .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
+    '    .WebURL = "http://moviethumbnail.sourceforge.net/",
+    '    .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
+
+    Shared Property MTNPython As Package = Add(New Package With {
+        .Name = "MTNPytthon",
+        .Filename = "MTN.py",
+        .DirPath = "MTN",
         .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
         .WebURL = "http://moviethumbnail.sourceforge.net/",
         .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
@@ -192,7 +226,7 @@ Public Class Package
         .Name = "mpv",
         .Filename = "mpv.exe",
         .LaunchName = "mpv.exe",
-        .URL = "https://portableapps.com/apps/music_video/potplayer-portable",
+        .URL = "https://mpv.io/",
         .Description = "mpv is a fork of mplayer2 and MPlayer. It shares some features with the former projects while introducing many more."})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {
@@ -317,16 +351,30 @@ Public Class Package
         .Name = "mkvmerge",
         .Filename = "mkvmerge.exe",
         .DirPath = "MKVToolNix",
-        .WebURL = "http://www.bunkus.org/videotools/mkvtoolnix",
-        .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
+        .WebURL = "https://mkvtoolnix.download/",
+        .HelpURL = "https://mkvtoolnix.download/docs.html",
+        .StartActionValue = Sub()
+                                g.DefaultCommands.ExecuteCommandLine(Package.Items("mkvmerge").Path.Escape + " " + "-o %target_dir%%target_name%_InjectedMetadata.%muxer_ext%" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + p.TargetFile, False, False, True)
+                            End Sub,
+                                .Description = "MKV muxing tool."})
+
+    Shared Property mkvinfo As Package = Add(New Package With {
+        .Name = "mkvinfo",
+        .Filename = "mkvinfo.exe",
+        .DirPath = "MKVToolNix",
+        .WebURL = "https://mkvtoolnix.download/",
+        .HelpURL = "https://mkvtoolnix.download/docs.html",
+        .StartActionValue = Sub()
+                                g.DefaultCommands.ExecuteCommandLine(Package.Items("mkvinfo").Path.Escape + " " + p.TargetFile + BR + "pause", False, False, True)
+                            End Sub,
         .Description = "MKV muxing tool."})
 
     Shared Property mkvextract As Package = Add(New Package With {
         .Name = "mkvextract",
         .Filename = "mkvextract.exe",
         .DirPath = "MKVToolNix",
-        .WebURL = "http://www.bunkus.org/videotools/mkvtoolnix",
-        .HelpURL = "http://www.bunkus.org/videotools/mkvtoolnix/docs.html",
+        .WebURL = "https://mkvtoolnix.download/",
+        .HelpURL = "https://mkvtoolnix.download/docs.html",
         .Description = "MKV demuxing tool."})
 
     Shared Property NVEnc As Package = Add(New Package With {
@@ -386,14 +434,20 @@ Public Class Package
         .AvsFilterNames = {"FFT3DFilter"},
         .AvsFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter | FFT3DFilter", "FFT3DFilter()")}})
 
-    Shared Property ffms2 As Package = Add(New PluginPackage With {
+    Shared Property avsffms2 As Package = Add(New PluginPackage With {
         .Name = "ffms2",
         .Filename = "ffms2.dll",
         .WebURL = "http://github.com/FFMS/ffms2",
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
-        .HelpURLFunc = Function(engine) If(engine = ScriptEngine.AviSynth, "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md", "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-vapoursynth.md"),
+        .HelpURL = "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md",
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", $"FFVideoSource(""%source_file%"", colorspace = ""YV12"", \{BR}              cachefile = ""%source_temp_file%.ffindex"")")},
+        .AvsFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", $"FFVideoSource(""%source_file%"", colorspace = ""YV12"", \{BR}              cachefile = ""%source_temp_file%.ffindex"")")}})
+
+    Shared Property vsffms2 As Package = Add(New PluginPackage With {
+        .Name = "ffms2",
+        .Filename = "ffms2.dll",
+        .HelpURL = "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-vapoursynth.md",
+        .Description = "The VapourSynth port of ffms2.",
         .VSFilterNames = {"ffms2"},
         .VSFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")")}})
 
@@ -478,25 +532,16 @@ Public Class Package
             .HelpFile = "doc\AVSMeter.html",
             .WebURL = "http://forum.doom9.org/showthread.php?t=174797"})
 
-        Add(New Package With {
-            .Name = "MKVInfo",
-            .Filename = "MKVInfo.exe",
-            .DirPath = "Apps/MKVToolNix",
-            .Description = "MKVToolNix is a set of tools to create, alter and inspect Matroska files",
-            .StartActionValue = Sub()
-                                    g.DefaultCommands.ExecuteCommandLine(Package.Items("MKVInfo").Path.Escape + " " + p.SourceFile + BR + "pause", False, False, True)
-                                End Sub,
-            .WebURL = "https://mkvtoolnix.download/doc/mkvinfo.html"})
 
-        Add(New Package With {
-            .Name = "MKVHDR",
-            .Filename = "MKVInfo.exe",
-            .DirPath = "Apps/MKVToolNix",
-            .Description = "MKVToolNix is a set of tools to create, alter and inspect Matroska files",
-            .StartActionValue = Sub()
-                                    g.DefaultCommands.ExecuteCommandLine(Package.Items("MKVInfo").Path.Escape + " " + "-o " + p.SourceFile + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + p.TargetFile + BR + "pause", False, False, True)
-                                End Sub,
-            .WebURL = "https://mkvtoolnix.download/doc/mkvinfo.html"})
+        'Add(New Package With {
+        '    .Name = "MKVHDR",
+        '    .Filename = "mkvmerge.exe",
+        '    .DirPath = "MKVToolNix",
+        '    .Description = "MKVToolNix is a set of tools to create, alter and inspect Matroska files",
+        '    .StartActionValue = Sub()
+        '                            g.DefaultCommands.ExecuteCommandLine(Package.Items("MKVHDR").Path.Escape + " " + "-o %target_Injected_file%" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + p.TargetFile + BR + "pause", False, False, True)
+        '                        End Sub,
+        '    .WebURL = "https://mkvtoolnix.download/doc/mkvinfo.html"})
 
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",

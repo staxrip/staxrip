@@ -78,74 +78,6 @@ Public Class GlobalCommands
     Sub StartJobs()
         g.ProcessJobs()
     End Sub
-    <Command("Thumbnail Maker using PowerShell & FFMPEG")>
-    Sub MTNCommand()
-        Dim val As String
-        'g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").Path.Escape+ " -avsinfo" + BR + "pause", False, False, True)        
-
-        If p.TempDir <> "" Then val += "cd \""" + p.TempDir + """"
-        g.StartProcess("powershell.exe", "-command wsl python3 '/mnt/c/Users/Revan/Desktop/Thumbnailer.py'" + val)
-    End Sub
-    <Command("Shows a command prompt with the temp directory of the current project.")>
-    Sub VCSPythonPrompt()
-        Dim batchCode = ""
-
-        For Each pack In Package.Items.Values
-            If TypeOf pack Is PluginPackage Then Continue For
-            Dim dir = pack.GetDir
-            If Not Directory.Exists(dir) Then Continue For
-            If Not dir.Contains(Folder.Startup) Then Continue For
-
-            batchCode += "@set PATH=" + dir + ";%PATH%" + BR
-            batchCode += "wsl python3 '/mnt/c/Users/Revan/Desktop/Thumbnailer.py'"
-        Next
-
-        Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
-        Proc.WriteBatchFile(batchPath, batchCode)
-
-        AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
-
-        Dim batchProcess As New Process
-        batchProcess.StartInfo.FileName = "cmd.exe"
-        batchProcess.StartInfo.Arguments = "/C """ + batchPath + """"
-        batchProcess.StartInfo.WorkingDirectory = p.TempDir
-        batchProcess.Start()
-    End Sub
-
-
-
-    '<Command("Thumbnail Maker using Bash & Imageick")>
-    'Sub VCSCommand()
-
-    '    Using fd As New OpenFileDialog
-    '        fd.Title = "Select files"
-    '        fd.SetFilter(FileTypes.Video)
-    '        fd.Multiselect = False
-
-    '        g.
-
-    '        If fd.ShowDialog = DialogResult.OK Then
-
-    '            p.StartInfo.FileName = "C:\Python33\python.exe"
-
-    '            Dim Val As String
-    '            Dim Cmds As String
-    '            Cmds += "wsl python3 VCS.py "
-    '            If p.TempDir <> "" Then Val += "cd \""" + p.TempDir + """"
-    '            g.DefaultCommands.BashCommandPrompt()
-    '            g.StartProcess("python3 VCS.py  " + p.SourceFile + " /mnt/c/users/Revan/Desktop/vcs.bash")
-    '        End If
-    '    End Using
-    'End Sub
-
-    <Command("Shows the Bash Commandline with the temp directory of the current project.")>
-    Sub BashCommandPrompt()
-        Dim val As String
-
-        If p.TempDir <> "" Then val += "cd \""" + p.TempDir + """"
-        g.StartProcess("powershell.exe", "-noexit -command bash" + val)
-    End Sub
-
     <Command("Shows a command prompt with the temp directory of the current project.")>
     Sub ShowCommandPrompt()
         Dim batchCode = ""
@@ -186,7 +118,6 @@ Public Class GlobalCommands
         If p.TempDir <> "" Then val += "cd \""" + p.TempDir + """"
         g.StartProcess("powershell.exe", "-noexit -command " + val)
     End Sub
-
     <Command("Executes command lines separated by a line break line by line. Macros are solved as well as passed in as environment variables.")>
     Sub ExecuteCommandLine(
         <DispName("Command Line"),

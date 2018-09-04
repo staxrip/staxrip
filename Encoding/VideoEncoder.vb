@@ -534,22 +534,6 @@ Public Class BatchEncoder
             Return {" [ETA ", ", eta ", "frames: ", "frame= "}
         End If
     End Function
-    Function GetLinuxShell(value As String) As String
-        Dim ret = ""
-
-        For Each pack In Package.Items.Values
-            If TypeOf pack Is PluginPackage Then Continue For
-            Dim dir = pack.GetDir
-            If Not Directory.Exists(dir) Then Continue For
-            If Not dir.Contains(Folder.Startup) Then Continue For
-
-            If value.ToLower.Contains(pack.Name.ToLower) Then
-                ret += "PATH=""""" + dir + """" + BR
-            End If
-        Next
-
-        Return ret + BR + value
-    End Function
     Function GetBatchCode(value As String) As String
         Dim ret = ""
 

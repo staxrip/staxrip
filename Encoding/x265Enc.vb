@@ -832,8 +832,7 @@ Public Class x265Params
                     Ref, MinKeyint, Keyint,
                     Bpyramid, OpenGop, IntraRefresh)
                 Add("Performance",
-                    New NumParam() With {.Switch = "--pools", .Text = "Pools", .Init = 5, .Config = {0, 100, 1, 1}},
-                    New NumParam() With {.Switch = "--numa-pools", .Text = "Threads", .Init = 0, .Config = {0, 100, 1, 1}},
+                    New StringParam With {.Switch = "--pools", .Switches = {"--numa-pools"}, .Text = "Pools", .Quotes = True},
                     New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},
                     FrameThreads, WPP, Pmode, PME,
                     New BoolParam With {.Switch = "--asm", .NoSwitch = "--no-asm", .Text = "ASM", .Init = True},
@@ -874,7 +873,6 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--multi-pass-opt-rps", .Text = "Enable storing commonly used RPS in SPS in multi pass mode"})
                 Add("Input/Output",
                     New OptionParam With {.Switch = "--input-depth", .Text = "Input Depth", .Options = {"Automatic", "8", "10", "12", "14", "16"}},
-                    New OptionParam With {.Switch = "--output-depth", .Text = "Output Depth", .Options = {"Automatic", "8", "10", "12"}},
                     New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Options = {"Automatic", "I400", "I420", "I422", "I444", "NV12", "NV16"}},
                     New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Progressive", "Top Field First", "Bottom Field First"}, .Values = {"", "tff", "bff"}},
                     New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}},

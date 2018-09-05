@@ -67,6 +67,8 @@ Public Class Project
     Public RemindToSetFilters As Boolean = False
     Public ResizeSliderMaxWidth As Integer
     Public SaveThumbnails As Boolean
+    Public MTN As Boolean
+    Public GIF As Boolean
     Public ScanOrder As String
     Public ScanType As String
     Public Script As TargetVideoScript
@@ -310,3 +312,4 @@ Public Class Project
         End If
     End Sub
 End Class
+

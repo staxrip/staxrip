@@ -908,6 +908,7 @@ Public Class Macro
         ret.Add(New Macro("script_dir", "Script Directory", GetType(String), "Users PowerShell scripts directory."))
         ret.Add(New Macro("script_ext", "Script File Extension", GetType(String), "File extension of the AviSynth/VapourSynth script so either avs or vpy."))
         ret.Add(New Macro("script_file", "Script Path", GetType(String), "Path of the AviSynth/VapourSynth script."))
+        ret.Add(New Macro("script_files", "Script Path", GetType(String), "Script file path in quotes separated by a blank."))
         ret.Add(New Macro("sel_end", "Selection End", GetType(Integer), "End position of the first selecion in the preview."))
         ret.Add(New Macro("sel_start", "Selection Start", GetType(Integer), "Start position of the first selecion in the preview."))
         ret.Add(New Macro("settings_dir", "Settings Directory", GetType(String), "Path of the settings direcory."))
@@ -1129,6 +1130,12 @@ Public Class Macro
 
         If value.Contains("%target_files%") Then value = value.Replace("%target_files%", """" + String.Join(""" """, p.TargetFile.ToArray) + """")
         If Not value.Contains("%") Then Return value
+
+        If value.Contains("%script_files%") Then
+            p.Script.Synchronize()
+            value = value.Replace("%script_files%", """" + String.Join(""" """, p.Script.Path.ToArray) + """")
+            If Not value.Contains("%") Then Return value
+        End If
 
         If value.Contains("%target_dir%") Then value = value.Replace("%target_dir%", FilePath.GetDir(p.TargetFile))
         If Not value.Contains("%") Then Return value

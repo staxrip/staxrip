@@ -48,6 +48,10 @@ Public Class ImageHelp
         Return bitmap
     End Function
 End Class
+'' Dim avsdoc As New VideoScript
+''avsdoc.Path = Folder.Settings + "Thumbnails.avs"
+''avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + """, cachefile = """ + cachePath + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
+''avsdoc.Filters.Add(New VideoFilter("ConvertToRGB()"))
 
 Public Class Thumbnails
     Shared Sub SaveThumbnails(inputFile As String, proj As Project)

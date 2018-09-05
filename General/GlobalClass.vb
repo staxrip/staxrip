@@ -141,6 +141,7 @@ Public Class GlobalClass
             p.VideoEncoder.Muxer.Mux()
 
             If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile, p)
+            If p.MTN Then g.DefaultCommands.ExecuteCommandLine(Package.Items("MTNWindows").Path.Escape + " " + p.TargetFile, True, True, False)
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
@@ -631,7 +632,7 @@ Public Class GlobalClass
                 proc.Header = "Indexing using ffmsindex"
                 proc.SkipString = "Indexing, please wait..."
                 proc.Project = proj
-                proc.File = Package.avsffms2.GetDir + "ffmsindex.exe"
+                proc.File = Package.ffms2.GetDir + "ffmsindex.exe"
                 proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.Escape + " " + cachePath.Escape
                 proc.Start()
             End Using

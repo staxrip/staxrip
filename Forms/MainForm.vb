@@ -2754,7 +2754,7 @@ Public Class MainForm
 
             Dim ae = Calc.GetAspectRatioError()
 
-            If Not isValidAnamorphicSize AndAlso (ae > p.MaxAspectRatioError OrElse
+            If Not isValidAnamorphicSize AndAlso (ae > p.MaxAspectRatioError OrElse 
                 ae < -p.MaxAspectRatioError) AndAlso p.Script.IsFilterActive("Resize") AndAlso
                 p.RemindArError Then
 
@@ -3795,9 +3795,14 @@ Public Class MainForm
             ui.CreateFlowPage("Image", True)
 
             Dim b = ui.AddBool()
-            b.Text = "Save Staxrip Thumbnails"
+            b.Text = "Save Thumbnails"
             b.Help = "Saves thumbnails in the target folder. Customizations can be made in the settings under:" + BR2 + "General > Advanced > Thumbnails"
             b.Field = NameOf(p.SaveThumbnails)
+
+            b = ui.AddBool()
+            b.Text = "MTN Thumbnails"
+            b.Help = "Saves thumbnails to Source Location"
+            b.Field = NameOf(p.MTN)
 
             Dim n = ui.AddNum()
             n.Text = "Auto resize image size"
@@ -4298,34 +4303,32 @@ Public Class MainForm
         ret.Add("Tools|Advanced", Symbol.More)
         If Application.StartupPath = "C:\Users\Revan\Desktop\staxrip-1.8.2.0\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
-        ret.Add("Tools|Advanced|Command Prompts", Symbol.fa_terminal)
-        'ret.Add("Tools|Advanced|Command Prompts|Bash Prompt", NameOf(g.DefaultCommands.BashCommandPrompt), Symbol.fa_terminal)
-        ret.Add("Tools|Advanced|Command Prompts|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
-        ret.Add("Tools|Advanced|Command Prompts|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_terminal)
+        'ret.Add("Tools|Advanced|Bash Prompt", NameOf(g.DefaultCommands.BashCommandPrompt), Symbol.fa_terminal)
+        ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
+        ret.Add("Tools|Advanced|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_terminal)
         ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
         ret.Add("Tools|Advanced|Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H, Symbol.Subtitles)
         ret.Add("Tools|Advanced|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
         ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
         ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog), Symbol.Info)
         ret.Add("Tools|Advanced|Reset Setting...", NameOf(ResetSettings))
-        ret.Add("Tools|Advanced|Thumbnails", Symbol.fa_th)
         ret.Add("Tools|Advanced|Thumbnails|StaxRip Thumbnail Generator", NameOf(ShowBatchGenerateThumbnailsDialog), Symbol.fa_th_large)
         ret.Add("Tools|Advanced|Thumbnails|MTN Thumbnail Generator", NameOf(g.DefaultCommands.StartTool), Symbol.fa_th, {"MTNWindows"})
-        ret.Add("Tools|Advanced|Thumbnails|MTN Thumbnail Generator", NameOf(g.DefaultCommands.StartTool), Symbol.fa_th, {"VCSPython"})
+        ret.Add("Tools|Advanced|Thumbnails|VCS Thumbnail Generator", NameOf(g.DefaultCommands.StartTool), Symbol.fa_th, {"VCSPython"})
 
         ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
         ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
 
-        ret.Add("Apps|AVSTools|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
-        ret.Add("Apps|MKVTools|MKVHDR Info", NameOf(g.DefaultCommands.StartTool), {"mkvinfo"})
-        ret.Add("Apps|MKVTools|MKVHDR Merge", NameOf(g.DefaultCommands.StartTool), {"mkvmerge"})
-        ret.Add("Apps|DGIndex|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
-        ret.Add("Apps|DGIndex|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
-        ret.Add("Apps|Players|MPV", NameOf(g.DefaultCommands.StartTool), {"mpv"})
-        ret.Add("Apps|SubTitles|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
-        ret.Add("Apps|SubTitles|SubtitleEdit", NameOf(g.DefaultCommands.StartTool), {"SubtitleEdit"})
-        ret.Add("Apps|SubTitles|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
+        ret.Add("Apps|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
+        ret.Add("Apps|MKVInfo", NameOf(g.DefaultCommands.StartTool), {"MKVInfo"})
+        ret.Add("Apps|MKVHDR", NameOf(g.DefaultCommands.StartTool), {"MKVHDR"})
+        ret.Add("Apps|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
+        ret.Add("Apps|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
+        ret.Add("Apps|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
+        ret.Add("Apps|mpv", NameOf(g.DefaultCommands.StartTool), {"mpv"})
+        ret.Add("Apps|SubtitleEdit", NameOf(g.DefaultCommands.StartTool), {"SubtitleEdit"})
+        ret.Add("Apps|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
 
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
@@ -5489,6 +5492,7 @@ Public Class MainForm
         SourceFileMenu.Add("Copy", Sub() tbSourceFile.Copy(), "Copies the selected text to the clipboard.", tbSourceFile.Text <> "").SetImage(Symbol.Copy)
         SourceFileMenu.Add("Paste", Sub() tbSourceFile.Paste(), "Copies the full source file path to the clipboard.", Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
     End Sub
+
     <Command("Shows a dialog to generate thumbnails.")>
     Sub ShowBatchGenerateThumbnailsDialog()
         Using fd As New OpenFileDialog

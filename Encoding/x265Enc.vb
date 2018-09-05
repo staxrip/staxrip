@@ -608,6 +608,18 @@ Public Class x265Params
         .Text = "VBV Init",
         .Config = {0, 1, 0.05, 2},
         .Init = 0.9}
+		
+		Property VBVend As New NumParam With {
+        .Switch = "--vbv-end",
+        .Text = "VBV End",
+        .Config = {0, 1, 0.05, 2},
+        .Init = 0.0}
+		
+	Property VBVfradj As New NumParam With { ''Need More Information Before Being Added.
+        .Switch = "--vbv-end-fr-adj",
+        .Text = "VBV End",
+        .Config = {0, 1, 0.05, 2},
+        .Init = 0.0}	
 
     Property Chromaloc As New NumParam With {
         .Switch = "--chromaloc",
@@ -791,8 +803,9 @@ Public Class x265Params
                     TUintra, TUinter, rdoqLevel,
                     PsyRDOQ,
                     New NumParam With {.Switch = "--dynamic-rd", .Text = "Dynamic RD", .Config = {0, 4}},
-                    New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 3}},
-                    New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}})
+                    New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 4}},
+                    New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}},
+                    New BoolParam With {.Switch = "--dynamic-refine", .NoSwitch = "--no-dynamic-refine", .Init = False, .Text = "Dynamic Refine"})
                 Add("Analysis 3", Rect, AMP,
                     New BoolParam With {.Switch = "--tskip", .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"},
                     New BoolParam With {.Switch = "--refine-mv", .Text = "Enable refinement of motion vector for scaled video"},
@@ -810,7 +823,7 @@ Public Class x265Params
                     New NumParam With {.Switch = "--crqpoffs", .Text = "CR QP Offset", .Config = {-12, 12}},
                     NRintra, NRinter, qpmin, qpmax, qpstep, CRFmin, CRFmax)
                 Add("Rate Control 2",
-                    VBVbufsize, VBVmaxrate, VBVinit,
+                    VBVbufsize, VBVmaxrate, VBVinit, VBVend,
                     IPRatio, PBRatio, Cplxblur, QBlur,
                     CUtree, Lossless, StrictCBR, rcGrain,
                     multi_pass_opt_analysis,
@@ -860,8 +873,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "Component", "PAL", "NTSC", "SECAM", "MAC"}},
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"Undefined", "Show", "Crop"}},
                     New OptionParam With {.Switch = "--display-window", .Text = "Display Window", .Options = {"Undefined", "Left", "Top", "Right", "Top"}},
-                    Chromaloc
-)
+                    Chromaloc)
                 Add("Bitstream",
                     Hash,
                     New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "log2-max-poc-lsb", .Init = 8},
@@ -869,8 +881,12 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers"},
                     New BoolParam With {.Switch = "--vui-timing-info", .Text = "VUI Timing Info"},
                     New BoolParam With {.Switch = "--vui-hrd-info", .Text = "VUI HRD Info"},
+                    New BoolParam With {.Switch = "--opt-qp-pps", .NoSwitch = "--no-opt-qp-pps", .Init = False, .Text = "Optimize QP in PPS"},
+                    New BoolParam With {.Switch = "--opt-ref-list-length-pps", .NoSwitch = "--no-opt-ref-list-length-pps", .Init = False, .Text = "Optimize L0 and L1 ref list length in PPS"},
+                    New BoolParam With {.Switch = "--multi-pass-opt-rps", .NoSwitch = "-no-multi-pass-opt-rps", .Init = False, .Text = "Enable storing commonly used RPS in SPS in multi pass mode"},
                     New BoolParam With {.Switch = "--opt-cu-delta-qp", .Text = "Optimize CU level QPs pulling up lower QPs close to meanQP"},
-                    New BoolParam With {.Switch = "--multi-pass-opt-rps", .Text = "Enable storing commonly used RPS in SPS in multi pass mode"})
+                    New BoolParam With {.Switch = "--idr-recovery-sei", .NoSwitch = "--no-idr-recovery-sei", .Init = False, .Text = "Recovery SEI"},
+                    New BoolParam With {.Switch = "--single-sei", .NoSwitch = "--no-single-sei", .Init = False, .Text = "Single SEI"})
                 Add("Input/Output",
                     New OptionParam With {.Switch = "--input-depth", .Text = "Input Depth", .Options = {"Automatic", "8", "10", "12", "14", "16"}},
                     New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Options = {"Automatic", "I400", "I420", "I422", "I444", "NV12", "NV16"}},

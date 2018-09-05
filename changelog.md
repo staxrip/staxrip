@@ -14,8 +14,8 @@ https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 1.9.00
 
 - Added Two new Marcos to the list.
-	- %target_file%
-	- %target_Injected_file%
+	- %target_files%	
+- Updated the PowerShell Assembly to version 1.1.0
 - Added Support for New Thumbnail Creator, Which is much faster. The Only One will remain for those who want to use it.
 
 1.8.0.0

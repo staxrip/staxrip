@@ -3801,8 +3801,18 @@ Public Class MainForm
 
             b = ui.AddBool()
             b.Text = "MTN Thumbnails"
-            b.Help = "Saves thumbnails to Source Location"
+            b.Help = "Saves thumbnails to Source Location using the MTN Engine"
             b.Field = NameOf(p.MTN)
+
+            b = ui.AddBool()
+            b.Text = "Gif Creation"
+            b.Help = "Picks a Random Spot and creates a 2 to 5 Second Animation."
+            b.Field = NameOf(p.GIF)
+
+            b = ui.AddBool()
+            b.Text = "HDR Metadata"
+            b.Help = "Adds the Remaining Metadata needed for HDR10 to MKV File"
+            b.Field = NameOf(p.MKVHDR)
 
             Dim n = ui.AddNum()
             n.Text = "Auto resize image size"
@@ -4303,15 +4313,15 @@ Public Class MainForm
         ret.Add("Tools|Advanced", Symbol.More)
         If Application.StartupPath = "C:\Users\Revan\Desktop\staxrip-1.8.2.0\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
-        'ret.Add("Tools|Advanced|Bash Prompt", NameOf(g.DefaultCommands.BashCommandPrompt), Symbol.fa_terminal)
+        ret.Add("Tools|Advanced|Command Prompt", Symbol.fa_terminal)
         ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
         ret.Add("Tools|Advanced|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_terminal)
         ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
-        ret.Add("Tools|Advanced|Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H, Symbol.Subtitles)
         ret.Add("Tools|Advanced|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
         ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
         ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog), Symbol.Info)
         ret.Add("Tools|Advanced|Reset Setting...", NameOf(ResetSettings))
+        ret.Add("Tools|Advanced|Thumbnails|", Symbol.fa_th_large)
         ret.Add("Tools|Advanced|Thumbnails|StaxRip Thumbnail Generator", NameOf(ShowBatchGenerateThumbnailsDialog), Symbol.fa_th_large)
         ret.Add("Tools|Advanced|Thumbnails|MTN Thumbnail Generator", NameOf(g.DefaultCommands.StartTool), Symbol.fa_th, {"MTNWindows"})
         ret.Add("Tools|Advanced|Thumbnails|VCS Thumbnail Generator", NameOf(g.DefaultCommands.StartTool), Symbol.fa_th, {"VCSPython"})
@@ -4322,13 +4332,13 @@ Public Class MainForm
 
         ret.Add("Apps|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
         ret.Add("Apps|MKVInfo", NameOf(g.DefaultCommands.StartTool), {"MKVInfo"})
-        ret.Add("Apps|MKVHDR", NameOf(g.DefaultCommands.StartTool), {"MKVHDR"})
-        ret.Add("Apps|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
-        ret.Add("Apps|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
-        ret.Add("Apps|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
-        ret.Add("Apps|mpv", NameOf(g.DefaultCommands.StartTool), {"mpv"})
-        ret.Add("Apps|SubtitleEdit", NameOf(g.DefaultCommands.StartTool), {"SubtitleEdit"})
-        ret.Add("Apps|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
+        ret.Add("Apps|DGIndex|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
+        ret.Add("Apps|DGIndex|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
+        ret.Add("Apps|Players|MPV", NameOf(g.DefaultCommands.StartTool), {"mpv"})
+        ret.Add("Apps|Subtitles|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
+        ret.Add("Apps|Subtitles|Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H, Symbol.Subtitles)
+        ret.Add("Apps|Subtitles|SubtitleEdit", NameOf(g.DefaultCommands.StartTool), {"SubtitleEdit"})
+        ret.Add("Apps|Subtitles|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
 
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))

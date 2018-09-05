@@ -181,12 +181,12 @@ Public Class Package
     Shared Property MTN As Package = Add(New Package With {
         .Name = "MTNWindows",
         .Filename = "mtn.exe",
-        .DirPath = "MTN",''Shared Sub SaveThumbnails(inputFile As String, proj As Project)
+        .DirPath = "MTN",
         .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
         .StartActionValue = Sub()
                                 Using fd As New OpenFileDialog
                                     fd.Title = "Select files"
-                                    fd.Multiselect = True
+                                    fd.Multiselect = False '' Can Only Do Single.
                                     If fd.ShowDialog = DialogResult.OK Then
                                         g.DefaultCommands.ExecuteCommandLine(Package.Items("MTNWindows").Path.Escape + " " + fd.FileName, True, True, False)
                                     End If
@@ -352,11 +352,7 @@ Public Class Package
         .Filename = "mkvmerge.exe",
         .DirPath = "MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
-        .HelpURL = "https://mkvtoolnix.download/docs.html",
-        .StartActionValue = Sub()
-                                g.DefaultCommands.ExecuteCommandLine(Package.Items("mkvmerge").Path.Escape + " " + "-o %target_dir%%target_name%_InjectedMetadata.%muxer_ext%" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + p.TargetFile, False, False, True)
-                            End Sub,
-                                .Description = "MKV muxing tool."})
+        .HelpURL = "https://mkvtoolnix.download/docs.html"})
 
     Shared Property mkvinfo As Package = Add(New Package With {
         .Name = "mkvinfo",
@@ -365,7 +361,7 @@ Public Class Package
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .StartActionValue = Sub()
-                                g.DefaultCommands.ExecuteCommandLine(Package.Items("mkvinfo").Path.Escape + " " + p.TargetFile + BR + "pause", False, False, True)
+                                g.DefaultCommands.PowerShellScript(Package.Items("mkvinfo").Path.Escape + " " + "%target_files%" + BR + "pause", False, False, True)
                             End Sub,
         .Description = "MKV muxing tool."})
 

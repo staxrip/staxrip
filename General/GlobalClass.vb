@@ -142,6 +142,9 @@ Public Class GlobalClass
 
             If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile, p)
             If p.MTN Then g.DefaultCommands.ExecuteCommandLine(Package.Items("MTNWindows").Path.Escape + " " + p.TargetFile, True, True, False)
+            If p.MTN Then g.DefaultCommands.ExecuteCommandLine(Package.Items("MTNWindows").Path.Escape + " " + p.TargetFile, True, True, False)
+            If p.GIF Then g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss 25.0 -t 4.2 -i %target_files% -vf ""fps=15,scale=480:-1:flags=spline,palettegen=stats_mode=diff"" -loglevel quiet -y ""%target_temp_file%.png"" || exit" + BR + Package.Items("ffmpeg").Path.Escape + " -ss 25.0 -t 4.2 -i %target_files% -i ""%target_temp_file%.png"" -lavfi ""fps=15,scale=480:-1:flags=spline [x]; [x][1:v] paletteuse=dither=floyd_steinberg"" -loglevel quiet -y ""%target_dir%%target_name%.gif""", True, True, True)
+            If p.MKVHDR Then g.DefaultCommands.ExecuteCommandLine(Package.Items("mkvmerge").Path.Escape + " " + "-o %target_dir%%target_name%_HDR.%muxer_ext%" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + p.TargetFile, True, True, False)
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)

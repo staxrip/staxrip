@@ -69,6 +69,7 @@ Public Class Project
     Public SaveThumbnails As Boolean
     Public MTN As Boolean
     Public GIF As Boolean
+    Public MKVHDR As Boolean
     Public ScanOrder As String
     Public ScanType As String
     Public Script As TargetVideoScript

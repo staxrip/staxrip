@@ -313,14 +313,6 @@ Public MustInherit Class VideoEncoder
         Gif.CommandLines = "ffmpeg -i ""%script_file%"" -vf ""fps=15,scale=%target_width%:-1:flags=spline,palettegen=stats_mode=diff"" -loglevel quiet -y ""%target_temp_file%.png"" || exit" + BR + "ffmpeg -i ""%script_file%"" -i ""%target_temp_file%.png"" -lavfi ""fps=15,scale=%target_width%:-1:flags=spline [x]; [x][1:v] paletteuse=dither=floyd_steinberg"" -loglevel quiet -y ""%target_file%"""
         ret.Add(Gif)
 
-        Dim Thumbs As New BatchEncoder()
-        Thumbs.OutputFileTypeValue = "jpg"
-        Thumbs.Name = "Command Line | jpg Maker"
-        Thumbs.QualityMode = True
-        Thumbs.Muxer = New NullMuxer("No Muxing")
-        Thumbs.CommandLines = "wsl python Thumbnailer.py /mnt/c/Users/Revan/Desktop/mtn/mtn ""/mnt/c/Users/Revan/Desktop/Lara.avi"" -c 4 -r 6 -w 1280 -h 150 -j 95 -D 12 -O /mnt/c/Users/Revan/Desktop -f /mnt/c/Users/Revan/Desktop/mtn/LiberationMono-Bold.ttf"
-        ret.Add(Thumbs)
-
         Dim x264cli As New BatchEncoder()
         x264cli.OutputFileTypeValue = "h264"
         x264cli.Name = "Command Line | x264"

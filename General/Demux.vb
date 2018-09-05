@@ -186,9 +186,6 @@ Public Class CommandLineDemuxer
             ElseIf Command?.Contains("dsmux") Then
                 If Not Package.Haali.VerifyOK(True) Then Throw New AbortException
                 proc.SkipString = "Muxing..."
-                ''  ElseIf Command?.Contains("Java") Then
-                '' If Not Package.Java.VerifyOK(True) Then Throw New AbortException
-                '' proc.SkipPatterns = {"^\d+ %$"}
             End If
 
             proc.Header = Name

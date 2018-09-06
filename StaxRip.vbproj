@@ -582,6 +582,7 @@
     <None Include="Segoe-MDL2-Assets.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="updater.ps1" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

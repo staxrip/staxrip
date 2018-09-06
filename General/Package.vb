@@ -203,13 +203,13 @@ Public Class Package
     '    .WebURL = "http://moviethumbnail.sourceforge.net/",
     '    .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
 
-    Shared Property MTNPython As Package = Add(New Package With {
-        .Name = "MTNPytthon",
-        .Filename = "MTN.py",
-        .DirPath = "MTN",
-        .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
-        .WebURL = "http://moviethumbnail.sourceforge.net/",
-        .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
+    ' Shared Property MTNPython As Package = Add(New Package With {
+    ' .Name = "MTNPytthon",
+    '.Filename = "MTN.py",
+    ' .DirPath = "MTN",
+    ' .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
+    ' .WebURL = "http://moviethumbnail.sourceforge.net/",
+    ' .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
 
     Shared Property SubtitleEdit As Package = Add(New Package With {
         .Name = "SubtitleEdit",
@@ -228,6 +228,16 @@ Public Class Package
         .LaunchName = "mpv.exe",
         .URL = "https://mpv.io/",
         .Description = "mpv is a fork of mplayer2 and MPlayer. It shares some features with the former projects while introducing many more."})
+
+    Shared Property Update As Package = Add(New Package With {
+        .Name = "Update",
+        .Filename = "Update.ps1",
+        .LaunchName = "Update.ps1",
+        .DirPath = "Updates",
+        .StartActionValue = Sub()
+                                g.DefaultCommands.ExecutePowerShellScript("%app:Update%")
+                            End Sub,
+        .Description = "The Script File that checks and Updates to the latest Software."})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {
         .Name = "modPlus",
@@ -361,7 +371,7 @@ Public Class Package
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .StartActionValue = Sub()
-                                g.DefaultCommands.PowerShellScript(Package.Items("mkvinfo").Path.Escape + " " + "%target_files%" + BR + "pause", False, False, True)
+                                g.DefaultCommands.ExecuteCommandLine(Package.Items("mkvinfo").Path.Escape + " " + "%target_files%" + BR + "pause", False, False, True)
                             End Sub,
         .Description = "MKV muxing tool."})
 

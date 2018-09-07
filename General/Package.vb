@@ -155,21 +155,6 @@ Public Class Package
         .WebURL = "http://forum.doom9.org/showthread.php?p=1613303",
         .Description = "Converts Blu-ray subtitles to other formats like VobSub."})
 
-    Shared Property VCSPython As Package = Add(New Package With {
-      .Name = "VCSPython",
-      .Filename = "VCS.py",
-      .StartActionValue = Sub()
-                              Using fd As New OpenFileDialog
-                                  fd.Title = "Select files"
-                                  fd.Multiselect = True
-                                  If fd.ShowDialog = DialogResult.OK Then
-                                      g.DefaultCommands.ExecuteCommandLine("wsl python3 " + Package.Items("VCSPython").Path.Escape + " " + fd.FileName + " %app:VCS%", True, True, False)
-                                  End If
-                              End Using
-                          End Sub,
-                              .DirPath = "VCS",
-     .Description = "Custom Launcher Script for VCS"})
-
     Shared Property MTN As Package = Add(New Package With {
         .Name = "MTNWindows",
         .Filename = "mtn.exe",
@@ -211,9 +196,15 @@ Public Class Package
         .LaunchName = "Update.ps1",
         .DirPath = "Updates",
         .StartActionValue = Sub()
-                                g.DefaultCommands.ExecutePowerShellScript(Package.Items("Update").Path.Escape + " ")
+                                g.DefaultCommands.ExecutePowerShellScript("cd %app_dir:Update%" + Package.Items("Update").Path.Escape + " ")
                             End Sub,
         .Description = "The PowerShell Script that Updates StaxRip."})
+
+    Shared Property vsedit As Package = Add(New Package With {
+        .Name = "vsedit",
+        .Filename = "vsedit.exe",
+        .URL = "https://vapoursynth.com/",
+        .Description = "The New Editor for VapourSynth"})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {
         .Name = "modPlus",

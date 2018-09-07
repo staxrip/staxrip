@@ -166,7 +166,6 @@
     <Compile Include="Controls\x265Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Encoding\AnimationEnc.vb" />
     <Compile Include="Encoding\VCEEnc.vb" />
     <Compile Include="Encoding\ffmpegEnc.vb" />
     <Compile Include="Encoding\QSVEnc.vb" />

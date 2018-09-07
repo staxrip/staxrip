@@ -4322,10 +4322,6 @@ Public Class MainForm
         ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog), Symbol.Info)
         ret.Add("Tools|Advanced|Reset Setting...", NameOf(ResetSettings))
         ret.Add("Tools|Advanced|Check For Update", NameOf(g.DefaultCommands.StartTool), {"Update"})
-        'ret.Add("Tools|Advanced|Thumbnails|", Symbol.fa_th_large)
-        'ret.Add("Tools|Advanced|Thumbnails|StaxRip Thumbnail Generator", NameOf(ShowBatchGenerateThumbnailsDialog), Symbol.fa_th_large)
-        'ret.Add("Tools|Advanced|Thumbnails|MTN Thumbnail Generator", NameOf(g.DefaultCommands.StartTool), Symbol.fa_th, {"MTNWindows"})
-        'ret.Add("Tools|Advanced|Thumbnails|VCS Thumbnail Generator", NameOf(g.DefaultCommands.StartTool), Symbol.fa_th, {"VCSPython"})
 
         ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
@@ -4343,9 +4339,8 @@ Public Class MainForm
         ret.Add("Apps|Subtitles|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
         ret.Add("Apps|Thumbnails|", Symbol.fa_th)
         ret.Add("Apps|Thumbnails|StaxRip Thumbnail Generator", NameOf(ShowBatchGenerateThumbnailsDialog), Symbol.fa_th_large)
-        ret.Add("Apps|Thumbnails|MTN Thumbnail Generator", NameOf(g.DefaultCommands.StartTool), Symbol.fa_th, {"MTNWindows"})
-        ' ret.Add("Apps|Thumbnails|StaxRip Thumbnail Generator", NameOf(Animation))
-        ret.Add("Apps|Gif Creation", NameOf(GifCreation))
+        ret.Add("Apps|Thumbnails|MTN Thumbnail Generator", NameOf(MTNThumbnailCreator), Symbol.fa_th)
+        ret.Add("Apps|Gif Creator", NameOf(GifCreation))
 
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
@@ -5550,7 +5545,7 @@ Public Class MainForm
                     Dim Time = ui.AddNum()
                     Time.Text = "Starting Time:"
                     Time.Config = {1, 3600}
-                    Time.NumEdit.Value = s.Storage.GetInt("Time", 15)
+                    Time.NumEdit.Value = s.Storage.GetInt("Time", 25)
                     Time.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Time", CInt(value))
 
                     ''How long Should the Animated Gif Be        
@@ -5559,6 +5554,7 @@ Public Class MainForm
                     Length.Config = {1, 30}
                     Length.NumEdit.Value = s.Storage.GetInt("Length", 4)
                     Length.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Length", CInt(value))
+
 
                     Dim FrameRate = ui.AddNum()
                     FrameRate.Text = "FrameRate:"
@@ -5571,6 +5567,13 @@ Public Class MainForm
                     Scale.Config = {240, 2160}
                     Scale.NumEdit.Value = s.Storage.GetInt("Scale", 480)
                     Scale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Scale", CInt(value))
+
+                    Dim Status_Mode = ui.AddMenu(Of String)
+                    Status_Mode.Text = "Palettegen Mode:"
+                    Status_Mode.Add("Full", "full")
+                    Status_Mode.Add("Difference", "diff")
+                    Status_Mode.Button.Value = s.Storage.GetString("Status", "diff")
+                    Status_Mode.Button.SaveAction = Sub(value) s.Storage.SetString("Status", value)
 
                     Dim Compression = ui.AddMenu(Of String)
                     Compression.Text = "Dither:"
@@ -5595,20 +5598,112 @@ Public Class MainForm
                         Dim Seek = s.Storage.GetInt("Time")
                         Dim Duration = s.Storage.GetInt("Length")
                         Dim Size = s.Storage.GetInt("Scale")
+                        Dim Mode = s.Storage.GetInt("Status")
                         Dim Dither = s.Storage.GetInt("Dither")
                         p.SourceFile = fd.FileName
 
                         For Each i In fd.FileNames
                             Try
-                                g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & ".0 -t " & Duration & ".0 -i " + fd.FileName + " -vf " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=diff""  -y " + cachePath, True, True, True)
+                                g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & ".0 -t " & Duration & ".0 -i " + fd.FileName + " -vf " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=" & Mode & """ -hide_banner  -y " + cachePath, True, True, False)
+                                g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & ".0 -t " & Duration & ".0 -i " + fd.FileName + " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & """ -hide_banner  -y " + OutPutPath, True, True, False)
                             Catch ex As Exception
                                 g.ShowException(ex)
                             End Try
                         Next
 
-                        g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & ".0 -t " & Duration & ".0 -i " + fd.FileName + " -vf " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=diff""  -y " + cachePath, True, True, True)
-                        g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & ".0 -t " & Duration & ".0 -i " + fd.FileName + " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & """  -y " + OutPutPath, False, False, True)
-                        'g.StartProcess(fd.FileName.Dir)
+                        g.StartProcess(fd.FileName.Dir)
+
+                    End If
+                End Using
+            End If
+        End Using
+
+    End Sub
+
+    <Command("Shows a dialog to generate thumbnails Using MTN")>
+    Sub MTNThumbnailCreator()
+        Using fd As New OpenFileDialog
+            fd.Title = "Select files"
+            fd.Multiselect = False
+
+            Dim proj As Project
+            If proj Is Nothing Then
+                proj = New Project
+                proj.Init()
+                proj.SourceFile = fd.FileName
+            End If
+
+            proj.Log.WriteHeader("Saving Thumbnails")
+            proj.Log.WriteLine(fd.FileName)
+            proj.Log.Save(proj)
+
+            If fd.ShowDialog = DialogResult.OK Then
+                Using f As New SimpleSettingsForm("Thumbnail Options")
+                    f.ScaleClientSize(27, 15)
+
+                    Dim ui = f.SimpleUI
+                    Dim page = ui.CreateFlowPage("main page")
+                    ui.Store = s
+                    page.SuspendLayout()
+
+                    Dim Column = ui.AddNum()
+                    Column.Text = "Number of Columns:"
+                    Column.Config = {1, 12}
+                    Column.NumEdit.Value = s.Storage.GetInt("Column", 4)
+                    Column.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Column", CInt(value))
+
+                    Dim Row = ui.AddNum()
+                    Row.Text = "Number of Rows:"
+                    Row.Config = {1, 12}
+                    Row.NumEdit.Value = s.Storage.GetInt("Row", 6)
+                    Row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Row", CInt(value))
+
+                    Dim Quality = ui.AddNum()
+                    Quality.Text = "JPG Quality:"
+                    Quality.Config = {25, 100}
+                    Quality.NumEdit.Value = s.Storage.GetInt("Quality", 95)
+                    Quality.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Quality", CInt(value))
+
+                    Dim Height = ui.AddNum()
+                    Height.Text = "Height of Each Shot:"
+                    Height.Config = {150, 600}
+                    Height.NumEdit.Value = s.Storage.GetInt("Height", 150)
+                    Height.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Height", CInt(value))
+
+                    Dim Width = ui.AddNum()
+                    Width.Text = "Width of Each Shot:"
+                    Width.Config = {480, 1080}
+                    Width.NumEdit.Value = s.Storage.GetInt("Width", 1280)
+                    Width.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Width", CInt(value))
+
+                    Dim Depth = ui.AddNum()
+                    Depth.Text = "Depth of Each Shot:"
+                    Depth.Config = {4, 12}
+                    Depth.NumEdit.Value = s.Storage.GetInt("Depth", 1280)
+                    Depth.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Depth", CInt(value))
+
+                    page.ResumeLayout()
+
+                    If f.ShowDialog() = DialogResult.OK Then
+                        ui.Save()
+
+                        Dim Col = s.Storage.GetInt("Column")
+                        Dim Rows = s.Storage.GetInt("Row")
+                        Dim SizeWidth = s.Storage.GetInt("Width")
+                        Dim SizeHeight = s.Storage.GetInt("Height")
+                        Dim PictureQuality = s.Storage.GetInt("Quality")
+                        Dim PictureDepth = s.Storage.GetInt("Depth")
+                        p.SourceFile = fd.FileName
+
+                        For Each i In fd.FileNames
+                            Try
+                                g.DefaultCommands.ExecuteCommandLine(Package.Items("MTNWindows").Path.Escape + """" + fd.FileName + """" + " -c " & Col & " -r " & Rows & " -w " & SizeWidth & " -h " & SizeHeight & " -D " & PictureDepth & " -j " & PictureQuality, True, True, False)
+                            Catch ex As Exception
+                                g.ShowException(ex)
+                            End Try
+                        Next
+
+                        g.StartProcess(fd.FileName.Dir)
 
                     End If
                 End Using

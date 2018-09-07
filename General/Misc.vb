@@ -930,7 +930,7 @@ Public Class Macro
         ret.Add(New Macro("system_dir", "System Directory", GetType(String), "System directory."))
         ret.Add(New Macro("target_dir", "Target Directory", GetType(String), "Directory of the target file."))
         ret.Add(New Macro("target_file", "Target File Path", GetType(String), "File path of the target file."))
-        ret.Add(New Macro("target_files", "Target Files Blank", GetType(String), "Target files in quotes separated by a blank."))
+        'ret.Add(New Macro("target_files", "Target Files Blank", GetType(String), "Target files in quotes separated by a blank."))
         ret.Add(New Macro("target_framerate", "Target Framerate", GetType(Integer), "Frame rate of the target video."))
         ret.Add(New Macro("target_frames", "Target Frames", GetType(Integer), "Length in frames of the target video."))
         ret.Add(New Macro("target_height", "Target Image Height", GetType(Integer), "Image height of the target video."))
@@ -1128,8 +1128,12 @@ Public Class Macro
         If value.Contains("%target_file%") Then value = value.Replace("%target_file%", p.TargetFile)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_files%") Then value = value.Replace("%target_files%", """" + String.Join(""" """, p.TargetFile.ToArray) + """")
-        If Not value.Contains("%") Then Return value
+        ' If value.Contains("%target_files%") Then
+        ' value = value.Replace("%target_files%", """" + String.Join(""" """, p.TargetFile.ToArray) + """")
+        'If Not value.Contains("%") Then Return value
+        ' End If
+        '' Will Be Added Later Once Other source files have been updated.
+
 
         If value.Contains("%script_files%") Then
             p.Script.Synchronize()

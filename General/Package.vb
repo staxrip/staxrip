@@ -155,14 +155,6 @@ Public Class Package
         .WebURL = "http://forum.doom9.org/showthread.php?p=1613303",
         .Description = "Converts Blu-ray subtitles to other formats like VobSub."})
 
-    Shared Property VCS As Package = Add(New Package With {
-        .Name = "VCS",
-        .Filename = "vcs.bash",
-        .DirPath = "VCS",
-        .Description = "This is a bash script meant to create video contact sheets (previews) of videos.",
-        .WebURL = "http://p.outlyer.net/vcs",
-        .HelpURL = "http://p.outlyer.net/vcs/docs"})
-
     Shared Property VCSPython As Package = Add(New Package With {
       .Name = "VCSPython",
       .Filename = "VCS.py",
@@ -195,22 +187,6 @@ Public Class Package
         .WebURL = "http://moviethumbnail.sourceforge.net/",
         .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
 
-    'Shared Property MTNLinux As Package = Add(New Package With {
-    '    .Name = "MTNLinux",
-    '    .Filename = "mtn",
-    '    .DirPath = "MTN",
-    '    .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
-    '    .WebURL = "http://moviethumbnail.sourceforge.net/",
-    '    .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
-
-    ' Shared Property MTNPython As Package = Add(New Package With {
-    ' .Name = "MTNPytthon",
-    '.Filename = "MTN.py",
-    ' .DirPath = "MTN",
-    ' .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
-    ' .WebURL = "http://moviethumbnail.sourceforge.net/",
-    ' .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
-
     Shared Property SubtitleEdit As Package = Add(New Package With {
         .Name = "SubtitleEdit",
         .Filename = "SubtitleEdit.exe",
@@ -235,9 +211,9 @@ Public Class Package
         .LaunchName = "Update.ps1",
         .DirPath = "Updates",
         .StartActionValue = Sub()
-                                g.DefaultCommands.ExecutePowerShellScript("%app:Update%")
+                                g.DefaultCommands.ExecutePowerShellScript(Package.Items("Update").Path.Escape + " ")
                             End Sub,
-        .Description = "The Script File that checks and Updates to the latest Software."})
+        .Description = "The PowerShell Script that Updates StaxRip."})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {
         .Name = "modPlus",

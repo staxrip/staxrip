@@ -4321,6 +4321,7 @@ Public Class MainForm
         ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
         ret.Add("Tools|Advanced|MediaInfo Folder View...", NameOf(ShowMediaInfoFolderViewDialog), Symbol.Info)
         ret.Add("Tools|Advanced|Reset Setting...", NameOf(ResetSettings))
+        ret.Add("Tools|Advanced|Check For Update", NameOf(g.DefaultCommands.StartTool), {"Update"})
         'ret.Add("Tools|Advanced|Thumbnails|", Symbol.fa_th_large)
         'ret.Add("Tools|Advanced|Thumbnails|StaxRip Thumbnail Generator", NameOf(ShowBatchGenerateThumbnailsDialog), Symbol.fa_th_large)
         'ret.Add("Tools|Advanced|Thumbnails|MTN Thumbnail Generator", NameOf(g.DefaultCommands.StartTool), Symbol.fa_th, {"MTNWindows"})
@@ -4340,11 +4341,11 @@ Public Class MainForm
         ret.Add("Apps|Subtitles|Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H, Symbol.Subtitles)
         ret.Add("Apps|Subtitles|SubtitleEdit", NameOf(g.DefaultCommands.StartTool), {"SubtitleEdit"})
         ret.Add("Apps|Subtitles|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
-        ret.Add("Apps|Thumbnails|", Symbol.fa_th_large)
+        ret.Add("Apps|Thumbnails|", Symbol.fa_th)
         ret.Add("Apps|Thumbnails|StaxRip Thumbnail Generator", NameOf(ShowBatchGenerateThumbnailsDialog), Symbol.fa_th_large)
         ret.Add("Apps|Thumbnails|MTN Thumbnail Generator", NameOf(g.DefaultCommands.StartTool), Symbol.fa_th, {"MTNWindows"})
-        ret.Add("Apps|Thumbnails|StaxRip Thumbnail Generator", NameOf(Animation))
-        ret.Add("Apps|Gif Creation", NameOf(Gif))
+        ' ret.Add("Apps|Thumbnails|StaxRip Thumbnail Generator", NameOf(Animation))
+        ret.Add("Apps|Gif Creation", NameOf(GifCreation))
 
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
@@ -4355,15 +4356,15 @@ Public Class MainForm
         ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.Info, {"info"})
         Return ret
     End Function
-    Sub Animation()
-        Using fd As New OpenFileDialog
-            fd.Title = "Select files"
-            fd.Multiselect = False
-            If fd.ShowDialog = DialogResult.OK Then
-                g.DefaultCommands.ExecuteCommandLine(Package.Items("MTNWindows").Path.Escape + " -ss 25.0 -t 4.2 -i " + fd.FileName + " -vf ""fps=15,scale=480:-1:flags=spline,palettegen=stats_mode=diff"" -loglevel quiet -y ""%target_temp_file%.png"" || exit" + BR + Package.Items("ffmpeg").Path.Escape + " -ss 25.0 -t 4.2 -i " + fd.FileName + " -i ""%target_temp_file%.png"" -lavfi ""fps=15,scale=480:-1:flags=spline [x]; [x][1:v] paletteuse=dither=floyd_steinberg"" -loglevel quiet -y ""%target_dir%%target_name%.gif""", True, True, True)
-            End If
-        End Using
-    End Sub
+    'Sub Animation()
+    '    Using fd As New OpenFileDialog
+    '        fd.Title = "Select files"
+    '        fd.Multiselect = False
+    '        If fd.ShowDialog = DialogResult.OK Then
+    '            g.DefaultCommands.ExecuteCommandLine(Package.Items("MTNWindows").Path.Escape + " -ss 25.0 -t 4.2 -i " + fd.FileName + " -vf ""fps=15,scale=480:-1:flags=spline,palettegen=stats_mode=diff"" -loglevel quiet -y ""%target_temp_file%.png"" || exit" + BR + Package.Items("ffmpeg").Path.Escape + " -ss 25.0 -t 4.2 -i " + fd.FileName + " -i ""%target_temp_file%.png"" -lavfi ""fps=15,scale=480:-1:flags=spline [x]; [x][1:v] paletteuse=dither=floyd_steinberg"" -loglevel quiet -y ""%target_dir%%target_name%.gif""", True, True, True)
+    '        End If
+    '    End Using
+    'End Sub
 
 
 
@@ -5519,11 +5520,23 @@ Public Class MainForm
         SourceFileMenu.Add("Copy", Sub() tbSourceFile.Copy(), "Copies the selected text to the clipboard.", tbSourceFile.Text <> "").SetImage(Symbol.Copy)
         SourceFileMenu.Add("Paste", Sub() tbSourceFile.Paste(), "Copies the full source file path to the clipboard.", Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
     End Sub
-    <Command("Shows a dialog to generate gifs.")>
-    Sub Gif()
+    <Command("Shows a dialog to generate thumbnails.")>
+    Sub GifCreation()
         Using fd As New OpenFileDialog
             fd.Title = "Select files"
-            fd.Multiselect = False '' Can Only Do Single.
+            fd.Multiselect = False
+
+            Dim proj As Project
+            If proj Is Nothing Then
+                proj = New Project
+                proj.Init()
+                proj.SourceFile = fd.FileName
+            End If
+
+            proj.Log.WriteHeader("Saving Gif")
+            proj.Log.WriteLine(fd.FileName)
+            proj.Log.Save(proj)
+
             If fd.ShowDialog = DialogResult.OK Then
                 Using f As New SimpleSettingsForm("Gif Options")
                     f.ScaleClientSize(27, 15)
@@ -5533,38 +5546,34 @@ Public Class MainForm
                     ui.Store = s
                     page.SuspendLayout()
 
-
                     ''Starting Time to Where to Start Seeking.
-                    Dim interval As SimpleUI.NumBlock
-                    'interval = ui.AddNum()
-                    interval.Text = "Starting Time:"
-                    interval.Config = {1, 3600}
-                    interval.NumEdit.Value = s.Storage.GetInt("Starting Time", 15)
-                    interval.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Starting Time", CInt(value))
+                    Dim Time = ui.AddNum()
+                    Time.Text = "Starting Time:"
+                    Time.Config = {1, 3600}
+                    Time.NumEdit.Value = s.Storage.GetInt("Time", 15)
+                    Time.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Time", CInt(value))
 
-                    ''How long Should the Animated Gif Be
-                    Dim Length As SimpleUI.NumBlock
-                    'Dim Length = ui.AddNum()
+                    ''How long Should the Animated Gif Be        
+                    Dim Length = ui.AddNum()
                     Length.Text = "Length:"
                     Length.Config = {1, 30}
                     Length.NumEdit.Value = s.Storage.GetInt("Length", 4)
                     Length.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Length", CInt(value))
 
-                    Dim FrameRate As SimpleUI.NumBlock
-                    FrameRate = ui.AddNum()
+                    Dim FrameRate = ui.AddNum()
                     FrameRate.Text = "FrameRate:"
                     FrameRate.Config = {15, 60}
                     FrameRate.NumEdit.Value = s.Storage.GetInt("FrameRate", 15)
-                    FrameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Length", CInt(value))
+                    FrameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("FrameRate", CInt(value))
 
-                    Dim Scale As SimpleUI.NumBlock
-                    Scale = ui.AddNum()
+                    Dim Scale = ui.AddNum()
                     Scale.Text = "Scale:"
                     Scale.Config = {240, 2160}
                     Scale.NumEdit.Value = s.Storage.GetInt("Scale", 480)
                     Scale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Scale", CInt(value))
 
                     Dim Compression = ui.AddMenu(Of String)
+                    Compression.Text = "Dither:"
                     Compression.Add("Bayer Scale 1", "dither=bayer:bayer_scale=1")
                     Compression.Add("Bayer Scale 2", "dither=bayer:bayer_scale=2")
                     Compression.Add("Bayer Scale 3", "dither=bayer:bayer_scale=3")
@@ -5572,30 +5581,40 @@ Public Class MainForm
                     Compression.Add("Sierra 2", "dither=sierra2")
                     Compression.Add("Sierra 2_4a", "dither=sierra2_4a")
                     Compression.Add("None", "dither=none")
-                    Compression.Expandet = True
                     Compression.Button.Value = s.Storage.GetString("Dither", "dither=floyd_steinberg")
-                    Compression.Text = "Dither:"
                     Compression.Button.SaveAction = Sub(value) s.Storage.SetString("Dither", value)
 
-                    Dim Seek = interval.NumEdit.Value
-                    Dim Time = Length.NumEdit.Value
-                    Dim FPS = FrameRate.NumEdit.Value
-                    Dim Size = Scale.NumEdit.Value
-                    Dim cachePath = Folder.Temp + "Palette.png"
-                    Dim OutPutPath = fd.FileName + ".gif"
-                    Dim Dither = Compression.Button.Value
-
                     page.ResumeLayout()
+
                     If f.ShowDialog() = DialogResult.OK Then
                         ui.Save()
 
-                        g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & ".0 -t " & Time & ".0 -i " + fd.FileName + " -vf " + """" + "fps=" & FPS & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=diff"" -loglevel quiet -y " + cachePath, True, True, False)
-                        g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & ".0 -t " & Time & ".0 -i " + fd.FileName + " -i " + cachePath + " -lavfi " + """" + "fps=" & FPS & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" + Dither + """ -loglevel quiet -y " + OutPutPath, True, True, False)
-                        FileHelp.Delete(cachePath)
+                        Dim Rate = s.Storage.GetInt("FrameRate")
+                        Dim cachePath = Folder.Settings + "Palette.png"
+                        Dim OutPutPath = fd.FileName + ".gif"
+                        Dim Seek = s.Storage.GetInt("Time")
+                        Dim Duration = s.Storage.GetInt("Length")
+                        Dim Size = s.Storage.GetInt("Scale")
+                        Dim Dither = s.Storage.GetInt("Dither")
+                        p.SourceFile = fd.FileName
+
+                        For Each i In fd.FileNames
+                            Try
+                                g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & ".0 -t " & Duration & ".0 -i " + fd.FileName + " -vf " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=diff""  -y " + cachePath, True, True, True)
+                            Catch ex As Exception
+                                g.ShowException(ex)
+                            End Try
+                        Next
+
+                        g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & ".0 -t " & Duration & ".0 -i " + fd.FileName + " -vf " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=diff""  -y " + cachePath, True, True, True)
+                        g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & ".0 -t " & Duration & ".0 -i " + fd.FileName + " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & """  -y " + OutPutPath, False, False, True)
+                        'g.StartProcess(fd.FileName.Dir)
+
                     End If
                 End Using
             End If
         End Using
+
     End Sub
 
     <Command("Shows a dialog to generate thumbnails.")>

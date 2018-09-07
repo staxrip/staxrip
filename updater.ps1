@@ -16,6 +16,27 @@ function Check-7z {
     }
 }
 
+function Obtain_Path{
+$staxrip_path = (get-location).Path + "\StaxRip.exe"
+return $staxrip_path
+}
+
+function Close_Application{
+get-process StaxRip | %{ $_.closemainwindow() }
+}
+
+function Start_Application($Path) {
+Start-Process $Path 
+}
+
+function Clean_Up {
+    $Path = Obtain_Path
+    $Replace = $Path -replace "StaxRip.exe", "StaxRip.7z" 
+    $Replace2 = $Path -replace "StaxRip.exe", "7z" 
+    remove-item $Replace
+    Remove-Item $Replace2
+}
+
 function Check-PowershellVersion {
     $version = $PSVersionTable.PSVersion.Major
     Write-Host "Checking Windows PowerShell version -- $version" -ForegroundColor Green
@@ -27,7 +48,7 @@ function Check-PowershellVersion {
 }
 
 function Check-staxrip {
-    $staxrip = (Get-Location).Path + "\StaxRip.exe"
+    $staxrip = (get-location).Path + "\StaxRip.exe"
     $is_exist = Test-Path $staxrip
     return $is_exist
 }
@@ -51,8 +72,7 @@ function Download-staxrip {
     Invoke-WebRequest -Uri $Build -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox -OutFile "Staxrip.7z"
 }
 
-function Get-Latest-staxrip {
-    Write-Host "Fetching URL feed for staxrip" -ForegroundColor Green    
+function Get-Latest-staxrip {  
     $Links = Invoke-WebRequest -Uri "https://github.com/Revan654/staxrip/releases/latest" –UseBasicParsing -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox
     $pattern = "([0-9].[0-9].[0-9].[0-9]).x64.zip"    
     $bool = $Links -match $pattern
@@ -93,7 +113,8 @@ function ExtractVersionFromFile {
     return "$Version"
 }
 
-function ExtractVersionFromURL($filename) {
+function ExtractVersionFromURL {
+    $filename = Get-Latest-staxrip
     $pattern = "([0-9].[0-9].[0-9].[0-9]).x64"    
     $bool = $filename -match $pattern
     return $matches[1]
@@ -106,12 +127,11 @@ function Test-Admin
 }
 
 function Upgrade-staxrip {
-    $need_download = $false
-    $remoteName = ""             
+    $need_download = $false    
+    Write-Host "Fetching URL Data for StaxRip Builds" -ForegroundColor Green                  
     $localVersion = ExtractVersionFromFile
-    Write-Host "Local Build:" $localVersion
-    $remoteVersion = ExtractVersionFromURL $remoteName
-    if ($localVersion -match $remoteVersion) {
+    $remoteVersion = ExtractVersionFromURL 
+    if ((ExtractVersionFromFile) -gt (ExtractVersionFromURL)) {
         Write-Host "You are Already Using Latest Build." -ForegroundColor Red
         Write-Host "Current Build: $remoteVersion" -ForegroundColor Red
             $need_download = $false       }    
@@ -123,8 +143,9 @@ function Upgrade-staxrip {
     
     if ($need_download) {
         Download-staxrip
-        Check-7z
-        Extract-staxrip
+        Check-7z        
+        Extract-staxrip -Wait   
+        Clean_Up     
     }
 
 }
@@ -174,7 +195,10 @@ try {
     Check-PowershellVersion
     # Sourceforge only support TLS 1.2
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    Upgrade-staxrip
+    $Path = Obtain_Path
+    Close_Application -Wait
+    Upgrade-staxrip    
+    Start_Application $Path
     Write-Host "Operation Complete" -ForegroundColor Magenta
 }
 catch [System.Exception] {

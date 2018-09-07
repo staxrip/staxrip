@@ -2000,7 +2000,7 @@ Public Class FileTypes
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
     Shared Property Video As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
-    Shared Property VideoOnly As String() = {"264", "265", "avc", "h264", "h265", "hevc", "hvc", "m2v", "mpv", "y4m"}
+    Shared Property VideoOnly As String() = {"264", "265", "avc", "h264", "h265", "hevc", "hvc", "m2v", "mpv", "y4m", "gif"}
     Shared Property VideoRaw As String() = {"264", "265", "h264", "h265", "avc", "hevc", "hvc"}
     Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs", "vpy"}
     Shared Property VideoDemuxOutput As String() = {"mpg", "h264", "avi", "h265"}

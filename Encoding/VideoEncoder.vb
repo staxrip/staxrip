@@ -291,6 +291,9 @@ Public MustInherit Class VideoEncoder
 
         Dim ffmpeg = New ffmpegEnc()
 
+        Dim Animation = New AnimationEnc
+        ret.Add(Animation)
+
         Dim xvid As New BatchEncoder()
         xvid.OutputFileTypeValue = "avi"
         xvid.Name = "XviD"

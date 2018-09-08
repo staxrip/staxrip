@@ -3679,7 +3679,6 @@ Public Class MainForm
             f.Show()
         End If
     End Sub
-
     <Command("Dialog to configure the main menu.")>
     Sub ShowMainMenuEditor()
         s.CustomMenuMainForm = CustomMainMenu.Edit()
@@ -3711,7 +3710,7 @@ Public Class MainForm
         Return p.TempDir + name + ".srip"
     End Function
 
-    <Command("Loads a audio or video profile.")>
+    <Command("Loads a audio Or video profile.")>
     Sub LoadProfile(<DispName("Video")> videoProfile As String,
                     <DispName("Audio 1")> audioProfile1 As String,
                     <DispName("Audio 2")> audioProfile2 As String)
@@ -3762,7 +3761,7 @@ Public Class MainForm
         If templateName <> "" Then LoadProject(Folder.Template + templateName + ".srip")
     End Sub
 
-    <Command("Compare and extract images for video comparisons.")>
+    <Command("Compare And extract images for video comparisons.")>
     Sub ShowVideoComparison()
         Dim f As New VideoComparisonForm
         f.Show()
@@ -3782,7 +3781,7 @@ Public Class MainForm
     Sub ShowOptionsDialog(pagePath As String)
         Using form As New SimpleSettingsForm(
             "Project Options",
-            "In order to save project options go to:",
+            "In order to save project options go to:    ",
             "Project > Save As Template",
             "In order to select a template to be loaded on program startup go to:",
             "Tools > Settings > General > Templates > Default Template")
@@ -5568,12 +5567,12 @@ Public Class MainForm
                     Scale.NumEdit.Value = s.Storage.GetInt("Scale", 480)
                     Scale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Scale", CInt(value))
 
-                    Dim Status_Mode = ui.AddMenu(Of String)
-                    Status_Mode.Text = "Palettegen Mode:"
-                    Status_Mode.Add("Full", "full")
-                    Status_Mode.Add("Difference", "diff")
-                    Status_Mode.Button.Value = s.Storage.GetString("Status", "diff")
-                    Status_Mode.Button.SaveAction = Sub(value) s.Storage.SetString("Status", value)
+                    Dim Status = ui.AddMenu(Of String)
+                    Status.Text = "PaletteGen Mode:"
+                    Status.Add("Full", "full")
+                    Status.Add("Difference", "diff")
+                    Status.Button.Value = s.Storage.GetString("Status", "diff")
+                    Status.Button.SaveAction = Sub(value) s.Storage.SetString("Status", value)
 
                     Dim Compression = ui.AddMenu(Of String)
                     Compression.Text = "Dither:"
@@ -5585,27 +5584,16 @@ Public Class MainForm
                     Compression.Add("Sierra 2_4a", "dither=sierra2_4a")
                     Compression.Add("None", "dither=none")
                     Compression.Button.Value = s.Storage.GetString("Dither", "dither=floyd_steinberg")
-                    Compression.Button.SaveAction = Sub(value) s.Storage.SetString("Dither", value)
+                    Compression.Button.SaveAction = Sub(value) s.Storage.SetString("Dither", CStr(value))
 
                     page.ResumeLayout()
 
                     If f.ShowDialog() = DialogResult.OK Then
                         ui.Save()
 
-                        Dim Rate = s.Storage.GetInt("FrameRate")
-                        Dim cachePath = Folder.Settings + "Palette.png"
-                        Dim OutPutPath = fd.FileName + ".gif"
-                        Dim Seek = s.Storage.GetInt("Time")
-                        Dim Duration = s.Storage.GetInt("Length")
-                        Dim Size = s.Storage.GetInt("Scale")
-                        Dim Mode = s.Storage.GetInt("Status")
-                        Dim Dither = s.Storage.GetInt("Dither")
-                        p.SourceFile = fd.FileName
-
                         For Each i In fd.FileNames
                             Try
-                                g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & ".0 -t " & Duration & ".0 -i " + fd.FileName + " -vf " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=" & Mode & """ -hide_banner  -y " + cachePath, True, True, False)
-                                g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & ".0 -t " & Duration & ".0 -i " + fd.FileName + " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & """ -hide_banner  -y " + OutPutPath, True, True, False)
+                                GifMaker.Creatator(i, Nothing)
                             Catch ex As Exception
                                 g.ShowException(ex)
                             End Try
@@ -5624,18 +5612,7 @@ Public Class MainForm
     Sub MTNThumbnailCreator()
         Using fd As New OpenFileDialog
             fd.Title = "Select files"
-            fd.Multiselect = False
-
-            Dim proj As Project
-            If proj Is Nothing Then
-                proj = New Project
-                proj.Init()
-                proj.SourceFile = fd.FileName
-            End If
-
-            proj.Log.WriteHeader("Saving Thumbnails")
-            proj.Log.WriteLine(fd.FileName)
-            proj.Log.Save(proj)
+            fd.Multiselect = True
 
             If fd.ShowDialog = DialogResult.OK Then
                 Using f As New SimpleSettingsForm("Thumbnail Options")
@@ -5672,14 +5649,14 @@ Public Class MainForm
 
                     Dim Width = ui.AddNum()
                     Width.Text = "Width of Each Shot:"
-                    Width.Config = {480, 1080}
+                    Width.Config = {480, 1280}
                     Width.NumEdit.Value = s.Storage.GetInt("Width", 1280)
                     Width.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Width", CInt(value))
 
                     Dim Depth = ui.AddNum()
                     Depth.Text = "Depth of Each Shot:"
                     Depth.Config = {4, 12}
-                    Depth.NumEdit.Value = s.Storage.GetInt("Depth", 1280)
+                    Depth.NumEdit.Value = s.Storage.GetInt("Depth", 12)
                     Depth.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Depth", CInt(value))
 
                     page.ResumeLayout()
@@ -5687,17 +5664,9 @@ Public Class MainForm
                     If f.ShowDialog() = DialogResult.OK Then
                         ui.Save()
 
-                        Dim Col = s.Storage.GetInt("Column")
-                        Dim Rows = s.Storage.GetInt("Row")
-                        Dim SizeWidth = s.Storage.GetInt("Width")
-                        Dim SizeHeight = s.Storage.GetInt("Height")
-                        Dim PictureQuality = s.Storage.GetInt("Quality")
-                        Dim PictureDepth = s.Storage.GetInt("Depth")
-                        p.SourceFile = fd.FileName
-
                         For Each i In fd.FileNames
                             Try
-                                g.DefaultCommands.ExecuteCommandLine(Package.Items("MTNWindows").Path.Escape + """" + fd.FileName + """" + " -c " & Col & " -r " & Rows & " -w " & SizeWidth & " -h " & SizeHeight & " -D " & PictureDepth & " -j " & PictureQuality, True, True, False)
+                                MTN.Thumbnails(i, Nothing)
                             Catch ex As Exception
                                 g.ShowException(ex)
                             End Try
@@ -5711,6 +5680,52 @@ Public Class MainForm
         End Using
 
     End Sub
+    <Command("MKV Video Info")>
+    Sub MKVInfoSelect()
+        Using fd As New OpenFileDialog
+            fd.Title = "Select files"
+            fd.SetFilter(FileTypes.Video)
+            fd.Multiselect = False
+
+            If fd.ShowDialog = DialogResult.OK Then
+
+                For Each i In fd.FileNames
+                    Try
+                        MKVInfoLookup.MetadataInfo(i, Nothing)
+                    Catch ex As Exception
+                        g.ShowException(ex)
+                    End Try
+                Next
+
+                ' g.StartProcess(fd.FileName.Dir)
+
+            End If
+        End Using
+    End Sub
+
+    <Command("MKV Video Info")>
+    Sub MKVmergeHDR()
+        Using fd As New OpenFileDialog
+            fd.Title = "Select files"
+            fd.SetFilter(FileTypes.Video)
+            fd.Multiselect = False
+
+            If fd.ShowDialog = DialogResult.OK Then
+
+                For Each i In fd.FileNames
+                    Try
+                        MKVMetaDataHDR.MetadataHDR(i, Nothing)
+                    Catch ex As Exception
+                        g.ShowException(ex)
+                    End Try
+                Next
+
+                ' g.StartProcess(fd.FileName.Dir)
+
+            End If
+        End Using
+    End Sub
+
 
     <Command("Shows a dialog to generate thumbnails.")>
     Sub ShowBatchGenerateThumbnailsDialog()

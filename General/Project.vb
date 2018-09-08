@@ -16,7 +16,7 @@ Public Class Project
     Public Audio1 As AudioProfile
     Public AudioTracks As List(Of AudioProfile)
     Public AutoCompCheck As Boolean
-    Public AutoCorrectCropValues As Boolean = True
+    Public AutoCorrectCropValues As Boolean = False
     Public AutoResizeImage As Integer
     Public AutoSmartCrop As Boolean
     Public AutoSmartOvercrop As Double
@@ -62,7 +62,7 @@ Public Class Project
     Public RemindOversize As Boolean = True
     Public RemindToCrop As Boolean = False
     Public RemindToCut As Boolean = False
-    Public RemindArError As Boolean = True
+    Public RemindArError As Boolean = False
     Public RemindToDoCompCheck As Boolean = False
     Public RemindToSetFilters As Boolean = False
     Public ResizeSliderMaxWidth As Integer

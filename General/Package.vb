@@ -53,7 +53,6 @@ Public Class Package
     End Property
 
     Shared Property Items As New SortedDictionary(Of String, Package)
-
     Shared Property Python As Package = Add(New PythonPackage)
     Shared Property DGIndexIM As Package = Add(New DGIndexIMPackage)
     Shared Property DGIndexNV As Package = Add(New DGIndexNVPackage)
@@ -156,19 +155,10 @@ Public Class Package
         .Description = "Converts Blu-ray subtitles to other formats like VobSub."})
 
     Shared Property MTN As Package = Add(New Package With {
-        .Name = "MTNWindows",
+        .Name = "MTN",
         .Filename = "mtn.exe",
         .DirPath = "MTN",
         .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
-        .StartActionValue = Sub()
-                                Using fd As New OpenFileDialog
-                                    fd.Title = "Select files"
-                                    fd.Multiselect = False '' Can Only Do Single.
-                                    If fd.ShowDialog = DialogResult.OK Then
-                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("MTNWindows").Path.Escape + " " + fd.FileName, True, True, False)
-                                    End If
-                                End Using
-                            End Sub,
         .WebURL = "http://moviethumbnail.sourceforge.net/",
         .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
 
@@ -199,12 +189,6 @@ Public Class Package
                                 g.DefaultCommands.ExecutePowerShellScript("cd %app_dir:Update%" + Package.Items("Update").Path.Escape + " ")
                             End Sub,
         .Description = "The PowerShell Script that Updates StaxRip."})
-
-    Shared Property vsedit As Package = Add(New Package With {
-        .Name = "vsedit",
-        .Filename = "vsedit.exe",
-        .URL = "https://vapoursynth.com/",
-        .Description = "The New Editor for VapourSynth"})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {
         .Name = "modPlus",

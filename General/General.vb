@@ -8,7 +8,6 @@ Imports System.Xml
 Imports System.Text
 Imports System.Security.Permissions
 Imports System.Security.Principal
-
 Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
 Imports Microsoft.Win32

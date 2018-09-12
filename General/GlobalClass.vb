@@ -143,6 +143,7 @@ Public Class GlobalClass
             If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile, p)
             If p.MTN Then MTN.Thumbnails(p.TargetFile, p)
             If p.GIF Then GifMaker.Creatator(p.TargetFile, p)
+            If p.PNG Then VDub2PNG.PNG(p.TargetFile, p)
             If p.MKVHDR Then MKVMetaDataHDR.MetadataHDR(p.TargetFile, p)
 
             Log.WriteHeader("Job Complete")

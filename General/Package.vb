@@ -135,7 +135,7 @@ Public Class Package
         .Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.",
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
-        .DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases",
+        .DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases",		
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"})
 
@@ -183,8 +183,8 @@ Public Class Package
     Shared Property Update As Package = Add(New Package With {
         .Name = "Update",
         .Filename = "Update.ps1",
+        .FixedDir = "Update",
         .LaunchName = "Update.ps1",
-        .DirPath = "Updates",
         .StartActionValue = Sub()
                                 g.DefaultCommands.ExecutePowerShellScript("cd %app_dir:Update%" + Package.Items("Update").Path.Escape + " ")
                             End Sub,
@@ -260,7 +260,7 @@ Public Class Package
         .Name = "vinverse",
         .Filename = "vinverse.dll",
         .WebURL = "http://avisynth.nl/index.php/Vinverse",
-        .Description = "A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Didée and then written as a plugin by tritical.",
+        .Description = "A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Didï¿½e and then written as a plugin by tritical.",
         .AvsFilterNames = {"vinverse", "vinverse2"},
         .AvsFiltersFunc = Function() {
             New VideoFilter("Restoration", "RCR | Vinverse", "vinverse()"),
@@ -321,9 +321,13 @@ Public Class Package
         .DirPath = "MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
-        .StartActionValue = Sub()
-                                g.DefaultCommands.ExecuteCommandLine(Package.Items("mkvinfo").Path.Escape + " " + "%target_files%" + BR + "pause", False, False, True)
-                            End Sub,
+        .Description = "MKV muxing tool."})
+
+    Shared Property vd2 As Package = Add(New Package With {
+        .Name = "VirtualDub 2",
+        .Filename = "VirtualDub64.exe",
+        .DirPath = "VirtualDub2",
+        .WebURL = "http://virtualdub2.com/",
         .Description = "MKV muxing tool."})
 
     Shared Property mkvextract As Package = Add(New Package With {
@@ -483,16 +487,6 @@ Public Class Package
             .HelpFile = "doc\AVSMeter.html",
             .WebURL = "http://forum.doom9.org/showthread.php?t=174797"})
 
-
-        'Add(New Package With {
-        '    .Name = "MKVHDR",
-        '    .Filename = "mkvmerge.exe",
-        '    .DirPath = "MKVToolNix",
-        '    .Description = "MKVToolNix is a set of tools to create, alter and inspect Matroska files",
-        '    .StartActionValue = Sub()
-        '                            g.DefaultCommands.ExecuteCommandLine(Package.Items("MKVHDR").Path.Escape + " " + "-o %target_Injected_file%" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + p.TargetFile + BR + "pause", False, False, True)
-        '                        End Sub,
-        '    .WebURL = "https://mkvtoolnix.download/doc/mkvinfo.html"})
 
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",
@@ -1147,7 +1141,7 @@ Public Class Package
             .Name = "QTGMC",
             .Filename = "QTGMC.avsi",
             .URL = "http://avisynth.nl/index.php/QTGMC",
-            .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée.",
+            .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didï¿½e.",
             .AvsFilterNames = {"QTGMC"},
             .AvsFiltersFunc = Function() {
             New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive Type 1|1;Progressive Type 2|2;Progressive Type 3|3$, SourceMatch=3, Sharpness=0.2, TR2=2, EdiThreads=8)"),
@@ -1317,7 +1311,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "Sangnommod",
-            .Filename = "libsangnom.dll",
+            .Filename = "vs_sangnommod.dll",
             .WebURL = "https://bitbucket.org/James1201/vapoursynth-sangnom/overview",
             .Description = "SangNom is a single field deinterlacer using edge-directed interpolation but nowadays it's mainly used in anti-aliasing scripts.",
             .VSFilterNames = {"sangnom.SangNom"}})
@@ -1334,32 +1328,48 @@ Public Class Package
             .Filename = "mvsfunc.py",
             .VSFilterNames = {
                 "mvsfunc.Depth", "mvsfunc.ToRGB", "mvsfunc.ToYUV", "mvsfunc.BM3D",
-                "mvsfunc.PlaneStatistics", "mvsfunc.PlaneCompare", "mvsfunc.ShowAverage",
+                "mvsfunc.VFRSplice", "mvsfunc.PlaneStatistics", "mvsfunc.PlaneCompare", "mvsfunc.ShowAverage",
                 "mvsfunc.FilterIf", "mvsfunc.FilterCombed", "mvsfunc.Min", "mvsfunc.Max",
                 "mvsfunc.Avg", "mvsfunc.MinFilter", "mvsfunc.MaxFilter", "mvsfunc.LimitFilter",
-                "mvsfunc.PointPower", "mvsfunc.SetColorSpace", "mvsfunc.AssumeFrame",
+                "mvsfunc.PointPower", "mvsfunc.CheckMatrix", "mvsfunc.postfix2infix", "mvsfunc.SetColorSpace", "mvsfunc.AssumeFrame",
                 "mvsfunc.AssumeTFF", "mvsfunc.AssumeBFF", "mvsfunc.AssumeField",
                 "mvsfunc.AssumeCombed", "mvsfunc.CheckVersion", "mvsfunc.GetMatrix",
-                "mvsfunc.Depth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage"
+                "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage", "mvsfunc.Preview", "mvsfunc.GrayScale"
             },
             .Description = "mawen1250's VapourSynth functions.",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=172564",
             .WebURL = "http://github.com/HomeOfVapourSynthEvolution/mvsfunc"})
 
         Add(New PluginPackage With {
+            .Name = "muvsfunc",
+            .Filename = "muvsfunc.py",
+            .VSFilterNames = {
+                "muvsfunc.LDMerge", "muvsfunc.Compare", "muvsfunc.ExInpand", "muvsfunc.InDeflate", "muvsfunc.MultiRemoveGrain", "muvsfunc.GradFun3", "muvsfunc.AnimeMask",
+                "muvsfunc.PolygonExInpand", "muvsfunc.Luma", "muvsfunc.ediaa", "muvsfunc.nnedi3aa", "muvsfunc.maa", "muvsfunc.SharpAAMcmod", "muvsfunc.TEdge",
+                "muvsfunc.Sort", "muvsfunc.Soothe_mod", "muvsfunc.TemporalSoften", "muvsfunc.FixTelecinedFades", "muvsfunc.TCannyHelper", "muvsfunc.MergeChroma", "muvsfunc.firniture",
+                "muvsfunc.BoxFilter", "muvsfunc.SmoothGrad", "muvsfunc.DeFilter", "muvsfunc.scale", "muvsfunc.ColorBarsHD", "muvsfunc.SeeSaw", "muvsfunc.abcxyz",
+                 "muvsfunc.Sharpen", "muvsfunc.Blur", "muvsfunc.BlindDeHalo3", "muvsfunc.dfttestMC", "muvsfunc.TurnLeft", "muvsfunc.TurnRight", "muvsfunc.BalanceBorders",
+                  "muvsfunc.DisplayHistogram", "muvsfunc.GuidedFilter", "muvsfunc.GMSD", "muvsfunc.SSIM", "muvsfunc.SSIM_downsample", "muvsfunc.LocalStatisticsMatching", "muvsfunc.LocalStatistics",
+                  "muvsfunc.TextSub16", "muvsfunc.TMinBlur", "muvsfunc.mdering", "muvsfunc.BMAFilter", "muvsfunc.LLSURE", "muvsfunc.YAHRmod", "muvsfunc.RandomInterleave"},
+            .Description = "Muonium's VapourSynth functions.",
+            .WebURL = "https://github.com/WolframRhodium/muvsfunc"})
+
+
+        Add(New PluginPackage With {
             .Name = "havsfunc",
             .Filename = "havsfunc.py",
             .VSFiltersFunc = Function() {
-                New VideoFilter("Misc", "LSFmod", "clip = havsfunc.LSFmod(clip, strength = 100)"),
+                New VideoFilter("Line", "Sharpen | LSFmod", "clip = havsfunc.LSFmod(clip, strength = 100)"),
                 New VideoFilter("Field", "QTGMC...", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"")")},
-            .VSFilterNames = {"havsfunc.QTGMC", "havsfunc.ediaa", "havsfunc.daa", "havsfunc.maa",
-                                       "havsfunc.SharpAAMCmod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
-                                       "havsfunc.InterFrame", "havsfunc.FixChromaBleedingMod",
-                                        "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.ivtc_txt60mc",
-                                       "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.logoNR",
-                                       "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.GSMC",
-                                       "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD",
-                                       "havsfunc.LSFmod", "havsfunc.GrainFactory3", "havsfunc.MCTemporalDenoise"},
+            .VSFilterNames = {"havsfunc.QTGMC", "havsfunc.daa", "havsfunc.santiag", "havsfunc.FixChromaBleedingMod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
+                                "havsfunc.FineDehalo", "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.smartfademod", "havsfunc.srestore", "havsfunc.ivtc_txt60mc",
+                                "havsfunc.logoNR", "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.Stab",
+                                "havsfunc.GrainStabilizeMC", "havsfunc.MCTemporalDenoise", "havsfunc.SMDegrain", "havsfunc.STPresso", "havsfunc.SigmoidInverse", "havsfunc.SigmoidDirect",
+                                "havsfunc.GrainFactory3", "havsfunc.InterFrame", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD", "havsfunc.Toon", "havsfunc.LSFmod",
+                                "havsfunc.TemporalDegrain", "havsfunc.aaf", "havsfunc.AverageFrames", "havsfunc.Bob", "havsfunc.ChangeFPS", "havsfunc.Clamp",
+                                "havsfunc.KNLMeansCL", "havsfunc.Overlay", "havsfunc.Padding", "havsfunc.Resize", "havsfunc.SCDetect", "havsfunc.Weave",
+                                "havsfunc.ContraSharpening", "havsfunc.MinBlur", "havsfunc.sbr", "havsfunc.DitherLumaRebuild", "havsfunc.mt_expand_multi", "havsfunc.mt_inpand_multi",
+                                "havsfunc.mt_inflate_multi", "havsfunc.mt_deflate_multi"},
             .Description = "Various popular AviSynth scripts ported to VapourSynth.",
             .WebURL = "http://github.com/HomeOfVapourSynthEvolution/havsfunc",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=166582"})
@@ -1450,17 +1460,7 @@ Public Class Package
             .WebURL = "https://github.com/Hinterwaeldlers/vapoursynth-hqdn3d",
             .VSFilterNames = {"dfttest.DFTTest"},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "DFTTest | DFTTest 8Bit", "$select:msg:Select Strength;Moderate DeNoise|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5);Light DeNoise|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=1);Strong DeNoise|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1)$"),
-                New VideoFilter("Noise", "DFTTest | DFTTest 16Bit", "$select:msg:Select Strength;Moderate DeNoise|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5, lsb_in=true, lsb=true);Light DeNoise|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=1, lsb_in=true, lsb=true);Strong DeNoise|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1, lsb_in=true, lsb=true);Moderate DeNoise with Dither|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=1, lsb_in=true, lsb=true, dither=1)$")}})
-
-        Add(New PluginPackage With {
-            .Name = "CTMF",
-            .Filename = "CTMF.dll",
-            .Description = "Constant Time Median Filtering.",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-CTMF",
-            .VSFilterNames = {"ctmf.CTMF"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "CTMF", "clip = core.ctmf.CTMF(clip=clip, memsize=1048576, planes=[0,1,2])")}})
+                New VideoFilter("Noise", "DFTTest", "$select:msg:Select Strength;Moderate DeNoise|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5);Light DeNoise|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=1);Strong DeNoise|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1)$")}})
 
         Add(New PluginPackage With {
             .Name = "VagueDenoiser",
@@ -1469,7 +1469,7 @@ Public Class Package
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-VagueDenoiser",
             .VSFilterNames = {"vd.VagueDenoiser"},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "VagueDenoiser", "clip = core.vd.VagueDenoiser(clip=clip, method=$select:msg:Select Strength;Soft|1;Hard|0)$")}})
+                New VideoFilter("Noise", "VagueDenoiser", "clip = core.vd.VagueDenoiser(clip=clip, method=$select:msg:Select Strength;Soft|1;Hard|0$)")}})
 
         Add(New PluginPackage With {
             .Name = "TTempSmooth",
@@ -1478,7 +1478,7 @@ Public Class Package
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-TTempSmooth",
             .VSFilterNames = {"ttmpsm.TTempSmooth"},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "TTempSmooth", "clip =  core.ttmpsm.TTempSmooth(clip=clip)")}})
+                New VideoFilter("Noise", "TTempSmooth", "clip =  core.ttmpsm.TTempSmooth(clip)")}})
 
         Add(New PluginPackage With {
             .Name = "DegrainMedian",
@@ -1487,7 +1487,7 @@ Public Class Package
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-TTempSmooth",
             .VSFilterNames = {"dgm.DegrainMedian"},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Restoration", "DeGrain | DegrainMedian", "clip = core.dgm.DegrainMedian(clip=clip, interlaced=False)")}})
+                New VideoFilter("Noise", "RemoveGrain | DegrainMedian", "clip = core.dgm.DegrainMedian(clip=clip, interlaced=False)")}})
 
         Add(New PluginPackage With {
             .Name = "psharpen",
@@ -1512,12 +1512,12 @@ Public Class Package
             .WebURL = "http://github.com/EleonoreMizo/fmtconv",
             .HelpFile = "fmtconv.html",
             .Description = "Fmtconv is a format-conversion plug-in for the Vapoursynth video processing engine. It does resizing, bitdepth conversion with dithering and colorspace conversion.",
-            .VSFilterNames = {"fmtc.bitdepth", "fmtc.convert", "fmtc.matrix", "fmtc.resample", "fmtc.transfer", "fmtc.primaries"}})
+            .VSFilterNames = {"fmtc.bitdepth", "fmtc.convert", " core.fmtc.matrix", "fmtc.resample", "fmtc.transfer", "fmtc.primaries", " core.fmtc.matrix2020cl", "fmtc.stack16tonative", "nativetostack16"}})
 
         Add(New PluginPackage With {
             .Name = "finesharp",
             .Filename = "finesharp.py",
-            .Description = "Port of Didée's FineSharp script to VapourSynth.",
+            .Description = "Port of Didï¿½e's FineSharp script to VapourSynth.",
             .WebURL = "http://forum.doom9.org/showthread.php?p=1777860#post1777860",
             .VSFilterNames = {"finesharp.sharpen"},
             .VSFiltersFunc = Function() {

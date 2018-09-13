@@ -24,6 +24,8 @@ If applicable, add screenshots to help explain your problem.
  - Version [e.g. 1.8.0.0]
 
 **Additional context**
-Add any other Information or additional context to Issue.
+Add any other Information or additional context that can be Helpful.
 
 **Please be Clear and as Detailed as Possible**
+
+**Any Issues left unattended to for a stretch of Time will be Closed Due to inactivity**

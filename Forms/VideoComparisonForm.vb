@@ -77,6 +77,7 @@ Public Class VideoComparisonForm
                 b.Save(outputPath, ImageFormat.Png)
             End Using
         Next
+
     End Sub
 
     Sub Add(sourePath As String)

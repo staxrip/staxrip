@@ -48,10 +48,6 @@ Public Class ImageHelp
         Return bitmap
     End Function
 End Class
-'' Dim avsdoc As New VideoScript
-''avsdoc.Path = Folder.Settings + "Thumbnails.avs"
-''avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + """, cachefile = """ + cachePath + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
-''avsdoc.Filters.Add(New VideoFilter("ConvertToRGB()"))
 
 Public Class Thumbnails
     Shared Sub SaveThumbnails(inputFile As String, proj As Project)
@@ -69,9 +65,9 @@ Public Class Thumbnails
         proj.Log.Save(proj)
 
         Dim fontname = "Tahoma"
-        Dim width = s.Storage.GetInt("Thumbnail Width", 600)
+        Dim width = s.Storage.GetInt("Thumbnail Width", 200)
         Dim columnCount = s.Storage.GetInt("Thumbnail Columns", 4)
-        Dim rowCount = s.Storage.GetInt("Thumbnail Rows", 4)
+        Dim rowCount = s.Storage.GetInt("Thumbnail Rows", 6)
         Dim dar = MediaInfo.GetVideo(inputFile, "DisplayAspectRatio")
         Dim height = CInt(width / Convert.ToSingle(dar, CultureInfo.InvariantCulture))
         Dim gap = CInt((width * columnCount) * 0.005)

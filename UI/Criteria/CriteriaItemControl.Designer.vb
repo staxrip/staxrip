@@ -5,7 +5,7 @@ Namespace UI
 
         'UserControl overrides dispose to clean up the component list.
         <System.Diagnostics.DebuggerNonUserCode()>
-        Protected Overrides Sub Dispose(disposing As Boolean)
+        Protected Overrides Sub dispose(disposing As Boolean)
             If disposing AndAlso components IsNot Nothing Then
                 components.Dispose()
             End If

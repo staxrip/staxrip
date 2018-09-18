@@ -280,45 +280,6 @@ Public Class ApplicationSettings
         Dim mainMenuVersion = 14
 
         If Not Storage.GetBool("main menu update" & mainMenuVersion) Then
-            'If 0 = CustomMenuMainForm.GetAllItems().Where(
-            '    Function(val) Not val.Parameters.NothingOrEmpty AndAlso
-            '    TypeOf val.Parameters(0) Is String AndAlso
-            '    val.Parameters(0).ToString.Contains("Log Files")).Count Then
-
-            '    CustomMenuMainForm.Add("Tools|Directories|Log Files", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%Log Files"""})
-            'End If
-
-            'For Each i In CustomMenuMainForm.GetAllItems()
-            '    If i.MethodName = NameOf(g.DefaultCommands.ExecuteCommandLine) AndAlso
-            '        i.Parameters.Count > 0 AndAlso TypeOf i.Parameters(0) Is String AndAlso
-            '        i.Parameters(0).ToString <> "" AndAlso i.Parameters(0).ToString.EndsWith("test-build.md") Then
-
-            '        i.Parameters(0) = "https://github.com/Revan654/staxrip/blob/master/changelog.md"
-            '        Exit For
-            '    End If
-            'Next
-
-            'For Each i In CustomMenuMainForm.GetAllItems()
-            '    If i.MethodName = NameOf(g.DefaultCommands.ExecuteCommandLine) AndAlso
-            '        i.Parameters.Count > 0 AndAlso TypeOf i.Parameters(0) Is String AndAlso
-            '        i.Parameters(0).ToString <> "" AndAlso i.Parameters(0).ToString.EndsWith("/md/changelog.md") Then
-
-            '        i.Parameters(0) = "https://github.com/Revan654/staxrip/blob/master/changelog.md"
-            '        Exit For
-            '    End If
-            'Next
-
-            'For Each i In CustomMenuMainForm.GetAllItems()
-            '    If i.MethodName = NameOf(g.DefaultCommands.ExecuteCommandLine) AndAlso
-            '        i.Parameters.Count > 0 AndAlso TypeOf i.Parameters(0) Is String AndAlso
-            '        i.Parameters(0).ToString <> "" AndAlso i.Parameters(0).ToString.EndsWith("_staxrip.log""") Then
-
-            '        i.MethodName = "ShowLogFile"
-            '        i.Parameters.Clear()
-            '        Exit For
-            '    End If
-            'Next
-
             Storage.SetBool("main menu update" & mainMenuVersion, True)
         End If
 

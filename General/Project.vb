@@ -10,7 +10,6 @@ Public Class Project
     Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
     Private Storage As ObjectStorage
-
     Public AdjustHeight As Boolean = True
     Public Audio0 As AudioProfile
     Public Audio1 As AudioProfile
@@ -62,7 +61,7 @@ Public Class Project
     Public RemindOversize As Boolean = True
     Public RemindToCrop As Boolean = False
     Public RemindToCut As Boolean = False
-    Public RemindArError As Boolean = False
+    Public RemindArError As Boolean = True
     Public RemindToDoCompCheck As Boolean = False
     Public RemindToSetFilters As Boolean = False
     Public ResizeSliderMaxWidth As Integer

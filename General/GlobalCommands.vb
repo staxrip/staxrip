@@ -102,6 +102,7 @@ Public Class GlobalCommands
         batchProcess.StartInfo.WorkingDirectory = p.TempDir
         batchProcess.Start()
     End Sub
+
     <Command("Shows the powershell with aliases for all tools staxrip includes.")>
     Sub ShowPowerShell()
         Dim val As String

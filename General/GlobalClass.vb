@@ -44,6 +44,7 @@ Public Class GlobalClass
                     g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
                     g.ShutdownPC()
                 End If
+
             Else
                 If Process.GetCurrentProcess.PrivateMemorySize64 / 1024 ^ 2 > 1500 Then
                     g.StartProcess(Application.ExecutablePath, "-StartJobs")
@@ -142,8 +143,8 @@ Public Class GlobalClass
 
             If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile, p)
             If p.MTN Then MTN.Thumbnails(p.TargetFile, p)
-            If p.GIF Then GifMaker.Creatator(p.TargetFile, p)
-            If p.PNG Then VDub2PNG.PNG(p.TargetFile, p)
+            If p.GIF Then GIF.GIFAnimation(p.TargetFile, p)
+            If p.PNG Then PNG.aPNGAnimation(p.TargetFile, p)
             If p.MKVHDR Then MKVMetaDataHDR.MetadataHDR(p.TargetFile, p)
 
             Log.WriteHeader("Job Complete")

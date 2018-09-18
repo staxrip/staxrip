@@ -1,4 +1,4 @@
-﻿PowerShell Scripting
+PowerShell Scripting
 ====================
 
 StaxRip can be automated via PowerShell scripting.
@@ -45,6 +45,33 @@ https://github.com/stax76/staxrip/issues/200
 
 Default Scripts
 ---------------
+
+Update.ps1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. literalinclude:: Update.ps1
+   :language: powershell
+
+
+_ScanType.ps1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. literalinclude:: powershell/Bluray (BT2020) HDR10 Avisynth.ps1
+   :language: powershell
+
+
+HDR10 (BT2020) Avisynth.ps1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. literalinclude:: powershell/Bluray (BT2020) HDR10 Avisynth.ps1
+   :language: powershell
+
+HDR10 (BT2020) VapourSynth.ps1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. literalinclude:: powershell/Bluray (BT2020) HDR10 VapourSynth.ps1
+   :language: powershell
+
 
 Convert Bluray (BT709) to 10bit 400nits (MaxFALL) HDR v3.ps1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

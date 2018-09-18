@@ -10,6 +10,7 @@ aomenc
 AOMedia Video 1 (AV1) is an open, royalty-free video coding format designed for video transmissions over the Internet.
 
 Used Version: 2017-08-30
+Removed Util Encoder Matures. To slow to be usable in it's current state. FFMPEG has support for those who want to use it.
 
 http://aomedia.org
 
@@ -144,16 +145,6 @@ Used Version: 2013-04-14
 http://haali.su/mkv
 
 
-Java
-~~~~
-
-Java is required by ProjectX. ProjectX demuxes MPEG-2 DVD and DVB sources, H.264/AVC and H.265/HEVC are not supported. ProjectX can be enabled or disabled in the settings on the preprocessing tab tab.
-
-Used Version: 
-
-http://java.com
-
-
 MediaInfo
 ~~~~~~~~~
 
@@ -169,7 +160,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 20.0.0
+Used Version: 26.0.0
 
 http://www.bunkus.org/videotools/mkvtoolnix
 
@@ -179,7 +170,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 20.0.0
+Used Version: 26.0.0
 
 http://www.bunkus.org/videotools/mkvtoolnix
 
@@ -189,19 +180,19 @@ MP4Box
 
 MP4Box is a MP4 muxing and demuxing command line app.
 
-Used Version: 0.7.2-DEV-rev79
+Used Version: 0.7.2-DEV-rev709
 
 http://gpac.wp.mines-telecom.fr/
 
 
-mpv.net
+mpv
 ~~~~~~~
 
 libmpv based media player.
 
-Used Version: 0.2.2
+Used Version: 2018-09-12
 
-https://github.com/stax76/mpvnet
+https://mpv.io
 
 
 NVEnc
@@ -214,24 +205,15 @@ Used Version: 3.27
 https://github.com/rigaya/NVEnc
 
 
-ProjectX
-~~~~~~~~
-
-ProjectX demuxes MPEG-2 DVD and DVB sources, H.264/AVC and H.265/HEVC are not supported. ProjectX can be enabled or disabled in the settings on the preprocessing tab tab.
-
-Used Version: 0.91.0.00
-
-http://project-x.sourceforge.net
-
-
 Python
 ~~~~~~
 
-Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
+Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool. Use anaconda if you don't have admin access.
 
-Used Version: 3.6.4
+Used Version: 3.6.6
 
 http://www.python.org
+https://www.anaconda.com/download/
 
 
 qaac
@@ -269,7 +251,7 @@ VapourSynth
 
 StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
 
-Used Version: R43
+Used Version: R44
 
 http://www.vapoursynth.com
 
@@ -359,7 +341,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 2.6+31
+Used Version: 2.8+66
 
 http://x265.org
 
@@ -541,7 +523,7 @@ Increases the frame rate with interpolation and fine artifact removal.
 
 Filters: FrameRateConverter
 
-Used Version: 1.2
+Used Version: 1.2.1
 
 https://github.com/mysteryx93/FrameRateConverter
 
@@ -565,7 +547,7 @@ Merge of AutoYUY2, NNEDI3 and ResampleMT
 
 Filters: nnedi3, nnedi3_rpow2, AutoYUY2, PointResizeMT, BilinearResizeMT, BicubicResizeMT, LanczosResizeMT, Lanczos4ResizeMT, BlackmanResizeMT, Spline16ResizeMT, Spline36ResizeMT, Spline64ResizeMT, GaussResizeMT, SincResizeMT
 
-Used Version: 1.2.1
+Used Version: 2.2.0.0
 
 https://forum.doom9.org/showthread.php?t=174248
 
@@ -577,7 +559,7 @@ KNLMeansCL is an optimized pixelwise OpenCL implementation of the Non-local mean
 
 Filters: KNLMeansCL
 
-Used Version: 1.1.0
+Used Version: 1.1.1
 
 https://github.com/Khanattila/KNLMeansCL
 
@@ -613,7 +595,7 @@ MaskTools2 contain a set of filters designed to create, manipulate and use masks
 
 Filters: mt_adddiff, mt_average, mt_binarize, mt_circle, mt_clamp, mt_convolution, mt_diamond, mt_edge, mt_ellipse, mt_expand, mt_hysteresis, mt_inflate, mt_inpand, mt_invert, mt_logic, mt_losange, mt_lut, mt_lutf, mt_luts, mt_lutxy, mt_makediff, mt_mappedblur, mt_merge, mt_motion, mt_polish, mt_rectangle, mt_square
 
-Used Version: 2.2.10
+Used Version: 2.2.14
 
 https://github.com/pinterf/masktools
 
@@ -625,7 +607,7 @@ Removes noise whilst retaining as much detail as possible.
 
 Filters: mClean
 
-Used Version: 2.3
+Used Version: 3.2
 
 https://forum.doom9.org/showthread.php?t=174804
 
@@ -649,7 +631,7 @@ This plugin has 9 functions, which modify values of color components to attenuat
 
 Filters: GBlur, MBlur, Median, minvar, Morph, SaltPepper, SegAmp, TweakHist, Veed
 
-Used Version: 2017-04-15
+Used Version: 2017-10-17
 
 http://www.avisynth.nl/users/vcmohan/modPlus/modPlus.html
 
@@ -661,7 +643,7 @@ Source filter to open D2V index files created with DGIndex or D2VWitch.
 
 Filters: MPEG2Source
 
-Used Version: 0.1.1
+Used Version: 1.5.8.0
 
 https://github.com/chikuzen/MPEG2DecPlus
 
@@ -685,7 +667,7 @@ MVTools is collection of functions for estimation and compensation of objects mo
 
 Filters: MSuper, MAnalyse, MCompensate, MMask, MDeGrain1, MDeGrain2, MDegrain3
 
-Used Version: 2.7.24
+Used Version: 2.7.31.0
 
 https://github.com/pinterf/mvtools
 
@@ -709,7 +691,7 @@ A very high quality deinterlacer with a range of features for both quality and c
 
 Filters: QTGMC
 
-Used Version: 3.357
+Used Version: 3.361s
 
 http://avisynth.nl/index.php/QTGMC
 
@@ -745,7 +727,7 @@ SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using M
 
 Filters: SMDegrain
 
-Used Version: 3.1.2d
+Used Version: 3.1.2.97s
 
 http://avisynth.nl/index.php/SMDegrain
 
@@ -793,7 +775,7 @@ TIVTC is a plugin package containing 7 different filters and 3 conditional funct
 
 Filters: TFM, TDecimate, MergeHints, FrameDiff, FieldDiff, ShowCombedTIVTC, RequestLinear
 
-Used Version: 1.0.10
+Used Version: 1.0.11
 
 https://github.com/pinterf/TIVTC
 

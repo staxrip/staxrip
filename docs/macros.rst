@@ -141,6 +141,10 @@ File extension of the AviSynth/VapourSynth script so either avs or vpy.
 
 ``%script_file%``
 
+File extension of the AviSynth/VapourSynth script so either avs or vpy in quotes.
+
+``%script_file%``
+
 Path of the AviSynth/VapourSynth script.
 
 ``%sel_end%``

@@ -305,14 +305,6 @@ Public MustInherit Class VideoEncoder
             ret.Add(ffmpeg2)
         Next
 
-        ' Dim Gif As New BatchEncoder()
-        'Gif.OutputFileTypeValue = "gif"
-        ' Gif.Name = "Command Line | Gif Maker"
-        'Gif.QualityMode = True
-        'Gif.Muxer = New NullMuxer("No Muxing")
-        ' Gif.CommandLines = "ffmpeg -i ""%script_file%"" -vf ""fps=15,scale=%target_width%:-1:flags=spline,palettegen=stats_mode=diff"" -loglevel quiet -y ""%target_temp_file%.png"" || exit" + BR + "ffmpeg -i ""%script_file%"" -i ""%target_temp_file%.png"" -lavfi ""fps=15,scale=%target_width%:-1:flags=spline [x]; [x][1:v] paletteuse=dither=floyd_steinberg"" -loglevel quiet -y ""%target_file%"""
-        'ret.Add(Gif)
-
         Dim x264cli As New BatchEncoder()
         x264cli.OutputFileTypeValue = "h264"
         x264cli.Name = "Command Line | x264"

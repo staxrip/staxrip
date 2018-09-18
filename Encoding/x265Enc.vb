@@ -606,20 +606,26 @@ Public Class x265Params
     Property VBVinit As New NumParam With {
         .Switch = "--vbv-init",
         .Text = "VBV Init",
-        .Config = {0, 1, 0.05, 2},
+        .Config = {0, 0, 0.05, 1},
         .Init = 0.9}
-		
-		Property VBVend As New NumParam With {
+
+    Property VBVend As New NumParam With {
         .Switch = "--vbv-end",
         .Text = "VBV End",
-        .Config = {0, 1, 0.05, 2},
+        .Config = {0, 0, 0.05, 1},
         .Init = 0.0}
-		
-	Property VBVfradj As New NumParam With { ''Need More Information Before Being Added.
+
+    Property maxausizefactor As New NumParam With {
+        .Switch = "--max-ausize-factor",
+        .Text = "Max Ausize Factor",
+        .Config = {0, 0, 0.05, 1},
+        .Init = 1.0}
+
+    Property VBVfradj As New NumParam With { 'Need More Testing But Should work As it is.
         .Switch = "--vbv-end-fr-adj",
         .Text = "VBV End",
-        .Config = {0, 1, 0.05, 2},
-        .Init = 0.0}	
+        .Config = {0, 1, 0.05, 1},
+        .Init = 0.0}
 
     Property Chromaloc As New NumParam With {
         .Switch = "--chromaloc",
@@ -823,7 +829,7 @@ Public Class x265Params
                     New NumParam With {.Switch = "--crqpoffs", .Text = "CR QP Offset", .Config = {-12, 12}},
                     NRintra, NRinter, qpmin, qpmax, qpstep, CRFmin, CRFmax)
                 Add("Rate Control 2",
-                    VBVbufsize, VBVmaxrate, VBVinit, VBVend,
+                    VBVbufsize, VBVmaxrate, VBVinit, VBVend, VBVfradj,
                     IPRatio, PBRatio, Cplxblur, QBlur,
                     CUtree, Lossless, StrictCBR, rcGrain,
                     multi_pass_opt_analysis,
@@ -905,7 +911,7 @@ Public Class x265Params
                     New StringParam With {.Switch = "--scaling-list", .Text = "Scaling List", .Quotes = True},
                     Decoder, PsyRD, CompCheck, CompCheckAimedQuality,
                     New NumParam With {.Switch = "--recon-depth", .Text = "Recon Depth"},
-                    RDpenalty)
+                    RDpenalty, maxausizefactor)
                 Add("Other 2",
                     New BoolParam With {.Switch = "--high-tier", .Text = "High Tier", .Name = "HighTierV2", .Init = True},
                     SignHide,

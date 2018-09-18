@@ -212,7 +212,7 @@ Public Class ffmpegEnc
 
             If includePaths Then ret += " -i " + sourcePath.Escape
             Dim items = From i In Me.Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.Switch)
-            If items.Count > 0 Then ret += " " + items.Select (Function(item) item.GetArgs).Join(" ")
+            If items.Count > 0 Then ret += " " + items.Select(Function(item) item.GetArgs).Join(" ")
             If Calc.IsARSignalingRequired Then ret += " -aspect " + Calc.GetTargetDAR.ToInvariantString.Shorten(8)
 
             Select Case Mode.Value

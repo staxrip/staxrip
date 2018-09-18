@@ -328,6 +328,7 @@ Friend Class JobsForm
 
     Private Sub bnLoad_Click(sender As Object, e As EventArgs) Handles bnLoad.Click
         g.MainForm.LoadProject(lv.SelectedItem.ToString)
+        Close()
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)

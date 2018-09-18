@@ -458,8 +458,12 @@ Public Class AppsForm
         g.StartProcess(CurrentPackage.WebURL)
     End Sub
 
+    'Private Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click
+    '    g.StartProcess(CurrentPackage.DownloadURL)
+    'End Sub
+
     Private Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click
-        g.StartProcess(CurrentPackage.DownloadURL)
+        g.StartProcess(CurrentPackage.GetDir + "Update.bat")
     End Sub
 
     Private Sub tsbPath_Click(sender As Object, e As EventArgs) Handles tsbPath.Click

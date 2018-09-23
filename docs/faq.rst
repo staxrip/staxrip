@@ -50,6 +50,8 @@ StaxRip is only available for x64 and therefore only x64 plugins can be used.
 
 The AviSynth script can be edited manually using the code editor (Filters > Edit Code) or the filters menu can be configured using the filter profile editor (Filters > Profiles).
 
+New LoadPlugin / Import filter can be loaded through Filters tab in Option Menu.
+
 
 How can I use custom AviSynth scripts?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

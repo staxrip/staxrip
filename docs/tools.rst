@@ -9,19 +9,33 @@ AddGrainC
 
 Generate film-like grain or other effects (like rain) by adding random noise to a video clip. This noise may optionally be horizontally or vertically correlated to cause streaking. 
 
-Used Version: 1.7.1 
+Version: 1.7.1 
 
 Adjust
 ~~~~~~~~~~~
 
 very basic port of the built-in Avisynth filter Tweak.
 
-Used Version: 2015-03-22
+Version: 2015-03-22
+
 
 AnimeIVTC
 ~~~~~~~~~~~
 
-Used Version: 2.20
+Designed to used with QTGMC.
+
+Version: 2.20 
+
+http://avisynth.nl/index.php/AnimeIVTC
+
+Average
+~~~~~~~~~~~
+
+A simple plugin that calculates a weighted frame-by-frame average from multiple clips. This is a modern rewrite of the old Average plugin but a bit faster, additional colorspace support, and some additional sanity checks.
+
+Version: 0.94
+
+http://avisynth.nl/index.php/Average
 
 AviSynth+
 ~~~~~~~~~
@@ -51,6 +65,8 @@ AVSMeter runs an Avisynth script with virtually no overhead, displays clip info,
 Used Version: 2.6.6
 
 https://forum.doom9.org/showthread.php?t=174797
+
+AvsResize
 
 
 BDSup2Sub++

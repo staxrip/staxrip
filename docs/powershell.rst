@@ -53,23 +53,16 @@ Update.ps1
    :language: powershell
 
 
-_ScanType.ps1
+Convert Bluray (BT2020) to 10bit 1000nits (MaxFALL-BT709) HDR AVS.ps1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: powershell/Bluray (BT2020) HDR10 Avisynth.ps1
+.. literalinclude:: powershell/Convert Bluray (BT2020) to 10bit 1000nits (MaxFALL-BT709) HDR AVS.ps1
    :language: powershell
 
-
-HDR10 (BT2020) Avisynth.ps1
+Convert Bluray (BT2020) to 10bit 1000nits (MaxFALL-BT709) HDR VS.ps1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: powershell/Bluray (BT2020) HDR10 Avisynth.ps1
-   :language: powershell
-
-HDR10 (BT2020) VapourSynth.ps1
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. literalinclude:: powershell/Bluray (BT2020) HDR10 VapourSynth.ps1
+.. literalinclude:: powershell/Convert Bluray (BT2020) to 10bit 1000nits (MaxFALL-BT709) HDR VS.ps1
    :language: powershell
 
 

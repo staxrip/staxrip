@@ -328,12 +328,22 @@ clip.set_output()
                 If Not plugin.AvsFilterNames Is Nothing Then
                     For Each filterName In plugin.AvsFilterNames
                         If script.Contains(filterName.ToLower) Then
-                            If plugin.Filename.Ext = "dll" Then
+                            If plugin.Name = "ffms2" And plugin.Name <> "ffms2k" Then
+                                Dim loadC = "LoadCPlugin(""" + fp + """)" + BR
+
+                                If Not script.Contains(loadC.ToLower) AndAlso
+                                    Not loadCode.Contains(loadC) AndAlso
+                                    Not scriptAlready.Contains(loadC.ToLower) Then
+
+                                    loadCode += loadC
+                                End If
+
+                            ElseIf plugin.Filename.Ext = "dll" Then
                                 Dim load = "LoadPlugin(""" + fp + """)" + BR
 
                                 If File.Exists(Folder.Plugins + fp.FileName) AndAlso
-                                    File.GetLastWriteTimeUtc(Folder.Plugins + fp.FileName) <
-                                    File.GetLastWriteTimeUtc(fp) Then
+                                        File.GetLastWriteTimeUtc(Folder.Plugins + fp.FileName) <
+                                        File.GetLastWriteTimeUtc(fp) Then
 
                                     MsgWarn("Conflict with outdated plugin", $"An outdated version of {plugin.Name} is located in your auto load folder. StaxRip includes a newer version.{BR2 + Folder.Plugins + fp.FileName}", True)
                                 End If
@@ -344,6 +354,7 @@ clip.set_output()
 
                                     loadCode += load
                                 End If
+
                             ElseIf plugin.Filename.Ext = "avsi" Then
                                 Dim avsiImport = "Import(""" + fp + """)" + BR
 
@@ -675,7 +686,7 @@ Public Class FilterCategory
         ret.Add(field)
 
         Dim noise As New FilterCategory("Noise")
-        noise.Filters.Add(New VideoFilter(noise.Name, "RemoveGrain | RemoveGrain16 with Repair16", "Processed = Dither_removegrain16(mode=2, modeU=2, modeV=2)" + BR + "Dither_repair16(Processed, mode=2, modeU=2, modeV=2)"))
+        noise.Filters.Add(New VideoFilter(noise.Name, "RemoveGrain | RemoveGrain | RemoveGrain16 with Repair16", "Processed = Dither_removegrain16(mode=2, modeU=2, modeV=2)" + BR + "Dither_repair16(Processed, mode=2, modeU=2, modeV=2)"))
         ret.Add(noise)
 
         Dim misc As New FilterCategory("Misc")
@@ -744,8 +755,6 @@ Public Class FilterCategory
         color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Cube", "clip = core.timecube.Cube(clip, cube = r""$browse_file$"")"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Tweak", "clip = adjust.Tweak(clip, sat=0.75, hue=115-138)"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Range", "$select:msg:Select Range;PC to TV|clip = core.fmtc.bitdepth (clip, fulls=True, fulld=False);TV to PC|clip = core.fmtc.bitdepth (clip, fulls=False, fulld=True)$"))
-        color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Levels | Levels (16-235 to 0-255)", "clip = core.std.Levels(clip, min_in=16, max_in=235, min_out=0, max_out=255, planes=0)" + BR + "clip = core.std.Levels(clip, min_in=16, max_in=240, min_out=0, max_out=255, planes=[1,2])"))
-        color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Levels | Levels (0-255 to 16-235)", "clip = core.std.Levels(clip, min_in=0, max_in=255, min_out=16, max_out=235, planes=0)" + BR + "clip = core.std.Levels(clip, min_in=0, max_in=255, min_out=16, max_out=240, planes=[1,2])"))
         color.Filters.Add(New VideoFilter(color.Name, "Convert | Format", "clip = core.avs.z_ConvertFormat(clip, pixel_type = ""$select:msg:Select Pixel Type.;RGBPS;RGBP10;RGBP12;RGBP16;YV12;YV16;YV24;YUV420P10;YUV420P12;YUV420P16;YUV444P10;YUV444P12;YUV444P16;YUV422P10;YUV422P12;YUV422P16$"",colorspace_op=""$select:msg:Select Color Matrix Input;RGB;240m;709;2020ncl$:$select:msg:Select Color Transfer Input;Linear;470m;470bg;240m;SRGB;709;2020;st2084$:$select:msg:Select Color Primaries Input;470m;470bg;FILM;709;2020$:l=>$select:msg:Select Color Matrix output;RGB;FCC;YCGCO;240m;709;2020ncl$:$select:msg:Select Color Transfer Output;Linear;Log100;Log316;470m;470bg;240m;XVYCC;SRGB;709;2020;st2084$:$select:msg:Select Color Primaries Output;470m;470bg;FILM;709;2020$:l"", dither_type=""$select:msg:Select Dither Type;None;ordered$"")"))
         color.Filters.Add(New VideoFilter(color.Name, "Convert | Convert To", "clip = core.resize.Bicubic(clip, format=vs.$enter_text:Enter The Format You Wish To Convert To$)")) ''Ex: resize.Bicubic( format=vs.YUV444P8)        
         color.Filters.Add(New VideoFilter(color.Name, "Convert | To 444", "clip = core.fmtc.resample (clip, css=""444"")"))
@@ -757,7 +766,7 @@ Public Class FilterCategory
         line.Filters.Add(New VideoFilter(line.Name, "Anti-Aliasing | DAA", "clip = havsfunc.daa(clip)"))
         line.Filters.Add(New VideoFilter(line.Name, "Anti-Aliasing | MAA", "clip = muvsfunc.maa(clip)"))
         line.Filters.Add(New VideoFilter(line.Name, "Sharpen | LSFmod", "clip = havsfunc.LSFmod(clip, defaults=""slow"",strength = 100, Smode=5, Smethod=3, kernel=11, preblur=""OFF"", secure=True, Szrp= 16, Spwr= 4, SdmpLo= 4, SdmpHi= 48, Lmode=4, overshoot=1, undershoot=1, soft=-2, soothe=True, keep=20, edgemode=0, edgemaskHQ=True, ss_x= 1.50, ss_y=1.50)"))
-        line.Filters.Add(New VideoFilter(line.Name, "Sharpen | SharpAAMcmod", "clip = muvsfunc.SeeSaw(clip)"))
+        line.Filters.Add(New VideoFilter(line.Name, "Sharpen | SeeSaw", "clip = muvsfunc.SeeSaw(clip)"))
         line.Filters.Add(New VideoFilter(line.Name, "Sharpen | SharpAAMcmod", "clip = muvsfunc.SharpAAMcmod(clip)"))
         ret.Add(line)
 
@@ -765,7 +774,8 @@ Public Class FilterCategory
         field.Filters.Add(New VideoFilter(field.Name, "IVTC", "clip = core.vivtc.VFM(clip, 1)" + BR + "clip = core.vivtc.VDecimate(clip)"))
         field.Filters.Add(New VideoFilter(field.Name, "Select | Select Even", "clip = clip[::2]"))
         field.Filters.Add(New VideoFilter(field.Name, "Select | Select Odd", "clip = clip[1::2]"))
-        field.Filters.Add(New VideoFilter(field.Name, "znedi3", "clip = core.znedi3.nnedi3(clip, field = 1)"))
+        field.Filters.Add(New VideoFilter(field.Name, "nnedi3 | znedi3", "clip = core.znedi3.nnedi3(clip, field = 1)"))
+        field.Filters.Add(New VideoFilter(field.Name, "nnedi3 | nnedi3cl", "clip = core.nnedi3cl.NNEDI3CL(clip, field = 1)"))
         field.Filters.Add(New VideoFilter(field.Name, "Set | Set Frame Based", "clip = core.std.SetFieldBased(clip, 0) # 1 = BFF, 2 = TFF"))
         field.Filters.Add(New VideoFilter(field.Name, "Set | Set Bottom Field First", "clip = core.std.SetFieldBased(clip, 1) # 1 = BFF, 2 = TFF"))
         field.Filters.Add(New VideoFilter(field.Name, "Set | Set Top Field First", "clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF"))
@@ -777,11 +787,12 @@ Public Class FilterCategory
         noise.Filters.Add(New VideoFilter(noise.Name, "RemoveGrain | RemoveGrain | RemoveGrain with Repair", "Processed = core.rgvs.RemoveGrain(clip, 1)" + BR + "clip = core.rgvs.Repair(clip,Processed, mode=2)"))
         noise.Filters.Add(New VideoFilter(noise.Name, "MCTemporalDenoise", "clip = havsfunc.MCTemporalDenoise(i=clip, settings=""$select:msg:Select Strength;very low;low;medium;high;very high$"")"))
         noise.Filters.Add(New VideoFilter(noise.Name, "BM3D", "clip = mvsfunc.BM3D(clip)"))
+        noise.Filters.Add(New VideoFilter(noise.Name, "TempLinearApproximate", "clip = tla.TempLinearApproximate(clip)"))
         ret.Add(noise)
 
         Dim misc As New FilterCategory("Misc")
         misc.Filters.Add(New VideoFilter(misc.Name, "UnSpec", "clip = core.resize.Point(clip, matrix_in_s=""unspec"",range_s=""limited"")" + BR + "clip = core.std.AssumeFPS(clip, fpsnum = int(%media_info_video:FrameRate% * 1000), fpsden = 1000)" + BR + "clip = core.std.SetFrameProp(clip=clip, prop=""_ColorRange"", intval=1)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "UnSpec", "clip = muvsfunc.DisplayHistogram(clip)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "Histogram", "clip = muvsfunc.DisplayHistogram(clip)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Anamorphic to Standard", "clip = core.fmtc.resample (clip, w=1280, h=720, css=""444"")" + BR + "clip = core.fmtc.matrix (clip, mat=""709"", col_fam=vs.RGB)" + BR + "clip = core.fmtc.transfer (clip, transs=""1886"", transd=""srgb"")" + BR + "clip = core.fmtc.bitdepth (clip, bits=8)"))
         ret.Add(misc)
 

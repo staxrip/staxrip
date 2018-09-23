@@ -169,7 +169,7 @@ Public Class Folder
 
     Shared ReadOnly Property Template As String
         Get
-            Dim ret = Settings + "TemplatesV2\"
+            Dim ret = Settings + "Templates\"
             Dim fresh As Boolean
 
             If Not Directory.Exists(ret) Then

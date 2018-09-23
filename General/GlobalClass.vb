@@ -264,7 +264,7 @@ Public Class GlobalClass
 
     ReadOnly Property SettingsFile() As String
         Get
-            Return Folder.Settings + "SettingsV2.dat"
+            Return Folder.Settings + "Settings.dat"
         End Get
     End Property
 
@@ -491,7 +491,7 @@ Public Class GlobalClass
             SafeSerialization.Serialize(s, g.SettingsFile)
             Dim backupPath = Folder.Settings + "Backup\"
             If Not Directory.Exists(backupPath) Then Directory.CreateDirectory(backupPath)
-            FileHelp.Copy(g.SettingsFile, backupPath + "SettingsV2(" + Application.ProductVersion + ").dat")
+            FileHelp.Copy(g.SettingsFile, backupPath + "Settings(" + Application.ProductVersion + ").dat")
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -589,7 +589,7 @@ Public Class GlobalClass
                     p.TempDir = p.SourceFile.Dir
                 Else
                     Dim base = p.SourceFile.Base
-                    If base.Length > 30 Then base = base.Shorten(15) + "..."
+                    'If base.Length > 30 Then base = base.Shorten(15) + "..." <- No Longer Needed with GroupPolicy Change function in Windows 10.
                     p.TempDir = p.SourceFile.Dir + base + "_temp\"
                 End If
             End If
@@ -719,7 +719,7 @@ Public Class GlobalClass
                 If File.Exists(p.SourceFile) Then
                     Dim name = p.TargetFile.Base
                     If name = "" Then name = p.SourceFile.Base
-                    Dim path = FilePath.GetDir(p.SourceFile) + "crash.srip"
+                    Dim path = FilePath.GetDir(p.SourceFile) + "recovery.srip"
                     g.MainForm.SaveProjectPath(path)
                 End If
 

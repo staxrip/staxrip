@@ -392,7 +392,7 @@ Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$"
     Sub UpdateRecentProjects(path As String)
         Dim skip = Not File.Exists(path) OrElse
             path.StartsWith(Folder.Template) OrElse
-            path.EndsWith("crash.srip") OrElse
+            path.EndsWith("recovery.srip") OrElse
             path.Ext = "bin"
 
         Dim list As New List(Of String)

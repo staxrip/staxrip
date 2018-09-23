@@ -606,25 +606,25 @@ Public Class x265Params
     Property VBVinit As New NumParam With {
         .Switch = "--vbv-init",
         .Text = "VBV Init",
-        .Config = {0, 0, 0.05, 1},
+        .Config = {0.5, 1.0, 0.1, 1},
         .Init = 0.9}
 
     Property VBVend As New NumParam With {
         .Switch = "--vbv-end",
         .Text = "VBV End",
-        .Config = {0, 0, 0.05, 1},
+        .Config = {0, 1.0, 0.1, 1},
         .Init = 0.0}
 
     Property maxausizefactor As New NumParam With {
         .Switch = "--max-ausize-factor",
         .Text = "Max Ausize Factor",
-        .Config = {0, 0, 0.05, 1},
-        .Init = 1.0}
+        .Config = {0.5, 1.0, 0.1, 1},
+        .Init = 1}
 
     Property VBVfradj As New NumParam With { 'Need More Testing But Should work As it is.
         .Switch = "--vbv-end-fr-adj",
-        .Text = "VBV End",
-        .Config = {0, 1, 0.05, 1},
+        .Text = "VBV Adjust",
+        .Config = {0, 1, 0.1, 1},
         .Init = 0.0}
 
     Property Chromaloc As New NumParam With {
@@ -827,13 +827,12 @@ Public Class x265Params
                     AQmode, qgSize, AQStrength, QComp,
                     New NumParam With {.Switch = "--cbqpoffs", .Text = "CB QP Offset", .Config = {-12, 12}},
                     New NumParam With {.Switch = "--crqpoffs", .Text = "CR QP Offset", .Config = {-12, 12}},
-                    NRintra, NRinter, qpmin, qpmax, qpstep, CRFmin, CRFmax)
+                    NRintra, NRinter, qpmin, qpmax, qpstep, CRFmin, CRFmax, multi_pass_opt_analysis,
+                    multi_pass_opt_distortion)
                 Add("Rate Control 2",
                     VBVbufsize, VBVmaxrate, VBVinit, VBVend, VBVfradj,
                     IPRatio, PBRatio, Cplxblur, QBlur,
                     CUtree, Lossless, StrictCBR, rcGrain,
-                    multi_pass_opt_analysis,
-                    multi_pass_opt_distortion,
                     New BoolParam() With {.Switch = "--aq-motion", .Text = "AQ Motion"},
                     constvbv)
                 Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP,
@@ -855,7 +854,7 @@ Public Class x265Params
                     New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},
                     FrameThreads, WPP, Pmode, PME,
                     New BoolParam With {.Switch = "--asm", .NoSwitch = "--no-asm", .Text = "ASM", .Init = True},
-                    New BoolParam With {.Switch = "--asm avx512", .Text = "AVX 512", .Init = False},
+                    New BoolParam With {.Switch = "--asm avx512", .Text = "ASM AVX 512", .Init = False},
                     New BoolParam With {.Switch = "--slow-firstpass", .NoSwitch = "--no-slow-firstpass", .Init = True, .Text = "Slow Firstpass"},
                     New BoolParam With {.Switch = "--copy-pic", .NoSwitch = "--no-copy-pic", .Init = True, .Text = "Copy Pic"})
                 Add("Statistic",
@@ -887,12 +886,12 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers"},
                     New BoolParam With {.Switch = "--vui-timing-info", .Text = "VUI Timing Info"},
                     New BoolParam With {.Switch = "--vui-hrd-info", .Text = "VUI HRD Info"},
-                    New BoolParam With {.Switch = "--opt-qp-pps", .NoSwitch = "--no-opt-qp-pps", .Init = False, .Text = "Optimize QP in PPS"},
-                    New BoolParam With {.Switch = "--opt-ref-list-length-pps", .NoSwitch = "--no-opt-ref-list-length-pps", .Init = False, .Text = "Optimize L0 and L1 ref list length in PPS"},
-                    New BoolParam With {.Switch = "--multi-pass-opt-rps", .NoSwitch = "-no-multi-pass-opt-rps", .Init = False, .Text = "Enable storing commonly used RPS in SPS in multi pass mode"},
+                    New BoolParam With {.Switch = "--opt-qp-pps", .Init = False, .Text = "Optimize QP in PPS"},
+                    New BoolParam With {.Switch = "--opt-ref-list-length-pps", .Init = False, .Text = "Optimize L0 and L1 ref list length in PPS"},
+                    New BoolParam With {.Switch = "--multi-pass-opt-rps", .Init = False, .Text = "Enable storing commonly used RPS in SPS in multi pass mode"},
                     New BoolParam With {.Switch = "--opt-cu-delta-qp", .Text = "Optimize CU level QPs pulling up lower QPs close to meanQP"},
-                    New BoolParam With {.Switch = "--idr-recovery-sei", .NoSwitch = "--no-idr-recovery-sei", .Init = False, .Text = "Recovery SEI"},
-                    New BoolParam With {.Switch = "--single-sei", .NoSwitch = "--no-single-sei", .Init = False, .Text = "Single SEI"})
+                    New BoolParam With {.Switch = "--idr-recovery-sei", .Init = False, .Text = "Recovery SEI"},
+                    New BoolParam With {.Switch = "--single-sei", .Init = False, .Text = "Single SEI"})
                 Add("Input/Output",
                     New OptionParam With {.Switch = "--input-depth", .Text = "Input Depth", .Options = {"Automatic", "8", "10", "12", "14", "16"}},
                     New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Options = {"Automatic", "I400", "I420", "I422", "I444", "NV12", "NV16"}},

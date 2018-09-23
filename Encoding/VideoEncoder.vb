@@ -85,20 +85,27 @@ Public MustInherit Class VideoEncoder
         Dim MasteringDisplay_Luminance = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_Luminance")
 
         If MasteringDisplay_ColorPrimaries <> "" AndAlso MasteringDisplay_Luminance <> "" Then
-            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "BT.2020")
+            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "(BT.2020)")
             ''Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "R: x=([0-9\.]+) y=([0-9\.]+), G: x=([0-9\.]+) y=([0-9\.]+), B: x=([0-9\.]+) y=([0-9\.]+), White point: x=([0-9\.]+) y=([0-9\.]+)")
-            Dim match2 = Regex.Match(MasteringDisplay_Luminance, "min: ([0-9\.]+) cd/m2, max: ([0-9\.]+)")
+            Dim match2 = Regex.Match(MasteringDisplay_Luminance, "min: ([0-9\.]+) cd/m2, max: ([0-9\.]+) cd/m2")
+
 
             If match1.Success AndAlso match2.Success Then
-                ''Dim strings1 = match1.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 50000).ToString)
+                'Dim strings1 = match1.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 50000).ToString)
+                Dim strings1 = match1.Groups.OfType(Of Group).Select(Function(group) CInt(group.Value.ToDouble * 50000).ToString)
                 Dim strings2 = match2.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 10000).ToString)
-                cl += "--master-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L(10000000,1)"""
-                ''cl += $" --master-display ""G({strings1(2)},{strings1(3)})B({strings1(4)},{strings1(5)})R({strings1(0)},{strings1(1)})WP({strings1(6)},{strings1(7)})L({strings2(1)},{strings2(0)})"""
+                cl += " --no-open-gop"
+                cl += " --master-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L(10000000,1)"""
+                'cl += $" --master-display ""G({strings1(2)},{strings1(3)})B({strings1(4)},{strings1(5)})R({strings1(0)},{strings1(1)})WP({strings1(6)},{strings1(7)})L({strings2(1)},{strings2(0)})"""
                 cl += " --range limited"
+                cl += " --hdr"
+                cl += " --repeat-headers"
+                cl += " --hrd"
+                cl += " --aud"
             End If
-        End If
+            End If
 
-        Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
+            Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
         Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
 
         If MaxCLL <> 0 OrElse MaxFALL <> 0 Then cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""

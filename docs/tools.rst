@@ -4,16 +4,24 @@
 Tools
 -----
 
-aomenc
-~~~~~~
+AddGrainC
+~~~~~~~~~~~
 
-AOMedia Video 1 (AV1) is an open, royalty-free video coding format designed for video transmissions over the Internet.
+Generate film-like grain or other effects (like rain) by adding random noise to a video clip. This noise may optionally be horizontally or vertically correlated to cause streaking. 
 
-Used Version: 2017-08-30
-Removed Util Encoder Matures. To slow to be usable in it's current state. FFMPEG has support for those who want to use it.
+Used Version: 1.7.1 
 
-http://aomedia.org
+Adjust
+~~~~~~~~~~~
 
+very basic port of the built-in Avisynth filter Tweak.
+
+Used Version: 2015-03-22
+
+AnimeIVTC
+~~~~~~~~~~~
+
+Used Version: 2.20
 
 AviSynth+
 ~~~~~~~~~

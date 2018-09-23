@@ -379,7 +379,7 @@ Public Class AppsForm
             Case Keys.F1
                 tsbHelp.PerformClick()
             Case Keys.F10
-                Dim fp = "D:\Projekte\VS\VB\StaxRip\changelog.md"
+                Dim fp = "C:\Users\Revan\Desktop\staxrip-1.8.2.0\bin\changelog.md"
                 If File.Exists(fp) Then g.StartProcess(fp)
             Case Keys.F11
                 tsbPath.PerformClick()
@@ -405,8 +405,8 @@ Public Class AppsForm
             Dim plugin = TryCast(pack, PluginPackage)
 
             Dim searchString = pack.Name + pack.Description + pack.Version +
-                plugin?.VSFilterNames.Join(" ") +pack.Path+
-                plugin?.AvsFilterNames.Join(" ") 
+                plugin?.VSFilterNames.Join(" ") + pack.Path +
+                plugin?.AvsFilterNames.Join(" ")
 
             If searchString?.ToLower.Contains(SearchTextBox.Text?.ToLower) Then
                 If plugin Is Nothing Then
@@ -421,13 +421,13 @@ Public Class AppsForm
                     End If
                 Else
                     If plugin.AvsFilterNames?.Length > 0 Then
-                        Dim n = tv.AddNode("Plugins|AviSynth|" + pack.Name)
+                        Dim n = tv.AddNode("Avisynth|Plugins|" + pack.Name)
                         Nodes.Add(n)
                         n.Tag = pack
                     End If
 
                     If plugin.VSFilterNames?.Length > 0 Then
-                        Dim n = tv.AddNode("Plugins|VapourSynth|" + pack.Name)
+                        Dim n = tv.AddNode("VapourSynth|Plugins|" + pack.Name)
                         Nodes.Add(n)
                         n.Tag = pack
                     End If
@@ -458,13 +458,13 @@ Public Class AppsForm
         g.StartProcess(CurrentPackage.WebURL)
     End Sub
 
-    'Private Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click
-    '    g.StartProcess(CurrentPackage.DownloadURL)
-    'End Sub
-
     Private Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click
-        g.StartProcess(CurrentPackage.GetDir + "Update.bat")
+        g.StartProcess(CurrentPackage.DownloadURL)
     End Sub
+
+    'Private Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click
+    '    g.StartProcess(CurrentPackage.GetDir + "Update.bat")
+    'End Sub
 
     Private Sub tsbPath_Click(sender As Object, e As EventArgs) Handles tsbPath.Click
         Using d As New OpenFileDialog
@@ -486,14 +486,17 @@ Public Class AppsForm
         If input <> "" Then
             input = input.Replace(";", "_")
             CurrentPackage.Version = input
-            CurrentPackage.VersionDate = File.GetLastWriteTimeUtc(CurrentPackage.Path)
+            CurrentPackage.VersionDate = File.GetLastWriteTime(CurrentPackage.Path)
+            'GetLastWriteTimeUtc(CurrentPackage.Path)
 
             Dim txt = Application.ProductVersion + BR2
 
             For Each i In Package.Items.Values
                 If i.Version <> "" Then
                     txt += i.ID + " = " + i.VersionDate.ToString("yyyy-MM-dd",
-                        CultureInfo.InvariantCulture) + "; " + i.Version + BR 'persian calendar
+                        CultureInfo.InvariantCulture) + "; " + i.Version + BR
+
+
                 End If
             Next
 

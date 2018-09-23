@@ -4,39 +4,6 @@
 Tools
 -----
 
-AddGrainC
-~~~~~~~~~~~
-
-Generate film-like grain or other effects (like rain) by adding random noise to a video clip. This noise may optionally be horizontally or vertically correlated to cause streaking. 
-
-Version: 1.7.1 
-
-Adjust
-~~~~~~~~~~~
-
-very basic port of the built-in Avisynth filter Tweak.
-
-Version: 2015-03-22
-
-
-AnimeIVTC
-~~~~~~~~~~~
-
-Designed to used with QTGMC.
-
-Version: 2.20 
-
-http://avisynth.nl/index.php/AnimeIVTC
-
-Average
-~~~~~~~~~~~
-
-A simple plugin that calculates a weighted frame-by-frame average from multiple clips. This is a modern rewrite of the old Average plugin but a bit faster, additional colorspace support, and some additional sanity checks.
-
-Version: 0.94
-
-http://avisynth.nl/index.php/Average
-
 AviSynth+
 ~~~~~~~~~
 
@@ -372,6 +339,7 @@ http://x265.org
 
 AviSynth Plugins
 ----------------
+
 AutoAdjust
 ~~~~~~~~~~
 
@@ -382,6 +350,32 @@ Filters: AutoAdjust
 Used Version: 2.60
 
 https://forum.doom9.org/showthread.php?t=167573
+
+AddGrainC
+~~~~~~~~~~~
+
+Generate film-like grain or other effects (like rain) by adding random noise to a video clip. This noise may optionally be horizontally or vertically correlated to cause streaking. 
+
+Version: 1.7.1 
+
+
+AnimeIVTC
+~~~~~~~~~~~
+
+Designed to used with QTGMC.
+
+Version: 2.20 
+
+http://avisynth.nl/index.php/AnimeIVTC
+
+Average
+~~~~~~~~~~~
+
+A simple plugin that calculates a weighted frame-by-frame average from multiple clips. This is a modern rewrite of the old Average plugin but a bit faster, additional colorspace support, and some additional sanity checks.
+
+Version: 0.94
+
+http://avisynth.nl/index.php/Average
 
 
 aWarpSharp2

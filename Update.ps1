@@ -22,7 +22,9 @@ return $staxrip_path
 }
 
 function Close_Application{
-get-process StaxRip | %{ $_.closemainwindow() }
+Get-Process StaxRip
+Stop-Process -Name "StaxRip"
+#get-process StaxRip | %{ $_.closemainwindow() Clean Exit Only.  }
 }
 
 function Start_Application($Path) {
@@ -77,7 +79,7 @@ function Download-staxrip {
     $pattern = "([0-9].[0-9].[0-9].[0-9]).x64.zip"    
     $bool = $Links -match $pattern
     $Build = "https://github.com/Revan654/staxrip/releases/download/" + $matches[1] + "/" + $matches[1] + ".x64.zip"
-    Invoke-WebRequest -Uri $Build -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox -OutFile "Staxrip.7z"
+    Invoke-WebRequest -Uri $Build -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0" -OutFile "Staxrip.7z"
 }
 
 function Get-Latest-staxrip {  
@@ -88,7 +90,7 @@ function Get-Latest-staxrip {
     return $Build
 }
 
-function Get-Arch { #Is Not Called, Will Remain if it's needed at a later Date.
+function Get-Arch { #Not needed at This Time
     # Reference: http://superuser.com/a/891443
     $FilePath = [System.IO.Path]::Combine((Get-Location).Path, 'StaxRip.exe')
     [int32]$MACHINE_OFFSET = 4
@@ -139,7 +141,7 @@ function Upgrade-staxrip {
     Write-Host "Fetching URL Data for StaxRip Builds" -ForegroundColor Green                  
     $localVersion = ExtractVersionFromFile
     $remoteVersion = ExtractVersionFromURL 
-    if ((ExtractVersionFromFile) -gt (ExtractVersionFromURL)) {
+    if ((ExtractVersionFromFile) -ge (ExtractVersionFromURL)) {
         Write-Host "You are Already Using Latest Build." -ForegroundColor Red
         Write-Host "Current Build: $remoteVersion" -ForegroundColor Red
             $need_download = $false  

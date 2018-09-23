@@ -16,7 +16,7 @@ Main Drop Down Menu
 App Form
 --------
 
-..image:: screenshots/AppForm.png
+.. image:: screenshots/AppForm.png
 
 Audio
 -----
@@ -64,6 +64,10 @@ Thumbnails
 
 .. image:: screenshots/Thumbnails.png
 .. image:: screenshots/MTNThumbnails.png
+
+Header Output & Font 
+---------------------
+
 .. image:: screenshots/Font.png
 
 Animation
@@ -75,8 +79,8 @@ Animation
 Update
 ------
 
-..image:: screenshots/Update.msg.png
-..image:: screenshots/UpdateScreen.png
+.. image:: screenshots/Update.msg.png
+.. image:: screenshots/UpdateScreen.png
 
 x265
 ----

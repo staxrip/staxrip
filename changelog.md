@@ -1,22 +1,163 @@
 #### Requirements
 
-.NET 4.7 is required on systems prior to Windows 10 Anniversary or users using Windows 8.1 or Windows 7 SP1.
+.NET 4.7 is required on systems prior to Windows 10 Anniversary.
 
 https://www.microsoft.com/en-us/download/details.aspx?id=55170
-
-#### Download
-
-Earlier Test Builds For Version 1.7.x.x:
-
-https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 
 
 1.9.00
 
-- Added Two new Marcos to the list.
-	- %target_files%	
-- Updated the PowerShell Assembly to version 1.1.0
-- Added Support for New Thumbnail Creator, Which is much faster. The Only One will remain for those who want to use it.
+- Added a new Marco to the list.
+	- Script_files%	
+- Added Support Added for FFMS LoadCPlugins. FFMS2K will use the normal LoadPlugin Function.
+- Avisynth and Vapousynth have Seperate Menu tabs in the App Forms. Vapoursynth is no longer burried inside Avisynth Menu at the bottom.
+- Removed all the dead links from Package Section and Replaced them with the most up to date URL's, If one existed.
+- Added Support for PNG & Tiff when saving a screenshot of a single Frame in the Preview Window. To add or Remove a Format Just need to access the edit menu.
+- StaxRip now has a Update Function through PowerShell Script. It will first Shutdown the app and check for updates. If a new version is avaible, it download, extract and re-open StaxRip.
+- Updated the PowerShell 5 Reference Assemblies to version 1.1.0.
+- Framework has been Updated to 4.7.2.
+- Subtitle Tools have been moved to Advance -> Tools -> Subtitles.
+- Internal Thumbnail Creator:
+	- Added support for PNG, BMP & TIFF. 
+	- It Fully supports HDR10, HDR10+ and HLG.
+	- Add support for Gap (The Size between each shot). 
+	- The ability to disable the StaxRip Logo has been added.
+	- The Font styles have been changed to DejaVu Serif which give a much cleaner look.
+	- The Default Logo Font Style has been changed to DejaVu Serif, Which gives the logo a bit more Style.
+	- Cleaned up the Header to make it more Professional looking.
+	- Added more Video information to the Header as well.
+	- The Matrix for the Creator has Been tweaked.
+
+- Added Support for New Thumbnail Creator Which can be used by it self or added into the project process. It Uses FFMPEG engine to create the Thumbnails without the need to index any file(s).
+	Options Support as of Right Now:
+		- Number of Columns
+		- Number of Rows
+		- Width of Each Shot
+		- Height of Each Shot
+		- Depth of Each Shot
+		- Quality of Jpg
+
+- Added Animation Support in the Form of gif & apng(png). by it self or be added into a project process. It Uses FFMPEG engine to create the animation without the need to index any file(s).
+	Options for Gif:
+	- Scale (Width x auto)
+	- FrameRate (No Float points are Support, it must be a solid number like 60 and not 59.940.)
+	- Statistics Mode
+	- Diff Mode
+	- Dither Options
+	- Starting Time (in Seconds) - Supports Float Points like 25.2.
+	- Length(in Seconds) - Supports Float points.
+- Options For aPNG:
+	- Starting Time (in Seconds) - Supports Float points.
+	- Length(in Seconds) - Supports Float points.
+	- FrameRate -  No Support for Float points.
+	- Scale	(Width x auto)
+	- Opt Settings (zlib,7zip & Zopfli) - zlib is the fastest with Zopfli being the slowest. 7zip is the balance between the two.
+
+- Updated all Vapoursynth variable names for existing filters that have been changed or removed since 1.7.
+- Tweaked the Job Loading function, When a previous job is loaded into StaxRip the form will now automatically close.
+- Added Support for Remaining HDR10 colorspace Metadata, To make it full compatible with HDR10 Standards(MKV Only). The function can be enabled in the option section under Image -> Extras. It can also be done Manually The tool can be accessed by Apps -> MediaInfo -> MKVHDR
+- Altered VUI import system to match MediaInfo changes. For HDR10 it must match BT.2020 Colorspace. It will now also enable the additional flags in VUI and Bitstream to encode to HDR10. GOP & VBV Settings will have to be set manually.
+- Removed the Character Limit on the Temp Folders. It will not longer create the '...' after it hits 30 characters Which was designed for Windows 260 limit. If you need more then 260 characters you can alter the GroupPolicy Settings.
+- MediaFolder Folder Option has been Disabled(It was no longer Working correctly) and has been updated with the internal MediaInfo GUI that allows you to open any file, If it's loaded in StaxRip or not.
+
+- x265 Changes:
+	- 12Bit Profiles Have Been Added	
+	- VUI Menu has been Broken Up into two Menus now due to the Growing Number of options in the VUI section.
+	- Added:
+		- chromaloc
+		- DHDR10-Info
+		- atc-sei
+		- pic-struct
+		- display-window
+		- opt-ref-list-length-pps
+		- opt-qp-pps
+		- single-sei
+		- dynamic-refine
+		- idr-recovery-sei
+		- VBVinit, VBVend, VBV Adjustment,
+		- Maximum AU size Factor
+		- refine-intra has been increased to Level 4
+
+- VapourSynth Updated Context Menu:
+	The List of all Included Filters:
+- Source: 
+	- AVISource
+	- d2vsource
+	- DGSource
+	- ffms2
+	- LibavSMASHSource
+	- LWLibavSource
+- FrameRate
+	- AssumeFPS
+	- InterFrame
+	- SVPFlow
+- Color
+	- BitDepth
+	- Matrix
+	- Transfer
+	- Primaries
+	- Cube
+	- Range
+	- Tweak
+	- Convert To
+	- Format (Mainly Designed for HDR to SDR)
+	- To 444
+	- To RGB
+	- To YUV
+	- Dither Tools
+- Line
+	- MAA
+	- DAA
+	- Sangnom
+	- TAAmbk
+	- SeeSaw
+	- FineSharp
+	- MSharpen
+	- aWarpSharpen2
+	- LSFmod
+	- pSharpen
+	- SharpAAMcmod
+- Resize
+	- Resize
+	- ReSample
+	- Dither_Resize16
+- Field
+	- IVTC
+	- QTGMC
+	- nnedi3
+	- Yadifmod
+	- nnedi3cl
+	- znedi3
+	- Support Filters
+- Noise
+	- DFTTest
+	- BM3D
+	- HQDN3D
+	- KNLMeansCL
+	- MCTemporalDenoise
+	- DegrainMedian
+	- RemoveGrain
+	- SMDegrain 	
+	- TTempSmooth
+	- VagueDenoiser
+- Misc
+	- Anamorphic to Standard
+	- UnSpec
+	- Histogram
+- Restoration
+	- Deblock
+	- Deblock PP7
+	- Deblock_QED
+	- MDeRing
+	- MSmooth
+	- abcxyz
+	- BlindDeHalo3
+	- DeHaloAlpha
+	- EdgeCleaner
+	- HQDering
+	- YAHR
+	- Vinverse
+	- Vinverse 2
 
 1.8.0.0
 
@@ -399,7 +540,7 @@ Filters and Software that Support AVX2: aWarpSharp2, DCTFilter, DFTTest, JPSDR, 
 #### 1.6.0.9 unstable test build
 
 - new: x265 switch and flags added but the x265 binary is not updated because it isn't yet merged with the stable branch (https://forum.doom9.org/showthread.php?p=1815427#post1815427)
-- new: added setting to enable debug logging to settings dialog, the issue with the main dialog disappearing is probably fixed so at the moment the setting is probably useless (https://github.com/stax76/staxrip/issues/244)
+- new: added setting to enable logging to settings dialog, the issue with the main dialog disappearing is probably fixed so at the moment the setting is probably useless (https://github.com/stax76/staxrip/issues/244)
 
 - fix: subtitle cutting did not work for multi stream idx files extracted with vsrip (https://github.com/stax76/staxrip/issues/268)
 

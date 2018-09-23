@@ -8,10 +8,21 @@ Main
 
 .. image:: screenshots/_Main.png
 
+Main Drop Down Menu
+----
+
+.. image:: screenshots/Menus.png
+
+App Form
+--------
+
+..image:: screenshots/AppForm.png
+
 Audio
 -----
 
 .. image:: screenshots/Audio.png
+.. image:: screensshots/AudioMenu.png
 
 eac3to
 ------
@@ -52,6 +63,20 @@ Thumbnails
 ----------
 
 .. image:: screenshots/Thumbnails.png
+.. image:: screenshots/MTNThumbnails.png
+.. image:: screenshots/Font.png
+
+Animation
+----------
+
+.. image:: screenshots/PNGAnimation.png
+.. image:: screenshots/GIF.Animation.png
+
+Update
+------
+
+..image:: screenshots/Update.msg.png
+..image:: screenshots/UpdateScreen.png
 
 x265
 ----

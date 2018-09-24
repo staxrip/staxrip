@@ -854,7 +854,7 @@ Public Class x265Params
                     New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},
                     FrameThreads, WPP, Pmode, PME,
                     New BoolParam With {.Switch = "--asm", .NoSwitch = "--no-asm", .Text = "ASM", .Init = True},
-                    New BoolParam With {.Switch = "--asm avx512", .Text = "ASM AVX 512", .Init = False},
+                    New BoolParam With {.Switch = "--asm avx512", .Text = "AVX 512", .Init = False},
                     New BoolParam With {.Switch = "--slow-firstpass", .NoSwitch = "--no-slow-firstpass", .Init = True, .Text = "Slow Firstpass"},
                     New BoolParam With {.Switch = "--copy-pic", .NoSwitch = "--no-copy-pic", .Init = True, .Text = "Copy Pic"})
                 Add("Statistic",

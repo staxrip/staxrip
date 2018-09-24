@@ -12,6 +12,10 @@ Public Class GIF
             proj.SourceFile = inputFile
         End If
 
+        proj.Log.WriteHeader("Saving GIF")
+        proj.Log.WriteLine(inputFile)
+        proj.Log.Save(proj)
+
         Dim Rate = s.Storage.GetInt("GifFrameRate", 15)
         Dim cachePath = Folder.Temp + "Palette.png"
         Dim OutPutPath = inputFile + ".gif"
@@ -42,6 +46,10 @@ End Class
             proj.SourceFile = inputFile
         End If
 
+        proj.Log.WriteHeader("Saving Thumbnails")
+        proj.Log.WriteLine(inputFile)
+        proj.Log.Save(proj)
+
         Dim Col = s.Storage.GetInt("MTNColumn", 4)
         Dim Rows = s.Storage.GetInt("MTNRow", 6)
         Dim SizeWidth = s.Storage.GetInt("MTNWidth", 1280)
@@ -66,6 +74,10 @@ Public Class PNG
             proj.SourceFile = inputFile
         End If
 
+        proj.Log.WriteHeader("Saving aPNG")
+        proj.Log.WriteLine(inputFile)
+        proj.Log.Save(proj)
+
         Dim Rate = s.Storage.GetInt("PNGFrameRate", 15)
         Dim Path = inputFile + ".apng"
         Dim NewPath = inputFile + ".png"
@@ -74,12 +86,21 @@ Public Class PNG
         Dim Duration = s.Storage.GetString("PNGLength", 4)
         Dim Size = s.Storage.GetInt("PNGScale", 480)
         Dim OptSettings = s.Storage.GetString("PNGopt", "-z0")
+        Dim Opt = s.Storage.GetBool("OptSetting", False)
 
-        g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline" + """ -plays 0 -loglevel quiet -an -y " + """" + Path + """", True, True, False)
-        File.Move(Path, NewPath)
-        g.DefaultCommands.ExecuteCommandLine(Package.Items("PNGopt").Path.Escape + " " + OptSettings + " " + """" + NewPath + """" + " " + """" + OptOut + """", True, True, False)
-        File.Delete(NewPath)
+        If Opt = False Then
 
+            g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline" + """ -plays 0 -loglevel quiet -an -y " + """" + Path + """", True, True, False)
+            File.Move(Path, NewPath)
+
+        Else
+
+            g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline" + """ -plays 0 -loglevel quiet -an -y " + """" + Path + """", True, True, False)
+            File.Move(Path, NewPath)
+            g.DefaultCommands.ExecuteCommandLine(Package.Items("PNGopt").Path.Escape + " " + OptSettings + " " + """" + NewPath + """" + " " + """" + OptOut + """", True, True, False)
+            File.Delete(NewPath)
+
+        End If
 
     End Sub
 

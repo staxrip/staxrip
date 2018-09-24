@@ -12,9 +12,6 @@ Public Class GIF
             proj.SourceFile = inputFile
         End If
 
-        proj.Log.WriteHeader("Saving GIF")
-        proj.Log.WriteLine(inputFile)
-        proj.Log.Save(proj)
 
         Dim Rate = s.Storage.GetInt("GifFrameRate", 15)
         Dim cachePath = Folder.Temp + "Palette.png"
@@ -25,6 +22,8 @@ Public Class GIF
         Dim Mode = s.Storage.GetString("PaletteGen", "diff")
         Dim SecondMode = s.Storage.GetString("PaletteUse", "rectangle")
         Dim Dither = s.Storage.GetString("GifDither", "dither=bayer:bayer_scale=5")
+        Dim Options = s.Storage.GetBool("Output", False)
+
 
         g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -vf " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=" & Mode & """ -loglevel quiet -an -y " + cachePath, True, True, False)
         g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & ":diff_mode=" & SecondMode & """ -loglevel quiet -an -y " + """" + OutPutPath + """", True, True, False)
@@ -46,9 +45,6 @@ End Class
             proj.SourceFile = inputFile
         End If
 
-        proj.Log.WriteHeader("Saving Thumbnails")
-        proj.Log.WriteLine(inputFile)
-        proj.Log.Save(proj)
 
         Dim Col = s.Storage.GetInt("MTNColumn", 4)
         Dim Rows = s.Storage.GetInt("MTNRow", 6)
@@ -56,9 +52,16 @@ End Class
         Dim SizeHeight = s.Storage.GetInt("MTNHeight", 150)
         Dim PictureQuality = s.Storage.GetInt("MTNQuality", 95)
         Dim PictureDepth = s.Storage.GetInt("MTNDepth", 12)
+        Dim Options = s.Storage.GetBool("CustomOut", False)
 
-        g.DefaultCommands.ExecuteCommandLine(Package.Items("MTN").Path.Escape + """" + inputFile + """" + " -c " & Col & " -r " & Rows & " -w " & SizeWidth & " -h " & SizeHeight & " -D " & PictureDepth & " -j " & PictureQuality & " -P ", True, True, False)
+        If Options = True Then
 
+            g.DefaultCommands.ExecuteCommandLine(Package.Items("MTN").Path.Escape + """" + inputFile + """" + " -c " & Col & " -r " & Rows & " -w " & SizeWidth & " -h " & SizeHeight & " -D " & PictureDepth & " -j " & PictureQuality & " -P ", True, True, False)
+
+        ElseIf Options = False Then
+
+            g.DefaultCommands.ExecuteCommandLine(Package.Items("MTN").Path.Escape + """" + inputFile + """" + " -c " & Col & " -r " & Rows & " -w " & SizeWidth & " -h " & SizeHeight & " -D " & PictureDepth & " -j " & PictureQuality & " -O " & p.DefaultTargetFolder & " -P ", True, True, False)
+        End If
     End Sub
 End Class
 Public Class PNG
@@ -74,10 +77,6 @@ Public Class PNG
             proj.SourceFile = inputFile
         End If
 
-        proj.Log.WriteHeader("Saving aPNG")
-        proj.Log.WriteLine(inputFile)
-        proj.Log.Save(proj)
-
         Dim Rate = s.Storage.GetInt("PNGFrameRate", 15)
         Dim Path = inputFile + ".apng"
         Dim NewPath = inputFile + ".png"
@@ -87,6 +86,7 @@ Public Class PNG
         Dim Size = s.Storage.GetInt("PNGScale", 480)
         Dim OptSettings = s.Storage.GetString("PNGopt", "-z0")
         Dim Opt = s.Storage.GetBool("OptSetting", False)
+        Dim Options = s.Storage.GetBool("Output", False)
 
         If Opt = False Then
 
@@ -118,7 +118,6 @@ Public Class MKVInfoLookup
         End If
 
         g.DefaultCommands.ExecuteCommandLine(Package.Items("mkvinfo").Path.Escape + " " + """" + inputFile + """" + BR + "pause", False, False, True)
-
 
     End Sub
 End Class
@@ -156,5 +155,3 @@ Public Class UpdateStaxRip
 
     End Sub
 End Class
-
-

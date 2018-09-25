@@ -131,6 +131,7 @@ Public Class ApplicationSettings
             AviSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("wmv", "DSS2")
             AviSynthFilterPreferences.Add("vdr", "AviSource")
+            AviSynthFilterPreferences.Add("avi raw", "RawSourcePlus")
         End If
 
         If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 3) Then
@@ -143,6 +144,7 @@ Public Class ApplicationSettings
             VapourSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavSource")
             VapourSynthFilterPreferences.Add("d2v", "d2vsource")
             VapourSynthFilterPreferences.Add("dgi", "DGSource")
+            VapourSynthFilterPreferences.Add("avi raw", "RawPlus")
         End If
 
         If Check(eac3toProfiles, "eac3to Audio Stream Profiles", 4) Then

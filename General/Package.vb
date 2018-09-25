@@ -149,8 +149,6 @@ Public Class Package
         .Name = "BDSup2Sub++",
         .Filename = "bdsup2sub++.exe",
         .LaunchName = "bdsup2sub++.exe",
-        .IsRequired = False,
-        .IgnoreVersion = True,
         .WebURL = "http://forum.doom9.org/showthread.php?p=1613303",
         .Description = "Converts Blu-ray subtitles to other formats like VobSub."})
 
@@ -244,8 +242,6 @@ Public Class Package
         .Name = "VSRip",
         .Filename = "VSRip.exe",
         .Description = "VSRip rips VobSub subtitles.",
-        .IsRequired = False,
-        .IgnoreVersion = True,
         .WebURL = "http://sourceforge.net/projects/guliverkli",
         .LaunchName = "VSRip.exe"})
 
@@ -1183,12 +1179,12 @@ Public Class Package
             .AvsFilterNames = {"yadifmod2"},
             .AvsFiltersFunc = Function() {New VideoFilter("Field", "yadifmod2", "yadifmod2()")}})
 
-        'Add(New PluginPackage With {
-        '    .Name = "DCTFilter",
-        '    .Filename = "DCTFilter.dll",
-        '    .Description = "A rewrite of DctFilter for Avisynth+.",
-        '    .URL = "http://github.com/chikuzen/DCTFilter",
-        '    .AvsFilterNames = {"DCTFilter", "DCTFilterD", "DCTFilter4", "DCTFilter4D", "DCTFilter8", "DCTFilter8D"}})
+        Add(New PluginPackage With {
+            .Name = "DCTFilter",
+            .Filename = "DCTFilter.dll",
+            .Description = "A rewrite of DctFilter for Avisynth+.",
+            .URL = "http://github.com/chikuzen/DCTFilter",
+            .AvsFilterNames = {"DCTFilter", "DCTFilterD", "DCTFilter4", "DCTFilter4D", "DCTFilter8", "DCTFilter8D"}})
 
         Add(New PluginPackage With {
             .Name = "DCTFilter",
@@ -1203,6 +1199,14 @@ Public Class Package
             .Description = "vcmod plugin for VapourSynth.",
             .URL = "http://www.avisynth.nl/users/vcmohan/vcmod/vcmod.html",
             .VSFilterNames = {"vcmod.Median", "vcmod.Variance", "vcmod.Amplitude", "vcmod.GBlur", "vcmod.MBlur", "vcmod.Histogram"}})
+
+        Add(New PluginPackage With {
+            .Name = "RawSource",
+            .Filename = "vsrawsource.dll",
+            .DirPath = "Plugins\VS\vsRawSource",
+            .Description = "raw(uncompressed) video source filter for VapourSynth.",
+            .URL = "http://www.avisynth.nl/users/vcmohan/vcmod/vcmod.html",
+            .VSFilterNames = {"raws.Source"}})
 
         Add(New PluginPackage With {
             .Name = "Yadifmod",
@@ -1237,14 +1241,14 @@ Public Class Package
                 "mv.Degrain3", "mv.Mask", "mv.Finest", "mv.Flow", "mv.FlowBlur", "mv.FlowInter", "mv.FlowFPS", "mv.BlockFPS", "mv.SCDetection",
                 "mv.DepanAnalyse", "mv.DepanEstimate", "mv.DepanCompensate", "mv.DepanStabilise"}})
 
-        'Add(New PluginPackage With {
-        '    .Name = "mvtools sf",
-        '    .Filename = "libmvtoolssf.dll",
-        '    .WebURL = "http://github.com/dubhater/vapoursynth-mvtools",
-        '    .Description = "MVTools is a set of filters for motion estimation and compensation.",
-        '    .VSFilterNames = {"mv.Super", "mv.Analyse", "mv.Recalculate", "mv.Compensate", "mv.Degrain1", "mv.Degrain2",
-        '        "mv.Degrain3", "mv.Mask", "mv.Finest", "mv.Flow", "mv.FlowBlur", "mv.FlowInter", "mv.FlowFPS", "mv.BlockFPS", "mv.SCDetection",
-        '        "mv.DepanAnalyse", "mv.DepanEstimate", "mv.DepanCompensate", "mv.DepanStabilise"}})
+        Add(New PluginPackage With {
+            .Name = "mvtools sf",
+            .Filename = "libmvtools_sf_em64t_AVX1.dll",
+            .WebURL = "http://github.com/dubhater/vapoursynth-mvtools",
+            .Description = "MVTools is a set of filters for motion estimation and compensation.",
+            .VSFilterNames = {"mvsf.Super", "mvsf.Analyse", "mvsf.Recalculate", "mvsf.Compensate", "mvsf.Degrain1", "mvsf.Degrain2",
+                "mvsf.Degrain3", "mvsf.Mask", "mvsf.Finest", "mvsf.Flow", "mvsf.FlowBlur", "mvsf.FlowInter", "mvsf.FlowFPS", "mvsf.BlockFPS", "mvsf.SCDetection",
+                "mvsf.DepanAnalyse", "mvsf.DepanEstimate", "mvsf.DepanCompensate", "mvsf.DepanStabilise"}})
 
 
         'Add(New PluginPackage With { 'Currently Doesn't works Properly & crashes VS

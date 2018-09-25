@@ -128,7 +128,6 @@ Public Class MKVMetaDataHDR
         If Not Package.mkvmerge.VerifyOK(True) Then Exit Sub
 
         g.DefaultCommands.ExecuteCommandLine(Package.Items("mkvmerge").Path.Escape + " " + "-o " + """" + inputFile + "_HDR.mkv" + """" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + """" + inputFile + """", True, True, False)
-        g.DefaultCommands.ExecuteScriptFile("")
 
     End Sub
 End Class

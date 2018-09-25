@@ -637,7 +637,7 @@ Public Class FilterCategory
             {New VideoFilter("Source", "Manual", "# shows the filter selection dialog"),
              New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"),
              New VideoFilter("Source", "AviSource", "AviSource(""%source_file%"", Audio = False)"),
-             New VideoFilter("Source", "RawSourcePlus", "RawSourcePlus(""%source_file%"", fpsnum=%media_info_video:FrameRate_Num%, fpsden=(%media_info_video:FrameRate_Den%)"),
+             New VideoFilter("Source", "RawSourcePlus", "RawSourcePlus(""%source_file%"",Pixel_type=""YUV420P10"",width=%media_info_video:Width%,height=%media_info_video:Height%, fpsnum=%media_info_video:FrameRate_Num%, fpsden=%media_info_video:FrameRate_Den%)"),
              New VideoFilter("Source", "DirectShowSource", "DirectShowSource(""%source_file%"", audio = False)")})
         ret.Add(src)
 
@@ -656,10 +656,10 @@ Public Class FilterCategory
         color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Stack", "$select:To Stack|ConvertToStacked();From Stacked|ConvertFromStacked()$"))
         color.Filters.Add(New VideoFilter(color.Name, "Convert | ConvertTo", "ConvertTo$enter_text:Enter The Format You Wish To Convert To$()"))
         color.Filters.Add(New VideoFilter(color.Name, "Convert | ConvertBits", "ConvertBits($select:msg:Select the Bit Depth You want to Convert To;8;10;12;14;16;32$)"))
-        color.Filters.Add(New VideoFilter(color.Name, "Dither | Gamma <-> Linear", "$select:Gamma To Linear|Dither_y_gamma_to_linear;Linear To Gamma|Dither_y_linear_to_gamma$(Curve=""$select:msg:Select the Color Curve;601;709;2020$"")"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | Sigmoid", "$select:Sigmoid Direct|Dither_sigmoid_direct();Sigmoid Inverse|Dither_sigmoid_inverse()$"))
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | Gamma / Linear", "$select:Gamma To Linear|Dither_y_gamma_to_linear;Linear To Gamma|Dither_y_linear_to_gamma$(Curve=""$select:msg:Select the Color Curve;601;709;2020$"")"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | 8Bit to 16Bit", "Dither_convert_8_to_16()"))
-        color.Filters.Add(New VideoFilter(color.Name, "Dither | YUV <-> RGB", "$select:RGB To YUV|Dither_convert_rgb_to_yuv();YUV To RGB|Dither_convert_yuv_to_rgb()$"))
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | YUV / RGB", "$select:RGB To YUV|Dither_convert_rgb_to_yuv();YUV To RGB|Dither_convert_yuv_to_rgb()$"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | DFTTest(LSB)", "dfttest(lsb=True)"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | DitherPost", "DitherPost()"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | AutoGain", "ColorYUV(autogain=$select:msg:Enable AutoGain?;True;False$, autowhite=$select:msg:Enable AutoWhite?;True;False$)"))
@@ -730,7 +730,7 @@ Public Class FilterCategory
         Dim src As New FilterCategory("Source")
         src.Filters.AddRange(
             {New VideoFilter("Source", "Manual", "# shows filter selection dialog"),
-            New VideoFilter("Source", "RawSource", "clip = core.raws.Source(r""%source_file%"")"),
+            New VideoFilter("Source", "RawSource", "clip = core.raws.Source(r""%source_file%"", src_fmt=""YUV420P10"", width=%media_info_video:Width%,height=%media_info_video:Height%, fpsnum=%media_info_video:FrameRate_Num%, fpsden=%media_info_video:FrameRate_Den%)"),
              New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"),
              New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r""%source_file%"")")})
         ret.Add(src)
@@ -743,7 +743,7 @@ Public Class FilterCategory
         ret.Add(framerate)
 
         Dim color As New FilterCategory("Color")
-        color.Filters.Add(New VideoFilter(color.Name, "Dither | Gamma <-> Linear", "clip = $select:Gamma To Linear|Dither.gamma_to_linear|Linear To Gamma|Dither.linear_to_gamma$(clip, curve=""$select:msg:Select the Color Curve;601;709;2020$"")"))
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | Gamma / Linear", "clip = $select:Gamma To Linear|Dither.gamma_to_linear|Linear To Gamma|Dither.linear_to_gamma$(clip, curve=""$select:msg:Select the Color Curve;601;709;2020$"")"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | Sigmoid", "$select:Sigmoid Inverse|clip = havsfunc.SigmoidInverse(clip);Sigmoid Direct|clip = havsfunc.SigmoidDirect(clip)$"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | SmoothGrad", "clip = muvsfunc.GradFun3(src=clip, mode=6, smode=1)"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | Stack", "$select:Native to Stack16|clip = core.fmtc.nativetostack16(clip);Stack16 to Native|clip = fmtc.stack16tonative(clip)$"))
@@ -757,7 +757,7 @@ Public Class FilterCategory
         color.Filters.Add(New VideoFilter(color.Name, "Convert | Format", "clip = core.avs.z_ConvertFormat(clip, pixel_type = ""$select:msg:Select Pixel Type.;RGBPS;RGBP10;RGBP12;RGBP16;YV12;YV16;YV24;YUV420P10;YUV420P12;YUV420P16;YUV444P10;YUV444P12;YUV444P16;YUV422P10;YUV422P12;YUV422P16$"",colorspace_op=""$select:msg:Select Color Matrix Input;RGB;240m;709;2020ncl$:$select:msg:Select Color Transfer Input;Linear;470m;470bg;240m;SRGB;709;2020;st2084$:$select:msg:Select Color Primaries Input;470m;470bg;FILM;709;2020$:l=>$select:msg:Select Color Matrix output;RGB;FCC;YCGCO;240m;709;2020ncl$:$select:msg:Select Color Transfer Output;Linear;Log100;Log316;470m;470bg;240m;XVYCC;SRGB;709;2020;st2084$:$select:msg:Select Color Primaries Output;470m;470bg;FILM;709;2020$:l"", dither_type=""$select:msg:Select Dither Type;None;ordered$"")"))
         color.Filters.Add(New VideoFilter(color.Name, "Convert | Convert To", "clip = core.resize.Bicubic(clip, format=vs.$enter_text:Enter The Format You Wish To Convert To$)")) ''Ex: resize.Bicubic( format=vs.YUV444P8)        
         color.Filters.Add(New VideoFilter(color.Name, "Convert | To 444", "clip = core.fmtc.resample (clip, css=""444"")"))
-        color.Filters.Add(New VideoFilter(color.Name, "Convert | To RGB <-> YUV", "clip = $select:To RGB|mvsfunc.ToRGB;To YUV|mvsfunc.ToYUV$(clip,matrix=""$select:msg:Select Matrix;470bg;240;709;2020;2020cl;bt2020c$"")"))
+        color.Filters.Add(New VideoFilter(color.Name, "Convert | To RGB / YUV", "clip = $select:To RGB|mvsfunc.ToRGB;To YUV|mvsfunc.ToYUV$(clip,matrix=""$select:msg:Select Matrix;470bg;240;709;2020;2020cl;bt2020c$"")"))
         ret.Add(color)
 
         Dim line As New FilterCategory("Line")

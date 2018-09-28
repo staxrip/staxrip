@@ -65,7 +65,7 @@ function Check-staxrip {
 
 function Extract-staxrip  {    
     $Links = Invoke-WebRequest -Uri "https://github.com/Revan654/staxrip/releases/latest" –UseBasicParsing -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox
-    $pattern = "([0-9].[0-9].[0-9].[0-9]).x64.zip"    
+    $pattern = "([0-9].[0-9].[0-9].[0-9]).x64.7z"    
     $bool = $Links -match $pattern
     $FileName = $matches[1] + ".x64.7z"
     $7za = (Get-Location).Path + "\7z\7za.exe"
@@ -76,17 +76,17 @@ function Extract-staxrip  {
 function Download-staxrip {
     Write-Host "Downloading StaxRip" -ForegroundColor Green
     $Links = Invoke-WebRequest -Uri "https://github.com/Revan654/staxrip/releases/latest" –UseBasicParsing -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox
-    $pattern = "([0-9].[0-9].[0-9].[0-9]).x64.zip"    
+    $pattern = "([0-9].[0-9].[0-9].[0-9]).x64.7z"    
     $bool = $Links -match $pattern
-    $Build = "https://github.com/Revan654/staxrip/releases/download/" + $matches[1] + "/" + $matches[1] + ".x64.zip"
+    $Build = "https://github.com/Revan654/staxrip/releases/download/" + $matches[1] + "/" + $matches[1] + ".x64.7z"
     Invoke-WebRequest -Uri $Build -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0" -OutFile "Staxrip.7z"
 }
 
 function Get-Latest-staxrip {  
     $Links = Invoke-WebRequest -Uri "https://github.com/Revan654/staxrip/releases/latest" –UseBasicParsing -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox
-    $pattern = "([0-9].[0-9].[0-9].[0-9]).x64.zip"    
+    $pattern = "([0-9].[0-9].[0-9].[0-9]).x64.7z"    
     $bool = $Links -match $pattern
-    $Build = "https://github.com/Revan654/staxrip/releases/download/" + $matches[1] + "/" + $matches[1] + ".x64.zip"
+    $Build = "https://github.com/Revan654/staxrip/releases/download/" + $matches[1] + "/" + $matches[1] + ".x64.7z"
     return $Build
 }
 

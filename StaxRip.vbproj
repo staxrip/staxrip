@@ -88,7 +88,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <Optimize>true</Optimize>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>embedded</DebugType>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -416,10 +416,10 @@
     <None Include="changelog.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="DejaVu Serif.ttf">
+    <None Include="Fonts\DejaVu Serif.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="mikadan.ttf">
+    <None Include="Fonts\mikadan.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="My Project\Application.myapp">

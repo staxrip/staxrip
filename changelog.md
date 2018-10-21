@@ -4,29 +4,84 @@
 
 https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
+2.0
+- Anaconda 3.7 64Bit has been added to Python search Path.
+- Directory Output has been Added to StaxRip Thumbnail Creator. It's Default Directory is the last Used Location. If none is known it defaults to C Drive(Fresh Install)
+- Bash Support has been Added(This is a Very Early Feature, Not Everything has been added yet)
+- Added Long Path Aware for OS that Support it.
+- All Encoders have been Re-Compilied Fresh, to avoid any issues.
+- Fixed any Issues for Short filenames being converted to wrong type.
+- MTN Now Supports Custom Output Directory
+- mpv has also been Custom Compilied to work with VapourSynth, Requires pipemod to play back any videos.
+- Added Support for Cuvid Decoding in FFMPEG.
+- Removed MediaInfo 18.08.1 Due to Bugs it contains and Re-Added MediaInfo 18.05.
+- Added More Support for HDR with Intel Encoders.
+- VS Filters Added: W3FDIF, MiniDeen, IT, TDeintMod, vcfreq, vcmove
+- Added mvtools-sf for AVX by default(It's a much older build), The default Branch uses AVX2 by default, Which not every CPU supports.
+- Added Support for Plum, Vine & Oyster (requires 32 Float). Not Included in Context menu(Due to being CPU & GPU Heavy).
+- Added Support for RawSourcePlus for Avisynth and RawSource for VapourSynth. Default Pixel_type is set to YUV420P10 (aka P010)
+- DitherTools have been Updated for AVS+.
+- Added UU_NQAA, NQAA, MultiSharpen to Context Menu With other functions like AA_pow2Qt, pow2Qt, & FRAANQ that can be added if Needed.
+- Added Nnedi3Enlarge2 & Nnedi3EnlargeYV12 to Resize Menu for AVS.
+- Replaced MPV with non-default build which supports vapourSynth among other codecs.
+- FFMPEG has been Rebuilt with Full Support to VapourSynth.
+- Python3 code has been updated for R45 Release of VapourSynth. 
+- Dual Package Setup for x264 have been Removed for Single release x264(8+10Bit). The Depth menu will set the Depth Output, extactly like x265.
+-x264:
+Following Have Been Added:
+	- ColorMatrix: Added chroma-derived-nc, chroma-derived-c, and ICtCp.
+	- Alternative Transfer
+	- vbv-init has been modded to have a locked value and proper float points.
 
-1.9.00
+- FFTW Should auto copy to proper Directory During Fresh Start-up, if your PC is missing these files in the System32 Folder.
+- MP4Box is Now Static Once again.
+
+1.9.0.0
 
 - Added a new Marco to the list.
 	- Script_files%	
+- Added Total System Memory to System Environment & Logging
+- mpv has been updated to the latest nightly release
+- FFmpeg has been updated to 4.0.2
+- Mediainfo has been updated to 18.08.1
+- MP4Box has been Updated and includes required dll files that are required now.
+- NVEnc has been updated to 4.12
+- QSVEnc has been updated to 3.09
+- x264 has been updated to 2932
+- x265 has been updated to 2.8+68
+- MKVToolNix has been Updated to 26.0.0
+- AVSMeter has been Updated to 2.8.5
+- Added Two new Scripts for HDR10+ AVS & VS Version. Along with updated Script for Source load.
 - Added Support Added for FFMS LoadCPlugins. FFMS2K will use the normal LoadPlugin Function.
-- Avisynth and Vapousynth have Seperate Menu tabs in the App Forms. Vapoursynth is no longer burried inside Avisynth Menu at the bottom.
+- Avisynth and Vapousynth have Separate Menu tabs in the App Forms. Vapoursynth is no longer buried inside Avisynth Menu at the bottom.
 - Removed all the dead links from Package Section and Replaced them with the most up to date URL's, If one existed.
-- Added Support for PNG & Tiff when saving a screenshot of a single Frame in the Preview Window. To add or Remove a Format Just need to access the edit menu.
-- StaxRip now has a Update Function through PowerShell Script. It will first Shutdown the app and check for updates. If a new version is avaible, it download, extract and re-open StaxRip.
+- Added Support for PNG & Tiff when saving a screenshot of a single Frame in the Preview Window. To add or Remove a format, Everything can be done through the Edit Menu.
+- StaxRip now has a Update Function through PowerShell Script(Can be Accessed Via: Tools -> Advanced -> Check For Update. It will first Shutdown the app and check for updates. If a new version is avaible, it download, extract and re-open StaxRip.
 - Updated the PowerShell 5 Reference Assemblies to version 1.1.0.
 - Framework has been Updated to 4.7.2.
-- Subtitle Tools have been moved to Advance -> Tools -> Subtitles.
-- Internal Thumbnail Creator:
+- The main drop-down menus have been cleaned up and better organized
+- The control boxes For the codecs have also been cleaned up, to create a shorter drop down.
+- Subtitle Tools have been moved to Advanced -> Tools -> Subtitles.
+- Added vscube, Second Scripts for Utils and some small tweaks to selected scripts for AVS+.
+- Updated VapourSynth Plugins & Context menu (See Below for Context Options).
+- Like with AVS+ There are allot more functions supported, Not all have been added to the context menu.
+- Settings:
+	- Template Folder has been Renamed to just Templates & .dat file has been Renamed to Settings.dat. All your previous Templates will still work, Just move them to the new folder.
+- Internal Thumbnail Creator Has been Updated with the Following Features:
 	- Added support for PNG, BMP & TIFF. 
 	- It Fully supports HDR10, HDR10+ and HLG.
-	- Add support for Gap (The Size between each shot). 
+	- Add support for Gap (The space between each shot, default: 0).
 	- The ability to disable the StaxRip Logo has been added.
-	- The Font styles have been changed to DejaVu Serif which give a much cleaner look.
-	- The Default Logo Font Style has been changed to DejaVu Serif, Which gives the logo a bit more Style.
-	- Cleaned up the Header to make it more Professional looking.
-	- Added more Video information to the Header as well.
-	- The Matrix for the Creator has Been tweaked.
+	- The Font styles have been changed to DejaVu Serif which give a much clearer & cleaner look. 
+	- The Default Logo Font Style has been changed to mikadan, Which gives the logo a bit more Style.
+	- If for what reason you do not have DejaVu Serif or mikadan font, They have been included. Once installed They can be deleted. FontAwesome & Segoe-MDL2-Assets must remain next to .exe file.
+	- Cleaned up the Header to make look more Professional like and added more video & Audio Details.
+		- File: name
+		- Size: Filesize in bytes / MBS, Length, and average bitrate.
+		- Video: Codec, Format Profile, colorspace,colour_range, Bitrate, FrameRate, ChromaSubsampling, Height & Width
+		- VideoCodec (The old code wasn't working with latest version of Mediainfo.)
+		- Audio: Codecs, Channels, kHz and Bitrate
+	- The Matrix for the Creator has also Been tweaked for correct colorspace.
 
 - Added Support for New Thumbnail Creator Which can be used by it self or added into the project process. It Uses FFMPEG engine to create the Thumbnails without the need to index any file(s).
 	Options Support as of Right Now:
@@ -57,8 +112,9 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 - Tweaked the Job Loading function, When a previous job is loaded into StaxRip the form will now automatically close.
 - Added Support for Remaining HDR10 colorspace Metadata, To make it full compatible with HDR10 Standards(MKV Only). The function can be enabled in the option section under Image -> Extras. It can also be done Manually The tool can be accessed by Apps -> MediaInfo -> MKVHDR
 - Altered VUI import system to match MediaInfo changes. For HDR10 it must match BT.2020 Colorspace. It will now also enable the additional flags in VUI and Bitstream to encode to HDR10. GOP & VBV Settings will have to be set manually.
-- Removed the Character Limit on the Temp Folders. It will not longer create the '...' after it hits 30 characters Which was designed for Windows 260 limit. If you need more then 260 characters you can alter the GroupPolicy Settings.
-- MediaFolder Folder Option has been Disabled(It was no longer Working correctly) and has been updated with the internal MediaInfo GUI that allows you to open any file, If it's loaded in StaxRip or not.
+- Removed the Character Limit on the Temp Folders. It will not longer create the '...' after it hits 30 characters Which was designed for Windows 260 limit(Mainly for older Windows). If you need more then 260 characters you can alter the GroupPolicy Settings which will allow your to bypass the limit.
+- Added MKVinfo App to menu to check colorspace coordinates (Which Mediainfo no longer displays), This is useful for HDR content to make sure metadate has the correct HDR metadata.
+- MediaFolder Folder Option has been Disabled(It was no longer Working correctly due to latest update to Mediainfo) and has been replaced with the internal MediaInfo GUI that allows you to open any media file, If it's loaded in StaxRip or not.
 
 - x265 Changes:
 	- 12Bit Profiles Have Been Added	
@@ -74,10 +130,10 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 		- single-sei
 		- dynamic-refine
 		- idr-recovery-sei
-		- VBVinit, VBVend, VBV Adjustment,
+		- VBVinit, VBVend, VBV Adjustment with VBVinit being tweaked.
 		- Maximum AU size Factor
 		- refine-intra has been increased to Level 4
-
+		- multi-pass-opt-analysis & multi-pass-opt-distortion have been moved to Rate Control 1 menu to make room for VBV options in Rate Control 2 Menu.
 - VapourSynth Updated Context Menu:
 	The List of all Included Filters:
 - Source: 

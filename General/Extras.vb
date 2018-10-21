@@ -1,6 +1,4 @@
 ﻿Imports System.Text
-
-
 Public Class GIF
     Shared Sub GIFAnimation(inputFile As String, proj As Project)
         If Not File.Exists(inputFile) Then Exit Sub
@@ -82,9 +80,9 @@ Public Class PNG
         Dim NewPath = inputFile + ".png"
         Dim OptOut = inputFile + "_opt.png"
         Dim Seek = s.Storage.GetString("PNGTime", 25)
-        Dim Duration = s.Storage.GetString("PNGLength", 4)
-        Dim Size = s.Storage.GetInt("PNGScale", 480)
-        Dim OptSettings = s.Storage.GetString("PNGopt", "-z0")
+        Dim Duration = s.Storage.GetString("PNGLength", 3.5)
+        Dim Size = s.Storage.GetInt("PNGScale", 400)
+        Dim OptSettings = s.Storage.GetString("PNGopt", "-z1")
         Dim Opt = s.Storage.GetBool("OptSetting", False)
         Dim Options = s.Storage.GetBool("Output", False)
 

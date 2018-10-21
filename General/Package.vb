@@ -156,6 +156,7 @@ Public Class Package
         .Name = "MTN",
         .Filename = "mtn.exe",
         .DirPath = "MTN",
+        .IgnoreVersion = True,
         .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
         .WebURL = "https://github.com/Revan654/Movie-Thumbnailer-mtn-",
         .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
@@ -273,30 +274,30 @@ Public Class Package
         .Filename = "avs2pipemod64.exe",
         .WebURL = "http://github.com/chikuzen/avs2pipemod",
         .Description = "Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools."})
-    Shared ReadOnly Property x264 As Package
-        Get
-            If IsX264_10Required() Then Return x264_10 Else Return x264_8
-        End Get
-    End Property
+    'Shared ReadOnly Property x264 As Package
+    '    Get
+    '        If IsX264_10Required() Then Return x264_10 Else Return x264_8
+    '    End Get
+    'End Property
 
-    Shared Property x264_8 As Package = Add(New Package With {
+    Shared Property x264 As Package = Add(New Package With {
         .Name = "x264",
         .Filename = "x264.exe",
         .Description = "H.264 video encoding command line app.",
         .WebURL = "http://www.videolan.org/developers/x264.html",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm"})
 
-    Shared Property x264_10 As Package = Add(New Package With {
-        .Name = "x264 10-Bit",
-        .Filename = "x264-10b.exe",
-        .DirPath = "x264",
-        .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
-        .WebURL = "http://www.videolan.org/developers/x264.html",
-        .Description = "H.264 video encoding command line app."})
+    'Shared Property x264_10 As Package = Add(New Package With {
+    '    .Name = "x264 10-Bit",
+    '    .Filename = "x264-10b.exe",
+    '    .DirPath = "x264",
+    '    .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
+    '    .WebURL = "http://www.videolan.org/developers/x264.html",
+    '    .Description = "H.264 video encoding command line app."})
 
-    Shared Function IsX264_10Required() As Boolean
-        Return TypeOf p.VideoEncoder Is x264Enc AndAlso DirectCast(p.VideoEncoder, x264Enc).Params.Depth.Value = 1
-    End Function
+    'Shared Function IsX264_10Required() As Boolean
+    '    Return TypeOf p.VideoEncoder Is x264Enc AndAlso DirectCast(p.VideoEncoder, x264Enc).Params.Depth.Value = 1
+    'End Function
 
     Shared Property x265 As Package = Add(New Package With {
         .Name = "x265",
@@ -424,8 +425,7 @@ Public Class Package
         Add(New Package With {
             .Name = "Visual C++ 2012",
             .Filename = "msvcp110.dll",
-            .Description = "Visual C++ 2012 Redistributable is required by some tools used by StaxRip.",
-            .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
+            .Description = "Visual C++ 2012 Redistributable is required by some tools used by StaxRip.", '.DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
             .FixedDir = Folder.System,
             .IgnoreVersion = True,
             .IsRequiredFunc = Function() Items("SangNom2 avs").IsRequired,
@@ -434,8 +434,7 @@ Public Class Package
         Add(New Package With {
             .Name = "Visual C++ 2013",
             .Filename = "msvcp120.dll",
-            .Description = "Visual C++ 2013 Redistributable is required by some tools used by StaxRip.",
-            .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=40784",
+            .Description = "Visual C++ 2013 Redistributable is required by some tools used by StaxRip.", '.DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=40784",            
             .IgnoreVersion = True,
             .FixedDir = Folder.System,
             .TreePath = "Runtimes"})
@@ -443,8 +442,7 @@ Public Class Package
         Add(New Package With {
             .Name = "Visual C++ 2017",
             .Filename = "msvcp140.dll",
-            .Description = "Visual C++ 2017 Redistributable is required by some tools used by StaxRip.",
-            .DownloadURL = "http://download.microsoft.com/download/8/9/d/89d195e1-1901-4036-9a75-fbe46443fc5a/vc_redist.x64.exe",
+            .Description = "Visual C++ 2017 Redistributable is required by some tools used by StaxRip.",'.DownloadURL = "http://download.microsoft.com/download/8/9/d/89d195e1-1901-4036-9a75-fbe46443fc5a/vc_redist.x64.exe",
             .FixedDir = Folder.System,
             .IgnoreVersion = True,
             .IsRequiredFunc = Function() SangNom2.IsRequired OrElse VSFilterMod.IsRequired,
@@ -456,7 +454,7 @@ Public Class Package
             .Description = "Library required by the FFT3DFilter AviSynth plugin.",
             .URL = "http://www.fftw.org/",
             .FixedDir = Folder.System,
-            .IsRequiredFunc = Function() Package.FFT3DFilter.IsRequired,
+            .IsRequiredFunc = Function() Package.AviSynth.IsRequired, 'Old Settings: FFT3DFilter.IsRequired,
             .SetupAction = Sub()
                                Using pr As New Process
                                    pr.StartInfo.FileName = "xcopy.exe"
@@ -543,6 +541,13 @@ Public Class Package
             .Description = "Loads raw video data directly from files, RawSourcePlus opens a video file which contains 8bit, 9bit, 10bit, 16bit or float ",
             .WebURL = "http://avisynth.nl/index.php/VapourSource",
             .AvsFilterNames = {"RawSource"}})
+
+        Add(New PluginPackage With {
+            .Name = "TDeint",
+            .Filename = "TDeint.dll",
+            .Description = "TDeint is a bi-directionally, motion adaptive, sharp deinterlacer.",
+            .WebURL = "http://avisynth.nl/index.php/VapourSource",
+            .AvsFilterNames = {"TDeint"}})
 
         Add(New PluginPackage With {
             .Name = "TNLMeans",
@@ -642,7 +647,7 @@ Public Class Package
             .Filename = "InterFrame.avsi",
             .HelpFile = "InterFrame.html",
             .Description = "A frame interpolation script that makes accurate estimations about the content of frames",
-            .DirPath = "Plugins\AVS\InterFrame2",
+            .DirPath = "Plugins\AVS\InterFrame",
             .WebURL = "http://avisynth.nl/index.php/InterFrame",
             .AvsFilterNames = {"InterFrame", "InterFrameProcess"},
             .AvsFiltersFunc = Function() {
@@ -1028,7 +1033,6 @@ Public Class Package
             New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoise", "MCTemporalDenoise(settings=""medium"")"),
             New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoisePP", "source=last" + BR + "denoised=FFT3Dfilter()" + BR + "MCTemporalDenoisePP(denoised)")}})
 
-
         Add(New PluginPackage With {
             .Name = "L-SMASH-Works",
             .Filename = "LSMASHSource.dll",
@@ -1196,9 +1200,34 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "vcmod",
             .Filename = "vcmod.dll",
+            .HelpFile = "vcmod.html",
             .Description = "vcmod plugin for VapourSynth.",
             .URL = "http://www.avisynth.nl/users/vcmohan/vcmod/vcmod.html",
-            .VSFilterNames = {"vcmod.Median", "vcmod.Variance", "vcmod.Amplitude", "vcmod.GBlur", "vcmod.MBlur", "vcmod.Histogram"}})
+            .VSFilterNames = {"vcmod.Median", "vcmod.Variance", "vcmod.Amplitude", "vcmod.GBlur", "vcmod.MBlur", "vcmod.Histogram", "vcmod.Fan", "vcmod.Variance", "vcmod.Neural", "vcmod.Veed", "vcmod.SaltPepper"}})
+
+        Add(New PluginPackage With {
+            .Name = "vcmove",
+            .Filename = "vcmove.dll",
+            .HelpFile = "vcmove.html",
+            .Description = "vcmove plugin for VapourSynth.",
+            .URL = "http://www.avisynth.nl/users/vcmohan/vcmove/vcmove.html",
+            .VSFilterNames = {"vcmove.Rotate", "vcmove.DeBarrel", "vcmove.Quad2Rect", "vcmove.Rect2Quad"}})
+
+        Add(New PluginPackage With {
+            .Name = "vcfreq",
+            .Filename = "vcfreq.dll",
+            .HelpFile = "vcfreq.html",
+            .Description = "vcvcfreq plugin for VapourSynth.",
+            .URL = "http://www.avisynth.nl/users/vcmohan/vcfreq/vcfreq.html",
+            .VSFilterNames = {"vcfreq.F1Quiver", "vcfreq.F2Quiver", "vcfreq.Blur", "vcfreq.Sharp"}})
+
+        'Add(New PluginPackage With {
+        '    .Name = "Retinex",
+        '    .Filename = "Retinex.dll",
+        '    .HelpFile = "Readme.txt",
+        '    .Description = "The Retinex theory and algorithm mainly aims at simulating the color constancy feature of HVS(Human Visual System).",
+        '    .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Retinex",
+        '    .VSFilterNames = {"retinex.MSRCP", "retinex.MSRCR"}})
 
         Add(New PluginPackage With {
             .Name = "RawSource",
@@ -1217,13 +1246,13 @@ Public Class Package
             .VSFiltersFunc = Function() {
                 New VideoFilter("Field", "Yadifmod", "clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field = 0), order = 1, field = -1, mode = 0)")}})
 
-        Add(New PluginPackage With {
-            .Name = "nnedi3",
-            .Filename = "libnnedi3.dll",
-            .DirPath = "Plugins\VS\nnedi3",
-            .WebURL = "http://github.com/dubhater/vapoursynth-nnedi3",
-            .Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field.",
-            .VSFilterNames = {"nnedi3.nnedi3"}})
+        ''Add(New PluginPackage With {
+        ''    .Name = "nnedi3",
+        ''    .Filename = "libnnedi3.dll",
+        ''    .HelpFile = "Readme.txt",
+        ''    .WebURL = "http://github.com/dubhater/vapoursynth-nnedi3",
+        ''    .Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field.",
+        ''    .VSFilterNames = {"nnedi3.nnedi3"}})
 
         Add(New PluginPackage With {
             .Name = "FFT3DFilter",
@@ -1242,22 +1271,13 @@ Public Class Package
                 "mv.DepanAnalyse", "mv.DepanEstimate", "mv.DepanCompensate", "mv.DepanStabilise"}})
 
         Add(New PluginPackage With {
-            .Name = "mvtools sf",
-            .Filename = "libmvtools_sf_em64t_AVX1.dll",
+            .Name = "mvtools-sf",
+            .Filename = "libmvtools_sf_em64t.dll",
             .WebURL = "http://github.com/dubhater/vapoursynth-mvtools",
             .Description = "MVTools is a set of filters for motion estimation and compensation.",
             .VSFilterNames = {"mvsf.Super", "mvsf.Analyse", "mvsf.Recalculate", "mvsf.Compensate", "mvsf.Degrain1", "mvsf.Degrain2",
                 "mvsf.Degrain3", "mvsf.Mask", "mvsf.Finest", "mvsf.Flow", "mvsf.FlowBlur", "mvsf.FlowInter", "mvsf.FlowFPS", "mvsf.BlockFPS", "mvsf.SCDetection",
                 "mvsf.DepanAnalyse", "mvsf.DepanEstimate", "mvsf.DepanCompensate", "mvsf.DepanStabilise"}})
-
-
-        'Add(New PluginPackage With { 'Currently Doesn't works Properly & crashes VS
-        '    .Name = "hnwvsfunc",
-        '    .Filename = "hnwvsfunc.py",
-        '    .WebURL = "https://github.com/IFeelBloated/vapoursynth-mvtools-sf",
-        '    .Description = "MVTools is a set of filters for motion estimation and compensation.",
-        '    .VSFilterNames = {"hnwvsfunc.mClean", "hnwvsfunc.NonlinUSM", "hnwvsfunc.DetailSharpen", "hnwvsfunc.LUSM", "hnwvsfunc.JohnFPS", "hnwvsfunc.blah",
-        '        "hnwvsfunc.ReCon", "hnwvsfunc.MCDegrainSharp"}})
 
         Add(New PluginPackage With {
             .Name = "mvmulti",
@@ -1278,7 +1298,6 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "znedi3",
             .Filename = "vsznedi3.dll",
-            .DirPath = "Plugins\VS\nnedi3",
             .HelpFile = "Readme.txt",
             .WebURL = "https://github.com/sekrit-twc/znedi3",
             .Description = "znedi3 is a CPU-optimized version of nnedi.",
@@ -1297,7 +1316,7 @@ Public Class Package
             .Filename = "EEDI3m.dll",
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-EEDI3",
             .Description = "EEDI3 works by finding the best non-decreasing (non-crossing) warping between two lines by minimizing a cost functional.",
-            .VSFilterNames = {"eedi3m.EEDI3"}})
+            .VSFilterNames = {"eedi3m.EEDI3", "eedi3m.EEDI3CL"}})
 
         Add(New PluginPackage With {
             .Name = "EEDI2",
@@ -1305,6 +1324,37 @@ Public Class Package
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-EEDI2",
             .Description = "EEDI2 works by finding the best non-decreasing (non-crossing) warping between two lines by minimizing a cost functional.",
             .VSFilterNames = {"eedi2.EEDI2"}})
+
+        Add(New PluginPackage With {
+            .Name = "W3FDIF",
+            .Filename = "W3FDIF.dll",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-W3FDIF/releases",
+            .Description = "Weston 3 Field Deinterlacing Filter. Ported from FFmpeg's libavfilter.",
+            .VSFilterNames = {"w3fdif.W3FDIF"}})
+
+        Add(New PluginPackage With {
+            .Name = "MiniDeen",
+            .Filename = "libminideen.dll",
+            .HelpFile = "Readme.txt",
+            .WebURL = "https://github.com/dubhater/vapoursynth-minideen",
+            .Description = "MiniDeen is a spatial denoising filter. It replaces every pixel with the average of its neighbourhood.",
+            .VSFilterNames = {"minideen.MiniDeen"}})
+
+        Add(New PluginPackage With {
+            .Name = "IT",
+            .Filename = "vs_it.dll",
+            .HelpFile = "Readme.txt",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-IT",
+            .Description = "VapourSynth Plugin - Inverse Telecine (YV12 Only, IT-0051 base, IT_YV12-0103 base).",
+            .VSFilterNames = {"it.IT"}})
+
+        Add(New PluginPackage With {
+            .Name = "TDeintMod",
+            .Filename = "TDeintMod.dll",
+            .HelpFile = "Readme.txt",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-TDeintMod",
+            .Description = "TDeintMod is a combination of TDeint and TMM, which are both ported from tritical's AviSynth plugin.",
+            .VSFilterNames = {"tdm.TDeintMod"}})
 
         Add(New PluginPackage With {
             .Name = "adjust",
@@ -1316,6 +1366,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "Oyster",
             .Filename = "Oyster.py",
+            .HelpFile = "Readme.txt",
             .Description = "Oyster is an experimental implement of the Blocking Matching concept, designed specifically for compression artifacts removal.",
             .URL = "https://github.com/IFeelBloated/Oyster",
             .VSFilterNames = {"Osyter.Basic", "Oyster.Deringing", "Oyster.Destaircase", "Oyster.Deblocking", "Oyster.Super"}})
@@ -1323,6 +1374,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "Plum",
             .Filename = "Plum.py",
+            .HelpFile = "Readme.txt",
             .Description = "Plum is a sharpening/blind deconvolution suite with certain advanced features like Non-Local error, Block Matching, etc..",
             .URL = "https://github.com/IFeelBloated/Plum",
             .VSFilterNames = {"Plum.Super", "Plum.Basic", "Plum.Final"}})
@@ -1330,6 +1382,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "Vine",
             .Filename = "Vine.py",
+            .HelpFile = "Readme.txt",
             .Description = "Plum is a sharpening/blind deconvolution suite with certain advanced features like Non-Local error, Block Matching, etc..",
             .URL = "https://github.com/IFeelBloated/Plum",
             .VSFilterNames = {"Vine.Super", "Vine.Basic", "Vine.Final", "Vine.Dilation", "Vine.Erosion", "Vine.Closing", "Vine.Opening", "Vine.Gradient", "Vine.TopHat", "Vine.Blackhat"}})
@@ -1337,6 +1390,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "TCanny",
             .Filename = "TCanny.dll",
+            .HelpFile = "Readme.txt",
             .Description = "Builds an edge map using canny edge detection.",
             .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-TCanny",
             .VSFilterNames = {"tcanny.TCanny"}})
@@ -1907,10 +1961,18 @@ Public Class PythonPackage
             If File.Exists(ret) Then Return ret
 
             For Each i In {
-                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", "ExecutablePath"), 'Location Needs to be Changed for R45
+                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", "ExecutablePath"),
                 Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", "ExecutablePath"),
                 Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", Nothing).FixDir + "python.exe",
-                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", Nothing).FixDir + "python.exe"
+                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.6\InstallPath", Nothing).FixDir + "python.exe",
+                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", "ExecutablePath"),
+                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", "ExecutablePath"),
+                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", Nothing).FixDir + "python.exe",
+                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", Nothing).FixDir + "python.exe",
+                Registry.CurrentUser.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", "ExecutablePath"),
+                Registry.LocalMachine.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", "ExecutablePath"),
+                Registry.CurrentUser.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", Nothing).FixDir + "python.exe",
+                Registry.LocalMachine.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", Nothing).FixDir + "python.exe"
                 }
 
                 If File.Exists(i) Then Return i

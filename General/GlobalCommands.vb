@@ -102,7 +102,6 @@ Public Class GlobalCommands
         batchProcess.StartInfo.WorkingDirectory = p.TempDir
         batchProcess.Start()
     End Sub
-
     <Command("Shows the powershell with aliases for all tools staxrip includes.")>
     Sub ShowPowerShell()
         Dim val As String
@@ -118,12 +117,6 @@ Public Class GlobalCommands
 
         If p.TempDir <> "" Then val += "cd \""" + p.TempDir + """"
         g.StartProcess("powershell.exe", "-noexit -command " + val)
-    End Sub
-    <Command("Shows the Bash Prompt at the Startup Folder")>
-    Sub ShowBashPrompt()
-        MsgWarn("This Functions Requires the Linux Sub System to be Installed to Work.", Nothing, True)
-        g.StartProcess("wsl.exe")
-
     End Sub
     <Command("Executes command lines separated by a line break line by line. Macros are solved as well as passed in as environment variables.")>
     Sub ExecuteCommandLine(

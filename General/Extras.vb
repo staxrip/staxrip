@@ -10,7 +10,6 @@ Public Class GIF
             proj.SourceFile = inputFile
         End If
 
-
         Dim Rate = s.Storage.GetInt("GifFrameRate", 15)
         Dim cachePath = Folder.Temp + "Palette.png"
         Dim OutPutPath = inputFile + ".gif"
@@ -20,16 +19,28 @@ Public Class GIF
         Dim Mode = s.Storage.GetString("PaletteGen", "diff")
         Dim SecondMode = s.Storage.GetString("PaletteUse", "rectangle")
         Dim Dither = s.Storage.GetString("GifDither", "dither=bayer:bayer_scale=5")
-        Dim Options = s.Storage.GetBool("Output", False)
 
+        Using Proc As New Proc
+            Proc.Header = "Creating Gif"
+            Proc.SkipStrings = {"frame=", "size="}
+            Proc.Encoding = Encoding.UTF8
+            Proc.Package = Package.ffmpeg
+            Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -vf " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=" & Mode & """ -loglevel quiet -an -y " + cachePath
+            Proc.Start()
+        End Using
 
-        g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -vf " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=" & Mode & """ -loglevel quiet -an -y " + cachePath, True, True, False)
-        g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & ":diff_mode=" & SecondMode & """ -loglevel quiet -an -y " + """" + OutPutPath + """", True, True, False)
+        Using Proc As New Proc
+            Proc.Header = "Creating Gif"
+            Proc.SkipStrings = {"frame=", "size="}
+            Proc.Encoding = Encoding.UTF8
+            Proc.Package = Package.ffmpeg
+            Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & ":diff_mode=" & SecondMode & """ -loglevel quiet -an -y " + """" + OutPutPath + """"
+            Proc.Start()
+        End Using
 
         FileHelp.Delete(cachePath)
 
     End Sub
-
 End Class
 
  Class MTN
@@ -43,23 +54,22 @@ End Class
             proj.SourceFile = inputFile
         End If
 
-
         Dim Col = s.Storage.GetInt("MTNColumn", 4)
         Dim Rows = s.Storage.GetInt("MTNRow", 6)
         Dim SizeWidth = s.Storage.GetInt("MTNWidth", 1280)
         Dim SizeHeight = s.Storage.GetInt("MTNHeight", 150)
         Dim PictureQuality = s.Storage.GetInt("MTNQuality", 95)
         Dim PictureDepth = s.Storage.GetInt("MTNDepth", 12)
-        Dim Options = s.Storage.GetBool("CustomOut", False)
 
-        If Options = True Then
+        Using Proc As New Proc
+            Proc.Header = "Creating Thumbnail"
+            Proc.SkipStrings = {"frame=", "size="}
+            Proc.Encoding = Encoding.UTF8
+            Proc.Package = Package.MTN
+            Proc.Arguments = """" + inputFile + """" + " -c " & Col & " -r " & Rows & " -w " & SizeWidth & " -h " & SizeHeight & " -D " & PictureDepth & " -j " & PictureQuality & " -P "
+            Proc.Start()
+        End Using
 
-            g.DefaultCommands.ExecuteCommandLine(Package.Items("MTN").Path.Escape + """" + inputFile + """" + " -c " & Col & " -r " & Rows & " -w " & SizeWidth & " -h " & SizeHeight & " -D " & PictureDepth & " -j " & PictureQuality & " -P ", True, True, False)
-
-        ElseIf Options = False Then
-
-            g.DefaultCommands.ExecuteCommandLine(Package.Items("MTN").Path.Escape + """" + inputFile + """" + " -c " & Col & " -r " & Rows & " -w " & SizeWidth & " -h " & SizeHeight & " -D " & PictureDepth & " -j " & PictureQuality & " -O " & p.DefaultTargetFolder & " -P ", True, True, False)
-        End If
     End Sub
 End Class
 Public Class PNG
@@ -80,30 +90,39 @@ Public Class PNG
         Dim NewPath = inputFile + ".png"
         Dim OptOut = inputFile + "_opt.png"
         Dim Seek = s.Storage.GetString("PNGTime", 25)
-        Dim Duration = s.Storage.GetString("PNGLength", 3.5)
-        Dim Size = s.Storage.GetInt("PNGScale", 400)
+        Dim Duration = s.Storage.GetString("PNGLength", 4)
+        Dim Size = s.Storage.GetInt("PNGScale", 480)
         Dim OptSettings = s.Storage.GetString("PNGopt", "-z1")
         Dim Opt = s.Storage.GetBool("OptSetting", False)
-        Dim Options = s.Storage.GetBool("Output", False)
 
-        If Opt = False Then
+        Using Proc As New Proc
+            Proc.Header = "Encoding PNG"
+            Proc.SkipStrings = {"frame=", "size="}
+            Proc.Encoding = Encoding.UTF8
+            Proc.Package = Package.ffmpeg
+            Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline" + """ -plays 0 -loglevel quiet -an -y " + """" + Path + """"
+            Proc.Start()
+        End Using
 
-            g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline" + """ -plays 0 -loglevel quiet -an -y " + """" + Path + """", True, True, False)
-            File.Move(Path, NewPath)
+        File.Move(Path, NewPath)
 
-        Else
+        If Opt = True Then
 
-            g.DefaultCommands.ExecuteCommandLine(Package.Items("ffmpeg").Path.Escape + " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline" + """ -plays 0 -loglevel quiet -an -y " + """" + Path + """", True, True, False)
-            File.Move(Path, NewPath)
-            g.DefaultCommands.ExecuteCommandLine(Package.Items("PNGopt").Path.Escape + " " + OptSettings + " " + """" + NewPath + """" + " " + """" + OptOut + """", True, True, False)
+            Using Proc As New Proc
+                Proc.Header = "Optimizing PNG"
+                Proc.SkipStrings = {"saving", "Reading", "all done", "APNG"}
+                Proc.Encoding = Encoding.UTF8
+                Proc.Package = Package.PNGopt
+                Proc.Arguments = OptSettings + " " + """" + NewPath + """" + " " + """" + OptOut + """"
+                Proc.Start()
+            End Using
+
             File.Delete(NewPath)
 
         End If
 
     End Sub
-
 End Class
-
 Public Class MKVInfoLookup
     Shared Sub MetadataInfo(inputFile As String, proj As Project)
         If Not File.Exists(inputFile) Then Exit Sub
@@ -119,17 +138,22 @@ Public Class MKVInfoLookup
 
     End Sub
 End Class
-
 Public Class MKVMetaDataHDR
     Shared Sub MetadataHDR(inputFile As String, proj As Project)
         If Not File.Exists(inputFile) Then Exit Sub
         If Not Package.mkvmerge.VerifyOK(True) Then Exit Sub
 
-        g.DefaultCommands.ExecuteCommandLine(Package.Items("mkvmerge").Path.Escape + " " + "-o " + """" + inputFile + "_HDR.mkv" + """" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + """" + inputFile + """", True, True, False)
+        Using Proc As New Proc
+            Proc.Header = "Adding HDR Metadata"
+            Proc.SkipStrings = {"Progress", "The file", "The cue", "Multiplexing"}
+            Proc.Encoding = Encoding.UTF8
+            Proc.Package = Package.mkvmerge
+            Proc.Arguments = "-o " + """" + inputFile + "_HDR.mkv" + """" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + """" + inputFile + """"
+            Proc.Start()
+        End Using
 
     End Sub
 End Class
-
 Public Class UpdateStaxRip
     Shared Sub CheckforUpdate()
         If Not Package.Update.VerifyOK(True) Then Exit Sub

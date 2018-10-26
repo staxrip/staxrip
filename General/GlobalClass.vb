@@ -364,14 +364,20 @@ Public Class GlobalClass
             End If
         End If
 
-        script.Synchronize(False)
-        Dim args = script.Path.Escape
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-file=" + ap.File.Escape + " " + args
-        g.StartProcess(Package.mpvnet.Path, args)
+        If doc.Engine = ScriptEngine.AviSynth Then
+            script.Synchronize(False)
+            Dim args = script.Path.Escape
+            If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-file=" + ap.File.Escape + " " + args
+            g.StartProcess(Package.mpvnet.Path, args)
+        End If
+
 
         If doc.Engine = ScriptEngine.VapourSynth Then
-            ''MsgWarn("VapourSynth Playback is Limited and Still Work in Progress. VS Must be piped to work fully", Nothing, True)
-            g.DefaultCommands.ExecuteCommandLine("/c " + """%app:vspipe%"" -y %script_files% - | ""%app:mpv%"" -", False, False, False)
+            script.Synchronize(False)
+            Dim args = ""
+            args = """%app:vspipe%"" -y %script_files% - | ""%app:mpv%"" -"
+            g.DefaultCommands.ExecuteCommandLine(args, False, False, True)
+
         End If
 
     End Sub
@@ -590,7 +596,7 @@ Public Class GlobalClass
                     p.TempDir = p.SourceFile.Dir
                 Else
                     Dim base = p.SourceFile.Base
-                    If base.Length > 30 Then base = base.Shorten(10) + "..." ''Re-Enabled Due to issues Some People are having. From 15 to 10
+                    If base.Length > 30 Then base = base.Shorten(21) + "..." 'Windows 10 Users Do not Need it However anything below Windows 10, requires trimming for Long Paths.
                     p.TempDir = p.SourceFile.Dir + base + "_temp\"
                 End If
             End If
@@ -605,7 +611,7 @@ Public Class GlobalClass
                         p.TempDir = p.SourceFile.DirAndBase + "_temp\"
                         If Not Directory.Exists(p.TempDir) Then Directory.CreateDirectory(p.TempDir)
                     Catch
-                        MsgWarn("Failed to create a temp directory. By default it's created in the directory of the source file so it's not possible to open files directly from a optical drive unless a temp directory is defined in the options. Also make sure the GroupPolicy Settings have been changed to support 260+ Characters.")
+                        MsgWarn("Failed to create a temp directory. By default it's created in the directory of the source file so it's not possible to open files directly from a optical drive unless a temp directory is defined in the options. Usually discs are copied to the hard drive first using a application like MakeMKV, DVDfab or AnyDVD.")
                         Throw New AbortException
                     End Try
                 End Try
@@ -874,7 +880,6 @@ Public Class GlobalClass
         End If
 
         Log.Save(p)
-        File.Copy(Log.GetPath, Folder.Desktop)
         Dim fp = Log.GetPath
         g.OpenDirAndSelectFile(fp, g.MainForm.Handle)
         g.StartProcess(g.GetTextEditor(), """" + fp + """")

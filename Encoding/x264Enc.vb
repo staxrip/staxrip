@@ -213,8 +213,11 @@ Public Class x264Params
         .Value = 2}
 
     Property Depth As New OptionParam With {
+        .Switch = "--output-depth",
         .Text = "Depth",
-        .Options = {"8-Bit", "10-Bit"}}
+        .Options = {"8-Bit", "10-Bit"},
+        .Values = {"8", "10"},
+        .Value = 1}
 
     Property CompCheck As New NumParam With {
         .Name = "CompCheckQuant",
@@ -731,7 +734,7 @@ Public Class x264Params
                     Qcomp,
                     New NumParam With {.Switch = "--vbv-maxrate", .Text = "VBV Maxrate"},
                     New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize"},
-                    New NumParam With {.Switch = "--vbv-init", .Text = "VBV Init", .Config = {0, 0, 0.1, 1}, .Init = 0.9},
+                    New NumParam With {.Switch = "--vbv-init", .Text = "VBV Init", .Config = {0.5, 1.0, 0.1, 1}, .Init = 0.9},
                     New NumParam With {.Switch = "--crf-max", .Text = "Maximum CRF"},
                     New NumParam With {.Switch = "--qpmin", .Text = "Minimum QP"},
                     New NumParam With {.Switch = "--qpmax", .Text = "Maximum QP", .Init = 69})
@@ -787,8 +790,9 @@ Public Class x264Params
                     New StringParam With {.Switch = "--crop-rect", .Text = "Crop Rectangle"},
                     New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "Component", "PAL", "NTSC", "SECAM", "MAC"}},
                     New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 428", "SMPTE 431", "SMPTE 432"}},
-                    New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 2085", "SMPTE 240 M", "YCgCo"}},
+                    New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 2085", "SMPTE 240 M", "YCgCo", "Chroma Derived C", "ICtCp"}},
                     New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 2084", "SMPTE 240 M", "SMPTE 428"}},
+                    New OptionParam With {.Switch = "--alternative-transfer", .Text = "Alternative Transfer", .Options = {"Undefined", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 2084", "SMPTE 240 M", "SMPTE 428"}},
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"Undefined", "Show", "Crop"}},
                     New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"Auto", "TV", "PC"}},
                     New OptionParam With {.Switch = "--nal-hrd", .Text = "Signal HDR Info", .Options = {"None", "VBR", "CBR"}},

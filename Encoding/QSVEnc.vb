@@ -182,7 +182,7 @@ Public Class QSVEnc
 
         Property MaxCLL As New NumParam With {
         .Text = "Maximum CLL",
-        .VisibleFunc = Function() Codec.ValueText = "h265",
+        .VisibleFunc = Function() Codec.ValueText = "hevc",
         .Switch = "--max-cll",
         .Config = {0, Integer.MaxValue, 50},
         .ImportAction = Sub(arg As String)
@@ -196,7 +196,7 @@ Public Class QSVEnc
         Property MaxFALL As New NumParam With {
         .Config = {0, Integer.MaxValue, 50},
         .ArgsFunc = Function() "",
-        .VisibleFunc = Function() Codec.ValueText = "h265",
+        .VisibleFunc = Function() Codec.ValueText = "hevc",
         .Text = "Maximum FALL"}
 
         Property TFF As New BoolParam With {
@@ -273,7 +273,7 @@ Public Class QSVEnc
                         New NumParam With {.Switch = "--vpp-denoise", .Text = "Denoise", .Config = {0, 100}},
                         New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhance", .Config = {0, 100}})
                     Add("VUI",
-                        New StringParam With {.Switch = "--master-display", .Text = "Master Display", .Quotes = True, .VisibleFunc = Function() Codec.ValueText = "h265"},
+                        New StringParam With {.Switch = "--master-display", .Text = "Master Display", .Quotes = True, .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},

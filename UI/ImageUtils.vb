@@ -67,8 +67,6 @@ Public Class Thumbnails
         Dim fontname = "DejaVu Serif"
         Dim Fontoptions = "Mikadan"
 
-        Dim GapPoint = s.Storage.GetInt("Gap")
-
         Dim width = s.Storage.GetInt("Thumbnail Width", 300)
         Dim columnCount = s.Storage.GetInt("Thumbnail Columns", 4)
         Dim rowCount = s.Storage.GetInt("Thumbnail Rows", 6)
@@ -78,15 +76,16 @@ Public Class Thumbnails
         Dim font = New Font(fontname, (width * columnCount) \ 80, FontStyle.Bold, GraphicsUnit.Pixel)
         Dim foreColor = Color.Black
 
-        width = width - width Mod 16
-        height = height - height Mod 16
+        width = width - width Mod 4
+        height = height - height Mod 4
 
-        Dim cachePath = Folder.Temp + "Thumbnails.ffindex"
+        Dim cachePath = Folder.Settings + "Thumbnails.ffindex"
         Dim avsdoc As New VideoScript
-        avsdoc.Path = Folder.Temp + "Thumbnails.avs"
+        avsdoc.Path = Folder.Settings + "Thumbnails.avs"
         'avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + """, cachefile = """ + cachePath + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
         avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + "" + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
-        avsdoc.Filters.Add(New VideoFilter("ConvertToRGB(matrix=""Rec709"")"))
+        avsdoc.Filters.Add(New VideoFilter("ConvertToRGB()"))
+
         'g.ffmsindex(inputFile, cachePath, False, proj)
 
         Dim errorMsg = ""
@@ -118,7 +117,7 @@ Public Class Thumbnails
 
                 Using g = Graphics.FromImage(bitmap)
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic
-                    g.TextRenderingHint = Drawing.Text.TextRenderingHint.ClearTypeGridFit
+                    g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
                     g.SmoothingMode = SmoothingMode.AntiAlias
                     g.PixelOffsetMode = PixelOffsetMode.HighQuality
 
@@ -129,7 +128,7 @@ Public Class Thumbnails
                     Dim gp As New GraphicsPath()
                     Dim sz = g.MeasureString(timestamp, ft)
                     Dim pt As Point
-                    Dim pos = s.Storage.GetInt("Thumbnail Position", 3)
+                    Dim pos = s.Storage.GetInt("Thumbnail Position", 1)
 
                     If pos = 0 OrElse pos = 2 Then
                         pt.X = ft.Height \ 10
@@ -187,8 +186,6 @@ Public Class Thumbnails
         If Channels = 5.1 Then AudioSound = "Surround Sound"
         If Channels = 7.1 Then AudioSound = "Surround Sound"
 
-        '(((infoLength * 8) / 1000 / (infoDuration / 1000)) / 1000).ToInvariantString("f1") & "Mb/s" + BR + 
-
         If audioCodecs.Length > 40 Then audioCodecs = audioCodecs.Shorten(40) + "..."
 
         If infoLength / 1024 ^ 3 > 1 Then
@@ -201,15 +198,9 @@ Public Class Thumbnails
             "Audio: " + audioCodecs + ", " + MediaInfo.GetAudio(inputFile, "SamplingRate_String") + ", " + AudioSound + ", " + MediaInfo.GetAudio(inputFile, "BitRate_String") + BR +
             "Video: " + MediaInfo.GetVideo(inputFile, "Format") + "(" + Profile + ")" + ", " + ColorSpace + SubSampling + "(" + ColorRange + ", " + MatrixColor + "), " + infoWidth & "x" & infoHeight & ", " + MediaInfo.GetVideo(inputFile, "BitRate_String") + ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps"
 
-        'Dim caption = FilePath.GetName(inputFile) + BR & infoSize & "  " +
-        '    g.GetTimeString(infoDuration / 1000) + "  " &
-        '    (((infoLength * 8) / 1000 / (infoDuration / 1000)) / 1000).ToInvariantString("f1") & "Mb/s" + BR +
-        '    audioCodecs + BR + MediaInfo.GetVideoCodec(inputFile) + "  " & infoWidth & "x" & infoHeight & "  " &
-        '    MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps"
-
         Dim captionSize = TextRenderer.MeasureText(caption, font)
         Dim captionHeight = captionSize.Height + font.Height \ 3
-
+        Dim WaterMark = s.Storage.GetBool("Logo", False)
         Dim imageWidth = width * columnCount + gap
         Dim imageHeight = height * rowCount + captionHeight
 
@@ -224,16 +215,15 @@ Public Class Thumbnails
                 Dim format As New StringFormat
                 format.LineAlignment = StringAlignment.Center
 
-                Dim LogoOption = s.Storage.GetBool("Logo", False)
-
                 Using brush As New SolidBrush(foreColor)
                     g.DrawString(caption, font, brush, rect, format)
                     format.Alignment = StringAlignment.Far
                     format.LineAlignment = StringAlignment.Center
-                    If LogoOption = False Then
+                    If WaterMark = False Then
                         g.DrawString("StaxRip", New Font(Fontoptions, font.Height * 2, FontStyle.Bold, GraphicsUnit.Pixel), brush, rect, format)
                     End If
                 End Using
+
 
                 For x = 0 To bitmaps.Count - 1
                     Dim rowPos = x \ columnCount
@@ -288,7 +278,7 @@ Public Class Thumbnails
 
             ElseIf Options = "tiff" Then
 
-                    Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Tiff.Guid).First
+                Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Tiff.Guid).First
                 bitmap.Save(inputFile.ChangeExt("tiff"), info, Nothing)
 
                 If OutputOptions = False Then
@@ -308,7 +298,7 @@ Public Class Thumbnails
 
             ElseIf Options = "bmp" Then
 
-                    Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Bmp.Guid).First
+                Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Bmp.Guid).First
                 bitmap.Save(inputFile.ChangeExt("bmp"), info, Nothing)
 
                 If OutputOptions = False Then

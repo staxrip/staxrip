@@ -4352,8 +4352,8 @@ Public Class MainForm
         If Application.StartupPath = "C:\Users\Revan\Desktop\staxrip-1.8.2.0\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
         ret.Add("Tools|Advanced|Command Prompt", Symbol.fa_terminal)
-        ret.Add("Tools|Advanced|Command Prompt|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.CommandPrompt)
-        ret.Add("Tools|Advanced|Command Prompt|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.Connect)
+        ret.Add("Tools|Advanced|Command Prompt|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_windows)
+        ret.Add("Tools|Advanced|Command Prompt|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.Connect)
         ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
         ret.Add("Tools|Advanced|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
         ret.Add("Tools|Advanced|Subtitles|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
@@ -4369,8 +4369,8 @@ Public Class MainForm
 
         ret.Add("Apps|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
         ret.Add("Apps|MediaInfo|MKVInfo", NameOf(MediainfoMKV))
-        ret.Add("Apps|MediaInfo|MKVHDR", NameOf(SaveMKVHDR))
         ret.Add("Apps|MediaInfo|MediaInfo", NameOf(MediaInfoShowMedia))
+        ret.Add("Apps|MediaInfo|MKVHDR", NameOf(SaveMKVHDR))
         ret.Add("Apps|DGIndex|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|DGIndex|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
         ret.Add("Apps|Players|MPV", NameOf(g.DefaultCommands.StartTool), {"mpv"})
@@ -5712,7 +5712,6 @@ Public Class MainForm
 
                     Dim tm = ui.AddTextMenu() 'Custom Output Directory
                     tm.Label.Visible = False
-                    'tm.Edit.Expand = True
                     tm.Edit.Text = p.DefaultTargetFolder
                     tm.Edit.SaveAction = Sub(value) p.DefaultTargetFolder = value
                     tm.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
@@ -5723,22 +5722,21 @@ Public Class MainForm
 
                     tm.Visible = Output.Checked = True
 
-
                     page.ResumeLayout()
 
-                        If f.ShowDialog() = DialogResult.OK Then
-                            ui.Save()
+                    If f.ShowDialog() = DialogResult.OK Then
+                        ui.Save()
 
-                            For Each i In fd.FileNames
-                                Try
-                                    MTN.Thumbnails(i, Nothing)
-                                Catch ex As Exception
-                                    g.ShowException(ex)
-                                End Try
-                            Next
+                        For Each i In fd.FileNames
+                            Try
+                                MTN.Thumbnails(i, Nothing)
+                            Catch ex As Exception
+                                g.ShowException(ex)
+                            End Try
+                        Next
 
-                        End If
-                    End Using
+                    End If
+                End Using
             End If
         End Using
 
@@ -5762,22 +5760,20 @@ Public Class MainForm
                     'Dim CompressionMode = ui.AddMenu(Of String)
                     Dim Opt = ui.AddMenu(Of String)
 
-                    ''Starting Time to Where to Start Seeking Using Float Points. ex: 6 Minutes would be 360.0 The zero is removed when code is sent to commandline. 
-                    Dim PNGTime = ui.AddNum() 'if it's 360.5 the .5 will remain, only zero's get trimmed.
+
+                    Dim PNGTime = ui.AddNum()
                     PNGTime.Text = "Starting Time:"
                     PNGTime.Config = {0, 3600, 0.1, 1}
                     PNGTime.Help = "The Time Position Where the Animation Should start at in Seconds"
                     PNGTime.NumEdit.Value = s.Storage.GetString("PNGTime", 25)
                     PNGTime.NumEdit.SaveAction = Sub(value) s.Storage.SetString("PNGTime", CStr(value))
 
-                    ''How long Should the Animated Gif Be Using Float Points. ex: 4 seconds would be 4.0. It also follows the above code when being sent. 
                     Dim PNGLength = ui.AddNum()
                     PNGLength.Text = "Length:"
                     PNGLength.Config = {0, 9, 0.1, 1}
                     PNGLength.Help = "The Length of the Animation in Seconds"
                     PNGLength.NumEdit.Value = s.Storage.GetString("PNGLength", 4)
                     PNGLength.NumEdit.SaveAction = Sub(value) s.Storage.SetString("PNGLength", CStr(value))
-
 
                     Dim PNGFrameRate = ui.AddNum()
                     PNGFrameRate.Text = "FrameRate:"
@@ -5792,20 +5788,18 @@ Public Class MainForm
                     PNGScale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("PNGScale", CInt(value))
 
                     Dim OptSettings = ui.AddBool()
-                    OptSettings.Text = "Enable Opt" ' Call External exe file to help shrink the filesize without damaging the quality of the file.
+                    OptSettings.Text = "Enable Opt"
                     OptSettings.Help = "Enable or Disable the Usage of Optimizator"
                     OptSettings.Checked = s.Storage.GetBool("OptSetting", False)
                     OptSettings.SaveAction = Sub(value) s.Storage.SetBool("OptSetting", CBool(value))
 
-
                     Opt.Text = "Opt Settings:"
-                    Opt.Add("Zlib", "-z0") 'Fastest Mode and has no lit
-                    Opt.Add("7zip", "-z1") ' Balance between Zopfli & Zlib. It also createst a smaller size then Zlib.
-                    Opt.Add("Zopfli", "-z2") 'This is slow, Very Slow. Only has a difference of about .4 megs compared to 7zip.
+                    Opt.Add("Zlib", "-z0")
+                    Opt.Add("7zip", "-z1")
+                    Opt.Add("Zopfli", "-z2")
                     Opt.Help = "Compression and Optimization Method Used" + BR + "ZLib = Fastest" + BR + "7Zip = Balance" + BR + "Zopfli = Slowest"
-                    Opt.Button.Value = s.Storage.GetString("PNGopt", "-z0")
+                    Opt.Button.Value = s.Storage.GetString("PNGopt", "-z1")
                     Opt.Button.SaveAction = Sub(value) s.Storage.SetString("PNGopt", CStr(value))
-
 
                     page.ResumeLayout()
 
@@ -5876,7 +5870,7 @@ Public Class MainForm
 
                 If fd.ShowDialog = DialogResult.OK Then
                     Using f As New SimpleSettingsForm("Thumbnail Options")
-                    f.ScaleClientSize(27, 18)
+                    f.ScaleClientSize(27, 20)
 
                     Dim ui = f.SimpleUI
                     Dim page = ui.CreateFlowPage("main page")
@@ -5894,27 +5888,26 @@ Public Class MainForm
                     mode.Button.Value = s.Storage.GetInt("Thumbnail Mode")
                     mode.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Mode", value)
                     AddHandler mode.Button.ValueChangedUser, Sub()
-                                                                     row.Visible = mode.Button.Value = 0
-                                                                     interval.Visible = mode.Button.Value = 1
-                                                                 End Sub
+                                                                 row.Visible = mode.Button.Value = 0
+                                                                 interval.Visible = mode.Button.Value = 1
+                                                             End Sub
                     Dim m = ui.AddMenu(Of Integer)
                     m.Text = "Timestamp Position:"
                     m.Add("Left Top", 0)
                     m.Add("Right Top", 1)
                     m.Add("Left Bottom", 2)
                     m.Add("Right Bottom", 3)
-                    m.Button.Value = s.Storage.GetInt("Thumbnail Position", 3) ' Middle Option might be Added at a later date.
+                    m.Button.Value = s.Storage.GetInt("Thumbnail Position", 3)
                     m.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Position", value)
 
-                    Dim p = ui.AddMenu(Of String)
-                    p.Text = "Picture Format:"
-                    p.Add("JPG", "jpg")
-                    p.Add("PNG", "png")
-                    p.Add("TIFF", "tiff")
-                    p.Add("BMP", "bmp")
-                    p.Button.Value = s.Storage.GetString("Picture Format", "png")
-                    p.Button.SaveAction = Sub(value) s.Storage.SetString("Picture Format", CStr(value))
-
+                    Dim k = ui.AddMenu(Of String)
+                    k.Text = "Picture Format:"
+                    k.Add("JPG", "jpg")
+                    k.Add("PNG", "png")
+                    k.Add("TIFF", "tiff")
+                    k.Add("BMP", "bmp")
+                    k.Button.Value = s.Storage.GetString("Picture Format", "png")
+                    k.Button.SaveAction = Sub(value) s.Storage.SetString("Picture Format", CStr(value))
 
                     Dim cp = ui.AddColorPicker()
                     cp.Text = "Background Color:"
@@ -5938,13 +5931,6 @@ Public Class MainForm
                     row.NumEdit.Value = s.Storage.GetInt("Thumbnail Rows", 6)
                     row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Rows", CInt(value))
 
-                    Dim Gap = ui.AddNum() 'Using a 4x6 Reference: This is the Space between Shot A & B & D. 0 = No Gap, 5 = Largest Gap Possible.
-                    Gap.Text = "Gap:"
-                    Gap.Config = {0, 5}
-                    Gap.Help = "Distance Between each ScreenShot."
-                    Gap.NumEdit.Value = s.Storage.GetInt("Gap", 0)
-                    Gap.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Gap", CInt(value))
-
                     interval = ui.AddNum()
                     interval.Text = "Interval (seconds):"
                     interval.NumEdit.Value = s.Storage.GetInt("Thumbnail Interval")
@@ -5953,23 +5939,40 @@ Public Class MainForm
                     row.Visible = mode.Button.Value = 0
                     interval.Visible = mode.Button.Value = 1
 
-                    Dim cq = ui.AddNum() ' Only Appears When jpg Options is used, PNG, TIFF & BMP bypasses this option.
+                    Dim cq = ui.AddNum()
                     cq.Text = "Compression Quality:"
                     cq.Config = {1, 100}
                     cq.NumEdit.Value = s.Storage.GetInt("Thumbnail Compression Quality", 95)
                     cq.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Compression Quality", CInt(value))
-                    AddHandler p.Button.ValueChangedUser, Sub()
-                                                              cq.Visible = p.Button.Value = "jpg"
+                    AddHandler k.Button.ValueChangedUser, Sub()
+                                                              cq.Visible = k.Button.Value = "jpg"
                                                           End Sub
 
-                    cq.Visible = p.Button.Value = "jpg"
+                    cq.Visible = k.Button.Value = "jpg"
 
-
-                    Dim Logo = ui.AddBool() 'Removes Watermark.
+                    Dim Logo = ui.AddBool()
                     Logo.Text = "Disable Logo"
                     Logo.Help = "Enable or Disable the StaxRip Watermark"
                     Logo.Checked = s.Storage.GetBool("Logo", False)
                     Logo.SaveAction = Sub(value) s.Storage.SetBool("Logo", CBool(value))
+
+                    Dim Output = ui.AddBool()
+                    Output.Text = "Output Directory"
+                    Output.Checked = s.Storage.GetBool("CustomOut", False)
+                    Output.SaveAction = Sub(value) s.Storage.SetBool("CustomOutput", CBool(value))
+
+
+                    Dim tm = ui.AddTextMenu()
+                    tm.Label.Visible = False
+                    tm.Edit.Text = p.DefaultTargetFolder
+                    tm.Edit.SaveAction = Sub(value) p.DefaultTargetFolder = value
+                    tm.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+
+                    AddHandler Output.CheckStateChanged, Sub()
+                                                             tm.Visible = Output.Checked = True
+                                                         End Sub
+
+                    tm.Visible = Output.Checked = True
 
                     page.ResumeLayout()
 
@@ -5988,21 +5991,21 @@ Public Class MainForm
                 End If
             End Using
         End Sub
-    '<Command("Presents MediaInfo of all files in a folder in a list view.")>
-    'Sub ShowMediaInfoFolderViewDialog()
-    '    Using d As New FolderBrowserDialog
-    '        d.ShowNewFolderButton = False
-    '        d.SetSelectedPath(s.Storage.GetString("MediaInfo Folder View folder"))
+        <Command("Presents MediaInfo of all files in a folder in a list view.")>
+        Sub ShowMediaInfoFolderViewDialog()
+            Using d As New FolderBrowserDialog
+                d.ShowNewFolderButton = False
+                d.SetSelectedPath(s.Storage.GetString("MediaInfo Folder View folder"))
 
-    '        If d.ShowDialog = DialogResult.OK Then
-    '            s.Storage.SetString("MediaInfo Folder View folder", d.SelectedPath)
-    '            Dim f As New MediaInfoFolderViewForm(d.SelectedPath.FixDir)
-    '            f.Show()
-    '        End If
-    '    End Using
-    'End Sub
+                If d.ShowDialog = DialogResult.OK Then
+                    s.Storage.SetString("MediaInfo Folder View folder", d.SelectedPath)
+                    Dim f As New MediaInfoFolderViewForm(d.SelectedPath.FixDir)
+                    f.Show()
+                End If
+            End Using
+        End Sub
 
-    Protected Overrides Sub OnDragEnter(e As DragEventArgs)
+        Protected Overrides Sub OnDragEnter(e As DragEventArgs)
             Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
             If Not files.NothingOrEmpty Then e.Effect = DragDropEffects.Copy
             MyBase.OnDragEnter(e)

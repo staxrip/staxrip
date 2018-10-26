@@ -12,7 +12,6 @@ Public Class CropForm
                 components.Dispose()
             End If
         End If
-        Close()
         MyBase.Dispose(disposing)
     End Sub
 

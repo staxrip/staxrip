@@ -379,7 +379,7 @@ Public Class AppsForm
             Case Keys.F1
                 tsbHelp.PerformClick()
             Case Keys.F10
-                Dim fp = "C:\Users\Revan\Desktop\staxrip-1.8.2.0\bin\changelog.md"
+                Dim fp = "staxrip-2.0\bin\changelog.md"
                 If File.Exists(fp) Then g.StartProcess(fp)
             Case Keys.F11
                 tsbPath.PerformClick()

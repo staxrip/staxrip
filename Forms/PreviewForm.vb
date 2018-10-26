@@ -987,9 +987,9 @@ Public Class PreviewForm
         ret.Add("Tools|Copy Frame Number", NameOf(g.DefaultCommands.CopyToClipboard), {"%pos_frame%"})
         ret.Add("Tools|Copy Time", NameOf(CopyTime))
         ret.Add("Tools|-")
-        ret.Add("Tools|Save Bitmap", NameOf(SaveBitmap), Keys.Control Or Keys.S)
-        ret.Add("Tools|Save PNG", NameOf(SavePNG), Symbol.SaveAs)
-        ret.Add("Tools|Save JPG", NameOf(SaveJPG), Symbol.Save)
+        'ret.Add("Tools|Save Bitmap", NameOf(SaveBitmap), Keys.Control Or Keys.S)
+        ret.Add("Tools|Save PNG", NameOf(SavePNG), Keys.P, Symbol.SaveAs)
+        ret.Add("Tools|Save JPG", NameOf(SaveJPG), Keys.J, Symbol.Save)
 
         ret.Add("Edit Menu...", NameOf(OpenMenuEditor), Keys.M)
         ret.Add("Help...", NameOf(OpenHelp), Keys.F1, Symbol.Help)

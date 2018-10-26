@@ -7,6 +7,6 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyCopyright("Revan654")>
 <Assembly: ComVisible(False)> 
 <Assembly: Guid("54d5dc0f-6ba7-42f0-a82f-9c71d561cb8b")>
-<Assembly: AssemblyVersion("1.9.0.0")>
-<Assembly: AssemblyFileVersion("1.9.0.0")>
+<Assembly: AssemblyVersion("2.0.0.0")>
+<Assembly: AssemblyFileVersion("2.0.0.0")>
 <Assembly: AssemblyDescription("Thanks to Stax76 for Making Orig. StaxRip.")>

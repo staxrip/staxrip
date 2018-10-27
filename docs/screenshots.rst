@@ -9,7 +9,7 @@ Main
 .. image:: screenshots/_Main.png
 
 Main Drop Down Menu
-----
+-------------------
 
 .. image:: screenshots/Menus.png
 
@@ -21,8 +21,7 @@ App Form
 Audio
 -----
 
-.. image:: screenshots/Audio.png
-.. image:: screensshots/AudioMenu.png
+.. image:: screenshots/AudioMenu.png
 
 eac3to
 ------
@@ -74,7 +73,7 @@ Animation
 ----------
 
 .. image:: screenshots/PNGAnimation.png
-.. image:: screenshots/GIF.Animation.png
+.. image:: screenshots/GIFAnimation.png
 
 Update
 ------

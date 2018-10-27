@@ -116,24 +116,6 @@ Used Version: 3.3.4
 http://ffmpeg.org
 
 
-PNGOpt
-~~~~~~
-
-Optimizes APNG animations.
-
-Used Version: 1.4
-
-https://sourceforge.net/projects/apng/files/APNG_Optimizer/
-
-MTN
-~~~
-
-movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.
-
-Used Version: 4.0
-
-https://github.com/Revan654/Movie-Thumbnailer-mtn-
-
 FFTW
 ~~~~
 
@@ -153,21 +135,13 @@ Used Version: 2013-04-14
 
 http://haali.su/mkv
 
-Update
-~~~~~~
-
-Script Tool that is designed to check for new releases and install it.
-
-Used Version: 1.0
-
-https://github.com/Revan654/staxrip
 
 MediaInfo
 ~~~~~~~~~
 
 MediaInfo is used by StaxRip to read infos from media files.
 
-Used Version: 18.08
+Used Version: 0.7.99
 
 https://mediaarea.net/en/MediaInfo
 
@@ -177,7 +151,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 28.0.0
+Used Version: 26.0.0
 
 http://www.bunkus.org/videotools/mkvtoolnix
 
@@ -187,19 +161,10 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 28.0.0
+Used Version: 26.0.0
 
 http://www.bunkus.org/videotools/mkvtoolnix
 
-
-mkvmerge
-~~~~~~~~
-
-MKV info tool.
-
-Used Version: 28.0.0
-
-http://www.bunkus.org/videotools/mkvtoolnix
 
 MP4Box
 ~~~~~~
@@ -216,7 +181,7 @@ mpv
 
 libmpv based media player.
 
-Used Version: 2018-10-20
+Used Version: 2018-09-12
 
 https://mpv.io
 
@@ -226,7 +191,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.16
+Used Version: 3.27
 
 https://github.com/rigaya/NVEnc
 
@@ -236,7 +201,7 @@ Python
 
 Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool. Use anaconda if you don't have admin access.
 
-Used Version: 3.7
+Used Version: 3.6.6
 
 http://www.python.org
 https://www.anaconda.com/download/
@@ -247,7 +212,7 @@ qaac
 
 qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the x64 iTunes installer using a decompression tool like 7-Zip. The makeportable script found on the qaac website can also be used.
 
-Used Version: 2.67
+Used Version: 2.64
 
 http://github.com/nu774/qaac
 
@@ -257,7 +222,7 @@ QSVEnc
 
 Intel hardware video encoder.
 
-Used Version: 3.09
+Used Version: 2.73
 
 https://github.com/rigaya/QSVEnc
 
@@ -277,7 +242,7 @@ VapourSynth
 
 StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
 
-Used Version: R45
+Used Version: R44
 
 http://www.vapoursynth.com
 
@@ -300,12 +265,16 @@ Visual C++ 2012 Redistributable is required by some tools used by StaxRip.
 Used Version: 
 
 
+
+
 Visual C++ 2013
 ~~~~~~~~~~~~~~~
 
 Visual C++ 2013 Redistributable is required by some tools used by StaxRip.
 
 Used Version: 
+
+
 
 
 Visual C++ 2017
@@ -316,12 +285,14 @@ Visual C++ 2017 Redistributable is required by some tools used by StaxRip.
 Used Version: 
 
 
+
+
 vspipe
 ~~~~~~
 
 vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.
 
-Used Version: R45
+Used Version: R43
 
 http://www.vapoursynth.com/doc/vspipe.html
 
@@ -341,16 +312,27 @@ x264
 
 H.264 video encoding command line app.
 
-Used Version: 2932
+Used Version: 0.150.2851 8-Bit
 
 http://www.videolan.org/developers/x264.html
+
+
+x264 10-Bit
+~~~~~~~~~~~
+
+H.264 video encoding command line app.
+
+Used Version: 0.150.2851 10-Bit
+
+http://www.videolan.org/developers/x264.html
+
 
 x265
 ~~~~
 
 H.265 video encoding command line app.
 
-Used Version: 2.8+74
+Used Version: 2.8+66
 
 http://x265.org
 
@@ -358,37 +340,38 @@ http://x265.org
 AviSynth Plugins
 ----------------
 
+AutoAdjust
+~~~~~~~~~~
+
+AutoAdjust is an automatic adjustement filter. It calculates statistics of clip, stabilizes them temporally and uses them to adjust luminance gain & color balance.
+
+Filters: AutoAdjust
+
+Used Version: 2.60
+
+https://forum.doom9.org/showthread.php?t=167573
+
 AddGrainC
 ~~~~~~~~~~~
 
-Generate film-like grain or other effects (like rain) by adding random noise to a video clip. This noise may optionally be horizontally or vertically correlated to cause streaking.
+Generate film-like grain or other effects (like rain) by adding random noise to a video clip. This noise may optionally be horizontally or vertically correlated to cause streaking. 
 
-Version: 1.7.1
+Version: 1.7.1 
 
-http://avisynth.nl/index.php/AddGrainC
 
 AnimeIVTC
 ~~~~~~~~~~~
 
 Designed to used with QTGMC.
 
-Version: 2.20
+Version: 2.20 
 
 http://avisynth.nl/index.php/AnimeIVTC
-
-AutoAdjust
-~~~~~~~~~~~
-
-A high quality automatic adjustement filter. It calculates statistics of clip, averages them temporally to stabilize data and uses them to adjust luminance gain & color balance. AutoAdjust has a smoothing & dithering algorithm to avoid banding issue. Calculations are made in 32bits float to avoid rounding errors and can also input/output 16-bits. AutoAdjust is internally multithreaded and SSE2 optimized. 
-
-Version: 2.60
-
-http://avisynth.nl/index.php/AutoAdjust
 
 Average
 ~~~~~~~~~~~
 
-simple plugin that calculates a weighted frame-by-frame average from multiple clips. This is a modern rewrite of the old Average plugin but a bit faster, additional colorspace support, and some additional sanity checks.
+A simple plugin that calculates a weighted frame-by-frame average from multiple clips. This is a modern rewrite of the old Average plugin but a bit faster, additional colorspace support, and some additional sanity checks.
 
 Version: 0.94
 
@@ -418,20 +401,6 @@ Used Version: 0.9
 
 http://github.com/tp7/checkmate
 
-CNR2
-~~~~
-
-This filter is a Chroma Stabilizer for analog sources. It's a temporal filter and it's very effective against two chroma artifacts: Stationary rainbows and huge analog chroma activity.
-Cnr2 was inspired by the VirtualDub filter Chroma Noise Reduction 1.1 by Gilles Mouchard.
-
-Version: 2.6.1
-
-DAA3Mod
-~~~~~~~
-
-Anti-aliasing with contra-sharpening. 
-
-Version: 3.3
 
 DCTFilter
 ~~~~~~~~~

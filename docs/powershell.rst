@@ -46,30 +46,16 @@ https://github.com/stax76/staxrip/issues/200
 Default Scripts
 ---------------
 
-Update.ps1
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+HDR to 10bit 1000nits(Rec.2100)AVS.ps1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: Update.ps1
+.. literalinclude:: powershell/HDR to 10bit 1000nits(Rec.2100)AVS.ps1
    :language: powershell
 
+HDR to 10bit 1000nits(Rec.2100)VS.ps1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Convert Bluray (BT2020) to 10bit 1000nits (MaxFALL-BT709) HDR AVS.ps1
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. literalinclude:: powershell/Convert Bluray (BT2020) to 10bit 1000nits (MaxFALL-BT709) HDR AVS.ps1
-   :language: powershell
-
-Convert Bluray (BT2020) to 10bit 1000nits (MaxFALL-BT709) HDR VS.ps1
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. literalinclude:: powershell/Convert Bluray (BT2020) to 10bit 1000nits (MaxFALL-BT709) HDR VS.ps1
-   :language: powershell
-
-
-Convert Bluray (BT709) to 10bit 400nits (MaxFALL) HDR v3.ps1
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. literalinclude:: powershell/Convert Bluray (BT709) to 10bit 400nits (MaxFALL) HDR v3.ps1
+.. literalinclude:: powershell/HDR to 10bit 1000nits(Rec.2100)VS.ps1
    :language: powershell
 
 Re-mux v4.ps1

@@ -49,8 +49,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'StaxRip'
-copyright = '2018, Revan654'
-author = 'Revan654'
+copyright = '2018, StaxRip'
+author = 'StaxRip'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

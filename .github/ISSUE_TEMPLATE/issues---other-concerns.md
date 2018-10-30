@@ -3,6 +3,8 @@ name: Issues & Other Concerns
 about: Creating a Report
 
 ---
+**Any Pre-Releases / Beta Releases**
+- Any Beta Releases are Not Covered, They may have bugs and are not part of the Final Release.
 
 **Describe the bug or Issue**
 A clear and concise description of what the bug is.

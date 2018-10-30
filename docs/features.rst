@@ -57,17 +57,3 @@ It executes a batch script with solved macros. Macros are also available as envi
 The 'Execute Batch Script' command has a option 'Interpret Output' that can be turned on to interpret each console output line from the batch script or executables started in the batch script as StaxRip command. The documentation of the StaxRip commands is located at: Main Menu > Help > Command Line.
 
 Used executables can be powershell.exe, cscript.exe (VBScript/JScript), python.exe, any other scripting engine or any console app programed in any programming language.
-
-Thumbnails
-----------
-
-Along with Video Processing, You can make a contact sheet(aka Thumbnails) with StaxRip. You have access to two engines to do this MTN and the StaxRip internal engine. 
- 
-The internal engine is capable of covering HDR and all different formats of HDR. The MTN engine requires zero indexing and is the ideal engine to use when you need a quick contact sheet.
-
-Animation
----------
-
-Other then video encoding, StaxRip is capable of creating short high quality animation in the form of gif or aPNG (it's just a normal PNG file but animated). You can create quick animation from project your encoding or on the fly animation. 
-
-Both types supports different types of options to set for your animation.

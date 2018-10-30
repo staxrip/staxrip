@@ -139,6 +139,18 @@ Loads the source file.
 Loads a template.
 
 
+-MediainfoMKV
+~~~~~~~~~~~~~
+
+Shows the Metadata Information for MKV file including HDR10 data.
+
+
+-MediaInfoShowMedia
+~~~~~~~~~~~~~~~~~~~
+
+View the Metadata of any Selected File
+
+
 -OpenHelpTopic:topic
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -159,6 +171,30 @@ Plays a mp3, wav or wmv sound file.
 ~~~~~~~~~~~~~~
 
 Shows a dialog allowing to reset various settings.
+
+
+-SaveGif
+~~~~~~~~
+
+Generates a Short Gif Based on Input data.
+
+
+-SaveMKVHDR
+~~~~~~~~~~~
+
+Adds the Remaining HDR10 Metadata to MKV file.
+
+
+-SaveMTN
+~~~~~~~~
+
+Generate Thumbnails Using MTN Engine
+
+
+-SavePNG
+~~~~~~~~
+
+Creates Very High Quality Animations in the Form of PNG.
 
 
 -SaveProject
@@ -473,6 +509,12 @@ Starts a tool by name as shown in the app manage dialog.
 ~~~~~
 
 Test
+
+
+-UpdateStaxRip
+~~~~~~~~~~~~~~
+
+Checks For Updates
 
 
 -WriteLog:header,message

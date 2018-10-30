@@ -1,4 +1,4 @@
-﻿Frequently Asked Questions
+Frequently Asked Questions
 ==========================
 
 .. contents::
@@ -50,8 +50,6 @@ StaxRip is only available for x64 and therefore only x64 plugins can be used.
 
 The AviSynth script can be edited manually using the code editor (Filters > Edit Code) or the filters menu can be configured using the filter profile editor (Filters > Profiles).
 
-New LoadPlugin / Import filter can be loaded through Filters tab in Option Menu.
-
 
 How can I use custom AviSynth scripts?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,3 +65,8 @@ This folder can be opened in StaxRip with:
 Main Menu > Tools > Folders > Plugins
 
 The AviSynth script can be edited manually using the code editor (Filters > Edit Code) or the filters menu can be configured using the filter profile editor (Filters > Profiles).
+
+Is there a way to make StaxRip fully Portable?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Yes and No, Due to VFW framework  requires registery keys and registery keys must point to AVS+ or VS/Python locations. Which requires editing the registery keys at multiple locations. It's easier just to install the Frameservers and allow the installers to create the proper keys for global acess instead of just local acess.

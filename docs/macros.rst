@@ -141,10 +141,6 @@ File extension of the AviSynth/VapourSynth script so either avs or vpy.
 
 ``%script_file%``
 
-File extension of the AviSynth/VapourSynth script so either avs or vpy in quotes.
-
-``%script_file%``
-
 Path of the AviSynth/VapourSynth script.
 
 ``%sel_end%``
@@ -295,9 +291,17 @@ Depending on which video encoder is active returns x264, x265, nvenc, qsvenc, vc
 
 Directory of the source file or the temp directory if enabled.
 
+``%app:AddGrainC%``
+
+File path to AddGrainC
+
 ``%app:adjust%``
 
 File path to adjust
+
+``%app:AnimeIVTC%``
+
+File path to AnimeIVTC
 
 ``%app:aomenc%``
 
@@ -306,6 +310,10 @@ File path to aomenc
 ``%app:AutoAdjust%``
 
 File path to AutoAdjust
+
+``%app:Average%``
+
+File path to Average
 
 ``%app:AviSynth+%``
 
@@ -319,37 +327,125 @@ File path to avs2pipemod
 
 File path to AVSMeter
 
+``%app:AvsResize%``
+
+File path to AvsResize
+
+``%app:AVSTP%``
+
+File path to AVSTP
+
 ``%app:aWarpSharp2%``
 
 File path to aWarpSharp2
+
+``%app:AWarpSharp2%``
+
+File path to AWarpSharp2
 
 ``%app:BDSup2Sub++%``
 
 File path to BDSup2Sub++
 
+``%app:BM3D%``
+
+File path to BM3D
+
 ``%app:checkmate%``
 
 File path to checkmate
+
+``%app:CNR2%``
+
+File path to CNR2
+
+``%app:CNR2%``
+
+File path to CNR2
+
+``%app:CTMF%``
+
+File path to CTMF
 
 ``%app:d2vsource%``
 
 File path to d2vsource
 
+``%app:DAA3Mod%``
+
+File path to DAA3Mod
+
 ``%app:DCTFilter%``
 
 File path to DCTFilter
+
+``%app:DCTFilter%``
+
+File path to DCTFilter
+
+``%app:DCTFilter-f%``
+
+File path to DCTFilter-f
 
 ``%app:Deblock%``
 
 File path to Deblock
 
+``%app:Deblock%``
+
+File path to Deblock
+
+``%app:Deblock_QED%``
+
+File path to Deblock_QED
+
+``%app:DeblockPP7%``
+
+File path to DeblockPP7
+
 ``%app:Decomb%``
 
 File path to Decomb
 
-``%app:DeLogo%``
+``%app:DeGrainMedian%``
 
-File path to DeLogo
+File path to DeGrainMedian
+
+``%app:DegrainMedian%``
+
+File path to DegrainMedian
+
+``%app:DehaloAlpha%``
+
+File path to DehaloAlpha
+
+``%app:DeNoise Histogram%``
+
+File path to DeNoise Histogram
+
+``%app:DeNoiseMD%``
+
+File path to DeNoiseMD
+
+``%app:DeNoiseMF%``
+
+File path to DeNoiseMF
+
+``%app:DePan%``
+
+File path to DePan
+
+``%app:DePanEstimate%``
+
+File path to DePanEstimate
+
+``%app:DFTTest%``
+
+File path to DFTTest
+
+``%app:DFTTest%``
+
+File path to DFTTest
 
 ``%app:DGDecodeIM%``
 
@@ -371,6 +467,22 @@ File path to DGIndexIM
 
 File path to DGIndexNV
 
+``%app:DGTonemap%``
+
+File path to DGTonemap
+
+``%app:Dither AVSI%``
+
+File path to Dither AVSI
+
+``%app:Dither DLL%``
+
+File path to Dither DLL
+
+``%app:Dither%``
+
+File path to Dither
+
 ``%app:dsmux%``
 
 File path to dsmux
@@ -383,9 +495,29 @@ File path to DSS2mod
 
 File path to eac3to
 
+``%app:edi_rpow2 AVSI%``
+
+File path to edi_rpow2 AVSI
+
 ``%app:EEDI2%``
 
 File path to EEDI2
+
+``%app:EEDI2%``
+
+File path to EEDI2
+
+``%app:EEDI3%``
+
+File path to EEDI3
+
+``%app:eedi3_resize%``
+
+File path to eedi3_resize
+
+``%app:EEDI3m%``
+
+File path to EEDI3m
 
 ``%app:fdkaac%``
 
@@ -407,9 +539,17 @@ File path to FFT3DFilter
 
 File path to FFT3DFilter
 
+``%app:FFT3DGPU%``
+
+File path to FFT3DGPU
+
 ``%app:FFTW%``
 
 File path to FFTW
+
+``%app:FineDehalo%``
+
+File path to FineDehalo
 
 ``%app:FineSharp%``
 
@@ -443,9 +583,13 @@ File path to FrameRateConverter AVSI
 
 File path to FrameRateConverter DLL
 
-``%app:GradCurve%``
+``%app:GradFun2DB%``
 
-File path to GradCurve
+File path to GradFun2DB
+
+``%app:GradFun2DBmod%``
+
+File path to GradFun2DBmod
 
 ``%app:Haali Splitter%``
 
@@ -455,9 +599,33 @@ File path to Haali Splitter
 
 File path to havsfunc
 
-``%app:Java%``
+``%app:hnwvsfunc%``
 
-File path to Java
+File path to hnwvsfunc
+
+``%app:HQDeringmod%``
+
+File path to HQDeringmod
+
+``%app:HQDN3D%``
+
+File path to HQDN3D
+
+``%app:HQDN3D%``
+
+File path to HQDN3D
+
+``%app:InterFrame%``
+
+File path to InterFrame
+
+``%app:IT%``
+
+File path to IT
+
+``%app:JincResize%``
+
+File path to JincResize
 
 ``%app:JPSDR%``
 
@@ -467,6 +635,10 @@ File path to JPSDR
 
 File path to KNLMeansCL
 
+``%app:Lazy Utilities%``
+
+File path to Lazy Utilities
+
 ``%app:LSFmod%``
 
 File path to LSFmod
@@ -475,13 +647,25 @@ File path to LSFmod
 
 File path to L-SMASH-Works
 
+``%app:MAA2Mod%``
+
+File path to MAA2Mod
+
 ``%app:masktools2%``
 
 File path to masktools2
 
+``%app:mcdegrainsharp%``
+
+File path to mcdegrainsharp
+
 ``%app:mClean%``
 
 File path to mClean
+
+``%app:MCTemporalDenoise%``
+
+File path to MCTemporalDenoise
 
 ``%app:MediaInfo%``
 
@@ -491,9 +675,21 @@ File path to MediaInfo
 
 File path to MedianBlur2
 
+``%app:MiniDeen%``
+
+File path to MiniDeen
+
+``%app:MipSmooth%``
+
+File path to MipSmooth
+
 ``%app:mkvextract%``
 
 File path to mkvextract
+
+``%app:mkvinfo%``
+
+File path to mkvinfo
 
 ``%app:mkvmerge%``
 
@@ -511,9 +707,9 @@ File path to MP4Box
 
 File path to MPEG2DecPlus
 
-``%app:mpv.net%``
+``%app:mpv%``
 
-File path to mpv.net
+File path to mpv
 
 ``%app:MSharpen%``
 
@@ -522,6 +718,26 @@ File path to MSharpen
 ``%app:msmoosh%``
 
 File path to msmoosh
+
+``%app:MT Expand Multi%``
+
+File path to MT Expand Multi
+
+``%app:MTN%``
+
+File path to MTN
+
+``%app:MultiSharpen%``
+
+File path to MultiSharpen
+
+``%app:muvsfunc%``
+
+File path to muvsfunc
+
+``%app:mvmulti%``
+
+File path to mvmulti
 
 ``%app:mvsfunc%``
 
@@ -535,21 +751,53 @@ File path to mvtools
 
 File path to mvtools2
 
+``%app:mvtools-sf%``
+
+File path to mvtools-sf
+
 ``%app:NicAudio%``
 
 File path to NicAudio
+
+``%app:nnedi3 AVSI%``
+
+File path to nnedi3 AVSI
 
 ``%app:nnedi3%``
 
 File path to nnedi3
 
+``%app:nnedi3cl%``
+
+File path to nnedi3cl
+
+``%app:nnedi3x AVSI%``
+
+File path to nnedi3x AVSI
+
 ``%app:NVEnc%``
 
 File path to NVEnc
 
-``%app:ProjectX%``
+``%app:Oyster%``
 
-File path to ProjectX
+File path to Oyster
+
+``%app:Plum%``
+
+File path to Plum
+
+``%app:PNGopt%``
+
+File path to PNGopt
+
+``%app:pSharpen%``
+
+File path to pSharpen
+
+``%app:psharpen%``
+
+File path to psharpen
 
 ``%app:Python%``
 
@@ -567,9 +815,29 @@ File path to QSVEnc
 
 File path to QTGMC
 
+``%app:Rav1e%``
+
+File path to Rav1e
+
+``%app:RawSource%``
+
+File path to RawSource
+
+``%app:resamplehq%``
+
+File path to resamplehq
+
+``%app:ResizeX%``
+
+File path to ResizeX
+
 ``%app:RgTools%``
 
 File path to RgTools
+
+``%app:Sangnom%``
+
+File path to Sangnom
 
 ``%app:SangNom2%``
 
@@ -579,6 +847,14 @@ File path to SangNom2
 
 File path to scenechange
 
+``%app:Shader AVSI%``
+
+File path to Shader AVSI
+
+``%app:Shader DLL%``
+
+File path to Shader DLL
+
 ``%app:SMDegrain%``
 
 File path to SMDegrain
@@ -587,29 +863,101 @@ File path to SMDegrain
 
 File path to SmoothAdjust
 
+``%app:SmoothD2%``
+
+File path to SmoothD2
+
+``%app:SmoothD2c%``
+
+File path to SmoothD2c
+
 ``%app:SubtitleEdit%``
 
 File path to SubtitleEdit
 
-``%app:TComb%``
+``%app:SVPFlow 1%``
 
-File path to TComb
+File path to SVPFlow 1
+
+``%app:SVPFlow 1%``
+
+File path to SVPFlow 1
+
+``%app:SVPFlow 2%``
+
+File path to SVPFlow 2
+
+``%app:SVPFlow 2%``
+
+File path to SVPFlow 2
+
+``%app:taa%``
+
+File path to taa
+
+``%app:TCanny%``
+
+File path to TCanny
 
 ``%app:TDeint%``
 
 File path to TDeint
 
+``%app:TDeintMod%``
+
+File path to TDeintMod
+
+``%app:TEMmod%``
+
+File path to TEMmod
+
+``%app:TemporalMedian%``
+
+File path to TemporalMedian
+
 ``%app:temporalsoften%``
 
 File path to temporalsoften
+
+``%app:TimeCube%``
+
+File path to TimeCube
 
 ``%app:TIVTC%``
 
 File path to TIVTC
 
+``%app:TMM2%``
+
+File path to TMM2
+
+``%app:TNLMeans%``
+
+File path to TNLMeans
+
+``%app:TTempSmooth%``
+
+File path to TTempSmooth
+
 ``%app:UnDot%``
 
 File path to UnDot
+
+``%app:Update%``
+
+File path to Update
+
+``%app:VagueDenoiser%``
+
+File path to VagueDenoiser
+
+``%app:VagueDenoiser%``
+
+File path to VagueDenoiser
+
+``%app:VapourSource%``
+
+File path to VapourSource
 
 ``%app:VapourSynth%``
 
@@ -619,9 +967,21 @@ File path to VapourSynth
 
 File path to VCEEnc
 
+``%app:vcfreq%``
+
+File path to vcfreq
+
 ``%app:vcmod%``
 
 File path to vcmod
+
+``%app:vcmove%``
+
+File path to vcmove
+
+``%app:Vine%``
+
+File path to Vine
 
 ``%app:vinverse%``
 
@@ -639,6 +999,10 @@ File path to Visual C++ 2013
 
 File path to Visual C++ 2017
 
+``%app:vsCube%``
+
+File path to vsCube
+
 ``%app:VSFilterMod%``
 
 File path to VSFilterMod
@@ -655,17 +1019,25 @@ File path to vspipe
 
 File path to VSRip
 
+``%app:W3FDIF%``
+
+File path to W3FDIF
+
 ``%app:x264%``
 
 File path to x264
 
-``%app:x264 10-Bit%``
-
-File path to x264 10-Bit
-
 ``%app:x265%``
 
 File path to x265
+
+``%app:XAA%``
+
+File path to XAA
+
+``%app:xNLMeans%``
+
+File path to xNLMeans
 
 ``%app:xvid_encraw%``
 
@@ -679,9 +1051,25 @@ File path to Yadifmod
 
 File path to yadifmod2
 
+``%app:YFRC%``
+
+File path to YFRC
+
+``%app:znedi3%``
+
+File path to znedi3
+
+``%app_dir:AddGrainC%``
+
+Folder path to AddGrainC
+
 ``%app_dir:adjust%``
 
 Folder path to adjust
+
+``%app_dir:AnimeIVTC%``
+
+Folder path to AnimeIVTC
 
 ``%app_dir:aomenc%``
 
@@ -690,6 +1078,10 @@ Folder path to aomenc
 ``%app_dir:AutoAdjust%``
 
 Folder path to AutoAdjust
+
+``%app_dir:Average%``
+
+Folder path to Average
 
 ``%app_dir:AviSynth+%``
 
@@ -703,37 +1095,125 @@ Folder path to avs2pipemod
 
 Folder path to AVSMeter
 
+``%app_dir:AvsResize%``
+
+Folder path to AvsResize
+
+``%app_dir:AVSTP%``
+
+Folder path to AVSTP
+
 ``%app_dir:aWarpSharp2%``
 
 Folder path to aWarpSharp2
+
+``%app_dir:AWarpSharp2%``
+
+Folder path to AWarpSharp2
 
 ``%app_dir:BDSup2Sub++%``
 
 Folder path to BDSup2Sub++
 
+``%app_dir:BM3D%``
+
+Folder path to BM3D
+
 ``%app_dir:checkmate%``
 
 Folder path to checkmate
+
+``%app_dir:CNR2%``
+
+Folder path to CNR2
+
+``%app_dir:CNR2%``
+
+Folder path to CNR2
+
+``%app_dir:CTMF%``
+
+Folder path to CTMF
 
 ``%app_dir:d2vsource%``
 
 Folder path to d2vsource
 
+``%app_dir:DAA3Mod%``
+
+Folder path to DAA3Mod
+
 ``%app_dir:DCTFilter%``
 
 Folder path to DCTFilter
+
+``%app_dir:DCTFilter%``
+
+Folder path to DCTFilter
+
+``%app_dir:DCTFilter-f%``
+
+Folder path to DCTFilter-f
 
 ``%app_dir:Deblock%``
 
 Folder path to Deblock
 
+``%app_dir:Deblock%``
+
+Folder path to Deblock
+
+``%app_dir:Deblock_QED%``
+
+Folder path to Deblock_QED
+
+``%app_dir:DeblockPP7%``
+
+Folder path to DeblockPP7
+
 ``%app_dir:Decomb%``
 
 Folder path to Decomb
 
-``%app_dir:DeLogo%``
+``%app_dir:DeGrainMedian%``
 
-Folder path to DeLogo
+Folder path to DeGrainMedian
+
+``%app_dir:DegrainMedian%``
+
+Folder path to DegrainMedian
+
+``%app_dir:DehaloAlpha%``
+
+Folder path to DehaloAlpha
+
+``%app_dir:DeNoise Histogram%``
+
+Folder path to DeNoise Histogram
+
+``%app_dir:DeNoiseMD%``
+
+Folder path to DeNoiseMD
+
+``%app_dir:DeNoiseMF%``
+
+Folder path to DeNoiseMF
+
+``%app_dir:DePan%``
+
+Folder path to DePan
+
+``%app_dir:DePanEstimate%``
+
+Folder path to DePanEstimate
+
+``%app_dir:DFTTest%``
+
+Folder path to DFTTest
+
+``%app_dir:DFTTest%``
+
+Folder path to DFTTest
 
 ``%app_dir:DGDecodeIM%``
 
@@ -755,6 +1235,22 @@ Folder path to DGIndexIM
 
 Folder path to DGIndexNV
 
+``%app_dir:DGTonemap%``
+
+Folder path to DGTonemap
+
+``%app_dir:Dither AVSI%``
+
+Folder path to Dither AVSI
+
+``%app_dir:Dither DLL%``
+
+Folder path to Dither DLL
+
+``%app_dir:Dither%``
+
+Folder path to Dither
+
 ``%app_dir:dsmux%``
 
 Folder path to dsmux
@@ -767,9 +1263,29 @@ Folder path to DSS2mod
 
 Folder path to eac3to
 
+``%app_dir:edi_rpow2 AVSI%``
+
+Folder path to edi_rpow2 AVSI
+
 ``%app_dir:EEDI2%``
 
 Folder path to EEDI2
+
+``%app_dir:EEDI2%``
+
+Folder path to EEDI2
+
+``%app_dir:EEDI3%``
+
+Folder path to EEDI3
+
+``%app_dir:eedi3_resize%``
+
+Folder path to eedi3_resize
+
+``%app_dir:EEDI3m%``
+
+Folder path to EEDI3m
 
 ``%app_dir:fdkaac%``
 
@@ -791,9 +1307,17 @@ Folder path to FFT3DFilter
 
 Folder path to FFT3DFilter
 
+``%app_dir:FFT3DGPU%``
+
+Folder path to FFT3DGPU
+
 ``%app_dir:FFTW%``
 
 Folder path to FFTW
+
+``%app_dir:FineDehalo%``
+
+Folder path to FineDehalo
 
 ``%app_dir:FineSharp%``
 
@@ -827,9 +1351,13 @@ Folder path to FrameRateConverter AVSI
 
 Folder path to FrameRateConverter DLL
 
-``%app_dir:GradCurve%``
+``%app_dir:GradFun2DB%``
 
-Folder path to GradCurve
+Folder path to GradFun2DB
+
+``%app_dir:GradFun2DBmod%``
+
+Folder path to GradFun2DBmod
 
 ``%app_dir:Haali Splitter%``
 
@@ -839,9 +1367,33 @@ Folder path to Haali Splitter
 
 Folder path to havsfunc
 
-``%app_dir:Java%``
+``%app_dir:hnwvsfunc%``
 
-Folder path to Java
+Folder path to hnwvsfunc
+
+``%app_dir:HQDeringmod%``
+
+Folder path to HQDeringmod
+
+``%app_dir:HQDN3D%``
+
+Folder path to HQDN3D
+
+``%app_dir:HQDN3D%``
+
+Folder path to HQDN3D
+
+``%app_dir:InterFrame%``
+
+Folder path to InterFrame
+
+``%app_dir:IT%``
+
+Folder path to IT
+
+``%app_dir:JincResize%``
+
+Folder path to JincResize
 
 ``%app_dir:JPSDR%``
 
@@ -851,6 +1403,10 @@ Folder path to JPSDR
 
 Folder path to KNLMeansCL
 
+``%app_dir:Lazy Utilities%``
+
+Folder path to Lazy Utilities
+
 ``%app_dir:LSFmod%``
 
 Folder path to LSFmod
@@ -859,13 +1415,25 @@ Folder path to LSFmod
 
 Folder path to L-SMASH-Works
 
+``%app_dir:MAA2Mod%``
+
+Folder path to MAA2Mod
+
 ``%app_dir:masktools2%``
 
 Folder path to masktools2
 
+``%app_dir:mcdegrainsharp%``
+
+Folder path to mcdegrainsharp
+
 ``%app_dir:mClean%``
 
 Folder path to mClean
+
+``%app_dir:MCTemporalDenoise%``
+
+Folder path to MCTemporalDenoise
 
 ``%app_dir:MediaInfo%``
 
@@ -875,9 +1443,21 @@ Folder path to MediaInfo
 
 Folder path to MedianBlur2
 
+``%app_dir:MiniDeen%``
+
+Folder path to MiniDeen
+
+``%app_dir:MipSmooth%``
+
+Folder path to MipSmooth
+
 ``%app_dir:mkvextract%``
 
 Folder path to mkvextract
+
+``%app_dir:mkvinfo%``
+
+Folder path to mkvinfo
 
 ``%app_dir:mkvmerge%``
 
@@ -895,9 +1475,9 @@ Folder path to MP4Box
 
 Folder path to MPEG2DecPlus
 
-``%app_dir:mpv.net%``
+``%app_dir:mpv%``
 
-Folder path to mpv.net
+Folder path to mpv
 
 ``%app_dir:MSharpen%``
 
@@ -906,6 +1486,26 @@ Folder path to MSharpen
 ``%app_dir:msmoosh%``
 
 Folder path to msmoosh
+
+``%app_dir:MT Expand Multi%``
+
+Folder path to MT Expand Multi
+
+``%app_dir:MTN%``
+
+Folder path to MTN
+
+``%app_dir:MultiSharpen%``
+
+Folder path to MultiSharpen
+
+``%app_dir:muvsfunc%``
+
+Folder path to muvsfunc
+
+``%app_dir:mvmulti%``
+
+Folder path to mvmulti
 
 ``%app_dir:mvsfunc%``
 
@@ -919,21 +1519,53 @@ Folder path to mvtools
 
 Folder path to mvtools2
 
+``%app_dir:mvtools-sf%``
+
+Folder path to mvtools-sf
+
 ``%app_dir:NicAudio%``
 
 Folder path to NicAudio
+
+``%app_dir:nnedi3 AVSI%``
+
+Folder path to nnedi3 AVSI
 
 ``%app_dir:nnedi3%``
 
 Folder path to nnedi3
 
+``%app_dir:nnedi3cl%``
+
+Folder path to nnedi3cl
+
+``%app_dir:nnedi3x AVSI%``
+
+Folder path to nnedi3x AVSI
+
 ``%app_dir:NVEnc%``
 
 Folder path to NVEnc
 
-``%app_dir:ProjectX%``
+``%app_dir:Oyster%``
 
-Folder path to ProjectX
+Folder path to Oyster
+
+``%app_dir:Plum%``
+
+Folder path to Plum
+
+``%app_dir:PNGopt%``
+
+Folder path to PNGopt
+
+``%app_dir:pSharpen%``
+
+Folder path to pSharpen
+
+``%app_dir:psharpen%``
+
+Folder path to psharpen
 
 ``%app_dir:Python%``
 
@@ -951,9 +1583,29 @@ Folder path to QSVEnc
 
 Folder path to QTGMC
 
+``%app_dir:Rav1e%``
+
+Folder path to Rav1e
+
+``%app_dir:RawSource%``
+
+Folder path to RawSource
+
+``%app_dir:resamplehq%``
+
+Folder path to resamplehq
+
+``%app_dir:ResizeX%``
+
+Folder path to ResizeX
+
 ``%app_dir:RgTools%``
 
 Folder path to RgTools
+
+``%app_dir:Sangnom%``
+
+Folder path to Sangnom
 
 ``%app_dir:SangNom2%``
 
@@ -963,6 +1615,14 @@ Folder path to SangNom2
 
 Folder path to scenechange
 
+``%app_dir:Shader AVSI%``
+
+Folder path to Shader AVSI
+
+``%app_dir:Shader DLL%``
+
+Folder path to Shader DLL
+
 ``%app_dir:SMDegrain%``
 
 Folder path to SMDegrain
@@ -971,29 +1631,101 @@ Folder path to SMDegrain
 
 Folder path to SmoothAdjust
 
+``%app_dir:SmoothD2%``
+
+Folder path to SmoothD2
+
+``%app_dir:SmoothD2c%``
+
+Folder path to SmoothD2c
+
 ``%app_dir:SubtitleEdit%``
 
 Folder path to SubtitleEdit
 
-``%app_dir:TComb%``
+``%app_dir:SVPFlow 1%``
 
-Folder path to TComb
+Folder path to SVPFlow 1
+
+``%app_dir:SVPFlow 1%``
+
+Folder path to SVPFlow 1
+
+``%app_dir:SVPFlow 2%``
+
+Folder path to SVPFlow 2
+
+``%app_dir:SVPFlow 2%``
+
+Folder path to SVPFlow 2
+
+``%app_dir:taa%``
+
+Folder path to taa
+
+``%app_dir:TCanny%``
+
+Folder path to TCanny
 
 ``%app_dir:TDeint%``
 
 Folder path to TDeint
 
+``%app_dir:TDeintMod%``
+
+Folder path to TDeintMod
+
+``%app_dir:TEMmod%``
+
+Folder path to TEMmod
+
+``%app_dir:TemporalMedian%``
+
+Folder path to TemporalMedian
+
 ``%app_dir:temporalsoften%``
 
 Folder path to temporalsoften
+
+``%app_dir:TimeCube%``
+
+Folder path to TimeCube
 
 ``%app_dir:TIVTC%``
 
 Folder path to TIVTC
 
+``%app_dir:TMM2%``
+
+Folder path to TMM2
+
+``%app_dir:TNLMeans%``
+
+Folder path to TNLMeans
+
+``%app_dir:TTempSmooth%``
+
+Folder path to TTempSmooth
+
 ``%app_dir:UnDot%``
 
 Folder path to UnDot
+
+``%app_dir:Update%``
+
+Folder path to Update
+
+``%app_dir:VagueDenoiser%``
+
+Folder path to VagueDenoiser
+
+``%app_dir:VagueDenoiser%``
+
+Folder path to VagueDenoiser
+
+``%app_dir:VapourSource%``
+
+Folder path to VapourSource
 
 ``%app_dir:VapourSynth%``
 
@@ -1003,9 +1735,21 @@ Folder path to VapourSynth
 
 Folder path to VCEEnc
 
+``%app_dir:vcfreq%``
+
+Folder path to vcfreq
+
 ``%app_dir:vcmod%``
 
 Folder path to vcmod
+
+``%app_dir:vcmove%``
+
+Folder path to vcmove
+
+``%app_dir:Vine%``
+
+Folder path to Vine
 
 ``%app_dir:vinverse%``
 
@@ -1023,6 +1767,10 @@ Folder path to Visual C++ 2013
 
 Folder path to Visual C++ 2017
 
+``%app_dir:vsCube%``
+
+Folder path to vsCube
+
 ``%app_dir:VSFilterMod%``
 
 Folder path to VSFilterMod
@@ -1039,17 +1787,25 @@ Folder path to vspipe
 
 Folder path to VSRip
 
+``%app_dir:W3FDIF%``
+
+Folder path to W3FDIF
+
 ``%app_dir:x264%``
 
 Folder path to x264
 
-``%app_dir:x264 10-Bit%``
-
-Folder path to x264 10-Bit
-
 ``%app_dir:x265%``
 
 Folder path to x265
+
+``%app_dir:XAA%``
+
+Folder path to XAA
+
+``%app_dir:xNLMeans%``
+
+Folder path to xNLMeans
 
 ``%app_dir:xvid_encraw%``
 
@@ -1062,4 +1818,12 @@ Folder path to Yadifmod
 ``%app_dir:yadifmod2%``
 
 Folder path to yadifmod2
+
+``%app_dir:YFRC%``
+
+Folder path to YFRC
+
+``%app_dir:znedi3%``
+
+Folder path to znedi3
 

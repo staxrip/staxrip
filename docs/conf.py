@@ -49,8 +49,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'StaxRip'
-copyright = '2018, StaxRip'
-author = 'StaxRip'
+copyright = '2018'
+author = 'Revan654'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -145,7 +145,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'StaxRip.tex', 'StaxRip Documentation',
-     'stax76', 'manual'),
+      'manual'),
 ]
 
 

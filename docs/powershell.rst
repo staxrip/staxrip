@@ -1,4 +1,4 @@
-PowerShell Scripting
+﻿PowerShell Scripting
 ====================
 
 StaxRip can be automated via PowerShell scripting.

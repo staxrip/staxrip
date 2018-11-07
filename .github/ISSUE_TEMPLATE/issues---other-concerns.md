@@ -3,8 +3,13 @@ name: Issues & Other Concerns
 about: Creating a Report
 
 ---
-**Any Pre-Releases / Beta Releases**
-- Any Beta Releases are Not Covered, They may have bugs and are not part of the Final Release.
+**Notes Before Posting**
+- Only Open an issue if it's tied to Staxrip, If issues is tied to external program or filter. Head to Resp page for that project and open an issue there. 
+- Beta Releases are Not Covered, Beta Are Pre-Releases and Could Contain Bugs. This is the Risk Your Willing to Take When using Beta releases. Beta Concerns should be posted in the forums.
+- If you Require Help with one of the FrameServers, Programs or Scripting Post in the Forums, Rather then opening a ticket here.
+  Link: https://forum.doom9.org/showthread.php?t=175845
+- Check your CPU Specs as Well. Many newer Filters are AVX2 Enabled with no AVX1 support(This is espeically True on VapourSynth side. Which will crash the software if your CPU doesn't support it.
+- Lastly, Only Files that are Released with StaxRip are fully supported, This is done to make debugging easier. Also since all filters have been tested before release. Newer versions can have changes which have not been added to StaxRip yet.
 
 **Describe the bug or Issue**
 A clear and concise description of what the bug is.
@@ -18,6 +23,7 @@ A clear and concise description of what the bug is.
 6. Filter(s) x is being Used.
 7. Any Major External Files tied to the Error.
 8. Post Both your Log file & AVS/VS Script.
+9. It it's Tied to Hardware Encoder Post your Hardware Specs along with the Following.
 
 **Screenshots**
 If possible, add screenshots to help explain your problem.
@@ -31,4 +37,4 @@ Add any other Information or additional context that can be Helpful.
 
 **Please be Clear and as Detailed as Possible**
 
-**Any Issues left unattended to for Length of Time will automatically be Closed Due to inactivity**
+**Any Issues left unattended to for Length of Time will automatically be Closed Due and or Locked to inactivity**

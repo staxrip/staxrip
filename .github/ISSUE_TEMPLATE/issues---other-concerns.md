@@ -14,6 +14,8 @@ about: Creating a Report
 **Describe the bug or Issue**
 A clear and concise description of what the bug is.
 
+**Add The Proper Label**
+
 **Step To Reproduce the Problem**
 
 1. Go to '...'

@@ -49,7 +49,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'StaxRip'
-copyright = '2018'
+copyright = '2018, Revan654'
 author = 'Revan654'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -145,7 +145,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'StaxRip.tex', 'StaxRip Documentation',
-      'manual'),
+     'Revan654', 'manual'),
 ]
 
 

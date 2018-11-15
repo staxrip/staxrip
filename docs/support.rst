@@ -10,6 +10,8 @@ Issue Tracker
 
 For bug reports and feature requests please use the `issue tracker <https://github.com/Revan654/staxrip/issues>`_, English Only.
 
+Before making a bug report please try the newest `test build <https://github.com/stax76/staxrip/blob/master/changelog.md>`_.
+
 
 Forum Support
 -------------

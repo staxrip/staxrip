@@ -303,10 +303,6 @@ File path to adjust
 
 File path to AnimeIVTC
 
-``%app:aomenc%``
-
-File path to aomenc
-
 ``%app:AutoAdjust%``
 
 File path to AutoAdjust
@@ -707,9 +703,9 @@ File path to MP4Box
 
 File path to MPEG2DecPlus
 
-``%app:mpv%``
+``%app:mpvnet%``
 
-File path to mpv
+File path to mpvnet
 
 ``%app:MSharpen%``
 
@@ -723,9 +719,9 @@ File path to msmoosh
 
 File path to MT Expand Multi
 
-``%app:MTN%``
+``%app:mtn%``
 
-File path to MTN
+File path to mtn
 
 ``%app:MultiSharpen%``
 
@@ -815,9 +811,9 @@ File path to QSVEnc
 
 File path to QTGMC
 
-``%app:Rav1e%``
+``%app:rav1e%``
 
-File path to Rav1e
+File path to rav1e
 
 ``%app:RawSource%``
 
@@ -1070,10 +1066,6 @@ Folder path to adjust
 ``%app_dir:AnimeIVTC%``
 
 Folder path to AnimeIVTC
-
-``%app_dir:aomenc%``
-
-Folder path to aomenc
 
 ``%app_dir:AutoAdjust%``
 
@@ -1475,9 +1467,9 @@ Folder path to MP4Box
 
 Folder path to MPEG2DecPlus
 
-``%app_dir:mpv%``
+``%app_dir:mpvnet%``
 
-Folder path to mpv
+Folder path to mpvnet
 
 ``%app_dir:MSharpen%``
 
@@ -1491,9 +1483,9 @@ Folder path to msmoosh
 
 Folder path to MT Expand Multi
 
-``%app_dir:MTN%``
+``%app_dir:mtn%``
 
-Folder path to MTN
+Folder path to mtn
 
 ``%app_dir:MultiSharpen%``
 
@@ -1583,9 +1575,9 @@ Folder path to QSVEnc
 
 Folder path to QTGMC
 
-``%app_dir:Rav1e%``
+``%app_dir:rav1e%``
 
-Folder path to Rav1e
+Folder path to rav1e
 
 ``%app_dir:RawSource%``
 

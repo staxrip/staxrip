@@ -1,4 +1,4 @@
-Supported Tools
+﻿Supported Tools
 ===============
 
 Tools
@@ -109,7 +109,7 @@ ffmpeg
 
 Versatile audio video converter.
 
-Used Version: 2018-10-26
+Used Version: 4.1
 
 http://ffmpeg.org
 
@@ -129,7 +129,7 @@ Haali Splitter
 
 Haali Splitter is used by eac3to and dsmux to write MKV files. Haali Splitter and LAV Filters overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last.
 
-Used Version: 2013-04-14
+Used Version: 
 
 http://haali.su/mkv
 
@@ -179,22 +179,22 @@ MP4Box
 
 MP4Box is a MP4 muxing and demuxing command line app.
 
-Used Version: 0.7.2-DEV-rev903
+Used Version: 0.7.2-DEV-rev909
 
 http://gpac.wp.mines-telecom.fr/
 
 
-mpv
-~~~
+mpvnet
+~~~~~~
 
 libmpv based media player.
 
-Used Version: 2018-10-28
+Used Version: 2.0
 
 https://github.com/Revan654/mpvnet/
 
 
-MTN
+mtn
 ~~~
 
 movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.
@@ -209,7 +209,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.20
+Used Version: 4.23
 
 http://github.com/rigaya/NVEnc
 
@@ -254,14 +254,14 @@ Used Version: 3.11
 http://github.com/rigaya/QSVEnc
 
 
-Rav1e
+rav1e
 ~~~~~
 
-a Faster AV1 Encoder
+a Faster and Safer AV1 Encoder
 
-Used Version: 2018-10-28
+Used Version: 0.1.0
 
-
+https://github.com/xiph/rav1e
 
 
 SubtitleEdit
@@ -277,9 +277,9 @@ http://www.nikse.dk/SubtitleEdit
 Update
 ~~~~~~
 
-Python Based Script that Checks and Updates StaxRip.
+Python Based Script that Checks and Updates StaxRip, Requires Python 3 + SitePackages
 
-Used Version: 0.1
+Used Version: 0.2
 
 
 
@@ -369,7 +369,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 2.9+2
+Used Version: 2.9+9
 
 http://x265.org
 
@@ -1205,7 +1205,7 @@ http://avisynth.nl/index.php/PSharpen
 QTGMC
 ~~~~~
 
-A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Did e.
+A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Did�e.
 
 Filters: QTGMC
 
@@ -1457,7 +1457,7 @@ http://avisynth.nl/index.php/VapourSource
 vinverse
 ~~~~~~~~
 
-A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Did e and then written as a plugin by tritical.
+A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Did�e and then written as a plugin by tritical.
 
 Filters: vinverse, vinverse2
 
@@ -2052,7 +2052,7 @@ Motion vectors search plugin  is a deeply refactored and modified version of MVT
 
 Filters: core.svp1.Super, core.svp1.Analyse
 
-Used Version: 2017-10-13
+Used Version: 4.2.0.133
 
 https://www.svp-team.com/wiki/Manual:SVPflow
 
@@ -2064,7 +2064,7 @@ Motion vectors search plugin is a deeply refactored and modified version of MVTo
 
 Filters: core.svp2.SmoothFps, core.svp2.Convert
 
-Used Version: 2017-10-18
+Used Version: 4.2.0.142
 
 https://www.svp-team.com/wiki/Manual:SVPflow
 

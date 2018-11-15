@@ -91,7 +91,7 @@ Public Class Package
     Shared Property qaac As Package = Add(New qaacPackage)
     Shared Property UnDot As Package = Add(New UnDotPackage)
 
-    Shared Property xvid_encraw As Package = Add(New PluginPackage With {
+    Shared Property xvid_encraw As Package = Add(New Package With {
         .Name = "xvid_encraw",
         .Filename = "xvid_encraw.exe",
         .Description = "XviD command line encoder",
@@ -123,8 +123,8 @@ Public Class Package
         .Name = "vspipe",
         .Filename = "vspipe.exe",
         .Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
-        .IgnoreVersion = True,
         .WebURL = "http://www.vapoursynth.com/doc/vspipe.html",
+        .DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"})
 
@@ -132,9 +132,9 @@ Public Class Package
         .Name = "VapourSynth",
         .Filename = "vapoursynth.dll",
         .Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.",
-        .SetupFilename = "VapourSynth-R45.exe",
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
+        .DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"})
 
@@ -153,10 +153,17 @@ Public Class Package
         .WebURL = "http://forum.doom9.org/showthread.php?p=1613303",
         .Description = "Converts Blu-ray subtitles to other formats like VobSub."})
 
+    Shared Property Rav1e As Package = Add(New Package With {
+        .Name = "rav1e",
+        .Filename = "rav1e.exe",
+        .Description = "a Faster and Safer AV1 Encoder",
+        .HelpFile = "help.txt"})
+
     Shared Property MTN As Package = Add(New Package With {
-        .Name = "MTN",
+        .Name = "mtn",
         .Filename = "mtn.exe",
-        .DirPath = "MTN",
+        .DirPath = "mtn",
+        .HelpFile = "help.txt",
         .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
         .WebURL = "https://github.com/Revan654/Movie-Thumbnailer-mtn-",
         .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
@@ -173,21 +180,17 @@ Public Class Package
         .Description = "Subtitle Edit is a open source subtitle editor."})
 
     Shared Property mpvnet As Package = Add(New Package With {
-        .Name = "mpv",
-        .Filename = "mpv.exe",
-        .LaunchName = "mpv.exe",
-        .IgnoreVersion = True,
-        .URL = "https://mpv.io/",
-        .Description = "mpv is a fork of mplayer2 and MPlayer. It shares some features with the former projects while introducing many more."})
+        .Name = "mpvnet",
+        .Filename = "mpvnet.exe",
+        .LaunchName = "mpvnet.exe",
+        .URL = "https://github.com/Revan654/mpvnet/",
+        .Description = "libmpv based media player."})
 
-    Shared Property Update As Package = Add(New Package With {
+    Shared Property UpdateAll As Package = Add(New Package With {
         .Name = "Update",
-        .Filename = "Update.ps1",
-        .LaunchName = "Update.ps1",
+        .Filename = "Update.py",
         .DirPath = "Update",
-        .IgnoreVersion = True,
-        .IsRequired = True,
-        .Description = "The PowerShell Script that Updates StaxRip."})
+        .Description = "Python Based Script that Checks and Updates StaxRip, Requires Python 3 + SitePackages"})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {
         .Name = "modPlus",
@@ -294,7 +297,8 @@ Public Class Package
         .Filename = "mkvmerge.exe",
         .DirPath = "MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
-        .HelpURL = "https://mkvtoolnix.download/docs.html"})
+        .HelpURL = "https://mkvtoolnix.download/docs.html",
+        .Description = "MKV muxing tool."})
 
     Shared Property mkvinfo As Package = Add(New Package With {
         .Name = "mkvinfo",
@@ -307,9 +311,9 @@ Public Class Package
     Shared Property PNGopt As Package = Add(New Package With {
         .Name = "PNGopt",
         .Filename = "apngopt.exe",
+        .HelpFile = "help.txt",
         .DirPath = "PNGopt",
-        .IsRequired = False,
-        .IgnoreVersion = True,
+        .WebURL = "https://sourceforge.net/projects/apng/files/",
         .Description = "Opt Tools For Creating PNG"})
 
     Shared Property mkvextract As Package = Add(New Package With {
@@ -729,7 +733,6 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "ResizeX",
             .Filename = "ResizeX.avsi",
-            .HelpFile = "Readme.txt",
             .WebURL = "http://avisynth.nl",
             .AvsFilterNames = {"ResizeX"}})
 
@@ -1011,7 +1014,6 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "MCTemporalDenoise",
             .Filename = "MCTemporalDenoise.avsi",
-            .HelpFile = "Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/Abcxyz",
             .Description = "A motion compensated noise removal script with an accompanying post-processing component.",
             .AvsFilterNames = {"MCTemporalDenoise", "MCTemporalDenoisePP"},
@@ -1112,7 +1114,6 @@ Public Class Package
             .Name = "vsCube",
             .Filename = "vscube.dll",
             .Description = "Deblocking plugin using the deblocking filter of h264.",
-            .HelpFile = "Readme.txt",
             .WebURL = "http://rationalqm.us/mine.html",
             .DirPath = "Plugins\AVS\VSCube",
             .AvsFilterNames = {"Cube"},
@@ -1356,7 +1357,6 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "MiniDeen",
             .Filename = "libminideen.dll",
-            .HelpFile = "Readme.txt",
             .WebURL = "https://github.com/dubhater/vapoursynth-minideen",
             .Description = "MiniDeen is a spatial denoising filter. It replaces every pixel with the average of its neighbourhood.",
             .VSFilterNames = {"minideen.MiniDeen"}})
@@ -1364,7 +1364,6 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "IT",
             .Filename = "vs_it.dll",
-            .HelpFile = "Readme.txt",
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-IT",
             .Description = "VapourSynth Plugin - Inverse Telecine (YV12 Only, IT-0051 base, IT_YV12-0103 base).",
             .VSFilterNames = {"it.IT"}})
@@ -1492,7 +1491,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "FluxSmooth",
             .Filename = "libfluxsmooth.dll",
-            .VSFilterNames = {"SmoothT", "SmoothST"},
+            .VSFilterNames = {"flux.SmoothT", "flux.SmoothST"},
             .Description = "FluxSmooth is a filter for smoothing of fluctuations.",
             .WebURL = "http://github.com/dubhater/vapoursynth-fluxsmooth"})
 
@@ -1531,7 +1530,6 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "SVPFlow 1",
             .DirPath = "Plugins\VS\SVPFlow",
-            .HelpFile = "Readme.txt",
             .Description = "Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin",
             .Filename = "svpflow1_vs64.dll",
             .WebURL = "https://www.svp-team.com/wiki/Manual:SVPflow",
@@ -1540,7 +1538,6 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "SVPFlow 2",
             .DirPath = "Plugins\VS\SVPFlow",
-            .HelpFile = "Readme.txt",
             .Description = "Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin",
             .Filename = "svpflow2_vs64.dll",
             .WebURL = "https://www.svp-team.com/wiki/Manual:SVPflow",
@@ -1637,7 +1634,7 @@ Public Class Package
             .Name = "fmtconv",
             .Filename = "fmtconv.dll",
             .WebURL = "http://github.com/EleonoreMizo/fmtconv",
-            .HelpFile = "fmtconv.html",
+            .HelpFile = "doc\fmtconv.html",
             .Description = "Fmtconv is a format-conversion plug-in for the Vapoursynth video processing engine. It does resizing, bitdepth conversion with dithering and colorspace conversion.",
             .VSFilterNames = {"fmtc.bitdepth", "fmtc.convert", " core.fmtc.matrix", "fmtc.resample", "fmtc.transfer", "fmtc.primaries", " core.fmtc.matrix2020cl", "fmtc.stack16tonative", "nativetostack16"}})
 
@@ -1654,7 +1651,6 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "FineSharp",
             .Filename = "FineSharp.avsi",
-            .HelpFile = "Readme.txt",
             .Description = "Small and fast realtime-sharpening function for 1080p, or after scaling 720p -> 1080p. It's a generic sharpener only for good quality sources!",
             .WebURL = "http://avisynth.nl/index.php/FineSharp",
             .AvsFilterNames = {"FineSharp"},
@@ -1967,10 +1963,10 @@ Public Class PythonPackage
     Sub New()
         Name = "Python"
         Filename = "python.exe"
-        TreePath = "Apps"
+        TreePath = "Runtimes"
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        SetupFilename = "python-3.7.1-amd64.exe"
+        DownloadURL = "https://www.python.org/downloads/windows/"
     End Sub
 
     Public Overrides Property IsRequired As Boolean

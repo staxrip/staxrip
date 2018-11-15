@@ -13,8 +13,8 @@ Public Class GIF
         Dim Rate = s.Storage.GetInt("GifFrameRate", 15)
         Dim cachePath = Folder.Temp + "Palette.png"
         Dim OutPutPath = inputFile + ".gif"
-        Dim Seek = s.Storage.GetString("GifTime", 25)
-        Dim Duration = s.Storage.GetString("GifLength", 4)
+        Dim Seek = s.Storage.GetInt("GifTime", 25)
+        Dim Duration = s.Storage.GetInt("GifLength", 4)
         Dim Size = s.Storage.GetInt("GifScale", 480)
         Dim Mode = s.Storage.GetString("PaletteGen", "diff")
         Dim SecondMode = s.Storage.GetString("PaletteUse", "rectangle")
@@ -42,8 +42,7 @@ Public Class GIF
 
     End Sub
 End Class
-
- Class MTN
+Class MTN
     Shared Sub Thumbnails(inputFile As String, proj As Project)
         If Not File.Exists(inputFile) Then Exit Sub
         If Not Package.MTN.VerifyOK(True) Then Exit Sub
@@ -89,8 +88,8 @@ Public Class PNG
         Dim Path = inputFile + ".apng"
         Dim NewPath = inputFile + ".png"
         Dim OptOut = inputFile + "_opt.png"
-        Dim Seek = s.Storage.GetString("PNGTime", 25)
-        Dim Duration = s.Storage.GetString("PNGLength", 4)
+        Dim Seek = s.Storage.GetInt("PNGTime", 25)
+        Dim Duration = s.Storage.GetInt("PNGLength", 4)
         Dim Size = s.Storage.GetInt("PNGScale", 480)
         Dim OptSettings = s.Storage.GetString("PNGopt", "-z1")
         Dim Opt = s.Storage.GetBool("OptSetting", False)
@@ -107,7 +106,9 @@ Public Class PNG
         File.Move(Path, NewPath)
 
         If Opt = True Then
-
+            If File.Exists(OptOut) = True Then
+                File.Delete(p.DefaultTargetFolder + "/" + inputFile.FileName + ".png")
+            End If
             Using Proc As New Proc
                 Proc.Header = "Optimizing PNG"
                 Proc.SkipStrings = {"saving", "Reading", "all done", "APNG"}
@@ -143,36 +144,51 @@ Public Class MKVMetaDataHDR
         If Not File.Exists(inputFile) Then Exit Sub
         If Not Package.mkvmerge.VerifyOK(True) Then Exit Sub
 
-        Using Proc As New Proc
-            Proc.Header = "Adding HDR Metadata"
-            Proc.SkipStrings = {"Progress", "The file", "The cue", "Multiplexing"}
-            Proc.Encoding = Encoding.UTF8
-            Proc.Package = Package.mkvmerge
-            Proc.Arguments = "-o " + """" + inputFile + "_HDR.mkv" + """" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + """" + inputFile + """"
-            Proc.Start()
-        End Using
+        Dim HDR = MediaInfo.GetVideo(inputFile, "transfer_characteristics")
 
+        If HDR = "PQ" Then
+
+            Using Proc As New Proc
+                Proc.Header = "Adding HDR Metadata"
+                Proc.SkipStrings = {"Progress", "The file", "The cue", "Multiplexing"}
+                Proc.Encoding = Encoding.UTF8
+                Proc.Package = Package.mkvmerge
+                Proc.Arguments = "-o " + """" + inputFile + "_HDR10.mkv" + """" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + """" + inputFile + """"
+                Proc.Start()
+            End Using
+
+        ElseIf HDR = "HLG" Then
+
+            Using Proc As New Proc
+                Proc.Header = "Adding HDR Metadata"
+                Proc.SkipStrings = {"Progress", "The file", "The cue", "Multiplexing"}
+                Proc.Encoding = Encoding.UTF8
+                Proc.Package = Package.mkvmerge
+                Proc.Arguments = "-o " + """" + inputFile + "_HLG.mkv" + """" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:18 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + """" + inputFile + """"
+                Proc.Start()
+            End Using
+        Else
+            MsgInfo("No HDR Metadata Key was Found")
+        End If
     End Sub
 End Class
-Public Class UpdateStaxRip
-    Shared Sub CheckforUpdate()
-        If Not Package.Update.VerifyOK(True) Then Exit Sub
+Public Class Updates
+
+    Shared Sub All()
+        If Not Package.Python.VerifyOK(True) Then Exit Sub
+        If Not Package.UpdateAll.VerifyOK(True) Then Exit Sub
 
         Dim UpdateCode = ""
         Dim Path = Folder.Startup + "Update" + ".bat"
 
         UpdateCode += "@echo OFF" + BR
-        UpdateCode += "pushd %~dp0" + BR
-        UpdateCode += "if exist ""%~dp0\Apps\Update\update.ps1"" (" + BR
-        UpdateCode += "set update_script=""Apps\Update\update.ps1""" + BR
-        UpdateCode += ") else (" + BR
-        UpdateCode += "set update_script=""Apps\update.ps1""" + BR
-        UpdateCode += ")" + BR
-        UpdateCode += "powershell -noprofile -nologo -noexit -executionpolicy bypass -File %update_script%" + BR
-        UpdateCode += "@exit"
+        UpdateCode += Package.Python.Path.Escape & " " & Package.UpdateAll.Path + BR
+        UpdateCode += "pause"
 
         File.WriteAllText(Path, UpdateCode, Encoding.Default)
-        g.DefaultCommands.ExecuteCommandLine(Path, False, False, False)
+        g.DefaultCommands.ExecuteCommandLine(Path, True, False, False)
 
+        File.Delete(Path)
     End Sub
+
 End Class

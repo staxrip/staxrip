@@ -908,7 +908,6 @@ Public Class Macro
         ret.Add(New Macro("script_dir", "Script Directory", GetType(String), "Users PowerShell scripts directory."))
         ret.Add(New Macro("script_ext", "Script File Extension", GetType(String), "File extension of the AviSynth/VapourSynth script so either avs or vpy."))
         ret.Add(New Macro("script_file", "Script Path", GetType(String), "Path of the AviSynth/VapourSynth script."))
-        ret.Add(New Macro("script_files", "Script Files Blank", GetType(String), "Script file path in quotes separated by a blank."))
         ret.Add(New Macro("sel_end", "Selection End", GetType(Integer), "End position of the first selecion in the preview."))
         ret.Add(New Macro("sel_start", "Selection Start", GetType(Integer), "Start position of the first selecion in the preview."))
         ret.Add(New Macro("settings_dir", "Settings Directory", GetType(String), "Path of the settings direcory."))
@@ -1126,12 +1125,6 @@ Public Class Macro
 
         If value.Contains("%target_file%") Then value = value.Replace("%target_file%", p.TargetFile)
         If Not value.Contains("%") Then Return value
-
-        If value.Contains("%script_files%") Then
-            p.Script.Synchronize()
-            value = value.Replace("%script_files%", """" + String.Join(""" """, p.Script.Path.ToArray) + """")
-            If Not value.Contains("%") Then Return value
-        End If
 
         If value.Contains("%target_dir%") Then value = value.Replace("%target_dir%", FilePath.GetDir(p.TargetFile))
         If Not value.Contains("%") Then Return value
@@ -1364,7 +1357,6 @@ Public Class ObjectStorage
     Private IntDictionary As New Dictionary(Of String, Integer)
 
     Private BoolDictionaryValue As Dictionary(Of String, Boolean)
-
     ReadOnly Property BoolDictionary() As Dictionary(Of String, Boolean)
         Get
             If BoolDictionaryValue Is Nothing Then
@@ -1423,7 +1415,6 @@ Public Class ObjectStorage
         StringDictionary(key) = value
     End Sub
 End Class
-
 Public Enum CompCheckAction
     [Nothing]
     <DispName("image size")> AdjustImageSize
@@ -1676,6 +1667,8 @@ Public Class VideoStream
                     Return "avi"
                 Case "HEVC"
                     Return "h265"
+                Case "AV1"
+                    Return "ivf"
                 Case Else
                     Throw New NotImplementedException("Video format " + Format + " is not supported.")
             End Select
@@ -1800,7 +1793,7 @@ Public Class Subtitle
                     st = Nothing
                 End If
             Next
-        ElseIf path.Ext.EqualsAny("mkv", "mp4", "m2ts") Then
+        ElseIf path.Ext.EqualsAny("mkv", "mp4", "m2ts", "webm") Then
             For Each i In MediaInfo.GetSubtitles(path)
                 If i.Size = 0 Then
                     Select Case i.TypeName
@@ -1994,10 +1987,10 @@ Public Class FileTypes
     Shared Property SubtitleSingle As String() = {"srt", "ass", "sup", "ttxt", "ssa", "smi"}
     Shared Property SubtitleIncludingContainers As String() = {"m2ts", "mkv", "mp4", "m4v", "ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
-    Shared Property Video As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
+    Shared Property Video As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "ivf", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
-    Shared Property VideoOnly As String() = {"264", "265", "avc", "h264", "h265", "hevc", "hvc", "m2v", "mpv", "y4m", "gif", "png"}
-    Shared Property VideoRaw As String() = {"264", "265", "h264", "h265", "avc", "hevc", "hvc"}
+    Shared Property VideoOnly As String() = {"264", "265", "avc", "gif", "h264", "h265", "hevc", "hvc", "ivf", "m2v", "mpv", "apng", "png", "y4m"}
+    Shared Property VideoRaw As String() = {"264", "265", "h264", "h265", "avc", "hevc", "hvc", "ivf"}
     Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs", "vpy"}
     Shared Property VideoDemuxOutput As String() = {"mpg", "h264", "avi", "h265"}
 

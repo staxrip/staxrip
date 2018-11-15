@@ -304,7 +304,7 @@ Public Class MP4Muxer
 
     Overrides ReadOnly Property SupportedInputTypes() As String()
         Get
-            Return {"ts", "m2ts",
+            Return {"ts", "m2ts", "ivf",
                     "mpg", "m2v",
                     "avi", "ac3",
                     "mp4", "m4a", "aac", "mov",
@@ -647,7 +647,7 @@ Public Class MkvMuxer
 
     Overrides ReadOnly Property SupportedInputTypes() As String()
         Get
-            Return {"avi", "wav",
+            Return {"avi", "wav", "ivf",
                     "mp4", "m4v", "m4a", "aac",
                     "flv", "mov",
                     "264", "h264", "avc",
@@ -674,7 +674,7 @@ Public Class WebMMuxer
 
     Overrides ReadOnly Property SupportedInputTypes() As String()
         Get
-            Return {"mkv", "webm", "mka", "ogg", "opus"}
+            Return {"mkv", "webm", "mka", "ogg", "opus", "ivf"}
         End Get
     End Property
 
@@ -703,7 +703,7 @@ Public Class ffmpegMuxer
 
     Shared ReadOnly Property SupportedFormats As String()
         Get
-            Return {"ASF", "AVI", "FLV", "ISMV", "MKV", "MOV", "MP4", "MPG", "MXF", "NUT", "OGG", "TS", "WEBM", "WMV"}
+            Return {"ASF", "AVI", "FLV", "ISMV", "IVF", "MKV", "MOV", "MP4", "MPG", "MXF", "NUT", "OGG", "TS", "WEBM", "WMV"}
         End Get
     End Property
 

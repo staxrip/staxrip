@@ -10,12 +10,13 @@ Public Class Project
     Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
     Private Storage As ObjectStorage
+
     Public AdjustHeight As Boolean = True
     Public Audio0 As AudioProfile
     Public Audio1 As AudioProfile
     Public AudioTracks As List(Of AudioProfile)
     Public AutoCompCheck As Boolean
-    Public AutoCorrectCropValues As Boolean = False
+    Public AutoCorrectCropValues As Boolean = True
     Public AutoResizeImage As Integer
     Public AutoSmartCrop As Boolean
     Public AutoSmartOvercrop As Double
@@ -70,7 +71,6 @@ Public Class Project
     Public GIF As Boolean
     Public PNG As Boolean
     Public MKVHDR As Boolean
-    Public ThumbSelection As Integer = 1
     Public ScanOrder As String
     Public ScanType As String
     Public Script As TargetVideoScript
@@ -146,7 +146,7 @@ Public Class Project
         If SourceFiles Is Nothing Then SourceFiles = New List(Of String)
         If AudioTracks Is Nothing Then AudioTracks = New List(Of AudioProfile)
 
-        If Check(VideoEncoder, "Video Encoder", 75) Then VideoEncoder = New x264Enc
+        If Check(VideoEncoder, "Video Encoder", 75) Then VideoEncoder = New x265Enc
 
         If Check(Audio0, "Audio Track 1", 36) Then
             Audio0 = New GUIAudioProfile(AudioCodec.Opus, 1) With {.Bitrate = 250}
@@ -314,4 +314,3 @@ Public Class Project
         End If
     End Sub
 End Class
-

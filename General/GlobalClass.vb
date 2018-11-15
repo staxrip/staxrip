@@ -44,7 +44,6 @@ Public Class GlobalClass
                     g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
                     g.ShutdownPC()
                 End If
-
             Else
                 If Process.GetCurrentProcess.PrivateMemorySize64 / 1024 ^ 2 > 1500 Then
                     g.StartProcess(Application.ExecutablePath, "-StartJobs")
@@ -142,10 +141,6 @@ Public Class GlobalClass
             p.VideoEncoder.Muxer.Mux()
 
             If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile, p)
-            If p.MTN Then MTN.Thumbnails(p.TargetFile, p)
-            If p.GIF Then GIF.GIFAnimation(p.TargetFile, p)
-            If p.PNG Then PNG.aPNGAnimation(p.TargetFile, p)
-            If p.MKVHDR Then MKVMetaDataHDR.MetadataHDR(p.TargetFile, p)
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
@@ -347,6 +342,11 @@ Public Class GlobalClass
     Sub PlayScript(doc As VideoScript, ap As AudioProfile)
         If Not Package.mpvnet.VerifyOK(True) Then Exit Sub
 
+        If doc.Engine = ScriptEngine.VapourSynth Then
+            MsgError("VapourSynth scripts are not supported by the mpv player.")
+            Exit Sub
+        End If
+
         Dim script As New VideoScript
         script.Engine = doc.Engine
         script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
@@ -364,22 +364,10 @@ Public Class GlobalClass
             End If
         End If
 
-        If doc.Engine = ScriptEngine.AviSynth Then
-            script.Synchronize(False)
-            Dim args = script.Path.Escape
-            If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-file=" + ap.File.Escape + " " + args
-            g.StartProcess(Package.mpvnet.Path, args)
-        End If
-
-
-        If doc.Engine = ScriptEngine.VapourSynth Then
-            script.Synchronize(False)
-            Dim args = ""
-            args = """%app:vspipe%"" -y %script_files% - | ""%app:mpv%"" -"
-            g.DefaultCommands.ExecuteCommandLine(args, False, False, True)
-
-        End If
-
+        script.Synchronize(False)
+        Dim args = script.Path.Escape
+        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-file=" + ap.File.Escape + " " + args
+        g.StartProcess(Package.mpvnet.Path, args)
     End Sub
 
     Function ExtractDelay(value As String) As Integer
@@ -596,7 +584,7 @@ Public Class GlobalClass
                     p.TempDir = p.SourceFile.Dir
                 Else
                     Dim base = p.SourceFile.Base
-                    If base.Length > 30 Then base = base.Shorten(21) + "..." 'Windows 10 Users Do not Need it However anything below Windows 10, requires trimming for Long Paths.
+                    If base.Length > 30 Then base = base.Shorten(15) + "..."
                     p.TempDir = p.SourceFile.Dir + base + "_temp\"
                 End If
             End If
@@ -803,7 +791,7 @@ Public Class GlobalClass
     End Sub
 
     Sub Play(file As String)
-        g.StartProcess(Package.mpvnet.Path, file.Escape)
+        g.StartProcess(Package.mpvnet.Path.Escape, file.Escape)
     End Sub
 
     Sub ShowCommandLineHelp(package As Package, switch As String)

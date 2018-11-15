@@ -324,7 +324,7 @@ Public Class Audio
         If params.ffmpegDynaudnormC Then ret += ":c=true"
         If params.ffmpegDynaudnormB Then ret += ":b=true"
 
-        If ret <> "" Then Return "-af dynaudnorm " + ret.Trim(":"c) Else Return "-af dynaudnorm"
+        If ret <> "" Then Return "-af dynaudnorm=" + ret.Trim(":"c) Else Return "-af dynaudnorm"
     End Function
 
     Shared Sub ConvertDirectShowSource(ap As AudioProfile, Optional useFlac As Boolean = False)

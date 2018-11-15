@@ -9,7 +9,7 @@ Public Class NVEnc
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "NVIDIA | " + Params.Codec.OptionText
+            Return "Nvidia | " + Params.Codec.OptionText
         End Get
     End Property
 
@@ -153,9 +153,18 @@ Public Class NVEnc
         Property Profile As New OptionParam With {
             .Switch = "--profile",
             .Text = "Profile",
+            .Name = "ProfileH264",
             .VisibleFunc = Function() Codec.ValueText = "h264",
             .Options = {"Baseline", "Main", "High", "High 444"},
             .InitValue = 2}
+
+        Property ProfileH265 As New OptionParam With {
+            .Switch = "--profile",
+            .Text = "Profile",
+            .Name = "ProfileH265",
+            .VisibleFunc = Function() Codec.ValueText = "h265",
+            .Options = {"Main", "Main 10", "Main 444"},
+            .InitValue = 0}
 
         Property QPI As New NumParam With {
             .Switches = {"--cqp"},
@@ -207,14 +216,70 @@ Public Class NVEnc
             .Text = "Denoise using K-nearest neighbor",
             .ArgsFunc = AddressOf GetKnnArgs}
 
+        Property Pad As New BoolParam With {
+            .Switch = "--vpp-pad",
+            .Text = "Padding",
+            .ArgsFunc = AddressOf GetPaddingArgs}
+
+        Property PadLeft As New NumParam With {
+            .Text = "      Left",
+            .Init = 0}
+
+        Property PadTop As New NumParam With {
+            .Text = "      Top",
+            .Init = 0}
+
+        Property PadRight As New NumParam With {
+            .Text = "      Right",
+            .Init = 0}
+
+        Property PadBottom As New NumParam With {
+            .Text = "      Bottom",
+            .Init = 0}
+
+        Property Tweak As New BoolParam With {
+            .Switch = "--vpp-tweak",
+            .Text = "Tweaking",
+            .ArgsFunc = AddressOf GetTweakArgs}
+
         Property KnnRadius As New NumParam With {
             .Text = "      Radius",
             .Init = 3}
+
+        Property vppcontrast As New NumParam With {
+            .Text = "      Contrast",
+            .Init = 1.0,
+            .Config = {-2.0, 2.0, 0.1, 1}}
+
+        Property vppgamma As New NumParam With {
+            .Text = "      Gamma",
+            .Init = 1.0,
+            .Config = {0.1, 10.0, 0.1, 1}}
+
+        Property vppsaturation As New NumParam With {
+            .Text = "      Saturation",
+            .Init = 1.0,
+            .Config = {0.0, 3.0, 0.1, 1}}
+
+        Property vpphue As New NumParam With {
+            .Text = "      Hue",
+            .Init = 0.0,
+            .Config = {-180.0, 180.0, 0.1, 1}}
+
+        Property vppbrightness As New NumParam With {
+            .Text = "      Brightness",
+            .Init = 0.0,
+            .Config = {-1.0, 1.0, 0.1, 1}}
 
         Property KnnStrength As New NumParam With {
             .Text = "      Strength",
             .Init = 0.08,
             .Config = {0, 1, 0.02, 2}}
+
+        Property Chromaloc As New NumParam With {
+        .Switch = "--chromaloc",
+        .Text = "Chromaloc",
+        .Config = {0, 5}}
 
         Property KnnLerp As New NumParam With {
             .Text = "      Lerp",
@@ -247,12 +312,10 @@ Public Class NVEnc
             .Config = {0, 255, 1, 1}}
 
         Property Interlace As New OptionParam With {
-            .Switch = "--interlace",
-            .Switches = {"--tff", "--bff"},
             .Text = "Interlace",
             .VisibleFunc = Function() Codec.ValueText = "h264",
-            .Options = {"Progressive ", "Top Field First", "Bottom Field First"},
-            .Values = {"", "--tff", "--bff"}}
+            .Options = {"Top Field First", "Bottom Field First"},
+            .Values = {"--interlace tff", "--interlace bff"}}
 
         Property Deband As New BoolParam With {.Text = "Deband", .Switches = {"--vpp-deband"}, .ArgsFunc = AddressOf GetDebandArgs}
 
@@ -318,7 +381,8 @@ Public Class NVEnc
                     ItemsValue = New List(Of CommandLineParam)
                     Add("Basic", Mode, Decoder, Codec,
                         New OptionParam With {.Switch = "--preset", .Text = "Preset", .Value = 1, .Options = {"Default", "Quality", "Performance"}},
-                        Profile,
+                        Profile, ProfileH265,
+                        New OptionParam With {.Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}, .Values = {"main", "high"}},
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Name = "LevelH265", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
@@ -334,6 +398,7 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Init = 3, .Config = {0, 16}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--lookahead", .Text = "Lookahead", .Config = {0, 32}},
+                        New NumParam With {.Switch = "--slices", .Text = "Slices", .Config = {0, Integer.MaxValue, 1}},
                         New BoolParam With {.Switch = "--strict-gop", .Text = "Strict GOP"},
                         New BoolParam With {.NoSwitch = "--no-b-adapt", .Text = "B-Adapt", .Init = True},
                         New BoolParam With {.NoSwitch = "--no-i-adapt", .Text = "I-Adapt", .Init = True})
@@ -363,7 +428,10 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},
                         New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-SRD-B67", "Auto", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 2084", "SMPTE 428"}},
                         MaxCLL, MaxFALL,
-                        New BoolParam With {.Switch = "--fullrange", .Text = "Full Range", .VisibleFunc = Function() Codec.ValueText = "h264"})
+                        Chromaloc,
+                        New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"},
+                        New BoolParam With {.Switch = "--fullrange", .Text = "Full Range", .VisibleFunc = Function() Codec.ValueText = "h264"},
+                        New BoolParam With {.Switch = "--aud", .Text = "AUD"})
                     Add("VPP",
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvnative", "nvcuda"), .Options = {"None", "Adaptive", "Bob"}},
@@ -419,6 +487,19 @@ Public Class NVEnc
                         AFSrff,
                         AFStimecode,
                         AFSlog)
+                    Add("VPP 2 | Tweak",
+                        Tweak,
+                        vppbrightness,
+                        vppcontrast,
+                        vppsaturation,
+                        vppgamma,
+                        vpphue)
+                    Add("VPP 2 | Padding",
+                        Pad,
+                        PadLeft,
+                        PadTop,
+                        PadRight,
+                        PadBottom)
                     Add("Other",
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},
@@ -460,6 +541,17 @@ Public Class NVEnc
                 KnnStrength.NumEdit.Enabled = KNN.Value
                 KnnLerp.NumEdit.Enabled = KNN.Value
                 KnnThLerp.NumEdit.Enabled = KNN.Value
+
+                PadLeft.NumEdit.Enabled = Pad.Value
+                PadTop.NumEdit.Enabled = Pad.Value
+                PadRight.NumEdit.Enabled = Pad.Value
+                PadBottom.NumEdit.Enabled = Pad.Value
+
+                vppcontrast.NumEdit.Enabled = Tweak.Value
+                vppgamma.NumEdit.Enabled = Tweak.Value
+                vppsaturation.NumEdit.Enabled = Tweak.Value
+                vpphue.NumEdit.Enabled = Tweak.Value
+                vppbrightness.NumEdit.Enabled = Tweak.Value
 
                 PmdApplyCount.NumEdit.Enabled = PMD.Value
                 PmdStrength.NumEdit.Enabled = PMD.Value
@@ -509,6 +601,40 @@ Public Class NVEnc
             End If
         End Function
 
+        Function GetTweakArgs() As String
+            If Tweak.Value Then
+                Dim ret = ""
+
+                If vppbrightness.Value <> vppbrightness.DefaultValue Then ret += "brightness=" & vppbrightness.Value
+                If vppcontrast.Value <> vppcontrast.DefaultValue Then ret += ",contrast=" & vppcontrast.Value
+                If vppsaturation.Value <> vppsaturation.DefaultValue Then ret += ",saturation=" & vppsaturation.Value
+                If vppgamma.Value <> vppgamma.DefaultValue Then ret += ",gamma=" & vppgamma.Value
+                If vpphue.Value <> vpphue.DefaultValue Then ret += ",hue=" & vpphue.Value
+
+                If ret <> "" Then
+                    Return "--vpp-tweak " + ret.TrimStart(","c)
+                Else
+                    Return "--vpp-tweak"
+                End If
+            End If
+        End Function
+
+        Function GetPaddingArgs() As String
+            If Pad.Value Then
+                Dim ret = ""
+
+                If PadLeft.Value <> PadLeft.DefaultValue Then ret += "" & PadLeft.Value
+                If PadTop.Value <> PadTop.DefaultValue Then ret += "," & PadTop.Value
+                If PadRight.Value <> PadRight.DefaultValue Then ret += "," & PadRight.Value
+                If PadBottom.Value <> PadBottom.DefaultValue Then ret += "," & PadBottom.Value
+
+                If ret <> "" Then
+                    Return "--vpp-pad " + ret.TrimStart(","c)
+                Else
+                    Return "--vpp-pad "
+                End If
+            End If
+        End Function
         Function GetKnnArgs() As String
             If KNN.Value Then
                 Dim ret = ""
@@ -560,6 +686,7 @@ Public Class NVEnc
 
             If VppEdgelevel.Value Then Return ("--vpp-edgelevel " + ret.TrimStart(","c)).TrimEnd
         End Function
+
 
         Function GetAFS() As String
             Dim ret = ""

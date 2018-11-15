@@ -51,6 +51,8 @@ Public MustInherit Class VideoEncoder
         If Not p.ImportVUIMetadata Then Exit Sub
 
         Dim cl As String
+        Dim Range = MediaInfo.GetVideo(sourceFile, "colour_range")       
+
         Dim colour_primaries = MediaInfo.GetVideo(sourceFile, "colour_primaries")
         Dim height = MediaInfo.GetVideo(sourceFile, "Height").ToInt
 
@@ -72,6 +74,12 @@ Public MustInherit Class VideoEncoder
                 cl += " --transfer smpte2084"
             Case "BT.709"
                 If height <= 576 Then cl += " --transfer bt709"
+            Case "HLG"
+                cl += " --transfer arib-std-b67"
+            Case "BT.601 NTSC"
+                If height > 480 Then cl += " --transfer bt470m"
+            Case "BT.601 PAL"
+                If height > 576 Then cl += " --transfer bt470bg"
         End Select
 
         Dim matrix_coefficients = MediaInfo.GetVideo(sourceFile, "matrix_coefficients")
@@ -79,38 +87,67 @@ Public MustInherit Class VideoEncoder
         Select Case matrix_coefficients
             Case "BT.2020 non-constant"
                 cl += " --colormatrix bt2020nc"
+            Case "BT.709"
+                cl += " --colormatrix bt709"
+            Case "BT.601 NTSC"
+                If height > 480 Then cl += " --colormatrix bt470m"
+            Case "BT.601 PAL"
+                If height > 576 Then cl += " --colormatrix bt470bg"
         End Select
 
         Dim MasteringDisplay_ColorPrimaries = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_ColorPrimaries")
         Dim MasteringDisplay_Luminance = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_Luminance")
 
         If MasteringDisplay_ColorPrimaries <> "" AndAlso MasteringDisplay_Luminance <> "" Then
-            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "(BT.2020)")
-            ''Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "R: x=([0-9\.]+) y=([0-9\.]+), G: x=([0-9\.]+) y=([0-9\.]+), B: x=([0-9\.]+) y=([0-9\.]+), White point: x=([0-9\.]+) y=([0-9\.]+)")
+            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "(BT.2020)")			            
             Dim match2 = Regex.Match(MasteringDisplay_Luminance, "min: ([0-9\.]+) cd/m2, max: ([0-9\.]+) cd/m2")
+			Dim match3 = Regex.Match(MasteringDisplay_ColorPrimaries, "(Display P3)")
+			Dim match4 = Regex.Match(MasteringDisplay_ColorPrimaries, "(DCI P3)")
 
-
-            If match1.Success AndAlso match2.Success Then
-                'Dim strings1 = match1.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 50000).ToString)
-                Dim strings1 = match1.Groups.OfType(Of Group).Select(Function(group) CInt(group.Value.ToDouble * 50000).ToString)
+            ''DisPlay-P3
+            If match3.Success AndAlso match2.Success Then
                 Dim strings2 = match2.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 10000).ToString)
-                cl += " --no-open-gop"
-                cl += " --master-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L(10000000,1)"""
-                'cl += $" --master-display ""G({strings1(2)},{strings1(3)})B({strings1(4)},{strings1(5)})R({strings1(0)},{strings1(1)})WP({strings1(6)},{strings1(7)})L({strings2(1)},{strings2(0)})"""
-                cl += " --range limited"
+                cl += " --output-depth 10"
+                cl += " --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15635,16450)L(10000000,1)"""
                 cl += " --hdr"
                 cl += " --repeat-headers"
+                cl += " --range limited"
                 cl += " --hrd"
                 cl += " --aud"
             End If
-            End If
 
-            Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
+            ''DCI-P3
+            If match4.Success AndAlso match2.Success Then
+                Dim strings2 = match2.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 10000).ToString)
+                cl += " --output-depth 10"
+                cl += " --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15700,17550)L(10000000,1)"""
+                cl += " --hdr"
+                cl += " --repeat-headers"
+                cl += " --range limited"
+                cl += " --hrd"
+                cl += " --aud"
+            End If
+            ''BT.2020
+            If match1.Success AndAlso match2.Success Then
+                Dim strings2 = match2.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 10000).ToString)
+                cl += " --output-depth 10"
+                cl += " --master-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L(10000000,1)"""
+                cl += " --hdr"
+                cl += " --repeat-headers"
+                cl += " --range limited"
+                cl += " --hrd"
+                cl += " --aud"
+
+            End If
+        End If		
+			
+        Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
         Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
 
         If MaxCLL <> 0 OrElse MaxFALL <> 0 Then cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""
 
         ImportCommandLine(cl)
+
     End Sub
 
     Sub AfterEncoding()
@@ -277,6 +314,8 @@ Public MustInherit Class VideoEncoder
         ret.Add(New x264Enc)
         ret.Add(New x265Enc)
 
+        ret.Add(New Rav1e)
+
         Dim nvidia264 As New NVEnc()
         ret.Add(nvidia264)
 
@@ -298,13 +337,6 @@ Public MustInherit Class VideoEncoder
 
         Dim ffmpeg = New ffmpegEnc()
 
-        Dim xvid As New BatchEncoder()
-        xvid.OutputFileTypeValue = "avi"
-        xvid.Name = "XviD"
-        xvid.Muxer = New ffmpegMuxer("AVI")
-        xvid.QualityMode = True
-        xvid.CommandLines = "xvid_encraw -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
-        ret.Add(xvid)
 
         For x = 0 To ffmpeg.Params.Codec.Options.Length - 1
             Dim ffmpeg2 = New ffmpegEnc()
@@ -312,21 +344,13 @@ Public MustInherit Class VideoEncoder
             ret.Add(ffmpeg2)
         Next
 
-        Dim x264cli As New BatchEncoder()
-        x264cli.OutputFileTypeValue = "h264"
-        x264cli.Name = "Command Line | x264"
-        x264cli.Muxer = New MkvMuxer()
-        x264cli.CommandLines = "x264 --pass 1 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output NUL ""%script_file%"" || exit" + BR + "x264 --pass 2 --bitrate %video_bitrate% --stats ""%target_temp_file%.stats"" --output ""%encoder_out_file%"" ""%script_file%"""
-        x264cli.CompCheckCommandLines = "x264 --crf 18 --output ""%target_temp_file%_CompCheck.%encoder_ext%"" ""%target_temp_file%_CompCheck.%script_ext%"""
-        ret.Add(x264cli)
-
-        Dim nvencH265 As New BatchEncoder()
-        nvencH265.OutputFileTypeValue = "h265"
-        nvencH265.Name = "Command Line | Nvidia H.265"
-        nvencH265.Muxer = New MkvMuxer()
-        nvencH265.QualityMode = True
-        nvencH265.CommandLines = "NVEncC64 --sar %target_sar% --codec h265 --cqp 20 -i ""%script_file%"" -o ""%encoder_out_file%"""
-        ret.Add(nvencH265)
+        Dim xvid As New BatchEncoder()
+        xvid.OutputFileTypeValue = "avi"
+        xvid.Name = "XviD"
+        xvid.Muxer = New ffmpegMuxer("AVI")
+        xvid.QualityMode = True
+        xvid.CommandLines = "xvid_encraw -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
+        ret.Add(xvid)
 
         ret.Add(New NullEncoder())
 

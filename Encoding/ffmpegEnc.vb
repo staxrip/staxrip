@@ -66,7 +66,7 @@ Public Class ffmpegEnc
     Overrides ReadOnly Property OutputExt() As String
         Get
             Select Case Params.Codec.OptionText
-                Case "Xvid", "ASP", "UT Video"
+                Case "Xvid", "MPEG-4", "UT Video"
                     Return "avi"
                 Case "ProRes"
                     Return "mov"
@@ -142,8 +142,8 @@ Public Class ffmpegEnc
             .Switch = "-c:v",
             .Text = "Codec",
             .AlwaysOn = True,
-            .Options = {"x264", "x265", "VP8", "VP9", "XviD", "ASP", "Theora", "ProRes", "UT Video", "Intel | Intel H.264", "Intel | Intel H.265", "Nvidia | Nvidia H.264", "Nvidia | Nvidia H.265"},
-            .Values = {"libx264", "libx265", "libvpx", "libvpx-vp9", "libxvid", "mpeg4", "libtheora", "prores", "utvideo", "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
+            .Options = {"x264", "x265", "XviD", "MPEG-4", "Theora", "ProRes", "UT Video", "VP | VP8", "VP | VP9", "Intel | Intel H.264", "Intel | Intel H.265", "Nvidia | Nvidia H.264", "Nvidia | Nvidia H.265"},
+            .Values = {"libx264", "libx265", "libxvid", "mpeg4", "libtheora", "prores", "utvideo", "libvpx", "libvpx-vp9", "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
 
         Property Mode As New OptionParam With {
             .Name = "Mode",

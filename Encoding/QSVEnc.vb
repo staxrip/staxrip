@@ -120,8 +120,7 @@ Public Class QSVEnc
             New StringPair("qvbr", "QVBR - Quality Variable Bitrate using bitrate"),
             New StringPair("qvbr-q", "QVBR-Q - Quality Variable Bitrate using quality"),
             New StringPair("vbr", "VBR - Variable Bitrate"),
-            New StringPair("vcm", "VCM - Video Conferencing Mode"),
-            New StringPair("vqp", "VQP - Variable QP")}
+            New StringPair("vcm", "VCM - Video Conferencing Mode")}
 
         Sub New()
             Title = "QSVEnc Options"
@@ -139,7 +138,7 @@ Public Class QSVEnc
             .Values = {"h264", "hevc", "mpeg2"}}
 
         Property Mode As New OptionParam With {
-            .Switches = {"--avbr", "--cbr", "--vbr", "--qvbr-q", "--cqp", "--vqp", "--icq", "--la-icq", "--vcm", "--la", "--la-hrd", "--qvbr"},
+            .Switches = {"--avbr", "--cbr", "--vbr", "--qvbr-q", "--cqp", "--icq", "--la-icq", "--vcm", "--la", "--la-hrd", "--qvbr"},
             .Name = "Mode",
             .Text = "Mode",
             .Expand = True,
@@ -160,25 +159,45 @@ Public Class QSVEnc
             .Config = {0, 51}}
 
         Property QPI As New NumParam With {
-            .Switches = {"--cqp", "--vqp"},
+            .Switches = {"--cqp"},
             .Text = "QP I",
             .Init = 24,
-            .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText),
+            .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
             .Config = {0, 51}}
 
         Property QPP As New NumParam With {
-            .Switches = {"--cqp", "--vqp"},
+            .Switches = {"--cqp"},
             .Text = "QP P",
             .Init = 26,
-            .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText),
+            .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
             .Config = {0, 51}}
 
         Property QPB As New NumParam With {
-            .Switches = {"--cqp", "--vqp"},
+            .Switches = {"--cqp"},
             .Text = "QP B",
             .Init = 27,
-            .VisibleFunc = Function() {"cqp", "vqp"}.Contains(Mode.ValueText),
+            .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
             .Config = {0, 51}}
+
+        Property mctf As New BoolParam With {
+            .Switch = "--vpp-mctf",
+            .Text = "Enable Mctf",
+            .ArgsFunc = AddressOf GetmctfArgs}
+
+        Property mctfval As New NumParam With {
+            .Text = "      Mctf",
+            .Config = {0, 20},
+            .Init = 0}
+
+        Property Chromaloc As New NumParam With {
+        .Switch = "--chromaloc",
+        .Text = "Chromaloc",
+        .Config = {0, 5}}
+
+        Property VBVbufsize As New NumParam With {
+        .Switch = "--vbv-bufsize",
+        .Text = "VBV Bufsize",
+        .Config = {0, 1000000, 100}}
 
         Property MaxCLL As New NumParam With {
         .Text = "Maximum CLL",
@@ -214,9 +233,10 @@ Public Class QSVEnc
 
                     Add("Basic", Mode, Decoder, Codec,
                         New OptionParam With {.Switch = "--quality", .Text = "Preset", .Options = {"Best", "Higher", "High", "Balanced", "Fast", "Faster", "Fastest"}, .InitValue = 3},
-                        New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileH264", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "Baseline", "Main", "High"}},
-                        New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileH265", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "Main", "Main 10"}},
+                        New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileH264", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "Baseline", "Main", "High", "High 444"}},
+                        New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileH265", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "Main", "Main 10", "Main 444"}},
                         New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileMPEG2", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "Simple", "Main", "High"}},
+                        New OptionParam With {.Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}, .Values = {"main", "high"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelHEVC", .Text = "Level", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelMPEG2", .Text = "Level", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "low", "main", "high", "High1440"}},
@@ -235,17 +255,15 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid"},
                         New BoolParam With {.Switch = "--b-adapt", .Text = "Adaptive B-Frame Insert"},
                         New BoolParam With {.Switch = "--direct-bias-adjust", .Text = "Direct Bias Adjust"},
-                        New BoolParam With {.Switch = "--scenechange", .Text = "Scenechange"},
                         New BoolParam With {.Switch = "--strict-gop", .Text = "Strict Gop"},
                         New BoolParam With {.Switch = "--open-gop", .Text = "Open Gop"})
-                    Add("Rate Control",
+                    Add("Rate Control", VBVbufsize,
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-offset", .Text = "QP Offset", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--avbr-unitsize", .Text = "AVBR Unitsize", .Init = 90},
-                        New BoolParam With {.Switch = "--mbbrc", .Text = "Per macro block rate control"},
-                        New BoolParam With {.Switch = "--extbrc", .Text = "Extended Rate Control"})
+                        New BoolParam With {.Switch = "--mbbrc", .Text = "Per macro block rate control"})
                     Add("Motion Search",
                         New OptionParam With {.Switch = "--mv-scaling", .Text = "MV Scaling", .IntegerValue = True, .Options = {"Default", "MV cost to be 0", "MV cost 1/2 of default", "MV cost 1/4 of default", "MV cost 1/8 of default"}},
                         New BoolParam With {.Switch = "--weightb", .Text = "B-Frame Weight Prediction"},
@@ -269,29 +287,36 @@ Public Class QSVEnc
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"0", "90", "180", "270"}},
                         New OptionParam With {.Switch = "--vpp-image-stab", .Text = "Image Stabilizer", .Options = {"Disabled", "Upscale", "Box"}},
                         New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image", .Options = {"Disabled", "H", "V"}},
-                        New OptionParam With {.Switch = "--vpp-scaling", .Text = "Scaling Quality", .Options = {"Automatic", "Simple", "Fine"}},
+                        New OptionParam With {.Switch = "--vpp-resize", .Text = "Scaling Quality", .Options = {"Auto", "Simple", "Fine"}},
                         New NumParam With {.Switch = "--vpp-denoise", .Text = "Denoise", .Config = {0, 100}},
-                        New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhance", .Config = {0, 100}})
+                        New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhance", .Config = {0, 100}},
+                        mctf,
+                        mctfval)
                     Add("VUI",
                         New StringParam With {.Switch = "--master-display", .Text = "Master Display", .Quotes = True, .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
-                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
+                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 NC", "BT 2020 C", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}},
                         New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-SRD-B67"}},
-                        MaxCLL, MaxFALL,
-                        New BoolParam With {.Switch = "--fullrange", .Text = "Fullrange"})
+                        MaxCLL, MaxFALL, Chromaloc,                        
+						New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"},
+						New BoolParam With {.Switch = "--fullrange", .Text = "Fullrange"},
+						New BoolParam With {.Switch = "--aud", .Text = "AUD"})
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                     Add("Other",
                         New StringParam With {.Text = "Custom", .AlwaysOn = True},
                         New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .InitValue = 3},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
+                        New OptionParam With {.Switch = "--sao", .Text = "SAO", .Options = {"Auto", "None", "Luma", "Chroma", "All"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
+                        New OptionParam With {.Switch = "--ctu", .Text = "CTU", .Options = {"16", "32", "64"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New BoolParam With {.Switch = "--no-deblock", .Text = "No Deblock"},
                         New BoolParam With {.Switch = "--fallback-rc", .Text = "Enable fallback for unsupported modes", .Value = True},
                         New BoolParam With {.Switch = "--timer-period-tuning", .NoSwitch = "--no-timer-period-tuning", .Text = "Timer Period Tuning", .Init = True},
                         New BoolParam With {.Switch = "--i-adapt", .Text = "Adaptive I-Frame Insert"},
                         New BoolParam With {.Switch = "--fixed-func", .Text = "Use fixed func instead of GPU EU"},
                         New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"},
+                        New BoolParam With {.Switch = "--tskip", .Text = "T-Skip", .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"})
 
                     For Each item In ItemsValue
@@ -341,6 +366,8 @@ Public Class QSVEnc
                 End If
             End If
 
+            mctfval.NumEdit.Enabled = mctf.Value
+
             MyBase.OnValueChanged(item)
         End Sub
 
@@ -374,7 +401,7 @@ Public Class QSVEnc
                     ret += " --" + Mode.ValueText + " " & CInt(Quality.Value)
                 Case "qvbr-q"
                     ret += " --qvbr-q " & CInt(Quality.Value) & " --qvbr " & p.VideoBitrate
-                Case "cqp", "vqp"
+                Case "cqp"
                     ret += " --" + Mode.ValueText + " " & CInt(QPI.Value) & ":" & CInt(QPP.Value) & ":" & CInt(QPB.Value)
                 Case Else
                     ret += " --" + Mode.ValueText + " " & p.VideoBitrate
@@ -404,6 +431,20 @@ Public Class QSVEnc
             If includePaths Then ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
 
             Return ret.Trim
+        End Function
+
+        Function GetmctfArgs() As String
+            If mctf.Value Then
+                Dim ret = ""
+
+                If mctfval.Value <> mctfval.DefaultValue Then ret += "" & mctfval.Value
+
+                If ret <> "" Then
+                    Return "--vpp-mctf " + ret.TrimStart(","c)
+                Else
+                    Return "--vpp-mctf"
+                End If
+            End If
         End Function
 
         Public Overrides Function GetPackage() As Package

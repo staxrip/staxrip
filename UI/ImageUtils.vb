@@ -45,6 +45,7 @@ Public Class ImageHelp
         graphics.DrawString(Convert.ToChar(CInt(symbol)), font, Brushes.Black, -fontHeight * 0.1F, fontHeight * 0.07F)
         graphics.Dispose()
         font.Dispose()
+
         Return bitmap
     End Function
 End Class
@@ -60,13 +61,8 @@ Public Class Thumbnails
             proj.SourceFile = inputFile
         End If
 
-        'proj.Log.WriteHeader("Saving Thumbnails")
-        'proj.Log.WriteLine(inputFile)
-        'proj.Log.Save(proj)
-
         Dim fontname = "DejaVu Serif"
         Dim Fontoptions = "Mikadan"
-
         Dim width = s.Storage.GetInt("Thumbnail Width", 300)
         Dim columnCount = s.Storage.GetInt("Thumbnail Columns", 4)
         Dim rowCount = s.Storage.GetInt("Thumbnail Rows", 6)
@@ -82,9 +78,9 @@ Public Class Thumbnails
         Dim cachePath = Folder.Settings + "Thumbnails.ffindex"
         Dim avsdoc As New VideoScript
         avsdoc.Path = Folder.Settings + "Thumbnails.avs"
-        'avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + """, cachefile = """ + cachePath + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
+        'avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + """, cachefile = """ + cachePath + """, colorspace = ""YV12"").LanczosResize(" & width & "," & height & ")"))
         avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + "" + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
-        avsdoc.Filters.Add(New VideoFilter("ConvertToRGB()"))
+        avsdoc.Filters.Add(New VideoFilter("ConvertToRGB(matrix=""Rec709"")"))
 
         'g.ffmsindex(inputFile, cachePath, False, proj)
 
@@ -167,24 +163,30 @@ Public Class Thumbnails
         Dim infoWidth = MediaInfo.GetVideo(inputFile, "Width")
         Dim infoHeight = MediaInfo.GetVideo(inputFile, "Height")
         Dim infoLength = New FileInfo(inputFile).Length
-        Dim AudioBitrate = MediaInfo.GetAudio(inputFile, "BitRate").ToInt
         Dim infoDuration = MediaInfo.GetGeneral(inputFile, "Duration").ToInt
-        Dim audioCodecs = MediaInfo.GetAudioCodecs(inputFile).Replace(" / ", "  ")
-        Dim videoCodecs = MediaInfo.GetVideoCodec(inputFile).Replace(" / ", "  ")
+        Dim audioCodecs = MediaInfo.GetAudioCodecs(inputFile)
+        If audioCodecs = "" Then audioCodecs = "???"
+
         Dim Channels = MediaInfo.GetAudio(inputFile, "Channel(s)").ToInt
         Dim SubSampling = MediaInfo.GetVideo(inputFile, "ChromaSubsampling").Replace(":", "")
+        If SubSampling = "" Then SubSampling = "???"
         Dim ColorSpace = MediaInfo.GetVideo(inputFile, "ColorSpace").ToLower
+        If ColorSpace = "" Then ColorSpace = "???"
         Dim MatrixColor = MediaInfo.GetVideo(inputFile, "matrix_coefficients").ToLower
+        If MatrixColor = "" Then MatrixColor = "???"
         Dim Profile = MediaInfo.GetVideo(inputFile, "Format_Profile").Shorten(4)
+        If Profile = "" Then Profile = "???"
         Dim Range = MediaInfo.GetVideo(inputFile, "colour_range")
-        Dim ColorRange As String
-        If Range = "Limited" Then ColorRange = "tv"
-        If Range = "Full" Then ColorRange = "pc"
+
+        If Range = "Limited" Then Range = "tv"
+        If Range = "Full" Then Range = "pc"
+        If Range = "" Then Range = "???"
         Dim AudioSound As String
         If Channels = 2 Then AudioSound = "Stereo"
         If Channels = 1 Then AudioSound = "Mono"
-        If Channels = 5.1 Then AudioSound = "Surround Sound"
-        If Channels = 7.1 Then AudioSound = "Surround Sound"
+        If Channels = 6 Then AudioSound = "Surround Sound"
+        If Channels = 8 Then AudioSound = "Surround Sound"
+        If Channels = 0 Then AudioSound = "???"
 
         If audioCodecs.Length > 40 Then audioCodecs = audioCodecs.Shorten(40) + "..."
 
@@ -194,9 +196,15 @@ Public Class Thumbnails
             infoSize = CInt(infoLength / 1024 ^ 2).ToString + "MB"
         End If
 
+        'Dim caption = FilePath.GetName(inputFile) + BR & infoSize & "  " +
+        '    g.GetTimeString(infoDuration / 1000) + "  " &
+        '    (((infoLength * 8) / 1000 / (infoDuration / 1000)) / 1000).ToInvariantString("f1") & "Mb/s" + BR +
+        '    audioCodecs + BR + MediaInfo.GetVideoCodec(inputFile) + "  " & infoWidth & "x" & infoHeight & "  " &
+        '    MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps"
+
         Dim caption = "File: " + FilePath.GetName(inputFile) + BR & "Size: " + MediaInfo.GetGeneral(inputFile, "FileSize") + " bytes" + " (" + MediaInfo.GetGeneral(inputFile, "FileSize_String1") + ")" & ", " + "Duration: " + g.GetTimeString(infoDuration / 1000) + ", avg.bitrate: " + MediaInfo.GetGeneral(inputFile, "OverallBitRate_String") + BR +
             "Audio: " + audioCodecs + ", " + MediaInfo.GetAudio(inputFile, "SamplingRate_String") + ", " + AudioSound + ", " + MediaInfo.GetAudio(inputFile, "BitRate_String") + BR +
-            "Video: " + MediaInfo.GetVideo(inputFile, "Format") + "(" + Profile + ")" + ", " + ColorSpace + SubSampling + "(" + ColorRange + ", " + MatrixColor + "), " + infoWidth & "x" & infoHeight & ", " + MediaInfo.GetVideo(inputFile, "BitRate_String") + ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps"
+            "Video: " + MediaInfo.GetVideo(inputFile, "Format") + "(" + Profile + ")" + ", " + ColorSpace + SubSampling + "(" + Range + ", " + MatrixColor + "), " + infoWidth & "x" & infoHeight & ", " + MediaInfo.GetVideo(inputFile, "BitRate_String") + ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps"
 
         Dim captionSize = TextRenderer.MeasureText(caption, font)
         Dim captionHeight = captionSize.Height + font.Height \ 3
@@ -223,7 +231,6 @@ Public Class Thumbnails
                         g.DrawString("StaxRip", New Font(Fontoptions, font.Height * 2, FontStyle.Bold, GraphicsUnit.Pixel), brush, rect, format)
                     End If
                 End Using
-
 
                 For x = 0 To bitmaps.Count - 1
                     Dim rowPos = x \ columnCount
@@ -278,7 +285,7 @@ Public Class Thumbnails
 
             ElseIf Options = "tiff" Then
 
-                Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Tiff.Guid).First
+                Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Gif.Guid).First
                 bitmap.Save(inputFile.ChangeExt("tiff"), info, Nothing)
 
                 If OutputOptions = False Then

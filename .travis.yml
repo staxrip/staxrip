@@ -1,7 +1,5 @@
 language: Visual Basic
 solution: StaxRip.sln
-install:
-    - nuget restore StaxRip.sln
 dotnet: 2.1
 script:
  - dotnet restore   

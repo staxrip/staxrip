@@ -1,4 +1,4 @@
-language: csharp
+language: Visual Basic
 solution: StaxRip.sln
 install:
     - nuget restore StaxRip.sln

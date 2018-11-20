@@ -51,7 +51,6 @@ Public MustInherit Class VideoEncoder
         If Not p.ImportVUIMetadata Then Exit Sub
 
         Dim cl As String
-        Dim Range = MediaInfo.GetVideo(sourceFile, "colour_range")       
 
         Dim colour_primaries = MediaInfo.GetVideo(sourceFile, "colour_primaries")
         Dim height = MediaInfo.GetVideo(sourceFile, "Height").ToInt
@@ -145,7 +144,6 @@ Public MustInherit Class VideoEncoder
         Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
 
         If MaxCLL <> 0 OrElse MaxFALL <> 0 Then cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""
-
         ImportCommandLine(cl)
 
     End Sub

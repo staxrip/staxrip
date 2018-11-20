@@ -1,3 +1,4 @@
 language: csharp
+Mono: none
 solution: StaxRip.sln
 dotnet: 2.1

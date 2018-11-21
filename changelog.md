@@ -4,37 +4,88 @@
 
 https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
-2.0
-- Tweaked the Temp Folder Creator & Path.
+2.0 Beta 2
+- Updated a few of FFMpeg Flags for Audio Demuxing / Encoding.
+- Moved HDR Ingest in Options Menu to Video Tab.
+- Support for HLG Metadata has been Added to Ingest.
+- Added Support for VUI for the Following ColorSpaces: Display P3 and DCI P3 (It still Must pass the other HDR Checks)
+- Proper Master-Display data has been added for Display P3 and DCI P3.
+- Support for Webm Subtitles has been Added For srt, sup, idx Files.
+- Updated the VUI Import for HDR10, Due to MediaInfo Changes to Output Names.
+- Changed the VUI import name for HLG, Due to MediaInfo not using proper colorspace name.
+- Added Some Support for HLG to VUI import function, MediaInfo does not contain all HLG Metadata.
+- Updated all the Help Files for the Encoders.
+- Rav1e Encoder Has Been Added to Support AV1 codec.
+	Flags:
+		--tune
+		--limit
+		--speed
+		--quantizer
+		--keyint
+		--low_latency
+		--custom
+- NVEnc Added Flags:
+	-profile(h265)
+	-vpp-padding(Left,Top,Right,Bottom)
+	-vpp-tweak(Contrast,Gamma,Saturation,Hue,Brightness)
+	-chromaloc
+	-interlace tff
+	-interlace bff
+	-tier
+	-pic-struct
+	-aud
+	-slices
+	+ Others...
+- QSVEnc Added Flags:
+	-vbv-bufsize
+	-chromaloc	
+	-vpp-scaling -> -vpp-resize
+	-Filter: mctf
+	-sao
+	-ctu
+	-tskip
+	+ Others...
+- Removed any Switches that no longer exist in the CLI Encoders.
+- Updated FFMPEG to 4.1
+- ReBuilt MPVNet to work on Both older and Newer Systems.
+- Support has been added for MKV, Webm and MP4 to AV1.
+- 32 Float Filters have been Added(Oyster, Plum, Vine)
+- FFMPEG Shared dll Files has been Updated to 4.1
+- Added mpvnet back with fully working mpv dll file.
+- Re-Enabled MediaInfo Folder, It's Been Fixed to with latest MediaInfo Code.
+- x264 has Been Updated to 2935
+- x265 has Been Updated to 2.9+9
+- Cleaned up the Config Files.
+- Update Script has been moved to Python Code, instead of basic Powershell Script.
+	- Site Packges Required: bs4(BeautifulSoup), Requests, win32api, tqdm, & psutil
+- Added Update Script for NVEnc & QVSEnc.
+- mtn has been Updated, Uses less Shared files.
+
+
+2.0 Beta 1
+- Temp Folder Creation has been slightly altered
 - Removed some old Code, That wasn't doing anything anymore.
 - AVSMeter has Been Updated to 2.8.6.
 - Updated eac3to, fdkaac & qaac.
-- Both FFMPEG and MPV now use custom Builds instead of the normal default build(Which Fully Supports VapourSynth).
-- FFMPEG & Shared dll Files has been Updated to 20181026
-- MPV has been Updated to 20181026
-- Added Limited Support for VS in MPV(Requires VSPipe).
 - nnedi3 for AVS has Been Updated to 0.9.4
-- FFMPEG, x264, x265 & MPV are now compiled Using GCC ToolChain instead of MVS.
-- x264 has Been Updated to 2935
-- x265 has Been Updated to 2.9+2
+- x264 & x265 have compiled Using GCC ToolChain instead of MVS.
 - Python Search Path has been Updated to 3.7/3.7.1 & Python 3.6 has been Removed.
 - Also Included Support for Anaconda3.
 - The VapourSynth Script has been slightly altered to work better with Python Search Path.
 - VS has been Updated to R45.
 - MKVToolNix Updated to 28.2.0.7
-- Updated the Update Script to Support additional HTML Protocols, due to the changes on the website.
 - Added hnwvsfunc for VS & mClean to Context Menu.
 - Cleaned up the AVS Filter Names.
 - Added MultiSharpen Function
-- Modified the Profile List for x265, Only Profiles that work with Current Selected Depth with Display.
-- Removed any 8Bit x265 that no Longer used with 2.9(Based on: https://x265.readthedocs.io).
+- Modified the Profile List for x265, Only Profiles that work with Current Selected Depth with Display now.
+- Removed any 8Bit x265 Profiles that no Longer used with 2.9(Based on: https://x265.readthedocs.io).
 - Moved Some Extra Functions to the System Process.
 - Custom Directory Output Option has been Added to StaxRip Thumbnail Creator & MTN. It's Default Directory is the last Used Location. If none is known it defaults to C Drive(Fresh Install)
 - Added support for Long Path Aware(Make Sure to Enable it If your OS Supports it)
 - Fixed any Issues for very Short filenames being converted to wrong type.
 - Removed MediaInfo 18.08.1 Due to Bugs it contains and Re-Added MediaInfo 18.05.
 - Added More Support for HDR to Intel Encoder.
-- VS Filters Added: W3FDIF, MiniDeen, IT, TDeintMod, vcfreq, vcmove & TemporalMedian.
+- VS Filters Added: W3FDIF, MiniDeen, IT, TDeintMod, VC* Filters & TemporalMedian.
 - Updated mvtools-sf to AVX, The latest Builds only use AVX2 which not all CPU's Support.
 - Added Support for RawSourcePlus for Avisynth and RawSource for VapourSynth. Default Pixel_type is set to YUV420P10 (aka P010).
 - Dual Package Setup for x264 have been Removed for Single release x264(8+10Bit). The Depth menu will set the Output Bits, exactly like x265.

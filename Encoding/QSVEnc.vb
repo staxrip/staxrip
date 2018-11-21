@@ -276,10 +276,7 @@ Public Class QSVEnc
                         New NumParam With {.Switch = "--output-thread", .Text = "Output Thread", .Config = {0, 64}},
                         New NumParam With {.Switch = "--async-depth", .Text = "Async Depth", .Config = {0, 64}},
                         New BoolParam With {.Switch = "--min-memory", .Text = "Minimize memory usage"},
-                        New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
-                    Add("Bitstream",
-                        New BoolParam With {.Switch = "--aud", .Text = "Insert aud nal unit"},
-                        New BoolParam With {.Switch = "--pic-struct", .Text = "Insert pic-timing SEI with pic_struct"})
+                        New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})                    
                     Add("VPP",
                         New StringParam With {.Switch = "--vpp-sub", .Text = "Subtitle File", .Quotes = True, .BrowseFile = True},
                         New StringParam With {.Switch = "--vpp-sub-charset", .Text = "Subtitle Charset", .Quotes = True},

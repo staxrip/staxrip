@@ -52,7 +52,6 @@ Public Class QSVEnc
             f.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetStdOut(Package.QSVEnc.Path, "--check-environment"))))
             f.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.QSVEnc.Path, "--check-hw"))))
             f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.QSVEnc.Path, "--check-features"))))
-            f.cms.Items.Add(New ActionMenuItem("Check Library", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.QSVEnc.Path, "--check-lib"))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = params1
@@ -276,7 +275,7 @@ Public Class QSVEnc
                         New NumParam With {.Switch = "--output-thread", .Text = "Output Thread", .Config = {0, 64}},
                         New NumParam With {.Switch = "--async-depth", .Text = "Async Depth", .Config = {0, 64}},
                         New BoolParam With {.Switch = "--min-memory", .Text = "Minimize memory usage"},
-                        New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})                    
+                        New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
                     Add("VPP",
                         New StringParam With {.Switch = "--vpp-sub", .Text = "Subtitle File", .Quotes = True, .BrowseFile = True},
                         New StringParam With {.Switch = "--vpp-sub-charset", .Text = "Subtitle Charset", .Quotes = True},

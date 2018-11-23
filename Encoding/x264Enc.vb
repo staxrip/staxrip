@@ -852,21 +852,20 @@ Public Class x264Params
                     CustomFirstPass,
                     CustomSecondPass)
 
-                For Each i In ItemsValue
-                    Dim urls As New List(Of String)
-
-                    For Each switch In i.GetSwitches
-                        If switch = i.NoSwitch AndAlso urls.Count > 0 Then Continue For
-                        urls.Add("http://www.chaneru.com/Roku/HLS/X264_Settings.htm#" + switch.TrimStart("-"c))
-                    Next
-
-                    If urls.Count > 0 Then i.URLs = urls
+                For Each item In ItemsValue
+                    If item.HelpSwitch <> "" Then Continue For
+                    Dim switches = item.GetSwitches
+                    If switches.NothingOrEmpty Then Continue For
+                    item.HelpSwitch = switches(0)
                 Next
             End If
 
             Return ItemsValue
         End Get
     End Property
+    Public Overrides Sub ShowHelp(id As String)
+        g.ShowCommandLineHelp(Package.x264, id)
+    End Sub
 
     Private BlockValueChanged As Boolean
 

@@ -945,20 +945,19 @@ Public Class x265Params
                 Add("Custom", Custom, CustomFirstPass, CustomSecondPass)
 
                 For Each item In ItemsValue
-                    Dim urls As New List(Of String)
-
-                    For Each switch In item.GetSwitches
-                        If switch = item.NoSwitch AndAlso urls.Count > 0 Then Continue For
-                        urls.Add("http://x265.readthedocs.io/en/latest/cli.html#cmdoption" + switch.Substring(1))
-                    Next
-
-                    If urls.Count > 0 Then item.URLs = urls
+                    If item.HelpSwitch <> "" Then Continue For
+                    Dim switches = item.GetSwitches
+                    If switches.NothingOrEmpty Then Continue For
+                    item.HelpSwitch = switches(0)
                 Next
             End If
 
             Return ItemsValue
         End Get
     End Property
+    Public Overrides Sub ShowHelp(id As String)
+        g.ShowCommandLineHelp(Package.x265, id)
+    End Sub
 
     Private BlockValueChanged As Boolean
 

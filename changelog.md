@@ -1,8 +1,14 @@
 #### Requirements
 
-.NET 4.7 is required on systems prior to Windows 10 Anniversary.
+.NET 4.8 is required to be installed on Windows Before Fall 2018 Update.
 
 https://www.microsoft.com/en-us/download/details.aspx?id=55170
+
+2.0
+- Fixed QSVEnc Key, Which was locking some users out.
+- Updated the Switches for VCEnc
+- FrameWork has been Fully Updated to 4.8 and works with Older 4.* versions.
+- The Help System for the Encoders Has been Altered. All the Help System works the Same now.
 
 2.0 Beta 2
 - Updated a few of FFMpeg Flags for Audio Demuxing / Encoding.

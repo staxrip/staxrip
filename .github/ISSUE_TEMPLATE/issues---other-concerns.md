@@ -32,7 +32,12 @@ If possible, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
  - OS: [e.g. Windows 10 Build 1803]
- - Version [e.g. 1.9]
+- Version [e.g. 1.9]
+- FrameServer Being Used [e.g. Avisynth]
+- Version of External Application / Filter Being Used [e.g. 2.9+10]
+- List of Filters Being Used [e.g. QTGMC]
+- Post your Logs, There Tell contain Allot of Information that Could Help.
+- The More Information Posted, The Easier it will be to Debug.
 
 **Additional context**
 Add any other Information or additional context that can be Helpful.

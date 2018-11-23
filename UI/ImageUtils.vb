@@ -54,7 +54,6 @@ Public Class Thumbnails
     Shared Sub SaveThumbnails(inputFile As String, proj As Project)
         If Not File.Exists(inputFile) Then Exit Sub
         If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
-
         If proj Is Nothing Then
             proj = New Project
             proj.Init()
@@ -81,7 +80,6 @@ Public Class Thumbnails
         'avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + """, cachefile = """ + cachePath + """, colorspace = ""YV12"").LanczosResize(" & width & "," & height & ")"))
         avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + "" + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
         avsdoc.Filters.Add(New VideoFilter("ConvertToRGB(matrix=""Rec709"")"))
-
         'g.ffmsindex(inputFile, cachePath, False, proj)
 
         Dim errorMsg = ""
@@ -103,7 +101,6 @@ Public Class Thumbnails
 
         Dim frames = avsdoc.GetFrames
         Dim count = columnCount * rowCount
-
         Dim bitmaps As New List(Of Bitmap)
 
         Using avi As New AVIFile(avsdoc.Path)

@@ -141,6 +141,8 @@ Public Class GlobalClass
             p.VideoEncoder.Muxer.Mux()
 
             If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile, p)
+            If p.MTN Then MTN.Thumbnails(p.TargetFile, p)
+            If p.MKVHDR Then MKVMetaDataHDR.MetadataHDR(p.TargetFile, p)
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)

@@ -13,8 +13,8 @@ Public Class GIF
         Dim Rate = s.Storage.GetInt("GifFrameRate", 15)
         Dim cachePath = Folder.Temp + "Palette.png"
         Dim OutPutPath = inputFile + ".gif"
-        Dim Seek = s.Storage.GetInt("GifTime", 25)
-        Dim Duration = s.Storage.GetInt("GifLength", 4)
+        Dim Seek = s.Storage.GetString("GifTime", 25.0)
+        Dim Duration = s.Storage.GetString("GifLength", 4.2)
         Dim Size = s.Storage.GetInt("GifScale", 480)
         Dim Mode = s.Storage.GetString("PaletteGen", "diff")
         Dim SecondMode = s.Storage.GetString("PaletteUse", "rectangle")
@@ -88,8 +88,8 @@ Public Class PNG
         Dim Path = inputFile + ".apng"
         Dim NewPath = inputFile + ".png"
         Dim OptOut = inputFile + "_opt.png"
-        Dim Seek = s.Storage.GetInt("PNGTime", 25)
-        Dim Duration = s.Storage.GetInt("PNGLength", 4)
+        Dim Seek = s.Storage.GetString("PNGTime", 25.0)
+        Dim Duration = s.Storage.GetString("PNGLength", 4.2)
         Dim Size = s.Storage.GetInt("PNGScale", 480)
         Dim OptSettings = s.Storage.GetString("PNGopt", "-z1")
         Dim Opt = s.Storage.GetBool("OptSetting", False)

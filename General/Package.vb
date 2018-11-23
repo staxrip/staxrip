@@ -157,6 +157,7 @@ Public Class Package
         .Name = "rav1e",
         .Filename = "rav1e.exe",
         .Description = "a Faster and Safer AV1 Encoder",
+        .WebURL = "https://github.com/xiph/rav1e",
         .HelpFile = "help.txt"})
 
     Shared Property MTN As Package = Add(New Package With {
@@ -165,7 +166,7 @@ Public Class Package
         .DirPath = "mtn",
         .HelpFile = "help.txt",
         .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
-        .WebURL = "https://github.com/Revan654/Movie-Thumbnailer-mtn-",
+        .WebURL = "https://github.com/Revan654/Movie-Thumbnailer-mtn",
         .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
 
     Shared Property SubtitleEdit As Package = Add(New Package With {
@@ -283,6 +284,7 @@ Public Class Package
         .Filename = "x264.exe",
         .Description = "H.264 video encoding command line app.",
         .WebURL = "http://www.videolan.org/developers/x264.html",
+        .HelpFile = "help.txt",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm"})
 
     Shared Property x265 As Package = Add(New Package With {
@@ -290,6 +292,7 @@ Public Class Package
         .Filename = "x265.exe",
         .WebURL = "http://x265.org",
         .HelpURL = "http://x265.readthedocs.org",
+        .HelpFile = "help.txt",
         .Description = "H.265 video encoding command line app."})
 
     Shared Property mkvmerge As Package = Add(New Package With {

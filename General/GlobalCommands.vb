@@ -285,7 +285,7 @@ Public Class GlobalCommands
 
         Dim nvExcept = "--help --version --check-device --avsw --input-analyze 
             --input-format --output-format --video-streamid --video-track --vpp-delogo
-            --vpp-delogo-cb --vpp-delogo-cr --vpp-delogo-depth --vpp-delogo-pos
+            --vpp-delogo-cb --vpp-delogo-cr --vpp-delogo-depth --vpp-delogo-pos --vpp-select-every
             --vpp-delogo-select --vpp-delogo-y --check-avversion --check-codecs --caption2ass
             --check-encoders --check-decoders --check-formats --check-protocols --bref-mode
             --check-filters --input --output --raw --avs --vpy --vpy-mt --key-on-chapter
@@ -310,7 +310,7 @@ Public Class GlobalCommands
         If nvUnknown.Count > 0 Then msg += BR2 + "# NVEnc Todo" + BR2 + nvUnknown.Join(" ")
 
         Dim amdExcept = "--audio-bitrate --audio-codec --audio-copy --audio-file
-            --audio-filter --avsw --device --input-analyze
+            --audio-filter --avsw --device --input-analyze --caption2ass
             --audio-ignore-decode-error --audio-ignore-notrack-error --audio-resampler
             --audio-samplerate --audio-source --audio-stream --avs --avvce-analyze
             --check-avversion --check-codecs --check-decoders --check-encoders --check-filters
@@ -333,7 +333,7 @@ Public Class GlobalCommands
         Dim qsExcept = "--help --version --check-device --video-streamid --video-track
             --check-avversion --check-codecs --check-encoders --check-decoders --check-formats
             --check-protocols --chapter-no-trim --check-filters --device --input --output
-            --raw --avs --vpy --vpy-mt --audio-source --audio-file --seek --format
+            --raw --avs --vpy --vpy-mt --audio-source --audio-file --seek --format --caption2ass
             --audio-copy --audio-copy --audio-codec --audio-bitrate --audio-ignore --avhw --check-profiles
             --audio-ignore --audio-samplerate --audio-resampler --audio-stream --audio-stream
             --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
@@ -367,9 +367,10 @@ Public Class GlobalCommands
             --opt-qp-pps --opt-ref-list-length-pps --single-sei
             --dhdr10-opt --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
 
-        Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --help").Replace("--[no-]", "--")
+        Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --fullhelp").Replace("--[no-]", "--")
         Dim x265HelpSwitches = Regex.Matches(x265Help, "--[\w-]+").OfType(Of Match).Select(Function(val) val.Value)
         Dim x265Code = File.ReadAllText(Folder.Startup.Parent + "Encoding\x265Enc.vb").Replace("--no-", "--")
+        File.WriteAllText(Package.x265.GetDir + "help.txt", x265Help)
         Dim x265Present As New HashSet(Of String)
 
         For Each switch In Regex.Matches(x265Code, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)

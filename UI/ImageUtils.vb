@@ -60,9 +60,9 @@ Public Class Thumbnails
             proj.SourceFile = inputFile
         End If
 
-        Dim fontname = "DejaVu Serif"
-        Dim Fontoptions = "Mikadan"
-        Dim width = s.Storage.GetInt("Thumbnail Width", 300)
+        Dim fontname = "Microsoft Sans Serif"
+        Dim Fontoptions = "mikadan"
+        Dim width = s.Storage.GetInt("Thumbnail Width", 500)
         Dim columnCount = s.Storage.GetInt("Thumbnail Columns", 4)
         Dim rowCount = s.Storage.GetInt("Thumbnail Rows", 6)
         Dim dar = MediaInfo.GetVideo(inputFile, "DisplayAspectRatio")
@@ -74,9 +74,10 @@ Public Class Thumbnails
         width = width - width Mod 4
         height = height - height Mod 4
 
-        Dim cachePath = Folder.Settings + "Thumbnails.ffindex"
+        'Dim cachePath = Folder.Settings + "\Thumbnails.ffindex"
         Dim avsdoc As New VideoScript
-        avsdoc.Path = Folder.Settings + "Thumbnails.avs"
+        avsdoc.Path = Folder.Settings + "\Thumbnails.avs"
+        Dim indexfile = inputFile + ".ffindex"
         'avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + """, cachefile = """ + cachePath + """, colorspace = ""YV12"").LanczosResize(" & width & "," & height & ")"))
         avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + "" + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
         avsdoc.Filters.Add(New VideoFilter("ConvertToRGB(matrix=""Rec709"")"))
@@ -151,9 +152,9 @@ Public Class Thumbnails
             height = height + gap
         End Using
 
-        FileHelp.Delete(cachePath)
+        FileHelp.Delete(indexfile)
         FileHelp.Delete(avsdoc.Path)
-        FileHelp.Delete(inputFile + ".ffindex")
+        'FileHelp.Delete(inputFile.ChangeExt(".ffindex"))
 
         Dim infoSize As String
 
@@ -236,88 +237,54 @@ Public Class Thumbnails
                 Next
             End Using
 
-            Dim OutputOptions = s.Storage.GetBool("CustomOut", False)
+            Dim DirectoryStatus = s.Storage.GetBool("StaxRipOutput", False)
+            Dim DirectoryLocation = s.Storage.GetString("StaxRipDirectory", p.DefaultTargetFolder)
+            Dim Export = DirectoryLocation + "\" + inputFile.Base
             Dim Options = s.Storage.GetString("Picture Format", "png")
 
             If Options = "jpg" Then
                 Dim params = New EncoderParameters(1)
                 params.Param(0) = New EncoderParameter(Encoder.Quality, s.Storage.GetInt("Thumbnail Compression Quality", 95))
                 Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Jpeg.Guid).First
-                bitmap.Save(inputFile.ChangeExt("jpg"), info, params)
+                'bitmap.Save(inputFile.ChangeExt("jpg"), info, params)
 
-                If OutputOptions = False Then
-                    Try
-                        Dim Out = inputFile.ChangeExt("jpg")
-                        If File.Exists(Out) = True Then
-                            File.Delete(p.DefaultTargetFolder + "/" + inputFile.FileName + ".jpg")
-                            File.Move(Out, p.DefaultTargetFolder + "/" + inputFile.FileName + ".jpg")
-                        Else
-                            File.Move(Out, p.DefaultTargetFolder + "/" + inputFile.FileName + ".jpg")
-                        End If
-
-                    Catch ex As Exception
-                        g.ShowException(ex)
-                    End Try
+                If DirectoryStatus = True Then
+                    bitmap.Save(Export.ChangeExt("jpg"), info, params)
+                Else
+                    bitmap.Save(inputFile.ChangeExt("jpg"), info, params)
                 End If
 
             ElseIf Options = "png" Then
 
                 Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Png.Guid).First
-                bitmap.Save(inputFile.ChangeExt("png"), info, Nothing)
+                'bitmap.Save(inputFile.ChangeExt("png"), info, Nothing)
 
-                If OutputOptions = False Then
-                    Try
-                        Dim Out = inputFile.ChangeExt("png")
-                        If File.Exists(Out) = True Then
-                            File.Delete(p.DefaultTargetFolder + "/" + inputFile.FileName + ".png")
-                            File.Move(Out, p.DefaultTargetFolder + "/" + inputFile.FileName + ".png")
-                        Else
-                            File.Move(Out, p.DefaultTargetFolder + "/" + inputFile.FileName + ".png")
-                        End If
-
-                    Catch ex As Exception
-                        g.ShowException(ex)
-                    End Try
+                If DirectoryStatus = True Then
+                    bitmap.Save(Export.ChangeExt("png"), info, Nothing)
+                Else
+                    bitmap.Save(inputFile.ChangeExt("png"), info, Nothing)
                 End If
 
             ElseIf Options = "tiff" Then
 
-                Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Gif.Guid).First
-                bitmap.Save(inputFile.ChangeExt("tiff"), info, Nothing)
+                Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Tiff.Guid).First
+                'bitmap.Save(inputFile.ChangeExt("tiff"), info, Nothing)
 
-                If OutputOptions = False Then
-                    Try
-                        Dim Out = inputFile.ChangeExt("tiff")
-                        If File.Exists(Out) = True Then
-                            File.Delete(p.DefaultTargetFolder + "/" + inputFile.FileName + ".tiff")
-                            File.Move(Out, p.DefaultTargetFolder + "/" + inputFile.FileName + ".tiff")
-                        Else
-                            File.Move(Out, p.DefaultTargetFolder + "/" + inputFile.FileName + ".tiff")
-                        End If
-
-                    Catch ex As Exception
-                        g.ShowException(ex)
-                    End Try
+                If DirectoryStatus = True Then
+                    bitmap.Save(Export.ChangeExt("tiff"), info, Nothing)
+                Else
+                    bitmap.Save(inputFile.ChangeExt("tiff"), info, Nothing)
                 End If
 
             ElseIf Options = "bmp" Then
 
                 Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Bmp.Guid).First
-                bitmap.Save(inputFile.ChangeExt("bmp"), info, Nothing)
+                'bitmap.Save(inputFile.ChangeExt("bmp"), info, Nothing)
 
-                If OutputOptions = False Then
-                    Try
-                        Dim Out = inputFile.ChangeExt("bmp")
-                        If File.Exists(Out) = True Then
-                            File.Delete(p.DefaultTargetFolder + "/" + inputFile.FileName + ".bmp")
-                            File.Move(Out, p.DefaultTargetFolder + "/" + inputFile.FileName + ".bmp")
-                        Else
-                            File.Move(Out, p.DefaultTargetFolder + "/" + inputFile.FileName + ".bmp")
-                        End If
-
-                    Catch ex As Exception
-                        g.ShowException(ex)
-                    End Try
+                If DirectoryStatus = True Then
+                    bitmap.Save(Export.ChangeExt("bmp"), info, Nothing)
+                Else
+                    bitmap.Save(inputFile.ChangeExt("bmp"), info, Nothing)
                 End If
 
             End If

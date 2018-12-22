@@ -4353,7 +4353,7 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Subtitles|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
         ret.Add("Tools|Advanced|LAV Filters Decoder", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
         ret.Add("Tools|Advanced|Reset Settings", NameOf(ResetSettings))
-        ret.Add("Tools|Advanced|Update", NameOf(UpdateAll), Symbol.UpdateRestore)
+        'ret.Add("Tools|Advanced|Update", NameOf(UpdateAll), Symbol.UpdateRestore)
 
         ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
@@ -5535,15 +5535,15 @@ Public Class MainForm
         SourceFileMenu.Add("Copy", Sub() tbSourceFile.Copy(), "Copies the selected text to the clipboard.", tbSourceFile.Text <> "").SetImage(Symbol.Copy)
         SourceFileMenu.Add("Paste", Sub() tbSourceFile.Paste(), "Copies the full source file path to the clipboard.", Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
     End Sub
-    <Command("Checks For Updates")>
-    Sub UpdateAll()
-        MsgInfo("Application May Shutdown During Update")
-        Try
-            Updates.All()
-        Catch ex As Exception
-            g.ShowException(ex)
-        End Try
-    End Sub
+    '<Command("Checks For Updates")>
+    'Sub UpdateAll()
+    '    MsgInfo("Application May Shutdown During Update")
+    '    Try
+    '        Updates.All()
+    '    Catch ex As Exception
+    '        g.ShowException(ex)
+    '    End Try
+    'End Sub
     <Command("View the Metadata of any Selected File")>
     Private Sub MediaInfoShowMedia()
         Using fd As New OpenFileDialog
@@ -5564,7 +5564,7 @@ Public Class MainForm
             If fd.ShowDialog = DialogResult.OK Then
                 For Each i In fd.FileNames
                     Try
-                        MKVInfoLookup.MetadataInfo(i, Nothing)
+                        MKVInfo.MetadataInfo(i, Nothing)
                     Catch ex As Exception
                         g.ShowException(ex)
                     End Try
@@ -5582,7 +5582,7 @@ Public Class MainForm
             If fd.ShowDialog = DialogResult.OK Then
                 For Each i In fd.FileNames
                     Try
-                        MKVMetaDataHDR.MetadataHDR(i, Nothing)
+                        MKVInfo.MetadataHDR(i, Nothing)
                     Catch ex As Exception
                         g.ShowException(ex)
                     End Try
@@ -5590,6 +5590,7 @@ Public Class MainForm
             End If
         End Using
     End Sub
+
     <Command("Generates a Short Gif Based on Input data.")>
     Sub SaveGif()
         Using fd As New OpenFileDialog
@@ -5597,7 +5598,7 @@ Public Class MainForm
             fd.Multiselect = True
             If fd.ShowDialog = DialogResult.OK Then
                 Using f As New SimpleSettingsForm("Gif Options")
-                    f.ScaleClientSize(27, 14)
+                    f.ScaleClientSize(27, 18)
 
                     Dim ui = f.SimpleUI
                     Dim page = ui.CreateFlowPage("main page")
@@ -5607,29 +5608,37 @@ Public Class MainForm
                     Dim PaletteGen = ui.AddMenu(Of String)
                     Dim Compression = ui.AddMenu(Of String)
                     Dim PaletteUse = ui.AddMenu(Of String)
+                    Dim ColorSpace = ui.AddMenu(Of String)
 
-                    ''Starting Time to Where to Start Seeking.
                     Dim Time = ui.AddNum()
                     Time.Text = "Starting Time:"
-                    'Double/Float - Time.Config = {0, 3600, 0.1, 1}
-                    Time.Config = {1, 3600, 1, 1}
+                    Time.Config = {1.0, 3600.0, 0.2, 1}
                     Time.Help = "The Time Position Where the Animation Should start at in Seconds"
-                    Time.NumEdit.Value = s.Storage.GetInt("GifTime", 25)
-                    Time.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifTime", CInt(value))
+                    Time.NumEdit.Value = s.Storage.GetDouble("GifTime", 15.0)
+                    Time.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("GifTime", CInt(value))
 
-                    ''How long Should the Animated Gif Be        
                     Dim Length = ui.AddNum()
                     Length.Text = "Length:"
-                    Time.Config = {1, 10, 1, 1}
+                    Length.Config = {1.0, 9.0, 0.2, 1}
                     Length.Help = "The Length of the Animation in Seconds"
-                    Time.NumEdit.Value = s.Storage.GetInt("GifLength", 4)
-                    Time.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifLength", CInt(value))
+                    Length.NumEdit.Value = s.Storage.GetDouble("GifLength", 4.2)
+                    Length.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("GifLength", CDbl(value))
 
                     Dim FrameRate = ui.AddNum()
-                    FrameRate.Text = "FrameRate:"
+                    FrameRate.Text = "Framerate:"
                     FrameRate.Config = {15, 60}
                     FrameRate.NumEdit.Value = s.Storage.GetInt("GifFrameRate", 15)
                     FrameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifFrameRate", CInt(value))
+
+                    ColorSpace.Text = "Colorspace:"
+                    ColorSpace.Add("BT.470M", "bt470m")
+                    ColorSpace.Add("BT.470BG", "bt470bg")
+                    ColorSpace.Add("BT.601-6 525", "bt601-6-525")
+                    ColorSpace.Add("BT.601-6 625", "bt601-6-625")
+                    ColorSpace.Add("BT.709", "bt709")
+                    ColorSpace.Add("BT.2020", "bt2020")
+                    ColorSpace.Button.Value = s.Storage.GetString("Colorspace", "bt709")
+                    ColorSpace.Button.SaveAction = Sub(value) s.Storage.SetString("Colorspace", CStr(value))
 
                     Dim Scale = ui.AddNum()
                     Scale.Text = "Scale:"
@@ -5656,8 +5665,25 @@ Public Class MainForm
                     Compression.Add("Sierra 2", "dither=sierra2")
                     Compression.Add("Sierra 2_4a", "dither=sierra2_4a")
                     Compression.Add("None", "dither=none")
-                    Compression.Button.Value = s.Storage.GetString("GifDither", "dither=bayer:bayer_scale=5")
+                    Compression.Button.Value = s.Storage.GetString("GifDither", "dither=floyd_steinberg")
                     Compression.Button.SaveAction = Sub(value) s.Storage.SetString("GifDither", value)
+
+                    Dim Output = ui.AddBool()
+                    Output.Text = "Output Path"
+                    Output.Checked = s.Storage.GetBool("GifOutput", False)
+                    Output.SaveAction = Sub(value) s.Storage.SetBool("GifOutput", value)
+
+                    Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
+                    CustomDirectory.Label.Visible = False
+                    CustomDirectory.Edit.Text = s.Storage.GetString("GifDirectory", p.DefaultTargetFolder)
+                    CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("GifDirectory", value)
+                    CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+
+                    AddHandler Output.CheckStateChanged, Sub()
+                                                             CustomDirectory.Visible = Output.Checked = True
+                                                         End Sub
+
+                    CustomDirectory.Visible = Output.Checked = True
 
                     page.ResumeLayout()
 
@@ -5666,7 +5692,7 @@ Public Class MainForm
 
                         For Each i In fd.FileNames
                             Try
-                                GIF.GIFAnimation(i, Nothing)
+                                Animation.GIF(i, Nothing)
                             Catch ex As Exception
                                 g.ShowException(ex)
                             End Try
@@ -5676,6 +5702,7 @@ Public Class MainForm
             End If
         End Using
     End Sub
+
     <Command("Generate Thumbnails Using MTN Engine")>
     Sub SaveMTN()
         Using fd As New OpenFileDialog
@@ -5692,58 +5719,58 @@ Public Class MainForm
                     page.SuspendLayout()
 
                     Dim Column = ui.AddNum()
-                    Column.Text = "Number of Columns:"
+                    Column.Text = "Columns:"
                     Column.Config = {1, 12}
                     Column.NumEdit.Value = s.Storage.GetInt("MTNColumn", 4)
                     Column.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNColumn", CInt(value))
 
                     Dim Row = ui.AddNum()
-                    Row.Text = "Number of Rows:"
+                    Row.Text = "Rows:"
                     Row.Config = {1, 12}
                     Row.NumEdit.Value = s.Storage.GetInt("MTNRow", 6)
                     Row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNRow", CInt(value))
 
                     Dim Quality = ui.AddNum()
-                    Quality.Text = "JPG Quality:"
+                    Quality.Text = "Quality:"
                     Quality.Config = {25, 100}
                     Quality.NumEdit.Value = s.Storage.GetInt("MTNQuality", 95)
                     Quality.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNQuality", CInt(value))
 
                     Dim Height = ui.AddNum()
-                    Height.Text = "Height of Each Shot:"
-                    Height.Config = {150, 600}
-                    Height.NumEdit.Value = s.Storage.GetInt("MTNHeight", 150)
+                    Height.Text = "Height:"
+                    Height.Config = {150, 500}
+                    Height.NumEdit.Value = s.Storage.GetInt("MTNHeight", 200)
                     Height.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNHeight", CInt(value))
 
                     Dim Width = ui.AddNum()
-                    Width.Text = "Width of Each Shot:"
-                    Width.Config = {480, 1280}
-                    Width.NumEdit.Value = s.Storage.GetInt("MTNWidth", 1280)
+                    Width.Text = "Width:"
+                    Width.Config = {960, 2000}
+                    Width.NumEdit.Value = s.Storage.GetInt("MTNWidth", 2000)
                     Width.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNWidth", CInt(value))
 
                     Dim Depth = ui.AddNum()
-                    Depth.Text = "Depth of Each Shot:"
+                    Depth.Text = "Depth:"
                     Depth.Config = {4, 12}
                     Depth.NumEdit.Value = s.Storage.GetInt("MTNDepth", 12)
                     Depth.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNDepth", CInt(value))
 
                     Dim Output = ui.AddBool()
                     Output.Text = "Custom Output"
-                    Output.Checked = s.Storage.GetBool("CustomOut", False)
-                    Output.SaveAction = Sub(value) s.Storage.SetBool("CustomOutput", value)
+                    Output.Checked = s.Storage.GetBool("MTNOutput", False)
+                    Output.SaveAction = Sub(value) s.Storage.SetBool("MTNOutput", value)
 
 
-                    Dim tm = ui.AddTextMenu() 'Custom Output Directory
-                    tm.Label.Visible = False
-                    tm.Edit.Text = p.DefaultTargetFolder
-                    tm.Edit.SaveAction = Sub(value) p.DefaultTargetFolder = value
-                    tm.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+                    Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
+                    CustomDirectory.Label.Visible = False
+                    CustomDirectory.Edit.Text = s.Storage.GetString("MTNDirectory", p.DefaultTargetFolder)
+                    CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("MTNDirectory", value)
+                    CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
 
                     AddHandler Output.CheckStateChanged, Sub()
-                                                             tm.Visible = Output.Checked = True
+                                                             CustomDirectory.Visible = Output.Checked = True
                                                          End Sub
 
-                    tm.Visible = Output.Checked = True
+                    CustomDirectory.Visible = Output.Checked = True
 
                     page.ResumeLayout()
 
@@ -5763,6 +5790,7 @@ Public Class MainForm
             End If
         End Using
     End Sub
+
     <Command("Creates Very High Quality Animations in the Form of PNG.")>
     Sub SavePNG()
         Using fd As New OpenFileDialog
@@ -5771,7 +5799,7 @@ Public Class MainForm
 
             If fd.ShowDialog = DialogResult.OK Then
                 Using f As New SimpleSettingsForm("PNG Options")
-                    f.ScaleClientSize(27, 12)
+                    f.ScaleClientSize(27, 15)
 
                     Dim ui = f.SimpleUI
                     Dim page = ui.CreateFlowPage("main page")
@@ -5782,17 +5810,17 @@ Public Class MainForm
 
                     Dim PNGTime = ui.AddNum()
                     PNGTime.Text = "Starting Time:"
-                    PNGTime.Config = {0, 3600, 1, 1}
+                    PNGTime.Config = {1.0, 3600.0, 0.2, 1}
                     PNGTime.Help = "The Time Position Where the Animation Should start at in Seconds"
-                    PNGTime.NumEdit.Value = s.Storage.GetInt("PNGTime", 25)
-                    PNGTime.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("PNGTime", CInt(value))
+                    PNGTime.NumEdit.Value = s.Storage.GetDouble("PNGTime", 15.0)
+                    PNGTime.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("PNGTime", CDbl(value))
 
                     Dim PNGLength = ui.AddNum()
                     PNGLength.Text = "Length:"
-                    PNGLength.Config = {0, 9, 1, 1}
+                    PNGLength.Config = {1.0, 9.0, 0.2, 1}
                     PNGLength.Help = "The Length of the Animation in Seconds"
-                    PNGLength.NumEdit.Value = s.Storage.GetInt("PNGLength", 4)
-                    PNGLength.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("PNGLength", CInt(value))
+                    PNGLength.NumEdit.Value = s.Storage.GetDouble("PNGLength", 3.4)
+                    PNGLength.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("PNGLength", CDbl(value))
 
                     Dim PNGFrameRate = ui.AddNum()
                     PNGFrameRate.Text = "FrameRate:"
@@ -5803,12 +5831,13 @@ Public Class MainForm
                     Dim PNGScale = ui.AddNum()
                     PNGScale.Text = "Scale:"
                     PNGScale.Config = {240, 2160}
-                    PNGScale.NumEdit.Value = s.Storage.GetInt("PNGScale", 480)
+                    PNGScale.Help = "The Size to Scale the Resolution to"
+                    PNGScale.NumEdit.Value = s.Storage.GetInt("PNGScale", 400)
                     PNGScale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("PNGScale", CInt(value))
 
                     Dim OptSettings = ui.AddBool()
                     OptSettings.Text = "Enable Opt"
-                    OptSettings.Help = "Enable or Disable the Usage of Optimizator"
+                    OptSettings.Help = "Enable or Disable the Usage of PNG Opt"
                     OptSettings.Checked = s.Storage.GetBool("OptSetting", False)
                     OptSettings.SaveAction = Sub(value) s.Storage.SetBool("OptSetting", value)
                     AddHandler OptSettings.CheckStateChanged, Sub()
@@ -5825,6 +5854,24 @@ Public Class MainForm
 
                     Opt.Visible = OptSettings.Checked = True
 
+                    Dim Output = ui.AddBool()
+                    Output.Text = "Output Path"
+                    Output.Checked = s.Storage.GetBool("PNGOutput", False)
+                    Output.SaveAction = Sub(value) s.Storage.SetBool("PNGOutput", value)
+
+
+                    Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
+                    CustomDirectory.Label.Visible = False
+                    CustomDirectory.Edit.Text = s.Storage.GetString("PNGDirectory", p.DefaultTargetFolder)
+                    CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("PNGDirectory", value)
+                    CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+
+                    AddHandler Output.CheckStateChanged, Sub()
+                                                             CustomDirectory.Visible = Output.Checked = True
+                                                         End Sub
+
+                    CustomDirectory.Visible = Output.Checked = True
+
                     page.ResumeLayout()
 
                     If f.ShowDialog() = DialogResult.OK Then
@@ -5832,7 +5879,7 @@ Public Class MainForm
 
                         For Each i In fd.FileNames
                             Try
-                                PNG.aPNGAnimation(i, Nothing)
+                                Animation.aPNG(i, Nothing)
                             Catch ex As Exception
                                 g.ShowException(ex)
                             End Try
@@ -5842,6 +5889,7 @@ Public Class MainForm
             End If
         End Using
     End Sub
+
     <Command("Shows a dialog to generate thumbnails.")>
     Sub ShowBatchGenerateThumbnailsDialog()
         Using fd As New OpenFileDialog
@@ -5896,7 +5944,7 @@ Public Class MainForm
                     Dim nb = ui.AddNum()
                     nb.Text = "Thumbnail Width:"
                     nb.Config = {200, 4000, 10}
-                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Width", 300)
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Width", 500)
                     nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Width", CInt(value))
 
                     nb = ui.AddNum()
@@ -5937,21 +5985,22 @@ Public Class MainForm
                     Logo.SaveAction = Sub(value) s.Storage.SetBool("Logo", CBool(value))
 
                     Dim Output = ui.AddBool()
-                    Output.Text = "Output Directory"
-                    Output.Checked = s.Storage.GetBool("CustomOut", False)
-                    Output.SaveAction = Sub(value) s.Storage.SetBool("CustomOutput", CBool(value))
+                    Output.Text = "Output Path"
+                    Output.Checked = s.Storage.GetBool("StaxRipOutput", False)
+                    Output.SaveAction = Sub(value) s.Storage.SetBool("StaxRipOutput", value)
 
-                    Dim tm = ui.AddTextMenu()
-                    tm.Label.Visible = False
-                    tm.Edit.Text = p.DefaultTargetFolder
-                    tm.Edit.SaveAction = Sub(value) p.DefaultTargetFolder = value
-                    tm.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+
+                    Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
+                    CustomDirectory.Label.Visible = False
+                    CustomDirectory.Edit.Text = s.Storage.GetString("StaxRipDirectory", p.DefaultTargetFolder)
+                    CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("StaxRipDirectory", value)
+                    CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
 
                     AddHandler Output.CheckStateChanged, Sub()
-                                                             tm.Visible = Output.Checked = True
+                                                             CustomDirectory.Visible = Output.Checked = True
                                                          End Sub
 
-                    tm.Visible = Output.Checked = True
+                    CustomDirectory.Visible = Output.Checked = True
 
 
                     page.ResumeLayout()
@@ -5966,7 +6015,7 @@ Public Class MainForm
                                 g.ShowException(ex)
                             End Try
                         Next
-
+                        MsgInfo("Thumbnail Has Been Created")
                     End If
                 End Using
             End If

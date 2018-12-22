@@ -187,8 +187,8 @@ Public Class x265Params
 
     Property Decoder As New OptionParam With {
         .Text = "Decoder",
-        .Options = {"AviSynth/VapourSynth", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
-        .Values = {"avs", "qs", "ffqsv", "ffdxva"}}
+        .Options = {"AviSynth/VapourSynth", "NVDec (Nvidia)", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
+        .Values = {"avs", "cuvid", "qs", "ffqsv", "ffdxva"}}
 
     Property Quant As New NumParam With {
         .Switches = {"--crf", "--qp"},
@@ -1009,6 +1009,10 @@ Public Class x265Params
                     Else
                         sb.Append(Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | " + Package.x265.Path.Escape)
                     End If
+                Case "cuvid"
+                    Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
+                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel cuvid -i " + p.SourceFile.Escape + " -f yuv4mpegpipe" + crop + " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
+
                 Case "qs"
                     Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")
                     sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.x265.Path.Escape)

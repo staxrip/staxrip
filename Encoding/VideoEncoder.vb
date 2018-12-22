@@ -49,9 +49,7 @@ Public MustInherit Class VideoEncoder
 
     Sub SetMetaData(sourceFile As String)
         If Not p.ImportVUIMetadata Then Exit Sub
-
         Dim cl As String
-
         Dim colour_primaries = MediaInfo.GetVideo(sourceFile, "colour_primaries")
         Dim height = MediaInfo.GetVideo(sourceFile, "Height").ToInt
 
@@ -98,10 +96,10 @@ Public MustInherit Class VideoEncoder
         Dim MasteringDisplay_Luminance = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_Luminance")
 
         If MasteringDisplay_ColorPrimaries <> "" AndAlso MasteringDisplay_Luminance <> "" Then
-            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "(BT.2020)")			            
+            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "(BT.2020)")
             Dim match2 = Regex.Match(MasteringDisplay_Luminance, "min: ([0-9\.]+) cd/m2, max: ([0-9\.]+) cd/m2")
-			Dim match3 = Regex.Match(MasteringDisplay_ColorPrimaries, "(Display P3)")
-			Dim match4 = Regex.Match(MasteringDisplay_ColorPrimaries, "(DCI P3)")
+            Dim match3 = Regex.Match(MasteringDisplay_ColorPrimaries, "(Display P3)")
+            Dim match4 = Regex.Match(MasteringDisplay_ColorPrimaries, "(DCI P3)")
 
             ''DisPlay-P3
             If match3.Success AndAlso match2.Success Then
@@ -136,16 +134,15 @@ Public MustInherit Class VideoEncoder
                 cl += " --range limited"
                 cl += " --hrd"
                 cl += " --aud"
-
             End If
-        End If		
-			
+        End If
+
         Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
         Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
 
-        If MaxCLL <> 0 OrElse MaxFALL <> 0 Then cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""
-        ImportCommandLine(cl)
+        If MaxCLL <> 0 AndAlso MaxFALL <> 0 Then cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""
 
+        ImportCommandLine(cl)
     End Sub
 
     Sub AfterEncoding()
@@ -311,7 +308,6 @@ Public MustInherit Class VideoEncoder
 
         ret.Add(New x264Enc)
         ret.Add(New x265Enc)
-
         ret.Add(New Rav1e)
 
         Dim nvidia264 As New NVEnc()
@@ -334,7 +330,6 @@ Public MustInherit Class VideoEncoder
         ret.Add(amd265)
 
         Dim ffmpeg = New ffmpegEnc()
-
 
         For x = 0 To ffmpeg.Params.Codec.Options.Length - 1
             Dim ffmpeg2 = New ffmpegEnc()
@@ -547,6 +542,7 @@ Public Class BatchEncoder
             Return {" [ETA ", ", eta ", "frames: ", "frame= "}
         End If
     End Function
+
     Function GetBatchCode(value As String) As String
         Dim ret = ""
 
@@ -660,8 +656,8 @@ Public Class NullEncoder
 
     Function GetSourceFile() As String
         For Each i In {".h264", ".avc", ".h265", ".hevc", ".mpg", ".avi"}
-            If File.Exists(p.SourceFile.DirAndBase + "_out" + i) Then
-                Return p.SourceFile.DirAndBase + "_out" + i
+            If File.Exists(FilePath.GetDirAndBase(p.SourceFile) + "_out" + i) Then
+                Return FilePath.GetDirAndBase(p.SourceFile) + "_out" + i
             ElseIf File.Exists(p.TempDir + p.TargetFile.Base + "_out" + i) Then
                 Return p.TempDir + p.TargetFile.Base + "_out" + i
             End If

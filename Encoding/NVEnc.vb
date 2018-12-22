@@ -147,13 +147,12 @@ Public Class NVEnc
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
-            .Options = {"Nvidia H.264", "Nvidia H.265"},
+            .Options = {"H.264", "H.265"},
             .Values = {"h264", "h265"}}
 
         Property Profile As New OptionParam With {
             .Switch = "--profile",
             .Text = "Profile",
-            .Name = "ProfileH264",
             .VisibleFunc = Function() Codec.ValueText = "h264",
             .Options = {"Baseline", "Main", "High", "High 444"},
             .InitValue = 2}
@@ -164,7 +163,7 @@ Public Class NVEnc
             .Name = "ProfileH265",
             .VisibleFunc = Function() Codec.ValueText = "h265",
             .Options = {"Main", "Main 10", "Main 444"},
-            .InitValue = 0}
+            .InitValue = 1}
 
         Property QPI As New NumParam With {
             .Switches = {"--cqp"},
@@ -271,15 +270,15 @@ Public Class NVEnc
             .Init = 0.0,
             .Config = {-1.0, 1.0, 0.1, 1}}
 
-        Property KnnStrength As New NumParam With {
-            .Text = "      Strength",
-            .Init = 0.08,
-            .Config = {0, 1, 0.02, 2}}
-
         Property Chromaloc As New NumParam With {
         .Switch = "--chromaloc",
         .Text = "Chromaloc",
         .Config = {0, 5}}
+
+        Property KnnStrength As New NumParam With {
+            .Text = "      Strength",
+            .Init = 0.08,
+            .Config = {0, 1, 0.02, 2}}
 
         Property KnnLerp As New NumParam With {
             .Text = "      Lerp",
@@ -312,10 +311,12 @@ Public Class NVEnc
             .Config = {0, 255, 1, 1}}
 
         Property Interlace As New OptionParam With {
+            .Switch = "--interlace",
+            .Switches = {"--tff", "--bff"},
             .Text = "Interlace",
             .VisibleFunc = Function() Codec.ValueText = "h264",
-            .Options = {"Top Field First", "Bottom Field First"},
-            .Values = {"--interlace tff", "--interlace bff"}}
+            .Options = {"Progressive ", "Top Field First", "Bottom Field First"},
+            .Values = {"", "--tff", "--bff"}}
 
         Property Deband As New BoolParam With {.Text = "Deband", .Switches = {"--vpp-deband"}, .ArgsFunc = AddressOf GetDebandArgs}
 
@@ -398,7 +399,6 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Init = 3, .Config = {0, 16}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--lookahead", .Text = "Lookahead", .Config = {0, 32}},
-                        New NumParam With {.Switch = "--slices", .Text = "Slices", .Config = {0, Integer.MaxValue, 1}},
                         New BoolParam With {.Switch = "--strict-gop", .Text = "Strict GOP"},
                         New BoolParam With {.NoSwitch = "--no-b-adapt", .Text = "B-Adapt", .Init = True},
                         New BoolParam With {.NoSwitch = "--no-i-adapt", .Text = "I-Adapt", .Init = True})
@@ -635,6 +635,7 @@ Public Class NVEnc
                 End If
             End If
         End Function
+
         Function GetKnnArgs() As String
             If KNN.Value Then
                 Dim ret = ""
@@ -686,7 +687,6 @@ Public Class NVEnc
 
             If VppEdgelevel.Value Then Return ("--vpp-edgelevel " + ret.TrimStart(","c)).TrimEnd
         End Function
-
 
         Function GetAFS() As String
             Dim ret = ""

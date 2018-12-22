@@ -47,7 +47,7 @@ Public Class VCEEnc
                                     End Sub
 
             f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.VCEEnc.Path, "--check-features"))))
-            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.VCEEnc.Path, "--check-vce"))))
+            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.VCEEnc.Path, "--check-hw"))))
             ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction, Symbol.Save)
 
             If f.ShowDialog() = DialogResult.OK Then
@@ -115,7 +115,7 @@ Public Class VCEEnc
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
-            .Options = {"H.264", "H.265"},
+            .Options = {"AMD H.264", "AMD H.265"},
             .Values = {"h264", "hevc"}}
 
         Property Decoder As New OptionParam With {
@@ -226,7 +226,7 @@ Public Class VCEEnc
                     If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt yuv420p -loglevel fatal - | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC64")
                 Case "vce"
                     sourcePath = p.LastOriginalSourceFile
-                    ret += " --avvce"
+                    ret += " --avhw"
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""

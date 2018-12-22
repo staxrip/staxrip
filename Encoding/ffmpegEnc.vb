@@ -227,7 +227,7 @@ Public Class ffmpegEnc
                     ret += $" -b:v {p.VideoBitrate}k"
             End Select
 
-            If Codec.OptionText = "Xvid" Then ret += " -tag:v xvid"
+            If Codec.OptionText = "XviD" Then ret += " -tag:v xvid"
             Dim targetPath As String
 
             If Mode.OptionText = "Two Pass" AndAlso pass = 1 Then

@@ -187,8 +187,8 @@ Public Class x265Params
 
     Property Decoder As New OptionParam With {
         .Text = "Decoder",
-        .Options = {"AviSynth/VapourSynth", "NVDec (Nvidia)", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
-        .Values = {"avs", "cuvid", "qs", "ffqsv", "ffdxva"}}
+        .Options = {"AviSynth/VapourSynth", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
+        .Values = {"avs", "qs", "ffqsv", "ffdxva"}}
 
     Property Quant As New NumParam With {
         .Switches = {"--crf", "--qp"},
@@ -208,7 +208,6 @@ Public Class x265Params
         .Name = "Chunk End",
         .Text = "Chunk End",
         .Init = 0}
-
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",
@@ -812,7 +811,7 @@ Public Class x265Params
 
                 Add("Basic", Preset, Tune,
                     New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileMain8", .VisibleFunc = Function() OutputDepth.Value = 0, .Options = {"Unrestricted", "Main", "Main - Intra", "Main Still Picture", "Main 444 - 8", "Main 444 - Intra", "Main 444 - Main Still Picture"}},
-                    New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileMain10", .VisibleFunc = Function() OutputDepth.Value = 1, .Options = {"Unrestricted", "Main 10", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra"}},
+                    New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileMain10", .InitValue = 1, .VisibleFunc = Function() OutputDepth.Value = 1, .Options = {"Unrestricted", "Main 10", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra"}},
                     New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileMain12", .VisibleFunc = Function() OutputDepth.Value = 2, .Options = {"Unrestricted", "Main 12", "Main 12 - Intra", "Main 422 - 12", "Main 422 - 12 - Intra", "Main 444 - 12", "Main 444 - 12 - Intra"}},
                     New OptionParam With {.Switch = "--level-idc", .Switches = {"--level"}, .Text = "Level", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}},
                     Mode, OutputDepth, Quant)
@@ -907,8 +906,8 @@ Public Class x265Params
                     New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "Maximum Picture Order Count", .Init = 8},
                     RepeatHeaders, Info, HRD, AUD,
                     New BoolParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers"},
-                    New BoolParam With {.Switch = "--vui-timing-info", .Text = "VUI Timing Info"},
-                    New BoolParam With {.Switch = "--vui-hrd-info", .Text = "VUI HRD Info"},
+                    New BoolParam With {.Switch = "--vui-timing-info", .Text = "VUI Timing Info", .Init = True},
+                    New BoolParam With {.Switch = "--vui-hrd-info", .Text = "VUI HRD Info", .Init = True},
                     New BoolParam With {.Switch = "--opt-qp-pps", .Init = False, .Text = "Optimize QP in PPS"},
                     New BoolParam With {.Switch = "--opt-ref-list-length-pps", .Init = False, .Text = "Optimize L0 and L1 Ref List Length in PPS"},
                     New BoolParam With {.Switch = "--multi-pass-opt-rps", .Init = False, .Text = "Enable Storing", .Help = "Enable Storing commonly used RPS in SPS in multi pass mode"},
@@ -940,7 +939,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--allow-non-conformance", .Text = "Allow non conformance"},
                     New BoolParam With {.Switch = "--uhd-bd", .Text = "Ultra HD Blu-ray"},
                     StrongIntraSmoothing,
-                    New BoolParam With {.Switch = "--constrained-intra", .NoSwitch = "--no-constrained-intra", .Switches = {"--cip"}, .Text = "Constrained Intra Prediction", .Init = True},
+                    New BoolParam With {.Switch = "--constrained-intra", .NoSwitch = "--no-constrained-intra", .Switches = {"--cip"}, .Text = "Constrained Intra Prediction", .Init = False},
                     New BoolParam With {.Switch = "--lowpass-dct", .Text = "Lowpass DCT"})
                 Add("Custom", Custom, CustomFirstPass, CustomSecondPass)
 
@@ -1009,10 +1008,6 @@ Public Class x265Params
                     Else
                         sb.Append(Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | " + Package.x265.Path.Escape)
                     End If
-                Case "cuvid"
-                    Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel cuvid -i " + p.SourceFile.Escape + " -f yuv4mpegpipe" + crop + " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
-
                 Case "qs"
                     Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")
                     sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.x265.Path.Escape)

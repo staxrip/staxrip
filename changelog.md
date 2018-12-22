@@ -1,14 +1,22 @@
 #### Requirements
 
-.NET 4.8 is required to be installed on Windows Before Fall 2018 Update.
+.NET 4.7.2 is required to be installed.
 
 https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
 2.0
 - Fixed QSVEnc Key, Which was locking some users out.
 - Updated the Switches for VCEnc
-- FrameWork has been Fully Updated to 4.8 and works with Older 4.* versions.
+- Some Prep For Dotnet 4.8(Not Yet Enabled Until Next Windows 10 Update)
+- Updated the MTModes
+- Updated AVS Syntax for SVPFlow
+- Updated some of the Changed defaults for x265.
+- Updated FFMpeg, MKVNix, NVENCc, Rav1e,x265 & MediaInfo
+- Support Now Includes MiniCoda For supported Python
+- Included Both Old and Newer versions of MediaInfo Just incase it breaks something again.
+- Updated All the Output Path Options for MTN, StaxRip Thumbnailer, Gif & PNG Creator.
 - The Help System for the Encoders Has been Altered. All the Help System works the Same now.
+- Plus all the Changes From PRevious Two Beta Release(See Below)
 
 2.0 Beta 2
 - Updated a few of FFMpeg Flags for Audio Demuxing / Encoding.
@@ -53,7 +61,7 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 	+ Others...
 - Removed any Switches that no longer exist in the CLI Encoders.
 - Updated FFMPEG to 4.1
-- ReBuilt MPVNet to work on Both older and Newer Systems.
+- ReBuilt MPVNet to work on Both older and Newer Systems(Requires Dotnet 4.8).
 - Support has been added for MKV, Webm and MP4 to AV1.
 - 32 Float Filters have been Added(Oyster, Plum, Vine)
 - FFMPEG Shared dll Files has been Updated to 4.1

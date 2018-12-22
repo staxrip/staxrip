@@ -14,6 +14,8 @@ Public Class Project
     Public AdjustHeight As Boolean = True
     Public Audio0 As AudioProfile
     Public Audio1 As AudioProfile
+    Public AudioConvertFormat As AudioConvertType
+    Public AudioConvertMode As AudioConvertMode
     Public AudioTracks As List(Of AudioProfile)
     Public AutoCompCheck As Boolean
     Public AutoCorrectCropValues As Boolean = True
@@ -42,12 +44,13 @@ Public Class Project
     Public DefaultSubtitle As DefaultSubtitleMode
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
-    Public DemuxAudio As DemuxMode = DemuxMode.All
-    Public DemuxSubtitles As DemuxMode = DemuxMode.All
-    Public ExtractTimestamps As Boolean
+    Public DemuxAudio As DemuxMode
+    Public DemuxSubtitles As DemuxMode
+    Public ExtractTimecodes As Boolean
     Public FileExistAudio As FileExistMode
     Public FileExistVideo As FileExistMode
     Public FirstOriginalSourceFile As String
+    Public ForceAudioConvert As Boolean
     Public ForcedOutputMod As Integer = 8
     Public HarcodedSubtitle As Boolean
     Public ITU As Boolean = True
@@ -62,7 +65,6 @@ Public Class Project
     Public RemindOversize As Boolean = True
     Public RemindToCrop As Boolean = False
     Public RemindToCut As Boolean = False
-    Public RemindArError As Boolean = True
     Public RemindToDoCompCheck As Boolean = False
     Public RemindToSetFilters As Boolean = False
     Public ResizeSliderMaxWidth As Integer
@@ -144,7 +146,7 @@ Public Class Project
         If SourceFiles Is Nothing Then SourceFiles = New List(Of String)
         If AudioTracks Is Nothing Then AudioTracks = New List(Of AudioProfile)
 
-        If Check(VideoEncoder, "Video Encoder", 75) Then VideoEncoder = New x265Enc
+        If Check(VideoEncoder, "Video Encoder", 75) Then VideoEncoder = New x264Enc
 
         If Check(Audio0, "Audio Track 1", 36) Then
             Audio0 = New GUIAudioProfile(AudioCodec.Opus, 1) With {.Bitrate = 250}

@@ -836,7 +836,7 @@ Public Class Macro
     Shared Function GetTips() As StringPairList
         Dim ret As New StringPairList
 
-        For Each i In GetMacros(True, True)
+        For Each i In GetMacros(True)
             ret.Add(i.Name, i.Description)
         Next
 
@@ -865,23 +865,21 @@ Public Class Macro
         Return Name.CompareTo(other.Name)
     End Function
 
-    Shared Function GetMacros(Optional includeSpecial As Boolean = False,
-                              Optional includeApps As Boolean = False) As List(Of Macro)
-
+    Shared Function GetMacros(Optional includeSpecial As Boolean = False) As List(Of Macro)
         Dim ret As New List(Of Macro)
 
         If includeSpecial Then
             ret.Add(New Macro("$browse_file$", "Browse For File", GetType(String), "Filepath returned from a file browser."))
             ret.Add(New Macro("$enter_text$", "Enter Text", GetType(String), "Text entered in a input box."))
-            ret.Add(New Macro("$enter_text:prompt$", "Enter Text (Params)", GetType(String), "Text entered in a input box."))
-            ret.Add(New Macro("$select:param1;param2;param...$", "Select", GetType(String), "String selected from dropdown, to show a optional message the first parameter has to start with msg: and to give the items optional captions use caption|value." + BR2 + "Example: $select:msg:hello;cap1|val1;cap2|val2$"))
-            ret.Add(New Macro("app:name", "Application File Path", GetType(String), "Returns the path of a aplication."))
-            ret.Add(New Macro("app_dir:name", "Application Directory", GetType(String), "Returns the directory of a aplication."))
-            ret.Add(New Macro("eval:expression", "Eval Math Expression", GetType(String), "Evaluates a math expression which may contain default macros."))
-            ret.Add(New Macro("eval_ps:expression", "Eval PowerShell Expression", GetType(String), "Evaluates a PowerShell expression which may contain default macros."))
-            ret.Add(New Macro("filter:name", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
-            ret.Add(New Macro("media_info_audio:property", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
-            ret.Add(New Macro("media_info_video:property", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
+            ret.Add(New Macro("$enter_text:<prompt>$", "Enter Text (Params)", GetType(String), "Text entered in a input box."))
+            ret.Add(New Macro("$select:<param1;param2;...>$", "Select", GetType(String), "String selected from dropdown, to show a optional message the first parameter has to start with msg: and to give the items optional captions use caption|value." + BR2 + "Example: $select:msg:hello;cap1|val1;cap2|val2$"))
+            ret.Add(New Macro("app:<name>", "Application File Path", GetType(String), "Returns the path of a aplication. Possible names are: " + Package.Items.Values.Select(Function(arg) arg.Name).Join(", ")))
+            ret.Add(New Macro("app_dir:<name>", "Application Directory", GetType(String), "Returns the directory of a aplication. Possible names are: " + Package.Items.Values.Select(Function(arg) arg.Name).Join(", ")))
+            ret.Add(New Macro("eval:<expression>", "Eval Math Expression", GetType(String), "Evaluates a math expression which may contain default macros."))
+            ret.Add(New Macro("eval_ps:<expression>", "Eval PowerShell Expression", GetType(String), "Evaluates a PowerShell expression which may contain default macros."))
+            ret.Add(New Macro("filter:<name>", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
+            ret.Add(New Macro("media_info_audio:<property>", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
+            ret.Add(New Macro("media_info_video:<property>", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
         End If
 
         ret.Add(New Macro("audio_bitrate", "Audio Bitrate", GetType(Integer), "Overall audio bitrate."))
@@ -914,7 +912,6 @@ Public Class Macro
         ret.Add(New Macro("source_dir", "Source Directory", GetType(String), "Directory of the source file."))
         ret.Add(New Macro("source_dir_name", "Source Directory Name", GetType(String), "Name of the source file directory."))
         ret.Add(New Macro("source_dir_parent", "Source Directory Parent", GetType(String), "Parent directory of the source file directory."))
-        ret.Add(New Macro("source_ext", "Source File Extension", GetType(String), "File extension of the source file."))
         ret.Add(New Macro("source_file", "Source File Path", GetType(String), "File path of the source video."))
         ret.Add(New Macro("source_files", "Source Files Blank", GetType(String), "Source files in quotes separated by a blank."))
         ret.Add(New Macro("source_files_comma", "Source Files Comma", GetType(String), "Source files in quotes separated by comma."))
@@ -947,16 +944,6 @@ Public Class Macro
         ret.Add(New Macro("working_dir", "Working Directory", GetType(String), "Directory of the source file or the temp directory if enabled."))
 
         ret.Sort()
-
-        If includeApps Then
-            For Each i In Package.Items.Values
-                ret.Add(New Macro("app:" + i.Name, "File path to " + i.Name, GetType(String), "File path to " + i.Name))
-            Next
-
-            For Each i In Package.Items.Values
-                ret.Add(New Macro("app_dir:" + i.Name, "Folder path to " + i.Name, GetType(String), "Folder path to " + i.Name))
-            Next
-        End If
 
         Return ret
     End Function
@@ -1073,9 +1060,6 @@ Public Class Macro
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_name%") Then value = value.Replace("%source_name%", p.SourceFile.Base)
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%source_ext%") Then value = value.Replace("%source_ext%", p.FirstOriginalSourceFile.Ext)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%version%") Then value = value.Replace("%version%", Application.ProductVersion)
@@ -1259,11 +1243,14 @@ Public Class Macro
 
             For Each i As Match In mc
                 Dim package = StaxRip.Package.Items.Values.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
-                Dim path = package?.Path
 
-                If path <> "" Then
-                    value = value.Replace(i.Value, path)
-                    If Not value.Contains("%") Then Return value
+                If package?.VerifyOK Then
+                    Dim path = package.Path
+
+                    If path <> "" Then
+                        value = value.Replace(i.Value, path)
+                        If Not value.Contains("%") Then Return value
+                    End If
                 End If
             Next
         End If
@@ -1271,11 +1258,14 @@ Public Class Macro
         If value.Contains("%app_dir:") Then
             For Each i As Match In Regex.Matches(value, "%app_dir:(.+?)%")
                 Dim package = StaxRip.Package.Items.Values.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
-                Dim path = package?.Path
 
-                If path <> "" Then
-                    value = value.Replace(i.Value, FilePath.GetDir(path))
-                    If Not value.Contains("%") Then Return value
+                If package?.VerifyOK Then
+                    Dim path = package.Path
+
+                    If path <> "" Then
+                        value = value.Replace(i.Value, FilePath.GetDir(path))
+                        If Not value.Contains("%") Then Return value
+                    End If
                 End If
             Next
         End If
@@ -1355,8 +1345,9 @@ End Class
 Public Class ObjectStorage
     Private StringDictionary As New Dictionary(Of String, String)
     Private IntDictionary As New Dictionary(Of String, Integer)
-
+    Private DoubleDictionary As New Dictionary(Of String, Double)
     Private BoolDictionaryValue As Dictionary(Of String, Boolean)
+
     ReadOnly Property BoolDictionary() As Dictionary(Of String, Boolean)
         Get
             If BoolDictionaryValue Is Nothing Then
@@ -1399,6 +1390,22 @@ Public Class ObjectStorage
         IntDictionary(key) = value
     End Sub
 
+    Function GetDouble(key As String) As Double
+        Return GetDouble(key, 0.0)
+    End Function
+
+    Function GetDouble(key As String, defaultValue As Double) As Double
+        If DoubleDictionary.ContainsKey(key) Then
+            Return DoubleDictionary(key)
+        End If
+
+        Return defaultValue
+    End Function
+
+    Sub SetDouble(key As String, value As Double)
+        DoubleDictionary(key) = value
+    End Sub
+
     Function GetString(key As String) As String
         Return GetString(key, Nothing)
     End Function
@@ -1415,6 +1422,7 @@ Public Class ObjectStorage
         StringDictionary(key) = value
     End Sub
 End Class
+
 Public Enum CompCheckAction
     [Nothing]
     <DispName("image size")> AdjustImageSize
@@ -1667,8 +1675,6 @@ Public Class VideoStream
                     Return "avi"
                 Case "HEVC"
                     Return "h265"
-                Case "AV1"
-                    Return "ivf"
                 Case Else
                     Throw New NotImplementedException("Video format " + Format + " is not supported.")
             End Select
@@ -1793,7 +1799,7 @@ Public Class Subtitle
                     st = Nothing
                 End If
             Next
-        ElseIf path.Ext.EqualsAny("mkv", "mp4", "m2ts", "webm") Then
+        ElseIf path.Ext.EqualsAny("mkv", "mp4", "m2ts") Then
             For Each i In MediaInfo.GetSubtitles(path)
                 If i.Size = 0 Then
                     Select Case i.TypeName
@@ -1987,12 +1993,26 @@ Public Class FileTypes
     Shared Property SubtitleSingle As String() = {"srt", "ass", "sup", "ttxt", "ssa", "smi"}
     Shared Property SubtitleIncludingContainers As String() = {"m2ts", "mkv", "mp4", "m4v", "ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
-    Shared Property Video As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "ivf", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
+    Shared Property Video As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
-    Shared Property VideoOnly As String() = {"264", "265", "avc", "gif", "h264", "h265", "hevc", "hvc", "ivf", "m2v", "mpv", "apng", "png", "y4m"}
-    Shared Property VideoRaw As String() = {"264", "265", "h264", "h265", "avc", "hevc", "hvc", "ivf"}
+    Shared Property VideoOnly As String() = {"264", "265", "avc", "h264", "h265", "hevc", "hvc", "m2v", "mpv", "y4m"}
+    Shared Property VideoRaw As String() = {"264", "265", "h264", "h265", "avc", "hevc", "hvc"}
     Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs", "vpy"}
     Shared Property VideoDemuxOutput As String() = {"mpg", "h264", "avi", "h265"}
+
+    Shared Property mkvmergeInput As String() = {"avi", "wav",
+                                                 "mp4", "m4v", "m4a", "aac",
+                                                 "flv", "mov",
+                                                 "264", "h264", "avc",
+                                                 "265", "h265", "hevc", "hvc",
+                                                 "ac3", "eac3", "thd+ac3", "thd",
+                                                 "mkv", "mka", "webm",
+                                                 "mp2", "mpa", "mp3",
+                                                 "ogg", "ogm",
+                                                 "dts", "dtsma", "dtshr", "dtshd",
+                                                 "mpg", "m2v", "mpv",
+                                                 "ts", "m2ts",
+                                                 "opus", "flac"}
 
     Shared Function GetFilter(values As IEnumerable(Of String)) As String
         Return "*." + values.Join(";*.") + "|*." + values.Join(";*.") + "|All Files|*.*"

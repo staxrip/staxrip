@@ -238,7 +238,7 @@ clip.set_output()
         End If
 
         If Not script.Contains("import vapoursynth") Then
-
+            'code = "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR + code
             code = "import os" + BR + "import sys" + BR + VSPathScript + BR + ImportVSPath + BR + "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR + code
         End If
 
@@ -279,8 +279,8 @@ clip.set_output()
                     WriteVSCode(script, code, Nothing, plugin)
                 End If
 
-                If Not plugin.AvsFilterNames Is Nothing Then
-                    For Each filterName In plugin.AvsFilterNames
+                If Not plugin.AviSynthFilterNames Is Nothing Then
+                    For Each filterName In plugin.AviSynthFilterNames
                         If script.Contains(".avs." + filterName) Then WriteVSCode(script, code, filterName, plugin)
                     Next
                 End If
@@ -320,6 +320,7 @@ clip.set_output()
             End If
         End If
     End Sub
+
     Shared Function GetAVSLoadCode(script As String, scriptAlready As String) As String
         Dim loadCode = ""
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
@@ -328,8 +329,8 @@ clip.set_output()
             Dim fp = plugin.Path
 
             If fp <> "" Then
-                If Not plugin.AvsFilterNames Is Nothing Then
-                    For Each filterName In plugin.AvsFilterNames
+                If Not plugin.AviSynthFilterNames Is Nothing Then
+                    For Each filterName In plugin.AviSynthFilterNames
                         If script.Contains(filterName.ToLower) Then
                             If plugin.Name = "ffms2" And plugin.Name <> "ffms2k" Then
                                 Dim loadC = "LoadCPlugin(""" + fp + """)" + BR
@@ -348,7 +349,7 @@ clip.set_output()
                                         File.GetLastWriteTimeUtc(Folder.Plugins + fp.FileName) <
                                         File.GetLastWriteTimeUtc(fp) Then
 
-                                    MsgWarn("Conflict with outdated plugin", $"An outdated version of {plugin.Name} is located in your auto load folder. StaxRip includes a newer version.{BR2 + Folder.Plugins + fp.FileName}", True)
+                                    MsgWarn("Conflict with outdated plugin", $"An outdated version of {plugin.Name} is located in your auto load folder. StaxRip includes a newer version.{BR2 + Folder.Plugins + fp.FileName}")
                                 End If
 
                                 If Not script.Contains(load.ToLower) AndAlso
@@ -373,6 +374,7 @@ clip.set_output()
                 End If
             End If
         Next
+
         Return loadCode
     End Function
 
@@ -552,6 +554,7 @@ Public Class VideoFilter
     ReadOnly Property Name As String
         Get
             If Path.Contains("|") Then Return Path.RightLast("|").Trim
+
             Return Path
         End Get
     End Property
@@ -566,10 +569,6 @@ Public Class VideoFilter
 
     Function CompareTo(other As VideoFilter) As Integer Implements System.IComparable(Of VideoFilter).CompareTo
         Return Path.CompareTo(other.Path)
-    End Function
-
-    Shared Function GetDefault(category As String, name As String) As VideoFilter
-        Return FilterCategory.GetAviSynthDefaults.First(Function(val) val.Name = category).Filters.First(Function(val) val.Name = name)
     End Function
 End Class
 
@@ -611,9 +610,9 @@ Public Class FilterCategory
             Dim filters As VideoFilter() = Nothing
 
             If engine = ScriptEngine.AviSynth Then
-                If Not i.AvsFiltersFunc Is Nothing Then filters = i.AvsFiltersFunc.Invoke
+                If Not i.AviSynthFiltersFunc Is Nothing Then filters = i.AviSynthFiltersFunc.Invoke
             Else
-                If Not i.VSFiltersFunc Is Nothing Then filters = i.VSFiltersFunc.Invoke
+                If Not i.VapourSynthFiltersFunc Is Nothing Then filters = i.VapourSynthFiltersFunc.Invoke
             End If
 
             If Not filters Is Nothing Then
@@ -640,7 +639,6 @@ Public Class FilterCategory
             {New VideoFilter("Source", "Manual", "# shows the filter selection dialog"),
              New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"),
              New VideoFilter("Source", "AviSource", "AviSource(""%source_file%"", Audio = False)"),
-             New VideoFilter("Source", "RawSourcePlus", "RawSourcePlus(""%source_file%"", fpsnum=%media_info_video:FrameRate_Num%, fpsden=(%media_info_video:FrameRate_Den%)"),
              New VideoFilter("Source", "DirectShowSource", "DirectShowSource(""%source_file%"", audio = False)")})
         ret.Add(src)
 
@@ -726,7 +724,6 @@ Public Class FilterCategory
         Dim src As New FilterCategory("Source")
         src.Filters.AddRange(
             {New VideoFilter("Source", "Manual", "# shows filter selection dialog"),
-            New VideoFilter("Source", "RawSource", "clip = core.raws.Source(r""%source_file%"")"),
              New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"),
              New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r""%source_file%"")")})
         ret.Add(src)
@@ -814,6 +811,7 @@ Public Class FilterCategory
         restoration.Filters.Add(New VideoFilter(restoration.Name, "RCR | Vinverse", "$select:Vinverse|clip = havsfunc.Vinverse(clip);Vinverse2|clip = havsfunc.Vinverse2(clip)$"))
         restoration.Filters.Add(New VideoFilter(restoration.Name, "RCR | CNR2", "clip = core.cnr2.Cnr2(clip)"))
         ret.Add(restoration)
+
 
         FilterCategory.AddDefaults(ScriptEngine.VapourSynth, ret)
 

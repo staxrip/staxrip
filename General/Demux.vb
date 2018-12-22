@@ -83,7 +83,7 @@ Public MustInherit Class Demuxer
         tsToMkv.OutputExtensions = {"mkv"}
         tsToMkv.InputFormats = {"hevc", "avc"}
         tsToMkv.Command = "%app:ffmpeg%"
-        tsToMkv.Arguments = "-i ""%source_file%"" -c copy -map 0 -ignore_unknown -sn -y -hide_banner ""%temp_file%.mkv"""
+        tsToMkv.Arguments = "-i ""%source_file%"" -c:a copy -c:v copy -sn -y -hide_banner ""%temp_file%.mkv"""
         ret.Add(tsToMkv)
 
         ret.Add(New mkvDemuxer)
@@ -186,7 +186,6 @@ Public Class CommandLineDemuxer
             ElseIf Command?.Contains("dsmux") Then
                 If Not Package.Haali.VerifyOK(True) Then Throw New AbortException
                 proc.SkipString = "Muxing..."
-            ElseIf Command?.Contains("Java") Then
             End If
 
             proc.Header = Name
@@ -669,7 +668,7 @@ Public Class mkvDemuxer
                 proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
-                proc.Arguments = proj.SourceFile.Escape + " chapters " + (proj.TempDir + proj.SourceFile.Base + "_chapters.xml").Escape
+                proc.Arguments = "chapters " + proj.SourceFile.Escape + " --redirect-output " + (proj.TempDir + proj.SourceFile.Base + "_chapters.xml").Escape
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
             End Using
@@ -681,7 +680,7 @@ Public Class mkvDemuxer
                 proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
-                proc.Arguments = proj.SourceFile.Escape + " chapters " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").Escape + " --simple"
+                proc.Arguments = "chapters " + proj.SourceFile.Escape + " --redirect-output " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").Escape + " --simple"
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
             End Using
@@ -697,7 +696,7 @@ Public Class mkvDemuxer
                 proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
-                proc.Arguments = proj.SourceFile.Escape + " attachments " +
+                proc.Arguments = "attachments " + proj.SourceFile.Escape + " " +
                     enabledAttachments.Select(Function(val) val.ID & ":" + GetAttachmentPath(
                     proj.TempDir, val.Name).Escape).Join(" ")
                 proc.AllowedExitCodes = {0, 1, 2}
@@ -710,11 +709,11 @@ Public Class mkvDemuxer
 
             Using proc As New Proc
                 proc.Project = proj
-                proc.Header = "Demux timestamps"
+                proc.Header = "Demux timecodes"
                 proc.SkipString = "Progress: "
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
-                proc.Arguments = "timestamps_v2 " + proj.SourceFile.Escape + " " & streamOrder & ":" + (proj.TempDir + proj.SourceFile.Base + "_timestamps.txt").Escape
+                proc.Arguments = "timecodes_v2 " + proj.SourceFile.Escape + " " & streamOrder & ":" + (proj.TempDir + proj.SourceFile.Base + "_timecodes.txt").Escape
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
             End Using
@@ -748,7 +747,7 @@ Public Class mkvDemuxer
 
         If audioStreams.Count = 0 AndAlso subtitles.Count = 0 AndAlso Not videoDemuxing Then Exit Sub
 
-        Dim args = sourcefile.Escape + " tracks"
+        Dim args = "tracks " + sourcefile.Escape
 
         If videoDemuxing Then
             Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify " + sourcefile.Escape)

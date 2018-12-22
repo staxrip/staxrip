@@ -141,8 +141,8 @@ Public Class GlobalClass
             p.VideoEncoder.Muxer.Mux()
 
             If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile, p)
-            If p.MTN Then MTN.Thumbnails(p.TargetFile, p)
-            If p.MKVHDR Then MKVMetaDataHDR.MetadataHDR(p.TargetFile, p)
+            If p.MTN Then Thumbnailer.MTN(p.TargetFile, p)
+            If p.MKVHDR Then MKVInfo.MetadataHDR(p.TargetFile, p)
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
@@ -251,8 +251,8 @@ Public Class GlobalClass
             Dim ret = Folder.Template + s.StartupTemplate + ".srip"
 
             If Not File.Exists(ret) Then
-                ret = Folder.Template + "Automatic Workflow.srip"
-                s.StartupTemplate = "Automatic Workflow"
+                ret = Folder.Template + "x264.srip"
+                s.StartupTemplate = "x264"
             End If
 
             Return ret
@@ -261,7 +261,7 @@ Public Class GlobalClass
 
     ReadOnly Property SettingsFile() As String
         Get
-            Return Folder.Settings + "Settings.dat"
+            Return Folder.Settings + "SettingsV2.dat"
         End Get
     End Property
 
@@ -488,7 +488,7 @@ Public Class GlobalClass
             SafeSerialization.Serialize(s, g.SettingsFile)
             Dim backupPath = Folder.Settings + "Backup\"
             If Not Directory.Exists(backupPath) Then Directory.CreateDirectory(backupPath)
-            FileHelp.Copy(g.SettingsFile, backupPath + "Settings(" + Application.ProductVersion + ").dat")
+            FileHelp.Copy(g.SettingsFile, backupPath + "SettingsV2(" + Application.ProductVersion + ").dat")
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -506,7 +506,6 @@ Public Class GlobalClass
 
         MainForm.tbTargetFile.Text = p.TargetFile.ChangeExt(p.VideoEncoder.Muxer.OutputExt)
         p.VideoEncoder.OnStateChange()
-        p.VideoEncoder.SetMetaData(p.LastOriginalSourceFile)
         MainForm.RecalcBitrate()
         MainForm.Assistant()
     End Sub
@@ -562,15 +561,11 @@ Public Class GlobalClass
                     (Not i.OrOnly AndAlso matches = i.CriteriaList.Count)) AndAlso
                     Not i.CommandParameters Is Nothing Then
 
+                    Log.WriteHeader("Process Event Command '" + i.Name + "'")
+                    Log.WriteLine("Event: " + DispNameAttribute.GetValueForEnum(i.Event))
                     Dim command = g.MainForm.CustomMainMenu.CommandManager.GetCommand(i.CommandParameters.MethodName)
-
-                    If p.SourceFile <> "" Then
-                        Log.WriteHeader("Event Command " + i.Name)
-                        Log.WriteLine("Event: " + DispNameAttribute.GetValueForEnum(i.Event))
-                        Log.WriteLine("Command: " + command.MethodInfo.Name)
-                        Log.WriteLine(command.GetParameterHelp(i.CommandParameters.Parameters))
-                    End If
-
+                    Log.WriteLine("Command: " + command.MethodInfo.Name)
+                    Log.WriteLine(command.GetParameterHelp(i.CommandParameters.Parameters))
                     g.MainForm.CustomMainMenu.CommandManager.Process(i.CommandParameters)
                 End If
             End If
@@ -671,15 +666,12 @@ Public Class GlobalClass
 
     Function GetFilesInTempDirAndParent() As List(Of String)
         Dim ret As New List(Of String)
-        Dim dirs As New HashSet(Of String)
 
-        If p.TempDir <> "" Then dirs.Add(p.TempDir)
-        If p.TempDir?.EndsWith("_temp\") Then dirs.Add(DirPath.GetParent(p.TempDir))
-        dirs.Add(FilePath.GetDir(p.FirstOriginalSourceFile))
+        If p.TempDir <> "" Then ret.AddRange(Directory.GetFiles(p.TempDir))
 
-        For Each i In dirs
-            ret.AddRange(Directory.GetFiles(i))
-        Next
+        If p.TempDir <> FilePath.GetDir(p.FirstOriginalSourceFile) Then
+            ret.AddRange(Directory.GetFiles(FilePath.GetDir(p.FirstOriginalSourceFile)))
+        End If
 
         Return ret
     End Function
@@ -716,7 +708,7 @@ Public Class GlobalClass
                 If File.Exists(p.SourceFile) Then
                     Dim name = p.TargetFile.Base
                     If name = "" Then name = p.SourceFile.Base
-                    Dim path = FilePath.GetDir(p.SourceFile) + "recovery.srip"
+                    Dim path = FilePath.GetDir(p.SourceFile) + "crash.srip"
                     g.MainForm.SaveProjectPath(path)
                 End If
 
@@ -793,7 +785,7 @@ Public Class GlobalClass
     End Sub
 
     Sub Play(file As String)
-        g.StartProcess(Package.mpvnet.Path.Escape, file.Escape)
+        g.StartProcess(Package.mpvnet.Path, file.Escape)
     End Sub
 
     Sub ShowCommandLineHelp(package As Package, switch As String)
@@ -873,7 +865,7 @@ Public Class GlobalClass
         Dim fp = Log.GetPath
         g.OpenDirAndSelectFile(fp, g.MainForm.Handle)
         g.StartProcess(g.GetTextEditor(), """" + fp + """")
-        g.StartProcess("https://github.com/Revan654/staxrip/issues")
+        g.StartProcess("https://github.com/stax76/staxrip/issues")
     End Sub
 
     Function FileExists(path As String) As Boolean

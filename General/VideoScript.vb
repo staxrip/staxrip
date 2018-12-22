@@ -238,7 +238,7 @@ clip.set_output()
         End If
 
         If Not script.Contains("import vapoursynth") Then
-            'code = "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR + code
+
             code = "import os" + BR + "import sys" + BR + VSPathScript + BR + ImportVSPath + BR + "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR + code
         End If
 
@@ -279,8 +279,8 @@ clip.set_output()
                     WriteVSCode(script, code, Nothing, plugin)
                 End If
 
-                If Not plugin.AviSynthFilterNames Is Nothing Then
-                    For Each filterName In plugin.AviSynthFilterNames
+                If Not plugin.AvsFilterNames Is Nothing Then
+                    For Each filterName In plugin.AvsFilterNames
                         If script.Contains(".avs." + filterName) Then WriteVSCode(script, code, filterName, plugin)
                     Next
                 End If
@@ -320,7 +320,6 @@ clip.set_output()
             End If
         End If
     End Sub
-
     Shared Function GetAVSLoadCode(script As String, scriptAlready As String) As String
         Dim loadCode = ""
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
@@ -329,8 +328,8 @@ clip.set_output()
             Dim fp = plugin.Path
 
             If fp <> "" Then
-                If Not plugin.AviSynthFilterNames Is Nothing Then
-                    For Each filterName In plugin.AviSynthFilterNames
+                If Not plugin.AvsFilterNames Is Nothing Then
+                    For Each filterName In plugin.AvsFilterNames
                         If script.Contains(filterName.ToLower) Then
                             If plugin.Name = "ffms2" And plugin.Name <> "ffms2k" Then
                                 Dim loadC = "LoadCPlugin(""" + fp + """)" + BR
@@ -349,7 +348,7 @@ clip.set_output()
                                         File.GetLastWriteTimeUtc(Folder.Plugins + fp.FileName) <
                                         File.GetLastWriteTimeUtc(fp) Then
 
-                                    MsgWarn("Conflict with outdated plugin", $"An outdated version of {plugin.Name} is located in your auto load folder. StaxRip includes a newer version.{BR2 + Folder.Plugins + fp.FileName}")
+                                    MsgWarn("Conflict with outdated plugin", $"An outdated version of {plugin.Name} is located in your auto load folder. StaxRip includes a newer version.{BR2 + Folder.Plugins + fp.FileName}", True)
                                 End If
 
                                 If Not script.Contains(load.ToLower) AndAlso
@@ -374,7 +373,6 @@ clip.set_output()
                 End If
             End If
         Next
-
         Return loadCode
     End Function
 
@@ -554,7 +552,6 @@ Public Class VideoFilter
     ReadOnly Property Name As String
         Get
             If Path.Contains("|") Then Return Path.RightLast("|").Trim
-
             Return Path
         End Get
     End Property
@@ -569,6 +566,10 @@ Public Class VideoFilter
 
     Function CompareTo(other As VideoFilter) As Integer Implements System.IComparable(Of VideoFilter).CompareTo
         Return Path.CompareTo(other.Path)
+    End Function
+
+    Shared Function GetDefault(category As String, name As String) As VideoFilter
+        Return FilterCategory.GetAviSynthDefaults.First(Function(val) val.Name = category).Filters.First(Function(val) val.Name = name)
     End Function
 End Class
 
@@ -610,9 +611,9 @@ Public Class FilterCategory
             Dim filters As VideoFilter() = Nothing
 
             If engine = ScriptEngine.AviSynth Then
-                If Not i.AviSynthFiltersFunc Is Nothing Then filters = i.AviSynthFiltersFunc.Invoke
+                If Not i.AvsFiltersFunc Is Nothing Then filters = i.AvsFiltersFunc.Invoke
             Else
-                If Not i.VapourSynthFiltersFunc Is Nothing Then filters = i.VapourSynthFiltersFunc.Invoke
+                If Not i.VSFiltersFunc Is Nothing Then filters = i.VSFiltersFunc.Invoke
             End If
 
             If Not filters Is Nothing Then
@@ -646,7 +647,7 @@ Public Class FilterCategory
         framerate.Filters.Add(New VideoFilter(framerate.Name, "AssumeFPS | AssumeFPS Source File", "AssumeFPS(%media_info_video:FrameRate%)"))
         framerate.Filters.Add(New VideoFilter(framerate.Name, "AssumeFPS | AssumeFPS", "AssumeFPS($select:msg:Select a frame rate;24000/1001|24000, 1001;24;25;30000/1001|30000, 1001;30;50;60000/1001|60000, 1001;60;120;144;240$)"))
         framerate.Filters.Add(New VideoFilter(framerate.Name, "ConvertFPS...", "ConvertFPS($select:msg:Select a frame rate;24;25;29.970;50;59.970;60;120;144;240;$)"))
-        framerate.Filters.Add(New VideoFilter(framerate.Name, "SVPFlow", "super_params=""{pel:2,gpu:1}""" + BR + "analyse_params=""""""{block:{w:32,h:32}, main:{search:{coarse:{distance:-10}}}, refine:[{thsad:200}]}"""""" " + BR + "smoothfps_params=""{rate:{num:4,den:2},algo:21,cubic:1}""" + BR + "super = SVSuper(super_params)" + BR + "vectors = SVAnalyse(super, analyse_params)" + BR + "SVSmoothFps(super, vectors, smoothfps_params, mt=threads)" + BR + "#Prefetch(threads) must be added at the end of the script and Threads=9 after the source."))
+        framerate.Filters.Add(New VideoFilter(framerate.Name, "SVPFlow", "Threads=8" + BR + "super_params=""{pel:2,gpu:1}""" + BR + "analyse_params=""""""{block:{w:16,h:16}, main:{search:{coarse:{distance:-10}}}, refine:[{thsad:200}]}"""""" " + BR + "smoothfps_params=""{rate:{num:4,den:2},algo:21,cubic:1}""" + BR + "super = SVSuper(super_params)" + BR + "vectors = SVAnalyse(super, analyse_params)" + BR + "SVSmoothFps(super, vectors, smoothfps_params, mt=threads)" + BR + "#Prefetch(threads) must be added at the end of the script and Threads=9 after the source" + BR + "Prefetch(threads)"))
         ret.Add(framerate)
 
         Dim color As New FilterCategory("Color")
@@ -664,7 +665,7 @@ Public Class FilterCategory
         color.Filters.Add(New VideoFilter(color.Name, "Dither | DitherPost", "DitherPost()"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | AutoGain", "ColorYUV(autogain=$select:msg:Enable AutoGain?;True;False$, autowhite=$select:msg:Enable AutoWhite?;True;False$)"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Tweak", "Tweak(realcalc=true, dither_strength= 1.0, sat=0.75, startHue=105, endHue=138 )"))
-        color.Filters.Add(New VideoFilter(color.Name, "HDRCore | HDRToneMapping", "$select:msg:Select the Map Tone You Wish to Use;DGReinhard|DGReinhard();DGHable|DGHable()$"))
+        color.Filters.Add(New VideoFilter(color.Name, "HDRCore | Tone Mapping", "$select:msg:Select the Map Tone You Wish to Use;DGReinhard|DGReinhard();DGHable|DGHable()$"))
         ret.Add(color)
 
         Dim line As New FilterCategory("Line")
@@ -684,9 +685,9 @@ Public Class FilterCategory
         ret.Add(noise)
 
         Dim misc As New FilterCategory("Misc")
-        misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | Prefetch", "Prefetch($enter_text:Enter the Number of Cores You Wish to Use$)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | SetMTMode Header", "SetMTMode( $enter_text:Enter the Number of Cores You Wish to Use$, $enter_text:Select the Number of Threaders that Should be Used$)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | SetMTMode Filter", "SetMTMode($enter_text:Enter the Number of Threads You Wish to be Used for this Filter$)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | Prefetch", "Prefetch($enter_text:Enter the Number of Cores You Wish to Use$)")) ' Number or Reference to Thread header can Be Used here.
+        misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | Set Threads", "threads=$enter_text:Enter The Number of Threads You Wish to Use$"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | SetMTMode Filter", "SetFilterMTMode(""$enter_text:Enter The FilterName$"",$enter_text:Enter Mode You Wish to Use$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | Set Max Memory", "SetMemoryMax($enter_text:Enter the Maximum Memory Avisynth Can use$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Histogram", "Histogram(""levels"", Bits=$select:msg:Select BitDepth;8;10;12$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "SplitVertical", "Splitvertical=True"))
@@ -724,6 +725,7 @@ Public Class FilterCategory
         Dim src As New FilterCategory("Source")
         src.Filters.AddRange(
             {New VideoFilter("Source", "Manual", "# shows filter selection dialog"),
+            New VideoFilter("Source", "RawSource", "clip = core.raws.Source(r""%source_file%"")"),
              New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"),
              New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r""%source_file%"")")})
         ret.Add(src)
@@ -733,6 +735,7 @@ Public Class FilterCategory
         framerate.Filters.Add(New VideoFilter(framerate.Name, "AssumeFPS | AssumeFPS...", "clip = core.std.AssumeFPS(clip, None, $select:msg:Select a frame rate.;24000/1001|24000, 1001;24|24, 1;25|25, 1;30000/1001|30000, 1001;30|30, 1;50|50, 1;60000/1001|60000, 1001;60|60, 1$)"))
         framerate.Filters.Add(New VideoFilter(framerate.Name, "InterFrame", "clip = havsfunc.InterFrame(clip, Preset=""Medium"", Tuning=""$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$"", NewNum=$enter_text:Enter the NewNum Value$, NewDen=$enter_text:Enter the NewDen Value$, OverrideAlgo=$select:msg:Which Algorithm Do you Wish to Use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)"))
         framerate.Filters.Add(New VideoFilter(framerate.Name, "SVPFlow", "sup = core.mv.Super(clip, pel=2, hpad=0, vpad=0)" + BR + "bvec = core.mv.Analyse(sup, blksize=16, isb=True, chroma=True, search=3, searchparam=1)" + BR + "fvec = core.mv.Analyse(sup, blksize=16, isb=False, chroma=True, search=3, searchparam=1)" + BR + "clip = core.mv.FlowFPS(clip, sup, bvec, fvec, num=60000, den=1001, mask=2)"))
+        'framerate.Filters.Add(New VideoFilter(framerate.Name, "SVPFlow", "sup = core.mv.Super(clip, pel=2, hpad=0, vpad=0)" + BR + "bvec = core.mv.Analyse(sup, blksize=16, isb=True, chroma=True, search=3, searchparam=1)" + BR + "fvec = core.mv.Analyse(sup, blksize=16, isb=False, chroma=True, search=3, searchparam=1)" + BR + "clip = core.mv.BlockFPS(clip, sup, bvec, fvec, num=60000, den=1001, mode=3, thscd2=12)"))
         'clip = core.mv.FlowFPS(clip, sup, bvec, fvec, num=60000, den=1001, mask=2)
         'clip = core.mv.BlockFPS(clip, sup, bvec, fvec, num=60000, den=1001, mode=3, thscd2=12)
         ret.Add(framerate)
@@ -811,7 +814,6 @@ Public Class FilterCategory
         restoration.Filters.Add(New VideoFilter(restoration.Name, "RCR | Vinverse", "$select:Vinverse|clip = havsfunc.Vinverse(clip);Vinverse2|clip = havsfunc.Vinverse2(clip)$"))
         restoration.Filters.Add(New VideoFilter(restoration.Name, "RCR | CNR2", "clip = core.cnr2.Cnr2(clip)"))
         ret.Add(restoration)
-
 
         FilterCategory.AddDefaults(ScriptEngine.VapourSynth, ret)
 

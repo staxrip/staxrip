@@ -137,6 +137,27 @@ Public Class Rav1eParams
         .Path = "Basic",
         .Options = {"Quality"}}
 
+    Property Prime As New OptionParam With {
+        .Text = "Primaries",
+        .Path = "VUI",
+        .Switch = "--primaries",
+        .InitValue = 1,
+        .Options = {"BT709", "Unspecified", "BT470M", "BT470BG", "ST170M", "ST240M", "Film", "BT2020", "ST428", "P3DCI", "P3Display", "Tech3213"}}
+
+    Property Matrix As New OptionParam With {
+        .Text = "Matrix",
+        .Path = "VUI",
+        .Switch = "--matrix",
+        .InitValue = 2,
+        .Options = {"Identity", "BT709", "Unspecified", "BT470M", "BT470BG", "ST170M", "ST240M", "YCgCo", "BT2020NonConstantLuminance", "BT2020ConstantLuminance", "ST2085", "ChromaticityDerivedNonConstantLuminance", "ChromaticityDerivedConstantLuminance", "ICtCp"}}
+
+    Property Transfer As New OptionParam With {
+        .Text = "Transfer",
+        .Path = "VUI",
+        .Switch = "--transfer",
+        .InitValue = 1,
+        .Options = {"BT1886", "Unspecified", "BT470M", "BT470BG", "ST170M", "ST240M", "Linear", "Logarithmic100", "Logarithmic316", "XVYCC", "BT1361E", "SRGB", "BT2020Ten", "BT2020Twelve", "PerceptualQuantizer", "ST428", "HybridLogGamma"}}
+
     Property Speed As New NumParam With {
         .Text = "Speed",
         .Help = "Speed level, 0 (Slowest) to 10 (Fastest)",
@@ -157,7 +178,14 @@ Public Class Rav1eParams
         .Switch = "--keyint",
         .Path = "Basic",
         .Config = {0, 300},
-        .Init = 30}
+        .Init = 240}
+
+    Property MinKeyint As New NumParam With {
+        .Text = "Min Keyframe",
+        .Switch = "--min-keyint",
+        .Path = "Basic",
+        .Config = {0, 300},
+        .Init = 12}
 
     Property Custom As New StringParam With {
         .Text = "Custom",
@@ -168,8 +196,9 @@ Public Class Rav1eParams
             If ItemsValue Is Nothing Then
                 ItemsValue = New List(Of CommandLineParam)
 
-                Add(Mode, Tune, Speed, Quantizer, Keyint, Limit,
-                   New BoolParam With {.Switch = "--low_latency", .Text = "Low Latency", .Init = False, .Path = "Basic"},
+                Add(Mode, Tune, Speed, Quantizer,
+                Keyint, MinKeyint, Limit, Prime, Matrix, Transfer,
+                   New BoolParam With {.Switch = "--low_latency", .Text = "Low Latency", .Path = "Basic", .NoSwitch = ""},
                 Custom)
 
                 For Each item In ItemsValue

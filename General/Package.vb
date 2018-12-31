@@ -140,6 +140,7 @@ Public Class Package
         .Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.",
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
+        .SetupFilename = "Installers\VapourSynth-R45.exe",
         .DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"})
@@ -194,13 +195,6 @@ Public Class Package
         .LaunchName = "mpvnet.exe",
         .URL = "https://github.com/Revan654/mpvnet/",
         .Description = "libmpv based media player."})
-
-    Shared Property Update As Package = Add(New Package With {
-        .Name = "Update",
-        .DirPath = "Support\Update",
-        .Filename = "update.ps1",
-        .URL = "https://github.com/Revan654/staxrip/blob/master/Scripts/Update.ps1",
-        .Description = "a Small update Script to Check and installer newer versions of StaxRip"})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {
         .Name = "modPlus",
@@ -276,7 +270,7 @@ Public Class Package
         .Description = "A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Did�e and then written as a plugin by tritical.",
         .AvsFilterNames = {"vinverse", "vinverse2"},
         .AvsFiltersFunc = Function() {
-            New VideoFilter("Restoration", "RCR | Vinverse", "Vinverse|vinverse(sstr=2.7, amnt=255, uv=3, scl=0.25);Vinverse2|vinverse2(sstr=2.7, amnt=255, uv=3, scl=0.25)$")}})
+            New VideoFilter("Restoration", "RCR | Vinverse", "$select:Vinverse|vinverse(sstr=2.7, amnt=255, uv=3, scl=0.25);Vinverse2|vinverse2(sstr=2.7, amnt=255, uv=3, scl=0.25)$")}})
 
     Shared Property scenechange As Package = Add(New PluginPackage With {
         .Name = "scenechange",
@@ -924,7 +918,7 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/Dfttest",
             .AvsFilterNames = {"dfttest"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Noise", "DFTTest", "dfttest($select:msg:Select Strength;Moderate|sigma=16, tbsize=5;Light|sigma=6, tbsize=1;Strong|sigma=64, tbsize=1$,$select:msg:Enable LSB?;True|lsb_in=true, lsb=true;False|lsb_in=false, lsb=false$)")}})
+                New VideoFilter("Noise", "DFTTest", "dfttest($select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong|sigma=64, tbsize=1$,$select:msg:Enable High Bit Depth?;True|lsb_in=true, lsb=true;False|lsb_in=false, lsb=false$)")}})
 
         Add(New PluginPackage With {
             .Name = "MT Expand Multi",
@@ -1600,7 +1594,7 @@ Public Class Package
             .WebURL = "https://github.com/Hinterwaeldlers/vapoursynth-hqdn3d",
             .VSFilterNames = {"dfttest.DFTTest"},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "DFTTest", "$select:msg:Select Strength;Moderate|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5);Light|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=1);Strong|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1)$")}})
+                New VideoFilter("Noise", "DFTTest", "$select:msg:Select Strength;Light|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3,opt=3);Moderate|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5,opt=3);Strong|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1,opt=3)$")}})
 
         Add(New PluginPackage With {
             .Name = "VagueDenoiser",
@@ -1961,7 +1955,7 @@ Public Class AviSynthPlusPackage
         WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         FixedDir = Folder.System
-        SetupFilename = "AviSynthPlus-MT-r2728.exe"
+        SetupFilename = "Installers\AviSynthPlus-MT-r2728.exe"
     End Sub
 
     Public Overrides Property IsRequired As Boolean
@@ -1991,6 +1985,7 @@ Public Class PythonPackage
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         DownloadURL = "https://www.python.org/downloads/windows/"
+        SetupFilename = "Installers\python-3.7.2-amd64.exe"
     End Sub
 
     Public Overrides Property IsRequired As Boolean
@@ -2188,7 +2183,6 @@ Public Class dsmuxPackage
         Filename = "dsmux.exe"
         Description = Strings.dsmux
         WebURL = "http://haali.su/mkv"
-        SetupFilename = "MatroskaSplitter.exe"
         IsRequired = False
     End Sub
 
@@ -2216,7 +2210,6 @@ Public Class HaaliSplitter
         Name = "Haali Splitter"
         Filename = "splitter.ax"
         WebURL = "http://haali.su/mkv"
-        SetupFilename = "MatroskaSplitter.exe"
         Description = "Haali Splitter is used by eac3to and dsmux to write MKV files. Haali Splitter and LAV Filters overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
         IsRequired = False
     End Sub

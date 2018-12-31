@@ -119,30 +119,59 @@ Public Class ApplicationSettings
 
         If Check(Demuxers, "Demuxers", 106) Then Demuxers = Demuxer.GetDefaults()
 
-        If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 1) Then
-            AviSynthFilterPreferences = New StringPairList
-            AviSynthFilterPreferences.Add("default", "FFVideoSource")
-            AviSynthFilterPreferences.Add("264 h264 avc", "LWLibavVideoSource")
-            AviSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavVideoSource")
-            AviSynthFilterPreferences.Add("d2v", "MPEG2Source")
-            AviSynthFilterPreferences.Add("dgi", "DGSource")
-            AviSynthFilterPreferences.Add("dgim", "DGSourceIM")
-            AviSynthFilterPreferences.Add("mp4 m4v mov", "LSMASHVideoSource")
-            AviSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavVideoSource")
-            AviSynthFilterPreferences.Add("wmv", "DSS2")
-            AviSynthFilterPreferences.Add("avi vdr", "AviSource")
+        If Path.GetDirectoryName(Folder.Startup).Contains("Revan") Then
+            If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 1) Then
+                AviSynthFilterPreferences = New StringPairList
+                AviSynthFilterPreferences.Add("default", "DGSource")
+                AviSynthFilterPreferences.Add("264 h264 avc", "DGSource")
+                AviSynthFilterPreferences.Add("265 h265 hevc hvc", "DGSource")
+                AviSynthFilterPreferences.Add("d2v", "MPEG2Source")
+                AviSynthFilterPreferences.Add("dgi", "DGSource")
+                AviSynthFilterPreferences.Add("dgim", "DGSourceIM")
+                AviSynthFilterPreferences.Add("mp4 m4v mov", "DGSource")
+                AviSynthFilterPreferences.Add("ts m2ts mts m2t", "DGSource")
+                AviSynthFilterPreferences.Add("wmv", "DSS2")
+                AviSynthFilterPreferences.Add("avi vdr", "AviSource")
+            End If
+        Else
+            If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 1) Then
+                AviSynthFilterPreferences = New StringPairList
+                AviSynthFilterPreferences.Add("default", "FFVideoSource")
+                AviSynthFilterPreferences.Add("264 h264 avc", "LWLibavVideoSource")
+                AviSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavVideoSource")
+                AviSynthFilterPreferences.Add("d2v", "MPEG2Source")
+                AviSynthFilterPreferences.Add("dgi", "DGSource")
+                AviSynthFilterPreferences.Add("dgim", "DGSourceIM")
+                AviSynthFilterPreferences.Add("mp4 m4v mov", "LSMASHVideoSource")
+                AviSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavVideoSource")
+                AviSynthFilterPreferences.Add("wmv", "DSS2")
+                AviSynthFilterPreferences.Add("avi vdr", "AviSource")
+            End If
         End If
-
-        If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 3) Then
-            VapourSynthFilterPreferences = New StringPairList
-            VapourSynthFilterPreferences.Add("default", "ffms2")
-            VapourSynthFilterPreferences.Add("264 h264 avc", "LWLibavSource")
-            VapourSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavSource")
-            VapourSynthFilterPreferences.Add("avi avs vdr", "AVISource")
-            VapourSynthFilterPreferences.Add("mp4 m4v mov", "LibavSMASHSource")
-            VapourSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavSource")
-            VapourSynthFilterPreferences.Add("d2v", "d2vsource")
-            VapourSynthFilterPreferences.Add("dgi", "DGSource")
+        If Path.GetDirectoryName(Folder.Startup).Contains("Revan") Then
+            If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 3) Then
+                VapourSynthFilterPreferences = New StringPairList
+                VapourSynthFilterPreferences.Add("default", "DGSource")
+                VapourSynthFilterPreferences.Add("264 h264 avc", "DGSource")
+                VapourSynthFilterPreferences.Add("265 h265 hevc hvc", "DGSource")
+                VapourSynthFilterPreferences.Add("avi avs vdr", "AVISource")
+                VapourSynthFilterPreferences.Add("mp4 m4v mov", "DGSource")
+                VapourSynthFilterPreferences.Add("ts m2ts mts m2t", "DGSource")
+                VapourSynthFilterPreferences.Add("d2v", "d2vsource")
+                VapourSynthFilterPreferences.Add("dgi", "DGSource")
+            End If
+        Else
+            If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 3) Then
+                VapourSynthFilterPreferences = New StringPairList
+                VapourSynthFilterPreferences.Add("default", "ffms2")
+                VapourSynthFilterPreferences.Add("264 h264 avc", "LWLibavSource")
+                VapourSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavSource")
+                VapourSynthFilterPreferences.Add("avi avs vdr", "AVISource")
+                VapourSynthFilterPreferences.Add("mp4 m4v mov", "LibavSMASHSource")
+                VapourSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavSource")
+                VapourSynthFilterPreferences.Add("d2v", "d2vsource")
+                VapourSynthFilterPreferences.Add("dgi", "DGSource")
+            End If
         End If
 
         If Check(eac3toProfiles, "eac3to Audio Stream Profiles", 4) Then

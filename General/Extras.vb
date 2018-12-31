@@ -14,14 +14,13 @@ Public Class Animation
         Dim Rate = s.Storage.GetInt("GifFrameRate", 15)
         Dim cachePath = Folder.Temp + "Palette.png"
         Dim OutPutPath = inputFile.ChangeExt("gif")
-        Dim Seek = s.Storage.GetDouble("GifTime", 25.0)
+        Dim Seek = s.Storage.GetDouble("GifTime", 15.0)
         Dim Duration = s.Storage.GetDouble("GifLength", 4.2)
         Dim Size = s.Storage.GetInt("GifScale", 480)
         Dim Mode = s.Storage.GetString("PaletteGen", "diff")
         Dim SecondMode = s.Storage.GetString("PaletteUse", "rectangle")
         Dim Dither = s.Storage.GetString("GifDither", "dither=floyd_steinberg")
         Dim DirectoryStatus = s.Storage.GetBool("GifOutput", False)
-        Dim ColorSpace = s.Storage.GetString("Colorspace", "bt709")
         Dim DirectoryLocation = s.Storage.GetString("GifDirectory", p.DefaultTargetFolder)
         Dim Export = DirectoryLocation + "\" + inputFile.Base.ChangeExt("gif")
 
@@ -30,11 +29,9 @@ Public Class Animation
             Proc.SkipStrings = {"frame=", "size="}
             Proc.Encoding = Encoding.UTF8
             Proc.Package = Package.ffmpeg
-            Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -vf " + """" + "colorspace=all=" + ColorSpace + ",fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=" & Mode & """ -loglevel quiet -an -y " + cachePath
+            Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -vf " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=" & Mode & """ -loglevel quiet -an -y " + cachePath
             Proc.Start()
         End Using
-
-        'PathTooLongException
 
         If DirectoryStatus = True Then
 
@@ -43,7 +40,7 @@ Public Class Animation
                 Proc.SkipStrings = {"frame=", "size="}
                 Proc.Encoding = Encoding.UTF8
                 Proc.Package = Package.ffmpeg
-                Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -i " + cachePath + " -lavfi " + """" + "colorspace=all=" + ColorSpace + ",fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & ":diff_mode=" & SecondMode & """ -loglevel quiet -an -y " + """" + Export + """"
+                Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & ":diff_mode=" & SecondMode & """ -loglevel quiet -an -y " + """" + Export + """"
                 Proc.Start()
             End Using
 
@@ -54,7 +51,7 @@ Public Class Animation
                 Proc.SkipStrings = {"frame=", "size="}
                 Proc.Encoding = Encoding.UTF8
                 Proc.Package = Package.ffmpeg
-                Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -i " + cachePath + " -lavfi " + """" + "colorspace=all=" + ColorSpace + ",fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & ":diff_mode=" & SecondMode & """ -loglevel quiet -an -y " + """" + OutPutPath + """"
+                Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & ":diff_mode=" & SecondMode & """ -loglevel quiet -an -y " + """" + OutPutPath + """"
                 Proc.Start()
             End Using
 
@@ -81,8 +78,8 @@ Public Class Animation
         Dim Path = inputFile.ChangeExt("apng")
         Dim OptOut = inputFile.ChangeExt(".png").Replace(".png", "_opt.png")
         Dim Seek = s.Storage.GetString("PNGTime", 15.0)
-        Dim Duration = s.Storage.GetString("PNGLength", 3.4)
-        Dim Size = s.Storage.GetInt("PNGScale", 400)
+        Dim Duration = s.Storage.GetString("PNGLength", 3.8)
+        Dim Size = s.Storage.GetInt("PNGScale", 480)
         Dim OptSettings = s.Storage.GetString("PNGopt", "-z1")
         Dim Opt = s.Storage.GetBool("OptSetting", False)
         Dim DirectoryStatus = s.Storage.GetBool("PNGOutput", False)
@@ -153,8 +150,8 @@ Class MTN
 
         Dim Col = s.Storage.GetInt("MTNColumn", 4)
         Dim Rows = s.Storage.GetInt("MTNRow", 6)
-        Dim SizeWidth = s.Storage.GetInt("MTNWidth", 1280)
-        Dim SizeHeight = s.Storage.GetInt("MTNHeight", 150)
+        Dim SizeWidth = s.Storage.GetInt("MTNWidth", 1920)
+        Dim SizeHeight = s.Storage.GetInt("MTNHeight", 200)
         Dim PictureQuality = s.Storage.GetInt("MTNQuality", 95)
         Dim PictureDepth = s.Storage.GetInt("MTNDepth", 12)
         Dim DirectoryStatus = s.Storage.GetBool("MTNOutput", False)
@@ -235,23 +232,25 @@ Public Class MKVInfo
         End If
     End Sub
 End Class
-'Public Class Updates
+Public Class UpdateStaxRip
+    Shared Sub Update()
+        If Not Package.Update.VerifyOK(True) Then Exit Sub
 
-'    Shared Sub All()
-'        If Not Package.Python.VerifyOK(True) Then Exit Sub
-'        If Not Package.UpdateAll.VerifyOK(True) Then Exit Sub
+        Dim UpdateCode As String
+        Dim Path = Folder.Startup + "Update" + ".bat"
 
-'        Dim UpdateCode = ""
-'        Dim Path = Folder.Startup + "Update" + ".bat"
+        UpdateCode += "@echo OFF" + BR
+        UpdateCode += "pushd %~dp0" + BR
+        UpdateCode += "if exist ""%~dp0\Apps\Support\Update\update.ps1"" (" + BR
+        UpdateCode += "set update_script=""Apps\Support\Update\update.ps1""" + BR
+        UpdateCode += ") else (" + BR
+        UpdateCode += "set update_script=""Apps\Support\Update\update.ps1""" + BR
+        UpdateCode += ")" + BR
+        UpdateCode += "powershell -noprofile -nologo -noexit -executionpolicy bypass -File %update_script%" + BR
+        UpdateCode += "@exit"
 
-'        UpdateCode += "@echo OFF" + BR
-'        UpdateCode += Package.Python.Path.Escape & " " & Package.UpdateAll.Path + BR
-'        UpdateCode += "pause"
+        File.WriteAllText(Path, UpdateCode, Encoding.Default)
+        g.DefaultCommands.ExecuteCommandLine(Path, False, False, False)
 
-'        File.WriteAllText(Path, UpdateCode, Encoding.Default)
-'        g.DefaultCommands.ExecuteCommandLine(Path, True, False, False)
-
-'        File.Delete(Path)
-'    End Sub
-
-'End Class
+    End Sub
+End Class

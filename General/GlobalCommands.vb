@@ -330,7 +330,7 @@ Public Class GlobalCommands
         If amdMissing.Count > 0 Then msg += BR2 + "# Removed from VCEEnc" + BR2 + amdMissing.Join(" ")
         If amdUnknown.Count > 0 Then msg += BR2 + "# VCEEnc Todo" + BR2 + amdUnknown.Join(" ")
 
-        Dim qsExcept = "--help --version --check-device --video-streamid --video-track
+        Dim qsExcept = "--help --version --check-lib --check-device --video-streamid --video-track
             --check-avversion --check-codecs --check-encoders --check-decoders --check-formats
             --check-protocols --chapter-no-trim --check-filters --device --input --output
             --raw --avs --vpy --vpy-mt --audio-source --audio-file --seek --format --caption2ass
@@ -364,7 +364,7 @@ Public Class GlobalCommands
             --no-progress --pbration --fullhelp".Split((" " + BR).ToCharArray())
 
         Dim x265RemoveExcept = "--numa-pools --rdoq --cip --qblur --cplxblur --cu-stats --dhdr10-info --display-window 
-            --opt-qp-pps --opt-ref-list-length-pps --single-sei
+            --opt-qp-pps --opt-ref-list-length-pps --single-sei --hrd-concat
             --dhdr10-opt --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
 
         Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --fullhelp").Replace("--[no-]", "--")
@@ -403,7 +403,7 @@ Public Class GlobalCommands
         'If aomMissing.Count > 0 Then msg += BR2 + "# Removed from aomenc" + BR2 + aomMissing.Join(" ")
         'If aomUnknown.Count > 0 Then msg += BR2 + "# aomenc Todo" + BR2 + aomUnknown.Join(" ")
 
-        Dim RavExcept = "--output --help --version --verbose".Split((" " + BR).ToCharArray())
+        Dim RavExcept = "--output --help --psnr --version --verbose".Split((" " + BR).ToCharArray())
         Dim RavCodeExcept = "--y4m --help --version --verbose".Split((" " + BR).ToCharArray())
         Dim RavHelp = ProcessHelp.GetStdOut(Package.Rav1e.Path, "--help")
         File.WriteAllText(Package.Rav1e.GetDir + "help.txt", RavHelp)

@@ -685,8 +685,8 @@ Public Class FilterCategory
         ret.Add(noise)
 
         Dim misc As New FilterCategory("Misc")
-        misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | Prefetch", "Prefetch($enter_text:Enter the Number of Cores You Wish to Use$)")) ' Number or Reference to Thread header can Be Used here.
-        misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | Set Threads", "threads=$enter_text:Enter The Number of Threads You Wish to Use$"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | Prefetch", "Prefetch($enter_text:Enter the Number of Threads to Use$)")) ' Number or Reference to Thread header can Be Used here.
+        misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | Set Threads", "threads=$enter_text:Enter The Number of Threads to Use$"))
         misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | SetMTMode Filter", "SetFilterMTMode(""$enter_text:Enter The FilterName$"",$enter_text:Enter Mode You Wish to Use$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | Set Max Memory", "SetMemoryMax($enter_text:Enter the Maximum Memory Avisynth Can use$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Histogram", "Histogram(""levels"", Bits=$select:msg:Select BitDepth;8;10;12$)"))
@@ -725,7 +725,6 @@ Public Class FilterCategory
         Dim src As New FilterCategory("Source")
         src.Filters.AddRange(
             {New VideoFilter("Source", "Manual", "# shows filter selection dialog"),
-            New VideoFilter("Source", "RawSource", "clip = core.raws.Source(r""%source_file%"")"),
              New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"),
              New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r""%source_file%"")")})
         ret.Add(src)
@@ -734,10 +733,7 @@ Public Class FilterCategory
         framerate.Filters.Add(New VideoFilter(framerate.Name, "AssumeFPS | AssumeFPS Source", "clip = core.std.AssumeFPS(clip, fpsnum = int(%media_info_video:FrameRate% * 1000), fpsden = 1000)"))
         framerate.Filters.Add(New VideoFilter(framerate.Name, "AssumeFPS | AssumeFPS...", "clip = core.std.AssumeFPS(clip, None, $select:msg:Select a frame rate.;24000/1001|24000, 1001;24|24, 1;25|25, 1;30000/1001|30000, 1001;30|30, 1;50|50, 1;60000/1001|60000, 1001;60|60, 1$)"))
         framerate.Filters.Add(New VideoFilter(framerate.Name, "InterFrame", "clip = havsfunc.InterFrame(clip, Preset=""Medium"", Tuning=""$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$"", NewNum=$enter_text:Enter the NewNum Value$, NewDen=$enter_text:Enter the NewDen Value$, OverrideAlgo=$select:msg:Which Algorithm Do you Wish to Use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)"))
-        framerate.Filters.Add(New VideoFilter(framerate.Name, "SVPFlow", "sup = core.mv.Super(clip, pel=2, hpad=0, vpad=0)" + BR + "bvec = core.mv.Analyse(sup, blksize=16, isb=True, chroma=True, search=3, searchparam=1)" + BR + "fvec = core.mv.Analyse(sup, blksize=16, isb=False, chroma=True, search=3, searchparam=1)" + BR + "clip = core.mv.FlowFPS(clip, sup, bvec, fvec, num=60000, den=1001, mask=2)"))
-        'framerate.Filters.Add(New VideoFilter(framerate.Name, "SVPFlow", "sup = core.mv.Super(clip, pel=2, hpad=0, vpad=0)" + BR + "bvec = core.mv.Analyse(sup, blksize=16, isb=True, chroma=True, search=3, searchparam=1)" + BR + "fvec = core.mv.Analyse(sup, blksize=16, isb=False, chroma=True, search=3, searchparam=1)" + BR + "clip = core.mv.BlockFPS(clip, sup, bvec, fvec, num=60000, den=1001, mode=3, thscd2=12)"))
-        'clip = core.mv.FlowFPS(clip, sup, bvec, fvec, num=60000, den=1001, mask=2)
-        'clip = core.mv.BlockFPS(clip, sup, bvec, fvec, num=60000, den=1001, mode=3, thscd2=12)
+        framerate.Filters.Add(New VideoFilter(framerate.Name, "SVPFlow", "sup = core.mv.Super(clip, pel=2, hpad=0, vpad=0)" + BR + "bvec = core.mv.Analyse(sup, blksize=16, isb=True, chroma=True, search=3, searchparam=1)" + BR + "fvec = core.mv.Analyse(sup, blksize=16, isb=False, chroma=True, search=3, searchparam=1)" + BR + "$select:msg:Select FPS Filter to Use;FlowFPS|clip = core.mv.FlowFPS(clip, sup, bvec, fvec, mask=2;BlockFPS|clip = core.mv.BlockFPS(clip, sup, bvec, fvec, mode=3, thscd2=12$, num=$enter_text:Enter The Num Value$, den=$enter_text:Enter The Den Value$)"))
         ret.Add(framerate)
 
         Dim color As New FilterCategory("Color")
@@ -745,17 +741,18 @@ Public Class FilterCategory
         color.Filters.Add(New VideoFilter(color.Name, "Dither | Sigmoid", "$select:Sigmoid Inverse|clip = havsfunc.SigmoidInverse(clip);Sigmoid Direct|clip = havsfunc.SigmoidDirect(clip)$"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | SmoothGrad", "clip = muvsfunc.GradFun3(src=clip, mode=6, smode=1)"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | Stack", "$select:Native to Stack16|clip = core.fmtc.nativetostack16(clip);Stack16 to Native|clip = fmtc.stack16tonative(clip)$"))
-        color.Filters.Add(New VideoFilter(color.Name, "ColorSpace | BitDepth", "clip = core.fmtc.bitdepth (clip, bits=$select:msg:Select BitDepth;8;10;12;16;32$)"))
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | To RGB / YUV", "clip = $select:To RGB|mvsfunc.ToRGB;To YUV|mvsfunc.ToYUV$(clip,matrix=""$select:msg:Select Matrix;470bg;240;709;2020;2020cl;bt2020c$"")"))
+        color.Filters.Add(New VideoFilter(color.Name, "ColorSpace | SetColorSpace", "clip = mvsfunc.SetColorSpace(clip,ColorRange=$select:msg:Select Range;None|None;Full|0;Limit|1$,Primaries=$select:msg:Select Primaries;None|None;BT.470M|4;BT.470BG|5;BT.709|1;BT.2020|9$,Matrix=$select:msg:Select Matrix;None|None;BT.470BG|5;BT.709|1;BT.2020 NCL|9;BT.2020 CL|10$,Transfer=$select:msg:Select Transfer;None|None;Gamma 2.2|4;Gamma 2.8|5;Linear|8;BT.709|1;BT.2020-10|14;BT.2020-12|15;SMPTE ST 2084|16;ARIB STD-B67|18$)"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorSpace | Matrix", "clip = core.fmtc.matrix(clip, mat=""$select:msg:Select Matrix;Linear;470m;470bg;240m;SRGB;709;2020$"")"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorSpace | Primaries", "clip = core.fmtc.primaries(clip, prims=""$select:msg:Select Input;470m;470bg;240m;SRGB;709;2020$"", primd=""$select:msg:Select Output;Linear;470m;470bg;240m;SRGB;709;2020$"")"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorSpace | Transfer", "clip = core.fmtc.transfer(clip, transs=""$select:msg:Select Input;Linear;470m;470bg;240m;SRGB;709;2020;2084$"", transd=""$select:msg:Select Output;Linear;470m;470bg;240m;SRGB;709;2020;2084$"")"))
-        color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Cube", "clip = core.timecube.Cube(clip, cube = r""$browse_file$"")"))
-        color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Tweak", "clip = adjust.Tweak(clip, sat=0.75, hue=115-138)"))
-        color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Range", "$select:msg:Select Range;PC to TV|clip = core.fmtc.bitdepth (clip, fulls=True, fulld=False);TV to PC|clip = core.fmtc.bitdepth (clip, fulls=False, fulld=True)$"))
+        color.Filters.Add(New VideoFilter(color.Name, "ColorSpace | Range", "$select:msg:Select Range;PC to TV|clip = core.fmtc.bitdepth (clip, fulls=True, fulld=False);TV to PC|clip = core.fmtc.bitdepth (clip, fulls=False, fulld=True)$"))
+        color.Filters.Add(New VideoFilter(color.Name, "ColorSpace YUV | Cube", "clip = core.timecube.Cube(clip, cube = r""$browse_file$"")"))
+        color.Filters.Add(New VideoFilter(color.Name, "ColorSpace YUV | Tweak", "clip = adjust.Tweak(clip, sat=0.75, hue=115-138)"))
+        color.Filters.Add(New VideoFilter(color.Name, "Convert | BitDepth", "clip = core.fmtc.bitdepth (clip, bits=$select:msg:Select BitDepth;8;10;12;16;32$)"))
         color.Filters.Add(New VideoFilter(color.Name, "Convert | Format", "clip = core.avs.z_ConvertFormat(clip, pixel_type = ""$enter_text:Enter The Format You Wish To Convert To$"",colorspace_op=""$select:msg:Select Color Matrix Input;RGB;240m;709;2020ncl$:$select:msg:Select Color Transfer Input;Linear;470m;470bg;240m;SRGB;709;2020;st2084$:$select:msg:Select Color Primaries Input;470m;470bg;FILM;709;2020$:l=>$select:msg:Select Color Matrix output;RGB;FCC;YCGCO;240m;709;2020ncl$:$select:msg:Select Color Transfer Output;Linear;Log100;Log316;470m;470bg;240m;XVYCC;SRGB;709;2020;st2084$:$select:msg:Select Color Primaries Output;470m;470bg;FILM;709;2020$:l"", dither_type=""$select:msg:Select Dither Type;None;ordered$"")"))
         color.Filters.Add(New VideoFilter(color.Name, "Convert | Convert To", "clip = core.resize.Bicubic(clip, format=vs.$enter_text:Enter The Format You Wish To Convert To$)")) ''Ex: resize.Bicubic( format=vs.YUV444P8)        
         color.Filters.Add(New VideoFilter(color.Name, "Convert | To 444", "clip = core.fmtc.resample (clip, css=""444"")"))
-        color.Filters.Add(New VideoFilter(color.Name, "Convert | To RGB / YUV", "clip = $select:To RGB|mvsfunc.ToRGB;To YUV|mvsfunc.ToYUV$(clip,matrix=""$select:msg:Select Matrix;470bg;240;709;2020;2020cl;bt2020c$"")"))
         ret.Add(color)
 
         Dim line As New FilterCategory("Line")
@@ -784,7 +781,7 @@ Public Class FilterCategory
         noise.Filters.Add(New VideoFilter(noise.Name, "mClean", "clip = hnwvsfunc.mClean(clip)"))
         noise.Filters.Add(New VideoFilter(noise.Name, "MiniDeen", "clip = core.minideen.MiniDeen(clip)"))
         noise.Filters.Add(New VideoFilter(noise.Name, "MCTemporalDenoise", "clip = havsfunc.MCTemporalDenoise(i=clip, settings=""$select:msg:Select Strength;Very Low;Low;Medium;High;Very High$"")"))
-        noise.Filters.Add(New VideoFilter(noise.Name, "BM3D", "clip = mvsfunc.BM3D(clip)"))
+        noise.Filters.Add(New VideoFilter(noise.Name, "BM3D", "clip = mvsfunc.BM3D(clip, sigma=[3,3,3], radius1=0)"))
         ret.Add(noise)
 
         Dim misc As New FilterCategory("Misc")

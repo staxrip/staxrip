@@ -74,8 +74,9 @@ Public Class LogBuilder
 
     Sub WriteEnvironment()
 
-        Dim Memory = My.Computer.Info.TotalPhysicalMemory \ 1073741824
-        Dim MemoryF = Math.Ceiling(My.Computer.Info.TotalPhysicalMemory * 100D) / 100D
+        'Dim Memory = My.Computer.Info.TotalPhysicalMemory \ 1073741824
+        'Dim MemoryF = Math.Ceiling(My.Computer.Info.TotalPhysicalMemory * 100D) / 100D
+        '"Memory:" + MemoryF.ToString.Shorten(2) + " GB" + BR +
 
         If ToString.Contains("- System Environment -") Then Exit Sub
         WriteHeader("System Environment")
@@ -86,7 +87,6 @@ Public Class LogBuilder
             "Language:" + CultureInfo.CurrentCulture.EnglishName + BR +
             "CPU:" + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + BR +
             "GPU:" + String.Join(", ", SystemHelp.VideoControllers) + BR +
-            "Memory:" + MemoryF.ToString.Shorten(1) + " GB" + BR +
             "Resolution:" & Screen.PrimaryScreen.Bounds.Width & " x " & Screen.PrimaryScreen.Bounds.Height & BR +
             "DPI:" & g.MainForm.DeviceDpi
 

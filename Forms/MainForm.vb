@@ -2616,6 +2616,14 @@ Public Class MainForm
             End If
         End If
 
+        If p.Script.Engine = ScriptEngine.VapourSynth AndAlso TypeOf p.VideoEncoder Is Rav1e Then
+            If ProcessTip("Using ffmpeg along side of rav1e is not supported by ffmpeg currently.") Then
+                gbAssistant.Text = "Incompatible settings"
+                CanIgnoreTip = False
+                Return False
+            End If
+        End If
+
         If TypeOf p.VideoEncoder Is BasicVideoEncoder Then
             Dim enc = DirectCast(p.VideoEncoder, BasicVideoEncoder)
             Dim param = enc.CommandLineParams.GetOptionParam("--vpp-resize")
@@ -3922,36 +3930,6 @@ Public Class MainForm
             te.TextBox.TextAlign = HorizontalAlignment.Center
             te.SaveAction = Sub(value) If value.IsInt Then p.CropBottom = CInt(value)
 
-            'Dim Extras = ui.CreateFlowPage("Image | Thumbnail", True)
-
-            'Dim ThumbOptions = ui.AddMenu(Of Integer)
-            'Dim StaxRipThumbnailOption = ui.AddBool()
-            'Dim MTNThumbnailOption = ui.AddBool()
-
-            'ThumbOptions.Text = "Thumbnail Choices:"
-            'ThumbOptions.Add("StaxRip Thumbnails", 0)
-            'ThumbOptions.Add("MTN Thumbnails", 1)
-            'ThumbOptions.Button.Value = s.Storage.GetInt("Thumbnail Choices", 1)
-            'ThumbOptions.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Choices", value)
-            'AddHandler ThumbOptions.Button.ValueChangedUser, Sub()
-            '                                                     StaxRipThumbnailOption.Visible = ThumbOptions.Button.Value = 0
-            '                                                     MTNThumbnailOption.Visible = ThumbOptions.Button.Value = 1
-            '                                                 End Sub
-
-
-            'StaxRipThumbnailOption.Text = "Create Thumbnails"
-            'StaxRipThumbnailOption.Help = "Saves thumbnails to Source Location using the StaxRip Engine"
-            'StaxRipThumbnailOption.Field = NameOf(p.SaveThumbnails)
-
-
-            'MTNThumbnailOption.Text = "Create Thumbnails"
-            'MTNThumbnailOption.Visible = True
-            'MTNThumbnailOption.Help = "Saves thumbnails to Source Location using the MTN Engine"
-            'MTNThumbnailOption.Field = NameOf(p.MTN)
-
-            'StaxRipThumbnailOption.Visible = ThumbOptions.Button.Value = 0
-            'MTNThumbnailOption.Visible = ThumbOptions.Button.Value = 1
-
             Dim audioPage = ui.CreateFlowPage("Audio", True)
 
             t = ui.AddText
@@ -4382,7 +4360,7 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Subtitles|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
         ret.Add("Tools|Advanced|LAV Filters Decoder", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
         ret.Add("Tools|Advanced|Reset Settings", NameOf(ResetSettings))
-        ret.Add("Tools|Advanced|Update", NameOf(Update), Symbol.UpdateRestore)
+        ret.Add("Tools|Advanced|Update", NameOf(UpdateStaxRip), Symbol.UpdateRestore)
 
         ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
@@ -5565,16 +5543,6 @@ Public Class MainForm
         SourceFileMenu.Add("Paste", Sub() tbSourceFile.Paste(), "Copies the full source file path to the clipboard.", Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
     End Sub
 
-    <Command("Checks For Updates")>
-    Sub Update()
-        MsgInfo("Application May Shutdown During Update")
-        Try
-            UpdateStaxRip.Update()
-        Catch ex As Exception
-            g.ShowException(ex)
-        End Try
-    End Sub
-
     <Command("View the Metadata of any Selected File")>
     Private Sub MediaInfoShowMedia()
         Using fd As New OpenFileDialog
@@ -6053,6 +6021,16 @@ Public Class MainForm
                 Dim f As New MediaInfoFolderViewForm(d.SelectedPath.FixDir)
                 f.Show()
             End If
+        End Using
+    End Sub
+
+    <Command("Searches for New Releases of Staxrip")>
+    Sub UpdateStaxRip()
+        Using f As New UpdateForm
+            Try
+                f.Show()
+            Catch ex As Exception
+            End Try
         End Using
     End Sub
 

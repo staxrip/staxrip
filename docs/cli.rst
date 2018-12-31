@@ -511,8 +511,8 @@ Starts a tool by name as shown in the app manage dialog.
 Test
 
 
--UpdateAll
-~~~~~~~~~~
+-Update
+~~~~~~~
 
 Checks For Updates
 

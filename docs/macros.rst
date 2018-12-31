@@ -579,6 +579,10 @@ File path to FrameRateConverter AVSI
 
 File path to FrameRateConverter DLL
 
+``%app:fvsfunc%``
+
+File path to fvsfunc
+
 ``%app:GradFun2DB%``
 
 File path to GradFun2DB
@@ -815,10 +819,6 @@ File path to QTGMC
 
 File path to rav1e
 
-``%app:RawSource%``
-
-File path to RawSource
-
 ``%app:resamplehq%``
 
 File path to resamplehq
@@ -846,10 +846,6 @@ File path to scenechange
 ``%app:Shader AVSI%``
 
 File path to Shader AVSI
-
-``%app:Shader DLL%``
-
-File path to Shader DLL
 
 ``%app:SMDegrain%``
 
@@ -1343,6 +1339,10 @@ Folder path to FrameRateConverter AVSI
 
 Folder path to FrameRateConverter DLL
 
+``%app_dir:fvsfunc%``
+
+Folder path to fvsfunc
+
 ``%app_dir:GradFun2DB%``
 
 Folder path to GradFun2DB
@@ -1579,10 +1579,6 @@ Folder path to QTGMC
 
 Folder path to rav1e
 
-``%app_dir:RawSource%``
-
-Folder path to RawSource
-
 ``%app_dir:resamplehq%``
 
 Folder path to resamplehq
@@ -1610,10 +1606,6 @@ Folder path to scenechange
 ``%app_dir:Shader AVSI%``
 
 Folder path to Shader AVSI
-
-``%app_dir:Shader DLL%``
-
-Folder path to Shader DLL
 
 ``%app_dir:SMDegrain%``
 

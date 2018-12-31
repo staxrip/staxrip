@@ -876,6 +876,18 @@ Public Class PreviewForm
         End Using
     End Sub
 
+    <Command("Saves the current frame as bitmap.")>
+    Sub SavePng()
+        Using d As New SaveFileDialog
+            d.SetFilter({"png"})
+            d.FileName = p.TargetFile.Base + " - " & AVI.Position
+
+            If d.ShowDialog = DialogResult.OK Then
+                AVI.GetBitmap.Save(d.FileName, Imaging.ImageFormat.Png)
+            End If
+        End Using
+    End Sub
+
     <Command("Saves the current frame as JPG to the given path which can contain macros.")>
     Sub SaveJpgByPath(<DispName("File Path")>
                       <Description("File path which can contain macros.")>
@@ -975,8 +987,8 @@ Public Class PreviewForm
         ret.Add("Tools|Copy Frame Number", NameOf(g.DefaultCommands.CopyToClipboard), {"%pos_frame%"})
         ret.Add("Tools|Copy Time", NameOf(CopyTime))
         ret.Add("Tools|-")
-        ret.Add("Tools|Save Bitmap", NameOf(SaveBitmap), Keys.Control Or Keys.S)
-        ret.Add("Tools|Save JPG", NameOf(SaveJPG), Symbol.Save)
+        ret.Add("Tools|Save Png", NameOf(SavePng), Keys.Control Or Keys.P, Symbol.Save)
+        ret.Add("Tools|Save Bitmap", NameOf(SaveBitmap), Keys.Control Or Keys.S, Symbol.SaveAs)
 
         ret.Add("Edit Menu...", NameOf(OpenMenuEditor), Keys.M)
         ret.Add("Help...", NameOf(OpenHelp), Keys.F1, Symbol.Help)

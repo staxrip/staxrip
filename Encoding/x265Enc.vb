@@ -187,8 +187,8 @@ Public Class x265Params
 
     Property Decoder As New OptionParam With {
         .Text = "Decoder",
-        .Options = {"AviSynth/VapourSynth", "Cuvid", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
-        .Values = {"avs", "nv", "qs", "ffqsv", "ffdxva"}}
+        .Options = {"AviSynth/VapourSynth", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
+        .Values = {"avs", "qs", "ffqsv", "ffdxva"}}
 
     Property Quant As New NumParam With {
         .Switches = {"--crf", "--qp"},
@@ -270,6 +270,11 @@ Public Class x265Params
         .Switch = "--ref",
         .Text = "Ref Frames",
         .Config = {1, 16}}
+
+    Property slowpass As New BoolParam With {
+        .Switch = "--slow-firstpass",
+        .NoSwitch = "--no-slow-firstpass",
+        .Init = True, .Text = "Slow Firstpass"}
 
     Property [Me] As New OptionParam With {
         .Switch = "--me",
@@ -473,7 +478,8 @@ Public Class x265Params
     Property qpadaptationrange As New NumParam With {
         .Switch = " --qp-adaptation-range",
         .Text = "QP Adaptation Range",
-        .Config = {1, 6, 0.05, 1}}
+        .Init = 1.0,
+        .Config = {1, 6, 0.05, 2}}
 
     Property CRFmax As New NumParam With {
         .Switch = "--crf-max",
@@ -841,7 +847,8 @@ Public Class x265Params
                     New NumParam With {.Switch = "--dynamic-rd", .Text = "Dynamic RD", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}},
-                    qpadaptationrange)
+                    qpadaptationrange,
+                    New BoolParam With {.Switch = "--hevc-aq", .Text = "Mode for HEVC Adaptive Quantization", .Init = False})
                 Add("Analysis 3", Rect, AMP,
                     New BoolParam With {.Switch = "--tskip", .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"},
                     New BoolParam With {.Switch = "--refine-mv", .Text = "Enable refinement of motion vector for scaled video"},
@@ -853,8 +860,6 @@ Public Class x265Params
                     RecursionSkip,
                     New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"},
                     New BoolParam With {.Switch = "--splitrd-skip", .Text = "Enable skipping split RD analysis"})
-                Add("Analysis 4",
-                    New BoolParam With {.Switch = "--hevc-aq", .Text = "Mode for HEVC Adaptive Quantization", .Init = False})
                 Add("Rate Control 1",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     New StringParam With {.Switch = "--zonefile", .Text = "Zone File", .Quotes = True, .BrowseFile = True},
@@ -867,8 +872,7 @@ Public Class x265Params
                     IPRatio, PBRatio, Cplxblur, QBlur,
                     CUtree, Lossless, StrictCBR, rcGrain,
                     multi_pass_opt_analysis,
-                    multi_pass_opt_distortion)
-                Add("Rate Control 3",
+                    multi_pass_opt_distortion,
                     New BoolParam() With {.Switch = "--aq-motion", .Text = "AQ Motion"})
                 Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP,
                     New BoolParam With {.Switch = "--analyze-src-pics", .NoSwitch = "--no-analyze-src-pics", .Text = "Analyze SRC Pics"})
@@ -891,9 +895,9 @@ Public Class x265Params
                     New StringParam With {.Switch = "--pools", .Switches = {"--numa-pools"}, .Text = "Pools", .Quotes = True},
                     New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},
                     FrameThreads, WPP, Pmode, PME,
-                    New BoolParam With {.Switch = "--asm", .NoSwitch = "--no-asm", .Text = "ASM", .Init = True},
+                    New BoolParam With {.Switch = "--asm", .NoSwitch = "--no-asm", .Text = "ASM", .Help = "For AVX512 Vector CPU's, Experiential Feature", .Init = True},
                     New BoolParam With {.Switch = "--asm avx512", .Text = "AVX 512", .Init = False},
-                    New BoolParam With {.Switch = "--slow-firstpass", .NoSwitch = "--no-slow-firstpass", .Init = True, .Text = "Slow Firstpass"},
+                    slowpass,
                     New BoolParam With {.Switch = "--copy-pic", .NoSwitch = "--no-copy-pic", .Init = True, .Text = "Copy Pic"})
                 Add("Statistic",
                     New OptionParam With {.Switch = "--log-level", .Switches = {"--log"}, .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .InitValue = 3},
@@ -1038,11 +1042,9 @@ Public Class x265Params
                 Case "ffdxva"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
                     sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Escape + " -f yuv4mpegpipe" + crop + " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
-                Case "nv"
-                    Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel cuvid -i " + p.SourceFile.Escape + " -f yuv4mpegpipe" + crop + " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
             End Select
         End If
+
 
         If Mode.Value = x265RateMode.TwoPass OrElse Mode.Value = x265RateMode.ThreePass Then
             sb.Append(" --pass " & pass)
@@ -1738,11 +1740,13 @@ Public Class x265Params
                 Scenecut.Value = 0
                 CUtree.Value = False
                 FrameThreads.Value = 1
-            Case 6 '"Animation
-                PsyRD.DefaultValue = 0.4
-                AQStrength.DefaultValue = 0.4
-                Deblock.DefaultValue = False
-                BFrames.DefaultValue = 6
+            Case 6 '"Animation"
+                PsyRD.Value = 0.4
+                AQStrength.Value = 0.4
+                Deblock.Value = True
+                DeblockA.Value = 1
+                DeblockB.Value = 1
+                BFrames.Value = 6
         End Select
     End Sub
 

@@ -153,7 +153,7 @@ Public Class ffmpegEnc
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
-            .Options = {"AviSynth/VapourSynth", "Intel", "DXVA2", "CUDA"},
+            .Options = {"AviSynth/VapourSynth", "Intel", "DXVA2", "Nvidia"},
             .Values = {"avs", "qsv", "dxva2", "cuvid"}}
 
         Property Custom As New StringParam With {

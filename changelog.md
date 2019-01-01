@@ -39,7 +39,7 @@ https://github.com/Microsoft/dotnet-framework-early-access
 - Added additional source filter when StaxRip internal thumbnail is used, some source files did not get along with ffms.
 - Updated VapourSynth and Tweaked SVPFlow & Added Additional Option to use BlockFPS.
 - Updated FFmpeg, MKVToolNix, NVENC, Rav1e, x265 & MediaInfo
-- Python Support now includes MiniCoda as well.
+- Python Support now includes Miniconda as well, Python 3.7.2 can be used as well.
 - Included Both Old and Newer versions of MediaInfo Just incase it breaks something again.
 - Re-Enabled MediaInfo Folder Function, Since The Bug in MediaInfo has been fixed.
 - Added & Updated All the Output Path Options for MTN, StaxRip Thumbnailer, Gif & PNG Creators.

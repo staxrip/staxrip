@@ -365,11 +365,12 @@ Public Class Package
         .Description = Strings.DGDecNV,
         .DirPath = "Support\DGIndexNV",
         .HelpFile = "DGDecodeNVManual.html",
-        .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource("),
         .HintDirFunc = Function() DGIndexNV.GetStoredPath.Dir,
+        .IsRequiredFunc = Function() p.Script.Filters(0).Script.StartsWith("DGSource("),
         .AvsFilterNames = {"DGSource"},
+        .VSFilterNames = {"DGSource"},
         .AvsFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")},
-        .VSFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.avs.DGSource(r""%source_file%"")")}})
+        .VSFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.dgdecodenv.DGSource(r""%source_file%"")")}})
 
     Shared Property DGDecodeIM As Package = Add(New PluginPackage With {
         .Name = "DGDecodeIM",
@@ -379,7 +380,7 @@ Public Class Package
         .DirPath = "Support\DGIndexIM",
         .HelpFile = "Notes.txt",
         .HintDirFunc = Function() DGIndexIM.GetStoredPath.Dir,
-        .IsRequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSourceIM("),
+        .IsRequiredFunc = Function() p.Script.Filters(0).Script.StartsWith("DGSourceIM("),
         .AvsFilterNames = {"DGSourceIM"},
         .AvsFiltersFunc = Function() {New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")}})
 
@@ -462,7 +463,7 @@ Public Class Package
             .SetupAction = Sub()
                                Using pr As New Process
                                    pr.StartInfo.FileName = "xcopy.exe"
-                                   pr.StartInfo.Arguments = $"""{Folder.Apps + "FFTW\"}*ff*"" ""{Folder.System}"" /Y"
+                                   pr.StartInfo.Arguments = $"""{Folder.Apps + "\support\FFTW\"}*ff*"" ""{Folder.System}"" /Y"
                                    pr.StartInfo.Verb = "runas"
                                    pr.Start()
                                    pr.WaitForExit()
@@ -811,15 +812,15 @@ Public Class Package
             .AvsFiltersFunc = Function() {
                 New VideoFilter("Noise", "NLMeans | xNLMeans", "xnlmeans(a=4,h=2.2,vcomp=0.5,s=1)")}})
 
-        Add(New PluginPackage With {
-            .Name = "XAA",
-            .Filename = "xaa.avsi",
-            .WebURL = "http://avisynth.nl/index.php/xaa",
-            .Description = "A highly versatile anti-aliasing function.",
-            .HelpFile = "Readme.txt",
-            .AvsFilterNames = {"XAA"},
-            .AvsFiltersFunc = Function() {
-                New VideoFilter("Line", "Anti-Aliasing | XAA", "xaa()")}})
+        'Add(New PluginPackage With { 'Will be Removed, Code does no longer work with Latest filters.
+        '    .Name = "XAA",
+        '    .Filename = "xaa.avsi",
+        '    .WebURL = "http://avisynth.nl/index.php/xaa",
+        '    .Description = "A highly versatile anti-aliasing function.",
+        '    .HelpFile = "Readme.txt",
+        '    .AvsFilterNames = {"XAA"},
+        '    .AvsFiltersFunc = Function() {
+        '        New VideoFilter("Line", "Anti-Aliasing | XAA", "xaa()")}})
 
         Add(New PluginPackage With {
             .Name = "FFT3DGPU",
@@ -828,7 +829,7 @@ Public Class Package
             .HelpFile = "Readme.txt",
             .AvsFilterNames = {"FFT3DGPU"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Noise", "FFT3DFilter | FFT3DGPU", "FFT3DGPU(sigma=1.5, bt=5, bw=32, bh=32, ow=16, oh=16, sharpen=0.4, NVPerf=$Select:msg:Do you want to use Nvidia Feature;True;False$)")}})
+                New VideoFilter("Noise", "FFT3DFilter | FFT3DGPU", "FFT3DGPU(sigma=1.5, bt=5, bw=32, bh=32, ow=16, oh=16, sharpen=0.4, NVPerf=$select:msg:Enable Nvidia Function;True;False$)")}})
 
         Add(New PluginPackage With {
             .Name = "DehaloAlpha",
@@ -1297,15 +1298,32 @@ Public Class Package
                 New VideoFilter("Line", "Sharpen | McDegrainSharp", "clip = mcdegrainsharp.mcdegrainsharp(clip, plane=4)")}})
 
         Add(New PluginPackage With {
-            .Name = "hnwvsfunc",
-            .Filename = "hnwvsfunc.py",
+            .Name = "G41Fun",
+            .Filename = "G41Fun.py",
             .DirPath = "Plugins\VS\Scripts",
             .WebURL = "https://github.com/Helenerineium/hnwvsfunc",
-            .Description = "MVTools is a set of filters for motion estimation and compensation.",
-            .VSFilterNames = {"hnwvsfunc.mClean", "hnwvsfunc.NonlinUSM", "hnwvsfunc.DetailSharpen", "hnwvsfunc.LUSM", "hnwvsfunc.JohnFPS", "hnwvsfunc.TemporalDegrain2",
-                "hnwvsfunc.MCDegrainSharp", "hnwvsfunc.FineSharp", "hnwvsfunc.psharpen", "hnwvsfunc.QTGMC", "hnwvsfunc.SMDegrain", "hnwvsfunc.daamod",
-                "hnwvsfunc.STPressoHD", "hnwvsfunc.MLDegrain", "hnwvsfunc.Hysteria", "hnwvsfunc.SuperToon", "hnwvsfunc.EdgeDetect", "hnwvsfunc.SpotLess",
-                "hnwvsfunc.HQDeringmod", "hnwvsfunc.LSFmod", "hnwvsfunc.SeeSaw", "hnwvsfunc.MaskedDHA"}})
+            .Description = "The replaced script for hnwvsfunc with re-written functions.",
+            .VSFilterNames = {"G41Fun.mClean", "G41Fun.NonlinUSM", "G41Fun.DetailSharpen", "G41Fun.LUSM", "G41Fun.JohnFPS", "G41Fun.TemporalDegrain2",
+                "G41Fun.MCDegrainSharp", "G41Fun.FineSharp", "G41Fun.psharpen", "G41Fun.QTGMC", "G41Fun.SMDegrain", "G41Fun.daamod",
+                "G41Fun.STPressoHD", "G41Fun.MLDegrain", "G41Fun.Hysteria", "G41Fun.SuperToon", "G41Fun.EdgeDetect", "G41Fun.SpotLess",
+                "G41Fun.HQDeringmod", "G41Fun.LSFmod", "G41Fun.SeeSaw", "G41Fun.MaskedDHA"}})
+
+        Add(New PluginPackage With {
+            .Name = "fvsfunc",
+            .Filename = "fvsfunc.py",
+            .Description = "Small collection of VapourSynth functions",
+            .DirPath = "Plugins\VS\Scripts",
+            .WebURL = "https://github.com/Irrational-Encoding-Wizardry/fvsfunc",
+            .VSFilterNames = {"fvsfunc.GradFun3mod", "fvsfunc.DescaleM", "fvsfunc.Downscale444", "fvsfunc.JIVTC", "fvsfunc.OverlayInter", "fvsfunc.AutoDeblock", "fvsfunc.ReplaceFrames", "fvsfunc.maa", "fvsfunc.TemporalDegrain",
+                                "fvsfunc.DescaleAA", "fvsfunc.InsertSign"}})
+
+        Add(New PluginPackage With {
+            .Name = "nnedi3_rpow2",
+            .Filename = "nnedi3_rpow2.py",
+            .DirPath = "Plugins\VS\Scripts",
+            .WebURL = "https://github.com/Irrational-Encoding-Wizardry/fvsfunc",
+            .Description = "nnedi3_rpow2 ported from Avisynth for VapourSynth",
+            .VSFilterNames = {"nnedi3_rpow2"}})
 
         Add(New PluginPackage With {
             .Name = "mvmulti",
@@ -1398,7 +1416,7 @@ Public Class Package
             .DirPath = "Plugins\VS\Scripts",
             .Description = "Oyster is an experimental implement of the Blocking Matching concept, designed specifically for compression artifacts removal.",
             .URL = "https://github.com/IFeelBloated/Oyster",
-            .VSFilterNames = {"Osyter.Basic", "Oyster.Deringing", "Oyster.Destaircase", "Oyster.Deblocking", "Oyster.Super"}})
+            .VSFilterNames = {"Oyster.Basic", "Oyster.Deringing", "Oyster.Destaircase", "Oyster.Deblocking", "Oyster.Super"}})
 
         Add(New PluginPackage With {
             .Name = "Plum",
@@ -1503,16 +1521,6 @@ Public Class Package
             .Description = "FluxSmooth is a filter for smoothing of fluctuations.",
             .WebURL = "http://github.com/dubhater/vapoursynth-fluxsmooth"})
 
-
-        Add(New PluginPackage With {
-            .Name = "fvsfunc",
-            .Filename = "fvsfunc.py",
-           .DirPath = "Plugins\VS\Scripts",
-            .VSFilterNames = {"fvsfunc.GradFun3mod", "fvsfunc.DescaleM", "fvsfunc.Downscale444", "fvsfunc.JIVTC", "fvsfunc.OverlayInter", "fvsfunc.AutoDeblock", "fvsfunc.ReplaceFrames", "fvsfunc.maa", "fvsfunc.TemporalDegrain",
-                                "fvsfunc.DescaleAA", "fvsfunc.InsertSign"},
-            .Description = "Simple Avisynth filter Ports.",
-            .WebURL = "https://github.com/Irrational-Encoding-Wizardry/fvsfunc"})
-
         Add(New PluginPackage With {
             .Name = "CNR2",
             .Filename = "libcnr2.dll",
@@ -1591,7 +1599,7 @@ Public Class Package
             .Name = "DFTTest",
             .Filename = "DFTTest.dll",
             .Description = "VapourSynth port of dfttest.",
-            .WebURL = "https://github.com/Hinterwaeldlers/vapoursynth-hqdn3d",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DFTTest",
             .VSFilterNames = {"dfttest.DFTTest"},
             .VSFiltersFunc = Function() {
                 New VideoFilter("Noise", "DFTTest", "$select:msg:Select Strength;Light|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3,opt=3);Moderate|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5,opt=3);Strong|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1,opt=3)$")}})
@@ -1625,7 +1633,7 @@ Public Class Package
             .Name = "DegrainMedian",
             .Filename = "libdegrainmedian.dll",
             .Description = "VapourSynth port of DegrainMedian",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-TTempSmooth",
+            .WebURL = "https://github.com/dubhater/vapoursynth-degrainmedian",
             .VSFilterNames = {"dgm.DegrainMedian"},
             .VSFiltersFunc = Function() {
                 New VideoFilter("Noise", "RemoveGrain | DegrainMedian", "clip = core.dgm.DegrainMedian(clip=clip, interlaced=False)")}})

@@ -803,6 +803,7 @@ Public Class FilterCategory
         restoration.Filters.Add(New VideoFilter(restoration.Name, "DeHalo | FineDehalo", "clip = havsfunc.FineDehalo(clip)"))
         restoration.Filters.Add(New VideoFilter(restoration.Name, "DeHalo | DeHaloAlpha", "clip = havsfunc.DeHalo_alpha(clip)"))
         restoration.Filters.Add(New VideoFilter(restoration.Name, "DeBlock | Deblock_QED", "clip = havsfunc.Deblock_QED(clip)"))
+        restoration.Filters.Add(New VideoFilter(restoration.Name, "DeBlock | Auto-Deblock", "clip = fvsfunc.AutoDeblock(clip)"))
         restoration.Filters.Add(New VideoFilter(restoration.Name, "DeHalo | BlindDeHalo3", "clip = muvsfunc.BlindDeHalo3(clip, interlaced=False)"))
         restoration.Filters.Add(New VideoFilter(restoration.Name, "DeHalo | EdgeCleaner", "clip = havsfunc.EdgeCleaner(clip)"))
         restoration.Filters.Add(New VideoFilter(restoration.Name, "DeHalo | YAHR", "$select:YAHR|clip = havsfunc.YAHR(clip);YAHRmod|clip = muvsfunc.YAHRmod(clip)$"))

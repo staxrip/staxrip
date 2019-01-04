@@ -592,9 +592,9 @@ Public Class Package
             .AvsFilterNames = {"DePanEstimate"}})
 
         Add(New PluginPackage With {
-            .Name = "Shader AVSI",
+            .Name = "Shader DLL",
             .DirPath = "Plugins\AVS\Shader",
-            .Filename = "Shader.avsi",
+            .Filename = "Shader.dll",
              .HelpFile = "Readme.txt",
             .WebURL = "https://github.com/mysteryx93/AviSynthShader/releases",
             .AvsFilterNames = {"SuperRes", "SuperResXBR", "SuperXBR", "ResizeShader", "SuperResPass", "SuperXbrMulti", "ResizeShader"}})

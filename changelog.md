@@ -8,6 +8,20 @@ Dotnet 4.8 Preview Build (Not Required But Fully Supports 4.7.2)
 
 https://github.com/Microsoft/dotnet-framework-early-access
 
+2.0.0.1
+- XAA Remove from AVS, Can No longer run in AVS+.
+
+- VS: Updated DGIndexNV Load Function It now loads using it's native method instead of AVS load function.
+- VS:  G41Fun replaces hnwvsfunc
+- VS: hnwvsfunc Script removed
+- VS: fvsfunc functions updated
+- VS: Auto-Deblock Added to Context Menu
+- VS: nnedi3_rpow2 added to Script folder for Support.
+- VS: ReBuilt SVPFlow Functions using only SVPFlow files & interpolation Function.
+- VS: Added FixTelecinedFades to Context Menu for RCR.
+- Rebuilt QVSEnc Encoder Script
+- x265 Has been updated to 3.0
+
 2.0
 - Brand New Update System All done within the App
 - New Tab Added to x265 for Bitstream due to all the new Flags.

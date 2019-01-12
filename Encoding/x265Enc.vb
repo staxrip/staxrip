@@ -832,7 +832,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileMain12", .InitValue = 1, .VisibleFunc = Function() OutputDepth.Value = 2, .Options = {"Unrestricted", "Main 12", "Main 12 - Intra", "Main 422 - 12", "Main 422 - 12 - Intra", "Main 444 - 12", "Main 444 - 12 - Intra"}},
                     New OptionParam With {.Switch = "--level-idc", .Switches = {"--level"}, .Text = "Level", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}},
                     Mode, OutputDepth, Quant)
-                Add("Analysis 1", RD,
+                Add("Analysis", RD,
                     New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis File", .Quotes = True, .BrowseFile = True},
                     New StringParam With {.Switch = "--analysis-load", .Text = "Analysis Load", .Quotes = True, .BrowseFile = True},
                     New StringParam With {.Switch = "--analysis-save", .Text = "Analysis Save", .Quotes = True},
@@ -860,7 +860,7 @@ Public Class x265Params
                     RecursionSkip,
                     New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"},
                     New BoolParam With {.Switch = "--splitrd-skip", .Text = "Enable skipping split RD analysis"})
-                Add("Rate Control 1",
+                Add("Rate Control",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     New StringParam With {.Switch = "--zonefile", .Text = "Zone File", .Quotes = True, .BrowseFile = True},
                     AQmode, qgSize, AQStrength, QComp,
@@ -876,7 +876,7 @@ Public Class x265Params
                     New BoolParam() With {.Switch = "--aq-motion", .Text = "AQ Motion"})
                 Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP,
                     New BoolParam With {.Switch = "--analyze-src-pics", .NoSwitch = "--no-analyze-src-pics", .Text = "Analyze SRC Pics"})
-                Add("Slice Decision 1",
+                Add("Slice Decision",
                     New StringParam With {.Switch = "--refine-analysis-type", .Text = "Refine Analysis Type", .Quotes = True},
                     New OptionParam() With {.Switch = "--force-flush", .Text = "Force Flush", .Expand = True, .IntegerValue = True, .Options = {"Flush the encoder only when all the input pictures are over", "Flush all the frames even when the input is not over", "Flush the slicetype decided frames only"}},
                     BAdapt,
@@ -902,7 +902,7 @@ Public Class x265Params
                 Add("Statistic",
                     New OptionParam With {.Switch = "--log-level", .Switches = {"--log"}, .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .InitValue = 3},
                     csvloglevel, CSV, SSIM, PSNR)
-                Add("VUI 1",
+                Add("VUI",
                     New StringParam With {.Switch = "--master-display", .Text = "Master Display", .Quotes = True},
                     New StringParam With {.Switch = "--dhdr10-info", .Text = "DHDR10-Info", .Quotes = True, .BrowseFile = True},
                     New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 428", "SMPTE 431", "SMPTE 432"}},
@@ -1110,7 +1110,7 @@ Public Class x265Params
     End Function
 
     Sub ApplyPresetValues()
-        AQmode.Value = 1
+        AQmode.Value = 2
         AQStrength.Value = 1
         DeblockA.Value = 0
         DeblockB.Value = 0
@@ -1406,7 +1406,7 @@ Public Class x265Params
     End Sub
 
     Sub ApplyPresetDefaultValues()
-        AQmode.DefaultValue = 1
+        AQmode.DefaultValue = 2
         AQStrength.DefaultValue = 1
         DeblockA.DefaultValue = 0
         DeblockB.DefaultValue = 0

@@ -435,8 +435,8 @@ clip.set_output()
         script.Engine = ScriptEngine.AviSynth
         script.Filters.Add(New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"))
         script.Filters.Add(New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", False))
-        script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", "QTGMC(Preset = ""Medium"")", False))
         script.Filters.Add(New VideoFilter("Noise", "DFTTest", "DFTTest(sigma=6, tbsize=1)", False))
+        script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", "QTGMC(Preset = ""Medium"")", False))
         script.Filters.Add(New VideoFilter("Resize", "Spline64Resize", "Spline64Resize(%target_width%, %target_height%)", False))
         ret.Add(script)
 
@@ -444,9 +444,11 @@ clip.set_output()
         script.Engine = ScriptEngine.VapourSynth
         script.Filters.Add(New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"))
         script.Filters.Add(New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)", False))
+        script.Filters.Add(New VideoFilter("Noise", "DFTTest", "clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3,opt=3)", False))
+        script.Filters.Add(New VideoFilter("Misc", "UnSpec", "clip = core.resize.Point(clip, matrix_in_s=""unspec"",range_s=""limited"")" + BR + "clip = core.std.AssumeFPS(clip, fpsnum = int(%media_info_video:FrameRate% * 1000), fpsden = 1000)" + BR + "clip = core.std.SetFrameProp(clip=clip, prop=""_ColorRange"", intval=1)", False))
+        script.Filters.Add(New VideoFilter("ColorSpace", "ReSpec", "clip = core.fmtc.resample (clip, css=""444"")" + BR + "clip = core.fmtc.matrix (clip, mats=""709"", matd=""709"")" + BR + "clip = core.fmtc.resample (clip, css=""420"")" + BR + "clip = core.fmtc.bitdepth(clip, bits=8, fulls = False, fulld = False)", False))
         script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = 'Medium')", False))
-        script.Filters.Add(New VideoFilter("Noise", "DFTTest", "clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=1)", False))
-        script.Filters.Add(New VideoFilter("Resize", "Spline64Resize", "clip = resamplehq.resamplehq(clip, %target_width%, %target_height%, kernel=""Spline64"")", False))
+        script.Filters.Add(New VideoFilter("Resize", "Spline64Resize", "clip = core.fmtc.resample(clip, kernel=""spline64"", w=%target_width%, h=%target_height%)", False))
         ret.Add(script)
 
         Return ret
@@ -734,7 +736,7 @@ Public Class FilterCategory
         framerate.Filters.Add(New VideoFilter(framerate.Name, "AssumeFPS | AssumeFPS...", "clip = core.std.AssumeFPS(clip, None, $select:msg:Select a frame rate.;24000/1001|24000, 1001;24|24, 1;25|25, 1;30000/1001|30000, 1001;30|30, 1;50|50, 1;60000/1001|60000, 1001;60|60, 1$)"))
         framerate.Filters.Add(New VideoFilter(framerate.Name, "InterFrame", "clip = havsfunc.InterFrame(clip, Preset=""Medium"", Tuning=""$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$"", NewNum=$enter_text:Enter the NewNum Value$, NewDen=$enter_text:Enter the NewDen Value$, OverrideAlgo=$select:msg:Which Algorithm Do you Wish to Use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)"))
         framerate.Filters.Add(New VideoFilter(framerate.Name, "SVPFlow | SVPFlowMV", "sup = core.mv.Super(clip, pel=2, hpad=0, vpad=0)" + BR + "bvec = core.mv.Analyse(sup, blksize=16, isb=True, chroma=True, search=3, searchparam=1)" + BR + "fvec = core.mv.Analyse(sup, blksize=16, isb=False, chroma=True, search=3, searchparam=1)" + BR + "$select:msg:Select FPS Filter to Use;FlowFPS|clip = core.mv.FlowFPS(clip, sup, bvec, fvec, mask=2;BlockFPS|clip = core.mv.BlockFPS(clip, sup, bvec, fvec, mode=3, thscd2=12$, num=$enter_text:Enter The Num Value$, den=$enter_text:Enter The Den Value$)"))
-        framerate.Filters.Add(New VideoFilter(framerate.Name, "SVPFlow | SVPFlow", "crop_string = """"" + BR + "resize_string = """"" + BR + "super_params = ""{pel:1,scale:{up:0},gpu:1,full:false,rc:true}""" + BR + "analyse_params = ""{block:{w:32},main:{search:{coarse:{type:2,distance:-6,bad:{sad:2000,range:24}},type:2}},refine:[{thsad:250}]}""" + BR + "smoothfps_params = ""{gpuid:0,linear:true,rate:{num:4,den:2},algo:23,mask:{area:200},scene:{}}""" + BR + "def interpolate(clip):" + BR + "    input = clip" + BR + "    if crop_string!='':" + BR + "        input = eval(crop_string)" + BR + "    if resize_string!='':" + BR + "        input = eval(resize_string)" + BR + "    super   = core.svp1.Super(input,super_params)" + BR + "    vectors = core.svp1.Analyse(super[""clip""],super[""data""],input,analyse_params)" + BR + "    smooth  = core.svp2.SmoothFps(input,super[""clip""],super[""data""],vectors[""clip""],vectors[""data""],smoothfps_params,src=clip)" + BR + "    smooth  = core.std.AssumeFPS(smooth,fpsnum=smooth.fps_num,fpsden=smooth.fps_den)" + BR + "    return smooth" + BR + "clip =  interpolate(clip)"))
+        framerate.Filters.Add(New VideoFilter(framerate.Name, "SVPFlow | SVPFlow", "crop_string = """"" + BR + "resize_string = """"" + BR + "super_params = ""{pel:1,scale:{up:0},gpu:1,full:false,rc:true}""" + BR + "analyse_params = ""{block:{w:16},main:{search:{coarse:{type:2,distance:-6,bad:{sad:2000,range:24}},type:2}},refine:[{thsad:250}]}""" + BR + "smoothfps_params = ""{gpuid:11,linear:true,rate:{num:4,den:2},algo:23,mask:{area:200},scene:{}}""" + BR + "def interpolate(clip):" + BR + "    input = clip" + BR + "    if crop_string!='':" + BR + "        input = eval(crop_string)" + BR + "    if resize_string!='':" + BR + "        input = eval(resize_string)" + BR + "    super   = core.svp1.Super(input,super_params)" + BR + "    vectors = core.svp1.Analyse(super[""clip""],super[""data""],input,analyse_params)" + BR + "    smooth  = core.svp2.SmoothFps(input,super[""clip""],super[""data""],vectors[""clip""],vectors[""data""],smoothfps_params,src=clip)" + BR + "    smooth  = core.std.AssumeFPS(smooth,fpsnum=smooth.fps_num,fpsden=smooth.fps_den)" + BR + "    return smooth" + BR + "clip =  interpolate(clip)"))
         ret.Add(framerate)
 
         Dim color As New FilterCategory("Color")
@@ -743,7 +745,7 @@ Public Class FilterCategory
         color.Filters.Add(New VideoFilter(color.Name, "Dither | SmoothGrad", "clip = muvsfunc.GradFun3(src=clip, mode=6, smode=1)"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | Stack", "$select:Native to Stack16|clip = core.fmtc.nativetostack16(clip);Stack16 to Native|clip = fmtc.stack16tonative(clip)$"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | To RGB / YUV", "clip = $select:To RGB|mvsfunc.ToRGB;To YUV|mvsfunc.ToYUV$(clip,matrix=""$select:msg:Select Matrix;470bg;240;709;2020;2020cl;bt2020c$"")"))
-        color.Filters.Add(New VideoFilter(color.Name, "ColorSpace | Conversion", "clip = core.fmtc.resample (clip, css=""444"")" + BR + "clip = core.fmtc.matrix (clip, mats=""$select:msg:Select Input Colorspace;240;601;709;2020$"", matd=""$select:msg:Select Output Colorspace;240;601;709;2020$"")" + BR + "clip = core.fmtc.resample (clip, css=""420"")" + BR + "clip = core.fmtc.bitdepth (clip, bits=8)"))
+        color.Filters.Add(New VideoFilter(color.Name, "ColorSpace | ReSpec", "clip = core.fmtc.resample(clip, css=""444"")" + BR + "clip = core.fmtc.matrix(clip, mats=""$select:msg:Select Input Colorspace;240;601;709;2020$"", matd=""$select:msg:Select Output Colorspace;240;601;709;2020$"")" + BR + "clip = core.fmtc.resample(clip, css=""420"")" + BR + "clip = core.fmtc.bitdepth(clip, bits=8, fulls = False, fulld = False)"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorSpace | Matrix", "clip = core.fmtc.matrix(clip, mat=""$select:msg:Select Matrix;Linear;470m;470bg;240m;SRGB;709;2020$"")"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorSpace | Primaries", "clip = core.fmtc.primaries(clip, prims=""$select:msg:Select Input;470m;470bg;240m;SRGB;709;2020$"", primd=""$select:msg:Select Output;Linear;470m;470bg;240m;SRGB;709;2020$"")"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorSpace | Transfer", "clip = core.fmtc.transfer(clip, transs=""$select:msg:Select Input;Linear;470m;470bg;240m;SRGB;709;2020;2084$"", transd=""$select:msg:Select Output;Linear;470m;470bg;240m;SRGB;709;2020;2084$"")"))
@@ -970,6 +972,17 @@ Public Class FilterParameters
                 add2({"QTGMC"}, "Preset", """Slower""", "Preset | Slower")
                 add2({"QTGMC"}, "Preset", """Very Slow""", "Preset | Very Slow")
                 add2({"QTGMC"}, "Preset", """Placebo""", "Preset | Placebo")
+
+                add2({"core.fmtc.bitdepth"}, "fulls", "True", "Fulls | True")
+                add2({"core.fmtc.bitdepth"}, "fulls", "False", "Fulls | False")
+                add2({"core.fmtc.bitdepth"}, "fulld", "True", "Fulld | True")
+                add2({"core.fmtc.bitdepth"}, "fulld", "False", "Fulld | False")
+
+                add2({"core.fmtc.bitdepth"}, "bits", "8", "Bits | 8")
+                add2({"core.fmtc.bitdepth"}, "bits", "10", "Bits | 10")
+                add2({"core.fmtc.bitdepth"}, "bits", "12", "Bits | 12")
+                add2({"core.fmtc.bitdepth"}, "bits", "16", "Bits | 16")
+                add2({"core.fmtc.bitdepth"}, "bits", "32", "Bits | 32")
 
                 add2({"LSMASHVideoSource",
                       "LWLibavVideoSource",

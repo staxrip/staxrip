@@ -26,6 +26,7 @@ https://github.com/Microsoft/dotnet-framework-early-access
 - VS: More syntax Filters have been added to Definition Function.
 - x265/x264: Added Depth Option to Control Menu
 
+
 2.0
 - Brand New Update System All done within the App
 - New Tab Added to x265 for Bitstream due to all the new Flags.

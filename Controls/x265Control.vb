@@ -107,15 +107,15 @@ Public Class x265Control
         components = New System.ComponentModel.Container()
 
         QualityDefinitions = New List(Of QualityItem) From {
-            New QualityItem(12, "Super High", "Super high quality and file size (-crf 12)"),
-            New QualityItem(14, "Very High", "Very high quality and file size (-crf 14)"),
-            New QualityItem(16, "Higher", "Higher quality and file size (-crf 16)"),
-            New QualityItem(18, "High", "High quality and file size (-crf 18)"),
+            New QualityItem(16, "Super High", "Super high quality and file size (-crf 16)"),
+            New QualityItem(17, "Very High", "Very high quality and file size (-crf 17)"),
+            New QualityItem(18, "Higher", "Higher quality and file size (-crf 18)"),
+            New QualityItem(19, "High", "High quality and file size (-crf 19)"),
             New QualityItem(20, "Medium", "Medium quality and file size (-crf 20)"),
-            New QualityItem(22, "Low", "Low quality and file size (-crf 22)"),
-            New QualityItem(24, "Lower", "Lower quality and file size (-crf 24)"),
-            New QualityItem(26, "Very Low", "Very low quality and file size (-crf 26)"),
-            New QualityItem(28, "Super Low", "Super low quality and file size (-crf 28)")}
+            New QualityItem(21, "Low", "Low quality and file size (-crf 21)"),
+            New QualityItem(22, "Lower", "Lower quality and file size (-crf 22)"),
+            New QualityItem(23, "Very Low", "Very low quality and file size (-crf 23)"),
+            New QualityItem(24, "Super Low", "Super low quality and file size (-rf 24)")}
 
         Encoder = enc
         Params = Encoder.Params
@@ -156,6 +156,7 @@ Public Class x265Control
     Sub UpdateMenu()
         cms.Items.ClearAndDisplose
         Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
+
         If lv.SelectedItems.Count > 0 Then
             Select Case lv.SelectedIndices(0)
                 Case 0 - offset
@@ -174,12 +175,6 @@ Public Class x265Control
                         Dim temp = x
                         cms.Items.Add(New ActionMenuItem(
                                       Params.Tune.Options(x), Sub() SetTune(temp)) With {.Font = If(Params.Tune.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
-                    Next
-                Case 3 - offset
-                    For x = 0 To Params.OutputDepth.Options.Length - 1
-                        Dim temp = x
-                        cms.Items.Add(New ActionMenuItem(
-                                      Params.OutputDepth.Options(x), Sub() SetDepth(temp)) With {.Font = If(Params.OutputDepth.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
             End Select
         End If
@@ -220,20 +215,6 @@ Public Class x265Control
         UpdateControls()
     End Sub
 
-    Sub SetDepth(value As Integer)
-        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
-
-        Params.OutputDepth.Value = value
-
-        Params.ApplyPresetValues()
-        Params.ApplyTuneValues()
-
-        lv.Items(3 - offset).SubItems(1).Text = value.ToString
-        lv.Items(3 - offset).Selected = False
-
-        UpdateControls()
-    End Sub
-
     Function GetQualityCaption(value As Double) As String
         For Each i In QualityDefinitions
             If i.Value = value Then
@@ -245,17 +226,15 @@ Public Class x265Control
     End Function
 
     Sub UpdateControls()
-        If Params.Mode.Value = x265RateMode.SingleCRF AndAlso lv.Items.Count < 5 Then
+        If Params.Mode.Value = x265RateMode.SingleCRF AndAlso lv.Items.Count < 4 Then
             lv.Items.Clear()
             lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.Quant.Value)}))
             lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
             lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
-            lv.Items.Add(New ListViewItem({"Depth", Params.OutputDepth.OptionText}))
-        ElseIf Params.Mode.Value <> 2 AndAlso lv.Items.Count <> 4 Then
+        ElseIf Params.Mode.Value <> 2 AndAlso lv.Items.Count <> 3 Then
             lv.Items.Clear()
             lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
             lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
-            lv.Items.Add(New ListViewItem({"Depth", Params.OutputDepth.OptionText}))
         End If
 
         Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)

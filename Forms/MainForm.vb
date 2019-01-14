@@ -4589,15 +4589,19 @@ Public Class MainForm
 
     Shared Function GetDefaultMenuSize() As CustomMenuItem
         Dim ret = New CustomMenuItem("Root")
-        ret.Add("DVD/BD-5 (4480 MB)", NameOf(SetSize), {4480})
-        ret.Add("DVD-DL/BD-9 (8145 MB)", NameOf(SetSize), {8145})
+        ret.Add("480p", NameOf(SetBitrate), {1000})
+        ret.Add("720p", NameOf(SetBitrate), {3200})
+        ret.Add("1080p", NameOf(SetBitrate), {6000})
         ret.Add("-")
-        ret.Add("BD (23450 MB)", NameOf(SetSize), {23450})
-        ret.Add("BD-DL (46900 MB)", NameOf(SetSize), {46900})
+        ret.Add("1440p", NameOf(SetBitrate), {9000})
+        ret.Add("2160p", NameOf(SetBitrate), {12000})
         ret.Add("-")
-        ret.Add("50%", NameOf(SetPercent), {50})
-        ret.Add("60%", NameOf(SetPercent), {60})
-        ret.Add("-")
+        'ret.Add("DVD", NameOf(SetSize), {4480})
+        'ret.Add("DVD-DL", NameOf(SetSize), {8145})
+        'ret.Add("-")
+        'ret.Add("Blu-Ray", NameOf(SetSize), {23450})
+        'ret.Add("Blu-Ray-DL", NameOf(SetSize), {46900})
+        'ret.Add("-")
         ret.Add("Edit Menu...", NameOf(ShowSizeMenuEditor))
         Return ret
     End Function

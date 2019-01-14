@@ -210,7 +210,7 @@ Public Class x264Params
         .Text = "Mode",
         .Switches = {"--bitrate", "--qp", "--crf", "--pass", "--stats"},
         .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
-        .Value = 2}
+        .Value = 3}
 
     Property Depth As New OptionParam With {
         .Switch = "--output-depth",

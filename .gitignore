@@ -5,8 +5,11 @@
 /bin/Apps
 /bin
 /obj
+/Fonts
+/VideoData
 /packages/Microsoft.PowerShell.5.ReferenceAssemblies.1.0.0
 /.vs/StaxRip/v15
 /.vs/StaxRip/DesignTimeBuild/.dtbcache
 /packages
 /.vs
+/_config.yml

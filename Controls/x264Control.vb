@@ -156,7 +156,6 @@ Public Class x264Control
     Sub UpdateMenu()
         cms.Items.ClearAndDisplose
         Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
-
         If lv.SelectedItems.Count > 0 Then
             Select Case lv.SelectedIndices(0)
                 Case 0 - offset

@@ -156,7 +156,6 @@ Public Class x265Control
     Sub UpdateMenu()
         cms.Items.ClearAndDisplose
         Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
-
         If lv.SelectedItems.Count > 0 Then
             Select Case lv.SelectedIndices(0)
                 Case 0 - offset

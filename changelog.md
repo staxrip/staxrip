@@ -24,6 +24,7 @@ https://github.com/Microsoft/dotnet-framework-early-access
 - Rebuilt QVSEnc Encoder Commands, It sometimes would output null value instead of script value.
 - x265 Has been updated to 3.0+.
 - VS: More syntax Filters have been added to Definition Function.
+- x265/x264: Added Depth Option to Control Menu
 
 2.0
 - Brand New Update System All done within the App

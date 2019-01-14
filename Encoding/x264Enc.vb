@@ -191,7 +191,7 @@ Public Class x264Params
         .Switches = {"--crf", "--qp"},
         .Name = "Quant",
         .Text = "Quality",
-        .Value = 20,
+        .Value = 23,
         .Config = {0, 69, 1, 1}}
 
     Property Preset As New OptionParam With {

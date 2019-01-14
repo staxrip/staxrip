@@ -18,11 +18,11 @@ Public Class UpdateForm
             Dim web As HtmlWeb = New HtmlWeb()
             Dim htmlDoc = web.Load(html)
             Try
-                Dim node = htmlDoc.DocumentNode.SelectSingleNode("//strong[@class='pl-1 pr-2 flex-auto min-width-0']")
+                Dim node = htmlDoc.DocumentNode.SelectSingleNode("(//strong[@class='pl-1 pr-2 flex-auto min-width-0'])[1]")
                 Dim Export As String = node.OuterHtml
                 Dim match = Regex.Match(Export, ">(.*?)<")
                 If match.Success Then
-                    Dim Tag = match.Groups(1).Value.ToString().Replace("Staxrip.", "").Replace(".x64.rar", "")
+                    Dim Tag = match.Groups(1).Value.ToString().Replace(".x64.7z", "")
                     Dim FilePath = Folder.Startup + "\" + match.Groups(1).Value.ToString()
                     Dim Results = "https://github.com/Revan654/staxrip/releases/download/" + Tag + "/" + match.Groups(1).Value.ToString()
                     Try

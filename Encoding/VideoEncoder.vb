@@ -314,22 +314,39 @@ Public MustInherit Class VideoEncoder
 
         ret.Add(New Rav1e)
 
+
+        'StaxRip Based on Users Hardware, In Progress
+        'Dim IntelCheck = ProcessHelp.GetStdOut(Package.QSVEnc.Path, "--check-hw")
+        'Dim Intelmatch = Regex.Match(IntelCheck, "Error")
+        'If Intelmatch.Success Then
+        'Else
         ret.Add(New QSVEnc())
         Dim intel265 As New QSVEnc()
         intel265.Params.Codec.Value = 1
         ret.Add(intel265)
+        'End If
 
+        'Dim NvidiaCheck = ProcessHelp.GetStdOut(Package.NVEnc.Path, "--check-features")
+        'Dim Nvidiamatch = Regex.Match(NvidiaCheck, "Error")
+        'If Nvidiamatch.Success Then
+        'Else
         Dim nvidia264 As New NVEnc()
         ret.Add(nvidia264)
 
         Dim nvidia265 As New NVEnc()
         nvidia265.Params.Codec.Value = 1
         ret.Add(nvidia265)
+        'End If
 
+        'Dim AmdCheck = ProcessHelp.GetStdOut(Package.VCEEnc.Path, "--check-features")
+        'Dim Amdmatch = Regex.Match(AmdCheck, "failed to initialize AMF")
+        'If Amdmatch.Success Then
+        'Else
         ret.Add(New VCEEnc())
         Dim amd265 As New VCEEnc()
         amd265.Params.Codec.Value = 1
         ret.Add(amd265)
+        ' End If
 
         Dim ffmpeg = New ffmpegEnc()
         For x = 0 To ffmpeg.Params.Codec.Options.Length - 1

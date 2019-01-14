@@ -194,7 +194,7 @@ Public Class x265Params
         .Switches = {"--crf", "--qp"},
         .Name = "Quant",
         .Text = "Quality",
-        .Value = 28,
+        .Value = 20,
         .Config = {0, 51, 1, 1}}
 
     Property chunkstart As New NumParam With {
@@ -225,7 +225,7 @@ Public Class x265Params
         .Text = "Mode",
         .Switches = {"--bitrate", "--qp", "--crf", "--pass"},
         .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
-        .Value = 3}
+        .Value = 2}
 
     Property SSIM As New BoolParam With {
         .Switch = "--ssim",

@@ -7,5 +7,6 @@ build:
   project: StaxRip.sln
   verbosity: normal
 artifacts:
-- path: bin\*
+- path: bin
   name: Staxrip
+  type: WebDeployPackage

@@ -6,3 +6,6 @@ clone_folder: C:\Staxrip
 build:
   project: StaxRip.sln
   verbosity: normal
+artifacts:
+- path: bin\*
+  name: Staxrip

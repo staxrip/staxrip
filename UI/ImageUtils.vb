@@ -79,7 +79,7 @@ Public Class Thumbnails
 
         Dim avsdoc As New VideoScript
         avsdoc.Path = Folder.Settings + "Thumbnails.avs"
-        If inputFile.EndsWith("mp4") Or inputFile.EndsWith("mkv") Then
+        If inputFile.EndsWith("mp4") Then
             avsdoc.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + inputFile + "" + """, format = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
         Else
             avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + "" + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))

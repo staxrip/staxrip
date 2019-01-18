@@ -8,5 +8,4 @@ build:
   verbosity: normal
 artifacts:
 - path: bin
-  name: Staxrip
-  type: WebDeployPackage
+  name: Staxrip.2.0.0.{Build}

@@ -581,22 +581,29 @@ Public Class GlobalClass
         If p.SourceFile <> "" Then
             p.TempDir = Macro.Expand(p.TempDir)
 
-            If p.TempDir = "" Then
-                Try
-                    If p.SourceFile.Dir.EndsWith("_temp\") Then
-                        p.TempDir = p.SourceFile.Dir
-                    End If
-                Catch ex As Exception
-                    'Only 
-                    'Previous Versions of Windows(Below Windows 10) 
-                    'Earlier dotnet that doesn't target 4.6+, 
-                    'Harddrive is not NTFS
-                    'Requires Shorter Paths.
-                    Dim base = p.SourceFile.Base
-                    base = base.Shorten(15) + "..."
-                    p.TempDir = p.SourceFile.Dir + base + "_temp\"
-                End Try
-        End If
+            Try
+                If p.SourceFile.Dir.EndsWith("_temp\") Then
+                    p.TempDir = p.SourceFile.Dir
+                    'Else
+                    '    Dim base = p.SourceFile.Base
+                    '    If base.Length > 30 Then base = base.Shorten(15) + "..."
+                    '    p.TempDir = p.SourceFile.Dir + base + "_temp\"
+                End If
+            Catch ex As Exception
+                MsgInfo(ex.Message)
+                'Only 
+                'Previous Versions of Windows(Below Windows 10)                     
+                'Also well if the Harddrive is not NTFS
+                'Requires Shorter Paths.           
+            End Try
+            'Else
+            '    Try
+            '        Dim base = p.SourceFile.Base
+            '        base = base.Shorten(15) + "..."
+            '        p.TempDir = p.SourceFile.Dir + base + "_temp\"
+            '    Catch ex As Exception
+            '    End Try
+            'End If
 
             'Source Code Running Windows 7 & 8.1, Just incase Code needs to reverted Back:
 

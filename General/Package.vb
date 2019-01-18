@@ -73,6 +73,14 @@ Public Class Package
         .HelpURL = "http://www.ffmpeg.org/ffmpeg-all.html",
         .Description = "Versatile audio video converter."})
 
+    Shared Property HB As Package = Add(New Package With {
+        .Name = "HB",
+        .Filename = "HBCli.exe",
+        .DirPath = "Encoders\HB",
+        .WebURL = "https://handbrake.fr/",
+        .HelpURL = "https://handbrake.fr/docs/en/1.2.0/cli/command-line-reference.html",
+        .Description = "HandBrake is a tool for converting video from nearly any format to a selection of modern, widely supported codecs."})
+
     Shared Property Haali As Package = Add(New HaaliSplitter)
 
     Shared Property MediaInfo As Package = Add(New Package With {
@@ -812,7 +820,7 @@ Public Class Package
             .AvsFiltersFunc = Function() {
                 New VideoFilter("Noise", "NLMeans | xNLMeans", "xnlmeans(a=4,h=2.2,vcomp=0.5,s=1)")}})
 
-        'Add(New PluginPackage With { 'Will be Removed, Code does no longer work with Latest filters.
+        'Add(New PluginPackage With { 'Removed Since it can longer run on any newer systems.
         '    .Name = "XAA",
         '    .Filename = "xaa.avsi",
         '    .WebURL = "http://avisynth.nl/index.php/xaa",
@@ -1030,7 +1038,6 @@ Public Class Package
             New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoise", "MCTemporalDenoise(settings=""medium"")"),
             New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoisePP", "source=last" + BR + "denoised=FFT3Dfilter()" + BR + "MCTemporalDenoisePP(denoised)")}})
 
-
         Add(New PluginPackage With {
             .Name = "L-SMASH-Works",
             .Filename = "LSMASHSource.dll",
@@ -1045,6 +1052,18 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "vslsmashsource",
             .Filename = "vslsmashsource.dll",
+            .Description = "VapourSynth source filter based on Libav supporting a wide range of input formats.",
+            .HelpURL = "http://github.com/VFR-maniac/L-SMASH-Works/blob/master/VapourSynth/README",
+            .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
+            .VSFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"},
+            .VSFiltersFunc = Function() {
+                New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")"),
+                New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")}})
+
+        Add(New PluginPackage With {
+            .Name = "vsrawsource",
+            .Filename = "vsrawsource.dll",
+            .DirPath = "Plugins\VS\vsRawSource",
             .Description = "VapourSynth source filter based on Libav supporting a wide range of input formats.",
             .HelpURL = "http://github.com/VFR-maniac/L-SMASH-Works/blob/master/VapourSynth/README",
             .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
@@ -1203,6 +1222,16 @@ Public Class Package
             .Description = "Renewed VapourSynth port of DCTFilter.",
             .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DCTFilter",
             .VSFilterNames = {"dctf.DCTFilter"}})
+
+        Add(New PluginPackage With {
+            .Name = "FixTelecinedFades",
+            .Filename = "libftf_em64t_avx_fma.dll",
+            .DirPath = "Plugins\VS\FixTelecinedFades",
+            .Description = "InsaneAA Anti-Aliasing Script.",
+            .URL = "https://github.com/IFeelBloated/Fix-Telecined-Fades",
+            .VSFilterNames = {"ftf.FixFades"},
+            .VSFiltersFunc = Function() {
+                New VideoFilter("Restoration", "RCR | Fix Telecined Fades", "clip = core.fmtc.bitdepth (clip, bits=32)" + BR + "clip = core.ftf.FixFades(clip)" + BR + "clip = core.fmtc.bitdepth (clip, bits=8)")}})
 
         Add(New PluginPackage With {
             .Name = "vcmod",
@@ -1559,7 +1588,7 @@ Public Class Package
             .Description = "Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin",
             .Filename = "svpflow1_vs64.dll",
             .WebURL = "https://www.svp-team.com/wiki/Manual:SVPflow",
-            .VSFilterNames = {"core.svp1.Super", "core.svp1.Analyse"}})
+            .VSFilterNames = {"core.svp1.Super", "core.svp1.Analyse", "core.svp1.Convert"}})
 
         Add(New PluginPackage With {
             .Name = "SVPFlow 2",
@@ -1567,7 +1596,7 @@ Public Class Package
             .Description = "Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin",
             .Filename = "svpflow2_vs64.dll",
             .WebURL = "https://www.svp-team.com/wiki/Manual:SVPflow",
-            .VSFilterNames = {"core.svp2.SmoothFps", "core.svp2.Convert"}})
+            .VSFilterNames = {"core.svp2.SmoothFps"}})
 
         Add(New PluginPackage With {
             .Name = "Dither",

@@ -1,0 +1,10 @@
+version: 2.0{Build}
+image: Visual Studio 2017
+configuration: Release
+platform: x64
+clone_folder: C:\StaxRip
+nuget:
+  project_feed: true
+build:
+  project: StaxRip.sln
+  verbosity: normal

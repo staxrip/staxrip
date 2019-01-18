@@ -47,7 +47,6 @@ Partial Class UpdateForm
         Me.Name = "UpdateForm"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Updating"
-        Me.TopMost = True
         Me.ResumeLayout(False)
 
     End Sub

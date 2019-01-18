@@ -6028,7 +6028,7 @@ Public Class MainForm
     Sub UpdateStaxRip()
         Using f As New UpdateForm
             Try
-                f.Show()
+                f.ShowDialog()
             Catch ex As Exception
             End Try
         End Using

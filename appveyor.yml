@@ -8,4 +8,4 @@ build:
   verbosity: normal
 artifacts:
 - path: bin
-  name: Staxrip.2.0.0.{Build}
+  name: StaxRip

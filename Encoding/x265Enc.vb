@@ -194,7 +194,7 @@ Public Class x265Params
         .Switches = {"--crf", "--qp"},
         .Name = "Quant",
         .Text = "Quality",
-        .Value = 20,
+        .Value = 28,
         .Config = {0, 51, 1, 1}}
 
     Property chunkstart As New NumParam With {
@@ -225,7 +225,7 @@ Public Class x265Params
         .Text = "Mode",
         .Switches = {"--bitrate", "--qp", "--crf", "--pass"},
         .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
-        .Value = 2}
+        .Value = 3}
 
     Property SSIM As New BoolParam With {
         .Switch = "--ssim",
@@ -274,7 +274,8 @@ Public Class x265Params
     Property slowpass As New BoolParam With {
         .Switch = "--slow-firstpass",
         .NoSwitch = "--no-slow-firstpass",
-        .Init = True, .Text = "Slow Firstpass"}
+        .Init = True,
+        .Text = "Slow Firstpass"}
 
     Property [Me] As New OptionParam With {
         .Switch = "--me",
@@ -651,7 +652,7 @@ Public Class x265Params
         .Config = {0.5, 1.0, 0.1, 1},
         .Init = 1}
 
-    Property VBVfradj As New NumParam With { 'Need More Testing But Should work As it is.
+    Property VBVfradj As New NumParam With {
         .Switch = "--vbv-end-fr-adj",
         .Text = "VBV Adjust",
         .Config = {0, 1, 0.1, 1},

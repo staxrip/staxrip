@@ -9,23 +9,17 @@ Dotnet 4.8 Preview Build (Not Required But Fully Supports 4.7.2)
 https://github.com/Microsoft/dotnet-framework-early-access
 
 2.0.0.1
-- Update System: The Form has been updated due to change in htmlcode at github.
-- x265: AQmode Tweaked for New defaults
-- x265: Many of the defaults have been tweaked to bring them to there new default values.
-- XAA Remove from AVS(For the Time Being), Script no longer runs in AVS+ due to external deps and internal function being re-named.
-- VS: Updated DGIndexNV it now uses it's native method instead of AVS load function.
+- x265: AQmode Tweaked
+- XAA Remove from AVS, Can No longer run in AVS+.
+- VS: Updated DGIndexNV Load Function It now loads using it's native method instead of AVS load function.
 - VS: G41Fun replaces hnwvsfunc
-- VS: hnwvsfunc Script has been removed
+- VS: hnwvsfunc Script removed
 - VS: fvsfunc functions updated
 - VS: Auto-Deblock Added to Context Menu
-- VS: nnedi3_rpow2 added to Script folder for Support function.
-- VS: ReBuilt SVPFlow Functions using only SVPFlow files & interpolation Function.
+- VS: nnedi3_rpow2 added to Script folder for Support.
 - VS: Added FixTelecinedFades to Context Menu for RCR.
-- Rebuilt QVSEnc Encoder Commands, It sometimes would output null value instead of script value.
-- x265 Has been updated to 3.0+.
-- VS: More syntax Filters have been added to Definition Function.
-- x265/x264: Added Depth Option to Control Menu
-
+- Rebuilt QVSEnc Encoder Script
+- x265 Has been updated to 3.0
 
 2.0
 - Brand New Update System All done within the App

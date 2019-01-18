@@ -7,5 +7,5 @@ build:
   project: StaxRip.sln
   verbosity: normal
 artifacts:
-- path: C:\Staxrip\bin
+- path: C:\Staxrip
   name: Staxrip

@@ -182,7 +182,7 @@ Public Class Thumbnails
         If Channels = 1 Then AudioSound = "Mono"
         If Channels = 6 Then AudioSound = "Surround Sound"
         If Channels = 8 Then AudioSound = "Surround Sound"
-        If Channels = 0 Then AudioSound = "unknown"
+        If Channels = 0 Then AudioSound = ""
 
         If audioCodecs.Length > 40 Then audioCodecs = audioCodecs.Shorten(40) + "..."
 
@@ -200,7 +200,9 @@ Public Class Thumbnails
 
         Dim caption = "File: " + FilePath.GetName(inputFile) + BR & "Size: " + MediaInfo.GetGeneral(inputFile, "FileSize") + " bytes" + " (" + MediaInfo.GetGeneral(inputFile, "FileSize_String1") + ")" & ", " + "Duration: " + g.GetTimeString(infoDuration / 1000) + ", avg.bitrate: " + MediaInfo.GetGeneral(inputFile, "OverallBitRate_String") + BR +
             "Audio: " + audioCodecs + ", " + MediaInfo.GetAudio(inputFile, "SamplingRate_String") + ", " + AudioSound + ", " + MediaInfo.GetAudio(inputFile, "BitRate_String") + BR +
-            "Video: " + MediaInfo.GetVideo(inputFile, "Format") + "(" + Profile + ")" + ", " + ColorSpace + SubSampling + ScanType.Shorten(1).ToLower() + ", " + infoWidth & "x" & infoHeight & ", " + MediaInfo.GetVideo(inputFile, "BitRate_String") + ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps"
+            "Video: " + MediaInfo.GetVideo(inputFile, "Format") + " (" + Profile + ")" + ", " + ColorSpace + SubSampling + ScanType.Shorten(1).ToLower() + ", " + infoWidth & "x" & infoHeight & ", " + MediaInfo.GetVideo(inputFile, "BitRate_String") + ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps".Replace(", ", "")
+
+        caption = caption.Replace(" ,", "")
 
         Dim captionSize = TextRenderer.MeasureText(caption, font)
         Dim captionHeight = captionSize.Height + font.Height \ 3

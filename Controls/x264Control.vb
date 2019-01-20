@@ -107,15 +107,15 @@ Public Class x264Control
         components = New System.ComponentModel.Container()
 
         QualityDefinitions = New List(Of QualityItem) From {
-            New QualityItem(16, "Super High", "Super high quality and file size (-crf 16)"),
-            New QualityItem(17, "Very High", "Very high quality and file size (-crf 17)"),
-            New QualityItem(18, "Higher", "Higher quality and file size (-crf 18)"),
-            New QualityItem(19, "High", "High quality and file size (-crf 19)"),
+            New QualityItem(12, "Super High", "Super high quality and file size (-crf 12)"),
+            New QualityItem(14, "Very High", "Very high quality and file size (-crf 14)"),
+            New QualityItem(16, "Higher", "Higher quality and file size (-crf 16)"),
+            New QualityItem(18, "High", "High quality and file size (-crf 18)"),
             New QualityItem(20, "Medium", "Medium quality and file size (-crf 20)"),
-            New QualityItem(21, "Low", "Low quality and file size (-crf 21)"),
-            New QualityItem(22, "Lower", "Lower quality and file size (-crf 22)"),
-            New QualityItem(23, "Very Low", "Very low quality and file size (-crf 23)"),
-            New QualityItem(24, "Super Low", "Super low quality and file size (-rf 24)")}
+            New QualityItem(22, "Low", "Low quality and file size (-crf 22)"),
+            New QualityItem(24, "Lower", "Lower quality and file size (-crf 24)"),
+            New QualityItem(26, "Very Low", "Very low quality and file size (-crf 26)"),
+            New QualityItem(28, "Super Low", "Super low quality and file size (-rf 28)")}
 
         Encoder = enc
         Params = Encoder.Params

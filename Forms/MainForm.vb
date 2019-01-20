@@ -4347,7 +4347,7 @@ Public Class MainForm
         ret.Add("Tools|Folders|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%working_dir%"""})
 
         ret.Add("Tools|Advanced", Symbol.More)
-        If Application.StartupPath = "C:\Users\Revan\Desktop\StaxRip\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
+        If Application.StartupPath = "C:\Users\Revan\Desktop\staxrip-master\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
         ret.Add("Tools|Advanced|Command Prompt", Symbol.fa_terminal)
         ret.Add("Tools|Advanced|Command Prompt|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_windows)
@@ -4374,8 +4374,8 @@ Public Class MainForm
         ret.Add("Apps|DGIndex|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|DGIndex|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
         ret.Add("Apps|Players|MPV", NameOf(g.DefaultCommands.StartTool), {"mpvnet"})
-        ret.Add("Apps|Thumbnails|MTN Thumbnail Generator", NameOf(SaveMTN))
-        ret.Add("Apps|Thumbnails|StaxRip Thumbnail Generator", NameOf(ShowBatchGenerateThumbnailsDialog))
+        ret.Add("Apps|Thumbnails|MTN Thumbnailer", NameOf(SaveMTN))
+        ret.Add("Apps|Thumbnails|StaxRip Thumbnailer", NameOf(ShowBatchGenerateThumbnailsDialog))
         ret.Add("Apps|Animation|Animated GIF", NameOf(SaveGif))
         ret.Add("Apps|Animation|Animated PNG", NameOf(SavePNG))
 

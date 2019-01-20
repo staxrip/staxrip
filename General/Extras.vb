@@ -236,25 +236,3 @@ Public Class MKVInfo
         End If
     End Sub
 End Class
-'Public Class UpdateStaxRip
-'    Shared Sub Update()
-'        If Not Package.Update.VerifyOK(True) Then Exit Sub
-
-'        Dim UpdateCode As String
-'        Dim Path = Folder.Startup + "Update" + ".bat"
-
-'        UpdateCode += "@echo OFF" + BR
-'        UpdateCode += "pushd %~dp0" + BR
-'        UpdateCode += "if exist ""%~dp0\Apps\Support\Update\update.ps1"" (" + BR
-'        UpdateCode += "set update_script=""Apps\Support\Update\update.ps1""" + BR
-'        UpdateCode += ") else (" + BR
-'        UpdateCode += "set update_script=""Apps\Support\Update\update.ps1""" + BR
-'        UpdateCode += ")" + BR
-'        UpdateCode += "powershell -noprofile -nologo -noexit -executionpolicy bypass -File %update_script%" + BR
-'        UpdateCode += "@exit"
-
-'        File.WriteAllText(Path, UpdateCode, Encoding.Default)
-'        g.DefaultCommands.ExecuteCommandLine(Path, False, False, False)
-
-'    End Sub
-'End Class

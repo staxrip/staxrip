@@ -590,20 +590,13 @@ Public Class GlobalClass
                     '    p.TempDir = p.SourceFile.Dir + base + "_temp\"
                 End If
             Catch ex As Exception
+                Dim base = p.SourceFile.Base
+                If base.Length > 30 Then base = base.Shorten(15) + "..."
+                p.TempDir = p.SourceFile.Dir + base + "_temp\"
                 MsgInfo(ex.Message)
-                'Only 
-                'Previous Versions of Windows(Below Windows 10)                     
-                'Also well if the Harddrive is not NTFS
-                'Requires Shorter Paths.           
+                'Only Previous Versions of Windows(Below Windows 10) Can't Handle Long Paths and HDD Must be NTFS.
+                ' This Should catch Older OS's.
             End Try
-            'Else
-            '    Try
-            '        Dim base = p.SourceFile.Base
-            '        base = base.Shorten(15) + "..."
-            '        p.TempDir = p.SourceFile.Dir + base + "_temp\"
-            '    Catch ex As Exception
-            '    End Try
-            'End If
 
             'Source Code Running Windows 7 & 8.1, Just incase Code needs to reverted Back:
 

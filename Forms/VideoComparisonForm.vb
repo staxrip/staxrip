@@ -217,7 +217,7 @@ Public Class VideoComparisonForm
     End Sub
 
     Private Sub VideoComparisonForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        WindowState = FormWindowState.Maximized
+        WindowState = FormWindowState.Normal
     End Sub
 
     Public Class VideoTab
@@ -252,20 +252,29 @@ Public Class VideoComparisonForm
             If sourePath.Ext = "png" Then
                 avs.Filters.Add(New VideoFilter("ImageSource(""" + sourePath + """, end = 0)"))
             Else
-                Dim cachePath = Folder.Temp + Guid.NewGuid.ToString + ".ffindex"
-                AddHandler Disposed, Sub() FileHelp.Delete(cachePath)
-                avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """)"))
-
-                Dim proj As New Project
-                proj.Init()
-
                 Try
-                    g.ffmsindex(sourePath, cachePath, False, proj)
-                Catch ex As AbortException
-                    Return False
-                Finally
-                    Form.Activate()
+                    Dim cachePath = Folder.Temp + Guid.NewGuid.ToString + ".ffindex"
+                    AddHandler Disposed, Sub() FileHelp.Delete(cachePath)
+                Catch ex As Exception
                 End Try
+
+                If sourePath.EndsWith("mp4") Then
+                    avs.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + sourePath + "" + """, format = ""YV12"")"))
+                Else
+                    avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + "" + """, colorspace = ""YV12"")"))
+                End If
+                'avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """)"))
+
+                '    Dim proj As New Project
+                '    proj.Init()
+
+                '    Try
+                '        g.ffmsindex(sourePath, cachePath, False, proj)
+                '    Catch ex As AbortException
+                '        Return False
+                '    Finally
+                '        Form.Activate()
+                '    End Try               
             End If
 
             If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
@@ -273,11 +282,16 @@ Public Class VideoComparisonForm
             End If
 
             If Form.Zoom <> 100 Then
-                avs.Filters.Add(New VideoFilter("LanczosResize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
-            End If
+                    avs.Filters.Add(New VideoFilter("Spline64Resize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
+                End If
 
             avs.Synchronize(True)
             AVI = New AVIFile(avs.Path)
+
+            Try
+                FileHelp.Delete(sourePath + ".ffindex")
+            Catch ex As Exception
+            End Try
 
             If Form.TrackBar.Maximum < AVI.FrameCount - 1 Then
                 Form.TrackBar.Maximum = AVI.FrameCount - 1

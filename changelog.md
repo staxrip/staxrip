@@ -9,14 +9,8 @@ Dotnet 4.8 Preview Build (Not Required But Fully Supports 4.7.2)
 https://github.com/Microsoft/dotnet-framework-early-access
 
 2.0.0.1
-- Updated Video Comparsion Form, Will No longer need to index the File before View the Video.
-- x265: Reset Some of the Defaults to there New defaults.
-- Core: ImageUtils(Moved MKV to ffms instead of Using L-Smash)
-- Core: Updated Caption for Thumbnails(If No Audio Exists it will Will leave the Field Blank).
-- Core: Slight Renaming of two of Menu Items(Nothing Major)
-- Core: Slight Tweak to to Temp Folder Creator, Nothing Noticeable.
 - x265: AQmode Tweaked
-- XAA Temp Remove from AVS, Code Needs to be Re-Worked with New Syntax.
+- XAA Remove from AVS, Can No longer run in AVS+.
 - VS: Updated DGIndexNV Load Function It now loads using it's native method instead of AVS load function.
 - VS: G41Fun replaces hnwvsfunc
 - VS: hnwvsfunc Script removed
@@ -24,10 +18,8 @@ https://github.com/Microsoft/dotnet-framework-early-access
 - VS: Auto-Deblock Added to Context Menu
 - VS: nnedi3_rpow2 added to Script folder for Support.
 - VS: Added FixTelecinedFades to Context Menu for RCR.
-- Encoders: Rebuilt QVSEnc Encoder Code.
-- x265: Has been updated to 3.0+RC*
-- x265: Updated the Defaults to there New defaults.
-- x264/x265 Control CRF: Updated the Range. It Starts at 12 CRF and Ends at default value of 28.
+- Rebuilt QVSEnc Encoder Script
+- x265 Has been updated to 3.0
 
 2.0
 - Brand New Update System All done within the App

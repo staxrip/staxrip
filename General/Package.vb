@@ -73,14 +73,6 @@ Public Class Package
         .HelpURL = "http://www.ffmpeg.org/ffmpeg-all.html",
         .Description = "Versatile audio video converter."})
 
-    Shared Property HB As Package = Add(New Package With {
-        .Name = "HB",
-        .Filename = "HBCli.exe",
-        .DirPath = "Encoders\HB",
-        .WebURL = "https://handbrake.fr/",
-        .HelpURL = "https://handbrake.fr/docs/en/1.2.0/cli/command-line-reference.html",
-        .Description = "HandBrake is a tool for converting video from nearly any format to a selection of modern, widely supported codecs."})
-
     Shared Property Haali As Package = Add(New HaaliSplitter)
 
     Shared Property MediaInfo As Package = Add(New Package With {

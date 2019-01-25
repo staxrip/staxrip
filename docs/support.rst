@@ -8,9 +8,9 @@ Search For Past Issues to Before Opening a New Issue.
 Issue Tracker
 -------------
 
-For bug reports and feature requests please use the `issue tracker <https://github.com/Revan654/staxrip/issues>`_, English Only.
+For bug reports and feature requests please use the `Issue Tracker <https://github.com/Revan654/staxrip/issues>`_, English Only.
 
-Before making a bug report please try the newest `test build <https://github.com/stax76/staxrip/blob/master/changelog.md>`_.
+Before making a bug report please try the newest `Beta Build <https://ci.appveyor.com/project/Revan654/staxrip/branch/master/artifacts>`_.
 
 
 Forum Support
@@ -18,4 +18,4 @@ Forum Support
 
 I provide support in the following forum threads:
 
-`doom9 <http://forum.doom9.org/showthread.php?t=172068&page=55555>`_
+`doom9 <https://forum.doom9.org/showthread.php?t=175845>`_

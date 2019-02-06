@@ -557,9 +557,38 @@ Public Class MkvMuxer
                 args += " " + subtitle.Path.Escape
             End If
         Next
-
+        
         If Not TypeOf Me Is WebMMuxer AndAlso File.Exists(ChapterFile) Then
-            args += " --chapters " + ChapterFile.Escape
+            If p.Ranges.Count > 0 Then
+                Dim xDoc = XDocument.Load(ChapterFile)
+                Dim lstTimeRanges As New List(Of (StartTime As TimeSpan, EndTime As TimeSpan, Offset As TimeSpan))
+                Dim OffsetRecord As TimeSpan
+                Dim lstValidChapterAtoms As New List(Of XElement)
+                For Each r In p.Ranges
+                    lstTimeRanges.Add((
+                        New TimeSpan(10000000L * r.Start / p.CutFrameRate),
+                        New TimeSpan(10000000L * r.End / p.CutFrameRate),
+                        OffsetRecord
+                    ))
+                    OffsetRecord += lstTimeRanges.Last.EndTime - lstTimeRanges.Last.StartTime
+                    For Each elAtom In xDoc.Descendants("ChapterAtom")
+                        Dim elChapterTimeStart = elAtom.Element("ChapterTimeStart")
+                        If Not lstValidChapterAtoms.Contains(elAtom) Then
+                            Dim tsStart = TimeSpan.Parse(Left(elAtom.Element("ChapterTimeStart").Value, 16))
+                            If tsStart >= lstTimeRanges.Last.StartTime And tsStart <= lstTimeRanges.Last.EndTime Then
+                                elAtom.Element("ChapterTimeStart").Value = (lstTimeRanges.Last.Offset + (tsStart - lstTimeRanges.Last.StartTime)).ToString()
+                                lstValidChapterAtoms.Add(elAtom)
+                            End If
+                        End If
+                    Next
+                Next
+                xDoc.Descendants("ChapterAtom").Where(Function(Atom) Not lstValidChapterAtoms.Contains(Atom)).Remove()
+                Dim CutChapterFile = Path.Combine(Path.GetDirectoryName(ChapterFile), "cut_cpt" + ".xml")
+                xDoc.Save(CutChapterFile)
+                args += " --chapters " + CutChapterFile.Escape
+            Else
+                args += " --chapters " + ChapterFile.Escape
+            End If
         End If
 
         If CoverFile <> "" AndAlso File.Exists(CoverFile) Then args += " --attach-file " + CoverFile.Escape

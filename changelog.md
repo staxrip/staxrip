@@ -20,6 +20,7 @@ https://github.com/Microsoft/dotnet-framework-early-access
 - VS: Added FixTelecinedFades to Context Menu for RCR.
 - Rebuilt QVSEnc Encoder Script
 - x265 Has been updated to 3.0
+- Added Merge: Chapter Cutting Feature to MkvMuxer(Credit: wybb)
 
 2.0
 - Brand New Update System All done within the App

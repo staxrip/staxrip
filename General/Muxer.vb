@@ -1,7 +1,7 @@
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Globalization
-
+Imports System.Xml.Linq
 Imports vb6 = Microsoft.VisualBasic
 
 <Serializable()>

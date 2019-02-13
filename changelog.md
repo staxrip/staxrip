@@ -9,8 +9,8 @@ Dotnet 4.8 Preview Build (Not Required But Fully Supports 4.7.2)
 https://github.com/Microsoft/dotnet-framework-early-access
 
 2.0.0.1
-- x265: AQmode Tweaked
-- XAA Remove from AVS, Can No longer run in AVS+.
+- x265: AQmode Tweaked for the new Defaults.
+- XAA Remove from AVS (Temp), due to certain Functions being alter in AVS+ core.
 - VS: Updated DGIndexNV Load Function It now loads using it's native method instead of AVS load function.
 - VS: G41Fun replaces hnwvsfunc
 - VS: hnwvsfunc Script removed
@@ -19,7 +19,7 @@ https://github.com/Microsoft/dotnet-framework-early-access
 - VS: nnedi3_rpow2 added to Script folder for Support.
 - VS: Added FixTelecinedFades to Context Menu for RCR.
 - Rebuilt QVSEnc Encoder Script
-- x265 Has been updated to 3.0
+- x265 Has been updated to 3.0-AU
 - Added Merge: Chapter Cutting Feature to MkvMuxer (Credit: wybb)
 
 2.0

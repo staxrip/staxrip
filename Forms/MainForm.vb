@@ -4360,7 +4360,7 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Subtitles|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
         ret.Add("Tools|Advanced|LAV Filters Decoder", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
         ret.Add("Tools|Advanced|Reset Settings", NameOf(ResetSettings))
-        ret.Add("Tools|Advanced|Update", NameOf(UpdateStaxRip), Symbol.UpdateRestore)
+        'ret.Add("Tools|Advanced|Update", NameOf(UpdateStaxRip), Symbol.UpdateRestore)
 
         ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
@@ -6024,15 +6024,15 @@ Public Class MainForm
         End Using
     End Sub
 
-    <Command("Searches for New Releases of Staxrip")>
-    Sub UpdateStaxRip()
-        Using f As New UpdateForm
-            Try
-                f.ShowDialog()
-            Catch ex As Exception
-            End Try
-        End Using
-    End Sub
+    '<Command("Searches for New Releases of Staxrip")>
+    'Sub UpdateStaxRip()
+    '    Using f As New UpdateForm
+    '        Try
+    '            f.ShowDialog()
+    '        Catch ex As Exception
+    '        End Try
+    '    End Using
+    'End Sub
 
     Protected Overrides Sub OnDragEnter(e As DragEventArgs)
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())

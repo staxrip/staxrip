@@ -391,7 +391,7 @@
         </member>
         <member name="F:HtmlAgilityPack.HtmlDocument.OptionOutputAsXml">
             <summary>
-            Defines if output must conform to XML, instead of HTML.
+            Defines if output must conform to XML, instead of HTML. Default is false.
             </summary>
         </member>
         <member name="F:HtmlAgilityPack.HtmlDocument.OptionPreserveXmlNamespaces">
@@ -406,7 +406,7 @@
         </member>
         <member name="F:HtmlAgilityPack.HtmlDocument.OptionOutputOriginalCase">
             <summary>
-            Defines if name must be output with it's original case. Useful for asp.net tags and attributes
+            Defines if name must be output with it's original case. Useful for asp.net tags and attributes. Default is false.
             </summary>
         </member>
         <member name="F:HtmlAgilityPack.HtmlDocument.OptionOutputUpperCase">

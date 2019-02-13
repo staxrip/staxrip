@@ -116,9 +116,6 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack, Version=1.8.14.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>packages\HtmlAgilityPack.1.8.14\lib\Net45\HtmlAgilityPack.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic">
       <Name>Microsoft.VisualBasic</Name>
@@ -208,12 +205,6 @@
       <DependentUpon>TextHelpForm.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\TextHelpForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\UpdateForm.Designer.vb">
-      <DependentUpon>UpdateForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\UpdateForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="General\Extras.vb" />
@@ -498,9 +489,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TextHelpForm.resx">
       <DependentUpon>TextHelpForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\UpdateForm.resx">
-      <DependentUpon>UpdateForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\DataForm.resx">
       <DependentUpon>DataForm.vb</DependentUpon>

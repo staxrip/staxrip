@@ -98,10 +98,10 @@ Public MustInherit Class VideoEncoder
         Dim MasteringDisplay_Luminance = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_Luminance")
 
         If MasteringDisplay_ColorPrimaries <> "" AndAlso MasteringDisplay_Luminance <> "" Then
-            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "(BT.2020)")			            
+            Dim match1 = Regex.Match(MasteringDisplay_ColorPrimaries, "(BT.2020)")
             Dim match2 = Regex.Match(MasteringDisplay_Luminance, "min: ([0-9\.]+) cd/m2, max: ([0-9\.]+) cd/m2")
-			Dim match3 = Regex.Match(MasteringDisplay_ColorPrimaries, "(Display P3)")
-			Dim match4 = Regex.Match(MasteringDisplay_ColorPrimaries, "(DCI P3)")
+            Dim match3 = Regex.Match(MasteringDisplay_ColorPrimaries, "(Display P3)")
+            Dim match4 = Regex.Match(MasteringDisplay_ColorPrimaries, "(DCI P3)")
 
             ''DisPlay-P3
             If match3.Success AndAlso match2.Success Then
@@ -138,8 +138,8 @@ Public MustInherit Class VideoEncoder
                 cl += " --aud"
 
             End If
-        End If		
-			
+        End If
+
         Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
         Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
 

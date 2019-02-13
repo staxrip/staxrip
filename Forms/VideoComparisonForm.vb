@@ -282,8 +282,8 @@ Public Class VideoComparisonForm
             End If
 
             If Form.Zoom <> 100 Then
-                    avs.Filters.Add(New VideoFilter("Spline64Resize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
-                End If
+                avs.Filters.Add(New VideoFilter("Spline64Resize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
+            End If
 
             avs.Synchronize(True)
             AVI = New AVIFile(avs.Path)

@@ -28,25 +28,16 @@ Partial Class UpdateForm
         '
         'ScrappyProgressBar
         '
-        Me.ScrappyProgressBar.Location = New System.Drawing.Point(16, 15)
-        Me.ScrappyProgressBar.Margin = New System.Windows.Forms.Padding(4)
+        resources.ApplyResources(Me.ScrappyProgressBar, "ScrappyProgressBar")
         Me.ScrappyProgressBar.Name = "ScrappyProgressBar"
-        Me.ScrappyProgressBar.Size = New System.Drawing.Size(652, 38)
-        Me.ScrappyProgressBar.TabIndex = 0
         '
         'UpdateForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(144.0!, 144.0!)
+        resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(689, 70)
         Me.Controls.Add(Me.ScrappyProgressBar)
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "UpdateForm"
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "Updating"
         Me.ResumeLayout(False)
 
     End Sub

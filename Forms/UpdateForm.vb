@@ -11,10 +11,11 @@ Public Class UpdateForm
             MsgInfo(ex.Message)
         End Try
     End Sub
-    Private Sub Update()
+
+    Private Async Sub Update()
         Dim html = "https://github.com/Revan654/staxrip/releases/latest"
         Dim web As HtmlWeb = New HtmlWeb()
-        Dim htmlDoc = web.Load(html)
+        Dim htmlDoc As HtmlDocument = Await web.LoadFromWebAsync(html)
         Try
             Dim node = htmlDoc.DocumentNode.SelectSingleNode("//strong[@class='pl-1 pr-2 flex-auto min-width-0']")
             Dim Export As String = node.OuterHtml

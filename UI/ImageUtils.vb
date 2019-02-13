@@ -3,8 +3,6 @@ Imports System.Drawing.Imaging
 Imports System.Drawing.Text
 Imports System.Globalization
 Imports System.Threading.Tasks
-Imports System.Text.RegularExpressions
-Imports System.Text
 
 Public Class ImageHelp
     Private Shared Coll As PrivateFontCollection
@@ -43,7 +41,7 @@ Public Class ImageHelp
         Dim fontHeight = font.Height
         Dim bitmap As New Bitmap(CInt(fontHeight * 1.1F), CInt(fontHeight * 1.1F))
         Dim graphics = Drawing.Graphics.FromImage(bitmap)
-        graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+        graphics.TextRenderingHint = TextRenderingHint.AntiAlias
         graphics.DrawString(Convert.ToChar(CInt(symbol)), font, Brushes.Black, -fontHeight * 0.1F, fontHeight * 0.07F)
         graphics.Dispose()
         font.Dispose()
@@ -62,7 +60,7 @@ Public Class Thumbnails
             proj.SourceFile = inputFile
         End If
 
-        Dim fontname = "Microsoft Sans Serif"
+        Dim fontname = "DejaVu Serif"
         Dim Fontoptions = "Mikadan"
 
         Dim width = s.Storage.GetInt("Thumbnail Width", 500)
@@ -78,9 +76,9 @@ Public Class Thumbnails
         height = height - height Mod 4
 
         Dim avsdoc As New VideoScript
-        avsdoc.Path = Folder.Settings + "Thumbnails.avs"
+        avsdoc.Path = Path.Combine(Folder.Temp + "Thumbnails.avs")
         If inputFile.EndsWith("mp4") Then
-            avsdoc.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + inputFile + "" + """, format = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
+            avsdoc.Filters.Add(New VideoFilter("LWLibavVideoSource(""" + inputFile + "" + """, format = ""YUV420P8"").Spline64Resize(" & width & "," & height & ")"))
         Else
             avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + "" + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
         End If
@@ -114,7 +112,7 @@ Public Class Thumbnails
 
                 Using g = Graphics.FromImage(bitmap)
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic
-                    g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+                    g.TextRenderingHint = TextRenderingHint.AntiAlias
                     g.SmoothingMode = SmoothingMode.AntiAlias
                     g.PixelOffsetMode = PixelOffsetMode.HighQuality
 
@@ -155,10 +153,17 @@ Public Class Thumbnails
             height = height + gap
         End Using
 
-        'FileHelp.Delete(cachePath)
-        FileHelp.Delete(avsdoc.Path)
         Try
-            FileHelp.Delete(inputFile + ".ffindex")
+            FileHelp.Delete(avsdoc.Path)
+        Catch ex As Exception
+        End Try
+
+        Try
+            If inputFile.EndsWith("mp4") Then
+                FileHelp.Delete(inputFile + ".lwi")
+            Else
+                FileHelp.Delete(inputFile + ".ffindex")
+            End If
         Catch ex As Exception
         End Try
 
@@ -177,6 +182,7 @@ Public Class Thumbnails
         Dim Profile = MediaInfo.GetVideo(inputFile, "Format_Profile").Shorten(4)
         If Profile = "" Then Profile = "Main"
         Dim ScanType = MediaInfo.GetVideo(inputFile, "ScanType")
+
         Dim AudioSound As String
         If Channels = 2 Then AudioSound = "Stereo"
         If Channels = 1 Then AudioSound = "Mono"
@@ -184,23 +190,15 @@ Public Class Thumbnails
         If Channels = 8 Then AudioSound = "Surround Sound"
         If Channels = 0 Then AudioSound = ""
 
-        If audioCodecs.Length > 40 Then audioCodecs = audioCodecs.Shorten(40) + "..."
-
         If infoLength / 1024 ^ 3 > 1 Then
             infoSize = (infoLength / 1024 ^ 3).ToInvariantString("f2") + "GB"
         Else
             infoSize = CInt(infoLength / 1024 ^ 2).ToString + "MB"
         End If
 
-        'Dim caption = FilePath.GetName(inputFile) + BR & infoSize & "  " +
-        '    g.GetTimeString(infoDuration / 1000) + "  " &
-        '    (((infoLength * 8) / 1000 / (infoDuration / 1000)) / 1000).ToInvariantString("f1") & "Mb/s" + BR +
-        '    audioCodecs + BR + MediaInfo.GetVideoCodec(inputFile) + "  " & infoWidth & "x" & infoHeight & "  " &
-        '    MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps"
-
-        Dim caption = "File: " + FilePath.GetName(inputFile) + BR & "Size: " + MediaInfo.GetGeneral(inputFile, "FileSize") + " bytes" + " (" + MediaInfo.GetGeneral(inputFile, "FileSize_String1") + ")" & ", " + "Duration: " + g.GetTimeString(infoDuration / 1000) + ", avg.bitrate: " + MediaInfo.GetGeneral(inputFile, "OverallBitRate_String") + BR +
+        Dim caption = "File: " + FilePath.GetName(inputFile) + BR & "Size: " + MediaInfo.GetGeneral(inputFile, "FileSize") + " bytes" + " (" + infoSize + ")" & ", " + "Duration: " + StaxRip.g.GetTimeString(infoDuration / 1000) + ", avg.bitrate: " + MediaInfo.GetGeneral(inputFile, "OverallBitRate_String") + BR +
             "Audio: " + audioCodecs + ", " + MediaInfo.GetAudio(inputFile, "SamplingRate_String") + ", " + AudioSound + ", " + MediaInfo.GetAudio(inputFile, "BitRate_String") + BR +
-            "Video: " + MediaInfo.GetVideo(inputFile, "Format") + " (" + Profile + ")" + ", " + ColorSpace + SubSampling + ScanType.Shorten(1).ToLower() + ", " + infoWidth & "x" & infoHeight & ", " + MediaInfo.GetVideo(inputFile, "BitRate_String") + ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps".Replace(", ", "")
+            "Video: " + MediaInfo.GetVideo(inputFile, "Format") + " (" + Profile + ")" + ", " + ColorSpace + SubSampling + ScanType.Shorten(1).ToLower() + ", " + MediaInfo.GetVideo(inputFile, "Width") & "x" & MediaInfo.GetVideo(inputFile, "Height") & ", " + MediaInfo.GetVideo(inputFile, "BitRate_String") + ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps".Replace(", ", "")
 
         caption = caption.Replace(" ,", "")
 
@@ -213,7 +211,7 @@ Public Class Thumbnails
         Using bitmap As New Bitmap(imageWidth, imageHeight)
             Using g = Graphics.FromImage(bitmap)
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic
-                g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+                g.TextRenderingHint = TextRenderingHint.AntiAlias
                 g.SmoothingMode = SmoothingMode.AntiAlias
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality
                 g.Clear(s.ThumbnailBackgroundColor)
@@ -239,7 +237,7 @@ Public Class Thumbnails
 
             Dim DirectoryStatus = s.Storage.GetBool("StaxRipOutput", False)
             Dim DirectoryLocation = s.Storage.GetString("StaxRipDirectory", p.DefaultTargetFolder)
-            Dim Export = DirectoryLocation + "\" + inputFile.Base
+            Dim Export = Path.Combine(DirectoryLocation, inputFile.Base)
             Dim Options = s.Storage.GetString("Picture Format", "png")
 
             If Options = "jpg" Then
@@ -247,7 +245,6 @@ Public Class Thumbnails
                     Dim params = New EncoderParameters(1)
                     params.Param(0) = New EncoderParameter(Imaging.Encoder.Quality, s.Storage.GetInt("Thumbnail Compression Quality", 95))
                     Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Jpeg.Guid).First
-                    'bitmap.Save(inputFile.ChangeExt("jpg"), info, params)
                     If DirectoryStatus = True Then
                         bitmap.Save(Export.ChangeExt("jpg"), info, params)
                     Else
@@ -259,7 +256,6 @@ Public Class Thumbnails
             ElseIf Options = "png" Then
                 Try
                     Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Png.Guid).First
-                    'bitmap.Save(inputFile.ChangeExt("png"), info, Nothing)
                     If DirectoryStatus = True Then
                         bitmap.Save(Export.ChangeExt("png"), info, Nothing)
                     Else
@@ -271,7 +267,6 @@ Public Class Thumbnails
             ElseIf Options = "tiff" Then
                 Try
                     Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Tiff.Guid).First
-                    'bitmap.Save(inputFile.ChangeExt("tiff"), info, Nothing)
                     If DirectoryStatus = True Then
                         bitmap.Save(Export.ChangeExt("tiff"), info, Nothing)
                     Else
@@ -283,7 +278,6 @@ Public Class Thumbnails
             ElseIf Options = "bmp" Then
                 Try
                     Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Bmp.Guid).First
-                    'bitmap.Save(inputFile.ChangeExt("bmp"), info, Nothing)
                     If DirectoryStatus = True Then
                         bitmap.Save(Export.ChangeExt("bmp"), info, Nothing)
                     Else

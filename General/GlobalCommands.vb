@@ -318,7 +318,7 @@ Public Class GlobalCommands
             --input-res --log-framelist --mux-option --output-file --raw --seek --skip-frame
             --sub-copy --version --video-streamid --video-track --vpy --vpy-mt".Split((" " + BR).ToCharArray())
 
-        Dim amdHelp = File.ReadAllText(".\Apps\VCEEnc\help.txt").Replace("(no-)", "").Replace("--no-", "--")
+        Dim amdHelp = File.ReadAllText(".\Apps\Encoders\VCEEnc\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim amdHelpSwitches = Regex.Matches(amdHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim amdCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\vceenc.vb").Replace("--no-", "--")
         Dim amdPresent = Regex.Matches(amdCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
@@ -479,10 +479,10 @@ Public Class GlobalCommands
             End If
         Next
 
-        supportedTools.WriteUTF8File("C:\Users\Revan\Desktop\StaxRip\docs\tools.rst")
+        supportedTools.WriteUTF8File("C:\Users\Revan\Desktop\staxrip-master\docs\tools.rst")
 
         Dim screenshots = "Screenshots" + BR + "===========" + BR2 + ".. contents::" + BR2
-        Dim screenshotFiles = Directory.GetFiles("C:\Users\Revan\Desktop\StaxRip\docs\screenshots").ToList
+        Dim screenshotFiles = Directory.GetFiles("C:\Users\Revan\Desktop\staxrip-master\docs\screenshots").ToList
         screenshotFiles.Sort(New StringLogicalComparer)
 
         For Each i In screenshotFiles
@@ -490,7 +490,7 @@ Public Class GlobalCommands
             screenshots += name + BR + "-".Multiply(name.Length) + BR2 + ".. image:: screenshots/" + i.FileName + BR2
         Next
 
-        screenshots.WriteUTF8File("C:\Users\Revan\Desktop\StaxRip\docs\screenshots.rst")
+        screenshots.WriteUTF8File("C:\Users\Revan\Desktop\staxrip-master\docs\screenshots.rst")
 
         Dim macros = "Macros" + BR + "======" + BR2
 
@@ -498,7 +498,7 @@ Public Class GlobalCommands
             macros += "``" + i.Name + "``" + BR2 + i.Value + BR2
         Next
 
-        macros.WriteUTF8File("C:\Users\Revan\Desktop\StaxRip\docs\macros.rst")
+        macros.WriteUTF8File("C:\Users\Revan\Desktop\staxrip-master\docs\macros.rst")
 
         Dim powershell = "PowerShell Scripting
 ====================

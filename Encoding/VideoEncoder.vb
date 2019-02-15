@@ -537,7 +537,7 @@ Public Class BatchEncoder
 
     Function GetSkipStrings(commands As String) As String()
         If commands.Contains("xvid_encraw") Then
-            Return {"key="}
+            Return {"key=", "frames("}
         ElseIf commands.Contains("x264") Then
             Return {"%]"}
         ElseIf commands.Contains("NVEnc") Then

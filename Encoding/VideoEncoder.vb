@@ -537,7 +537,7 @@ Public Class BatchEncoder
 
     Function GetSkipStrings(commands As String) As String()
         If commands.Contains("xvid_encraw") Then
-            Return {"key="}
+            Return {"key=", "frames("}
         ElseIf commands.Contains("x264") Then
             Return {"%]"}
         ElseIf commands.Contains("NVEnc") Then
@@ -596,8 +596,6 @@ Public Class BatchEncoder
         If Not g.VerifyRequirements Then Exit Sub
         If Not g.IsValidSource Then Exit Sub
 
-        Log.WriteHeader("Compressibility Check")
-
         Dim script As New VideoScript
         script.Engine = p.Script.Engine
         script.Filters = p.Script.GetFiltersCopy
@@ -612,16 +610,17 @@ Public Class BatchEncoder
                 "clip = core.std.AssumeFPS(clip = clip, fpsnum = fpsnum, fpsden = fpsden)"
         End If
 
-        Log.WriteLine(code + BR2)
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
         script.Path = p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType
         script.Synchronize()
 
         Dim batchPath = p.TempDir + p.TargetFile.Base + "_CompCheck.bat"
         Dim batchCode = Proc.WriteBatchFile(batchPath, GetBatchCode(Macro.Expand(CompCheckCommandLines)))
-        Log.WriteLine(batchCode + BR2)
 
         Using proc As New Proc
+            proc.Header = "Compressibility Check"
+            proc.WriteLog(code + BR2)
+            proc.WriteLog(batchCode + BR2)                                                                                                            
             proc.SkipStrings = GetSkipStrings(batchCode)
             proc.File = "cmd.exe"
             proc.Arguments = "/C call """ + batchPath + """"
@@ -644,6 +643,7 @@ Public Class BatchEncoder
         g.MainForm.Assistant()
 
         Log.WriteLine(CInt(Calc.GetPercent).ToString() + " %")
+        Log.Save()
     End Sub
 End Class
 

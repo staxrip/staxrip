@@ -207,6 +207,12 @@
     <Compile Include="Forms\TextHelpForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\UpdateForm.Designer.vb">
+      <DependentUpon>UpdateForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UpdateForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="General\Extras.vb" />
     <Compile Include="General\Job.vb" />
     <Compile Include="General\LogBuilder.vb" />
@@ -489,6 +495,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TextHelpForm.resx">
       <DependentUpon>TextHelpForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UpdateForm.resx">
+      <DependentUpon>UpdateForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\DataForm.resx">
       <DependentUpon>DataForm.vb</DependentUpon>

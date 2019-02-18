@@ -579,10 +579,9 @@ Public Class GlobalClass
 
     Sub SetTempDir()
 
-        Dim OSName = Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName")
         If p.SourceFile <> "" Then
             p.TempDir = Macro.Expand(p.TempDir)
-            If p.TempDir = "" and OSName.Contains("Windows 10") Then          
+            If p.TempDir = "" Then
                 Try
                     If p.SourceFile.Dir.EndsWith("_temp\") Then
                         p.TempDir = p.SourceFile.Dir
@@ -590,11 +589,7 @@ Public Class GlobalClass
                         Dim base = p.SourceFile.Base
                         p.TempDir = p.SourceFile.Dir + base + "_temp\"
                     End If
-                Catch ex As Exception
-                    MsgInfo(ex.Message)
-                End Try
-            Else ''Will Only Trigger For Older OS's.                
-                Try
+                Catch ex As PathTooLongException
                     If p.SourceFile.Dir.EndsWith("_temp\") Then
                         p.TempDir = p.SourceFile.Dir
                     Else
@@ -602,8 +597,6 @@ Public Class GlobalClass
                         If base.Length > 30 Then base = base.Shorten(15) + "..."
                         p.TempDir = p.SourceFile.Dir + base + "_temp\"
                     End If
-                Catch ex As Exception
-                    MsgInfo(ex.Message)
                 End Try
             End If
 

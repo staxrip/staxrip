@@ -582,7 +582,7 @@ Public Class GlobalClass
         Dim OSName = Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName")
         If p.SourceFile <> "" Then
             p.TempDir = Macro.Expand(p.TempDir)
-            If OSName.Contains("Windows 10") Then
+            If p.TempDir = "" and OSName.Contains("Windows 10") Then          
                 Try
                     If p.SourceFile.Dir.EndsWith("_temp\") Then
                         p.TempDir = p.SourceFile.Dir

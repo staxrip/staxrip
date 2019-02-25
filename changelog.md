@@ -9,6 +9,9 @@ Dotnet 4.8 Preview Build (Not Required But Fully Supports 4.7.2)
 https://github.com/Microsoft/dotnet-framework-early-access
 
 2.0.0.1
+- Updater: The Code has been Changed to used Async Functions.
+- VS: The Base Resizer python Code is slightly Different Compared to Resizer python Code in the Context.
+- VS: SVPFlow Altered to target Target rather using CurrentFramte & Num / Den to achieve the Final Framerate. Type quality has also been Changed.
 - x265: AQmode Tweaked for the new Defaults.
 - XAA Remove from AVS (Temp), due to certain Functions being alter in AVS+ core.
 - VS: Updated DGIndexNV Load Function It now loads using it's native method instead of AVS load function.
@@ -19,7 +22,14 @@ https://github.com/Microsoft/dotnet-framework-early-access
 - VS: nnedi3_rpow2 added to Script folder for Support.
 - VS: Added FixTelecinedFades to Context Menu for RCR.
 - Rebuilt QVSEnc Encoder Script
-- x265 Has been updated to 3.0-AU
+- x265 Has been updated to 3.0-AU With any Additional Chnages.
+- Rav1e Added The Following Flags:
+	- content_light(aka MAX CLL / FALL)
+	- Bitrate
+	- Passes
+	- Threads
+	- Range
+	-mastering_display
 - Added Merge: Chapter Cutting Feature to MkvMuxer (Credit: wybb)
 
 2.0

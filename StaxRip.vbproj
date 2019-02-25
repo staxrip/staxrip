@@ -207,12 +207,6 @@
     <Compile Include="Forms\TextHelpForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\UpdateForm.Designer.vb">
-      <DependentUpon>UpdateForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\UpdateForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="General\Extras.vb" />
     <Compile Include="General\Job.vb" />
     <Compile Include="General\LogBuilder.vb" />
@@ -453,10 +447,7 @@
     <None Include="Fonts\mikadan.ttf" />
     <None Include="Fonts\Segoe-MDL2-Assets.ttf" />
     <None Include="packages.config" />
-    <None Include="Resources\FontAwesome.ttf" />
-    <None Include="Resources\play.png" />
     <None Include="Resources\arrow.png" />
-    <None Include="Resources\Segoe-MDL2-Assets.ttf" />
     <None Include="Resources\X.png" />
     <None Include="Resources\Right3.png" />
     <None Include="Resources\Right2.png" />
@@ -495,9 +486,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TextHelpForm.resx">
       <DependentUpon>TextHelpForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\UpdateForm.resx">
-      <DependentUpon>UpdateForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\DataForm.resx">
       <DependentUpon>DataForm.vb</DependentUpon>

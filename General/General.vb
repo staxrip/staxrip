@@ -23,6 +23,12 @@ Public Class Folder
         End Get
     End Property
 
+    Shared ReadOnly Property Fonts() As String
+        Get
+            Return Environment.GetFolderPath(Environment.SpecialFolder.Fonts).FixDir
+        End Get
+    End Property
+
     Shared ReadOnly Property Startup() As String
         Get
             Return Application.StartupPath.FixDir

@@ -1053,18 +1053,6 @@ Public Class Package
                 New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")}})
 
         Add(New PluginPackage With {
-            .Name = "vsrawsource",
-            .Filename = "vsrawsource.dll",
-            .DirPath = "Plugins\VS\vsRawSource",
-            .Description = "VapourSynth source filter based on Libav supporting a wide range of input formats.",
-            .HelpURL = "http://github.com/VFR-maniac/L-SMASH-Works/blob/master/VapourSynth/README",
-            .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
-            .VSFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")"),
-                New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")}})
-
-        Add(New PluginPackage With {
             .Name = "Deblock",
             .Filename = "Deblock.dll",
             .DirPath = "Plugins\VS\Deblock",
@@ -1984,7 +1972,7 @@ Public Class AviSynthPlusPackage
         WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
         Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         FixedDir = Folder.System
-        SetupFilename = "Installers\AviSynthPlus-MT-r2728.exe"
+        SetupFilename = "Installers\AviSynthPlus-MT-r2772.exe"
     End Sub
 
     Public Overrides Property IsRequired As Boolean

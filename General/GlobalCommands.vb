@@ -276,10 +276,10 @@ Public Class GlobalCommands
 
     <Command("Test")>
     Sub Test()
-        If Not File.Exists(Folder.Startup.Parent + "Encoding\nvenc.vb") Then
-            MsgError("This feature is development related.")
-            Exit Sub
-        End If
+        'If Not File.Exists(Folder.Startup.Parent + "Encoding\nvenc.vb") Then
+        '    MsgError("This feature is development related.")
+        '    Exit Sub
+        'End If
 
         Dim msg = ""
 
@@ -296,7 +296,7 @@ Public Class GlobalCommands
             --avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
             --log --log-framelist".Split((" " + BR).ToCharArray())
 
-        File.WriteAllText(Package.NVEnc.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.NVEnc.Path, "-h"))
+        File.WriteAllText(Package.NVEnc.GetDir + "\help.txt", ProcessHelp.GetStdOut(Package.NVEnc.Path, "-h"))
         Dim nvHelp = File.ReadAllText(Package.NVEnc.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim nvHelpSwitches = Regex.Matches(nvHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim nvCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\nvenc.vb").Replace("--no-", "--")
@@ -535,18 +535,18 @@ Default Scripts
 ---------------
 
 "
-        Dim psdir = "C:\Users\Revan\Desktop\StaxRip\docs\powershell"
+        Dim psdir = "C:\Users\Revan\Desktop\staxrip-master\docs\powershell"
         DirectoryHelp.Delete(psdir)
         Directory.CreateDirectory(psdir)
 
-        For Each i In Directory.GetFiles("C:\Users\Revan\Desktop\StaxRip\bin\Apps\Scripts")
+        For Each i In Directory.GetFiles("C:\Users\Revan\Desktop\staxrip-master\bin\Apps\Scripts")
             FileHelp.Copy(i, psdir + i.FileName)
             Dim filename = i.FileName
             powershell += filename + BR + "~".Multiply(filename.Length) + BR2
             powershell += ".. literalinclude:: " + "powershell/" + i.FileName + BR + "   :language: powershell" + BR2
         Next
 
-        powershell.WriteUTF8File("C:\Users\Revan\Desktop\StaxRip\docs\powershell.rst")
+        powershell.WriteUTF8File("C:\Users\Revan\Desktop\staxrip-master\docs\powershell.rst")
 
         Dim switches = "Command Line Interface
 ======================
@@ -615,7 +615,7 @@ Switches
             switches += command.Attribute.Description + BR2 + BR
         Next
 
-        switches.WriteUTF8File("C:\Users\Revan\Desktop\StaxRip\docs\cli.rst")
+        switches.WriteUTF8File("C:\Users\Revan\Desktop\staxrip-master\docs\cli.rst")
 
         If msg <> "" Then
             Dim fs = Folder.Temp + "staxrip todo.txt"

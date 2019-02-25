@@ -83,16 +83,6 @@ ThumbnailsStaxRip
 
 .. image:: screenshots/ThumbnailsStaxRip.png
 
-Updatemsg
----------
-
-.. image:: screenshots/Updatemsg.png
-
-UpdateScreen
-------------
-
-.. image:: screenshots/UpdateScreen.png
-
 x265
 ----
 

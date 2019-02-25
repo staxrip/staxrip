@@ -6030,6 +6030,7 @@ Public Class MainForm
     '        Try
     '            f.ShowDialog()
     '        Catch ex As Exception
+    '            MsgInfo(ex.Message)
     '        End Try
     '    End Using
     'End Sub

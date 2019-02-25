@@ -928,7 +928,7 @@ Public Class x265Params
                     New StringParam With {.Switch = "--dolby-vision-rpu", .Text = "Dolby Vision RPU", .Quotes = True, .BrowseFile = True},
                     New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "Maximum Picture Order Count", .Init = 8},
                     RepeatHeaders, Info, HRD, AUD,
-                    New BoolParam With {.Switch = "--hrd-concat", .Init = False, .Text = "HRD Concat"},
+                    New BoolParam With {.Switch = "---hrd-concat", .Init = False, .Text = "HRD Concat"},
                     New BoolParam With {.Switch = "--vui-timing-info", .Text = "VUI Timing Info", .Init = True},
                     New BoolParam With {.Switch = "--vui-hrd-info", .Text = "VUI HRD Info", .Init = True},
                     New BoolParam With {.Switch = "--idr-recovery-sei", .Init = False, .Text = "Recovery SEI"},

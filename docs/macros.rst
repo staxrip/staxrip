@@ -555,6 +555,10 @@ File path to FineSharp
 
 File path to finesharp
 
+``%app:FixTelecinedFades%``
+
+File path to FixTelecinedFades
+
 ``%app:flash3kyuu_deband%``
 
 File path to flash3kyuu_deband
@@ -583,6 +587,10 @@ File path to FrameRateConverter DLL
 
 File path to fvsfunc
 
+``%app:G41Fun%``
+
+File path to G41Fun
+
 ``%app:GradFun2DB%``
 
 File path to GradFun2DB
@@ -598,10 +606,6 @@ File path to Haali Splitter
 ``%app:havsfunc%``
 
 File path to havsfunc
-
-``%app:hnwvsfunc%``
-
-File path to hnwvsfunc
 
 ``%app:HQDeringmod%``
 
@@ -767,6 +771,10 @@ File path to nnedi3 AVSI
 
 File path to nnedi3
 
+``%app:nnedi3_rpow2%``
+
+File path to nnedi3_rpow2
+
 ``%app:nnedi3cl%``
 
 File path to nnedi3cl
@@ -846,6 +854,10 @@ File path to scenechange
 ``%app:Shader AVSI%``
 
 File path to Shader AVSI
+
+``%app:Shader DLL%``
+
+File path to Shader DLL
 
 ``%app:SMDegrain%``
 
@@ -935,10 +947,6 @@ File path to TTempSmooth
 
 File path to UnDot
 
-``%app:Update%``
-
-File path to Update
-
 ``%app:VagueDenoiser%``
 
 File path to VagueDenoiser
@@ -1022,10 +1030,6 @@ File path to x264
 ``%app:x265%``
 
 File path to x265
-
-``%app:XAA%``
-
-File path to XAA
 
 ``%app:xNLMeans%``
 
@@ -1315,6 +1319,10 @@ Folder path to FineSharp
 
 Folder path to finesharp
 
+``%app_dir:FixTelecinedFades%``
+
+Folder path to FixTelecinedFades
+
 ``%app_dir:flash3kyuu_deband%``
 
 Folder path to flash3kyuu_deband
@@ -1343,6 +1351,10 @@ Folder path to FrameRateConverter DLL
 
 Folder path to fvsfunc
 
+``%app_dir:G41Fun%``
+
+Folder path to G41Fun
+
 ``%app_dir:GradFun2DB%``
 
 Folder path to GradFun2DB
@@ -1358,10 +1370,6 @@ Folder path to Haali Splitter
 ``%app_dir:havsfunc%``
 
 Folder path to havsfunc
-
-``%app_dir:hnwvsfunc%``
-
-Folder path to hnwvsfunc
 
 ``%app_dir:HQDeringmod%``
 
@@ -1527,6 +1535,10 @@ Folder path to nnedi3 AVSI
 
 Folder path to nnedi3
 
+``%app_dir:nnedi3_rpow2%``
+
+Folder path to nnedi3_rpow2
+
 ``%app_dir:nnedi3cl%``
 
 Folder path to nnedi3cl
@@ -1606,6 +1618,10 @@ Folder path to scenechange
 ``%app_dir:Shader AVSI%``
 
 Folder path to Shader AVSI
+
+``%app_dir:Shader DLL%``
+
+Folder path to Shader DLL
 
 ``%app_dir:SMDegrain%``
 
@@ -1695,10 +1711,6 @@ Folder path to TTempSmooth
 
 Folder path to UnDot
 
-``%app_dir:Update%``
-
-Folder path to Update
-
 ``%app_dir:VagueDenoiser%``
 
 Folder path to VagueDenoiser
@@ -1782,10 +1794,6 @@ Folder path to x264
 ``%app_dir:x265%``
 
 Folder path to x265
-
-``%app_dir:XAA%``
-
-Folder path to XAA
 
 ``%app_dir:xNLMeans%``
 

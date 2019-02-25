@@ -511,12 +511,6 @@ Starts a tool by name as shown in the app manage dialog.
 Test
 
 
--Update
-~~~~~~~
-
-Checks For Updates
-
-
 -WriteLog:header,message
 ~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -1,0 +1,12 @@
+version: 2.0.0.{build}
+skip_tags: true
+image: Visual Studio 2019 Preview
+configuration: Release
+platform: x64
+clone_folder: C:\Staxrip
+build:
+  project: StaxRip.sln
+  verbosity: normal
+artifacts:
+- path: bin
+  name: StaxRip

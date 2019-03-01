@@ -719,7 +719,7 @@ Namespace UI
         Event LinkClick()
 
         Sub New()
-            Label.Left = 7
+            Label.Left = 4
             Label.AutoSize = True
             Controls.Add(Label)
         End Sub

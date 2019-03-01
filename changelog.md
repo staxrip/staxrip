@@ -1,17 +1,22 @@
 #### Requirements
 
-.NET 4.7.2 is required to be installed(For Windows 10 Anniversary and Below).
+.NET 4.7.2 / 4.8 is required to be installed(For Windows 10 Anniversary and Below).
 
 https://dotnet.microsoft.com/download
 
-Dotnet 4.8 Preview Build (Not Required But Fully Supports 4.7.2)
+Dotnet 4.8 RC Build (Not Required But Fully Supports past dotnet Builds)
 
 https://github.com/Microsoft/dotnet-framework-early-access
 
 2.0.0.1
-- Updater: The Code has been Changed to used Async Functions.
-- VS: The Base Resizer python Code is slightly Different Compared to Resizer python Code in the Context.
-- VS: SVPFlow Altered to target Target rather using CurrentFramte & Num / Den to achieve the Final Framerate. Type quality has also been Changed.
+- This is a pure Refresh Release, Mainily designed to update some of the encoding tools.
+- This Release contains all the Changes from the Pipeline along with the Following.
+- Updated Temp Folder Creation and Long Path Checker (Long Path Checker is only used on any OS below Window 10)
+- Updated Comparison Tool It shouldn't need to index file when ffms2 is used.
+- Updated Both Contact Sheet Creator and Video Comparison tool to use LWLibavVideoSource over the Standard L-Smash.
+- Updated Visual Studio to 2019 RC, Anything Compiled will be using RC Build of VS 2019.
+- VS: The default Resizer Code is slightly Different Compared to Base VS Resizer Code in the Context Menu.
+- VS: SVPFlow Altered to Target CurrentFramte & Num / Den to achieve the Final Framerate instead of rounding. Type quality has also been Changed, aswell linear light support has been added (GPU Only).
 - x265: AQmode Tweaked for the new Defaults.
 - XAA Remove from AVS (Temp), due to certain Functions being alter in AVS+ core.
 - VS: Updated DGIndexNV Load Function It now loads using it's native method instead of AVS load function.
@@ -23,13 +28,7 @@ https://github.com/Microsoft/dotnet-framework-early-access
 - VS: Added FixTelecinedFades to Context Menu for RCR.
 - Rebuilt QVSEnc Encoder Script
 - x265 Has been updated to 3.0-AU With any Additional Chnages.
-- Rav1e Added The Following Flags:
-	- content_light(aka MAX CLL / FALL)
-	- Bitrate
-	- Passes
-	- Threads
-	- Range
-	-mastering_display
+- Added Merge: XviD Encoding code has been Updated (Credit: jkilez)
 - Added Merge: Chapter Cutting Feature to MkvMuxer (Credit: wybb)
 
 2.0

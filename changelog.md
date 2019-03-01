@@ -9,6 +9,7 @@ Dotnet 4.8 RC Build (Not Required But Fully Supports past dotnet Builds)
 https://github.com/Microsoft/dotnet-framework-early-access
 
 2.0.0.1
+- Removed Auto insert for RGB for VS and Convert Bits for AVS. Most are no longer useful due to 10Bit+ Videos are more common now.
 - This is a pure Refresh Release, Mainily designed to update some of the encoding tools.
 - This Release contains all the Changes from the Pipeline along with the Following.
 - Updated Temp Folder Creation and Long Path Checker (Long Path Checker is only used on any OS below Window 10)

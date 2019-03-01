@@ -2022,7 +2022,11 @@ Public Class PythonPackage
                 Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", "ExecutablePath"),
                 Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", "ExecutablePath"),
                 Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", Nothing).FixDir + "python.exe",
-                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", Nothing).FixDir + "python.exe"               
+                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", Nothing).FixDir + "python.exe",
+                Registry.CurrentUser.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", "ExecutablePath"),
+                Registry.LocalMachine.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", "ExecutablePath"),
+                Registry.CurrentUser.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", Nothing).FixDir + "python.exe",
+                Registry.LocalMachine.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", Nothing).FixDir + "python.exe"
                 }
 
                 If File.Exists(i) Then Return i

@@ -459,7 +459,11 @@ Public Class Package
             .Description = "Library required by the FFT3DFilter AviSynth plugin.",
             .URL = "http://www.fftw.org/",
             .FixedDir = Folder.System,
-            .IsRequiredFunc = Function() Package.AviSynth.IsRequired,
+            .IsRequiredFunc = Function()
+                                  For Each i In p.Script.Filters
+                                      If i.Script.Contains("fft") OrElse i.Script.Contains("FFT") Then Return True
+                                  Next
+                              End Function,
             .SetupAction = Sub()
                                Using pr As New Process
                                    pr.StartInfo.FileName = "xcopy.exe"

@@ -161,16 +161,16 @@ Public MustInherit Class VideoEncoder
 
         ret.ShowItemToolTips = False
         ret.GripStyle = ToolStripGripStyle.Hidden
-        ret.BackColor = System.Drawing.SystemColors.Window
+        ret.BackColor = SystemColors.Window
         ret.Dock = DockStyle.Fill
-        ret.BackColor = System.Drawing.SystemColors.Window
-        ret.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow
+        ret.BackColor = SystemColors.Window
+        ret.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow
         ret.ShowControlBorder = True
         ret.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
         For Each i In GetMenu()
             Dim b As New ToolStripButton
-            b.Margin = New Padding(0)
+            b.Margin = New Padding(2, 2, 0, 0)
             b.Text = i.Key
             b.Padding = New Padding(4)
             Dim happy = i

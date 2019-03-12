@@ -662,13 +662,9 @@ Namespace UI
             MyBase.New(container)
         End Sub
 
-        Protected Overrides Sub OnOpening(e As CancelEventArgs)
-            MyBase.OnOpening(e)
-            g.SetRenderer(Me)
-        End Sub
-
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
             MyBase.OnHandleCreated(e)
+            g.SetRenderer(Me)
             Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         End Sub
 

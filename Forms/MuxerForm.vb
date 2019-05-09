@@ -472,7 +472,7 @@ Public Class MuxerForm
     End Sub
 
     Private Sub bnAddAudio_Click(sender As Object, e As EventArgs) Handles bnAdd.Click
-        Using d As New OpenFileDialog
+        Using d As New System.Windows.Forms.OpenFileDialog
             d.SetFilter(FileTypes.Audio.Union(FileTypes.VideoAudio))
             d.Multiselect = True
             d.SetInitDir(p.TempDir)

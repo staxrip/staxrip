@@ -2073,7 +2073,7 @@ Public Class PluginPackage
         If p.Script.Engine = ScriptEngine.AviSynth AndAlso
             Not package.AvsFilterNames.NothingOrEmpty Then
 
-            Dim fullScriptLower = p.Script.GetFullScript().ToLowerInvariant
+            Dim fullScriptLower = p.Script.GetScript().ToLowerInvariant
 
             For Each filterName In package.AvsFilterNames
                 If fullScriptLower.Contains(filterName.ToLowerInvariant) Then Return True

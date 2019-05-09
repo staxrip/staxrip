@@ -54,7 +54,7 @@ Public Class PreviewForm
         Me.pVideo.SuspendLayout()
         Me.SuspendLayout()
         '
-        'bDeleteRange
+        'bnDeleteRange
         '
         Me.bnDeleteRange.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnDeleteRange.BackColor = System.Drawing.Color.White
@@ -62,15 +62,15 @@ Public Class PreviewForm
         Me.bnDeleteRange.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bnDeleteRange.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bnDeleteRange.Location = New System.Drawing.Point(332, 432)
-        Me.bnDeleteRange.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.bnDeleteRange.Name = "bDeleteRange"
+        Me.bnDeleteRange.Margin = New System.Windows.Forms.Padding(2)
+        Me.bnDeleteRange.Name = "bnDeleteRange"
         Me.bnDeleteRange.Size = New System.Drawing.Size(25, 26)
         Me.bnDeleteRange.TabIndex = 47
         Me.bnDeleteRange.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnDeleteRange, "Deletes the cut selection that encloses the current position.")
         Me.bnDeleteRange.UseVisualStyleBackColor = False
         '
-        'bForward1
+        'bnForward1
         '
         Me.bnForward1.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnForward1.BackColor = System.Drawing.Color.White
@@ -78,15 +78,15 @@ Public Class PreviewForm
         Me.bnForward1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bnForward1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bnForward1.Location = New System.Drawing.Point(251, 432)
-        Me.bnForward1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.bnForward1.Name = "bForward1"
+        Me.bnForward1.Margin = New System.Windows.Forms.Padding(2)
+        Me.bnForward1.Name = "bnForward1"
         Me.bnForward1.Size = New System.Drawing.Size(25, 26)
         Me.bnForward1.TabIndex = 46
         Me.bnForward1.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnForward1, "Forward 1 Frames")
         Me.bnForward1.UseVisualStyleBackColor = False
         '
-        'bBackward1
+        'bnBackward1
         '
         Me.bnBackward1.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnBackward1.BackColor = System.Drawing.Color.White
@@ -94,15 +94,15 @@ Public Class PreviewForm
         Me.bnBackward1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bnBackward1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bnBackward1.Location = New System.Drawing.Point(170, 432)
-        Me.bnBackward1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.bnBackward1.Name = "bBackward1"
+        Me.bnBackward1.Margin = New System.Windows.Forms.Padding(2)
+        Me.bnBackward1.Name = "bnBackward1"
         Me.bnBackward1.Size = New System.Drawing.Size(25, 26)
         Me.bnBackward1.TabIndex = 45
         Me.bnBackward1.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnBackward1, "Backward 1 Frame")
         Me.bnBackward1.UseVisualStyleBackColor = False
         '
-        'bRangeStart
+        'bnRangeStart
         '
         Me.bnRangeStart.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnRangeStart.BackColor = System.Drawing.Color.White
@@ -110,15 +110,15 @@ Public Class PreviewForm
         Me.bnRangeStart.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bnRangeStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bnRangeStart.Location = New System.Drawing.Point(197, 432)
-        Me.bnRangeStart.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.bnRangeStart.Name = "bRangeStart"
+        Me.bnRangeStart.Margin = New System.Windows.Forms.Padding(2)
+        Me.bnRangeStart.Name = "bnRangeStart"
         Me.bnRangeStart.Size = New System.Drawing.Size(25, 26)
         Me.bnRangeStart.TabIndex = 44
         Me.bnRangeStart.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnRangeStart, "Sets a start cut point. Press F1 for help about cutting")
         Me.bnRangeStart.UseVisualStyleBackColor = False
         '
-        'bRangeEnd
+        'bnRangeEnd
         '
         Me.bnRangeEnd.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnRangeEnd.BackColor = System.Drawing.Color.White
@@ -126,15 +126,15 @@ Public Class PreviewForm
         Me.bnRangeEnd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bnRangeEnd.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bnRangeEnd.Location = New System.Drawing.Point(224, 432)
-        Me.bnRangeEnd.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.bnRangeEnd.Name = "bRangeEnd"
+        Me.bnRangeEnd.Margin = New System.Windows.Forms.Padding(2)
+        Me.bnRangeEnd.Name = "bnRangeEnd"
         Me.bnRangeEnd.Size = New System.Drawing.Size(25, 26)
         Me.bnRangeEnd.TabIndex = 43
         Me.bnRangeEnd.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnRangeEnd, "Sets a end cut point. Press F1 for help about cutting")
         Me.bnRangeEnd.UseVisualStyleBackColor = False
         '
-        'bForward10
+        'bnForward10
         '
         Me.bnForward10.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnForward10.BackColor = System.Drawing.Color.White
@@ -142,24 +142,24 @@ Public Class PreviewForm
         Me.bnForward10.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bnForward10.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bnForward10.Location = New System.Drawing.Point(278, 432)
-        Me.bnForward10.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.bnForward10.Name = "bForward10"
+        Me.bnForward10.Margin = New System.Windows.Forms.Padding(2)
+        Me.bnForward10.Name = "bnForward10"
         Me.bnForward10.Size = New System.Drawing.Size(25, 26)
         Me.bnForward10.TabIndex = 42
         Me.bnForward10.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnForward10, "Forward 10 Frames")
         Me.bnForward10.UseVisualStyleBackColor = False
         '
-        'bBackward10
+        'bnBackward10
         '
         Me.bnBackward10.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnBackward10.BackColor = System.Drawing.Color.White
-        Me.bnBackward10.BackgroundImage = CType(resources.GetObject("bBackward10.BackgroundImage"), System.Drawing.Image)
+        Me.bnBackward10.BackgroundImage = CType(resources.GetObject("bnBackward10.BackgroundImage"), System.Drawing.Image)
         Me.bnBackward10.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bnBackward10.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bnBackward10.Location = New System.Drawing.Point(143, 432)
-        Me.bnBackward10.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.bnBackward10.Name = "bBackward10"
+        Me.bnBackward10.Margin = New System.Windows.Forms.Padding(2)
+        Me.bnBackward10.Name = "bnBackward10"
         Me.bnBackward10.Size = New System.Drawing.Size(25, 26)
         Me.bnBackward10.TabIndex = 41
         Me.bnBackward10.TabStop = False
@@ -173,13 +173,13 @@ Public Class PreviewForm
         Me.bExtras.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bExtras.ForeColor = System.Drawing.SystemColors.ControlText
         Me.bExtras.Location = New System.Drawing.Point(359, 432)
-        Me.bExtras.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.bExtras.Margin = New System.Windows.Forms.Padding(2)
         Me.bExtras.ShowMenuSymbol = True
         Me.bExtras.Size = New System.Drawing.Size(25, 26)
         Me.bExtras.TabStop = False
         Me.ToolTip.SetToolTip(Me.bExtras, "Shows the menu")
         '
-        'bForward100
+        'bnForward100
         '
         Me.bnForward100.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnForward100.BackColor = System.Drawing.Color.White
@@ -188,26 +188,26 @@ Public Class PreviewForm
         Me.bnForward100.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bnForward100.ForeColor = System.Drawing.SystemColors.ControlText
         Me.bnForward100.Location = New System.Drawing.Point(305, 432)
-        Me.bnForward100.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.bnForward100.Name = "bForward100"
+        Me.bnForward100.Margin = New System.Windows.Forms.Padding(2)
+        Me.bnForward100.Name = "bnForward100"
         Me.bnForward100.Size = New System.Drawing.Size(25, 26)
         Me.bnForward100.TabIndex = 49
         Me.bnForward100.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnForward100, "Forward 100 Frames")
         Me.bnForward100.UseVisualStyleBackColor = False
         '
-        'bBackward100
+        'bnBackward100
         '
         Me.bnBackward100.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnBackward100.BackColor = System.Drawing.Color.White
-        Me.bnBackward100.BackgroundImage = CType(resources.GetObject("bBackward100.BackgroundImage"), System.Drawing.Image)
+        Me.bnBackward100.BackgroundImage = CType(resources.GetObject("bnBackward100.BackgroundImage"), System.Drawing.Image)
         Me.bnBackward100.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bnBackward100.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bnBackward100.Font = New System.Drawing.Font("Segoe UI", 4.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.bnBackward100.ForeColor = System.Drawing.SystemColors.ControlText
         Me.bnBackward100.Location = New System.Drawing.Point(116, 432)
-        Me.bnBackward100.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.bnBackward100.Name = "bBackward100"
+        Me.bnBackward100.Margin = New System.Windows.Forms.Padding(2)
+        Me.bnBackward100.Name = "bnBackward100"
         Me.bnBackward100.Size = New System.Drawing.Size(25, 26)
         Me.bnBackward100.TabIndex = 48
         Me.bnBackward100.TabStop = False
@@ -229,7 +229,7 @@ Public Class PreviewForm
         Me.pVideo.Controls.Add(Me.bnBackward100)
         Me.pVideo.Controls.Add(Me.pnTrack)
         Me.pVideo.Location = New System.Drawing.Point(64, 25)
-        Me.pVideo.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.pVideo.Margin = New System.Windows.Forms.Padding(2)
         Me.pVideo.Name = "pVideo"
         Me.pVideo.Size = New System.Drawing.Size(500, 462)
         Me.pVideo.TabIndex = 50
@@ -238,17 +238,17 @@ Public Class PreviewForm
         '
         Me.cmsMain.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.cmsMain.Name = "cmsMain"
-        Me.cmsMain.Size = New System.Drawing.Size(74, 4)
+        Me.cmsMain.Size = New System.Drawing.Size(61, 4)
         '
-        'pTrack
+        'pnTrack
         '
         Me.pnTrack.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pnTrack.BackColor = System.Drawing.SystemColors.Control
         Me.pnTrack.Cursor = System.Windows.Forms.Cursors.SizeNS
         Me.pnTrack.Location = New System.Drawing.Point(5, 416)
-        Me.pnTrack.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.pnTrack.Name = "pTrack"
+        Me.pnTrack.Margin = New System.Windows.Forms.Padding(2)
+        Me.pnTrack.Name = "pnTrack"
         Me.pnTrack.Size = New System.Drawing.Size(490, 12)
         Me.pnTrack.TabIndex = 51
         '
@@ -265,8 +265,8 @@ Public Class PreviewForm
         Me.BackColor = System.Drawing.Color.Black
         Me.ClientSize = New System.Drawing.Size(640, 513)
         Me.Controls.Add(Me.pVideo)
-        Me.DoubleBuffered = True
         Me.KeyPreview = True
+        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "PreviewForm"
         Me.Text = "Preview"
         Me.pVideo.ResumeLayout(False)
@@ -279,7 +279,6 @@ Public Class PreviewForm
     Public AVI As AVIFile
     Public RangeStart As Integer = -1
 
-    Private InfoAviSynthDocument As VideoScript
     Private AviSynthDocument As VideoScript
     Private SizeFactor As Double = 1
     Private TargetFrames As Integer

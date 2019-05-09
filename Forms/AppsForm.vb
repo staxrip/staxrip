@@ -405,8 +405,8 @@ Public Class AppsForm
             Dim plugin = TryCast(pack, PluginPackage)
 
             Dim searchString = pack.Name + pack.Description + pack.Version +
-                plugin?.VSFilterNames.Join(" ") +pack.Path+
-                plugin?.AvsFilterNames.Join(" ") 
+                plugin?.VSFilterNames.Join(" ") + pack.Path +
+                plugin?.AvsFilterNames.Join(" ")
 
             If searchString?.ToLower.Contains(SearchTextBox.Text?.ToLower) Then
                 If plugin Is Nothing Then

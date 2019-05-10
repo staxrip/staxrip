@@ -331,17 +331,7 @@ clip.set_output()
                 If Not plugin.AvsFilterNames Is Nothing Then
                     For Each filterName In plugin.AvsFilterNames
                         If script.Contains(filterName.ToLower) Then
-                            If plugin.Name = "ffms2" And plugin.Name <> "ffms2k" Then
-                                Dim loadC = "LoadCPlugin(""" + fp + """)" + BR
-
-                                If Not script.Contains(loadC.ToLower) AndAlso
-                                    Not loadCode.Contains(loadC) AndAlso
-                                    Not scriptAlready.Contains(loadC.ToLower) Then
-
-                                    loadCode += loadC
-                                End If
-
-                            ElseIf plugin.Filename.Ext = "dll" Then
+                            If plugin.Filename.Ext = "dll" Then
                                 Dim load = "LoadPlugin(""" + fp + """)" + BR
 
                                 If File.Exists(Folder.Plugins + fp.FileName) AndAlso

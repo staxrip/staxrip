@@ -653,7 +653,13 @@ Public Class GlobalClass
                 proc.Header = "Indexing using ffmsindex"
                 proc.SkipString = "Indexing, please wait..."
                 proc.Project = proj
-                proc.File = Package.ffms2.GetDir + "ffmsindex.exe"
+
+                If proj.Script.Engine = ScriptEngine.AviSynth Then
+                    proc.File = Package.ffms2avs.GetDir + "ffmsindex.exe"
+                Else
+                    proc.File = Package.ffms2vs.GetDir + "ffmsindex.exe"
+                End If
+
                 proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.Escape + " " + cachePath.Escape
                 proc.Start()
             End Using

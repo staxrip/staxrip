@@ -290,7 +290,13 @@ Public Class AppsForm
 
         Contents("Status").Text = CurrentPackage.GetStatusDisplay()
         Contents("Location").Text = path
-        Contents("Version").Text = CurrentPackage.Version
+
+        If File.Exists(CurrentPackage.Path) Then
+            Contents("Version").Text = CurrentPackage.Version + " (" + File.GetLastWriteTimeUtc(CurrentPackage.Path).ToShortDateString() + ")"
+        Else
+            Contents("Version").Text = CurrentPackage.Version
+        End If
+
         Contents("Description").Text = CurrentPackage.Description
 
         Headers("AviSynth Filters").Visible = False

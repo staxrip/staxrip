@@ -392,14 +392,21 @@ Public Class Package
         .AvsFilterNames = {"FFT3DFilter"},
         .AvsFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter | FFT3DFilter", "FFT3DFilter()")}})
 
-    Shared Property ffms2 As Package = Add(New PluginPackage With {
+    Shared Property ffms2avs As Package = Add(New PluginPackage With {
         .Name = "ffms2",
         .Filename = "ffms2.dll",
         .WebURL = "http://github.com/FFMS/ffms2",
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
-        .HelpURLFunc = Function(engine) If(engine = ScriptEngine.AviSynth, "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md", "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-vapoursynth.md"),
+        .HelpURL = "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md",
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", $"FFVideoSource(""%source_file%"", colorspace = ""YV12"", \{BR}              cachefile = ""%source_temp_file%.ffindex"")")},
+        .AvsFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", $"FFVideoSource(""%source_file%"", colorspace = ""YV12"", \{BR}              cachefile = ""%source_temp_file%.ffindex"")")}})
+
+    Shared Property ffms2vs As Package = Add(New PluginPackage With {
+        .Name = "ffms2",
+        .Filename = "ffms2.dll",
+        .WebURL = "http://github.com/FFMS/ffms2",
+        .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
+        .HelpURL = "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-vapoursynth.md",
         .VSFilterNames = {"ffms2"},
         .VSFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")")}})
 

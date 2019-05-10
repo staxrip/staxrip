@@ -2,11 +2,8 @@
 
 .NET 4.7.2 / 4.8 is required to be installed(For Windows 10 Anniversary and Below).
 
-https://dotnet.microsoft.com/download
-
-Dotnet 4.8 RC Build (Not Required But Fully Supports past dotnet Builds)
-
-https://github.com/Microsoft/dotnet-framework-early-access
+- VapourSynth and AviSynth have now a separated ffms2 version
+- the apps manage dialog displays the built date (using last modified date)
 
 2.0.0.1
 - Removed Auto insert for RGB for VS and Convert Bits for AVS. Most are no longer useful due to 10Bit+ Videos are more common now.

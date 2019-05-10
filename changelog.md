@@ -2,7 +2,9 @@
 
 .NET 4.7.2 / 4.8 is required to be installed(For Windows 10 Anniversary and Below).
 
-- VapourSynth and AviSynth have now a separated ffms2 version
+- there are no longer plugins that are shared between VapourSynth and AviSynth,
+  ffms2 for VapourSynth was updated, the AviSynth version is 3 years old,
+  ffms2 with C interface was removed because it was leaking memory
 - the apps manage dialog displays the built date (using last modified date)
 
 2.0.0.1

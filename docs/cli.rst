@@ -154,17 +154,23 @@ View the Metadata of any Selected File
 -OpenHelpTopic:topic
 ~~~~~~~~~~~~~~~~~~~~
 
-topic: Name of the help topic to be opened.
+topic: Name Of the help topic To be opened.
 
-Opens a given help topic in the help browser.
+Opens a given help topic In the help browser.
 
 
 -PlaySound:Filepath,Volume
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Filepath: Filepath to a mp3, wav or wmv sound file.
+Filepath: Filepath To a mp3, wav Or wmv sound file.
 
-Plays a mp3, wav or wmv sound file.
+Plays a mp3, wav Or wmv sound file.
+
+
+-Release
+~~~~~~~~
+
+Test
 
 
 -ResetSettings

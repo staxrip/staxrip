@@ -422,26 +422,28 @@ Public Class GlobalCommands
                 msg += BR2 + "# local MD file for " + pack.Name
             End If
 
-            If pack.Path = "" Then msg += BR2 + "# path missing for " + pack.Name
-
-            If Not pack.IgnoreVersion Then
-                If pack.Version = "" Then
-                    msg += BR2 + "# version missing for " + pack.Name
-                ElseIf Not pack.IsCorrectVersion Then
-                    msg += BR2 + "# wrong version for " + pack.Name
+            If Not pack.IgnoreIfMissing Then
+                If pack.Path = "" Then
+                    msg += BR2 + "# path missing for " + pack.Name
+                ElseIf Not pack.IgnoreVersion Then
+                    If pack.Version = "" Then
+                        msg += BR2 + "# version missing for " + pack.Name
+                    ElseIf Not pack.IsCorrectVersion Then
+                        'msg += BR2 + "# wrong version for " + pack.Name
+                    End If
                 End If
-            End If
 
-            'does help file exist?
-            If pack.Path <> "" AndAlso pack.HelpFile <> "" Then
-                If Not File.Exists(pack.GetDir + pack.HelpFile) Then
-                    msg += BR2 + $"# Help file of {pack.Name} don't exist!"
+                'does help file exist?
+                If pack.Path <> "" AndAlso pack.HelpFile <> "" Then
+                    If Not File.Exists(pack.GetDir + pack.HelpFile) Then
+                        msg += BR2 + $"# Help file of {pack.Name} don't exist!"
+                    End If
                 End If
-            End If
 
-            'does setup file exist?
-            If pack.SetupFilename <> "" AndAlso Not File.Exists(Folder.Apps + pack.SetupFilename) Then
-                msg += BR2 + $"Setup file of {pack.Name} don't exist!"
+                'does setup file exist?
+                If pack.SetupFilename <> "" AndAlso Not File.Exists(Folder.Apps + pack.SetupFilename) Then
+                    msg += BR2 + $"Setup file of {pack.Name} don't exist!"
+                End If
             End If
         Next
 
@@ -623,14 +625,16 @@ Switches
 
     <Command("Test")>
     Sub Release()
-        Dim outputDirectories = {"C:\Users\frank\OneDrive\StaxRip\TestBuilds\"}
+        Dim outputDirectories = {
+            "C:\Users\frank\OneDrive\StaxRip\TestBuilds\",
+            "C:\Users\frank\Dropbox\public\StaxRip\Builds"}
+
         Dim sourceDir = "C:\Users\frank\Daten\Projekte\VB\staxrip\bin\"
 
-        If Not Directory.Exists(sourceDir) Then
-            'TODO: paths specic to Revan 
-            outputDirectories = {""}
-            sourceDir = ""
-        End If
+        'If Not Directory.Exists(sourceDir) Then
+        '    outputDirectories = {""}
+        '    sourceDir = ""
+        'End If
 
         Dim version = Assembly.LoadFile(sourceDir + "StaxRip.exe").GetName.Version
         Dim releaseType = "-stable"
@@ -685,12 +689,12 @@ Switches
             End If
         End Using
 
-        'If releaseType = "-test" Then
-        '    For Each i In outputDirectories
-        '        FileHelp.Copy(targetDir.TrimEnd("\"c) + ".7z", i + DirPath.GetName(targetDir) + ".7z", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
-        '        Process.Start(i)
-        '    Next
-        'End If
+        If releaseType = "-test" Then
+            For Each i In outputDirectories
+                FileHelp.Copy(targetDir.TrimEnd("\"c) + ".7z", i + DirPath.GetName(targetDir) + ".7z", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
+                Process.Start(i)
+            Next
+        End If
     End Sub
 
     Sub ShowPackageError(pack As Package, msg As String)

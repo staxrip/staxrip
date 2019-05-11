@@ -4,6 +4,7 @@ Imports StaxRip
 
 Public Class Package
     Implements IComparable(Of Package)
+
     Property Description As String
     Property DirPath As String
     Property DownloadURL As String
@@ -13,6 +14,7 @@ Public Class Package
     Property HelpURLFunc As Func(Of ScriptEngine, String)
     Property HintDirFunc As Func(Of String)
     Property IgnoreVersion As Boolean
+    Property IgnoreIfMissing As Boolean
     Property IsRequiredFunc As Func(Of Boolean)
     Property LaunchName As String
     Property Name As String
@@ -182,6 +184,7 @@ Public Class Package
         .Name = "SubtitleEdit",
         .Filename = "SubtitleEdit.exe",
         .LaunchName = "SubtitleEdit.exe",
+        .IgnoreIfMissing = True,
         .HintDirFunc = Function() "C:\Program Files\Subtitle Edit\",
         .WebURL = "http://www.nikse.dk/SubtitleEdit",
         .HelpURL = "http://www.nikse.dk/SubtitleEdit/Help",
@@ -365,6 +368,7 @@ Public Class Package
         .Description = Strings.DGDecNV,
         .DirPath = "Support\DGIndexNV",
         .HelpFile = "DGDecodeNVManual.html",
+        .IgnoreIfMissing = True,
         .HintDirFunc = Function() DGIndexNV.GetStoredPath.Dir,
         .IsRequiredFunc = Function() p.Script.Filters(0).Script.StartsWith("DGSource("),
         .AvsFilterNames = {"DGSource"},
@@ -379,6 +383,7 @@ Public Class Package
         .Description = Strings.DGDecIM,
         .DirPath = "Support\DGIndexIM",
         .HelpFile = "Notes.txt",
+        .IgnoreIfMissing = True,
         .HintDirFunc = Function() DGIndexIM.GetStoredPath.Dir,
         .IsRequiredFunc = Function() p.Script.Filters(0).Script.StartsWith("DGSourceIM("),
         .AvsFilterNames = {"DGSourceIM"},
@@ -482,6 +487,7 @@ Public Class Package
             .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
             .FixedDir = Folder.System,
             .IgnoreVersion = True,
+            .IgnoreIfMissing = True,
             .IsRequiredFunc = Function() Items("SangNom2 avs").IsRequired,
             .TreePath = "Runtimes"})
 
@@ -2021,7 +2027,7 @@ Public Class PythonPackage
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
         DownloadURL = "https://www.python.org/downloads/windows/"
-        SetupFilename = "Installers\python-3.7.2-amd64.exe"
+        SetupFilename = "Installers\python-3.7.3-amd64-webinstall.exe"
     End Sub
 
     Public Overrides Property IsRequired As Boolean
@@ -2045,8 +2051,7 @@ Public Class PythonPackage
                 Registry.CurrentUser.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", "ExecutablePath"),
                 Registry.LocalMachine.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", "ExecutablePath"),
                 Registry.CurrentUser.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", Nothing).FixDir + "python.exe",
-                Registry.LocalMachine.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", Nothing).FixDir + "python.exe"
-                }
+                Registry.LocalMachine.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", Nothing).FixDir + "python.exe"}
 
                 If File.Exists(i) Then Return i
             Next
@@ -2163,6 +2168,7 @@ Public Class DGIndexNVPackage
         Description = Strings.DGDecNV
         HelpFile = "DGIndexNVManual.html"
         LaunchName = Filename
+        IgnoreIfMissing = True
         FileNotFoundMessage = "DGIndexNV can be disabled under Tools/Settings/Demux."
         HintDirFunc = Function() DGDecodeNV.GetStoredPath.Dir
     End Sub
@@ -2189,6 +2195,7 @@ Public Class DGIndexIMPackage
         Name = "DGIndexIM"
         Filename = "DGIndexIM.exe"
         DirPath = "Support\DGIndexIM"
+        IgnoreIfMissing = True
         WebURL = "http://rationalqm.us/mine.html"
         Description = Strings.DGDecIM
         HelpFile = "Notes.txt"
@@ -2220,6 +2227,7 @@ Public Class dsmuxPackage
         Description = Strings.dsmux
         WebURL = "http://haali.su/mkv"
         IsRequired = False
+        IgnoreIfMissing = True
     End Sub
 
     Public Overrides ReadOnly Property Path As String
@@ -2248,6 +2256,7 @@ Public Class HaaliSplitter
         WebURL = "http://haali.su/mkv"
         Description = "Haali Splitter is used by eac3to and dsmux to write MKV files. Haali Splitter and LAV Filters overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
         IsRequired = False
+        IgnoreIfMissing = True
     End Sub
 
     Public Overrides ReadOnly Property Path As String

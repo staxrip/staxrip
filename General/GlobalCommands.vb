@@ -621,6 +621,78 @@ Switches
         End If
     End Sub
 
+    <Command("Test")>
+    Sub Release()
+        Dim outputDirectories = {"C:\Users\frank\OneDrive\StaxRip\TestBuilds\"}
+        Dim sourceDir = "C:\Users\frank\Daten\Projekte\VB\staxrip\bin\"
+
+        If Not Directory.Exists(sourceDir) Then
+            'TODO: paths specic to Revan 
+            outputDirectories = {""}
+            sourceDir = ""
+        End If
+
+        Dim version = Assembly.LoadFile(sourceDir + "StaxRip.exe").GetName.Version
+        Dim releaseType = "-stable"
+        If version.Revision <> 0 Then releaseType = "-test"
+
+        If Not Directory.Exists(sourceDir) Then
+            MsgError("Source directory not found." + BR2 + sourceDir, MessageBoxIcon.Error)
+            Exit Sub
+        End If
+
+        Dim info = FileVersionInfo.GetVersionInfo(sourceDir + "StaxRip.exe")
+        Dim targetDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                                     "StaxRip-x64-" + info.FileVersion + releaseType + "\")
+
+        DirectoryHelp.Delete(targetDir)
+        DirectoryHelp.Copy(sourceDir, targetDir, Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
+
+        For Each i In Directory.GetDirectories(targetDir + "Apps\Plugins\VS")
+            Dim cacheDir = i + "\__pycache__"
+            If Directory.Exists(cacheDir) Then DirectoryHelp.Delete(cacheDir)
+        Next
+
+        DirectoryHelp.Delete(targetDir + ".vs")
+        DirectoryHelp.Delete(targetDir + "Apps\Audio\qaac\QTfiles64")
+
+        FileHelp.Delete(targetDir + "debug.log")
+        FileHelp.Delete(targetDir + "_StaxRip.log")
+        FileHelp.Delete(targetDir + "StaxRip.vshost.exe")
+        FileHelp.Delete(targetDir + "StaxRip.vshost.sln")
+        FileHelp.Delete(targetDir + "StaxRip.vshost.exe.config")
+        FileHelp.Delete(targetDir + "StaxRip.vshost.exe.manifest")
+        FileHelp.Delete(targetDir + "Apps\Audio\eac3to\log.txt")
+        FileHelp.Delete(targetDir + "Apps\Support\DGIndex\DGIndex.ini")
+        FileHelp.Delete(targetDir + "Apps\Support\MKVToolNix\mkvtoolnix.ini")
+        FileHelp.Delete(targetDir + "Apps\Support\MKVToolNix\mkvtoolnix-gui.ini")
+        FileHelp.Delete(targetDir + "Apps\Support\AVSMeter\AVSMeter.ini")
+
+        For Each i In Directory.GetFiles(targetDir, "*.ini", IO.SearchOption.AllDirectories)
+            MsgWarn(i, MessageBoxIcon.Exclamation)
+            Exit Sub
+        Next
+
+        Using p As New Process
+            p.StartInfo.FileName = "C:\Program Files\7-Zip\7z.exe"
+            p.StartInfo.Arguments = $"a -tzip -mx9 ""{targetDir.TrimEnd("\"c)}.7z"" -r ""{targetDir}*"""
+            p.Start()
+            p.WaitForExit()
+
+            If p.ExitCode > 0 Then
+                MsgError($"7zip exit code: {p.ExitCode}")
+                Exit Sub
+            End If
+        End Using
+
+        'If releaseType = "-test" Then
+        '    For Each i In outputDirectories
+        '        FileHelp.Copy(targetDir.TrimEnd("\"c) + ".7z", i + DirPath.GetName(targetDir) + ".7z", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
+        '        Process.Start(i)
+        '    Next
+        'End If
+    End Sub
+
     Sub ShowPackageError(pack As Package, msg As String)
         MsgError(msg)
 
@@ -630,9 +702,9 @@ Switches
         End Using
     End Sub
 
-    <Command("Plays a mp3, wav or wmv sound file.")>
+    <Command("Plays a mp3, wav Or wmv sound file.")>
     Sub PlaySound(<Editor(GetType(OpenFileDialogEditor), GetType(UITypeEditor)),
-        Description("Filepath to a mp3, wav or wmv sound file.")> Filepath As String,
+        Description("Filepath To a mp3, wav Or wmv sound file.")> Filepath As String,
         <DispName("Volume (%)"), DefaultValue(20)> Volume As Integer)
 
         Misc.PlayAudioFile(Filepath, Volume)
@@ -644,10 +716,10 @@ Switches
         Return "Stable Release"
     End Function
 
-    <Command("Opens a given help topic in the help browser.")>
+    <Command("Opens a given help topic In the help browser.")>
     Sub OpenHelpTopic(
         <DispName("Help Topic"),
-        Description("Name of the help topic to be opened.")> topic As String)
+        Description("Name Of the help topic To be opened.")> topic As String)
 
         Dim f As New HelpForm()
 
@@ -658,10 +730,10 @@ Switches
                 If File.Exists(licensePath) Then f.Doc.WriteP(File.ReadAllText(licensePath), True)
             Case "CRF Value"
                 f.Doc.WriteStart("CRF Value")
-                f.Doc.WriteP("Low values produce high quality, large file size, large value produces small file size and poor quality. A balanced value is 23 which is the defalt in x264. Common values are 18-26 where 18 produces near transparent quality at the cost of a huge file size. The quality 26 produces is rather poor so such a high value should only be used when a small file size is the only criterium.")
+                f.Doc.WriteP("Low values produce high quality, large file size, large value produces small file size And poor quality. A balanced value Is 23 which Is the defalt In x264. Common values are 18-26 where 18 produces near transparent quality at the cost Of a huge file size. The quality 26 produces Is rather poor so such a high value should only be used When a small file size Is the only criterium.")
             Case "x264 Mode"
                 f.Doc.WriteStart("x264 Mode")
-                f.Doc.WriteP("Generally there are two popular encoding modes, quality based and 2pass. 2pass mode allows to specify a bit rate and file size, quality mode doesn't, it works with a rate factor and requires only a single pass. Other terms for quality mode are constant quality or CRF mode in x264.")
+                f.Doc.WriteP("Generally there are two popular encoding modes, quality based And 2pass. 2pass mode allows To specify a bit rate And file size, quality mode doesn't, it works with a rate factor and requires only a single pass. Other terms for quality mode are constant quality or CRF mode in x264.")
                 f.Doc.WriteP("Slow and dark sources compress better then colorful sources with a lot action so a short, slow and dark movie requires a smaller file size then a long, colorful source with a lot action and movement.")
                 f.Doc.WriteP("Quality mode works with a rate factor that gives comparable quality regardless of how well a movie compresses so it's not using a constant bit rate but adjusts the bit rate dynamically. So while the same rate factor can be applied to every movie to achieve a constant quality this is not possible with 2pass mode because every movie requires a different bit rate. Quality mode is much easier to use then 2pass mode which requires a longer encoding time due to 2 passes and a compressibility check to be performed to determine a reasonable image and file size which also requires more expertise.")
                 f.Doc.WriteP("It's a common misconception that 2pass mode is more efficient than quality mode. The only benefit of 2pass mode is hitting a exact file size. Encoding in quality mode using a single pass will result in equal quality compared to a 2pass encode assuming the file size is identical of course.")

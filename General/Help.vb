@@ -96,11 +96,11 @@ Public Class DirectoryHelp
         End If
     End Sub
 
-    Shared Sub Copy(source As String, target As String)
+    Shared Sub Copy(source As String, target As String, Optional opt As UIOption = UIOption.OnlyErrorDialogs)
         Try
             FileSystem.CopyDirectory(source, target, True)
         Catch
-            FileSystem.CopyDirectory(source, target, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
+            FileSystem.CopyDirectory(source, target, opt, UICancelOption.DoNothing)
         End Try
     End Sub
 
@@ -136,10 +136,10 @@ Public Class FileHelp
         End If
     End Sub
 
-    Shared Sub Copy(src As String, dest As String)
+    Shared Sub Copy(src As String, dest As String, Optional opt As UIOption = UIOption.OnlyErrorDialogs)
         If Not File.Exists(src) Then Exit Sub
         If File.Exists(dest) Then Delete(dest)
-        FileSystem.CopyFile(src, dest, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
+        FileSystem.CopyFile(src, dest, opt, UICancelOption.DoNothing)
     End Sub
 
     Shared Sub Delete(path As String, Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)

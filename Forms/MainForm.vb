@@ -4347,7 +4347,12 @@ Public Class MainForm
         ret.Add("Tools|Folders|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%working_dir%"""})
 
         ret.Add("Tools|Advanced", Symbol.More)
-        If Application.StartupPath.EndsWith("\bin") Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
+
+        If Application.StartupPath.EndsWith("\bin") Then
+            ret.Add("Tools|Advanced|Release...", NameOf(g.DefaultCommands.Release), Keys.F11)
+            ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
+        End If
+
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
         ret.Add("Tools|Advanced|Command Prompt", Symbol.fa_terminal)
         ret.Add("Tools|Advanced|Command Prompt|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_windows)

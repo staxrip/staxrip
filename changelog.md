@@ -2,6 +2,8 @@
 
 .NET 4.7.2 or higher
 
+- nvenc update
+
 ### 2.0.0.2
 
 - there are no longer plugins that are shared between VapourSynth and AviSynth,

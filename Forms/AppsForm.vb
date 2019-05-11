@@ -405,6 +405,7 @@ Public Class AppsForm
     End Sub
 
     Private Sub SearchTextBox_TextChanged() Handles SearchTextBox.TextChanged
+        tv.BeginUpdate()
         tv.Nodes.Clear()
 
         For Each pack In Package.Items.Values
@@ -445,6 +446,7 @@ Public Class AppsForm
         ToolStrip.Enabled = tv.Nodes.Count > 0
         flp.Enabled = tv.Nodes.Count > 0
         If SearchTextBox.Text <> "" Then tv.ExpandAll()
+        tv.EndUpdate()
     End Sub
 
     Private Sub tsbLaunch_Click(sender As Object, e As EventArgs) Handles tsbLaunch.Click

@@ -139,7 +139,7 @@ MediaInfo
 
 MediaInfo is used by StaxRip to read infos from media files.
 
-Used Version: 18.12
+Used Version: 19.04
 
 http://mediaarea.net/en/MediaInfo
 
@@ -149,7 +149,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 31.0.0
+Used Version: 31.1
 
 https://mkvtoolnix.download/
 
@@ -159,7 +159,7 @@ mkvinfo
 
 MKV muxing tool.
 
-Used Version: 31.0.0
+Used Version: 31.1
 
 https://mkvtoolnix.download/
 
@@ -169,7 +169,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 31.0.0
+Used Version: 31.1
 
 https://mkvtoolnix.download/
 
@@ -189,7 +189,7 @@ mpvnet
 
 libmpv based media player.
 
-Used Version: 2.0
+Used Version: 3.5
 
 https://github.com/Revan654/mpvnet/
 
@@ -2246,7 +2246,7 @@ VapourSynth source filter based on Libav supporting a wide range of input format
 
 Filters: lsmas.LibavSMASHSource, lsmas.LWLibavSource
 
-Used Version: 929
+Used Version: 2019-05-04
 
 http://avisynth.nl/index.php/LSMASHSource
 

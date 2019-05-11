@@ -1,21 +1,28 @@
 #### Requirements
 
-.NET 4.7.2 / 4.8 is required to be installed(For Windows 10 Anniversary and Below).
+.NET 4.7.2 or higher
+
+### 2.0.0.2
 
 - there are no longer plugins that are shared between VapourSynth and AviSynth,
   ffms2 for VapourSynth was updated, the AviSynth version is 3 years old,
   ffms2 with C interface was removed because it was leaking memory
 - the apps manage dialog displays the built date (using last modified date)
 - on startup the main window often wasn't activated
-- mpv.net was updated to version 3.5
 - there was a bug that resulted in subtitles being demuxed without file extension
   and because of that staxrip couldn't find and include the subtitles, the reason
   was a breaking change in MediaInfo
 - audio files were as mka demuxed due to a breaking change in MediaInfo
-- MediaInfo was updated
 - webm files without mpeg-4 video format failed to load
+- the navigation tree in the app manage dialog had a flicker issue
+- MediaInfo was updated, most recent bugs are due to breaking changes in MediaInfo
+- vslsmashsource updated
+- mkvtoolnix update
+- mpv.net was updated to version 3.5
+- a major performance issue using AviSynth was fixed
 
-2.0.0.1
+### 2.0.0.1
+
 - Removed Auto insert for RGB for VS and Convert Bits for AVS. Most are no longer useful due to 10Bit+ Videos are more common now.
 - This is a pure Refresh Release, Mainily designed to update some of the encoding tools.
 - This Release contains all the Changes from the Pipeline along with the Following.

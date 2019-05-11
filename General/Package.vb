@@ -424,6 +424,51 @@ Public Class Package
         .WebURL = "http://avisynth.nl/index.php/SangNom2",
         .Description = "SangNom2 is a reimplementation of MarcFD's old SangNom filter. Originally it's a single field deinterlacer using edge-directed interpolation but nowadays it's mainly used in anti-aliasing scripts. The output is not completely but mostly identical to the original SangNom.",
         .AvsFilterNames = {"SangNom2"}})
+
+    Shared Property DCTFilter As Package = Add(New PluginPackage With {
+        .Name = "DCTFilter",
+        .Filename = "DCTFilter.dll",
+        .DirPath = "Plugins\AVS\DCTFilter",
+        .Description = "A rewrite of DctFilter for Avisynth+.",
+        .URL = "http://github.com/chikuzen/DCTFilter",
+        .AvsFilterNames = {"DCTFilter", "DCTFilterD", "DCTFilter4", "DCTFilter4D", "DCTFilter8", "DCTFilter8D"}})
+
+    Shared Property DCTFilterF As Package = Add(New PluginPackage With {
+        .Name = "DCTFilter-f",
+        .Filename = "DCTFilter.dll",
+        .DirPath = "Plugins\VS\DCTFilter-f",
+        .Description = "Renewed VapourSynth port of DCTFilter.",
+        .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DCTFilter",
+        .VSFilterNames = {"dctf.DCTFilter"}})
+
+    Shared Property DCTFilterVS As Package = Add(New PluginPackage With {
+        .Name = "DCTFilter",
+        .Filename = "DCTFilter.dll",
+        .DirPath = "Plugins\VS\DCTFilter",
+        .Description = "Renewed VapourSynth port of DCTFilter.",
+        .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DCTFilter",
+        .VSFilterNames = {"dctf.DCTFilter"}})
+
+    Shared Property havsfunc As Package = Add(New PluginPackage With {
+        .Name = "havsfunc",
+        .WebURL = "http://github.com/HomeOfVapourSynthEvolution/havsfunc",
+        .HelpURL = "http://forum.doom9.org/showthread.php?t=166582",
+        .Description = "Various popular AviSynth scripts ported To VapourSynth.",
+        .Filename = "havsfunc.py",
+        .DirPath = "Plugins\VS\Scripts",
+        .VSFilterNames = {"havsfunc.QTGMC", "havsfunc.daa", "havsfunc.santiag", "havsfunc.FixChromaBleedingMod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
+                          "havsfunc.FineDehalo", "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.smartfademod", "havsfunc.srestore", "havsfunc.ivtc_txt60mc",
+                          "havsfunc.logoNR", "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.Stab",
+                          "havsfunc.GrainStabilizeMC", "havsfunc.MCTemporalDenoise", "havsfunc.SMDegrain", "havsfunc.STPresso", "havsfunc.SigmoidInverse", "havsfunc.SigmoidDirect",
+                          "havsfunc.GrainFactory3", "havsfunc.InterFrame", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD", "havsfunc.Toon", "havsfunc.LSFmod",
+                          "havsfunc.TemporalDegrain", "havsfunc.aaf", "havsfunc.AverageFrames", "havsfunc.Bob", "havsfunc.ChangeFPS", "havsfunc.Clamp",
+                          "havsfunc.KNLMeansCL", "havsfunc.Overlay", "havsfunc.Padding", "havsfunc.Resize", "havsfunc.SCDetect", "havsfunc.Weave",
+                          "havsfunc.ContraSharpening", "havsfunc.MinBlur", "havsfunc.sbr", "havsfunc.DitherLumaRebuild", "havsfunc.mt_expand_multi", "havsfunc.mt_inpand_multi",
+                          "havsfunc.mt_inflate_multi", "havsfunc.mt_deflate_multi", "havsfunc.EdgeCleaner"},
+        .VSFiltersFunc = Function() {
+                New VideoFilter("Field", "QTGMC | QTGMC", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2)"),
+                New VideoFilter("Field", "QTGMC | QTGMC with Repair", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}QTGMC1 = havsfunc.QTGMC(clip, TFF = True, Preset=""Slower"", InputType=2){BR}QTGMC2 = havsfunc.QTGMC(clip, TFF = True, Preset=""Slower"", InputType=3){BR}clip = core.rgvs.Repair(QTGMC1,QTGMC2, mode=1)")}})
+
     Shared Function Add(pack As Package) As Package
         Items(pack.ID) = pack
         Return pack
@@ -468,7 +513,15 @@ Public Class Package
             .FixedDir = Folder.System,
             .IsRequiredFunc = Function()
                                   For Each i In p.Script.Filters
-                                      If i.Script.Contains("fft") OrElse i.Script.Contains("FFT") Then Return True
+                                      If i.Script.Contains("fft") OrElse
+                                          i.Script.Contains("FFT") OrElse
+                                          DCTFilter.IsRequired OrElse
+                                          DCTFilterVS.IsRequired OrElse
+                                          DCTFilterF.IsRequired OrElse
+                                          havsfunc.IsRequired Then
+
+                                          Return True
+                                      End If
                                   Next
                               End Function,
             .SetupAction = Sub()
@@ -1191,30 +1244,6 @@ Public Class Package
             .AvsFiltersFunc = Function() {New VideoFilter("Field", "yadifmod2", "yadifmod2()")}})
 
         Add(New PluginPackage With {
-            .Name = "DCTFilter",
-            .Filename = "DCTFilter.dll",
-            .DirPath = "Plugins\AVS\DCTFilter",
-            .Description = "A rewrite of DctFilter for Avisynth+.",
-            .URL = "http://github.com/chikuzen/DCTFilter",
-            .AvsFilterNames = {"DCTFilter", "DCTFilterD", "DCTFilter4", "DCTFilter4D", "DCTFilter8", "DCTFilter8D"}})
-
-        Add(New PluginPackage With {
-            .Name = "DCTFilter-f",
-            .Filename = "DCTFilter.dll",
-            .DirPath = "Plugins\VS\DCTFilter-f",
-            .Description = "Renewed VapourSynth port of DCTFilter.",
-            .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DCTFilter",
-            .VSFilterNames = {"dctf.DCTFilter"}})
-
-        Add(New PluginPackage With {
-            .Name = "DCTFilter",
-            .Filename = "DCTFilter.dll",
-            .DirPath = "Plugins\VS\DCTFilter",
-            .Description = "Renewed VapourSynth port of DCTFilter.",
-            .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DCTFilter",
-            .VSFilterNames = {"dctf.DCTFilter"}})
-
-        Add(New PluginPackage With {
             .Name = "FixTelecinedFades",
             .Filename = "libftf_em64t_avx_fma.dll",
             .DirPath = "Plugins\VS\FixTelecinedFades",
@@ -1503,27 +1532,6 @@ Public Class Package
                   "muvsfunc.TextSub16", "muvsfunc.TMinBlur", "muvsfunc.mdering", "muvsfunc.BMAFilter", "muvsfunc.LLSURE", "muvsfunc.YAHRmod", "muvsfunc.RandomInterleave"},
             .Description = "Muonium's VapourSynth functions.",
             .WebURL = "https://github.com/WolframRhodium/muvsfunc"})
-
-
-        Add(New PluginPackage With {
-            .Name = "havsfunc",
-            .WebURL = "http://github.com/HomeOfVapourSynthEvolution/havsfunc",
-            .HelpURL = "http://forum.doom9.org/showthread.php?t=166582",
-            .Description = "Various popular AviSynth scripts ported To VapourSynth.",
-            .Filename = "havsfunc.py",
-            .DirPath = "Plugins\VS\Scripts",
-            .VSFilterNames = {"havsfunc.QTGMC", "havsfunc.daa", "havsfunc.santiag", "havsfunc.FixChromaBleedingMod", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha",
-                                "havsfunc.FineDehalo", "havsfunc.YAHR", "havsfunc.HQDeringmod", "havsfunc.smartfademod", "havsfunc.srestore", "havsfunc.ivtc_txt60mc",
-                                "havsfunc.logoNR", "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.Stab",
-                                "havsfunc.GrainStabilizeMC", "havsfunc.MCTemporalDenoise", "havsfunc.SMDegrain", "havsfunc.STPresso", "havsfunc.SigmoidInverse", "havsfunc.SigmoidDirect",
-                                "havsfunc.GrainFactory3", "havsfunc.InterFrame", "havsfunc.SmoothLevels", "havsfunc.FastLineDarkenMOD", "havsfunc.Toon", "havsfunc.LSFmod",
-                                "havsfunc.TemporalDegrain", "havsfunc.aaf", "havsfunc.AverageFrames", "havsfunc.Bob", "havsfunc.ChangeFPS", "havsfunc.Clamp",
-                                "havsfunc.KNLMeansCL", "havsfunc.Overlay", "havsfunc.Padding", "havsfunc.Resize", "havsfunc.SCDetect", "havsfunc.Weave",
-                                "havsfunc.ContraSharpening", "havsfunc.MinBlur", "havsfunc.sbr", "havsfunc.DitherLumaRebuild", "havsfunc.mt_expand_multi", "havsfunc.mt_inpand_multi",
-                                "havsfunc.mt_inflate_multi", "havsfunc.mt_deflate_multi", "havsfunc.EdgeCleaner"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Field", "QTGMC | QTGMC", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2)"),
-                New VideoFilter("Field", "QTGMC | QTGMC with Repair", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}QTGMC1 = havsfunc.QTGMC(clip, TFF = True, Preset=""Slower"", InputType=2){BR}QTGMC2 = havsfunc.QTGMC(clip, TFF = True, Preset=""Slower"", InputType=3){BR}clip = core.rgvs.Repair(QTGMC1,QTGMC2, mode=1)")}})
 
         Add(New PluginPackage With {
             .Name = "d2vsource",

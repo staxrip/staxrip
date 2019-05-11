@@ -1,13 +1,7 @@
+# if you need help with scripting visit the forums
+
 $msg = @"
-This script does the following:
 
-- Sets video to mux from source or previous encoding
-- Sets audio to mux
-- Sets MP4Box or mkvmerge as muxer
-
-With MKV output you can cut/trim in the preview dialog.
-
-Edit the script if you want this message to disappear.
 "@
 
 $td = new-object "TaskDialog[string]"

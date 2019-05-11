@@ -9,7 +9,7 @@ AviSynth+
 
 StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
 
-Used Version: 2728
+Used Version: 2772
 
 http://avisynth.nl/index.php/AviSynth%2B
 
@@ -767,7 +767,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: FFVideoSource, FFAudioSource
 
-Used Version: 2.30
+Used Version: 2.23.1
 
 http://github.com/FFMS/ffms2
 
@@ -1705,7 +1705,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: ffms2
 
-Used Version: 2.30
+Used Version: 2019-05-04
 
 http://github.com/FFMS/ffms2
 

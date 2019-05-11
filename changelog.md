@@ -6,6 +6,14 @@
   ffms2 for VapourSynth was updated, the AviSynth version is 3 years old,
   ffms2 with C interface was removed because it was leaking memory
 - the apps manage dialog displays the built date (using last modified date)
+- on startup the main window often wasn't activated
+- mpv.net was updated to version 3.5
+- there was a bug that resulted in subtitles being demuxed without file extension
+  and because of that staxrip couldn't find and include the subtitles, the reason
+  was a breaking change in MediaInfo
+- audio files were as mka demuxed due to a breaking change in MediaInfo
+- MediaInfo was updated
+- webm files without mpeg-4 video format failed to load
 
 2.0.0.1
 - Removed Auto insert for RGB for VS and Convert Bits for AVS. Most are no longer useful due to 10Bit+ Videos are more common now.

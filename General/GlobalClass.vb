@@ -652,6 +652,7 @@ Public Class GlobalClass
             Using proc As New Proc
                 proc.Header = "Indexing using ffmsindex"
                 proc.SkipString = "Indexing, please wait..."
+                If proj Is Nothing Then proj = p
                 proc.Project = proj
 
                 If proj.Script.Engine = ScriptEngine.AviSynth Then

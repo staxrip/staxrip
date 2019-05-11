@@ -6083,8 +6083,13 @@ Public Class MainForm
         Get
             Dim hwnd = Native.GetForegroundWindow()
             Dim styles = Native.GetWindowLong(hwnd, -16) 'GWL_STYLE
-            If (&HC00000L And styles) <> &HC00000L Then Return True 'WS_CAPTION
-            If ProcController.BlockActivation Then Return True
+
+            'WS_CAPTION
+            If p.SourceFile <> "" AndAlso ((&HC00000L And styles) <> &HC00000L OrElse
+                ProcController.BlockActivation) Then
+                Return True
+            End If
+
             Return MyBase.ShowWithoutActivation
         End Get
     End Property

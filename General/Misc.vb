@@ -1576,6 +1576,9 @@ Public Class AudioStream
                 ret += " MP2"
             ElseIf CodecString = "MPEG-1 Audio layer 3" Then
                 ret += " MP3"
+            ElseIf CodecString = "MPEG Audio" Then
+                If FormatProfile = "Layer 2" Then ret += " MP2"
+                If FormatProfile = "Layer 3" Then ret += " MP3"
             ElseIf CodecString = "AC3+" Then
                 ret += " E-AC3"
             ElseIf FormatProfile.StartsWith("MA /") Then
@@ -1625,11 +1628,11 @@ Public Class AudioStream
             Select Case CodecString
                 Case "AAC LC", "AAC LC-SBR", "AAC LC-SBR-PS"
                     Return ".m4a"
-                Case "AC3"
+                Case "AC3", "AC-3"
                     Return ".ac3"
                 Case "DTS"
                     Return ".dts"
-                Case "DTS-HD"
+                Case "DTS-HD", "DTS XLL"
                     If FormatProfile.StartsWith("MA /") Then
                         Return ".dtsma"
                     ElseIf FormatProfile.StartsWith("HRA /") Then
@@ -1643,6 +1646,9 @@ Public Class AudioStream
                     Return ".mp2"
                 Case "MPEG-1 Audio layer 3"
                     Return ".mp3"
+                Case "MPEG Audio"
+                    If FormatProfile = "Layer 2" Then Return ".mp2"
+                    If FormatProfile = "Layer 3" Then Return ".mp3"
                 Case "TrueHD / AC3"
                     Return ".thd"
                 Case "FLAC"
@@ -1653,7 +1659,7 @@ Public Class AudioStream
                     Return ".opus"
                 Case "TrueHD", "Atmos / TrueHD"
                     Return ".thd"
-                Case "AC3+"
+                Case "AC3+", "E-AC-3"
                     Return ".eac3"
                 Case Else
                     Return ".mka"
@@ -1748,14 +1754,12 @@ Public Class Subtitle
                     Return ".sup"
                 Case "S_TEXT/ASS", "ASS"
                     Return ".ass"
-                Case "S_TEXT/UTF8", "UTF-8"
+                Case "S_TEXT/UTF8", "UTF-8", "Timed"
                     Return ".srt"
                 Case "S_TEXT/SSA", "SSA"
                     Return ".ssa"
                 Case "S_TEXT/USF", "USF"
                     Return ".usf"
-                Case "Timed"
-                    Return ".srt"
                 Case Else
                     Return Path.ExtFull
             End Select

@@ -12,9 +12,9 @@ $g = [ShortcutModule]::g
 
 if ([MediaInfo]::GetVideo($p.FirstOriginalSourceFile, "ScanType") -eq "Interlaced")
 {
-    $p.Script.SetFilter("QTGMC", "Field", "QTGMC(Preset = "Medium", InputType=0, SourceMatch=3, Sharpness=0.2, EdiThreads=8)")
+    $p.Script.SetFilter("Field", "QTGMC Interlaced", "QTGMC(Preset = ""Medium"", InputType=0, SourceMatch=3, Sharpness=0.2, EdiThreads=8)")
 }
-elif ([MediaInfo]::GetVideo($p.FirstOriginalSourceFile, "ScanType") -eq "Progressive")
+elseif ([MediaInfo]::GetVideo($p.FirstOriginalSourceFile, "ScanType") -eq "Progressive")
 {
-	$p.Script.SetFilter("QTGMC", "Field", "QTGMC(Preset = "Medium", InputType=1, Sharpness=0.2, EdiThreads=8)")
+	$p.Script.SetFilter("Field", "QTGMC Progressive", "QTGMC(Preset = ""Medium"", InputType=1, Sharpness=0.2, EdiThreads=8)")
 }

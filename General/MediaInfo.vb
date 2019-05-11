@@ -74,6 +74,7 @@ Public Class MediaInfo
                     at.SamplingRate = GetAudio(index, "SamplingRate").ToInt
                     at.BitDepth = GetAudio(index, "BitDepth").ToInt
                     at.CodecString = GetAudio(index, "Codec/String")
+                    If at.CodecString = "" Then at.CodecString = GetAudio(index, "Format/String")
                     at.Format = GetAudio(index, "Format")
                     at.FormatProfile = GetAudio(index, "Format_Profile")
                     at.Title = GetAudio(index, "Title").Trim
@@ -174,6 +175,7 @@ Public Class MediaInfo
                     subtitle.ID = GetText(index, "ID").ToInt
                     subtitle.Title = GetText(index, "Title").Trim
                     subtitle.CodecString = GetText(index, "Codec/String")
+                    If subtitle.CodecString = "" Then subtitle.CodecString = GetText(index, "Format")
                     subtitle.Format = GetText(index, "Format")
                     subtitle.Size = GetText(index, "StreamSize").ToInt
 

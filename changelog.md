@@ -13,8 +13,11 @@ https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR
   like shown [here](https://forum.doom9.org/showpost.php?p=1874254&postcount=3394).
   The main menu was not reset so it shows only if you reset it at: Tools > Edit Menu 
 
+- change: selecting a filter in the filter menu, the names that are shown in the list were improved
+
 - update: nvenc
 - update: ffmpeg, it's now possible to open vpy with ffmpeg
+- update: rav1e, it's now possible to use rav1e with VapourSynth
 
 - internal: Release() method (F11 key) added to automate the release process
 - internal: Test() method updated to use relative paths

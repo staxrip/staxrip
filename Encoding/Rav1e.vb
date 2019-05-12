@@ -38,8 +38,6 @@ Public Class Rav1e
     Overrides Sub Encode()
         p.Script.Synchronize()
         Encode("Video encoding", GetArgs(1, p.Script), s.ProcessPriority)
-
-
         AfterEncoding()
     End Sub
 
@@ -305,15 +303,10 @@ Public Class Rav1eParams
                                includePaths As Boolean,
                                includeExecutable As Boolean) As String
 
-
         Dim sb As New StringBuilder
 
         If includePaths AndAlso includeExecutable Then
-            If p.Script.Engine = ScriptEngine.VapourSynth Then
-                sb.Append(Package.vspipe.Path.Escape + " -y -loglevel fatal -hide_banner -i " + script.Path.Escape + " -f yuv4mpegpipe - | " + Package.Rav1e.Path.Escape)
-            Else
-                sb.Append(Package.ffmpeg.Path.Escape + " -y -loglevel fatal -hide_banner -i " + script.Path.Escape + " -f yuv4mpegpipe - | " + Package.Rav1e.Path.Escape)
-            End If
+            sb.Append(Package.ffmpeg.Path.Escape + $" -y -loglevel fatal -hide_banner{If(script.Path.Ext = "vpy", " -f vapoursynth", "")} -i " + script.Path.Escape + " -f yuv4mpegpipe - | " + Package.Rav1e.Path.Escape)
         End If
 
         Dim q = From i In Items Where i.GetArgs <> ""

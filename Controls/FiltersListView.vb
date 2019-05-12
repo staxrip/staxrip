@@ -167,11 +167,7 @@ Public Class FiltersListView
         If tup.Cancel Then Exit Sub
 
         If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-            If filter.Script.StartsWith("$") Then
-                filter.Path = tup.Caption
-            Else
-                filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
-            End If
+            filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
         End If
 
         filter.Script = tup.Value
@@ -186,11 +182,7 @@ Public Class FiltersListView
         If tup.Cancel Then Exit Sub
 
         If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-            If filter.Script.StartsWith("$") Then
-                filter.Path = tup.Caption
-            Else
-                filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
-            End If
+            filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
         End If
 
         filter.Script = tup.Value
@@ -205,11 +197,7 @@ Public Class FiltersListView
         If tup.Cancel Then Exit Sub
 
         If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-            If filter.Script.StartsWith("$") Then
-                filter.Path = tup.Caption
-            Else
-                filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
-            End If
+            filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
         End If
 
         filter.Script = tup.Value

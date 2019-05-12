@@ -1,8 +1,4 @@
 ﻿Imports System.Text
-Imports System.ComponentModel
-Imports System.Runtime.Remoting
-Imports System.Runtime.Remoting.Channels
-Imports System.Runtime.Remoting.Channels.Ipc
 
 Public Class Animation
     Shared Sub GIF(inputFile As String, proj As Project)

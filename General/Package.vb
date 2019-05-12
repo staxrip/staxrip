@@ -134,7 +134,29 @@ Public Class Package
         .WebURL = "http://www.vapoursynth.com/doc/vspipe.html",
         .DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"})
+        .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\",
+        .StartActionValue = Sub()
+                                If p.SourceFile = "" Then
+                                    g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + BR + "pause", False, False, True)
+                                Else
+                                    g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + " --info " + p.Script.Path.Escape + " -" + BR + "pause", False, False, True)
+                                End If
+                            End Sub})
+
+    Shared Property AVSMeter As Package = Add(New Package With {
+        .Name = "AVSMeter",
+        .DirPath = "support\AVSMeter",
+        .Filename = "AVSMeter64.exe",
+        .Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.",
+        .HelpFile = "doc\AVSMeter.html",
+        .WebURL = "http://forum.doom9.org/showthread.php?t=174797",
+        .StartActionValue = Sub()
+                                If p.SourceFile = "" Then
+                                    g.DefaultCommands.ExecuteCommandLine(Package.AVSMeter.Path.Escape + " avsinfo" + BR + "pause", False, False, True)
+                                Else
+                                    g.DefaultCommands.ExecuteCommandLine(Package.AVSMeter.Path.Escape + " " + p.Script.Path.Escape + BR + "pause", False, False, True)
+                                End If
+                            End Sub})
 
     Shared Property VapourSynth As Package = Add(New Package With {
         .Name = "VapourSynth",
@@ -540,22 +562,6 @@ Public Class Package
                                    If pr.ExitCode <> 0 Then MsgError("FFTW returned an error.")
                                End Using
                            End Sub})
-
-        Add(New Package With {
-            .Name = "AVSMeter",
-            .DirPath = "support\AVSMeter",
-            .Filename = "AVSMeter64.exe",
-            .Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.",
-            .StartActionValue = Sub()
-                                    If p.SourceFile = "" Then
-                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").Path.Escape + " avsinfo" + BR + "pause", False, False, True)
-                                    Else
-                                        g.DefaultCommands.ExecuteCommandLine(Package.Items("AVSMeter").Path.Escape + " " + p.Script.Path.Escape + BR + "pause", False, False, True)
-                                    End If
-                                End Sub,
-            .HelpFile = "doc\AVSMeter.html",
-            .WebURL = "http://forum.doom9.org/showthread.php?t=174797"})
-
 
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",

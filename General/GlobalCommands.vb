@@ -257,7 +257,6 @@ Public Class GlobalCommands
     Sub StartTool(<DispName("Tool Name")>
                   <Description("Tool name as shown in the app manage dialog.")>
                   name As String)
-
         Try
             If Package.Items(name).VerifyOK Then Package.Items(name).StartAction?.Invoke
         Catch ex As Exception

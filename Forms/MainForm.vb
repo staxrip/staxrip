@@ -4364,10 +4364,11 @@ Public Class MainForm
         ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
 
         ret.Add("Apps|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
-        ret.Add("Apps|MediaInfo|MKVInfo", NameOf(MediainfoMKV))
-        ret.Add("Apps|MediaInfo|MediaInfo File", NameOf(MediaInfoShowMedia))
-        ret.Add("Apps|MediaInfo|MediaInfo Folder", NameOf(ShowMediaInfoFolderViewDialog))
-        ret.Add("Apps|MediaInfo|Ingest HDR", NameOf(SaveMKVHDR))
+        ret.Add("Apps|Media Info|MKVInfo", NameOf(MediainfoMKV))
+        ret.Add("Apps|Media Info|MediaInfo File", NameOf(MediaInfoShowMedia))
+        ret.Add("Apps|Media Info|MediaInfo Folder", NameOf(ShowMediaInfoFolderViewDialog))
+        ret.Add("Apps|Media Info|Ingest HDR", NameOf(SaveMKVHDR))
+        ret.Add("Apps|Media Info|vspipe", NameOf(g.DefaultCommands.StartTool), {"vspipe"})
         ret.Add("Apps|DGIndex|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|DGIndex|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
         ret.Add("Apps|Players|mpv.net", NameOf(g.DefaultCommands.StartTool), {"mpvnet"})
@@ -5550,13 +5551,15 @@ Public Class MainForm
             End If
         End Using
     End Sub
+
     <Command("Shows the Metadata Information for MKV file including HDR10 data.")>
     Sub MediainfoMKV()
-        Using fd As New System.Windows.Forms.OpenFileDialog
+        Using fd As New OpenFileDialog
             fd.Title = "Select file"
             fd.Filter = "mkv|*.mkv"
             fd.SetFilter(FileTypes.Video)
             fd.Multiselect = False
+
             If fd.ShowDialog = DialogResult.OK Then
                 For Each i In fd.FileNames
                     Try

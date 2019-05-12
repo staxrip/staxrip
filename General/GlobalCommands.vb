@@ -623,87 +623,82 @@ Switches
         End If
     End Sub
 
+    'This method is called by pressing F11 in the main form.
+    'It creates the release 7zip files on the desktop.
+    'If version.Revision is not 0 then it's a test build
+    'and it's moved to dropbox and onedrive folders.
     <Command("Test")>
     Sub Release()
-        Dim outputDirectories = {
-            "C:\Users\frank\OneDrive\StaxRip\TestBuilds\",
-            "C:\Users\frank\Dropbox\public\StaxRip\Builds"}
+        Try
+            Dim outputDirectories = {
+                "C:\Users\frank\OneDrive\StaxRip\TestBuilds\",
+                "C:\Users\frank\Dropbox\public\StaxRip\Builds"}
 
-        Dim sourceDir = "C:\Users\frank\Daten\Projekte\VB\staxrip\bin\"
+            Dim sourceDir = "C:\Users\frank\Daten\Projekte\VB\staxrip\bin\"
 
-        'If Not Directory.Exists(sourceDir) Then
-        '    outputDirectories = {""}
-        '    sourceDir = ""
-        'End If
+            'If Not Directory.Exists(sourceDir) Then
+            '    outputDirectories = {""}
+            '    sourceDir = ""
+            'End If
 
-        Dim version = Assembly.LoadFile(sourceDir + "StaxRip.exe").GetName.Version
-        Dim releaseType = "-stable"
-        If version.Revision <> 0 Then releaseType = "-test"
+            Dim version = Assembly.LoadFile(sourceDir + "StaxRip.exe").GetName.Version
+            Dim releaseType = "-stable"
+            If version.Revision <> 0 Then releaseType = "-test"
 
-        If Not Directory.Exists(sourceDir) Then
-            MsgError("Source directory not found." + BR2 + sourceDir, MessageBoxIcon.Error)
-            Exit Sub
-        End If
+            If Not Directory.Exists(sourceDir) Then Throw New Exception("Source directory not found." + BR2 + sourceDir)
 
-        Dim info = FileVersionInfo.GetVersionInfo(sourceDir + "StaxRip.exe")
-        Dim targetDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                                     "StaxRip-x64-" + info.FileVersion + releaseType + "\")
+            Dim info = FileVersionInfo.GetVersionInfo(sourceDir + "StaxRip.exe")
+            Dim targetDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                                         "StaxRip-x64-" + info.FileVersion + releaseType)
 
-        DirectoryHelp.Delete(targetDir)
-        DirectoryHelp.Copy(sourceDir, targetDir, Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
+            DirectoryHelp.Delete(targetDir)
+            DirectoryHelp.Copy(sourceDir, targetDir, Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
 
-        For Each i In Directory.GetDirectories(targetDir + "Apps\Plugins\VS")
-            Dim cacheDir = i + "\__pycache__"
-            If Directory.Exists(cacheDir) Then DirectoryHelp.Delete(cacheDir)
-        Next
-
-        DirectoryHelp.Delete(targetDir + ".vs")
-        DirectoryHelp.Delete(targetDir + "Apps\Audio\qaac\QTfiles64")
-
-        FileHelp.Delete(targetDir + "debug.log")
-        FileHelp.Delete(targetDir + "_StaxRip.log")
-        FileHelp.Delete(targetDir + "StaxRip.vshost.exe")
-        FileHelp.Delete(targetDir + "StaxRip.vshost.sln")
-        FileHelp.Delete(targetDir + "StaxRip.vshost.exe.config")
-        FileHelp.Delete(targetDir + "StaxRip.vshost.exe.manifest")
-        FileHelp.Delete(targetDir + "Apps\Audio\eac3to\log.txt")
-        FileHelp.Delete(targetDir + "Apps\Support\DGIndex\DGIndex.ini")
-        FileHelp.Delete(targetDir + "Apps\Support\MKVToolNix\mkvtoolnix.ini")
-        FileHelp.Delete(targetDir + "Apps\Support\MKVToolNix\mkvtoolnix-gui.ini")
-        FileHelp.Delete(targetDir + "Apps\Support\AVSMeter\AVSMeter.ini")
-
-        For Each i In Directory.GetFiles(targetDir, "*.ini", IO.SearchOption.AllDirectories)
-            MsgWarn(i, MessageBoxIcon.Exclamation)
-            Exit Sub
-        Next
-
-        Using p As New Process
-            p.StartInfo.FileName = "C:\Program Files\7-Zip\7z.exe"
-            p.StartInfo.Arguments = $"a -tzip -mx9 ""{targetDir.TrimEnd("\"c)}.7z"" -r ""{targetDir}*"""
-            p.Start()
-            p.WaitForExit()
-
-            If p.ExitCode > 0 Then
-                MsgError($"7zip exit code: {p.ExitCode}")
-                Exit Sub
-            End If
-        End Using
-
-        If releaseType = "-test" Then
-            For Each i In outputDirectories
-                FileHelp.Copy(targetDir.TrimEnd("\"c) + ".7z", i + DirPath.GetName(targetDir) + ".7z", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
-                Process.Start(i)
+            For Each i In Directory.GetDirectories(targetDir + "\Apps\Plugins\VS")
+                Dim cacheDir = i + "\__pycache__"
+                If Directory.Exists(cacheDir) Then DirectoryHelp.Delete(cacheDir)
             Next
-        End If
-    End Sub
 
-    Sub ShowPackageError(pack As Package, msg As String)
-        MsgError(msg)
+            DirectoryHelp.Delete(targetDir + "\.vs")
+            DirectoryHelp.Delete(targetDir + "\Apps\Audio\qaac\QTfiles64")
 
-        Using form As New AppsForm
-            form.ShowPackage(pack)
-            form.ShowDialog()
-        End Using
+            FileHelp.Delete(targetDir + "\debug.log")
+            FileHelp.Delete(targetDir + "\_StaxRip.log")
+            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe")
+            FileHelp.Delete(targetDir + "\StaxRip.vshost.sln")
+            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe.config")
+            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe.manifest")
+            FileHelp.Delete(targetDir + "\Apps\Audio\eac3to\log.txt")
+            FileHelp.Delete(targetDir + "\Apps\Support\DGIndex\DGIndex.ini")
+            FileHelp.Delete(targetDir + "\Apps\Support\MKVToolNix\mkvtoolnix.ini")
+            FileHelp.Delete(targetDir + "\Apps\Support\MKVToolNix\mkvtoolnix-gui.ini")
+            FileHelp.Delete(targetDir + "\Apps\Support\AVSMeter\AVSMeter.ini")
+
+            For Each i In Directory.GetFiles(targetDir, "*.ini", IO.SearchOption.AllDirectories)
+                Throw New Exception("ini file found:" + BR2 + i)
+            Next
+
+            Using p As New Process
+                p.StartInfo.FileName = "C:\Program Files\7-Zip\7z.exe"
+                p.StartInfo.Arguments = $"a -tzip -mx9 ""{targetDir}.7z"" -r ""{targetDir}\*"""
+                p.Start()
+                p.WaitForExit()
+                If p.ExitCode > 0 Then Throw New Exception($"7zip exit code: {p.ExitCode}")
+            End Using
+
+            If releaseType = "-test" Then
+                For Each i In outputDirectories
+                    FileHelp.Copy(targetDir.TrimEnd("\"c) + ".7z", i + DirPath.GetName(targetDir) + ".7z", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
+                    Process.Start(i)
+                Next
+            End If
+
+            'Dim newTargetDir = targetDir.Replace("-full-", "-light-")
+            'DirectoryHelp.Move(targetDir, newTargetDir)
+            'targetDir = newTargetDir
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
     End Sub
 
     <Command("Plays a mp3, wav Or wmv sound file.")>

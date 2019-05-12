@@ -2608,14 +2608,6 @@ Public Class MainForm
             End If
         End If
 
-        If p.Script.Engine = ScriptEngine.VapourSynth AndAlso TypeOf p.VideoEncoder Is ffmpegEnc Then
-            If ProcessTip("ffmpeg video encoding with VapourSynth input isn't supported.") Then
-                gbAssistant.Text = "Incompatible settings"
-                CanIgnoreTip = False
-                Return False
-            End If
-        End If
-
         If p.Script.Engine = ScriptEngine.VapourSynth AndAlso TypeOf p.VideoEncoder Is Rav1e Then
             If ProcessTip("Using ffmpeg along side of rav1e is not supported by ffmpeg currently.") Then
                 gbAssistant.Text = "Incompatible settings"

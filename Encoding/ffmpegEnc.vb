@@ -213,6 +213,7 @@ Public Class ffmpegEnc
                     ret += " -hwaccel cuvid"
             End Select
 
+            If sourcePath.Ext = "vpy" Then ret += " -f vapoursynth"
             If includePaths Then ret += " -i " + sourcePath.Escape
             Dim items = From i In Me.Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.Switch)
             If items.Count > 0 Then ret += " " + items.Select(Function(item) item.GetArgs).Join(" ")

@@ -7,7 +7,7 @@
     <ProjectGuid>{8DB07BD5-D3DD-49CB-85ED-AB35EAF3C951}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>MainIcon.ico</ApplicationIcon>
+    <ApplicationIcon>NewIcon.ico</ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>StaxRip</AssemblyName>
@@ -405,7 +405,11 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
+    <Content Include="License.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="MainIcon.ico" />
+    <Content Include="NewIcon.ico" />
     <None Include="changelog.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

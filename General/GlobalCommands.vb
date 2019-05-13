@@ -288,7 +288,7 @@ Public Class GlobalCommands
             --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
             --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
             --avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
-            --log --log-framelist".Split((" " + BR).ToCharArray())
+            --log --log-framelist --vpp-colorspace".Split((" " + BR).ToCharArray())
 
         File.WriteAllText(Package.NVEnc.GetDir + "\help.txt", ProcessHelp.GetStdOut(Package.NVEnc.Path, "-h"))
         Dim nvHelp = File.ReadAllText(Package.NVEnc.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")

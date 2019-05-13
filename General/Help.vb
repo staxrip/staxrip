@@ -98,9 +98,8 @@ Public Class DirectoryHelp
 
     Shared Sub Copy(source As String, target As String, Optional opt As UIOption = UIOption.OnlyErrorDialogs)
         Try
-            FileSystem.CopyDirectory(source, target, True)
+            FileSystem.CopyDirectory(source, target, opt)
         Catch
-            FileSystem.CopyDirectory(source, target, opt, UICancelOption.DoNothing)
         End Try
     End Sub
 

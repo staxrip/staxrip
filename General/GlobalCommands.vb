@@ -631,7 +631,7 @@ Switches
         Try
             Dim outputDirectories = {
                 "C:\Users\frank\OneDrive\StaxRip\TestBuilds\",
-                "C:\Users\frank\Dropbox\public\StaxRip\Builds"}
+                "C:\Users\frank\Dropbox\public\StaxRip\Builds\"}
 
             Dim sourceDir = "C:\Users\frank\Daten\Projekte\VB\staxrip\bin\"
 
@@ -691,10 +691,6 @@ Switches
                     Process.Start(i)
                 Next
             End If
-
-            'Dim newTargetDir = targetDir.Replace("-full-", "-light-")
-            'DirectoryHelp.Move(targetDir, newTargetDir)
-            'targetDir = newTargetDir
         Catch ex As Exception
             g.ShowException(ex)
         End Try

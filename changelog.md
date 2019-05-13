@@ -8,11 +8,12 @@ https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 
 https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR
 
+- new: few x265 switches added
+
 ### 2.0.1.0
 
 - new: experimental new icon, please give feedback if you like it,
   if it's not liked then it will be reverted to the old icon
-- new: few new x265 switches added
 - new: in the main menu under 'Apps > Media Info > vspipe' you can show info
   like shown [here](https://forum.doom9.org/showpost.php?p=1874254&postcount=3394).
   The main menu was not reset so it shows only if you reset it at: Tools > Edit Menu 

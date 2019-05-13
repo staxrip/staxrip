@@ -8,6 +8,8 @@ https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 
 https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR
 
+### 2.0.1.0
+
 - new: experimental new icon, please give feedback if you like it,
   if it's not liked then it will be reverted to the old icon
 
@@ -18,7 +20,7 @@ https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR
 - change: selecting a filter in the filter menu, the names that are shown in the list were improved
 
 - update: nvenc
-- update: ffmpeg, it's now possible to open vpy with ffmpeg
+- update: ffmpeg, it's now possible to use vpy with ffmpeg
 - update: rav1e, it's now possible to use rav1e with VapourSynth
 
 - internal: Release() method (F11 key) added to automate the release process

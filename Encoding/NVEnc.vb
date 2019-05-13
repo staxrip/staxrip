@@ -373,6 +373,17 @@ Public Class NVEnc
         Property VppUnsharpWeight As New NumParam With {.Text = "     weight", .HelpSwitch = "--vpp-unsharp", .Init = 0.5, .Config = {0, 10, 0.5, 1}}
         Property VppUnsharpThreshold As New NumParam With {.Text = "     threshold", .HelpSwitch = "--vpp-unsharp", .Init = 10, .Config = {0, 255, 1, 1}}
 
+        Property VppNnedi As New BoolParam With {.Text = "nnedi deinterlacer", .Switches = {"--vpp-nnedi"}, .ArgsFunc = AddressOf GetNnedi}
+
+        Property VppNnediField As New OptionParam With {.Text = "     field", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "top", "bottom"}}
+        Property VppNnediNns As New OptionParam With {.Text = "     nns", .HelpSwitch = "--vpp-nnedi", .InitValue = 1, .Options = {"16", "32", "64", "128", "256"}}
+        Property VppNnediNszie As New OptionParam With {.Text = "     nszie", .HelpSwitch = "--vpp-nnedi", .InitValue = 6, .Options = {"8x6", "16x6", "32x6", "48x6", "8x4", "16x4", "32x4"}}
+        Property VppNnediQuality As New OptionParam With {.Text = "     quality", .HelpSwitch = "--vpp-nnedi", .Options = {"fast", "slow"}}
+        Property VppNnediPrescreen As New OptionParam With {.Text = "     prescreen", .HelpSwitch = "--vpp-nnedi", .InitValue = 4, .Options = {"none", "original", "new", "original_block", "new_block"}}
+        Property VppNnediErrortype As New OptionParam With {.Text = "     errortype", .HelpSwitch = "--vpp-nnedi", .Options = {"abs", "square"}}
+        Property VppNnediPrec As New OptionParam With {.Text = "     prec", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "fp16", "fp32"}}
+        Property VppNnediWeightfile As New StringParam With {.Text = "     weightfile", .HelpSwitch = "--vpp-nnedi", .BrowseFile = True}
+
         Property Custom As New StringParam With {.Text = "Custom", .AlwaysOn = True}
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -387,6 +398,84 @@ Public Class NVEnc
                         New OptionParam With {.Name = "LevelH265", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
                         QPI, QPP, QPB)
+                    Add("VPP",
+                        New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
+                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvnative", "nvcuda"), .Options = {"None", "Adaptive", "Bob"}},
+                        New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
+                        New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvnative", "nvcuda")},
+                        VppEdgelevel,
+                        VppEdgelevelStrength,
+                        VppEdgelevelThreshold,
+                        VppEdgelevelBlack,
+                        VppEdgelevelWhite,
+                        VppUnsharp,
+                        VppUnsharpRadius,
+                        VppUnsharpWeight,
+                        VppUnsharpThreshold)
+                    Add("VPP 2 | Denoise",
+                        KNN, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
+                        PMD, PmdApplyCount, PmdStrength, PmdThreshold)
+                    Add("VPP 2 | Deband",
+                        Deband,
+                        Deband_range,
+                        Deband_sample,
+                        Deband_thre,
+                        Deband_thre_y,
+                        Deband_thre_cb,
+                        Deband_thre_cr,
+                        Deband_dither,
+                        Deband_dither_y,
+                        Deband_dither_c,
+                        Deband_seed,
+                        Deband_blurfirst,
+                        Deband_rand_each_frame)
+                    Add("VPP 2 | Deinterlace",
+                        VppNnedi,
+                        VppNnediField,
+                        VppNnediNns,
+                        VppNnediNszie,
+                        VppNnediQuality,
+                        VppNnediPrescreen,
+                        VppNnediErrortype,
+                        VppNnediPrec,
+                        VppNnediWeightfile,
+                        New OptionParam With {.Switch = "--vpp-yadif", .Text = "Yadif", .Options = {"disabled", "auto", "tff", "bff", "bob", "bob_tff", "bob_bff"}, .Values = {"", "", "mode=tff", "mode=bff", "mode=bob", "mode=bob_tff", "mode=bob_bff"}})
+                    Add("VPP 2 | AFS 1",
+                        AFS,
+                        AFSINI,
+                        AFSPreset,
+                        AFSLeft,
+                        AFSRight,
+                        AFSTop,
+                        AFSBottom,
+                        AFSmethod_switch,
+                        AFScoeff_shift,
+                        AFSthre_shift,
+                        AFSthre_deint,
+                        AFSthre_motion_y,
+                        AFSthre_motion_c,
+                        AFSlevel)
+                    Add("VPP 2 | AFS 2",
+                        AFSshift,
+                        AFSdrop,
+                        AFSsmooth,
+                        AFS24fps,
+                        AFStune,
+                        AFSrff,
+                        AFStimecode,
+                        AFSlog)
+                    Add("VPP 2 | Tweak",
+                        Tweak,
+                        vppbrightness,
+                        vppcontrast,
+                        vppsaturation,
+                        vppgamma,
+                        vpphue,
+                        Pad,
+                        PadLeft,
+                        PadTop,
+                        PadRight,
+                        PadBottom)
                     Add("Analysis",
                         New OptionParam With {.Switch = "--adapt-transform", .Text = "Adaptive Transform", .Options = {"Automatic", "Enabled", "Disabled"}, .Values = {"", "--adapt-transform", "--no-adapt-transform"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New NumParam With {.Switch = "--cu-min", .Text = "Minimum CU Size", .Config = {0, 32, 16}},
@@ -432,74 +521,6 @@ Public Class NVEnc
                         New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Full Range", .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New BoolParam With {.Switch = "--aud", .Text = "AUD"})
-                    Add("VPP",
-                        New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
-                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvnative", "nvcuda"), .Options = {"None", "Adaptive", "Bob"}},
-                        New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
-                        New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvnative", "nvcuda")},
-                        VppEdgelevel,
-                        VppEdgelevelStrength,
-                        VppEdgelevelThreshold,
-                        VppEdgelevelBlack,
-                        VppEdgelevelWhite,
-                        VppUnsharp,
-                        VppUnsharpRadius,
-                        VppUnsharpWeight,
-                        VppUnsharpThreshold)
-                    Add("VPP | Denoise",
-                        KNN, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
-                        PMD, PmdApplyCount, PmdStrength, PmdThreshold)
-                    Add("VPP | Deband",
-                        Deband,
-                        Deband_range,
-                        Deband_sample,
-                        Deband_thre,
-                        Deband_thre_y,
-                        Deband_thre_cb,
-                        Deband_thre_cr,
-                        Deband_dither,
-                        Deband_dither_y,
-                        Deband_dither_c,
-                        Deband_seed,
-                        Deband_blurfirst,
-                        Deband_rand_each_frame)
-                    Add("VPP | AFS 1",
-                        AFS,
-                        AFSINI,
-                        AFSPreset,
-                        AFSLeft,
-                        AFSRight,
-                        AFSTop,
-                        AFSBottom,
-                        AFSmethod_switch,
-                        AFScoeff_shift,
-                        AFSthre_shift,
-                        AFSthre_deint,
-                        AFSthre_motion_y,
-                        AFSthre_motion_c,
-                        AFSlevel)
-                    Add("VPP | AFS 2",
-                        AFSshift,
-                        AFSdrop,
-                        AFSsmooth,
-                        AFS24fps,
-                        AFStune,
-                        AFSrff,
-                        AFStimecode,
-                        AFSlog)
-                    Add("VPP 2 | Tweak",
-                        Tweak,
-                        vppbrightness,
-                        vppcontrast,
-                        vppsaturation,
-                        vppgamma,
-                        vpphue)
-                    Add("VPP 2 | Padding",
-                        Pad,
-                        PadLeft,
-                        PadTop,
-                        PadRight,
-                        PadBottom)
                     Add("Other",
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},
@@ -528,6 +549,15 @@ Public Class NVEnc
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
             If Not QPI.NumEdit Is Nothing Then
+                VppNnediField.MenuButton.Enabled = VppNnedi.Value
+                VppNnediNns.MenuButton.Enabled = VppNnedi.Value
+                VppNnediNszie.MenuButton.Enabled = VppNnedi.Value
+                VppNnediQuality.MenuButton.Enabled = VppNnedi.Value
+                VppNnediPrescreen.MenuButton.Enabled = VppNnedi.Value
+                VppNnediErrortype.MenuButton.Enabled = VppNnedi.Value
+                VppNnediPrec.MenuButton.Enabled = VppNnedi.Value
+                VppNnediWeightfile.TextEdit.Enabled = VppNnedi.Value
+
                 VppEdgelevelStrength.NumEdit.Enabled = VppEdgelevel.Value
                 VppEdgelevelThreshold.NumEdit.Enabled = VppEdgelevel.Value
                 VppEdgelevelBlack.NumEdit.Enabled = VppEdgelevel.Value
@@ -635,6 +665,7 @@ Public Class NVEnc
                 End If
             End If
         End Function
+
         Function GetKnnArgs() As String
             If KNN.Value Then
                 Dim ret = ""
@@ -687,6 +718,19 @@ Public Class NVEnc
             If VppEdgelevel.Value Then Return ("--vpp-edgelevel " + ret.TrimStart(","c)).TrimEnd
         End Function
 
+        Function GetNnedi() As String
+            Dim ret = ""
+            If VppNnediField.Value <> VppNnediField.DefaultValue Then ret += "field=" + VppNnediField.ValueText
+            If VppNnediNns.Value <> VppNnediNns.DefaultValue Then ret += ",nns=" + VppNnediNns.ValueText
+            If VppNnediNszie.Value <> VppNnediNszie.DefaultValue Then ret += ",nszie=" + VppNnediNszie.ValueText
+            If VppNnediQuality.Value <> VppNnediQuality.DefaultValue Then ret += ",quality=" + VppNnediQuality.ValueText
+            If VppNnediPrescreen.Value <> VppNnediPrescreen.DefaultValue Then ret += ",prescreen=" + VppNnediPrescreen.ValueText
+            If VppNnediErrortype.Value <> VppNnediErrortype.DefaultValue Then ret += ",errortype=" + VppNnediErrortype.ValueText
+            If VppNnediPrec.Value <> VppNnediPrec.DefaultValue Then ret += ",prec=" + VppNnediPrec.ValueText
+            If VppNnediWeightfile.Value <> "" Then ret += ",weightfile=" + VppNnediWeightfile.Value.Escape
+
+            If VppNnedi.Value Then Return ("--vpp-nnedi " + ret.TrimStart(","c)).TrimEnd
+        End Function
 
         Function GetAFS() As String
             Dim ret = ""

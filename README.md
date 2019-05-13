@@ -1,4 +1,4 @@
-![alt text](docs\screenshots\_Main.png "Main Window")
+![Main Window](https://github.com/staxrip/staxrip/blob/master/docs/screenshots/_Main.png)
 
 # About
 

@@ -259,7 +259,7 @@ rav1e
 
 a Faster and Safer AV1 Encoder
 
-Used Version: 0.1.0
+Used Version: 2019-04-30
 
 https://github.com/xiph/rav1e
 
@@ -359,7 +359,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.0-AU+7
+Used Version: 3.0 Au+22
 
 http://x265.org
 

@@ -867,14 +867,15 @@ Public Class x265Params
                     AQmode, qgSize, AQStrength, QComp,
                     New NumParam With {.Switch = "--cbqpoffs", .Text = "CB QP Offset", .Config = {-12, 12}},
                     New NumParam With {.Switch = "--crqpoffs", .Text = "CR QP Offset", .Config = {-12, 12}},
-                    NRintra, NRinter, qpmin, qpmax, qpstep, CRFmin, CRFmax, constvbv)
+                    NRintra, NRinter, qpmin, qpmax, qpstep, CRFmin, CRFmax)
                 Add("Rate Control 2",
                     VBVbufsize, VBVmaxrate, VBVinit, VBVend, VBVfradj,
                     IPRatio, PBRatio, Cplxblur, QBlur,
                     CUtree, Lossless, StrictCBR, rcGrain,
                     multi_pass_opt_analysis,
                     multi_pass_opt_distortion,
-                    New BoolParam() With {.Switch = "--aq-motion", .Text = "AQ Motion"})
+                    New BoolParam() With {.Switch = "--aq-motion", .Text = "AQ Motion"},
+                    constvbv)
                 Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP,
                     New BoolParam With {.Switch = "--analyze-src-pics", .NoSwitch = "--no-analyze-src-pics", .Text = "Analyze SRC Pics"})
                 Add("Slice Decision",
@@ -901,6 +902,8 @@ Public Class x265Params
                     slowpass,
                     New BoolParam With {.Switch = "--copy-pic", .NoSwitch = "--no-copy-pic", .Init = True, .Text = "Copy Pic"})
                 Add("Statistic",
+                    New StringParam With {.Switch = "--log-file", .Text = "Log File", .Quotes = True, .BrowseFile = True},
+                    New OptionParam With {.Switch = "--log-file-level", .Text = "Log File Level", .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .InitValue = 3},
                     New OptionParam With {.Switch = "--log-level", .Switches = {"--log"}, .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .InitValue = 3},
                     csvloglevel, CSV, SSIM, PSNR)
                 Add("VUI",
@@ -947,7 +950,8 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}},
                     Frames, chunkstart, chunkend,
                     New NumParam With {.Switch = "--seek", .Text = "Seek"},
-                    New BoolParam With {.Switch = "--dither", .Text = "Dither (High Quality Downscaling)"})
+                    New BoolParam With {.Switch = "--dither", .Text = "Dither (High Quality Downscaling)"},
+                    New BoolParam With {.Switch = "--stylish", .Text = "Enable x264 style progress indicator"})
                 Add("Loop Filter", Deblock, DeblockA, DeblockB, SAO,
                     New BoolParam With {.Switch = "--limit-sao", .Text = "Limit Sample Adaptive Offset"},
                     SAOnonDeblock)

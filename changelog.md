@@ -8,6 +8,10 @@ https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 
 https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR
 
+### 
+
+- fix for audio streams demuxed as mka
+
 ### 2.0.1.1
 
 - new: nvencc --vpp-nnedi, --vpp-yadif

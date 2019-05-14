@@ -1549,7 +1549,7 @@ Public Class AudioStream
     Property CodecString As String
     Property Delay As Integer
     Property Format As String
-    Property FormatProfile As String 'was only field to show DTS MA
+    Property FormatProfile As String
     Property ID As Integer
     Property StreamOrder As Integer
     Property Index As Integer
@@ -1579,12 +1579,16 @@ Public Class AudioStream
             ElseIf CodecString = "MPEG Audio" Then
                 If FormatProfile = "Layer 2" Then ret += " MP2"
                 If FormatProfile = "Layer 3" Then ret += " MP3"
-            ElseIf CodecString = "AC3+" Then
-                ret += " E-AC3"
+            ElseIf CodecString = "AC3+" OrElse Format = "E-AC-3" Then
+                ret += " EAC3"
+            ElseIf Format = "MLP FBA" Then
+                ret += " TrueHD"
+            ElseIf CodecString = "DTS XLL" Then
+                ret += " DTSMA"
             ElseIf FormatProfile.StartsWith("MA /") Then
-                ret += " DTS-MA"
+                ret += " DTSMA"
             ElseIf FormatProfile.StartsWith("HRA /") Then
-                ret += " DTS-HRA"
+                ret += " DTSHRA"
             Else
                 ret += " " + CodecString
             End If
@@ -1662,7 +1666,14 @@ Public Class AudioStream
                 Case "AC3+", "E-AC-3"
                     Return ".eac3"
                 Case Else
-                    Return ".mka"
+                    Select Case Format
+                        Case "MLP FBA"
+                            Return ".thd"
+                        Case "E-AC-3"
+                            Return ".eac3"
+                        Case Else
+                            Return ".mka"
+                    End Select
             End Select
         End Get
     End Property

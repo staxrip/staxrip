@@ -1222,7 +1222,7 @@ Public Class Package
             .AvsFilterNames = {"nnedi3", "AutoYUY2", "PointResizeMT", "BilinearResizeMT", "BicubicResizeMT", "LanczosResizeMT", "Lanczos4ResizeMT", "BlackmanResizeMT", "Spline16ResizeMT", "Spline36ResizeMT", "Spline64ResizeMT", "GaussResizeMT", "SincResizeMT", "DeBilinearResizeMT", "DeBicubicResizeMT", "DeLanczosResizeMT", "DeLanczos4ResizeMT", "DeBlackmanResizeMT", "DeSpline16ResizeMT", "DeSpline36ResizeMT", "DeSpline64ResizeMT", "DeGaussResizeMT", "DeSincResizeMT"},
             .AvsFiltersFunc = Function() {
                 New VideoFilter("Field", "nnedi3", "nnedi3(field = 1)"),
-                New VideoFilter("Resize", "Resize | ResizeMT", "$select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;Lanczos4ResizeMT;LanczosResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch = 4)")}})
+                New VideoFilter("Resize", "ResizeMT", "$select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;Lanczos4ResizeMT;LanczosResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch = 4)")}})
 
         Add(New PluginPackage With {
             .Name = "TIVTC",

@@ -77,11 +77,13 @@ Public Class Thumbnails
 
         Dim avsdoc As New VideoScript
         avsdoc.Path = Path.Combine(Folder.Temp + "Thumbnails.avs")
+
         If inputFile.EndsWith("mp4") Then
             avsdoc.Filters.Add(New VideoFilter("LWLibavVideoSource(""" + inputFile + "" + """, format = ""YUV420P8"").Spline64Resize(" & width & "," & height & ")"))
         Else
             avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + "" + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
         End If
+
         avsdoc.Filters.Add(New VideoFilter("ConvertToRGB(matrix=""Rec709"")"))
 
         Dim errorMsg = ""

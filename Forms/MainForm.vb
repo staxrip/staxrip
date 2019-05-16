@@ -89,7 +89,6 @@ Public Class MainForm
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.bnNext = New System.Windows.Forms.Button()
         Me.llEditAudio0 = New StaxRip.UI.ButtonLabel()
         Me.gbAssistant = New System.Windows.Forms.GroupBox()
@@ -1005,7 +1004,6 @@ Public Class MainForm
         Me.Controls.Add(Me.tlpMain)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.HelpButton = True
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.KeyPreview = True
         Me.MainMenuStrip = Me.MenuStrip
         Me.Margin = New System.Windows.Forms.Padding(9, 12, 9, 12)
@@ -1081,7 +1079,7 @@ Public Class MainForm
         g.MainForm = Me
         LoadSettings()
         MenuItemEx.UseTooltips = s.EnableTooltips
-
+        Icon = My.Resources.NewIcon
         InitializeComponent()
 
         ScaleClientSize(41, 26.5)

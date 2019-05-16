@@ -8,16 +8,23 @@ https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 
 https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR
 
-- new: added ConvertFromDoubleWidth to AviSynth profiles
-- new: the default AviSynth and VapourSynth profiles were improved to deal better with high bit depth sources,
-  the profiles were not reset so the changes are only available after reseting the profiles manually
-- new: in the x265 dialog it's possible to select the preferred piping tool, use at your own risk, not all
-  combinations will work. In theory the included x265 built don't need a piping tool but I could not make it work
-  without piping tool. Options are: Automatic, None, vspipe, avs2pipemod, ffmpeg
+### 2.0.1.3
+
+- new: again new experimental icon, please give feedback if you like it,
+  if it's not liked then it will be reverted to the classic icon, the problem
+  with the classic icon is it looks outdated to because it's not flat
+- new: added ConvertFromDoubleWidth to AviSynth profiles, it's useful to fix the
+  double width output that l-smash outputs for 10 (or more) bit sources.
+  The profiles were not reset so the changes are only available
+  after reseting the profiles manually
+- new: in the x265 dialog it's possible to select the preferred piping tool,
+  use at your own risk, not all combinations will work. In theory the included
+  x265 built don't need a piping tool but I could not make it work without
+  a piping tool. Options are: Automatic, None, vspipe, avs2pipemod, ffmpeg
 
 - update: ffmpeg, unlike the built before this one supports mp3 encoding
-- update: x265
-- update: d2v vs filter
+- update: x264, x265
+- update: d2v vs filter plugin
 
 ### 2.0.1.2
 

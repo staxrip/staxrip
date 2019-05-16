@@ -353,6 +353,8 @@ Public Class GlobalCommands
         If qsMissing.Count > 0 Then msg += BR2 + "# Removed from QSVEnc" + BR2 + qsMissing.Join(" ")
         If qsUnknown.Count > 0 Then msg += BR2 + "# QSVEnc Todo" + BR2 + qsUnknown.Join(" ")
 
+        File.WriteAllText(Package.x264.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.x264.Path, "--fullhelp"))
+
         Dim x265Except = "--crop-rect--fast-cbf --frame-skip --help
             --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version --no-scenecut
             --no-progress --pbration --fullhelp".Split((" " + BR).ToCharArray())

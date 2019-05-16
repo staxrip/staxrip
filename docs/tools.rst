@@ -349,7 +349,7 @@ x264
 
 H.264 video encoding command line app.
 
-Used Version: 2935
+Used Version: 2969
 
 http://www.videolan.org/developers/x264.html
 
@@ -1573,7 +1573,7 @@ Source filter to open D2V index files created with DGIndex or D2VWitch.
 
 Filters: d2v.Source
 
-Used Version: 2016-04-29
+Used Version: 1.1
 
 http://github.com/dwbuiten/d2vsource
 
@@ -1934,7 +1934,7 @@ MVTools is a set of filters for motion estimation and compensation.
 
 Filters: mv.Super, mv.Analyse, mv.Recalculate, mv.Compensate, mv.Degrain1, mv.Degrain2, mv.Degrain3, mv.Mask, mv.Finest, mv.Flow, mv.FlowBlur, mv.FlowInter, mv.FlowFPS, mv.BlockFPS, mv.SCDetection, mv.DepanAnalyse, mv.DepanEstimate, mv.DepanCompensate, mv.DepanStabilise
 
-Used Version: r20
+Used Version: 21
 
 http://github.com/dubhater/vapoursynth-mvtools
 

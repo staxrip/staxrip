@@ -19,7 +19,7 @@ Public Class ApplicationSettings
     Public DeleteTempFilesMode As DeleteMode
     Public Demuxers As List(Of Demuxer)
     Public eac3toProfiles As List(Of eac3toProfile)
-    Public EnableTooltips As Boolean = True
+    Public EnableTooltips As Boolean
     Public EventCommands As List(Of EventCommand)
     Public FilterSetupProfiles As List(Of TargetVideoScript)
     Public HidePreviewButtons As Boolean

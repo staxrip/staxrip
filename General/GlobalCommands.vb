@@ -630,10 +630,7 @@ Switches
     Sub Release()
         Try
             Dim sourceDir = "C:\Users\frank\Daten\Projekte\VB\staxrip\bin\"
-
-            'If Not Directory.Exists(sourceDir) Then
-            '    sourceDir = ""
-            'End If
+            'If Not Directory.Exists(sourceDir) Then sourceDir = 
 
             Dim version = Assembly.LoadFile(sourceDir + "StaxRip.exe").GetName.Version
             Dim releaseType = "-stable"

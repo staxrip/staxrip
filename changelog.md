@@ -12,7 +12,7 @@ https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR
 
 - new: again new experimental icon, please give feedback if you like it,
   if it's not liked then it will be reverted to the classic icon, the problem
-  with the classic icon is it looks outdated to because it's not flat
+  with the classic icon is it looks outdated because it's not flat
 - new: added ConvertFromDoubleWidth to AviSynth profiles, it's useful to fix the
   double width output that l-smash outputs for 10 (or more) bit sources.
   The profiles were not reset so the changes are only available

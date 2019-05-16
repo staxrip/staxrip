@@ -17,6 +17,7 @@ https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR
 
 - update: ffmpeg, unlike the built before this one supports mp3 encoding
 - update: x265
+- update: d2v vs filter
 
 ### 2.0.1.2
 

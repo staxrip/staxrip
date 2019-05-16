@@ -109,7 +109,7 @@ ffmpeg
 
 Versatile audio video converter.
 
-Used Version: 2019-05-12 (Wolfberry built)
+Used Version: 2019-05-15 (Wolfberry built)
 
 http://ffmpeg.org
 
@@ -359,7 +359,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.0 Au+22
+Used Version: 3.0 Au+24
 
 http://x265.org
 
@@ -995,7 +995,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: LSMASHVideoSource, LSMASHAudioSource, LWLibavVideoSource, LWLibavAudioSource
 
-Used Version: r929
+Used Version: 929
 
 http://avisynth.nl/index.php/LSMASHSource
 
@@ -2246,7 +2246,7 @@ VapourSynth source filter based on Libav supporting a wide range of input format
 
 Filters: lsmas.LibavSMASHSource, lsmas.LWLibavSource
 
-Used Version: 2019-05-04
+Used Version: 929
 
 http://avisynth.nl/index.php/LSMASHSource
 

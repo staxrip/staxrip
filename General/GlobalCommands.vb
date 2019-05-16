@@ -428,7 +428,7 @@ Public Class GlobalCommands
                     If pack.Version = "" Then
                         msg += BR2 + "# version missing for " + pack.Name
                     ElseIf Not pack.IsCorrectVersion Then
-                        'msg += BR2 + "# wrong version for " + pack.Name
+                        msg += BR2 + "# wrong version for " + pack.Name
                     End If
                 End If
 
@@ -629,14 +629,9 @@ Switches
     <Command("Test")>
     Sub Release()
         Try
-            Dim outputDirectories = {
-                "C:\Users\frank\OneDrive\StaxRip\TestBuilds\",
-                "C:\Users\frank\Dropbox\public\StaxRip\Builds\"}
-
             Dim sourceDir = "C:\Users\frank\Daten\Projekte\VB\staxrip\bin\"
 
             'If Not Directory.Exists(sourceDir) Then
-            '    outputDirectories = {""}
             '    sourceDir = ""
             'End If
 
@@ -685,8 +680,13 @@ Switches
                 If p.ExitCode > 0 Then Throw New Exception($"7zip exit code: {p.ExitCode}")
             End Using
 
+            Dim outputDirectories = {
+                "C:\Users\frank\OneDrive\StaxRip\TestBuilds\",
+                "C:\Users\frank\Dropbox\public\StaxRip\Builds\"}
+
             If releaseType = "-test" Then
                 For Each i In outputDirectories
+                    If Not Directory.Exists(i) Then Continue For
                     FileHelp.Copy(targetDir.TrimEnd("\"c) + ".7z", i + DirPath.GetName(targetDir) + ".7z", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
                     Process.Start(i)
                 Next

@@ -9,8 +9,14 @@ https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0
 https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR
 
 - new: added ConvertFromDoubleWidth to AviSynth profiles
+- new: the default AviSynth and VapourSynth profiles were improved to deal better with high bit depth sources,
+  the profiles were not reset so the changes are only available after reseting the profiles manually
+- new: in the x265 dialog it's possible to select the preferred piping tool, use at your own risk, not all
+  combinations will work. In theory the included x265 built don't need a piping tool but I could not make it work
+  without piping tool. Options are: Automatic, None, vspipe, avs2pipemod, ffmpeg
 
 - update: ffmpeg, unlike the built before this one supports mp3 encoding
+- update: x265
 
 ### 2.0.1.2
 

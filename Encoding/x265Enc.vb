@@ -188,7 +188,12 @@ Public Class x265Params
     Property Decoder As New OptionParam With {
         .Text = "Decoder",
         .Options = {"AviSynth/VapourSynth", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
-        .Values = {"avs", "qs", "ffqsv", "ffdxva"}}
+        .Values = {"script", "qs", "ffqsv", "ffdxva"}}
+
+    Property PipingTool As New OptionParam With {
+        .Text = "Piping Tool",
+        .Options = {"Automatic", "None", "vspipe", "avs2pipemod", "ffmpeg"},
+        .Values = {"auto", "none", "vspipe", "avs2pipemod", "ffmpeg"}}
 
     Property Quant As New NumParam With {
         .Switches = {"--crf", "--qp"},
@@ -960,7 +965,7 @@ Public Class x265Params
                     New StringParam With {.Switch = "--qpfile", .Text = "QP File", .Quotes = True, .BrowseFile = True},
                     New StringParam With {.Switch = "--recon", .Text = "Recon File", .Quotes = True, .BrowseFile = True},
                     New StringParam With {.Switch = "--scaling-list", .Text = "Scaling List", .Quotes = True},
-                    Decoder, PsyRD, CompCheck, CompCheckAimedQuality,
+                    Decoder, PipingTool, PsyRD, CompCheck, CompCheckAimedQuality,
                     New NumParam With {.Switch = "--recon-depth", .Text = "Recon Depth"},
                     RDpenalty, maxausizefactor)
                 Add("Other 2",
@@ -1032,12 +1037,28 @@ Public Class x265Params
                 Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop")
 
             Select Case Decoder.ValueText
-                Case "avs"
-                    If p.Script.Engine = ScriptEngine.VapourSynth Then
-                        sb.Append(Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | " + Package.x265.Path.Escape)
-                    Else
-                        sb.Append(Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | " + Package.x265.Path.Escape)
+                Case "script"
+                    Dim pipeString = ""
+                    Dim pipeTool = PipingTool.ValueText
+
+                    If pipeTool = "auto" Then
+                        If p.Script.Engine = ScriptEngine.VapourSynth Then
+                            pipeTool = "vspipe"
+                        Else
+                            pipeTool = "avs2pipemod"
+                        End If
                     End If
+
+                    Select Case pipeTool
+                        Case "vspipe"
+                            pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | "
+                        Case "avs2pipemod"
+                            pipeString = Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | "
+                        Case "ffmpeg"
+                            pipeString = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe" + " -loglevel fatal -hide_banner - | "
+                    End Select
+
+                    sb.Append(pipeString + Package.x265.Path.Escape)
                 Case "qs"
                     Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")
                     sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.x265.Path.Escape)
@@ -1079,19 +1100,26 @@ Public Class x265Params
         If q.Count > 0 Then sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
 
         If includePaths Then
-            If Frames.Value = 0 AndAlso Not IsCustom(pass, "--frames") Then sb.Append(" --frames " & script.GetFrames)
-            sb.Append(" --y4m")
+            If PipingTool.ValueText <> "none" Then
+                If Frames.Value = 0 AndAlso Not IsCustom(pass, "--frames") Then
+                    sb.Append(" --frames " & script.GetFrames)
+                End If
+
+                sb.Append(" --y4m")
+            End If
 
             If Mode.Value = x265RateMode.TwoPass OrElse Mode.Value = x265RateMode.ThreePass Then
                 sb.Append(" --stats " + (p.TempDir + p.TargetFile.Base + ".stats").Escape)
             End If
 
+            Dim input = If(PipingTool.ValueText = "none", script.Path.Escape, "-")
+
             If (Mode.Value = x265RateMode.ThreePass AndAlso pass < 3) OrElse
                 Mode.Value = x265RateMode.TwoPass AndAlso pass = 1 Then
 
-                sb.Append(" --output NUL -")
+                sb.Append(" --output NUL " + input)
             Else
-                sb.Append(" --output " + targetPath.Escape + " - ")
+                sb.Append(" --output " + targetPath.Escape + " " + input)
             End If
         End If
 

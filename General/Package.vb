@@ -426,7 +426,7 @@ Public Class Package
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .HelpURL = "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md",
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", $"FFVideoSource(""%source_file%"", colorspace = ""YV12"", \{BR}              cachefile = ""%source_temp_file%.ffindex"")")}})
+        .AvsFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", $"FFVideoSource(""%source_file%"", colorspace = ""YV12"", \{BR}              cachefile = ""%source_temp_file%.ffindex"")" + BR + "#AssumeFPS(25)")}})
 
     Shared Property ffms2vs As Package = Add(New PluginPackage With {
         .Name = "ffms2",
@@ -435,7 +435,7 @@ Public Class Package
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .HelpURL = "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-vapoursynth.md",
         .VSFilterNames = {"ffms2"},
-        .VSFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")")}})
+        .VSFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
 
     Shared Property VSFilterMod As Package = Add(New PluginPackage With {
         .Name = "VSFilterMod",
@@ -1114,8 +1114,8 @@ Public Class Package
             .HelpURL = "http://github.com/VFR-maniac/L-SMASH-Works/blob/master/AviSynth/README",
             .AvsFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"")"),
-                New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")")}})
+                New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"")" + BR + "#ConvertFromDoubleWidth(bits=10)" + BR + "#AssumeFPS(25)"),
+                New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")" + BR + "#ConvertFromDoubleWidth(bits=10)" + BR + "#AssumeFPS(25)")}})
 
         Add(New PluginPackage With {
             .Name = "vslsmashsource",
@@ -1125,8 +1125,8 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
             .VSFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")"),
-                New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")")}})
+                New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)"),
+                New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
 
         Add(New PluginPackage With {
             .Name = "Deblock",

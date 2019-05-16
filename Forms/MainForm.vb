@@ -4785,7 +4785,7 @@ Public Class MainForm
 
         Select Case td.Show
             Case "Single File"
-                Using d As New System.Windows.Forms.OpenFileDialog
+                Using d As New OpenFileDialog
                     d.SetFilter(FileTypes.Video)
                     d.SetInitDir(s.LastSourceDir)
                     If d.ShowDialog() = DialogResult.OK Then OpenVideoSourceFiles(d.FileNames)

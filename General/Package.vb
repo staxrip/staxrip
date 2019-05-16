@@ -2099,13 +2099,13 @@ Public Class PluginPackage
         If p.Script.Engine = ScriptEngine.AviSynth AndAlso
             Not package.AvsFilterNames.NothingOrEmpty Then
 
-            Dim fullScriptLower = p.Script.GetScript().ToLowerInvariant
+            Dim scriptLower = p.Script.GetScript().ToLowerInvariant
 
             For Each filterName In package.AvsFilterNames
-                If fullScriptLower.Contains(filterName.ToLowerInvariant) Then Return True
+                If scriptLower.Contains(filterName.ToLowerInvariant + "(") Then Return True
 
-                If fullScriptLower.Contains("import") Then
-                    Dim match = Regex.Match(fullScriptLower, "\bimport\s*\(\s*""\s*(.+\.avsi*)\s*""\s*\)",
+                If scriptLower.Contains("import") Then
+                    Dim match = Regex.Match(scriptLower, "\bimport\s*\(\s*""\s*(.+\.avsi*)\s*""\s*\)",
                                             RegexOptions.IgnoreCase)
 
                     If match.Success AndAlso File.Exists(match.Groups(1).Value) Then

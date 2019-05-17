@@ -1079,7 +1079,7 @@ Public Class MainForm
         g.MainForm = Me
         LoadSettings()
         MenuItemEx.UseTooltips = s.EnableTooltips
-        Icon = My.Resources.NewIcon
+        Icon = My.Resources.Icons.ModernIcon
         InitializeComponent()
 
         ScaleClientSize(41, 26.5)

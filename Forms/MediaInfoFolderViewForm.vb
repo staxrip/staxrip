@@ -62,7 +62,7 @@ Public Class MediaInfoFolderViewForm
         MyBase.New()
         InitializeComponent()
 
-        Icon = My.Resources.NewIcon
+        Icon = My.Resources.Icons.ModernIcon
 
         lv.View = View.Details
         lv.FullRowSelect = True

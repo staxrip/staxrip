@@ -8,6 +8,13 @@
 
 <https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR>
 
+### 2.0.2.0
+
+- fix: downloads were using 7z extension even though it was zip instead of 7z
+
+- update: LSMASHSource avs
+- update: mkvtoolnix
+
 ### 2.0.1.3
 
 - new: again new experimental icon, please give feedback if you like it,

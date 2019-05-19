@@ -410,14 +410,11 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
-    <None Include="TombstoneIcon.ico" />
     <None Include="ClassicIcon.ico" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="MainIcon.ico" />
     <None Include="ModernIcon.ico" />
-    <Content Include="NewIcon.ico" />
     <None Include="changelog.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

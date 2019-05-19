@@ -632,7 +632,11 @@ Switches
     Sub Release()
         Try
             Dim sourceDir = "C:\Users\frank\Daten\Projekte\VB\staxrip\bin\"
-            'If Not Directory.Exists(sourceDir) Then sourceDir = 
+
+            If Not Directory.Exists(sourceDir) Then
+                MsgError("Source directory not foundd." + BR2 + sourceDir)
+                Exit Sub
+            End If
 
             Dim version = Assembly.LoadFile(sourceDir + "StaxRip.exe").GetName.Version
             Dim releaseType = "-stable"
@@ -673,17 +677,17 @@ Switches
 
             Using p As New Process
                 p.StartInfo.FileName = "C:\Program Files\7-Zip\7z.exe"
-                p.StartInfo.Arguments = $"a -tzip -mx9 ""{targetDir}.7z"" -r ""{targetDir}\*"""
+                p.StartInfo.Arguments = $"a -t7z -mx9 ""{targetDir}.7z"" -r ""{targetDir}\*"""
                 p.Start()
                 p.WaitForExit()
                 If p.ExitCode > 0 Then Throw New Exception($"7zip exit code: {p.ExitCode}")
             End Using
 
-            Dim outputDirectories = {
-                "C:\Users\frank\OneDrive\StaxRip\TestBuilds\",
-                "C:\Users\frank\Dropbox\public\StaxRip\Builds\"}
-
             If releaseType = "-test" Then
+                Dim outputDirectories = {
+                    "C:\Users\frank\OneDrive\StaxRip\TestBuilds\",
+                    "C:\Users\frank\Dropbox\public\StaxRip\Builds\"}
+
                 For Each i In outputDirectories
                     If Not Directory.Exists(i) Then Continue For
                     FileHelp.Copy(targetDir.TrimEnd("\"c) + ".7z", i + DirPath.GetName(targetDir) + ".7z", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)

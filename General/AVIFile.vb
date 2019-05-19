@@ -53,9 +53,9 @@ Public Class AVIFile
 
     Sub ThrowException(message As String)
         If Sourcefile.Ext = "avs" Then
-            Throw New Exception(message + BR2 + "Failed to open AviSynth script:" + BR2 + Sourcefile + BR2 + "You can try to open the script with VirtualDub x64, if it don't open it could be a problem with the script or the AviSynth+ x64 setup, if StaxRip don't report a script error and the script looks valid then reinstalling AviSynth+ x64 might fix the problem, the setup is located at:" + BR2 + Folder.Apps + Package.AviSynth.SetupFilename + BR)
+            Throw New Exception(message + BR2 + "Failed to open AviSynth script:" + BR2 + Sourcefile + BR2 + "You can try to open the script with VirtualDub2 x64, if it don't open it could be a problem with the script or the AviSynth+ x64 setup, if StaxRip don't report a script error and the script looks valid then reinstalling AviSynth+ x64 might fix the problem, the setup is located at:" + BR2 + Folder.Apps + Package.AviSynth.SetupFilename + BR)
         ElseIf Sourcefile.Ext = "vpy" Then
-            Throw New Exception(message + BR2 + "Failed to open VapourSynth script:" + BR2 + Sourcefile + BR2 + "You can try to open the script with VirtualDub x64, if it don't open it could be a problem with the script or the VapourSynth x64 setup, if StaxRip don't report a script error and the script looks valid then reinstalling VapourSynth x64 might fix the problem.")
+            Throw New Exception(message + BR2 + "Failed to open VapourSynth script:" + BR2 + Sourcefile + BR2 + "You can try to open the script with VirtualDub2 x64, if it don't open it could be a problem with the script or the VapourSynth x64 setup, if StaxRip don't report a script error and the script looks valid then reinstalling VapourSynth x64 might fix the problem.")
         Else
             Throw New Exception(message + BR2 + "Failed to open script:" + BR2 + Sourcefile)
         End If

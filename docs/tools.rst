@@ -109,7 +109,7 @@ ffmpeg
 
 Versatile audio video converter.
 
-Used Version: 2019-05-15 (Wolfberry built)
+Used Version: 2019-05-19
 
 http://ffmpeg.org
 
@@ -149,7 +149,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 31.1
+Used Version: 34
 
 https://mkvtoolnix.download/
 
@@ -159,7 +159,7 @@ mkvinfo
 
 MKV muxing tool.
 
-Used Version: 31.1
+Used Version: 34
 
 https://mkvtoolnix.download/
 
@@ -169,7 +169,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 31.1
+Used Version: 34
 
 https://mkvtoolnix.download/
 
@@ -995,7 +995,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: LSMASHVideoSource, LSMASHAudioSource, LWLibavVideoSource, LWLibavAudioSource
 
-Used Version: 929
+Used Version: 941
 
 http://avisynth.nl/index.php/LSMASHSource
 

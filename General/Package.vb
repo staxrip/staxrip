@@ -132,7 +132,6 @@ Public Class Package
         .Filename = "vspipe.exe",
         .Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
         .WebURL = "http://www.vapoursynth.com/doc/vspipe.html",
-        .DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\",
         .StartActionValue = Sub()
@@ -165,7 +164,6 @@ Public Class Package
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
         .SetupFilename = "Installers\VapourSynth-R45.exe",
-        .DownloadURL = "http://github.com/vapoursynth/vapoursynth/releases",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"})
 
@@ -2032,7 +2030,6 @@ Public Class PythonPackage
         TreePath = "Runtimes"
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        DownloadURL = "https://www.python.org/downloads/windows/"
         SetupFilename = "Installers\python-3.7.3-amd64-webinstall.exe"
     End Sub
 

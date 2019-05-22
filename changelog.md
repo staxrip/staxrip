@@ -8,6 +8,9 @@
 
 <https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR>
 
+- fix: if in the codec dialogs search field the enter key is pressed in order to cycle
+  there is no longer an annoying sound made 
+
 ### 2.0.2.1
 
 - Under 'Tools > Settings > User Interface' there is a setting to define a icon file

@@ -1,5 +1,6 @@
 ﻿Imports System.Threading
 Imports System.Threading.Tasks
+
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -13,7 +14,7 @@ Public Class CommandLineForm
 
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
-        SimpleUI.ScaleClientSize(37, 24)
+        SimpleUI.ScaleClientSize(37, 25)
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
         Dim singleList As New List(Of String)
 

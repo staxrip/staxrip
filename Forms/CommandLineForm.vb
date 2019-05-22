@@ -232,6 +232,8 @@ Public Class CommandLineForm
         Else
             SearchIndex = 0
         End If
+
+        If e.KeyData = Keys.Enter Then e.SuppressKeyPress = True
     End Sub
 
     Private Sub cbGoTo_TextChanged(sender As Object, e As EventArgs) Handles cbGoTo.TextChanged

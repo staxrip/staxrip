@@ -1044,12 +1044,12 @@ Public Class SimpleUI
             BrowseFile(FileTypes.GetFilter(filterTypes))
         End Sub
 
-        Sub BrowseFile(filter As String)
+        Sub BrowseFile(filter As String, Optional initDir As String = Nothing)
             Button.ClickAction = Sub()
                                      Using dia As New OpenFileDialog
                                          dia.Filter = filter
-                                         dia.SetInitDir(s.LastSourceDir)
-                                         dia.InitialDirectory = p.TempDir
+                                         If initDir = "" OrElse Not Directory.Exists(initDir) Then initDir = p.TempDir
+                                         dia.SetInitDir(initDir)
                                          If dia.ShowDialog = DialogResult.OK Then Edit.Text = dia.FileName
                                      End Using
                                  End Sub

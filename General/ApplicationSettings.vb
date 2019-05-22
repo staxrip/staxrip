@@ -61,6 +61,7 @@ Public Class ApplicationSettings
     Public WriteDebugLog As Boolean
     Public ThumbnailBackgroundColor As Color = Color.AliceBlue
     Public MinPreviewSize As Integer = 60
+    Public IconFile As String
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -272,6 +273,7 @@ Public Class ApplicationSettings
         End If
 
         If LastSourceDir = "" Then LastSourceDir = ""
+        If IconFile = "" OrElse Not File.Exists(IconFile) Then IconFile = Folder.Startup + "Apps\Icons\Black.ico"
 
         Migrate()
     End Sub

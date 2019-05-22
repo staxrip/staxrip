@@ -222,8 +222,8 @@ Public Class ProcForm
         InitializeComponent()
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
         mbShutdown.Add(System.Enum.GetValues(GetType(ShutdownMode)).Cast(Of Object))
-        Icon = My.Resources.Icons.ModernIcon
-        NotifyIcon.Icon = My.Resources.Icons.ModernIcon
+        Icon = g.Icon
+        NotifyIcon.Icon = g.Icon
         NotifyIcon.Text = "StaxRip"
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
         ScaleClientSize(42, 28)

@@ -1079,7 +1079,7 @@ Public Class MainForm
         g.MainForm = Me
         LoadSettings()
         MenuItemEx.UseTooltips = s.EnableTooltips
-        Icon = My.Resources.Icons.ModernIcon
+        Icon = g.Icon
         InitializeComponent()
 
         ScaleClientSize(41, 26.5)
@@ -3305,6 +3305,15 @@ Public Class MainForm
 
             ui.CreateFlowPage("User Interface", True)
 
+            ui.AddLabel("Icon File:")
+
+            Dim tb = ui.AddTextButton
+            tb.Label.Visible = False
+            tb.BrowseFile("ico|*.ico", Folder.Startup + "Apps\Icons")
+            tb.Edit.Expand = True
+            tb.Edit.Text = s.IconFile
+            tb.Edit.SaveAction = Sub(value) s.IconFile = value
+
             Dim t = ui.AddText()
             t.Text = "Remember Window Positions:"
             t.Help = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
@@ -3388,6 +3397,7 @@ Public Class MainForm
                 SetMenuStyle()
                 s.UpdateRecentProjects(Nothing)
                 UpdateRecentProjectsMenu()
+                If Not Icon Is g.Icon Then Icon = g.Icon
                 g.SaveSettings()
             End If
 

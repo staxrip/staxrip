@@ -705,7 +705,7 @@ Module UIExtensions
     End Sub
 
     <Extension()>
-    Sub SetInitDir(d As System.Windows.Forms.FileDialog, ParamArray paths As String())
+    Sub SetInitDir(d As FileDialog, ParamArray paths As String())
         For Each i In paths
             If Not Directory.Exists(i) Then i = i.ExistingParent
 
@@ -717,7 +717,7 @@ Module UIExtensions
     End Sub
 
     <Extension()>
-    Sub SetFilter(d As System.Windows.Forms.FileDialog, values As IEnumerable(Of String))
+    Sub SetFilter(d As FileDialog, values As IEnumerable(Of String))
         d.Filter = FileTypes.GetFilter(values)
     End Sub
 

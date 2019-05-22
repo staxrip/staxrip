@@ -7,7 +7,7 @@
     <ProjectGuid>{8DB07BD5-D3DD-49CB-85ED-AB35EAF3C951}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>ModernIcon.ico</ApplicationIcon>
+    <ApplicationIcon>Black.ico</ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>StaxRip</AssemblyName>
@@ -188,11 +188,6 @@
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
-    </Compile>
-    <Compile Include="My Project\Icons.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Icons.resx</DependentUpon>
     </Compile>
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -410,11 +405,10 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
-    <None Include="ClassicIcon.ico" />
+    <Content Include="Black.ico" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="ModernIcon.ico" />
     <None Include="changelog.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -466,11 +460,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TextHelpForm.resx">
       <DependentUpon>TextHelpForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="My Project\Icons.resx">
-      <CustomToolNamespace>My.Resources</CustomToolNamespace>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Icons.Designer.vb</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\DataForm.resx">
       <DependentUpon>DataForm.vb</DependentUpon>

@@ -8,6 +8,10 @@
 
 <https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR>
 
+### 2.0.2.1
+
+- Under 'Tools > Settings > User Interface' there is a setting to define a icon file
+
 ### 2.0.2.0
 
 - fix: downloads were using 7z extension even though it was zip instead of 7z

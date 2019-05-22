@@ -887,6 +887,28 @@ Public Class GlobalClass
         OnException(DirectCast(e.ExceptionObject, Exception))
     End Sub
 
+    Private IconValue As Icon
+    Private LastIconFile As String
+
+    Public Property Icon As Icon
+        Get
+            If IconValue Is Nothing OrElse s.IconFile <> LastIconFile Then
+                Dim iconFile = s.IconFile
+                If Not File.Exists(iconFile) Then iconFile = Folder.Startup + "Apps\Icons\Black.ico"
+
+                If File.Exists(iconFile) Then
+                    IconValue = New Icon(iconFile)
+                    LastIconFile = iconFile
+                End If
+            End If
+
+            Return IconValue
+        End Get
+        Set(ByVal value As Icon)
+            IconValue = value
+        End Set
+    End Property
+
     Sub MakeBugReport(e As Exception)
         If e Is Nothing AndAlso Not g.IsValidSource(False) Then Exit Sub
 

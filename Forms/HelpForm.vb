@@ -43,7 +43,7 @@ Public Class HelpForm
 
     Sub New()
         InitializeComponent()
-        Icon = My.Resources.Icons.ModernIcon
+        Icon = g.Icon
     End Sub
 
     Sub New(path As String)
@@ -55,7 +55,7 @@ Public Class HelpForm
             MsgWarn("Failed to load: " + path)
         End Try
 
-        Icon = My.Resources.Icons.ModernIcon
+        Icon = g.Icon
     End Sub
 
     Private DocumentValue As HelpDocument

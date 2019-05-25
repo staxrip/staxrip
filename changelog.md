@@ -10,6 +10,7 @@
 
 - fix: if in the codec dialogs search field the enter key is pressed in order to cycle
   there is no longer an annoying sound made 
+- fix: encoding was failing when a ambersand (&) character was used in the path
 
 ### 2.0.2.1
 

@@ -79,9 +79,7 @@ Module StringExtensions
     Function Escape(instance As String) As String
         If instance = "" Then Return ""
 
-        Dim chars = " ()".ToCharArray
-
-        For Each i In chars
+        For Each i In " ()&"
             If instance.Contains(i) Then Return """" + instance + """"
         Next
 

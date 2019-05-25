@@ -71,11 +71,9 @@ Namespace CommandLine
         End Function
 
         Sub Execute()
-            Dim batchPath = p.TempDir + p.TargetFile.Base + "_vexe.bat"
-            Dim batchCode = Proc.WriteBatchFile(batchPath, GetCommandLine(True, True))
             Dim batchProc As New Process
             batchProc.StartInfo.FileName = "cmd.exe"
-            batchProc.StartInfo.Arguments = "/k """ + batchPath + """"
+            batchProc.StartInfo.Arguments = "/k """ + GetCommandLine(True, True) + """"
             batchProc.StartInfo.WorkingDirectory = p.TempDir
             batchProc.Start()
         End Sub

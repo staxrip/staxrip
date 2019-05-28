@@ -421,6 +421,7 @@
     <None Include="Fonts\mikadan.ttf" />
     <None Include="Fonts\Segoe-MDL2-Assets.ttf" />
     <None Include="packages.config" />
+    <None Include="README.md" />
     <None Include="Resources\arrow.png" />
     <None Include="Resources\X.png" />
     <None Include="Resources\Right3.png" />

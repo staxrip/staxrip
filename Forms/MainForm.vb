@@ -1068,7 +1068,6 @@ Public Class MainForm
     Private CanIgnoreTip As Boolean = True
     Private IsLoading As Boolean = True
     Private BlockBitrate, BlockSize As Boolean
-    Private IsManualCheckForUpdates As Boolean
     Private SkipAssistant As Boolean
     Private BlockSourceTextBoxTextChanged As Boolean
 

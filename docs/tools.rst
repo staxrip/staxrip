@@ -189,7 +189,7 @@ mpvnet
 
 libmpv based media player.
 
-Used Version: 3.5
+Used Version: 4.0
 
 https://github.com/Revan654/mpvnet/
 
@@ -289,7 +289,7 @@ VCEEnc
 
 AMD hardware video encoder.
 
-Used Version: 4.00
+Used Version: 4.01
 
 http://github.com/rigaya/VCEEnc
 
@@ -359,7 +359,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.0 Au+32
+Used Version: 3.0+2 Wolfberry
 
 http://x265.org
 

@@ -3304,7 +3304,8 @@ Public Class MainForm
 
             ui.CreateFlowPage("User Interface", True)
 
-            ui.AddLabel("Icon File:")
+            Dim l = ui.AddLabel("Icon File:")
+            l.Help = "The Windows Startmenu uses Windows Links which allow to use custom icon files."
 
             Dim tb = ui.AddTextButton
             tb.Label.Visible = False

@@ -312,6 +312,7 @@ Public Class GlobalCommands
             --input-res --log-framelist --mux-option --output-file --raw --seek --skip-frame
             --sub-copy --version --video-streamid --video-track --vpy --vpy-mt".Split((" " + BR).ToCharArray())
 
+        File.WriteAllText(Package.VCEEnc.GetDir + "\help.txt", ProcessHelp.GetStdOut(Package.VCEEnc.Path, "-h"))
         Dim amdHelp = File.ReadAllText(".\Apps\Encoders\VCEEnc\help.txt").Replace("(no-)", "").Replace("--no-", "--")
         Dim amdHelpSwitches = Regex.Matches(amdHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim amdCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\vceenc.vb").Replace("--no-", "--")
@@ -723,7 +724,7 @@ Switches
         Select Case topic
             Case "info"
                 f.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
-                f.Doc.WriteP("Thanks for icon artwork: Freepik from www.flaticon.com, vanontom")
+                f.Doc.WriteP("Thanks for icon artwork: Freepik www.flaticon.com, vanontom, nulledone")
                 Dim licensePath = Folder.Startup + "License.txt"
                 If File.Exists(licensePath) Then f.Doc.WriteP(File.ReadAllText(licensePath), True)
             Case "CRF Value"

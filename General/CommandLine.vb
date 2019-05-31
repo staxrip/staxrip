@@ -440,7 +440,7 @@ Namespace CommandLine
 
         Property DefaultValue As String
         Property TextEdit As TextEdit
-        Property Quotes As Boolean
+        Property Quotes As QuotesMode
         Property InitAction As Action(Of SimpleUI.TextBlock)
         Property BrowseFileFilter As String
         Property BrowseFolderText As String
@@ -489,15 +489,19 @@ Namespace CommandLine
                 If Value <> DefaultValue Then
                     If Switch = "" Then
                         If AlwaysOn Then
-                            If Quotes Then
+                            If Quotes = QuotesMode.Always Then
                                 Return """" + Value + """"
+                            ElseIf Quotes = QuotesMode.Auto Then
+                                Return Value.Escape
                             Else
                                 Return Value
                             End If
                         End If
                     Else
-                        If Quotes Then
+                        If Quotes = QuotesMode.Always Then
                             Return Switch + Params.Separator + """" + Value + """"
+                        ElseIf Quotes = QuotesMode.Auto Then
+                            Return Switch + Params.Separator + Value.Escape
                         Else
                             Return Switch + Params.Separator + Value
                         End If

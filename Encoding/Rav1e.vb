@@ -145,7 +145,7 @@ Public Class Rav1eParams
         .ImportAction = Sub(arg As String)
                             If arg = "" Then Exit Sub
                             Dim a = arg.Trim(""""c)
-                            Mode.Value = 1 + " " + Bitrate.Value
+                            'Mode.Value = 1 + " " + Bitrate.Value 'TODO:
                         End Sub,
         .ArgsFunc = Function() "" & Bitrate.Value,
     .VisibleFunc = Function() Mode.Value = 1}
@@ -196,7 +196,7 @@ Public Class Rav1eParams
         .ImportAction = Sub(arg As String)
                             If arg = "" Then Exit Sub
                             Dim a = arg.Trim(""""c)
-                            Mode.Value = 0 + " " + Speed.Value
+                            'Mode.Value = 0 + " " + Speed.Value 'TODO:
                         End Sub,
         .ArgsFunc = Function() "" & Speed.Value,
          .Path = "Basic"}
@@ -251,14 +251,16 @@ Public Class Rav1eParams
     Property Custom As New StringParam With {
         .Text = "Custom",
         .Path = "Misc",
+        .Quotes = QuotesMode.Never,
         .AlwaysOn = True}
+
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
             If ItemsValue Is Nothing Then
                 ItemsValue = New List(Of CommandLineParam)
 
                 Add(Tune, Passes, Mode, Speed, Bitrate, Quantizer,
-                New StringParam With {.Switch = "--mastering_display", .Path = "VUI", .Text = "Master Display", .Quotes = True},
+                New StringParam With {.Switch = "--mastering_display", .Path = "VUI", .Text = "Master Display"},
                 Keyint, MinKeyint, Threads, Limit, Light, MaxFALL, Prime, Matrix, Transfer, Range,
                    New BoolParam With {.Switch = "--low_latency", .Text = "Low Latency", .Path = "Basic"},
                 Custom)

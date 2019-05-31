@@ -10,7 +10,7 @@ Issue Tracker
 
 For bug reports and feature requests please use the `Issue Tracker <https://github.com/staxrip/staxrip/issues>`_, English Only.
 
-Before making a bug report please try the newest `Beta Build <https://github.com/staxrip/staxrip/blob/master/changelog.md>`_.
+Before making a bug report please try the newest `Test Build <https://github.com/staxrip/staxrip/blob/master/changelog.md>`_.
 
 
 Forum

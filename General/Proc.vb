@@ -19,6 +19,7 @@ Public Class Proc
     Property TrimChars As Char()
     Property RemoveChars As Char()
     Property ExitCode As Integer
+    Property Frames As Integer
     Property Log As New LogBuilder
     Property Succeeded As Boolean
     Property Header As String

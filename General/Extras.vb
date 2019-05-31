@@ -77,8 +77,8 @@ Public Class Animation
         Dim Rate = s.Storage.GetInt("PNGFrameRate", 15)
         Dim Path = inputFile.ChangeExt("apng")
         Dim OptOut = inputFile.ChangeExt(".png").Replace(".png", "_opt.png")
-        Dim Seek = s.Storage.GetString("PNGTime", 15.0)
-        Dim Duration = s.Storage.GetString("PNGLength", 3.8)
+        Dim Seek = s.Storage.GetString("PNGTime", "15.0")
+        Dim Duration = s.Storage.GetString("PNGLength", "3.8")
         Dim Size = s.Storage.GetInt("PNGScale", 480)
         Dim OptSettings = s.Storage.GetString("PNGopt", "-z1")
         Dim Opt = s.Storage.GetBool("OptSetting", False)
@@ -86,7 +86,6 @@ Public Class Animation
         Dim DirectoryLocation = s.Storage.GetString("PNGDirectory", p.DefaultTargetFolder)
         Dim Export = DirectoryLocation + "\" + inputFile.Base.ChangeExt("png")
         Dim NewFile = inputFile.ChangeExt("png")
-
 
         Using Proc As New Proc
             Proc.Header = "Encoding PNG"

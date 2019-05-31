@@ -283,8 +283,8 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--min-memory", .Text = "Minimize memory usage"},
                         New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
                     Add("VPP",
-                        New StringParam With {.Switch = "--vpp-sub", .Text = "Subtitle File", .Quotes = True, .BrowseFile = True},
-                        New StringParam With {.Switch = "--vpp-sub-charset", .Text = "Subtitle Charset", .Quotes = True},
+                        New StringParam With {.Switch = "--vpp-sub", .Text = "Subtitle File", .BrowseFile = True},
+                        New StringParam With {.Switch = "--vpp-sub-charset", .Text = "Subtitle Charset"},
                         New OptionParam With {.Switch = "--vpp-sub-shaping", .Text = "Subtitle Shaping", .Options = {"Simple", "Complex"}},
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"0", "90", "180", "270"}},
                         New OptionParam With {.Switch = "--vpp-image-stab", .Text = "Image Stabilizer", .Options = {"Disabled", "Upscale", "Box"}},
@@ -295,7 +295,7 @@ Public Class QSVEnc
                         mctf,
                         mctfval)
                     Add("VUI",
-                        New StringParam With {.Switch = "--master-display", .Text = "Master Display", .Quotes = True, .VisibleFunc = Function() Codec.ValueText = "hevc"},
+                        New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 NC", "BT 2020 C", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
@@ -307,7 +307,7 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--aud", .Text = "AUD"})
                     Add("Deinterlace", Deinterlace, TFF, BFF)
                     Add("Other",
-                        New StringParam With {.Text = "Custom", .AlwaysOn = True},
+                        New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
                         New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .InitValue = 3},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New OptionParam With {.Switch = "--sao", .Text = "SAO", .Options = {"Auto", "None", "Luma", "Chroma", "All"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},

@@ -5619,13 +5619,13 @@ Public Class MainForm
                     FrameRate.Text = "Framerate:"
                     FrameRate.Config = {15, 60}
                     FrameRate.NumEdit.Value = s.Storage.GetInt("GifFrameRate", 15)
-                    FrameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifFrameRate", value)
+                    FrameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifFrameRate", CInt(value))
 
                     Dim Scale = ui.AddNum()
                     Scale.Text = "Scale:"
                     Scale.Config = {240, 2160}
                     Scale.NumEdit.Value = s.Storage.GetInt("GifScale", 480)
-                    Scale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifScale", value)
+                    Scale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifScale", CInt(value))
 
                     PaletteGen.Text = "Statistics Mode:"
                     PaletteGen.Add("Full", "full")
@@ -5703,37 +5703,37 @@ Public Class MainForm
                     Column.Text = "Columns:"
                     Column.Config = {1, 12}
                     Column.NumEdit.Value = s.Storage.GetInt("MTNColumn", 4)
-                    Column.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNColumn", value)
+                    Column.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNColumn", CInt(value))
 
                     Dim Row = ui.AddNum()
                     Row.Text = "Rows:"
                     Row.Config = {1, 12}
                     Row.NumEdit.Value = s.Storage.GetInt("MTNRow", 6)
-                    Row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNRow", value)
+                    Row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNRow", CInt(value))
 
                     Dim Quality = ui.AddNum()
                     Quality.Text = "Quality:"
                     Quality.Config = {25, 100}
                     Quality.NumEdit.Value = s.Storage.GetInt("MTNQuality", 95)
-                    Quality.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNQuality", value)
+                    Quality.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNQuality", CInt(value))
 
                     Dim Height = ui.AddNum()
                     Height.Text = "Height:"
                     Height.Config = {150, 500}
                     Height.NumEdit.Value = s.Storage.GetInt("MTNHeight", 250)
-                    Height.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNHeight", value)
+                    Height.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNHeight", CInt(value))
 
                     Dim Width = ui.AddNum()
                     Width.Text = "Width:"
                     Width.Config = {960, 2000}
                     Width.NumEdit.Value = s.Storage.GetInt("MTNWidth", 1920)
-                    Width.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNWidth", value)
+                    Width.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNWidth", CInt(value))
 
                     Dim Depth = ui.AddNum()
                     Depth.Text = "Depth:"
                     Depth.Config = {4, 12}
                     Depth.NumEdit.Value = s.Storage.GetInt("MTNDepth", 12)
-                    Depth.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNDepth", value)
+                    Depth.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNDepth", CInt(value))
 
                     Dim Output = ui.AddBool()
                     Output.Text = "Custom Output"
@@ -5807,14 +5807,14 @@ Public Class MainForm
                     PNGFrameRate.Text = "FrameRate:"
                     PNGFrameRate.Config = {15, 60}
                     PNGFrameRate.NumEdit.Value = s.Storage.GetInt("PNGFrameRate", 15)
-                    PNGFrameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("PNGFrameRate", value)
+                    PNGFrameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("PNGFrameRate", CInt(value))
 
                     Dim PNGScale = ui.AddNum()
                     PNGScale.Text = "Scale:"
                     PNGScale.Config = {240, 2160}
                     PNGScale.Help = "The Size to Scale the Resolution to"
                     PNGScale.NumEdit.Value = s.Storage.GetInt("PNGScale", 480)
-                    PNGScale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("PNGScale", value)
+                    PNGScale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("PNGScale", CInt(value))
 
                     Dim OptSettings = ui.AddBool()
                     OptSettings.Text = "Enable Opt"

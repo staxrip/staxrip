@@ -9,11 +9,19 @@
 <https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR>
 
 - icons added and credits in about dialog updated, thanks to: Freepik, vanontom, nulledone, ilko-k
+- the progress bar in the processing window has better contrast
+- video encoding with ffmpeg shows now progress in the progress bar and task bar
 - fix: if in the codec dialogs search field the enter key is pressed in order to cycle
   there is no longer an annoying sound made 
 - fix: encoding was failing when a ambersand (&) character was used in the path
-- update: x265, supports avs input, in the x264 options: Other > Piping Tool > None
+- new AV1 codec option added to ffmpeg encoder
+- various improvments made in the ffmpeg encoder
+- new vceenc switches added
+- new nvencc switches added
+- new x265 switches added
+- update: x265, Wolfberry build with avs input support, in the x265 options: Other > Piping Tool > None
 - update: mpvnet
+- update: ffmpeg Wolfberry build with vpy input support
 - update: nvencc, untested
 - update: qsvencc, untested
 - update: vceencc, untested

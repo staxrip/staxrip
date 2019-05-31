@@ -566,8 +566,8 @@ Public Class MkvMuxer
                 Dim lstValidChapterAtoms As New List(Of XElement)
                 For Each r In p.Ranges
                     lstTimeRanges.Add((
-                        New TimeSpan(10000000L * r.Start / p.CutFrameRate),
-                        New TimeSpan(10000000L * r.End / p.CutFrameRate),
+                        New TimeSpan(CLng(10000000L * r.Start / p.CutFrameRate)),
+                        New TimeSpan(CLng(10000000L * r.End / p.CutFrameRate)),
                         OffsetRecord
                     ))
                     OffsetRecord += lstTimeRanges.Last.EndTime - lstTimeRanges.Last.StartTime

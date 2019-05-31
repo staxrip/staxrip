@@ -1,6 +1,7 @@
 ﻿Imports System.Runtime.InteropServices
 Imports System.Threading
 Imports System.Threading.Tasks
+
 Imports Microsoft.Win32
 Imports StaxRip.UI
 
@@ -30,7 +31,7 @@ Public Class ProcController
 
         ProgressBar.Dock = DockStyle.Fill
         ProgressBar.Font = New Font("Consolas", 9 * s.UIScaleFactor)
-        ProgressBar.ForeColor = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(ToolStripRendererEx.ColorBorder, 0.4)))
+        ProgressBar.ForeColor = ControlPaint.LightLight(ControlPaint.Light(ToolStripRendererEx.ColorBorder, 0.4))
 
         LogTextBox.ScrollBars = ScrollBars.Both
         LogTextBox.Multiline = True
@@ -97,6 +98,26 @@ Public Class ProcController
                 End If
 
                 Exit Sub
+            End If
+        ElseIf Proc.Frames > 0 AndAlso value.Contains("frame=") AndAlso value.Contains("fps=") Then
+            Dim right = value.Left("fps=").Right("frame=")
+
+            If right.IsInt Then
+                Dim frame = right.ToInt
+
+                If frame < Proc.Frames Then
+                    Dim val = CSng(frame / Proc.Frames * 100)
+
+                    If LastProgress <> val Then
+                        ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                        ProcForm.Taskbar?.SetValue(val, 100)
+                        ProcForm.NotifyIcon.Text = val & "%"
+                        ProgressBar.Value = val
+                        LastProgress = val
+                    End If
+
+                    Exit Sub
+                End If
             End If
         End If
 

@@ -4337,3 +4337,9 @@ Public Enum DeleteMode
     <DispName("Recycle Bin")> RecycleBin
     Permanent
 End Enum
+
+Public Enum QuotesMode
+    Auto
+    Always
+    Never
+End Enum

@@ -1723,29 +1723,29 @@ Public Class Package
 
         Dim fp = Folder.Settings + "Versions.txt"
 
-                                    Try
-                                        If Not File.Exists(fp) OrElse Not File.ReadAllText(fp).Contains(Application.ProductVersion + BR2) Then
-                                            FileHelp.Delete(fp)
-                                            fp = Folder.Apps + "Versions.txt"
-                                        End If
+        Try
+            If Not File.Exists(fp) OrElse Not File.ReadAllText(fp).Contains(Application.ProductVersion + BR2) Then
+                FileHelp.Delete(fp)
+                fp = Folder.Apps + "Versions.txt"
+            End If
 
-                                        For Each line In File.ReadAllLines(fp)
-                                            For Each pack In Items.Values
-                                                If line Like "*=*;*" Then
-                                                    Dim name = line.Left("=").Trim
+            For Each line In File.ReadAllLines(fp)
+                For Each pack In Items.Values
+                    If line Like "*=*;*" Then
+                        Dim name = line.Left("=").Trim
 
-                                                    If name = pack.ID Then
-                                                        pack.Version = line.Right("=").Right(";").Trim
-                                                        Dim a = line.Right("=").Left(";").Trim.Split("-"c)
-                                                        pack.VersionDate = New DateTime(CInt(a(0)), CInt(a(1)), CInt(a(2)))
-                                                    End If
-                                                End If
-                                            Next
-                                        Next
-                                    Catch ex As Exception
-                                        g.ShowException(ex)
-                                    End Try
-                                End Sub
+                        If name = pack.ID Then
+                            pack.Version = line.Right("=").Right(";").Trim
+                            Dim a = line.Right("=").Left(";").Trim.Split("-"c)
+                            pack.VersionDate = New DateTime(CInt(a(0)), CInt(a(1)), CInt(a(2)))
+                        End If
+                    End If
+                Next
+            Next
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
+    End Sub
 
     ReadOnly Property ID As String
         Get

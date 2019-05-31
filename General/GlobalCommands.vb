@@ -723,7 +723,7 @@ Switches
         Select Case topic
             Case "info"
                 f.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
-                f.Doc.WriteP("Icon made by Freepik from www.flaticon.com")
+                f.Doc.WriteP("Thanks for icon artwork: Freepik from www.flaticon.com, vanontom")
                 Dim licensePath = Folder.Startup + "License.txt"
                 If File.Exists(licensePath) Then f.Doc.WriteP(File.ReadAllText(licensePath), True)
             Case "CRF Value"

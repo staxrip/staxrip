@@ -11,6 +11,11 @@
 - fix: if in the codec dialogs search field the enter key is pressed in order to cycle
   there is no longer an annoying sound made 
 - fix: encoding was failing when a ambersand (&) character was used in the path
+- update: x265, supports avs input, in the x264 options: Other > Piping Tool > None
+- update: mpvnet
+- update: nvencc, untested
+- update: qsvencc, untested
+- update: vceencc, untested
 
 ### 2.0.2.1
 

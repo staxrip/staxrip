@@ -209,7 +209,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.38
+Used Version: 4.41
 
 http://github.com/rigaya/NVEnc
 
@@ -249,7 +249,7 @@ QSVEnc
 
 Intel hardware video encoder.
 
-Used Version: 3.17
+Used Version: 3.18
 
 http://github.com/rigaya/QSVEnc
 
@@ -359,7 +359,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.0 Au+24
+Used Version: 3.0 Au+32
 
 http://x265.org
 

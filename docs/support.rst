@@ -13,19 +13,17 @@ For bug reports and feature requests please use the `Issue Tracker <https://gith
 Before making a bug report please try the newest `Beta Build <https://github.com/staxrip/staxrip/blob/master/changelog.md>`_.
 
 
-Forum Support
--------------
+Forum
+-----
 
-We provide support in the following forum thread:
+https://forum.doom9.org/showthread.php?t=175845
 
-`doom9 <https://forum.doom9.org/showthread.php?t=175845>`_
-
-discord
+Discord
 -------
 
-invite link: <https://discord.gg/rRn7vGU>
+https://discord.gg/rRn7vGU
 
-gitter
+Gitter
 ------
 
-<https://gitter.im/staxrip/community>
+https://gitter.im/staxrip/community

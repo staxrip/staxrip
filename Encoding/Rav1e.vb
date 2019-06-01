@@ -142,11 +142,6 @@ Public Class Rav1eParams
         .Text = "Bitrate",
         .Path = "Basic",
         .Config = {0, 9999},
-        .ImportAction = Sub(arg As String)
-                            If arg = "" Then Exit Sub
-                            Dim a = arg.Trim(""""c)
-                            'Mode.Value = 1 + " " + Bitrate.Value 'TODO:
-                        End Sub,
         .ArgsFunc = Function() "" & Bitrate.Value,
     .VisibleFunc = Function() Mode.Value = 1}
 
@@ -193,13 +188,8 @@ Public Class Rav1eParams
         .Config = {0, 10},
         .Init = 3,
         .VisibleFunc = Function() Mode.Value = 0,
-        .ImportAction = Sub(arg As String)
-                            If arg = "" Then Exit Sub
-                            Dim a = arg.Trim(""""c)
-                            'Mode.Value = 0 + " " + Speed.Value 'TODO:
-                        End Sub,
         .ArgsFunc = Function() "" & Speed.Value,
-         .Path = "Basic"}
+        .Path = "Basic"}
 
     Property Quantizer As New NumParam With {
         .Text = "Quantizer",

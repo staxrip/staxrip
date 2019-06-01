@@ -795,6 +795,12 @@ Namespace UI
                 If Not value Is Nothing Then
                     For Each i In Menu.Items.OfType(Of ActionMenuItem)()
                         If value.Equals(i.Tag) Then Text = i.Text
+
+                        If i.DropDownItems.Count > 0 Then
+                            For Each i2 In i.DropDownItems.OfType(Of ActionMenuItem)()
+                                If value.Equals(i2.Tag) Then Text = i2.Text
+                            Next
+                        End If
                     Next
                 End If
 

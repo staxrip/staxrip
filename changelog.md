@@ -8,6 +8,12 @@
 
 <https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR>
 
+###
+
+- the progress bar in the processing window was using black as text color,
+  this was changed to use SystemBrushes.ControlText which should be defined
+  by the OS
+
 ### 2.0.2.2
 
 - new icons added and credits in about (info) dialog updated,

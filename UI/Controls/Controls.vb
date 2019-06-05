@@ -1803,13 +1803,12 @@ Namespace UI
     Public Class LabelProgressBar
         Inherits Control
 
+        Property ProgressColor As Color = Color.Silver
+
         Public Sub New()
             SetStyle(ControlStyles.ResizeRedraw, True)
             SetStyle(ControlStyles.Selectable, False)
             SetStyle(ControlStyles.OptimizedDoubleBuffer, True)
-
-            ForeColor = Color.Green
-            BackColor = SystemColors.Control
         End Sub
 
         Private _Minimum As Double
@@ -1868,9 +1867,9 @@ Namespace UI
             Dim g = e.Graphics
             g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
 
-            Using br = New SolidBrush(ForeColor)
+            Using br = New SolidBrush(ProgressColor)
                 g.FillRectangle(br, New RectangleF(0, 0, CSng(Width * (Value - Minimum) / Maximum), Height))
-                g.DrawString(Text, Font, Brushes.Black, 0, CInt((Height - FontHeight) / 2))
+                g.DrawString(Text, Font, SystemBrushes.ControlText, 0, CInt((Height - FontHeight) / 2))
             End Using
 
             MyBase.OnPaint(e)

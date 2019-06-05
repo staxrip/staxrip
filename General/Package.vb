@@ -127,21 +127,6 @@ Public Class Package
         .URL = "http://github.com/nu774/fdkaac",
         .IsRequiredFunc = Function() TypeOf p.Audio0 Is GUIAudioProfile AndAlso DirectCast(p.Audio0, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.fdkaac OrElse TypeOf p.Audio1 Is GUIAudioProfile AndAlso DirectCast(p.Audio1, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.fdkaac})
 
-    Shared Property vspipe As Package = Add(New Package With {
-        .Name = "vspipe",
-        .Filename = "vspipe.exe",
-        .Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
-        .WebURL = "http://www.vapoursynth.com/doc/vspipe.html",
-        .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\",
-        .StartActionValue = Sub()
-                                If p.SourceFile = "" Then
-                                    g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + BR + "pause", False, False, True)
-                                Else
-                                    g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + " --info " + p.Script.Path.Escape + " -" + BR + "pause", False, False, True)
-                                End If
-                            End Sub})
-
     Shared Property AVSMeter As Package = Add(New Package With {
         .Name = "AVSMeter",
         .DirPath = "support\AVSMeter",
@@ -157,6 +142,21 @@ Public Class Package
                                 End If
                             End Sub})
 
+    Shared Property vspipe As Package = Add(New Package With {
+        .Name = "vspipe",
+        .Filename = "vspipe.exe",
+        .Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
+        .WebURL = "http://www.vapoursynth.com/doc/vspipe.html",
+        .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
+        .HintDirFunc = AddressOf Package.GetVapourSynthHintDir,
+        .StartActionValue = Sub()
+                                If p.SourceFile = "" Then
+                                    g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + BR + "pause", False, False, True)
+                                Else
+                                    g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + " --info " + p.Script.Path.Escape + " -" + BR + "pause", False, False, True)
+                                End If
+                            End Sub})
+
     Shared Property VapourSynth As Package = Add(New Package With {
         .Name = "VapourSynth",
         .Filename = "vapoursynth.dll",
@@ -165,7 +165,7 @@ Public Class Package
         .HelpURL = "http://www.vapoursynth.com/doc",
         .SetupFilename = "Installers\VapourSynth-R45.exe",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = Function() Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"})
+        .HintDirFunc = AddressOf Package.GetVapourSynthHintDir})
 
     Shared Property DGIndex As Package = Add(New Package With {
         .Name = "DGIndex",
@@ -1900,6 +1900,12 @@ Public Class Package
     Sub SetPath(pathParam As String)
         s?.Storage?.SetString(Name + "custom path", pathParam)
     End Sub
+
+    Shared Function GetVapourSynthHintDir() As String
+        Dim ret = Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"
+        If File.Exists(ret + "VapourSynth.dll") Then Return ret
+        Return Registry.CurrentUser.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
+    End Function
 
     Function GetStoredPath() As String
         Dim ret As String

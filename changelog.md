@@ -8,11 +8,13 @@
 
 <https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR>
 
-###
+### 2.0.2.3
 
 - the progress bar in the processing window was using black as text color,
   this was changed to use SystemBrushes.ControlText which should be defined
   by the OS
+- if the x265 dialog was opened before a source file was loaded, there could
+  be an exception after the source file was loaded
 
 ### 2.0.2.2
 

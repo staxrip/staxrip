@@ -208,6 +208,7 @@ Public Class CommandLineForm
 
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
         SimpleUI.SaveLast(Params.Title + "page selection")
+        RemoveHandler Params.ValueChanged, AddressOf ValueChanged
         MyBase.OnFormClosed(e)
     End Sub
 

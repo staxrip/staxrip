@@ -767,7 +767,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: FFVideoSource, FFAudioSource
 
-Used Version: 2.23.1
+Used Version: -
 
 http://github.com/FFMS/ffms2
 

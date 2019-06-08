@@ -632,10 +632,13 @@ Switches
     <Command("Test")>
     Sub Release()
         Try
-            Dim sourceDir = "C:\Users\frank\Daten\Projekte\VB\staxrip\bin\"
+            Dim sourceDir = Application.StartupPath + "\"
 
             If Not Directory.Exists(sourceDir) Then
-                MsgError("Source directory not foundd." + BR2 + sourceDir)
+                MsgError("Source directory not found." + BR2 + sourceDir)
+                Exit Sub
+            ElseIf Not sourceDir.EndsWith("\bin\") Then
+                MsgError("Source directory don't end with \bin\" + BR2 + sourceDir)
                 Exit Sub
             End If
 

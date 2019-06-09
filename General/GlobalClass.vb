@@ -922,7 +922,7 @@ Public Class GlobalClass
         Dim fp = Log.GetPath
         g.OpenDirAndSelectFile(fp, g.MainForm.Handle)
         g.StartProcess(g.GetTextEditor(), """" + fp + """")
-        g.StartProcess("https://github.com/Revan654/staxrip/issues")
+        g.StartProcess("https://github.com/staxrip/staxrip/issues")
     End Sub
 
     Function FileExists(path As String) As Boolean

@@ -216,7 +216,7 @@ Public Class Package
         .Name = "mpvnet",
         .Filename = "mpvnet.exe",
         .LaunchName = "mpvnet.exe",
-        .URL = "https://github.com/Revan654/mpvnet/",
+        .URL = "https://github.com/stax76/mpv.net",
         .Description = "libmpv based media player."})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {

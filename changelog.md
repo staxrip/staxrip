@@ -15,6 +15,7 @@
   by the OS
 - if the x265 dialog was opened before a source file was loaded, there could
   be an exception after the source file was loaded
+- tooltip improvement in the muxer options
 
 ### 2.0.2.2
 

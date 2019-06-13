@@ -620,6 +620,7 @@ Public Class MuxerForm
 
             Dim tm = UI.AddTextMenu()
             tm.Text = "Display Aspect Ratio:"
+            tm.Help = "Display Aspect Ratio to be applied by mkvmerge. By default and best practice the aspect ratio should be signalled to the encoder and not to the muxer, use this setting at your own risk."
             tm.Property = NameOf(MkvMuxer.DAR)
             tm.AddMenu(s.DarMenu)
 
@@ -655,6 +656,7 @@ Public Class MuxerForm
 
             Dim tm = UI.AddTextMenu()
             tm.Text = "Pixel Aspect Ratio:"
+            tm.Help = "Display Aspect Ratio to be applied by MP4Box. By default and best practice the aspect ratio should be signalled to the encoder and not to the muxer, use this setting at your own risk."
             tm.Property = NameOf(MP4Muxer.PAR)
             tm.AddMenu(s.ParMenu)
         End If

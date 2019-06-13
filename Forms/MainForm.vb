@@ -5953,36 +5953,27 @@ Public Class MainForm
                     cq.Config = {1, 100}
                     cq.NumEdit.Value = s.Storage.GetInt("Thumbnail Compression Quality", 95)
                     cq.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Compression Quality", CInt(value))
-                    AddHandler k.Button.ValueChangedUser, Sub()
-                                                              cq.Visible = k.Button.Value = "jpg"
-                                                          End Sub
+                    AddHandler k.Button.ValueChangedUser, Sub() cq.Visible = k.Button.Value = "jpg"
 
-                    cq.Visible = k.Button.Value = "jpg"
+                    Dim logo = ui.AddBool()
+                    logo.Text = "Disable Logo"
+                    logo.Help = "Enable or disable the StaxRip Watermark"
+                    logo.Checked = s.Storage.GetBool("Logo", False)
+                    logo.SaveAction = Sub(value) s.Storage.SetBool("Logo", CBool(value))
 
-                    Dim Logo = ui.AddBool()
-                    Logo.Text = "Disable Logo"
-                    Logo.Help = "Enable or Disable the StaxRip Watermark"
-                    Logo.Checked = s.Storage.GetBool("Logo", False)
-                    Logo.SaveAction = Sub(value) s.Storage.SetBool("Logo", CBool(value))
-
-                    Dim Output = ui.AddBool()
-                    Output.Text = "Output Path"
-                    Output.Checked = s.Storage.GetBool("StaxRipOutput", False)
-                    Output.SaveAction = Sub(value) s.Storage.SetBool("StaxRipOutput", value)
-
+                    Dim output = ui.AddBool()
+                    output.Text = "Output Path"
+                    output.Checked = s.Storage.GetBool("StaxRipOutput", False)
+                    output.SaveAction = Sub(value) s.Storage.SetBool("StaxRipOutput", value)
 
                     Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
+                    CustomDirectory.Expandet = True
                     CustomDirectory.Label.Visible = False
                     CustomDirectory.Edit.Text = s.Storage.GetString("StaxRipDirectory", p.DefaultTargetFolder)
                     CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("StaxRipDirectory", value)
                     CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
 
-                    AddHandler Output.CheckStateChanged, Sub()
-                                                             CustomDirectory.Visible = Output.Checked = True
-                                                         End Sub
-
-                    CustomDirectory.Visible = Output.Checked = True
-
+                    AddHandler output.CheckStateChanged, Sub() CustomDirectory.Visible = output.Checked = True
 
                     page.ResumeLayout()
 
@@ -5996,7 +5987,8 @@ Public Class MainForm
                                 g.ShowException(ex)
                             End Try
                         Next
-                        MsgInfo("Thumbnail Has Been Created")
+
+                        MsgInfo("Thumbnails have been created.")
                     End If
                 End Using
             End If

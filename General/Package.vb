@@ -1904,6 +1904,8 @@ Public Class Package
     Shared Function GetVapourSynthHintDir() As String
         Dim ret = Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"
         If File.Exists(ret + "VapourSynth.dll") Then Return ret
+        ret = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
+        If File.Exists(ret + "VapourSynth.dll") Then Return ret
         Return Registry.CurrentUser.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
     End Function
 

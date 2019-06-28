@@ -8,6 +8,10 @@
 
 <https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR>
 
+###
+
+- nvencc switch --vpp-select-every added
+
 ### 2.0.2.3
 
 - the progress bar in the processing window was using black as text color,

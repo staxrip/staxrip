@@ -445,6 +445,7 @@ Namespace CommandLine
         Property BrowseFileFilter As String
         Property BrowseFolderText As String
         Property Menu As String
+        Property Expand As Boolean = True
 
         WriteOnly Property BrowseFile As Boolean
             Set(value As Boolean)

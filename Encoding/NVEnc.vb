@@ -361,20 +361,17 @@ Public Class NVEnc
         Property AFSlog As New BoolParam With {.Text = "log", .HelpSwitch = "--vpp-afs"}
 
         Property VppEdgelevel As New BoolParam With {.Text = "Edgelevel filter to enhance edge", .Switches = {"--vpp-edgelevel"}, .ArgsFunc = AddressOf GetEdge}
-
         Property VppEdgelevelStrength As New NumParam With {.Text = "     strength", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
         Property VppEdgelevelThreshold As New NumParam With {.Text = "     threshold", .HelpSwitch = "--vpp-edgelevel", .Init = 20, .Config = {0, 255, 1, 1}}
         Property VppEdgelevelBlack As New NumParam With {.Text = "     black", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
         Property VppEdgelevelWhite As New NumParam With {.Text = "     white", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
 
         Property VppUnsharp As New BoolParam With {.Text = "Enable unsharp filter", .Switches = {"--vpp-unsharp"}, .ArgsFunc = AddressOf GetUnsharp}
-
         Property VppUnsharpRadius As New NumParam With {.Text = "     radius", .HelpSwitch = "--vpp-unsharp", .Init = 3, .Config = {1, 9}}
         Property VppUnsharpWeight As New NumParam With {.Text = "     weight", .HelpSwitch = "--vpp-unsharp", .Init = 0.5, .Config = {0, 10, 0.5, 1}}
         Property VppUnsharpThreshold As New NumParam With {.Text = "     threshold", .HelpSwitch = "--vpp-unsharp", .Init = 10, .Config = {0, 255, 1, 1}}
 
         Property VppNnedi As New BoolParam With {.Text = "nnedi deinterlacer", .Switches = {"--vpp-nnedi"}, .ArgsFunc = AddressOf GetNnedi}
-
         Property VppNnediField As New OptionParam With {.Text = "     field", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "top", "bottom"}}
         Property VppNnediNns As New OptionParam With {.Text = "     nns", .HelpSwitch = "--vpp-nnedi", .InitValue = 1, .Options = {"16", "32", "64", "128", "256"}}
         Property VppNnediNszie As New OptionParam With {.Text = "     nszie", .HelpSwitch = "--vpp-nnedi", .InitValue = 6, .Options = {"8x6", "16x6", "32x6", "48x6", "8x4", "16x4", "32x4"}}
@@ -383,6 +380,10 @@ Public Class NVEnc
         Property VppNnediErrortype As New OptionParam With {.Text = "     errortype", .HelpSwitch = "--vpp-nnedi", .Options = {"abs", "square"}}
         Property VppNnediPrec As New OptionParam With {.Text = "     prec", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "fp16", "fp32"}}
         Property VppNnediWeightfile As New StringParam With {.Text = "     weightfile", .HelpSwitch = "--vpp-nnedi", .BrowseFile = True}
+
+        Property VppSelectEvery As New BoolParam With {.Text = "Select Every", .Switches = {"--vpp-select-every"}, .ArgsFunc = AddressOf GetSelectEvery}
+        Property VppSelectEveryValue As New NumParam With {.Text = "     value", .HelpSwitch = "--vpp-select-every", .Init = 2}
+        Property VppSelectEveryOffsets As New StringParam With {.Text = "     offsets", .HelpSwitch = "--vpp-select-every", .Expand = False}
 
         Property Custom As New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True}
 
@@ -412,7 +413,10 @@ Public Class NVEnc
                         VppUnsharp,
                         VppUnsharpRadius,
                         VppUnsharpWeight,
-                        VppUnsharpThreshold)
+                        VppUnsharpThreshold,
+                        VppSelectEvery,
+                        VppSelectEveryValue,
+                        VppSelectEveryOffsets)
                     Add("VPP 2 | Denoise",
                         KNN, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
                         PMD, PmdApplyCount, PmdStrength, PmdThreshold)
@@ -570,6 +574,9 @@ Public Class NVEnc
                 VppUnsharpWeight.NumEdit.Enabled = VppUnsharp.Value
                 VppUnsharpThreshold.NumEdit.Enabled = VppUnsharp.Value
 
+                VppSelectEveryValue.NumEdit.Enabled = VppSelectEvery.Value
+                VppSelectEveryOffsets.TextEdit.Enabled = VppSelectEvery.Value
+
                 KnnRadius.NumEdit.Enabled = KNN.Value
                 KnnStrength.NumEdit.Enabled = KNN.Value
                 KnnLerp.NumEdit.Enabled = KNN.Value
@@ -719,6 +726,15 @@ Public Class NVEnc
             If VppEdgelevelWhite.Value <> VppEdgelevelWhite.DefaultValue Then ret += ",white=" & VppEdgelevelWhite.Value
 
             If VppEdgelevel.Value Then Return ("--vpp-edgelevel " + ret.TrimStart(","c)).TrimEnd
+        End Function
+
+        Function GetSelectEvery() As String
+            Dim ret = ""
+
+            ret += VppSelectEveryValue.Value.ToString
+            ret += "," + VppSelectEveryOffsets.Value.SplitNoEmptyAndWhiteSpace(" ", ",", ";").Select(Function(item) "offset=" + item).Join(",")
+
+            If VppSelectEvery.Value Then Return ("--vpp-select-every " + ret.TrimStart(","c)).TrimEnd(","c)
         End Function
 
         Function GetNnedi() As String

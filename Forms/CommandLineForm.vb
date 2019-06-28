@@ -181,9 +181,8 @@ Public Class CommandLineForm
 
                 helpControl = textBlock.Label
                 AddHandler textBlock.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
-                textBlock.Edit.Expand = True
-                Dim sp = DirectCast(item, StringParam)
-                sp.Init(textBlock)
+                textBlock.Edit.Expand = tempItem.Expand
+                tempItem.Init(textBlock)
             End If
 
             If Not helpControl Is Nothing Then

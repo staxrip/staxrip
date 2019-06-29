@@ -325,7 +325,7 @@ Public Class GlobalClass
         ElseIf ap.File = p.FirstOriginalSourceFile AndAlso ap.Streams.Count > 0 Then
             g.StartProcess(Package.mpvnet.Path, "--audio=" & (ap.Stream.Index + 1) & " " + p.FirstOriginalSourceFile.Escape)
         ElseIf FileTypes.Audio.Contains(ap.File.Ext) Then
-            g.StartProcess(Package.mpvnet.Path, "--audio-delay=" + (g.ExtractDelay(ap.File) / 1000).ToInvariantString.Shorten(9) + " --audio-file=" + ap.File.Escape + " " + p.FirstOriginalSourceFile.Escape)
+            g.StartProcess(Package.mpvnet.Path, "--audio-delay=" + (g.ExtractDelay(ap.File) / 1000).ToInvariantString.Shorten(9) + " --audio-files=" + ap.File.Escape + " " + p.FirstOriginalSourceFile.Escape)
         Else
             MsgError("Unable to play audio.")
         End If
@@ -368,7 +368,7 @@ Public Class GlobalClass
 
         script.Synchronize(False)
         Dim args = script.Path.Escape
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-file=" + ap.File.Escape + " " + args
+        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-files=" + ap.File.Escape + " " + args
         g.StartProcess(Package.mpvnet.Path, args)
     End Sub
 

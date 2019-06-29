@@ -350,7 +350,7 @@ Public Class CodeEditor
             previewMenuItem.Enabled = p.SourceFile <> ""
             previewMenuItem.ShortcutKeyDisplayString = "F5"
 
-            Menu.Add("Play...", AddressOf Editor.Play, "Plays the current script with a media player.", p.SourceFile <> "").SetImage(Symbol.Play)
+            Menu.Add("Play", AddressOf Editor.Play, p.SourceFile <> "", "Plays the current script with a media player.").SetImage(Symbol.Play)
             Menu.Add("-")
 
             Dim moveUpMenuItem = Menu.Add("Move Up", AddressOf MoveUp)
@@ -375,9 +375,9 @@ Public Class CodeEditor
                                   rtbScript.ScrollToCaret()
                               End Sub
 
-            Menu.Add("Cut", cutAction, Nothing, rtbScript.SelectionLength > 0 AndAlso Not rtbScript.ReadOnly).SetImage(Symbol.Cut)
-            Menu.Add("Copy", copyAction, Nothing, rtbScript.SelectionLength > 0).SetImage(Symbol.Copy)
-            Menu.Add("Paste", pasteAction, Nothing, Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly).SetImage(Symbol.Paste)
+            Menu.Add("Cut", cutAction, rtbScript.SelectionLength > 0 AndAlso Not rtbScript.ReadOnly).SetImage(Symbol.Cut)
+            Menu.Add("Copy", copyAction, rtbScript.SelectionLength > 0).SetImage(Symbol.Copy)
+            Menu.Add("Paste", pasteAction, Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly).SetImage(Symbol.Paste)
 
             Menu.Add("-")
             Dim helpMenuItem = Menu.Add("Help")

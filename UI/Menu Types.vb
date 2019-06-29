@@ -492,9 +492,11 @@ Namespace UI
                 Return ShortcutValue
             End Get
             Set(value As Keys)
-                ShortcutValue = value
-                ShortcutKeyDisplayString = KeysHelp.GetKeyString(value) + "  "
-                AddHandler Form.KeyDown, AddressOf KeyDown
+                If value <> Keys.None Then
+                    ShortcutValue = value
+                    ShortcutKeyDisplayString = KeysHelp.GetKeyString(value) + "  "
+                    AddHandler Form.KeyDown, AddressOf KeyDown
+                End If
             End Set
         End Property
 
@@ -683,46 +685,55 @@ Namespace UI
             Return Add(path, Nothing)
         End Function
 
-        Function Add(path As String,
-                     action As Action) As ActionMenuItem
+        Function Add(path As String, action As Action) As ActionMenuItem
+            Return Add(path, action, True)
+        End Function
 
-            Return Add(path, action, Nothing)
+        Function Add(path As String, action As Action, key As Keys) As ActionMenuItem
+            Return Add(path, action, key, Nothing, Nothing, Nothing)
+        End Function
+
+        Function Add(path As String, action As Action, help As String) As ActionMenuItem
+            Return Add(path, action, True, help)
+        End Function
+
+        Function Add(path As String, action As Action, enabled As Boolean) As ActionMenuItem
+            Return Add(path, action, enabled, Nothing)
+        End Function
+
+        Function Add(path As String, action As Action, key As Keys, help As String) As ActionMenuItem
+            Return Add(path, action, key, True, Nothing, help)
+        End Function
+
+        Function Add(path As String, action As Action, key As Keys, enabledFunc As Func(Of Boolean)) As ActionMenuItem
+            Return Add(path, action, key, True, enabledFunc)
+        End Function
+
+        Function Add(path As String, action As Action, key As Keys, enabledFunc As Func(Of Boolean), help As String) As ActionMenuItem
+            Return Add(path, action, key, True, enabledFunc, help)
+        End Function
+
+        Function Add(path As String, action As Action, enabled As Boolean, help As String) As ActionMenuItem
+            Return Add(path, action, Keys.None, enabled, Nothing, help)
+        End Function
+
+        Function Add(path As String, action As Action, enabledFunc As Func(Of Boolean), help As String) As ActionMenuItem
+            Return Add(path, action, Keys.None, True, enabledFunc, help)
         End Function
 
         Function Add(path As String,
                      action As Action,
-                     help As String) As ActionMenuItem
-
-            Return Add(path, action, help, True)
-        End Function
-
-        Function Add(path As String,
-                     action As Action,
-                     help As String,
-                     enabled As Boolean) As ActionMenuItem
+                     key As Keys,
+                     enabled As Boolean,
+                     enabledFunc As Func(Of Boolean),
+                     Optional help As String = Nothing) As ActionMenuItem
 
             Dim ret = ActionMenuItem.Add(Items, path, action)
             If ret Is Nothing Then Exit Function
 
             ret.Form = Form
-            ret.Help = help
+            ret.Shortcut = key
             ret.Enabled = enabled
-
-            AddHandler Opening, AddressOf ret.Opening
-
-            Return ret
-        End Function
-
-        Function Add(path As String,
-                     action As Action,
-                     shortcut As Keys,
-                     enabledFunc As Func(Of Boolean),
-                     Optional help As String = Nothing) As ActionMenuItem
-
-            Dim ret = ActionMenuItem.Add(Items, path, action)
-
-            ret.Form = Form
-            ret.Shortcut = shortcut
             ret.EnabledFunc = enabledFunc
             ret.Help = help
 

@@ -27,7 +27,7 @@ Public Class VideoComparisonForm
         bnMenu.ContextMenuStrip = Menu
         TabControl.ContextMenuStrip = Menu
 
-        Menu.Add("Add files to compare...", AddressOf Add, Keys.O, Nothing, "Video files to compare, the file browser has multiselect enabled.")
+        Menu.Add("Add files to compare...", AddressOf Add, Keys.O, "Video files to compare, the file browser has multiselect enabled.")
         Menu.Add("Close selected tab", AddressOf Remove, Keys.Delete, enabledFunc)
         Menu.Add("Save PNGs at current position", AddressOf Save, Keys.S, enabledFunc, "Saves a PNG image for every file/tab at the current position in the directory of the source file.")
         Menu.Add("Crop and Zoom...", AddressOf CropZoom, Keys.C, enabledFunc)
@@ -38,7 +38,7 @@ Public Class VideoComparisonForm
         Menu.Add("Navigate | 1 frame forward", Sub() TrackBar.Value += 1, Keys.Right, enabledFunc)
         Menu.Add("Navigate | 100 frame backward", Sub() TrackBar.Value -= 100, Keys.Left Or Keys.Control, enabledFunc)
         Menu.Add("Navigate | 100 frame forward", Sub() TrackBar.Value += 100, Keys.Right Or Keys.Control, enabledFunc)
-        Menu.Add("Help", AddressOf Me.Help, Keys.F1, Nothing)
+        Menu.Add("Help", AddressOf Me.Help, Keys.F1)
     End Sub
 
     Sub Add()

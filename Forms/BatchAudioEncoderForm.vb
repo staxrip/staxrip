@@ -446,7 +446,7 @@ Public Class BatchAudioEncoderForm
         TipProvider.SetTip("Stream name used by the muxer. The stream name may contain macros.", tbStreamName, lStreamName)
         TipProvider.SetTip("If no name is defined StaxRip auto generate the name.", laProfileName, tbProfileName)
 
-        cms.Add("Execute Batch Code", AddressOf Execute, Nothing, TempProfile.File <> "").SetImage(Symbol.fa_terminal)
+        cms.Add("Execute Batch Code", AddressOf Execute, TempProfile.File <> "").SetImage(Symbol.fa_terminal)
         cms.Add("Copy Batch Code", Sub() Clipboard.SetText(TempProfile.GetCode))
         cms.Add("Show Batch Code...", Sub() g.ShowCommandLinePreview("Batch Code", TempProfile.GetCode))
         cms.Add("Save Profile...", AddressOf SaveProfile, "Saves the current settings as profile").SetImage(Symbol.Save)

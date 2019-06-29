@@ -38,7 +38,7 @@ Public Class CommandLineForm
         cbGoTo.SendMessageCue("Search")
         cbGoTo.Select()
 
-        cms.Add("Execute Command Line", Sub() params.Execute(), Nothing, p.SourceFile <> "").SetImage(Symbol.fa_terminal)
+        cms.Add("Execute Command Line", Sub() params.Execute(), p.SourceFile <> "").SetImage(Symbol.fa_terminal)
         cms.Add("Copy Command Line", Sub() Clipboard.SetText(params.GetCommandLine(True, True)))
         cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", params.GetCommandLine(True, True)))
         cms.Add("Import Command Line...", Sub() If MsgQuestion("Import command line from clipboard?") = DialogResult.OK Then BasicVideoEncoder.ImportCommandLine(Clipboard.GetText, params))

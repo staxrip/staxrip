@@ -5486,16 +5486,16 @@ Public Class MainForm
         End If
 
         m.Add("Open", a, "Change the audio source file.").SetImage(Symbol.OpenFile)
-        m.Add("Play", Sub() g.PlayAudio(ap), "Plays the audio source file with a media player.", exist).SetImage(Symbol.Play)
-        m.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), "Show MediaInfo for the audio source file.", exist).SetImage(Symbol.Info)
-        m.Add("Explore", Sub() g.OpenDirAndSelectFile(ap.File, Handle), "Open the audio source file directory with File Explorer.", exist).SetImage(Symbol.FileExplorer)
-        m.Add("Execute", Sub() ExecuteAudio(ap), "Processes the audio profile.", exist).SetImage(Symbol.fa_terminal)
+        m.Add("Play", Sub() g.PlayAudio(ap), exist, "Plays the audio source file with a media player.").SetImage(Symbol.Play)
+        m.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), exist, "Show MediaInfo for the audio source file.").SetImage(Symbol.Info)
+        m.Add("Explore", Sub() g.OpenDirAndSelectFile(ap.File, Handle), exist, "Open the audio source file directory with File Explorer.").SetImage(Symbol.FileExplorer)
+        m.Add("Execute", Sub() ExecuteAudio(ap), exist, "Processes the audio profile.").SetImage(Symbol.fa_terminal)
         m.Add("-")
-        m.Add("Copy Path", Sub() Clipboard.SetText(ap.File), Nothing, tb.Text <> "")
-        m.Add("Copy Selection", Sub() Clipboard.SetText(tb.SelectedText), Nothing, tb.Text <> "").SetImage(Symbol.Copy)
-        m.Add("Paste", Sub() tb.Paste(), Nothing, Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
+        m.Add("Copy Path", Sub() Clipboard.SetText(ap.File), tb.Text <> "")
+        m.Add("Copy Selection", Sub() Clipboard.SetText(tb.SelectedText), tb.Text <> "").SetImage(Symbol.Copy)
+        m.Add("Paste", Sub() tb.Paste(), Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
         m.Add("-")
-        m.Add("Remove", Sub() tb.Text = "", "Remove audio file", tb.Text <> "").SetImage(Symbol.Remove)
+        m.Add("Remove", Sub() tb.Text = "", tb.Text <> "", "Remove audio file").SetImage(Symbol.Remove)
     End Sub
 
     Sub ExecuteAudio(ap As AudioProfile)
@@ -5510,13 +5510,13 @@ Public Class MainForm
 
     Sub UpdateTargetFileMenu()
         TargetFileMenu.Items.ClearAndDisplose
-        TargetFileMenu.Add("Edit...", AddressOf tbTargetFile_DoubleClick, "Change the path of the target file.")
-        TargetFileMenu.Add("Play...", Sub() g.Play(p.TargetFile), "Play the target file.", File.Exists(p.TargetFile)).SetImage(Symbol.Play)
-        TargetFileMenu.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), "Show MediaInfo for the target file.", File.Exists(p.TargetFile)).SetImage(Symbol.Info)
-        TargetFileMenu.Add("Explore...", Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle), "Open the target file directory with File Explorer.", Directory.Exists(p.TargetFile.Dir)).SetImage(Symbol.FileExplorer)
+        TargetFileMenu.Add("Edit...", AddressOf tbTargetFile_DoubleClick, File.Exists(p.SourceFile), "Change the path of the target file.")
+        TargetFileMenu.Add("Play", Sub() g.Play(p.TargetFile), File.Exists(p.TargetFile), "Play the target file.").SetImage(Symbol.Play)
+        TargetFileMenu.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), File.Exists(p.TargetFile), "Show MediaInfo for the target file.").SetImage(Symbol.Info)
+        TargetFileMenu.Add("Explore...", Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle), Directory.Exists(p.TargetFile.Dir), "Open the target file directory with File Explorer.").SetImage(Symbol.FileExplorer)
         TargetFileMenu.Add("-")
-        TargetFileMenu.Add("Copy", Sub() tbTargetFile.Copy(), "", tbTargetFile.Text <> "").SetImage(Symbol.Copy)
-        TargetFileMenu.Add("Paste", Sub() tbTargetFile.Paste(), "", Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
+        TargetFileMenu.Add("Copy", Sub() tbTargetFile.Copy(), tbTargetFile.Text <> "").SetImage(Symbol.Copy)
+        TargetFileMenu.Add("Paste", Sub() tbTargetFile.Paste(), Clipboard.GetText.Trim <> "" AndAlso File.Exists(p.SourceFile)).SetImage(Symbol.Paste)
     End Sub
 
     Sub UpdateSourceFileMenu()
@@ -5524,12 +5524,12 @@ Public Class MainForm
         Dim isIndex = FileTypes.VideoIndex.Contains(FilePath.GetExt(p.SourceFile))
 
         SourceFileMenu.Add("Open...", AddressOf ShowOpenSourceDialog, "Open source files").SetImage(Symbol.OpenFile)
-        SourceFileMenu.Add("Play...", Sub() g.Play(p.SourceFile), "Play the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex).SetImage(Symbol.Play)
-        SourceFileMenu.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.SourceFile), "Show MediaInfo for the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex).SetImage(Symbol.Info)
-        SourceFileMenu.Add("Explore...", Sub() g.OpenDirAndSelectFile(p.SourceFile, Handle), "Open the source file directory with File Explorer.", File.Exists(p.SourceFile)).SetImage(Symbol.FileExplorer)
+        SourceFileMenu.Add("Play", Sub() g.Play(p.SourceFile), File.Exists(p.SourceFile) AndAlso Not isIndex, "Play the source file.").SetImage(Symbol.Play)
+        SourceFileMenu.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.SourceFile), File.Exists(p.SourceFile) AndAlso Not isIndex, "Show MediaInfo for the source file.").SetImage(Symbol.Info)
+        SourceFileMenu.Add("Explore...", Sub() g.OpenDirAndSelectFile(p.SourceFile, Handle), File.Exists(p.SourceFile), "Open the source file directory with File Explorer.").SetImage(Symbol.FileExplorer)
         SourceFileMenu.Items.Add("-")
-        SourceFileMenu.Add("Copy", Sub() tbSourceFile.Copy(), "Copies the selected text to the clipboard.", tbSourceFile.Text <> "").SetImage(Symbol.Copy)
-        SourceFileMenu.Add("Paste", Sub() tbSourceFile.Paste(), "Copies the full source file path to the clipboard.", Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
+        SourceFileMenu.Add("Copy", Sub() tbSourceFile.Copy(), tbSourceFile.Text <> "", "Copies the selected text to the clipboard.").SetImage(Symbol.Copy)
+        SourceFileMenu.Add("Paste", Sub() tbSourceFile.Paste(), Clipboard.GetText.Trim <> "", "Copies the full source file path to the clipboard.").SetImage(Symbol.Paste)
     End Sub
 
     <Command("View the Metadata of any Selected File")>

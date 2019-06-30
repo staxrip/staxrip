@@ -13,6 +13,7 @@
 - nvencc switch --vpp-select-every added
 - fix for play menu item in filters menu of main dialog being disabled
 - fix audio being not loaded by mpvnet when the avs/vs script is played
+- fix a issue with the custom icon feature
 
 ### 2.0.2.3
 

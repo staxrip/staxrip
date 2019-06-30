@@ -893,12 +893,11 @@ Public Class GlobalClass
     Public Property Icon As Icon
         Get
             If IconValue Is Nothing OrElse s.IconFile <> LastIconFile Then
-                Dim iconFile = s.IconFile
-                If Not File.Exists(iconFile) Then iconFile = Folder.Startup + "Apps\Icons\Black.ico"
-
-                If File.Exists(iconFile) Then
-                    IconValue = New Icon(iconFile)
-                    LastIconFile = iconFile
+                If File.Exists(s.IconFile) Then
+                    IconValue = New Icon(s.IconFile)
+                    LastIconFile = s.IconFile
+                Else
+                    IconValue = My.Resources.Black
                 End If
             End If
 

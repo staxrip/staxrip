@@ -634,10 +634,7 @@ Switches
         Try
             Dim sourceDir = Application.StartupPath + "\"
 
-            If Not Directory.Exists(sourceDir) Then
-                MsgError("Source directory not found." + BR2 + sourceDir)
-                Exit Sub
-            ElseIf Not sourceDir.EndsWith("\bin\") Then
+            If Not sourceDir.EndsWith("\bin\") Then
                 MsgError("Source directory don't end with \bin\" + BR2 + sourceDir)
                 Exit Sub
             End If

@@ -10,6 +10,7 @@
 
 ###
 
+- .NET Framework version updated to 4.8
 - nvencc switch --vpp-select-every added
 - fix for play menu item in filters menu of main dialog being disabled
 - fix audio being not loaded by mpvnet when the avs/vs script is played

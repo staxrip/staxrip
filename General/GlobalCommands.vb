@@ -628,7 +628,7 @@ Switches
     'This method is called by pressing F11 in the main form.
     'It creates the release 7zip files on the desktop.
     'If version.Revision is not 0 then it's a test build
-    'and it's moved to dropbox and onedrive folders.
+    'and it's copied to dropbox and onedrive folders.
     <Command("Test")>
     Sub Release()
         Try

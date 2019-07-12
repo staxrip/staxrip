@@ -1112,8 +1112,8 @@ Public Class Package
             .HelpURL = "http://github.com/VFR-maniac/L-SMASH-Works/blob/master/AviSynth/README",
             .AvsFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"")" + BR + "#ConvertFromDoubleWidth(bits=10)" + BR + "#AssumeFPS(25)"),
-                New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")" + BR + "#ConvertFromDoubleWidth(bits=10)" + BR + "#AssumeFPS(25)")}})
+                New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"")" + BR + "#AssumeFPS(25)"),
+                New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")" + BR + "#AssumeFPS(25)")}})
 
         Add(New PluginPackage With {
             .Name = "vslsmashsource",

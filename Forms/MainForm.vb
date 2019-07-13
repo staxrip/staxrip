@@ -6035,6 +6035,7 @@ Public Class MainForm
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
         BeginInvoke(New Action(Sub()
+                                   Application.DoEvents()
                                    Assistant()
                                    UpdateScriptsMenuAsync()
                                    g.WriteDebugLog("MainForm.Activated")

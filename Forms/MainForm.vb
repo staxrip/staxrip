@@ -6033,10 +6033,12 @@ Public Class MainForm
     End Sub
 
     Protected Overrides Sub OnActivated(e As EventArgs)
-        Assistant()
-        UpdateScriptsMenuAsync()
         MyBase.OnActivated(e)
-        g.WriteDebugLog("MainForm.Activated")
+        BeginInvoke(New Action(Sub()
+                                   Assistant()
+                                   UpdateScriptsMenuAsync()
+                                   g.WriteDebugLog("MainForm.Activated")
+                               End Sub))
     End Sub
 
     Protected Overrides Sub OnShown(e As EventArgs)

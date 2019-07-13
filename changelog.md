@@ -10,6 +10,8 @@
 
 ###
 
+- dialogs were closing slow with 4K sources, this was fixed by using
+  a async call, could be unstable, hopefully not
 - .NET Framework version updated to 4.8
 - nvencc switch --vpp-select-every added
 - fix for play menu item in filters menu of main dialog being disabled

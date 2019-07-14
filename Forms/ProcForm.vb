@@ -272,11 +272,10 @@ Public Class ProcForm
         MyBase.OnResize(e)
 
         If s.MinimizeToTray Then
+            NotifyIcon.Visible = True
+
             If WindowState = FormWindowState.Minimized Then
-                NotifyIcon.Visible = True
                 Hide()
-            Else
-                NotifyIcon.Visible = False
             End If
         End If
     End Sub

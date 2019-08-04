@@ -5,15 +5,14 @@ Imports System.ComponentModel
 Imports System.Runtime.InteropServices
 Imports System.Runtime.CompilerServices
 
-<System.Drawing.ToolboxBitmap(GetType(System.Windows.Forms.FolderBrowserDialog), "FolderBrowserDialog.bmp"), DefaultEvent("HelpRequest"), Designer("System.Windows.Forms.Design.FolderBrowserDialogDesigner, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"), DefaultProperty("SelectedPath"), Description("Prompts the user to select a folder.")>
+<ToolboxBitmap(GetType(Windows.Forms.FolderBrowserDialog), "FolderBrowserDialog.bmp"), DefaultEvent("HelpRequest"), Designer("System.Windows.Forms.Design.FolderBrowserDialogDesigner, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"), DefaultProperty("SelectedPath"), Description("Prompts the user to select a folder.")>
 Public Class FolderBrowserDialog
     Inherits CommonDialog
 
-    Private _downlevelDialog As System.Windows.Forms.FolderBrowserDialog
+    Private ReadOnly _downlevelDialog As Windows.Forms.FolderBrowserDialog
     Private _description As String
-    Private _useDescriptionForTitle As Boolean
     Private _selectedPath As String
-    Private _rootFolder As System.Environment.SpecialFolder
+    Private _rootFolder As Environment.SpecialFolder
 
     Public Sub New()
         Me.New(False)
@@ -43,21 +42,21 @@ Public Class FolderBrowserDialog
             If _downlevelDialog IsNot Nothing Then
                 _downlevelDialog.Description = value
             Else
-                _description = If(value, [String].Empty)
+                _description = If(value, String.Empty)
             End If
         End Set
     End Property
 
     <Localizable(False),
-        Description("The root folder where the browsing starts from. This property has no effect if the Vista style dialog is used."), Category("Folder Browsing"), Browsable(True), DefaultValue(GetType(System.Environment.SpecialFolder), "Desktop")>
-    Property RootFolder() As System.Environment.SpecialFolder
+        Description("The root folder where the browsing starts from. This property has no effect if the Vista style dialog is used."), Category("Folder Browsing"), Browsable(True), DefaultValue(GetType(Environment.SpecialFolder), "Desktop")>
+    Property RootFolder() As Environment.SpecialFolder
         Get
             If _downlevelDialog IsNot Nothing Then
                 Return _downlevelDialog.RootFolder
             End If
             Return _rootFolder
         End Get
-        Set(value As System.Environment.SpecialFolder)
+        Set(value As Environment.SpecialFolder)
             If _downlevelDialog IsNot Nothing Then
                 _downlevelDialog.RootFolder = value
             Else
@@ -67,7 +66,7 @@ Public Class FolderBrowserDialog
     End Property
 
     <Browsable(True),
-        Editor("System.Windows.Forms.Design.SelectedPathEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", GetType(System.Drawing.Design.UITypeEditor)), Description("The path selected by the user."), DefaultValue(""), Localizable(True), Category("Folder Browsing")>
+        Editor("System.Windows.Forms.Design.SelectedPathEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", GetType(Drawing.Design.UITypeEditor)), Description("The path selected by the user."), DefaultValue(""), Localizable(True), Category("Folder Browsing")>
     Property SelectedPath() As String
         Get
             If _downlevelDialog IsNot Nothing Then
@@ -109,13 +108,6 @@ Public Class FolderBrowserDialog
     <DefaultValue(False)>
     <Description("A value that indicates whether to use the value of the Description property as the dialog title for Vista style dialogs. This property has no effect on old style dialogs.")>
     Property UseDescriptionForTitle() As Boolean
-        Get
-            Return _useDescriptionForTitle
-        End Get
-        Set(value As Boolean)
-            _useDescriptionForTitle = value
-        End Set
-    End Property
 
 #End Region
 
@@ -123,7 +115,7 @@ Public Class FolderBrowserDialog
 
     Public Overrides Sub Reset()
         _description = ""
-        _useDescriptionForTitle = False
+        UseDescriptionForTitle = False
         _selectedPath = ""
         _rootFolder = Environment.SpecialFolder.Desktop
         _showNewFolderButton = True
@@ -162,7 +154,7 @@ Public Class FolderBrowserDialog
             Return True
         Finally
             If dialog IsNot Nothing Then
-                System.Runtime.InteropServices.Marshal.FinalReleaseComObject(dialog)
+                Dim unused = Marshal.FinalReleaseComObject(dialog)
             End If
         End Try
     End Function
@@ -187,7 +179,7 @@ Public Class FolderBrowserDialog
 
     Private Sub SetDialogProperties(dialog As IFileDialog)
         If _description <> "" Then
-            If _useDescriptionForTitle Then
+            If UseDescriptionForTitle Then
                 dialog.SetTitle(_description)
             Else
                 DirectCast(dialog, IFileDialogCustomize).AddText(0, _description)
@@ -199,14 +191,12 @@ Public Class FolderBrowserDialog
                           NativeMethods.FOS.FOS_FILEMUSTEXIST)
 
         If _selectedPath <> "" Then
-            Dim parent = Path.GetDirectoryName(_selectedPath)
 
-            If parent Is Nothing OrElse Not Directory.Exists(parent) Then
+            If Path.GetDirectoryName(_selectedPath) Is Nothing OrElse Not Directory.Exists(Path.GetDirectoryName(_selectedPath)) Then
                 dialog.SetFileName(_selectedPath)
             Else
-                Dim folder = Path.GetFileName(_selectedPath)
-                dialog.SetFolder(NativeMethods.CreateItemFromParsingName(parent))
-                dialog.SetFileName(folder)
+                dialog.SetFolder(NativeMethods.CreateItemFromParsingName(Path.GetDirectoryName(_selectedPath)))
+                dialog.SetFileName(Path.GetFileName(_selectedPath))
             End If
         End If
     End Sub
@@ -723,7 +713,7 @@ Public Class FolderBrowserDialog
     End Class
 
     Friend Class SafeModuleHandle
-        Inherits System.Runtime.InteropServices.SafeHandle
+        Inherits SafeHandle
         Public Sub New()
             MyBase.New(IntPtr.Zero, True)
         End Sub

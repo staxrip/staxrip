@@ -112,6 +112,9 @@
     </Reference>
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.PowerShell.5.ReferenceAssemblies.1.1.0\lib\net4\System.Management.Automation.dll</HintPath>
+    </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Security">
       <Name>System.Security</Name>
@@ -416,6 +419,7 @@
     <None Include="Fonts\FontAwesome.ttf" />
     <None Include="Fonts\mikadan.ttf" />
     <None Include="Fonts\Segoe-MDL2-Assets.ttf" />
+    <None Include="packages.config" />
     <None Include="README.md" />
     <None Include="Resources\arrow.png" />
     <None Include="Resources\X.png" />
@@ -615,11 +619,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="My Project\DataSources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.PowerShell.5.ReferenceAssemblies">
-      <Version>1.1.0</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

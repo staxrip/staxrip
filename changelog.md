@@ -1,13 +1,3 @@
-#### Requirements
-
-.NET 4.7.2 or higher
-
-### test builds
-
-<https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0>
-
-<https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR>
-
 ###
 
 - dialogs were closing slow with 4K sources, this was fixed by using
@@ -17,6 +7,7 @@
 - fix for play menu item in filters menu of main dialog being disabled
 - fix audio being not loaded by mpvnet when the avs/vs script is played
 - fix a issue with the custom icon feature
+- x265 --aq-mode update
 
 ### 2.0.2.3
 

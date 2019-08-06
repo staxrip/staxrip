@@ -198,10 +198,7 @@ Module StringExtensions
         If value <> "" Then
             If value.Contains(",") Then value = value.Replace(",", ".")
 
-            Return Single.TryParse(value,
-                                   NumberStyles.Float Or NumberStyles.AllowThousands,
-                                   CultureInfo.InvariantCulture,
-                                   Nothing)
+            Return Single.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, Nothing)
         End If
     End Function
 
@@ -212,10 +209,7 @@ Module StringExtensions
 
             Dim ret As Single
 
-            If Single.TryParse(value,
-                               NumberStyles.Float Or NumberStyles.AllowThousands,
-                               CultureInfo.InvariantCulture,
-                               ret) Then
+            If Single.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, ret) Then
                 Return ret
             End If
         End If

@@ -1327,7 +1327,7 @@ Public Class Macro
         End If
 
         If value.Contains("%eval_ps:") Then
-            If Not value.Contains("%eval_ps:<expression>%") Then
+            If Not value.Contains("%eval_ps:<expression>%") AndAlso Not value.Contains("%eval_ps:expression%") Then
                 Dim mc = Regex.Matches(value, "%eval_ps:(.+?)%")
 
                 For Each i As Match In mc

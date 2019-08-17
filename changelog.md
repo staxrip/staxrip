@@ -8,9 +8,15 @@
 - fix audio being not loaded by mpvnet when the avs/vs script is played
 - fix a issue with the custom icon feature
 - x265 --aq-mode update
-- VapourSynth updated to R47.2
-- L-Smash updated and added support for showing indexing progress
-  and cachefile parameter and for native high bit depth
+- update: L-Smash updated and added support for showing indexing progress
+  and cachefile parameter and for native high bit depth, avs and vs
+  l-smash are now contained in the same dll, avs and vs filter profiles
+  have been changed to contain the the new cachefile parameter and
+  high bit depth support has been added to the profiles, the profiles
+  have not been reset so users have to update existing profiles manually
+- update: VapourSynth R47.2, the new L-Smash update requires this
+  new VapourSynth update
+- update: mpv.net 5.3
 
 ### 2.0.2.3
 

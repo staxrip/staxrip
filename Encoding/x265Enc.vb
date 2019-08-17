@@ -482,7 +482,7 @@ Public Class x265Params
         .Config = {0, 50, 0.05, 2}}
 
     Property qpadaptationrange As New NumParam With {
-        .Switch = " --qp-adaptation-range",
+        .Switch = "--qp-adaptation-range",
         .Text = "QP Adaptation Range",
         .Init = 1.0,
         .Config = {1, 6, 0.05, 2}}
@@ -844,19 +844,17 @@ Public Class x265Params
                     New NumParam With {.Switch = "--dynamic-rd", .Text = "Dynamic RD", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}},
-                    qpadaptationrange,
-                    New BoolParam With {.Switch = "--hevc-aq", .Text = "Mode for HEVC Adaptive Quantization", .Init = False})
+                    qpadaptationrange)
                 Add("Analysis 3", Rect, AMP,
                     New BoolParam With {.Switch = "--tskip", .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"},
                     New BoolParam With {.Switch = "--refine-mv", .Text = "Enable refinement of motion vector for scaled video"},
                     New BoolParam With {.Switch = "--dynamic-refine", .Text = "Dynamic Refine"},
-                    EarlySkip, FastIntra, BIntra,
-                    CUlossless,
-                    TskipFast, LimitModes, RdRefine,
+                    EarlySkip, FastIntra, BIntra, CUlossless, TskipFast, LimitModes, RdRefine,
                     New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
                     RecursionSkip,
                     New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"},
-                    New BoolParam With {.Switch = "--splitrd-skip", .Text = "Enable skipping split RD analysis"})
+                    New BoolParam With {.Switch = "--splitrd-skip", .Text = "Enable skipping split RD analysis"},
+                    New BoolParam With {.Switch = "--hevc-aq", .Text = "Mode for HEVC Adaptive Quantization", .Init = False})
                 Add("Rate Control",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     New StringParam With {.Switch = "--zonefile", .Text = "Zone File", .BrowseFile = True},
@@ -872,8 +870,11 @@ Public Class x265Params
                     multi_pass_opt_distortion,
                     New BoolParam() With {.Switch = "--aq-motion", .Text = "AQ Motion"},
                     constvbv)
-                Add("Motion Search", SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP,
-                    New BoolParam With {.Switch = "--analyze-src-pics", .NoSwitch = "--no-analyze-src-pics", .Text = "Analyze SRC Pics"})
+                Add("Motion Search",
+                    New StringParam With {.Switch = "--hme-search", .Text = "HME Search"},
+                    SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP,
+                    New BoolParam With {.Switch = "--analyze-src-pics", .NoSwitch = "--no-analyze-src-pics", .Text = "Analyze SRC Pics"},
+                    New BoolParam With {.Switch = "--hme", .NoSwitch = "--no-hme", .Text = "3-level Hierarchical motion estimation"})
                 Add("Slice Decision",
                     New StringParam With {.Switch = "--refine-analysis-type", .Text = "Refine Analysis Type"},
                     New OptionParam() With {.Switch = "--force-flush", .Text = "Force Flush", .Expand = True, .IntegerValue = True, .Options = {"Flush the encoder only when all the input pictures are over", "Flush all the frames even when the input is not over", "Flush the slicetype decided frames only"}},
@@ -928,7 +929,7 @@ Public Class x265Params
                     New StringParam With {.Switch = "--dolby-vision-rpu", .Text = "Dolby Vision RPU", .BrowseFile = True},
                     New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "Maximum Picture Order Count", .Init = 8},
                     RepeatHeaders, Info, HRD, AUD,
-                    New BoolParam With {.Switch = "---hrd-concat", .Init = False, .Text = "HRD Concat"},
+                    New BoolParam With {.Switch = "--hrd-concat", .Init = False, .Text = "HRD Concat"},
                     New BoolParam With {.Switch = "--vui-timing-info", .Text = "VUI Timing Info", .Init = True},
                     New BoolParam With {.Switch = "--vui-hrd-info", .Text = "VUI HRD Info", .Init = True},
                     New BoolParam With {.Switch = "--idr-recovery-sei", .Init = False, .Text = "Recovery SEI"},

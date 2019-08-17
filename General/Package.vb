@@ -160,10 +160,10 @@ Public Class Package
     Shared Property VapourSynth As Package = Add(New Package With {
         .Name = "VapourSynth",
         .Filename = "vapoursynth.dll",
-        .Description = "StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.",
+        .Description = "StaxRip supports both AviSynth+ and VapourSynth as scripting based video processing tool.",
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
-        .SetupFilename = "Installers\VapourSynth-R45.exe",
+        .SetupFilename = "Installers\VapourSynth64-R47.2.exe",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = AddressOf Package.GetVapourSynthHintDir})
 
@@ -493,6 +493,21 @@ Public Class Package
         .VSFiltersFunc = Function() {
                 New VideoFilter("Field", "QTGMC | QTGMC", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2)"),
                 New VideoFilter("Field", "QTGMC | QTGMC with Repair", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}QTGMC1 = havsfunc.QTGMC(clip, TFF = True, Preset=""Slower"", InputType=2){BR}QTGMC2 = havsfunc.QTGMC(clip, TFF = True, Preset=""Slower"", InputType=3){BR}clip = core.rgvs.Repair(QTGMC1,QTGMC2, mode=1)")}})
+
+    Shared Property LSmashWorks As Package = Add(New PluginPackage With {
+        .Name = "L-SMASH-Works",
+        .Filename = "LSMASHSource.dll",
+        .Description = "AviSynth and VapourSynth source filter based on Libav supporting a wide range of input formats.",
+        .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
+        .HelpURL = "http://github.com/VFR-maniac/L-SMASH-Works/blob/master/AviSynth/README",
+        .AvsFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"},
+        .AvsFiltersFunc = Function() {
+            New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")" + BR + "#AssumeFPS(25)"),
+            New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", cachefile = ""%source_temp_file%.lwi"")" + BR + "#AssumeFPS(25)")},
+        .VSFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"},
+        .VSFiltersFunc = Function() {
+            New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)"),
+            New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"", cachefile = r""%source_temp_file%.lwi"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
 
     Shared Function Add(pack As Package) As Package
         Items(pack.ID) = pack
@@ -1103,28 +1118,6 @@ Public Class Package
             .AvsFiltersFunc = Function() {
             New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoise", "MCTemporalDenoise(settings=""medium"")"),
             New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoisePP", "source=last" + BR + "denoised=FFT3Dfilter()" + BR + "MCTemporalDenoisePP(denoised)")}})
-
-        Add(New PluginPackage With {
-            .Name = "L-SMASH-Works",
-            .Filename = "LSMASHSource.dll",
-            .Description = "AviSynth and VapourSynth source filter based on Libav supporting a wide range of input formats.",
-            .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
-            .HelpURL = "http://github.com/VFR-maniac/L-SMASH-Works/blob/master/AviSynth/README",
-            .AvsFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"},
-            .AvsFiltersFunc = Function() {
-                New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"", format = ""YUV420P8"")" + BR + "#AssumeFPS(25)"),
-                New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", format = ""YUV420P8"")" + BR + "#AssumeFPS(25)")}})
-
-        Add(New PluginPackage With {
-            .Name = "vslsmashsource",
-            .Filename = "vslsmashsource.dll",
-            .Description = "VapourSynth source filter based on Libav supporting a wide range of input formats.",
-            .HelpURL = "http://github.com/VFR-maniac/L-SMASH-Works/blob/master/VapourSynth/README",
-            .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
-            .VSFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)"),
-                New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
 
         Add(New PluginPackage With {
             .Name = "Deblock",

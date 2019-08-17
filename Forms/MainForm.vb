@@ -3131,6 +3131,7 @@ Public Class MainForm
             End If
         Next
 
+        p.Script.Synchronize()
         Indexing()
     End Sub
 
@@ -3159,12 +3160,13 @@ Public Class MainForm
                 BlockSourceTextBoxTextChanged = False
             End If
 
-            If Not File.Exists(p.SourceFile + ".lwi") AndAlso File.Exists(p.Script.Path) AndAlso
-                Not FileTypes.VideoText.Contains(FilePath.GetExt(p.SourceFile)) Then
+            If Not File.Exists(p.SourceFile + ".lwi") AndAlso Not File.Exists(p.TempDir + p.SourceFile.Base + ".lwi") AndAlso
+                File.Exists(p.Script.Path) AndAlso Not FileTypes.VideoText.Contains(FilePath.GetExt(p.SourceFile)) Then
 
                 Using proc As New Proc
                     proc.Header = "Index LWLibav"
                     proc.Encoding = Encoding.UTF8
+                    proc.SkipString = "Creating lwi"
 
                     If p.Script.Engine = ScriptEngine.AviSynth Then
                         proc.File = Package.ffmpeg.Path

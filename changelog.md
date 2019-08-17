@@ -1,4 +1,4 @@
-###
+### 2.0.2.6
 
 - dialogs were closing slow with 4K sources, this was fixed by using
   a async call, could be unstable, hopefully not
@@ -8,6 +8,9 @@
 - fix audio being not loaded by mpvnet when the avs/vs script is played
 - fix a issue with the custom icon feature
 - x265 --aq-mode update
+- VapourSynth updated to R47.2
+- L-Smash updated and added support for showing indexing progress
+  and cachefile parameter and for native high bit depth
 
 ### 2.0.2.3
 

@@ -19,3 +19,7 @@ Current Framework: Dotnet 4.7.2 (4.8 Will be Used in Future Releases).
 ## Download
 
 <https://staxrip.readthedocs.io/intro.html#download>
+
+### Changelog
+
+<https://github.com/staxrip/staxrip/blob/master/changelog.md>

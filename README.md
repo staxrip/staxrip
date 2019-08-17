@@ -4,7 +4,7 @@
 
 StaxRip is a video encoding app for Windows with a unrivaled feature set and usability.
 
-# Pipeline
+## Pipeline
 
 Current Image: Visual Studio 2019
 Current Framework: Dotnet 4.7.2 (4.8 Will be Used in Future Releases).
@@ -14,4 +14,8 @@ Current Framework: Dotnet 4.7.2 (4.8 Will be Used in Future Releases).
 
 ## Documentation
 
-https://staxrip.readthedocs.io
+<https://staxrip.readthedocs.io>
+
+## Download
+
+<https://staxrip.readthedocs.io/intro.html#download>

@@ -54,9 +54,13 @@ Public Class Package
     End Property
 
     Shared Property Items As New SortedDictionary(Of String, Package)
+
     Shared Property Python As Package = Add(New PythonPackage)
+
     Shared Property DGIndexIM As Package = Add(New DGIndexIMPackage)
+
     Shared Property DGIndexNV As Package = Add(New DGIndexNVPackage)
+
     Shared Property dsmux As Package = Add(New dsmuxPackage)
 
     Shared Property eac3to As Package = Add(New Package With {
@@ -213,7 +217,7 @@ Public Class Package
         .Description = "Subtitle Edit is a open source subtitle editor."})
 
     Shared Property mpvnet As Package = Add(New Package With {
-        .Name = "mpvnet",
+        .Name = "mpv.net",
         .Filename = "mpvnet.exe",
         .LaunchName = "mpvnet.exe",
         .URL = "https://github.com/stax76/mpv.net",
@@ -2031,7 +2035,7 @@ Public Class PythonPackage
         TreePath = "Runtimes"
         WebURL = "http://www.python.org"
         Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        SetupFilename = "Installers\python-3.7.3-amd64-webinstall.exe"
+        SetupFilename = "Installers\python-3.7.4-amd64-webinstall.exe"
     End Sub
 
     Public Overrides Property IsRequired As Boolean

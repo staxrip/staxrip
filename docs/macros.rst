@@ -715,9 +715,9 @@ File path to MP4Box
 
 File path to MPEG2DecPlus
 
-``%app:mpvnet%``
+``%app:mpv.net%``
 
-File path to mpvnet
+File path to mpv.net
 
 ``%app:MSharpen%``
 
@@ -1010,10 +1010,6 @@ File path to vsCube
 ``%app:VSFilterMod%``
 
 File path to VSFilterMod
-
-``%app:vslsmashsource%``
-
-File path to vslsmashsource
 
 ``%app:vspipe%``
 
@@ -1483,9 +1479,9 @@ Folder path to MP4Box
 
 Folder path to MPEG2DecPlus
 
-``%app_dir:mpvnet%``
+``%app_dir:mpv.net%``
 
-Folder path to mpvnet
+Folder path to mpv.net
 
 ``%app_dir:MSharpen%``
 
@@ -1778,10 +1774,6 @@ Folder path to vsCube
 ``%app_dir:VSFilterMod%``
 
 Folder path to VSFilterMod
-
-``%app_dir:vslsmashsource%``
-
-Folder path to vslsmashsource
 
 ``%app_dir:vspipe%``
 

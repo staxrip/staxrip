@@ -279,7 +279,7 @@ Public Class GlobalCommands
 
         Dim nvExcept = "--help --version --check-device --avsw --input-analyze 
             --input-format --output-format --video-streamid --video-track --vpp-delogo
-            --vpp-delogo-cb --vpp-delogo-cr --vpp-delogo-depth --vpp-delogo-pos --vpp-select-every
+            --vpp-delogo-cb --vpp-delogo-cr --vpp-delogo-depth --vpp-delogo-pos
             --vpp-delogo-select --vpp-delogo-y --check-avversion --check-codecs --caption2ass
             --check-encoders --check-decoders --check-formats --check-protocols --bref-mode
             --check-filters --input --output --raw --avs --vpy --vpy-mt --key-on-chapter

@@ -42,8 +42,11 @@ Download
 
 `Stable Releases <https://github.com/staxrip/staxrip/releases>`_
 
-Before making a bug report please try the newest `test build <https://github.com/staxrip/staxrip/blob/master/changelog.md>`_.
+Before making a bug report please try the newest test build:
 
+`DropBox <https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0>`_
+
+`OneDrive <https://1drv.ms/f/s!ArwKS_ZUR01gySQIE1QCL2i9F_uR>`_
 
 Setup
 -----

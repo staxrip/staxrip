@@ -109,7 +109,7 @@ ffmpeg
 
 Versatile audio video converter.
 
-Used Version: 2019-05-29 Wolfberry
+Used Version: 4.1.3
 
 http://ffmpeg.org
 
@@ -149,7 +149,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 34
+Used Version: 35.0.0
 
 https://mkvtoolnix.download/
 
@@ -159,7 +159,7 @@ mkvinfo
 
 MKV muxing tool.
 
-Used Version: 34
+Used Version: 35.0.0
 
 https://mkvtoolnix.download/
 
@@ -169,7 +169,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 34
+Used Version: 35.0.0
 
 https://mkvtoolnix.download/
 
@@ -184,14 +184,14 @@ Used Version: 0.7.2-DEV-rev1009
 http://gpac.wp.mines-telecom.fr/
 
 
-mpvnet
-~~~~~~
+mpv.net
+~~~~~~~
 
 libmpv based media player.
 
-Used Version: 4.0
+Used Version: 5.3
 
-https://github.com/Revan654/mpvnet/
+https://github.com/stax76/mpv.net
 
 
 mtn
@@ -199,7 +199,7 @@ mtn
 
 movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.
 
-Used Version: 2.0
+Used Version: 2.0.1
 
 https://github.com/Revan654/Movie-Thumbnailer-mtn
 
@@ -209,7 +209,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.41
+Used Version: 4.42
 
 http://github.com/rigaya/NVEnc
 
@@ -229,7 +229,7 @@ Python
 
 Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
 
-Used Version: 3.7.2
+Used Version: 3.7.3
 
 http://www.python.org
 
@@ -249,7 +249,7 @@ QSVEnc
 
 Intel hardware video encoder.
 
-Used Version: 3.18
+Used Version: 3.23
 
 http://github.com/rigaya/QSVEnc
 
@@ -259,7 +259,7 @@ rav1e
 
 a Faster and Safer AV1 Encoder
 
-Used Version: 2019-04-30
+Used Version: 0.1.0
 
 https://github.com/xiph/rav1e
 
@@ -277,9 +277,9 @@ http://www.nikse.dk/SubtitleEdit
 VapourSynth
 ~~~~~~~~~~~
 
-StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
+StaxRip supports both AviSynth+ and VapourSynth as scripting based video processing tool.
 
-Used Version: R45
+Used Version: R47.2
 
 http://www.vapoursynth.com
 
@@ -329,7 +329,7 @@ vspipe
 
 vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.
 
-Used Version: 43
+Used Version: R47.2
 
 http://www.vapoursynth.com/doc/vspipe.html
 
@@ -359,7 +359,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.0+2 Wolfberry
+Used Version: 3.1
 
 http://x265.org
 
@@ -767,7 +767,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: FFVideoSource, FFAudioSource
 
-Used Version: -
+Used Version: 2.3.0
 
 http://github.com/FFMS/ffms2
 
@@ -995,7 +995,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: LSMASHVideoSource, LSMASHAudioSource, LWLibavVideoSource, LWLibavAudioSource
 
-Used Version: 941
+Used Version: r935+31-2019-08-17 HolyWu
 
 http://avisynth.nl/index.php/LSMASHSource
 
@@ -1573,7 +1573,7 @@ Source filter to open D2V index files created with DGIndex or D2VWitch.
 
 Filters: d2v.Source
 
-Used Version: 1.1
+Used Version: 2016-04-29
 
 http://github.com/dwbuiten/d2vsource
 
@@ -1705,7 +1705,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: ffms2
 
-Used Version: 2019-05-04
+Used Version: 2.3.0
 
 http://github.com/FFMS/ffms2
 
@@ -1854,6 +1854,18 @@ Used Version: 1.1.1
 http://github.com/Khanattila/KNLMeansCL
 
 
+L-SMASH-Works
+~~~~~~~~~~~~~
+
+AviSynth and VapourSynth source filter based on Libav supporting a wide range of input formats.
+
+Filters: lsmas.LibavSMASHSource, lsmas.LWLibavSource
+
+Used Version: r935+31-2019-08-17 HolyWu
+
+http://avisynth.nl/index.php/LSMASHSource
+
+
 mcdegrainsharp
 ~~~~~~~~~~~~~~
 
@@ -1934,7 +1946,7 @@ MVTools is a set of filters for motion estimation and compensation.
 
 Filters: mv.Super, mv.Analyse, mv.Recalculate, mv.Compensate, mv.Degrain1, mv.Degrain2, mv.Degrain3, mv.Mask, mv.Finest, mv.Flow, mv.FlowBlur, mv.FlowInter, mv.FlowFPS, mv.BlockFPS, mv.SCDetection, mv.DepanAnalyse, mv.DepanEstimate, mv.DepanCompensate, mv.DepanStabilise
 
-Used Version: 21
+Used Version: r20
 
 http://github.com/dubhater/vapoursynth-mvtools
 
@@ -2237,18 +2249,6 @@ Filters: vsfm.VobSub, vsfm.TextSubMod
 Used Version: 5.2
 
 http://github.com/HomeOfVapourSynthEvolution/VSFilterMod
-
-
-vslsmashsource
-~~~~~~~~~~~~~~
-
-VapourSynth source filter based on Libav supporting a wide range of input formats.
-
-Filters: lsmas.LibavSMASHSource, lsmas.LWLibavSource
-
-Used Version: 929
-
-http://avisynth.nl/index.php/LSMASHSource
 
 
 W3FDIF

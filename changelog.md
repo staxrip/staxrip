@@ -1,21 +1,21 @@
 ### 2.0.2.6
 
-- dialogs were closing slow with 4K sources, this was fixed by using
-  a async call, could be unstable, hopefully not
+- dialogs were closing slow with 4K sources
 - .NET Framework version updated to 4.8
 - nvencc switch --vpp-select-every added
 - fix for play menu item in filters menu of main dialog being disabled
-- fix audio being not loaded by mpvnet when the avs/vs script is played
+- fix audio being not loaded by mpv.net when the avs/vs script is played
 - fix a issue with the custom icon feature
 - x265 --aq-mode update
-- update: L-Smash updated and added support for showing indexing progress
-  and cachefile parameter and for native high bit depth, avs and vs
-  l-smash are now contained in the same dll, avs and vs filter profiles
-  have been changed to contain the the new cachefile parameter and
-  high bit depth support has been added to the profiles, the profiles
+- update: L-Smash r935+31-2019-08-17 HolyWu
+  added support for showing indexing progress and cachefile parameter and
+  for native high bit depth, avs and vs l-smash are now contained in the same dll,
+  avs and vs filter profiles have been changed to contain the the new cachefile
+  parameter and high bit depth support has been added to the profiles, the profiles
   have not been reset so users have to update existing profiles manually
 - update: VapourSynth R47.2, the new L-Smash update requires this
   new VapourSynth update
+- update: python-3.7.4-amd64-webinstall
 - update: mpv.net 5.3
 
 ### 2.0.2.3

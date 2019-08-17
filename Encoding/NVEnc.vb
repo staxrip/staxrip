@@ -400,7 +400,7 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
                         QPI, QPP, QPB)
                     Add("VPP",
-                        New StringParam With {.Switch = "--vpp-subrbun", .Text = "Subrbun"},
+                        New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvnative", "nvcuda"), .Options = {"None", "Adaptive", "Bob"}},
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
@@ -495,7 +495,8 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--slices", .Text = "Slices", .Config = {0, Integer.MaxValue, 1}},
                         New BoolParam With {.Switch = "--strict-gop", .Text = "Strict GOP"},
                         New BoolParam With {.NoSwitch = "--no-b-adapt", .Text = "B-Adapt", .Init = True},
-                        New BoolParam With {.NoSwitch = "--no-i-adapt", .Text = "I-Adapt", .Init = True})
+                        New BoolParam With {.NoSwitch = "--no-i-adapt", .Text = "I-Adapt", .Init = True},
+                        New BoolParam With {.Switch = "--nonrefp", .Text = "Enable adapt. non-reference P frame insertion"})
                     Add("Rate Control",
                         New StringParam With {.Switch = "--dynamic-rc", .Text = "Dynamic RC"},
                         New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Config = {0, Integer.MaxValue, 1}},
@@ -529,6 +530,7 @@ Public Class NVEnc
                         New BoolParam With {.Switch = "--fullrange", .Text = "Full Range", .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New BoolParam With {.Switch = "--aud", .Text = "AUD"})
                     Add("Other",
+                        New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},
                         Interlace,

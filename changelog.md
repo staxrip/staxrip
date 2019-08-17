@@ -8,6 +8,7 @@
 - fix a issue with the custom icon feature
 - update: x265 3.1+11-de920e0 Wolfberry
 - x265 --aq-mode update, new switches --hme and --hme-search added
+- update: nvenc 4.44, new switches --data-copy, --nonrefp, fix --vpp-subburn
 - update: L-Smash r935+31-2019-08-17 HolyWu
   added support for showing indexing progress and cachefile parameter and
   for native high bit depth, avs and vs l-smash are now contained in the same dll,

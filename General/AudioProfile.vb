@@ -649,7 +649,7 @@ Public Class GUIAudioProfile
                     proc.SkipStrings = {", ETA ", "x)"}
                 ElseIf cl.Contains("fdkaac.exe") Then
                     proc.Package = Package.fdkaac
-                    proc.SkipString = "%]"
+                    proc.SkipStrings = {"%]", "x)"}
                 ElseIf cl.Contains("eac3to.exe") Then
                     proc.Package = Package.eac3to
                     proc.SkipStrings = {"process: ", "analyze: "}
@@ -819,6 +819,7 @@ Public Class GUIAudioProfile
     Function GetfdkaacCommandLine(includePaths As Boolean) As String
         Dim ret As String
         includePaths = includePaths And File <> ""
+        If DecodingMode = AudioDecodingMode.Pipe Then ret = GetPipeCommandLine(includePaths)
         If includePaths Then ret += Package.fdkaac.Path.Escape Else ret = "fdkaac"
         If Params.fdkaacProfile <> 2 Then ret += " --profile " & Params.fdkaacProfile
 
@@ -838,9 +839,11 @@ Public Class GUIAudioProfile
         If Params.fdkaacLowDelaySBR <> 0 Then ret += " --lowdelay-sbr " & Params.fdkaacLowDelaySBR
         If Params.fdkaacSbrRatio <> 0 Then ret += " --sbr-ratio " & Params.fdkaacSbrRatio
         If Params.fdkaacTransportFormat <> 0 Then ret += " --transport-format " & Params.fdkaacTransportFormat
-
         If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
-        If includePaths Then ret += " --ignorelength -o " + GetOutputFile.Escape + " " + File.Escape
+
+        Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.Escape)
+        If includePaths Then ret += " --ignorelength -o " + GetOutputFile.Escape + " " + input
+
         Return ret
     End Function
 
@@ -1074,7 +1077,7 @@ Public Class GUIAudioProfile
                 Case GuiAudioEncoder.qaac
                     If DecodingMode <> AudioDecodingMode.Pipe Then Return FileTypes.qaacInput
                 Case GuiAudioEncoder.fdkaac
-                    Return {"wav"}
+                    If DecodingMode <> AudioDecodingMode.Pipe Then Return {"wav"}
             End Select
 
             Return {}

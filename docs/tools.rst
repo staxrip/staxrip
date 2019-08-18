@@ -179,7 +179,7 @@ MP4Box
 
 MP4Box is a MP4 muxing and demuxing command line app.
 
-Used Version: 0.7.2-DEV-rev1009
+Used Version: v0.8.0-rev41-gb78fe5fbe Barough
 
 http://gpac.wp.mines-telecom.fr/
 
@@ -239,7 +239,7 @@ qaac
 
 qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the x64 iTunes installer using a decompression tool like 7-Zip. The makeportable script found on the qaac website can also be used.
 
-Used Version: 2.67
+Used Version: 2.68
 
 http://github.com/nu774/qaac
 
@@ -767,7 +767,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: FFVideoSource, FFAudioSource
 
-Used Version: 2.3.0
+Used Version: r1275+2-2019-08-11 HolyWu
 
 http://github.com/FFMS/ffms2
 
@@ -1705,7 +1705,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: ffms2
 
-Used Version: 2.3.0
+Used Version: r1275+2-2019-08-11 HolyWu
 
 http://github.com/FFMS/ffms2
 

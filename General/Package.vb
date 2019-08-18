@@ -97,8 +97,11 @@ Public Class Package
         .Description = "MP4Box is a MP4 muxing and demuxing command line app."})
 
     Shared Property AviSynth As Package = Add(New AviSynthPlusPackage)
+
     Shared Property NicAudio As Package = Add(New NicAudioPackage)
+
     Shared Property qaac As Package = Add(New qaacPackage)
+
     Shared Property UnDot As Package = Add(New UnDotPackage)
 
     Shared Property xvid_encraw As Package = Add(New Package With {

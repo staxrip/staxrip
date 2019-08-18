@@ -1,7 +1,13 @@
-###
+### 2.0.2.7
 
-- the file creation/write dates of apps were recovered from staxrip 1.7
+- added fdkaac pipe input support, in the audio settings
+  go to: More > General > Decoding Mode > Pipe
+- added missing icons
+- file creation/write dates of apps were recovered
 - update: ffms2 r1275+2-2019-08-11 HolyWu
+- update: eac3to libraries libdcadec and libFLAC
+- update: MP4Box v0.8.0-rev41-gb78fe5fbe Barough
+- update: qaac 2.68
 
 ### 2.0.2.6
 

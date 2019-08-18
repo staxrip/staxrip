@@ -527,10 +527,6 @@ File path to ffmpeg
 
 File path to ffms2
 
-``%app:ffms2%``
-
-File path to ffms2
-
 ``%app:FFT3DFilter%``
 
 File path to FFT3DFilter
@@ -1286,10 +1282,6 @@ Folder path to fdkaac
 ``%app_dir:ffmpeg%``
 
 Folder path to ffmpeg
-
-``%app_dir:ffms2%``
-
-Folder path to ffms2
 
 ``%app_dir:ffms2%``
 

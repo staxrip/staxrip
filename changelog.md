@@ -1,3 +1,8 @@
+###
+
+- the file creation/write dates of apps were recovered from staxrip 1.7
+- update: ffms2 r1275+2-2019-08-11 HolyWu
+
 ### 2.0.2.6
 
 - dialogs were closing slow with 4K sources

@@ -1,14 +1,12 @@
 Support
 =======
 
-Before contacting the support please note that for most issues it's necessary to see a full log file which you can paste for instance at www.pastebin.com, screenshots are also helpful.
-
-Search for past issues before opening a new issue.
+Before contacting the support please note that for most issues it's necessary to see a full log file which you can paste for instance at `www.pastebin.com <www.pastebin.com>`_, screenshots are also helpful.
 
 Issue Tracker
 -------------
 
-For bug reports and feature requests please use the `Issue Tracker <https://github.com/staxrip/staxrip/issues>`_, English Only.
+For bug reports and feature requests please use the `Issue Tracker <https://github.com/staxrip/staxrip/issues>`_, English Only. Search for past issues before opening a new issue.
 
 Before making a bug report please try the newest `Test Build <https://staxrip.readthedocs.io/intro.html#download>`_:
 

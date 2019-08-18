@@ -658,6 +658,7 @@ Switches
             Next
 
             DirectoryHelp.Delete(targetDir + "\.vs")
+            DirectoryHelp.Delete(targetDir + "\Apps\Plugins\VS\Scripts\__pycache__")
             DirectoryHelp.Delete(targetDir + "\Apps\Audio\qaac\QTfiles64")
 
             FileHelp.Delete(targetDir + "\debug.log")

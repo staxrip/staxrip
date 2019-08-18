@@ -1,5 +1,6 @@
 ###
 
+- colorspace="YV12" removed from ffms2 defaults because it converts to 8 bit
 - fix DTS-X format being demuxed as mka instead of dtshd
 - update: mkvtoolnix 36.0.0
 

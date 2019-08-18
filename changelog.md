@@ -1,5 +1,6 @@
 ###
 
+- fix DTS-X format being demuxed as mka instead of dtshd
 - update: mkvtoolnix 36.0.0
 
 ### 2.0.2.7

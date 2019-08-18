@@ -1546,9 +1546,9 @@ Public Class AudioStream
     Property Channels As Integer
     Property Channels2 As Integer
     Property Codec As String
-    Property CodecString As String
     Property Delay As Integer
     Property Format As String
+    Property FormatString As String
     Property FormatProfile As String
     Property ID As Integer
     Property StreamOrder As Integer
@@ -1570,27 +1570,29 @@ Public Class AudioStream
                                         "E-AC-3+Atmos / E-AC-3",
                                         "TrueHD+Atmos / TrueHD / AC-3") Then
                 ret += " Atmos"
-            ElseIf CodecString = "TrueHD / AC3" OrElse Codec = "TrueHD / AC3" Then
+            ElseIf FormatString = "TrueHD / AC3" OrElse Codec = "TrueHD / AC3" Then
                 ret += " TrueHD"
-            ElseIf CodecString = "MPEG-1 Audio layer 2" Then
+            ElseIf FormatString = "MPEG-1 Audio layer 2" Then
                 ret += " MP2"
-            ElseIf CodecString = "MPEG-1 Audio layer 3" Then
+            ElseIf FormatString = "MPEG-1 Audio layer 3" Then
                 ret += " MP3"
-            ElseIf CodecString = "MPEG Audio" Then
+            ElseIf FormatString = "MPEG Audio" Then
                 If FormatProfile = "Layer 2" Then ret += " MP2"
                 If FormatProfile = "Layer 3" Then ret += " MP3"
-            ElseIf CodecString = "AC3+" OrElse Format = "E-AC-3" Then
+            ElseIf FormatString = "AC3+" OrElse Format = "E-AC-3" Then
                 ret += " EAC3"
             ElseIf Format = "MLP FBA" Then
                 ret += " TrueHD"
-            ElseIf CodecString = "DTS XLL" Then
+            ElseIf FormatString = "DTS XLL" Then
                 ret += " DTSMA"
+            ElseIf FormatString = "DTS XLL X" Then
+                ret += " DTSX"
             ElseIf FormatProfile.StartsWith("MA /") Then
                 ret += " DTSMA"
             ElseIf FormatProfile.StartsWith("HRA /") Then
                 ret += " DTSHRA"
             Else
-                ret += " " + CodecString
+                ret += " " + FormatString
             End If
 
             If Not ret.Contains("Atmos") Then
@@ -1629,21 +1631,15 @@ Public Class AudioStream
 
     ReadOnly Property Extension() As String
         Get
-            Select Case CodecString
+            Select Case FormatString
                 Case "AAC LC", "AAC LC-SBR", "AAC LC-SBR-PS"
                     Return ".m4a"
                 Case "AC3", "AC-3"
                     Return ".ac3"
                 Case "DTS"
                     Return ".dts"
-                Case "DTS-HD", "DTS XLL"
-                    If FormatProfile.StartsWith("MA /") Then
-                        Return ".dtsma"
-                    ElseIf FormatProfile.StartsWith("HRA /") Then
-                        Return ".dtshr"
-                    Else
-                        Return ".dtshd"
-                    End If
+                Case "DTS-HD", "DTS XLL", "DTS XLL X"
+                    Return ".dtshd"
                 Case "PCM", "ADPCM"
                     Return ".wav"
                 Case "MPEG-1 Audio layer 2"

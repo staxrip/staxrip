@@ -73,8 +73,7 @@ Public Class MediaInfo
                     at.Lossy = GetAudio(index, "Compression_Mode") = "Lossy"
                     at.SamplingRate = GetAudio(index, "SamplingRate").ToInt
                     at.BitDepth = GetAudio(index, "BitDepth").ToInt
-                    at.CodecString = GetAudio(index, "Codec/String")
-                    If at.CodecString = "" Then at.CodecString = GetAudio(index, "Format/String")
+                    at.FormatString = GetAudio(index, "Format/String")
                     at.Format = GetAudio(index, "Format")
                     at.FormatProfile = GetAudio(index, "Format_Profile")
                     at.Title = GetAudio(index, "Title").Trim

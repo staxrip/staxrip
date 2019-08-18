@@ -1,3 +1,7 @@
+###
+
+- update: mkvtoolnix 36.0.0
+
 ### 2.0.2.7
 
 - added fdkaac pipe input support, in the audio settings

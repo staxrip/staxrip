@@ -96,7 +96,14 @@ Public Class Package
         .HelpURL = "http://gpac.wp.mines-telecom.fr/mp4box/mp4box-documentation",
         .Description = "MP4Box is a MP4 muxing and demuxing command line app."})
 
-    Shared Property AviSynth As Package = Add(New AviSynthPlusPackage)
+    Shared Property AviSynth As Package = Add(New Package With {
+        .Name = "AviSynth+",
+        .Filename = "avisynth.dll",
+        .WebURL = "http://avisynth.nl/index.php/AviSynth%2B",
+        .Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.",
+        .FixedDir = Folder.System,
+        .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth,
+        .SetupFilename = "Installers\AviSynthPlus-MT-r2772.exe"})
 
     Shared Property NicAudio As Package = Add(New NicAudioPackage)
 
@@ -1991,35 +1998,6 @@ Public Class NicAudioPackage
         Description = "AviSynth audio source filter."
         AvsFilterNames = {"NicAC3Source", "NicDTSSource", "NicMPASource", "RaWavSource"}
     End Sub
-End Class
-
-Public Class AviSynthPlusPackage
-    Inherits Package
-
-    Sub New()
-        Name = "AviSynth+"
-        Filename = "avisynth.dll"
-        WebURL = "http://avisynth.nl/index.php/AviSynth%2B"
-        Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
-        FixedDir = Folder.System
-        SetupFilename = "Installers\AviSynthPlus-MT-r2772.exe"
-    End Sub
-
-    Public Overrides Property IsRequired As Boolean
-        Get
-            Return p.Script.Engine = ScriptEngine.AviSynth
-        End Get
-        Set(value As Boolean)
-        End Set
-    End Property
-
-    Public Overrides Function GetStatus() As String
-        If Not Directory.Exists(Folder.Plugins) Then
-            Return "The AviSynth+ plugins directory is missing, run the AviSynth+ setup."
-        End If
-
-        Return MyBase.GetStatus()
-    End Function
 End Class
 
 Public Class PythonPackage

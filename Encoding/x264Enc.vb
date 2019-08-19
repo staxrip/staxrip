@@ -488,6 +488,11 @@ Public Class x264Params
         .Switch = "--slow-firstpass",
         .Text = "Slow Firstpass"}
 
+    Property PipingTool As New OptionParam With {
+        .Text = "Piping Tool",
+        .Options = {"Automatic", "None", "vspipe", "avs2pipemod", "ffmpeg"},
+        .Values = {"auto", "none", "vspipe", "avs2pipemod", "ffmpeg"}}
+
     Sub ApplyValues(isDefault As Boolean)
         Dim setVal = Sub(param As CommandLineParam, value As Object)
                          If TypeOf param Is BoolParam Then
@@ -840,6 +845,7 @@ Public Class x264Params
                     New BoolParam With {.Switch = "--aud", .Text = "Use access unit delimiters"},
                     New BoolParam With {.Switch = "--dts-compress", .Text = "Eliminate initial delay with container DTS hack"})
                 Add("Other",
+                    PipingTool,
                     New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                     New OptionParam With {.Switch = "--frame-packing", .Text = "Frame Packing", .IntegerValue = True, .Options = {"Checkerboard", "Column Alternation", "Row Alternation", "Side By Side", "Top Bottom", "Frame Alternation", "Mono", "Tile Format"}},
                     Deblock,
@@ -909,16 +915,29 @@ Public Class x264Params
         ApplyValues(True)
 
         Dim args As String
-        Dim sourcePath As String
 
         If includePaths AndAlso includeExecutable Then
-            If p.Script.Engine = ScriptEngine.VapourSynth Then
-                args += Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | " + Package.x264.Path.Escape
-                sourcePath = "-"
-            Else
-                args += Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | " + Package.x264.Path.Escape
-                sourcePath = "-"
+            Dim pipeString = ""
+            Dim pipeTool = PipingTool.ValueText
+
+            If pipeTool = "auto" Then
+                If p.Script.Engine = ScriptEngine.VapourSynth Then
+                    pipeTool = "vspipe"
+                Else
+                    pipeTool = "avs2pipemod"
+                End If
             End If
+
+            Select Case pipeTool
+                Case "vspipe"
+                    pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | "
+                Case "avs2pipemod"
+                    pipeString = Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | "
+                Case "ffmpeg"
+                    pipeString = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe" + " -loglevel fatal -hide_banner - | "
+            End Select
+
+            args += pipeString + Package.x264.Path.Escape
         End If
 
         If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
@@ -943,7 +962,8 @@ Public Class x264Params
         If q.Count > 0 Then args += " " + q.Select(Function(item) item.GetArgs).Join(" ")
 
         If includePaths Then
-            If sourcePath = "-" Then args += " --demuxer y4m --frames " & script.GetFrames
+            Dim input = If(PipingTool.ValueText = "none", script.Path.Escape, "-")
+            If input = "-" Then args += " --demuxer y4m --frames " & script.GetFrames
 
             If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
                 args += " --stats " + (p.TempDir + p.TargetFile.Base + ".stats").Escape
@@ -953,9 +973,9 @@ Public Class x264Params
                 (pass = 1 OrElse pass = 3)) OrElse
                 Mode.Value = x264RateMode.TwoPass AndAlso pass = 1 Then
 
-                args += " --output NUL " + sourcePath.Escape
+                args += " --output NUL " + input
             Else
-                args += " --output " + targetPath.Escape + " " + sourcePath.Escape
+                args += " --output " + targetPath.Escape + " " + input
             End If
         End If
 

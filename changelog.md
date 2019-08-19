@@ -1,3 +1,7 @@
+###
+
+- piping tool option added to x264 encoder
+
 ### 2.0.3 Stable
 
 - colorspace="YV12" removed from ffms2 defaults because it converts to 8 bit

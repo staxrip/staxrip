@@ -934,7 +934,7 @@ Public Class x264Params
                 Case "avs2pipemod"
                     pipeString = Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | "
                 Case "ffmpeg"
-                    pipeString = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe" + " -loglevel fatal -hide_banner - | "
+                    pipeString = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
             End Select
 
             args += pipeString + Package.x264.Path.Escape

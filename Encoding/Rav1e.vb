@@ -298,7 +298,7 @@ Public Class Rav1eParams
         Dim sb As New StringBuilder
 
         If includePaths AndAlso includeExecutable Then
-            sb.Append(Package.ffmpeg.Path.Escape + $" -y -loglevel fatal -hide_banner{If(script.Path.Ext = "vpy", " -f vapoursynth", "")} -i " + script.Path.Escape + " -f yuv4mpegpipe - | " + Package.Rav1e.Path.Escape)
+            sb.Append(Package.ffmpeg.Path.Escape + $" -y -loglevel fatal -hide_banner{If(script.Path.Ext = "vpy", " -f vapoursynth", "")} -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 - | " + Package.Rav1e.Path.Escape)
         End If
 
         Dim q = From i In Items Where i.GetArgs <> ""

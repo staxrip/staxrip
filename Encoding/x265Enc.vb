@@ -1048,7 +1048,7 @@ Public Class x265Params
                         Case "avs2pipemod"
                             pipeString = Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | "
                         Case "ffmpeg"
-                            pipeString = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe" + " -loglevel fatal -hide_banner - | "
+                            pipeString = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
                     End Select
 
                     sb.Append(pipeString + Package.x265.Path.Escape)
@@ -1057,13 +1057,12 @@ Public Class x265Params
                     sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.x265.Path.Escape)
                 Case "ffqsv"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Escape + " -f yuv4mpegpipe" + crop + " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
+                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Escape + " -f yuv4mpegpipe -strict -1" + crop + " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
                 Case "ffdxva"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Escape + " -f yuv4mpegpipe" + crop + " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
+                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Escape + " -f yuv4mpegpipe -strict -1" + crop + " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
             End Select
         End If
-
 
         If Mode.Value = x265RateMode.TwoPass OrElse Mode.Value = x265RateMode.ThreePass Then
             sb.Append(" --pass " & pass)

@@ -1239,7 +1239,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "FluxSmooth",
-            .Filename = "FluxSmoothSSSE3.dll",
+            .Filename = "FluxSmooth.dll",
             .AvsFilterNames = {"FluxSmoothT", "FluxSmoothST"},
             .Description = "One of the fundamental properties of noise is that it's random. One of the fundamental properties of motion is that it's not. This is the premise behind FluxSmooth, which examines each pixel and compares it to the corresponding pixel in the previous and last frame. Smoothing occurs if both the previous frame's value and the next frame's value are greater, or if both are less, than the value in the current frame.",
             .WebURL = "http://avisynth.nl/index.php/FluxSmooth"})

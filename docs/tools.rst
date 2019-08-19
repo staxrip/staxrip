@@ -29,7 +29,7 @@ AVSMeter
 
 AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.
 
-Used Version: 2.9.0
+Used Version: 2.9.5
 
 http://forum.doom9.org/showthread.php?t=174797
 
@@ -149,7 +149,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 35.0.0
+Used Version: 36.0.0
 
 https://mkvtoolnix.download/
 
@@ -159,7 +159,7 @@ mkvinfo
 
 MKV muxing tool.
 
-Used Version: 35.0.0
+Used Version: 36.0.0
 
 https://mkvtoolnix.download/
 
@@ -169,7 +169,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 35.0.0
+Used Version: 36.0.0
 
 https://mkvtoolnix.download/
 
@@ -839,7 +839,7 @@ One of the fundamental properties of noise is that it's random. One of the funda
 
 Filters: FluxSmoothT, FluxSmoothST
 
-Used Version: 2010-12-01
+Used Version: 1.4.7
 
 http://avisynth.nl/index.php/FluxSmooth
 
@@ -1271,7 +1271,7 @@ SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using M
 
 Filters: SMDegrain
 
-Used Version: 3.1.2.97s
+Used Version: 3.1.2.100s
 
 http://avisynth.nl/index.php/SMDegrain
 

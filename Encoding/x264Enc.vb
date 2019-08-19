@@ -916,8 +916,8 @@ Public Class x264Params
                 args += Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | " + Package.x264.Path.Escape
                 sourcePath = "-"
             Else
-                args += Package.x264.Path.Escape
-                sourcePath = script.Path
+                args += Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | " + Package.x264.Path.Escape
+                sourcePath = "-"
             End If
         End If
 

@@ -1,4 +1,4 @@
-### 2.0.3 Stable Release
+### 2.0.3 Stable
 
 - colorspace="YV12" removed from ffms2 defaults because it converts to 8 bit
 - the x264 encoder uses now avs2pipemod64 because the avs input did not support 10 bit
@@ -7,7 +7,7 @@
 - update: avs FluxSmooth 1.4.7
 - update: avsmeter 2.9.5
 
-### 2.0.2.7 Test
+### 2.0.2.7 Beta
 
 - added fdkaac pipe input support, in the audio settings
   go to: More > General > Decoding Mode > Pipe
@@ -18,7 +18,7 @@
 - update: MP4Box v0.8.0-rev41-gb78fe5fbe Barough
 - update: qaac 2.68
 
-### 2.0.2.6 Test
+### 2.0.2.6 Beta
 
 - dialogs were closing slow with 4K sources
 - .NET Framework version updated to 4.8
@@ -40,7 +40,7 @@
 - update: python-3.7.4-amd64-webinstall
 - update: mpv.net 5.3
 
-### 2.0.2.3 Test
+### 2.0.2.3 Beta
 
 - the progress bar in the processing window was using black as text color,
   this was changed to use SystemBrushes.ControlText which should be defined
@@ -49,7 +49,7 @@
   be an exception after the source file was loaded
 - tooltip improvement in the muxer options
 
-### 2.0.2.2 Test
+### 2.0.2.2 Beta
 
 - new icons added and credits in about (info) dialog updated,
   thanks to: Freepik, ilko-k, nulledone, vanontom
@@ -71,7 +71,7 @@
 - update: qsvencc, untested
 - update: vceencc, untested
 
-### 2.0.2.1 Test
+### 2.0.2.1 Beta
 
 - Under 'Tools > Settings > User Interface' there is a setting to define a icon file
 

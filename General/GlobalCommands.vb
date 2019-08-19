@@ -711,8 +711,8 @@ Switches
 
     Function GetReleaseType() As String
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
-        If version.MinorRevision <> 0 Then Return "Beta Release"
-        Return "Stable Release"
+        If version.MinorRevision <> 0 Then Return "Beta"
+        Return "Stable"
     End Function
 
     <Command("Opens a given help topic In the help browser.")>

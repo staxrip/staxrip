@@ -27,7 +27,7 @@ http://github.com/chikuzen/avs2pipemod
 AVSMeter
 ~~~~~~~~
 
-AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application like x264 and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.
+AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.
 
 Used Version: 2.9.5
 

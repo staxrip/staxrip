@@ -340,7 +340,7 @@ Public Class AudioForm
         Me.laStreamName.Name = "laStreamName"
         Me.laStreamName.Size = New System.Drawing.Size(244, 48)
         Me.laStreamName.TabIndex = 44
-        Me.laStreamName.Text = "Stream Name:"
+        Me.laStreamName.Text = "Track Name:"
         '
         'tbStreamName
         '
@@ -715,7 +715,7 @@ Public Class AudioForm
         TipProvider.SetTip("Language used by the muxer. Saved in projects/templates but not in profiles.", mbLanguage, lLanguage)
         TipProvider.SetTip("Delay in milliseconds. eac3to handles delay, ffmpeg don't but it is handled by the muxer. Saved in projects/templates but not in profiles.", numDelay, lDelay)
 
-        TipProvider.SetTip("Stream name used by the muxer.", tbStreamName, laStreamName)
+        TipProvider.SetTip("Track name used by the muxer.", tbStreamName, laStreamName)
         TipProvider.SetTip("Custom command line arguments.", tbCustom, laCustom)
 
         TipProvider.SetTip("Default MKV Track.", cbDefaultTrack)

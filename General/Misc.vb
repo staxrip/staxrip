@@ -1740,10 +1740,8 @@ Public Class Subtitle
             Dim ret = "ID" & (StreamOrder + 1)
             ret += " " + Language.Name
 
-            If Title <> "" AndAlso Title <> " " AndAlso Not Title.ContainsUnicode AndAlso
-                p.SourceFile <> "" AndAlso p.SourceFile.Length < 130 Then
-
-                ret += " " + Title.Shorten(30)
+            If Title <> "" AndAlso Title <> " " AndAlso p.SourceFile <> "" AndAlso p.SourceFile.Length < 200 Then
+                ret += " {" + Title.Shorten(50) + "}"
             End If
 
             If Not FilePath.IsValidFileSystemName(ret) Then ret = FilePath.RemoveIllegalCharsFromName(ret)
@@ -1848,6 +1846,11 @@ Public Class Subtitle
                     Exit For
                 End If
             Next
+
+            If path.Contains("{") Then
+                Dim title = path.Right("{")
+                st.Title = title.Left("}")
+            End If
 
             Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
             st.Enabled = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)

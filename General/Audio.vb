@@ -54,10 +54,8 @@ Public Class Audio
         If stream.Delay <> 0 Then ret += " " & stream.Delay & "ms"
         If stream.Language.TwoLetterCode <> "iv" Then ret += " " + stream.Language.ToString
 
-        If Not shorten AndAlso path.Length < 130 AndAlso stream.Title <> "" AndAlso
-            Not stream.Title.ContainsUnicode Then
-
-            ret += " " + stream.Title.Shorten(30)
+        If Not shorten AndAlso path.Length < 200 AndAlso stream.Title <> "" Then
+            ret += " {" + stream.Title.Shorten(50) + "}"
         End If
 
         If Not FilePath.IsValidFileSystemName(ret) Then ret = FilePath.RemoveIllegalCharsFromName(ret)

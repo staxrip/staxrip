@@ -1250,11 +1250,7 @@ Public Class MainForm
         Next
     End Sub
 
-    Private Sub DetectAudioFiles(track As Integer,
-                                 lang As Boolean,
-                                 same As Boolean,
-                                 hq As Boolean)
-
+    Private Sub DetectAudioFiles(track As Integer, lang As Boolean, same As Boolean, hq As Boolean)
         Dim tb, tbOther As TextBox
         Dim profile As AudioProfile
 
@@ -1287,7 +1283,7 @@ Public Class MainForm
                 If iPath.Contains("_cut_") Then Continue For
                 If iPath.Contains("_out") Then Continue For
                 If Not g.IsSourceSame(iPath) Then Continue For
-                If hq AndAlso Not iPath.Ext.EqualsAny("dtsma", "thd", "eac3", "thd+ac3", "dtshr") Then Continue For
+                If hq AndAlso Not iPath.Ext.EqualsAny("dtsma", "thd", "eac3", "thd+ac3", "dtshr", "dtshd") Then Continue For
 
                 If same AndAlso tbOther.Text <> "" AndAlso tbOther.Text.ExtFull <> iPath.ExtFull Then
                     Continue For
@@ -2939,8 +2935,15 @@ Public Class MainForm
             If tb.Text <> ap.File Then
                 ap.File = tb.Text
 
-                If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
-                    ap.Delay = g.ExtractDelay(ap.File)
+                If FileTypes.Audio.Contains(ap.File.Ext) Then
+                    If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
+                        ap.Delay = g.ExtractDelay(ap.File)
+                    End If
+
+                    If ap.File.Contains("{") Then
+                        Dim title = ap.File.Right("{")
+                        ap.StreamName = title.Left("}")
+                    End If
                 End If
 
                 ap.SetStreamOrLanguage()
@@ -4000,8 +4003,8 @@ Public Class MainForm
             t.Field = NameOf(p.PreferredSubtitles)
 
             Dim tbm = ui.AddTextMenu(subPage)
-            tbm.Text = "Stream Name"
-            tbm.Help = "Stream name used for muxing, may contain macros."
+            tbm.Text = "Track Name"
+            tbm.Help = "Track name used for muxing, may contain macros."
             tbm.Field = NameOf(p.SubtitleName)
             tbm.AddMenu("Language English", "%language_english%")
             tbm.AddMenu("Language Native", "%language_native%")

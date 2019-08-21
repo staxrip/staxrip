@@ -1,6 +1,7 @@
 ###
 
 - piping tool option added to x264 encoder
+- the track title wasn't detected from demuxed audio and subtitle tracks
 
 ### 2.0.3 Stable
 

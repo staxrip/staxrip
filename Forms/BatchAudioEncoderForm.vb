@@ -197,7 +197,7 @@ Public Class BatchAudioEncoderForm
         Me.lStreamName.Name = "lStreamName"
         Me.lStreamName.Size = New System.Drawing.Size(576, 48)
         Me.lStreamName.TabIndex = 9
-        Me.lStreamName.Text = "Stream Name:"
+        Me.lStreamName.Text = "Track Name:"
         '
         'lChannels
         '
@@ -443,7 +443,7 @@ Public Class BatchAudioEncoderForm
         TipProvider.SetTip("The targeted bitrate of the output file.", tbBitrate, lBitrate)
         TipProvider.SetTip("Audio delay to be fixed.", tbDelay, lDelay)
         TipProvider.SetTip("File types accepted as input, leave empty to support any file type.", tbInput, lInput)
-        TipProvider.SetTip("Stream name used by the muxer. The stream name may contain macros.", tbStreamName, lStreamName)
+        TipProvider.SetTip("Track name used by the muxer. The track name may contain macros.", tbStreamName, lStreamName)
         TipProvider.SetTip("If no name is defined StaxRip auto generate the name.", laProfileName, tbProfileName)
 
         cms.Add("Execute Batch Code", AddressOf Execute, TempProfile.File <> "").SetImage(Symbol.fa_terminal)

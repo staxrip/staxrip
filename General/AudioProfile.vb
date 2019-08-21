@@ -472,8 +472,8 @@ Public Class MuxAudioProfile
             page.SuspendLayout()
 
             Dim tbb = ui.AddTextButton(page)
-            tbb.Label.Text = "Stream Name:"
-            tbb.Label.Help = "Stream name used by the muxer. The stream name may contain macros."
+            tbb.Label.Text = "Track Name:"
+            tbb.Label.Help = "Track name used by the muxer. The track name may contain macros."
             tbb.Edit.Expand = True
             tbb.Edit.Text = StreamName
             tbb.Edit.SaveAction = Sub(value) StreamName = value

@@ -2008,7 +2008,7 @@ Public Class PythonPackage
         Filename = "python.exe"
         TreePath = "Runtimes"
         WebURL = "http://www.python.org"
-        Description = "Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool."
+        Description = "Python is required by VapourSynth."
         SetupFilename = "Installers\python-3.7.4-amd64-webinstall.exe"
     End Sub
 

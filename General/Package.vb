@@ -2027,21 +2027,15 @@ Public Class PythonPackage
 
             For Each i In {
                 Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", "ExecutablePath"),
-                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", "ExecutablePath"),
-                Registry.CurrentUser.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", Nothing).FixDir + "python.exe",
-                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", Nothing).FixDir + "python.exe",
-                Registry.CurrentUser.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", "ExecutablePath"),
-                Registry.LocalMachine.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", "ExecutablePath"),
-                Registry.CurrentUser.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", Nothing).FixDir + "python.exe",
-                Registry.LocalMachine.GetString("SOFTWARE\Python\ContinuumAnalytics\Anaconda37-64\InstallPath", Nothing).FixDir + "python.exe"}
+                Registry.LocalMachine.GetString("SOFTWARE\Python\PythonCore\3.7\InstallPath", "ExecutablePath")}
 
                 If File.Exists(i) Then Return i
             Next
 
-            Dim paths = Environment.GetEnvironmentVariable("path").SplitNoEmptyAndWhiteSpace(";").ToList
+            Dim paths = Environment.GetEnvironmentVariable("path").SplitNoEmptyAndWhiteSpace(";")
 
             For Each i In paths
-                i = i.Trim(" "c, """"c).FixDir
+                i = i.FixDir
 
                 If File.Exists(i + "python.exe") Then
                     SetPath(i + "python.exe")

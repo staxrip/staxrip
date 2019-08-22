@@ -2038,8 +2038,7 @@ Public Class PythonPackage
                 If File.Exists(i) Then Return i
             Next
 
-            Dim paths = Environment.ExpandEnvironmentVariables("%Path%").SplitNoEmptyAndWhiteSpace(";").ToList
-            paths.AddRange(Environment.ExpandEnvironmentVariables("%PATH%").SplitNoEmptyAndWhiteSpace(";"))
+            Dim paths = Environment.GetEnvironmentVariable("path").SplitNoEmptyAndWhiteSpace(";").ToList
 
             For Each i In paths
                 i = i.Trim(" "c, """"c).FixDir

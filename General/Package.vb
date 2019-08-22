@@ -2035,11 +2035,11 @@ Public Class PythonPackage
             Dim paths = Environment.GetEnvironmentVariable("path").SplitNoEmptyAndWhiteSpace(";")
 
             For Each i In paths
-                i = i.FixDir
+                i = i.FixDir + "python.exe"
 
-                If File.Exists(i + "python.exe") Then
-                    SetPath(i + "python.exe")
-                    Return i + "python.exe"
+                If File.Exists(i) Then
+                    SetPath(i)
+                    Return i
                 End If
             Next
         End Get

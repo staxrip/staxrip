@@ -2032,7 +2032,7 @@ Public Class PythonPackage
                 If File.Exists(i) Then Return i
             Next
 
-            Dim paths = Environment.GetEnvironmentVariable("path").SplitNoEmptyAndWhiteSpace(";")
+            Dim paths = Environment.GetEnvironmentVariable("path").SplitNoEmpty(";")
 
             For Each i In paths
                 i = i.FixDir + "python.exe"

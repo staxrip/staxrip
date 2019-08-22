@@ -2740,7 +2740,7 @@ Public Class MainForm
 
             If Not isValidAnamorphicSize AndAlso (ae > p.MaxAspectRatioError OrElse
                 ae < -p.MaxAspectRatioError) AndAlso p.Script.IsFilterActive("Resize") AndAlso
-                p.RemindArError Then
+                p.RemindArError AndAlso p.CustomTargetPAR <> "1:1" Then
 
                 If ProcessTip("Use the resize slider to correct the aspect ratio error or click next to encode anamorphic.") Then
                     g.Highlight(True, lAspectRatioError)

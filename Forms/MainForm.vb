@@ -1077,6 +1077,16 @@ Public Class MainForm
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
         g.MainForm = Me
         LoadSettings()
+
+        If s.WriteDebugLog Then
+            Dim filePath = Folder.Startup + "Debug.log"
+            If File.Exists(filePath) Then File.Delete(filePath)
+            Dim listener = New TextWriterTraceListener(filePath)
+            listener.TraceOutputOptions = TraceOptions.ThreadId Or TraceOptions.DateTime
+            Trace.Listeners.Add(listener)
+            Trace.AutoFlush = True
+        End If
+
         MenuItemEx.UseTooltips = s.EnableTooltips
         Icon = g.Icon
         InitializeComponent()

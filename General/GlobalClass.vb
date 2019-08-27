@@ -1,14 +1,15 @@
-﻿Imports System.Threading
-Imports System.Drawing.Imaging
+﻿Imports System.Drawing.Imaging
 Imports System.Globalization
+Imports System.Runtime.ExceptionServices
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports System.Threading
+Imports System.Threading.Tasks
 Imports System.Windows.Forms.VisualStyles
+
 Imports Microsoft.Win32
 Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
-Imports System.Threading.Tasks
-Imports System.Runtime.ExceptionServices
 
 Public Class GlobalClass
     Property ProjectPath As String
@@ -20,7 +21,7 @@ Public Class GlobalClass
     Property IsProcessing As Boolean
 
     Sub WriteDebugLog(value As String)
-        If s?.WriteDebugLog Then Trace.WriteLine(value)
+        If s?.WriteDebugLog Then Trace.TraceInformation(value)
     End Sub
 
     Sub ProcessJobs()

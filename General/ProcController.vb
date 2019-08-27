@@ -223,6 +223,7 @@ Public Class ProcController
                          If Procs.Count = 0 AndAlso Not g.IsProcessing Then
                              g.WriteDebugLog("ProcController.Cleanup about to call Finished")
                              Finished()
+                             g.WriteDebugLog("ProcController.Cleanup after Finished")
                          End If
                      End SyncLock
 

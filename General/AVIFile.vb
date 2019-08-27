@@ -12,6 +12,7 @@ Public Class AVIFile
 
     Sub New(path As String)
         Try
+            g.WriteDebugLog("opening avifile: " + path)
             Sourcefile = path
             AVIFileInit()
 
@@ -254,6 +255,7 @@ Public Class AVIFile
             If AviFile <> IntPtr.Zero Then AVIFileRelease(AviFile)
             AVIFileExit()
             WasDisposed = True
+            g.WriteDebugLog("closing avifile")
         End If
     End Sub
 

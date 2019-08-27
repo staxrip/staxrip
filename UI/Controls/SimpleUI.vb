@@ -1053,8 +1053,6 @@ Public Class SimpleUI
                                          If dia.ShowDialog = DialogResult.OK Then Edit.Text = dia.FileName
                                      End Using
                                  End Sub
-
-            AddHandler Edit.TextChanged, Sub() If File.Exists(Edit.Text) Then s.LastSourceDir = Edit.Text.Dir
         End Sub
 
         Sub BrowseFolder()

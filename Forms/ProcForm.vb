@@ -226,7 +226,7 @@ Public Class ProcForm
         NotifyIcon.Icon = g.Icon
         NotifyIcon.Text = "StaxRip"
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
-        ScaleClientSize(42, 28)
+        ScaleClientSize(43, 28)
     End Sub
 
     Private Sub cbShutdown_SelectedIndexChanged() Handles mbShutdown.ValueChangedUser

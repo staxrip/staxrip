@@ -530,7 +530,7 @@ Public Class Package
             .FixedDir = Folder.System,
             .IgnoreVersion = True,
             .IgnoreIfMissing = True,
-            .IsRequiredFunc = Function() Items("SangNom2 avs").IsRequired,
+            .IsRequiredFunc = Function() Items("SangNom2 avs").IsRequired OrElse Items("Deblock avs").IsRequired OrElse Items("mClean avs").IsRequired,
             .TreePath = "Runtimes"})
 
         Add(New Package With {

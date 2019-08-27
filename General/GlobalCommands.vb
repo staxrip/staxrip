@@ -661,7 +661,7 @@ Switches
             DirectoryHelp.Delete(targetDir + "\Apps\Plugins\VS\Scripts\__pycache__")
             DirectoryHelp.Delete(targetDir + "\Apps\Audio\qaac\QTfiles64")
 
-            FileHelp.Delete(targetDir + "\debug.log")
+            FileHelp.Delete(targetDir + "\Debug.log")
             FileHelp.Delete(targetDir + "\_StaxRip.log")
             FileHelp.Delete(targetDir + "\StaxRip.vshost.exe")
             FileHelp.Delete(targetDir + "\StaxRip.vshost.sln")

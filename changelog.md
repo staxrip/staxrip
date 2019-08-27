@@ -1,4 +1,4 @@
-### 2.0.3.1
+### 2.0.3.1 Beta
 
 - piping tool option added to x264 encoder
 - piping with ffmpeg supports 10 bit now

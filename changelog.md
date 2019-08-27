@@ -1,7 +1,12 @@
-###
+### 2.0.3.1
 
 - piping tool option added to x264 encoder
+- piping with ffmpeg supports 10 bit now
 - the track title wasn't detected from demuxed audio and subtitle tracks
+- closing the settings dialog was setting the icon location as last source directory
+- debug logging was improved, more debug info is included, it's no longer
+  needed to edit the config file to enable debug logging, it's sufficient
+  to enable it in the settings: Tools > Settings > General > Enable Debug Logging
 
 ### 2.0.3 Stable
 

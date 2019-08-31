@@ -1,5 +1,13 @@
-- update: ffms2 2019-08-30 StvG
-- update: L-Smash-Works r935+34 2019-08-29 MeteorRain
+### 2.0.4.0 Stable
+
+- update: ffms2 2019-08-30 StvG, successfully tested was the load time,
+          memory usage and avs/vs compatibility
+- update: L-Smash-Works r935+34 2019-08-29 MeteorRain, successfully
+          tested was the load time, memory usage and avs/vs compatibility
+- update: MediaInfo 19.07
+- update: ffmpeg 4.2 Wolfberry
+- update: nvenc 4.46
+- update: qsvenc 3.24
 
 ### 2.0.3.1 Beta
 

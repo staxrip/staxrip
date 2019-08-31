@@ -90,7 +90,7 @@ showProcessWindow: Redirects the output of command line apps to the process wind
 
 asBatch: Alternative mode that creats a BAT file to execute.
 
-Executes command lines separated by a line break line by line. Macros are solved as well as passed in as environment variables.
+Executes command lines separated by a line break line by line. Macros are solved and passed as environment variables.
 
 
 -ExecutePowerShellScript:scriptCode

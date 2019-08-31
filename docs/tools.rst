@@ -109,7 +109,7 @@ ffmpeg
 
 Versatile audio video converter.
 
-Used Version: 4.1.3
+Used Version: 4.2 Wolfberry
 
 http://ffmpeg.org
 
@@ -139,7 +139,7 @@ MediaInfo
 
 MediaInfo is used by StaxRip to read infos from media files.
 
-Used Version: 19.04
+Used Version: 19.07
 
 http://mediaarea.net/en/MediaInfo
 
@@ -149,7 +149,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 36.0.0
+Used Version: 37.0.0
 
 https://mkvtoolnix.download/
 
@@ -159,7 +159,7 @@ mkvinfo
 
 MKV muxing tool.
 
-Used Version: 36.0.0
+Used Version: 37.0.0
 
 https://mkvtoolnix.download/
 
@@ -169,7 +169,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 36.0.0
+Used Version: 37.0.0
 
 https://mkvtoolnix.download/
 
@@ -209,7 +209,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.44
+Used Version: 4.46
 
 http://github.com/rigaya/NVEnc
 
@@ -227,9 +227,9 @@ https://sourceforge.net/projects/apng/files/
 Python
 ~~~~~~
 
-Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
+Python is required by VapourSynth.
 
-Used Version: 3.7.3
+Used Version: 3.7.4
 
 http://www.python.org
 
@@ -249,7 +249,7 @@ QSVEnc
 
 Intel hardware video encoder.
 
-Used Version: 3.23
+Used Version: 3.24
 
 http://github.com/rigaya/QSVEnc
 
@@ -767,7 +767,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: FFVideoSource, FFAudioSource
 
-Used Version: r1275+2-2019-08-11 HolyWu
+Used Version: 2019-08-30 StvG
 
 http://github.com/FFMS/ffms2
 
@@ -995,7 +995,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: LSMASHVideoSource, LSMASHAudioSource, LWLibavVideoSource, LWLibavAudioSource
 
-Used Version: r935+31-2019-08-17 HolyWu
+Used Version: r935+34 2019-08-29 MeteorRain
 
 http://avisynth.nl/index.php/LSMASHSource
 
@@ -1705,7 +1705,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: ffms2
 
-Used Version: r1275+2-2019-08-11 HolyWu
+Used Version: 2019-08-30 StvG
 
 http://github.com/FFMS/ffms2
 
@@ -1861,7 +1861,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: lsmas.LibavSMASHSource, lsmas.LWLibavSource
 
-Used Version: r935+31-2019-08-17 HolyWu
+Used Version: r935+34 2019-08-29 MeteorRain
 
 http://avisynth.nl/index.php/LSMASHSource
 

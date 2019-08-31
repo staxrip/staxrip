@@ -121,7 +121,7 @@ Public Class GlobalCommands
         g.StartProcess("powershell.exe", "-noexit -command " + val)
     End Sub
 
-    <Command("Executes command lines separated by a line break line by line. Macros are solved as well as passed in as environment variables.")>
+    <Command("Executes command lines separated by a line break line by line. Macros are solved and passed as environment variables.")>
     Sub ExecuteCommandLine(
         <DispName("Command Line"),
         Description("One or more command lines to be executed or if batch mode is used content of the batch file. Macros are solved as well as passed in as environment variables."),

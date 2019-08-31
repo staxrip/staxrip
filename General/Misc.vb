@@ -1545,7 +1545,6 @@ Public Class AudioStream
     Property Bitrate2 As Integer
     Property Channels As Integer
     Property Channels2 As Integer
-    Property Codec As String
     Property Delay As Integer
     Property Format As String
     Property FormatString As String
@@ -1565,12 +1564,11 @@ Public Class AudioStream
         Get
             Dim ret = "#" & Index + 1
 
-            If Codec = "Atmos / TrueHD" OrElse
-                FormatProfile.EqualsAny("TrueHD+Atmos / TrueHD",
-                                        "E-AC-3+Atmos / E-AC-3",
-                                        "TrueHD+Atmos / TrueHD / AC-3") Then
+            If FormatProfile.EqualsAny("TrueHD+Atmos / TrueHD",
+                                       "E-AC-3+Atmos / E-AC-3",
+                                       "TrueHD+Atmos / TrueHD / AC-3") Then
                 ret += " Atmos"
-            ElseIf FormatString = "TrueHD / AC3" OrElse Codec = "TrueHD / AC3" Then
+            ElseIf FormatString = "TrueHD / AC3" Then
                 ret += " TrueHD"
             ElseIf FormatString = "MPEG-1 Audio layer 2" Then
                 ret += " MP2"
@@ -1591,6 +1589,8 @@ Public Class AudioStream
                 ret += " DTSMA"
             ElseIf FormatProfile.StartsWith("HRA /") Then
                 ret += " DTSHRA"
+            ElseIf FormatString = "AC-3" Then
+                ret += " AC3"
             Else
                 ret += " " + FormatString
             End If

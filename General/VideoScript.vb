@@ -157,6 +157,9 @@ Public Class VideoScript
                     Optional comparePath As Boolean = True)
 
         If Path <> "" Then
+            Dim srcFilter = GetFilter("Source")
+            If Not srcFilter Is Nothing AndAlso Not srcFilter.Script.Contains("(") Then Exit Sub
+
             Dim code = Macro.Expand(GetScript())
 
             If convertToRGB Then

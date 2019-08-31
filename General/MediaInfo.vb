@@ -67,9 +67,6 @@ Public Class MediaInfo
                     If Not id.IsInt Then id = (index + 2).ToString
                     at.ID = id.ToInt + offset
 
-                    at.Codec = GetAudio(index, "Codec")
-                    If at.Codec = "TrueHD / AC3" Then offset += 1
-
                     at.Lossy = GetAudio(index, "Compression_Mode") = "Lossy"
                     at.SamplingRate = GetAudio(index, "SamplingRate").ToInt
                     at.BitDepth = GetAudio(index, "BitDepth").ToInt
@@ -152,10 +149,6 @@ Public Class MediaInfo
             Dim offset As Integer
 
             If count > 0 Then
-                For Each i In AudioStreams
-                    If i.Codec = "TrueHD / AC3" Then offset += 1
-                Next
-
                 For index = 0 To count - 1
                     Dim subtitle As New Subtitle(New Language(GetText(index, "Language")))
                     subtitle.Index = index

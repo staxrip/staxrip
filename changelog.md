@@ -1,3 +1,6 @@
+- update: ffms2 2019-08-30 StvG
+- update: L-Smash-Works r935+34 2019-08-29 MeteorRain
+
 ### 2.0.3.1 Beta
 
 - piping tool option added to x264 encoder

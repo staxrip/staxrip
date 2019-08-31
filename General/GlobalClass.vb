@@ -75,7 +75,7 @@ Public Class GlobalClass
 
             If p.BatchMode Then
                 g.MainForm.OpenVideoSourceFiles(p.SourceFiles, True)
-                g.ProjectPath = p.TempDir + p.SourceFile.Base + ".srip"
+                g.ProjectPath = p.TempDir + p.TargetFile.Base + ".srip"
                 g.MainForm.SaveProjectPath(g.ProjectPath)
                 p.BatchMode = False
             End If
@@ -581,20 +581,21 @@ Public Class GlobalClass
     Sub SetTempDir()
 
         If p.SourceFile <> "" Then
+            Dim tempDirName = p.DefaultTargetName.Replace("%source_name%", p.SourceFile.FileName)
             p.TempDir = Macro.Expand(p.TempDir)
             If p.TempDir = "" Then
                 Try
                     If p.SourceFile.Dir.EndsWith("_temp\") Then
                         p.TempDir = p.SourceFile.Dir
                     Else
-                        Dim base = p.SourceFile.Base
+                        Dim base = tempDirName
                         p.TempDir = p.SourceFile.Dir + base + "_temp\"
                     End If
                 Catch ex As PathTooLongException
                     If p.SourceFile.Dir.EndsWith("_temp\") Then
                         p.TempDir = p.SourceFile.Dir
                     Else
-                        Dim base = p.SourceFile.Base
+                        Dim base = tempDirName
                         If base.Length > 30 Then base = base.Shorten(15) + "..."
                         p.TempDir = p.SourceFile.Dir + base + "_temp\"
                     End If

@@ -235,7 +235,7 @@ Public MustInherit Class AudioProfile
     End Function
 
     Function GetOutputFile() As String
-        Dim base = File.Base
+        Dim base = p.TargetFile.Base
 
         If Delay <> 0 Then
             If HandlesDelay() Then

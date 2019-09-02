@@ -788,7 +788,7 @@ Public Class NVEnc
                     sourcePath = p.LastOriginalSourceFile
                 Case "nvcuda"
                     sourcePath = p.LastOriginalSourceFile
-                    ret += " --avhw cuda"
+                    ret += " --avhw"
                 Case "qs"
                     sourcePath = "-"
                     If includePaths Then ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")

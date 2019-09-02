@@ -1,3 +1,5 @@
+- nvenc switch --avhw updated (thx to Patman86)
+
 ### 2.0.4.0 Stable
 
 - update: ffms2 2019-08-30 StvG, successfully tested was the load time,

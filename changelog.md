@@ -1,4 +1,5 @@
 - nvenc switch --avhw updated (thx to Patman86)
+- progress bar support added for DGIndexNV
 
 ### 2.0.4.0 Stable
 

@@ -99,6 +99,18 @@ Public Class ProcController
 
                 Exit Sub
             End If
+        ElseIf value.IsInt Then
+            Dim val = value.ToInt
+
+            If LastProgress <> val Then
+                ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                ProcForm.Taskbar?.SetValue(val, 100)
+                ProcForm.NotifyIcon.Text = val & "%"
+                ProgressBar.Value = val
+                LastProgress = val
+            End If
+
+            Exit Sub
         ElseIf Proc.Frames > 0 AndAlso value.Contains("frame=") AndAlso value.Contains("fps=") Then
             Dim right = value.Left("fps=").Right("frame=")
 

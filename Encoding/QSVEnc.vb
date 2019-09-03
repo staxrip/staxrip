@@ -133,7 +133,7 @@ Public Class QSVEnc
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
-                        .Options = {"AviSynth/VapourSynth", "QSVEnc Hardware", "QSVEnc Software", "ffmpeg Intel", "ffmpeg DXVA2"},
+            .Options = {"AviSynth/VapourSynth", "QSVEnc Hardware", "QSVEnc Software", "ffmpeg Intel", "ffmpeg DXVA2"},
             .Values = {"avs", "qshw", "qssw", "ffqsv", "ffdxva"}}
 
         Property Codec As New OptionParam With {

@@ -104,6 +104,7 @@ Public Class ProcController
                 ProcForm.Taskbar?.SetValue(val, 100)
                 ProcForm.NotifyIcon.Text = val & "%"
                 ProgressBar.Value = val
+                ProgressBar.Text = val & "%"
                 LastProgress = val
             End If
 

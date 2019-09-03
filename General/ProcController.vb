@@ -51,16 +51,13 @@ Public Class ProcController
 
     Sub DataReceived(sender As Object, e As DataReceivedEventArgs)
         If e.Data = "" Then Exit Sub
-        Dim t = Proc.ProcessData(e.Data)
+        Dim ret = Proc.ProcessData(e.Data)
+        If ret.Data = "" Then Exit Sub
 
-        If t.Item1 = "" Then Exit Sub
-        Dim value = t.Item1
-        Dim skip = t.Item2
-
-        If skip Then
-            ProcForm.BeginInvoke(StatusAction, {value})
+        If ret.Skip Then
+            ProcForm.BeginInvoke(StatusAction, {ret.Data})
         Else
-            Proc.Log.WriteLine(value)
+            Proc.Log.WriteLine(ret.Data)
             ProcForm.BeginInvoke(LogAction, Nothing)
         End If
     End Sub

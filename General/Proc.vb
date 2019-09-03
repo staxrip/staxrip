@@ -372,7 +372,7 @@ Public Class Proc
         GC.SuppressFinalize(Me)
     End Sub
 
-    Function ProcessData(value As String) As (String, Boolean)
+    Function ProcessData(value As String) As (Data As String, Skip As Boolean)
         If value = "" Then Return ("", False)
 
         If Not RemoveChars Is Nothing Then

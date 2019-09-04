@@ -116,12 +116,12 @@ Public Class NVEnc
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
             .Options = {"AviSynth/VapourSynth",
-                        "NVEnc",
                         "NVEnc Hardware",
+                        "NVEnc Software",
                         "QSVEnc (Intel)",
                         "ffmpeg (Intel)",
                         "ffmpeg (DXVA2)"},
-            .Values = {"avs", "nv", "nvhw", "qs", "ffqsv", "ffdxva"}}
+            .Values = {"avs", "nvhw", "nvsw", "qs", "ffqsv", "ffdxva"}}
 
         Property Mode As New OptionParam With {
             .Text = "Mode",
@@ -402,9 +402,9 @@ Public Class NVEnc
                     Add("VPP",
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
-                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nv", "nvhw"), .Options = {"None", "Adaptive", "Bob"}},
+                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw"), .Options = {"None", "Adaptive", "Bob"}},
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
-                        New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nv", "nvhw")},
+                        New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw")},
                         VppEdgelevel,
                         VppEdgelevelStrength,
                         VppEdgelevelThreshold,
@@ -784,11 +784,12 @@ Public Class NVEnc
             Select Case Decoder.ValueText
                 Case "avs"
                     sourcePath = p.Script.Path
-                Case "nv"
-                    sourcePath = p.LastOriginalSourceFile
                 Case "nvhw"
                     sourcePath = p.LastOriginalSourceFile
                     ret += " --avhw"
+                Case "nvsw"
+                    sourcePath = p.LastOriginalSourceFile
+                    ret += " --avsw"
                 Case "qs"
                     sourcePath = "-"
                     If includePaths Then ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")

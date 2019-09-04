@@ -4874,7 +4874,7 @@ Public Class MainForm
                             Dim batchProject = ObjectHelp.GetCopy(Of Project)(p)
                             batchProject.BatchMode = True
                             batchProject.SourceFiles = {i}.ToList
-                            Dim jobPath = batchFolder + i.Replace("\", "-").Replace(":", "-")
+                            Dim jobPath = batchFolder + i.Dir.Replace("\", "-").Replace(":", "-") + " " + p.TemplateName + " - " + i.FileName
                             SafeSerialization.Serialize(batchProject, jobPath)
                             Job.AddJob(jobPath)
                         Next

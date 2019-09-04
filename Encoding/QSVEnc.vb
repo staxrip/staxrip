@@ -133,8 +133,8 @@ Public Class QSVEnc
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
-            .Options = {"AviSynth/VapourSynth", "QSVEnc Intel", "QSVEnc Software", "ffmpeg Intel", "ffmpeg DXVA2"},
-            .Values = {"avs", "qs", "qsw", "ffqsv", "ffdxva"}}
+            .Options = {"AviSynth/VapourSynth", "QSVEnc Hardware", "QSVEnc Software", "ffmpeg Intel", "ffmpeg DXVA2"},
+            .Values = {"avs", "qshw", "qssw", "ffqsv", "ffdxva"}}
 
         Property Codec As New OptionParam With {
             .Switch = "--codec",
@@ -387,8 +387,12 @@ Public Class QSVEnc
             Select Case Decoder.ValueText
                 Case "avs"
                     sourcePath = p.Script.Path
-                Case "qs", "qsw"
+                Case "qshw"
                     sourcePath = p.LastOriginalSourceFile
+                    ret += " --avhw"
+                Case "qssw"
+                    sourcePath = p.LastOriginalSourceFile
+                    ret += " --avsw"
                 Case "ffdxva"
                     sourcePath = "-"
                     If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64")
@@ -431,7 +435,6 @@ Public Class QSVEnc
             End If
 
             If sourcePath = "-" Then ret += " --y4m"
-            If Decoder.ValueText = "qsw" Then ret += " --avsw"
             If includePaths Then ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
 
             Return ret.Trim

@@ -1,5 +1,6 @@
 - nvenc switch --avhw updated (thx to Patman86)
 - progress bar support added for DGIndexNV
+- progress bar support added for ffmpeg audio encoding
 
 ### 2.0.4.0 Stable
 

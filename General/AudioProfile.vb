@@ -162,6 +162,18 @@ Public MustInherit Class AudioProfile
     Overridable Sub OnStreamChanged()
     End Sub
 
+    Function GetDuration() As TimeSpan
+        If IO.File.Exists(File) Then
+            If Stream Is Nothing Then
+                Return TimeSpan.FromMilliseconds(MediaInfo.GetAudio(File, "Duration").ToDouble)
+            Else
+                Using mi As New MediaInfo(File)
+                    Return TimeSpan.FromMilliseconds(mi.GetAudio(Stream.Index, "Duration").ToDouble)
+                End Using
+            End If
+        End If
+    End Function
+
     Function GetAudioText(stream As AudioStream, path As String) As String
         For Each i In Language.Languages
             If path.Contains(i.CultureInfo.EnglishName) Then
@@ -659,6 +671,7 @@ Public Class GUIAudioProfile
                     proc.Package = Package.ffmpeg
                     proc.SkipStrings = {"frame=", "size="}
                     proc.Encoding = Encoding.UTF8
+                    proc.Duration = GetDuration()
                 End If
 
                 proc.Start()

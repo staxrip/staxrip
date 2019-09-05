@@ -20,6 +20,7 @@ Public Class Proc
     Property RemoveChars As Char()
     Property ExitCode As Integer
     Property Frames As Integer
+    Property Duration As TimeSpan
     Property Log As New LogBuilder
     Property Succeeded As Boolean
     Property Header As String

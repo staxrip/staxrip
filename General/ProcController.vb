@@ -72,7 +72,7 @@ Public Class ProcController
         SetProgress(value)
     End Sub
 
-    Shared LastProgress As Single
+    Shared LastProgress As Double
 
     Sub SetProgress(value As String)
         If Proc.IsSilent Then Exit Sub
@@ -83,8 +83,25 @@ Public Class ProcController
             If value.Contains("[") Then value = value.Right("[")
             If value.Contains(" ") Then value = value.RightLast(" ")
 
-            If value.IsSingle Then
-                Dim val = value.ToSingle
+            If value.IsDouble Then
+                Dim val = value.ToDouble
+
+                If LastProgress <> val Then
+                    ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                    ProcForm.Taskbar?.SetValue(val, 100)
+                    ProcForm.NotifyIcon.Text = val & "%"
+                    ProgressBar.Value = val
+                    LastProgress = val
+                End If
+
+                Exit Sub
+            End If
+        ElseIf Proc.Duration <> TimeSpan.Zero AndAlso value.Contains(" time=") Then
+            Dim tokens = value.Right(" time=").Left(" ").Split(":"c)
+
+            If tokens.Length = 3 Then
+                Dim ts As New TimeSpan(tokens(0).ToInt, tokens(1).ToInt, tokens(2).ToInt)
+                Dim val = 100 / Proc.Duration.TotalSeconds * ts.TotalSeconds
 
                 If LastProgress <> val Then
                     ProcForm.Taskbar?.SetState(TaskbarStates.Normal)

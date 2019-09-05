@@ -221,11 +221,7 @@ Module StringExtensions
     Function IsDouble(value As String) As Boolean
         If value <> "" Then
             If value.Contains(",") Then value = value.Replace(",", ".")
-
-            Return Double.TryParse(value,
-                                   NumberStyles.Float Or NumberStyles.AllowThousands,
-                                   CultureInfo.InvariantCulture,
-                                   Nothing)
+            Return Double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, Nothing)
         End If
     End Function
 
@@ -236,10 +232,7 @@ Module StringExtensions
 
             Dim ret As Double
 
-            If Double.TryParse(value,
-                               NumberStyles.Float Or NumberStyles.AllowThousands,
-                               CultureInfo.InvariantCulture,
-                               ret) Then
+            If Double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, ret) Then
                 Return ret
             End If
         End If

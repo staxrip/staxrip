@@ -971,22 +971,37 @@ Public Class FilterParameters
                 add2({"LSMASHVideoSource",
                       "LWLibavVideoSource",
                       "LibavSMASHSource",
-                      "LWLibavSource"}, "decoder", """h264_qsv""", "decoder | h264_qsv")
+                      "LWLibavSource"}, "prefer_hw", "0", "prefer_hw | 0")
 
                 add2({"LSMASHVideoSource",
                       "LWLibavVideoSource",
                       "LibavSMASHSource",
-                      "LWLibavSource"}, "decoder", """hevc_qsv""", "decoder | hevc_qsv")
+                      "LWLibavSource"}, "prefer_hw", "1", "prefer_hw | 1")
 
-                add2({"LSMASHVideoSource",
-                      "LWLibavVideoSource",
-                      "LibavSMASHSource",
-                      "LWLibavSource"}, "decoder", """h264_nvenc""", "decoder | h264_nvenc")
-
-                add2({"LSMASHVideoSource",
-                      "LWLibavVideoSource",
-                      "LibavSMASHSource",
-                      "LWLibavSource"}, "decoder", """hevc_nvenc""", "decoder | hevc_nvenc")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV420P8", "format | YUV420P8")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV422P8", "format | YUV422P8")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV444P8", "format | YUV444P8")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV410P8", "format | YUV410P8")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV411P8", "format | YUV411P8")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV420P9", "format | YUV420P9")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV422P9", "format | YUV422P9")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV444P9", "format | YUV444P9")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV420P10", "format | YUV420P10")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV422P10", "format | YUV422P10")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV444P10", "format | YUV444P10")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV420P12", "format | YUV420P12")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV422P12", "format | YUV422P12")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV444P12", "format | YUV444P12")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV420P14", "format | YUV420P14")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV422P14", "format | YUV422P14")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV444P14", "format | YUV444P14")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV420P16", "format | YUV420P16")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV422P16", "format | YUV422P16")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV444P16", "format | YUV444P16")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "Y8", "format | Y8")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUY2", "format | YUY2")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "RGB24", "format | RGB24")
+                add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "RGB32", "format | RGB32")
             End If
 
             Return DefinitionsValue

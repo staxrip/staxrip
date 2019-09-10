@@ -1,6 +1,10 @@
-- nvenc switch --avhw updated (thx to Patman86)
+###
+
+- nvenc switch --avhw updated (Patman86)
 - progress bar support added for DGIndexNV
 - progress bar support added for ffmpeg audio encoding
+- l-smash parameters prefer_hw and format have menu support in the avs/vs code editor
+- update: l-smash-works 2019-09-10 HolyWu
 
 ### 2.0.4.0 Stable
 

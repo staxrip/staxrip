@@ -241,8 +241,8 @@ clip.set_output()
         End If
 
         If Not script.Contains("import vapoursynth") Then
-
-            code = "import os" + BR + "import sys" + BR + VSPathScript + BR + ImportVSPath + BR + "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR + code
+            code = "import os" + BR + "import sys" + BR + VSPathScript + BR + ImportVSPath + BR +
+                "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR + code
         End If
 
         Dim clip As String

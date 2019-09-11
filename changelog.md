@@ -5,6 +5,7 @@
 - progress bar support added for ffmpeg audio encoding
 - l-smash parameters prefer_hw and format have menu support in the avs/vs code editor
 - update: l-smash-works 2019-09-10 HolyWu
+- a format exception was fixed
 
 ### 2.0.4.0 Stable
 

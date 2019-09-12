@@ -697,9 +697,8 @@ Public Class mkvDemuxer
                 proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
-                proc.Arguments = proj.SourceFile.Escape + " attachments " +
-                    enabledAttachments.Select(Function(val) val.ID & ":" + GetAttachmentPath(
-                    proj.TempDir, val.Name).Escape).Join(" ")
+                proc.Arguments = proj.SourceFile.Escape + " attachments " + enabledAttachments.Select(
+                    Function(val) val.ID & ":" + GetAttachmentPath(proj, val.Name).Escape).Join(" ")
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
             End Using
@@ -823,10 +822,10 @@ Public Class mkvDemuxer
         Next
     End Sub
 
-    Shared Function GetAttachmentPath(dir As String, name As String) As String
-        Dim prefix = If(name.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land"), "", "_attachment_")
-        Dim ret = dir + prefix + name.Base + name.ExtFull
-        If ret.Length > 260 Then ret = dir + prefix + name.Base.Shorten(10) + name.ExtFull
+    Shared Function GetAttachmentPath(proj As Project, name As String) As String
+        Dim prefix = If(name.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land"), "", proj.SourceFile.Base + "_attachment_")
+        Dim ret = proj.TempDir + prefix + name.Base + name.ExtFull
+        If ret.Length > 260 Then ret = proj.TempDir + prefix + name.Base.Shorten(10) + name.ExtFull
         Return ret
     End Function
 
@@ -836,9 +835,10 @@ Public Class mkvDemuxer
         For Each i In stdout.SplitLinesNoEmpty
             If i.StartsWith("Attachment ID ") Then
                 Dim match = Regex.Match(i, "Attachment ID (\d+):.+, file name '(.+)'")
+
                 If match.Success Then ret.Add(New Attachment With {
-                                              .ID = match.Groups(1).Value.ToInt,
-                                              .Name = match.Groups(2).Value})
+                    .ID = match.Groups(1).Value.ToInt,
+                    .Name = match.Groups(2).Value})
             End If
         Next
 

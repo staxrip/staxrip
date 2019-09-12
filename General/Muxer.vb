@@ -39,7 +39,7 @@ Public MustInherit Class Muxer
 
     Private AdditionalSwitchesValue As String
 
-    Property AdditionalSwitches() As String
+    Property AdditionalSwitches As String
         Get
             Return AdditionalSwitchesValue
         End Get
@@ -64,11 +64,25 @@ Public MustInherit Class Muxer
         End Set
     End Property
 
+    Private AttachmentsValue As List(Of String)
+
+    Property Attachments As List(Of String)
+        Get
+            If AttachmentsValue Is Nothing Then AttachmentsValue = New List(Of String)
+            AttachmentsValue.Sort()
+            Return AttachmentsValue
+        End Get
+        Set(value As List(Of String))
+            AttachmentsValue = value
+        End Set
+    End Property
+
     Overrides Sub Clean()
         Subtitles = Nothing
         ChapterFile = Nothing
         TimestampsFile = Nothing
         Tags = Nothing
+        Attachments = Nothing
     End Sub
 
     Protected Sub ExpandMacros()
@@ -150,7 +164,7 @@ Public MustInherit Class Muxer
             End If
 
             If TypeOf Me Is MkvMuxer AndAlso i.Contains("_attachment_") Then
-                AdditionalSwitches += " --attachment-name " + i.Right("_attachment_").Escape + " --attach-file " + i.Escape
+                Attachments.Add(i)
             End If
         Next
 
@@ -623,6 +637,12 @@ Public Class MkvMuxer
 
         args += " --ui-language en"
         If AdditionalSwitches <> "" Then args += " " + Macro.Expand(AdditionalSwitches)
+
+        For Each i In Attachments
+            Dim name = Path.GetFileName(i)
+            If i.Contains("_attachment_") Then name = i.Right("_attachment_")
+            args += $" --attachment-name {name.Escape} --attach-file {i.Escape}"
+        Next
 
         Return args
     End Function

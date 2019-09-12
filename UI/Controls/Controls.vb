@@ -1281,7 +1281,7 @@ Namespace UI
                     End If
 
                     Items.RemoveAt(index)
-                    UpdateButtons()
+                    UpdateControls()
                 Else
                     Dim iFirst = SelectedIndex
 
@@ -1350,23 +1350,25 @@ Namespace UI
                 If Not UpButton Is Nothing Then UpButton.AddClickAction(AddressOf MoveSelectionUp)
                 If Not DownButton Is Nothing Then DownButton.AddClickAction(AddressOf MoveSelectionDown)
                 If Not RemoveButton Is Nothing Then RemoveButton.AddClickAction(AddressOf RemoveSelection)
-                UpdateButtons()
+                UpdateControls()
             End If
         End Sub
 
         Protected Overrides Sub OnSelectedIndexChanged(e As EventArgs)
             If Not BlockOnSelectedIndexChanged Then
                 MyBase.OnSelectedIndexChanged(e)
-                UpdateButtons()
+                UpdateControls()
             End If
         End Sub
 
-        Sub UpdateButtons()
+        Sub UpdateControls()
             If Not RemoveButton Is Nothing Then RemoveButton.Enabled = Not SelectedItem Is Nothing
             If Not UpButton Is Nothing Then UpButton.Enabled = SelectedIndex > 0
             If Not DownButton Is Nothing Then DownButton.Enabled = SelectedIndex > -1 AndAlso SelectedIndex < Items.Count - 1
             If Not Button1 Is Nothing Then Button1.Enabled = Not SelectedItem Is Nothing
             If Not Button2 Is Nothing Then Button2.Enabled = Not SelectedItem Is Nothing
+
+            If SelectedIndex = -1 AndAlso Items.Count > 0 Then SelectedIndex = 0
         End Sub
     End Class
 

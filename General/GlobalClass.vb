@@ -967,7 +967,7 @@ Public Class GlobalClass
     End Function
 
     Function BrowseFile(filter As String, Optional defaultFilepath As String = Nothing) As String
-        Using d As New System.Windows.Forms.OpenFileDialog
+        Using d As New OpenFileDialog
             d.Filter = filter
 
             If File.Exists(defaultFilepath) Then

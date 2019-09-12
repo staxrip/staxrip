@@ -29,17 +29,23 @@ Public Class MuxerForm
     Friend WithEvents tpSubtitles As TabPage
     Friend WithEvents SubtitleControl As SubtitleControl
     Friend WithEvents tpAudio As TabPage
-    Friend WithEvents bnPlay As ButtonEx
-    Friend WithEvents bnDown As ButtonEx
-    Friend WithEvents bnUp As ButtonEx
-    Friend WithEvents bnRemove As ButtonEx
-    Friend WithEvents bnAdd As ButtonEx
+    Friend WithEvents bnPlayAudio As ButtonEx
+    Friend WithEvents bnDownAudio As ButtonEx
+    Friend WithEvents bnUpAudio As ButtonEx
+    Friend WithEvents bnRemoveAudio As ButtonEx
+    Friend WithEvents bnAddAudio As ButtonEx
     Friend WithEvents dgvAudio As DataGridViewEx
-    Friend WithEvents bnEdit As ButtonEx
-    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
-    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
+    Friend WithEvents bnEditAudio As ButtonEx
+    Friend WithEvents tlpAudio As TableLayoutPanel
+    Friend WithEvents flpAudio As FlowLayoutPanel
     Friend WithEvents tlpMain As TableLayoutPanel
     Friend WithEvents pnTab As Panel
+    Friend WithEvents tpAttachments As TabPage
+    Friend WithEvents tlpAttachments As TableLayoutPanel
+    Friend WithEvents flpAttachments As FlowLayoutPanel
+    Friend WithEvents bnAddAttachment As ButtonEx
+    Friend WithEvents lbAttachments As ListBoxEx
+    Friend WithEvents bnRemoveAttachment As ButtonEx
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -53,15 +59,21 @@ Public Class MuxerForm
         Me.tpSubtitles = New System.Windows.Forms.TabPage()
         Me.SubtitleControl = New StaxRip.SubtitleControl()
         Me.tpAudio = New System.Windows.Forms.TabPage()
-        Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
-        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
-        Me.bnAdd = New StaxRip.UI.ButtonEx()
-        Me.bnRemove = New StaxRip.UI.ButtonEx()
-        Me.bnUp = New StaxRip.UI.ButtonEx()
-        Me.bnDown = New StaxRip.UI.ButtonEx()
-        Me.bnPlay = New StaxRip.UI.ButtonEx()
-        Me.bnEdit = New StaxRip.UI.ButtonEx()
+        Me.tlpAudio = New System.Windows.Forms.TableLayoutPanel()
+        Me.flpAudio = New System.Windows.Forms.FlowLayoutPanel()
+        Me.bnAddAudio = New StaxRip.UI.ButtonEx()
+        Me.bnRemoveAudio = New StaxRip.UI.ButtonEx()
+        Me.bnUpAudio = New StaxRip.UI.ButtonEx()
+        Me.bnDownAudio = New StaxRip.UI.ButtonEx()
+        Me.bnPlayAudio = New StaxRip.UI.ButtonEx()
+        Me.bnEditAudio = New StaxRip.UI.ButtonEx()
         Me.dgvAudio = New StaxRip.UI.DataGridViewEx()
+        Me.tpAttachments = New System.Windows.Forms.TabPage()
+        Me.tlpAttachments = New System.Windows.Forms.TableLayoutPanel()
+        Me.flpAttachments = New System.Windows.Forms.FlowLayoutPanel()
+        Me.bnAddAttachment = New StaxRip.UI.ButtonEx()
+        Me.bnRemoveAttachment = New StaxRip.UI.ButtonEx()
+        Me.lbAttachments = New StaxRip.UI.ListBoxEx()
         Me.tpOptions = New System.Windows.Forms.TabPage()
         Me.SimpleUI = New StaxRip.SimpleUI()
         Me.tpCommandLine = New System.Windows.Forms.TabPage()
@@ -72,9 +84,12 @@ Public Class MuxerForm
         Me.tcMain.SuspendLayout()
         Me.tpSubtitles.SuspendLayout()
         Me.tpAudio.SuspendLayout()
-        Me.TableLayoutPanel2.SuspendLayout()
-        Me.FlowLayoutPanel1.SuspendLayout()
+        Me.tlpAudio.SuspendLayout()
+        Me.flpAudio.SuspendLayout()
         CType(Me.dgvAudio, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.tpAttachments.SuspendLayout()
+        Me.tlpAttachments.SuspendLayout()
+        Me.flpAttachments.SuspendLayout()
         Me.tpOptions.SuspendLayout()
         Me.tpCommandLine.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
@@ -91,7 +106,7 @@ Public Class MuxerForm
         Me.CmdlControl.Location = New System.Drawing.Point(0, 48)
         Me.CmdlControl.Margin = New System.Windows.Forms.Padding(0)
         Me.CmdlControl.Name = "CmdlControl"
-        Me.CmdlControl.Size = New System.Drawing.Size(1870, 934)
+        Me.CmdlControl.Size = New System.Drawing.Size(1147, 577)
         Me.CmdlControl.TabIndex = 0
         '
         'bnCommandLinePreview
@@ -128,6 +143,7 @@ Public Class MuxerForm
         '
         Me.tcMain.Controls.Add(Me.tpSubtitles)
         Me.tcMain.Controls.Add(Me.tpAudio)
+        Me.tcMain.Controls.Add(Me.tpAttachments)
         Me.tcMain.Controls.Add(Me.tpOptions)
         Me.tcMain.Controls.Add(Me.tpCommandLine)
         Me.tcMain.Dock = System.Windows.Forms.DockStyle.Fill
@@ -161,96 +177,96 @@ Public Class MuxerForm
         '
         'tpAudio
         '
-        Me.tpAudio.Controls.Add(Me.TableLayoutPanel2)
+        Me.tpAudio.Controls.Add(Me.tlpAudio)
         Me.tpAudio.Location = New System.Drawing.Point(12, 69)
         Me.tpAudio.Margin = New System.Windows.Forms.Padding(5)
         Me.tpAudio.Name = "tpAudio"
         Me.tpAudio.Padding = New System.Windows.Forms.Padding(5)
-        Me.tpAudio.Size = New System.Drawing.Size(1900, 1010)
+        Me.tpAudio.Size = New System.Drawing.Size(1177, 653)
         Me.tpAudio.TabIndex = 4
         Me.tpAudio.Text = "   Audio   "
         Me.tpAudio.UseVisualStyleBackColor = True
         '
-        'TableLayoutPanel2
+        'tlpAudio
         '
-        Me.TableLayoutPanel2.ColumnCount = 2
-        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TableLayoutPanel2.Controls.Add(Me.FlowLayoutPanel1, 1, 0)
-        Me.TableLayoutPanel2.Controls.Add(Me.dgvAudio, 0, 0)
-        Me.TableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel2.Location = New System.Drawing.Point(5, 5)
-        Me.TableLayoutPanel2.Margin = New System.Windows.Forms.Padding(0)
-        Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
-        Me.TableLayoutPanel2.RowCount = 1
-        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(1890, 1000)
-        Me.TableLayoutPanel2.TabIndex = 7
+        Me.tlpAudio.ColumnCount = 2
+        Me.tlpAudio.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpAudio.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpAudio.Controls.Add(Me.flpAudio, 1, 0)
+        Me.tlpAudio.Controls.Add(Me.dgvAudio, 0, 0)
+        Me.tlpAudio.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpAudio.Location = New System.Drawing.Point(5, 5)
+        Me.tlpAudio.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpAudio.Name = "tlpAudio"
+        Me.tlpAudio.RowCount = 1
+        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpAudio.Size = New System.Drawing.Size(1167, 643)
+        Me.tlpAudio.TabIndex = 7
         '
-        'FlowLayoutPanel1
+        'flpAudio
         '
-        Me.FlowLayoutPanel1.AutoSize = True
-        Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.FlowLayoutPanel1.Controls.Add(Me.bnAdd)
-        Me.FlowLayoutPanel1.Controls.Add(Me.bnRemove)
-        Me.FlowLayoutPanel1.Controls.Add(Me.bnUp)
-        Me.FlowLayoutPanel1.Controls.Add(Me.bnDown)
-        Me.FlowLayoutPanel1.Controls.Add(Me.bnPlay)
-        Me.FlowLayoutPanel1.Controls.Add(Me.bnEdit)
-        Me.FlowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(1599, 0)
-        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0)
-        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(291, 516)
-        Me.FlowLayoutPanel1.TabIndex = 6
+        Me.flpAudio.AutoSize = True
+        Me.flpAudio.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpAudio.Controls.Add(Me.bnAddAudio)
+        Me.flpAudio.Controls.Add(Me.bnRemoveAudio)
+        Me.flpAudio.Controls.Add(Me.bnUpAudio)
+        Me.flpAudio.Controls.Add(Me.bnDownAudio)
+        Me.flpAudio.Controls.Add(Me.bnPlayAudio)
+        Me.flpAudio.Controls.Add(Me.bnEditAudio)
+        Me.flpAudio.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        Me.flpAudio.Location = New System.Drawing.Point(876, 0)
+        Me.flpAudio.Margin = New System.Windows.Forms.Padding(0)
+        Me.flpAudio.Name = "flpAudio"
+        Me.flpAudio.Size = New System.Drawing.Size(291, 516)
+        Me.flpAudio.TabIndex = 6
         '
-        'bnAdd
+        'bnAddAudio
         '
-        Me.bnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnAdd.Location = New System.Drawing.Point(11, 0)
-        Me.bnAdd.Margin = New System.Windows.Forms.Padding(11, 0, 0, 6)
-        Me.bnAdd.Size = New System.Drawing.Size(280, 80)
-        Me.bnAdd.Text = "Add..."
+        Me.bnAddAudio.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnAddAudio.Location = New System.Drawing.Point(11, 0)
+        Me.bnAddAudio.Margin = New System.Windows.Forms.Padding(11, 0, 0, 6)
+        Me.bnAddAudio.Size = New System.Drawing.Size(280, 80)
+        Me.bnAddAudio.Text = "Add..."
         '
-        'bnRemove
+        'bnRemoveAudio
         '
-        Me.bnRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnRemove.Location = New System.Drawing.Point(11, 86)
-        Me.bnRemove.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
-        Me.bnRemove.Size = New System.Drawing.Size(280, 80)
-        Me.bnRemove.Text = " Remove"
+        Me.bnRemoveAudio.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnRemoveAudio.Location = New System.Drawing.Point(11, 86)
+        Me.bnRemoveAudio.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnRemoveAudio.Size = New System.Drawing.Size(280, 80)
+        Me.bnRemoveAudio.Text = " Remove"
         '
-        'bnUp
+        'bnUpAudio
         '
-        Me.bnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnUp.Location = New System.Drawing.Point(11, 172)
-        Me.bnUp.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
-        Me.bnUp.Size = New System.Drawing.Size(280, 80)
-        Me.bnUp.Text = "Up"
+        Me.bnUpAudio.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnUpAudio.Location = New System.Drawing.Point(11, 172)
+        Me.bnUpAudio.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnUpAudio.Size = New System.Drawing.Size(280, 80)
+        Me.bnUpAudio.Text = "Up"
         '
-        'bnDown
+        'bnDownAudio
         '
-        Me.bnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnDown.Location = New System.Drawing.Point(11, 258)
-        Me.bnDown.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
-        Me.bnDown.Size = New System.Drawing.Size(280, 80)
-        Me.bnDown.Text = "Down"
+        Me.bnDownAudio.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnDownAudio.Location = New System.Drawing.Point(11, 258)
+        Me.bnDownAudio.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnDownAudio.Size = New System.Drawing.Size(280, 80)
+        Me.bnDownAudio.Text = "Down"
         '
-        'bnPlay
+        'bnPlayAudio
         '
-        Me.bnPlay.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnPlay.Location = New System.Drawing.Point(11, 344)
-        Me.bnPlay.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
-        Me.bnPlay.Size = New System.Drawing.Size(280, 80)
-        Me.bnPlay.Text = "Play"
+        Me.bnPlayAudio.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnPlayAudio.Location = New System.Drawing.Point(11, 344)
+        Me.bnPlayAudio.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnPlayAudio.Size = New System.Drawing.Size(280, 80)
+        Me.bnPlayAudio.Text = "Play"
         '
-        'bnEdit
+        'bnEditAudio
         '
-        Me.bnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnEdit.Location = New System.Drawing.Point(11, 430)
-        Me.bnEdit.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
-        Me.bnEdit.Size = New System.Drawing.Size(280, 80)
-        Me.bnEdit.Text = "Edit..."
+        Me.bnEditAudio.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnEditAudio.Location = New System.Drawing.Point(11, 430)
+        Me.bnEditAudio.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
+        Me.bnEditAudio.Size = New System.Drawing.Size(280, 80)
+        Me.bnEditAudio.Text = "Edit..."
         '
         'dgvAudio
         '
@@ -261,9 +277,74 @@ Public Class MuxerForm
         Me.dgvAudio.Location = New System.Drawing.Point(0, 0)
         Me.dgvAudio.Margin = New System.Windows.Forms.Padding(0)
         Me.dgvAudio.Name = "dgvAudio"
+        Me.dgvAudio.RowHeadersWidth = 123
         Me.dgvAudio.RowTemplate.Height = 28
-        Me.dgvAudio.Size = New System.Drawing.Size(1599, 1000)
+        Me.dgvAudio.Size = New System.Drawing.Size(876, 643)
         Me.dgvAudio.TabIndex = 0
+        '
+        'tpAttachments
+        '
+        Me.tpAttachments.Controls.Add(Me.tlpAttachments)
+        Me.tpAttachments.Location = New System.Drawing.Point(12, 69)
+        Me.tpAttachments.Name = "tpAttachments"
+        Me.tpAttachments.Padding = New System.Windows.Forms.Padding(3)
+        Me.tpAttachments.Size = New System.Drawing.Size(1177, 653)
+        Me.tpAttachments.TabIndex = 5
+        Me.tpAttachments.Text = "Attachments"
+        Me.tpAttachments.UseVisualStyleBackColor = True
+        '
+        'tlpAttachments
+        '
+        Me.tlpAttachments.ColumnCount = 2
+        Me.tlpAttachments.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpAttachments.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpAttachments.Controls.Add(Me.flpAttachments, 1, 0)
+        Me.tlpAttachments.Controls.Add(Me.lbAttachments, 0, 0)
+        Me.tlpAttachments.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpAttachments.Location = New System.Drawing.Point(3, 3)
+        Me.tlpAttachments.Name = "tlpAttachments"
+        Me.tlpAttachments.RowCount = 1
+        Me.tlpAttachments.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpAttachments.Size = New System.Drawing.Size(1171, 647)
+        Me.tlpAttachments.TabIndex = 0
+        '
+        'flpAttachments
+        '
+        Me.flpAttachments.AutoSize = True
+        Me.flpAttachments.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpAttachments.Controls.Add(Me.bnAddAttachment)
+        Me.flpAttachments.Controls.Add(Me.bnRemoveAttachment)
+        Me.flpAttachments.Location = New System.Drawing.Point(877, 3)
+        Me.flpAttachments.Name = "flpAttachments"
+        Me.flpAttachments.Size = New System.Drawing.Size(291, 172)
+        Me.flpAttachments.TabIndex = 0
+        '
+        'bnAddAttachment
+        '
+        Me.bnAddAttachment.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnAddAttachment.Location = New System.Drawing.Point(11, 0)
+        Me.bnAddAttachment.Margin = New System.Windows.Forms.Padding(11, 0, 0, 6)
+        Me.bnAddAttachment.Size = New System.Drawing.Size(280, 80)
+        Me.bnAddAttachment.Text = "Add..."
+        '
+        'bnRemoveAttachment
+        '
+        Me.bnRemoveAttachment.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnRemoveAttachment.Location = New System.Drawing.Point(11, 86)
+        Me.bnRemoveAttachment.Margin = New System.Windows.Forms.Padding(11, 0, 0, 6)
+        Me.bnRemoveAttachment.Size = New System.Drawing.Size(280, 80)
+        Me.bnRemoveAttachment.Text = "Remove"
+        '
+        'lbAttachments
+        '
+        Me.lbAttachments.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lbAttachments.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed
+        Me.lbAttachments.FormattingEnabled = True
+        Me.lbAttachments.ItemHeight = 67
+        Me.lbAttachments.Location = New System.Drawing.Point(3, 3)
+        Me.lbAttachments.Name = "lbAttachments"
+        Me.lbAttachments.Size = New System.Drawing.Size(868, 641)
+        Me.lbAttachments.TabIndex = 1
         '
         'tpOptions
         '
@@ -272,7 +353,7 @@ Public Class MuxerForm
         Me.tpOptions.Margin = New System.Windows.Forms.Padding(5)
         Me.tpOptions.Name = "tpOptions"
         Me.tpOptions.Padding = New System.Windows.Forms.Padding(5)
-        Me.tpOptions.Size = New System.Drawing.Size(1900, 1010)
+        Me.tpOptions.Size = New System.Drawing.Size(1177, 653)
         Me.tpOptions.TabIndex = 2
         Me.tpOptions.Text = "  Options  "
         Me.tpOptions.UseVisualStyleBackColor = True
@@ -280,10 +361,11 @@ Public Class MuxerForm
         'SimpleUI
         '
         Me.SimpleUI.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SimpleUI.FormSizeScaleFactor = New System.Drawing.SizeF(0!, 0!)
         Me.SimpleUI.Location = New System.Drawing.Point(5, 5)
         Me.SimpleUI.Margin = New System.Windows.Forms.Padding(5)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(1890, 1000)
+        Me.SimpleUI.Size = New System.Drawing.Size(1167, 643)
         Me.SimpleUI.TabIndex = 0
         Me.SimpleUI.Text = "SimpleUI1"
         '
@@ -294,7 +376,7 @@ Public Class MuxerForm
         Me.tpCommandLine.Margin = New System.Windows.Forms.Padding(5)
         Me.tpCommandLine.Name = "tpCommandLine"
         Me.tpCommandLine.Padding = New System.Windows.Forms.Padding(15, 14, 15, 14)
-        Me.tpCommandLine.Size = New System.Drawing.Size(1900, 1010)
+        Me.tpCommandLine.Size = New System.Drawing.Size(1177, 653)
         Me.tpCommandLine.TabIndex = 1
         Me.tpCommandLine.Text = " Command Line "
         Me.tpCommandLine.UseVisualStyleBackColor = True
@@ -313,7 +395,7 @@ Public Class MuxerForm
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1870, 982)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1147, 625)
         Me.TableLayoutPanel1.TabIndex = 2
         '
         'Label1
@@ -372,10 +454,14 @@ Public Class MuxerForm
         Me.tcMain.ResumeLayout(False)
         Me.tpSubtitles.ResumeLayout(False)
         Me.tpAudio.ResumeLayout(False)
-        Me.TableLayoutPanel2.ResumeLayout(False)
-        Me.TableLayoutPanel2.PerformLayout()
-        Me.FlowLayoutPanel1.ResumeLayout(False)
+        Me.tlpAudio.ResumeLayout(False)
+        Me.tlpAudio.PerformLayout()
+        Me.flpAudio.ResumeLayout(False)
         CType(Me.dgvAudio, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.tpAttachments.ResumeLayout(False)
+        Me.tlpAttachments.ResumeLayout(False)
+        Me.tlpAttachments.PerformLayout()
+        Me.flpAttachments.ResumeLayout(False)
         Me.tpOptions.ResumeLayout(False)
         Me.tpCommandLine.ResumeLayout(False)
         Me.TableLayoutPanel1.ResumeLayout(False)
@@ -399,6 +485,9 @@ Public Class MuxerForm
         Me.Muxer = muxer
         SubtitleControl.AddSubtitles(muxer.Subtitles)
         CmdlControl.tb.Text = muxer.AdditionalSwitches
+        lbAttachments.Items.AddRange(muxer.Attachments.Select(Function(val) New AttachmentContainer With {.Filepath = val}).ToArray)
+        lbAttachments.RemoveButton = bnRemoveAttachment
+
         tcMain.SelectedIndex = s.Storage.GetInt("last selected muxer tab")
 
         dgvAudio.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
@@ -411,14 +500,19 @@ Public Class MuxerForm
         AudioBindingSource.DataSource = ObjectHelp.GetCopy(p.AudioTracks)
         dgvAudio.DataSource = AudioBindingSource
 
-        bnAdd.Image = ImageHelp.GetSymbolImage(Symbol.Add)
-        bnRemove.Image = ImageHelp.GetSymbolImage(Symbol.Remove)
-        bnPlay.Image = ImageHelp.GetSymbolImage(Symbol.Play)
-        bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
-        bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
-        bnEdit.Image = ImageHelp.GetSymbolImage(Symbol.Repair)
+        bnAddAudio.Image = ImageHelp.GetSymbolImage(Symbol.Add)
+        bnRemoveAudio.Image = ImageHelp.GetSymbolImage(Symbol.Remove)
+        bnPlayAudio.Image = ImageHelp.GetSymbolImage(Symbol.Play)
+        bnUpAudio.Image = ImageHelp.GetSymbolImage(Symbol.Up)
+        bnDownAudio.Image = ImageHelp.GetSymbolImage(Symbol.Down)
+        bnEditAudio.Image = ImageHelp.GetSymbolImage(Symbol.Repair)
 
-        For Each bn In {bnAdd, bnRemove, bnPlay, bnUp, bnDown, bnEdit}
+        bnAddAttachment.Image = ImageHelp.GetSymbolImage(Symbol.Add)
+        bnRemoveAttachment.Image = ImageHelp.GetSymbolImage(Symbol.Remove)
+
+        For Each bn In {bnAddAudio, bnRemoveAudio, bnPlayAudio, bnUpAudio,
+                        bnDownAudio, bnEditAudio, bnAddAttachment, bnRemoveAttachment}
+
             bn.TextImageRelation = TextImageRelation.Overlay
             bn.ImageAlign = ContentAlignment.MiddleLeft
             Dim pad = bn.Padding
@@ -439,7 +533,7 @@ Public Class MuxerForm
 
         If dgvAudio.RowCount > 0 Then dgvAudio.Rows(0).Selected = True
 
-        UpdateAudioControls()
+        UpdateControls()
         TipProvider.SetTip("Additional command line switches that may contain macros.", tpCommandLine)
     End Sub
 
@@ -455,6 +549,8 @@ Public Class MuxerForm
 
         If DialogResult = DialogResult.OK Then
             p.AudioTracks = DirectCast(AudioBindingSource.DataSource, List(Of AudioProfile))
+            Muxer.Attachments.Clear()
+            Muxer.Attachments.AddRange(lbAttachments.Items.OfType(Of AttachmentContainer).Select(Function(val) val.Filepath))
         End If
 
         MyBase.OnFormClosed(e)
@@ -471,8 +567,8 @@ Public Class MuxerForm
         g.ShowCommandLinePreview("Command Line", Muxer.GetCommandLine)
     End Sub
 
-    Private Sub bnAddAudio_Click(sender As Object, e As EventArgs) Handles bnAdd.Click
-        Using d As New System.Windows.Forms.OpenFileDialog
+    Private Sub bnAddAudio_Click(sender As Object, e As EventArgs) Handles bnAddAudio.Click
+        Using d As New OpenFileDialog
             d.SetFilter(FileTypes.Audio.Union(FileTypes.VideoAudio))
             d.Multiselect = True
             d.SetInitDir(p.TempDir)
@@ -517,33 +613,33 @@ Public Class MuxerForm
                         g.MainForm.UpdateSizeOrBitrate()
                         AudioBindingSource.Add(ap)
                         AudioBindingSource.Position = AudioBindingSource.Count - 1
-                        UpdateAudioControls()
+                        UpdateControls()
                     Next
                 End If
             End If
         End Using
     End Sub
 
-    Private Sub bnRemove_Click(sender As Object, e As EventArgs) Handles bnRemove.Click
+    Private Sub bnRemoveAudio_Click(sender As Object, e As EventArgs) Handles bnRemoveAudio.Click
         dgvAudio.RemoveSelection
-        UpdateAudioControls()
+        UpdateControls()
     End Sub
 
-    Private Sub bnUp_Click(sender As Object, e As EventArgs) Handles bnUp.Click
+    Private Sub bnUpAudio_Click(sender As Object, e As EventArgs) Handles bnUpAudio.Click
         dgvAudio.MoveSelectionUp
-        UpdateAudioControls()
+        UpdateControls()
     End Sub
 
-    Private Sub bnDown_Click(sender As Object, e As EventArgs) Handles bnDown.Click
+    Private Sub bnDownAudio_Click(sender As Object, e As EventArgs) Handles bnDownAudio.Click
         dgvAudio.MoveSelectionDown
-        UpdateAudioControls()
+        UpdateControls()
     End Sub
 
-    Private Sub bnPlay_Click(sender As Object, e As EventArgs) Handles bnPlay.Click
+    Private Sub bnPlayAudio_Click(sender As Object, e As EventArgs) Handles bnPlayAudio.Click
         g.Play(DirectCast(AudioBindingSource(dgvAudio.SelectedRows(0).Index), AudioProfile).File)
     End Sub
 
-    Private Sub bnEdit_Click(sender As Object, e As EventArgs) Handles bnEdit.Click
+    Private Sub bnEditAudio_Click(sender As Object, e As EventArgs) Handles bnEditAudio.Click
         Dim ap = DirectCast(AudioBindingSource(dgvAudio.SelectedRows(0).Index), AudioProfile)
         ap.EditProject()
         g.MainForm.UpdateAudioMenu()
@@ -551,16 +647,35 @@ Public Class MuxerForm
         AudioBindingSource.ResetBindings(False)
     End Sub
 
-    Sub UpdateAudioControls()
-        bnRemove.Enabled = dgvAudio.SelectedRows.Count > 0
-        bnPlay.Enabled = dgvAudio.SelectedRows.Count > 0
-        bnEdit.Enabled = dgvAudio.SelectedRows.Count > 0
-        bnUp.Enabled = dgvAudio.CanMoveUp
-        bnDown.Enabled = dgvAudio.CanMoveDown
+    Private Sub BnAddAttachment_Click(sender As Object, e As EventArgs) Handles bnAddAttachment.Click
+        Using d As New OpenFileDialog
+            d.SetFilter({"ttf", "txt", "jpg", "png"})
+            d.Multiselect = True
+            d.SetInitDir(p.TempDir)
+
+            If d.ShowDialog = DialogResult.OK Then
+                Dim items2 = lbAttachments.Items.OfType(Of AttachmentContainer).Select(Function(val) val.Filepath).ToList
+                items2.AddRange(d.FileNames)
+                items2.Sort()
+                lbAttachments.Items.Clear()
+                lbAttachments.Items.AddRange(items2.Select(Function(val) New AttachmentContainer With {.Filepath = val}).ToArray)
+                UpdateControls()
+            End If
+        End Using
+    End Sub
+
+    Sub UpdateControls()
+        bnRemoveAudio.Enabled = dgvAudio.SelectedRows.Count > 0
+        bnPlayAudio.Enabled = dgvAudio.SelectedRows.Count > 0
+        bnEditAudio.Enabled = dgvAudio.SelectedRows.Count > 0
+        bnUpAudio.Enabled = dgvAudio.CanMoveUp
+        bnDownAudio.Enabled = dgvAudio.CanMoveDown
+
+        lbAttachments.UpdateControls()
     End Sub
 
     Private Sub dgvAudio_MouseUp(sender As Object, e As MouseEventArgs) Handles dgvAudio.MouseUp
-        UpdateAudioControls()
+        UpdateControls()
     End Sub
 
     Protected Overrides Sub OnShown(e As EventArgs)
@@ -594,6 +709,8 @@ Public Class MuxerForm
             tb.Expandet = True
             tb.Property = NameOf(Muxer.TimestampsFile)
             tb.BrowseFile("txt, mkv|*.txt;*.mkv")
+        Else
+            tpAttachments.Enabled = False
         End If
 
         If TypeOf Muxer Is MkvMuxer Then
@@ -675,4 +792,13 @@ Public Class MuxerForm
         f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
         f.Show()
     End Sub
+
+    Public Class AttachmentContainer
+        Property Filepath As String
+
+        Public Overrides Function ToString() As String
+            If Filepath.Contains("_attachment_") Then Return Filepath.Right("_attachment_")
+            Return Path.GetFileName(Filepath)
+        End Function
+    End Class
 End Class

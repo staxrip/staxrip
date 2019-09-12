@@ -3233,7 +3233,7 @@ Public Class MainForm
 
     <Command("Shows a file browser to open a project file.")>
     Sub ShowFileBrowserToOpenProject()
-        Using d As New System.Windows.Forms.OpenFileDialog
+        Using d As New OpenFileDialog
             d.Filter = "Project Files|*.srip"
 
             If d.ShowDialog() = DialogResult.OK Then
@@ -4396,7 +4396,7 @@ Public Class MainForm
 
     <Command("Shows a dialog to add a hardcoded subtitle.")>
     Sub ShowHardcodedSubtitleDialog()
-        Using d As New System.Windows.Forms.OpenFileDialog
+        Using d As New OpenFileDialog
             d.SetFilter(FileTypes.SubtitleExludingContainers)
             d.SetInitDir(s.LastSourceDir)
 
@@ -5038,7 +5038,7 @@ Public Class MainForm
     End Sub
 
     Sub tbSource_DoubleClick() Handles tbSourceFile.DoubleClick
-        Using d As New System.Windows.Forms.OpenFileDialog
+        Using d As New OpenFileDialog
             d.SetFilter(FileTypes.Video)
             d.Multiselect = True
             d.SetInitDir(s.LastSourceDir)
@@ -5078,7 +5078,7 @@ Public Class MainForm
     End Function
 
     Sub tbAudioFile0_DoubleClick() Handles tbAudioFile0.DoubleClick
-        Using d As New System.Windows.Forms.OpenFileDialog
+        Using d As New OpenFileDialog
             Dim filter = FileTypes.Audio.ToList
             filter.Insert(0, "avs")
             d.SetFilter(filter)
@@ -5088,7 +5088,7 @@ Public Class MainForm
     End Sub
 
     Sub tbAudioFile1_DoubleClick() Handles tbAudioFile1.DoubleClick
-        Using d As New System.Windows.Forms.OpenFileDialog
+        Using d As New OpenFileDialog
             Dim filter = FileTypes.Audio.ToList
             filter.Insert(0, "avs")
             d.SetFilter(filter)
@@ -5549,7 +5549,7 @@ Public Class MainForm
 
     <Command("View the Metadata of any Selected File")>
     Private Sub MediaInfoShowMedia()
-        Using fd As New System.Windows.Forms.OpenFileDialog
+        Using fd As New OpenFileDialog
             fd.Title = "Select files"
             fd.Multiselect = False
             If fd.ShowDialog = DialogResult.OK Then
@@ -5580,7 +5580,7 @@ Public Class MainForm
 
     <Command("Adds the Remaining HDR10 Metadata to MKV file.")>
     Sub SaveMKVHDR()
-        Using fd As New System.Windows.Forms.OpenFileDialog
+        Using fd As New OpenFileDialog
             fd.Title = "Select file"
             fd.SetFilter(FileTypes.Video)
             fd.Multiselect = False
@@ -5600,7 +5600,7 @@ Public Class MainForm
 
     <Command("Generates a Short Gif Based on Input data.")>
     Sub SaveGif()
-        Using fd As New System.Windows.Forms.OpenFileDialog
+        Using fd As New OpenFileDialog
             fd.Title = "Select files"
             fd.Multiselect = True
             If fd.ShowDialog = DialogResult.OK Then
@@ -5701,7 +5701,7 @@ Public Class MainForm
 
     <Command("Generate Thumbnails Using MTN Engine")>
     Sub SaveMTN()
-        Using fd As New System.Windows.Forms.OpenFileDialog
+        Using fd As New OpenFileDialog
             fd.Title = "Select files"
             fd.Multiselect = True
 
@@ -5789,7 +5789,7 @@ Public Class MainForm
 
     <Command("Creates Very High Quality Animations in the Form of PNG.")>
     Sub SavePNG()
-        Using fd As New System.Windows.Forms.OpenFileDialog
+        Using fd As New OpenFileDialog
             fd.Title = "Select files"
             fd.Multiselect = True
 
@@ -5888,7 +5888,7 @@ Public Class MainForm
 
     <Command("Shows a dialog to generate thumbnails.")>
     Sub ShowBatchGenerateThumbnailsDialog()
-        Using fd As New System.Windows.Forms.OpenFileDialog
+        Using fd As New OpenFileDialog
             fd.Title = "Select files"
             fd.SetFilter(FileTypes.Video)
             fd.Multiselect = True

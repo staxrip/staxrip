@@ -359,7 +359,7 @@ Public MustInherit Class VideoEncoder
         xvid.Name = "XviD"
         xvid.Muxer = New ffmpegMuxer("AVI")
         xvid.QualityMode = True
-        xvid.CommandLines = "xvid_encraw -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
+        xvid.CommandLines = "xvid_encraw -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_par_x%:%target_par_y%"
         ret.Add(xvid)
 
         ret.Add(New NullEncoder())

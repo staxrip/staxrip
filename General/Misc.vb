@@ -911,6 +911,7 @@ Public Class Macro
         ret.Add(New Macro("sel_end", "Selection End", GetType(Integer), "End position of the first selecion in the preview."))
         ret.Add(New Macro("sel_start", "Selection Start", GetType(Integer), "Start position of the first selecion in the preview."))
         ret.Add(New Macro("settings_dir", "Settings Directory", GetType(String), "Path of the settings direcory."))
+        ret.Add(New Macro("source_dar", "Source Display Aspect Ratio", GetType(String), "Source display aspect ratio."))
         ret.Add(New Macro("source_dir", "Source Directory", GetType(String), "Directory of the source file."))
         ret.Add(New Macro("source_dir_name", "Source Directory Name", GetType(String), "Name of the source file directory."))
         ret.Add(New Macro("source_dir_parent", "Source Directory Parent", GetType(String), "Parent directory of the source file directory."))
@@ -922,18 +923,22 @@ Public Class Macro
         ret.Add(New Macro("source_frames", "Source Frames", GetType(Integer), "Length in frames of the source video."))
         ret.Add(New Macro("source_height", "Source Image Height", GetType(Integer), "Image height of the source video."))
         ret.Add(New Macro("source_name", "Source Filename Without Extension", GetType(String), "The name of the source file without file extension."))
+        ret.Add(New Macro("source_par_x", "Source Pixel Aspect Ratio X", GetType(String), "Source pixel/sample aspect ratio."))
+        ret.Add(New Macro("source_par_y", "Source Pixel Aspect Ratio Y", GetType(String), "Source pixel/sample aspect ratio."))
         ret.Add(New Macro("source_seconds", "Source Seconds", GetType(Integer), "Length in seconds of the source video."))
         ret.Add(New Macro("source_temp_file", "Source Temp File", GetType(String), "File located in the temp directory using the same name as the source file."))
         ret.Add(New Macro("source_width", "Source Image Width", GetType(Integer), "Image width of the source video."))
         ret.Add(New Macro("startup_dir", "Startup Directory", GetType(String), "Directory of the application."))
         ret.Add(New Macro("system_dir", "System Directory", GetType(String), "System directory."))
+        ret.Add(New Macro("target_dar", "Target Display Aspect Ratio", GetType(String), "Target display aspect ratio."))
         ret.Add(New Macro("target_dir", "Target Directory", GetType(String), "Directory of the target file."))
         ret.Add(New Macro("target_file", "Target File Path", GetType(String), "File path of the target file."))
         ret.Add(New Macro("target_framerate", "Target Framerate", GetType(Integer), "Frame rate of the target video."))
         ret.Add(New Macro("target_frames", "Target Frames", GetType(Integer), "Length in frames of the target video."))
         ret.Add(New Macro("target_height", "Target Image Height", GetType(Integer), "Image height of the target video."))
         ret.Add(New Macro("target_name", "Target Filename Without Extension", GetType(String), "Name of the target file without file extension."))
-        ret.Add(New Macro("target_sar", "Target Sample Aspect Ratio", GetType(String), "Target sample aspect ratio (also known as PAR (pixel aspect ratio))."))
+        ret.Add(New Macro("target_par_x", "Target Pixel Aspect Ratio X", GetType(String), "Target pixel/sample aspect ratio."))
+        ret.Add(New Macro("target_par_y", "Target Pixel Aspect Ratio Y", GetType(String), "Target pixel/sample aspect ratio."))
         ret.Add(New Macro("target_seconds", "Target Seconds", GetType(Integer), "Length in seconds of the target video."))
         ret.Add(New Macro("target_size", "Target Size", GetType(Integer), "Size of the target video in kilo bytes."))
         ret.Add(New Macro("target_temp_file", "Target Temp File", GetType(String), "File located in the temp directory using the same name as the target file."))
@@ -1132,9 +1137,39 @@ Public Class Macro
         If value.Contains("%target_name%") Then value = value.Replace("%target_name%", p.TargetFile.Base)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_sar%") Then
+        If value.Contains("%source_par_x%") Then
+            Dim par = Calc.GetSourcePAR
+            value = value.Replace("%source_par_x%", par.X.ToString)
+            If Not value.Contains("%") Then Return value
+        End If
+
+        If value.Contains("%source_par_y%") Then
+            Dim par = Calc.GetSourcePAR
+            value = value.Replace("%source_par_y%", par.Y.ToString)
+            If Not value.Contains("%") Then Return value
+        End If
+
+        If value.Contains("%target_par_x%") Then
             Dim par = Calc.GetTargetPAR
-            value = value.Replace("%target_sar%", par.X & ":" & par.Y)
+            value = value.Replace("%target_par_x%", par.X.ToString)
+            If Not value.Contains("%") Then Return value
+        End If
+
+        If value.Contains("%target_par_y%") Then
+            Dim par = Calc.GetTargetPAR
+            value = value.Replace("%target_par_y%", par.Y.ToString)
+            If Not value.Contains("%") Then Return value
+        End If
+
+        If value.Contains("%source_dar%") Then
+            Dim dar = Calc.GetSourceDAR
+            value = value.Replace("%source_dar%", dar.ToString("f9", CultureInfo.InvariantCulture))
+            If Not value.Contains("%") Then Return value
+        End If
+
+        If value.Contains("%target_dar%") Then
+            Dim dar = Calc.GetTargetDAR
+            value = value.Replace("%target_dar%", dar.ToString("f9", CultureInfo.InvariantCulture))
             If Not value.Contains("%") Then Return value
         End If
 

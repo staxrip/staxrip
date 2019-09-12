@@ -977,12 +977,17 @@ Public Class FilterParameters
                 add2({"LSMASHVideoSource",
                       "LWLibavVideoSource",
                       "LibavSMASHSource",
-                      "LWLibavSource"}, "prefer_hw", "0", "prefer_hw | 0")
+                      "LWLibavSource"}, "prefer_hw", "0", "prefer_hw | default software decoder")
 
                 add2({"LSMASHVideoSource",
                       "LWLibavVideoSource",
                       "LibavSMASHSource",
-                      "LWLibavSource"}, "prefer_hw", "1", "prefer_hw | 1")
+                      "LWLibavSource"}, "prefer_hw", "1", "prefer_hw | NVIDIA CUVID acceleration")
+
+                add2({"LSMASHVideoSource",
+                      "LWLibavVideoSource",
+                      "LibavSMASHSource",
+                      "LWLibavSource"}, "prefer_hw", "2", "prefer_hw | Intel Quick Sync acceleration")
 
                 add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV420P8", "format | YUV420P8")
                 add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", "YUV422P8", "format | YUV422P8")

@@ -1,3 +1,9 @@
+### 2.0.4.2 Beta
+
+- new macros added: %source_dar%, %target_dar%,
+  %source_par_x%, %source_par_y%, %target_par_x%, %target_par_y%
+- fix: menu support of L-Smash Works parameters prefer_hw was incomplete
+
 ### 2.0.4.1 Beta
 
 - nvenc switch --avhw updated (Patman86), --sub-source added

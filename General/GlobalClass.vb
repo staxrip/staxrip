@@ -953,9 +953,11 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Function EnableFilter(cat As String) As Boolean
+    Function EnableFilter(search As String) As Boolean
+        Dim searchLower = search.ToLower
+
         For Each i In p.Script.Filters
-            If i.Category = cat Then
+            If i.Script.Contains(search) OrElse i.Script.Contains(searchLower) Then
                 If Not i.Active Then
                     i.Active = True
                     g.MainForm.FiltersListView.Load()

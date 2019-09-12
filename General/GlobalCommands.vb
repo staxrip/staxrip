@@ -627,9 +627,9 @@ Switches
 
     'This method is called by pressing F11 in the main form.
     'It creates the release 7zip files on the desktop.
-    'If version.Revision is not 0 then it's a test build
+    'If version.Revision is not 0 then it's a beta build
     'and it's copied to dropbox and onedrive folders.
-    <Command("Test")>
+    <Command("Release")>
     Sub Release()
         Try
             Dim sourceDir = Application.StartupPath + "\"
@@ -641,7 +641,7 @@ Switches
 
             Dim version = Assembly.LoadFile(sourceDir + "StaxRip.exe").GetName.Version
             Dim releaseType = "-stable"
-            If version.Revision <> 0 Then releaseType = "-test"
+            If version.Revision <> 0 Then releaseType = "-beta"
 
             If Not Directory.Exists(sourceDir) Then Throw New Exception("Source directory not found." + BR2 + sourceDir)
 
@@ -685,7 +685,7 @@ Switches
                 If p.ExitCode > 0 Then Throw New Exception($"7zip exit code: {p.ExitCode}")
             End Using
 
-            If releaseType = "-test" Then
+            If releaseType = "-beta" Then
                 Dim outputDirectories = {
                     "C:\Users\frank\OneDrive\StaxRip\TestBuilds\",
                     "C:\Users\frank\Dropbox\public\StaxRip\Builds\"}

@@ -277,7 +277,7 @@ Public Class GlobalCommands
     Sub Test()
         Dim msg = ""
 
-        Dim nvExcept = "--help --version --check-device --avsw --input-analyze 
+        Dim nvExcept = "--help --version --check-device --input-analyze 
             --input-format --output-format --video-streamid --video-track --vpp-delogo
             --vpp-delogo-cb --vpp-delogo-cr --vpp-delogo-depth --vpp-delogo-pos
             --vpp-delogo-select --vpp-delogo-y --check-avversion --check-codecs --caption2ass
@@ -329,7 +329,7 @@ Public Class GlobalCommands
             --check-avversion --check-codecs --check-encoders --check-decoders --check-formats
             --check-protocols --chapter-no-trim --check-filters --device --input --output
             --raw --avs --vpy --vpy-mt --audio-source --audio-file --seek --format --caption2ass
-            --audio-copy --audio-copy --audio-codec --audio-bitrate --audio-ignore --avhw --check-profiles
+            --audio-copy --audio-copy --audio-codec --audio-bitrate --audio-ignore --check-profiles
             --audio-ignore --audio-samplerate --audio-resampler --audio-stream --audio-stream
             --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
             --avsync --mux-option --input-res --fps --dar --avqsv-analyze --benchmark

@@ -1,10 +1,13 @@
-###
+### 2.0.4.1 Beta
 
-- nvenc switch --avhw updated (Patman86)
-- progress bar support added for DGIndexNV
-- progress bar support added for ffmpeg audio encoding
-- l-smash parameters prefer_hw and format have menu support in the avs/vs code editor
-- update: l-smash-works 2019-09-10 HolyWu
+- update: nvenc 4.47
+- update: L-Smash Works 2019-09-10 HolyWu
+- update: MediaInfo 19.09
+- update mpv.net 5.4.1.1
+- nvenc switch --avhw updated (Patman86), --sub-source added
+- qsvenc switches added: --data-copy, --adapt-ltr
+- progress display support added for DGIndexNV, MP4Box and ffmpeg audio encoding
+- L-Smash Works parameters prefer_hw and format have menu support in the avs/vs code editor
 - a format exception was fixed, it was happening when the cut/trim feature was used
 - the container/muxer dialog has a new tab for MKV attachments
 

@@ -139,7 +139,7 @@ MediaInfo
 
 MediaInfo is used by StaxRip to read infos from media files.
 
-Used Version: 19.07
+Used Version: 19.09
 
 http://mediaarea.net/en/MediaInfo
 
@@ -189,7 +189,7 @@ mpv.net
 
 libmpv based media player.
 
-Used Version: 5.3
+Used Version: 5.4.1.1
 
 https://github.com/stax76/mpv.net
 
@@ -209,7 +209,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.46
+Used Version: 4.47
 
 http://github.com/rigaya/NVEnc
 
@@ -995,7 +995,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: LSMASHVideoSource, LSMASHAudioSource, LWLibavVideoSource, LWLibavAudioSource
 
-Used Version: r935+34 2019-08-29 MeteorRain
+Used Version: 2019-09-10 HolyWu
 
 http://avisynth.nl/index.php/LSMASHSource
 
@@ -1861,7 +1861,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: lsmas.LibavSMASHSource, lsmas.LWLibavSource
 
-Used Version: r935+34 2019-08-29 MeteorRain
+Used Version: 2019-09-10 HolyWu
 
 http://avisynth.nl/index.php/LSMASHSource
 

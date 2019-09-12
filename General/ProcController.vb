@@ -127,24 +127,40 @@ Public Class ProcController
 
             Exit Sub
         ElseIf Proc.Frames > 0 AndAlso value.Contains("frame=") AndAlso value.Contains("fps=") Then
-            Dim right = value.Left("fps=").Right("frame=")
+            Dim frameString = value.Left("fps=").Right("frame=")
 
-            If right.IsInt Then
-                Dim frame = right.ToInt
+            If frameString.IsInt Then
+                Dim frame = frameString.ToInt
 
                 If frame < Proc.Frames Then
-                    Dim val = CSng(frame / Proc.Frames * 100)
+                    Dim progressValue = CSng(frame / Proc.Frames * 100)
 
-                    If LastProgress <> val Then
+                    If LastProgress <> progressValue Then
                         ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
-                        ProcForm.Taskbar?.SetValue(val, 100)
-                        ProcForm.NotifyIcon.Text = val & "%"
-                        ProgressBar.Value = val
-                        LastProgress = val
+                        ProcForm.Taskbar?.SetValue(progressValue, 100)
+                        ProcForm.NotifyIcon.Text = progressValue & "%"
+                        ProgressBar.Value = progressValue
+                        LastProgress = progressValue
                     End If
 
                     Exit Sub
                 End If
+            End If
+        ElseIf value.Contains("/100)") Then
+            Dim percentString = value.Right("(").Left("/")
+
+            If percentString.IsInt Then
+                Dim percent = percentString.ToInt
+
+                If LastProgress <> percent Then
+                    ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                    ProcForm.Taskbar?.SetValue(percent, 100)
+                    ProcForm.NotifyIcon.Text = percent & "%"
+                    ProgressBar.Value = percent
+                    LastProgress = percent
+                End If
+
+                Exit Sub
             End If
         End If
 

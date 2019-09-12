@@ -170,18 +170,25 @@ Public Class VideoScript
                         code += BR + "ConvertBits(8)" + BR + "ConvertToRGB(matrix=""Rec601"")"
                     End If
                 Else
+                    code = code.Trim
+                    If Not code.Contains(".set_output(") Then code += BR + "clip.set_output()"
+                    Dim match = Regex.Match(code, "(\w+)\.set_output\(\)")
+                    Dim clipname = match.Groups(1).Value
+
                     Dim vsCode = "
-if clip.format.id == vs.RGB24:
+if clipname.format.id == vs.RGB24:
     _matrix_in_s = 'rgb'
 else:
-    if clip.height > 576:
+    if clipname.height > 576:
         _matrix_in_s = '709'
     else:
         _matrix_in_s = '470bg'
-clip = clip.resize.Bicubic(matrix_in_s = _matrix_in_s, format = vs.COMPATBGR32)
-clip.set_output()
+
+clipname = clipname.resize.Bicubic(matrix_in_s = _matrix_in_s, format = vs.COMPATBGR32)
+clipname.set_output()
 "
-                    code += BR + vsCode
+                    vsCode = vsCode.Replace("clipname", clipname)
+                    code = code.Replace(match.Value, vsCode).Trim
                 End If
             End If
 
@@ -231,9 +238,6 @@ clip.set_output()
 
     Shared Function ModifyVSScript(script As String) As String
         Dim code = ""
-        Dim VSPathScript = "ScriptPath = '" + Folder.Startup.Replace("\", "/") + "Apps\Plugins\VS\Scripts'".Replace("\", "/")
-        Dim ImportVSPath = "sys.path.append(os.path.abspath(ScriptPath))"
-
         ModifyVSScript(script, code)
 
         If Not script.Contains("import importlib.machinery") AndAlso code.Contains("SourceFileLoader") Then
@@ -241,8 +245,10 @@ clip.set_output()
         End If
 
         If Not script.Contains("import vapoursynth") Then
-            code = "import os" + BR + "import sys" + BR + VSPathScript + BR + ImportVSPath + BR +
-                "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR + code
+            code =
+                "import os, sys" + BR +
+                "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR +
+                "sys.path.append(r'" + Folder.Startup + "Apps\Plugins\VS\Scripts')" + BR + code
         End If
 
         Dim clip As String

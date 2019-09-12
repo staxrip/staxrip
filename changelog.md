@@ -6,6 +6,7 @@
 - L-Smash Works parameters prefer_hw and format have menu support in the avs/vs code editor
 - the container/muxer dialog has a new tab for MKV attachments
 
+- fix: vpy import did not work when the output variable isn't named 'clip'
 - fix: a format exception was fixed, it was happening when the cut/trim feature was used
 
 - update: nvenc 4.47

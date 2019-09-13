@@ -7,7 +7,10 @@
 - the filter list in the main dialog shows shorter filter names,
   for example 'BicubicResize' instead of 'Resize BicubicResize'
 - SubtitleEdit is now included
-- chapterEditor has been integrated
+- chapterEditor has been integrated into the main menu and
+  into the container/muxer dialog
+- a Tag File option has been added to the container/muxer dialog
+- container/muxer has a Tags tab with a grid view for tags
 
 ### 2.0.4.2 Beta
 

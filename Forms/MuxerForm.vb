@@ -46,6 +46,8 @@ Public Class MuxerForm
     Friend WithEvents bnAddAttachment As ButtonEx
     Friend WithEvents lbAttachments As ListBoxEx
     Friend WithEvents bnRemoveAttachment As ButtonEx
+    Friend WithEvents tpTags As TabPage
+    Friend WithEvents dgvTags As DataGridViewEx
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -74,6 +76,8 @@ Public Class MuxerForm
         Me.bnAddAttachment = New StaxRip.UI.ButtonEx()
         Me.bnRemoveAttachment = New StaxRip.UI.ButtonEx()
         Me.lbAttachments = New StaxRip.UI.ListBoxEx()
+        Me.tpTags = New System.Windows.Forms.TabPage()
+        Me.dgvTags = New StaxRip.UI.DataGridViewEx()
         Me.tpOptions = New System.Windows.Forms.TabPage()
         Me.SimpleUI = New StaxRip.SimpleUI()
         Me.tpCommandLine = New System.Windows.Forms.TabPage()
@@ -90,6 +94,8 @@ Public Class MuxerForm
         Me.tpAttachments.SuspendLayout()
         Me.tlpAttachments.SuspendLayout()
         Me.flpAttachments.SuspendLayout()
+        Me.tpTags.SuspendLayout()
+        CType(Me.dgvTags, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tpOptions.SuspendLayout()
         Me.tpCommandLine.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
@@ -106,14 +112,14 @@ Public Class MuxerForm
         Me.CmdlControl.Location = New System.Drawing.Point(0, 48)
         Me.CmdlControl.Margin = New System.Windows.Forms.Padding(0)
         Me.CmdlControl.Name = "CmdlControl"
-        Me.CmdlControl.Size = New System.Drawing.Size(1147, 577)
+        Me.CmdlControl.Size = New System.Drawing.Size(1458, 577)
         Me.CmdlControl.TabIndex = 0
         '
         'bnCommandLinePreview
         '
         Me.bnCommandLinePreview.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.bnCommandLinePreview.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.bnCommandLinePreview.Location = New System.Drawing.Point(365, 766)
+        Me.bnCommandLinePreview.Location = New System.Drawing.Point(676, 766)
         Me.bnCommandLinePreview.Margin = New System.Windows.Forms.Padding(8)
         Me.bnCommandLinePreview.Name = "bnCommandLinePreview"
         Me.bnCommandLinePreview.Size = New System.Drawing.Size(320, 70)
@@ -125,7 +131,7 @@ Public Class MuxerForm
         '
         Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(967, 766)
+        Me.bnCancel.Location = New System.Drawing.Point(1278, 766)
         Me.bnCancel.Margin = New System.Windows.Forms.Padding(8)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
@@ -134,7 +140,7 @@ Public Class MuxerForm
         '
         Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(701, 766)
+        Me.bnOK.Location = New System.Drawing.Point(1012, 766)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(8)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
@@ -144,6 +150,7 @@ Public Class MuxerForm
         Me.tcMain.Controls.Add(Me.tpSubtitles)
         Me.tcMain.Controls.Add(Me.tpAudio)
         Me.tcMain.Controls.Add(Me.tpAttachments)
+        Me.tcMain.Controls.Add(Me.tpTags)
         Me.tcMain.Controls.Add(Me.tpOptions)
         Me.tcMain.Controls.Add(Me.tpCommandLine)
         Me.tcMain.Dock = System.Windows.Forms.DockStyle.Fill
@@ -151,7 +158,7 @@ Public Class MuxerForm
         Me.tcMain.Margin = New System.Windows.Forms.Padding(0)
         Me.tcMain.Name = "tcMain"
         Me.tcMain.SelectedIndex = 0
-        Me.tcMain.Size = New System.Drawing.Size(1201, 734)
+        Me.tcMain.Size = New System.Drawing.Size(1512, 734)
         Me.tcMain.TabIndex = 5
         '
         'tpSubtitles
@@ -290,7 +297,7 @@ Public Class MuxerForm
         Me.tpAttachments.Padding = New System.Windows.Forms.Padding(3)
         Me.tpAttachments.Size = New System.Drawing.Size(1177, 653)
         Me.tpAttachments.TabIndex = 5
-        Me.tpAttachments.Text = "Attachments"
+        Me.tpAttachments.Text = "  Attachments  "
         Me.tpAttachments.UseVisualStyleBackColor = True
         '
         'tlpAttachments
@@ -346,6 +353,28 @@ Public Class MuxerForm
         Me.lbAttachments.Size = New System.Drawing.Size(868, 641)
         Me.lbAttachments.TabIndex = 1
         '
+        'tpTags
+        '
+        Me.tpTags.Controls.Add(Me.dgvTags)
+        Me.tpTags.Location = New System.Drawing.Point(12, 69)
+        Me.tpTags.Name = "tpTags"
+        Me.tpTags.Padding = New System.Windows.Forms.Padding(3)
+        Me.tpTags.Size = New System.Drawing.Size(1177, 653)
+        Me.tpTags.TabIndex = 6
+        Me.tpTags.Text = "  Tags"
+        Me.tpTags.UseVisualStyleBackColor = True
+        '
+        'dgvTags
+        '
+        Me.dgvTags.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvTags.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgvTags.Location = New System.Drawing.Point(3, 3)
+        Me.dgvTags.Name = "dgvTags"
+        Me.dgvTags.RowHeadersWidth = 123
+        Me.dgvTags.RowTemplate.Height = 46
+        Me.dgvTags.Size = New System.Drawing.Size(1171, 647)
+        Me.dgvTags.TabIndex = 0
+        '
         'tpOptions
         '
         Me.tpOptions.Controls.Add(Me.SimpleUI)
@@ -376,9 +405,9 @@ Public Class MuxerForm
         Me.tpCommandLine.Margin = New System.Windows.Forms.Padding(5)
         Me.tpCommandLine.Name = "tpCommandLine"
         Me.tpCommandLine.Padding = New System.Windows.Forms.Padding(15, 14, 15, 14)
-        Me.tpCommandLine.Size = New System.Drawing.Size(1177, 653)
+        Me.tpCommandLine.Size = New System.Drawing.Size(1488, 653)
         Me.tpCommandLine.TabIndex = 1
-        Me.tpCommandLine.Text = " Command Line "
+        Me.tpCommandLine.Text = "  Command Line  "
         Me.tpCommandLine.UseVisualStyleBackColor = True
         '
         'TableLayoutPanel1
@@ -395,7 +424,7 @@ Public Class MuxerForm
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1147, 625)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1458, 625)
         Me.TableLayoutPanel1.TabIndex = 2
         '
         'Label1
@@ -425,7 +454,7 @@ Public Class MuxerForm
         Me.tlpMain.RowCount = 2
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1233, 852)
+        Me.tlpMain.Size = New System.Drawing.Size(1544, 852)
         Me.tlpMain.TabIndex = 8
         '
         'pnTab
@@ -436,7 +465,7 @@ Public Class MuxerForm
         Me.pnTab.Location = New System.Drawing.Point(16, 16)
         Me.pnTab.Margin = New System.Windows.Forms.Padding(8)
         Me.pnTab.Name = "pnTab"
-        Me.pnTab.Size = New System.Drawing.Size(1201, 734)
+        Me.pnTab.Size = New System.Drawing.Size(1512, 734)
         Me.pnTab.TabIndex = 8
         '
         'MuxerForm
@@ -445,7 +474,7 @@ Public Class MuxerForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1233, 852)
+        Me.ClientSize = New System.Drawing.Size(1544, 852)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
@@ -462,6 +491,8 @@ Public Class MuxerForm
         Me.tlpAttachments.ResumeLayout(False)
         Me.tlpAttachments.PerformLayout()
         Me.flpAttachments.ResumeLayout(False)
+        Me.tpTags.ResumeLayout(False)
+        CType(Me.dgvTags, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tpOptions.ResumeLayout(False)
         Me.tpCommandLine.ResumeLayout(False)
         Me.TableLayoutPanel1.ResumeLayout(False)
@@ -499,6 +530,12 @@ Public Class MuxerForm
         dgvAudio.AutoGenerateColumns = False
         AudioBindingSource.DataSource = ObjectHelp.GetCopy(p.AudioTracks)
         dgvAudio.DataSource = AudioBindingSource
+
+        dgvTags.DataSource = muxer.Tags
+        dgvTags.AllowUserToAddRows = True
+        dgvTags.AllowUserToDeleteRows = True
+        dgvTags.Columns(0).Width = FontHeight * 10
+        dgvTags.Columns(1).Width = FontHeight * 20
 
         bnAddAudio.Image = ImageHelp.GetSymbolImage(Symbol.Add)
         bnRemoveAudio.Image = ImageHelp.GetSymbolImage(Symbol.Remove)
@@ -562,7 +599,7 @@ Public Class MuxerForm
         Muxer.AdditionalSwitches = CmdlControl.tb.Text.ReplaceUnicode
     End Sub
 
-    Private Sub buCmdlPreview_Click() Handles bnCommandLinePreview.Click
+    Private Sub bnCmdlPreview_Click() Handles bnCommandLinePreview.Click
         SetValues()
         g.ShowCommandLinePreview("Command Line", Muxer.GetCommandLine)
     End Sub
@@ -689,62 +726,61 @@ Public Class MuxerForm
         page.SuspendLayout()
 
         Dim tb = UI.AddTextButton()
-        tb.Text = "Cover:"
+        tb.Text = "Cover File"
         tb.Expandet = True
         tb.Property = NameOf(Muxer.CoverFile)
         tb.BrowseFile("jpg, png|*.jpg;*.png")
 
+        Dim mb As SimpleUI.TextMenuBlock
+
         If Not TypeOf Muxer Is WebMMuxer Then
-            Dim mb = UI.AddTextMenu()
-            mb.Text = "Chapters"
+            mb = UI.AddTextMenu()
+            mb.Text = "Chapter File"
             mb.Expandet = True
             mb.Help = "Chapter file to be muxed."
             mb.Property = NameOf(Muxer.ChapterFile)
             mb.AddMenu("Browse File...", Function() g.BrowseFile("txt, xml|*.txt;*.xml"))
-            mb.AddMenu("Edit with chapterEditor...", Sub() Process.Start(Package.chapterEditor.Path, Muxer.ChapterFile))
-        End If
-
-        If TypeOf Muxer Is MkvMuxer Then
-            tb = UI.AddTextButton()
-            tb.Text = "Timestamps:"
-            tb.Help = "txt or mkv file"
-            tb.Expandet = True
-            tb.Property = NameOf(Muxer.TimestampsFile)
-            tb.BrowseFile("txt, mkv|*.txt;*.mkv")
-        Else
-            tpAttachments.Enabled = False
+            mb.AddMenu("Edit with chapterEditor...", Sub() Process.Start(Package.chapterEditor.Path, Muxer.ChapterFile.Escape))
         End If
 
         If TypeOf Muxer Is MkvMuxer Then
             CmdlControl.Presets = s.CmdlPresetsMKV
 
-            Dim tags = UI.AddTextButton()
-            tags.Text = "Tags"
-            tags.Help = "Tags added to the MKV file." + BR2 + "Syntax: name1: value1; name2: value2"
-            tags.Expandet = True
-            tags.Property = NameOf(Muxer.Tags)
-            tags.MacroDialog()
+            mb = UI.AddTextMenu()
+            mb.Text = "Tag File"
+            mb.Expandet = True
+            mb.Help = "Tag file to be muxed."
+            mb.Property = NameOf(Muxer.TagFile)
+            mb.AddMenu("Browse File...", Function() g.BrowseFile("xml|*.xml"))
+            mb.AddMenu("Edit File...", Sub() Process.Start(g.GetAppPathForExtension("xml", "txt"), Muxer.TagFile.Escape))
 
             tb = UI.AddTextButton()
-            tb.Text = "Title:"
+            tb.Text = "Title"
             tb.Expandet = True
             tb.Property = NameOf(MkvMuxer.Title)
             tb.MacroDialog()
 
             Dim t = UI.AddText()
-            t.Text = "Video Track Name:"
+            t.Text = "Video Track Name"
             t.Help = "Optional name of the video stream that may contain macro."
             t.Expandet = True
             t.Property = NameOf(MkvMuxer.VideoTrackName)
 
+            tb = UI.AddTextButton()
+            tb.Text = "Timestamps File"
+            tb.Help = "txt or mkv file"
+            tb.Expandet = True
+            tb.Property = NameOf(Muxer.TimestampsFile)
+            tb.BrowseFile("txt, mkv|*.txt;*.mkv")
+
             Dim tm = UI.AddTextMenu()
-            tm.Text = "Display Aspect Ratio:"
+            tm.Text = "Display Aspect Ratio"
             tm.Help = "Display Aspect Ratio to be applied by mkvmerge. By default and best practice the aspect ratio should be signalled to the encoder and not to the muxer, use this setting at your own risk."
             tm.Property = NameOf(MkvMuxer.DAR)
             tm.AddMenu(s.DarMenu)
 
             Dim ml = UI.AddMenu(Of Language)()
-            ml.Text = "Video Track Language:"
+            ml.Text = "Video Track Language"
             ml.Help = "Optional language of the video stream."
             ml.Property = NameOf(MkvMuxer.VideoTrackLanguage)
 
@@ -761,6 +797,8 @@ Public Class MuxerForm
                          End Sub
 
         ElseIf TypeOf Muxer Is MP4Muxer Then
+            tpAttachments.Enabled = False
+
             Dim tags = UI.AddTextButton()
             tags.Text = "Tags"
             Task.Run(Sub()

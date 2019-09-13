@@ -501,7 +501,7 @@ Advanced crop and resize AviSynth script.
 
 Filters: CropResize
 
-Used Version: 2019-09-10
+Used Version: 2019-09-09
 
 https://forum.videohelp.com/threads/393752-CropResize-Cropping-resizing-script
 

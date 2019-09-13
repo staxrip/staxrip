@@ -3,6 +3,8 @@ Imports System.Text.RegularExpressions
 Imports System.Globalization
 Imports System.Xml.Linq
 Imports vb6 = Microsoft.VisualBasic
+Imports System.ComponentModel
+Imports System.Runtime.Serialization
 
 <Serializable()>
 Public MustInherit Class Muxer
@@ -10,8 +12,8 @@ Public MustInherit Class Muxer
 
     Property CoverFile As String = ""
     Property ChapterFile As String = ""
+    Property TagFile As String = ""
     Property TimestampsFile As String = ""
-    Property Tags As String = ""
 
     MustOverride Sub Mux()
 
@@ -24,6 +26,18 @@ Public MustInherit Class Muxer
         MyBase.New(name)
         CanEditValue = True
     End Sub
+
+    Private TagsValue As BindingList(Of StringPair)
+
+    Property Tags As BindingList(Of StringPair)
+        Get
+            If TagsValue Is Nothing Then TagsValue = New BindingList(Of StringPair)
+            Return TagsValue
+        End Get
+        Set(value As BindingList(Of StringPair))
+            TagsValue = value
+        End Set
+    End Property
 
     ReadOnly Property OutputExtFull As String
         Get
@@ -77,9 +91,15 @@ Public MustInherit Class Muxer
         End Set
     End Property
 
+    <OnDeserialized>
+    Sub OnDeserialized(context As StreamingContext)
+        If TagFile Is Nothing Then TagFile = ""
+    End Sub
+
     Overrides Sub Clean()
         Subtitles = Nothing
         ChapterFile = Nothing
+        TagFile = Nothing
         TimestampsFile = Nothing
         Tags = Nothing
         Attachments = Nothing
@@ -207,7 +227,6 @@ Public Class MP4Muxer
 
     Sub New(name As String)
         MyBase.New(name)
-        Tags = "encoder=""StaxRip %version%"""
     End Sub
 
     Overrides ReadOnly Property OutputExt As String
@@ -269,7 +288,8 @@ Public Class MP4Muxer
 
         Dim tagList As New List(Of String)
         If CoverFile <> "" AndAlso File.Exists(CoverFile) Then tagList.Add("cover=" + CoverFile.Escape)
-        If Tags <> "" Then tagList.Add(Macro.Expand(Tags))
+        'TODO:
+        'If Tags <> "" Then tagList.Add(Macro.Expand(Tags))
         If tagList.Count > 0 Then args.Append(" -itags " + String.Join(":", tagList))
         args.Append(" -new " + p.TargetFile.Escape)
 
@@ -449,7 +469,6 @@ Public Class MkvMuxer
 
     Sub New()
         Name = "MKV (mkvmerge)"
-        Tags = "Writing frontend: StaxRip v%version%"
     End Sub
 
     Sub New(name As String)
@@ -484,18 +503,39 @@ Public Class MkvMuxer
     End Sub
 
     Overrides Sub Mux()
+        WriteTagfile()
+
         Using proc As New Proc
             proc.Header = "Muxing"
             proc.SkipStrings = {"Progress: ", "+-> Pre-parsing"}
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.mkvmerge
-            proc.Arguments = GetArgs(True)
+            proc.Arguments = GetArgs()
             proc.AllowedExitCodes = {0, 1}
             proc.Start()
         End Using
 
         If Not g.FileExists(p.TargetFile) Then Log.Write("Error MKV output file is missing", p.TargetFile)
         Log.WriteLine(MediaInfo.GetSummary(p.TargetFile))
+    End Sub
+
+    Sub WriteTagfile()
+        If Tags.Count = 0 Then Exit Sub
+
+        Dim xml = <Tags>
+                      <%= From tag In Tags Select
+                        <Tag>
+                            <Simple>
+                                <Name><%= Macro.Expand(tag.Name) %></Name>
+                                <String><%= Macro.Expand(tag.Value) %></String>
+                            </Simple>
+                        </Tag>
+                      %>
+                  </Tags>
+
+        Dim filepath = p.TempDir + p.TargetFile.Base + "_tags.xml"
+        xml.Save(filepath)
+        TagFile = filepath
     End Sub
 
     Overrides Function GetCommandLine() As String
@@ -506,7 +546,7 @@ Public Class MkvMuxer
         Return CommandLineHelp.ConvertText(val)
     End Function
 
-    Private Function GetArgs(Optional writeTag As Boolean = False) As String
+    Private Function GetArgs() As String
         Dim args = "-o " + p.TargetFile.Escape
 
         Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify " + p.VideoEncoder.OutputPath.Escape)
@@ -571,7 +611,7 @@ Public Class MkvMuxer
                 args += " " + subtitle.Path.Escape
             End If
         Next
-        
+
         If Not TypeOf Me Is WebMMuxer AndAlso File.Exists(ChapterFile) Then
             If p.Ranges.Count > 0 Then
                 Dim xDoc = XDocument.Load(ChapterFile)
@@ -612,28 +652,7 @@ Public Class MkvMuxer
             args += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")
         End If
 
-        Try
-            Dim tags = Me.Tags.SplitNoEmptyAndWhiteSpace(";")
-
-            If writeTag Then
-                Dim xml = <Tags>
-                              <%= From tag In tags Select
-                                <Tag>
-                                    <Simple>
-                                        <Name><%= Macro.Expand(tag.Left(":").Trim) %></Name>
-                                        <String><%= Macro.Expand(tag.Right(":").Trim) %></String>
-                                    </Simple>
-                                </Tag>
-                              %>
-                          </Tags>
-
-                Dim tagsPath = p.TempDir + p.TargetFile.Base + "_tags.xml"
-                xml.Save(tagsPath)
-                args += " --global-tags " + tagsPath.Escape
-            End If
-        Catch ex As Exception
-            Throw New ErrorAbortException("Error writing tags", ex.Message)
-        End Try
+        If File.Exists(TagFile) Then args += " --global-tags " + TagFile.Escape
 
         args += " --ui-language en"
         If AdditionalSwitches <> "" Then args += " " + Macro.Expand(AdditionalSwitches)

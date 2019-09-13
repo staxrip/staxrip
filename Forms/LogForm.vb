@@ -22,14 +22,14 @@ Public Class LogForm
             lb.Items.Add(val)
         Next
 
-        lb.Items.Add("Open with " + g.GetTextEditor.Base)
+        lb.Items.Add("Open with " + g.GetTextEditorPath.Base)
     End Sub
 
     Private Sub lb_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lb.SelectedIndexChanged
         If lb.SelectedItem Is Nothing Then Exit Sub
 
         If lb.SelectedItem.ToString.StartsWith("Open with") Then
-            g.StartProcess(g.GetTextEditor, p.Log.GetPath.Escape)
+            g.StartProcess(g.GetTextEditorPath, p.Log.GetPath.Escape)
         Else
             rtb.Find(lb.SelectedItem.ToString)
             rtb.ScrollToCaret()

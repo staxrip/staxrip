@@ -157,7 +157,7 @@ Public Class GlobalClass
         Catch ex As ErrorAbortException
             Log.Save()
             g.ShowException(ex, Nothing, 50)
-            g.StartProcess(g.GetTextEditor(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
+            g.StartProcess(g.GetTextEditorPath(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
             ProcController.Aborted = False
         End Try
     End Sub
@@ -461,27 +461,28 @@ Public Class GlobalClass
         Return CInt((s.LastPosition / fr) * 1000)
     End Function
 
-    Function GetTextEditor() As String
-        Dim ret = GetAssociatedApplication(".txt")
+    Function GetTextEditorPath() As String
+        Dim ret = GetAppPathForExtension("txt")
         If ret <> "" Then Return ret
         Return "notepad.exe"
     End Function
 
-    Function GetAssociatedApplication(ext As String) As String
-        Dim c = 0UI
+    Function GetAppPathForExtension(ParamArray extensions As String()) As String
+        For Each extension In extensions
+            If Not extension.StartsWith(".") Then extension = "." + extension
+            Dim c = 0UI
 
-        'ASSOCF_VERIFY, ASSOCSTR_EXECUTABLE
-        If 1 = Native.AssocQueryString(&H40, 2, ext, Nothing, Nothing, c) Then
-            If c > 0 Then
-                Dim sb As New StringBuilder(CInt(c))
+            If Native.AssocQueryString(&H40, 2, extension, Nothing, Nothing, c) = 1 Then
+                If c > 0 Then
+                    Dim sb As New StringBuilder(CInt(c))
 
-                'ASSOCF_VERIFY, ASSOCSTR_EXECUTABLE
-                If 0 = Native.AssocQueryString(&H40, 2, ext, Nothing, sb, c) Then
-                    Dim ret = sb.ToString
-                    If File.Exists(ret) Then Return ret
+                    If 0 = Native.AssocQueryString(&H40, 2, extension, Nothing, sb, c) Then
+                        Dim ret = sb.ToString
+                        If File.Exists(ret) Then Return ret
+                    End If
                 End If
             End If
-        End If
+        Next
     End Function
 
     Sub SaveSettings()
@@ -915,7 +916,7 @@ Public Class GlobalClass
         Log.Save(p)
         Dim fp = Log.GetPath
         g.OpenDirAndSelectFile(fp, g.MainForm.Handle)
-        g.StartProcess(g.GetTextEditor(), """" + fp + """")
+        g.StartProcess(g.GetTextEditorPath(), """" + fp + """")
         g.StartProcess("https://github.com/staxrip/staxrip/issues")
     End Sub
 

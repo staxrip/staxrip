@@ -1257,7 +1257,7 @@ Public Class Macro
         If value.Contains("%player%") Then value = value.Replace("%player%", Package.mpvnet.Path)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%text_editor%") Then value = value.Replace("%text_editor%", g.GetTextEditor)
+        If value.Contains("%text_editor%") Then value = value.Replace("%text_editor%", g.GetTextEditorPath)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%processing%") Then value = value.Replace("%processing%", g.IsProcessing.ToString)

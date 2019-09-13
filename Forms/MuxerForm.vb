@@ -695,16 +695,18 @@ Public Class MuxerForm
         tb.BrowseFile("jpg, png|*.jpg;*.png")
 
         If Not TypeOf Muxer Is WebMMuxer Then
-            tb = UI.AddTextButton()
-            tb.Text = "Chapters:"
-            tb.Expandet = True
-            tb.Property = NameOf(Muxer.ChapterFile)
-            tb.BrowseFile("txt, xml|*.txt;*.xml")
+            Dim mb = UI.AddTextMenu()
+            mb.Text = "Chapters"
+            mb.Expandet = True
+            mb.Help = "Chapter file to be muxed."
+            mb.Property = NameOf(Muxer.ChapterFile)
+            mb.AddMenu("Browse File...", Function() g.BrowseFile("txt, xml|*.txt;*.xml"))
+            mb.AddMenu("Edit with chapterEditor...", Sub() Process.Start(Package.chapterEditor.Path, Muxer.ChapterFile))
         End If
 
         If TypeOf Muxer Is MkvMuxer Then
             tb = UI.AddTextButton()
-            tb.Text = "timestamps:"
+            tb.Text = "Timestamps:"
             tb.Help = "txt or mkv file"
             tb.Expandet = True
             tb.Property = NameOf(Muxer.TimestampsFile)

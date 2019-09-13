@@ -44,6 +44,16 @@ Used Version: 1.0.2
 http://forum.doom9.org/showthread.php?p=1613303
 
 
+chapterEditor
+~~~~~~~~~~~~~
+
+ChapterEditor is a chapter editor and menu editor for OGG, XML, TTXT, m.AVCHD, m.editions-mkv, Matroska Menu.
+
+Used Version: 1.18
+
+https://forum.doom9.org/showthread.php?t=169984
+
+
 DGIndex
 ~~~~~~~
 
@@ -109,7 +119,7 @@ ffmpeg
 
 Versatile audio video converter.
 
-Used Version: 4.2 Wolfberry
+Used Version: 4.2.1 Wolfberry
 
 http://ffmpeg.org
 
@@ -179,7 +189,7 @@ MP4Box
 
 MP4Box is a MP4 muxing and demuxing command line app.
 
-Used Version: v0.8.0-rev41-gb78fe5fbe Barough
+Used Version: 0.8.0-rev69-5fe3ec1 Wolfberry
 
 http://gpac.wp.mines-telecom.fr/
 
@@ -269,7 +279,7 @@ SubtitleEdit
 
 Subtitle Edit is a open source subtitle editor.
 
-Used Version: 
+Used Version: 35.10
 
 http://www.nikse.dk/SubtitleEdit
 
@@ -482,6 +492,18 @@ Filters: cnr2
 Used Version: 2.6.1
 
 http://avisynth.nl/index.php/Cnr2
+
+
+CropResize
+~~~~~~~~~~
+
+Advanced crop and resize AviSynth script.
+
+Filters: CropResize
+
+Used Version: 2019-09-10
+
+https://forum.videohelp.com/threads/393752-CropResize-Cropping-resizing-script
 
 
 DAA3Mod

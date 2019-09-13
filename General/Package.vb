@@ -1,6 +1,5 @@
 Imports System.Text.RegularExpressions
 Imports Microsoft.Win32
-Imports StaxRip
 
 Public Class Package
     Implements IComparable(Of Package)
@@ -8,13 +7,14 @@ Public Class Package
     Property Description As String
     Property DirPath As String
     Property DownloadURL As String
+    Property Filename As String
     Property FileNotFoundMessage As String
     Property HelpFile As String
     Property HelpURL As String
     Property HelpURLFunc As Func(Of ScriptEngine, String)
     Property HintDirFunc As Func(Of String)
-    Property IgnoreVersion As Boolean
     Property IgnoreIfMissing As Boolean
+    Property IgnoreVersion As Boolean
     Property IsRequiredFunc As Func(Of Boolean)
     Property LaunchName As String
     Property Name As String
@@ -24,7 +24,6 @@ Public Class Package
     Property Version As String
     Property VersionDate As Date
     Property WebURL As String
-    Property Filename As String
 
     Overridable Property FixedDir As String
 
@@ -63,6 +62,14 @@ Public Class Package
 
     Shared Property dsmux As Package = Add(New dsmuxPackage)
 
+    Shared Property Haali As Package = Add(New HaaliSplitter)
+
+    Shared Property NicAudio As Package = Add(New NicAudioPackage)
+
+    Shared Property qaac As Package = Add(New qaacPackage)
+
+    Shared Property UnDot As Package = Add(New UnDotPackage)
+
     Shared Property eac3to As Package = Add(New Package With {
         .Name = "eac3to",
         .Filename = "eac3to.exe",
@@ -78,8 +85,6 @@ Public Class Package
         .WebURL = "http://ffmpeg.org",
         .HelpURL = "http://www.ffmpeg.org/ffmpeg-all.html",
         .Description = "Versatile audio video converter."})
-
-    Shared Property Haali As Package = Add(New HaaliSplitter)
 
     Shared Property MediaInfo As Package = Add(New Package With {
         .Name = "MediaInfo",
@@ -105,11 +110,13 @@ Public Class Package
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth,
         .SetupFilename = "Installers\AviSynthPlus-MT-r2772.exe"})
 
-    Shared Property NicAudio As Package = Add(New NicAudioPackage)
-
-    Shared Property qaac As Package = Add(New qaacPackage)
-
-    Shared Property UnDot As Package = Add(New UnDotPackage)
+    Shared Property chapterEditor As Package = Add(New Package With {
+        .Name = "chapterEditor",
+        .DirPath = "Support\chapterEditor",
+        .Filename = "chapterEditor.exe",
+        .LaunchName = "chapterEditor.exe",
+        .Description = "ChapterEditor is a chapter editor and menu editor for OGG, XML, TTXT, m.AVCHD, m.editions-mkv, Matroska Menu.",
+        .WebURL = "https://forum.doom9.org/showthread.php?t=169984"})
 
     Shared Property xvid_encraw As Package = Add(New Package With {
         .Name = "xvid_encraw",
@@ -148,13 +155,13 @@ Public Class Package
         .Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.",
         .HelpFile = "doc\AVSMeter.html",
         .WebURL = "http://forum.doom9.org/showthread.php?t=174797",
-        .StartActionValue = Sub()
-                                If p.SourceFile = "" Then
-                                    g.DefaultCommands.ExecuteCommandLine(Package.AVSMeter.Path.Escape + " avsinfo" + BR + "pause", False, False, True)
-                                Else
-                                    g.DefaultCommands.ExecuteCommandLine(Package.AVSMeter.Path.Escape + " " + p.Script.Path.Escape + BR + "pause", False, False, True)
-                                End If
-                            End Sub})
+        .StartAction = Sub()
+                           If p.SourceFile = "" Then
+                               g.DefaultCommands.ExecuteCommandLine(Package.AVSMeter.Path.Escape + " avsinfo" + BR + "pause", False, False, True)
+                           Else
+                               g.DefaultCommands.ExecuteCommandLine(Package.AVSMeter.Path.Escape + " " + p.Script.Path.Escape + BR + "pause", False, False, True)
+                           End If
+                       End Sub})
 
     Shared Property vspipe As Package = Add(New Package With {
         .Name = "vspipe",
@@ -163,13 +170,13 @@ Public Class Package
         .WebURL = "http://www.vapoursynth.com/doc/vspipe.html",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = AddressOf Package.GetVapourSynthHintDir,
-        .StartActionValue = Sub()
-                                If p.SourceFile = "" Then
-                                    g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + BR + "pause", False, False, True)
-                                Else
-                                    g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + " --info " + p.Script.Path.Escape + " -" + BR + "pause", False, False, True)
-                                End If
-                            End Sub})
+        .StartAction = Sub()
+                           If p.SourceFile = "" Then
+                               g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + BR + "pause", False, False, True)
+                           Else
+                               g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + " --info " + p.Script.Path.Escape + " -" + BR + "pause", False, False, True)
+                           End If
+                       End Sub})
 
     Shared Property VapourSynth As Package = Add(New Package With {
         .Name = "VapourSynth",
@@ -219,11 +226,9 @@ Public Class Package
         .Filename = "SubtitleEdit.exe",
         .LaunchName = "SubtitleEdit.exe",
         .IgnoreIfMissing = True,
-        .HintDirFunc = Function() "C:\Program Files\Subtitle Edit\",
+        .DirPath = "Support\SubtitleEdit",
         .WebURL = "http://www.nikse.dk/SubtitleEdit",
         .HelpURL = "http://www.nikse.dk/SubtitleEdit/Help",
-        .IsRequired = False,
-        .IgnoreVersion = True,
         .Description = "Subtitle Edit is a open source subtitle editor."})
 
     Shared Property mpvnet As Package = Add(New Package With {
@@ -1776,11 +1781,14 @@ Public Class Package
 
     Private StartActionValue As Action
 
-    Overridable ReadOnly Property StartAction As Action
+    Overridable Property StartAction As Action
         Get
             If LaunchName <> "" Then Return Sub() g.StartProcess(GetDir() + LaunchName)
-            If Not StartActionValue Is Nothing Then Return StartActionValue
+            Return StartActionValue
         End Get
+        Set(value As Action)
+            StartActionValue = value
+        End Set
     End Property
 
     Overridable ReadOnly Property LaunchTitle As String

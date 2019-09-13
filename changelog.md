@@ -1,9 +1,13 @@
+###
+
 - new AviSynth script CropResize added
 - update: x265 3.1+15-a092e82 Wolfberry
 - update: MP4Box 0.8.0-rev69-5fe3ec1 Wolfberry
 - update: ffmpeg 4.2.1 Wolfberry
 - the filter list in the main dialog shows shorter filter names,
   for example 'BicubicResize' instead of 'Resize BicubicResize'
+- SubtitleEdit is now included
+- chapterEditor has been integrated
 
 ### 2.0.4.2 Beta
 

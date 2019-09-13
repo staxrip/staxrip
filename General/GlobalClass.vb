@@ -968,15 +968,10 @@ Public Class GlobalClass
         Next
     End Function
 
-    Function BrowseFile(filter As String, Optional defaultFilepath As String = Nothing) As String
+    Function BrowseFile(filter As String) As String
         Using d As New OpenFileDialog
             d.Filter = filter
-
-            If File.Exists(defaultFilepath) Then
-                d.InitialDirectory = FilePath.GetDir(defaultFilepath)
-                d.FileName = FilePath.GetName(defaultFilepath)
-            End If
-
+            d.SetInitDir(p.TempDir)
             If d.ShowDialog = DialogResult.OK Then Return d.FileName
         End Using
     End Function

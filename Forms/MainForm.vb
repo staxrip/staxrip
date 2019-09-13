@@ -1129,7 +1129,7 @@ Public Class MainForm
         CommandManager.AddCommandsFromObject(Me)
         CommandManager.AddCommandsFromObject(g.DefaultCommands)
 
-        CustomMainMenu = New CustomMenu(AddressOf GetDefaultMenuMain,
+        CustomMainMenu = New CustomMenu(AddressOf GetDefaultMainMenu,
                 s.CustomMenuMainForm, CommandManager, MenuStrip)
 
         OpenProject(g.StartupTemplatePath)
@@ -4047,7 +4047,7 @@ Public Class MainForm
             tm.Edit.Expand = True
             tm.Edit.Text = p.DefaultTargetFolder
             tm.Edit.SaveAction = Sub(value) p.DefaultTargetFolder = value
-            tm.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+            tm.AddMenu("Browse Folder...", Function() g.BrowseFolder(p.DefaultTargetFolder))
             tm.AddMenu("Directory of source file", "%source_dir%")
             tm.AddMenu("Parent directory of source file directory", "%source_dir_parent%")
 
@@ -4077,7 +4077,7 @@ Public Class MainForm
             tm.Edit.Expand = True
             tm.Edit.Text = p.TempDir
             tm.Edit.SaveAction = Sub(value) p.TempDir = value
-            tm.AddMenu("Edit...", tempDirFunc)
+            tm.AddMenu("Browse Folder...", tempDirFunc)
             tm.AddMenu("Source File Directory", "%source_dir%%source_name%_temp")
 
             ui.CreateFlowPage("Assistant")
@@ -4313,7 +4313,7 @@ Public Class MainForm
         f.Show()
     End Sub
 
-    Shared Function GetDefaultMenuMain() As CustomMenuItem
+    Shared Function GetDefaultMainMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
         ret.Add("Project|Open...", NameOf(ShowFileBrowserToOpenProject), Keys.O Or Keys.Control, Symbol.OpenFile)
@@ -4369,7 +4369,6 @@ Public Class MainForm
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
         ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
 
-        ret.Add("Apps|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
         ret.Add("Apps|Media Info|MKVInfo", NameOf(MediainfoMKV))
         ret.Add("Apps|Media Info|MediaInfo File", NameOf(MediaInfoShowMedia))
         ret.Add("Apps|Media Info|MediaInfo Folder", NameOf(ShowMediaInfoFolderViewDialog))
@@ -4382,6 +4381,8 @@ Public Class MainForm
         ret.Add("Apps|Thumbnails|StaxRip Thumbnailer", NameOf(ShowBatchGenerateThumbnailsDialog))
         ret.Add("Apps|Animation|Animated GIF", NameOf(SaveGif))
         ret.Add("Apps|Animation|Animated PNG", NameOf(SavePNG))
+        ret.Add("Apps|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
+        ret.Add("Apps|chapterEditor", NameOf(g.DefaultCommands.StartTool), {"chapterEditor"})
 
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
@@ -5525,7 +5526,7 @@ Public Class MainForm
 
     Sub UpdateTargetFileMenu()
         TargetFileMenu.Items.ClearAndDisplose
-        TargetFileMenu.Add("Edit...", AddressOf tbTargetFile_DoubleClick, File.Exists(p.SourceFile), "Change the path of the target file.")
+        TargetFileMenu.Add("Browse File...", AddressOf tbTargetFile_DoubleClick, File.Exists(p.SourceFile), "Change the path of the target file.")
         TargetFileMenu.Add("Play", Sub() g.Play(p.TargetFile), File.Exists(p.TargetFile), "Play the target file.").SetImage(Symbol.Play)
         TargetFileMenu.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), File.Exists(p.TargetFile), "Show MediaInfo for the target file.").SetImage(Symbol.Info)
         TargetFileMenu.Add("Explore...", Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle), Directory.Exists(p.TargetFile.Dir), "Open the target file directory with File Explorer.").SetImage(Symbol.FileExplorer)
@@ -5612,74 +5613,72 @@ Public Class MainForm
                     ui.Store = s
                     page.SuspendLayout()
 
-                    Dim PaletteGen = ui.AddMenu(Of String)
-                    Dim Compression = ui.AddMenu(Of String)
-                    Dim PaletteUse = ui.AddMenu(Of String)
+                    Dim paletteGen = ui.AddMenu(Of String)
+                    Dim compression = ui.AddMenu(Of String)
+                    Dim paletteUse = ui.AddMenu(Of String)
 
-                    Dim Time = ui.AddNum()
-                    Time.Text = "Starting Time:"
-                    Time.Config = {1.0, 3600.0, 0.2, 1}
-                    Time.Help = "The Time Position Where the Animation Should start at in Seconds"
-                    Time.NumEdit.Value = s.Storage.GetDouble("GifTime", 15.0)
-                    Time.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("GifTime", value)
+                    Dim time = ui.AddNum()
+                    time.Text = "Starting Time:"
+                    time.Config = {1.0, 3600.0, 0.2, 1}
+                    time.Help = "The Time Position Where the Animation Should start at in Seconds"
+                    time.NumEdit.Value = s.Storage.GetDouble("GifTime", 15.0)
+                    time.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("GifTime", value)
 
-                    Dim Length = ui.AddNum()
-                    Length.Text = "Length:"
-                    Length.Config = {1.0, 9.0, 0.2, 1}
-                    Length.Help = "The Length of the Animation in Seconds"
-                    Length.NumEdit.Value = s.Storage.GetDouble("GifLength", 4.2)
-                    Length.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("GifLength", value)
+                    Dim length = ui.AddNum()
+                    length.Text = "Length:"
+                    length.Config = {1.0, 9.0, 0.2, 1}
+                    length.Help = "The Length of the Animation in Seconds"
+                    length.NumEdit.Value = s.Storage.GetDouble("GifLength", 4.2)
+                    length.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("GifLength", value)
 
-                    Dim FrameRate = ui.AddNum()
-                    FrameRate.Text = "Framerate:"
-                    FrameRate.Config = {15, 60}
-                    FrameRate.NumEdit.Value = s.Storage.GetInt("GifFrameRate", 15)
-                    FrameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifFrameRate", CInt(value))
+                    Dim frameRate = ui.AddNum()
+                    frameRate.Text = "Framerate:"
+                    frameRate.Config = {15, 60}
+                    frameRate.NumEdit.Value = s.Storage.GetInt("GifFrameRate", 15)
+                    frameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifFrameRate", CInt(value))
 
-                    Dim Scale = ui.AddNum()
-                    Scale.Text = "Scale:"
-                    Scale.Config = {240, 2160}
-                    Scale.NumEdit.Value = s.Storage.GetInt("GifScale", 480)
-                    Scale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifScale", CInt(value))
+                    Dim scale = ui.AddNum()
+                    scale.Text = "Scale:"
+                    scale.Config = {240, 2160}
+                    scale.NumEdit.Value = s.Storage.GetInt("GifScale", 480)
+                    scale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifScale", CInt(value))
 
-                    PaletteGen.Text = "Statistics Mode:"
-                    PaletteGen.Add("Full", "full")
-                    PaletteGen.Add("Difference", "diff")
-                    PaletteGen.Button.Value = s.Storage.GetString("PaletteGen", "diff")
-                    PaletteGen.Button.SaveAction = Sub(value) s.Storage.SetString("PaletteGen", value)
+                    paletteGen.Text = "Statistics Mode:"
+                    paletteGen.Add("Full", "full")
+                    paletteGen.Add("Difference", "diff")
+                    paletteGen.Button.Value = s.Storage.GetString("PaletteGen", "diff")
+                    paletteGen.Button.SaveAction = Sub(value) s.Storage.SetString("PaletteGen", value)
 
-                    PaletteUse.Text = "Diff Mode:"
-                    PaletteUse.Add("Rectangle", "rectangle")
-                    PaletteUse.Add("None", "none")
-                    PaletteUse.Button.Value = s.Storage.GetString("PaletteUse", "rectangle")
-                    PaletteUse.Button.SaveAction = Sub(value) s.Storage.SetString("PaletteUse", value)
+                    paletteUse.Text = "Diff Mode:"
+                    paletteUse.Add("Rectangle", "rectangle")
+                    paletteUse.Add("None", "none")
+                    paletteUse.Button.Value = s.Storage.GetString("PaletteUse", "rectangle")
+                    paletteUse.Button.SaveAction = Sub(value) s.Storage.SetString("PaletteUse", value)
 
-                    Compression.Text = "Dither:"
-                    Compression.Add("Bayer Scale", "dither=bayer:bayer_scale=5")
-                    Compression.Add("Heckbert", "dither=heckbert")
-                    Compression.Add("Floyd Steinberg", "dither=floyd_steinberg")
-                    Compression.Add("Sierra 2", "dither=sierra2")
-                    Compression.Add("Sierra 2_4a", "dither=sierra2_4a")
-                    Compression.Add("None", "dither=none")
-                    Compression.Button.Value = s.Storage.GetString("GifDither", "dither=floyd_steinberg")
-                    Compression.Button.SaveAction = Sub(value) s.Storage.SetString("GifDither", value)
+                    compression.Text = "Dither:"
+                    compression.Add("Bayer Scale", "dither=bayer:bayer_scale=5")
+                    compression.Add("Heckbert", "dither=heckbert")
+                    compression.Add("Floyd Steinberg", "dither=floyd_steinberg")
+                    compression.Add("Sierra 2", "dither=sierra2")
+                    compression.Add("Sierra 2_4a", "dither=sierra2_4a")
+                    compression.Add("None", "dither=none")
+                    compression.Button.Value = s.Storage.GetString("GifDither", "dither=floyd_steinberg")
+                    compression.Button.SaveAction = Sub(value) s.Storage.SetString("GifDither", value)
 
-                    Dim Output = ui.AddBool()
-                    Output.Text = "Output Path"
-                    Output.Checked = s.Storage.GetBool("GifOutput", False)
-                    Output.SaveAction = Sub(value) s.Storage.SetBool("GifOutput", value)
+                    Dim output = ui.AddBool()
+                    output.Text = "Output Path"
+                    output.Checked = s.Storage.GetBool("GifOutput", False)
+                    output.SaveAction = Sub(value) s.Storage.SetBool("GifOutput", value)
 
-                    Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
-                    CustomDirectory.Label.Visible = False
-                    CustomDirectory.Edit.Text = s.Storage.GetString("GifDirectory", p.DefaultTargetFolder)
-                    CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("GifDirectory", value)
-                    CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+                    Dim customDirectory = ui.AddTextMenu() 'Custom Output Folder
+                    customDirectory.Label.Visible = False
+                    customDirectory.Edit.Text = s.Storage.GetString("GifDirectory", p.DefaultTargetFolder)
+                    customDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("GifDirectory", value)
+                    customDirectory.AddMenu("Browse Folder...", Function() g.BrowseFolder(p.DefaultTargetFolder))
 
-                    AddHandler Output.CheckStateChanged, Sub()
-                                                             CustomDirectory.Visible = Output.Checked = True
-                                                         End Sub
+                    AddHandler output.CheckStateChanged, Sub() customDirectory.Visible = output.Checked = True
 
-                    CustomDirectory.Visible = Output.Checked = True
+                    customDirectory.Visible = output.Checked = True
 
                     page.ResumeLayout()
 
@@ -5760,7 +5759,7 @@ Public Class MainForm
                     CustomDirectory.Label.Visible = False
                     CustomDirectory.Edit.Text = s.Storage.GetString("MTNDirectory", p.DefaultTargetFolder)
                     CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("MTNDirectory", value)
-                    CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+                    CustomDirectory.AddMenu("Browse Folder...", Function() g.BrowseFolder(p.DefaultTargetFolder))
 
                     AddHandler Output.CheckStateChanged, Sub()
                                                              CustomDirectory.Visible = Output.Checked = True
@@ -5860,7 +5859,7 @@ Public Class MainForm
                     CustomDirectory.Label.Visible = False
                     CustomDirectory.Edit.Text = s.Storage.GetString("PNGDirectory", p.DefaultTargetFolder)
                     CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("PNGDirectory", value)
-                    CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+                    CustomDirectory.AddMenu("Browse Folder...", Function() g.BrowseFolder(p.DefaultTargetFolder))
 
                     AddHandler Output.CheckStateChanged, Sub()
                                                              CustomDirectory.Visible = Output.Checked = True
@@ -5981,14 +5980,14 @@ Public Class MainForm
                     output.Checked = s.Storage.GetBool("StaxRipOutput", False)
                     output.SaveAction = Sub(value) s.Storage.SetBool("StaxRipOutput", value)
 
-                    Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
-                    CustomDirectory.Expandet = True
-                    CustomDirectory.Label.Visible = False
-                    CustomDirectory.Edit.Text = s.Storage.GetString("StaxRipDirectory", p.DefaultTargetFolder)
-                    CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("StaxRipDirectory", value)
-                    CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+                    Dim customDirectory = ui.AddTextMenu() 'Custom Output Directory
+                    customDirectory.Expandet = True
+                    customDirectory.Label.Visible = False
+                    customDirectory.Edit.Text = s.Storage.GetString("StaxRipDirectory", p.DefaultTargetFolder)
+                    customDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("StaxRipDirectory", value)
+                    customDirectory.AddMenu("Browse Folder...", Function() g.BrowseFolder(p.DefaultTargetFolder))
 
-                    AddHandler output.CheckStateChanged, Sub() CustomDirectory.Visible = output.Checked = True
+                    AddHandler output.CheckStateChanged, Sub() customDirectory.Visible = output.Checked = True
 
                     page.ResumeLayout()
 

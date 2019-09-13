@@ -367,6 +367,10 @@ File path to BDSup2Sub++
 
 File path to BM3D
 
+``%app:chapterEditor%``
+
+File path to chapterEditor
+
 ``%app:checkmate%``
 
 File path to checkmate
@@ -378,6 +382,10 @@ File path to CNR2
 ``%app:CNR2%``
 
 File path to CNR2
+
+``%app:CropResize%``
+
+File path to CropResize
 
 ``%app:CTMF%``
 
@@ -1127,6 +1135,10 @@ Folder path to BDSup2Sub++
 
 Folder path to BM3D
 
+``%app_dir:chapterEditor%``
+
+Folder path to chapterEditor
+
 ``%app_dir:checkmate%``
 
 Folder path to checkmate
@@ -1138,6 +1150,10 @@ Folder path to CNR2
 ``%app_dir:CNR2%``
 
 Folder path to CNR2
+
+``%app_dir:CropResize%``
+
+Folder path to CropResize
 
 ``%app_dir:CTMF%``
 

@@ -220,7 +220,7 @@ Public Class ApplicationSettings
         End If
 
         If Check(CustomMenuMainForm, "Main menu in main window", 163) Then
-            CustomMenuMainForm = MainForm.GetDefaultMenuMain
+            CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 
         If Check(CustomMenuPreview, "Menu in preview dialog", 53) Then

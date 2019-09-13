@@ -155,6 +155,10 @@ Start position of the first selecion in the preview.
 
 Path of the settings direcory.
 
+``%source_dar%``
+
+Source display aspect ratio.
+
 ``%source_dir%``
 
 Directory of the source file.
@@ -199,6 +203,14 @@ Image height of the source video.
 
 The name of the source file without file extension.
 
+``%source_par_x%``
+
+Source pixel/sample aspect ratio.
+
+``%source_par_y%``
+
+Source pixel/sample aspect ratio.
+
 ``%source_seconds%``
 
 Length in seconds of the source video.
@@ -218,6 +230,10 @@ Directory of the application.
 ``%system_dir%``
 
 System directory.
+
+``%target_dar%``
+
+Target display aspect ratio.
 
 ``%target_dir%``
 
@@ -243,9 +259,13 @@ Image height of the target video.
 
 Name of the target file without file extension.
 
-``%target_sar%``
+``%target_par_x%``
 
-Target sample aspect ratio (also known as PAR (pixel aspect ratio)).
+Target pixel/sample aspect ratio.
+
+``%target_par_y%``
+
+Target pixel/sample aspect ratio.
 
 ``%target_seconds%``
 

@@ -1081,13 +1081,13 @@ Public Class Package
                 New VideoFilter("Line", "Sharpen | pSharpen", "pSharpen(strength=25, threshold=75, ss_x=1.0, ss_y=1.0)")}})
 
         Add(New PluginPackage With {
-          .Name = "GradFun2DBmod",
-          .DirPath = "Plugins\AVS\GradFun2DB",
-          .Filename = "GradFun2DBmod.avsi",
-          .HelpFile = "Readme.txt",
-           .WebURL = "http://avisynth.nl/index.php/GradFun2dbmod",
-           .Description = "An advanced debanding script based on GradFun2DB.",
-          .AvsFilterNames = {"GradFun2DBmod"}})
+            .Name = "GradFun2DBmod",
+            .DirPath = "Plugins\AVS\GradFun2DB",
+            .Filename = "GradFun2DBmod.avsi",
+            .HelpFile = "Readme.txt",
+            .WebURL = "http://avisynth.nl/index.php/GradFun2dbmod",
+            .Description = "An advanced debanding script based on GradFun2DB.",
+            .AvsFilterNames = {"GradFun2DBmod"}})
 
         Add(New PluginPackage With {
             .Name = "GradFun2DB",
@@ -1123,8 +1123,8 @@ Public Class Package
             .Description = "A motion compensated noise removal script with an accompanying post-processing component.",
             .AvsFilterNames = {"MCTemporalDenoise", "MCTemporalDenoisePP"},
             .AvsFiltersFunc = Function() {
-            New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoise", "MCTemporalDenoise(settings=""medium"")"),
-            New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoisePP", "source=last" + BR + "denoised=FFT3Dfilter()" + BR + "MCTemporalDenoisePP(denoised)")}})
+                New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoise", "MCTemporalDenoise(settings=""medium"")"),
+                New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoisePP", "source=last" + BR + "denoised=FFT3Dfilter()" + BR + "MCTemporalDenoisePP(denoised)")}})
 
         Add(New PluginPackage With {
             .Name = "Deblock",
@@ -1162,8 +1162,8 @@ Public Class Package
             .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Did�e.",
             .AvsFilterNames = {"QTGMC"},
             .AvsFiltersFunc = Function() {
-            New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2, TR2=2, EdiThreads=8)"),
-            New VideoFilter("Field", "QTGMC | QTGMC With Repair", "QTGMC1 = QTGMC( Preset=""Slower"", InputType=2 )" + BR + "QTGMC2 = QTGMC( Preset=""Slower"", InputType=3, PrevGlobals=""Reuse"")" + BR + "$select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Repair16(QTGMC1, QTGMC2, 1)$")}})
+                New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2, TR2=2, EdiThreads=8)"),
+                New VideoFilter("Field", "QTGMC | QTGMC With Repair", "QTGMC1 = QTGMC( Preset=""Slower"", InputType=2 )" + BR + "QTGMC2 = QTGMC( Preset=""Slower"", InputType=3, PrevGlobals=""Reuse"")" + BR + "$select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Repair16(QTGMC1, QTGMC2, 1)$")}})
 
         Add(New PluginPackage With {
             .Name = "SMDegrain",
@@ -1172,9 +1172,9 @@ Public Class Package
             .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
             .AvsFilterNames = {"SMDegrain"},
             .AvsFiltersFunc = Function() {
-            New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain", "SMDegrain(tr = 2, thSAD = 250, contrasharp = false, refinemotion = true, lsb = false)"),
-            New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain With Motion Vectors", "super_search = Dither_Luma_Rebuild(S0=1.0,c=0.0625).MSuper(rfilter=4)" + BR + "bv2 = super_search.MAnalyse(isb = true,  delta = 2, overlap= 4)" + BR + "bv1 = super_search.MAnalyse(isb = true,  delta = 1, overlap= 4)" + BR + "fv1 = super_search.MAnalyse(isb = false, delta = 1, overlap= 4)" + BR + "fv2 = super_search.MAnalyse(isb = false, delta = 2, overlap= 4)" + BR + "MDegrain2(MSuper(levels = 1), bv1, fv1, bv2, fv2, thSAD = 300, thSADC = 150)"),
-            New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain 16Bit", "sharp=last" + BR + "dfttest(tbsize=1, sigma = 10, lsb = True)" + BR + "SMDegrain(tr=3, thSAD = 300, CClip = sharp, lsb_in = True, lsb_out = True)")}})
+                New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain", "SMDegrain(tr = 2, thSAD = 250, contrasharp = false, refinemotion = true, lsb = false)"),
+                New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain With Motion Vectors", "super_search = Dither_Luma_Rebuild(S0=1.0,c=0.0625).MSuper(rfilter=4)" + BR + "bv2 = super_search.MAnalyse(isb = true,  delta = 2, overlap= 4)" + BR + "bv1 = super_search.MAnalyse(isb = true,  delta = 1, overlap= 4)" + BR + "fv1 = super_search.MAnalyse(isb = false, delta = 1, overlap= 4)" + BR + "fv2 = super_search.MAnalyse(isb = false, delta = 2, overlap= 4)" + BR + "MDegrain2(MSuper(levels = 1), bv1, fv1, bv2, fv2, thSAD = 300, thSADC = 150)"),
+                New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain 16Bit", "sharp=last" + BR + "dfttest(tbsize=1, sigma = 10, lsb = True)" + BR + "SMDegrain(tr=3, thSAD = 300, CClip = sharp, lsb_in = True, lsb_out = True)")}})
 
         Add(New PluginPackage With {
             .Name = "mClean",
@@ -1514,34 +1514,33 @@ Public Class Package
             .Name = "mvsfunc",
             .Filename = "mvsfunc.py",
             .DirPath = "Plugins\VS\Scripts",
-            .VSFilterNames = {
-                "mvsfunc.Depth", "mvsfunc.ToRGB", "mvsfunc.ToYUV", "mvsfunc.BM3D",
-                "mvsfunc.VFRSplice", "mvsfunc.PlaneStatistics", "mvsfunc.PlaneCompare", "mvsfunc.ShowAverage",
-                "mvsfunc.FilterIf", "mvsfunc.FilterCombed", "mvsfunc.Min", "mvsfunc.Max",
-                "mvsfunc.Avg", "mvsfunc.MinFilter", "mvsfunc.MaxFilter", "mvsfunc.LimitFilter",
-                "mvsfunc.PointPower", "mvsfunc.CheckMatrix", "mvsfunc.postfix2infix", "mvsfunc.SetColorSpace", "mvsfunc.AssumeFrame",
-                "mvsfunc.AssumeTFF", "mvsfunc.AssumeBFF", "mvsfunc.AssumeField",
-                "mvsfunc.AssumeCombed", "mvsfunc.CheckVersion", "mvsfunc.GetMatrix",
-                "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage", "mvsfunc.Preview", "mvsfunc.GrayScale"
-            },
             .Description = "mawen1250's VapourSynth functions.",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=172564",
-            .WebURL = "http://github.com/HomeOfVapourSynthEvolution/mvsfunc"})
+            .WebURL = "http://github.com/HomeOfVapourSynthEvolution/mvsfunc",
+            .VSFilterNames = {
+                "mvsfunc.Depth", "mvsfunc.ToRGB", "mvsfunc.ToYUV", "mvsfunc.BM3D", "mvsfunc.VFRSplice",
+                "mvsfunc.PlaneStatistics", "mvsfunc.PlaneCompare", "mvsfunc.ShowAverage", "mvsfunc.FilterIf",
+                "mvsfunc.FilterCombed", "mvsfunc.Min", "mvsfunc.Max", "mvsfunc.Avg", "mvsfunc.MinFilter",
+                "mvsfunc.MaxFilter", "mvsfunc.LimitFilter", "mvsfunc.PointPower", "mvsfunc.CheckMatrix",
+                "mvsfunc.postfix2infix", "mvsfunc.SetColorSpace", "mvsfunc.AssumeFrame", "mvsfunc.AssumeTFF",
+                "mvsfunc.AssumeBFF", "mvsfunc.AssumeField", "mvsfunc.AssumeCombed", "mvsfunc.CheckVersion",
+                "mvsfunc.GetMatrix", "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage",
+                "mvsfunc.Preview", "mvsfunc.GrayScale"}})
 
         Add(New PluginPackage With {
             .Name = "muvsfunc",
             .Filename = "muvsfunc.py",
             .DirPath = "Plugins\VS\Scripts",
+            .Description = "Muonium's VapourSynth functions.",
+            .WebURL = "https://github.com/WolframRhodium/muvsfunc",
             .VSFilterNames = {
                 "muvsfunc.LDMerge", "muvsfunc.Compare", "muvsfunc.ExInpand", "muvsfunc.InDeflate", "muvsfunc.MultiRemoveGrain", "muvsfunc.GradFun3", "muvsfunc.AnimeMask",
                 "muvsfunc.PolygonExInpand", "muvsfunc.Luma", "muvsfunc.ediaa", "muvsfunc.nnedi3aa", "muvsfunc.maa", "muvsfunc.SharpAAMcmod", "muvsfunc.TEdge",
                 "muvsfunc.Sort", "muvsfunc.Soothe_mod", "muvsfunc.TemporalSoften", "muvsfunc.FixTelecinedFades", "muvsfunc.TCannyHelper", "muvsfunc.MergeChroma", "muvsfunc.firniture",
                 "muvsfunc.BoxFilter", "muvsfunc.SmoothGrad", "muvsfunc.DeFilter", "muvsfunc.scale", "muvsfunc.ColorBarsHD", "muvsfunc.SeeSaw", "muvsfunc.abcxyz",
-                 "muvsfunc.Sharpen", "muvsfunc.Blur", "muvsfunc.BlindDeHalo3", "muvsfunc.dfttestMC", "muvsfunc.TurnLeft", "muvsfunc.TurnRight", "muvsfunc.BalanceBorders",
-                  "muvsfunc.DisplayHistogram", "muvsfunc.GuidedFilter", "muvsfunc.GMSD", "muvsfunc.SSIM", "muvsfunc.SSIM_downsample", "muvsfunc.LocalStatisticsMatching", "muvsfunc.LocalStatistics",
-                  "muvsfunc.TextSub16", "muvsfunc.TMinBlur", "muvsfunc.mdering", "muvsfunc.BMAFilter", "muvsfunc.LLSURE", "muvsfunc.YAHRmod", "muvsfunc.RandomInterleave"},
-            .Description = "Muonium's VapourSynth functions.",
-            .WebURL = "https://github.com/WolframRhodium/muvsfunc"})
+                "muvsfunc.Sharpen", "muvsfunc.Blur", "muvsfunc.BlindDeHalo3", "muvsfunc.dfttestMC", "muvsfunc.TurnLeft", "muvsfunc.TurnRight", "muvsfunc.BalanceBorders",
+                "muvsfunc.DisplayHistogram", "muvsfunc.GuidedFilter", "muvsfunc.GMSD", "muvsfunc.SSIM", "muvsfunc.SSIM_downsample", "muvsfunc.LocalStatisticsMatching", "muvsfunc.LocalStatistics",
+                "muvsfunc.TextSub16", "muvsfunc.TMinBlur", "muvsfunc.mdering", "muvsfunc.BMAFilter", "muvsfunc.LLSURE", "muvsfunc.YAHRmod", "muvsfunc.RandomInterleave"}})
 
         Add(New PluginPackage With {
             .Name = "d2vsource",
@@ -1719,7 +1718,15 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/FineSharp",
             .AvsFilterNames = {"FineSharp"},
             .AvsFiltersFunc = Function() {
-            New VideoFilter("Line", "Sharpen | FineSharp", "$select:msg:Select Strength;Light|FineSharp(mode=1, sstr=2, cstr=0.8, xstr=0.19, lstr=1.49, pstr=1.272);Moderate|FineSharp(mode=2, sstr=2.0,  cstr=1.3, xstr=0.0,  lstr=1.49, pstr=1.472);Strong|FineSharp(mode=3, sstr=6.0,  cstr=1.3, xstr=0.0,  lstr=1.49, pstr=1.472)$")}})
+                New VideoFilter("Line", "Sharpen | FineSharp", "$select:msg:Select Strength;Light|FineSharp(mode=1, sstr=2, cstr=0.8, xstr=0.19, lstr=1.49, pstr=1.272);Moderate|FineSharp(mode=2, sstr=2.0,  cstr=1.3, xstr=0.0,  lstr=1.49, pstr=1.472);Strong|FineSharp(mode=3, sstr=6.0,  cstr=1.3, xstr=0.0,  lstr=1.49, pstr=1.472)$")}})
+
+        Add(New PluginPackage With {
+            .Name = "CropResize",
+            .Filename = "CropResize.avsi",
+            .Description = "Advanced crop and resize AviSynth script.",
+            .WebURL = "https://forum.videohelp.com/threads/393752-CropResize-Cropping-resizing-script",
+            .AvsFilterNames = {"CropResize"},
+            .AvsFiltersFunc = Function() {New VideoFilter("Resize", "CropResize", $"CropResize(%target_width%, %target_height%, \{BR}    %crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%, \{BR}    InDAR=%source_dar%, OutDAR=%target_dar%, Info=true)")}})
 
         Dim fp = Folder.Settings + "Versions.txt"
 

@@ -356,12 +356,12 @@ Public Class GlobalCommands
 
         File.WriteAllText(Package.x264.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.x264.Path, "--fullhelp"))
 
-        Dim x265Except = "--crop-rect--fast-cbf --frame-skip --help
-            --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version --no-scenecut
+        Dim x265Except = "--crop-rect--fast-cbf --frame-skip --help --lavf --no-scenecut
+            --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version
             --no-progress --pbration --fullhelp ---hrd-concat".Split((" " + BR).ToCharArray())
 
-        Dim x265RemoveExcept = "--numa-pools --rdoq --cip --qblur --cplxblur --cu-stats --dhdr10-info --display-window 
-            --opt-qp-pps --opt-ref-list-length-pps --single-sei --hrd-concat
+        Dim x265RemoveExcept = "--numa-pools --rdoq --cip --qblur --cplxblur --cu-stats --dhdr10-info
+            --opt-qp-pps --opt-ref-list-length-pps --single-sei --hrd-concat --display-window 
             --dhdr10-opt --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
 
         Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --fullhelp").Replace("--[no-]", "--")

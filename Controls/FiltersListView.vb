@@ -163,14 +163,20 @@ Public Class FiltersListView
 
     Sub ReplaceClick(filter As VideoFilter)
         filter = filter.GetCopy
-        Dim tup = Macro.ExpandGUI(filter.Script)
-        If tup.Cancel Then Exit Sub
+        Dim val = Macro.ExpandGUI(filter.Script)
+        If val.Cancel Then Exit Sub
 
-        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-            filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+        If val.Value <> filter.Script AndAlso val.Caption <> "" Then
+            Dim path = filter.Path.Replace("...", "")
+
+            If val.Caption.EndsWith(path) Then
+                filter.Path = val.Caption
+            Else
+                filter.Path = path + " " + val.Caption
+            End If
         End If
 
-        filter.Script = tup.Value
+        filter.Script = val.Value
         Dim index = SelectedItems(0).Index
         p.Script.SetFilter(index, filter)
         Items(index).Selected = True
@@ -178,14 +184,20 @@ Public Class FiltersListView
 
     Private Sub InsertClick(filter As VideoFilter)
         filter = filter.GetCopy
-        Dim tup = Macro.ExpandGUI(filter.Script)
-        If tup.Cancel Then Exit Sub
+        Dim val = Macro.ExpandGUI(filter.Script)
+        If val.Cancel Then Exit Sub
 
-        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-            filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+        If val.Value <> filter.Script AndAlso val.Caption <> "" Then
+            Dim path = filter.Path.Replace("...", "")
+
+            If val.Caption.EndsWith(path) Then
+                filter.Path = val.Caption
+            Else
+                filter.Path = path + " " + val.Caption
+            End If
         End If
 
-        filter.Script = tup.Value
+        filter.Script = val.Value
         Dim index = SelectedItems(0).Index
         p.Script.InsertFilter(index, filter)
         Items(index).Selected = True
@@ -193,14 +205,20 @@ Public Class FiltersListView
 
     Private Sub AddClick(filter As VideoFilter)
         filter = filter.GetCopy
-        Dim tup = Macro.ExpandGUI(filter.Script)
-        If tup.Cancel Then Exit Sub
+        Dim val = Macro.ExpandGUI(filter.Script)
+        If val.Cancel Then Exit Sub
 
-        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-            filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+        If val.Value <> filter.Script AndAlso val.Caption <> "" Then
+            Dim path = filter.Path.Replace("...", "")
+
+            If val.Caption.EndsWith(path) Then
+                filter.Path = val.Caption
+            Else
+                filter.Path = path + " " + val.Caption
+            End If
         End If
 
-        filter.Script = tup.Value
+        filter.Script = val.Value
         p.Script.AddFilter(filter)
         Items(Items.Count - 1).Selected = True
     End Sub

@@ -170,7 +170,7 @@ Plays a mp3, wav Or wmv sound file.
 -Release
 ~~~~~~~~
 
-Test
+Release
 
 
 -ResetSettings

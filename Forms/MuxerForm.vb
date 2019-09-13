@@ -649,7 +649,7 @@ Public Class MuxerForm
 
     Private Sub BnAddAttachment_Click(sender As Object, e As EventArgs) Handles bnAddAttachment.Click
         Using d As New OpenFileDialog
-            d.SetFilter({"ttf", "txt", "jpg", "png", "otf", "jpeg"})
+            d.SetFilter({"ttf", "txt", "jpg", "png", "otf", "jpeg", "xml", "nfo"})
             d.Multiselect = True
             d.SetInitDir(p.TempDir)
 

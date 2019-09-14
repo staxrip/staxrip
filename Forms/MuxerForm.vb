@@ -726,7 +726,7 @@ Public Class MuxerForm
         page.SuspendLayout()
 
         Dim tb = UI.AddTextButton()
-        tb.Text = "Cover File"
+        tb.Text = "Cover"
         tb.Expandet = True
         tb.Property = NameOf(Muxer.CoverFile)
         tb.BrowseFile("jpg, png|*.jpg;*.png")
@@ -735,7 +735,7 @@ Public Class MuxerForm
 
         If Not TypeOf Muxer Is WebMMuxer Then
             mb = UI.AddTextMenu()
-            mb.Text = "Chapter File"
+            mb.Text = "Chapters"
             mb.Expandet = True
             mb.Help = "Chapter file to be muxed."
             mb.Property = NameOf(Muxer.ChapterFile)
@@ -747,12 +747,19 @@ Public Class MuxerForm
             CmdlControl.Presets = s.CmdlPresetsMKV
 
             mb = UI.AddTextMenu()
-            mb.Text = "Tag File"
+            mb.Text = "Tags"
             mb.Expandet = True
             mb.Help = "Tag file to be muxed."
             mb.Property = NameOf(Muxer.TagFile)
             mb.AddMenu("Browse File...", Function() g.BrowseFile("xml|*.xml"))
             mb.AddMenu("Edit File...", Sub() Process.Start(g.GetAppPathForExtension("xml", "txt"), Muxer.TagFile.Escape))
+
+            tb = UI.AddTextButton()
+            tb.Text = "Timestamps"
+            tb.Help = "txt or mkv file"
+            tb.Expandet = True
+            tb.Property = NameOf(Muxer.TimestampsFile)
+            tb.BrowseFile("txt, mkv|*.txt;*.mkv")
 
             tb = UI.AddTextButton()
             tb.Text = "Title"
@@ -765,13 +772,6 @@ Public Class MuxerForm
             t.Help = "Optional name of the video stream that may contain macro."
             t.Expandet = True
             t.Property = NameOf(MkvMuxer.VideoTrackName)
-
-            tb = UI.AddTextButton()
-            tb.Text = "Timestamps File"
-            tb.Help = "txt or mkv file"
-            tb.Expandet = True
-            tb.Property = NameOf(Muxer.TimestampsFile)
-            tb.BrowseFile("txt, mkv|*.txt;*.mkv")
 
             Dim tm = UI.AddTextMenu()
             tm.Text = "Display Aspect Ratio"
@@ -798,16 +798,6 @@ Public Class MuxerForm
 
         ElseIf TypeOf Muxer Is MP4Muxer Then
             tpAttachments.Enabled = False
-
-            Dim tags = UI.AddTextButton()
-            tags.Text = "Tags"
-            Task.Run(Sub()
-                         Dim stdOut = ProcessHelp.GetErrOut(Package.MP4Box.Path, "-tag-list")
-                         BeginInvoke(Sub() tags.Help = "Tags added to the MP4 file." + BR2 + "Syntax: prop1=val1:prop2=val2" + BR2 + stdOut)
-                     End Sub)
-            tags.Expandet = True
-            tags.Property = NameOf(Muxer.Tags)
-            tags.MacroDialog()
 
             CmdlControl.Presets = s.CmdlPresetsMP4
 

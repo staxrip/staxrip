@@ -128,6 +128,16 @@ Public MustInherit Class Muxer
         Dim files = g.GetFilesInTempDirAndParent
         files.Sort(New StringLogicalComparer)
 
+        If File.Exists(p.FirstOriginalSourceFile.DirAndBase + ".nfo") Then
+            Dim fieldNames = "title originaltitle showtitle studio genre director season episode premiered aired outline plot tagline".Split(" "c)
+            Dim root = XElement.Parse(File.ReadAllText(p.FirstOriginalSourceFile.DirAndBase + ".nfo"))
+            Dim elements = root.Elements.Where(Function(x) fieldNames.Contains(x.Name.ToString()) AndAlso x.Value <> "")
+
+            For Each i In elements
+                Tags.Add(New StringPair(i.Name.ToString, i.Value))
+            Next
+        End If
+
         For Each file1 In files
             If file1.Ext = "idx" Then
                 Dim v = File.ReadAllText(file1, Encoding.Default)
@@ -288,9 +298,8 @@ Public Class MP4Muxer
 
         Dim tagList As New List(Of String)
         If CoverFile <> "" AndAlso File.Exists(CoverFile) Then tagList.Add("cover=" + CoverFile.Escape)
-        'TODO:
-        'If Tags <> "" Then tagList.Add(Macro.Expand(Tags))
-        If tagList.Count > 0 Then args.Append(" -itags " + String.Join(":", tagList))
+        If Tags.Count > 0 Then tagList.AddRange(Tags.Select(Function(val) val.Name + "=" + val.Value))
+        If tagList.Count > 0 Then args.Append(" -itags " + Macro.Expand(String.Join(":", tagList)))
         args.Append(" -new " + p.TargetFile.Escape)
 
         Return args.ToString.Trim

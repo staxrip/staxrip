@@ -1,4 +1,4 @@
-###
+### 2.0.4.3 Beta
 
 - new AviSynth script CropResize added
 - update: x265 3.1+15-a092e82 Wolfberry
@@ -10,7 +10,8 @@
 - chapterEditor has been integrated into the main menu and
   into the container/muxer dialog
 - a Tag File option has been added to the container/muxer dialog
-- container/muxer has a Tags tab with a grid view for tags
+- container/muxer has a Tags tab added with a grid view for editing tags
+- Kodi nfo files are imported into tags
 
 ### 2.0.4.2 Beta
 

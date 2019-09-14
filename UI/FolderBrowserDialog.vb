@@ -1,5 +1,3 @@
-'TODO: shrink down huge waste of bytes
-
 Imports System.Text
 Imports System.ComponentModel
 Imports System.Runtime.InteropServices
@@ -714,6 +712,7 @@ Public Class FolderBrowserDialog
 
     Friend Class SafeModuleHandle
         Inherits SafeHandle
+
         Public Sub New()
             MyBase.New(IntPtr.Zero, True)
         End Sub

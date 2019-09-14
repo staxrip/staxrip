@@ -193,7 +193,6 @@ Public Class MediaInfoForm
         rtb.Text = newText.ToString
     End Sub
 
-
     Protected Overrides Sub OnDragDrop(drgevent As DragEventArgs)
         MyBase.OnDragDrop(drgevent)
 

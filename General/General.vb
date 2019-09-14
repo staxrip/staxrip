@@ -925,9 +925,9 @@ Public Class StringPair
     Sub New()
     End Sub
 
-    Sub New(name As String, text As String)
+    Sub New(name As String, value As String)
         Me.Name = name
-        Me.Value = text
+        Me.Value = value
     End Sub
 
     Function CompareTo(other As StringPair) As Integer Implements System.IComparable(Of StringPair).CompareTo

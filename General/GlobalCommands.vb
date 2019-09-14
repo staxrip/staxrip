@@ -669,6 +669,7 @@ Switches
             FileHelp.Delete(targetDir + "\StaxRip.vshost.exe.manifest")
             FileHelp.Delete(targetDir + "\Apps\Audio\eac3to\log.txt")
             FileHelp.Delete(targetDir + "\Apps\Support\DGIndex\DGIndex.ini")
+            FileHelp.Delete(targetDir + "\Apps\Support\chapterEditor\chapterEditor.ini")
             FileHelp.Delete(targetDir + "\Apps\Support\MKVToolNix\mkvtoolnix.ini")
             FileHelp.Delete(targetDir + "\Apps\Support\MKVToolNix\mkvtoolnix-gui.ini")
             FileHelp.Delete(targetDir + "\Apps\Support\AVSMeter\AVSMeter.ini")

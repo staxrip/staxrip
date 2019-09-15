@@ -1,3 +1,7 @@
+###
+
+- fix: nfo files with non xml content caused an exception
+
 ### 2.0.4.3 Beta
 
 - new AviSynth script CropResize added

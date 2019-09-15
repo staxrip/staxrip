@@ -73,11 +73,6 @@ Public Class LogBuilder
     Shared EnvironmentString As String 'cached due to bug report
 
     Sub WriteEnvironment()
-
-        'Dim Memory = My.Computer.Info.TotalPhysicalMemory \ 1073741824
-        'Dim MemoryF = Math.Ceiling(My.Computer.Info.TotalPhysicalMemory * 100D) / 100D
-        '"Memory:" + MemoryF.ToString.Shorten(2) + " GB" + BR +
-
         If ToString.Contains("- System Environment -") Then Exit Sub
         WriteHeader("System Environment")
 

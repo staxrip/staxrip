@@ -129,13 +129,16 @@ Public MustInherit Class Muxer
         files.Sort(New StringLogicalComparer)
 
         If File.Exists(p.FirstOriginalSourceFile.DirAndBase + ".nfo") Then
-            Dim fieldNames = "title originaltitle showtitle studio genre director season episode premiered aired outline plot tagline".Split(" "c)
-            Dim root = XElement.Parse(File.ReadAllText(p.FirstOriginalSourceFile.DirAndBase + ".nfo"))
-            Dim elements = root.Elements.Where(Function(x) fieldNames.Contains(x.Name.ToString()) AndAlso x.Value <> "")
+            Try
+                Dim fieldNames = "title originaltitle showtitle studio genre director season episode premiered aired outline plot tagline".Split(" "c)
+                Dim root = XElement.Parse(File.ReadAllText(p.FirstOriginalSourceFile.DirAndBase + ".nfo"))
+                Dim elements = root.Elements.Where(Function(x) fieldNames.Contains(x.Name.ToString()) AndAlso x.Value <> "")
 
-            For Each i In elements
-                Tags.Add(New StringPair(i.Name.ToString, i.Value))
-            Next
+                For Each i In elements
+                    Tags.Add(New StringPair(i.Name.ToString, i.Value))
+                Next
+            Catch
+            End Try
         End If
 
         For Each file1 In files

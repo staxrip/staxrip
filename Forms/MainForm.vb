@@ -4396,6 +4396,7 @@ Public Class MainForm
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
 
         ret.Add("Help|Docs", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Lightbulb, {"http://staxrip.readthedocs.io"})
+        ret.Add("Help|Website", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Globe, {"https://github.com/staxrip/staxrip"})
         ret.Add("Help|Apps", NameOf(DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
         ret.Add("Help|-")
         ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.Info, {"info"})

@@ -1776,10 +1776,8 @@ Public Class Subtitle
             ret += " " + Language.Name
 
             If Title <> "" AndAlso Title <> " " AndAlso p.SourceFile <> "" AndAlso p.SourceFile.Length < 200 Then
-                ret += " {" + Title.Shorten(50) + "}"
+                ret += " {" + Title.Shorten(50).EscapeIllegalFileSysChars + "}"
             End If
-
-            If Not FilePath.IsValidFileSystemName(ret) Then ret = FilePath.RemoveIllegalCharsFromName(ret)
 
             Return ret
         End Get
@@ -1884,7 +1882,7 @@ Public Class Subtitle
 
             If path.Contains("{") Then
                 Dim title = path.Right("{")
-                st.Title = title.Left("}")
+                st.Title = title.Left("}").UnescapeIllegalFileSysChars
             End If
 
             Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")

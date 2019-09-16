@@ -2960,7 +2960,7 @@ Public Class MainForm
 
                     If ap.File.Contains("{") Then
                         Dim title = ap.File.Right("{")
-                        ap.StreamName = title.Left("}")
+                        ap.StreamName = title.Left("}").UnescapeIllegalFileSysChars
                     End If
                 End If
 

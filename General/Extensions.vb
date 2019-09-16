@@ -4,6 +4,7 @@ Imports System.Reflection
 Imports System.Runtime.CompilerServices
 Imports System.Security.Cryptography
 Imports System.Text
+Imports System.Text.RegularExpressions
 Imports Microsoft.Win32
 Imports VB6 = Microsoft.VisualBasic
 
@@ -338,6 +339,30 @@ Module StringExtensions
         End If
 
         Return value.Substring(0, maxLength)
+    End Function
+
+    <Extension()>
+    Function EscapeIllegalFileSysChars(value As String) As String
+        If value = "" Then Return ""
+
+        For Each i In value
+            If Not FilePath.IsValidFileSystemName(i) Then
+                value = value.Replace(i, "__" + Uri.EscapeDataString(i).TrimStart("%"c) + "__")
+            End If
+        Next
+
+        Return value
+    End Function
+
+    <Extension()>
+    Function UnescapeIllegalFileSysChars(value As String) As String
+        If value = "" Then Return ""
+
+        For Each match As Match In Regex.Matches(value, "__(\w\w)__")
+            value = value.Replace(match.Value, Uri.UnescapeDataString("%" + match.Groups(1).Value))
+        Next
+
+        Return value
     End Function
 
     <Extension()>

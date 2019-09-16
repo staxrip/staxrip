@@ -77,14 +77,6 @@ Public Class MediaInfo
                     at.Forced = GetAudio(index, "Forced") = "Yes"
                     at.Default = GetAudio(index, "Default") = "Yes"
 
-                    If at.Title.ContainsAny({"IsoMedia", "GPAC", "PID ", "Surround ", "Stereo", "3/2+1", "2/0"}) Then
-                        at.Title = ""
-                    End If
-
-                    If Not FilePath.IsValidFileSystemName(at.Title) Then
-                        at.Title = FilePath.RemoveIllegalCharsFromName(at.Title)
-                    End If
-
                     Dim lm = GetAudio(index, "Language_More")
 
                     If lm <> "" Then

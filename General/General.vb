@@ -278,26 +278,6 @@ Public Class PathBase
 
         Return True
     End Function
-
-    Shared Function RemoveIllegalCharsFromName(name As String) As String
-        If name = "" Then Return ""
-
-        Dim chars = """*/:<>?\|^".ToCharArray
-
-        For Each i In name.ToCharArray
-            If chars.Contains(i) Then
-                name = name.Replace(i, "_")
-            End If
-        Next
-
-        For x = 1 To 31
-            If name.Contains(Convert.ToChar(x)) Then
-                name = name.Replace(Convert.ToChar(x), "_"c)
-            End If
-        Next
-
-        Return name
-    End Function
 End Class
 
 Public Class DirPath

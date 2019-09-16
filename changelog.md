@@ -1,6 +1,10 @@
 ###
 
 - fix: nfo files with non xml content caused an exception
+- fix: if subtitle and audio titles contained illegal
+  file system characters then these characters were replaced
+  with an underscore and thus being lost, now the characters
+  are escaped/unescaped and thus preserved
 
 ### 2.0.4.3 Beta
 

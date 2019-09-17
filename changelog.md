@@ -1,3 +1,8 @@
+###
+
+- new: x265 switch --selective-sao added but the included x265 build
+  does not yet support it
+
 ### 2.0.4.4 Beta
 
 - fix: nfo files with non xml content caused an exception

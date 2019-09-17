@@ -243,7 +243,7 @@ Namespace CommandLine
 
         Private ConfigValue As Double()
 
-        Property Config As Double()
+        Property Config As Double() 'min, max, step, decimal places
             Get
                 If ConfigValue Is Nothing Then Return {Double.MinValue, Double.MaxValue, 1, 0}
                 Return ConfigValue

@@ -625,10 +625,6 @@ Switches
         End If
     End Sub
 
-    'This method is called by pressing F11 in the main form.
-    'It creates the release 7zip files on the desktop.
-    'If version.Revision is not 0 then it's a beta build
-    'and it's copied to dropbox and onedrive folders.
     <Command("Release")>
     Sub Release()
         Try

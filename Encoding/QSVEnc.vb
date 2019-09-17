@@ -335,7 +335,7 @@ Public Class QSVEnc
                 End If
             End If
 
-            If Not Mode.MenuButton Is Nothing AndAlso item Is Codec OrElse item Is Nothing Then
+            If Not Mode.MenuButton Is Nothing AndAlso (item Is Codec OrElse item Is Nothing) Then
                 For x = 0 To Mode.Values.Length - 1
                     Select Case Codec.ValueText
                         Case "h264"

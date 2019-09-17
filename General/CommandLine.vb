@@ -347,9 +347,7 @@ Namespace CommandLine
         Sub ShowOption(value As Integer, visible As Boolean)
             If Not MenuButton Is Nothing Then
                 For Each i In MenuButton.Menu.Items.OfType(Of ToolStripMenuItem)
-                    For Each i2 In Values
-                        If value.Equals(i.Tag) Then i.Visible = visible
-                    Next
+                    If value.Equals(i.Tag) Then i.Visible = visible
                 Next
             End If
         End Sub

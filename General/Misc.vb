@@ -2093,17 +2093,15 @@ End Class
 
 Public Class OS
     Public Shared EnvVars As String() = {"ALLUSERSPROFILE", "APPDATA", "CD", "CMDCMDLINE", "CMDEXTVERSION", "CommonProgramFiles", "CommonProgramFiles(x86)", "CommonProgramW6432", "COMPUTERNAME", "COMSPEC", "DATE", "ERRORLEVEL", "HOMEDRIVE", "HOMEPATH", "LOCALAPPDATA", "LOGONSERVER", "NUMBER_OF_PROCESSORS", "OS", "PATH", "PATHEXT", "PROCESSOR_ARCHITECTURE", "PROCESSOR_IDENTIFIER", "PROCESSOR_LEVEL", "PROCESSOR_REVISION", "ProgramData", "ProgramFiles", "ProgramFiles(x86)", "ProgramW6432", "PROMPT", "PSModulePath", "PUBLIC", "RANDOM", "SessionName", "SystemDrive", "SystemRoot", "TEMP", "TIME", "TMP", "USERDOMAIN", "USERDOMAIN_ROAMINGPROFILE", "USERNAME", "USERPROFILE", "WINDIR"}
-End Class
 
-Public Class SystemHelp
-    Private Shared VideoControllersValue As IEnumerable(Of String)
+    Private Shared VideoControllersValue As String()
 
-    Public Shared ReadOnly Property VideoControllers As IEnumerable(Of String)
+    Public Shared ReadOnly Property VideoControllers As String()
         Get
             If VideoControllersValue Is Nothing Then
-                Try 'one bug report received
+                Try 'bug report received
                     Dim mc As New ManagementClass("Win32_VideoController")
-                    VideoControllersValue = From i2 In mc.GetInstances().OfType(Of ManagementBaseObject)() Select CStr(i2("Caption"))
+                    VideoControllersValue = mc.GetInstances().OfType(Of ManagementBaseObject)().Select(Function(val) CStr(val("Caption"))).ToArray
                 Catch ex As Exception
                     Return {"WMI Error"}
                 End Try

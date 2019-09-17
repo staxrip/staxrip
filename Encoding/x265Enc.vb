@@ -981,6 +981,7 @@ Public Class x265Params
             Return ItemsValue
         End Get
     End Property
+
     Public Overrides Sub ShowHelp(id As String)
         g.ShowCommandLineHelp(Package.x265, id)
     End Sub

@@ -69,7 +69,6 @@ Public Class QSVEnc
     End Property
 
     Overrides Sub Encode()
-
         If OutputExt = "hevc" Then
             Dim codecs = ProcessHelp.GetStdOut(Package.QSVEnc.Path, "--check-features").Right("Codec")
             If Not codecs?.ToLower.Contains("hevc") Then Throw New ErrorAbortException("QSVEnc Error", "H.265/HEVC isn't supported by your Hardware.")

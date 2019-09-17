@@ -1017,7 +1017,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: LSMASHVideoSource, LSMASHAudioSource, LWLibavVideoSource, LWLibavAudioSource
 
-Used Version: 2019-09-10 HolyWu
+Used Version: 2019-09-14 HolyWu
 
 http://avisynth.nl/index.php/LSMASHSource
 
@@ -1883,7 +1883,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: lsmas.LibavSMASHSource, lsmas.LWLibavSource
 
-Used Version: 2019-09-10 HolyWu
+Used Version: 2019-09-14 HolyWu
 
 http://avisynth.nl/index.php/LSMASHSource
 

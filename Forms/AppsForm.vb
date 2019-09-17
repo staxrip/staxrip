@@ -220,7 +220,7 @@ Public Class AppsForm
         MyBase.New()
         InitializeComponent()
 
-        ScaleClientSize(41, 27)
+        ScaleClientSize(45, 30)
         tv.ItemHeight = CInt(FontHeight * 1.5)
 
         Text = $"{Package.Items.Count} tools"

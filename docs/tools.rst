@@ -645,7 +645,7 @@ DFTTest
 
 Filters: dfttest
 
-Used Version: 1.9.4.1
+Used Version: -
 
 http://avisynth.nl/index.php/Dfttest
 
@@ -1245,7 +1245,7 @@ RgTools is a modern rewrite of RemoveGrain, Repair, BackwardClense, Clense, Forw
 
 Filters: RemoveGrain, Clense, ForwardClense, BackwardClense, Repair, VerticalCleaner
 
-Used Version: 0.97
+Used Version: 0.98
 
 http://github.com/pinterf/RgTools
 
@@ -1389,7 +1389,7 @@ TIVTC is a plugin package containing 7 different filters and 3 conditional funct
 
 Filters: TFM, TDecimate, MergeHints, FrameDiff, FieldDiff, ShowCombedTIVTC, RequestLinear
 
-Used Version: 1.0.11
+Used Version: 1.0.14
 
 http://github.com/pinterf/TIVTC
 
@@ -1559,7 +1559,7 @@ BM3D denoising filter for VapourSynth
 
 Filters: bm3d.RGB2OPP, bm3d.OPP2RGB, bm3d.Basic, bm3d.Final, bm3d.VBasic, bm3d.VFinal, bm3d.VAggregate
 
-Used Version: 2016-08-16
+Used Version: r8
 
 https://github.com/HomeOfVapourSynthEvolution/VapourSynth-BM3D
 
@@ -1667,7 +1667,7 @@ VapourSynth port of dfttest.
 
 Filters: dfttest.DFTTest
 
-Used Version: 2017-12-21
+Used Version: r6
 
 https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DFTTest
 
@@ -1845,9 +1845,9 @@ havsfunc
 
 Various popular AviSynth scripts ported To VapourSynth.
 
-Filters: havsfunc.QTGMC, havsfunc.daa, havsfunc.santiag, havsfunc.FixChromaBleedingMod, havsfunc.Deblock_QED, havsfunc.DeHalo_alpha, havsfunc.FineDehalo, havsfunc.YAHR, havsfunc.HQDeringmod, havsfunc.smartfademod, havsfunc.srestore, havsfunc.ivtc_txt60mc, havsfunc.logoNR, havsfunc.Vinverse, havsfunc.Vinverse2, havsfunc.LUTDeCrawl, havsfunc.LUTDeRainbow, havsfunc.Stab, havsfunc.GrainStabilizeMC, havsfunc.MCTemporalDenoise, havsfunc.SMDegrain, havsfunc.STPresso, havsfunc.SigmoidInverse, havsfunc.SigmoidDirect, havsfunc.GrainFactory3, havsfunc.InterFrame, havsfunc.SmoothLevels, havsfunc.FastLineDarkenMOD, havsfunc.Toon, havsfunc.LSFmod, havsfunc.TemporalDegrain, havsfunc.aaf, havsfunc.AverageFrames, havsfunc.Bob, havsfunc.ChangeFPS, havsfunc.Clamp, havsfunc.KNLMeansCL, havsfunc.Overlay, havsfunc.Padding, havsfunc.Resize, havsfunc.SCDetect, havsfunc.Weave, havsfunc.ContraSharpening, havsfunc.MinBlur, havsfunc.sbr, havsfunc.DitherLumaRebuild, havsfunc.mt_expand_multi, havsfunc.mt_inpand_multi, havsfunc.mt_inflate_multi, havsfunc.mt_deflate_multi, havsfunc.EdgeCleaner
+Filters: havsfunc.aaf, havsfunc.AverageFrames, havsfunc.Bob, havsfunc.ChangeFPS, havsfunc.Clamp, havsfunc.ContraSharpening, havsfunc.daa, havsfunc.Deblock_QED, havsfunc.DeHalo_alpha, havsfunc.DitherLumaRebuild, havsfunc.EdgeCleaner, havsfunc.FastLineDarkenMOD, havsfunc.FineDehalo, havsfunc.FixChromaBleedingMod, havsfunc.GrainFactory3, havsfunc.GrainStabilizeMC, havsfunc.HQDeringmod, havsfunc.InterFrame, havsfunc.ivtc_txt60mc, havsfunc.KNLMeansCL, havsfunc.logoNR, havsfunc.LSFmod, havsfunc.LUTDeCrawl, havsfunc.LUTDeRainbow, havsfunc.MCTemporalDenoise, havsfunc.MinBlur, havsfunc.mt_deflate_multi, havsfunc.mt_expand_multi, havsfunc.mt_inflate_multi, havsfunc.mt_inpand_multi, havsfunc.Overlay, havsfunc.Padding, havsfunc.QTGMC, havsfunc.Resize, havsfunc.santiag, havsfunc.sbr, havsfunc.SCDetect, havsfunc.SigmoidDirect, havsfunc.SigmoidInverse, havsfunc.smartfademod, havsfunc.SMDegrain, havsfunc.SmoothLevels, havsfunc.srestore, havsfunc.Stab, havsfunc.STPresso, havsfunc.TemporalDegrain, havsfunc.Toon, havsfunc.Vinverse, havsfunc.Vinverse2, havsfunc.Weave, havsfunc.YAHR
 
-Used Version: 31
+Used Version: 32
 
 http://github.com/HomeOfVapourSynthEvolution/havsfunc
 
@@ -2148,7 +2148,7 @@ Builds an edge map using canny edge detection.
 
 Filters: tcanny.TCanny
 
-Used Version: 2017-07-30
+Used Version: r12
 
 https://github.com/HomeOfVapourSynthEvolution/VapourSynth-TCanny
 

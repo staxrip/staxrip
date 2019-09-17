@@ -1151,16 +1151,6 @@ Public Class Package
                 New VideoFilter("Line", "Sharpen | MSharpen", "MSharpen(threshold = 10, strength = 100, highq = true, mask = false)")}})
 
         Add(New PluginPackage With {
-            .Name = "aWarpSharp2",
-            .Filename = "aWarpSharpMT.dll",
-            .HelpFile = "aWarpSharp.txt",
-            .AvsFilterNames = {"aBlur", "aSobel", "aWarp", "aWarp4", "aWarpSharp", "aWarpSharp2"},
-            .Description = "This filter implements the same warp sharpening algorithm as aWarpSharp by Marc FD, but with several bugfixes and optimizations.",
-            .WebURL = "http://avisynth.nl/index.php/AWarpSharp2",
-            .AvsFiltersFunc = Function() {
-                New VideoFilter("Line", "Sharpen | aWarpSharp2", "aWarpSharp2(thresh=128, blur=2, type=0, depth=16, chroma=3)")}})
-
-        Add(New PluginPackage With {
             .Name = "QTGMC",
             .Filename = "QTGMC.avsi",
             .URL = "http://avisynth.nl/index.php/QTGMC",
@@ -1214,18 +1204,19 @@ Public Class Package
             .Description = "RgTools is a modern rewrite of RemoveGrain, Repair, BackwardClense, Clense, ForwardClense and VerticalCleaner all in a single plugin.",
             .AvsFilterNames = {"RemoveGrain", "Clense", "ForwardClense", "BackwardClense", "Repair", "VerticalCleaner"},
             .AvsFiltersFunc = Function() {
-               New VideoFilter("Noise", "RemoveGrain | RemoveGrain | RemoveGrain", "RemoveGrain(mode=2, modeU=2, modeV=2, planar=false)"),
-               New VideoFilter("Noise", "RemoveGrain | RemoveGrain | RemoveGrain With Repair", "Processed = RemoveGrain(mode=2, modeU=2, modeV=2, planar=false)" + BR + "Repair(Processed, mode=2, modeU=2, modeV=2, planar=false)")}})
+                New VideoFilter("Noise", "RemoveGrain | RemoveGrain | RemoveGrain", "RemoveGrain(mode=2, modeU=2, modeV=2, planar=false)"),
+                New VideoFilter("Noise", "RemoveGrain | RemoveGrain | RemoveGrain With Repair", "Processed = RemoveGrain(mode=2, modeU=2, modeV=2, planar=false)" + BR + "Repair(Processed, mode=2, modeU=2, modeV=2, planar=false)")}})
 
         Add(New PluginPackage With {
             .Name = "JPSDR",
             .Filename = "Plugins_JPSDR.dll",
             .WebURL = "http://forum.doom9.org/showthread.php?t=174248",
-            .Description = "Merge of AutoYUY2, NNEDI3 and ResampleMT",
-            .AvsFilterNames = {"nnedi3", "AutoYUY2", "PointResizeMT", "BilinearResizeMT", "BicubicResizeMT", "LanczosResizeMT", "Lanczos4ResizeMT", "BlackmanResizeMT", "Spline16ResizeMT", "Spline36ResizeMT", "Spline64ResizeMT", "GaussResizeMT", "SincResizeMT", "DeBilinearResizeMT", "DeBicubicResizeMT", "DeLanczosResizeMT", "DeLanczos4ResizeMT", "DeBlackmanResizeMT", "DeSpline16ResizeMT", "DeSpline36ResizeMT", "DeSpline64ResizeMT", "DeGaussResizeMT", "DeSincResizeMT"},
+            .Description = "Merge of AutoYUY2, NNEDI3, HDRTools, aWarpSharpMT and ResampleMT",
+            .AvsFilterNames = {"aBlur", "aSobel", "AutoYUY2", "aWarp", "aWarp4", "aWarpSharp2", "BicubicResizeMT", "BilinearResizeMT", "BlackmanResizeMT", "ConvertLinearRGBtoYUV", "ConvertRGB_Hable_HDRtoSDR", "ConvertRGB_Mobius_HDRtoSDR", "ConvertRGB_Reinhard_HDRtoSDR", "ConvertRGBtoXYZ", "ConvertXYZ_Hable_HDRtoSDR", "ConvertXYZ_Mobius_HDRtoSDR", "ConvertXYZ_Reinhard_HDRtoSDR", "ConvertXYZ_Scale_HDRtoSDR", "ConvertXYZ_Scale_SDRtoHDR", "ConvertXYZtoRGB", "ConvertXYZtoYUV", "ConvertYUVtoLinearRGB", "ConvertYUVtoXYZ", "DeBicubicResizeMT", "DeBilinearResizeMT", "DeBlackmanResizeMT", "DeGaussResizeMT", "DeLanczos4ResizeMT", "DeLanczosResizeMT", "DeSincResizeMT", "DeSpline16ResizeMT", "DeSpline36ResizeMT", "DeSpline64ResizeMT", "GaussResizeMT", "Lanczos4ResizeMT", "LanczosResizeMT", "nnedi3", "PointResizeMT", "SincResizeMT", "Spline16ResizeMT", "Spline36ResizeMT", "Spline64ResizeMT"},
             .AvsFiltersFunc = Function() {
                 New VideoFilter("Field", "nnedi3", "nnedi3(field = 1)"),
-                New VideoFilter("Resize", "ResizeMT", "$select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;Lanczos4ResizeMT;LanczosResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch = 4)")}})
+                New VideoFilter("Resize", "ResizeMT", "$select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;Lanczos4ResizeMT;LanczosResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch = 4)"),
+                New VideoFilter("Line", "Sharpen | aWarpSharp2", "aWarpSharp2(thresh=128, blur=2, type=0, depth=16, chroma=3)")}})
 
         Add(New PluginPackage With {
             .Name = "TIVTC",
@@ -1732,14 +1723,6 @@ Public Class Package
             .WebURL = "https://forum.videohelp.com/threads/393752-CropResize-Cropping-resizing-script",
             .AvsFilterNames = {"CropResize"},
             .AvsFiltersFunc = Function() {New VideoFilter("Resize", "CropResize", $"CropResize(%target_width%, %target_height%, \{BR}    %crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%, \{BR}    InDAR=%source_dar%, OutDAR=%target_dar%, Info=true)")}})
-
-        Add(New PluginPackage With {
-            .Name = "HDRTools",
-            .Filename = "HDRTools.dll",
-            .Description = "Avisynth HDR Tools plugin.",
-            .WebURL = "https://github.com/jpsdr/HDRTools",
-            .HelpURL = "https://github.com/jpsdr/HDRTools/blob/master/HDRTools%20-%20ReadMe.txt",
-            .AvsFilterNames = {"ConvertYUVtoLinearRGB", "ConvertLinearRGBtoYUV", "ConvertYUVtoXYZ", "ConvertXYZtoYUV", "ConvertRGBtoXYZ", "ConvertXYZtoRGB", "ConvertXYZ_Scale_HDRtoSDR", "ConvertXYZ_Scale_SDRtoHDR", "ConvertXYZ_Hable_HDRtoSDR", "ConvertRGB_Hable_HDRtoSDR", "ConvertXYZ_Mobius_HDRtoSDR", "ConvertRGB_Mobius_HDRtoSDR", "ConvertXYZ_Reinhard_HDRtoSDR", "ConvertRGB_Reinhard_HDRtoSDR"}})
 
         Add(New PluginPackage With {
             .Name = "DGHDRtoSDR",

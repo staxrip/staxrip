@@ -1,7 +1,9 @@
 ###
 
+- update: avs plugin JPSDR 3.1.3
+- update: nvenc 4.48
 - new: x265 switch --selective-sao added but the included x265 build
-  does not yet support it
+  3.1+15-a092e82 Wolfberry does not yet support it
 
 ### 2.0.4.4 Beta
 

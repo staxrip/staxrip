@@ -833,8 +833,8 @@ Public Class x265Params
                     New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis File", .BrowseFile = True},
                     New StringParam With {.Switch = "--analysis-load", .Text = "Analysis Load", .BrowseFile = True},
                     New StringParam With {.Switch = "--analysis-save", .Text = "Analysis Save"},
-                    refinectudistortion,
-                    MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
+                    New OptionParam With {.Switch = "--refine-mv", .Text = "Refine MV", .Expand = True, .IntegerValue = True, .Options = {"Disabled", "Level 1: Search around scaled MV", "Level 2: Level 1 + Search around best AMVP cand", "Level 3: Level 2 + Search around the other AMVP cand"}},
+                    refinectudistortion, MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
                 Add("Analysis 2",
                     New NumParam With {.Switch = "--analysis-reuse-level", .Text = "Refine Level", .Config = {1, 10}, .Init = 5},
                     New NumParam With {.Switch = "--scale-factor", .Text = "Scale Factor"},
@@ -847,7 +847,6 @@ Public Class x265Params
                     qpadaptationrange)
                 Add("Analysis 3", Rect, AMP,
                     New BoolParam With {.Switch = "--tskip", .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"},
-                    New BoolParam With {.Switch = "--refine-mv", .Text = "Enable refinement of motion vector for scaled video"},
                     New BoolParam With {.Switch = "--dynamic-refine", .Text = "Dynamic Refine"},
                     EarlySkip, FastIntra, BIntra, CUlossless, TskipFast, LimitModes, RdRefine,
                     New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},

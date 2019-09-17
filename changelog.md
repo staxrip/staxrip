@@ -5,6 +5,7 @@
   file system characters then these characters were replaced
   with an underscore and thus being lost, now the characters
   are escaped/unescaped and thus preserved
+- fix: update x265 switch --refine-mv
 - new: option to check online for new stable version once per day
 
 ### 2.0.4.3 Beta

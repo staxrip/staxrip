@@ -1,4 +1,4 @@
-###
+### 2.0.4.4 Beta
 
 - fix: nfo files with non xml content caused an exception
 - fix: if subtitle and audio titles contained illegal
@@ -8,7 +8,11 @@
 - fix: update x265 switch --refine-mv
 - fix: in the nvenc dialog, Intel decoding options were present
   even when no Intel GPU is present
+- new: a link to the web site has been added to the menu
 - new: option to check online for new stable version once per day
+- new: avs plugin HDRTools
+- new: avs, vs plugin DGHDRtoSDR
+- new: ffms2 parameter colorspace has menu support in the avs code editor
 
 ### 2.0.4.3 Beta
 

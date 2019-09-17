@@ -686,6 +686,18 @@ Used Version: 2053
 http://rationalqm.us/dgdecnv/dgdecnv.html
 
 
+DGHDRtoSDR
+~~~~~~~~~~
+
+Convert UHD BluRay HDR10 to SDR (CUDA).
+
+Filters: DGHDRtoSDR
+
+Used Version: 1.11
+
+http://rationalqm.us/mine.html
+
+
 DGTonemap
 ~~~~~~~~~
 
@@ -912,6 +924,18 @@ Filters: GradFun2DBmod
 Used Version: 1.5
 
 http://avisynth.nl/index.php/GradFun2dbmod
+
+
+HDRTools
+~~~~~~~~
+
+Avisynth HDR Tools plugin.
+
+Filters: ConvertYUVtoLinearRGB, ConvertLinearRGBtoYUV, ConvertYUVtoXYZ, ConvertXYZtoYUV, ConvertRGBtoXYZ, ConvertXYZtoRGB, ConvertXYZ_Scale_HDRtoSDR, ConvertXYZ_Scale_SDRtoHDR, ConvertXYZ_Hable_HDRtoSDR, ConvertRGB_Hable_HDRtoSDR, ConvertXYZ_Mobius_HDRtoSDR, ConvertRGB_Mobius_HDRtoSDR, ConvertXYZ_Reinhard_HDRtoSDR, ConvertRGB_Reinhard_HDRtoSDR
+
+Used Version: 0.5.3
+
+https://github.com/jpsdr/HDRTools
 
 
 HQDeringmod
@@ -1682,6 +1706,18 @@ Filters: DGSource
 Used Version: 2053
 
 http://rationalqm.us/dgdecnv/dgdecnv.html
+
+
+DGHDRtoSDR
+~~~~~~~~~~
+
+Convert UHD BluRay HDR10 to SDR (CUDA).
+
+Filters: DGHDRtoSDR
+
+Used Version: 1.11
+
+http://rationalqm.us/mine.html
 
 
 Dither

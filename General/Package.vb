@@ -1733,6 +1733,25 @@ Public Class Package
             .AvsFilterNames = {"CropResize"},
             .AvsFiltersFunc = Function() {New VideoFilter("Resize", "CropResize", $"CropResize(%target_width%, %target_height%, \{BR}    %crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%, \{BR}    InDAR=%source_dar%, OutDAR=%target_dar%, Info=true)")}})
 
+        Add(New PluginPackage With {
+            .Name = "HDRTools",
+            .Filename = "HDRTools.dll",
+            .Description = "Avisynth HDR Tools plugin.",
+            .WebURL = "https://github.com/jpsdr/HDRTools",
+            .HelpURL = "https://github.com/jpsdr/HDRTools/blob/master/HDRTools%20-%20ReadMe.txt",
+            .AvsFilterNames = {"ConvertYUVtoLinearRGB", "ConvertLinearRGBtoYUV", "ConvertYUVtoXYZ", "ConvertXYZtoYUV", "ConvertRGBtoXYZ", "ConvertXYZtoRGB", "ConvertXYZ_Scale_HDRtoSDR", "ConvertXYZ_Scale_SDRtoHDR", "ConvertXYZ_Hable_HDRtoSDR", "ConvertRGB_Hable_HDRtoSDR", "ConvertXYZ_Mobius_HDRtoSDR", "ConvertRGB_Mobius_HDRtoSDR", "ConvertXYZ_Reinhard_HDRtoSDR", "ConvertRGB_Reinhard_HDRtoSDR"}})
+
+        Add(New PluginPackage With {
+            .Name = "DGHDRtoSDR",
+            .Filename = "DGHDRtoSDR.dll",
+            .Description = "Convert UHD BluRay HDR10 to SDR (CUDA).",
+            .WebURL = "http://rationalqm.us/mine.html",
+            .HelpFile = "DGHDRtoSDR.txt",
+            .AvsFilterNames = {"DGHDRtoSDR"},
+            .AvsFiltersFunc = Function() {New VideoFilter("Color", "DGHDRtoSDR", "DGHDRtoSDR()")},
+            .VSFilterNames = {"DGHDRtoSDR"},
+            .VSFiltersFunc = Function() {New VideoFilter("Color", "DGHDRtoSDR", "clip = core.dghdrtosdr.DGHDRtoSDR(clip, fulldepth=True)")}})
+
         Dim fp = Folder.Settings + "Versions.txt"
 
         Try

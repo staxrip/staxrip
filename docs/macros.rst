@@ -479,6 +479,10 @@ File path to DGDecodeIM
 
 File path to DGDecodeNV
 
+``%app:DGHDRtoSDR%``
+
+File path to DGHDRtoSDR
+
 ``%app:DGIndex%``
 
 File path to DGIndex
@@ -634,6 +638,10 @@ File path to Haali Splitter
 ``%app:havsfunc%``
 
 File path to havsfunc
+
+``%app:HDRTools%``
+
+File path to HDRTools
 
 ``%app:HQDeringmod%``
 
@@ -1247,6 +1255,10 @@ Folder path to DGDecodeIM
 
 Folder path to DGDecodeNV
 
+``%app_dir:DGHDRtoSDR%``
+
+Folder path to DGHDRtoSDR
+
 ``%app_dir:DGIndex%``
 
 Folder path to DGIndex
@@ -1402,6 +1414,10 @@ Folder path to Haali Splitter
 ``%app_dir:havsfunc%``
 
 Folder path to havsfunc
+
+``%app_dir:HDRTools%``
+
+Folder path to HDRTools
 
 ``%app_dir:HQDeringmod%``
 

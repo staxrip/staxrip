@@ -495,6 +495,7 @@ Public Class SafeSerialization
     Private Shared Function IsSimpleType(t As Type) As Boolean
         Return t.IsPrimitive OrElse
             t Is GetType(String) OrElse
+            t Is GetType(DateTime) OrElse
             t Is GetType(SettingBag(Of String)) OrElse
             t Is GetType(SettingBag(Of Boolean)) OrElse
             t Is GetType(SettingBag(Of Integer)) OrElse

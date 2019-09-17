@@ -7,6 +7,10 @@ Public Class ApplicationSettings
     Public AudioProfiles As List(Of AudioProfile)
     Public AviSynthFilterPreferences As StringPairList
     Public AviSynthProfiles As List(Of FilterCategory)
+    Public CheckForUpdates As Boolean
+    Public CheckForUpdatesLastRequest As DateTime
+    Public CheckForUpdatesQuestion As Boolean
+    Public CheckForUpdatesDismissedVersion As Integer
     Public CmdlPresetsEac3to As String
     Public CmdlPresetsMKV As String
     Public CmdlPresetsMP4 As String
@@ -23,11 +27,13 @@ Public Class ApplicationSettings
     Public EventCommands As List(Of EventCommand)
     Public FilterSetupProfiles As List(Of TargetVideoScript)
     Public HidePreviewButtons As Boolean
+    Public IconFile As String
     Public LastPosition As Integer
     Public LastSourceDir As String
     Public LogFileNum As Integer = 50
     Public MinimizeToTray As Boolean
     Public MinimumDiskSpace As Integer = 20
+    Public MinPreviewSize As Integer = 60
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
     Public ParallelProcsNum As Integer = 2
@@ -49,6 +55,7 @@ Public Class ApplicationSettings
     Public StringDictionary As Dictionary(Of String, String)
     Public StringList As List(Of String)
     Public TargetImageSizeMenu As String
+    Public ThumbnailBackgroundColor As Color = Color.AliceBlue
     Public ToolStripRenderModeEx As ToolStripRenderModeEx
     Public UIScaleFactor As Single = 1
     Public VapourSynthFilterPreferences As StringPairList
@@ -59,9 +66,6 @@ Public Class ApplicationSettings
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
     Public WriteDebugLog As Boolean
-    Public ThumbnailBackgroundColor As Color = Color.AliceBlue
-    Public MinPreviewSize As Integer = 60
-    Public IconFile As String
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

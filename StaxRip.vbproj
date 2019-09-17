@@ -115,6 +115,7 @@
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.PowerShell.5.ReferenceAssemblies.1.1.0\lib\net4\System.Management.Automation.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Security">
       <Name>System.Security</Name>
@@ -183,6 +184,7 @@
     <Compile Include="General\GlobalCommands.vb" />
     <Compile Include="General\Automation.vb" />
     <Compile Include="General\ProcController.vb" />
+    <Compile Include="General\Http.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>

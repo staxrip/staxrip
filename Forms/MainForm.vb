@@ -3286,6 +3286,10 @@ Public Class MainForm
             ui.CreateFlowPage("General")
 
             Dim b = ui.AddBool()
+            b.Text = "Check for updates once per day"
+            b.Field = NameOf(s.CheckForUpdates)
+
+            b = ui.AddBool()
             b.Text = "Show template selection when loading new files"
             b.Field = NameOf(s.ShowTemplateSelection)
 
@@ -6072,6 +6076,8 @@ Public Class MainForm
         IsLoading = False
         Refresh()
         ProcessCommandLine(Environment.GetCommandLineArgs)
+        Http.ShowUpdateQuestion()
+        Http.CheckForUpdates()
         MyBase.OnShown(e)
         'TestForm.ShowForm()
     End Sub

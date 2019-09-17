@@ -557,7 +557,7 @@ Public Class NVEnc
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
             If Not Decoder.MenuButton Is Nothing AndAlso item Is Decoder OrElse item Is Nothing Then
-                Dim isIntelPresent = OS.VideoControllers.Where(Function(val) val.Contains("AMD") OrElse val.Contains("NVIDIA")).Count <> OS.VideoControllers.Length
+                Dim isIntelPresent = OS.VideoControllers.Where(Function(val) val.Contains("Intel")).Count > 0
 
                 For x = 0 To Decoder.Options.Length - 1
                     If Decoder.Options(x).Contains("Intel") Then

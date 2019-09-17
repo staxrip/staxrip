@@ -113,19 +113,6 @@ Public Class QSVEnc
     Public Class EncoderParams
         Inherits CommandLineParams
 
-        Shared Modes As New List(Of StringPair) From {
-            New StringPair("avbr", "AVBR - Average Variable Bitrate"),
-            New StringPair("cbr", "CBR - Constant Bitrate"),
-            New StringPair("cqp", "CQP - Constant QP"),
-            New StringPair("icq", "ICQ - Intelligent Constant Quality"),
-            New StringPair("la", "LA - VBR Lookahead"),
-            New StringPair("la-hrd", "LA-HRD - VBR HRD Lookahead"),
-            New StringPair("la-icq", "LA-ICQ - Intelligent Constant Quality Lookahead"),
-            New StringPair("qvbr", "QVBR - Quality Variable Bitrate using bitrate"),
-            New StringPair("qvbr-q", "QVBR-Q - Quality Variable Bitrate using quality"),
-            New StringPair("vbr", "VBR - Variable Bitrate"),
-            New StringPair("vcm", "VCM - Video Conferencing Mode")}
-
         Sub New()
             Title = "QSVEnc Options"
         End Sub
@@ -146,8 +133,8 @@ Public Class QSVEnc
             .Name = "Mode",
             .Text = "Mode",
             .Expand = True,
-            .Options = Modes.Select(Function(a) a.Value).ToArray,
-            .Values = Modes.Select(Function(a) a.Name).ToArray,
+            .Options = {"AVBR - Average Variable Bitrate", "CBR - Constant Bitrate", "CQP - Constant QP", "ICQ - Intelligent Constant Quality", "LA - VBR Lookahead", "LA-HRD - VBR HRD Lookahead", "LA-ICQ - Intelligent Constant Quality Lookahead", "QVBR - Quality Variable Bitrate using bitrate", "QVBR-Q - Quality Variable Bitrate using quality", "VBR - Variable Bitrate", "VCM - Video Conferencing Mode"},
+            .Values = {"avbr", "cbr", "cqp", "icq", "la", "la-hrd", "la-icq", "qvbr", "qvbr-q", "vbr", "vcm"},
             .InitValue = 2}
 
         Property Deinterlace As New OptionParam With {
@@ -338,12 +325,6 @@ Public Class QSVEnc
             g.ShowCommandLineHelp(Package.QSVEnc, id)
         End Sub
 
-        Function GetMode(name As String) As Integer
-            For x = 0 To Modes.Count - 1
-                If Modes(x).Name = name Then Return x
-            Next
-        End Function
-
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
             If item Is Deinterlace Then
                 If Deinterlace.ValueText = "normal" OrElse Deinterlace.ValueText = "bob" Then
@@ -354,19 +335,17 @@ Public Class QSVEnc
                 End If
             End If
 
-            If Not Mode.MenuButton Is Nothing Then
-                If item Is Codec OrElse item Is Nothing Then
-                    For Each i In Modes
-                        Select Case Codec.ValueText
-                            Case "h264"
-                                Mode.ShowOption(GetMode(i.Name), True)
-                            Case "hevc"
-                                Mode.ShowOption(GetMode(i.Name), i.Name.EqualsAny("cbr", "vbr", "cqp", "vqp", "icq", "vcm"))
-                            Case "mpeg2"
-                                Mode.ShowOption(GetMode(i.Name), i.Name.EqualsAny("cbr", "vbr", "avbr", "cqp", "vqp"))
-                        End Select
-                    Next
-                End If
+            If Not Mode.MenuButton Is Nothing AndAlso item Is Codec OrElse item Is Nothing Then
+                For x = 0 To Mode.Values.Length - 1
+                    Select Case Codec.ValueText
+                        Case "h264"
+                            Mode.ShowOption(x, True)
+                        Case "hevc"
+                            Mode.ShowOption(x, Mode.Values(x).EqualsAny("cbr", "vbr", "cqp", "icq", "vcm"))
+                        Case "mpeg2"
+                            Mode.ShowOption(x, Mode.Values(x).EqualsAny("cbr", "vbr", "avbr", "cqp"))
+                    End Select
+                Next
             End If
 
             If Not QPI.NumEdit Is Nothing Then

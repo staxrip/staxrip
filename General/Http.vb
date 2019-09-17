@@ -24,7 +24,7 @@ Public Class Http
                 If Not match.Success Then Throw New Exception("regex failure")
                 Dim onlineVersion = match.Groups(1).Value.Replace(".", "").ToInt
                 Dim currentVersion = Application.ProductVersion.Replace(".", "").ToInt
-                If currentVersion > 3000 Then Throw New Exception("invalid version scheme")
+                If currentVersion > 9000 Then Throw New Exception("invalid version scheme")
 
                 If onlineVersion > currentVersion AndAlso onlineVersion <> s.CheckForUpdatesDismissedVersion Then
                     Using td As New TaskDialog(Of String)

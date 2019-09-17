@@ -1015,6 +1015,11 @@ Public Class FilterParameters
                       "LibavSMASHSource",
                       "LWLibavSource"}, "prefer_hw", "2", "prefer_hw | Intel Quick Sync acceleration")
 
+                add2({"LSMASHVideoSource",
+                      "LWLibavVideoSource",
+                      "LibavSMASHSource",
+                      "LWLibavSource"}, "prefer_hw", "3", "prefer_hw | HW Automatic")
+
                 add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", """YUV420P8""", "format | YUV420P8")
                 add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", """YUV422P8""", "format | YUV422P8")
                 add2({"LSMASHVideoSource", "LWLibavVideoSource", "LibavSMASHSource", "LWLibavSource"}, "format", """YUV444P8""", "format | YUV444P8")

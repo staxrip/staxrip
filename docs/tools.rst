@@ -29,7 +29,7 @@ AVSMeter
 
 AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.
 
-Used Version: 2.9.5
+Used Version: 2.9.6
 
 http://forum.doom9.org/showthread.php?t=174797
 
@@ -369,7 +369,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.1+15-a092e82 Wolfberry
+Used Version: 3.1+20-f5d7563 Wolfberry
 
 http://x265.org
 
@@ -456,18 +456,6 @@ Filters: avstp_set_threads
 Used Version: 1.0.3.0
 
 http://avisynth.nl/index.php/AVSTP
-
-
-aWarpSharp2
-~~~~~~~~~~~
-
-This filter implements the same warp sharpening algorithm as aWarpSharp by Marc FD, but with several bugfixes and optimizations.
-
-Filters: aBlur, aSobel, aWarp, aWarp4, aWarpSharp, aWarpSharp2
-
-Used Version: 2.0.1.7
-
-http://avisynth.nl/index.php/AWarpSharp2
 
 
 checkmate
@@ -633,7 +621,7 @@ DePan
 
 Filters: DePan, DePanInterleave, DePanStabilize, DePanScenes
 
-Used Version: 1.13.1
+Used Version: 2.7.41
 
 http://avisynth.nl/index.php/DePan
 
@@ -645,7 +633,7 @@ DePanEstimate
 
 Filters: DePanEstimate
 
-Used Version: 1.13.1
+Used Version: 2.7.41
 
 http://avisynth.nl/index.php/DePan
 
@@ -693,7 +681,7 @@ Convert UHD BluRay HDR10 to SDR (CUDA).
 
 Filters: DGHDRtoSDR
 
-Used Version: 1.11
+Used Version: 1.12
 
 http://rationalqm.us/mine.html
 
@@ -813,7 +801,7 @@ FFT3DFilter uses Fast Fourier Transform method for image processing in frequency
 
 Filters: FFT3DFilter
 
-Used Version: 2.4.7
+Used Version: 2.6.7
 
 http://github.com/pinterf/fft3dfilter
 
@@ -926,18 +914,6 @@ Used Version: 1.5
 http://avisynth.nl/index.php/GradFun2dbmod
 
 
-HDRTools
-~~~~~~~~
-
-Avisynth HDR Tools plugin.
-
-Filters: ConvertYUVtoLinearRGB, ConvertLinearRGBtoYUV, ConvertYUVtoXYZ, ConvertXYZtoYUV, ConvertRGBtoXYZ, ConvertXYZtoRGB, ConvertXYZ_Scale_HDRtoSDR, ConvertXYZ_Scale_SDRtoHDR, ConvertXYZ_Hable_HDRtoSDR, ConvertRGB_Hable_HDRtoSDR, ConvertXYZ_Mobius_HDRtoSDR, ConvertRGB_Mobius_HDRtoSDR, ConvertXYZ_Reinhard_HDRtoSDR, ConvertRGB_Reinhard_HDRtoSDR
-
-Used Version: 0.5.3
-
-https://github.com/jpsdr/HDRTools
-
-
 HQDeringmod
 ~~~~~~~~~~~
 
@@ -989,11 +965,11 @@ http://avisynth.nl/index.php/JincResize
 JPSDR
 ~~~~~
 
-Merge of AutoYUY2, NNEDI3 and ResampleMT
+Merge of AutoYUY2, NNEDI3, HDRTools, aWarpSharpMT and ResampleMT
 
-Filters: nnedi3, AutoYUY2, PointResizeMT, BilinearResizeMT, BicubicResizeMT, LanczosResizeMT, Lanczos4ResizeMT, BlackmanResizeMT, Spline16ResizeMT, Spline36ResizeMT, Spline64ResizeMT, GaussResizeMT, SincResizeMT, DeBilinearResizeMT, DeBicubicResizeMT, DeLanczosResizeMT, DeLanczos4ResizeMT, DeBlackmanResizeMT, DeSpline16ResizeMT, DeSpline36ResizeMT, DeSpline64ResizeMT, DeGaussResizeMT, DeSincResizeMT
+Filters: aBlur, aSobel, AutoYUY2, aWarp, aWarp4, aWarpSharp2, BicubicResizeMT, BilinearResizeMT, BlackmanResizeMT, ConvertLinearRGBtoYUV, ConvertRGB_Hable_HDRtoSDR, ConvertRGB_Mobius_HDRtoSDR, ConvertRGB_Reinhard_HDRtoSDR, ConvertRGBtoXYZ, ConvertXYZ_Hable_HDRtoSDR, ConvertXYZ_Mobius_HDRtoSDR, ConvertXYZ_Reinhard_HDRtoSDR, ConvertXYZ_Scale_HDRtoSDR, ConvertXYZ_Scale_SDRtoHDR, ConvertXYZtoRGB, ConvertXYZtoYUV, ConvertYUVtoLinearRGB, ConvertYUVtoXYZ, DeBicubicResizeMT, DeBilinearResizeMT, DeBlackmanResizeMT, DeGaussResizeMT, DeLanczos4ResizeMT, DeLanczosResizeMT, DeSincResizeMT, DeSpline16ResizeMT, DeSpline36ResizeMT, DeSpline64ResizeMT, GaussResizeMT, Lanczos4ResizeMT, LanczosResizeMT, nnedi3, PointResizeMT, SincResizeMT, Spline16ResizeMT, Spline36ResizeMT, Spline64ResizeMT
 
-Used Version: 3.0.0
+Used Version: 3.1.3
 
 http://forum.doom9.org/showthread.php?t=174248
 
@@ -1041,7 +1017,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: LSMASHVideoSource, LSMASHAudioSource, LWLibavVideoSource, LWLibavAudioSource
 
-Used Version: 2019-09-14 HolyWu
+Used Version: 2019-09-17 HolyWu
 
 http://avisynth.nl/index.php/LSMASHSource
 
@@ -1185,7 +1161,7 @@ MVTools is collection of functions for estimation and compensation of objects mo
 
 Filters: MSuper, MAnalyse, MCompensate, MMask, MDeGrain1, MDeGrain2, MDegrain3
 
-Used Version: 2.7.38
+Used Version: 2.7.41
 
 http://github.com/pinterf/mvtools
 
@@ -1715,7 +1691,7 @@ Convert UHD BluRay HDR10 to SDR (CUDA).
 
 Filters: DGHDRtoSDR
 
-Used Version: 1.11
+Used Version: 1.12
 
 http://rationalqm.us/mine.html
 
@@ -1919,7 +1895,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: lsmas.LibavSMASHSource, lsmas.LWLibavSource
 
-Used Version: 2019-09-14 HolyWu
+Used Version: 2019-09-17 HolyWu
 
 http://avisynth.nl/index.php/LSMASHSource
 

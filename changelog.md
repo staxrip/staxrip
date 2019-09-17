@@ -2,8 +2,14 @@
 
 - update: avs plugin JPSDR 3.1.3
 - update: nvenc 4.48
-- new: x265 switch --selective-sao added but the included x265 build
-  3.1+15-a092e82 Wolfberry does not yet support it
+- update: x265 3.1+20-f5d7563 Wolfberry
+- update: AVSMeter 2.9.6
+- update: L-Smash Works 2019-09-17 HolyWu
+- update: DGHDRtoSDR 1.12
+- update: mvtools2 2.7.41
+- update: FFT3dFilter 2.6.7
+- new: x265 switch --selective-sao added
+- new: L-Smash Works parameters prefer_hw 3 HW auto added to menu
 
 ### 2.0.4.4 Beta
 

@@ -351,10 +351,6 @@ File path to AvsResize
 
 File path to AVSTP
 
-``%app:aWarpSharp2%``
-
-File path to aWarpSharp2
-
 ``%app:AWarpSharp2%``
 
 File path to AWarpSharp2
@@ -638,10 +634,6 @@ File path to Haali Splitter
 ``%app:havsfunc%``
 
 File path to havsfunc
-
-``%app:HDRTools%``
-
-File path to HDRTools
 
 ``%app:HQDeringmod%``
 
@@ -1127,10 +1119,6 @@ Folder path to AvsResize
 
 Folder path to AVSTP
 
-``%app_dir:aWarpSharp2%``
-
-Folder path to aWarpSharp2
-
 ``%app_dir:AWarpSharp2%``
 
 Folder path to AWarpSharp2
@@ -1414,10 +1402,6 @@ Folder path to Haali Splitter
 ``%app_dir:havsfunc%``
 
 Folder path to havsfunc
-
-``%app_dir:HDRTools%``
-
-Folder path to HDRTools
 
 ``%app_dir:HQDeringmod%``
 

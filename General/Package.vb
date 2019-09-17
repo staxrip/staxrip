@@ -433,6 +433,7 @@ Public Class Package
         .Filename = "fft3dfilter.dll",
         .URL = "http://github.com/pinterf/fft3dfilter",
         .Description = "FFT3DFilter uses Fast Fourier Transform method for image processing in frequency domain.",
+        .HelpFile = "fft3dfilter.html",
         .AvsFilterNames = {"FFT3DFilter"},
         .AvsFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter | FFT3DFilter", "FFT3DFilter()")}})
 
@@ -604,7 +605,7 @@ Public Class Package
             .Name = "mvtools2",
             .Filename = "mvtools2.dll",
             .WebURL = "http://github.com/pinterf/mvtools",
-            .HelpURL = "http://avisynth.org.ru/mvtools/mvtools2.html",
+            .HelpFile = "mvtools2.html",
             .Description = "MVTools is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
             .AvsFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDeGrain1", "MDeGrain2", "MDegrain3"}})
 
@@ -680,7 +681,7 @@ Public Class Package
             .Name = "DePan",
             .Filename = "DePan.dll",
             .DirPath = "Plugins\AVS\MVTools2",
-             .HelpFile = "Readme_depans.txt",
+            .HelpFile = "DePan.html",
             .WebURL = "http://avisynth.nl/index.php/DePan",
             .AvsFilterNames = {"DePan", "DePanInterleave", "DePanStabilize", "DePanScenes"}})
 
@@ -688,7 +689,7 @@ Public Class Package
             .Name = "DePanEstimate",
             .DirPath = "Plugins\AVS\MVTools2",
             .Filename = "DePanEstimate.dll",
-             .HelpFile = "Readme_depans.txt",
+            .HelpFile = "DePan.html",
             .WebURL = "http://avisynth.nl/index.php/DePan",
             .AvsFilterNames = {"DePanEstimate"}})
 

@@ -4497,10 +4497,10 @@ Public Class MainForm
     Private Sub tbBitrate_KeyDown(sender As Object, e As KeyEventArgs) Handles tbBitrate.KeyDown
         If e.KeyData = Keys.Up Then
             e.Handled = True
-            tbBitrate.Text = Math.Max(1, Calc.GetPreviousMod(tbBitrate.Text.ToInt, 50)).ToString
+            tbBitrate.Text = Math.Max(0, Calc.GetPreviousMod(tbBitrate.Text.ToInt, 50)).ToString
         ElseIf e.KeyData = Keys.Down Then
             e.Handled = True
-            tbBitrate.Text = Math.Max(1, Calc.GetNextMod(tbBitrate.Text.ToInt, 50)).ToString
+            tbBitrate.Text = Math.Max(0, Calc.GetNextMod(tbBitrate.Text.ToInt, 50)).ToString
         End If
     End Sub
 
@@ -4520,10 +4520,10 @@ Public Class MainForm
 
         If e.KeyData = Keys.Up Then
             e.Handled = True
-            tbTargetSize.Text = Math.Max(1, Calc.GetPreviousMod(tbTargetSize.Text.ToInt, modValue)).ToString
+            tbTargetSize.Text = Math.Max(0, Calc.GetPreviousMod(tbTargetSize.Text.ToInt, modValue)).ToString
         ElseIf e.KeyData = Keys.Down Then
             e.Handled = True
-            tbTargetSize.Text = Math.Max(1, Calc.GetNextMod(tbTargetSize.Text.ToInt, modValue)).ToString
+            tbTargetSize.Text = Math.Max(0, Calc.GetNextMod(tbTargetSize.Text.ToInt, modValue)).ToString
         End If
     End Sub
 
@@ -4536,7 +4536,7 @@ Public Class MainForm
             If tbTargetSize.Focused Then p.BitrateIsFixed = False
 
             If Integer.TryParse(tbTargetSize.Text, Nothing) Then
-                p.TargetSize = Math.Max(1, CInt(tbTargetSize.Text))
+                p.TargetSize = Math.Max(0, CInt(tbTargetSize.Text))
                 BlockSize = True
                 If Not BlockBitrate Then tbBitrate.Text = CInt(Calc.GetVideoBitrate).ToString
                 BlockSize = False
@@ -4551,7 +4551,7 @@ Public Class MainForm
             If tbBitrate.Focused Then p.BitrateIsFixed = True
 
             If Integer.TryParse(tbBitrate.Text, Nothing) Then
-                p.VideoBitrate = Math.Max(1, CInt(tbBitrate.Text))
+                p.VideoBitrate = Math.Max(0, CInt(tbBitrate.Text))
                 BlockBitrate = True
                 If Not BlockSize Then tbTargetSize.Text = CInt(Calc.GetSize).ToString
                 BlockBitrate = False

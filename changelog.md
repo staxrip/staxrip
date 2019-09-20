@@ -16,6 +16,8 @@
 - update: x265 3.1+20-f5d7563 Wolfberry
 - new: x265 switch --selective-sao added
 - new: L-Smash Works parameters prefer_hw 3 HW auto added to menu
+- new: allow to set the bitrate and size to 0 in the main dialog,
+  nvenc has usecases for it
 
 ### 2.0.4.4 Beta
 

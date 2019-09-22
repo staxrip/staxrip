@@ -1392,6 +1392,7 @@ Public Class ObjectStorage
     Private IntDictionary As New Dictionary(Of String, Integer)
     Private DoubleDictionary As New Dictionary(Of String, Double)
     Private BoolDictionaryValue As Dictionary(Of String, Boolean)
+
     ReadOnly Property BoolDictionary() As Dictionary(Of String, Boolean)
         Get
             If BoolDictionaryValue Is Nothing Then

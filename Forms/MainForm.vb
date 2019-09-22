@@ -4388,7 +4388,7 @@ Public Class MainForm
         ret.Add("Apps|Media Info|vspipe", NameOf(g.DefaultCommands.StartTool), {"vspipe"})
         ret.Add("Apps|DGIndex|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|DGIndex|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
-        ret.Add("Apps|Players|mpv.net", NameOf(g.DefaultCommands.StartTool), {"mpvnet"})
+        ret.Add("Apps|Players|mpv.net", NameOf(g.DefaultCommands.StartTool), {"mpv.net"})
         ret.Add("Apps|Thumbnails|MTN Thumbnailer", NameOf(SaveMTN))
         ret.Add("Apps|Thumbnails|StaxRip Thumbnailer", NameOf(ShowBatchGenerateThumbnailsDialog))
         ret.Add("Apps|Animation|Animated GIF", NameOf(SaveGif))

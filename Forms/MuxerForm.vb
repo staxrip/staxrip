@@ -767,7 +767,7 @@ Public Class MuxerForm
             t.Text = "Video Track Name"
             t.Help = "Optional name of the video stream that may contain macros."
             t.Expandet = True
-            t.Property = NameOf(MkvMuxer.VideoTrackName)
+            t.Property = NameOf(Muxer.VideoTrackName)
 
             Dim tm = UI.AddTextMenu()
             tm.Text = "Display Aspect Ratio"

@@ -18,6 +18,7 @@
 - new: L-Smash Works parameters prefer_hw 3 HW auto added to menu
 - new: allow to set the bitrate and size to 0 in the main dialog,
   nvenc has usecases for it
+- new: add support of video track title/name using MP4Box
 
 ### 2.0.4.4 Beta
 

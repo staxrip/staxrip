@@ -731,17 +731,13 @@ Public Class MuxerForm
         tb.Property = NameOf(Muxer.CoverFile)
         tb.BrowseFile("jpg, png|*.jpg;*.png")
 
-        Dim mb As SimpleUI.TextMenuBlock
-
-        If Not TypeOf Muxer Is WebMMuxer Then
-            mb = UI.AddTextMenu()
-            mb.Text = "Chapters"
-            mb.Expandet = True
-            mb.Help = "Chapter file to be muxed."
-            mb.Property = NameOf(Muxer.ChapterFile)
-            mb.AddMenu("Browse File...", Function() g.BrowseFile("txt, xml|*.txt;*.xml"))
-            mb.AddMenu("Edit with chapterEditor...", Sub() Process.Start(Package.chapterEditor.Path, Muxer.ChapterFile.Escape))
-        End If
+        Dim mb = UI.AddTextMenu()
+        mb.Text = "Chapters"
+        mb.Expandet = True
+        mb.Help = "Chapter file to be muxed."
+        mb.Property = NameOf(Muxer.ChapterFile)
+        mb.AddMenu("Browse File...", Function() g.BrowseFile("txt, xml|*.txt;*.xml"))
+        mb.AddMenu("Edit with chapterEditor...", Sub() Process.Start(Package.chapterEditor.Path, Muxer.ChapterFile.Escape))
 
         If TypeOf Muxer Is MkvMuxer Then
             CmdlControl.Presets = s.CmdlPresetsMKV
@@ -769,7 +765,7 @@ Public Class MuxerForm
 
             Dim t = UI.AddText()
             t.Text = "Video Track Name"
-            t.Help = "Optional name of the video stream that may contain macro."
+            t.Help = "Optional name of the video stream that may contain macros."
             t.Expandet = True
             t.Property = NameOf(MkvMuxer.VideoTrackName)
 
@@ -800,6 +796,12 @@ Public Class MuxerForm
             tpAttachments.Enabled = False
 
             CmdlControl.Presets = s.CmdlPresetsMP4
+
+            Dim t = UI.AddText()
+            t.Text = "Video Track Name"
+            t.Help = "Optional name of the video stream that may contain macros."
+            t.Expandet = True
+            t.Property = NameOf(Muxer.VideoTrackName)
 
             Dim tm = UI.AddTextMenu()
             tm.Text = "Pixel Aspect Ratio:"

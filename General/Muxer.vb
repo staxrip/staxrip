@@ -14,6 +14,7 @@ Public MustInherit Class Muxer
     Property ChapterFile As String = ""
     Property TagFile As String = ""
     Property TimestampsFile As String = ""
+    Property VideoTrackName As String = ""
 
     MustOverride Sub Mux()
 
@@ -265,17 +266,19 @@ Public Class MP4Muxer
             args.Append(" -fps " + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
         End If
 
-        Dim temp = ""
+        Dim videoParams = ""
 
         If PAR <> "" Then
             Dim val = Calc.ParseCustomAR(PAR, 0, 0)
-            If val.X <> 0 Then temp = ":par=" & val.X & ":" & val.Y
+            If val.X <> 0 Then videoParams = ":par=" & val.X & ":" & val.Y
         ElseIf Calc.IsARSignalingRequired Then
             Dim par = Calc.GetTargetPAR
-            If TypeOf p.VideoEncoder Is NullEncoder Then temp = ":par=" & par.X & ":" & par.Y
+            If TypeOf p.VideoEncoder Is NullEncoder Then videoParams = ":par=" & par.X & ":" & par.Y
         End If
 
-        args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + temp).Escape)
+        If VideoTrackName <> "" Then videoParams += ":name=" + Macro.Expand(VideoTrackName)
+
+        args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + videoParams).Escape)
 
         AddAudio(p.Audio0, args)
         AddAudio(p.Audio1, args)
@@ -474,7 +477,6 @@ End Class
 Public Class MkvMuxer
     Inherits Muxer
 
-    Property VideoTrackName As String = ""
     Property VideoTrackLanguage As New Language(CultureInfo.InvariantCulture)
     Property Title As String = ""
     Property DAR As String = ""

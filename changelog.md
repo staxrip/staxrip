@@ -1,7 +1,7 @@
 ###
 
 - update: JPSDR 3.1.3
-- update: nvenc 4.48
+- update: nvenc 4.50
 - update: AVSMeter 2.9.6
 - update: DGHDRtoSDR 1.12
 - update: mvtools2 2.7.41

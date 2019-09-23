@@ -154,7 +154,8 @@ Public Class NVEnc
             .InitValue = 0}
 
         Property QPAdvanced As New BoolParam With {
-            .Text = "Show advanced QP settings"
+            .Text = "Show advanced QP settings",
+            .VisibleFunc = Function() Mode.Value = 0
         }
 
         Property QP As New NumParam With {

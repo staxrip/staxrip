@@ -10,10 +10,10 @@ StaxRip is a video encoding app for Windows with a unrivaled feature set and usa
 Features
 --------
 
-- Support for countless formats and tools
+- Support for a wide variety of formats and tools
 - Hardware encoding for AMD, Intel and NVIDIA
 - Batch Processing
-- AviSynth and VapourSynth code editor
+- Video editing using AviSynth and VapourSynth
 - Extendable via PowerShell
 - Minimal user interaction required due to rich configuration and automation features
 - Copy modes for audio and video for plain remuxing
@@ -42,7 +42,7 @@ Download
 
 `Stable Releases <https://github.com/staxrip/staxrip/releases>`_
 
-Before making a bug report please try the newest test build:
+Before making a bug report please try the newest beta build:
 
 `DropBox <https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0>`_
 

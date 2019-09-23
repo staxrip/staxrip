@@ -554,7 +554,8 @@ Public Class Package
             .DownloadURL = "http://download.microsoft.com/download/8/9/d/89d195e1-1901-4036-9a75-fbe46443fc5a/vc_redist.x64.exe",
             .FixedDir = Folder.System,
             .IgnoreVersion = True,
-            .IsRequiredFunc = Function() SangNom2.IsRequired OrElse VSFilterMod.IsRequired,
+            .IsRequiredFunc = Function() SangNom2.IsRequired OrElse VSFilterMod.IsRequired OrElse
+                                         eac3to.IsRequired,
             .TreePath = "Runtimes"})
 
         Add(New Package With {

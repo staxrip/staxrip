@@ -1,21 +1,20 @@
 Support
 =======
 
-Before contacting the support please note that for most issues it's necessary to see a full log file which you can paste for instance at `www.pastebin.com <www.pastebin.com>`_, screenshots are also helpful.
+For bug reports and feature requests please use the `Issue Tracker <https://github.com/staxrip/staxrip/issues>`_. Search for past issues before opening a new issue. Before making a bug report please try the newest Beta Build:
 
-Issue Tracker
--------------
+https://staxrip.readthedocs.io/intro.html#download
 
-For bug reports and feature requests please use the `Issue Tracker <https://github.com/staxrip/staxrip/issues>`_, English Only. Search for past issues before opening a new issue.
-
-Before making a bug report please try the newest `Test Build <https://staxrip.readthedocs.io/intro.html#download>`_:
 
 Forum
 -----
 
 https://forum.doom9.org/showthread.php?t=175845
 
-Discord
+https://forum.videohelp.com/threads/369913-StaxRip-support-thread
+
+
+User Chat
 -------
 
 https://discord.gg/rRn7vGU

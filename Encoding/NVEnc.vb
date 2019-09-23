@@ -191,23 +191,23 @@ Public Class NVEnc
             .VisibleFunc = Function() Codec.ValueText = "h264" AndAlso Profile.Visible}
 
         Property MaxCLL As New NumParam With {
-        .Text = "Maximum CLL",
-        .VisibleFunc = Function() Codec.ValueText = "h265",
-        .Switch = "--max-cll",
-        .Config = {0, Integer.MaxValue, 50},
-        .ImportAction = Sub(arg As String)
-                            If arg = "" Then Exit Sub
-                            Dim a = arg.Trim(""""c).Split(","c)
-                            MaxCLL.Value = a(0).ToInt
-                            MaxFALL.Value = a(1).ToInt
-                        End Sub,
-        .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", "")}
+            .Switch = "--max-cll",
+            .Text = "Maximum CLL",
+            .VisibleFunc = Function() Codec.ValueText = "h265",
+            .Config = {0, Integer.MaxValue, 50},
+            .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", ""),
+            .ImportAction = Sub(arg As String)
+                                If arg = "" Then Exit Sub
+                                Dim a = arg.Trim(""""c).Split(","c)
+                                MaxCLL.Value = a(0).ToInt
+                                MaxFALL.Value = a(1).ToInt
+                            End Sub}
 
         Property MaxFALL As New NumParam With {
-        .Config = {0, Integer.MaxValue, 50},
-        .ArgsFunc = Function() "",
-        .VisibleFunc = Function() Codec.ValueText = "h265",
-        .Text = "Maximum FALL"}
+            .Switches = {"--max-cll"},
+            .Text = "Maximum FALL",
+            .Config = {0, Integer.MaxValue, 50},
+            .VisibleFunc = Function() Codec.ValueText = "h265"}
 
         Property KNN As New BoolParam With {
             .Switch = "--vpp-knn",

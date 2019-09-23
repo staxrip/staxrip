@@ -204,10 +204,10 @@ Public Class QSVEnc
         .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", "")}
 
         Property MaxFALL As New NumParam With {
-        .Config = {0, Integer.MaxValue, 50},
-        .ArgsFunc = Function() "",
-        .VisibleFunc = Function() Codec.ValueText = "hevc",
-        .Text = "Maximum FALL"}
+            .Switches = {"--max-cll"},
+            .Text = "Maximum FALL",
+            .Config = {0, Integer.MaxValue, 50},
+            .VisibleFunc = Function() Codec.ValueText = "hevc"}
 
         Property TFF As New BoolParam With {
             .Switch = "--tff",

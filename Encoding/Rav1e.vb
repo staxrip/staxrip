@@ -143,7 +143,7 @@ Public Class Rav1eParams
         .Path = "Basic",
         .Config = {0, 9999},
         .ArgsFunc = Function() "" & Bitrate.Value,
-    .VisibleFunc = Function() Mode.Value = 1}
+        .VisibleFunc = Function() Mode.Value = 1}
 
     Property Passes As New OptionParam With {
         .Text = "Passes",
@@ -217,19 +217,19 @@ Public Class Rav1eParams
         .Switch = "--content_light",
         .Path = "VUI",
         .Config = {0, Integer.MaxValue, 50},
+        .ArgsFunc = Function() If(Light.Value <> 0 OrElse MaxFALL.Value <> 0, "--content_light """ & Light.Value & "," & MaxFALL.Value & """", ""),
         .ImportAction = Sub(arg As String)
                             If arg = "" Then Exit Sub
                             Dim a = arg.Trim(""""c).Split(","c)
                             Light.Value = a(0).ToInt
                             MaxFALL.Value = a(1).ToInt
-                        End Sub,
-        .ArgsFunc = Function() If(Light.Value <> 0 OrElse MaxFALL.Value <> 0, "--content_light """ & Light.Value & "," & MaxFALL.Value & """", "")}
+                        End Sub}
 
     Property MaxFALL As New NumParam With {
+        .Switches = {"--content_light"},
+        .Text = "Maximum FALL",
         .Path = "VUI",
-        .Config = {0, Integer.MaxValue, 50},
-        .ArgsFunc = Function() "",
-        .Text = "Maximum FALL"}
+        .Config = {0, Integer.MaxValue, 50}}
 
     Property Threads As New NumParam With {
         .Text = "Threads",

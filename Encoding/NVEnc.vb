@@ -129,20 +129,7 @@ Public Class NVEnc
             .Switches = {"--cqp", "--cbr", "--cbrhq", "--vbr", "--vbrhq"},
             .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "CBR HQ - Constant Bitrate HQ", "VBR - Variable Bitrate", "VBR HQ - Variable Bitrate HQ"},
             .VisibleFunc = Function() Not Lossless.Value,
-            .ArgsFunc = Function() As String
-                            Select Case Mode.Value
-                                Case 0
-                                    Return "--cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
-                                Case 1
-                                    Return "--cbr " & p.VideoBitrate
-                                Case 2
-                                    Return "--cbrhq " & p.VideoBitrate
-                                Case 3
-                                    Return "--vbr " & p.VideoBitrate
-                                Case 4
-                                    Return "--vbrhq " & p.VideoBitrate
-                            End Select
-                        End Function}
+            .ArgsFunc = AddressOf GetModeArgs}
 
         Property Codec As New OptionParam With {
             .Switch = "--codec",
@@ -166,25 +153,36 @@ Public Class NVEnc
             .Options = {"Main", "Main 10", "Main 444"},
             .InitValue = 0}
 
+        Property QPAdvanced As New BoolParam With {
+            .Text = "Show advanced QP settings"
+        }
+
+        Property QP As New NumParam With {
+            .Switches = {"--cqp"},
+            .Text = "QP",
+            .Init = 18,
+            .VisibleFunc = Function() Mode.Value = 0 AndAlso Not QPAdvanced.Value,
+            .Config = {0, 51}}
+
         Property QPI As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP I",
             .Init = 18,
-            .VisibleFunc = Function() Mode.Value = 0,
+            .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
             .Config = {0, 51}}
 
         Property QPP As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP P",
             .Init = 20,
-            .VisibleFunc = Function() Mode.Value = 0,
+            .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
             .Config = {0, 51}}
 
         Property QPB As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP B",
             .Init = 22,
-            .VisibleFunc = Function() Mode.Value = 0,
+            .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
             .Config = {0, 51}}
 
         Property Lossless As New BoolParam With {
@@ -275,11 +273,6 @@ Public Class NVEnc
             .Text = "      Strength",
             .Init = 0.08,
             .Config = {0, 1, 0.02, 2}}
-
-        Property Chromaloc As New NumParam With {
-        .Switch = "--chromaloc",
-        .Text = "Chromaloc",
-        .Config = {0, 5}}
 
         Property KnnLerp As New NumParam With {
             .Text = "      Lerp",
@@ -396,7 +389,7 @@ Public Class NVEnc
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Name = "LevelH265", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
-                        QPI, QPP, QPB)
+                        QPAdvanced, QP, QPI, QPP, QPB)
                     Add("VPP",
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
@@ -523,7 +516,7 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},
                         New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-SRD-B67", "Auto", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 2084", "SMPTE 428"}},
                         MaxCLL, MaxFALL,
-                        Chromaloc,
+                        New NumParam With {.Switch = "--chromaloc", .Text = "Chromaloc", .Config = {0, 5}},
                         New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Full Range", .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New BoolParam With {.Switch = "--aud", .Text = "AUD"})
@@ -779,6 +772,25 @@ Public Class NVEnc
             Next
 
             If AFS.Value Then Return ("--vpp-afs " + ret.TrimStart(","c)).TrimEnd
+        End Function
+
+        Function GetModeArgs() As String
+            Select Case Mode.Value
+                Case 0
+                    If QPAdvanced.Value Then
+                        Return "--cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
+                    Else
+                        Return "--cqp " & QP.Value
+                    End If
+                Case 1
+                    Return "--cbr " & p.VideoBitrate
+                Case 2
+                    Return "--cbrhq " & p.VideoBitrate
+                Case 3
+                    Return "--vbr " & p.VideoBitrate
+                Case 4
+                    Return "--vbrhq " & p.VideoBitrate
+            End Select
         End Function
 
         Overrides Function GetCommandLine(includePaths As Boolean,

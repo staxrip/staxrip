@@ -20,6 +20,7 @@
   nvenc has usecases for it
 - new: add support of video track title/name using MP4Box
 - new: simple QP mode added to nvenc to use one instead of three QP values
+- fix: docs weren't built automatically
 
 ### 2.0.4.4 Beta
 

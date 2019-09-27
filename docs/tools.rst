@@ -369,7 +369,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.1+20-f5d7563 Wolfberry
+Used Version: 3.2+3-fdd69a766881 Barough
 
 http://x265.org
 

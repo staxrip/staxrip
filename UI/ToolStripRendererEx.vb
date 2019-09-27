@@ -72,7 +72,6 @@ Public Class ToolStripRendererEx
 
         If TypeOf e.Item Is ToolStripMenuItem AndAlso Not TypeOf e.Item.Owner Is MenuStrip Then
             Dim r = e.TextRectangle
-
             Dim dropDown = TryCast(e.ToolStrip, ToolStripDropDownMenu)
 
             If dropDown Is Nothing OrElse dropDown.ShowImageMargin OrElse dropDown.ShowCheckMargin Then
@@ -242,13 +241,24 @@ Public Class ToolStripRendererEx
     End Sub
 
     Protected Overloads Overrides Sub OnRenderArrow(e As ToolStripArrowRenderEventArgs)
-        Dim value = If(e.Direction = ArrowDirection.Down, &H36, &H34)
-        Dim s = Convert.ToChar(value).ToString
-        Dim font = New Font("Marlett", e.Item.Font.Size - 2)
-        Dim size = e.Graphics.MeasureString(s, font)
-        Dim x = CInt(e.Item.Width - size.Width)
-        Dim y = CInt((e.Item.Height - size.Height) / 2) + 1
-        e.Graphics.DrawString(s, font, Brushes.Black, x, y)
+        If e.Direction = ArrowDirection.Down Then
+            MyBase.OnRenderArrow(e)
+        Else
+            Dim x1 = e.Item.Width - e.Item.Height * 0.6F
+            Dim y1 = e.Item.Height * 0.25F
+            Dim x2 = x1 + e.Item.Height * 0.25F
+            Dim y2 = e.Item.Height / 2.0F
+            Dim x3 = x1
+            Dim y3 = e.Item.Height * 0.75F
+            e.Graphics.SmoothingMode = SmoothingMode.HighQuality
+
+            Using b = New SolidBrush(e.Item.ForeColor)
+                Using p = New Pen(b, Control.DefaultFont.Height / 20.0F)
+                    e.Graphics.DrawLine(p, x1, y1, x2, y2)
+                    e.Graphics.DrawLine(p, x2, y2, x3, y3)
+                End Using
+            End Using
+        End If
     End Sub
 
     Protected Overrides Sub OnRenderItemCheck(e As ToolStripItemImageRenderEventArgs)

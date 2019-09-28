@@ -324,7 +324,14 @@ Public Class Package
         .Filename = "avs2pipemod64.exe",
         .DirPath = "Support\avs2pipemod",
         .WebURL = "http://github.com/chikuzen/avs2pipemod",
-        .Description = "Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools."})
+        .Description = "Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools.",
+        .StartAction = Sub()
+                           If p.SourceFile = "" Then
+                               g.DefaultCommands.ExecuteCommandLine(Package.avs2pipemod.Path.Escape + BR + "pause", False, False, True)
+                           Else
+                               g.DefaultCommands.ExecuteCommandLine(Package.avs2pipemod.Path.Escape + " -info " + p.Script.Path.Escape + BR + "pause", False, False, True)
+                           End If
+                       End Sub})
 
     Shared Property x264 As Package = Add(New Package With {
         .Name = "x264",

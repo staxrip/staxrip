@@ -20,7 +20,12 @@
 - new: add support of video track title/name using MP4Box
 - new: simple QP mode added to nvenc to use one instead of three QP values
 - new: the menu renderer has now Win 10 style arrows for sub menu indication
-- new: icons added to filter list and script editor
+- new: icons added to filter list and script editor, shortcuts added to script editor
+- new: in the main menu a sub menu was added: Apps > Script Info,
+       it contains avsmeter, vspipe and avs2pipemod for showing
+	   info about the currently active AviSynth or VapourSynth script,
+	   vspipe and avs2pipemod show parameters like bit depth, colorspace and framecount.
+	   In the script editor there is a new 'Script Info' menu item (Ctrl+I) doing the same. 
 - fix: docs weren't built automatically
 
 ### 2.0.4.4 Beta

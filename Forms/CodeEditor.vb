@@ -82,23 +82,48 @@ Public Class CodeEditor
 
     Sub VideoPreview()
         If p.SourceFile = "" Then Exit Sub
-        Dim doc As New VideoScript
-        doc.Engine = Engine
-        doc.Path = p.TempDir + p.TargetFile.Base + "_editor." + doc.FileType
-        doc.Filters = GetFilters()
 
-        Dim errMsg = doc.GetErrorMessage
+        Dim script As New VideoScript
+        script.Engine = Engine
+        script.Path = p.TempDir + p.TargetFile.Base + "_editor." + script.FileType
+        script.Filters = GetFilters()
+
+        Dim errMsg = script.GetErrorMessage
 
         If Not errMsg Is Nothing Then
             MsgError(errMsg)
             Exit Sub
         End If
 
-        doc.Synchronize(True)
+        script.Synchronize(True)
 
-        Dim f As New PreviewForm(doc)
+        Dim f As New PreviewForm(script)
         f.Owner = g.MainForm
         f.Show()
+    End Sub
+
+    Sub Info()
+        If p.SourceFile = "" Then Exit Sub
+
+        Dim script As New VideoScript
+        script.Engine = Engine
+        script.Path = p.TempDir + p.TargetFile.Base + "_editor." + script.FileType
+        script.Filters = GetFilters()
+
+        Dim errMsg = script.GetErrorMessage
+
+        If Not errMsg Is Nothing Then
+            MsgError(errMsg)
+            Exit Sub
+        End If
+
+        script.Synchronize(True)
+
+        If script.Engine = ScriptEngine.AviSynth Then
+            g.DefaultCommands.ExecuteCommandLine(Package.avs2pipemod.Path.Escape + " -info " + script.Path.Escape + BR + "pause", False, False, True)
+        Else
+            g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + " --info " + script.Path.Escape + " -" + BR + "pause", False, False, True)
+        End If
     End Sub
 
     Sub MainFlowLayoutPanelLayout(sender As Object, e As LayoutEventArgs)
@@ -299,7 +324,7 @@ Public Class CodeEditor
                 End If
             Next
 
-            ActionMenuItem.Add(Menu.Items, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""))
+            ActionMenuItem.Add(Menu.Items, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""), "Replace current filter with empty values.")
 
             Menu.Add("-")
 
@@ -344,10 +369,10 @@ Public Class CodeEditor
             removeMenuItem.ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Delete)
             removeMenuItem.SetImage(Symbol.Remove)
 
-            Dim profilesMenuItem = Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
+            Dim profilesMenuItem = Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, Keys.Control Or Keys.P, "Dialog to edit profiles.")
             profilesMenuItem.SetImage(Symbol.FavoriteStar)
 
-            Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to edit profiles.").SetImage(Symbol.CalculatorPercentage)
+            Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, Keys.Control Or Keys.M, "Dialog to choose macros.").SetImage(Symbol.CalculatorPercentage)
 
             Dim previewMenuItem = Menu.Add("Preview Video...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
             previewMenuItem.Enabled = p.SourceFile <> ""
@@ -355,8 +380,12 @@ Public Class CodeEditor
             previewMenuItem.SetImage(Symbol.Photo)
 
             Menu.Add("Preview Code...", AddressOf CodePreview, "Previews the script with solved macros.").SetImage(Symbol.Code)
-            Menu.Add("Join Filters", AddressOf JoinFilters, "Joins all filters into one filter.").Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
 
+            Dim infoMenuItem = Menu.Add("Script Info...", AddressOf Editor.Info, Keys.Control Or Keys.I, "Previews script parameters such as framecount and colorspace.")
+            infoMenuItem.SetImage(Symbol.Info)
+            infoMenuItem.Enabled = p.SourceFile <> ""
+
+            Menu.Add("Join Filters", AddressOf JoinFilters, Keys.Control Or Keys.J, "Joins all filters into one filter.").Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
             Menu.Add("Play Video", AddressOf Editor.Play, p.SourceFile <> "", "Plays the current script with a media player.").SetImage(Symbol.Play)
             Menu.Add("-")
 
@@ -382,9 +411,17 @@ Public Class CodeEditor
                                   rtbScript.ScrollToCaret()
                               End Sub
 
-            Menu.Add("Cut", cutAction, rtbScript.SelectionLength > 0 AndAlso Not rtbScript.ReadOnly).SetImage(Symbol.Cut)
-            Menu.Add("Copy", copyAction, rtbScript.SelectionLength > 0).SetImage(Symbol.Copy)
-            Menu.Add("Paste", pasteAction, Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly).SetImage(Symbol.Paste)
+            Dim cutMenuItem = Menu.Add("Cut", cutAction, rtbScript.SelectionLength > 0 AndAlso Not rtbScript.ReadOnly)
+            cutMenuItem.SetImage(Symbol.Cut)
+            cutMenuItem.ShortcutKeyDisplayString = "Ctrl+X"
+
+            Dim copyMenuItem = Menu.Add("Copy", copyAction, rtbScript.SelectionLength > 0)
+            copyMenuItem.SetImage(Symbol.Copy)
+            copyMenuItem.ShortcutKeyDisplayString = "Ctrl+C"
+
+            Dim pasteMenuItem = Menu.Add("Paste", pasteAction, Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly)
+            pasteMenuItem.SetImage(Symbol.Paste)
+            pasteMenuItem.ShortcutKeyDisplayString = "Ctrl+V"
 
             Menu.Add("-")
             Dim helpMenuItem = Menu.Add("Help")

@@ -4385,7 +4385,9 @@ Public Class MainForm
         ret.Add("Apps|Media Info|MediaInfo File", NameOf(MediaInfoShowMedia))
         ret.Add("Apps|Media Info|MediaInfo Folder", NameOf(ShowMediaInfoFolderViewDialog))
         ret.Add("Apps|Media Info|Ingest HDR", NameOf(SaveMKVHDR))
-        ret.Add("Apps|Media Info|vspipe", NameOf(g.DefaultCommands.StartTool), {"vspipe"})
+        ret.Add("Apps|Script Info|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
+        ret.Add("Apps|Script Info|vspipe", NameOf(g.DefaultCommands.StartTool), {"vspipe"})
+        ret.Add("Apps|Script Info|avs2pipemod", NameOf(g.DefaultCommands.StartTool), {"avs2pipemod"})
         ret.Add("Apps|DGIndex|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|DGIndex|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
         ret.Add("Apps|Players|mpv.net", NameOf(g.DefaultCommands.StartTool), {"mpv.net"})
@@ -4393,7 +4395,6 @@ Public Class MainForm
         ret.Add("Apps|Thumbnails|StaxRip Thumbnailer", NameOf(ShowBatchGenerateThumbnailsDialog))
         ret.Add("Apps|Animation|Animated GIF", NameOf(SaveGif))
         ret.Add("Apps|Animation|Animated PNG", NameOf(SavePNG))
-        ret.Add("Apps|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
         ret.Add("Apps|chapterEditor", NameOf(g.DefaultCommands.StartTool), {"chapterEditor"})
 
         ret.Add("Apps|-")

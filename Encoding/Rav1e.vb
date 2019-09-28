@@ -217,7 +217,7 @@ Public Class Rav1eParams
         .Path = "VUI",
         .Config = {0, Integer.MaxValue, 50},
         .ArgsFunc = Function() If(Light.Value <> 0 OrElse MaxFALL.Value <> 0, "--content_light """ & Light.Value & "," & MaxFALL.Value & """", ""),
-        .ImportAction = Sub(arg As String)
+        .ImportAction = Sub(param, arg)
                             If arg = "" Then Exit Sub
                             Dim a = arg.Trim(""""c).Split(","c)
                             Light.Value = a(0).ToInt

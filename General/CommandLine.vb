@@ -94,7 +94,7 @@ Namespace CommandLine
         Property Text As String
         Property URLs As List(Of String)
         Property VisibleFunc As Func(Of Boolean)
-        Property ImportAction As Action(Of String)
+        Property ImportAction As Action(Of String, String)
 
         Friend Store As PrimitiveStore
         Friend Params As CommandLineParams

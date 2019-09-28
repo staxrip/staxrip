@@ -38,6 +38,7 @@ Thanks to Patman for providing the download links of the tools !!!
 	   In the script editor there is a new 'Script Info' menu item (Ctrl+I) doing the same.
 
 - fix: docs weren't built automatically
+- fix: some bugs were fixed in the nvenc command line import feature
 
 ### 2.0.4.4 Beta
 

@@ -268,7 +268,7 @@ Public Class x264Params
         .Switch = "--deblock",
         .NoSwitch = "--no-deblock",
         .Text = "Deblocking",
-        .ImportAction = Sub(arg As String)
+        .ImportAction = Sub(param, arg)
                             Dim a = arg.Split(":"c)
                             DeblockA.Value = a(0).ToInt
                             DeblockB.Value = a(1).ToInt

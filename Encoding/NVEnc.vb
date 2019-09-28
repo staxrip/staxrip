@@ -129,13 +129,19 @@ Public Class NVEnc
             .Switches = {"--cqp", "--cbr", "--cbrhq", "--vbr", "--vbrhq"},
             .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "CBR HQ - Constant Bitrate HQ", "VBR - Variable Bitrate", "VBR HQ - Variable Bitrate HQ"},
             .VisibleFunc = Function() Not Lossless.Value,
-            .ArgsFunc = AddressOf GetModeArgs}
+            .ArgsFunc = AddressOf GetModeArgs,
+            .ImportAction = Sub(param, arg)
+                                If Mode.Switches.Contains(param) Then
+                                    Mode.Value = Array.IndexOf(Mode.Switches.ToArray, param)
+                                End If
+                            End Sub}
 
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
             .Options = {"Nvidia H.264", "Nvidia H.265"},
-            .Values = {"h264", "h265"}}
+            .Values = {"h264", "h265"},
+            .ImportAction = Sub(param, arg) Codec.Value = If(arg.EqualsAny("h264", "avc"), 0, 1)}
 
         Property Profile As New OptionParam With {
             .Switch = "--profile",
@@ -204,7 +210,7 @@ Public Class NVEnc
             .VisibleFunc = Function() Codec.ValueText = "h265",
             .Config = {0, Integer.MaxValue, 50},
             .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", ""),
-            .ImportAction = Sub(arg As String)
+            .ImportAction = Sub(param, arg)
                                 If arg = "" Then Exit Sub
                                 Dim a = arg.Trim(""""c).Split(","c)
                                 MaxCLL.Value = a(0).ToInt

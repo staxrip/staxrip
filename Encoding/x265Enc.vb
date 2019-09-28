@@ -691,13 +691,13 @@ Public Class x265Params
         .Text = "Maximum CLL",
         .Switch = "--max-cll",
         .Config = {0, Integer.MaxValue, 50},
-        .ImportAction = Sub(arg As String)
+        .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", ""),
+        .ImportAction = Sub(param, arg)
                             If arg = "" Then Exit Sub
                             Dim a = arg.Trim(""""c).Split(","c)
                             MaxCLL.Value = a(0).ToInt
                             MaxFALL.Value = a(1).ToInt
-                        End Sub,
-        .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", "")}
+                        End Sub}
 
     Property MaxFALL As New NumParam With {
         .Switches = {"--max-cll"},
@@ -755,7 +755,7 @@ Public Class x265Params
                             Return "--no-deblock"
                         End If
                     End Function,
-        .ImportAction = Sub(arg As String)
+        .ImportAction = Sub(param, arg)
                             Dim a = arg.Split(":"c)
                             DeblockA.Value = a(0).ToInt
                             DeblockB.Value = a(1).ToInt

@@ -180,27 +180,27 @@ Public Class QSVEnc
             .Config = {0, 20}}
 
         Property Chromaloc As New NumParam With {
-        .Switch = "--chromaloc",
-        .Text = "Chromaloc",
-        .Config = {0, 5}}
+            .Switch = "--chromaloc",
+            .Text = "Chromaloc",
+            .Config = {0, 5}}
 
         Property VBVbufsize As New NumParam With {
-        .Switch = "--vbv-bufsize",
-        .Text = "VBV Bufsize",
-        .Config = {0, 1000000, 100}}
+            .Switch = "--vbv-bufsize",
+            .Text = "VBV Bufsize",
+            .Config = {0, 1000000, 100}}
 
         Property MaxCLL As New NumParam With {
-        .Text = "Maximum CLL",
-        .VisibleFunc = Function() Codec.ValueText = "hevc",
-        .Switch = "--max-cll",
-        .Config = {0, Integer.MaxValue, 50},
-        .ImportAction = Sub(arg As String)
-                            If arg = "" Then Exit Sub
-                            Dim a = arg.Trim(""""c).Split(","c)
-                            MaxCLL.Value = a(0).ToInt
-                            MaxFALL.Value = a(1).ToInt
-                        End Sub,
-        .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", "")}
+            .Text = "Maximum CLL",
+            .VisibleFunc = Function() Codec.ValueText = "hevc",
+            .Switch = "--max-cll",
+            .Config = {0, Integer.MaxValue, 50},
+            .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", ""),
+            .ImportAction = Sub(param, arg)
+                                If arg = "" Then Exit Sub
+                                Dim a = arg.Trim(""""c).Split(","c)
+                                MaxCLL.Value = a(0).ToInt
+                                MaxFALL.Value = a(1).ToInt
+                            End Sub}
 
         Property MaxFALL As New NumParam With {
             .Switches = {"--max-cll"},

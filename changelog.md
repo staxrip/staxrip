@@ -1,5 +1,7 @@
 ###
 
+Thanks to Patman for providing the download links of the tools !!!
+
 - update: JPSDR 3.1.3
 - update: nvenc 4.50
 - update: AVSMeter 2.9.6
@@ -14,13 +16,27 @@
 - update: BM3D r8
 - update: L-Smash Works 2019-09-17 HolyWu
 - update: x265 3.2+3-fdd69a766881 Barough
+
 - new: x265 switch --selective-sao added
 - new: L-Smash Works parameters prefer_hw 3 HW auto added to menu
-- new: allow to set the bitrate and size to 0 in the main dialog,
-  nvenc has usecases for it
+- new: the way --vbr-quality works in nvenc was changed,
+       if it's value is -1 the bitrate in the main dialog is used,
+	   if it's higher then -1 the bitrate is set to 0
 - new: add support of video track title/name using MP4Box
 - new: simple QP mode added to nvenc to use one instead of three QP values
 - new: the menu renderer has now Win 10 style arrows for sub menu indication
+- new: icons added to filter list and script editor, shortcuts added to script editor
+- new: the preview can be closed by clicking in the top right corner
+- new: in the script editor there are now two players available,
+       mpv.net and whatever is registered for mkv, mpc-be supports vpy playback
+- new: the way filters are added, replaced and inserted in the script editor
+       was changed in order to improve the menu performance
+- new: in the main menu a sub menu was added: Apps > Script Info,
+       it contains avsmeter, vspipe and avs2pipemod for showing
+	   info about the currently active AviSynth or VapourSynth script,
+	   vspipe and avs2pipemod show parameters like bit depth, colorspace and framecount.
+	   In the script editor there is a new 'Script Info' menu item (Ctrl+I) doing the same.
+
 - fix: docs weren't built automatically
 
 ### 2.0.4.4 Beta

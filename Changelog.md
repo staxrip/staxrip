@@ -16,11 +16,11 @@
 - update: x265 3.2+3-fdd69a766881 Barough
 - new: x265 switch --selective-sao added
 - new: L-Smash Works parameters prefer_hw 3 HW auto added to menu
-- new: allow to set the bitrate and size to 0 in the main dialog,
-  nvenc has usecases for it
+- new: allow to set the bitrate and size to 0 in the main dialog, nvenc has usecases for it
 - new: add support of video track title/name using MP4Box
 - new: simple QP mode added to nvenc to use one instead of three QP values
 - new: the menu renderer has now Win 10 style arrows for sub menu indication
+- new: icons added to filter list and script editor
 - fix: docs weren't built automatically
 
 ### 2.0.4.4 Beta

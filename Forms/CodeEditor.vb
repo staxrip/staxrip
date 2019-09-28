@@ -303,23 +303,26 @@ Public Class CodeEditor
 
             Menu.Add("-")
 
-            Dim replace = Menu.Add("Replace")
-            Dim insert = Menu.Add("Insert")
+            Dim replaceMenuItem = Menu.Add("Replace")
+            replaceMenuItem.SetImage(Symbol.Switch)
 
-            ActionMenuItem.Add(replace.DropDownItems, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""))
-            ActionMenuItem.Add(insert.DropDownItems, "Blank", AddressOf InsertClick, New VideoFilter("Misc", "", ""))
+            Dim insertMenuItem = Menu.Add("Insert")
+            insertMenuItem.SetImage(Symbol.LeftArrowKeyTime0)
+
+            ActionMenuItem.Add(replaceMenuItem.DropDownItems, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""))
+            ActionMenuItem.Add(insertMenuItem.DropDownItems, "Blank", AddressOf InsertClick, New VideoFilter("Misc", "", ""))
 
             For Each i In filterProfiles
                 For Each i2 In i.Filters
                     Dim tip = i2.Script
-                    ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
+                    ActionMenuItem.Add(replaceMenuItem.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
                 Next
             Next
 
             For Each i In filterProfiles
                 For Each i2 In i.Filters
                     Dim tip = i2.Script
-                    ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
+                    ActionMenuItem.Add(insertMenuItem.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
                 Next
             Next
 
@@ -341,16 +344,20 @@ Public Class CodeEditor
             removeMenuItem.ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Delete)
             removeMenuItem.SetImage(Symbol.Remove)
 
-            Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
+            Dim profilesMenuItem = Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
+            profilesMenuItem.SetImage(Symbol.FavoriteStar)
+
             Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to edit profiles.").SetImage(Symbol.CalculatorPercentage)
+
+            Dim previewMenuItem = Menu.Add("Preview Video...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
+            previewMenuItem.Enabled = p.SourceFile <> ""
+            previewMenuItem.ShortcutKeyDisplayString = "F5"
+            previewMenuItem.SetImage(Symbol.Photo)
+
             Menu.Add("Preview Code...", AddressOf CodePreview, "Previews the script with solved macros.").SetImage(Symbol.Code)
             Menu.Add("Join Filters", AddressOf JoinFilters, "Joins all filters into one filter.").Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
 
-            Dim previewMenuItem = Menu.Add("Video Preview...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
-            previewMenuItem.Enabled = p.SourceFile <> ""
-            previewMenuItem.ShortcutKeyDisplayString = "F5"
-
-            Menu.Add("Play", AddressOf Editor.Play, p.SourceFile <> "", "Plays the current script with a media player.").SetImage(Symbol.Play)
+            Menu.Add("Play Video", AddressOf Editor.Play, p.SourceFile <> "", "Plays the current script with a media player.").SetImage(Symbol.Play)
             Menu.Add("-")
 
             Dim moveUpMenuItem = Menu.Add("Move Up", AddressOf MoveUp)

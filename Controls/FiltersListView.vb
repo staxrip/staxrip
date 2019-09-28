@@ -65,21 +65,23 @@ Public Class FiltersListView
         Dim sep0 = New ToolStripSeparator
         Menu.Items.Add(sep0)
 
-        Dim replace = Menu.Add("Replace")
-        replace.VisibleFunc = selectedFunc
+        Dim replaceMenuItem = Menu.Add("Replace")
+        replaceMenuItem.SetImage(Symbol.Switch)
+        replaceMenuItem.VisibleFunc = selectedFunc
 
         For Each i In filterProfiles
             For Each i2 In i.Filters
-                ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2, i2.Script)
+                ActionMenuItem.Add(replaceMenuItem.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2, i2.Script)
             Next
         Next
 
-        Dim insert = Menu.Add("Insert")
-        insert.VisibleFunc = selectedFunc
+        Dim insertMenuItem = Menu.Add("Insert")
+        insertMenuItem.SetImage(Symbol.LeftArrowKeyTime0)
+        insertMenuItem.VisibleFunc = selectedFunc
 
         For Each i In filterProfiles
             For Each i2 In i.Filters
-                ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2, i2.Script)
+                ActionMenuItem.Add(insertMenuItem.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2, i2.Script)
             Next
         Next
 
@@ -100,7 +102,7 @@ Public Class FiltersListView
         Menu.Add("Edit Code...", AddressOf ShowEditor, "Dialog to edit filters.").SetImage(Symbol.Code)
         Menu.Add("Preview Code...", Sub() g.CodePreview(p.Script.GetFullScript), "Script code preview.")
         Menu.Add("Play", Sub() g.PlayScript(p.Script), Function() p.SourceFile <> "", "Plays the script with the AVI player.").SetImage(Symbol.Play)
-        Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
+        Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.").SetImage(Symbol.FavoriteStar)
 
         Menu.Add("-")
 

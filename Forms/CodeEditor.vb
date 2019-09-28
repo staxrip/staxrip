@@ -87,8 +87,26 @@ Public Class CodeEditor
         End If
 
         script.Synchronize(True)
-
         g.PlayScriptWithMpv(script)
+    End Sub
+
+    Sub PlayScript(playerPath As String)
+        If p.SourceFile = "" Then Exit Sub
+
+        Dim script As New VideoScript
+        script.Engine = Engine
+        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        script.Filters = GetFilters()
+
+        Dim errMsg = script.GetErrorMessage
+
+        If Not errMsg Is Nothing Then
+            MsgError(errMsg)
+            Exit Sub
+        End If
+
+        script.Synchronize(True)
+        g.StartProcess(playerPath, script.Path.Escape)
     End Sub
 
     Sub VideoPreview()
@@ -321,8 +339,6 @@ Public Class CodeEditor
                 End If
             Next
 
-            If Menu.Items.Count > 0 Then Menu.Add("-")
-
             For Each i In filterProfiles
                 If i.Name = cbActive.Text Then
                     Dim cat = i
@@ -335,60 +351,38 @@ Public Class CodeEditor
                 End If
             Next
 
-            ActionMenuItem.Add(Menu.Items, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""), "Replace current filter with empty values.")
+            Dim filterMenuItem = Menu.Add("Add, insert or replace a filter")
+            filterMenuItem.SetImage(Symbol.Filter)
 
-            Menu.Add("-")
+            ActionMenuItem.Add(filterMenuItem.DropDownItems, "Empty Filter", AddressOf FilterClick, New VideoFilter("Misc", "", ""), "Filter with empty values.")
 
-            Dim replaceMenuItem = Menu.Add("Replace")
-            replaceMenuItem.SetImage(Symbol.Switch)
-
-            Dim insertMenuItem = Menu.Add("Insert")
-            insertMenuItem.SetImage(Symbol.LeftArrowKeyTime0)
-
-            ActionMenuItem.Add(replaceMenuItem.DropDownItems, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""))
-            ActionMenuItem.Add(insertMenuItem.DropDownItems, "Blank", AddressOf InsertClick, New VideoFilter("Misc", "", ""))
-
-            For Each i In filterProfiles
-                For Each i2 In i.Filters
-                    Dim tip = i2.Script
-                    ActionMenuItem.Add(replaceMenuItem.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
+            For Each filterCategory In filterProfiles
+                For Each filter In filterCategory.Filters
+                    Dim tip = filter.Script
+                    ActionMenuItem.Add(filterMenuItem.DropDownItems, filterCategory.Name + " | " + filter.Path, AddressOf FilterClick, filter.GetCopy, tip)
                 Next
             Next
-
-            For Each i In filterProfiles
-                For Each i2 In i.Filters
-                    Dim tip = i2.Script
-                    ActionMenuItem.Add(insertMenuItem.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
-                Next
-            Next
-
-            Dim addMenuItem = Menu.Add("Add")
-            addMenuItem.SetImage(Symbol.Add)
-
-            ActionMenuItem.Add(addMenuItem.DropDownItems, "Blank", AddressOf AddClick, New VideoFilter("Misc", "", ""))
-
-            For Each i In filterProfiles
-                For Each i2 In i.Filters
-                    Dim tip = i2.Script
-                    ActionMenuItem.Add(addMenuItem.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
-                Next
-            Next
-
-            Menu.Add("-")
 
             Dim removeMenuItem = Menu.Add("Remove", AddressOf RemoveClick)
             removeMenuItem.ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Delete)
             removeMenuItem.SetImage(Symbol.Remove)
 
-            Dim profilesMenuItem = Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, Keys.Control Or Keys.P, "Dialog to edit profiles.")
-            profilesMenuItem.SetImage(Symbol.FavoriteStar)
-
-            Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, Keys.Control Or Keys.M, "Dialog to choose macros.").SetImage(Symbol.CalculatorPercentage)
-
             Dim previewMenuItem = Menu.Add("Preview Video...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
             previewMenuItem.Enabled = p.SourceFile <> ""
             previewMenuItem.ShortcutKeyDisplayString = "F5"
             previewMenuItem.SetImage(Symbol.Photo)
+
+            Dim mpvnetMenuItem = Menu.Add("Play with mpv.net", AddressOf Editor.PlayScriptWithMpv, Keys.F6, "Plays the current script with mpv.net.")
+            mpvnetMenuItem.Enabled = p.SourceFile <> ""
+            mpvnetMenuItem.SetImage(Symbol.Play)
+
+            Dim mkvPlayerPath = g.GetAppPathForExtension("mkv")
+
+            If Path.GetFileName(mkvPlayerPath) <> "mpvnet.exe" Then
+                Dim mkvPlayerMenuItem = Menu.Add("Play with " + mkvPlayerPath.Base, Sub() Editor.PlayScript(mkvPlayerPath), Keys.F7, "Plays the current script with a media player.")
+                mkvPlayerMenuItem.Enabled = p.SourceFile <> ""
+                mkvPlayerMenuItem.SetImage(Symbol.Play)
+            End If
 
             Menu.Add("Preview Code...", AddressOf CodePreview, "Previews the script with solved macros.").SetImage(Symbol.Code)
 
@@ -398,11 +392,10 @@ Public Class CodeEditor
 
             Menu.Add("Join Filters", AddressOf JoinFilters, Keys.Control Or Keys.J, "Joins all filters into one filter.").Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
 
-            Menu.Add("Play Video", AddressOf Editor.PlayScriptWithMpv, p.SourceFile <> "", "Plays the current script with a media player.").SetImage(Symbol.Play)
+            Dim profilesMenuItem = Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, Keys.Control Or Keys.P, "Dialog to edit profiles.")
+            profilesMenuItem.SetImage(Symbol.FavoriteStar)
 
-
-            Dim openWithMenuItem = Menu.Add("Open with")
-
+            Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, Keys.Control Or Keys.M, "Dialog to choose macros.").SetImage(Symbol.CalculatorPercentage)
 
             Menu.Add("-")
 
@@ -517,7 +510,7 @@ Public Class CodeEditor
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim firstTable = DirectCast(flow.Controls(0), FilterTable)
             firstTable.tbName.Text = "merged"
-            firstTable.rtbScript.Text = flow.Controls.OfType(Of FilterTable).Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(BR, "# " + BR))).Join(BR) + BR2 + BR2 + "#"
+            firstTable.rtbScript.Text = flow.Controls.OfType(Of FilterTable).Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(BR, "# " + BR))).Join(BR) + BR2 + BR2
 
             For x = flow.Controls.Count - 1 To 1 Step -1
                 flow.Controls.RemoveAt(x)
@@ -557,6 +550,82 @@ Public Class CodeEditor
             End If
         End Sub
 
+        Sub FilterClick(filter As VideoFilter)
+            Using td As New TaskDialog(Of String)
+                td.MainInstruction = "Choose action"
+                td.AddCommandLink("Replace selection", "Replace")
+                td.AddCommandLink("Insert at selection", "Insert")
+                td.AddCommandLink("Add to end", "Add")
+
+                Select Case td.Show
+                    Case "Replace"
+                        Dim tup = Macro.ExpandGUI(filter.Script)
+                        If tup.Cancel Then Exit Sub
+                        cbActive.Checked = filter.Active
+                        cbActive.Text = filter.Category
+
+                        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
+                            If filter.Script.StartsWith("$") Then
+                                tbName.Text = tup.Caption
+                            Else
+                                tbName.Text = filter.Name.Replace("...", "") + " " + tup.Caption
+                            End If
+                        Else
+                            tbName.Text = filter.Name
+                        End If
+
+                        rtbScript.Text = tup.Value.TrimEnd + BR
+                        rtbScript.SelectionStart = rtbScript.Text.Length
+                        Application.DoEvents()
+                        Menu.Items.ClearAndDisplose
+                    Case "Insert"
+                        Dim tup = Macro.ExpandGUI(filter.Script)
+                        If tup.Cancel Then Exit Sub
+
+                        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
+                            If filter.Script.StartsWith("$") Then
+                                filter.Path = tup.Caption
+                            Else
+                                filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+                            End If
+                        End If
+
+                        filter.Script = tup.Value
+                        Dim flow = DirectCast(Parent, FlowLayoutPanel)
+                        Dim index = flow.Controls.IndexOf(Me)
+                        Dim filterTable = CodeEditor.CreateFilterTable(filter)
+                        flow.SuspendLayout()
+                        flow.Controls.Add(filterTable)
+                        flow.Controls.SetChildIndex(filterTable, index)
+                        flow.ResumeLayout()
+                        filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
+                        filterTable.rtbScript.Focus()
+                        Application.DoEvents()
+                        Menu.Items.ClearAndDisplose
+                    Case "Add"
+                        Dim tup = Macro.ExpandGUI(filter.Script)
+                        If tup.Cancel Then Exit Sub
+
+                        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
+                            If filter.Script.StartsWith("$") Then
+                                filter.Path = tup.Caption
+                            Else
+                                filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+                            End If
+                        End If
+
+                        filter.Script = tup.Value
+                        Dim flow = DirectCast(Parent, FlowLayoutPanel)
+                        Dim filterTable = CodeEditor.CreateFilterTable(filter)
+                        flow.Controls.Add(filterTable)
+                        filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
+                        filterTable.rtbScript.Focus()
+                        Application.DoEvents()
+                        Menu.Items.ClearAndDisplose
+                End Select
+            End Using
+        End Sub
+
         Sub ReplaceClick(filter As VideoFilter)
             Dim tup = Macro.ExpandGUI(filter.Script)
             If tup.Cancel Then Exit Sub
@@ -575,54 +644,6 @@ Public Class CodeEditor
 
             rtbScript.Text = tup.Value.TrimEnd + BR
             rtbScript.SelectionStart = rtbScript.Text.Length
-            Application.DoEvents()
-            Menu.Items.ClearAndDisplose
-        End Sub
-
-        Sub InsertClick(filter As VideoFilter)
-            Dim tup = Macro.ExpandGUI(filter.Script)
-            If tup.Cancel Then Exit Sub
-
-            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-                If filter.Script.StartsWith("$") Then
-                    filter.Path = tup.Caption
-                Else
-                    filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
-                End If
-            End If
-
-            filter.Script = tup.Value
-            Dim flow = DirectCast(Parent, FlowLayoutPanel)
-            Dim index = flow.Controls.IndexOf(Me)
-            Dim filterTable = CodeEditor.CreateFilterTable(filter)
-            flow.SuspendLayout()
-            flow.Controls.Add(filterTable)
-            flow.Controls.SetChildIndex(filterTable, index)
-            flow.ResumeLayout()
-            filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
-            filterTable.rtbScript.Focus()
-            Application.DoEvents()
-            Menu.Items.ClearAndDisplose
-        End Sub
-
-        Sub AddClick(filter As VideoFilter)
-            Dim tup = Macro.ExpandGUI(filter.Script)
-            If tup.Cancel Then Exit Sub
-
-            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-                If filter.Script.StartsWith("$") Then
-                    filter.Path = tup.Caption
-                Else
-                    filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
-                End If
-            End If
-
-            filter.Script = tup.Value
-            Dim flow = DirectCast(Parent, FlowLayoutPanel)
-            Dim filterTable = CodeEditor.CreateFilterTable(filter)
-            flow.Controls.Add(filterTable)
-            filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
-            filterTable.rtbScript.Focus()
             Application.DoEvents()
             Menu.Items.ClearAndDisplose
         End Sub

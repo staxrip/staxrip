@@ -25,6 +25,10 @@ Thanks to Patman for providing the download links of the tools !!!
 - new: the menu renderer has now Win 10 style arrows for sub menu indication
 - new: icons added to filter list and script editor, shortcuts added to script editor
 - new: the preview can be closed by clicking in the top right corner
+- new: in the script editor there are now two players available,
+       mpv.net and whatever is registered for mkv, mpc-be supports vpy playback
+- new: the way filters are added, replaced and inserted in the script editor
+       was changed in order to improve the menu performance
 - new: in the main menu a sub menu was added: Apps > Script Info,
        it contains avsmeter, vspipe and avs2pipemod for showing
 	   info about the currently active AviSynth or VapourSynth script,

@@ -463,7 +463,8 @@ Module MiscExtensions
 
     <Extension()>
     Function ToInvariantString(instance As IConvertible) As String
-        If Not instance Is Nothing Then Return instance.ToString(CultureInfo.InvariantCulture)
+        If instance Is Nothing Then Return ""
+        Return instance.ToString(CultureInfo.InvariantCulture)
     End Function
 
     <Extension()>

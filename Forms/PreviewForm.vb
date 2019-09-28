@@ -788,7 +788,7 @@ Public Class PreviewForm
     <Command("Shows the AviSynth script using the player currently associated with AVI files.")>
     Sub ShowExternalPlayer()
         UpdateTrim()
-        g.PlayScript(p.Script)
+        g.PlayScriptWithMpv(p.Script)
     End Sub
 
     <Command("Reloads the script.")>
@@ -1100,5 +1100,17 @@ Public Class PreviewForm
         Dim p1 = New Point(sb.Width, 0)
         Dim p2 = PointToScreen(e.Location)
         If Math.Abs(p1.X - p2.X) < 10 AndAlso Math.Abs(p1.Y - p2.Y) < 10 Then Close()
+    End Sub
+
+    Private Sub pVideo_MouseClick(sender As Object, e As MouseEventArgs) Handles pVideo.MouseClick
+        If pVideo.Width - e.Location.X < 10 AndAlso e.Location.Y < 10 Then
+            Close()
+        End If
+    End Sub
+
+    Private Sub PreviewForm_MouseClick(sender As Object, e As MouseEventArgs) Handles Me.MouseClick
+        If Width - e.Location.X < 10 AndAlso e.Location.Y < 10 Then
+            Close()
+        End If
     End Sub
 End Class

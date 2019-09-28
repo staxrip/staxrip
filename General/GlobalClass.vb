@@ -332,45 +332,34 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub PlayScript(doc As VideoScript)
+    Sub PlayScriptWithMpv(script As VideoScript)
         If File.Exists(p.Audio0.File) AndAlso FileTypes.Audio.Contains(p.Audio0.File.Ext) Then
-            PlayScript(doc, p.Audio0)
+            PlayScriptWithMpv(script, p.Audio0)
         ElseIf File.Exists(p.Audio1.File) AndAlso FileTypes.Audio.Contains(p.Audio1.File.Ext) Then
-            PlayScript(doc, p.Audio1)
+            PlayScriptWithMpv(script, p.Audio1)
         Else
-            PlayScript(doc, Nothing)
+            PlayScriptWithMpv(script, Nothing)
         End If
     End Sub
 
-    Sub PlayScript(doc As VideoScript, ap As AudioProfile)
-        If Not Package.mpvnet.VerifyOK(True) Then Exit Sub
-
-        If doc.Engine = ScriptEngine.VapourSynth Then
+    Sub PlayScriptWithMpv(script As VideoScript, ap As AudioProfile)
+        If script.Engine = ScriptEngine.VapourSynth Then
             MsgError("VapourSynth scripts are not supported by the mpv player.")
             Exit Sub
         End If
 
-        Dim script As New VideoScript
-        script.Engine = doc.Engine
-        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
-        script.Filters = doc.GetFiltersCopy
+        Dim args As String
 
-        If script.Engine = ScriptEngine.AviSynth Then
-            If Calc.IsARSignalingRequired Then
-                Dim targetWidth = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
-                script.Filters.Add(New VideoFilter("LanczosResize(" & targetWidth & "," & p.TargetHeight & ")"))
-            End If
-        Else
-            If Calc.IsARSignalingRequired Then
-                Dim targetWidth = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
-                script.Filters.Add(New VideoFilter("clip = core.resize.Bicubic(clip, " & targetWidth & "," & p.TargetHeight & ")"))
-            End If
+        If Calc.IsARSignalingRequired Then
+            args += " --video-aspect=" + Calc.GetTargetDAR.ToInvariantString.Shorten(8)
         End If
 
-        script.Synchronize(False)
-        Dim args = script.Path.Escape
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-files=" + ap.File.Escape + " " + args
-        g.StartProcess(Package.mpvnet.Path, args)
+        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then
+            args += " --audio-files=" + ap.File.Escape
+        End If
+
+        args += " " + script.Path.Escape
+        g.StartProcess(Package.mpvnet.Path, args.Trim)
     End Sub
 
     Function ExtractDelay(value As String) As Integer
@@ -838,18 +827,18 @@ Public Class GlobalClass
         form.Show()
     End Sub
 
-    Sub StartProcess(cmd As String, Optional args As String = Nothing)
+    Sub StartProcess(fileName As String, Optional arguments As String = Nothing)
         Try
-            Process.Start(cmd, args)
+            Process.Start(fileName, arguments)
         Catch ex As Exception
-            If cmd Like "http*://*" Then
-                MsgError("Failed to open URL with browser." + BR2 + cmd, ex.Message)
-            ElseIf File.Exists(cmd) Then
-                MsgError("Failed to launch file." + BR2 + cmd, ex.Message)
-            ElseIf Directory.Exists(cmd) Then
-                MsgError("Failed to launch directory." + BR2 + cmd, ex.Message)
+            If fileName Like "http*://*" Then
+                MsgError("Failed to open URL with browser." + BR2 + fileName, ex.Message)
+            ElseIf File.Exists(fileName) Then
+                MsgError("Failed to launch file." + BR2 + fileName, ex.Message)
+            ElseIf Directory.Exists(fileName) Then
+                MsgError("Failed to launch directory." + BR2 + fileName, ex.Message)
             Else
-                g.ShowException(ex, "Failed to execute command:" + BR2 + cmd + BR2 + "Arguments:" + BR2 + args)
+                g.ShowException(ex, "Failed to execute command:" + BR2 + fileName + BR2 + "Arguments:" + BR2 + arguments)
             End If
         End Try
     End Sub

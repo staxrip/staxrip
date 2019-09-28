@@ -71,13 +71,24 @@ Public Class CodeEditor
         Return ret
     End Function
 
-    Sub Play()
+    Sub PlayScriptWithMpv()
         If p.SourceFile = "" Then Exit Sub
-        Dim doc As New VideoScript
-        doc.Engine = Engine
-        doc.Path = p.TempDir + p.TargetFile.Base + "_scriptEditor." + doc.FileType
-        doc.Filters = GetFilters()
-        g.PlayScript(doc)
+
+        Dim script As New VideoScript
+        script.Engine = Engine
+        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        script.Filters = GetFilters()
+
+        Dim errMsg = script.GetErrorMessage
+
+        If Not errMsg Is Nothing Then
+            MsgError(errMsg)
+            Exit Sub
+        End If
+
+        script.Synchronize(True)
+
+        g.PlayScriptWithMpv(script)
     End Sub
 
     Sub VideoPreview()
@@ -351,15 +362,15 @@ Public Class CodeEditor
                 Next
             Next
 
-            Dim add = Menu.Add("Add")
-            add.SetImage(Symbol.Add)
+            Dim addMenuItem = Menu.Add("Add")
+            addMenuItem.SetImage(Symbol.Add)
 
-            ActionMenuItem.Add(add.DropDownItems, "Blank", AddressOf AddClick, New VideoFilter("Misc", "", ""))
+            ActionMenuItem.Add(addMenuItem.DropDownItems, "Blank", AddressOf AddClick, New VideoFilter("Misc", "", ""))
 
             For Each i In filterProfiles
                 For Each i2 In i.Filters
                     Dim tip = i2.Script
-                    ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
+                    ActionMenuItem.Add(addMenuItem.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
                 Next
             Next
 
@@ -386,7 +397,13 @@ Public Class CodeEditor
             infoMenuItem.Enabled = p.SourceFile <> ""
 
             Menu.Add("Join Filters", AddressOf JoinFilters, Keys.Control Or Keys.J, "Joins all filters into one filter.").Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
-            Menu.Add("Play Video", AddressOf Editor.Play, p.SourceFile <> "", "Plays the current script with a media player.").SetImage(Symbol.Play)
+
+            Menu.Add("Play Video", AddressOf Editor.PlayScriptWithMpv, p.SourceFile <> "", "Plays the current script with a media player.").SetImage(Symbol.Play)
+
+
+            Dim openWithMenuItem = Menu.Add("Open with")
+
+
             Menu.Add("-")
 
             Dim moveUpMenuItem = Menu.Add("Move Up", AddressOf MoveUp)

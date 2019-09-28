@@ -177,8 +177,7 @@ Public Class QSVEnc
 
         Property mctfval As New NumParam With {
             .Text = "      Mctf",
-            .Config = {0, 20},
-            .Init = 0}
+            .Config = {0, 20}}
 
         Property Chromaloc As New NumParam With {
         .Switch = "--chromaloc",

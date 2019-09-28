@@ -186,6 +186,13 @@ Public Class NVEnc
             .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
             .Config = {0, 51}}
 
+        Property VbrQuality As New NumParam With {
+            .Switch = "--vbr-quality",
+            .Text = "VBR Quality",
+            .Config = {-1, 51, 1, 1},
+            .Init = -1,
+            .VisibleFunc = Function() Mode.Value = 3 OrElse Mode.Value = 4}
+
         Property Lossless As New BoolParam With {
             .Switch = "--lossless",
             .Text = "Lossless",
@@ -221,20 +228,16 @@ Public Class NVEnc
             .ArgsFunc = AddressOf GetPaddingArgs}
 
         Property PadLeft As New NumParam With {
-            .Text = "      Left",
-            .Init = 0}
+            .Text = "      Left"}
 
         Property PadTop As New NumParam With {
-            .Text = "      Top",
-            .Init = 0}
+            .Text = "      Top"}
 
         Property PadRight As New NumParam With {
-            .Text = "      Right",
-            .Init = 0}
+            .Text = "      Right"}
 
         Property PadBottom As New NumParam With {
-            .Text = "      Bottom",
-            .Init = 0}
+            .Text = "      Bottom"}
 
         Property Tweak As New BoolParam With {
             .Switch = "--vpp-tweak",
@@ -262,12 +265,10 @@ Public Class NVEnc
 
         Property vpphue As New NumParam With {
             .Text = "      Hue",
-            .Init = 0.0,
             .Config = {-180.0, 180.0, 0.1, 1}}
 
         Property vppbrightness As New NumParam With {
             .Text = "      Brightness",
-            .Init = 0.0,
             .Config = {-1.0, 1.0, 0.1, 1}}
 
         Property KnnStrength As New NumParam With {
@@ -497,7 +498,7 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Init = 17500, .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() Codec.ValueText = "h264"},
-                        New NumParam With {.Switch = "--vbr-quality", .Text = "VBR Quality", .Config = {0, 51, 1, 1}},
+                        VbrQuality,
                         New BoolParam With {.Switch = "--aq", .Text = "Adaptive Quantization"},
                         New BoolParam With {.Switch = "--aq-temporal", .Text = "AQ Temporal"},
                         Lossless)
@@ -788,9 +789,9 @@ Public Class NVEnc
                 Case 2
                     Return "--cbrhq " & p.VideoBitrate
                 Case 3
-                    Return "--vbr " & p.VideoBitrate
+                    Return "--vbr " & If(VbrQuality.Value = -1, p.VideoBitrate, 0)
                 Case 4
-                    Return "--vbrhq " & p.VideoBitrate
+                    Return "--vbrhq " & If(VbrQuality.Value = -1, p.VideoBitrate, 0)
             End Select
         End Function
 

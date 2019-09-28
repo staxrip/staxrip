@@ -127,7 +127,6 @@ Public Class Rav1eParams
         .Text = "Limit",
         .Help = "Maximum number of frames to encode",
         .Switch = "--limit",
-        .Init = 0,
         .Path = "Basic"}
 
     Property Mode As New OptionParam With {
@@ -235,8 +234,7 @@ Public Class Rav1eParams
         .Text = "Threads",
         .Switch = "--threads",
         .Path = "Basic",
-        .Config = {0, 20},
-        .Init = 0}
+        .Config = {0, 20}}
 
     Property Custom As New StringParam With {
         .Text = "Custom",

@@ -205,14 +205,12 @@ Public Class x265Params
     Property chunkstart As New NumParam With {
         .Switch = "--chunk-start",
         .Name = "Chunk Start",
-        .Text = "Chunk Start",
-        .Init = 0}
+        .Text = "Chunk Start"}
 
     Property chunkend As New NumParam With {
         .Switch = "--chunk-end",
         .Name = "Chunk End",
-        .Text = "Chunk End",
-        .Init = 0}
+        .Text = "Chunk End"}
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",
@@ -641,8 +639,7 @@ Public Class x265Params
     Property VBVend As New NumParam With {
         .Switch = "--vbv-end",
         .Text = "VBV End",
-        .Config = {0, 1.0, 0.1, 1},
-        .Init = 0.0}
+        .Config = {0, 1.0, 0.1, 1}}
 
     Property maxausizefactor As New NumParam With {
         .Switch = "--max-ausize-factor",
@@ -653,8 +650,7 @@ Public Class x265Params
     Property VBVfradj As New NumParam With {
         .Switch = "--vbv-end-fr-adj",
         .Text = "VBV Adjust",
-        .Config = {0, 1, 0.1, 1},
-        .Init = 0.0}
+        .Config = {0, 1, 0.1, 1}}
 
     Property Chromaloc As New NumParam With {
         .Switch = "--chromaloc",
@@ -886,7 +882,7 @@ Public Class x265Params
                     New NumParam() With {.Switch = "--gop-lookahead", .Text = "Gop Lookahead"},
                     Scenecut,
                     New NumParam() With {.Switch = "--scenecut-bias", .Text = "Scenecut Bias", .Init = 5, .Config = {0, 100, 1, 1}},
-                    New NumParam() With {.Switch = "--radl", .Text = "Radl", .Init = 0},
+                    New NumParam() With {.Switch = "--radl", .Text = "Radl"},
                     Ref)
                 Add("Slice Decision 2", MinKeyint, Keyint, Bpyramid, OpenGop, IntraRefresh,
                     New BoolParam() With {.Switch = "--fades", .Text = "Enable detection and handling of fade-in regions"})

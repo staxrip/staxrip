@@ -9,7 +9,7 @@ Public Class QSVEnc
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "Intel | " + Params.Codec.OptionText
+            Return "Intel | " + Params.Codec.OptionText.Replace("Intel ", "")
         End Get
     End Property
 

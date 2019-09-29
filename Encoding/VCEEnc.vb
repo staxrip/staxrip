@@ -9,7 +9,7 @@ Public Class VCEEnc
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "AMD | " + Params.Codec.OptionText
+            Return "AMD | " + Params.Codec.OptionText.Replace("AMD ", "")
         End Get
     End Property
 

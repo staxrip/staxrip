@@ -22,7 +22,7 @@ Thanks to Patman for providing the download links of the tools !!!
 - new: L-Smash Works parameters prefer_hw 3 HW auto added to menu
 - new: the way --vbr-quality works in nvenc was changed,
        if it's value is -1 the bitrate in the main dialog is used,
-	   if it's higher then -1 the bitrate is set to 0
+       if it's higher then -1 the bitrate is set to 0
 - new: add support of video track title/name using MP4Box
 - new: simple QP mode added to nvenc to use one instead of three QP values
 - new: the menu renderer has now Win 10 style arrows for sub menu indication
@@ -34,9 +34,9 @@ Thanks to Patman for providing the download links of the tools !!!
        was changed in order to improve the menu performance
 - new: in the main menu a sub menu was added: Apps > Script Info,
        it contains avsmeter, vspipe and avs2pipemod for showing
-	   info about the currently active AviSynth or VapourSynth script,
-	   vspipe and avs2pipemod show parameters like bit depth, colorspace and framecount.
-	   In the script editor there is a new 'Script Info' menu item (Ctrl+I) doing the same.
+       info about the currently active AviSynth or VapourSynth script,
+       vspipe and avs2pipemod show parameters like bit depth, colorspace and framecount.
+       In the script editor there is a new 'Script Info' menu item (Ctrl+I) doing the same.
 - new: the mediainfo dialog shows the formats in the tab captions
 - new: the mediainfo dialog has a new feature to move
        to the next and previous file via menu and shortcut

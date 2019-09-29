@@ -9,7 +9,7 @@ Public Class NVEnc
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "Nvidia | " + Params.Codec.OptionText
+            Return "Nvidia | " + Params.Codec.OptionText.Replace("Nvidia ", "")
         End Get
     End Property
 

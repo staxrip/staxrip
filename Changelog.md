@@ -38,7 +38,8 @@ Thanks to Patman for providing the download links of the tools !!!
 	   vspipe and avs2pipemod show parameters like bit depth, colorspace and framecount.
 	   In the script editor there is a new 'Script Info' menu item (Ctrl+I) doing the same.
 - new: the mediainfo dialog shows the format in the tab captions
-
+- new: the mediainfo dialog has a new feature to move
+       to the next and previous file via menu and shortcut
 - fix: docs weren't built automatically
 - fix: some bugs were fixed in the nvenc command line import feature
 

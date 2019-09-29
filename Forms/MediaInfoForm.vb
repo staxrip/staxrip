@@ -38,7 +38,7 @@ Public Class MediaInfoForm
         Me.tv.Location = New System.Drawing.Point(0, 80)
         Me.tv.Margin = New System.Windows.Forms.Padding(0)
         Me.tv.Name = "tv"
-        Me.tv.Size = New System.Drawing.Size(350, 632)
+        Me.tv.Size = New System.Drawing.Size(400, 632)
         Me.tv.TabIndex = 2
         '
         'rtb
@@ -47,11 +47,11 @@ Public Class MediaInfoForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.rtb.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.rtb.Location = New System.Drawing.Point(350, 0)
+        Me.rtb.Location = New System.Drawing.Point(400, 0)
         Me.rtb.Margin = New System.Windows.Forms.Padding(0)
         Me.rtb.Name = "rtb"
         Me.tlpMain.SetRowSpan(Me.rtb, 2)
-        Me.rtb.Size = New System.Drawing.Size(580, 712)
+        Me.rtb.Size = New System.Drawing.Size(582, 712)
         Me.rtb.TabIndex = 4
         Me.rtb.Text = ""
         '
@@ -61,13 +61,13 @@ Public Class MediaInfoForm
         Me.stb.Location = New System.Drawing.Point(0, 0)
         Me.stb.Margin = New System.Windows.Forms.Padding(0)
         Me.stb.Name = "stb"
-        Me.stb.Size = New System.Drawing.Size(350, 80)
+        Me.stb.Size = New System.Drawing.Size(400, 80)
         Me.stb.TabIndex = 5
         '
         'tlpMain
         '
         Me.tlpMain.ColumnCount = 2
-        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 350.0!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 400.0!))
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.Controls.Add(Me.stb, 0, 0)
         Me.tlpMain.Controls.Add(Me.tv, 0, 1)
@@ -79,7 +79,7 @@ Public Class MediaInfoForm
         Me.tlpMain.RowCount = 2
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpMain.Size = New System.Drawing.Size(930, 712)
+        Me.tlpMain.Size = New System.Drawing.Size(982, 712)
         Me.tlpMain.TabIndex = 6
         '
         'MediaInfoForm
@@ -87,7 +87,7 @@ Public Class MediaInfoForm
         Me.AllowDrop = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(930, 712)
+        Me.ClientSize = New System.Drawing.Size(982, 712)
         Me.Controls.Add(Me.tlpMain)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.HelpButton = False
@@ -121,7 +121,12 @@ Public Class MediaInfoForm
         rtb.Font = New Font("Consolas", 10 * s.UIScaleFactor)
 
         Dim devModeCaption = If(Registry.CurrentUser.GetBoolean("Software\" + Application.ProductName, "DevMode"), "User Mode", "Developer Mode")
-        ActionMenuItem.Add(rtb.ContextMenuStrip.Items, devModeCaption, AddressOf ToggleDevMode)
+
+        Dim menu = DirectCast(rtb.ContextMenuStrip, ContextMenuStripEx)
+        menu.Form = Me
+        menu.Add(devModeCaption, AddressOf ToggleDevMode)
+        menu.Add("Previous File", AddressOf PreviousFile).Shortcut = Keys.F11
+        menu.Add("Next File", AddressOf NextFile).Shortcut = Keys.F12
 
         tv.SelectOnMouseDown = True
         tv.ShowLines = False
@@ -143,6 +148,22 @@ Public Class MediaInfoForm
         Registry.CurrentUser.Write("Software\" + Application.ProductName, "DevMode", Not Registry.CurrentUser.GetBoolean("Software\" + Application.ProductName, "DevMode"))
         Close()
         g.DefaultCommands.ShowMediaInfo(SourcePath)
+    End Sub
+
+    Sub NextFile()
+        Dim files = Directory.GetFiles(Path.GetDirectoryName(SourcePath))
+        Dim index = Array.IndexOf(files, SourcePath)
+        index += 1
+        If index > files.Length - 1 Then index = 0
+        SetFile(files(index))
+    End Sub
+
+    Sub PreviousFile()
+        Dim files = Directory.GetFiles(Path.GetDirectoryName(SourcePath))
+        Dim index = Array.IndexOf(files, SourcePath)
+        index -= 1
+        If index < 0 Then index = files.Length - 1
+        SetFile(files(index))
     End Sub
 
     Sub UpdateItems()
@@ -200,11 +221,13 @@ Public Class MediaInfoForm
 
         Dim files = TryCast(drgevent.Data.GetData(DataFormats.FileDrop), String())
 
-        If Not files.NothingOrEmpty Then
-            SourcePath = files(0)
-            Text = "MediaInfo - " + SourcePath
-            Parse()
-        End If
+        If Not files.NothingOrEmpty Then SetFile(files(0))
+    End Sub
+
+    Sub SetFile(filepath As String)
+        SourcePath = filepath
+        Text = "MediaInfo - " + SourcePath
+        Parse()
     End Sub
 
     Protected Overrides Sub OnDragEnter(e As DragEventArgs)
@@ -222,14 +245,15 @@ Public Class MediaInfoForm
     End Class
 
     Sub Parse()
+        tv.BeginUpdate()
         tv.Nodes.Clear()
         Items.Clear()
 
         Dim output = MediaInfo.GetCompleteSummary(SourcePath).FixBreak
         Dim group As String
 
-        tv.Nodes.Add("Basic")
-        tv.Nodes.Add("Advanced")
+        tv.Nodes.Add("Basic").Tag = "Basic"
+        tv.Nodes.Add("Advanced").Tag = "Advanced"
 
         For Each line In output.SplitLinesNoEmpty
             If line.Contains(":") Then
@@ -245,7 +269,7 @@ Public Class MediaInfoForm
                 Items.Add(item)
             Else
                 group = line.Trim
-                tv.Nodes.Add(line.Trim)
+                tv.Nodes.Add(line.Trim).Tag = line.Trim
             End If
         Next
 
@@ -286,11 +310,13 @@ Public Class MediaInfoForm
         Else
             tv.SelectedNode = tv.Nodes(1)
         End If
+
+        tv.EndUpdate()
     End Sub
 
     Private Sub tv_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles tv.AfterSelect
         Application.DoEvents()
-        ActiveGroup = e.Node.Text
+        ActiveGroup = e.Node.Tag.ToString
         UpdateItems()
     End Sub
 

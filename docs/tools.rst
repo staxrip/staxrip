@@ -119,7 +119,7 @@ ffmpeg
 
 Versatile audio video converter.
 
-Used Version: 4.2.1 Wolfberry
+Used Version: 2019-09-27 Patman
 
 http://ffmpeg.org
 
@@ -369,7 +369,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.2+3-fdd69a766881 Barough
+Used Version: 3.2+3-fdd69a76688 Patman
 
 http://x265.org
 

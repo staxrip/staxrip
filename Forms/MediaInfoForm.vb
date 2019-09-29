@@ -150,34 +150,36 @@ Public Class MediaInfoForm
         Dim items As IEnumerable(Of Item)
 
         If ActiveGroup = "Advanced" Then
-            items = Me.Items.Where(Function(i) i.IsComplete)
+            items = Me.Items.Where(Function(item) item.IsComplete)
         ElseIf ActiveGroup = "Basic" Then
-            items = Me.Items.Where(Function(i) Not i.IsComplete)
+            items = Me.Items.Where(Function(item) Not item.IsComplete)
         Else
             Dim l As New List(Of Item)
-            l.AddRange(Me.Items.Where(Function(i) Not i.IsComplete AndAlso i.Group = ActiveGroup))
+            l.AddRange(Me.Items.Where(Function(item) Not item.IsComplete AndAlso item.Group = ActiveGroup))
             l.Add(New Item With {.Name = "", .Value = "", .Group = ActiveGroup})
-            l.AddRange(Me.Items.Where(Function(i) i.IsComplete AndAlso i.Group = ActiveGroup))
+            l.AddRange(Me.Items.Where(Function(item) item.IsComplete AndAlso item.Group = ActiveGroup))
             items = l
         End If
 
         Dim search = stb.Text.ToLower
 
-        If search <> "" Then items = items.Where(Function(i) i.Name.ToLower.Contains(search) OrElse i.Value.ToLower.Contains(search))
+        If search <> "" Then items = items.Where(Function(item) item.Name.ToLower.Contains(search) OrElse item.Value.ToLower.Contains(search))
         Dim groups As New List(Of String)
 
         For Each i In items
-            If i.Group <> "" AndAlso Not groups.Contains(i.Group) Then groups.Add(i.Group)
+            If i.Group <> "" AndAlso Not groups.Contains(i.Group) Then
+                groups.Add(i.Group)
+            End If
         Next
 
-        For Each i In groups
+        For Each group In groups
             If newText.Length = 0 Then
-                newText.Append(i + BR2)
+                newText.Append(group + BR2)
             Else
-                newText.Append(BR + i + BR2)
+                newText.Append(BR + group + BR2)
             End If
 
-            Dim itemsInGroup = items.Where(Function(v) v.Group = i)
+            Dim itemsInGroup = items.Where(Function(item) item.Group = group)
 
             For Each i3 In itemsInGroup
                 If i3.Name <> "" Then
@@ -229,11 +231,11 @@ Public Class MediaInfoForm
         tv.Nodes.Add("Basic")
         tv.Nodes.Add("Advanced")
 
-        For Each i In output.SplitLinesNoEmpty
-            If i.Contains(":") Then
+        For Each line In output.SplitLinesNoEmpty
+            If line.Contains(":") Then
                 Dim item As New Item
-                item.Name = i.Left(":").Trim
-                item.Value = i.Right(":").Trim
+                item.Name = line.Left(":").Trim
+                item.Value = line.Right(":").Trim
                 item.Group = group
                 item.IsComplete = True
 
@@ -242,18 +244,18 @@ Public Class MediaInfoForm
 
                 Items.Add(item)
             Else
-                group = i.Trim
-                tv.Nodes.Add(i.Trim)
+                group = line.Trim
+                tv.Nodes.Add(line.Trim)
             End If
         Next
 
         output = MediaInfo.GetSummary(SourcePath)
 
-        For Each i In output.SplitLinesNoEmpty
-            If i.Contains(":") Then
+        For Each line In output.SplitLinesNoEmpty
+            If line.Contains(":") Then
                 Dim item As New Item
-                item.Name = i.Left(":").Trim
-                item.Value = i.Right(":").Trim
+                item.Name = line.Left(":").Trim
+                item.Value = line.Right(":").Trim
                 item.Group = group
 
                 If item.Name Is Nothing Then item.Name = ""
@@ -267,8 +269,16 @@ Public Class MediaInfoForm
 
                 Items.Add(item)
             Else
-                group = i.Trim
+                group = line.Trim
             End If
+        Next
+
+        For Each node As TreeNode In tv.Nodes
+            For Each item In Items
+                If item.Group = node.Text AndAlso item.Name = "Format" Then
+                    node.Text += " (" + item.Value + ")"
+                End If
+            Next
         Next
 
         If stb.Text = "" Then

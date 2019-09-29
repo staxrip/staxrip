@@ -6081,6 +6081,10 @@ Public Class MainForm
         Http.CheckForUpdates()
         MyBase.OnShown(e)
         'TestForm.ShowForm()
+
+        Using f As New MediaInfoForm("D:\Samples\DTS DTSX SRT PGS.mkv") With {.ShowInTaskbar = True}
+            f.ShowDialog()
+        End Using
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)

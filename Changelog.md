@@ -15,7 +15,8 @@ Thanks to Patman for providing the download links of the tools !!!
 - update: TCanny r12
 - update: BM3D r8
 - update: L-Smash Works 2019-09-17 HolyWu
-- update: x265 3.2+3-fdd69a766881 Barough
+- update: x265 3.2+3-fdd69a76688 Patman
+- update: ffmpeg 2019-09-27 Patman
 
 - new: x265 switch --selective-sao added
 - new: L-Smash Works parameters prefer_hw 3 HW auto added to menu
@@ -36,6 +37,7 @@ Thanks to Patman for providing the download links of the tools !!!
 	   info about the currently active AviSynth or VapourSynth script,
 	   vspipe and avs2pipemod show parameters like bit depth, colorspace and framecount.
 	   In the script editor there is a new 'Script Info' menu item (Ctrl+I) doing the same.
+- new: the mediainfo dialog shows the format in the tab captions
 
 - fix: docs weren't built automatically
 - fix: some bugs were fixed in the nvenc command line import feature

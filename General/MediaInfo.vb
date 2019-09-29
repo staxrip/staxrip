@@ -10,13 +10,16 @@ Public Class MediaInfo
 
     Sub New(path As String)
         If Not Loaded Then
-            Loaded = True
             Native.LoadLibrary(Package.MediaInfo.Path)
+            Loaded = True
         End If
 
         Handle = MediaInfo_New()
         MediaInfo_Open(Handle, path)
-        If Registry.CurrentUser.GetBoolean("Software\" + Application.ProductName, "DevMode") Then MediaInfo_Option(Handle, "Language", "raw")
+
+        If Registry.CurrentUser.GetBoolean("Software\" + Application.ProductName, "DevMode") Then
+            MediaInfo_Option(Handle, "Language", "raw")
+        End If
     End Sub
 
     Private VideoStreamsValue As List(Of VideoStream)
@@ -195,7 +198,6 @@ Public Class MediaInfo
         If ret.Contains("Encoded_Library_Settings") Then ret = Regex.Replace(ret, "Encoded_Library_Settings +: .+\n", "")
         If ret.Contains("Encoding settings") Then ret = Regex.Replace(ret, "Encoding settings +: .+\n", "")
         If ret.Contains("Format settings, ") Then ret = ret.Replace("Format settings, ", "Format, ")
-
         Return ret.FormatColumn(":").Trim
     End Function
 

@@ -1,3 +1,7 @@
+### 2.0.4.6 Beta
+
+- fix: main dialog was not set to quality mode using nvenc --vbr-quality
+
 ### 2.0.4.5 Beta
 
 Thanks to Patman for providing the download links of the tools !!!

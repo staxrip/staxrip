@@ -10,7 +10,7 @@ Public Class ApplicationSettings
     Public CheckForUpdates As Boolean
     Public CheckForUpdatesLastRequest As DateTime
     Public CheckForUpdatesQuestion As Boolean
-    Public CheckForUpdatesDismissedVersion As Integer
+    Public CheckForUpdatesDismissed As String
     Public CmdlPresetsEac3to As String
     Public CmdlPresetsMKV As String
     Public CmdlPresetsMP4 As String

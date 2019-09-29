@@ -20,23 +20,23 @@ Public Class Http
                 Dim response = Await HttpClient.GetAsync("https://github.com/staxrip/staxrip/releases")
                 response.EnsureSuccessStatusCode()
                 Dim content = Await response.Content.ReadAsStringAsync()
-                Dim match = Regex.Match(content, "title=""(\d\.\d\.\d\.\d)""")
-                If Not match.Success Then Throw New Exception("regex failure")
-                Dim onlineVersion = match.Groups(1).Value.Replace(".", "").ToInt
-                Dim currentVersion = Application.ProductVersion.Replace(".", "").ToInt
-                If currentVersion > 9000 Then Throw New Exception("invalid version scheme")
+                Dim match = Regex.Match(content, "title=""(\d+\.\d+\.\d+\.\d+)""")
+                Dim onlineVersion = Version.Parse(match.Groups(1).Value)
+                Dim currentVersion = Reflection.Assembly.GetEntryAssembly.GetName.Version
 
-                If onlineVersion > currentVersion AndAlso onlineVersion <> s.CheckForUpdatesDismissedVersion Then
+                If onlineVersion > currentVersion AndAlso (s.CheckForUpdatesDismissed = "" OrElse
+                    Version.Parse(s.CheckForUpdatesDismissed) <> onlineVersion) Then
+
                     Using td As New TaskDialog(Of String)
                         td.MainInstruction = "A newer version was found online: " + match.Groups(1).Value
-                        td.AddCommandLink("Show download page", "dl")
+                        td.AddCommandLink("Show download page", "download")
                         td.AddCommandLink("Dismiss " + match.Groups(1).Value, "dismiss")
 
                         Select Case td.Show
-                            Case "dl"
+                            Case "download"
                                 Process.Start("https://github.com/staxrip/staxrip/releases")
                             Case "dismiss"
-                                s.CheckForUpdatesDismissedVersion = onlineVersion
+                                s.CheckForUpdatesDismissed = onlineVersion.ToString
                         End Select
                     End Using
                 End If

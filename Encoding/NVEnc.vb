@@ -94,7 +94,7 @@ Public Class NVEnc
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.Mode.Value = 0 OrElse
+            Return Params.Mode.Value = 0 OrElse Params.Mode.Value = 5 OrElse
                 ((Params.Mode.Value = 3 OrElse Params.Mode.Value = 4) AndAlso Params.VbrQuality.Value > -1)
         End Get
         Set(Value As Boolean)
@@ -127,8 +127,8 @@ Public Class NVEnc
         Property Mode As New OptionParam With {
             .Text = "Mode",
             .Expand = True,
-            .Switches = {"--cqp", "--cbr", "--cbrhq", "--vbr", "--vbrhq"},
-            .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "CBR HQ - Constant Bitrate HQ", "VBR - Variable Bitrate", "VBR HQ - Variable Bitrate HQ"},
+            .Switches = {"--cqp", "--cbr", "--cbrhq", "--vbr", "--vbrhq", "--vbrhq"},
+            .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "CBR HQ - Constant Bitrate HQ", "VBR - Variable Bitrate", "VBR HQ - Variable Bitrate HQ", "VBR HQ - Variable Bitrate HQ - Quality Mode"},
             .VisibleFunc = Function() Not Lossless.Value,
             .ArgsFunc = AddressOf GetModeArgs,
             .ImportAction = Sub(param, arg)
@@ -198,7 +198,7 @@ Public Class NVEnc
             .Text = "VBR Quality",
             .Config = {-1, 51, 1, 1},
             .Init = -1,
-            .VisibleFunc = Function() Mode.Value = 3 OrElse Mode.Value = 4}
+            .VisibleFunc = Function() {3, 4, 5}.Contains(Mode.Value)}
 
         Property Lossless As New BoolParam With {
             .Switch = "--lossless",
@@ -796,9 +796,11 @@ Public Class NVEnc
                 Case 2
                     Return "--cbrhq " & p.VideoBitrate
                 Case 3
-                    Return "--vbr " & If(VbrQuality.Value = -1, p.VideoBitrate, 0)
+                    Return "--vbr " & p.VideoBitrate
                 Case 4
-                    Return "--vbrhq " & If(VbrQuality.Value = -1, p.VideoBitrate, 0)
+                    Return "--vbrhq " & p.VideoBitrate
+                Case 5
+                    Return "--vbrhq 0"
             End Select
         End Function
 

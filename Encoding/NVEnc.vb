@@ -94,8 +94,8 @@ Public Class NVEnc
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.Mode.Value = 0 OrElse Params.Mode.Value = 5 OrElse
-                ((Params.Mode.Value = 3 OrElse Params.Mode.Value = 4) AndAlso Params.VbrQuality.Value > -1)
+            Return Params.Mode.Value = 0 OrElse
+                ((Params.Mode.Value = 3 OrElse Params.Mode.Value = 4) AndAlso Params.ConstantQualityMode.Value)
         End Get
         Set(Value As Boolean)
         End Set
@@ -127,13 +127,17 @@ Public Class NVEnc
         Property Mode As New OptionParam With {
             .Text = "Mode",
             .Expand = True,
-            .Switches = {"--cqp", "--cbr", "--cbrhq", "--vbr", "--vbrhq", "--vbrhq"},
-            .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "CBR HQ - Constant Bitrate HQ", "VBR - Variable Bitrate", "VBR HQ - Variable Bitrate HQ", "VBR HQ - Variable Bitrate HQ - Quality Mode"},
+            .Switches = {"--cqp", "--cbr", "--cbrhq", "--vbr", "--vbrhq"},
+            .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "CBR HQ - Constant Bitrate HQ", "VBR - Variable Bitrate", "VBR HQ - Variable Bitrate HQ"},
             .VisibleFunc = Function() Not Lossless.Value,
             .ArgsFunc = AddressOf GetModeArgs,
             .ImportAction = Sub(param, arg)
                                 If Mode.Switches.Contains(param) Then
                                     Mode.Value = Array.IndexOf(Mode.Switches.ToArray, param)
+                                End If
+
+                                If param = "--vbrhq" AndAlso arg = "0" Then
+                                    ConstantQualityMode.Value = True
                                 End If
                             End Sub}
 
@@ -159,6 +163,12 @@ Public Class NVEnc
             .VisibleFunc = Function() Codec.ValueText = "h265",
             .Options = {"Main", "Main 10", "Main 444"},
             .InitValue = 0}
+
+        Property ConstantQualityMode As New BoolParam With {
+            .Switches = {"--vbr-quality"},
+            .Text = "Constant Quality Mode",
+            .VisibleFunc = Function() Mode.Value = 3 OrElse Mode.Value = 4
+        }
 
         Property QPAdvanced As New BoolParam With {
             .Text = "Show advanced QP settings",
@@ -196,9 +206,9 @@ Public Class NVEnc
         Property VbrQuality As New NumParam With {
             .Switch = "--vbr-quality",
             .Text = "VBR Quality",
-            .Config = {-1, 51, 1, 1},
-            .Init = -1,
-            .VisibleFunc = Function() {3, 4, 5}.Contains(Mode.Value)}
+            .Config = {0, 51, 1, 1},
+            .AlwaysOn = True,
+            .VisibleFunc = Function() {3, 4}.Contains(Mode.Value) AndAlso ConstantQualityMode.Value}
 
         Property Lossless As New BoolParam With {
             .Switch = "--lossless",
@@ -506,6 +516,7 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() Codec.ValueText = "h264"},
                         VbrQuality,
+                        ConstantQualityMode,
                         New BoolParam With {.Switch = "--aq", .Text = "Adaptive Quantization"},
                         New BoolParam With {.Switch = "--aq-temporal", .Text = "AQ Temporal"},
                         Lossless)
@@ -784,6 +795,8 @@ Public Class NVEnc
         End Function
 
         Function GetModeArgs() As String
+            Dim bitrate = If(ConstantQualityMode.Value, 0, p.VideoBitrate)
+
             Select Case Mode.Value
                 Case 0
                     If QPAdvanced.Value Then
@@ -796,11 +809,9 @@ Public Class NVEnc
                 Case 2
                     Return "--cbrhq " & p.VideoBitrate
                 Case 3
-                    Return "--vbr " & p.VideoBitrate
+                    Return "--vbr " & bitrate
                 Case 4
-                    Return "--vbrhq " & p.VideoBitrate
-                Case 5
-                    Return "--vbrhq 0"
+                    Return "--vbrhq " & bitrate
             End Select
         End Function
 

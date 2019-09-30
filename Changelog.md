@@ -1,3 +1,6 @@
+- new: to use nvenc --vbr-quality there is now a checkbox 'Constant Quality Mode'
+       on the rate control tab
+
 ### 2.0.4.6 Beta
 
 - fix: main dialog was not set to quality mode using nvenc --vbr-quality

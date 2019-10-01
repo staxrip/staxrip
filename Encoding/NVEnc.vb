@@ -167,7 +167,14 @@ Public Class NVEnc
         Property ConstantQualityMode As New BoolParam With {
             .Switches = {"--vbr-quality"},
             .Text = "Constant Quality Mode",
-            .VisibleFunc = Function() Mode.Value = 3 OrElse Mode.Value = 4
+            .VisibleFunc = Function() Mode.Value = 3 OrElse Mode.Value = 4,
+            .ArgsFunc = Function() As String
+                            If ConstantQualityMode.Value then
+                               VbrQuality.AlwaysOn = True 
+                            Else
+                               VbrQuality.AlwaysOn = False
+                            End if
+                        End Function
         }
 
         Property QPAdvanced As New BoolParam With {
@@ -207,8 +214,7 @@ Public Class NVEnc
             .Switch = "--vbr-quality",
             .Text = "VBR Quality",
             .Config = {0, 51, 1, 1},
-            .AlwaysOn = True,
-            .VisibleFunc = Function() {3, 4}.Contains(Mode.Value) AndAlso ConstantQualityMode.Value}
+            .VisibleFunc = Function() {3, 4}.Contains(Mode.Value)}
 
         Property Lossless As New BoolParam With {
             .Switch = "--lossless",

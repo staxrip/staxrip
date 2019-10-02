@@ -202,13 +202,19 @@ Public Class NVEnc
             .Init = 22,
             .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
             .Config = {0, 51}}
-
+                                                                                                    
         Property VbrQuality As New NumParam With {
             .Switch = "--vbr-quality",
             .Text = "VBR Quality",
             .Config = {0, 51, 1, 1},
-            .AlwaysOn = True,
-            .VisibleFunc = Function() {3, 4}.Contains(Mode.Value) AndAlso ConstantQualityMode.Value}
+            .VisibleFunc = Function() Mode.Value = 3 OrElse Mode.Value = 4,
+            .ArgsFunc = Function()
+                            If ConstantQualityMode.Value OrElse
+                                VbrQuality.Value <> VbrQuality.DefaultValue Then
+
+                                Return "--vbr-quality " & VbrQuality.Value
+                            End If
+                        End Function}
 
         Property Lossless As New BoolParam With {
             .Switch = "--lossless",

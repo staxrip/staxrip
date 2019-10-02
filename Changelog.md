@@ -1,6 +1,7 @@
 - new: to use nvenc --vbr-quality there is now a checkbox 'Constant Quality Mode'
        on the rate control tab (Patman86)
 - new: --bref-mode added to nvenc
+- new: --aq-strength enabled for nvenc h265
 
 ### 2.0.4.6 Beta
 

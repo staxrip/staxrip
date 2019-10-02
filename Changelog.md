@@ -1,3 +1,4 @@
+- fix: foo bar (Patman86)
 - new: to use nvenc --vbr-quality there is now a checkbox 'Constant Quality Mode'
        on the rate control tab
 

@@ -8,13 +8,14 @@ Public Class ApplicationSettings
     Public AviSynthFilterPreferences As StringPairList
     Public AviSynthProfiles As List(Of FilterCategory)
     Public CheckForUpdates As Boolean
+    Public CheckForUpdatesDismissed As String
     Public CheckForUpdatesLastRequest As DateTime
     Public CheckForUpdatesQuestion As Boolean
-    Public CheckForUpdatesDismissed As String
     Public CmdlPresetsEac3to As String
     Public CmdlPresetsMKV As String
     Public CmdlPresetsMP4 As String
     Public CmdlPresetsX264 As String
+    Public ConvertChromaSubsampling As Boolean = True
     Public CustomMenuCrop As CustomMenuItem
     Public CustomMenuMainForm As CustomMenuItem
     Public CustomMenuPreview As CustomMenuItem

@@ -2290,9 +2290,9 @@ Public Class MainForm
             End If
         End If
 
-        'chroma
-        If editVS Then
-            If p.ChromaSubsampling <> "4:2:0" Then
+        If p.ChromaSubsampling <> "4:2:0" AndAlso s.ConvertChromaSubsampling Then
+            'chroma
+            If editVS Then
                 Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
                 Dim matrix As String
 
@@ -2303,25 +2303,21 @@ Public Class MainForm
                 End If
 
                 p.Script.GetFilter("Source").Script += BR + "clip = clip.resize.Bicubic(matrix_s = '" + matrix + "', format = vs.YUV420P8)"
-            End If
-        ElseIf editAVS Then
-            If Not sourceFilter.Script.Contains("ConvertToYV12") Then
-                If p.ChromaSubsampling <> "4:2:0" Then
-                    Dim format = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format")
-                    Dim matrix As String
+            ElseIf editAVS AndAlso Not sourceFilter.Script.Contains("ConvertToYV12") Then
+                Dim format = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format")
+                Dim matrix As String
 
-                    If format = "RGB" OrElse p.SourceFile.Ext = "vdr" Then
-                        Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
+                If format = "RGB" OrElse p.SourceFile.Ext = "vdr" Then
+                    Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
 
-                        If sourceHeight > 576 Then
-                            matrix = "matrix = ""Rec709"""
-                        Else
-                            matrix = "matrix = ""Rec601"""
-                        End If
+                    If sourceHeight > 576 Then
+                        matrix = "matrix = ""Rec709"""
+                    Else
+                        matrix = "matrix = ""Rec601"""
                     End If
-
-                    p.Script.GetFilter("Source").Script += BR + "ConvertToYV12(" + matrix + ")"
                 End If
+
+                p.Script.GetFilter("Source").Script += BR + "ConvertToYV12(" + matrix + ")"
             End If
         End If
 
@@ -3405,6 +3401,13 @@ Public Class MainForm
             b = ui.AddBool
             b.Text = "Minimize processing dialog to tray"
             b.Field = NameOf(s.MinimizeToTray)
+
+            Dim videoPage = ui.CreateFlowPage("Video", True)
+
+            b = ui.AddBool
+            b.Text = "Add filter to convert chroma subsampling to 4:2:0"
+            b.Help = "After a source is loaded, automatically add a filter to convert chroma subsampling to 4:2:0"
+            b.Field = NameOf(s.ConvertChromaSubsampling)
 
             Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth",
                                              s.AviSynthFilterPreferences, s.AviSynthProfiles)

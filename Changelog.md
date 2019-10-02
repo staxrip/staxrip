@@ -2,6 +2,9 @@
        on the rate control tab (Patman86)
 - new: --bref-mode added to nvenc
 - new: --aq-strength enabled for nvenc h265
+- new: after a source is loaded StaxRip automatically adds a filter
+       to convert chroma subsampling to 4:2:0, this can now be
+	   disabled in the settings on a new Video tab
 
 ### 2.0.4.6 Beta
 

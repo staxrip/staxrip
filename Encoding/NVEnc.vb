@@ -202,7 +202,7 @@ Public Class NVEnc
             .Init = 22,
             .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
             .Config = {0, 51}}
-                                                                                                    
+
         Property VbrQuality As New NumParam With {
             .Switch = "--vbr-quality",
             .Text = "VBR Quality",
@@ -504,6 +504,7 @@ Public Class NVEnc
                         New BoolParam With {.Switch = "--weightp", .Text = "Enable weighted prediction in P slices"})
                     Add("Slice Decision",
                         New OptionParam With {.Switch = "--direct", .Text = "B-Direct Mode", .Options = {"Automatic", "None", "Spatial", "Temporal"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
+                        New OptionParam With {.Switch = "--bref-mode", .Text = "B-Frame Reference Mode", .Options = {"Disabled", "Each", "Middle"}},
                         New NumParam With {.Switch = "--bframes", .Text = "B-Frames", .Init = 3, .Config = {0, 16}},
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Init = 3, .Config = {0, 16}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length", .Config = {0, Integer.MaxValue, 1}},
@@ -523,8 +524,8 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() Codec.ValueText = "h264"},
                         VbrQuality,
                         ConstantQualityMode,
-                        New BoolParam With {.Switch = "--aq", .Text = "Adaptive Quantization"},
-                        New BoolParam With {.Switch = "--aq-temporal", .Text = "AQ Temporal"},
+                        New BoolParam With {.Switch = "--aq", .Text = "Adaptive Quantization (Spatial)"},
+                        New BoolParam With {.Switch = "--aq-temporal", .Text = "Adaptive Quantization (Temporal)"},
                         Lossless)
                     Add("Performance",
                         New StringParam With {.Switch = "--perf-monitor", .Text = "Perf. Monitor"},

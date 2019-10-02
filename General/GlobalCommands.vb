@@ -281,7 +281,7 @@ Public Class GlobalCommands
             --input-format --output-format --video-streamid --video-track --vpp-delogo
             --vpp-delogo-cb --vpp-delogo-cr --vpp-delogo-depth --vpp-delogo-pos
             --vpp-delogo-select --vpp-delogo-y --check-avversion --check-codecs --caption2ass
-            --check-encoders --check-decoders --check-formats --check-protocols --bref-mode
+            --check-encoders --check-decoders --check-formats --check-protocols
             --check-filters --input --output --raw --avs --vpy --vpy-mt --key-on-chapter
             --avcuvid-analyze --audio-source --audio-file --seek --format --audio-copy
             --audio-copy --audio-codec --vpp-perf-monitor --avi --audio-profile --check-profiles

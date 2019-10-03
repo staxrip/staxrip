@@ -243,6 +243,8 @@ Public Class Package
         .Name = "MPC-BE",
         .Filename = "mpc-be64.exe",
         .LaunchName = "mpc-be64.exe",
+        .IgnoreIfMissing = True,
+        .IgnoreVersion = True,
         .URL = "https://sourceforge.net/projects/mpcbe/",
         .Description = "DirectShow based media player.",
         .HintDirectories = {Registry.LocalMachine.GetString("SOFTWARE\MPC-BE", "ExePath").Dir, Folder.Programs + "MPC-BE x64\"}})
@@ -251,6 +253,8 @@ Public Class Package
         .Name = "MPC-HC",
         .Filename = "mpc-hc64.exe",
         .LaunchName = "mpc-hc64.exe",
+        .IgnoreIfMissing = True,
+        .IgnoreVersion = True,
         .URL = "https://mpc-hc.org/",
         .Description = "DirectShow based media player.",
         .HintDirectories = {Registry.CurrentUser.GetString("Software\MPC-HC\MPC-HC", "ExePath").Dir, Folder.Programs + "MPC-HC\"}})
@@ -558,8 +562,9 @@ Public Class Package
             .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
             .FixedDir = Folder.System,
             .IgnoreVersion = True,
-            .IgnoreIfMissing = True,
-            .IsRequiredFunc = Function() Items("SangNom2 avs").IsRequired OrElse Items("Deblock avs").IsRequired OrElse Items("mClean avs").IsRequired,
+            .IsRequiredFunc = Function() Items("SangNom2 avs").IsRequired OrElse
+                                         Items("Deblock avs").IsRequired OrElse
+                                         Items("mClean avs").IsRequired,
             .TreePath = "Runtimes"})
 
         Add(New Package With {

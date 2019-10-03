@@ -735,6 +735,14 @@ File path to modPlus
 
 File path to MP4Box
 
+``%app:MPC-BE%``
+
+File path to MPC-BE
+
+``%app:MPC-HC%``
+
+File path to MPC-HC
+
 ``%app:MPEG2DecPlus%``
 
 File path to MPEG2DecPlus
@@ -1502,6 +1510,14 @@ Folder path to modPlus
 ``%app_dir:MP4Box%``
 
 Folder path to MP4Box
+
+``%app_dir:MPC-BE%``
+
+Folder path to MPC-BE
+
+``%app_dir:MPC-HC%``
+
+Folder path to MPC-HC
 
 ``%app_dir:MPEG2DecPlus%``
 

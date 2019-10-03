@@ -194,6 +194,26 @@ Used Version: 0.8.0-rev69-5fe3ec1 Wolfberry
 http://gpac.wp.mines-telecom.fr/
 
 
+MPC-BE
+~~~~~~
+
+DirectShow based media player.
+
+Used Version: 
+
+https://sourceforge.net/projects/mpcbe/
+
+
+MPC-HC
+~~~~~~
+
+DirectShow based media player.
+
+Used Version: 
+
+https://mpc-hc.org/
+
+
 mpv.net
 ~~~~~~~
 

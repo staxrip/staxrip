@@ -424,7 +424,7 @@ Public Class GlobalCommands
                 msg += BR2 + "# local MD file for " + pack.Name
             End If
 
-            If Not pack.IgnoreIfMissing Then
+            If pack.IsIncluded Then
                 If pack.Path = "" Then
                     msg += BR2 + "# path missing for " + pack.Name
                 ElseIf Not pack.IgnoreVersion Then

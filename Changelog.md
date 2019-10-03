@@ -1,3 +1,7 @@
+### 2.0.4.8 Beta
+
+- fix: MPC was shown as missing even for operations that do not require MPC
+
 ### 2.0.4.7 Beta
 
 - new: to use nvenc --vbr-quality there is now a checkbox 'Constant Quality Mode'

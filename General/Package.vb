@@ -12,10 +12,10 @@ Public Class Package
     Property HelpFile As String
     Property HelpURL As String
     Property HelpURLFunc As Func(Of ScriptEngine, String)
-    Property HintDirFunc As Func(Of String)
     Property HintDirectories As String()
-    Property IgnoreIfMissing As Boolean
+    Property HintDirFunc As Func(Of String)
     Property IgnoreVersion As Boolean
+    Property IsIncluded As Boolean = True
     Property IsRequiredFunc As Func(Of Boolean)
     Property LaunchName As String
     Property Name As String
@@ -226,7 +226,6 @@ Public Class Package
         .Name = "SubtitleEdit",
         .Filename = "SubtitleEdit.exe",
         .LaunchName = "SubtitleEdit.exe",
-        .IgnoreIfMissing = True,
         .DirPath = "Support\SubtitleEdit",
         .WebURL = "http://www.nikse.dk/SubtitleEdit",
         .HelpURL = "http://www.nikse.dk/SubtitleEdit/Help",
@@ -243,8 +242,9 @@ Public Class Package
         .Name = "MPC-BE",
         .Filename = "mpc-be64.exe",
         .LaunchName = "mpc-be64.exe",
-        .IgnoreIfMissing = True,
+        .IsIncluded = False,
         .IgnoreVersion = True,
+        .IsRequired = False,
         .URL = "https://sourceforge.net/projects/mpcbe/",
         .Description = "DirectShow based media player.",
         .HintDirectories = {Registry.LocalMachine.GetString("SOFTWARE\MPC-BE", "ExePath").Dir, Folder.Programs + "MPC-BE x64\"}})
@@ -253,8 +253,9 @@ Public Class Package
         .Name = "MPC-HC",
         .Filename = "mpc-hc64.exe",
         .LaunchName = "mpc-hc64.exe",
-        .IgnoreIfMissing = True,
+        .IsIncluded = False,
         .IgnoreVersion = True,
+        .IsRequired = False,
         .URL = "https://mpc-hc.org/",
         .Description = "DirectShow based media player.",
         .HintDirectories = {Registry.CurrentUser.GetString("Software\MPC-HC\MPC-HC", "ExePath").Dir, Folder.Programs + "MPC-HC\"}})
@@ -435,7 +436,7 @@ Public Class Package
         .Description = Strings.DGDecNV,
         .DirPath = "Support\DGIndexNV",
         .HelpFile = "DGDecodeNVManual.html",
-        .IgnoreIfMissing = True,
+        .IsIncluded = False,
         .HintDirFunc = Function() DGIndexNV.GetStoredPath.Dir,
         .IsRequiredFunc = Function() p.Script.Filters(0).Script.StartsWith("DGSource("),
         .AvsFilterNames = {"DGSource"},
@@ -450,7 +451,7 @@ Public Class Package
         .Description = Strings.DGDecIM,
         .DirPath = "Support\DGIndexIM",
         .HelpFile = "Notes.txt",
-        .IgnoreIfMissing = True,
+        .IsIncluded = False,
         .HintDirFunc = Function() DGIndexIM.GetStoredPath.Dir,
         .IsRequiredFunc = Function() p.Script.Filters(0).Script.StartsWith("DGSourceIM("),
         .AvsFilterNames = {"DGSourceIM"},
@@ -2204,7 +2205,7 @@ Public Class DGIndexNVPackage
         Description = Strings.DGDecNV
         HelpFile = "DGIndexNVManual.html"
         LaunchName = Filename
-        IgnoreIfMissing = True
+        IsIncluded = False
         FileNotFoundMessage = "DGIndexNV can be disabled under Tools/Settings/Demux."
         HintDirFunc = Function() DGDecodeNV.GetStoredPath.Dir
     End Sub
@@ -2231,7 +2232,7 @@ Public Class DGIndexIMPackage
         Name = "DGIndexIM"
         Filename = "DGIndexIM.exe"
         DirPath = "Support\DGIndexIM"
-        IgnoreIfMissing = True
+        IsIncluded = False
         WebURL = "http://rationalqm.us/mine.html"
         Description = Strings.DGDecIM
         HelpFile = "Notes.txt"
@@ -2263,7 +2264,7 @@ Public Class dsmuxPackage
         Description = Strings.dsmux
         WebURL = "http://haali.su/mkv"
         IsRequired = False
-        IgnoreIfMissing = True
+        IsIncluded = False
     End Sub
 
     Public Overrides ReadOnly Property Path As String
@@ -2292,7 +2293,7 @@ Public Class HaaliSplitter
         WebURL = "http://haali.su/mkv"
         Description = "Haali Splitter is used by eac3to and dsmux to write MKV files. Haali Splitter and LAV Filters overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
         IsRequired = False
-        IgnoreIfMissing = True
+        IsIncluded = False
     End Sub
 
     Public Overrides ReadOnly Property Path As String

@@ -6,6 +6,8 @@
        to convert chroma subsampling to 4:2:0, this can now be
 	   disabled in the settings on a new Video tab
 
+- fix: there was a issue with the resize slider and resize menu using VapourSynth
+
 ### 2.0.4.6 Beta
 
 - fix: main dialog was not set to quality mode using nvenc --vbr-quality

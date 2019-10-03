@@ -323,6 +323,7 @@ Public Class PreviewForm
     Sub RefreshScript()
         TargetFrames = p.Script.GetFrames
         If Not AVI Is Nothing Then AVI.Dispose()
+        AviSynthDocument.Synchronize(True)
         AVI = New AVIFile(AviSynthDocument.Path)
         Drawer = New VideoDrawer(pVideo, AVI)
         Drawer.ShowInfos = s.PreviewToggleInfos
@@ -785,10 +786,22 @@ Public Class PreviewForm
         Drawer.Draw()
     End Sub
 
-    <Command("Shows the AviSynth script using the player currently associated with AVI files.")>
+    <Command("Plays the script with a player.")>
     Sub ShowExternalPlayer()
         UpdateTrim()
-        g.PlayScriptWithMpv(p.Script)
+        g.PlayScript(p.Script)
+    End Sub
+
+    <Command("Plays the script with mpv.net.")>
+    Sub PlayWithMpvnet()
+        UpdateTrim()
+        g.PlayScriptWithMpvnet(p.Script)
+    End Sub
+
+    <Command("Plays the script with MPC.")>
+    Sub PlayWithMPC()
+        UpdateTrim()
+        g.PlayScriptWithMPC(p.Script)
     End Sub
 
     <Command("Reloads the script.")>
@@ -981,7 +994,8 @@ Public Class PreviewForm
         ret.Add("View|Trackbar", NameOf(ShowHideTrackbar), Keys.Control Or Keys.T)
 
         ret.Add("Tools|Reload", NameOf(Reload), Keys.R, Symbol.Refresh)
-        ret.Add("Tools|External Player", NameOf(ShowExternalPlayer), Keys.E, Symbol.Play)
+        ret.Add("Tools|Play with mpv.net", NameOf(PlayWithMpvnet), Keys.F9, Symbol.Play)
+        ret.Add("Tools|Play with MPC", NameOf(PlayWithMPC), Keys.F10, Symbol.Play)
         ret.Add("Tools|-")
         ret.Add("Tools|Copy Frame Number", NameOf(g.DefaultCommands.CopyToClipboard), {"%pos_frame%"})
         ret.Add("Tools|Copy Time", NameOf(CopyTime))

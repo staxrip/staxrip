@@ -558,15 +558,15 @@ Module MiscExtensions
 End Module
 
 Module RegistryKeyExtensions
-    Private Function GetValue(Of T)(rootKey As RegistryKey, key As String, name As String) As T
-        Using k = rootKey.OpenSubKey(key)
-            If Not k Is Nothing Then
-                Dim r = k.GetValue(name)
+    Private Function GetValue(Of T)(rootKey As RegistryKey, subKeyName As String, valueName As String) As T
+        Using subKey = rootKey.OpenSubKey(subKeyName)
+            If Not subKey Is Nothing Then
+                Dim value = subKey.GetValue(valueName)
 
-                If Not r Is Nothing Then
+                If Not value Is Nothing Then
                     Try
-                        Return CType(r, T)
-                    Catch ex As Exception
+                        Return CType(value, T)
+                    Catch
                     End Try
                 End If
             End If
@@ -574,52 +574,39 @@ Module RegistryKeyExtensions
     End Function
 
     <Extension()>
-    Function GetString(rootKey As RegistryKey, subKey As String, name As String) As String
-        Return GetValue(Of String)(rootKey, subKey, name)
+    Function GetString(rootKey As RegistryKey, subKeyName As String, valueName As String) As String
+        Return GetValue(Of String)(rootKey, subKeyName, valueName)
     End Function
 
     <Extension()>
-    Function GetInt(rootKey As RegistryKey, subKey As String, name As String) As Integer
-        Return GetValue(Of Integer)(rootKey, subKey, name)
+    Function GetInt(rootKey As RegistryKey, subKeyName As String, valueName As String) As Integer
+        Return GetValue(Of Integer)(rootKey, subKeyName, valueName)
     End Function
 
     <Extension()>
-    Function GetBoolean(rootKey As RegistryKey, subKey As String, name As String) As Boolean
-        Return GetValue(Of Boolean)(rootKey, subKey, name)
+    Function GetBoolean(rootKey As RegistryKey, subKeyName As String, valueName As String) As Boolean
+        Return GetValue(Of Boolean)(rootKey, subKeyName, valueName)
     End Function
 
     <Extension()>
-    Function GetValueNames(rootKey As RegistryKey, subKeyName As String) As IEnumerable(Of String)
-        Using k = rootKey.OpenSubKey(subKeyName)
-            If Not k Is Nothing Then
-                Return k.GetValueNames
-            End If
+    Function GetValueNames(rootKey As RegistryKey, subKeyName As String) As String()
+        Using subKey = rootKey.OpenSubKey(subKeyName)
+            If Not subKey Is Nothing Then Return subKey.GetValueNames
         End Using
 
         Return {}
     End Function
 
     <Extension()>
-    Sub GetSubKeys(rootKey As RegistryKey, keys As List(Of RegistryKey))
-        If Not rootKey Is Nothing Then
-            keys.Add(rootKey)
+    Sub Write(rootKey As RegistryKey, subKeyName As String, valueName As String, valueValue As Object)
+        Dim subKey = rootKey.OpenSubKey(subKeyName, True)
 
-            For Each i In rootKey.GetSubKeyNames
-                GetSubKeys(rootKey.OpenSubKey(i), keys)
-            Next
-        End If
-    End Sub
-
-    <Extension()>
-    Sub Write(rootKey As RegistryKey, subKey As String, valueName As String, valueValue As Object)
-        Dim k = rootKey.OpenSubKey(subKey, True)
-
-        If k Is Nothing Then
-            k = rootKey.CreateSubKey(subKey, RegistryKeyPermissionCheck.ReadWriteSubTree)
+        If subKey Is Nothing Then
+            subKey = rootKey.CreateSubKey(subKeyName, RegistryKeyPermissionCheck.ReadWriteSubTree)
         End If
 
-        k.SetValue(valueName, valueValue)
-        k.Close()
+        subKey.SetValue(valueName, valueValue)
+        subKey.Close()
     End Sub
 
     <Extension()>

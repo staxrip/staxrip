@@ -31,12 +31,24 @@ Public Class CodeEditor
         Select Case e.KeyData
             Case Keys.F5
                 VideoPreview()
+            Case Keys.F9
+                PlayScriptWithMpvnet()
+            Case Keys.F10
+                PlayScriptWithMPC()
             Case Keys.Control Or Keys.Delete
                 If Not ActiveTable Is Nothing Then ActiveTable.RemoveClick()
             Case Keys.Control Or Keys.Up
                 If Not ActiveTable Is Nothing Then ActiveTable.MoveUp()
             Case Keys.Control Or Keys.Down
                 If Not ActiveTable Is Nothing Then ActiveTable.MoveDown()
+            Case Keys.Control Or Keys.I
+                ShowInfo()
+            Case Keys.Control Or Keys.J
+                JoinFilters()
+            Case Keys.Control Or Keys.P
+                g.MainForm.ShowFilterProfilesDialog()
+            Case Keys.Control Or Keys.M
+                MacrosForm.ShowDialogForm()
         End Select
 
         MyBase.OnKeyDown(e)
@@ -71,9 +83,7 @@ Public Class CodeEditor
         Return ret
     End Function
 
-    Sub PlayScriptWithMpv()
-        If p.SourceFile = "" Then Exit Sub
-
+    Sub PlayScriptWithMpvnet()
         Dim script As New VideoScript
         script.Engine = Engine
         script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
@@ -86,13 +96,10 @@ Public Class CodeEditor
             Exit Sub
         End If
 
-        script.Synchronize(True)
-        g.PlayScriptWithMpv(script)
+        g.PlayScriptWithMpvnet(script)
     End Sub
 
-    Sub PlayScript(playerPath As String)
-        If p.SourceFile = "" Then Exit Sub
-
+    Sub PlayScriptWithMPC()
         Dim script As New VideoScript
         script.Engine = Engine
         script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
@@ -105,8 +112,7 @@ Public Class CodeEditor
             Exit Sub
         End If
 
-        script.Synchronize(True)
-        g.StartProcess(playerPath, script.Path.Escape)
+        g.PlayScriptWithMPC(script)
     End Sub
 
     Sub VideoPreview()
@@ -131,7 +137,7 @@ Public Class CodeEditor
         f.Show()
     End Sub
 
-    Sub Info()
+    Sub ShowInfo()
         If p.SourceFile = "" Then Exit Sub
 
         Dim script As New VideoScript
@@ -153,6 +159,16 @@ Public Class CodeEditor
         Else
             g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + " --info " + script.Path.Escape + " -" + BR + "pause", False, False, True)
         End If
+    End Sub
+
+    Sub JoinFilters()
+        Dim firstTable = DirectCast(MainFlowLayoutPanel.Controls(0), FilterTable)
+        firstTable.tbName.Text = "merged"
+        firstTable.rtbScript.Text = MainFlowLayoutPanel.Controls.OfType(Of FilterTable).Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(BR, "# " + BR))).Join(BR) + BR2 + BR2
+
+        For x = MainFlowLayoutPanel.Controls.Count - 1 To 1 Step -1
+            MainFlowLayoutPanel.Controls.RemoveAt(x)
+        Next
     End Sub
 
     Sub MainFlowLayoutPanelLayout(sender As Object, e As LayoutEventArgs)
@@ -364,7 +380,7 @@ Public Class CodeEditor
             Next
 
             Dim removeMenuItem = Menu.Add("Remove", AddressOf RemoveClick)
-            removeMenuItem.ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Delete)
+            removeMenuItem.ShortcutKeyDisplayString = "Ctrl+Delete"
             removeMenuItem.SetImage(Symbol.Remove)
 
             Dim previewMenuItem = Menu.Add("Preview Video...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
@@ -372,39 +388,43 @@ Public Class CodeEditor
             previewMenuItem.ShortcutKeyDisplayString = "F5"
             previewMenuItem.SetImage(Symbol.Photo)
 
-            Dim mpvnetMenuItem = Menu.Add("Play with mpv.net", AddressOf Editor.PlayScriptWithMpv, Keys.F6, "Plays the current script with mpv.net.")
+            Dim mpvnetMenuItem = Menu.Add("Play with mpv.net", AddressOf Editor.PlayScriptWithMpvnet, "Plays the current script with mpv.net.")
             mpvnetMenuItem.Enabled = p.SourceFile <> ""
+            mpvnetMenuItem.ShortcutKeyDisplayString = "F9"
             mpvnetMenuItem.SetImage(Symbol.Play)
 
-            Dim mkvPlayerPath = g.GetAppPathForExtension("mkv")
-
-            If Path.GetFileName(mkvPlayerPath) <> "mpvnet.exe" Then
-                Dim mkvPlayerMenuItem = Menu.Add("Play with " + mkvPlayerPath.Base, Sub() Editor.PlayScript(mkvPlayerPath), Keys.F7, "Plays the current script with a media player.")
-                mkvPlayerMenuItem.Enabled = p.SourceFile <> ""
-                mkvPlayerMenuItem.SetImage(Symbol.Play)
-            End If
+            Dim mpcMenuItem = Menu.Add("Play with MPC", AddressOf Editor.PlayScriptWithMPC, "Plays the current script with MPC.")
+            mpcMenuItem.Enabled = p.SourceFile <> ""
+            mpcMenuItem.ShortcutKeyDisplayString = "F10"
+            mpcMenuItem.SetImage(Symbol.Play)
 
             Menu.Add("Preview Code...", AddressOf CodePreview, "Previews the script with solved macros.").SetImage(Symbol.Code)
 
-            Dim infoMenuItem = Menu.Add("Script Info...", AddressOf Editor.Info, Keys.Control Or Keys.I, "Previews script parameters such as framecount and colorspace.")
+            Dim infoMenuItem = Menu.Add("Script Info...", AddressOf Editor.ShowInfo, "Previews script parameters such as framecount and colorspace.")
             infoMenuItem.SetImage(Symbol.Info)
+            infoMenuItem.ShortcutKeyDisplayString = "Ctrl+I"
             infoMenuItem.Enabled = p.SourceFile <> ""
 
-            Menu.Add("Join Filters", AddressOf JoinFilters, Keys.Control Or Keys.J, "Joins all filters into one filter.").Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
+            Dim joinMenuItem = Menu.Add("Join Filters", AddressOf Editor.JoinFilters, "Joins all filters into one filter.")
+            joinMenuItem.Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
+            joinMenuItem.ShortcutKeyDisplayString = "Ctrl+J"
 
-            Dim profilesMenuItem = Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, Keys.Control Or Keys.P, "Dialog to edit profiles.")
+            Dim profilesMenuItem = Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
+            profilesMenuItem.ShortcutKeyDisplayString = "Ctrl+P"
             profilesMenuItem.SetImage(Symbol.FavoriteStar)
 
-            Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, Keys.Control Or Keys.M, "Dialog to choose macros.").SetImage(Symbol.CalculatorPercentage)
+            Dim macrosMenuItem = Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to choose macros.")
+            macrosMenuItem.ShortcutKeyDisplayString = "Ctrl+M"
+            macrosMenuItem.SetImage(Symbol.CalculatorPercentage)
 
             Menu.Add("-")
 
             Dim moveUpMenuItem = Menu.Add("Move Up", AddressOf MoveUp)
-            moveUpMenuItem.ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Up)
+            moveUpMenuItem.ShortcutKeyDisplayString = "Ctrl+Up"
             moveUpMenuItem.SetImage(Symbol.Up)
 
             Dim moveDownMenuItem = Menu.Add("Move Down", AddressOf MoveDown)
-            moveDownMenuItem.ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Down)
+            moveDownMenuItem.ShortcutKeyDisplayString = "Ctrl+Down"
             moveDownMenuItem.SetImage(Symbol.Down)
 
             Menu.Add("-")
@@ -504,17 +524,6 @@ Public Class CodeEditor
                                                         helpAction()
                                                     End Sub
             Menu.Show(rtbScript, e.Location)
-        End Sub
-
-        Sub JoinFilters()
-            Dim flow = DirectCast(Parent, FlowLayoutPanel)
-            Dim firstTable = DirectCast(flow.Controls(0), FilterTable)
-            firstTable.tbName.Text = "merged"
-            firstTable.rtbScript.Text = flow.Controls.OfType(Of FilterTable).Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(BR, "# " + BR))).Join(BR) + BR2 + BR2
-
-            For x = flow.Controls.Count - 1 To 1 Step -1
-                flow.Controls.RemoveAt(x)
-            Next
         End Sub
 
         Sub MoveUp()

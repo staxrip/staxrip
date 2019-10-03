@@ -13,6 +13,7 @@ Public Class Package
     Property HelpURL As String
     Property HelpURLFunc As Func(Of ScriptEngine, String)
     Property HintDirFunc As Func(Of String)
+    Property HintDirectories As String()
     Property IgnoreIfMissing As Boolean
     Property IgnoreVersion As Boolean
     Property IsRequiredFunc As Func(Of Boolean)
@@ -237,6 +238,22 @@ Public Class Package
         .LaunchName = "mpvnet.exe",
         .URL = "https://github.com/stax76/mpv.net",
         .Description = "libmpv based media player."})
+
+    Shared Property MpcBE As Package = Add(New Package With {
+        .Name = "MPC-BE",
+        .Filename = "mpc-be64.exe",
+        .LaunchName = "mpc-be64.exe",
+        .URL = "https://sourceforge.net/projects/mpcbe/",
+        .Description = "DirectShow based media player.",
+        .HintDirectories = {Registry.LocalMachine.GetString("SOFTWARE\MPC-BE", "ExePath").Dir, Folder.Programs + "MPC-BE x64\"}})
+
+    Shared Property MpcHC As Package = Add(New Package With {
+        .Name = "MPC-HC",
+        .Filename = "mpc-hc64.exe",
+        .LaunchName = "mpc-hc64.exe",
+        .URL = "https://mpc-hc.org/",
+        .Description = "DirectShow based media player.",
+        .HintDirectories = {Registry.CurrentUser.GetString("Software\MPC-HC\MPC-HC", "ExePath").Dir, Folder.Programs + "MPC-HC\"}})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {
         .Name = "modPlus",
@@ -1961,6 +1978,12 @@ Public Class Package
                 Return Folder.Apps + DirPath + "\" + Filename
             End If
 
+            If Not HintDirectories.NothingOrEmpty Then
+                For Each hintDir In HintDirectories
+                    If File.Exists(hintDir + Filename) Then Return hintDir + Filename
+                Next
+            End If
+
             If Not HintDirFunc Is Nothing Then
                 If File.Exists(HintDirFunc.Invoke + Filename) Then Return HintDirFunc.Invoke + Filename
             End If
@@ -1984,6 +2007,19 @@ Public Class Package
 
             ret = Folder.Apps + Name + "\" + Filename
             If File.Exists(ret) Then Return ret
+
+            If Filename?.EndsWith(".exe") Then
+                Using key = Registry.ClassesRoot.OpenSubKey("Local Settings\Software\Microsoft\Windows\Shell\MuiCache")
+                    If Not key Is Nothing Then
+                        For Each valueName In key.GetValueNames
+                            If valueName.Contains(Filename) Then
+                                ret = valueName.Left(Filename) + Filename
+                                If File.Exists(ret) Then Return ret
+                            End If
+                        Next
+                    End If
+                End Using
+            End If
         End Get
     End Property
 

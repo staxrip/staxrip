@@ -332,27 +332,55 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub PlayScriptWithMpv(script As VideoScript)
-        If File.Exists(p.Audio0.File) AndAlso FileTypes.Audio.Contains(p.Audio0.File.Ext) Then
-            PlayScriptWithMpv(script, p.Audio0)
-        ElseIf File.Exists(p.Audio1.File) AndAlso FileTypes.Audio.Contains(p.Audio1.File.Ext) Then
-            PlayScriptWithMpv(script, p.Audio1)
+    Sub PlayScript(script As VideoScript)
+        If script.Engine = ScriptEngine.AviSynth Then
+            PlayScriptWithMpvnet(script)
         Else
-            PlayScriptWithMpv(script, Nothing)
+            PlayScriptWithMPC(script)
         End If
     End Sub
 
-    Sub PlayScriptWithMpv(script As VideoScript, ap As AudioProfile)
-        If script.Engine = ScriptEngine.VapourSynth Then
-            MsgError("VapourSynth scripts are not supported by the mpv player.")
+    Function GetAudioProfileForScriptPlayback() As AudioProfile
+        If File.Exists(p.Audio0.File) AndAlso FileTypes.Audio.Contains(p.Audio0.File.Ext) Then
+            Return p.Audio0
+        ElseIf File.Exists(p.Audio1.File) AndAlso FileTypes.Audio.Contains(p.Audio1.File.Ext) Then
+            Return p.Audio1
+        End If
+    End Function
+
+    Sub PlayScriptWithMPC(script As VideoScript)
+        script.Synchronize(True)
+        Dim playerPath = Package.MpcBE.Path
+        If Not File.Exists(playerPath) Then playerPath = Package.MpcHC.Path
+
+        If Not File.Exists(playerPath) AndAlso Package.MpcBE.VerifyOK(True) Then
+            playerPath = Package.MpcBE.Path
+        End If
+
+        If Not File.Exists(playerPath) Then
             Exit Sub
         End If
 
+        Dim args As String
+        Dim ap = GetAudioProfileForScriptPlayback()
+
+        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then
+            args += " /dub " + ap.File.Escape
+        End If
+
+        args += " " + script.Path.Escape
+        g.StartProcess(playerPath, args.Trim)
+    End Sub
+
+    Sub PlayScriptWithMpvnet(script As VideoScript)
+        script.Synchronize(True)
         Dim args As String
 
         If Calc.IsARSignalingRequired Then
             args += " --video-aspect=" + Calc.GetTargetDAR.ToInvariantString.Shorten(8)
         End If
+
+        Dim ap = GetAudioProfileForScriptPlayback()
 
         If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then
             args += " --audio-files=" + ap.File.Escape
@@ -947,7 +975,9 @@ Public Class GlobalClass
         Dim searchLower = search.ToLower
 
         For Each filter In p.Script.Filters
-            If filter.Category = search OrElse filter.Script.Contains(search) OrElse filter.Script.Contains(searchLower) Then
+            If filter.Category = search OrElse filter.Script.Contains(search) OrElse
+                filter.Script.Contains(searchLower) Then
+
                 If Not filter.Active Then
                     filter.Active = True
                     g.MainForm.FiltersListView.Load()

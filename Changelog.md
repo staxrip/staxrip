@@ -1,5 +1,9 @@
 - new: code formatting of avs/vs code was improved according to most common standard
 
+- fix: Apps with custom path and unknown filename failed to launch
+- fix: nvenc --aq-strength is now only visible if --aq is enabled
+- fix: the right-click/context help in the encoder options failed in same cases 
+
 ### 2.0.4.8 Beta
 
 - fix: MPC was shown as missing even for operations that do not require MPC

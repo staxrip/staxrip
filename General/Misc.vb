@@ -3351,6 +3351,7 @@ Public Enum Symbol
     SliderThumb = &HEC13
     Slideshow = &HE786
     SlideshowLegacy = &HE173
+    SlowMotionOn = &HEA79
     Smartcard = &HE963
     SmartcardVirtual = &HE964
     SolidStarLegacy = &HE1CF

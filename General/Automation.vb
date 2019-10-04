@@ -38,7 +38,7 @@ Using namespace System.Windows.Forms;
                 End Using
             End Using
         Catch ex As Exception
-            g.ShowException(ex, "Failed to execute PowerShell script." + BR2 + "Install PowerShell 5.1 or higher.")
+            g.ShowException(ex, "Failed to execute PowerShell script", "Install PowerShell 5.1 or higher.")
         End Try
     End Function
 End Class

@@ -216,6 +216,10 @@ Public Class NVEnc
                             End If
                         End Function}
 
+        Property AQ As New BoolParam With {
+            .Switch = "--aq",
+            .Text = "Adaptive Quantization (Spatial)"}
+
         Property Lossless As New BoolParam With {
             .Switch = "--lossless",
             .Text = "Lossless",
@@ -521,10 +525,10 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Init = 17500, .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize", .Config = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}},
+                        New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() AQ.Value},
                         VbrQuality,
                         ConstantQualityMode,
-                        New BoolParam With {.Switch = "--aq", .Text = "Adaptive Quantization (Spatial)"},
+                        AQ,
                         New BoolParam With {.Switch = "--aq-temporal", .Text = "Adaptive Quantization (Temporal)"},
                         Lossless)
                     Add("Performance",

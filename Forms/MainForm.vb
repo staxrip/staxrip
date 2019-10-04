@@ -1590,7 +1590,7 @@ Public Class MainForm
         Try
             p = SafeSerialization.Deserialize(New Project, path)
         Catch ex As Exception
-            g.ShowException(ex, "The project file failed to load, it will be reset to defaults." + BR2 + path)
+            g.ShowException(ex, "Project file failed to load", "It will be reset to defaults." + BR2 + path)
             p = New Project
             p.Init()
         End Try

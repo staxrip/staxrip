@@ -16,8 +16,8 @@ Public Class Package
     Property HintDirFunc As Func(Of String)
     Property IgnoreVersion As Boolean
     Property IsIncluded As Boolean = True
+    Property IsLaunchable As Boolean
     Property IsRequiredFunc As Func(Of Boolean)
-    Property LaunchName As String
     Property Name As String
     Property SetupFilename As String
     Property StatusFunc As Func(Of String)
@@ -115,7 +115,7 @@ Public Class Package
         .Name = "chapterEditor",
         .DirPath = "Support\chapterEditor",
         .Filename = "chapterEditor.exe",
-        .LaunchName = "chapterEditor.exe",
+        .IsLaunchable = True,
         .Description = "ChapterEditor is a chapter editor and menu editor for OGG, XML, TTXT, m.AVCHD, m.editions-mkv, Matroska Menu.",
         .WebURL = "https://forum.doom9.org/showthread.php?t=169984"})
 
@@ -192,7 +192,7 @@ Public Class Package
     Shared Property DGIndex As Package = Add(New Package With {
         .Name = "DGIndex",
         .Filename = "DGIndex.exe",
-        .LaunchName = "DGIndex.exe",
+        .IsLaunchable = True,
         .DirPath = "Support\DGIndex",
         .HelpFile = "DGIndexManual.html",
         .Description = "MPEG-2 demuxing and indexing app.",
@@ -201,8 +201,8 @@ Public Class Package
     Shared Property BDSup2SubPP As Package = Add(New Package With {
         .Name = "BDSup2Sub++",
         .Filename = "bdsup2sub++.exe",
+        .IsLaunchable = True,
         .DirPath = "Subtitles\BDSup2Sub++",
-        .LaunchName = "bdsup2sub++.exe",
         .WebURL = "http://forum.doom9.org/showthread.php?p=1613303",
         .Description = "Converts Blu-ray subtitles to other formats like VobSub."})
 
@@ -225,7 +225,7 @@ Public Class Package
     Shared Property SubtitleEdit As Package = Add(New Package With {
         .Name = "SubtitleEdit",
         .Filename = "SubtitleEdit.exe",
-        .LaunchName = "SubtitleEdit.exe",
+        .IsLaunchable = True,
         .DirPath = "Support\SubtitleEdit",
         .WebURL = "http://www.nikse.dk/SubtitleEdit",
         .HelpURL = "http://www.nikse.dk/SubtitleEdit/Help",
@@ -234,14 +234,14 @@ Public Class Package
     Shared Property mpvnet As Package = Add(New Package With {
         .Name = "mpv.net",
         .Filename = "mpvnet.exe",
-        .LaunchName = "mpvnet.exe",
+        .IsLaunchable = True,
         .URL = "https://github.com/stax76/mpv.net",
         .Description = "libmpv based media player."})
 
     Shared Property MpcBE As Package = Add(New Package With {
         .Name = "MPC-BE",
         .Filename = "mpc-be64.exe",
-        .LaunchName = "mpc-be64.exe",
+        .IsLaunchable = True,
         .IsIncluded = False,
         .IgnoreVersion = True,
         .IsRequired = False,
@@ -252,7 +252,7 @@ Public Class Package
     Shared Property MpcHC As Package = Add(New Package With {
         .Name = "MPC-HC",
         .Filename = "mpc-hc64.exe",
-        .LaunchName = "mpc-hc64.exe",
+        .IsLaunchable = True,
         .IsIncluded = False,
         .IgnoreVersion = True,
         .IsRequired = False,
@@ -315,8 +315,8 @@ Public Class Package
         .Filename = "VSRip.exe",
         .DirPath = "subtitles\VSRip",
         .Description = "VSRip rips VobSub subtitles.",
-        .WebURL = "http://sourceforge.net/projects/guliverkli",
-        .LaunchName = "VSRip.exe"})
+        .IsLaunchable = True,
+        .WebURL = "http://sourceforge.net/projects/guliverkli"})
 
     Shared Property flash3kyuu_deband As Package = Add(New PluginPackage With {
         .Name = "flash3kyuu_deband",
@@ -776,7 +776,7 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/InterFrame",
             .AvsFilterNames = {"InterFrame"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("FrameRate", "InterFrame", "InterFrame(Preset=""Medium"", Tuning=""$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$"", NewNum=$enter_text:Enter the NewNum Value.$, NewDen=$enter_text:Enter the NewDen Value$, Cores=$enter_text:Enter the Number of Cores You want to use$, OverrideAlgo=$select:msg:Which Algorithm Do you want to Use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)")}})
+                New VideoFilter("FrameRate", "InterFrame", "InterFrame(preset=""Medium"", tuning=""$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$"", newNum=$enter_text:Enter the NewNum Value.$, newDen=$enter_text:Enter the NewDen Value$, cores=$enter_text:Enter the Number of Cores You want to use$, overrideAlgo=$select:msg:Which Algorithm Do you want to Use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)")}})
 
         Add(New PluginPackage With {
             .Name = "SVPFlow 1",
@@ -1189,8 +1189,8 @@ Public Class Package
             .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Did�e.",
             .AvsFilterNames = {"QTGMC"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(Preset=""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2, TR2=2, EdiThreads=8)"),
-                New VideoFilter("Field", "QTGMC | QTGMC With Repair", "QTGMC1 = QTGMC(Preset=""Slower"", InputType=2)" + BR + "QTGMC2 = QTGMC(Preset=""Slower"", InputType=3, PrevGlobals=""Reuse"")" + BR + "$select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Repair16(QTGMC1, QTGMC2, 1)$")}})
+                New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(preset=""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, sourceMatch=3, sharpness=0.2, tr2=2, ediThreads=8)"),
+                New VideoFilter("Field", "QTGMC | QTGMC With Repair", "QTGMC1 = QTGMC(preset=""Slower"", inputType=2)" + BR + "QTGMC2 = QTGMC(preset=""Slower"", inputType=3, prevGlobals=""Reuse"")" + BR + "$select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Repair16(QTGMC1, QTGMC2, 1)$")}})
 
         Add(New PluginPackage With {
             .Name = "SMDegrain",
@@ -1811,7 +1811,7 @@ Public Class Package
 
     Overridable Property StartAction As Action
         Get
-            If LaunchName <> "" Then Return Sub() g.StartProcess(GetDir() + LaunchName)
+            If IsLaunchable Then Return Sub() g.StartProcess(Path)
             Return StartActionValue
         End Get
         Set(value As Action)
@@ -2204,7 +2204,7 @@ Public Class DGIndexNVPackage
         WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html"
         Description = Strings.DGDecNV
         HelpFile = "DGIndexNVManual.html"
-        LaunchName = Filename
+        IsLaunchable = True
         IsIncluded = False
         FileNotFoundMessage = "DGIndexNV can be disabled under Tools/Settings/Demux."
         HintDirFunc = Function() DGDecodeNV.GetStoredPath.Dir

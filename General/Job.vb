@@ -85,7 +85,7 @@ Public Class Job
                     counter += 1
 
                     If counter > 9 Then
-                        g.ShowException(ex, "Failed to load job file:" + BR2 + jobsPath)
+                        g.ShowException(ex, "Failed to load job file", jobsPath)
                         FileHelp.Delete(jobsPath)
                         Exit While
                     End If

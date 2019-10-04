@@ -156,7 +156,7 @@ Public Class GlobalClass
             If jobPath.StartsWith(Folder.Settings + "Batch Projects\") Then File.Delete(jobPath)
         Catch ex As ErrorAbortException
             Log.Save()
-            g.ShowException(ex, Nothing, 50)
+            g.ShowException(ex, Nothing, Nothing, 50)
             g.StartProcess(g.GetTextEditorPath(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
             ProcController.Aborted = False
         End Try
@@ -774,38 +774,39 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub ShowException(e As Exception,
-                      Optional msg As String = Nothing,
+    Sub ShowException(ex As Exception,
+                      Optional mainInstruction As String = Nothing,
+                      Optional content As String = Nothing,
                       Optional timeout As Integer = 0)
         Try
             Using td As New TaskDialog(Of String)
-                If msg = "" Then
-                    If TypeOf e Is ErrorAbortException Then
-                        td.MainInstruction = DirectCast(e, ErrorAbortException).Title + $" ({Application.ProductVersion})"
+                If mainInstruction = "" Then
+                    If TypeOf ex Is ErrorAbortException Then
+                        td.MainInstruction = DirectCast(ex, ErrorAbortException).Title + $" ({Application.ProductVersion})"
                     Else
-                        td.MainInstruction = e.GetType.Name + $" ({Application.ProductVersion})"
+                        td.MainInstruction = ex.GetType.Name + $" ({Application.ProductVersion})"
                     End If
                 Else
-                    td.MainInstruction = msg
+                    td.MainInstruction = mainInstruction
                 End If
 
                 td.Timeout = timeout
-                td.Content = e.Message
+                td.Content = (ex.Message + BR2 + content).Trim
                 td.MainIcon = TaskDialogIcon.Error
-                td.ExpandedInformation = e.ToString
+                td.ExpandedInformation = ex.ToString
                 td.Footer = Strings.TaskDialogFooter
                 td.Show()
             End Using
         Catch
             Dim title As String
 
-            If TypeOf e Is ErrorAbortException Then
-                title = DirectCast(e, ErrorAbortException).Title
+            If TypeOf ex Is ErrorAbortException Then
+                title = DirectCast(ex, ErrorAbortException).Title
             Else
-                title = e.GetType.Name
+                title = ex.GetType.Name
             End If
 
-            VB6.MsgBox(title + BR2 + e.Message + BR2 + e.ToString, VB6.MsgBoxStyle.Critical)
+            VB6.MsgBox(title + BR2 + ex.Message + BR2 + ex.ToString, VB6.MsgBoxStyle.Critical)
         End Try
     End Sub
 
@@ -842,10 +843,14 @@ Public Class GlobalClass
         Dim helpContent = File.ReadAllText(helpPath)
         Dim find As String
 
-        If helpContent.Contains(switch) Then
-            find = switch
+        If helpContent.Contains(switch.Replace("--", "--(no-)") + " ") Then
+            find = switch.Replace("--", "--(no-)") + " "
+        ElseIf helpContent.Contains(switch + " ") Then
+            find = switch + " "
         ElseIf helpContent.Contains(switch.Replace("--", "--(no-)")) Then
             find = switch.Replace("--", "--(no-)")
+        ElseIf helpContent.Contains(switch) Then
+            find = switch
         End If
 
         If find = "" Then Exit Sub
@@ -859,15 +864,7 @@ Public Class GlobalClass
         Try
             Process.Start(fileName, arguments)
         Catch ex As Exception
-            If fileName Like "http*://*" Then
-                MsgError("Failed to open URL with browser." + BR2 + fileName, ex.Message)
-            ElseIf File.Exists(fileName) Then
-                MsgError("Failed to launch file." + BR2 + fileName, ex.Message)
-            ElseIf Directory.Exists(fileName) Then
-                MsgError("Failed to launch directory." + BR2 + fileName, ex.Message)
-            Else
-                g.ShowException(ex, "Failed to execute command:" + BR2 + fileName + BR2 + "Arguments:" + BR2 + arguments)
-            End If
+            g.ShowException(ex, "Failed to start process", "Filename:" + BR2 + fileName + BR2 + "Arguments:" + BR2 + arguments)
         End Try
     End Sub
 

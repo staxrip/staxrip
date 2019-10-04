@@ -367,7 +367,7 @@ Public Class Audio
         d.RemoveFilter("Cutting")
         Dim outPath = p.TempDir + ap.File.Base + "_convFFAudioSource." + ap.ConvertExt
         d.Path = p.TempDir + ap.File.Base + "_DecodeFFAudioSource.avs"
-        d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))
+        d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile=""" + cachefile + """))"))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
@@ -433,7 +433,7 @@ Public Class Audio
         d.Filters.AddRange(p.Script.Filters)
         Dim wavPath = p.TempDir + ap.File.Base + "_cut_ff.wav"
         d.Path = p.TempDir + ap.File.Base + "_cut_ff.avs"
-        d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))
+        d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile=""" + cachefile + """))"))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 

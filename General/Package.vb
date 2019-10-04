@@ -473,9 +473,9 @@ Public Class Package
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .HelpURL = "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md",
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", $"FFVideoSource(""%source_file%"", cachefile = ""%source_temp_file%.ffindex"")" + BR + "#AssumeFPS(25)")},
+        .AvsFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", $"FFVideoSource(""%source_file%"", cachefile=""%source_temp_file%.ffindex"")" + BR + "#AssumeFPS(25)")},
         .VSFilterNames = {"ffms2"},
-        .VSFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile = r""%source_temp_file%.ffindex"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
+        .VSFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r'%source_file%', cachefile=r'%source_temp_file%.ffindex')" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
 
     Shared Property VSFilterMod As Package = Add(New PluginPackage With {
         .Name = "VSFilterMod",
@@ -525,8 +525,8 @@ Public Class Package
         .DirPath = "Plugins\VS\Scripts",
         .VSFilterNames = {"havsfunc.aaf", "havsfunc.AverageFrames", "havsfunc.Bob", "havsfunc.ChangeFPS", "havsfunc.Clamp", "havsfunc.ContraSharpening", "havsfunc.daa", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha", "havsfunc.DitherLumaRebuild", "havsfunc.EdgeCleaner", "havsfunc.FastLineDarkenMOD", "havsfunc.FineDehalo", "havsfunc.FixChromaBleedingMod", "havsfunc.GrainFactory3", "havsfunc.GrainStabilizeMC", "havsfunc.HQDeringmod", "havsfunc.InterFrame", "havsfunc.ivtc_txt60mc", "havsfunc.KNLMeansCL", "havsfunc.logoNR", "havsfunc.LSFmod", "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.MCTemporalDenoise", "havsfunc.MinBlur", "havsfunc.mt_deflate_multi", "havsfunc.mt_expand_multi", "havsfunc.mt_inflate_multi", "havsfunc.mt_inpand_multi", "havsfunc.Overlay", "havsfunc.Padding", "havsfunc.QTGMC", "havsfunc.Resize", "havsfunc.santiag", "havsfunc.sbr", "havsfunc.SCDetect", "havsfunc.SigmoidDirect", "havsfunc.SigmoidInverse", "havsfunc.smartfademod", "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.srestore", "havsfunc.Stab", "havsfunc.STPresso", "havsfunc.TemporalDegrain", "havsfunc.Toon", "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.Weave", "havsfunc.YAHR"},
         .VSFiltersFunc = Function() {
-            New VideoFilter("Field", "QTGMC | QTGMC", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}clip = havsfunc.QTGMC(clip, TFF = True, Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2)"),
-            New VideoFilter("Field", "QTGMC | QTGMC with Repair", $"clip = core.std.SetFieldBased(clip, 2) # 1 = BFF, 2 = TFF{BR}QTGMC1 = havsfunc.QTGMC(clip, TFF = True, Preset=""Slower"", InputType=2){BR}QTGMC2 = havsfunc.QTGMC(clip, TFF = True, Preset=""Slower"", InputType=3){BR}clip = core.rgvs.Repair(QTGMC1,QTGMC2, mode=1)")}})
+            New VideoFilter("Field", "QTGMC | QTGMC", $"clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF{BR}clip = havsfunc.QTGMC(clip, TFF=True, Preset='$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$', InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2)"),
+            New VideoFilter("Field", "QTGMC | QTGMC with Repair", $"clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF{BR}QTGMC1 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=2){BR}QTGMC2 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=3){BR}clip = core.rgvs.Repair(QTGMC1,QTGMC2, mode=1)")}})
 
     Shared Property LSmashWorks As Package = Add(New PluginPackage With {
         .Name = "L-SMASH-Works",
@@ -537,11 +537,11 @@ Public Class Package
         .AvsFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"},
         .AvsFiltersFunc = Function() {
             New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")" + BR + "#AssumeFPS(25)"),
-            New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", cachefile = ""%source_temp_file%.lwi"")" + BR + "#AssumeFPS(25)")},
+            New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", cachefile=""%source_temp_file%.lwi"")" + BR + "#AssumeFPS(25)")},
         .VSFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"},
         .VSFiltersFunc = Function() {
-            New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)"),
-            New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"", cachefile = r""%source_temp_file%.lwi"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
+            New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r'%source_file%')" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)"),
+            New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r'%source_file%', cachefile=r'%source_temp_file%.lwi')" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
 
     Shared Property BM3D As Package = Add(New PluginPackage With {
         .Name = "BM3D",
@@ -628,9 +628,9 @@ Public Class Package
             .VSFilterNames = {"knlm.KNLMeansCL"},
             .AvsFilterNames = {"KNLMeansCL"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Noise", "NLMeans | KNLMeansCL", "KNLMeansCL(D = 1, A = 1, h = $select:msg:Select Strength;Light|2;Medium|4;Strong|4$, device_type=""auto"")")},
+                New VideoFilter("Noise", "NLMeans | KNLMeansCL", "KNLMeansCL(D=1, A=1, h=$select:msg:Select Strength;Light|2;Medium|4;Strong|4$, device_type=""auto"")")},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "KNLMeansCL", "clip = core.knlm.KNLMeansCL(clip, d = 1, a = 1, h = $select:msg:Select Strength;Light|2;Medium|4;Strong|4$, device_type=""auto"")")}})
+                New VideoFilter("Noise", "KNLMeansCL", "clip = core.knlm.KNLMeansCL(clip, d=1, a=1, h=$select:msg:Select Strength;Light|2;Medium|4;Strong|4$, device_type='auto')")}})
 
         Add(New PluginPackage With {
             .Name = "mvtools2",
@@ -665,7 +665,7 @@ Public Class Package
             .DirPath = "Plugins\AVS\Deblock",
             .AvsFilterNames = {"Deblock"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Restoration", "DeBlock | DeBock", "Deblock(quant=25, aOffset = 0, bOffset = 0, planes=""yuv"")")}})
+                New VideoFilter("Restoration", "DeBlock | DeBock", "Deblock(quant=25, aOffset=0, bOffset=0, planes=""yuv"")")}})
 
         Add(New PluginPackage With {
             .Name = "VapourSource",
@@ -755,7 +755,7 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/Hqdn3d",
             .AvsFilterNames = {"HQDN3D"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Noise", "HQDN3D", "HQDN3D(ls = 4.0, cs=3.0, lt=6.0, ct=4.5, restart=7)")}})
+                New VideoFilter("Noise", "HQDN3D", "HQDN3D(ls=4.0, cs=3.0, lt=6.0, ct=4.5, restart=7)")}})
 
         Add(New PluginPackage With {
             .Name = "HQDeringmod",
@@ -804,7 +804,7 @@ Public Class Package
             .WebURL = "http://avisynth.org.ru/docs/english/externalfilters/mipsmooth.htm",
             .AvsFilterNames = {"MipSmooth"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Restoration", "DeBlock | MipSmooth", "MipSmooth(downsizer=""lanczos"", upsizer=""bilinear"", scalefactor=1.5, method = ""strong"")")}})
+                New VideoFilter("Restoration", "DeBlock | MipSmooth", "MipSmooth(downsizer=""lanczos"", upsizer=""bilinear"", scalefactor=1.5, method=""strong"")")}})
 
         Add(New PluginPackage With {
             .Name = "TMM2",
@@ -1171,7 +1171,7 @@ Public Class Package
             .URL = "http://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock/",
             .VSFilterNames = {"deblock.Deblock"},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Restoration", "DeBlock | DeBlock", "clip = core.deblock.Deblock(clip, quant = 25, aoffset = 0, boffset = 0)")}})
+                New VideoFilter("Restoration", "DeBlock | DeBlock", "clip = core.deblock.Deblock(clip, quant=25, aoffset=0, boffset=0)")}})
 
         Add(New PluginPackage With {
             .Name = "MSharpen",
@@ -1180,7 +1180,7 @@ Public Class Package
             .HelpFile = "Readme.txt",
             .AvsFilterNames = {"MSharpen"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Line", "Sharpen | MSharpen", "MSharpen(threshold = 10, strength = 100, highq = true, mask = false)")}})
+                New VideoFilter("Line", "Sharpen | MSharpen", "MSharpen(threshold=10, strength=100, highq=true, mask=false)")}})
 
         Add(New PluginPackage With {
             .Name = "QTGMC",
@@ -1189,8 +1189,8 @@ Public Class Package
             .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Did�e.",
             .AvsFilterNames = {"QTGMC"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(Preset = ""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2, TR2=2, EdiThreads=8)"),
-                New VideoFilter("Field", "QTGMC | QTGMC With Repair", "QTGMC1 = QTGMC( Preset=""Slower"", InputType=2 )" + BR + "QTGMC2 = QTGMC( Preset=""Slower"", InputType=3, PrevGlobals=""Reuse"")" + BR + "$select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Repair16(QTGMC1, QTGMC2, 1)$")}})
+                New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(Preset=""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2, TR2=2, EdiThreads=8)"),
+                New VideoFilter("Field", "QTGMC | QTGMC With Repair", "QTGMC1 = QTGMC(Preset=""Slower"", InputType=2)" + BR + "QTGMC2 = QTGMC(Preset=""Slower"", InputType=3, PrevGlobals=""Reuse"")" + BR + "$select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Repair16(QTGMC1, QTGMC2, 1)$")}})
 
         Add(New PluginPackage With {
             .Name = "SMDegrain",
@@ -1199,9 +1199,9 @@ Public Class Package
             .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
             .AvsFilterNames = {"SMDegrain"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain", "SMDegrain(tr = 2, thSAD = 250, contrasharp = false, refinemotion = true, lsb = false)"),
-                New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain With Motion Vectors", "super_search = Dither_Luma_Rebuild(S0=1.0,c=0.0625).MSuper(rfilter=4)" + BR + "bv2 = super_search.MAnalyse(isb = true,  delta = 2, overlap= 4)" + BR + "bv1 = super_search.MAnalyse(isb = true,  delta = 1, overlap= 4)" + BR + "fv1 = super_search.MAnalyse(isb = false, delta = 1, overlap= 4)" + BR + "fv2 = super_search.MAnalyse(isb = false, delta = 2, overlap= 4)" + BR + "MDegrain2(MSuper(levels = 1), bv1, fv1, bv2, fv2, thSAD = 300, thSADC = 150)"),
-                New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain 16Bit", "sharp=last" + BR + "dfttest(tbsize=1, sigma = 10, lsb = True)" + BR + "SMDegrain(tr=3, thSAD = 300, CClip = sharp, lsb_in = True, lsb_out = True)")}})
+                New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain", "SMDegrain(tr=2, thSAD=250, contrasharp=false, refinemotion=true, lsb=false)"),
+                New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain With Motion Vectors", "super_search = Dither_Luma_Rebuild(S0=1.0, c=0.0625).MSuper(rfilter=4)" + BR + "bv2 = super_search.MAnalyse(isb=true,  delta=2, overlap=4)" + BR + "bv1 = super_search.MAnalyse(isb=true,  delta=1, overlap=4)" + BR + "fv1 = super_search.MAnalyse(isb=false, delta=1, overlap=4)" + BR + "fv2 = super_search.MAnalyse(isb=false, delta=2, overlap=4)" + BR + "MDegrain2(MSuper(levels=1), bv1, fv1, bv2, fv2, thSAD=300, thSADC=150)"),
+                New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain 16Bit", "sharp=last" + BR + "dfttest(tbsize=1, sigma=10, lsb=True)" + BR + "SMDegrain(tr=3, thSAD=300, CClip=sharp, lsb_in=True, lsb_out=True)")}})
 
         Add(New PluginPackage With {
             .Name = "mClean",
@@ -1217,7 +1217,7 @@ Public Class Package
             .URL = "http://avisynth.nl/index.php/LSFmod",
             .Description = "A LimitedSharpenFaster mod with a lot of new features and optimizations.",
             .AvsFilterNames = {"LSFmod"},
-            .AvsFiltersFunc = Function() {New VideoFilter("Line", "Sharpen | LSFmod", "LSFmod(defaults=""slow"",strength = 100, Smode=5, Smethod=3, kernel=11, preblur=""OFF"", secure=true, Szrp= 16, Spwr= 4, SdmpLo= 4, SdmpHi= 48, Lmode=4, overshoot=1, undershoot=1, Overshoot2=1, Undershoot2=1, soft=-2, soothe=true, keep=20, edgemode=0, edgemaskHQ=true, ss_x= 1.50, ss_y=1.50 , dest_x=%target_width%, dest_y=%target_height%, show=false, screenW=1280, screenH=1024)")}})
+            .AvsFiltersFunc = Function() {New VideoFilter("Line", "Sharpen | LSFmod", "LSFmod(defaults=""slow"", strength=100, Smode=5, Smethod=3, kernel=11, preblur=""OFF"", secure=true, Szrp=16, Spwr=4, SdmpLo=4, SdmpHi=48, Lmode=4, overshoot=1, undershoot=1, Overshoot2=1, Undershoot2=1, soft=-2, soothe=true, keep=20, edgemode=0, edgemaskHQ=true, ss_x=1.50, ss_y=1.50, dest_x=%target_width%, dest_y=%target_height%, show=false, screenW=1280, screenH=1024)")}})
 
         Add(New PluginPackage With {
             .Name = "vsCube",
@@ -1247,8 +1247,8 @@ Public Class Package
             .Description = "Merge of AutoYUY2, NNEDI3, HDRTools, aWarpSharpMT and ResampleMT",
             .AvsFilterNames = {"aBlur", "aSobel", "AutoYUY2", "aWarp", "aWarp4", "aWarpSharp2", "BicubicResizeMT", "BilinearResizeMT", "BlackmanResizeMT", "ConvertLinearRGBtoYUV", "ConvertRGB_Hable_HDRtoSDR", "ConvertRGB_Mobius_HDRtoSDR", "ConvertRGB_Reinhard_HDRtoSDR", "ConvertRGBtoXYZ", "ConvertXYZ_Hable_HDRtoSDR", "ConvertXYZ_Mobius_HDRtoSDR", "ConvertXYZ_Reinhard_HDRtoSDR", "ConvertXYZ_Scale_HDRtoSDR", "ConvertXYZ_Scale_SDRtoHDR", "ConvertXYZtoRGB", "ConvertXYZtoYUV", "ConvertYUVtoLinearRGB", "ConvertYUVtoXYZ", "DeBicubicResizeMT", "DeBilinearResizeMT", "DeBlackmanResizeMT", "DeGaussResizeMT", "DeLanczos4ResizeMT", "DeLanczosResizeMT", "DeSincResizeMT", "DeSpline16ResizeMT", "DeSpline36ResizeMT", "DeSpline64ResizeMT", "GaussResizeMT", "Lanczos4ResizeMT", "LanczosResizeMT", "nnedi3", "PointResizeMT", "SincResizeMT", "Spline16ResizeMT", "Spline36ResizeMT", "Spline64ResizeMT"},
             .AvsFiltersFunc = Function() {
-                New VideoFilter("Field", "nnedi3", "nnedi3(field = 1)"),
-                New VideoFilter("Resize", "ResizeMT", "$select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;Lanczos4ResizeMT;LanczosResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch = 4)"),
+                New VideoFilter("Field", "nnedi3", "nnedi3(field=1)"),
+                New VideoFilter("Resize", "ResizeMT", "$select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;Lanczos4ResizeMT;LanczosResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch=4)"),
                 New VideoFilter("Line", "Sharpen | aWarpSharp2", "aWarpSharp2(thresh=128, blur=2, type=0, depth=16, chroma=3)")}})
 
         Add(New PluginPackage With {
@@ -1323,7 +1323,7 @@ Public Class Package
             .WebURL = "http://github.com/HomeOfVapourSynthEvolution/VapourSynth-Yadifmod",
             .VSFilterNames = {"yadifmod.Yadifmod"},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Field", "Yadifmod", "clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field = 0), order = 1, field = -1, mode = 0)")}})
+                New VideoFilter("Field", "Yadifmod", "clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field=0), order=1, field=-1, mode=0)")}})
 
         Add(New PluginPackage With {
             .Name = "nnedi3",
@@ -1373,7 +1373,7 @@ Public Class Package
             .Description = "TemporalMedian is a temporal denoising filter. It replaces every pixel with the median of its temporal neighbourhood.",
             .VSFilterNames = {"resamplehq.resamplehq"},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Resize", "ReSampleHQ", "clip = resamplehq.resamplehq(clip, %target_width%, %target_height%, kernel=""$select:Point;Rect;Linear;Cubic;Lanczos;Blackman;Blackmanminlobe;Spline16;Spline36;Spline64;Gauss;Sinc$"")")}})
+                New VideoFilter("Resize", "ReSampleHQ", "clip = resamplehq.resamplehq(clip, %target_width%, %target_height%, kernel='$select:Point;Rect;Linear;Cubic;Lanczos;Blackman;Blackmanminlobe;Spline16;Spline36;Spline64;Gauss;Sinc$')")}})
 
         Add(New PluginPackage With {
             .Name = "mcdegrainsharp",
@@ -1578,7 +1578,7 @@ Public Class Package
             .URL = "http://github.com/dwbuiten/d2vsource",
             .VSFilterNames = {"d2v.Source"},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})
+                New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r'%source_file%')")}})
 
         Add(New PluginPackage With {
             .Name = "FluxSmooth",
@@ -1609,8 +1609,8 @@ Public Class Package
             .Description = "MSmooth is a spatial smoother that doesn't touch edges." + BR + "MSharpen is a sharpener that tries to sharpen only edges.",
             .WebURL = "http://github.com/dubhater/vapoursynth-msmoosh",
             .VSFiltersFunc = Function() {
-                New VideoFilter("Restoration", "DeBlock | MSmooth", "clip = core.msmoosh.MSmooth(clip, threshold = 3.0, strength = 1)"),
-                New VideoFilter("Line", "Sharpen | MSharpen", "clip = core.msmoosh.MSharpen(clip, threshold = 6.0, strength = 39)")}})
+                New VideoFilter("Restoration", "DeBlock | MSmooth", "clip = core.msmoosh.MSmooth(clip, threshold=3.0, strength=1)"),
+                New VideoFilter("Line", "Sharpen | MSharpen", "clip = core.msmoosh.MSharpen(clip, threshold=6.0, strength=39)")}})
 
         Add(New PluginPackage With {
             .Name = "SVPFlow 1",

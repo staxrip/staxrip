@@ -1,3 +1,24 @@
+### 2.0.4.8 Beta
+
+- fix: MPC was shown as missing even for operations that do not require MPC
+
+### 2.0.4.7 Beta
+
+- new: to use nvenc --vbr-quality there is now a checkbox 'Constant Quality Mode'
+       on the rate control tab (Patman86)
+- new: --bref-mode added to nvenc
+- new: after a source is loaded StaxRip automatically adds a filter
+       to convert chroma subsampling to 4:2:0, this can now be
+	   disabled in the settings on a new Video tab
+- new: MPC player integration was added to script editor and preview
+       via menu and F10 key, mpv.net key was changed to F9
+
+- fix: --aq-strength enabled for nvenc h265
+- fix: there was a issue with the resize slider and resize menu using VapourSynth
+- fix: in the preview the reload feature was causing an error in case
+       the player was invoked before, also trim wasn't applied in the player
+- fix: shortcut keys in the script editor did not work
+
 ### 2.0.4.6 Beta
 
 - fix: main dialog was not set to quality mode using nvenc --vbr-quality

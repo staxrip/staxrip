@@ -262,7 +262,7 @@ Public Class VideoComparisonForm
                 Else
                     avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + "" + """, colorspace = ""YV12"")"))
                 End If
-                'avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """)"))
+                'avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile=""" + cachePath + """)"))
 
                 '    Dim proj As New Project
                 '    proj.Init()

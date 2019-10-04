@@ -1,4 +1,5 @@
 - new: code formatting of avs/vs code was improved according to most common standard
+- new: tab order changed in nvenc options
 
 - fix: Apps with custom path and unknown filename failed to launch
 - fix: nvenc --aq-strength is now only visible if --aq is enabled

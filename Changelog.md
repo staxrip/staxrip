@@ -1,3 +1,5 @@
+- new: code formatting of avs/vs code was improved according to most common standard
+
 ### 2.0.4.8 Beta
 
 - fix: MPC was shown as missing even for operations that do not require MPC

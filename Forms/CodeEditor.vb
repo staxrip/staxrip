@@ -335,7 +335,13 @@ Public Class CodeEditor
             Next
 
             For Each parameter In parameters.Parameters
-                newParameters.Add(parameter.Name + " = " + parameter.Value)
+                Dim value = parameter.Value
+
+                If Editor.Engine = ScriptEngine.VapourSynth Then
+                    value = value.Replace("""", "'")
+                End If
+
+                newParameters.Add(parameter.Name + "=" + value)
             Next
 
             rtbScript.Text = Regex.Replace(code, parameters.FunctionName + "\((.+)\)",

@@ -442,7 +442,7 @@ Public Class Package
         .AvsFilterNames = {"DGSource"},
         .VSFilterNames = {"DGSource"},
         .AvsFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")},
-        .VSFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.dgdecodenv.DGSource(r""%source_file%"")")}})
+        .VSFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.dgdecodenv.DGSource(r'%source_file%')")}})
 
     Shared Property DGDecodeIM As Package = Add(New PluginPackage With {
         .Name = "DGDecodeIM",

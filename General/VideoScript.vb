@@ -24,8 +24,7 @@ Public Class VideoScript
 
     Overridable ReadOnly Property FileType As String
         Get
-            If Engine = ScriptEngine.VapourSynth Then Return "vpy"
-            Return "avs"
+            Return If(Engine = ScriptEngine.VapourSynth, "vpy", "avs")
         End Get
     End Property
 
@@ -142,6 +141,13 @@ Public Class VideoScript
         Next
 
         Return ret
+    End Function
+
+    Function GetNewScript() As VideoScript
+        Dim returnValue As New VideoScript
+        returnValue.Engine = Engine
+        returnValue.Filters = GetFiltersCopy()
+        Return returnValue
     End Function
 
     Function GetFilter(category As String) As VideoFilter
@@ -472,10 +478,6 @@ clipname.set_output()
         End Using
 
         Return DialogResult.Cancel
-    End Function
-
-    Private Function GetDocument() As VideoScript
-        Return Me
     End Function
 End Class
 

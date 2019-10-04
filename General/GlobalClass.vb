@@ -349,7 +349,7 @@ Public Class GlobalClass
     End Function
 
     Sub PlayScriptWithMPC(script As VideoScript)
-        script.Synchronize(True)
+        script.Synchronize()
         Dim playerPath = Package.MpcBE.Path
         If Not File.Exists(playerPath) Then playerPath = Package.MpcHC.Path
 
@@ -373,7 +373,7 @@ Public Class GlobalClass
     End Sub
 
     Sub PlayScriptWithMpvnet(script As VideoScript)
-        script.Synchronize(True)
+        script.Synchronize()
         Dim args As String
 
         If Calc.IsARSignalingRequired Then

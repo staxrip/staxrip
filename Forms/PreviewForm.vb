@@ -279,7 +279,7 @@ Public Class PreviewForm
     Public AVI As AVIFile
     Public RangeStart As Integer = -1
 
-    Private AviSynthDocument As VideoScript
+    Private PreviewScript As VideoScript
     Private SizeFactor As Double = 1
     Private TargetFrames As Integer
     Private WithEvents GenericMenu As CustomMenu
@@ -314,7 +314,7 @@ Public Class PreviewForm
             Next
         End If
 
-        Me.AviSynthDocument = aviSynthDocument
+        Me.PreviewScript = aviSynthDocument
 
         NormalRectangle.Size = Size
         NormalRectangle.Location = Location
@@ -323,8 +323,8 @@ Public Class PreviewForm
     Sub RefreshScript()
         TargetFrames = p.Script.GetFrames
         If Not AVI Is Nothing Then AVI.Dispose()
-        AviSynthDocument.Synchronize(True)
-        AVI = New AVIFile(AviSynthDocument.Path)
+        PreviewScript.Synchronize(True)
+        AVI = New AVIFile(PreviewScript.Path)
         Drawer = New VideoDrawer(pVideo, AVI)
         Drawer.ShowInfos = s.PreviewToggleInfos
         Dim wa = Screen.FromControl(Me).WorkingArea
@@ -788,20 +788,26 @@ Public Class PreviewForm
 
     <Command("Plays the script with a player.")>
     Sub ShowExternalPlayer()
-        UpdateTrim()
-        g.PlayScript(p.Script)
+        Dim script = PreviewScript.GetNewScript()
+        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        UpdateTrim(script)
+        g.PlayScript(script)
     End Sub
 
     <Command("Plays the script with mpv.net.")>
     Sub PlayWithMpvnet()
-        UpdateTrim()
-        g.PlayScriptWithMpvnet(p.Script)
+        Dim script = PreviewScript.GetNewScript()
+        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        UpdateTrim(script)
+        g.PlayScriptWithMpvnet(script)
     End Sub
 
     <Command("Plays the script with MPC.")>
     Sub PlayWithMPC()
-        UpdateTrim()
-        g.PlayScriptWithMPC(p.Script)
+        Dim script = PreviewScript.GetNewScript()
+        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        UpdateTrim(script)
+        g.PlayScriptWithMPC(script)
     End Sub
 
     <Command("Reloads the script.")>
@@ -1037,33 +1043,23 @@ Public Class PreviewForm
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
-
         Instances.Remove(Me)
         s.LastPosition = AVI.Position
         AVI.Dispose()
-        UpdateTrim()
+        UpdateTrim(p.Script)
+        p.CutFrameCount = PreviewScript.GetFrames
+        p.CutFrameRate = PreviewScript.GetFramerate
         g.MainForm.UpdateFilters()
     End Sub
 
-    Sub UpdateTrim()
-        p.CutFrameCount = AviSynthDocument.GetFrames
-        p.CutFrameRate = AviSynthDocument.GetFramerate
-
-        Dim cut = p.Script.GetFilter("Cutting")
-
-        If p.Ranges.Count = 0 Then
-            If Not cut Is Nothing Then
-                p.Script.Filters.Remove(cut)
-            End If
-        Else
-            If cut Is Nothing Then
-                cut = New VideoFilter
-                cut.Path = "Cutting"
-                cut.Category = "Cutting"
-                cut.Script = GetTrim()
-                cut.Active = True
-                p.Script.Filters.Add(cut)
-            End If
+    Sub UpdateTrim(script As VideoScript)
+        If p.Ranges.Count > 0 Then
+            Dim cutFilter As New VideoFilter
+            cutFilter.Path = "Cutting"
+            cutFilter.Category = "Cutting"
+            cutFilter.Script = GetTrim()
+            cutFilter.Active = True
+            script.Filters.Add(cutFilter)
         End If
     End Sub
 

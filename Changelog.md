@@ -1,9 +1,12 @@
+### 2.0.4.9 Beta
+
 - new: code formatting of avs/vs code was improved according to most common standard
 - new: tab order changed in nvenc options
 
-- fix: Apps with custom path and unknown filename failed to launch
+- fix: apps with custom path and unknown filename failed to launch
 - fix: nvenc --aq-strength is now only visible if --aq is enabled
-- fix: the right-click/context help in the encoder options failed in same cases 
+- fix: the right-click/context help in the encoder options failed in some cases 
+- fix: a critical issue with the playback feature in the preview was fixed
 
 ### 2.0.4.8 Beta
 

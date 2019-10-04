@@ -3689,23 +3689,21 @@ Public Class MainForm
                 Exit Sub
             End If
 
-            Dim cutting = p.Script.GetFilter("Cutting")
+            Dim cuttingFilter = p.Script.GetFilter("Cutting")
 
-            If Not cutting Is Nothing Then
-                p.Script.Filters.Remove(cutting)
+            If Not cuttingFilter Is Nothing Then
+                p.Script.Filters.Remove(cuttingFilter)
                 g.MainForm.FiltersListView.Load()
                 g.MainForm.UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
             End If
 
-            Dim doc As New VideoScript
-            doc.Engine = p.Script.Engine
-            doc.Filters = p.Script.GetFiltersCopy
-            doc.Path = p.TempDir + p.TargetFile.Base + "_preview." + doc.FileType
-            doc.Synchronize(True)
+            Dim script = p.Script.GetNewScript
+            script.Path = p.TempDir + p.TargetFile.Base + "_preview." + script.FileType
+            script.Synchronize(True)
 
-            Dim f As New PreviewForm(doc)
-            f.Owner = g.MainForm
-            f.Show()
+            Dim form As New PreviewForm(script)
+            form.Owner = g.MainForm
+            form.Show()
         End If
     End Sub
 

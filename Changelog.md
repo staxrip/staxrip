@@ -1,3 +1,7 @@
+### 2.0.4.10 Beta
+
+- fix: issue using trim with multiple preview instances 
+
 ### 2.0.4.9 Beta
 
 - new: code formatting of avs/vs code was improved according to most common standard

@@ -292,7 +292,7 @@ Public Class PreviewForm
 
     Private Shared Instances As New List(Of PreviewForm)
 
-    Sub New(aviSynthDocument As VideoScript)
+    Sub New(script As VideoScript)
         MyBase.New()
         InitializeComponent()
         Icon = g.Icon
@@ -314,8 +314,7 @@ Public Class PreviewForm
             Next
         End If
 
-        Me.PreviewScript = aviSynthDocument
-
+        PreviewScript = script
         NormalRectangle.Size = Size
         NormalRectangle.Location = Location
     End Sub
@@ -1007,7 +1006,7 @@ Public Class PreviewForm
         ret.Add("Tools|Copy Time", NameOf(CopyTime))
         ret.Add("Tools|-")
         ret.Add("Tools|Save Png", NameOf(SavePng), Keys.Control Or Keys.P, Symbol.Save)
-        ret.Add("Tools|Save Bitmap", NameOf(SaveBitmap), Keys.Control Or Keys.S, Symbol.SaveAs)
+        ret.Add("Tools|Save Bitmap", NameOf(SaveBitmap), Keys.Control Or Keys.S, Symbol.Save)
 
         ret.Add("Edit Menu...", NameOf(OpenMenuEditor), Keys.M)
         ret.Add("Help...", NameOf(OpenHelp), Keys.F1, Symbol.Help)
@@ -1053,6 +1052,8 @@ Public Class PreviewForm
     End Sub
 
     Sub UpdateTrim(script As VideoScript)
+        script.RemoveFilter("Cutting")
+
         If p.Ranges.Count > 0 Then
             Dim cutFilter As New VideoFilter
             cutFilter.Path = "Cutting"
@@ -1069,7 +1070,7 @@ Public Class PreviewForm
         For Each i In p.Ranges
             If ret <> "" Then ret += " + "
 
-            If p.Script.Engine = ScriptEngine.AviSynth Then
+            If PreviewScript.Engine = ScriptEngine.AviSynth Then
                 ret += "Trim(" & i.Start & ", " & i.End - 1 & ")"
 
                 If p.TrimCode <> "" Then
@@ -1080,7 +1081,7 @@ Public Class PreviewForm
             End If
         Next
 
-        If p.Script.Engine = ScriptEngine.AviSynth Then
+        If PreviewScript.Engine = ScriptEngine.AviSynth Then
             Return ret
         Else
             Return "clip = " + ret

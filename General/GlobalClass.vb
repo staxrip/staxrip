@@ -682,10 +682,7 @@ Public Class GlobalClass
 
     Function IsValidSource(Optional warn As Boolean = True) As Boolean
         If p.SourceScript.GetFrames = 0 Then
-            If warn Then
-                MsgWarn("Failed to load source.")
-            End If
-
+            If warn Then MsgWarn("Failed to load source.")
             Return False
         End If
 

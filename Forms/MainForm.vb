@@ -1776,8 +1776,7 @@ Public Class MainForm
         Dim recoverText = Text
 
         SafeSerialization.Serialize(p, recoverProjectPath)
-
-        AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(recoverProjectPath)
+        AddHandler Disposed, Sub() FileHelp.Delete(recoverProjectPath)
 
         Try
             If g.ShowVideoSourceWarnings(files) Then Throw New AbortException
@@ -3689,13 +3688,9 @@ Public Class MainForm
                 Exit Sub
             End If
 
-            Dim cuttingFilter = p.Script.GetFilter("Cutting")
-
-            If Not cuttingFilter Is Nothing Then
-                p.Script.Filters.Remove(cuttingFilter)
-                g.MainForm.FiltersListView.Load()
-                g.MainForm.UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
-            End If
+            p.Script.RemoveFilter("Cutting")
+            FiltersListView.Load()
+            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
 
             Dim script = p.Script.GetNewScript
             script.Path = p.TempDir + p.TargetFile.Base + "_preview." + script.FileType
@@ -3776,13 +3771,13 @@ Public Class MainForm
     Sub AddJob(showConfirmation As Boolean, templateName As String, showAssistant As Boolean)
         If Not g.VerifyRequirements() Then Exit Sub
 
-        If showAssistant AndAlso Not IsLoading AndAlso Not g.MainForm.AssistantPassed Then
+        If showAssistant AndAlso Not IsLoading AndAlso Not AssistantPassed Then
             MsgWarn("Please follow the assistant.")
             Exit Sub
         End If
 
         Dim jobPath = GetJobPath()
-        g.MainForm.SaveProjectPath(jobPath)
+        SaveProjectPath(jobPath)
         Job.AddJob(jobPath)
 
         If showConfirmation Then MsgInfo("Job added")
@@ -5217,7 +5212,10 @@ Public Class MainForm
 
     Sub UpdateFilters()
         FiltersListView.Load()
-        If g.IsValidSource(False) Then UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
+
+        If g.IsValidSource(False) Then
+            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
+        End If
     End Sub
 
     Private Sub AviSynthListView_DoubleClick() Handles FiltersListView.DoubleClick

@@ -1,6 +1,9 @@
 ### 2.0.4.10 Beta
 
-- fix: issue using trim with multiple preview instances 
+- update: mkvtoolnix 38.0.0
+- update: x265 3.2+5-gfbe9fef31 Patman
+
+- fix: issue using trim with multiple preview instances
 
 ### 2.0.4.9 Beta
 

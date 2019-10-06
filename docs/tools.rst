@@ -159,7 +159,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 37.0.0
+Used Version: 38.0.0
 
 https://mkvtoolnix.download/
 
@@ -169,7 +169,7 @@ mkvinfo
 
 MKV muxing tool.
 
-Used Version: 37.0.0
+Used Version: 38.0.0
 
 https://mkvtoolnix.download/
 
@@ -179,7 +179,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 37.0.0
+Used Version: 38.0.0
 
 https://mkvtoolnix.download/
 
@@ -389,7 +389,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.2+3-fdd69a76688 Patman
+Used Version: 3.2+5-gfbe9fef31 Patman
 
 http://x265.org
 

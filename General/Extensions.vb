@@ -134,12 +134,12 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function ContainsAll(instance As String, all As IEnumerable(Of String)) As Boolean
+    Function ContainsAll(instance As String, ParamArray all As String()) As Boolean
         If instance <> "" Then Return all.All(Function(arg) instance.Contains(arg))
     End Function
 
     <Extension()>
-    Function ContainsAny(instance As String, any As IEnumerable(Of String)) As Boolean
+    Function ContainsAny(instance As String, ParamArray any As String()) As Boolean
         If instance <> "" Then Return any.Any(Function(arg) instance.Contains(arg))
     End Function
 

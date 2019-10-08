@@ -516,6 +516,44 @@ Public Class Package
         .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DCTFilter",
         .VSFilterNames = {"dctf.DCTFilter"}})
 
+    Shared Property FFTW As Package = Add(New Package With {
+            .Name = "FFTW",
+            .DirPath = "support\FFTW",
+            .Filename = "libfftw3-3.dll",
+            .Description = "Library required by the FFT3DFilter AviSynth plugin.",
+            .URL = "http://www.fftw.org/",
+            .FixedDir = Folder.System,
+            .IsRequiredFunc = Function()
+                                  For Each filter In p.Script.Filters
+                                      If filter.Script.ContainsAny("fft", "FFT") Then
+                                          Return True
+                                      End If
+                                  Next
+
+                                  Return BM3D.IsRequired OrElse
+                                         DCTFilter.IsRequired OrElse
+                                         DCTFilterVS.IsRequired OrElse
+                                         DCTFilterF.IsRequired OrElse
+                                         DFTTestAvs.IsRequired OrElse
+                                         SMDegrain.IsRequired OrElse
+                                         MCTemporalDenoise.IsRequired OrElse
+                                         FFT3DGPU.IsRequired OrElse
+                                         FFT3DFilter.IsRequired OrElse
+                                         DFTTest.IsRequired OrElse
+                                         muvsfunc.IsRequired OrElse
+                                         havsfunc.IsRequired
+                              End Function,
+            .SetupAction = Sub()
+                               Using pr As New Process
+                                   pr.StartInfo.FileName = "xcopy.exe"
+                                   pr.StartInfo.Arguments = $"""{Folder.Apps + "\support\FFTW\"}*ff*"" ""{Folder.System}"" /Y"
+                                   pr.StartInfo.Verb = "runas"
+                                   pr.Start()
+                                   pr.WaitForExit()
+                                   If pr.ExitCode <> 0 Then MsgError("FFTW returned an error.")
+                               End Using
+                           End Sub})
+
     Shared Property havsfunc As Package = Add(New PluginPackage With {
         .Name = "havsfunc",
         .WebURL = "http://github.com/HomeOfVapourSynthEvolution/havsfunc",
@@ -549,6 +587,68 @@ Public Class Package
         .VSFilterNames = {"bm3d.RGB2OPP", "bm3d.OPP2RGB", "bm3d.Basic", "bm3d.Final", "bm3d.VBasic", "bm3d.VFinal", "bm3d.VAggregate"},
         .Description = "BM3D denoising filter for VapourSynth",
         .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-BM3D"})
+
+    Shared Property MCTemporalDenoise As Package = Add(New PluginPackage With {
+        .Name = "MCTemporalDenoise",
+        .Filename = "MCTemporalDenoise.avsi",
+        .WebURL = "http://avisynth.nl/index.php/Abcxyz",
+        .Description = "A motion compensated noise removal script with an accompanying post-processing component.",
+        .AvsFilterNames = {"MCTemporalDenoise", "MCTemporalDenoisePP"},
+        .AvsFiltersFunc = Function() {
+            New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoise", "MCTemporalDenoise(settings=""medium"")"),
+            New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoisePP", "source=last" + BR + "denoised=FFT3Dfilter()" + BR + "MCTemporalDenoisePP(denoised)")}})
+
+
+    Shared Property DFTTestAvs As Package = Add(New PluginPackage With {
+        .Name = "DFTTest",
+        .Filename = "dfttest.dll",
+        .Description = "2D/3D frequency domain denoiser using Discrete Fourier transform",
+        .HelpFile = "Readme.txt",
+        .WebURL = "http://avisynth.nl/index.php/Dfttest",
+        .AvsFilterNames = {"dfttest"},
+        .AvsFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest", "dfttest($select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong|sigma=64, tbsize=1$,$select:msg:Enable High Bit Depth?;True|lsb_in=true, lsb=true;False|lsb_in=false, lsb=false$)")}})
+
+    Shared Property muvsfunc As Package = Add(New PluginPackage With {
+        .Name = "muvsfunc",
+        .Filename = "muvsfunc.py",
+        .DirPath = "Plugins\VS\Scripts",
+        .Description = "Muonium's VapourSynth functions.",
+        .WebURL = "https://github.com/WolframRhodium/muvsfunc",
+        .VSFilterNames = {
+            "muvsfunc.LDMerge", "muvsfunc.Compare", "muvsfunc.ExInpand", "muvsfunc.InDeflate", "muvsfunc.MultiRemoveGrain", "muvsfunc.GradFun3", "muvsfunc.AnimeMask",
+            "muvsfunc.PolygonExInpand", "muvsfunc.Luma", "muvsfunc.ediaa", "muvsfunc.nnedi3aa", "muvsfunc.maa", "muvsfunc.SharpAAMcmod", "muvsfunc.TEdge",
+            "muvsfunc.Sort", "muvsfunc.Soothe_mod", "muvsfunc.TemporalSoften", "muvsfunc.FixTelecinedFades", "muvsfunc.TCannyHelper", "muvsfunc.MergeChroma", "muvsfunc.firniture",
+            "muvsfunc.BoxFilter", "muvsfunc.SmoothGrad", "muvsfunc.DeFilter", "muvsfunc.scale", "muvsfunc.ColorBarsHD", "muvsfunc.SeeSaw", "muvsfunc.abcxyz",
+            "muvsfunc.Sharpen", "muvsfunc.Blur", "muvsfunc.BlindDeHalo3", "muvsfunc.dfttestMC", "muvsfunc.TurnLeft", "muvsfunc.TurnRight", "muvsfunc.BalanceBorders",
+            "muvsfunc.DisplayHistogram", "muvsfunc.GuidedFilter", "muvsfunc.GMSD", "muvsfunc.SSIM", "muvsfunc.SSIM_downsample", "muvsfunc.LocalStatisticsMatching", "muvsfunc.LocalStatistics",
+            "muvsfunc.TextSub16", "muvsfunc.TMinBlur", "muvsfunc.mdering", "muvsfunc.BMAFilter", "muvsfunc.LLSURE", "muvsfunc.YAHRmod", "muvsfunc.RandomInterleave"}})
+
+    Shared Property SMDegrain As Package = Add(New PluginPackage With {
+        .Name = "SMDegrain",
+        .Filename = "SMDegrain.avsi",
+        .URL = "http://avisynth.nl/index.php/SMDegrain",
+        .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
+        .AvsFilterNames = {"SMDegrain"},
+        .AvsFiltersFunc = Function() {
+            New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain", "SMDegrain(tr=2, thSAD=250, contrasharp=false, refinemotion=true, lsb=false)"),
+            New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain With Motion Vectors", "super_search = Dither_Luma_Rebuild(S0=1.0, c=0.0625).MSuper(rfilter=4)" + BR + "bv2 = super_search.MAnalyse(isb=true,  delta=2, overlap=4)" + BR + "bv1 = super_search.MAnalyse(isb=true,  delta=1, overlap=4)" + BR + "fv1 = super_search.MAnalyse(isb=false, delta=1, overlap=4)" + BR + "fv2 = super_search.MAnalyse(isb=false, delta=2, overlap=4)" + BR + "MDegrain2(MSuper(levels=1), bv1, fv1, bv2, fv2, thSAD=300, thSADC=150)"),
+            New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain 16Bit", "sharp=last" + BR + "dfttest(tbsize=1, sigma=10, lsb=True)" + BR + "SMDegrain(tr=3, thSAD=300, CClip=sharp, lsb_in=True, lsb_out=True)")}})
+
+    Shared Property DFTTest As Package = Add(New PluginPackage With {
+        .Name = "DFTTest",
+        .Filename = "DFTTest.dll",
+        .Description = "VapourSynth port of dfttest.",
+        .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DFTTest",
+        .VSFilterNames = {"dfttest.DFTTest"},
+        .VSFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest", "$select:msg:Select Strength;Light|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3,opt=3);Moderate|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5,opt=3);Strong|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1,opt=3)$")}})
+
+    Shared Property FFT3DGPU As Package = Add(New PluginPackage With {
+        .Name = "FFT3DGPU",
+        .Filename = "FFT3dGPU.dll",
+        .Description = "Similar algorithm to FFT3DFilter, but uses graphics hardware for increased speed.",
+        .HelpFile = "Readme.txt",
+        .AvsFilterNames = {"FFT3DGPU"},
+        .AvsFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter | FFT3DGPU", "FFT3DGPU(sigma=1.5, bt=5, bw=32, bh=32, ow=16, oh=16, sharpen=0.4, NVPerf=$select:msg:Enable Nvidia Function;True;False$)")}})
 
     Shared Function Add(pack As Package) As Package
         Items(pack.ID) = pack
@@ -587,38 +687,6 @@ Public Class Package
             .TreePath = "Runtimes",
             .IsRequiredFunc = Function() SangNom2.IsRequired OrElse VSFilterMod.IsRequired OrElse
                                          eac3to.IsRequired})
-
-        Add(New Package With {
-            .Name = "FFTW",
-            .DirPath = "support\FFTW",
-            .Filename = "libfftw3-3.dll",
-            .Description = "Library required by the FFT3DFilter AviSynth plugin.",
-            .URL = "http://www.fftw.org/",
-            .FixedDir = Folder.System,
-            .IsRequiredFunc = Function()
-                                  For Each filter In p.Script.Filters
-                                      If filter.Script.Contains("fft") OrElse
-                                          filter.Script.Contains("FFT") OrElse
-                                          DCTFilter.IsRequired OrElse
-                                          BM3D.IsRequired OrElse
-                                          DCTFilterVS.IsRequired OrElse
-                                          DCTFilterF.IsRequired OrElse
-                                          havsfunc.IsRequired Then
-
-                                          Return True
-                                      End If
-                                  Next
-                              End Function,
-            .SetupAction = Sub()
-                               Using pr As New Process
-                                   pr.StartInfo.FileName = "xcopy.exe"
-                                   pr.StartInfo.Arguments = $"""{Folder.Apps + "\support\FFTW\"}*ff*"" ""{Folder.System}"" /Y"
-                                   pr.StartInfo.Verb = "runas"
-                                   pr.Start()
-                                   pr.WaitForExit()
-                                   If pr.ExitCode <> 0 Then MsgError("FFTW returned an error.")
-                               End Using
-                           End Sub})
 
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",
@@ -956,15 +1024,6 @@ Public Class Package
         '        New VideoFilter("Line", "Anti-Aliasing | XAA", "xaa()")}})
 
         Add(New PluginPackage With {
-            .Name = "FFT3DGPU",
-            .Filename = "FFT3dGPU.dll",
-            .Description = "Similar algorithm to FFT3DFilter, but uses graphics hardware for increased speed.",
-            .HelpFile = "Readme.txt",
-            .AvsFilterNames = {"FFT3DGPU"},
-            .AvsFiltersFunc = Function() {
-                New VideoFilter("Noise", "FFT3DFilter | FFT3DGPU", "FFT3DGPU(sigma=1.5, bt=5, bw=32, bh=32, ow=16, oh=16, sharpen=0.4, NVPerf=$select:msg:Enable Nvidia Function;True;False$)")}})
-
-        Add(New PluginPackage With {
             .Name = "DehaloAlpha",
             .Filename = "Dehalo_alpha.avsi",
             .Description = "Reduce halo artifacts that can occur when sharpening.",
@@ -1043,16 +1102,6 @@ Public Class Package
             .AvsFilterNames = {"DeNoiseMF1", "DenoiseMF2"},
             .AvsFiltersFunc = Function() {
                 New VideoFilter("Noise", "DeNoise | Denoise MF", "DenoiseMF2(s1=2.0, s2=2.5, s3=3.0, s4=2.0, overlap=4, thcomp=80, str=0.8, gpu=$select:msg:Use GPU Enabled Feature?;True;False$)")}})
-
-        Add(New PluginPackage With {
-            .Name = "DFTTest",
-            .Filename = "dfttest.dll",
-            .Description = "2D/3D frequency domain denoiser using Discrete Fourier transform",
-            .HelpFile = "Readme.txt",
-            .WebURL = "http://avisynth.nl/index.php/Dfttest",
-            .AvsFilterNames = {"dfttest"},
-            .AvsFiltersFunc = Function() {
-                New VideoFilter("Noise", "DFTTest", "dfttest($select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong|sigma=64, tbsize=1$,$select:msg:Enable High Bit Depth?;True|lsb_in=true, lsb=true;False|lsb_in=false, lsb=false$)")}})
 
         Add(New PluginPackage With {
             .Name = "MT Expand Multi",
@@ -1154,16 +1203,6 @@ Public Class Package
             New VideoFilter("FrameRate", "YRFC", "YFRC(BlockH=16, BlockV=16, OverlayType=0, MaskExpand=1)")}})
 
         Add(New PluginPackage With {
-            .Name = "MCTemporalDenoise",
-            .Filename = "MCTemporalDenoise.avsi",
-            .WebURL = "http://avisynth.nl/index.php/Abcxyz",
-            .Description = "A motion compensated noise removal script with an accompanying post-processing component.",
-            .AvsFilterNames = {"MCTemporalDenoise", "MCTemporalDenoisePP"},
-            .AvsFiltersFunc = Function() {
-                New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoise", "MCTemporalDenoise(settings=""medium"")"),
-                New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoisePP", "source=last" + BR + "denoised=FFT3Dfilter()" + BR + "MCTemporalDenoisePP(denoised)")}})
-
-        Add(New PluginPackage With {
             .Name = "Deblock",
             .Filename = "Deblock.dll",
             .DirPath = "Plugins\VS\Deblock",
@@ -1191,17 +1230,6 @@ Public Class Package
             .AvsFiltersFunc = Function() {
                 New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(preset=""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, sourceMatch=3, sharpness=0.2, tr2=2, ediThreads=8)"),
                 New VideoFilter("Field", "QTGMC | QTGMC With Repair", "QTGMC1 = QTGMC(preset=""Slower"", inputType=2)" + BR + "QTGMC2 = QTGMC(preset=""Slower"", inputType=3, prevGlobals=""Reuse"")" + BR + "$select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Repair16(QTGMC1, QTGMC2, 1)$")}})
-
-        Add(New PluginPackage With {
-            .Name = "SMDegrain",
-            .Filename = "SMDegrain.avsi",
-            .URL = "http://avisynth.nl/index.php/SMDegrain",
-            .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
-            .AvsFilterNames = {"SMDegrain"},
-            .AvsFiltersFunc = Function() {
-                New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain", "SMDegrain(tr=2, thSAD=250, contrasharp=false, refinemotion=true, lsb=false)"),
-                New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain With Motion Vectors", "super_search = Dither_Luma_Rebuild(S0=1.0, c=0.0625).MSuper(rfilter=4)" + BR + "bv2 = super_search.MAnalyse(isb=true,  delta=2, overlap=4)" + BR + "bv1 = super_search.MAnalyse(isb=true,  delta=1, overlap=4)" + BR + "fv1 = super_search.MAnalyse(isb=false, delta=1, overlap=4)" + BR + "fv2 = super_search.MAnalyse(isb=false, delta=2, overlap=4)" + BR + "MDegrain2(MSuper(levels=1), bv1, fv1, bv2, fv2, thSAD=300, thSADC=150)"),
-                New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain 16Bit", "sharp=last" + BR + "dfttest(tbsize=1, sigma=10, lsb=True)" + BR + "SMDegrain(tr=3, thSAD=300, CClip=sharp, lsb_in=True, lsb_out=True)")}})
 
         Add(New PluginPackage With {
             .Name = "mClean",
@@ -1557,21 +1585,6 @@ Public Class Package
                 "mvsfunc.Preview", "mvsfunc.GrayScale"}})
 
         Add(New PluginPackage With {
-            .Name = "muvsfunc",
-            .Filename = "muvsfunc.py",
-            .DirPath = "Plugins\VS\Scripts",
-            .Description = "Muonium's VapourSynth functions.",
-            .WebURL = "https://github.com/WolframRhodium/muvsfunc",
-            .VSFilterNames = {
-                "muvsfunc.LDMerge", "muvsfunc.Compare", "muvsfunc.ExInpand", "muvsfunc.InDeflate", "muvsfunc.MultiRemoveGrain", "muvsfunc.GradFun3", "muvsfunc.AnimeMask",
-                "muvsfunc.PolygonExInpand", "muvsfunc.Luma", "muvsfunc.ediaa", "muvsfunc.nnedi3aa", "muvsfunc.maa", "muvsfunc.SharpAAMcmod", "muvsfunc.TEdge",
-                "muvsfunc.Sort", "muvsfunc.Soothe_mod", "muvsfunc.TemporalSoften", "muvsfunc.FixTelecinedFades", "muvsfunc.TCannyHelper", "muvsfunc.MergeChroma", "muvsfunc.firniture",
-                "muvsfunc.BoxFilter", "muvsfunc.SmoothGrad", "muvsfunc.DeFilter", "muvsfunc.scale", "muvsfunc.ColorBarsHD", "muvsfunc.SeeSaw", "muvsfunc.abcxyz",
-                "muvsfunc.Sharpen", "muvsfunc.Blur", "muvsfunc.BlindDeHalo3", "muvsfunc.dfttestMC", "muvsfunc.TurnLeft", "muvsfunc.TurnRight", "muvsfunc.BalanceBorders",
-                "muvsfunc.DisplayHistogram", "muvsfunc.GuidedFilter", "muvsfunc.GMSD", "muvsfunc.SSIM", "muvsfunc.SSIM_downsample", "muvsfunc.LocalStatisticsMatching", "muvsfunc.LocalStatistics",
-                "muvsfunc.TextSub16", "muvsfunc.TMinBlur", "muvsfunc.mdering", "muvsfunc.BMAFilter", "muvsfunc.LLSURE", "muvsfunc.YAHRmod", "muvsfunc.RandomInterleave"}})
-
-        Add(New PluginPackage With {
             .Name = "d2vsource",
             .Filename = "d2vsource.dll",
             .Description = "Source filter to open D2V index files created with DGIndex or D2VWitch.",
@@ -1653,15 +1666,6 @@ Public Class Package
             .VSFilterNames = {"hqdn3d.Hqdn3d"},
             .VSFiltersFunc = Function() {
                 New VideoFilter("Noise", "HQDN3D", "clip = core.hqdn3d.Hqdn3d(clip=clip)")}})
-
-        Add(New PluginPackage With {
-            .Name = "DFTTest",
-            .Filename = "DFTTest.dll",
-            .Description = "VapourSynth port of dfttest.",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DFTTest",
-            .VSFilterNames = {"dfttest.DFTTest"},
-            .VSFiltersFunc = Function() {
-                New VideoFilter("Noise", "DFTTest", "$select:msg:Select Strength;Light|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3,opt=3);Moderate|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5,opt=3);Strong|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1,opt=3)$")}})
 
         Add(New PluginPackage With {
             .Name = "VagueDenoiser",

@@ -239,7 +239,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.50
+Used Version: 4.51
 
 http://github.com/rigaya/NVEnc
 
@@ -701,7 +701,7 @@ Convert UHD BluRay HDR10 to SDR (CUDA).
 
 Filters: DGHDRtoSDR
 
-Used Version: 1.12
+Used Version: 1.13
 
 http://rationalqm.us/mine.html
 
@@ -1711,7 +1711,7 @@ Convert UHD BluRay HDR10 to SDR (CUDA).
 
 Filters: DGHDRtoSDR
 
-Used Version: 1.12
+Used Version: 1.13
 
 http://rationalqm.us/mine.html
 

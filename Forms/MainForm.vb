@@ -3105,11 +3105,11 @@ Public Class MainForm
 
         For Each i In s.Demuxers
             If Not i.Active AndAlso (i.SourceFilters.NothingOrEmpty OrElse
-                Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "("))) Then Continue For
+                Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "(").ToArray)) Then Continue For
 
             If i.InputExtensions?.Length = 0 OrElse i.InputExtensions.Contains(p.SourceFile.Ext) Then
                 If Not srcScript?.Contains("(") OrElse i.SourceFilters.NothingOrEmpty OrElse
-                    srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "(")) Then
+                    srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "(").ToArray) Then
 
                     Dim inputFormats = i.InputFormats.NothingOrEmpty OrElse
                         i.InputFormats.Contains(getFormat())

@@ -758,7 +758,7 @@ Public Class eac3toForm
         If Output = "" Then
             MsgWarn("eac3to output was empty")
             Cancel()
-        ElseIf Output.ContainsAll({"left eye", "right eye"}) Then
+        ElseIf Output.ContainsAll("left eye", "right eye") Then
             MsgError("3D demuxing isn't supported.")
             Cancel()
         ElseIf Output <> "" Then

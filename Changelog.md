@@ -1,3 +1,8 @@
+- update: DGHDRtoSDR 1.13
+- update: NVEncC 4.51
+
+- fix: FFTW not always asked to be installed when needed
+
 ### 2.0.4.10 Beta
 
 - update: mkvtoolnix 38.0.0

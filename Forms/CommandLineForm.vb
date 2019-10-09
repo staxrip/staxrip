@@ -243,11 +243,11 @@ Public Class CommandLineForm
 
         If find.Length > 1 Then
             For Each item In Items
-                If item.Param.Switch?.ToLower = find Then matchedItems.Add(item)
+                If item.Param.Switch = cbGoTo.Text Then matchedItems.Add(item)
 
                 If Not item.Param.Switches Is Nothing Then
                     For Each switch In item.Param.Switches
-                        If switch.ToLower = find Then matchedItems.Add(item)
+                        If switch = cbGoTo.Text Then matchedItems.Add(item)
                     Next
                 End If
             Next

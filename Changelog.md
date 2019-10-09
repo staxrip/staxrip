@@ -1,8 +1,9 @@
 - update: DGHDRtoSDR 1.13
 - update: NVEncC 4.51
 
-- new: the short version of nvenc switches like -c and -u were integrated
-       into the search field and command line import feature
+- new: the short version of x265 and nvenc switches like -c, -f etc.
+       were integrated into the search field and command line import
+	   feature, the search feature now first looks for a exact match
 - new: nvenc switches --multiref-l0, --multiref-l1
 
 - fix: FFTW not always asked to be installed when needed

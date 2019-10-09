@@ -196,7 +196,7 @@ Public Class x265Params
         .Values = {"auto", "none", "vspipe", "avs2pipemod", "ffmpeg"}}
 
     Property Quant As New NumParam With {
-        .Switches = {"--crf", "--qp"},
+        .Switches = {"--crf", "--qp", "-q"},
         .Name = "Quant",
         .Text = "Quality",
         .Value = 28,
@@ -214,12 +214,14 @@ Public Class x265Params
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",
+        .Switches = {"-p"},
         .Text = "Preset",
         .Options = {"Ultra Fast", "Super Fast", "Very Fast", "Faster", "Fast", "Medium", "Slow", "Slower", "Very Slow", "Placebo"},
         .InitValue = 5}
 
     Property Tune As New OptionParam With {
         .Switch = "--tune",
+        .Switches = {"-t"},
         .Text = "Tune",
         .Options = {"None", "PSNR", "SSIM", "Grain", "Fast Decode", "Zero Latency", "Animation"}}
 
@@ -240,6 +242,7 @@ Public Class x265Params
 
     Property BFrames As New NumParam With {
         .Switch = "--bframes",
+        .Switches = {"-b"},
         .Text = "B-Frames",
         .Config = {0, 16}}
 
@@ -294,6 +297,7 @@ Public Class x265Params
 
     Property SubME As New OptionParam With {
         .Switch = "--subme",
+        .Switches = {"-m"},
         .Text = "Subpel Refinement",
         .IntegerValue = True,
         .Options = {"0 - HPEL 1/4 - QPEL 0/4 - HPEL SATD false",
@@ -341,6 +345,7 @@ Public Class x265Params
 
     Property Weightp As New BoolParam With {
         .Switch = "--weightp",
+        .Switches = {"-w"},
         .NoSwitch = "--no-weightp",
         .Text = "Enable weighted prediction in P slices"}
 
@@ -392,6 +397,7 @@ Public Class x265Params
 
     Property MaxCuSize As New OptionParam With {
         .Switch = "--ctu",
+        .Switches = {"-s"},
         .Text = "Max CU size",
         .Options = {"64", "32", "16"}}
 
@@ -551,6 +557,7 @@ Public Class x265Params
 
     Property OutputDepth As New OptionParam With {
         .Switch = "--output-depth",
+        .Switches = {"-D"},
         .Text = "Depth",
         .Options = {"8-Bit", "10-Bit", "12-Bit"},
         .Values = {"8", "10", "12"},
@@ -611,12 +618,14 @@ Public Class x265Params
 
     Property Keyint As New NumParam With {
         .Switch = "--keyint",
+        .Switches = {"-I"},
         .Text = "Max GOP Size",
         .Config = {0, 10000, 10},
         .Init = 250}
 
     Property MinKeyint As New NumParam With {
         .Switch = "--min-keyint",
+        .Switches = {"-i"},
         .Text = "Min GOP Size",
         .Config = {0, 10000, 10}}
 
@@ -659,6 +668,7 @@ Public Class x265Params
 
     Property FrameThreads As New NumParam With {
         .Switch = "--frame-threads",
+        .Switches = {"-F"},
         .Text = "Frame Threads"}
 
     Property RepeatHeaders As New BoolParam With {
@@ -812,6 +822,7 @@ Public Class x265Params
 
     Property Frames As New NumParam With {
         .Switch = "--frames",
+        .Switches = {"-f"},
         .Text = "Frames"}
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -820,9 +831,9 @@ Public Class x265Params
                 ItemsValue = New List(Of CommandLineParam)
 
                 Add("Basic", Preset, Tune,
-                    New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileMain8", .InitValue = 1, .VisibleFunc = Function() OutputDepth.Value = 0, .Options = {"Unrestricted", "Main", "Main - Intra", "Main Still Picture", "Main 444 - 8", "Main 444 - Intra", "Main 444 - Main Still Picture"}},
-                    New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileMain10", .InitValue = 1, .VisibleFunc = Function() OutputDepth.Value = 1, .Options = {"Unrestricted", "Main 10", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra"}},
-                    New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileMain12", .InitValue = 1, .VisibleFunc = Function() OutputDepth.Value = 2, .Options = {"Unrestricted", "Main 12", "Main 12 - Intra", "Main 422 - 12", "Main 422 - 12 - Intra", "Main 444 - 12", "Main 444 - 12 - Intra"}},
+                    New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain8", .InitValue = 1, .VisibleFunc = Function() OutputDepth.Value = 0, .Options = {"Unrestricted", "Main", "Main - Intra", "Main Still Picture", "Main 444 - 8", "Main 444 - Intra", "Main 444 - Main Still Picture"}},
+                    New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain10", .InitValue = 1, .VisibleFunc = Function() OutputDepth.Value = 1, .Options = {"Unrestricted", "Main 10", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra"}},
+                    New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain12", .InitValue = 1, .VisibleFunc = Function() OutputDepth.Value = 2, .Options = {"Unrestricted", "Main 12", "Main 12 - Intra", "Main 422 - 12", "Main 422 - 12 - Intra", "Main 444 - 12", "Main 444 - 12 - Intra"}},
                     New OptionParam With {.Switch = "--level-idc", .Switches = {"--level"}, .Text = "Level", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}},
                     Mode, OutputDepth, Quant)
                 Add("Analysis", RD,
@@ -953,7 +964,7 @@ Public Class x265Params
                 Add("Other",
                     New StringParam With {.Switch = "--lambda-file", .Text = "Lambda File", .BrowseFile = True},
                     New StringParam With {.Switch = "--qpfile", .Text = "QP File", .BrowseFile = True},
-                    New StringParam With {.Switch = "--recon", .Text = "Recon File", .BrowseFile = True},
+                    New StringParam With {.Switch = "--recon", .Switches = {"-r"}, .Text = "Recon File", .BrowseFile = True},
                     New StringParam With {.Switch = "--scaling-list", .Text = "Scaling List"},
                     Decoder, PipingTool, PsyRD, CompCheck, CompCheckAimedQuality,
                     New NumParam With {.Switch = "--recon-depth", .Text = "Recon Depth"},

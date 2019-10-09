@@ -1,6 +1,10 @@
 - update: DGHDRtoSDR 1.13
 - update: NVEncC 4.51
 
+- new: the short version of nvenc switches like -c and -u were integrated
+       into the search field and command line import feature
+- new: nvenc switches --multiref-l0, --multiref-l1
+
 - fix: FFTW not always asked to be installed when needed
 
 ### 2.0.4.10 Beta

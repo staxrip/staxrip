@@ -239,7 +239,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.51
+Used Version: 4.52
 
 http://github.com/rigaya/NVEnc
 

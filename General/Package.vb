@@ -517,42 +517,42 @@ Public Class Package
         .VSFilterNames = {"dctf.DCTFilter"}})
 
     Shared Property FFTW As Package = Add(New Package With {
-            .Name = "FFTW",
-            .DirPath = "support\FFTW",
-            .Filename = "libfftw3-3.dll",
-            .Description = "Library required by the FFT3DFilter AviSynth plugin.",
-            .URL = "http://www.fftw.org/",
-            .FixedDir = Folder.System,
-            .IsRequiredFunc = Function()
-                                  For Each filter In p.Script.Filters
-                                      If filter.Script.ContainsAny("fft", "FFT") Then
-                                          Return True
-                                      End If
-                                  Next
+        .Name = "FFTW",
+        .DirPath = "support\FFTW",
+        .Filename = "libfftw3-3.dll",
+        .Description = "Library required by the FFT3DFilter AviSynth plugin.",
+        .URL = "http://www.fftw.org/",
+        .FixedDir = Folder.System,
+        .IsRequiredFunc = Function()
+                              For Each filter In p.Script.Filters
+                                  If filter.Script.ContainsAny("fft", "FFT") Then
+                                      Return True
+                                  End If
+                              Next
 
-                                  Return BM3D.IsRequired OrElse
-                                         DCTFilter.IsRequired OrElse
-                                         DCTFilterVS.IsRequired OrElse
-                                         DCTFilterF.IsRequired OrElse
-                                         DFTTestAvs.IsRequired OrElse
-                                         SMDegrain.IsRequired OrElse
-                                         MCTemporalDenoise.IsRequired OrElse
-                                         FFT3DGPU.IsRequired OrElse
-                                         FFT3DFilter.IsRequired OrElse
-                                         DFTTest.IsRequired OrElse
-                                         muvsfunc.IsRequired OrElse
-                                         havsfunc.IsRequired
-                              End Function,
-            .SetupAction = Sub()
-                               Using pr As New Process
-                                   pr.StartInfo.FileName = "xcopy.exe"
-                                   pr.StartInfo.Arguments = $"""{Folder.Apps + "\support\FFTW\"}*ff*"" ""{Folder.System}"" /Y"
-                                   pr.StartInfo.Verb = "runas"
-                                   pr.Start()
-                                   pr.WaitForExit()
-                                   If pr.ExitCode <> 0 Then MsgError("FFTW returned an error.")
-                               End Using
-                           End Sub})
+                              Return BM3D.IsRequired OrElse
+                                     DCTFilter.IsRequired OrElse
+                                     DCTFilterVS.IsRequired OrElse
+                                     DCTFilterF.IsRequired OrElse
+                                     DFTTestAvs.IsRequired OrElse
+                                     SMDegrain.IsRequired OrElse
+                                     MCTemporalDenoise.IsRequired OrElse
+                                     FFT3DGPU.IsRequired OrElse
+                                     FFT3DFilter.IsRequired OrElse
+                                     DFTTest.IsRequired OrElse
+                                     muvsfunc.IsRequired OrElse
+                                     havsfunc.IsRequired
+                          End Function,
+        .SetupAction = Sub()
+                           Using pr As New Process
+                               pr.StartInfo.FileName = "xcopy.exe"
+                               pr.StartInfo.Arguments = $"""{Folder.Apps + "\support\FFTW\"}*ff*"" ""{Folder.System}"" /Y"
+                               pr.StartInfo.Verb = "runas"
+                               pr.Start()
+                               pr.WaitForExit()
+                               If pr.ExitCode <> 0 Then MsgError("FFTW returned an error.")
+                           End Using
+                       End Sub})
 
     Shared Property havsfunc As Package = Add(New PluginPackage With {
         .Name = "havsfunc",

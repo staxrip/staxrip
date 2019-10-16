@@ -877,8 +877,9 @@ Public Class GUIAudioProfile
                 ret += " --cbr " & CInt(Bitrate)
         End Select
 
-        If Params.qaacHE Then ret += " --he"
+        If Params.qaacHE And (Params.qaacRateMode = 1 OrElse Params.qaacRateMode = 2 OrElse Params.qaacRateMode = 3) Then ret += " --he"
         If Delay <> 0 Then ret += " --delay " + (Delay / 1000).ToInvariantString
+        If Params.Normalize Then ret += " --normalize"
         If Params.qaacQuality <> 2 Then ret += " --quality " & Params.qaacQuality
         If Params.SamplingRate <> 0 Then ret += " --rate " & Params.SamplingRate
         If Params.qaacLowpass <> 0 Then ret += " --lowpass " & Params.qaacLowpass

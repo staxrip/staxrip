@@ -80,7 +80,7 @@ Module StringExtensions
     Function Escape(instance As String) As String
         If instance = "" Then Return ""
 
-        For Each i In " ()&"
+        For Each i In " ;=~*$%()&"
             If instance.Contains(i) Then Return """" + instance + """"
         Next
 

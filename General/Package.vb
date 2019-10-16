@@ -71,13 +71,13 @@ Public Class Package
 
     Shared Property UnDot As Package = Add(New UnDotPackage)
 
-    Shared Property SvtAv1 As Package = Add(New Package With {
-        .Name = "SVT-AV1",
-        .Filename = "SvtAv1EncApp.exe",
-        .DirPath = "Encoders\SVT-AV1",
-        .WebURL = "https://github.com/OpenVisualCloud/SVT-AV1",
-        .HelpURL = "https://github.com/OpenVisualCloud/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
-        .Description = "The Scalable Video Technology AV1 Encoder."})
+    'Shared Property SvtAv1 As Package = Add(New Package With {
+    '    .Name = "SVT-AV1",
+    '    .Filename = "SvtAv1EncApp.exe",
+    '    .DirPath = "Encoders\SVT-AV1",
+    '    .WebURL = "https://github.com/OpenVisualCloud/SVT-AV1",
+    '    .HelpURL = "https://github.com/OpenVisualCloud/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
+    '    .Description = "The Scalable Video Technology AV1 Encoder."})
 
     Shared Property eac3to As Package = Add(New Package With {
         .Name = "eac3to",

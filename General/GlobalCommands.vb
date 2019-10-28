@@ -3,6 +3,7 @@ Imports System.Drawing.Design
 Imports System.Reflection
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports Microsoft.Win32
 Imports StaxRip.UI
 
 Public Class GlobalCommands
@@ -770,7 +771,13 @@ Switches
         filepath = Macro.Expand(filepath)
 
         If File.Exists(filepath) Then
-            g.StartProcess(Application.ExecutablePath, "-mediainfo " + filepath.Escape)
+            Dim path = Registry.CurrentUser.GetString("Software\Microsoft\Windows\CurrentVersion\App Paths\MediaInfoNET.exe", Nothing)
+
+            If File.Exists(path) Then
+                g.StartProcess(path, filepath.Escape)
+            Else
+                g.StartProcess(Application.ExecutablePath, "-mediainfo " + filepath.Escape)
+            End If
         Else
             MsgWarn("No file found.")
         End If

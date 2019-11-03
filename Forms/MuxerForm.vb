@@ -536,6 +536,7 @@ Public Class MuxerForm
         dgvTags.AllowUserToDeleteRows = True
         dgvTags.Columns(0).Width = FontHeight * 10
         dgvTags.Columns(1).Width = FontHeight * 20
+        dgvTags.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
 
         bnAddAudio.Image = ImageHelp.GetSymbolImage(Symbol.Add)
         bnRemoveAudio.Image = ImageHelp.GetSymbolImage(Symbol.Remove)

@@ -193,7 +193,7 @@ Public Class Package
         .Description = "StaxRip supports both AviSynth+ and VapourSynth as scripting based video processing tool.",
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
-        .SetupFilename = "Installers\VapourSynth64-R47.2.exe",
+        .SetupFilename = "Installers\VapourSynth64-R48.exe",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = AddressOf Package.GetVapourSynthHintDir})
 

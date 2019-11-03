@@ -173,7 +173,7 @@ Namespace UI
                 Dim found = False
 
                 For Each iNode As TreeNode In currentNodeList
-                    If iNode.Text = iNodeName Then
+                    If iNode.Text = " " + iNodeName Then
                         ret = iNode
                         currentNodeList = iNode.Nodes
                         found = True
@@ -182,7 +182,7 @@ Namespace UI
 
                 If Not found Then
                     ret = New TreeNode
-                    ret.Text = iNodeName
+                    ret.Text = " " + iNodeName
                     currentNodeList.Add(ret)
                     currentNodeList = ret.Nodes
                 End If
@@ -1136,13 +1136,8 @@ Namespace UI
         Private KeyText As String = ""
         Private BlockOnSelectedIndexChanged As Boolean
 
-        Private ColorBorder As Color
-        Private ColorTop As Color
-        Private ColorBottom As Color
-
         Public Sub New()
             DrawMode = DrawMode.OwnerDrawFixed
-            InitAero()
         End Sub
 
         Protected Overrides Sub OnFontChanged(e As EventArgs)
@@ -1162,13 +1157,9 @@ Namespace UI
                 r.Width -= 1
                 r.Height -= 1
 
-                Using p As New Pen(ColorBorder)
-                    g.DrawRectangle(p, r)
-                End Using
-
                 r.Inflate(-1, -1)
 
-                Using b As New SolidBrush(ColorBottom)
+                Using b As New SolidBrush(Color.FromArgb(&HFFB2DFFF))
                     g.FillRectangle(b, r)
                 End Using
             Else
@@ -1199,49 +1190,6 @@ Namespace UI
 
             e.Graphics.DrawString(caption, Font, Brushes.Black, r2, sf)
         End Sub
-
-        Sub InitAero()
-            Dim argb = CInt(Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", 0))
-            If argb = 0 Then argb = Color.Orange.ToArgb
-            InitColors(Color.FromArgb(argb))
-        End Sub
-
-        Sub InitColors(c As Color)
-            Dim border = HSLColor.Convert(c)
-            border.Luminosity = 50
-
-            Dim top = border
-            Dim bottom = border
-
-            top.Luminosity = 240
-            bottom.Luminosity = 220
-
-            ColorBorder = border.ToColor
-            ColorTop = top.ToColor
-            ColorBottom = bottom.ToColor
-        End Sub
-
-        Public Shared Function CreateRoundRectangle(r As Rectangle, radius As Integer) As GraphicsPath
-            Dim path As New GraphicsPath()
-
-            Dim l = r.Left
-            Dim t = r.Top
-            Dim w = r.Width
-            Dim h = r.Height
-            Dim d = radius << 1
-
-            path.AddArc(l, t, d, d, 180, 90)
-            path.AddLine(l + radius, t, l + w - radius, t)
-            path.AddArc(l + w - d, t, d, d, 270, 90)
-            path.AddLine(l + w, t + radius, l + w, t + h - radius)
-            path.AddArc(l + w - d, t + h - d, d, d, 0, 90)
-            path.AddLine(l + w - radius, t + h, l + radius, t + h)
-            path.AddArc(l, t + h - d, d, d, 90, 90)
-            path.AddLine(l, t + h - radius, l, t + radius)
-            path.CloseFigure()
-
-            Return path
-        End Function
 
         Sub UpdateSelection()
             If SelectedIndex > -1 Then

@@ -422,7 +422,7 @@ Public Class GlobalClass
 
                 For Each iItem As ToolStripItem In l
                     If i < a.Length - 1 Then
-                        If iItem.Text = a(i) Then
+                        If iItem.Text = a(i) + "     " Then
                             found = True
                             l = DirectCast(iItem, ToolStripMenuItem).DropDownItems
                         End If
@@ -431,11 +431,11 @@ Public Class GlobalClass
 
                 If Not found Then
                     If i = a.Length - 1 Then
-                        Dim item As New ActionMenuItem(a(i), Sub() loadAction(iProfile))
+                        Dim item As New ActionMenuItem(a(i) + "     ", Sub() loadAction(iProfile))
                         l.Add(item)
                         l = item.DropDownItems
                     Else
-                        Dim item As New MenuItemEx(a(i))
+                        Dim item As New MenuItemEx(a(i) + "     ")
                         l.Add(item)
                         l = item.DropDownItems
                     End If

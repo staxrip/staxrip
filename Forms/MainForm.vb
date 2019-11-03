@@ -1,3 +1,4 @@
+
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Globalization
@@ -232,7 +233,6 @@ Public Class MainForm
         Me.lTip.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lTip.ForeColor = System.Drawing.Color.Blue
         Me.lTip.Location = New System.Drawing.Point(0, 0)
         Me.lTip.Margin = New System.Windows.Forms.Padding(0)
         Me.lTip.Name = "lTip"
@@ -1180,43 +1180,31 @@ Public Class MainForm
     End Sub
 
     Sub SetMenuStyle()
+        Dim col As Color
+
         If ToolStripRendererEx.IsAutoRenderMode Then
-            Dim col = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)
-
-            llAudioProfile0.LinkColor = col
-            llAudioProfile1.LinkColor = col
-            llEditAudio0.LinkColor = col
-            llEditAudio1.LinkColor = col
-            blFilesize.LinkColor = col
-            llMuxer.LinkColor = col
-            blSourceParText.LinkColor = col
-            blSourceDarText.LinkColor = col
-            blTargetParText.LinkColor = col
-            blTargetDarText.LinkColor = col
-
-            lgbEncoder.Label.LinkColor = col
-            lgbFilters.Label.LinkColor = col
-            lgbResize.Label.LinkColor = col
-            lgbSource.Label.LinkColor = col
-            lgbTarget.Label.LinkColor = col
+            col = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)
         Else
-            llAudioProfile0.LinkColor = Color.Blue
-            llAudioProfile1.LinkColor = Color.Blue
-            llEditAudio0.LinkColor = Color.Blue
-            llEditAudio1.LinkColor = Color.Blue
-            blFilesize.LinkColor = Color.Blue
-            llMuxer.LinkColor = Color.Blue
-            blSourceParText.LinkColor = Color.Blue
-            blSourceDarText.LinkColor = Color.Blue
-            blTargetParText.LinkColor = Color.Blue
-            blTargetDarText.LinkColor = Color.Blue
-
-            lgbEncoder.Label.LinkColor = Color.Blue
-            lgbFilters.Label.LinkColor = Color.Blue
-            lgbResize.Label.LinkColor = Color.Blue
-            lgbSource.Label.LinkColor = Color.Blue
-            lgbTarget.Label.LinkColor = Color.Blue
+            col = Color.FromArgb(&HFF004BFF)
         End If
+
+        llAudioProfile0.LinkColor = col
+        llAudioProfile1.LinkColor = col
+        llEditAudio0.LinkColor = col
+        llEditAudio1.LinkColor = col
+        blFilesize.LinkColor = col
+        llMuxer.LinkColor = col
+        blSourceParText.LinkColor = col
+        blSourceDarText.LinkColor = col
+        blTargetParText.LinkColor = col
+        blTargetDarText.LinkColor = col
+
+        lgbEncoder.Label.LinkColor = col
+        lgbFilters.Label.LinkColor = col
+        lgbResize.Label.LinkColor = col
+        lgbSource.Label.LinkColor = col
+        lgbTarget.Label.LinkColor = col
+        lTip.ForeColor = col
     End Sub
 
     Function GetIfoFile() As String
@@ -2447,8 +2435,13 @@ Public Class MainForm
     End Sub
 
     Function ProcessTip(message As String) As Boolean
-        If message.Contains(BR2) Then message = message.Replace(BR2, BR)
-        If message.Contains(VB6.vbLf + VB6.vbLf) Then message = message.FixBreak.Replace(BR2, BR)
+        If message.Contains(BR2) Then
+            message = message.Replace(BR2, BR)
+        End If
+
+        If message.Contains(VB6.vbLf + VB6.vbLf) Then
+            message = message.FixBreak.Replace(BR2, BR)
+        End If
 
         CurrentAssistantTipKey = message.SHA512Hash
 
@@ -2478,7 +2471,9 @@ Public Class MainForm
     End Property
 
     Function Assistant() As Boolean
-        If SkipAssistant Then Return False
+        If SkipAssistant Then
+            Return False
+        End If
 
         Dim isCropped = p.Script.IsFilterActive("Crop")
         Dim isResized = p.Script.IsFilterActive("Resize")
@@ -3326,7 +3321,7 @@ Public Class MainForm
 
             ui.CreateFlowPage("User Interface", True)
 
-            Dim l = ui.AddLabel("Icon File:")
+            Dim l = ui.AddLabel("Icon File")
             l.Help = "The Windows Startmenu uses Windows Links which allow to use custom icon files."
 
             Dim tb = ui.AddTextButton
@@ -3336,8 +3331,13 @@ Public Class MainForm
             tb.Edit.Text = s.IconFile
             tb.Edit.SaveAction = Sub(value) s.IconFile = value
 
+            Dim renderMode = ui.AddMenu(Of ToolStripRenderModeEx)
+            renderMode.Text = "Menu Style"
+            renderMode.Help = "Defines the style used to render main menus, context menus and toolbars."
+            renderMode.Field = NameOf(s.ToolStripRenderModeEx)
+
             Dim t = ui.AddText()
-            t.Text = "Remember Window Positions:"
+            t.Text = "Remember Window Positions"
             t.Help = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
             t.Label.Offset = 12
             t.Edit.Expand = True
@@ -3345,7 +3345,7 @@ Public Class MainForm
             t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
 
             t = ui.AddText()
-            t.Text = "Center Screen Window Positions:"
+            t.Text = "Center Screen Window Positions"
             t.Help = "Title or beginning of the title of windows to be centered on the screen. For all windows enter '''all'''."
             t.Label.Offset = 12
             t.Edit.Expand = True
@@ -3372,11 +3372,6 @@ Public Class MainForm
             procPriority.Text = "Process Priority"
             procPriority.Help = "Process priority of the applications StaxRip launches."
             procPriority.Field = NameOf(s.ProcessPriority)
-
-            Dim renderMode = ui.AddMenu(Of ToolStripRenderModeEx)
-            renderMode.Text = "Menu Style"
-            renderMode.Help = "Defines the style used to render main menus, context menus and toolbars."
-            renderMode.Field = NameOf(s.ToolStripRenderModeEx)
 
             Dim tempDelete = ui.AddMenu(Of DeleteMode)
             tempDelete.Text = "Delete temp files"

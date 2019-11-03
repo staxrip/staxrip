@@ -1,3 +1,4 @@
+
 Imports System.Drawing.Drawing2D
 Imports System.Drawing.Text
 Imports Microsoft.Win32
@@ -38,13 +39,14 @@ Public Class ToolStripRendererEx
             If argb = 0 Then argb = Color.LightBlue.ToArgb
             InitColors(Color.FromArgb(argb))
         Else
+            ColorChecked = Color.FromArgb(&HFF91C9F7)
             ColorBorder = Color.FromArgb(&HFF83ABDC)
             ColorTop = Color.FromArgb(&HFFE7F0FB)
-            ColorBottom = Color.FromArgb(&HFFCCE1FB)
+            ColorBottom = Color.FromArgb(&HFF91C9F7)
             ColorBackground = SystemColors.Control
 
             ColorToolStrip1 = Color.FromArgb(&HFFFDFEFF)
-            ColorToolStrip2 = Color.FromArgb(&HFFE6F0FA)
+            ColorToolStrip2 = Color.FromArgb(&HFFF0F0F0)
             ColorToolStrip3 = Color.FromArgb(&HFFDCE6F4)
             ColorToolStrip4 = Color.FromArgb(&HFFDDE9F7)
         End If
@@ -52,8 +54,8 @@ Public Class ToolStripRendererEx
 
     Shared Sub InitColors(c As Color)
         ColorBorder = HSLColor.Convert(c).ToColorSetLuminosity(100)
-        ColorChecked = HSLColor.Convert(c).ToColorSetLuminosity(200)
-        ColorBottom = HSLColor.Convert(c).ToColorSetLuminosity(220)
+        ColorChecked = HSLColor.Convert(c).ToColorSetLuminosity(180)
+        ColorBottom = HSLColor.Convert(c).ToColorSetLuminosity(200)
         ColorBackground = HSLColor.Convert(c).ToColorSetLuminosity(230)
         ColorTop = HSLColor.Convert(c).ToColorSetLuminosity(240)
 
@@ -129,10 +131,6 @@ Public Class ToolStripRendererEx
                 Dim r2 = New Rectangle(r.X + 2, r.Y, r.Width - 4, r.Height - 1)
 
                 If IsFlat() Then
-                    Using pen As New Pen(ColorBorder)
-                        g.DrawRectangle(pen, r2)
-                    End Using
-
                     r2.Inflate(-1, -1)
 
                     Using b As New SolidBrush(ColorBottom)
@@ -170,10 +168,6 @@ Public Class ToolStripRendererEx
         Dim r2 = New Rectangle(r.X, r.Y, r.Width - 1, r.Height - 1)
 
         If IsFlat() Then
-            Using pen As New Pen(ColorBorder)
-                g.DrawRectangle(pen, r2)
-            End Using
-
             r2.Inflate(-1, -1)
 
             Dim tsb = TryCast(e.Item, ToolStripButton)
@@ -183,7 +177,7 @@ Public Class ToolStripRendererEx
                     g.FillRectangle(brush, r2)
                 End Using
             Else
-                Using brush As New SolidBrush(ColorBottom)
+                Using brush As New SolidBrush(ColorChecked)
                     g.FillRectangle(brush, r2)
                 End Using
             End If
@@ -232,12 +226,17 @@ Public Class ToolStripRendererEx
     End Sub
 
     Protected Overrides Sub OnRenderDropDownButtonBackground(e As ToolStripItemRenderEventArgs)
-        If e.Item.Selected Then DrawButton(e)
+        If e.Item.Selected Then
+            DrawButton(e)
+        End If
     End Sub
 
     Protected Overrides Sub OnRenderButtonBackground(e As ToolStripItemRenderEventArgs)
         Dim button = DirectCast(e.Item, ToolStripButton)
-        If e.Item.Selected OrElse button.Checked Then DrawButton(e)
+
+        If e.Item.Selected OrElse button.Checked Then
+            DrawButton(e)
+        End If
     End Sub
 
     Protected Overloads Overrides Sub OnRenderArrow(e As ToolStripArrowRenderEventArgs)

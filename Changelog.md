@@ -1,16 +1,21 @@
 
-- update: DGHDRtoSDR 1.13
-- update: NVEncC 4.51
+### 2.0.5.1 Beta
 
+- update: DGHDRtoSDR 1.13
+- update: NVEncC 4.54
+- update: VapourSynth R48
+- update: x265 3.2+9-971180b100f8 Patman
+
+- new: various UI improvements
 - new: the short version of x265 and nvenc switches like -c, -f etc.
        were integrated into the search field and command line import
 	   feature, the search feature now first looks for a exact match
+- new: x265 switches --dup-threshold, --frame-dup
 - new: nvenc switches --multiref-l0, --multiref-l1
 - new: StaxRip can use MediaInfo.NET instead of the built-in MediaInfo GUI,
-       it requires MediaInfo.NET (minimum v5.2) to be started at least once
+       it requires MediaInfo.NET to be present and started at least once
 
 - fix: FFTW not always asked to be installed when needed
-- fix: progress bar color changed according to user request
 
 ### 2.0.4.10 Beta
 

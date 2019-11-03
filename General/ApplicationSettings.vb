@@ -57,7 +57,7 @@ Public Class ApplicationSettings
     Public StringList As List(Of String)
     Public TargetImageSizeMenu As String
     Public ThumbnailBackgroundColor As Color = Color.AliceBlue
-    Public ToolStripRenderModeEx As ToolStripRenderModeEx
+    Public ToolStripRenderModeEx As ToolStripRenderModeEx = ToolStripRenderModeEx.SystemDefault
     Public UIScaleFactor As Single = 1
     Public VapourSynthFilterPreferences As StringPairList
     Public VapourSynthProfiles As List(Of FilterCategory)
@@ -149,6 +149,10 @@ Public Class ApplicationSettings
             VapourSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavSource")
             VapourSynthFilterPreferences.Add("d2v", "d2vsource")
             VapourSynthFilterPreferences.Add("dgi", "DGSource")
+        End If
+
+        If Check(ToolStripRenderModeEx, "menu style", 1) Then
+            ToolStripRenderModeEx = ToolStripRenderModeEx.SystemDefault
         End If
 
         If Check(eac3toProfiles, "eac3to Audio Stream Profiles", 4) Then

@@ -239,7 +239,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.52
+Used Version: 4.54
 
 http://github.com/rigaya/NVEnc
 
@@ -309,7 +309,7 @@ VapourSynth
 
 StaxRip supports both AviSynth+ and VapourSynth as scripting based video processing tool.
 
-Used Version: R47.2
+Used Version: R48
 
 http://www.vapoursynth.com
 
@@ -359,7 +359,7 @@ vspipe
 
 vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.
 
-Used Version: R47.2
+Used Version: R48
 
 http://www.vapoursynth.com/doc/vspipe.html
 
@@ -389,7 +389,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.2+5-gfbe9fef31 Patman
+Used Version: 3.2+9-971180b100f8 Patman
 
 http://x265.org
 

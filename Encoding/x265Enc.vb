@@ -1,4 +1,5 @@
-﻿Imports System.Text
+﻿
+Imports System.Text
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -954,8 +955,10 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}},
                     Frames, chunkstart, chunkend,
                     New NumParam With {.Switch = "--seek", .Text = "Seek"},
+                    New NumParam With {.Switch = "--dup-threshold", .Text = "Dup. Threshold", .Init = 70, .Config = {1, 99}},
                     New BoolParam With {.Switch = "--dither", .Text = "Dither (High Quality Downscaling)"},
-                    New BoolParam With {.Switch = "--field", .NoSwitch = "--no-field", .Text = "Field Coding"})
+                    New BoolParam With {.Switch = "--field", .NoSwitch = "--no-field", .Text = "Field Coding"},
+                    New BoolParam With {.Switch = "--frame-dup", .Text = "Adaptive frame duplication"})
                 Add("Loop Filter", Deblock, DeblockA, DeblockB,
                     New NumParam With {.Switch = "--selective-sao", .Text = "Selective SAO", .Init = 4, .Config = {0, 4}},
                     SAO,

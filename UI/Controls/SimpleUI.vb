@@ -1,4 +1,5 @@
-﻿Imports StaxRip.UI
+﻿
+Imports StaxRip.UI
 
 Public Class SimpleUI
     Inherits Control
@@ -42,8 +43,13 @@ Public Class SimpleUI
         If Not DesignMode Then
             AddHandler FindForm.Load,
                 Sub()
-                    If Tree.Nodes.Count > 0 Then Tree.ItemHeight = CInt(Tree.Height / (Tree.Nodes.Count)) - 2
-                    If Tree.ItemHeight > CInt(Tree.Font.Height * 1.7) Then Tree.ItemHeight = CInt(Tree.Font.Height * 1.7)
+                    If Tree.Nodes.Count > 0 Then
+                        Tree.ItemHeight = CInt(Tree.Height / (Tree.Nodes.Count)) - 2
+                    End If
+
+                    If Tree.ItemHeight > CInt(Tree.Font.Height * 1.7) Then
+                        Tree.ItemHeight = CInt(Tree.Font.Height * 1.7)
+                    End If
                 End Sub
         End If
     End Sub

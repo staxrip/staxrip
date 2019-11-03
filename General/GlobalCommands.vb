@@ -479,10 +479,10 @@ Public Class GlobalCommands
             End If
         Next
 
-        supportedTools.WriteUTF8File("..\docs\tools.rst")
+        supportedTools.WriteUTF8File(Folder.Startup + "..\docs\tools.rst")
 
         Dim screenshots = "Screenshots" + BR + "===========" + BR2 + ".. contents::" + BR2
-        Dim screenshotFiles = Directory.GetFiles("..\docs\screenshots").ToList
+        Dim screenshotFiles = Directory.GetFiles(Folder.Startup + "..\docs\screenshots").ToList
         screenshotFiles.Sort(New StringLogicalComparer)
 
         For Each i In screenshotFiles
@@ -490,7 +490,7 @@ Public Class GlobalCommands
             screenshots += name + BR + "-".Multiply(name.Length) + BR2 + ".. image:: screenshots/" + i.FileName + BR2
         Next
 
-        screenshots.WriteUTF8File("..\docs\screenshots.rst")
+        screenshots.WriteUTF8File(Folder.Startup + "..\docs\screenshots.rst")
 
         Dim macros = "Macros" + BR + "======" + BR2
 
@@ -498,7 +498,7 @@ Public Class GlobalCommands
             macros += "``" + i.Name + "``" + BR2 + i.Value + BR2
         Next
 
-        macros.WriteUTF8File("..\docs\macros.rst")
+        macros.WriteUTF8File(Folder.Startup + "..\docs\macros.rst")
 
         Dim powershell = "PowerShell Scripting
 ====================
@@ -535,18 +535,18 @@ Default Scripts
 ---------------
 
 "
-        Dim psdir = "..\docs\powershell"
+        Dim psdir = Folder.Startup + "..\docs\powershell"
         DirectoryHelp.Delete(psdir)
         Directory.CreateDirectory(psdir)
 
-        For Each i In Directory.GetFiles(".\Apps\Scripts")
+        For Each i In Directory.GetFiles(Folder.Startup + "Apps\Scripts")
             FileHelp.Copy(i, psdir + "\" + i.FileName)
             Dim filename = i.FileName
             powershell += filename + BR + "~".Multiply(filename.Length) + BR2
             powershell += ".. literalinclude:: " + "powershell/" + i.FileName + BR + "   :language: powershell" + BR2
         Next
 
-        powershell.WriteUTF8File("..\docs\powershell.rst")
+        powershell.WriteUTF8File(Folder.Startup + "..\docs\powershell.rst")
 
         Dim switches = "Command Line Interface
 ======================
@@ -615,7 +615,7 @@ Switches
             switches += command.Attribute.Description + BR2 + BR
         Next
 
-        switches.WriteUTF8File("..\docs\cli.rst")
+        switches.WriteUTF8File(Folder.Startup + "..\docs\cli.rst")
 
         If msg <> "" Then
             Dim fs = Folder.Temp + "staxrip todo.txt"

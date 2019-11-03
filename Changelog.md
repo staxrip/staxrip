@@ -9,6 +9,7 @@
        it requires MediaInfo.NET (minimum v5.2) to be started at least once
 
 - fix: FFTW not always asked to be installed when needed
+- fix: progress bar color changed according to user request
 
 ### 2.0.4.10 Beta
 

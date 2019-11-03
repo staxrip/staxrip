@@ -31,7 +31,6 @@ Public Class ProcController
 
         ProgressBar.Dock = DockStyle.Fill
         ProgressBar.Font = New Font("Consolas", 9 * s.UIScaleFactor)
-        ProgressBar.ProgressColor = ControlPaint.LightLight(ControlPaint.Light(ToolStripRendererEx.ColorBorder, 0.4))
 
         LogTextBox.ScrollBars = ScrollBars.Both
         LogTextBox.Multiline = True

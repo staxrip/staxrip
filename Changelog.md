@@ -13,7 +13,7 @@
 - new: x265 switches --dup-threshold, --frame-dup
 - new: nvenc switches --multiref-l0, --multiref-l1
 - new: StaxRip can use MediaInfo.NET instead of the built-in MediaInfo GUI,
-       it requires MediaInfo.NET to be present and started at least once
+       it requires MediaInfo.NET to be installed and started at least once
 
 - fix: FFTW not always asked to be installed when needed
 

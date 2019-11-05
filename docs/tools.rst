@@ -159,7 +159,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 38.0.0
+Used Version: 39.0.0
 
 https://mkvtoolnix.download/
 
@@ -169,7 +169,7 @@ mkvinfo
 
 MKV muxing tool.
 
-Used Version: 38.0.0
+Used Version: 39.0.0
 
 https://mkvtoolnix.download/
 
@@ -179,7 +179,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 38.0.0
+Used Version: 39.0.0
 
 https://mkvtoolnix.download/
 
@@ -219,7 +219,7 @@ mpv.net
 
 libmpv based media player.
 
-Used Version: 5.4.1.1
+Used Version: 5.4.3.0
 
 https://github.com/stax76/mpv.net
 

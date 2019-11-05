@@ -1,3 +1,4 @@
+
 Imports System.ComponentModel
 Imports System.Drawing.Design
 
@@ -494,7 +495,7 @@ Namespace UI
             Set(value As Keys)
                 If value <> Keys.None Then
                     ShortcutValue = value
-                    ShortcutKeyDisplayString = KeysHelp.GetKeyString(value)
+                    ShortcutKeyDisplayString = KeysHelp.GetKeyString(value) + "     "
                     AddHandler Form.KeyDown, AddressOf KeyDown
                 End If
             End Set

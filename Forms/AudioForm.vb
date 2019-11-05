@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class AudioForm
@@ -884,6 +885,7 @@ Public Class AudioForm
 
     Private Sub mbLanguage_ValueChanged() Handles mbLanguage.ValueChangedUser
         TempProfile.Language = mbLanguage.GetValue(Of Language)()
+        mbLanguage.Text = TempProfile.Language.Name
         UpdateControls()
     End Sub
 

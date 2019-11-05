@@ -4,7 +4,7 @@
 - update: mkvtoolnix 39
 - update: mpv.net 5.4.3
 
-- fix: UI issues in jobs dialog
+- fix: few UI issues were fixed
 
 ### 2.0.5.1 Beta
 

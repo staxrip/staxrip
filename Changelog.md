@@ -1,5 +1,5 @@
 
-### 2.0.6 Stable
+### 2.0.6.0 Stable
 
 - update: mkvtoolnix 39
 - update: mpv.net 5.4.3

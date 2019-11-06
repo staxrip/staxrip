@@ -1,8 +1,9 @@
 
-### 2.0.5.2 Beta
+### 2.0.5.3 Beta
 
 - update: mkvtoolnix 39
 - update: mpv.net 5.4.3
+- update: NVEnc 4.55
 
 - fix: few UI issues
 - fix: avs MCTemporalDenoise/GradFun2DBmod

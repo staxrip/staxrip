@@ -48,50 +48,72 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Sub SetMetaData(sourceFile As String)
-        If Not p.ImportVUIMetadata Then Exit Sub
+        If Not p.ImportVUIMetadata Then
+            Exit Sub
+        End If
 
         Dim cl As String
-
         Dim colour_primaries = MediaInfo.GetVideo(sourceFile, "colour_primaries")
-        Dim height = MediaInfo.GetVideo(sourceFile, "Height").ToInt
 
         Select Case colour_primaries
             Case "BT.2020"
-                If colour_primaries.Contains("BT.2020") Then cl += " --colorprim bt2020"
+                If colour_primaries.Contains("BT.2020") Then
+                    cl += " --colorprim bt2020"
+                End If
             Case "BT.709"
-                If colour_primaries.Contains("BT.709") Then cl += " --colorprim bt709"
+                If colour_primaries.Contains("BT.709") Then
+                    cl += " --colorprim bt709"
+                End If
             Case "BT.601 NTSC"
-                If colour_primaries.Contains("BT.601 NTSC") Then cl += " --colorprim bt470m"
+                If colour_primaries.Contains("BT.601 NTSC") Then
+                    cl += " --colorprim bt470m"
+                End If
             Case "BT.601 PAL"
-                If colour_primaries.Contains("BT.601 PAL") Then cl += " --colorprim bt470bg"
+                If colour_primaries.Contains("BT.601 PAL") Then
+                    cl += " --colorprim bt470bg"
+                End If
         End Select
 
         Dim transfer_characteristics = MediaInfo.GetVideo(sourceFile, "transfer_characteristics")
 
         Select Case transfer_characteristics
             Case "PQ", "SMPTE ST 2084"
-                If transfer_characteristics.Contains("SMPTE ST 2084") Or transfer_characteristics.Contains("PQ") Then cl += " --transfer smpte2084"
+                If transfer_characteristics.Contains("SMPTE ST 2084") Or transfer_characteristics.Contains("PQ") Then
+                    cl += " --transfer smpte2084"
+                End If
             Case "BT.709"
-                If transfer_characteristics.Contains("BT.709") Then cl += " --transfer bt709"
+                If transfer_characteristics.Contains("BT.709") Then
+                    cl += " --transfer bt709"
+                End If
             Case "HLG"
                 cl += " --transfer arib-std-b67"
             Case "BT.601 NTSC"
-                If transfer_characteristics.Contains("BT.601 NTSC") Then cl += " --transfer bt470m"
+                If transfer_characteristics.Contains("BT.601 NTSC") Then
+                    cl += " --transfer bt470m"
+                End If
             Case "BT.601 PAL"
-                If transfer_characteristics.Contains("BT.601 PAL") Then cl += " --transfer bt470bg"
+                If transfer_characteristics.Contains("BT.601 PAL") Then
+                    cl += " --transfer bt470bg"
+                End If
         End Select
 
         Dim matrix_coefficients = MediaInfo.GetVideo(sourceFile, "matrix_coefficients")
 
         Select Case matrix_coefficients
             Case "BT.2020 non-constant"
-                If matrix_coefficients.Contains("BT.2020 non-constant") Then cl += " --colormatrix bt2020nc"
+                If matrix_coefficients.Contains("BT.2020 non-constant") Then
+                    cl += " --colormatrix bt2020nc"
+                End If
             Case "BT.709"
                 cl += " --colormatrix bt709"
             Case "BT.601 NTSC"
-                If matrix_coefficients.Contains("BT.601 NTSC") Then cl += " --colormatrix bt470m"
+                If matrix_coefficients.Contains("BT.601 NTSC") Then
+                    cl += " --colormatrix bt470m"
+                End If
             Case "BT.601 PAL"
-                If matrix_coefficients.Contains("BT.601 PAL") Then cl += " --colormatrix bt470bg"
+                If matrix_coefficients.Contains("BT.601 PAL") Then
+                    cl += " --colormatrix bt470bg"
+                End If
         End Select
 
         Dim color_range = MediaInfo.GetVideo(sourceFile, "colour_range")
@@ -101,64 +123,58 @@ Public MustInherit Class VideoEncoder
                 cl += " --range limited"
             Case "Full"
                 cl += " --range full"
-
         End Select
 
         Dim MasteringDisplay_ColorPrimaries = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_ColorPrimaries")
         Dim MasteringDisplay_Luminance = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_Luminance")
 
         If MasteringDisplay_ColorPrimaries <> "" AndAlso MasteringDisplay_Luminance <> "" Then
-            Dim BT2020 = Regex.Match(MasteringDisplay_ColorPrimaries, "(BT.2020)")
-            Dim MaxCL = Regex.Match(MasteringDisplay_Luminance, "min: ([0-9\.]+) cd/m2, max: ([0-9\.]+) cd/m2")
-            Dim DisplayP3 = Regex.Match(MasteringDisplay_ColorPrimaries, "(Display P3)")
-            Dim DCIP3 = Regex.Match(MasteringDisplay_ColorPrimaries, "(DCI P3)")
+            Dim luminanceMatch = Regex.Match(MasteringDisplay_Luminance, "min: ([\d\.]+) cd/m2, max: ([\d\.]+) cd/m2")
 
-            ''DisPlay-P3
-            If DisplayP3.Success AndAlso MaxCL.Success Then
-                'Dim Export = MaxCL.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 10000).ToString)
-                ''Not Sure if These^ string Values are Needed anymore, Since MediaInfo Does Not Use this Format anymore. Removed all Ones Below and 
-                '' Left this One Intact Just Incase it's Needed.
-                cl += " --output-depth 10"
-                cl += " --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15635,16450)L(10000000,1)"""
-                cl += " --hdr"
-                cl += " --repeat-headers"
-                cl += " --range limited"
-                cl += " --hrd"
-                cl += " --aud"
-            End If
+            If luminanceMatch.Success Then
+                Dim luminanceMin = luminanceMatch.Groups(1).Value.ToDouble * 10000
+                Dim luminanceMax = luminanceMatch.Groups(2).Value.ToDouble * 10000
 
-            ''DCI-P3
-            If DCIP3.Success AndAlso MaxCL.Success Then
-                'Removed String Value.
-                cl += " --output-depth 10"
-                cl += " --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15700,17550)L(10000000,1)"""
-                cl += " --hdr"
-                cl += " --repeat-headers"
-                cl += " --range limited"
-                cl += " --hrd"
-                cl += " --aud"
-            End If
+                If MasteringDisplay_ColorPrimaries.Contains("Display P3") Then
+                    cl += " --output-depth 10"
+                    cl += $" --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15635,16450)L({luminanceMax},{luminanceMin})"""
+                    cl += " --hdr"
+                    cl += " --repeat-headers"
+                    cl += " --range limited"
+                    cl += " --hrd"
+                    cl += " --aud"
+                End If
 
-            ''BT.2020
-            If BT2020.Success AndAlso MaxCL.Success Then
-                'Removed String Value.
-                cl += " --output-depth 10"
-                cl += " --master-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L(10000000,1)"""
-                cl += " --hdr"
-                cl += " --repeat-headers"
-                cl += " --range limited"
-                cl += " --hrd"
-                cl += " --aud"
+                If MasteringDisplay_ColorPrimaries.Contains("DCI P3") Then
+                    cl += " --output-depth 10"
+                    cl += $" --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15700,17550)L({luminanceMax},{luminanceMin})"""
+                    cl += " --hdr"
+                    cl += " --repeat-headers"
+                    cl += " --range limited"
+                    cl += " --hrd"
+                    cl += " --aud"
+                End If
 
+                If MasteringDisplay_ColorPrimaries.Contains("BT.2020") Then
+                    cl += " --output-depth 10"
+                    cl += $" --master-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L({luminanceMax},{luminanceMin})"""
+                    cl += " --hdr"
+                    cl += " --repeat-headers"
+                    cl += " --range limited"
+                    cl += " --hrd"
+                    cl += " --aud"
+                End If
             End If
         End If
 
         Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
         Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
 
-        If MaxCLL <> 0 OrElse MaxFALL <> 0 Then cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""
-        ImportCommandLine(cl)
+        If MaxCLL <> 0 OrElse MaxFALL <> 0 Then
+            cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""
+        End If
 
+        ImportCommandLine(cl)
     End Sub
 
     Sub AfterEncoding()

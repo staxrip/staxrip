@@ -229,7 +229,9 @@ Module StringExtensions
     <Extension()>
     Function ToDouble(value As String, Optional defaultValue As Single = 0) As Double
         If value <> "" Then
-            If value.Contains(",") Then value = value.Replace(",", ".")
+            If value.Contains(",") Then
+                value = value.Replace(",", ".")
+            End If
 
             Dim ret As Double
 

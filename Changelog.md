@@ -1,10 +1,12 @@
 
-### 2.0.6.0 Stable
+### 2.0.5.2 Beta
 
 - update: mkvtoolnix 39
 - update: mpv.net 5.4.3
 
-- fix: few UI issues were fixed
+- fix: few UI issues
+- fix: avs MCTemporalDenoise/GradFun2DBmod
+- fix: VUI luminance issue
 
 ### 2.0.5.1 Beta
 

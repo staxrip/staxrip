@@ -296,7 +296,7 @@ Public Class CommandLineDemuxForm
         Me.Label1.Size = New System.Drawing.Size(249, 48)
         Me.Label1.TabIndex = 26
         Me.Label1.Text = "Input Formats:"
-        Me.TipProvider.SetTipText(Me.Label1, "Formats the demuxer handles (vc1 mpeg2 avc, hevc)")
+        Me.TipProvider.SetTipText(Me.Label1, "Formats the demuxer handles (vc1 mpeg2 avc hevc)")
         '
         'Label7
         '

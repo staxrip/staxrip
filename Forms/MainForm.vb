@@ -3523,19 +3523,19 @@ Public Class MainForm
     <Command("Saves the current project as template.")>
     Sub SaveProjectAsTemplate()
         If p.SourceFile = "" Then
-            Dim b As New InputBox
-            b.Text = "Enter the name of the template."
-            b.Title = "Save Template"
-            b.Value = p.TemplateName
-            b.VerificationText = "Load template on startup"
+            Dim box As New InputBox
+            box.Text = "Enter the name of the template."
+            box.Title = "Save Template"
+            box.Value = p.TemplateName
+            box.CheckBoxText = "Load template on startup"
 
-            If b.Show = DialogResult.OK Then
-                p.TemplateName = b.Value.RemoveChars(Path.GetInvalidFileNameChars)
+            If box.Show = DialogResult.OK Then
+                p.TemplateName = box.Value.RemoveChars(Path.GetInvalidFileNameChars)
                 SaveProjectPath(Folder.Template + p.TemplateName + ".srip")
                 UpdateTemplatesMenuAsync()
 
-                If b.Checked Then
-                    s.StartupTemplate = b.Value
+                If box.Checked Then
+                    s.StartupTemplate = box.Value
                 End If
             End If
         Else
@@ -4198,12 +4198,14 @@ Public Class MainForm
 
     <Command("Dialog to configure filter setup profiles.")>
     Sub ShowFilterSetupProfilesDialog()
-        Using f As New ProfilesForm("AviSynth Profiles", s.FilterSetupProfiles,
-                                    AddressOf LoadFilterSetup,
-                                    AddressOf GetScriptAsProfile,
-                                    AddressOf VideoScript.GetDefaults)
+        Using form As New ProfilesForm(
+            "Filter Setup Profiles",
+            s.FilterSetupProfiles,
+            AddressOf LoadFilterSetup,
+            AddressOf GetScriptAsProfile,
+            AddressOf VideoScript.GetDefaults)
 
-            If f.ShowDialog() = DialogResult.OK Then
+            If form.ShowDialog() = DialogResult.OK Then
                 PopulateProfileMenu(DynamicMenuItemID.FilterSetupProfiles)
             End If
         End Using

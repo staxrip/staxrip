@@ -358,6 +358,7 @@ Public Class x265Params
     Property AQmode As New OptionParam With {
         .Switch = "--aq-mode",
         .Text = "AQ Mode",
+        .Expand = True,
         .IntegerValue = True,
         .Options = {"Disabled", "AQ", "AQ Auto-variance", "AQ Auto-variance with bias to dark scenes", "AQ Auto-variance and edge information"}}
 

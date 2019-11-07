@@ -1,4 +1,8 @@
 
+### 2.0.6.0 Stable
+
+no changes since 2.0.5.3 Beta
+
 ### 2.0.5.3 Beta
 
 - update: mkvtoolnix 39

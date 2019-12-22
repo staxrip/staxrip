@@ -1,5 +1,7 @@
 
-###
+to do: remove changelog duplicate
+
+### 2.0.6.1
 
 - new: the preview dialog uses now a Direct2D harware accelerated video renderer
 

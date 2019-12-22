@@ -1,3 +1,4 @@
+
 Imports System.ComponentModel
 Imports System.Drawing.Imaging
 
@@ -284,7 +285,7 @@ Public Class PreviewForm
     Private TargetFrames As Integer
     Private WithEvents GenericMenu As CustomMenu
     Private CommandManager As New CommandManager
-    Private Drawer As VideoDrawer
+    Private Renderer As VideoRenderer
 
     Private Const TrackBarBorder As Integer = 1
     Private Const TrackBarGap As Integer = 1
@@ -321,14 +322,19 @@ Public Class PreviewForm
 
     Sub RefreshScript()
         TargetFrames = p.Script.GetFrames
-        If Not AVI Is Nothing Then AVI.Dispose()
-        PreviewScript.Synchronize(True)
+
+        If Not AVI Is Nothing Then
+            AVI.Dispose()
+        End If
+
+        PreviewScript.Synchronize(True, True, True)
         AVI = New AVIFile(PreviewScript.Path)
-        Drawer = New VideoDrawer(pVideo, AVI)
-        Drawer.ShowInfos = s.PreviewToggleInfos
+        Renderer = New VideoRenderer(pVideo, AVI)
         Dim wa = Screen.FromControl(Me).WorkingArea
 
-        While GetNormalSize.Width < wa.Width * (s.MinPreviewSize / 100) AndAlso GetNormalSize.Height < wa.Height * (s.MinPreviewSize / 100)
+        While GetNormalSize.Width < wa.Width * (s.MinPreviewSize / 100) AndAlso
+            GetNormalSize.Height < wa.Height * (s.MinPreviewSize / 100)
+
             SizeFactor += 0.05
             SizeFactor = Math.Round(SizeFactor, 2)
         End While
@@ -610,7 +616,7 @@ Public Class PreviewForm
 
     Sub SetPos(pos As Integer)
         AVI.Position = pos
-        Drawer.Draw()
+        Renderer.Draw()
         AfterPositionChanged()
     End Sub
 
@@ -631,7 +637,7 @@ Public Class PreviewForm
         If value <> "" Then
             Try
                 AVI.Position = CInt((TimeSpan.Parse(value).TotalMilliseconds / 1000) * AVI.FrameRate)
-                Drawer.Draw()
+                Renderer.Draw()
                 AfterPositionChanged()
             Catch
             End Try
@@ -645,7 +651,7 @@ Public Class PreviewForm
 
         If Integer.TryParse(value, pos) Then
             AVI.Position = pos
-            Drawer.Draw()
+            Renderer.Draw()
             AfterPositionChanged()
         End If
     End Sub
@@ -780,9 +786,10 @@ Public Class PreviewForm
 
     <Command("Shows/hides various infos.")>
     Sub ToggleInfos()
-        s.PreviewToggleInfos = Not s.PreviewToggleInfos
-        Drawer.ShowInfos = s.PreviewToggleInfos
-        Drawer.Draw()
+        MsgInfo("Feature is currently not available.")
+        's.PreviewToggleInfos = Not s.PreviewToggleInfos
+        'Renderer.ShowInfos = s.PreviewToggleInfos
+        'Renderer.Draw()
     End Sub
 
     <Command("Plays the script with a player.")>
@@ -848,7 +855,7 @@ Public Class PreviewForm
 
         If index >= 0 AndAlso index < list.Count Then
             AVI.Position = CInt(list(index))
-            Drawer.Draw()
+            Renderer.Draw()
             AfterPositionChanged()
         End If
     End Sub
@@ -876,7 +883,7 @@ Public Class PreviewForm
 
         If index >= 0 AndAlso index < list.Count Then
             AVI.Position = CInt(list(index))
-            Drawer.Draw()
+            Renderer.Draw()
             AfterPositionChanged()
         End If
     End Sub
@@ -952,7 +959,7 @@ Public Class PreviewForm
 
             If td.Show() <> "" Then
                 AVI.Position = CInt((TimeSpan.Parse(td.SelectedValue).TotalMilliseconds / 1000) * AVI.FrameRate)
-                Drawer.Draw()
+                Renderer.Draw()
                 AfterPositionChanged()
             End If
         End Using
@@ -1016,7 +1023,7 @@ Public Class PreviewForm
     End Function
 
     Private Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pVideo.Paint
-        Drawer.Draw(e.Graphics)
+        Renderer.Draw()
     End Sub
 
     Private Sub GenericMenu_Command(e As CustomMenuItemEventArgs) Handles GenericMenu.Command
@@ -1044,6 +1051,7 @@ Public Class PreviewForm
         MyBase.OnFormClosing(e)
         Instances.Remove(Me)
         s.LastPosition = AVI.Position
+        Renderer.Dispose()
         AVI.Dispose()
         UpdateTrim(p.Script)
         p.CutFrameCount = PreviewScript.GetFrames
@@ -1068,7 +1076,9 @@ Public Class PreviewForm
         Dim ret As String
 
         For Each i In p.Ranges
-            If ret <> "" Then ret += " + "
+            If ret <> "" Then
+                ret += " + "
+            End If
 
             If PreviewScript.Engine = ScriptEngine.AviSynth Then
                 ret += "Trim(" & i.Start & ", " & i.End - 1 & ")"

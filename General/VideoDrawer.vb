@@ -1,4 +1,5 @@
-﻿Public Class VideoDrawer
+﻿
+Public Class VideoDrawer
     Property CropLeft As Integer
     Property CropTop As Integer
     Property CropRight As Integer
@@ -14,7 +15,9 @@
     End Sub
 
     Sub Draw(Optional g As Graphics = Nothing)
-        If g Is Nothing Then g = Control.CreateGraphics()
+        If g Is Nothing Then
+            g = Control.CreateGraphics()
+        End If
 
         g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
         g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias

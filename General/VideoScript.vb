@@ -1,3 +1,4 @@
+
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports StaxRip
@@ -160,11 +161,15 @@ Public Class VideoScript
     <NonSerialized()> Public LastPath As String
 
     Sub Synchronize(Optional convertToRGB As Boolean = False,
-                    Optional comparePath As Boolean = True)
+                    Optional comparePath As Boolean = True,
+                    Optional flipVertical As Boolean = False)
 
         If Path <> "" Then
             Dim srcFilter = GetFilter("Source")
-            If Not srcFilter Is Nothing AndAlso Not srcFilter.Script.Contains("(") Then Exit Sub
+
+            If Not srcFilter Is Nothing AndAlso Not srcFilter.Script.Contains("(") Then
+                Exit Sub
+            End If
 
             Dim code = Macro.Expand(GetScript())
 
@@ -175,13 +180,27 @@ Public Class VideoScript
                     Else
                         code += BR + "ConvertBits(8)" + BR + "ConvertToRGB(matrix=""Rec601"")"
                     End If
+
+                    If flipVertical Then
+                        code += BR + "FlipVertical()"
+                    End If
                 Else
                     code = code.Trim
-                    If Not code.Contains(".set_output(") Then code += BR + "clip.set_output()"
+
+                    If Not code.Contains(".set_output(") Then
+                        code += BR + "clip.set_output()"
+                    End If
+
                     Dim match = Regex.Match(code, "(\w+)\.set_output\(\)")
                     Dim clipname = match.Groups(1).Value
 
-                    Dim vsCode = "
+                    Dim vsCode = ""
+
+                    If flipVertical Then
+                        vsCode += BR + "clipname = core.std.FlipVertical(clipname)" + BR
+                    End If
+
+                    vsCode = "
 if clipname.format.id == vs.RGB24:
     _matrix_in_s = 'rgb'
 else:

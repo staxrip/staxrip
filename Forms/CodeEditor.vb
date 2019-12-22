@@ -116,7 +116,9 @@ Public Class CodeEditor
     End Sub
 
     Sub VideoPreview()
-        If p.SourceFile = "" Then Exit Sub
+        If p.SourceFile = "" Then
+            Exit Sub
+        End If
 
         Dim script As New VideoScript
         script.Engine = Engine
@@ -130,7 +132,7 @@ Public Class CodeEditor
             Exit Sub
         End If
 
-        script.Synchronize(True)
+        script.Synchronize(True, True, True)
 
         Dim f As New PreviewForm(script)
         f.Owner = g.MainForm
@@ -152,7 +154,7 @@ Public Class CodeEditor
             Exit Sub
         End If
 
-        script.Synchronize(True)
+        script.Synchronize()
 
         If script.Engine = ScriptEngine.AviSynth Then
             g.DefaultCommands.ExecuteCommandLine(Package.avs2pipemod.Path.Escape + " -info " + script.Path.Escape + BR + "pause", False, False, True)

@@ -1,3 +1,4 @@
+
 Imports System.Text
 Imports System.ComponentModel
 Imports System.Runtime.InteropServices
@@ -622,7 +623,6 @@ Public Class FolderBrowserDialog
 
     <ComImport(), Guid(IIDGuid.IFileDialogControlEvents), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IFileDialogControlEvents
-
         <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub OnItemSelected(<[In](), MarshalAs(UnmanagedType.[Interface])> pfdc As IFileDialogCustomize, <[In]()> dwIDCtl As Integer, <[In]()> dwIDItem As Integer)
         <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
@@ -927,10 +927,11 @@ Public Class FolderBrowserDialog
         End Function
 
         <DllImport("shell32.dll", CharSet:=CharSet.Unicode)>
-        Public Shared Function SHCreateItemFromParsingName(pszPath As String,
-                                                           pbc As IntPtr,
-                                                           ByRef riid As Guid,
-                                                           <MarshalAs(UnmanagedType.IUnknown)> ByRef ppv As Object) As Integer
+        Public Shared Function SHCreateItemFromParsingName(
+            pszPath As String,
+            pbc As IntPtr,
+            ByRef riid As Guid,
+            <MarshalAs(UnmanagedType.IUnknown)> ByRef ppv As Object) As Integer
         End Function
 
         Public Shared Function CreateItemFromParsingName(path As String) As IShellItem
@@ -938,7 +939,11 @@ Public Class FolderBrowserDialog
             Dim guid As New Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")
             ' IID_IShellItem
             Dim hr = NativeMethods.SHCreateItemFromParsingName(path, IntPtr.Zero, guid, item)
-            If hr <> 0 Then Throw New Win32Exception(hr)
+
+            If hr <> 0 Then
+                Throw New Win32Exception(hr)
+            End If
+
             Return DirectCast(item, IShellItem)
         End Function
     End Class
@@ -947,7 +952,7 @@ Public Class FolderBrowserDialog
         Private Sub New()
         End Sub
 
-        ' IID GUID strings for relevant COM interfaces
+        'IID GUID strings for relevant COM interfaces
         Friend Const IModalWindow As String = "b4db1657-70d7-485e-8e3e-6fcb5a5c1802"
         Friend Const IFileDialog As String = "42f85136-db7e-439c-85f1-e4075d135fc8"
         Friend Const IFileOpenDialog As String = "d57c7288-d4ad-4768-be02-9d969532d960"

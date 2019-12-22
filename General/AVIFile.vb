@@ -1,3 +1,4 @@
+
 Imports System.Runtime.InteropServices
 Imports System.Reflection
 
@@ -33,7 +34,11 @@ Public Class AVIFile
 
                 If Not clipInfo Is Nothing Then
                     Dim ptr As IntPtr
-                    If clipInfo.GetError(ptr) = 0 Then ErrorMessageValue = Marshal.PtrToStringAnsi(ptr)
+
+                    If clipInfo.GetError(ptr) = 0 Then
+                        ErrorMessageValue = Marshal.PtrToStringAnsi(ptr)
+                    End If
+
                     Marshal.ReleaseComObject(clipInfo)
                 End If
             Else
@@ -126,24 +131,27 @@ Public Class AVIFile
 
     Function GetDIB() As IntPtr
         If FrameObject = IntPtr.Zero Then
-            Const AVIGETFRAMEF_BESTDISPLAYFMT = 1
-            FrameObject = AVIStreamGetFrameOpen(AviStream, AVIGETFRAMEF_BESTDISPLAYFMT)
-            If FrameObject = IntPtr.Zero Then FrameObject = AVIStreamGetFrameOpen(AviStream, 0)
+            FrameObject = AVIStreamGetFrameOpen(AviStream, 0)
         End If
 
-        If FrameObject <> IntPtr.Zero Then Return AVIStreamGetFrame(FrameObject, Position)
+        If FrameObject <> IntPtr.Zero Then
+            Return AVIStreamGetFrame(FrameObject, Position)
+        End If
     End Function
 
     Function GetBitmap() As Bitmap
         Dim dib = GetDIB()
-        If dib <> IntPtr.Zero Then Return GetBMPFromDib(dib)
+
+        If dib <> IntPtr.Zero Then
+            Return GetBitmapFromDib(dib)
+        End If
     End Function
 
-    Private Function GetBMPFromDib(pDIB As IntPtr) As Bitmap
+    Private Function GetBitmapFromDib(pDIB As IntPtr) As Bitmap
         Dim pPix As New IntPtr(pDIB.ToInt64 + Marshal.SizeOf(GetType(BITMAPINFOHEADER)))
-        Dim mi = GetType(Bitmap).GetMethod("FromGDIplus", BindingFlags.Static Or BindingFlags.NonPublic)
         Dim pBmp = IntPtr.Zero
         GdipCreateBitmapFromGdiDib(pDIB, pPix, pBmp)
+        Dim mi = GetType(Bitmap).GetMethod("FromGDIplus", BindingFlags.Static Or BindingFlags.NonPublic)
         Return DirectCast(mi.Invoke(Nothing, {pBmp}), Bitmap)
     End Function
 
@@ -203,23 +211,9 @@ Public Class AVIFile
     Private Shared Sub AVIFileExit()
     End Sub
 
-    <DllImport("winmm.dll")> 
+    <DllImport("winmm.dll")>
     Private Shared Function mmioStringToFOURCC(sz As String, uFlags As Integer) As UInteger
     End Function
-
-    Private Structure BITMAPINFOHEADER
-        Public biSize As UInt32
-        Public biWidth As Int32
-        Public biHeight As Int32
-        Public biPlanes As Int16
-        Public biBitCount As Int16
-        Public biCompression As UInt32
-        Public biSizeImage As UInt32
-        Public biXPelsPerMeter As Int32
-        Public biYPelsPerMeter As Int32
-        Public biClrUsed As UInt32
-        Public biClrImportant As UInt32
-    End Structure
 
     <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode)>
     Private Structure _AVISTREAMINFO
@@ -244,31 +238,39 @@ Public Class AVIFile
         Public szName As String
     End Structure
 
-#Region "IDisposable Support"
-
     Private WasDisposed As Boolean
 
-    Protected Overridable Sub Dispose(disposing As Boolean)
+    Public Sub Dispose() Implements IDisposable.Dispose
         If Not WasDisposed Then
-            If FrameObject <> IntPtr.Zero Then AVIStreamGetFrameClose(FrameObject)
-            If AviStream <> IntPtr.Zero Then AVIStreamRelease(AviStream)
-            If AviFile <> IntPtr.Zero Then AVIFileRelease(AviFile)
+            If FrameObject <> IntPtr.Zero Then
+                AVIStreamGetFrameClose(FrameObject)
+            End If
+
+            If AviStream <> IntPtr.Zero Then
+                AVIStreamRelease(AviStream)
+            End If
+
+            If AviFile <> IntPtr.Zero Then
+                AVIFileRelease(AviFile)
+            End If
+
             AVIFileExit()
             WasDisposed = True
             g.WriteDebugLog("closing avifile")
         End If
     End Sub
-
-    Protected Overrides Sub Finalize()
-        Dispose(False)
-        MyBase.Finalize()
-    End Sub
-
-    Public Sub Dispose() Implements IDisposable.Dispose
-        Dispose(True)
-        GC.SuppressFinalize(Me)
-    End Sub
-
-#End Region
-
 End Class
+
+Public Structure BITMAPINFOHEADER
+    Public biSize As UInt32
+    Public biWidth As Int32
+    Public biHeight As Int32
+    Public biPlanes As Int16
+    Public biBitCount As Int16
+    Public biCompression As UInt32
+    Public biSizeImage As UInt32
+    Public biXPelsPerMeter As Int32
+    Public biYPelsPerMeter As Int32
+    Public biClrUsed As UInt32
+    Public biClrImportant As UInt32
+End Structure

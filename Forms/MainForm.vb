@@ -3689,7 +3689,7 @@ Public Class MainForm
 
             Dim script = p.Script.GetNewScript
             script.Path = p.TempDir + p.TargetFile.Base + "_preview." + script.FileType
-            script.Synchronize(True)
+            script.Synchronize(True, True, True)
 
             Dim form As New PreviewForm(script)
             form.Owner = g.MainForm
@@ -6048,13 +6048,21 @@ Public Class MainForm
 
     Protected Overrides Sub OnDragEnter(e As DragEventArgs)
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
-        If Not files.NothingOrEmpty Then e.Effect = DragDropEffects.Copy
+
+        If Not files.NothingOrEmpty Then
+            e.Effect = DragDropEffects.Copy
+        End If
+
         MyBase.OnDragEnter(e)
     End Sub
 
     Protected Overrides Sub OnDragDrop(e As DragEventArgs)
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
-        If Not files.NothingOrEmpty Then BeginInvoke(Sub() OpenAnyFile(files.ToList))
+
+        If Not files.NothingOrEmpty Then
+            BeginInvoke(Sub() OpenAnyFile(files.ToList))
+        End If
+
         MyBase.OnDragDrop(e)
     End Sub
 

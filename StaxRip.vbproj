@@ -93,6 +93,9 @@
     </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DirectN, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\DirectN.1.5.0\lib\net451\DirectN.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic">
       <Name>Microsoft.VisualBasic</Name>
     </Reference>
@@ -185,6 +188,7 @@
     <Compile Include="General\Automation.vb" />
     <Compile Include="General\ProcController.vb" />
     <Compile Include="General\Http.vb" />
+    <Compile Include="General\VideoRenderer.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
@@ -407,6 +411,8 @@
     <Compile Include="UI\UI Help.vb" />
     <None Include="bin\Apps\Icons\Black.ico" />
     <Content Include="Black.ico" />
+    <Content Include="DirectN.ico" />
+    <Content Include="DirectN.png" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

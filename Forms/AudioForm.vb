@@ -1298,13 +1298,13 @@ Public Class AudioForm
             n = ui.AddNum()
             n.Text = "Target Peak"
             n.Help = helpUrl
-            n.Config = {0, 0, 0.1, 2}
+            n.Config = {0, 0, 0.05, 2}
             n.Property = NameOf(TempProfile.Params.ffmpegDynaudnormP)
 
             n = ui.AddNum()
             n.Text = "Max gain factor"
             n.Help = helpUrl
-            n.Config = {1, 100, 1, 1}
+            n.Config = {1, 100, 5, 1}
             n.Property = NameOf(TempProfile.Params.ffmpegDynaudnormM)
 
             n = ui.AddNum()

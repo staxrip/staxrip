@@ -114,7 +114,7 @@ Public Class Package
         .Name = "AviSynth+",
         .Filename = "avisynth.dll",
         .WebURL = "http://avisynth.nl/index.php/AviSynth%2B",
-        .Description = "StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.",
+        .Description = "StaxRip support both AviSynth+ and VapourSynth as scripting based video processing tool.",
         .FixedDir = Folder.System,
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth,
         .SetupFilename = "Installers\AviSynthPlus-MT-r2772.exe"})
@@ -183,6 +183,7 @@ Public Class Package
                            If p.SourceFile = "" Then
                                g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + BR + "pause", False, False, True)
                            Else
+                               p.Script.Synchronize()
                                g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + " --info " + p.Script.Path.Escape + " -" + BR + "pause", False, False, True)
                            End If
                        End Sub})
@@ -359,6 +360,7 @@ Public Class Package
                            If p.SourceFile = "" Then
                                g.DefaultCommands.ExecuteCommandLine(Package.avs2pipemod.Path.Escape + BR + "pause", False, False, True)
                            Else
+                               p.Script.Synchronize()
                                g.DefaultCommands.ExecuteCommandLine(Package.avs2pipemod.Path.Escape + " -info " + p.Script.Path.Escape + BR + "pause", False, False, True)
                            End If
                        End Sub})

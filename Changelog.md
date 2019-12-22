@@ -1,4 +1,10 @@
 
+###
+
+- new: the preview dialog uses now a Direct2D harware accelerated video renderer
+
+- fix: the info tool in the code editor was not showing the correct colorspace
+
 ### 2.0.6.0 Stable
 
 no changes since 2.0.5.3 Beta

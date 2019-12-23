@@ -269,6 +269,7 @@ Public Class PreviewForm
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "PreviewForm"
+        Me.ShowInTaskbar = True
         Me.Text = "Preview"
         Me.pVideo.ResumeLayout(False)
         Me.ResumeLayout(False)
@@ -308,12 +309,6 @@ Public Class PreviewForm
         GenericMenu.BuildMenu()
 
         Instances.Add(Me)
-
-        If Instances.Count > 1 Then
-            For Each i In Instances
-                i.ShowInTaskbar = True
-            Next
-        End If
 
         PreviewScript = script
         NormalRectangle.Size = Size
@@ -552,7 +547,7 @@ Public Class PreviewForm
         If RangeStart > -1 Then
             posPen = New Pen(Color.DarkOrange, trackHeight)
         Else
-            posPen = New Pen(Color.Blue, trackHeight)
+            posPen = New Pen(Color.Black, trackHeight)
         End If
 
         posPen.Alignment = Drawing2D.PenAlignment.Center

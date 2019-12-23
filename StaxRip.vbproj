@@ -279,7 +279,6 @@
     <Compile Include="UI\Controls\SimpleUI.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="General\VideoDrawer.vb" />
     <Compile Include="UI\Controls\SearchTextBox.vb">
       <SubType>UserControl</SubType>
     </Compile>
@@ -411,11 +410,10 @@
     <Compile Include="UI\UI Help.vb" />
     <None Include="bin\Apps\Icons\Black.ico" />
     <Content Include="Black.ico" />
-    <Content Include="DirectN.ico" />
-    <Content Include="DirectN.png" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Changelog.md" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>

@@ -1,5 +1,9 @@
 
-to do: remove changelog duplicate
+###
+
+- new: crop dialog supports harware accelerated video rendering
+
+- fix: when a second preview was opened the first one had broken rendering
 
 ### 2.0.6.1
 

@@ -1,4 +1,5 @@
-﻿Imports System.Drawing.Drawing2D
+﻿
+Imports System.Drawing.Drawing2D
 Imports System.Drawing.Imaging
 
 Imports StaxRip.UI
@@ -42,17 +43,19 @@ Public Class VideoComparisonForm
     End Sub
 
     Sub Add()
-        If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
+        If Not Package.AviSynth.VerifyOK(True) Then
+            Exit Sub
+        End If
 
-        Using f As New OpenFileDialog
-            f.SetFilter(FileTypes.Video)
-            f.Multiselect = True
-            f.SetInitDir(s.Storage.GetString("video comparison folder"))
+        Using dialog As New OpenFileDialog
+            dialog.SetFilter(FileTypes.Video)
+            dialog.Multiselect = True
+            dialog.SetInitDir(s.Storage.GetString("video comparison folder"))
 
-            If f.ShowDialog() = DialogResult.OK Then
-                s.Storage.SetString("video comparison folder", FilePath.GetDir(f.FileName))
+            If dialog.ShowDialog() = DialogResult.OK Then
+                s.Storage.SetString("video comparison folder", FilePath.GetDir(dialog.FileName))
 
-                For Each i In f.FileNames
+                For Each i In dialog.FileNames
                     Add(i)
                 Next
             End If
@@ -112,18 +115,24 @@ Public Class VideoComparisonForm
     End Sub
 
     Sub Help()
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteP("In the statistic tab of the x265 dialog select Log Level Frame and enable CSV log file creation, the video comparison tool can displays containing frame info.")
-        f.Doc.WriteTips(Menu.GetTips)
-        f.Doc.WriteTable("Shortcut Keys", Menu.GetKeys, False)
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteP("In the statistic tab of the x265 dialog select Log Level Frame and enable CSV log file creation, the video comparison tool can displays containing frame info.")
+        form.Doc.WriteTips(Menu.GetTips)
+        form.Doc.WriteTable("Shortcut Keys", Menu.GetKeys, False)
+        form.Show()
     End Sub
 
     Private Sub NextTab()
         Dim index = TabControl.SelectedIndex + 1
-        If index >= TabControl.TabPages.Count Then index = 0
-        If index <> TabControl.SelectedIndex Then TabControl.SelectedIndex = index
+
+        If index >= TabControl.TabPages.Count Then
+            index = 0
+        End If
+
+        If index <> TabControl.SelectedIndex Then
+            TabControl.SelectedIndex = index
+        End If
     End Sub
 
     Sub Reload()
@@ -134,7 +143,10 @@ Public Class VideoComparisonForm
 
     Private Sub TabControl_Selected(sender As Object, e As TabControlEventArgs) Handles TabControl.Selected
         Dim tab = DirectCast(TabControl.SelectedTab, VideoTab)
-        If Not tab Is Nothing Then tab.TrackBarValueChanged()
+
+        If Not tab Is Nothing Then
+            tab.TrackBarValueChanged()
+        End If
     End Sub
 
     Private Sub TabControl_Deselecting(sender As Object, e As TabControlCancelEventArgs) Handles TabControl.Deselecting
@@ -254,7 +266,7 @@ Public Class VideoComparisonForm
                 Try
                     Dim cachePath = Folder.Temp + Guid.NewGuid.ToString + ".ffindex"
                     AddHandler Disposed, Sub() FileHelp.Delete(cachePath)
-                Catch ex As Exception
+                Catch
                 End Try
 
                 If sourePath.EndsWith("mp4") Then
@@ -262,18 +274,6 @@ Public Class VideoComparisonForm
                 Else
                     avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + "" + """, colorspace = ""YV12"")"))
                 End If
-                'avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile=""" + cachePath + """)"))
-
-                '    Dim proj As New Project
-                '    proj.Init()
-
-                '    Try
-                '        g.ffmsindex(sourePath, cachePath, False, proj)
-                '    Catch ex As AbortException
-                '        Return False
-                '    Finally
-                '        Form.Activate()
-                '    End Try               
             End If
 
             If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
@@ -329,9 +329,11 @@ Public Class VideoComparisonForm
             Dim padding As Padding
             Dim sizeToFit = New Size(AVI.FrameSize.Width, AVI.FrameSize.Height)
 
-            Dim rect As New Rectangle(padding.Left, padding.Top,
-                                      Width - padding.Horizontal,
-                                      Height - padding.Vertical)
+            Dim rect As New Rectangle(
+                padding.Left, padding.Top,
+                Width - padding.Horizontal,
+                Height - padding.Vertical)
+
             Dim targetPoint As Point
             Dim targetSize As Size
             Dim ar1 = rect.Width / rect.Height
@@ -367,7 +369,11 @@ Public Class VideoComparisonForm
                 g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
                 Dim text = FilePath.GetBase(SourceFile)
                 Dim fontSize = ret.Height \ 100
-                If fontSize < 10 Then fontSize = 10
+
+                If fontSize < 10 Then
+                    fontSize = 10
+                End If
+
                 Dim font = New Font("Arial", fontSize)
                 Dim size = g.MeasureString(text, font)
                 Dim rect = New RectangleF(font.Height \ 2, font.Height \ 2, size.Width, size.Height)
@@ -410,7 +416,10 @@ Public Class VideoComparisonForm
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
-            If Not AVI Is Nothing Then AVI.Dispose()
+            If Not AVI Is Nothing Then
+                AVI.Dispose()
+            End If
+
             MyBase.Dispose(disposing)
         End Sub
     End Class

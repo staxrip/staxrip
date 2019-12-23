@@ -3647,8 +3647,13 @@ Public Class MainForm
         If p.SourceFile = "" Then
             ShowOpenSourceDialog()
         Else
-            If Not g.VerifyRequirements Then Exit Sub
-            If Not g.IsValidSource Then Exit Sub
+            If Not g.VerifyRequirements Then
+                Exit Sub
+            End If
+
+            If Not g.IsValidSource Then
+                Exit Sub
+            End If
 
             If Not g.EnableFilter("Crop") Then
                 If p.Script.Engine = ScriptEngine.AviSynth Then
@@ -3658,8 +3663,8 @@ Public Class MainForm
                 End If
             End If
 
-            Using f As New CropForm
-                f.ShowDialog()
+            Using form As New CropForm
+                form.ShowDialog()
             End Using
 
             DisableCropFilter()

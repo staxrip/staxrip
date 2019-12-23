@@ -1,3 +1,4 @@
+
 Imports System.ComponentModel
 
 Imports StaxRip.UI
@@ -152,12 +153,14 @@ Public Class CropForm
     Private ActiveCropSide As AnchorStyles
     Private CommandManager As New CommandManager
     Private WithEvents CustomMenu As CustomMenu
-    Private Drawer As VideoDrawer
+    Private Renderer As VideoRenderer
 
     Sub New()
         MyBase.New()
         InitializeComponent()
         UpdateStyles()
+
+        MinimumSize = New Size(CInt(Font.Size * 90), CInt(Font.Size * 70))
 
         CommandManager.AddCommandsFromObject(Me)
         CommandManager.AddCommandsFromObject(g.DefaultCommands)
@@ -211,14 +214,14 @@ Public Class CropForm
         pTopActive.BackColor = SelectedBorderColor
         Side = AnchorStyles.Top
 
-        Dim doc As New VideoScript
-        doc.Engine = p.Script.Engine
-        doc.Path = p.TempDir + p.TargetFile.Base + "_crop." + doc.FileType
-        doc.Filters.Add(p.Script.GetFilter("Source").GetCopy)
-        doc.Synchronize(True)
+        Dim script As New VideoScript
+        script.Engine = p.Script.Engine
+        script.Path = p.TempDir + p.TargetFile.Base + "_crop." + script.FileType
+        script.Filters.Add(p.Script.GetFilter("Source").GetCopy)
+        script.Synchronize(True, True, True)
 
-        AVI = New AVIFile(doc.Path)
-        Drawer = New VideoDrawer(pVideo, AVI)
+        AVI = New AVIFile(script.Path)
+        Renderer = New VideoRenderer(pVideo, AVI)
 
         If s.LastPosition < (AVI.FrameCount - 1) Then
             AVI.Position = s.LastPosition
@@ -230,7 +233,7 @@ Public Class CropForm
 
     Private Sub TrackLength_Scroll() Handles tbPosition.Scroll
         AVI.Position = tbPosition.Value
-        Drawer.Draw()
+        Renderer.Draw()
     End Sub
 
     Private Sub DeactivateActiveColor()
@@ -241,15 +244,13 @@ Public Class CropForm
     End Sub
 
     Private Sub CropForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim zoom = 1.0!
-        Dim b = Screen.FromControl(Me).WorkingArea
+        Dim zoom = 0.0
+        Dim workingArea = Screen.FromControl(Me).WorkingArea
 
-        While p.SourceWidth * zoom > 0.85 * b.Width OrElse p.SourceHeight * zoom > 0.85 * b.Height
-            zoom -= 0.01!
-        End While
+        While p.SourceWidth * zoom < 0.7 * workingArea.Width AndAlso
+            p.SourceHeight * zoom < 0.7 * workingArea.Height
 
-        While p.SourceWidth * zoom < 0.5 * b.Width AndAlso p.SourceHeight * zoom < 0.5 * b.Height
-            zoom += 0.01!
+            zoom += 0.01
         End While
 
         SetDialogSize(CInt(p.SourceWidth * zoom), CInt(p.SourceHeight * zoom))
@@ -266,16 +267,28 @@ Public Class CropForm
         Select Case Side
             Case AnchorStyles.Left
                 p.CropLeft += x
-                If opposite Then p.CropRight += x
+
+                If opposite Then
+                    p.CropRight += x
+                End If
             Case AnchorStyles.Top
                 p.CropTop += x
-                If opposite Then p.CropBottom += x
+
+                If opposite Then
+                    p.CropBottom += x
+                End If
             Case AnchorStyles.Right
                 p.CropRight += x
-                If opposite Then p.CropLeft += x
+
+                If opposite Then
+                    p.CropLeft += x
+                End If
             Case AnchorStyles.Bottom
                 p.CropBottom += x
-                If opposite Then p.CropTop += x
+
+                If opposite Then
+                    p.CropTop += x
+                End If
         End Select
 
         UpdateAll()
@@ -308,13 +321,13 @@ Public Class CropForm
     End Function
 
     Private Sub MouseCrop(e As MouseEventArgs)
-        Dim factorX = p.SourceWidth / pVideo.Width
-        Dim factorY = p.SourceHeight / pVideo.Height
+        Dim scaleX = p.SourceWidth / pVideo.Width
+        Dim scaleY = p.SourceHeight / pVideo.Height
 
-        Dim leftSide = CInt(e.X * factorX)
-        Dim topSide = CInt(e.Y * factorY)
-        Dim rightSide = CInt((pVideo.Width - e.X) * factorX)
-        Dim bottomSide = CInt((pVideo.Height - e.Y) * factorY)
+        Dim leftSide = CInt(e.X * scaleX)
+        Dim topSide = CInt(e.Y * scaleY)
+        Dim rightSide = CInt((pVideo.Width - e.X) * scaleX)
+        Dim bottomSide = CInt((pVideo.Height - e.Y) * scaleY)
 
         Select Case ActiveCropSide
             Case AnchorStyles.Left
@@ -352,21 +365,35 @@ Public Class CropForm
     End Sub
 
     Private Function FixMod(value As Integer) As Integer
-        If p.AutoCorrectCropValues Then
-            If Not value Mod 2 = 0 Then
-                value += 1
-            End If
+        If p.AutoCorrectCropValues AndAlso Not value Mod 2 = 0 Then
+            value += 1
         End If
 
         Return value
     End Function
 
     Sub UpdateAll()
-        Drawer.CropLeft = p.CropLeft
-        Drawer.CropTop = p.CropTop
-        Drawer.CropRight = p.CropRight
-        Drawer.CropBottom = p.CropBottom
-        Drawer.Draw()
+        If p.CropLeft > p.SourceWidth \ 3 Then
+            p.CropLeft = p.SourceWidth \ 3
+        End If
+
+        If p.CropTop > p.TargetHeight \ 3 Then
+            p.CropTop = p.TargetHeight \ 3
+        End If
+
+        If p.CropRight > p.SourceWidth \ 3 Then
+            p.CropRight = p.SourceWidth \ 3
+        End If
+
+        If p.CropBottom > p.TargetHeight \ 3 Then
+            p.CropBottom = p.TargetHeight \ 3
+        End If
+
+        Renderer.CropLeft = p.CropLeft
+        Renderer.CropTop = p.CropTop
+        Renderer.CropRight = p.CropRight
+        Renderer.CropBottom = p.CropBottom
+        Renderer.Draw()
 
         Dim cropw = p.SourceWidth - p.CropLeft - p.CropRight
         Dim croph = p.SourceHeight - p.CropTop - p.CropBottom
@@ -400,11 +427,11 @@ Public Class CropForm
     End Sub
 
     Private Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pVideo.Paint
-        Drawer.Draw(e.Graphics)
+        Renderer.Draw()
     End Sub
 
     Private Sub CropForm_SizeChanged() Handles MyBase.SizeChanged
-        If Not Drawer Is Nothing Then Drawer.Draw()
+        If Not Renderer Is Nothing Then Renderer.Draw()
     End Sub
 
     Private Sub CropForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
@@ -426,6 +453,7 @@ Public Class CropForm
 
         p.RemindToCrop = False
         s.LastPosition = AVI.Position
+        Renderer.Dispose()
         AVI.Dispose()
     End Sub
 
@@ -435,7 +463,7 @@ Public Class CropForm
 
     Private Sub SetDialogSize(w As Integer, h As Integer)
         ClientSize = New Size(ClientSize.Width + w - pVideo.Width, ClientSize.Height + h - pVideo.Height)
-        Drawer.Draw()
+        Renderer.Draw()
     End Sub
 
     Protected Overrides Function IsInputKey(keyData As Keys) As Boolean
@@ -554,19 +582,19 @@ Public Class CropForm
 
         AVI.Position += offset
         tbPosition.Value = AVI.Position
-        Drawer.Draw()
+        Renderer.Draw()
     End Sub
 
     <Command("Opens the help of the crop dialog.")>
     Private Sub ShowHelpDialog()
         Refresh()
 
-        Dim f As New HelpForm()
-        f.Doc.WriteStart("Crop Dialog")
-        f.Doc.WriteP("The crop dialog allows to crop borders. Right-click to show a '''context menu''' with available features. By default StaxRip detects the crop values automatically. It's recommended to check the detected values visually. A crop value can be changed roughly by moving the mouse while the left mouse button is pressed. Alternative methods are using the '''mousewheel''' or keyboard shortcuts. The Ctrl key crops the active and opposite side, the Shift key crops 8 instead of 2 pixel.")
-        f.Doc.WriteTips(CustomMenu.GetTips)
-        f.Doc.WriteTable("Shortcut Keys", CustomMenu.GetKeys, False)
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart("Crop Dialog")
+        form.Doc.WriteP("The crop dialog allows to crop borders. Right-click to show a '''context menu''' with available features. By default StaxRip detects the crop values automatically. It's recommended to check the detected values visually. A crop value can be changed roughly by moving the mouse while the left mouse button is pressed. Alternative methods are using the '''mousewheel''' or keyboard shortcuts. The Ctrl key crops the active and opposite side, the Shift key crops 8 instead of 2 pixel.")
+        form.Doc.WriteTips(CustomMenu.GetTips)
+        form.Doc.WriteTable("Shortcut Keys", CustomMenu.GetKeys, False)
+        form.Show()
     End Sub
 
     Protected Overrides Sub OnHelpButtonClicked(e As CancelEventArgs)

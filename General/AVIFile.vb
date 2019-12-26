@@ -81,6 +81,18 @@ Public Class AVIFile
         End Get
     End Property
 
+    ReadOnly Property FrameRateNumerator() As Integer
+        Get
+            Return CInt(StreamInfo.dwRate)
+        End Get
+    End Property
+
+    ReadOnly Property FrameRateDenominator() As Integer
+        Get
+            Return CInt(StreamInfo.dwScale)
+        End Get
+    End Property
+
     ReadOnly Property FrameSize() As Size
         Get
             Return New Size(CInt(StreamInfo.rcFrame.Right), CInt(StreamInfo.rcFrame.Bottom))

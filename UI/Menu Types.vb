@@ -209,16 +209,6 @@ Namespace UI
             Return MenuItem
         End Function
 
-        Sub Check(methodName As String, checked As Boolean)
-            For Each i In Me.MenuItems
-                If Not i.CustomMenuItem Is Nothing Then
-                    If i.CustomMenuItem.MethodName = methodName Then
-                        i.Checked = checked
-                    End If
-                End If
-            Next
-        End Sub
-
         Sub OnKeyDown(sender As Object, e As KeyEventArgs)
             For Each i As CustomMenuItem In Items
                 If i.KeyData = e.KeyData Then

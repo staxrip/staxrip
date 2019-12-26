@@ -1,9 +1,11 @@
 
-###
+### 2.0.6.2
 
 - new: crop dialog supports harware accelerated video rendering
+- new: info feature in preview dialog is back
 
 - fix: when a second preview was opened the first one had broken rendering
+- fix: image was vertically flipped using preview and crop dialog with VapourSynth
 
 ### 2.0.6.1
 

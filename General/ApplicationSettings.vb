@@ -41,7 +41,6 @@ Public Class ApplicationSettings
     Public ParMenu As String
     Public PreventStandby As Boolean = True
     Public PreviewFormBorderStyle As FormBorderStyle
-    Public PreviewToggleInfos As Boolean
     Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.Idle
     Public ProjectsMruNum As Integer = 10
     Public RecentFramePositions As List(Of String)
@@ -49,6 +48,7 @@ Public Class ApplicationSettings
     Public RecentProjects As List(Of String)
     Public ReverseVideoScrollDirection As Boolean
     Public ShowPathsInCommandLine As Boolean
+    Public ShowPreviewInfo As Boolean
     Public ShowTemplateSelection As Boolean
     Public ShutdownTimeout As Integer
     Public StartupTemplate As String

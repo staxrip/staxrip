@@ -7,6 +7,8 @@ Imports StaxRip
 Public Class VideoScript
     Inherits Profile
 
+    <NonSerialized()> Private FrameRateNumerator As Integer
+    <NonSerialized()> Private FrameRateDenominator As Integer
     <NonSerialized()> Private Framerate As Double
     <NonSerialized()> Private Frames As Integer
     <NonSerialized()> Private Size As Size
@@ -35,7 +37,10 @@ Public Class VideoScript
 
     Overridable Function GetScript(skipCategory As String) As String
         Dim sb As New StringBuilder()
-        If p.CodeAtTop <> "" Then sb.AppendLine(p.CodeAtTop)
+
+        If p.CodeAtTop <> "" Then
+            sb.AppendLine(p.CodeAtTop)
+        End If
 
         For Each filter As VideoFilter In Filters
             If filter.Active Then
@@ -116,12 +121,18 @@ Public Class VideoScript
     Function Contains(category As String, search As String) As Boolean
         If category = "" OrElse search = "" Then Return False
         Dim filter = GetFilter(category)
-        If filter?.Script?.ToLower.Contains(search.ToLower) AndAlso filter?.Active Then Return True
+
+        If filter?.Script?.ToLower.Contains(search.ToLower) AndAlso filter?.Active Then
+            Return True
+        End If
     End Function
 
     Sub ActivateFilter(category As String)
         Dim filter = GetFilter(category)
-        If Not filter Is Nothing Then filter.Active = True
+
+        If Not filter Is Nothing Then
+            filter.Active = True
+        End If
     End Sub
 
     Function IsFilterActive(category As String) As Boolean
@@ -200,7 +211,7 @@ Public Class VideoScript
                         vsCode += BR + "clipname = core.std.FlipVertical(clipname)" + BR
                     End If
 
-                    vsCode = "
+                    vsCode += "
 if clipname.format.id == vs.RGB24:
     _matrix_in_s = 'rgb'
 else:
@@ -225,7 +236,9 @@ clipname.set_output()
                         ModifyScript(code, Engine).WriteANSIFile(Path)
                     End If
 
-                    If p.SourceFile <> "" Then g.MainForm.Indexing()
+                    If p.SourceFile <> "" Then
+                        g.MainForm.Indexing()
+                    End If
 
                     If Not Package.AviSynth.VerifyOK OrElse
                         Not Package.VapourSynth.VerifyOK OrElse
@@ -235,6 +248,8 @@ clipname.set_output()
                     End If
 
                     Using avi As New AVIFile(Path)
+                        FrameRateNumerator = avi.FrameRateNumerator
+                        FrameRateDenominator = avi.FrameRateDenominator
                         Framerate = avi.FrameRate
                         Frames = avi.FrameCount
                         Size = avi.FrameSize
@@ -426,6 +441,16 @@ clipname.set_output()
         Return clip
     End Function
 
+    Function GetFramerateDenominator() As Integer
+        Synchronize(False, False)
+        Return FrameRateDenominator
+    End Function
+
+    Function GetFramerateNumerator() As Integer
+        Synchronize(False, False)
+        Return FrameRateNumerator
+    End Function
+
     Function GetFramerate() As Double
         Synchronize(False, False)
         Return Framerate
@@ -438,8 +463,15 @@ clipname.set_output()
 
     Function GetSeconds() As Integer
         Dim fr = GetFramerate()
-        If fr = 0 Then fr = p.SourceFrameRate
-        If fr = 0 Then fr = 25
+
+        If fr = 0 Then
+            fr = p.SourceFrameRate
+        End If
+
+        If fr = 0 Then
+            fr = 25
+        End If
+
         Return CInt(GetFrames() / fr)
     End Function
 

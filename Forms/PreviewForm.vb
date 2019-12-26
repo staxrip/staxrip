@@ -325,6 +325,7 @@ Public Class PreviewForm
         PreviewScript.Synchronize(True, True, True)
         AVI = New AVIFile(PreviewScript.Path)
         Renderer = New VideoRenderer(pVideo, AVI)
+        Renderer.ShowInfo = s.ShowPreviewInfo
         Dim wa = Screen.FromControl(Me).WorkingArea
 
         While GetNormalSize.Width < wa.Width * (s.MinPreviewSize / 100) AndAlso
@@ -491,10 +492,6 @@ Public Class PreviewForm
         Next
     End Sub
 
-    Private Sub PreviewForm_Shown() Handles Me.Shown
-        GenericMenu.Check("ToggleInfos", s.PreviewToggleInfos)
-    End Sub
-
     Private Sub Wheel(sender As Object, e As MouseEventArgs) Handles MyBase.MouseWheel
         Dim pos = 1
         If Control.ModifierKeys = Keys.Control Then pos = 10
@@ -529,7 +526,7 @@ Public Class PreviewForm
                 Using rangePen As New Pen(c, trackHeight)
                     g.DrawLine(rangePen, GetDrawPos(p.Ranges(x).Start) - CInt(TrackBarPosition / 2),
                         pnTrack.Height \ 2, GetDrawPos(p.Ranges(x).End) + CInt(TrackBarPosition / 2),
-                               pnTrack.Height \ 2)
+                        pnTrack.Height \ 2)
                 End Using
             Next
         End If
@@ -560,7 +557,6 @@ Public Class PreviewForm
                    pnTrack.Height \ 2)
 
         posPen.Dispose()
-
         g.Dispose()
     End Sub
 
@@ -781,10 +777,9 @@ Public Class PreviewForm
 
     <Command("Shows/hides various infos.")>
     Sub ToggleInfos()
-        MsgInfo("Feature is currently not available.")
-        's.PreviewToggleInfos = Not s.PreviewToggleInfos
-        'Renderer.ShowInfos = s.PreviewToggleInfos
-        'Renderer.Draw()
+        s.ShowPreviewInfo = Not s.ShowPreviewInfo
+        Renderer.ShowInfo = s.ShowPreviewInfo
+        Renderer.Draw()
     End Sub
 
     <Command("Plays the script with a player.")>
@@ -1045,13 +1040,13 @@ Public Class PreviewForm
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
         Instances.Remove(Me)
+        UpdateTrim(p.Script)
         s.LastPosition = AVI.Position
+        p.CutFrameCount = AVI.FrameCount
+        p.CutFrameRate = AVI.FrameRate
+        g.MainForm.UpdateFilters()
         Renderer.Dispose()
         AVI.Dispose()
-        UpdateTrim(p.Script)
-        p.CutFrameCount = PreviewScript.GetFrames
-        p.CutFrameRate = PreviewScript.GetFramerate
-        g.MainForm.UpdateFilters()
     End Sub
 
     Sub UpdateTrim(script As VideoScript)

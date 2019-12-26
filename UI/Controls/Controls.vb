@@ -738,6 +738,10 @@ Namespace UI
                 Return Label.Text
             End Get
             Set(value As String)
+                If Not value.EndsWith(" ") Then
+                    value += " "
+                End If
+
                 Label.Text = value
             End Set
         End Property

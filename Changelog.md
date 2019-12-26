@@ -2,11 +2,13 @@
 ### 2.0.6.2
 
 - new: crop dialog supports harware accelerated video rendering
-- new: info feature in preview dialog is back
 
+- fix: info feature in preview dialog is back
 - fix: when a second preview was opened the first one had broken rendering
-- fix: image was vertically flipped using preview and crop dialog with VapourSynth
-
+- fix: image was vertically flipped using preview dialog with VapourSynth
+- fix: main window DPI scaling issue on 96 DPI, please post a screenshot
+       if you find something that doesn't look good!
+	   
 ### 2.0.6.1
 
 - new: the preview dialog uses now a Direct2D harware accelerated video renderer

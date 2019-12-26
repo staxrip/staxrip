@@ -1,7 +1,6 @@
 
 Imports System.ComponentModel
 Imports System.Drawing.Imaging
-
 Imports StaxRip.UI
 
 Public Class PreviewForm
@@ -290,7 +289,7 @@ Public Class PreviewForm
 
     Private Const TrackBarBorder As Integer = 1
     Private Const TrackBarGap As Integer = 1
-    Private TrackBarPosition As Integer = CInt(Control.DefaultFont.Height / 4) - 1
+    Private TrackBarPosition As Integer = Control.DefaultFont.Height \ 5
 
     Private Shared Instances As New List(Of PreviewForm)
 
@@ -326,16 +325,18 @@ Public Class PreviewForm
         AVI = New AVIFile(PreviewScript.Path)
         Renderer = New VideoRenderer(pVideo, AVI)
         Renderer.ShowInfo = s.ShowPreviewInfo
-        Dim wa = Screen.FromControl(Me).WorkingArea
+        Dim workingArea = Screen.FromControl(Me).WorkingArea
 
-        While GetNormalSize.Width < wa.Width * (s.MinPreviewSize / 100) AndAlso
-            GetNormalSize.Height < wa.Height * (s.MinPreviewSize / 100)
+        While GetNormalSize.Width < workingArea.Width * (s.MinPreviewSize / 100) AndAlso
+            GetNormalSize.Height < workingArea.Height * (s.MinPreviewSize / 100)
 
             SizeFactor += 0.05
             SizeFactor = Math.Round(SizeFactor, 2)
         End While
 
-        While GetNormalSize.Width > wa.Width * 0.95 OrElse GetNormalSize.Height > wa.Height * 0.95
+        While GetNormalSize.Width > workingArea.Width * 0.95 OrElse
+            GetNormalSize.Height > workingArea.Height * 0.95
+
             SizeFactor -= 0.05
             SizeFactor = Math.Round(SizeFactor, 2)
         End While
@@ -551,7 +552,8 @@ Public Class PreviewForm
 
         Dim pos = GetDrawPos(AVI.Position)
 
-        g.DrawLine(posPen, pos - CInt(TrackBarPosition / 2),
+        g.DrawLine(posPen,
+                   pos - CInt(TrackBarPosition / 2),
                    pnTrack.Height \ 2,
                    pos + CInt(TrackBarPosition / 2),
                    pnTrack.Height \ 2)

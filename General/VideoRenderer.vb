@@ -67,18 +67,18 @@ Public Class VideoRenderer
                 Dim scaleX = Control.Width / bitmapSize.Width
                 Dim scaleY = Control.Height / bitmapSize.Height
 
-                Dim left = CInt(CropLeft * scaleX)
-                Dim right = CInt(CropRight * scaleX)
-                Dim top = CInt(CropTop * scaleY)
-                Dim bottom = CInt(CropBottom * scaleY)
+                Dim left = CropLeft * scaleX
+                Dim right = CropRight * scaleX
+                Dim top = CropTop * scaleY
+                Dim bottom = CropBottom * scaleY
 
-                Dim destinationRectangle As Rectangle
-                destinationRectangle.X = left
-                destinationRectangle.Y = CInt(CropTop * scaleY)
-                destinationRectangle.Width = Control.Width - left - right
-                destinationRectangle.Height = Control.Height - top - bottom
+                Dim destinationRectangle As RectangleF
+                destinationRectangle.X = CSng(left)
+                destinationRectangle.Y = CSng(CropTop * scaleY)
+                destinationRectangle.Width = CSng(Control.Width - left - right)
+                destinationRectangle.Height = CSng(Control.Height - top - bottom)
 
-                Dim sourceRectangle As Rectangle
+                Dim sourceRectangle As RectangleF
                 sourceRectangle.X = CropLeft
                 sourceRectangle.Y = CropTop
                 sourceRectangle.Width = bitmapSize.Width - CropLeft - CropRight
@@ -184,7 +184,7 @@ Public Class VideoRenderer
         Return rect
     End Function
 
-    Function ConvertRectangle(inputRect As Rectangle) As D2D_RECT_F
+    Function ConvertRectangle(inputRect As RectangleF) As D2D_RECT_F
         Dim outputRect As D2D_RECT_F
         outputRect.left = inputRect.Left
         outputRect.top = inputRect.Top

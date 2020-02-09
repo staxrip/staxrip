@@ -6092,6 +6092,7 @@ Public Class MainForm
         Http.CheckForUpdates()
         MyBase.OnShown(e)
         'TestForm.ShowForm()
+        'Close()
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)

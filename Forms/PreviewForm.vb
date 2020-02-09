@@ -289,7 +289,7 @@ Public Class PreviewForm
 
     Private Const TrackBarBorder As Integer = 1
     Private Const TrackBarGap As Integer = 1
-    Private TrackBarPosition As Integer = Control.DefaultFont.Height \ 5
+    Private TrackBarPosition As Integer = CInt(Control.DefaultFont.Height / 4) - 1
 
     Private Shared Instances As New List(Of PreviewForm)
 

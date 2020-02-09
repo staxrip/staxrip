@@ -67,7 +67,7 @@
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\</OutputPath>
@@ -77,20 +77,14 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>
-    </DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\</OutputPath>
     <WarningLevel>1</WarningLevel>
     <NoWarn>41998,42004,42024,42025,42026,42029,42030,42031,42099,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>
-    </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DirectN, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -181,6 +175,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="General\Extras.vb" />
+    <Compile Include="General\FrameServer.vb" />
     <Compile Include="General\Job.vb" />
     <Compile Include="General\LogBuilder.vb" />
     <Compile Include="General\GlobalClass.vb" />
@@ -188,6 +183,7 @@
     <Compile Include="General\Automation.vb" />
     <Compile Include="General\ProcController.vb" />
     <Compile Include="General\Http.vb" />
+    <Compile Include="General\VideoRenderer2.vb" />
     <Compile Include="General\VideoRenderer.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

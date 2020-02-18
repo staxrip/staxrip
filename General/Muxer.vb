@@ -276,7 +276,11 @@ Public Class MP4Muxer
             If TypeOf p.VideoEncoder Is NullEncoder Then videoParams = ":par=" & par.X & ":" & par.Y
         End If
 
-        If VideoTrackName <> "" Then videoParams += ":name=" + Macro.Expand(VideoTrackName)
+        If VideoTrackName <> "" Then
+            videoParams += ":name=" + Macro.Expand(VideoTrackName)
+        ElseIf VideoTrackName = "" Then
+            videoParams += ":name="
+        End If
 
         args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + videoParams).Escape)
 

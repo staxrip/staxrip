@@ -15,11 +15,9 @@ HRESULT __stdcall AviSynthServer::QueryInterface(const IID& iid, void** ppv)
         AddRef();
         return S_OK;
     }
-    else
-    {
-        *ppv = NULL;
-        return E_NOINTERFACE;
-    }
+
+    *ppv = NULL;
+    return E_NOINTERFACE;
 }
 
 
@@ -45,24 +43,24 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
 {
     try
     {
-        memset(&m_Clip, 0, sizeof(PClip));
+        memset(&m_Clip,  0, sizeof(PClip));
         memset(&m_Frame, 0, sizeof(PVideoFrame));
 
-        HMODULE dll = LoadLibrary(L"AviSynth");
+        static HMODULE dll = LoadLibrary(L"AviSynth");
 
         if (!dll)
-            return ErrorHelp(L"AviSynth installation cannot be found.");
+            throw std::exception("AviSynth+ installation cannot be found");
 
         IScriptEnvironment* (*CreateScriptEnvironment)(int version) =
             (IScriptEnvironment * (*)(int)) GetProcAddress(dll, "CreateScriptEnvironment");
 
         if (!CreateScriptEnvironment)
-            return ErrorHelp(L"Cannot load CreateScriptEnvironment.");
+            throw std::exception("Cannot resolve AviSynth+ CreateScriptEnvironment function");
 
         m_ScriptEnvironment = CreateScriptEnvironment(6);
 
         if (!m_ScriptEnvironment)
-            return ErrorHelp(L"A newer AviSynth version is required.");
+            throw std::exception("A newer AviSynth+ version is required");
 
         AVS_linkage = m_ScriptEnvironment->GetAVSLinkage();
 
@@ -71,7 +69,7 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
         m_AVSValue = m_ScriptEnvironment->Invoke("Import", AVSValue(&arg, 1));
 
         if (!m_AVSValue.IsClip())
-            return ErrorHelp(L"The script's return was not a video clip.");
+            throw std::exception("AviSynth+ script does not return a video clip");
 
         m_Clip = m_AVSValue.AsClip();
 
@@ -81,19 +79,24 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
         m_Info.FrameCount = avsInfo.num_frames;
         m_Info.FrameRateNumerator = avsInfo.fps_numerator;
         m_Info.FrameRateDenominator = avsInfo.fps_denominator;
+
+        return S_OK;
     }
-    catch (AvisynthError err)
+    catch (AvisynthError& e)
     {
-        m_Error = ConvertAnsiToWide(err.msg);
-        Free();
-        return E_FAIL;
+        m_Error = ConvertAnsiToWide(e.msg);
+    }
+    catch (std::exception& e)
+    {
+        m_Error = ConvertAnsiToWide(e.what());
     }
     catch (...)
     {
-        return ErrorHelp(L"Unhandled exception: AviSynthServer::OpenFile");
+        m_Error = L"Exception: AviSynthServer::OpenFile";
     }
 
-    return S_OK;
+    Free();
+    return E_FAIL;
 }
 
 
@@ -125,11 +128,6 @@ WCHAR* __stdcall AviSynthServer::GetError()
 
 /////////// local
 
-AviSynthServer::AviSynthServer()
-{
-}
-
-
 AviSynthServer::~AviSynthServer()
 {
     Free();
@@ -138,9 +136,9 @@ AviSynthServer::~AviSynthServer()
 
 void AviSynthServer::Free()
 {
-    m_Frame = NULL;
-    m_Clip = NULL;
-    m_AVSValue = NULL;
+    m_Frame     = NULL;
+    m_Clip      = NULL;
+    m_AVSValue  = NULL;
     AVS_linkage = NULL;
 
     if (m_ScriptEnvironment)
@@ -148,14 +146,6 @@ void AviSynthServer::Free()
         m_ScriptEnvironment->DeleteScriptEnvironment();
         m_ScriptEnvironment = NULL;
     }
-}
-
-
-HRESULT AviSynthServer::ErrorHelp(const WCHAR* msg)
-{
-    m_Error = msg;
-    Free();
-    return E_FAIL;
 }
 
 

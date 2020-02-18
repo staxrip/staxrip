@@ -1,3 +1,4 @@
+
 Imports System.Text.RegularExpressions
 Imports Microsoft.Win32
 
@@ -1959,10 +1960,12 @@ Public Class Package
     End Sub
 
     Shared Function GetVapourSynthHintDir() As String
-        Dim ret = Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VapourSynth_is1", "Inno Setup: App Path") + "\core64\"
-        If File.Exists(ret + "VapourSynth.dll") Then Return ret
-        ret = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
-        If File.Exists(ret + "VapourSynth.dll") Then Return ret
+        Dim ret = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
+
+        If File.Exists(ret + "VapourSynth.dll") Then
+            Return ret
+        End If
+
         Return Registry.CurrentUser.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
     End Function
 

@@ -342,8 +342,14 @@ Public Class FilePath
     End Sub
 
     Shared Function GetDir(path As String) As String
-        If path = "" Then Return ""
-        If path.Contains("\") Then path = path.LeftLast("\") + "\"
+        If path = "" Then
+            Return ""
+        End If
+
+        If path.Contains("\") Then
+            path = path.LeftLast("\") + "\"
+        End If
+
         Return path
     End Function
 
@@ -371,13 +377,21 @@ Public Class FilePath
         Return GetExt(filepath, False)
     End Function
 
-    Shared Function GetExt(filepath As String, dot As Boolean) As String
-        If filepath = "" Then Return ""
-        Dim chars = filepath.ToCharArray
+    Shared Function GetExt(filepath As String, includeDot As Boolean) As String
+        If filepath = "" Then
+            Return ""
+        End If
+
+        Dim chars = filepath.ToCharArray()
 
         For x = filepath.Length - 1 To 0 Step -1
-            If chars(x) = Separator Then Return ""
-            If chars(x) = "."c Then Return filepath.Substring(x + If(dot, 0, 1)).ToLower
+            If chars(x) = Separator Then
+                Return ""
+            End If
+
+            If chars(x) = "."c Then
+                Return filepath.Substring(x + If(includeDot, 0, 1)).ToLower()
+            End If
         Next
 
         Return ""

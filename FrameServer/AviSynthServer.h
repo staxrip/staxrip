@@ -26,11 +26,9 @@ private:
     PVideoFrame         m_Frame;
 
     void    Free();
-    HRESULT ErrorHelp(const WCHAR* msg);
 
 public:
 
-    AviSynthServer();
     ~AviSynthServer();
 
     // IUnknown

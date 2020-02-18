@@ -1,5 +1,6 @@
 ﻿
 Imports System.Runtime.InteropServices
+Imports Microsoft.Win32
 
 Public Class FrameServer
     Implements IDisposable
@@ -8,14 +9,38 @@ Public Class FrameServer
     Property Server As IFrameServer
     Property Position As Integer
 
+    Private InitError As String
+
     Sub New(path As String)
-        Server = CreateAviSynthServer()
+        If path.EndsWith(".avs") Then
+            Server = CreateAviSynthServer()
+        Else
+            Dim dll = CStr(Registry.GetValue("HKEY_LOCAL_MACHINE\Software\VapourSynth", "VapourSynthDLL", Nothing))
+
+            If Not File.Exists(dll) Then
+                dll = CStr(Registry.GetValue("HKEY_CURRENT_USER\Software\VapourSynth", "VapourSynthDLL", Nothing))
+            End If
+
+            If File.Exists(dll) Then
+                Environment.SetEnvironmentVariable("path", dll.Dir + ";" + Environment.GetEnvironmentVariable("path"))
+            Else
+                InitError = "Failed to find VapourSynth location."
+                Exit Sub
+            End If
+
+            Server = CreateVapourSynthServer()
+        End If
+
         Server.OpenFile(path)
         Info = Marshal.PtrToStructure(Of ServerInfo)(Server.GetInfo())
     End Sub
 
     ReadOnly Property [Error] As String
         Get
+            If InitError <> "" Then
+                Return InitError
+            End If
+
             Return Marshal.PtrToStringUni(Server.GetError())
         End Get
     End Property
@@ -30,8 +55,14 @@ Public Class FrameServer
     Public Shared Function CreateAviSynthServer() As IFrameServer
     End Function
 
+    <DllImport("FrameServer")>
+    Public Shared Function CreateVapourSynthServer() As IFrameServer
+    End Function
+
     Public Sub Dispose() Implements IDisposable.Dispose
-        Marshal.ReleaseComObject(Server)
+        If Not Server Is Nothing Then
+            Marshal.ReleaseComObject(Server)
+        End If
     End Sub
 End Class
 

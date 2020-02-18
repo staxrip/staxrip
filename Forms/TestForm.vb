@@ -8,6 +8,7 @@ Public Class TestForm
     Sub New()
         InitializeComponent()
         Server = New FrameServer("D:\Samples\Jill_temp\Jill_new_preview.avs")
+        'Server = New FrameServer("D:\Samples\Jill_temp\Jill_new_preview.vpy")
         TrackBar1.Maximum = Server.Info.FrameCount - 1
     End Sub
 

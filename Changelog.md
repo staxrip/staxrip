@@ -1,7 +1,7 @@
 
 ### 2.0.6.2
 
-- new: crop dialog supports harware accelerated video rendering
+- new: crop dialog supports hardware accelerated video rendering
 
 - fix: info feature in preview dialog is back
 - fix: when a second preview was opened the first one had broken rendering
@@ -11,7 +11,7 @@
 	   
 ### 2.0.6.1
 
-- new: the preview dialog uses now a Direct2D harware accelerated video renderer
+- new: the preview dialog uses now a Direct2D hardware accelerated video renderer
 
 - fix: the info tool in the code editor was not showing the correct colorspace
 

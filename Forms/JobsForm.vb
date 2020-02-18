@@ -345,6 +345,6 @@ Friend Class JobsForm
 
     Sub ShowHelp()
         MsgInfo("Please note that the job list can be processed by multiple StaxRip instances in parallel." + BR2 +
-                "Multiple instances work most efficiently when the files are located on diffeent HDDs.")
+                "Multiple instances work most efficiently when the files are located on different HDDs.")
     End Sub
 End Class

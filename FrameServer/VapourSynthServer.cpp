@@ -104,7 +104,7 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
         std::string utf8file = ConvertWideToUtf8(file);
 
         if (vs_evaluateFile(&m_vsScript, utf8file.c_str(), 0))
-            throw std::exception("Failed to evaluate VapourSynth file");
+            throw std::exception(vs_getError(m_vsScript));     
 
         m_vsNode = vs_getOutput(m_vsScript, 0);
 
@@ -136,7 +136,27 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
 
 void* __stdcall VapourSynthServer::GetFrame(int position)
 {
-    return NULL;
+    if (!m_vsAPI || !m_vsNode)
+        return NULL;
+
+    const VSFrameRef* frame = m_vsAPI->getFrame(position, m_vsNode, m_vsErrorMessage, sizeof(m_vsErrorMessage));
+
+    if (!frame)
+    {
+        m_Error = ConvertUtf8ToWide(m_vsErrorMessage);
+        return NULL;
+    }
+
+    auto readPtr = m_vsAPI->getReadPtr(frame, 0);
+
+    if (!readPtr)
+        return NULL;
+
+    if (m_vsFrame)
+        m_vsAPI->freeFrame(m_vsFrame);
+
+    m_vsFrame = frame;
+    return (void*)readPtr;
 }
 
 
@@ -148,7 +168,7 @@ ServerInfo* __stdcall VapourSynthServer::GetInfo()
 
 WCHAR* __stdcall VapourSynthServer::GetError()
 {
-    return NULL;
+    return (WCHAR*)m_Error.c_str();
 }
 
 
@@ -164,6 +184,12 @@ void VapourSynthServer::Free()
 {
     if (m_vsAPI)
     {
+        if (m_vsFrame)
+        {
+            m_vsAPI->freeFrame(m_vsFrame);
+            m_vsFrame = NULL;
+        }
+
         if (m_vsNode)
         {
             m_vsAPI->freeNode(m_vsNode);

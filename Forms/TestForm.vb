@@ -1,14 +1,17 @@
 ﻿
-Imports System.Runtime.InteropServices
-
 Public Class TestForm
     Private Server As FrameServer
     Private Renderer As VideoRenderer2
 
     Sub New()
         InitializeComponent()
-        Server = New FrameServer("D:\Samples\Jill_temp\Jill_new_preview.avs")
-        'Server = New FrameServer("D:\Samples\Jill_temp\Jill_new_preview.vpy")
+        'Server = New FrameServer("D:\Samples\Jill_temp\Jill_new_preview.avs")
+        Server = New FrameServer("D:\Samples\Jill_temp\Jill_new_preview.vpy")
+
+        If Server.Error <> "" Then
+            MsgError(Server.Error)
+        End If
+
         TrackBar1.Maximum = Server.Info.FrameCount - 1
     End Sub
 

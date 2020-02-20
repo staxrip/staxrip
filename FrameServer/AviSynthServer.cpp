@@ -105,10 +105,24 @@ void* __stdcall AviSynthServer::GetFrame(int position)
     if (!m_ScriptEnvironment)
         return NULL;
 
-    m_Frame = m_Clip->GetFrame(position, m_ScriptEnvironment);
+    try
+    {
+        m_Frame = m_Clip->GetFrame(position, m_ScriptEnvironment);
+        auto readPtr = m_Frame->GetReadPtr();
+        
+        if (!readPtr)
+            throw std::exception("AviSynth+ frame pointer is null");
 
-    if (m_Frame)
-        return (void*)m_Frame->GetReadPtr();
+        return (void*)readPtr;
+    }
+    catch (AvisynthError& e)
+    {
+        m_Error = ConvertAnsiToWide(e.msg);
+    }
+    catch (std::exception & e)
+    {
+        m_Error = ConvertAnsiToWide(e.what());
+    }
 
     return NULL;
 }

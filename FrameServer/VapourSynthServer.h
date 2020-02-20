@@ -38,7 +38,9 @@ private:
     const VSAPI*       m_vsAPI    = NULL;
     VSScript*          m_vsScript = NULL;
     VSNodeRef*         m_vsNode   = NULL;
+    const VSFrameRef*  m_vsFrame  = NULL;
     const VSVideoInfo* m_vsInfo   = NULL;
+    char               m_vsErrorMessage[1024];
 
     void Free();
 

@@ -115,7 +115,7 @@ Public Class x264Enc
         End Try
 
         Dim bits = (New FileInfo(p.TempDir + p.TargetFile.Base + "_CompCheck." + OutputExt).Length) * 8
-        p.Compressibility = (bits / script.GetFrames) / (p.TargetWidth * p.TargetHeight)
+        p.Compressibility = (bits / script.GetFrameCount) / (p.TargetWidth * p.TargetHeight)
 
         OnAfterCompCheck()
         g.MainForm.Assistant()
@@ -963,7 +963,7 @@ Public Class x264Params
 
         If includePaths Then
             Dim input = If(PipingTool.ValueText = "none", script.Path.Escape, "-")
-            If input = "-" Then args += " --demuxer y4m --frames " & script.GetFrames
+            If input = "-" Then args += " --demuxer y4m --frames " & script.GetFrameCount
 
             If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
                 args += " --stats " + (p.TempDir + p.TargetFile.Base + ".stats").Escape

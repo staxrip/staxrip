@@ -63,6 +63,9 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
         static HMODULE dll = LoadLibrary(dllPath);
 
         if (!dll)
+            dll = LoadLibrary(dllPath);
+
+        if (!dll)
             throw std::exception("Failed to load VapourSynth library");
 
         static bool wasResolved = false;
@@ -85,10 +88,8 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
             };
 
             for (auto& i : resolvePairs)
-            {
-                if (nullptr == (*(i.first) = GetProcAddress(dll, i.second)))
+                if (NULL == (*(i.first) = GetProcAddress(dll, i.second)))
                     throw std::exception("Failed to resolve VapourSynth vsscript functions");
-            }
         }
 
         wasResolved = true;
@@ -114,13 +115,13 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
         m_vsInfo = m_vsAPI->getVideoInfo(m_vsNode);
 
         if (!m_vsInfo)
-            throw std::exception("Failed to get VapourSynth video info");        
+            throw std::exception("Failed to get VapourSynth info");        
 
         m_Info.Width = m_vsInfo->width;
         m_Info.Height = m_vsInfo->height;
         m_Info.FrameCount = m_vsInfo->numFrames;
-        m_Info.FrameRateNumerator = m_vsInfo->fpsNum;
-        m_Info.FrameRateDenominator = m_vsInfo->fpsDen;
+        m_Info.FrameRateNum = m_vsInfo->fpsNum;
+        m_Info.FrameRateDen = m_vsInfo->fpsDen;
 
         return S_OK;
     }
@@ -150,7 +151,10 @@ void* __stdcall VapourSynthServer::GetFrame(int position)
     auto readPtr = m_vsAPI->getReadPtr(frame, 0);
 
     if (!readPtr)
+    {
+        m_Error = L"VapourSynthServer m_vsAPI->getReadPtr returned NULL";
         return NULL;
+    }
 
     if (m_vsFrame)
         m_vsAPI->freeFrame(m_vsFrame);

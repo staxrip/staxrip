@@ -27,6 +27,7 @@ Public Class CropForm
     Friend WithEvents StatusStrip As System.Windows.Forms.StatusStrip
     Friend WithEvents tsbMenu As System.Windows.Forms.ToolStripDropDownButton
     Friend WithEvents laStatus As System.Windows.Forms.ToolStripStatusLabel
+
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.pLeftActive = New System.Windows.Forms.Panel()
         Me.pTopActive = New System.Windows.Forms.Panel()
@@ -147,18 +148,17 @@ Public Class CropForm
 
 #End Region
 
-    Private AVI As AVIFile
+    Private FrameServer As FrameServer
+    Private Renderer As VideoRenderer
     Private SelectedBorderColor As Color = ToolStripRendererEx.ColorBorder
     Private Side As AnchorStyles
     Private ActiveCropSide As AnchorStyles
     Private CommandManager As New CommandManager
     Private WithEvents CustomMenu As CustomMenu
-    Private Renderer As VideoRenderer
 
     Sub New()
         MyBase.New()
         InitializeComponent()
-        UpdateStyles()
 
         MinimumSize = New Size(CInt(Font.Size * 90), CInt(Font.Size * 70))
 
@@ -213,26 +213,10 @@ Public Class CropForm
 
         pTopActive.BackColor = SelectedBorderColor
         Side = AnchorStyles.Top
-
-        Dim script As New VideoScript
-        script.Engine = p.Script.Engine
-        script.Path = p.TempDir + p.TargetFile.Base + "_crop." + script.FileType
-        script.Filters.Add(p.Script.GetFilter("Source").GetCopy)
-        script.Synchronize(True, True, True)
-
-        AVI = New AVIFile(script.Path)
-        Renderer = New VideoRenderer(pVideo, AVI)
-
-        If s.LastPosition < (AVI.FrameCount - 1) Then
-            AVI.Position = s.LastPosition
-        End If
-
-        tbPosition.Value = AVI.Position
-        UpdateAll()
     End Sub
 
     Private Sub TrackLength_Scroll() Handles tbPosition.Scroll
-        AVI.Position = tbPosition.Value
+        Renderer.Position = tbPosition.Value
         Renderer.Draw()
     End Sub
 
@@ -427,15 +411,15 @@ Public Class CropForm
     End Sub
 
     Private Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pVideo.Paint
-        Renderer.Draw()
+        Renderer?.Draw()
     End Sub
 
     Private Sub CropForm_SizeChanged() Handles MyBase.SizeChanged
-        If Not Renderer Is Nothing Then Renderer.Draw()
+        Renderer?.Draw()
     End Sub
 
     Private Sub CropForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        Dim err = p.Script.GetErrorMessage
+        Dim err = p.Script.GetError
 
         If err <> "" Then
             Using td As New TaskDialog(Of String)
@@ -452,9 +436,9 @@ Public Class CropForm
         End If
 
         p.RemindToCrop = False
-        s.LastPosition = AVI.Position
+        s.LastPosition = Renderer.Position
         Renderer.Dispose()
-        AVI.Dispose()
+        FrameServer.Dispose()
     End Sub
 
     Private Sub tbPosition_Enter() Handles tbPosition.Enter
@@ -463,7 +447,7 @@ Public Class CropForm
 
     Private Sub SetDialogSize(w As Integer, h As Integer)
         ClientSize = New Size(ClientSize.Width + w - pVideo.Width, ClientSize.Height + h - pVideo.Height)
-        Renderer.Draw()
+        Renderer?.Draw()
     End Sub
 
     Protected Overrides Function IsInputKey(keyData As Keys) As Boolean
@@ -580,8 +564,8 @@ Public Class CropForm
         <DispName("Offset"), Description("Frames to jump, negative values jump backward.")>
         offset As Integer)
 
-        AVI.Position += offset
-        tbPosition.Value = AVI.Position
+        Renderer.Position += offset
+        tbPosition.Value = Renderer.Position
         Renderer.Draw()
     End Sub
 
@@ -601,6 +585,26 @@ Public Class CropForm
         e.Cancel = True
         MyBase.OnHelpButtonClicked(e)
         ShowHelpDialog()
+    End Sub
+
+    Protected Overrides Sub OnLoad(e As EventArgs)
+        MyBase.OnLoad(e)
+
+        Dim script As New VideoScript
+        script.Engine = p.Script.Engine
+        script.Path = p.TempDir + p.TargetFile.Base + "_crop." + script.FileType
+        script.Filters.Add(p.Script.GetFilter("Source").GetCopy)
+        script.Synchronize(True, True, True)
+
+        FrameServer = New FrameServer(script.Path)
+        Renderer = New VideoRenderer(pVideo, FrameServer)
+
+        If s.LastPosition < (FrameServer.Info.FrameCount - 1) Then
+            Renderer.Position = s.LastPosition
+        End If
+
+        tbPosition.Value = Renderer.Position
+        UpdateAll()
     End Sub
 
     Private Sub tsbMenu_Click(sender As Object, e As EventArgs) Handles tsbMenu.Click

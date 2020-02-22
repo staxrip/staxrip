@@ -638,9 +638,14 @@ Switches
 
             Dim version = Assembly.LoadFile(sourceDir + "StaxRip.exe").GetName.Version
             Dim releaseType = "-stable"
-            If version.Revision <> 0 Then releaseType = "-beta"
 
-            If Not Directory.Exists(sourceDir) Then Throw New Exception("Source directory not found." + BR2 + sourceDir)
+            If version.Revision <> 0 Then
+                releaseType = "-beta"
+            End If
+
+            If Not Directory.Exists(sourceDir) Then
+                Throw New Exception("Source directory not found." + BR2 + sourceDir)
+            End If
 
             Dim info = FileVersionInfo.GetVersionInfo(sourceDir + "StaxRip.exe")
             Dim targetDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
@@ -651,25 +656,34 @@ Switches
 
             For Each i In Directory.GetDirectories(targetDir + "\Apps\Plugins\VS")
                 Dim cacheDir = i + "\__pycache__"
-                If Directory.Exists(cacheDir) Then DirectoryHelp.Delete(cacheDir)
+
+                If Directory.Exists(cacheDir) Then
+                    DirectoryHelp.Delete(cacheDir)
+                End If
             Next
 
             DirectoryHelp.Delete(targetDir + "\.vs")
             DirectoryHelp.Delete(targetDir + "\Apps\Plugins\VS\Scripts\__pycache__")
             DirectoryHelp.Delete(targetDir + "\Apps\Audio\qaac\QTfiles64")
 
-            FileHelp.Delete(targetDir + "\Debug.log")
             FileHelp.Delete(targetDir + "\_StaxRip.log")
-            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe")
-            FileHelp.Delete(targetDir + "\StaxRip.vshost.sln")
-            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe.config")
-            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe.manifest")
             FileHelp.Delete(targetDir + "\Apps\Audio\eac3to\log.txt")
-            FileHelp.Delete(targetDir + "\Apps\Support\DGIndex\DGIndex.ini")
+            FileHelp.Delete(targetDir + "\Apps\Support\AVSMeter\AVSMeter.ini")
             FileHelp.Delete(targetDir + "\Apps\Support\chapterEditor\chapterEditor.ini")
+            FileHelp.Delete(targetDir + "\Apps\Support\DGIndex\DGIndex.ini")
             FileHelp.Delete(targetDir + "\Apps\Support\MKVToolNix\mkvtoolnix.ini")
             FileHelp.Delete(targetDir + "\Apps\Support\MKVToolNix\mkvtoolnix-gui.ini")
-            FileHelp.Delete(targetDir + "\Apps\Support\AVSMeter\AVSMeter.ini")
+            FileHelp.Delete(targetDir + "\Debug.log")
+            FileHelp.Delete(targetDir + "\FrameServer.exp")
+            FileHelp.Delete(targetDir + "\FrameServer.exp")
+            FileHelp.Delete(targetDir + "\FrameServer.exp")
+            FileHelp.Delete(targetDir + "\FrameServer.ilk")
+            FileHelp.Delete(targetDir + "\FrameServer.lib")
+            FileHelp.Delete(targetDir + "\FrameServer.pdb")
+            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe")
+            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe.config")
+            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe.manifest")
+            FileHelp.Delete(targetDir + "\StaxRip.vshost.sln")
 
             For Each i In Directory.GetFiles(targetDir, "*.ini", IO.SearchOption.AllDirectories)
                 Throw New Exception("ini file found:" + BR2 + i)
@@ -680,7 +694,10 @@ Switches
                 p.StartInfo.Arguments = $"a -t7z -mx9 ""{targetDir}.7z"" -r ""{targetDir}\*"""
                 p.Start()
                 p.WaitForExit()
-                If p.ExitCode > 0 Then Throw New Exception($"7zip exit code: {p.ExitCode}")
+
+                If p.ExitCode > 0 Then
+                    Throw New Exception($"7zip exit code: {p.ExitCode}")
+                End If
             End Using
 
             If releaseType = "-beta" Then
@@ -689,7 +706,10 @@ Switches
                     "C:\Users\frank\Dropbox\public\StaxRip\Builds\"}
 
                 For Each i In outputDirectories
-                    If Not Directory.Exists(i) Then Continue For
+                    If Not Directory.Exists(i) Then
+                        Continue For
+                    End If
+
                     FileHelp.Copy(targetDir.TrimEnd("\"c) + ".7z", i + DirPath.GetName(targetDir) + ".7z", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
                     Process.Start(i)
                 Next

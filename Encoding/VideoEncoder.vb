@@ -671,7 +671,7 @@ Public Class BatchEncoder
         End Using
 
         Dim bits = (New FileInfo(p.TempDir + p.TargetFile.Base + "_CompCheck." + OutputExt).Length) * 8
-        p.Compressibility = (bits / script.GetFrames) / (p.TargetWidth * p.TargetHeight)
+        p.Compressibility = (bits / script.GetFrameCount) / (p.TargetWidth * p.TargetHeight)
 
         OnAfterCompCheck()
 

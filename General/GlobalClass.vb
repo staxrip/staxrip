@@ -85,12 +85,12 @@ Public Class GlobalClass
             Log.WriteHeader("Script Properties")
 
             Dim props =
-                "Source Frame Count: " & p.SourceScript.GetFrames & BR +
+                "Source Frame Count: " & p.SourceScript.GetFrameCount & BR +
                 "Source Frame Rate: " & p.SourceScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
-                "Source Duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.SourceScript.GetFrames / p.SourceScript.GetFramerate)).ToString + BR +
-                "Target Frame Count: " & p.Script.GetFrames & BR +
+                "Source Duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.SourceScript.GetFrameCount / p.SourceScript.GetFramerate)).ToString + BR +
+                "Target Frame Count: " & p.Script.GetFrameCount & BR +
                 "Target Frame Rate: " & p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
-                "Target Duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.Script.GetFrames / p.Script.GetFramerate)).ToString
+                "Target Duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.Script.GetFrameCount / p.Script.GetFramerate)).ToString
 
             Log.WriteLine(props.FormatColumn(":"))
 
@@ -681,13 +681,13 @@ Public Class GlobalClass
     End Sub
 
     Function IsValidSource(Optional warn As Boolean = True) As Boolean
-        If p.SourceScript.GetFrames = 0 Then
+        If p.SourceScript.GetFrameCount = 0 Then
             If warn Then MsgWarn("Failed to load source.")
             Return False
         End If
 
-        If Not p.SourceScript.GetErrorMessage Is Nothing Then
-            MsgError(p.SourceScript.GetErrorMessage)
+        If p.SourceScript.GetError <> "" Then
+            MsgError(p.SourceScript.GetError)
             Return False
         End If
 
@@ -1024,19 +1024,20 @@ Public Class GlobalClass
 
     Sub RunAutoCrop()
         g.WriteDebugLog("AutoCrop start")
-        p.SourceScript.Synchronize(True)
+        p.SourceScript.Synchronize(True, True, True)
 
-        Using avi As New AVIFile(p.SourceScript.Path)
+        Using server As New FrameServer(p.SourceScript.Path)
             Dim segmentCount = 20
 
-            Dim len = avi.FrameCount \ (segmentCount + 1)
+            Dim len = server.Info.FrameCount \ (segmentCount + 1)
             Dim crops(segmentCount - 1) As AutoCrop
+            Dim pos As Integer
 
             For x = 1 To segmentCount
-                avi.Position = len * x
+                pos = len * x
 
-                Using bmp = avi.GetBitmap
-                    crops(x - 1) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), avi.Position)
+                Using bmp = BitmapUtil.CreateBitmap(server, pos)
+                    crops(x - 1) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), pos)
                 End Using
             Next
 

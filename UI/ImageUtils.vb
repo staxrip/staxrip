@@ -52,8 +52,13 @@ End Class
 
 Public Class Thumbnails
     Shared Sub SaveThumbnails(inputFile As String, proj As Project)
-        If Not File.Exists(inputFile) Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
+        If Not File.Exists(inputFile) Then
+            Exit Sub
+        End If
+
+        If Not Package.AviSynth.VerifyOK(True) Then
+            Exit Sub
+        End If
 
         If proj Is Nothing Then
             proj = New Project
@@ -69,49 +74,50 @@ Public Class Thumbnails
         Dim rowCount = s.Storage.GetInt("Thumbnail Rows", 6)
         Dim dar = MediaInfo.GetVideo(inputFile, "DisplayAspectRatio")
         Dim height = CInt(width / Convert.ToSingle(dar, CultureInfo.InvariantCulture))
-        Dim gap = CInt((width * columnCount) * 0.000)
+        Dim gap = CInt((width * columnCount) * (s.Storage.GetInt("Thumbnail Margin", 5) / 1000))
         Dim font = New Font(fontname, (width * columnCount) \ 80, FontStyle.Bold, GraphicsUnit.Pixel)
         Dim foreColor = Color.Black
 
-        width = width - width Mod 4
-        height = height - height Mod 4
+        width = width - width Mod 16
+        height = height - height Mod 16
 
-        Dim avsdoc As New VideoScript
-        avsdoc.Path = Path.Combine(Folder.Temp + "Thumbnails.avs")
+        Dim script As New VideoScript
+        script.Path = Path.Combine(Folder.Temp + "Thumbnails.avs")
 
-        If inputFile.EndsWith("mp4") Then
-            avsdoc.Filters.Add(New VideoFilter("LWLibavVideoSource(""" + inputFile + "" + """, format = ""YUV420P8"").Spline64Resize(" & width & "," & height & ")"))
+        If inputFile.Ext = "mp4" Then
+            script.Filters.Add(New VideoFilter($"LSMASHVideoSource(""{inputFile}"")"))
         Else
-            avsdoc.Filters.Add(New VideoFilter("FFVideoSource(""" + inputFile + "" + """, colorspace = ""YV12"").Spline64Resize(" & width & "," & height & ")"))
+            script.Filters.Add(New VideoFilter($"FFVideoSource(""{inputFile}"")"))
         End If
 
-        avsdoc.Filters.Add(New VideoFilter("ConvertToRGB(matrix=""Rec709"")"))
+        script.Filters.Add(New VideoFilter($"Spline64Resize({width},{height})"))
 
-        Dim errorMsg = ""
+        Dim mode = s.Storage.GetInt("Thumbnail Mode")
+        Dim intervalSec = s.Storage.GetInt("Thumbnail Interval")
 
-        Try
-            avsdoc.Synchronize()
-            Dim mode = s.Storage.GetInt("Thumbnail Mode")
-            Dim intervalSec = s.Storage.GetInt("Thumbnail Interval")
-            If intervalSec <> 0 AndAlso mode = 1 Then rowCount = CInt((avsdoc.GetSeconds / intervalSec) / columnCount)
-            errorMsg = p.SourceScript.GetErrorMessage
-        Catch ex As Exception
-            errorMsg = ex.Message
-        End Try
+        If intervalSec <> 0 AndAlso mode = 1 Then
+            rowCount = CInt((script.GetSeconds / intervalSec) / columnCount)
+        End If
+
+        Dim errorMsg = script.GetError
 
         If errorMsg <> "" Then
             MsgError("Failed to open file." + BR2 + inputFile, errorMsg)
             Exit Sub
         End If
 
-        Dim frames = avsdoc.GetFrames
+        Dim frames = script.GetFrameCount
         Dim count = columnCount * rowCount
         Dim bitmaps As New List(Of Bitmap)
 
-        Using avi As New AVIFile(avsdoc.Path)
+        script.Synchronize(True, True, True)
+
+        Using server As New FrameServer(script.Path)
+            Dim serverPos As Integer
+
             For x = 1 To count
-                avi.Position = CInt((frames / count) * x) - CInt((frames / count) / 2)
-                Dim bitmap = New Bitmap(avi.GetBitmap())
+                serverPos = CInt((frames / count) * x) - CInt((frames / count) / 2)
+                Dim bitmap = BitmapUtil.CreateBitmap(server, serverPos)
 
                 Using g = Graphics.FromImage(bitmap)
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic
@@ -119,34 +125,35 @@ Public Class Thumbnails
                     g.SmoothingMode = SmoothingMode.AntiAlias
                     g.PixelOffsetMode = PixelOffsetMode.HighQuality
 
-                    Dim dur = TimeSpan.FromSeconds(avi.FrameCount / avi.FrameRate)
-                    Dim timestamp = StaxRip.g.GetTimeString(avi.Position / avi.FrameRate)
+                    Dim dur = TimeSpan.FromSeconds(server.Info.FrameCount / server.FrameRate)
+                    Dim timestamp = StaxRip.g.GetTimeString(serverPos / server.FrameRate)
                     Dim ft As New Font("Segoe UI", font.Size, FontStyle.Bold, GraphicsUnit.Pixel)
 
-                    Dim gp As New GraphicsPath()
-                    Dim sz = g.MeasureString(timestamp, ft)
-                    Dim pt As Point
-                    Dim pos = s.Storage.GetInt("Thumbnail Position", 1)
+                    Using gp As New GraphicsPath()
+                        Dim sz = g.MeasureString(timestamp, ft)
+                        Dim pt As Point
+                        Dim pos = s.Storage.GetInt("Thumbnail Position", 1)
 
-                    If pos = 0 OrElse pos = 2 Then
-                        pt.X = ft.Height \ 10
-                    Else
-                        pt.X = CInt(bitmap.Width - sz.Width - ft.Height / 10)
-                    End If
+                        If pos = 0 OrElse pos = 2 Then
+                            pt.X = ft.Height \ 10
+                        Else
+                            pt.X = CInt(bitmap.Width - sz.Width - ft.Height / 10)
+                        End If
 
-                    If pos = 2 OrElse pos = 3 Then
-                        pt.Y = CInt(bitmap.Height - sz.Height)
-                    Else
-                        pt.Y = 0
-                    End If
+                        If pos = 2 OrElse pos = 3 Then
+                            pt.Y = CInt(bitmap.Height - sz.Height)
+                        Else
+                            pt.Y = 0
+                        End If
 
-                    gp.AddString(timestamp, ft.FontFamily, CInt(ft.Style), ft.Size, pt, New StringFormat())
+                        gp.AddString(timestamp, ft.FontFamily, CInt(ft.Style), ft.Size, pt, New StringFormat())
 
-                    Using pen As New Pen(Brushes.Black, ft.Height \ 5)
-                        g.DrawPath(pen, gp)
+                        Using pen As New Pen(Brushes.Black, ft.Height \ 5)
+                            g.DrawPath(pen, gp)
+                        End Using
+
+                        g.FillPath(Brushes.Gainsboro, gp)
                     End Using
-
-                    g.FillPath(Brushes.Gainsboro, gp)
                 End Using
 
                 bitmaps.Add(bitmap)
@@ -156,19 +163,11 @@ Public Class Thumbnails
             height = height + gap
         End Using
 
-        Try
-            FileHelp.Delete(avsdoc.Path)
-        Catch ex As Exception
-        End Try
-
-        Try
-            If inputFile.EndsWith("mp4") Then
-                FileHelp.Delete(inputFile + ".lwi")
-            Else
-                FileHelp.Delete(inputFile + ".ffindex")
-            End If
-        Catch ex As Exception
-        End Try
+        If inputFile.Ext = "mp4" Then
+            FileHelp.Delete(inputFile + ".lwi")
+        Else
+            FileHelp.Delete(inputFile + ".ffindex")
+        End If
 
         Dim infoSize As String
         Dim infoWidth = MediaInfo.GetVideo(inputFile, "Width")
@@ -176,7 +175,11 @@ Public Class Thumbnails
         Dim infoLength = New FileInfo(inputFile).Length
         Dim infoDuration = MediaInfo.GetGeneral(inputFile, "Duration").ToInt
         Dim audioCodecs = MediaInfo.GetAudioCodecs(inputFile)
-        If audioCodecs = "" Then audioCodecs = ""
+
+        If audioCodecs = "" Then
+            audioCodecs = ""
+        End If
+
         Dim channels = MediaInfo.GetAudio(inputFile, "Channel(s)").ToInt
         Dim subSampling = MediaInfo.GetVideo(inputFile, "ChromaSubsampling").Replace(":", "")
         If subSampling = "" Then subSampling = ""
@@ -219,6 +222,7 @@ Public Class Thumbnails
                 g.SmoothingMode = SmoothingMode.AntiAlias
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality
                 g.Clear(s.ThumbnailBackgroundColor)
+
                 Dim rect = New RectangleF(gap, 0, imageWidth - gap * 2, captionHeight)
                 Dim format As New StringFormat
                 format.LineAlignment = StringAlignment.Center

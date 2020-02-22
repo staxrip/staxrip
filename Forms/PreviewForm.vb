@@ -277,15 +277,14 @@ Public Class PreviewForm
 
 #End Region
 
-    Public AVI As AVIFile
-    Public RangeStart As Integer = -1
-
+    Private FrameServer As FrameServer
+    Private Renderer As VideoRenderer
+    Private RangeStart As Integer = -1
     Private PreviewScript As VideoScript
     Private SizeFactor As Double = 1
     Private TargetFrames As Integer
     Private WithEvents GenericMenu As CustomMenu
     Private CommandManager As New CommandManager
-    Private Renderer As VideoRenderer
 
     Private Const TrackBarBorder As Integer = 1
     Private Const TrackBarGap As Integer = 1
@@ -315,15 +314,19 @@ Public Class PreviewForm
     End Sub
 
     Sub RefreshScript()
-        TargetFrames = p.Script.GetFrames
+        TargetFrames = p.Script.GetFrameCount
 
-        If Not AVI Is Nothing Then
-            AVI.Dispose()
+        If Not Renderer Is Nothing Then
+            Renderer.Dispose()
+        End If
+
+        If Not FrameServer Is Nothing Then
+            FrameServer.Dispose()
         End If
 
         PreviewScript.Synchronize(True, True, True)
-        AVI = New AVIFile(PreviewScript.Path)
-        Renderer = New VideoRenderer(pVideo, AVI)
+        FrameServer = New FrameServer(PreviewScript.Path)
+        Renderer = New VideoRenderer(pVideo, FrameServer)
         Renderer.ShowInfo = s.ShowPreviewInfo
         Dim workingArea = Screen.FromControl(Me).WorkingArea
 
@@ -347,7 +350,10 @@ Public Class PreviewForm
             NormalScreen()
         End If
 
-        If s.LastPosition < AVI.FrameCount - 1 Then AVI.Position = s.LastPosition
+        If s.LastPosition < FrameServer.Info.FrameCount - 1 Then
+            Renderer.Position = s.LastPosition
+        End If
+
         AfterPositionChanged()
         ShowButtons(Not s.HidePreviewButtons)
         Refresh()
@@ -366,7 +372,7 @@ Public Class PreviewForm
         If Calc.IsARSignalingRequired Then
             ratio = Calc.GetTargetDAR
         Else
-            ratio = AVI.FrameSize.Width / AVI.FrameSize.Height
+            ratio = FrameServer.Info.Width / FrameServer.Info.Height
         End If
 
         Dim b = Screen.FromControl(Me).Bounds
@@ -404,12 +410,12 @@ Public Class PreviewForm
 
     Function GetNormalSize() As Size
         Dim ret As Size
-        Dim frameHeight = AVI.FrameSize.Height
+        Dim frameHeight = FrameServer.Info.Height
 
         If Calc.IsARSignalingRequired Then
             ret = New Size(CInt(frameHeight * SizeFactor * Calc.GetTargetDAR), CInt(frameHeight * SizeFactor))
         Else
-            ret = New Size(CInt(AVI.FrameSize.Width * SizeFactor), CInt(frameHeight * SizeFactor))
+            ret = New Size(CInt(FrameServer.Info.Width * SizeFactor), CInt(frameHeight * SizeFactor))
         End If
 
         Return ret
@@ -533,9 +539,9 @@ Public Class PreviewForm
         End If
 
         Using rangeSetPen As New Pen(Color.DarkOrange, trackHeight)
-            If RangeStart > -1 AndAlso RangeStart <= AVI.Position Then
+            If RangeStart > -1 AndAlso RangeStart <= Renderer.Position Then
                 g.DrawLine(rangeSetPen, GetDrawPos(RangeStart) - CInt(TrackBarPosition / 2),
-                    pnTrack.Height \ 2, GetDrawPos(AVI.Position) +
+                    pnTrack.Height \ 2, GetDrawPos(Renderer.Position) +
                     CInt(TrackBarPosition / 2), pnTrack.Height \ 2)
             End If
         End Using
@@ -550,7 +556,7 @@ Public Class PreviewForm
 
         posPen.Alignment = Drawing2D.PenAlignment.Center
 
-        Dim pos = GetDrawPos(AVI.Position)
+        Dim pos = GetDrawPos(Renderer.Position)
 
         g.DrawLine(posPen,
                    pos - CInt(TrackBarPosition / 2),
@@ -604,19 +610,19 @@ Public Class PreviewForm
         Description("Frames to jump, negative values jump backward.")>
         pos As Integer)
 
-        SetPos(AVI.Position + pos)
+        SetPos(Renderer.Position + pos)
     End Sub
 
     Sub SetPos(pos As Integer)
-        AVI.Position = pos
+        Renderer.Position = pos
         Renderer.Draw()
         AfterPositionChanged()
     End Sub
 
     Private Sub AfterPositionChanged()
-        s.LastPosition = AVI.Position
+        s.LastPosition = Renderer.Position
         DrawTrack()
-        Dim time = TimeSpan.FromSeconds(AVI.Position / AVI.FrameRate).ToString.Shorten(12)
+        Dim time = TimeSpan.FromSeconds(Renderer.Position / FrameServer.FrameRate).ToString.Shorten(12)
         If time.StartsWith("00") Then time = time.Substring(3)
         Text = "Preview  " & s.LastPosition & "  " + time
     End Sub
@@ -624,12 +630,12 @@ Public Class PreviewForm
     <Command("Dialog to jump to a specific time.")>
     Sub GoToTime()
         Dim d As Date
-        d = d.AddSeconds(AVI.Position / AVI.FrameRate)
+        d = d.AddSeconds(Renderer.Position / FrameServer.FrameRate)
         Dim value = InputBox.Show("Time:", "Go To Time", d.ToString("HH:mm:ss.fff"))
 
         If value <> "" Then
             Try
-                AVI.Position = CInt((TimeSpan.Parse(value).TotalMilliseconds / 1000) * AVI.FrameRate)
+                Renderer.Position = CInt((TimeSpan.Parse(value).TotalMilliseconds / 1000) * FrameServer.FrameRate)
                 Renderer.Draw()
                 AfterPositionChanged()
             Catch
@@ -639,11 +645,11 @@ Public Class PreviewForm
 
     <Command("Dialog to jump to a specific frame.")>
     Sub GoToFrame()
-        Dim value = InputBox.Show("Frame:", "Go To Frame", AVI.Position.ToString)
+        Dim value = InputBox.Show("Frame:", "Go To Frame", Renderer.Position.ToString)
         Dim pos As Integer
 
         If Integer.TryParse(value, pos) Then
-            AVI.Position = pos
+            Renderer.Position = pos
             Renderer.Draw()
             AfterPositionChanged()
         End If
@@ -669,10 +675,10 @@ Public Class PreviewForm
     Sub SetRangeStart()
         Dim r = GetCurrentRange()
 
-        If r Is Nothing OrElse AVI.Position = r.End Then
-            RangeStart = AVI.Position
+        If r Is Nothing OrElse Renderer.Position = r.End Then
+            RangeStart = Renderer.Position
         Else
-            r.Start = AVI.Position
+            r.Start = Renderer.Position
         End If
 
         MergeRanges()
@@ -682,14 +688,14 @@ Public Class PreviewForm
     <Command("Sets the end cut position.")>
     Sub SetRangeEnd()
         If RangeStart > -1 Then
-            p.Ranges.Add(New Range(RangeStart, AVI.Position))
+            p.Ranges.Add(New Range(RangeStart, Renderer.Position))
             p.Ranges.Sort()
             RangeStart = -1
         Else
             Dim r = GetCurrentRange()
 
             If Not r Is Nothing Then
-                r.End = AVI.Position
+                r.End = Renderer.Position
                 RangeStart = -1
             End If
         End If
@@ -720,13 +726,13 @@ Public Class PreviewForm
     <Command("Splits the clip or selection into two selections.")>
     Sub SplitRange()
         If p.Ranges.Count = 0 Then
-            p.Ranges.Add(New Range(0, AVI.FrameCount - 1))
+            p.Ranges.Add(New Range(0, FrameServer.Info.FrameCount - 1))
         End If
 
         For Each i In p.Ranges.ToArray
-            If i.Start < AVI.Position AndAlso i.End > AVI.Position Then
-                p.Ranges.Add(New Range(i.Start, AVI.Position))
-                p.Ranges.Add(New Range(AVI.Position + 1, i.End))
+            If i.Start < Renderer.Position AndAlso i.End > Renderer.Position Then
+                p.Ranges.Add(New Range(i.Start, Renderer.Position))
+                p.Ranges.Add(New Range(Renderer.Position + 1, i.End))
                 p.Ranges.Remove(i)
                 Exit For
             End If
@@ -746,7 +752,7 @@ Public Class PreviewForm
     <Command("Deletes the range that encloses the current position.")>
     Sub DeleteRange()
         For Each i As Range In p.Ranges.ToArray
-            If AVI.Position >= i.Start AndAlso AVI.Position <= i.End Then
+            If Renderer.Position >= i.Start AndAlso Renderer.Position <= i.End Then
                 p.Ranges.Remove(i)
             End If
         Next
@@ -839,14 +845,14 @@ Public Class PreviewForm
             list.Add(i.End)
         Next
 
-        list.Add(AVI.Position - 1)
+        list.Add(Renderer.Position - 1)
 
         list.Sort()
 
-        Dim index = list.IndexOf(AVI.Position - 1) - 1
+        Dim index = list.IndexOf(Renderer.Position - 1) - 1
 
         If index >= 0 AndAlso index < list.Count Then
-            AVI.Position = CInt(list(index))
+            Renderer.Position = CInt(list(index))
             Renderer.Draw()
             AfterPositionChanged()
         End If
@@ -855,7 +861,7 @@ Public Class PreviewForm
     <Command("Copies the time of the current position.")>
     Sub CopyTime()
         Dim d As Date
-        d = d.AddSeconds(AVI.Position / AVI.FrameRate)
+        d = d.AddSeconds(Renderer.Position / FrameServer.FrameRate)
         Clipboard.SetText(d.ToString("HH:mm:ss.fff"))
     End Sub
 
@@ -868,13 +874,13 @@ Public Class PreviewForm
             list.Add(i.End)
         Next
 
-        list.Add(AVI.Position + 1)
+        list.Add(Renderer.Position + 1)
         list.Sort()
 
-        Dim index = list.IndexOf(AVI.Position + 1) + 1
+        Dim index = list.IndexOf(Renderer.Position + 1) + 1
 
         If index >= 0 AndAlso index < list.Count Then
-            AVI.Position = CInt(list(index))
+            Renderer.Position = CInt(list(index))
             Renderer.Draw()
             AfterPositionChanged()
         End If
@@ -884,10 +890,10 @@ Public Class PreviewForm
     Sub SaveBitmap()
         Using d As New SaveFileDialog
             d.SetFilter({"bmp"})
-            d.FileName = p.TargetFile.Base + " - " & AVI.Position
+            d.FileName = p.TargetFile.Base + " - " & Renderer.Position
 
             If d.ShowDialog = DialogResult.OK Then
-                AVI.GetBitmap.Save(d.FileName, Imaging.ImageFormat.Bmp)
+                BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(d.FileName, ImageFormat.Bmp)
             End If
         End Using
     End Sub
@@ -896,10 +902,10 @@ Public Class PreviewForm
     Sub SavePng()
         Using d As New SaveFileDialog
             d.SetFilter({"png"})
-            d.FileName = p.TargetFile.Base + " - " & AVI.Position
+            d.FileName = p.TargetFile.Base + " - " & Renderer.Position
 
             If d.ShowDialog = DialogResult.OK Then
-                AVI.GetBitmap.Save(d.FileName, Imaging.ImageFormat.Png)
+                BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(d.FileName, ImageFormat.Png)
             End If
         End Using
     End Sub
@@ -917,7 +923,7 @@ Public Class PreviewForm
             Dim params = New EncoderParameters(1)
             params.Param(0) = New EncoderParameter(Encoder.Quality, q.ToInt)
             Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Jpeg.Guid).First
-            AVI.GetBitmap.Save(path, info, params)
+            BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(path, info, params)
         End If
     End Sub
 
@@ -925,7 +931,7 @@ Public Class PreviewForm
     Sub SaveJPG()
         Using d As New SaveFileDialog
             d.DefaultExt = "jpg"
-            d.FileName = p.TargetFile.Base + " - " & AVI.Position
+            d.FileName = p.TargetFile.Base + " - " & Renderer.Position
 
             If d.ShowDialog = DialogResult.OK Then SaveJpgByPath(d.FileName)
         End Using
@@ -950,7 +956,7 @@ Public Class PreviewForm
             Next
 
             If td.Show() <> "" Then
-                AVI.Position = CInt((TimeSpan.Parse(td.SelectedValue).TotalMilliseconds / 1000) * AVI.FrameRate)
+                Renderer.Position = CInt((TimeSpan.Parse(td.SelectedValue).TotalMilliseconds / 1000) * FrameServer.FrameRate)
                 Renderer.Draw()
                 AfterPositionChanged()
             End If
@@ -1043,12 +1049,12 @@ Public Class PreviewForm
         MyBase.OnFormClosing(e)
         Instances.Remove(Me)
         UpdateTrim(p.Script)
-        s.LastPosition = AVI.Position
-        p.CutFrameCount = AVI.FrameCount
-        p.CutFrameRate = AVI.FrameRate
+        s.LastPosition = Renderer.Position
+        p.CutFrameCount = FrameServer.Info.FrameCount
+        p.CutFrameRate = FrameServer.FrameRate
         g.MainForm.UpdateFilters()
         Renderer.Dispose()
-        AVI.Dispose()
+        FrameServer.Dispose()
     End Sub
 
     Sub UpdateTrim(script As VideoScript)
@@ -1096,7 +1102,7 @@ Public Class PreviewForm
 
     Function GetCurrentRange() As Range
         For Each i In p.Ranges
-            If AVI.Position >= i.Start AndAlso AVI.Position <= i.End Then
+            If Renderer.Position >= i.Start AndAlso Renderer.Position <= i.End Then
                 Return i
             End If
         Next

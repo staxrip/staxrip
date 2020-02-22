@@ -7,12 +7,8 @@ Imports StaxRip
 Public Class VideoScript
     Inherits Profile
 
-    <NonSerialized()> Private FrameRateNumerator As Integer
-    <NonSerialized()> Private FrameRateDenominator As Integer
-    <NonSerialized()> Private Framerate As Double
-    <NonSerialized()> Private Frames As Integer
-    <NonSerialized()> Private Size As Size
-    <NonSerialized()> Private ErrorMessage As String
+    <NonSerialized()> Private [Error] As String
+    <NonSerialized()> Private Info As ServerInfo
 
     Property Filters As New List(Of VideoFilter)
 
@@ -228,7 +224,7 @@ clipname.set_output()
                 End If
             End If
 
-            If Frames = 240 OrElse code <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
+            If Me.Error <> "" OrElse code <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
                 If Directory.Exists(FilePath.GetDir(Path)) Then
                     If Engine = ScriptEngine.VapourSynth Then
                         ModifyScript(code, Engine).WriteFile(Path, Encoding.UTF8)
@@ -247,18 +243,9 @@ clipname.set_output()
                         Throw New AbortException
                     End If
 
-                    Using avi As New AVIFile(Path)
-                        FrameRateNumerator = avi.FrameRateNumerator
-                        FrameRateDenominator = avi.FrameRateDenominator
-                        Framerate = avi.FrameRate
-                        Frames = avi.FrameCount
-                        Size = avi.FrameSize
-                        ErrorMessage = avi.ErrorMessage
-
-                        If Double.IsNaN(Framerate) Then
-                            Throw New ErrorAbortException("AviSynth/VapourSynth Error",
-                                                          "AviSynth/VapourSynth script returned invalid framerate.")
-                        End If
+                    Using server As New FrameServer(Path)
+                        Info = server.Info
+                        Me.Error = server.Error
                     End Using
 
                     LastCode = code
@@ -441,48 +428,37 @@ clipname.set_output()
         Return clip
     End Function
 
-    Function GetFramerateDenominator() As Integer
-        Synchronize(False, False)
-        Return FrameRateDenominator
-    End Function
-
-    Function GetFramerateNumerator() As Integer
-        Synchronize(False, False)
-        Return FrameRateNumerator
-    End Function
-
     Function GetFramerate() As Double
-        Synchronize(False, False)
-        Return Framerate
+        Dim info = GetInfo()
+        Return info.FrameRateNum / info.FrameRateDen
     End Function
 
-    Function GetErrorMessage() As String
+    Function GetInfo() As ServerInfo
         Synchronize(False, False)
-        Return ErrorMessage
+        Return Info
+    End Function
+
+    Function GetError() As String
+        Synchronize(False, False)
+        Return Me.Error
     End Function
 
     Function GetSeconds() As Integer
-        Dim fr = GetFramerate()
+        Dim rate = GetFramerate()
 
-        If fr = 0 Then
-            fr = p.SourceFrameRate
+        If rate = 0 OrElse Double.IsNaN(rate) Then
+            rate = p.SourceFrameRate
         End If
 
-        If fr = 0 Then
-            fr = 25
+        If rate = 0 OrElse Double.IsNaN(rate) Then
+            rate = 25
         End If
 
-        Return CInt(GetFrames() / fr)
+        Return CInt(GetFrameCount() / rate)
     End Function
 
-    Function GetFrames() As Integer
-        Synchronize()
-        Return Frames
-    End Function
-
-    Function GetSize() As Size
-        Synchronize()
-        Return Size
+    Function GetFrameCount() As Integer
+        Return GetInfo.FrameCount
     End Function
 
     Shared Function GetDefaults() As List(Of TargetVideoScript)
@@ -503,7 +479,7 @@ clipname.set_output()
         script.Filters.Add(New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)", False))
         script.Filters.Add(New VideoFilter("Noise", "DFTTest", "clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3, opt=3)", False))
         script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", $"clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF{BR}clip = havsfunc.QTGMC(clip, TFF=True, Preset='Medium')", False))
-        'filter is too long
+        'code is too long
         'script.Filters.Add(New VideoFilter("FrameRate", "SVPFlow", "crop_string = """"" + BR + "resize_string = """"" + BR + "super_params = ""{pel:1,scale:{up:0},gpu:1,full:false,rc:true}""" + BR + "analyse_params = ""{block:{w:16},main:{search:{coarse:{type:4,distance:-6,bad:{sad:2000,range:24}},type:4}},refine:[{thsad:250}]}""" + BR + "smoothfps_params = ""{gpuid:11,linear:true,rate:{num:60000,den:1001,abs:true},algo:23,mask:{area:200},scene:{}}""" + BR + "def interpolate(clip):" + BR + "    input = clip" + BR + "    if crop_string!='':" + BR + "        input = eval(crop_string)" + BR + "    if resize_string!='':" + BR + "        input = eval(resize_string)" + BR + "    super   = core.svp1.Super(input,super_params)" + BR + "    vectors = core.svp1.Analyse(super[""clip""],super[""data""],input,analyse_params)" + BR + "    smooth  = core.svp2.SmoothFps(input,super[""clip""],super[""data""],vectors[""clip""],vectors[""data""],smoothfps_params,src=clip)" + BR + "    smooth  = core.std.AssumeFPS(smooth,fpsnum=smooth.fps_num,fpsden=smooth.fps_den)" + BR + "    return smooth" + BR + "clip =  interpolate(clip)", False))
         script.Filters.Add(New VideoFilter("Color", "Respec", "clip = core.fmtc.resample(clip, css='444')" + BR + "clip = core.fmtc.matrix(clip, mats='709', matd='709')" + BR + "clip = core.fmtc.resample(clip, css='420')" + BR + "clip = core.fmtc.bitdepth(clip, bits=10, fulls=False, fulld=False)", False))
         script.Filters.Add(New VideoFilter("Resize", "Spline64Resize", "clip = core.fmtc.resample(clip, kernel='spline64', w=%target_width%, h=%target_height%)", False))
@@ -543,7 +519,10 @@ Public Class TargetVideoScript
 
     Overrides Property Path() As String
         Get
-            If p.SourceFile = "" OrElse p.TargetFile.Base = "" Then Return ""
+            If p.SourceFile = "" OrElse p.TargetFile.Base = "" Then
+                Return ""
+            End If
+
             Return p.TempDir + p.TargetFile.Base + "." + FileType
         End Get
         Set(value As String)
@@ -557,7 +536,10 @@ Public Class SourceVideoScript
 
     Overrides Property Path() As String
         Get
-            If p.SourceFile = "" Then Return ""
+            If p.SourceFile = "" Then
+                Return ""
+            End If
+
             Return p.TempDir + p.TargetFile.Base + "_source." + p.Script.FileType
         End Get
         Set(value As String)
@@ -748,6 +730,7 @@ Public Class FilterCategory
         misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | Set Max Memory", "SetMemoryMax($enter_text:Enter the Maximum Memory Avisynth Can use$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Histogram", "Histogram(""levels"", bits=$select:msg:Select BitDepth;8;10;12$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "SplitVertical", "Splitvertical=true"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "Info", "Info(size=16*%dpi%/96)"))
         ret.Add(misc)
 
         Dim resize As New FilterCategory("Resize")

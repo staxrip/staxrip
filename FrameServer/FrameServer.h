@@ -12,8 +12,8 @@ struct ServerInfo
 {
     int Width;
     int Height;
-    int FrameRateNumerator;
-    int FrameRateDenominator;
+    int FrameRateNum;
+    int FrameRateDen;
     int FrameCount;
 };
 

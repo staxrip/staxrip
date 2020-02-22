@@ -66,11 +66,17 @@ Namespace UI
             End If
 
             MyBase.OnLoad(e)
-            If Not DesignHelp.IsDesignMode Then s.WindowPositions?.RestorePosition(Me)
+
+            If Not DesignHelp.IsDesignMode Then
+                s.WindowPositions?.RestorePosition(Me)
+            End If
         End Sub
 
         Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
-            If Not s.WindowPositions Is Nothing Then s.WindowPositions.Save(Me)
+            If Not s.WindowPositions Is Nothing Then
+                s.WindowPositions.Save(Me)
+            End If
+
             MyBase.OnFormClosing(e)
         End Sub
 

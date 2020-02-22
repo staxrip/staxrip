@@ -3,6 +3,7 @@ Imports System.Drawing.Design
 Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Management
+Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -82,7 +83,7 @@ Public Class Calc
 
     Shared Function GetOverheadKBytes() As Double
         Dim ret As Double
-        Dim frames = p.Script.GetFrames
+        Dim frames = p.Script.GetFrameCount
 
         If {"avi", "divx"}.Contains(p.VideoEncoder.Muxer.OutputExt) Then
             ret += frames * 0.024
@@ -896,6 +897,7 @@ Public Class Macro
         ret.Add(New Macro("crop_width", "Crop Width", GetType(Integer), "Crop width."))
         ret.Add(New Macro("delay", "Audio Delay 1", GetType(Integer), "Audio delay of the first audio track."))
         ret.Add(New Macro("delay2", "Audio Delay 2", GetType(Integer), "Audio delay of the second audio track."))
+        ret.Add(New Macro("dpi", "Main Dialog DPI", GetType(Integer), "DPI value of the main dialog."))
         ret.Add(New Macro("encoder_ext", "Encoder File Extension", GetType(String), "File extension of the format the encoder of the active project outputs."))
         ret.Add(New Macro("encoder_out_file", "Encoder Output File", GetType(String), "Output file of the video encoder."))
         ret.Add(New Macro("muxer_ext", "Muxer Extension", GetType(String), "Output extension of the active muxer."))
@@ -1119,7 +1121,7 @@ Public Class Macro
         If value.Contains("%target_seconds%") Then value = value.Replace("%target_seconds%", p.TargetSeconds.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_frames%") Then value = value.Replace("%target_frames%", p.Script.GetFrames.ToString)
+        If value.Contains("%target_frames%") Then value = value.Replace("%target_frames%", p.Script.GetFrameCount.ToString)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_framerate%") Then value = value.Replace("%target_framerate%", p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
@@ -1264,6 +1266,9 @@ Public Class Macro
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%video_encoder%") Then value = value.Replace("%video_encoder%", TryCast(p.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.GetPackage.Name)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%dpi%") Then value = value.Replace("%dpi%", g.MainForm.DeviceDpi.ToString())
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%script_file%") Then
@@ -2136,6 +2141,17 @@ Public Class BitmapUtil
     Property Data As Byte()
     Property BitmapData As BitmapData
 
+    Function GetPixel(x As Integer, y As Integer) As Color
+        Dim pos = y * BitmapData.Stride + x * 4
+        Return Color.FromArgb(Data(pos), Data(pos + 1), Data(pos + 2))
+    End Function
+
+    Function GetMax(x As Integer, y As Integer) As Integer
+        Dim col = GetPixel(x, y)
+        Dim max = Math.Max(col.R, col.G)
+        Return Math.Max(max, col.B)
+    End Function
+
     Shared Function Create(bmp As Bitmap) As BitmapUtil
         Dim util As New BitmapUtil
         Dim rect As New Rectangle(0, 0, bmp.Width, bmp.Height)
@@ -2148,16 +2164,19 @@ Public Class BitmapUtil
         Return util
     End Function
 
-    Function GetPixel(x As Integer, y As Integer) As Color
-        Dim pos = y * BitmapData.Stride + x * 4
-        Return Color.FromArgb(Data(pos), Data(pos + 1), Data(pos + 2))
+    Shared Function CreateBitmap(server As FrameServer, position As Integer) As Bitmap
+        Dim bmp As New Bitmap(server.Info.Width, server.Info.Height, PixelFormat.Format32bppArgb)
+        Dim rect As Rectangle = New Rectangle(0, 0, bmp.Width, bmp.Height)
+        Dim data = bmp.LockBits(rect, ImageLockMode.ReadWrite, bmp.PixelFormat)
+        Dim len = ((((bmp.Width * 32) + 31) And Not 31) >> 3) * bmp.Height
+        CopyMemory(data.Scan0, server.NativeServer.GetFrame(position), CUInt(len))
+        bmp.UnlockBits(data)
+        Return bmp
     End Function
 
-    Function GetMax(x As Integer, y As Integer) As Integer
-        Dim col = GetPixel(x, y)
-        Dim max = Math.Max(col.R, col.G)
-        Return Math.Max(max, col.B)
-    End Function
+    <DllImport("kernel32")>
+    Public Shared Sub CopyMemory(destination As IntPtr, source As IntPtr, length As UInteger)
+    End Sub
 End Class
 
 Public Class AutoCrop

@@ -73,7 +73,6 @@ Public Class VideoComparisonForm
 
     Private Sub Save()
         For Each i As VideoTab In TabControl.TabPages
-            i.AVI.Position = Pos
             Dim outputPath = i.SourceFile.Dir & Pos & " " + i.SourceFile.Base + ".png"
 
             Using b = i.GetBitmap
@@ -149,12 +148,6 @@ Public Class VideoComparisonForm
         End If
     End Sub
 
-    Private Sub TabControl_Deselecting(sender As Object, e As TabControlCancelEventArgs) Handles TabControl.Deselecting
-        For Each i As VideoTab In TabControl.TabPages
-            i.AVI.Position = Pos
-        Next
-    End Sub
-
     Private Sub CodecComparisonForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         Dispose()
     End Sub
@@ -218,12 +211,12 @@ Public Class VideoComparisonForm
     Private Sub GoToTime()
         Dim tab = DirectCast(TabControl.SelectedTab, VideoTab)
         Dim d As Date
-        d = d.AddSeconds(tab.AVI.Position / tab.AVI.FrameRate)
+        d = d.AddSeconds(Pos / tab.Server.FrameRate)
         Dim value = InputBox.Show("Time:", "Go To Time", d.ToString("HH:mm:ss.fff"))
         Dim time As TimeSpan
 
         If value <> "" AndAlso TimeSpan.TryParse(value, time) Then
-            TrackBar.Value = CInt((time.TotalMilliseconds / 1000) * tab.AVI.FrameRate)
+            TrackBar.Value = CInt((time.TotalMilliseconds / 1000) * tab.Server.FrameRate)
         End If
     End Sub
 
@@ -234,7 +227,7 @@ Public Class VideoComparisonForm
     Public Class VideoTab
         Inherits TabPage
 
-        Property AVI As AVIFile
+        Property Server As FrameServer
         Property Form As VideoComparisonForm
         Property SourceFile As String
 
@@ -245,7 +238,7 @@ Public Class VideoComparisonForm
         End Sub
 
         Sub Reload()
-            AVI.Dispose()
+            Server.Dispose()
             Open(SourceFile)
         End Sub
 
@@ -285,15 +278,15 @@ Public Class VideoComparisonForm
             End If
 
             avs.Synchronize(True)
-            AVI = New AVIFile(avs.Path)
+            Server = New FrameServer(avs.Path)
 
             Try
                 FileHelp.Delete(sourePath + ".ffindex")
             Catch ex As Exception
             End Try
 
-            If Form.TrackBar.Maximum < AVI.FrameCount - 1 Then
-                Form.TrackBar.Maximum = AVI.FrameCount - 1
+            If Form.TrackBar.Maximum < Server.Info.FrameCount - 1 Then
+                Form.TrackBar.Maximum = Server.Info.FrameCount - 1
             End If
 
             Dim csvFile = sourePath.DirAndBase + ".csv"
@@ -327,7 +320,7 @@ Public Class VideoComparisonForm
 
         Sub Draw()
             Dim padding As Padding
-            Dim sizeToFit = New Size(AVI.FrameSize.Width, AVI.FrameSize.Height)
+            Dim sizeToFit = New Size(Server.Info.Width, Server.Info.Height)
 
             Dim rect As New Rectangle(
                 padding.Left, padding.Top,
@@ -363,7 +356,8 @@ Public Class VideoComparisonForm
         End Sub
 
         Function GetBitmap() As Bitmap
-            Dim ret = AVI.GetBitmap
+            Dim ret = BitmapUtil.CreateBitmap(Server, Pos)
+            ret.RotateFlip(RotateFlipType.RotateNoneFlipY)
 
             Using g = Graphics.FromImage(ret)
                 g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
@@ -385,7 +379,7 @@ Public Class VideoComparisonForm
         End Function
 
         Sub TrackBarValueChanged()
-            AVI.Position = Form.TrackBar.Value
+            Pos = Form.TrackBar.Value
 
             Try
                 Draw()
@@ -403,8 +397,8 @@ Public Class VideoComparisonForm
                 Form.lInfo.Text = FrameInfo(Form.TrackBar.Value)
             Else
                 Dim d As Date
-                d = d.AddSeconds(AVI.Position / AVI.FrameRate)
-                Form.lInfo.Text = "Position: " & AVI.Position & ", Time: " + d.ToString("HH:mm:ss.fff") + ", Size: " & AVI.FrameSize.Width & " x " & AVI.FrameSize.Height
+                d = d.AddSeconds(Pos / Server.FrameRate)
+                Form.lInfo.Text = "Position: " & Pos & ", Time: " + d.ToString("HH:mm:ss.fff") + ", Size: " & Server.Info.Width & " x " & Server.Info.Height
             End If
 
             Form.lInfo.Refresh()
@@ -416,8 +410,8 @@ Public Class VideoComparisonForm
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
-            If Not AVI Is Nothing Then
-                AVI.Dispose()
+            If Not Server Is Nothing Then
+                Server.Dispose()
             End If
 
             MyBase.Dispose(disposing)

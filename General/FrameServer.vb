@@ -5,29 +5,28 @@ Public Class FrameServer
     Implements IDisposable
 
     Property Info As ServerInfo
-    Property Server As IFrameServer
-    Property Position As Integer
+    Property NativeServer As IFrameServer
 
     Sub New(path As String)
         If path.EndsWith(".avs") Then
-            Server = CreateAviSynthServer()
+            NativeServer = CreateAviSynthServer()
         Else
-            Server = CreateVapourSynthServer()
+            NativeServer = CreateVapourSynthServer()
         End If
 
-        Server.OpenFile(path)
-        Info = Marshal.PtrToStructure(Of ServerInfo)(Server.GetInfo())
+        NativeServer.OpenFile(path)
+        Info = Marshal.PtrToStructure(Of ServerInfo)(NativeServer.GetInfo())
     End Sub
 
     ReadOnly Property [Error] As String
         Get
-            Return Marshal.PtrToStringUni(Server.GetError())
+            Return Marshal.PtrToStringUni(NativeServer.GetError())
         End Get
     End Property
 
     ReadOnly Property FrameRate As Double
         Get
-            Return Info.FrameRateNumerator / Info.FrameRateDenominator
+            Return Info.FrameRateNum / Info.FrameRateDen
         End Get
     End Property
 
@@ -40,9 +39,9 @@ Public Class FrameServer
     End Function
 
     Public Sub Dispose() Implements IDisposable.Dispose
-        If Not Server Is Nothing Then
-            Marshal.ReleaseComObject(Server)
-            Server = Nothing
+        If Not NativeServer Is Nothing Then
+            Marshal.ReleaseComObject(NativeServer)
+            NativeServer = Nothing
         End If
     End Sub
 End Class
@@ -59,7 +58,7 @@ End Interface
 Public Structure ServerInfo
     Public Width As Integer
     Public Height As Integer
-    Public FrameRateNumerator As Integer
-    Public FrameRateDenominator As Integer
+    Public FrameRateNum As Integer
+    Public FrameRateDen As Integer
     Public FrameCount As Integer
 End Structure

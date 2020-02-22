@@ -1843,7 +1843,9 @@ Public Class MainForm
                                    preferredSourceFilter.Script)
             End If
 
-            If Not g.VerifyRequirements() Then Throw New AbortException
+            If Not g.VerifyRequirements() Then
+                Throw New AbortException
+            End If
 
             p.LastOriginalSourceFile = p.SourceFile
             p.FirstOriginalSourceFile = p.SourceFile
@@ -2030,7 +2032,7 @@ Public Class MainForm
 
             Try
                 p.SourceScript.Synchronize()
-                errorMsg = p.SourceScript.GetErrorMessage
+                errorMsg = p.SourceScript.GetError
             Catch ex As Exception
                 errorMsg = ex.Message
             End Try
@@ -2077,7 +2079,7 @@ Public Class MainForm
 
                     Try
                         p.SourceScript.Synchronize()
-                        errorMsg = p.SourceScript.GetErrorMessage
+                        errorMsg = p.SourceScript.GetError
                     Catch ex As Exception
                         errorMsg = ex.Message
                     End Try
@@ -2891,16 +2893,16 @@ Public Class MainForm
             End If
 
             If Not (MouseButtons = MouseButtons.Left AndAlso ActiveControl Is tbResize) Then
-                If Not p.Script.GetErrorMessage Is Nothing AndAlso Not g.VerifyRequirements Then
-                    If ProcessTip(p.Script.GetErrorMessage) Then
+                If p.Script.GetError <> "" AndAlso Not g.VerifyRequirements Then
+                    If ProcessTip(p.Script.GetError) Then
                         CanIgnoreTip = False
                         gbAssistant.Text = "Script Error"
                         Return False
                     End If
                 End If
 
-                If Not p.Script.GetErrorMessage Is Nothing Then
-                    If ProcessTip(p.Script.GetErrorMessage) Then
+                If p.Script.GetError <> "" Then
+                    If ProcessTip(p.Script.GetError) Then
                         CanIgnoreTip = False
                         gbAssistant.Text = "Script Error"
                         Return False
@@ -3681,10 +3683,8 @@ Public Class MainForm
                 Exit Sub
             End If
 
-            Dim errMsg = p.Script.GetErrorMessage
-
-            If Not errMsg Is Nothing Then
-                MsgError("Script Error", errMsg)
+            If p.Script.GetError <> "" Then
+                MsgError("Script Error", p.Script.GetError)
                 Exit Sub
             End If
 
@@ -5392,11 +5392,11 @@ Public Class MainForm
     Sub UpdateSourceParameters()
         If Not p.SourceScript Is Nothing Then
             Try
-                p.SourceWidth = p.SourceScript.GetSize.Width
-                p.SourceHeight = p.SourceScript.GetSize.Height
-                p.SourceSeconds = CInt(p.SourceScript.GetFrames / p.SourceScript.GetFramerate)
+                p.SourceWidth = p.SourceScript.GetInfo.Width
+                p.SourceHeight = p.SourceScript.GetInfo.Height
+                p.SourceSeconds = CInt(p.SourceScript.GetFrameCount / p.SourceScript.GetFramerate)
                 p.SourceFrameRate = p.SourceScript.GetFramerate
-                p.SourceFrames = p.SourceScript.GetFrames
+                p.SourceFrames = p.SourceScript.GetFrameCount
             Catch ex As Exception
                 MsgError("Source filter returned invalid parameters", p.SourceScript.GetFullScript)
                 Throw New AbortException()
@@ -5910,10 +5910,10 @@ Public Class MainForm
             fd.Multiselect = True
 
             If fd.ShowDialog = DialogResult.OK Then
-                Using f As New SimpleSettingsForm("Thumbnail Options")
-                    f.ScaleClientSize(27, 20)
+                Using form As New SimpleSettingsForm("Thumbnail Options")
+                    form.ScaleClientSize(27, 20)
 
-                    Dim ui = f.SimpleUI
+                    Dim ui = form.SimpleUI
                     Dim page = ui.CreateFlowPage("main page")
                     ui.Store = s
                     page.SuspendLayout()
@@ -5923,10 +5923,12 @@ Public Class MainForm
 
                     Dim mode = ui.AddMenu(Of Integer)
                     mode.Text = "Row Count Mode"
+                    mode.Expandet = True
                     mode.Add("Manual", 0)
                     mode.Add("Row count is calculated based on time interval", 1)
                     mode.Button.Value = s.Storage.GetInt("Thumbnail Mode")
                     mode.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Mode", value)
+
                     AddHandler mode.Button.ValueChangedUser, Sub()
                                                                  row.Visible = mode.Button.Value = 0
                                                                  interval.Visible = mode.Button.Value = 1
@@ -5979,6 +5981,12 @@ Public Class MainForm
                     row.Visible = mode.Button.Value = 0
                     interval.Visible = mode.Button.Value = 1
 
+                    Dim margin = ui.AddNum()
+                    margin.Text = "Margin:"
+                    margin.Config = {0, 100}
+                    margin.NumEdit.Value = s.Storage.GetInt("Thumbnail Margin", 5)
+                    margin.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Margin", CInt(value))
+
                     Dim cq = ui.AddNum()
                     cq.Text = "Compression Quality:"
                     cq.Config = {1, 100}
@@ -5987,7 +5995,7 @@ Public Class MainForm
                     AddHandler k.Button.ValueChangedUser, Sub() cq.Visible = k.Button.Value = "jpg"
 
                     Dim logo = ui.AddBool()
-                    logo.Text = "Disable Logo"
+                    logo.Text = "Disable StaxRip Logo"
                     logo.Help = "Enable or disable the StaxRip Watermark"
                     logo.Checked = s.Storage.GetBool("Logo", False)
                     logo.SaveAction = Sub(value) s.Storage.SetBool("Logo", CBool(value))
@@ -5997,18 +6005,19 @@ Public Class MainForm
                     output.Checked = s.Storage.GetBool("StaxRipOutput", False)
                     output.SaveAction = Sub(value) s.Storage.SetBool("StaxRipOutput", value)
 
-                    Dim customDirectory = ui.AddTextMenu() 'Custom Output Directory
-                    customDirectory.Expandet = True
-                    customDirectory.Label.Visible = False
-                    customDirectory.Edit.Text = s.Storage.GetString("StaxRipDirectory", p.DefaultTargetFolder)
-                    customDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("StaxRipDirectory", value)
-                    customDirectory.AddMenu("Browse Folder...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+                    Dim customDir = ui.AddTextButton()
+                    customDir.Visible = output.Checked
+                    customDir.Expandet = True
+                    customDir.Label.Visible = False
+                    customDir.Edit.Text = s.Storage.GetString("StaxRipDirectory", p.DefaultTargetFolder)
+                    customDir.Edit.SaveAction = Sub(value) s.Storage.SetString("StaxRipDirectory", value)
+                    customDir.BrowseFolder()
 
-                    AddHandler output.CheckStateChanged, Sub() customDirectory.Visible = output.Checked = True
+                    AddHandler output.CheckStateChanged, Sub() customDir.Visible = output.Checked = True
 
                     page.ResumeLayout()
 
-                    If f.ShowDialog() = DialogResult.OK Then
+                    If form.ShowDialog() = DialogResult.OK Then
                         ui.Save()
 
                         For Each i In fd.FileNames

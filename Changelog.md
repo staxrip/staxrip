@@ -1,4 +1,10 @@
 
+###
+
+- new: %dpi% macro added, returnes the DPI value of the main dialog screen
+- new: High DPI aware Info AviSynth filter profile added to misc section: Info(size=16*%dpi%/96)
+- new: the VFW/avifile interface was replaced with a wrapper library
+
 ### 2.0.6.2
 
 - new: crop dialog supports hardware accelerated video rendering

@@ -151,13 +151,18 @@ Module StringExtensions
 
     <Extension()>
     Function FixDir(instance As String) As String
-        If instance = "" Then Return ""
+        If instance = "" Then
+            Return ""
+        End If
 
         While instance.EndsWith(DirPath.Separator + DirPath.Separator)
             instance = instance.Substring(0, instance.Length - 1)
         End While
 
-        If instance.EndsWith(DirPath.Separator) Then Return instance
+        If instance.EndsWith(DirPath.Separator) Then
+            Return instance
+        End If
+
         Return instance + DirPath.Separator
     End Function
 

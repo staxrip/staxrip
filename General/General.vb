@@ -1,3 +1,4 @@
+
 Imports System.Runtime.Serialization
 Imports System.ComponentModel
 Imports System.Runtime.Serialization.Formatters.Binary
@@ -14,9 +15,6 @@ Imports VB6 = Microsoft.VisualBasic
 Imports Microsoft.Win32
 
 Public Class Folder
-
-#Region "System"
-
     Shared ReadOnly Property Desktop() As String
         Get
             Return Environment.GetFolderPath(Environment.SpecialFolder.Desktop).FixDir
@@ -88,10 +86,6 @@ Public Class Folder
             Return GetFolderPath(Environment.SpecialFolder.Windows).FixDir
         End Get
     End Property
-
-#End Region
-
-#Region "StaxRip"
 
     Shared ReadOnly Property Apps As String
         Get
@@ -236,8 +230,6 @@ Public Class Folder
             Return ret
         End Get
     End Property
-
-#End Region
 
     <DllImport("shfolder.dll", CharSet:=CharSet.Unicode)>
     Private Shared Function SHGetFolderPath(hwndOwner As IntPtr, nFolder As Integer, hToken As IntPtr, dwFlags As Integer, lpszPath As StringBuilder) As Integer

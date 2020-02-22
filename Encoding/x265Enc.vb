@@ -112,7 +112,7 @@ Public Class x265Enc
         End Try
 
         Dim bits = (New FileInfo(p.TempDir + p.TargetFile.Base + "_CompCheck." + OutputExt).Length) * 8
-        p.Compressibility = (bits / script.GetFrames) / (p.TargetWidth * p.TargetHeight)
+        p.Compressibility = (bits / script.GetFrameCount) / (p.TargetWidth * p.TargetHeight)
 
         OnAfterCompCheck()
         g.MainForm.Assistant()
@@ -1107,7 +1107,7 @@ Public Class x265Params
         If includePaths Then
             If PipingTool.ValueText <> "none" Then
                 If Frames.Value = 0 AndAlso Not IsCustom(pass, "--frames") Then
-                    sb.Append(" --frames " & script.GetFrames)
+                    sb.Append(" --frames " & script.GetFrameCount)
                 End If
 
                 sb.Append(" --y4m")

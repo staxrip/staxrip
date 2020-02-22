@@ -49,20 +49,23 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
         static HMODULE dll = LoadLibrary(L"AviSynth");
 
         if (!dll)
+            dll = LoadLibrary(L"AviSynth");
+
+        if (!dll)
             throw std::exception("AviSynth+ installation cannot be found");
 
-        IScriptEnvironment* (*CreateScriptEnvironment)(int version) =
-            (IScriptEnvironment * (*)(int)) GetProcAddress(dll, "CreateScriptEnvironment");
+        IScriptEnvironment2* (*CreateScriptEnvironment2)(int version) =
+            (IScriptEnvironment2 * (*)(int)) GetProcAddress(dll, "CreateScriptEnvironment2");
 
-        if (!CreateScriptEnvironment)
-            throw std::exception("Cannot resolve AviSynth+ CreateScriptEnvironment function");
+        if (!CreateScriptEnvironment2)
+            throw std::exception("Cannot resolve AviSynth+ CreateScriptEnvironment2 function");
 
-        m_ScriptEnvironment = CreateScriptEnvironment(6);
+        m_ScriptEnvironment = CreateScriptEnvironment2(6);
 
         if (!m_ScriptEnvironment)
             throw std::exception("A newer AviSynth+ version is required");
 
-        AVS_linkage = m_ScriptEnvironment->GetAVSLinkage();
+        AVS_linkage = m_Linkage = m_ScriptEnvironment->GetAVSLinkage();
 
         std::string ansiFile = ConvertWideToANSI(file);
         AVSValue arg(ansiFile.c_str());
@@ -74,11 +77,12 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
         m_Clip = m_AVSValue.AsClip();
 
         VideoInfo avsInfo = m_Clip->GetVideoInfo();
+
         m_Info.Width = avsInfo.width;
         m_Info.Height = avsInfo.height;
         m_Info.FrameCount = avsInfo.num_frames;
-        m_Info.FrameRateNumerator = avsInfo.fps_numerator;
-        m_Info.FrameRateDenominator = avsInfo.fps_denominator;
+        m_Info.FrameRateNum = avsInfo.fps_numerator;
+        m_Info.FrameRateDen = avsInfo.fps_denominator;
 
         return S_OK;
     }
@@ -102,16 +106,18 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
 
 void* __stdcall AviSynthServer::GetFrame(int position)
 {
-    if (!m_ScriptEnvironment)
+    if (m_Info.FrameCount == 0)
         return NULL;
+
+    AVS_linkage = m_Linkage;
 
     try
     {
         m_Frame = m_Clip->GetFrame(position, m_ScriptEnvironment);
         auto readPtr = m_Frame->GetReadPtr();
-        
+
         if (!readPtr)
-            throw std::exception("AviSynth+ frame pointer is null");
+            throw std::exception("AviSynth+ pixel data pointer is null");
 
         return (void*)readPtr;
     }
@@ -119,9 +125,13 @@ void* __stdcall AviSynthServer::GetFrame(int position)
     {
         m_Error = ConvertAnsiToWide(e.msg);
     }
-    catch (std::exception & e)
+    catch (std::exception& e)
     {
         m_Error = ConvertAnsiToWide(e.what());
+    }
+    catch (...)
+    {
+        m_Error = L"Exception: AviSynthServer::GetFrame";
     }
 
     return NULL;
@@ -150,16 +160,20 @@ AviSynthServer::~AviSynthServer()
 
 void AviSynthServer::Free()
 {
+    AVS_linkage = m_Linkage;
+
     m_Frame     = NULL;
     m_Clip      = NULL;
     m_AVSValue  = NULL;
-    AVS_linkage = NULL;
 
     if (m_ScriptEnvironment)
     {
         m_ScriptEnvironment->DeleteScriptEnvironment();
         m_ScriptEnvironment = NULL;
     }
+
+    AVS_linkage = NULL;
+    m_Linkage = NULL;
 }
 
 

@@ -1,12 +1,11 @@
 
 #pragma once
 
-#include <atomic>
-
 #include "Common.h"
 #include "FrameServer.h"
 #include "avisynth_headers\avisynth.h"
 
+#include <atomic>
 
 const AVS_Linkage* AVS_linkage = NULL;
 
@@ -16,16 +15,17 @@ class AviSynthServer : IFrameServer
 
 private:
 
-    std::atomic<int>    m_References = 0;
-    std::wstring        m_Error;
-    ServerInfo          m_Info = {};
+    std::atomic<int>     m_References = 0;
+    std::wstring         m_Error;
+    ServerInfo           m_Info = {};
 
-    IScriptEnvironment* m_ScriptEnvironment = NULL;
-    PClip               m_Clip;
-    AVSValue            m_AVSValue;
-    PVideoFrame         m_Frame;
+    IScriptEnvironment2* m_ScriptEnvironment = NULL;
+    PClip                m_Clip;
+    AVSValue             m_AVSValue;
+    PVideoFrame          m_Frame;
+    const AVS_Linkage*   m_Linkage = NULL;
 
-    void    Free();
+    void Free();
 
 public:
 

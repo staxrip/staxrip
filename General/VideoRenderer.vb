@@ -15,12 +15,12 @@ Public Class VideoRenderer
     Private DirectWriteFactory As ComObject(Of IDWriteFactory)
     Private RenderTarget As ID2D1HwndRenderTarget
     Private DeviceContext As ID2D1DeviceContext
-    Private AVIFile As AVIFile
+    Private Server As FrameServer
     Private Control As Control
 
-    Sub New(ctrl As Control, avi As AVIFile)
-        AVIFile = avi
-        Control = ctrl
+    Sub New(control As Control, server As FrameServer)
+        Me.Server = server
+        Me.Control = control
 
         Direct2dFactory = D2D1Functions.D2D1CreateFactory(
             D2D1_FACTORY_TYPE.D2D1_FACTORY_TYPE_SINGLE_THREADED)
@@ -28,8 +28,27 @@ Public Class VideoRenderer
         DirectWriteFactory = DWriteFunctions.DWriteCreateFactory(Of IDWriteFactory)(
             DWRITE_FACTORY_TYPE.DWRITE_FACTORY_TYPE_SHARED)
 
-        AddHandler ctrl.ClientSizeChanged, AddressOf Resize
+        AddHandler control.ClientSizeChanged, AddressOf Resize
     End Sub
+
+    Private PositionValue As Integer
+
+    Property Position As Integer
+        Get
+            Return PositionValue
+        End Get
+        Set(value As Integer)
+            PositionValue = value
+
+            If PositionValue < 0 Then
+                PositionValue = 0
+            End If
+
+            If PositionValue > Server.Info.FrameCount - 1 Then
+                PositionValue = Server.Info.FrameCount - 1
+            End If
+        End Set
+    End Property
 
     Sub Resize(sender As Object, e As EventArgs)
         Dim bitmapSize = New D2D_SIZE_U With {
@@ -43,9 +62,9 @@ Public Class VideoRenderer
         CreateGraphicsResources()
 
         Try
-            Dim dib = AVIFile.GetDIB
+            Dim pixelPtr = Server.NativeServer.GetFrame(Position)
 
-            If dib = IntPtr.Zero Then
+            If pixelPtr = IntPtr.Zero Then
                 Exit Sub
             End If
 
@@ -56,16 +75,13 @@ Public Class VideoRenderer
                     .right = Control.ClientSize.Width,
                     .bottom = Control.ClientSize.Height}
 
-                DrawBitmap(CreateBitmapFromDIB(dib), ScaleRectangle(destinationRectangle))
+                DrawBitmap(CreateBitmap(pixelPtr), ScaleRectangle(destinationRectangle))
                 DrawInfoText()
             Else
                 Clear(Color.White)
 
-                Dim bitmapHeader = Marshal.PtrToStructure(Of BITMAPINFOHEADER)(dib)
-                Dim bitmapSize = New Size(bitmapHeader.biWidth, bitmapHeader.biHeight)
-
-                Dim scaleX = Control.Width / bitmapSize.Width
-                Dim scaleY = Control.Height / bitmapSize.Height
+                Dim scaleX = Control.Width / Server.Info.Width
+                Dim scaleY = Control.Height / Server.Info.Height
 
                 Dim left = CropLeft * scaleX
                 Dim right = CropRight * scaleX
@@ -81,10 +97,10 @@ Public Class VideoRenderer
                 Dim sourceRectangle As RectangleF
                 sourceRectangle.X = CropLeft
                 sourceRectangle.Y = CropTop
-                sourceRectangle.Width = bitmapSize.Width - CropLeft - CropRight
-                sourceRectangle.Height = bitmapSize.Height - CropTop - CropBottom
+                sourceRectangle.Width = Server.Info.Width - CropLeft - CropRight
+                sourceRectangle.Height = Server.Info.Height - CropTop - CropBottom
 
-                DrawBitmap(CreateBitmapFromDIB(dib),
+                DrawBitmap(CreateBitmap(pixelPtr),
                            ConvertRectangle(sourceRectangle),
                            ScaleRectangle(ConvertRectangle(destinationRectangle)))
             End If
@@ -101,19 +117,18 @@ Public Class VideoRenderer
         End If
 
         Dim currentDate As Date
-        currentDate = currentDate.AddSeconds(AVIFile.Position / AVIFile.FrameRate)
+        currentDate = currentDate.AddSeconds(Position / Server.FrameRate)
 
         Dim lengthtDate As Date
-        lengthtDate = lengthtDate.AddSeconds(AVIFile.FrameCount / AVIFile.FrameRate)
+        lengthtDate = lengthtDate.AddSeconds(Server.Info.FrameCount / Server.FrameRate)
 
-        Dim frameSize = AVIFile.FrameSize
         Dim dateFormat = If(lengthtDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff")
 
         Dim text =
-            "Frame: " & AVIFile.Position & " of " & AVIFile.FrameCount & BR &
+            "Frame: " & Position & " of " & Server.Info.FrameCount & BR &
             "Time: " & currentDate.ToString(dateFormat) + " of " + lengthtDate.ToString(dateFormat) + BR +
-            "Size: " & frameSize.Width & " x " & frameSize.Height & BR +
-            "Rate: " & AVIFile.FrameRate.ToString.Shorten(9) & " (" & AVIFile.FrameRateNumerator & "/" & AVIFile.FrameRateDenominator & ")"
+            "Size: " & Server.Info.Width & " x " & Server.Info.Height & BR +
+            "Rate: " & Server.FrameRate.ToString.Shorten(9) & " (" & Server.Info.FrameRateNum & "/" & Server.Info.FrameRateDen & ")"
 
         Dim layout As IDWriteTextLayout
         Dim format = DirectWriteFactory.CreateTextFormat("Segoe UI", 13)
@@ -221,10 +236,8 @@ Public Class VideoRenderer
         Marshal.ReleaseComObject(bitmap)
     End Sub
 
-    Function CreateBitmapFromDIB(dib As IntPtr) As ID2D1Bitmap
-        Dim bitmapHeader = Marshal.PtrToStructure(Of BITMAPINFOHEADER)(dib)
-        Dim pixelData = dib + Marshal.SizeOf(GetType(BITMAPINFOHEADER))
-        Dim pitch = CUInt((((bitmapHeader.biWidth * bitmapHeader.biBitCount) + 31) And Not 31) >> 3)
+    Function CreateBitmap(pixelPtr As IntPtr) As ID2D1Bitmap
+        Dim pitch = CUInt((((Server.Info.Width * 32) + 31) And Not 31) >> 3)
         Dim bitmapProperties As D2D1_BITMAP_PROPERTIES
 
         bitmapProperties.pixelFormat = New D2D1_PIXEL_FORMAT() With {
@@ -235,11 +248,11 @@ Public Class VideoRenderer
         bitmapProperties.dpiY = 96
 
         Dim bitmapSize = New D2D_SIZE_U With {
-            .width = CUInt(bitmapHeader.biWidth),
-            .height = CUInt(bitmapHeader.biHeight)}
+            .width = CUInt(Server.Info.Width),
+            .height = CUInt(Server.Info.Height)}
 
         Dim bitmap As ID2D1Bitmap
-        DeviceContext.CreateBitmap(bitmapSize, pixelData, pitch, bitmapProperties, bitmap).ThrowOnError()
+        DeviceContext.CreateBitmap(bitmapSize, pixelPtr, pitch, bitmapProperties, bitmap).ThrowOnError()
         Return bitmap
     End Function
 

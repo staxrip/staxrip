@@ -89,10 +89,8 @@ Public Class CodeEditor
         script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
         script.Filters = GetFilters()
 
-        Dim errMsg = script.GetErrorMessage
-
-        If Not errMsg Is Nothing Then
-            MsgError(errMsg)
+        If script.GetError <> "" Then
+            MsgError(script.GetError)
             Exit Sub
         End If
 
@@ -105,10 +103,8 @@ Public Class CodeEditor
         script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
         script.Filters = GetFilters()
 
-        Dim errMsg = script.GetErrorMessage
-
-        If Not errMsg Is Nothing Then
-            MsgError(errMsg)
+        If script.GetError <> "" Then
+            MsgError(script.GetError)
             Exit Sub
         End If
 
@@ -125,10 +121,8 @@ Public Class CodeEditor
         script.Path = p.TempDir + p.TargetFile.Base + "_editor." + script.FileType
         script.Filters = GetFilters()
 
-        Dim errMsg = script.GetErrorMessage
-
-        If Not errMsg Is Nothing Then
-            MsgError(errMsg)
+        If script.GetError <> "" Then
+            MsgError(script.GetError)
             Exit Sub
         End If
 
@@ -147,10 +141,8 @@ Public Class CodeEditor
         script.Path = p.TempDir + p.TargetFile.Base + "_editor." + script.FileType
         script.Filters = GetFilters()
 
-        Dim errMsg = script.GetErrorMessage
-
-        If Not errMsg Is Nothing Then
-            MsgError(errMsg)
+        If script.GetError <> "" Then
+            MsgError(script.GetError)
             Exit Sub
         End If
 

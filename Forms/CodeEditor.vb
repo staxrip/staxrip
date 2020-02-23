@@ -128,9 +128,9 @@ Public Class CodeEditor
 
         script.Synchronize(True, True, True)
 
-        Dim f As New PreviewForm(script)
-        f.Owner = g.MainForm
-        f.Show()
+        Dim form As New PreviewForm(script)
+        form.Owner = g.MainForm
+        form.Show()
     End Sub
 
     Sub ShowInfo()

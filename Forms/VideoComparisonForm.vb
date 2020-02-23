@@ -246,15 +246,15 @@ Public Class VideoComparisonForm
             Text = FilePath.GetBase(sourePath)
             SourceFile = sourePath
 
-            Dim avs As New VideoScript
-            avs.Engine = ScriptEngine.AviSynth
-            avs.Path = Folder.Temp + Guid.NewGuid.ToString + ".avs"
-            AddHandler Disposed, Sub() FileHelp.Delete(avs.Path)
+            Dim script As New VideoScript
+            script.Engine = ScriptEngine.AviSynth
+            script.Path = Folder.Temp + Guid.NewGuid.ToString + ".avs"
+            AddHandler Disposed, Sub() FileHelp.Delete(script.Path)
 
-            avs.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
+            script.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
 
             If sourePath.Ext = "png" Then
-                avs.Filters.Add(New VideoFilter("ImageSource(""" + sourePath + """, end = 0)"))
+                script.Filters.Add(New VideoFilter("ImageSource(""" + sourePath + """, end = 0)"))
             Else
                 Try
                     Dim cachePath = Folder.Temp + Guid.NewGuid.ToString + ".ffindex"
@@ -263,22 +263,22 @@ Public Class VideoComparisonForm
                 End Try
 
                 If sourePath.EndsWith("mp4") Then
-                    avs.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + sourePath + "" + """, format = ""YV12"")"))
+                    script.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + sourePath + "" + """, format = ""YV12"")"))
                 Else
-                    avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + "" + """, colorspace = ""YV12"")"))
+                    script.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + "" + """, colorspace = ""YV12"")"))
                 End If
             End If
 
             If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
-                avs.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
+                script.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
             End If
 
             If Form.Zoom <> 100 Then
-                avs.Filters.Add(New VideoFilter("Spline64Resize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
+                script.Filters.Add(New VideoFilter("Spline64Resize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
             End If
 
-            avs.Synchronize(True)
-            Server = New FrameServer(avs.Path)
+            script.Synchronize(True)
+            Server = New FrameServer(script.Path)
 
             Try
                 FileHelp.Delete(sourePath + ".ffindex")

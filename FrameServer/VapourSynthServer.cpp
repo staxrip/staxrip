@@ -105,7 +105,11 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
         std::string utf8file = ConvertWideToUtf8(file);
 
         if (vs_evaluateFile(&m_vsScript, utf8file.c_str(), 0))
-            throw std::exception(vs_getError(m_vsScript));     
+        {
+            m_Error = ConvertUtf8ToWide(vs_getError(m_vsScript));
+            Free();
+            return E_FAIL;
+        }
 
         m_vsNode = vs_getOutput(m_vsScript, 0);
 

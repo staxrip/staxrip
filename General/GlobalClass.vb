@@ -1023,7 +1023,6 @@ Public Class GlobalClass
     End Sub
 
     Sub RunAutoCrop()
-        g.WriteDebugLog("AutoCrop start")
         p.SourceScript.Synchronize(True, True, True)
 
         Using server As New FrameServer(p.SourceScript.Path)
@@ -1055,8 +1054,6 @@ Public Class GlobalClass
 
             CorrectCropMod()
         End Using
-
-        g.WriteDebugLog("AutoCrop end")
     End Sub
 
     Sub SmartCrop()

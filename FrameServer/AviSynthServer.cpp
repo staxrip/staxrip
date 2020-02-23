@@ -106,13 +106,13 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
 
 void* __stdcall AviSynthServer::GetFrame(int position)
 {
-    if (m_Info.FrameCount == 0)
-        return NULL;
-
-    AVS_linkage = m_Linkage;
-
     try
     {
+        if (m_Info.FrameCount == 0)
+            return NULL;
+
+        AVS_linkage = m_Linkage;
+
         m_Frame = m_Clip->GetFrame(position, m_ScriptEnvironment);
         auto readPtr = m_Frame->GetReadPtr();
 

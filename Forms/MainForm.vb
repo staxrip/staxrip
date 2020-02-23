@@ -1767,7 +1767,9 @@ Public Class MainForm
         AddHandler Disposed, Sub() FileHelp.Delete(recoverProjectPath)
 
         Try
-            If g.ShowVideoSourceWarnings(files) Then Throw New AbortException
+            If g.ShowVideoSourceWarnings(files) Then
+                Throw New AbortException
+            End If
 
             For Each i In files
                 Dim name = FilePath.GetName(i)
@@ -2192,10 +2194,7 @@ Public Class MainForm
             OpenProject("", False)
         Finally
             If Not isEncoding Then
-                g.WriteDebugLog("ProcController.Finished OpenVideoSourceFiles")
                 ProcController.Finished()
-            Else
-                g.WriteDebugLog("ProcController.Finished isEncoding")
             End If
         End Try
     End Sub
@@ -6086,7 +6085,6 @@ Public Class MainForm
                                    Application.DoEvents()
                                    Assistant()
                                    UpdateScriptsMenuAsync()
-                                   g.WriteDebugLog("MainForm.Activated")
                                End Sub))
     End Sub
 

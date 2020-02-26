@@ -1,12 +1,17 @@
 
 ###
 
+- new: icons added in encoder dialog menus
+- new: if a tool has both a local help file and online help
+       then a dialog is shown asking which help to show
 - new: medium quality for x264 was changed from crf 20 to 22
 - new: medium quality for x265 was changed from crf 20 to 18
 - new: %dpi% macro added, returnes the DPI value of the main dialog screen
 - new: High DPI aware Info AviSynth filter profile added to misc section: Info(size=16*%dpi%/96)
-- new: the VFW/avifile interface used to access AviSynth and VapourSynth
-       was replaced with a native wrapper library
+- new: the VFW interface used to access AviSynth and VapourSynth
+       was replaced with a new library
+
+- fix: x265 three pass encoding (untested)
 
 ### 2.0.6.2
 

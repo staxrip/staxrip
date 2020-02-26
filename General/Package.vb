@@ -12,7 +12,6 @@ Public Class Package
     Property FileNotFoundMessage As String
     Property HelpFile As String
     Property HelpURL As String
-    Property HelpURLFunc As Func(Of ScriptEngine, String)
     Property HintDirectories As String()
     Property HintDirFunc As Func(Of String)
     Property IgnoreVersion As Boolean
@@ -1852,13 +1851,31 @@ Public Class Package
         End Set
     End Property
 
+    Sub ShowHelp()
+        If HelpFile <> "" AndAlso HelpURL <> "" Then
+            Using td As New TaskDialog(Of String)
+                td.MainInstruction = "Local help file or online help?"
+
+                td.AddCommandLink("Local help file", GetDir() + HelpFile, "local")
+                td.AddCommandLink("Online help", HelpURL, "online")
+
+                Select Case td.Show
+                    Case "local"
+                        g.StartProcess(GetDir() + HelpFile)
+                    Case "online"
+                        g.StartProcess(HelpURL)
+                End Select
+            End Using
+        Else
+            g.StartProcess(GetHelpPath)
+        End If
+    End Sub
+
     Function GetHelpPath(Optional engine As ScriptEngine = ScriptEngine.AviSynth) As String
         If HelpFile <> "" Then
             Return GetDir() + HelpFile
         ElseIf HelpURL <> "" Then
             Return HelpURL
-        ElseIf Not HelpURLFunc Is Nothing Then
-            Return HelpURLFunc.Invoke(engine)
         ElseIf WebURL <> "" Then
             Return WebURL
         End If

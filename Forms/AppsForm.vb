@@ -460,7 +460,7 @@ Public Class AppsForm
     End Sub
 
     Private Sub tsbHelp_Click(sender As Object, e As EventArgs) Handles tsbHelp.Click
-        g.StartProcess(CurrentPackage.GetHelpPath)
+        CurrentPackage.ShowHelp()
     End Sub
 
     Private Sub tsbWebsite_Click(sender As Object, e As EventArgs) Handles tsbWebsite.Click

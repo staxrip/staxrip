@@ -1387,16 +1387,19 @@ Public Class MainForm
                     i.DropDownItems.ClearAndDisplose
 
                     For Each iPackage In Package.Items.Values
-                        Dim helpPath = iPackage.GetHelpPath
-
-                        If helpPath <> "" Then
+                        If iPackage.GetHelpPath <> "" Then
                             Dim plugin = TryCast(iPackage, PluginPackage)
 
                             If plugin Is Nothing Then
-                                ActionMenuItem.Add(i.DropDownItems, iPackage.Name.Substring(0, 1).Upper + " | " + iPackage.Name, Sub() g.StartProcess(helpPath))
+                                ActionMenuItem.Add(i.DropDownItems, iPackage.Name.Substring(0, 1).Upper + " | " + iPackage.Name, Sub() iPackage.ShowHelp())
                             Else
-                                If plugin.AvsFilterNames?.Length > 0 Then ActionMenuItem.Add(i.DropDownItems, iPackage.Name.Substring(0, 1).Upper + " | " + iPackage.Name + " (AviSynth)", Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.AviSynth)))
-                                If plugin.VSFilterNames?.Length > 0 Then ActionMenuItem.Add(i.DropDownItems, iPackage.Name.Substring(0, 1).Upper + " | " + iPackage.Name + " (VapourSynth)", Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.VapourSynth)))
+                                If plugin.AvsFilterNames?.Length > 0 Then
+                                    ActionMenuItem.Add(i.DropDownItems, iPackage.Name.Substring(0, 1).Upper + " | " + iPackage.Name + " (AviSynth)", Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.AviSynth)))
+                                End If
+
+                                If plugin.VSFilterNames?.Length > 0 Then
+                                    ActionMenuItem.Add(i.DropDownItems, iPackage.Name.Substring(0, 1).Upper + " | " + iPackage.Name + " (VapourSynth)", Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.VapourSynth)))
+                                End If
                             End If
                         End If
                     Next

@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 Imports StaxRip.CommandLine
 Imports System.Text.RegularExpressions
@@ -300,11 +301,11 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Function OpenMuxerProfilesDialog() As DialogResult
-        Using f As New ProfilesForm("Muxer Profiles", s.MuxerProfiles,
-                                    AddressOf LoadMuxer,
-                                    AddressOf GetMuxerProfile,
-                                    AddressOf Muxer.GetDefaults)
-            Return f.ShowDialog()
+        Using form As New ProfilesForm("Muxer Profiles", s.MuxerProfiles,
+                                       AddressOf LoadMuxer,
+                                       AddressOf GetMuxerProfile,
+                                       AddressOf Muxer.GetDefaults)
+            Return form.ShowDialog()
         End Using
     End Function
 
@@ -411,9 +412,9 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Overrides Function Edit() As DialogResult
-        Using f As New ControlHostForm(Name)
-            f.AddControl(CreateEditControl, Nothing)
-            f.ShowDialog()
+        Using form As New ControlHostForm(Name)
+            form.AddControl(CreateEditControl, Nothing)
+            form.ShowDialog()
         End Using
 
         Return DialogResult.OK

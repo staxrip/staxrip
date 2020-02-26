@@ -45,8 +45,8 @@ Public Class x265Enc
         If Params.Mode.Value = x265RateMode.TwoPass Then
             Encode("Video encoding second pass", GetArgs(2, p.Script), s.ProcessPriority)
         ElseIf Params.Mode.Value = x265RateMode.ThreePass Then
-            Encode("Video encoding second pass", GetArgs(3, p.Script), s.ProcessPriority)
-            Encode("Video encoding third pass", GetArgs(2, p.Script), s.ProcessPriority)
+            Encode("Video encoding second pass", GetArgs(2, p.Script), s.ProcessPriority)
+            Encode("Video encoding third pass", GetArgs(3, p.Script), s.ProcessPriority)
         End If
 
         AfterEncoding()
@@ -133,7 +133,7 @@ Public Class x265Enc
         newParams.ApplyPresetDefaultValues()
         newParams.ApplyTuneDefaultValues()
 
-        Using f As New CommandLineForm(newParams)
+        Using form As New CommandLineForm(newParams)
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of x265Enc)(Me)
                                         Dim params2 As New x265Params
@@ -144,9 +144,9 @@ Public Class x265Enc
                                         SaveProfile(enc)
                                     End Sub
 
-            ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
+            ActionMenuItem.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
 
-            If f.ShowDialog() = DialogResult.OK Then
+            If form.ShowDialog() = DialogResult.OK Then
                 AutoCompCheckValue = CInt(newParams.CompCheckAimedQuality.Value)
                 Params = newParams
                 ParamsStore = store

@@ -1,9 +1,12 @@
 
 ###
 
+- new: medium quality for x264 was changed from crf 20 to 22
+- new: medium quality for x265 was changed from crf 20 to 18
 - new: %dpi% macro added, returnes the DPI value of the main dialog screen
 - new: High DPI aware Info AviSynth filter profile added to misc section: Info(size=16*%dpi%/96)
-- new: the VFW/avifile interface was replaced with a wrapper library
+- new: the VFW/avifile interface used to access AviSynth and VapourSynth
+       was replaced with a native wrapper library
 
 ### 2.0.6.2
 

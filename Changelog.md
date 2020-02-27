@@ -10,10 +10,10 @@
 - new: medium quality for x264 was changed from crf 20 to 22
 - new: medium quality for x265 was changed from crf 20 to 18
 - new: %dpi% macro added, returnes the DPI value of the main dialog screen
-- new: High DPI aware Info AviSynth filter profile added to misc section: Info(size=16*%dpi%/96)
+- new: High DPI aware Info() AviSynth filter profile added to misc section
 - new: the VFW interface used to access AviSynth and VapourSynth
        was replaced with a new library
-- new: x265 switches --analysis-save-reuse-level --analysis-load-reuse-level
+- new: a dozen new x265 switches
 - new: nvenc switches --colorrange, --psnr, --ssim
 - new: search matches in the video encoder config dialog
        stay now permanently highlighted with bold font

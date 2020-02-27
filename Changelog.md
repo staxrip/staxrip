@@ -23,6 +23,9 @@
 - new: in the video encoder config dialogs the context menu of the
        command line preview has a new menu item to search
 	   for the switch or string at the caret or cursor
+- new: Opus format enabled for MP4Box muxer, this was requested
+       but did not work in my test
+- new: bmp format for cover art can be used in muxer dialog
 
 - update: nvenc 4.65
 - update: qsvenc 3.31
@@ -30,8 +33,10 @@
 - update: x265 3.3+2-gbe2d82093 GCC Patman
 - update: ffmpeg N-96788 GCC 9.2.0 Patman
 - update: mkvtoolnix 43
+- update: MP4Box 0.8.0-rev178-g44c48d630 Patman
 
 - fix: x265 three pass encoding (untested)
+- fix: zoom in/out was flipped in preview dialog
 
 ### 2.0.6.2
 

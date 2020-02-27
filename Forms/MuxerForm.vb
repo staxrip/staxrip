@@ -1,4 +1,4 @@
-Imports System.Threading.Tasks
+
 Imports StaxRip.UI
 
 Public Class MuxerForm
@@ -730,7 +730,7 @@ Public Class MuxerForm
         tb.Text = "Cover"
         tb.Expandet = True
         tb.Property = NameOf(Muxer.CoverFile)
-        tb.BrowseFile("jpg, png|*.jpg;*.png")
+        tb.BrowseFile("jpg, png, bmp|*.jpg;*.png;*.bmp")
 
         Dim mb = UI.AddTextMenu()
         mb.Text = "Chapters"

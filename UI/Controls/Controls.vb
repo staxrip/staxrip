@@ -455,12 +455,19 @@ Namespace UI
         End Sub
 
         Sub New(createMenu As Boolean)
-            If createMenu Then InitMenu()
-            If VisualStyleInformation.IsEnabledByUser Then BorderStyle = BorderStyle.None
+            If createMenu Then
+                InitMenu()
+            End If
+
+            If VisualStyleInformation.IsEnabledByUser Then
+                BorderStyle = BorderStyle.None
+            End If
         End Sub
 
         Sub InitMenu()
-            If DesignHelp.IsDesignMode Then Exit Sub
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
 
             Dim cms As New ContextMenuStripEx()
 
@@ -497,6 +504,11 @@ Namespace UI
             ContextMenuStrip = cms
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            MyBase.Dispose(disposing)
+            ContextMenuStrip?.Dispose()
+        End Sub
+
         Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
             If e.KeyData = (Keys.Control Or Keys.V) Then
                 e.SuppressKeyPress = True
@@ -513,7 +525,9 @@ Namespace UI
 
             Select Case m.Msg
                 Case 15, 20 'WM_PAINT, WM_ERASEBKGND
-                    If BlockPaint Then Exit Sub
+                    If BlockPaint Then
+                        Exit Sub
+                    End If
                 Case Else
             End Select
 
@@ -530,7 +544,9 @@ Namespace UI
         End Sub
 
         Private Sub WmNccalcsize(ByRef m As Message)
-            If Not VisualStyleInformation.IsEnabledByUser Then Return
+            If Not VisualStyleInformation.IsEnabledByUser Then
+                Return
+            End If
 
             Dim par As New Native.NCCALCSIZE_PARAMS()
             Dim windowRect As Native.RECT
@@ -567,23 +583,25 @@ Namespace UI
         End Sub
 
         Private Sub WmNcpaint(ByRef m As Message)
-            If Not VisualStyleInformation.IsEnabledByUser Then Return
+            If Not VisualStyleInformation.IsEnabledByUser Then
+                Return
+            End If
 
-            Dim r As Native.RECT
-            Native.GetWindowRect(Handle, r)
+            Dim rect As Native.RECT
+            Native.GetWindowRect(Handle, rect)
 
-            r.Right -= r.Left
-            r.Bottom -= r.Top
-            r.Top = 0
-            r.Left = 0
+            rect.Right -= rect.Left
+            rect.Bottom -= rect.Top
+            rect.Top = 0
+            rect.Left = 0
 
-            r.Left += BorderRect.Left
-            r.Top += BorderRect.Top
-            r.Right -= BorderRect.Right
-            r.Bottom -= BorderRect.Bottom
+            rect.Left += BorderRect.Left
+            rect.Top += BorderRect.Top
+            rect.Right -= BorderRect.Right
+            rect.Bottom -= BorderRect.Bottom
 
             Dim hDC = Native.GetWindowDC(Handle)
-            Native.ExcludeClipRect(hDC, r.Left, r.Top, r.Right, r.Bottom)
+            Native.ExcludeClipRect(hDC, rect.Left, rect.Top, rect.Right, rect.Bottom)
 
             Using g = Graphics.FromHdc(hDC)
                 g.Clear(Color.CadetBlue)
@@ -885,7 +903,9 @@ Namespace UI
         Property LastCommandLine As String
 
         Sub SetText(commandLine As String)
-            If commandLine = LastCommandLine Then Exit Sub
+            If commandLine = LastCommandLine Then
+                Exit Sub
+            End If
 
             If commandLine = "" Then
                 Text = ""
@@ -941,13 +961,15 @@ Namespace UI
         End Function
 
         Function ReverseString(value As String) As String
-            Dim a = value.ToCharArray
-            Array.Reverse(a)
-            Return New String(a)
+            Dim chars = value.ToCharArray
+            Array.Reverse(chars)
+            Return New String(chars)
         End Function
 
         Private Sub CommandLineRichTextBox_HandleCreated(sender As Object, e As EventArgs) Handles Me.HandleCreated
-            If Not DesignMode Then Font = New Font("Consolas", 10 * s.UIScaleFactor)
+            If Not DesignMode Then
+                Font = New Font("Consolas", 10 * s.UIScaleFactor)
+            End If
         End Sub
 
         Sub UpdateHeight()

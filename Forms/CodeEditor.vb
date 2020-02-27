@@ -1,4 +1,5 @@
-﻿Imports StaxRip.UI
+﻿
+Imports StaxRip.UI
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 
@@ -71,13 +72,13 @@ Public Class CodeEditor
     Function GetFilters() As List(Of VideoFilter)
         Dim ret As New List(Of VideoFilter)
 
-        For Each i As FilterTable In MainFlowLayoutPanel.Controls
-            Dim f As New VideoFilter()
-            f.Active = i.cbActive.Checked
-            f.Category = i.cbActive.Text
-            f.Path = i.tbName.Text
-            f.Script = i.rtbScript.Text.FixBreak.Trim
-            ret.Add(f)
+        For Each table As FilterTable In MainFlowLayoutPanel.Controls
+            Dim filter As New VideoFilter()
+            filter.Active = table.cbActive.Checked
+            filter.Category = table.cbActive.Text
+            filter.Path = table.tbName.Text
+            filter.Script = table.rtbScript.Text.FixBreak.Trim
+            ret.Add(filter)
         Next
 
         Return ret
@@ -180,10 +181,10 @@ Public Class CodeEditor
     End Sub
 
     Private Sub CodeEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        form.Show()
     End Sub
 
     Public Class FilterTable
@@ -343,7 +344,10 @@ Public Class CodeEditor
         End Sub
 
         Sub HandleMouseUp(sender As Object, e As MouseEventArgs)
-            If e.Button <> MouseButtons.Right Then Exit Sub
+            If e.Button <> MouseButtons.Right Then
+                Exit Sub
+            End If
+
             Menu.Items.ClearAndDisplose
             Dim filterProfiles = If(p.Script.Engine = ScriptEngine.AviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
             Dim code = rtbScript.Text.FixBreak
@@ -492,9 +496,7 @@ Public Class CodeEditor
                                          Menu.Add("Help | AviSynth local", Sub() g.StartProcess(helpIndex), helpIndex)
                                      End If
 
-                                     Menu.Add("Help | AviSynth.nl", Sub() g.StartProcess("http://avisynth.nl"), "http://avisynth.nl")
-                                     Menu.Add("Help | AviSynth+", Sub() g.StartProcess("http://avisynth.nl/index.php/AviSynth%2B"), "http://avisynth.nl/index.php/AviSynth%2B")
-                                     Menu.Add("Help | AviSynth+ plugins", Sub() g.StartProcess("http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins"), "http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins")
+                                     Menu.Add("Help | AviSynth Help", Sub() g.StartProcess("http://avisynth.nl"), "http://avisynth.nl")
                                      Menu.Add("Help | -")
 
                                      For Each pluginPack In Package.Items.Values.OfType(Of PluginPackage)
@@ -506,8 +508,7 @@ Public Class CodeEditor
                                          End If
                                      Next
                                  Else
-                                     Menu.Add("Help | vapoursynth.com", Sub() g.StartProcess("http://www.vapoursynth.com"), "http://www.vapoursynth.com")
-                                     Menu.Add("Help | VapourSynth plugins", Sub() g.StartProcess("http://www.vapoursynth.com/doc/pluginlist.html"), "http://www.vapoursynth.com/doc/pluginlist.html")
+                                     Menu.Add("Help | VapourSynth Help", Sub() Package.VapourSynth.ShowHelp(), Package.VapourSynth.GetHelpPath)
                                      Menu.Add("Help | -")
 
                                      For Each pluginPack In Package.Items.Values.OfType(Of PluginPackage)
@@ -522,7 +523,10 @@ Public Class CodeEditor
                              End Sub
 
             AddHandler helpMenuItem.DropDownOpened, Sub()
-                                                        If helpMenuItem.DropDownItems.Count > 1 Then Exit Sub
+                                                        If helpMenuItem.DropDownItems.Count > 1 Then
+                                                            Exit Sub
+                                                        End If
+
                                                         helpTempMenuItem.Visible = False
                                                         helpAction()
                                                     End Sub
@@ -533,7 +537,11 @@ Public Class CodeEditor
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim index = flow.Controls.IndexOf(Me)
             index -= 1
-            If index < 0 Then index = 0
+
+            If index < 0 Then
+                index = 0
+            End If
+
             flow.Controls.SetChildIndex(Me, index)
         End Sub
 

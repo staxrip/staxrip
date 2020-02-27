@@ -1,30 +1,31 @@
 ﻿
-Imports System.Threading
-Imports System.Threading.Tasks
-
+Imports System.ComponentModel
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 Public Class CommandLineForm
     Private Params As CommandLineParams
-
-    Public HTMLHelp As String
-
     Private SearchIndex As Integer
     Private Items As New List(Of Item)
+    Private HighlightedControl As Control
+
+    Property HTMLHelp As String
 
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
         SimpleUI.ScaleClientSize(37, 26)
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
+        rtbCommandLine.ContextMenuStrip.Dispose()
+        rtbCommandLine.ContextMenuStrip = cmsCommandLine
+
         Dim singleList As New List(Of String)
 
-        For Each i In params.Items
-            If i.GetKey = "" OrElse singleList.Contains(i.GetKey) Then
-                Throw New Exception("key found twice: " + i.GetKey)
+        For Each param In params.Items
+            If param.GetKey = "" OrElse singleList.Contains(param.GetKey) Then
+                Throw New Exception("key found twice: " + param.GetKey)
             End If
 
-            singleList.Add(i.GetKey)
+            singleList.Add(param.GetKey)
         Next
 
         Me.Params = params
@@ -65,8 +66,8 @@ Public Class CommandLineForm
         Dim currentFlow As SimpleUI.FlowPage
 
         For x = 0 To Params.Items.Count - 1
-            Dim item = Params.Items(x)
-            Dim parent As FlowLayoutPanelEx = SimpleUI.GetFlowPage(item.Path)
+            Dim param = Params.Items(x)
+            Dim parent As FlowLayoutPanelEx = SimpleUI.GetFlowPage(param.Path)
             currentFlow = DirectCast(parent, SimpleUI.FlowPage)
 
             If Not flowPanels.Contains(parent) Then
@@ -75,88 +76,117 @@ Public Class CommandLineForm
             End If
 
             Dim help As String = Nothing
-            Dim switches = item.Switches
+            Dim switches = param.Switches
 
-            If item.Switch <> "" Then help += item.Switch + BR
-            If item.NoSwitch <> "" Then help += item.NoSwitch + BR
-            If Not switches.NothingOrEmpty Then help += switches.Join(BR) + BR
+            If param.Switch <> "" Then
+                help += param.Switch + BR
+            End If
 
-            help += BR
+            If param.NoSwitch <> "" Then
+                help += param.NoSwitch + BR
+            End If
 
-            If TypeOf item Is NumParam Then
-                Dim param = DirectCast(item, NumParam)
-                If param.Config(0) > Double.MinValue Then help += "Minimum: " & param.Config(0) & BR
-                If param.Config(1) < Double.MaxValue Then help += "Maximum: " & param.Config(1) & BR
+            If Not switches.NothingOrEmpty Then
+                help += switches.Join(BR) + BR
             End If
 
             help += BR
 
-            If Not item.URLs.NothingOrEmpty Then help += String.Join(BR, item.URLs.Select(Function(val) "[" + val + " " + val + "]"))
-            If item.Help <> "" Then help += item.Help
+            If TypeOf param Is NumParam Then
+                Dim nParam = DirectCast(param, NumParam)
+
+                If nParam.Config(0) > Double.MinValue Then
+                    help += "Minimum: " & nParam.Config(0) & BR
+                End If
+
+                If nParam.Config(1) < Double.MaxValue Then
+                    help += "Maximum: " & nParam.Config(1) & BR
+                End If
+            End If
+
+            help += BR
+
+            If Not param.URLs.NothingOrEmpty Then
+                help += String.Join(BR, param.URLs.Select(Function(val) "[" + val + " " + val + "]"))
+            End If
+
+            If param.Help <> "" Then
+                help += param.Help
+            End If
 
             If help <> "" Then
-                If help.Contains(BR2 + BR) Then help = help.Replace(BR2 + BR, BR2)
-                If help.EndsWith(BR) Then help = help.Trim
+                If help.Contains(BR2 + BR) Then
+                    help = help.Replace(BR2 + BR, BR2)
+                End If
+
+                If help.EndsWith(BR) Then
+                    help = help.Trim
+                End If
             End If
 
-            If item.Label <> "" Then SimpleUI.AddLabel(parent, item.Label).MarginTop = FontHeight \ 2
+            If param.Label <> "" Then
+                SimpleUI.AddLabel(parent, param.Label).MarginTop = FontHeight \ 2
+            End If
 
-            If TypeOf item Is BoolParam Then
-                Dim cb = SimpleUI.AddBool(parent)
-                cb.Text = item.Text
+            If TypeOf param Is BoolParam Then
+                Dim checkBox = SimpleUI.AddBool(parent)
+                checkBox.Text = param.Text
 
-                If item.HelpSwitch <> "" Then
-                    Dim helpID = item.HelpSwitch
-                    cb.HelpAction = Sub() Params.ShowHelp(helpID)
+                If param.HelpSwitch <> "" Then
+                    Dim helpID = param.HelpSwitch
+                    checkBox.HelpAction = Sub() Params.ShowHelp(helpID)
                 Else
-                    cb.Help = help
+                    checkBox.Help = help
                 End If
 
-                cb.MarginLeft = item.LeftMargin
-                DirectCast(item, BoolParam).InitParam(cb)
-                helpControl = cb
-            ElseIf TypeOf item Is NumParam Then
-                Dim tempItem = DirectCast(item, NumParam)
-                Dim param = DirectCast(item, NumParam)
-                Dim nb = SimpleUI.AddNum(parent)
-                nb.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
+                checkBox.MarginLeft = param.LeftMargin
+                DirectCast(param, BoolParam).InitParam(checkBox)
+                helpControl = checkBox
+            ElseIf TypeOf param Is NumParam Then
+                Dim tempNumParam = DirectCast(param, NumParam)
+                Dim nParam = DirectCast(param, NumParam)
+                Dim numBlock = SimpleUI.AddNum(parent)
+                numBlock.Label.Text = If(param.Text.EndsWith(":"), param.Text, param.Text + ":")
 
-                If item.HelpSwitch <> "" Then
-                    Dim helpID = item.HelpSwitch
-                    nb.Label.HelpAction = Sub() Params.ShowHelp(helpID)
+                If param.HelpSwitch <> "" Then
+                    Dim helpID = param.HelpSwitch
+                    numBlock.Label.HelpAction = Sub() Params.ShowHelp(helpID)
                 Else
-                    nb.Label.Help = help
+                    numBlock.Label.Help = help
                 End If
 
-                nb.NumEdit.Config = param.Config
-                AddHandler nb.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
-                DirectCast(item, NumParam).InitParam(nb.NumEdit)
-                helpControl = nb.Label
-            ElseIf TypeOf item Is OptionParam Then
-                Dim tempItem = DirectCast(item, OptionParam)
-                Dim os = DirectCast(item, OptionParam)
-                Dim mb = SimpleUI.AddMenu(Of Integer)(parent)
-                mb.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
+                numBlock.NumEdit.Config = nParam.Config
+                AddHandler numBlock.Label.MouseDoubleClick, Sub() tempNumParam.Value = tempNumParam.DefaultValue
+                DirectCast(param, NumParam).InitParam(numBlock.NumEdit)
+                helpControl = numBlock.Label
+            ElseIf TypeOf param Is OptionParam Then
+                Dim tempOptionParam = DirectCast(param, OptionParam)
+                Dim oParam = DirectCast(param, OptionParam)
+                Dim menuBlock = SimpleUI.AddMenu(Of Integer)(parent)
+                menuBlock.Label.Text = If(param.Text.EndsWith(":"), param.Text, param.Text + ":")
 
-                If item.HelpSwitch <> "" Then
-                    Dim helpID = item.HelpSwitch
-                    mb.Label.HelpAction = Sub() Params.ShowHelp(helpID)
-                    mb.Button.HelpAction = Sub() Params.ShowHelp(helpID)
+                If param.HelpSwitch <> "" Then
+                    Dim helpID = param.HelpSwitch
+                    menuBlock.Label.HelpAction = Sub() Params.ShowHelp(helpID)
+                    menuBlock.Button.HelpAction = Sub() Params.ShowHelp(helpID)
                 Else
-                    mb.Help = help
+                    menuBlock.Help = help
                 End If
 
-                helpControl = mb.Label
-                AddHandler mb.Label.MouseDoubleClick, Sub() tempItem.ValueChangedUser(tempItem.DefaultValue)
-                If os.Expand Then mb.Button.Expand = True
+                helpControl = menuBlock.Label
+                AddHandler menuBlock.Label.MouseDoubleClick, Sub() tempOptionParam.ValueChangedUser(tempOptionParam.DefaultValue)
 
-                For x2 = 0 To os.Options.Length - 1
-                    mb.Button.Add(os.Options(x2), x2)
+                If oParam.Expand Then
+                    menuBlock.Button.Expand = True
+                End If
+
+                For x2 = 0 To oParam.Options.Length - 1
+                    menuBlock.Button.Add(oParam.Options(x2), x2)
                 Next
 
-                os.Init2(mb.Button)
-            ElseIf TypeOf item Is StringParam Then
-                Dim tempItem = DirectCast(item, StringParam)
+                oParam.Init2(menuBlock.Button)
+            ElseIf TypeOf param Is StringParam Then
+                Dim tempItem = DirectCast(param, StringParam)
                 Dim textBlock As SimpleUI.TextBlock
 
                 If tempItem.BrowseFileFilter <> "" Then
@@ -171,10 +201,10 @@ Public Class CommandLineForm
                     textBlock = SimpleUI.AddText(parent)
                 End If
 
-                textBlock.Label.Text = If(item.Text.EndsWith(":"), item.Text, item.Text + ":")
+                textBlock.Label.Text = If(param.Text.EndsWith(":"), param.Text, param.Text + ":")
 
-                If item.HelpSwitch <> "" Then
-                    Dim helpID = item.HelpSwitch
+                If param.HelpSwitch <> "" Then
+                    Dim helpID = param.HelpSwitch
                     textBlock.Label.HelpAction = Sub() Params.ShowHelp(helpID)
                 Else
                     textBlock.Label.Help = help
@@ -187,16 +217,16 @@ Public Class CommandLineForm
             End If
 
             If Not helpControl Is Nothing Then
-                Dim item2 As New Item
-                item2.Control = helpControl
-                item2.Page = currentFlow
-                item2.Param = item
-                Items.Add(item2)
+                Dim item As New Item
+                item.Control = helpControl
+                item.Page = currentFlow
+                item.Param = param
+                Items.Add(item)
             End If
         Next
 
-        For Each i In flowPanels
-            i.ResumeLayout()
+        For Each panel In flowPanels
+            panel.ResumeLayout()
         Next
     End Sub
 
@@ -217,14 +247,22 @@ Public Class CommandLineForm
     End Sub
 
     Sub ShowHelp()
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        If cbGoTo.Visible Then f.Doc.WriteP("The Search input field can be used to search for options, it searches the switch and the label. Multiple matches can be cycled by pressing enter.")
-        f.Doc.WriteP("Numeric values and options can be reset to their default value by double clicking on the label.")
-        f.Doc.WriteP("The context help is shown with a right-click on a label, menu or checkbox.")
-        If HTMLHelp <> "" Then f.Doc.Writer.WriteRaw(HTMLHelp)
-        f.Doc.WriteTips(SimpleUI.ActivePage.TipProvider.GetTips)
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+
+        If cbGoTo.Visible Then
+            form.Doc.WriteP("The Search input field can be used to search for options, it searches the switch and the label. Multiple matches can be cycled by pressing enter.")
+        End If
+
+        form.Doc.WriteP("Numeric values and options can be reset to their default value by double clicking on the label.")
+        form.Doc.WriteP("The context help is shown with a right-click on a label, menu or checkbox.")
+
+        If HTMLHelp <> "" Then
+            form.Doc.Writer.WriteRaw(HTMLHelp)
+        End If
+
+        form.Doc.WriteTips(SimpleUI.ActivePage.TipProvider.GetTips)
+        form.Show()
     End Sub
 
     Private Sub cbGoTo_KeyDown(sender As Object, e As KeyEventArgs) Handles cbGoTo.KeyDown
@@ -235,20 +273,31 @@ Public Class CommandLineForm
             SearchIndex = 0
         End If
 
-        If e.KeyData = Keys.Enter Then e.SuppressKeyPress = True
+        If e.KeyData = Keys.Enter Then
+            e.SuppressKeyPress = True
+        End If
     End Sub
 
     Private Sub cbGoTo_TextChanged(sender As Object, e As EventArgs) Handles cbGoTo.TextChanged
+        If Not HighlightedControl Is Nothing Then
+            HighlightedControl.Font = New Font(HighlightedControl.Font.FontFamily, HighlightedControl.Font.Size, FontStyle.Regular)
+            HighlightedControl = Nothing
+        End If
+
         Dim find = cbGoTo.Text.ToLower
         Dim matchedItems As New HashSet(Of Item)
 
         If find.Length > 1 Then
             For Each item In Items
-                If item.Param.Switch = cbGoTo.Text Then matchedItems.Add(item)
+                If item.Param.Switch = cbGoTo.Text Then
+                    matchedItems.Add(item)
+                End If
 
                 If Not item.Param.Switches Is Nothing Then
                     For Each switch In item.Param.Switches
-                        If switch = cbGoTo.Text Then matchedItems.Add(item)
+                        If switch = cbGoTo.Text Then
+                            matchedItems.Add(item)
+                        End If
                     Next
                 End If
             Next
@@ -261,73 +310,47 @@ Public Class CommandLineForm
 
                 If Not item.Param.Switches Is Nothing Then
                     For Each switch In item.Param.Switches
-                        If switch.ToLower.Contains(find) Then matchedItems.Add(item)
+                        If switch.ToLower.Contains(find) Then
+                            matchedItems.Add(item)
+                        End If
                     Next
+                End If
+
+                If TypeOf item.Param Is OptionParam Then
+                    Dim param = DirectCast(item.Param, OptionParam)
+
+                    If Not param.Options Is Nothing Then
+                        For Each value In param.Options
+                            If value.ToLower.Contains(find) Then
+                                matchedItems.Add(item)
+                            End If
+                        Next
+                    End If
+
+                    If Not param.Values Is Nothing Then
+                        For Each value In param.Values
+                            If value.ToLower.Contains(find) Then
+                                matchedItems.Add(item)
+                            End If
+                        Next
+                    End If
                 End If
             Next
 
             Dim visibleItems = matchedItems.Where(Function(arg) arg.Param.Visible)
 
             If visibleItems.Count > 0 Then
-                If SearchIndex >= visibleItems.Count Then SearchIndex = 0
+                If SearchIndex >= visibleItems.Count Then
+                    SearchIndex = 0
+                End If
+
                 Dim control = visibleItems(SearchIndex).Control
                 SimpleUI.ShowPage(visibleItems(SearchIndex).Page)
-                Highlight(control)
+                control.Font = New Font(control.Font.FontFamily, control.Font.Size, FontStyle.Bold)
+                HighlightedControl = control
+                Exit Sub
             End If
         End If
-    End Sub
-
-    Sub Highlight(c As Control)
-        Task.Run(Sub() HighlightAsync(c))
-    End Sub
-
-    Private BlockHighlight As Boolean
-    Private EarlyExit As Boolean
-
-    Sub HighlightAsync(c As Control)
-        While BlockHighlight
-            EarlyExit = True
-            Thread.Sleep(1)
-        End While
-
-        EarlyExit = False
-        BlockHighlight = True
-
-        Try
-            Dim size As Double = 9
-
-            For x = 0 To 30
-                If EarlyExit Then Exit For
-                Thread.Sleep(1)
-                size += 0.1
-                Dim tempSize = size
-                Invoke(Sub()
-                           c.Font = New Font(c.Font.FontFamily, CSng(tempSize * s.UIScaleFactor), FontStyle.Bold)
-                           c.ForeColor = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0.1)
-                       End Sub)
-            Next
-
-            For x = 0 To 30
-                If EarlyExit Then Exit For
-                Thread.Sleep(1)
-                size -= 0.1
-                Dim tempSize = size
-                Invoke(Sub()
-                           c.Font = New Font(c.Font.FontFamily, CSng(tempSize * s.UIScaleFactor), FontStyle.Bold)
-                           c.ForeColor = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0.1)
-                       End Sub)
-            Next
-        Finally
-            Try
-                Invoke(Sub()
-                           c.Font = New Font(c.Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Regular)
-                           c.ForeColor = Color.Black
-                       End Sub)
-            Catch
-            End Try
-        End Try
-
-        BlockHighlight = False
     End Sub
 
     Sub UpdateSearchComboBox()
@@ -354,5 +377,51 @@ Public Class CommandLineForm
 
     Private Sub CommandLineForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         g.MainForm.PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
+    End Sub
+
+    Private Sub rtbCommandLine_MouseUp(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseUp
+        If e.Button = MouseButtons.Right Then
+            cmsCommandLine.Items.Clear()
+
+            Dim copyItem = cmsCommandLine.Add("Copy Selection", Sub() Clipboard.SetText(rtbCommandLine.SelectedText))
+            copyItem.ShortcutKeyDisplayString = "Ctrl+C    "
+            copyItem.Visible = rtbCommandLine.SelectionLength > 0
+
+            cmsCommandLine.Add("Copy Command Line", Sub() Clipboard.SetText(Params.GetCommandLine(True, True)))
+
+            Dim find = rtbCommandLine.SelectedText
+
+            If find.Length = 0 Then
+                Dim pos = rtbCommandLine.SelectionStart
+                Dim leftString = rtbCommandLine.Text.Substring(0, pos)
+                Dim left = leftString.LastIndexOf(" ") + 1
+                Dim right = rtbCommandLine.Text.Length
+                Dim rightString = rtbCommandLine.Text.Substring(pos)
+                Dim index = rightString.IndexOf(" ")
+
+                If index > -1 Then
+                    right = pos + index
+                End If
+
+                If right - left > 0 Then
+                    find = rtbCommandLine.Text.Substring(left, right - left)
+                End If
+            End If
+
+            If find.Length > 0 Then
+                cmsCommandLine.Add("Search " + find, Sub()
+                                                         cbGoTo.Text = find
+                                                         cbGoTo.Focus()
+                                                     End Sub)
+            End If
+
+            cmsCommandLine.Show(rtbCommandLine, e.Location)
+        End If
+    End Sub
+
+    Private Sub rtbCommandLine_MouseDown(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseDown
+        If e.Button = MouseButtons.Right AndAlso rtbCommandLine.SelectedText = "" Then
+            rtbCommandLine.SelectionStart = rtbCommandLine.GetCharIndexFromPosition(e.Location)
+        End If
     End Sub
 End Class

@@ -1,3 +1,4 @@
+
 Namespace UI
     Public Class StringEditorForm
         Inherits FormBase

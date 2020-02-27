@@ -1,3 +1,4 @@
+
 Imports System.ComponentModel
 Imports System.Drawing.Design
 
@@ -31,7 +32,10 @@ Namespace UI
         Protected Overrides Sub OnDragEnter(e As DragEventArgs)
             If FileDrop Then
                 Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
-                If Not files.NothingOrEmpty Then e.Effect = DragDropEffects.Copy
+
+                If Not files.NothingOrEmpty Then
+                    e.Effect = DragDropEffects.Copy
+                End If
             End If
 
             MyBase.OnDragEnter(e)
@@ -40,7 +44,10 @@ Namespace UI
         Protected Overrides Sub OnDragDrop(e As DragEventArgs)
             If FileDrop Then
                 Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
-                If Not files.NothingOrEmpty Then RaiseEvent FilesDropped(files)
+
+                If Not files.NothingOrEmpty Then
+                    RaiseEvent FilesDropped(files)
+                End If
             End If
 
             MyBase.OnDragDrop(e)

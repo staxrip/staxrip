@@ -30,8 +30,6 @@ Public MustInherit Class VideoEncoder
         End Get
     End Property
 
-    Private OutputPathValue As String
-
     Overridable ReadOnly Property OutputPath() As String
         Get
             If TypeOf Muxer Is NullMuxer Then

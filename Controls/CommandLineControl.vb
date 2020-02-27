@@ -1,4 +1,5 @@
-﻿Imports StaxRip.UI
+﻿
+Imports StaxRip.UI
 Imports System.ComponentModel
 
 Public Class CommandLineControl
@@ -7,7 +8,7 @@ Public Class CommandLineControl
 #Region "Designer"
     Friend WithEvents tb As TextBoxEx
     Friend WithEvents tlpMain As System.Windows.Forms.TableLayoutPanel
-    Friend WithEvents bu As StaxRip.UI.ButtonEx
+    Friend WithEvents bn As StaxRip.UI.ButtonEx
 
     <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(disposing As Boolean)
@@ -25,7 +26,7 @@ Public Class CommandLineControl
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.tb = New StaxRip.UI.TextBoxEx()
-        Me.bu = New StaxRip.UI.ButtonEx()
+        Me.bn = New StaxRip.UI.ButtonEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
@@ -42,18 +43,18 @@ Public Class CommandLineControl
         '
         'bu
         '
-        Me.bu.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.bu.Location = New System.Drawing.Point(245, 0)
-        Me.bu.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
-        Me.bu.ShowMenuSymbol = True
-        Me.bu.Size = New System.Drawing.Size(70, 70)
+        Me.bn.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.bn.Location = New System.Drawing.Point(245, 0)
+        Me.bn.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
+        Me.bn.ShowMenuSymbol = True
+        Me.bn.Size = New System.Drawing.Size(70, 70)
         '
         'tlpMain
         '
         Me.tlpMain.ColumnCount = 2
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpMain.Controls.Add(Me.bu, 1, 0)
+        Me.tlpMain.Controls.Add(Me.bn, 1, 0)
         Me.tlpMain.Controls.Add(Me.tb, 0, 0)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
@@ -100,7 +101,11 @@ Public Class CommandLineControl
 
     Sub MenuItenClick(value As String)
         Dim tup = Macro.ExpandGUI(value)
-        If tup.Cancel Then Exit Sub
+
+        If tup.Cancel Then
+            Exit Sub
+        End If
+
         value = tup.Value
 
         If Not value Like "*$*$*" Then
@@ -132,12 +137,12 @@ Public Class CommandLineControl
         End Using
     End Sub
 
-    Private Sub bCmdlAddition_Click() Handles bu.Click
-        Dim cms = TextCustomMenu.GetMenu(Presets, bu, components, AddressOf MenuItenClick)
-        Me.components.Add(cms)
+    Private Sub bnCmdlAddition_Click() Handles bn.Click
+        Dim cms = TextCustomMenu.GetMenu(Presets, bn, components, AddressOf MenuItenClick)
+        components.Add(cms)
         cms.Items.Add(New ToolStripSeparator)
         cms.Items.Add(New ActionMenuItem("Edit Menu...", AddressOf EditPresets))
-        cms.Show(bu, 0, bu.Height)
+        cms.Show(bn, 0, bn.Height)
     End Sub
 
     Private Sub CmdlControl_Layout(sender As Object, e As LayoutEventArgs) Handles Me.Layout
@@ -145,6 +150,8 @@ Public Class CommandLineControl
     End Sub
 
     Private Sub CommandLineControl_Load(sender As Object, e As EventArgs) Handles Me.Load
-        If Not DesignHelp.IsDesignMode Then Font = New Font("Consolas", 10 * s.UIScaleFactor)
+        If Not DesignHelp.IsDesignMode Then
+            Font = New Font("Consolas", 10 * s.UIScaleFactor)
+        End If
     End Sub
 End Class

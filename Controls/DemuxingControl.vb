@@ -208,7 +208,10 @@ Public Class PreprocessingControl
             If TypeOf i.Tag Is CommandLineDemuxer Then
                 Dim muxer = DirectCast(i.Tag, CommandLineDemuxer)
                 Dim help = muxer.GetHelp
-                If help <> "" Then ret.Add(muxer.Name, help)
+
+                If help <> "" Then
+                    ret.Add(muxer.Name, help)
+                End If
             End If
         Next
 

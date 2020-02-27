@@ -14,6 +14,14 @@
 - new: the VFW interface used to access AviSynth and VapourSynth
        was replaced with a new library
 - new: nvenc switches --colorrange, --psnr, --ssim
+- new: search matches in the encoder config dialog are now
+       displayed with permanent bold font
+- new: the search feature in the encoder config dialog now
+       also searches in option values, for instance searching
+	   for 'medium' will find and highlight the 'preset' switch
+- new: in the encoder config dialogs the context menu of the
+       command line preview has a new menu item to search
+	   for the string at the caret or cursor
 
 - update: nvenc 4.65
 - update: qsvenc 3.31

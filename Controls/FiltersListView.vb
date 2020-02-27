@@ -47,7 +47,13 @@ Public Class FiltersListView
             item.Tag = i
             item.Checked = i.Active
             item.SubItems.Add(i.Category)
-            If i.Name = "" Then item.SubItems.Add(i.Script) Else item.SubItems.Add(i.Name)
+
+            If i.Name = "" Then
+                item.SubItems.Add(i.Script)
+            Else
+                item.SubItems.Add(i.Name)
+            End If
+
             item.SubItems.Add(i.Script)
             Items.Add(item)
         Next
@@ -123,7 +129,11 @@ Public Class FiltersListView
                                      Dim active = DirectCast(Menu.Items(0), ActionMenuItem)
                                      active.DropDownItems.ClearAndDisplose
                                      sep0.Visible = SelectedItems.Count > 0
-                                     If SelectedItems.Count = 0 Then Exit Sub
+
+                                     If SelectedItems.Count = 0 Then
+                                         Exit Sub
+                                     End If
+
                                      Dim selectedFilter = DirectCast(SelectedItems(0).Tag, VideoFilter)
                                      active.Text = selectedFilter.Category
 
@@ -138,9 +148,16 @@ Public Class FiltersListView
     End Sub
 
     Sub MoveUp()
-        If SelectedItems.Count = 0 Then Exit Sub
+        If SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
+
         Dim index = SelectedItems(0).Index
-        If index = 0 Then Exit Sub
+
+        If index = 0 Then
+            Exit Sub
+        End If
+
         Dim sel = p.Script.Filters(index)
         p.Script.Filters.Remove(sel)
         p.Script.Filters.Insert(index - 1, sel)
@@ -149,9 +166,16 @@ Public Class FiltersListView
     End Sub
 
     Sub MoveDown()
-        If SelectedItems.Count = 0 Then Exit Sub
+        If SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
+
         Dim index = SelectedItems(0).Index
-        If index = p.Script.Filters.Count - 1 Then Exit Sub
+
+        If index = p.Script.Filters.Count - 1 Then
+            Exit Sub
+        End If
+
         Dim sel = p.Script.Filters(index)
         p.Script.Filters.Remove(sel)
         p.Script.Filters.Insert(index + 1, sel)
@@ -160,13 +184,18 @@ Public Class FiltersListView
     End Sub
 
     Sub ShowEditor()
-        If p.Script.Edit = DialogResult.OK Then OnChanged()
+        If p.Script.Edit = DialogResult.OK Then
+            OnChanged()
+        End If
     End Sub
 
     Sub ReplaceClick(filter As VideoFilter)
         filter = filter.GetCopy
         Dim val = Macro.ExpandGUI(filter.Script)
-        If val.Cancel Then Exit Sub
+
+        If val.Cancel Then
+            Exit Sub
+        End If
 
         If val.Value <> filter.Script AndAlso val.Caption <> "" Then
             Dim path = filter.Path.Replace("...", "")
@@ -187,7 +216,10 @@ Public Class FiltersListView
     Private Sub InsertClick(filter As VideoFilter)
         filter = filter.GetCopy
         Dim val = Macro.ExpandGUI(filter.Script)
-        If val.Cancel Then Exit Sub
+
+        If val.Cancel Then
+            Exit Sub
+        End If
 
         If val.Value <> filter.Script AndAlso val.Caption <> "" Then
             Dim path = filter.Path.Replace("...", "")
@@ -208,7 +240,10 @@ Public Class FiltersListView
     Private Sub AddClick(filter As VideoFilter)
         filter = filter.GetCopy
         Dim val = Macro.ExpandGUI(filter.Script)
-        If val.Cancel Then Exit Sub
+
+        If val.Cancel Then
+            Exit Sub
+        End If
 
         If val.Value <> filter.Script AndAlso val.Caption <> "" Then
             Dim path = filter.Path.Replace("...", "")
@@ -226,7 +261,10 @@ Public Class FiltersListView
     End Sub
 
     Sub OnChanged()
-        If IsLoading Then Exit Sub
+        If IsLoading Then
+            Exit Sub
+        End If
+
         Load()
         RaiseEvent Changed()
     End Sub
@@ -241,7 +279,9 @@ Public Class FiltersListView
     End Sub
 
     Private Sub RemoveClick()
-        If Items.Count > 1 Then p.Script.RemoveFilterAt(SelectedItems(0).Index)
+        If Items.Count > 1 Then
+            p.Script.RemoveFilterAt(SelectedItems(0).Index)
+        End If
     End Sub
 
     Sub UpdateDocument()

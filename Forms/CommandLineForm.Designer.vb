@@ -34,6 +34,7 @@ Partial Class CommandLineForm
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpRTB = New System.Windows.Forms.TableLayoutPanel()
         Me.rtbCommandLine = New StaxRip.UI.CommandLineRichTextBox()
+        Me.cmsCommandLine = New ContextMenuStripEx(Me.components)
         Me.tlpMain.SuspendLayout()
         Me.tlpRTB.SuspendLayout()
         Me.SuspendLayout()
@@ -62,6 +63,7 @@ Partial Class CommandLineForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.SimpleUI, 4)
+        Me.SimpleUI.FormSizeScaleFactor = New System.Drawing.SizeF(0!, 0!)
         Me.SimpleUI.Location = New System.Drawing.Point(15, 15)
         Me.SimpleUI.Margin = New System.Windows.Forms.Padding(15)
         Me.SimpleUI.Name = "SimpleUI"
@@ -73,7 +75,7 @@ Partial Class CommandLineForm
         '
         Me.cbGoTo.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.cbGoTo.FormattingEnabled = True
-        Me.cbGoTo.Location = New System.Drawing.Point(15, 507)
+        Me.cbGoTo.Location = New System.Drawing.Point(15, 512)
         Me.cbGoTo.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.cbGoTo.Name = "cbGoTo"
         Me.cbGoTo.Size = New System.Drawing.Size(400, 56)
@@ -151,6 +153,12 @@ Partial Class CommandLineForm
         Me.rtbCommandLine.TabIndex = 4
         Me.rtbCommandLine.Text = ""
         '
+        'cmsCommandLine
+        '
+        Me.cmsCommandLine.ImageScalingSize = New System.Drawing.Size(48, 48)
+        Me.cmsCommandLine.Name = "cmsCommandLine"
+        Me.cmsCommandLine.Size = New System.Drawing.Size(61, 4)
+        '
         'CommandLineForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
@@ -179,4 +187,5 @@ Partial Class CommandLineForm
     Friend WithEvents tlpMain As TableLayoutPanel
     Friend WithEvents tlpRTB As TableLayoutPanel
     Friend WithEvents rtbCommandLine As CommandLineRichTextBox
+    Friend WithEvents cmsCommandLine As ContextMenuStripEx
 End Class

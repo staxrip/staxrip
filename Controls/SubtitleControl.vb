@@ -333,7 +333,11 @@ Public Class SubtitleControl
             subtitle.Subtitle.Title = subtitle.Title
             subtitle.Subtitle.Forced = subtitle.Forced
             subtitle.Subtitle.Default = subtitle.Default
-            If subtitle.Subtitle.Title Is Nothing Then subtitle.Subtitle.Title = ""
+
+            If subtitle.Subtitle.Title Is Nothing Then
+                subtitle.Subtitle.Title = ""
+            End If
+
             muxer.Subtitles.Add(subtitle.Subtitle)
         Next
     End Sub

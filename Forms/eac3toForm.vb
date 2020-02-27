@@ -1013,7 +1013,7 @@ Public Class eac3toForm
     End Sub
 
     Private Sub cmdlOptions_ValueChanged(value As String) Handles cmdlOptions.ValueChanged
-        If cmdlOptions.tb.Focused OrElse cmdlOptions.bu.Focused Then
+        If cmdlOptions.tb.Focused OrElse cmdlOptions.bn.Focused Then
             Dim ms = GetSelectedStream()
 
             If Not ms Is Nothing Then

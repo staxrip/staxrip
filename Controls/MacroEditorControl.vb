@@ -251,7 +251,10 @@ Public Class MacroEditorControl
         End Get
         Set(value As String)
             rtbEdit.Text = value
-            If IsCommandLineMode Then EditTextChanged(Nothing, Nothing)
+
+            If IsCommandLineMode Then
+                EditTextChanged(Nothing, Nothing)
+            End If
         End Set
     End Property
 

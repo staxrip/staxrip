@@ -649,14 +649,14 @@ Public Class GlobalClass
     End Sub
 
     Sub ShowCommandLinePreview(title As String, value As String)
-        Using f As New StringEditorForm
-            f.Text = title
-            f.rtb.ReadOnly = True
-            f.cbWrap.Checked = Not value.Contains(BR)
-            f.rtb.Text = value
-            f.bnOK.Visible = False
-            f.bnCancel.Text = "Close"
-            f.ShowDialog()
+        Using form As New StringEditorForm
+            form.Text = title
+            form.rtb.ReadOnly = True
+            form.cbWrap.Checked = Not value.Contains(BR)
+            form.rtb.Text = value
+            form.bnOK.Visible = False
+            form.bnCancel.Text = "Close"
+            form.ShowDialog()
         End Using
     End Sub
 

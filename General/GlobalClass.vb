@@ -836,7 +836,11 @@ Public Class GlobalClass
 
     Sub ShowCommandLineHelp(package As Package, switch As String)
         Dim helpPath = package.GetHelpPath
-        If Not File.Exists(helpPath) Then Exit Sub
+
+        If Not File.Exists(helpPath) Then
+            Exit Sub
+        End If
+
         Dim helpContent = File.ReadAllText(helpPath)
         Dim find As String
 
@@ -850,7 +854,9 @@ Public Class GlobalClass
             find = switch
         End If
 
-        If find = "" Then Exit Sub
+        If find = "" Then
+            Exit Sub
+        End If
 
         Dim form As New TextHelpForm(helpContent, find)
         form.Text = package.Name + " Help"

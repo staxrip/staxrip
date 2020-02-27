@@ -459,12 +459,15 @@ Public Class CodeEditor
             Dim helpTempMenuItem = Menu.Add("Help | temp")
 
             Dim helpAction = Sub()
-                                 For Each i In Package.Items.Values.OfType(Of PluginPackage)()
-                                     If Not i.AvsFilterNames Is Nothing Then
-                                         For Each i2 In i.AvsFilterNames
-                                             If rtbScript.Text.Contains(i2) Then
-                                                 Dim path = i.GetHelpPath()
-                                                 If path <> "" Then Menu.Add("Help | " + i.Name, Sub() g.StartProcess(path), path)
+                                 For Each pluginPack In Package.Items.Values.OfType(Of PluginPackage)()
+                                     If Not pluginPack.AvsFilterNames Is Nothing Then
+                                         For Each avsFilterName In pluginPack.AvsFilterNames
+                                             If rtbScript.Text.Contains(avsFilterName) Then
+                                                 Dim helpPath = pluginPack.GetHelpPath()
+
+                                                 If helpPath <> "" Then
+                                                     Menu.Add("Help | " + pluginPack.Name, Sub() pluginPack.ShowHelp(), pluginPack.Description)
+                                                 End If
                                              End If
                                          Next
                                      End If
@@ -494,11 +497,11 @@ Public Class CodeEditor
                                      Menu.Add("Help | AviSynth+ plugins", Sub() g.StartProcess("http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins"), "http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins")
                                      Menu.Add("Help | -")
 
-                                     For Each i In Package.Items.Values.OfType(Of PluginPackage)
-                                         Dim helpPath = i.GetHelpPath
+                                     For Each pluginPack In Package.Items.Values.OfType(Of PluginPackage)
+                                         Dim helpPath = pluginPack.GetHelpPath
 
-                                         If helpPath <> "" AndAlso Not i.AvsFilterNames Is Nothing Then
-                                             Menu.Add("Help | " + i.Name.Substring(0, 1).ToUpper + " | " + i.Name, Sub() g.StartProcess(helpPath), i.Description)
+                                         If helpPath <> "" AndAlso Not pluginPack.AvsFilterNames Is Nothing Then
+                                             Menu.Add("Help | " + pluginPack.Name.Substring(0, 1).ToUpper + " | " + pluginPack.Name, Sub() pluginPack.ShowHelp(), pluginPack.Description)
                                              Application.DoEvents()
                                          End If
                                      Next
@@ -507,11 +510,11 @@ Public Class CodeEditor
                                      Menu.Add("Help | VapourSynth plugins", Sub() g.StartProcess("http://www.vapoursynth.com/doc/pluginlist.html"), "http://www.vapoursynth.com/doc/pluginlist.html")
                                      Menu.Add("Help | -")
 
-                                     For Each i In Package.Items.Values.OfType(Of PluginPackage)
-                                         Dim helpPath = i.GetHelpPath
+                                     For Each pluginPack In Package.Items.Values.OfType(Of PluginPackage)
+                                         Dim helpPath = pluginPack.GetHelpPath
 
-                                         If helpPath <> "" AndAlso Not i.VSFilterNames Is Nothing Then
-                                             Menu.Add("Help | " + i.Name.Substring(0, 1).ToUpper + " | " + i.Name, Sub() g.StartProcess(helpPath), i.Description)
+                                         If helpPath <> "" AndAlso Not pluginPack.VSFilterNames Is Nothing Then
+                                             Menu.Add("Help | " + pluginPack.Name.Substring(0, 1).ToUpper + " | " + pluginPack.Name, Sub() pluginPack.ShowHelp(), pluginPack.Description)
                                              Application.DoEvents()
                                          End If
                                      Next

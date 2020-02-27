@@ -341,12 +341,12 @@ Public Class MacroEditorControl
         HelpPaths.Clear()
         Dim caption As String
 
-        For Each i In Package.Items.Values
-            If editText.Contains(i.Name) Then
-                If i.GetHelpPath() <> "" Then
+        For Each pack In Package.Items.Values
+            If editText.Contains(pack.Name) Then
+                If pack.GetHelpPath() <> "" Then
                     llHelp.Visible = True
-                    caption += ", " + i.Name
-                    HelpPaths.Add(i.GetHelpPath())
+                    caption += ", " + pack.Name
+                    HelpPaths.Add(pack.GetHelpPath())
                 End If
             End If
         Next

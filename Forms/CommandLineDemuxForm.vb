@@ -390,10 +390,10 @@ Public Class CommandLineDemuxForm
     End Sub
 
     Private Sub HelpToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HelpToolStripMenuItem.Click
-        For Each i In Package.Items.Values
-            If tbName.Text = i.Name Then
-                If i.GetHelpPath <> "" Then
-                    g.StartProcess(i.GetHelpPath)
+        For Each pack In Package.Items.Values
+            If tbName.Text = pack.Name Then
+                If pack.GetHelpPath <> "" Then
+                    pack.ShowHelp()
                 Else
                     MsgWarn("There is no help available for this app.")
                 End If

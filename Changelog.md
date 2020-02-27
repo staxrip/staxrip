@@ -2,14 +2,22 @@
 ###
 
 - new: icons added in encoder dialog menus
-- new: if a tool has both a local help file and online help
-       then a dialog is shown asking which help to show
+- new: option dialog is shown in case a tool has multiple help
+       resources, x265 for instance has a local help file containing
+	   the console help and it has a comprehensive online help.
+	   L-Smash-Works for instance has separate help pages
+	   for AviSynth and for VapourSynth
 - new: medium quality for x264 was changed from crf 20 to 22
 - new: medium quality for x265 was changed from crf 20 to 18
 - new: %dpi% macro added, returnes the DPI value of the main dialog screen
 - new: High DPI aware Info AviSynth filter profile added to misc section: Info(size=16*%dpi%/96)
 - new: the VFW interface used to access AviSynth and VapourSynth
        was replaced with a new library
+- new: nvenc switches --colorrange, --psnr, --ssim
+
+- update: nvenc 4.65
+- update: qsvenc 3.31
+- update: vceenc 5.02
 
 - fix: x265 three pass encoding (untested)
 

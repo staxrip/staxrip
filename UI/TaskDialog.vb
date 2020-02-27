@@ -184,7 +184,10 @@ Public Class TaskDialog(Of T)
 
     Property SelectedValue() As T
         Get
-            If IdValueDic.ContainsKey(SelectedID) Then Return IdValueDic(SelectedID)
+            If IdValueDic.ContainsKey(SelectedID) Then
+                Return IdValueDic(SelectedID)
+            End If
+
             Return SelectedValueValue
         End Get
         Set(value As T)

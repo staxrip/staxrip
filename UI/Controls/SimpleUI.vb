@@ -47,8 +47,8 @@ Public Class SimpleUI
                         Tree.ItemHeight = CInt(Tree.Height / (Tree.Nodes.Count)) - 2
                     End If
 
-                    If Tree.ItemHeight > CInt(Tree.Font.Height * 1.7) Then
-                        Tree.ItemHeight = CInt(Tree.Font.Height * 1.7)
+                    If Tree.ItemHeight > CInt(Tree.Font.Height * 1.5) Then
+                        Tree.ItemHeight = CInt(Tree.Font.Height * 1.5)
                     End If
                 End Sub
         End If

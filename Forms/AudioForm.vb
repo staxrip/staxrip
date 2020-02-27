@@ -710,7 +710,7 @@ Public Class AudioForm
         cms.Add("-")
         cms.Add("Help", AddressOf ShowHelp).SetImage(Symbol.Help)
         cms.Add("eac3to Help", Sub() g.StartProcess("http://en.wikibooks.org/wiki/Eac3to"))
-        cms.Add("ffmpeg Help", Sub() g.StartProcess(Package.ffmpeg.GetHelpPath))
+        cms.Add("ffmpeg Help", Sub() Package.ffmpeg.ShowHelp())
 
         TipProvider.SetTip("Profile name that is auto generated when undefined.", laProfileName)
         TipProvider.SetTip("Language used by the muxer. Saved in projects/templates but not in profiles.", mbLanguage, lLanguage)

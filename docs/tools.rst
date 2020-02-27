@@ -7,9 +7,9 @@ Tools
 AviSynth+
 ~~~~~~~~~
 
-StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
+StaxRip support both AviSynth+ and VapourSynth as scripting based video processing tool.
 
-Used Version: 2772
+Used Version: 3.4.0
 
 http://avisynth.nl/index.php/AviSynth%2B
 
@@ -239,7 +239,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.55
+Used Version: 4.65
 
 http://github.com/rigaya/NVEnc
 
@@ -279,7 +279,7 @@ QSVEnc
 
 Intel hardware video encoder.
 
-Used Version: 3.24
+Used Version: 3.31
 
 http://github.com/rigaya/QSVEnc
 
@@ -319,7 +319,7 @@ VCEEnc
 
 AMD hardware video encoder.
 
-Used Version: 4.01
+Used Version: 5.02
 
 http://github.com/rigaya/VCEEnc
 

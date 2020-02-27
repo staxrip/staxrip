@@ -75,6 +75,10 @@ Audio delay of the first audio track.
 
 Audio delay of the second audio track.
 
+``%dpi%``
+
+DPI value of the main dialog.
+
 ``%encoder_ext%``
 
 File extension of the format the encoder of the active project outputs.

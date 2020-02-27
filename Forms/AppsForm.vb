@@ -209,9 +209,7 @@ Public Class AppsForm
 #End Region
 
     Private CurrentPackage As Package
-    Private Folders As New Hashtable
     Private Nodes As New List(Of TreeNode)
-    Private ControlDic As New Dictionary(Of String, Control)
     Private Headers As New Dictionary(Of String, Label)
     Private Contents As New Dictionary(Of String, Label)
     Private SetupButton As New ButtonEx
@@ -246,9 +244,12 @@ Public Class AppsForm
         DownloadButton.AutoSize = True
         DownloadButton.AutoSizeMode = Windows.Forms.AutoSizeMode.GrowAndShrink
 
-        Dim title = New Label With {.Font = New Font(flp.Font.FontFamily, 14 * s.UIScaleFactor, FontStyle.Bold),
-                                    .AutoSize = True,
-                                    .Margin = New Padding(6, 6, 0, 0)}
+        Dim title = New Label With {
+            .Font = New Font(flp.Font.FontFamily, 14 * s.UIScaleFactor, FontStyle.Bold),
+            .AutoSize = True,
+            .Margin = New Padding(6, 6, 0, 0)
+        }
+
         Headers("Title") = title
         flp.Controls.Add(title)
         AddSection("Status")

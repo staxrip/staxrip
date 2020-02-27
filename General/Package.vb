@@ -12,6 +12,8 @@ Public Class Package
     Property FileNotFoundMessage As String
     Property HelpFile As String
     Property HelpURL As String
+    Property HelpUrlAviSynth As String
+    Property HelpUrlVapourSynth As String
     Property HintDirectories As String()
     Property HintDirFunc As Func(Of String)
     Property IgnoreVersion As Boolean
@@ -581,7 +583,8 @@ Public Class Package
         .Filename = "LSMASHSource.dll",
         .Description = "AviSynth and VapourSynth source filter based on Libav supporting a wide range of input formats.",
         .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
-        .HelpURL = "http://github.com/VFR-maniac/L-SMASH-Works/blob/master/AviSynth/README",
+        .HelpUrlAviSynth = "http://github.com/VFR-maniac/L-SMASH-Works/blob/master/AviSynth/README",
+        .HelpUrlVapourSynth = "https://github.com/VFR-maniac/L-SMASH-Works/blob/master/VapourSynth/README",
         .AvsFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"},
         .AvsFiltersFunc = Function() {
             New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")" + BR + "#AssumeFPS(25)"),
@@ -1852,30 +1855,46 @@ Public Class Package
     End Property
 
     Sub ShowHelp()
-        If HelpFile <> "" AndAlso HelpURL <> "" Then
-            Using td As New TaskDialog(Of String)
-                td.MainInstruction = "Local help file or online help?"
+        Dim dic As New SortedDictionary(Of String, String)
 
-                td.AddCommandLink("Local help file", GetDir() + HelpFile, "local")
-                td.AddCommandLink("Online help", HelpURL, "online")
+        If HelpFile <> "" Then
+            dic("Local") = GetDir() + HelpFile
+        End If
 
-                Select Case td.Show
-                    Case "local"
-                        g.StartProcess(GetDir() + HelpFile)
-                    Case "online"
-                        g.StartProcess(HelpURL)
-                End Select
+        dic("Online") = HelpURL
+        dic("AviSynth") = HelpUrlAviSynth
+        dic("VapourSynth") = HelpUrlVapourSynth
+
+        Dim count = dic.Values.Where(Function(val) val <> "").Count
+
+        If count > 1 Then
+            Using dialog As New TaskDialog(Of String)
+                dialog.MainInstruction = "Choose option"
+
+                For Each pair In dic
+                    If pair.Value <> "" Then
+                        dialog.AddCommandLink(pair.Key, pair.Value)
+                    End If
+                Next
+
+                If dialog.Show <> "" Then
+                    g.StartProcess(dialog.SelectedValue)
+                End If
             End Using
         Else
             g.StartProcess(GetHelpPath)
         End If
     End Sub
 
-    Function GetHelpPath(Optional engine As ScriptEngine = ScriptEngine.AviSynth) As String
+    Function GetHelpPath() As String
         If HelpFile <> "" Then
             Return GetDir() + HelpFile
         ElseIf HelpURL <> "" Then
             Return HelpURL
+        ElseIf HelpUrlAviSynth <> "" Then
+            Return HelpUrlAviSynth
+        ElseIf HelpUrlVapourSynth <> "" Then
+            Return HelpUrlVapourSynth
         ElseIf WebURL <> "" Then
             Return WebURL
         End If

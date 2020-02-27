@@ -1,4 +1,5 @@
-﻿Imports StaxRip.CommandLine
+﻿
+Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 <Serializable()>
@@ -170,8 +171,7 @@ Public Class VCEEnc
                         New NumParam With {.Switch = "--qp-min", .Text = "QP Min", .Config = {0, 100}},
                         New NumParam With {.Switch = "--qp-max", .Text = "QP Max", .Config = {0, 100}, .Init = 100},
                         New NumParam With {.Switch = "--b-deltaqp", .Text = "Non-ref Bframe QP Offset"},
-                        New NumParam With {.Switch = "--bref-deltaqp", .Text = "Ref Bframe QP Offset"},
-                        New BoolParam With {.Switch = "--vbaq", .Text = "VBAQ"})
+                        New NumParam With {.Switch = "--bref-deltaqp", .Text = "Ref Bframe QP Offset"})
                     Add("VUI",
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
@@ -186,12 +186,8 @@ Public Class VCEEnc
                         New OptionParam With {.Switch = "--tier", .Text = "Tier", .Options = {"Main", "High"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New OptionParam With {.Switch = "--motion-est", .Text = "Motion Estimation", .Options = {"Q-pel", "Full-pel", "Half-pel"}},
-                        New OptionParam With {.Switch = "--pre-analysis", .Name = "pre-analysis-h264", .Text = "Pre Analysis", .Options = {"None", "Full", "Half", "Quarter"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
-                        New OptionParam With {.Switch = "--pre-analysis", .Name = "pre-analysis-h265", .Text = "Pre Analysis", .Options = {"None", "Auto"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
-                        New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                         New BoolParam With {.Switch = "--chapter-copy", .Text = "Copy Chapters"},
-                        New BoolParam With {.Switch = "--filler", .Text = "Use filler data"},
-                        New BoolParam With {.Switch = "--fullrange", .Text = "Set yuv to fullrange", .VisibleFunc = Function() Codec.ValueText = "h264"})
+                        New BoolParam With {.Switch = "--filler", .Text = "Use filler data"})
 
                     For Each item In ItemsValue
                         If item.HelpSwitch <> "" Then Continue For

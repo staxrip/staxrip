@@ -163,7 +163,7 @@ Namespace CommandLine
         Property CheckBox As CheckBox
         Property IntegerValue As Boolean
 
-        Public Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
+        Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
 
@@ -270,10 +270,13 @@ Namespace CommandLine
                                          End Sub
         End Sub
 
-        Public Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
+        Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
-            If Not store.Double.ContainsKey(GetKey) Then store.Double(GetKey) = ValueValue
+
+            If Not store.Double.ContainsKey(GetKey) Then
+                store.Double(GetKey) = ValueValue
+            End If
         End Sub
 
         Sub ValueChanged(ne As NumEdit)
@@ -334,7 +337,15 @@ Namespace CommandLine
         Property DefaultValue As Integer
         Property IntegerValue As Boolean
 
-        Overloads Sub Init2(mb As MenuButton)
+        Sub ShowOption(value As Integer, visible As Boolean)
+            If Not MenuButton Is Nothing Then
+                For Each i In MenuButton.Menu.Items.OfType(Of ToolStripMenuItem)
+                    If value.Equals(i.Tag) Then i.Visible = visible
+                Next
+            End If
+        End Sub
+
+        Overloads Sub InitParam(mb As MenuButton)
             MenuButton = mb
             MenuButton.Value = Value
             AddHandler MenuButton.ValueChangedUser, AddressOf ValueChangedUser
@@ -342,14 +353,6 @@ Namespace CommandLine
                                                 RemoveHandler MenuButton.ValueChangedUser, AddressOf ValueChangedUser
                                                 MenuButton = Nothing
                                             End Sub
-        End Sub
-
-        Sub ShowOption(value As Integer, visible As Boolean)
-            If Not MenuButton Is Nothing Then
-                For Each i In MenuButton.Menu.Items.OfType(Of ToolStripMenuItem)
-                    If value.Equals(i.Tag) Then i.Visible = visible
-                Next
-            End If
         End Sub
 
         Public Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
@@ -392,12 +395,17 @@ Namespace CommandLine
             End Get
             Set(value As Integer)
                 ValueValue = value
-                If Not Store Is Nothing Then Store.Int(GetKey) = value
-                If Not MenuButton Is Nothing Then MenuButton.Value = ValueValue
+                If Not Store Is Nothing Then
+                    Store.Int(GetKey) = value
+                End If
+
+                If Not MenuButton Is Nothing Then
+                    MenuButton.Value = ValueValue
+                End If
             End Set
         End Property
 
-        WriteOnly Property InitValue As Integer
+        WriteOnly Property Init As Integer
             Set(value As Integer)
                 Me.Value = value
                 DefaultValue = value
@@ -439,6 +447,7 @@ Namespace CommandLine
         Property DefaultValue As String
         Property TextEdit As TextEdit
         Property Quotes As QuotesMode
+        Property RemoveSpace As Boolean
         Property InitAction As Action(Of SimpleUI.TextBlock)
         Property BrowseFileFilter As String
         Property BrowseFolderText As String
@@ -451,7 +460,7 @@ Namespace CommandLine
             End Set
         End Property
 
-        Public Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
+        Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
 
@@ -460,7 +469,7 @@ Namespace CommandLine
             End If
         End Sub
 
-        Overloads Sub Init(te As SimpleUI.TextBlock)
+        Overloads Sub InitParam(te As SimpleUI.TextBlock)
             TextEdit = te.Edit
             TextEdit.Text = Value
             AddHandler TextEdit.TextChanged, AddressOf TextChanged
@@ -485,24 +494,30 @@ Namespace CommandLine
             If Not ArgsFunc Is Nothing Then
                 Return ArgsFunc.Invoke
             Else
-                If Value <> DefaultValue Then
+                Dim val = Value
+
+                If RemoveSpace AndAlso val?.Contains(" ") Then
+                    val = val.Replace(" ", "")
+                End If
+
+                If val <> DefaultValue Then
                     If Switch = "" Then
                         If AlwaysOn Then
                             If Quotes = QuotesMode.Always Then
-                                Return """" + Value + """"
+                                Return """" + val + """"
                             ElseIf Quotes = QuotesMode.Auto Then
-                                Return Value.Escape
+                                Return val.Escape
                             Else
-                                Return Value
+                                Return val
                             End If
                         End If
                     Else
                         If Quotes = QuotesMode.Always Then
-                            Return Switch + Params.Separator + """" + Value + """"
+                            Return Switch + Params.Separator + """" + val + """"
                         ElseIf Quotes = QuotesMode.Auto Then
-                            Return Switch + Params.Separator + Value.Escape
+                            Return Switch + Params.Separator + val.Escape
                         Else
-                            Return Switch + Params.Separator + Value
+                            Return Switch + Params.Separator + val
                         End If
                     End If
                 End If
@@ -528,7 +543,7 @@ Namespace CommandLine
             End Set
         End Property
 
-        WriteOnly Property InitValue As String
+        WriteOnly Property Init As String
             Set(value As String)
                 Me.Value = value
                 DefaultValue = value

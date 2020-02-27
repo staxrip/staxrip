@@ -218,7 +218,7 @@ Public Class x265Params
         .Switches = {"-p"},
         .Text = "Preset",
         .Options = {"Ultra Fast", "Super Fast", "Very Fast", "Faster", "Fast", "Medium", "Slow", "Slower", "Very Slow", "Placebo"},
-        .InitValue = 5}
+        .Init = 5}
 
     Property Tune As New OptionParam With {
         .Switch = "--tune",
@@ -394,7 +394,7 @@ Public Class x265Params
     Property refinectudistortion As New OptionParam With {
         .Switch = "--refine-ctu-distortion",
         .Text = "Min CU size",
-        .InitValue = 0,
+        .Init = 0,
         .Options = {"0", "1"}}
 
     Property MaxCuSize As New OptionParam With {
@@ -407,7 +407,7 @@ Public Class x265Params
         .Switch = "--qg-size",
         .Text = "QG Size",
         .Options = {"64", "32", "16", "8"},
-        .InitValue = 1}
+        .Init = 1}
 
     Property qpstep As New NumParam With {
         .Switch = "--qpstep",
@@ -444,7 +444,7 @@ Public Class x265Params
         .NoSwitch = "--no-rect",
         .Text = "Enable analysis of rectangular motion partitions Nx2N and 2NxN"}
 
-    Property rcGrain As New BoolParam With {
+    Property RcGrain As New BoolParam With {
         .Switch = "--rc-grain",
         .NoSwitch = "--no-rc-grain",
         .Text = "Specialised ratecontrol for film grain content"}
@@ -521,18 +521,6 @@ Public Class x265Params
         .Text = "QComp",
         .Config = {0, 1000, 0.05, 2}}
 
-    Property QBlur As New NumParam With {
-        .Switch = "--qblur",
-        .Text = "Q Blur",
-        .Config = {0, 0, 0.05, 2},
-        .Init = 0.5}
-
-    Property Cplxblur As New NumParam With {
-        .Switch = "--cplxblur",
-        .Text = "Blur Complexity",
-        .Config = {0, 0, 0.05, 2},
-        .Init = 20}
-
     Property WPP As New BoolParam With {
         .Switch = "--wpp",
         .NoSwitch = "--no-wpp",
@@ -600,14 +588,6 @@ Public Class x265Params
         .Text = "B-Pyramid",
         .Init = True}
 
-    Property Lossless As New BoolParam With {
-        .Switch = "--lossless",
-        .Text = "Lossless"}
-
-    Property StrictCBR As New BoolParam With {
-        .Switch = "--strict-cbr",
-        .Text = "Strict CBR"}
-
     Property NRintra As New NumParam With {
         .Switch = "--nr-intra",
         .Text = "Intra Noise Reduct.",
@@ -631,37 +611,11 @@ Public Class x265Params
         .Text = "Min GOP Size",
         .Config = {0, 10000, 10}}
 
-    Property VBVbufsize As New NumParam With {
-        .Switch = "--vbv-bufsize",
-        .Text = "VBV Bufsize",
-        .Config = {0, 1000000, 100}}
-
-    Property VBVmaxrate As New NumParam With {
-        .Switch = "--vbv-maxrate",
-        .Text = "VBV Maxrate",
-        .Config = {0, 1000000, 100}}
-
-    Property VBVinit As New NumParam With {
-        .Switch = "--vbv-init",
-        .Text = "VBV Init",
-        .Config = {0.5, 1.0, 0.1, 1},
-        .Init = 0.9}
-
-    Property VBVend As New NumParam With {
-        .Switch = "--vbv-end",
-        .Text = "VBV End",
-        .Config = {0, 1.0, 0.1, 1}}
-
     Property maxausizefactor As New NumParam With {
         .Switch = "--max-ausize-factor",
         .Text = "Max Ausize Factor",
         .Config = {0.5, 1.0, 0.1, 1},
         .Init = 1}
-
-    Property VBVfradj As New NumParam With {
-        .Switch = "--vbv-end-fr-adj",
-        .Text = "VBV Adjust",
-        .Config = {0, 1, 0.1, 1}}
 
     Property Chromaloc As New NumParam With {
         .Switch = "--chromaloc",
@@ -698,6 +652,10 @@ Public Class x265Params
     Property RdRefine As New BoolParam With {
         .Switch = "--rd-refine",
         .Text = "RD Refine"}
+
+    Property MasterDisplay As New StringParam With {
+        .Switch = "--master-display",
+        .Text = "Master Display"}
 
     Property MaxCLL As New NumParam With {
         .Text = "Maximum CLL",
@@ -790,7 +748,7 @@ Public Class x265Params
         .Switch = "--limit-refs",
         .Text = "Limit References",
         .Options = {"0", "1", "2", "3"},
-        .InitValue = 3}
+        .Init = 3}
 
     Property RecursionSkip As New BoolParam With {
         .Switch = "--rskip",
@@ -804,11 +762,11 @@ Public Class x265Params
         .IntegerValue = True,
         .Options = {"Default", "Summary", "Frame"}}
 
-    Property multi_pass_opt_analysis As New BoolParam() With {
+    Property MultiPassOptAnalysis As New BoolParam() With {
         .Switch = "--multi-pass-opt-analysis",
         .Text = "Multipass analysis refinement along with multipass ratecontrol"}
 
-    Property multi_pass_opt_distortion As New BoolParam() With {
+    Property MultiPassOptDistortion As New BoolParam() With {
         .Switch = "--multi-pass-opt-distortion",
         .Text = "Multipass refinement of qp based on distortion data"}
 
@@ -817,7 +775,7 @@ Public Class x265Params
         .Text = "Limit TU",
         .Config = {0, 4}}
 
-    Property constvbv As New BoolParam With {
+    Property ConstVBV As New BoolParam With {
         .Switch = "--const-vbv",
         .NoSwitch = "--no-const-vbv",
         .Text = "Enable VBV algorithm to be consistent across runs"}
@@ -833,9 +791,9 @@ Public Class x265Params
                 ItemsValue = New List(Of CommandLineParam)
 
                 Add("Basic", Preset, Tune,
-                    New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain8", .InitValue = 1, .VisibleFunc = Function() OutputDepth.Value = 0, .Options = {"Unrestricted", "Main", "Main - Intra", "Main Still Picture", "Main 444 - 8", "Main 444 - Intra", "Main 444 - Main Still Picture"}},
-                    New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain10", .InitValue = 1, .VisibleFunc = Function() OutputDepth.Value = 1, .Options = {"Unrestricted", "Main 10", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra"}},
-                    New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain12", .InitValue = 1, .VisibleFunc = Function() OutputDepth.Value = 2, .Options = {"Unrestricted", "Main 12", "Main 12 - Intra", "Main 422 - 12", "Main 422 - 12 - Intra", "Main 444 - 12", "Main 444 - 12 - Intra"}},
+                    New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain8", .Init = 1, .VisibleFunc = Function() OutputDepth.Value = 0, .Options = {"Unrestricted", "Main", "Main - Intra", "Main Still Picture", "Main 444 - 8", "Main 444 - Intra", "Main 444 - Main Still Picture"}},
+                    New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain10", .Init = 1, .VisibleFunc = Function() OutputDepth.Value = 1, .Options = {"Unrestricted", "Main 10", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra"}},
+                    New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain12", .Init = 1, .VisibleFunc = Function() OutputDepth.Value = 2, .Options = {"Unrestricted", "Main 12", "Main 12 - Intra", "Main 422 - 12", "Main 422 - 12 - Intra", "Main 444 - 12", "Main 444 - 12 - Intra"}},
                     New OptionParam With {.Switch = "--level-idc", .Switches = {"--level"}, .Text = "Level", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}},
                     Mode, OutputDepth, Quant)
                 Add("Analysis", RD,
@@ -843,6 +801,8 @@ Public Class x265Params
                     New StringParam With {.Switch = "--analysis-load", .Text = "Analysis Load", .BrowseFile = True},
                     New StringParam With {.Switch = "--analysis-save", .Text = "Analysis Save"},
                     New OptionParam With {.Switch = "--refine-mv", .Text = "Refine MV", .Expand = True, .IntegerValue = True, .Options = {"Disabled", "Level 1: Search around scaled MV", "Level 2: Level 1 + Search around best AMVP cand", "Level 3: Level 2 + Search around the other AMVP cand"}},
+                    New OptionParam With {.Switch = "--analysis-save-reuse-level", .Text = "Save Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref’s", " 3 - Level 1 + intra/inter modes, ref’s", " 4 - Level 1 + intra/inter modes, ref’s", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
+                    New OptionParam With {.Switch = "--analysis-load-reuse-level", .Text = "Load Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref’s", " 3 - Level 1 + intra/inter modes, ref’s", " 4 - Level 1 + intra/inter modes, ref’s", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
                     refinectudistortion, MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
                 Add("Analysis 2",
                     New NumParam With {.Switch = "--analysis-reuse-level", .Text = "Refine Level", .Config = {1, 10}, .Init = 5},
@@ -853,6 +813,7 @@ Public Class x265Params
                     New NumParam With {.Switch = "--dynamic-rd", .Text = "Dynamic RD", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}},
+                    New NumParam With {.Switch = "--rskip-edge-threshold", .Text = "RSkip Edge Threshold", .Init = 5, .Config = {0, 100}},
                     qpadaptationrange)
                 Add("Analysis 3", Rect, AMP,
                     New BoolParam With {.Switch = "--tskip", .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"},
@@ -866,20 +827,34 @@ Public Class x265Params
                 Add("Rate Control",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     New StringParam With {.Switch = "--zonefile", .Text = "Zone File", .BrowseFile = True},
-                    AQmode, qgSize, AQStrength, QComp,
+                    AQmode, qgSize, AQStrength, QComp, qpmin, qpmax, qpstep,
                     New NumParam With {.Switch = "--cbqpoffs", .Text = "CB QP Offset", .Config = {-12, 12}},
                     New NumParam With {.Switch = "--crqpoffs", .Text = "CR QP Offset", .Config = {-12, 12}},
-                    NRintra, NRinter, qpmin, qpmax, qpstep, CRFmin, CRFmax)
+                    New NumParam With {.Switch = "--max-qp-delta", .Text = "Max QP Delta", .Init = 5, .Config = {0, 10}},
+                    NRintra, NRinter, CRFmin, CRFmax)
                 Add("Rate Control 2",
-                    VBVbufsize, VBVmaxrate, VBVinit, VBVend, VBVfradj,
-                    IPRatio, PBRatio, Cplxblur, QBlur,
-                    CUtree, Lossless, StrictCBR, rcGrain,
-                    multi_pass_opt_analysis,
-                    multi_pass_opt_distortion,
+                    New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize", .Config = {0, 1000000, 100}},
+                    New NumParam With {.Switch = "--vbv-maxrate", .Text = "VBV Maxrate", .Config = {0, 1000000, 100}},
+                    New NumParam With {.Switch = "--vbv-init", .Text = "VBV Init", .Config = {0.5, 1.0, 0.1, 1}, .Init = 0.9},
+                    New NumParam With {.Switch = "--vbv-end", .Text = "VBV End", .Config = {0, 1.0, 0.1, 1}},
+                    New NumParam With {.Switch = "--vbv-end-fr-adj", .Text = "VBV Adjust", .Config = {0, 1, 0.1, 1}},
+                    IPRatio, PBRatio,
+                    New NumParam With {.Switch = "--cplxblur", .Text = "Blur Complexity", .Config = {0, 0, 0.05, 2}, .Init = 20},
+                    New NumParam With {.Switch = "--qblur", .Text = "Q Blur", .Config = {0, 0, 0.05, 2}, .Init = 0.5},
+                    New NumParam With {.Switch = "--scenecut-window", .Text = "Scenecut Window", .Init = 500, .Config = {0, 1000}})
+                Add("Rate Control 3",
+                    CUtree,
+                    New BoolParam With {.Switch = "--lossless", .Text = "Lossless"},
+                    New BoolParam With {.Switch = "--strict-cbr", .Text = "Strict CBR"},
+                    RcGrain,
+                    MultiPassOptAnalysis,
+                    MultiPassOptDistortion,
+                    ConstVBV,
                     New BoolParam() With {.Switch = "--aq-motion", .Text = "AQ Motion"},
-                    constvbv)
+                    New BoolParam() With {.Switch = "--scenecut-aware-qp", .NoSwitch = "--no-scenecut-aware-qp", .Text = "Scenecut Aware QP"})
                 Add("Motion Search",
                     New StringParam With {.Switch = "--hme-search", .Text = "HME Search"},
+                    New StringParam With {.Switch = "--hme-range", .Text = "HME Range", .Init = "16,32,48", .Quotes = QuotesMode.Never, .RemoveSpace = True},
                     SubME, [Me], MErange, MaxMerge, Weightp, Weightb, TemporalMVP,
                     New BoolParam With {.Switch = "--analyze-src-pics", .NoSwitch = "--no-analyze-src-pics", .Text = "Analyze SRC Pics"},
                     New BoolParam With {.Switch = "--hme", .NoSwitch = "--no-hme", .Text = "3-level Hierarchical motion estimation"})
@@ -896,9 +871,11 @@ Public Class x265Params
                     Scenecut,
                     New NumParam() With {.Switch = "--scenecut-bias", .Text = "Scenecut Bias", .Init = 5, .Config = {0, 100, 1, 1}},
                     New NumParam() With {.Switch = "--radl", .Text = "Radl"},
+                    New NumParam() With {.Switch = "--hist-threshold", .Text = "Hist Threshold", .Init = 0.01, .Config = {0, 2, 0.01, 2}},
                     Ref)
                 Add("Slice Decision 2", MinKeyint, Keyint, Bpyramid, OpenGop, IntraRefresh,
-                    New BoolParam() With {.Switch = "--fades", .Text = "Enable detection and handling of fade-in regions"})
+                    New BoolParam() With {.Switch = "--fades", .Text = "Detection and handling of fade-in regions"},
+                    New BoolParam() With {.Switch = "--hist-scenecut", .NoSwitch = "--no-hist-scenecut", .Text = "Scenecut detection using luma edge and chroma histograms"})
                 Add("Performance",
                     New StringParam With {.Switch = "--pools", .Switches = {"--numa-pools"}, .Text = "Pools"},
                     New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},
@@ -909,31 +886,32 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--copy-pic", .NoSwitch = "--no-copy-pic", .Init = True, .Text = "Copy Pic"})
                 Add("Statistic",
                     New StringParam With {.Switch = "--csv", .Text = "CSV", .BrowseFile = True},
-                    New OptionParam With {.Switch = "--log-level", .Switches = {"--log"}, .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .InitValue = 3},
+                    New OptionParam With {.Switch = "--log-level", .Switches = {"--log"}, .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Init = 3},
                     csvloglevel, SSIM, PSNR)
                 Add("VUI",
-                    New StringParam With {.Switch = "--master-display", .Text = "Master Display"},
-                    New StringParam With {.Switch = "--dhdr10-info", .Text = "DHDR10-Info", .BrowseFile = True},
+                    MasterDisplay,
+                    New StringParam With {.Switch = "--dhdr10-info", .Text = "DHDR10 Info", .BrowseFile = True},
+                    New OptionParam With {.Switch = "--hdr10", .NoSwitch = "--no-hdr10", .Text = "HDR10", .Options = {"Undefined", "Yes", "No"}, .Values = {"", "--hdr10", "--no-hdr10"}},
                     New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 428", "SMPTE 431", "SMPTE 432"}},
                     New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "Chroma-Derived-C", "Chroma-Derived-NC", "FCC", "GBR", "ICTCP", "SMPTE 170 M", "SMPTE 2085", "SMPTE 240 M", "YCgCo"}},
                     New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-STD-B67", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 2084", "SMPTE 240 M", "SMPTE 428"}},
                     New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"Undefined", "Limited", "Full"}},
                     minLuma, maxLuma, MaxCLL, MaxFALL,
-                    New BoolParam With {.Switch = "--hdr", .Text = "Force signalling of HDR parameters in SEI packets"},
-                    New BoolParam With {.Switch = "--hdr-opt", .Text = "Add luma and chroma offsets for HDR/WCG content"},
+                    New BoolParam With {.Switch = "--hdr-opt", .NoSwitch = "--no-hdr-opt", .Text = "Add luma and chroma offsets for HDR/WCG content"},
+                    New BoolParam With {.Switch = "--hdr10-opt", .NoSwitch = "--no-hdr10-opt", .Text = "Block-level luma and chroma QP optimization for HDR10 content"},
                     New BoolParam With {.Switch = "--dhdr10-opt", .Text = "Limit frames for which tone mapping information is inserted as SEI message"},
                     New BoolParam With {.Switch = "--atc-sei", .Text = "Emit the alternative transfer characteristics SEI message"},
                     New BoolParam With {.Switch = "--cll", .NoSwitch = "--no-cll", .Text = "Emit content light level info SEI", .Init = True},
                     New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"})
                 Add("VUI 2",
                     New StringParam With {.Switch = "--nalu-file", .Text = "Nalu File", .BrowseFile = True},
-                    New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
+                    New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                     New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "Component", "PAL", "NTSC", "SECAM", "MAC"}},
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"Undefined", "Show", "Crop"}},
                     New OptionParam With {.Switch = "--display-window", .Text = "Display Window", .Options = {"Undefined", "Left", "Top", "Right", "Top"}},
                     Chromaloc)
                 Add("Bitstream",
-                    New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .InitValue = 0, .Options = {"0", "5", "8.1", "8.2"}},
+                    New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .Init = 0, .Options = {"0", "5", "8.1", "8.2"}},
                     New StringParam With {.Switch = "--dolby-vision-rpu", .Text = "Dolby Vision RPU", .BrowseFile = True},
                     New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "Maximum Picture Order Count", .Init = 8},
                     RepeatHeaders, Info, HRD, AUD,
@@ -1086,7 +1064,7 @@ Public Class x265Params
                 If CustomSecondPass.Value <> "" Then sb.Append(" " + CustomSecondPass.Value)
             End If
 
-            If includePaths AndAlso (multi_pass_opt_distortion.Value OrElse multi_pass_opt_analysis.Value) Then
+            If includePaths AndAlso (MultiPassOptDistortion.Value OrElse MultiPassOptAnalysis.Value) Then
                 sb.Append(" --analysis-reuse-file " + targetPath.ChangeExt("analysis").Escape)
             End If
         End If
@@ -1740,9 +1718,9 @@ Public Class x265Params
     End Sub
 
     Sub ApplyTuneValues()
-        rcGrain.Value = False
+        RcGrain.Value = False
         qpstep.Value = 4
-        constvbv.Value = False
+        ConstVBV.Value = False
 
         Select Case Tune.Value
             Case 1 '"psnr"
@@ -1759,12 +1737,12 @@ Public Class x265Params
                 CUtree.Value = False
                 AQmode.Value = 0
                 qpstep.Value = 1
-                rcGrain.Value = True
+                RcGrain.Value = True
                 RecursionSkip.Value = False
                 PsyRD.Value = 4
                 PsyRDOQ.Value = 10
                 SAO.Value = False
-                constvbv.Value = True
+                ConstVBV.Value = True
             Case 4 '"fastdecode"
                 Deblock.Value = False
                 SAO.Value = False
@@ -1789,9 +1767,9 @@ Public Class x265Params
     End Sub
 
     Sub ApplyTuneDefaultValues()
-        rcGrain.DefaultValue = False
+        RcGrain.DefaultValue = False
         qpstep.DefaultValue = 4
-        constvbv.DefaultValue = False
+        ConstVBV.DefaultValue = False
 
         Select Case Tune.Value
             Case 1 '"psnr"
@@ -1808,12 +1786,12 @@ Public Class x265Params
                 CUtree.DefaultValue = False
                 AQmode.DefaultValue = 0
                 qpstep.DefaultValue = 1
-                rcGrain.DefaultValue = True
+                RcGrain.DefaultValue = True
                 RecursionSkip.DefaultValue = False
                 PsyRD.DefaultValue = 4
                 PsyRDOQ.DefaultValue = 10
                 SAO.DefaultValue = False
-                constvbv.DefaultValue = True
+                ConstVBV.DefaultValue = True
             Case 4 '"fastdecode"
                 Deblock.DefaultValue = False
                 SAO.DefaultValue = False

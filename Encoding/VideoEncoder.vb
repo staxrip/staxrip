@@ -482,32 +482,47 @@ Public MustInherit Class BasicVideoEncoder
                     ElseIf TypeOf param Is OptionParam Then
                         Dim optionParam = DirectCast(param, OptionParam)
 
-                        If optionParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
+                        If optionParam.GetSwitches.Contains(a(x)) Then
                             Dim exitFor As Boolean
 
-                            If optionParam.IntegerValue Then
-                                For xOpt = 0 To optionParam.Options.Length - 1
-                                    If a(x + 1) = xOpt.ToString Then
-                                        optionParam.Value = xOpt
-                                        params.RaiseValueChanged(param)
-                                        exitFor = True
-                                        Exit For
-                                    End If
-                                Next
-                            Else
-                                For xOpt = 0 To optionParam.Options.Length - 1
-                                    Dim values = If(optionParam.Values.NothingOrEmpty, optionParam.Options, optionParam.Values)
+                            If a.Length - 1 > x Then
+                                If optionParam.IntegerValue Then
+                                    For xOpt = 0 To optionParam.Options.Length - 1
+                                        If a(x + 1) = xOpt.ToString Then
+                                            optionParam.Value = xOpt
+                                            params.RaiseValueChanged(param)
+                                            exitFor = True
+                                            Exit For
+                                        End If
+                                    Next
+                                Else
+                                    For xOpt = 0 To optionParam.Options.Length - 1
+                                        Dim values = If(optionParam.Values.NothingOrEmpty, optionParam.Options, optionParam.Values)
 
-                                    If a(x + 1).Trim(""""c).ToLower = values(xOpt).ToLower.Replace(" ", "") Then
-                                        optionParam.Value = xOpt
-                                        params.RaiseValueChanged(param)
-                                        exitFor = True
-                                        Exit For
-                                    End If
-                                Next
+                                        If a(x + 1).Trim(""""c).ToLower = values(xOpt).ToLower.Replace(" ", "") Then
+                                            optionParam.Value = xOpt
+                                            params.RaiseValueChanged(param)
+                                            exitFor = True
+                                            Exit For
+                                        End If
+                                    Next
+                                End If
+
+                                If exitFor Then
+                                    Exit For
+                                End If
+                            ElseIf a.Length - 1 = x Then
+                                If Not optionParam.Values Is Nothing Then
+                                    For xOpt = 0 To optionParam.Values.Length - 1
+                                        If a(x) = optionParam.Values(xOpt) AndAlso optionParam.Values(xOpt).StartsWith("--") Then
+                                            optionParam.Value = xOpt
+                                            params.RaiseValueChanged(param)
+                                            exitFor = True
+                                            Exit For
+                                        End If
+                                    Next
+                                End If
                             End If
-
-                            If exitFor Then Exit For
                         End If
                     ElseIf TypeOf param Is StringParam Then
                         Dim stringParam = DirectCast(param, StringParam)

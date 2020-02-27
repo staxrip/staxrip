@@ -198,7 +198,7 @@ Public Class x264Params
         .Switch = "--preset",
         .Text = "Preset",
         .Options = {"Ultra Fast", "Super Fast", "Very Fast", "Faster", "Fast", "Medium", "Slow", "Slower", "Very Slow", "Placebo"},
-        .InitValue = 5}
+        .Init = 5}
 
     Property Tune As New OptionParam With {
         .Switch = "--tune",
@@ -776,7 +776,7 @@ Public Class x264Params
                     New BoolParam With {.NoSwitch = "--no-chroma-me", .Init = True, .Text = "Use chroma in motion estimation"})
                 Add("Slice Decision",
                     BAdapt,
-                    New OptionParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid", .InitValue = 2, .Options = {"None", "Strict", "Normal"}},
+                    New OptionParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid", .Init = 2, .Options = {"None", "Strict", "Normal"}},
                     BFrames,
                     New NumParam With {.Switch = "--b-bias", .Text = "B-Bias"},
                     RcLookahead,
@@ -794,7 +794,7 @@ Public Class x264Params
                     New BoolParam With {.Switch = "--intra-refresh", .Text = "Periodic Intra Refresh instead of IDR frames"},
                     New BoolParam With {.Switch = "--open-gop", .Text = "Open GOP"})
                 Add("VUI",
-                    New StringParam With {.Switch = "--sar", .Text = "Sample AR", .InitValue = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
+                    New StringParam With {.Switch = "--sar", .Text = "Sample AR", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                     New StringParam With {.Switch = "--crop-rect", .Text = "Crop Rectangle"},
                     New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "Component", "PAL", "NTSC", "SECAM", "MAC"}},
                     New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 428", "SMPTE 431", "SMPTE 432"}},

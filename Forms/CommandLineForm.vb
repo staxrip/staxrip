@@ -184,7 +184,7 @@ Public Class CommandLineForm
                     menuBlock.Button.Add(oParam.Options(x2), x2)
                 Next
 
-                oParam.Init2(menuBlock.Button)
+                oParam.InitParam(menuBlock.Button)
             ElseIf TypeOf param Is StringParam Then
                 Dim tempItem = DirectCast(param, StringParam)
                 Dim textBlock As SimpleUI.TextBlock
@@ -213,7 +213,7 @@ Public Class CommandLineForm
                 helpControl = textBlock.Label
                 AddHandler textBlock.Label.MouseDoubleClick, Sub() tempItem.Value = tempItem.DefaultValue
                 textBlock.Edit.Expand = tempItem.Expand
-                tempItem.Init(textBlock)
+                tempItem.InitParam(textBlock)
             End If
 
             If Not helpControl Is Nothing Then
@@ -319,8 +319,16 @@ Public Class CommandLineForm
                 If TypeOf item.Param Is OptionParam Then
                     Dim param = DirectCast(item.Param, OptionParam)
 
+                    If find.Contains(" ") Then
+                        find = find.Replace(" ", "")
+                    End If
+
                     If Not param.Options Is Nothing Then
                         For Each value In param.Options
+                            If value.Contains(" ") Then
+                                value = value.Replace(" ", "")
+                            End If
+
                             If value.ToLower.Contains(find) Then
                                 matchedItems.Add(item)
                             End If
@@ -329,6 +337,10 @@ Public Class CommandLineForm
 
                     If Not param.Values Is Nothing Then
                         For Each value In param.Values
+                            If value.Contains(" ") Then
+                                value = value.Replace(" ", "")
+                            End If
+
                             If value.ToLower.Contains(find) Then
                                 matchedItems.Add(item)
                             End If

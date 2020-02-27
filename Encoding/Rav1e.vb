@@ -121,7 +121,7 @@ Public Class Rav1eParams
         .Path = "Basic",
         .Options = {"PSNR", "Psychovisual"},
         .Values = {"psnr", "psychovisual"},
-        .InitValue = 0}
+        .Init = 0}
 
     Property Limit As New NumParam With {
         .Text = "Limit",
@@ -135,7 +135,7 @@ Public Class Rav1eParams
         .AlwaysOn = True,
         .Options = {"Speed", "Bitrate"},
         .Values = {"--speed", "--bitrate"},
-        .InitValue = 0}
+        .Init = 0}
 
     Property Bitrate As New NumParam With {
         .Text = "Bitrate",
@@ -149,35 +149,35 @@ Public Class Rav1eParams
         .Path = "Basic",
         .Options = {"One Pass", "Two Passes"},
         .Values = {"--pass 1", "--pass 2"},
-        .InitValue = 0,
+        .Init = 0,
         .VisibleFunc = Function() Mode.Value = 1}
 
     Property Range As New OptionParam With {
         .Text = "Range",
         .Path = "VUI",
         .Switch = "--range",
-        .InitValue = 0,
+        .Init = 0,
         .Options = {"Unspecified", "Limited", "Full"}}
 
     Property Prime As New OptionParam With {
         .Text = "Primaries",
         .Path = "VUI",
         .Switch = "--primaries",
-        .InitValue = 1,
+        .Init = 1,
         .Options = {"BT709", "Unspecified", "BT470M", "BT470BG", "ST170M", "ST240M", "Film", "BT2020", "ST428", "P3DCI", "P3Display", "Tech3213"}}
 
     Property Matrix As New OptionParam With {
         .Text = "Matrix",
         .Path = "VUI",
         .Switch = "--matrix",
-        .InitValue = 2,
+        .Init = 2,
         .Options = {"Identity", "BT709", "Unspecified", "BT470M", "BT470BG", "ST170M", "ST240M", "YCgCo", "BT2020NonConstantLuminance", "BT2020ConstantLuminance", "ST2085", "ChromaticityDerivedNonConstantLuminance", "ChromaticityDerivedConstantLuminance", "ICtCp"}}
 
     Property Transfer As New OptionParam With {
         .Text = "Transfer",
         .Path = "VUI",
         .Switch = "--transfer",
-        .InitValue = 1,
+        .Init = 1,
         .Options = {"BT1886", "Unspecified", "BT470M", "BT470BG", "ST170M", "ST240M", "Linear", "Logarithmic100", "Logarithmic316", "XVYCC", "BT1361E", "SRGB", "BT2020Ten", "BT2020Twelve", "PerceptualQuantizer", "ST428", "HybridLogGamma"}}
 
     Property Speed As New NumParam With {

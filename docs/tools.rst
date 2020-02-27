@@ -119,7 +119,7 @@ ffmpeg
 
 Versatile audio video converter.
 
-Used Version: 2019-09-27 Patman
+Used Version: N-96788 GCC 9.2.0 Patman
 
 http://ffmpeg.org
 
@@ -159,7 +159,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 39.0.0
+Used Version: 43.0.0
 
 https://mkvtoolnix.download/
 
@@ -169,7 +169,7 @@ mkvinfo
 
 MKV muxing tool.
 
-Used Version: 39.0.0
+Used Version: 43.0.0
 
 https://mkvtoolnix.download/
 
@@ -179,7 +179,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 39.0.0
+Used Version: 43.0.0
 
 https://mkvtoolnix.download/
 
@@ -389,7 +389,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.2+9-971180b100f8 Patman
+Used Version: 3.3+2-gbe2d82093 GCC Patman
 
 http://x265.org
 
@@ -1037,7 +1037,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: LSMASHVideoSource, LSMASHAudioSource, LWLibavVideoSource, LWLibavAudioSource
 
-Used Version: 2019-09-17 HolyWu
+Used Version: 20200207 HolyWu
 
 http://avisynth.nl/index.php/LSMASHSource
 
@@ -1915,7 +1915,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: lsmas.LibavSMASHSource, lsmas.LWLibavSource
 
-Used Version: 2019-09-17 HolyWu
+Used Version: 20200207 HolyWu
 
 http://avisynth.nl/index.php/LSMASHSource
 

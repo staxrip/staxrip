@@ -1,5 +1,5 @@
 
-###
+### 2.0.7.1
 
 - new: icons added in encoder dialog menus
 - new: option dialog is shown in case a tool has multiple help
@@ -13,19 +13,23 @@
 - new: High DPI aware Info AviSynth filter profile added to misc section: Info(size=16*%dpi%/96)
 - new: the VFW interface used to access AviSynth and VapourSynth
        was replaced with a new library
+- new: x265 switches --analysis-save-reuse-level --analysis-load-reuse-level
 - new: nvenc switches --colorrange, --psnr, --ssim
-- new: search matches in the encoder config dialog are now
-       displayed with permanent bold font
-- new: the search feature in the encoder config dialog now
+- new: search matches in the video encoder config dialog
+       stay now permanently highlighted with bold font
+- new: the search feature in the video encoder config dialog now
        also searches in option values, for instance searching
 	   for 'medium' will find and highlight the 'preset' switch
-- new: in the encoder config dialogs the context menu of the
+- new: in the video encoder config dialogs the context menu of the
        command line preview has a new menu item to search
-	   for the string at the caret or cursor
+	   for the switch or string at the caret or cursor
 
 - update: nvenc 4.65
 - update: qsvenc 3.31
 - update: vceenc 5.02
+- update: x265 3.3+2-gbe2d82093 GCC Patman
+- update: ffmpeg N-96788 GCC 9.2.0 Patman
+- update: mkvtoolnix 43
 
 - fix: x265 three pass encoding (untested)
 

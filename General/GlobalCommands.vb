@@ -292,7 +292,7 @@ Public Class GlobalCommands
             --log --log-framelist --vpp-colorspace --audio-delay".Split((" " + BR).ToCharArray())
 
         File.WriteAllText(Package.NVEnc.GetDir + "\help.txt", ProcessHelp.GetStdOut(Package.NVEnc.Path, "-h"))
-        Dim nvHelp = File.ReadAllText(Package.NVEnc.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
+        Dim nvHelp = File.ReadAllText(Package.NVEnc.GetDir + "help.txt").Replace("--(no-)", "--").Replace("--no-", "--")
         Dim nvHelpSwitches = Regex.Matches(nvHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
         Dim nvCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\nvenc.vb").Replace("--no-", "--")
         Dim nvPresent = Regex.Matches(nvCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
@@ -359,13 +359,13 @@ Public Class GlobalCommands
 
         Dim x265Except = "--crop-rect--fast-cbf --frame-skip --help --lavf --no-scenecut
             --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version
-            --no-progress --pbration --fullhelp ---hrd-concat".Split((" " + BR).ToCharArray())
+            --no-progress --pbration --fullhelp ---hrd-concat --progress".Split((" " + BR).ToCharArray())
 
         Dim x265RemoveExcept = "--numa-pools --rdoq --cip --qblur --cplxblur --cu-stats --dhdr10-info
             --opt-qp-pps --opt-ref-list-length-pps --single-sei --hrd-concat --display-window 
             --dhdr10-opt --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
 
-        Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --fullhelp").Replace("--[no-]", "--")
+        Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --fullhelp").Replace("--[no-]", "--").Replace("--no-", "--")
         Dim x265HelpSwitches = Regex.Matches(x265Help, "--[\w-]+").OfType(Of Match).Select(Function(val) val.Value)
         Dim x265Code = File.ReadAllText(Folder.Startup.Parent + "Encoding\x265Enc.vb").Replace("--no-", "--")
         File.WriteAllText(Package.x265.GetDir + "help.txt", x265Help)

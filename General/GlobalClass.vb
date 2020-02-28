@@ -1,4 +1,5 @@
-﻿Imports System.Drawing.Imaging
+﻿
+Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Runtime.ExceptionServices
 Imports System.Text
@@ -82,17 +83,10 @@ Public Class GlobalClass
 
             Log.WriteHeader(If(p.Script.Engine = ScriptEngine.AviSynth, "AviSynth Script", "VapourSynth Script"))
             Log.WriteLine(p.Script.GetFullScript)
-            Log.WriteHeader("Script Properties")
-
-            Dim props =
-                "Source Frame Count: " & p.SourceScript.GetFrameCount & BR +
-                "Source Frame Rate: " & p.SourceScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
-                "Source Duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.SourceScript.GetFrameCount / p.SourceScript.GetFramerate)).ToString + BR +
-                "Target Frame Count: " & p.Script.GetFrameCount & BR +
-                "Target Frame Rate: " & p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
-                "Target Duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.Script.GetFrameCount / p.Script.GetFramerate)).ToString
-
-            Log.WriteLine(props.FormatColumn(":"))
+            Log.WriteHeader("Source Script Information")
+            Log.WriteLine(p.SourceScript.GetInfo().GetText(-1))
+            Log.WriteHeader("Target Script Information")
+            Log.WriteLine(p.Script.GetInfo().GetText(-1))
 
             g.MainForm.Hide()
 
@@ -871,6 +865,7 @@ Public Class GlobalClass
         End Try
     End Sub
 
+    'TODO: replace OpenDirAndSelectFile
     Sub OpenDirAndSelectFile(filepath As String, handle As IntPtr)
         If File.Exists(filepath) Then
             g.StartProcess(StaxRip.FilePath.GetDir(filepath))
@@ -993,15 +988,34 @@ Public Class GlobalClass
     End Function
 
     Sub CodePreview(code As String)
-        Using f As New StringEditorForm
-            f.rtb.ReadOnly = True
-            f.cbWrap.Checked = False
-            f.cbWrap.Visible = False
-            f.rtb.Text = code
-            f.Text = "Code Preview"
-            f.bnOK.Visible = False
-            f.bnCancel.Text = "Close"
-            f.ShowDialog()
+        Using form As New StringEditorForm
+            form.rtb.ReadOnly = True
+            form.cbWrap.Checked = False
+            form.cbWrap.Visible = False
+            form.rtb.Text = code
+            form.Text = "Code Preview"
+            form.bnOK.Visible = False
+            form.bnCancel.Text = "Close"
+            form.ShowDialog()
+        End Using
+    End Sub
+
+    Sub ShowScriptInfo(script As VideoScript)
+        script.Synchronize()
+        Dim text = If(script.Error = "", script.Info.GetText(-1), script.Error)
+        text = BR + "  " + text.FixBreak.Replace(BR, BR + "  ") + BR
+
+        Using form As New StringEditorForm
+            form.ScaleClientSize(30, 20)
+            form.MaximizeBox = False
+            form.rtb.ReadOnly = True
+            form.cbWrap.Checked = False
+            form.cbWrap.Visible = False
+            form.rtb.Text = text
+            form.Text = script.Path
+            form.bnOK.Visible = False
+            form.bnCancel.Text = "Close"
+            form.ShowDialog()
         End Using
     End Sub
 

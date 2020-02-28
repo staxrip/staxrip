@@ -61,4 +61,42 @@ Public Structure ServerInfo
     Public FrameRateNum As Integer
     Public FrameRateDen As Integer
     Public FrameCount As Integer
+
+    ' ######### avs2pipemod64.exe -info ########
+    '
+    ' avisynth_version 2.600 / AviSynth+ 3.4 (r2923, 3.4, x86_64)
+    ' script_name      D:\Samples\Jill_temp\Jill_new.avs
+    ' 
+    ' v:width            1920
+    ' v:height           1080
+    ' v:image_type       framebased
+    ' v:field_order      assumed bottom field first
+    ' v:pixel_type       YV12
+    ' v:bit_depth        8
+    ' v:number of planes 3
+    ' v:fps              30000/1001
+    ' v:frames           6172
+    ' v:duration[sec]    205.939
+    '
+    ' ###########################################
+
+    Function GetText(position As Integer) As String
+        Dim rate = FrameRateNum / FrameRateDen
+        Dim currentDate = Date.Today.AddSeconds(position / rate)
+        Dim lengthtDate = Date.Today.AddSeconds(FrameCount / rate)
+        Dim dateFormat = If(lengthtDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff")
+        Dim frames = FrameCount.ToString
+        Dim len = lengthtDate.ToString(dateFormat)
+
+        If position > -1 Then
+            frames = position & " of " & FrameCount
+            len = currentDate.ToString(dateFormat) + " of " + lengthtDate.ToString(dateFormat)
+        End If
+
+        Return "Width     : " & Width & BR &
+               "Height    : " & Height & BR &
+               "Frames    : " + frames + BR +
+               "Time      : " + len + BR +
+               "Framerate : " + rate.ToString.Shorten(9) & " (" & FrameRateNum & "/" & FrameRateDen & ")"
+    End Function
 End Structure

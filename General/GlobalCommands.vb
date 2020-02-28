@@ -703,7 +703,7 @@ Switches
             If releaseType = "-beta" Then
                 Dim outputDirectories = {
                     "C:\Users\frank\OneDrive\StaxRip\TestBuilds\",
-                    "C:\Users\frank\Dropbox\public\StaxRip\Builds\"}
+                    "C:\Users\frank\OneDrive\StaxRip\Builds"}
 
                 For Each i In outputDirectories
                     If Not Directory.Exists(i) Then

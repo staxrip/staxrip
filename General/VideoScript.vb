@@ -7,8 +7,8 @@ Imports StaxRip
 Public Class VideoScript
     Inherits Profile
 
-    <NonSerialized()> Private [Error] As String
-    <NonSerialized()> Private Info As ServerInfo
+    <NonSerialized()> Public [Error] As String
+    <NonSerialized()> Public Info As ServerInfo
 
     Property Filters As New List(Of VideoFilter)
 

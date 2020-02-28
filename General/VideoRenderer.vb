@@ -116,22 +116,9 @@ Public Class VideoRenderer
             Exit Sub
         End If
 
-        Dim currentDate As Date
-        currentDate = currentDate.AddSeconds(Position / Server.FrameRate)
-
-        Dim lengthtDate As Date
-        lengthtDate = lengthtDate.AddSeconds(Server.Info.FrameCount / Server.FrameRate)
-
-        Dim dateFormat = If(lengthtDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff")
-
-        Dim text =
-            "Frame: " & Position & " of " & Server.Info.FrameCount & BR &
-            "Time: " & currentDate.ToString(dateFormat) + " of " + lengthtDate.ToString(dateFormat) + BR +
-            "Size: " & Server.Info.Width & " x " & Server.Info.Height & BR +
-            "Rate: " & Server.FrameRate.ToString.Shorten(9) & " (" & Server.Info.FrameRateNum & "/" & Server.Info.FrameRateDen & ")"
-
+        Dim text = Server.Info.GetText(Position)
         Dim layout As IDWriteTextLayout
-        Dim format = DirectWriteFactory.CreateTextFormat("Segoe UI", 13)
+        Dim format = DirectWriteFactory.CreateTextFormat("Consolas", 13)
 
         DirectWriteFactory.Object.CreateTextLayout(
             text,

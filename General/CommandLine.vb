@@ -489,7 +489,9 @@ Namespace CommandLine
         End Sub
 
         Overrides Function GetArgs() As String
-            If Not Visible Then Return Nothing
+            If Not Visible Then
+                Return Nothing
+            End If
 
             If Not ArgsFunc Is Nothing Then
                 Return ArgsFunc.Invoke
@@ -500,7 +502,7 @@ Namespace CommandLine
                     val = val.Replace(" ", "")
                 End If
 
-                If val <> DefaultValue Then
+                If val <> DefaultValue AndAlso val <> "" Then
                     If Switch = "" Then
                         If AlwaysOn Then
                             If Quotes = QuotesMode.Always Then

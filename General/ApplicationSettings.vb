@@ -233,7 +233,7 @@ Public Class ApplicationSettings
         End If
 
         If Check(CustomMenuPreview, "Menu in preview dialog", 53) Then
-            CustomMenuPreview = PreviewForm.GetDefaultMenuPreview
+            CustomMenuPreview = PreviewForm.GetDefaultMenu()
         End If
 
         If Check(CustomMenuSize, "Target size menu in main dialog", 31) Then

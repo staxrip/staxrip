@@ -1,6 +1,7 @@
 
 Imports System.ComponentModel
 Imports System.Drawing.Imaging
+
 Imports StaxRip.UI
 
 Public Class PreviewForm
@@ -300,7 +301,7 @@ Public Class PreviewForm
         CommandManager.AddCommandsFromObject(Me)
         CommandManager.AddCommandsFromObject(g.DefaultCommands)
 
-        GenericMenu = New CustomMenu(AddressOf GetDefaultMenuPreview,
+        GenericMenu = New CustomMenu(AddressOf GetDefaultMenu,
             s.CustomMenuPreview, CommandManager, cmsMain)
 
         GenericMenu.AddKeyDownHandler(Me)
@@ -963,7 +964,7 @@ Public Class PreviewForm
         End Using
     End Sub
 
-    Shared Function GetDefaultMenuPreview() As CustomMenuItem
+    Shared Function GetDefaultMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
         ret.Add("Navigation|Go To Start", NameOf(SetAbsolutePos), Keys.Control Or Keys.Left, {0})

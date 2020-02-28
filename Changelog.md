@@ -1,4 +1,9 @@
 
+### 
+
+- new: showing MediaInfo for the source file works now even if
+       the source file is an d2v/dgi index file
+
 ### 2.0.7.1
 
 - new: icons added in encoder dialog menus
@@ -30,7 +35,7 @@
 - update: nvenc 4.65
 - update: qsvenc 3.31
 - update: vceenc 5.02
-- update: x265 3.3+2-gbe2d82093 GCC Patman
+- update: x265 3.3+2-gbe2d82093 GCC 9.2.0 Patman
 - update: ffmpeg N-96788 GCC 9.2.0 Patman
 - update: mkvtoolnix 43
 - update: MP4Box 0.8.0-rev178-g44c48d630 Patman

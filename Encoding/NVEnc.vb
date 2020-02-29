@@ -108,6 +108,26 @@ Public Class NVEnc
         End Get
     End Property
 
+    Public Shared Function Test() As String
+        Dim tester As New ConsolAppTester
+
+        tester.IgnoredSwitches = "help version check-device input-analyze input-format output-format
+            video-streamid video-track vpp-delogo vpp-delogo-cb vpp-delogo-cr vpp-delogo-depth output
+            vpp-delogo-pos vpp-delogo-select vpp-delogo-y check-avversion check-codecs caption2ass log
+            check-encoders check-decoders check-formats check-protocols log-framelist vpp-colorspace fps
+            check-filters input raw avs vpy vpy-mt key-on-chapter audio-delay audio-ignore-decode-error
+            avcuvid-analyze audio-source audio-file seek format audio-copy audio-ignore-notrack-error
+            audio-copy audio-codec vpp-perf-monitor avi audio-profile check-profiles avsync mux-option
+            audio-bitrate audio-ignore audio-ignore audio-samplerate audio-resampler audio-stream dar
+            audio-stream audio-stream audio-stream audio-filter chapter-copy chapter sub-copy input-res"
+
+        tester.Package = Package.NVEnc
+        tester.HelpSwitch = "-h"
+        tester.CodeFile = Folder.Startup.Parent + "Encoding\nvenc.vb"
+
+        Return tester.Test
+    End Function
+
     Public Class EncoderParams
         Inherits CommandLineParams
 

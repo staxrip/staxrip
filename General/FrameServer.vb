@@ -62,8 +62,8 @@ Public Structure ServerInfo
     Public FrameRateDen As Integer
     Public FrameCount As Integer
 
-    ' ######### avs2pipemod64.exe -info ########
-    '
+
+    ' avs2pipemod64.exe -info   
     ' avisynth_version 2.600 / AviSynth+ 3.4 (r2923, 3.4, x86_64)
     ' script_name      D:\Samples\Jill_temp\Jill_new.avs
     ' 
@@ -77,9 +77,22 @@ Public Structure ServerInfo
     ' v:fps              30000/1001
     ' v:frames           6172
     ' v:duration[sec]    205.939
-    '
-    ' ###########################################
 
+
+    ' vspipe.exe --info file.vpy -
+    ' Width: 1920
+    ' Height: 1080
+    ' Frames: 6172
+    ' FPS: 30000/1001 (29.970 fps)
+    ' Format Name: YUV420P8
+    ' Color Family: YUV
+    ' Alpha: No
+    ' Sample Type: Integer
+    ' Bits: 8
+    ' SubSampling W: 1
+    ' SubSampling H: 1
+
+    'TODO: add colorspace support
     Function GetText(position As Integer) As String
         Dim rate = FrameRateNum / FrameRateDen
         Dim currentDate = Date.Today.AddSeconds(position / rate)

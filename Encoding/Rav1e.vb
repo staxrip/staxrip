@@ -1,4 +1,5 @@
-﻿Imports System.Text
+﻿
+Imports System.Text
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -67,6 +68,7 @@ Public Class Rav1e
         r.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
         Return r
     End Function
+
     Overrides Sub ShowConfigDialog()
 
         Dim newParams As New Rav1eParams
@@ -93,6 +95,7 @@ Public Class Rav1e
             End If
         End Using
     End Sub
+
     Overrides Property QualityMode() As Boolean
         Get
             Return Params.Mode.OptionText.EqualsAny("Quality")
@@ -100,11 +103,24 @@ Public Class Rav1e
         Set(Value As Boolean)
         End Set
     End Property
+
     Public Overrides ReadOnly Property CommandLineParams As CommandLineParams
         Get
             Return Params
         End Get
     End Property
+
+    Public Shared Function Test() As String
+        Dim tester As New ConsolAppTester
+
+        tester.IgnoredSwitches = "--output --help --psnr --version --verbose"
+        tester.UndocumentedSwitches = "--y4m --help --version --verbose"
+        tester.Package = Package.Rav1e
+        tester.HelpSwitch = "--help"
+        tester.CodeFile = Folder.Startup.Parent + "Encoding\Rav1e.vb"
+
+        Return tester.Test
+    End Function
 End Class
 
 Public Class Rav1eParams

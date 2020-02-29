@@ -1,8 +1,14 @@
 
-### 
+### 2.0.7.2
 
 - new: showing MediaInfo for the source file works now even if
        the source file is an d2v/dgi index file
+
+- new: improved detection to find out if all video encoder
+       command line switches have a GUI implementation,
+       (there is still a lot work to do)
+
+- fix: use FrameServer.dll release build instead of debug build
 
 ### 2.0.7.1
 

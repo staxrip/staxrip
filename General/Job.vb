@@ -1,4 +1,5 @@
-﻿Imports System.Runtime.Serialization.Formatters.Binary
+﻿
+Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Threading
 
 Public Class Job

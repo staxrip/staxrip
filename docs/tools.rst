@@ -189,7 +189,7 @@ MP4Box
 
 MP4Box is a MP4 muxing and demuxing command line app.
 
-Used Version: 0.8.0-rev69-5fe3ec1 Wolfberry
+Used Version: 0.8.0-rev178-g44c48d630 Patman
 
 http://gpac.wp.mines-telecom.fr/
 
@@ -389,7 +389,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.3+2-gbe2d82093 GCC Patman
+Used Version: 3.3+2-gbe2d82093 GCC 9.2.0 Patman
 
 http://x265.org
 

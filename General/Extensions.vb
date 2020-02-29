@@ -78,10 +78,14 @@ Module StringExtensions
 
     <Extension()>
     Function Escape(instance As String) As String
-        If instance = "" Then Return ""
+        If instance = "" Then
+            Return ""
+        End If
 
         For Each i In " ;=~*$%()&"
-            If instance.Contains(i) Then Return """" + instance + """"
+            If instance.Contains(i) Then
+                Return """" + instance + """"
+            End If
         Next
 
         Return instance
@@ -429,6 +433,19 @@ Module StringExtensions
         If value.Contains(Convert.ToChar(&H2212)) Then
             value = value.Replace(Convert.ToChar(&H2212), "-"c)
         End If
+
+        Return value
+    End Function
+
+    <Extension()>
+    Function ReplaceRecursive(value As String, find As String, replace As String) As String
+        If value = "" Then
+            Return ""
+        End If
+
+        While value.Contains(find)
+            value = value.Replace(find, replace)
+        End While
 
         Return value
     End Function

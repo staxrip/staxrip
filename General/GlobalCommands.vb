@@ -278,110 +278,14 @@ Public Class GlobalCommands
     Sub Test()
         Dim msg = ""
 
-        Dim nvExcept = "--help --version --check-device --input-analyze 
-            --input-format --output-format --video-streamid --video-track --vpp-delogo
-            --vpp-delogo-cb --vpp-delogo-cr --vpp-delogo-depth --vpp-delogo-pos
-            --vpp-delogo-select --vpp-delogo-y --check-avversion --check-codecs --caption2ass
-            --check-encoders --check-decoders --check-formats --check-protocols
-            --check-filters --input --output --raw --avs --vpy --vpy-mt --key-on-chapter
-            --avcuvid-analyze --audio-source --audio-file --seek --format --audio-copy
-            --audio-copy --audio-codec --vpp-perf-monitor --avi --audio-profile --check-profiles
-            --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
-            --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
-            --avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
-            --log --log-framelist --vpp-colorspace --audio-delay".Split((" " + BR).ToCharArray())
+        msg += NVEnc.Test
+        msg += QSVEnc.Test
+        msg += Rav1e.Test
+        msg += VCEEnc.Test
+        msg += x264Enc.Test
+        msg += x265Enc.Test
 
-        File.WriteAllText(Package.NVEnc.GetDir + "\help.txt", ProcessHelp.GetStdOut(Package.NVEnc.Path, "-h"))
-        Dim nvHelp = File.ReadAllText(Package.NVEnc.GetDir + "help.txt").Replace("--(no-)", "--").Replace("--no-", "--")
-        Dim nvHelpSwitches = Regex.Matches(nvHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim nvCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\nvenc.vb").Replace("--no-", "--")
-        Dim nvPresent = Regex.Matches(nvCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim nvMissing = nvPresent.Where(Function(arg) Not nvHelpSwitches.Contains(arg))
-        Dim nvUnknown = nvHelpSwitches.Where(Function(x) Not nvPresent.Contains(x) AndAlso Not nvExcept.Contains(x)).ToList()
-        nvUnknown.Sort()
-        Dim nvNoNeedToExcept = nvExcept.Where(Function(arg) nvPresent.Contains(arg))
-        If nvNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary NVEnc Exception:" + BR2 + nvNoNeedToExcept.Join(" ")
-        If nvMissing.Count > 0 Then msg += BR2 + "# Removed from NVEnc" + BR2 + nvMissing.Join(" ")
-        If nvUnknown.Count > 0 Then msg += BR2 + "# NVEnc Todo" + BR2 + nvUnknown.Join(" ")
-
-        Dim amdExcept = "--audio-bitrate --audio-codec --audio-copy --audio-file
-            --audio-filter --avsw --device --input-analyze --caption2ass
-            --audio-ignore-decode-error --audio-ignore-notrack-error --audio-resampler
-            --audio-samplerate --audio-source --audio-stream --avs --avvce-analyze
-            --check-avversion --check-codecs --check-decoders --check-encoders --check-filters
-            --check-formats --check-protocols --dar --format --fps --help --input-file
-            --input-res --log-framelist --mux-option --output-file --raw --seek --skip-frame
-            --sub-copy --version --video-streamid --video-track --vpy --vpy-mt".Split((" " + BR).ToCharArray())
-
-        File.WriteAllText(Package.VCEEnc.GetDir + "\help.txt", ProcessHelp.GetStdOut(Package.VCEEnc.Path, "-h"))
-        Dim amdHelp = File.ReadAllText(".\Apps\Encoders\VCEEnc\help.txt").Replace("(no-)", "").Replace("--no-", "--")
-        Dim amdHelpSwitches = Regex.Matches(amdHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim amdCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\vceenc.vb").Replace("--no-", "--")
-        Dim amdPresent = Regex.Matches(amdCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim amdMissing = amdPresent.Where(Function(arg) Not amdHelpSwitches.Contains(arg))
-        Dim amdUnknown = amdHelpSwitches.Where(Function(x) Not amdPresent.Contains(x) AndAlso Not amdExcept.Contains(x)).ToList()
-        amdUnknown.Sort()
-        Dim amdNoNeedToExcept = amdExcept.Where(Function(arg) amdPresent.Contains(arg))
-        If amdNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary VCEEnc Exception" + BR2 + amdNoNeedToExcept.Join(" ")
-        If amdMissing.Count > 0 Then msg += BR2 + "# Removed from VCEEnc" + BR2 + amdMissing.Join(" ")
-        If amdUnknown.Count > 0 Then msg += BR2 + "# VCEEnc Todo" + BR2 + amdUnknown.Join(" ")
-
-        Dim qsExcept = "--help --version --check-lib --check-device --video-streamid --video-track
-            --check-avversion --check-codecs --check-encoders --check-decoders --check-formats
-            --check-protocols --chapter-no-trim --check-filters --device --input --output
-            --raw --avs --vpy --vpy-mt --audio-source --audio-file --seek --format --caption2ass
-            --audio-copy --audio-copy --audio-codec --audio-bitrate --audio-ignore --check-profiles
-            --audio-ignore --audio-samplerate --audio-resampler --audio-stream --audio-stream
-            --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
-            --avsync --mux-option --input-res --fps --dar --avqsv-analyze --benchmark
-            --bench-quality --log --log-framelist --audio-thread --avi --avqsv --input-file
-            --audio-ignore-decode-error --audio-ignore-notrack-error --nv12 --output-file
-            --check-features-html --perf-monitor --perf-monitor-plot --perf-monitor-interval
-            --python --qvbr-quality --sharpness --vpp-delogo --vpp-delogo-select --audio-profile
-            --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb --vpp-delogo-cr
-            --vpp-delogo-add --vpp-half-turn --input-analyze --input-format --output-format
-            ".Split((" " + BR).ToCharArray())
-
-        File.WriteAllText(Package.QSVEnc.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.QSVEnc.Path, "-h"))
-        Dim qsHelp = File.ReadAllText(Package.QSVEnc.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
-        Dim qsHelpSwitches = Regex.Matches(qsHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim qsCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\qsvenc.vb").Replace("--no-", "--")
-        Dim qsPresent = Regex.Matches(qsCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim qsMissing = qsPresent.Where(Function(arg) Not qsHelpSwitches.Contains(arg))
-        Dim qsUnknown = qsHelpSwitches.Where(Function(x) Not qsPresent.Contains(x) AndAlso Not qsExcept.Contains(x)).ToList()
-        qsUnknown.Sort()
-        Dim qsNoNeedToExcept = qsExcept.Where(Function(arg) qsPresent.Contains(arg))
-        If qsNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary QSVEnc Exception:" + BR2 + qsNoNeedToExcept.Join(" ")
-        If qsMissing.Count > 0 Then msg += BR2 + "# Removed from QSVEnc" + BR2 + qsMissing.Join(" ")
-        If qsUnknown.Count > 0 Then msg += BR2 + "# QSVEnc Todo" + BR2 + qsUnknown.Join(" ")
-
-        File.WriteAllText(Package.x264.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.x264.Path, "--fullhelp"))
-
-        Dim x265Except = "--crop-rect--fast-cbf --frame-skip --help --lavf --no-scenecut
-            --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version
-            --no-progress --pbration --fullhelp ---hrd-concat --progress".Split((" " + BR).ToCharArray())
-
-        Dim x265RemoveExcept = "--numa-pools --rdoq --cip --qblur --cplxblur --cu-stats --dhdr10-info
-            --opt-qp-pps --opt-ref-list-length-pps --single-sei --hrd-concat --display-window 
-            --dhdr10-opt --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
-
-        Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --fullhelp").Replace("--[no-]", "--").Replace("--no-", "--")
-        Dim x265HelpSwitches = Regex.Matches(x265Help, "--[\w-]+").OfType(Of Match).Select(Function(val) val.Value)
-        Dim x265Code = File.ReadAllText(Folder.Startup.Parent + "Encoding\x265Enc.vb").Replace("--no-", "--")
-        File.WriteAllText(Package.x265.GetDir + "help.txt", x265Help)
-        Dim x265Present As New HashSet(Of String)
-
-        For Each switch In Regex.Matches(x265Code, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-            x265Present.Add(switch)
-        Next
-
-        Dim x265Missing = x265Present.Where(Function(arg) Not x265HelpSwitches.Contains(arg) AndAlso Not x265RemoveExcept.Contains(arg))
-        Dim x265Unknown = x265HelpSwitches.Where(Function(x) Not x265Present.Contains(x) AndAlso Not x265Except.Contains(x)).ToList()
-        x265Unknown.Sort()
-        Dim x265NoNeedToExcept = x265Except.Where(Function(arg) x265Present.Contains(arg))
-        If x265NoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary x265 Exception:", x265NoNeedToExcept.Join(" "))
-        If x265Missing.Count > 0 Then msg += BR2 + "# Removed from x265" + BR2 + x265Missing.Join(" ")
-        If x265Unknown.Count > 0 Then msg += BR2 + "# x265 Todo" + BR2 + x265Unknown.Join(" ")
+        '//////////////////// aom
 
         'Dim aomCodeExcept = "".Split((" " + BR).ToCharArray())
 
@@ -401,27 +305,11 @@ Public Class GlobalCommands
         'If aomMissing.Count > 0 Then msg += BR2 + "# Removed from aomenc" + BR2 + aomMissing.Join(" ")
         'If aomUnknown.Count > 0 Then msg += BR2 + "# aomenc Todo" + BR2 + aomUnknown.Join(" ")
 
-        Dim RavExcept = "--output --help --psnr --version --verbose".Split((" " + BR).ToCharArray())
-        Dim RavCodeExcept = "--y4m --help --version --verbose".Split((" " + BR).ToCharArray())
-        Dim RavHelp = ProcessHelp.GetStdOut(Package.Rav1e.Path, "--help")
-        File.WriteAllText(Package.Rav1e.GetDir + "help.txt", RavHelp)
-        RavHelp = RavHelp.Replace("(no-)", "").Replace("--no-", "--")
-        Dim RavHelpSwitches = Regex.Matches(RavHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim RavCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\Rav1e.vb").Replace("--no-", "--")
-        Dim RavPresentInCode = Regex.Matches(RavCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim RavMissing = RavPresentInCode.Where(Function(arg) Not RavHelpSwitches.Contains(arg) AndAlso Not RavCodeExcept.Contains(arg))
-        Dim RavUnknown = RavHelpSwitches.Where(Function(x) Not RavPresentInCode.Contains(x) AndAlso Not RavExcept.Contains(x)).ToList()
-        RavUnknown.Sort()
-        Dim RavNoNeedToExcept = RavExcept.Where(Function(arg) RavPresentInCode.Contains(arg))
-        If RavNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary Rav1e Exception:" + BR2 + RavNoNeedToExcept.Join(" ")
-        If RavMissing.Count > 0 Then msg += BR2 + "# Removed from Rav1e" + BR2 + RavMissing.Join(" ")
-        If RavUnknown.Count > 0 Then msg += BR2 + "# Rav1e Todo" + BR2 + RavUnknown.Join(" ")
-
-        File.WriteAllText(Package.fdkaac.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.fdkaac.Path, "-h"))
-        File.WriteAllText(Package.PNGopt.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.PNGopt.Path, Nothing))
+        Package.fdkaac.CreateHelpfile("-h")
+        Package.PNGopt.CreateHelpfile("")
 
         For Each pack In Package.Items.Values
-            If pack.HelpFile.Ext = "md" Then
+            If pack.HelpFilename.Ext = "md" Then
                 msg += BR2 + "# local MD file for " + pack.Name
             End If
 
@@ -437,8 +325,8 @@ Public Class GlobalCommands
                 End If
 
                 'does help file exist?
-                If pack.Path <> "" AndAlso pack.HelpFile <> "" Then
-                    If Not File.Exists(pack.GetDir + pack.HelpFile) Then
+                If pack.Path <> "" AndAlso pack.HelpFilename <> "" Then
+                    If Not File.Exists(pack.GetDir + pack.HelpFilename) Then
                         msg += BR2 + $"# Help file of {pack.Name} don't exist!"
                     End If
                 End If
@@ -618,8 +506,8 @@ Switches
         switches.WriteUTF8File(Folder.Startup + "..\docs\cli.rst")
 
         If msg <> "" Then
-            Dim fs = Folder.Temp + "staxrip todo.txt"
-            File.WriteAllText(fs, msg)
+            Dim fs = Folder.Temp + "staxrip test.txt"
+            File.WriteAllText(fs, BR + msg.Trim + BR)
             g.StartProcess(fs)
         Else
             MsgInfo("No issues found.")

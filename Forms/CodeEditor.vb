@@ -467,7 +467,7 @@ Public Class CodeEditor
                                      If Not pluginPack.AvsFilterNames Is Nothing Then
                                          For Each avsFilterName In pluginPack.AvsFilterNames
                                              If rtbScript.Text.Contains(avsFilterName) Then
-                                                 Dim helpPath = pluginPack.GetHelpPath()
+                                                 Dim helpPath = pluginPack.HelpFileOrURL
 
                                                  If helpPath <> "" Then
                                                      Menu.Add("Help | " + pluginPack.Name, Sub() pluginPack.ShowHelp(), pluginPack.Description)
@@ -500,7 +500,7 @@ Public Class CodeEditor
                                      Menu.Add("Help | -")
 
                                      For Each pluginPack In Package.Items.Values.OfType(Of PluginPackage)
-                                         Dim helpPath = pluginPack.GetHelpPath
+                                         Dim helpPath = pluginPack.HelpFileOrURL
 
                                          If helpPath <> "" AndAlso Not pluginPack.AvsFilterNames Is Nothing Then
                                              Menu.Add("Help | " + pluginPack.Name.Substring(0, 1).ToUpper + " | " + pluginPack.Name, Sub() pluginPack.ShowHelp(), pluginPack.Description)
@@ -508,11 +508,11 @@ Public Class CodeEditor
                                          End If
                                      Next
                                  Else
-                                     Menu.Add("Help | VapourSynth Help", Sub() Package.VapourSynth.ShowHelp(), Package.VapourSynth.GetHelpPath)
+                                     Menu.Add("Help | VapourSynth Help", Sub() Package.VapourSynth.ShowHelp(), Package.VapourSynth.HelpFileOrURL)
                                      Menu.Add("Help | -")
 
                                      For Each pluginPack In Package.Items.Values.OfType(Of PluginPackage)
-                                         Dim helpPath = pluginPack.GetHelpPath
+                                         Dim helpPath = pluginPack.HelpFileOrURL
 
                                          If helpPath <> "" AndAlso Not pluginPack.VSFilterNames Is Nothing Then
                                              Menu.Add("Help | " + pluginPack.Name.Substring(0, 1).ToUpper + " | " + pluginPack.Name, Sub() pluginPack.ShowHelp(), pluginPack.Description)

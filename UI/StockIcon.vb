@@ -113,7 +113,10 @@ Namespace UI
         End Structure
 
         <DllImport("Shell32.dll")>
-        Private Shared Function SHGetStockIconInfo(identifier As StockIconIdentifier, flags As StockIconOptions, ByRef info As StockIconInfo) As Integer
+        Private Shared Function SHGetStockIconInfo(
+            identifier As StockIconIdentifier,
+            flags As StockIconOptions,
+            ByRef info As StockIconInfo) As Integer
         End Function
 
         <DllImport("User32.dll")>
@@ -121,28 +124,23 @@ Namespace UI
         End Function
 
         Shared Function GetSmallImage(identifier As StockIconIdentifier) As Bitmap
-            Dim h = GetIcon(identifier, StockIconOptions.Handle Or StockIconOptions.Small)
-            Dim r = Icon.FromHandle(h).ToBitmap
-            DestroyIcon(h)
-            Return r
+            Dim ptr = GetIcon(identifier, StockIconOptions.Handle Or StockIconOptions.Small)
+            Dim bmp = Icon.FromHandle(ptr).ToBitmap
+            DestroyIcon(ptr)
+            Return bmp
         End Function
 
         Shared Function GetImage(identifier As StockIconIdentifier) As Image
-            Dim h = GetIcon(identifier, StockIconOptions.Handle Or StockIconOptions.ShellSize)
-            Dim r = Icon.FromHandle(h).ToBitmap
-            DestroyIcon(h)
-            Return r
+            Dim ptr = GetIcon(identifier, StockIconOptions.Handle Or StockIconOptions.ShellSize)
+            Dim bmp = Icon.FromHandle(ptr).ToBitmap
+            DestroyIcon(ptr)
+            Return bmp
         End Function
 
         Private Shared Function GetIcon(identifier As StockIconIdentifier, flags As StockIconOptions) As IntPtr
             Dim info As New StockIconInfo()
             info.StuctureSize = CType(Marshal.SizeOf(GetType(StockIconInfo)), UInt32)
-            Dim hResult = SHGetStockIconInfo(identifier, flags, info)
-
-            If hResult < 0 Then
-                Throw New COMException("SHGetStockIconInfo execution failure", hResult)
-            End If
-
+            Marshal.ThrowExceptionForHR(SHGetStockIconInfo(identifier, flags, info))
             Return info.Handle
         End Function
     End Class

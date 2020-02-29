@@ -1283,6 +1283,7 @@ End Class
 Public Module MainModule
     Public Const BR As String = VB6.vbCrLf
     Public Const BR2 As String = VB6.vbCrLf + VB6.vbCrLf
+    Public Const BR3 As String = VB6.vbCrLf + VB6.vbCrLf + VB6.vbCrLf
     Public Log As LogBuilder
 
     Sub MsgInfo(text As String, Optional content As String = Nothing)

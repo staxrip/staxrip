@@ -392,7 +392,7 @@ Public Class CommandLineDemuxForm
     Private Sub HelpToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HelpToolStripMenuItem.Click
         For Each pack In Package.Items.Values
             If tbName.Text = pack.Name Then
-                If pack.GetHelpPath <> "" Then
+                If pack.HelpFileOrURL <> "" Then
                     pack.ShowHelp()
                 Else
                     MsgWarn("There is no help available for this app.")

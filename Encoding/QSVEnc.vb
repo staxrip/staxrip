@@ -1,4 +1,5 @@
-﻿Imports StaxRip.CommandLine
+﻿Imports System.Text.RegularExpressions
+Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 <Serializable()>
@@ -109,6 +110,29 @@ Public Class QSVEnc
             Return Params
         End Get
     End Property
+
+    Public Shared Function Test() As String
+        Dim tester As New ConsolAppTester
+
+        tester.IgnoredSwitches = "version check-lib check-device video-streamid video-track input-analyze
+            check-avversion check-codecs check-encoders check-decoders check-formats vpp-delogo-add
+            check-protocols chapter-no-trim check-filters device output vpp-half-turn input-format
+            raw avs vpy-mt audio-source audio-file seek format caption2ass output-format audio-profile
+            audio-copy audio-copy audio-codec audio-bitrate audio-ignore check-profiles vpp-delogo-pos
+            audio-ignore audio-samplerate audio-resampler audio-stream audio-stream vpp-delogo-y vpy
+            audio-stream audio-stream audio-filter chapter-copy chapter sub-copy vpp-delogo-depth input
+            avsync mux-option input-res fps dar avqsv-analyze benchmark vpp-delogo-cb vpp-delogo-cr
+            bench-quality log log-framelist audio-thread avi avqsv input-file python qvbr-quality help
+            audio-ignore-decode-error audio-ignore-notrack-error nv12 output-file sharpness vpp-delogo
+            check-features-html perf-monitor perf-monitor-plot perf-monitor-interval vpp-delogo-select"
+
+        tester.UndocumentedSwitches = "chromaloc videoformat colormatrix colorprim transfer fullrange"
+        tester.Package = Package.QSVEnc
+        tester.HelpSwitch = "-h"
+        tester.CodeFile = Folder.Startup.Parent + "Encoding\qsvenc.vb"
+
+        Return tester.Test
+    End Function
 
     Public Class EncoderParams
         Inherits CommandLineParams
@@ -269,9 +293,6 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--min-memory", .Text = "Minimize memory usage"},
                         New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
                     Add("VPP",
-                        New StringParam With {.Switch = "--vpp-sub", .Text = "Subtitle File", .BrowseFile = True},
-                        New StringParam With {.Switch = "--vpp-sub-charset", .Text = "Subtitle Charset"},
-                        New OptionParam With {.Switch = "--vpp-sub-shaping", .Text = "Subtitle Shaping", .Options = {"Simple", "Complex"}},
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"0", "90", "180", "270"}},
                         New OptionParam With {.Switch = "--vpp-image-stab", .Text = "Image Stabilizer", .Options = {"Disabled", "Upscale", "Box"}},
                         New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image", .Options = {"Disabled", "H", "V"}},

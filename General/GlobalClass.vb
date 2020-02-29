@@ -829,22 +829,24 @@ Public Class GlobalClass
     End Sub
 
     Sub ShowCommandLineHelp(package As Package, switch As String)
-        Dim helpPath = package.GetHelpPath
-
-        If Not File.Exists(helpPath) Then
+        If Not File.Exists(package.HelpFileOrURL) Then
             Exit Sub
         End If
 
-        Dim helpContent = File.ReadAllText(helpPath)
+        Dim content = File.ReadAllText(package.HelpFileOrURL)
         Dim find As String
 
-        If helpContent.Contains(switch.Replace("--", "--(no-)") + " ") Then
+        If content.Contains(switch.Replace("--", "--(no-)") + " ") Then
             find = switch.Replace("--", "--(no-)") + " "
-        ElseIf helpContent.Contains(switch + " ") Then
-            find = switch + " "
-        ElseIf helpContent.Contains(switch.Replace("--", "--(no-)")) Then
+        ElseIf content.Contains(switch.Replace("--", "--(no-)")) Then
             find = switch.Replace("--", "--(no-)")
-        ElseIf helpContent.Contains(switch) Then
+        ElseIf content.Contains(switch.Replace("--", "--[no-]") + " ") Then
+            find = switch.Replace("--", "--[no-]") + " "
+        ElseIf content.Contains(switch.Replace("--", "--[no-]")) Then
+            find = switch.Replace("--", "--[no-]")
+        ElseIf content.Contains(switch + " ") Then
+            find = switch + " "
+        ElseIf content.Contains(switch) Then
             find = switch
         End If
 
@@ -852,7 +854,7 @@ Public Class GlobalClass
             Exit Sub
         End If
 
-        Dim form As New TextHelpForm(helpContent, find)
+        Dim form As New TextHelpForm(content, find)
         form.Text = package.Name + " Help"
         form.Show()
     End Sub
@@ -865,26 +867,8 @@ Public Class GlobalClass
         End Try
     End Sub
 
-    'TODO: replace OpenDirAndSelectFile
-    Sub OpenDirAndSelectFile(filepath As String, handle As IntPtr)
-        If File.Exists(filepath) Then
-            g.StartProcess(StaxRip.FilePath.GetDir(filepath))
-
-            Try
-                For x = 0 To 9
-                    Thread.Sleep(300)
-                    Application.DoEvents()
-
-                    If handle <> Native.GetForegroundWindow Then
-                        ExplorerHelp.SelectFile(Native.GetForegroundWindow, filepath)
-                        Exit For
-                    End If
-                Next
-            Catch
-            End Try
-        ElseIf Directory.Exists(StaxRip.FilePath.GetDir(filepath)) Then
-            g.StartProcess(StaxRip.FilePath.GetDir(filepath))
-        End If
+    Sub SelectFileWithExplorer(filepath As String)
+        g.StartProcess("explorer.exe", "/n, /select, " + filepath.Escape)
     End Sub
 
     Sub OnUnhandledException(sender As Object, e As ThreadExceptionEventArgs)
@@ -927,7 +911,7 @@ Public Class GlobalClass
 
         Log.Save(p)
         Dim fp = Log.GetPath
-        g.OpenDirAndSelectFile(fp, g.MainForm.Handle)
+        g.SelectFileWithExplorer(fp)
         g.StartProcess(g.GetTextEditorPath(), """" + fp + """")
         g.StartProcess("https://github.com/staxrip/staxrip/issues")
     End Sub

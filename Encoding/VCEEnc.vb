@@ -101,6 +101,23 @@ Public Class VCEEnc
         End Get
     End Property
 
+    Public Shared Function Test() As String
+        Dim tester As New ConsolAppTester
+
+        tester.IgnoredSwitches = "audio-bitrate audio-codec video-streamid video-track vpy vpy-mt
+            audio-filter avsw device input-analyze caption2ass audio-file sub-copy version audio-copy
+            audio-ignore-decode-error audio-ignore-notrack-error audio-resampler raw help input-file
+            audio-samplerate audio-source audio-stream avs avvce-analyze output-file seek skip-frame
+            check-avversion check-codecs check-decoders check-encoders check-filters check-protocols
+            check-formats dar format fps input-res log-framelist mux-option"
+
+        tester.Package = Package.VCEEnc
+        tester.HelpSwitch = "-h"
+        tester.CodeFile = Folder.Startup.Parent + "Encoding\vceenc.vb"
+
+        Return tester.Test
+    End Function
+
     Public Class EncoderParams
         Inherits CommandLineParams
 

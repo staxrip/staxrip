@@ -178,6 +178,16 @@ Public Class x264Enc
     Overrides Function CreateEditControl() As Control
         Return New x264Control(Me) With {.Dock = DockStyle.Fill}
     End Function
+
+    Public Shared Function Test() As String
+        Dim tester As New ConsolAppTester
+
+        tester.Package = Package.x264
+        tester.HelpSwitch = "--fullhelp"
+        tester.CodeFile = Folder.Startup.Parent + "Encoding\x264Enc.vb"
+
+        Return tester.Test
+    End Function
 End Class
 
 Public Class x264Params

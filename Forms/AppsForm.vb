@@ -281,7 +281,7 @@ Public Class AppsForm
         tsbWebsite.Enabled = CurrentPackage.WebURL <> ""
         tsbWebsite.Enabled = CurrentPackage.WebURL <> ""
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
-        tsbHelp.Enabled = CurrentPackage.GetHelpPath <> ""
+        tsbHelp.Enabled = CurrentPackage.HelpFileOrURL <> ""
 
         tsbVersion.Enabled = Not CurrentPackage.IgnoreVersion
         tsbPath.Enabled = CurrentPackage.FixedDir = ""
@@ -457,7 +457,7 @@ Public Class AppsForm
 
     <DebuggerNonUserCode()>
     Private Sub tsbOpenDir_Click(sender As Object, e As EventArgs) Handles tsbExplore.Click
-        g.OpenDirAndSelectFile(CurrentPackage.Path, Handle)
+        g.SelectFileWithExplorer(CurrentPackage.Path)
     End Sub
 
     Private Sub tsbHelp_Click(sender As Object, e As EventArgs) Handles tsbHelp.Click

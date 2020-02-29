@@ -86,6 +86,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DirectN, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -184,6 +185,7 @@
     <Compile Include="General\Automation.vb" />
     <Compile Include="General\ProcController.vb" />
     <Compile Include="General\Http.vb" />
+    <Compile Include="General\Test.vb" />
     <Compile Include="General\VideoRenderer.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -265,7 +267,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="General\Audio.vb" />
-    <Compile Include="General\Late Binding.vb" />
     <Compile Include="General\CommandLine.vb" />
     <Compile Include="UI\ImageUtils.vb" />
     <Compile Include="Encoding\x265Enc.vb" />

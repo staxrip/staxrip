@@ -1613,7 +1613,9 @@ Public Class MainForm
         tbSourceFile.Text = p.SourceFile
         BlockSourceTextBoxTextChanged = False
 
-        If p.SourceFile <> "" Then s.LastSourceDir = p.SourceFile.Dir
+        If p.SourceFile <> "" Then
+            s.LastSourceDir = p.SourceFile.Dir
+        End If
 
         tbAudioFile0.Text = audio0
         tbAudioFile1.Text = audio1
@@ -1971,11 +1973,14 @@ Public Class MainForm
 
             If p.SourceFile.Ext = "avs" AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
                 p.Script.Filters.Clear()
-                p.Script.Filters.Add(New VideoFilter("Source", "AviSynth Import", File.ReadAllText(p.SourceFile)))
+                p.Script.Filters.Add(New VideoFilter("Source", "AVS Script Import", "Import(""" + p.SourceFile + """)"))
             ElseIf p.SourceFile.Ext = "vpy" Then
                 p.Script.Engine = ScriptEngine.VapourSynth
                 p.Script.Filters.Clear()
-                p.Script.Filters.Add(New VideoFilter("Source", "VapourSynth Import", File.ReadAllText(p.SourceFile)))
+                Dim code = "from importlib.machinery import SourceFileLoader" + BR +
+                           $"SourceFileLoader('clip', r""{p.SourceFile}"").load_module()" + BR +
+                           "clip = vs.get_output()"
+                p.Script.Filters.Add(New VideoFilter("Source", "VS Script Import", code))
             End If
 
             ModifyFilters()
@@ -2191,7 +2196,10 @@ Public Class MainForm
     End Sub
 
     Private Sub ModifyFilters()
-        If p.SourceFile = "" Then Exit Sub
+        If p.SourceFile = "" Then
+            Exit Sub
+        End If
+
         Dim sourceFilter = p.Script.GetFilter("Source")
 
         If Not sourceFilter.Script.Contains("(") OrElse
@@ -4402,13 +4410,13 @@ Public Class MainForm
 
     <Command("Shows a dialog to add a hardcoded subtitle.")>
     Sub ShowHardcodedSubtitleDialog()
-        Using d As New OpenFileDialog
-            d.SetFilter(FileTypes.SubtitleExludingContainers)
-            d.SetInitDir(s.LastSourceDir)
+        Using dialog As New OpenFileDialog
+            dialog.SetFilter(FileTypes.SubtitleExludingContainers)
+            dialog.SetInitDir(s.LastSourceDir)
 
-            If d.ShowDialog = DialogResult.OK Then
-                If d.FileName.Ext = "idx" Then
-                    Dim subs = Subtitle.Create(d.FileName)
+            If dialog.ShowDialog = DialogResult.OK Then
+                If dialog.FileName.Ext = "idx" Then
+                    Dim subs = Subtitle.Create(dialog.FileName)
 
                     If subs.Count = 0 Then
                         MsgInfo("No subtitles found.")
@@ -4425,11 +4433,11 @@ Public Class MainForm
 
                     If sb.Show = DialogResult.Cancel Then Exit Sub
 
-                    Regex.Replace(File.ReadAllText(d.FileName), "langidx: \d+", "langidx: " +
-                                  sb.SelectedValue.IndexIDX.ToString).WriteANSIFile(d.FileName)
+                    Regex.Replace(File.ReadAllText(dialog.FileName), "langidx: \d+", "langidx: " +
+                                  sb.SelectedValue.IndexIDX.ToString).WriteANSIFile(dialog.FileName)
                 End If
 
-                p.AddHardcodedSubtitleFilter(d.FileName, True)
+                p.AddHardcodedSubtitleFilter(dialog.FileName, True)
             End If
         End Using
     End Sub
@@ -5247,7 +5255,7 @@ Public Class MainForm
     Private Sub gbResize_LinkClick() Handles lgbResize.LinkClick
         Dim cms = TextCustomMenu.GetMenu(s.TargetImageSizeMenu, lgbResize.Label, components, AddressOf TargetImageMenuClick)
         cms.Add("-")
-        cms.Add("Image Options...", Sub() ShowOptionsDialog("Image")).SetImage(Symbol.fa_photo)
+        cms.Add("Image Options...", Sub() ShowOptionsDialog("Image"))
         cms.Add("Edit Menu...", Sub() s.TargetImageSizeMenu = TextCustomMenu.EditMenu(s.TargetImageSizeMenu, ApplicationSettings.GetDefaultTargetImageSizeMenu, Me))
         cms.Show(lgbResize, 0, lgbResize.Label.Height)
     End Sub

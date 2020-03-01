@@ -305,8 +305,7 @@ Public Class GlobalCommands
         'If aomMissing.Count > 0 Then msg += BR2 + "# Removed from aomenc" + BR2 + aomMissing.Join(" ")
         'If aomUnknown.Count > 0 Then msg += BR2 + "# aomenc Todo" + BR2 + aomUnknown.Join(" ")
 
-        Package.fdkaac.CreateHelpfile("-h")
-        Package.PNGopt.CreateHelpfile("")
+        Package.fdkaac.CreateHelpfile()
 
         For Each pack In Package.Items.Values
             If pack.HelpFilename.Ext = "md" Then

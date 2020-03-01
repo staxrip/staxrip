@@ -11,6 +11,7 @@ Public Class Package
     Property Filename As String
     Property FileNotFoundMessage As String
     Property HelpFilename As String
+    Property HelpSwitch As String
     Property HelpURL As String
     Property HelpUrlAviSynth As String
     Property HelpUrlVapourSynth As String
@@ -155,6 +156,7 @@ Public Class Package
         .Filename = "fdkaac.exe",
         .DirPath = "Audio\fdkaac",
         .HelpFilename = "help.txt",
+        .HelpSwitch = "-h",
         .Description = "Command line AAC encoder based on libfdk-aac.",
         .URL = "http://github.com/nu774/fdkaac",
         .IsRequiredFunc = Function() TypeOf p.Audio0 Is GUIAudioProfile AndAlso DirectCast(p.Audio0, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.fdkaac OrElse TypeOf p.Audio1 Is GUIAudioProfile AndAlso DirectCast(p.Audio1, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.fdkaac})
@@ -214,7 +216,7 @@ Public Class Package
         .Filename = "bdsup2sub++.exe",
         .IsLaunchable = True,
         .DirPath = "Subtitles\BDSup2Sub++",
-        .WebURL = "http://forum.doom9.org/showthread.php?p=1613303",
+        .WebURL = "https://github.com/amichaeltm/BDSup2SubPlusPlus",
         .Description = "Converts Blu-ray subtitles to other formats like VobSub."})
 
     Shared Property Rav1e As Package = Add(New Package With {
@@ -223,7 +225,8 @@ Public Class Package
         .DirPath = "Encoders\Rav1e",
         .Description = "a Faster and Safer AV1 Encoder",
         .WebURL = "https://github.com/xiph/rav1e",
-        .HelpFilename = "rav1e help.txt"})
+        .HelpFilename = "rav1e help.txt",
+        .HelpSwitch = "--help"})
 
     Shared Property MTN As Package = Add(New Package With {
         .Name = "mtn",
@@ -374,6 +377,7 @@ Public Class Package
         .Description = "H.264 video encoding command line app.",
         .WebURL = "http://www.videolan.org/developers/x264.html",
         .HelpFilename = "x264 Help.txt",
+        .HelpSwitch = "--fullhelp",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm"})
 
     Shared Property x265 As Package = Add(New Package With {
@@ -382,6 +386,7 @@ Public Class Package
         .Filename = "x265.exe",
         .WebURL = "http://x265.org",
         .HelpURL = "http://x265.readthedocs.org",
+        .HelpSwitch = "--log-level full --fullhelp",
         .HelpFilename = "x265 Help.txt",
         .Description = "H.265 video encoding command line app."})
 
@@ -421,7 +426,9 @@ Public Class Package
         .Name = "NVEnc",
         .Filename = "NVEncC64.exe",
         .DirPath = "Encoders\NVEnc",
+        .HelpSwitch = "-h",
         .WebURL = "http://github.com/rigaya/NVEnc",
+        .HelpURL = "https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md",
         .Description = "NVIDIA hardware video encoder.",
         .HelpFilename = "NVEnc Help.txt"})
 
@@ -431,6 +438,8 @@ Public Class Package
         .DirPath = "Encoders\QSVEnc",
         .Description = "Intel hardware video encoder.",
         .HelpFilename = "QSVEnc Help.txt",
+        .HelpSwitch = "-h",
+        .HelpURL = "https://github.com/rigaya/QSVEnc/blob/master/QSVEncC_Options.en.md",
         .WebURL = "http://github.com/rigaya/QSVEnc"})
 
     Shared Property VCEEnc As Package = Add(New Package With {
@@ -439,6 +448,7 @@ Public Class Package
         .DirPath = "Encoders\VCEEnc",
         .Description = "AMD hardware video encoder.",
         .HelpFilename = "VCEEnc Help.txt",
+        .HelpSwitch = "-h",
         .WebURL = "http://github.com/rigaya/VCEEnc"})
 
     Shared Property DGDecodeNV As Package = Add(New PluginPackage With {
@@ -454,7 +464,7 @@ Public Class Package
         .AvsFilterNames = {"DGSource"},
         .VSFilterNames = {"DGSource"},
         .AvsFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")},
-        .VSFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.dgdecodenv.DGSource(r'%source_file%')")}})
+        .VSFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.dgdecodenv.DGSource(r""%source_file%"")")}})
 
     Shared Property DGDecodeIM As Package = Add(New PluginPackage With {
         .Name = "DGDecodeIM",
@@ -487,13 +497,13 @@ Public Class Package
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource"},
         .AvsFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", $"FFVideoSource(""%source_file%"", cachefile=""%source_temp_file%.ffindex"")" + BR + "#AssumeFPS(25)")},
         .VSFilterNames = {"ffms2"},
-        .VSFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r'%source_file%', cachefile=r'%source_temp_file%.ffindex')" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
+        .VSFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile=r""%source_temp_file%.ffindex"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
 
     Shared Property VSFilterMod As Package = Add(New PluginPackage With {
         .Name = "VSFilterMod",
         .Filename = "VSFilterMod.dll",
-        .Description = "AviSynth subtitle plugin with support for vobsub srt and ass.",
-        .WebURL = "http://github.com/HomeOfVapourSynthEvolution/VSFilterMod",
+        .Description = "AviSynth and VapourSynth subtitle plugin with support for vobsub srt and ass.",
+        .WebURL = "https://github.com/sorayuki/VSFilterMod",
         .AvsFilterNames = {"VobSub", "TextSubMod"},
         .VSFilterNames = {"vsfm.VobSub", "vsfm.TextSubMod"}})
 
@@ -591,8 +601,8 @@ Public Class Package
             New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"", cachefile=""%source_temp_file%.lwi"")" + BR + "#AssumeFPS(25)")},
         .VSFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"},
         .VSFiltersFunc = Function() {
-            New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r'%source_file%')" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)"),
-            New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r'%source_file%', cachefile=r'%source_temp_file%.lwi')" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
+            New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(r""%source_file%"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)"),
+            New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(r""%source_file%"", cachefile=r""%source_temp_file%.lwi"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
 
     Shared Property BM3D As Package = Add(New PluginPackage With {
         .Name = "BM3D",
@@ -1604,7 +1614,16 @@ Public Class Package
             .URL = "http://github.com/dwbuiten/d2vsource",
             .VSFilterNames = {"d2v.Source"},
             .VSFiltersFunc = Function() {
-                New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r'%source_file%')")}})
+                New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})
+
+        Add(New PluginPackage With {
+            .Name = "Bwdif",
+            .Filename = "Bwdif.dll",
+            .Description = "Motion adaptive deinterlacing based on yadif with the use of w3fdif and cubic interpolation algorithms.",
+            .URL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Bwdif",
+            .VSFilterNames = {"bwdif.Bwdif"},
+            .VSFiltersFunc = Function() {
+                New VideoFilter("Field", "Bwdif", "clip = core.bwdif.Bwdif(clip, field=0)")}})
 
         Add(New PluginPackage With {
             .Name = "FluxSmooth",
@@ -1878,10 +1897,12 @@ Public Class Package
                 Next
 
                 If dialog.Show <> "" Then
+                    CreateHelpfile()
                     g.StartProcess(dialog.SelectedValue)
                 End If
             End Using
         Else
+            CreateHelpfile()
             g.StartProcess(HelpFileOrURL)
         End If
     End Sub
@@ -1908,13 +1929,17 @@ Public Class Package
         End Get
     End Property
 
-    Public Function CreateHelpfile(switch As String) As String
+    Public Function CreateHelpfile() As String
         If File.Exists(HelpFile) Then
             Return File.ReadAllText(HelpFile)
         End If
 
-        File.WriteAllText(HelpFile, BR + ProcessHelp.GetStdOut(Path, switch).Trim + BR)
-        Return File.ReadAllText(HelpFile)
+        If HelpSwitch <> "" Then
+            File.WriteAllText(HelpFile, BR + ProcessHelp.GetStdOut(Path, HelpSwitch).Trim + BR)
+            Return File.ReadAllText(HelpFile)
+        End If
+
+        Return ""
     End Function
 
     Function VerifyOK(Optional showEvenIfNotRequired As Boolean = False) As Boolean

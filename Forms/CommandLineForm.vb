@@ -1,5 +1,4 @@
 ﻿
-Imports System.ComponentModel
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -251,11 +250,11 @@ Public Class CommandLineForm
         form.Doc.WriteStart(Text)
 
         If cbGoTo.Visible Then
-            form.Doc.WriteP("The Search input field can be used to search for options, it searches the switch and the label. Multiple matches can be cycled by pressing enter.")
+            form.Doc.WriteP("The Search input field can be used to quickly find options, it searches command line switches, labels and dropdowns. Multiple matches can be cycled by pressing enter.")
         End If
 
-        form.Doc.WriteP("Numeric values and options can be reset to their default value by double clicking on the label.")
-        form.Doc.WriteP("The context help is shown with a right-click on a label, menu or checkbox.")
+        form.Doc.WriteP("Numeric values and dropdown menu options can be reset to their default value by double clicking on the label.")
+        form.Doc.WriteP("The context help is shown with a right-click on a label, dropdown menu or checkbox.")
 
         If HTMLHelp <> "" Then
             form.Doc.Writer.WriteRaw(HTMLHelp)
@@ -285,6 +284,7 @@ Public Class CommandLineForm
         End If
 
         Dim find = cbGoTo.Text.ToLower
+        Dim findNoSpace = find.Replace(" ", "")
         Dim matchedItems As New HashSet(Of Item)
 
         If find.Length > 1 Then
@@ -319,17 +319,23 @@ Public Class CommandLineForm
                 If TypeOf item.Param Is OptionParam Then
                     Dim param = DirectCast(item.Param, OptionParam)
 
-                    If find.Contains(" ") Then
-                        find = find.Replace(" ", "")
-                    End If
-
                     If Not param.Options Is Nothing Then
                         For Each value In param.Options
-                            If value.Contains(" ") Then
-                                value = value.Replace(" ", "")
-                            End If
+                            Dim valueNoSpace = value.Replace(" ", "")
 
                             If value.ToLower.Contains(find) Then
+                                matchedItems.Add(item)
+                            End If
+
+                            If valueNoSpace.ToLower.Contains(findNoSpace) Then
+                                matchedItems.Add(item)
+                            End If
+
+                            If value.ToLower.Contains(findNoSpace) Then
+                                matchedItems.Add(item)
+                            End If
+
+                            If valueNoSpace.ToLower.Contains(find) Then
                                 matchedItems.Add(item)
                             End If
                         Next
@@ -337,11 +343,21 @@ Public Class CommandLineForm
 
                     If Not param.Values Is Nothing Then
                         For Each value In param.Values
-                            If value.Contains(" ") Then
-                                value = value.Replace(" ", "")
-                            End If
+                            Dim valueNoSpace = value.Replace(" ", "")
 
                             If value.ToLower.Contains(find) Then
+                                matchedItems.Add(item)
+                            End If
+
+                            If valueNoSpace.ToLower.Contains(findNoSpace) Then
+                                matchedItems.Add(item)
+                            End If
+
+                            If value.ToLower.Contains(findNoSpace) Then
+                                matchedItems.Add(item)
+                            End If
+
+                            If valueNoSpace.ToLower.Contains(find) Then
                                 matchedItems.Add(item)
                             End If
                         Next

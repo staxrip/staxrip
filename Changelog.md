@@ -3,6 +3,21 @@
 
 - new: improved possibility to show AviSynth and VapourSynth script
        information with a new dialog and new pixel format parameter	   
+- new: the right click context help in the x265 dialog can now
+       alternativly open the online help with ctrl or shift + right click
+- new: the F1 help in the video encoder dialogs was improved
+- new: in the nvenc dialog custom switches do overwrite regular switches
+- new: Bwdif plugin for VapourSynth (similar to yadif)
+- new: filter can be removed from filter list view using delete key
+
+- update: nvenc 4.66
+- update: L-Smash-Work 20200207 HolyWu
+- update: VSFilterMod R5.2.1
+- update: BDSup2Sub++ 1.0.3
+- update: qsvenc 3.31
+
+- fix: x265 issues with --refine-ctu-distortion and --high-tier
+- fix: certain avs and vpy files failed to load before, should work fine now
 
 ### 2.0.7.2 Beta
 

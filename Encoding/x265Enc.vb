@@ -134,6 +134,9 @@ Public Class x265Enc
         newParams.ApplyTuneDefaultValues()
 
         Using form As New CommandLineForm(newParams)
+            form.HTMLHelp = "<p>Pressing Ctrl or Shift while right-clicking on an option opens the <a href=""https://x265.readthedocs.io/en/latest/index.html"">x265 online help</a> and navigates to the switch that was right-clicked.</p>" +
+                $"<pre>{Package.x265.CreateHelpfile()}</pre>"
+
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of x265Enc)(Me)
                                         Dim params2 As New x265Params
@@ -183,14 +186,13 @@ Public Class x265Enc
 
         tester.IgnoredSwitches = "crop-rectfast-cbf frame-skip help lavf no-scenecut
             ratetol recon-y4m-exec input input-res lft total-frames version pbration
-            no-progress progress -hrd-concat"
+            no-progress progress -hrd-concat fullhelp"
 
         tester.UndocumentedSwitches = "numa-pools rdoq cip qblur cplxblur cu-stats
             dhdr10-info opt-qp-pps opt-ref-list-length-pps single-sei hrd-concat 
             dhdr10-opt crop pb-factor ip-factor level log display-window"
 
         tester.Package = Package.x265
-        tester.HelpSwitch = "--log-level full --fullhelp"
         tester.CodeFile = Folder.Startup.Parent + "Encoding\x265Enc.vb"
 
         Return tester.Test
@@ -319,6 +321,7 @@ Public Class x265Params
         .Switches = {"-m"},
         .Text = "Subpel Refinement",
         .IntegerValue = True,
+        .Expand = True,
         .Options = {"0 - HPEL 1/4 - QPEL 0/4 - HPEL SATD false",
                     "1 - HPEL 1/4 - QPEL 1/4 - HPEL SATD false",
                     "2 - HPEL 1/4 - QPEL 1/4 - HPEL SATD true",
@@ -326,8 +329,7 @@ Public Class x265Params
                     "4 - HPEL 2/4 - QPEL 2/4 - HPEL SATD true",
                     "5 - HPEL 1/8 - QPEL 1/8 - HPEL SATD true",
                     "6 - HPEL 2/8 - QPEL 1/8 - HPEL SATD true",
-                    "7 - HPEL 2/8 - QPEL 2/8 - HPEL SATD true"},
-        .Expand = True}
+                    "7 - HPEL 2/8 - QPEL 2/8 - HPEL SATD true"}}
 
     Property MaxMerge As New NumParam With {
         .Switch = "--max-merge",
@@ -408,12 +410,6 @@ Public Class x265Params
         .Switch = "--min-cu-size",
         .Text = "Min CU size",
         .Options = {"32", "16", "8"}}
-
-    Property refinectudistortion As New OptionParam With {
-        .Switch = "--refine-ctu-distortion",
-        .Text = "Min CU size",
-        .Init = 0,
-        .Options = {"0", "1"}}
 
     Property MaxCuSize As New OptionParam With {
         .Switch = "--ctu",
@@ -629,9 +625,9 @@ Public Class x265Params
         .Text = "Min GOP Size",
         .Config = {0, 10000, 10}}
 
-    Property maxausizefactor As New NumParam With {
+    Property MaxAuSizeFactor As New NumParam With {
         .Switch = "--max-ausize-factor",
-        .Text = "Max Ausize Factor",
+        .Text = "Max AU size",
         .Config = {0.5, 1.0, 0.1, 1},
         .Init = 1}
 
@@ -695,6 +691,11 @@ Public Class x265Params
     Property IntraRefresh As New BoolParam With {
         .Switch = "--intra-refresh",
         .Text = "Intra Refresh"}
+
+    Property RefineCtuDistortion As New BoolParam With {
+        .Switch = "--refine-ctu-distortion",
+        .Text = "Store/normalize ctu distortion in analysis-save/load.",
+        .ArgsFunc = Function() If(RefineCtuDistortion.Value, RefineCtuDistortion.Switch + " 1", Nothing)}
 
     Property Custom As New StringParam With {
         .Text = "Custom",
@@ -821,7 +822,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--refine-mv", .Text = "Refine MV", .Expand = True, .IntegerValue = True, .Options = {"Disabled", "Level 1: Search around scaled MV", "Level 2: Level 1 + Search around best AMVP cand", "Level 3: Level 2 + Search around the other AMVP cand"}},
                     New OptionParam With {.Switch = "--analysis-save-reuse-level", .Text = "Save Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref’s", " 3 - Level 1 + intra/inter modes, ref’s", " 4 - Level 1 + intra/inter modes, ref’s", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
                     New OptionParam With {.Switch = "--analysis-load-reuse-level", .Text = "Load Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref’s", " 3 - Level 1 + intra/inter modes, ref’s", " 4 - Level 1 + intra/inter modes, ref’s", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
-                    refinectudistortion, MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
+                    MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
                 Add("Analysis 2",
                     New NumParam With {.Switch = "--analysis-reuse-level", .Text = "Refine Level", .Config = {1, 10}, .Init = 5},
                     New NumParam With {.Switch = "--scale-factor", .Text = "Scale Factor"},
@@ -841,7 +842,8 @@ Public Class x265Params
                     RecursionSkip,
                     New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"},
                     New BoolParam With {.Switch = "--splitrd-skip", .Text = "Enable skipping split RD analysis"},
-                    New BoolParam With {.Switch = "--hevc-aq", .Text = "Mode for HEVC Adaptive Quantization", .Init = False})
+                    New BoolParam With {.Switch = "--hevc-aq", .Text = "Mode for HEVC Adaptive Quantization", .Init = False},
+                    RefineCtuDistortion)
                 Add("Rate Control",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     New StringParam With {.Switch = "--zonefile", .Text = "Zone File", .BrowseFile = True},
@@ -929,7 +931,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--display-window", .Text = "Display Window", .Options = {"Undefined", "Left", "Top", "Right", "Top"}},
                     Chromaloc)
                 Add("Bitstream",
-                    New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .Init = 0, .Options = {"0", "5", "8.1", "8.2"}},
+                    New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .Options = {"0", "5", "8.1", "8.2"}},
                     New StringParam With {.Switch = "--dolby-vision-rpu", .Text = "Dolby Vision RPU", .BrowseFile = True},
                     New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "Maximum Picture Order Count", .Init = 8},
                     RepeatHeaders, Info, HRD, AUD,
@@ -966,11 +968,11 @@ Public Class x265Params
                     New StringParam With {.Switch = "--qpfile", .Text = "QP File", .BrowseFile = True},
                     New StringParam With {.Switch = "--recon", .Switches = {"-r"}, .Text = "Recon File", .BrowseFile = True},
                     New StringParam With {.Switch = "--scaling-list", .Text = "Scaling List"},
+                    New OptionParam With {.Switch = "--high-tier", .NoSwitch = "--no-high-tier", .Text = "High Tier", .Options = {"Undefined", "Yes", "No"}, .Values = {"", "--high-tier", "--no-high-tier"}},
                     Decoder, PipingTool, PsyRD, CompCheck, CompCheckAimedQuality,
                     New NumParam With {.Switch = "--recon-depth", .Text = "Recon Depth"},
-                    RDpenalty, maxausizefactor)
+                    RDpenalty, MaxAuSizeFactor)
                 Add("Other 2",
-                    New BoolParam With {.Switch = "--high-tier", .Text = "High Tier", .Name = "HighTierV2", .Init = True},
                     SignHide,
                     New BoolParam With {.Switch = "--allow-non-conformance", .Text = "Allow non conformance"},
                     New BoolParam With {.Switch = "--uhd-bd", .Text = "Ultra HD Blu-ray"},
@@ -992,7 +994,11 @@ Public Class x265Params
     End Property
 
     Public Overrides Sub ShowHelp(id As String)
-        g.ShowCommandLineHelp(Package.x265, id)
+        If Control.ModifierKeys = Keys.Control OrElse Control.ModifierKeys = Keys.Shift Then
+            g.StartProcess("https://x265.readthedocs.io/en/latest/cli.html#cmdoption-" + id.TrimStart("-"c))
+        Else
+            g.ShowCommandLineHelp(Package.x265, id)
+        End If
     End Sub
 
     Private BlockValueChanged As Boolean
@@ -1077,9 +1083,13 @@ Public Class x265Params
             sb.Append(" --pass " & pass)
 
             If pass = 1 Then
-                If CustomFirstPass.Value <> "" Then sb.Append(" " + CustomFirstPass.Value)
+                If CustomFirstPass.Value <> "" Then
+                    sb.Append(" " + CustomFirstPass.Value)
+                End If
             Else
-                If CustomSecondPass.Value <> "" Then sb.Append(" " + CustomSecondPass.Value)
+                If CustomSecondPass.Value <> "" Then
+                    sb.Append(" " + CustomSecondPass.Value)
+                End If
             End If
 
             If includePaths AndAlso (MultiPassOptDistortion.Value OrElse MultiPassOptAnalysis.Value) Then
@@ -1088,17 +1098,24 @@ Public Class x265Params
         End If
 
         If Mode.Value = x265RateMode.SingleQuant Then
-            If Not IsCustom(pass, "--qp") Then sb.Append(" --qp " + CInt(Quant.Value).ToString)
+            If Not IsCustom(pass, "--qp") Then
+                sb.Append(" --qp " + CInt(Quant.Value).ToString)
+            End If
         ElseIf Mode.Value = x265RateMode.SingleCRF Then
             If Quant.Value <> 28 AndAlso Not IsCustom(pass, "--crf") Then
                 sb.Append(" --crf " + Quant.Value.ToInvariantString)
             End If
         Else
-            If Not IsCustom(pass, "--bitrate") Then sb.Append(" --bitrate " & p.VideoBitrate)
+            If Not IsCustom(pass, "--bitrate") Then
+                sb.Append(" --bitrate " & p.VideoBitrate)
+            End If
         End If
 
         Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.Switch)
-        If q.Count > 0 Then sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
+
+        If q.Count > 0 Then
+            sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
+        End If
 
         If includePaths Then
             If PipingTool.ValueText <> "none" Then
@@ -1128,19 +1145,29 @@ Public Class x265Params
     End Function
 
     Function IsCustom(pass As Integer, switch As String) As Boolean
-        If switch = "" Then Return False
+        If switch = "" Then
+            Return False
+        End If
 
         If Mode.Value = x265RateMode.TwoPass OrElse Mode.Value = x265RateMode.ThreePass Then
             If pass = 1 Then
                 If CustomFirstPass.Value?.Contains(switch + " ") OrElse
-                    CustomFirstPass.Value?.EndsWith(switch) Then Return True
+                    CustomFirstPass.Value?.EndsWith(switch) Then
+
+                    Return True
+                End If
             Else
                 If CustomSecondPass.Value?.Contains(switch + " ") OrElse
-                    CustomSecondPass.Value?.EndsWith(switch) Then Return True
+                    CustomSecondPass.Value?.EndsWith(switch) Then
+
+                    Return True
+                End If
             End If
         End If
 
-        If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then Return True
+        If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then
+            Return True
+        End If
     End Function
 
     Sub ApplyPresetValues()

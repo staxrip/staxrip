@@ -37,6 +37,9 @@ Public Class NVEnc
         newParams.Init(store)
 
         Using form As New CommandLineForm(newParams)
+            form.HTMLHelp = $"<a href=""{Package.NVEnc.HelpURL}"">NVEnc online help</a>" +
+                $"<pre>{Package.NVEnc.CreateHelpfile()}</pre>"
+
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of NVEnc)(Me)
                                         Dim params2 As New EncoderParams
@@ -122,7 +125,6 @@ Public Class NVEnc
             audio-stream audio-stream audio-stream audio-filter chapter-copy chapter sub-copy input-res"
 
         tester.Package = Package.NVEnc
-        tester.HelpSwitch = "-h"
         tester.CodeFile = Folder.Startup.Parent + "Encoding\nvenc.vb"
 
         Return tester.Test
@@ -183,8 +185,7 @@ Public Class NVEnc
             .Text = "Profile",
             .Name = "ProfileH265",
             .VisibleFunc = Function() Codec.ValueText = "h265",
-            .Options = {"Main", "Main 10", "Main 444"},
-            .Init = 0}
+            .Options = {"Main", "Main 10", "Main 444"}}
 
         Property ConstantQualityMode As New BoolParam With {
             .Switches = {"--vbr-quality"},
@@ -360,6 +361,11 @@ Public Class NVEnc
             .VisibleFunc = Function() Codec.ValueText = "h264",
             .Options = {"Top Field First", "Bottom Field First"},
             .Values = {"--interlace tff", "--interlace bff"}}
+
+        Property Custom As New StringParam With {
+            .Text = "Custom",
+            .Quotes = QuotesMode.Never,
+            .AlwaysOn = True}
 
         Property Deband As New BoolParam With {.Text = "Deband", .Switches = {"--vpp-deband"}, .ArgsFunc = AddressOf GetDebandArgs}
 
@@ -580,7 +586,7 @@ Public Class NVEnc
                         New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
                         New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})
                     Add("Other",
-                        New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
+                        Custom,
                         New StringParam With {.Switch = "--sub-source", .Text = "Subtitle File", .BrowseFile = True, .BrowseFileFilter = FileTypes.GetFilter(FileTypes.SubtitleExludingContainers)},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
@@ -882,8 +888,11 @@ Public Class NVEnc
                     If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
             End Select
 
-            Dim q = From i In Items Where i.GetArgs <> ""
-            If q.Count > 0 Then ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+            Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.Switch)
+
+            If q.Count > 0 Then
+                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+            End If
 
             If (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
                 (p.Script.IsFilterActive("Crop", "Hardware Encoder") OrElse
@@ -908,6 +917,16 @@ Public Class NVEnc
             If includePaths Then ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
 
             Return ret.Trim
+        End Function
+
+        Function IsCustom(switch As String) As Boolean
+            If switch = "" Then
+                Return False
+            End If
+
+            If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then
+                Return True
+            End If
         End Function
 
         Public Overrides Function GetPackage() As Package

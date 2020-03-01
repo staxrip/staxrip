@@ -1,3 +1,4 @@
+
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Globalization
@@ -32,7 +33,9 @@ Public MustInherit Class Muxer
 
     Property Tags As BindingList(Of StringPair)
         Get
-            If TagsValue Is Nothing Then TagsValue = New BindingList(Of StringPair)
+            If TagsValue Is Nothing Then
+                TagsValue = New BindingList(Of StringPair)
+            End If
             Return TagsValue
         End Get
         Set(value As BindingList(Of StringPair))
@@ -71,7 +74,10 @@ Public MustInherit Class Muxer
 
     Property Subtitles() As List(Of Subtitle)
         Get
-            If SubtitlesValue Is Nothing Then SubtitlesValue = New List(Of Subtitle)
+            If SubtitlesValue Is Nothing Then
+                SubtitlesValue = New List(Of Subtitle)
+            End If
+
             Return SubtitlesValue
         End Get
         Set(value As List(Of Subtitle))
@@ -83,7 +89,10 @@ Public MustInherit Class Muxer
 
     Property Attachments As List(Of String)
         Get
-            If AttachmentsValue Is Nothing Then AttachmentsValue = New List(Of String)
+            If AttachmentsValue Is Nothing Then
+                AttachmentsValue = New List(Of String)
+            End If
+
             AttachmentsValue.Sort()
             Return AttachmentsValue
         End Get
@@ -94,7 +103,9 @@ Public MustInherit Class Muxer
 
     <OnDeserialized>
     Sub OnDeserialized(context As StreamingContext)
-        If TagFile Is Nothing Then TagFile = ""
+        If TagFile Is Nothing Then
+            TagFile = ""
+        End If
     End Sub
 
     Overrides Sub Clean()
@@ -109,9 +120,17 @@ Public MustInherit Class Muxer
     Protected Sub ExpandMacros()
         For Each i In Subtitles
             If i.Title?.Contains("%") Then
-                If i.Title.Contains("%language_native%") Then i.Title = i.Title.Replace("%language_native%", i.Language.CultureInfo.NativeName)
-                If i.Title.Contains("%language_english%") Then i.Title = i.Title.Replace("%language_english%", i.Language.Name)
-                If i.Title.Contains("%") Then i.Title = Macro.Expand(i.Title)
+                If i.Title.Contains("%language_native%") Then
+                    i.Title = i.Title.Replace("%language_native%", i.Language.CultureInfo.NativeName)
+                End If
+
+                If i.Title.Contains("%language_english%") Then
+                    i.Title = i.Title.Replace("%language_english%", i.Language.Name)
+                End If
+
+                If i.Title.Contains("%") Then
+                    i.Title = Macro.Expand(i.Title)
+                End If
             End If
         Next
     End Sub
@@ -270,10 +289,16 @@ Public Class MP4Muxer
 
         If PAR <> "" Then
             Dim val = Calc.ParseCustomAR(PAR, 0, 0)
-            If val.X <> 0 Then videoParams = ":par=" & val.X & ":" & val.Y
+
+            If val.X <> 0 Then
+                videoParams = ":par=" & val.X & ":" & val.Y
+            End If
         ElseIf Calc.IsARSignalingRequired Then
             Dim par = Calc.GetTargetPAR
-            If TypeOf p.VideoEncoder Is NullEncoder Then videoParams = ":par=" & par.X & ":" & par.Y
+
+            If TypeOf p.VideoEncoder Is NullEncoder Then
+                videoParams = ":par=" & par.X & ":" & par.Y
+            End If
         End If
 
         videoParams += ":name="

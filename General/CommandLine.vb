@@ -188,8 +188,13 @@ Namespace CommandLine
         End Sub
 
         Overrides Function GetArgs() As String
-            If Switch = "" AndAlso NoSwitch = "" AndAlso ArgsFunc Is Nothing Then Return Nothing
-            If Not Visible Then Return Nothing
+            If Switch = "" AndAlso NoSwitch = "" AndAlso ArgsFunc Is Nothing Then
+                Return Nothing
+            End If
+
+            If Not Visible Then
+                Return Nothing
+            End If
 
             If ArgsFunc Is Nothing Then
                 If Value AndAlso DefaultValue = False Then

@@ -5,23 +5,47 @@ Public Class ConsolAppTester
     Property IgnoredSwitches As String = ""
     Property UndocumentedSwitches As String = ""
     Property Package As Package
-    Property HelpSwitch As String
     Property CodeFile As String
 
+    Sub Save(file As String, list As IEnumerable(Of String))
+        list.Join(BR).WriteUTF8File(file)
+    End Sub
+
     Public Function Test() As String
+        Dim log = BR
+        log += "ignored switches" + BR
+        log += "----------------" + BR
+        log += "found in the documentation but not implemented" + BR2
         IgnoredSwitches = IgnoredSwitches.Trim.FixBreak.Replace(BR, " ").ReplaceRecursive("  ", " ")
         Dim ignore = IgnoredSwitches.Split(" "c).Select(Function(x) "--" + x).ToArray
+        log += ignore.Join(BR) + BR2
+        log += "undocumented switches" + BR
+        log += "---------------------" + BR
+        log += "implemented even though not documented" + BR2
         UndocumentedSwitches = UndocumentedSwitches.Trim.FixBreak.Replace(BR, " ").ReplaceRecursive("  ", " ")
         Dim undocumented = UndocumentedSwitches.Split(" "c).Select(Function(x) "--" + x).ToArray
-        Dim help = Package.CreateHelpfile(HelpSwitch)
-        help = help.Replace("--(no-)", "--").Replace("--[no-]", "--").Replace("--no-", "--")
-        Dim switches = Regex.Matches(help, "--[\w-]+").OfType(Of Match).Select(Function(x) x.Value)
-        Dim code = File.ReadAllText(CodeFile).Replace("--no-", "--")
-        Dim present = Regex.Matches(code, "--[\w-]+").OfType(Of Match).Select(Function(x) x.Value)
-        Dim missing = present.Where(Function(x) Not switches.Contains(x) AndAlso Not undocumented.Contains(x))
-        Dim unknown = switches.Where(Function(x) Not present.Contains(x) AndAlso Not ignore.Contains(x)).ToList()
+        log += undocumented.Join(BR) + BR2
+        log += "documented switches" + BR
+        log += "-------------------" + BR
+        log += "found in the documentation" + BR2
+        Dim fullHelp = Package.CreateHelpfile()
+        Dim compressedHelp = fullHelp.Replace("--(no-)", "--").Replace("--[no-]", "--").Replace("--no-", "--")
+        Dim documented = Regex.Matches(compressedHelp, "--[\w-]+").OfType(Of Match).Select(Function(x) x.Value)
+        log += documented.Join(BR) + BR2
+        Dim compressedCode = File.ReadAllText(CodeFile).Replace("--no-", "--")
+        Dim implemented = Regex.Matches(compressedCode, "--[\w-]+").OfType(Of Match).Select(Function(x) x.Value)
+        log += "implemented switches" + BR
+        log += "-------------------" + BR
+        log += "implemetation found in StaxRip code" + BR2
+        log += implemented.Join(BR) + BR2
+        Dim missing = implemented.Where(Function(x) Not documented.Contains(x) AndAlso Not undocumented.Contains(x))
+        'log.WriteUTF8File(Folder.Desktop + Package.Name + ".txt")
+        Dim unknown = documented.Where(Function(x) Not implemented.Contains(x) AndAlso Not ignore.Contains(x)).ToList()
         unknown.Sort()
-        Dim unnecessaryIgnore = ignore.Where(Function(x) present.Contains(x))
+        Dim unnecessaryIgnore = ignore.Where(Function(x) implemented.Contains(x))
+        log += "full documentation" + BR
+        log += "------------------" + BR
+        log += fullHelp
         Dim message As String
 
         If unnecessaryIgnore.Count > 0 Then

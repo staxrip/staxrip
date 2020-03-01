@@ -840,11 +840,7 @@ Public Class GlobalClass
     End Sub
 
     Sub ShowCommandLineHelp(package As Package, switch As String)
-        If Not File.Exists(package.HelpFileOrURL) Then
-            Exit Sub
-        End If
-
-        Dim content = File.ReadAllText(package.HelpFileOrURL)
+        Dim content = package.CreateHelpfile
         Dim find As String
 
         If content.Contains(switch.Replace("--", "--(no-)") + " ") Then

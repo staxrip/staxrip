@@ -34,7 +34,7 @@ Partial Class CommandLineForm
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpRTB = New System.Windows.Forms.TableLayoutPanel()
         Me.rtbCommandLine = New StaxRip.UI.CommandLineRichTextBox()
-        Me.cmsCommandLine = New ContextMenuStripEx(Me.components)
+        Me.cmsCommandLine = New StaxRip.UI.ContextMenuStripEx(Me.components)
         Me.tlpMain.SuspendLayout()
         Me.tlpRTB.SuspendLayout()
         Me.SuspendLayout()
@@ -43,7 +43,7 @@ Partial Class CommandLineForm
         '
         Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(857, 500)
+        Me.bnCancel.Location = New System.Drawing.Point(955, 507)
         Me.bnCancel.Margin = New System.Windows.Forms.Padding(15)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
@@ -52,7 +52,7 @@ Partial Class CommandLineForm
         '
         Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(592, 500)
+        Me.bnOK.Location = New System.Drawing.Point(690, 507)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(15, 15, 0, 15)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
@@ -67,7 +67,7 @@ Partial Class CommandLineForm
         Me.SimpleUI.Location = New System.Drawing.Point(15, 15)
         Me.SimpleUI.Margin = New System.Windows.Forms.Padding(15)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(1092, 391)
+        Me.SimpleUI.Size = New System.Drawing.Size(1190, 398)
         Me.SimpleUI.TabIndex = 5
         Me.SimpleUI.Text = "SimpleUI"
         '
@@ -75,17 +75,17 @@ Partial Class CommandLineForm
         '
         Me.cbGoTo.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.cbGoTo.FormattingEnabled = True
-        Me.cbGoTo.Location = New System.Drawing.Point(15, 512)
+        Me.cbGoTo.Location = New System.Drawing.Point(15, 519)
         Me.cbGoTo.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.cbGoTo.Name = "cbGoTo"
-        Me.cbGoTo.Size = New System.Drawing.Size(400, 56)
+        Me.cbGoTo.Size = New System.Drawing.Size(530, 56)
         Me.cbGoTo.TabIndex = 8
         '
         'bnMenu
         '
         Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnMenu.ContextMenuStrip = Me.cms
-        Me.bnMenu.Location = New System.Drawing.Point(507, 500)
+        Me.bnMenu.Location = New System.Drawing.Point(605, 507)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(0, 8, 0, 8)
         Me.bnMenu.ShowMenuSymbol = True
         Me.bnMenu.Size = New System.Drawing.Size(70, 70)
@@ -120,7 +120,7 @@ Partial Class CommandLineForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1122, 585)
+        Me.tlpMain.Size = New System.Drawing.Size(1220, 592)
         Me.tlpMain.TabIndex = 11
         '
         'tlpRTB
@@ -132,12 +132,12 @@ Partial Class CommandLineForm
         Me.tlpMain.SetColumnSpan(Me.tlpRTB, 4)
         Me.tlpRTB.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpRTB.Controls.Add(Me.rtbCommandLine, 0, 0)
-        Me.tlpRTB.Location = New System.Drawing.Point(15, 421)
+        Me.tlpRTB.Location = New System.Drawing.Point(15, 428)
         Me.tlpRTB.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.tlpRTB.Name = "tlpRTB"
         Me.tlpRTB.RowCount = 1
         Me.tlpRTB.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpRTB.Size = New System.Drawing.Size(1092, 64)
+        Me.tlpRTB.Size = New System.Drawing.Size(1190, 64)
         Me.tlpRTB.TabIndex = 9
         '
         'rtbCommandLine
@@ -149,7 +149,7 @@ Partial Class CommandLineForm
         Me.rtbCommandLine.Margin = New System.Windows.Forms.Padding(0)
         Me.rtbCommandLine.Name = "rtbCommandLine"
         Me.rtbCommandLine.ReadOnly = True
-        Me.rtbCommandLine.Size = New System.Drawing.Size(1092, 64)
+        Me.rtbCommandLine.Size = New System.Drawing.Size(1190, 64)
         Me.rtbCommandLine.TabIndex = 4
         Me.rtbCommandLine.Text = ""
         '
@@ -166,7 +166,7 @@ Partial Class CommandLineForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1122, 585)
+        Me.ClientSize = New System.Drawing.Size(1220, 592)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(4)

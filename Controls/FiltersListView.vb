@@ -281,7 +281,7 @@ Public Class FiltersListView
     End Sub
 
     Private Sub RemoveClick()
-        If Items.Count > 1 Then
+        If SelectedItems.Count > 0 Then
             p.Script.RemoveFilterAt(SelectedItems(0).Index)
         End If
     End Sub
@@ -313,6 +313,14 @@ Public Class FiltersListView
         UpdateDocument()
     End Sub
 
+    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
+        MyBase.OnKeyDown(e)
+
+        If e.KeyData = Keys.Delete Then
+            RemoveClick()
+        End If
+    End Sub
+
     Protected Overrides Sub OnItemCheck(e As ItemCheckEventArgs)
         MyBase.OnItemCheck(e)
 
@@ -320,9 +328,9 @@ Public Class FiltersListView
             Dim filter = DirectCast(Items(e.Index).Tag, VideoFilter)
 
             If e.NewValue = CheckState.Checked AndAlso filter.Category = "Resize" Then
-                Dim f = FindForm()
+                Dim form = FindForm()
 
-                If Not f Is Nothing AndAlso TypeOf f Is MainForm Then
+                If Not form Is Nothing AndAlso TypeOf form Is MainForm Then
                     g.MainForm.SetTargetImageSize(p.TargetWidth, 0)
                 End If
             End If

@@ -1,4 +1,4 @@
-﻿Imports System.Text.RegularExpressions
+﻿
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -37,7 +37,8 @@ Public Class QSVEnc
         params1.Init(store)
 
         Using form As New CommandLineForm(params1)
-            form.HTMLHelp = Strings.Intel
+            form.HTMLHelp = Strings.Intel + $"<a href=""{Package.QSVEnc.HelpURL}"">QSVEnc online help</a>" +
+                $"<pre>{Package.QSVEnc.CreateHelpfile()}</pre>"
 
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of QSVEnc)(Me)
@@ -128,7 +129,6 @@ Public Class QSVEnc
 
         tester.UndocumentedSwitches = "chromaloc videoformat colormatrix colorprim transfer fullrange"
         tester.Package = Package.QSVEnc
-        tester.HelpSwitch = "-h"
         tester.CodeFile = Folder.Startup.Parent + "Encoding\qsvenc.vb"
 
         Return tester.Test
@@ -160,12 +160,6 @@ Public Class QSVEnc
             .Options = {"AVBR - Average Variable Bitrate", "CBR - Constant Bitrate", "CQP - Constant QP", "ICQ - Intelligent Constant Quality", "LA - VBR Lookahead", "LA-HRD - VBR HRD Lookahead", "LA-ICQ - Intelligent Constant Quality Lookahead", "QVBR - Quality Variable Bitrate using bitrate", "QVBR-Q - Quality Variable Bitrate using quality", "VBR - Variable Bitrate", "VCM - Video Conferencing Mode"},
             .Values = {"avbr", "cbr", "cqp", "icq", "la", "la-hrd", "la-icq", "qvbr", "qvbr-q", "vbr", "vcm"},
             .Init = 2}
-
-        Property Deinterlace As New OptionParam With {
-            .Switch = "--vpp-deinterlace",
-            .Text = "Deinterlace",
-            .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"},
-            .Values = {"none", "normal", "it", "bob"}}
 
         Property Quality As New NumParam With {
             .Text = "Quality",
@@ -231,14 +225,6 @@ Public Class QSVEnc
             .Text = "Maximum FALL",
             .Config = {0, Integer.MaxValue, 50},
             .VisibleFunc = Function() Codec.ValueText = "hevc"}
-
-        Property TFF As New BoolParam With {
-            .Switch = "--tff",
-            .Text = "Top Field First"}
-
-        Property BFF As New BoolParam With {
-            .Switch = "--bff",
-            .Text = "Bottom Field First"}
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
@@ -312,7 +298,8 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Fullrange"},
                         New BoolParam With {.Switch = "--aud", .Text = "AUD"})
-                    Add("Deinterlace", Deinterlace, TFF, BFF)
+                    Add("Deinterlace",
+                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}})
                     Add("Other",
                         New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
@@ -346,15 +333,6 @@ Public Class QSVEnc
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-            If item Is Deinterlace Then
-                If Deinterlace.ValueText = "normal" OrElse Deinterlace.ValueText = "bob" Then
-                    If Not TFF.Value AndAlso Not BFF.Value Then TFF.Value = True
-                Else
-                    TFF.Value = False
-                    BFF.Value = False
-                End If
-            End If
-
             If Not Mode.MenuButton Is Nothing AndAlso (item Is Codec OrElse item Is Nothing) Then
                 For x = 0 To Mode.Values.Length - 1
                     Select Case Codec.ValueText

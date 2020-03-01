@@ -113,10 +113,9 @@ Public Class Rav1e
     Public Shared Function Test() As String
         Dim tester As New ConsolAppTester
 
-        tester.IgnoredSwitches = "--output --help --psnr --version --verbose"
-        tester.UndocumentedSwitches = "--y4m --help --version --verbose"
+        tester.IgnoredSwitches = "fullhelp output help psnr version verbose"
+        tester.UndocumentedSwitches = "y4m help version verbose"
         tester.Package = Package.Rav1e
-        tester.HelpSwitch = "--help"
         tester.CodeFile = Folder.Startup.Parent + "Encoding\Rav1e.vb"
 
         Return tester.Test
@@ -136,8 +135,7 @@ Public Class Rav1eParams
         .Switch = "--tune",
         .Path = "Basic",
         .Options = {"PSNR", "Psychovisual"},
-        .Values = {"psnr", "psychovisual"},
-        .Init = 0}
+        .Values = {"psnr", "psychovisual"}}
 
     Property Limit As New NumParam With {
         .Text = "Limit",
@@ -150,8 +148,7 @@ Public Class Rav1eParams
         .Path = "Basic",
         .AlwaysOn = True,
         .Options = {"Speed", "Bitrate"},
-        .Values = {"--speed", "--bitrate"},
-        .Init = 0}
+        .Values = {"--speed", "--bitrate"}}
 
     Property Bitrate As New NumParam With {
         .Text = "Bitrate",
@@ -165,14 +162,12 @@ Public Class Rav1eParams
         .Path = "Basic",
         .Options = {"One Pass", "Two Passes"},
         .Values = {"--pass 1", "--pass 2"},
-        .Init = 0,
         .VisibleFunc = Function() Mode.Value = 1}
 
     Property Range As New OptionParam With {
         .Text = "Range",
         .Path = "VUI",
         .Switch = "--range",
-        .Init = 0,
         .Options = {"Unspecified", "Limited", "Full"}}
 
     Property Prime As New OptionParam With {

@@ -727,12 +727,14 @@ Module UIExtensions
     End Sub
 
     <Extension()>
-    Sub SetInitDir(d As FileDialog, ParamArray paths As String())
-        For Each i In paths
-            If Not Directory.Exists(i) Then i = i.ExistingParent
+    Sub SetInitDir(dialog As FileDialog, ParamArray paths As String())
+        For Each path In paths
+            If Not Directory.Exists(path) Then
+                path = path.ExistingParent
+            End If
 
-            If Directory.Exists(i) Then
-                d.InitialDirectory = i
+            If Directory.Exists(path) Then
+                dialog.InitialDirectory = path
                 Exit For
             End If
         Next

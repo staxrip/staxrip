@@ -281,7 +281,7 @@ clipname.set_output()
             code =
                 "import os, sys" + BR +
                 "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR +
-                "sys.path.append(r'" + Folder.Startup + "Apps\Plugins\VS\Scripts')" + BR + code
+                "sys.path.append(r""" + Folder.Startup + "Apps\Plugins\VS\Scripts"")" + BR + code
         End If
 
         Dim clip As String
@@ -772,7 +772,7 @@ Public Class FilterCategory
         src.Filters.AddRange(
             {New VideoFilter("Source", "Manual", "# shows filter selection dialog"),
              New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"),
-             New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r'%source_file%')")})
+             New VideoFilter("Source", "AVISource", "clip = core.avisource.AVISource(r""%source_file%"")")})
         ret.Add(src)
 
         Dim framerate As New FilterCategory("FrameRate")
@@ -833,7 +833,7 @@ Public Class FilterCategory
         Dim misc As New FilterCategory("Misc")
         misc.Filters.Add(New VideoFilter(misc.Name, "UnSpec", "clip = core.resize.Point(clip, matrix_in_s='unspec',range_s='limited')" + BR + "clip = core.std.AssumeFPS(clip, fpsnum=int(%media_info_video:FrameRate% * 1000), fpsden=1000)" + BR + "clip = core.std.SetFrameProp(clip=clip, prop='_ColorRange', intval=1)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Histogram", "clip = muvsfunc.DisplayHistogram(clip)"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "Cube", "clip = core.timecube.Cube(clip, cube=r'$browse_file$')"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "Cube", "clip = core.timecube.Cube(clip, cube=r""$browse_file$"")"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Anamorphic to Standard", "clip = core.fmtc.resample (clip, w=1280, h=720, css='444')" + BR + "clip = core.fmtc.matrix (clip, mat='709', col_fam=vs.RGB)" + BR + "clip = core.fmtc.transfer (clip, transs='1886', transd='srgb')" + BR + "clip = core.fmtc.bitdepth (clip, bits=8)"))
         ret.Add(misc)
 

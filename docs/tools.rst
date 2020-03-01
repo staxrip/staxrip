@@ -39,9 +39,9 @@ BDSup2Sub++
 
 Converts Blu-ray subtitles to other formats like VobSub.
 
-Used Version: 1.0.2
+Used Version: 1.0.3
 
-http://forum.doom9.org/showthread.php?p=1613303
+https://github.com/amichaeltm/BDSup2SubPlusPlus
 
 
 chapterEditor
@@ -239,7 +239,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.65
+Used Version: 4.66
 
 http://github.com/rigaya/NVEnc
 
@@ -279,7 +279,7 @@ QSVEnc
 
 Intel hardware video encoder.
 
-Used Version: 3.31
+Used Version: 3.32
 
 http://github.com/rigaya/QSVEnc
 
@@ -319,7 +319,7 @@ VCEEnc
 
 AMD hardware video encoder.
 
-Used Version: 5.02
+Used Version: 5.03
 
 http://github.com/rigaya/VCEEnc
 
@@ -1501,13 +1501,13 @@ http://rationalqm.us/mine.html
 VSFilterMod
 ~~~~~~~~~~~
 
-AviSynth subtitle plugin with support for vobsub srt and ass.
+AviSynth and VapourSynth subtitle plugin with support for vobsub srt and ass.
 
 Filters: VobSub, TextSubMod
 
-Used Version: 5.2
+Used Version: R5.2.1
 
-http://github.com/HomeOfVapourSynthEvolution/VSFilterMod
+https://github.com/sorayuki/VSFilterMod
 
 
 xNLMeans
@@ -1582,6 +1582,18 @@ Filters: bm3d.RGB2OPP, bm3d.OPP2RGB, bm3d.Basic, bm3d.Final, bm3d.VBasic, bm3d.V
 Used Version: r8
 
 https://github.com/HomeOfVapourSynthEvolution/VapourSynth-BM3D
+
+
+Bwdif
+~~~~~
+
+Motion adaptive deinterlacing based on yadif with the use of w3fdif and cubic interpolation algorithms.
+
+Filters: bwdif.Bwdif
+
+Used Version: r1
+
+https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Bwdif
 
 
 CNR2
@@ -2296,13 +2308,13 @@ https://github.com/IFeelBloated/Plum
 VSFilterMod
 ~~~~~~~~~~~
 
-AviSynth subtitle plugin with support for vobsub srt and ass.
+AviSynth and VapourSynth subtitle plugin with support for vobsub srt and ass.
 
 Filters: vsfm.VobSub, vsfm.TextSubMod
 
-Used Version: 5.2
+Used Version: R5.2.1
 
-http://github.com/HomeOfVapourSynthEvolution/VSFilterMod
+https://github.com/sorayuki/VSFilterMod
 
 
 W3FDIF

@@ -1,4 +1,5 @@
-﻿Imports StaxRip.CommandLine
+﻿
+Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 <Serializable()>
@@ -182,8 +183,8 @@ Public Class x264Enc
     Public Shared Function Test() As String
         Dim tester As New ConsolAppTester
 
+        tester.UndocumentedSwitches = "y4m"
         tester.Package = Package.x264
-        tester.HelpSwitch = "--fullhelp"
         tester.CodeFile = Folder.Startup.Parent + "Encoding\x264Enc.vb"
 
         Return tester.Test

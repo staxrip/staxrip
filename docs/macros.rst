@@ -367,6 +367,10 @@ File path to BDSup2Sub++
 
 File path to BM3D
 
+``%app:Bwdif%``
+
+File path to Bwdif
+
 ``%app:chapterEditor%``
 
 File path to chapterEditor
@@ -1142,6 +1146,10 @@ Folder path to BDSup2Sub++
 ``%app_dir:BM3D%``
 
 Folder path to BM3D
+
+``%app_dir:Bwdif%``
+
+Folder path to Bwdif
 
 ``%app_dir:chapterEditor%``
 

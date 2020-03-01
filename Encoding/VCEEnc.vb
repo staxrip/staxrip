@@ -112,7 +112,6 @@ Public Class VCEEnc
             check-formats dar format fps input-res log-framelist mux-option"
 
         tester.Package = Package.VCEEnc
-        tester.HelpSwitch = "-h"
         tester.CodeFile = Folder.Startup.Parent + "Encoding\vceenc.vb"
 
         Return tester.Test

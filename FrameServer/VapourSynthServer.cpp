@@ -127,6 +127,51 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
         m_Info.FrameRateNum = m_vsInfo->fpsNum;
         m_Info.FrameRateDen = m_vsInfo->fpsDen;
 
+        const VSFormat* format = m_vsInfo->format;
+        int id = format->id;
+
+        if      (id == pfCompatBGR32)  m_Info.ColorSpace = VideoInfo::CS_BGR32;
+        else if (id == pfCompatYUY2)   m_Info.ColorSpace = VideoInfo::CS_YUY2;
+        else if (id == pfYUV444P8)     m_Info.ColorSpace = VideoInfo::CS_YV24;
+        else if (id == pfYUV422P8)     m_Info.ColorSpace = VideoInfo::CS_YV16;
+        else if (id == pfYUV420P8)     m_Info.ColorSpace = VideoInfo::CS_YV12;
+        else if (id == pfYUV410P8)     m_Info.ColorSpace = VideoInfo::CS_YUV9;
+        else if (id == pfYUV411P8)     m_Info.ColorSpace = VideoInfo::CS_YV411;
+        else if (id == pfGray8)        m_Info.ColorSpace = VideoInfo::CS_Y8;
+        else if (id == pfYUV444P10)    m_Info.ColorSpace = VideoInfo::CS_YUV444P10;
+        else if (id == pfYUV422P10)    m_Info.ColorSpace = VideoInfo::CS_YUV422P10;
+        else if (id == pfYUV420P10)    m_Info.ColorSpace = VideoInfo::CS_YUV420P10;
+        else if (id == pfYUV444P12)    m_Info.ColorSpace = VideoInfo::CS_YUV444P12;
+        else if (id == pfYUV422P12)    m_Info.ColorSpace = VideoInfo::CS_YUV422P12;
+        else if (id == pfYUV420P12)    m_Info.ColorSpace = VideoInfo::CS_YUV420P12;
+        else if (id == pfYUV444P14)    m_Info.ColorSpace = VideoInfo::CS_YUV444P14;
+        else if (id == pfYUV422P14)    m_Info.ColorSpace = VideoInfo::CS_YUV422P14;
+        else if (id == pfYUV420P14)    m_Info.ColorSpace = VideoInfo::CS_YUV420P14;
+        else if (id == pfYUV444P16)    m_Info.ColorSpace = VideoInfo::CS_YUV444P16;
+        else if (id == pfYUV422P16)    m_Info.ColorSpace = VideoInfo::CS_YUV422P16;
+        else if (id == pfYUV420P16)    m_Info.ColorSpace = VideoInfo::CS_YUV420P16;
+        else if (id == pfGray16)       m_Info.ColorSpace = VideoInfo::CS_Y16;
+        else if (id == pfYUV444PS)     m_Info.ColorSpace = VideoInfo::CS_YUV444PS;
+        else if (id == pfGrayS)        m_Info.ColorSpace = VideoInfo::CS_Y32;
+        else if (id == pfRGB24)        m_Info.ColorSpace = VideoInfo::CS_RGBP;
+        else if (id == pfRGB30)        m_Info.ColorSpace = VideoInfo::CS_RGBP10;
+        else if (id == pfRGB48)        m_Info.ColorSpace = VideoInfo::CS_RGBP16;
+        else if (id == pfGrayS)        m_Info.ColorSpace = VideoInfo::CS_Y32;
+        else if (format->bitsPerSample == 12 && format->colorFamily == cmRGB)
+            m_Info.ColorSpace = VideoInfo::CS_RGBP12;
+        else if (format->bitsPerSample == 14 && format->colorFamily == cmRGB)
+            m_Info.ColorSpace = VideoInfo::CS_RGBP14;
+        else if (format->bitsPerSample == 32 && format->colorFamily == cmYUV && format->sampleType == stFloat && format->subSamplingH == 0 && format->subSamplingW == 1)
+            m_Info.ColorSpace = VideoInfo::CS_YUV422PS;
+        else if (format->bitsPerSample == 32 && format->colorFamily == cmYUV && format->sampleType == stFloat && format->subSamplingH == 1 && format->subSamplingW == 1)
+            m_Info.ColorSpace = VideoInfo::CS_YUV420PS;
+        else if (format->bitsPerSample == 12 && format->colorFamily == cmGray && format->sampleType == stInteger)
+            m_Info.ColorSpace = VideoInfo::CS_Y12;
+        else if (format->bitsPerSample == 10 && format->colorFamily == cmGray && format->sampleType == stInteger)
+            m_Info.ColorSpace = VideoInfo::CS_Y10;
+        else if (format->bitsPerSample == 14 && format->colorFamily == cmGray && format->sampleType == stInteger)
+            m_Info.ColorSpace = VideoInfo::CS_Y14;
+
         return S_OK;
     }
     catch (std::exception& e)

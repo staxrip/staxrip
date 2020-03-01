@@ -3686,7 +3686,6 @@ Public Class MainForm
 
             Dim script = p.Script.GetNewScript
             script.Path = p.TempDir + p.TargetFile.Base + "_preview." + script.FileType
-            script.Synchronize(True, True, True)
 
             Dim form As New PreviewForm(script)
             form.Owner = g.MainForm

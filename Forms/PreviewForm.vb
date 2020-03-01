@@ -19,7 +19,7 @@ Public Class PreviewForm
 
     Private components As System.ComponentModel.IContainer
 
-    Friend WithEvents pVideo As System.Windows.Forms.Panel
+    Friend WithEvents pnVideo As System.Windows.Forms.Panel
     Friend WithEvents pnTrack As System.Windows.Forms.Panel
     Private WithEvents bnDeleteRange As System.Windows.Forms.Button
     Private WithEvents bnForward1 As System.Windows.Forms.Button
@@ -48,11 +48,11 @@ Public Class PreviewForm
         Me.bExtras = New StaxRip.UI.ButtonEx()
         Me.bnForward100 = New System.Windows.Forms.Button()
         Me.bnBackward100 = New System.Windows.Forms.Button()
-        Me.pVideo = New System.Windows.Forms.Panel()
+        Me.pnVideo = New System.Windows.Forms.Panel()
         Me.cmsMain = New StaxRip.UI.ContextMenuStripEx(Me.components)
         Me.pnTrack = New System.Windows.Forms.Panel()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
-        Me.pVideo.SuspendLayout()
+        Me.pnVideo.SuspendLayout()
         Me.SuspendLayout()
         '
         'bnDeleteRange
@@ -217,23 +217,23 @@ Public Class PreviewForm
         '
         'pVideo
         '
-        Me.pVideo.ContextMenuStrip = Me.cmsMain
-        Me.pVideo.Controls.Add(Me.bnForward100)
-        Me.pVideo.Controls.Add(Me.bnDeleteRange)
-        Me.pVideo.Controls.Add(Me.bnForward10)
-        Me.pVideo.Controls.Add(Me.bExtras)
-        Me.pVideo.Controls.Add(Me.bnForward1)
-        Me.pVideo.Controls.Add(Me.bnRangeEnd)
-        Me.pVideo.Controls.Add(Me.bnRangeStart)
-        Me.pVideo.Controls.Add(Me.bnBackward1)
-        Me.pVideo.Controls.Add(Me.bnBackward10)
-        Me.pVideo.Controls.Add(Me.bnBackward100)
-        Me.pVideo.Controls.Add(Me.pnTrack)
-        Me.pVideo.Location = New System.Drawing.Point(64, 25)
-        Me.pVideo.Margin = New System.Windows.Forms.Padding(2)
-        Me.pVideo.Name = "pVideo"
-        Me.pVideo.Size = New System.Drawing.Size(500, 462)
-        Me.pVideo.TabIndex = 50
+        Me.pnVideo.ContextMenuStrip = Me.cmsMain
+        Me.pnVideo.Controls.Add(Me.bnForward100)
+        Me.pnVideo.Controls.Add(Me.bnDeleteRange)
+        Me.pnVideo.Controls.Add(Me.bnForward10)
+        Me.pnVideo.Controls.Add(Me.bExtras)
+        Me.pnVideo.Controls.Add(Me.bnForward1)
+        Me.pnVideo.Controls.Add(Me.bnRangeEnd)
+        Me.pnVideo.Controls.Add(Me.bnRangeStart)
+        Me.pnVideo.Controls.Add(Me.bnBackward1)
+        Me.pnVideo.Controls.Add(Me.bnBackward10)
+        Me.pnVideo.Controls.Add(Me.bnBackward100)
+        Me.pnVideo.Controls.Add(Me.pnTrack)
+        Me.pnVideo.Location = New System.Drawing.Point(64, 25)
+        Me.pnVideo.Margin = New System.Windows.Forms.Padding(2)
+        Me.pnVideo.Name = "pVideo"
+        Me.pnVideo.Size = New System.Drawing.Size(500, 462)
+        Me.pnVideo.TabIndex = 50
         '
         'cmsMain
         '
@@ -265,13 +265,13 @@ Public Class PreviewForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.BackColor = System.Drawing.Color.Black
         Me.ClientSize = New System.Drawing.Size(640, 513)
-        Me.Controls.Add(Me.pVideo)
+        Me.Controls.Add(Me.pnVideo)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "PreviewForm"
         Me.ShowInTaskbar = True
         Me.Text = "Preview"
-        Me.pVideo.ResumeLayout(False)
+        Me.pnVideo.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -283,7 +283,6 @@ Public Class PreviewForm
     Private RangeStart As Integer = -1
     Private PreviewScript As VideoScript
     Private SizeFactor As Double = 1
-    Private TargetFrames As Integer
     Private WithEvents GenericMenu As CustomMenu
     Private CommandManager As New CommandManager
 
@@ -315,8 +314,6 @@ Public Class PreviewForm
     End Sub
 
     Sub RefreshScript()
-        TargetFrames = p.Script.GetFrameCount
-
         If Not Renderer Is Nothing Then
             Renderer.Dispose()
         End If
@@ -325,9 +322,11 @@ Public Class PreviewForm
             FrameServer.Dispose()
         End If
 
+        PreviewScript.Synchronize()
         PreviewScript.Synchronize(True, True, True)
         FrameServer = New FrameServer(PreviewScript.Path)
-        Renderer = New VideoRenderer(pVideo, FrameServer)
+        Renderer = New VideoRenderer(pnVideo, FrameServer)
+        Renderer.Info = PreviewScript.OriginalInfo
         Renderer.ShowInfo = s.ShowPreviewInfo
         Dim workingArea = Screen.FromControl(Me).WorkingArea
 
@@ -378,20 +377,20 @@ Public Class PreviewForm
 
         Dim b = Screen.FromControl(Me).Bounds
 
-        pVideo.Dock = DockStyle.None
+        pnVideo.Dock = DockStyle.None
 
         If ratio > b.Width / b.Height Then
             Dim h = CInt(b.Width / ratio)
-            pVideo.Left = 0
-            pVideo.Top = CInt((b.Height - h) / 2)
-            pVideo.Width = b.Width
-            pVideo.Height = h
+            pnVideo.Left = 0
+            pnVideo.Top = CInt((b.Height - h) / 2)
+            pnVideo.Width = b.Width
+            pnVideo.Height = h
         Else
             Dim w = CInt(b.Height * ratio)
-            pVideo.Left = CInt((b.Width - w) / 2)
-            pVideo.Top = 0
-            pVideo.Width = w
-            pVideo.Height = b.Height
+            pnVideo.Left = CInt((b.Width - w) / 2)
+            pnVideo.Top = 0
+            pnVideo.Width = w
+            pnVideo.Height = b.Height
         End If
 
         pnTrack.Visible = trackVisible
@@ -401,7 +400,7 @@ Public Class PreviewForm
         FormBorderStyle = FormBorderStyle.FixedDialog
         s.PreviewFormBorderStyle = FormBorderStyle
         WindowState = FormWindowState.Normal
-        pVideo.Dock = DockStyle.Fill
+        pnVideo.Dock = DockStyle.Fill
         ClientSize = GetNormalSize()
         Dim wa = Screen.FromControl(Me).WorkingArea
         If Left + Width > wa.Width OrElse Top + Height > wa.Height Then WindowPositions.CenterScreen(Me)
@@ -571,7 +570,7 @@ Public Class PreviewForm
 
     Private Function GetDrawPos(frame As Integer) As Integer
         Dim values = TrackBarBorder * 2 + TrackBarGap * 2 + TrackBarPosition
-        Dim width = CInt(((pnTrack.Width - values) / CInt(TargetFrames - 1)) * frame)
+        Dim width = CInt(((pnTrack.Width - values) / CInt(PreviewScript.Info.FrameCount - 1)) * frame)
         Return width + CInt(values / 2)
     End Function
 
@@ -584,9 +583,12 @@ Public Class PreviewForm
     End Sub
 
     Private Sub HandleMouseOntrackBar()
-        Dim pos = CInt((TargetFrames / pnTrack.Width) * pnTrack.PointToClient(Control.MousePosition).X)
+        Dim pos = CInt((PreviewScript.Info.FrameCount / pnTrack.Width) * pnTrack.PointToClient(Control.MousePosition).X)
         Dim remainder = pos Mod 4
-        If remainder <> 0 Then pos -= remainder
+
+        If remainder <> 0 Then
+            pos -= remainder
+        End If
 
         For Each i In Instances
             i.SetAbsolutePos(pos)
@@ -826,11 +828,11 @@ Public Class PreviewForm
         Close()
     End Sub
 
-    Private Sub pVideo_DoubleClick() Handles pVideo.DoubleClick
+    Private Sub pVideo_DoubleClick() Handles pnVideo.DoubleClick
         SwitchWindowState()
     End Sub
 
-    Private Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pVideo.MouseMove
+    Private Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseMove
         If Not WindowState = FormWindowState.Maximized AndAlso e.Button = MouseButtons.Left Then
             Native.ReleaseCapture()
             Native.PostMessage(Handle, &HA1, New IntPtr(2), IntPtr.Zero) 'WM_NCLBUTTONDOWN, HTCAPTION
@@ -995,7 +997,7 @@ Public Class PreviewForm
         ret.Add("Cut|Delete Selection", NameOf(DeleteRange), Keys.Delete, Symbol.Delete)
         ret.Add("Cut|Delete All Selections", NameOf(ClearAllRanges), Keys.Control Or Keys.Delete)
 
-        ret.Add("View|Infos", NameOf(ToggleInfos), Keys.I, Symbol.Info)
+        ret.Add("View|Info", NameOf(ToggleInfos), Keys.I, Symbol.Info)
         ret.Add("View|Fullscreen", NameOf(SwitchWindowState), Keys.Enter, Symbol.FullScreen)
         ret.Add("View|-")
         ret.Add("View|Zoom In", NameOf(Zoom), Keys.Oemplus, Symbol.ZoomIn, {0.25F})
@@ -1021,7 +1023,7 @@ Public Class PreviewForm
         Return ret
     End Function
 
-    Private Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pVideo.Paint
+    Private Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pnVideo.Paint
         Renderer.Draw()
     End Sub
 
@@ -1115,15 +1117,15 @@ Public Class PreviewForm
         OpenHelp()
     End Sub
 
-    Private Sub pVideo_MouseDown(sender As Object, e As MouseEventArgs) Handles pVideo.MouseDown
+    Private Sub pVideo_MouseDown(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseDown
         Dim sb = Screen.FromControl(Me).Bounds
         Dim p1 = New Point(sb.Width, 0)
         Dim p2 = PointToScreen(e.Location)
         If Math.Abs(p1.X - p2.X) < 10 AndAlso Math.Abs(p1.Y - p2.Y) < 10 Then Close()
     End Sub
 
-    Private Sub pVideo_MouseClick(sender As Object, e As MouseEventArgs) Handles pVideo.MouseClick
-        If pVideo.Width - e.Location.X < 10 AndAlso e.Location.Y < 10 Then
+    Private Sub pVideo_MouseClick(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseClick
+        If pnVideo.Width - e.Location.X < 10 AndAlso e.Location.Y < 10 Then
             Close()
         End If
     End Sub

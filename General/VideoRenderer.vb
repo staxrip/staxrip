@@ -10,6 +10,7 @@ Public Class VideoRenderer
     Property CropRight As Integer
     Property CropBottom As Integer
     Property ShowInfo As Boolean
+    Property Info As ServerInfo
 
     Private Direct2dFactory As ComObject(Of ID2D1Factory)
     Private DirectWriteFactory As ComObject(Of IDWriteFactory)
@@ -21,6 +22,7 @@ Public Class VideoRenderer
     Sub New(control As Control, server As FrameServer)
         Me.Server = server
         Me.Control = control
+        Info = server.Info
 
         Direct2dFactory = D2D1Functions.D2D1CreateFactory(
             D2D1_FACTORY_TYPE.D2D1_FACTORY_TYPE_SINGLE_THREADED)
@@ -116,7 +118,7 @@ Public Class VideoRenderer
             Exit Sub
         End If
 
-        Dim text = Server.Info.GetText(Position)
+        Dim text = Info.GetInfoText(Position)
         Dim layout As IDWriteTextLayout
         Dim format = DirectWriteFactory.CreateTextFormat("Consolas", 13)
 

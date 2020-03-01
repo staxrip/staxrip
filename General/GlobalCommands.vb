@@ -590,16 +590,17 @@ Switches
 
             If releaseType = "-beta" Then
                 Dim outputDirectories = {
-                    "C:\Users\frank\OneDrive\StaxRip\TestBuilds\",
+                    "C:\Users\frank\Dropbox\public\StaxRip\Builds",
                     "C:\Users\frank\OneDrive\StaxRip\Builds"}
 
-                For Each i In outputDirectories
-                    If Not Directory.Exists(i) Then
-                        Continue For
-                    End If
+                For Each outDir In outputDirectories
+                    If Directory.Exists(outDir) Then
+                        FileHelp.Copy(targetDir.TrimEnd("\"c) + ".7z",
+                                      outDir + "\" + DirPath.GetName(targetDir) + ".7z",
+                                      Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
 
-                    FileHelp.Copy(targetDir.TrimEnd("\"c) + ".7z", i + DirPath.GetName(targetDir) + ".7z", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
-                    Process.Start(i)
+                        Process.Start(outDir)
+                    End If
                 Next
             End If
         Catch ex As Exception

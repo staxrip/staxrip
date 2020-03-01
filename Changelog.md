@@ -1,5 +1,10 @@
 
-### 2.0.7.2
+###
+
+- new: improved possibility to show AviSynth and VapourSynth script
+       information with a new dialog and new pixel format parameter	   
+
+### 2.0.7.2 Beta
 
 - new: showing MediaInfo for the source file works now even if
        the source file is an d2v/dgi index file
@@ -10,7 +15,7 @@
 
 - fix: use FrameServer.dll release build instead of debug build
 
-### 2.0.7.1
+### 2.0.7.1 Beta
 
 - new: icons added in encoder dialog menus
 - new: option dialog is shown in case a tool has multiple help

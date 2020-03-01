@@ -15,6 +15,7 @@ struct ServerInfo
     int FrameRateNum;
     int FrameRateDen;
     int FrameCount;
+    int ColorSpace;
 };
 
 

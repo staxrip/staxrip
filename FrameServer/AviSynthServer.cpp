@@ -76,13 +76,14 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
 
         m_Clip = m_AVSValue.AsClip();
 
-        VideoInfo avsInfo = m_Clip->GetVideoInfo();
+        VideoInfo vi = m_Clip->GetVideoInfo();
 
-        m_Info.Width = avsInfo.width;
-        m_Info.Height = avsInfo.height;
-        m_Info.FrameCount = avsInfo.num_frames;
-        m_Info.FrameRateNum = avsInfo.fps_numerator;
-        m_Info.FrameRateDen = avsInfo.fps_denominator;
+        m_Info.Width = vi.width;
+        m_Info.Height = vi.height;
+        m_Info.FrameCount = vi.num_frames;
+        m_Info.FrameRateNum = vi.fps_numerator;
+        m_Info.FrameRateDen = vi.fps_denominator;
+        m_Info.ColorSpace = vi.pixel_type;
 
         return S_OK;
     }

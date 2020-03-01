@@ -84,9 +84,9 @@ Public Class GlobalClass
             Log.WriteHeader(If(p.Script.Engine = ScriptEngine.AviSynth, "AviSynth Script", "VapourSynth Script"))
             Log.WriteLine(p.Script.GetFullScript)
             Log.WriteHeader("Source Script Information")
-            Log.WriteLine(p.SourceScript.GetInfo().GetText(-1))
+            Log.WriteLine(p.SourceScript.GetInfo().GetInfoText(-1))
             Log.WriteHeader("Target Script Information")
-            Log.WriteLine(p.Script.GetInfo().GetText(-1))
+            Log.WriteLine(p.Script.GetInfo().GetInfoText(-1))
 
             g.MainForm.Hide()
 
@@ -110,11 +110,11 @@ Public Class GlobalClass
                             End Sub)
             End If
 
-            For Each i In p.AudioTracks
-                Dim temp = i
+            For Each track In p.AudioTracks
+                Dim temp = track
 
-                If p.SkipAudioEncoding AndAlso File.Exists(i.GetOutputFile) Then
-                    i.File = i.GetOutputFile()
+                If p.SkipAudioEncoding AndAlso File.Exists(track.GetOutputFile) Then
+                    track.File = track.GetOutputFile()
                 Else
                     actions.Add(Sub()
                                     Audio.Process(temp)
@@ -135,9 +135,17 @@ Public Class GlobalClass
             Log.Save()
             p.VideoEncoder.Muxer.Mux()
 
-            If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile, p)
-            If p.MTN Then MTN.Thumbnails(p.TargetFile, p)
-            If p.MKVHDR Then MKVInfo.MetadataHDR(p.TargetFile, p)
+            If p.SaveThumbnails Then
+                Thumbnails.SaveThumbnails(p.TargetFile, p)
+            End If
+
+            If p.MTN Then
+                MTN.Thumbnails(p.TargetFile, p)
+            End If
+
+            If p.MKVHDR Then
+                MKVInfo.MetadataHDR(p.TargetFile, p)
+            End If
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
@@ -147,7 +155,10 @@ Public Class GlobalClass
             g.DeleteTempFiles()
             g.RaiseAppEvent(ApplicationEvent.JobProcessed)
             Job.RemoveJob(jobPath)
-            If jobPath.StartsWith(Folder.Settings + "Batch Projects\") Then File.Delete(jobPath)
+
+            If jobPath.StartsWith(Folder.Settings + "Batch Projects\") Then
+                File.Delete(jobPath)
+            End If
         Catch ex As ErrorAbortException
             Log.Save()
             g.ShowException(ex, Nothing, Nothing, 50)
@@ -986,11 +997,11 @@ Public Class GlobalClass
 
     Sub ShowScriptInfo(script As VideoScript)
         script.Synchronize()
-        Dim text = If(script.Error = "", script.Info.GetText(-1), script.Error)
+        Dim text = If(script.Error = "", script.Info.GetInfoText(-1), script.Error)
         text = BR + "  " + text.FixBreak.Replace(BR, BR + "  ") + BR
 
         Using form As New StringEditorForm
-            form.ScaleClientSize(30, 20)
+            form.ScaleClientSize(25, 15)
             form.MaximizeBox = False
             form.rtb.ReadOnly = True
             form.cbWrap.Checked = False

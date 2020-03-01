@@ -9,6 +9,7 @@ Public Class VideoScript
 
     <NonSerialized()> Public [Error] As String
     <NonSerialized()> Public Info As ServerInfo
+    <NonSerialized()> Public OriginalInfo As ServerInfo
 
     Property Filters As New List(Of VideoFilter)
 
@@ -245,6 +246,11 @@ clipname.set_output()
 
                     Using server As New FrameServer(Path)
                         Info = server.Info
+
+                        If Not convertToRGB Then
+                            OriginalInfo = Info
+                        End If
+
                         Me.Error = server.Error
                     End Using
 

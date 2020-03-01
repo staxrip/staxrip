@@ -8,6 +8,7 @@
 #include "FrameServer.h"
 #include "VSScript.h"
 #include "VSHelper.h"
+#include "avisynth_headers\avisynth.h"
 #include "Windows.h"
 
 #include <atomic>

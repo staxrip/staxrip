@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2002-2019 StaxRip authors
+Copyright (C) 2002-2020 StaxRip authors
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and ssociated documentation files (the "Software"),

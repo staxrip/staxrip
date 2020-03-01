@@ -127,15 +127,15 @@ Public Class CodeEditor
             Exit Sub
         End If
 
-        script.Synchronize(True, True, True)
-
         Dim form As New PreviewForm(script)
         form.Owner = g.MainForm
         form.Show()
     End Sub
 
     Sub ShowInfo()
-        If p.SourceFile = "" Then Exit Sub
+        If p.SourceFile = "" Then
+            Exit Sub
+        End If
 
         Dim script As New VideoScript
         script.Engine = Engine
@@ -147,13 +147,7 @@ Public Class CodeEditor
             Exit Sub
         End If
 
-        script.Synchronize()
-
-        If script.Engine = ScriptEngine.AviSynth Then
-            g.DefaultCommands.ExecuteCommandLine(Package.avs2pipemod.Path.Escape + " -info " + script.Path.Escape + BR + "pause", False, False, True)
-        Else
-            g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + " --info " + script.Path.Escape + " -" + BR + "pause", False, False, True)
-        End If
+        g.ShowScriptInfo(script)
     End Sub
 
     Sub JoinFilters()
@@ -404,7 +398,7 @@ Public Class CodeEditor
 
             Menu.Add("Preview Code...", AddressOf CodePreview, "Previews the script with solved macros.").SetImage(Symbol.Code)
 
-            Dim infoMenuItem = Menu.Add("Script Info...", AddressOf Editor.ShowInfo, "Previews script parameters such as framecount and colorspace.")
+            Dim infoMenuItem = Menu.Add("Info...", AddressOf Editor.ShowInfo, "Previews script parameters such as framecount and colorspace.")
             infoMenuItem.SetImage(Symbol.Info)
             infoMenuItem.ShortcutKeyDisplayString = "Ctrl+I"
             infoMenuItem.Enabled = p.SourceFile <> ""

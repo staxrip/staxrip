@@ -37,8 +37,9 @@ Public Class QSVEnc
         params1.Init(store)
 
         Using form As New CommandLineForm(params1)
-            form.HTMLHelp = Strings.Intel + $"<a href=""{Package.QSVEnc.HelpURL}"">QSVEnc online help</a>" +
-                $"<pre>{Package.QSVEnc.CreateHelpfile()}</pre>"
+            form.HTMLHelp = $"<p><a href=""{Package.QSVEnc.HelpURL}"">QSVEnc online help</a></p>" +
+                $"<p><a href=""https://github.com/staxrip/staxrip/wiki/qsvenc-bitrate-modes"">QSVEnc bitrate modes</a></p>" +
+                $"<pre>{HelpDocument.ConvertChars(Package.QSVEnc.CreateHelpfile())}</pre>"
 
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of QSVEnc)(Me)
@@ -125,9 +126,10 @@ Public Class QSVEnc
             avsync mux-option input-res fps dar avqsv-analyze benchmark vpp-delogo-cb vpp-delogo-cr
             bench-quality log log-framelist audio-thread avi avqsv input-file python qvbr-quality help
             audio-ignore-decode-error audio-ignore-notrack-error nv12 output-file sharpness vpp-delogo
-            check-features-html perf-monitor perf-monitor-plot perf-monitor-interval vpp-delogo-select"
+            check-features-html perf-monitor perf-monitor-plot perf-monitor-interval vpp-delogo-select
+            audio-delay"
 
-        tester.UndocumentedSwitches = "chromaloc videoformat colormatrix colorprim transfer fullrange"
+        tester.UndocumentedSwitches = "input-thread chromaloc videoformat colormatrix colorprim transfer fullrange"
         tester.Package = Package.QSVEnc
         tester.CodeFile = Folder.Startup.Parent + "Encoding\qsvenc.vb"
 
@@ -252,6 +254,7 @@ Public Class QSVEnc
                         New NumParam With {.Switch = "--bframes", .Text = "B-Frames", .Init = 3, .Config = {0, 16}},
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Config = {0, 16}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length", .Config = {0, Integer.MaxValue, 1}},
+                        New BoolParam With {.Switch = "--key-on-chapter", .Text = "Set key frame on chapter"},
                         New BoolParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid"},
                         New BoolParam With {.Switch = "--b-adapt", .Text = "Adaptive B-Frame Insert"},
                         New BoolParam With {.Switch = "--adapt-ltr", .Text = "Adaptive LTR frames"},
@@ -289,20 +292,23 @@ Public Class QSVEnc
                         mctfval)
                     Add("VUI",
                         New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "hevc"},
+                        New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 NC", "BT 2020 C", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}},
+                        New OptionParam With {.Switch = "--colorrange", .Text = "Colorrange", .Options = {"Undefined", "Limited", "TV", "Full", "PC", "Auto"}},
                         New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-SRD-B67"}},
                         MaxCLL, MaxFALL, Chromaloc,
                         New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Fullrange"},
                         New BoolParam With {.Switch = "--aud", .Text = "AUD"})
-                    Add("Deinterlace",
-                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}})
                     Add("Other",
                         New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
+                        New StringParam With {.Switch = "--sub-source", .Text = "Subtitle File", .BrowseFile = True, .BrowseFileFilter = FileTypes.GetFilter(FileTypes.SubtitleExludingContainers)},
+                        New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Undefined", "TFF, BFF"}},
+                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}},
                         New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Init = 3},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New OptionParam With {.Switch = "--sao", .Text = "SAO", .Options = {"Auto", "None", "Luma", "Chroma", "All"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},

@@ -945,6 +945,7 @@ Public Class Macro
         ret.Add(New Macro("target_size", "Target Size", GetType(Integer), "Size of the target video in kilo bytes."))
         ret.Add(New Macro("target_temp_file", "Target Temp File", GetType(String), "File located in the temp directory using the same name as the target file."))
         ret.Add(New Macro("target_width", "Target Image Width", GetType(Integer), "Image width of the target video."))
+        ret.Add(New Macro("temp_dir", "Temp Directory", GetType(String), "Directory of the source file or the temp directory if enabled."))
         ret.Add(New Macro("temp_file", "Temp File", GetType(String), "File located in the temp directory using the same name as the source file."))
         ret.Add(New Macro("template_name", "Template Name", GetType(String), "Name of the template the active project is based on."))
         ret.Add(New Macro("text_editor", "Text Editor", GetType(String), "Path of the application currently associated with TXT files."))
@@ -1068,6 +1069,9 @@ Public Class Macro
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%working_dir%") Then value = value.Replace("%working_dir%", p.TempDir)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%temp_dir%") Then value = value.Replace("%temp_dir%", p.TempDir)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%temp_file%") Then value = value.Replace("%temp_file%", p.TempDir + p.SourceFile.Base)

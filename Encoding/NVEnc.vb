@@ -37,8 +37,8 @@ Public Class NVEnc
         newParams.Init(store)
 
         Using form As New CommandLineForm(newParams)
-            form.HTMLHelp = $"<a href=""{Package.NVEnc.HelpURL}"">NVEnc online help</a>" +
-                $"<pre>{Package.NVEnc.CreateHelpfile()}</pre>"
+            form.HTMLHelp = $"<p><a href=""{Package.NVEnc.HelpURL}"">NVEnc online help</a></p>" +
+                $"<pre>{HelpDocument.ConvertChars(Package.NVEnc.CreateHelpfile())}</pre>"
 
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of NVEnc)(Me)
@@ -489,7 +489,7 @@ Public Class NVEnc
                     Add("VUI",
                         New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "h265"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
-                        New StringParam With {.Switch = "--dhdr10-info", .Text = "Dynamic HDR10 Info", .BrowseFile = True},
+                        New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},

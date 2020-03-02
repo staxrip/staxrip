@@ -737,6 +737,8 @@ Public Class FilterCategory
         misc.Filters.Add(New VideoFilter(misc.Name, "Histogram", "Histogram(""levels"", bits=$select:msg:Select BitDepth;8;10;12$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "SplitVertical", "Splitvertical=true"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Info", "Info(size=16*%dpi%/96)"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "AddBorders", "AddBorders(0,0,0,0) #left,top,right,bottom"))
+
         ret.Add(misc)
 
         Dim resize As New FilterCategory("Resize")

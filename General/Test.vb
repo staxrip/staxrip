@@ -39,13 +39,14 @@ Public Class ConsolAppTester
         log += "implemetation found in StaxRip code" + BR2
         log += implemented.Join(BR) + BR2
         Dim missing = implemented.Where(Function(x) Not documented.Contains(x) AndAlso Not undocumented.Contains(x))
-        'log.WriteUTF8File(Folder.Desktop + Package.Name + ".txt")
         Dim unknown = documented.Where(Function(x) Not implemented.Contains(x) AndAlso Not ignore.Contains(x)).ToList()
         unknown.Sort()
         Dim unnecessaryIgnore = ignore.Where(Function(x) implemented.Contains(x))
         log += "full documentation" + BR
         log += "------------------" + BR
         log += fullHelp
+        'log.WriteUTF8File(Folder.Desktop + Package.Name + ".txt")
+
         Dim message As String
 
         If unnecessaryIgnore.Count > 0 Then

@@ -279,7 +279,6 @@ Public Class AppsForm
         tsbExplore.Enabled = path <> ""
         tsbLaunch.Enabled = Not CurrentPackage.StartAction Is Nothing AndAlso Not CurrentPackage.IsStatusCritical
         tsbWebsite.Enabled = CurrentPackage.WebURL <> ""
-        tsbWebsite.Enabled = CurrentPackage.WebURL <> ""
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
         tsbHelp.Enabled = CurrentPackage.HelpFileOrURL <> ""
 

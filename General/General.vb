@@ -636,16 +636,24 @@ table {
         Writer.WriteEndElement() 'head
         Writer.WriteStartElement("body")
 
-        If showTitle Then Writer.WriteElementString("h1", title)
+        If showTitle Then
+            Writer.WriteElementString("h1", title)
+        End If
     End Sub
 
     Sub WriteP(rawText As String, Optional convert As Boolean = False)
-        If convert Then rawText = ConvertChars(rawText)
+        If convert Then
+            rawText = ConvertChars(rawText)
+        End If
+
         WriteElement("p", rawText)
     End Sub
 
     Sub WriteP(title As String, rawText As String, Optional convert As Boolean = False)
-        If convert Then rawText = ConvertChars(rawText)
+        If convert Then
+            rawText = ConvertChars(rawText)
+        End If
+
         WriteElement("h2", title)
         WriteElement("p", rawText)
     End Sub
@@ -659,7 +667,9 @@ table {
     End Sub
 
     Sub WriteElement(elementName As String, rawText As String)
-        If rawText = "" Then Exit Sub
+        If rawText = "" Then
+            Exit Sub
+        End If
 
         Writer.WriteStartElement(elementName)
 
@@ -674,9 +684,19 @@ table {
 
     Shared Function ConvertChars(value As String) As String
         value = value.FixBreak
-        If value.Contains("<") Then value = value.Replace("<", "&lt;")
-        If value.Contains(">") Then value = value.Replace(">", "&gt;")
-        If value.Contains(BR) Then value = value.Replace(BR, "<br>")
+
+        If value.Contains("<") Then
+            value = value.Replace("<", "&lt;")
+        End If
+
+        If value.Contains(">") Then
+            value = value.Replace(">", "&gt;")
+        End If
+
+        If value.Contains(BR) Then
+            value = value.Replace(BR, "<br>")
+        End If
+
         Return value
     End Function
 
@@ -684,12 +704,18 @@ table {
         If stripOnly Then
             If value.Contains("[") Then
                 Dim re As New Regex("\[(.+?) (.+?)\]")
-                If re.IsMatch(value) Then value = re.Replace(value, "$2")
+
+                If re.IsMatch(value) Then
+                    value = re.Replace(value, "$2")
+                End If
             End If
 
             If value.Contains("'''") Then
                 Dim re As New Regex("'''(.+?)'''")
-                If re.IsMatch(value) Then value = re.Replace(value, "$1")
+
+                If re.IsMatch(value) Then
+                    value = re.Replace(value, "$1")
+                End If
             End If
         Else
             If value.Contains("[") Then
@@ -721,17 +747,19 @@ table {
     End Function
 
     Sub WriteTips(ParamArray tips As StringPairList())
-        If tips.NothingOrEmpty Then Exit Sub
+        If tips.NothingOrEmpty Then
+            Exit Sub
+        End If
 
-        Dim l As New StringPairList
+        Dim list As New StringPairList
 
         For Each i In tips
-            l.AddRange(i)
+            list.AddRange(i)
         Next
 
-        l.Sort()
+        list.Sort()
 
-        For Each i In l
+        For Each i In list
             WriteH3(HelpDocument.ConvertChars(i.Name))
             WriteP(HelpDocument.ConvertChars(i.Value))
         Next
@@ -740,7 +768,7 @@ table {
     Sub WriteList(ParamArray values As String())
         Writer.WriteStartElement("ul")
 
-        For Each i As String In values
+        For Each i In values
             Writer.WriteStartElement("li")
             Writer.WriteRaw(ConvertMarkup(i, False))
             Writer.WriteEndElement()
@@ -770,7 +798,9 @@ table {
     End Sub
 
     Private Sub WriteTable(title As String, text As String, list As StringPairList, sort As Boolean)
-        If sort Then list.Sort()
+        If sort Then
+            list.Sort()
+        End If
 
         If Not title Is Nothing Then
             Writer.WriteElementString("h2", title)
@@ -797,17 +827,17 @@ table {
         Writer.WriteAttributeString("style", "width: 60%")
         Writer.WriteEndElement()
 
-        For Each i As StringPair In list
+        For Each pair In list
             Writer.WriteStartElement("tr")
             Writer.WriteStartElement("td")
-            WriteElement("p", HelpDocument.ConvertChars(i.Name))
+            WriteElement("p", HelpDocument.ConvertChars(pair.Name))
             Writer.WriteEndElement() 'td
             Writer.WriteStartElement("td")
 
-            If i.Value Is Nothing Then
+            If pair.Value Is Nothing Then
                 WriteElement("p", "&nbsp;")
             Else
-                WriteElement("p", HelpDocument.ConvertChars(i.Value))
+                WriteElement("p", HelpDocument.ConvertChars(pair.Value))
             End If
 
             Writer.WriteEndElement() 'td
@@ -882,10 +912,10 @@ Public Class ReflectionSettingBag(Of T)
 
     Overrides Property Value() As T
         Get
-            Dim f = Obj.GetType.GetField(Name, BindingFlags.Public Or BindingFlags.NonPublic Or BindingFlags.Instance)
+            Dim field = Obj.GetType.GetField(Name, BindingFlags.Public Or BindingFlags.NonPublic Or BindingFlags.Instance)
 
-            If Not f Is Nothing Then
-                Return DirectCast(f.GetValue(Obj), T)
+            If Not field Is Nothing Then
+                Return DirectCast(field.GetValue(Obj), T)
             Else
                 Return DirectCast(Obj.GetType.GetProperty(Name).GetValue(Obj, Nothing), T)
             End If

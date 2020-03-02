@@ -33,7 +33,11 @@ Public Class x264Enc
 
     Overrides ReadOnly Property OutputExt As String
         Get
-            Return "h264"
+            If Params.Muxer.Value = 0 OrElse Params.Muxer.Value = 1 Then
+                Return "h264"
+            Else
+                Return Params.Muxer.ValueText.ToLower
+            End If
         End Get
     End Property
 
@@ -137,6 +141,10 @@ Public Class x264Enc
         newParams.ApplyValues(True)
 
         Using form As New CommandLineForm(newParams)
+            form.HTMLHelp = "<p>Pressing Ctrl or Shift while right-clicking on an option opens the x264 online help and navigates to the switch that was right-clicked.</p>" +
+                $"<p><a href=""{Package.x264.HelpURL}"">x264 online help</a></p>" +
+                $"<pre>{HelpDocument.ConvertChars(Package.x264.CreateHelpfile())}</pre>"
+
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of x264Enc)(Me)
                                         Dim params2 As New x264Params
@@ -183,6 +191,7 @@ Public Class x264Enc
     Public Shared Function Test() As String
         Dim tester As New ConsolAppTester
 
+        tester.IgnoredSwitches = "help longhelp fullhelp input-res progress"
         tester.UndocumentedSwitches = "y4m"
         tester.Package = Package.x264
         tester.CodeFile = Folder.Startup.Parent + "Encoding\x264Enc.vb"
@@ -219,7 +228,7 @@ Public Class x264Params
     Property Mode As New OptionParam With {
         .Name = "Mode",
         .Text = "Mode",
-        .Switches = {"--bitrate", "--qp", "--crf", "--pass", "--stats"},
+        .Switches = {"--bitrate", "--qp", "--crf", "--pass", "--stats", "-q", "-B", "-p"},
         .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
         .Value = 3}
 
@@ -278,6 +287,7 @@ Public Class x264Params
     Property Deblock As New BoolParam With {
         .Switch = "--deblock",
         .NoSwitch = "--no-deblock",
+        .Switches = {"-f"},
         .Text = "Deblocking",
         .ImportAction = Sub(param, arg)
                             Dim a = arg.Split(":"c)
@@ -309,6 +319,7 @@ Public Class x264Params
 
     Property BFrames As New NumParam With {
         .Switch = "--bframes",
+        .Switches = {"-b"},
         .Text = "B-Frames",
         .Config = {0, 16}}
 
@@ -351,29 +362,29 @@ Public Class x264Params
         .Text = "MB Tree"}
 
     Property I4x4 As New BoolParam With {
-        .Switches = {"--partitions"},
+        .Switches = {"--partitions", "-A"},
         .Label = "Partitions",
         .ArgsFunc = AddressOf GetPartitionsArg,
         .LeftMargin = g.MainForm.FontHeight * 1.5,
         .Text = "i4x4"}
 
     Property P4x4 As New BoolParam With {
-        .Switches = {"--partitions"},
+        .Switches = {"--partitions", "-A"},
         .LeftMargin = g.MainForm.FontHeight * 1.5,
         .Text = "p4x4"}
 
     Property B8x8 As New BoolParam With {
-        .Switches = {"--partitions"},
+        .Switches = {"--partitions", "-A"},
         .LeftMargin = g.MainForm.FontHeight * 1.5,
         .Text = "b8x8"}
 
     Property I8x8 As New BoolParam With {
-        .Switches = {"--partitions"},
+        .Switches = {"--partitions", "-A"},
         .LeftMargin = g.MainForm.FontHeight * 1.5,
         .Text = "i8x8"}
 
     Property P8x8 As New BoolParam With {
-        .Switches = {"--partitions"},
+        .Switches = {"--partitions", "-A"},
         .LeftMargin = g.MainForm.FontHeight * 1.5,
         .Text = "p8x8"}
 
@@ -389,6 +400,7 @@ Public Class x264Params
 
     Property Ref As New NumParam With {
         .Switch = "--ref",
+        .Switches = {"-r"},
         .Text = "Ref Frames"}
 
     Property Scenecut As New NumParam With {
@@ -397,6 +409,7 @@ Public Class x264Params
 
     Property Subme As New OptionParam With {
         .Switch = "--subme",
+        .Switches = {"-m"},
         .Text = "Subpel Refinement",
         .IntegerValue = True,
         .Expand = True,
@@ -415,6 +428,7 @@ Public Class x264Params
 
     Property Trellis As New OptionParam With {
         .Switch = "--trellis",
+        .Switches = {"-t"},
         .Text = "Trellis",
         .Expand = True,
         .IntegerValue = True,
@@ -494,6 +508,11 @@ Public Class x264Params
         .Text = "QComp",
         .Switch = "--qcomp",
         .Config = {0, 0, 0.1, 1}}
+
+    Property Muxer As New OptionParam With {
+        .Switch = "--muxer",
+        .Text = "Output Format",
+        .Options = {"Auto", "RAW", "MKV", "FLV", "MP4"}}
 
     Property SlowFirstpass As New BoolParam With {
         .Switch = "--slow-firstpass",
@@ -746,6 +765,7 @@ Public Class x264Params
                     New NumParam With {.Switch = "--mvrange-thread", .Text = "MV Range Thread", .Init = -1},
                     New NumParam With {.Switch = "--nr", .Text = "Noise Reduction"})
                 Add("Rate Control",
+                    New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     AqMode,
                     AqStrength,
                     Ipratio,
@@ -793,8 +813,8 @@ Public Class x264Params
                     RcLookahead,
                     Ref,
                     Scenecut,
-                    New NumParam With {.Switch = "--keyint", .Text = "Max GOP Size", .Init = 250},
-                    New NumParam With {.Switch = "--min-keyint", .Text = "Min GOP Size"},
+                    New NumParam With {.Switch = "--keyint", .Switches = {"-I"}, .Text = "Max GOP Size", .Init = 250},
+                    New NumParam With {.Switch = "--min-keyint", .Switches = {"-i"}, .Text = "Min GOP Size"},
                     New NumParam With {.Switch = "--slices", .Text = "Slices"},
                     New NumParam With {.Switch = "--slices-max", .Text = "Slices Max"},
                     New NumParam With {.Switch = "--slice-max-size", .Text = "Slice Max Size"},
@@ -823,16 +843,20 @@ Public Class x264Params
                     New StringParam With {.Switch = "--dump-yuv", .Text = "Dump YUV", .BrowseFile = True},
                     New StringParam With {.Switch = "--tcfile-in", .Text = "TC File In", .BrowseFile = True},
                     New StringParam With {.Switch = "--tcfile-out", .Text = "TC File Out", .BrowseFile = True},
+                    New StringParam With {.Switch = "--index", .Text = "Index File", .BrowseFile = True},
                     New StringParam With {.Switch = "--timebase", .Text = "Timebase"},
+                    New StringParam With {.Switch = "--input-fmt", .Text = "Input File Format"},
                     New OptionParam With {.Switch = "--input-depth", .Text = "Input Depth", .Options = {"Automatic", "8", "10", "12", "14", "16"}},
                     New OptionParam With {.Switch = "--input-csp", .Text = "Input Csp", .Options = {"Automatic", "I420", "YV12", "NV12", "NV21", "I422", "YV16", "NV16", "YUYV", "UYVY", "I444", "YV24", "BGR", "BGRA", "RGB"}},
                     New OptionParam With {.Switch = "--input-range", .Text = "Input Range", .Options = {"Automatic", "TV", "PC"}},
                     New OptionParam With {.Switch = "--output-csp", .Text = "Output Csp", .Options = {"Automatic", "I420", "I422", "I444", "RGB"}},
+                    Muxer,
                     New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}},
-                    New OptionParam With {.Switch = "--pulldown", .Text = "Pulldown", .Options = {"None", "22", "32", "64", "Double", "Triple", "Euro"}},
-                    New OptionParam With {.Switch = "--avcintra-class", .Text = "Intra Class", .Options = {"None", "50", "100", "200"}},
                     New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug"}})
                 Add("Input/Output 2",
+                    New OptionParam With {.Switch = "--pulldown", .Text = "Pulldown", .Options = {"None", "22", "32", "64", "Double", "Triple", "Euro"}},
+                    New OptionParam With {.Switch = "--avcintra-class", .Text = "AVC Intra Class", .Options = {"None", "50", "100", "200"}},
+                    New OptionParam With {.Switch = "--avcintra-flavor", .Text = "AVC Intra Flavor", .Options = {"Panasonic", "Sony"}},
                     New NumParam With {.Switch = "--threads", .Text = "Threads"},
                     New NumParam With {.Switch = "--lookahead-threads", .Text = "Lookahead Threads"},
                     New NumParam With {.Switch = "--seek", .Text = "Seek"},
@@ -854,8 +878,11 @@ Public Class x264Params
                     ForceCFR,
                     New BoolParam With {.Switch = "--bluray-compat", .Text = "Enable compatibility hacks for Blu-ray support"},
                     New BoolParam With {.Switch = "--aud", .Text = "Use access unit delimiters"},
+                    New BoolParam With {.Switch = "--quiet", .Text = "Quiet Mode"},
+                    New BoolParam With {.Switch = "--verbose", .Switches = {"-v"}, .Text = "Print stats for each frame"},
                     New BoolParam With {.Switch = "--dts-compress", .Text = "Eliminate initial delay with container DTS hack"})
                 Add("Other",
+                    New StringParam With {.Switch = "--video-filter", .Switches = {"--vf"}, .Text = "Video Filter"},
                     PipingTool,
                     New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                     New OptionParam With {.Switch = "--frame-packing", .Text = "Frame Packing", .IntegerValue = True, .Options = {"Checkerboard", "Column Alternation", "Row Alternation", "Side By Side", "Top Bottom", "Frame Alternation", "Mono", "Tile Format"}},
@@ -885,7 +912,11 @@ Public Class x264Params
     End Property
 
     Public Overrides Sub ShowHelp(id As String)
-        g.ShowCommandLineHelp(Package.x264, id)
+        If Control.ModifierKeys = Keys.Control OrElse Control.ModifierKeys = Keys.Shift Then
+            g.StartProcess("http://www.chaneru.com/Roku/HLS/X264_Settings.htm#" + id.TrimStart("-"c))
+        Else
+            g.ShowCommandLineHelp(Package.x264, id)
+        End If
     End Sub
 
     Private BlockValueChanged As Boolean
@@ -955,33 +986,48 @@ Public Class x264Params
             args += " --pass " & pass
 
             If pass = 1 Then
-                If CustomFirstPass.Value <> "" Then args += " " + CustomFirstPass.Value
+                If CustomFirstPass.Value <> "" Then
+                    args += " " + CustomFirstPass.Value
+                End If
             Else
-                If CustomSecondPass.Value <> "" Then args += " " + CustomSecondPass.Value
+                If CustomSecondPass.Value <> "" Then
+                    args += " " + CustomSecondPass.Value
+                End If
             End If
         End If
 
         If Mode.Value = x264RateMode.Quantizer Then
-            If Not IsCustom(pass, "--qp") Then args += " --qp " + CInt(Quant.Value).ToString
+            If Not IsCustom(pass, "--qp") Then
+                args += " --qp " + CInt(Quant.Value).ToString
+            End If
         ElseIf Mode.Value = x264RateMode.Quality Then
-            If Not IsCustom(pass, "--crf") Then args += " --crf " + Quant.Value.ToInvariantString
+            If Not IsCustom(pass, "--crf") Then
+                args += " --crf " + Quant.Value.ToInvariantString
+            End If
         Else
-            If Not IsCustom(pass, "--bitrate") Then args += " --bitrate " & p.VideoBitrate
+            If Not IsCustom(pass, "--bitrate") Then
+                args += " --bitrate " & p.VideoBitrate
+            End If
         End If
 
         Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.Switch)
-        If q.Count > 0 Then args += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+
+        If q.Count > 0 Then
+            args += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+        End If
 
         If includePaths Then
             Dim input = If(PipingTool.ValueText = "none", script.Path.Escape, "-")
-            If input = "-" Then args += " --demuxer y4m --frames " & script.GetFrameCount
+
+            If input = "-" Then
+                args += " --demuxer y4m --frames " & script.GetFrameCount
+            End If
 
             If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
                 args += " --stats " + (p.TempDir + p.TargetFile.Base + ".stats").Escape
             End If
 
-            If (Mode.Value = x264RateMode.ThreePass AndAlso
-                (pass = 1 OrElse pass = 3)) OrElse
+            If (Mode.Value = x264RateMode.ThreePass AndAlso (pass = 1 OrElse pass = 3)) OrElse
                 Mode.Value = x264RateMode.TwoPass AndAlso pass = 1 Then
 
                 args += " --output NUL " + input

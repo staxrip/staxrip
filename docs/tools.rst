@@ -11,7 +11,7 @@ StaxRip support both AviSynth+ and VapourSynth as scripting based video processi
 
 Used Version: 3.4.0
 
-http://avisynth.nl/index.php/AviSynth%2B
+https://github.com/AviSynth/AviSynthPlus
 
 
 avs2pipemod
@@ -29,7 +29,7 @@ AVSMeter
 
 AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.
 
-Used Version: 2.9.6
+Used Version: 2.9.8
 
 http://forum.doom9.org/showthread.php?t=174797
 
@@ -49,7 +49,7 @@ chapterEditor
 
 ChapterEditor is a chapter editor and menu editor for OGG, XML, TTXT, m.AVCHD, m.editions-mkv, Matroska Menu.
 
-Used Version: 1.18
+Used Version: 1.21
 
 https://forum.doom9.org/showthread.php?t=169984
 
@@ -259,7 +259,7 @@ Python
 
 Python is required by VapourSynth.
 
-Used Version: 3.7.4
+Used Version: 3.7.6
 
 http://www.python.org
 
@@ -289,17 +289,17 @@ rav1e
 
 a Faster and Safer AV1 Encoder
 
-Used Version: 0.1.0
+Used Version: 0.3.0
 
 https://github.com/xiph/rav1e
 
 
-SubtitleEdit
-~~~~~~~~~~~~
+Subtitle Edit
+~~~~~~~~~~~~~
 
 Subtitle Edit is a open source subtitle editor.
 
-Used Version: 35.10
+Used Version: 3.5.13
 
 http://www.nikse.dk/SubtitleEdit
 
@@ -344,10 +344,10 @@ Used Version:
 
 
 
-Visual C++ 2017
-~~~~~~~~~~~~~~~
+Visual C++ 2015-2019
+~~~~~~~~~~~~~~~~~~~~
 
-Visual C++ 2017 Redistributable is required by some tools used by StaxRip.
+Visual C++ Redistributable is required by many tools used by StaxRip.
 
 Used Version: 
 
@@ -379,7 +379,7 @@ x264
 
 H.264 video encoding command line app.
 
-Used Version: 2969
+Used Version: 2991-1771b55 Patman
 
 http://www.videolan.org/developers/x264.html
 
@@ -661,13 +661,13 @@ http://avisynth.nl/index.php/DePan
 DFTTest
 ~~~~~~~
 
-2D/3D frequency domain denoiser using Discrete Fourier transform
+2D/3D frequency domain denoiser using Discrete Fourier transform.
 
 Filters: dfttest
 
-Used Version: -
+Used Version: 190410
 
-http://avisynth.nl/index.php/Dfttest
+https://github.com/299792458m/dfttest_mod
 
 
 DGDecodeIM
@@ -821,7 +821,7 @@ FFT3DFilter uses Fast Fourier Transform method for image processing in frequency
 
 Filters: FFT3DFilter
 
-Used Version: 2.6.7
+Used Version: 2.6
 
 http://github.com/pinterf/fft3dfilter
 
@@ -989,7 +989,7 @@ Merge of AutoYUY2, NNEDI3, HDRTools, aWarpSharpMT and ResampleMT
 
 Filters: aBlur, aSobel, AutoYUY2, aWarp, aWarp4, aWarpSharp2, BicubicResizeMT, BilinearResizeMT, BlackmanResizeMT, ConvertLinearRGBtoYUV, ConvertRGB_Hable_HDRtoSDR, ConvertRGB_Mobius_HDRtoSDR, ConvertRGB_Reinhard_HDRtoSDR, ConvertRGBtoXYZ, ConvertXYZ_Hable_HDRtoSDR, ConvertXYZ_Mobius_HDRtoSDR, ConvertXYZ_Reinhard_HDRtoSDR, ConvertXYZ_Scale_HDRtoSDR, ConvertXYZ_Scale_SDRtoHDR, ConvertXYZtoRGB, ConvertXYZtoYUV, ConvertYUVtoLinearRGB, ConvertYUVtoXYZ, DeBicubicResizeMT, DeBilinearResizeMT, DeBlackmanResizeMT, DeGaussResizeMT, DeLanczos4ResizeMT, DeLanczosResizeMT, DeSincResizeMT, DeSpline16ResizeMT, DeSpline36ResizeMT, DeSpline64ResizeMT, GaussResizeMT, Lanczos4ResizeMT, LanczosResizeMT, nnedi3, PointResizeMT, SincResizeMT, Spline16ResizeMT, Spline36ResizeMT, Spline64ResizeMT
 
-Used Version: 3.1.3
+Used Version: 3.2.0
 
 http://forum.doom9.org/showthread.php?t=174248
 
@@ -1627,7 +1627,7 @@ Source filter to open D2V index files created with DGIndex or D2VWitch.
 
 Filters: d2v.Source
 
-Used Version: 2016-04-29
+Used Version: 1.2
 
 http://github.com/dwbuiten/d2vsource
 

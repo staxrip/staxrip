@@ -841,6 +841,15 @@ Public Class GlobalClass
 
     Sub ShowCommandLineHelp(package As Package, switch As String)
         Dim content = package.CreateHelpfile
+
+        If package Is StaxRip.Package.x264 Then
+            Dim match = Regex.Match(content, "Presets:.+Frame-type options:", RegexOptions.Singleline)
+
+            If match.Success Then
+                content = content.Replace(match.Value, BR)
+            End If
+        End If
+
         Dim find As String
 
         If content.Contains(switch.Replace("--", "--(no-)") + " ") Then
@@ -851,6 +860,10 @@ Public Class GlobalClass
             find = switch.Replace("--", "--[no-]") + " "
         ElseIf content.Contains(switch.Replace("--", "--[no-]")) Then
             find = switch.Replace("--", "--[no-]")
+        ElseIf content.Contains("  " + switch + " ") Then
+            find = "  " + switch + " "
+        ElseIf content.Contains(",  " + switch + " ") Then
+            find = ",  " + switch + " "
         ElseIf content.Contains(switch + " ") Then
             find = switch + " "
         ElseIf content.Contains(switch) Then

@@ -134,8 +134,9 @@ Public Class x265Enc
         newParams.ApplyTuneDefaultValues()
 
         Using form As New CommandLineForm(newParams)
-            form.HTMLHelp = "<p>Pressing Ctrl or Shift while right-clicking on an option opens the <a href=""https://x265.readthedocs.io/en/latest/index.html"">x265 online help</a> and navigates to the switch that was right-clicked.</p>" +
-                $"<pre>{Package.x265.CreateHelpfile()}</pre>"
+            form.HTMLHelp = "<p>Pressing Ctrl or Shift while right-clicking on an option opens the x265 online help and navigates to the switch that was right-clicked.</p>" +
+                $"<p><a href=""{Package.x265.HelpURL}"">x265 online help</a></p>" +
+                $"<pre>{HelpDocument.ConvertChars(Package.x265.CreateHelpfile())}</pre>"
 
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of x265Enc)(Me)
@@ -910,7 +911,7 @@ Public Class x265Params
                     csvloglevel, SSIM, PSNR)
                 Add("VUI",
                     MasterDisplay,
-                    New StringParam With {.Switch = "--dhdr10-info", .Text = "DHDR10 Info", .BrowseFile = True},
+                    New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
                     New OptionParam With {.Switch = "--hdr10", .NoSwitch = "--no-hdr10", .Text = "HDR10", .Options = {"Undefined", "Yes", "No"}, .Values = {"", "--hdr10", "--no-hdr10"}},
                     New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 428", "SMPTE 431", "SMPTE 432"}},
                     New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "Chroma-Derived-C", "Chroma-Derived-NC", "FCC", "GBR", "ICTCP", "SMPTE 170 M", "SMPTE 2085", "SMPTE 240 M", "YCgCo"}},

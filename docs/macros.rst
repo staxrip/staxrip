@@ -287,6 +287,10 @@ File located in the temp directory using the same name as the target file.
 
 Image width of the target video.
 
+``%temp_dir%``
+
+Directory of the source file or the temp directory if enabled.
+
 ``%temp_file%``
 
 File located in the temp directory using the same name as the source file.
@@ -919,9 +923,9 @@ File path to SmoothD2
 
 File path to SmoothD2c
 
-``%app:SubtitleEdit%``
+``%app:Subtitle Edit%``
 
-File path to SubtitleEdit
+File path to Subtitle Edit
 
 ``%app:SVPFlow 1%``
 
@@ -1039,9 +1043,9 @@ File path to Visual C++ 2012
 
 File path to Visual C++ 2013
 
-``%app:Visual C++ 2017%``
+``%app:Visual C++ 2015-2019%``
 
-File path to Visual C++ 2017
+File path to Visual C++ 2015-2019
 
 ``%app:vsCube%``
 
@@ -1699,9 +1703,9 @@ Folder path to SmoothD2
 
 Folder path to SmoothD2c
 
-``%app_dir:SubtitleEdit%``
+``%app_dir:Subtitle Edit%``
 
-Folder path to SubtitleEdit
+Folder path to Subtitle Edit
 
 ``%app_dir:SVPFlow 1%``
 
@@ -1819,9 +1823,9 @@ Folder path to Visual C++ 2012
 
 Folder path to Visual C++ 2013
 
-``%app_dir:Visual C++ 2017%``
+``%app_dir:Visual C++ 2015-2019%``
 
-Folder path to Visual C++ 2017
+Folder path to Visual C++ 2015-2019
 
 ``%app_dir:vsCube%``
 

@@ -1,23 +1,44 @@
 
-###
 
-- new: improved possibility to show AviSynth and VapourSynth script
-       information with a new dialog and new pixel format parameter	   
-- new: the right click context help in the x265 dialog can now
-       alternativly open the online help with ctrl or shift + right click
-- new: the F1 help in the video encoder dialogs was improved
-- new: in the nvenc dialog custom switches do overwrite regular switches
-- new: Bwdif plugin for VapourSynth (similar to yadif)
-- new: filter can be removed from filter list view using delete key
+### 2.0.7.3 Beta
+
+- fix: x265 issues with --refine-ctu-distortion and --high-tier
+- fix: certain avs and vpy files failed to load before, hopefully all external
+       scripts can now be opened
+- fix: opening source files that contain single quotes caused a VapourSynth
+       script error, the fix will however only work when people reset their
+	   filter profiles
+- fix: the local context help of x264 did often not work
 
 - update: nvenc 4.66
 - update: L-Smash-Work 20200207 HolyWu
 - update: VSFilterMod R5.2.1
 - update: BDSup2Sub++ 1.0.3
 - update: qsvenc 3.31
+- update: JPSDR 3.2.0
+- update: d2vsource 1.2
+- update: AVSMeter 2.9.8
+- update: chapterEditor 1.21
+- update: Subtitle Edit 3.5.13
+- update: rav1e 0.3.0
+- update: x264 2991-1771b55 Patman
 
-- fix: x265 issues with --refine-ctu-distortion and --high-tier
-- fix: certain avs and vpy files failed to load before, should work fine now
+- new: improved possibility to show AviSynth and VapourSynth script
+       information with a new dialog and new pixel format parameter	   
+- new: the right click context help in the x264 and x265 dialog can now
+       alternativly open the online help with ctrl or shift + right click
+	   to navigate directly to the online help of the right-clicked switch
+- new: the F1 help in the video encoder dialogs was greatly improved
+- new: in the nvenc dialog custom switches do overwrite regular switches
+- new: Bwdif plugin for VapourSynth (similar to yadif)
+- new: filters can be removed from the filter list view in the main dialog
+       using the delete key
+- new: qsvenc --colorrange --dhdr10-info --key-on-chapter --sub-source
+- new: x264 --avcintra-flavor --index --input-fmt --muxer --quiet
+       --verbose --video-filter
+- new: the short version command line switches (like -t) are now supported
+       in the x264 dialog
+
 
 ### 2.0.7.2 Beta
 

@@ -656,22 +656,27 @@ Public Class MkvMuxer
         Next
 
         If Not TypeOf Me Is WebMMuxer AndAlso File.Exists(ChapterFile) Then
-            If p.Ranges.Count > 0 Then
+            If p.Ranges.Count > 0 AndAlso ChapterFile.Ext = "xml" Then
                 Dim xDoc = XDocument.Load(ChapterFile)
                 Dim lstTimeRanges As New List(Of (StartTime As TimeSpan, EndTime As TimeSpan, Offset As TimeSpan))
-                Dim OffsetRecord As TimeSpan
+                Dim offsetRecord As TimeSpan
                 Dim lstValidChapterAtoms As New List(Of XElement)
+
                 For Each r In p.Ranges
                     lstTimeRanges.Add((
                         New TimeSpan(CLng(10000000L * r.Start / p.CutFrameRate)),
                         New TimeSpan(CLng(10000000L * r.End / p.CutFrameRate)),
-                        OffsetRecord
+                        offsetRecord
                     ))
-                    OffsetRecord += lstTimeRanges.Last.EndTime - lstTimeRanges.Last.StartTime
+
+                    offsetRecord += lstTimeRanges.Last.EndTime - lstTimeRanges.Last.StartTime
+
                     For Each elAtom In xDoc.Descendants("ChapterAtom")
                         Dim elChapterTimeStart = elAtom.Element("ChapterTimeStart")
+
                         If Not lstValidChapterAtoms.Contains(elAtom) Then
                             Dim tsStart = TimeSpan.Parse(Left(elAtom.Element("ChapterTimeStart").Value, 16))
+
                             If tsStart >= lstTimeRanges.Last.StartTime And tsStart <= lstTimeRanges.Last.EndTime Then
                                 elAtom.Element("ChapterTimeStart").Value = (lstTimeRanges.Last.Offset + (tsStart - lstTimeRanges.Last.StartTime)).ToString()
                                 lstValidChapterAtoms.Add(elAtom)
@@ -679,6 +684,7 @@ Public Class MkvMuxer
                         End If
                     Next
                 Next
+
                 xDoc.Descendants("ChapterAtom").Where(Function(Atom) Not lstValidChapterAtoms.Contains(Atom)).Remove()
                 Dim CutChapterFile = Path.Combine(Path.GetDirectoryName(ChapterFile), "cut_cpt" + ".xml")
                 xDoc.Save(CutChapterFile)
@@ -688,21 +694,35 @@ Public Class MkvMuxer
             End If
         End If
 
-        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then args += " --attach-file " + CoverFile.Escape
-        If Title <> "" Then args += " --title """ + Convert(Title) + """"
+        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then
+            args += " --attach-file " + CoverFile.Escape
+        End If
+
+        If Title <> "" Then
+            args += " --title """ + Convert(Title) + """"
+        End If
 
         If TypeOf p.VideoEncoder Is NullEncoder AndAlso p.Ranges.Count > 0 Then
             args += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")
         End If
 
-        If File.Exists(TagFile) Then args += " --global-tags " + TagFile.Escape
+        If File.Exists(TagFile) Then
+            args += " --global-tags " + TagFile.Escape
+        End If
 
         args += " --ui-language en"
-        If AdditionalSwitches <> "" Then args += " " + Macro.Expand(AdditionalSwitches)
+
+        If AdditionalSwitches <> "" Then
+            args += " " + Macro.Expand(AdditionalSwitches)
+        End If
 
         For Each i In Attachments
             Dim name = Path.GetFileName(i)
-            If i.Contains("_attachment_") Then name = i.Right("_attachment_")
+
+            If i.Contains("_attachment_") Then
+                name = i.Right("_attachment_")
+            End If
+
             args += $" --attachment-name {name.Escape} --attach-file {i.Escape}"
         Next
 

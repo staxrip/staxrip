@@ -290,7 +290,9 @@ Public Class Proc
                 Process.WaitForExit()
                 ExitCode = Process.ExitCode
 
-                If Abort Then Throw New AbortException
+                If Abort Then
+                    Throw New AbortException
+                End If
 
                 If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCode) Then
                     Dim ntdllHandle = Native.LoadLibrary("NTDLL.DLL")

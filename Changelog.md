@@ -1,4 +1,7 @@
 
+###
+
+- fix: using txt chapters in mkv muxer caused xml exception
 
 ### 2.0.7.3 Beta
 
@@ -7,7 +10,7 @@
        scripts can now be opened
 - fix: opening source files that contain single quotes caused a VapourSynth
        script error, the fix will however only work when people reset their
-	   filter profiles
+       filter profiles
 - fix: the local context help of x264 did often not work
 
 - update: nvenc 4.66
@@ -24,10 +27,10 @@
 - update: x264 2991-1771b55 Patman
 
 - new: improved possibility to show AviSynth and VapourSynth script
-       information with a new dialog and new pixel format parameter	   
+       information with a new dialog and new pixel format parameter       
 - new: the right click context help in the x264 and x265 dialog can now
        alternativly open the online help with ctrl or shift + right click
-	   to navigate directly to the online help of the right-clicked switch
+       to navigate directly to the online help of the right-clicked switch
 - new: the F1 help in the video encoder dialogs was greatly improved
 - new: in the nvenc dialog custom switches do overwrite regular switches
 - new: Bwdif plugin for VapourSynth (similar to yadif)
@@ -56,9 +59,9 @@
 - new: icons added in encoder dialog menus
 - new: option dialog is shown in case a tool has multiple help
        resources, x265 for instance has a local help file containing
-	   the console help and it has a comprehensive online help.
-	   L-Smash-Works for instance has separate help pages
-	   for AviSynth and for VapourSynth
+       the console help and it has a comprehensive online help.
+       L-Smash-Works for instance has separate help pages
+       for AviSynth and for VapourSynth
 - new: medium quality for x264 was changed from crf 20 to 22
 - new: medium quality for x265 was changed from crf 20 to 18
 - new: %dpi% macro added, returnes the DPI value of the main dialog screen
@@ -71,10 +74,10 @@
        stay now permanently highlighted with bold font
 - new: the search feature in the video encoder config dialog now
        also searches in option values, for instance searching
-	   for 'medium' will find and highlight the 'preset' switch
+       for 'medium' will find and highlight the 'preset' switch
 - new: in the video encoder config dialogs the context menu of the
        command line preview has a new menu item to search
-	   for the switch or string at the caret or cursor
+       for the switch or string at the caret or cursor
 - new: Opus format enabled for MP4Box muxer, this was requested
        but did not work in my test
 - new: bmp format for cover art can be used in muxer dialog
@@ -99,7 +102,7 @@
 - fix: image was vertically flipped using preview dialog with VapourSynth
 - fix: main window DPI scaling issue on 96 DPI, please post a screenshot
        if you find something that doesn't look good!
-	   
+       
 ### 2.0.6.1
 
 - new: the preview dialog uses now a Direct2D hardware accelerated video renderer
@@ -130,7 +133,7 @@ no changes since 2.0.5.3 Beta
 - new: various UI improvements
 - new: the short version of x265 and nvenc switches like -c, -f etc.
        were integrated into the search field and command line import
-	   feature, the search feature now first looks for a exact match
+       feature, the search feature now first looks for a exact match
 - new: x265 switches --dup-threshold, --frame-dup
 - new: nvenc switches --multiref-l0, --multiref-l1
 - new: StaxRip can use MediaInfo.NET instead of the built-in MediaInfo GUI,
@@ -166,7 +169,7 @@ no changes since 2.0.5.3 Beta
 - new: --bref-mode added to nvenc
 - new: after a source is loaded StaxRip automatically adds a filter
        to convert chroma subsampling to 4:2:0, this can now be
-	   disabled in the settings on a new Video tab
+       disabled in the settings on a new Video tab
 - new: MPC player integration was added to script editor and preview
        via menu and F10 key, mpv.net key was changed to F9
 
@@ -477,23 +480,23 @@ Thanks to Patman for providing the download links of the tools !!!
 - New Tab Added to x265 for Bitstream due to all the new Flags.
 - Updated the default state of the x265 flags that were changed.
 - x265 Flags Added:
-	- Zone File
-	- HRD Concat(The Flag is currently improperly marked in x265 cli)
-	- Dolby Vision RPU
-	- Dolby Vision Profiles
-	- Tuning: Animation
-	- Refine CTU Distortion	
-	- hevc-aq
-	- qp-adaptation-range
-	- refine-mv-type renamed to refine-analysis-type	
+    - Zone File
+    - HRD Concat(The Flag is currently improperly marked in x265 cli)
+    - Dolby Vision RPU
+    - Dolby Vision Profiles
+    - Tuning: Animation
+    - Refine CTU Distortion    
+    - hevc-aq
+    - qp-adaptation-range
+    - refine-mv-type renamed to refine-analysis-type    
 - rav1e Flags Added:
-	- Matrix
-	- transfer
-	- primaries
-	- Min Key Int
+    - Matrix
+    - transfer
+    - primaries
+    - Min Key Int
 - Added Support additional support for LongPaths 
-	- There are two ways the app can name the files & Folders based on your OS & Harddrive Type
-	- If One Method fails it now has a fallback method to use.
+    - There are two ways the app can name the files & Folders based on your OS & Harddrive Type
+    - If One Method fails it now has a fallback method to use.
 - Fixed QSVEnc key, Which was locking some users out.
 - Updated the VapourSynth scripts that have been updated recently.
 - Updated the filter names for Vapoursynth and removed the ones that don't exist anymore.
@@ -528,35 +531,35 @@ Thanks to Patman for providing the download links of the tools !!!
 - Added Some Support for HLG to VUI import function, MediaInfo does not contain all HLG Metadata.
 - Updated all the Help Files for the Encoders.
 - Rav1e Encoder Has Been Added to Support AV1 codec.
-	Flags:
-		--tune
-		--limit
-		--speed
-		--quantizer
-		--keyint
-		--low_latency
-		--custom
+    Flags:
+        --tune
+        --limit
+        --speed
+        --quantizer
+        --keyint
+        --low_latency
+        --custom
 - NVEnc Added Flags:
-	-profile(h265)
-	-vpp-padding(Left,Top,Right,Bottom)
-	-vpp-tweak(Contrast,Gamma,Saturation,Hue,Brightness)
-	-chromaloc
-	-interlace tff
-	-interlace bff
-	-tier
-	-pic-struct
-	-aud
-	-slices
-	+ Others...
+    -profile(h265)
+    -vpp-padding(Left,Top,Right,Bottom)
+    -vpp-tweak(Contrast,Gamma,Saturation,Hue,Brightness)
+    -chromaloc
+    -interlace tff
+    -interlace bff
+    -tier
+    -pic-struct
+    -aud
+    -slices
+    + Others...
 - QSVEnc Added Flags:
-	-vbv-bufsize
-	-chromaloc	
-	-vpp-scaling -> -vpp-resize
-	-Filter: mctf
-	-sao
-	-ctu
-	-tskip
-	+ Others...
+    -vbv-bufsize
+    -chromaloc    
+    -vpp-scaling -> -vpp-resize
+    -Filter: mctf
+    -sao
+    -ctu
+    -tskip
+    + Others...
 - Removed any Switches that no longer exist in the CLI Encoders.
 - Updated FFMPEG to 4.1
 - ReBuilt MPVNet to work on Both older and Newer Systems(Requires Dotnet 4.8).
@@ -569,7 +572,7 @@ Thanks to Patman for providing the download links of the tools !!!
 - x265 has Been Updated to 2.9+9
 - Cleaned up the Config Files.
 - Update Script has been moved to Python Code, instead of basic Powershell Script.
-	- Site Packges Required: bs4(BeautifulSoup), Requests, win32api, tqdm, & psutil
+    - Site Packges Required: bs4(BeautifulSoup), Requests, win32api, tqdm, & psutil
 - Added Update Script for NVEnc & QVSEnc.
 - mtn has been Updated, Uses less Shared files.
 
@@ -602,9 +605,9 @@ Thanks to Patman for providing the download links of the tools !!!
 - Added Support for RawSourcePlus for Avisynth and RawSource for VapourSynth. Default Pixel_type is set to YUV420P10 (aka P010).
 - Dual Package Setup for x264 have been Removed for Single release x264(8+10Bit). The Depth menu will set the Output Bits, exactly like x265.
 - Following Have Been Added to x264:
-	- ColorMatrix: Added chroma-derived-nc, chroma-derived-c, and ICtCp.
-	- Added Alternative Transfer
-	- vbv-init has been modded to have a locked value and proper float point scaling.
+    - ColorMatrix: Added chroma-derived-nc, chroma-derived-c, and ICtCp.
+    - Added Alternative Transfer
+    - vbv-init has been modded to have a locked value and proper float point scaling.
 - FFTW Files will auto copy to System Directory, if your PC is missing these files in the System32 Folder(Fresh Install).
 - MP4Box is back to Static Once again.
 - Included Setup files for Python 3.7.1 & VS R45 to make sure the proper versions are being installed for StaxRip.
@@ -612,7 +615,7 @@ Thanks to Patman for providing the download links of the tools !!!
 1.9.0.0
 
 - Added a new Marco to the list.
-	- %Script_files%	
+    - %Script_files%    
 - Added Total System Memory to System Environment & Logging
 - mpv has been updated to the latest nightly release
 - FFmpeg has been updated to 4.0.2
@@ -639,47 +642,47 @@ Thanks to Patman for providing the download links of the tools !!!
 - Updated VapourSynth Plugins & Context menu (See Below for Context Options).
 - Like with AVS+ There are allot more functions supported, Not all have been added to the context menu.
 - Settings:
-	- Template Folder has been Renamed to just Templates & .dat file has been Renamed to Settings.dat. All your previous Templates will still work, Just move them to the new folder.
+    - Template Folder has been Renamed to just Templates & .dat file has been Renamed to Settings.dat. All your previous Templates will still work, Just move them to the new folder.
 - Internal Thumbnail Creator Has been Updated with the Following Features:
-	- Added support for PNG, BMP & TIFF. 
-	- It Fully supports HDR10, HDR10+ and HLG.
-	- Add support for Gap (The space between each shot, default: 0).
-	- The ability to disable the StaxRip Logo has been added.
-	- The Font styles have been changed to DejaVu Serif which give a much clearer & cleaner look. 
-	- The Default Logo Font Style has been changed to mikadan, Which gives the logo a bit more Style.
-	- If for what reason you do not have DejaVu Serif or mikadan font, They have been included. Once installed They can be deleted. FontAwesome & Segoe-MDL2-Assets must remain next to .exe file.
-	- Cleaned up the Header to make look more Professional like and added more video & Audio Details.
-		- File: name
-		- Size: Filesize in bytes / MBS, Length, and average bitrate.
-		- Video: Codec, Format Profile, colorspace,colour_range, Bitrate, FrameRate, ChromaSubsampling, Height & Width
-		- VideoCodec (The old code wasn't working with latest version of Mediainfo.)
-		- Audio: Codecs, Channels, kHz and Bitrate
-	- The Matrix for the Creator has also Been tweaked for correct colorspace.
+    - Added support for PNG, BMP & TIFF. 
+    - It Fully supports HDR10, HDR10+ and HLG.
+    - Add support for Gap (The space between each shot, default: 0).
+    - The ability to disable the StaxRip Logo has been added.
+    - The Font styles have been changed to DejaVu Serif which give a much clearer & cleaner look. 
+    - The Default Logo Font Style has been changed to mikadan, Which gives the logo a bit more Style.
+    - If for what reason you do not have DejaVu Serif or mikadan font, They have been included. Once installed They can be deleted. FontAwesome & Segoe-MDL2-Assets must remain next to .exe file.
+    - Cleaned up the Header to make look more Professional like and added more video & Audio Details.
+        - File: name
+        - Size: Filesize in bytes / MBS, Length, and average bitrate.
+        - Video: Codec, Format Profile, colorspace,colour_range, Bitrate, FrameRate, ChromaSubsampling, Height & Width
+        - VideoCodec (The old code wasn't working with latest version of Mediainfo.)
+        - Audio: Codecs, Channels, kHz and Bitrate
+    - The Matrix for the Creator has also Been tweaked for correct colorspace.
 
 - Added Support for New Thumbnail Creator Which can be used by it self or added into the project process. It Uses FFMPEG engine to create the Thumbnails without the need to index any file(s).
-	Options Support as of Right Now:
-		- Number of Columns
-		- Number of Rows
-		- Width of Each Shot
-		- Height of Each Shot
-		- Depth of Each Shot
-		- Quality of Jpg
+    Options Support as of Right Now:
+        - Number of Columns
+        - Number of Rows
+        - Width of Each Shot
+        - Height of Each Shot
+        - Depth of Each Shot
+        - Quality of Jpg
 
 - Added Animation Support in the Form of gif & apng(png). by it self or be added into a project process. It Uses FFMPEG engine to create the animation without the need to index any file(s).
-	Options for Gif:
-	- Scale (Width x auto)
-	- FrameRate (No Float points are Support, it must be a solid number like 60 and not 59.940.)
-	- Statistics Mode
-	- Diff Mode
-	- Dither Options
-	- Starting Time (in Seconds) - Supports Float Points like 25.2.
-	- Length(in Seconds) - Supports Float points.
+    Options for Gif:
+    - Scale (Width x auto)
+    - FrameRate (No Float points are Support, it must be a solid number like 60 and not 59.940.)
+    - Statistics Mode
+    - Diff Mode
+    - Dither Options
+    - Starting Time (in Seconds) - Supports Float Points like 25.2.
+    - Length(in Seconds) - Supports Float points.
 - Options For aPNG:
-	- Starting Time (in Seconds) - Supports Float points.
-	- Length(in Seconds) - Supports Float points.
-	- FrameRate -  No Support for Float points.
-	- Scale	(Width x auto)
-	- Opt Settings (zlib,7zip & Zopfli) - zlib is the fastest with Zopfli being the slowest. 7zip is the balance between the two.
+    - Starting Time (in Seconds) - Supports Float points.
+    - Length(in Seconds) - Supports Float points.
+    - FrameRate -  No Support for Float points.
+    - Scale    (Width x auto)
+    - Opt Settings (zlib,7zip & Zopfli) - zlib is the fastest with Zopfli being the slowest. 7zip is the balance between the two.
 
 - Updated all Vapoursynth variable names for existing filters that have been changed or removed since 1.7.
 - Tweaked the Job Loading function, When a previous job is loaded into StaxRip the form will now automatically close.
@@ -690,103 +693,103 @@ Thanks to Patman for providing the download links of the tools !!!
 - MediaFolder Folder Option has been Disabled(It was no longer Working correctly due to latest update to Mediainfo) and has been replaced with the internal MediaInfo GUI that allows you to open any media file, If it's loaded in StaxRip or not.
 
 - x265 Changes:
-	- 12Bit Profiles Have Been Added	
-	- VUI Menu has been Broken Up into two Menus now due to the Growing Number of options in the VUI section.
-	- Added:
-		- chromaloc
-		- DHDR10-Info
-		- atc-sei
-		- pic-struct
-		- display-window
-		- opt-ref-list-length-pps
-		- opt-qp-pps
-		- single-sei
-		- dynamic-refine
-		- idr-recovery-sei
-		- VBVinit, VBVend, VBV Adjustment with VBVinit being tweaked.
-		- Maximum AU size Factor
-		- refine-intra has been increased to Level 4
-		- multi-pass-opt-analysis & multi-pass-opt-distortion have been moved to Rate Control 1 menu to make room for VBV options in Rate Control 2 Menu.
+    - 12Bit Profiles Have Been Added    
+    - VUI Menu has been Broken Up into two Menus now due to the Growing Number of options in the VUI section.
+    - Added:
+        - chromaloc
+        - DHDR10-Info
+        - atc-sei
+        - pic-struct
+        - display-window
+        - opt-ref-list-length-pps
+        - opt-qp-pps
+        - single-sei
+        - dynamic-refine
+        - idr-recovery-sei
+        - VBVinit, VBVend, VBV Adjustment with VBVinit being tweaked.
+        - Maximum AU size Factor
+        - refine-intra has been increased to Level 4
+        - multi-pass-opt-analysis & multi-pass-opt-distortion have been moved to Rate Control 1 menu to make room for VBV options in Rate Control 2 Menu.
 - VapourSynth Updated Context Menu:
-	The List of all Included Filters:
+    The List of all Included Filters:
 - Source: 
-	- AVISource
-	- d2vsource
-	- DGSource
-	- ffms2
-	- LibavSMASHSource
-	- LWLibavSource
+    - AVISource
+    - d2vsource
+    - DGSource
+    - ffms2
+    - LibavSMASHSource
+    - LWLibavSource
 - FrameRate
-	- AssumeFPS
-	- InterFrame
-	- SVPFlow
+    - AssumeFPS
+    - InterFrame
+    - SVPFlow
 - Color
-	- BitDepth
-	- Matrix
-	- Transfer
-	- Primaries
-	- Cube
-	- Range
-	- Tweak
-	- Convert To
-	- Format (Mainly Designed for HDR to SDR)
-	- To 444
-	- To RGB
-	- To YUV
-	- Dither Tools
+    - BitDepth
+    - Matrix
+    - Transfer
+    - Primaries
+    - Cube
+    - Range
+    - Tweak
+    - Convert To
+    - Format (Mainly Designed for HDR to SDR)
+    - To 444
+    - To RGB
+    - To YUV
+    - Dither Tools
 - Line
-	- MAA
-	- DAA
-	- Sangnom
-	- TAAmbk
-	- SeeSaw
-	- FineSharp
-	- MSharpen
-	- aWarpSharpen2
-	- LSFmod
-	- pSharpen
-	- SharpAAMcmod
+    - MAA
+    - DAA
+    - Sangnom
+    - TAAmbk
+    - SeeSaw
+    - FineSharp
+    - MSharpen
+    - aWarpSharpen2
+    - LSFmod
+    - pSharpen
+    - SharpAAMcmod
 - Resize
-	- Resize
-	- ReSample
-	- Dither_Resize16
+    - Resize
+    - ReSample
+    - Dither_Resize16
 - Field
-	- IVTC
-	- QTGMC
-	- nnedi3
-	- Yadifmod
-	- nnedi3cl
-	- znedi3
-	- Support Filters
+    - IVTC
+    - QTGMC
+    - nnedi3
+    - Yadifmod
+    - nnedi3cl
+    - znedi3
+    - Support Filters
 - Noise
-	- DFTTest
-	- BM3D
-	- HQDN3D
-	- KNLMeansCL
-	- MCTemporalDenoise
-	- DegrainMedian
-	- RemoveGrain
-	- SMDegrain 	
-	- TTempSmooth
-	- VagueDenoiser
+    - DFTTest
+    - BM3D
+    - HQDN3D
+    - KNLMeansCL
+    - MCTemporalDenoise
+    - DegrainMedian
+    - RemoveGrain
+    - SMDegrain     
+    - TTempSmooth
+    - VagueDenoiser
 - Misc
-	- Anamorphic to Standard
-	- UnSpec
-	- Histogram
+    - Anamorphic to Standard
+    - UnSpec
+    - Histogram
 - Restoration
-	- Deblock
-	- Deblock PP7
-	- Deblock_QED
-	- MDeRing
-	- MSmooth
-	- abcxyz
-	- BlindDeHalo3
-	- DeHaloAlpha
-	- EdgeCleaner
-	- HQDering
-	- YAHR
-	- Vinverse
-	- Vinverse 2
+    - Deblock
+    - Deblock PP7
+    - Deblock_QED
+    - MDeRing
+    - MSmooth
+    - abcxyz
+    - BlindDeHalo3
+    - DeHaloAlpha
+    - EdgeCleaner
+    - HQDering
+    - YAHR
+    - Vinverse
+    - Vinverse 2
 
 1.8.0.0
 
@@ -823,153 +826,153 @@ Thanks to Patman for providing the download links of the tools !!!
 - Added Color, FrameRate, Line, and Restoration context Menu.
 The List of all Included Filters:
 - Source: 
-	- Automatic
-	- AviSource
-	- DirectShowSource
-	- FFVideoSource 
-	- Manual
-	- MPEG2Source
-	- DGSource
-	- DGSourceIM*
-	- DGSourceNV*
-	- DSS2
-	* = Not Freeware.
+    - Automatic
+    - AviSource
+    - DirectShowSource
+    - FFVideoSource 
+    - Manual
+    - MPEG2Source
+    - DGSource
+    - DGSourceIM*
+    - DGSourceNV*
+    - DSS2
+    * = Not Freeware.
 - Resizers: 
-	- Dither_Resize16 
-	- ResizeMT
-	- Resize
-	- Hardware Resize
-	- JincResize
-	- SuperResXBR
-	- SuperRes
-	- SuperXBR
-	- Resize(Z) - Uses ZLib
+    - Dither_Resize16 
+    - ResizeMT
+    - Resize
+    - Hardware Resize
+    - JincResize
+    - SuperResXBR
+    - SuperRes
+    - SuperXBR
+    - Resize(Z) - Uses ZLib
 - Crop: 
-	- Dither_Crop16
-	- Crop
-	- Hardware Crop
+    - Dither_Crop16
+    - Crop
+    - Hardware Crop
 - Line:
-	- MCDAA3
-	- DAA3Mod
-	- MAA2Mod
-	- XAA
-	- HDRSharp
-	- pSharpen
-	- MSharpen
-	- aWarpSharp2
-	- FineSharp 
-	- LSFmod (With More Syntax added for better results then Default)
+    - MCDAA3
+    - DAA3Mod
+    - MAA2Mod
+    - XAA
+    - HDRSharp
+    - pSharpen
+    - MSharpen
+    - aWarpSharp2
+    - FineSharp 
+    - LSFmod (With More Syntax added for better results then Default)
 - Misc:
-	- MTMode (Multithreading)
-	- SplitVertical (For MT) 
+    - MTMode (Multithreading)
+    - SplitVertical (For MT) 
 - Restoration: 
-	- CNR2
-	- Deblock	(Includes Dll for Both old and New versions, New version is enabled by Default).
-	- Deblock_QED 
-	- DehaloAlpha
-	- FineDehalo
-	- HQDeringmod
-	- MipSmooth
-	- SmoothD2 
+    - CNR2
+    - Deblock    (Includes Dll for Both old and New versions, New version is enabled by Default).
+    - Deblock_QED 
+    - DehaloAlpha
+    - FineDehalo
+    - HQDeringmod
+    - MipSmooth
+    - SmoothD2 
 - Color:
-	- AutoAdjust
-	- Histogram
-	- ColorYUV (AutoGain)
-	- Levels and the Correct color levels for each BitDepth.
-	- Tweak
-	- Convert(Format(ColorSpace), To(DataFormat), Bits(BitDepth)
-	- Dither Tools
-	- DFTTest (For Stack)
-	- HDRCore
-	- HDRColor*	
-	- HDRNoise (Function must be Entered Manually to Use)
-	- HDRMatrix
-	- HDR Tone Mapping
-	* = Not Freeware
+    - AutoAdjust
+    - Histogram
+    - ColorYUV (AutoGain)
+    - Levels and the Correct color levels for each BitDepth.
+    - Tweak
+    - Convert(Format(ColorSpace), To(DataFormat), Bits(BitDepth)
+    - Dither Tools
+    - DFTTest (For Stack)
+    - HDRCore
+    - HDRColor*    
+    - HDRNoise (Function must be Entered Manually to Use)
+    - HDRMatrix
+    - HDR Tone Mapping
+    * = Not Freeware
 - Framerate:
-	- AssumeFPS
-	- AssumeFPS_Source
-	- InterFrame
-	- ConvertFPS
-	- ChangeFPS
-	- SVPFlow (Scales to 59.940 and uses GPU by Default)
-	- YFRC
+    - AssumeFPS
+    - AssumeFPS_Source
+    - InterFrame
+    - ConvertFPS
+    - ChangeFPS
+    - SVPFlow (Scales to 59.940 and uses GPU by Default)
+    - YFRC
 - Field:
-	- QTGMC (With additional Syntax for both Interlaced and Progressive Sources. Plus Repair option for bad interlaced sources (Includes Progressive)
-	- nnedi3
-	- IVTC
-	- Assume (AssumeTFF & AssumeBFF)
-	- EEDI3
-	- FieldDeinterlace
-	- yadifmod2
-	- Select (SelectEven & SelectOdd)
+    - QTGMC (With additional Syntax for both Interlaced and Progressive Sources. Plus Repair option for bad interlaced sources (Includes Progressive)
+    - nnedi3
+    - IVTC
+    - Assume (AssumeTFF & AssumeBFF)
+    - EEDI3
+    - FieldDeinterlace
+    - yadifmod2
+    - Select (SelectEven & SelectOdd)
 - Noise:
-	- KNLMeansCL (Added Device_type to Syntax)
-	- DeNoiseMD + Histogram
-	- DenoiseMF + Histogram
-	- DFTTest
-	- mClean
-	- RemoveGrain16 
-	- Repair16
-	- Repair
-	- HDRNoise (Syntax must be entered Manually)
-	- RemoveGrain
-	- FFT3DGPU 
-	- HQDN3D
-	- SpatialSoften (YUY2 Only)
-	- TemporalSoften 
-	- MCTemporalDenoise (Script has been Updated to work properly with GradFun2DB & GradFun2DBMod).
-	- MCTemporalDenoisePP (Same as Above)
-	- SMDGrain
-	- DFTTest
-	- TNLMeans 
-	- VagueDenoiser 
-	- xNLMeans)
+    - KNLMeansCL (Added Device_type to Syntax)
+    - DeNoiseMD + Histogram
+    - DenoiseMF + Histogram
+    - DFTTest
+    - mClean
+    - RemoveGrain16 
+    - Repair16
+    - Repair
+    - HDRNoise (Syntax must be entered Manually)
+    - RemoveGrain
+    - FFT3DGPU 
+    - HQDN3D
+    - SpatialSoften (YUY2 Only)
+    - TemporalSoften 
+    - MCTemporalDenoise (Script has been Updated to work properly with GradFun2DB & GradFun2DBMod).
+    - MCTemporalDenoisePP (Same as Above)
+    - SMDGrain
+    - DFTTest
+    - TNLMeans 
+    - VagueDenoiser 
+    - xNLMeans)
 Support Filters & Scripts:
-	- AddGrainC
-	- DeGrainMedian
-	- GradFun2DB
-	- GradFun2DBMod
-	- HDRCore Source
-	- AVSTP
-	- TEMmod
-	- MT Expand Multi
-	- SmoothD2c
-	- edi_rpow2
-	- Average
-	- nnedi3 rpow2
-	- LUtils
-	- TMM2
-	- SVPFlow 1
-	- SVPFlow 2
-	- TTempSmooth
-	- Depan
-	- DepanEstimate
-	- TemporalDegrain
-	- AnimeIVTC
-	- f3kdb
-	- TComb
-	- TDent
+    - AddGrainC
+    - DeGrainMedian
+    - GradFun2DB
+    - GradFun2DBMod
+    - HDRCore Source
+    - AVSTP
+    - TEMmod
+    - MT Expand Multi
+    - SmoothD2c
+    - edi_rpow2
+    - Average
+    - nnedi3 rpow2
+    - LUtils
+    - TMM2
+    - SVPFlow 1
+    - SVPFlow 2
+    - TTempSmooth
+    - Depan
+    - DepanEstimate
+    - TemporalDegrain
+    - AnimeIVTC
+    - f3kdb
+    - TComb
+    - TDent
 Altered:
-	Tweak: Syntax has been alter for Adjusting saturation and includes both realcalc and dither_strength(Only Avisynth+ use these Functions).
-	- RemoveGrain: added a secondary option for for artifact removal.	
-	- KNLMeansCL: Added additional syntax for Device_type which is set to Auto. It will try to use GPU first before trying to use the CPU. 
- 	- Levels with correct range for each bitdepth. Level function does not autoscale based on the bitdepth.
-	- added more modern Framerates to Assumefps, ConvertFPS and ChangeFPS. 144 & 240 rates have been added.
+    Tweak: Syntax has been alter for Adjusting saturation and includes both realcalc and dither_strength(Only Avisynth+ use these Functions).
+    - RemoveGrain: added a secondary option for for artifact removal.    
+    - KNLMeansCL: Added additional syntax for Device_type which is set to Auto. It will try to use GPU first before trying to use the CPU. 
+     - Levels with correct range for each bitdepth. Level function does not autoscale based on the bitdepth.
+    - added more modern Framerates to Assumefps, ConvertFPS and ChangeFPS. 144 & 240 rates have been added.
 - Removed from Filter context Menu but can still works with the auto loading feature(Syntax must be Entered Manually): 
-	- Clense (Part of JPSDR)
-	- Checkmate
-	- SangNom2
-	- TComb
-	- Undot
-	- MedianBlurTemporal
-	- FluxSmoothST
-	- FluxSmoothT
-	- MedianBlur
-	- SangNom2
-	- f3kdb
-	- Vinverse 2
+    - Clense (Part of JPSDR)
+    - Checkmate
+    - SangNom2
+    - TComb
+    - Undot
+    - MedianBlurTemporal
+    - FluxSmoothST
+    - FluxSmoothT
+    - MedianBlur
+    - SangNom2
+    - f3kdb
+    - Vinverse 2
 
 Filters and Software that Support AVX2: aWarpSharp2, DCTFilter, DFTTest, JPSDR, Masktools2, TMM2, TNLMeans, yadifmod2, x265
-	- By default AVX or below are activate for compaiblity. 
+    - By default AVX or below are activate for compaiblity. 
 - VapourSynth is untouched(No Changes).

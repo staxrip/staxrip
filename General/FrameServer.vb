@@ -80,7 +80,7 @@ Public Structure ServerInfo
                "Height    : " & Height & BR &
                "Frames    : " + frames + BR +
                "Time      : " + len + BR +
-               "Framerate : " + rate.ToString.Shorten(9) + " (" & FrameRateNum & "/" & FrameRateDen & ")" + BR +
+               "Framerate : " + rate.ToInvariantString.Shorten(9) + " (" & FrameRateNum & "/" & FrameRateDen & ")" + BR +
                "Format    : " + ColorSpace.ToString.Replace("_", "")
     End Function
 End Structure

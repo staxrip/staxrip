@@ -104,7 +104,7 @@ Public Class Package
         .HelpURL = "http://gpac.wp.mines-telecom.fr/mp4box/mp4box-documentation",
         .Description = "MP4Box is a MP4 muxing and demuxing command line app."})
 
-    Shared Property AviSynth As Package = Add(New Package With {
+    Shared Property AviSynthPlus As Package = Add(New Package With {
         .Name = "AviSynth+",
         .Filename = "AviSynth.dll",
         .WebURL = "https://github.com/AviSynth/AviSynthPlus",

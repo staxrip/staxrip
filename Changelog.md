@@ -3,6 +3,9 @@
 
 - fix: using txt chapters in mkv muxer caused xml exception
 
+- new: mpv and mpc started in the preview dialog start at the current
+       time position of the preview instead of the beginning
+
 ### 2.0.7.3 Beta
 
 - fix: x265 issues with --refine-ctu-distortion and --high-tier

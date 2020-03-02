@@ -806,7 +806,8 @@ Public Class PreviewForm
         Dim script = PreviewScript.GetNewScript()
         script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
         UpdateTrim(script)
-        g.PlayScriptWithMpvnet(script)
+        Dim ts = TimeSpan.FromSeconds(Renderer.Position / FrameServer.FrameRate)
+        g.PlayScriptWithMpvnet(script, "--start=" + ts.ToString)
     End Sub
 
     <Command("Plays the script with MPC.")>
@@ -814,7 +815,8 @@ Public Class PreviewForm
         Dim script = PreviewScript.GetNewScript()
         script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
         UpdateTrim(script)
-        g.PlayScriptWithMPC(script)
+        Dim ts = TimeSpan.FromSeconds(Renderer.Position / FrameServer.FrameRate)
+        g.PlayScriptWithMPC(script, "/start " & ts.TotalMilliseconds)
     End Sub
 
     <Command("Reloads the script.")>

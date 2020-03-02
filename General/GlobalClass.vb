@@ -353,10 +353,13 @@ Public Class GlobalClass
         End If
     End Function
 
-    Sub PlayScriptWithMPC(script As VideoScript)
+    Sub PlayScriptWithMPC(script As VideoScript, Optional cliArgs As String = Nothing)
         script.Synchronize()
         Dim playerPath = Package.MpcBE.Path
-        If Not File.Exists(playerPath) Then playerPath = Package.MpcHC.Path
+
+        If Not File.Exists(playerPath) Then
+            playerPath = Package.MpcHC.Path
+        End If
 
         If Not File.Exists(playerPath) AndAlso Package.MpcBE.VerifyOK(True) Then
             playerPath = Package.MpcBE.Path
@@ -367,6 +370,11 @@ Public Class GlobalClass
         End If
 
         Dim args As String
+
+        If cliArgs <> "" Then
+            args += " " + cliArgs
+        End If
+
         Dim ap = GetAudioProfileForScriptPlayback()
 
         If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then
@@ -377,9 +385,13 @@ Public Class GlobalClass
         g.StartProcess(playerPath, args.Trim)
     End Sub
 
-    Sub PlayScriptWithMpvnet(script As VideoScript)
+    Sub PlayScriptWithMpvnet(script As VideoScript, Optional cliArgs As String = Nothing)
         script.Synchronize()
         Dim args As String
+
+        If cliArgs <> "" Then
+            args += " " + cliArgs
+        End If
 
         If Calc.IsARSignalingRequired Then
             args += " --video-aspect=" + Calc.GetTargetDAR.ToInvariantString.Shorten(8)

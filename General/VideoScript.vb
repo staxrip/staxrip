@@ -237,7 +237,7 @@ clipname.set_output()
                         g.MainForm.Indexing()
                     End If
 
-                    If Not Package.AviSynth.VerifyOK OrElse
+                    If Not Package.AviSynthPlus.VerifyOK OrElse
                         Not Package.VapourSynth.VerifyOK OrElse
                         Not Package.vspipe.VerifyOK Then
 

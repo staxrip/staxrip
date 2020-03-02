@@ -1936,7 +1936,7 @@ Public Class Subtitle
 
     Shared Sub Cut(subtitles As List(Of Subtitle))
         If p.Ranges.Count = 0 OrElse TypeOf p.VideoEncoder Is NullEncoder Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynthPlus.VerifyOK(True) Then Throw New AbortException
         Dim emptySubs As New List(Of Subtitle)
 
         For x = 0 To subtitles.Count - 1

@@ -108,7 +108,7 @@ Public Class Audio
     Shared Sub CutNicAudio(ap As AudioProfile)
         If ap.File.Contains("_cut_") Then Exit Sub
         If Not FileTypes.NicAudioInput.Contains(ap.File.Ext) Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynthPlus.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -141,7 +141,7 @@ Public Class Audio
     Shared Sub ConvertNicAudio(ap As AudioProfile)
         If ap.File.Ext = ap.ConvertExt Then Exit Sub
         If Not FileTypes.NicAudioInput.Contains(ap.File.Ext) Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynthPlus.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -325,7 +325,7 @@ Public Class Audio
 
     Shared Sub ConvertDirectShowSource(ap As AudioProfile, Optional useFlac As Boolean = False)
         If ap.File.Ext = ap.ConvertExt Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynthPlus.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -358,7 +358,7 @@ Public Class Audio
 
     Shared Sub ConvertFFAudioSource(ap As AudioProfile)
         If ap.File.Ext = ap.ConvertExt Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynthPlus.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim cachefile = p.TempDir + ap.File.Base + ".ffindex"
         g.ffmsindex(ap.File, cachefile)
@@ -393,7 +393,7 @@ Public Class Audio
 
     Shared Sub CutDirectShowSource(ap As AudioProfile)
         If ap.File.Contains("_cut_") Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynthPlus.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -425,7 +425,7 @@ Public Class Audio
 
     Shared Sub CutFFAudioSource(ap As AudioProfile)
         If ap.File.Contains("_cut_") Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynthPlus.VerifyOK(True) Then Throw New AbortException
         ap.Delay = 0
         Dim cachefile = p.TempDir + ap.File.Base + ".ffindex"
         g.ffmsindex(ap.File, cachefile)
@@ -459,7 +459,7 @@ Public Class Audio
 
     Shared Sub CutMkvmerge(ap As AudioProfile)
         If ap.File.Contains("_cut_") Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If Not Package.AviSynthPlus.VerifyOK(True) Then Throw New AbortException
 
         Dim aviPath = p.TempDir + ap.File.Base + "_cut_mm.avi"
         Dim d = (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture)

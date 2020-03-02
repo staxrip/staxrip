@@ -275,7 +275,6 @@ Public Class QSVEnc
                     Add("Performance",
                         New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer", .Options = {"8", "16", "32", "64", "128"}},
                         New NumParam With {.Switch = "--input-buf", .Text = "Input Buffer", .Config = {0, 16}},
-                        New NumParam With {.Switch = "--input-thread", .Text = "Input Thread", .Config = {0, 64}},
                         New NumParam With {.Switch = "--mfx-thread", .Text = "Input Threads MFX"},
                         New NumParam With {.Switch = "--output-thread", .Text = "Output Thread", .Config = {0, 64}},
                         New NumParam With {.Switch = "--async-depth", .Text = "Async Depth", .Config = {0, 64}},

@@ -1,6 +1,7 @@
 
 ###
 
+- fix: changed x265 --rskip switch updated
 - fix: using txt chapters in mkv muxer caused xml exception
 
 - new: mpv and mpc started in the preview dialog start at the current

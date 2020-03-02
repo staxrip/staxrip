@@ -770,12 +770,6 @@ Public Class x265Params
         .Options = {"0", "1", "2", "3"},
         .Init = 3}
 
-    Property RecursionSkip As New BoolParam With {
-        .Switch = "--rskip",
-        .NoSwitch = "--no-rskip",
-        .Text = "Early CU depth recursion skip",
-        .Init = True}
-
     Property csvloglevel As New OptionParam With {
         .Switch = "--csv-log-level",
         .Text = "CSV Log Level",
@@ -823,6 +817,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--refine-mv", .Text = "Refine MV", .Expand = True, .IntegerValue = True, .Options = {"Disabled", "Level 1: Search around scaled MV", "Level 2: Level 1 + Search around best AMVP cand", "Level 3: Level 2 + Search around the other AMVP cand"}},
                     New OptionParam With {.Switch = "--analysis-save-reuse-level", .Text = "Save Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref’s", " 3 - Level 1 + intra/inter modes, ref’s", " 4 - Level 1 + intra/inter modes, ref’s", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
                     New OptionParam With {.Switch = "--analysis-load-reuse-level", .Text = "Load Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref’s", " 3 - Level 1 + intra/inter modes, ref’s", " 4 - Level 1 + intra/inter modes, ref’s", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
+                    New OptionParam With {.Switch = "--rskip", .Text = "Recursion Skip", .Expand = True, .Options = {"Disabled", "0 - RD Level 0-4 Neighbour costs", "1 - RD Level 5-6 Comparison with inter2Nx2N", "2 - RD Level 0-6 CU edge denstiy", "3 - RD Level 0-6 CU edge denstiy with forceful skip for lower levels of CTU"}, .Values = {"", "0", "1", "2", "3"}},
                     MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
                 Add("Analysis 2",
                     New NumParam With {.Switch = "--analysis-reuse-level", .Text = "Refine Level", .Config = {1, 10}, .Init = 5},
@@ -840,7 +835,6 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--dynamic-refine", .Text = "Dynamic Refine"},
                     EarlySkip, FastIntra, BIntra, CUlossless, TskipFast, LimitModes, RdRefine,
                     New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
-                    RecursionSkip,
                     New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"},
                     New BoolParam With {.Switch = "--splitrd-skip", .Text = "Enable skipping split RD analysis"},
                     New BoolParam With {.Switch = "--hevc-aq", .Text = "Mode for HEVC Adaptive Quantization", .Init = False},
@@ -1188,7 +1182,6 @@ Public Class x265Params
         PsyRD.Value = 2.0
         PsyRDOQ.Value = 1
         QComp.Value = 0.6
-        RecursionSkip.Value = True
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -1426,7 +1419,6 @@ Public Class x265Params
                 RD.Value = 6
                 rdoqLevel.Value = 2
                 Rect.Value = True
-                RecursionSkip.Value = False
                 Ref.Value = 5
                 SAO.Value = True
                 Scenecut.Value = 40
@@ -1454,7 +1446,6 @@ Public Class x265Params
                 RD.Value = 6
                 rdoqLevel.Value = 2
                 Rect.Value = True
-                RecursionSkip.Value = False
                 Ref.Value = 5
                 SAO.Value = True
                 Scenecut.Value = 40
@@ -1484,7 +1475,6 @@ Public Class x265Params
         PsyRD.DefaultValue = 2.0
         PsyRDOQ.DefaultValue = 1
         QComp.DefaultValue = 0.6
-        RecursionSkip.DefaultValue = True
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -1722,7 +1712,6 @@ Public Class x265Params
                 RD.DefaultValue = 6
                 rdoqLevel.DefaultValue = 2
                 Rect.DefaultValue = True
-                RecursionSkip.DefaultValue = False
                 Ref.DefaultValue = 5
                 SAO.DefaultValue = True
                 Scenecut.DefaultValue = 40
@@ -1750,7 +1739,6 @@ Public Class x265Params
                 RD.DefaultValue = 6
                 rdoqLevel.DefaultValue = 2
                 Rect.DefaultValue = True
-                RecursionSkip.DefaultValue = False
                 Ref.DefaultValue = 5
                 SAO.DefaultValue = True
                 Scenecut.DefaultValue = 40
@@ -1784,7 +1772,6 @@ Public Class x265Params
                 AQmode.Value = 0
                 qpstep.Value = 1
                 RcGrain.Value = True
-                RecursionSkip.Value = False
                 PsyRD.Value = 4
                 PsyRDOQ.Value = 10
                 SAO.Value = False
@@ -1833,7 +1820,6 @@ Public Class x265Params
                 AQmode.DefaultValue = 0
                 qpstep.DefaultValue = 1
                 RcGrain.DefaultValue = True
-                RecursionSkip.DefaultValue = False
                 PsyRD.DefaultValue = 4
                 PsyRDOQ.DefaultValue = 10
                 SAO.DefaultValue = False

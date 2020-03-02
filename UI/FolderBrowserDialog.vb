@@ -753,7 +753,7 @@ Public Class FolderBrowserDialog
         End Function
 
         <DllImport("uxtheme.dll", CharSet:=CharSet.Unicode)>
-        Public Shared Function SetWindowTheme(hWnd As IntPtr, pszSubAppName As String, pszSubIdList As String) As Integer
+        Shared Function SetWindowTheme(hWnd As IntPtr, pszSubAppName As String, pszSubIdList As String) As Integer
         End Function
 
 #Region "General Definitions"
@@ -915,26 +915,26 @@ Public Class FolderBrowserDialog
         Friend Const ERROR_CANCELLED As Integer = &H800704C7
 
         <DllImport("kernel32.dll", CharSet:=CharSet.Unicode, SetLastError:=True)>
-        Public Shared Function LoadLibrary(name As String) As SafeModuleHandle
+        Shared Function LoadLibrary(name As String) As SafeModuleHandle
         End Function
 
         <DllImport("kernel32.dll", SetLastError:=True)>
-        Public Shared Function FreeLibrary(hModule As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
+        Shared Function FreeLibrary(hModule As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
         End Function
 
         <DllImport("user32.dll", SetLastError:=True, CharSet:=CharSet.Unicode)>
-        Public Shared Function LoadString(hInstance As SafeModuleHandle, uID As UInteger, lpBuffer As StringBuilder, nBufferMax As Integer) As Integer
+        Shared Function LoadString(hInstance As SafeModuleHandle, uID As UInteger, lpBuffer As StringBuilder, nBufferMax As Integer) As Integer
         End Function
 
         <DllImport("shell32.dll", CharSet:=CharSet.Unicode)>
-        Public Shared Function SHCreateItemFromParsingName(
+        Shared Function SHCreateItemFromParsingName(
             pszPath As String,
             pbc As IntPtr,
             ByRef riid As Guid,
             <MarshalAs(UnmanagedType.IUnknown)> ByRef ppv As Object) As Integer
         End Function
 
-        Public Shared Function CreateItemFromParsingName(path As String) As IShellItem
+        Shared Function CreateItemFromParsingName(path As String) As IShellItem
             Dim item As Object = Nothing
             Dim guid As New Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")
             ' IID_IShellItem

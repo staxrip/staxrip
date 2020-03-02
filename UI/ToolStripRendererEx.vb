@@ -285,7 +285,7 @@ Public Class ToolStripRendererEx
         End If
     End Sub
 
-    Public Shared Function CreateRoundRectangle(r As Rectangle, radius As Integer) As GraphicsPath
+    Shared Function CreateRoundRectangle(r As Rectangle, radius As Integer) As GraphicsPath
         Dim path As New GraphicsPath()
 
         Dim l = r.Left

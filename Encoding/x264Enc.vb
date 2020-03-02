@@ -188,7 +188,7 @@ Public Class x264Enc
         Return New x264Control(Me) With {.Dock = DockStyle.Fill}
     End Function
 
-    Public Shared Function Test() As String
+    Shared Function Test() As String
         Dim tester As New ConsolAppTester
 
         tester.IgnoredSwitches = "help longhelp fullhelp input-res progress"

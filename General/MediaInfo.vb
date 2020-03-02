@@ -257,13 +257,37 @@ Public Class MediaInfo
     End Function
 
     Function GetFrameRate(Optional defaultValue As Double = 25) As Double
-        Dim num = GetVideo("FrameRate_Num").ToInt
-        Dim den = GetVideo("FrameRate_Den").ToInt
-        If num > 0 AndAlso den > 0 Then Return num / den
-        Dim ret = GetVideo("FrameRate")
-        If ret = "" Then ret = GetVideo("FrameRate_Original")
-        If ret = "" Then ret = GetVideo("FrameRate_Nominal")
-        If ret.IsDouble Then Return ret.ToDouble Else Return defaultValue
+        Dim ret = GetVideo("FrameRate_Num").ToInt / GetVideo("FrameRate_Den").ToInt
+
+        If Calc.IsValidFrameRate(ret) Then
+            Return ret
+        End If
+
+        ret = GetVideo("FrameRate_Original_Num").ToInt / GetVideo("FrameRate_Original_Den").ToInt
+
+        If Calc.IsValidFrameRate(ret) Then
+            Return ret
+        End If
+
+        ret = GetVideo("FrameRate").ToDouble
+
+        If Calc.IsValidFrameRate(ret) Then
+            Return ret
+        End If
+
+        ret = GetVideo("FrameRate_Original").ToDouble
+
+        If Calc.IsValidFrameRate(ret) Then
+            Return ret
+        End If
+
+        ret = GetVideo("FrameRate_Nominal").ToDouble
+
+        If Calc.IsValidFrameRate(ret) Then
+            Return ret
+        End If
+
+        Return defaultValue
     End Function
 
     Shared Function GetFrameRate(path As String, Optional defaultValue As Double = 25) As Double

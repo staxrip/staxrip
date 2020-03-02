@@ -31,11 +31,11 @@ Public Class FrameServer
     End Property
 
     <DllImport("FrameServer")>
-    Public Shared Function CreateAviSynthServer() As IFrameServer
+    Shared Function CreateAviSynthServer() As IFrameServer
     End Function
 
     <DllImport("FrameServer")>
-    Public Shared Function CreateVapourSynthServer() As IFrameServer
+    Shared Function CreateVapourSynthServer() As IFrameServer
     End Function
 
     Public Sub Dispose() Implements IDisposable.Dispose

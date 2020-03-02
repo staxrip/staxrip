@@ -110,7 +110,7 @@ Public Class Rav1e
         End Get
     End Property
 
-    Public Shared Function Test() As String
+    Shared Function Test() As String
         Dim tester As New ConsolAppTester
 
         tester.IgnoredSwitches = "fullhelp output help psnr version verbose"

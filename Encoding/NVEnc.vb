@@ -111,7 +111,7 @@ Public Class NVEnc
         End Get
     End Property
 
-    Public Shared Function Test() As String
+    Shared Function Test() As String
         Dim tester As New ConsolAppTester
 
         tester.IgnoredSwitches = "help version check-device input-analyze input-format output-format

@@ -2267,7 +2267,7 @@ Public Class MainForm
         Next
 
         If editAVS Then
-            Dim miFPS = MediaInfo.GetFrameRate(p.FirstOriginalSourceFile)
+            Dim miFPS = MediaInfo.GetFrameRate(p.FirstOriginalSourceFile, 25)
             Dim avsFPS = p.SourceScript.GetFramerate
 
             If (CInt(miFPS) * 2) = CInt(avsFPS) Then
@@ -6104,12 +6104,18 @@ Public Class MainForm
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
-        If IsSaveCanceled() Then e.Cancel = True
+        If IsSaveCanceled() Then
+            e.Cancel = True
+        End If
+
         MyBase.OnFormClosing(e)
     End Sub
 
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
-        If Not g.ProcForm Is Nothing Then g.ProcForm.Invoke(Sub() g.ProcForm.Close())
+        If Not g.ProcForm Is Nothing Then
+            g.ProcForm.Invoke(Sub() g.ProcForm.Close())
+        End If
+
         g.SaveSettings()
         g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
         MyBase.OnFormClosed(e)

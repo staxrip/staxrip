@@ -101,7 +101,7 @@ Public Class VCEEnc
         End Get
     End Property
 
-    Public Shared Function Test() As String
+    Shared Function Test() As String
         Dim tester As New ConsolAppTester
 
         tester.IgnoredSwitches = "audio-bitrate audio-codec video-streamid video-track vpy vpy-mt

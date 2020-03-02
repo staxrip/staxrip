@@ -113,7 +113,7 @@ Public Class QSVEnc
         End Get
     End Property
 
-    Public Shared Function Test() As String
+    Shared Function Test() As String
         Dim tester As New ConsolAppTester
 
         tester.IgnoredSwitches = "version check-lib check-device video-streamid video-track input-analyze

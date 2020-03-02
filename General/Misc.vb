@@ -37,13 +37,20 @@ Public Class Range
 End Class
 
 Public Class Calc
+    Shared Function IsValidFrameRate(value As Double) As Boolean
+        Return Not (Double.IsNaN(value) OrElse Double.IsInfinity(value) OrElse
+            value < 1 OrElse value > 500)
+    End Function
+
     Shared Function GetYFromTwoPointForm(x1 As Single, y1 As Single, x2 As Single, y2 As Single, x As Single) As Integer
-        'Zweipunkteform nach y aufgelöst
         Return CInt((((y2 - y1) / (x2 - x1)) * (x - x1)) + y1)
     End Function
 
     Shared Function GetPercent() As Double
-        If p.Compressibility = 0 Then Return 0
+        If p.Compressibility = 0 Then
+            Return 0
+        End If
+
         Return (GetBPF() / p.Compressibility) * 100
     End Function
 
@@ -62,6 +69,7 @@ Public Class Calc
             GetSubtitleKBytes() + Calc.GetOverheadKBytes()) / 1024
 
         If ret < 1 Then ret = 1
+
         Return ret
     End Function
 
@@ -2273,7 +2281,7 @@ Public Class StringLogicalComparer
     Implements IComparer, IComparer(Of String)
 
     <DllImport("shlwapi.dll", CharSet:=CharSet.Unicode)>
-    Public Shared Function StrCmpLogical(x As String, y As String) As Integer
+    Shared Function StrCmpLogical(x As String, y As String) As Integer
     End Function
 
     Private Function IComparer_Compare(x As Object, y As Object) As Integer Implements IComparer.Compare

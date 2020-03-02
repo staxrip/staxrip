@@ -317,14 +317,6 @@ Public Class GlobalClass
         Next
     End Function
 
-    Function Get0ForInfinityOrNaN(arg As Double) As Double
-        If Double.IsNaN(arg) OrElse Double.IsInfinity(arg) Then
-            Return 0
-        Else
-            Return arg
-        End If
-    End Function
-
     Sub PlayAudio(ap As AudioProfile)
         If FileTypes.AudioRaw.Contains(ap.File.Ext) Then
             g.StartProcess(Package.mpvnet.Path, ap.File.Escape)
@@ -490,9 +482,7 @@ Public Class GlobalClass
     End Function
 
     Function GetPreviewPosMS() As Integer
-        Dim fr = p.Script.GetFramerate
-        If fr = 0 Then fr = 25
-        Return CInt((s.LastPosition / fr) * 1000)
+        Return CInt((s.LastPosition / p.Script.GetFramerate) * 1000)
     End Function
 
     Function GetTextEditorPath() As String

@@ -436,7 +436,8 @@ clipname.set_output()
 
     Function GetFramerate() As Double
         Dim info = GetInfo()
-        Return info.FrameRateNum / info.FrameRateDen
+        Dim ret = info.FrameRateNum / info.FrameRateDen
+        Return If(Calc.IsValidFrameRate(ret), ret, 25)
     End Function
 
     Function GetInfo() As ServerInfo
@@ -450,17 +451,7 @@ clipname.set_output()
     End Function
 
     Function GetSeconds() As Integer
-        Dim rate = GetFramerate()
-
-        If rate = 0 OrElse Double.IsNaN(rate) Then
-            rate = p.SourceFrameRate
-        End If
-
-        If rate = 0 OrElse Double.IsNaN(rate) Then
-            rate = 25
-        End If
-
-        Return CInt(GetFrameCount() / rate)
+        Return CInt(GetFrameCount() / GetFramerate())
     End Function
 
     Function GetFrameCount() As Integer

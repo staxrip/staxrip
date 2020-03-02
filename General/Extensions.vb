@@ -1,4 +1,5 @@
-﻿Imports System.Drawing.Drawing2D
+﻿
+Imports System.Drawing.Drawing2D
 Imports System.Globalization
 Imports System.Reflection
 Imports System.Runtime.CompilerServices
@@ -199,7 +200,10 @@ Module StringExtensions
 
     <Extension()>
     Function ToInt(value As String, Optional defaultValue As Integer = 0) As Integer
-        If Not Integer.TryParse(value, Nothing) Then Return defaultValue
+        If Not Integer.TryParse(value, Nothing) Then
+            Return defaultValue
+        End If
+
         Return CInt(value)
     End Function
 
@@ -230,7 +234,10 @@ Module StringExtensions
     <Extension()>
     Function IsDouble(value As String) As Boolean
         If value <> "" Then
-            If value.Contains(",") Then value = value.Replace(",", ".")
+            If value.Contains(",") Then
+                value = value.Replace(",", ".")
+            End If
+
             Return Double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, Nothing)
         End If
     End Function
@@ -473,18 +480,14 @@ Module StringExtensions
     End Sub
 End Module
 
-Module MiscExtensions
+Module NumericExtensions
     <Extension()>
-    Function ToInvariantString(instance As Double, format As String) As String
-        Dim ret = instance.ToString(format, CultureInfo.InvariantCulture)
-
-        If (ret.Contains(".") OrElse ret.Contains(",")) AndAlso ret.EndsWith("0") Then
-            ret = ret.TrimEnd("0"c)
-        End If
-
-        Return ret
+    Function ToInvariantString(value As Double, format As String) As String
+        Return value.ToString(format, CultureInfo.InvariantCulture)
     End Function
+End Module
 
+Module MiscExtensions
     <Extension()>
     Function ToInvariantString(instance As IConvertible) As String
         If instance Is Nothing Then Return ""
@@ -547,24 +550,19 @@ Module MiscExtensions
     End Function
 
     <Extension()>
-    Function EnsureRange(value As Integer, min As Integer, max As Integer) As Integer
-        If value < min Then
-            value = min
-        ElseIf value > max Then
-            value = max
-        End If
-
-        Return value
-    End Function
-
-    <Extension()>
     Function NeutralCulture(ci As CultureInfo) As CultureInfo
-        If ci.IsNeutralCulture Then Return ci Else Return ci.Parent
+        If ci.IsNeutralCulture Then
+            Return ci
+        Else
+            Return ci.Parent
+        End If
     End Function
 
     <Extension()>
     Function NothingOrEmpty(strings As IEnumerable(Of String)) As Boolean
-        If strings Is Nothing OrElse strings.Count = 0 Then Return True
+        If strings Is Nothing OrElse strings.Count = 0 Then
+            Return True
+        End If
 
         For Each i In strings
             If i = "" Then Return True

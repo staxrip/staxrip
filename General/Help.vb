@@ -204,7 +204,7 @@ Public Class ProcessHelp
 End Class
 
 Public Class CommandLineHelp
-    Public Shared Function ConvertText(val As String) As String
+    Shared Function ConvertText(val As String) As String
         If val = "" Then Return ""
         Return Macro.Expand(val).Replace("""", "'").Trim
     End Function

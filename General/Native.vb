@@ -6,7 +6,7 @@ Public Class Native
     Public Delegate Function CallbackHandler(handle As IntPtr, parameter As Integer) As Boolean
 
     <DllImport("gdi32.dll")>
-    Public Shared Function ExcludeClipRect(hdc As IntPtr, nLeftRect As Integer, nTopRect As Integer, nRightRect As Integer, nBottomRect As Integer) As Integer
+    Shared Function ExcludeClipRect(hdc As IntPtr, nLeftRect As Integer, nTopRect As Integer, nRightRect As Integer, nBottomRect As Integer) As Integer
     End Function
 
 #Region "Constants"
@@ -204,15 +204,15 @@ Public Class Native
     End Sub
 
     <DllImport("user32.dll")>
-    Public Shared Function GetWindowRect(hWnd As IntPtr, ByRef lpRect As RECT) As Boolean
+    Shared Function GetWindowRect(hWnd As IntPtr, ByRef lpRect As RECT) As Boolean
     End Function
 
     <DllImport("user32.dll")>
-    Public Shared Function GetWindowDC(hWnd As IntPtr) As IntPtr
+    Shared Function GetWindowDC(hWnd As IntPtr) As IntPtr
     End Function
 
     <DllImport("user32.dll")>
-    Public Shared Function ReleaseDC(hWnd As IntPtr, hDC As IntPtr) As Integer
+    Shared Function ReleaseDC(hWnd As IntPtr, hDC As IntPtr) As Integer
     End Function
 
 #End Region

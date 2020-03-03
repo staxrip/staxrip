@@ -1,5 +1,5 @@
 
-###
+### TODO: put fftw.dll in proc search path instead of copying to system32
 
 - fix: changed x265 --rskip switch updated
 - fix: using txt chapters in mkv muxer caused xml exception

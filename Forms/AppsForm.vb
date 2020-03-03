@@ -235,14 +235,17 @@ Public Class AppsForm
                                       End Sub
 
         SetupButton.ForeColor = Color.Red
+        SetupButton.Font = New Font("Segoe UI", 10)
+        SetupButton.Margin = New Padding(FontHeight \ 3)
+        SetupButton.Padding = New Padding(FontHeight \ 5)
         SetupButton.AutoSize = True
-        SetupButton.AutoSizeMode = Windows.Forms.AutoSizeMode.GrowAndShrink
+        SetupButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
         SetupButton.TextImageRelation = TextImageRelation.ImageBeforeText
         SetupButton.Image = StockIcon.GetSmallImage(StockIconIdentifier.Shield)
 
         AddHandler DownloadButton.Click, Sub() g.StartProcess(CurrentPackage.DownloadURL)
         DownloadButton.AutoSize = True
-        DownloadButton.AutoSizeMode = Windows.Forms.AutoSizeMode.GrowAndShrink
+        DownloadButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
 
         Dim title = New Label With {
             .Font = New Font(flp.Font.FontFamily, 14 * s.UIScaleFactor, FontStyle.Bold),
@@ -270,8 +273,8 @@ Public Class AppsForm
 
         SetupButton.Text = "Install " + CurrentPackage.Name
         SetupButton.Visible = Not CurrentPackage.SetupAction Is Nothing AndAlso
-            (CurrentPackage.IsStatusCritical OrElse
-            (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> ""))
+            (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso
+            CurrentPackage.Version <> ""))
 
         DownloadButton.Text = "Download " + CurrentPackage.Name
         DownloadButton.Visible = CurrentPackage.DownloadURL <> "" AndAlso (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> ""))
@@ -298,6 +301,7 @@ Public Class AppsForm
             Contents("Version").Text = CurrentPackage.Version
         End If
 
+        Contents("Status").Font = New Font("Segoe UI", 10)
         Contents("Description").Text = CurrentPackage.Description
 
         Headers("AviSynth Filters").Visible = False

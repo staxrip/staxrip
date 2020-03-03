@@ -1826,7 +1826,7 @@ Public Class MainForm
                         p.Script = VideoScript.GetDefaults()(1)
                     End If
                 Else
-                    If Not Package.AviSynthPlus.VerifyOK(True) Then Throw New AbortException
+                    If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
 
                     If p.Script.Engine = ScriptEngine.VapourSynth Then
                         p.Script = VideoScript.GetDefaults()(0)

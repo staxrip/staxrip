@@ -56,7 +56,7 @@ Public Class Thumbnails
             Exit Sub
         End If
 
-        If Not Package.AviSynthPlus.VerifyOK(True) Then
+        If Not Package.AviSynth.VerifyOK(True) Then
             Exit Sub
         End If
 

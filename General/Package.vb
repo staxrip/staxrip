@@ -62,7 +62,12 @@ Public Class Package
 
     Shared Property qaac As Package = Add(New qaacPackage)
 
-    Shared Property UnDot As Package = Add(New UnDotPackage)
+    Shared Property UnDot As Package = Add(New PluginPackage With {
+        .Name = "UnDot",
+        .Filename = "UnDot.dll",
+        .WebURL = "http://avisynth.nl/index.php/UnDot",
+        .Description = "UnDot is a simple median filter for removing dots, that is stray orphan pixels and mosquito noise.",
+        .AvsFilterNames = {"UnDot"}})
 
     'TODO: add or remove
     'Shared Property SvtAv1 As Package = Add(New Package With {
@@ -104,14 +109,14 @@ Public Class Package
         .HelpURL = "http://gpac.wp.mines-telecom.fr/mp4box/mp4box-documentation",
         .Description = "MP4Box is a MP4 muxing and demuxing command line app."})
 
-    Shared Property AviSynthPlus As Package = Add(New Package With {
-        .Name = "AviSynth+",
+    Shared Property AviSynth As Package = Add(New Package With {
+        .Name = "AviSynth",
         .Filename = "AviSynth.dll",
         .WebURL = "https://github.com/AviSynth/AviSynthPlus",
         .HelpURL = "http://avisynth.nl",
-        .DownloadURL = "https://github.com/AviSynth/AviSynthPlus/releases/download/v3.4.0/AviSynthPlus_3.4.0_20191020.exe",
         .Description = "StaxRip support both AviSynth+ and VapourSynth as scripting based video processing tool.",
         .FixedDir = Folder.System,
+        .SetupFilename = "Installers\AviSynthPlus_3.5.0_20200302.exe",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth})
 
     Shared Property chapterEditor As Package = Add(New Package With {
@@ -530,12 +535,14 @@ Public Class Package
         .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DCTFilter",
         .VSFilterNames = {"dctf.DCTFilter"}})
 
+    Shared CanFftwBeLoaded As Boolean
+
     Shared Property FFTW As Package = Add(New Package With {
         .Name = "FFTW",
         .DirPath = "support\FFTW",
         .Filename = "libfftw3-3.dll",
-        .Description = "Library required by the FFT3DFilter AviSynth plugin.",
-        .WebURL = "http://www.fftw.org/",
+        .Description = "Library required by various AviSynth and VapourSynth plugins.",
+        .WebURL = "http://www.fftw.org",
         .FixedDir = Folder.System,
         .IsRequiredFunc = Function()
                               For Each filter In p.Script.Filters
@@ -546,25 +553,28 @@ Public Class Package
 
                               Return BM3D.IsRequired OrElse
                                      DCTFilter.IsRequired OrElse
-                                     DCTFilterVS.IsRequired OrElse
                                      DCTFilterF.IsRequired OrElse
-                                     DFTTestAvs.IsRequired OrElse
-                                     SMDegrain.IsRequired OrElse
-                                     MCTemporalDenoise.IsRequired OrElse
-                                     FFT3DGPU.IsRequired OrElse
-                                     FFT3DFilter.IsRequired OrElse
+                                     DCTFilterVS.IsRequired OrElse
                                      DFTTest.IsRequired OrElse
+                                     DFTTestAvs.IsRequired OrElse
+                                     FFT3DFilter.IsRequired OrElse
+                                     FFT3DGPU.IsRequired OrElse
+                                     havsfunc.IsRequired OrElse
+                                     MCTemporalDenoise.IsRequired OrElse
                                      muvsfunc.IsRequired OrElse
-                                     havsfunc.IsRequired
+                                     SMDegrain.IsRequired
                           End Function,
         .SetupAction = Sub()
-                           Using pr As New Process
-                               pr.StartInfo.FileName = "xcopy.exe"
-                               pr.StartInfo.Arguments = $"""{Folder.Apps + "\support\FFTW\"}*ff*"" ""{Folder.System}"" /Y"
-                               pr.StartInfo.Verb = "runas"
-                               pr.Start()
-                               pr.WaitForExit()
-                               If pr.ExitCode <> 0 Then MsgError("FFTW returned an error.")
+                           Using proc As New Process
+                               proc.StartInfo.FileName = "xcopy.exe"
+                               proc.StartInfo.Arguments = $"""{Folder.Apps + "\support\FFTW\"}*ff*"" ""{Folder.System}"" /Y"
+                               proc.StartInfo.Verb = "runas"
+                               proc.Start()
+                               proc.WaitForExit()
+
+                               If proc.ExitCode <> 0 Then
+                                   MsgError("FFTW returned an error.")
+                               End If
                            End Using
                        End Sub})
 
@@ -1951,8 +1961,17 @@ Public Class Package
     End Function
 
     Overridable Function GetStatus() As String
-        If IsOutdated() Then Return "Unsupported outdated version, continue with F12 if you must."
-        If Not StatusFunc Is Nothing Then Return StatusFunc.Invoke
+        If IsOutdated() Then
+            If Not SetupAction Is Nothing Then
+                Return $"An unsupported outdated {Name} version was found, install the new version."
+            Else
+                Return $"An unsupported outdated {Name} version was found, continue with F12 if you must."
+            End If
+        End If
+
+        If Not StatusFunc Is Nothing Then
+            Return StatusFunc.Invoke
+        End If
     End Function
 
     Function GetStatusDisplay() As String
@@ -2016,7 +2035,7 @@ Public Class Package
 
         If fp <> "" Then
             Dim dt = File.GetLastWriteTimeUtc(fp)
-            Return dt.AddDays(-2) < VersionDate AndAlso dt.AddDays(2) > VersionDate
+            Return dt.AddDays(-2) <VersionDate AndAlso dt.AddDays(2) > VersionDate
         End If
     End Function
 
@@ -2192,18 +2211,6 @@ Public Class PluginPackage
             Next
         End If
     End Function
-End Class
-
-Public Class UnDotPackage
-    Inherits PluginPackage
-
-    Sub New()
-        Name = "UnDot"
-        Filename = "UnDot.dll"
-        WebURL = "http://avisynth.nl/index.php/UnDot"
-        Description = "UnDot is a simple median filter for removing dots, that is stray orphan pixels and mosquito noise."
-        AvsFilterNames = {"UnDot"}
-    End Sub
 End Class
 
 Public Class NicAudioPackage

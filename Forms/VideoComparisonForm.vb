@@ -43,7 +43,7 @@ Public Class VideoComparisonForm
     End Sub
 
     Sub Add()
-        If Not Package.AviSynthPlus.VerifyOK(True) Then
+        If Not Package.AviSynth.VerifyOK(True) Then
             Exit Sub
         End If
 

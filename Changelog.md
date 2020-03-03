@@ -1,9 +1,12 @@
 
-### TODO: put fftw.dll in proc search path instead of copying to system32
+###
 
 - fix: changed x265 --rskip switch updated
 - fix: using txt chapters in mkv muxer caused xml exception
 
+- update: AviSynth 3.5.0
+
+- new: improved app management dialog
 - new: mpv and mpc started in the preview dialog start at the current
        time position of the preview instead of the beginning
 

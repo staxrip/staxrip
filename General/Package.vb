@@ -114,7 +114,7 @@ Public Class Package
         .Filename = "AviSynth.dll",
         .WebURL = "https://github.com/AviSynth/AviSynthPlus",
         .HelpURL = "http://avisynth.nl",
-        .Description = "StaxRip support both AviSynth+ and VapourSynth as scripting based video processing tool.",
+        .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
         .FixedDir = Folder.System,
         .SetupFilename = "Installers\AviSynthPlus_3.5.0_20200302.exe",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth})
@@ -192,7 +192,7 @@ Public Class Package
     Shared Property VapourSynth As Package = Add(New Package With {
         .Name = "VapourSynth",
         .Filename = "vapoursynth.dll",
-        .Description = "StaxRip supports both AviSynth+ and VapourSynth as scripting based video processing tool.",
+        .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
         .SetupFilename = "Installers\VapourSynth64-R48.exe",

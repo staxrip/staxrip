@@ -1,5 +1,11 @@
 
-###
+### Todo
+
+- documentation
+- csv table creation feature in apps dialog
+- diagnostic dialog
+
+### 2.0.7.4 next Beta not yet released
 
 - fix: changed x265 --rskip switch updated
 - fix: using txt chapters in mkv muxer caused xml exception

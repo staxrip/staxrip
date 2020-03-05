@@ -3,9 +3,11 @@
 
 - documentation
 - use ffmpeg for auto crop
-- improve defauls
+- improve defaults
 
 ### 2.0.7.5 next Beta not yet released
+
+
 
 ### 2.0.7.4
 
@@ -19,6 +21,8 @@
 
 - update: AviSynth 3.5.0
 
+- new: the apps dialog can create a CSV file listing all tools
+       with various properties like Name, Version, Modified date etc.
 - new: x265 --rskip switch updated
 - new: improved main menu
 - new: improved app management dialog

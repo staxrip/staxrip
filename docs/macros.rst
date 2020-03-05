@@ -339,9 +339,9 @@ File path to AutoAdjust
 
 File path to Average
 
-``%app:AviSynth+%``
+``%app:AviSynth%``
 
-File path to AviSynth+
+File path to AviSynth
 
 ``%app:avs2pipemod%``
 
@@ -1119,9 +1119,9 @@ Folder path to AutoAdjust
 
 Folder path to Average
 
-``%app_dir:AviSynth+%``
+``%app_dir:AviSynth%``
 
-Folder path to AviSynth+
+Folder path to AviSynth
 
 ``%app_dir:avs2pipemod%``
 

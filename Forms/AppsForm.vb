@@ -555,7 +555,7 @@ Public Class AppsForm
 
     Private Sub miCSV_Click(sender As Object, e As EventArgs) Handles miCSV.Click
         Dim rows As New List(Of List(Of String))
-        Dim headings = {"Name", "Type", "Filename", "Version", "Modified Date", "Required", "Status", "Folder"}
+        Dim headings = {"Name", "Type", "Filename", "Version", "Modified Date", "Folder"}
         rows.Add(New List(Of String)(headings))
 
         Dim add = Function(value As String) As String
@@ -574,7 +574,7 @@ Public Class AppsForm
                       Return value
                   End Function
 
-        For Each pair In Package.Items
+        For Each pair In Package.Items.OrderBy(Function(val) val.Value.Path)
             Dim row As New List(Of String)
             Dim pack = pair.Value
             Dim path = pack.Path
@@ -628,20 +628,6 @@ Public Class AppsForm
             'Modified Date
             If File.Exists(path) Then
                 row.Add(File.GetLastWriteTime(path).ToShortDateString())
-            Else
-                row.Add("")
-            End If
-
-            'Required
-            row.Add(If(pack.Required, "Yes", "No"))
-
-            'Status
-            Dim status = pack.GetStatusDisplay
-
-            If status = "OK" Then
-                row.Add("OK")
-            ElseIf path = "" Then
-                row.Add("Not installed")
             Else
                 row.Add("")
             End If

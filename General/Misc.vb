@@ -2185,10 +2185,6 @@ Public Class BitmapUtil
                 pitch, PixelFormat.Format32bppArgb, data)
         End If
     End Function
-
-    <DllImport("kernel32")>
-    Public Shared Sub CopyMemory(destination As IntPtr, source As IntPtr, length As UInteger)
-    End Sub
 End Class
 
 Public Class AutoCrop

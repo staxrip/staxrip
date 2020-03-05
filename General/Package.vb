@@ -6,7 +6,7 @@ Public Class Package
     Implements IComparable(Of Package)
 
     Property Description As String
-    Property DirPath As String
+    Property Directory As String
     Property DownloadURL As String
     Property Filename As String
     Property FileNotFoundMessage As String
@@ -72,7 +72,7 @@ Public Class Package
     Shared Property eac3to As Package = Add(New Package With {
         .Name = "eac3to",
         .Filename = "eac3to.exe",
-        .DirPath = "Audio\eac3to",
+        .Directory = "Audio\eac3to",
         .WebURL = "http://forum.doom9.org/showthread.php?t=125966",
         .HelpURL = "http://en.wikibooks.org/wiki/Eac3to/How_to_Use",
         .Description = "Audio conversion command line app."})
@@ -80,7 +80,7 @@ Public Class Package
     Shared Property ffmpeg As Package = Add(New Package With {
         .Name = "ffmpeg",
         .Filename = "ffmpeg.exe",
-        .DirPath = "Encoders\ffmpeg",
+        .Directory = "Encoders\ffmpeg",
         .WebURL = "http://ffmpeg.org",
         .HelpURL = "http://www.ffmpeg.org/ffmpeg-all.html",
         .Description = "Versatile audio video converter."})
@@ -88,14 +88,14 @@ Public Class Package
     Shared Property MediaInfo As Package = Add(New Package With {
         .Name = "MediaInfo",
         .Filename = "MediaInfo.dll",
-        .DirPath = "Support\MediaInfo",
+        .Directory = "Support\MediaInfo",
         .WebURL = "http://mediaarea.net/en/MediaInfo",
         .Description = "MediaInfo is used by StaxRip to read infos from media files."})
 
     Shared Property MP4Box As Package = Add(New Package With {
         .Name = "MP4Box",
         .Filename = "MP4Box.exe",
-        .DirPath = "Support\MP4Box",
+        .Directory = "Support\MP4Box",
         .WebURL = "http://gpac.wp.mines-telecom.fr/",
         .HelpURL = "http://gpac.wp.mines-telecom.fr/mp4box/mp4box-documentation",
         .Description = "MP4Box is a MP4 muxing and demuxing command line app."})
@@ -112,7 +112,7 @@ Public Class Package
 
     Shared Property chapterEditor As Package = Add(New Package With {
         .Name = "chapterEditor",
-        .DirPath = "Support\chapterEditor",
+        .Directory = "Support\chapterEditor",
         .Filename = "chapterEditor.exe",
         .Launchable = True,
         .Description = "ChapterEditor is a chapter editor and menu editor for OGG, XML, TTXT, m.AVCHD, m.editions-mkv, Matroska Menu.",
@@ -120,7 +120,7 @@ Public Class Package
 
     Shared Property xvid_encraw As Package = Add(New Package With {
         .Name = "xvid_encraw",
-        .DirPath = "Encoders\xvid_encraw",
+        .Directory = "Encoders\xvid_encraw",
         .Filename = "xvid_encraw.exe",
         .Description = "XviD command line encoder",
         .HelpFilename = "help.txt",
@@ -142,7 +142,7 @@ Public Class Package
     Shared Property fdkaac As Package = Add(New Package With {
         .Name = "fdkaac",
         .Filename = "fdkaac.exe",
-        .DirPath = "Audio\fdkaac",
+        .Directory = "Audio\fdkaac",
         .HelpFilename = "help.txt",
         .HelpSwitch = "-h",
         .Description = "Command line AAC encoder based on libfdk-aac.",
@@ -151,7 +151,7 @@ Public Class Package
 
     Shared Property AVSMeter As Package = Add(New Package With {
         .Name = "AVSMeter",
-        .DirPath = "support\AVSMeter",
+        .Directory = "support\AVSMeter",
         .Filename = "AVSMeter64.exe",
         .Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.",
         .HelpFilename = "doc\AVSMeter.html",
@@ -194,7 +194,7 @@ Public Class Package
         .Name = "DGIndex",
         .Filename = "DGIndex.exe",
         .Launchable = True,
-        .DirPath = "Support\DGIndex",
+        .Directory = "Support\DGIndex",
         .HelpFilename = "DGIndexManual.html",
         .Description = "MPEG-2 demuxing and indexing app.",
         .WebURL = "http://rationalqm.us/dgmpgdec/dgmpgdec.html"})
@@ -203,14 +203,14 @@ Public Class Package
         .Name = "BDSup2Sub++",
         .Filename = "bdsup2sub++.exe",
         .Launchable = True,
-        .DirPath = "Subtitles\BDSup2Sub++",
+        .Directory = "Subtitles\BDSup2Sub++",
         .WebURL = "https://github.com/amichaeltm/BDSup2SubPlusPlus",
         .Description = "Converts Blu-ray subtitles to other formats like VobSub."})
 
     Shared Property Rav1e As Package = Add(New Package With {
         .Name = "rav1e",
         .Filename = "rav1e.exe",
-        .DirPath = "Encoders\Rav1e",
+        .Directory = "Encoders\Rav1e",
         .Description = "a Faster and Safer AV1 Encoder",
         .WebURL = "https://github.com/xiph/rav1e",
         .HelpFilename = "rav1e help.txt",
@@ -219,7 +219,7 @@ Public Class Package
     Shared Property MTN As Package = Add(New Package With {
         .Name = "mtn",
         .Filename = "mtn.exe",
-        .DirPath = "Thumbnails\MTN",
+        .Directory = "Thumbnails\MTN",
         .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
         .WebURL = "https://github.com/Revan654/Movie-Thumbnailer-mtn",
         .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
@@ -228,7 +228,7 @@ Public Class Package
         .Name = "Subtitle Edit",
         .Filename = "SubtitleEdit.exe",
         .Launchable = True,
-        .DirPath = "Support\SubtitleEdit",
+        .Directory = "Support\SubtitleEdit",
         .WebURL = "http://www.nikse.dk/SubtitleEdit",
         .HelpURL = "http://www.nikse.dk/SubtitleEdit/Help",
         .Description = "Subtitle Edit is a open source subtitle editor."})
@@ -315,7 +315,7 @@ Public Class Package
     Shared Property VSRip As Package = Add(New Package With {
         .Name = "VSRip",
         .Filename = "VSRip.exe",
-        .DirPath = "subtitles\VSRip",
+        .Directory = "subtitles\VSRip",
         .Description = "VSRip rips VobSub subtitles.",
         .Launchable = True,
         .WebURL = "http://sourceforge.net/projects/guliverkli"})
@@ -346,7 +346,7 @@ Public Class Package
     Shared Property avs2pipemod As Package = Add(New Package With {
         .Name = "avs2pipemod",
         .Filename = "avs2pipemod64.exe",
-        .DirPath = "Support\avs2pipemod",
+        .Directory = "Support\avs2pipemod",
         .WebURL = "http://github.com/chikuzen/avs2pipemod",
         .Description = "Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools.",
         .StartAction = Sub()
@@ -361,7 +361,7 @@ Public Class Package
     Shared Property x264 As Package = Add(New Package With {
         .Name = "x264",
         .Filename = "x264.exe",
-        .DirPath = "Encoders\x264",
+        .Directory = "Encoders\x264",
         .Description = "H.264 video encoding command line app.",
         .WebURL = "http://www.videolan.org/developers/x264.html",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
@@ -370,7 +370,7 @@ Public Class Package
 
     Shared Property x265 As Package = Add(New Package With {
         .Name = "x265",
-        .DirPath = "Encoders\x265",
+        .Directory = "Encoders\x265",
         .Filename = "x265.exe",
         .WebURL = "http://x265.org",
         .HelpURL = "http://x265.readthedocs.org",
@@ -381,7 +381,7 @@ Public Class Package
     Shared Property mkvmerge As Package = Add(New Package With {
         .Name = "mkvmerge",
         .Filename = "mkvmerge.exe",
-        .DirPath = "Support\MKVToolNix",
+        .Directory = "Support\MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .Description = "MKV muxing tool."})
@@ -389,7 +389,7 @@ Public Class Package
     Shared Property mkvinfo As Package = Add(New Package With {
         .Name = "mkvinfo",
         .Filename = "mkvinfo.exe",
-        .DirPath = "Support\MKVToolNix",
+        .Directory = "Support\MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .Description = "MKV muxing tool."})
@@ -398,14 +398,14 @@ Public Class Package
         .Name = "PNGopt",
         .Filename = "apngopt.exe",
         .HelpFilename = "help.txt",
-        .DirPath = "Thumbnails\PNGopt",
+        .Directory = "Thumbnails\PNGopt",
         .WebURL = "https://sourceforge.net/projects/apng/files/",
         .Description = "Opt Tools For Creating PNG"})
 
     Shared Property mkvextract As Package = Add(New Package With {
         .Name = "mkvextract",
         .Filename = "mkvextract.exe",
-        .DirPath = "Support\MKVToolNix",
+        .Directory = "Support\MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .Description = "MKV demuxing tool."})
@@ -413,7 +413,7 @@ Public Class Package
     Shared Property NVEnc As Package = Add(New Package With {
         .Name = "NVEnc",
         .Filename = "NVEncC64.exe",
-        .DirPath = "Encoders\NVEnc",
+        .Directory = "Encoders\NVEnc",
         .HelpSwitch = "-h",
         .WebURL = "http://github.com/rigaya/NVEnc",
         .HelpURL = "https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md",
@@ -423,7 +423,7 @@ Public Class Package
     Shared Property QSVEnc As Package = Add(New Package With {
         .Name = "QSVEnc",
         .Filename = "QSVEncC64.exe",
-        .DirPath = "Encoders\QSVEnc",
+        .Directory = "Encoders\QSVEnc",
         .Description = "Intel hardware video encoder.",
         .HelpFilename = "QSVEnc Help.txt",
         .WebURL = "http://github.com/rigaya/QSVEnc",
@@ -433,7 +433,7 @@ Public Class Package
     Shared Property VCEEnc As Package = Add(New Package With {
         .Name = "VCEEnc",
         .Filename = "VCEEncC64.exe",
-        .DirPath = "Encoders\VCEEnc",
+        .Directory = "Encoders\VCEEnc",
         .Description = "AMD hardware video encoder.",
         .HelpFilename = "VCEEnc Help.txt",
         .HelpSwitch = "-h",
@@ -444,7 +444,7 @@ Public Class Package
         .Filename = "DGDecodeNV.dll",
         .WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html",
         .Description = Strings.DGDecNV,
-        .DirPath = "Support\DGIndexNV",
+        .Directory = "Support\DGIndexNV",
         .HelpFilename = "DGDecodeNVManual.html",
         .IsIncluded = False,
         .HintDirFunc = Function() DGIndexNV.GetStoredPath.Dir,
@@ -459,7 +459,7 @@ Public Class Package
         .Filename = "DGDecodeIM.dll",
         .WebURL = "http://rationalqm.us/mine.html",
         .Description = Strings.DGDecIM,
-        .DirPath = "Support\DGIndexIM",
+        .Directory = "Support\DGIndexIM",
         .HelpFilename = "Notes.txt",
         .IsIncluded = False,
         .HintDirFunc = Function() DGIndexIM.GetStoredPath.Dir,
@@ -505,7 +505,7 @@ Public Class Package
     Shared Property DCTFilter As Package = Add(New PluginPackage With {
         .Name = "DCTFilter",
         .Filename = "DCTFilter.dll",
-        .DirPath = "Plugins\AVS\DCTFilter",
+        .Directory = "Plugins\AVS\DCTFilter",
         .Description = "A rewrite of DctFilter for Avisynth+.",
         .WebURL = "http://github.com/chikuzen/DCTFilter",
         .AvsFilterNames = {"DCTFilter", "DCTFilterD", "DCTFilter4", "DCTFilter4D", "DCTFilter8", "DCTFilter8D"}})
@@ -513,7 +513,7 @@ Public Class Package
     Shared Property DCTFilterF As Package = Add(New PluginPackage With {
         .Name = "DCTFilter-f",
         .Filename = "DCTFilter.dll",
-        .DirPath = "Plugins\VS\DCTFilter-f",
+        .Directory = "Plugins\VS\DCTFilter-f",
         .Description = "Renewed VapourSynth port of DCTFilter.",
         .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DCTFilter",
         .VSFilterNames = {"dctf.DCTFilter"}})
@@ -521,7 +521,7 @@ Public Class Package
     Shared Property DCTFilterVS As Package = Add(New PluginPackage With {
         .Name = "DCTFilter",
         .Filename = "DCTFilter.dll",
-        .DirPath = "Plugins\VS\DCTFilter",
+        .Directory = "Plugins\VS\DCTFilter",
         .Description = "Renewed VapourSynth port of DCTFilter.",
         .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DCTFilter",
         .VSFilterNames = {"dctf.DCTFilter"}})
@@ -530,7 +530,7 @@ Public Class Package
 
     Shared Property FFTW As Package = Add(New Package With {
         .Name = "FFTW",
-        .DirPath = "support\FFTW",
+        .Directory = "support\FFTW",
         .Filename = "libfftw3-3.dll",
         .Description = "Library required by various AviSynth and VapourSynth plugins.",
         .WebURL = "http://www.fftw.org",
@@ -575,7 +575,7 @@ Public Class Package
         .HelpURL = "http://forum.doom9.org/showthread.php?t=166582",
         .Description = "Various popular AviSynth scripts ported To VapourSynth.",
         .Filename = "havsfunc.py",
-        .DirPath = "Plugins\VS\Scripts",
+        .Directory = "Plugins\VS\Scripts",
         .VSFilterNames = {"havsfunc.aaf", "havsfunc.AverageFrames", "havsfunc.Bob", "havsfunc.ChangeFPS", "havsfunc.Clamp", "havsfunc.ContraSharpening", "havsfunc.daa", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha", "havsfunc.DitherLumaRebuild", "havsfunc.EdgeCleaner", "havsfunc.FastLineDarkenMOD", "havsfunc.FineDehalo", "havsfunc.FixChromaBleedingMod", "havsfunc.GrainFactory3", "havsfunc.GrainStabilizeMC", "havsfunc.HQDeringmod", "havsfunc.InterFrame", "havsfunc.ivtc_txt60mc", "havsfunc.KNLMeansCL", "havsfunc.logoNR", "havsfunc.LSFmod", "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.MCTemporalDenoise", "havsfunc.MinBlur", "havsfunc.mt_deflate_multi", "havsfunc.mt_expand_multi", "havsfunc.mt_inflate_multi", "havsfunc.mt_inpand_multi", "havsfunc.Overlay", "havsfunc.Padding", "havsfunc.QTGMC", "havsfunc.Resize", "havsfunc.santiag", "havsfunc.sbr", "havsfunc.SCDetect", "havsfunc.SigmoidDirect", "havsfunc.SigmoidInverse", "havsfunc.smartfademod", "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.srestore", "havsfunc.Stab", "havsfunc.STPresso", "havsfunc.TemporalDegrain", "havsfunc.Toon", "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.Weave", "havsfunc.YAHR"},
         .VSFiltersFunc = Function() {
             New VideoFilter("Field", "QTGMC | QTGMC", $"clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF{BR}clip = havsfunc.QTGMC(clip, TFF=True, Preset='$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$', InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2)"),
@@ -626,7 +626,7 @@ Public Class Package
     Shared Property muvsfunc As Package = Add(New PluginPackage With {
         .Name = "muvsfunc",
         .Filename = "muvsfunc.py",
-        .DirPath = "Plugins\VS\Scripts",
+        .Directory = "Plugins\VS\Scripts",
         .Description = "Muonium's VapourSynth functions.",
         .WebURL = "https://github.com/WolframRhodium/muvsfunc",
         .VSFilterNames = {
@@ -745,7 +745,7 @@ Public Class Package
             .Description = "Deblocking plugin using the deblocking filter of h264.",
             .HelpFilename = "Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/DeBlock",
-            .DirPath = "Plugins\AVS\Deblock",
+            .Directory = "Plugins\AVS\Deblock",
             .AvsFilterNames = {"Deblock"},
             .AvsFiltersFunc = Function() {
                 New VideoFilter("Restoration", "DeBlock | DeBock", "Deblock(quant=25, aOffset=0, bOffset=0, planes=""yuv"")")}})
@@ -794,14 +794,14 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "DePan",
             .Filename = "DePan.dll",
-            .DirPath = "Plugins\AVS\MVTools2",
+            .Directory = "Plugins\AVS\MVTools2",
             .HelpFilename = "DePan.html",
             .WebURL = "http://avisynth.nl/index.php/DePan",
             .AvsFilterNames = {"DePan", "DePanInterleave", "DePanStabilize", "DePanScenes"}})
 
         Add(New PluginPackage With {
             .Name = "DePanEstimate",
-            .DirPath = "Plugins\AVS\MVTools2",
+            .Directory = "Plugins\AVS\MVTools2",
             .Filename = "DePanEstimate.dll",
             .HelpFilename = "DePan.html",
             .WebURL = "http://avisynth.nl/index.php/DePan",
@@ -809,7 +809,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "Shader DLL",
-            .DirPath = "Plugins\AVS\Shader",
+            .Directory = "Plugins\AVS\Shader",
             .Filename = "Shader.dll",
              .HelpFilename = "Readme.txt",
             .WebURL = "https://github.com/mysteryx93/AviSynthShader/releases",
@@ -817,7 +817,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "Shader AVSI",
-            .DirPath = "Plugins\AVS\Shader",
+            .Directory = "Plugins\AVS\Shader",
             .Filename = "Shader.avsi",
              .HelpFilename = "Readme.txt",
             .WebURL = "https://github.com/mysteryx93/AviSynthShader/releases",
@@ -855,7 +855,7 @@ Public Class Package
             .Filename = "InterFrame.avsi",
             .HelpFilename = "InterFrame.html",
             .Description = "A frame interpolation script that makes accurate estimations about the content of frames",
-            .DirPath = "Plugins\AVS\InterFrame2",
+            .Directory = "Plugins\AVS\InterFrame2",
             .WebURL = "http://avisynth.nl/index.php/InterFrame",
             .AvsFilterNames = {"InterFrame"},
             .AvsFiltersFunc = Function() {
@@ -863,7 +863,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "SVPFlow 1",
-            .DirPath = "Plugins\AVS\SVPFlow",
+            .Directory = "Plugins\AVS\SVPFlow",
             .HelpFilename = "Readme.txt",
             .Description = "Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin",
             .Filename = "svpflow1.dll",
@@ -872,7 +872,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "SVPFlow 2",
-            .DirPath = "Plugins\AVS\SVPFlow",
+            .Directory = "Plugins\AVS\SVPFlow",
             .HelpFilename = "Readme.txt",
             .Description = "Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin",
             .Filename = "svpflow2.dll",
@@ -900,7 +900,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "TDeint",
             .Filename = "TDeint.dll",
-            .DirPath = "Plugins\AVS\TDeint",
+            .Directory = "Plugins\AVS\TDeint",
             .WebURL = "http://avisynth.nl/index.php/TDeint",
             .Description = "TDeint is a bi-directionally, motion adaptive, sharp deinterlacer.",
             .AvsFilterNames = {"TDeint"},
@@ -976,7 +976,7 @@ Public Class Package
             .Filename = "nnedi3_16.avsi",
             .HelpFilename = "Readme.txt",
             .Description = "nnedi3 is an AviSynth 2.5 plugin, but supports all new planar colorspaces when used with AviSynth 2.6",
-            .DirPath = "Plugins\AVS\NNEDI3",
+            .Directory = "Plugins\AVS\NNEDI3",
             .WebURL = "http://avisynth.nl/index.php/nnedi3",
             .AvsFilterNames = {"nnedi3_resize16"}})
 
@@ -985,7 +985,7 @@ Public Class Package
             .Filename = "nnedi3x.avsi",
             .HelpFilename = "Readme.txt",
             .Description = "nnedi3x is an AviSynth 2.5 plugin, but supports all new planar colorspaces when used with AviSynth 2.6",
-            .DirPath = "Plugins\AVS\NNEDI3",
+            .Directory = "Plugins\AVS\NNEDI3",
             .WebURL = "http://avisynth.nl/index.php/nnedi3",
             .AvsFilterNames = {"nnedi3x"}})
 
@@ -994,13 +994,13 @@ Public Class Package
             .Filename = "edi_rpow2.avsi",
             .HelpFilename = "Readme.txt",
             .Description = "An improved rpow2 function for nnedi3, nnedi3ocl, eedi3, and eedi2.",
-            .DirPath = "Plugins\AVS\NNEDI3",
+            .Directory = "Plugins\AVS\NNEDI3",
             .WebURL = "http://avisynth.nl/index.php/nnedi3",
             .AvsFilterNames = {"nnedi3_rpow2"}})
 
         Add(New PluginPackage With {
             .Name = "SmoothD2",
-            .DirPath = "Plugins\AVS\SmoothD2",
+            .Directory = "Plugins\AVS\SmoothD2",
             .Filename = "SmoothD2.dll",
             .HelpFilename = "Readme.txt",
             .Description = "Deblocking filter. Rewrite of SmoothD. Faster, better detail preservation, optional chroma deblocking.",
@@ -1011,7 +1011,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "SmoothD2c",
-            .DirPath = "Plugins/AVS/SmoothD2",
+            .Directory = "Plugins/AVS/SmoothD2",
             .HelpFilename = "Readme.txt",
             .Description = "Deblocking filter. Rewrite of SmoothD. Faster, better detail preservation, optional chroma deblocking.",
             .Filename = "SmoothD2c.avs",
@@ -1049,7 +1049,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "MAA2Mod",
-            .DirPath = "Plugins\AVS\MAA2",
+            .Directory = "Plugins\AVS\MAA2",
             .Filename = "maa2mod.avsi",
             .Description = "Updated version of the MAA2+ antialising script from AnimeIVTC. MAA2 uses tp7's SangNom2, which provide a nice speedup for SangNom-based antialiasing. Mod version also includes support for EEDI3 along with a few other new functions.",
             .HelpFilename = "Readme.txt",
@@ -1070,7 +1070,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "eedi3_resize",
             .Filename = "eedi3_resize.avsi",
-            .DirPath = "Plugins\AVS\EEDI3",
+            .Directory = "Plugins\AVS\EEDI3",
             .Description = "eedi3 based resizing script that allows to resize to arbitrary resolutions while maintaining the correct image center and chroma location.",
             .HelpFilename = "EEDI3 - Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/eedi3",
@@ -1078,7 +1078,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "DeNoise Histogram",
-            .DirPath = "Plugins\AVS\DeNoiseMD",
+            .Directory = "Plugins\AVS\DeNoiseMD",
             .Filename = "DiffCol.avsi",
             .Description = "Histogram for both DenoiseMD and DenoiseMF",
             .WebURL = "http://avisynth.nl",
@@ -1087,7 +1087,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "FrameRateConverter DLL",
             .Filename = "FrameRateConverter-x64.dll",
-            .DirPath = "Plugins\AVS\FrameRateConverter",
+            .Directory = "Plugins\AVS\FrameRateConverter",
             .Description = "Increases the frame rate with interpolation and fine artifact removal ",
             .WebURL = "https://github.com/mysteryx93/FrameRateConverter",
             .AvsFilterNames = {"FrameRateConverter"}})
@@ -1095,7 +1095,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "FrameRateConverter AVSI",
             .Filename = "FrameRateConverter.avsi",
-            .DirPath = "Plugins\AVS\FrameRateConverter",
+            .Directory = "Plugins\AVS\FrameRateConverter",
             .Description = "Increases the frame rate with interpolation and fine artifact removal ",
             .WebURL = "https://github.com/mysteryx93/FrameRateConverter",
             .AvsFilterNames = {"FrameRateConverter"}})
@@ -1120,7 +1120,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "MT Expand Multi",
-            .DirPath = "Plugins\AVS\Dither",
+            .Directory = "Plugins\AVS\Dither",
             .Description = "Calls mt_expand or mt_inpand multiple times in order to grow or shrink the mask from the desired width and height.",
             .Filename = "mt_xxpand_multi.avsi",
             .WebURL = "http://avisynth.nl/index.php/Dither",
@@ -1136,7 +1136,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "AVSTP",
-            .DirPath = "Plugins\AVS\AVSTP",
+            .Directory = "Plugins\AVS\AVSTP",
             .Description = "AVSTP is a programming library for Avisynth plug-in developers. It helps supporting native multi-threading in plug-ins. It works by sharing a thread pool between multiple plug-ins, so the number of threads stays low whatever the number of instantiated plug-ins. This helps saving resources, especially when working in an Avisynth MT environment. This documentation is mostly targeted to plug-ins developpers, but contains installation instructions for Avisynth users too.",
             .HelpFilename = "avstp.html",
             .Filename = "avstp.dll",
@@ -1147,14 +1147,14 @@ Public Class Package
             .Name = "Dither AVSI",
             .Description = "This package offers a set of tools to manipulate high-bitdepth (16 bits per plane) video clips. The most proeminent features are color banding artifact removal, dithering to 8 bits, colorspace conversions and resizing.",
             .HelpFilename = "dither.html",
-            .DirPath = "Plugins\AVS\Dither",
+            .Directory = "Plugins\AVS\Dither",
             .Filename = "dither.avsi",
             .WebURL = "http://avisynth.nl/index.php/Dither",
             .AvsFilterNames = {"Dither_y_gamma_to_linear", "Dither_y_linear_to_gamma", "Dither_convert_8_to_16", "Dither1Pre", "Dither1Pre", "Dither_repair16", "Dither_convert_yuv_to_rgb", "Dither_convert_rgb_to_yuv", "Dither_resize16", "DitherPost", "Dither_crop16", "DitherBuildMask", "SmoothGrad", "GradFun3", "Dither_box_filter16", "Dither_bilateral16", "Dither_limit_dif16", "Dither_resize16nr", "Dither_srgb_display", "Dither_convey_yuv4xxp16_on_yvxx", "Dither_convey_rgb48_on_yv12", "Dither_removegrain16", "Dither_median16", "Dither_get_msb", "Dither_get_lsb", "Dither_addborders16", "Dither_lut8", "Dither_lutxy8", "Dither_lutxyz8", "Dither_lut16", "Dither_add16", "Dither_sub16", "Dither_max_dif16", "Dither_min_dif16", "Dither_merge16", "Dither_merge16_8", "Dither_sigmoid_direct", "Dither_sigmoid_inverse", "Dither_add_grain16", "Dither_Luma_Rebuild"}})
 
         Add(New PluginPackage With {
             .Name = "Dither DLL",
-            .DirPath = "Plugins\AVS\Dither",
+            .Directory = "Plugins\AVS\Dither",
             .Description = "This package offers a set of tools to manipulate high-bitdepth (16 bits per plane) video clips. The most proeminent features are color banding artifact removal, dithering to 8 bits, colorspace conversions and resizing.",
             .HelpFilename = "dither.html",
             .Filename = "dither.dll",
@@ -1183,7 +1183,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "GradFun2DBmod",
-            .DirPath = "Plugins\AVS\GradFun2DB",
+            .Directory = "Plugins\AVS\GradFun2DB",
             .Filename = "GradFun2DBmod.avsi",
             .HelpFilename = "Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/GradFun2dbmod",
@@ -1192,7 +1192,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "GradFun2DB",
-            .DirPath = "Plugins\AVS\GradFun2DB",
+            .Directory = "Plugins\AVS\GradFun2DB",
             .Filename = "gradfun2db.dll",
             .HelpFilename = "Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/GradFun2db",
@@ -1220,7 +1220,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "Deblock",
             .Filename = "Deblock.dll",
-            .DirPath = "Plugins\VS\Deblock",
+            .Directory = "Plugins\VS\Deblock",
             .Description = "Deblocking plugin using the deblocking filter of h264.",
             .WebURL = "http://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock/",
             .VSFilterNames = {"deblock.Deblock"},
@@ -1267,7 +1267,7 @@ Public Class Package
             .Filename = "vscube.dll",
             .Description = "Deblocking plugin using the deblocking filter of h264.",
             .WebURL = "http://rationalqm.us/mine.html",
-            .DirPath = "Plugins\AVS\VSCube",
+            .Directory = "Plugins\AVS\VSCube",
             .AvsFilterNames = {"Cube"},
             .AvsFiltersFunc = Function() {
                 New VideoFilter("Color", "HDRCore | Cube", "Cube(""$browse_file$"")")}})
@@ -1328,7 +1328,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "FixTelecinedFades",
             .Filename = "libftf_em64t_avx_fma.dll",
-            .DirPath = "Plugins\VS\FixTelecinedFades",
+            .Directory = "Plugins\VS\FixTelecinedFades",
             .Description = "InsaneAA Anti-Aliasing Script.",
             .WebURL = "https://github.com/IFeelBloated/Fix-Telecined-Fades",
             .VSFilterNames = {"ftf.FixFades"},
@@ -1371,7 +1371,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "nnedi3",
             .Filename = "libnnedi3.dll",
-            .DirPath = "Plugins\VS\nnedi3",
+            .Directory = "Plugins\VS\nnedi3",
             .WebURL = "http://github.com/dubhater/vapoursynth-nnedi3",
             .Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field.",
             .VSFilterNames = {"nnedi3.nnedi3"}})
@@ -1411,7 +1411,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "resamplehq",
             .Filename = "resamplehq.py",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .WebURL = "https://gist.github.com/4re/b5399b1801072458fc80#file-mcdegrainsharp-py",
             .Description = "TemporalMedian is a temporal denoising filter. It replaces every pixel with the median of its temporal neighbourhood.",
             .VSFilterNames = {"resamplehq.resamplehq"},
@@ -1421,7 +1421,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "mcdegrainsharp",
             .Filename = "mcdegrainsharp.py",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .WebURL = "https://gist.github.com/4re/b5399b1801072458fc80#file-mcdegrainsharp-py",
             .Description = "TemporalMedian is a temporal denoising filter. It replaces every pixel with the median of its temporal neighbourhood.",
             .VSFilterNames = {"mcdegrainsharp.mcdegrainsharp"},
@@ -1431,7 +1431,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "G41Fun",
             .Filename = "G41Fun.py",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .WebURL = "https://github.com/Helenerineium/hnwvsfunc",
             .Description = "The replaced script for hnwvsfunc with re-written functions.",
             .VSFilterNames = {"G41Fun.mClean", "G41Fun.NonlinUSM", "G41Fun.DetailSharpen", "G41Fun.LUSM", "G41Fun.JohnFPS", "G41Fun.TemporalDegrain2",
@@ -1443,7 +1443,7 @@ Public Class Package
             .Name = "fvsfunc",
             .Filename = "fvsfunc.py",
             .Description = "Small collection of VapourSynth functions",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .WebURL = "https://github.com/Irrational-Encoding-Wizardry/fvsfunc",
             .VSFilterNames = {"fvsfunc.GradFun3mod", "fvsfunc.DescaleM", "fvsfunc.Downscale444", "fvsfunc.JIVTC", "fvsfunc.OverlayInter", "fvsfunc.AutoDeblock", "fvsfunc.ReplaceFrames", "fvsfunc.maa", "fvsfunc.TemporalDegrain",
                                 "fvsfunc.DescaleAA", "fvsfunc.InsertSign"}})
@@ -1451,7 +1451,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "nnedi3_rpow2",
             .Filename = "nnedi3_rpow2.py",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .WebURL = "https://github.com/Irrational-Encoding-Wizardry/fvsfunc",
             .Description = "nnedi3_rpow2 ported from Avisynth for VapourSynth",
             .VSFilterNames = {"nnedi3_rpow2"}})
@@ -1459,7 +1459,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "mvmulti",
             .Filename = "mvmulti.py",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .WebURL = "http://github.com/dubhater/vapoursynth-mvtools",
             .Description = "MVTools is a set of filters for motion estimation and compensation.",
             .VSFilterNames = {"mvmulti.StoreVect", "mvmulti.Analyse", "mvmulti.Recalculate", "mvmulti.Compensate", "mvmulti.Restore", "mvmulti.Flow", "mvmulti.DegrainN"}})
@@ -1476,7 +1476,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "znedi3",
             .Filename = "vsznedi3.dll",
-            .DirPath = "Plugins\VS\nnedi3",
+            .Directory = "Plugins\VS\nnedi3",
             .HelpFilename = "Readme.txt",
             .WebURL = "https://github.com/sekrit-twc/znedi3",
             .Description = "znedi3 is a CPU-optimized version of nnedi.",
@@ -1486,7 +1486,7 @@ Public Class Package
             .Name = "nnedi3cl",
             .Filename = "NNEDI3CL.dll",
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-NNEDI3CL",
-            .DirPath = "Plugins\VS\nnedi3",
+            .Directory = "Plugins\VS\nnedi3",
             .Description = "nnedi3 is an intra-field only deinterlacer. It takes a frame, throws away one field, and then interpolates the missing pixels using only information from the remaining field. It is also good for enlarging images by powers of two.",
             .VSFilterNames = {"nnedi3cl.NNEDI3CL"}})
 
@@ -1536,7 +1536,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "adjust",
             .Filename = "adjust.py",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .Description = "very basic port of the built-in Avisynth filter Tweak.",
             .WebURL = "http://github.com/dubhater/vapoursynth-adjust",
             .VSFilterNames = {"adjust.Tweak"}})
@@ -1544,7 +1544,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "Oyster",
             .Filename = "Oyster.py",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .Description = "Oyster is an experimental implement of the Blocking Matching concept, designed specifically for compression artifacts removal.",
             .WebURL = "https://github.com/IFeelBloated/Oyster",
             .VSFilterNames = {"Oyster.Basic", "Oyster.Deringing", "Oyster.Destaircase", "Oyster.Deblocking", "Oyster.Super"}})
@@ -1552,7 +1552,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "Plum",
             .Filename = "Plum.py",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .Description = "Plum is a sharpening/blind deconvolution suite with certain advanced features like Non-Local error, Block Matching, etc..",
             .WebURL = "https://github.com/IFeelBloated/Plum",
             .VSFilterNames = {"Plum.Super", "Plum.Basic", "Plum.Final"}})
@@ -1560,7 +1560,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "Vine",
             .Filename = "Vine.py",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .Description = "Plum is a sharpening/blind deconvolution suite with certain advanced features like Non-Local error, Block Matching, etc..",
             .WebURL = "https://github.com/IFeelBloated/Plum",
             .VSFilterNames = {"Vine.Super", "Vine.Basic", "Vine.Final", "Vine.Dilation", "Vine.Erosion", "Vine.Closing", "Vine.Opening", "Vine.Gradient", "Vine.TopHat", "Vine.Blackhat"}})
@@ -1576,7 +1576,7 @@ Public Class Package
             .Name = "taa",
             .Filename = "vsTAAmbk.py",
             .Description = "A ported AA-script from Avisynth.",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/vsTAAmbk",
             .VSFilterNames = {"taa.TAAmbk", "taa.vsTAAmbk"},
             .VSFiltersFunc = Function() {
@@ -1585,7 +1585,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "mvsfunc",
             .Filename = "mvsfunc.py",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .Description = "mawen1250's VapourSynth functions.",
             .WebURL = "http://github.com/HomeOfVapourSynthEvolution/mvsfunc",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=172564",
@@ -1625,7 +1625,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "CNR2",
             .Filename = "libcnr2.dll",
-            .DirPath = "Plugins\VS\CNR2",
+            .Directory = "Plugins\VS\CNR2",
             .VSFilterNames = {"cnr2.Cnr2"},
             .Description = "Cnr2 is a temporal denoiser designed to denoise only the chroma.",
             .WebURL = "https://github.com/dubhater/vapoursynth-cnr2"})
@@ -1649,7 +1649,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "SVPFlow 1",
-            .DirPath = "Plugins\VS\SVPFlow",
+            .Directory = "Plugins\VS\SVPFlow",
             .Description = "Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin",
             .Filename = "svpflow1_vs64.dll",
             .WebURL = "https://www.svp-team.com/wiki/Manual:SVPflow",
@@ -1657,7 +1657,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "SVPFlow 2",
-            .DirPath = "Plugins\VS\SVPFlow",
+            .Directory = "Plugins\VS\SVPFlow",
             .Description = "Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin",
             .Filename = "svpflow2_vs64.dll",
             .WebURL = "https://www.svp-team.com/wiki/Manual:SVPflow",
@@ -1665,7 +1665,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "Dither",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .Description = "VapourSynth port of DitherTools",
             .Filename = "Dither.py",
             .WebURL = "https://github.com/IFeelBloated/VaporSynth-Functions",
@@ -1726,7 +1726,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "psharpen",
             .Filename = "psharpen.py",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .Description = "VapourSynth port of pSharpen",
             .VSFilterNames = {"psharpen.psharpen"},
             .VSFiltersFunc = Function() {
@@ -1752,7 +1752,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "finesharp",
             .Filename = "finesharp.py",
-            .DirPath = "Plugins\VS\Scripts",
+            .Directory = "Plugins\VS\Scripts",
             .Description = "Port of Didie's FineSharp script to VapourSynth.",
             .WebURL = "http://forum.doom9.org/showthread.php?p=1777860#post1777860",
             .VSFilterNames = {"finesharp.sharpen"},
@@ -1863,6 +1863,14 @@ Public Class Package
     Sub ShowHelp()
         Dim dic As New SortedDictionary(Of String, String)
 
+        If HelpFilename = "" AndAlso Not HelpSwitch Is Nothing Then
+            HelpFilename = Name + " Help.txt"
+
+            If CreateHelpfile() = "" Then
+                HelpFilename = ""
+            End If
+        End If
+
         If HelpFilename <> "" Then
             dic("Local") = GetDir() + HelpFilename
         End If
@@ -1923,10 +1931,13 @@ Public Class Package
             Return File.ReadAllText(HelpFile)
         End If
 
-        If HelpSwitch <> "" Then
-            File.WriteAllText(HelpFile, BR + ProcessHelp.GetStdOut(Path, HelpSwitch).Trim + BR)
-            Return File.ReadAllText(HelpFile)
-        End If
+        Try
+            If Not HelpSwitch Is Nothing Then
+                File.WriteAllText(HelpFile, BR + ProcessHelp.GetStdOut(Path, HelpSwitch).Trim + BR)
+                Return File.ReadAllText(HelpFile)
+            End If
+        Catch ex As Exception
+        End Try
 
         Return ""
     End Function
@@ -2083,8 +2094,8 @@ Public Class Package
                 Return Nothing
             End If
 
-            If DirPath <> "" AndAlso File.Exists(Folder.Apps + DirPath + "\" + Filename) Then
-                Return Folder.Apps + DirPath + "\" + Filename
+            If Directory <> "" AndAlso File.Exists(Folder.Apps + Directory + "\" + Filename) Then
+                Return Folder.Apps + Directory + "\" + Filename
             End If
 
             If Not HintDirectories.NothingOrEmpty Then
@@ -2277,7 +2288,7 @@ Public Class qaacPackage
     Sub New()
         Name = "qaac"
         Filename = "qaac64.exe"
-        DirPath = "Audio\qaac"
+        Directory = "Audio\qaac"
         WebURL = "http://github.com/nu774/qaac"
         Description = "qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the x64 iTunes installer using a decompression tool like 7-Zip. The makeportable script found on the qaac website can also be used."
     End Sub
@@ -2308,7 +2319,7 @@ Public Class DGIndexNVPackage
 
     Sub New()
         Name = "DGIndexNV"
-        DirPath = "Support\DGIndexNV"
+        Directory = "Support\DGIndexNV"
         Filename = "DGIndexNV.exe"
         WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html"
         Description = Strings.DGDecNV
@@ -2340,7 +2351,7 @@ Public Class DGIndexIMPackage
     Sub New()
         Name = "DGIndexIM"
         Filename = "DGIndexIM.exe"
-        DirPath = "Support\DGIndexIM"
+        Directory = "Support\DGIndexIM"
         IsIncluded = False
         WebURL = "http://rationalqm.us/mine.html"
         Description = Strings.DGDecIM

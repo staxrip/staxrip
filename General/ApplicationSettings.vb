@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 <Serializable()>
@@ -16,6 +17,7 @@ Public Class ApplicationSettings
     Public CmdlPresetsMP4 As String
     Public CmdlPresetsX264 As String
     Public ConvertChromaSubsampling As Boolean = True
+    Public CropFrameCount As Integer
     Public CustomMenuCrop As CustomMenuItem
     Public CustomMenuMainForm As CustomMenuItem
     Public CustomMenuPreview As CustomMenuItem
@@ -223,6 +225,8 @@ Public Class ApplicationSettings
         If StringList Is Nothing Then StringList = New List(Of String)
 
         If RecentFramePositions Is Nothing Then RecentFramePositions = New List(Of String)
+
+        If CropFrameCount = 0 Then CropFrameCount = 10
 
         If Check(CustomMenuCrop, "Menu in crop dialog", 17) Then
             CustomMenuCrop = CropForm.GetDefaultMenuCrop

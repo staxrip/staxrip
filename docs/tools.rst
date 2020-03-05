@@ -4,12 +4,12 @@
 Tools
 -----
 
-AviSynth+
-~~~~~~~~~
+AviSynth
+~~~~~~~~
 
-StaxRip support both AviSynth+ and VapourSynth as scripting based video processing tool.
+StaxRip supports both AviSynth and VapourSynth as video processing tool.
 
-Used Version: 3.4.0
+Used Version: 3.5.0
 
 https://github.com/AviSynth/AviSynthPlus
 
@@ -127,11 +127,11 @@ http://ffmpeg.org
 FFTW
 ~~~~
 
-Library required by the FFT3DFilter AviSynth plugin.
+Library required by various AviSynth and VapourSynth plugins.
 
 Used Version: 3.3.8
 
-http://www.fftw.org/
+http://www.fftw.org
 
 
 Haali Splitter
@@ -307,7 +307,7 @@ http://www.nikse.dk/SubtitleEdit
 VapourSynth
 ~~~~~~~~~~~
 
-StaxRip supports both AviSynth+ and VapourSynth as scripting based video processing tool.
+StaxRip supports both AviSynth and VapourSynth as video processing tool.
 
 Used Version: R48
 

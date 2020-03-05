@@ -532,7 +532,15 @@ Public Class CropForm
 
     <Command("Detects the crop values automatically.")>
     Private Sub RunAutoCrop()
-        g.RunAutoCrop()
+        p.CropLeft = 0
+        p.CropTop = 0
+        p.CropRight = 0
+        p.CropBottom = 0
+        UpdateAll()
+        g.RunAutoCrop(Sub(progress As Double)
+                          tbPosition.Value = CInt(tbPosition.Maximum / 100 * progress)
+                          TrackLength_Scroll()
+                      End Sub)
         UpdateAll()
     End Sub
 

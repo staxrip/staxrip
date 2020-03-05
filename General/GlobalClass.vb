@@ -1058,17 +1058,16 @@ Public Class GlobalClass
         Next
     End Sub
 
-    Sub RunAutoCrop()
+    Sub RunAutoCrop(progressAction As Action(Of Double))
         p.SourceScript.Synchronize(True, True, True)
 
         Using server As New FrameServer(p.SourceScript.Path)
-            Dim segmentCount = 20
-
-            Dim len = server.Info.FrameCount \ (segmentCount + 1)
-            Dim crops(segmentCount - 1) As AutoCrop
+            Dim len = server.Info.FrameCount \ (s.CropFrameCount + 1)
+            Dim crops(s.CropFrameCount - 1) As AutoCrop
             Dim pos As Integer
 
-            For x = 1 To segmentCount
+            For x = 1 To s.CropFrameCount
+                progressAction?.Invoke((x - 1) / s.CropFrameCount * 100)
                 pos = len * x
 
                 Using bmp = BitmapUtil.CreateBitmap(server, pos)

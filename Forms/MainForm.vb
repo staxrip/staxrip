@@ -2162,7 +2162,7 @@ Public Class MainForm
             Dim isCropActive = p.Script.IsFilterActive("Crop")
 
             If isCropActive AndAlso (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
-                g.RunAutoCrop()
+                g.RunAutoCrop(Nothing)
                 DisableCropFilter()
             End If
 
@@ -3405,6 +3405,15 @@ Public Class MainForm
             b.Help = "After a source is loaded, automatically add a filter to convert chroma subsampling to 4:2:0"
             b.Field = NameOf(s.ConvertChromaSubsampling)
 
+            n = ui.AddNum
+            n.Text = "Number of frames used for auto crop"
+            n.Config = {5, 20}
+            n.Field = NameOf(s.CropFrameCount)
+
+            b.Text = "Add filter to convert chroma subsampling to 4:2:0"
+            b.Help = "After a source is loaded, automatically add a filter to convert chroma subsampling to 4:2:0"
+            b.Field = NameOf(s.ConvertChromaSubsampling)
+
             Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth",
                                              s.AviSynthFilterPreferences, s.AviSynthProfiles)
 
@@ -3939,7 +3948,7 @@ Public Class MainForm
 
             t = ui.AddText
             t.Text = "Preferred Languages"
-            t.Help = "Preferred audio languages using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all languages just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+            t.Help = "Preferred audio languages using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all languages just enter 'all'." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
             t.Field = NameOf(p.PreferredAudio)
 
             Dim cut = ui.AddMenu(Of CuttingMode)
@@ -4678,7 +4687,7 @@ Public Class MainForm
 
     <Command("Crops borders automatically.")>
     Sub StartAutoCrop()
-        g.RunAutoCrop()
+        g.RunAutoCrop(Nothing)
         Assistant()
     End Sub
 

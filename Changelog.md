@@ -2,12 +2,18 @@
 ### Todo
 
 - documentation
-- use ffmpeg for auto crop
-- improve defaults
+- website
+- improve default settings
+- improve and maintain video encoders
+- improve package definitions with help of csv file
+- make all console apps launchable and able to show offline help
 
 ### 2.0.7.5 next Beta not yet released
 
-
+- new: the csv file content in the apps dialog was improved,
+       unimportant properties were removed, the sort order
+       was changed to file path
+- new: auto crop feature in crop dialog shows progress
 
 ### 2.0.7.4
 

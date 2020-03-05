@@ -54,8 +54,8 @@ Public Class VideoRenderer
 
     Sub Resize(sender As Object, e As EventArgs)
         Dim bitmapSize = New D2D_SIZE_U With {
-                .width = CUInt(Control.ClientSize.Width),
-                .height = CUInt(Control.ClientSize.Height)}
+            .width = CUInt(Control.ClientSize.Width),
+            .height = CUInt(Control.ClientSize.Height)}
 
         RenderTarget?.Resize(bitmapSize)
     End Sub
@@ -64,48 +64,44 @@ Public Class VideoRenderer
         CreateGraphicsResources()
 
         Try
-            Dim pixelPtr = Server.NativeServer.GetFrame(Position)
+            Dim pitch As Integer
+            Dim pixelPtr As IntPtr
 
-            If pixelPtr = IntPtr.Zero Then
+            If Server.NativeServer.GetFrame(Position, pixelPtr, pitch) <> 0 OrElse pixelPtr = IntPtr.Zero Then
                 Exit Sub
             End If
 
             DeviceContext.BeginDraw()
 
-            If CropLeft + CropTop + CropRight + CropBottom = 0 Then
-                Dim destinationRectangle = New D2D_RECT_F With {
-                    .right = Control.ClientSize.Width,
-                    .bottom = Control.ClientSize.Height}
-
-                DrawBitmap(CreateBitmap(pixelPtr), ScaleRectangle(destinationRectangle))
-                DrawInfoText()
-            Else
+            If CropLeft + CropTop + CropRight + CropBottom <> 0 Then
                 Clear(Color.White)
-
-                Dim scaleX = Control.Width / Server.Info.Width
-                Dim scaleY = Control.Height / Server.Info.Height
-
-                Dim left = CropLeft * scaleX
-                Dim right = CropRight * scaleX
-                Dim top = CropTop * scaleY
-                Dim bottom = CropBottom * scaleY
-
-                Dim destinationRectangle As RectangleF
-                destinationRectangle.X = CSng(left)
-                destinationRectangle.Y = CSng(CropTop * scaleY)
-                destinationRectangle.Width = CSng(Control.Width - left - right)
-                destinationRectangle.Height = CSng(Control.Height - top - bottom)
-
-                Dim sourceRectangle As RectangleF
-                sourceRectangle.X = CropLeft
-                sourceRectangle.Y = CropTop
-                sourceRectangle.Width = Server.Info.Width - CropLeft - CropRight
-                sourceRectangle.Height = Server.Info.Height - CropTop - CropBottom
-
-                DrawBitmap(CreateBitmap(pixelPtr),
-                           ConvertRectangle(sourceRectangle),
-                           ScaleRectangle(ConvertRectangle(destinationRectangle)))
             End If
+
+            Dim scaleX = Control.Width / Server.Info.Width
+            Dim scaleY = Control.Height / Server.Info.Height
+
+            Dim left = CropLeft * scaleX
+            Dim right = CropRight * scaleX
+            Dim top = CropTop * scaleY
+            Dim bottom = CropBottom * scaleY
+
+            Dim destinationRectangle As RectangleF
+            destinationRectangle.X = CSng(left)
+            destinationRectangle.Y = CSng(CropTop * scaleY)
+            destinationRectangle.Width = CSng(Control.Width - left - right)
+            destinationRectangle.Height = CSng(Control.Height - top - bottom)
+
+            Dim sourceRectangle As RectangleF
+            sourceRectangle.X = CropLeft
+            sourceRectangle.Y = CropTop
+            sourceRectangle.Width = Server.Info.Width - CropLeft - CropRight
+            sourceRectangle.Height = Server.Info.Height - CropTop - CropBottom
+
+            DrawBitmap(CreateBitmap(pixelPtr, pitch),
+                       ConvertRectangle(sourceRectangle),
+                       ScaleRectangle(ConvertRectangle(destinationRectangle)))
+
+            DrawInfoText()
 
             DeviceContext.EndDraw()
         Catch
@@ -197,18 +193,6 @@ Public Class VideoRenderer
         Return outputRect
     End Function
 
-    Sub DrawBitmap(bitmap As ID2D1Bitmap, destinationRectangle As D2D_RECT_F)
-        Dim destinationRectanglePtr = Marshal.AllocHGlobal(Marshal.SizeOf(GetType(D2D_RECT_F)))
-        Marshal.StructureToPtr(Of D2D_RECT_F)(destinationRectangle, destinationRectanglePtr, False)
-
-        DeviceContext.DrawBitmap(bitmap, destinationRectanglePtr, 1,
-            D2D1_INTERPOLATION_MODE.D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC,
-            IntPtr.Zero, IntPtr.Zero)
-
-        Marshal.FreeHGlobal(destinationRectanglePtr)
-        Marshal.ReleaseComObject(bitmap)
-    End Sub
-
     Sub DrawBitmap(bitmap As ID2D1Bitmap, sourceRectangle As D2D_RECT_F, destinationRectangle As D2D_RECT_F)
         Dim sourceRectanglePtr = Marshal.AllocHGlobal(Marshal.SizeOf(GetType(D2D_RECT_F)))
         Marshal.StructureToPtr(Of D2D_RECT_F)(sourceRectangle, sourceRectanglePtr, False)
@@ -225,8 +209,7 @@ Public Class VideoRenderer
         Marshal.ReleaseComObject(bitmap)
     End Sub
 
-    Function CreateBitmap(pixelPtr As IntPtr) As ID2D1Bitmap
-        Dim pitch = CUInt((((Server.Info.Width * 32) + 31) And Not 31) >> 3)
+    Function CreateBitmap(pixelPtr As IntPtr, pitch As Integer) As ID2D1Bitmap
         Dim bitmapProperties As D2D1_BITMAP_PROPERTIES
 
         bitmapProperties.pixelFormat = New D2D1_PIXEL_FORMAT() With {
@@ -241,7 +224,7 @@ Public Class VideoRenderer
             .height = CUInt(Server.Info.Height)}
 
         Dim bitmap As ID2D1Bitmap
-        DeviceContext.CreateBitmap(bitmapSize, pixelPtr, pitch, bitmapProperties, bitmap).ThrowOnError()
+        DeviceContext.CreateBitmap(bitmapSize, pixelPtr, CUInt(pitch), bitmapProperties, bitmap).ThrowOnError()
         Return bitmap
     End Function
 

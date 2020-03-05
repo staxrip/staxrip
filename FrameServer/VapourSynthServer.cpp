@@ -184,32 +184,37 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
 }
 
 
-void* __stdcall VapourSynthServer::GetFrame(int position)
+HRESULT __stdcall VapourSynthServer::GetFrame(int position, void** data, int& pitch)
 {
+    if (!data)
+        return E_POINTER;
+
     if (!m_vsAPI || !m_vsNode)
-        return NULL;
+        return E_FAIL;
 
     const VSFrameRef* frame = m_vsAPI->getFrame(position, m_vsNode, m_vsErrorMessage, sizeof(m_vsErrorMessage));
 
     if (!frame)
     {
         m_Error = ConvertUtf8ToWide(m_vsErrorMessage);
-        return NULL;
+        return E_FAIL;
     }
 
-    auto readPtr = m_vsAPI->getReadPtr(frame, 0);
+    *data = (void*)m_vsAPI->getReadPtr(frame, 0);
 
-    if (!readPtr)
+    if (!(*data))
     {
         m_Error = L"VapourSynthServer m_vsAPI->getReadPtr returned NULL";
-        return NULL;
+        return E_FAIL;
     }
+    
+    pitch = m_vsAPI->getStride(frame, 0);
 
     if (m_vsFrame)
         m_vsAPI->freeFrame(m_vsFrame);
 
     m_vsFrame = frame;
-    return (void*)readPtr;
+    return S_OK;
 }
 
 

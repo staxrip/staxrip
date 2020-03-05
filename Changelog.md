@@ -2,16 +2,25 @@
 ### Todo
 
 - documentation
-- csv table creation feature in apps dialog
-- diagnostic dialog
+- use ffmpeg for auto crop
+- improve defauls
 
-### 2.0.7.4 next Beta not yet released
+### 2.0.7.5 next Beta not yet released
 
-- fix: changed x265 --rskip switch updated
-- fix: using txt chapters in mkv muxer caused xml exception
+### 2.0.7.4
+
+- fix: bug in crop dialog was fixed
+- fix: raw format of VP8/VP9 (IVF) was undefined which
+       caused a NotImplementedException
+- fix: OverflowException of unknown cause
+- fix: using txt chapters with mkv muxer caused xml exception
+- fix: if the width was not mod 16 the crop and preview
+       dialog showed a distorted image
 
 - update: AviSynth 3.5.0
 
+- new: x265 --rskip switch updated
+- new: improved main menu
 - new: improved app management dialog
 - new: mpv and mpc started in the preview dialog start at the current
        time position of the preview instead of the beginning

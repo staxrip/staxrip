@@ -19,7 +19,7 @@ Public Class Package
     Property HintDirFunc As Func(Of String)
     Property IgnoreVersion As Boolean
     Property IsIncluded As Boolean = True
-    Property IsLaunchable As Boolean
+    Property Launchable As Boolean
     Property IsRequiredFunc As Func(Of Boolean)
     Property Name As String
     Property SetupFilename As String
@@ -69,15 +69,6 @@ Public Class Package
         .Description = "UnDot is a simple median filter for removing dots, that is stray orphan pixels and mosquito noise.",
         .AvsFilterNames = {"UnDot"}})
 
-    'TODO: add or remove
-    'Shared Property SvtAv1 As Package = Add(New Package With {
-    '    .Name = "SVT-AV1",
-    '    .Filename = "SvtAv1EncApp.exe",
-    '    .DirPath = "Encoders\SVT-AV1",
-    '    .WebURL = "https://github.com/OpenVisualCloud/SVT-AV1",
-    '    .HelpURL = "https://github.com/OpenVisualCloud/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
-    '    .Description = "The Scalable Video Technology AV1 Encoder."})
-
     Shared Property eac3to As Package = Add(New Package With {
         .Name = "eac3to",
         .Filename = "eac3to.exe",
@@ -123,7 +114,7 @@ Public Class Package
         .Name = "chapterEditor",
         .DirPath = "Support\chapterEditor",
         .Filename = "chapterEditor.exe",
-        .IsLaunchable = True,
+        .Launchable = True,
         .Description = "ChapterEditor is a chapter editor and menu editor for OGG, XML, TTXT, m.AVCHD, m.editions-mkv, Matroska Menu.",
         .WebURL = "https://forum.doom9.org/showthread.php?t=169984"})
 
@@ -202,7 +193,7 @@ Public Class Package
     Shared Property DGIndex As Package = Add(New Package With {
         .Name = "DGIndex",
         .Filename = "DGIndex.exe",
-        .IsLaunchable = True,
+        .Launchable = True,
         .DirPath = "Support\DGIndex",
         .HelpFilename = "DGIndexManual.html",
         .Description = "MPEG-2 demuxing and indexing app.",
@@ -211,7 +202,7 @@ Public Class Package
     Shared Property BDSup2SubPP As Package = Add(New Package With {
         .Name = "BDSup2Sub++",
         .Filename = "bdsup2sub++.exe",
-        .IsLaunchable = True,
+        .Launchable = True,
         .DirPath = "Subtitles\BDSup2Sub++",
         .WebURL = "https://github.com/amichaeltm/BDSup2SubPlusPlus",
         .Description = "Converts Blu-ray subtitles to other formats like VobSub."})
@@ -236,7 +227,7 @@ Public Class Package
     Shared Property SubtitleEdit As Package = Add(New Package With {
         .Name = "Subtitle Edit",
         .Filename = "SubtitleEdit.exe",
-        .IsLaunchable = True,
+        .Launchable = True,
         .DirPath = "Support\SubtitleEdit",
         .WebURL = "http://www.nikse.dk/SubtitleEdit",
         .HelpURL = "http://www.nikse.dk/SubtitleEdit/Help",
@@ -245,17 +236,17 @@ Public Class Package
     Shared Property mpvnet As Package = Add(New Package With {
         .Name = "mpv.net",
         .Filename = "mpvnet.exe",
-        .IsLaunchable = True,
+        .Launchable = True,
         .WebURL = "https://github.com/stax76/mpv.net",
         .Description = "libmpv based media player."})
 
     Shared Property MpcBE As Package = Add(New Package With {
         .Name = "MPC-BE",
         .Filename = "mpc-be64.exe",
-        .IsLaunchable = True,
+        .Launchable = True,
         .IsIncluded = False,
         .IgnoreVersion = True,
-        .IsRequired = False,
+        .Required = False,
         .WebURL = "https://sourceforge.net/projects/mpcbe/",
         .Description = "DirectShow based media player.",
         .HintDirectories = {Registry.LocalMachine.GetString("SOFTWARE\MPC-BE", "ExePath").Dir, Folder.Programs + "MPC-BE x64\"}})
@@ -263,10 +254,10 @@ Public Class Package
     Shared Property MpcHC As Package = Add(New Package With {
         .Name = "MPC-HC",
         .Filename = "mpc-hc64.exe",
-        .IsLaunchable = True,
+        .Launchable = True,
         .IsIncluded = False,
         .IgnoreVersion = True,
-        .IsRequired = False,
+        .Required = False,
         .WebURL = "https://mpc-hc.org/",
         .Description = "DirectShow based media player.",
         .HintDirectories = {Registry.CurrentUser.GetString("Software\MPC-HC\MPC-HC", "ExePath").Dir, Folder.Programs + "MPC-HC\"}})
@@ -326,7 +317,7 @@ Public Class Package
         .Filename = "VSRip.exe",
         .DirPath = "subtitles\VSRip",
         .Description = "VSRip rips VobSub subtitles.",
-        .IsLaunchable = True,
+        .Launchable = True,
         .WebURL = "http://sourceforge.net/projects/guliverkli"})
 
     Shared Property flash3kyuu_deband As Package = Add(New PluginPackage With {
@@ -551,18 +542,18 @@ Public Class Package
                                   End If
                               Next
 
-                              Return BM3D.IsRequired OrElse
-                                     DCTFilter.IsRequired OrElse
-                                     DCTFilterF.IsRequired OrElse
-                                     DCTFilterVS.IsRequired OrElse
-                                     DFTTest.IsRequired OrElse
-                                     DFTTestAvs.IsRequired OrElse
-                                     FFT3DFilter.IsRequired OrElse
-                                     FFT3DGPU.IsRequired OrElse
-                                     havsfunc.IsRequired OrElse
-                                     MCTemporalDenoise.IsRequired OrElse
-                                     muvsfunc.IsRequired OrElse
-                                     SMDegrain.IsRequired
+                              Return BM3D.Required OrElse
+                                     DCTFilter.Required OrElse
+                                     DCTFilterF.Required OrElse
+                                     DCTFilterVS.Required OrElse
+                                     DFTTest.Required OrElse
+                                     DFTTestAvs.Required OrElse
+                                     FFT3DFilter.Required OrElse
+                                     FFT3DGPU.Required OrElse
+                                     havsfunc.Required OrElse
+                                     MCTemporalDenoise.Required OrElse
+                                     muvsfunc.Required OrElse
+                                     SMDegrain.Required
                           End Function,
         .SetupAction = Sub()
                            Using proc As New Process
@@ -687,9 +678,9 @@ Public Class Package
             .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
             .FixedDir = Folder.System,
             .IgnoreVersion = True,
-            .IsRequiredFunc = Function() Items("SangNom2 avs").IsRequired OrElse
-                                         Items("Deblock avs").IsRequired OrElse
-                                         Items("mClean avs").IsRequired,
+            .IsRequiredFunc = Function() Items("SangNom2 avs").Required OrElse
+                                         Items("Deblock avs").Required OrElse
+                                         Items("mClean avs").Required,
             .TreePath = "Runtimes"})
 
         Add(New Package With {
@@ -709,8 +700,8 @@ Public Class Package
             .FixedDir = Folder.System,
             .IgnoreVersion = True,
             .TreePath = "Runtimes",
-            .IsRequiredFunc = Function() SangNom2.IsRequired OrElse VSFilterMod.IsRequired OrElse
-                                         eac3to.IsRequired})
+            .IsRequiredFunc = Function() SangNom2.Required OrElse VSFilterMod.Required OrElse
+                                         eac3to.Required})
 
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",
@@ -1846,7 +1837,7 @@ Public Class Package
 
     Overridable Property StartAction As Action
         Get
-            If IsLaunchable Then Return Sub() g.StartProcess(Path)
+            If Launchable Then Return Sub() g.StartProcess(Path)
             Return StartActionValue
         End Get
         Set(value As Action)
@@ -1854,21 +1845,18 @@ Public Class Package
         End Set
     End Property
 
-    Overridable ReadOnly Property LaunchTitle As String
-        Get
-            Return Name
-        End Get
-    End Property
+    Private RequiredValue As Boolean = True
 
-    Private IsRequiredValue As Boolean = True
-
-    Overridable Property IsRequired() As Boolean
+    Overridable Property Required() As Boolean
         Get
-            If Not IsRequiredFunc Is Nothing Then Return IsRequiredFunc.Invoke
-            Return IsRequiredValue
+            If Not IsRequiredFunc Is Nothing Then
+                Return IsRequiredFunc.Invoke
+            End If
+
+            Return RequiredValue
         End Get
         Set(value As Boolean)
-            IsRequiredValue = value
+            RequiredValue = value
         End Set
     End Property
 
@@ -1944,7 +1932,7 @@ Public Class Package
     End Function
 
     Function VerifyOK(Optional showEvenIfNotRequired As Boolean = False) As Boolean
-        If (IsRequired() OrElse showEvenIfNotRequired) AndAlso IsStatusCritical() Then
+        If (Required() OrElse showEvenIfNotRequired) AndAlso IsStatusCritical() Then
             Using f As New AppsForm
                 f.ShowPackage(Me)
                 f.ShowDialog()
@@ -2017,7 +2005,9 @@ Public Class Package
             Return GetAppNotFoundMessage()
         End If
 
-        If FixedDir <> "" AndAlso pathVar <> "" AndAlso Not pathVar.ToLower.StartsWith(FixedDir.ToLower) Then
+        If FixedDir <> "" AndAlso pathVar <> "" AndAlso
+            Not pathVar.ToLower.StartsWith(FixedDir.ToLower) Then
+
             Return "The App has To be located at: " + FixedDir
         End If
     End Function
@@ -2026,7 +2016,9 @@ Public Class Package
         Dim fp = Path
 
         If fp <> "" AndAlso Not IgnoreVersion Then
-            If (VersionDate - File.GetLastWriteTimeUtc(fp)).TotalDays > 3 Then Return True
+            If (VersionDate - File.GetLastWriteTimeUtc(fp)).TotalDays > 3 Then
+                Return True
+            End If
         End If
     End Function
 
@@ -2035,7 +2027,7 @@ Public Class Package
 
         If fp <> "" Then
             Dim dt = File.GetLastWriteTimeUtc(fp)
-            Return dt.AddDays(-2) <VersionDate AndAlso dt.AddDays(2) > VersionDate
+            Return dt.AddDays(-2) < VersionDate AndAlso dt.AddDays(2) > VersionDate
         End If
     End Function
 
@@ -2167,7 +2159,7 @@ Public Class PluginPackage
     Property VSFiltersFunc As Func(Of VideoFilter())
     Property AvsFiltersFunc As Func(Of VideoFilter())
 
-    Public Overrides Property IsRequired As Boolean
+    Public Overrides Property Required As Boolean
         Get
             Return IsPluginPackageRequired(Me)
         End Get
@@ -2237,7 +2229,7 @@ Public Class PythonPackage
         SetupFilename = "Installers\python-3.7.6-amd64-webinstall.exe"
     End Sub
 
-    Public Overrides Property IsRequired As Boolean
+    Public Overrides Property Required As Boolean
         Get
             Return p.Script.Engine = ScriptEngine.VapourSynth
         End Get
@@ -2290,7 +2282,7 @@ Public Class qaacPackage
         Description = "qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the x64 iTunes installer using a decompression tool like 7-Zip. The makeportable script found on the qaac website can also be used."
     End Sub
 
-    Overrides Property IsRequired As Boolean
+    Overrides Property Required As Boolean
         Get
             Return TypeOf p.Audio0 Is GUIAudioProfile AndAlso
                 DirectCast(p.Audio0, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.qaac OrElse
@@ -2321,7 +2313,7 @@ Public Class DGIndexNVPackage
         WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html"
         Description = Strings.DGDecNV
         HelpFilename = "DGIndexNVManual.html"
-        IsLaunchable = True
+        Launchable = True
         IsIncluded = False
         FileNotFoundMessage = "DGIndexNV can be disabled under Tools/Settings/Demux."
         HintDirFunc = Function() DGDecodeNV.GetStoredPath.Dir
@@ -2333,7 +2325,7 @@ Public Class DGIndexNVPackage
         End If
     End Function
 
-    Overrides Property IsRequired As Boolean
+    Overrides Property Required As Boolean
         Get
             Return CommandLineDemuxer.IsActive("DGIndexNV")
         End Get
@@ -2363,7 +2355,7 @@ Public Class DGIndexIMPackage
         End If
     End Function
 
-    Overrides Property IsRequired As Boolean
+    Overrides Property Required As Boolean
         Get
             Return CommandLineDemuxer.IsActive("DGIndexIM")
         End Get
@@ -2380,7 +2372,7 @@ Public Class dsmuxPackage
         Filename = "dsmux.exe"
         Description = Strings.dsmux
         WebURL = "http://haali.su/mkv"
-        IsRequired = False
+        Required = False
         IsIncluded = False
     End Sub
 
@@ -2392,7 +2384,7 @@ Public Class dsmuxPackage
         End Get
     End Property
 
-    Overrides Property IsRequired As Boolean
+    Overrides Property Required As Boolean
         Get
             Return CommandLineDemuxer.IsActive("dsmux")
         End Get
@@ -2409,7 +2401,7 @@ Public Class HaaliSplitter
         Filename = "splitter.ax"
         WebURL = "http://haali.su/mkv"
         Description = "Haali Splitter is used by eac3to and dsmux to write MKV files. Haali Splitter and LAV Filters overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last."
-        IsRequired = False
+        Required = False
         IsIncluded = False
     End Sub
 

@@ -4325,13 +4325,15 @@ Public Class MainForm
     Shared Function GetDefaultMainMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
-        ret.Add("Project|Open...", NameOf(ShowFileBrowserToOpenProject), Keys.O Or Keys.Control, Symbol.OpenFile)
-        ret.Add("Project|Save", NameOf(SaveProject), Keys.S Or Keys.Control, Symbol.Save)
-        ret.Add("Project|Save As...", NameOf(SaveProjectAs))
-        ret.Add("Project|Save As Template...", NameOf(SaveProjectAsTemplate))
-        ret.Add("Project|-")
-        ret.Add("Project|Templates", NameOf(DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
-        ret.Add("Project|Recent", NameOf(DynamicMenuItem), {DynamicMenuItemID.RecentProjects})
+        ret.Add("File|Open Video...", NameOf(ShowOpenSourceDialog), Keys.O Or Keys.Control)
+        ret.Add("File|-")
+        ret.Add("File|Open Project...", NameOf(ShowFileBrowserToOpenProject))
+        ret.Add("File|Save Project", NameOf(SaveProject), Keys.S Or Keys.Control, Symbol.Save)
+        ret.Add("File|Save Project As...", NameOf(SaveProjectAs))
+        ret.Add("File|Save Project As Template...", NameOf(SaveProjectAsTemplate))
+        ret.Add("File|-")
+        ret.Add("File|Project Templates", NameOf(DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
+        ret.Add("File|Recent Projects", NameOf(DynamicMenuItem), {DynamicMenuItemID.RecentProjects})
 
         ret.Add("Crop", NameOf(ShowCropDialog), Keys.F4)
         ret.Add("Preview", NameOf(ShowPreview), Keys.F5)
@@ -4817,6 +4819,7 @@ Public Class MainForm
     <Command("Dialog to open source files.")>
     Private Sub ShowOpenSourceDialog()
         Dim td As New TaskDialog(Of String)
+
         td.MainInstruction = "Select a method for opening a source."
         td.AddCommandLink("Single File", "Single File")
         td.AddCommandLink("Blu-ray Folder", "Blu-ray Folder")
@@ -4828,7 +4831,10 @@ Public Class MainForm
                 Using d As New OpenFileDialog
                     d.SetFilter(FileTypes.Video)
                     d.SetInitDir(s.LastSourceDir)
-                    If d.ShowDialog() = DialogResult.OK Then OpenVideoSourceFiles(d.FileNames)
+
+                    If d.ShowDialog() = DialogResult.OK Then
+                        OpenVideoSourceFiles(d.FileNames)
+                    End If
                 End Using
             Case "Merge Files"
                 Using form As New SourceFilesForm()
@@ -6099,8 +6105,6 @@ Public Class MainForm
         Http.ShowUpdateQuestion()
         Http.CheckForUpdates()
         MyBase.OnShown(e)
-        'TestForm.ShowForm()
-        'Close()
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)

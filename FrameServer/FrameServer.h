@@ -22,7 +22,7 @@ struct ServerInfo
 struct IFrameServer : IUnknown
 {
     virtual HRESULT     __stdcall OpenFile(WCHAR* file) = NULL;
-    virtual void*       __stdcall GetFrame(int position) = NULL;
+    virtual HRESULT     __stdcall GetFrame(int position, void** frame, int& pitch) = NULL;
     virtual ServerInfo* __stdcall GetInfo() = NULL;
     virtual WCHAR*      __stdcall GetError() = NULL;
 };

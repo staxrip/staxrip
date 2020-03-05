@@ -1,6 +1,8 @@
-Imports System.Text.RegularExpressions
-Imports VB6 = Microsoft.VisualBasic
+
 Imports System.Text
+Imports System.Text.RegularExpressions
+
+Imports VB6 = Microsoft.VisualBasic
 
 <Serializable()>
 Public MustInherit Class Demuxer
@@ -739,13 +741,20 @@ Public Class mkvDemuxer
                      onlyEnabled As Boolean,
                      videoDemuxing As Boolean)
 
-        If audioStreams Is Nothing Then audioStreams = New List(Of AudioStream)
-        If subtitles Is Nothing Then subtitles = New List(Of Subtitle)
+        If audioStreams Is Nothing Then
+            audioStreams = New List(Of AudioStream)
+        End If
+
+        If subtitles Is Nothing Then
+            subtitles = New List(Of Subtitle)
+        End If
 
         If onlyEnabled Then audioStreams = audioStreams.Where(Function(arg) arg.Enabled)
         subtitles = subtitles.Where(Function(subtitle) subtitle.Enabled)
 
-        If audioStreams.Count = 0 AndAlso subtitles.Count = 0 AndAlso Not videoDemuxing Then Exit Sub
+        If audioStreams.Count = 0 AndAlso subtitles.Count = 0 AndAlso Not videoDemuxing Then
+            Exit Sub
+        End If
 
         Dim args = sourcefile.Escape + " tracks"
 
@@ -753,14 +762,25 @@ Public Class mkvDemuxer
             Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify " + sourcefile.Escape)
             Dim id = Regex.Match(stdout, "Track ID (\d+): video").Groups(1).Value.ToInt
             Dim outpath = proj.TempDir + sourcefile.Base + MediaInfo.GetVideoStreams(sourcefile)(0).ExtFull
-            If outpath <> sourcefile Then args += " " & id & ":" + outpath.Escape
+
+            If outpath <> sourcefile Then
+                args += " " & id & ":" + outpath.Escape
+            End If
         End If
 
         For Each subtitle In subtitles
-            If Not subtitle.Enabled Then Continue For
+            If Not subtitle.Enabled Then
+                Continue For
+            End If
+
             Dim forced = If(subtitle.Forced, "_forced", "")
             Dim outpath = proj.TempDir + sourcefile.Base + " " + subtitle.Filename + forced + subtitle.ExtFull
-            If outpath.Length > 259 Then outpath = proj.TempDir + sourcefile.Base.Shorten(10) + " " + subtitle.Filename.Shorten(10) + forced + subtitle.ExtFull
+
+            If outpath.Length > 259 Then
+                outpath = proj.TempDir + sourcefile.Base.Shorten(10) + " " +
+                    subtitle.Filename.Shorten(10) + forced + subtitle.ExtFull
+            End If
+
             args += " " & subtitle.StreamOrder & ":" + outpath.Escape
         Next
 

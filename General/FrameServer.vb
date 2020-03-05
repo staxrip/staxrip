@@ -30,11 +30,11 @@ Public Class FrameServer
         End Get
     End Property
 
-    <DllImport("FrameServer")>
+    <DllImport("FrameServer.dll")>
     Shared Function CreateAviSynthServer() As IFrameServer
     End Function
 
-    <DllImport("FrameServer")>
+    <DllImport("FrameServer.dll")>
     Shared Function CreateVapourSynthServer() As IFrameServer
     End Function
 
@@ -49,8 +49,8 @@ End Class
 <Guid("A933B077-7EC2-42CC-8110-91DE21116C1A")>
 <InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
 Public Interface IFrameServer
-    <PreserveSig> Function OpenFile(file As String) As IntPtr
-    <PreserveSig> Function GetFrame(position As Integer) As IntPtr
+    <PreserveSig> Function OpenFile(file As String) As Integer
+    <PreserveSig> Function GetFrame(position As Integer, ByRef data As IntPtr, ByRef pitch As Integer) As Integer
     <PreserveSig> Function GetInfo() As IntPtr
     <PreserveSig> Function GetError() As IntPtr
 End Interface

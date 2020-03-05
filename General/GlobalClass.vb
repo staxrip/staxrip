@@ -487,13 +487,20 @@ Public Class GlobalClass
 
     Function GetTextEditorPath() As String
         Dim ret = GetAppPathForExtension("txt")
-        If ret <> "" Then Return ret
+
+        If ret <> "" Then
+            Return ret
+        End If
+
         Return "notepad.exe"
     End Function
 
     Function GetAppPathForExtension(ParamArray extensions As String()) As String
         For Each extension In extensions
-            If Not extension.StartsWith(".") Then extension = "." + extension
+            If Not extension.StartsWith(".") Then
+                extension = "." + extension
+            End If
+
             Dim c = 0UI
 
             If Native.AssocQueryString(&H40, 2, extension, Nothing, Nothing, c) = 1 Then
@@ -502,7 +509,10 @@ Public Class GlobalClass
 
                     If 0 = Native.AssocQueryString(&H40, 2, extension, Nothing, sb, c) Then
                         Dim ret = sb.ToString
-                        If File.Exists(ret) Then Return ret
+
+                        If File.Exists(ret) Then
+                            Return ret
+                        End If
                     End If
                 End If
             End If

@@ -58,7 +58,7 @@ public:
     // IFrameServer
 
     HRESULT     __stdcall OpenFile(WCHAR* file);
-    void*       __stdcall GetFrame(int position);
+    HRESULT     __stdcall GetFrame(int position, void** data, int& pitch);
     ServerInfo* __stdcall GetInfo();
     WCHAR*      __stdcall GetError();
 };

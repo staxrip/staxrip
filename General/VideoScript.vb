@@ -184,9 +184,9 @@ Public Class VideoScript
             If convertToRGB Then
                 If Engine = ScriptEngine.AviSynth Then
                     If p.SourceHeight > 576 Then
-                        code += BR + "ConvertBits(8)" + BR + "ConvertToRGB(matrix=""Rec709"")"
+                        code += BR + "ConvertBits(8)" + BR + "ConvertToRGB32(matrix=""Rec709"")"
                     Else
-                        code += BR + "ConvertBits(8)" + BR + "ConvertToRGB(matrix=""Rec601"")"
+                        code += BR + "ConvertBits(8)" + BR + "ConvertToRGB32(matrix=""Rec601"")"
                     End If
 
                     If flipVertical Then

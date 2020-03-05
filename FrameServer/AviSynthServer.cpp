@@ -84,7 +84,7 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
         m_Info.FrameRateNum = vi.fps_numerator;
         m_Info.FrameRateDen = vi.fps_denominator;
         m_Info.ColorSpace = vi.pixel_type;
-
+        
         return S_OK;
     }
     catch (AvisynthError& e)
@@ -105,22 +105,23 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
 }
 
 
-void* __stdcall AviSynthServer::GetFrame(int position)
+HRESULT __stdcall AviSynthServer::GetFrame(int position, void** data, int& pitch)
 {
     try
     {
         if (m_Info.FrameCount == 0)
-            return NULL;
+            return E_FAIL;
 
         AVS_linkage = m_Linkage;
 
         m_Frame = m_Clip->GetFrame(position, m_ScriptEnvironment);
-        auto readPtr = m_Frame->GetReadPtr();
+        *data = (void*)m_Frame->GetReadPtr();
 
-        if (!readPtr)
+        if (!(*data))
             throw std::exception("AviSynth+ pixel data pointer is null");
-
-        return (void*)readPtr;
+        
+        pitch = m_Frame->GetPitch();
+        return S_OK;
     }
     catch (AvisynthError& e)
     {

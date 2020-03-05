@@ -730,7 +730,11 @@ Public Class NullEncoder
                 Select Case sourceFile.Ext
                     Case "mkv"
                         Dim streams = MediaInfo.GetVideoStreams(sourceFile)
-                        If streams.Count = 0 Then Return sourceFile
+
+                        If streams.Count = 0 Then
+                            Return sourceFile
+                        End If
+
                         Return p.TempDir + sourceFile.Base + streams(0).ExtFull
                 End Select
             End If

@@ -1749,7 +1749,7 @@ Public Class VideoStream
                     Return "avi"
                 Case "HEVC"
                     Return "h265"
-                Case "AV1"
+                Case "AV1", "VP8", "VP9"
                     Return "ivf"
                 Case Else
                     Throw New NotImplementedException("Video format " + Format + " is not supported.")
@@ -2177,13 +2177,13 @@ Public Class BitmapUtil
     End Function
 
     Shared Function CreateBitmap(server As FrameServer, position As Integer) As Bitmap
-        Dim bmp As New Bitmap(server.Info.Width, server.Info.Height, PixelFormat.Format32bppArgb)
-        Dim rect As Rectangle = New Rectangle(0, 0, bmp.Width, bmp.Height)
-        Dim data = bmp.LockBits(rect, ImageLockMode.ReadWrite, bmp.PixelFormat)
-        Dim len = ((((bmp.Width * 32) + 31) And Not 31) >> 3) * bmp.Height
-        CopyMemory(data.Scan0, server.NativeServer.GetFrame(position), CUInt(len))
-        bmp.UnlockBits(data)
-        Return bmp
+        Dim pitch As Integer
+        Dim data As IntPtr
+
+        If server.NativeServer.GetFrame(position, data, pitch) = 0 Then
+            Return New Bitmap(server.Info.Width, server.Info.Height,
+                pitch, PixelFormat.Format32bppArgb, data)
+        End If
     End Function
 
     <DllImport("kernel32")>

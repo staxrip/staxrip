@@ -1702,7 +1702,7 @@ Public Class MainForm
         End If
 
         For Each filter In filters
-            td.AddCommandLink(filter.Name, filter)
+            td.AddCommand(filter.Name, filter)
         Next
 
         Dim ret = td.Show
@@ -3005,8 +3005,8 @@ Public Class MainForm
                         Using td As New TaskDialog(Of String)
                             td.MainInstruction = "The output file of the video encoder already exists"
                             td.Content = "Would you like to skip video encoding and reuse the existing video encoder output file or would you like to re-encode and overwrite it?"
-                            td.AddCommandLink("Reuse", "skip")
-                            td.AddCommandLink("Re-encode", "encode")
+                            td.AddCommand("Reuse", "skip")
+                            td.AddCommand("Re-encode", "encode")
 
                             Select Case td.Show
                                 Case "skip"
@@ -3031,8 +3031,8 @@ Public Class MainForm
                         Using td As New TaskDialog(Of String)
                             td.MainInstruction = "An audio encoding output file already exists"
                             td.Content = "Would you like to skip audio encoding and reuse existing audio encoding output files or would you like to re-encode and overwrite?"
-                            td.AddCommandLink("Reuse", "skip")
-                            td.AddCommandLink("Re-encode", "encode")
+                            td.AddCommand("Reuse", "skip")
+                            td.AddCommand("Re-encode", "encode")
 
                             Select Case td.Show
                                 Case "skip"
@@ -3248,7 +3248,7 @@ Public Class MainForm
         td.MainInstruction = "Please select a template"
 
         For Each i In Directory.GetFiles(Folder.Template, "*.srip")
-            td.AddCommandLink(FilePath.GetBase(i), i)
+            td.AddCommand(FilePath.GetBase(i), i)
         Next
 
         If td.Show <> "" Then Return OpenProject(td.SelectedValue, True)
@@ -3692,17 +3692,14 @@ Public Class MainForm
                 Exit Sub
             End If
 
-            If p.Script.GetError <> "" Then
-                MsgError("Script Error", p.Script.GetError)
-                Exit Sub
-            End If
-
-            p.Script.RemoveFilter("Cutting")
-            FiltersListView.Load()
-            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
-
             Dim script = p.Script.GetNewScript
             script.Path = p.TempDir + p.TargetFile.Base + "_preview." + script.FileType
+            script.RemoveFilter("Cutting")
+
+            If script.GetError <> "" Then
+                MsgError("Script Error", script.GetError)
+                Exit Sub
+            End If
 
             Dim form As New PreviewForm(script)
             form.Owner = g.MainForm
@@ -4391,9 +4388,6 @@ Public Class MainForm
         ret.Add("Apps|Media Info|MediaInfo File", NameOf(MediaInfoShowMedia))
         ret.Add("Apps|Media Info|MediaInfo Folder", NameOf(ShowMediaInfoFolderViewDialog))
         ret.Add("Apps|Media Info|Ingest HDR", NameOf(SaveMKVHDR))
-        ret.Add("Apps|Script Info|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
-        ret.Add("Apps|Script Info|vspipe", NameOf(g.DefaultCommands.StartTool), {"vspipe"})
-        ret.Add("Apps|Script Info|avs2pipemod", NameOf(g.DefaultCommands.StartTool), {"avs2pipemod"})
         ret.Add("Apps|DGIndex|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|DGIndex|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
         ret.Add("Apps|Players|mpv.net", NameOf(g.DefaultCommands.StartTool), {"mpv.net"})
@@ -4674,6 +4668,12 @@ Public Class MainForm
         p.BitrateIsFixed = False
     End Sub
 
+    <Command("Shows script info using various console tools.")>
+    Sub ShowScriptInfo()
+        p.Script.Synchronize()
+        g.ShowAdvancedScriptInfo(p.Script)
+    End Sub
+
     <Command("Sets the bitrate according to the compressibility.")>
     Sub SetPercent(<DispName("Percent Value")> value As Integer)
         tbTargetSize.Text = g.GetAutoSize(value).ToString
@@ -4830,10 +4830,10 @@ Public Class MainForm
         Dim td As New TaskDialog(Of String)
 
         td.MainInstruction = "Select a method for opening a source."
-        td.AddCommandLink("Single File", "Single File")
-        td.AddCommandLink("Blu-ray Folder", "Blu-ray Folder")
-        td.AddCommandLink("Merge Files", "Merge Files")
-        td.AddCommandLink("File Batch", "File Batch")
+        td.AddCommand("Single File", "Single File")
+        td.AddCommand("Blu-ray Folder", "Blu-ray Folder")
+        td.AddCommand("Merge Files", "Merge Files")
+        td.AddCommand("File Batch", "File Batch")
 
         Select Case td.Show
             Case "Single File"
@@ -4913,7 +4913,9 @@ Public Class MainForm
                     End If
                 End Using
             Case "Blu-ray Folder"
-                If p.SourceFile <> "" Then If Not OpenProject() Then Exit Sub
+                If p.SourceFile <> "" Then
+                    If Not OpenProject() Then Exit Sub
+                End If
 
                 Using d As New FolderBrowserDialog
                     d.Description = "Please select a Blu-ray source folder."
@@ -4936,7 +4938,7 @@ Public Class MainForm
                         Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + BR2)
                         Log.WriteLine("Source Drive Type: " + New DriveInfo(d.SelectedPath).DriveType.ToString + BR)
 
-                        Dim output = ProcessHelp.GetStdOut(Package.eac3to.Path, srcPath.Escape).Replace(VB6.vbBack, "")
+                        Dim output = ProcessHelp.GetConsoleOutput(Package.eac3to.Path, srcPath.Escape).Replace(VB6.vbBack, "")
                         Log.WriteLine(output)
 
                         Dim a = Regex.Split(output, "^\d+\)", RegexOptions.Multiline).ToList
@@ -6064,6 +6066,7 @@ Public Class MainForm
         End Using
     End Sub
 
+    'TODO: -
     '<Command("Searches for New Releases of Staxrip")>
     'Sub UpdateStaxRip()
     '    Using f As New UpdateForm
@@ -6114,6 +6117,7 @@ Public Class MainForm
         Http.ShowUpdateQuestion()
         Http.CheckForUpdates()
         MyBase.OnShown(e)
+        'TestForm.ShowForm()
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)

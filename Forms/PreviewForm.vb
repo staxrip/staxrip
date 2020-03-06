@@ -957,7 +957,7 @@ Public Class PreviewForm
             For Each i In File.ReadAllLines(fp)
                 Dim left = i.Left("=")
                 If left.Length <> 9 Then Continue For
-                td.AddCommandLink(left.Substring(7) + "   " + i.Right("="), i.Right("="))
+                td.AddCommand(left.Substring(7) + "   " + i.Right("="), i.Right("="))
             Next
 
             If td.Show() <> "" Then

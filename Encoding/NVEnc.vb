@@ -50,9 +50,9 @@ Public Class NVEnc
                                         SaveProfile(enc)
                                     End Sub
 
-            form.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.NVEnc.Path, "--check-hw"))))
-            form.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.NVEnc.Path, "--check-features"))))
-            form.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetStdOut(Package.NVEnc.Path, "--check-environment"))))
+            form.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw"))))
+            form.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-features"))))
+            form.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-environment"))))
             ActionMenuItem.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
 
             If form.ShowDialog() = DialogResult.OK Then
@@ -71,7 +71,7 @@ Public Class NVEnc
 
     Overrides Sub Encode()
         If OutputExt = "h265" Then
-            Dim codecs = ProcessHelp.GetStdOut(Package.NVEnc.Path, "--check-hw").Right("Codec(s)")
+            Dim codecs = ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw").Right("Codec(s)")
             If Not codecs?.ToLower.Contains("hevc") Then Throw New ErrorAbortException("NVEnc Error", "H.265/HEVC isn't supported by the graphics card.")
         End If
 

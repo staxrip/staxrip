@@ -27,11 +27,27 @@ Public Class Folder
         End Get
     End Property
 
+    Private Shared StartupValue As String
+
     Shared ReadOnly Property Startup() As String
         Get
-            Return Application.StartupPath.FixDir
+            If StartupValue Is Nothing Then
+                Dim buffer As New StringBuilder(500)
+                QueryFullProcessImageName(Process.GetCurrentProcess.Handle, 0, buffer, buffer.Capacity)
+                StartupValue = buffer.ToString.Dir
+            End If
+
+            Return StartupValue
         End Get
     End Property
+
+    <DllImport("kernel32.dll")>
+    Private Shared Function QueryFullProcessImageName(
+        hProcess As IntPtr,
+        dwFlags As Integer,
+        lpExeName As StringBuilder,
+        ByRef lpdwSize As Integer) As Boolean
+    End Function
 
     Shared ReadOnly Property Current() As String
         Get
@@ -130,9 +146,9 @@ Public Class Folder
                     td.MainInstruction = "Settings Directory"
                     td.Content = "Select the location of the settings directory."
 
-                    td.AddCommandLink(Folder.AppDataRoaming + "StaxRip")
-                    td.AddCommandLink(Folder.Startup + "Settings")
-                    td.AddCommandLink("Browse for custom directory", "custom")
+                    td.AddCommand(Folder.AppDataRoaming + "StaxRip")
+                    td.AddCommand(Folder.Startup + "Settings")
+                    td.AddCommand("Browse for custom directory", "custom")
 
                     Dim dir = td.Show
 

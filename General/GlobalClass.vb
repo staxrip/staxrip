@@ -1214,6 +1214,38 @@ Public Class GlobalClass
 
     Function GetTimeString(sec As Double) As String
         Dim ts = TimeSpan.FromSeconds(sec)
-        Return CInt(Math.Floor(ts.TotalMinutes)).ToString("00") + ":" + CInt(Math.Floor(ts.Seconds)).ToString("00")
+
+        Return CInt(Math.Floor(ts.TotalMinutes)).ToString("00") + ":" +
+            CInt(Math.Floor(ts.Seconds)).ToString("00")
     End Function
+
+    Sub ShowAdvancedScriptInfo(script As VideoScript)
+        If script.Engine = ScriptEngine.AviSynth Then
+            Using td As New TaskDialog(Of String)
+                td.MainInstruction = "Choose below"
+                td.AddCommand("avsmeter benchmark")
+                td.AddCommand("avsmeter info")
+                td.AddCommand("avs2pipemod info")
+                td.Show()
+
+                Select Case td.SelectedText
+                    Case "avs2pipemod info"
+                        g.DefaultCommands.ExecutePowerShellScript(
+                            $"""`n{Package.avs2pipemod.Name} {Package.avs2pipemod.Version}""; & '{Package.avs2pipemod.Path}' -info '{script.Path}'", True)
+                    Case "avsmeter benchmark"
+                        g.DefaultCommands.ExecutePowerShellScript(
+                            $"& '{Package.AVSMeter.Path}' '{script.Path}'", True)
+                    Case "avsmeter info"
+                        g.DefaultCommands.ExecutePowerShellScript(
+                            $"& '{Package.AVSMeter.Path}' -info '{script.Path}';""""", True)
+                    Case "avsmeter"
+                        g.DefaultCommands.ExecutePowerShellScript(
+                            $"& '{Package.AVSMeter.Path}' '{script.Path}'", True)
+                End Select
+            End Using
+        Else
+            g.DefaultCommands.ExecutePowerShellScript(
+                $"""`n{Package.vspipe.Name} {Package.vspipe.Version}`n""; & '{Package.vspipe.Path}' --info '{script.Path}' -;""""", True)
+        End If
+    End Sub
 End Class

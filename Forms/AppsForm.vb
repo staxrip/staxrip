@@ -274,6 +274,9 @@ Public Class AppsForm
         AddHandler DownloadButton.Click, Sub() g.StartProcess(CurrentPackage.DownloadURL)
         DownloadButton.AutoSize = True
         DownloadButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        DownloadButton.Font = New Font("Segoe UI", 10)
+        DownloadButton.Margin = New Padding(FontHeight \ 3)
+        DownloadButton.Padding = New Padding(FontHeight \ 5)
 
         Dim title = New Label With {
             .Font = New Font(flp.Font.FontFamily, 14 * s.UIScaleFactor, FontStyle.Bold),
@@ -307,7 +310,7 @@ Public Class AppsForm
         DownloadButton.Visible = CurrentPackage.DownloadURL <> "" AndAlso (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> ""))
 
         tsbExplore.Enabled = path <> ""
-        tsbLaunch.Enabled = Not CurrentPackage.StartAction Is Nothing AndAlso Not CurrentPackage.IsStatusCritical
+        tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso Not CurrentPackage.IsStatusCritical
         tsbWebsite.Enabled = CurrentPackage.WebURL <> ""
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
         tsbHelp.Enabled = CurrentPackage.HelpFileOrURL <> ""
@@ -488,7 +491,7 @@ Public Class AppsForm
     End Sub
 
     Private Sub tsbLaunch_Click(sender As Object, e As EventArgs) Handles tsbLaunch.Click
-        CurrentPackage.StartAction.Invoke()
+        CurrentPackage.LaunchAction?.Invoke()
     End Sub
 
     <DebuggerNonUserCode()>
@@ -583,10 +586,10 @@ Public Class AppsForm
             row.Add(add(pack.Name))
 
             'Type
-            If pack.HelpSwitch <> "" Then
+            If Not pack.HelpSwitch Is Nothing Then
                 row.Add("Console App")
-            ElseIf pack.Filename.Ext = "exe" Then
-                row.Add("App")
+            ElseIf pack.IsGUI Then
+                row.Add("GUI App")
             ElseIf TypeOf pack Is PluginPackage Then
                 Dim plugin = DirectCast(pack, PluginPackage)
 

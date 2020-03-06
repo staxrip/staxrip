@@ -629,7 +629,7 @@ Public Class mkvDemuxer
     Overrides Sub Run(proj As Project)
         Dim audioStreams As List(Of AudioStream)
         Dim subtitles As List(Of Subtitle)
-        Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify --ui-language en " + proj.SourceFile.Escape)
+        Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify --ui-language en " + proj.SourceFile.Escape)
 
         Dim demuxAudio = (Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
             TypeOf proj.Audio1 Is NullAudioProfile)) AndAlso
@@ -759,7 +759,7 @@ Public Class mkvDemuxer
         Dim args = sourcefile.Escape + " tracks"
 
         If videoDemuxing Then
-            Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify " + sourcefile.Escape)
+            Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + sourcefile.Escape)
             Dim id = Regex.Match(stdout, "Track ID (\d+): video").Groups(1).Value.ToInt
             Dim outpath = proj.TempDir + sourcefile.Base + MediaInfo.GetVideoStreams(sourcefile)(0).ExtFull
 

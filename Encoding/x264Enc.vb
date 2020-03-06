@@ -211,7 +211,7 @@ Public Class x264Params
         .Switches = {"--crf", "--qp"},
         .Name = "Quant",
         .Text = "Quality",
-        .Value = 20,
+        .Init = 22,
         .Config = {0, 69, 1, 1}}
 
     Property Preset As New OptionParam With {
@@ -230,7 +230,7 @@ Public Class x264Params
         .Text = "Mode",
         .Switches = {"--bitrate", "--qp", "--crf", "--pass", "--stats", "-q", "-B", "-p"},
         .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
-        .Value = 3}
+        .Value = 2}
 
     Property Depth As New OptionParam With {
         .Switch = "--output-depth",

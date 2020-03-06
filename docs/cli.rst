@@ -93,10 +93,12 @@ asBatch: Alternative mode that creats a BAT file to execute.
 Executes command lines separated by a line break line by line. Macros are solved and passed as environment variables.
 
 
--ExecutePowerShellScript:scriptCode
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-ExecutePowerShellScript:code,externalShell
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-scriptCode: PowerShell script code to be executed.
+code: PowerShell script code to be executed.
+
+externalShell: Execute in StaxRip to automate StaxRip or in external Shell.
 
 Executes PowerShell script code.
 

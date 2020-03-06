@@ -446,10 +446,10 @@ Public Class SubtitleControl
     Private Sub bnSetNames_Click(sender As Object, e As EventArgs) Handles bnSetNames.Click
         Using td As New TaskDialog(Of Integer)
             td.MainInstruction = "Set names for all streams."
-            td.AddCommandLink("Set language in English", 1)
+            td.AddCommand("Set language in English", 1)
 
             If CultureInfo.CurrentCulture.NeutralCulture.TwoLetterISOLanguageName <> "en" Then
-                td.AddCommandLink("Set language in " + CultureInfo.CurrentCulture.NeutralCulture.DisplayName, 2)
+                td.AddCommand("Set language in " + CultureInfo.CurrentCulture.NeutralCulture.DisplayName, 2)
             End If
 
             Select Case td.Show

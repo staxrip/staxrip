@@ -1,15 +1,18 @@
-﻿Imports System.ComponentModel
+﻿
+Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Reflection
 Imports System.Text
-Imports System.Text.RegularExpressions
+
 Imports Microsoft.Win32
 Imports StaxRip.UI
 
 Public Class GlobalCommands
     <Command("Shows the log file with the built in log file viewer.")>
     Sub ShowLogFile()
-        If Not File.Exists(p.Log.GetPath()) Then Exit Sub
+        If Not File.Exists(p.Log.GetPath()) Then
+            Exit Sub
+        End If
 
         Using form As New LogForm
             form.Path = p.Log.GetPath()
@@ -54,10 +57,10 @@ Public Class GlobalCommands
 
                 Using td As New TaskDialog(Of Demuxer)
                     td.MainInstruction = "Select a demuxer."
-                    If sourceFile.Edit.Text.Ext = "mkv" Then td.AddCommandLink("mkvextract", New mkvDemuxer)
-                    If sourceFile.Edit.Text.Ext.EqualsAny("mp4", "flv") Then td.AddCommandLink("MP4Box", New MP4BoxDemuxer)
-                    td.AddCommandLink("ffmpeg", New ffmpegDemuxer)
-                    td.AddCommandLink("eac3to", New eac3toDemuxer)
+                    If sourceFile.Edit.Text.Ext = "mkv" Then td.AddCommand("mkvextract", New mkvDemuxer)
+                    If sourceFile.Edit.Text.Ext.EqualsAny("mp4", "flv") Then td.AddCommand("MP4Box", New MP4BoxDemuxer)
+                    td.AddCommand("ffmpeg", New ffmpegDemuxer)
+                    td.AddCommand("eac3to", New eac3toDemuxer)
 
                     Dim proj As New Project
                     proj.Init()
@@ -259,19 +262,29 @@ Public Class GlobalCommands
                   <Description("Tool name as shown in the app manage dialog.")>
                   name As String)
         Try
-            If Package.Items(name).VerifyOK Then Package.Items(name).StartAction?.Invoke
+            If Package.Items(name).VerifyOK Then Package.Items(name).LaunchAction?.Invoke
         Catch ex As Exception
             g.ShowException(ex)
         End Try
     End Sub
 
     <Command("Executes PowerShell script code.")>
-    Sub ExecutePowerShellScript(<DispName("Script Code")>
-                                <Description("PowerShell script code to be executed.")>
-                                <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
-                                scriptCode As String)
+    Sub ExecutePowerShellScript(
+        <DispName("Script Code")>
+        <Description("PowerShell script code to be executed.")>
+        <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
+        code As String,
+        <DispName("Use External Shell")>
+        <Description("Execute in StaxRip to automate StaxRip or in external Shell.")>
+        Optional externalShell As Boolean = False)
 
-        Scripting.RunPowershell(scriptCode)
+        If externalShell Then
+            Dim path = Folder.Temp + "temp.ps1"
+            code.WriteUTF8File(path)
+            g.StartProcess("powershell.exe", "-nologo -noexit -file " + path.Escape)
+        Else
+            Scripting.RunPowershell(code)
+        End If
     End Sub
 
     <Command("Test")>
@@ -280,8 +293,8 @@ Public Class GlobalCommands
 
         msg += NVEnc.Test
         msg += QSVEnc.Test
-        msg += Rav1e.Test
-        msg += VCEEnc.Test
+        'msg += Rav1e.Test
+        'msg += VCEEnc.Test
         msg += x264Enc.Test
         msg += x265Enc.Test
 
@@ -291,7 +304,7 @@ Public Class GlobalCommands
 
         'Dim aomExcept = "--output --help".Split((" " + BR).ToCharArray())
         'Dim aomCodeExcept = "--y4m --help".Split((" " + BR).ToCharArray())
-        'Dim aomHelp = ProcessHelp.GetStdOut(Package.AOMEnc.Path, "--help")
+        'Dim aomHelp = ProcessHelp.GetConsoleOutput(Package.AOMEnc.Path, "--help")
         'File.WriteAllText(Package.AOMEnc.GetDir + "aomenc.txt", aomHelp)
         'aomHelp = aomHelp.Replace("(no-)", "").Replace("--no-", "--")
         'Dim aomHelpSwitches = Regex.Matches(aomHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)

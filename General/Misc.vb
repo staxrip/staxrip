@@ -1047,9 +1047,9 @@ Public Class Macro
 
                         For Each iItem As String In items
                             If iItem.Contains("|") Then
-                                td.AddCommandLink(iItem.Left("|"), iItem.Right("|"))
+                                td.AddCommand(iItem.Left("|"), iItem.Right("|"))
                             Else
-                                td.AddCommandLink(iItem, iItem)
+                                td.AddCommand(iItem, iItem)
                             End If
                         Next
 

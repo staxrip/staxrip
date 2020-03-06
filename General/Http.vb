@@ -30,8 +30,8 @@ Public Class Http
 
                     Using td As New TaskDialog(Of String)
                         td.MainInstruction = "A newer version was found online: " + match.Groups(1).Value
-                        td.AddCommandLink("Show download page", "download")
-                        td.AddCommandLink("Dismiss " + match.Groups(1).Value, "dismiss")
+                        td.AddCommand("Show download page", "download")
+                        td.AddCommand("Dismiss " + match.Groups(1).Value, "dismiss")
 
                         Select Case td.Show
                             Case "download"

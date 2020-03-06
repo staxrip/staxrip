@@ -269,7 +269,7 @@ Public Class TaskDialog(Of T)
         Return value
     End Function
 
-    Sub AddCommandLink(text As String, Optional value As T = Nothing)
+    Sub AddCommand(text As String, Optional value As T = Nothing)
         Dim id = 1000 + IdValueDic.Count + 1
         Dim temp As Object = text
         IdValueDic(id) = If(value Is Nothing, CType(temp, T), value)

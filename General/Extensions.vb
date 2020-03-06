@@ -298,7 +298,7 @@ Module StringExtensions
 
     <Extension()>
     Sub WriteUTF8File(instance As String, path As String)
-        WriteFile(instance, path, Encoding.UTF8)
+        WriteFile(instance, path, Encoding.UTF8) 'it adds BOM
     End Sub
 
     <Extension()>

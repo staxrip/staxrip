@@ -52,7 +52,7 @@ Public Class ffmpegEnc
                                     End Sub
 
             f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
-            f.cms.Items.Add(New ActionMenuItem("Codec Help", Sub() g.ShowCode(newParams.Codec.OptionText + " Help", ProcessHelp.GetStdOut(Package.ffmpeg.Path, "-hide_banner -h encoder=" + newParams.Codec.ValueText))))
+            f.cms.Items.Add(New ActionMenuItem("Codec Help", Sub() g.ShowCode(newParams.Codec.OptionText + " Help", ProcessHelp.GetConsoleOutput(Package.ffmpeg.Path, "-hide_banner -h encoder=" + newParams.Codec.ValueText))))
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = newParams

@@ -214,9 +214,9 @@ Public Class SourceFilesForm
         End If
 
         Using td As New TaskDialog(Of String)
-            td.AddCommandLink("Add files", "files")
-            td.AddCommandLink("Add folder", "folder")
-            td.AddCommandLink("Add folder including sub-folders", "sub-folders")
+            td.AddCommand("Add files", "files")
+            td.AddCommand("Add folder", "folder")
+            td.AddCommand("Add folder including sub-folders", "sub-folders")
 
             Select Case td.Show
                 Case "files"

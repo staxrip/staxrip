@@ -3,17 +3,18 @@
 
 - documentation
 - website
-- improve default settings
-- improve and maintain video encoders
-- improve package definitions with help of csv file
-- make all console apps launchable and able to show offline help
 
 ### 2.0.7.5 next Beta not yet released
 
-- new: the csv file content in the apps dialog was improved,
-       unimportant properties were removed, the sort order
-       was changed to file path
+- fix: issue with cut feature and preview used from code editor
+- fix: when AviSynthShader was used StaxRip did not show
+       a warning in case DirectX 9 is not installed
+
+- new: the csv file content in the apps dialog was improved
 - new: auto crop feature in crop dialog shows progress
+- new: the avisynth and vapoursynth code editor has a new
+       'Advanced > Advanced Info' feature, it offers the following info:
+       avs2pipemod info, avsmeter info, avsmeter benchmark and vspipe info
 
 ### 2.0.7.4
 

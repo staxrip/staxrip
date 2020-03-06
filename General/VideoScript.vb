@@ -467,7 +467,7 @@ clipname.set_output()
         script.Filters.Add(New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", False))
         script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", "QTGMC(preset=""Medium"")", False))
         script.Filters.Add(New VideoFilter("Noise", "DFTTest", "DFTTest(sigma=6, tbsize=1)", False))
-        script.Filters.Add(New VideoFilter("Resize", "Spline64Resize", "Spline64Resize(%target_width%, %target_height%)", False))
+        script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%)", False))
         ret.Add(script)
 
         script = New TargetVideoScript("VapourSynth")
@@ -479,7 +479,7 @@ clipname.set_output()
         'code is too long
         'script.Filters.Add(New VideoFilter("FrameRate", "SVPFlow", "crop_string = """"" + BR + "resize_string = """"" + BR + "super_params = ""{pel:1,scale:{up:0},gpu:1,full:false,rc:true}""" + BR + "analyse_params = ""{block:{w:16},main:{search:{coarse:{type:4,distance:-6,bad:{sad:2000,range:24}},type:4}},refine:[{thsad:250}]}""" + BR + "smoothfps_params = ""{gpuid:11,linear:true,rate:{num:60000,den:1001,abs:true},algo:23,mask:{area:200},scene:{}}""" + BR + "def interpolate(clip):" + BR + "    input = clip" + BR + "    if crop_string!='':" + BR + "        input = eval(crop_string)" + BR + "    if resize_string!='':" + BR + "        input = eval(resize_string)" + BR + "    super   = core.svp1.Super(input,super_params)" + BR + "    vectors = core.svp1.Analyse(super[""clip""],super[""data""],input,analyse_params)" + BR + "    smooth  = core.svp2.SmoothFps(input,super[""clip""],super[""data""],vectors[""clip""],vectors[""data""],smoothfps_params,src=clip)" + BR + "    smooth  = core.std.AssumeFPS(smooth,fpsnum=smooth.fps_num,fpsden=smooth.fps_den)" + BR + "    return smooth" + BR + "clip =  interpolate(clip)", False))
         script.Filters.Add(New VideoFilter("Color", "Respec", "clip = core.fmtc.resample(clip, css='444')" + BR + "clip = core.fmtc.matrix(clip, mats='709', matd='709')" + BR + "clip = core.fmtc.resample(clip, css='420')" + BR + "clip = core.fmtc.bitdepth(clip, bits=10, fulls=False, fulld=False)", False))
-        script.Filters.Add(New VideoFilter("Resize", "Spline64Resize", "clip = core.fmtc.resample(clip, kernel='spline64', w=%target_width%, h=%target_height%)", False))
+        script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)", False))
         ret.Add(script)
 
         Return ret
@@ -734,10 +734,10 @@ Public Class FilterCategory
 
         Dim resize As New FilterCategory("Resize")
         resize.Filters.Add(New VideoFilter(resize.Name, "Resize...", "$select:BicubicResize;BilinearResize;BlackmanResize;GaussResize;Lanczos4Resize;LanczosResize;PointResize;SincResize;Jinc36Resize;Jinc64Resize;Jinc144Resize;Jinc256Resize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Hardware Encoder", "# hardware encoder resizes"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "SuperRes", "$select:msg:Select Version;SuperResXBR|SuperResXBR;SuperRes|SuperRes;SuperXBR|SuperXBR$(passes=$select:msg:How Many Passes Do you wish to Perform?;2;3;4;5$, factor=$select:msg:Factor Increase by?;2;4$)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Dither_Resize16", "Dither_resize16(%target_width%, %target_height%)"))
-        resize.Filters.Add(New VideoFilter(resize.Name, "Dither_Resize16 In Linear Light", "Dither_convert_yuv_to_rgb (matrix=""2020"", output=""rgb48y"", lsb_in=true)" + BR + "Dither_y_gamma_to_linear(tv_range_in=false, tv_range_out=false, curve=""2020"", sigmoid=true)" + BR + "Dither_resize16nr(%target_width%, %target_height%, kernel=""spline36"")" + BR + "Dither_y_linear_to_gamma(tv_range_in=false, tv_range_out=false, curve=""2020"", sigmoid=true)" + BR + "r = SelectEvery (3, 0)" + BR + "g = SelectEvery (3, 1)" + BR + "b = SelectEvery (3, 2)" + BR + "Dither_convert_rgb_to_yuv(r, g, b, matrix=""2020"", lsb=true)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Advanced | Hardware Encoder", "# hardware encoder resizes"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Advanced | SuperRes", "$select:msg:Select Version;SuperResXBR|SuperResXBR;SuperRes|SuperRes;SuperXBR|SuperXBR$(passes=$select:msg:How Many Passes Do you wish to Perform?;2;3;4;5$, factor=$select:msg:Factor Increase by?;2;4$)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Advanced | Dither_Resize16", "Dither_resize16(%target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Advanced | Dither_Resize16 In Linear Light", "Dither_convert_yuv_to_rgb (matrix=""2020"", output=""rgb48y"", lsb_in=true)" + BR + "Dither_y_gamma_to_linear(tv_range_in=false, tv_range_out=false, curve=""2020"", sigmoid=true)" + BR + "Dither_resize16nr(%target_width%, %target_height%, kernel=""spline36"")" + BR + "Dither_y_linear_to_gamma(tv_range_in=false, tv_range_out=false, curve=""2020"", sigmoid=true)" + BR + "r = SelectEvery (3, 0)" + BR + "g = SelectEvery (3, 1)" + BR + "b = SelectEvery (3, 2)" + BR + "Dither_convert_rgb_to_yuv(r, g, b, matrix=""2020"", lsb=true)"))
         ret.Add(resize)
 
         Dim crop As New FilterCategory("Crop")
@@ -831,7 +831,7 @@ Public Class FilterCategory
         ret.Add(misc)
 
         Dim resize As New FilterCategory("Resize")
-        resize.Filters.Add(New VideoFilter(resize.Name, "Resize", "clip = $select:Bilinear|core.resize.Bilinear;Bicubic|core.resize.Bicubic;Point|core.resize.Point;Lanczos|core.resize.Lanczos;Spline16|core.resize.Spline16;Spline36|core.resize.Spline36;Dither_Resize16|Dither.Resize16nr;Resample|core.fmtc.resample$(clip, %target_width%, %target_height%)"))
+        resize.Filters.Add(New VideoFilter(resize.Name, "Resize...", "clip = $select:Bilinear|core.resize.Bilinear;Bicubic|core.resize.Bicubic;Point|core.resize.Point;Lanczos|core.resize.Lanczos;Spline16|core.resize.Spline16;Spline36|core.resize.Spline36;Dither_Resize16|Dither.Resize16nr;Resample|core.fmtc.resample$(clip, %target_width%, %target_height%)"))
         ret.Add(resize)
 
         Dim crop As New FilterCategory("Crop")

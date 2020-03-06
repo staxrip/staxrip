@@ -144,7 +144,10 @@ Public MustInherit Class Muxer
     End Function
 
     Overridable Sub Init()
-        If Not File.Exists(p.SourceFile) Then Exit Sub
+        If Not File.Exists(p.SourceFile) Then
+            Exit Sub
+        End If
+
         Dim files = g.GetFilesInTempDirAndParent
         files.Sort(New StringLogicalComparer)
 
@@ -210,7 +213,9 @@ Public MustInherit Class Muxer
                         If TypeOf Me Is MP4Muxer Then
                             If lower.Ext = "txt" Then ChapterFile = i
                         Else
-                            If ChapterFile.Ext <> "xml" Then ChapterFile = i
+                            If ChapterFile.Ext.EqualsAny("txt", "xml") Then
+                                ChapterFile = i
+                            End If
                         End If
                     End If
                 End If
@@ -592,7 +597,7 @@ Public Class MkvMuxer
     Private Function GetArgs() As String
         Dim args = "-o " + p.TargetFile.Escape
 
-        Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify " + p.VideoEncoder.OutputPath.Escape)
+        Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + p.VideoEncoder.OutputPath.Escape)
         Dim id = Regex.Match(stdout, "Track ID (\d+): video").Groups(1).Value.ToInt
 
         If Not FileTypes.VideoOnly.Contains(p.VideoEncoder.OutputPath.Ext) Then
@@ -738,7 +743,7 @@ Public Class MkvMuxer
                 tid = ap.Stream.StreamOrder
                 isCombo = ap.Stream.Name.Contains("THD+AC3")
 
-                Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify " + ap.File.Escape)
+                Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + ap.File.Escape)
                 Dim values = Regex.Matches(stdout, "Track ID (\d+): audio").OfType(Of Match).Select(Function(match) match.Groups(1).Value.ToInt)
                 If values.Count = ap.Streams.Count Then tid = values(ap.Stream.Index)
             Else

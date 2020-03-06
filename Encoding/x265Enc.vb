@@ -221,7 +221,8 @@ Public Class x265Params
         .Switches = {"--crf", "--qp", "-q"},
         .Name = "Quant",
         .Text = "Quality",
-        .Value = 28,
+        .DefaultValue = 28,
+        .Value = 18,
         .Config = {0, 51, 1, 1}}
 
     Property chunkstart As New NumParam With {
@@ -252,7 +253,7 @@ Public Class x265Params
         .Text = "Mode",
         .Switches = {"--bitrate", "--qp", "--crf", "--pass"},
         .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
-        .Value = 3}
+        .Value = 2}
 
     Property SSIM As New BoolParam With {
         .Switch = "--ssim",
@@ -804,12 +805,12 @@ Public Class x265Params
             If ItemsValue Is Nothing Then
                 ItemsValue = New List(Of CommandLineParam)
 
-                Add("Basic", Preset, Tune,
+                Add("Basic", Mode, Preset, Tune,
                     New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain8", .Init = 1, .VisibleFunc = Function() OutputDepth.Value = 0, .Options = {"Unrestricted", "Main", "Main - Intra", "Main Still Picture", "Main 444 - 8", "Main 444 - Intra", "Main 444 - Main Still Picture"}},
                     New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain10", .Init = 1, .VisibleFunc = Function() OutputDepth.Value = 1, .Options = {"Unrestricted", "Main 10", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra"}},
                     New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain12", .Init = 1, .VisibleFunc = Function() OutputDepth.Value = 2, .Options = {"Unrestricted", "Main 12", "Main 12 - Intra", "Main 422 - 12", "Main 422 - 12 - Intra", "Main 444 - 12", "Main 444 - 12 - Intra"}},
                     New OptionParam With {.Switch = "--level-idc", .Switches = {"--level"}, .Text = "Level", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}},
-                    Mode, OutputDepth, Quant)
+                    OutputDepth, Quant)
                 Add("Analysis", RD,
                     New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis File", .BrowseFile = True},
                     New StringParam With {.Switch = "--analysis-load", .Text = "Analysis Load", .BrowseFile = True},

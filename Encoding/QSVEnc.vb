@@ -52,9 +52,9 @@ Public Class QSVEnc
                                     End Sub
 
             ActionMenuItem.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
-            form.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetStdOut(Package.QSVEnc.Path, "--check-environment"))))
-            form.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetStdOut(Package.QSVEnc.Path, "--check-hw"))))
-            form.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetStdOut(Package.QSVEnc.Path, "--check-features"))))
+            form.cms.Items.Add(New ActionMenuItem("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-environment"))))
+            form.cms.Items.Add(New ActionMenuItem("Check Hardware", Sub() MsgInfo(ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-hw"))))
+            form.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-features"))))
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = params1
@@ -73,7 +73,7 @@ Public Class QSVEnc
 
     Overrides Sub Encode()
         If OutputExt = "hevc" Then
-            Dim codecs = ProcessHelp.GetStdOut(Package.QSVEnc.Path, "--check-features").Right("Codec")
+            Dim codecs = ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-features").Right("Codec")
             If Not codecs?.ToLower.Contains("hevc") Then Throw New ErrorAbortException("QSVEnc Error", "H.265/HEVC isn't supported by your Hardware.")
         End If
 

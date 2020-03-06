@@ -84,6 +84,30 @@ Public Class CodeEditor
         Return ret
     End Function
 
+    Function CreateTempScript() As VideoScript
+        Dim script As New VideoScript
+        script.Engine = Engine
+        script.Path = p.TempDir + p.TargetFile.Base + $"_temp." + script.FileType
+        script.Filters = GetFilters()
+
+        If script.GetError <> "" Then
+            MsgError(script.GetError)
+            Exit Function
+        End If
+
+        Return script
+    End Function
+
+    Sub AdvancedScriptInfo()
+        Dim script = CreateTempScript()
+
+        If script Is Nothing Then
+            Exit Sub
+        End If
+
+        g.ShowAdvancedScriptInfo(script)
+    End Sub
+
     Sub PlayScriptWithMpvnet()
         Dim script As New VideoScript
         script.Engine = Engine
@@ -121,6 +145,7 @@ Public Class CodeEditor
         script.Engine = Engine
         script.Path = p.TempDir + p.TargetFile.Base + "_editor." + script.FileType
         script.Filters = GetFilters()
+        script.RemoveFilter("Cutting")
 
         If script.GetError <> "" Then
             MsgError(script.GetError)
@@ -415,6 +440,8 @@ Public Class CodeEditor
             macrosMenuItem.ShortcutKeyDisplayString = "Ctrl+M"
             macrosMenuItem.SetImage(Symbol.CalculatorPercentage)
 
+            Menu.Add("Advanced | Advanced Info...", AddressOf Editor.AdvancedScriptInfo, p.SourceFile <> "")
+
             Menu.Add("-")
 
             Dim moveUpMenuItem = Menu.Add("Move Up", AddressOf MoveUp)
@@ -567,9 +594,9 @@ Public Class CodeEditor
         Sub FilterClick(filter As VideoFilter)
             Using td As New TaskDialog(Of String)
                 td.MainInstruction = "Choose action"
-                td.AddCommandLink("Replace selection", "Replace")
-                td.AddCommandLink("Insert at selection", "Insert")
-                td.AddCommandLink("Add to end", "Add")
+                td.AddCommand("Replace selection", "Replace")
+                td.AddCommand("Insert at selection", "Insert")
+                td.AddCommand("Add to end", "Add")
 
                 Select Case td.Show
                     Case "Replace"

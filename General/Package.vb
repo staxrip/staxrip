@@ -19,7 +19,7 @@ Public Class Package
     Property HintDirFunc As Func(Of String)
     Property IgnoreVersion As Boolean
     Property IsIncluded As Boolean = True
-    Property Launchable As Boolean
+    Property IsGUI As Boolean
     Property IsRequiredFunc As Func(Of Boolean)
     Property Name As String
     Property SetupFilename As String
@@ -75,6 +75,7 @@ Public Class Package
         .Directory = "Audio\eac3to",
         .WebURL = "http://forum.doom9.org/showthread.php?t=125966",
         .HelpURL = "http://en.wikibooks.org/wiki/Eac3to/How_to_Use",
+        .HelpSwitch = "",
         .Description = "Audio conversion command line app."})
 
     Shared Property ffmpeg As Package = Add(New Package With {
@@ -83,6 +84,7 @@ Public Class Package
         .Directory = "Encoders\ffmpeg",
         .WebURL = "http://ffmpeg.org",
         .HelpURL = "http://www.ffmpeg.org/ffmpeg-all.html",
+        .HelpSwitch = "-h",
         .Description = "Versatile audio video converter."})
 
     Shared Property MediaInfo As Package = Add(New Package With {
@@ -98,6 +100,7 @@ Public Class Package
         .Directory = "Support\MP4Box",
         .WebURL = "http://gpac.wp.mines-telecom.fr/",
         .HelpURL = "http://gpac.wp.mines-telecom.fr/mp4box/mp4box-documentation",
+        .HelpSwitch = "-h",
         .Description = "MP4Box is a MP4 muxing and demuxing command line app."})
 
     Shared Property AviSynth As Package = Add(New Package With {
@@ -114,7 +117,7 @@ Public Class Package
         .Name = "chapterEditor",
         .Directory = "Support\chapterEditor",
         .Filename = "chapterEditor.exe",
-        .Launchable = True,
+        .IsGUI = True,
         .Description = "ChapterEditor is a chapter editor and menu editor for OGG, XML, TTXT, m.AVCHD, m.editions-mkv, Matroska Menu.",
         .WebURL = "https://forum.doom9.org/showthread.php?t=169984"})
 
@@ -123,7 +126,7 @@ Public Class Package
         .Directory = "Encoders\xvid_encraw",
         .Filename = "xvid_encraw.exe",
         .Description = "XviD command line encoder",
-        .HelpFilename = "help.txt",
+        .HelpSwitch = "-h",
         .WebURL = "http://www.xvid.com"})
 
     Shared Property Decomb As Package = Add(New PluginPackage With {
@@ -156,29 +159,16 @@ Public Class Package
         .Description = "AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.",
         .HelpFilename = "doc\AVSMeter.html",
         .WebURL = "http://forum.doom9.org/showthread.php?t=174797",
-        .StartAction = Sub()
-                           If p.SourceFile = "" Then
-                               g.DefaultCommands.ExecuteCommandLine(Package.AVSMeter.Path.Escape + " avsinfo" + BR + "pause", False, False, True)
-                           Else
-                               g.DefaultCommands.ExecuteCommandLine(Package.AVSMeter.Path.Escape + " " + p.Script.Path.Escape + BR + "pause", False, False, True)
-                           End If
-                       End Sub})
+        .HelpSwitch = ""})
 
     Shared Property vspipe As Package = Add(New Package With {
         .Name = "vspipe",
         .Filename = "vspipe.exe",
         .Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
-        .WebURL = "http://www.vapoursynth.com/doc/vspipe.html",
+        .HelpURL = "http://www.vapoursynth.com/doc/vspipe.html",
+        .HelpSwitch = "",
         .IsRequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = AddressOf Package.GetVapourSynthHintDir,
-        .StartAction = Sub()
-                           If p.SourceFile = "" Then
-                               g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + BR + "pause", False, False, True)
-                           Else
-                               p.Script.Synchronize()
-                               g.DefaultCommands.ExecuteCommandLine(Package.vspipe.Path.Escape + " --info " + p.Script.Path.Escape + " -" + BR + "pause", False, False, True)
-                           End If
-                       End Sub})
+        .HintDirFunc = AddressOf Package.GetVapourSynthHintDir})
 
     Shared Property VapourSynth As Package = Add(New Package With {
         .Name = "VapourSynth",
@@ -193,7 +183,7 @@ Public Class Package
     Shared Property DGIndex As Package = Add(New Package With {
         .Name = "DGIndex",
         .Filename = "DGIndex.exe",
-        .Launchable = True,
+        .IsGUI = True,
         .Directory = "Support\DGIndex",
         .HelpFilename = "DGIndexManual.html",
         .Description = "MPEG-2 demuxing and indexing app.",
@@ -202,7 +192,7 @@ Public Class Package
     Shared Property BDSup2SubPP As Package = Add(New Package With {
         .Name = "BDSup2Sub++",
         .Filename = "bdsup2sub++.exe",
-        .Launchable = True,
+        .IsGUI = True,
         .Directory = "Subtitles\BDSup2Sub++",
         .WebURL = "https://github.com/amichaeltm/BDSup2SubPlusPlus",
         .Description = "Converts Blu-ray subtitles to other formats like VobSub."})
@@ -222,12 +212,13 @@ Public Class Package
         .Directory = "Thumbnails\MTN",
         .Description = "movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
         .WebURL = "https://github.com/Revan654/Movie-Thumbnailer-mtn",
-        .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html"})
+        .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html",
+        .HelpSwitch = ""})
 
     Shared Property SubtitleEdit As Package = Add(New Package With {
         .Name = "Subtitle Edit",
         .Filename = "SubtitleEdit.exe",
-        .Launchable = True,
+        .IsGUI = True,
         .Directory = "Support\SubtitleEdit",
         .WebURL = "http://www.nikse.dk/SubtitleEdit",
         .HelpURL = "http://www.nikse.dk/SubtitleEdit/Help",
@@ -236,14 +227,14 @@ Public Class Package
     Shared Property mpvnet As Package = Add(New Package With {
         .Name = "mpv.net",
         .Filename = "mpvnet.exe",
-        .Launchable = True,
+        .IsGUI = True,
         .WebURL = "https://github.com/stax76/mpv.net",
         .Description = "libmpv based media player."})
 
     Shared Property MpcBE As Package = Add(New Package With {
         .Name = "MPC-BE",
         .Filename = "mpc-be64.exe",
-        .Launchable = True,
+        .IsGUI = True,
         .IsIncluded = False,
         .IgnoreVersion = True,
         .Required = False,
@@ -254,7 +245,7 @@ Public Class Package
     Shared Property MpcHC As Package = Add(New Package With {
         .Name = "MPC-HC",
         .Filename = "mpc-hc64.exe",
-        .Launchable = True,
+        .IsGUI = True,
         .IsIncluded = False,
         .IgnoreVersion = True,
         .Required = False,
@@ -317,7 +308,7 @@ Public Class Package
         .Filename = "VSRip.exe",
         .Directory = "subtitles\VSRip",
         .Description = "VSRip rips VobSub subtitles.",
-        .Launchable = True,
+        .IsGUI = True,
         .WebURL = "http://sourceforge.net/projects/guliverkli"})
 
     Shared Property flash3kyuu_deband As Package = Add(New PluginPackage With {
@@ -348,15 +339,8 @@ Public Class Package
         .Filename = "avs2pipemod64.exe",
         .Directory = "Support\avs2pipemod",
         .WebURL = "http://github.com/chikuzen/avs2pipemod",
-        .Description = "Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools.",
-        .StartAction = Sub()
-                           If p.SourceFile = "" Then
-                               g.DefaultCommands.ExecuteCommandLine(Package.avs2pipemod.Path.Escape + BR + "pause", False, False, True)
-                           Else
-                               p.Script.Synchronize()
-                               g.DefaultCommands.ExecuteCommandLine(Package.avs2pipemod.Path.Escape + " -info " + p.Script.Path.Escape + BR + "pause", False, False, True)
-                           End If
-                       End Sub})
+        .HelpSwitch = "stderr",
+        .Description = "Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools."})
 
     Shared Property x264 As Package = Add(New Package With {
         .Name = "x264",
@@ -384,7 +368,17 @@ Public Class Package
         .Directory = "Support\MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
+        .HelpSwitch = "",
         .Description = "MKV muxing tool."})
+
+    Shared Property mkvextract As Package = Add(New Package With {
+        .Name = "mkvextract",
+        .Filename = "mkvextract.exe",
+        .Directory = "Support\MKVToolNix",
+        .WebURL = "https://mkvtoolnix.download/",
+        .HelpURL = "https://mkvtoolnix.download/docs.html",
+        .HelpSwitch = "",
+        .Description = "MKV demuxing tool."})
 
     Shared Property mkvinfo As Package = Add(New Package With {
         .Name = "mkvinfo",
@@ -400,15 +394,8 @@ Public Class Package
         .HelpFilename = "help.txt",
         .Directory = "Thumbnails\PNGopt",
         .WebURL = "https://sourceforge.net/projects/apng/files/",
+        .HelpSwitch = "",
         .Description = "Opt Tools For Creating PNG"})
-
-    Shared Property mkvextract As Package = Add(New Package With {
-        .Name = "mkvextract",
-        .Filename = "mkvextract.exe",
-        .Directory = "Support\MKVToolNix",
-        .WebURL = "https://mkvtoolnix.download/",
-        .HelpURL = "https://mkvtoolnix.download/docs.html",
-        .Description = "MKV demuxing tool."})
 
     Shared Property NVEnc As Package = Add(New Package With {
         .Name = "NVEnc",
@@ -486,6 +473,20 @@ Public Class Package
         .AvsFiltersFunc = Function() {New VideoFilter("Source", "FFVideoSource", $"FFVideoSource(""%source_file%"", cachefile=""%source_temp_file%.ffindex"")" + BR + "#AssumeFPS(25)")},
         .VSFilterNames = {"ffms2"},
         .VSFiltersFunc = Function() {New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(r""%source_file%"", cachefile=r""%source_temp_file%.ffindex"")" + BR + "#clip = core.std.AssumeFPS(clip, None, 25, 1)")}})
+
+    Shared Property AviSynthShader As Package = Add(New PluginPackage With {
+        .Name = "AviSynthShader DLL",
+        .Directory = "Plugins\AVS\AviSynthShader",
+        .Filename = "Shader.dll",
+        .WebURL = "https://github.com/mysteryx93/AviSynthShader",
+        .AvsFilterNames = {"SuperRes", "SuperResXBR", "SuperXBR", "ResizeShader", "SuperResPass", "SuperXbrMulti", "ResizeShader"}})
+
+    Shared Property AviSynthShaderAVSI As Package = Add(New PluginPackage With {
+        .Name = "AviSynthShader AVSI",
+        .Directory = "Plugins\AVS\AviSynthShader",
+        .Filename = "Shader.avsi",
+        .WebURL = "https://github.com/mysteryx93/AviSynthShader",
+        .AvsFilterNames = {"SuperRes", "SuperResXBR", "SuperXBR", "ResizeShader", "SuperResPass", "SuperXbrMulti", "ResizeShader"}})
 
     Shared Property VSFilterMod As Package = Add(New PluginPackage With {
         .Name = "VSFilterMod",
@@ -700,8 +701,17 @@ Public Class Package
             .FixedDir = Folder.System,
             .IgnoreVersion = True,
             .TreePath = "Runtimes",
-            .IsRequiredFunc = Function() SangNom2.Required OrElse VSFilterMod.Required OrElse
-                                         eac3to.Required})
+            .IsRequiredFunc = Function() SangNom2.Required OrElse VSFilterMod.Required OrElse eac3to.Required})
+
+        Add(New Package With {
+            .Name = "DirectX 9",
+            .Filename = "d3d9.dll",
+            .Description = "DirectX 9.0c End-User Runtime",
+            .DownloadURL = "https://www.microsoft.com/en-us/download/details.aspx?id=34429",
+            .FixedDir = Folder.System,
+            .IgnoreVersion = True,
+            .TreePath = "Runtimes",
+            .IsRequiredFunc = Function() AviSynthShader.Required})
 
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",
@@ -806,22 +816,6 @@ Public Class Package
             .HelpFilename = "DePan.html",
             .WebURL = "http://avisynth.nl/index.php/DePan",
             .AvsFilterNames = {"DePanEstimate"}})
-
-        Add(New PluginPackage With {
-            .Name = "Shader DLL",
-            .Directory = "Plugins\AVS\Shader",
-            .Filename = "Shader.dll",
-             .HelpFilename = "Readme.txt",
-            .WebURL = "https://github.com/mysteryx93/AviSynthShader/releases",
-            .AvsFilterNames = {"SuperRes", "SuperResXBR", "SuperXBR", "ResizeShader", "SuperResPass", "SuperXbrMulti", "ResizeShader"}})
-
-        Add(New PluginPackage With {
-            .Name = "Shader AVSI",
-            .Directory = "Plugins\AVS\Shader",
-            .Filename = "Shader.avsi",
-             .HelpFilename = "Readme.txt",
-            .WebURL = "https://github.com/mysteryx93/AviSynthShader/releases",
-            .AvsFilterNames = {"SuperRes", "SuperResXBR", "SuperXBR", "ResizeShader", "SuperResPass", "SuperXbrMulti", "ResizeShader"}})
 
         Add(New PluginPackage With {
             .Name = "JincResize",
@@ -1291,7 +1285,7 @@ Public Class Package
             .AvsFilterNames = {"aBlur", "aSobel", "AutoYUY2", "aWarp", "aWarp4", "aWarpSharp2", "BicubicResizeMT", "BilinearResizeMT", "BlackmanResizeMT", "ConvertLinearRGBtoYUV", "ConvertRGB_Hable_HDRtoSDR", "ConvertRGB_Mobius_HDRtoSDR", "ConvertRGB_Reinhard_HDRtoSDR", "ConvertRGBtoXYZ", "ConvertXYZ_Hable_HDRtoSDR", "ConvertXYZ_Mobius_HDRtoSDR", "ConvertXYZ_Reinhard_HDRtoSDR", "ConvertXYZ_Scale_HDRtoSDR", "ConvertXYZ_Scale_SDRtoHDR", "ConvertXYZtoRGB", "ConvertXYZtoYUV", "ConvertYUVtoLinearRGB", "ConvertYUVtoXYZ", "DeBicubicResizeMT", "DeBilinearResizeMT", "DeBlackmanResizeMT", "DeGaussResizeMT", "DeLanczos4ResizeMT", "DeLanczosResizeMT", "DeSincResizeMT", "DeSpline16ResizeMT", "DeSpline36ResizeMT", "DeSpline64ResizeMT", "GaussResizeMT", "Lanczos4ResizeMT", "LanczosResizeMT", "nnedi3", "PointResizeMT", "SincResizeMT", "Spline16ResizeMT", "Spline36ResizeMT", "Spline64ResizeMT"},
             .AvsFiltersFunc = Function() {
                 New VideoFilter("Field", "nnedi3", "nnedi3(field=1)"),
-                New VideoFilter("Resize", "ResizeMT", "$select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;Lanczos4ResizeMT;LanczosResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch=4)"),
+                New VideoFilter("Resize", "Advanced | ResizeMT", "$select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;Lanczos4ResizeMT;LanczosResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch=4)"),
                 New VideoFilter("Line", "Sharpen | aWarpSharp2", "aWarpSharp2(thresh=128, blur=2, type=0, depth=16, chroma=3)")}})
 
         Add(New PluginPackage With {
@@ -1774,7 +1768,7 @@ Public Class Package
             .Description = "Advanced crop and resize AviSynth script.",
             .WebURL = "https://forum.videohelp.com/threads/393752-CropResize-Cropping-resizing-script",
             .AvsFilterNames = {"CropResize"},
-            .AvsFiltersFunc = Function() {New VideoFilter("Resize", "CropResize", $"CropResize(%target_width%, %target_height%, \{BR}    %crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%, \{BR}    InDAR=%source_dar%, OutDAR=%target_dar%, Info=true)")}})
+            .AvsFiltersFunc = Function() {New VideoFilter("Resize", "Advanced | CropResize", $"CropResize(%target_width%, %target_height%, \{BR}    %crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%, \{BR}    InDAR=%source_dar%, OutDAR=%target_dar%, Info=true)")}})
 
         Add(New PluginPackage With {
             .Name = "DGHDRtoSDR",
@@ -1833,15 +1827,23 @@ Public Class Package
         End Get
     End Property
 
-    Private StartActionValue As Action
+    Private LaunchActionValue As Action
 
-    Overridable Property StartAction As Action
+    Overridable Property LaunchAction As Action
         Get
-            If Launchable Then Return Sub() g.StartProcess(Path)
-            Return StartActionValue
+            If LaunchActionValue Is Nothing Then
+                If IsGUI Then
+                    LaunchActionValue = Sub() g.StartProcess(Path)
+                ElseIf Not HelpSwitch Is Nothing Then
+                    LaunchActionValue = Sub() g.DefaultCommands.ExecutePowerShellScript(
+                        $"& '{Path}' {If(HelpSwitch = "stderr", "", HelpSwitch)}", True)
+                End If
+            End If
+
+            Return LaunchActionValue
         End Get
         Set(value As Action)
-            StartActionValue = value
+            LaunchActionValue = value
         End Set
     End Property
 
@@ -1887,18 +1889,25 @@ Public Class Package
 
                 For Each pair In dic
                     If pair.Value <> "" Then
-                        dialog.AddCommandLink(pair.Key, pair.Value)
+                        dialog.AddCommand(pair.Key, pair.Value)
                     End If
                 Next
 
                 If dialog.Show <> "" Then
                     CreateHelpfile()
-                    g.StartProcess(dialog.SelectedValue)
+                    StartProcess(dialog.SelectedValue)
                 End If
             End Using
         Else
             CreateHelpfile()
-            g.StartProcess(HelpFileOrURL)
+
+            If HelpFileOrURL <> "" AndAlso (HelpFileOrURL.Contains("http") OrElse
+                File.Exists(HelpFileOrURL)) Then
+
+                StartProcess(HelpFileOrURL)
+            Else
+                MsgInfo("No help resource available.")
+            End If
         End If
     End Sub
 
@@ -1933,7 +1942,11 @@ Public Class Package
 
         Try
             If Not HelpSwitch Is Nothing Then
-                File.WriteAllText(HelpFile, BR + ProcessHelp.GetStdOut(Path, HelpSwitch).Trim + BR)
+                Dim stderr = If(HelpSwitch = "stderr", True, False)
+
+                File.WriteAllText(HelpFile, BR + ProcessHelp.GetConsoleOutput(
+                    Path, HelpSwitch, stderr).Trim + BR)
+
                 Return File.ReadAllText(HelpFile)
             End If
         Catch ex As Exception
@@ -2136,22 +2149,45 @@ Public Class Package
             End If
 
             If Filename.Ext = "exe" Then
-                Using key = Registry.ClassesRoot.OpenSubKey("Local Settings\Software\Microsoft\Windows\Shell\MuiCache")
-                    If Not key Is Nothing Then
-                        For Each valueName In key.GetValueNames
-                            If valueName.Contains(Filename) Then
-                                ret = valueName.Left(Filename) + Filename
+                ret = FindExecutable(Filename)
 
-                                If File.Exists(ret) Then
-                                    Return ret
-                                End If
-                            End If
-                        Next
-                    End If
-                End Using
+                If ret <> "" Then
+                    Return ret
+                End If
             End If
         End Get
     End Property
+
+    Sub StartProcess(path As String)
+        If path.Ext.EqualsAny("htm", "html") Then
+            Dim broswer = FindExecutable("chrome.exe", "firefox.exe")
+
+            If broswer <> "" Then
+                g.StartProcess(broswer, path.Escape)
+                Exit Sub
+            End If
+        End If
+
+        g.StartProcess(path)
+    End Sub
+
+    Function FindExecutable(ParamArray names As String()) As String
+        For Each exeName In names
+            Using key = Registry.ClassesRoot.OpenSubKey("Local Settings\Software\Microsoft\Windows\Shell\MuiCache")
+                If Not key Is Nothing Then
+                    For Each valueName In key.GetValueNames
+                        If valueName.Contains(exeName) Then
+                            Dim ret = valueName.Left(exeName) + exeName
+
+                            If File.Exists(ret) Then
+                                Return ret
+                            End If
+                        End If
+                    Next
+                End If
+            End Using
+        Next
+    End Function
 
     Overrides Function ToString() As String
         Return Name
@@ -2236,6 +2272,7 @@ Public Class PythonPackage
         Filename = "python.exe"
         TreePath = "Runtimes"
         WebURL = "http://www.python.org"
+        HelpSwitch = "-h"
         Description = "Python is required by VapourSynth."
         SetupFilename = "Installers\python-3.7.6-amd64-webinstall.exe"
     End Sub
@@ -2290,6 +2327,7 @@ Public Class qaacPackage
         Filename = "qaac64.exe"
         Directory = "Audio\qaac"
         WebURL = "http://github.com/nu774/qaac"
+        HelpSwitch = ""
         Description = "qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the x64 iTunes installer using a decompression tool like 7-Zip. The makeportable script found on the qaac website can also be used."
     End Sub
 
@@ -2324,7 +2362,7 @@ Public Class DGIndexNVPackage
         WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html"
         Description = Strings.DGDecNV
         HelpFilename = "DGIndexNVManual.html"
-        Launchable = True
+        IsGUI = True
         IsIncluded = False
         FileNotFoundMessage = "DGIndexNV can be disabled under Tools/Settings/Demux."
         HintDirFunc = Function() DGDecodeNV.GetStoredPath.Dir
@@ -2383,6 +2421,7 @@ Public Class dsmuxPackage
         Filename = "dsmux.exe"
         Description = Strings.dsmux
         WebURL = "http://haali.su/mkv"
+        HelpSwitch = ""
         Required = False
         IsIncluded = False
     End Sub

@@ -1691,7 +1691,7 @@ Public Class AudioStream
                     Return ".ac3"
                 Case "DTS"
                     Return ".dts"
-                Case "DTS-HD", "DTS XLL", "DTS XLL X"
+                Case "DTS-HD", "DTS XLL", "DTS XLL X", "DTS XBR"
                     Return ".dtshd"
                 Case "PCM", "ADPCM"
                     Return ".wav"

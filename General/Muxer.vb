@@ -211,9 +211,11 @@ Public MustInherit Class Muxer
 
                     If lower.Contains("chapters") Then
                         If TypeOf Me Is MP4Muxer Then
-                            If lower.Ext = "txt" Then ChapterFile = i
+                            If i.Ext = "txt" Then
+                                ChapterFile = i
+                            End If
                         Else
-                            If ChapterFile.Ext.EqualsAny("txt", "xml") Then
+                            If i.Ext.EqualsAny("txt", "xml") Then
                                 ChapterFile = i
                             End If
                         End If

@@ -779,8 +779,7 @@ Public Class PreviewForm
         Dim script = PreviewScript.GetNewScript()
         script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
         UpdateTrim(script)
-        Dim ts = TimeSpan.FromSeconds(Renderer.Position / FrameServer.FrameRate)
-        g.PlayScriptWithMpvnet(script, "--start=" + ts.ToString)
+        g.PlayScriptWithMpvnet(script, "--start=" + GetPlayPosition.ToString)
     End Sub
 
     <Command("Plays the script with MPC.")>
@@ -788,8 +787,7 @@ Public Class PreviewForm
         Dim script = PreviewScript.GetNewScript()
         script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
         UpdateTrim(script)
-        Dim ts = TimeSpan.FromSeconds(Renderer.Position / FrameServer.FrameRate)
-        g.PlayScriptWithMPC(script, "/start " & ts.TotalMilliseconds)
+        g.PlayScriptWithMPC(script, "/start " & GetPlayPosition.TotalMilliseconds)
     End Sub
 
     <Command("Reloads the script.")>
@@ -801,17 +799,6 @@ Public Class PreviewForm
     <Command("Closes the dialog.")>
     Sub CloseDialog()
         Close()
-    End Sub
-
-    Private Sub pVideo_DoubleClick() Handles pnVideo.DoubleClick
-        SwitchWindowState()
-    End Sub
-
-    Private Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseMove
-        If Not WindowState = FormWindowState.Maximized AndAlso e.Button = MouseButtons.Left Then
-            Native.ReleaseCapture()
-            Native.PostMessage(Handle, &HA1, New IntPtr(2), IntPtr.Zero) 'WM_NCLBUTTONDOWN, HTCAPTION
-        End If
     End Sub
 
     <Command("Jumps to the previous cut point.")>
@@ -1012,6 +999,17 @@ Public Class PreviewForm
         pnTrack.Refresh()
     End Sub
 
+    Private Sub pVideo_DoubleClick() Handles pnVideo.DoubleClick
+        SwitchWindowState()
+    End Sub
+
+    Private Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseMove
+        If Not WindowState = FormWindowState.Maximized AndAlso e.Button = MouseButtons.Left Then
+            Native.ReleaseCapture()
+            Native.PostMessage(Handle, &HA1, New IntPtr(2), IntPtr.Zero) 'WM_NCLBUTTONDOWN, HTCAPTION
+        End If
+    End Sub
+
     Private Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pnVideo.Paint
         RefreshControls()
         Renderer.Draw()
@@ -1101,6 +1099,28 @@ Public Class PreviewForm
         Next
     End Function
 
+    Function GetPlayPosition() As TimeSpan
+        If p.Ranges.Count = 0 Then
+            Return TimeSpan.FromSeconds(Renderer.Position / FrameServer.FrameRate)
+        Else
+            If GetCurrentRange() Is Nothing Then
+                Return TimeSpan.Zero
+            Else
+                Dim frames As Integer
+
+                For x = 0 To p.Ranges.Count - 1
+                    Dim current = p.Ranges(x)
+
+                    If current.End < Renderer.Position Then
+                        frames += current.End - current.Start
+                    Else
+                        Return TimeSpan.FromSeconds((frames + (Renderer.Position - current.Start)) / FrameServer.FrameRate)
+                    End If
+                Next
+            End If
+        End If
+    End Function
+
     Protected Overrides Sub OnHelpButtonClicked(e As CancelEventArgs)
         e.Cancel = True
         MyBase.OnHelpButtonClicked(e)
@@ -1111,7 +1131,10 @@ Public Class PreviewForm
         Dim sb = Screen.FromControl(Me).Bounds
         Dim p1 = New Point(sb.Width, 0)
         Dim p2 = PointToScreen(e.Location)
-        If Math.Abs(p1.X - p2.X) < 10 AndAlso Math.Abs(p1.Y - p2.Y) < 10 Then Close()
+
+        If Math.Abs(p1.X - p2.X) < 10 AndAlso Math.Abs(p1.Y - p2.Y) < 10 Then
+            Close()
+        End If
     End Sub
 
     Private Sub pVideo_MouseClick(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseClick
@@ -1124,13 +1147,5 @@ Public Class PreviewForm
         If Width - e.Location.X < 10 AndAlso e.Location.Y < 10 Then
             Close()
         End If
-    End Sub
-
-    Private Sub bnBackward100_Click(sender As Object, e As EventArgs) Handles bnLeft3.Click
-
-    End Sub
-
-    Private Sub bnBackward10_Click(sender As Object, e As EventArgs) Handles bnLeft2.Click
-
     End Sub
 End Class

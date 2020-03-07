@@ -1,7 +1,15 @@
 
-### 2.0.7.5 next Beta not yet released
+### 2.0.7.7 next Beta not yet released
 
 
+
+### 2.0.7.6 next Beta not yet released
+
+- fix: 'DTS XBR' was demuxed as mka instead of dtshd,
+       mka works fine but it's better to use dtshd
+- fix: in the preview dialog the start position for mpc
+       and mpv was incorrect when cut ranges were active
+- fix: chapter file not being picked up
 
 ### 2.0.7.5 Beta
 
@@ -11,6 +19,8 @@
        a warning in case DirectX 9 is not installed
 - fix: HE-AAC as demuxed as mka
 
+- new: setting that allows to define how many frames
+       are used for auto cropping
 - new: some default settings were changed
 - new: the buttons in the preview dialog look much better now, also flicker
        was eleminated and the button and trackbar size was increased,

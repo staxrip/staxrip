@@ -121,31 +121,4 @@
   <data name="Black" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Black.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="BracketClose" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BracketClose.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="BracketOpen" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BracketOpen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Left1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Left1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Left2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Left2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Left3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Left3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Right1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Right1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Right2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Right2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Right3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Right3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="X" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\X.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
 </root>

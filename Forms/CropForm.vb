@@ -541,6 +541,7 @@ Public Class CropForm
                           tbPosition.Value = CInt(tbPosition.Maximum / 100 * progress)
                           TrackLength_Scroll()
                       End Sub)
+        tbPosition.Value = 0
         UpdateAll()
     End Sub
 

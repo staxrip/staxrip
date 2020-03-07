@@ -1069,6 +1069,9 @@ Namespace UI
     Public Class ButtonEx
         Inherits Button
 
+        <DefaultValue(ButtonSymbol.None)>
+        Property Symbol As ButtonSymbol
+
         <DefaultValue(False)>
         Property ShowMenuSymbol As Boolean
 
@@ -1135,6 +1138,170 @@ Namespace UI
                 Dim brush = If(Enabled, Brushes.Black, SystemBrushes.GrayText)
                 e.Graphics.DrawString(_text, _font, brush, CSng(x), CSng(y))
             End If
+
+            If Symbol <> ButtonSymbol.None Then
+                e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
+
+                Dim p = New Pen(Brushes.Black)
+                p = New Pen(Brushes.Black)
+                p.Alignment = Drawing2D.PenAlignment.Center
+                p.EndCap = Drawing2D.LineCap.Round
+                p.StartCap = Drawing2D.LineCap.Round
+                p.Width = Height \ 12
+
+                Dim d As New SymbolDrawer()
+                d.Graphics = e.Graphics
+                d.Pen = p
+
+                d.Point1.Width = ClientSize.Width
+                d.Point2.Width = ClientSize.Width
+                d.Point1.Height = ClientSize.Height
+                d.Point2.Height = ClientSize.Height
+
+                Select Case Symbol
+                    Case ButtonSymbol.Open
+                        d.Point1.MoveRight(0.6)
+                        d.Point1.MoveDown(0.3)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.4)
+                        d.Draw()
+                        d.Point1.MoveDown(0.4)
+                        d.Point2.MoveDown(0.4)
+                        d.Draw()
+                        d.Point1.MoveLeft(0.2)
+                        d.Point1.MoveUp(0.4)
+                        d.Draw()
+                    Case ButtonSymbol.Close
+                        d.Point1.MoveRight(0.6)
+                        d.Point1.MoveDown(0.3)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.4)
+                        d.Draw()
+                        d.Point1.MoveDown(0.4)
+                        d.Point2.MoveDown(0.4)
+                        d.Draw()
+                        d.Point2.MoveRight(0.2)
+                        d.Point2.MoveUp(0.4)
+                        d.Draw()
+                    Case ButtonSymbol.Left3
+                        d.Point1.MoveRight(0.2)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.4)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Reset()
+                        d.Point1.MoveRight(0.2)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.7)
+                        d.Point2.MoveRight(0.4)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                    Case ButtonSymbol.Left2
+                        d.Point1.MoveRight(0.3)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.5)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Reset()
+                        d.Point1.MoveRight(0.3)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.7)
+                        d.Point2.MoveRight(0.5)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                    Case ButtonSymbol.Left1
+                        d.Point1.MoveRight(0.4)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.6)
+                        d.Draw()
+                        d.Point2.MoveDown(0.4)
+                        d.Draw()
+                    Case ButtonSymbol.Right1
+                        d.Point1.MoveRight(0.6)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.4)
+                        d.Draw()
+                        d.Point2.MoveDown(0.4)
+                        d.Draw()
+                    Case ButtonSymbol.Right2
+                        d.Point1.MoveRight(0.5)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.3)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Reset()
+                        d.Point1.MoveRight(0.5)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.7)
+                        d.Point2.MoveRight(0.3)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                    Case ButtonSymbol.Right3
+                        d.Point1.MoveRight(0.4)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Reset()
+                        d.Point1.MoveRight(0.4)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.7)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                    Case ButtonSymbol.Delete
+                        d.Point1.MoveRight(0.3)
+                        d.Point1.MoveDown(0.3)
+                        d.Point2.MoveRight(0.7)
+                        d.Point2.MoveDown(0.7)
+                        d.Draw()
+                        d.Point1.MoveRight(0.4)
+                        d.Point2.MoveLeft(0.4)
+                        d.Draw()
+                    Case ButtonSymbol.Menu
+                        d.Point1.MoveRight(0.2)
+                        d.Point1.MoveDown(0.35)
+                        d.Point2.MoveRight(0.5)
+                        d.Point2.MoveDown(0.65)
+                        d.Draw()
+                        d.Point1.MoveRight(0.6)
+                        d.Draw()
+                End Select
+            End If
         End Sub
 
         Sub ShowBold()
@@ -1147,6 +1314,61 @@ Namespace UI
 
             Font = New Font(Font, FontStyle.Regular)
         End Sub
+
+        Enum ButtonSymbol
+            None
+            Left1
+            Left2
+            Left3
+            Right1
+            Right2
+            Right3
+            Open
+            Close
+            Delete
+            Menu
+        End Enum
+
+        Class SymbolDrawer
+            Property Point1 As New Point
+            Property Point2 As New Point
+            Property Pen As Pen
+            Property Graphics As Graphics
+
+            Sub Draw()
+                Graphics.DrawLine(Pen, Point1.X, Point1.Y, Point2.X, Point2.Y)
+            End Sub
+
+            Sub Reset()
+                Point1.X = 0
+                Point2.X = 0
+                Point1.Y = 0
+                Point2.Y = 0
+            End Sub
+
+            Class Point
+                Property Width As Single
+                Property Height As Single
+                Property X As Single
+                Property Y As Single
+
+                Sub MoveLeft(value As Single)
+                    X -= Width * value
+                End Sub
+
+                Sub MoveRight(value As Single)
+                    X += Width * value
+                End Sub
+
+                Sub MoveUp(value As Single)
+                    Y -= Height * value
+                End Sub
+
+                Sub MoveDown(value As Single)
+                    Y += Height * value
+                End Sub
+            End Class
+        End Class
     End Class
 
     Public Class ListBoxEx

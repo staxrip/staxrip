@@ -36,7 +36,7 @@ Public Class ApplicationSettings
     Public LogFileNum As Integer = 50
     Public MinimizeToTray As Boolean
     Public MinimumDiskSpace As Integer = 20
-    Public MinPreviewSize As Integer = 60
+    Public MinPreviewSize As Integer = 70
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
     Public ParallelProcsNum As Integer = 2

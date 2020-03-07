@@ -1,17 +1,22 @@
 
-### Todo
-
-- documentation
-- website
-
 ### 2.0.7.5 next Beta not yet released
 
-- fix: issue with cut feature and preview used from code editor
+
+
+### 2.0.7.5 Beta
+
+- fix: when the cut feature was used and afterwards the preview was
+       opened from the code editor then the cut settings got damaged
 - fix: when AviSynthShader was used StaxRip did not show
        a warning in case DirectX 9 is not installed
+- fix: HE-AAC as demuxed as mka
 
+- new: some default settings were changed
+- new: the buttons in the preview dialog look much better now, also flicker
+       was eleminated and the button and trackbar size was increased,
+       standard buttons were used, I don't know how it looks on Win 7...
 - new: the csv file content in the apps dialog was improved
-- new: auto crop feature in crop dialog shows progress
+- new: auto crop feature in crop dialog finally shows progress
 - new: the avisynth and vapoursynth code editor has a new
        'Advanced > Advanced Info' feature, it offers the following info:
        avs2pipemod info, avsmeter info, avsmeter benchmark and vspipe info

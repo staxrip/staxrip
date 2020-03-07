@@ -1685,7 +1685,7 @@ Public Class AudioStream
     ReadOnly Property Extension() As String
         Get
             Select Case FormatString
-                Case "AAC LC", "AAC LC-SBR", "AAC LC-SBR-PS"
+                Case "AAC LC", "AAC LC-SBR", "AAC LC-SBR-PS", "AAC LC SBR"
                     Return ".m4a"
                 Case "AC3", "AC-3"
                     Return ".ac3"

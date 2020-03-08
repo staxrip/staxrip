@@ -18,13 +18,13 @@
 
 - new: the logic to create and edit cut sections in the preview
        dialog is now smarter and more flexible       
-- new: the assistand tells in case of a script error that the
+- new: the assistant tells in case of a script error that the
        full error can be shown by clicking the preview button
 - new: MiniDeen avs filter added
 - new: Advanced Info in the code editor was moved to the top level menu
        and AviSynth Info() can be shown directly from the Advanced Info
        without adding Info() to the script, staxrip generates the script
-       and shows it with mpv (paused and osc and osd disabled)
+       with perfect font size and shows it with mpv (paused, no osc, no osd)
 
 ### 2.0.7.5 Beta
 

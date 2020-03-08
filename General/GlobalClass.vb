@@ -331,7 +331,7 @@ Public Class GlobalClass
 
     Sub PlayScript(script As VideoScript)
         If script.Engine = ScriptEngine.AviSynth Then
-            PlayScriptWithMpvnet(script)
+            PlayScriptWithMPV(script)
         Else
             PlayScriptWithMPC(script)
         End If
@@ -346,6 +346,10 @@ Public Class GlobalClass
     End Function
 
     Sub PlayScriptWithMPC(script As VideoScript, Optional cliArgs As String = Nothing)
+        If script Is Nothing Then
+            Exit Sub
+        End If
+
         script.Synchronize()
         Dim playerPath = Package.MpcBE.Path
 
@@ -377,7 +381,11 @@ Public Class GlobalClass
         g.StartProcess(playerPath, args.Trim)
     End Sub
 
-    Sub PlayScriptWithMpvnet(script As VideoScript, Optional cliArgs As String = Nothing)
+    Sub PlayScriptWithMPV(script As VideoScript, Optional cliArgs As String = Nothing)
+        If script Is Nothing Then
+            Exit Sub
+        End If
+
         script.Synchronize()
         Dim args As String
 
@@ -704,7 +712,7 @@ Public Class GlobalClass
         End If
 
         If p.SourceScript.GetError <> "" Then
-            MsgError(p.SourceScript.GetError)
+            MsgError("Script Error", p.SourceScript.GetError)
             Return False
         End If
 
@@ -1223,12 +1231,12 @@ Public Class GlobalClass
         If script.Engine = ScriptEngine.AviSynth Then
             Using td As New TaskDialog(Of String)
                 td.MainInstruction = "Choose below"
+                td.AddCommand("Info()")
                 td.AddCommand("avsmeter benchmark")
                 td.AddCommand("avsmeter info")
                 td.AddCommand("avs2pipemod info")
-                td.Show()
 
-                Select Case td.SelectedText
+                Select Case td.Show()
                     Case "avs2pipemod info"
                         g.DefaultCommands.ExecutePowerShellScript(
                             $"""`n{Package.avs2pipemod.Name} {Package.avs2pipemod.Version}""; & '{Package.avs2pipemod.Path}' -info '{script.Path}'", True)
@@ -1241,6 +1249,19 @@ Public Class GlobalClass
                     Case "avsmeter"
                         g.DefaultCommands.ExecutePowerShellScript(
                             $"& '{Package.AVSMeter.Path}' '{script.Path}'", True)
+                    Case "Info()"
+                        Dim infoScript = New VideoScript
+                        infoScript.AddFilter(New VideoFilter($"Import(""{script.Path}"")"))
+                        Dim infoCode = $"Info(size={(script.GetInfo().Height * 0.07).ToInvariantString()})"
+                        infoScript.AddFilter(New VideoFilter(infoCode))
+                        infoScript.Path = p.TempDir + p.TargetFile.Base + $"_info." + script.FileType
+
+                        If infoScript.GetError() <> "" Then
+                            MsgError("Script Error", infoScript.GetError())
+                            Exit Sub
+                        End If
+
+                        g.PlayScriptWithMPV(infoScript, "--pause=yes --osc=no --osd-level=0")
                 End Select
             End Using
         Else

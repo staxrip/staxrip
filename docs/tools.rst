@@ -84,6 +84,16 @@ Used Version: 2053
 http://rationalqm.us/dgdecnv/dgdecnv.html
 
 
+DirectX 9
+~~~~~~~~~
+
+DirectX 9.0c End-User Runtime
+
+Used Version: 
+
+
+
+
 dsmux
 ~~~~~
 
@@ -452,6 +462,30 @@ Filters: Average
 Used Version: 0.94
 
 http://avisynth.nl/index.php/Average
+
+
+AviSynthShader AVSI
+~~~~~~~~~~~~~~~~~~~
+
+
+
+Filters: SuperRes, SuperResXBR, SuperXBR, ResizeShader, SuperResPass, SuperXbrMulti, ResizeShader
+
+Used Version: 1.6.5
+
+https://github.com/mysteryx93/AviSynthShader
+
+
+AviSynthShader DLL
+~~~~~~~~~~~~~~~~~~
+
+
+
+Filters: SuperRes, SuperResXBR, SuperXBR, ResizeShader, SuperResPass, SuperXbrMulti, ResizeShader
+
+Used Version: 1.6.5
+
+https://github.com/mysteryx93/AviSynthShader
 
 
 AvsResize
@@ -1102,6 +1136,18 @@ Used Version: 0.94
 http://avisynth.nl/index.php/MedianBlur2
 
 
+MiniDeen
+~~~~~~~~
+
+MiniDeen is a spatial denoising filter. It replaces every pixel with the average of its neighbourhood.
+
+Filters: MiniDeen
+
+Used Version: r4
+
+https://github.com/HomeOfAviSynthPlusEvolution/MiniDeen
+
+
 MipSmooth
 ~~~~~~~~~
 
@@ -1280,30 +1326,6 @@ Filters: SangNom2
 Used Version: 0.35
 
 http://avisynth.nl/index.php/SangNom2
-
-
-Shader AVSI
-~~~~~~~~~~~
-
-
-
-Filters: SuperRes, SuperResXBR, SuperXBR, ResizeShader, SuperResPass, SuperXbrMulti, ResizeShader
-
-Used Version: 1.6.5
-
-https://github.com/mysteryx93/AviSynthShader/releases
-
-
-Shader DLL
-~~~~~~~~~~
-
-
-
-Filters: SuperRes, SuperResXBR, SuperXBR, ResizeShader, SuperResPass, SuperXbrMulti, ResizeShader
-
-Used Version: 1.0
-
-https://github.com/mysteryx93/AviSynthShader/releases
 
 
 SMDegrain

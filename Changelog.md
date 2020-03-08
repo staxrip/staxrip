@@ -10,6 +10,15 @@
 - fix: in the preview dialog the start position for mpc
        and mpv was incorrect when cut ranges were active
 - fix: chapter file not being picked up
+- fix: in the filter setup profiles dialog were two bugs
+- fix: the filter parameter menu in the code editor was adding
+       parameters if they were existing with different casing
+
+- new: the assistand tells in case of a script error that the
+       full error can be shown by clicking the preview button
+- new: MiniDeen avs filter added
+- new: the advanced script info in the code editor was moved
+       to the top level menu and Info() can be shown in mpv
 
 ### 2.0.7.5 Beta
 

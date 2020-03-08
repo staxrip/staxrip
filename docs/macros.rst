@@ -343,6 +343,14 @@ File path to Average
 
 File path to AviSynth
 
+``%app:AviSynthShader AVSI%``
+
+File path to AviSynthShader AVSI
+
+``%app:AviSynthShader DLL%``
+
+File path to AviSynthShader DLL
+
 ``%app:avs2pipemod%``
 
 File path to avs2pipemod
@@ -506,6 +514,10 @@ File path to DGIndexNV
 ``%app:DGTonemap%``
 
 File path to DGTonemap
+
+``%app:DirectX 9%``
+
+File path to DirectX 9
 
 ``%app:Dither AVSI%``
 
@@ -723,6 +735,10 @@ File path to MedianBlur2
 
 File path to MiniDeen
 
+``%app:MiniDeen%``
+
+File path to MiniDeen
+
 ``%app:MipSmooth%``
 
 File path to MipSmooth
@@ -898,14 +914,6 @@ File path to SangNom2
 ``%app:scenechange%``
 
 File path to scenechange
-
-``%app:Shader AVSI%``
-
-File path to Shader AVSI
-
-``%app:Shader DLL%``
-
-File path to Shader DLL
 
 ``%app:SMDegrain%``
 
@@ -1123,6 +1131,14 @@ Folder path to Average
 
 Folder path to AviSynth
 
+``%app_dir:AviSynthShader AVSI%``
+
+Folder path to AviSynthShader AVSI
+
+``%app_dir:AviSynthShader DLL%``
+
+Folder path to AviSynthShader DLL
+
 ``%app_dir:avs2pipemod%``
 
 Folder path to avs2pipemod
@@ -1286,6 +1302,10 @@ Folder path to DGIndexNV
 ``%app_dir:DGTonemap%``
 
 Folder path to DGTonemap
+
+``%app_dir:DirectX 9%``
+
+Folder path to DirectX 9
 
 ``%app_dir:Dither AVSI%``
 
@@ -1503,6 +1523,10 @@ Folder path to MedianBlur2
 
 Folder path to MiniDeen
 
+``%app_dir:MiniDeen%``
+
+Folder path to MiniDeen
+
 ``%app_dir:MipSmooth%``
 
 Folder path to MipSmooth
@@ -1678,14 +1702,6 @@ Folder path to SangNom2
 ``%app_dir:scenechange%``
 
 Folder path to scenechange
-
-``%app_dir:Shader AVSI%``
-
-Folder path to Shader AVSI
-
-``%app_dir:Shader DLL%``
-
-Folder path to Shader DLL
 
 ``%app_dir:SMDegrain%``
 

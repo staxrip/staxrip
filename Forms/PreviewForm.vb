@@ -779,7 +779,7 @@ Public Class PreviewForm
         Dim script = PreviewScript.GetNewScript()
         script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
         UpdateTrim(script)
-        g.PlayScriptWithMpvnet(script, "--start=" + GetPlayPosition.ToString)
+        g.PlayScriptWithMPV(script, "--start=" + GetPlayPosition.ToString)
     End Sub
 
     <Command("Plays the script with MPC.")>

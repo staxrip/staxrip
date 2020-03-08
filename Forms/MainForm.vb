@@ -2037,7 +2037,7 @@ Public Class MainForm
 
             If errorMsg <> "" Then
                 If p.SourceFile.Ext = "avs" OrElse p.SourceFile.Ext = "vpy" Then
-                    MsgError("Failed to load script.", errorMsg)
+                    MsgError("Failed to load script", errorMsg)
                     Throw New AbortException
                 Else
                     Log.WriteHeader("Error opening source")
@@ -2891,18 +2891,21 @@ Public Class MainForm
             End If
 
             If Not (MouseButtons = MouseButtons.Left AndAlso ActiveControl Is tbResize) Then
-                If p.Script.GetError <> "" AndAlso Not g.VerifyRequirements Then
-                    If ProcessTip(p.Script.GetError) Then
+                Dim err = p.Script.GetError
+                Dim title = If(err.Count(Function(chr) chr = BR(1)) > 2, "Click Preview to show full error", "Script Error")
+
+                If err <> "" AndAlso Not g.VerifyRequirements Then
+                    If ProcessTip(err) Then
                         CanIgnoreTip = False
-                        gbAssistant.Text = "Script Error"
+                        gbAssistant.Text = title
                         Return False
                     End If
                 End If
 
-                If p.Script.GetError <> "" Then
-                    If ProcessTip(p.Script.GetError) Then
+                If err <> "" Then
+                    If ProcessTip(err) Then
                         CanIgnoreTip = False
-                        gbAssistant.Text = "Script Error"
+                        gbAssistant.Text = title
                         Return False
                     End If
                 End If
@@ -2919,7 +2922,11 @@ Public Class MainForm
         End If
 
         gbAssistant.Text = "Add Job"
-        If lTip.Font.Size <> 9 Then lTip.Font = New Font(lTip.Font.FontFamily, 9 * s.UIScaleFactor)
+
+        If lTip.Font.Size <> 9 Then
+            lTip.Font = New Font(lTip.Font.FontFamily, 9 * s.UIScaleFactor)
+        End If
+
         lTip.Text = "Click on the next button to add a job."
         AssistantPassed = True
     End Function
@@ -4217,6 +4224,7 @@ Public Class MainForm
 
             If form.ShowDialog() = DialogResult.OK Then
                 PopulateProfileMenu(DynamicMenuItemID.FilterSetupProfiles)
+                FiltersListView.RebuildMenu()
             End If
         End Using
     End Sub
@@ -4729,9 +4737,9 @@ Public Class MainForm
         Dim profile = DirectCast(ObjectHelp.GetCopy(profileInterface), TargetVideoScript)
 
         If profile.Engine = ScriptEngine.AviSynth OrElse
-                (Package.Python.VerifyOK(True) AndAlso
-                Package.VapourSynth.VerifyOK(True) AndAlso
-                Package.vspipe.VerifyOK(True)) Then
+            (Package.Python.VerifyOK(True) AndAlso
+            Package.VapourSynth.VerifyOK(True) AndAlso
+            Package.vspipe.VerifyOK(True)) Then
 
             p.Script = profile
             ModifyFilters()
@@ -5549,13 +5557,15 @@ Public Class MainForm
     End Sub
 
     Sub ExecuteAudio(ap As AudioProfile)
-        Try
-            If p.TempDir = "" Then p.TempDir = ap.File.Dir
-            ap = ObjectHelp.GetCopy(Of AudioProfile)(ap)
-            Audio.Process(ap)
-            ap.Encode()
-        Catch
-        End Try
+        If MsgQuestion("Confirm to process the track.") = DialogResult.OK Then
+            Try
+                If p.TempDir = "" Then p.TempDir = ap.File.Dir
+                ap = ObjectHelp.GetCopy(Of AudioProfile)(ap)
+                Audio.Process(ap)
+                ap.Encode()
+            Catch
+            End Try
+        End If
     End Sub
 
     Sub UpdateTargetFileMenu()

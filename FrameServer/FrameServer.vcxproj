@@ -101,12 +101,16 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="FrameServer.h" />
     <ClInclude Include="AviSynthServer.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="VapourSynthServer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AviSynthServer.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="VapourSynthServer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="FrameServer.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

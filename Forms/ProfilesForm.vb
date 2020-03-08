@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class ProfilesForm
@@ -112,9 +113,10 @@ Public Class ProfilesForm
         'lbMain
         '
         Me.lbMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lbMain.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed
         Me.lbMain.FormattingEnabled = True
         Me.lbMain.IntegralHeight = False
-        Me.lbMain.ItemHeight = 48
+        Me.lbMain.ItemHeight = 67
         Me.lbMain.Location = New System.Drawing.Point(0, 0)
         Me.lbMain.Margin = New System.Windows.Forms.Padding(15, 15, 15, 0)
         Me.lbMain.Name = "lbMain"
@@ -304,7 +306,6 @@ Public Class ProfilesForm
     Private Profiles As IList
     Private AddProfileMethod As Func(Of Profile)
     Private LoadProfileMethod As Action(Of Profile)
-    Private Counter As Integer
     Private TextValues As New Dictionary(Of Button, String)
     Private DefaultsFunc As Func(Of IList)
 
@@ -407,17 +408,17 @@ Public Class ProfilesForm
     End Sub
 
     Private Sub bnAdd_Click() Handles bnAdd.Click
-        Dim p = AddProfileMethod()
+        Dim pm = AddProfileMethod()
 
-        If Not p Is Nothing Then
-            p = DirectCast(ObjectHelp.GetCopy(p), Profile)
-            p.Name = InputBox.Show("Enter the name of the new profile.", "Name", p.Name)
+        If Not pm Is Nothing Then
+            pm = DirectCast(ObjectHelp.GetCopy(pm), Profile)
+            pm.Name = InputBox.Show("Enter the name of the new profile.", "Name", pm.Name)
 
-            If Not p.Name Is Nothing Then
+            If Not pm.Name Is Nothing Then
                 Dim remove As Profile = Nothing
 
                 For Each i As Profile In lbMain.Items
-                    If i.Name = p.Name Then
+                    If i.Name = pm.Name Then
                         If MsgOK("There is already a profile with this name, overwrite?") Then
                             remove = i
                         Else
@@ -430,10 +431,10 @@ Public Class ProfilesForm
                     lbMain.Items.Remove(remove)
                 End If
 
-                p.Clean()
-                lbMain.Items.Insert(0, p)
+                pm.Clean()
+                lbMain.Items.Insert(0, pm)
                 lbMain.ClearSelected()
-                lbMain.SelectedItem = p
+                lbMain.SelectedItem = pm
                 UpdateControls()
             End If
         End If
@@ -517,6 +518,7 @@ Public Class ProfilesForm
         If MsgQuestion("Restore Profiles?") = DialogResult.OK Then
             lbMain.Items.Clear()
             lbMain.Items.AddRange(DefaultsFunc().OfType(Of Profile).ToArray)
+            UpdateControls()
         End If
     End Sub
 
@@ -539,5 +541,9 @@ Public Class ProfilesForm
         form.Doc.WriteStart(Text)
         form.Doc.WriteTips(TipProvider.GetTips)
         form.Show()
+    End Sub
+
+    Private Sub bnOK_Click(sender As Object, e As EventArgs) Handles bnOK.Click
+        DialogResult = DialogResult.OK
     End Sub
 End Class

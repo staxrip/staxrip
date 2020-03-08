@@ -1,3 +1,4 @@
+
 Imports System.Text.RegularExpressions
 Imports System.Text
 Imports System.ComponentModel
@@ -298,11 +299,12 @@ Public Class Proc
                     Dim ntdllHandle = Native.LoadLibrary("NTDLL.DLL")
                     Dim systemErrorMessage As String
 
-                    Dim retval = Native.FormatMessage(Native.FORMAT_MESSAGE_ALLOCATE_BUFFER Or
-                                                      Native.FORMAT_MESSAGE_FROM_SYSTEM Or
-                                                      Native.FORMAT_MESSAGE_FROM_HMODULE,
-                                                      ntdllHandle, ExitCode, 0, systemErrorMessage,
-                                                      0, IntPtr.Zero)
+                    Dim retval = Native.FormatMessage(
+                        Native.FORMAT_MESSAGE_ALLOCATE_BUFFER Or
+                        Native.FORMAT_MESSAGE_FROM_SYSTEM Or
+                        Native.FORMAT_MESSAGE_FROM_HMODULE,
+                        ntdllHandle, ExitCode, 0, systemErrorMessage, 0, IntPtr.Zero)
+
                     Native.FreeLibrary(ntdllHandle)
 
                     Const ERROR_MR_MID_NOT_FOUND = 317

@@ -102,7 +102,7 @@ Public Class Thumbnails
         Dim errorMsg = script.GetError
 
         If errorMsg <> "" Then
-            MsgError("Failed to open file." + BR2 + inputFile, errorMsg)
+            MsgError("Failed to open file" + BR2 + inputFile, errorMsg)
             Exit Sub
         End If
 

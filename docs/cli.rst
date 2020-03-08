@@ -445,6 +445,12 @@ Shows the powershell with aliases for all tools staxrip includes.
 Dialog to preview or cut the video.
 
 
+-ShowScriptInfo
+~~~~~~~~~~~~~~~
+
+Shows script info using various console tools.
+
+
 -ShowSettingsDialog
 ~~~~~~~~~~~~~~~~~~~
 

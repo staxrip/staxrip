@@ -33,7 +33,7 @@ Public Class CodeEditor
             Case Keys.F5
                 VideoPreview()
             Case Keys.F9
-                PlayScriptWithMpvnet()
+                PlayScriptWithMPVt()
             Case Keys.F10
                 PlayScriptWithMPC()
             Case Keys.Control Or Keys.Delete
@@ -91,49 +91,19 @@ Public Class CodeEditor
         script.Filters = GetFilters()
 
         If script.GetError <> "" Then
-            MsgError(script.GetError)
+            MsgError("Script Error", script.GetError)
             Exit Function
         End If
 
         Return script
     End Function
 
-    Sub AdvancedScriptInfo()
-        Dim script = CreateTempScript()
-
-        If script Is Nothing Then
-            Exit Sub
-        End If
-
-        g.ShowAdvancedScriptInfo(script)
-    End Sub
-
-    Sub PlayScriptWithMpvnet()
-        Dim script As New VideoScript
-        script.Engine = Engine
-        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
-        script.Filters = GetFilters()
-
-        If script.GetError <> "" Then
-            MsgError(script.GetError)
-            Exit Sub
-        End If
-
-        g.PlayScriptWithMpvnet(script)
+    Sub PlayScriptWithMPVt()
+        g.PlayScriptWithMPV(CreateTempScript())
     End Sub
 
     Sub PlayScriptWithMPC()
-        Dim script As New VideoScript
-        script.Engine = Engine
-        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
-        script.Filters = GetFilters()
-
-        If script.GetError <> "" Then
-            MsgError(script.GetError)
-            Exit Sub
-        End If
-
-        g.PlayScriptWithMPC(script)
+        g.PlayScriptWithMPC(CreateTempScript())
     End Sub
 
     Sub VideoPreview()
@@ -141,16 +111,13 @@ Public Class CodeEditor
             Exit Sub
         End If
 
-        Dim script As New VideoScript
-        script.Engine = Engine
-        script.Path = p.TempDir + p.TargetFile.Base + "_editor." + script.FileType
-        script.Filters = GetFilters()
-        script.RemoveFilter("Cutting")
+        Dim script = CreateTempScript()
 
-        If script.GetError <> "" Then
-            MsgError(script.GetError)
+        If script Is Nothing Then
             Exit Sub
         End If
+
+        script.RemoveFilter("Cutting")
 
         Dim form As New PreviewForm(script)
         form.Owner = g.MainForm
@@ -158,21 +125,21 @@ Public Class CodeEditor
     End Sub
 
     Sub ShowInfo()
-        If p.SourceFile = "" Then
+        Dim script = CreateTempScript()
+
+        If Not script Is Nothing Then
+            g.ShowScriptInfo(script)
+        End If
+    End Sub
+
+    Sub ShowAdvancedInfo()
+        Dim script = CreateTempScript()
+
+        If script Is Nothing Then
             Exit Sub
         End If
 
-        Dim script As New VideoScript
-        script.Engine = Engine
-        script.Path = p.TempDir + p.TargetFile.Base + "_editor." + script.FileType
-        script.Filters = GetFilters()
-
-        If script.GetError <> "" Then
-            MsgError(script.GetError)
-            Exit Sub
-        End If
-
-        g.ShowScriptInfo(script)
+        g.ShowAdvancedScriptInfo(script)
     End Sub
 
     Sub JoinFilters()
@@ -340,7 +307,9 @@ Public Class CodeEditor
                 Dim skip = False
 
                 For Each parameter In parameters.Parameters
-                    If argument Like "*" + parameter.Name + "*=*" Then
+                    If argument.ToLower.RemoveChars(" ").Contains(
+                        parameter.Name.ToLower.RemoveChars(" ") + "=") Then
+
                         skip = True
                     End If
                 Next
@@ -411,12 +380,12 @@ Public Class CodeEditor
             previewMenuItem.ShortcutKeyDisplayString = "F5"
             previewMenuItem.SetImage(Symbol.Photo)
 
-            Dim mpvnetMenuItem = Menu.Add("Play with mpv.net", AddressOf Editor.PlayScriptWithMpvnet, "Plays the current script with mpv.net.")
+            Dim mpvnetMenuItem = Menu.Add("Play with mpv.net", AddressOf Editor.PlayScriptWithMPVt, "Plays the current script with mpv.net.")
             mpvnetMenuItem.Enabled = p.SourceFile <> ""
             mpvnetMenuItem.ShortcutKeyDisplayString = "F9"
             mpvnetMenuItem.SetImage(Symbol.Play)
 
-            Dim mpcMenuItem = Menu.Add("Play with MPC", AddressOf Editor.PlayScriptWithMPC, "Plays the current script with MPC.")
+            Dim mpcMenuItem = Menu.Add("Play with mpc", AddressOf Editor.PlayScriptWithMPC, "Plays the current script with MPC.")
             mpcMenuItem.Enabled = p.SourceFile <> ""
             mpcMenuItem.ShortcutKeyDisplayString = "F10"
             mpcMenuItem.SetImage(Symbol.Play)
@@ -427,6 +396,8 @@ Public Class CodeEditor
             infoMenuItem.SetImage(Symbol.Info)
             infoMenuItem.ShortcutKeyDisplayString = "Ctrl+I"
             infoMenuItem.Enabled = p.SourceFile <> ""
+
+            Menu.Add("Advanced Info...", AddressOf Editor.ShowAdvancedInfo, p.SourceFile <> "").SetImage(Symbol.Lightbulb)
 
             Dim joinMenuItem = Menu.Add("Join Filters", AddressOf Editor.JoinFilters, "Joins all filters into one filter.")
             joinMenuItem.Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
@@ -439,8 +410,6 @@ Public Class CodeEditor
             Dim macrosMenuItem = Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to choose macros.")
             macrosMenuItem.ShortcutKeyDisplayString = "Ctrl+M"
             macrosMenuItem.SetImage(Symbol.CalculatorPercentage)
-
-            Menu.Add("Advanced | Advanced Info...", AddressOf Editor.AdvancedScriptInfo, p.SourceFile <> "")
 
             Menu.Add("-")
 

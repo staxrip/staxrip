@@ -679,10 +679,10 @@ Public Class Package
             .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
             .FixedDir = Folder.System,
             .IgnoreVersion = True,
+            .TreePath = "Runtimes",
             .IsRequiredFunc = Function() Items("SangNom2 avs").Required OrElse
                                          Items("Deblock avs").Required OrElse
-                                         Items("mClean avs").Required,
-            .TreePath = "Runtimes"})
+                                         Items("mClean avs").Required})
 
         Add(New Package With {
             .Name = "Visual C++ 2013",
@@ -962,8 +962,7 @@ Public Class Package
             .HelpFilename = "Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/Deblock_QED",
             .AvsFilterNames = {"Deblock_QED"},
-            .AvsFiltersFunc = Function() {
-                New VideoFilter("Restoration", "DeBlock | DeBlock_QED", "Deblock_QED(quant1=24, quant2=26, aOff1=1, aOff2=1, bOff1=2, bOff2=2, uv=3)")}})
+            .AvsFiltersFunc = Function() {New VideoFilter("Restoration", "DeBlock | DeBlock_QED", "Deblock_QED(quant1=24, quant2=26, aOff1=1, aOff2=1, bOff1=2, bOff2=2, uv=3)")}})
 
         Add(New PluginPackage With {
             .Name = "nnedi3 AVSI",
@@ -1209,7 +1208,7 @@ Public Class Package
             .Description = "Yushko Frame Rate Converter - doubles the frame rate with strong artifact detection and scene change detection. YFRC uses masks to reduce artifacts in areas where interpolation failed.",
             .AvsFilterNames = {"YFRC"},
             .AvsFiltersFunc = Function() {
-            New VideoFilter("FrameRate", "YRFC", "YFRC(BlockH=16, BlockV=16, OverlayType=0, MaskExpand=1)")}})
+                New VideoFilter("FrameRate", "YRFC", "YFRC(BlockH=16, BlockV=16, OverlayType=0, MaskExpand=1)")}})
 
         Add(New PluginPackage With {
             .Name = "Deblock",
@@ -1263,8 +1262,7 @@ Public Class Package
             .WebURL = "http://rationalqm.us/mine.html",
             .Directory = "Plugins\AVS\VSCube",
             .AvsFilterNames = {"Cube"},
-            .AvsFiltersFunc = Function() {
-                New VideoFilter("Color", "HDRCore | Cube", "Cube(""$browse_file$"")")}})
+            .AvsFiltersFunc = Function() {New VideoFilter("Color", "HDRCore | Cube", "Cube(""$browse_file$"")")}})
 
         Add(New PluginPackage With {
             .Name = "RgTools",
@@ -1507,10 +1505,19 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "MiniDeen",
+            .Filename = "MiniDeen.dll",
+            .WebURL = "https://github.com/HomeOfAviSynthPlusEvolution/MiniDeen",
+            .Description = "MiniDeen is a spatial denoising filter. It replaces every pixel with the average of its neighbourhood.",
+            .AvsFilterNames = {"MiniDeen"},
+            .AvsFiltersFunc = Function() {New VideoFilter("Noise", "MiniDeen", "MiniDeen(radius=1, thrY=10, thrUV=12, Y=3, U=3, V=3)")}})
+
+        Add(New PluginPackage With {
+            .Name = "MiniDeen",
             .Filename = "libminideen.dll",
             .WebURL = "https://github.com/dubhater/vapoursynth-minideen",
             .Description = "MiniDeen is a spatial denoising filter. It replaces every pixel with the average of its neighbourhood.",
-            .VSFilterNames = {"minideen.MiniDeen"}})
+            .VSFilterNames = {"minideen.MiniDeen"},
+            .VSFiltersFunc = Function() {New VideoFilter("Noise", "MiniDeen", "clip = core.minideen.MiniDeen(clip, radius=1, threshold=10)")}})
 
         Add(New PluginPackage With {
             .Name = "IT",
@@ -1783,28 +1790,28 @@ Public Class Package
 
         Dim fp = Folder.Settings + "Versions.txt"
 
-        Try
-            If Not File.Exists(fp) OrElse Not File.ReadAllText(fp).Contains(Application.ProductVersion + BR2) Then
-                FileHelp.Delete(fp)
-                fp = Folder.Apps + "Versions.txt"
-            End If
+                                  Try
+                                      If Not File.Exists(fp) OrElse Not File.ReadAllText(fp).Contains(Application.ProductVersion + BR2) Then
+                                          FileHelp.Delete(fp)
+                                          fp = Folder.Apps + "Versions.txt"
+                                      End If
 
-            For Each line In File.ReadAllLines(fp)
-                For Each pack In Items.Values
-                    If line Like "*=*;*" Then
-                        Dim name = line.Left("=").Trim
+                                      For Each line In File.ReadAllLines(fp)
+                                          For Each pack In Items.Values
+                                              If line Like "*=*;*" Then
+                                                  Dim name = line.Left("=").Trim
 
-                        If name = pack.ID Then
-                            pack.Version = line.Right("=").Right(";").Trim
-                            Dim a = line.Right("=").Left(";").Trim.Split("-"c)
-                            pack.VersionDate = New DateTime(CInt(a(0)), CInt(a(1)), CInt(a(2)))
-                        End If
-                    End If
-                Next
-            Next
-        Catch ex As Exception
-            g.ShowException(ex)
-        End Try
+                                                  If name = pack.ID Then
+                                                      pack.Version = line.Right("=").Right(";").Trim
+                                                      Dim a = line.Right("=").Left(";").Trim.Split("-"c)
+                                                      pack.VersionDate = New DateTime(CInt(a(0)), CInt(a(1)), CInt(a(2)))
+                                                  End If
+                                              End If
+                                          Next
+                                      Next
+                                  Catch ex As Exception
+                                      g.ShowException(ex)
+                                  End Try
     End Sub
 
     ReadOnly Property ID As String
@@ -2129,15 +2136,24 @@ Public Class Package
 
             If Not plugin Is Nothing Then
                 If Not plugin.VSFilterNames Is Nothing AndAlso Not plugin.AvsFilterNames Is Nothing Then
-                    ret = Folder.Apps + "Plugins\both\" + Name + "\" + Filename
-                    If File.Exists(ret) Then Return ret
+                    ret = Folder.Apps + "Plugins\Dual\" + Name + "\" + Filename
+
+                    If File.Exists(ret) Then
+                        Return ret
+                    End If
                 Else
                     If plugin.VSFilterNames Is Nothing Then
-                        ret = Folder.Apps + "Plugins\avs\" + Name + "\" + Filename
-                        If File.Exists(ret) Then Return ret
+                        ret = Folder.Apps + "Plugins\AVS\" + Name + "\" + Filename
+
+                        If File.Exists(ret) Then
+                            Return ret
+                        End If
                     Else
-                        ret = Folder.Apps + "Plugins\vs\" + Name + "\" + Filename
-                        If File.Exists(ret) Then Return ret
+                        ret = Folder.Apps + "Plugins\VS\" + Name + "\" + Filename
+
+                        If File.Exists(ret) Then
+                            Return ret
+                        End If
                     End If
                 End If
             End If

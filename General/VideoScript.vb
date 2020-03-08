@@ -727,7 +727,6 @@ Public Class FilterCategory
         misc.Filters.Add(New VideoFilter(misc.Name, "MTMode | Set Max Memory", "SetMemoryMax($enter_text:Enter the Maximum Memory Avisynth Can use$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "Histogram", "Histogram(""levels"", bits=$select:msg:Select BitDepth;8;10;12$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "SplitVertical", "Splitvertical=true"))
-        misc.Filters.Add(New VideoFilter(misc.Name, "Info", "Info(size=16*%dpi%/96)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "AddBorders", "AddBorders(0,0,0,0) #left,top,right,bottom"))
 
         ret.Add(misc)
@@ -818,7 +817,6 @@ Public Class FilterCategory
         noise.Filters.Add(New VideoFilter(noise.Name, "RemoveGrain | RemoveGrain | RemoveGrain", "clip = core.rgvs.RemoveGrain(clip, 1)"))
         noise.Filters.Add(New VideoFilter(noise.Name, "RemoveGrain | RemoveGrain | RemoveGrain with Repair", "Processed = core.rgvs.RemoveGrain(clip, 1)" + BR + "clip = core.rgvs.Repair(clip,Processed, mode=2)"))
         noise.Filters.Add(New VideoFilter(noise.Name, "mClean", "clip = G41Fun.mClean(clip)"))
-        noise.Filters.Add(New VideoFilter(noise.Name, "MiniDeen", "clip = core.minideen.MiniDeen(clip)"))
         noise.Filters.Add(New VideoFilter(noise.Name, "MCTemporalDenoise", "clip = havsfunc.MCTemporalDenoise(i=clip, settings='$select:msg:Select Strength;Very Low;Low;Medium;High;Very High$')"))
         noise.Filters.Add(New VideoFilter(noise.Name, "BM3D", "clip = mvsfunc.BM3D(clip, sigma=[3,3,3], radius1=0)"))
         ret.Add(noise)

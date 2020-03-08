@@ -23,8 +23,8 @@ Public Class PreviewForm
     Friend WithEvents pnTrack As System.Windows.Forms.Panel
     Private WithEvents bnDelete As ButtonEx
     Private WithEvents bnRight1 As ButtonEx
-    Private WithEvents bnOpen As ButtonEx
-    Private WithEvents bnClose As ButtonEx
+    Private WithEvents bnStartCutRange As ButtonEx
+    Private WithEvents bnEndCutRange As ButtonEx
     Private WithEvents bnRight2 As ButtonEx
     Private WithEvents bnLeft2 As ButtonEx
     Private WithEvents bnMenu As ButtonEx
@@ -40,8 +40,8 @@ Public Class PreviewForm
         Me.bnDelete = New StaxRip.UI.ButtonEx()
         Me.bnRight1 = New StaxRip.UI.ButtonEx()
         Me.bnLeft1 = New StaxRip.UI.ButtonEx()
-        Me.bnOpen = New StaxRip.UI.ButtonEx()
-        Me.bnClose = New StaxRip.UI.ButtonEx()
+        Me.bnStartCutRange = New StaxRip.UI.ButtonEx()
+        Me.bnEndCutRange = New StaxRip.UI.ButtonEx()
         Me.bnRight2 = New StaxRip.UI.ButtonEx()
         Me.bnLeft2 = New StaxRip.UI.ButtonEx()
         Me.bnMenu = New StaxRip.UI.ButtonEx()
@@ -92,27 +92,27 @@ Public Class PreviewForm
         '
         'bnOpen
         '
-        Me.bnOpen.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bnOpen.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.bnOpen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnOpen.Location = New System.Drawing.Point(261, 629)
-        Me.bnOpen.Margin = New System.Windows.Forms.Padding(6)
-        Me.bnOpen.Size = New System.Drawing.Size(70, 70)
-        Me.bnOpen.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Open
-        Me.bnOpen.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bnOpen, "Sets a start cut point. Press F1 for help about cutting")
+        Me.bnStartCutRange.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.bnStartCutRange.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.bnStartCutRange.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.bnStartCutRange.Location = New System.Drawing.Point(261, 629)
+        Me.bnStartCutRange.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnStartCutRange.Size = New System.Drawing.Size(70, 70)
+        Me.bnStartCutRange.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Open
+        Me.bnStartCutRange.TabStop = False
+        Me.ToolTip.SetToolTip(Me.bnStartCutRange, "Sets a start cut point. Press F1 for help about cutting")
         '
         'bnClose
         '
-        Me.bnClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bnClose.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.bnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnClose.Location = New System.Drawing.Point(343, 629)
-        Me.bnClose.Margin = New System.Windows.Forms.Padding(6)
-        Me.bnClose.Size = New System.Drawing.Size(70, 70)
-        Me.bnClose.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Close
-        Me.bnClose.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bnClose, "Sets a end cut point. Press F1 for help about cutting")
+        Me.bnEndCutRange.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.bnEndCutRange.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.bnEndCutRange.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.bnEndCutRange.Location = New System.Drawing.Point(343, 629)
+        Me.bnEndCutRange.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnEndCutRange.Size = New System.Drawing.Size(70, 70)
+        Me.bnEndCutRange.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Close
+        Me.bnEndCutRange.TabStop = False
+        Me.ToolTip.SetToolTip(Me.bnEndCutRange, "Sets a end cut point. Press F1 for help about cutting")
         '
         'bnRight2
         '
@@ -185,8 +185,8 @@ Public Class PreviewForm
         Me.pnVideo.Controls.Add(Me.bnRight3)
         Me.pnVideo.Controls.Add(Me.bnRight2)
         Me.pnVideo.Controls.Add(Me.bnRight1)
-        Me.pnVideo.Controls.Add(Me.bnClose)
-        Me.pnVideo.Controls.Add(Me.bnOpen)
+        Me.pnVideo.Controls.Add(Me.bnEndCutRange)
+        Me.pnVideo.Controls.Add(Me.bnStartCutRange)
         Me.pnVideo.Controls.Add(Me.bnLeft1)
         Me.pnVideo.Controls.Add(Me.bnLeft2)
         Me.pnVideo.Controls.Add(Me.bnLeft3)
@@ -245,7 +245,8 @@ Public Class PreviewForm
 
     Private FrameServer As FrameServer
     Private Renderer As VideoRenderer
-    Private RangeStart As Integer = -1
+    Private StartRange As Integer = -1
+    Private EndRange As Integer = -1
     Private PreviewScript As VideoScript
     Private SizeFactor As Double = 1
     Private WithEvents GenericMenu As CustomMenu
@@ -406,8 +407,8 @@ Public Class PreviewForm
     Sub ShowButtons(vis As Boolean)
         bnRight1.Visible = vis
         bnLeft1.Visible = vis
-        bnOpen.Visible = vis
-        bnClose.Visible = vis
+        bnStartCutRange.Visible = vis
+        bnEndCutRange.Visible = vis
         bnDelete.Visible = vis
         bnRight2.Visible = vis
         bnLeft2.Visible = vis
@@ -428,13 +429,13 @@ Public Class PreviewForm
         Next
     End Sub
 
-    Private Sub bnOpen_Click() Handles bnOpen.Click
+    Private Sub bnStartCutRange_Click() Handles bnStartCutRange.Click
         For Each i As PreviewForm In Instances
             SetRangeStart()
         Next
     End Sub
 
-    Private Sub bnClose_Click() Handles bnClose.Click
+    Private Sub bnEndCutRange_Click() Handles bnEndCutRange.Click
         For Each i As PreviewForm In Instances
             SetRangeEnd()
         Next
@@ -510,8 +511,16 @@ Public Class PreviewForm
         End If
 
         Using rangeSetPen As New Pen(Color.DarkOrange, trackHeight)
-            If RangeStart > -1 AndAlso RangeStart <= Renderer.Position Then
-                g.DrawLine(rangeSetPen, GetDrawPos(RangeStart) - CInt(TrackBarPosition / 2),
+            If StartRange > -1 AndAlso StartRange <= Renderer.Position Then
+                g.DrawLine(rangeSetPen, GetDrawPos(StartRange) - CInt(TrackBarPosition / 2),
+                    pnTrack.Height \ 2, GetDrawPos(Renderer.Position) +
+                    CInt(TrackBarPosition / 2), pnTrack.Height \ 2)
+            End If
+        End Using
+
+        Using rangeSetPen As New Pen(Color.DarkOrange, trackHeight)
+            If EndRange > -1 AndAlso EndRange >= Renderer.Position Then
+                g.DrawLine(rangeSetPen, GetDrawPos(EndRange) - CInt(TrackBarPosition / 2),
                     pnTrack.Height \ 2, GetDrawPos(Renderer.Position) +
                     CInt(TrackBarPosition / 2), pnTrack.Height \ 2)
             End If
@@ -519,7 +528,7 @@ Public Class PreviewForm
 
         Dim posPen As Pen
 
-        If RangeStart > -1 Then
+        If StartRange > -1 OrElse EndRange > -1 Then
             posPen = New Pen(Color.DarkOrange, trackHeight)
         Else
             posPen = New Pen(Color.Black, trackHeight)
@@ -649,12 +658,19 @@ Public Class PreviewForm
 
     <Command("Sets the start cut position.")>
     Sub SetRangeStart()
-        Dim r = GetCurrentRange()
-
-        If r Is Nothing OrElse Renderer.Position = r.End Then
-            RangeStart = Renderer.Position
+        If EndRange > -1 Then
+            p.Ranges.Add(New Range(Renderer.Position, EndRange))
+            p.Ranges.Sort()
+            EndRange = -1
         Else
-            r.Start = Renderer.Position
+            Dim currentRange = GetCurrentRange()
+
+            If currentRange Is Nothing OrElse Renderer.Position = currentRange.End Then
+                StartRange = Renderer.Position
+            Else
+                currentRange.Start = Renderer.Position
+                EndRange = -1
+            End If
         End If
 
         MergeRanges()
@@ -663,16 +679,18 @@ Public Class PreviewForm
 
     <Command("Sets the end cut position.")>
     Sub SetRangeEnd()
-        If RangeStart > -1 Then
-            p.Ranges.Add(New Range(RangeStart, Renderer.Position))
+        If StartRange > -1 Then
+            p.Ranges.Add(New Range(StartRange, Renderer.Position))
             p.Ranges.Sort()
-            RangeStart = -1
+            StartRange = -1
         Else
-            Dim r = GetCurrentRange()
+            Dim currentRange = GetCurrentRange()
 
-            If Not r Is Nothing Then
-                r.End = Renderer.Position
-                RangeStart = -1
+            If currentRange Is Nothing Then
+                EndRange = Renderer.Position
+            Else
+                currentRange.End = Renderer.Position
+                StartRange = -1
             End If
         End If
 
@@ -989,8 +1007,8 @@ Public Class PreviewForm
         bnLeft1.Refresh()
         bnLeft2.Refresh()
         bnLeft3.Refresh()
-        bnOpen.Refresh()
-        bnClose.Refresh()
+        bnStartCutRange.Refresh()
+        bnEndCutRange.Refresh()
         bnRight1.Refresh()
         bnRight2.Refresh()
         bnRight3.Refresh()
@@ -1087,7 +1105,7 @@ Public Class PreviewForm
         End If
     End Function
 
-    Private Sub Control_Enter() Handles bnLeft3.Enter, bnLeft2.Enter, bnLeft1.Enter, bnRight1.Enter, bnRight2.Enter, bnRight3.Enter, bnClose.Enter, bnOpen.Enter, bnDelete.Enter, bnMenu.Enter
+    Private Sub Control_Enter() Handles bnLeft3.Enter, bnLeft2.Enter, bnLeft1.Enter, bnRight1.Enter, bnRight2.Enter, bnRight3.Enter, bnEndCutRange.Enter, bnStartCutRange.Enter, bnDelete.Enter, bnMenu.Enter
         ActiveControl = Nothing
     End Sub
 

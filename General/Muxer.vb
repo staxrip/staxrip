@@ -693,9 +693,12 @@ Public Class MkvMuxer
                 Next
 
                 xDoc.Descendants("ChapterAtom").Where(Function(Atom) Not lstValidChapterAtoms.Contains(Atom)).Remove()
-                Dim CutChapterFile = Path.Combine(Path.GetDirectoryName(ChapterFile), "cut_cpt" + ".xml")
-                xDoc.Save(CutChapterFile)
-                args += " --chapters " + CutChapterFile.Escape
+
+                If xDoc.Descendants("ChapterAtom").Count > 0 Then
+                    Dim CutChapterFile = Path.Combine(Path.GetDirectoryName(ChapterFile), "cut_cpt" + ".xml")
+                    xDoc.Save(CutChapterFile)
+                    args += " --chapters " + CutChapterFile.Escape
+                End If
             Else
                 args += " --chapters " + ChapterFile.Escape
             End If

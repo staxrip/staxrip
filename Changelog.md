@@ -3,22 +3,28 @@
 
 
 
-### 2.0.7.6 next Beta not yet released
+### 2.0.7.6
 
-- fix: 'DTS XBR' was demuxed as mka instead of dtshd,
-       mka works fine but it's better to use dtshd
+- fix: format compatibility was improved with an automated test
 - fix: in the preview dialog the start position for mpc
        and mpv was incorrect when cut ranges were active
 - fix: chapter file not being picked up
-- fix: in the filter setup profiles dialog were two bugs
+- fix: in the filter setup profiles dialog a exception could
+       happen and loading a filter setup from the menu could fail
 - fix: the filter parameter menu in the code editor was adding
-       parameters if they were existing with different casing
+       parameters even if they were already existing with different casing
+- fix: cutting could cause an error where staxrip generates
+       a chapter file without containing a ChapterAtom
 
+- new: the logic to create and edit cut sections in the preview
+       dialog is now smarter and more flexible       
 - new: the assistand tells in case of a script error that the
        full error can be shown by clicking the preview button
 - new: MiniDeen avs filter added
-- new: the advanced script info in the code editor was moved
-       to the top level menu and Info() can be shown in mpv
+- new: Advanced Info in the code editor was moved to the top level menu
+       and AviSynth Info() can be shown directly from the Advanced Info
+       without adding Info() to the script, staxrip generates the script
+       and shows it with mpv (paused and osc and osd disabled)
 
 ### 2.0.7.5 Beta
 

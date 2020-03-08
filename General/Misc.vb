@@ -1691,7 +1691,7 @@ Public Class AudioStream
                     Return ".ac3"
                 Case "DTS"
                     Return ".dts"
-                Case "DTS-HD", "DTS XLL", "DTS XLL X", "DTS XBR"
+                Case "DTS-HD", "DTS XLL", "DTS XLL X", "DTS XBR", "DTS ES XLL"
                     Return ".dtshd"
                 Case "PCM", "ADPCM"
                     Return ".wav"
@@ -1710,7 +1710,7 @@ Public Class AudioStream
                     Return ".ogg"
                 Case "Opus"
                     Return ".opus"
-                Case "TrueHD", "Atmos / TrueHD"
+                Case "TrueHD", "Atmos / TrueHD", "MLP FBA 16-ch"
                     Return ".thd"
                 Case "AC3+", "E-AC-3"
                     Return ".eac3"
@@ -1752,7 +1752,7 @@ Public Class VideoStream
                 Case "AV1", "VP8", "VP9"
                     Return "ivf"
                 Case Else
-                    Throw New NotImplementedException("Video format " + Format + " is not supported.")
+                    Return ""
             End Select
         End Get
     End Property

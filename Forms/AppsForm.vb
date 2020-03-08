@@ -247,7 +247,6 @@ Public Class AppsForm
         For Each mi As ToolStripMenuItem In ddTools.DropDownItems
             mi.AutoSize = False
             mi.Height = CInt(FontHeight * 1.5)
-            mi.Width = FontHeight * 8
         Next
 
         Text = $"{Package.Items.Count} tools"

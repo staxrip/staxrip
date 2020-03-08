@@ -319,7 +319,11 @@ Public Class ffmpegDemuxer
 
     Shared Sub DemuxVideo(proj As Project)
         Dim streams = MediaInfo.GetVideoStreams(proj.SourceFile)
-        If streams.Count = 0 Then Exit Sub
+
+        If streams.Count = 0 OrElse streams(0).Ext = "" Then
+            Exit Sub
+        End If
+
         Dim outPath = proj.TempDir + proj.SourceFile.Base + streams(0).ExtFull
         If outPath = proj.SourceFile Then Exit Sub
         Dim args = "-i " + proj.SourceFile.Escape
@@ -540,7 +544,11 @@ Public Class MP4BoxDemuxer
 
     Shared Sub DemuxVideo(proj As Project)
         Dim streams = MediaInfo.GetVideoStreams(proj.SourceFile)
-        If streams.Count = 0 Then Exit Sub
+
+        If streams.Count = 0 OrElse streams(0).Ext = "" Then
+            Exit Sub
+        End If
+
         Dim outpath = proj.TempDir + proj.SourceFile.Base + streams(0).ExtFull
         If outpath = proj.SourceFile Then Exit Sub
         Dim args = If(streams(0).Ext = "avi", "-avi ", "-raw ")
@@ -761,10 +769,14 @@ Public Class mkvDemuxer
         If videoDemuxing Then
             Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + sourcefile.Escape)
             Dim id = Regex.Match(stdout, "Track ID (\d+): video").Groups(1).Value.ToInt
-            Dim outpath = proj.TempDir + sourcefile.Base + MediaInfo.GetVideoStreams(sourcefile)(0).ExtFull
+            Dim videoStreams = MediaInfo.GetVideoStreams(sourcefile)
 
-            If outpath <> sourcefile Then
-                args += " " & id & ":" + outpath.Escape
+            If videoStreams.Count > 0 Then
+                Dim outpath = proj.TempDir + sourcefile.Base + videoStreams(0).ExtFull
+
+                If outpath <> sourcefile Then
+                    args += " " & id & ":" + outpath.Escape
+                End If
             End If
         End If
 

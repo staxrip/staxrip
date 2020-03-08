@@ -348,7 +348,7 @@ Namespace UI
             Me.tsbNew.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbNew.Name = "tsbNew"
             Me.tsbNew.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
-            Me.tsbNew.Size = New System.Drawing.Size(24, 86)
+            Me.tsbNew.Size = New System.Drawing.Size(69, 80)
             Me.tsbNew.Text = "New"
             '
             'ToolStripSeparator3
@@ -362,7 +362,7 @@ Namespace UI
             Me.tsbCut.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbCut.Name = "tsbCut"
             Me.tsbCut.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
-            Me.tsbCut.Size = New System.Drawing.Size(24, 86)
+            Me.tsbCut.Size = New System.Drawing.Size(69, 80)
             Me.tsbCut.Text = "Cut"
             '
             'tsbCopy
@@ -371,7 +371,7 @@ Namespace UI
             Me.tsbCopy.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbCopy.Name = "tsbCopy"
             Me.tsbCopy.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
-            Me.tsbCopy.Size = New System.Drawing.Size(24, 86)
+            Me.tsbCopy.Size = New System.Drawing.Size(69, 80)
             Me.tsbCopy.Text = "Copy"
             '
             'tsbPaste
@@ -380,7 +380,7 @@ Namespace UI
             Me.tsbPaste.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbPaste.Name = "tsbPaste"
             Me.tsbPaste.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
-            Me.tsbPaste.Size = New System.Drawing.Size(24, 86)
+            Me.tsbPaste.Size = New System.Drawing.Size(69, 80)
             Me.tsbPaste.Text = "Paste"
             '
             'ToolStripSeparator4
@@ -393,7 +393,7 @@ Namespace UI
             Me.tsbMoveLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
             Me.tsbMoveLeft.Name = "tsbMoveLeft"
             Me.tsbMoveLeft.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
-            Me.tsbMoveLeft.Size = New System.Drawing.Size(24, 86)
+            Me.tsbMoveLeft.Size = New System.Drawing.Size(69, 80)
             Me.tsbMoveLeft.ToolTipText = "Move Left"
             '
             'tsbMoveRight
@@ -401,7 +401,7 @@ Namespace UI
             Me.tsbMoveRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
             Me.tsbMoveRight.Name = "tsbMoveRight"
             Me.tsbMoveRight.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
-            Me.tsbMoveRight.Size = New System.Drawing.Size(24, 86)
+            Me.tsbMoveRight.Size = New System.Drawing.Size(69, 80)
             Me.tsbMoveRight.ToolTipText = "Move Right"
             '
             'tsbMoveUp
@@ -409,7 +409,7 @@ Namespace UI
             Me.tsbMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
             Me.tsbMoveUp.Name = "tsbMoveUp"
             Me.tsbMoveUp.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
-            Me.tsbMoveUp.Size = New System.Drawing.Size(24, 86)
+            Me.tsbMoveUp.Size = New System.Drawing.Size(69, 80)
             Me.tsbMoveUp.ToolTipText = "Move Up"
             '
             'tsbMoveDown
@@ -417,7 +417,7 @@ Namespace UI
             Me.tsbMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
             Me.tsbMoveDown.Name = "tsbMoveDown"
             Me.tsbMoveDown.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
-            Me.tsbMoveDown.Size = New System.Drawing.Size(24, 86)
+            Me.tsbMoveDown.Size = New System.Drawing.Size(69, 80)
             Me.tsbMoveDown.ToolTipText = "Move Down"
             '
             'ToolStripSeparator1
@@ -431,30 +431,30 @@ Namespace UI
             Me.tsbRemove.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.tsbRemove.Name = "tsbRemove"
             Me.tsbRemove.Padding = New System.Windows.Forms.Padding(10, 4, 10, 4)
-            Me.tsbRemove.Size = New System.Drawing.Size(24, 86)
+            Me.tsbRemove.Size = New System.Drawing.Size(69, 80)
             Me.tsbRemove.Text = "Remove"
             '
             'ToolsToolStripDropDownButton
             '
             Me.ToolsToolStripDropDownButton.AutoToolTip = False
-            Me.ToolsToolStripDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+            Me.ToolsToolStripDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
             Me.ToolsToolStripDropDownButton.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewFromDefaultsToolStripMenuItem, Me.ResetToolStripMenuItem})
             Me.ToolsToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.ToolsToolStripDropDownButton.Name = "ToolsToolStripDropDownButton"
             Me.ToolsToolStripDropDownButton.Padding = New System.Windows.Forms.Padding(2)
-            Me.ToolsToolStripDropDownButton.Size = New System.Drawing.Size(35, 86)
+            Me.ToolsToolStripDropDownButton.Size = New System.Drawing.Size(136, 80)
             Me.ToolsToolStripDropDownButton.Text = "Tools"
             '
             'NewFromDefaultsToolStripMenuItem
             '
             Me.NewFromDefaultsToolStripMenuItem.Name = "NewFromDefaultsToolStripMenuItem"
-            Me.NewFromDefaultsToolStripMenuItem.Size = New System.Drawing.Size(476, 54)
+            Me.NewFromDefaultsToolStripMenuItem.Size = New System.Drawing.Size(546, 66)
             Me.NewFromDefaultsToolStripMenuItem.Text = "New From Defaults..."
             '
             'ResetToolStripMenuItem
             '
             Me.ResetToolStripMenuItem.Name = "ResetToolStripMenuItem"
-            Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(476, 54)
+            Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(546, 66)
             Me.ResetToolStripMenuItem.Text = "Reset Everything"
             '
             'Label1
@@ -564,6 +564,11 @@ Namespace UI
             InitializeComponent()
             ScaleClientSize(32, 30)
             g.SetRenderer(ToolStrip)
+
+            For Each mi As ToolStripMenuItem In ToolsToolStripDropDownButton.DropDownItems
+                mi.AutoSize = False
+                mi.Height = CInt(FontHeight * 1.5)
+            Next
 
             tsbNew.Image = ImageHelp.GetSymbolImage(Symbol.Page)
             tsbCopy.Image = ImageHelp.GetSymbolImage(Symbol.Copy)
@@ -940,8 +945,10 @@ Namespace UI
 
         Private Sub ResetToolStripMenuItem_Click() Handles ResetToolStripMenuItem.Click
             If MsgOK("Please confirm to reset the entire menu.") Then
+                tv.BeginUpdate()
                 tv.Nodes.Clear()
                 PopulateTreeView(GenericMenu.DefaultMenu.Invoke, Nothing)
+                tv.EndUpdate()
                 tv.ExpandAll()
                 tv.SelectedNode = tv.Nodes(0)
             End If

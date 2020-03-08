@@ -344,7 +344,9 @@ Public Class Proc
             Throw e
         End Try
 
-        If Abort Then Throw New AbortException
+        If Abort Then
+            Throw New AbortException
+        End If
     End Sub
 
     Private DisposedValue As Boolean = False

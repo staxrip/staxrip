@@ -1,3 +1,4 @@
+
 Namespace UI
     Public Class InputBox
         Property Text As String
@@ -26,32 +27,28 @@ Namespace UI
             Return Show(text, Application.ProductName)
         End Function
 
-        Shared Function Show(text As String,
-                             title As String) As String
-
+        Shared Function Show(text As String, title As String) As String
             Return Show(text, title, "", FormStartPosition.CenterParent)
         End Function
 
-        Shared Function Show(text As String,
-                             title As String,
-                             value As String) As String
-
+        Shared Function Show(text As String, title As String, value As String) As String
             Return Show(text, title, value, FormStartPosition.CenterParent)
         End Function
 
-        Shared Function Show(text As String,
-                             title As String,
-                             value As String,
-                             startPos As FormStartPosition) As String
+        Shared Function Show(
+            text As String,
+            title As String,
+            value As String,
+            startPos As FormStartPosition) As String
 
-            Dim b As New InputBox
-            b.Text = text
-            b.Title = title
-            b.Value = value
-            b.StartPosition = startPos
+            Dim box As New InputBox
+            box.Text = text
+            box.Title = title
+            box.Value = value
+            box.StartPosition = startPos
 
-            If b.Show = DialogResult.OK Then
-                Return b.Value
+            If box.Show = DialogResult.OK Then
+                Return box.Value
             Else
                 Return Nothing
             End If

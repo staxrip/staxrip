@@ -281,6 +281,7 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--min-memory", .Text = "Minimize memory usage"},
                         New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
                     Add("VPP",
+                        New StringParam With {.Switch = "--vpp-colorspace", .Text = "Colorspace"},
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"0", "90", "180", "270"}},
                         New OptionParam With {.Switch = "--vpp-image-stab", .Text = "Image Stabilizer", .Options = {"Disabled", "Upscale", "Box"}},
                         New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image", .Options = {"Disabled", "H", "V"}},
@@ -304,8 +305,9 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--aud", .Text = "AUD"})
                     Add("Other",
                         New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
-                        New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New StringParam With {.Switch = "--sub-source", .Text = "Subtitle File", .BrowseFile = True, .BrowseFileFilter = FileTypes.GetFilter(FileTypes.SubtitleExludingContainers)},
+                        New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
+                        New StringParam With {.Switch = "--input-option", .Text = "Input Option"},
                         New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Undefined", "TFF, BFF"}},
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}},
                         New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Init = 3},

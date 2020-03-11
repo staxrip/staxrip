@@ -7,10 +7,6 @@ Public Class ConsolAppTester
     Property Package As Package
     Property CodeFile As String
 
-    Sub Save(file As String, list As IEnumerable(Of String))
-        list.Join(BR).WriteUTF8File(file)
-    End Sub
-
     Public Function Test() As String
         Dim log = BR
         log += "ignored switches" + BR

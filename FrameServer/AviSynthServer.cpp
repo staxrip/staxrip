@@ -46,13 +46,16 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
         memset(&m_Clip,  0, sizeof(PClip));
         memset(&m_Frame, 0, sizeof(PVideoFrame));
 
-        static HMODULE dll = LoadLibrary(L"AviSynth");
+        static HMODULE dll = LoadLibrary(L"AviSynth.dll");
 
         if (!dll)
-            dll = LoadLibrary(L"AviSynth");
+            dll = LoadLibrary(L"AviSynth.dll");
 
         if (!dll)
-            throw std::exception("AviSynth+ installation cannot be found");
+        {
+            std::string msg = GetWinErrorMessage(GetLastError());
+            throw std::runtime_error("Failed to load AviSynth+: \r\n\r\n" + msg);
+        }
 
         IScriptEnvironment2* (*CreateScriptEnvironment2)(int version) =
             (IScriptEnvironment2 * (*)(int)) GetProcAddress(dll, "CreateScriptEnvironment2");

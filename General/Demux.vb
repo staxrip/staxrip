@@ -124,28 +124,6 @@ Public MustInherit Class Demuxer
         dgnvDemux.Active = False
         ret.Add(dgnvDemux)
 
-        Dim dgimNoDemux As New CommandLineDemuxer
-        dgimNoDemux.Name = "DGIndexIM: Index, No Demux"
-        dgimNoDemux.InputExtensions = {"264", "h264", "avc", "mkv", "mp4"}
-        dgimNoDemux.OutputExtensions = {"dgim"}
-        dgimNoDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
-        dgimNoDemux.Command = "%app:DGIndexIM%"
-        dgimNoDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgim"" -h"
-        dgimNoDemux.SourceFilters = {"DGSourceIM"}
-        dgimNoDemux.Active = False
-        ret.Add(dgimNoDemux)
-
-        Dim dgimDemux As New CommandLineDemuxer
-        dgimDemux.Name = "DGIndexIM: Demux & Index"
-        dgimDemux.InputExtensions = {"mpg", "vob", "ts", "m2ts", "mts", "m2t"}
-        dgimDemux.OutputExtensions = {"dgim"}
-        dgimDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
-        dgimDemux.Command = "%app:DGIndexIM%"
-        dgimDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgim"" -a -h"
-        dgimDemux.SourceFilters = {"DGSourceIM"}
-        dgimDemux.Active = False
-        ret.Add(dgimDemux)
-
         Return ret
     End Function
 End Class
@@ -175,9 +153,6 @@ Public Class CommandLineDemuxer
                 If Not Package.DGIndexNV.VerifyOK(True) Then Throw New AbortException
                 proc.Package = Package.DGIndexNV
                 proc.SkipPatterns = {"^\d+$"}
-            ElseIf Command?.Contains("DGIndexIM") Then
-                If Not Package.DGIndexIM.VerifyOK(True) Then Throw New AbortException
-                proc.Package = Package.DGIndexIM
             ElseIf Command?.Contains("ffmpeg") Then
                 proc.Package = Package.ffmpeg
                 proc.SkipStrings = {"frame=", "size="}

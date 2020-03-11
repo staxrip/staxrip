@@ -51,9 +51,16 @@ Module StringExtensions
 
     <Extension()>
     Function FileName(instance As String) As String
-        If instance = "" Then Return ""
+        If instance = "" Then
+            Return ""
+        End If
+
         Dim index = instance.LastIndexOf(Path.DirectorySeparatorChar)
-        If index > -1 Then Return instance.Substring(index + 1)
+
+        If index > -1 Then
+            Return instance.Substring(index + 1)
+        End If
+
         Return instance
     End Function
 
@@ -114,6 +121,16 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function FileExists(instance As String) As Boolean
+        Return File.Exists(instance)
+    End Function
+
+    <Extension()>
+    Function DirExists(instance As String) As Boolean
+        Return Directory.Exists(instance)
+    End Function
+
+    <Extension()>
     Function ExtFull(instance As String) As String
         Return FilePath.GetExtFull(instance)
     End Function
@@ -160,8 +177,8 @@ Module StringExtensions
             Return ""
         End If
 
-        While instance.EndsWith(DirPath.Separator + DirPath.Separator)
-            instance = instance.Substring(0, instance.Length - 1)
+        While instance.Contains(DirPath.Separator + DirPath.Separator)
+            instance = instance.Replace(DirPath.Separator + DirPath.Separator, DirPath.Separator)
         End While
 
         If instance.EndsWith(DirPath.Separator) Then

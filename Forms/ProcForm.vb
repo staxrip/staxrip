@@ -1,3 +1,4 @@
+
 Imports Microsoft.Win32
 Imports StaxRip.UI
 
@@ -246,7 +247,9 @@ Public Class ProcForm
     End Sub
 
     Private Sub bnAbort_Click(sender As Object, e As EventArgs) Handles bnAbort.Click
-        If MsgOK("Abort processing?") Then Abort()
+        If MsgOK("Abort processing?") Then
+            Abort()
+        End If
     End Sub
 
     Sub Abort()

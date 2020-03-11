@@ -309,11 +309,6 @@ Public Class GlobalClass
                 MsgError("There is no properly working x64 source filters available for DGA. There are several newer and faster x64 source filters available.")
                 Return True
             End If
-
-            If i.Ext = "dgi" AndAlso File.ReadAllText(i).Contains("DGIndexIM") Then
-                MsgError("Please rename the file extension from dgi to dgim.")
-                Return True
-            End If
         Next
     End Function
 
@@ -698,7 +693,7 @@ Public Class GlobalClass
                 proc.SkipString = "Indexing, please wait..."
                 If proj Is Nothing Then proj = p
                 proc.Project = proj
-                proc.File = Package.ffms2.GetDir + "ffmsindex.exe"
+                proc.File = Package.ffms2.Directory + "ffmsindex.exe"
                 proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.Escape + " " + cachePath.Escape
                 proc.Start()
             End Using

@@ -1,7 +1,13 @@
 
 ### 2.0.7.7 next Beta not yet released
 
+- fix: usage of too old VC++ 2019 runtime is now
+       prevented
 
+- update: qsvenc 3.33
+- update: nvenc 4.68
+- update: vceenc 5.04
+- update: MiniDeen r6
 
 ### 2.0.7.6
 

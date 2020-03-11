@@ -574,7 +574,7 @@ Namespace UI
             tsbCopy.Image = ImageHelp.GetSymbolImage(Symbol.Copy)
             tsbCut.Image = ImageHelp.GetSymbolImage(Symbol.Cut)
             tsbPaste.Image = ImageHelp.GetSymbolImage(Symbol.Paste)
-            tsbRemove.Image = ImageHelp.GetSymbolImage(Symbol.Delete)
+            tsbRemove.Image = ImageHelp.GetSymbolImage(Symbol.Remove)
 
             tsbMoveLeft.Image = ImageHelp.GetSymbolImage(Symbol.Back)
             tsbMoveUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)

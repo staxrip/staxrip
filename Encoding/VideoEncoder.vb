@@ -595,12 +595,13 @@ Public Class BatchEncoder
             Return {" [ETA ", ", eta ", "frames: ", "frame= "}
         End If
     End Function
+
     Function GetBatchCode(value As String) As String
         Dim ret = ""
 
         For Each pack In Package.Items.Values
             If TypeOf pack Is PluginPackage Then Continue For
-            Dim dir = pack.GetDir
+            Dim dir = pack.Directory
             If Not Directory.Exists(dir) Then Continue For
             If Not dir.Contains(Folder.Startup) Then Continue For
 

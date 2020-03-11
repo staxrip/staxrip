@@ -329,7 +329,7 @@ Public Class BatchAudioProfile
             Package.eac3to,
             Package.qaac}.
             Where(Function(pack) cl.ToLower.Contains(pack.Name.ToLower)).
-            Select(Function(pack) "set PATH=%PATH%;" + pack.GetDir).
+            Select(Function(pack) "set PATH=%PATH%;" + pack.Directory).
             Join(BR) + BR2 + "cd /D " + p.TempDir.Escape + BR2 + cl
     End Function
 

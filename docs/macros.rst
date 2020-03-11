@@ -487,10 +487,6 @@ File path to DFTTest
 
 File path to DFTTest
 
-``%app:DGDecodeIM%``
-
-File path to DGDecodeIM
-
 ``%app:DGDecodeNV%``
 
 File path to DGDecodeNV
@@ -502,10 +498,6 @@ File path to DGHDRtoSDR
 ``%app:DGIndex%``
 
 File path to DGIndex
-
-``%app:DGIndexIM%``
-
-File path to DGIndexIM
 
 ``%app:DGIndexNV%``
 
@@ -730,10 +722,6 @@ File path to MediaInfo
 ``%app:MedianBlur2%``
 
 File path to MedianBlur2
-
-``%app:MiniDeen%``
-
-File path to MiniDeen
 
 ``%app:MiniDeen%``
 
@@ -1051,9 +1039,9 @@ File path to Visual C++ 2012
 
 File path to Visual C++ 2013
 
-``%app:Visual C++ 2015-2019%``
+``%app:Visual C++ 2019%``
 
-File path to Visual C++ 2015-2019
+File path to Visual C++ 2019
 
 ``%app:vsCube%``
 
@@ -1275,10 +1263,6 @@ Folder path to DFTTest
 
 Folder path to DFTTest
 
-``%app_dir:DGDecodeIM%``
-
-Folder path to DGDecodeIM
-
 ``%app_dir:DGDecodeNV%``
 
 Folder path to DGDecodeNV
@@ -1290,10 +1274,6 @@ Folder path to DGHDRtoSDR
 ``%app_dir:DGIndex%``
 
 Folder path to DGIndex
-
-``%app_dir:DGIndexIM%``
-
-Folder path to DGIndexIM
 
 ``%app_dir:DGIndexNV%``
 
@@ -1518,10 +1498,6 @@ Folder path to MediaInfo
 ``%app_dir:MedianBlur2%``
 
 Folder path to MedianBlur2
-
-``%app_dir:MiniDeen%``
-
-Folder path to MiniDeen
 
 ``%app_dir:MiniDeen%``
 
@@ -1839,9 +1815,9 @@ Folder path to Visual C++ 2012
 
 Folder path to Visual C++ 2013
 
-``%app_dir:Visual C++ 2015-2019%``
+``%app_dir:Visual C++ 2019%``
 
-Folder path to Visual C++ 2015-2019
+Folder path to Visual C++ 2019
 
 ``%app_dir:vsCube%``
 

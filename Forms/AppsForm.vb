@@ -30,6 +30,7 @@ Public Class AppsForm
     Friend WithEvents tsbVersion As ToolStripButton
     Friend WithEvents ddTools As ToolStripDropDownButton
     Friend WithEvents miCSV As ToolStripMenuItem
+    Friend WithEvents miStatus As ToolStripMenuItem
     Friend WithEvents tsbExplore As System.Windows.Forms.ToolStripButton
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AppsForm))
@@ -47,6 +48,7 @@ Public Class AppsForm
         Me.flp = New System.Windows.Forms.FlowLayoutPanel()
         Me.SearchTextBox = New StaxRip.SearchTextBox()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
+        Me.miStatus = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStrip.SuspendLayout()
         Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
@@ -144,7 +146,7 @@ Public Class AppsForm
         'ddTools
         '
         Me.ddTools.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.ddTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miCSV})
+        Me.ddTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miCSV, Me.miStatus})
         Me.ddTools.Image = CType(resources.GetObject("ddTools.Image"), System.Drawing.Image)
         Me.ddTools.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ddTools.Name = "ddTools"
@@ -155,7 +157,7 @@ Public Class AppsForm
         '
         Me.miCSV.Name = "miCSV"
         Me.miCSV.Size = New System.Drawing.Size(538, 66)
-        Me.miCSV.Text = "Create CSV file"
+        Me.miCSV.Text = "Create CSV file listing all tools"
         Me.miCSV.ToolTipText = "Generates a CSV file listing all tools"
         '
         'tsbHelp
@@ -209,6 +211,12 @@ Public Class AppsForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.Size = New System.Drawing.Size(1687, 1128)
         Me.tlpMain.TabIndex = 6
+        '
+        'miStatus
+        '
+        Me.miStatus.Name = "miStatus"
+        Me.miStatus.Size = New System.Drawing.Size(538, 66)
+        Me.miStatus.Text = "Check status of all required tools"
         '
         'AppsForm
         '
@@ -277,13 +285,13 @@ Public Class AppsForm
         DownloadButton.Margin = New Padding(FontHeight \ 3)
         DownloadButton.Padding = New Padding(FontHeight \ 5)
 
-        Dim title = New Label With {
+        Dim titleHeaderLabel = New Label With {
             .Font = New Font(flp.Font.FontFamily, 14 * s.UIScaleFactor, FontStyle.Bold),
             .AutoSize = True
         }
 
-        Headers("Title") = title
-        flp.Controls.Add(title)
+        Headers("Title") = titleHeaderLabel
+        flp.Controls.Add(titleHeaderLabel)
         AddSection("Status")
         flp.Controls.Add(SetupButton)
         flp.Controls.Add(DownloadButton)
@@ -301,20 +309,20 @@ Public Class AppsForm
         Headers("Title").Text = CurrentPackage.Name
 
         SetupButton.Text = "Install " + CurrentPackage.Name
-        SetupButton.Visible = Not CurrentPackage.SetupAction Is Nothing AndAlso
-            (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso
-            CurrentPackage.Version <> ""))
+        SetupButton.Visible = Not CurrentPackage.SetupAction Is Nothing AndAlso CurrentPackage.GetStatus <> ""
 
         DownloadButton.Text = "Download " + CurrentPackage.Name
-        DownloadButton.Visible = CurrentPackage.DownloadURL <> "" AndAlso (CurrentPackage.IsStatusCritical OrElse (Not CurrentPackage.IsCorrectVersion AndAlso CurrentPackage.Version <> ""))
+        DownloadButton.Visible = CurrentPackage.DownloadURL <> "" AndAlso CurrentPackage.GetStatus <> ""
 
         tsbExplore.Enabled = path <> ""
-        tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso Not CurrentPackage.IsStatusCritical
+        tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso CurrentPackage.GetStatus <> ""
         tsbWebsite.Enabled = CurrentPackage.WebURL <> ""
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
         tsbHelp.Enabled = CurrentPackage.HelpFileOrURL <> ""
 
-        tsbVersion.Enabled = Not CurrentPackage.IgnoreVersion
+        tsbVersion.Enabled = Not CurrentPackage.IgnoreVersion AndAlso
+            Not (CurrentPackage.IsOldVersion() AndAlso Not CurrentPackage.AllowOldVersion)
+
         tsbPath.Enabled = CurrentPackage.FixedDir = ""
 
         s.StringDictionary("RecentExternalApplicationControl") = CurrentPackage.Name + CurrentPackage.Version
@@ -330,6 +338,12 @@ Public Class AppsForm
             Contents("Version").Text = CurrentPackage.Version
         End If
 
+        If CurrentPackage.Required AndAlso CurrentPackage.GetStatus <> "" Then
+            Contents("Status").ForeColor = Color.Red
+        Else
+            Contents("Status").ForeColor = Color.Black
+        End If
+
         Contents("Status").Font = New Font("Segoe UI", 10)
         Contents("Description").Text = CurrentPackage.Description
 
@@ -339,8 +353,8 @@ Public Class AppsForm
         Headers("VapourSynth Filters").Visible = False
         Contents("VapourSynth Filters").Visible = False
 
-        Headers("Version").Visible = Not CurrentPackage.IgnoreVersion
-        Contents("Version").Visible = Not CurrentPackage.IgnoreVersion
+        Headers("Version").Visible = CurrentPackage.IsCorrectVersion
+        Contents("Version").Visible = CurrentPackage.IsCorrectVersion
 
         Headers("Filters").Visible = False
         Contents("Filters").Visible = False
@@ -400,7 +414,9 @@ Public Class AppsForm
         Next
 
         For Each i In tv.GetNodes
-            If package Is i.Tag Then tv.SelectedNode = i
+            If package Is i.Tag Then
+                tv.SelectedNode = i
+            End If
         Next
     End Sub
 
@@ -445,6 +461,8 @@ Public Class AppsForm
     End Sub
 
     Private Sub SearchTextBox_TextChanged() Handles SearchTextBox.TextChanged
+        Dim current = CurrentPackage
+
         tv.BeginUpdate()
         tv.Nodes.Clear()
 
@@ -452,8 +470,7 @@ Public Class AppsForm
             Dim plugin = TryCast(pack, PluginPackage)
 
             Dim searchString = pack.Name + pack.Description + pack.Version +
-                plugin?.VSFilterNames.Join(" ") + pack.Path +
-                plugin?.AvsFilterNames.Join(" ")
+                plugin?.VSFilterNames.Join(" ") + pack.Path + plugin?.AvsFilterNames.Join(" ")
 
             If searchString?.ToLower.Contains(SearchTextBox.Text?.ToLower) Then
                 If plugin Is Nothing Then
@@ -482,10 +499,19 @@ Public Class AppsForm
             End If
         Next
 
-        If tv.Nodes.Count > 0 Then tv.SelectedNode = tv.Nodes(0)
+        If tv.Nodes.Count > 0 Then
+            tv.SelectedNode = tv.Nodes(0)
+        End If
+
         ToolStrip.Enabled = tv.Nodes.Count > 0
         flp.Enabled = tv.Nodes.Count > 0
-        If SearchTextBox.Text <> "" Then tv.ExpandAll()
+
+        If SearchTextBox.Text <> "" Then
+            tv.ExpandAll()
+        Else
+            ShowPackage(current)
+        End If
+
         tv.EndUpdate()
     End Sub
 
@@ -527,7 +553,12 @@ Public Class AppsForm
             Exit Sub
         End If
 
-        Dim input = InputBox.Show("What's the name of this version?", "StaxRip", CurrentPackage.Version)
+        Dim input = InputBox.Show(
+            "What's the name of this version?" + BR2 +
+            "Enter anything if you don't know or care." + BR2 +
+            "File Data (often incorrect or empty):" + BR2 +
+            "Version: " + FileVersionInfo.GetVersionInfo(CurrentPackage.Path).FileVersion,
+            "StaxRip", CurrentPackage.Version)
 
         If input <> "" Then
             input = input.Replace(";", "_")
@@ -544,12 +575,9 @@ Public Class AppsForm
                 End If
             Next
 
-            If Not Directory.Exists(Folder.Apps) Then
-                Directory.CreateDirectory(Folder.Apps)
+            If Directory.Exists(Folder.Apps) Then
+                txt.FormatColumn("=").WriteUTF8File(Folder.Apps + "Versions.txt")
             End If
-
-            txt.FormatColumn("=").WriteUTF8File(Folder.Apps + "Versions.txt")
-            txt.FormatColumn("=").WriteUTF8File(Folder.Settings + "Versions.txt")
 
             ShowActivePackage()
         End If
@@ -635,7 +663,7 @@ Public Class AppsForm
             End If
 
             'Folder
-            row.Add(add(pack.GetDir))
+            row.Add(add(pack.Directory))
 
             rows.Add(row)
         Next
@@ -649,5 +677,23 @@ Public Class AppsForm
         Dim csvFile = Folder.Temp + "staxrip tools.csv"
         text.WriteUTF8File(csvFile)
         g.StartProcess(g.GetAppPathForExtension("csv", "txt"), csvFile.Escape)
+    End Sub
+
+    Private Sub miStatus_Click(sender As Object, e As EventArgs) Handles miStatus.Click
+        Dim txt As String
+
+        For Each pair In Package.Items
+            Dim pack = pair.Value
+
+            If pack.Required AndAlso pack.GetStatus <> "" Then
+                txt += pack.Name + ": " + pack.GetStatus + BR2
+            End If
+        Next
+
+        If txt = "" Then
+            MsgInfo("Status of all tools required by the current project is OK.")
+        Else
+            MsgInfo(txt)
+        End If
     End Sub
 End Class

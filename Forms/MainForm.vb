@@ -18,7 +18,10 @@ Public Class MainForm
 #Region " Designer "
 
     Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then If Not components Is Nothing Then components.Dispose()
+        If disposing Then
+            components?.Dispose()
+        End If
+
         MyBase.Dispose(disposing)
     End Sub
 
@@ -1706,7 +1709,11 @@ Public Class MainForm
         Next
 
         Dim ret = td.Show
-        If ret Is Nothing Then Throw New AbortException
+
+        If ret Is Nothing Then
+            Throw New AbortException
+        End If
+
         ret.Script = Macro.ExpandGUI(ret.Script, True).Value
         Return ret
     End Function
@@ -1987,7 +1994,7 @@ Public Class MainForm
             FiltersListView.IsLoading = False
             FiltersListView.Load()
 
-            If Not Package.DGDecodeNV.VerifyOK() OrElse Not Package.DGDecodeIM.VerifyOK() Then
+            If Not Package.DGDecodeNV.VerifyOK() Then
                 Throw New AbortException
             End If
 
@@ -2036,58 +2043,22 @@ Public Class MainForm
             End Try
 
             If errorMsg <> "" Then
-                If p.SourceFile.Ext = "avs" OrElse p.SourceFile.Ext = "vpy" Then
-                    MsgError("Failed to load script", errorMsg)
+                Log.WriteHeader("Error opening source")
+                Log.WriteLine(errorMsg + BR2)
+                Log.WriteLine(p.SourceScript.GetFullScript)
+                Log.Save()
+
+                g.ShowDirectShowWarning()
+
+                Using td As New TaskDialog(Of DialogResult)(Handle)
+                    td.MainInstruction = "Script Error"
+                    td.MainIcon = TaskDialogIcon.Error
+                    td.Content = errorMsg
+                    td.CommonButtons = TaskDialogButtons.Ok
+                    td.Show()
+                    p.Script.Synchronize()
                     Throw New AbortException
-                Else
-                    Log.WriteHeader("Error opening source")
-                    Log.WriteLine(errorMsg + BR2)
-                    Log.WriteLine(p.SourceScript.GetFullScript)
-                    Log.Save()
-
-                    g.ShowDirectShowWarning()
-
-                    Using td As New TaskDialog(Of DialogResult)
-                        td.MainInstruction = "Failed to open source, try another source filter?"
-                        td.Content = errorMsg
-                        td.CommonButtons = TaskDialogButtons.OkCancel
-
-                        If td.Show = DialogResult.OK Then
-                            Dim f = ShowSourceFilterSelectionDialog(p.SourceFile)
-                            Dim isVapourSynth = f.Script?.Contains("clip = core.")
-
-                            If isVapourSynth Then
-                                If p.Script.Engine = ScriptEngine.AviSynth Then
-                                    p.Script = VideoScript.GetDefaults()(1)
-                                End If
-                            Else
-                                If p.Script.Engine = ScriptEngine.VapourSynth Then
-                                    p.Script = VideoScript.GetDefaults()(0)
-                                End If
-                            End If
-
-                            If f.Script?.Contains("(") Then p.Script.SetFilter(0, f)
-                        Else
-                            p.Script.Synchronize()
-                            Throw New AbortException
-                        End If
-                    End Using
-
-                    errorMsg = ""
-
-                    Try
-                        p.SourceScript.Synchronize()
-                        errorMsg = p.SourceScript.GetError
-                    Catch ex As Exception
-                        errorMsg = ex.Message
-                    End Try
-
-                    If errorMsg <> "" Then
-                        MsgError("Failed to open source", errorMsg)
-                        p.Script.Synchronize()
-                        Throw New AbortException
-                    End If
-                End If
+                End Using
             End If
 
             UpdateSourceParameters()
@@ -2422,7 +2393,7 @@ Public Class MainForm
                             proc.WriteLog(args + BR2)
                             proc.File = Package.VSRip.Path
                             proc.Arguments = """" + fileContent + """"
-                            proc.WorkingDirectory = Package.VSRip.GetDir
+                            proc.WorkingDirectory = Package.VSRip.Directory
                             proc.AllowedExitCodes = {0, 1, 2}
                             proc.Start()
                         End Using
@@ -3216,18 +3187,6 @@ Public Class MainForm
             Dim dgIndexNV = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexNV: Index, No Demux")
             Dim outFile = p.TempDir + p.SourceFile.Base + ".dgi"
             If Not File.Exists(outFile) Then dgIndexNV.Run(p)
-
-            If File.Exists(outFile) Then
-                p.SourceFile = outFile
-                BlockSourceTextBoxTextChanged = True
-                tbSourceFile.Text = outFile
-                BlockSourceTextBoxTextChanged = False
-            End If
-        ElseIf codeLower.Contains("dgsourceim(") AndAlso Not p.SourceFile.Ext = "dgim" Then
-            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
-            Dim dgIndexIM = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexIM: Index, No Demux")
-            Dim outFile = p.TempDir + p.SourceFile.Base + ".dgim"
-            If Not File.Exists(outFile) Then dgIndexIM.Run(p)
 
             If File.Exists(outFile) Then
                 p.SourceFile = outFile
@@ -4378,15 +4337,12 @@ Public Class MainForm
         End If
 
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
-        ret.Add("Tools|Advanced|Command Prompt", Symbol.fa_terminal)
-        ret.Add("Tools|Advanced|Command Prompt|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_windows)
-        ret.Add("Tools|Advanced|Command Prompt|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.Connect)
-        ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
         ret.Add("Tools|Advanced|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
-        ret.Add("Tools|Advanced|Subtitles|Add Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
-        ret.Add("Tools|Advanced|LAV Filters Decoder", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
+        ret.Add("Tools|Advanced|Add Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
+        ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
         ret.Add("Tools|Advanced|Reset Settings", NameOf(ResetSettings))
-        'ret.Add("Tools|Advanced|Update", NameOf(UpdateStaxRip), Symbol.UpdateRestore)
+        ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
+        ret.Add("Tools|Advanced|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_terminal)
 
         ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
@@ -4750,6 +4706,7 @@ Public Class MainForm
         FiltersListView.RebuildMenu()
     End Sub
 
+    'removed 2020 from defaults
     <Command("Shows LAV Filters video decoder configuration")>
     Private Sub ShowLAVFiltersConfigDialog()
         Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.LAVVideoDecoder.ToString + "\InprocServer32", Nothing)
@@ -5226,7 +5183,6 @@ Public Class MainForm
     Private Sub AviSynthListView_ScriptChanged() Handles FiltersListView.Changed
         If Not IsLoading AndAlso Not FiltersListView.IsLoading Then
             Package.DGDecodeNV.VerifyOK()
-            Package.DGDecodeIM.VerifyOK()
 
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
@@ -6076,18 +6032,6 @@ Public Class MainForm
         End Using
     End Sub
 
-    'TODO: -
-    '<Command("Searches for New Releases of Staxrip")>
-    'Sub UpdateStaxRip()
-    '    Using f As New UpdateForm
-    '        Try
-    '            f.ShowDialog()
-    '        Catch ex As Exception
-    '            MsgInfo(ex.Message)
-    '        End Try
-    '    End Using
-    'End Sub
-
     Protected Overrides Sub OnDragEnter(e As DragEventArgs)
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
@@ -6127,7 +6071,6 @@ Public Class MainForm
         Http.ShowUpdateQuestion()
         Http.CheckForUpdates()
         MyBase.OnShown(e)
-        'TestForm.ShowForm()
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)

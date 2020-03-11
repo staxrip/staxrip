@@ -85,44 +85,46 @@ Public Class GlobalCommands
 
     <Command("Shows a command prompt with the temp directory of the current project.")>
     Sub ShowCommandPrompt()
-        Dim batchCode = ""
+        Dim path = Environment.GetEnvironmentVariable("path")
 
         For Each pack In Package.Items.Values
-            If TypeOf pack Is PluginPackage Then Continue For
-            Dim dir = pack.GetDir
-            If Not Directory.Exists(dir) Then Continue For
-            If Not dir.Contains(Folder.Startup) Then Continue For
+            If Not pack.Filename.Ext = "exe" OrElse Not pack.Path.FileExists Then
+                Continue For
+            End If
 
-            batchCode += "@set PATH=" + dir + ";%PATH%" + BR
+            path = pack.Directory + ";" + path
         Next
 
-        Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
-        Proc.WriteBatchFile(batchPath, batchCode)
-
-        AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
-
-        Dim batchProcess As New Process
-        batchProcess.StartInfo.FileName = "cmd.exe"
-        batchProcess.StartInfo.Arguments = "/k """ + batchPath + """"
-        batchProcess.StartInfo.WorkingDirectory = p.TempDir
-        batchProcess.Start()
+        Using proc As New Process
+            proc.StartInfo.UseShellExecute = False
+            proc.StartInfo.FileName = "cmd.exe"
+            proc.StartInfo.Arguments = "/k"
+            proc.StartInfo.WorkingDirectory = p.TempDir
+            proc.StartInfo.EnvironmentVariables("path") = path
+            proc.Start()
+        End Using
     End Sub
 
     <Command("Shows the powershell with aliases for all tools staxrip includes.")>
     Sub ShowPowerShell()
-        Dim val As String
+        Dim path = Environment.GetEnvironmentVariable("path")
 
         For Each pack In Package.Items.Values
-            If pack.Path <> "" AndAlso pack.Filename.Ext = "exe" AndAlso Not pack.Name.Contains(" ") Then
-                Dim name = pack.Name.Replace(" ", "")
-                Dim filename = pack.Filename.Replace(" ", "")
-                val += "set-alias " + name + " \""" + pack.Path + "\"";"
-                If name <> filename Then val += "set-alias " + filename + " \""" + pack.Path + "\"";"
+            If Not pack.Filename.Ext = "exe" OrElse Not pack.Path.FileExists Then
+                Continue For
             End If
+
+            path = pack.Directory + ";" + path
         Next
 
-        If p.TempDir <> "" Then val += "cd \""" + p.TempDir + """"
-        g.StartProcess("powershell.exe", "-noexit -command " + val)
+        Using proc As New Process
+            proc.StartInfo.UseShellExecute = False
+            proc.StartInfo.FileName = "powershell.exe"
+            proc.StartInfo.Arguments = "-noexit -nologo"
+            proc.StartInfo.WorkingDirectory = p.TempDir
+            proc.StartInfo.EnvironmentVariables("path") = path
+            proc.Start()
+        End Using
     End Sub
 
     <Command("Executes command lines separated by a line break line by line. Macros are solved and passed as environment variables.")>
@@ -136,7 +138,7 @@ Public Class GlobalCommands
         DefaultValue(False)>
         waitForExit As Boolean,
         <DispName("Show Process Window"),
-        Description("Redirects the output of command line apps to the process window."),
+        Description("Redirects the output of console apps to the process window."),
         DefaultValue(False)>
         showProcessWindow As Boolean,
         <DispName("Batch Mode"),
@@ -338,7 +340,7 @@ Public Class GlobalCommands
 
                 'does help file exist?
                 If pack.Path <> "" AndAlso pack.HelpFilename <> "" Then
-                    If Not File.Exists(pack.GetDir + pack.HelpFilename) Then
+                    If Not File.Exists(pack.Directory + pack.HelpFilename) Then
                         msg += BR2 + $"# Help file of {pack.Name} don't exist!"
                     End If
                 End If
@@ -549,7 +551,7 @@ Switches
 
             Dim info = FileVersionInfo.GetVersionInfo(sourceDir + "StaxRip.exe")
             Dim targetDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                                         "StaxRip-x64-" + info.FileVersion + releaseType)
+                "StaxRip-x64-" + info.FileVersion + releaseType)
 
             DirectoryHelp.Delete(targetDir)
             DirectoryHelp.Copy(sourceDir, targetDir, Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)

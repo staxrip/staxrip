@@ -34,3 +34,16 @@ std::wstring ConvertUtf8ToWide(const std::string& str)
     MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), &wstr[0], count);
     return wstr;
 }
+
+//////////////////// Misc
+
+std::string GetWinErrorMessage(int id)
+{
+    std::string ret(2048, 0);
+
+    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL, id, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPSTR)ret.c_str(), ret.capacity(), NULL);
+
+    return ret;
+}

@@ -1,4 +1,5 @@
-﻿Imports System.Runtime.InteropServices
+﻿
+Imports System.Runtime.InteropServices
 Imports System.Threading
 Imports System.Threading.Tasks
 
@@ -49,9 +50,15 @@ Public Class ProcController
     End Sub
 
     Sub DataReceived(sender As Object, e As DataReceivedEventArgs)
-        If e.Data = "" Then Exit Sub
+        If e.Data = "" Then
+            Exit Sub
+        End If
+
         Dim ret = Proc.ProcessData(e.Data)
-        If ret.Data = "" Then Exit Sub
+
+        If ret.Data = "" Then
+            Exit Sub
+        End If
 
         If ret.Skip Then
             ProcForm.BeginInvoke(StatusAction, {ret.Data})
@@ -282,7 +289,9 @@ Public Class ProcController
             End If
         End If
 
-        If g.MainForm.Disposing OrElse g.MainForm.IsDisposed Then Exit Sub
+        If g.MainForm.Disposing OrElse g.MainForm.IsDisposed Then
+            Exit Sub
+        End If
 
         Dim mainSub = Sub()
                           BlockActivation = False
@@ -329,8 +338,13 @@ Public Class ProcController
     End Sub
 
     Shared Sub Start(proc As Proc)
-        If Aborted Then Throw New AbortException
-        If g.MainForm.Visible Then g.MainForm.Hide()
+        If Aborted Then
+            Throw New AbortException
+        End If
+
+        If g.MainForm.Visible Then
+            g.MainForm.Hide()
+        End If
 
         SyncLock Procs
             If g.ProcForm Is Nothing Then

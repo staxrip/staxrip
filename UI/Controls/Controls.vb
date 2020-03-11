@@ -1873,7 +1873,7 @@ Namespace UI
 
         Private TextValue As String
 
-        <BrowsableAttribute(True)>
+        <Browsable(True)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
         Overrides Property Text As String
             Get

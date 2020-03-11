@@ -86,7 +86,7 @@ commandLines: One or more command lines to be executed or if batch mode is used 
 
 waitForExit: This will halt the main thread until the command line returns.
 
-showProcessWindow: Redirects the output of command line apps to the process window.
+showProcessWindow: Redirects the output of console apps to the process window.
 
 asBatch: Alternative mode that creats a BAT file to execute.
 

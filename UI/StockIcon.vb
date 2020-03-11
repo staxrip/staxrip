@@ -102,7 +102,7 @@ Namespace UI
         Private Sub New()
         End Sub
 
-        <StructLayoutAttribute(LayoutKind.Sequential, CharSet:=CharSet.Unicode)>
+        <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode)>
         Private Structure StockIconInfo
             Friend StuctureSize As UInt32
             Friend Handle As IntPtr

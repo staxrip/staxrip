@@ -64,20 +64,10 @@ Used Version: 1.5.8
 http://rationalqm.us/dgmpgdec/dgmpgdec.html
 
 
-DGIndexIM
-~~~~~~~~~
-
-DGDecIM is a shareware AviSynth source filter using Intel powered hardware acceleration. DGIndexIM can be enabled and configured at Tools/Setting/Demux. Which file types DGIndexIM handles can be configured. DGIndexIM can demux audio with proper av sync.
-
-Used Version: b50
-
-http://rationalqm.us/mine.html
-
-
 DGIndexNV
 ~~~~~~~~~
 
-DGDecNV is a shareware AviSynth source filter using NVIDIA hardware acceleration. DGIndexNV can be configured at Tools > Setting > Demux. DGDecNV is not included so must be downloaded manually.
+Shareware source filter with NVIDIA hardware acceleration and reliable transport stream support. DGIndexNV can be configured at Tools > Setting > Demux.
 
 Used Version: 2053
 
@@ -97,7 +87,7 @@ Used Version:
 dsmux
 ~~~~~
 
-dsmux is installed by the Haali Splitter and is used to mux TS containing AVC into MKV in order to fix av sync problems, dsmux handles av sync much better then many other TS tools. dsmux can be enabled or disabled in the settings on the preprocessing tab, if no audio is present or DGDecNV/DGDecIM is used, dsmux is not necessary and skipped automatically. LAV Filters and Haali Splitter overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last.
+dsmux is installed by the Haali Splitter and can be used to mux TS containing AVC into MKV in order to fix av sync problems.
 
 Used Version: 2013-04-14
 
@@ -107,7 +97,7 @@ http://haali.su/mkv
 eac3to
 ~~~~~~
 
-Audio conversion command line app.
+Audio convertor console app.
 
 Used Version: 3.34
 
@@ -169,7 +159,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 43.0.0
+Used Version: 44.0.0
 
 https://mkvtoolnix.download/
 
@@ -179,7 +169,7 @@ mkvinfo
 
 MKV muxing tool.
 
-Used Version: 43.0.0
+Used Version: 44.0.0
 
 https://mkvtoolnix.download/
 
@@ -189,7 +179,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 43.0.0
+Used Version: 44.0.0
 
 https://mkvtoolnix.download/
 
@@ -197,7 +187,7 @@ https://mkvtoolnix.download/
 MP4Box
 ~~~~~~
 
-MP4Box is a MP4 muxing and demuxing command line app.
+MP4Box is a MP4 muxing and demuxing console app.
 
 Used Version: 0.8.0-rev178-g44c48d630 Patman
 
@@ -249,7 +239,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.66
+Used Version: 4.68
 
 http://github.com/rigaya/NVEnc
 
@@ -289,7 +279,7 @@ QSVEnc
 
 Intel hardware video encoder.
 
-Used Version: 3.32
+Used Version: 3.33
 
 http://github.com/rigaya/QSVEnc
 
@@ -309,7 +299,7 @@ Subtitle Edit
 
 Subtitle Edit is a open source subtitle editor.
 
-Used Version: 3.5.13
+Used Version: 3.5.14
 
 http://www.nikse.dk/SubtitleEdit
 
@@ -329,7 +319,7 @@ VCEEnc
 
 AMD hardware video encoder.
 
-Used Version: 5.03
+Used Version: 5.04
 
 http://github.com/rigaya/VCEEnc
 
@@ -354,12 +344,12 @@ Used Version:
 
 
 
-Visual C++ 2015-2019
-~~~~~~~~~~~~~~~~~~~~
+Visual C++ 2019
+~~~~~~~~~~~~~~~
 
 Visual C++ Redistributable is required by many tools used by StaxRip.
 
-Used Version: 
+Used Version: 14.24.28127.4
 
 
 
@@ -387,7 +377,7 @@ http://sourceforge.net/projects/guliverkli
 x264
 ~~~~
 
-H.264 video encoding command line app.
+H.264 video encoding console app.
 
 Used Version: 2991-1771b55 Patman
 
@@ -397,7 +387,7 @@ http://www.videolan.org/developers/x264.html
 x265
 ~~~~
 
-H.265 video encoding command line app.
+H.265 video encoding console app.
 
 Used Version: 3.3+2-gbe2d82093 GCC 9.2.0 Patman
 
@@ -704,22 +694,10 @@ Used Version: 190410
 https://github.com/299792458m/dfttest_mod
 
 
-DGDecodeIM
-~~~~~~~~~~
-
-DGDecIM is a shareware AviSynth source filter using Intel powered hardware acceleration. DGIndexIM can be enabled and configured at Tools/Setting/Demux. Which file types DGIndexIM handles can be configured. DGIndexIM can demux audio with proper av sync.
-
-Filters: DGSourceIM
-
-Used Version: b50
-
-http://rationalqm.us/mine.html
-
-
 DGDecodeNV
 ~~~~~~~~~~
 
-DGDecNV is a shareware AviSynth source filter using NVIDIA hardware acceleration. DGIndexNV can be configured at Tools > Setting > Demux. DGDecNV is not included so must be downloaded manually.
+Shareware source filter with NVIDIA hardware acceleration and reliable transport stream support. DGIndexNV can be configured at Tools > Setting > Demux.
 
 Filters: DGSource
 
@@ -1143,7 +1121,7 @@ MiniDeen is a spatial denoising filter. It replaces every pixel with the average
 
 Filters: MiniDeen
 
-Used Version: r4
+Used Version: r6
 
 https://github.com/HomeOfAviSynthPlusEvolution/MiniDeen
 
@@ -1729,7 +1707,7 @@ https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DFTTest
 DGDecodeNV
 ~~~~~~~~~~
 
-DGDecNV is a shareware AviSynth source filter using NVIDIA hardware acceleration. DGIndexNV can be configured at Tools > Setting > Demux. DGDecNV is not included so must be downloaded manually.
+Shareware source filter with NVIDIA hardware acceleration and reliable transport stream support. DGIndexNV can be configured at Tools > Setting > Demux.
 
 Filters: DGSource
 
@@ -1973,9 +1951,9 @@ MiniDeen is a spatial denoising filter. It replaces every pixel with the average
 
 Filters: minideen.MiniDeen
 
-Used Version: 1.0
+Used Version: r6
 
-https://github.com/dubhater/vapoursynth-minideen
+https://github.com/HomeOfAviSynthPlusEvolution/MiniDeen
 
 
 msmoosh

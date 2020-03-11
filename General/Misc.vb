@@ -1390,7 +1390,9 @@ Public Class Macro
         End If
 
         For Each i In OS.EnvVars
-            If value = "" OrElse i = "" Then Continue For
+            If value = "" OrElse i = "" Then
+                Continue For
+            End If
 
             If value.ToLowerInvariant.Contains("%" + i.ToLowerInvariant + "%") Then
                 value = Environment.ExpandEnvironmentVariables(value)
@@ -2110,7 +2112,14 @@ Public Class OSVersion
 End Class
 
 Public Class OS
-    Public Shared EnvVars As String() = {"ALLUSERSPROFILE", "APPDATA", "CD", "CMDCMDLINE", "CMDEXTVERSION", "CommonProgramFiles", "CommonProgramFiles(x86)", "CommonProgramW6432", "COMPUTERNAME", "COMSPEC", "DATE", "ERRORLEVEL", "HOMEDRIVE", "HOMEPATH", "LOCALAPPDATA", "LOGONSERVER", "NUMBER_OF_PROCESSORS", "OS", "PATH", "PATHEXT", "PROCESSOR_ARCHITECTURE", "PROCESSOR_IDENTIFIER", "PROCESSOR_LEVEL", "PROCESSOR_REVISION", "ProgramData", "ProgramFiles", "ProgramFiles(x86)", "ProgramW6432", "PROMPT", "PSModulePath", "PUBLIC", "RANDOM", "SessionName", "SystemDrive", "SystemRoot", "TEMP", "TIME", "TMP", "USERDOMAIN", "USERDOMAIN_ROAMINGPROFILE", "USERNAME", "USERPROFILE", "WINDIR"}
+    Public Shared EnvVars As String() = {"ALLUSERSPROFILE", "APPDATA", "CD", "CMDCMDLINE",
+        "CMDEXTVERSION", "CommonProgramFiles", "CommonProgramFiles(x86)", "CommonProgramW6432",
+        "COMPUTERNAME", "COMSPEC", "DATE", "ERRORLEVEL", "HOMEDRIVE", "HOMEPATH", "LOCALAPPDATA",
+        "LOGONSERVER", "NUMBER_OF_PROCESSORS", "OS", "PATH", "PATHEXT", "PROCESSOR_ARCHITECTURE",
+        "PROCESSOR_IDENTIFIER", "PROCESSOR_LEVEL", "PROCESSOR_REVISION", "ProgramData",
+        "ProgramFiles", "ProgramFiles(x86)", "ProgramW6432", "PROMPT", "PSModulePath", "PUBLIC",
+        "RANDOM", "SessionName", "SystemDrive", "SystemRoot", "TEMP", "TIME", "TMP", "USERDOMAIN",
+        "USERDOMAIN_ROAMINGPROFILE", "USERNAME", "USERPROFILE", "WINDIR"}
 
     Private Shared VideoControllersValue As String()
 

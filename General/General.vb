@@ -1606,15 +1606,15 @@ Public Class PowerRequest
         PowerRequestExecutionRequired
     End Enum
 
-    <DllImport("kernel32.dll", SetLastError:=True)>
+    <DllImport("kernel32.dll")>
     Shared Function PowerCreateRequest(ByRef Context As POWER_REQUEST_CONTEXT) As IntPtr
     End Function
 
-    <DllImport("kernel32.dll", SetLastError:=True)>
+    <DllImport("kernel32.dll")>
     Shared Function PowerSetRequest(PowerRequestHandle As IntPtr, RequestType As PowerRequestType) As Boolean
     End Function
 
-    <DllImport("kernel32.dll", SetLastError:=True)>
+    <DllImport("kernel32.dll")>
     Shared Function PowerClearRequest(PowerRequestHandle As IntPtr, RequestType As PowerRequestType) As Boolean
     End Function
 

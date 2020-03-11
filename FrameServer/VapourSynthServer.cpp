@@ -66,7 +66,10 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
             dll = LoadLibrary(dllPath);
 
         if (!dll)
-            throw std::exception("Failed to load VapourSynth library");
+        {
+            std::string msg = GetWinErrorMessage(GetLastError());
+            throw std::runtime_error("Failed to load VapourSynth:\r\n\r\n" + msg);
+        }
 
         static bool wasResolved = false;
 

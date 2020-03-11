@@ -914,15 +914,15 @@ Public Class FolderBrowserDialog
 
         Friend Const ERROR_CANCELLED As Integer = &H800704C7
 
-        <DllImport("kernel32.dll", CharSet:=CharSet.Unicode, SetLastError:=True)>
+        <DllImport("kernel32.dll", CharSet:=CharSet.Unicode)>
         Shared Function LoadLibrary(name As String) As SafeModuleHandle
         End Function
 
-        <DllImport("kernel32.dll", SetLastError:=True)>
+        <DllImport("kernel32.dll")>
         Shared Function FreeLibrary(hModule As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
         End Function
 
-        <DllImport("user32.dll", SetLastError:=True, CharSet:=CharSet.Unicode)>
+        <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
         Shared Function LoadString(hInstance As SafeModuleHandle, uID As UInteger, lpBuffer As StringBuilder, nBufferMax As Integer) As Integer
         End Function
 

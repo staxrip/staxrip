@@ -105,7 +105,7 @@ Public Class AppsForm
         Me.tsbExplore.Name = "tsbExplore"
         Me.tsbExplore.Size = New System.Drawing.Size(142, 69)
         Me.tsbExplore.Text = "Explore"
-        Me.tsbExplore.ToolTipText = "Opens the apps folder in windows file explorer"
+        Me.tsbExplore.ToolTipText = "Opens the apps folder in File Explorer"
         '
         'tsbWebsite
         '
@@ -132,7 +132,7 @@ Public Class AppsForm
         Me.tsbPath.Name = "tsbPath"
         Me.tsbPath.Size = New System.Drawing.Size(113, 69)
         Me.tsbPath.Text = " Path "
-        Me.tsbPath.ToolTipText = "Edits the apps path (F11)"
+        Me.tsbPath.ToolTipText = "Edits the apps file location (F11)"
         '
         'tsbVersion
         '
@@ -311,16 +311,16 @@ Public Class AppsForm
         SetupButton.Text = "Install " + CurrentPackage.Name
         SetupButton.Visible = Not CurrentPackage.SetupAction Is Nothing AndAlso CurrentPackage.GetStatus <> ""
 
-        DownloadButton.Text = "Download " + CurrentPackage.Name
+        DownloadButton.Text = "Download and install " + CurrentPackage.Name
         DownloadButton.Visible = CurrentPackage.DownloadURL <> "" AndAlso CurrentPackage.GetStatus <> ""
 
         tsbExplore.Enabled = path <> ""
-        tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso CurrentPackage.GetStatus <> ""
+        tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso CurrentPackage.GetStatus = ""
         tsbWebsite.Enabled = CurrentPackage.WebURL <> ""
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
         tsbHelp.Enabled = CurrentPackage.HelpFileOrURL <> ""
 
-        tsbVersion.Enabled = Not CurrentPackage.IgnoreVersion AndAlso
+        tsbVersion.Enabled = Not CurrentPackage.IgnoreVersion AndAlso CurrentPackage.Path.FileExists AndAlso
             Not (CurrentPackage.IsOldVersion() AndAlso Not CurrentPackage.AllowOldVersion)
 
         tsbPath.Enabled = CurrentPackage.FixedDir = ""
@@ -329,14 +329,19 @@ Public Class AppsForm
 
         flp.SuspendLayout()
 
-        Contents("Status").Text = CurrentPackage.GetStatusDisplay()
-        Contents("Location").Text = path
+        Contents("Location").Text = If(path = "", "Not found", path)
+        Contents("Description").Text = CurrentPackage.Description
 
         If File.Exists(CurrentPackage.Path) Then
             Contents("Version").Text = CurrentPackage.Version + " (" + File.GetLastWriteTimeUtc(CurrentPackage.Path).ToShortDateString() + ")"
         Else
             Contents("Version").Text = CurrentPackage.Version
         End If
+
+        Headers("Version").Visible = CurrentPackage.IsCorrectVersion AndAlso Not CurrentPackage.IgnoreVersion
+        Contents("Version").Visible = CurrentPackage.IsCorrectVersion AndAlso Not CurrentPackage.IgnoreVersion
+
+        Contents("Status").Text = CurrentPackage.GetStatusDisplay()
 
         If CurrentPackage.Required AndAlso CurrentPackage.GetStatus <> "" Then
             Contents("Status").ForeColor = Color.Red
@@ -345,16 +350,12 @@ Public Class AppsForm
         End If
 
         Contents("Status").Font = New Font("Segoe UI", 10)
-        Contents("Description").Text = CurrentPackage.Description
 
         Headers("AviSynth Filters").Visible = False
         Contents("AviSynth Filters").Visible = False
 
         Headers("VapourSynth Filters").Visible = False
         Contents("VapourSynth Filters").Visible = False
-
-        Headers("Version").Visible = CurrentPackage.IsCorrectVersion
-        Contents("Version").Visible = CurrentPackage.IsCorrectVersion
 
         Headers("Filters").Visible = False
         Contents("Filters").Visible = False

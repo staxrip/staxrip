@@ -1,8 +1,13 @@
 
-### 2.0.7.7 next Beta not yet released
+### 2.0.7.8 Beta not yet released
 
-- fix: usage of too old VC++ 2019 runtime is now
-       prevented
+
+
+### 2.0.7.7 Beta
+
+- new: the apps management and verification has been improved
+
+- fix: usage of too old VC++ 2019 runtime is now prevented
 
 - update: qsvenc 3.33
 - update: nvenc 4.68

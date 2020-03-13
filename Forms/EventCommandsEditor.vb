@@ -205,7 +205,7 @@ Public Class EventCommandsEditor
         Me.Margin = New System.Windows.Forms.Padding(7)
         Me.MinimumSize = New System.Drawing.Size(405, 302)
         Me.Name = "EventCommandsEditor"
-        Me.Text = "Event Commands"
+        Me.Text = "Event Command"
         Me.flpButtons.ResumeLayout(False)
         Me.tlpTop.ResumeLayout(False)
         Me.tlpTop.PerformLayout()

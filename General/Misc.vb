@@ -363,7 +363,7 @@ Public Class Calc
             Dim xval As String
 
             If x = 8 OrElse x = -8 Then
-                xval = "±8"
+                xval = "ï¿½8"
             ElseIf x > 0 Then
                 xval = "+" & x
             Else
@@ -374,7 +374,7 @@ Public Class Calc
             Dim yval As String
 
             If y = 8 OrElse y = -8 Then
-                yval = "±8"
+                yval = "ï¿½8"
             ElseIf y > 0 Then
                 yval = "+" & y
             Else
@@ -1834,20 +1834,23 @@ Public Class Subtitle
 
     Shared Function Create(path As String) As List(Of Subtitle)
         Dim ret As New List(Of Subtitle)
-        If New FileInfo(path).Length = 0 Then Return ret
+
+        If New FileInfo(path).Length = 0 Then
+            Return ret
+        End If
 
         If path.Ext = "idx" Then
             Dim indexData As Integer
             Dim st As Subtitle = Nothing
 
-            For Each i In File.ReadAllText(path).SplitLinesNoEmpty
-                If i.StartsWith("id: ") AndAlso i Like "id: ??, index: *" Then
+            For Each line In path.ReadAllText.SplitLinesNoEmpty
+                If line.StartsWith("id: ") AndAlso line Like "id: ??, index: *" Then
                     st = New Subtitle
 
                     If path.Contains("forced") Then st.Forced = True
 
                     Try
-                        st.Language = New Language(New CultureInfo(i.Substring(4, 2)))
+                        st.Language = New Language(New CultureInfo(line.Substring(4, 2)))
                     Catch
                         st.Language = New Language(CultureInfo.InvariantCulture)
                     End Try
@@ -1856,11 +1859,11 @@ Public Class Subtitle
                     st.Enabled = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
 
                     If Not st Is Nothing Then
-                        st.IndexIDX = CInt(Regex.Match(i, ", index: (\d+)").Groups(1).Value)
+                        st.IndexIDX = CInt(Regex.Match(line, ", index: (\d+)").Groups(1).Value)
                     End If
                 End If
 
-                If Not st Is Nothing AndAlso i.StartsWith("timestamp: ") Then
+                If Not st Is Nothing AndAlso line.StartsWith("timestamp: ") Then
                     st.StreamOrder = indexData
                     st.Path = path
                     indexData += 1

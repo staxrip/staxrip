@@ -1913,7 +1913,7 @@ Public Class Package
 
     Public Function CreateHelpfile() As String
         If File.Exists(HelpFile) Then
-            Return File.ReadAllText(HelpFile)
+            Return HelpFile.ReadAllText
         End If
 
         Try
@@ -1923,7 +1923,7 @@ Public Class Package
                 File.WriteAllText(HelpFile, BR + ProcessHelp.GetConsoleOutput(
                     Path, HelpSwitch, stderr).Trim + BR)
 
-                Return File.ReadAllText(HelpFile)
+                Return HelpFile.ReadAllText
             End If
         Catch ex As Exception
         End Try
@@ -2302,7 +2302,7 @@ Public Class PluginPackage
                                             RegexOptions.IgnoreCase)
 
                     If match.Success AndAlso File.Exists(match.Groups(1).Value) Then
-                        If File.ReadAllText(match.Groups(1).Value).ToLowerInvariant.Contains(
+                        If match.Groups(1).Value.ReadAllText.ToLowerInvariant.Contains(
                                 filterName.ToLowerInvariant) Then
 
                             Return True

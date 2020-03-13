@@ -1,7 +1,12 @@
 
-### 2.0.7.8 Beta not yet released
+### 2.0.8.0 Stable
 
+- fix: using Event Command After Encoded with SetTargetFile
+       caused exception
+- fix: if the default code page is UTF8 then staxrip
+       don't warn about avisynth not supporting Unicode
 
+- update: mkvtoolnix 44
 
 ### 2.0.7.7 Beta
 

@@ -180,20 +180,19 @@ Public Class MediaInfoFolderViewForm
 
     Sub SaveCSV()
         Dim sb As New StringBuilder
-
         sb.Append(lv.Columns.Cast(Of ColumnHeader).Select(Function(arg) If(arg.Text.Contains(","), """" + arg.Text + """", arg.Text)).Join(",") + BR)
 
-        For Each i As ListViewItem In lv.Items
-            sb.Append(i.SubItems.Cast(Of ListViewItem.ListViewSubItem).Select(Function(arg) If(arg.Text.Contains(","), """" + arg.Text + """", arg.Text)).Join(",") + BR)
+        For Each item As ListViewItem In lv.Items
+            sb.Append(item.SubItems.Cast(Of ListViewItem.ListViewSubItem).Select(Function(arg) If(arg.Text.Contains(","), """" + arg.Text + """", arg.Text)).Join(",") + BR)
         Next
 
-        Using f As New SaveFileDialog()
-            f.AddExtension = True
-            f.DefaultExt = "csv"
-            f.FileName = "MediaInfo.csv"
+        Using dialog As New SaveFileDialog()
+            dialog.AddExtension = True
+            dialog.DefaultExt = "csv"
+            dialog.FileName = "MediaInfo.csv"
 
-            If f.ShowDialog = DialogResult.OK Then
-                File.WriteAllText(f.FileName, sb.ToString)
+            If dialog.ShowDialog = DialogResult.OK Then
+                File.WriteAllText(dialog.FileName, sb.ToString)
             End If
         End Using
     End Sub

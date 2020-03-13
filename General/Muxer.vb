@@ -154,7 +154,7 @@ Public MustInherit Class Muxer
         If File.Exists(p.FirstOriginalSourceFile.DirAndBase + ".nfo") Then
             Try
                 Dim fieldNames = "title originaltitle showtitle studio genre director season episode premiered aired outline plot tagline".Split(" "c)
-                Dim root = XElement.Parse(File.ReadAllText(p.FirstOriginalSourceFile.DirAndBase + ".nfo"))
+                Dim root = XElement.Parse((p.FirstOriginalSourceFile.DirAndBase + ".nfo").ReadAllText)
                 Dim elements = root.Elements.Where(Function(x) fieldNames.Contains(x.Name.ToString()) AndAlso x.Value <> "")
 
                 For Each i In elements
@@ -164,32 +164,32 @@ Public MustInherit Class Muxer
             End Try
         End If
 
-        For Each file1 In files
-            If file1.Ext = "idx" Then
-                Dim v = File.ReadAllText(file1, Encoding.Default)
+        For Each fp In files
+            If fp.Ext = "idx" Then
+                Dim v = fp.ReadAllTextDefault
 
                 If v.Contains(vb6.ChrW(&HA) + vb6.ChrW(&H0) + vb6.ChrW(&HD) + vb6.ChrW(&HA)) Then
                     v = v.FixBreak
                     v = v.Replace(BR + vb6.ChrW(&H0) + BR, BR + "langidx: 0" + BR)
-                    File.WriteAllText(file1, v, Encoding.Default)
+                    File.WriteAllText(fp, v, Encoding.Default)
                 End If
             End If
 
-            If FileTypes.SubtitleExludingContainers.Contains(file1.Ext) AndAlso
-                g.IsSourceSameOrSimilar(file1) AndAlso Not file1.Contains("_Preview.") AndAlso
-                Not file1.Contains("_Temp.") Then
+            If FileTypes.SubtitleExludingContainers.Contains(fp.Ext) AndAlso
+                g.IsSourceSameOrSimilar(fp) AndAlso Not fp.Contains("_Preview.") AndAlso
+                Not fp.Contains("_Temp.") Then
 
-                If p.ConvertSup2Sub AndAlso file1.Ext = "sup" Then
+                If p.ConvertSup2Sub AndAlso fp.Ext = "sup" Then
                     Continue For
                 End If
 
-                If TypeOf Me Is MP4Muxer AndAlso Not {"idx", "srt"}.Contains(file1.Ext) Then
+                If TypeOf Me Is MP4Muxer AndAlso Not {"idx", "srt"}.Contains(fp.Ext) Then
                     Continue For
                 End If
 
-                For Each iSubtitle In Subtitle.Create(file1)
+                For Each iSubtitle In Subtitle.Create(fp)
                     If p.PreferredSubtitles <> "" Then
-                        If file1.Contains("_forced") Then iSubtitle.Forced = True
+                        If fp.Contains("_forced") Then iSubtitle.Forced = True
                         Subtitles.Add(iSubtitle)
                     End If
                 Next

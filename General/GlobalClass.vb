@@ -292,20 +292,22 @@ Public Class GlobalClass
     End Function
 
     Function ShowVideoSourceWarnings(files As IEnumerable(Of String)) As Boolean
-        For Each i In files
-            If Not i.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
+        For Each file In files
+            If System.Text.Encoding.Default.CodePage <> 65001 AndAlso
+                Not file.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
+
                 MsgError(Strings.NoUnicode)
                 Return True
             End If
 
-            If i.Contains("#") Then
-                If i.Ext = "mp4" OrElse MediaInfo.GetGeneral(i, "Audio_Codec_List").Contains("AAC") Then
-                    MsgError("Character # can't be processed by MP4Box, please rename." + BR2 + i)
+            If file.Contains("#") Then
+                If file.Ext = "mp4" OrElse MediaInfo.GetGeneral(file, "Audio_Codec_List").Contains("AAC") Then
+                    MsgError("Character # can't be processed by MP4Box, please rename." + BR2 + file)
                     Return True
                 End If
             End If
 
-            If i.Ext = "dga" Then
+            If file.Ext = "dga" Then
                 MsgError("There is no properly working x64 source filters available for DGA. There are several newer and faster x64 source filters available.")
                 Return True
             End If
@@ -368,7 +370,9 @@ Public Class GlobalClass
 
         Dim ap = GetAudioProfileForScriptPlayback()
 
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then
+        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso
+            p.Ranges.Count = 0 Then
+
             args += " /dub " + ap.File.Escape
         End If
 
@@ -394,7 +398,9 @@ Public Class GlobalClass
 
         Dim ap = GetAudioProfileForScriptPlayback()
 
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then
+        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso
+            p.Ranges.Count = 0 Then
+
             args += " --audio-files=" + ap.File.Escape
         End If
 

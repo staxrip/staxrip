@@ -184,7 +184,7 @@
     <Compile Include="General\GlobalCommands.vb" />
     <Compile Include="General\Automation.vb" />
     <Compile Include="General\ProcController.vb" />
-    <Compile Include="General\Http.vb" />
+    <Compile Include="General\Update.vb" />
     <Compile Include="General\Test.vb" />
     <Compile Include="General\VideoRenderer.vb" />
     <Compile Include="My Project\Application.Designer.vb">

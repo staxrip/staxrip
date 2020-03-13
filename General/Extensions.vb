@@ -37,14 +37,20 @@ Module StringExtensions
 
     <Extension>
     Function IsDosCompatible(instance As String) As Boolean
-        If instance = "" Then Return True
+        If instance = "" Then
+            Return True
+        End If
+
         Dim bytes = Encoding.Convert(Encoding.Unicode, Encoding.GetEncoding(ConsoleHelp.DosCodePage), Encoding.Unicode.GetBytes(instance))
         Return instance = Encoding.Unicode.GetString(Encoding.Convert(Encoding.GetEncoding(ConsoleHelp.DosCodePage), Encoding.Unicode, bytes))
     End Function
 
     <Extension>
     Function IsANSICompatible(instance As String) As Boolean
-        If instance = "" Then Return True
+        If instance = "" Then
+            Return True
+        End If
+
         Dim bytes = Encoding.Convert(Encoding.Unicode, Encoding.Default, Encoding.Unicode.GetBytes(instance))
         Return instance = Encoding.Unicode.GetString(Encoding.Convert(Encoding.Default, Encoding.Unicode, bytes))
     End Function
@@ -309,13 +315,23 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Sub WriteANSIFile(instance As String, path As String)
+    Function ReadAllText(instance As String) As String 'auto detects encoding
+        Return File.ReadAllText(instance)
+    End Function
+
+    <Extension()>
+    Function ReadAllTextDefault(instance As String) As String 'auto detects encoding
+        Return File.ReadAllText(instance, Encoding.Default)
+    End Function
+
+    <Extension()>
+    Sub WriteFileDefault(instance As String, path As String)
         WriteFile(instance, path, Encoding.Default)
     End Sub
 
     <Extension()>
-    Sub WriteUTF8File(instance As String, path As String)
-        WriteFile(instance, path, Encoding.UTF8) 'it adds BOM
+    Sub WriteFileUtf8(instance As String, path As String)
+        WriteFile(instance, path, Encoding.UTF8) 'adds BOM
     End Sub
 
     <Extension()>

@@ -2,7 +2,7 @@
 Imports System.Net.Http
 Imports System.Text.RegularExpressions
 
-Public Class Http
+Public Class Update
     Shared HttpClient As New HttpClient
 
     Shared Sub ShowUpdateQuestion()

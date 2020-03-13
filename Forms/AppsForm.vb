@@ -343,7 +343,7 @@ Public Class AppsForm
 
         Contents("Status").Text = CurrentPackage.GetStatusDisplay()
 
-        If CurrentPackage.Required AndAlso CurrentPackage.GetStatus <> "" Then
+        If CurrentPackage.GetStatus <> "" Then
             Contents("Status").ForeColor = Color.Red
         Else
             Contents("Status").ForeColor = Color.Black
@@ -577,7 +577,7 @@ Public Class AppsForm
             Next
 
             If Directory.Exists(Folder.Apps) Then
-                txt.FormatColumn("=").WriteUTF8File(Folder.Apps + "Versions.txt")
+                txt.FormatColumn("=").WriteFileUtf8(Folder.Apps + "Versions.txt")
             End If
 
             ShowActivePackage()
@@ -676,7 +676,7 @@ Public Class AppsForm
         Next
 
         Dim csvFile = Folder.Temp + "staxrip tools.csv"
-        text.WriteUTF8File(csvFile)
+        text.WriteFileUtf8(csvFile)
         g.StartProcess(g.GetAppPathForExtension("csv", "txt"), csvFile.Escape)
     End Sub
 

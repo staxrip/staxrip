@@ -3,9 +3,9 @@
 
 Switches are processed in the order they appear in the command line.
 
-The command line interface, the customizable main menu and Event Commands features are built with a shared command system.
+The command line interface, the customizable main menu and Event Command features are built with a shared command system.
 
-There is a special mode where only the MediaInfo window is shown using -mediainfo , this is useful for Windows File Explorer integration with an app like Open++.
+There is a special mode where only the MediaInfo window is shown using -mediainfo , this is useful for File Explorer integration with an app like Open++.
 
 
 Examples

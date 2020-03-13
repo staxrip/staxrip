@@ -988,7 +988,7 @@ Public Class PreviewForm
 
         ret.Add("Tools|Reload", NameOf(Reload), Keys.R, Symbol.Refresh)
         ret.Add("Tools|Play with mpv.net", NameOf(PlayWithMpvnet), Keys.F9, Symbol.Play)
-        ret.Add("Tools|Play with MPC", NameOf(PlayWithMPC), Keys.F10, Symbol.Play)
+        ret.Add("Tools|Play with mpc", NameOf(PlayWithMPC), Keys.F10, Symbol.Play)
         ret.Add("Tools|-")
         ret.Add("Tools|Copy Frame Number", NameOf(g.DefaultCommands.CopyToClipboard), {"%pos_frame%"})
         ret.Add("Tools|Copy Time", NameOf(CopyTime))

@@ -134,7 +134,7 @@ Public Class x265Enc
         newParams.ApplyTuneDefaultValues()
 
         Using form As New CommandLineForm(newParams)
-            form.HTMLHelp = "<p>Pressing Ctrl or Shift while right-clicking on an option opens the x265 online help and navigates to the switch that was right-clicked.</p>" +
+            form.HTMLHelp = "<p>Pressing Ctrl or Shift while right-clicking on an option opens the x265 online help instead of the local help and navigates to the switch that was right-clicked.</p>" +
                 $"<p><a href=""{Package.x265.HelpURL}"">x265 online help</a></p>" +
                 $"<pre>{HelpDocument.ConvertChars(Package.x265.CreateHelpfile())}</pre>"
 

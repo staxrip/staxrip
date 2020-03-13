@@ -250,7 +250,7 @@ Public Class GlobalCommands
 
         If File.Exists(filepath) Then
             If filepath.Ext = "ps1" Then
-                ExecutePowerShellScript(File.ReadAllText(filepath))
+                ExecutePowerShellScript(filepath.ReadAllText)
             Else
                 MsgError("Only PowerShell (*.ps1) is supported.")
             End If
@@ -282,7 +282,7 @@ Public Class GlobalCommands
 
         If externalShell Then
             Dim path = Folder.Temp + "temp.ps1"
-            code.WriteUTF8File(path)
+            code.WriteFileUtf8(path)
             g.StartProcess("powershell.exe", "-nologo -noexit -file " + path.Escape)
         Else
             Scripting.RunPowershell(code)
@@ -381,7 +381,7 @@ Public Class GlobalCommands
             End If
         Next
 
-        supportedTools.WriteUTF8File(Folder.Startup + "..\docs\tools.rst")
+        supportedTools.WriteFileUtf8(Folder.Startup + "..\docs\tools.rst")
 
         Dim screenshots = "Screenshots" + BR + "===========" + BR2 + ".. contents::" + BR2
         Dim screenshotFiles = Directory.GetFiles(Folder.Startup + "..\docs\screenshots").ToList
@@ -392,7 +392,7 @@ Public Class GlobalCommands
             screenshots += name + BR + "-".Multiply(name.Length) + BR2 + ".. image:: screenshots/" + i.FileName + BR2
         Next
 
-        screenshots.WriteUTF8File(Folder.Startup + "..\docs\screenshots.rst")
+        screenshots.WriteFileUtf8(Folder.Startup + "..\docs\screenshots.rst")
 
         Dim macros = "Macros" + BR + "======" + BR2
 
@@ -400,7 +400,7 @@ Public Class GlobalCommands
             macros += "``" + i.Name + "``" + BR2 + i.Value + BR2
         Next
 
-        macros.WriteUTF8File(Folder.Startup + "..\docs\macros.rst")
+        macros.WriteFileUtf8(Folder.Startup + "..\docs\macros.rst")
 
         Dim powershell = "PowerShell Scripting
 ====================
@@ -448,14 +448,14 @@ Default Scripts
             powershell += ".. literalinclude:: " + "powershell/" + i.FileName + BR + "   :language: powershell" + BR2
         Next
 
-        powershell.WriteUTF8File(Folder.Startup + "..\docs\powershell.rst")
+        powershell.WriteFileUtf8(Folder.Startup + "..\docs\powershell.rst")
 
         Dim switches = "Command Line Interface
 ======================
 
 Switches are processed in the order they appear in the command line.
 
-The command line interface, the customizable main menu and Event Commands features are built with a shared command system.
+The command line interface, the customizable main menu and Event Command features are built with a shared command system.
 
 There is a special mode where only the MediaInfo window is shown using -mediainfo , this is useful for File Explorer integration with an app like Open++.
 
@@ -517,7 +517,7 @@ Switches
             switches += command.Attribute.Description + BR2 + BR
         Next
 
-        switches.WriteUTF8File(Folder.Startup + "..\docs\cli.rst")
+        switches.WriteFileUtf8(Folder.Startup + "..\docs\cli.rst")
 
         If msg <> "" Then
             Dim fs = Folder.Temp + "staxrip test.txt"
@@ -648,7 +648,7 @@ Switches
                 f.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
                 f.Doc.WriteP("Thanks for icon artwork: Freepik www.flaticon.com, ilko-k, nulledone, vanontom")
                 Dim licensePath = Folder.Startup + "License.txt"
-                If File.Exists(licensePath) Then f.Doc.WriteP(File.ReadAllText(licensePath), True)
+                If File.Exists(licensePath) Then f.Doc.WriteP(licensePath.ReadAllText, True)
             Case "CRF Value"
                 f.Doc.WriteStart("CRF Value")
                 f.Doc.WriteP("Low values produce high quality, large file size, large value produces small file size And poor quality. A balanced value Is 23 which Is the defalt In x264. Common values are 18-26 where 18 produces near transparent quality at the cost Of a huge file size. The quality 26 produces Is rather poor so such a high value should only be used When a small file size Is the only criterium.")
@@ -789,7 +789,7 @@ Switches
                       <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
                       path As String)
 
-        p.TargetFile = Macro.Expand(path)
+        g.MainForm.BeginInvoke(Sub() p.TargetFile = Macro.Expand(path))
     End Sub
 
     <Command("Loads the source file.")>

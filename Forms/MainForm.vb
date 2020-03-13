@@ -1860,7 +1860,7 @@ Public Class MainForm
                     p.FirstOriginalSourceFile = path
                 End If
             ElseIf p.SourceFile.Ext.EqualsAny({"avs", "vpy"}) Then
-                Dim code = File.ReadAllText(p.SourceFile)
+                Dim code = p.SourceFile.ReadAllText
                 Dim matches = Regex.Matches(code, "('|"")(.+?)\1", RegexOptions.IgnoreCase)
 
                 For Each match As Match In matches
@@ -1946,7 +1946,7 @@ Public Class MainForm
 
             If p.SourceFile = p.TargetFile OrElse
                 (FileTypes.VideoIndex.Contains(p.SourceFile.Ext) AndAlso
-                File.ReadAllText(p.SourceFile).Contains(p.TargetFile)) Then
+                p.SourceFile.ReadAllText.Contains(p.TargetFile)) Then
 
                 tbTargetFile.Text = p.TargetFile.DirAndBase + "_new" + p.TargetFile.ExtFull
             End If
@@ -2006,7 +2006,7 @@ Public Class MainForm
             End If
 
             If p.SourceFile.Ext = "d2v" Then
-                Dim content = File.ReadAllText(p.SourceFile)
+                Dim content = p.SourceFile.ReadAllText
 
                 If content.Contains("Aspect_Ratio=16:9") Then
                     p.SourceAnamorphic = True
@@ -2027,7 +2027,7 @@ Public Class MainForm
 
                         If film >= 95 Then
                             content = content.Replace("Field_Operation=0" + BR + "Frame_Rate=29970 (30000/1001)", "Field_Operation=1" + BR + "Frame_Rate=23976 (24000/1001)")
-                            content.WriteANSIFile(p.SourceFile)
+                            content.WriteFileDefault(p.SourceFile)
                         End If
                     End If
                 End If
@@ -2326,25 +2326,25 @@ Public Class MainForm
     End Sub
 
     Sub ExtractForcedVobSubSubtitles()
-        For Each i In g.GetFilesInTempDirAndParent
-            If i.ExtFull = ".idx" AndAlso g.IsSourceSameOrSimilar(i) AndAlso
-                    Not i.Contains("_forced") AndAlso
-                    Not File.Exists(i.DirAndBase + "_forced.idx") Then
+        For Each path In g.GetFilesInTempDirAndParent
+            If path.ExtFull = ".idx" AndAlso g.IsSourceSameOrSimilar(path) AndAlso
+                    Not path.Contains("_forced") AndAlso
+                    Not File.Exists(path.DirAndBase + "_forced.idx") Then
 
-                Dim idxContent = File.ReadAllText(i, Encoding.Default)
+                Dim idxContent = path.ReadAllTextDefault
 
                 If idxContent.Contains(VB6.ChrW(&HA) + VB6.ChrW(&H0) + VB6.ChrW(&HD) + VB6.ChrW(&HA)) Then
                     idxContent = idxContent.FixBreak
                     idxContent = idxContent.Replace(BR + VB6.ChrW(&H0) + BR, BR + "langidx: 0" + BR)
-                    File.WriteAllText(i, idxContent, Encoding.Default)
+                    File.WriteAllText(path, idxContent, Encoding.Default)
                 End If
 
                 Using proc As New Proc
                     proc.Header = "Extract forced subtitles if existing"
                     proc.SkipString = "# "
-                    proc.WriteLog(FilePath.GetName(i) + BR2)
+                    proc.WriteLog(FilePath.GetName(path) + BR2)
                     proc.File = Package.BDSup2SubPP.Path
-                    proc.Arguments = "--forced-only -o " + (i.DirAndBase + "_forced.idx").Escape + " " + i.Escape
+                    proc.Arguments = "--forced-only -o " + (path.DirAndBase + "_forced.idx").Escape + " " + path.Escape
                     proc.AllowedExitCodes = {}
                     proc.Start()
                 End Using
@@ -2386,7 +2386,7 @@ Public Class MainForm
                             "CLOSE"
 
                         Dim fileContent = p.TempDir + p.TargetFile.Base + "_vsrip.txt"
-                        args.WriteANSIFile(fileContent)
+                        args.WriteFileDefault(fileContent)
 
                         Using proc As New Proc
                             proc.Header = "Demux subtitles using VSRip"
@@ -2769,7 +2769,7 @@ Public Class MainForm
 
             If File.Exists(p.TargetFile) Then
                 If FileTypes.VideoText.Contains(FilePath.GetExt(p.SourceFile)) AndAlso
-                    File.ReadAllText(p.SourceFile).Contains(p.TargetFile) Then
+                    p.SourceFile.ReadAllText.Contains(p.TargetFile) Then
 
                     If ProcessTip("Source and target name are identical, please select another target name.") Then
                         CanIgnoreTip = False
@@ -2913,7 +2913,9 @@ Public Class MainForm
             Exit Sub
         End If
 
-        If Not tb.Text.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
+        If System.Text.Encoding.Default.CodePage <> 65001 AndAlso
+            Not tb.Text.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
+
             MsgWarn(Strings.NoUnicode)
             tb.Text = ""
             Exit Sub
@@ -4339,8 +4341,8 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
         ret.Add("Tools|Advanced|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
         ret.Add("Tools|Advanced|Add Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
-        ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
-        ret.Add("Tools|Advanced|Reset Settings", NameOf(ResetSettings))
+        ret.Add("Tools|Advanced|Event Command...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
+        ret.Add("Tools|Advanced|Reset Setting", NameOf(ResetSettings))
         ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
         ret.Add("Tools|Advanced|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_terminal)
 
@@ -4403,8 +4405,8 @@ Public Class MainForm
 
                     If sb.Show = DialogResult.Cancel Then Exit Sub
 
-                    Regex.Replace(File.ReadAllText(dialog.FileName), "langidx: \d+", "langidx: " +
-                                  sb.SelectedValue.IndexIDX.ToString).WriteANSIFile(dialog.FileName)
+                    Regex.Replace(dialog.FileName.ReadAllText, "langidx: \d+", "langidx: " +
+                                  sb.SelectedValue.IndexIDX.ToString).WriteFileDefault(dialog.FileName)
                 End If
 
                 p.AddHardcodedSubtitleFilter(dialog.FileName, True)
@@ -6068,8 +6070,8 @@ Public Class MainForm
         IsLoading = False
         Refresh()
         ProcessCommandLine(Environment.GetCommandLineArgs)
-        Http.ShowUpdateQuestion()
-        Http.CheckForUpdates()
+        StaxRip.Update.ShowUpdateQuestion()
+        StaxRip.Update.CheckForUpdates()
         MyBase.OnShown(e)
     End Sub
 

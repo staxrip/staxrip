@@ -27,7 +27,7 @@ http://github.com/chikuzen/avs2pipemod
 AVSMeter
 ~~~~~~~~
 
-AVSMeter runs an Avisynth script with virtually no overhead, displays clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.
+AVSMeter displays AviSynth script clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.
 
 Used Version: 2.9.8
 
@@ -67,7 +67,7 @@ http://rationalqm.us/dgmpgdec/dgmpgdec.html
 DGIndexNV
 ~~~~~~~~~
 
-Shareware source filter with NVIDIA hardware acceleration and reliable transport stream support. DGIndexNV can be configured at Tools > Setting > Demux.
+Shareware indexer and demuxer.
 
 Used Version: 2053
 
@@ -77,7 +77,7 @@ http://rationalqm.us/dgdecnv/dgdecnv.html
 DirectX 9
 ~~~~~~~~~
 
-DirectX 9.0c End-User Runtime
+DirectX 9.0c End-User Runtime.
 
 Used Version: 
 
@@ -107,7 +107,7 @@ http://forum.doom9.org/showthread.php?t=125966
 fdkaac
 ~~~~~~
 
-Command line AAC encoder based on libfdk-aac.
+Console AAC encoder based on libfdk-aac.
 
 Used Version: 1.0.0
 
@@ -117,7 +117,7 @@ http://github.com/nu774/fdkaac
 ffmpeg
 ~~~~~~
 
-Versatile audio video converter.
+Versatile audio video convertor.
 
 Used Version: N-96788 GCC 9.2.0 Patman
 
@@ -137,7 +137,7 @@ http://www.fftw.org
 Haali Splitter
 ~~~~~~~~~~~~~~
 
-Haali Splitter is used by eac3to and dsmux to write MKV files. Haali Splitter and LAV Filters overrite each other, most people prefer LAV Filters, therefore it's recommended to install Haali first and LAV Filters last.
+Haali Splitter is used by eac3to and dsmux to write MKV files.
 
 Used Version: 
 
@@ -267,7 +267,7 @@ http://www.python.org
 qaac
 ~~~~
 
-qaac is a command line AAC encoder frontend based on the Apple AAC encoder. qaac requires libflac which StaxRip includes and it requires AppleApplicationSupport64.msi which can be extracted from the x64 iTunes installer using a decompression tool like 7-Zip. The makeportable script found on the qaac website can also be used.
+qaac is a console AAC encoder frontend based on the Apple AAC encoder.
 
 Used Version: 2.68
 
@@ -287,7 +287,7 @@ http://github.com/rigaya/QSVEnc
 rav1e
 ~~~~~
 
-a Faster and Safer AV1 Encoder
+A Faster and Safer AV1 Encoder
 
 Used Version: 0.3.0
 
@@ -397,7 +397,7 @@ http://x265.org
 xvid_encraw
 ~~~~~~~~~~~
 
-XviD command line encoder
+XviD console encoder
 
 Used Version: 1.3.5
 
@@ -697,7 +697,7 @@ https://github.com/299792458m/dfttest_mod
 DGDecodeNV
 ~~~~~~~~~~
 
-Shareware source filter with NVIDIA hardware acceleration and reliable transport stream support. DGIndexNV can be configured at Tools > Setting > Demux.
+Shareware source filter with NVIDIA hardware acceleration and reliable transport stream support.
 
 Filters: DGSource
 
@@ -1537,7 +1537,7 @@ http://github.com/chikuzen/yadifmod2
 YFRC
 ~~~~
 
-Yushko Frame Rate Converter - doubles the frame rate with strong artifact detection and scene change detection. YFRC uses masks to reduce artifacts in areas where interpolation failed.
+Yushko Frame Rate convertor - doubles the frame rate with strong artifact detection and scene change detection. YFRC uses masks to reduce artifacts in areas where interpolation failed.
 
 Filters: YFRC
 
@@ -1707,7 +1707,7 @@ https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DFTTest
 DGDecodeNV
 ~~~~~~~~~~
 
-Shareware source filter with NVIDIA hardware acceleration and reliable transport stream support. DGIndexNV can be configured at Tools > Setting > Demux.
+Shareware source filter with NVIDIA hardware acceleration and reliable transport stream support.
 
 Filters: DGSource
 

@@ -28,7 +28,7 @@ Public Class ConsolAppTester
         Dim compressedHelp = fullHelp.Replace("--(no-)", "--").Replace("--[no-]", "--").Replace("--no-", "--")
         Dim documented = Regex.Matches(compressedHelp, "--[\w-]+").OfType(Of Match).Select(Function(x) x.Value)
         log += documented.Join(BR) + BR2
-        Dim compressedCode = File.ReadAllText(CodeFile).Replace("--no-", "--")
+        Dim compressedCode = CodeFile.ReadAllText.Replace("--no-", "--")
         Dim implemented = Regex.Matches(compressedCode, "--[\w-]+").OfType(Of Match).Select(Function(x) x.Value)
         log += "implemented switches" + BR
         log += "-------------------" + BR
